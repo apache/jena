@@ -1,0 +1,11 @@
+This is a collection of individual EARL reports for
+test subjects claiming RDF/XML processor conformance.
+
+The consolodated report is saved to index.html generated
+using the earl-report Ruby gem. Run it as follows:
+
+gem install earl-report
+
+earl-report --format json -o earl.jsonld *.ttl --manifest ../manifest.ttl --base https://www.w3.org/2013/RDFXMLTests/manifest.ttl --name RDF/XML --bibRef [[RDFXML]]
+earl-report --json --format ttl -o earl.ttl earl.jsonld
+earl-report --json --format html --template template.md -o index.html earl.jsonld

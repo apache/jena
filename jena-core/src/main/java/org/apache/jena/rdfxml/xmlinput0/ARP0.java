@@ -63,7 +63,9 @@ import org.xml.sax.SAXException;
  * usage through the file life time. </p>
  * <p>See <a href="/documentation/io/index.html">ARP documentation</a> for more information.</p>
  * Includes contributions from Simon Raboczi and Andrew Newman
+ * @deprecated Direct access to the RDF/XML parser is planned for removal. Please contact the Jena development community for details.
  */
+@Deprecated
 public class ARP0 implements ARPConfig
 {
 

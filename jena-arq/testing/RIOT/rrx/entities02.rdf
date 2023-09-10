@@ -1,0 +1,23 @@
+<!-- Licensed under the terms of https://www.apache.org/licenses/LICENSE-2.0 -->
+
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+<!ENTITY rdf     'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+<!ENTITY xsd     'http://www.w3.org/2001/XMLSchema#'>
+<!ENTITY ex      'http://example/'>
+<!ENTITY text    'TEXT'>
+]>
+
+<rdf:RDF
+    xmlns:rdf   ="&rdf;"
+    xmlns:xsd   ="&xsd;"
+    xmlns:ex    ="&ex;"
+    >
+
+  <rdf:Description rdf:about="&ex;">
+    <ex:property rdf:datatype="&xsd;integer">123</ex:property>
+    <ex:plain>&text;</ex:plain>
+  </rdf:Description>
+
+</rdf:RDF>

@@ -39,7 +39,7 @@ public class MemoryLeakTest extends TestCase {
     public MemoryLeakTest(String arg0) {
         super(arg0);
     }
-    
+
     public void testWineMemoryLeak() {
         // warmup
         Runtime rt = Runtime.getRuntime();
@@ -54,10 +54,11 @@ public class MemoryLeakTest extends TestCase {
         rt.gc();
         long leaked = rt.totalMemory() - rt.freeMemory() - inUse;
         System.err.println("Leaked: "+ leaked);
-        
-        
+
+
     }
 
+    @SuppressWarnings("deprecation")
     static void loadFile(String fileName) {
         PrintStream oldOut = System.out;
         try ( PrintStream out = new PrintStream(new OutputStream() {

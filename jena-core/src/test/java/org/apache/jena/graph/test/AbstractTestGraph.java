@@ -712,8 +712,6 @@ public abstract class AbstractTestGraph extends GraphTestBase
         assertFalse( containsNode( g, node( "99" ) ) );
     }
 
-
-
     private boolean containsNode(Graph g, Node node)
     {
         return GraphUtil.containsNode(g, node) ;
@@ -916,9 +914,9 @@ public abstract class AbstractTestGraph extends GraphTestBase
         testIsomorphismXMLFile(1,true);
         testIsomorphismXMLFile(2,true);
         testIsomorphismXMLFile(3,true);
-        testIsomorphismXMLFile(4,true);
+//        testIsomorphismXMLFile(4,true); -- Uses daml:collection
         testIsomorphismXMLFile(5,false);
-        testIsomorphismXMLFile(6,false);
+//        testIsomorphismXMLFile(6,false); -- Uses daml:collection
         testIsomorphismNTripleFile(7,true);
         testIsomorphismNTripleFile(8,false);
 
@@ -929,7 +927,6 @@ public abstract class AbstractTestGraph extends GraphTestBase
 
     private void testIsomorphismXMLFile(int i, boolean result) {
         testIsomorphismFile(i,"RDF/XML","rdf",result);
-
     }
 
     private InputStream getInputStream( int n, int n2, String suffix)
@@ -945,6 +942,9 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Model m1 = ModelFactory.createModelForGraph(g1);
         Model m2 = ModelFactory.createModelForGraph(g2);
 
+        // Read regression/testModelEquals/{n}-1.{suffix} and
+        // regression/testModelEquals/{n}-2.{suffix}
+        // check they are isomorphic or nor as expected.
         m1.read(
                 getInputStream(n, 1, suffix),
                 "http://www.example.org/",lang);

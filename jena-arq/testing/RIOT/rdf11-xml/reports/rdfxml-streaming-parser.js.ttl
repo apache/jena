@@ -1,0 +1,2463 @@
+@prefix dc: <http://purl.org/dc/terms/>.
+@prefix doap: <http://usefulinc.com/ns/doap#>.
+@prefix earl: <http://www.w3.org/ns/earl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdft: <http://www.w3.org/ns/rdftest#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+<> foaf:primaryTopic <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    dc:issued "2018-10-08T23:16:03.823Z"^^xsd:dateTime;
+    foaf:maker <https://www.rubensworks.net/#me>.
+<https://www.npmjs.com/package/rdfxml-streaming-parser/> a earl:Software, earl:TestSubject, doap:Project;
+    doap:name "rdfxml-streaming-parser";
+    dc:title "rdfxml-streaming-parser";
+    doap:homepage <https://github.com/rdfjs/rdfxml-streaming-parser.js#readme>;
+    doap:license <http://opensource.org/licenses/MIT>;
+    doap:programming-language "JavaScript";
+    doap:implements <https://www.w3.org/TR/rdf-syntax-grammar/>;
+    doap:category <http://dbpedia.org/resource/Resource_Description_Framework>;
+    doap:download-page <https://npmjs.org/package/rdfxml-streaming-parser>;
+    doap:bug-database <https://github.com/rdfjs/rdfxml-streaming-parser.js/issues>;
+    doap:developer <https://www.rubensworks.net/#me>;
+    doap:maintainer <https://www.rubensworks.net/#me>;
+    doap:documenter <https://www.rubensworks.net/#me>;
+    doap:maker <https://www.rubensworks.net/#me>;
+    dc:creator <https://www.rubensworks.net/#me>;
+    dc:description "Streaming RDF/XML parser"@en;
+    doap:description "Streaming RDF/XML parser"@en.
+<https://www.rubensworks.net/#me> a foaf:Person, earl:Assertor;
+    foaf:name "Ruben Taelman <rubensworks@gmail.com>";
+    foaf:homepage <https://www.rubensworks.net/>.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#amp-in-url-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "amp-in-url-test001";
+    dc:description "\n    Description: the purpose of this test case is to show how one\nof XML's Predefined Entities - in this case the ampersand - is\nrepresented when it is used in the value of an rdf:about\nattribute. The ampersand is represented by its numeric\ncharacter reference as specified in:\nhttp://www.w3.org/TR/REC-xml#sec-predefined-ent In the\nassociated N-Triples file, the ampersand will be represented\nwith a single ampersand character (and not the ampersand's\nnumeric character reference). Note: when a XML/HTML browser is\nused to display this file, a single ampersand character may be\ndisplayed and not the ampersand's numeric character reference.\nIn this case, the browser may provide an alternate way to view\nthe file (such as viewing the file's source or saving to a\nfile).\n  ";
+    earl:assertions _:assertions0.
+_:assertions0 rdf:first _:assertion0;
+    rdf:rest rdf:nil.
+_:assertion0 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#amp-in-url-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result0.
+_:result0 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#datatypes-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "datatypes-test001";
+    dc:description "\n    A simple datatype production; a language+datatype production.\n  ";
+    earl:assertions _:assertions1.
+_:assertions1 rdf:first _:assertion1;
+    rdf:rest rdf:nil.
+_:assertion1 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#datatypes-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result1.
+_:result1 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#datatypes-test002> a earl:TestCriterion, earl:TestCase;
+    dc:title "datatypes-test002";
+    dc:description "\n    A parser is not required to know about well-formed datatyped\nliterals.\n  ";
+    earl:assertions _:assertions2.
+_:assertions2 rdf:first _:assertion2;
+    rdf:rest rdf:nil.
+_:assertion2 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#datatypes-test002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result2.
+_:result2 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-literals-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-charmod-literals-test001";
+    dc:description "\n    Does the treatment of literals conform to charmod ? Test for\nsuccess of legal Normal Form C literal\n  ";
+    earl:assertions _:assertions3.
+_:assertions3 rdf:first _:assertion3;
+    rdf:rest rdf:nil.
+_:assertion3 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-literals-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result3.
+_:result3 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-uris-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-charmod-uris-test001";
+    dc:description "\n    A uriref is allowed to match non-US ASCII forms conforming to\nUnicode Normal Form C. No escaping algorithm is applied.\n  ";
+    earl:assertions _:assertions4.
+_:assertions4 rdf:first _:assertion4;
+    rdf:rest rdf:nil.
+_:assertion4 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-uris-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result4.
+_:result4 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-uris-test002> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-charmod-uris-test002";
+    dc:description "\n    A uriref which already has % escaping is permitted. No\nunescaping algorithm is applied.\n  ";
+    earl:assertions _:assertions5.
+_:assertions5 rdf:first _:assertion5;
+    rdf:rest rdf:nil.
+_:assertion5 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-uris-test002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result5.
+_:result5 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-error001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-containers-syntax-vs-schema-error001";
+    dc:description "\n    rdf:li is not allowed as as an attribute\n  ";
+    earl:assertions _:assertions6.
+_:assertions6 rdf:first _:assertion6;
+    rdf:rest rdf:nil.
+_:assertion6 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-error001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result6.
+_:result6 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-error002> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-containers-syntax-vs-schema-error002";
+    dc:description "\n    rdf:li elements as typed nodes - a bizarre case As specified\nin\nhttp://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2001Nov/0651.html\nis not an error.\n  ";
+    earl:assertions _:assertions7.
+_:assertions7 rdf:first _:assertion7;
+    rdf:rest rdf:nil.
+_:assertion7 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-error002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result7.
+_:result7 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-containers-syntax-vs-schema-test001";
+    dc:description "\n    Simple container\n  ";
+    earl:assertions _:assertions8.
+_:assertions8 rdf:first _:assertion8;
+    rdf:rest rdf:nil.
+_:assertion8 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result8.
+_:result8 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test002> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-containers-syntax-vs-schema-test002";
+    dc:description "\n    rdf:li is unaffected by other rdf:_nnn properties. This test\ncase is concerned only with defining the triples that this\nparticular example RDF/XML represents. It is not concerned\nwith whether that collection of triples violates any other\nconstraints, e.g. restrictions on the number of rdf:_1\nproperties that may be defined for a resource.\n  ";
+    earl:assertions _:assertions9.
+_:assertions9 rdf:first _:assertion9;
+    rdf:rest rdf:nil.
+_:assertion9 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result9.
+_:result9 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test003> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-containers-syntax-vs-schema-test003";
+    dc:description "\n    rdf:li elements can exist in any description element\n  ";
+    earl:assertions _:assertions10.
+_:assertions10 rdf:first _:assertion10;
+    rdf:rest rdf:nil.
+_:assertion10 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test003>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result10.
+_:result10 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test004> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-containers-syntax-vs-schema-test004";
+    dc:description "\n    rdf:li elements match any of the property element productions\n  ";
+    earl:assertions _:assertions11.
+_:assertions11 rdf:first _:assertion11;
+    rdf:rest rdf:nil.
+_:assertion11 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test004>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result11.
+_:result11 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test006> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-containers-syntax-vs-schema-test006";
+    dc:description "\n    containers match the typed node production\n  ";
+    earl:assertions _:assertions12.
+_:assertions12 rdf:first _:assertion12;
+    rdf:rest rdf:nil.
+_:assertion12 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test006>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result12.
+_:result12 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test007> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-containers-syntax-vs-schema-test007";
+    dc:description "\n    rdf:li processing within each element is independent\n  ";
+    earl:assertions _:assertions13.
+_:assertions13 rdf:first _:assertion13;
+    rdf:rest rdf:nil.
+_:assertion13 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test007>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result13.
+_:result13 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test008> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-containers-syntax-vs-schema-test008";
+    dc:description "\n    rdf:li processing is per element, not per resource.\n  ";
+    earl:assertions _:assertions14.
+_:assertions14 rdf:first _:assertion14;
+    rdf:rest rdf:nil.
+_:assertion14 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test008>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result14.
+_:result14 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-element-not-mandatory-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-element-not-mandatory-test001";
+    dc:description "\n    A surrounding rdf:RDF element is no longer mandatory.\n  ";
+    earl:assertions _:assertions15.
+_:assertions15 rdf:first _:assertion15;
+    rdf:rest rdf:nil.
+_:assertion15 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-element-not-mandatory-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result15.
+_:result15 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-ns-prefix-confusion-test0001";
+    dc:description "\n    RDF attributes that are required to have an rdf: prefix about\naboutEach ID bagID type resource parseType\n  ";
+    earl:assertions _:assertions16.
+_:assertions16 rdf:first _:assertion16;
+    rdf:rest rdf:nil.
+_:assertion16 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result16.
+_:result16 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0003> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-ns-prefix-confusion-test0003";
+    dc:description "\n    RDF attributes that are required to have an rdf: prefix about\naboutEach ID bagID type resource parseType\n  ";
+    earl:assertions _:assertions17.
+_:assertions17 rdf:first _:assertion17;
+    rdf:rest rdf:nil.
+_:assertion17 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0003>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result17.
+_:result17 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0004> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-ns-prefix-confusion-test0004";
+    dc:description "\n    RDF attributes that are required to have an rdf: prefix about\naboutEach ID bagID type resource parseType\n  ";
+    earl:assertions _:assertions18.
+_:assertions18 rdf:first _:assertion18;
+    rdf:rest rdf:nil.
+_:assertion18 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0004>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result18.
+_:result18 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0005> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-ns-prefix-confusion-test0005";
+    dc:description "\n    RDF attributes that are required to have an rdf: prefix about\naboutEach ID bagID type resource parseType\n  ";
+    earl:assertions _:assertions19.
+_:assertions19 rdf:first _:assertion19;
+    rdf:rest rdf:nil.
+_:assertion19 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0005>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result19.
+_:result19 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0006> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-ns-prefix-confusion-test0006";
+    dc:description "\n    RDF attributes that are required to have an rdf: prefix about\naboutEach ID bagID type resource parseType\n  ";
+    earl:assertions _:assertions20.
+_:assertions20 rdf:first _:assertion20;
+    rdf:rest rdf:nil.
+_:assertion20 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0006>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result20.
+_:result20 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0009> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-ns-prefix-confusion-test0009";
+    dc:description "\n    Namespace qualification MUST be used for all property\nattributes.\n  ";
+    earl:assertions _:assertions21.
+_:assertions21 rdf:first _:assertion21;
+    rdf:rest rdf:nil.
+_:assertion21 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0009>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result21.
+_:result21 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0010> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-ns-prefix-confusion-test0010";
+    dc:description "\n    Non-prefixed RDF elements (NOT attributes) are allowed when a\ndefault XML element namespace is defined with an\nxmlns=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" attribute.\n  ";
+    earl:assertions _:assertions22.
+_:assertions22 rdf:first _:assertion22;
+    rdf:rest rdf:nil.
+_:assertion22 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0010>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result22.
+_:result22 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0011> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-ns-prefix-confusion-test0011";
+    dc:description "\n    Non-prefixed RDF elements (NOT attributes) are allowed when a\ndefault XML element namespace is defined with an\nxmlns=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" attribute.\n  ";
+    earl:assertions _:assertions23.
+_:assertions23 rdf:first _:assertion23;
+    rdf:rest rdf:nil.
+_:assertion23 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0011>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result23.
+_:result23 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0012> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-ns-prefix-confusion-test0012";
+    dc:description "\n    Non-prefixed RDF elements (NOT attributes) are allowed when a\ndefault XML element namespace is defined with an\nxmlns=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" attribute.\n  ";
+    earl:assertions _:assertions24.
+_:assertions24 rdf:first _:assertion24;
+    rdf:rest rdf:nil.
+_:assertion24 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0012>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result24.
+_:result24 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0013> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-ns-prefix-confusion-test0013";
+    dc:description "\n    Non-prefixed RDF elements (NOT attributes) are allowed when a\ndefault XML element namespace is defined with an\nxmlns=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" attribute.\n  ";
+    earl:assertions _:assertions25.
+_:assertions25 rdf:first _:assertion25;
+    rdf:rest rdf:nil.
+_:assertion25 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0013>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result25.
+_:result25 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0014> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdf-ns-prefix-confusion-test0014";
+    dc:description "\n    Non-prefixed RDF elements (NOT attributes) are allowed when a\ndefault XML element namespace is defined with an\nxmlns=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" attribute.\n  ";
+    earl:assertions _:assertions26.
+_:assertions26 rdf:first _:assertion26;
+    rdf:rest rdf:nil.
+_:assertion26 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0014>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result26.
+_:result26 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-abouteach-error001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-abouteach-error001";
+    dc:description "\n    aboutEach removed from the RDF specifications. See URI above\nfor further details.\n  ";
+    earl:assertions _:assertions27.
+_:assertions27 rdf:first _:assertion27;
+    rdf:rest rdf:nil.
+_:assertion27 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-abouteach-error001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result27.
+_:result27 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-abouteach-error002> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-abouteach-error002";
+    dc:description "\n    aboutEach removed from the RDF specifications. See URI above\nfor further details.\n  ";
+    earl:assertions _:assertions28.
+_:assertions28 rdf:first _:assertion28;
+    rdf:rest rdf:nil.
+_:assertion28 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-abouteach-error002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result28.
+_:result28 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-error1> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-difference-between-ID-and-about-error1";
+    dc:description "\n    two elements cannot use the same ID\n  ";
+    earl:assertions _:assertions29.
+_:assertions29 rdf:first _:assertion29;
+    rdf:rest rdf:nil.
+_:assertion29 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-error1>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result29.
+_:result29 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test1> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-difference-between-ID-and-about-test1";
+    dc:description "\n    A statement with an rdf:ID creates a regular triple.\n  ";
+    earl:assertions _:assertions30.
+_:assertions30 rdf:first _:assertion30;
+    rdf:rest rdf:nil.
+_:assertion30 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test1>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result30.
+_:result30 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test2> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-difference-between-ID-and-about-test2";
+    dc:description "\n    This test shows the treatment of non-ASCII characters in the\nvalue of rdf:ID attribute.\n  ";
+    earl:assertions _:assertions31.
+_:assertions31 rdf:first _:assertion31;
+    rdf:rest rdf:nil.
+_:assertion31 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test2>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result31.
+_:result31 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test3> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-difference-between-ID-and-about-test3";
+    dc:description "\n    This test shows the treatment of non-ASCII characters in the\nvalue of rdf:about attribute.\n  ";
+    earl:assertions _:assertions32.
+_:assertions32 rdf:first _:assertion32;
+    rdf:rest rdf:nil.
+_:assertion32 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test3>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result32.
+_:result32 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-duplicate-member-props-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-duplicate-member-props-test001";
+    dc:description "\n    The question posed to the RDF WG was: should an RDF document\ncontaining multiple rdf:_n properties (with the same n) on an\nelement be rejected as illegal? The WG decided that a parser\nshould accept that case as legal RDF.\n  ";
+    earl:assertions _:assertions33.
+_:assertions33 rdf:first _:assertion33;
+    rdf:rest rdf:nil.
+_:assertion33 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-duplicate-member-props-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result33.
+_:result33 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-error001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-empty-property-elements-error001";
+    dc:description "\n    This is not legal RDF; specifying an rdf:parseType of\n\"Literal\" and an rdf:resource attribute at the same time is an\nerror.\n  ";
+    earl:assertions _:assertions34.
+_:assertions34 rdf:first _:assertion34;
+    rdf:rest rdf:nil.
+_:assertion34 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-error001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result34.
+_:result34 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-error002> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-empty-property-elements-error002";
+    dc:description "\n    This is not legal RDF; specifying an rdf:parseType of\n\"Literal\" and an rdf:resource attribute at the same time is an\nerror.\n  ";
+    earl:assertions _:assertions35.
+_:assertions35 rdf:first _:assertion35;
+    rdf:rest rdf:nil.
+_:assertion35 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-error002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result35.
+_:result35 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-empty-property-elements-test001";
+    dc:description "\n    The rdf:resource attribute means that the value of this\nproperty element is a resource.\n  ";
+    earl:assertions _:assertions36.
+_:assertions36 rdf:first _:assertion36;
+    rdf:rest rdf:nil.
+_:assertion36 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result36.
+_:result36 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test002> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-empty-property-elements-test002";
+    dc:description "\n    The basic case. An empty property element just gives an empty\nliteral.\n  ";
+    earl:assertions _:assertions37.
+_:assertions37 rdf:first _:assertion37;
+    rdf:rest rdf:nil.
+_:assertion37 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result37.
+_:result37 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test004> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-empty-property-elements-test004";
+    dc:description "\n    If the parseType indicates the value is a resource, we must\ncreate one. With no additional information, the resource is\nanonymous.\n  ";
+    earl:assertions _:assertions38.
+_:assertions38 rdf:first _:assertion38;
+    rdf:rest rdf:nil.
+_:assertion38 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test004>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result38.
+_:result38 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test005> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-empty-property-elements-test005";
+    dc:description "\n    An empty property element just gives an empty literal. We\nreify the statement at the same time.\n  ";
+    earl:assertions _:assertions39.
+_:assertions39 rdf:first _:assertion39;
+    rdf:rest rdf:nil.
+_:assertion39 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test005>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result39.
+_:result39 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test006> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-empty-property-elements-test006";
+    dc:description "\n    Here the parseType indicates that we should create a resource.\nWe also reify the generated statement.\n  ";
+    earl:assertions _:assertions40.
+_:assertions40 rdf:first _:assertion40;
+    rdf:rest rdf:nil.
+_:assertion40 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test006>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result40.
+_:result40 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test007> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-empty-property-elements-test007";
+    dc:description "\n    As test001.rdf; this uses an explicit closing tag.\n  ";
+    earl:assertions _:assertions41.
+_:assertions41 rdf:first _:assertion41;
+    rdf:rest rdf:nil.
+_:assertion41 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test007>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result41.
+_:result41 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test008> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-empty-property-elements-test008";
+    dc:description "\n    As test002.rdf; this uses an explicit closing tag.\n  ";
+    earl:assertions _:assertions42.
+_:assertions42 rdf:first _:assertion42;
+    rdf:rest rdf:nil.
+_:assertion42 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test008>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result42.
+_:result42 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test010> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-empty-property-elements-test010";
+    dc:description "\n    As test004.rdf; this uses an explicit closing tag.\n  ";
+    earl:assertions _:assertions43.
+_:assertions43 rdf:first _:assertion43;
+    rdf:rest rdf:nil.
+_:assertion43 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test010>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result43.
+_:result43 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test011> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-empty-property-elements-test011";
+    dc:description "\n    As test005.rdf; this uses an explicit closing tag.\n  ";
+    earl:assertions _:assertions44.
+_:assertions44 rdf:first _:assertion44;
+    rdf:rest rdf:nil.
+_:assertion44 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test011>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result44.
+_:result44 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test012> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-empty-property-elements-test012";
+    dc:description "\n    As test006.rdf; this uses an explicit closing tag.\n  ";
+    earl:assertions _:assertions45.
+_:assertions45 rdf:first _:assertion45;
+    rdf:rest rdf:nil.
+_:assertion45 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test012>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result45.
+_:result45 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test013> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-empty-property-elements-test013";
+    dc:description "\n    Test of the last alternative for production [6.12],\ninterpreted according to RDFMS paragraphs 229-234:\nhttp://lists.w3.org/Archives/Public/www-archive/2001Jun/att-0021/00-part#229\n  ";
+    earl:assertions _:assertions46.
+_:assertions46 rdf:first _:assertion46;
+    rdf:rest rdf:nil.
+_:assertion46 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test013>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result46.
+_:result46 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test014> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-empty-property-elements-test014";
+    dc:description "\n    Test of the last alternative for production [6.12],\ninterpreted according to RDFMS paragraphs 229-234:\nhttp://lists.w3.org/Archives/Public/www-archive/2001Jun/att-0021/00-part#229\n  ";
+    earl:assertions _:assertions47.
+_:assertions47 rdf:first _:assertion47;
+    rdf:rest rdf:nil.
+_:assertion47 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test014>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result47.
+_:result47 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test015> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-empty-property-elements-test015";
+    dc:description "\n    Test of the last alternative for production [6.12],\ninterpreted according to RDFMS paragraphs 229-234:\nhttp://lists.w3.org/Archives/Public/www-archive/2001Jun/att-0021/00-part#229\nHere we have an explicit closing tag. This does not match any\nof the productions in the original document, but is\nindistinguishable from test014 as far as XML is concerned.\n  ";
+    earl:assertions _:assertions48.
+_:assertions48 rdf:first _:assertion48;
+    rdf:rest rdf:nil.
+_:assertion48 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test015>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result48.
+_:result48 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test016> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-empty-property-elements-test016";
+    dc:description "\n    Like rdfms-empty-property-elements/test001.rdf but with a\nprocessing instruction as the only content of the otherwise\nempty element.\n  ";
+    earl:assertions _:assertions49.
+_:assertions49 rdf:first _:assertion49;
+    rdf:rest rdf:nil.
+_:assertion49 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test016>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result49.
+_:result49 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test017> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-empty-property-elements-test017";
+    dc:description "\n    Like rdfms-empty-property-elements/test001.rdf but with a\ncomment as the only content of the otherwise empty element.\n  ";
+    earl:assertions _:assertions50.
+_:assertions50 rdf:first _:assertion50;
+    rdf:rest rdf:nil.
+_:assertion50 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test017>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result50.
+_:result50 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-identity-anon-resources-test001";
+    dc:description "\n    a RDF Description with no ID or about attribute describes an\nun-named resource, aka a bNode.\n  ";
+    earl:assertions _:assertions51.
+_:assertions51 rdf:first _:assertion51;
+    rdf:rest rdf:nil.
+_:assertion51 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result51.
+_:result51 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test002> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-identity-anon-resources-test002";
+    dc:description "\n    a RDF Description with no ID or about attribute describes an\nun-named resource, aka a bNode.\n  ";
+    earl:assertions _:assertions52.
+_:assertions52 rdf:first _:assertion52;
+    rdf:rest rdf:nil.
+_:assertion52 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result52.
+_:result52 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test003> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-identity-anon-resources-test003";
+    dc:description "\n    a RDF container (in this case a Bag) without an ID attribute\ndescribes an un-named resource, aka a bNode.\n  ";
+    earl:assertions _:assertions53.
+_:assertions53 rdf:first _:assertion53;
+    rdf:rest rdf:nil.
+_:assertion53 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test003>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result53.
+_:result53 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test004> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-identity-anon-resources-test004";
+    dc:description "\n    a RDF container (in this case an Alt) without an ID attribute\ndescribes an un-named resource, aka a bNode.\n  ";
+    earl:assertions _:assertions54.
+_:assertions54 rdf:first _:assertion54;
+    rdf:rest rdf:nil.
+_:assertion54 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test004>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result54.
+_:result54 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test005> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-identity-anon-resources-test005";
+    dc:description "\n    a RDF container (in this case an Seq) without an ID attribute\ndescribes an un-named resource, aka a bNode.\n  ";
+    earl:assertions _:assertions55.
+_:assertions55 rdf:first _:assertion55;
+    rdf:rest rdf:nil.
+_:assertion55 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test005>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result55.
+_:result55 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-not-id-and-resource-attr-test001";
+    dc:description "\n    rdf:ID on an empty property element indicates reification.\n  ";
+    earl:assertions _:assertions56.
+_:assertions56 rdf:first _:assertion56;
+    rdf:rest rdf:nil.
+_:assertion56 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result56.
+_:result56 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test002> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-not-id-and-resource-attr-test002";
+    dc:description "\n    rdf:reource on an empty property element indicates the URI of\nthe object.\n  ";
+    earl:assertions _:assertions57.
+_:assertions57 rdf:first _:assertion57;
+    rdf:rest rdf:nil.
+_:assertion57 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result57.
+_:result57 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test004> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-not-id-and-resource-attr-test004";
+    dc:description "\n    rdf:ID and rdf:resource are allowed together on empty property\nelement.\n  ";
+    earl:assertions _:assertions58.
+_:assertions58 rdf:first _:assertion58;
+    rdf:rest rdf:nil.
+_:assertion58 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test004>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result58.
+_:result58 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test005> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-not-id-and-resource-attr-test005";
+    dc:description "\n    rdf:ID and rdf:resource are allowed together on empty property\nelement.\n  ";
+    earl:assertions _:assertions59.
+_:assertions59 rdf:first _:assertion59;
+    rdf:rest rdf:nil.
+_:assertion59 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test005>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result59.
+_:result59 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-para196-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-para196-test001";
+    dc:description "\n    test case showing that the 2nd URI in M Paragraph 196 is\npermitted as a namespace URI (and any namespace URI starting\nwith that URI)\n  ";
+    earl:assertions _:assertions60.
+_:assertions60 rdf:first _:assertion60;
+    rdf:rest rdf:nil.
+_:assertion60 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-para196-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result60.
+_:result60 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-id-error001";
+    dc:description "\n    The value of rdf:ID must match the XML Name production, (as\nmodified by XML Namespaces).\n  ";
+    earl:assertions _:assertions61.
+_:assertions61 rdf:first _:assertion61;
+    rdf:rest rdf:nil.
+_:assertion61 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result61.
+_:result61 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error002> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-id-error002";
+    dc:description "\n    The value of rdf:ID must match the XML Name production, (as\nmodified by XML Namespaces).\n  ";
+    earl:assertions _:assertions62.
+_:assertions62 rdf:first _:assertion62;
+    rdf:rest rdf:nil.
+_:assertion62 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result62.
+_:result62 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error003> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-id-error003";
+    dc:description "\n    The value of rdf:ID must match the XML Name production, (as\nmodified by XML Namespaces).\n  ";
+    earl:assertions _:assertions63.
+_:assertions63 rdf:first _:assertion63;
+    rdf:rest rdf:nil.
+_:assertion63 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error003>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result63.
+_:result63 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error004> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-id-error004";
+    dc:description "\n    The value of rdf:ID must match the XML Name production, (as\nmodified by XML Namespaces).\n  ";
+    earl:assertions _:assertions64.
+_:assertions64 rdf:first _:assertion64;
+    rdf:rest rdf:nil.
+_:assertion64 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error004>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result64.
+_:result64 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error005> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-id-error005";
+    dc:description "\n    The value of rdf:ID must match the XML Name production, (as\nmodified by XML Namespaces).\n  ";
+    earl:assertions _:assertions65.
+_:assertions65 rdf:first _:assertion65;
+    rdf:rest rdf:nil.
+_:assertion65 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error005>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result65.
+_:result65 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error006> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-id-error006";
+    dc:description "\n    The value of rdf:bagID must match the XML Name production, (as\nmodified by XML Namespaces).\n  ";
+    earl:assertions _:assertions66.
+_:assertions66 rdf:first _:assertion66;
+    rdf:rest rdf:nil.
+_:assertion66 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error006>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result66.
+_:result66 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error007> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-id-error007";
+    dc:description "\n    The value of rdf:bagID must match the XML Name production, (as\nmodified by XML Namespaces).\n  ";
+    earl:assertions _:assertions67.
+_:assertions67 rdf:first _:assertion67;
+    rdf:rest rdf:nil.
+_:assertion67 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error007>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result67.
+_:result67 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-001";
+    dc:description "\n    RDF is forbidden as a node element name.\n  ";
+    earl:assertions _:assertions68.
+_:assertions68 rdf:first _:assertion68;
+    rdf:rest rdf:nil.
+_:assertion68 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result68.
+_:result68 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-002> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-002";
+    dc:description "\n    ID is forbidden as a node element name.\n  ";
+    earl:assertions _:assertions69.
+_:assertions69 rdf:first _:assertion69;
+    rdf:rest rdf:nil.
+_:assertion69 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result69.
+_:result69 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-003> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-003";
+    dc:description "\n    about is forbidden as a node element name.\n  ";
+    earl:assertions _:assertions70.
+_:assertions70 rdf:first _:assertion70;
+    rdf:rest rdf:nil.
+_:assertion70 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-003>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result70.
+_:result70 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-004> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-004";
+    dc:description "\n    bagID is forbidden as a node element name.\n  ";
+    earl:assertions _:assertions71.
+_:assertions71 rdf:first _:assertion71;
+    rdf:rest rdf:nil.
+_:assertion71 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-004>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result71.
+_:result71 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-005> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-005";
+    dc:description "\n    parseType is forbidden as a node element name.\n  ";
+    earl:assertions _:assertions72.
+_:assertions72 rdf:first _:assertion72;
+    rdf:rest rdf:nil.
+_:assertion72 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-005>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result72.
+_:result72 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-006> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-006";
+    dc:description "\n    resource is forbidden as a node element name.\n  ";
+    earl:assertions _:assertions73.
+_:assertions73 rdf:first _:assertion73;
+    rdf:rest rdf:nil.
+_:assertion73 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-006>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result73.
+_:result73 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-007> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-007";
+    dc:description "\n    nodeID is forbidden as a node element name.\n  ";
+    earl:assertions _:assertions74.
+_:assertions74 rdf:first _:assertion74;
+    rdf:rest rdf:nil.
+_:assertion74 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-007>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result74.
+_:result74 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-008> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-008";
+    dc:description "\n    li is forbidden as a node element name.\n  ";
+    earl:assertions _:assertions75.
+_:assertions75 rdf:first _:assertion75;
+    rdf:rest rdf:nil.
+_:assertion75 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-008>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result75.
+_:result75 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-009> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-009";
+    dc:description "\n    aboutEach is forbidden as a node element name.\n  ";
+    earl:assertions _:assertions76.
+_:assertions76 rdf:first _:assertion76;
+    rdf:rest rdf:nil.
+_:assertion76 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-009>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result76.
+_:result76 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-010> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-010";
+    dc:description "\n    aboutEachPrefix is forbidden as a node element name.\n  ";
+    earl:assertions _:assertions77.
+_:assertions77 rdf:first _:assertion77;
+    rdf:rest rdf:nil.
+_:assertion77 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-010>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result77.
+_:result77 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-011> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-011";
+    dc:description "\n    Description is forbidden as a property element name.\n  ";
+    earl:assertions _:assertions78.
+_:assertions78 rdf:first _:assertion78;
+    rdf:rest rdf:nil.
+_:assertion78 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-011>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result78.
+_:result78 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-012> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-012";
+    dc:description "\n    RDF is forbidden as a property element name.\n  ";
+    earl:assertions _:assertions79.
+_:assertions79 rdf:first _:assertion79;
+    rdf:rest rdf:nil.
+_:assertion79 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-012>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result79.
+_:result79 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-013> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-013";
+    dc:description "\n    ID is forbidden as a property element name.\n  ";
+    earl:assertions _:assertions80.
+_:assertions80 rdf:first _:assertion80;
+    rdf:rest rdf:nil.
+_:assertion80 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-013>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result80.
+_:result80 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-014> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-014";
+    dc:description "\n    about is forbidden as a property element name.\n  ";
+    earl:assertions _:assertions81.
+_:assertions81 rdf:first _:assertion81;
+    rdf:rest rdf:nil.
+_:assertion81 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-014>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result81.
+_:result81 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-015> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-015";
+    dc:description "\n    bagID is forbidden as a property element name.\n  ";
+    earl:assertions _:assertions82.
+_:assertions82 rdf:first _:assertion82;
+    rdf:rest rdf:nil.
+_:assertion82 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-015>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result82.
+_:result82 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-016> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-016";
+    dc:description "\n    parseType is forbidden as a property element name.\n  ";
+    earl:assertions _:assertions83.
+_:assertions83 rdf:first _:assertion83;
+    rdf:rest rdf:nil.
+_:assertion83 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-016>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result83.
+_:result83 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-017> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-017";
+    dc:description "\n    resource is forbidden as a property element name.\n  ";
+    earl:assertions _:assertions84.
+_:assertions84 rdf:first _:assertion84;
+    rdf:rest rdf:nil.
+_:assertion84 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-017>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result84.
+_:result84 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-018> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-018";
+    dc:description "\n    nodeID is forbidden as a property element name.\n  ";
+    earl:assertions _:assertions85.
+_:assertions85 rdf:first _:assertion85;
+    rdf:rest rdf:nil.
+_:assertion85 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-018>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result85.
+_:result85 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-019> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-019";
+    dc:description "\n    aboutEach is forbidden as a property element name.\n  ";
+    earl:assertions _:assertions86.
+_:assertions86 rdf:first _:assertion86;
+    rdf:rest rdf:nil.
+_:assertion86 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-019>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result86.
+_:result86 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-020> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-error-020";
+    dc:description "\n    aboutEachPrefix is forbidden as a property element name.\n  ";
+    earl:assertions _:assertions87.
+_:assertions87 rdf:first _:assertion87;
+    rdf:rest rdf:nil.
+_:assertion87 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-020>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result87.
+_:result87 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-001";
+    dc:description "\n    Description is allowed as a node element name.\n  ";
+    earl:assertions _:assertions88.
+_:assertions88 rdf:first _:assertion88;
+    rdf:rest rdf:nil.
+_:assertion88 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result88.
+_:result88 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-002> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-002";
+    dc:description "\n    Seq is allowed as a node element name.\n  ";
+    earl:assertions _:assertions89.
+_:assertions89 rdf:first _:assertion89;
+    rdf:rest rdf:nil.
+_:assertion89 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result89.
+_:result89 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-003> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-003";
+    dc:description "\n    Bag is allowed as a node element name.\n  ";
+    earl:assertions _:assertions90.
+_:assertions90 rdf:first _:assertion90;
+    rdf:rest rdf:nil.
+_:assertion90 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-003>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result90.
+_:result90 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-004> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-004";
+    dc:description "\n    Alt is allowed as a node element name.\n  ";
+    earl:assertions _:assertions91.
+_:assertions91 rdf:first _:assertion91;
+    rdf:rest rdf:nil.
+_:assertion91 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-004>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result91.
+_:result91 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-005> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-005";
+    dc:description "\n    Statement is allowed as a node element name.\n  ";
+    earl:assertions _:assertions92.
+_:assertions92 rdf:first _:assertion92;
+    rdf:rest rdf:nil.
+_:assertion92 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-005>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result92.
+_:result92 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-006> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-006";
+    dc:description "\n    Property is allowed as a node element name.\n  ";
+    earl:assertions _:assertions93.
+_:assertions93 rdf:first _:assertion93;
+    rdf:rest rdf:nil.
+_:assertion93 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-006>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result93.
+_:result93 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-007> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-007";
+    dc:description "\n    List is allowed as a node element name.\n  ";
+    earl:assertions _:assertions94.
+_:assertions94 rdf:first _:assertion94;
+    rdf:rest rdf:nil.
+_:assertion94 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-007>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result94.
+_:result94 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-008> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-008";
+    dc:description "\n    subject is allowed as a node element name.\n  ";
+    earl:assertions _:assertions95.
+_:assertions95 rdf:first _:assertion95;
+    rdf:rest rdf:nil.
+_:assertion95 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-008>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result95.
+_:result95 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-009> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-009";
+    dc:description "\n    predicate is allowed as a node element name.\n  ";
+    earl:assertions _:assertions96.
+_:assertions96 rdf:first _:assertion96;
+    rdf:rest rdf:nil.
+_:assertion96 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-009>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result96.
+_:result96 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-010> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-010";
+    dc:description "\n    object is allowed as a node element name.\n  ";
+    earl:assertions _:assertions97.
+_:assertions97 rdf:first _:assertion97;
+    rdf:rest rdf:nil.
+_:assertion97 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-010>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result97.
+_:result97 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-011> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-011";
+    dc:description "\n    type is allowed as a node element name.\n  ";
+    earl:assertions _:assertions98.
+_:assertions98 rdf:first _:assertion98;
+    rdf:rest rdf:nil.
+_:assertion98 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-011>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result98.
+_:result98 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-012> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-012";
+    dc:description "\n    value is allowed as a node element name.\n  ";
+    earl:assertions _:assertions99.
+_:assertions99 rdf:first _:assertion99;
+    rdf:rest rdf:nil.
+_:assertion99 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-012>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result99.
+_:result99 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-013> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-013";
+    dc:description "\n    first is allowed as a node element name.\n  ";
+    earl:assertions _:assertions100.
+_:assertions100 rdf:first _:assertion100;
+    rdf:rest rdf:nil.
+_:assertion100 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-013>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result100.
+_:result100 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-014> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-014";
+    dc:description "\n    rest is allowed as a node element name.\n  ";
+    earl:assertions _:assertions101.
+_:assertions101 rdf:first _:assertion101;
+    rdf:rest rdf:nil.
+_:assertion101 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-014>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result101.
+_:result101 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-015> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-015";
+    dc:description "\n    _1 is allowed as a node element name.\n  ";
+    earl:assertions _:assertions102.
+_:assertions102 rdf:first _:assertion102;
+    rdf:rest rdf:nil.
+_:assertion102 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-015>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result102.
+_:result102 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-016> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-016";
+    dc:description "\n    nil is allowed as a node element name.\n  ";
+    earl:assertions _:assertions103.
+_:assertions103 rdf:first _:assertion103;
+    rdf:rest rdf:nil.
+_:assertion103 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-016>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result103.
+_:result103 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-017> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-017";
+    dc:description "\n    Seq is allowed as a property element name.\n  ";
+    earl:assertions _:assertions104.
+_:assertions104 rdf:first _:assertion104;
+    rdf:rest rdf:nil.
+_:assertion104 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-017>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result104.
+_:result104 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-018> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-018";
+    dc:description "\n    Bag is allowed as a property element name.\n  ";
+    earl:assertions _:assertions105.
+_:assertions105 rdf:first _:assertion105;
+    rdf:rest rdf:nil.
+_:assertion105 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-018>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result105.
+_:result105 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-019> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-019";
+    dc:description "\n    Alt is allowed as a property element name.\n  ";
+    earl:assertions _:assertions106.
+_:assertions106 rdf:first _:assertion106;
+    rdf:rest rdf:nil.
+_:assertion106 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-019>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result106.
+_:result106 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-020> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-020";
+    dc:description "\n    Statement is allowed as a property element name.\n  ";
+    earl:assertions _:assertions107.
+_:assertions107 rdf:first _:assertion107;
+    rdf:rest rdf:nil.
+_:assertion107 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-020>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result107.
+_:result107 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-021> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-021";
+    dc:description "\n    Property is allowed as a property element name.\n  ";
+    earl:assertions _:assertions108.
+_:assertions108 rdf:first _:assertion108;
+    rdf:rest rdf:nil.
+_:assertion108 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-021>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result108.
+_:result108 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-022> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-022";
+    dc:description "\n    List is allowed as a property element name.\n  ";
+    earl:assertions _:assertions109.
+_:assertions109 rdf:first _:assertion109;
+    rdf:rest rdf:nil.
+_:assertion109 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-022>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result109.
+_:result109 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-023> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-023";
+    dc:description "\n    subject is allowed as a property element name.\n  ";
+    earl:assertions _:assertions110.
+_:assertions110 rdf:first _:assertion110;
+    rdf:rest rdf:nil.
+_:assertion110 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-023>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result110.
+_:result110 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-024> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-024";
+    dc:description "\n    predicate is allowed as a property element name.\n  ";
+    earl:assertions _:assertions111.
+_:assertions111 rdf:first _:assertion111;
+    rdf:rest rdf:nil.
+_:assertion111 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-024>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result111.
+_:result111 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-025> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-025";
+    dc:description "\n    object is allowed as a property element name.\n  ";
+    earl:assertions _:assertions112.
+_:assertions112 rdf:first _:assertion112;
+    rdf:rest rdf:nil.
+_:assertion112 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-025>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result112.
+_:result112 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-026> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-026";
+    dc:description "\n    type is allowed as a property element name.\n  ";
+    earl:assertions _:assertions113.
+_:assertions113 rdf:first _:assertion113;
+    rdf:rest rdf:nil.
+_:assertion113 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-026>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result113.
+_:result113 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-027> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-027";
+    dc:description "\n    value is allowed as a property element name.\n  ";
+    earl:assertions _:assertions114.
+_:assertions114 rdf:first _:assertion114;
+    rdf:rest rdf:nil.
+_:assertion114 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-027>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result114.
+_:result114 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-028> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-028";
+    dc:description "\n    first is allowed as a property element name.\n  ";
+    earl:assertions _:assertions115.
+_:assertions115 rdf:first _:assertion115;
+    rdf:rest rdf:nil.
+_:assertion115 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-028>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result115.
+_:result115 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-029> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-029";
+    dc:description "\n    rest is allowed as a property element name.\n  ";
+    earl:assertions _:assertions116.
+_:assertions116 rdf:first _:assertion116;
+    rdf:rest rdf:nil.
+_:assertion116 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-029>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result116.
+_:result116 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-030> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-030";
+    dc:description "\n    _1 is allowed as a property element name.\n  ";
+    earl:assertions _:assertions117.
+_:assertions117 rdf:first _:assertion117;
+    rdf:rest rdf:nil.
+_:assertion117 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-030>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result117.
+_:result117 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-031> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-031";
+    dc:description "\n    li is allowed as a property element name.\n  ";
+    earl:assertions _:assertions118.
+_:assertions118 rdf:first _:assertion118;
+    rdf:rest rdf:nil.
+_:assertion118 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-031>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result118.
+_:result118 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-032> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-032";
+    dc:description "\n    Seq is allowed as a property element name.\n  ";
+    earl:assertions _:assertions119.
+_:assertions119 rdf:first _:assertion119;
+    rdf:rest rdf:nil.
+_:assertion119 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-032>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result119.
+_:result119 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-033> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-033";
+    dc:description "\n    Bag is allowed as a property element name.\n  ";
+    earl:assertions _:assertions120.
+_:assertions120 rdf:first _:assertion120;
+    rdf:rest rdf:nil.
+_:assertion120 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-033>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result120.
+_:result120 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-034> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-034";
+    dc:description "\n    Alt is allowed as a property element name.\n  ";
+    earl:assertions _:assertions121.
+_:assertions121 rdf:first _:assertion121;
+    rdf:rest rdf:nil.
+_:assertion121 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-034>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result121.
+_:result121 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-035> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-035";
+    dc:description "\n    Statement is allowed as a property element name.\n  ";
+    earl:assertions _:assertions122.
+_:assertions122 rdf:first _:assertion122;
+    rdf:rest rdf:nil.
+_:assertion122 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-035>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result122.
+_:result122 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-036> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-036";
+    dc:description "\n    Property is allowed as a property element name.\n  ";
+    earl:assertions _:assertions123.
+_:assertions123 rdf:first _:assertion123;
+    rdf:rest rdf:nil.
+_:assertion123 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-036>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result123.
+_:result123 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-037> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-test-037";
+    dc:description "\n    List is allowed as a property element name.\n  ";
+    earl:assertions _:assertions124.
+_:assertions124 rdf:first _:assertion124;
+    rdf:rest rdf:nil.
+_:assertion124 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-037>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result124.
+_:result124 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-warn-001";
+    dc:description "\n    foo is allowed with warnings as a node element name.\n  ";
+    earl:assertions _:assertions125.
+_:assertions125 rdf:first _:assertion125;
+    rdf:rest rdf:nil.
+_:assertion125 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result125.
+_:result125 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-002> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-warn-002";
+    dc:description "\n    foo is allowed with warnings as a property element name.\n  ";
+    earl:assertions _:assertions126.
+_:assertions126 rdf:first _:assertion126;
+    rdf:rest rdf:nil.
+_:assertion126 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result126.
+_:result126 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-003> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-rdf-names-use-warn-003";
+    dc:description "\n    foo is allowed with warnings as a property attribute name.\n  ";
+    earl:assertions _:assertions127.
+_:assertions127 rdf:first _:assertion127;
+    rdf:rest rdf:nil.
+_:assertion127 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-003>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result127.
+_:result127 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-reification-required-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-reification-required-test001";
+    dc:description "\n    A parser is not required to generate a bag of reified\nstatements for all description elements.\n  ";
+    earl:assertions _:assertions128.
+_:assertions128 rdf:first _:assertion128;
+    rdf:rest rdf:nil.
+_:assertion128 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-reification-required-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result128.
+_:result128 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-seq-representation-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-seq-representation-test001";
+    dc:description "\n    rdf:parseType=\"Collection\" is parsed like the nonstandard\ndaml:collection.\n  ";
+    earl:assertions _:assertions129.
+_:assertions129 rdf:first _:assertion129;
+    rdf:rest rdf:nil.
+_:assertion129 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-seq-representation-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result129.
+_:result129 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-syntax-incomplete-test001";
+    dc:description "\n    rdf:nodeID can be used to label a blank node.\n  ";
+    earl:assertions _:assertions130.
+_:assertions130 rdf:first _:assertion130;
+    rdf:rest rdf:nil.
+_:assertion130 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result130.
+_:result130 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test002> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-syntax-incomplete-test002";
+    dc:description "\n    rdf:nodeID can be used to label a blank node. These have file\nscope and are distinct from any unlabelled blank nodes.\n  ";
+    earl:assertions _:assertions131.
+_:assertions131 rdf:first _:assertion131;
+    rdf:rest rdf:nil.
+_:assertion131 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result131.
+_:result131 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test003> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-syntax-incomplete-test003";
+    dc:description "\n    On an rdf:Description or typed node rdf:nodeID behaves\nsimilarly to an rdf:about.\n  ";
+    earl:assertions _:assertions132.
+_:assertions132 rdf:first _:assertion132;
+    rdf:rest rdf:nil.
+_:assertion132 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test003>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result132.
+_:result132 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test004> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-syntax-incomplete-test004";
+    dc:description "\n    On a property element rdf:nodeID behaves similarly to\nrdf:resource.\n  ";
+    earl:assertions _:assertions133.
+_:assertions133 rdf:first _:assertion133;
+    rdf:rest rdf:nil.
+_:assertion133 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test004>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result133.
+_:result133 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-syntax-incomplete-error001";
+    dc:description "\n    The value of rdf:nodeID must match the XML Name production,\n(as modified by XML Namespaces).\n  ";
+    earl:assertions _:assertions134.
+_:assertions134 rdf:first _:assertion134;
+    rdf:rest rdf:nil.
+_:assertion134 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result134.
+_:result134 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error002> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-syntax-incomplete-error002";
+    dc:description "\n    The value of rdf:nodeID must match the XML Name production,\n(as modified by XML Namespaces).\n  ";
+    earl:assertions _:assertions135.
+_:assertions135 rdf:first _:assertion135;
+    rdf:rest rdf:nil.
+_:assertion135 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result135.
+_:result135 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error003> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-syntax-incomplete-error003";
+    dc:description "\n    The value of rdf:nodeID must match the XML Name production,\n(as modified by XML Namespaces).\n  ";
+    earl:assertions _:assertions136.
+_:assertions136 rdf:first _:assertion136;
+    rdf:rest rdf:nil.
+_:assertion136 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error003>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result136.
+_:result136 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error004> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-syntax-incomplete-error004";
+    dc:description "\n    Cannot have rdf:nodeID and rdf:ID.\n  ";
+    earl:assertions _:assertions137.
+_:assertions137 rdf:first _:assertion137;
+    rdf:rest rdf:nil.
+_:assertion137 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error004>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result137.
+_:result137 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error005> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-syntax-incomplete-error005";
+    dc:description "\n    Cannot have rdf:nodeID and rdf:about.\n  ";
+    earl:assertions _:assertions138.
+_:assertions138 rdf:first _:assertion138;
+    rdf:rest rdf:nil.
+_:assertion138 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error005>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result138.
+_:result138 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error006> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-syntax-incomplete-error006";
+    dc:description "\n    Cannot have rdf:nodeID and rdf:resource.\n  ";
+    earl:assertions _:assertions139.
+_:assertions139 rdf:first _:assertion139;
+    rdf:rest rdf:nil.
+_:assertion139 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error006>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result139.
+_:result139 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-uri-substructure-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-uri-substructure-test001";
+    dc:description "\n    Demonstrates the Recommended partitioning of a URI into a\nnamespace part and a localname part\n  ";
+    earl:assertions _:assertions140.
+_:assertions140 rdf:first _:assertion140;
+    rdf:rest rdf:nil.
+_:assertion140 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-uri-substructure-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result140.
+_:result140 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test003> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-xmllang-test003";
+    dc:description "\n    In-scope xml:lang applies to element content literal values\n  ";
+    earl:assertions _:assertions141.
+_:assertions141 rdf:first _:assertion141;
+    rdf:rest rdf:nil.
+_:assertion141 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test003>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result141.
+_:result141 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test004> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-xmllang-test004";
+    dc:description "\n    In-scope xml:lang applies to element content literal values\n  ";
+    earl:assertions _:assertions142.
+_:assertions142 rdf:first _:assertion142;
+    rdf:rest rdf:nil.
+_:assertion142 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test004>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result142.
+_:result142 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test005> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-xmllang-test005";
+    dc:description "\n    In-scope xml:lang applies to element content literal values\n  ";
+    earl:assertions _:assertions143.
+_:assertions143 rdf:first _:assertion143;
+    rdf:rest rdf:nil.
+_:assertion143 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test005>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result143.
+_:result143 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test006> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfms-xmllang-test006";
+    dc:description "\n    In-scope xml:lang applies to element content literal values\n  ";
+    earl:assertions _:assertions144.
+_:assertions144 rdf:first _:assertion144;
+    rdf:rest rdf:nil.
+_:assertion144 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test006>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result144.
+_:result144 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfs-domain-and-range-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfs-domain-and-range-test001";
+    dc:description "\n    a RDF Property may have more than one domain property\n  ";
+    earl:assertions _:assertions145.
+_:assertions145 rdf:first _:assertion145;
+    rdf:rest rdf:nil.
+_:assertion145 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfs-domain-and-range-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result145.
+_:result145 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfs-domain-and-range-test002> a earl:TestCriterion, earl:TestCase;
+    dc:title "rdfs-domain-and-range-test002";
+    dc:description "\n    a RDF Property may have more than one domain property\n  ";
+    earl:assertions _:assertions146.
+_:assertions146 rdf:first _:assertion146;
+    rdf:rest rdf:nil.
+_:assertion146 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfs-domain-and-range-test002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result146.
+_:result146 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#unrecognised-xml-attributes-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "unrecognised-xml-attributes-test001";
+    dc:description "\n    Unrecognized attributes in the xml namespace should be\nignored.\n  ";
+    earl:assertions _:assertions147.
+_:assertions147 rdf:first _:assertion147;
+    rdf:rest rdf:nil.
+_:assertion147 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#unrecognised-xml-attributes-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result147.
+_:result147 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#unrecognised-xml-attributes-test002> a earl:TestCriterion, earl:TestCase;
+    dc:title "unrecognised-xml-attributes-test002";
+    dc:description "\n    Unrecognized attributes in the xml namespace should be\nignored.\n  ";
+    earl:assertions _:assertions148.
+_:assertions148 rdf:first _:assertion148;
+    rdf:rest rdf:nil.
+_:assertion148 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#unrecognised-xml-attributes-test002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result148.
+_:result148 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xml-canon-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "xml-canon-test001";
+    dc:description "\n    Demonstrating the canonicalisation of XMLLiterals.\n  ";
+    earl:assertions _:assertions149.
+_:assertions149 rdf:first _:assertion149;
+    rdf:rest rdf:nil.
+_:assertion149 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xml-canon-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result149.
+_:result149 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test001> a earl:TestCriterion, earl:TestCase;
+    dc:title "xmlbase-test001";
+    dc:description "\n    xml:base applies to an rdf:ID on an rdf:Description element.\n  ";
+    earl:assertions _:assertions150.
+_:assertions150 rdf:first _:assertion150;
+    rdf:rest rdf:nil.
+_:assertion150 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test001>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result150.
+_:result150 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test002> a earl:TestCriterion, earl:TestCase;
+    dc:title "xmlbase-test002";
+    dc:description "\n    xml:base applies to an rdf:resource attribute.\n  ";
+    earl:assertions _:assertions151.
+_:assertions151 rdf:first _:assertion151;
+    rdf:rest rdf:nil.
+_:assertion151 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test002>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result151.
+_:result151 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test003> a earl:TestCriterion, earl:TestCase;
+    dc:title "xmlbase-test003";
+    dc:description "\n    xml:base applies to an rdf:about attribute.\n  ";
+    earl:assertions _:assertions152.
+_:assertions152 rdf:first _:assertion152;
+    rdf:rest rdf:nil.
+_:assertion152 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test003>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result152.
+_:result152 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test004> a earl:TestCriterion, earl:TestCase;
+    dc:title "xmlbase-test004";
+    dc:description "\n    xml:base applies to an rdf:ID on a property element.\n  ";
+    earl:assertions _:assertions153.
+_:assertions153 rdf:first _:assertion153;
+    rdf:rest rdf:nil.
+_:assertion153 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test004>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result153.
+_:result153 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test006> a earl:TestCriterion, earl:TestCase;
+    dc:title "xmlbase-test006";
+    dc:description "\n    xml:base scoping.\n  ";
+    earl:assertions _:assertions154.
+_:assertions154 rdf:first _:assertion154;
+    rdf:rest rdf:nil.
+_:assertion154 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test006>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result154.
+_:result154 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test007> a earl:TestCriterion, earl:TestCase;
+    dc:title "xmlbase-test007";
+    dc:description "\n    example of relative URI resolution.\n  ";
+    earl:assertions _:assertions155.
+_:assertions155 rdf:first _:assertion155;
+    rdf:rest rdf:nil.
+_:assertion155 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test007>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result155.
+_:result155 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test008> a earl:TestCriterion, earl:TestCase;
+    dc:title "xmlbase-test008";
+    dc:description "\n    example of empty same document ref resolution.\n  ";
+    earl:assertions _:assertions156.
+_:assertions156 rdf:first _:assertion156;
+    rdf:rest rdf:nil.
+_:assertion156 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test008>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result156.
+_:result156 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test009> a earl:TestCriterion, earl:TestCase;
+    dc:title "xmlbase-test009";
+    dc:description "\n    Example of relative uri with absolute path resolution.\n  ";
+    earl:assertions _:assertions157.
+_:assertions157 rdf:first _:assertion157;
+    rdf:rest rdf:nil.
+_:assertion157 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test009>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result157.
+_:result157 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test010> a earl:TestCriterion, earl:TestCase;
+    dc:title "xmlbase-test010";
+    dc:description "\n    Example of relative uri with net path resolution.\n  ";
+    earl:assertions _:assertions158.
+_:assertions158 rdf:first _:assertion158;
+    rdf:rest rdf:nil.
+_:assertion158 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test010>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result158.
+_:result158 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test011> a earl:TestCriterion, earl:TestCase;
+    dc:title "xmlbase-test011";
+    dc:description "\n    Example of xml:base with no path component.\n  ";
+    earl:assertions _:assertions159.
+_:assertions159 rdf:first _:assertion159;
+    rdf:rest rdf:nil.
+_:assertion159 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test011>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result159.
+_:result159 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test013> a earl:TestCriterion, earl:TestCase;
+    dc:title "xmlbase-test013";
+    dc:description "\n    With an xml:base with fragment the fragment is ignored.\n  ";
+    earl:assertions _:assertions160.
+_:assertions160 rdf:first _:assertion160;
+    rdf:rest rdf:nil.
+_:assertion160 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test013>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result160.
+_:result160 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test014> a earl:TestCriterion, earl:TestCase;
+    dc:title "xmlbase-test014";
+    dc:description "\n    Test output corrected to use correct base URL.\n  ";
+    earl:assertions _:assertions161.
+_:assertions161 rdf:first _:assertion161;
+    rdf:rest rdf:nil.
+_:assertion161 a earl:Assertion;
+    earl:assertedBy <https://www.rubensworks.net/#me>;
+    earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test014>;
+    earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+    earl:mode earl:automatic;
+    earl:result _:result161.
+_:result161 a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime.

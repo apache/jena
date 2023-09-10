@@ -1,0 +1,13 @@
+<?xml version='1.1'?>
+<!-- Licensed under the terms of https://www.apache.org/licenses/LICENSE-2.0 -->
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    >
+
+  <rdf:Description rdf:about="http://example/xml11">
+    <rdfs:label>XML 1.1</rdfs:label>
+  </rdf:Description>
+
+</rdf:RDF>
