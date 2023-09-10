@@ -36,6 +36,7 @@ import org.xml.sax.ErrorHandler ;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
 
+@SuppressWarnings("deprecation")
 public class ARPTests2 extends TestCase implements RDFErrorHandler, ARPErrorNumbers {
 
 	static private Logger logger = LoggerFactory.getLogger(ARPTests2.class);
@@ -243,7 +244,6 @@ public class ARPTests2 extends TestCase implements RDFErrorHandler, ARPErrorNumb
 				+ "</rdf:Description> "
 				+ "</rdf:RDF>";
 
-		@SuppressWarnings("deprecation")
         ARP0 parser = new ARP0();
 		ToStringStatementHandler tssh = new ToStringStatementHandler();
 		parser.getHandlers().setStatementHandler(tssh);
@@ -442,7 +442,6 @@ public class ARPTests2 extends TestCase implements RDFErrorHandler, ARPErrorNumb
         checkExpected();
     }
 	public void testInterrupt() throws SAXException, IOException {
-	    @SuppressWarnings("deprecation")
         ARP0 a = new ARP0();
 	    try ( InputStream in = new FileInputStream("testing0/wg/miscellaneous/consistent001.rdf") ) {
 	        a.getHandlers().setStatementHandler(new StatementHandler() {

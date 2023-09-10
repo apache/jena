@@ -1,0 +1,2877 @@
+<!DOCTYPE html>
+<html prefix='earl: http://www.w3.org/ns/earl# doap: http://usefulinc.com/ns/doap# mf: http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#'>
+<head>
+<meta content='text/html;charset=utf-8' http-equiv='Content-Type' />
+<link href='earl.ttl' rel='alternate' />
+<link href='earl.jsonld' rel='alternate' />
+<link href='rdfxml-streaming-parser.js.ttl' rel='related' />
+<title>
+RDF/XML
+Implementation Report
+</title>
+<script class='remove' src='../../local-biblio.js'></script>
+<script class='remove' src='https://www.w3.org/Tools/respec/respec-w3c-common' type='text/javascript'></script>
+<script type='text/javascript'>
+  //<![CDATA[
+    var respecConfig = {
+        // extend the bibliography entries
+        localBiblio: localBibliography,
+    
+        // specification status (e.g. WD, LCWD, NOTE, etc.). If in doubt use ED.
+        specStatus:           "base",
+        copyrightStart:       "2010",
+        doRDFa:               "1.1",
+    
+        // the specification's short name, as in http://www.w3.org/TR/short-name/
+        shortName:            "rdf-syntax-grammar",
+        //subtitle:             "RDF/XML Implementation Conformance Report",
+        // if you wish the publication date to be other than today, set this
+        publishDate:  "2018/10/09",
+    
+        // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+        // and its maturity status
+        //previousPublishDate:  "2011-10-23",
+        //previousMaturity:     "ED",
+        //previousDiffURI:      "http://json-ld.org/spec/ED/json-ld-syntax/20111023/index.html",
+        //diffTool:             "http://www.aptest.com/standards/htmldiff/htmldiff.pl",
+    
+        // if there a publicly available Editor's Draft, this is the link
+        //edDraftURI:           "",
+    
+        // if this is a LCWD, uncomment and set the end of its review period
+        // lcEnd: "2009-08-05",
+    
+        // editors, add as many as you like
+        // only "name" is required
+        editors:  [
+            { name: "Gregg Kellogg", url: "http://greggkellogg.net/",
+              company: "Kellogg Associates" },
+            { name: "Andy Seaborne",
+              company: "The Apache Software Foundation"}
+        ],
+    
+        // authors, add as many as you like.
+        // This is optional, uncomment if you have authors as well as editors.
+        // only "name" is required. Same format as editors.
+        //authors:  [
+        //RDF Working Group],
+    
+        // name of the WG
+        wg:           "RDF Working Group",
+    
+        // URI of the public WG page
+        wgURI:        "http://www.w3.org/2011/rdf-wg/",
+    
+        // name (with the @w3c.org) of the public mailing to which comments are due
+        wgPublicList: "public-rdf-comments",
+    
+        // URI of the patent status for this WG, for Rec-track documents
+        // !!!! IMPORTANT !!!!
+        // This is important for Rec-track documents, do not copy a patent URI from a random
+        // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
+        // Team Contact.
+        wgPatentURI:  "http://www.w3.org/2004/01/pp-impl/46168/status",
+        alternateFormats: [
+          {uri: "earl.ttl", label: "Turtle"},
+          {uri: "earl.jsonld", label: "JSON-LD"}
+        ],
+    };
+  //]]>
+</script>
+<style type='text/css'>
+  /*<![CDATA[*/
+    span[property='dc:description'] { display: none; }
+    td.PASS { color: green; }
+    td.FAIL { color: red; }
+    table.report {
+      border-width: 1px;
+      border-spacing: 2px;
+      border-style: outset;
+      border-color: gray;
+      border-collapse: separate;
+      background-color: white;
+    }
+    table.report th {
+      border-width: 1px;
+      padding: 1px;
+      border-style: inset;
+      border-color: gray;
+      background-color: white;
+      -moz-border-radius: ;
+    }
+    table.report td {
+      border-width: 1px;
+      padding: 1px;
+      border-style: inset;
+      border-color: gray;
+      background-color: white;
+      -moz-border-radius: ;
+    }
+    tr.summary {font-weight: bold;}
+    td.passed-all {color: green;}
+    td.passed-most {color: darkorange;}
+    td.passed-some {color: red;}
+  /*]]>*/
+</style>
+</head>
+<body prefix='earl: http://www.w3.org/ns/earl# doap: http://usefulinc.com/ns/doap# mf: http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#'>
+<section about='' id='abstract' typeof='doap:Project Software'>
+<p>
+This document report test subject conformance for and related specifications for
+<span property='doap:name'>RDF/XML</span>
+<span property='dc:bibliographicCitation'>[[RDFXML]]</span>
+according to the requirements of the Evaluation and Report Language (EARL) 1.0 Schema [[EARL10-SCHEMA]].
+</p>
+<p>
+This report is also available in alternate formats:
+<a href='earl.ttl' rel='xhv:alternate'>
+Turtle
+</a>
+and
+<a href='earl.jsonld' rel='xhv:alternate'>
+JSON-LD
+</a>
+</p>
+</section>
+<section id='sodt'></section>
+<section>
+<h2 id="instructions-for-submitting-implementation-reports">Instructions for submitting implementation reports</h2>
+
+<p>Tests should be run using the test manifests defined in the 
+  <a href="#test-manifests">Test Manifests</a> Section.</p>
+
+<p>The assumed base URI for the tests is <code>&lt;http://example/base/&gt;</code> if needed.</p>
+
+<p>Reports should be submitted in Turtle format to <a href="mailto:public-rdf-comments@w3.org">public-rdf-comments@w3.org</a>
+  and include an <code>earl:Assertion</code>
+  for each test, referencing the test resource from the associated manifest
+  and the test subject being reported upon. An example test entry is be the following:</p>
+
+<pre><code>  [ a earl:Assertion;&#x000A;    earl:assertedBy &lt;https://www.rubensworks.net/#me&gt;;&#x000A;    earl:subject &lt;https://www.npmjs.com/package/rdfxml-streaming-parser/&gt;;&#x000A;    earl:test &lt;https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-element-not-mandatory-test001&gt;;&#x000A;    earl:result [&#x000A;      a earl:TestResult;&#x000A;      earl:outcome earl:passed;&#x000A;      dc:date "2018-10-08T23:16:03.823Z"^^xsd:dateTime];&#x000A;    earl:mode earl:automatic ] .&#x000A;</code></pre>
+
+<p>The Test Subject should be defined as a <code>doap:Project</code>, including the name,
+  homepage and developer(s) of the software (see [[DOAP]]). Optionally, including the
+  project description and programming language. An example test subject description is the following:</p>
+
+<pre><code>  &lt;&gt; foaf:primaryTopic &lt;https://www.npmjs.com/package/rdfxml-streaming-parser/&gt;;&#x000A;      dc:issued "2018-10-08T23:16:03.823Z"^^xsd:dateTime;&#x000A;      foaf:maker &lt;https://www.rubensworks.net/#me&gt;.&#x000A;&#x000A;  &lt;https://www.npmjs.com/package/rdfxml-streaming-parser/&gt; a earl:Software, earl:TestSubject, doap:Project;&#x000A;      doap:name "rdfxml-streaming-parser";&#x000A;      dc:title "rdfxml-streaming-parser";&#x000A;      doap:homepage &lt;https://github.com/rdfjs/rdfxml-streaming-parser.js#readme&gt;;&#x000A;      doap:license &lt;http://opensource.org/licenses/MIT&gt;;&#x000A;      doap:programming-language "JavaScript";&#x000A;      doap:implements &lt;https://www.w3.org/TR/rdf-syntax-grammar/&gt;;&#x000A;      doap:category &lt;http://dbpedia.org/resource/Resource_Description_Framework&gt;;&#x000A;      doap:download-page &lt;https://npmjs.org/package/rdfxml-streaming-parser&gt;;&#x000A;      doap:bug-database &lt;https://github.com/rdfjs/rdfxml-streaming-parser.js/issues&gt;;&#x000A;      doap:developer &lt;https://www.rubensworks.net/#me&gt;;&#x000A;      doap:maintainer &lt;https://www.rubensworks.net/#me&gt;;&#x000A;      doap:documenter &lt;https://www.rubensworks.net/#me&gt;;&#x000A;      doap:maker &lt;https://www.rubensworks.net/#me&gt;;&#x000A;      dc:creator &lt;https://www.rubensworks.net/#me&gt;;&#x000A;      dc:description "Streaming RDF/XML parser"@en;&#x000A;      doap:description "Streaming RDF/XML parser"@en.&#x000A;</code></pre>
+
+<p>The software developer, either an organization or one or more individuals SHOULD be
+  referenced from <code>doap:developer</code> using [[FOAF]]. For example:</p>
+
+<pre><code>  &lt;https://www.rubensworks.net/#me&gt; a foaf:Person, earl:Assertor;&#x000A;      foaf:name "Ruben Taelman &lt;rubensworks@gmail.com&gt;";&#x000A;      foaf:homepage &lt;https://www.rubensworks.net/&gt;.&#x000A;</code></pre>
+
+<p>See <a href="https://www.w3.org/2011/rdf-wg/wiki/RDF_Test_Suites">RDF Test Suite Wiki</a>
+  for more information.</p>
+</section>
+<section>
+<h2>
+Test Manifests
+</h2>
+<section resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl' typeof='mf:Manifest Report'>
+<h2>RDF/XML Tests</h2>
+<table class='report'>
+<tr>
+<th>
+Test
+</th>
+<th>
+<a href='#subj_0'>rdfxml-streaming-parser</a>
+</th>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#amp-in-url-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_amp-in-url-test001'>amp-in-url-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#amp-in-url-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#datatypes-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_datatypes-test001'>datatypes-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#datatypes-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#datatypes-test002' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_datatypes-test002'>datatypes-test002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#datatypes-test002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-literals-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-charmod-literals-test001'>rdf-charmod-literals-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-literals-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-uris-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-charmod-uris-test001'>rdf-charmod-uris-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-uris-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-uris-test002' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-charmod-uris-test002'>rdf-charmod-uris-test002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-uris-test002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-error001' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-containers-syntax-vs-schema-error001'>rdf-containers-syntax-vs-schema-error001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-error001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-error002' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-containers-syntax-vs-schema-error002'>rdf-containers-syntax-vs-schema-error002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-error002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-containers-syntax-vs-schema-test001'>rdf-containers-syntax-vs-schema-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test002' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-containers-syntax-vs-schema-test002'>rdf-containers-syntax-vs-schema-test002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test003' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-containers-syntax-vs-schema-test003'>rdf-containers-syntax-vs-schema-test003</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test003' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test004' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-containers-syntax-vs-schema-test004'>rdf-containers-syntax-vs-schema-test004</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test004' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test006' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-containers-syntax-vs-schema-test006'>rdf-containers-syntax-vs-schema-test006</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test006' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test007' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-containers-syntax-vs-schema-test007'>rdf-containers-syntax-vs-schema-test007</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test007' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test008' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-containers-syntax-vs-schema-test008'>rdf-containers-syntax-vs-schema-test008</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test008' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-element-not-mandatory-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-element-not-mandatory-test001'>rdf-element-not-mandatory-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-element-not-mandatory-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-ns-prefix-confusion-test0001'>rdf-ns-prefix-confusion-test0001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0003' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-ns-prefix-confusion-test0003'>rdf-ns-prefix-confusion-test0003</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0003' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0004' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-ns-prefix-confusion-test0004'>rdf-ns-prefix-confusion-test0004</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0004' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0005' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-ns-prefix-confusion-test0005'>rdf-ns-prefix-confusion-test0005</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0005' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0006' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-ns-prefix-confusion-test0006'>rdf-ns-prefix-confusion-test0006</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0006' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0009' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-ns-prefix-confusion-test0009'>rdf-ns-prefix-confusion-test0009</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0009' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0010' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-ns-prefix-confusion-test0010'>rdf-ns-prefix-confusion-test0010</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0010' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0011' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-ns-prefix-confusion-test0011'>rdf-ns-prefix-confusion-test0011</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0011' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0012' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-ns-prefix-confusion-test0012'>rdf-ns-prefix-confusion-test0012</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0012' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0013' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-ns-prefix-confusion-test0013'>rdf-ns-prefix-confusion-test0013</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0013' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0014' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdf-ns-prefix-confusion-test0014'>rdf-ns-prefix-confusion-test0014</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0014' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-abouteach-error001' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-abouteach-error001'>rdfms-abouteach-error001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-abouteach-error001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-abouteach-error002' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-abouteach-error002'>rdfms-abouteach-error002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-abouteach-error002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-error1' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-difference-between-ID-and-about-error1'>rdfms-difference-between-ID-and-about-error1</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-error1' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test1' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-difference-between-ID-and-about-test1'>rdfms-difference-between-ID-and-about-test1</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test1' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test2' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-difference-between-ID-and-about-test2'>rdfms-difference-between-ID-and-about-test2</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test2' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test3' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-difference-between-ID-and-about-test3'>rdfms-difference-between-ID-and-about-test3</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test3' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-duplicate-member-props-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-duplicate-member-props-test001'>rdfms-duplicate-member-props-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-duplicate-member-props-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-error001' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-empty-property-elements-error001'>rdfms-empty-property-elements-error001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-error001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-error002' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-empty-property-elements-error002'>rdfms-empty-property-elements-error002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-error002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-empty-property-elements-test001'>rdfms-empty-property-elements-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test002' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-empty-property-elements-test002'>rdfms-empty-property-elements-test002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test004' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-empty-property-elements-test004'>rdfms-empty-property-elements-test004</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test004' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test005' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-empty-property-elements-test005'>rdfms-empty-property-elements-test005</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test005' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test006' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-empty-property-elements-test006'>rdfms-empty-property-elements-test006</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test006' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test007' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-empty-property-elements-test007'>rdfms-empty-property-elements-test007</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test007' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test008' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-empty-property-elements-test008'>rdfms-empty-property-elements-test008</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test008' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test010' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-empty-property-elements-test010'>rdfms-empty-property-elements-test010</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test010' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test011' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-empty-property-elements-test011'>rdfms-empty-property-elements-test011</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test011' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test012' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-empty-property-elements-test012'>rdfms-empty-property-elements-test012</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test012' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test013' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-empty-property-elements-test013'>rdfms-empty-property-elements-test013</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test013' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test014' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-empty-property-elements-test014'>rdfms-empty-property-elements-test014</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test014' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test015' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-empty-property-elements-test015'>rdfms-empty-property-elements-test015</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test015' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test016' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-empty-property-elements-test016'>rdfms-empty-property-elements-test016</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test016' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test017' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-empty-property-elements-test017'>rdfms-empty-property-elements-test017</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test017' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-identity-anon-resources-test001'>rdfms-identity-anon-resources-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test002' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-identity-anon-resources-test002'>rdfms-identity-anon-resources-test002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test003' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-identity-anon-resources-test003'>rdfms-identity-anon-resources-test003</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test003' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test004' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-identity-anon-resources-test004'>rdfms-identity-anon-resources-test004</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test004' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test005' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-identity-anon-resources-test005'>rdfms-identity-anon-resources-test005</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test005' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-not-id-and-resource-attr-test001'>rdfms-not-id-and-resource-attr-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test002' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-not-id-and-resource-attr-test002'>rdfms-not-id-and-resource-attr-test002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test004' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-not-id-and-resource-attr-test004'>rdfms-not-id-and-resource-attr-test004</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test004' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test005' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-not-id-and-resource-attr-test005'>rdfms-not-id-and-resource-attr-test005</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test005' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-para196-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-para196-test001'>rdfms-para196-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-para196-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error001' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-id-error001'>rdfms-rdf-id-error001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error002' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-id-error002'>rdfms-rdf-id-error002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error003' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-id-error003'>rdfms-rdf-id-error003</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error003' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error004' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-id-error004'>rdfms-rdf-id-error004</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error004' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error005' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-id-error005'>rdfms-rdf-id-error005</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error005' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error006' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-id-error006'>rdfms-rdf-id-error006</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error006' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error007' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-id-error007'>rdfms-rdf-id-error007</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error007' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-001' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-001'>rdfms-rdf-names-use-error-001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-002' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-002'>rdfms-rdf-names-use-error-002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-003' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-003'>rdfms-rdf-names-use-error-003</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-003' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-004' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-004'>rdfms-rdf-names-use-error-004</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-004' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-005' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-005'>rdfms-rdf-names-use-error-005</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-005' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-006' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-006'>rdfms-rdf-names-use-error-006</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-006' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-007' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-007'>rdfms-rdf-names-use-error-007</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-007' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-008' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-008'>rdfms-rdf-names-use-error-008</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-008' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-009' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-009'>rdfms-rdf-names-use-error-009</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-009' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-010' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-010'>rdfms-rdf-names-use-error-010</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-010' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-011' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-011'>rdfms-rdf-names-use-error-011</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-011' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-012' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-012'>rdfms-rdf-names-use-error-012</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-012' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-013' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-013'>rdfms-rdf-names-use-error-013</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-013' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-014' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-014'>rdfms-rdf-names-use-error-014</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-014' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-015' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-015'>rdfms-rdf-names-use-error-015</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-015' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-016' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-016'>rdfms-rdf-names-use-error-016</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-016' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-017' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-017'>rdfms-rdf-names-use-error-017</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-017' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-018' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-018'>rdfms-rdf-names-use-error-018</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-018' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-019' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-019'>rdfms-rdf-names-use-error-019</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-019' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-020' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-error-020'>rdfms-rdf-names-use-error-020</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-020' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-001'>rdfms-rdf-names-use-test-001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-002' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-002'>rdfms-rdf-names-use-test-002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-003' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-003'>rdfms-rdf-names-use-test-003</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-003' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-004' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-004'>rdfms-rdf-names-use-test-004</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-004' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-005' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-005'>rdfms-rdf-names-use-test-005</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-005' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-006' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-006'>rdfms-rdf-names-use-test-006</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-006' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-007' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-007'>rdfms-rdf-names-use-test-007</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-007' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-008' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-008'>rdfms-rdf-names-use-test-008</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-008' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-009' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-009'>rdfms-rdf-names-use-test-009</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-009' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-010' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-010'>rdfms-rdf-names-use-test-010</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-010' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-011' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-011'>rdfms-rdf-names-use-test-011</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-011' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-012' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-012'>rdfms-rdf-names-use-test-012</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-012' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-013' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-013'>rdfms-rdf-names-use-test-013</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-013' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-014' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-014'>rdfms-rdf-names-use-test-014</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-014' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-015' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-015'>rdfms-rdf-names-use-test-015</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-015' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-016' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-016'>rdfms-rdf-names-use-test-016</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-016' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-017' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-017'>rdfms-rdf-names-use-test-017</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-017' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-018' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-018'>rdfms-rdf-names-use-test-018</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-018' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-019' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-019'>rdfms-rdf-names-use-test-019</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-019' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-020' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-020'>rdfms-rdf-names-use-test-020</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-020' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-021' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-021'>rdfms-rdf-names-use-test-021</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-021' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-022' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-022'>rdfms-rdf-names-use-test-022</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-022' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-023' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-023'>rdfms-rdf-names-use-test-023</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-023' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-024' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-024'>rdfms-rdf-names-use-test-024</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-024' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-025' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-025'>rdfms-rdf-names-use-test-025</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-025' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-026' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-026'>rdfms-rdf-names-use-test-026</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-026' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-027' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-027'>rdfms-rdf-names-use-test-027</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-027' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-028' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-028'>rdfms-rdf-names-use-test-028</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-028' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-029' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-029'>rdfms-rdf-names-use-test-029</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-029' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-030' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-030'>rdfms-rdf-names-use-test-030</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-030' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-031' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-031'>rdfms-rdf-names-use-test-031</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-031' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-032' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-032'>rdfms-rdf-names-use-test-032</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-032' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-033' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-033'>rdfms-rdf-names-use-test-033</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-033' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-034' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-034'>rdfms-rdf-names-use-test-034</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-034' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-035' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-035'>rdfms-rdf-names-use-test-035</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-035' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-036' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-036'>rdfms-rdf-names-use-test-036</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-036' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-037' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-test-037'>rdfms-rdf-names-use-test-037</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-037' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-warn-001'>rdfms-rdf-names-use-warn-001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-002' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-warn-002'>rdfms-rdf-names-use-warn-002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-003' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-rdf-names-use-warn-003'>rdfms-rdf-names-use-warn-003</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-003' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-reification-required-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-reification-required-test001'>rdfms-reification-required-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-reification-required-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-seq-representation-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-seq-representation-test001'>rdfms-seq-representation-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-seq-representation-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-syntax-incomplete-test001'>rdfms-syntax-incomplete-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test002' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-syntax-incomplete-test002'>rdfms-syntax-incomplete-test002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test003' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-syntax-incomplete-test003'>rdfms-syntax-incomplete-test003</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test003' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test004' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-syntax-incomplete-test004'>rdfms-syntax-incomplete-test004</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test004' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error001' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-syntax-incomplete-error001'>rdfms-syntax-incomplete-error001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error002' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-syntax-incomplete-error002'>rdfms-syntax-incomplete-error002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error003' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-syntax-incomplete-error003'>rdfms-syntax-incomplete-error003</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error003' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error004' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-syntax-incomplete-error004'>rdfms-syntax-incomplete-error004</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error004' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error005' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-syntax-incomplete-error005'>rdfms-syntax-incomplete-error005</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error005' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error006' typeof='http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-syntax-incomplete-error006'>rdfms-syntax-incomplete-error006</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error006' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-uri-substructure-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-uri-substructure-test001'>rdfms-uri-substructure-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-uri-substructure-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test003' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-xmllang-test003'>rdfms-xmllang-test003</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test003' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test004' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-xmllang-test004'>rdfms-xmllang-test004</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test004' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test005' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-xmllang-test005'>rdfms-xmllang-test005</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test005' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test006' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfms-xmllang-test006'>rdfms-xmllang-test006</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test006' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfs-domain-and-range-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfs-domain-and-range-test001'>rdfs-domain-and-range-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfs-domain-and-range-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfs-domain-and-range-test002' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_rdfs-domain-and-range-test002'>rdfs-domain-and-range-test002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfs-domain-and-range-test002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#unrecognised-xml-attributes-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_unrecognised-xml-attributes-test001'>unrecognised-xml-attributes-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#unrecognised-xml-attributes-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#unrecognised-xml-attributes-test002' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_unrecognised-xml-attributes-test002'>unrecognised-xml-attributes-test002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#unrecognised-xml-attributes-test002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xml-canon-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_xml-canon-test001'>xml-canon-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xml-canon-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test001' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_xmlbase-test001'>xmlbase-test001</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test001' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test002' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_xmlbase-test002'>xmlbase-test002</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test002' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test003' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_xmlbase-test003'>xmlbase-test003</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test003' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test004' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_xmlbase-test004'>xmlbase-test004</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test004' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test006' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_xmlbase-test006'>xmlbase-test006</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test006' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test007' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_xmlbase-test007'>xmlbase-test007</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test007' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test008' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_xmlbase-test008'>xmlbase-test008</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test008' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test009' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_xmlbase-test009'>xmlbase-test009</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test009' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test010' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_xmlbase-test010'>xmlbase-test010</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test010' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test011' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_xmlbase-test011'>xmlbase-test011</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test011' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test013' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_xmlbase-test013'>xmlbase-test013</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test013' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr inlist='inlist' rel='mf:entries' resource='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test014' typeof='http://www.w3.org/ns/rdftest#TestXMLEval TestCase TestCriterion'>
+<td>
+<a href='#test_xmlbase-test014'>xmlbase-test014</a>
+</td>
+<td class='PASS' property='earl:assertions' typeof='Assertion'>
+<link href='https://www.rubensworks.net/#me' property='earl:assertedBy' />
+<link href='https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test014' property='earl:test' />
+<link href='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='earl:subject' />
+<link href='earl:automatic' property='earl:mode' />
+<span property='earl:result' typeof='TestResult'>
+<span property='earl:outcome' resource='earl:passed'>
+PASS
+</span>
+</span>
+</td>
+</tr>
+<tr class='summary'>
+<td>
+Percentage passed out of 162 Tests
+</td>
+<td class='passed-all'>
+100.0%
+</td>
+</tr>
+</table>
+</section>
+</section>
+<section class='appendix'>
+<h2>
+Test Subjects
+</h2>
+<p>
+This report was tested using the following test subjects:
+</p>
+<dl>
+<dt id='subj_0'>
+<a href='https://www.npmjs.com/package/rdfxml-streaming-parser/'>
+<span about='https://www.npmjs.com/package/rdfxml-streaming-parser/' property='doap:name'>rdfxml-streaming-parser</span>
+</a>
+</dt>
+<dd property='earl:testSubjects' resource='https://www.npmjs.com/package/rdfxml-streaming-parser/' typeof='doap:Project TestSubject Software'>
+<dl>
+<dt>Description</dt>
+<dd lang='en' property='doap:description'>Streaming RDF/XML parser</dd>
+<dt>Programming Language</dt>
+<dd property='doap:programming-language'>JavaScript</dd>
+<dt>Home Page</dt>
+<dd property='doap:homepage'>
+<a href='https://github.com/rdfjs/rdfxml-streaming-parser.js#readme'>
+https://github.com/rdfjs/rdfxml-streaming-parser.js#readme
+</a>
+</dd>
+<dt>Developer</dt>
+<dd rel='doap:developer'>
+<div resource='https://www.rubensworks.net/#me' typeof='Assertor foaf:Person'>
+<a href='https://www.rubensworks.net/#me'>
+<span property='foaf:name'>Ruben Taelman &lt;rubensworks@gmail.com&gt;</span>
+</a>
+</div>
+</dd>
+<dt>
+Test Suite Compliance
+</dt>
+<dd>
+<table class='report'>
+<tbody>
+<tr>
+<td class='passed-all'>
+162/162 (100.0%)
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section class='appendix' rel='xhv:related earl:assertions'>
+<h2>
+Individual Test Results
+</h2>
+<p>
+Individual test results used to construct this report are available here:
+</p>
+<ul>
+<li>
+<a class='source' href='rdfxml-streaming-parser.js.ttl'>rdfxml-streaming-parser.js.ttl</a>
+</li>
+</ul>
+</section>
+<section id='appendix' property='earl:generatedBy' resource='http://rubygems.org/gems/earl-report' typeof='[&quot;doap:Project&quot;, &quot;Software&quot;]'>
+<h2>
+Report Generation Software
+</h2>
+<p>
+This report generated by
+<span property='doap:name'><a href='http://rubygems.org/gems/earl-report'>earl-report</a></span>
+<meta content='Earl Report summary generator' lang='en' property='doap:shortdesc' />
+<meta content='EarlReport generates HTML+RDFa rollups of multiple EARL reports' lang='en' property='doap:description' />
+version
+<span property='doap:release' resource='https://github.com/gkellogg/earl-report/tree/0.4.6' typeof='doap:Version'>
+<span property='doap:revision'>0.4.6</span>
+<meta content='earl-report-0.4.6' property='doap:name' />
+<meta content='2018-09-28' datatype='xsd:date' property='doap:created' />
+</span>
+an
+<a href='http://unlicense.org' property='doap:license'>Unlicensed</a>
+<span property='doap:programming-language'>Ruby</span>
+application. More information is available at
+<a href='https://github.com/gkellogg/earl-report' property='doap:homepage'>https://github.com/gkellogg/earl-report</a>
+.
+</p>
+<p property='doap:developer' resource='http://greggkellogg.net/foaf#me' typeof='foaf:Person'>
+This software is provided by
+<a href='http://greggkellogg.net/' property='foaf:homepage'><span aboue='http://greggkellogg.net/foaf#me' property='foaf:name'>Gregg Kellogg</span></a>
+in hopes that it might make the lives of conformance testers easier.
+</p>
+</section>
+</body>
+</html>

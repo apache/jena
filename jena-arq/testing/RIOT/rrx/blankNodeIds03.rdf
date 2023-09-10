@@ -1,0 +1,30 @@
+<?xml version='1.0'?>
+<!-- Licensed under the terms of https://www.apache.org/licenses/LICENSE-2.0 -->
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://local/" 
+    xmlns:ex="http://example/" 
+    xml:base="http://base/">
+
+  <!-- Use as object -->
+  <rdf:Description rdf:about="http://local/subject">
+    <ex:property rdf:nodeID="blank"/>
+  </rdf:Description>
+
+  <!-- Use as subject -->
+  <rdf:Description rdf:nodeID="blank">
+    <ex:p>Text</ex:p>
+  </rdf:Description>
+
+  <!-- Use as subject again-->
+  <rdf:Description rdf:nodeID="blank">
+    <ex:p1>Text</ex:p1>
+  </rdf:Description>
+
+  <!-- Use as object -->
+  <rdf:Description rdf:about="http://local/subject2">
+    <ex:property rdf:nodeID="blank"/>
+  </rdf:Description>
+
+</rdf:RDF>

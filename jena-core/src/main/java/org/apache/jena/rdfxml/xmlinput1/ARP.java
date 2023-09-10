@@ -71,9 +71,11 @@ public class ARP implements ARPConfig
 
     final private RDFXMLParser arpf;
 
-/** Creates a new RDF Parser.
- * Can parse one file at a time.
- */
+    /**
+     * Can parse one file at a time.
+     * @deprecated Direct access to the RDF/XML parser is planned for removal. Please contact the Jena development community for details.
+     */
+    @Deprecated
     public ARP()  {
         arpf =  RDFXMLParser.create();
     }

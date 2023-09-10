@@ -49,7 +49,8 @@ import org.xml.sax.SAXParseException ;
  * <p>
  * <b>LEGACY</b>
  * <p>
- * Uses xmlinput0 - uses the version of ARP from Jena 4.7.0 before the conversion to IRIx.
+ * Uses ARP0 in org.apache.jena.rdfxml.xmlinput0 - the version of ARP used up to jena 4.6.2
+ * before the conversion to IRIx.
  *
  * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/">http://www.w3.org/TR/rdf-syntax-grammar/</a>
  */

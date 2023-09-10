@@ -1,0 +1,17 @@
+<?xml version='1.0'?>
+<!-- Licensed under the terms of https://www.apache.org/licenses/LICENSE-2.0 -->
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://local/" 
+    xmlns:ex="http://example/" 
+    xml:base="http://base/">
+
+  <rdf:Seq rdf:about="http://example.org/favourite-fruit">
+    <rdf:li rdf:resource="http://example.org/banana"/>
+    <rdf:li rdf:resource="http://example.org/apple"/>
+    <rdf:_9 rdf:resource="http://example.org/pear"/>
+    <rdf:li rdf:resource="http://example.org/grape"/>
+  </rdf:Seq>
+
+</rdf:RDF>

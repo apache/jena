@@ -1,0 +1,14 @@
+<?xml version='1.0'?>
+<!-- Licensed under the terms of https://www.apache.org/licenses/LICENSE-2.0 -->
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:ex="http://example/"
+    >
+
+  <!-- rdf:parseType not recognized -->
+  <rdf:Description rdf:about="http://host/subject">
+    <ex:property rdf:parseType="unknown"/>
+  </rdf:Description>
+
+</rdf:RDF>

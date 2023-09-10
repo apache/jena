@@ -1,0 +1,29 @@
+<?xml version='1.0'?>
+<!-- Licensed under the terms of https://www.apache.org/licenses/LICENSE-2.0 -->
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://local/" 
+    xmlns:ex="http://example/" 
+    xml:base="http://base/">
+
+  
+
+  <!-- Collection - nested -->
+  <rdf:Description rdf:about="http://example.org/basket5">
+    <ex:hasFruit rdf:parseType="Collection">
+      <rdf:Description>
+        <ex:varieties rdf:parseType="Collection">
+          <rdf:Description rdf:about="http://example.org/apple/Braeburn"/>
+          <rdf:Description rdf:about="http://example.org/apple/Cox"/>
+        </ex:varieties>
+      </rdf:Description>
+      <rdf:Description rdf:nodeID="bananaBlank">
+        <ex:varieties rdf:parseType="Collection">
+          <rdf:Description rdf:about="http://example.org/banana/Cavendish"/>
+        </ex:varieties>
+      </rdf:Description>
+    </ex:hasFruit>
+  </rdf:Description>
+
+</rdf:RDF>

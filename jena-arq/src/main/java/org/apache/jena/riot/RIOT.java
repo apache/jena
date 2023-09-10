@@ -19,6 +19,7 @@
 package org.apache.jena.riot ;
 
 import org.apache.jena.atlas.lib.Version;
+import org.apache.jena.riot.lang.rdfxml.RRX;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.SystemARQ ;
@@ -122,7 +123,8 @@ public class RIOT {
     private static String RDFXML_SYMBOL_BASE = "http://jena.apache.org/riot/rdfxml#";
 
     /**
-     * Access to the legacy RDF/XML parser.
+     * Access to the original legacy RDF/XML parser
+     * Use Lang constant {@link RRX#RDFXML_ARP0}
      * @deprecated Do not use! This will be removed.
      */
     @Deprecated

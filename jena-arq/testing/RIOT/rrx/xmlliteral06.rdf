@@ -1,0 +1,24 @@
+<?xml version='1.0'?>
+<!-- Licensed under the terms of https://www.apache.org/licenses/LICENSE-2.0 -->
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:ex="http://example/" 
+    xml:base="http://base/">
+
+<!-- XML literals and XML escapes
+"   &quot;
+'   &apos;
+<   &lt;
+>   &gt;
+&   &amp;
+-->
+
+  <rdf:Description rdf:about="http://example.org/basket">
+    <ex:xmlliteral rdf:parseType="Literal">
+      &quot; &apos; &lt; &gt; &amp;
+      <tag attr="&quot; &apos; &lt; &gt; &amp;">TAG</tag>
+    </ex:xmlliteral>
+  </rdf:Description> 
+
+</rdf:RDF>

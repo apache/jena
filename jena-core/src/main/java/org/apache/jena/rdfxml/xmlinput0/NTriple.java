@@ -83,11 +83,13 @@ import org.xml.sax.SAXParseException;
  * </dt><dd>
  * Ignores numbered error/warning conditions.
  * </dl>
+ * @deprecate Legacy. To be removed.
  */
+@Deprecated
 public class NTriple implements ARPErrorNumbers {
 
 	private static StringBuffer line = new StringBuffer();
-	private static ARP0 arp;
+    private static ARP0 arp;
 	private static String xmlBase = null;
 	private static boolean numbers = false;
 	/** Starts an RDF/XML to NTriple converter.
@@ -105,7 +107,6 @@ public class NTriple implements ARPErrorNumbers {
 	 * @param eh Can be null.
 	 * @param ap Can be null.
 	 */
-	@SuppressWarnings("deprecation")
     static public void mainEh(String args[], ErrorHandler eh, ARPEventHandler ap) {
 		boolean doneOne = false;
 		startMem = -1;

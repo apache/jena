@@ -1,0 +1,3680 @@
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<> a doap:Project,
+     earl:Software;
+   dc:bibliographicCitation "[[RDFXML]]";
+   doap:name "RDF/XML";
+   mf:entries (<https://www.w3.org/2013/RDFXMLTests/manifest.ttl>);
+   earl:assertions <http://example.org/rdfxml-streaming-parser.js.ttl>;
+   earl:generatedBy <http://rubygems.org/gems/earl-report>;
+   earl:testSubjects <https://www.npmjs.com/package/rdfxml-streaming-parser/> .
+
+# Manifests
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl> a mf:Manifest,
+     earl:Report;
+   rdfs:label "RDF/XML Syntax tests";
+   mf:entries (<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#amp-in-url-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#datatypes-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#datatypes-test002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-literals-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-uris-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-uris-test002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-error001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-error002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test003> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test004> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test006> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test007> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test008> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-element-not-mandatory-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0003> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0004> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0005> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0006> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0009> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0010> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0011> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0012> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0013> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0014> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-abouteach-error001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-abouteach-error002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-error1> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test1> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test2> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test3> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-duplicate-member-props-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-error001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-error002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test004> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test005> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test006> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test007> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test008> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test010> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test011> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test012> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test013> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test014> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test015> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test016> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test017> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test003> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test004> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test005> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test004> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test005> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-para196-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error003> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error004> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error005> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error006> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error007> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-003> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-004> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-005> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-006> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-007> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-008> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-009> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-010> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-011> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-012> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-013> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-014> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-015> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-016> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-017> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-018> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-019> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-020> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-003> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-004> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-005> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-006> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-007> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-008> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-009> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-010> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-011> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-012> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-013> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-014> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-015> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-016> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-017> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-018> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-019> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-020> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-021> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-022> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-023> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-024> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-025> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-026> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-027> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-028> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-029> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-030> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-031> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-032> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-033> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-034> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-035> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-036> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-037> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-003> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-reification-required-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-seq-representation-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test003> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test004> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error003> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error004> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error005> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error006> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-uri-substructure-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test003> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test004> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test005> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test006> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfs-domain-and-range-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfs-domain-and-range-test002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#unrecognised-xml-attributes-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#unrecognised-xml-attributes-test002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xml-canon-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test001> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test002> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test003> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test004> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test006> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test007> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test008> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test009> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test010> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test011> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test013> <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test014>) .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#amp-in-url-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Description: the purpose of this test case is to show how one
+of XML's Predefined Entities - in this case the ampersand - is
+represented when it is used in the value of an rdf:about
+attribute. The ampersand is represented by its numeric
+character reference as specified in:
+http://www.w3.org/TR/REC-xml#sec-predefined-ent In the
+associated N-Triples file, the ampersand will be represented
+with a single ampersand character (and not the ampersand's
+numeric character reference). Note: when a XML/HTML browser is
+used to display this file, a single ampersand character may be
+displayed and not the ampersand's numeric character reference.
+In this case, the browser may provide an alternate way to view
+the file (such as viewing the file's source or saving to a
+file).
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/amp-in-url/test001.rdf>;
+   mf:name "amp-in-url-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/amp-in-url/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#amp-in-url-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#datatypes-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    A simple datatype production; a language+datatype production.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/datatypes/test001.rdf>;
+   mf:name "datatypes-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/datatypes/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#datatypes-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#datatypes-test002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    A parser is not required to know about well-formed datatyped
+literals.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/datatypes/test002.rdf>;
+   mf:name "datatypes-test002";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/datatypes/test002.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#datatypes-test002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-literals-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Does the treatment of literals conform to charmod ? Test for
+success of legal Normal Form C literal
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-charmod-literals/test001.rdf>;
+   mf:name "rdf-charmod-literals-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-charmod-literals/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-literals-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-uris-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    A uriref is allowed to match non-US ASCII forms conforming to
+Unicode Normal Form C. No escaping algorithm is applied.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-charmod-uris/test001.rdf>;
+   mf:name "rdf-charmod-uris-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-charmod-uris/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-uris-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-uris-test002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    A uriref which already has % escaping is permitted. No
+unescaping algorithm is applied.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-charmod-uris/test002.rdf>;
+   mf:name "rdf-charmod-uris-test002";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-charmod-uris/test002.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-charmod-uris-test002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-error001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    rdf:li is not allowed as as an attribute
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/error001.rdf>;
+   mf:name "rdf-containers-syntax-vs-schema-error001";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-error001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-error002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    rdf:li elements as typed nodes - a bizarre case As specified
+in
+http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2001Nov/0651.html
+is not an error.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/error002.rdf>;
+   mf:name "rdf-containers-syntax-vs-schema-error002";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-error002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Simple container
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test001.rdf>;
+   mf:name "rdf-containers-syntax-vs-schema-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    rdf:li is unaffected by other rdf:_nnn properties. This test
+case is concerned only with defining the triples that this
+particular example RDF/XML represents. It is not concerned
+with whether that collection of triples violates any other
+constraints, e.g. restrictions on the number of rdf:_1
+properties that may be defined for a resource.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test002.rdf>;
+   mf:name "rdf-containers-syntax-vs-schema-test002";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test002.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test003> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    rdf:li elements can exist in any description element
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test003.rdf>;
+   mf:name "rdf-containers-syntax-vs-schema-test003";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test003.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test003>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test004> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    rdf:li elements match any of the property element productions
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test004.rdf>;
+   mf:name "rdf-containers-syntax-vs-schema-test004";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test004.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test004>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test006> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    containers match the typed node production
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test006.rdf>;
+   mf:name "rdf-containers-syntax-vs-schema-test006";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test006.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test006>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test007> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    rdf:li processing within each element is independent
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test007.rdf>;
+   mf:name "rdf-containers-syntax-vs-schema-test007";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test007.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test007>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test008> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    rdf:li processing is per element, not per resource.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test008.rdf>;
+   mf:name "rdf-containers-syntax-vs-schema-test008";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-containers-syntax-vs-schema/test008.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-containers-syntax-vs-schema-test008>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-element-not-mandatory-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    A surrounding rdf:RDF element is no longer mandatory.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-element-not-mandatory/test001.rdf>;
+   mf:name "rdf-element-not-mandatory-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-element-not-mandatory/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-element-not-mandatory-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    RDF attributes that are required to have an rdf: prefix about
+aboutEach ID bagID type resource parseType
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0001.rdf>;
+   mf:name "rdf-ns-prefix-confusion-test0001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0003> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    RDF attributes that are required to have an rdf: prefix about
+aboutEach ID bagID type resource parseType
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0003.rdf>;
+   mf:name "rdf-ns-prefix-confusion-test0003";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0003.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0003>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0004> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    RDF attributes that are required to have an rdf: prefix about
+aboutEach ID bagID type resource parseType
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0004.rdf>;
+   mf:name "rdf-ns-prefix-confusion-test0004";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0004.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0004>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0005> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    RDF attributes that are required to have an rdf: prefix about
+aboutEach ID bagID type resource parseType
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0005.rdf>;
+   mf:name "rdf-ns-prefix-confusion-test0005";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0005.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0005>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0006> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    RDF attributes that are required to have an rdf: prefix about
+aboutEach ID bagID type resource parseType
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0006.rdf>;
+   mf:name "rdf-ns-prefix-confusion-test0006";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0006.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0006>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0009> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Namespace qualification MUST be used for all property
+attributes.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0009.rdf>;
+   mf:name "rdf-ns-prefix-confusion-test0009";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0009.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0009>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0010> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Non-prefixed RDF elements (NOT attributes) are allowed when a
+default XML element namespace is defined with an
+xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" attribute.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0010.rdf>;
+   mf:name "rdf-ns-prefix-confusion-test0010";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0010.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0010>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0011> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Non-prefixed RDF elements (NOT attributes) are allowed when a
+default XML element namespace is defined with an
+xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" attribute.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0011.rdf>;
+   mf:name "rdf-ns-prefix-confusion-test0011";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0011.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0011>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0012> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Non-prefixed RDF elements (NOT attributes) are allowed when a
+default XML element namespace is defined with an
+xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" attribute.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0012.rdf>;
+   mf:name "rdf-ns-prefix-confusion-test0012";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0012.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0012>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0013> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Non-prefixed RDF elements (NOT attributes) are allowed when a
+default XML element namespace is defined with an
+xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" attribute.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0013.rdf>;
+   mf:name "rdf-ns-prefix-confusion-test0013";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0013.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0013>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0014> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Non-prefixed RDF elements (NOT attributes) are allowed when a
+default XML element namespace is defined with an
+xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" attribute.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0014.rdf>;
+   mf:name "rdf-ns-prefix-confusion-test0014";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdf-ns-prefix-confusion/test0014.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdf-ns-prefix-confusion-test0014>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-abouteach-error001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    aboutEach removed from the RDF specifications. See URI above
+for further details.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-abouteach/error001.rdf>;
+   mf:name "rdfms-abouteach-error001";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-abouteach-error001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-abouteach-error002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    aboutEach removed from the RDF specifications. See URI above
+for further details.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-abouteach/error002.rdf>;
+   mf:name "rdfms-abouteach-error002";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-abouteach-error002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-error1> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    two elements cannot use the same ID
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-difference-between-ID-and-about/error1.rdf>;
+   mf:name "rdfms-difference-between-ID-and-about-error1";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-error1>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test1> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    A statement with an rdf:ID creates a regular triple.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-difference-between-ID-and-about/test1.rdf>;
+   mf:name "rdfms-difference-between-ID-and-about-test1";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-difference-between-ID-and-about/test1.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test1>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test2> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    This test shows the treatment of non-ASCII characters in the
+value of rdf:ID attribute.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-difference-between-ID-and-about/test2.rdf>;
+   mf:name "rdfms-difference-between-ID-and-about-test2";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-difference-between-ID-and-about/test2.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test2>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test3> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    This test shows the treatment of non-ASCII characters in the
+value of rdf:about attribute.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-difference-between-ID-and-about/test3.rdf>;
+   mf:name "rdfms-difference-between-ID-and-about-test3";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-difference-between-ID-and-about/test3.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-difference-between-ID-and-about-test3>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-duplicate-member-props-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    The question posed to the RDF WG was: should an RDF document
+containing multiple rdf:_n properties (with the same n) on an
+element be rejected as illegal? The WG decided that a parser
+should accept that case as legal RDF.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-duplicate-member-props/test001.rdf>;
+   mf:name "rdfms-duplicate-member-props-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-duplicate-member-props/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-duplicate-member-props-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-error001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    This is not legal RDF; specifying an rdf:parseType of
+"Literal" and an rdf:resource attribute at the same time is an
+error.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/error001.rdf>;
+   mf:name "rdfms-empty-property-elements-error001";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-error001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-error002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    This is not legal RDF; specifying an rdf:parseType of
+"Literal" and an rdf:resource attribute at the same time is an
+error.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/error002.rdf>;
+   mf:name "rdfms-empty-property-elements-error002";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-error002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    The rdf:resource attribute means that the value of this
+property element is a resource.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test001.rdf>;
+   mf:name "rdfms-empty-property-elements-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    The basic case. An empty property element just gives an empty
+literal.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test002.rdf>;
+   mf:name "rdfms-empty-property-elements-test002";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test002.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test004> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    If the parseType indicates the value is a resource, we must
+create one. With no additional information, the resource is
+anonymous.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test004.rdf>;
+   mf:name "rdfms-empty-property-elements-test004";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test004.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test004>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test005> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    An empty property element just gives an empty literal. We
+reify the statement at the same time.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test005.rdf>;
+   mf:name "rdfms-empty-property-elements-test005";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test005.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test005>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test006> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Here the parseType indicates that we should create a resource.
+We also reify the generated statement.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test006.rdf>;
+   mf:name "rdfms-empty-property-elements-test006";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test006.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test006>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test007> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    As test001.rdf; this uses an explicit closing tag.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test007.rdf>;
+   mf:name "rdfms-empty-property-elements-test007";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test007.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test007>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test008> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    As test002.rdf; this uses an explicit closing tag.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test008.rdf>;
+   mf:name "rdfms-empty-property-elements-test008";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test008.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test008>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test010> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    As test004.rdf; this uses an explicit closing tag.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test010.rdf>;
+   mf:name "rdfms-empty-property-elements-test010";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test010.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test010>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test011> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    As test005.rdf; this uses an explicit closing tag.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test011.rdf>;
+   mf:name "rdfms-empty-property-elements-test011";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test011.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test011>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test012> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    As test006.rdf; this uses an explicit closing tag.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test012.rdf>;
+   mf:name "rdfms-empty-property-elements-test012";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test012.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test012>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test013> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Test of the last alternative for production [6.12],
+interpreted according to RDFMS paragraphs 229-234:
+http://lists.w3.org/Archives/Public/www-archive/2001Jun/att-0021/00-part#229
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test013.rdf>;
+   mf:name "rdfms-empty-property-elements-test013";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test013.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test013>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test014> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Test of the last alternative for production [6.12],
+interpreted according to RDFMS paragraphs 229-234:
+http://lists.w3.org/Archives/Public/www-archive/2001Jun/att-0021/00-part#229
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test014.rdf>;
+   mf:name "rdfms-empty-property-elements-test014";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test014.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test014>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test015> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Test of the last alternative for production [6.12],
+interpreted according to RDFMS paragraphs 229-234:
+http://lists.w3.org/Archives/Public/www-archive/2001Jun/att-0021/00-part#229
+Here we have an explicit closing tag. This does not match any
+of the productions in the original document, but is
+indistinguishable from test014 as far as XML is concerned.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test015.rdf>;
+   mf:name "rdfms-empty-property-elements-test015";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test015.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test015>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test016> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Like rdfms-empty-property-elements/test001.rdf but with a
+processing instruction as the only content of the otherwise
+empty element.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test016.rdf>;
+   mf:name "rdfms-empty-property-elements-test016";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test016.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test016>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test017> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Like rdfms-empty-property-elements/test001.rdf but with a
+comment as the only content of the otherwise empty element.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test017.rdf>;
+   mf:name "rdfms-empty-property-elements-test017";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-empty-property-elements/test017.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-empty-property-elements-test017>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    a RDF Description with no ID or about attribute describes an
+un-named resource, aka a bNode.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-identity-anon-resources/test001.rdf>;
+   mf:name "rdfms-identity-anon-resources-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-identity-anon-resources/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    a RDF Description with no ID or about attribute describes an
+un-named resource, aka a bNode.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-identity-anon-resources/test002.rdf>;
+   mf:name "rdfms-identity-anon-resources-test002";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-identity-anon-resources/test002.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test003> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    a RDF container (in this case a Bag) without an ID attribute
+describes an un-named resource, aka a bNode.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-identity-anon-resources/test003.rdf>;
+   mf:name "rdfms-identity-anon-resources-test003";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-identity-anon-resources/test003.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test003>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test004> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    a RDF container (in this case an Alt) without an ID attribute
+describes an un-named resource, aka a bNode.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-identity-anon-resources/test004.rdf>;
+   mf:name "rdfms-identity-anon-resources-test004";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-identity-anon-resources/test004.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test004>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test005> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    a RDF container (in this case an Seq) without an ID attribute
+describes an un-named resource, aka a bNode.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-identity-anon-resources/test005.rdf>;
+   mf:name "rdfms-identity-anon-resources-test005";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-identity-anon-resources/test005.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-identity-anon-resources-test005>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    rdf:ID on an empty property element indicates reification.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-not-id-and-resource-attr/test001.rdf>;
+   mf:name "rdfms-not-id-and-resource-attr-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-not-id-and-resource-attr/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    rdf:reource on an empty property element indicates the URI of
+the object.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-not-id-and-resource-attr/test002.rdf>;
+   mf:name "rdfms-not-id-and-resource-attr-test002";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-not-id-and-resource-attr/test002.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test004> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    rdf:ID and rdf:resource are allowed together on empty property
+element.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-not-id-and-resource-attr/test004.rdf>;
+   mf:name "rdfms-not-id-and-resource-attr-test004";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-not-id-and-resource-attr/test004.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test004>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test005> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    rdf:ID and rdf:resource are allowed together on empty property
+element.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-not-id-and-resource-attr/test005.rdf>;
+   mf:name "rdfms-not-id-and-resource-attr-test005";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-not-id-and-resource-attr/test005.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-not-id-and-resource-attr-test005>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-para196-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    test case showing that the 2nd URI in M Paragraph 196 is
+permitted as a namespace URI (and any namespace URI starting
+with that URI)
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-para196/test001.rdf>;
+   mf:name "rdfms-para196-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-para196/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-para196-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    The value of rdf:ID must match the XML Name production, (as
+modified by XML Namespaces).
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-id/error001.rdf>;
+   mf:name "rdfms-rdf-id-error001";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    The value of rdf:ID must match the XML Name production, (as
+modified by XML Namespaces).
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-id/error002.rdf>;
+   mf:name "rdfms-rdf-id-error002";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error003> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    The value of rdf:ID must match the XML Name production, (as
+modified by XML Namespaces).
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-id/error003.rdf>;
+   mf:name "rdfms-rdf-id-error003";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error003>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error004> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    The value of rdf:ID must match the XML Name production, (as
+modified by XML Namespaces).
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-id/error004.rdf>;
+   mf:name "rdfms-rdf-id-error004";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error004>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error005> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    The value of rdf:ID must match the XML Name production, (as
+modified by XML Namespaces).
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-id/error005.rdf>;
+   mf:name "rdfms-rdf-id-error005";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error005>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error006> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    The value of rdf:bagID must match the XML Name production, (as
+modified by XML Namespaces).
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-id/error006.rdf>;
+   mf:name "rdfms-rdf-id-error006";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error006>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error007> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    The value of rdf:bagID must match the XML Name production, (as
+modified by XML Namespaces).
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-id/error007.rdf>;
+   mf:name "rdfms-rdf-id-error007";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-id-error007>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    RDF is forbidden as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-001.rdf>;
+   mf:name "rdfms-rdf-names-use-error-001";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    ID is forbidden as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-002.rdf>;
+   mf:name "rdfms-rdf-names-use-error-002";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-003> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    about is forbidden as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-003.rdf>;
+   mf:name "rdfms-rdf-names-use-error-003";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-003>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-004> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    bagID is forbidden as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-004.rdf>;
+   mf:name "rdfms-rdf-names-use-error-004";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-004>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-005> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    parseType is forbidden as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-005.rdf>;
+   mf:name "rdfms-rdf-names-use-error-005";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-005>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-006> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    resource is forbidden as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-006.rdf>;
+   mf:name "rdfms-rdf-names-use-error-006";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-006>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-007> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    nodeID is forbidden as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-007.rdf>;
+   mf:name "rdfms-rdf-names-use-error-007";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-007>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-008> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    li is forbidden as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-008.rdf>;
+   mf:name "rdfms-rdf-names-use-error-008";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-008>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-009> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    aboutEach is forbidden as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-009.rdf>;
+   mf:name "rdfms-rdf-names-use-error-009";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-009>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-010> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    aboutEachPrefix is forbidden as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-010.rdf>;
+   mf:name "rdfms-rdf-names-use-error-010";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-010>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-011> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    Description is forbidden as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-011.rdf>;
+   mf:name "rdfms-rdf-names-use-error-011";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-011>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-012> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    RDF is forbidden as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-012.rdf>;
+   mf:name "rdfms-rdf-names-use-error-012";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-012>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-013> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    ID is forbidden as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-013.rdf>;
+   mf:name "rdfms-rdf-names-use-error-013";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-013>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-014> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    about is forbidden as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-014.rdf>;
+   mf:name "rdfms-rdf-names-use-error-014";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-014>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-015> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    bagID is forbidden as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-015.rdf>;
+   mf:name "rdfms-rdf-names-use-error-015";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-015>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-016> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    parseType is forbidden as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-016.rdf>;
+   mf:name "rdfms-rdf-names-use-error-016";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-016>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-017> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    resource is forbidden as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-017.rdf>;
+   mf:name "rdfms-rdf-names-use-error-017";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-017>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-018> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    nodeID is forbidden as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-018.rdf>;
+   mf:name "rdfms-rdf-names-use-error-018";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-018>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-019> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    aboutEach is forbidden as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-019.rdf>;
+   mf:name "rdfms-rdf-names-use-error-019";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-019>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-020> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    aboutEachPrefix is forbidden as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/error-020.rdf>;
+   mf:name "rdfms-rdf-names-use-error-020";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-error-020>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Description is allowed as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-001.rdf>;
+   mf:name "rdfms-rdf-names-use-test-001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Seq is allowed as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-002.rdf>;
+   mf:name "rdfms-rdf-names-use-test-002";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-002.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-003> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Bag is allowed as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-003.rdf>;
+   mf:name "rdfms-rdf-names-use-test-003";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-003.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-003>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-004> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Alt is allowed as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-004.rdf>;
+   mf:name "rdfms-rdf-names-use-test-004";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-004.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-004>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-005> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Statement is allowed as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-005.rdf>;
+   mf:name "rdfms-rdf-names-use-test-005";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-005.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-005>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-006> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Property is allowed as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-006.rdf>;
+   mf:name "rdfms-rdf-names-use-test-006";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-006.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-006>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-007> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    List is allowed as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-007.rdf>;
+   mf:name "rdfms-rdf-names-use-test-007";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-007.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-007>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-008> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    subject is allowed as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-008.rdf>;
+   mf:name "rdfms-rdf-names-use-test-008";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-008.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-008>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-009> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    predicate is allowed as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-009.rdf>;
+   mf:name "rdfms-rdf-names-use-test-009";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-009.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-009>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-010> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    object is allowed as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-010.rdf>;
+   mf:name "rdfms-rdf-names-use-test-010";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-010.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-010>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-011> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    type is allowed as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-011.rdf>;
+   mf:name "rdfms-rdf-names-use-test-011";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-011.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-011>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-012> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    value is allowed as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-012.rdf>;
+   mf:name "rdfms-rdf-names-use-test-012";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-012.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-012>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-013> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    first is allowed as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-013.rdf>;
+   mf:name "rdfms-rdf-names-use-test-013";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-013.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-013>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-014> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    rest is allowed as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-014.rdf>;
+   mf:name "rdfms-rdf-names-use-test-014";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-014.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-014>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-015> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    _1 is allowed as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-015.rdf>;
+   mf:name "rdfms-rdf-names-use-test-015";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-015.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-015>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-016> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    nil is allowed as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-016.rdf>;
+   mf:name "rdfms-rdf-names-use-test-016";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-016.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-016>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-017> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Seq is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-017.rdf>;
+   mf:name "rdfms-rdf-names-use-test-017";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-017.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-017>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-018> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Bag is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-018.rdf>;
+   mf:name "rdfms-rdf-names-use-test-018";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-018.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-018>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-019> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Alt is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-019.rdf>;
+   mf:name "rdfms-rdf-names-use-test-019";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-019.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-019>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-020> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Statement is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-020.rdf>;
+   mf:name "rdfms-rdf-names-use-test-020";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-020.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-020>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-021> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Property is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-021.rdf>;
+   mf:name "rdfms-rdf-names-use-test-021";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-021.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-021>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-022> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    List is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-022.rdf>;
+   mf:name "rdfms-rdf-names-use-test-022";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-022.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-022>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-023> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    subject is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-023.rdf>;
+   mf:name "rdfms-rdf-names-use-test-023";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-023.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-023>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-024> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    predicate is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-024.rdf>;
+   mf:name "rdfms-rdf-names-use-test-024";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-024.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-024>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-025> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    object is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-025.rdf>;
+   mf:name "rdfms-rdf-names-use-test-025";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-025.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-025>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-026> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    type is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-026.rdf>;
+   mf:name "rdfms-rdf-names-use-test-026";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-026.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-026>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-027> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    value is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-027.rdf>;
+   mf:name "rdfms-rdf-names-use-test-027";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-027.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-027>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-028> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    first is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-028.rdf>;
+   mf:name "rdfms-rdf-names-use-test-028";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-028.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-028>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-029> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    rest is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-029.rdf>;
+   mf:name "rdfms-rdf-names-use-test-029";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-029.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-029>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-030> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    _1 is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-030.rdf>;
+   mf:name "rdfms-rdf-names-use-test-030";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-030.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-030>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-031> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    li is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-031.rdf>;
+   mf:name "rdfms-rdf-names-use-test-031";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-031.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-031>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-032> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Seq is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-032.rdf>;
+   mf:name "rdfms-rdf-names-use-test-032";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-032.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-032>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-033> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Bag is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-033.rdf>;
+   mf:name "rdfms-rdf-names-use-test-033";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-033.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-033>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-034> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Alt is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-034.rdf>;
+   mf:name "rdfms-rdf-names-use-test-034";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-034.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-034>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-035> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Statement is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-035.rdf>;
+   mf:name "rdfms-rdf-names-use-test-035";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-035.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-035>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-036> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Property is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-036.rdf>;
+   mf:name "rdfms-rdf-names-use-test-036";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-036.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-036>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-037> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    List is allowed as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-037.rdf>;
+   mf:name "rdfms-rdf-names-use-test-037";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/test-037.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-test-037>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    foo is allowed with warnings as a node element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/warn-001.rdf>;
+   mf:name "rdfms-rdf-names-use-warn-001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/warn-001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    foo is allowed with warnings as a property element name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/warn-002.rdf>;
+   mf:name "rdfms-rdf-names-use-warn-002";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/warn-002.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-003> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    foo is allowed with warnings as a property attribute name.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/warn-003.rdf>;
+   mf:name "rdfms-rdf-names-use-warn-003";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-rdf-names-use/warn-003.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-rdf-names-use-warn-003>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-reification-required-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    A parser is not required to generate a bag of reified
+statements for all description elements.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-reification-required/test001.rdf>;
+   mf:name "rdfms-reification-required-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-reification-required/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-reification-required-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-seq-representation-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    rdf:parseType="Collection" is parsed like the nonstandard
+daml:collection.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-seq-representation/test001.rdf>;
+   mf:name "rdfms-seq-representation-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-seq-representation/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-seq-representation-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    rdf:nodeID can be used to label a blank node.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/test001.rdf>;
+   mf:name "rdfms-syntax-incomplete-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    rdf:nodeID can be used to label a blank node. These have file
+scope and are distinct from any unlabelled blank nodes.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/test002.rdf>;
+   mf:name "rdfms-syntax-incomplete-test002";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/test002.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test003> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    On an rdf:Description or typed node rdf:nodeID behaves
+similarly to an rdf:about.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/test003.rdf>;
+   mf:name "rdfms-syntax-incomplete-test003";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/test003.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test003>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test004> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    On a property element rdf:nodeID behaves similarly to
+rdf:resource.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/test004.rdf>;
+   mf:name "rdfms-syntax-incomplete-test004";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/test004.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-test004>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    The value of rdf:nodeID must match the XML Name production,
+(as modified by XML Namespaces).
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/error001.rdf>;
+   mf:name "rdfms-syntax-incomplete-error001";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    The value of rdf:nodeID must match the XML Name production,
+(as modified by XML Namespaces).
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/error002.rdf>;
+   mf:name "rdfms-syntax-incomplete-error002";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error003> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    The value of rdf:nodeID must match the XML Name production,
+(as modified by XML Namespaces).
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/error003.rdf>;
+   mf:name "rdfms-syntax-incomplete-error003";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error003>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error004> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    Cannot have rdf:nodeID and rdf:ID.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/error004.rdf>;
+   mf:name "rdfms-syntax-incomplete-error004";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error004>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error005> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    Cannot have rdf:nodeID and rdf:about.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/error005.rdf>;
+   mf:name "rdfms-syntax-incomplete-error005";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error005>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error006> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLNegativeSyntax>;
+   rdfs:comment """
+    Cannot have rdf:nodeID and rdf:resource.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-syntax-incomplete/error006.rdf>;
+   mf:name "rdfms-syntax-incomplete-error006";
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-syntax-incomplete-error006>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-uri-substructure-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Demonstrates the Recommended partitioning of a URI into a
+namespace part and a localname part
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-uri-substructure/test001.rdf>;
+   mf:name "rdfms-uri-substructure-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-uri-substructure/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-uri-substructure-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test003> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    In-scope xml:lang applies to element content literal values
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-xmllang/test003.rdf>;
+   mf:name "rdfms-xmllang-test003";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-xmllang/test003.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test003>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test004> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    In-scope xml:lang applies to element content literal values
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-xmllang/test004.rdf>;
+   mf:name "rdfms-xmllang-test004";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-xmllang/test004.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test004>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test005> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    In-scope xml:lang applies to element content literal values
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-xmllang/test005.rdf>;
+   mf:name "rdfms-xmllang-test005";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-xmllang/test005.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test005>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test006> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    In-scope xml:lang applies to element content literal values
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfms-xmllang/test006.rdf>;
+   mf:name "rdfms-xmllang-test006";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfms-xmllang/test006.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfms-xmllang-test006>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfs-domain-and-range-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    a RDF Property may have more than one domain property
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfs-domain-and-range/test001.rdf>;
+   mf:name "rdfs-domain-and-range-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfs-domain-and-range/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfs-domain-and-range-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfs-domain-and-range-test002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    a RDF Property may have more than one domain property
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/rdfs-domain-and-range/test002.rdf>;
+   mf:name "rdfs-domain-and-range-test002";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/rdfs-domain-and-range/test002.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#rdfs-domain-and-range-test002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#unrecognised-xml-attributes-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Unrecognized attributes in the xml namespace should be
+ignored.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/unrecognised-xml-attributes/test001.rdf>;
+   mf:name "unrecognised-xml-attributes-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/unrecognised-xml-attributes/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#unrecognised-xml-attributes-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#unrecognised-xml-attributes-test002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Unrecognized attributes in the xml namespace should be
+ignored.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/unrecognised-xml-attributes/test002.rdf>;
+   mf:name "unrecognised-xml-attributes-test002";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/unrecognised-xml-attributes/test002.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#unrecognised-xml-attributes-test002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xml-canon-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Demonstrating the canonicalisation of XMLLiterals.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/xml-canon/test001.rdf>;
+   mf:name "xml-canon-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/xml-canon/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xml-canon-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test001> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    xml:base applies to an rdf:ID on an rdf:Description element.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/xmlbase/test001.rdf>;
+   mf:name "xmlbase-test001";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/xmlbase/test001.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test001>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test002> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    xml:base applies to an rdf:resource attribute.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/xmlbase/test002.rdf>;
+   mf:name "xmlbase-test002";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/xmlbase/test002.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test002>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test003> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    xml:base applies to an rdf:about attribute.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/xmlbase/test003.rdf>;
+   mf:name "xmlbase-test003";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/xmlbase/test003.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test003>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test004> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    xml:base applies to an rdf:ID on a property element.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/xmlbase/test004.rdf>;
+   mf:name "xmlbase-test004";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/xmlbase/test004.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test004>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test006> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    xml:base scoping.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/xmlbase/test006.rdf>;
+   mf:name "xmlbase-test006";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/xmlbase/test006.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test006>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test007> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    example of relative URI resolution.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/xmlbase/test007.rdf>;
+   mf:name "xmlbase-test007";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/xmlbase/test007.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test007>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test008> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    example of empty same document ref resolution.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/xmlbase/test008.rdf>;
+   mf:name "xmlbase-test008";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/xmlbase/test008.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test008>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test009> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Example of relative uri with absolute path resolution.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/xmlbase/test009.rdf>;
+   mf:name "xmlbase-test009";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/xmlbase/test009.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test009>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test010> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Example of relative uri with net path resolution.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/xmlbase/test010.rdf>;
+   mf:name "xmlbase-test010";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/xmlbase/test010.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test010>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test011> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Example of xml:base with no path component.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/xmlbase/test011.rdf>;
+   mf:name "xmlbase-test011";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/xmlbase/test011.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test011>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test013> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    With an xml:base with fragment the fragment is ignored.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/xmlbase/test013.rdf>;
+   mf:name "xmlbase-test013";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/xmlbase/test013.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test013>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+<https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test014> a earl:TestCriterion,
+     earl:TestCase,
+     <http://www.w3.org/ns/rdftest#TestXMLEval>;
+   rdfs:comment """
+    Test output corrected to use correct base URL.
+  """;
+   mf:action <https://www.w3.org/2013/RDFXMLTests/xmlbase/test014.rdf>;
+   mf:name "xmlbase-test014";
+   mf:result <https://www.w3.org/2013/RDFXMLTests/xmlbase/test014.nt>;
+   earl:assertions [
+     a earl:Assertion;
+     earl:assertedBy <https://www.rubensworks.net/#me>;
+     earl:mode earl:automatic;
+     earl:result [
+       a earl:TestResult;
+       earl:outcome earl:passed
+     ];
+     earl:subject <https://www.npmjs.com/package/rdfxml-streaming-parser/>;
+     earl:test <https://www.w3.org/2013/RDFXMLTests/manifest.ttl#xmlbase-test014>
+   ];
+   <http://www.w3.org/ns/rdftest#approval> <http://www.w3.org/ns/rdftest#Approved> .
+
+# Test Subjects
+
+<https://www.npmjs.com/package/rdfxml-streaming-parser/> a earl:TestSubject,
+     doap:Project,
+     earl:Software;
+   doap:description "Streaming RDF/XML parser"@en;
+   doap:developer <https://www.rubensworks.net/#me>;
+   doap:homepage <https://github.com/rdfjs/rdfxml-streaming-parser.js#readme>;
+   doap:name "rdfxml-streaming-parser";
+   doap:programming-language "JavaScript" .
+
+<https://www.rubensworks.net/#me> a foaf:Person,
+     earl:Assertor;
+   foaf:homepage <https://www.rubensworks.net/>;
+   foaf:name "Ruben Taelman <rubensworks@gmail.com>" .
+
+# Report Generation Software
+
+<http://rubygems.org/gems/earl-report> a doap:Project,
+     earl:Software;
+   doap:description "EarlReport generates HTML+RDFa rollups of multiple EARL reports"@en;
+   doap:developer <http://greggkellogg.net/foaf#me>;
+   doap:homepage <https://github.com/gkellogg/earl-report>;
+   doap:license <http://unlicense.org>;
+   doap:name "earl-report";
+   doap:programming-language "Ruby";
+   doap:release <https://github.com/gkellogg/earl-report/tree/0.4.6>;
+   doap:shortdesc "Earl Report summary generator"@en .
+
+<https://github.com/gkellogg/earl-report/tree/0.4.6> a doap:Version;
+   doap:created "2018-09-28"^^xsd:date;
+   doap:name "earl-report-0.4.6";
+   doap:revision "0.4.6" .

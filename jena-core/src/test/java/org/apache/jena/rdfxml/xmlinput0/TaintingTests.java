@@ -36,10 +36,10 @@ import org.xml.sax.SAXParseException;
 
 public class TaintingTests extends TestCase implements ErrorHandler,
 		ARPErrorNumbers {
-	 
+
     static String promoteWarnings[] =
     {
-        "WARN_UNQUALIFIED_ATTRIBUTE", 
+        "WARN_UNQUALIFIED_ATTRIBUTE",
         "WARN_UNKNOWN_RDF_ATTRIBUTE",
         "WARN_REDEFINITION_OF_ID",
         "WARN_UNKNOWN_PARSETYPE",
@@ -49,7 +49,7 @@ public class TaintingTests extends TestCase implements ErrorHandler,
         "WARN_BAD_XMLLANG",
     };
     static String files[] = {
-        
+
         "testing0/arp/syntax-errors/error001.rdf",
         "testing0/arp/syntax-errors/error002.rdf",
         "testing0/arp/syntax-errors/error003.rdf",
@@ -67,7 +67,7 @@ public class TaintingTests extends TestCase implements ErrorHandler,
         "testing0/wg/rdf-ns-prefix-confusion/error0007.rdf",
         "testing0/wg/rdf-ns-prefix-confusion/error0008.rdf",
         "testing0/wg/rdf-ns-prefix-confusion/error0009.rdf",
-        
+
         "testing0/wg/rdfms-abouteach/error001.rdf",
         "testing0/wg/rdfms-abouteach/error002.rdf",
         "testing0/wg/rdfms-difference-between-ID-and-about/error1.rdf",
@@ -111,25 +111,25 @@ public class TaintingTests extends TestCase implements ErrorHandler,
         "testing0/wg/rdfms-syntax-incomplete/error005.rdf",
         "testing0/wg/rdfms-syntax-incomplete/error006.rdf",
         "testing0/wg/xmlbase/error001.rdf",
-        
+
         "testing0/arp/tainting/base.rdf",
-        
+
         "testing0/arp/tainting/lang.rdf",
         "testing0/arp/tainting/ptUnknown.rdf",
         "testing0/arp/tainting/typedLiteral.rdf",
-        
+
         "testing0/arp/tainting/typedNode.rdf",
         "testing0/arp/tainting/property.rdf",
-        
+
         "testing0/arp/tainting/collection.rdf",
-        
+
 
         "testing0/arp/tainting/propValueA.rdf",
         "testing0/arp/tainting/propValueB.rdf",
         "testing0/arp/tainting/propValueC.rdf",
         "testing0/arp/tainting/propValueD.rdf",
         "testing0/arp/tainting/propValueE.rdf",
-        
+
 
     };
 
@@ -178,9 +178,8 @@ public class TaintingTests extends TestCase implements ErrorHandler,
 	}
 
     @Override
+    @SuppressWarnings("deprecation")
     public void runTest() throws IOException {
-
-
         ByteArrayOutputStream goodBytes = new ByteArrayOutputStream();
         ByteArrayOutputStream badBytes = new ByteArrayOutputStream();
         PrintStream oldOut = System.out;
@@ -219,8 +218,8 @@ public class TaintingTests extends TestCase implements ErrorHandler,
         }
         assertTrue("Triples were not as expected.",isomorphicWith);
     }
-	
-	
+
+
     static public boolean seen[] = new boolean[400];
 	@Override
     public void warning(SAXParseException e) {

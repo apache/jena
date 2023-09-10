@@ -1221,10 +1221,14 @@ public class SecuredModelTest {
     public void testReadEmpty() throws Exception {
         final Set<Action> createAndUpdate = SecurityEvaluator.Util.asSet(new Action[] { Action.Update, Action.Create });
 
-        final String XML_INPUT = "<rdf:RDF" + "   xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' "
-                + "   xmlns:rt='http://example.com/readTest#' " + "   xmlns:j.0='http://example.com/readTest#3' > "
+        final String XML_INPUT =
+                "<rdf:RDF"
+                + "   xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' "
+                + "   xmlns:rt='http://example.com/readTest#' "
+                + "   xmlns:j.0='http://example.com/readTest#3' > "
                 + "  <rdf:Description rdf:about='http://example.com/readTest#1'> "
-                + "    <rdf:type rdf:resource='http://example.com/readTest#3'/>" + "  </rdf:Description>"
+                + "    <rdf:type rdf:resource='http://example.com/readTest#3'/>"
+                + "  </rdf:Description>"
                 + "</rdf:RDF>";
         final String TTL_INPUT = "@prefix rt: <http://example.com/readTest#> . rt:1 a rt:3 .";
         final String base = "http://example.com/test";
