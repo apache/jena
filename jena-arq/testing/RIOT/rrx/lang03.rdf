@@ -1,0 +1,18 @@
+<?xml version='1.0'?>
+<!-- Licensed under the terms of https://www.apache.org/licenses/LICENSE-2.0 -->
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://local/" 
+    xmlns:ex="http://example/" 
+    xml:base="http://base/"
+    xml:lang="en">
+
+  <rdf:Description rdf:about="http://local/subject">
+    <ex:property1 xml:lang="fr">abc</ex:property1>
+    <ex:property2>abc</ex:property2>
+    <ex:property3 xml:lang="">abc</ex:property3>
+    <ex:property4 xml:lang="de" ex:property4="abc"/>
+  </rdf:Description>
+  
+</rdf:RDF>

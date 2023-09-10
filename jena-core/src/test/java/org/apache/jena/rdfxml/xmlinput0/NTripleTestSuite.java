@@ -242,6 +242,7 @@ class NTripleTestSuite extends WGTestSuite {
 		return loadRDFx(in, eh, base, true, 0);
 	}
 
+    @SuppressWarnings("deprecation")
     static Model loadRDFx(
 		InFactoryX in,
 		RDFErrorHandler eh,

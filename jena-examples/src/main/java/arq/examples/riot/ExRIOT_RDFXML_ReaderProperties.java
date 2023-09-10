@@ -31,7 +31,10 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.SysRIOT;
 
-/** Set properties of the RDF/XML parser (ARP) */
+/**
+ * Set properties of the RDF/XML parser (ARP)
+ * <b>This example only applies to the legacy ARPparser</b>
+ */
 public class ExRIOT_RDFXML_ReaderProperties {
     static { LogCtl.setLogging(); }
 

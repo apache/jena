@@ -1,0 +1,22 @@
+<?xml version='1.0'?>
+<!-- Licensed under the terms of https://www.apache.org/licenses/LICENSE-2.0 -->
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://local/" 
+    xmlns:ex="http://example/" 
+    xml:base="http://base/">
+
+  <!-- Redefine a prefix -->
+  <rdf:Description rdf:about="http://example.org/nestedRedefn">
+    <ex:xmlliteral rdf:parseType="Literal">
+      <sometag2 xmlns:ex="http://example/" xmlns:ns="http://example/ns#">
+         <ex:tag3 xmlns:ex="http://different/">
+          <ex:tag3inner>INNER</ex:tag3inner>
+        </ex:tag3>
+        <ns:tag4>444</ns:tag4>
+      </sometag2>
+    </ex:xmlliteral>
+  </rdf:Description> 
+
+</rdf:RDF>

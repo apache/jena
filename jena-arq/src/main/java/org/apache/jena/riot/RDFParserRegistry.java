@@ -28,6 +28,8 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.riot.lang.*;
 import org.apache.jena.riot.lang.extra.TurtleJCC;
+import org.apache.jena.riot.lang.rdfxml.RRX;
+import org.apache.jena.riot.lang.rdfxml.rrx.LangRDFXML_SAX;
 import org.apache.jena.riot.protobuf.ProtobufRDF;
 import org.apache.jena.riot.protobuf.RiotProtobufException;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
@@ -74,7 +76,7 @@ public class RDFParserRegistry
         /** General parser factory for parsers implemented by "Lang" */
         ReaderRIOTFactory parserFactory          = ReaderRIOTLang.factory;
 
-        ReaderRIOTFactory parserFactoryRDFXML    = ReaderRIOTRDFXML.factory;
+        ReaderRIOTFactory parserFactoryRDFXML    = LangRDFXML_SAX.factory;
         ReaderRIOTFactory parserFactoryProtobuf  = ReaderRDFProtobuf.factory;
         ReaderRIOTFactory parserFactoryThrift    = ReaderRDFThrift.factory;
         ReaderRIOTFactory parserFactoryTriX      = ReaderTriX.factory;
@@ -115,6 +117,8 @@ public class RDFParserRegistry
         // Lang = TurtleJCC.TTLJCC.
         // File extension = ".ttljcc"
         TurtleJCC.register();
+        // Languagfes to access specific RDF parsers
+        RRX.register();
     }
 
     /**

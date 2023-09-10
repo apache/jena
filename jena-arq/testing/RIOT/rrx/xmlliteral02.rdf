@@ -1,0 +1,22 @@
+<?xml version='1.0'?>
+<!-- Licensed under the terms of https://www.apache.org/licenses/LICENSE-2.0 -->
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://local/" 
+    xmlns:ex="http://example/" 
+    xml:base="http://base/">
+
+  <rdf:Description rdf:about="http://example.org/basket">
+    <ex:string>Before XML Literal</ex:string>
+    <ex:xmlliteral rdf:parseType="Literal">
+      Some text 1
+      <sometag2 xmlns:ex="http://example/">
+        <sometag3>333</sometag3>
+      </sometag2>
+      Some text 2
+    </ex:xmlliteral>
+    <ex:string>After XML Literal</ex:string>
+  </rdf:Description> 
+
+</rdf:RDF>

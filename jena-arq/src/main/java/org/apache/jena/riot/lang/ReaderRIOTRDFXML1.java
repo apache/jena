@@ -36,27 +36,37 @@ import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdfxml.xmlinput1.*;
 import org.apache.jena.rdfxml.xmlinput1.impl.ARPSaxErrorHandler;
 import org.apache.jena.riot.*;
-import org.apache.jena.riot.system.*;
+import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.riot.system.FactoryRDF;
+import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.util.Context;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
 
 /** RDF/XML.
- * Default RDF/XML parser
+ * <p>
+ * <b>LEGACY</b>
+ * <p>
+ * Uses xmlinput1 - the version of ARP from Jena 4.7.0 to Jena 4.10.0.
+ * <p>
+ * Replaced at Jena 5 by RRX.
+ *
  * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/">http://www.w3.org/TR/rdf-syntax-grammar/</a>
  */
-public class ReaderRIOTRDFXML implements ReaderRIOT
+public class ReaderRIOTRDFXML1 implements ReaderRIOT
 {
     public static ReaderRIOTFactory factory = (Lang language, ParserProfile parserProfile) -> {
         // Ignore the provided ParserProfile
-        return new ReaderRIOTRDFXML(parserProfile);
+        // ARP predates RIOT and does many things internally already.
+        return new ReaderRIOTRDFXML1(parserProfile);
     };
 
     private final ParserProfile parserProfile;
     private final ErrorHandler errorHandler;
 
 
-    public ReaderRIOTRDFXML(ParserProfile parserProfile) {
+    public ReaderRIOTRDFXML1(ParserProfile parserProfile) {
         this.parserProfile = parserProfile;
         this.errorHandler = parserProfile.getErrorHandler();
     }
@@ -128,6 +138,9 @@ public class ReaderRIOTRDFXML implements ReaderRIOT
         // One of input and reader is null.
         boolean legacySwitch = context.isTrue(RIOT.symRDFXML0);
         if ( legacySwitch ) {
+            Log.warnOnce(SysRIOT.getLogger(),
+                         "Do not use rdfxml:rdfxml0 - use Lang RRX#RDFXML_ARP0 or \"--syntax arp0\"",
+                         ReaderRIOTRDFXML0.class);
             ReaderRIOTRDFXML0 other = new ReaderRIOTRDFXML0(parserProfile.getErrorHandler());
             other.parse(input, reader, xmlBase, ct, sink, context);
             return;
