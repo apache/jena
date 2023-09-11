@@ -301,15 +301,6 @@ public class RDFWriterRegistry
         return Set.copyOf(x) ;
     }
 
-    /**
-     * All registered formats.
-     * @deprecated Use {@link #registeredFormats()} instead.
-    */
-    @Deprecated
-    public static Collection<RDFFormat> registered() {
-        return registeredFormats();
-    }
-
     /** All registered languages */
     public static Collection<Lang> registeredLangs() {
         return Set.copyOf(langToFormat.keySet());

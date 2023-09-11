@@ -42,7 +42,6 @@ import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.LabelToNode;
 import org.apache.jena.riot.writer.WriterGraphRIOTBase;
-import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
@@ -383,23 +382,11 @@ public class RiotLib {
         out.println();
     }
 
-    /** @deprecated Use {@link DatasetGraph#prefixes} */
-    @Deprecated
-    public static PrefixMap prefixMap(DatasetGraph dsg) {
-        return dsg.prefixes();
-    }
-
     /**
      * IndentedWriter over a java.io.Writer (better to use an IndentedWriter over an OutputStream)
      */
     public static IndentedWriter create(Writer writer) {
         return new IndentedWriterWriter(writer);
-    }
-
-    /** @deprecated Use {@link Prefixes#adapt(PrefixMapping)} */
-    @Deprecated
-    public static PrefixMap prefixMap(Graph graph) {
-        return Prefixes.adapt(graph.getPrefixMapping());
     }
 
     public static WriterGraphRIOTBase adapter(WriterDatasetRIOT writer) {
