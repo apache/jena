@@ -23,6 +23,7 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.function.Function ;
 import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.sparql.util.Context;
 
 /** Function for XPath fn:matches */
 
@@ -31,16 +32,16 @@ public class FN_Matches implements Function
     // Wrapper around an E_Regex. Maybe move actual regex to Function.regex.
     E_Regex regex = null;
     ExprList myArgs = null ;
-    
+
     @Override
-    public void build(String uri, ExprList args)
+    public void build(String uri, ExprList args, Context context)
     {
         if ( args.size() != 3 && args.size() != 2 )
             throw new ExprEvalException("matches: Wrong number of arguments: Wanted 2 or 3, got "+args.size()) ;
         myArgs = args ;
-        
+
     }
-    
+
     @Override
     public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env)
     {
@@ -49,7 +50,7 @@ public class FN_Matches implements Function
 
         Expr expr = args.get(0) ;
         E_Regex regexEval = regex ;
-        
+
         if ( regexEval == null )
         {
             Expr e1 = args.get(1) ;
@@ -59,7 +60,7 @@ public class FN_Matches implements Function
 
             String pattern = e1.eval(binding, env).getString() ;
             String flags = (e2==null)?null : e2.eval(binding, env).getString() ;
-            
+
             regexEval = new E_Regex(expr, pattern, flags) ;
 
             // Cache if the pattern is fixed and the flags are fixed or non-existant

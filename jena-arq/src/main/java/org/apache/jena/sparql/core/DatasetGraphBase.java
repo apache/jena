@@ -84,11 +84,6 @@ abstract public class DatasetGraphBase implements DatasetGraph
     @Override
     public abstract void removeGraph(Node graphName) ;
 
-    @Deprecated
-    @Override
-    public void setDefaultGraph(Graph g)
-    { throw new UnsupportedOperationException("DatasetGraph.setDefaultGraph") ; }
-
     @Override
     public void add(Quad quad) { throw new UnsupportedOperationException("DatasetGraph.add(Quad)") ; }
 

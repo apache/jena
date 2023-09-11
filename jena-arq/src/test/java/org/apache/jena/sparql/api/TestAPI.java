@@ -286,11 +286,11 @@ public class TestAPI
         Dataset ds = DatasetFactory.create();
         QuerySolutionMap initialBinding = new QuerySolutionMap();
         initialBinding.add("a", ResourceFactory.createTypedLiteral(Boolean.TRUE));
-        try ( QueryExecution qexec = QueryExecutionFactory.create(query, ds, initialBinding) ) {
-            assertFalse(qexec.execSelect().next().contains("a"));
+        try ( QueryExecution qExec = QueryExecution
+                .dataset(ds).query(query).substitution(initialBinding).build() ) {
+            assertFalse(qExec.execSelect().next().contains("a"));
         }
     }
-
 
     @Test public void testReuseQueryObject1()
     {

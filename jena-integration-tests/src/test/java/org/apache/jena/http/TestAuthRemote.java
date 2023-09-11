@@ -171,10 +171,9 @@ public class TestAuthRemote {
         assertNotNull(graph);
     }
 
-    @SuppressWarnings("deprecation")
     @Test
-    public void auth_gsp_good_auth_2() {
-        DatasetGraph dsg = GSP.service(env.datasetURL()).httpClient(env.httpClientAuthGood()).dataset().getDataset();
+    public void auth_dsp_good_auth_2() {
+        DatasetGraph dsg = DSP.service(env.datasetURL()).httpClient(env.httpClientAuthGood()).GET();
         assertNotNull(dsg);
     }
 
@@ -192,12 +191,11 @@ public class TestAuthRemote {
         );
     }
 
-    @SuppressWarnings("deprecation")
     @Test
-    public void auth_gsp_bad_auth_2() {
+    public void auth_dsp_bad_auth_2() {
         // 401 because we didn't authenticate.
         expect401(()->
-            GSP.service(env.datasetURL()).httpClient(env.httpClientAuthBad()).dataset().getDataset()
+            DSP.service(env.datasetURL()).httpClient(env.httpClientAuthBad()).GET()
         );
     }
 

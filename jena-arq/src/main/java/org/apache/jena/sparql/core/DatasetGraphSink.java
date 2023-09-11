@@ -53,9 +53,6 @@ public class DatasetGraphSink extends DatasetGraphNull {
     public void deleteAny(Node g, Node s, Node p, Node o) { /* ignore */ }
 
     @Override
-    public void setDefaultGraph(Graph g) { /* ignore */ }
-
-    @Override
     public void addGraph(Node graphName, Graph graph) { /* ignore */ }
 
     @Override

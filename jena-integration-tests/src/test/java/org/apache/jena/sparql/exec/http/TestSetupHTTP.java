@@ -73,12 +73,6 @@ public class TestSetupHTTP  {
         GSP.service(URL).httpClient(httpClient).acceptHeader("application/n-triples").defaultGraph().GET();
     }
 
-    @SuppressWarnings("deprecation")
-    @Test public void setup_GSP_dataset() {
-        GSP.service(URL).httpClient(httpClient).dataset().contentType(RDFFormat.NQ).putDataset(dsg);
-        GSP.service(URL).httpClient(httpClient).acceptHeader("application/n-triples").dataset().getDataset();
-    }
-
     @Test public void setup_DSP() {
         DSP.service(URL).httpClient(httpClient).contentType(RDFFormat.NQ).PUT(dsg);
         DSP.service(URL).httpClient(httpClient).acceptHeader("application/n-quads").GET();

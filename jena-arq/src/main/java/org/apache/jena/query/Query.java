@@ -149,21 +149,6 @@ public class Query extends Prologue implements Cloneable, Printable
     /** Return the {@link QueryType} */
     public QueryType queryType()                       { return queryType ; }
 
-    /** @deprecated Use {@link #queryType()} which returns a {@link QueryType} */
-    @Deprecated
-    public int getQueryType() {
-        // Old constants.
-        switch(queryType) {
-            case SELECT :           return QueryTypeSelect;
-            case ASK :              return QueryTypeAsk;
-            case CONSTRUCT :        return QueryTypeConstruct;
-            case CONSTRUCT_JSON :   return QueryTypeJson;
-            //case CONSTRUCT_QUADS :  return QueryTypeConstruct;
-            case DESCRIBE :         return QueryTypeDescribe;
-            default :               return QueryTypeUnknown;
-        }
-    }
-
     public boolean isSelectType()               { return queryType == QueryType.SELECT; }
 
     public boolean isConstructType()            { return queryType == QueryType.CONSTRUCT ; }

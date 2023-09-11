@@ -81,19 +81,4 @@ public class TestGraphReadOnly {
         // Does not matter that it is alread defined.
         graph.getPrefixMapping().clearNsPrefixMap();
     }
-
-    @Test(expected=JenaException.class)
-    public void unmodified_add() {
-        @SuppressWarnings("deprecation")
-        Graph graph = new UnmodifiableGraph(baseGraph);
-        graph.add(triple);
-    }
-
-    @Test(expected=JenaException.class)
-    public void unmodified_prefixmapping() {
-        @SuppressWarnings("deprecation")
-        Graph graph = new UnmodifiableGraph(baseGraph);
-        graph.add(triple);
-    }
-
 }

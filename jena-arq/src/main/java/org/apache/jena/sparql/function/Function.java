@@ -35,11 +35,7 @@ public interface Function
      * @param args The parsed arguments
      * @param context The build context.
      */
-    public default void build(String uri, ExprList args, Context context) { build(uri, args); }
-
-    /** Use {@link #build(String, ExprList, Context)} */
-    @Deprecated
-    public void build(String uri, ExprList args) ;
+    public void build(String uri, ExprList args, Context context);
 
     /** Test a list of values - argument will not be null but
      *  may have the wrong number of arguments.

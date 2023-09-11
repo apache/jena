@@ -69,12 +69,6 @@ public abstract class AbstractDatasetGraphAddDelete extends DatasetGraphWrapper 
     { deleteAny(graphName, Node.ANY, Node.ANY, Node.ANY) ; }
 
     @Override
-    public void setDefaultGraph(Graph graph) {
-        graph.find(null, null, null)
-             .forEachRemaining((t) -> this.add(Quad.defaultGraphNodeGenerated, t.getSubject(), t.getPredicate(), t.getObject()));
-    }
-
-    @Override
     public void clear()
     { deleteAny(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ; }
 

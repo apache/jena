@@ -36,10 +36,10 @@ public class UpdateProcessorBase implements UpdateProcessor
     protected final UpdateEngineFactory factory ;
     protected final Context context ;
 
-    public UpdateProcessorBase(UpdateRequest request, 
-                               DatasetGraph datasetGraph, 
+    public UpdateProcessorBase(UpdateRequest request,
+                               DatasetGraph datasetGraph,
                                Binding inputBinding,
-                               Context context, 
+                               Context context,
                                UpdateEngineFactory factory)
     {
         this.request = request ;
@@ -54,22 +54,12 @@ public class UpdateProcessorBase implements UpdateProcessor
     public void execute() {
         UpdateEngine uProc = factory.create(datasetGraph, inputBinding, context);
         uProc.startRequest();
-        
+
         try {
             UpdateSink sink = uProc.getUpdateSink();
             Iter.sendToSink(request.iterator(), sink);     // Will call close on sink if there are no exceptions
         } finally {
             uProc.finishRequest() ;
         }
-    }
-
-    @Override
-    public DatasetGraph getDatasetGraph() {
-        return datasetGraph ;
-    }
-
-    @Override
-    public Context getContext() {
-        return context ;
     }
 }

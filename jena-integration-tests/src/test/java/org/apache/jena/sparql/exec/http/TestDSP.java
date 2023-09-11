@@ -83,6 +83,28 @@ public class TestDSP {
         assertTrue(IsoMatcher.isomorphic(dataset, dsg));
     }
 
+    @Test
+    public void dsp_clear_01() {
+        // DELETE on the GSP endpoint would be the default graph.
+        // DELETE on the dataset endpoint is not supported by Fuseki - this does "CLER ALL"
+        DSP.service(env.datasetURL()).clear();
+    }
+
+    @Test
+    public void dsp_clear_02() {
+        DSP.service(dspServiceURL()).POST(dataset);
+        DSP.service(env.datasetURL()).clear();
+        DatasetGraph dsg = DSP.service(dspServiceURL()).GET();
+        assertFalse(dsg.find().hasNext());
+    }
+
+    @Test public void dsp_put_delete_01() {
+        DSP.service(dspServiceURL()).PUT(dataset);
+        DSP.service(dspServiceURL()).clear();
+        DatasetGraph dsg = DSP.service(dspServiceURL()).GET();
+        assertTrue(dsg.isEmpty());
+    }
+
     @Test public void dspHead_dataset_1() {
         // Base dspServiceURL(), default content type => N-Quads (dump format)
         String h = HttpOp.httpHead(dspServiceURL(), null);
@@ -113,27 +135,7 @@ public class TestDSP {
         assertEquals(ct, h);
     }
 
-    @Test
-    public void dsp_clear_01() {
-        // DELETE on the DSP endpoint would be the default graph.
-        // DELETE on the dataset endpoint is not supported by Fuseki - this does "CLER ALL"
-        DSP.service(env.datasetURL()).clear();
-    }
-
-    @Test
-    public void dsp_clear_02() {
-        DSP.service(dspServiceURL()).POST(dataset);
-        DSP.service(env.datasetURL()).clear();
-        DatasetGraph dsg = DSP.service(dspServiceURL()).GET();
-        assertFalse(dsg.find().hasNext());
-    }
-
-    @Test public void dsp_put_delete_01() {
-        DSP.service(dspServiceURL()).PUT(dataset);
-        DSP.service(dspServiceURL()).clear();
-        DatasetGraph dsg = DSP.service(dspServiceURL()).GET();
-        assertTrue(dsg.isEmpty());
-    }
+    
 
     // 404
 

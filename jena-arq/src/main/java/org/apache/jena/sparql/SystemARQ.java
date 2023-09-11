@@ -18,9 +18,6 @@
 
 package org.apache.jena.sparql;
 
-import java.util.Iterator ;
-
-import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.compose.Polyadic ;
@@ -32,10 +29,8 @@ import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.GraphView ;
 import org.apache.jena.sparql.graph.GraphWrapper ;
-import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Symbol ;
 
-@SuppressWarnings("deprecation")
 public class SystemARQ
 {
     // Various system wide settings, "constants" that might change e.g. test setups
@@ -124,19 +119,6 @@ public class SystemARQ
         if ( object instanceof Sync )
             ((Sync)object).sync() ;
     }
-
-    /**
-     * @deprected To be removed. This is a no-op.
-     */
-    @Deprecated(since="4.9.0")
-    public static void registerSubSystem(SystemInfo systemInfo)
-    { }
-
-    /**
-     * @deprected To be removed. This is a no-op.
-     */
-    @Deprecated(since="4.9.0")
-    public static Iterator<SystemInfo> registeredSubsystems() { return Iter.nullIterator(); }
 
     public static Symbol allocSymbol(String shortName) {
         // This must work even if initialization is happening.
