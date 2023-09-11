@@ -50,13 +50,6 @@ public class ExprUtils
 {
     static { JenaSystem.init(); }
 
-    /** Go from a node to an expression.
-     * @deprecated Use {@link ExprLib#nodeToExpr(Node)} instead*/
-    @Deprecated
-    public static Expr nodeToExpr(Node n) {
-        return ExprLib.nodeToExpr(n);
-    }
-
     public static Expr parse(String s) {
         return parse(s, ARQConstants.getGlobalPrefixMap());
     }

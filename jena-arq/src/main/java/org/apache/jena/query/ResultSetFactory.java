@@ -243,20 +243,6 @@ public class ResultSetFactory {
 
     /**
      * Read from an input stream which is the format of the SPARQL result set
-     * format in TSV.
-     *
-     * @param in
-     *            InputStream
-     * @return ResultSet
-     * @deprecated Use {@code ResultSetMgr.read(in, ResultSetLang.RS_TSV)}
-     */
-    @Deprecated
-    public static ResultSet fromTSV(InputStream in) {
-        return ResultSetMgr.read(in, ResultSetLang.RS_TSV);
-    }
-
-    /**
-     * Read from an input stream which is the format of the SPARQL result set
      * format in SSE.
      *
      * @param in

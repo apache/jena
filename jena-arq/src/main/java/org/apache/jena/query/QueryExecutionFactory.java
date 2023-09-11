@@ -19,28 +19,20 @@
 package org.apache.jena.query;
 import static java.util.Objects.requireNonNull;
 
-import java.util.List;
-
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.impl.WrappedGraph;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.GraphView;
-import org.apache.jena.sparql.engine.Plan;
-import org.apache.jena.sparql.engine.QueryEngineFactory;
-import org.apache.jena.sparql.engine.QueryEngineRegistry;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingLib;
-import org.apache.jena.sparql.engine.binding.BindingRoot;
 import org.apache.jena.sparql.exec.QueryExecDataset;
 import org.apache.jena.sparql.exec.QueryExecDatasetBuilder;
 import org.apache.jena.sparql.exec.QueryExecutionCompat;
-import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
 import org.apache.jena.sparql.graph.GraphWrapper;
 import org.apache.jena.sparql.syntax.Element;
-import org.apache.jena.sparql.util.Context;
 
 /**
  * {@code QueryExecutionFactory} provides some convenience operations for making {@link QueryExecution} objects.
@@ -70,7 +62,7 @@ public class QueryExecutionFactory
      * @param query Query
      * @return QueryExecution
      */
-    static public QueryExecution create(Query query) {
+    public static QueryExecution create(Query query) {
         checkArg(query);
         return make(query);
     }
@@ -81,7 +73,7 @@ public class QueryExecutionFactory
      * @param queryStr Query string
      * @return QueryExecution
      */
-    static public QueryExecution create(String queryStr) {
+    public static QueryExecution create(String queryStr) {
         checkArg(queryStr);
         return create(makeQuery(queryStr));
     }
@@ -93,7 +85,7 @@ public class QueryExecutionFactory
      * @param syntax Query syntax
      * @return QueryExecution
      */
-    static public QueryExecution create(String queryStr, Syntax syntax) {
+    public static QueryExecution create(String queryStr, Syntax syntax) {
         checkArg(queryStr);
         return create(makeQuery(queryStr, syntax));
     }
@@ -107,7 +99,7 @@ public class QueryExecutionFactory
      * @param dataset Target of the query
      * @return QueryExecution
      */
-    static public QueryExecution create(Query query, Dataset dataset) {
+    public static QueryExecution create(Query query, Dataset dataset) {
         // checkArg(dataset); // Allow null
         return make(query, dataset, null, null);
     }
@@ -119,7 +111,7 @@ public class QueryExecutionFactory
      * @param datasetGraph Target of the query
      * @return QueryExecution
      */
-    static public QueryExecution create(Query query, DatasetGraph datasetGraph) {
+    public static QueryExecution create(Query query, DatasetGraph datasetGraph) {
         requireNonNull(query, "Query is null");
         requireNonNull(datasetGraph, "DatasetGraph is null");
         return make(query, null, datasetGraph, null);
@@ -131,7 +123,7 @@ public class QueryExecutionFactory
      * @param dataset      Target of the query
      * @return QueryExecution
      */
-    static public QueryExecution create(String queryStr, Dataset dataset) {
+    public static QueryExecution create(String queryStr, Dataset dataset) {
         checkArg(queryStr);
         // checkArg(dataset); // Allow null
         return make(makeQuery(queryStr), dataset, null, null);
@@ -144,7 +136,7 @@ public class QueryExecutionFactory
      * @param dataset      Target of the query
      * @return QueryExecution
      */
-    static public QueryExecution create(String queryStr, Syntax syntax, Dataset dataset) {
+    public static QueryExecution create(String queryStr, Syntax syntax, Dataset dataset) {
         checkArg(queryStr);
         // checkArg(dataset); // Allow null
         return make(makeQuery(queryStr, syntax), dataset, null, null);
@@ -158,7 +150,7 @@ public class QueryExecutionFactory
      * @param model     Target of the query
      * @return QueryExecution
      */
-    static public QueryExecution create(Query query, Model model) {
+    public static QueryExecution create(Query query, Model model) {
         checkArg(query);
         checkArg(model);
         return make(query, model);
@@ -170,7 +162,7 @@ public class QueryExecutionFactory
      * @param model     Target of the query
      * @return QueryExecution
      */
-    static public QueryExecution create(String queryStr, Model model) {
+    public static QueryExecution create(String queryStr, Model model) {
         checkArg(queryStr);
         checkArg(model);
         return create(makeQuery(queryStr), model);
@@ -183,244 +175,43 @@ public class QueryExecutionFactory
      * @param model        Target of the query
      * @return QueryExecution
      */
-    static public QueryExecution create(String queryStr, Syntax lang, Model model) {
+    public static QueryExecution create(String queryStr, Syntax lang, Model model) {
         checkArg(queryStr);
         checkArg(model);
         return create(makeQuery(queryStr, lang), model);
     }
 
-    /** Create a QueryExecution to execute over the Model.
-     *
-     * @param query         Query string
-     * @param initialBinding    Any initial binding of variables
-     * @return QueryExecution
-     * @deprecated Use {QueryExecution.create()....build()}.
-     */
-    @Deprecated
-    static public QueryExecution create(Query query, QuerySolution initialBinding) {
-        checkArg(query);
-        QueryExecution qe = make(query, null, initialBinding);
-        return qe;
-    }
-
-    /** Create a QueryExecution given some initial values of variables.
-     *
-     * @param queryStr          QueryString
-     * @param initialBinding    Any initial binding of variables
-     * @return QueryExecution
-     * @deprecated Use {QueryExecution.create()....build()}.
-     */
-    @Deprecated
-    static public QueryExecution create(String queryStr, QuerySolution initialBinding) {
-        checkArg(queryStr);
-        return create(makeQuery(queryStr), initialBinding);
-    }
-
-    /** Create a QueryExecution given some initial values of variables.
-     *
-     * @param queryStr          QueryString
-     * @param syntax            Query language syntax
-     * @param initialBinding    Any initial binding of variables
-     * @return QueryExecution
-     */
-    static public QueryExecution create(String queryStr, Syntax syntax, QuerySolution initialBinding) {
-        checkArg(queryStr);
-        return create(makeQuery(queryStr, syntax), initialBinding);
-    }
-
-    /** Create a QueryExecution to execute over the Model,
-     * given some initial values of variables.
-     *
-     * @param query            Query
-     * @param model            Target of the query
-     * @param initialBinding    Any initial binding of variables
-     * @return QueryExecution
-     * @deprecated Use {QueryExecution.create()....build()}.
-     */
-    @Deprecated
-    static public QueryExecution create(Query query, Model model, QuerySolution initialBinding) {
-        checkArg(model);
-        return create(query, DatasetFactory.wrap(model), initialBinding);
-    }
-
-    /** Create a QueryExecution to execute over the Model,
-     * given some initial values of variables.
-     *
-     * @param queryStr         Query string
-     * @param model            Target of the query
-     * @param initialBinding    Any initial binding of variables
-     * @return QueryExecution
-     */
-    static public QueryExecution create(String queryStr, Model model, QuerySolution initialBinding) {
-        checkArg(queryStr);
-        checkArg(model);
-        return create(makeQuery(queryStr), model, initialBinding);
-    }
-
-    /** Create a QueryExecution to execute over the Model,
-     * given some initial values of variables.
-     *
-     * @param queryStr         Query string
-     * @param syntax           Query language
-     * @param model            Target of the query
-     * @param initialBinding    Any initial binding of variables
-     * @return QueryExecution
-     * @deprecated Use {QueryExecution.create()....build()}.
-     */
-    @Deprecated
-    static public QueryExecution create(String queryStr, Syntax syntax, Model model, QuerySolution initialBinding) {
-        checkArg(queryStr);
-        return create(makeQuery(queryStr, syntax), model, initialBinding);
-    }
-
     /** Create a QueryExecution over a Dataset given some initial values of variables.
+     * Use {@code QueryExecution#create(Dataset).query(Query).substitution(QuerySolution).build()}.
      *
      * @param query            Query
      * @param dataset          Target of the query
      * @param initialBinding    Any initial binding of variables
      * @return QueryExecution
+     * @deprecated Use {@code QueryExecution#dataset(Dataset).query(Query).substitution(QuerySolution).build()}.
      */
-    static public QueryExecution create(Query query, Dataset dataset, QuerySolution initialBinding) {
+    @Deprecated
+    public static QueryExecution create(Query query, Dataset dataset, QuerySolution initialBinding) {
         checkArg(query);
-        return make(query, dataset, initialBinding);
+        return QueryExecution.dataset(dataset).query(query).substitution(initialBinding).build();
     }
 
     /** Create a QueryExecution over a Dataset given some initial values of variables.
+     * Use {@code QueryExecution#create(Dataset).query(Query).substitution(QuerySolution).build()}.
      *
-     * @param queryStr         Query string
-     * @param dataset          Target of the query
-     * @param initialBinding    Any initial binding of variables
+     * @param query            Query
+     * @param model            Target of the query
+     * @param initialBinding   Any initial binding of variables
      * @return QueryExecution
-     * @deprecated Use {QueryExecution.create()....build()}.
+     * @deprecated Use {@code QueryExecution#model(Model).query(Query).substitution(QuerySolution).build()}.
      */
     @Deprecated
-    static public QueryExecution create(String queryStr, Dataset dataset, QuerySolution initialBinding) {
-        checkArg(queryStr);
-        return create(makeQuery(queryStr), dataset, initialBinding);
+    public static QueryExecution create(Query query, Model model, QuerySolution initialBinding) {
+        checkArg(query);
+        return QueryExecution.model(model).query(query).substitution(initialBinding).build();
     }
 
-    /** Create a QueryExecution over a Dataset given some initial values of variables.
-     *
-     * @param queryStr         Query string
-     * @param dataset          Target of the query
-     * @param initialBinding    Any initial binding of variables
-     * @return QueryExecution
-     * @deprecated Use {QueryExecution.create()....build()}.
-     */
-    @Deprecated
-    static public QueryExecution create(String queryStr, Syntax syntax, Dataset dataset, QuerySolution initialBinding) {
-        QueryExecution.create();
-        checkArg(queryStr);
-        return create(makeQuery(queryStr, syntax), dataset, initialBinding);
-    }
-
-    // ---------------- Remote query execution
-
-    /**
-     * Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param serviceURL   URL of the remote service
-     * @param query     Query string to execute
-     * @return QueryExecution
-     * @deprecated Use {@code QueryExecution.service(serviceURL).query(query).build()} or {@link QueryExecutionHTTP#service}
-     */
-    @Deprecated
-    static public QueryExecutionHTTP sparqlService(String serviceURL, Query query) {
-        return QueryExecution.service(serviceURL).query(query).build();
-    }
-
-    /**
-     * Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param serviceURL   URL of the remote service
-     * @param query        Query string to execute
-     * @return QueryExecution
-     * @deprecated Use {@code QueryExecution.service(serviceURL).query(query).build()} or {@link QueryExecutionHTTP#service}
-     */
-    @Deprecated
-    static public QueryExecutionHTTP sparqlService(String serviceURL, String query) {
-        return QueryExecution.service(serviceURL).query(query).build();
-    }
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param serviceURL    URL of the remote service
-     * @param query         Query string to execute
-     * @param defaultGraph  URI of the default graph
-     * @return QueryExecution
-     * @deprecated Use {QueryExecutionHTTP.create()....build()}.
-     */
-    @Deprecated
-    static public QueryExecution sparqlService(String serviceURL, String query, String defaultGraph) {
-        return sparqlService(serviceURL, query, List.of(defaultGraph), null);
-    }
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param serviceURL        URL of the remote service
-     * @param query             Query string to execute
-     * @param defaultGraphURIs  List of URIs to make up the default graph
-     * @param namedGraphURIs    List of URIs to make up the named graphs
-     * @return QueryExecution
-     * @deprecated Use {QueryExecutionHTTP.create()....build()}.
-     */
-    @Deprecated
-    static public QueryExecutionHTTP sparqlService(String serviceURL, Query query, List<String> defaultGraphURIs, List<String> namedGraphURIs) {
-        return sparqlService(serviceURL, query.toString(), defaultGraphURIs, namedGraphURIs);
-    }
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param serviceURL        URL of the remote service
-     * @param query             Query string to execute
-     * @param defaultGraphURIs  List of URIs to make up the default graph
-     * @param namedGraphURIs    List of URIs to make up the named graphs
-     * @return QueryExecution
-     * @deprecated Use {QueryExecutionHTTP.create()....build()}.
-     */
-    @Deprecated
-    static public QueryExecutionHTTP sparqlService(String serviceURL, String query, List<String> defaultGraphURIs, List<String> namedGraphURIs) {
-        QueryExecutionHTTPBuilder builder = createExecutionHTTP(serviceURL, query);
-        if ( defaultGraphURIs != null )
-            defaultGraphURIs.forEach(builder::addDefaultGraphURI);
-        if ( namedGraphURIs != null )
-            namedGraphURIs.forEach(builder::addNamedGraphURI);
-        return builder.build();
-    }
-
-    /** Create a QueryExecution that will access a SPARQL service over HTTP
-     * @param serviceURL    URL of the remote service
-     * @param query         Query to execute
-     * @param defaultGraph  URI of the default graph
-     * @return QueryExecution
-     * @deprecated Use {QueryExecutionHTTP.create()....build()}.
-     */
-    @Deprecated
-    static public QueryExecutionHTTP sparqlService(String serviceURL, Query query, String defaultGraph) {
-        return sparqlService(serviceURL, query.toString(), List.of(defaultGraph), null);
-    }
-
-    /** Create a service request for remote execution over HTTP.
-     * allows various HTTP specific parameters to be set.
-     * @param service Endpoint URL
-     * @param query Query
-     * @return QueryExecutionHTTP
-     * @deprecated Use the builder directly {@code QueryExecutionHTTP.create()....build()}
-     */
-    @Deprecated
-    static public QueryExecutionHTTPBuilder createServiceRequest(String service, Query query) {
-        return createExecutionHTTP(service, query.toString());
-    }
-
-    // All createServiceRequest calls
-    static private QueryExecutionHTTPBuilder createExecutionHTTP(String serviceURL, String queryStr) {
-        return QueryExecutionHTTP.create().endpoint(serviceURL).queryString(queryStr);
-    }
-
-    // -----------------
-
-    static public Plan createPlan(Query query, DatasetGraph dataset, Binding input, Context context) {
-        return makePlan(query, dataset, input, context);
-    }
-
-    public static Plan createPlan(Query query, DatasetGraph dataset, Binding input) {
-        return makePlan(query, dataset, input, null);
-    }
+    // ---------------- Internal routines
 
     private static Query toQuery(Element pattern) {
         Query query = QueryFactory.make();
@@ -429,19 +220,6 @@ public class QueryExecutionFactory
         query.setQueryResultStar(true);
         return query;
     }
-
-    private static Plan makePlan(Query query, DatasetGraph dataset, Binding input, Context context)
-    {
-        if ( context == null )
-            context = ARQ.getContext().copy();
-        if ( input == null )
-            input = BindingRoot.create();
-        QueryEngineFactory f = QueryEngineRegistry.findFactory(query, dataset, context);
-        if ( f == null )
-            return null;
-        return f.create(query, dataset, input, context);
-    }
-    // ---------------- Internal routines
 
     static private Query makeQuery(String queryStr) {
         return QueryFactory.create(queryStr);

@@ -26,12 +26,13 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.sparql.util.Context;
 
 /** Implementation root for custom function evaluation. */
 public abstract class FunctionBase implements Function {
 
     @Override
-    public final void build(String uri, ExprList args) {
+    public void build(String uri, ExprList args, Context context) {
         // Rename for legacy reasons.
         checkBuild(uri, args) ;
     }

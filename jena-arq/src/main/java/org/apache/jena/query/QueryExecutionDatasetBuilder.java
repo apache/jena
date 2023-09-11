@@ -26,11 +26,9 @@ import java.util.concurrent.TimeUnit;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingLib;
-import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.QueryExecDatasetBuilder;
 import org.apache.jena.sparql.exec.QueryExecutionCompat;
 import org.apache.jena.sparql.util.Context;
@@ -66,14 +64,6 @@ public class QueryExecutionDatasetBuilder implements QueryExecutionBuilder {
     @Override
     public QueryExecutionDatasetBuilder query(String queryString, Syntax syntax) {
         builder.query(queryString, syntax);
-        return this;
-    }
-
-    /** @deprecated Use {@link QueryExec#dataset} */
-    @Deprecated
-    public QueryExecutionDatasetBuilder dataset(DatasetGraph dsg) {
-        this.dataset = DatasetFactory.wrap(dsg);
-        builder.dataset(dsg);
         return this;
     }
 

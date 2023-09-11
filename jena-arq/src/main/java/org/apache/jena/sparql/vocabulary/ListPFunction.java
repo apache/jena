@@ -50,23 +50,6 @@ public class ListPFunction {
     /** <p>Membership relationship of a list [subject] to a member [object] c.f. rdfs:member</p> */
     public static final Property member = m_model.createProperty( NS+"member" );
 
-    /** <p>Length relationship of a list [subject] to a length [object]</p>
-     * @deprecated Use {@link #length}
-     */
-    @Deprecated
-    public static final Property lengthJ2 = m_model.createProperty( NS_J2+"length" );
-
-    /** <p>Index relationship of a list [subject] to a query list (index member)</p>
-     * @deprecated Use {@link #index}
-     */
-    @Deprecated
-    public static final Property indexJ2 = m_model.createProperty( NS_J2+"index" );
-
-    /** <p>Membership relationship of a list [subject] to a member [object] c.f. rdfs:member</p> */
-    @Deprecated
-    public static final Property memberJ2 = m_model.createProperty( NS_J2+"member" );
-
-
     /** list:member as a node */
     public static final Node nListMember = member.asNode() ;
 

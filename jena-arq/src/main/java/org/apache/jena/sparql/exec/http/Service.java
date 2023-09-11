@@ -68,8 +68,6 @@ public class Service {
 //    //public static final Symbol httpQueryCompression    = ARQ.httpQueryCompression;
     public static final Symbol httpQueryClient          = ARQ.httpQueryClient;
     public static final Symbol httpServiceSendMode      = ARQ.httpServiceSendMode;
-    @Deprecated(since = "4.8.0")
-    public static final Symbol httpServiceContext    = ARQ.httpServiceContext;
 //    // No connection timeout which is now in HttpClient
     public static final Symbol httpQueryTimeout         = ARQ.httpQueryTimeout;
 

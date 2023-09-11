@@ -267,12 +267,6 @@ public class Item extends ItemLocation {
         return ((Number)(getNode().getLiteralValue())).longValue();
     }
 
-    /** @deprecated Use {@link #asLong} */
-    @Deprecated
-    public long asInteger() {
-        return asLong();
-    }
-
     // Get an integer-like value, ignoring typing
     public long asLong() {
         if ( isNode() ) {

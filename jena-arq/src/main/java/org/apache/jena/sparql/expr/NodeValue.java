@@ -462,12 +462,6 @@ public abstract class NodeValue extends ExprNode
         return NodeValueCmp.sameValueAs(nv1, nv2);
     }
 
-    /** @deprecated Use {@link #sameValueAs(NodeValue, NodeValue)}. */
-    @Deprecated
-    public static boolean sameAs(NodeValue nv1, NodeValue nv2) {
-        return sameValueAs(nv1, nv2);
-    }
-
     /**
      * Return true if the two Nodes are known to be different, return false if the
      * two Nodes are known to be the same, else throw ExprEvalException
@@ -476,24 +470,12 @@ public abstract class NodeValue extends ExprNode
         return notSameValueAs(NodeValue.makeNode(n1), NodeValue.makeNode(n2));
     }
 
-    /** @deprecated Use {@link #sameValueAs(NodeValue, NodeValue)}. */
-    @Deprecated
-    public static boolean notSameAs(Node n1, Node n2) {
-        return notSameValueAs(n1, n2);
-    }
-
     /**
      * Return true if the two NodeValues are known to be different, return false if
      * the two NodeValues are known to be the same, else throw ExprEvalException
      */
     public static boolean notSameValueAs(NodeValue nv1, NodeValue nv2) {
         return NodeValueCmp.notSameValueAs(nv1, nv2);
-    }
-
-    /** @deprecated Use {@link #sameValueAs(NodeValue, NodeValue)}. */
-    @Deprecated
-    public static boolean notSameAs(NodeValue nv1, NodeValue nv2) {
-        return notSameValueAs(nv1, nv2);
     }
 
     // ----------------------------------------------------------------

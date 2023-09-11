@@ -75,15 +75,6 @@ public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
 //        return GraphView.createNamedGraph(this, graphNode) ;
 //    }
 
-    // Default implementations - copy based.
-
-    @Deprecated
-    @Override
-    public void setDefaultGraph(Graph graph) {
-        getDefaultGraph().clear();
-        GraphUtil.addInto(getDefaultGraph(), graph) ;
-    }
-
     @Override
     public void addGraph(Node graphName, Graph graph) {
         GraphUtil.addInto(getGraph(graphName), graph) ;

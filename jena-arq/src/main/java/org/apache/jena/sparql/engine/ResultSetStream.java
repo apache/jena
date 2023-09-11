@@ -57,13 +57,6 @@ public class ResultSetStream implements ResultSet
         return ResultSet.adapt(RowSetStream.create(resultVars, iter));
     }
 
-    /** @deprecated Use {@link #create} */
-    @Deprecated
-    public ResultSetStream(List<String> resultVars, Model m, Iterator<Binding> iter) {
-        this(57, resultVars, m, iter);
-    }
-
-
     protected ResultSetStream(int dummy, List<String> resultVars, Model m, Iterator<Binding> iter) {
         this.queryExecutionIter = iter;
         this.resultVars = resultVars;

@@ -53,10 +53,6 @@ public class UpdateLoad extends Update
 
     public String  getSource()      { return source; }
     public Node    getDest()        { return dest; }
-    /**
-     * @deprecated use {@link #isSilent}
-     */
-    @Deprecated
     public boolean getSilent()      { return isSilent(); }
     public boolean isSilent()       { return silent; }
 

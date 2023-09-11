@@ -111,16 +111,6 @@ public class ModelStore {
         return this;
     }
 
-    /**
-     * Send request for the dataset. This is "no GSP naming".
-     * @deprecated This call is a no-op.
-     */
-    @Deprecated
-    public ModelStore dataset() {
-        //gsp().dataset();
-        return this;
-    }
-
     /** Set the accept header on GET requests. Optional; if not set, a system default is used. */
     public ModelStore acceptHeader(String acceptHeader) {
         gsp().acceptHeader(acceptHeader);

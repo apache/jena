@@ -65,7 +65,8 @@ public class DescribeBNodeClosure implements DescribeHandler {
 
         QuerySolutionMap qsm = new QuerySolutionMap();
         qsm.add("s", r);
-        try (QueryExecution qExec = QueryExecutionFactory.create(query, dataset, qsm)) {
+        try ( QueryExecution qExec = QueryExecution
+                    .dataset(dataset).query(query).substitution(qsm).build() ) {
             ResultSet rs = qExec.execSelect();
             for ( ; rs.hasNext() ; ) {
                 QuerySolution qs = rs.next();

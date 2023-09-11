@@ -70,18 +70,13 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
      * Any new graphs needed are separate from the original dataset and created according
      * to the {@link GraphMaker}.
      */
-    public static DatasetGraph cloneStructure(DatasetGraph dsg, GraphMaker graphMaker) {
-        DatasetGraphMapLink dsg2 = new DatasetGraphMapLink((Graph)null, graphMaker);
-        linkGraphs(dsg, dsg2);
-        return dsg2;
-    }
-
-    private static void linkGraphs(DatasetGraph srcDsg, DatasetGraphMapLink dstDsg) {
-        dstDsg.setDefaultGraph(srcDsg.getDefaultGraph());
+    public static DatasetGraph cloneStructure(DatasetGraph srcDsg, GraphMaker graphMaker) {
+        DatasetGraphMapLink dsg2 = new DatasetGraphMapLink(srcDsg.getDefaultGraph(), graphMaker);
         for ( Iterator<Node> names = srcDsg.listGraphNodes(); names.hasNext(); ) {
             Node gn = names.next();
-            dstDsg.addGraph(gn, srcDsg.getGraph(gn));
+            dsg2.addGraph(gn, srcDsg.getGraph(gn));
         }
+        return dsg2;
     }
 
     /** A {@code DatasetGraph} that uses the given graph for the default graph
@@ -93,9 +88,13 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
 
     // This is the root constructor.
     /*package*/DatasetGraphMapLink(Graph dftGraph, GraphMaker graphMaker) {
+        if ( dftGraph == null )
+            // Always have a default graph of some kind.
+            dftGraph = GraphZero.instance();
+        this.prefixes = Prefixes.adapt(dftGraph.getPrefixMapping());
         this.graphMaker = graphMaker;
-        this.setDefaultGraph(dftGraph);
-        txnDsg2Graph = new TxnDataset2Graph(dftGraph);
+        this.defaultGraph = dftGraph;
+        txnDsg2Graph = new TxnDataset2Graph(defaultGraph);
         txn = txnDsg2Graph;
     }
 
@@ -170,17 +169,6 @@ public class DatasetGraphMapLink extends DatasetGraphCollection
         Graph g = graphs.remove(graphName);
         if ( g != null && txnDsg2Graph != null )
             txnDsg2Graph.removeGraph(g);
-    }
-
-    @Override
-    public void setDefaultGraph(Graph g) {
-        if ( g == null )
-            // Always have a default graph of some kind.
-            g = GraphZero.instance();
-        if ( txnDsg2Graph != null )
-            txnDsg2Graph.addGraph(g);
-        defaultGraph = g;
-        prefixes = Prefixes.adapt(g.getPrefixMapping());
     }
 
     @Override
