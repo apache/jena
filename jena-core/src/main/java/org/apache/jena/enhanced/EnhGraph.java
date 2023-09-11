@@ -120,13 +120,4 @@ public class EnhGraph
     protected Personality<RDFNode> getPersonality() {
         return personality;
     }
-
-    /**
-     * Set the cache controller object for this graph
-     *
-     * @param cc The cache controller
-     * @deprecated This is a no-op and the method will be removed.
-     */
-    @Deprecated
-    public void setNodeCache(org.apache.jena.atlas.lib.Cache<Node, RDFNode> cc) {}
 }
