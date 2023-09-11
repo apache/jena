@@ -209,7 +209,6 @@ public class TestFileUtils extends TestCase {
 	}
 
 	void checkToFilename(String url, String fn) {
-		@SuppressWarnings("deprecation")
         String t = FileUtils.toFilename(url);
 		assertEquals("Wrong: " + t + " != " + fn, t, fn);
 	}

@@ -69,7 +69,8 @@ public class NodeFactory {
         return new Node_Marker(name);
     }
 
-    /** make a literal node with the specified literal value
+    /**
+     * Make a literal node with the specified literal value
      * @deprecated Making nodes directly from {@link LiteralLabel} may be removed.
      */
     @Deprecated

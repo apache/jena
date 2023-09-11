@@ -112,9 +112,7 @@ public class FileUtils
 
     /**
      * Turn a file: URL or file name into a plain file name
-     * @deprecated Use IRILib.IRIToFilename.
      */
-    @Deprecated
     public static String toFilename(String filenameOrURI)
     {
         // Retained only because of OntModel -> FileManager -> LocatorFile.
@@ -183,7 +181,7 @@ public class FileUtils
      */
     public static boolean isFile(String name)
     {
-        String scheme = getScheme(name) ;
+        String scheme = IRIs.scheme(name) ;
 
         if ( scheme == null  )
             // No URI scheme - treat as filename
@@ -209,26 +207,6 @@ public class FileUtils
     public static boolean isURI(String name)
     {
         return (IRIs.scheme(name) != null) ;
-    }
-
-    /**
-     * Get the URI scheme at the start of the string. This is the substring up to, and
-     * excluding, the first ":" if it conforms to the syntax requirements. Return null
-     * if it does not look like a scheme.
-     * <p>
-     * The <a href="https://tools.ietf.org/html/rfc3986#appendix-A">RFC 3986 URI
-     * grammar</a> defines {@code scheme} as:
-     *
-     * <pre>
-     * URI         = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
-     * scheme      = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
-     * ...
-     * </pre>
-     * @deprecated Use {@link IRIs#scheme}
-     */
-    @Deprecated
-    public static String getScheme(String uri) {
-        return IRIs.scheme(uri);
     }
 
     /**
