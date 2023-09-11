@@ -2094,15 +2094,6 @@ public class OntModelImpl extends ModelCom implements OntModel
     }
 
     /**
-         @deprecated use getImportModelMaker instead.
-    */
-    @Override
-    @Deprecated
-    public ModelMaker getModelMaker() {
-        return getImportModelMaker();
-    }
-
-    /**
      * <p>Read statements into the model from the given source, and then load
      * imported ontologies (according to the document manager policy).</p>
      * @param uri URI to read from, may be mapped to a local source by the document manager
@@ -2258,33 +2249,11 @@ public class OntModelImpl extends ModelCom implements OntModel
 
 
     /**
-     * <p>Answer an iterator over the ontologies that this ontology imports,
-     * each of which will have been wrapped as an ontology model using the same
-     * {@link OntModelSpec} as this model.  If this model has no imports,
-     * the iterator will be non-null but will not have any values.</p>
-     * @return An iterator, each value of which will be an <code>OntModel</code>
-     * representing an imported ontology.
-     * @deprecated This method has been re-named to <code>listSubModels</code>,
-     * but note that to obtain the same behaviour as <code>listImportedModels</code>
-     * from Jena 2.4 and earlier, callers should invoke {@link #listSubModels(boolean)}
-     * with parameter <code>true</code>.
-     * @see #listSubModels()
-     * @see #listSubModels(boolean)
-     */
-    @Override
-    @Deprecated
-    public ExtendedIterator<OntModel> listImportedModels() {
-        return listSubModels( true );
-    }
-
-
-    /**
      * <p>Answer an iterator over the ontology models that are sub-models of
      * this model. Sub-models are used, for example, to represent composite
      * documents such as the imports of a model. So if ontology A imports
      * ontologies B and C, each of B and C will be available as one of
-     * the sub-models of the model containing A. This method replaces the
-     * older {@link #listImportedModels}. Note that to fully replicate
+     * the sub-models of the model containing A. Note that to fully replicate
      * the behaviour of <code>listImportedModels</code>, the
      * <code>withImports</code> flag must be set to true. Each model
      * returned by this method will have been wrapped as an ontology model using the same
@@ -2325,8 +2294,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * of the <code>withImports</code> flag. This zero-argument form
      * of <code>listSubModels</code> sets <code>withImports</code> to
      * false, so the returned models will not themselves contain imports.
-     * This behaviour differs from the zero-argument method
-     * {@link #listImportedModels()} in Jena 2.4 an earlier.</p>
+     * </p>
      * @return An iterator, each value of which will be an <code>OntModel</code>
      * representing a sub-model of this ontology.
      * @see #listSubModels(boolean)

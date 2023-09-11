@@ -238,12 +238,6 @@ public class ResourceFactory {
          */
         public Literal createStringLiteral( String string );
 
-        /** Use createStringLiteral */
-        @Deprecated
-        default public Literal createPlainLiteral( String string ) {
-            return createStringLiteral( string );
-        }
-
         /**
          * Answer a plain (untyped) literal with no language and the given content.
          *
