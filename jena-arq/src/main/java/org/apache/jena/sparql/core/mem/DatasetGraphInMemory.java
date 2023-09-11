@@ -331,14 +331,6 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
     }
 
     @Override
-    public void setDefaultGraph(final Graph g) {
-        mutate(graph -> {
-            defaultGraph().clear();
-            graph.find().forEachRemaining(defaultGraph()::add);
-        }, g);
-    }
-
-    @Override
     public Graph getGraph(final Node graphNode) {
         return GraphView.createNamedGraph(this, graphNode);
     }

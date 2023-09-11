@@ -36,7 +36,6 @@ import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.ARQException;
-import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.graph.GraphFactory;
 
 /**
@@ -126,16 +125,6 @@ public class GSP extends StoreProtocol<GSP> {
         return this;
     }
 
-    /**
-     * Send request for the dataset. This is "no GSP naming".
-     * @deprecated Use {@link DSP}.
-     */
-    @Deprecated
-    public GSP dataset() {
-        clearOperation();
-        return this;
-    }
-
     private void clearOperation() {
         this.defaultGraph = false;
         this.graphName = null;
@@ -175,6 +164,8 @@ public class GSP extends StoreProtocol<GSP> {
      * Content-Type to use if it is not already set.
      * <p>
      * This operation does not parse the file.
+     * <p>
+     * If the data may have quads (named graphs), use {@link DSP#POST(String)}.
      */
     public void POST(String file) {
         validateGraphOperation();
@@ -224,7 +215,7 @@ public class GSP extends StoreProtocol<GSP> {
      * <p>
      * This operation does not parse the file.
      * <p>
-     * If the data may have quads (named graphs), use {@link #putDataset(String)}.
+     * If the data may have quads (named graphs), use {@link DSP#PUT(String)}.
      */
     public void PUT(String file) {
         validateGraphOperation();
@@ -342,61 +333,6 @@ public class GSP extends StoreProtocol<GSP> {
             throw exception("A graph name specified for dataset operation");
         if ( ! datasetGraph )
             throw exception("Dataset request not specified for dataset operation");
-    }
-
-    // Redirect
-    /** @deprecated Use {@link DSP#GET()} */
-    @Deprecated
-    public DatasetGraph getDataset() {
-        internalDataset();
-        validateDatasetOperation();
-        return newDSP().GET();
-    }
-
-    /** @deprecated Use {@link DSP#POST(String)} */
-    @Deprecated
-    public void postDataset(String file) {
-        internalDataset();
-        validateDatasetOperation();
-        newDSP().POST(file);
-    }
-
-    /** @deprecated Use {@link DSP#POST(DatasetGraph)} */
-    @Deprecated
-    public void postDataset(DatasetGraph dataset) {
-        internalDataset();
-        validateDatasetOperation();
-        newDSP().POST(dataset);
-    }
-
-    /** @deprecated Use {@link DSP#PUT(String)} */
-    @Deprecated
-    public void putDataset(String file) {
-        internalDataset();
-        validateDatasetOperation();
-        newDSP().PUT(file);
-    }
-
-    /** @deprecated Use {@link DSP#PUT(DatasetGraph)} */
-    @Deprecated
-    public void putDataset(DatasetGraph dataset) {
-        internalDataset();
-        validateDatasetOperation();
-        newDSP().PUT(dataset);
-    }
-
-    /** @deprecated Use {@link DSP#clear()} */
-    @Deprecated
-    public void clearDataset() {
-        internalDataset();
-        validateDatasetOperation();
-        newDSP().clear();
-    }
-
-    private DSP newDSP() {
-        DSP dsp = new DSP();
-        dsp.copySetup(this);
-        return dsp;
     }
 
     /** Send a file of triples to a URL. */

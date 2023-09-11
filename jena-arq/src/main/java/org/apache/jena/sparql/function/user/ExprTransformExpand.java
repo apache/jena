@@ -76,7 +76,7 @@ public class ExprTransformExpand extends ExprTransformCopy {
             }
 
             // Expand the function
-            uFunc.build(def.getUri(), subArgs);
+            uFunc.build(def.getUri(), subArgs, null);
             return uFunc.getActualExpr();
         } else {
             return super.transform(func, args);

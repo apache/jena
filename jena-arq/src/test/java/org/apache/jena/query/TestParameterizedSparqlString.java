@@ -1505,7 +1505,6 @@ public class TestParameterizedSparqlString {
         pss.setLiteral("var2", "b");
 
         // Figure out which variable will be injected first
-        @SuppressWarnings("deprecation")
         String first = pss.getVars().next();
         String second = first.equals("var") ? "var2" : "var";
 
@@ -1579,7 +1578,6 @@ public class TestParameterizedSparqlString {
         pss.setLiteral("var2", "b");
 
         // Figure out which variable will be injected first
-        @SuppressWarnings("deprecation")
         String first = pss.getVars().next();
         String second = first.equals("var") ? "var2" : "var";
 

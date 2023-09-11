@@ -288,7 +288,6 @@ public abstract class JenaStatement implements Statement {
         }
     }
 
-    @SuppressWarnings("deprecation")
     private boolean executeQuery(Query q) throws SQLException {
         updateCount = NOT_AN_UPDATE;
         if (this.isClosed())
@@ -332,12 +331,7 @@ public abstract class JenaStatement implements Statement {
             }
 
             // Create the query execution
-            QueryExecution qe = this.createQueryExecution(q);
-
-            // Manipulate the query execution if appropriate
-            if (this.timeout > NO_LIMIT) {
-                qe.setTimeout(this.timeout, TimeUnit.SECONDS, this.timeout, TimeUnit.SECONDS);
-            }
+            QueryExecution qe = this.createQueryExecution(q, this.timeout, TimeUnit.SECONDS);
 
             // Return the appropriate result set type
             if (q.isSelectType()) {
@@ -418,11 +412,13 @@ public abstract class JenaStatement implements Statement {
      *
      * @param q
      *            Query
+     * @param seconds
+     * @param timeout
      * @return Query Execution
      * @throws SQLException
      *             Thrown if there is a problem creating a query execution
      */
-    protected abstract QueryExecution createQueryExecution(Query q) throws SQLException;
+    protected abstract QueryExecution createQueryExecution(Query q, int timeout, TimeUnit timeUnit) throws SQLException;
 
     private int executeUpdate(UpdateRequest u) throws SQLException {
         updateCount = UNKNOWN_UPDATE_COUNT;

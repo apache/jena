@@ -181,11 +181,6 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
     }
 
     @Override
-    public void setDefaultGraph(Graph g) {
-        unsupportedMethod(this, "setDefaultGraph");
-    }
-
-    @Override
     public void addGraph(Node graphName, Graph graph) {
         unsupportedMethod(this, "addGraph");
     }

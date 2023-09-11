@@ -19,6 +19,7 @@
 package org.apache.jena.query;
 
 import java.net.http.HttpClient;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.atlas.lib.Version;
 import org.apache.jena.http.sys.HttpRequestModifier;
@@ -190,8 +191,7 @@ public class ARQ
      * <li>A string, e.g. "1000", parsed as a number</li>
      * <li>A string, as two numbers separated by a comma, e.g. "500,10000" parsed as two numbers</li>
      * </ul>
-     * @see QueryExecution#setTimeout(long)
-     * @see QueryExecution#setTimeout(long,long)
+     * @see QueryExecutionBuilder#timeout(long, TimeUnit)
      */
     public static final Symbol queryTimeout = SystemARQ.allocSymbol("queryTimeout");
 
@@ -296,13 +296,6 @@ public class ARQ
 
     /** {@link HttpClient} to use. */
     public static final Symbol httpQueryClient       = SystemARQ.allocSymbol("httpQueryClient");
-    /**
-     * Context to use to set up the SERVICE call.
-     * @deprecated This no longer does anything. The context comes from the query
-     *     execution settings or the dataset settings.
-     */
-    @Deprecated(since="4.9.0")
-    public static final Symbol httpServiceContext    = SystemARQ.allocSymbol("httpServiceContext");
 
     /**
      * Operation timeout.

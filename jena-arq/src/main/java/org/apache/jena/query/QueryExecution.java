@@ -19,14 +19,12 @@
 package org.apache.jena.query;
 
 import java.util.Iterator;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
 import org.apache.jena.sparql.util.Context;
@@ -85,30 +83,6 @@ public interface QueryExecution extends AutoCloseable
 
     /** Create a local execution builder */
     public static QueryExecutionDatasetBuilder create() { return QueryExecutionDatasetBuilder.create(); }
-
-
-    /** Set the initial association of variables and values.
-     * May not be supported by all QueryExecution implementations.
-     * <p>
-     * The preferred way is to use {@link QueryExecutionDatasetBuilder#substitution(QuerySolution)}
-     * which is supported uniformly for local and remote queries.
-     *
-     * @param binding
-     * @deprecated Use {@link QueryExecutionDatasetBuilder} and set the initial binding before building.
-     */
-    @Deprecated
-    public void setInitialBinding(QuerySolution binding) ;
-
-    /** Set the initial association of variables and values.
-     * May not be supported by all QueryExecution implementations.
-     * <p>
-     * The preferred way is to use {@link QueryExecutionDatasetBuilder#substitution(Binding)}
-     * which is supported uniformly for local and remote queries.
-     * @param binding
-     * @deprecated Use {@link QueryExecutionDatasetBuilder} and set the initial binding before building.
-     */
-    @Deprecated
-    void setInitialBinding(Binding binding);
 
     /**
      * The dataset against which the query will execute.
@@ -268,41 +242,6 @@ public interface QueryExecution extends AutoCloseable
      * @return boolean
      */
     public boolean isClosed();
-
-    /** Set a timeout on the query execution.
-	 * Processing will be aborted after the timeout (which starts when the appropriate exec call is made).
-	 * Not all query execution systems support timeouts.
-	 * A timeout of less than zero means no timeout.
-	 *
-	 * @see QueryExecutionDatasetBuilder#timeout
-	 * @deprecated Use {@code QueryExecution.create().timeout(....)...}
-	 */
-    @Deprecated
-	public void setTimeout(long timeout, TimeUnit timeoutUnits) ;
-
-	/** Set time, in milliseconds
-     * @see QueryExecutionDatasetBuilder#timeout
-     * @deprecated Use {@code QueryExecution.create().timeout(....)...}
-	 */
-    @Deprecated
-	public void setTimeout(long timeout) ;
-
-	/** Set timeouts on the query execution; the first timeout refers to time to first result,
-	 * the second refers to overall query execution after the first result.
-	 * Processing will be aborted if a timeout expires.
-	 * Not all query execution systems support timeouts.
-	 * A timeout of less than zero means no timeout; this can be used for timeout1 or timeout2.
-	 * @deprecated Use {@code QueryExecution.create().initialTimeout(timeout1, timeUnit1).overallTimeout(timeout, timeUnit2)...}
-	 */
-    @Deprecated
-	public void setTimeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2) ;
-
-    /** Set time, in milliseconds
-     * @see #setTimeout(long, TimeUnit, long, TimeUnit)
-     * @deprecated Use {@code QueryExecution.create().initialTimeout(timeout1, timeUnit).overallTimeout(timeout, timeUnit)...}
-     */
-    @Deprecated
-    public void setTimeout(long timeout1, long timeout2) ;
 
     /** Return the first timeout (time to first result), in milliseconds: negative if unset */
     public long getTimeout1() ;

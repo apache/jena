@@ -86,7 +86,11 @@ import org.apache.jena.vocabulary.RDFS;
         QuerySolutionMap initValues = null;
         if ( varName != null && value != null )
             initValues = querySolution(varName, value);
-        try ( QueryExecution qExec = QueryExecutionFactory.create(query, ds, initValues) ) {
+        try ( QueryExecution qExec = QueryExecution
+                    .dataset(ds)
+                    .query(query)
+                    .substitution(initValues)
+                    .build() ) {
             return ResultSetFactory.copyResults(qExec.execSelect());
         }
     }

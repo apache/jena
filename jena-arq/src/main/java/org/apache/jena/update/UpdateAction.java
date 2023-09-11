@@ -409,7 +409,7 @@ public class UpdateAction
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, Binding inputBinding, String baseURI, Syntax syntax)
     {
         @SuppressWarnings("deprecation")
-        UpdateProcessorStreaming uProc = UpdateExecutionFactory.createStreaming(dataset, inputBinding) ;
+        UpdateProcessorStreaming uProc = UpdateStreaming.createStreaming(dataset, inputBinding) ;
         if (uProc == null)
             throw new ARQException("No suitable update procesors are registered/able to execute your updates");
 

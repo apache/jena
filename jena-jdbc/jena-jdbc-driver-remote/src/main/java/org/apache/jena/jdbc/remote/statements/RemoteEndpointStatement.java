@@ -22,6 +22,7 @@ import java.net.http.HttpClient;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.jdbc.remote.connections.RemoteEndpointConnection;
 import org.apache.jena.jdbc.statements.JenaStatement;
@@ -83,12 +84,13 @@ public class RemoteEndpointStatement extends JenaStatement {
     }
 
     @Override
-    protected QueryExecution createQueryExecution(Query q) throws SQLException {
+    protected QueryExecution createQueryExecution(Query q, int timeout, TimeUnit timeUnit) throws SQLException {
         if (this.remoteConn.getQueryEndpoint() == null)
             throw new SQLException("This statement is backed by a write-only connection, read operations are not supported");
 
-        // Create basic execution
         QueryExecutionHTTPBuilder exec = QueryExecutionHTTP.service(this.remoteConn.getQueryEndpoint()).query(q);
+        if ( timeout > NO_LIMIT )
+            exec.timeout(timeout, timeUnit);
 
         // Apply HTTP settings
         if (this.client != null) {
