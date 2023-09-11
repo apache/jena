@@ -28,44 +28,36 @@ import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.Tags;
 
 /** SSE Writer */
-public class WriterPath
-{
+public class WriterPath {
     private static final int NL = WriterLib.NL;
     private static final int NoNL = WriterLib.NoNL;
     private static final int NoSP = WriterLib.NoSP;
 
-    public static void write(Path path, Prologue prologue)
-    {
+    public static void write(Path path, Prologue prologue) {
         output(IndentedWriter.stdout, path, new SerializationContext(prologue));
     }
 
-    public static void output(IndentedWriter out, Path path, SerializationContext naming)
-    {
+    public static void output(IndentedWriter out, Path path, SerializationContext naming) {
         WriterPathVisitor w = new WriterPathVisitor(out, naming);
         w.output(path);
         w.out.flush();
     }
 
-    public static void output(IndentedWriter out, TriplePath tp, SerializationContext naming)
-    {
+    public static void output(IndentedWriter out, TriplePath tp, SerializationContext naming) {
         WriterLib.start(out, Tags.tagTriplePath, NoNL);
         outputPlain(out, tp, naming);
         WriterLib.finish(out, Tags.tagTriplePath);
     }
 
-    public static void outputPlain(IndentedWriter out, TriplePath tp, SerializationContext naming)
-    {
+    public static void outputPlain(IndentedWriter out, TriplePath tp, SerializationContext naming) {
         boolean oneLiner = oneLiner(tp.getPath());
-        if ( oneLiner )
-        {
+        if ( oneLiner ) {
             WriterNode.output(out, tp.getSubject(), naming);
             out.print(" ");
             WriterPath.output(out, tp.getPath(), naming);
             out.print(" ");
             WriterNode.output(out, tp.getObject(), naming);
-        }
-        else
-        {
+        } else {
             nl(out, false);
             WriterNode.output(out, tp.getSubject(), naming);
             nl(out);
@@ -75,38 +67,29 @@ public class WriterPath
         }
     }
 
-    private static boolean oneLiner(Path path)
-    {
+    private static boolean oneLiner(Path path) {
         return (path instanceof P_Link);
     }
 
     private static final boolean multiline = false;
     private static final boolean maxBracket = false;
 
-    private static void nl(IndentedWriter out)
-    {
+    private static void nl(IndentedWriter out) {
         nl(out, true);
     }
 
-    private static void nl(IndentedWriter out, boolean spaceForNL)
-    {
+    private static void nl(IndentedWriter out, boolean spaceForNL) {
         if ( multiline )
             out.println();
-        else
-            if ( spaceForNL ) out.print(" ");
+        else if ( spaceForNL )
+            out.print(" ");
     }
 
-    public static String asString(Path path) { return asString(path, (SerializationContext)null); }
-
-    @Deprecated
-    public static String asString(Path path, Prologue prologue)
-    {
-        return asString(path, new SerializationContext(prologue));
+    public static String asString(Path path) {
+        return asString(path, (SerializationContext)null);
     }
 
-    public static String asString(Path path, SerializationContext sCxt)
-    {
-
+    public static String asString(Path path, SerializationContext sCxt) {
         IndentedLineBuffer buff = new IndentedLineBuffer();
         WriterPathVisitor w = new WriterPathVisitor(buff, sCxt);
         path.visit(w);
@@ -114,37 +97,31 @@ public class WriterPath
         return buff.asString();
     }
 
-    private static class WriterPathVisitor implements PathVisitor
-    {
+    private static class WriterPathVisitor implements PathVisitor {
 
         private IndentedWriter out;
         private SerializationContext sCxt;
 
-        WriterPathVisitor(IndentedWriter indentedWriter, SerializationContext sCxt)
-        {
+        WriterPathVisitor(IndentedWriter indentedWriter, SerializationContext sCxt) {
             this.out = indentedWriter;
             this.sCxt = sCxt;
         }
 
-        private void output(Path path)
-        {
+        private void output(Path path) {
             path.visit(this);
         }
 
-        private void output(Node node)
-        {
+        private void output(Node node) {
             WriterNode.output(out, node, sCxt);
         }
 
         @Override
-        public void visit(P_Link pathNode)
-        {
+        public void visit(P_Link pathNode) {
             output(pathNode.getNode());
         }
 
         @Override
-        public void visit(P_ReverseLink pathNode)
-        {
+        public void visit(P_ReverseLink pathNode) {
             out.print("(");
             out.print(Tags.tagPathRev);
             out.print(" ");
@@ -153,13 +130,11 @@ public class WriterPath
         }
 
         @Override
-        public void visit(P_NegPropSet pathNotOneOf)
-        {
+        public void visit(P_NegPropSet pathNotOneOf) {
             out.print("(");
             out.print(Tags.tagPathNotOneOf);
 
-            for ( P_Path0 p : pathNotOneOf.getNodes() )
-            {
+            for ( P_Path0 p : pathNotOneOf.getNodes() ) {
                 out.print(" ");
                 output(p);
             }
@@ -167,19 +142,16 @@ public class WriterPath
         }
 
         @Override
-        public void visit(P_Alt pathAlt)
-        {
+        public void visit(P_Alt pathAlt) {
             visit2(pathAlt, Tags.tagPathAlt);
         }
 
         @Override
-        public void visit(P_Seq pathSeq)
-        {
+        public void visit(P_Seq pathSeq) {
             visit2(pathSeq, Tags.tagPathSeq);
         }
 
-        private void visit2(P_Path2 path2, String nodeName)
-        {
+        private void visit2(P_Path2 path2, String nodeName) {
             out.print("(");
             out.print(nodeName);
             nl(out);
@@ -192,8 +164,7 @@ public class WriterPath
         }
 
         @Override
-        public void visit(P_Mod pathMod)
-        {
+        public void visit(P_Mod pathMod) {
             out.print("(");
             out.print(Tags.tagPathMod);
             out.print(" ");
@@ -204,16 +175,16 @@ public class WriterPath
             out.print(")");
         }
 
-        private static String modInt(long value)
-        {
-            if ( value == P_Mod.INF ) return "*";
-            if ( value == P_Mod.UNSET ) return "_";
+        private static String modInt(long value) {
+            if ( value == P_Mod.INF )
+                return "*";
+            if ( value == P_Mod.UNSET )
+                return "_";
             return Long.toString(value);
         }
 
         @Override
-        public void visit(P_FixedLength path)
-        {
+        public void visit(P_FixedLength path) {
             out.print("(");
             out.print(Tags.tagPathFixedLength);
             out.print(" ");
@@ -224,55 +195,46 @@ public class WriterPath
         }
 
         @Override
-        public void visit(P_Distinct pathDistinct)
-        {
+        public void visit(P_Distinct pathDistinct) {
             writePath(Tags.tagPathDistinct, pathDistinct.getSubPath());
         }
 
         @Override
-        public void visit(P_Multi pathMulti)
-        {
+        public void visit(P_Multi pathMulti) {
             writePath(Tags.tagPathMulti, pathMulti.getSubPath());
         }
 
         @Override
-        public void visit(P_Shortest path)
-        {
+        public void visit(P_Shortest path) {
             writePath(Tags.tagPathShortest, path.getSubPath());
         }
 
         @Override
-        public void visit(P_ZeroOrOne path)
-        {
+        public void visit(P_ZeroOrOne path) {
             writePath(Tags.tagPathZeroOrOne, path.getSubPath());
         }
 
         @Override
-        public void visit(P_ZeroOrMore1 path)
-        {
+        public void visit(P_ZeroOrMore1 path) {
             writePath(Tags.tagPathZeroOrMore1, path.getSubPath());
         }
 
         @Override
-        public void visit(P_ZeroOrMoreN path)
-        {
+        public void visit(P_ZeroOrMoreN path) {
             writePath(Tags.tagPathZeroOrMoreN, path.getSubPath());
         }
 
         @Override
-        public void visit(P_OneOrMore1 path)
-        {
+        public void visit(P_OneOrMore1 path) {
             writePath(Tags.tagPathOneOrMore1, path.getSubPath());
         }
 
         @Override
-        public void visit(P_OneOrMoreN path)
-        {
+        public void visit(P_OneOrMoreN path) {
             writePath(Tags.tagPathOneOrMoreN, path.getSubPath());
         }
 
-        private void writeOneLiner(Path path)
-        {
+        private void writeOneLiner(Path path) {
             if ( oneLiner(path) )
                 out.print(" ");
             else
@@ -282,8 +244,7 @@ public class WriterPath
             out.decIndent();
         }
 
-        private void writePath(String tag, Path subPath)
-        {
+        private void writePath(String tag, Path subPath) {
             out.print("(");
             out.print(tag);
             writeOneLiner(subPath);
@@ -291,8 +252,7 @@ public class WriterPath
         }
 
         @Override
-        public void visit(P_Inverse reversePath)
-        {
+        public void visit(P_Inverse reversePath) {
             out.print("(");
             out.print(Tags.tagPathReverse);
             nl(out);

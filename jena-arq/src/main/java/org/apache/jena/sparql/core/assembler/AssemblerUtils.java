@@ -181,7 +181,7 @@ public class AssemblerUtils
         String qs = "PREFIX ja: <"+JA.getURI()+">\nSELECT * { ?x ja:context [ ja:cxtName ?name ; ja:cxtValue ?value ] }" ;
         QuerySolutionMap qsm = new QuerySolutionMap() ;
         qsm.add("x", r) ;
-        QueryExecution qExec = QueryExecutionFactory.create(qs, r.getModel(), qsm) ;
+        QueryExecution qExec = QueryExecution.model(r.getModel()).query(qs).substitution(qsm).build();
         ResultSet rs = qExec.execSelect() ;
         while ( rs.hasNext() )
         {

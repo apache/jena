@@ -457,14 +457,5 @@ public abstract class AbstractTestRDFConnection {
             conn.end();
         }
     }
-
-    @SuppressWarnings("deprecation")
-    @Test public void setTimeout() {
-        try ( RDFConnection rdfConnection = connection() ) {
-            QueryExecution queryExecution = rdfConnection.query("ASK{}");
-            queryExecution.setTimeout(1000);
-            queryExecution.execAsk();
-        }
-    }
 }
 

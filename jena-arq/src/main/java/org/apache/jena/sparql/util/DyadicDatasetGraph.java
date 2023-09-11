@@ -134,11 +134,6 @@ public abstract class DyadicDatasetGraph extends PairOfSameType<DatasetGraph> im
     }
 
     @Override
-    public void setDefaultGraph(Graph g) {
-        throwNoMutationAllowed();
-    }
-
-    @Override
     public void addGraph(Node graphName, Graph graph) {
         throwNoMutationAllowed();
     }

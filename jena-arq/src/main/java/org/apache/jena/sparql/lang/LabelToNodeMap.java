@@ -44,23 +44,23 @@ public class LabelToNodeMap
     boolean generateVars = false ;
     VarAlloc allocator = null ;
 
-    /** Create blank nodes, with the same blank node returned for the same label.
+    /**
+     * Create blank nodes, with the same blank node returned for the same label.
      *
      * @return LabelToNodeMap
-     * @deprecated use {@link LabelToNode#createUseLabelAsGiven}
+     * @deprecated Internal use only. Use {@link LabelToNode#createUseLabelAsGiven}
      */
     @Deprecated
     public static LabelToNodeMap createBNodeMap()
     { return new LabelToNodeMap(false, null) ; }
 
-    /** Create variables (Var), starting from zero each time
-     * This means that parsing a query string will generate
-     * the same variable names for bNode variables each time,
-     * making Query.equals and Query.hashCode work.
+    /**
+     * Create variables (Var), starting from zero each time This means that parsing a
+     * query string will generate the same variable names for bNode variables each
+     * time, making Query.equals and Query.hashCode work.
      *
      * @return LabelToNodeMap
      */
-
     public static LabelToNodeMap createVarMap()
     { return new LabelToNodeMap(true, new VarAlloc(ARQConstants.allocParserAnonVars) ) ; }
 

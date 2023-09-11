@@ -22,15 +22,11 @@ import org.apache.jena.sparql.vocabulary.ListPFunction;
 import org.apache.jena.vocabulary.RDFS;
 
 public class StandardPropertyFunctions {
-    @SuppressWarnings("deprecation")
+
     public static void loadStdDefs(PropertyFunctionRegistry registry) {
         add(registry, ListPFunction.member.getURI(),    org.apache.jena.sparql.pfunction.library.listMember.class);
         add(registry, ListPFunction.index.getURI(),     org.apache.jena.sparql.pfunction.library.listIndex.class);
         add(registry, ListPFunction.length.getURI(),    org.apache.jena.sparql.pfunction.library.listLength.class);
-
-        add(registry, ListPFunction.memberJ2.getURI(),    org.apache.jena.sparql.pfunction.library.listMember.class);
-        add(registry, ListPFunction.indexJ2.getURI(),     org.apache.jena.sparql.pfunction.library.listIndex.class);
-        add(registry, ListPFunction.lengthJ2.getURI(),    org.apache.jena.sparql.pfunction.library.listLength.class);
 
         // This is called during Jena-wide initialization.
         // Use function for constant (JENA-1294)

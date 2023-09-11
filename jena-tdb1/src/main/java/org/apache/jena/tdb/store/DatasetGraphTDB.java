@@ -263,11 +263,6 @@ public class DatasetGraphTDB extends DatasetGraphTriplesQuads
     }
 
     @Override
-    public void setDefaultGraph(Graph g) {
-        throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
-    }
-
-    @Override
     public String toString() {
         return "TDB1: "+getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this));
     }

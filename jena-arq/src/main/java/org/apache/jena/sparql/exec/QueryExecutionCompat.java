@@ -19,21 +19,20 @@
 package org.apache.jena.sparql.exec;
 
 import java.util.Iterator;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.*;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.Quad;
-import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.util.Context;
 
 /**
  * Query execution that delays making the QueryExecution until needed by exec
- * This means timeout and initialBindings can still be set.
  *
  * @see QueryExecution
  */
@@ -64,14 +63,6 @@ public class QueryExecutionCompat extends QueryExecutionAdapter {
         // Delay until used so setTimeout,setInitialBindings work.
         if ( qExecHere == null )
             qExecHere = qExecBuilder.build();
-    }
-
-    @Override
-    public void setInitialBinding(Binding binding) {
-        if ( qExecBuilder instanceof QueryExecDatasetBuilder)
-            ((QueryExecDatasetBuilder)qExecBuilder).initialBinding(binding);
-        else
-            throw new UnsupportedOperationException("setInitialBinding");
     }
 
     @Override
@@ -191,28 +182,6 @@ public class QueryExecutionCompat extends QueryExecutionAdapter {
     }
 
     @Override
-    public void setTimeout(long timeout, TimeUnit timeoutUnits) {
-        qExecBuilder.timeout(timeout, timeoutUnits);
-    }
-
-    @Override
-    public void setTimeout(long timeout) {
-        qExecBuilder.timeout(timeout, TimeUnit.MILLISECONDS);
-    }
-
-    @Override
-    public void setTimeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2) {
-        qExecBuilder.initialTimeout(timeout1, timeUnit1);
-        qExecBuilder.overallTimeout(timeout2, timeUnit2);
-    }
-
-    @Override
-    public void setTimeout(long timeout1, long timeout2) {
-        qExecBuilder.initialTimeout(timeout1, TimeUnit.MILLISECONDS);
-        qExecBuilder.overallTimeout(timeout2, TimeUnit.MILLISECONDS);
-    }
-
-    @Override
     public long getTimeout1() {
         return -1L;
     }
@@ -220,10 +189,5 @@ public class QueryExecutionCompat extends QueryExecutionAdapter {
     @Override
     public long getTimeout2() {
         return -1L;
-    }
-
-    @Override
-    public void setInitialBinding(QuerySolution querySolution) {
-        setInitialBinding(BindingLib.toBinding(querySolution));
     }
 }

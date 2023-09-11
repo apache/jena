@@ -152,11 +152,6 @@ public class DatasetGraphWrapper implements DatasetGraph, Sync
     public void removeGraph(Node graphName)
     { getW().removeGraph(graphName); }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public void setDefaultGraph(Graph g)
-    { getW().setDefaultGraph(g); }
-
     @Override
     public Lock getLock()
     { return getR().getLock(); }

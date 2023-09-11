@@ -38,13 +38,13 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphUtil;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.riot.*;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.core.*;
-import org.apache.jena.sparql.engine.Plan;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingRoot;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.QueryExecDatasetBuilder;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.graph.GraphOps;
 import org.apache.jena.sparql.modify.request.*;
@@ -525,16 +525,21 @@ public class UpdateEngineWorker implements UpdateVisitor
     protected static Iterator<Binding> evalBindings(Query query, DatasetGraph dsg, Binding inputBinding, Context context) {
         // The UpdateProcessorBase already copied the context and made it safe
         // ... but that's going to happen again :-(
-
-        Iterator<Binding> toReturn;
-
-        if ( query != null ) {
-            Plan plan = QueryExecutionFactory.createPlan(query, dsg, inputBinding, context);
-            toReturn = plan.iterator();
-        } else {
-            toReturn = Iter.singleton((null != inputBinding) ? inputBinding : BindingRoot.create());
+        if ( query == null ) {
+            Binding binding = (null != inputBinding) ? inputBinding : BindingRoot.create();
+            return Iter.singleton(binding);
         }
-        return toReturn;
+
+        // Not QueryExecDataset.dataset(...) because of initialBinding.
+        QueryExecDatasetBuilder builder = QueryExecDatasetBuilder.create().dataset(dsg).query(query);
+        if ( inputBinding != null ) {
+            // Must use initialBinding - it puts the input in the results, unlike substitution.
+            builder.initialBinding(inputBinding);
+            // substitution does not put results in the output.
+            // builder.substitution(inputBinding);
+        }
+        QueryExec qExec = builder.build();
+        return qExec.select();
     }
 
     /**

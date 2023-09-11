@@ -19,6 +19,7 @@
 package org.apache.jena.jdbc.statements;
 
 import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.jdbc.connections.DatasetConnection;
 import org.apache.jena.query.* ;
@@ -30,17 +31,17 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A Jena JDBC statement over a {@link Dataset}
- * 
+ *
  */
 public class DatasetStatement extends JenaStatement {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DatasetStatement.class);
 
     private DatasetConnection dsConn;
 
     /**
      * Creates a new statement
-     * 
+     *
      * @param connection
      *            Connection
      * @throws SQLException
@@ -53,7 +54,7 @@ public class DatasetStatement extends JenaStatement {
 
     /**
      * Creates a new statement
-     * 
+     *
      * @param connection
      *            Connection
      * @param type
@@ -70,7 +71,7 @@ public class DatasetStatement extends JenaStatement {
      *            Transaction level
      * @throws SQLException
      *             Thrown if there is an error with the statement parameters
-     * 
+     *
      */
     public DatasetStatement(DatasetConnection connection, int type, int fetchDir, int fetchSize, int holdability, boolean autoCommit,
             int transactionLevel) throws SQLException {
@@ -82,8 +83,11 @@ public class DatasetStatement extends JenaStatement {
      * Creates a query execution over the dataset
      */
     @Override
-    protected QueryExecution createQueryExecution(Query q) {
-        return QueryExecutionFactory.create(q, this.dsConn.getJenaDataset());
+    protected QueryExecution createQueryExecution(Query q, int timeout, TimeUnit timeUnit) {
+        QueryExecutionBuilder builder = QueryExecution.dataset(this.dsConn.getJenaDataset()).query(q);
+        if ( timeout > NO_LIMIT )
+            builder.timeout(timeout, timeUnit);
+        return builder.build();
     }
 
     /**

@@ -102,7 +102,7 @@ public class TestGSP {
             .defaultGraph()
             .GET();
         assertNotNull(g);
-        assertTrue(graph.isIsomorphicWith(g));
+        assertTrue(IsoMatcher.isomorphic(graph,g));
     }
 
     @Test(expected=HttpException.class)
@@ -135,7 +135,7 @@ public class TestGSP {
             .GET();
         assertNotNull(g2);
         assertFalse(g2.isEmpty());
-        assertTrue(graph.isIsomorphicWith(g2));
+        assertTrue(IsoMatcher.isomorphic(graph,g2));
     }
 
     @Test public void gsp_put_get_ct_02() {
@@ -149,7 +149,7 @@ public class TestGSP {
             .GET();
         assertNotNull(g1);
         assertFalse(g1.isEmpty());
-        assertTrue(graph.isIsomorphicWith(g1));
+        assertTrue(IsoMatcher.isomorphic(graph,g1));
     }
 
     @Test public void gsp_put_delete_01() {
@@ -185,22 +185,6 @@ public class TestGSP {
 
     // ----------------------------------------
 
-    @SuppressWarnings("deprecation")
-    @Test public void gsp_ds_put_get_01() {
-        GSP.service(gspServiceURL()).putDataset(dataset);
-        DatasetGraph dsg = GSP.service(gspServiceURL()).getDataset();
-        assertNotNull(dsg);
-        assertTrue(IsoMatcher.isomorphic(dataset, dsg));
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test public void gsp_ds_post_get_02() {
-        GSP.service(gspServiceURL()).postDataset(dataset);
-        DatasetGraph dsg = GSP.service(gspServiceURL()).getDataset();
-        assertNotNull(dsg);
-        assertTrue(IsoMatcher.isomorphic(dataset, dsg));
-    }
-
     @Test public void gspHead_dataset_1() {
         // Base URL, default content type => N-Quads (dump format)
         String h = HttpOp.httpHead(gspServiceURL(), null);
@@ -230,32 +214,6 @@ public class TestGSP {
         String h = HttpOp.httpHead(target, ct);
         assertNotNull(h);
         assertEquals(ct, h);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void gsp_ds_clear_01() {
-        // DELETE on the GSP endpoint would be the default graph.
-        // DELETE on the dataset endpoint is not supported by Fuseki - this does "CLER ALL"
-        GSP.service(env.datasetURL()).clearDataset();
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void gsp_ds_clear_02() {
-        GSP.service(gspServiceURL()).postDataset(dataset);
-        GSP.service(env.datasetURL()).clearDataset();
-        DatasetGraph dsg = GSP.service(gspServiceURL()).getDataset();
-        assertFalse(dsg.find().hasNext());
-    }
-
-
-    @SuppressWarnings("deprecation")
-    @Test public void gsp_ds_put_delete_01() {
-        GSP.service(gspServiceURL()).putDataset(dataset);
-        GSP.service(gspServiceURL()).clearDataset();
-        DatasetGraph dsg = GSP.service(gspServiceURL()).getDataset();
-        assertTrue(dsg.isEmpty());
     }
 
     @Test public void gsp_union_get() {
@@ -305,13 +263,6 @@ public class TestGSP {
         String graphName = "http://example/graph404";
         expect404(
             ()->GSP.service(gspServiceURL()).graphName(graphName).GET()
-        );
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test public void gsp_404_dataset() {
-        expect404(
-            ()->GSP.service(gspServiceURL()+"junk").getDataset()
         );
     }
 }

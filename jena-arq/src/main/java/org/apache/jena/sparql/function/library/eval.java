@@ -24,18 +24,19 @@ import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.function.Function ;
 import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.sparql.util.Context;
 
 /** Function that evaluates an expression.
- *  To convert errors to true or false, use COALESCE. 
+ *  To convert errors to true or false, use COALESCE.
  */
 
 public class eval implements Function
 {
     @Override
-    public void build(String uri, ExprList args) {}
+    public void build(String uri, ExprList args, Context context) {}
 
     /** Processes unevaluated arguments */
-    
+
     @Override
     public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env)
     {
@@ -44,5 +45,5 @@ public class eval implements Function
         if ( nv != null )
             return nv ;
         return e.eval(binding, env) ;
-    }  
+    }
 }

@@ -28,7 +28,6 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.shared.NotFoundException;
 import org.apache.jena.shared.PrefixMapping;
@@ -326,16 +325,6 @@ public class SSE {
     public static RowSet parseRowSet(String string) {
         Item item = parse(string);
         return BuilderRowSet.build(item);
-    }
-
-    /**
-     * Build a {@link ResultSet}
-     *
-     * @deprecated Use {@link #parseRowSet}
-     */
-    @Deprecated
-    public static ResultSet parseResultSet(String string) {
-        return ResultSet.adapt(parseRowSet(string));
     }
 
     /** Read in a file, parse, and obtain a SPARQL algebra op */

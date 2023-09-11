@@ -68,10 +68,6 @@ import org.apache.jena.web.HttpSC;
  */
 public class QueryExecHTTP implements QueryExec {
 
-    /** @deprecated Use {@link #newBuilder} */
-    @Deprecated
-    public static QueryExecHTTPBuilder create() { return newBuilder() ; }
-
     public static QueryExecHTTPBuilder newBuilder() { return QueryExecHTTPBuilder.create(); }
 
     public static QueryExecHTTPBuilder service(String serviceURL) {

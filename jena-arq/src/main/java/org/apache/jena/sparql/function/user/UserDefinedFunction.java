@@ -28,6 +28,7 @@ import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.function.Function ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException ;
+import org.apache.jena.sparql.util.Context;
 
 /**
  * Represents a user defined function
@@ -36,7 +37,7 @@ import org.apache.jena.sparql.sse.builders.SSE_ExprBuildException ;
 public class UserDefinedFunction extends UserDefinedFunctionDefinition implements Function {
 
     private Expr actualExpr;
-    
+
     /**
      * Creates a new user defined function
      * @param def Function Definition
@@ -44,7 +45,7 @@ public class UserDefinedFunction extends UserDefinedFunctionDefinition implement
     public UserDefinedFunction(UserDefinedFunctionDefinition def) {
         super(def.getUri(), def.getBaseExpr(), def.getArgList());
     }
-    
+
     /**
      * Creates a user defined function
      * @param url Function URL
@@ -59,17 +60,25 @@ public class UserDefinedFunction extends UserDefinedFunctionDefinition implement
      * Builds the expression substituting the arguments given into the base expression to yield the actual expression to evaluate
      * @throws SSE_ExprBuildException Thrown if an expression cannot be generated
      */
-    @Override
     public void build(String uri, ExprList args) {
+        build(uri,  args, null);
+    }
+
+    /**
+     * Builds the expression substituting the arguments given into the base expression to yield the actual expression to evaluate
+     * @throws SSE_ExprBuildException Thrown if an expression cannot be generated
+     */
+    @Override
+    public void build(String uri, ExprList args, Context context) {
         //Substitutes the arguments into the base expression to give the actual expression to evaluate
         if (uri == null || !uri.equals(this.getUri())) throw new SSE_ExprBuildException("Incorrect URI passed to build() call, expected <" + this.getUri() + "> but got <" + uri + ">");
         if (this.getArgList().size() != args.size()) throw new SSE_ExprBuildException("Incorrect number of arguments for user defined <" + this.getUri() + "> function");
-        
+
         Map<String, Expr> substitutions = new HashMap<>();
         for (int i = 0; i < this.getArgList().size(); i++) {
             substitutions.put(this.getArgList().get(i).getVarName(), args.get(i));
         }
-        
+
         this.actualExpr = ExprTransformer.transform(new ExprTransformSubstitute(substitutions), this.getBaseExpr());
     }
 
@@ -81,9 +90,9 @@ public class UserDefinedFunction extends UserDefinedFunctionDefinition implement
         //Evaluate the actual expression
         return this.actualExpr.eval(binding, env);
     }
-    
+
     /**
-     * Gets the actual expression that was built for the function, assuming {@link #build(String, ExprList)} has been called
+     * Gets the actual expression that was built for the function, assuming {@link #build(String, ExprList, Context)} has been called
      * @return Expression if built, null otherwise
      */
     public Expr getActualExpr() {
