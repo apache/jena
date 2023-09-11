@@ -78,22 +78,6 @@ public class SysRIOT
         return riotLogger;
     }
 
-    /** @deprecated Use {@code IRIs.getBaseStr();} */
-    @Deprecated
-    public static String chooseBaseIRI() {
-        return IRIs.getBaseStr();
-    }
-
-    /**
-     * Return a URI suitable for a baseURI, based on some input (which may be null).
-     *
-     * @deprecated Use {@link IRIs#toBase(String)}
-     */
-    @Deprecated
-    public static String chooseBaseIRI(String baseURI) {
-        return IRIs.toBase(baseURI);
-    }
-
     /**
      * Choose base IRI, from a given one and a filename. Prefer the given base;
      * turn any filename into an IRI which is resolved as well.

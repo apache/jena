@@ -264,12 +264,6 @@ public class RDFParserBuilder {
         return this;
     }
 
-    /** @deprecated Use {@link #acceptHeader} */
-    @Deprecated
-    public RDFParserBuilder httpAccept(String acceptHeader) {
-        return acceptHeader(acceptHeader);
-    }
-
     /**
      * Set an HTTP header. Any previous setting is lost.
      * <p>
@@ -321,30 +315,6 @@ public class RDFParserBuilder {
      */
     public RDFParserBuilder prefixes(PrefixMap prefixMap) {
         this.prefixMap = prefixMap == null ? null : PrefixMapFactory.create(prefixMap);
-        return this;
-    }
-
-    /**
-     * Convert the lexical form of literals to a canonical form.
-     * @deprecated Use {@link #canonicalValues} and one of {@link #langTagCanonical} and {@link #langTagLowerCase}
-     * <p>
-     * This operation is equivalent to
-     * <pre>
-     *   this.canonicalValues(flag);
-     *    if ( flag )
-     *        this.langTagCanonical();
-     *    else
-     *        this.langTagAsGiven();
-     *    return this;
-     * </pre>
-     */
-    @Deprecated
-    public RDFParserBuilder canonicalLiterals(boolean flag) {
-        this.canonicalValues(flag);
-        if ( flag )
-            this.langTagCanonical();
-        else
-            this.langTagAsGiven();
         return this;
     }
 

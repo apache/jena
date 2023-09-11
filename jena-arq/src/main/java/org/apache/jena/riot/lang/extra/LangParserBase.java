@@ -130,12 +130,6 @@ public class LangParserBase {
         return n ;
     }
 
-    /** @deprecated Use {@link #createQuotedTriple} */
-    @Deprecated
-    protected Node createTripleTerm(Node s, Node p, Node o, int line, int column) {
-        return createQuotedTriple(s, p, o, line, column);
-    }
-
     protected Node createQuotedTriple(Node s, Node p, Node o, int line, int column) {
         return profile.createTripleNode(s, p, o, line, column);
     }

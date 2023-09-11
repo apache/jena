@@ -76,12 +76,6 @@ public class NodeFmtLib
         return strNodesTTL(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject());
     }
 
-    /** @deprecated Use {@link #strNT}. */
-    @Deprecated
-    public static String str(Node node) {
-        return strNT(node);
-    }
-
     /** With Turtle abbreviation for literals, no prefixes of base URI */
     public static String strTTL(Node node) {
         return strNode(node, ttlFormatter);
@@ -114,12 +108,6 @@ public class NodeFmtLib
         return sw.toString();
     }
 
-    /** Use {@link #strNodesNT} or {@link #strNodesTTL} */
-    @Deprecated
-    public static String strNodes(Node...nodes) {
-        return strNodesNT(nodes);
-    }
-
     public static String strNodesNT(Node...nodes) {
         return strNodes(NodeFmtLib::strNT, nodes);
     }
@@ -142,12 +130,6 @@ public class NodeFmtLib
             output.accept(sw, n);
         }
         return sw.toString();
-    }
-
-    /** @deprecated To be removed. */
-    @Deprecated
-    public static void serialize(IndentedWriter w, Node node, String base, PrefixMap prefixMap) {
-        formatNode(w, node, base, prefixMap);
     }
 
     private static void formatNode(IndentedWriter w, Node node, NodeFormatter formatter) {

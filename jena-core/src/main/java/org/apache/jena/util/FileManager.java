@@ -130,30 +130,6 @@ public interface FileManager {
     /** For use within Jena libraries only. */
     Model loadModelInternal(String filenameOrURI);
 
-    /** Load a model from a file (local or remote).
-     *  URI is the base for reading the model.
-     *
-     *  @param filenameOrURI The filename or a URI (file:, http:)
-     *  @param rdfSyntax  RDF Serialization syntax.
-     *  @return a new model
-     *  @exception JenaException if there is syntax error in file.
-     *  @deprecated Use {@code RDFDataMgr}
-     */
-    @Deprecated
-    Model loadModel(String filenameOrURI, String rdfSyntax);
-
-    /** Load a model from a file (local or remote).
-     *
-     *  @param filenameOrURI The filename or a URI (file:, http:)
-     *  @param baseURI  Base URI for loading the RDF model.
-     *  @param rdfSyntax  RDF Serialization syntax.
-     *  @return a new model
-     *  @exception JenaException if there is syntax error in file.
-     *  @deprecated Use {@code RDFDataMgr}
-     */
-    @Deprecated
-    Model loadModel(String filenameOrURI, String baseURI, String rdfSyntax);
-
     /**
      * Read a file of RDF into a model.  Guesses the syntax of the file based on filename extension,
      *  defaulting to RDF/XML.
@@ -175,26 +151,11 @@ public interface FileManager {
      * Read a file of RDF into a model.
      * @param model
      * @param filenameOrURI
-     * @param rdfSyntax RDF Serialization syntax.
-     * @return The model or null, if there was an error.
-     * @exception JenaException if there is syntax error in file.
-     * @deprecated Use {@code RDFDataMgr}
-     */
-    @Deprecated
-    Model readModel(Model model, String filenameOrURI, String rdfSyntax);
-
-    /**
-     * Read a file of RDF into a model.
-     * @param model
-     * @param filenameOrURI
      * @param baseURI
      * @param syntax
      * @return The model
      *  @exception JenaException if there is syntax error in file.
      */
-
-    @Deprecated
-    Model readModel(Model model, String filenameOrURI, String baseURI, String syntax);
 
     /** Open a file using the locators of this FileManager */
     InputStream open(String filenameOrURI);

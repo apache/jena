@@ -30,6 +30,9 @@ import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol ;
 
@@ -59,7 +62,13 @@ public class RDFReaderRIOT implements RDFReaderI {
     @Override
     public void read(Model model, Reader r, String base) {
         startRead(model) ;
-        RDFDataMgr.read(model, r, base, hintlang) ;
+        StreamRDF dest = StreamRDFLib.graph(model.getGraph());
+        RDFParser.create()
+            .source(r)
+            .base(base)
+            .lang(hintlang)
+            //.context(context)
+            .parse(dest);
         finishRead(model) ;
     }
 
