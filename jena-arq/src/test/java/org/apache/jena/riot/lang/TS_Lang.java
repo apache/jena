@@ -45,7 +45,6 @@ import org.junit.runners.Suite ;
     // Protobuf is done in the "protobuf" package
     // Thrift is done in the "thrift" package
     , TestParserFactory.class
-    , TestPipedRDFIterators.class
     , TestCollectorStream.class
     , TC_RIOT_RDFXML.class
 })

@@ -105,46 +105,6 @@ public class RDFWriter {
         return create().source(dataset);
     }
 
-    /** Create an {@link RDFWriterBuilder} and set the source of writing to the graph argument.
-     * @param graph     A {@link Graph}.
-     * @return RDFWriterBuilder
-     * @deprecated Use {@link #source(Graph)}
-     */
-    @Deprecated
-    public static RDFWriterBuilder create(Graph graph) {
-        return create().source(graph);
-    }
-
-    /** Create an {@link RDFWriterBuilder} and set the source of writing to the graph argument.
-     * @param model     A {@link Model}.
-     * @return RDFWriterBuilder
-     * @deprecated Use {@link #source(Model)}
-     */
-    @Deprecated
-    public static RDFWriterBuilder create(Model model) {
-        return create().source(model);
-    }
-
-    /** Create an {@link RDFWriterBuilder} and set the source of writing to the graph argument.
-     * @param dataset     A {@link DatasetGraph}.
-     * @return RDFWriterBuilder
-     * @deprecated Use {@link #source(DatasetGraph)}
-     */
-    @Deprecated
-    public static RDFWriterBuilder create(DatasetGraph dataset) {
-        return create().source(dataset);
-    }
-
-    /** Create an {@link RDFWriterBuilder} and set the source of writing to the graph argument.
-     * @param dataset     A {@link Dataset}.
-     * @return RDFWriterBuilder
-     * @deprecated Use {@link #source(Dataset)}
-     */
-    @Deprecated
-    public static RDFWriterBuilder create(Dataset dataset) {
-        return create().source(dataset);
-    }
-
     /*package*/ RDFWriter(DatasetGraph dataset, Graph graph, RDFFormat format, Lang lang, String baseURI, Context context) {
         this.dataset = dataset;
         this.graph = graph;

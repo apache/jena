@@ -110,26 +110,9 @@ public class RiotParsers {
         return parser;
     }
 
-    /**
-     * Create an iterator for parsing N-Triples.
-     * @deprecated StreamRDF argument ignored. Use {@link #createIteratorNTriples(InputStream)}
-     */
-    @Deprecated
-    public static Iterator<Triple> createIteratorNTriples(InputStream input, StreamRDF dest) {
-        return createIteratorNTriples(input, RiotLib.dftProfile());
-    }
-
     /** Create an iterator for parsing N-Triples. */
     public static Iterator<Triple> createIteratorNTriples(InputStream input) {
         return createIteratorNTriples(input, RiotLib.dftProfile());
-    }
-
-    /** Create an iterator for parsing N-Triples.
-     * @deprecated StreamRDF argument ignored. Use {@link #createIteratorNTriples(InputStream)}
-     */
-    @Deprecated
-    public static Iterator<Triple> createIteratorNTriples(InputStream input, StreamRDF dest, ParserProfile profile) {
-        return createIteratorNTriples(input, profile);
     }
 
     /** Create an iterator for parsing N-Triples. */
@@ -139,27 +122,9 @@ public class RiotParsers {
         return createParserNTriples(tokenizer, null, profile);
     }
 
-    /**
-     * Create an iterator for parsing N-Quads.
-     * @deprecated StreamRDF argument ignored. Use {@link #createIteratorNQuads(InputStream)}
-     */
-    @Deprecated
-    public static Iterator<Quad> createIteratorNQuads(InputStream input, StreamRDF dest) {
-        return createIteratorNQuads(input, RiotLib.dftProfile());
-    }
-
     /** Create an iterator for parsing N-Quads. */
     public static Iterator<Quad> createIteratorNQuads(InputStream input) {
         return createIteratorNQuads(input, RiotLib.dftProfile());
-    }
-
-    /**
-     * Create an iterator for parsing N-Quads.
-     * @deprecated StreamRDF argument ignored. Use {@link #createIteratorNQuads(InputStream)}
-     */
-    @Deprecated
-    public static Iterator<Quad> createIteratorNQuads(InputStream input, StreamRDF dest, ParserProfile profile) {
-        return createIteratorNQuads(input, profile);
     }
 
     /**

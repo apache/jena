@@ -281,67 +281,27 @@ public class FileManagerImpl implements FileManager
      *  @return a new model
      *  @exception JenaException if there is syntax error in file.
      */
-
     @Override
     public Model loadModelInternal(String filenameOrURI)
     {
         if ( log.isDebugEnabled() )
             log.debug("loadModel("+filenameOrURI+")") ;
 
-        return loadModelWorker(filenameOrURI, null, null) ;
+        return loadModelWorker(filenameOrURI, null) ;
     }
 
-    /** Load a model from a file (local or remote).
-     *  URI is the base for reading the model.
-     *
-     *  @param filenameOrURI The filename or a URI (file:, http:)
-     *  @param rdfSyntax  RDF Serialization syntax.
-     *  @return a new model
-     *  @exception JenaException if there is syntax error in file.
-     */
-
-    @Override
-    public Model loadModel(String filenameOrURI, String rdfSyntax)
-    {
-        if ( log.isDebugEnabled() )
-            log.debug("loadModel("+filenameOrURI+", "+rdfSyntax+")") ;
-        return loadModelWorker(filenameOrURI, null, rdfSyntax) ;
-    }
-
-    /** Load a model from a file (local or remote).
-     *
-     *  @param filenameOrURI The filename or a URI (file:, http:)
-     *  @param baseURI  Base URI for loading the RDF model.
-     *  @param rdfSyntax  RDF Serialization syntax.
-     *  @return a new model
-     *  @exception JenaException if there is syntax error in file.
-    */
-
-
-    @Override
-    public Model loadModel(String filenameOrURI, String baseURI, String rdfSyntax)
-    {
-        if ( log.isDebugEnabled() )
-            log.debug("loadModel("+filenameOrURI+", "+baseURI+", "+rdfSyntax+")") ;
-
-        return loadModelWorker(filenameOrURI, baseURI, rdfSyntax) ;
-    }
-
-    private Model loadModelWorker(String filenameOrURI, String baseURI, String rdfSyntax)
-    {
+    private Model loadModelWorker(String filenameOrURI, String baseURI) {
         if ( hasCachedModel(filenameOrURI) )
         {
             if ( log.isDebugEnabled() )
                 log.debug("Model cache hit: "+filenameOrURI) ;
             return getFromCache(filenameOrURI) ;
         }
-
-        Model m = ModelFactory.createDefaultModel() ;
-        readModelWorker(m, filenameOrURI, baseURI, rdfSyntax) ;
-
+        Model model = ModelFactory.createDefaultModel();
+        readModelWorker(model, filenameOrURI, baseURI);
         if ( isCachingModels() )
-            addCacheModel(filenameOrURI, m) ;
-        return m ;
+            addCacheModel(filenameOrURI, model) ;
+        return model;
     }
 
     /**
@@ -352,52 +312,15 @@ public class FileManagerImpl implements FileManager
      * @return The model or null, if there was an error.
      *  @exception JenaException if there is syntax error in file.
      */
-
     @Override
     public Model readModelInternal(Model model, String filenameOrURI)
     {
         if ( log.isDebugEnabled() )
             log.debug("readModel(model,"+filenameOrURI+")") ;
-        return readModel(model, filenameOrURI, null);
+        return readModelWorker(model, filenameOrURI, null);
     }
 
-    /**
-     * Read a file of RDF into a model.
-     * @param model
-     * @param filenameOrURI
-     * @param rdfSyntax RDF Serialization syntax.
-     * @return The model or null, if there was an error.
-     *  @exception JenaException if there is syntax error in file.
-     */
-
-    @Override
-    public Model readModel(Model model, String filenameOrURI, String rdfSyntax)
-    {
-        if ( log.isDebugEnabled() )
-            log.debug("readModel(model,"+filenameOrURI+", "+rdfSyntax+")") ;
-        return readModelWorker(model, filenameOrURI, null, rdfSyntax);
-    }
-
-    /**
-     * Read a file of RDF into a model.
-     * @param model
-     * @param filenameOrURI
-     * @param baseURI
-     * @param syntax
-     * @return The model
-     *  @exception JenaException if there is syntax error in file.
-     */
-
-    @Override
-    public Model readModel(Model model, String filenameOrURI, String baseURI, String syntax)
-    {
-
-        if ( log.isDebugEnabled() )
-            log.debug("readModel(model,"+filenameOrURI+", "+baseURI+", "+syntax+")") ;
-        return readModelWorker(model, filenameOrURI, baseURI, syntax) ;
-    }
-
-    protected Model readModelWorker(Model model, String filenameOrURI, String baseURI, String syntax)
+    protected Model readModelWorker(Model model, String filenameOrURI, String baseURI)
     {
         // Doesn't call open() - we want to make the syntax guess based on the mapped URI.
         String mappedURI = mapURI(filenameOrURI) ;
@@ -405,35 +328,19 @@ public class FileManagerImpl implements FileManager
         if ( log.isDebugEnabled() && ! mappedURI.equals(filenameOrURI) )
             log.debug("Map: "+filenameOrURI+" => "+mappedURI) ;
 
-        if ( syntax == null && baseURI == null && mappedURI.startsWith( "http:" ) )
-        {
-            syntax = FileUtils.guessLang(mappedURI) ;
-            // Content negotation in next version (FileManager2)
-            model.read(mappedURI, syntax) ;
-            return model ;
-        }
-
-        if ( syntax == null )
-        {
-            syntax = FileUtils.guessLang(mappedURI) ;
-            if ( syntax == null || syntax.equals("") )
-                syntax = FileUtils.langXML ;
-            if ( log.isDebugEnabled() )
-                log.debug("Syntax guess: "+syntax);
-        }
+        String syntax = FileUtils.guessLang(mappedURI) ;
+        if ( syntax == null || syntax.equals("") )
+            syntax = FileUtils.langXML ;
+        if ( log.isDebugEnabled() )
+            log.debug("Syntax guess: "+syntax);
 
         if ( baseURI == null )
             baseURI = chooseBaseURI(filenameOrURI) ;
 
-        TypedStream in = openNoMapOrNull(mappedURI) ;
-        if ( in == null )
-        {
+        TypedStream in = openNoMapOrNull(mappedURI);
+        if ( in == null ) {
             FmtLog.debug(log, "Failed to locate '%s'", mappedURI);
-            throw new NotFoundException("Not found: "+filenameOrURI) ;
-        }
-        if ( in.getMimeType() != null )
-        {
-            //syntax
+            throw new NotFoundException("Not found: " + filenameOrURI);
         }
         model.read(in.getInput(), baseURI, syntax) ;
         try { in.getInput().close(); } catch (IOException ex) {}

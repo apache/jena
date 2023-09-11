@@ -345,15 +345,6 @@ public class G {
 
     // DISTINCT means these are space using.
 
-    /** @deprecated Use {@link #iterSubjects(Graph)} */
-    @Deprecated public static Iterator<Node> listSubjects(Graph graph) { return iterSubjects(graph); }
-
-    /** @deprecated Use {@link #iterPredicates(Graph)} */
-    @Deprecated public static Iterator<Node> listPredicates(Graph graph) { return iterPredicates(graph); }
-
-    /** @deprecated Use {@link #iterObjects(Graph)} */
-    @Deprecated public static Iterator<Node> listObjects(Graph graph) { return iterObjects(graph); }
-
     /** List the subjects in a graph (no duplicates) */
     public static Iterator<Node> iterSubjects(Graph graph) {
         Objects.requireNonNull(graph, "graph");

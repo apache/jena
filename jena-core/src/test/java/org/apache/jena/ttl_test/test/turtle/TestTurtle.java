@@ -34,10 +34,10 @@ public class TestTurtle extends TestCase
     String input ;
     String output ;
     String baseIRI ;
-    
+
     public TestTurtle(String name, String input, String output, String baseIRI)
     { super(name) ; this.input = input ; this.output = output ; this.baseIRI = baseIRI ; }
-    
+
     @Override
     public void runTest()
     {
@@ -47,19 +47,18 @@ public class TestTurtle extends TestCase
             if ( baseIRI != null )
                 t.read(model, FileManager.getInternal().open(input), baseIRI) ;
             else
-                t.read(model, input) ;  
+                t.read(model, input) ;
             // "http://www.w3.org/2001/sw/DataAccess/df1/tests/rdfq-results.ttl"
 
             String syntax = FileUtils.guessLang(output, FileUtils.langNTriple) ;
-            
-            @SuppressWarnings("deprecation")
-            Model results = FileManager.getInternal().loadModel(output, syntax);
+            Model results = ModelFactory.createDefaultModel() ;
+            results.read(output, null, syntax);
             boolean b = model.isIsomorphicWith(results) ;
             if ( !b )
                 assertTrue("Models not isomorphic", b) ;
         } catch (TurtleParseException ex)
         {
-            throw ex ;    
+            throw ex ;
         }
     }
 }
