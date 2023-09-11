@@ -26,7 +26,6 @@ import java.util.function.Consumer;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.query.ResultSet;
 import org.apache.jena.riot.protobuf.ProtobufRDF;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
@@ -198,12 +197,6 @@ public class ThriftRDF {
         iOut.flush() ;
     }
 
-    /** @deprecated Use {@link #readRowSet} */
-    @Deprecated
-    public static ResultSet readResultSet(InputStream in) {
-        return ResultSet.adapt(readRowSet(in));
-    }
-
     public static RowSet readRowSet(InputStream in) {
         return readRowSet(TRDF.protocol(in)) ;
     }
@@ -213,20 +206,8 @@ public class ThriftRDF {
         return RowSetStream.create(t2b.getVars(), t2b) ;
     }
 
-    /** @deprecated Use {@link #writeRowSet(OutputStream, RowSet)} */
-    @Deprecated
-    public static void writeResultSet(OutputStream out, ResultSet resultSet) {
-        writeRowSet(out, RowSet.adapt(resultSet), false) ;
-    }
-
     public static void writeRowSet(OutputStream out, RowSet rowSet) {
         writeRowSet(out, rowSet, false) ;
-    }
-
-    /** @deprecated Use {@link #writeRowSet(OutputStream, RowSet, boolean)} */
-    @Deprecated
-    public static void writeResultSet(OutputStream out, ResultSet resultSet, boolean withValues) {
-        writeRowSet(out, RowSet.adapt(resultSet), withValues) ;
     }
 
     public static void writeRowSet(OutputStream out, RowSet rowSet, boolean withValues) {
@@ -247,4 +228,3 @@ public class ThriftRDF {
         //Done by Binding2Thrift.close() -- LibThriftRDF.flush(protocol) ;
     }
 }
-

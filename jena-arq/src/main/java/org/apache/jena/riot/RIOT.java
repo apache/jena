@@ -112,11 +112,6 @@ public class RIOT {
         return RIOT.VERSION ;
     }
 
-    @Deprecated
-    public static String getBuildDate() {
-        return "";
-    }
-
     // ---- Symbols
 
     private static String TURTLE_SYMBOL_BASE = "http://jena.apache.org/riot/turtle#";

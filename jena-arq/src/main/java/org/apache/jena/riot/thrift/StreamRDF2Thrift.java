@@ -33,7 +33,6 @@ import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TProtocol;
 
 /** Encode StreamRDF in Thrift.
- *  Usually used via {@link BinRDF} functions.
  *
  * @see Thrift2StreamRDF (for each RDF_StreamRow) for the reverse process.
  */

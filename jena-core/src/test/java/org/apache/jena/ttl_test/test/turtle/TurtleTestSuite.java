@@ -25,15 +25,12 @@ public class TurtleTestSuite extends TestSuite
     static public TestSuite suite() {
         return new TurtleTestSuite() ;
     }
-	
+
 	private TurtleTestSuite()
 	{
 		super("Turtle") ;
         addTest(TestTurtleReader.suite()) ;
         addTest(TurtleInternalTests.suite()) ;
         addTest(TurtleTestFactory.make("testing/Turtle/manifest.ttl")) ;
-//		addTest(new N3ExternalTests()) ;
-//		addTest(new N3JenaReaderTests()) ;
-//		addTest(new N3JenaWriterTests()) ;
 	}
 }
