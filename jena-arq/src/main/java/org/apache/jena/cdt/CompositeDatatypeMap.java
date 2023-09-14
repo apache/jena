@@ -7,7 +7,7 @@ import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.impl.LiteralLabel;
 
-public class CompositeDatatypeMap extends CompositeDatatypeBase
+public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTValue>>
 {
 	public final static String uri = "http://example.org/cdt/Map";
 	public final static CompositeDatatypeMap type = new CompositeDatatypeMap();
@@ -28,6 +28,11 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase
 		@SuppressWarnings("unchecked")
 		final Map<CDTKey,CDTValue> map = (Map<CDTKey,CDTValue>) value;
 
+		return unparseValue(map);
+	}
+
+	@Override
+	public String unparseValue( final Map<CDTKey,CDTValue> map ) {
 		return unparseMap(map);
 	}
 

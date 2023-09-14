@@ -28,7 +28,7 @@ import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.ExprNotComparableException;
 import org.apache.jena.sparql.expr.NodeValue;
 
-public class CompositeDatatypeList extends CompositeDatatypeBase
+public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 {
 	public final static String uri = "http://example.org/cdt/List";
 	public final static CompositeDatatypeList type = new CompositeDatatypeList();
@@ -49,6 +49,11 @@ public class CompositeDatatypeList extends CompositeDatatypeBase
 		@SuppressWarnings("unchecked")
 		final List<CDTValue> list = (List<CDTValue>) value;
 
+		return unparseValue(list);
+	}
+
+	@Override
+	public String unparseValue( final List<CDTValue> list ) {
 		return unparseList(list);
 	}
 
@@ -246,11 +251,16 @@ public class CompositeDatatypeList extends CompositeDatatypeBase
 		return ( list1.size() - list2.size() );
 	}
 
+	@SuppressWarnings("unchecked")
 	public static List<CDTValue> getValue( final LiteralLabel lit ) throws DatatypeFormatException {
 		if ( lit instanceof LiteralLabelForList ) {
 			return ( (LiteralLabelForList) lit ).getValue();
 		}
 		else {
+			final Object value = lit.getValue();
+			//if ( value != null && value instanceof List<?> )
+				//return (List<CDTValue>) value;
+
 			final String lex = lit.getLexicalForm();
 			return parseList(lex);
 		}

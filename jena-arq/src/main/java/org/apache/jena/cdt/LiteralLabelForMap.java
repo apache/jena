@@ -20,8 +20,6 @@ package org.apache.jena.cdt;
 
 import java.util.Map;
 
-import org.apache.jena.datatypes.DatatypeFormatException;
-import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.impl.LiteralLabel;
 
 public class LiteralLabelForMap extends LiteralLabelForCDTs<Map<CDTKey,CDTValue>>
@@ -35,23 +33,7 @@ public class LiteralLabelForMap extends LiteralLabelForCDTs<Map<CDTKey,CDTValue>
 	}
 
 	@Override
-	protected String unparseValueForm( Map<CDTKey,CDTValue> valueForm ) {
-		return CompositeDatatypeMap.unparseMap(valueForm);
-	}
-
-	@Override
-	protected Map<CDTKey,CDTValue> parseLexicalForm( final String lex ) throws DatatypeFormatException {
-		final boolean recursive = false;
-		try {
-			return ParserForCDTLiterals.parseMapLiteral(lex, recursive);
-		}
-		catch ( final Exception ex ) {
-			throw new DatatypeFormatException(lex, CompositeDatatypeList.type, ex);
-		}
-	}
-
-	@Override
-	public RDFDatatype getDatatype() {
+	public CompositeDatatypeMap getDatatype() {
 		return CompositeDatatypeMap.type;
 	}
 
