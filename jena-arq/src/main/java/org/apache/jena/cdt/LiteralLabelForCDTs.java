@@ -31,6 +31,14 @@ public abstract class LiteralLabelForCDTs<T> implements LiteralLabel
 	}
 
 	@Override
+	public abstract CompositeDatatypeBase<T> getDatatype();
+
+	@Override
+	public String getDatatypeURI() {
+		return getDatatype().getURI();
+	}
+
+	@Override
 	public boolean isXML() {
 		return false;
 	}
@@ -81,13 +89,11 @@ public abstract class LiteralLabelForCDTs<T> implements LiteralLabel
 	@Override
 	public String getLexicalForm() {
 		if ( lexicalForm == null ) {
-			lexicalForm = unparseValueForm(valueForm);
+			lexicalForm = getDatatype().unparseValue(valueForm);
 		}
 
 		return lexicalForm;
 	}
-
-	protected abstract String unparseValueForm( T valueForm );
 
 	protected boolean isLexicalFormSet() {
 		return lexicalForm != null;
@@ -117,30 +123,15 @@ public abstract class LiteralLabelForCDTs<T> implements LiteralLabel
 			// try again at the next call of 'getValue()' because now we have
 			// set 'lexicalFormTested'.
 
-			valueForm = parseLexicalForm(lexicalForm);
+			valueForm = getDatatype().parse(lexicalForm);
 		}
 
 		return valueForm;
 	}
 
-	protected abstract T parseLexicalForm( String lex ) throws DatatypeFormatException;
-
-	@Override
-	public String getDatatypeURI() {
-		return getDatatype().getURI();
-	}
-
 	@Override
 	public boolean sameValueAs( final LiteralLabel other ) {
-		if ( ! other.getDatatypeURI().equals(getDatatypeURI()) ) {
-			return false;
-		}
-
-		if ( lexicalForm != null && other.getLexicalForm().equals(lexicalForm) ) {
-			return true;
-		}
-
-		return getValue().equals( other.getValue() );
+		return getDatatype().isEqual(this, other);
 	}
 
 	@Override
