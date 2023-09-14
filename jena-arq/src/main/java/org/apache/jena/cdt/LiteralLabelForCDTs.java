@@ -78,6 +78,14 @@ public abstract class LiteralLabelForCDTs<T> implements LiteralLabel
 	}
 
 	@Override
+	public abstract CompositeDatatypeBase<T> getDatatype();
+
+	@Override
+	public String getDatatypeURI() {
+		return getDatatype().getURI();
+	}
+
+	@Override
 	public boolean isXML() {
 		return false;
 	}
