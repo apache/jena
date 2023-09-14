@@ -18,9 +18,10 @@
 
 package org.apache.jena.cdt;
 
+import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
 
-public abstract class CompositeDatatypeBase implements RDFDatatype
+public abstract class CompositeDatatypeBase<T> implements RDFDatatype
 {
 	@Override
 	public Class<?> getJavaClass() {
@@ -42,4 +43,8 @@ public abstract class CompositeDatatypeBase implements RDFDatatype
 		return this;
 	}
 
+	@Override
+	public abstract T parse( final String lexicalForm ) throws DatatypeFormatException;
+
+	public abstract String unparseValue( final T value );
 }
