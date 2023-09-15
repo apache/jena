@@ -83,23 +83,70 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 		return isValid(lex);
 	}
 
-	/**
-	 * Returns true if the given node is a literal with {@link #uri}
-	 * as its datatype URI. Notice that this does not mean that this
-	 * literal is actually valid; for checking validity, use
-	 * {@link #isValidLiteral(LiteralLabel)}.
-	 */
-	public static boolean isListLiteral( final Node n ) {
-		return n.isLiteral() && n.getLiteralDatatypeURI().equals(uri);
+	@Override
+	public boolean isValid( final String lexicalForm ) {
+		try {
+			// 'recursive' must be false here because the validity check
+			// is only for the literal with the given lexical form and not
+			// for any possible CDT literals inside it
+			ParserForCDTLiterals.parseListLiteral(lexicalForm, false);
+			return true;
+		}
+		catch ( final Exception ex ) {
+			return false;
+		}
 	}
 
-	/**
-	 * Returns true if the datatype URI of the given {@link LiteralLabel} is
-	 * {@link #uri}. Notice that this does not mean that this LiteralLabel is
-	 * actually valid; for checking validity, use {@link #isValidLiteral(LiteralLabel)}.
-	 */
-	public static boolean isListLiteral( final LiteralLabel lit ) {
-		return lit.getDatatypeURI().equals(uri);
+	@Override
+	public List<CDTValue> parse( final String lexicalForm ) throws DatatypeFormatException {
+		final boolean recursive = false;
+		try {
+			return ParserForCDTLiterals.parseListLiteral(lexicalForm, recursive);
+		}
+		catch ( final Exception ex ) {
+			throw new DatatypeFormatException(lexicalForm, type, ex);
+		}
+	}
+
+	@Override
+	public String unparse( final Object value ) {
+		if ( !(value instanceof List<?>) ) {
+			throw new IllegalArgumentException();
+		}
+
+		@SuppressWarnings("unchecked")
+		final List<CDTValue> list = (List<CDTValue>) value;
+
+		return unparseValue(list);
+	}
+
+	@Override
+	public String unparseValue( final List<CDTValue> list ) {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("[");
+		if ( ! list.isEmpty() ) {
+			final Iterator<CDTValue> it = list.iterator();
+			final CDTValue firstElmt = it.next();
+			final String firstElmtAsString = unparseListElement(firstElmt);
+			sb.append(firstElmtAsString);
+			while ( it.hasNext() ) {
+				final CDTValue nextElmt = it.next();
+				final String nextElmtAsString = unparseListElement(nextElmt);
+				sb.append(", ");
+				sb.append(nextElmtAsString);
+			}
+		}
+		sb.append("]");
+		return sb.toString();
+	}
+
+	protected String unparseListElement( final CDTValue elmt ) {
+		return elmt.asLexicalForm();
+	}
+
+	@Override
+	public int getHashCode( final LiteralLabel lit ) {
+		return lit.getDefaultHashcode();
 	}
 
 	@Override

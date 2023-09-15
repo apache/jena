@@ -89,6 +89,88 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 		return isValid(lex);
 	}
 
+	@Override
+	public boolean isValid( final String lexicalForm ) {
+		try {
+			// 'recursive ' must be false here because the validity check
+			// is only for the literal with the given lexical form and not
+			// for any possible CDT literals inside it
+			ParserForCDTLiterals.parseMapLiteral(lexicalForm, false);
+			return true;
+		}
+		catch ( final Exception ex ) {
+			return false;
+		}
+	}
+
+	@Override
+	public Map<CDTKey,CDTValue> parse( final String lexicalForm ) throws DatatypeFormatException {
+		final boolean recursive = false;
+		try {
+			return ParserForCDTLiterals.parseMapLiteral(lexicalForm, recursive);
+		}
+		catch ( final Exception ex ) {
+			throw new DatatypeFormatException(lexicalForm, type, ex);
+		}
+	}
+
+	@Override
+	public String unparse( final Object value ) {
+		if ( !(value instanceof Map<?,?>) ) {
+			throw new IllegalArgumentException();
+		}
+
+		@SuppressWarnings("unchecked")
+		final Map<CDTKey,CDTValue> map = (Map<CDTKey,CDTValue>) value;
+
+		return unparseValue(map);
+	}
+
+	@Override
+	public String unparseValue( final Map<CDTKey,CDTValue> map ) {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("{");
+		if ( ! map.isEmpty() ) {
+			final Iterator<Map.Entry<CDTKey,CDTValue>> it = map.entrySet().iterator();
+
+			final Map.Entry<CDTKey,CDTValue> firstEntry = it.next();
+			unparseMapEntry(firstEntry, sb);
+
+			while ( it.hasNext() ) {
+				sb.append(", ");
+
+				final Map.Entry<CDTKey,CDTValue> nextEntry = it.next();
+				unparseMapEntry(nextEntry, sb);
+			}
+		}
+
+		sb.append("}");
+		return sb.toString();
+	}
+
+	protected void unparseMapEntry( final Map.Entry<CDTKey,CDTValue> entry, final StringBuilder sb ) {
+		sb.append( entry.getKey().asLexicalForm() );
+		sb.append(" : ");
+		sb.append( entry.getValue().asLexicalForm() );
+	}
+
+	@Override
+	public int getHashCode( final LiteralLabel lit ) {
+		return lit.getDefaultHashcode();
+	}
+
+	@Override
+	public boolean isEqual( final LiteralLabel value1, final LiteralLabel value2 ) {
+		if ( ! isMapLiteral(value1) || ! isMapLiteral(value2) ) {
+			return false;
+		}
+
+		final Map<CDTKey,CDTValue> map1 = getValue(value1);
+		final Map<CDTKey,CDTValue> map2 = getValue(value2);
+
+		return map1.equals(map2);
+	}
+
 	/**
 	 * Returns true if the given node is a literal with {@link #uri}
 	 * as its datatype URI. Notice that this does not mean that this
@@ -440,6 +522,10 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 			final String lang2 = n2.getLiteralLanguage();
 			return lang1.compareTo(lang2);
 		}
+
+		@SuppressWarnings("unchecked")
+		final Map<CDTKey,CDTValue> map = (Map<CDTKey,CDTValue>) value;
+		return map;
 	}
 
 }
