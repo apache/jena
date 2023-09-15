@@ -20,77 +20,6 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 	}
 
 	@Override
-	public String unparse( final Object value ) {
-		if ( !(value instanceof Map<?,?>) ) {
-			throw new IllegalArgumentException();
-		}
-
-		@SuppressWarnings("unchecked")
-		final Map<CDTKey,CDTValue> map = (Map<CDTKey,CDTValue>) value;
-
-		return unparseValue(map);
-	}
-
-	@Override
-	public String unparseValue( final Map<CDTKey,CDTValue> map ) {
-		return unparseMap(map);
-	}
-
-	public static String unparseMap( final Map<CDTKey,CDTValue> map ) {
-		final StringBuilder sb = new StringBuilder();
-		sb.append("{");
-		if ( ! map.isEmpty() ) {
-			final Iterator<Map.Entry<CDTKey,CDTValue>> it = map.entrySet().iterator();
-
-			final Map.Entry<CDTKey,CDTValue> firstEntry = it.next();
-			unparseMapEntry(firstEntry, sb);
-
-			while ( it.hasNext() ) {
-				sb.append(", ");
-
-				final Map.Entry<CDTKey,CDTValue> nextEntry = it.next();
-				unparseMapEntry(nextEntry, sb);
-			}
-		}
-
-		sb.append("}");
-		return sb.toString();
-	}
-
-	public static void unparseMapEntry( final Map.Entry<CDTKey,CDTValue> entry, final StringBuilder sb ) {
-		sb.append( entry.getKey().asLexicalForm() );
-		sb.append(" : ");
-		sb.append( entry.getValue().asLexicalForm() );
-	}
-
-	@Override
-	public Map<CDTKey,CDTValue> parse( final String lexicalForm ) throws DatatypeFormatException {
-		return parseMap(lexicalForm);
-	}
-
-	public static Map<CDTKey,CDTValue> parseMap( final String lexicalForm ) throws DatatypeFormatException {
-		final boolean recursive = false;
-		try {
-			return ParserForCDTLiterals.parseMapLiteral(lexicalForm, recursive);
-		}
-		catch ( final Exception ex ) {
-			throw new DatatypeFormatException(lexicalForm, type, ex);
-		}
-	}
-
-	@Override
-	public boolean isValid( final String lexicalForm ) {
-		final boolean recursive = false;
-		try {
-			ParserForCDTLiterals.parseMapLiteral(lexicalForm, recursive);
-		}
-		catch ( final Exception ex ) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
 	public boolean isValidValue( final Object value ) {
 		if ( !(value instanceof Map<?,?>) ) {
 			return false;
@@ -115,7 +44,7 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 		// datatype and the implementation of LiteralLabelForMap makes
 		// sure that these are valid.
 		if ( lit instanceof LiteralLabelForMap ) {
-			return true;
+			return lit.isWellFormed();
 		}
 
 		// However, the given LiteralLabel may come from somewhere else,
@@ -133,6 +62,88 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 
 		final String lex = lit.getLexicalForm();
 		return isValid(lex);
+	}
+
+	@Override
+	public boolean isValid( final String lexicalForm ) {
+		try {
+			// 'recursive ' must be false here because the validity check
+			// is only for the literal with the given lexical form and not
+			// for any possible CDT literals inside it
+			ParserForCDTLiterals.parseMapLiteral(lexicalForm, false);
+			return true;
+		}
+		catch ( final Exception ex ) {
+			return false;
+		}
+	}
+
+	@Override
+	public Map<CDTKey,CDTValue> parse( final String lexicalForm ) throws DatatypeFormatException {
+		final boolean recursive = false;
+		try {
+			return ParserForCDTLiterals.parseMapLiteral(lexicalForm, recursive);
+		}
+		catch ( final Exception ex ) {
+			throw new DatatypeFormatException(lexicalForm, type, ex);
+		}
+	}
+
+	@Override
+	public String unparse( final Object value ) {
+		if ( !(value instanceof Map<?,?>) ) {
+			throw new IllegalArgumentException();
+		}
+
+		@SuppressWarnings("unchecked")
+		final Map<CDTKey,CDTValue> map = (Map<CDTKey,CDTValue>) value;
+
+		return unparseValue(map);
+	}
+
+	@Override
+	public String unparseValue( final Map<CDTKey,CDTValue> map ) {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("{");
+		if ( ! map.isEmpty() ) {
+			final Iterator<Map.Entry<CDTKey,CDTValue>> it = map.entrySet().iterator();
+
+			final Map.Entry<CDTKey,CDTValue> firstEntry = it.next();
+			unparseMapEntry(firstEntry, sb);
+
+			while ( it.hasNext() ) {
+				sb.append(", ");
+
+				final Map.Entry<CDTKey,CDTValue> nextEntry = it.next();
+				unparseMapEntry(nextEntry, sb);
+			}
+		}
+
+		sb.append("}");
+		return sb.toString();
+	}
+
+	protected void unparseMapEntry( final Map.Entry<CDTKey,CDTValue> entry, final StringBuilder sb ) {
+		sb.append( entry.getKey().asLexicalForm() );
+		sb.append(" : ");
+		sb.append( entry.getValue().asLexicalForm() );
+	}
+
+	@Override
+	public int getHashCode( final LiteralLabel lit ) {
+		return lit.getDefaultHashcode();
+	}
+
+	@Override
+	public boolean isEqual( final LiteralLabel value1, final LiteralLabel value2 ) {
+		if ( ! isMapLiteral(value1) || ! isMapLiteral(value2) ) {
+			return false;
+		}
+
+		final Map<CDTKey,CDTValue> map1 = getValue(value1);
+		final Map<CDTKey,CDTValue> map2 = getValue(value2);
+
+		return map1.equals(map2);
 	}
 
 	/**
@@ -154,32 +165,22 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 		return lit.getDatatypeURI().equals(uri);
 	}
 
-	@Override
-	public boolean isEqual( final LiteralLabel value1, final LiteralLabel value2 ) {
-		final Map<CDTKey,CDTValue> map1 = getValue(value1);
-		final Map<CDTKey,CDTValue> map2 = getValue(value2);
-
-		return map1.equals(map2);
-	}
-
+	/**
+	 * Assumes that the datatype of the given literal is cdt:Map.
+	 */
 	public static Map<CDTKey,CDTValue> getValue( final LiteralLabel lit ) throws DatatypeFormatException {
 		if ( lit instanceof LiteralLabelForMap ) {
 			return ( (LiteralLabelForMap) lit ).getValue();
 		}
-		else {
-			final String lex = lit.getLexicalForm();
-			return parseMap(lex);
-		}
-	}
 
-	@Override
-	public int getHashCode( final LiteralLabel lit ) {
-		if ( lit instanceof LiteralLabelForMap ) {
-			return lit.hashCode();
+		final Object value = lit.getValue();
+		if ( value == null || ! (value instanceof Map<?,?>) ) {
+			throw new IllegalArgumentException( lit.toString() + " - " + value );
 		}
-		else {
-			return lit.getLexicalForm().hashCode();
-		}
+
+		@SuppressWarnings("unchecked")
+		final Map<CDTKey,CDTValue> map = (Map<CDTKey,CDTValue>) value;
+		return map;
 	}
 
 }
