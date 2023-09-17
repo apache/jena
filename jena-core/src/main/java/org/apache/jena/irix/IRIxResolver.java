@@ -26,15 +26,20 @@ import org.apache.jena.atlas.lib.CacheFactory;
 
 /**
  * A resolver is a base IRI and a policy for resolution. The policy choices are
- * whether to resolve against the base, or only consider the IRI being processed, and
- * whether to allow relative IRIs or to enforce that "base resolve IRI" is an
- * acceptable IRI for use in RDF (the test is {@link IRIx#isReference()}).
+ * <ul>
+ * <li>whether to resolve against the base, or only consider the IRI being processed</li>
+ * <li>whether to allow relative IRIs after resolving</li>
+ * </ul>
  * <p>
- * Normal use is to resolve and not allow relative IRIs.
- * <p>
+ * The normal behaviour is to resolve URIs and not allow relative IRIs.
+ * </p><p>
+ * A setup with "don't resolve" and "allow relative URIs" passes URIs through untouched,
+ * although a parser may issue a warning.
+ * </p><p>
  * The base may be null to support passing around a resolver that accepts/reject
  * IRIs. For application to check IRIs, use {@link IRIs#check}/{@link IRIs#checkEx}
  * directly.
+ * </p>
  */
 public class IRIxResolver {
 
@@ -91,7 +96,7 @@ public class IRIxResolver {
         return x;
     }
 
-    /** Create a new resolver with the same policies as the old one. */
+    /** Create a new resolver with the same policies as the old one but with a different base URI. */
     public IRIxResolver resetBase(IRIx newBase) {
         return new IRIxResolver(newBase, resolve, allowRelative);
     }
