@@ -39,30 +39,32 @@ import org.xml.sax.XMLReader;
  *
  * @see <a href="https://www.w3.org/TR/rdf-xml/">https://www.w3.org/TR/rdf-xml/</a>
  */
-public class LangRDFXML_SAX implements ReaderRIOT
+public class ReaderRDFXML_SAX implements ReaderRIOT
 {
     public static ReaderRIOTFactory factory = (Lang language, ParserProfile parserProfile) -> {
-        return new LangRDFXML_SAX(parserProfile);
+        return new ReaderRDFXML_SAX(parserProfile);
     };
 
     private final ParserProfile parserProfile;
 
-    public LangRDFXML_SAX(ParserProfile parserProfile) {
+    public ReaderRDFXML_SAX(ParserProfile parserProfile) {
         this.parserProfile = parserProfile;
     }
 
     @Override
     public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-        parse(in, null, baseURI, ct, output, context);
+        InputSource input = new InputSource(in) ;
+        parse(input, baseURI, ct, output, context);
     }
 
     @Override
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
-        parse(null, reader, baseURI, ct, output, context);
+        InputSource input = new InputSource(reader) ;
+        parse(input, baseURI, ct, output, context);
     }
 
-    private void parse(InputStream input, Reader reader, String xmlBase, ContentType ct, StreamRDF destination, Context context) {
-        RDFXMLParser_SAX sax2rdf = new RDFXMLParser_SAX(xmlBase, parserProfile, destination, RIOT.getContext().copy());
+    private void parse(InputSource inputSource, String xmlBase, ContentType ct, StreamRDF destination, Context context) {
+        ParserRDFXML_SAX sax2rdf = new ParserRDFXML_SAX(xmlBase, parserProfile, destination, RIOT.getContext().copy());
         // Configured to avoid XXE
         XMLReader xmlReader;
         try {
@@ -73,8 +75,6 @@ public class LangRDFXML_SAX implements ReaderRIOT
             xmlReader.setErrorHandler(sax2rdf);
             xmlReader.setContentHandler(sax2rdf);
             xmlReader.setProperty("http://xml.org/sax/properties/lexical-handler", sax2rdf);
-
-            InputSource inputSource = (input!=null) ? new InputSource(input) : new InputSource(reader);
 
             destination.start();
             try {

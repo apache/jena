@@ -22,7 +22,7 @@
  * that is the RIOT reader interface implementation and a {@code RDFXMLParser-???}
  * class which is the parser engine.
  * <ul>
- * <li>SAX based {@linkplain RDFXMLParser_SAX}. This is the default parser for Jena5 onwards for
+ * <li>SAX based {@linkplain ParserRDFXML_SAX}. This is the default parser for Jena5 onwards for
  * RDF/XML in RIOT, i.e it is the registration for {@linkplain org.apache.jena.riot.Lang#RDFXML} and it is the fastest.
  * <li>A StAX-based parser using {@link XMLStreamReader}.
  * <li>A StAX-based parser using {@link XMLEventReader}.
