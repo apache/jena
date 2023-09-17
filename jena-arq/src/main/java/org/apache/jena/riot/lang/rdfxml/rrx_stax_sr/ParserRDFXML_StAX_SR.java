@@ -53,7 +53,7 @@ import org.apache.jena.util.XML11Char;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDF.Nodes;
 
-public class RDFXMLParser_StAX_SR {
+public class ParserRDFXML_StAX_SR {
     public static boolean TRACE = false;
     private static boolean EVENTS = true;
     private final IndentedWriter trace;
@@ -147,7 +147,7 @@ public class RDFXMLParser_StAX_SR {
     /** Integer holder for rdf:li */
     private static class Counter { int value = 1; }
 
-    RDFXMLParser_StAX_SR(XMLStreamReader reader, String xmlBase, ParserProfile parserProfile, StreamRDF destination, Context context) {
+    ParserRDFXML_StAX_SR(XMLStreamReader reader, String xmlBase, ParserProfile parserProfile, StreamRDF destination, Context context) {
         // Debug
         IndentedWriter out = IndentedWriter.stdout.clone();
         out.setFlushOnNewline(true);

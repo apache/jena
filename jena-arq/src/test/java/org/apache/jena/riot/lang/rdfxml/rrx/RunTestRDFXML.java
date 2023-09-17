@@ -37,14 +37,14 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.*;
-import org.apache.jena.riot.lang.ReaderRIOTRDFXML1;
+import org.apache.jena.riot.lang.rdfxml.ReaderRDFXML_ARP1;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.sparql.graph.GraphFactory;
 
 /** Ways to run tests on parsers. */
 public class RunTestRDFXML {
 
-    static ReaderRIOTFactory arpFactory = ReaderRIOTRDFXML1.factory;
+    static ReaderRIOTFactory arpFactory = ReaderRDFXML_ARP1.factory;
 
     /**
      * The RDF/XML tests from rdf-tests CG

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang;
+package org.apache.jena.riot.lang.rdfxml;
 
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -55,20 +55,20 @@ import org.xml.sax.SAXParseException ;
  * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/">http://www.w3.org/TR/rdf-syntax-grammar/</a>
  */
 @SuppressWarnings("deprecation")
-public class ReaderRIOTRDFXML0 implements ReaderRIOT
+public class ReaderRDFXML_ARP0 implements ReaderRIOT
 {
     public static ReaderRIOTFactory factory = (Lang language, ParserProfile parserProfile) ->
             // Ignore the provided ParserProfile
             // ARP predates RIOT and does many things internally already.
             // This includes IRI resolution.
-            new ReaderRIOTRDFXML0(parserProfile.getErrorHandler())
+            new ReaderRDFXML_ARP0(parserProfile.getErrorHandler())
             ;
 
     private ErrorHandler errorHandler;
 
     private Context context;
 
-    public ReaderRIOTRDFXML0(ErrorHandler errorHandler) {
+    public ReaderRDFXML_ARP0(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
     }
 

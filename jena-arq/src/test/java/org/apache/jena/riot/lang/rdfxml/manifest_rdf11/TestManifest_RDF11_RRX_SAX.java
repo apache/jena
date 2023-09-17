@@ -24,7 +24,7 @@ import org.apache.jena.arq.junit.runners.RunnerRIOT;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserRegistry;
 import org.apache.jena.riot.ReaderRIOTFactory;
-import org.apache.jena.riot.lang.rdfxml.rrx.LangRDFXML_SAX;
+import org.apache.jena.riot.lang.rdfxml.rrx.ReaderRDFXML_SAX;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -42,7 +42,7 @@ public class TestManifest_RDF11_RRX_SAX {
     public static void beforeClass() {
         systemReaderfactory = RDFParserRegistry.getFactory(Lang.RDFXML);
         // Register test parser.
-        RDFParserRegistry.registerLangTriples(Lang.RDFXML, LangRDFXML_SAX.factory);
+        RDFParserRegistry.registerLangTriples(Lang.RDFXML, ReaderRDFXML_SAX.factory);
     }
 
     @AfterClass
