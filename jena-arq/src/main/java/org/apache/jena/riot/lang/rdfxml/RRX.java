@@ -19,11 +19,9 @@
 package org.apache.jena.riot.lang.rdfxml;
 
 import org.apache.jena.riot.*;
-import org.apache.jena.riot.lang.ReaderRIOTRDFXML0;
-import org.apache.jena.riot.lang.ReaderRIOTRDFXML1;
-import org.apache.jena.riot.lang.rdfxml.rrx.LangRDFXML_SAX;
-import org.apache.jena.riot.lang.rdfxml.rrx_stax_ev.LangRDFXML_StAX_EV;
-import org.apache.jena.riot.lang.rdfxml.rrx_stax_sr.LangRDFXML_StAX_SR;
+import org.apache.jena.riot.lang.rdfxml.rrx.ReaderRDFXML_SAX;
+import org.apache.jena.riot.lang.rdfxml.rrx_stax_ev.ReaderRDFXML_StAX_EV;
+import org.apache.jena.riot.lang.rdfxml.rrx_stax_sr.ReaderRDFXML_StAX_SR;
 
 /**
  * Addition registration of RDF/XML parsers to given each it's own {@link Lang} name.
@@ -67,13 +65,13 @@ public class RRX {
      */
     public static void register() {
         // RRX
-        register(RDFXML_SAX,     LangRDFXML_SAX.factory);
-        register(RDFXML_StAX_ev, LangRDFXML_StAX_EV.factory);
-        register(RDFXML_StAX_sr, LangRDFXML_StAX_SR.factory);
+        register(RDFXML_SAX,     ReaderRDFXML_SAX.factory);
+        register(RDFXML_StAX_ev, ReaderRDFXML_StAX_EV.factory);
+        register(RDFXML_StAX_sr, ReaderRDFXML_StAX_SR.factory);
 
         // Names for ARP
-        register(RDFXML_ARP1,    ReaderRIOTRDFXML1.factory);
-        register(RDFXML_ARP0,    ReaderRIOTRDFXML0.factory);
+        register(RDFXML_ARP1,    ReaderRDFXML_ARP1.factory);
+        register(RDFXML_ARP0,    ReaderRDFXML_ARP0.factory);
     }
 
     private static void register(Lang lang, ReaderRIOTFactory factory) {

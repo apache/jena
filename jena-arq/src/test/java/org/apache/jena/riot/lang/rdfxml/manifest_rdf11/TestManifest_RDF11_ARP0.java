@@ -24,7 +24,7 @@ import org.apache.jena.arq.junit.runners.RunnerRIOT;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserRegistry;
 import org.apache.jena.riot.ReaderRIOTFactory;
-import org.apache.jena.riot.lang.ReaderRIOTRDFXML0;
+import org.apache.jena.riot.lang.rdfxml.ReaderRDFXML_ARP0;
 import org.apache.jena.sys.JenaSystem;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -43,7 +43,7 @@ public class TestManifest_RDF11_ARP0 {
     public static void beforeClass() {
         JenaSystem.init();;
         systemReaderfactory = RDFParserRegistry.getFactory(Lang.RDFXML);
-        RDFParserRegistry.registerLangTriples(Lang.RDFXML, ReaderRIOTRDFXML0.factory);
+        RDFParserRegistry.registerLangTriples(Lang.RDFXML, ReaderRDFXML_ARP0.factory);
     }
 
     @AfterClass

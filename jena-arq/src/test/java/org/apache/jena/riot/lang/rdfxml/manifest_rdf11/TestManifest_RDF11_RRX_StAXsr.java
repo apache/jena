@@ -24,7 +24,7 @@ import org.apache.jena.arq.junit.runners.RunnerRIOT;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserRegistry;
 import org.apache.jena.riot.ReaderRIOTFactory;
-import org.apache.jena.riot.lang.rdfxml.rrx_stax_sr.LangRDFXML_StAX_SR;
+import org.apache.jena.riot.lang.rdfxml.rrx_stax_sr.ReaderRDFXML_StAX_SR;
 import org.apache.jena.sys.JenaSystem;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -43,7 +43,7 @@ public class TestManifest_RDF11_RRX_StAXsr {
     public static void beforeClass() {
         JenaSystem.init();;
         systemReaderfactory = RDFParserRegistry.getFactory(Lang.RDFXML);
-        RDFParserRegistry.registerLangTriples(Lang.RDFXML, LangRDFXML_StAX_SR.factory);
+        RDFParserRegistry.registerLangTriples(Lang.RDFXML, ReaderRDFXML_StAX_SR.factory);
     }
 
     @AfterClass

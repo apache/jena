@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang;
+package org.apache.jena.riot.lang.rdfxml;
 
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -54,19 +54,19 @@ import org.xml.sax.SAXParseException ;
  *
  * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/">http://www.w3.org/TR/rdf-syntax-grammar/</a>
  */
-public class ReaderRIOTRDFXML1 implements ReaderRIOT
+public class ReaderRDFXML_ARP1 implements ReaderRIOT
 {
     public static ReaderRIOTFactory factory = (Lang language, ParserProfile parserProfile) -> {
         // Ignore the provided ParserProfile
         // ARP predates RIOT and does many things internally already.
-        return new ReaderRIOTRDFXML1(parserProfile);
+        return new ReaderRDFXML_ARP1(parserProfile);
     };
 
     private final ParserProfile parserProfile;
     private final ErrorHandler errorHandler;
 
 
-    public ReaderRIOTRDFXML1(ParserProfile parserProfile) {
+    public ReaderRDFXML_ARP1(ParserProfile parserProfile) {
         this.parserProfile = parserProfile;
         this.errorHandler = parserProfile.getErrorHandler();
     }
@@ -140,8 +140,8 @@ public class ReaderRIOTRDFXML1 implements ReaderRIOT
         if ( legacySwitch ) {
             Log.warnOnce(SysRIOT.getLogger(),
                          "Do not use rdfxml:rdfxml0 - use Lang RRX#RDFXML_ARP0 or \"--syntax arp0\"",
-                         ReaderRIOTRDFXML0.class);
-            ReaderRIOTRDFXML0 other = new ReaderRIOTRDFXML0(parserProfile.getErrorHandler());
+                         ReaderRDFXML_ARP0.class);
+            ReaderRDFXML_ARP0 other = new ReaderRDFXML_ARP0(parserProfile.getErrorHandler());
             other.parse(input, reader, xmlBase, ct, sink, context);
             return;
         }

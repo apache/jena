@@ -21,7 +21,7 @@ package org.apache.jena.riot.lang.rdfxml.rrx;
 import java.util.List;
 
 import org.apache.jena.riot.ReaderRIOTFactory;
-import org.apache.jena.riot.lang.rdfxml.rrx_stax_sr.LangRDFXML_StAX_SR;
+import org.apache.jena.riot.lang.rdfxml.rrx_stax_sr.ReaderRDFXML_StAX_SR;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -35,7 +35,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class Test_RRX_Local_StAXsr extends AbstractTestRDFXML_RRX {
 
-    private static ReaderRIOTFactory rdfxmlStAXsrFactory = LangRDFXML_StAX_SR.factory;
+    private static ReaderRIOTFactory rdfxmlStAXsrFactory = ReaderRDFXML_StAX_SR.factory;
     private static String implLabel = "StAX(sr)";
 
     @Parameters(name = "{index}: {0} {1}")
