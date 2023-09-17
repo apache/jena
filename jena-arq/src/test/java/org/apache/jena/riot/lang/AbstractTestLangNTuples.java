@@ -201,7 +201,7 @@ abstract public class AbstractTestLangNTuples
         String string = String.join("\n", strings);
         Tokenizer tokenizer = tokenizer(string);
         StreamRDFCounting sink = StreamRDFLib.count();
-        LangRIOT x = RiotParsers.createParserNQuads(tokenizer, sink, parserProfile(new ErrorHandlerEx()));
+        LangRIOT x = IteratorParsers.createParserNQuads(tokenizer, sink, parserProfile(new ErrorHandlerEx()));
         x.parse();
     }
 
@@ -209,7 +209,7 @@ abstract public class AbstractTestLangNTuples
         String string = String.join("\n", strings);
         Tokenizer tokenizer = tokenizer(charSpace, string);
         StreamRDFCounting sink = StreamRDFLib.count();
-        LangRIOT x = RiotParsers.createParserNTriples(tokenizer, sink, parserProfile(new ErrorHandlerEx()));
+        LangRIOT x = IteratorParsers.createParserNTriples(tokenizer, sink, parserProfile(new ErrorHandlerEx()));
         x.parse();
         return sink.count();
     }
