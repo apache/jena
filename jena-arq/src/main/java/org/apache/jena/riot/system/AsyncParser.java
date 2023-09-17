@@ -36,12 +36,8 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFParser;
-import org.apache.jena.riot.RDFParserBuilder;
-import org.apache.jena.riot.RiotException;
-import org.apache.jena.riot.SysRIOT;
-import org.apache.jena.riot.lang.RiotParsers;
+import org.apache.jena.riot.*;
+import org.apache.jena.riot.lang.IteratorParsers;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.util.iterator.ClosableIterator;
 import org.slf4j.Logger;
@@ -129,7 +125,7 @@ public class AsyncParser {
     /**
      * Pull parser - triples.
      * <p>
-     * See also {@link RiotParsers#createIteratorNTriples}.
+     * See also {@link IteratorParsers#createIteratorNTriples}.
      */
     public static IteratorCloseable<Triple> asyncParseTriples(InputStream input, Lang lang, String baseURI) {
         return AsyncParser.of(input, lang, baseURI).asyncParseTriples();
@@ -148,7 +144,7 @@ public class AsyncParser {
     /**
      * Pull parser - quads.
      * <p>
-     * See also {@link RiotParsers#createIteratorNQuads}.
+     * See also {@link IteratorParsers#createIteratorNQuads}.
      */
     public static IteratorCloseable<Quad> asyncParseQuads(InputStream input, Lang lang, String baseURI) {
         return AsyncParser.of(input, lang, baseURI).asyncParseQuads();
