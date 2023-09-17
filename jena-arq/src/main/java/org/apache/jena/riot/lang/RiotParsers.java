@@ -21,13 +21,11 @@ package org.apache.jena.riot.lang;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Iterator;
 
 import org.apache.jena.atlas.io.PeekReader;
 import org.apache.jena.atlas.json.io.parser.TokenizerJSON;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.web.ContentType;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.protobuf.ProtobufRDF;
 import org.apache.jena.riot.protobuf.RiotProtobufException;
@@ -36,7 +34,6 @@ import org.apache.jena.riot.thrift.RiotThriftException;
 import org.apache.jena.riot.thrift.ThriftRDF;
 import org.apache.jena.riot.tokens.Tokenizer;
 import org.apache.jena.riot.tokens.TokenizerText;
-import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
 
 /** Use {@link RDFParser} via:
@@ -264,42 +261,6 @@ public class RiotParsers {
         public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
             throw new RiotException("RDF Thrift : Reading binary data from a java.io.reader is not supported. Please use an InputStream");
         }
-    }
-
-    /** Create an iterator for parsing N-Triples. */
-    public static Iterator<Triple> createIteratorNTriples(InputStream input) {
-        return createIteratorNTriples(input, RiotLib.dftProfile());
-    }
-
-    /** Create an iterator for parsing N-Triples. */
-    public static Iterator<Triple> createIteratorNTriples(InputStream input, ParserProfile profile) {
-        // LangNTriples supports iterator use.
-        Tokenizer tokenizer = TokenizerText.create().source(input).errorHandler(profile.getErrorHandler()).build();
-        return createParserNTriples(tokenizer, null, profile);
-    }
-
-    /*package*/ static LangNTriples createParserNTriples(Tokenizer tokenizer, StreamRDF dest, ParserProfile profile) {
-        LangNTriples parser = new LangNTriples(tokenizer, profile, dest);
-        return parser;
-    }
-
-    /** Create an iterator for parsing N-Quads. */
-    public static Iterator<Quad> createIteratorNQuads(InputStream input) {
-        return createIteratorNQuads(input, RiotLib.dftProfile());
-    }
-
-    /**
-     * Create an iterator for parsing N-Quads.
-     */
-    public static Iterator<Quad> createIteratorNQuads(InputStream input, ParserProfile profile) {
-        // LangNQuads supports iterator use.
-        Tokenizer tokenizer = TokenizerText.create().source(input).errorHandler(profile.getErrorHandler()).build();
-        return createParserNQuads(tokenizer, null,  profile);
-    }
-
-    /*package*/ static LangNQuads createParserNQuads(Tokenizer tokenizer, StreamRDF dest, ParserProfile profile) {
-        LangNQuads parser = new LangNQuads(tokenizer, profile, dest);
-        return parser;
     }
 }
 

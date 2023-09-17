@@ -31,7 +31,7 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.riot.lang.RiotParsers;
+import org.apache.jena.riot.lang.IteratorParsers;
 import org.apache.jena.riot.system.AsyncParser;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.riot.system.StreamRDF;
@@ -822,13 +822,13 @@ public class RDFDataMgr
      * @param lang Language
      * @param baseIRI Base IRI
      * @return Iterator over the triples
-     * @deprecated Use {@link AsyncParser#asyncParseTriples} or for N-Triples, {@link RiotParsers#createIteratorNTriples}
+     * @deprecated Use {@link AsyncParser#asyncParseTriples} or for N-Triples, {@link IteratorParsers#createIteratorNTriples}
      */
     @Deprecated
     public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseIRI) {
         // Special case N-Triples, because the RIOT reader has a pull interface
         if ( RDFLanguages.sameLang(RDFLanguages.NTRIPLES, lang) )
-            return Iter.onCloseIO(RiotParsers.createIteratorNTriples(input), input);
+            return Iter.onCloseIO(IteratorParsers.createIteratorNTriples(input), input);
         // Otherwise, we have to spin up a thread to deal with it
         return AsyncParser.asyncParseTriples(input, lang, baseIRI);
     }
@@ -841,13 +841,13 @@ public class RDFDataMgr
      * @param lang Language
      * @param baseIRI Base IRI
      * @return Iterator over the quads
-     * @deprecated Use {@link AsyncParser#asyncParseQuads} or for N-Triples, {@link RiotParsers#createIteratorNQuads}
+     * @deprecated Use {@link AsyncParser#asyncParseQuads} or for N-Triples, {@link IteratorParsers#createIteratorNQuads}
      */
     @Deprecated
     public static Iterator<Quad> createIteratorQuads(InputStream input, Lang lang, String baseIRI) {
         // Special case N-Quads, because the RIOT reader has a pull interface
         if ( RDFLanguages.sameLang(RDFLanguages.NQUADS, lang) )
-            return Iter.onCloseIO(RiotParsers.createIteratorNQuads(input, RiotLib.dftProfile()), input);
+            return Iter.onCloseIO(IteratorParsers.createIteratorNQuads(input, RiotLib.dftProfile()), input);
         // Otherwise, we have to spin up a thread to deal with it
         return AsyncParser.asyncParseQuads(input, lang, baseIRI);
     }
