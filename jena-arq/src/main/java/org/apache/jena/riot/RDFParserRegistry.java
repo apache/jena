@@ -20,24 +20,12 @@ package org.apache.jena.riot;
 
 import static org.apache.jena.riot.Lang.*;
 
-import java.io.InputStream;
-import java.io.Reader;
 import java.util.*;
 
-import org.apache.jena.atlas.lib.InternalErrorException;
-import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.riot.lang.*;
 import org.apache.jena.riot.lang.extra.TurtleJCC;
 import org.apache.jena.riot.lang.rdfxml.RRX;
 import org.apache.jena.riot.lang.rdfxml.rrx.LangRDFXML_SAX;
-import org.apache.jena.riot.protobuf.ProtobufRDF;
-import org.apache.jena.riot.protobuf.RiotProtobufException;
-import org.apache.jena.riot.system.ErrorHandlerFactory;
-import org.apache.jena.riot.system.ParserProfile;
-import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.thrift.RiotThriftException;
-import org.apache.jena.riot.thrift.ThriftRDF;
-import org.apache.jena.sparql.util.Context;
 
 /** The registry of languages and parsers.
  * To register a new parser:
@@ -73,45 +61,32 @@ public class RDFParserRegistry
         // Make sure the constants are initialized.
         RDFLanguages.init();
 
-        /** General parser factory for parsers implemented by "Lang" */
-        ReaderRIOTFactory parserFactory          = ReaderRIOTLang.factory;
+        registerLangTriples(NTRIPLES,   RiotParsers.factoryNT);
+        registerLangTriples(N3,         RiotParsers.factoryTTL);
+        registerLangTriples(TURTLE,     RiotParsers.factoryTTL);
 
-        ReaderRIOTFactory parserFactoryRDFXML    = LangRDFXML_SAX.factory;
-        ReaderRIOTFactory parserFactoryProtobuf  = ReaderRDFProtobuf.factory;
-        ReaderRIOTFactory parserFactoryThrift    = ReaderRDFThrift.factory;
-        ReaderRIOTFactory parserFactoryTriX      = ReaderTriX.factory;
-        ReaderRIOTFactory parserFactoryRDFNULL   = ReaderRDFNULL.factory;
+        registerLangTriples(RDFJSON,    RiotParsers.factoryRDFJSON);
 
-        registerLangTriples(NTRIPLES,   parserFactory);
-        registerLangTriples(N3,         parserFactory);
-        registerLangTriples(TURTLE,     parserFactory);
-        registerLangTriples(RDFJSON,    parserFactory);
-        registerLangTriples(RDFXML,     parserFactoryRDFXML);
-        registerLangTriples(RDFPROTO,   parserFactoryProtobuf);
-        registerLangTriples(RDFTHRIFT,  parserFactoryTriX);
-        registerLangTriples(TRIX,       parserFactoryTriX);
-        registerLangTriples(RDFNULL,    parserFactoryRDFNULL);
+        registerLangTriples(RDFXML,     LangRDFXML_SAX.factory);
+        registerLangTriples(RDFPROTO,   RiotParsers.factoryRDFProtobuf);
+        registerLangTriples(RDFTHRIFT,  RiotParsers.factoryRDFThrift);
 
-        // Keep here, not in statics, due to class initialization ordering effects.
-        // JSON-LD
-        ReaderRIOTFactory parserFactoryJsonLD11  = new ReaderRIOTFactoryJSONLD11();
-
-        // ==== JSON-LD system default for parsing.
-        ReaderRIOTFactory jsonldParserDefault = parserFactoryJsonLD11;
+        registerLangTriples(TRIX,       ReaderTriX.factory);
+        registerLangTriples(RDFNULL,    ReaderRDFNULL.factory);
 
         // Register default JSON-LD here.
-        registerLangTriples(JSONLD,     jsonldParserDefault);
-        registerLangTriples(JSONLD11,   parserFactoryJsonLD11);
+        registerLangTriples(JSONLD,     RiotParsers.factoryJSONLD);
+        registerLangTriples(JSONLD11,   RiotParsers.factoryJSONLD);
 
-        registerLangQuads(NQUADS,       parserFactory);
-        registerLangQuads(TRIG,         parserFactory);
-        registerLangQuads(RDFPROTO,     parserFactoryProtobuf);
-        registerLangQuads(RDFTHRIFT,    parserFactoryThrift);
-        registerLangQuads(TRIX,         parserFactoryTriX);
-        registerLangQuads(RDFNULL,      parserFactoryRDFNULL);
+        registerLangQuads(NQUADS,       RiotParsers.factoryNQ);
+        registerLangQuads(TRIG,         RiotParsers.factoryTRIG);
+        registerLangQuads(RDFPROTO,     RiotParsers.factoryRDFProtobuf);
+        registerLangQuads(RDFTHRIFT,    RiotParsers.factoryRDFThrift);
+        registerLangQuads(TRIX,         ReaderTriX.factory);
+        registerLangQuads(RDFNULL,      ReaderRDFNULL.factory);
 
-        registerLangQuads(JSONLD,       jsonldParserDefault);
-        registerLangQuads(JSONLD11,     parserFactoryJsonLD11);
+        registerLangQuads(JSONLD,       RiotParsers.factoryJSONLD);
+        registerLangQuads(JSONLD11,     RiotParsers.factoryJSONLD);
 
         // Javacc based Turtle parser, different language name.
         // Lang = TurtleJCC.TTLJCC.
@@ -179,96 +154,6 @@ public class RDFParserRegistry
     /** Return registered quad languages. */
     public static Collection<Lang> registeredLangQuads() {
         return Set.copyOf(langQuads);
-    }
-
-    // Parsers and factories.
-
-    private static class ReaderRIOTLang implements ReaderRIOT
-    {
-        static ReaderRIOTFactory factory =
-            (Lang lang, ParserProfile parserProfile) -> new ReaderRIOTLang(lang, parserProfile);
-
-        private final Lang lang;
-        private ParserProfile parserProfile = null;
-
-        ReaderRIOTLang(Lang lang, ParserProfile parserProfile) {
-            this.lang = lang;
-            this.parserProfile = parserProfile;
-        }
-
-        @Override
-        public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            LangRIOT parser = RiotParsers.createParser(in, lang, output, parserProfile);
-            parser.parse();
-        }
-
-        @Override
-        public void read(Reader in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            LangRIOT parser = RiotParsers.createParser(in, lang, output, parserProfile);
-            parser.parse();
-        }
-    }
-
-    private static class ReaderRIOTFactoryJSONLD11 implements ReaderRIOTFactory {
-        @Override
-        public ReaderRIOT create(Lang language, ParserProfile profile) {
-            if ( !Lang.JSONLD.equals(language) && !Lang.JSONLD11.equals(language) )
-                throw new InternalErrorException("Attempt to parse " + language + " as JSON-LD 1.1");
-            // Titanium json-ld for JSON-LD 1.1
-            return new LangJSONLD11(language, profile, profile.getErrorHandler());
-        }
-    }
-
-    private static class ReaderRDFProtobuf implements ReaderRIOT {
-        static ReaderRIOTFactory factory = (Lang language, ParserProfile profile) -> new ReaderRDFProtobuf(profile);
-
-        private final ParserProfile profile;
-
-        public ReaderRDFProtobuf(ParserProfile profile) {
-            this.profile = profile;
-        }
-
-        @Override
-        public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            try {
-                ProtobufRDF.inputStreamToStreamRDF(in, output);
-            } catch (RiotProtobufException ex) {
-                if ( profile != null && profile.getErrorHandler() != null )
-                    profile.getErrorHandler().error(ex.getMessage(), -1, -1);
-                else
-                    ErrorHandlerFactory.errorHandlerStd.error(ex.getMessage(), -1, -1);
-                throw ex;
-            }
-        }
-
-        @Override
-        public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            throw new RiotException("RDF Protobuf : Reading binary data from a java.io.reader is not supported. Please use an InputStream");
-        }
-    }
-
-    private static class ReaderRDFThrift implements ReaderRIOT {
-        static ReaderRIOTFactory factory = (Lang language, ParserProfile profile) -> new ReaderRDFThrift(profile);
-        private final ParserProfile profile;
-        public ReaderRDFThrift(ParserProfile profile) { this.profile = profile; }
-
-        @Override
-        public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            try {
-                ThriftRDF.inputStreamToStream(in, output);
-            } catch (RiotThriftException ex) {
-                if ( profile != null && profile.getErrorHandler() != null )
-                    profile.getErrorHandler().error(ex.getMessage(), -1, -1);
-                else
-                    ErrorHandlerFactory.errorHandlerStd.error(ex.getMessage(), -1 , -1);
-                throw ex;
-            }
-        }
-
-        @Override
-        public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
-            throw new RiotException("RDF Thrift : Reading binary data from a java.io.reader is not supported. Please use an InputStream");
-        }
     }
 }
 

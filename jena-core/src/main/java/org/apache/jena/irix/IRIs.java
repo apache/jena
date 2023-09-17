@@ -70,7 +70,7 @@ public class IRIs {
 
     /** The system base IRI as a string. */
     public static String getBaseStr() {
-        return SystemIRIx.getSystemBase().toString();
+        return SystemIRIx.getSystemBase().str();
     }
 
     /**

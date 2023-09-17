@@ -455,7 +455,8 @@ public class TestLangRdfJson {
         ByteArrayInputStream in = new ByteArrayInputStream(b);
         Tokenizer tokenizer = TokenizerText.create().source(in).build();
         StreamRDFCounting sink = StreamRDFLib.count();
-        LangRDFJSON parser = RiotParsers.createParserRdfJson(tokenizer, sink, RiotLib.dftProfile());
+        // IllegalArgumentException - not a TokenizerJSON.
+        LangRDFJSON x = new LangRDFJSON(tokenizer, RiotLib.dftProfile(), sink);
     }
 
     private long parseCount(String string) {

@@ -58,8 +58,7 @@ public class TokenizerJSON implements Tokenizer
     private final PeekReader reader;
     private boolean finished = false;
 
-    public TokenizerJSON(PeekReader reader)
-    {
+    public TokenizerJSON(PeekReader reader) {
         this.reader = reader;
     }
 

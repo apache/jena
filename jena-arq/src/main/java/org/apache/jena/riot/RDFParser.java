@@ -406,7 +406,7 @@ public class RDFParser {
         read(readerRiot, inputStream, jr, baseURI, context, ct, destination);
     }
 
-    /** Call the reader, from either an InputStream or a Reader */
+    /** Call the RIOT reader, from either an InputStream or a Reader */
     private static void read(ReaderRIOT readerRiot, InputStream inputStream, Reader javaReader,
                              String baseUri, Context context,
                              ContentType ct, StreamRDF destination) {

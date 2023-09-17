@@ -18,6 +18,8 @@
 
 package org.apache.jena.riot.system;
 
+import java.util.Objects;
+
 import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.datatypes.RDFDatatype;
@@ -50,11 +52,12 @@ public class ParserProfileStd implements ParserProfile {
 
     private boolean allowNodeExtentions;
 
-    public ParserProfileStd(FactoryRDF factory, ErrorHandler errorHandler, IRIxResolver resolver, PrefixMap prefixMap, Context context,
+    public ParserProfileStd(FactoryRDF factory, ErrorHandler errorHandler,
+                            IRIxResolver resolver, PrefixMap prefixMap, Context context,
                             boolean checking, boolean strictMode) {
         this.factory = factory;
         this.errorHandler = errorHandler;
-        this.resolver = resolver;
+        this.resolver = Objects.requireNonNull(resolver);
         this.prefixMap = prefixMap;
         this.context = context;
         this.checking = checking;
@@ -85,6 +88,11 @@ public class ParserProfileStd implements ParserProfile {
 
     @Override
     public void setBaseIRI(String baseIRIstr) {
+        // Resolver never null but it might have a null base URI.
+        if ( baseIRIstr == null ) {
+            this.resolver = resolver.resetBase(null);
+            return;
+        }
         IRIx newBase = resolver.resolve(baseIRIstr);
         this.resolver = resolver.resetBase(newBase);
     }
@@ -95,7 +103,6 @@ public class ParserProfileStd implements ParserProfile {
             errorHandler.warning("Bad IRI: <" + uriStr + "> Spaces are not legal in URIs/IRIs.", line, col);
             return IRIx.createAny(uriStr);
         }
-
         try {
             IRIx iri = resolver.resolve(uriStr);
             if ( checking )
@@ -311,6 +318,13 @@ public class ParserProfileStd implements ParserProfile {
                 return null;
             }
         }
+    }
+
+    @Override
+    public String getBaseURI() {
+        if ( resolver == null )
+            return null;
+        return resolver.getBaseURI();
     }
 
     @Override
