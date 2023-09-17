@@ -33,7 +33,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class Test_RRX_Local_SAX extends AbstractTestRDFXML_RRX {
 
-    private static ReaderRIOTFactory rdfxmlSAXfactory = LangRDFXML_SAX.factory;
+    private static ReaderRIOTFactory rdfxmlSAXfactory = ReaderRDFXML_SAX.factory;
     private static String implLabel = "SAX";
 
     @Parameters(name = "{index}: {0} {1}")

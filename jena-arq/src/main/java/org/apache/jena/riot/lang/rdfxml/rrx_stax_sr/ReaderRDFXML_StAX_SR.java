@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang.rdfxml.rrx_stax_ev;
+package org.apache.jena.riot.lang.rdfxml.rrx_stax_sr;
 
 import java.io.InputStream;
 import java.io.Reader;
 
-import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.riot.Lang;
@@ -38,53 +38,46 @@ import org.apache.jena.util.JenaXMLInput;
 /**
  * RDF/XML parser.
  * <p>
- * This implementation uses StAX events vi {@link XMLEventReader}.
+ * This implementation uses StAX via {@link XMLStreamReader}.
  *
  * @see <a href="https://www.w3.org/TR/rdf-xml/">https://www.w3.org/TR/rdf-xml/</a>
  */
-public class LangRDFXML_StAX_EV implements ReaderRIOT
+
+public class ReaderRDFXML_StAX_SR implements ReaderRIOT
 {
     public static ReaderRIOTFactory factory = (Lang language, ParserProfile parserProfile) -> {
-        return new LangRDFXML_StAX_EV(parserProfile);
+        return new ReaderRDFXML_StAX_SR(parserProfile);
     };
 
+    private static final XMLInputFactory xmlInputFactory = createXMLInputFactory();
     private final ParserProfile parserProfile;
 
-    public LangRDFXML_StAX_EV(ParserProfile parserProfile) {
+    public ReaderRDFXML_StAX_SR(ParserProfile parserProfile) {
         this.parserProfile = parserProfile;
     }
 
     @Override
-    public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) {
-        parse(in, null, baseURI, ct, output, context);
+    public void read(InputStream input, String baseURI, ContentType ct, StreamRDF output, Context context) {
+        try {
+            XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(input);
+            parse(xmlStreamReader, baseURI, ct, output, context);
+        } catch (XMLStreamException ex) {
+            throw new RiotException("Failed to create the XMLEventReader", ex);
+        }
     }
 
     @Override
     public void read(Reader reader, String baseURI, ContentType ct, StreamRDF output, Context context) {
-        parse(null, reader, baseURI, ct, output, context);
-    }
-
-    private void parse(InputStream input, Reader reader, String xmlBase, ContentType ct, StreamRDF destination, Context context) {
-        XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-        JenaXMLInput.initXMLInputFactory(xmlInputFactory);
-
-        // Enable character entity support.
-        xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);
-        xmlInputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.TRUE);
-        // Set merging.
-        xmlInputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
-
-        XMLEventReader xmlEventReader = null;
         try {
-            if ( input != null )
-                xmlEventReader = xmlInputFactory.createXMLEventReader(input);
-            else
-                xmlEventReader = xmlInputFactory.createXMLEventReader(reader);
+            XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(reader);
+            parse(xmlStreamReader, baseURI, ct, output, context);
         } catch (XMLStreamException ex) {
             throw new RiotException("Failed to create the XMLEventReader", ex);
         }
+    }
 
-        RDFXMLParser_StAX_EV parser = new RDFXMLParser_StAX_EV(xmlEventReader, xmlBase, parserProfile, destination, context);
+     private void parse(XMLStreamReader xmlStreamReader, String xmlBase, ContentType ct, StreamRDF destination, Context context) {
+        ParserRDFXML_StAX_SR parser = new ParserRDFXML_StAX_SR(xmlStreamReader, xmlBase, parserProfile, destination, context);
         destination.start();
         try {
             parser.parse();
@@ -94,6 +87,20 @@ public class LangRDFXML_StAX_EV implements ReaderRIOT
             throw ex;
         } catch (Exception ex) {
             throw new RiotException(ex);
-        } finally { destination.finish(); }
+        }
+        finally {
+            destination.finish();
+        }
+    }
+
+    private static XMLInputFactory createXMLInputFactory() {
+        XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+        JenaXMLInput.initXMLInputFactory(xmlInputFactory);
+        // Enable character entity support.
+        xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);
+        xmlInputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.TRUE);
+        // Set merging.
+        xmlInputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
+        return xmlInputFactory;
     }
 }

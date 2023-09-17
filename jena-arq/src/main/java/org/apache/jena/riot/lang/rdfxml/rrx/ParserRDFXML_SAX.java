@@ -51,7 +51,7 @@ import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.EntityResolver2;
 import org.xml.sax.ext.LexicalHandler;
 
-public class RDFXMLParser_SAX
+public class ParserRDFXML_SAX
         implements
             ContentHandler,
             ErrorHandler,
@@ -418,7 +418,7 @@ public class RDFXMLParser_SAX
 
 // // Forming objects.
 // private ParseType parseType = null;
-    public RDFXMLParser_SAX(String xmlBase, ParserProfile parserProfile, StreamRDF destination, Context context) {
+    public ParserRDFXML_SAX(String xmlBase, ParserProfile parserProfile, StreamRDF destination, Context context) {
         // Debug
         if ( TRACE )
         {
