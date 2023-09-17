@@ -88,12 +88,15 @@ public interface ParserProfile {
     /** Is this in strict mode? */
     public boolean isStrictMode();
 
+    /* Return the current base URI. This may be null for "no current base". */
+    public String getBaseURI();
+
     /* Return the prefix map, if any, used for mapping tokens into Nodes. */
     public PrefixMap getPrefixMap();
 
-    /** Get the {@link ErrorHandler error handler} used by this {@code ParserProfile} */
+    /** Get the {@link ErrorHandler error handler} used by this {@code ParserProfile}. */
     public ErrorHandler getErrorHandler();
 
-    /** Get the {@link FactoryRDF factory for RDF terms, triples and quads} */
+    /** Get the {@link FactoryRDF factory} for RDF terms, triples and quads. */
     public FactoryRDF getFactorRDF();
 }

@@ -27,9 +27,12 @@ import org.apache.jena.riot.system.StreamRDFLib ;
 /** Helper code for RIOT language parsing tests. */
 class ParserTests {
 
+    // Must end in / for easy use in tests
+    static String BASE = "http://base/";
+
     /** Setup parser for the tests: base "http://base/" and ErrorHandlerEx. */
     static RDFParserBuilder parser() {
-        String baseIRI = "http://base/" ;
+        String baseIRI = BASE;
         return RDFParser.create()
                 .base(baseIRI)
                 .errorHandler(new ErrorHandlerEx());
