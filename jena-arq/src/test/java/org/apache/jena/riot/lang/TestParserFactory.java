@@ -58,7 +58,7 @@ public class TestParserFactory
         CatchParserOutput sink = new CatchParserOutput() ;
         IRIxResolver resolver = IRIs.relativeResolver();
         ParserProfile profile = makeParserProfile(IRIs.relativeResolver(), null, false);
-        LangRIOT parser = RiotParsers.createParserNTriples(tokenizer, sink, profile) ;
+        LangRIOT parser = IteratorParsers.createParserNTriples(tokenizer, sink, profile) ;
         parser.parse();
         assertEquals(1, sink.startCalled) ;
         assertEquals(1, sink.finishCalled) ;
