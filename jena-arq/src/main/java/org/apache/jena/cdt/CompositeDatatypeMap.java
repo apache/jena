@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.impl.LiteralLabel;
+import org.apache.jena.sparql.expr.ExprEvalException;
 
 public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTValue>>
 {
@@ -135,15 +136,36 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 	}
 
 	@Override
-	public boolean isEqual( final LiteralLabel value1, final LiteralLabel value2 ) {
-		if ( ! isMapLiteral(value1) || ! isMapLiteral(value2) ) {
+	public boolean isEqual( final LiteralLabel lit1, final LiteralLabel lit2 ) {
+		if ( ! isMapLiteral(lit1) || ! isMapLiteral(lit2) ) {
 			return false;
 		}
 
-		final Map<CDTKey,CDTValue> map1 = getValue(value1);
-		final Map<CDTKey,CDTValue> map2 = getValue(value2);
+		final Map<CDTKey,CDTValue> map1 = getValue(lit1);
+		final Map<CDTKey,CDTValue> map2 = getValue(lit2);
 
-		return map1.equals(map2);
+		if ( map1.size() != map2.size() ) return false;
+
+		for ( final Map.Entry<CDTKey,CDTValue> entry1 : map1.entrySet() ) {
+			final CDTValue v1 = entry1.getValue();
+			final CDTValue v2 = map2.get( entry1.getKey() );
+			if ( v2 == null ) return false;
+
+			if ( v1.isNull() || v2.isNull() ) {
+				throw new ExprEvalException("nulls in maps cannot be compared");
+			}
+
+			final Node n1 = v1.asNode();
+			final Node n2 = v2.asNode();
+
+			if ( n1.isBlank() || n2.isBlank() ) {
+				throw new ExprEvalException("blank nodes in maps cannot be compared");
+			}
+
+			if ( ! n1.sameValueAs(n2) ) return false;
+		}
+
+		return true;
 	}
 
 	/**
