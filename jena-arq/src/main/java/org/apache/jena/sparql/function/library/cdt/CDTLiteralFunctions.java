@@ -14,6 +14,7 @@ public class CDTLiteralFunctions {
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "keys",    KeysFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "List",    ListFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "Map",     MapFct.class );
+		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "merge",   MergeFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "put",     PutFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "remove",  RemoveFct.class );
 		functionRegistry.put( ARQConstants.CDTFunctionLibraryURI + "reverse", ReverseFct.class );
