@@ -281,20 +281,20 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         allowRelativeReferences = false;
             if (base == null) {
                 warning(null,IGN_NO_BASE_URI_SPECIFIED,
-                        "Base URI not specified for input file; local URI references will be in error.");
+                            "Base URI not specified for input file; local URI references will be in error.");
 
                 return new XMLBaselessContext(this,
-                        ERR_RESOLVING_URI_AGAINST_NULL_BASE);
+                                              ERR_RESOLVING_URI_AGAINST_NULL_BASE);
 
             } else if (base.equals("")) {
                 allowRelativeReferences = true;
                 warning(null,IGN_NO_BASE_URI_SPECIFIED,
-                        "Base URI specified as \"\"; local URI references will not be resolved.");
+                            "Base URI specified as \"\"; local URI references will not be resolved.");
                 return new XMLBaselessContext(this,
-                        WARN_RESOLVING_URI_AGAINST_EMPTY_BASE);
+                                              WARN_RESOLVING_URI_AGAINST_EMPTY_BASE);
             } else {
                 return new XMLBaselessContext(this,
-                        ERR_RESOLVING_AGAINST_RELATIVE_BASE).withBase(this,base);
+                                              ERR_RESOLVING_AGAINST_RELATIVE_BASE).withBase(this,base);
             }
     }
 

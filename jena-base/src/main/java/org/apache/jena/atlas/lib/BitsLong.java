@@ -22,7 +22,9 @@ package org.apache.jena.atlas.lib;
 // http://mindprod.com/jgloss/masking.html
 
 /**
- * Utilities for manipulating a bit pattern which are held in a 64 bit long
+ * Utilities for manipulating a bit pattern which are held in a 64 bit long.
+ * Bits are numbered 0 to 63.
+ * Bit 0 is the low bit of the long, and bit 63 the sign bit of the long.
  *
  * @see BitsInt
  */
@@ -279,15 +281,17 @@ public final class BitsLong {
         return ~mask$(start, finish);
     }
 
-    private static final
-    void check(long bitIndex) {
-        if ( bitIndex < 0 || bitIndex >= LongLen ) throw new IllegalArgumentException("Illegal bit index: "+bitIndex);
+    private static final void check(long bitIndex) {
+        if ( bitIndex < 0 || bitIndex >= LongLen )
+            throw new IllegalArgumentException("Illegal bit index: " + bitIndex);
     }
 
-    private static final
-    void check(long start, long finish) {
-        if ( start < 0 || start >= LongLen ) throw new IllegalArgumentException("Illegal start: "+start);
-        if ( finish < 0 || finish > LongLen ) throw new IllegalArgumentException("Illegal finish: "+finish);
-        if ( start > finish )  throw new IllegalArgumentException("Illegal range: ("+start+", "+finish+")");
+    private static final void check(long start, long finish) {
+        if ( start < 0 || start >= LongLen )
+            throw new IllegalArgumentException("Illegal start: " + start);
+        if ( finish < 0 || finish > LongLen )
+            throw new IllegalArgumentException("Illegal finish: " + finish);
+        if ( start > finish )
+            throw new IllegalArgumentException("Illegal range: (" + start + ", " + finish + ")");
     }
 }
