@@ -23,6 +23,8 @@ package org.apache.jena.atlas.lib;
 
 /**
  * Utilities for manipulating a bit pattern which are held in a 32 bit int.
+ * Bits are numbered 0 to 31.
+ * Bit 0 is the low bit of the int, and bit 31 the sign bit of the long.
  *
  * @see BitsLong
  */
