@@ -96,10 +96,10 @@ public class RDFXMLParser0 extends XMLHandler {
             saxParser.parse(input);
         }
         catch (UTFDataFormatException e) {
-                generalError(ERR_UTF_ENCODING, e);
+            generalError(ERR_UTF_ENCODING, e);
         }
         catch (IOException e) {
-                generalError(ERR_GENERIC_IO, e);
+            generalError(ERR_GENERIC_IO, e);
         }
         catch (WrappedException wrapped) {
             wrapped.throwMe();
@@ -110,7 +110,6 @@ public class RDFXMLParser0 extends XMLHandler {
         finally {
             afterParse();
         }
-
     }
 
     private void initEncodingChecks(InputSource in) {

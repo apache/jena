@@ -51,7 +51,7 @@ import org.apache.jena.tdb2.store.value.*;
  * guarantee that all integers, say, are store inline.
  *
  * <ul>
- * <li>Integer format: signed 56 bit number, the type filed has the XSD type.
+ * <li>Integer format: signed 56 bit number, the type field has the XSD type.
  * <li>Decimal format: 8 bits scale, 48bits of signed valued. See {@link DecimalNode56}.
  * <li>Date and DateTime
  * <li>Boolean
