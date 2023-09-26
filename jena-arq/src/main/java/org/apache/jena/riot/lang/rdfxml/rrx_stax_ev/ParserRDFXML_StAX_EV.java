@@ -928,27 +928,27 @@ public class ParserRDFXML_StAX_EV {
         }
     }
 
-
-    // --- RDF Collections
-
-    /** XML text, context text. */
+    /**
+     * Escape text used in an XML content.
+     * Escapes aligned to ARP.
+     */
     private String xmlLiteralEscapeText(CharSequence stringAcc) {
         StringBuilder sBuff = new StringBuilder();
         int len = stringAcc.length() ;
         for (int i = 0; i < len; i++) {
             char c = stringAcc.charAt(i);
-            String replace;
-            switch (c) {
-                case '&' : replace = "&amp;"; break;
-                case '<' : replace = "&lt;"; break;
-                case '>' : replace = "&gt;"; break;
-                //case '"' : replace = "&quot;"; break;
-                //case '\'' : replace = "&apos;"; break;
-                default :
-                    sBuff.append(c);
-                    continue;
-            }
-            sBuff.append(replace);
+            String replace = switch (c) {
+                case '&' -> "&amp;";
+                case '<' -> "&lt;";
+                case '>' -> "&gt;";
+                //case '"' -> "&quot;";
+                //case '\'' -> replace = "&apos;";
+                default -> null;
+            };
+            if ( replace == null )
+                sBuff.append(c);
+            else
+                sBuff.append(replace);
         }
         return sBuff.toString();
     }
@@ -962,21 +962,23 @@ public class ParserRDFXML_StAX_EV {
         int len = stringAcc.length() ;
         for (int i = 0; i < len; i++) {
             char c = stringAcc.charAt(i);
-            String replace;
-            switch (c) {
-                case '&' : replace = "&amp;"; break;
-                case '<' : replace = "&lt;"; break;
-                //case '>' : replace = "&gt;"; break;
-                case '"' : replace = "&quot;"; break;
-                //case '\'' : replace = "&apos;"; break;
-                default :
-                    sBuff.append(c);
-                    continue;
-            }
-            sBuff.append(replace);
+            String replace = switch (c) {
+                case '&' -> "&amp;";
+                case '<' -> "&lt;";
+                //case '>' -> "&gt;";
+                case '"' -> "&quot;";
+                //case '\'' -> replace = "&apos;";
+                default -> null;
+            };
+            if ( replace == null )
+                sBuff.append(c);
+            else
+                sBuff.append(replace);
         }
         return sBuff.toString();
     }
+
+    // --- RDF Collections
 
     private XMLEvent parseTypeCollection(Node subject, Node property, Emitter emitter, StartElement startElt) {
         XMLEvent event = startElt;
@@ -1175,20 +1177,17 @@ public class ParserRDFXML_StAX_EV {
                 XMLEvent ev = xmlEventReader.nextEvent();
                 int evType = ev.getEventType();
                 switch (evType) {
-                    case START_ELEMENT:
-                    case END_ELEMENT:
+                    case START_ELEMENT, END_ELEMENT:
                         if ( EVENTS )
                             System.out.println("-- Tag: "+str(ev));
                         return ev;
-                    case CHARACTERS:
-                    case CDATA:
+                    case CHARACTERS, CDATA:
                         Characters chars = ev.asCharacters();
                         if ( ! isWhitespace(ev) )
                             throw RDFXMLparseError("Read "+str(ev)+" when expecting a start or end element.", ev);
                         // Skip
                         break;
-                    case COMMENT:
-                    case DTD:
+                    case COMMENT, DTD:
                         // Skip
                         break;
                         //case SPACE:
