@@ -153,7 +153,7 @@ public class query extends CmdARQ
         // Warm up.
         for ( int i = 0 ; i < warmupCount ; i++ )
             // Include the results format so that is warmed up as well.
-            queryExec(false, modResults.getResultsFormat(), NullPrintStream.NULL_PRINT_STREAM) ;
+            queryExec(false, modResults.getResultsFormat(), NullPrintStream.INSTANCE) ;
 
         for ( int i = 0 ; i < repeatCount ; i++ )
             queryExec(modTime.timingEnabled(),  modResults.getResultsFormat(), System.out) ;
