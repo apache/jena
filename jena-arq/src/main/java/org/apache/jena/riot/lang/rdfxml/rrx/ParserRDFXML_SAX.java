@@ -1618,28 +1618,26 @@ public class ParserRDFXML_SAX
      * Escape text used in an XML content.
      * Escapes aligned to ARP.
      */
-    /** XML text, context text. */
     private String xmlLiteralEscapeText(CharSequence stringAcc) {
         StringBuilder sBuff = new StringBuilder();
         int len = stringAcc.length() ;
         for (int i = 0; i < len; i++) {
             char c = stringAcc.charAt(i);
-            String replace;
-            switch (c) {
-                case '&' : replace = "&amp;"; break;
-                case '<' : replace = "&lt;"; break;
-                case '>' : replace = "&gt;"; break;
-                //case '"' : replace = "&quot;"; break;
-                //case '\'' : replace = "&apos;"; break;
-                default :
-                    sBuff.append(c);
-                    continue;
-            }
-            sBuff.append(replace);
+            String replace = switch (c) {
+                case '&' -> "&amp;";
+                case '<' -> "&lt;";
+                case '>' -> "&gt;";
+                //case '"' -> "&quot;";
+                //case '\'' -> replace = "&apos;";
+                default -> null;
+            };
+            if ( replace == null )
+                sBuff.append(c);
+            else
+                sBuff.append(replace);
         }
         return sBuff.toString();
     }
-
 
     /**
      * Escape text used in an XML attribute value.
@@ -1650,18 +1648,18 @@ public class ParserRDFXML_SAX
         int len = stringAcc.length() ;
         for (int i = 0; i < len; i++) {
             char c = stringAcc.charAt(i);
-            String replace;
-            switch (c) {
-                case '&' : replace = "&amp;"; break;
-                case '<' : replace = "&lt;"; break;
-                //case '>' : replace = "&gt;"; break;
-                case '"' : replace = "&quot;"; break;
-                //case '\'' : replace = "&apos;"; break;
-                default :
-                    sBuff.append(c);
-                    continue;
-            }
-            sBuff.append(replace);
+            String replace = switch (c) {
+                case '&' -> "&amp;";
+                case '<' -> "&lt;";
+                //case '>' -> "&gt;";
+                case '"' -> "&quot;";
+                //case '\'' -> replace = "&apos;";
+                default -> null;
+            };
+            if ( replace == null )
+                sBuff.append(c);
+            else
+                sBuff.append(replace);
         }
         return sBuff.toString();
     }
