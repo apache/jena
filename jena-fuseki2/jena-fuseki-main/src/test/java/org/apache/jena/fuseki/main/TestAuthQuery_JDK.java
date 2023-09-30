@@ -42,7 +42,7 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
     public void query_auth_jdk_02_bad_auth() {
         // Auth - bad password
         QueryExecutionHTTP qe = withAuthJDK(QueryExecutionHTTP.create().endpoint(databaseURL()).query("ASK { }"),
-                                              "allowed", "incorrect");
+                                              "user", "incorrect");
         expectQuery401(()->qe.execAsk());
     }
 
@@ -50,7 +50,7 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
     public void query_auth_jdk_03_good_auth() {
         // Auth credentials for valid user with correct password
         QueryExecutionHTTP qe = withAuthJDK(QueryExecutionHTTP.create().endpoint(databaseURL()).query("ASK { }"),
-                                              "allowed", "password");
+                                              "user", "password");
         Assert.assertTrue(qe.execAsk());
     }
 
@@ -60,7 +60,7 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
         QueryExecutionHTTP qe = QueryExecutionHTTP.create().endpoint(databaseURL()).query("ASK { }").build();
         String dsURL = databaseURL();
         URI uri = URI.create(dsURL);
-        AuthEnv.get().registerUsernamePassword(uri, "allowed", "password");
+        AuthEnv.get().registerUsernamePassword(uri, "user", "password");
         try {
             Assert.assertTrue(qe.execAsk());
         } finally {
@@ -74,7 +74,7 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
         // Server URL - a prefix.
         String dsURL = serverURL;
         URI uri = URI.create(dsURL);
-        AuthEnv.get().registerUsernamePassword(uri, "allowed", "password");
+        AuthEnv.get().registerUsernamePassword(uri, "user", "password");
         try {
             Assert.assertTrue(qe.execAsk());
         } finally {
@@ -88,7 +88,7 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
         // Wrong registration
         String dsURL = serverURL+"anotherPlace";
         URI uri = URI.create(dsURL);
-        AuthEnv.get().registerUsernamePassword(uri, "allowed", "password");
+        AuthEnv.get().registerUsernamePassword(uri, "user", "password");
         try {
             expectQuery401(()->qe.execAsk());
         } finally {

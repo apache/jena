@@ -27,9 +27,9 @@ import org.apache.jena.fuseki.main.JettySecurityLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.web.HttpSC;
-import org.eclipse.jetty.security.*;
-import org.eclipse.jetty.security.authentication.BasicAuthenticator;
-import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.ee10.servlet.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.security.UserStore;
 import org.junit.Assert;
 
 /**
@@ -138,33 +138,9 @@ public class FusekiTestAuth {
         Objects.requireNonNull(password);
         Objects.requireNonNull(role);
 
-        Constraint constraint = new Constraint();
-        constraint.setName(Constraint.__BASIC_AUTH);
-        String[] roles = new String[]{role};
-        constraint.setRoles(roles);
-        constraint.setAuthenticate(true);
-
-        ConstraintMapping mapping = new ConstraintMapping();
-        mapping.setConstraint(constraint);
-        mapping.setPathSpec("/*");
-
-        IdentityService identService = new DefaultIdentityService();
-
-        ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
-        securityHandler.addConstraintMapping(mapping);
-        securityHandler.setIdentityService(identService);
-
-        UserStore userStore = JettySecurityLib.makeUserStore(user, password, role);
-
-        HashLoginService loginService = new HashLoginService("Fuseki Authentication");
-        loginService.setUserStore(userStore);
-        loginService.setIdentityService(identService);
-
-        securityHandler.setLoginService(loginService);
-        securityHandler.setAuthenticator(new BasicAuthenticator());
-        if ( realm != null )
-            securityHandler.setRealmName(realm);
-
+        UserStore userStore = JettySecurityLib.makeUserStore(user, password);
+        ConstraintSecurityHandler securityHandler = JettySecurityLib.makeSecurityHandler("Fuseki", userStore);
+        JettySecurityLib.addPathConstraint(securityHandler, "/*");
         return securityHandler;
     }
 

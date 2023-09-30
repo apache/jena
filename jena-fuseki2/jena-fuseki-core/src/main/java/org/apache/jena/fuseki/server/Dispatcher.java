@@ -175,7 +175,16 @@ public class Dispatcher {
         return dap;
     }
 
+    /**
+     * Identity the Fuseki service for the request
+     */
     /*package:testing*/ static DataAccessPoint locateDataAccessPoint(String uri, DataAccessPointRegistry registry) {
+        // Cases:
+        // /dataset
+        // /dataset/endpoint
+        // /path/.../dataset/
+        // /path/.../dataset/endpoint
+
         // Direct match.
         if ( registry.isRegistered(uri) )
             // Cases: /, /dataset and /path/dataset where /path is not the servlet context path.
@@ -329,10 +338,10 @@ public class Dispatcher {
         }
 
         // If there is one endpoint, dispatch there directly.
-        Endpoint ep = epSet.getExactlyOne();
-        if ( ep != null )
+        Endpoint ep1 = epSet.getExactlyOne();
+        if ( ep1 != null )
             // Single dispatch, may not be valid.
-            return ep;
+            return ep1;
 
         // No single direct dispatch. Multiple choices (different operation, same endpoint name)
         // Work out which operation we are looking for based on SPARQL characteristics.
@@ -344,7 +353,7 @@ public class Dispatcher {
             operation = mapGSP(action, operation, epSet);
         if ( operation == null )
             ServletOps.errorBadRequest("No operation for request: "+action.getActionURI());
-        ep = epSet.get(operation);
+        Endpoint ep = epSet.get(operation);
         // There are multiple endpoints; if none are suitable, then 400.
         if ( ep == null )
             ServletOps.errorBadRequest("No operation for request: "+action.getActionURI());

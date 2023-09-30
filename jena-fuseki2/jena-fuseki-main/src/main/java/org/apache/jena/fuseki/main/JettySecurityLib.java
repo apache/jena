@@ -21,13 +21,20 @@ package org.apache.jena.fuseki.main;
 import java.util.Objects;
 
 import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.FusekiConfigException;
+import org.apache.jena.fuseki.main.sys.JettyLib;
 import org.eclipse.jetty.ee10.servlet.security.ConstraintMapping;
 import org.eclipse.jetty.ee10.servlet.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.*;
+import org.eclipse.jetty.security.Constraint.Authorization;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.security.authentication.DigestAuthenticator;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Response;
+import org.eclipse.jetty.util.Callback;
+import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.security.Credential;
 import org.eclipse.jetty.util.security.Password;
 
@@ -48,26 +55,24 @@ public class JettySecurityLib {
      * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}
      * for adding the {@code pathspec} to apply it to.
      */
-     public static ConstraintSecurityHandler makeSecurityHandler(String realm, UserStore userStore) {
-         return makeSecurityHandler(realm, userStore, "**", authMode);
-     }
-
-    /** Create a Jetty {@link SecurityHandler} for basic authentication.
-      * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}
-      * for adding the {@code pathspec} to apply it to.
-      */
-      public static ConstraintSecurityHandler makeSecurityHandler(String realm, UserStore userStore, AuthScheme authMode) {
-          return makeSecurityHandler(realm, userStore, "**", authMode);
-      }
+    public static ConstraintSecurityHandler makeSecurityHandler(String realm, UserStore userStore) {
+        return makeSecurityHandler(realm, userStore, authMode);
+    }
 
     /** Create a Jetty {@link SecurityHandler} for basic authentication.
      * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}
      * for adding the {@code pathspec} to apply it to.
      */
-     public static ConstraintSecurityHandler makeSecurityHandler(String realm, UserStore userStore, String role, AuthScheme authMode) {
-        // role can be "**" for any authenticated user.
+    public static ConstraintSecurityHandler makeSecurityHandler(String realm, UserStore userStore, AuthScheme authMode) {
+        return makeSecurityHandler$(realm, userStore, authMode);
+    }
+
+    /** Create a Jetty {@link SecurityHandler} for basic authentication.
+     * See {@linkplain #addPathConstraint(ConstraintSecurityHandler, String)}
+     * for adding the {@code pathspec} to apply it to.
+     */
+    public static ConstraintSecurityHandler makeSecurityHandler$(String realm, UserStore userStore, AuthScheme authMode) {
         Objects.requireNonNull(userStore);
-        Objects.requireNonNull(role);
 
         if ( authMode == null )
             authMode = dftAuthMode;
@@ -81,32 +86,58 @@ public class JettySecurityLib {
         HashLoginService loginService = new HashLoginService(realm);
         loginService.setUserStore(userStore);
         loginService.setIdentityService(identService);
-
         securityHandler.setLoginService(loginService);
-        securityHandler.setAuthenticator( authMode == AuthScheme.BASIC ? new BasicAuthenticator() : new DigestAuthenticator() );
+
+        Authenticator authenticator = ( authMode == AuthScheme.BASIC ) ? new BasicAuthenticator() : new DigestAuthenticator();
+        // Intercept (development)
+        if ( false ) {
+            authenticator = new BasicAuthenticator() {
+                @Override
+                public UserIdentity login(String username, Object password, Request request, Response response) {
+                    UserIdentity u =  super.login(username, password, request, response);
+                    FmtLog.info(JettySecurityLib.class, "login(%s, %s) -> [%s]", username, password, u.getUserPrincipal());
+                    return u ;
+                }
+
+                @Override
+                public AuthenticationState validateRequest(Request req, Response res, Callback callback) throws ServerAuthException {
+                    AuthenticationState s = super.validateRequest(req, res, callback);
+                    if ( s != null )
+                        FmtLog.info(JettySecurityLib.class, "validateRequest() -> %s %s", s, s.getUserPrincipal());
+                    else
+                        FmtLog.info(JettySecurityLib.class, "validateRequest() -> null");
+                    return s;
+                }
+            };
+        }
+        securityHandler.setAuthenticator(authenticator);
         if ( realm != null )
             securityHandler.setRealmName(realm);
         return securityHandler;
     }
 
     public static void addPathConstraint(ConstraintSecurityHandler securityHandler, String pathSpec) {
-         addPathConstraint(securityHandler, pathSpec, "**");
-     }
+        addPathConstraint(securityHandler, pathSpec, null);
+    }
 
-    public static void addPathConstraint(ConstraintSecurityHandler securityHandler, String pathSpec, String role) {
+    private static void addPathConstraint(ConstraintSecurityHandler securityHandler, String pathSpec, String role) {
         Objects.requireNonNull(securityHandler);
         Objects.requireNonNull(pathSpec);
 
         ConstraintMapping mapping = new ConstraintMapping();
         Constraint.Builder constraintBuilder = new Constraint.Builder();
-        String[] roles = new String[]{role};
-        constraintBuilder.roles(roles);
-        constraintBuilder.name(securityHandler.getAuthenticator().getAuthMethod());
-        constraintBuilder.authenticate(true);
+        if ( role != null ) {
+            constraintBuilder.roles(role);
+            constraintBuilder.authorization(Authorization.SPECIFIC_ROLE);
+        } else {
+            constraintBuilder.authorization(Authorization.ANY_USER);
+        }
+
+        String authName = securityHandler.getAuthenticator().getAuthenticationType();
+        constraintBuilder.name(authName);
+
         Constraint constraint = constraintBuilder.build();
         mapping.setConstraint(constraint);
-
-
         mapping.setPathSpec(pathSpec);
         securityHandler.addConstraintMapping(mapping);
     }
@@ -119,23 +150,25 @@ public class JettySecurityLib {
         if ( ! FileOps.exists(passwordFile) )
             throw new FusekiConfigException("No such file: "+passwordFile);
         PropertyUserStore propertyUserStore = new PropertyUserStore();
-        propertyUserStore.setConfig(passwordFile);
-        propertyUserStore.setHotReload(true); // Need directory access
+        Resource pwResource = JettyLib.newResource(passwordFile);
+        propertyUserStore.setConfig(pwResource);
+        propertyUserStore.setReloadInterval(5); // Need directory access
         try { propertyUserStore.start(); }
         catch (Exception ex) { throw new RuntimeException("UserStore", ex); }
         return propertyUserStore;
     }
 
-    /** Make a {@link UserStore} for a single user,password in any role. */
+    private static String ANY_USER = null;
+
+    /** Make a {@link UserStore} for a single user, password in any role. */
     public static UserStore makeUserStore(String user, String password) {
-        return makeUserStore(user, password, "**");
+        return makeUserStore(user, password, ANY_USER);
     }
 
-    /** Make a {@link UserStore} for a single user,password,role*/
-    public static UserStore makeUserStore(String user, String password, String role) {
+    /** Make a {@link UserStore} for a single user,password[,role]. */
+    private static UserStore makeUserStore(String user, String password, String role) {
         Objects.requireNonNull(user);
         Objects.requireNonNull(password);
-        Objects.requireNonNull(role);
         UserStore userStore = new UserStore();
         addUser(userStore, user, password, role);
         try { userStore.start(); }
@@ -144,12 +177,12 @@ public class JettySecurityLib {
     }
 
     public static UserStore addUser(UserStore userStore, String user, String password) {
-        return addUser(userStore, user, password, "**");
+        return addUser(userStore, user, password, ANY_USER);
     }
 
     /** Make a {@link UserStore} for a single user,password,role*/
     public static UserStore addUser(UserStore userStore, String user, String password, String role) {
-        String[] roles = role == null ? null : new String[]{role};
+        String[] roles = (role == null) ? null : new String[]{role};
         Credential cred  = new Password(password);
         userStore.addUser(user, cred, roles);
         return userStore;

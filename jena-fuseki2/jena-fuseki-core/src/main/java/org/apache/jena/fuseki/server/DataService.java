@@ -41,6 +41,9 @@ import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphWrapper;
 
+/**
+ * A {@code DataService} is the fuseki Service in a configuration file.
+ */
 public class DataService {
     // Not final - it is null'ed if closed to release the dataset state.
     private DatasetGraph dataset;

@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.fuseki.test.HttpTest;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
@@ -36,8 +37,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/** Tests for .add("/ds", dsg) */
-public class TestStdSetup {
+/** Tests for .add("/ds", dsg, false) */
+public class TestFusekiStdReadOnlySetup {
+    // This test suite is TestFusekiStdSetup, modified for read-only.
 
     private static FusekiServer server = null;
     private static int port;
@@ -62,7 +64,7 @@ public class TestStdSetup {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
 
         FusekiServer server = FusekiServer.create()
-            .add("/ds", dsg)
+            .add("/ds", dsg, false)
             .port(0)
             .build();
         server.start();
@@ -75,51 +77,104 @@ public class TestStdSetup {
             server.stop();
     }
 
-    @Test public void stdSetup_1() {
-
-        svcExec(URL, "/query",   conn->conn.queryAsk("ASK{}") );
-        svcExec(URL, "/sparql",  conn->conn.queryAsk("ASK{}") );
-        svcExec(URL, "/update",  conn->conn.update("INSERT DATA { <x:s> <x:p> 123 }") );
-        svcExec(URL, "/get",     conn->conn.fetch());
-        svcExec(URL, "/data",    conn->conn.fetch());
-        svcExec(URL, "/data",    conn->conn.put(data));
-        svcExec(URL, "/data",    conn->conn.putDataset(dataset));
-
+    @Test
+    public void stdSetup_endpoint_1() {
+        exec(URL, "/query", conn -> conn.queryAsk("ASK{}"));
     }
 
-    @Test public void stdSetup_2() {
-        execDataset(URL, conn->conn.queryAsk("ASK{}") );
-        execDataset(URL, conn->conn.update("INSERT DATA { <x:s> <x:p> 123 }") );
-        execDataset(URL, conn->conn.fetch());
-        execDataset(URL, conn->conn.fetchDataset());
-        execDataset(URL, conn->conn.put("http://example", data));
-        execDataset(URL, conn->conn.putDataset(dataset));
+    @Test
+    public void stdSetup_endpoint_2() {
+        exec(URL, "/sparql", conn -> conn.queryAsk("ASK{}"));
     }
 
-    @Test public void stdSetup_3() {
-        svcExecFail(URL, "/get",    (RDFConnection conn)->conn.put(data));
-        svcExecFail(URL, "/query",  (RDFConnection conn)->conn.update("INSERT DATA { <x:s> <x:p> 123 }") );
-        svcExecFail(URL, "/update", (RDFConnection conn)->conn.queryAsk("ASK{}") );
-        svcExecFail(URL, "/doesNotExist", (RDFConnection conn)->conn.queryAsk("ASK{}") );
-        svcExecFail(URL+"2", "", (RDFConnection conn)->conn.queryAsk("ASK{}") );
-
+    @Test
+    public void stdSetup_endpoint_3() {
+        // Read-only : No "/update" endpoint.
+        HttpTest.expect404(() -> exec(URL, "/update", conn -> conn.update("INSERT DATA { <x:s> <x:p> 123 }")) );
     }
 
-
-    private static void svcExec(String url, String ep, Consumer<RDFConnection> action) {
-        exec(url, ep, action);
+    @Test
+    public void stdSetup_endpoint_4() {
+        exec(URL, "/get", conn -> conn.fetch());
     }
 
-    private static void svcExecFail(String url, String ep, Consumer<RDFConnection> action) {
-        execFail(url, ep, action);
+    @Test
+    public void stdSetup_endpoint_5() {
+        exec(URL, "/data", conn -> conn.fetch());
     }
 
-    private static void execDataset(String url, Consumer<RDFConnection> action) {
-        exec(url, null, action);
+    @Test
+    public void stdSetup_endpoint_6() {
+        // Read-only : POST not allowed.
+        HttpTest.expect405(() -> exec(URL, "/data", conn -> conn.put(data)) );
     }
 
-    private static void execDatasetFail(String url, Consumer<RDFConnection> action) {
-        execFail(url, null, action);
+    @Test
+    public void stdSetup_endpoint_7() {
+        // Read-only : POST not allowed.
+        HttpTest.expect405(() -> exec(URL, "/data", conn -> conn.putDataset(dataset)) );
+    }
+
+    @Test
+    public void stdSetup_endpoint_8() {
+        HttpTest.expect404( () -> exec(URL, "/nonsense", conn -> conn.putDataset(dataset)) );
+    }
+
+    @Test
+    public void stdSetup_dataset_1() {
+        exec(URL, conn -> conn.queryAsk("ASK{}"));
+    }
+
+    @Test
+    public void stdSetup_dataset_2() {
+        // Read-only : POST of an update not allowed. Multiple endpoints on the datset URL (query, gsp-r) so general error.
+        HttpTest.expect400(() -> exec(URL, conn -> conn.update("INSERT DATA { <x:s> <x:p> 123 }")) );
+    }
+
+    @Test
+    public void stdSetup_dataset_3() {
+        exec(URL, conn -> conn.fetch());
+    }
+
+    @Test
+    public void stdSetup_dataset_4() {
+        exec(URL, conn -> conn.fetchDataset());
+    }
+
+    @Test
+    public void stdSetup_dataset_5() {
+        HttpTest.expect405(() -> exec(URL, conn -> conn.put("http://example", data)) );
+    }
+
+    @Test
+    public void stdSetup_dataset_6() {
+        // Read-only: Bad POST - only queies can be POST'ed => bad media type.
+        HttpTest.expect405(() -> exec(URL, conn -> conn.putDataset(dataset)) );
+    }
+
+    @Test public void stdSetup_endpoint_bad_1() {
+        HttpTest.expect405( () -> exec(URL, "/get", conn->conn.put(data)) );
+    }
+
+    @Test public void stdSetup_endpoint_bad_2() {
+        HttpTest.expect415( () -> exec(URL, "/query",  conn->conn.update("INSERT DATA { <x:s> <x:p> 123 }")) );
+    }
+
+    @Test public void stdSetup_endpoint_bad_3() {
+        // Read-only. It is now 404 whereas in a updatable setup it is 405.
+        HttpTest.expect404( () -> exec(URL, "/update", conn->conn.queryAsk("ASK{}")) );
+    }
+
+    @Test public void stdSetup_endpoint_bad_4() {
+        HttpTest.expect404( () -> exec(URL, "/doesNotExist", conn->conn.queryAsk("ASK{}")) );
+    }
+
+    @Test public void stdSetup_endpoint_bad_5() {
+        HttpTest.expect404( () -> exec(URL+"2", "", (RDFConnection conn)->conn.queryAsk("ASK{}")) );
+    }
+
+    private static void exec(String url, Consumer<RDFConnection> action) {
+        execEx(url, null, action);
     }
 
     private static void exec(String url, String ep, Consumer<RDFConnection> action) {
@@ -153,14 +208,4 @@ public class TestStdSetup {
 //        System.err.println("**** "+message);
         throw ex;
     }
-
-    private static void execFail(String url, String ep, Consumer<RDFConnection> action) {
-        try {
-            execEx(url, ep, action);
-            System.err.println("Expected an exception");
-        }
-        catch (HttpException ex) {}
-        catch (QueryExceptionHTTP ex) {}
-    }
-
 }
