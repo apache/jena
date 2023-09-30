@@ -64,6 +64,7 @@ import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.NotUniqueException;
 import org.apache.jena.sparql.util.graph.GraphUtils;
 import org.apache.jena.sys.JenaSystem;
+import org.apache.jena.web.HttpSC;
 import org.eclipse.jetty.ee10.servlet.DefaultServlet;
 import org.eclipse.jetty.ee10.servlet.FilterHolder;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
@@ -72,6 +73,7 @@ import org.eclipse.jetty.ee10.servlet.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.UserStore;
 import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.slf4j.Logger;
 
 /**
@@ -390,6 +392,7 @@ public class FusekiServer {
         private boolean                  networkLoopback    = false;
         private int                      minThreads         = -1;
         private int                      maxThreads         = -1;
+        private ErrorHandler             errorHandler       = new FusekiErrorHandler();
 
         private boolean                  verbose            = false;
         private boolean                  withCompact        = false;
@@ -1324,8 +1327,16 @@ public class FusekiServer {
                     server = jettyServer(handler, httpPort, minThreads, maxThreads);
                 } else {
                     // HTTPS, no http redirection.
-                    server = jettyServerHttps(handler, httpPort, httpsPort, minThreads, maxThreads, httpsKeystore, httpsKeystorePasswd);
+                    server = jettyServerHttps(handler, httpPort, httpsPort, minThreads, maxThreads,
+                                              httpsKeystore, httpsKeystorePasswd);
                 }
+                // The servletContext error handler isn't called when there is a
+                // dispatch to something that isn't there.
+                // Jetty default error handler is broken for application/json for Jetty GH-10474
+                // Jetty 12.0.1 - fixed at 12.0.next
+                if ( errorHandler != null )
+                    server.setErrorHandler(errorHandler);
+
                 if ( networkLoopback )
                     applyLocalhost(server);
 
@@ -1571,7 +1582,8 @@ public class FusekiServer {
                 contextPath = "/" + contextPath;
             ServletContextHandler context = new ServletContextHandler();
             context.setDisplayName(Fuseki.servletRequestLogName);
-            context.setErrorHandler(new FusekiErrorHandler());
+            // Also set on the server which handles request that don't dispatch.
+            context.setErrorHandler(errorHandler);
             context.setContextPath(contextPath);
             // SPARQL Update by HTML - not the best way but.
             context.setMaxFormContentSize(1024*1024);
@@ -1625,7 +1637,7 @@ public class FusekiServer {
             if ( staticContentDir != null ) {
                 DefaultServlet staticServlet = new DefaultServlet();
                 ServletHolder staticContent = new ServletHolder(staticServlet);
-                staticContent.setInitParameter("resourceBase", staticContentDir);
+                staticContent.setInitParameter("baseResource", staticContentDir);
                 //staticContent.setInitParameter("cacheControl", "false");
                 context.addServlet(staticContent, "/");
             } else {
@@ -1639,6 +1651,8 @@ public class FusekiServer {
 
         /** 404 for HEAD/GET/POST/PUT */
         static class Servlet404 extends HttpServlet {
+
+            public Servlet404() {}
             // service()?
             @Override
             protected void doHead(HttpServletRequest req, HttpServletResponse resp)     { err404(req, resp); }
@@ -1653,7 +1667,7 @@ public class FusekiServer {
             //protected void doOptions(HttpServletRequest req, HttpServletResponse resp)
             private static void err404(HttpServletRequest req, HttpServletResponse response) {
                 try {
-                    response.sendError(404, "NOT FOUND");
+                    response.sendError(HttpSC.NOT_FOUND_404, HttpSC.getMessage(HttpSC.NOT_FOUND_404));
                 } catch (IOException ex) {}
             }
         }
@@ -1696,7 +1710,7 @@ public class FusekiServer {
             return server;
         }
 
-        /** Jetty server with https. */
+        /** Jetty server with https */
         private static Server jettyServerHttps(ServletContextHandler handler, int httpPort, int httpsPort, int minThreads, int maxThreads, String keystore, String certPassword) {
             return JettyHttps.jettyServerHttps(handler, keystore, certPassword, httpPort, httpsPort, minThreads, maxThreads);
         }

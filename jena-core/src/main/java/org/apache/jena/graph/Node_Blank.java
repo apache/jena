@@ -29,7 +29,7 @@ public class Node_Blank extends Node
 {
     private final String label;
 
-    Node_Blank( String label ) {
+    /*package*/ Node_Blank( String label ) {
         this.label = Objects.requireNonNull(label);
     }
 

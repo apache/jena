@@ -55,6 +55,15 @@ public class HttpTest {
         execWithHttpException(HttpSC.NOT_FOUND_404, action);
     }
 
+    public static void expect405(Runnable action) {
+        execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, action);
+    }
+
+    public static void expect415(Runnable action) {
+        execWithHttpException(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, action);
+    }
+
+
     public static void execWithHttpException(int expectedStatusCode, Runnable action) {
         try {
             action.run();

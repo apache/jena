@@ -18,19 +18,17 @@
 
 package org.apache.jena.fuseki.cmd;
 
-import static java.lang.String.format;
-
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-import org.apache.jena.fuseki.servlets.ServletOps;
-import org.apache.jena.web.HttpSC;
-import org.eclipse.jetty.http.HttpMethod;
+import org.apache.jena.riot.WebContent;
+import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.server.handler.ErrorHandler;
+import org.eclipse.jetty.util.Callback;
 
 /**
  * Fuseki error handler (used with ServletAPI HttpServletResponse.sendError).
@@ -38,25 +36,21 @@ import org.eclipse.jetty.server.handler.ErrorHandler;
  */
 public class FusekiErrorHandler extends ErrorHandler
 {
+    private static List<Charset> utf8List = List.of(StandardCharsets.UTF_8);
+
     // Only used if ServletOps.responseSendError calls Servlet API response.sendError
     // or a non-Fuseki error occurs.
     public FusekiErrorHandler() {}
 
     @Override
-    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String method = request.getMethod();
-
-        if ( !method.equals(HttpMethod.GET.asString())
-            && !method.equals(HttpMethod.POST.asString())
-            && !method.equals(HttpMethod.HEAD.asString()) )
-            return;
-
-        ServletOps.setNoCache(response);
-        int code = response.getStatus();
-        String message = (response instanceof Response) ? ((Response)response).getReason() : HttpSC.getMessage(code);
-        if ( message == null )
-            message = HttpSC.getMessage(code);
-        String msg = format("Error %d: %s\n", code, message);
-        ServletOps.writeMessagePlainTextError(response, msg);
+    protected boolean generateAcceptableResponse(Request request, Response response, Callback callback, String contentType, List<Charset> charsets, int code, String message, Throwable cause) throws IOException {
+        // Fix Jetty GH-10474 : (12.0.0, 12.0.1)
+        // ContentType application/json cause illegal state exception
+        if ( contentType != null && contentType.equals(WebContent.contentTypeJSON) ) {
+            contentType = MimeTypes.Type.TEXT_PLAIN.asString();
+            charsets = utf8List;
+        }
+        //ServletOps.setNoCache(response);
+        return super.generateAcceptableResponse(request, response, callback, contentType, utf8List, code, message, cause);
     }
 }
