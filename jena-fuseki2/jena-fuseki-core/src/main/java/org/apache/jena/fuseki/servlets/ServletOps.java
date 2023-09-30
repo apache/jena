@@ -72,6 +72,7 @@ public class ServletOps {
      * Use Content-Length so the connection is preserved.
      */
     static void writeMessagePlainText(HttpServletResponse response, String message) {
+        ServletOps.setNoCache(response);
         if ( message == null )
             return;
         if ( ! message.endsWith("\n") )
@@ -79,7 +80,6 @@ public class ServletOps {
         response.setContentLength(message.length());
         response.setContentType(WebContent.contentTypeTextPlain);
         response.setCharacterEncoding(WebContent.charsetUTF8);
-        ServletOps.setNoCache(response);
         try(ServletOutputStream out = response.getOutputStream()){
             out.print(message);
         }

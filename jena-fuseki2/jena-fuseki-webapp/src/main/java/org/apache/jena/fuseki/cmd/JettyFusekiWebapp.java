@@ -25,6 +25,7 @@ import jakarta.servlet.ServletContext;
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.FusekiCoreInfo;
@@ -33,14 +34,13 @@ import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee10.servlet.security.ConstraintMapping;
 import org.eclipse.jetty.ee10.servlet.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.ee10.webapp.WebAppContext;
-import org.eclipse.jetty.security.Constraint;
-import org.eclipse.jetty.security.DefaultIdentityService;
-import org.eclipse.jetty.security.HashLoginService;
-import org.eclipse.jetty.security.IdentityService;
+import org.eclipse.jetty.security.*;
+import org.eclipse.jetty.security.Constraint.Authorization;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.resource.ResourceFactory;
 import org.eclipse.jetty.xml.XmlConfiguration;
 
 /** Standalone full server, not run as a WAR file.
@@ -76,9 +76,9 @@ public class JettyFusekiWebapp {
     // webapp setup - standard maven layout
     public static       String contextpath     = "/";
     // Standalone jar
-    public static final String resourceBase1   = "webapp";
+    public static final String baseResource1   = "webapp";
     // Development
-    public static final String resourceBase2   = "target/webapp";
+    public static final String baseResource2   = "target/webapp";
 
     /**
      * Default setup which requires a {@link org.apache.jena.fuseki.cmd.JettyServerConfig}
@@ -157,36 +157,36 @@ public class JettyFusekiWebapp {
     public static WebAppContext createWebApp(String contextPath) {
         FusekiEnv.setEnvironment();
         WebAppContext webapp = new WebAppContext();
-        webapp.getServletContext().getContextHandler().setMaxFormContentSize(20 * 1000 * 1000);
+        webapp.getContext().getServletContextHandler().setMaxFormContentSize(20 * 1000 * 1000);
 
         // Hunt for the webapp for the standalone jar (or development system).
         // Note that Path FUSEKI_HOME is not initialized until the webapp starts
         // so it is not available here.
 
-        String resourceBase3 = null;
-        String resourceBase4 = null;
+        String baseResource3 = null;
+        String baseResource4 = null;
         if ( FusekiEnv.FUSEKI_HOME != null ) {
             String HOME = FusekiEnv.FUSEKI_HOME.toString();
-            resourceBase3 = HOME+"/"+resourceBase1;
-            resourceBase4 = HOME+"/"+resourceBase2;
+            baseResource3 = HOME+"/"+baseResource1;
+            baseResource4 = HOME+"/"+baseResource2;
         }
 
-        String resourceBase = tryResourceBase(resourceBase1, null);
-        resourceBase = tryResourceBase(resourceBase2, resourceBase);
-        resourceBase = tryResourceBase(resourceBase3, resourceBase);
-        resourceBase = tryResourceBase(resourceBase4, resourceBase);
+        String baseResource = tryBaseResource(baseResource1, null);
+        baseResource = tryBaseResource(baseResource2, baseResource);
+        baseResource = tryBaseResource(baseResource3, baseResource);
+        baseResource = tryBaseResource(baseResource4, baseResource);
 
-        if ( resourceBase == null ) {
-            if ( resourceBase3 == null )
-                Fuseki.serverLog.error("Can't find resourceBase (tried "+resourceBase1+" and "+resourceBase2+")");
+        if ( baseResource == null ) {
+            if ( baseResource3 == null )
+                Fuseki.serverLog.error("Can't find baseResource (tried "+baseResource1+" and "+baseResource2+")");
             else
-                Fuseki.serverLog.error("Can't find resourceBase (tried "+resourceBase1+", "+resourceBase2+", "+resourceBase3+" and "+resourceBase4+")");
+                Fuseki.serverLog.error("Can't find baseResource (tried "+baseResource1+", "+baseResource2+", "+baseResource3+" and "+baseResource4+")");
             Fuseki.serverLog.error("Failed to start");
             throw new FusekiException("Failed to start");
         }
 
-        webapp.setDescriptor(resourceBase+"/WEB-INF/web.xml");
-        webapp.setResourceBase(resourceBase);
+        webapp.setDescriptor(baseResource+"/WEB-INF/web.xml");
+        webapp.getContext().getServletContextHandler().setBaseResourceAsString(baseResource);
         webapp.setContextPath(contextPath);
 
         //-- Jetty setup for the ServletContext logger.
@@ -212,7 +212,7 @@ public class JettyFusekiWebapp {
         return DataAccessPointRegistry.get(servletContext);
     }
 
-    private static String tryResourceBase(String maybeResourceBase, String currentResourceBase) {
+    private static String tryBaseResource(String maybeResourceBase, String currentResourceBase) {
         if ( currentResourceBase != null )
             return currentResourceBase;
         if ( maybeResourceBase != null && FileOps.exists(maybeResourceBase) )
@@ -244,39 +244,89 @@ public class JettyFusekiWebapp {
             security(webapp, serverConfig.authConfigFile);
     }
 
-    // This is now provided by Shiro.
+    // This is normally provided by Shiro.
     private static void security(ServletContextHandler context, String authfile) {
-        Constraint constraint = new Constraint();
-        constraint.setName(Constraint.__BASIC_AUTH);
-        constraint.setRoles(new String[]{"fuseki"});
-        constraint.setAuthenticate(true);
-
-        ConstraintMapping mapping = new ConstraintMapping();
-        mapping.setConstraint(constraint);
-        mapping.setPathSpec("/*");
-
-        IdentityService identService = new DefaultIdentityService();
+        UserStore userStore = makeUserStore(authfile);
 
         ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
-        securityHandler.addConstraintMapping(mapping);
+        IdentityService identService = new DefaultIdentityService();
         securityHandler.setIdentityService(identService);
 
-        HashLoginService loginService = new HashLoginService("Fuseki Authentication", authfile);
+        // ---- HashLoginService
+        HashLoginService loginService = new HashLoginService("Fuseki Authentication");
+        loginService.setUserStore(userStore);
         loginService.setIdentityService(identService);
-
         securityHandler.setLoginService(loginService);
-        securityHandler.setAuthenticator(new BasicAuthenticator());
+
+        Authenticator authenticator = new BasicAuthenticator();
+        securityHandler.setAuthenticator(authenticator);
+        securityHandler.setRealmName("Fuseki");
+
+        ConstraintMapping mapping = new ConstraintMapping();
+        Constraint.Builder constraintBuilder = new Constraint.Builder();
+        constraintBuilder.authorization(Authorization.ANY_USER);
+
+        String authName = securityHandler.getAuthenticator().getAuthenticationType();
+        constraintBuilder.name(authName);
+
+        Constraint constraint = constraintBuilder.build();
+        mapping.setConstraint(constraint);
+        mapping.setPathSpec("/*");
+        securityHandler.addConstraintMapping(mapping);
 
         context.setSecurityHandler(securityHandler);
 
-        serverLog.debug("Basic Auth Configuration = " + authfile);
+//        Constraint constraint = new Constraint();
+//        constraint.setName(Constraint.__BASIC_AUTH);
+//        constraint.setRoles(new String[]{"fuseki"});
+//        constraint.setAuthenticate(true);
+//
+//        ConstraintMapping mapping = new ConstraintMapping();
+//        mapping.setConstraint(constraint);
+//        mapping.setPathSpec("/*");
+//
+//        IdentityService identService = new DefaultIdentityService();
+//
+//        securityHandler.addConstraintMapping(mapping);
+//        securityHandler.setIdentityService(identService);
+//
+//        HashLoginService loginService = new HashLoginService("Fuseki Authentication", authfile);
+//        loginService.setIdentityService(identService);
+//
+//        securityHandler.setLoginService(loginService);
+//        securityHandler.setAuthenticator(new BasicAuthenticator());
+//
+//        context.setSecurityHandler(securityHandler);
+//
+//        serverLog.debug("Basic Auth Configuration = " + authfile);
+    }
+
+    /**
+     * Make a {@link UserStore} from a password file.
+     * {@link PropertyUserStore} for details.
+     */
+    private static UserStore makeUserStore(String passwordFile) {
+        if ( ! FileOps.exists(passwordFile) )
+            throw new FusekiConfigException("No such file: "+passwordFile);
+        PropertyUserStore propertyUserStore = new PropertyUserStore();
+        Resource pwResource = newResource(passwordFile);
+        propertyUserStore.setConfig(pwResource);
+        propertyUserStore.setReloadInterval(5); // Need directory access
+        try { propertyUserStore.start(); }
+        catch (Exception ex) { throw new RuntimeException("UserStore", ex); }
+        return propertyUserStore;
+    }
+
+    /** Create a resource for a filename */
+    private static Resource newResource(String filename) {
+        return ResourceFactory.root().newResource(filename);
     }
 
     private void configServer(String jettyConfig) {
         try {
             serverLog.info("Jetty server config file = " + jettyConfig);
             server = new Server();
-            Resource configXml = Resource.newResource(jettyConfig);
+            Resource configXml = ResourceFactory.root().newResource(jettyConfig);
             XmlConfiguration configuration = new XmlConfiguration(configXml);
             configuration.configure(server);
             serverConnector = (ServerConnector)server.getConnectors()[0];

@@ -21,7 +21,6 @@ package org.apache.jena.fuseki.main;
 import java.net.Authenticator;
 import java.net.http.HttpClient;
 
-import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.http.auth.AuthLib;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
@@ -44,30 +43,28 @@ public class AbstractTestAuth_JDK extends BaseFusekiTest {
         server = FusekiServer.create()
                 .port(0)
                 .passwordFile(passwordFile)
-                .auth(AuthScheme.BASIC)
+                //.auth(AuthScheme.BASIC)
                 //.verbose(true)
                 .add(datasetPath(), dsgTesting)
                 .build();
         server.start();
         port = server.getPort();
         serverURL = "http://localhost:"+port+"/";
-
         //String authServiceQuery
     }
 
     @AfterClass public static void stopServer() {
-        try {
-            server.stop();
-        } catch (Throwable th) {
-            th.printStackTrace();
-        }
+//        try {
+//            if ( server != null )
+//                server.stop();
+//            server = null;
+//        } catch (Throwable th) {
+//            th.printStackTrace();
+//        }
     }
-
 
     @Before public void beforeTest() { resetDatabase(); }
     @After public void afterTest() {}
-
-
 
     public static QueryExecutionHTTP withAuthJDK(QueryExecutionHTTPBuilder builder, String user, String passwd) {
         Authenticator authenticator = AuthLib.authenticator(user, passwd);

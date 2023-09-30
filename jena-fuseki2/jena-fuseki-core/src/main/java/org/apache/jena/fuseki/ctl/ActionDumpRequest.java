@@ -154,8 +154,6 @@ public class ActionDumpRequest extends HttpServlet {
                 pw.println();
                 pw.println("Cookie:        " + c[i].getName());
                 pw.println("    value:     " + c[i].getValue());
-                pw.println("    version:   " + c[i].getVersion());
-                pw.println("    comment:   " + c[i].getComment());
                 pw.println("    domain:    " + c[i].getDomain());
                 pw.println("    maxAge:    " + c[i].getMaxAge());
                 pw.println("    path:      " + c[i].getPath());

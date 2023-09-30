@@ -27,6 +27,8 @@ import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.resource.ResourceFactory;
 
 /** Helpers for working with Jetty.
  * <h3>SecurityHandler</h3>
@@ -52,16 +54,6 @@ public class JettyLib {
             handlerList.add(handler);
             Handler.Container container = new Handler.Sequence(handlerList);
             server.setHandler(container);
-
-//            if (currentHandler instanceof HandlerList) {
-//                ((HandlerList) currentHandler).addHandler(handler);
-//            } else {
-//                // Singleton handler. Convert to list.
-//                final HandlerList handlerList = new HandlerList();
-//                handlerList.addHandler(currentHandler);
-//                handlerList.addHandler(handler);
-//                server.setHandler(handlerList);
-//            }
         }
     }
 
@@ -105,5 +97,10 @@ public class JettyLib {
 //      http_config.setResponseHeaderSize(8192);
         http_config.setSendServerVersion(false);
         return http_config;
+    }
+
+    /** Create a resource for a filename */
+    public static Resource newResource(String filename) {
+        return ResourceFactory.root().newResource(filename);
     }
 }

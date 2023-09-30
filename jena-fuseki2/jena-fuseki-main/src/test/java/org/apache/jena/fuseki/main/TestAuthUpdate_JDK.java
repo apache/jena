@@ -50,7 +50,7 @@ public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
         UpdateExecution ue = withAuthJDK(UpdateExecutionHTTP.create()
                                                .endpoint(databaseURL())
                                                .update(updates),
-                                           "allowed", "bad-password");
+                                           "user", "bad-password");
         expect401(()->ue.execute());
     }
 
@@ -60,7 +60,7 @@ public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
         UpdateExecution ue = withAuthJDK(UpdateExecutionHTTP.create()
                                                .endpoint(databaseURL())
                                                .update(updates),
-                                           "allowed", "password");
+                                           "user", "password");
         ue.execute();
     }
 
@@ -70,7 +70,7 @@ public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
         UpdateExecution ue = withAuthJDK(UpdateExecutionHTTP.create()
                                                .endpoint(databaseURL())
                                                .update(updates),
-                                           "allowed", "password");
+                                           "user", "password");
         ue.execute();
     }
 
@@ -81,7 +81,7 @@ public class TestAuthUpdate_JDK extends AbstractTestAuth_JDK {
         UpdateExecution ue = UpdateExecutionHTTP.create().endpoint(databaseURL()).update(updates).build();
         String dsURL = databaseURL();
         URI uri = URI.create(dsURL);
-        AuthEnv.get().registerUsernamePassword(uri, "allowed", "password");
+        AuthEnv.get().registerUsernamePassword(uri, "user", "password");
         try {
             ue.execute();
         } finally {
