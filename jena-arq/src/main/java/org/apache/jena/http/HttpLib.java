@@ -24,6 +24,7 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
@@ -45,6 +46,7 @@ import java.util.zip.InflaterInputStream;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.http.auth.AuthEnv;
@@ -56,6 +58,8 @@ import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.exec.http.Params;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.web.HttpSC;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Operations related to SPARQL HTTP requests - Query, Update and Graph Store protocols.
@@ -63,7 +67,12 @@ import org.apache.jena.web.HttpSC;
  */
 public class HttpLib {
 
+    // JDK HTTP debug:
+    // -Djdk.httpclient.HttpClient.log=errors,requests,headers,frames[:control:data:window:all..],content,ssl,trace,channel
+
     private HttpLib() {}
+
+    private static Logger LOG = LoggerFactory.getLogger(HttpLib.class.getPackageName()+".HTTP");
 
     public static BodyHandler<Void> noBody() { return BodyHandlers.discarding(); }
 
@@ -623,12 +632,10 @@ public class HttpLib {
 
     /** Request */
     private static void logRequest(HttpRequest httpRequest) {
-        // Uses the SystemLogger which defaults to JUL.
-        // Add org.apache.jena.logging:log4j-jpl
-        // (java11 : 11.0.9, if using log4j-jpl, logging prints the request as {0} but response OK)
-//        httpRequest.uri();
-//        httpRequest.method();
-//        httpRequest.headers();
+        if ( LOG.isDebugEnabled() ) {
+            FmtLog.debug(LOG, "> %s %s", httpRequest.method(), httpRequest.uri());
+            logHeaders(LOG, httpRequest.headers());
+        }
     }
 
     /** Async Request */
@@ -636,10 +643,17 @@ public class HttpLib {
 
         /** Response (do not touch the body!)  */
     private static void logResponse(HttpResponse<?> httpResponse) {
-//        httpResponse.uri();
-//        httpResponse.statusCode();
-//        httpResponse.headers();
+        if ( LOG.isDebugEnabled() ) {
+            FmtLog.debug(LOG, "< %d %s %s", httpResponse.statusCode(), httpResponse.request().method(), httpResponse.uri());
+            logHeaders(LOG,  httpResponse.headers());
 //        httpResponse.previousResponse();
+        }
+    }
+
+    private static void logHeaders(Logger log, HttpHeaders headers) {
+        headers.map().forEach((header, values)->{
+            values.forEach(value->FmtLog.debug(log, "  %-15s %s", header, value));
+        });
     }
 
     /**

@@ -33,6 +33,7 @@ import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee10.servlet.ServletHandler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.session.DefaultSessionIdManager;
+import org.eclipse.jetty.session.SessionHandler;
 import org.eclipse.jetty.session.SessionIdManager;
 
 public class ExFusekiMain_2_AddShiro {
@@ -72,8 +73,8 @@ public class ExFusekiMain_2_AddShiro {
         servletHandler.setFilterMappings(mappings3);
 
         // Specify the Session ID Manager
-        SessionIdManager idmanager = new DefaultSessionIdManager(jettyServer);
-        jettyServer.setSessionIdManager(idmanager);
+        SessionIdManager idManager = new DefaultSessionIdManager(jettyServer);
+        jettyServer.addBean(idManager, true);
 
         // Specify the session handler
         SessionHandler sessionsHandler = new SessionHandler();

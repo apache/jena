@@ -44,7 +44,8 @@ public class AbstractFusekiTest extends BaseFusekiTest {
 
   @AfterClass public static void stopServer() {
       try {
-          server.stop();
+          if ( server != null )
+              server.stop();
       } catch (Throwable th) {
           th.printStackTrace();
       }
