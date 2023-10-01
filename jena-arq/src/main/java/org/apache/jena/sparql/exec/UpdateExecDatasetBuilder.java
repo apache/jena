@@ -47,7 +47,7 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
     // Uses query rewrite to replace variables by values.
     private Map<Var, Node>  substitutionMap  = null;
 
-    private Binding      initialBinding     = null;
+    private Binding       initialBinding    = null;
     private UpdateRequest update            = null;
     private UpdateRequest updateRequest     = new UpdateRequest();
 
@@ -134,6 +134,8 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
             substitutionMap = new HashMap<>();
     }
 
+    /** Use {@link #substitution(Binding)} */
+    @Deprecated
     public UpdateExecDatasetBuilder initialBinding(Binding initialBinding) {
         this.initialBinding = initialBinding;
         return this;

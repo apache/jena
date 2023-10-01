@@ -32,6 +32,27 @@ public class GraphFactory {
         JenaSystem.init();
     }
 
+    private static boolean defaultSameTerm = true;
+    static {
+        // Initial setting.
+        String x = System.getProperty("jena:graphSameTerm");
+        if ( x != null && x.equalsIgnoreCase("true") )
+            defaultSameTerm = true;
+    }
+
+    /**
+     * Set the default mode for in-memory graphs : same term (true) or same value
+     * (false).
+     * <p>
+     * This is initially set with system property "jena:graphSameTerm"
+     * with the system default is same value (Jena4).
+     * <p>
+     * This affects {@link #createDefaultGraph}.
+     */
+    public static void setDftGraphSameTerm(boolean value) {
+        defaultSameTerm = value;
+    }
+
     /**
      * Create a graph that is a Jena memory graph
      *

@@ -98,6 +98,8 @@ public class UpdateExecutionDatasetBuilder implements UpdateExecutionBuilder {
 //        return this;
 //    }
 
+    /** @deprecated Prefer {@link #substitution(QuerySolution)}. */
+    @Deprecated
     public UpdateExecutionDatasetBuilder initialBinding(QuerySolution querySolution) {
         if ( querySolution == null )
             return this;
