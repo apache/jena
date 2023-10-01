@@ -72,7 +72,7 @@
     <ver.shiro>1.12.0</ver.shiro>
 
     <ver.protobuf>3.24.3</ver.protobuf>
-    <ver.libthrift>0.18.1</ver.libthrift>
+    <ver.libthrift>0.19.0</ver.libthrift>
 
     <!-- JSON-LD 1.1 -->
     <ver.titanium-json-ld>1.3.2</ver.titanium-json-ld>
@@ -342,26 +342,33 @@
          <artifactId>libthrift</artifactId>
          <version>${ver.libthrift}</version>
          <exclusions>
-           <!-- Use whatever version Jena is using -->
-           <exclusion>
-             <groupId>org.apache.httpcomponents</groupId>
-             <artifactId>httpcore</artifactId>
-           </exclusion>
            <exclusion>
              <groupId>org.apache.commons</groupId>
              <artifactId>commons-lang3</artifactId>
            </exclusion>
-           <!-- libthrift : 0.14.0 onwards : THRIFT-5375 -->
-           <exclusion>
-             <groupId>org.apache.tomcat.embed</groupId>
-             <artifactId>tomcat-embed-core</artifactId>
-           </exclusion>
-           <exclusion>
-             <groupId>javax.servlet</groupId>
-             <artifactId>javax.servlet-api</artifactId>
-           </exclusion>
            <exclusion>
              <groupId>org.slf4j</groupId>
+             <artifactId>*</artifactId>
+           </exclusion>
+
+           <!-- 
+                Jena does not use the RPC capabilities of Thrift,
+                only the binary data format.
+           -->
+           <exclusion>
+             <groupId>org.apache.httpcomponents.client5</groupId>
+             <artifactId>*</artifactId>
+           </exclusion>
+           <exclusion>
+             <groupId>org.apache.httpcomponents.core5</groupId>
+             <artifactId>*</artifactId>
+           </exclusion>
+           <exclusion>
+             <groupId>jakarta.servlet</groupId>
+             <artifactId>*</artifactId>
+           </exclusion>
+           <exclusion>
+             <groupId>jakarta.annotation</groupId>
              <artifactId>*</artifactId>
            </exclusion>
          </exclusions>
