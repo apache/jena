@@ -522,6 +522,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         return evalBindings(query, datasetGraph, inputBinding, context);
     }
 
+    @SuppressWarnings("deprecation")
     protected static Iterator<Binding> evalBindings(Query query, DatasetGraph dsg, Binding inputBinding, Context context) {
         // The UpdateProcessorBase already copied the context and made it safe
         // ... but that's going to happen again :-(
