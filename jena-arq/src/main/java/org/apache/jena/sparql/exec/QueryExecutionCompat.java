@@ -60,7 +60,7 @@ public class QueryExecutionCompat extends QueryExecutionAdapter {
     }
 
     private void execution() {
-        // Delay until used so setTimeout,setInitialBindings work.
+        // Delay until used so setTimeout and initalBindings work.
         if ( qExecHere == null )
             qExecHere = qExecBuilder.build();
     }

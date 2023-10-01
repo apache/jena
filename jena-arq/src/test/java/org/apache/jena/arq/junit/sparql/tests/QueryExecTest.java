@@ -188,7 +188,6 @@ public class QueryExecTest implements Runnable {
                 if ( namedGraphURIs != null ) {
                     for ( String sourceURI : namedGraphURIs ) {
                         String absSourceURI = IRIs.resolve(sourceURI);
-                        SystemARQ.UsePlainGraph = true;
                         Model m = ds.getNamedModel(absSourceURI);
                         SparqlTestLib.parser(sourceURI).parse(m);
                     }
