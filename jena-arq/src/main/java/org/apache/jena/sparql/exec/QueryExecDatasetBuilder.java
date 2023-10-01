@@ -151,6 +151,8 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
             substitutionMap = new HashMap<>();
     }
 
+    /** Use {@link #substitution(Binding)} */
+    @Deprecated
     public QueryExecDatasetBuilder initialBinding(Binding binding) {
         this.initialBinding = binding;
         return this;

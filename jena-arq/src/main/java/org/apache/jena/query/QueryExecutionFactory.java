@@ -262,6 +262,7 @@ public class QueryExecutionFactory
         return make(query, dataset, null, binding);
     }
 
+    @SuppressWarnings("deprecation")
     private static QueryExecution make(Query query, Dataset dataset, DatasetGraph datasetGraph, Binding initialBinding) {
         QueryExecDatasetBuilder builder = QueryExecDataset.newBuilder().query(query);
         if ( initialBinding != null )
