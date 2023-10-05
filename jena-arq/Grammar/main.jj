@@ -487,13 +487,13 @@ SortCondition OrderConditionForAggregationFunction() :
   (
     ( // These are for clarity in the HTML
       ( <ASC>  { direction = Query.ORDER_ASCENDING ; }
-      | <DESC> { direction = Query.ORDER_DESCENDING ; } )
-      expr = BrackettedExpression()
+      | <DESC> { direction = Query.ORDER_DESCENDING ; } ) 
+      expr = BrackettedExpression() 
     )
   |
     ( expr = Constraint()
-    | v = Var() //{ expr = asExpr(v) ; }
-    )
+    | v = Var() //{ expr = asExpr(v) ; } 
+    ) 
   )
   { if ( v == null )
           return new SortCondition(expr, direction) ;
