@@ -11,16 +11,14 @@ import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.cdt.CDTFactory;
 import org.apache.jena.cdt.CDTKey;
 import org.apache.jena.cdt.CDTValue;
-import org.apache.jena.cdt.LiteralLabelForList;
-import org.apache.jena.cdt.LiteralLabelForMap;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprLib;
 import org.apache.jena.sparql.expr.ExprList;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.function.library.cdt.CDTLiteralFunctionUtils;
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.writers.WriterExpr;
 import org.apache.jena.sparql.util.ExprUtils;
@@ -30,12 +28,12 @@ public class AggFold extends AggregatorBase
 	protected final Expr expr1;  // While the values of these member variables can also be extracted from the ExprList (see
 	protected final Expr expr2;  // createExprList below), keeping these copies here makes it easier to access these values.
 
-	public AggFold( final Expr expr1 ) {
-		this(expr1, null);
+	public AggFold( final boolean isDistinct, final Expr expr1 ) {
+		this(isDistinct, expr1, null);
 	}
 
-	public AggFold( final Expr expr1, final Expr expr2 ) {
-		super( "FOLD", false, createExprList(expr1, expr2) );
+	public AggFold( final boolean isDistinct, final Expr expr1, final Expr expr2 ) {
+		super( "FOLD", isDistinct, createExprList(expr1, expr2) );
 
 		this.expr1 = expr1;
 		this.expr2 = expr2;
@@ -63,7 +61,7 @@ public class AggFold extends AggregatorBase
 
 		final Expr _expr2 = ( lookAhead != null ) ? lookAhead : null;
 
-		return new AggFold(_expr1, _expr2);
+		return new AggFold(isDistinct, _expr1, _expr2);
 	}
 
 	@Override
@@ -79,7 +77,7 @@ public class AggFold extends AggregatorBase
 	@Override
 	public Accumulator createAccumulator() {
 		if ( expr2 == null )
-			return new ListAccumulator();
+			return new ListAccumulator(expr1, isDistinct);
 		else
 			return new MapAccumulator();
 	}
@@ -134,28 +132,38 @@ public class AggFold extends AggregatorBase
 		return out.asString();
 	}
 
-	protected class ListAccumulator implements Accumulator {
+	protected class ListAccumulator extends AccumulatorExpr {
 		final protected List<CDTValue> list = new ArrayList<>();
 
-		@Override
-		public void accumulate( final Binding binding, final FunctionEnv functionEnv ) {
-			final CDTValue v;
-			final NodeValue nv = ExprLib.evalOrNull(expr1, binding, functionEnv);
-			if ( nv == null ) {
-				v = CDTFactory.getNullValue();
-			}
-			else {
-				v = CDTFactory.createValue( nv.asNode() );
-			}
+		protected ListAccumulator( final Expr expr, final boolean makeDistinct ) {
+			super(expr, makeDistinct);
+		}
 
+		@Override
+		protected void accumulate( final NodeValue nv, final Binding binding, final FunctionEnv functionEnv ) {
+			final CDTValue v = CDTFactory.createValue( nv.asNode() );
 			list.add(v);
 		}
 
 		@Override
+		protected void accumulateError( final Binding binding, final FunctionEnv functionEnv ) {
+			final CDTValue v = CDTFactory.getNullValue();
+			list.add(v);
+		}
+
+		@Override
+		protected NodeValue getAccValue() {
+			return CDTLiteralFunctionUtils.createNodeValue(list);
+		}
+
+		// Overriding this function because the base class would otherwise not
+		// call getAccValue() in cases in which there was an error during the
+		// evaluation of the 'expr' for any of the solution mappings. For FOLD,
+		// however, errors do not cause an aggregation error but just produce
+		// null values in the created list.
+		@Override
 		public NodeValue getValue() {
-			final LiteralLabelForList lit = new LiteralLabelForList(list);
-			final Node n = NodeFactory.createLiteral(lit);
-			return NodeValue.makeNode(n);
+			return getAccValue();
 		}
 	}
 
@@ -190,9 +198,7 @@ public class AggFold extends AggregatorBase
 
 		@Override
 		public NodeValue getValue() {
-			final LiteralLabelForMap lit = new LiteralLabelForMap(map);
-			final Node n = NodeFactory.createLiteral(lit);
-			return NodeValue.makeNode(n);
+			return CDTLiteralFunctionUtils.createNodeValue(map);
 		}
 	}
 
