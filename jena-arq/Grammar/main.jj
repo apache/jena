@@ -470,6 +470,27 @@ void OrderCondition() :
           getQuery().addOrderBy(v, direction) ; }
 }
 
+SortCondition OrderConditionForAggregationFunction() :
+{ int direction = 0 ; Expr expr = null ; Node v = null ; }
+{
+  { direction = Query.ORDER_DEFAULT ; }
+  (
+    ( // These are for clarity in the HTML
+      ( <ASC>  { direction = Query.ORDER_ASCENDING ; }
+      | <DESC> { direction = Query.ORDER_DESCENDING ; } ) 
+      expr = BrackettedExpression() 
+    )
+  |
+    ( expr = Constraint()
+    | v = Var() //{ expr = asExpr(v) ; } 
+    ) 
+  )
+  { if ( v == null )
+          return new SortCondition(expr, direction) ;
+      else
+          return new SortCondition(v, direction) ; }
+}
+
 void LimitOffsetClauses() : { }
 {
   // SPARQL does not care about the order here.
@@ -2270,14 +2291,25 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
     { agg = AggregatorFactory.createCustom(AggURI.var_pop, distinct, expr) ; }
 
   | t = <FOLD>
-    { Expr orderByExpr = null ;
-      Var  orderByVar  = null ;
-      int  orderByDirection = Query.ORDER_DEFAULT ; }
+    { java.util.List<SortCondition> scs = null ;
+      SortCondition sc = null ; }
     <LPAREN>
+    ( <DISTINCT> { distinct = true ; } )?
     expr = Expression()
     ( <COMMA> expr2 = Expression() )?
+    (
+       <ORDER> <BY>
+       (
+         sc = OrderConditionForAggregationFunction()
+         {
+           if ( scs == null )
+             scs = new java.util.ArrayList<SortCondition>();
+           scs.add(sc);
+         }
+       )+
+    )?
     <RPAREN>
-    { agg = AggregatorFactory.createFold(expr, expr2) ; }
+    { agg = AggregatorFactory.createFold(distinct, expr, expr2, scs) ; }
 
     /* Explicit syntax (aggregate even if not registered) */
   | t = <AGG>

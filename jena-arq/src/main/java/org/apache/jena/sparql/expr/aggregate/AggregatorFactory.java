@@ -18,8 +18,11 @@
 
 package org.apache.jena.sparql.expr.aggregate ;
 
+import java.util.List;
+
 import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprList ;
 
@@ -71,7 +74,11 @@ public class AggregatorFactory {
         return new AggNull() ;
     }
 
-    public static Aggregator createFold(Expr expr1, Expr expr2) {
+    public static Aggregator createFold(boolean distinct, Expr expr1, Expr expr2, List<SortCondition> orderBy) {
+        if ( distinct )
+            throw new NotImplemented("FOLD with DISTINCT not implemented yet") ;
+        if ( orderBy != null )
+            System.out.println( "HERE!! " + orderBy.size() );
         return new AggFold(expr1, expr2) ;
     }
 
