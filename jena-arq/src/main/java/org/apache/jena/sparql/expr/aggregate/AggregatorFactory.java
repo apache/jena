@@ -75,11 +75,12 @@ public class AggregatorFactory {
     }
 
     public static Aggregator createFold(boolean distinct, Expr expr1, Expr expr2, List<SortCondition> orderBy) {
-//        if ( distinct )
-//            throw new NotImplemented("FOLD with DISTINCT not implemented yet") ;
         if ( orderBy != null )
             System.out.println( "HERE!! " + orderBy.size() );
-        return new AggFold(distinct, expr1, expr2) ;
+        if ( expr2 == null )
+            return new AggFoldList(distinct, expr1) ;
+        else
+            return new AggFoldMap(expr1, expr2) ;
     }
 
     public static Aggregator createCustom(String iri, Args a) {
