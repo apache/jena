@@ -4537,6 +4537,59 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
+<<<<<<< HEAD
+=======
+  final public Node GraphTerm() throws ParseException {
+                     Node n ; String iri ;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case IRIref:
+    case PNAME_NS:
+    case PNAME_LN:
+      iri = iri();
+                {if (true) return createNode(iri) ;}
+      break;
+    case STRING_LITERAL1:
+    case STRING_LITERAL2:
+    case STRING_LITERAL_LONG1:
+    case STRING_LITERAL_LONG2:
+      n = RDFLiteral();
+                     {if (true) return n ;}
+      break;
+    case INTEGER:
+    case DECIMAL:
+    case DOUBLE:
+    case INTEGER_POSITIVE:
+    case DECIMAL_POSITIVE:
+    case DOUBLE_POSITIVE:
+    case INTEGER_NEGATIVE:
+    case DECIMAL_NEGATIVE:
+    case DOUBLE_NEGATIVE:
+      n = NumericLiteral();
+                         {if (true) return n ;}
+      break;
+    case TRUE:
+    case FALSE:
+      n = BooleanLiteral();
+                         {if (true) return n ;}
+      break;
+    case BLANK_NODE_LABEL:
+    case ANON:
+      n = BlankNode();
+                    {if (true) return n ;}
+      break;
+    case NIL:
+      jj_consume_token(NIL);
+          {if (true) return nRDFnil ;}
+      break;
+    default:
+      jj_la1[143] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+  }
+
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
   final public Expr Expression() throws ParseException {
                       Expr expr ;
     expr = ConditionalOrExpression();
@@ -4554,7 +4607,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         ;
         break;
       default:
+<<<<<<< HEAD
         jj_la1[143] = jj_gen;
+=======
+        jj_la1[144] = jj_gen;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
         break label_37;
       }
       jj_consume_token(SC_OR);
@@ -4575,7 +4632,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         ;
         break;
       default:
+<<<<<<< HEAD
         jj_la1[144] = jj_gen;
+=======
+        jj_la1[145] = jj_gen;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
         break label_38;
       }
       jj_consume_token(SC_AND);
@@ -4648,13 +4709,21 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         expr1 = new E_NotOneOf(expr1, a) ;
         break;
       default:
+<<<<<<< HEAD
         jj_la1[145] = jj_gen;
+=======
+        jj_la1[146] = jj_gen;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
+<<<<<<< HEAD
       jj_la1[146] = jj_gen;
+=======
+      jj_la1[147] = jj_gen;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
       ;
     }
       {if (true) return expr1 ;}
@@ -4685,7 +4754,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         ;
         break;
       default:
+<<<<<<< HEAD
         jj_la1[147] = jj_gen;
+=======
+        jj_la1[148] = jj_gen;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
         break label_39;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -4723,7 +4796,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
          addition = false ;
           break;
         default:
+<<<<<<< HEAD
           jj_la1[148] = jj_gen;
+=======
+          jj_la1[149] = jj_gen;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -4735,7 +4812,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
             ;
             break;
           default:
+<<<<<<< HEAD
             jj_la1[149] = jj_gen;
+=======
+            jj_la1[150] = jj_gen;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
             break label_40;
           }
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -4750,7 +4831,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                                             expr2 = new E_Divide(expr2, expr3) ;
             break;
           default:
+<<<<<<< HEAD
             jj_la1[150] = jj_gen;
+=======
+            jj_la1[151] = jj_gen;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
             jj_consume_token(-1);
             throw new ParseException();
           }
@@ -4761,7 +4846,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
          expr1 = new E_Subtract(expr1, expr2) ;
         break;
       default:
+<<<<<<< HEAD
         jj_la1[151] = jj_gen;
+=======
+        jj_la1[152] = jj_gen;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -4783,7 +4872,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         ;
         break;
       default:
+<<<<<<< HEAD
         jj_la1[152] = jj_gen;
+=======
+        jj_la1[153] = jj_gen;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
         break label_41;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -4808,7 +4901,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       expr1 = new E_OpNumericIntegerDivide(expr1, expr2) ;
         break;
       default:
+<<<<<<< HEAD
         jj_la1[153] = jj_gen;
+=======
+        jj_la1[154] = jj_gen;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -4942,7 +5039,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                                  {if (true) return expr ;}
       break;
     default:
+<<<<<<< HEAD
       jj_la1[154] = jj_gen;
+=======
+      jj_la1[155] = jj_gen;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -5080,7 +5181,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
                              {if (true) return asExpr(n) ;}
       break;
     default:
+<<<<<<< HEAD
       jj_la1[155] = jj_gen;
+=======
+      jj_la1[156] = jj_gen;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -5125,7 +5230,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       n = ExprQuotedTriple();
       break;
     default:
+<<<<<<< HEAD
       jj_la1[156] = jj_gen;
+=======
+      jj_la1[157] = jj_gen;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -5226,7 +5335,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         expr2 = Expression();
         break;
       default:
+<<<<<<< HEAD
         jj_la1[157] = jj_gen;
+=======
+        jj_la1[158] = jj_gen;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
         ;
       }
       jj_consume_token(RPAREN);
@@ -5242,7 +5355,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         expr2 = Expression();
         break;
       default:
+<<<<<<< HEAD
         jj_la1[158] = jj_gen;
+=======
+        jj_la1[159] = jj_gen;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
         ;
       }
       jj_consume_token(RPAREN);
@@ -5262,7 +5379,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
               {if (true) return makeFunction_BNode() ;}
         break;
       default:
+<<<<<<< HEAD
         jj_la1[159] = jj_gen;
+=======
+        jj_la1[160] = jj_gen;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -6290,7 +6411,10 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
           case SECONDS:
           case TIMEZONE:
           case TZ:
+<<<<<<< HEAD
           case ADJUST:
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
           case NOW:
           case UUID:
           case STRUUID:
@@ -6638,13 +6762,43 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     finally { jj_save(4, xla); }
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_101() {
-    if (jj_scan_token(IS_BLANK)) return true;
+=======
+  private boolean jj_3R_103() {
+    if (jj_3R_120()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_102() {
+    if (jj_scan_token(IS_NUMERIC)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_158() {
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_101() {
+    if (jj_scan_token(IS_LITERAL)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
   private boolean jj_3R_100() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
+    if (jj_scan_token(IS_BLANK)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+<<<<<<< HEAD
+  private boolean jj_3R_100() {
+=======
+  private boolean jj_3R_99() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(IS_URI)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
@@ -6710,35 +6864,68 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_97() {
-    if (jj_scan_token(STRDT)) return true;
+=======
+  private boolean jj_3R_98() {
+    if (jj_scan_token(IS_IRI)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_97() {
+    if (jj_scan_token(SAME_TERM)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
   private boolean jj_3R_96() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
+    if (jj_scan_token(STRDT)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+<<<<<<< HEAD
+  private boolean jj_3R_96() {
+=======
+  private boolean jj_3R_95() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(STRLANG)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_95() {
+=======
+  private boolean jj_3R_94() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(IF)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_168() {
+=======
+  private boolean jj_3R_159() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(LBRACKET)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_94() {
+=======
+  private boolean jj_3R_93() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(CALL)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_158() {
     if (jj_3R_168()) return true;
     return false;
@@ -6778,53 +6965,121 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_90() {
+=======
+  private boolean jj_3R_92() {
+    if (jj_scan_token(COALESCE)) return true;
+    if (jj_3R_117()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_152() {
+    if (jj_3R_159()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_91() {
+    if (jj_scan_token(VERSION)) return true;
+    if (jj_scan_token(NIL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_90() {
+    if (jj_scan_token(SHA512)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_126() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_151()) {
+    jj_scanpos = xsp;
+    if (jj_3R_152()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_151() {
+    if (jj_3R_158()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_89() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(SHA384)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_89() {
+=======
+  private boolean jj_3R_88() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(SHA256)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_88() {
+=======
+  private boolean jj_3R_87() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(SHA1)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_87() {
+=======
+  private boolean jj_3R_86() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(MD5)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_86() {
+=======
+  private boolean jj_3R_85() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(STRUUID)) return true;
     if (jj_scan_token(NIL)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_85() {
+=======
+  private boolean jj_3R_84() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(UUID)) return true;
     if (jj_scan_token(NIL)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_84() {
+=======
+  private boolean jj_3R_83() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(NOW)) return true;
     if (jj_scan_token(NIL)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_83() {
     if (jj_scan_token(ADJUST)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
   private boolean jj_3R_82() {
     if (jj_scan_token(TZ)) return true;
     if (jj_scan_token(LPAREN)) return true;
@@ -6922,7 +7177,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_66() {
+<<<<<<< HEAD
     if (jj_3R_120()) return true;
+=======
+    if (jj_3R_119()) return true;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     return false;
   }
 
@@ -6933,13 +7192,21 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_64() {
+<<<<<<< HEAD
     if (jj_3R_119()) return true;
+=======
+    if (jj_3R_118()) return true;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     return false;
   }
 
   private boolean jj_3R_63() {
     if (jj_scan_token(CONCAT)) return true;
+<<<<<<< HEAD
     if (jj_3R_118()) return true;
+=======
+    if (jj_3R_117()) return true;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     return false;
   }
 
@@ -6985,12 +7252,20 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_117() {
+=======
+  private boolean jj_3R_116() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(NIL)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_116() {
+=======
+  private boolean jj_3R_115() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
@@ -6999,9 +7274,15 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     if (jj_scan_token(BNODE)) return true;
     Token xsp;
     xsp = jj_scanpos;
+<<<<<<< HEAD
     if (jj_3R_116()) {
     jj_scanpos = xsp;
     if (jj_3R_117()) return true;
+=======
+    if (jj_3R_115()) {
+    jj_scanpos = xsp;
+    if (jj_3R_116()) return true;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     }
     return false;
   }
@@ -7049,7 +7330,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_47() {
+<<<<<<< HEAD
     if (jj_3R_115()) return true;
+=======
+    if (jj_3R_114()) return true;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     return false;
   }
 
@@ -7182,10 +7467,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_scanpos = xsp;
     if (jj_3R_109()) {
     jj_scanpos = xsp;
+<<<<<<< HEAD
     if (jj_3R_110()) {
     jj_scanpos = xsp;
     if (jj_3R_111()) return true;
     }
+=======
+    if (jj_3R_110()) return true;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     }
     }
     }
@@ -7252,26 +7541,44 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_160() {
+=======
+  private boolean jj_3R_154() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(IRIref)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_178() {
+=======
+  private boolean jj_3R_182() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(ANON)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_165() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_177()) {
     jj_scanpos = xsp;
     if (jj_3R_178()) return true;
+=======
+  private boolean jj_3R_172() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_181()) {
+    jj_scanpos = xsp;
+    if (jj_3R_182()) return true;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     }
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_177() {
     if (jj_scan_token(BLANK_NODE_LABEL)) return true;
     return false;
@@ -7328,20 +7635,107 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_181() {
+=======
+  private boolean jj_3R_181() {
+    if (jj_scan_token(BLANK_NODE_LABEL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_174() {
+    if (jj_scan_token(PNAME_NS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_173() {
+    if (jj_scan_token(PNAME_LN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_168() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_173()) {
+    jj_scanpos = xsp;
+    if (jj_3R_174()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_161() {
+    if (jj_3R_168()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_153() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_160()) {
+    jj_scanpos = xsp;
+    if (jj_3R_161()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_160() {
+    if (jj_3R_154()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_186() {
+    if (jj_scan_token(STRING_LITERAL_LONG2)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_185() {
+    if (jj_scan_token(STRING_LITERAL_LONG1)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_184() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(STRING_LITERAL2)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_180() {
+=======
+  private boolean jj_3R_183() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(STRING_LITERAL1)) return true;
     return false;
   }
 
+<<<<<<< HEAD
+=======
+  private boolean jj_3R_175() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_183()) {
+    jj_scanpos = xsp;
+    if (jj_3R_184()) {
+    jj_scanpos = xsp;
+    if (jj_3R_185()) {
+    jj_scanpos = xsp;
+    if (jj_3R_186()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_180() {
+    if (jj_scan_token(FALSE)) return true;
+    return false;
+  }
+
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
   private boolean jj_3R_171() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_180()) {
+    if (jj_3R_179()) {
     jj_scanpos = xsp;
+<<<<<<< HEAD
     if (jj_3R_181()) {
     jj_scanpos = xsp;
     if (jj_3R_182()) {
@@ -7349,10 +7743,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     if (jj_3R_183()) return true;
     }
     }
+=======
+    if (jj_3R_180()) return true;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     }
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_176() {
     if (jj_scan_token(FALSE)) return true;
     return false;
@@ -7369,38 +7767,85 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_175() {
+=======
+  private boolean jj_3R_179() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(TRUE)) return true;
     return false;
   }
 
-  private boolean jj_3R_197() {
+  private boolean jj_3R_145() {
+    if (jj_scan_token(LBRACE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_198() {
     if (jj_scan_token(DOUBLE_NEGATIVE)) return true;
     return false;
   }
 
-  private boolean jj_3R_196() {
+  private boolean jj_3R_197() {
     if (jj_scan_token(DECIMAL_NEGATIVE)) return true;
     return false;
   }
 
-  private boolean jj_3R_195() {
+  private boolean jj_3_3() {
+    if (jj_scan_token(DOT)) return true;
+    if (jj_3R_46()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_196() {
     if (jj_scan_token(INTEGER_NEGATIVE)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_186() {
+=======
+  private boolean jj_3R_189() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_195()) {
-    jj_scanpos = xsp;
     if (jj_3R_196()) {
     jj_scanpos = xsp;
-    if (jj_3R_197()) return true;
+    if (jj_3R_197()) {
+    jj_scanpos = xsp;
+    if (jj_3R_198()) return true;
     }
     }
     return false;
   }
 
+  private boolean jj_3R_195() {
+    if (jj_scan_token(DOUBLE_POSITIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_194() {
+    if (jj_scan_token(DECIMAL_POSITIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_193() {
+    if (jj_scan_token(INTEGER_POSITIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_188() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_193()) {
+    jj_scanpos = xsp;
+    if (jj_3R_194()) {
+    jj_scanpos = xsp;
+    if (jj_3R_195()) return true;
+    }
+    }
+    return false;
+  }
+
+<<<<<<< HEAD
   private boolean jj_3R_146() {
     if (jj_scan_token(LBRACE)) return true;
     return false;
@@ -7422,14 +7867,27 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
   private boolean jj_3R_192() {
-    if (jj_scan_token(INTEGER_POSITIVE)) return true;
+    if (jj_scan_token(DOUBLE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_191() {
+    if (jj_scan_token(DECIMAL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_190() {
+    if (jj_scan_token(INTEGER)) return true;
     return false;
   }
 
   private boolean jj_3R_185() {
     Token xsp;
     xsp = jj_scanpos;
+<<<<<<< HEAD
     if (jj_3R_192()) {
     jj_scanpos = xsp;
     if (jj_3R_193()) {
@@ -7460,14 +7918,19 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     xsp = jj_scanpos;
     if (jj_3R_189()) {
     jj_scanpos = xsp;
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_3R_190()) {
     jj_scanpos = xsp;
-    if (jj_3R_191()) return true;
+    if (jj_3R_191()) {
+    jj_scanpos = xsp;
+    if (jj_3R_192()) return true;
     }
     }
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_174() {
     if (jj_3R_186()) return true;
     return false;
@@ -7480,6 +7943,64 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   private boolean jj_3R_172() {
     if (jj_3R_184()) return true;
+=======
+  private boolean jj_3R_178() {
+    if (jj_3R_189()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_177() {
+    if (jj_3R_188()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_176() {
+    if (jj_3R_187()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_170() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_176()) {
+    jj_scanpos = xsp;
+    if (jj_3R_177()) {
+    jj_scanpos = xsp;
+    if (jj_3R_178()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_169() {
+    if (jj_3R_175()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_143() {
+    if (jj_scan_token(AGG)) return true;
+    if (jj_3R_153()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_167() {
+    if (jj_scan_token(NIL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_166() {
+    if (jj_3R_172()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_165() {
+    if (jj_3R_171()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_164() {
+    if (jj_3R_170()) return true;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     return false;
   }
 
@@ -7496,7 +8017,35 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_113() {
+    if (jj_3R_126()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_157() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_162()) {
+    jj_scanpos = xsp;
+    if (jj_3R_163()) {
+    jj_scanpos = xsp;
+    if (jj_3R_164()) {
+    jj_scanpos = xsp;
+    if (jj_3R_165()) {
+    jj_scanpos = xsp;
+    if (jj_3R_166()) {
+    jj_scanpos = xsp;
+    if (jj_3R_167()) return true;
+    }
+    }
+    }
+    }
+    }
+    return false;
+  }
+
   private boolean jj_3R_162() {
+<<<<<<< HEAD
     if (jj_3R_171()) return true;
     return false;
   }
@@ -7508,6 +8057,28 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_161() {
+=======
+    if (jj_3R_153()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_46() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_112()) {
+    jj_scanpos = xsp;
+    if (jj_3R_113()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_112() {
+    if (jj_3R_125()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_156() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(14)) {
@@ -7517,6 +8088,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_114() {
     if (jj_3R_127()) return true;
     return false;
@@ -7537,6 +8109,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
   private boolean jj_3_4() {
     if (jj_scan_token(DOT)) return true;
     if (jj_3R_46()) return true;
@@ -7548,59 +8122,100 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_143() {
+=======
+  private boolean jj_3R_142() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(FOLD)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_142() {
+=======
+  private boolean jj_3R_141() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(VAR_POP)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_141() {
+=======
+  private boolean jj_3R_140() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(VAR_SAMP)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_140() {
+=======
+  private boolean jj_3R_139() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(VARIANCE)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_139() {
+=======
+  private boolean jj_3R_138() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(STDEV_POP)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_138() {
+=======
+  private boolean jj_3R_137() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(STDEV_SAMP)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_145() {
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
   private boolean jj_3R_137() {
+=======
+  private boolean jj_3R_136() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(STDEV)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_118() {
+=======
+  private boolean jj_3R_144() {
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_117() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(187)) {
     jj_scanpos = xsp;
+<<<<<<< HEAD
     if (jj_3R_145()) return true;
+=======
+    if (jj_3R_144()) return true;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     }
     return false;
   }
@@ -7611,23 +8226,37 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_166() {
     if (jj_scan_token(LT2)) return true;
     return false;
   }
 
   private boolean jj_3R_136() {
+=======
+  private boolean jj_3R_135() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(GROUP_CONCAT)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_135() {
+=======
+  private boolean jj_3R_124() {
+    if (jj_3R_147()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_134() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(SAMPLE)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_156() {
     if (jj_3R_166()) return true;
     return false;
@@ -7639,11 +8268,15 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_134() {
+=======
+  private boolean jj_3R_133() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(MODE)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_125() {
     if (jj_3R_148()) return true;
     return false;
@@ -7660,11 +8293,27 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_133() {
+=======
+  private boolean jj_3R_147() {
+    if (jj_scan_token(PREFIX)) return true;
+    if (jj_scan_token(PNAME_NS)) return true;
+    if (jj_3R_154()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_155() {
+    if (jj_scan_token(LT2)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_132() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(MEDIAN)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_152() {
     if (jj_3R_163()) return true;
     return false;
@@ -7676,11 +8325,15 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_132() {
+=======
+  private boolean jj_3R_131() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(AVG)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_148() {
     if (jj_scan_token(PREFIX)) return true;
     if (jj_scan_token(PNAME_NS)) return true;
@@ -7690,20 +8343,33 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   private boolean jj_3R_150() {
     if (jj_3R_159()) return true;
+=======
+  private boolean jj_3R_150() {
+    if (jj_3R_157()) return true;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     return false;
   }
 
   private boolean jj_3R_149() {
+<<<<<<< HEAD
     if (jj_3R_161()) return true;
     return false;
   }
 
   private boolean jj_3R_131() {
+=======
+    if (jj_3R_156()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_130() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(MAX)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_126() {
     Token xsp;
     xsp = jj_scanpos;
@@ -7733,17 +8399,64 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_130() {
+=======
+  private boolean jj_3R_148() {
+    if (jj_3R_155()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_146() {
+    if (jj_scan_token(BASE)) return true;
+    if (jj_3R_154()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_129() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(MIN)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_129() {
+=======
+  private boolean jj_3R_125() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_148()) {
+    jj_scanpos = xsp;
+    if (jj_3R_149()) {
+    jj_scanpos = xsp;
+    if (jj_3R_150()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_111() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_123()) {
+    jj_scanpos = xsp;
+    if (jj_3R_124()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_123() {
+    if (jj_3R_146()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_128() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(SUM)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_147() {
     if (jj_scan_token(BASE)) return true;
     if (jj_3R_160()) return true;
@@ -7765,24 +8478,42 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
   private boolean jj_3R_45() {
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
+<<<<<<< HEAD
       if (jj_3R_112()) { jj_scanpos = xsp; break; }
+=======
+      if (jj_3R_111()) { jj_scanpos = xsp; break; }
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     }
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_128() {
+=======
+  private boolean jj_3R_127() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(COUNT)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_115() {
     Token xsp;
     xsp = jj_scanpos;
+=======
+  private boolean jj_3R_114() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_127()) {
+    jj_scanpos = xsp;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_3R_128()) {
     jj_scanpos = xsp;
     if (jj_3R_129()) {
@@ -7813,9 +8544,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_scanpos = xsp;
     if (jj_3R_142()) {
     jj_scanpos = xsp;
+<<<<<<< HEAD
     if (jj_3R_143()) {
     jj_scanpos = xsp;
     if (jj_3R_144()) return true;
+=======
+    if (jj_3R_143()) return true;
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     }
     }
     }
@@ -7835,12 +8570,17 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_123() {
+=======
+  private boolean jj_3R_122() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(NOT)) return true;
     if (jj_scan_token(EXISTS)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_122() {
     if (jj_scan_token(EXISTS)) return true;
     if (jj_3R_146()) return true;
@@ -7848,53 +8588,89 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_120() {
+=======
+  private boolean jj_3R_121() {
+    if (jj_scan_token(EXISTS)) return true;
+    if (jj_3R_145()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_119() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(REPLACE)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_119() {
+=======
+  private boolean jj_3R_118() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(SUBSTR)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_121() {
+=======
+  private boolean jj_3R_120() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(REGEX)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_111() {
+=======
+  private boolean jj_3R_110() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(OBJECT)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_110() {
+=======
+  private boolean jj_3R_109() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(PREDICATE)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_109() {
+=======
+  private boolean jj_3R_108() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(SUBJECT)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_108() {
+=======
+  private boolean jj_3R_107() {
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(TRIPLE)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
   private boolean jj_3R_106() {
+<<<<<<< HEAD
     if (jj_3R_123()) return true;
     return false;
   }
 
   private boolean jj_3R_107() {
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
     if (jj_scan_token(IS_TRIPLE)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
@@ -7910,6 +8686,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+<<<<<<< HEAD
   private boolean jj_3R_167() {
     if (jj_scan_token(LPAREN)) return true;
     return false;
@@ -7927,6 +8704,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
   /** Generated Token Manager. */
   public ARQParserTokenManager token_source;
   SimpleCharStream jj_input_stream;
@@ -7958,6 +8737,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_la1_init_7();
    }
    private static void jj_la1_init_0() {
+<<<<<<< HEAD
       jj_la1_0 = new int[] {0x1e400000,0x200,0x300000,0x300000,0x0,0x1800000,0x1800000,0x1c00,0x0,0xdc00,0xdc00,0xdc00,0x0,0x0,0x0,0xdc00,0xdc00,0x0,0x0,0x0,0x0,0x0,0xc000,0x1c00,0x0,0x0,0x0,0x80000000,0x60000000,0xdc00,0x0,0xdc00,0x1c00,0xdc00,0x0,0xdc00,0xdc00,0x0,0xdc00,0xdc00,0x40000000,0x20000000,0x60000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1c00,0x0,0x1c00,0x0,0xfc00,0x0,0x0,0xfc00,0xfc00,0xfc00,0x0,0x0,0xfc00,0x0,0xfc00,0x0,0x400000,0xfc00,0x0,0x0,0xfc00,0xfc00,0x0,0x0,0x0,0xc000,0x1c00,0xc000,0x0,0x0,0x1c00,0x0,0x1c00,0x0,0x0,0x1c00,0x800000,0x0,0x0,0x0,0x0,0x0,0xfc00,0x8dc00,0x0,0x8dc00,0x8dc00,0x0,0xfc00,0x88dc00,0x88dc00,0x0,0x88dc00,0x88dc00,0x0,0x0,0x0,0x0,0x0,0x881c00,0x0,0x0,0x0,0x0,0x881c00,0x0,0x81c00,0x81c00,0x81c00,0x81c00,0x0,0x0,0xfc00,0xfc00,0x0,0x0,0xfc00,0xfc00,0xfc00,0x81c00,0x1c00,0xdc00,0xfc00,0xc000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xdc00,0xdc00,0xdc00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x800000,0xdc00,0x800000,0x800000,0x800000,0x800000,0x800000,0x800000,0x800000,0x800000,0x0,0x0,0x0,0x800000,0x800000,0x800000,0x800000,0x800000,0x800000,0x800000,0x0,0xdc00,0x80000000,0x0,0x0,0x10000,0x10000,0x0,0x0,0x0,0x0,0x0,0x0,0x1c00,0x1800,0x2000,};
    }
    private static void jj_la1_init_1() {
@@ -7977,6 +8757,27 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
    }
    private static void jj_la1_init_6() {
       jj_la1_6 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x200000,0x0,0x0,0x0,0x0,0x200000,0x0,0x0,0x0,0x0,0x4,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x801,0x0,0x8,0x801,0x801,0x801,0x0,0x8,0x801,0x0,0x801,0x8,0x0,0x801,0x0,0x8,0x801,0x801,0x8,0x0,0x0,0x0,0x800,0x0,0x0,0x0,0x800,0x0,0x800,0x4,0x0,0x0,0x0,0x4,0x0,0x4,0x0,0x8,0x801,0x0,0x2,0x0,0x0,0x4,0x801,0x8004000,0x8004000,0x2,0x8004000,0x8004000,0x4,0x4000000,0x8400000,0x8400000,0x40280000,0x8004000,0x0,0x4,0x280004,0x40280000,0x4000,0x4000000,0x8000000,0x8000000,0x0,0x8000000,0x0,0x0,0x801,0x801,0x1000,0x1000,0x801,0x801,0x801,0x0,0x800,0x0,0x1,0x0,0x20000,0x40000,0x3f0,0x3f0,0x180000,0x0,0x600000,0x600000,0x180000,0x600000,0x600000,0x184800,0x800,0x800,0x4,0x4,0x0,0x4,0x4,0x0,0x4,0x4,0x4,0x0,0x384800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x2,0x2,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4,0x0,0x0,0x0,0x0,0x800000,0x800000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,};
+=======
+      jj_la1_0 = new int[] {0x1e400000,0x200,0x300000,0x300000,0x0,0x1800000,0x1800000,0x1c00,0x0,0xdc00,0xdc00,0xdc00,0x0,0x0,0x0,0xdc00,0xdc00,0x0,0x0,0x0,0x0,0x0,0xc000,0x1c00,0x0,0x0,0x0,0x80000000,0x60000000,0xdc00,0x0,0xdc00,0x1c00,0xdc00,0x0,0xdc00,0xdc00,0x0,0xdc00,0xdc00,0x40000000,0x20000000,0x60000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1c00,0x0,0x1c00,0x0,0xfc00,0x0,0x0,0xfc00,0xfc00,0xfc00,0x0,0x0,0xfc00,0x0,0xfc00,0x0,0x400000,0xfc00,0x0,0x0,0xfc00,0xfc00,0x0,0x0,0x0,0xc000,0x1c00,0xc000,0x0,0x0,0x1c00,0x0,0x1c00,0x0,0x0,0x1c00,0x800000,0x0,0x0,0x0,0x0,0x0,0xfc00,0x8dc00,0x0,0x8dc00,0x8dc00,0x0,0xfc00,0x88dc00,0x88dc00,0x0,0x88dc00,0x88dc00,0x0,0x0,0x0,0x0,0x0,0x881c00,0x0,0x0,0x0,0x0,0x881c00,0x0,0x81c00,0x81c00,0x81c00,0x81c00,0x0,0x0,0xfc00,0xfc00,0x0,0x0,0xfc00,0xfc00,0xfc00,0x81c00,0x1c00,0xdc00,0xfc00,0xc000,0x3c00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xdc00,0xdc00,0xdc00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x800000,0xdc00,0x800000,0x800000,0x800000,0x800000,0x800000,0x800000,0x800000,0x800000,0x0,0x0,0x0,0x800000,0x800000,0x800000,0x800000,0x800000,0x800000,0x800000,0x0,0xdc00,0x80000000,0x0,0x0,0x10000,0x10000,0x0,0x0,0x0,0x0,0x0,0x0,0x1c00,0x1800,0x2000,};
+   }
+   private static void jj_la1_init_1() {
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x40,0x0,0x0,0x0,0x1000000,0xf0df0000,0xf0df0000,0xf0df0000,0x40,0x40,0xc0,0x0,0x0,0x40,0x80,0x40,0x40,0x0,0x0,0x20,0x80,0x2000000,0x4000000,0x0,0x0,0xf0df0000,0x1000000,0xf0df0000,0xf0df0000,0xf0df0018,0x18,0xf0df0000,0xf0df0018,0x18,0xf0df0000,0xf0df0018,0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20,0x200,0x200,0x220,0x0,0x200,0x0,0x0,0x0,0x0,0x200,0x0,0x0,0x200,0x0,0x0,0x0,0x0,0xe0f602,0x0,0x0,0x0,0x0,0xe0f602,0x0,0x0,0x4,0x0,0x0,0x0,0x4,0x0,0x4,0x0,0x800,0xf0df0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x800000,0x800000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf0df0000,0xf0df0000,0x0,0x0,0x0,0x0,0x0,0xf0df0000,0x0,0x0,0x0,0x0,0xf0df0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf0df0018,0x0,0xf0000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+   }
+   private static void jj_la1_init_2() {
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xfe5edfff,0xfe5edfff,0xfe5edfff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xfe5edfff,0x0,0xfe5edfff,0xfe5edfff,0xfe5edfff,0x0,0xfe5edfff,0xfe5edfff,0x0,0xfe5edfff,0xfe5edfff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2000,0x0,0x0,0x0,0x0,0x2000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xfe5edfff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1800000,0x1800000,0x0,0x1800000,0x1800000,0x0,0x0,0x0,0x0,0x0,0x1800000,0x0,0x0,0x0,0x0,0x1800000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x10000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xfe5edfff,0xfe5edfff,0x0,0x0,0x0,0x0,0x0,0xfe5edfff,0x0,0x0,0x0,0x0,0xfe5edfff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xfe5edfff,0x0,0x1fff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+   }
+   private static void jj_la1_init_3() {
+      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffff,0xffffffff,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffff,0x0,0xffffffff,0xffffffff,0xffffffff,0x0,0xffffffff,0xffffffff,0x0,0xffffffff,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1800,0x1800,0xffffffff,0xffffffff,0x0,0x0,0x0,0x0,0x0,0xffffffff,0x0,0x0,0x0,0x0,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+   }
+   private static void jj_la1_init_4() {
+      jj_la1_4 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1800,0x0,0x1f7f,0x1f7f,0x1f7f,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1800,0x0,0x0,0x0,0x0,0x0,0x0,0x77f,0x0,0x77f,0x77f,0x77f,0x0,0x77f,0x77f,0x0,0x77f,0x77f,0x0,0x0,0x0,0x0,0x0,0x9ffc000,0x9ffc000,0x4000000,0x10000000,0x4000000,0x4000000,0x4000000,0x4000000,0x4000000,0x4000000,0x0,0x4000,0xc000,0x0,0x0,0x0,0x40000000,0xc0000000,0x1800,0x0,0x0,0x1800,0x1800,0x1800,0x0,0x0,0x1800,0x0,0x1800,0x0,0x0,0x1800,0x0,0x0,0x1800,0x1800,0x0,0x0,0x4000000,0x0,0x1800,0x0,0x0,0x0,0x1800,0x0,0x1800,0x0,0x0,0x77f,0x0,0x0,0x0,0x0,0x0,0x0,0x1800,0x0,0x0,0x0,0x0,0x0,0x1800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1800,0x1800,0x0,0x0,0x1800,0x1800,0x1800,0x0,0x1800,0x0,0x0,0x0,0x1800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1f7f,0x1f7f,0x1800,0x0,0x0,0x0,0x0,0x77f,0x0,0x0,0x0,0x0,0x1f7f,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x77f,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1800,0x0,0x0,0x0,0x0,};
+   }
+   private static void jj_la1_init_5() {
+      jj_la1_5 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x780ff8,0x0,0xf80ff8,0xf80ff8,0xf80ff8,0x0,0x0,0x4000000,0x0,0x0,0x0,0x4000000,0x0,0x0,0x0,0x780ff8,0x0,0x0,0x0,0x0,0x0,0x0,0x800000,0x0,0x800000,0x800000,0x800000,0x0,0x800000,0x800000,0x0,0x800000,0x800000,0x0,0x0,0x0,0x0,0x80000000,0x1,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x2,0x0,0x0,0x0,0x0,0x52f80ff8,0x0,0x0,0x52f80ff8,0x52f80ff8,0x52f80ff8,0x4000000,0x0,0x52f80ff8,0x0,0x52f80ff8,0x0,0x0,0x52f80ff8,0x4000000,0x0,0x52f80ff8,0x52f80ff8,0x0,0x4000000,0x0,0x2800000,0x780ff8,0x0,0x2800000,0x2800000,0x780ff8,0x2800000,0x780ff8,0x0,0x0,0x800000,0x0,0x0,0x2800000,0x0,0x2800000,0x0,0x52f80ff8,0x0,0x80000000,0x0,0x0,0x0,0x52f80ff8,0x800000,0x800000,0x80000000,0x800000,0x800000,0x0,0x0,0x0,0x0,0x4000000,0x800000,0x8000008,0x8000000,0x8,0x4000000,0x800000,0x0,0x0,0x800000,0x0,0x0,0x10800000,0x10800000,0x52f80ff8,0x52f80ff8,0x0,0x0,0x52f80ff8,0x52f80ff8,0x42780ff8,0x0,0x780ff8,0x0,0x40000000,0x0,0x42780ff8,0x0,0x0,0x0,0x0,0xfc0,0xfc0,0x0,0x0,0xfc0,0x0,0x0,0xf80ff8,0xf80ff8,0x780ff8,0x0,0x0,0x2800000,0x0,0x0,0x0,0x0,0x0,0x0,0xf80ff8,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80000000,0x80000000,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x800000,0x0,0x0,0x2800000,0x0,0x0,0xff8,0x38,0x1c0,0xe00,0x0,0x780000,0x0,0x0,0x40000000,};
+   }
+   private static void jj_la1_init_6() {
+      jj_la1_6 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x80000,0x0,0x0,0x0,0x0,0x80000,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x200,0x0,0x2,0x200,0x200,0x200,0x0,0x2,0x200,0x0,0x200,0x2,0x0,0x200,0x0,0x2,0x200,0x200,0x2,0x0,0x0,0x0,0x200,0x0,0x0,0x0,0x200,0x0,0x200,0x1,0x0,0x0,0x0,0x1,0x0,0x1,0x0,0x2,0x200,0x0,0x0,0x0,0x0,0x1,0x200,0x2001000,0x2001000,0x0,0x2001000,0x2001000,0x1,0x1000000,0x2100000,0x2100000,0x100a0000,0x2001000,0x0,0x1,0xa0001,0x100a0000,0x1000,0x1000000,0x2000000,0x2000000,0x0,0x2000000,0x0,0x0,0x200,0x200,0x400,0x400,0x200,0x200,0x200,0x0,0x200,0x0,0x0,0x0,0x0,0x8000,0x10000,0xfc,0xfc,0x60000,0x0,0x180000,0x180000,0x60000,0x180000,0x180000,0x61200,0x200,0x200,0x1,0x1,0x0,0x1,0x0,0x1,0x1,0x1,0x0,0xe1200,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x200000,0x200000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
    }
    private static void jj_la1_init_7() {
       jj_la1_7 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
