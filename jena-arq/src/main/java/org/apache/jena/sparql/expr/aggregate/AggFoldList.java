@@ -51,7 +51,8 @@ public class AggFoldList extends AggregatorBase
 
 	@Override
 	public Node getValueEmpty() {
-		return null;
+		final List<CDTValue> emptyList = new ArrayList<>();
+		return CDTLiteralFunctionUtils.createNode(emptyList);
 	}
 
 	@Override
