@@ -64,8 +64,13 @@ public static final boolean staticFlag = false;
     throw new java.io.IOException(); // Should never come here
   }
 
+<<<<<<< HEAD
 /* Position in buffer. */
 
+=======
+/** Position in buffer. */
+  
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 @SuppressWarnings("all")
 public int bufpos = -1;
   int bufsize;
@@ -89,11 +94,16 @@ public int bufpos = -1;
   protected int inBuf = 0;
   protected int tabSize = 8;
 
+<<<<<<< HEAD
 @SuppressWarnings("all")
 public void setTabSize(int i) { tabSize = i; }
 
 @SuppressWarnings("all")
 public int getTabSize() { return tabSize; }
+=======
+  protected void setTabSize(int i) { tabSize = i; }
+  protected int getTabSize(int i) { return tabSize; }
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 
   protected void ExpandBuff(boolean wrapAround)
   {
@@ -182,8 +192,13 @@ public int getTabSize() { return tabSize; }
     return nextCharBuf[nextCharInd];
   }
 
+<<<<<<< HEAD
 /* @return starting character for token. */
 
+=======
+/** @return starting character for token. */
+  
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 @SuppressWarnings("all")
 public char BeginToken() throws java.io.IOException
   {
@@ -264,8 +279,13 @@ public char BeginToken() throws java.io.IOException
     bufcolumn[bufpos] = column;
   }
 
+<<<<<<< HEAD
 /* Read a character. */
 
+=======
+/** Read a character. */
+  
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 @SuppressWarnings("all")
 public char readChar() throws java.io.IOException
   {
@@ -365,8 +385,12 @@ public char readChar() throws java.io.IOException
    * @deprecated
    * @see #getEndColumn
    */
+<<<<<<< HEAD
   @Deprecated
 
+=======
+  
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 @SuppressWarnings("all")
 public int getColumn() {
     return bufcolumn[bufpos];
@@ -377,36 +401,53 @@ public int getColumn() {
    * @deprecated
    * @see #getEndLine
    */
+<<<<<<< HEAD
   @Deprecated
 
+=======
+  
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 @SuppressWarnings("all")
 public int getLine() {
     return bufline[bufpos];
   }
 
+<<<<<<< HEAD
 /** Get end column.
  * @return the end column or -1
  */
 
+=======
+/** Get end column. */
+  
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 @SuppressWarnings("all")
 public int getEndColumn() {
     return bufcolumn[bufpos];
   }
 
+<<<<<<< HEAD
 /** Get end line.
  * @return the end line number or -1
  */
 
+=======
+/** Get end line. */
+  
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 @SuppressWarnings("all")
 public int getEndLine() {
     return bufline[bufpos];
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /** Get the beginning column.
  * @return column of token start */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** @return column of token start */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -433,6 +474,7 @@ public void backup(int amount) {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /** Constructor.
  * @param dstream the underlying data source.
  * @param startline line number of the first character of the stream, mostly for error messages.
@@ -441,6 +483,8 @@ public void backup(int amount) {
  */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** Constructor. */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -460,6 +504,7 @@ public JavaCharStream(java.io.Reader dstream,
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /** Constructor.
  * @param dstream the underlying data source.
  * @param startline line number of the first character of the stream, mostly for error messages.
@@ -467,6 +512,8 @@ public JavaCharStream(java.io.Reader dstream,
  */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** Constructor. */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -478,11 +525,14 @@ public JavaCharStream(java.io.Reader dstream,
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /** Constructor.
  * @param dstream the underlying data source.
  */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** Constructor. */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -492,9 +542,12 @@ public JavaCharStream(java.io.Reader dstream)
     this(dstream, 1, 1, 4096);
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Reinitialise. */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** Reinitialise. */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -520,9 +573,12 @@ public void ReInit(java.io.Reader dstream,
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Reinitialise. */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** Reinitialise. */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -534,9 +590,12 @@ public void ReInit(java.io.Reader dstream,
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Reinitialise. */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** Reinitialise. */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -555,6 +614,7 @@ public JavaCharStream(java.io.InputStream dstream, String encoding, int startlin
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /** Constructor.
  * @param dstream the underlying data source.
  * @param startline line number of the first character of the stream, mostly for error messages.
@@ -563,6 +623,8 @@ public JavaCharStream(java.io.InputStream dstream, String encoding, int startlin
  */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** Constructor. */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -574,6 +636,7 @@ public JavaCharStream(java.io.InputStream dstream, int startline,
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /** Constructor.
  * @param dstream the underlying data source.
  * @param encoding the character encoding of the data stream.
@@ -583,6 +646,8 @@ public JavaCharStream(java.io.InputStream dstream, int startline,
  */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** Constructor. */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -594,6 +659,7 @@ public JavaCharStream(java.io.InputStream dstream, String encoding, int startlin
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /** Constructor.
  * @param dstream the underlying data source.
  * @param startline line number of the first character of the stream, mostly for error messages.
@@ -601,6 +667,8 @@ public JavaCharStream(java.io.InputStream dstream, String encoding, int startlin
  */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** Constructor. */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -612,6 +680,7 @@ public JavaCharStream(java.io.InputStream dstream, int startline,
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /** Constructor.
  * @param dstream the underlying data source.
  * @param encoding the character encoding of the data stream.
@@ -619,6 +688,8 @@ public JavaCharStream(java.io.InputStream dstream, int startline,
  */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** Constructor. */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -629,11 +700,14 @@ public JavaCharStream(java.io.InputStream dstream, String encoding) throws java.
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   /** Constructor.
    * @param dstream the underlying data source.
    */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** Constructor. */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -644,6 +718,7 @@ public JavaCharStream(java.io.InputStream dstream)
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /** Reinitialise.
  * @param dstream the underlying data source.
  * @param encoding the character encoding of the data stream.
@@ -653,6 +728,8 @@ public JavaCharStream(java.io.InputStream dstream)
  */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** Reinitialise. */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -664,6 +741,7 @@ public void ReInit(java.io.InputStream dstream, String encoding, int startline,
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /** Reinitialise.
  * @param dstream the underlying data source.
  * @param startline line number of the first character of the stream, mostly for error messages.
@@ -672,6 +750,8 @@ public void ReInit(java.io.InputStream dstream, String encoding, int startline,
  */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** Reinitialise. */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -682,6 +762,7 @@ public void ReInit(java.io.InputStream dstream, int startline,
     ReInit(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
 /** Reinitialise.
  * @param dstream the underlying data source.
  * @param encoding the character encoding of the data stream.
@@ -691,6 +772,8 @@ public void ReInit(java.io.InputStream dstream, int startline,
  */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** Reinitialise. */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -701,6 +784,7 @@ public void ReInit(java.io.InputStream dstream, String encoding, int startline,
     ReInit(dstream, encoding, startline, startcolumn, 4096);
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
 /** Reinitialise.
  * @param dstream the underlying data source.
  * @param startline line number of the first character of the stream, mostly for error messages.
@@ -708,6 +792,8 @@ public void ReInit(java.io.InputStream dstream, String encoding, int startline,
  */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** Reinitialise. */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -718,6 +804,7 @@ public void ReInit(java.io.InputStream dstream, int startline,
     ReInit(dstream, startline, startcolumn, 4096);
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
 /** Reinitialise.
  * @param dstream the underlying data source.
  * @param encoding the character encoding of the data stream.
@@ -725,6 +812,8 @@ public void ReInit(java.io.InputStream dstream, int startline,
  */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** Reinitialise. */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -735,11 +824,14 @@ public void ReInit(java.io.InputStream dstream, String encoding) throws java.io.
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /** Reinitialise.
  * @param dstream the underlying data source.
  */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 /** Reinitialise. */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -750,10 +842,13 @@ public void ReInit(java.io.InputStream dstream)
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   /** Get the token timage.
    * @return token image as String */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
   /** @return token image as String */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
@@ -768,11 +863,14 @@ public String GetImage()
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   /** Get the suffix as an array of characters.
    * @param len the length of the array to return.
    * @return suffix */
 
 =======
+=======
+>>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
   /** @return suffix */
   
 >>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)

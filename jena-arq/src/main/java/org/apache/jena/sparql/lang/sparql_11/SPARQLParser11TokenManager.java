@@ -3948,7 +3948,6 @@ private int jjMoveNfa_0(int startState, int curPos)
 
    return toRet;
 }
-<<<<<<< HEAD
 
 /** Token literal values. */
 public static final String[] jjstrLiteralImages = {
@@ -3991,8 +3990,6 @@ protected Token jjFillToken()
 
    return t;
 }
-=======
->>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 static final int[] jjnextStates = {
    192, 193, 194, 196, 197, 202, 203, 233, 234, 235, 237, 242, 212, 213, 214, 216,
    221, 142, 153, 155, 120, 123, 124, 6, 7, 17, 1, 2, 4, 66, 67, 68,
@@ -4278,7 +4275,6 @@ private void jjCheckNAddStates(int start, int end)
    } while (start++ != end);
 }
 
-<<<<<<< HEAD
     /** Constructor. */
     public SPARQLParser11TokenManager(JavaCharStream stream){
 
@@ -4372,6 +4368,4 @@ static final long[] jjtoMore = {
     private int jjimageLen;
     private int lengthOfMatch;
     protected int curChar;
-=======
->>>>>>> b5d4838066 (extends SPARQL parser to recognize ORDER BY for FOLD)
 }
