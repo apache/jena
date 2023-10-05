@@ -97,13 +97,29 @@ public class CDTLiteralFunctionUtils
 	}
 
 	/**
+	 * Creates a {@link NodeV} with a cdt:List literal that represents the
+	 * given list.
+	 */
+	public static final Node createNode( final List<CDTValue> list ) {
+		final LiteralLabel lit = new LiteralLabelForList(list);
+		return NodeFactory.createLiteral(lit);
+	}
+
+	/**
+	 * Creates a {@link Node} with a cdt:Map literal that represents the
+	 * given map.
+	 */
+	public static final Node createNode( final Map<CDTKey,CDTValue> map ) {
+		final LiteralLabel lit = new LiteralLabelForMap(map);
+		return NodeFactory.createLiteral(lit);
+	}
+
+	/**
 	 * Creates a {@link NodeValue} with a cdt:List literal that represents the
 	 * given list.
 	 */
 	public static final NodeValue createNodeValue( final List<CDTValue> list ) {
-		final LiteralLabel lit = new LiteralLabelForList(list);
-		final Node n = NodeFactory.createLiteral(lit);
-		return NodeValue.makeNode(n);
+		return NodeValue.makeNode( createNode(list) );
 	}
 
 	/**
@@ -111,9 +127,7 @@ public class CDTLiteralFunctionUtils
 	 * given map.
 	 */
 	public static final NodeValue createNodeValue( final Map<CDTKey,CDTValue> map ) {
-		final LiteralLabel lit = new LiteralLabelForMap(map);
-		final Node n = NodeFactory.createLiteral(lit);
-		return NodeValue.makeNode(n);
+		return NodeValue.makeNode( createNode(map) );
 	}
 
 }

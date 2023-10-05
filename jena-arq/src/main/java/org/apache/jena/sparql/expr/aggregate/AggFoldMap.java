@@ -65,7 +65,8 @@ public class AggFoldMap extends AggregatorBase
 
 	@Override
 	public Node getValueEmpty() {
-		return null;
+		final Map<CDTKey,CDTValue> emptyMap = new HashMap<>();
+		return CDTLiteralFunctionUtils.createNode(emptyMap);
 	}
 
 	@Override
