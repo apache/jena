@@ -22,7 +22,7 @@ import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.sse.Tags;
 
-public class WriterLib
+public class SSEWriteLib
 {
     static final int UNDEF = 0;
     public static final int NL = 1;
