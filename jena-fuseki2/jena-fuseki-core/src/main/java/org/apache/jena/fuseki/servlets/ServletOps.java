@@ -288,8 +288,13 @@ public class ServletOps {
     }
 
     public static void setNoCache(HttpServletResponse response) {
+        try {
         response.setHeader(HttpNames.hCacheControl, "must-revalidate,no-cache,no-store");
         response.setHeader(HttpNames.hPragma, "no-cache");
+        } catch (UnsupportedOperationException ex) {
+            // Jetty exception when the response has already been committed
+            // and so the headers can't be set. Ignore.
+        }
     }
 
     /** response to a upload operation of some kind. */
