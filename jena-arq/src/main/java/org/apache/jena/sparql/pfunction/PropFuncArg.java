@@ -82,9 +82,8 @@ public class PropFuncArg extends PrintSerializableBase
     public boolean equals(Object other) {
         if ( this == other )
             return true ;
-        if ( !(other instanceof PropFuncArg) )
+        if ( !(other instanceof PropFuncArg pfArg) )
             return false ;
-        PropFuncArg pfArg = (PropFuncArg)other ;
         if ( isNode() )
             return arg.equals(pfArg.arg) ;
         return argList.equals(pfArg.argList) ;

@@ -210,9 +210,8 @@ public class Quad implements Serializable
     public boolean equals(Object other) {
         if ( this == other ) return true;
 
-        if ( ! ( other instanceof Quad) )
+        if ( ! ( other instanceof Quad quad) )
             return false;
-        Quad quad = (Quad)other;
 
         if ( ! Objects.equals(graph, quad.graph) ) return false;
         if ( ! subject.equals(quad.subject) ) return false;

@@ -40,9 +40,8 @@ public class EnvTDB
         Set<Object> keys = properties.keySet();
         for ( Object key : keys )
         {
-            if ( key instanceof String )
+            if ( key instanceof String keyStr)
             {
-                String keyStr = (String)key;
                 if ( keyStr.startsWith(prefix) )
                     keyStr = SystemTDB.symbolNamespace+keyStr.substring(prefix.length());
                 if ( ! keyStr.startsWith(SystemTDB.symbolNamespace) )

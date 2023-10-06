@@ -125,8 +125,7 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
         }
         BPTreePage p = iter.next();
         BPTreeRecords r;
-        if (p instanceof BPTreeNode) {
-            BPTreeNode n = ((BPTreeNode) p);
+        if (p instanceof BPTreeNode n) {
             // Check whether this entire subtree has the same key prefix, if so we can just return a singleton
             // iterator for this entire subtree and skip further recursion
             Record subtreeMin = n.minRecord();

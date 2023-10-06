@@ -36,14 +36,14 @@ public class BindingTDB extends BindingBase
 {
     private final NodeTable nodeTable ;
     private final BindingNodeId idBinding ;
-    
+
     private static final boolean caching = false ;
-    // Whether the cache is worthwhile is unclear - the NodeTable keeps a cache. 
+    // Whether the cache is worthwhile is unclear - the NodeTable keeps a cache.
     private final Map<Var,Node> cache = ( caching ? new HashMap<>() : null ) ;
 
     public BindingTDB(BindingNodeId idBinding, NodeTable nodeTable)
     {
-        // BindingNodeId contains the bindings actually used  copied down when created. 
+        // BindingNodeId contains the bindings actually used  copied down when created.
         super(idBinding.getParentBinding()) ;
         this.idBinding = idBinding ;
         this.nodeTable = nodeTable ;
@@ -51,12 +51,12 @@ public class BindingTDB extends BindingBase
 
     @Override
     protected int size1() { return idBinding.size(); }
-    
+
     private List<Var> vars = null ;
-    
+
     /** Iterate over all the names of variables. */
     @Override
-    protected Iterator<Var> vars1() 
+    protected Iterator<Var> vars1()
     {
         if ( vars == null )
             vars = calcVars() ;
@@ -67,10 +67,10 @@ public class BindingTDB extends BindingBase
     {
         List<Var> vars = new ArrayList<>(4) ;
         // Only if not in parent.
-        // A (var/value) binding may have been copied down to record it's NodeId.  
-        
+        // A (var/value) binding may have been copied down to record it's NodeId.
+
         Binding b = idBinding.getParentBinding() ;
-        
+
         Iterator<Var> iter = idBinding.iterator() ;
         for ( Var v : idBinding )
         {
@@ -79,7 +79,7 @@ public class BindingTDB extends BindingBase
         }
         return vars ;
     }
-    
+
     @Override
     protected boolean isEmpty1()
     {
@@ -91,25 +91,25 @@ public class BindingTDB extends BindingBase
     {
         return idBinding.containsKey(var) ;
     }
-    
+
     public BindingNodeId getBindingId() { return idBinding ; }
-    
+
     public NodeId getNodeId(Var var)
     {
         NodeId id = idBinding.get(var) ;
         if ( id != null )
             return id ;
-        // In case we are inserting known missing nodes. 
+        // In case we are inserting known missing nodes.
         if ( NodeId.isDoesNotExist(id) )
             return null ;
 
         if ( parent == null )
             return null ;
-        if ( parent instanceof BindingTDB )
-            return ((BindingTDB)parent).getNodeId(var) ;
+        if ( parent instanceof BindingTDB bindingTDB)
+            return bindingTDB.getNodeId(var) ;
         return null ;
     }
-    
+
     @Override
     public Node get1(Var var)
     {
@@ -117,7 +117,7 @@ public class BindingTDB extends BindingBase
             Node n = cacheGet(var) ;
             if ( n != null )
                 return n ;
-            
+
             NodeId id = idBinding.get(var) ;
             if ( id == null )
                 return null ;
@@ -125,7 +125,7 @@ public class BindingTDB extends BindingBase
                 return null;
             n = nodeTable.getNodeForNodeId(id) ;
             if ( n == null )
-                // But there was to put it in the BindingNodeId. 
+                // But there was to put it in the BindingNodeId.
                 throw new TDBException("No node in NodeTable for NodeId "+id);
             // Update cache.
             cachePut(var, n) ;
@@ -139,15 +139,15 @@ public class BindingTDB extends BindingBase
 
     private void cachePut(Var var, Node n)
     {
-        if ( cache != null ) cache.put(var, n) ; 
+        if ( cache != null ) cache.put(var, n) ;
     }
 
     private Node cacheGet(Var var)
-    { 
+    {
         if ( cache == null ) return null ;
         return cache.get(var) ;
     }
-    
+
     @Override
     protected void fmtVar(StringBuffer sbuff, Var var)
     {

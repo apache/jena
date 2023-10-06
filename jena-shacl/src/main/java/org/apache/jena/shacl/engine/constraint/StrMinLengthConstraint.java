@@ -89,9 +89,8 @@ public class StrMinLengthConstraint extends ConstraintTerm {
             return true;
         if ( obj == null )
             return false;
-        if ( !(obj instanceof StrMinLengthConstraint) )
+        if ( !(obj instanceof StrMinLengthConstraint other) )
             return false;
-        StrMinLengthConstraint other = (StrMinLengthConstraint)obj;
         return minLength == other.minLength;
     }
 }

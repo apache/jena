@@ -32,10 +32,9 @@ public class P_Inverse extends P_Path1 {
 
     @Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
-        if ( !(path2 instanceof P_Inverse) )
-            return false;
-        P_Inverse other = (P_Inverse)path2;
-        return getSubPath().equalTo(other.getSubPath(), isoMap);
+        if (path2 instanceof P_Inverse other )
+            return getSubPath().equalTo(other.getSubPath(), isoMap);
+        return false;
     }
 
     @Override

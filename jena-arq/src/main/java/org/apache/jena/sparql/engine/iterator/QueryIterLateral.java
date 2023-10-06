@@ -38,9 +38,8 @@ public class QueryIterLateral extends QueryIterRepeatApply {
     }
 
     private boolean isJoinIdentity(Op op) {
-        if( ! ( op instanceof OpTable ) )
+        if( ! ( op instanceof OpTable table ) )
             return false;
-        OpTable table = (OpTable)lateralOp;
         return table.isJoinIdentity();
     }
 

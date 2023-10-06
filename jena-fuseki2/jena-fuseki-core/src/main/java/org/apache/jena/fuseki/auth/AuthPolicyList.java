@@ -41,8 +41,8 @@ public class AuthPolicyList implements AuthPolicy {
             return policy2;
         if ( policy2 == null )
             return policy1;
-        if ( policy1 instanceof AuthPolicyList) {
-            AuthPolicyList x = new AuthPolicyList((AuthPolicyList)policy1);
+        if ( policy1 instanceof AuthPolicyList apl1 ) {
+            AuthPolicyList x = new AuthPolicyList(apl1);
             x.add(policy2);
             return x;
         }
@@ -70,7 +70,7 @@ public class AuthPolicyList implements AuthPolicy {
         }
         return true;
     }
-    
+
     @Override
     public String toString() {
         StringJoiner sj = new StringJoiner(", ","(",")");

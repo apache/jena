@@ -29,9 +29,9 @@ import org.apache.jena.sparql.sse.Tags;
 
 /** SSE Writer */
 public class WriterPath {
-    private static final int NL = WriterLib.NL;
-    private static final int NoNL = WriterLib.NoNL;
-    private static final int NoSP = WriterLib.NoSP;
+    private static final int NL = SSEWriteLib.NL;
+    private static final int NoNL = SSEWriteLib.NoNL;
+    private static final int NoSP = SSEWriteLib.NoSP;
 
     public static void write(Path path, Prologue prologue) {
         output(IndentedWriter.stdout, path, new SerializationContext(prologue));
@@ -44,9 +44,9 @@ public class WriterPath {
     }
 
     public static void output(IndentedWriter out, TriplePath tp, SerializationContext naming) {
-        WriterLib.start(out, Tags.tagTriplePath, NoNL);
+        SSEWriteLib.start(out, Tags.tagTriplePath, NoNL);
         outputPlain(out, tp, naming);
-        WriterLib.finish(out, Tags.tagTriplePath);
+        SSEWriteLib.finish(out, Tags.tagTriplePath);
     }
 
     public static void outputPlain(IndentedWriter out, TriplePath tp, SerializationContext naming) {

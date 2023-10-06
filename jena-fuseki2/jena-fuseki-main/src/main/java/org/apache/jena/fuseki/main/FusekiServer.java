@@ -320,8 +320,7 @@ public class FusekiServer {
 
         // Extract the ports from the Connectors.
         Arrays.stream(connectors).forEach(c->{
-            if ( c instanceof ServerConnector ) {
-                ServerConnector connector = (ServerConnector)c;
+            if ( c instanceof ServerConnector connector ) {
                 String protocol = connector.getDefaultConnectionFactory().getProtocol();
                 String scheme = (protocol.startsWith("SSL-") || protocol.equals("SSL")) ? "https" : "http";
                 int port = connector.getLocalPort();
@@ -1029,8 +1028,8 @@ public class FusekiServer {
             requireNonNull(processor, "processor");
 
             HttpServlet servlet;
-            if ( processor instanceof HttpServlet )
-                servlet = (HttpServlet)processor;
+            if ( processor instanceof HttpServlet proc )
+                servlet = proc;
             else
                 servlet = new ServletAction(processor, log);
             addServlet(pathSpec, servlet);
@@ -1719,8 +1718,8 @@ public class FusekiServer {
         private static void applyLocalhost(Server server) {
             Connector[] connectors = server.getConnectors();
             for ( int i = 0; i < connectors.length; i++ ) {
-                if ( connectors[i] instanceof ServerConnector ) {
-                    ((ServerConnector)connectors[i]).setHost("localhost");
+                if ( connectors[i] instanceof ServerConnector serverConnector) {
+                    serverConnector.setHost("localhost");
                 }
             }
         }

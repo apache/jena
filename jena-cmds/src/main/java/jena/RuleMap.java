@@ -55,12 +55,12 @@ import org.apache.jena.util.FileUtils ;
  * <p>
  * Rules are permitted an additional action "deduce" which forces triples
  * to be added to the deductions graph even if they are already known (for use
- * in deductions only mode). 
+ * in deductions only mode).
  * </p>
  */
 public class RuleMap {
     static { setLogging() ; }
-    
+
     /**
      * Load a set of rule definitions including processing of
      * comment lines and any initial prefix definition lines.
@@ -79,7 +79,7 @@ public class RuleMap {
         BufferedReader src = FileUtils.openResourceFile(fname);
         return loadRules(src, prefixes);
     }
-    
+
     /**
      * Load a set of rule definitions including processing of
      * comment lines and any initial prefix definition lines.
@@ -91,7 +91,7 @@ public class RuleMap {
         prefixes.putAll(parser.getPrefixMap());
         return rules;
     }
-    
+
     /**
      * Internal implementation of the "deduce" primitve.
      * This takes the form <code> ... -> deduce(s, p, o)</code>
@@ -99,14 +99,14 @@ public class RuleMap {
     static class Deduce extends BaseBuiltin {
 
         /**
-         * Return a name for this builtin, normally this will be the name of the 
+         * Return a name for this builtin, normally this will be the name of the
          * functor that will be used to invoke it.
          */
         @Override
         public String getName() {
             return "deduce";
-        }    
-   
+        }
+
         /**
          * Return the expected number of arguments for this functor or 0 if the number is flexible.
          */
@@ -118,7 +118,7 @@ public class RuleMap {
         /**
          * This method is invoked when the builtin is called in a rule head.
          * Such a use is only valid in a forward rule.
-         * @param args the array of argument values for the builtin, this is an array 
+         * @param args the array of argument values for the builtin, this is an array
          * of Nodes.
          * @param length the length of the argument list, may be less than the length of the args array
          * for some rule engines
@@ -126,18 +126,18 @@ public class RuleMap {
          */
         @Override
         public void headAction(Node[] args, int length, RuleContext context) {
-            if (context.getGraph() instanceof FBRuleInfGraph) {
+            if (context.getGraph() instanceof FBRuleInfGraph infGraph ) {
                 Triple t = Triple.create(args[0], args[1], args[2]);
-                ((FBRuleInfGraph)context.getGraph()).addDeduction(t);
+                infGraph.addDeduction(t);
             } else {
                 throw new BuiltinException(this, context, "Only usable in FBrule graphs");
             }
         }
     }
-    
+
     /**
      * General command line utility to process one RDF file into another
-     * by application of a set of forward chaining rules. 
+     * by application of a set of forward chaining rules.
      * <pre>
      * Usage:  RuleMap [-il inlang] [-ol outlang] -d infile rulefile
      * </pre>
@@ -146,7 +146,7 @@ public class RuleMap {
     	try {
 
             // Parse the command line
-            String usage = "Usage:  RuleMap [-il inlang] [-ol outlang] [-d] rulefile infile (- for stdin)"; 
+            String usage = "Usage:  RuleMap [-il inlang] [-ol outlang] [-d] rulefile infile (- for stdin)";
             final CommandLineParser parser = new DefaultParser();
 			Options options = new Options().addOption("il", "inputLang", true, "input language")
 					.addOption("ol", "outputLang", true, "output language").addOption("d", "Deductions only?");
@@ -156,7 +156,7 @@ public class RuleMap {
                 System.err.println(usage);
                 System.exit(1);
             }
-            
+
             String inLang = cl.getOptionValue("inputLang");
             String fname = filenameArgs.get(1);
             Model inModel = ModelFactory.createDefaultModel();
@@ -165,22 +165,22 @@ public class RuleMap {
             } else {
                 inModel.read(fname, inLang);
             }
-            
-            String outLang = cl.hasOption("outputLang") ? cl.getOptionValue("outputLang") : "N3";            
-            
+
+            String outLang = cl.hasOption("outputLang") ? cl.getOptionValue("outputLang") : "N3";
+
             boolean deductionsOnly = cl.hasOption('d');
-            
+
             // Fetch the rule set and create the reasoner
             BuiltinRegistry.theRegistry.register(new Deduce());
             Map<String, String> prefixes = new HashMap<>();
             List<Rule> rules = loadRules(filenameArgs.get(0), prefixes);
             Reasoner reasoner = new GenericRuleReasoner(rules);
-            
+
             // Process
             InfModel infModel = ModelFactory.createInfModel(reasoner, inModel);
             infModel.prepare();
             infModel.setNsPrefixes(prefixes);
-            
+
             // Output
             try ( PrintWriter writer = new PrintWriter(System.out) ) {
                 if (deductionsOnly) {

@@ -30,39 +30,39 @@ import java.util.Properties ;
 public class PropertiesSorted extends Properties
 {
     private Comparator<String> comparator = null ;
-    
+
     //public SortedProperties() { super() ; }
-    
+
     public PropertiesSorted(Comparator<String> comparator)
-    { 
+    {
         super() ;
         this.comparator = comparator ;
     }
-    
-    
+
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public synchronized Enumeration<Object> keys()
     {
-        // Old world - enumeration, untyped. But we know they are strings (Propetries hides non-strings in get) 
+        // Old world - enumeration, untyped. But we know they are strings (Propetries hides non-strings in get)
         Enumeration<Object> keys = super.keys() ;
         List<String> keys2 = new ArrayList<>(super.size()) ;
-        
+
         for( ; keys.hasMoreElements() ; )
         {
             Object obj = keys.nextElement() ;
-            if ( obj instanceof String )
-                keys2.add((String)obj);
+            if ( obj instanceof String str )
+                keys2.add(str);
         }
         // Keys are comparable because they are strings.
         if ( comparator == null )
             Collections.sort(keys2);
         else
             Collections.sort(keys2, comparator) ;
-        
+
         return new IteratorToEnumeration(keys2.listIterator()) ;
     }
-    
+
     static class IteratorToEnumeration<T>  implements Enumeration<T>
     {
         private Iterator<T> iterator ;
@@ -71,7 +71,7 @@ public class PropertiesSorted extends Properties
         {
             this.iterator = iterator ;
         }
-        
+
         @Override
         public boolean hasMoreElements()
         {

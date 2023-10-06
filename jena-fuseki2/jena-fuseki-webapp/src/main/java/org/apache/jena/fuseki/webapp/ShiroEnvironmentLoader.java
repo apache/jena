@@ -73,8 +73,7 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
      */
     @Override
     protected void customizeEnvironment(WebEnvironment environment) {
-        if ( environment instanceof ResourceBasedWebEnvironment ) {
-            ResourceBasedWebEnvironment env = (ResourceBasedWebEnvironment)environment;
+        if ( environment instanceof ResourceBasedWebEnvironment env ) {
             String[] locations = env.getConfigLocations();
             String loc = huntForShiroIni(locations);
             Fuseki.configLog.info("Shiro file: "+loc);

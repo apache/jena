@@ -56,10 +56,10 @@ public class tdbreorder {
         Op op = SSE.readOp(pattern);
 
         BasicPattern bgp;
-        if ( op instanceof OpQuadPattern ) {
-            bgp = ((OpQuadPattern)op).getBasicPattern();
-        } else if ( op instanceof OpBGP ) {
-            bgp = ((OpBGP)op).getPattern();
+        if ( op instanceof OpQuadPattern opq ) {
+            bgp = opq.getBasicPattern();
+        } else if ( op instanceof OpBGP opbgp) {
+            bgp = opbgp.getPattern();
         } else {
             System.err.println("Not a quad or triple pattern");
             System.exit(2);

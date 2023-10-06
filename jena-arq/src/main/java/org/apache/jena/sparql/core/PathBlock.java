@@ -53,10 +53,9 @@ public class PathBlock implements Iterable<TriplePath>
     public boolean equals(Object other)
     {
         if ( this == other ) return true ;
-        if ( ! ( other instanceof PathBlock) )
+        if ( ! ( other instanceof PathBlock pBlk) )
             return false ;
-        PathBlock bp = (PathBlock)other ;
-        return triplePaths.equals(bp.triplePaths) ;
+        return triplePaths.equals(pBlk.triplePaths) ;
     }
 
     public boolean equiv(PathBlock other, NodeIsomorphismMap isoMap)

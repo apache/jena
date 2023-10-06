@@ -59,9 +59,10 @@ public class Record //implements Comparable<Record>
 
     @Override
     public boolean equals(Object other) {
-        if ( this == other ) return true;
-        if ( ! ( other instanceof Record ) ) return false;
-        Record r = (Record)other;
+        if ( this == other )
+            return true;
+        if ( !(other instanceof Record r) )
+            return false;
         return compareByKeyValue(this, r) == 0;
     }
 

@@ -851,9 +851,8 @@ public abstract class NodeValue extends ExprNode
         if ( other == null ) return false ;
         if ( this == other ) return true ;
         // This is the equality condition Jena uses - lang tags are different by case.
-        if ( ! ( other instanceof NodeValue ) )
+        if ( ! ( other instanceof NodeValue nv) )
             return false ;
-        NodeValue nv = (NodeValue)other ;
         return asNode().equals(nv.asNode()) ;
         // Not NodeFunctions.sameTerm (which smooshes language tags by case)
     }

@@ -283,9 +283,8 @@ public class ReportEntry {
             return true;
         if ( obj == null )
             return false;
-        if ( !(obj instanceof ReportEntry) )
+        if ( !(obj instanceof ReportEntry other) )
             return false;
-        ReportEntry other = (ReportEntry)obj;
         return Objects.equals(constraint, other.constraint)
             && Objects.equals(detail, other.detail)
             && Objects.equals(focusNode, other.focusNode)
