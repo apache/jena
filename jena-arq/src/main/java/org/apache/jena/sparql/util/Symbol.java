@@ -24,7 +24,7 @@ import java.util.Objects;
 
 public class Symbol {
     protected final static String nilSymbolName = "nil";
-    
+
     protected String symbol;
 
     static public Symbol create(String symbolStr) {
@@ -64,9 +64,8 @@ public class Symbol {
     public boolean equals(Object obj) {
         if ( this == obj )
             return true;
-        if ( !(obj instanceof Symbol) )
+        if ( !(obj instanceof Symbol other) )
             return false;
-        Symbol other = (Symbol)obj;
         return Objects.equals(symbol, other.symbol);
     }
 }

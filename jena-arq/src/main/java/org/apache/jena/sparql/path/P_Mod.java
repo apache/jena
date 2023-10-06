@@ -54,10 +54,9 @@ public class P_Mod extends P_Path1 {
 
     @Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
-        if ( !(path2 instanceof P_Mod) )
-            return false;
-        P_Mod other = (P_Mod)path2;
-        return other.min == min && other.max == max && getSubPath().equalTo(other.getSubPath(), isoMap);
+        if ( path2 instanceof P_Mod other )
+            return other.min == min && other.max == max && getSubPath().equalTo(other.getSubPath(), isoMap);
+        return false;
     }
 
     public boolean isFixedLength() {

@@ -80,8 +80,8 @@ public final class InStreamUTF8 extends Reader implements CharStream
     // private long count = 0 ;
 
     public InStreamUTF8(InputStream in) {
-        if ( in instanceof InputStreamBuffered ) {
-            input = (InputStreamBuffered)in;
+        if ( in instanceof InputStreamBuffered bufferedInput ) {
+            input = bufferedInput;
             return;
         }
         input = new InputStreamBuffered(in);

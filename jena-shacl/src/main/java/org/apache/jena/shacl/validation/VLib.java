@@ -98,8 +98,7 @@ public class VLib {
         if ( shape instanceof NodeShape ) {
             path = null;
             vNodes = null;
-        } else if ( shape instanceof PropertyShape ) {
-            PropertyShape propertyShape = (PropertyShape)shape;
+        } else if ( shape instanceof PropertyShape propertyShape ) {
             path = propertyShape.getPath();
             vNodes = ShaclPaths.valueNodes(data, focusNode, propertyShape.getPath());
             vCxt.notifyValidationListener(() -> new ValueNodesDeterminedForPropertyShapeEvent(vCxt, shape, focusNode, path, vNodes));

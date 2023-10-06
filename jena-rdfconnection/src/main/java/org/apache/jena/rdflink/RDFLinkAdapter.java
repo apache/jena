@@ -42,8 +42,8 @@ import org.apache.jena.update.UpdateRequest;
 public class RDFLinkAdapter implements RDFLink {
 
     public static RDFLink adapt(RDFConnection conn) {
-        if ( conn instanceof RDFConnectionAdapter )
-            return ((RDFConnectionAdapter)conn).getLink();
+        if ( conn instanceof RDFConnectionAdapter adapter )
+            return adapter.getLink();
         return new RDFLinkAdapter(conn);
     }
 

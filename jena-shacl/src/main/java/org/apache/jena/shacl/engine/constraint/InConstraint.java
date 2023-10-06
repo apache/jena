@@ -86,9 +86,8 @@ public class InConstraint extends ConstraintTerm {
             return true;
         if ( obj == null )
             return false;
-        if ( !(obj instanceof InConstraint) )
+        if ( !(obj instanceof InConstraint other) )
             return false;
-        InConstraint other = (InConstraint)obj;
         return Objects.equals(values, other.values);
     }
 }

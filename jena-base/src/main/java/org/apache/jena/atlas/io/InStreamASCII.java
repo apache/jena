@@ -31,8 +31,8 @@ public final class InStreamASCII extends Reader implements CharStream {
     private long count = 0;
 
     public InStreamASCII(InputStream in) {
-        if ( in instanceof InputStreamBuffered ) {
-            input = (InputStreamBuffered)in;
+        if ( in instanceof InputStreamBuffered bufferedInput ) {
+            input = bufferedInput;
             return;
         }
         input = new InputStreamBuffered(in);

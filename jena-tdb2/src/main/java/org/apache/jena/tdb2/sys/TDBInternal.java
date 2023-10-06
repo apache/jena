@@ -123,8 +123,8 @@ public class TDBInternal {
      * Use the {@link DatasetGraphTDB} with care.
      */
     public static DatasetGraphSwitchable getDatabaseContainer(DatasetGraph dsg) {
-        if ( dsg instanceof DatasetGraphSwitchable )
-            return (DatasetGraphSwitchable)dsg;
+        if ( dsg instanceof DatasetGraphSwitchable dsgx )
+            return dsgx;
         throw new TDBException("Not a TDB database container");
     }
 
@@ -210,10 +210,10 @@ public class TDBInternal {
 
     private static DatasetGraphTDB unwrap(DatasetGraph datasetGraph) {
         DatasetGraph dsg = datasetGraph;
-        if ( dsg instanceof DatasetGraphSwitchable )
-            dsg = ((DatasetGraphSwitchable)datasetGraph).get();
-        if ( dsg instanceof DatasetGraphTDB )
-            return ((DatasetGraphTDB)dsg);
+        if ( dsg instanceof DatasetGraphSwitchable dsgx )
+            dsg = dsgx.get();
+        if ( dsg instanceof DatasetGraphTDB dsgt )
+            return dsgt ;
         return null;
     }
 
@@ -222,12 +222,12 @@ public class TDBInternal {
         Location locContainer = null;
         Location locStorage = null;
 
-        if ( dsg instanceof DatasetGraphSwitchable ) {
-            locContainer = ((DatasetGraphSwitchable)dsg).getLocation();
-            dsg = ((DatasetGraphSwitchable)dsg).getWrapped();
+        if ( dsg instanceof DatasetGraphSwitchable dsgx ) {
+            locContainer = dsgx.getLocation();
+            dsg = dsgx.getWrapped();
         }
-        if ( dsg instanceof DatasetGraphTDB )
-            locStorage = ((DatasetGraphTDB)dsg).getLocation();
+        if ( dsg instanceof DatasetGraphTDB dsgt )
+            locStorage = dsgt.getLocation();
 
         if ( locContainer != null )
             DatabaseConnection.internalExpel(locContainer, false);
@@ -239,12 +239,12 @@ public class TDBInternal {
         Location locContainer = null;
         Location locStorage = null;
 
-        if ( dsg instanceof DatasetGraphSwitchable ) {
-            locContainer = ((DatasetGraphSwitchable)dsg).getLocation();
-            dsg = ((DatasetGraphSwitchable)dsg).getWrapped();
+        if ( dsg instanceof DatasetGraphSwitchable dsgx ) {
+            locContainer = dsgx.getLocation();
+            dsg = dsgx.getWrapped();
         }
-        if ( dsg instanceof DatasetGraphTDB )
-            locStorage = ((DatasetGraphTDB)dsg).getLocation();
+        if ( dsg instanceof DatasetGraphTDB dsgt )
+            locStorage = dsgt.getLocation();
 
         DatabaseConnection.internalExpel(locContainer, force);
         StoreConnection.internalExpel(locStorage, force);

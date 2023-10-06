@@ -39,10 +39,9 @@ public class P_ReverseLink extends P_Path0 {
 
     @Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
-        if ( !(path2 instanceof P_ReverseLink) )
-            return false ;
-        P_ReverseLink other = (P_ReverseLink)path2 ;
-        return Iso.nodeIso(node, other.node, isoMap) ;
+        if ( path2 instanceof P_ReverseLink other )
+            return Iso.nodeIso(node, other.node, isoMap) ;
+        return false ;
     }
 
     @Override

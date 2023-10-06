@@ -47,10 +47,8 @@ public class JettyLib {
         } else {
             List<Handler> handlerList = new ArrayList<>();
 
-            if (currentHandler instanceof Handler.Container) {
-                Handler.Container container = (Handler.Container)currentHandler;
-                handlerList.addAll(container.getHandlers());
-            }
+            if (currentHandler instanceof Handler.Container hContainer)
+                handlerList.addAll(hContainer.getHandlers());
             handlerList.add(handler);
             Handler.Container container = new Handler.Sequence(handlerList);
             server.setHandler(container);

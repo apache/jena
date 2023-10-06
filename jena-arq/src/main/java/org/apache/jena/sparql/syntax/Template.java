@@ -149,8 +149,8 @@ public class Template
 
     public boolean equalIso(Object temp2, NodeIsomorphismMap labelMap)
     {
-        if ( ! ( temp2 instanceof Template) ) return false ;
-        Template tg2 = (Template)temp2 ;
+        if ( !(temp2 instanceof Template tg2) )
+            return false;
         List<Quad> list1 = this.getQuads() ;
         List<Quad> list2 = tg2.getQuads() ;
         if ( list1.size() != list2.size() ) return false ;

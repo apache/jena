@@ -47,10 +47,10 @@ public final class PeekReader extends Reader {
     private char[]           pushbackChars;
     // Index into pushbackChars: points to next pushBack.
     // -1 => none.
-    private int              idxPushback;            
+    private int              idxPushback;
 
     // Next character to return when reading forwards.
-    private int              currChar      = UNSET;  
+    private int              currChar      = UNSET;
     private long             posn;
 
     public static final int  INIT_LINE     = 1;
@@ -62,8 +62,8 @@ public final class PeekReader extends Reader {
     // ---- static construction methods.
 
     public static PeekReader make(Reader r) {
-        if ( r instanceof PeekReader )
-            return (PeekReader)r;
+        if ( r instanceof PeekReader pr )
+            return pr;
         return make(r, CharStreamBuffered.CB_SIZE);
     }
 

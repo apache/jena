@@ -133,14 +133,12 @@ public class TDB {
 
     /** Sync a TDB-backed Model. Do nothing if not TDB-backed. */
     public static void sync(Model model) {
-        if ( model instanceof OntModelImpl ) {
-            OntModelImpl ontModel = (OntModelImpl)model ;
+        if ( model instanceof OntModelImpl ontModel ) {
             sync(ontModel.getBaseGraph()) ;
             return ;
         }
         // This never happens (there is only one OntModel implementation)
-        if ( model instanceof OntModel ) {
-            OntModel ontModel = (OntModel)model ;
+        if ( model instanceof OntModel ontModel ) {
             sync(ontModel.getBaseModel()) ;
             return ;
         }
@@ -153,8 +151,7 @@ public class TDB {
         if ( graph == null )
             return ;
 
-        if ( graph instanceof InfGraph ) {
-            InfGraph infGraph = (InfGraph)graph ;
+        if ( graph instanceof InfGraph infGraph ) {
             sync(infGraph.getRawGraph()) ;
             return ;
         }
@@ -180,11 +177,10 @@ public class TDB {
             return ;
         }
 
-        if ( dataset instanceof DatasetGraphTransaction ) {
-            DatasetGraphTransaction dsgt = (DatasetGraphTransaction)dataset ;
+        if ( dataset instanceof DatasetGraphTransaction dsgtxn ) {
             // This only sync if the dataset has not been used transactionally.
             // Can't sync transactional datasets (it's meaningless)
-            dsgt.syncIfNotTransactional() ;
+            dsgtxn.syncIfNotTransactional() ;
             return ;
         }
 
@@ -208,8 +204,8 @@ public class TDB {
     private static void syncObject(Object object) {
         if ( object == null )
             return ;
-        if ( object instanceof Sync )
-            ((Sync)object).sync() ;
+        if ( object instanceof Sync syncObj )
+            syncObj.sync() ;
     }
 
     /** The root package name for TDB */

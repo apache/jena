@@ -31,7 +31,7 @@ import org.apache.jena.sparql.util.NodeIsomorphismMap ;
 
 
 /** A class whose purpose is to give a name to a collection of quads
- */ 
+ */
 
 public class QuadPattern implements Iterable<Quad>
 {
@@ -39,30 +39,29 @@ public class QuadPattern implements Iterable<Quad>
 
     public QuadPattern() {}
     public QuadPattern(QuadPattern other) {quads.addAll(other.quads) ; }
-    
+
     public void add(Quad q) { quads.add(q) ; }
     public void addAll(QuadPattern other) { quads.addAll(other.quads) ; }
     public void add(int i, Quad q) { quads.add(i, q) ; }
-    
+
     public Quad get(int i) { return quads.get(i) ; }
     @Override
-    public ListIterator<Quad> iterator() { return quads.listIterator() ; } 
+    public ListIterator<Quad> iterator() { return quads.listIterator() ; }
     public int size() { return quads.size() ; }
     public boolean isEmpty() { return quads.isEmpty() ; }
-    
-    public List<Quad> getList() { return quads ; } 
-    
+
+    public List<Quad> getList() { return quads ; }
+
     @Override
-    public int hashCode() { return quads.hashCode() ; } 
-    
+    public int hashCode() { return quads.hashCode() ; }
+
     @Override
     public boolean equals(Object other) {
         if ( this == other )
             return true ;
-        if ( !(other instanceof QuadPattern) )
+        if ( !(other instanceof QuadPattern qp) )
             return false ;
-        QuadPattern bp = (QuadPattern)other ;
-        return quads.equals(bp.quads) ;
+        return quads.equals(qp.quads) ;
     }
 
     public boolean equiv(QuadPattern other, NodeIsomorphismMap isoMap) {
@@ -78,7 +77,7 @@ public class QuadPattern implements Iterable<Quad>
         }
         return true ;
     }
-    
+
     @Override
     public String toString() {
         IndentedLineBuffer out = new IndentedLineBuffer() ;

@@ -33,14 +33,14 @@ import org.apache.jena.sparql.sse.Tags;
 
 public class WriterNode
 {
-    private static final int NL = WriterLib.NL;
-    private static final int NoNL = WriterLib.NoNL;
-    private static final int NoSP = WriterLib.NoSP;
+    private static final int NL = SSEWriteLib.NL;
+    private static final int NoNL = SSEWriteLib.NoNL;
+    private static final int NoSP = SSEWriteLib.NoSP;
 
     public static void output(IndentedWriter out, Triple triple, SerializationContext naming) {
-        WriterLib.startOneLine(out, Tags.tagTriple);
+        SSEWriteLib.startOneLine(out, Tags.tagTriple);
         outputPlain(out, triple, naming);
-        WriterLib.finishOneLine(out, Tags.tagTriple);
+        SSEWriteLib.finishOneLine(out, Tags.tagTriple);
     }
 
     public static void outputNoTag(IndentedWriter out, Triple triple, SerializationContext naming) {
@@ -60,9 +60,9 @@ public class WriterNode
     }
 
     public static void output(IndentedWriter out, Quad quad, SerializationContext naming) {
-        WriterLib.startOneLine(out, Tags.tagQuad);
+        SSEWriteLib.startOneLine(out, Tags.tagQuad);
         outputPlain(out, quad, naming);
-        WriterLib.finishOneLine(out, Tags.tagQuad);
+        SSEWriteLib.finishOneLine(out, Tags.tagQuad);
     }
 
     public static void outputNoTag(IndentedWriter out, Quad quad, SerializationContext naming) {
@@ -104,11 +104,11 @@ public class WriterNode
     }
 
     public static void outputVars(IndentedWriter out, List<Var> vars, SerializationContext sContext) {
-        WriterLib.start(out, Tags.tagVars, WriterLib.NoSP);
+        SSEWriteLib.start(out, Tags.tagVars, SSEWriteLib.NoSP);
         for ( Var v : vars ) {
             out.print(" ?");
             out.print(v.getVarName());
         }
-        WriterLib.finish(out, Tags.tagVars);
+        SSEWriteLib.finish(out, Tags.tagVars);
     }
 }

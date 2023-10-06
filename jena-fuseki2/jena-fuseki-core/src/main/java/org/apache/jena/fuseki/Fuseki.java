@@ -184,8 +184,8 @@ public class Fuseki {
         Object x = cxt.getAttribute(attrVerbose);
         if ( x == null )
             return false;
-        if ( x instanceof Boolean )
-            return (Boolean)x;
+        if ( x instanceof Boolean bool )
+            return bool.booleanValue();
         throw new FusekiException("attrVerbose: unknown object class: "+x.getClass().getName());
     }
 

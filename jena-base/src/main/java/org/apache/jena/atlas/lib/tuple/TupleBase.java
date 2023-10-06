@@ -40,9 +40,8 @@ abstract class TupleBase<X> implements Tuple<X> {
             return true;
         if ( obj == null )
             return false ;
-        if ( ! ( obj instanceof Tuple<?> ) )
+        if ( ! ( obj instanceof Tuple<?> other) )
             return false ;
-        Tuple<?> other = (Tuple<?>)obj ;
         if ( this.len() != other.len() )
             return false ;
         for ( int i = 0 ; i < this.len() ; i++ )

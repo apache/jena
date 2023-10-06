@@ -81,9 +81,9 @@ public class ActionCompact extends ActionAsyncTask
                 return null;
             if ( predicate.test(dsg) )
                 return dsg;
-            if ( ! ( dsg instanceof DatasetGraphWrapper) )
+            if ( ! ( dsg instanceof DatasetGraphWrapper dsgw ) )
                 return null;
-            dsg = ((DatasetGraphWrapper)dsg).getWrapped();
+            dsg = dsgw.getWrapped();
         }
     }
 

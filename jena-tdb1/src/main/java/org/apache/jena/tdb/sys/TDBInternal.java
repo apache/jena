@@ -119,13 +119,13 @@ public class TDBInternal
      * May not be up-to-date.
      */
     public static DatasetGraphTDB getDatasetGraphTDB(DatasetGraph dsg) {
-        if ( dsg instanceof DatasetGraphTransaction ) {
+        if ( dsg instanceof DatasetGraphTransaction dsgtxn ) {
                 // Latest. Must be inside a transaction or completely non-transactional.
                 // See getBaseDatasetGraphTDB
-                return ((DatasetGraphTransaction)dsg).getDatasetGraphToQuery() ;
+                return dsgtxn .getDatasetGraphToQuery() ;
         }
-        if ( dsg instanceof DatasetGraphTDB )
-            return (DatasetGraphTDB)dsg ;
+        if ( dsg instanceof DatasetGraphTDB dsgt )
+            return dsgt ;
 
         return null ;
     }
@@ -145,8 +145,8 @@ public class TDBInternal
 
     /* Use with great care */
     public static StoreConnection getStoreConnection(DatasetGraph dsg) {
-        if ( dsg instanceof DatasetGraphTransaction )
-            return ((DatasetGraphTransaction)dsg).getStoreConnection() ;
+        if ( dsg instanceof DatasetGraphTransaction dsgtxn )
+            return dsgtxn.getStoreConnection() ;
         throw new TDBException("Not a suitable TDB-backed DatasetGraph: " + Lib.classShortName(dsg.getClass())) ;
     }
 
@@ -157,13 +157,13 @@ public class TDBInternal
      * Don't call while transactions are active.
      */
     public static synchronized void expel(DatasetGraph dsg) {
-        if ( dsg instanceof DatasetGraphTransaction ) {
-            DatasetGraphTDB dsgtdb = ((DatasetGraphTransaction)dsg).getBaseDatasetGraph();
+        if ( dsg instanceof DatasetGraphTransaction dsgtxn ) {
+            DatasetGraphTDB dsgtdb =dsgtxn.getBaseDatasetGraph();
             expel(dsgtdb.getLocation());
             return;
         }
-        if ( dsg instanceof DatasetGraphTDB ) {
-            expel(((DatasetGraphTDB)dsg).getLocation());
+        if ( dsg instanceof DatasetGraphTDB dsgt ) {
+            expel(dsgt .getLocation());
             return;
         }
     }

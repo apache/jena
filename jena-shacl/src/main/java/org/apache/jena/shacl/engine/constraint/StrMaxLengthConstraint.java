@@ -89,9 +89,8 @@ public class StrMaxLengthConstraint extends ConstraintTerm {
             return true;
         if ( obj == null )
             return false;
-        if ( !(obj instanceof StrMaxLengthConstraint) )
+        if ( !(obj instanceof StrMaxLengthConstraint other) )
             return false;
-        StrMaxLengthConstraint other = (StrMaxLengthConstraint)obj;
         return maxLength == other.maxLength;
     }
 }

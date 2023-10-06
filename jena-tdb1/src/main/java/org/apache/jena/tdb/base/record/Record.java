@@ -25,7 +25,7 @@ import java.util.Arrays;
 import org.apache.jena.atlas.lib.Bytes ;
 import org.apache.jena.tdb.sys.SystemTDB ;
 
-/** A record is pair of key and value.  It may be all key, in which case value is null. 
+/** A record is pair of key and value.  It may be all key, in which case value is null.
  */
 
 final
@@ -35,12 +35,12 @@ public class Record //implements Comparable<Record>
      * Records of fixed size (controlled by the factory).
      */
     public static final Record NO_REC = null ;
-    
+
     final private byte[] key ;
     final private byte[] value ;
-    
+
     public Record(byte[] key, byte[] value)
-    { 
+    {
         this.key = key ;
         this.value = value ;
         if ( SystemTDB.Checking )
@@ -49,7 +49,7 @@ public class Record //implements Comparable<Record>
                 throw new RecordException("Zero length value") ;
         }
     }
-    
+
     public byte[] getKey()          { return key ; }
     public byte[] getValue()        { return value ; }
 
@@ -62,39 +62,40 @@ public class Record //implements Comparable<Record>
 //    {
 //        return lt(this, record) ;
 //    }
-//    
+//
 //    public boolean le(Record record)
 //    {
 //        return le(this, record) ;
 //    }
-//    
+//
 //    public boolean ge(Record record)
 //    {
 //        return ge(this, record) ;
 //    }
-//    
+//
 //    public boolean gt(Record record)
 //    {
 //        return gt(this, record) ;
 //    }
-    
+
     public boolean hasSeparateValue() { return value!=null ; }
-    
+
     @Override
     public int hashCode()
-    { 
+    {
         return Arrays.hashCode(key) ^ Arrays.hashCode(value) ;
-    } 
+    }
 
     @Override
     public boolean equals(Object other)
     {
-        if ( this == other ) return true ;
-        if ( ! ( other instanceof Record ) ) return false ;
-        Record r = (Record)other ;
-        return compareByKeyValue(this, r) == 0 ;
+        if ( this == other )
+            return true;
+        if ( !(other instanceof Record r) )
+            return false;
+        return compareByKeyValue(this, r) == 0;
     }
-    
+
     @Override
     public String toString()
     {
@@ -102,7 +103,7 @@ public class Record //implements Comparable<Record>
             return str(key) ;
         return str(key)+":"+str(value) ;
     }
-    
+
     /** Is the key of record1 == key of record2 */
     public static boolean keyEQ(Record record1, Record record2)
     {
@@ -130,21 +131,21 @@ public class Record //implements Comparable<Record>
         int x = compareByKey(record1, record2) ;
         return x <= 0 ;
     }
-    
+
     /** Is the key of record1 {@literal >=} key of record2 */
     public static boolean keyGE(Record record1, Record record2)
     {
         int x = compareByKey(record1, record2) ;
         return x >= 0 ;
     }
-    
+
     /** Is the key of record1 {@literal >} key of record2 */
     public static boolean keyGT(Record record1, Record record2)
     {
         int x = compareByKey(record1, record2) ;
         return x > 0 ;
     }
-    
+
     /** Is (key, value) of record1 equal to (key,value) of record2 */
     public static boolean equals(Record record1, Record record2)
     {
@@ -153,7 +154,7 @@ public class Record //implements Comparable<Record>
     }
 
 
-    
+
     static public String str(byte[] b)
     {
         StringBuilder str = new StringBuilder() ;
@@ -163,13 +164,13 @@ public class Record //implements Comparable<Record>
         }
         return str.toString() ;
     }
-    
+
     public static int compareByKey(Record record1, Record record2)
     {
         checkKeyCompatible(record1, record2) ;
-        return Bytes.compare(record1.key, record2.key) ; 
+        return Bytes.compare(record1.key, record2.key) ;
     }
-    
+
     public static int compareByKeyValue(Record record1, Record record2)
     {
         checkCompatible(record1, record2) ;
@@ -187,18 +188,18 @@ public class Record //implements Comparable<Record>
         if ( ! compatible(record1, record2, true) )
             throw new RecordException(format("Incompatible: %s, %s", record1, record2)) ;
     }
-    
+
     static void checkKeyCompatible(Record record1, Record record2)
     {
         if ( ! compatible(record1, record2, false) )
             throw new RecordException(format("Incompatible: %s, %s", record1, record2)) ;
     }
-    
+
     static boolean compatible(Record record1, Record record2, boolean checkValue)
     {
         if ( record1.key.length != record2.key.length )
             return false ;
-        
+
         if ( checkValue )
         {
             if ( record1.value == null && record2.value == null )
@@ -212,7 +213,7 @@ public class Record //implements Comparable<Record>
         }
         return true ;
     }
-    
+
 //    private static int compare(byte[] x1, byte[] x2)
 //    {
 //        for ( int i = 0 ; i < x1.length ; i++ )
@@ -221,8 +222,8 @@ public class Record //implements Comparable<Record>
 //            byte b2 = x2[i] ;
 //            if ( b1 == b2 )
 //                continue ;
-//            // Treat as unsigned values in the bytes. 
-//            return (b1&0xFF) - (b2&0xFF) ;  
+//            // Treat as unsigned values in the bytes.
+//            return (b1&0xFF) - (b2&0xFF) ;
 //        }
 //        return  0 ;
 //    }
