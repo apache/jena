@@ -28,9 +28,9 @@ import org.apache.jena.sparql.sse.Tags;
 import org.apache.jena.sparql.util.FmtUtils;
 
 public class WriterBasePrefix {
-    private static final int NL = WriterLib.NL;
-    private static final int NoNL = WriterLib.NoNL;
-    private static final int NoSP = WriterLib.NoSP;
+    private static final int NL = SSEWriteLib.NL;
+    private static final int NoNL = SSEWriteLib.NoNL;
+    private static final int NoSP = SSEWriteLib.NoSP;
 
     public static interface Fmt {
         void format();
@@ -47,9 +47,9 @@ public class WriterBasePrefix {
             fmt.format();
 
         if ( closeBase )
-            WriterLib.finish(iWriter, Tags.tagBase);
+            SSEWriteLib.finish(iWriter, Tags.tagBase);
         if ( closePrefix )
-            WriterLib.finish(iWriter, Tags.tagPrefix);
+            SSEWriteLib.finish(iWriter, Tags.tagPrefix);
         iWriter.ensureStartOfLine();
         iWriter.flush();
     }
@@ -58,7 +58,7 @@ public class WriterBasePrefix {
         String baseURI = prologue.getBaseURI();
 
         if ( baseURI != null ) {
-            WriterLib.start(iWriter, Tags.tagBase, NoNL);
+            SSEWriteLib.start(iWriter, Tags.tagBase, NoNL);
             iWriter.print(FmtUtils.stringForURI(baseURI));
             iWriter.println();
             return true;
@@ -73,8 +73,8 @@ public class WriterBasePrefix {
             Map<String, String> m = prefixMapping.getNsPrefixMap();
             if ( !m.isEmpty() ) {
                 int s = iWriter.getCol();
-                WriterLib.start(iWriter, Tags.tagPrefix, NoNL);
-                WriterLib.start(iWriter);
+                SSEWriteLib.start(iWriter, Tags.tagPrefix, NoNL);
+                SSEWriteLib.start(iWriter);
 
                 // Indent to this col.
                 int len = iWriter.getCurrentOffset();
@@ -90,14 +90,14 @@ public class WriterBasePrefix {
                     String uri = prefixMapping.getNsPrefixURI(prefix);
                     // Base relative URI = but not prefix mappings!
                     uri = FmtUtils.stringForURI(uri, prologue.getBaseURI());
-                    WriterLib.start(iWriter);
+                    SSEWriteLib.start(iWriter);
                     iWriter.print(prefix);
                     iWriter.print(": ");
                     iWriter.print(uri);
-                    WriterLib.finish(iWriter);
+                    SSEWriteLib.finish(iWriter);
                 }
                 iWriter.decIndent(len);
-                WriterLib.finish(iWriter);
+                SSEWriteLib.finish(iWriter);
 
                 iWriter.ensureStartOfLine();
                 return true;

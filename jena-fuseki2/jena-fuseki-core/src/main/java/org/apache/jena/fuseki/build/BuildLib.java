@@ -143,8 +143,8 @@ import org.apache.jena.vocabulary.RDFS;
     /*package*/ static String nodeLabel(RDFNode n) {
         if ( n == null )
             return "<null>";
-        if ( n instanceof Resource )
-            return strForResource((Resource)n);
+        if ( n instanceof Resource r)
+            return strForResource(r);
 
         Literal lit = (Literal)n;
         return lit.getLexicalForm();
@@ -159,8 +159,8 @@ import org.apache.jena.vocabulary.RDFS;
             return "NULL ";
         if ( r.hasProperty(RDFS.label) ) {
             RDFNode n = r.getProperty(RDFS.label).getObject();
-            if ( n instanceof Literal )
-                return ((Literal)n).getString();
+            if ( n instanceof Literal literal )
+                return literal.getString();
         }
 
         if ( r.isAnon() )

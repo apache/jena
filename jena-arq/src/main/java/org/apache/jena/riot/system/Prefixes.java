@@ -148,9 +148,9 @@ public class Prefixes {
      */
     public static PrefixMapping adapt(PrefixMap prefixMap) {
         Objects.requireNonNull(prefixMap);
-        if ( prefixMap instanceof PrefixMapAdapter )
+        if ( prefixMap instanceof PrefixMapAdapter prefixMapAdapter)
             // Already adapter from a PrefixMapping
-            return ((PrefixMapAdapter)prefixMap).getPrefixMapping();
+            return prefixMapAdapter.getPrefixMapping();
         return new PrefixMappingAdapter(prefixMap);
     }
 

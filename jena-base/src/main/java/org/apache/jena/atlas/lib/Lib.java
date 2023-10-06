@@ -65,8 +65,8 @@ public class Lib
     }
 
     public static final void sync(Object object) {
-        if ( object instanceof Sync )
-            ((Sync)object).sync() ;
+        if ( object instanceof Sync syncobj )
+            syncobj.sync() ;
     }
 
     /**

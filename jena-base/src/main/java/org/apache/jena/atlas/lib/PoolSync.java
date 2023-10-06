@@ -19,35 +19,35 @@
 package org.apache.jena.atlas.lib;
 
 
-/** Synchronization wrapper for a pool */ 
+/** Synchronization wrapper for a pool */
 public class PoolSync<T> implements Pool<T>
 {
     private Pool<T> pool ;
 
-    public static <T> Pool<T> create(Pool<T> pool)
-    { 
-        if ( pool instanceof PoolSync<?>)
-        {
-            PoolSync<T> p = (PoolSync<T>)pool ;
-            return p ;
+    public static <T> Pool<T> create(Pool<T> pool) {
+        if ( pool instanceof PoolSync<T> poolSync ) {
+            PoolSync<T> p = poolSync;
+            return p;
         }
-        return new PoolSync<>(pool) ;
+        return new PoolSync<>(pool);
     }
-    
-    public PoolSync(Pool<T> pool) { this.pool = pool ; } 
-    
-    @Override
-    public final synchronized void put(T item)
-    {
-        pool.put(item) ;
+
+    public PoolSync(Pool<T> pool) {
+        this.pool = pool;
     }
-    
+
     @Override
-    public final synchronized T get()              
-    { 
+    public final synchronized void put(T item) {
+        pool.put(item);
+    }
+
+    @Override
+    public final synchronized T get() {
         return pool.get();
     }
-    
+
     @Override
-    public final synchronized boolean isEmpty()    { return pool.isEmpty() ; } 
+    public final synchronized boolean isEmpty() {
+        return pool.isEmpty();
+    }
 }

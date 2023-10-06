@@ -45,7 +45,7 @@ public class IndexTestLib
 {
 
     // ---------- Utilities
-    
+
 //    public static RangeIndex buildRangeIndex(RangeIndexMaker maker, int[] keys)
 //    {
 //        RangeIndex index = maker.make() ;
@@ -60,14 +60,14 @@ public class IndexTestLib
         return index ;
     }
 
-    
+
     public static void testIteration(RangeIndex index, int[] keys, int numIterations)
     {
         // Shared across test-lets
         SortedSet<Integer> x = new TreeSet<>() ;
         for ( int v : keys )
             x.add(v) ;
-        
+
         for ( int i = 0 ; i < numIterations ; i++ )
         {
             int lo = random.nextInt(keys.length) ;
@@ -84,7 +84,7 @@ public class IndexTestLib
                 lo-- ;  // Negatives confuse the int/record code.
             if ( random.nextFloat() < 0.5 )
                 hi++ ;
-            
+
             List<Integer> slice = r(index.iterator(r(lo), r(hi))) ;
             List<Integer> expected = new ArrayList<>(keys.length) ;
             for ( Integer ii : x.subSet(lo, hi) )
@@ -93,13 +93,13 @@ public class IndexTestLib
         }
     }
 
-    /* One random test : print the keys if there was a problem */ 
-    
+    /* One random test : print the keys if there was a problem */
+
     public static void randTest(Index index, int maxValue, int numKeys)
     {
         if ( numKeys >= 5000 )
             System.err.printf("Warning: too many keys\n") ;
-            
+
         int[] keys1 = rand(numKeys, 0, maxValue) ;
         int[] keys2 = permute(keys1) ;
         try {
@@ -109,8 +109,8 @@ public class IndexTestLib
                 // Checking tests.
                 testIndexContents(index, keys2);
                 // Test iteration - quite expensive.
-                if ( index instanceof RangeIndex )
-                    testIteration((RangeIndex)index, keys1, 10) ;
+                if ( index instanceof RangeIndex rIdx )
+                    testIteration(rIdx, keys1, 10) ;
             }
             testDelete(index, keys2) ;
             index.close() ;
@@ -124,7 +124,7 @@ public class IndexTestLib
     }
 
     // ---- Test utils
-    
+
     public static void testInsert(Index index, int[] keys)
     {
         IndexTestLib.add(index, keys) ;
@@ -135,7 +135,7 @@ public class IndexTestLib
     {
         Index index = maker.makeIndex() ;
         testInsert(index, keys);
-        return index ; 
+        return index ;
     }
 
     public static void testInsertDelete(Index index, int[] buildKeys, int[] deleteKeys)
@@ -147,10 +147,10 @@ public class IndexTestLib
     public static void testDelete(Index index, int[] vals)
     {
         long size1 = index.size() ;
-        
+
         int count = 0 ;
         count = delete(index, vals) ;
-    
+
         List<Record> x =  intToRecord(vals, RecordLib.TestRecordLength) ;
         for ( Record r : x )
         {
@@ -158,7 +158,7 @@ public class IndexTestLib
             if ( b )
                 count ++ ;
         }
-        
+
         for ( Record r : x )
             assertFalse(index.contains(r)) ;
         long size2 = index.size() ;
@@ -192,13 +192,13 @@ public class IndexTestLib
     public static void testIndexContents(Index index, int[] records)
     {
         List<Integer> x = toIntList(index.iterator());
-        
+
         // Make a unique list of expected records.  Remove duplicates
         List<Integer> y = unique(asList(records)) ;
-        
+
         assertEquals("Expected records size and tree size different", y.size(), index.size()) ;
         assertEquals("Expected records size and iteration over all keys are of different sizes", y.size(), x.size()) ;
-        
+
         if ( index instanceof RangeIndex )
         {
             // Check sorted order
@@ -211,7 +211,7 @@ public class IndexTestLib
                 }
             }
         }
-        
+
         // Check each expected record is in the tree
         for ( int k : y)
         {

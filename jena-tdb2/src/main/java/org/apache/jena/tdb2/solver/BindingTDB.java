@@ -105,8 +105,8 @@ public class BindingTDB extends BindingBase
 
         if ( parent == null )
             return null;
-        if ( parent instanceof BindingTDB )
-            return ((BindingTDB)parent).getNodeId(var);
+        if ( parent instanceof BindingTDB bindingTDB )
+            return bindingTDB.getNodeId(var);
         return null;
     }
 

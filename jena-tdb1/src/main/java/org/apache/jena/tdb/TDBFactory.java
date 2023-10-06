@@ -38,30 +38,30 @@ import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 public class TDBFactory
 {
     static { JenaSystem.init(); }
-    
-    private TDBFactory() {} 
-    
+
+    private TDBFactory() {}
+
     /** Read the file and assembler a dataset */
     public static Dataset assembleDataset(String assemblerFile) {
         return (Dataset)AssemblerUtils.build(assemblerFile, VocabTDB.tDatasetTDB) ;
     }
-    
-    /** Create or connect to a TDB-backed dataset */ 
+
+    /** Create or connect to a TDB-backed dataset */
     public static Dataset createDataset(String dir)
     { return createDataset(Location.create(dir)) ; }
 
-    /** Create or connect to a TDB-backed dataset */ 
+    /** Create or connect to a TDB-backed dataset */
     public static Dataset createDataset(Location location)
     { return createDataset(createDatasetGraph(location)) ; }
 
-    /** Create or connect to a TDB dataset backed by an in-memory block manager. For testing.*/ 
+    /** Create or connect to a TDB dataset backed by an in-memory block manager. For testing.*/
     public static Dataset createDataset()
     { return createDataset(createDatasetGraph()) ; }
 
-    /** Create a dataset around a DatasetGraphTDB */ 
+    /** Create a dataset around a DatasetGraphTDB */
     private static Dataset createDataset(DatasetGraph datasetGraph)
     { return DatasetFactory.wrap(datasetGraph) ; }
-    
+
     /** Create or connect to a TDB-backed dataset (graph-level) */
     public static DatasetGraph createDatasetGraph(String directory)
     { return createDatasetGraph(Location.create(directory)) ; }
@@ -74,17 +74,17 @@ public class TDBFactory
     public static DatasetGraph createDatasetGraph() {
         return _createDatasetGraph() ;
     }
-    
+
     /** Release from the JVM. All caching is lost. */
     public static void release(Dataset dataset) {
         release(dataset.asDatasetGraph());
     }
-    
+
     /** Release from the JVM.  All caching is lost. */
     public static void release(DatasetGraph dataset) {
         _release(dataset) ;
     }
-    
+
     private static void _release(DatasetGraph dataset) {
         TDBInternal.expel(dataset);
     }
@@ -97,13 +97,13 @@ public class TDBFactory
         return TDBMaker.createDatasetGraphTransaction() ;
     }
 
-    /** Test whether a dataset is backed by TDB. */ 
+    /** Test whether a dataset is backed by TDB. */
     public static boolean isTDB1(Dataset dataset) {
         DatasetGraph dsg = dataset.asDatasetGraph() ;
         return isTDB1(dsg) ;
     }
-    
-    /** Test whether a dataset is backed by TDB. */ 
+
+    /** Test whether a dataset is backed by TDB. */
     public static boolean isTDB1(DatasetGraph datasetGraph) {
         return TDBInternal.isTDB1(datasetGraph);
     }
@@ -116,26 +116,26 @@ public class TDBFactory
 
     /** Return the location of a DatasetGraph if it is backed by TDB, else null */
     public static Location location(DatasetGraph datasetGraph) {
-        if ( datasetGraph instanceof DatasetGraphTDB )
-            return ((DatasetGraphTDB)datasetGraph).getLocation() ;
-        if ( datasetGraph instanceof DatasetGraphTransaction )
-            return ((DatasetGraphTransaction)datasetGraph).getLocation() ;
+        if ( datasetGraph instanceof DatasetGraphTDB dsgt )
+            return dsgt .getLocation() ;
+        if ( datasetGraph instanceof DatasetGraphTransaction dsgtxn )
+            return dsgtxn.getLocation() ;
         return null ;
     }
-    
-    /** Test whether a location already has a TDB database or whether a call to TDBFactory 
+
+    /** Test whether a location already has a TDB database or whether a call to TDBFactory
      * will cause a new, fresh TDB database to be created (pragmatic tests).
      * The directory may be empty, or not exist.
-     * Existing databases return "true".  
+     * Existing databases return "true".
      */
     public static boolean inUseLocation(String directory) {
         return inUseLocation(Location.create(directory)) ;
     }
 
-    /** Test whether a location already has a TDB database or whether a call to TDBFactory 
+    /** Test whether a location already has a TDB database or whether a call to TDBFactory
      * will cause a new, fresh TDB database to be created (pragmatic tests).
      * The directory may be empty, or not exist.
-     * Existing databases return "true".  
+     * Existing databases return "true".
      */
     public static boolean inUseLocation(Location location) {
         if ( location.isMemUnique() )
@@ -144,7 +144,7 @@ public class TDBFactory
             return StoreConnection.getExisting(location) != null ;
         String dirname = location.getDirectoryPath() ;
         File d = new File(dirname) ;
-        
+
         if ( ! d.exists() )
             // TDB autocreates directories one level.
             return ! FileOps.exists(d.getParent()) ;
@@ -155,9 +155,9 @@ public class TDBFactory
      *  This call must only be called before a dataset from Location
      *  is created. This operation should be used with care; bad choices
      *  of {@link StoreParams} can reduce performance.
-     *  
+     *
      *  <a href="http://jena.apache.org/documentation/tdb/store-parameters.html">See documentation</a>.
-     *  
+     *
      *  @param location  The persistent storage location
      *  @param params    StoreParams to use
      *  @throws IllegalStateException If the dataset has already been setup.

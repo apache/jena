@@ -121,7 +121,7 @@ public class NodeFormatterTTL_MultiLine extends NodeFormatterTTL {
 
         if ( action != null )
             action.run();
-        if ( indent >= 0 )
+        if ( iw != null && indent >= 0 )
             iw.setAbsoluteIndent(indent);
     }
 }

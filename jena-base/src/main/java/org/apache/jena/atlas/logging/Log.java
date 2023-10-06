@@ -67,12 +67,12 @@ public class Log {
     }
 
     private static Logger log(Object object) {
-        if ( object instanceof String )
-            return LoggerFactory.getLogger((String)object);
-        if ( object instanceof Logger )
-            return (Logger)object;
-        if ( object instanceof Class<?> )
-            return LoggerFactory.getLogger((Class<?>)object);
+        if ( object instanceof String str )
+            return LoggerFactory.getLogger(str);
+        if ( object instanceof Logger logger )
+            return logger;
+        if ( object instanceof Class<?> cls )
+            return LoggerFactory.getLogger(cls);
         return LoggerFactory.getLogger(object.getClass());
     }
 

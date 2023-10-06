@@ -27,7 +27,7 @@ import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.Tags;
-import org.apache.jena.sparql.sse.writers.WriterLib;
+import org.apache.jena.sparql.sse.writers.SSEWriteLib;
 
 /** Marker for extension points
  *  Execution will be per-engine specific */
@@ -62,16 +62,16 @@ public abstract class OpExt extends OpBase
 
         if ( false ) {
             // Write in (ext NAME ...) form.
-            WriterLib.start(out, Tags.tagExt, WriterLib.NoNL);
+            SSEWriteLib.start(out, Tags.tagExt, SSEWriteLib.NoNL);
             out.print(getName());
             out.print(" ");
             outputArgs(out, sCxt);
-            WriterLib.finish(out, Tags.tagExt);
+            SSEWriteLib.finish(out, Tags.tagExt);
         } else {
             // Write in (NAME ...) form.
-            WriterLib.start(out, tag, WriterLib.NoNL);
+            SSEWriteLib.start(out, tag, SSEWriteLib.NoNL);
             outputArgs(out, sCxt);
-            WriterLib.finish(out, tag);
+            SSEWriteLib.finish(out, tag);
         }
 
         if ( line != out.getRow() )

@@ -111,8 +111,8 @@ public class IndexTestLib {
                 // Checking tests.
                 testIndexContents(index, keys2);
                 // Test iteration - quite expensive.
-                if ( includeIteratorCheck && index instanceof RangeIndex )
-                    testIteration((RangeIndex)index, keys1, 10);
+                if ( includeIteratorCheck && index instanceof RangeIndex rIndex)
+                    testIteration(rIndex, keys1, 10);
             }
             testDelete(index, keys2);
         }

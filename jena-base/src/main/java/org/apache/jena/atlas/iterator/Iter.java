@@ -696,8 +696,8 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     /** Close iterator if marked with {@link Closeable}. */
     public static <T> void close(Iterator<T> iter) {
-        if ( iter instanceof Closeable )
-            ((Closeable)iter).close();
+        if ( iter instanceof Closeable cIter )
+            cIter.close();
     }
 
     /**
@@ -790,8 +790,8 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     public static <T> Iter<T> iter(Iterator<T> iterator) {
         Objects.requireNonNull(iterator);
-        if ( iterator instanceof Iter<? > )
-            return (Iter<T>)iterator;
+        if ( iterator instanceof Iter<T> iter )
+            return iter;
         return new Iter<>(iterator);
     }
 

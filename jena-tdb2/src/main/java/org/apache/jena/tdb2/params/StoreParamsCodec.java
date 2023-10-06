@@ -184,20 +184,19 @@ public class StoreParamsCodec {
 
     // Encode helper.
     private static void encode(JsonBuilder builder, String name, Object value) {
-        if ( value instanceof Number ) {
-            long x = ((Number)value).longValue();
+        if ( value instanceof Number number ) {
+            long x = number.longValue();
             builder.key(name).value(x);
             return;
         }
-        if ( value instanceof String ) {
-            builder.key(name).value(value.toString());
+        if ( value instanceof String str ) {
+            builder.key(name).value(str);
             return;
         }
-        if ( value instanceof String[] ) {
-            String[] x = (String[])value;
+        if ( value instanceof String[] strArray ) {
             builder.key(name);
             builder.startArray();
-            for ( String s : x ) {
+            for ( String s : strArray ) {
                 builder.value(s);
             }
             builder.finishArray();

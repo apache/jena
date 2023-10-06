@@ -245,8 +245,8 @@ public class FusekiConfig {
             Statement s = sIter.nextStatement();
             RDFNode rn = s.getObject();
             String className = null;
-            if ( rn instanceof Resource ) {
-                String uri = ((Resource)rn).getURI();
+            if ( rn instanceof Resource res ) {
+                String uri = res.getURI();
                 if ( uri == null ) {
                     log.warn("Blank node for class to load");
                     continue;
@@ -258,9 +258,9 @@ public class FusekiConfig {
                 }
                 className = uri.substring(javaScheme.length());
             }
-            if ( rn instanceof Literal )
-                className = ((Literal)rn).getLexicalForm();
-            /* Loader. */loadAndInit(className);
+            if ( rn instanceof Literal lit)
+                className = lit.getLexicalForm();
+            loadAndInit(className);
         }
     }
 

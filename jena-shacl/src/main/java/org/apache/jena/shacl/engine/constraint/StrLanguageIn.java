@@ -117,9 +117,8 @@ public class StrLanguageIn extends ConstraintTerm {
             return true;
         if ( obj == null )
             return false;
-        if ( !(obj instanceof StrLanguageIn) )
+        if ( !(obj instanceof StrLanguageIn other) )
             return false;
-        StrLanguageIn other = (StrLanguageIn)obj;
         return Objects.equals(langs, other.langs);
     }
 }

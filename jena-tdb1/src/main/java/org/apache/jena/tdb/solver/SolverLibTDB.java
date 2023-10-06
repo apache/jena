@@ -87,8 +87,8 @@ public class SolverLibTDB
 
     /** Binding {@literal ->} BindingNodeId, given a NodeTable */
     static BindingNodeId convert(Binding binding, NodeTable nodeTable) {
-        if ( binding instanceof BindingTDB )
-            return ((BindingTDB)binding).getBindingId();
+        if ( binding instanceof BindingTDB bindingTDB )
+            return bindingTDB.getBindingId();
 
         BindingNodeId b = new BindingNodeId(binding);
         // and copy over, getting NodeIds.

@@ -67,9 +67,9 @@ public class ShaclPaths {
 //  2.3.1.7 Zero-Or-One Paths
 
     public static Set<Node> valueNodes(Graph graph, Node node, Path path) {
-        if ( path instanceof P_Link ) {
+        if ( path instanceof P_Link plink) {
             // Fast path common case.
-            Node p = ((P_Link)path).getNode();
+            Node p = plink.getNode();
             return G.allSP(graph, node, p);
         }
         // Value nodes are a set.

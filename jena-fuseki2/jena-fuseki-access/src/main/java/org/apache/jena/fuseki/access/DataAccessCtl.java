@@ -85,10 +85,9 @@ public class DataAccessCtl {
      * {@code DatasetGraph} is not controlled.
      */
     public static DatasetGraph controlledDataset(DatasetGraph dsgBase, AuthorizationService reg) {
-        if ( dsgBase instanceof DatasetGraphAccessControl ) {
-            DatasetGraphAccessControl dsgx = (DatasetGraphAccessControl)dsgBase;
-            if ( reg == dsgx.getAuthService() )
-                return dsgx;
+        if ( dsgBase instanceof DatasetGraphAccessControl dsgAcc ) {
+            if ( reg == dsgAcc.getAuthService() )
+                return dsgAcc;
             throw new IllegalArgumentException("DatasetGraph is already wrapped on a DatasetGraphAccessControl with a different AuthorizationService");
         }
 

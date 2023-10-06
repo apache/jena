@@ -63,9 +63,8 @@ public class Severity {
     public boolean equals(Object obj) {
         if ( this == obj )
             return true;
-        if ( !(obj instanceof Severity) )
+        if ( !(obj instanceof Severity other) )
             return false;
-        Severity other = (Severity)obj;
         return Objects.equals(level, other.level);
     }
 }

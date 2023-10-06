@@ -89,7 +89,7 @@ public class CacheFactory {
 
     /** Add a synchronization wrapper to an existing set-cache */
     public static <Obj> CacheSet<Obj> createSync(CacheSet<Obj> cache) {
-        if ( cache instanceof CacheSetSync<? > )
+        if ( cache instanceof CacheSetSync<Obj> )
             return cache ;
         return new CacheSetSync<>(cache) ;
     }

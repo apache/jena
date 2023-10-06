@@ -39,21 +39,14 @@ class AdapterLib {
 
     @SuppressWarnings("deprecation")
     public static Locator convert(org.apache.jena.util.Locator oldloc) {
-        if ( oldloc instanceof org.apache.jena.util.LocatorFile ) {
-            org.apache.jena.util.LocatorFile lFile = (org.apache.jena.util.LocatorFile)oldloc;
+        if ( oldloc instanceof org.apache.jena.util.LocatorFile lFile )
             return new LocatorFile(lFile.getDir());
-        }
-        if ( oldloc instanceof org.apache.jena.util.LocatorClassLoader ) {
-            org.apache.jena.util.LocatorClassLoader classLoc = (org.apache.jena.util.LocatorClassLoader)oldloc;
+        if ( oldloc instanceof org.apache.jena.util.LocatorClassLoader classLoc )
             return new LocatorClassLoader(classLoc.getClassLoader());
-        }
         if ( oldloc instanceof org.apache.jena.util.LocatorURL )
             return new LocatorHTTP();
-        if ( oldloc instanceof org.apache.jena.util.LocatorZip ) {
-            org.apache.jena.util.LocatorZip zipLoc = (org.apache.jena.util.LocatorZip)oldloc;
+        if ( oldloc instanceof org.apache.jena.util.LocatorZip zipLoc )
             return new LocatorZip(zipLoc.getZipFileName());
-        }
-
         throw new RiotException("Unrecognized Locator: " + Lib.className(oldloc));
     }
 }
