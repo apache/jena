@@ -96,9 +96,8 @@ public abstract class TableBase implements Table {
     public boolean equals(Object other) {
         if ( this == other )
             return true ;
-        if ( !(other instanceof Table) )
+        if ( !(other instanceof Table table) )
             return false ;
-        Table table = (Table)other ;
         if ( table.size() != this.size() )
             return false ;
         if ( !table.getVars().equals(getVars()) )

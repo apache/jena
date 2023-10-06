@@ -30,10 +30,9 @@ public class P_FixedLength extends P_Path1 {
 
     @Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
-        if ( !(path2 instanceof P_FixedLength) )
-            return false;
-        P_FixedLength other = (P_FixedLength)path2;
-        return other.count == count && getSubPath().equalTo(other.getSubPath(), isoMap);
+        if ( path2 instanceof P_FixedLength other )
+            return other.count == count && getSubPath().equalTo(other.getSubPath(), isoMap);
+        return false;
     }
 
     public long getCount() {

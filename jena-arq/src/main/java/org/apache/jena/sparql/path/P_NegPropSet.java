@@ -63,10 +63,9 @@ public class P_NegPropSet extends PathBase {
 
     @Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
-        if ( !(path2 instanceof P_NegPropSet) )
-            return false ;
-        P_NegPropSet other = (P_NegPropSet)path2 ;
-        return nodes.equals(other.nodes) ;
+        if ( path2 instanceof P_NegPropSet other )
+            return nodes.equals(other.nodes) ;
+        return false ;
     }
 
     @Override

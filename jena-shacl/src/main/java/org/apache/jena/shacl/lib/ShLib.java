@@ -124,7 +124,7 @@ public class ShLib {
     }
 
     public static void printReport(OutputStream output , ValidationReport report) {
-        PrintStream out = output instanceof PrintStream ? (PrintStream)output : new PrintStream(output);
+        PrintStream out = output instanceof PrintStream pStream ? pStream : new PrintStream(output);
         if ( report.conforms() ) {
             out.println("Conforms");
             out.flush();

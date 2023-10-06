@@ -32,10 +32,9 @@ public class P_Shortest extends P_Path1 {
 
     @Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
-        if ( !(path2 instanceof P_Shortest) )
-            return false ;
-        P_Shortest other = (P_Shortest)path2 ;
-        return getSubPath().equalTo(other.getSubPath(), isoMap) ;
+        if ( path2 instanceof P_Shortest other )
+            return getSubPath().equalTo(other.getSubPath(), isoMap) ;
+        return false ;
     }
 
     @Override

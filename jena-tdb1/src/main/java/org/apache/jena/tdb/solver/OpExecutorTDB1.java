@@ -106,9 +106,8 @@ public class OpExecutorTDB1 extends OpExecutor
         }
 
         // (filter (quadpattern ...))
-        if ( opFilter.getSubOp() instanceof OpQuadPattern )
+        if ( opFilter.getSubOp() instanceof OpQuadPattern quadPattern )
         {
-            OpQuadPattern quadPattern = (OpQuadPattern)opFilter.getSubOp();
             DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset();
             return optimizeExecuteQuads(ds, input,
                                         quadPattern.getGraphNode(), quadPattern.getBasicPattern(),
@@ -366,13 +365,12 @@ public class OpExecutorTDB1 extends OpExecutor
         {
             Graph g = execCxt.getActiveGraph();
 
-            if ( g instanceof GraphTDB )
+            if ( g instanceof GraphTDB gtdb )
             {
                 BasicPattern bgp = opBGP.getPattern();
                 Explain.explain("Execute", bgp, execCxt.getContext());
                 // Triple-backed (but may be named as explicit default graph).
                 //return SolverLib.execute((GraphTDB)g, bgp, input, filter, execCxt);
-                GraphTDB gtdb = (GraphTDB)g;
                 Node gn = decideGraphNode(gtdb.getGraphName(), execCxt);
                 return PatternMatchTDB1.execute(gtdb.getDatasetGraphTDB(), gn, bgp, input, filter, execCxt);
             }
@@ -386,23 +384,22 @@ public class OpExecutorTDB1 extends OpExecutor
             Node gn = opQuadPattern.getGraphNode();
             gn = decideGraphNode(gn, execCxt);
 
-            if ( execCxt.getDataset() instanceof DatasetGraphTDB )
+            if ( execCxt.getDataset() instanceof DatasetGraphTDB dsgtdb )
             {
-                DatasetGraphTDB ds = (DatasetGraphTDB)execCxt.getDataset();
                 Explain.explain("Execute", opQuadPattern.getPattern(), execCxt.getContext());
                 BasicPattern bgp = opQuadPattern.getBasicPattern();
-                return PatternMatchTDB1.execute(ds, gn, bgp, input, filter, execCxt);
+                return PatternMatchTDB1.execute(dsgtdb, gn, bgp, input, filter, execCxt);
             }
             // Maybe a TDB named graph inside a non-TDB dataset.
             Graph g = execCxt.getActiveGraph();
-            if ( g instanceof GraphTDB )
+            if ( g instanceof GraphTDB gtdb )
             {
                 // Triples graph from TDB (which is the default graph of the dataset),
                 // used a named graph in a composite dataset.
                 BasicPattern bgp = opQuadPattern.getBasicPattern();
                 Explain.explain("Execute", bgp, execCxt.getContext());
                 // Don't pass in G -- gn may be different.
-                return PatternMatchTDB1.execute(((GraphTDB)g).getDatasetGraphTDB(), gn, bgp, input, filter, execCxt);
+                return PatternMatchTDB1.execute(gtdb.getDatasetGraphTDB(), gn, bgp, input, filter, execCxt);
             }
             Log.warn(this, "Non-DatasetGraphTDB passed to OpExecutorPlainTDB");
             return super.execute(opQuadPattern, input);

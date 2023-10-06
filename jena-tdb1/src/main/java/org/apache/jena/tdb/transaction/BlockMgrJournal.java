@@ -75,7 +75,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
             writeBlockBufferAllocator = new BufferAllocatorMem() ;
 
         reset(txn, fileRef, underlyingBlockMgr) ;
-        if ( txn.getTxnMode() == ReadWrite.READ &&  underlyingBlockMgr instanceof BlockMgrJournal )
+        if ( txn.getTxnMode() == ReadWrite.READ && underlyingBlockMgr instanceof BlockMgrJournal )
             log.error("Two level BlockMgrJournal") ;
     }
 

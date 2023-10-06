@@ -35,8 +35,8 @@ public class RDFChangesN implements RDFChanges
             return sc2;
         if ( sc2 == null )
             return sc1;
-        if ( sc1 instanceof RDFChangesN ) {
-            ((RDFChangesN)sc1).add(sc2);
+        if ( sc1 instanceof RDFChangesN x) {
+            x.add(sc2);
             return sc1;
         } else {
             return new RDFChangesN(sc1, sc2) ;

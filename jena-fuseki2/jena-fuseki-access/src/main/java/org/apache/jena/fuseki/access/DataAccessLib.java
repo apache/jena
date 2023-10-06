@@ -49,8 +49,8 @@ class DataAccessLib {
 
     /** Get the {@link AuthorizationService} for an action/query/dataset */
     static AuthorizationService getAuthorizationService(HttpAction action, DatasetGraph dsg) {
-        if ( dsg instanceof DatasetGraphAccessControl )
-            return ((DatasetGraphAccessControl)dsg).getAuthService();
+        if ( dsg instanceof DatasetGraphAccessControl dsgAcc )
+            return dsgAcc.getAuthService();
         return dsg.getContext().get(DataAccessCtl.symAuthorizationService);
     }
 

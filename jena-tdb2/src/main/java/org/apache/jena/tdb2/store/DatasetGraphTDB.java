@@ -141,8 +141,7 @@ public class DatasetGraphTDB extends DatasetGraphStorage
         NodeTupleTable quads = getQuadTable().getNodeTupleTable();
 
         TupleIndexRecord graphIndex = quads.getTupleTable().selectIndex("G", TupleIndexRecord.class);
-        if (graphIndex != null && graphIndex.getRangeIndex() instanceof BPlusTree) {
-            BPlusTree bpt = (BPlusTree) (graphIndex).getRangeIndex();
+        if (graphIndex != null && graphIndex.getRangeIndex() instanceof BPlusTree bpt ) {
             Iterator<NodeId> distinctGraphNodeIds
                     = Iter.iter(bpt.distinctByKeyPrefix(NodeId.SIZE)).map(r -> NodeIdFactory.get(r.getKey(), 0));
             return NodeLib.nodes(quads.getNodeTable(), distinctGraphNodeIds);

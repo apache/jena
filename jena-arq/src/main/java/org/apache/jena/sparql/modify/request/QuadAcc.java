@@ -29,36 +29,35 @@ import org.apache.jena.sparql.core.Quad ;
 public class QuadAcc extends QuadAccSink
 {
     // A lists of Pairs: Node and Triple connector
-    
+
     private final List<Quad> quads ;
     private final List<Quad> quadsView ;
-    
+
     public QuadAcc()
     {
         this(new ArrayList<Quad>());
     }
-    
+
     public QuadAcc(List<Quad> quads)
     {
         super(new SinkToCollection<>(quads)) ;
         this.quads = quads ;
         this.quadsView = Collections.unmodifiableList(quads) ;
     }
-    
+
     public List<Quad> getQuads()
     {
         return quadsView ;
     }
-    
+
     @Override
     public int hashCode() { return quads.hashCode() ; }
 
     @Override
     public boolean equals(Object other)
     {
-        if ( ! ( other instanceof QuadAcc ) ) return false ;
-        QuadAcc acc = (QuadAcc)other ;
-        return quads.equals(acc.quads) ; 
+        if ( ! ( other instanceof QuadAcc acc ) ) return false ;
+        return quads.equals(acc.quads) ;
     }
 
 }

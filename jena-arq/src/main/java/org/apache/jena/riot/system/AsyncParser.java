@@ -205,8 +205,7 @@ public class AsyncParser {
      * Any other type of throwable raises a generic RuntimeException with it as the cause.
      */
     private static void raiseException(Throwable throwable) {
-        if (throwable instanceof RuntimeException) {
-            RuntimeException e = (RuntimeException)throwable;
+        if (throwable instanceof RuntimeException e) {
             e.addSuppressed(new RuntimeException("Encountered error element from parse thread"));
             throw e;
         }

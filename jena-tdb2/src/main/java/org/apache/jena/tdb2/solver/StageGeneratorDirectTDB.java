@@ -46,15 +46,12 @@ public class StageGeneratorDirectTDB implements StageGenerator {
         // --- In case this isn't for TDB2
         Graph g = execCxt.getActiveGraph();
 
-        if ( g instanceof GraphViewSwitchable ) {
-            GraphViewSwitchable gvs = (GraphViewSwitchable)g;
+        if ( g instanceof GraphViewSwitchable gvs )
             g = gvs.getBaseGraph();
-        }
 
-        if ( !(g instanceof GraphTDB) )
+        if ( !(g instanceof GraphTDB graph) )
             // Not us - bounce up the StageGenerator chain
             return above.execute(pattern, input, execCxt);
-        GraphTDB graph = (GraphTDB)g;
         Predicate<Tuple<NodeId>> filter = QC2.getFilter(execCxt.getContext());
         return PatternMatchTDB2.execute(graph, pattern, input, filter, execCxt);
     }

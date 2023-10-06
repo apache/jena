@@ -54,8 +54,8 @@ public class Pair<A, B>
         // Use class X extends Pair<A,B> and implement .equals to do
         // instanceof then call super.equals.
 
-        if( ! ( other instanceof Pair<?,?> ) ) return false ;
-        Pair<?,?> p2 = (Pair<?,?>)other ;
+        if ( !(other instanceof Pair<? , ? > p2) )
+            return false;
         return Objects.equals(car(), p2.car()) && Objects.equals(cdr(), p2.cdr()) ;
     }
 

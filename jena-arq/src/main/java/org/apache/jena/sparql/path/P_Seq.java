@@ -38,8 +38,8 @@ public class P_Seq extends P_Path2 {
 
     @Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
-        if ( !(path2 instanceof P_Seq) )
-            return false ;
-        return equalsIso((P_Path2)path2, isoMap) ;
+        if ( path2 instanceof P_Seq p2 )
+            return equalsIso(p2, isoMap) ;
+        return false ;
     }
 }

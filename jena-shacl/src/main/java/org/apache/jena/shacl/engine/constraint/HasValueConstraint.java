@@ -64,7 +64,7 @@ public class HasValueConstraint extends ConstraintEntity {
             vCxt.reportEntry(errMsg, shape, focusNode, null, null, this);
         }
         final boolean finalPassed = passed;
-        vCxt.notifyValidationListener(() -> 
+        vCxt.notifyValidationListener(() ->
                         new ConstraintEvaluatedOnFocusNodeEvent(vCxt, shape, focusNode,  this,   finalPassed));
     }
 
@@ -103,9 +103,8 @@ public class HasValueConstraint extends ConstraintEntity {
             return true;
         if ( obj == null )
             return false;
-        if ( !(obj instanceof HasValueConstraint) )
+        if ( !(obj instanceof HasValueConstraint other) )
             return false;
-        HasValueConstraint other = (HasValueConstraint)obj;
         return Objects.equals(value, other.value);
     }
 }

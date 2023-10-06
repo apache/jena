@@ -43,13 +43,13 @@ import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
 // This exists to intercept the query execution setup.
 //  e.g choose the transformation optimizations
 // then to make the quad form.
-// TDB also uses a custom OpExecutor to intercept certain part 
+// TDB also uses a custom OpExecutor to intercept certain part
 // of the Op evaluations
 
 public class QueryEngineTDB extends QueryEngineMain
 {
     // ---- Wiring
-    static public QueryEngineFactory getFactory() { return factory ; } 
+    static public QueryEngineFactory getFactory() { return factory ; }
     static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
 
@@ -62,14 +62,14 @@ public class QueryEngineTDB extends QueryEngineMain
     protected QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context cxt) {
         super(query, dataset, input, cxt);
     }
-    
+
     @Override
     protected DatasetGraph dynamicDataset(DatasetDescription dsDesc, DatasetGraph dataset, boolean unionDftGraph) {
         boolean union = unionDftGraph || context.isTrue(TDB.symUnionDefaultGraph);
         return DynamicDatasets.dynamicDataset(dsDesc, dataset, union ) ;
     }
-    
-    // Choose the algebra-level optimizations to invoke. 
+
+    // Choose the algebra-level optimizations to invoke.
     @Override
     protected Op modifyOp(Op op)
     {
@@ -81,7 +81,7 @@ public class QueryEngineTDB extends QueryEngineMain
         // Only apply if not a rewritten DynamicDataset
         if ( ! isDynamicDataset() )
             op = Algebra.toQuadForm(op) ;
-        
+
         // Record it.
         setOp(op) ;
         return op ;
@@ -92,41 +92,41 @@ public class QueryEngineTDB extends QueryEngineMain
     {
         // Top of execution of a query.
         // Op is quad'ed by now but there still may be some (graph ....) forms e.g. paths
-        
+
         // Fix DatasetGraph for global union.
-        if ( context.isTrue(TDB.symUnionDefaultGraph) && ! isDynamicDataset() ) 
+        if ( context.isTrue(TDB.symUnionDefaultGraph) && ! isDynamicDataset() )
         {
             op = OpLib.unionDefaultGraphQuads(op) ;
             Explain.explain("REWRITE(Union default graph)", op, context) ;
         }
         QueryIterator results = super.eval(op, dsg, input, context) ;
-        return results ; 
+        return results ;
     }
-    
+
     // ---- Factory
     protected static QueryEngineFactory factory = new QueryEngineFactoryTDB() ;
-        
+
     protected static class QueryEngineFactoryTDB implements QueryEngineFactory
     {
         // If a DatasetGraphTransaction is passed in, we are outside a transaction.
-        
+
         private static boolean isHandledByTDB(DatasetGraph dataset)
         {
             if (dataset instanceof DatasetGraphTDB) return true ;
             if (dataset instanceof DatasetGraphTransaction ) return true ;
             return false ;
         }
-        
+
         protected DatasetGraphTDB dsgToQuery(DatasetGraph dataset)
         {
             if (dataset instanceof DatasetGraphTDB) return (DatasetGraphTDB)dataset ;
-            if (dataset instanceof DatasetGraphTransaction) 
-                return ((DatasetGraphTransaction)dataset).getDatasetGraphToQuery() ;
+            if (dataset instanceof DatasetGraphTransaction dsgtxn )
+                return dsgtxn.getDatasetGraphToQuery() ;
             throw new TDBException("Internal inconsistency: trying to execute query on unrecognized kind of DatasetGraph: "+Lib.className(dataset)) ;
         }
-        
+
         @Override
-        public boolean accept(Query query, DatasetGraph dataset, Context context) 
+        public boolean accept(Query query, DatasetGraph dataset, Context context)
         { return isHandledByTDB(dataset) ; }
 
         @Override
@@ -135,9 +135,9 @@ public class QueryEngineTDB extends QueryEngineMain
             QueryEngineTDB engine = new QueryEngineTDB(query, dsgToQuery(dataset), input, context) ;
             return engine.getPlan() ;
         }
-        
+
         @Override
-        public boolean accept(Op op, DatasetGraph dataset, Context context) 
+        public boolean accept(Op op, DatasetGraph dataset, Context context)
         { return isHandledByTDB(dataset) ; }
 
         @Override

@@ -36,8 +36,8 @@ public class CollectionUtils
     public static <T> T oneElt(Collection<T> collection) {
         if ( collection == null || collection.isEmpty() )
             return null;
-        if ( collection instanceof List<?> )
-            return ((List<T>)collection).get(0);
+        if ( collection instanceof List<T> list )
+            return list.get(0);
         return Iter.first(collection.iterator());
     }
 

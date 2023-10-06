@@ -35,8 +35,8 @@ import org.apache.jena.sparql.expr.RegexJava;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 
 /** sh:pattern.
- * 
- * This applies to literals and URI through the use of SPARQL str(). 
+ *
+ * This applies to literals and URI through the use of SPARQL str().
  */
 public class PatternConstraint extends ConstraintTerm {
 
@@ -114,9 +114,8 @@ public class PatternConstraint extends ConstraintTerm {
             return true;
         if ( obj == null )
             return false;
-        if ( !(obj instanceof PatternConstraint) )
+        if ( !(obj instanceof PatternConstraint other) )
             return false;
-        PatternConstraint other = (PatternConstraint)obj;
         return Objects.equals(patternString, other.patternString);
     }
 }

@@ -119,11 +119,12 @@ public class NodeKindConstraint extends ConstraintTerm {
             return true;
         if ( obj == null )
             return false;
-        if ( !(obj instanceof NodeKindConstraint) )
+        if ( !(obj instanceof NodeKindConstraint other) )
             return false;
-        NodeKindConstraint other = (NodeKindConstraint)obj;
-        return canBeBlankNode == other.canBeBlankNode && canBeIRI == other.canBeIRI && canBeLiteral == other.canBeLiteral
-               && Objects.equals(kind, other.kind);
+        return canBeBlankNode == other.canBeBlankNode &&
+               canBeIRI == other.canBeIRI &&
+               canBeLiteral == other.canBeLiteral &&
+               Objects.equals(kind, other.kind);
     }
 
 }

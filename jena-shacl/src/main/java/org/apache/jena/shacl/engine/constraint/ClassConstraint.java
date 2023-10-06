@@ -106,9 +106,8 @@ public class ClassConstraint extends ConstraintDataTerm {
             return true;
         if ( obj == null )
             return false;
-        if ( !(obj instanceof ClassConstraint) )
+        if ( !(obj instanceof ClassConstraint other) )
             return false;
-        ClassConstraint other = (ClassConstraint)obj;
         return Objects.equals(expectedClass, other.expectedClass);
     }
 }

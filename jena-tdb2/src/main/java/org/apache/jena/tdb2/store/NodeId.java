@@ -166,8 +166,7 @@ public class NodeId implements Comparable<NodeId>
     public boolean equals(Object other) {
         if ( this == other ) return true;
         if ( other == null ) return false;
-        if ( !(other instanceof NodeId) ) return false;
-        NodeId nOther = ((NodeId)other);
+        if ( !(other instanceof NodeId nOther) ) return false;
         return equals(nOther, value1, value2);
     }
 

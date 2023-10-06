@@ -28,10 +28,9 @@ public class P_OneOrMore1 extends P_Path1 {
 
     @Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
-        if ( !(path2 instanceof P_OneOrMore1) )
-            return false ;
-        P_OneOrMore1 other = (P_OneOrMore1)path2 ;
-        return getSubPath().equalTo(other.getSubPath(), isoMap) ;
+        if ( path2 instanceof P_OneOrMore1 other )
+            return getSubPath().equalTo(other.getSubPath(), isoMap) ;
+        return false ;
     }
 
     @Override

@@ -117,8 +117,8 @@ public class DatabaseMgr {
     }
 
     private static DatasetGraphSwitchable requireSwitchable(DatasetGraph datasetGraph) {
-        if ( datasetGraph instanceof DatasetGraphSwitchable )
-            return (DatasetGraphSwitchable)datasetGraph;
+        if ( datasetGraph instanceof DatasetGraphSwitchable dsgx )
+            return dsgx;
         throw new TDBException("Not a switchable TDB database");
     }
 

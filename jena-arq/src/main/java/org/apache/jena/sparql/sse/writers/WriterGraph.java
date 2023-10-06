@@ -31,9 +31,9 @@ import org.apache.jena.sparql.sse.Tags;
 
 public class WriterGraph
 {
-    public static final int NL = WriterLib.NL;
-    public static final int NoNL = WriterLib.NoNL;
-    public static final int NoSP = WriterLib.NoSP;
+    public static final int NL = SSEWriteLib.NL;
+    public static final int NoNL = SSEWriteLib.NoNL;
+    public static final int NoSP = SSEWriteLib.NoSP;
 
     public static void output(IndentedWriter out, Graph graph, SerializationContext naming)
     { writeGraph(out, graph, null, naming); }
@@ -51,7 +51,7 @@ public class WriterGraph
     // ---- Workers
 
     private static void writeDataset(IndentedWriter out, DatasetGraph ds, SerializationContext naming) {
-        WriterLib.start(out, Tags.tagDataset, NL);
+        SSEWriteLib.start(out, Tags.tagDataset, NL);
         writeGraph(out, ds.getDefaultGraph(), null, naming);
         out.ensureStartOfLine();
         for ( Iterator<Node> iter = ds.listGraphNodes() ; iter.hasNext() ; ) {
@@ -60,12 +60,12 @@ public class WriterGraph
             Graph g = ds.getGraph(node);
             writeGraph(out, g, node, naming);
         }
-        WriterLib.finish(out, Tags.tagDataset);
+        SSEWriteLib.finish(out, Tags.tagDataset);
         out.ensureStartOfLine();
     }
 
     private static void writeGraph(IndentedWriter out, Graph g, Node node, SerializationContext naming) {
-        WriterLib.start(out, Tags.tagGraph, NoSP);
+        SSEWriteLib.start(out, Tags.tagGraph, NoSP);
         if ( node != null ) {
             out.print(" ");
             WriterNode.output(out, node, naming);
@@ -75,7 +75,7 @@ public class WriterGraph
         if ( ! iter.hasNext() )
         {
             // Empty.
-            WriterLib.finish(out, Tags.tagGraph);
+            SSEWriteLib.finish(out, Tags.tagGraph);
             return;
         }
 
@@ -91,6 +91,6 @@ public class WriterGraph
         }
 //        out.decIndent();
         if ( ! first ) out.println();
-        WriterLib.finish(out, Tags.tagGraph);
+        SSEWriteLib.finish(out, Tags.tagGraph);
     }
 }

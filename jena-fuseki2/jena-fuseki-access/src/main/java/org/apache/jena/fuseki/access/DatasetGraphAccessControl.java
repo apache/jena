@@ -49,9 +49,9 @@ public class DatasetGraphAccessControl extends DatasetGraphWrapper {
      * {@code DatasetGraphAccessControl}, return the argument.
      */
     public static DatasetGraph removeWrapper(DatasetGraph dsg) {
-        if ( ! ( dsg instanceof DatasetGraphAccessControl ) )
+        if ( ! ( dsg instanceof DatasetGraphAccessControl accDSG ) )
             return dsg;
-        return ((DatasetGraphAccessControl)dsg).getWrapped();
+        return accDSG.getWrapped();
     }
 
     /**

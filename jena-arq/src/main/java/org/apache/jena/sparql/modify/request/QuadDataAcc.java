@@ -33,33 +33,32 @@ public class QuadDataAcc extends QuadDataAccSink implements TripleCollectorMark
 {
     private final List<Quad> quads ;
     private final List<Quad> quadsView ;
-    
+
     public QuadDataAcc()
     {
         this(new ArrayList<Quad>());
     }
-    
+
     public QuadDataAcc(List<Quad> quads)
     {
         super(new SinkToCollection<>(quads));
         this.quads = quads;
         this.quadsView = Collections.unmodifiableList(quads) ;
     }
-    
+
     public List<Quad> getQuads()
     {
         return quadsView ;
     }
-    
+
     @Override
     public int hashCode() { return quads.hashCode() ; }
 
     @Override
     public boolean equals(Object other)
     {
-        if ( ! ( other instanceof QuadDataAcc ) ) return false ;
-        QuadDataAcc acc = (QuadDataAcc)other ;
-        return quads.equals(acc.quads) ; 
+        if ( ! ( other instanceof QuadDataAcc acc ) ) return false ;
+        return quads.equals(acc.quads) ;
     }
 
     @Override
