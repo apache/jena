@@ -26,6 +26,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -50,6 +51,25 @@ public class JenaXMLInput {
     // ---- SAX
     // RDFXMLParser
     private static SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+
+    static {
+        // XMLConstants.FEATURE_SECURE_PROCESSING defaults to true.
+        // This can result in problems occasionally.
+        //
+        // It limits internal resources - one case: system property "entityExpansionLimit"
+        // The default setting Java17 is 64000. RDF/XML that uses a lot of "&ent;" as a form of URI management
+        // might lead to exceeding this limit.
+        //
+        // This limit applies to SAX/XMLreader, StAX/XMLStreamReader and StAX/XMLEventReader.
+        // Illustrative code that sets the default higher if it is not already been set.
+        if ( false ) {
+            String keyExpansionLimit = "entityExpansionLimit";
+            if ( System.getProperty(keyExpansionLimit) == null ) {
+                // The system default (no setting) is 64000
+                System.setProperty(keyExpansionLimit, "200000");
+            }
+        }
+    }
 
     public static XMLReader createXMLReader() throws ParserConfigurationException, SAXException {
         /*
@@ -82,15 +102,21 @@ public class JenaXMLInput {
         // and ignore external entities (silently ignore)
         xmlreader.setFeature("http://xml.org/sax/features/external-general-entities", false);
         xmlreader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+
         return xmlreader;
     }
 
+    private static XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance() ;
+
+    static { initXMLInputFactory(xmlInputFactory); }
+
     // ---- StAX
-    // TriX and SPARQL XML Results.
+    // RRX SR and RRX EV, TriX and SPARQL XML Results.
     /**
-     * Initialize an XMLInputFactory to jena settings.
+     * Initialize an XMLInputFactory to Jena settings such as protecting against XXE.
+     * Return the XMLInputFactory.
      */
-    public static void initXMLInputFactory(XMLInputFactory xf) {
+    public static XMLInputFactory initXMLInputFactory(XMLInputFactory xmlInputFactory) {
         /*
          * https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html
          * ---
@@ -105,7 +131,7 @@ public class JenaXMLInput {
          *     xmlInputFactory.setProperty("javax.xml.stream.isSupportingExternalEntities", false);
          */
 
-        String name = xf.getClass().getName();
+        String name = xmlInputFactory.getClass().getName();
         boolean isWoodstox = name.startsWith("com.ctc.wstx.stax.");
         boolean isJDK = name.contains("sun.xml.internal");
         boolean isXerces = name.startsWith("org.apache.xerces");
@@ -114,15 +140,30 @@ public class JenaXMLInput {
         // DTDs are silently ignored except for xmlEventReader.nextTag() which throws an exception on a "DTD" event.
         // Code can peek and skip the DTD.
         // This takes precedence over ACCESS_EXTERNAL_DTD
-    	setXMLInputFactoryProperty(xf, XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
+    	setXMLInputFactoryProperty(xmlInputFactory, XMLInputFactory.SUPPORT_DTD, Boolean.FALSE);
 
         // disable external entities (silently ignore)
-        setXMLInputFactoryProperty(xf, XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
+        setXMLInputFactoryProperty(xmlInputFactory, XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);
 
         // Not supported by Woodstox. IS_SUPPORTING_EXTERNAL_ENTITIES = false is enough.
         // Disable external DTDs (files and HTTP) - errors unless SUPPORT_DTD is false.
         if ( ! isWoodstox )
-            setXMLInputFactoryProperty(xf, XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            setXMLInputFactoryProperty(xmlInputFactory, XMLConstants.ACCESS_EXTERNAL_DTD, "");
+
+        return xmlInputFactory;
+        // RRX
+//        private static XMLInputFactory createXMLInputFactory() {
+//            XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+//            JenaXMLInput.initXMLInputFactory(xmlInputFactory);
+//            // Enable character entity support.
+//            xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);
+//            xmlInputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.TRUE);
+//            // Set merging.
+//            xmlInputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
+//            return xmlInputFactory;
+//        }
+
+
     }
 
     /**
@@ -137,15 +178,20 @@ public class JenaXMLInput {
         }
     }
 
-    private static XMLInputFactory xf = XMLInputFactory.newInstance() ;
-    static { initXMLInputFactory(xf); }
-
     public static XMLStreamReader newXMLStreamReader(InputStream in) throws XMLStreamException {
-        return xf.createXMLStreamReader(in) ;
+        return xmlInputFactory.createXMLStreamReader(in) ;
     }
 
     public static XMLStreamReader newXMLStreamReader(Reader in) throws XMLStreamException {
-        return xf.createXMLStreamReader(in) ;
+        return xmlInputFactory.createXMLStreamReader(in) ;
+    }
+
+    public static XMLEventReader newXMLEventReader(InputStream in) throws XMLStreamException {
+        return xmlInputFactory.createXMLEventReader(in) ;
+    }
+
+    public static XMLEventReader newXMLEventReader(Reader in) throws XMLStreamException {
+        return xmlInputFactory.createXMLEventReader(in) ;
     }
 
     // ---- DocumentBuilder
