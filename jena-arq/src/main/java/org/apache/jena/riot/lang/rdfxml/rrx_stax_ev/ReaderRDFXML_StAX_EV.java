@@ -30,10 +30,10 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.ReaderRIOT;
 import org.apache.jena.riot.ReaderRIOTFactory;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.lang.rdfxml.SysRRX;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.util.JenaXMLInput;
 
 /**
  * RDF/XML parser.
@@ -48,7 +48,7 @@ public class ReaderRDFXML_StAX_EV implements ReaderRIOT
         return new ReaderRDFXML_StAX_EV(parserProfile);
     };
 
-    private static final XMLInputFactory xmlInputFactory = createXMLInputFactory();
+    private static final XMLInputFactory xmlInputFactory = SysRRX.createXMLInputFactory();
     private final ParserProfile parserProfile;
 
     public ReaderRDFXML_StAX_EV(ParserProfile parserProfile) {
@@ -87,16 +87,5 @@ public class ReaderRDFXML_StAX_EV implements ReaderRIOT
         } catch (Exception ex) {
             throw new RiotException(ex);
         } finally { destination.finish(); }
-    }
-
-    private static XMLInputFactory createXMLInputFactory() {
-        XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
-        JenaXMLInput.initXMLInputFactory(xmlInputFactory);
-        // Enable character entity support.
-        xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);
-        xmlInputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.TRUE);
-        // Set merging.
-        xmlInputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
-        return xmlInputFactory;
     }
 }
