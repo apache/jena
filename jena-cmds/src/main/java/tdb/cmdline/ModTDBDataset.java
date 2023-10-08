@@ -33,10 +33,10 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab;
-import org.apache.jena.tdb.TDBFactory;
-import org.apache.jena.tdb.assembler.VocabTDB;
-import org.apache.jena.tdb.base.file.Location;
-import org.apache.jena.tdb.transaction.DatasetGraphTransaction;
+import org.apache.jena.tdb1.TDB1Factory;
+import org.apache.jena.tdb1.assembler.VocabTDB;
+import org.apache.jena.tdb1.base.file.Location;
+import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;
 
 public class ModTDBDataset extends ModDataset {
     // Mixes assembler, location and "tdb"
@@ -63,7 +63,7 @@ public class ModTDBDataset extends ModDataset {
     @Override
     public Dataset createDataset() {
         if ( inMemFile != null ) {
-            Dataset ds = TDBFactory.createDataset();
+            Dataset ds = TDB1Factory.createDataset();
             RDFDataMgr.read(ds, inMemFile);
             return ds;
 
@@ -93,7 +93,7 @@ public class ModTDBDataset extends ModDataset {
             throw new CmdException("No assembler file nor location provided");
 
         // No assembler - use location to find a database.
-        Dataset ds = TDBFactory.createDataset(modAssembler.getLocation());
+        Dataset ds = TDB1Factory.createDataset(modAssembler.getLocation());
         return ds;
     }
 

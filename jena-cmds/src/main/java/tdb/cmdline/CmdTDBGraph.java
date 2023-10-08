@@ -26,7 +26,7 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.tdb.store.GraphTDB;
+import org.apache.jena.tdb1.store.GraphTDB;
 
 public abstract class CmdTDBGraph extends CmdTDB {
     private static final ArgDecl argNamedGraph = new ArgDecl(ArgDecl.HasValue, "graph");

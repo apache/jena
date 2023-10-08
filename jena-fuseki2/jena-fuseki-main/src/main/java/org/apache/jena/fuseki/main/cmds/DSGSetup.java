@@ -24,7 +24,7 @@ import java.nio.file.Path;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.fuseki.system.spot.TDBOps;
-import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb2.DatabaseMgr;
 
 /*package*/ class DSGSetup {
@@ -65,7 +65,7 @@ import org.apache.jena.tdb2.DatabaseMgr;
 
     private static void setupTDB1(String directory, ServerConfig serverConfig) {
         serverConfig.datasetDescription = "TDB1 dataset: location="+directory;
-        serverConfig.dsg = TDBFactory.createDatasetGraph(directory);
+        serverConfig.dsg = TDB1Factory.createDatasetGraph(directory);
     }
 
     private static void setupTDB2(String directory, ServerConfig serverConfig) {
@@ -78,7 +78,7 @@ import org.apache.jena.tdb2.DatabaseMgr;
         serverConfig.datasetDescription = tag+" dataset in-memory";
         serverConfig.dsg = useTDB2
             ? DatabaseMgr.createDatasetGraph()
-            : TDBFactory.createDatasetGraph();
+            : TDB1Factory.createDatasetGraph();
         serverConfig.allowUpdate = true;
 
     }

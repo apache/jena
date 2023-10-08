@@ -46,8 +46,8 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb.TDB;
-import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb1.TDB1;
+import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.TDB2;
 import org.junit.Test;
@@ -61,7 +61,7 @@ public class TestSecurityFilterLocal {
     @Parameters(name = "{index}: {0}")
     public static Iterable<Object[]> data() {
         // By filtering on the TDB database
-        Creator<DatasetGraph> c1 = TDBFactory::createDatasetGraph;
+        Creator<DatasetGraph> c1 = TDB1Factory::createDatasetGraph;
         Creator<DatasetGraph> c2 = DatabaseMgr::createDatasetGraph;
         Creator<DatasetGraph> c3 = DatasetGraphFactory::createTxnMem;
         Creator<DatasetGraph> c4 = DatasetGraphFactory::create;
@@ -262,12 +262,12 @@ public class TestSecurityFilterLocal {
         if ( applyFilterTDB ) {
             // TDB special version. Set the TDB flags for union default graph
             try {
-                testdsg.getContext().set(TDB.symUnionDefaultGraph, true);
+                testdsg.getContext().set(TDB1.symUnionDefaultGraph, true);
                 testdsg.getContext().set(TDB2.symUnionDefaultGraph, true);
                 visible = subjects(testdsg, queryDft, sCxt);
             } finally {
                 // And unset them.
-                testdsg.getContext().unset(TDB.symUnionDefaultGraph);
+                testdsg.getContext().unset(TDB1.symUnionDefaultGraph);
                 testdsg.getContext().unset(TDB2.symUnionDefaultGraph);
             }
         } else {

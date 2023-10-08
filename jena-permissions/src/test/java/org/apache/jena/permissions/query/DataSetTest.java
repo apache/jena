@@ -27,8 +27,8 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.tdb.TDB;
-import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb1.TDB1;
+import org.apache.jena.tdb1.TDB1Factory;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -52,9 +52,9 @@ public class DataSetTest {
 
     public void setup() {
 
-        DatasetGraph dsg = TDBFactory.createDatasetGraph();
+        DatasetGraph dsg = TDB1Factory.createDatasetGraph();
 
-        dsg.getContext().set(TDB.symUnionDefaultGraph, true);
+        dsg.getContext().set(TDB1.symUnionDefaultGraph, true);
         Dataset myDataset = DatasetFactory.wrap(dsg);
 
         baseModel = myDataset.getNamedModel("http://example.com/baseModel");

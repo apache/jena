@@ -35,7 +35,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.index.DirectoryReader;
@@ -68,7 +68,7 @@ public class TestTextTxn
     public static Collection<Object[]>  data() {
         Creator<Dataset> plainFactory = ()->DatasetFactory.create();
         Creator<Dataset> timFactory = ()->DatasetFactory.createTxnMem();
-        Creator<Dataset> tdb1Factory = ()->TDBFactory.createDataset();
+        Creator<Dataset> tdb1Factory = ()->TDB1Factory.createDataset();
         Creator<Dataset> tdb2Factory = ()->TDB2Factory.createDataset();
         return Arrays.asList( new Object[][]{
             { "Plain", plainFactory, false } ,

@@ -18,15 +18,15 @@
 
 package tdb;
 
-import org.apache.jena.tdb.TDB;
-import org.apache.jena.tdb.store.DatasetGraphTDB;
-import org.apache.jena.tdb.transaction.JournalControl;
+import org.apache.jena.tdb1.TDB1;
+import org.apache.jena.tdb1.store.DatasetGraphTDB;
+import org.apache.jena.tdb1.transaction.JournalControl;
 import tdb.cmdline.CmdTDB;
 
 public class tdbrecovery extends CmdTDB {
     static public void main(String...argv) {
         CmdTDB.init();
-        TDB.setOptimizerWarningFlag(false);
+        TDB1.setOptimizerWarningFlag(false);
         new tdbrecovery(argv).mainRun();
     }
 

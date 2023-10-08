@@ -20,7 +20,7 @@ package org.apache.jena.fuseki.server;
 
 import static java.lang.String.format;
 import static org.apache.jena.fuseki.server.DataServiceStatus.*;
-import static org.apache.jena.tdb.sys.TDBInternal.isTDB1;
+import static org.apache.jena.tdb1.sys.TDBInternal.isTDB1;
 import static org.apache.jena.tdb2.sys.TDBInternal.isTDB2;
 
 import java.util.*;
@@ -281,7 +281,7 @@ public class DataService {
         if ( isTDB1 || isTDB2 ) {
             // JENA-1586: Remove database from the process.
             if ( isTDB1 )
-                org.apache.jena.tdb.sys.TDBInternal.expel(base);
+                org.apache.jena.tdb1.sys.TDBInternal.expel(base);
             if ( isTDB2 )
                 org.apache.jena.tdb2.sys.TDBInternal.expel(base);
         }

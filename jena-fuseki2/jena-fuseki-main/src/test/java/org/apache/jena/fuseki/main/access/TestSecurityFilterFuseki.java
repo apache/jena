@@ -42,7 +42,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
-import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.eclipse.jetty.ee10.servlet.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.UserStore;
@@ -67,7 +67,7 @@ public class TestSecurityFilterFuseki {
     }
 
     private final String baseUrl;
-    private static DatasetGraph testdsg1 =  TDBFactory.createDatasetGraph();
+    private static DatasetGraph testdsg1 =  TDB1Factory.createDatasetGraph();
     private static DatasetGraph testdsg2 =  DatabaseMgr.createDatasetGraph();
     private static DatasetGraph testdsg3 =  DatasetGraphFactory.createTxnMem();
 

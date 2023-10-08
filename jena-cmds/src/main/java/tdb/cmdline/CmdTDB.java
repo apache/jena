@@ -23,11 +23,11 @@ import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.tdb.TDB;
-import org.apache.jena.tdb.base.file.Location;
-import org.apache.jena.tdb.setup.DatasetBuilderStd;
-import org.apache.jena.tdb.store.DatasetGraphTDB;
-import org.apache.jena.tdb.sys.TDBInternal;
+import org.apache.jena.tdb1.TDB1;
+import org.apache.jena.tdb1.base.file.Location;
+import org.apache.jena.tdb1.setup.DatasetBuilderStd;
+import org.apache.jena.tdb1.store.DatasetGraphTDB;
+import org.apache.jena.tdb1.sys.TDBInternal;
 
 public abstract class CmdTDB extends CmdARQ {
     protected final ModTDBDataset tdbDatasetAssembler = new ModTDBDataset();
@@ -38,7 +38,7 @@ public abstract class CmdTDB extends CmdARQ {
         super(argv);
         init();
         super.addModule(tdbDatasetAssembler);
-        super.modVersion.addClass("TDB1", TDB.class);
+        super.modVersion.addClass("TDB1", TDB1.class);
     }
 
     public static synchronized void init() {

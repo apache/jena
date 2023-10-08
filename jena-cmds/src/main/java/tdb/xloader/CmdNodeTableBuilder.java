@@ -30,9 +30,9 @@ import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.tdb.base.file.Location;
-import org.apache.jena.tdb.setup.DatasetBuilderStd;
-import org.apache.jena.tdb.store.xloader.ProcNodeTableDataBuilder;
+import org.apache.jena.tdb1.base.file.Location;
+import org.apache.jena.tdb1.setup.DatasetBuilderStd;
+import org.apache.jena.tdb1.store.xloader.ProcNodeTableDataBuilder;
 import tdb.cmdline.CmdTDB;
 
 /** Build node table - write triples/quads as text file */

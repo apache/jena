@@ -21,7 +21,8 @@ package org.apache.jena.jdbc.tdb.results;
 import static java.sql.ResultSet.CONCUR_READ_ONLY;
 import static java.sql.ResultSet.TYPE_FORWARD_ONLY;
 import static org.apache.jena.jdbc.results.metadata.AskResultsMetadata.COLUMN_LABEL_ASK;
-import static org.apache.jena.tdb.TDBFactory.createDataset;
+import static org.apache.jena.tdb1.TDB1Factory.createDataset;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
