@@ -105,13 +105,13 @@ public class TestFusekiStdReadOnlySetup {
 
     @Test
     public void stdSetup_endpoint_6() {
-        // Read-only : POST not allowed.
+        // Read-only : PUT not allowed.
         HttpTest.expect405(() -> exec(URL, "/data", conn -> conn.put(data)) );
     }
 
     @Test
     public void stdSetup_endpoint_7() {
-        // Read-only : POST not allowed.
+        // Read-only : PUT not allowed.
         HttpTest.expect405(() -> exec(URL, "/data", conn -> conn.putDataset(dataset)) );
     }
 
@@ -127,7 +127,7 @@ public class TestFusekiStdReadOnlySetup {
 
     @Test
     public void stdSetup_dataset_2() {
-        // Read-only : POST of an update not allowed. Multiple endpoints on the datset URL (query, gsp-r) so general error.
+        // Read-only : POST of an update not allowed. Multiple endpoints on the dataset URL (query, gsp-r) so general error.
         HttpTest.expect400(() -> exec(URL, conn -> conn.update("INSERT DATA { <x:s> <x:p> 123 }")) );
     }
 
@@ -161,7 +161,7 @@ public class TestFusekiStdReadOnlySetup {
     }
 
     @Test public void stdSetup_endpoint_bad_3() {
-        // Read-only. It is now 404 whereas in a updatable setup it is 405.
+        // Read-only. It is now 404 whereas in a setup with update it is 405.
         HttpTest.expect404( () -> exec(URL, "/update", conn->conn.queryAsk("ASK{}")) );
     }
 
