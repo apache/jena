@@ -28,8 +28,8 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.rdf.model.Statement ;
-import org.apache.jena.tdb.TDB ;
-import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb1.TDB1;
+import org.apache.jena.tdb1.TDB1Factory;
 
 /** Example of single threaded use of TDB working with the Jena RDF API */
 public class ExTDB6
@@ -39,10 +39,10 @@ public class ExTDB6
 
     public static void main(String[] args) throws Exception {
         /// turn off the "No BGP optimizer warning"
-        TDB.setOptimizerWarningFlag(false);
+        TDB1.setOptimizerWarningFlag(false);
 
         final String DATASET_DIR_NAME = "data0";
-        final Dataset data0 = TDBFactory.createDataset( DATASET_DIR_NAME );
+        final Dataset data0 = TDB1Factory.createDataset( DATASET_DIR_NAME );
 
         // show the currently registered names
         for (Iterator<String> it = data0.listNames(); it.hasNext(); ) {

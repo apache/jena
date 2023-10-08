@@ -25,7 +25,7 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.tdb.store.bulkloader.BulkLoader;
+import org.apache.jena.tdb1.store.bulkloader.BulkLoader;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.sys.TDBInternal;
 import org.apache.jena.tdb2.xloader.BulkLoaderX;

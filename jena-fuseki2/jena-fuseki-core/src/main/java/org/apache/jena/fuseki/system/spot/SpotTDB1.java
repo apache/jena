@@ -26,11 +26,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.tdb.TDBException;
-import org.apache.jena.tdb.base.file.Location;
-import org.apache.jena.tdb.setup.StoreParams;
-import org.apache.jena.tdb.setup.StoreParamsCodec;
-import org.apache.jena.tdb.sys.Names;
+import org.apache.jena.tdb1.TDB1Exception;
+import org.apache.jena.tdb1.base.file.Location;
+import org.apache.jena.tdb1.setup.StoreParams;
+import org.apache.jena.tdb1.setup.StoreParamsCodec;
+import org.apache.jena.tdb1.sys.Names;
 
 class SpotTDB1 {
     /* TDB1 layout
@@ -121,7 +121,7 @@ class SpotTDB1 {
             return;
 
         if ( ! isTDB1(location) )
-            throw new TDBException("Not a TDB1 location: "+location);
+            throw new TDB1Exception("Not a TDB1 location: "+location);
 
         // Places for StoreParams: location or default
         StoreParams params = getStoreParams(location);
@@ -165,7 +165,7 @@ class SpotTDB1 {
         if ( Arrays.stream(tripleIndexes).findFirst().isPresent() )
             return;
         List<String> list = Arrays.asList(tripleIndexes);
-        throw new TDBException("Missing primary in index list: "+primaryIdx+" "+list);
+        throw new TDB1Exception("Missing primary in index list: "+primaryIdx+" "+list);
 
     }
 
@@ -219,7 +219,7 @@ class SpotTDB1 {
     }
 
     private static RuntimeException missingFile(String filename) {
-        return new TDBException("No such file: "+filename);
+        return new TDB1Exception("No such file: "+filename);
     }
 
     private static void good(Location location, String basename, String ext) {}

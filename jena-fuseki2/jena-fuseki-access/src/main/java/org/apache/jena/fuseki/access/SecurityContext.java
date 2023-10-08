@@ -98,7 +98,7 @@ public interface SecurityContext {
      * May throw {@link UnsupportedOperationException}.
      */
     public default void filterTDB(DatasetGraph dsg, QueryExecution qExec) {
-        if ( ! org.apache.jena.tdb.sys.TDBInternal.isTDB1(dsg) || ! org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dsg) )
+        if ( ! org.apache.jena.tdb1.sys.TDBInternal.isTDB1(dsg) || ! org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dsg) )
             throw new IllegalArgumentException("Not a TDB database");
         throw new UnsupportedOperationException();
     }

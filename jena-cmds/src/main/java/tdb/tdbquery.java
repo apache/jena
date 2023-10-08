@@ -18,10 +18,10 @@
 
 package tdb;
 
-import org.apache.jena.tdb.TDB;
 import tdb.cmdline.CmdTDB;
 import tdb.cmdline.ModTDBDataset;
 import arq.cmdline.ModDataset;
+import org.apache.jena.tdb1.TDB1;
 
 public class tdbquery extends arq.query {
     // Inherits from arq.query so is not a CmdTDB. Mixins for Java!
@@ -33,7 +33,7 @@ public class tdbquery extends arq.query {
     public tdbquery(String[] argv) {
         super(argv);
         // Because this inherits from an ARQ command
-        super.modVersion.addClass(TDB.class);
+        super.modVersion.addClass(TDB1.class);
     }
 
     @Override

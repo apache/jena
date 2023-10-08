@@ -69,7 +69,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.util.FmtUtils;
-import org.apache.jena.tdb.transaction.DatasetGraphTransaction;
+import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
@@ -399,7 +399,7 @@ public class ActionDatasets extends ActionContainerItem {
             // configuration file, so the databases will not be associated with the server
             // anymore.
 
-            boolean isTDB1 = org.apache.jena.tdb.sys.TDBInternal.isTDB1(dataService.getDataset());
+            boolean isTDB1 = org.apache.jena.tdb1.sys.TDBInternal.isTDB1(dataService.getDataset());
             boolean isTDB2 = org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dataService.getDataset());
 
             // This occasionally fails in tests due to outstanding transactions.

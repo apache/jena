@@ -33,8 +33,8 @@ import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.MappingRegistry;
 import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.tdb.TDB;
-import org.apache.jena.tdb.transaction.TransactionManager;
+import org.apache.jena.tdb1.TDB1;
+import org.apache.jena.tdb1.transaction.TransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -245,7 +245,7 @@ public class Fuseki {
         JenaSystem.init();
         MappingRegistry.addPrefixMapping("fuseki", FusekiSymbolIRI);
 
-        TDB.setOptimizerWarningFlag(false);
+        TDB1.setOptimizerWarningFlag(false);
         // Don't use TDB1 batch commits.
         // This can be slower, but it less memory hungry and more predictable.
         TransactionManager.QueueBatchSize = 0;

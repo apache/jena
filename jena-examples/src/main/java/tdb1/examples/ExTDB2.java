@@ -19,7 +19,7 @@
 package tdb1.examples;
 
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb1.TDB1Factory;
 
 /**
  * Using an assembler description (see wiki for details of the assembler format for TDB)
@@ -34,7 +34,7 @@ public class ExTDB2
     {
         String assemblerFile = "Store/tdb-assembler.ttl" ;
 
-        Dataset ds = TDBFactory.assembleDataset(assemblerFile) ;
+        Dataset ds = TDB1Factory.assembleDataset(assemblerFile) ;
         
         // ... do work ...
         

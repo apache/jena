@@ -43,7 +43,7 @@ import org.apache.jena.riot.RiotException;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb.sys.Names;
+import org.apache.jena.tdb1.sys.Names;
 import org.slf4j.Logger;
 
 /**

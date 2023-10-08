@@ -22,12 +22,12 @@ import java.util.Iterator;
 
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.lib.tuple.Tuple;
-import org.apache.jena.tdb.base.file.Location;
-import org.apache.jena.tdb.store.NodeId;
-import org.apache.jena.tdb.store.tupletable.TupleIndex;
-import org.apache.jena.tdb.sys.Names;
-import org.apache.jena.tdb.sys.SetupTDB;
-import org.apache.jena.tdb.sys.SystemTDB;
+import org.apache.jena.tdb1.base.file.Location;
+import org.apache.jena.tdb1.store.NodeId;
+import org.apache.jena.tdb1.store.tupletable.TupleIndex;
+import org.apache.jena.tdb1.sys.Names;
+import org.apache.jena.tdb1.sys.SetupTDB;
+import org.apache.jena.tdb1.sys.SystemTDB;
 
 /** copy one index to another, possibly changing the order */
 public class tdbgenindex {

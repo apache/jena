@@ -18,7 +18,7 @@
 
 package tdb;
 
-import org.apache.jena.tdb.TDBBackup;
+import org.apache.jena.tdb1.TDB1Backup;
 import tdb.cmdline.CmdTDB;
 
 public class tdbbackup extends CmdTDB {
@@ -38,6 +38,6 @@ public class tdbbackup extends CmdTDB {
 
     @Override
     protected void exec() {
-        TDBBackup.backup(getLocation(), System.out);
+        TDB1Backup.backup(getLocation(), System.out);
     }
 }

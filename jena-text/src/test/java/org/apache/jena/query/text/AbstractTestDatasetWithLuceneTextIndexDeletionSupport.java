@@ -19,7 +19,7 @@
 package org.apache.jena.query.text;
 
 import org.apache.jena.query.Dataset;
-import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.ByteBuffersDirectory;
@@ -34,7 +34,7 @@ public class AbstractTestDatasetWithLuceneTextIndexDeletionSupport extends Abstr
 
     @Before
     public void init() {
-        Dataset ds1 = TDBFactory.createDataset() ;
+        Dataset ds1 = TDB1Factory.createDataset() ;
         Directory dir = new ByteBuffersDirectory() ;
         EntityDefinition eDef = new EntityDefinition("iri", "text");
         eDef.setPrimaryPredicate(RDFS.label);

@@ -21,7 +21,7 @@ package tdb.cmdline;
 import java.util.List;
 
 import org.apache.jena.cmd.*;
-import org.apache.jena.tdb.base.file.Location;
+import org.apache.jena.tdb1.base.file.Location;
 
 public class ModLocation extends ModBase {
     public ModLocation() {}
