@@ -69,7 +69,7 @@
 
       <dependency>
         <groupId>org.apache.jena</groupId>
-        <artifactId>jena-tdb</artifactId>
+        <artifactId>jena-tdb1</artifactId>
         <version>${project.version}</version>
       </dependency>
 
