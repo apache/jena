@@ -805,11 +805,7 @@
          <exclusions>
            <exclusion>
              <groupId>org.apache.jena</groupId>
-             <artifactId>jena-tdb</artifactId>
-           </exclusion>
-           <exclusion>
-             <groupId>org.apache.jena</groupId>
-             <artifactId>jena-tdb2</artifactId>
+             <artifactId>*</artifactId>
            </exclusion>
            <exclusion>
              <groupId>com.beust</groupId>
