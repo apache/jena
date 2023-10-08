@@ -20,7 +20,7 @@ package tdb1.examples;
 
 import org.apache.jena.query.*;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb1.TDB1Factory;
 
 /**
  * Example of a READ transaction.
@@ -31,7 +31,7 @@ public class ExTDB_Txn1
     public static void main(String... argv)
     {
         String directory = "MyDatabases/DB1";
-        Dataset dataset = TDBFactory.createDataset(directory);
+        Dataset dataset = TDB1Factory.createDataset(directory);
 
         // Start READ transaction. 
         //   No updates or changes to the dataset are possible while this

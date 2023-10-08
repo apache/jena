@@ -20,8 +20,7 @@ package tdb1.examples;
 
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.rdf.model.Model;
-
-import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb1.TDB1Factory;
 
 /** Example of creating a TDB-backed model.
  *  The preferred way is to create a dataset then get the mode required from the dataset.
@@ -39,7 +38,7 @@ public class ExTDB1
     {
         // Direct way: Make a TDB-back Jena model in the named directory.
         String directory = "MyDatabases/DB1" ;
-        Dataset ds = TDBFactory.createDataset(directory) ;
+        Dataset ds = TDB1Factory.createDataset(directory) ;
         Model model = ds.getDefaultModel() ;
         
         // ... do work ...

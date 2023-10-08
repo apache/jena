@@ -23,7 +23,7 @@ import org.apache.jena.rdflink.AbstractTestRDFLink;
 import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.rdflink.RDFLinkFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb1.TDB1Factory;
 
 public class TestRDFLinkLocalTDB extends AbstractTestRDFLink {
 
@@ -32,7 +32,7 @@ public class TestRDFLinkLocalTDB extends AbstractTestRDFLink {
 
     @Override
     protected RDFLink link() {
-        DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
+        DatasetGraph dsg = TDB1Factory.createDatasetGraph() ;
         return RDFLinkFactory.connect(dsg, Isolation.COPY) ;
     }
 }

@@ -21,8 +21,8 @@ package tdb;
 import arq.cmdline.ModDataset;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.tdb.TDB;
-import org.apache.jena.tdb.transaction.TransactionManager;
+import org.apache.jena.tdb1.TDB1;
+import org.apache.jena.tdb1.transaction.TransactionManager;
 import tdb.cmdline.CmdTDB;
 import tdb.cmdline.ModTDBDataset;
 
@@ -39,7 +39,7 @@ public class tdbupdate extends arq.update {
         super(argv);
         // Because this inherits from an ARQ command
         CmdTDB.init();
-        super.modVersion.addClass(TDB.class);
+        super.modVersion.addClass(TDB1.class);
     }
 
     @Override

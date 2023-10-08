@@ -25,7 +25,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.tdb.TDB ;
+import org.apache.jena.tdb1.TDB1;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.store.ByteBuffersDirectory ;
 import org.apache.lucene.store.Directory ;
@@ -45,7 +45,7 @@ public class TestBuildTextDataset
     public void buildText_02() {
         Dataset ds = createAssembler("text-config-union.ttl") ;
         assertTrue(ds.getContext().isDefined(TextQuery.textIndex)) ;
-        assertTrue(ds.getContext().isDefined(TDB.symUnionDefaultGraph)) ;
+        assertTrue(ds.getContext().isDefined(TDB1.symUnionDefaultGraph)) ;
     }
 
     @Test

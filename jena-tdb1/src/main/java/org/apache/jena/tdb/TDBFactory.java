@@ -18,154 +18,197 @@
 
 package org.apache.jena.tdb;
 
-import java.io.File ;
 
-import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sys.JenaSystem ;
-import org.apache.jena.tdb.assembler.VocabTDB ;
-import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.setup.StoreParams ;
-import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import org.apache.jena.tdb.sys.TDBInternal ;
-import org.apache.jena.tdb.sys.TDBMaker ;
-import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
+import org.apache.jena.tdb1.TDB1Factory;
+import org.apache.jena.tdb1.base.file.Location;
+import org.apache.jena.tdb1.setup.StoreParams;
 
-/** Public factory for creating objects datasets backed by TDB storage */
-public class TDBFactory
-{
-    static { JenaSystem.init(); }
+/** Public factory for creating objects datasets backed by TDB1 storage.
+ * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory}
+ *
+ */
+@Deprecated
+public class TDBFactory {
+    static {
+        JenaSystem.init();
+    }
 
     private TDBFactory() {}
 
-    /** Read the file and assembler a dataset */
+    /**
+     * Read the file and assembler a dataset.
+     *
+     * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory#assembleDataset}
+     */
+    @Deprecated
     public static Dataset assembleDataset(String assemblerFile) {
-        return (Dataset)AssemblerUtils.build(assemblerFile, VocabTDB.tDatasetTDB) ;
+        return TDB1Factory.assembleDataset(assemblerFile);
     }
 
-    /** Create or connect to a TDB-backed dataset */
-    public static Dataset createDataset(String dir)
-    { return createDataset(Location.create(dir)) ; }
+    /**
+     * Create or connect to a TDB-backed dataset.
+     *
+     * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory#createDataset}
+     */
+    @Deprecated
+    public static Dataset createDataset(String dir) {
+        return TDB1Factory.createDataset(dir);
+    }
 
-    /** Create or connect to a TDB-backed dataset */
-    public static Dataset createDataset(Location location)
-    { return createDataset(createDatasetGraph(location)) ; }
+    /**
+     * Create or connect to a TDB-backed dataset.
+     *
+     * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory#createDataset(Location)}
+     */
+    @Deprecated
+    public static Dataset createDataset(Location location) {
+        return TDB1Factory.createDataset(location);
+    }
 
-    /** Create or connect to a TDB dataset backed by an in-memory block manager. For testing.*/
-    public static Dataset createDataset()
-    { return createDataset(createDatasetGraph()) ; }
+    /**
+     * Create or connect to a TDB dataset backed by an in-memory block manager. For
+     * testing.
+     *
+     * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory#createDataset()}
+     */
+    @Deprecated
+    public static Dataset createDataset() {
+        return TDB1Factory.createDataset();
+    }
 
-    /** Create a dataset around a DatasetGraphTDB */
-    private static Dataset createDataset(DatasetGraph datasetGraph)
-    { return DatasetFactory.wrap(datasetGraph) ; }
+    /**
+     * Create or connect to a TDB-backed dataset (graph-level).
+     *
+     * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory#createDatasetGraph(String)}
+     */
+    @Deprecated
+    public static DatasetGraph createDatasetGraph(String directory) {
+        return TDB1Factory.createDatasetGraph(directory);
+    }
 
-    /** Create or connect to a TDB-backed dataset (graph-level) */
-    public static DatasetGraph createDatasetGraph(String directory)
-    { return createDatasetGraph(Location.create(directory)) ; }
+    /**
+     * Create or connect to a TDB-backed dataset (graph-level).
+     *
+     * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory#createDatasetGraph(Location)}
+     */
+    @Deprecated
+    public static DatasetGraph createDatasetGraph(Location location) {
+        return TDB1Factory.createDatasetGraph(location);
+    }
 
-    /** Create or connect to a TDB-backed dataset (graph-level) */
-    public static DatasetGraph createDatasetGraph(Location location)
-    { return _createDatasetGraph(location) ; }
-
-    /** Create a TDB-backed dataset (graph-level) in memory (for testing) */
+    /**
+     * Create a TDB-backed dataset (graph-level) in memory (for testing).
+     *
+     * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory#createDatasetGraph()}
+     */
+    @Deprecated
     public static DatasetGraph createDatasetGraph() {
-        return _createDatasetGraph() ;
+        return TDB1Factory.createDatasetGraph();
     }
 
-    /** Release from the JVM. All caching is lost. */
+    /**
+     * Release from the JVM. All caching is lost.
+     *
+     * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory#release(Dataset)}
+     */
+    @Deprecated
     public static void release(Dataset dataset) {
-        release(dataset.asDatasetGraph());
+        TDB1Factory.release(dataset);
     }
 
-    /** Release from the JVM.  All caching is lost. */
+    /**
+     * Release from the JVM. All caching is lost.
+     *
+     * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory#release(DatasetGraph)}
+     */
+    @Deprecated
     public static void release(DatasetGraph dataset) {
-        _release(dataset) ;
+        TDB1Factory.release(dataset);
     }
 
-    private static void _release(DatasetGraph dataset) {
-        TDBInternal.expel(dataset);
-    }
-
-    private static DatasetGraph _createDatasetGraph(Location location) {
-        return TDBMaker.createDatasetGraphTransaction(location) ;
-    }
-
-    private static DatasetGraph _createDatasetGraph() {
-        return TDBMaker.createDatasetGraphTransaction() ;
-    }
-
-    /** Test whether a dataset is backed by TDB. */
+    /**
+     * Test whether a dataset is backed by TDB.
+     *
+     * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory#isTDB1(Dataset)}
+     */
+    @Deprecated
     public static boolean isTDB1(Dataset dataset) {
-        DatasetGraph dsg = dataset.asDatasetGraph() ;
-        return isTDB1(dsg) ;
+        return TDB1Factory.isTDB1(dataset);
     }
 
-    /** Test whether a dataset is backed by TDB. */
+    /**
+     * Test whether a dataset is backed by TDB.
+     *
+     * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory#isTDB1(DatasetGraph)}
+     */
+    @Deprecated
     public static boolean isTDB1(DatasetGraph datasetGraph) {
-        return TDBInternal.isTDB1(datasetGraph);
+        return TDB1Factory.isTDB1(datasetGraph);
     }
 
-    /** Return the location of a dataset if it is backed by TDB, else null */
+    /**
+     * Return the location of a dataset if it is backed by TDB, else null.
+     *
+     * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory#location(Dataset)}
+     */
+    @Deprecated
     public static Location location(Dataset dataset) {
-        DatasetGraph dsg = dataset.asDatasetGraph() ;
-        return location(dsg) ;
+        return TDB1Factory.location(dataset);
     }
 
-    /** Return the location of a DatasetGraph if it is backed by TDB, else null */
+    /**
+     * Return the location of a DatasetGraph if it is backed by TDB, else null.
+     *
+     * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory#location(DatasetGraph)}
+     */
+    @Deprecated
     public static Location location(DatasetGraph datasetGraph) {
-        if ( datasetGraph instanceof DatasetGraphTDB dsgt )
-            return dsgt .getLocation() ;
-        if ( datasetGraph instanceof DatasetGraphTransaction dsgtxn )
-            return dsgtxn.getLocation() ;
-        return null ;
+        return TDB1Factory.location(datasetGraph);
     }
 
-    /** Test whether a location already has a TDB database or whether a call to TDBFactory
-     * will cause a new, fresh TDB database to be created (pragmatic tests).
-     * The directory may be empty, or not exist.
-     * Existing databases return "true".
+    /**
+     * Test whether a location already has a TDB database or whether a call to
+     * TDBFactory will cause a new, fresh TDB database to be created (pragmatic
+     * tests). The directory may be empty, or not exist. Existing databases return
+     * "true".
+     *
+     * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory#inUseLocation(String)}
      */
+    @Deprecated
     public static boolean inUseLocation(String directory) {
-        return inUseLocation(Location.create(directory)) ;
+        return TDB1Factory.inUseLocation(directory);
     }
 
-    /** Test whether a location already has a TDB database or whether a call to TDBFactory
-     * will cause a new, fresh TDB database to be created (pragmatic tests).
-     * The directory may be empty, or not exist.
-     * Existing databases return "true".
+    /**
+     * Test whether a location already has a TDB database or whether a call to
+     * TDBFactory will cause a new, fresh TDB database to be created (pragmatic
+     * tests). The directory may be empty, or not exist. Existing databases return
+     * "true".
+     *
+     * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory#inUseLocation(Location)}
      */
+    @Deprecated
     public static boolean inUseLocation(Location location) {
-        if ( location.isMemUnique() )
-            return false ;
-        if ( location.isMem() )
-            return StoreConnection.getExisting(location) != null ;
-        String dirname = location.getDirectoryPath() ;
-        File d = new File(dirname) ;
-
-        if ( ! d.exists() )
-            // TDB autocreates directories one level.
-            return ! FileOps.exists(d.getParent()) ;
-        return ! TDBInternal.isNewDatabaseArea(location) ;
+        return TDB1Factory.inUseLocation(location);
     }
 
-    /** Set the {@link StoreParams} for specific Location.
-     *  This call must only be called before a dataset from Location
-     *  is created. This operation should be used with care; bad choices
-     *  of {@link StoreParams} can reduce performance.
+    /**
+     * Set the {@link StoreParams} for specific Location. This call must only be
+     * called before a dataset from Location is created. This operation should be
+     * used with care; bad choices of {@link StoreParams} can reduce performance.
+     * <a href="http://jena.apache.org/documentation/tdb/store-parameters.html">See
+     * documentation</a>.
      *
-     *  <a href="http://jena.apache.org/documentation/tdb/store-parameters.html">See documentation</a>.
-     *
-     *  @param location  The persistent storage location
-     *  @param params    StoreParams to use
-     *  @throws IllegalStateException If the dataset has already been setup.
+     * @param location The persistent storage location
+     * @param params StoreParams to use
+     * @throws IllegalStateException If the dataset has already been setup.
+     * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory#setup}
      */
+    @Deprecated
     public static void setup(Location location, StoreParams params) {
-        StoreConnection sConn = StoreConnection.getExisting(location) ;
-        if ( sConn != null )
-            throw new IllegalStateException("Location is already active") ;
-        StoreConnection.make(location, params) ;
+        TDB1Factory.setup(location, params);
     }
 }

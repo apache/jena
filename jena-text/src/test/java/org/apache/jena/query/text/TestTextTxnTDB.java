@@ -34,8 +34,8 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb.TDB ;
-import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb1.TDB1;
+import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.vocabulary.RDFS ;
@@ -67,7 +67,7 @@ public class TestTextTxnTDB
 {
     @Parameters(name = "{index}: {0}")
     public static Collection<Object[]>  data() {
-        Creator<Dataset> tdb1Factory = ()->TDBFactory.createDataset();
+        Creator<Dataset> tdb1Factory = ()->TDB1Factory.createDataset();
         Creator<Dataset> tdb2Factory = ()->TDB2Factory.createDataset();
         return Arrays.asList( new Object[][]{
             { "TDB1", tdb1Factory } ,
@@ -94,7 +94,7 @@ public class TestTextTxnTDB
     @Test public void textTDB_union_1() {
         // Check the union graph still works
         Dataset ds = create() ;
-        ds.getContext().set(TDB.symUnionDefaultGraph, true) ;
+        ds.getContext().set(TDB1.symUnionDefaultGraph, true) ;
         ds.getContext().set(TDB2.symUnionDefaultGraph, true) ;
         Quad quad = SSE.parseQuad("(<g> <p> rdfs:label 'foo')") ;
         Txn.executeWrite(ds, ()->ds.asDatasetGraph().add(quad));
@@ -111,7 +111,7 @@ public class TestTextTxnTDB
     @Test public void textTDB_union_2() {
         // Check text query and union graph
         Dataset ds = create() ;
-        ds.getContext().set(TDB.symUnionDefaultGraph, true) ;
+        ds.getContext().set(TDB1.symUnionDefaultGraph, true) ;
         ds.getContext().set(TDB2.symUnionDefaultGraph, true) ;
         Txn.executeWrite(ds, ()->{
             Quad quad = SSE.parseQuad("(<g> <s> rdfs:label 'foo')") ;
@@ -135,7 +135,7 @@ public class TestTextTxnTDB
 
     @Test public void textTDB_3() {
         Dataset ds = create() ;
-        ds.getContext().set(TDB.symUnionDefaultGraph, true) ;
+        ds.getContext().set(TDB1.symUnionDefaultGraph, true) ;
         ds.getContext().set(TDB2.symUnionDefaultGraph, true) ;
         Txn.executeWrite(ds, ()->{
             data(ds,

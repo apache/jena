@@ -24,7 +24,7 @@ import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.system.Txn ;
-import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.store.ByteBuffersDirectory ;
 import org.junit.Assert ;
@@ -104,8 +104,8 @@ public class TestTextGraphIndexExtra {
     }
 
     @Test public void test_tdb_ds () {
-        test(TDBFactory.createDataset(), textQuery, 1);
-        test(TDBFactory.createDataset(), textQuery2, 1);
+        test(TDB1Factory.createDataset(), textQuery, 1);
+        test(TDB1Factory.createDataset(), textQuery2, 1);
     }
 
     private void test(Dataset ds, String queryStr, int expected) {

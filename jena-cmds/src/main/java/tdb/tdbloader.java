@@ -29,9 +29,9 @@ import org.apache.jena.cmd.CmdException;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
-import org.apache.jena.tdb.TDB;
-import org.apache.jena.tdb.TDBLoader;
-import org.apache.jena.tdb.store.GraphTDB;
+import org.apache.jena.tdb1.TDB1;
+import org.apache.jena.tdb1.TDB1Loader;
+import org.apache.jena.tdb1.store.GraphTDB;
 import org.apache.jena.util.FileUtils;
 import tdb.cmdline.CmdTDB;
 import tdb.cmdline.CmdTDBGraph;
@@ -47,7 +47,7 @@ public class tdbloader extends CmdTDBGraph {
 
     static public void main(String...argv) {
         CmdTDB.init();
-        TDB.setOptimizerWarningFlag(false);
+        TDB1.setOptimizerWarningFlag(false);
         new tdbloader(argv).mainRun();
     }
 
@@ -145,16 +145,16 @@ public class tdbloader extends CmdTDBGraph {
 
     void loadNamedGraph(List<String> urls) {
         GraphTDB graph = getGraph();
-        TDBLoader.load(graph, urls, showProgress);
+        TDB1Loader.load(graph, urls, showProgress);
         return;
     }
 
     void loadQuads(List<String> urls) {
-        TDBLoader.load(getDatasetGraphTDB(), urls, showProgress, generateStats);
+        TDB1Loader.load(getDatasetGraphTDB(), urls, showProgress, generateStats);
         return;
     }
 
     private void loadQuadsStdin() {
-        TDBLoader.load(getDatasetGraphTDB(), System.in, lang, showProgress, generateStats);
+        TDB1Loader.load(getDatasetGraphTDB(), System.in, lang, showProgress, generateStats);
     }
 }

@@ -26,11 +26,11 @@ import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.tdb.TDB ;
-import org.apache.jena.tdb.TDBFactory ;
-import org.apache.jena.tdb.store.NodeId ;
-import org.apache.jena.tdb.sys.SystemTDB ;
-import org.apache.jena.tdb.sys.TDBInternal ;
+import org.apache.jena.tdb1.TDB1;
+import org.apache.jena.tdb1.TDB1Factory;
+import org.apache.jena.tdb1.store.NodeId;
+import org.apache.jena.tdb1.sys.SystemTDB;
+import org.apache.jena.tdb1.sys.TDBInternal;
 
 /** Example of how to filter quads as they are accessed at the lowest level.
  * Can be used to exclude data from specific graphs.   
@@ -47,7 +47,7 @@ public class ExQuadFilter
     public static void main(String ... args)
     {
         // This also works for default union graph ....
-        TDB.getContext().setTrue(TDB.symUnionDefaultGraph) ;
+        TDB1.getContext().setTrue(TDB1.symUnionDefaultGraph) ;
         
         Dataset ds = setup() ;
         Predicate<Tuple<NodeId>> filter = createFilter(ds) ;
@@ -57,7 +57,7 @@ public class ExQuadFilter
     /** Example setup - in-memory dataset with two graphs, one triple in each */
     private static Dataset setup()
     {
-        Dataset ds = TDBFactory.createDataset() ;
+        Dataset ds = TDB1Factory.createDataset() ;
         DatasetGraph dsg = ds.asDatasetGraph() ;
         Quad q1 = SSE.parseQuad("(<http://example/g1> <http://example/s> <http://example/p> <http://example/o1>)") ;
         Quad q2 = SSE.parseQuad("(<http://example/g2> <http://example/s> <http://example/p> <http://example/o2>)") ;

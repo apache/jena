@@ -38,19 +38,23 @@ import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.sys.JenaSystem ;
-import org.apache.jena.tdb.assembler.AssemblerTDB ;
-import org.apache.jena.tdb.modify.UpdateEngineTDB ;
-import org.apache.jena.tdb.setup.DatasetBuilderStd ;
-import org.apache.jena.tdb.solver.QueryEngineTDB ;
-import org.apache.jena.tdb.solver.StageGeneratorDirectTDB ;
-import org.apache.jena.tdb.store.DatasetGraphTDB ;
-import org.apache.jena.tdb.sys.EnvTDB ;
-import org.apache.jena.tdb.sys.SystemTDB ;
-import org.apache.jena.tdb.sys.TDBInternal;
-import org.apache.jena.tdb.transaction.DatasetGraphTransaction ;
+import org.apache.jena.tdb1.assembler.AssemblerTDB;
+import org.apache.jena.tdb1.modify.UpdateEngineTDB;
+import org.apache.jena.tdb1.setup.DatasetBuilderStd;
+import org.apache.jena.tdb1.solver.QueryEngineTDB;
+import org.apache.jena.tdb1.solver.StageGeneratorDirectTDB;
+import org.apache.jena.tdb1.store.DatasetGraphTDB;
+import org.apache.jena.tdb1.sys.EnvTDB;
+import org.apache.jena.tdb1.sys.SystemTDB;
+import org.apache.jena.tdb1.sys.TDBInternal;
+import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+/**
+ * @deprecated Use {@link org.apache.jena.tdb1.TDB1}
+ */
+@Deprecated
 public class TDB {
 
     private TDB() {}

@@ -20,7 +20,7 @@ package tdb.xloader;
 
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.sys.JenaSystem ;
-import org.apache.jena.tdb.store.xloader.ProcIndexBuild;
+import org.apache.jena.tdb1.store.xloader.ProcIndexBuild;
 
 public class CmdIndexBuild {
     static {

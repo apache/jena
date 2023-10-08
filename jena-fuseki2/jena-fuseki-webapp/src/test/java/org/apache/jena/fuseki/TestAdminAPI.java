@@ -41,7 +41,7 @@ import org.junit.Test;
 public class TestAdminAPI extends AbstractFusekiWebappTest {
 
     @Test public void add_delete_api_1() throws Exception {
-        if ( org.apache.jena.tdb.sys.SystemTDB.isWindows )
+        if ( org.apache.jena.tdb1.sys.SystemTDB.isWindows )
             return;
         testAddDelete("db_mem", "mem", false);
     }
