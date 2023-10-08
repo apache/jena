@@ -34,7 +34,7 @@ import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformationSubs
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.sse.writers.WriterNode;
-import org.apache.jena.tdb.sys.Names;
+import org.apache.jena.tdb1.sys.Names;
 
 public class tdbreorder {
     public static void main(String...args) {

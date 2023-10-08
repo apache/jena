@@ -27,7 +27,7 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.tdb.assembler.VocabTDB;
+import org.apache.jena.tdb1.assembler.VocabTDB;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
 

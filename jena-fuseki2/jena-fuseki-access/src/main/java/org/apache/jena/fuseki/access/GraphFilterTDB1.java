@@ -27,10 +27,10 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb.store.NodeId;
-import org.apache.jena.tdb.store.nodetable.NodeTable;
-import org.apache.jena.tdb.sys.SystemTDB;
-import org.apache.jena.tdb.sys.TDBInternal;
+import org.apache.jena.tdb1.store.NodeId;
+import org.apache.jena.tdb1.store.nodetable.NodeTable;
+import org.apache.jena.tdb1.sys.SystemTDB;
+import org.apache.jena.tdb1.sys.TDBInternal;
 
 /** {@link GraphFilter} for TDB1 */
 class GraphFilterTDB1 extends GraphFilter<NodeId> {

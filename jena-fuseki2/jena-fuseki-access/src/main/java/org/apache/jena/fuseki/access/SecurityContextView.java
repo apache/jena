@@ -33,7 +33,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.NodeUtils;
-import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb2.DatabaseMgr;
 
 /** A {@link SecurityContextView} is the things actor (user, role) is allowed to do.
@@ -142,7 +142,7 @@ public class SecurityContextView implements SecurityContext {
         dsg = DatasetGraphAccessControl.removeWrapper(dsg);
         // dsg has to be the database dataset, not wrapped.
         //  DatasetGraphSwitchable is wrapped but should not be unwrapped.
-        if ( TDBFactory.isTDB1(dsg) )
+        if ( TDB1Factory.isTDB1(dsg) )
             return GraphFilterTDB1.graphFilter(dsg, graphNames, matchDefaultGraph);
         if ( DatabaseMgr.isTDB2(dsg) )
             return GraphFilterTDB2.graphFilter(dsg, graphNames, matchDefaultGraph);
@@ -153,7 +153,7 @@ public class SecurityContextView implements SecurityContext {
         DatasetGraph dsgBase = DatasetGraphAccessControl.unwrapOrNull(dsg);
         if ( dsgBase == null )
             return false;
-        if ( TDBFactory.isTDB1(dsgBase) )
+        if ( TDB1Factory.isTDB1(dsgBase) )
             return true;
         if ( DatabaseMgr.isTDB2(dsgBase) )
             return true;

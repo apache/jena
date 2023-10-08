@@ -22,12 +22,12 @@ import java.util.Iterator;
 
 import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.graph.Node;
-import org.apache.jena.tdb.lib.NodeLib;
-import org.apache.jena.tdb.store.DatasetGraphTDB;
-import org.apache.jena.tdb.store.Hash;
-import org.apache.jena.tdb.store.NodeId;
-import org.apache.jena.tdb.store.nodetable.NodeTable;
-import org.apache.jena.tdb.sys.SystemTDB;
+import org.apache.jena.tdb1.lib.NodeLib;
+import org.apache.jena.tdb1.store.DatasetGraphTDB;
+import org.apache.jena.tdb1.store.Hash;
+import org.apache.jena.tdb1.store.NodeId;
+import org.apache.jena.tdb1.store.nodetable.NodeTable;
+import org.apache.jena.tdb1.sys.SystemTDB;
 import tdb.cmdline.CmdTDB;
 
 public class tdbnode extends CmdTDB {

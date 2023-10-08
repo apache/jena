@@ -39,7 +39,7 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.modify.request.Target;
 import org.apache.jena.sparql.modify.request.UpdateDrop;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb.base.file.Location;
+import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateProcessor;

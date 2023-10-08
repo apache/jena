@@ -35,7 +35,7 @@ import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,7 +57,7 @@ public class TestDataset2Graph {
     public static Collection<Object[]> data() {
         Creator<Dataset> datasetPlainMaker = ()-> DatasetFactory.createGeneral() ;
         Creator<Dataset> datasetTxnMemMaker = ()-> DatasetFactory.createTxnMem() ;
-        Creator<Dataset> datasetTDB1 = ()-> TDBFactory.createDataset();
+        Creator<Dataset> datasetTDB1 = ()-> TDB1Factory.createDataset();
         Creator<Dataset> datasetTDB2 = ()-> TDB2Factory.createDataset();
 
 

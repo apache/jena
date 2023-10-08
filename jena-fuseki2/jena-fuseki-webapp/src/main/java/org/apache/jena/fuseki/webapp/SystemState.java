@@ -21,13 +21,13 @@ package org.apache.jena.fuseki.webapp;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.tdb.StoreConnection;
-import org.apache.jena.tdb.TDB;
-import org.apache.jena.tdb.TDBFactory;
-import org.apache.jena.tdb.base.block.FileMode;
-import org.apache.jena.tdb.base.file.Location;
-import org.apache.jena.tdb.setup.StoreParams;
-import org.apache.jena.tdb.transaction.DatasetGraphTransaction;
+import org.apache.jena.tdb1.StoreConnection;
+import org.apache.jena.tdb1.TDB1;
+import org.apache.jena.tdb1.TDB1Factory;
+import org.apache.jena.tdb1.base.block.FileMode;
+import org.apache.jena.tdb1.base.file.Location;
+import org.apache.jena.tdb1.setup.StoreParams;
+import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;
 
 /**
  * Small database to record the system state.
@@ -88,9 +88,9 @@ public class SystemState {
             Fuseki.serverLog.warn("System database already in the StoreConnection cache");
         StoreConnection.make(location, systemDatabaseParams);
 
-        dataset = TDBFactory.createDataset(location);
+        dataset = TDB1Factory.createDataset(location);
         dsg     = (DatasetGraphTransaction)(dataset.asDatasetGraph());
-        dsg.getContext().set(TDB.symUnionDefaultGraph, false);
+        dsg.getContext().set(TDB1.symUnionDefaultGraph, false);
     }
 }
 

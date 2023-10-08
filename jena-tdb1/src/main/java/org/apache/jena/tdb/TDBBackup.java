@@ -18,45 +18,34 @@
 
 package org.apache.jena.tdb;
 
-import java.io.* ;
+import java.io.OutputStream;
 
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.TxnType;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.transaction.DatasetGraphTxn ;
+import org.apache.jena.tdb1.TDB1Backup;
+import org.apache.jena.tdb1.base.file.Location;
 
 /**
  * Backup a database.
+ * @deprecated Use {@link org.apache.jena.tdb1.TDB1Backup}
  */
-
+@Deprecated
 public class TDBBackup
 {
-    public static void backup(Location location, String backupfile)
-    {
-        try(OutputStream out = new BufferedOutputStream(new FileOutputStream(backupfile))) {
-            backup(location, out) ;
-        } 
-        catch (FileNotFoundException e)
-        {
-            Log.warn(TDBBackup.class, "File not found: "+backupfile) ;
-            throw new TDBException("File not found: "+backupfile) ;
-        } 
-        catch (IOException e)
-        { IO.exception(e) ; }
-        
+    /**
+     * @deprecated Use
+     *     {@link org.apache.jena.tdb1.TDB1Backup#backup(Location, String)}
+     */
+    @Deprecated
+    public static void backup(Location location, String backupfile) {
+        TDB1Backup.backup(location, backupfile);
     }
-    
-    public static void backup(Location location, OutputStream backupfile)
-    {
-        Dataset ds = TDBFactory.createDataset(location) ;
-        StoreConnection sConn = StoreConnection.make(location) ;
-        DatasetGraphTxn dsg = sConn.begin(TxnType.READ, "backup") ;
-        RDFDataMgr.write(backupfile, dsg, Lang.NQUADS) ;
-        dsg.end();
+
+    /**
+     * @deprecated Use
+     *     {@link org.apache.jena.tdb1.TDB1Backup#backup(Location, OutputStream)}
+     */
+    @Deprecated
+    public static void backup(Location location, OutputStream backupfile) {
+        TDB1Backup.backup(location, backupfile);
     }
 }
 

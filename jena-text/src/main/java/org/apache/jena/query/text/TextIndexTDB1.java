@@ -18,8 +18,8 @@
 
 package org.apache.jena.query.text;
 
-import org.apache.jena.tdb.transaction.Transaction;
-import org.apache.jena.tdb.transaction.TransactionLifecycle;
+import org.apache.jena.tdb1.transaction.Transaction;
+import org.apache.jena.tdb1.transaction.TransactionLifecycle;
 
 /**
  * Adapter to put Lucene text indexes into the TDB1 transaction system.

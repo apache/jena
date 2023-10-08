@@ -27,16 +27,16 @@ import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.cmd.ModVersion;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.system.PrefixMap;
-import org.apache.jena.tdb.TDB;
-import org.apache.jena.tdb.base.file.FileFactory;
-import org.apache.jena.tdb.base.file.Location;
-import org.apache.jena.tdb.base.objectfile.StringFile;
-import org.apache.jena.tdb.setup.Build;
-import org.apache.jena.tdb.solver.stats.Stats;
-import org.apache.jena.tdb.solver.stats.StatsResults;
-import org.apache.jena.tdb.store.DatasetGraphTDB;
-import org.apache.jena.tdb.store.DatasetPrefixStorage;
-import org.apache.jena.tdb.sys.DatasetControlNone;
+import org.apache.jena.tdb1.TDB1;
+import org.apache.jena.tdb1.base.file.FileFactory;
+import org.apache.jena.tdb1.base.file.Location;
+import org.apache.jena.tdb1.base.objectfile.StringFile;
+import org.apache.jena.tdb1.setup.Build;
+import org.apache.jena.tdb1.solver.stats.Stats;
+import org.apache.jena.tdb1.solver.stats.StatsResults;
+import org.apache.jena.tdb1.store.DatasetGraphTDB;
+import org.apache.jena.tdb1.store.DatasetPrefixStorage;
+import org.apache.jena.tdb1.sys.DatasetControlNone;
 import tdb.cmdline.CmdSub;
 import tdb.cmdline.CmdTDB;
 import tdb.cmdline.CmdTDBGraph;
@@ -216,7 +216,7 @@ public class tdbconfig extends CmdSub
         protected void exec() {
             System.out.println("-- " + DateTimeUtils.nowAsString() + " --");
             ModVersion v = new ModVersion(true);
-            v.addClass("TDB1", TDB.class);
+            v.addClass("TDB1", TDB1.class);
             v.printVersionAndExit();
         }
 

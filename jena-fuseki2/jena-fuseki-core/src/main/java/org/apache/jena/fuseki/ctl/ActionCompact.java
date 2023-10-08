@@ -69,7 +69,7 @@ public class ActionCompact extends ActionAsyncTask
 
     /** Safety condition that stops further unwrapping */
     private static Predicate<DatasetGraph> notTDB2 =
-        (dsg) -> org.apache.jena.tdb.sys.TDBInternal.isTDB1(dsg);
+        (dsg) -> org.apache.jena.tdb1.sys.TDBInternal.isTDB1(dsg);
 
     private static DatasetGraph getTDB2(DatasetGraph dsg) {
         return unwrap(dsg, x -> TDBInternal.isTDB2(x), notTDB2);

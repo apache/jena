@@ -23,8 +23,7 @@ import java.io.File;
 import org.apache.jena.cmd.CmdArgModule;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
-import org.apache.jena.tdb.base.file.Location ;
-
+import org.apache.jena.tdb1.base.file.Location;
 import arq.cmdline.ModAssembler;
 
 /**  Extends ModAssembler to include --tdb.

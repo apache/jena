@@ -33,14 +33,14 @@ import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Node_Literal;
 import org.apache.jena.sparql.util.FmtUtils;
-import org.apache.jena.tdb.base.file.FileFactory;
-import org.apache.jena.tdb.base.file.FileSet;
-import org.apache.jena.tdb.base.file.Location;
-import org.apache.jena.tdb.base.objectfile.ObjectFile;
-import org.apache.jena.tdb.lib.NodeLib;
-import org.apache.jena.tdb.setup.StoreParams;
-import org.apache.jena.tdb.store.NodeId;
-import org.apache.jena.tdb.sys.Names;
+import org.apache.jena.tdb1.base.file.FileFactory;
+import org.apache.jena.tdb1.base.file.FileSet;
+import org.apache.jena.tdb1.base.file.Location;
+import org.apache.jena.tdb1.base.objectfile.ObjectFile;
+import org.apache.jena.tdb1.lib.NodeLib;
+import org.apache.jena.tdb1.setup.StoreParams;
+import org.apache.jena.tdb1.store.NodeId;
+import org.apache.jena.tdb1.sys.Names;
 import tdb.cmdline.ModLocation;
 
 public class dumpnodes extends CmdARQ {

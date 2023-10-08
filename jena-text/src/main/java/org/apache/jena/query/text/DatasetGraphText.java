@@ -32,7 +32,7 @@ import org.apache.jena.query.text.changes.DatasetGraphTextMonitor;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.GraphView;
 import org.apache.jena.sparql.core.Transactional;
-import org.apache.jena.tdb.transaction.TransactionManager;
+import org.apache.jena.tdb1.transaction.TransactionManager;
 import org.apache.lucene.queryparser.classic.QueryParserBase ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -86,8 +86,8 @@ public class DatasetGraphText extends DatasetGraphTextMonitor implements Transac
         dftGraph = GraphView.createDefaultGraph(this) ;
         this.closeIndexOnClose = closeIndexOnClose;
 
-        if ( org.apache.jena.tdb.sys.TDBInternal.isTDB1(dsg) ) {
-            TransactionManager txnMgr = org.apache.jena.tdb.sys.TDBInternal.getTransactionManager(dsg);
+        if ( org.apache.jena.tdb1.sys.TDBInternal.isTDB1(dsg) ) {
+            TransactionManager txnMgr = org.apache.jena.tdb1.sys.TDBInternal.getTransactionManager(dsg);
             txnMgr.addAdditionComponent(new TextIndexTDB1(textIndex));
             commitAction = delegateCommit;
             abortAction = delegateAbort;

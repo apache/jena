@@ -33,7 +33,7 @@ import org.apache.jena.rdf.model.ResourceFactory ;
 import org.apache.jena.sparql.JenaTransactionException ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.analysis.standard.StandardAnalyzer ;
@@ -187,7 +187,7 @@ public class TestLuceneWithMultipleThreads
 
     @Test
     public void testIsolationTDB1() throws InterruptedException, ExecutionException {
-        testIsolation(TDBFactory.createDatasetGraph());
+        testIsolation(TDB1Factory.createDatasetGraph());
     }
 
     @Test

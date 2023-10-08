@@ -28,7 +28,7 @@ import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab ;
 import org.apache.jena.sparql.util.TypeNotUniqueException ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
-import org.apache.jena.tdb.assembler.VocabTDB ;
+import org.apache.jena.tdb1.assembler.VocabTDB;
 
 /** 
  * Examples of finding an assembler for a TDB model in a larger collection

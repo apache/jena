@@ -31,7 +31,7 @@ import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.tdb.connections.TDBConnection;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sys.JenaSystem ;
-import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb1.TDB1Factory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,7 +154,7 @@ public class TDBDriver extends JenaDriver {
 
         // Open the TDB dataset
         try {
-            Dataset tdb = useMem ? TDBFactory.createDataset() : TDBFactory.createDataset(location);
+            Dataset tdb = useMem ? TDB1Factory.createDataset() : TDB1Factory.createDataset(location);
 
             // Return a new connection for the TDB dataset
             return new TDBConnection(tdb, ResultSet.HOLD_CURSORS_OVER_COMMIT, true, compatibilityLevel);

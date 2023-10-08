@@ -59,7 +59,7 @@ public class FusekiServerListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        org.apache.jena.tdb.sys.TDBInternal.reset();
+        org.apache.jena.tdb1.sys.TDBInternal.reset();
         org.apache.jena.tdb2.sys.TDBInternal.reset();
     }
 

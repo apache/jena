@@ -31,8 +31,8 @@ import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.tdb.TDB ;
-import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb1.TDB1;
+import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory ;
@@ -42,7 +42,7 @@ import org.junit.Test ;
 public class TestTextNonTxnTDB1 extends AssertExtra
 {
     private static Dataset create() {
-        Dataset ds1 = TDBFactory.createDataset() ;
+        Dataset ds1 = TDB1Factory.createDataset() ;
         Directory dir = new ByteBuffersDirectory() ;
         EntityDefinition eDef = new EntityDefinition("iri", "text");
         eDef.setPrimaryPredicate(RDFS.label);
@@ -54,7 +54,7 @@ public class TestTextNonTxnTDB1 extends AssertExtra
     @Test public void textTDB1_1() {
         // Check the union graph stil works
         Dataset ds = create() ;
-        ds.getContext().set(TDB.symUnionDefaultGraph, true) ;
+        ds.getContext().set(TDB1.symUnionDefaultGraph, true) ;
         Quad quad = SSE.parseQuad("(<g> <p> rdfs:label 'foo')") ;
         ds.asDatasetGraph().add(quad) ;
         Query q = QueryFactory.create("SELECT * { ?s ?p ?o }") ;
@@ -67,7 +67,7 @@ public class TestTextNonTxnTDB1 extends AssertExtra
     @Test public void textTDB1_2() {
         // Check text query and union graph
         Dataset ds = create() ;
-        ds.getContext().set(TDB.symUnionDefaultGraph, true) ;
+        ds.getContext().set(TDB1.symUnionDefaultGraph, true) ;
         Quad quad = SSE.parseQuad("(<g> <s> rdfs:label 'foo')") ;
         ds.asDatasetGraph().add(quad) ;
 
@@ -87,7 +87,7 @@ public class TestTextNonTxnTDB1 extends AssertExtra
 
     @Test public void textTDB1_3() {
         Dataset ds = create() ;
-        ds.getContext().set(TDB.symUnionDefaultGraph, true) ;
+        ds.getContext().set(TDB1.symUnionDefaultGraph, true) ;
         data(ds,
              "(<ex:g1> <s1> rdfs:label 'foo')",
              "(<ex:g2> <s2> rdfs:label 'bar')") ;

@@ -27,9 +27,9 @@ import org.apache.jena.jdbc.connections.DatasetConnection;
 import org.apache.jena.jdbc.connections.JenaConnection;
 import org.apache.jena.jdbc.utils.TestJdbcUtils;
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.tdb.TDBFactory ;
-import org.apache.jena.tdb.base.file.Location ;
-import org.apache.jena.tdb.sys.TDBInternal;
+import org.apache.jena.tdb1.TDB1Factory;
+import org.apache.jena.tdb1.base.file.Location;
+import org.apache.jena.tdb1.sys.TDBInternal;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
@@ -58,13 +58,13 @@ public class TestTdbDiskConnection extends AbstractJenaConnectionTests {
 
     @Override
     protected JenaConnection getConnection() throws SQLException {
-        return new TDBConnection(TDBFactory.createDataset(tempDir.getRoot().getAbsolutePath()),
+        return new TDBConnection(TDB1Factory.createDataset(tempDir.getRoot().getAbsolutePath()),
                 ResultSet.HOLD_CURSORS_OVER_COMMIT, JenaConnection.DEFAULT_AUTO_COMMIT, JdbcCompatibility.DEFAULT);
     }
 
     @Override
     protected JenaConnection getConnection(Dataset ds) throws SQLException {
-        Dataset tdb = TDBFactory.createDataset(tempDir.getRoot().getAbsolutePath());
+        Dataset tdb = TDB1Factory.createDataset(tempDir.getRoot().getAbsolutePath());
         TestJdbcUtils.copyDataset(ds, tdb, true);
         return new TDBConnection(tdb, ResultSet.HOLD_CURSORS_OVER_COMMIT, JenaConnection.DEFAULT_AUTO_COMMIT,
                 JdbcCompatibility.DEFAULT);
