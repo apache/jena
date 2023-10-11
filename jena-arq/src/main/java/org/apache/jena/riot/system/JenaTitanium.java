@@ -65,20 +65,20 @@ public class JenaTitanium {
     }
 
     /** Translate a Titanium JSON-LD dataset to a {@link DatasetGraph} */
-    public static DatasetGraph convert(RdfDataset dataset) {
+    public static DatasetGraph convert(RdfDataset dataset, ParserProfile parserProfile) {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         StreamRDF dest = StreamRDFLib.dataset(dsg);
-        convert(dataset, dest);
+        convert(dataset, parserProfile, dest);
         return dsg;
     }
 
     /** Translate a Titanium JSON-LD dataset to a {@link StreamRDF} */
     public static void convert(RdfDataset dataset, StreamRDF output) {
-        convert(dataset, RiotLib.factoryRDF(), output);
+        convert(dataset, RiotLib.dftProfile(), output);
     }
 
     /** Translate a Titanium JSON-LD dataset to a {@link StreamRDF} */
-    public static void convert(RdfDataset dataset, FactoryRDF factory, StreamRDF output) {
+    public static void convert(RdfDataset dataset, ParserProfile parserProfile, StreamRDF output) {
         RdfProvider provider = RdfProvider.provider();
         for ( RdfNQuad rdfQuad : dataset.toList() ) {
             Optional<RdfResource> gn = rdfQuad.getGraphName();
@@ -86,10 +86,10 @@ public class JenaTitanium {
             RdfResource pred = rdfQuad.getPredicate();
             RdfValue obj= rdfQuad.getObject();
 
-            Node g = valueToNode(factory, gn);
-            Node s = valueToNode(factory, subj);
-            Node p = valueToNode(factory, pred);
-            Node o = valueToNode(factory, obj);
+            Node g = valueToNode(parserProfile, gn);
+            Node s = valueToNode(parserProfile, subj);
+            Node p = valueToNode(parserProfile, pred);
+            Node o = valueToNode(parserProfile, obj);
 
             if ( g == null )
                 output.triple(Triple.create(s, p, o));
@@ -98,18 +98,23 @@ public class JenaTitanium {
         }
     }
 
-    private static Node valueToNode(FactoryRDF factory, Optional<RdfResource> value) {
+    // Line number information not available because it is not exposed
+    // outside of the JSON parser.
+    private static long line = -1L;
+    private static long col = -1L;
+
+    private static Node valueToNode(ParserProfile parserProfile, Optional<RdfResource> value) {
         if ( value.isEmpty() )
             return null;
-        return valueToNode(factory, value.get());
+        return valueToNode(parserProfile, value.get());
     }
 
-    private static Node valueToNode(FactoryRDF factory, RdfValue value) {
+    private static Node valueToNode(ParserProfile parserProfile, RdfValue value) {
         if ( value.isBlankNode() )
-            return factory.createBlankNode(value.getValue());
+            return parserProfile.createBlankNode(null, value.getValue(), line, col);
 
         if ( value.isIRI() )
-            return factory.createURI(value.getValue());
+            return parserProfile.createURI(value.getValue(), line, col);
 
         if ( value.isLiteral() ) {
             RdfLiteral literal = (RdfLiteral)value;
@@ -118,8 +123,8 @@ public class JenaTitanium {
             RDFDatatype datatype = NodeFactory.getType(dt);
             Optional<String> lang = literal.getLanguage();
             if ( lang.isPresent() )
-                return factory.createLangLiteral(lex, lang.get());
-            return factory.createTypedLiteral(lex, datatype);
+                return parserProfile.createLangLiteral(lex, lang.get(), line, col);
+            return parserProfile.createTypedLiteral(lex, datatype, line, col);
         }
         throw new JenaTitaniumException("Not recognized: "+value);
     }
