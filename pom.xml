@@ -114,18 +114,22 @@
     <ver.jython>2.7.3</ver.jython>
     <ver.org.openjdk.jmh>1.37</ver.org.openjdk.jmh>
 
-    <!--- GeoSPARQL related -->
+    <!-- GeoSPARQL related -->
     <ver.jaxb-api>2.3.1</ver.jaxb-api>
     <ver.jakarta-xml-bind>4.0.0</ver.jakarta-xml-bind>
     <ver.jcommander>1.82</ver.jcommander>
     <ver.sis>1.1</ver.sis>
     <ver.jts>1.19.0</ver.jts>
 
-    <!-- 
-         A default value so it is defined everywhere (albeit with duplicates)
-         Modulenames can't have "-" so tricky to use ${project.*} variables
-         <automatic.module.name>org.apache.jena</automatic.module.name>
-    -->
+    <!-- Plugins -->
+    <ver.plugin.rat>0.15</ver.plugin.rat>
+    <ver.plugin.assembly>3.5.0</ver.plugin.assembly>
+    <ver.plugin.compiler>3.11.0</ver.plugin.compiler>
+    <ver.plugin.surefire>3.0.0</ver.plugin.surefire>
+    <ver.plugin.javadoc>3.5.0</ver.plugin.javadoc>
+    <ver.plugin.war>3.3.2</ver.plugin.war>
+    <ver.plugin.shade>3.4.1</ver.plugin.shade>
+    <ver.plugin.enforcer>3.4.1</ver.plugin.enforcer>
 
    </properties>
 
@@ -876,7 +880,7 @@
        <plugin>
          <groupId>org.apache.rat</groupId>
          <artifactId>apache-rat-plugin</artifactId>
-         <version>0.15</version>
+         <version>${ver.plugin.rat}</version>
          <!-- 
               Run only if maven is running from this POM,
               not when run in a sub-module with this as parent.
@@ -896,6 +900,7 @@
            <excludesFile>build-files/rat-exclusions.txt</excludesFile>
          </configuration>
        </plugin>
+
      </plugins>
 
      <!-- Plugin version list: https://maven.apache.org/plugins/index.html -->
@@ -905,13 +910,13 @@
          <plugin>
            <groupId>org.apache.maven.plugins</groupId>
            <artifactId>maven-assembly-plugin</artifactId>
-           <version>3.5.0</version>
+           <version>${ver.plugin.assembly}</version>
          </plugin>
 
          <plugin>
            <groupId>org.apache.maven.plugins</groupId>
            <artifactId>maven-compiler-plugin</artifactId>
-           <version>3.11.0</version>
+           <version>${ver.plugin.compiler}</version>
            <configuration>
              <release>${java.version}</release>
            </configuration>
@@ -920,7 +925,7 @@
          <plugin>
            <groupId>org.apache.maven.plugins</groupId>
            <artifactId>maven-surefire-plugin</artifactId>
-           <version>3.0.0</version>
+           <version>${ver.plugin.surefire}</version>
          </plugin>
 
          <plugin>
@@ -968,7 +973,7 @@
          <plugin>
            <groupId>org.apache.maven.plugins</groupId>
            <artifactId>maven-javadoc-plugin</artifactId>
-           <version>3.5.0</version>
+           <version>${ver.plugin.javadoc}</version>
            <executions>
              <execution>
                <id>attach-javadocs</id>
@@ -1053,19 +1058,19 @@
          <plugin>
            <groupId>org.apache.maven.plugins</groupId>
            <artifactId>maven-enforcer-plugin</artifactId>
-           <version>3.3.0</version>
+           <version>${ver.plugin.enforcer}</version>
          </plugin>
 
          <plugin>
            <groupId>org.apache.maven.plugins</groupId>
            <artifactId>maven-shade-plugin</artifactId>
-           <version>3.4.1</version>
+           <version>${ver.plugin.shade}</version>
          </plugin>
 
          <plugin>
            <groupId>org.apache.maven.plugins</groupId>
            <artifactId>maven-war-plugin</artifactId>
-           <version>3.3.2</version>
+           <version>${ver.plugin.war}</version>
          </plugin>
 
          <!--
