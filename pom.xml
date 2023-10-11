@@ -130,6 +130,7 @@
     <ver.plugin.war>3.3.2</ver.plugin.war>
     <ver.plugin.shade>3.4.1</ver.plugin.shade>
     <ver.plugin.enforcer>3.4.1</ver.plugin.enforcer>
+    <ver.plugin.cyclonedx>2.7.9</ver.plugin.cyclonedx>
 
    </properties>
 
@@ -898,6 +899,25 @@
          <configuration>
            <excludeSubProjects>false</excludeSubProjects>
            <excludesFile>build-files/rat-exclusions.txt</excludesFile>
+         </configuration>
+       </plugin>
+
+       <!-- SBOM -->
+       <plugin>
+         <groupId>org.cyclonedx</groupId>
+         <artifactId>cyclonedx-maven-plugin</artifactId>
+         <version>${ver.plugin.cyclonedx}</version>
+         <executions>
+           <execution>
+             <id>build-sbom-cyclonedx</id>
+             <phase>package</phase>
+             <goals>
+               <goal>makeAggregateBom</goal>
+             </goals>
+           </execution>
+         </executions>
+         <configuration>
+            <outputName>${project.artifactId}-${project.version}-bom</outputName>
          </configuration>
        </plugin>
 
