@@ -539,7 +539,7 @@ public JavaCharStream(java.io.InputStream dstream, int startline,
  * @param encoding the character encoding of the data stream.
  * @param startline line number of the first character of the stream, mostly for error messages.
  * @param startcolumn column number of the first character of the stream.
- * @throws UnsupportedEncodingException encoding is invalid or unsupported.
+ * @throws java.io.UnsupportedEncodingException encoding is invalid or unsupported.
  */
 
 @SuppressWarnings("all")
@@ -565,7 +565,7 @@ public JavaCharStream(java.io.InputStream dstream, int startline,
 /** Constructor.
  * @param dstream the underlying data source.
  * @param encoding the character encoding of the data stream.
- * @throws UnsupportedEncodingException encoding is invalid or unsupported.
+ * @throws java.io.UnsupportedEncodingException encoding is invalid or unsupported.
  */
 
 @SuppressWarnings("all")
@@ -617,7 +617,7 @@ public void ReInit(java.io.InputStream dstream, int startline,
  * @param encoding the character encoding of the data stream.
  * @param startline line number of the first character of the stream, mostly for error messages.
  * @param startcolumn column number of the first character of the stream.
- * @throws UnsupportedEncodingException encoding is invalid or unsupported.
+ * @throws java.io.UnsupportedEncodingException encoding is invalid or unsupported.
  */
 
 @SuppressWarnings("all")
@@ -641,7 +641,7 @@ public void ReInit(java.io.InputStream dstream, int startline,
 /** Reinitialise.
  * @param dstream the underlying data source.
  * @param encoding the character encoding of the data stream.
- * @throws UnsupportedEncodingException encoding is invalid or unsupported.
+ * @throws java.io.UnsupportedEncodingException encoding is invalid or unsupported.
  */
 
 @SuppressWarnings("all")
