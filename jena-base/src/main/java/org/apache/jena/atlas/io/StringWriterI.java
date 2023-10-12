@@ -20,11 +20,9 @@ package org.apache.jena.atlas.io;
 
 import java.io.StringWriter ;
 
-public class StringWriterI extends Writer2
-{
-    public StringWriterI()
-    {
-        super(new StringWriter()) ;
+public class StringWriterI extends Writer2 {
+    public StringWriterI() {
+        super(new StringWriter());
     }
 }
 

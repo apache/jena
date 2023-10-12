@@ -118,53 +118,58 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     protected IndentedWriter rtnObject() { return this; }
 
     @Override
-    public void print(String str) {
+    public IndentedWriter print(String str) {
         if ( str == null )
             str = "null";
         if ( false ) {
             // Don't check for embedded newlines.
             write$(str);
-            return;
+            return this;
         }
         for ( int i = 0; i < str.length(); i++ )
             printOneChar(str.charAt(i));
+        return this;
     }
 
     @Override
-    public void printf(String formatStr, Object... args) {
+    public IndentedWriter printf(String formatStr, Object... args) {
         print(format(formatStr, args));
+        return this;
     }
 
     @Override
-    public void print(char ch)      { printOneChar(ch); }
-    public void print(Object obj)   { print(String.valueOf(obj)); }
+    public IndentedWriter print(char ch)      { printOneChar(ch); return this; }
+    public IndentedWriter print(Object obj)   { print(String.valueOf(obj)); return this; }
 
     @Override
-    public void println(String str) { print(str); newline(); }
-    public void println(char ch)    { print(ch); newline(); }
-    public void println(Object obj) { print(String.valueOf(obj)); newline(); }
+    public IndentedWriter println(String str) { print(str); newline(); return this; }
+    public IndentedWriter println(char ch)    { print(ch); newline(); return this; }
+    public IndentedWriter println(Object obj) { print(String.valueOf(obj)); newline(); return this; }
 
     @Override
-    public void println() { newline(); }
+    public IndentedWriter println() { newline(); return this; }
 
     @Override
-    public void print(char[] cbuf) {
+    public IndentedWriter print(char[] cbuf) {
         for ( char aCbuf : cbuf ) {
             printOneChar(aCbuf);
         }
+        return this;
     }
 
     /** Print a string N times */
-    public void print(String s, int n) {
+    public IndentedWriter print(String s, int n) {
         for ( int i = 0; i < n; i++ )
             print(s);
+        return this;
     }
 
     /** Print a char N times */
-    public void print(char ch, int n) {
+    public IndentedWriter print(char ch, int n) {
         lineStart();
         for ( int i = 0; i < n; i++ )
             printOneChar(ch);
+        return this;
     }
 
     private char lastChar = '\0';
@@ -196,7 +201,7 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     private void write$(String s)
     { try { out.write(s); } catch (IOException ex) { IO.exception(ex); } }
 
-    public void newline() {
+    public IndentedWriter newline() {
         lineStart();
 
         if ( endOfLineMarker != null )
@@ -210,13 +215,15 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
         // so if layered over a PrintWriter, need to flush that as well.
         if ( flushOnNewline )
             flush();
+        return this;
     }
 
     private boolean atStartOfLine() { return column <= currentIndent; }
 
-    public void ensureStartOfLine() {
+    public IndentedWriter ensureStartOfLine() {
         if ( !atStartOfLine() )
             newline();
+        return this;
     }
 
     public boolean atLineStart()        { return startingNewLine; }
@@ -246,27 +253,28 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     public void close() { IO.close(out); }
 
     @Override
-    public void flush() { IO.flush(out); }
+    public IndentedWriter flush() { IO.flush(out); return this; }
 
     /** Pad to the indent (if we are before it) */
-    public void pad() {
+    public IndentedWriter pad() {
         if ( startingNewLine && currentIndent > 0 )
             lineStart();
         padInternal();
+        return this;
     }
 
     /** Pad to a given number of columns EXCLUDING the indent.
      *
      * @param col Column number (first column is 1).
      */
-    public void pad(int col) { pad(col, false); }
+    public IndentedWriter pad(int col) { return pad(col, false); }
 
     /** Pad to a given number of columns maybe including the indent.
      *
      * @param col Column number (first column is 1).
      * @param absoluteColumn Whether to include the indent
      */
-    public void pad(int col, boolean absoluteColumn) {
+    public IndentedWriter pad(int col, boolean absoluteColumn) {
         // Make absolute
         if ( !absoluteColumn )
             col = col + currentIndent;
@@ -275,6 +283,7 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
             write$(' ');        // Always a space.
             column++;
         }
+        return this;
     }
 
     private void padInternal() {
@@ -303,16 +312,18 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
         return column;
     }
 
-    public void incIndent() { incIndent(unitIndent); }
+    public IndentedWriter incIndent() { incIndent(unitIndent); return this; }
 
-    public void incIndent(int x) {
+    public IndentedWriter incIndent(int x) {
         currentIndent += x;
+        return this;
     }
 
-    public void decIndent() { decIndent(unitIndent); }
+    public IndentedWriter decIndent() { decIndent(unitIndent); return this; }
 
-    public void decIndent(int x) {
+    public IndentedWriter decIndent(int x) {
         currentIndent -= x;
+        return this;
     }
 
     /** Position past current indent */
@@ -394,7 +405,7 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
         return rtnObject();
     }
 
-    public int  getUnitIndent()         { return unitIndent; }
+    public int getUnitIndent()         { return unitIndent; }
 
     public IndentedWriter setUnitIndent(int x) {
         unitIndent = x;
