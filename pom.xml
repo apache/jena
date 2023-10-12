@@ -96,21 +96,12 @@
     <ver.guava>32.1.3-jre</ver.guava>
 
     <ver.gson>2.10.1</ver.gson>
-<<<<<<< HEAD
     <ver.commons-io>2.14.0</ver.commons-io>
     <ver.commons-cli>1.5.0</ver.commons-cli>
     <ver.commons-lang3>3.13.0</ver.commons-lang3>
     <ver.commons-rdf>0.5.0</ver.commons-rdf>
     <ver.commons-csv>1.10.0</ver.commons-csv>
     <ver.commons-codec>1.16.0</ver.commons-codec>
-=======
-    <ver.commons-io>2.13.0</ver.commons-io>
-    <ver.commons-cli>1.5.0</ver.commons-cli>
-    <ver.commons-lang3>3.12.0</ver.commons-lang3>
-    <ver.commons-rdf>0.5.0</ver.commons-rdf>
-    <ver.commons-csv>1.10.0</ver.commons-csv>
-    <ver.commons-codec>1.15</ver.commons-codec>
->>>>>>> 1b6990cca7 (GH-2024: Add Commons fileupload2 2.0.0-M1; update to commons-io 2.13.0)
     <ver.commons-compress>1.24.0</ver.commons-compress>
     <ver.commons-collections>4.4</ver.commons-collections>
     <ver.commons-fileupload>2.0.0-M1</ver.commons-fileupload>
