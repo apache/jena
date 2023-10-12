@@ -20,10 +20,12 @@ package org.apache.jena.fuseki.geosparql.cli;
 import com.beust.jcommander.IParameterValidator;
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.ParameterException;
-import io.github.galbiston.rdf_tables.cli.FormatParameter;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.jena.ext.io.github.galbiston.rdf_tables.cli.FormatParameter;
 import org.apache.jena.riot.RDFFormat;
 
 /**

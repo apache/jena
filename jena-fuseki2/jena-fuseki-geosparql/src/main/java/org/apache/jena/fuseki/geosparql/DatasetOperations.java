@@ -17,12 +17,13 @@
  */
 package org.apache.jena.fuseki.geosparql;
 
-import io.github.galbiston.rdf_tables.cli.DelimiterValidator;
-import io.github.galbiston.rdf_tables.datatypes.DatatypeController;
-import io.github.galbiston.rdf_tables.file.FileReader;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+
+import org.apache.jena.ext.io.github.galbiston.rdf_tables.cli.DelimiterValidator;
+import org.apache.jena.ext.io.github.galbiston.rdf_tables.datatypes.DatatypeController;
+import org.apache.jena.ext.io.github.galbiston.rdf_tables.file.FileReader;
 import org.apache.jena.fuseki.geosparql.cli.ArgsConfig;
 import org.apache.jena.fuseki.geosparql.cli.FileGraphDelimiter;
 import org.apache.jena.fuseki.geosparql.cli.FileGraphFormat;
