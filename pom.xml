@@ -131,7 +131,7 @@
     <ver.plugin.shade>3.4.1</ver.plugin.shade>
     <ver.plugin.enforcer>3.4.1</ver.plugin.enforcer>
     <ver.plugin.cyclonedx>2.7.9</ver.plugin.cyclonedx>
-
+    <ver.plugin.spdx>0.7.0</ver.plugin.spdx>
    </properties>
 
    <issueManagement>
@@ -919,6 +919,20 @@
          <configuration>
             <outputName>${project.artifactId}-${project.version}-bom</outputName>
          </configuration>
+       </plugin>
+       <plugin>
+         <groupId>org.spdx</groupId>
+         <artifactId>spdx-maven-plugin</artifactId>
+         <version>${ver.plugin.spdx}</version>
+         <executions>
+           <execution>
+             <id>build-sbom-spdx</id>
+             <phase>package</phase>
+             <goals>
+               <goal>createSPDX</goal>
+             </goals>
+           </execution>
+         </executions>
        </plugin>
 
      </plugins>
