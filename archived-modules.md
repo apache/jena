@@ -6,6 +6,13 @@ release. For each module, the location of the last code in git is given.
 Retired modules can be incorporated back into Jena releases if there is
 sufficient activity to maintain the code over the long term.
 
+### Apache Jena JDBC
+
+The last release of apache-jena-osgi source was with Jena 4.10.0 on 2023-@@
+Source is available from git with tag "jena-4.10.0".
+The commit retiring jena-jdbc is @@
+@@ needs setting after merge - commit is 2023-10-12, "GH-2035: Retire jena-jdbc"
+
 ### Apache Jena OSGi
 
 The last release of apache-jena-osgi source was with Jena 4.2.0 on 2021-09-16.
