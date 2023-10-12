@@ -21,7 +21,7 @@ package org.apache.jena.ext.io.github.galbiston.expiring_map;
 public class ExpiringMaps {
 
     public static <K,V> ExpiringMap<K,V> newExpiringMap(String label, int maxSize, long expiryInterval) {
-        return ExpiringMaps.newExpiringMap(label, maxSize, expiryInterval);
+        return new ExpiringMap<>(label, maxSize, expiryInterval);
     }
 
 
