@@ -77,9 +77,9 @@ public class ShaclPaths {
     }
 
     private static Iterator<Node> pathReachIter(Graph graph, Node node, Path path) {
-        if ( path instanceof P_Link ) {
+        if ( path instanceof P_Link pLink ) {
             // Fast path common case.
-            Node p = ((P_Link)path).getNode();
+            Node p = pLink.getNode();
             // Not an extended iterator.
             return G.iterSP(graph, node, p);
         }
@@ -209,8 +209,8 @@ public class ShaclPaths {
 
 
     public static Node pathNode(Path path) {
-        if ( path instanceof P_Link ) {
-            return ((P_Link)path).getNode();
+        if ( path instanceof P_Link pLink ) {
+            return pLink.getNode();
         }
         return null;
     }
