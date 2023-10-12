@@ -17,10 +17,13 @@
  */
 package org.apache.jena.geosparql.implementation.index;
 
-import io.github.galbiston.expiring_map.ExpiringMap;
-import static io.github.galbiston.expiring_map.MapDefaultValues.MAP_EXPIRY_INTERVAL;
-import static io.github.galbiston.expiring_map.MapDefaultValues.UNLIMITED_MAP;
+import static org.apache.jena.ext.io.github.galbiston.expiring_map.MapDefaultValues.MAP_EXPIRY_INTERVAL;
+import static org.apache.jena.ext.io.github.galbiston.expiring_map.MapDefaultValues.UNLIMITED_MAP;
+
 import java.util.Map;
+
+import org.apache.jena.ext.io.github.galbiston.expiring_map.ExpiringMap;
+import org.apache.jena.ext.io.github.galbiston.expiring_map.ExpiringMaps;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 
@@ -33,8 +36,8 @@ public class GeometryLiteralIndex {
     private static boolean INDEX_ACTIVE = false;
     private static final String PRIMARY_INDEX_LABEL = "Primary Geometry Literal Index";
     private static final String SECONDARY_INDEX_LABEL = "Secondary Geometry Literal Index";
-    private static ExpiringMap<String, GeometryWrapper> PRIMARY_INDEX = new ExpiringMap<>(PRIMARY_INDEX_LABEL, UNLIMITED_MAP, MAP_EXPIRY_INTERVAL);
-    private static ExpiringMap<String, GeometryWrapper> SECONDARY_INDEX = new ExpiringMap<>(SECONDARY_INDEX_LABEL, UNLIMITED_MAP, MAP_EXPIRY_INTERVAL);
+    private static ExpiringMap<String, GeometryWrapper> PRIMARY_INDEX = ExpiringMaps.newExpiringMap(PRIMARY_INDEX_LABEL, UNLIMITED_MAP, MAP_EXPIRY_INTERVAL);
+    private static ExpiringMap<String, GeometryWrapper> SECONDARY_INDEX = ExpiringMaps.newExpiringMap(SECONDARY_INDEX_LABEL, UNLIMITED_MAP, MAP_EXPIRY_INTERVAL);
 
     public enum GeometryIndex {
         PRIMARY, SECONDARY
@@ -68,7 +71,7 @@ public class GeometryLiteralIndex {
                 }
                 index.put(geometryLiteral, geometryWrapper);
             }
-         
+
             return geometryWrapper;
         }
 
@@ -153,8 +156,8 @@ public class GeometryLiteralIndex {
      * @param expiryInterval
      */
     public static void reset(int maxSize, long expiryInterval) {
-        PRIMARY_INDEX = new ExpiringMap<>(PRIMARY_INDEX_LABEL, maxSize, expiryInterval);
-        SECONDARY_INDEX = new ExpiringMap<>(SECONDARY_INDEX_LABEL, maxSize, expiryInterval);
+        PRIMARY_INDEX = ExpiringMaps.newExpiringMap(PRIMARY_INDEX_LABEL, maxSize, expiryInterval);
+        SECONDARY_INDEX = ExpiringMaps.newExpiringMap(SECONDARY_INDEX_LABEL, maxSize, expiryInterval);
     }
 
 }

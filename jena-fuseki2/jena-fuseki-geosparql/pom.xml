@@ -14,7 +14,9 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jena-fuseki-geosparql</artifactId>
     <packaging>jar</packaging>
@@ -48,21 +50,17 @@
       </dependency>
 
       <dependency>
-        <groupId>io.github.galbiston</groupId>
-        <artifactId>rdf-tables</artifactId>
-      </dependency>
-
-      <dependency>
-        <!-- rdf-tables:1.0.4
+		<groupId>com.opencsv</groupId>
+	    <artifactId>opencsv</artifactId>
+		<version>5.8</version>
+	        <!-- rdf-tables:1.0.4
                -> com.opencsv:opencsv:jar:3.9 
                  -> commons-beanutils:commons-beanutils:19.3
              CVE-2019-10086 https://nvd.nist.gov/vuln/detail/CVE-2019-10086 
              commons-beanutils:commons-beanutils:jar:1.9.3
              Needs to be 1.9.4.
              We exclude it from rdf-tables and directly depend on it here.
-        -->
-        <groupId>commons-beanutils</groupId>
-        <artifactId>commons-beanutils</artifactId>
+    	    -->
         <exclusions>
           <!-- Use jcl-over-slf4j -->
           <exclusion>
