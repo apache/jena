@@ -60,7 +60,7 @@ public class ExpiringMapTest {
      */
     @Test
     public void testExpiry() throws InterruptedException {
-        System.out.println("expiry");
+        //System.out.println("expiry");
 
         long expiryInterval = 2000l;
         long cleanerInterval = 1000l;
@@ -76,15 +76,15 @@ public class ExpiringMapTest {
         Thread.sleep(halfExpiryInterval + 100);
         instance.put("key5", "value5"); //Should be rejected.
         instance.put("key6", "value6");
-        //System.out.println("Size Before: " + instance.size());
+        ////System.out.println("Size Before: " + instance.size());
         Thread.sleep(halfExpiryInterval + cleanerInterval);
         instance.stopExpiry();
-        //System.out.println("Size After: " + instance.size());
+        ////System.out.println("Size After: " + instance.size());
         int result = instance.size();
         int expResult = 1;
 
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
+        ////System.out.println("Exp: " + expResult);
+        ////System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -95,7 +95,7 @@ public class ExpiringMapTest {
      */
     @Test
     public void testExpiry_none() throws InterruptedException {
-        System.out.println("expiry_none");
+        //System.out.println("expiry_none");
 
         ExpiringMap<String, String> instance = new ExpiringMap<>("Test");
 
@@ -108,15 +108,15 @@ public class ExpiringMapTest {
         instance.put("key5", "value5");
         instance.put("key6", "value6");
 
-        //System.out.println("Size Before: " + instance.size());
+        ////System.out.println("Size Before: " + instance.size());
         Thread.sleep(1000);
         instance.stopExpiry();
-        //System.out.println("Size After: " + instance.size());
+        ////System.out.println("Size After: " + instance.size());
         int result = instance.size();
         int expResult = 6;
 
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
+        ////System.out.println("Exp: " + expResult);
+        ////System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -127,7 +127,7 @@ public class ExpiringMapTest {
      */
     @Test
     public void testRefresh() throws InterruptedException {
-        System.out.println("refresh");
+        //System.out.println("refresh");
 
         long expiryInterval = 2000l;
         long halfExpiryInterval = expiryInterval / 2;
@@ -143,15 +143,15 @@ public class ExpiringMapTest {
         Thread.sleep(halfExpiryInterval + quarterExpiryInterval);
         instance.put("key1", "value1");
         instance.put("key2", "value2");
-        //System.out.println("Size Before: " + instance.size());
+        ////System.out.println("Size Before: " + instance.size());
         Thread.sleep(halfExpiryInterval);
         instance.stopExpiry();
-        //System.out.println("Size After: " + instance.size());
+        ////System.out.println("Size After: " + instance.size());
         int result = instance.size();
         int expResult = 2;
 
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
+        ////System.out.println("Exp: " + expResult);
+        ////System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -162,7 +162,7 @@ public class ExpiringMapTest {
      */
     @Test
     public void testEmpty() throws InterruptedException {
-        System.out.println("empty");
+        //System.out.println("empty");
 
         long expiryInterval = 2000l;
         long cleanerInterval = 1000l;
@@ -178,15 +178,15 @@ public class ExpiringMapTest {
         Thread.sleep(halfExpiryInterval);
         instance.put("key1", "value1");
         instance.put("key2", "value2");
-        //System.out.println("Size Before: " + instance.size());
+        ////System.out.println("Size Before: " + instance.size());
         Thread.sleep(expiryInterval + cleanerInterval);
         instance.stopExpiry();
-        //System.out.println("Size After: " + instance.size());
+        ////System.out.println("Size After: " + instance.size());
         int result = instance.size();
         int expResult = 0;
 
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
+        ////System.out.println("Exp: " + expResult);
+        ////System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -195,15 +195,15 @@ public class ExpiringMapTest {
      */
     @Test
     public void testSetCleanerInterval() {
-        System.out.println("setCleanerInterval");
+        //System.out.println("setCleanerInterval");
         long cleanerInterval = 2000L;
         ExpiringMap<?,?> instance = new ExpiringMap<>("Test", 5);
         instance.setCleanerInterval(cleanerInterval);
         long expResult = cleanerInterval;
         long result = instance.getCleanerInterval();
 
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
+        ////System.out.println("Exp: " + expResult);
+        ////System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -212,15 +212,15 @@ public class ExpiringMapTest {
      */
     @Test
     public void testSetCleanerInterval_minimum() {
-        System.out.println("setCleanerInterval_minimum");
+        //System.out.println("setCleanerInterval_minimum");
         long cleanerInterval = 0L;
         ExpiringMap<?,?> instance = new ExpiringMap<>("Test", 5);
         instance.setCleanerInterval(cleanerInterval);
         long expResult = MINIMUM_MAP_CLEANER_INTERVAL;
         long result = instance.getCleanerInterval();
 
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
+        ////System.out.println("Exp: " + expResult);
+        ////System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -229,15 +229,15 @@ public class ExpiringMapTest {
      */
     @Test
     public void testSetExpiryInterval() {
-        System.out.println("setExpiryInterval");
+        //System.out.println("setExpiryInterval");
         long expiryInterval = 2000L;
         ExpiringMap<?,?> instance = new ExpiringMap<>("Test", 5);
         instance.setExpiryInterval(expiryInterval);
         long expResult = expiryInterval;
         long result = instance.getExpiryInterval();
 
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
+        ////System.out.println("Exp: " + expResult);
+        ////System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -246,15 +246,15 @@ public class ExpiringMapTest {
      */
     @Test
     public void testSetExpiryInterval_minimum() {
-        System.out.println("setExpiryInterval_minimum");
+        //System.out.println("setExpiryInterval_minimum");
         long expiryInterval = 0L;
         ExpiringMap<?,?> instance = new ExpiringMap<>("Test", 5);
         instance.setExpiryInterval(expiryInterval);
         long expResult = MAP_CLEANER_INTERVAL + 1;
         long result = instance.getExpiryInterval();
 
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
+        ////System.out.println("Exp: " + expResult);
+        ////System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -263,15 +263,15 @@ public class ExpiringMapTest {
      */
     @Test
     public void testIsExpiring() {
-        System.out.println("isExpiring");
+        //System.out.println("isExpiring");
         long expiryInterval = 1000L;
         ExpiringMap<?,?> instance = new ExpiringMap<>("Test", 5);
         instance.setExpiryInterval(expiryInterval);
         boolean expResult = true;
         boolean result = instance.isExpiring();
 
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
+        ////System.out.println("Exp: " + expResult);
+        ////System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -280,15 +280,15 @@ public class ExpiringMapTest {
      */
     @Test
     public void testIsExpiring_false() {
-        System.out.println("isExpiring_false");
+        //System.out.println("isExpiring_false");
         long expiryInterval = UNLIMITED_EXPIRY;
         ExpiringMap<?,?> instance = new ExpiringMap<>("Test", 5);
         instance.setExpiryInterval(expiryInterval);
         boolean expResult = false;
         boolean result = instance.isExpiring();
 
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
+        ////System.out.println("Exp: " + expResult);
+        ////System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -299,7 +299,7 @@ public class ExpiringMapTest {
      */
     @Test
     public void testExpiry_change_max_size() throws InterruptedException {
-        System.out.println("expiry_change_max_size");
+        //System.out.println("expiry_change_max_size");
 
         long expiryInterval = 2000l;
         long cleanerInterval = 1000l;
@@ -316,14 +316,14 @@ public class ExpiringMapTest {
         instance.setMaxSize(10);
         instance.put("key5", "value5");
         instance.put("key6", "value6");
-        //System.out.println("Size Before: " + instance.size());
+        ////System.out.println("Size Before: " + instance.size());
         instance.stopExpiry();
-        //System.out.println("Size After: " + instance.size());
+        ////System.out.println("Size After: " + instance.size());
         int result = instance.size();
         int expResult = 6;
 
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
+        ////System.out.println("Exp: " + expResult);
+        ////System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -334,7 +334,7 @@ public class ExpiringMapTest {
      */
     @Test
     public void testExpiry_change_max_size_reduced() throws InterruptedException {
-        System.out.println("expiry_change_max_size_reduced");
+        //System.out.println("expiry_change_max_size_reduced");
 
         long expiryInterval = 2000l;
         long cleanerInterval = 1000l;
@@ -353,14 +353,14 @@ public class ExpiringMapTest {
         instance.put("key6", "value6");
         instance.setMaxSize(5);
         instance.put("key7", "value7"); //Should be rejected.
-        //System.out.println("Size Before: " + instance.size());
+        ////System.out.println("Size Before: " + instance.size());
         instance.stopExpiry();
-        //System.out.println("Size After: " + instance.size());
+        ////System.out.println("Size After: " + instance.size());
         int result = instance.size();
         int expResult = 6;  //Over max size but don't remove until expired.
 
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
+        ////System.out.println("Exp: " + expResult);
+        ////System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -371,7 +371,7 @@ public class ExpiringMapTest {
      */
     @Test
     public void testExpiry_change_expiry_interval() throws InterruptedException {
-        System.out.println("expiry_change_expiry_interval");
+        //System.out.println("expiry_change_expiry_interval");
 
         long expiryInterval = 2000l;
         long cleanerInterval = 1000l;
@@ -388,15 +388,15 @@ public class ExpiringMapTest {
         instance.put("key5", "value5");
         instance.put("key6", "value6");
         instance.setExpiryInterval(4000l);
-        //System.out.println("Size Before: " + instance.size());
+        ////System.out.println("Size Before: " + instance.size());
         Thread.sleep(halfExpiryInterval + cleanerInterval); //No cleaning should have taken place.
         instance.stopExpiry();
-        //System.out.println("Size After: " + instance.size());
+        ////System.out.println("Size After: " + instance.size());
         int result = instance.size();
         int expResult = 6;
 
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
+        ////System.out.println("Exp: " + expResult);
+        ////System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -407,7 +407,7 @@ public class ExpiringMapTest {
      */
     @Test
     public void testExpiry_change_expiry_interval_reduced() throws InterruptedException {
-        System.out.println("expiry_change_expiry_interval_reduced");
+        //System.out.println("expiry_change_expiry_interval_reduced");
 
         long expiryInterval = 4000l;
         long cleanerInterval = 1000l;
@@ -424,15 +424,15 @@ public class ExpiringMapTest {
         instance.put("key5", "value5");
         instance.put("key6", "value6");
         instance.setExpiryInterval(2000l);
-        //System.out.println("Size Before: " + instance.size());
+        ////System.out.println("Size Before: " + instance.size());
         Thread.sleep(halfExpiryInterval + cleanerInterval); //All should have been removed.
         instance.stopExpiry();
-        //System.out.println("Size After: " + instance.size());
+        ////System.out.println("Size After: " + instance.size());
         int result = instance.size();
         int expResult = 0;
 
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
+        ////System.out.println("Exp: " + expResult);
+        ////System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
@@ -443,7 +443,7 @@ public class ExpiringMapTest {
      */
     @Test
     public void testExpiry_set_cleaner() throws InterruptedException {
-        System.out.println("expiry_set_cleaner");
+        //System.out.println("expiry_set_cleaner");
 
         long expiryInterval = 2000l;
         long cleanerInterval = 1000l;
@@ -460,15 +460,15 @@ public class ExpiringMapTest {
         instance.setCleanerInterval(500l); //No obvious effect should occur.
         instance.put("key5", "value5"); //Should be rejected.
         instance.put("key6", "value6");
-        //System.out.println("Size Before: " + instance.size());
+        ////System.out.println("Size Before: " + instance.size());
         Thread.sleep(halfExpiryInterval + cleanerInterval);
         instance.stopExpiry();
-        //System.out.println("Size After: " + instance.size());
+        ////System.out.println("Size After: " + instance.size());
         int result = instance.size();
         int expResult = 1;
 
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
+        ////System.out.println("Exp: " + expResult);
+        ////System.out.println("Res: " + result);
         assertEquals(expResult, result);
     }
 
