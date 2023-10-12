@@ -75,10 +75,8 @@ public class AggregatorFactory {
     }
 
     public static Aggregator createFold(boolean distinct, Expr expr1, Expr expr2, List<SortCondition> orderBy) {
-        if ( orderBy != null )
-            System.out.println( "HERE!! " + orderBy.size() );
         if ( expr2 == null )
-            return new AggFoldList(distinct, expr1) ;
+            return new AggFoldList(distinct, expr1, orderBy) ;
         else
             return new AggFoldMap(expr1, expr2) ;
     }
