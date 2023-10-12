@@ -49,39 +49,43 @@ public class Writer2 extends AWriterBase implements AWriter, Closeable
     }
 
     @Override
-    public void print(char ch) {
+    public AWriter print(char ch) {
         try {
             writer.write(ch);
         } catch (IOException ex) {
             IO.exception(ex);
         }
+        return this;
     }
 
     @Override
-    public void print(String string) {
+    public AWriter print(String string) {
         try {
             writer.write(string);
         } catch (IOException ex) {
             IO.exception(ex);
         }
+        return this;
     }
 
     @Override
-    public void print(char[] cbuf) {
+    public AWriter print(char[] cbuf) {
         try {
             writer.write(cbuf);
         } catch (IOException ex) {
             IO.exception(ex);
         }
+        return this;
     }
 
     @Override
-    public void flush() {
+    public AWriter flush() {
         try {
             writer.flush();
         } catch (IOException ex) {
             IO.exception(ex);
         }
+        return this;
     }
 
     @Override
@@ -94,19 +98,22 @@ public class Writer2 extends AWriterBase implements AWriter, Closeable
     }
 
     @Override
-    public void printf(String fmt, Object...args) {
+    public AWriter printf(String fmt, Object...args) {
         print(String.format(fmt, args));
+        return this;
     }
 
     @Override
-    public void println(String obj) {
+    public AWriter println(String obj) {
         print(obj);
         print("\n");
+        return this;
     }
 
     @Override
-    public void println() {
+    public AWriter println() {
         print("\n");
+        return this;
     }
 
     @Override
