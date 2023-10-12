@@ -1,14 +1,26 @@
 package org.apache.jena.sparql.expr.aggregate;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
+import org.apache.jena.atlas.data.BagFactory;
+import org.apache.jena.atlas.data.SerializationFactory;
+import org.apache.jena.atlas.data.SortedDataBag;
+import org.apache.jena.atlas.data.ThresholdPolicy;
+import org.apache.jena.atlas.data.ThresholdPolicyFactory;
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.cdt.CDTFactory;
 import org.apache.jena.cdt.CDTValue;
 import org.apache.jena.graph.Node;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingComparator;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprList;
 import org.apache.jena.sparql.expr.NodeValue;
@@ -16,22 +28,77 @@ import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.function.library.cdt.CDTLiteralFunctionUtils;
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.writers.WriterExpr;
+import org.apache.jena.sparql.system.SerializationFactoryFinder;
 import org.apache.jena.sparql.util.ExprUtils;
 
 public class AggFoldList extends AggregatorBase
 {
+	protected final List<SortCondition> orderBy;
+	protected final ThresholdPolicy<Binding> policy;
+	protected final Comparator<Binding> comparator;
+
 	public AggFoldList( final boolean isDistinct, final Expr expr1 ) {
-		super( "FOLD", isDistinct, expr1 );
+		this(isDistinct, expr1, null);
+	}
+
+	public AggFoldList( final boolean isDistinct, final Expr expr1, final List<SortCondition> orderBy ) {
+		// We need to extract the expressions from the sort conditions
+		// as well in order for them to be considered by the algebra
+		// transformer that renames variables from subqueries (see
+		// {@link TransformScopeRename#RenameByScope}).
+		super( "FOLD", isDistinct, collectExprs(expr1, orderBy) );
+
+		this.orderBy = orderBy;
+
+		if ( orderBy != null && ! orderBy.isEmpty() ) {
+			policy = ThresholdPolicyFactory.policyFromContext( ARQ.getContext() );
+			comparator = new BindingComparator(orderBy);
+		}
+		else {
+			policy = null;
+			comparator = null;
+		}
+	}
+
+	protected static ExprList collectExprs( final Expr expr1, final List<SortCondition> orderBy ) {
+		final ExprList l = new ExprList(expr1);
+
+		if ( orderBy != null ) {
+			for ( final SortCondition c : orderBy ) {
+				l.add( c.getExpression() );
+			}
+		}
+
+		return l;
 	}
 
 	@Override
 	public Aggregator copy( final ExprList exprs ) {
-		if ( exprs.size() != 1 )
-			throw new IllegalArgumentException();
+		final Expr _expr1;
+		final List<SortCondition> _orderBy;
+		if ( orderBy == null ) {
+			if ( exprs.size() != 1 ) throw new IllegalArgumentException();
 
-		final Expr _expr1 = exprs.get(0);
+			_expr1 = exprs.get(0);
+			_orderBy = null;
+		}
+		else {
+			if ( exprs.size() != orderBy.size()+1 ) throw new IllegalArgumentException();
 
-		return new AggFoldList(isDistinct, _expr1);
+
+			final Iterator<SortCondition> cit = orderBy.iterator();
+			final Iterator<Expr> eit = exprs.iterator();
+
+			_expr1 = eit.next();
+
+			_orderBy = new ArrayList<>( orderBy.size() );
+			while ( eit.hasNext() ) {
+				final SortCondition c = new SortCondition( eit.next(), cit.next().getDirection() );
+				_orderBy.add(c);
+			}
+		}
+
+		return new AggFoldList(isDistinct, _expr1, _orderBy);
 	}
 
 	@Override
@@ -41,12 +108,17 @@ public class AggFoldList extends AggregatorBase
 		if ( ! ( other instanceof AggFoldList ) )
 			return false;
 		final AggFoldList fold = (AggFoldList) other;
-		return getExpr().equals(fold.getExpr(), bySyntax) && (isDistinct == fold.isDistinct);
+		return (isDistinct == fold.isDistinct)
+		       && getExprList().get(0).equals(fold.getExprList().get(0), bySyntax)
+		       && Objects.equals(orderBy, fold.orderBy);
 	}
 
 	@Override
 	public Accumulator createAccumulator() {
-		return new ListAccumulator( getExpr(), isDistinct );
+		if ( orderBy != null && ! orderBy.isEmpty() )
+			return new SortingListAccumulator();
+		else
+			return new BasicListAccumulator( getExprList().get(0), isDistinct );
 	}
 
 	@Override
@@ -69,7 +141,16 @@ public class AggFoldList extends AggregatorBase
 		if ( isDistinct )
 			out.append("DISTINCT ");
 
-		ExprUtils.fmtSPARQL(out, getExpr(), sCxt);
+		ExprUtils.fmtSPARQL(out, getExprList().get(0), sCxt);
+
+		if ( orderBy != null && ! orderBy.isEmpty() ) {
+			out.append(" ORDER BY ");
+			final Iterator<SortCondition> it = orderBy.iterator();
+			while ( it.hasNext() ) {
+				it.next().output(out, sCxt);
+				if ( it.hasNext() ) out.append(", ");
+			}
+		}
 
 		out.append(")");
 		return out.asString();
@@ -85,17 +166,26 @@ public class AggFoldList extends AggregatorBase
 		if ( isDistinct )
 			out.append(" distinct");
 
-		WriterExpr.output(out, getExpr(), null);
+		WriterExpr.output(out, getExprList().get(0), null);
+
+		if ( orderBy != null && ! orderBy.isEmpty() ) {
+			out.append(" order by ");
+			out.incIndent();
+			for ( final SortCondition c : orderBy ) {
+				c.output(out);
+			}
+			out.decIndent();
+		}
 
 		out.decIndent();
 		out.append(")");
 		return out.asString();
 	}
 
-	protected class ListAccumulator extends AccumulatorExpr {
+	protected static class BasicListAccumulator extends AccumulatorExpr {
 		final protected List<CDTValue> list = new ArrayList<>();
 
-		protected ListAccumulator( final Expr expr, final boolean makeDistinct ) {
+		protected BasicListAccumulator( final Expr expr, final boolean makeDistinct ) {
 			super(expr, makeDistinct);
 		}
 
@@ -124,6 +214,91 @@ public class AggFoldList extends AggregatorBase
 		@Override
 		public NodeValue getValue() {
 			return getAccValue();
+		}
+	}
+
+	protected class SortingListAccumulator implements Accumulator {
+		protected final SortedDataBag<Binding> sbag;
+		protected FunctionEnv functionEnv = null;
+
+		public SortingListAccumulator() {
+			final SerializationFactory<Binding> sf = SerializationFactoryFinder.bindingSerializationFactory();
+			sbag = BagFactory.newSortedBag(policy, sf, comparator);
+		}
+
+		@Override
+		public void accumulate( final Binding binding, final FunctionEnv functionEnv ) {
+			sbag.add(binding);
+
+			if ( this.functionEnv == null )
+				this.functionEnv = functionEnv;
+		}
+
+		@Override
+		public NodeValue getValue() {
+			final Iterator<Binding> it;
+			if ( isDistinct )
+				it = new DuplicateEliminationIterator<Binding>( sbag.iterator() );
+			else
+				it = sbag.iterator();
+
+			final Accumulator acc = new BasicListAccumulator( getExprList().get(0), false );
+			while ( it.hasNext() ) {
+				acc.accumulate( it.next(), functionEnv );
+			}
+
+			sbag.close();
+
+			return acc.getValue();
+		}
+	}
+
+	/**
+	 * Wraps another iterator which is assumed to return its elements in a
+	 * sorted order (that is, all elements that are equal to one another are
+	 * returned by the wrapped iterator directly one after another) and, then,
+	 * returns the elements from that wrapped iterator without duplicates.
+	 */
+	protected static class DuplicateEliminationIterator<E> implements Iterator<E> {
+		protected final Iterator<E> input;
+		protected E prevReturnedElmt = null;
+		protected E nextAvailableElmt = null;
+
+		public DuplicateEliminationIterator( final Iterator<E> input ) {
+			this.input = input;
+
+			if ( input.hasNext() ) {
+				nextAvailableElmt = input.next();
+			}
+		}
+
+		@Override
+		public boolean hasNext() {
+			while ( nextAvailableElmt == null ) {
+				if ( ! input.hasNext() )
+					return false;
+
+				nextAvailableElmt = input.next();
+				if (    prevReturnedElmt != null
+				     && prevReturnedElmt.equals(nextAvailableElmt) ) {
+					// the current next element must not be returned because
+					// it is a duplicate of the previous returned element
+					nextAvailableElmt = null;
+				}
+			}
+			return true;
+		}
+
+		@Override
+		public E next() {
+			if ( ! hasNext() ) {
+				throw new NoSuchElementException();
+			}
+
+			prevReturnedElmt = nextAvailableElmt;
+			nextAvailableElmt = null;
+
+			return prevReturnedElmt;
 		}
 	}
 
