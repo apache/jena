@@ -298,9 +298,6 @@
          <module>jena-extras</module>
          <module>jena-examples</module>
 
-         <!-- Slow building modules -->
-         <module>jena-jdbc</module>
-
          <module>jena-bom</module>
 
        </modules>
@@ -1058,7 +1055,6 @@
                <link>https://jena.apache.org/documentation/javadoc/rdfconnection/</link>
                <link>https://jena.apache.org/documentation/javadoc/fuseki2/</link>
                <link>https://jena.apache.org/documentation/javadoc/permissions/</link>
-               <link>https://jena.apache.org/documentation/javadoc/jdbc/</link>
              </links>
              <!-- Settings for @apiNote, @implSpec and @implNote -->
              <tags>
