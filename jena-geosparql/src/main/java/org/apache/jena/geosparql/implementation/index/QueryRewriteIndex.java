@@ -17,9 +17,11 @@
  */
 package org.apache.jena.geosparql.implementation.index;
 
-import io.github.galbiston.expiring_map.ExpiringMap;
-import static io.github.galbiston.expiring_map.MapDefaultValues.MAP_EXPIRY_INTERVAL;
-import static io.github.galbiston.expiring_map.MapDefaultValues.UNLIMITED_MAP;
+import static org.apache.jena.ext.io.github.galbiston.expiring_map.MapDefaultValues.MAP_EXPIRY_INTERVAL;
+import static org.apache.jena.ext.io.github.galbiston.expiring_map.MapDefaultValues.UNLIMITED_MAP;
+
+import org.apache.jena.ext.io.github.galbiston.expiring_map.ExpiringMap;
+import org.apache.jena.ext.io.github.galbiston.expiring_map.ExpiringMaps;
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.geo.topological.GenericPropertyFunction;
 import org.apache.jena.graph.Graph;
@@ -51,7 +53,7 @@ public class QueryRewriteIndex {
     public QueryRewriteIndex() {
         this.queryRewriteLabel = LABEL_DEFAULT;
         this.indexActive = GeoSPARQLConfig.isQueryRewriteEnabled();
-        this.index = new ExpiringMap<>(queryRewriteLabel, MAP_SIZE_DEFAULT, MAP_EXPIRY_INTERVAL_DEFAULT);
+        this.index = ExpiringMaps.newExpiringMap(queryRewriteLabel, MAP_SIZE_DEFAULT, MAP_EXPIRY_INTERVAL_DEFAULT);
         if (indexActive) {
             index.startExpiry();
         }
@@ -60,7 +62,7 @@ public class QueryRewriteIndex {
     public QueryRewriteIndex(String queryRewriteLabel, int maxSize, long expiryInterval) {
         this.queryRewriteLabel = queryRewriteLabel;
         this.indexActive = true;
-        this.index = new ExpiringMap<>(queryRewriteLabel, maxSize, expiryInterval);
+        this.index = ExpiringMaps.newExpiringMap(queryRewriteLabel, maxSize, expiryInterval);
         this.index.startExpiry();
     }
 
@@ -171,7 +173,7 @@ public class QueryRewriteIndex {
      * @param expiryInterval
      */
     public void reset(int maxSize, long expiryInterval) {
-        index = new ExpiringMap<>(queryRewriteLabel, maxSize, expiryInterval);
+        index = ExpiringMaps.newExpiringMap(queryRewriteLabel, maxSize, expiryInterval);
     }
 
     /**
