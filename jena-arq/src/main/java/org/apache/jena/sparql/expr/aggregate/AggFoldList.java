@@ -184,6 +184,7 @@ public class AggFoldList extends AggregatorBase
 
 	protected static class BasicListAccumulator extends AccumulatorExpr {
 		final protected List<CDTValue> list = new ArrayList<>();
+		protected boolean nullValueAdded = false;
 
 		protected BasicListAccumulator( final Expr expr, final boolean makeDistinct ) {
 			super(expr, makeDistinct);
@@ -197,6 +198,15 @@ public class AggFoldList extends AggregatorBase
 
 		@Override
 		protected void accumulateError( final Binding binding, final FunctionEnv functionEnv ) {
+			// By definition of FOLD, evaluation errors result in null values
+			// for the created list. If FOLD is used with the keyword DISTINCT,
+			// then all errors collapse to a single null value.
+			if ( makeDistinct && nullValueAdded ) {
+				return;
+			}
+
+			nullValueAdded = true;
+
 			final CDTValue v = CDTFactory.getNullValue();
 			list.add(v);
 		}
@@ -237,12 +247,22 @@ public class AggFoldList extends AggregatorBase
 		@Override
 		public NodeValue getValue() {
 			final Iterator<Binding> it;
-			if ( isDistinct )
+			final Accumulator acc;
+			if ( isDistinct ) {
 				it = new DuplicateEliminationIterator<Binding>( sbag.iterator() );
-			else
+				acc = new BasicListAccumulator( getExprList().get(0), false ) {
+					@Override
+					protected void accumulateError( final Binding b, final FunctionEnv e ) {
+						if ( nullValueAdded ) return;
+						super.accumulateError(b, e);
+					}
+				};
+			}
+			else {
 				it = sbag.iterator();
+				acc = new BasicListAccumulator( getExprList().get(0), false );
+			}
 
-			final Accumulator acc = new BasicListAccumulator( getExprList().get(0), false );
 			while ( it.hasNext() ) {
 				acc.accumulate( it.next(), functionEnv );
 			}
