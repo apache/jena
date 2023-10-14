@@ -59,7 +59,7 @@ import org.apache.jena.util.FileUtils;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.TestManifest;
 
-public class QueryExecTest implements Runnable {
+public class QueryEvalTest implements Runnable {
 
     private final ManifestEntry testEntry;
     private final SPARQLResult results;
@@ -76,14 +76,14 @@ public class QueryExecTest implements Runnable {
      */
     public static boolean compareResultSetsByValue = true;
 
-    public QueryExecTest(ManifestEntry entry, Creator<Dataset> maker) {
+    public QueryEvalTest(ManifestEntry entry, Creator<Dataset> maker) {
         testEntry = entry;
         testItem = QueryTestItem.create(testEntry.getEntry(), TestManifest.QueryEvaluationTest);
         results = testItem.getResults();
         creator = maker;
     }
 
-    public QueryExecTest(ManifestEntry entry) {
+    public QueryEvalTest(ManifestEntry entry) {
         this(entry, ()->DatasetFactory.createGeneral());
     }
 

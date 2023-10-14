@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.riot.writer.DirectiveStyle;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,20 +79,16 @@ public class TestRiotLib {
     @Test
     public void sortPrefixesNewStyle() {
         IndentedLineBuffer writer = new IndentedLineBuffer();
-        RiotLib.writePrefixes(writer, prefixMap, true);
-
+        RiotLib.writePrefixes(writer, prefixMap, DirectiveStyle.KEYWORD);
         String result = writer.asString();
-
         Assert.assertEquals(expectedNewStyle, result);
     }
 
     @Test
     public void sortPrefixesOldStyle() {
         IndentedLineBuffer writer = new IndentedLineBuffer();
-        RiotLib.writePrefixes(writer, prefixMap, false);
-
+        RiotLib.writePrefixes(writer, prefixMap, DirectiveStyle.AT);
         String result = writer.asString();
-
         Assert.assertEquals(expectedOldStyle, result);
     }
 
