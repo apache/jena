@@ -26,6 +26,7 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.other.G;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -57,7 +58,9 @@ public class StageMatchTriple {
         Node s2 = tripleNode(s) ;
         Node p2 = tripleNode(p) ;
         Node o2 = tripleNode(o) ;
-        ExtendedIterator<Triple> graphIter = graph.find(s2, p2, o2) ;
+        // ExtendedIterator<Triple> graphIter = graph.find(s2, p2, o2) ;
+        // Language tags.
+        ExtendedIterator<Triple> graphIter = G.findByLang(graph, s2, p2, o2);
         ExtendedIterator<Binding> iter = graphIter.mapWith( r -> mapper(resultsBuilder, s, p, o, r)).filterDrop(Objects::isNull);
         return iter;
     }
