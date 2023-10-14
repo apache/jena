@@ -100,15 +100,15 @@ public class SparqlTests {
 
         //---- Query Evaluation Tests
         if ( testType.equals(TestManifest.QueryEvaluationTest) )
-            return new QueryExecTest(entry);
+            return new QueryEvalTest(entry);
         if ( testType.equals(TestManifestX.TestQuery) )
-            return new QueryExecTest(entry);
+            return new QueryEvalTest(entry);
 
         // ---- Update Evaluation tests
         if ( testType.equals(TestManifestUpdate_11.UpdateEvaluationTest) )
-            return new UpdateExecTest(entry);
+            return new UpdateEvalTest(entry);
         if ( testType.equals(TestManifest_11.UpdateEvaluationTest) )
-            return new UpdateExecTest(entry);
+            return new UpdateEvalTest(entry);
 
         // ---- Other
 
@@ -117,7 +117,7 @@ public class SparqlTests {
 
         // Reduced is funny.
         if ( testType.equals(TestManifest.ReducedCardinalityTest) )
-            return new QueryExecTest(entry);
+            return new QueryEvalTest(entry);
 
         if ( testType.equals(TestManifestX.TestSurpressed) )
             return new SurpressedTest(entry);
@@ -140,9 +140,9 @@ public class SparqlTests {
         if ( testType != null ) {
             // -- Query Evaluation Tests
             if ( testType.equals(TestManifest.QueryEvaluationTest) )
-                return new QueryExecTest(entry, maker);
+                return new QueryEvalTest(entry, maker);
             if ( testType.equals(TestManifestX.TestQuery) )
-                return new QueryExecTest(entry, maker);
+                return new QueryEvalTest(entry, maker);
 
 //            // -- Update Evaluation tests
 //            if ( testType.equals(TestManifestUpdate_11.UpdateEvaluationTest) )

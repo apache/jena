@@ -37,16 +37,16 @@ import org.apache.jena.update.UpdateRequest ;
 import org.apache.jena.util.iterator.ClosableIterator ;
 import org.apache.jena.vocabulary.RDFS ;
 
-public class UpdateExecTest implements Runnable
+public class UpdateEvalTest implements Runnable
 {
     private final ManifestEntry testEntry;
     private final Creator<Dataset> creator;
 
-    public UpdateExecTest(ManifestEntry entry) {
+    public UpdateEvalTest(ManifestEntry entry) {
         this(entry, ()->DatasetFactory.create());
     }
 
-    public UpdateExecTest(ManifestEntry entry, Creator<Dataset> maker) {
+    public UpdateEvalTest(ManifestEntry entry, Creator<Dataset> maker) {
         this.testEntry = entry;
         this.creator = maker;
     }
