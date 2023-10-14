@@ -38,7 +38,7 @@ public class GraphMemFactory
     // Default for sameTerm/sameValue
     // Jena 4 : default false (same value)
     // Jena 5 : default false (same term)
-    private static boolean defaultSameTerm = false;
+    private static boolean defaultSameTerm = true;
     static {
         // Initial setting.
         String x = System.getProperty("jena:graphSameTerm");

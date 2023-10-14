@@ -82,8 +82,6 @@ public class SolverRX3 {
         Graph g = execCxt.getActiveGraph();
         Iterator<Binding> iter = StageMatchTriple.accessTriple(chain, g, pattern, null, execCxt);
         return iter;
-        // 4.0.0 and before.
-        //return new QueryIterTriplePattern(chain, pattern, execCxt);
     }
 
     public static Binding matchTriple(Binding input, Triple tData, Triple tPattern) {
