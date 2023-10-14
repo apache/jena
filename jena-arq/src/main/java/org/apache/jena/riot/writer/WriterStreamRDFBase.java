@@ -61,7 +61,7 @@ public abstract class WriterStreamRDFBase implements StreamRDF
 
     protected NodeFormatterTTL fmt ;
     protected final IndentedWriter out ;
-    protected final DirectiveStyle prefixStyle;
+    protected final DirectiveStyle directiveStyle;
     // Allows for ability to write RDF without writing the base URI.
     protected final boolean printBase;
     // Is there an active prefix mapping for the RDF namespace.
@@ -84,7 +84,7 @@ public abstract class WriterStreamRDFBase implements StreamRDF
 
     protected WriterStreamRDFBase(IndentedWriter output,
                                   NodeToLabel nodeToLabel,
-                                  DirectiveStyle prefixStyle,
+                                  DirectiveStyle directiveStyle,
                                   boolean printBase) {
         // Stream writing does not take an external base URI from the API "write"
         // call. The base URI is output if StreamRDF.base() called, which means BASE
@@ -93,7 +93,7 @@ public abstract class WriterStreamRDFBase implements StreamRDF
         this.baseURI = null ;
         this.pMap = PrefixMapFactory.create() ;
         this.nodeToLabel = nodeToLabel ;
-        this.prefixStyle = prefixStyle;
+        this.directiveStyle = directiveStyle;
         this.printBase = printBase;
         setFormatter() ;
     }
@@ -145,7 +145,7 @@ public abstract class WriterStreamRDFBase implements StreamRDF
         lastWasDirective = true;
         setFormatter();
         if ( printBase )
-            RiotLib.writeBase(out, base, prefixStyle == DirectiveStyle.SPARQL);
+            RiotLib.writeBase(out, base, directiveStyle);
     }
 
     @Override
@@ -166,7 +166,7 @@ public abstract class WriterStreamRDFBase implements StreamRDF
         }
 
         pMap.add(prefix, iri);
-        RiotLib.writePrefix(out, prefix, iri, prefixStyle == DirectiveStyle.SPARQL);
+        RiotLib.writePrefix(out, prefix, iri, directiveStyle);
     }
 
     protected void prefixSetup(String prefix, String iri) {}

@@ -128,28 +128,25 @@ public class TestTurtleWriter {
         // Default base style
         String result = modelToString(baseTestData, RDFFormat.TURTLE_FLAT, null);
         int count1 = StringUtils.countMatches(result, "@base");
-        Assert.assertEquals(1, count1);
+        Assert.assertEquals(0, count1);
         int count2 = StringUtils.countMatches(result, "BASE");
-        Assert.assertEquals(0, count2);
+        Assert.assertEquals(1, count2);
     }
 
     @Test
     public void test_base_2() {
-        Context cxt = RIOT.getContext().copy();
-        cxt.set(RIOT.symTurtleDirectiveStyle, DirectiveStyle.AT);
-        String result = modelToString(baseTestData, RDFFormat.TURTLE_BLOCKS, null);
+        Context cxt = RIOT.getContext().copy().set(RIOT.symTurtleDirectiveStyle, DirectiveStyle.AT);
+        String result = modelToString(baseTestData, RDFFormat.TURTLE_BLOCKS, cxt);
         int count1 = StringUtils.countMatches(result, "@base");
         Assert.assertEquals(1, count1);
         int count2 = StringUtils.countMatches(result, "BASE");
         Assert.assertEquals(0, count2);
     }
 
-
     // BASE
     @Test
     public void test_base_3() {
-        Context cxt = RIOT.getContext().copy();
-        cxt.set(RIOT.symTurtleDirectiveStyle, DirectiveStyle.SPARQL);
+        Context cxt = RIOT.getContext().copy().set(RIOT.symTurtleDirectiveStyle, DirectiveStyle.KEYWORD);
         String result = modelToString(baseTestData, RDFFormat.TURTLE_FLAT, cxt);
         int count1 = StringUtils.countMatches(result, "BASE");
         Assert.assertEquals(1, count1);
@@ -160,7 +157,7 @@ public class TestTurtleWriter {
     @Test
     public void test_base_4() {
         Context cxt = RIOT.getContext().copy();
-        cxt.set(RIOT.symTurtleDirectiveStyle, DirectiveStyle.SPARQL);
+        cxt.set(RIOT.symTurtleDirectiveStyle, DirectiveStyle.KEYWORD);
         String result = modelToString(baseTestData, RDFFormat.TURTLE_BLOCKS, cxt);
         int count1 = StringUtils.countMatches(result, "BASE");
         Assert.assertEquals(1, count1);

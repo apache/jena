@@ -24,25 +24,21 @@ import org.apache.jena.sparql.util.Context;
 /** Package-scoped utilities */
 /*package*/ class WriterLib {
 
-    private static final DirectiveStyle dftDirectiveStyle = DirectiveStyle.AT;
-
     private static final IndentStyle dftIndentStyle = IndentStyle.WIDE;
 
     // Determine the directive style (applies to PREFIX and BASE).
     /*package*/ static DirectiveStyle directiveStyle(Context context) {
         if ( context == null )
-            return dftDirectiveStyle;
-        Object x = context.get(RIOT.symTurtleDirectiveStyle) ;
+            return DirectiveStyle.systemDefault;
 
-        if ( x instanceof String s ) {
-            DirectiveStyle style = DirectiveStyle.create(s);
-            return style == null ? dftDirectiveStyle : style;
-        }
+        Object x = context.get(RIOT.symTurtleDirectiveStyle) ;
+        if ( x instanceof String s )
+            return DirectiveStyle.create(s);
         if ( x instanceof DirectiveStyle directive)
             return directive ;
 
         // Default choice; includes null in context.
-        return dftDirectiveStyle;
+        return DirectiveStyle.systemDefault;
     }
 
     /*package*/ static IndentStyle indentStyle(Context context) {

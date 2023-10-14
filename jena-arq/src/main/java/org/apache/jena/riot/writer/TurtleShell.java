@@ -57,7 +57,7 @@ public abstract class TurtleShell {
     protected final PrefixMap      prefixMap;
     protected final String         baseURI;
     protected final Context        context;
-    protected final DirectiveStyle prefixStyle;
+    protected final DirectiveStyle directiveStyle;
     protected final IndentStyle    indentStyle;
 
     protected TurtleShell(IndentedWriter out, PrefixMap pmap, String baseURI, NodeFormatter nodeFmt, Context context) {
@@ -68,7 +68,7 @@ public abstract class TurtleShell {
         this.baseURI = baseURI;
         this.nodeFmt = nodeFmt;
         this.context = context;
-        this.prefixStyle = WriterLib.directiveStyle(context);
+        this.directiveStyle = WriterLib.directiveStyle(context);
         this.indentStyle = WriterLib.indentStyle(context);
     }
 
@@ -85,11 +85,11 @@ public abstract class TurtleShell {
 
     protected void writeBase(String base) {
         if ( context == null || ! context.isTrue(RIOT.symTurtleOmitBase) )
-            RiotLib.writeBase(out, base, prefixStyle==DirectiveStyle.SPARQL);
+            RiotLib.writeBase(out, base, directiveStyle);
     }
 
     protected void writePrefixes(PrefixMap prefixMap) {
-        RiotLib.writePrefixes(out, prefixMap, prefixStyle==DirectiveStyle.SPARQL);
+        RiotLib.writePrefixes(out, prefixMap, directiveStyle);
     }
 
     /** Write graph in Turtle syntax (or part of TriG) */

@@ -22,6 +22,7 @@ import org.apache.jena.atlas.lib.Version;
 import org.apache.jena.riot.lang.rdfxml.RRX;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.writer.DirectiveStyle;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry;
@@ -126,8 +127,19 @@ public class RIOT {
     public static Symbol symRDFXML0 = SystemARQ.allocSymbol(RDFXML_SYMBOL_BASE, "rdfxml0");
 
     /**
-     * Printing style. One of "RDF11" or RDF10". Controls {@literal @prefix} vs PREFIX.
-     * Values causing SPARQL-style keyword output are "sparql","keyword" and "rdf11".
+     * Printing style - {@code PREFIX} or {@code @prefix}
+     *  - {@link DirectiveStyle}, one of {@code AT} or {@code KEYWORD}.
+     * <p>
+     * The context value is:
+     * <ul>
+     * <li>
+     * One of {@link DirectiveStyle#KEYWORD}, "rdf_11", "rdf11" or "sparql"
+     * to have {@code PREFIX} and {@code BASE}</li>
+     * <ll>
+     *  One of {@link DirectiveStyle#AT}," rdf_10", "rdf10" or  "at" to have {@code @prefix} and {@code @base}
+     * </li>
+     * The system default is {@link DirectiveStyle#KEYWORD}.
+     * </ul>
      */
     public static final Symbol symTurtleDirectiveStyle = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "directiveStyle");
 
