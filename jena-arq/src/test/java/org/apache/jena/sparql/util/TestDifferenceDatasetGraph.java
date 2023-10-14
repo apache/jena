@@ -51,5 +51,4 @@ public class TestDifferenceDatasetGraph extends AbstractTestDyadicDatasetGraph {
         assertTrue(g1.isIsomorphicWith(dsg.getDefaultGraph()));
         assertTrue(dsg.getGraph(graphName2).isEmpty());
     }
-
 }

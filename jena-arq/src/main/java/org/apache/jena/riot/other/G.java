@@ -989,4 +989,56 @@ public class G {
         String lang2 = data.getLiteralLanguage();
         return lex1.equals(lex2) && lang1.equalsIgnoreCase(lang2);
     }
+
+
+    /** Contains, and language tags compare case-insentively */
+    public static boolean containsByLang(Graph g, Node s, Node p, Node o) {
+        // Try exact.
+        if ( g.contains(s, p, o) )
+            return true;
+        // If object is a wildcard, no further test needed.
+        if ( G.isNullOrAny(o) )
+            return false;
+        // Only objects have languages
+        if ( ! G.hasLang(o) )
+            return false;
+        // No term match - o has a language - check all s-p-?
+        ExtendedIterator<Triple> iter = g.find(s, p, Node.ANY).filterKeep(triple->G.sameTermMatch(o, triple.getObject()));
+        try {
+            return iter.hasNext();
+        } finally {
+            iter.close();
+        }
+    }
+
+    /** Contains, and language tags match case-insentively */
+    public static ExtendedIterator<Triple> findByLang(Graph g, Node s, Node p, Node o) {
+        // No specific value given.
+        if ( G.isNullOrAny(o) )
+            return g.find(s, p, o);
+        if ( ! G.hasLang(o) )
+            // Not a language literal. find(s,p,o) is enough.
+            return g.find(s,p,o);
+        // Filter by language value.
+        ExtendedIterator<Triple> iter = g.find(s, p, Node.ANY)
+                                         .filterKeep(triple->G.sameTermMatch(o, triple.getObject()));
+        return iter;
+    }
+
+    /**
+     * Test whether a node has a language tag.
+     * If the node is null or any "match" (non-concrete) node, return false.
+     */
+    public static boolean hasLang(Node node) {
+        if ( node == null )
+            return false ;
+        if ( ! node.isLiteral() )
+            return false ;
+        String x = node.getLiteralLanguage() ;
+        if ( x == null )
+            return false ;
+        if ( x.equals("") )
+            return false ;
+        return true ;
+    }
 }
