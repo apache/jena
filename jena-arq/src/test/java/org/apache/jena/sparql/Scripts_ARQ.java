@@ -27,7 +27,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-
+/**
+ * ARQ scripted tests.
+ */
 @RunWith(RunnerSPARQL.class)
 @Label("ARQ")
 @Manifests({
