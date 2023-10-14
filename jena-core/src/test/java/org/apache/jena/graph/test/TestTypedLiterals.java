@@ -61,9 +61,6 @@ public class TestTypedLiterals extends TestCase {
     }
     */
 
-    /**
-     * Boilerplate for junit
-     */
     public TestTypedLiterals( String name ) {
         super( name );
     }
@@ -438,8 +435,8 @@ public class TestTypedLiterals extends TestCase {
     }
 
     /**
-     * Test case for a bug in retrieving a value like 3.00 from
-     * a probe like 3.0
+     * Test case for retrieving a value like 3.00 from
+     * a probe like 3.0. This test is value sensitive
      */
     public void testDecimalFind() {
         RDFDatatype dt = XSDDatatype.XSDdecimal;
@@ -467,7 +464,7 @@ public class TestTypedLiterals extends TestCase {
 
     /**
      * Helper for testDecimalCannonicalize. Run a single
-     * cannonicalization test on a value specified in string form.
+     * canonicalization test on a value specified in string form.
      */
     private void doTestDecimalCanonicalize(String value, String expected, Class<?> expectedClass) {
         Object normalized = XSDDatatype.XSDdecimal.cannonicalise( new BigDecimal(value) );

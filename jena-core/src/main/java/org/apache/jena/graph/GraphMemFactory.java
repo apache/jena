@@ -36,12 +36,18 @@ import org.apache.jena.util.iterator.NullIterator ;
 public class GraphMemFactory
 {
     // Default for sameTerm/sameValue
+    // Jena 4 : default false (same value)
+    // Jena 5 : default false (same term)
     private static boolean defaultSameTerm = false;
     static {
         // Initial setting.
         String x = System.getProperty("jena:graphSameTerm");
-        if ( x != null && x.equalsIgnoreCase("true") )
-            defaultSameTerm = true;
+        if ( x != null ) {
+            if ( x.equalsIgnoreCase("true") )
+                defaultSameTerm = true;
+            if ( x.equalsIgnoreCase("false") )
+                defaultSameTerm = false;
+        }
     }
 
     /**
@@ -90,7 +96,7 @@ public class GraphMemFactory
     /**
      * Answer a memory-based graph with "same value" semantics
      * used in Jena2, Jena3 and Jena4 for in-memory graphs.
-     * Jena5 may change to "same term" semantics.
+     * Jena5 changed to "same term" semantics.
      * This method will continue to provide a "same value" graph.
      */
     @SuppressWarnings("deprecation")
