@@ -27,10 +27,11 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith;
 
-/** The test suite for all DAWG (the first SPARQL working group) approved tests. 
- *  Many are the same as or overlap with ARQ tests (because the ARQ ones were 
- *  contributed to DAWG or developed in response the feature design within DAWG)
- *  but we keep this set here as a reference.  
+/**
+ * The test suite for all DAWG (the first SPARQL working group) approved tests.
+ * Many are the same as or overlap with ARQ tests (because the ARQ ones were
+ * contributed to DAWG or developed in response the feature design within DAWG)
+ * but we keep this set here as a reference.
  */
 @RunWith(RunnerSPARQL.class)
 @Label("DAWG")
