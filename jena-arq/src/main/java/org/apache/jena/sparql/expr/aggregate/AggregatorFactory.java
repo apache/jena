@@ -78,7 +78,7 @@ public class AggregatorFactory {
         if ( expr2 == null )
             return new AggFoldList(distinct, expr1, orderBy) ;
         else
-            return new AggFoldMap(expr1, expr2) ;
+            return new AggFoldMap(expr1, expr2, orderBy) ;
     }
 
     public static Aggregator createCustom(String iri, Args a) {
