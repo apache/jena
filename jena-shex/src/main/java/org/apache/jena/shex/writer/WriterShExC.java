@@ -29,6 +29,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterTTL;
 import org.apache.jena.riot.system.RiotLib;
+import org.apache.jena.riot.writer.DirectiveStyle;
 import org.apache.jena.shex.ShexSchema;
 import org.apache.jena.shex.ShexShape;
 import org.apache.jena.shex.expressions.*;
@@ -53,7 +54,7 @@ public class WriterShExC {
             hasHeader = true;
         }
         if ( schema.getPrefixMap() != null && ! schema.getPrefixMap().isEmpty() ) {
-            RiotLib.writePrefixes(out, schema.getPrefixMap(), true);
+            RiotLib.writePrefixes(out, schema.getPrefixMap(), DirectiveStyle.KEYWORD);
             hasHeader = true;
         }
         if ( schema.getImports() != null && ! schema.getImports().isEmpty() ) {

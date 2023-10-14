@@ -18,16 +18,17 @@
 
 package org.apache.jena.riot.writer;
 
-enum DirectiveStyle {
-    AT, SPARQL ;
+public enum DirectiveStyle {
+    AT, KEYWORD ;
+
+    public static DirectiveStyle systemDefault = DirectiveStyle.KEYWORD;
+
     public static DirectiveStyle create(String label) {
         String s = label.toLowerCase() ;
-        switch(s) {
-            case "rdf_10": case "rdf10": case "n3": case "at":
-                return DirectiveStyle.AT ;
-            case "rdf_11": case "rdf11": case "sparql":
-                return DirectiveStyle.SPARQL ;
-        }
-        return null;
+        return switch(s) {
+            case "rdf_10", "rdf10", "at"     -> DirectiveStyle.AT ;
+            case "rdf_11", "rdf11", "sparql" -> DirectiveStyle.KEYWORD ;
+            default -> systemDefault;
+        };
     }
 }
