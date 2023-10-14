@@ -87,14 +87,15 @@ public class NodeFactory {
     /**
      * Make a literal with specified language. lexical form must not be null.
      *
-     * @param string
-     *            the lexical form of the literal
-     * @param lang
-     *            the optional language tag
+     * @param string  the lexical form of the literal
+     * @param lang    the optional language tag
      */
     public static Node createLiteral(String string, String lang) {
         Objects.requireNonNull(string, "null lexical form for literal");
-        return StringUtils.isEmpty(lang) ?new Node_Literal(string) : new Node_Literal(string, lang);
+        if ( StringUtils.isEmpty(lang) )
+            return new Node_Literal(string);
+        else
+            return new Node_Literal(string, lang);
     }
 
     /**

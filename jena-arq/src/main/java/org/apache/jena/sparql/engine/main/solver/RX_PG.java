@@ -160,7 +160,7 @@ import org.apache.jena.sparql.util.Context;
      * It assumes any triple terms have been dealt with.
      */
     private static QueryIterator matchData(QueryIterator chain, Triple pattern, ExecutionContext execCxt) {
-        return QC.execute(chain, pattern, execCxt);
+        return QC.executeFlat(chain, pattern, execCxt);
     }
 
     /**

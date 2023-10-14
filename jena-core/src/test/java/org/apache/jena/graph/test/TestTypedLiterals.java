@@ -436,17 +436,18 @@ public class TestTypedLiterals extends TestCase {
 
     /**
      * Test case for retrieving a value like 3.00 from
-     * a probe like 3.0. This test is value sensitive
+     * a probe like 3.0. This test is value sensitive.
      */
     public void testDecimalFind() {
+        Graph graph = GraphMemFactory.createDefaultGraphSameValue();
         RDFDatatype dt = XSDDatatype.XSDdecimal;
         Node ns = NodeFactory.createURI("x") ;
         Node np = NodeFactory.createURI("p") ;
         Node nx1 = NodeFactory.createLiteral("0.50", dt) ;
         Node nx2 = NodeFactory.createLiteral("0.500", dt) ;
-        Graph graph = GraphMemFactory.createDefaultGraph() ;
-        graph.add(Triple.create(ns, np, nx1)) ;
+        graph.add(ns, np, nx1) ;
         assertTrue( graph.find(Node.ANY, Node.ANY, nx2).hasNext() );
+        assertTrue( graph.find(ns, np, nx2).hasNext() );
     }
 
     /**

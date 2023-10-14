@@ -64,10 +64,10 @@ public class QC
     }
 
     /**
-     * Execute a triple pattern - top level variables only (no variables in RDF-sr embedded triples).
+     * Execute a triple pattern - top level variables only (no variables in RDF-star triple terms).
      * This is data access to asserted triples.
      */
-    public static QueryIterator execute(QueryIterator input, Triple pattern, ExecutionContext execCxt) {
+    public static QueryIterator executeFlat(QueryIterator input, Triple pattern, ExecutionContext execCxt) {
         Iterator<Binding> iter = StageMatchTriple.accessTriple(input, execCxt.getActiveGraph(), pattern, null, execCxt);
         return QueryIterPlainWrapper.create(iter, execCxt);
     }
