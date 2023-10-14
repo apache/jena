@@ -41,6 +41,7 @@ import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.LabelToNode;
+import org.apache.jena.riot.writer.DirectiveStyle;
 import org.apache.jena.riot.writer.WriterGraphRIOTBase;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -284,11 +285,15 @@ public class RiotLib {
         graph.find(s, p, o).forEach(acc::add);
     }
 
-    public static void writeBase(IndentedWriter out, String base, boolean newStyle) {
-        if (newStyle)
-            writeBaseNewStyle(out, base);
-        else
+    public static void writeBase(IndentedWriter out, String base) {
+        writeBase(out, base, DirectiveStyle.systemDefault);
+    }
+
+    public static void writeBase(IndentedWriter out, String base, DirectiveStyle writeStyle) {
+        if ( writeStyle == DirectiveStyle.AT )
             writeBaseOldStyle(out, base);
+        else
+            writeBaseNewStyle(out, base);
     }
 
     private static void writeBaseNewStyle(IndentedWriter out, String base) {
@@ -314,17 +319,21 @@ public class RiotLib {
         }
     }
 
+    public static void writePrefixes(IndentedWriter out, PrefixMap prefixMap) {
+        writePrefixes(out, prefixMap, DirectiveStyle.systemDefault);
+    }
+
     /**
      * Write prefixes
      */
-    public static void writePrefixes(IndentedWriter out, PrefixMap prefixMap, boolean newStyle) {
+    public static void writePrefixes(IndentedWriter out, PrefixMap prefixMap, DirectiveStyle writeStyle) {
         if ( prefixMap != null && !prefixMap.isEmpty() ) {
             int maxPrefixLength = prefixMap.getMapping().keySet().stream()
                     .map(String::length)
                     .max(Comparator.naturalOrder())
                     .orElse(0);
             for (Map.Entry<String, String> e : sortPrefixes(prefixMap)) {
-                writePrefix(out, e.getKey(), e.getValue(), newStyle, maxPrefixLength);
+                writePrefix(out, e.getKey(), e.getValue(), writeStyle, maxPrefixLength);
             }
         }
     }
@@ -342,15 +351,15 @@ public class RiotLib {
      * Write a prefix.
      * Write using {@code @prefix} or {@code PREFIX}.
      */
-    public static void writePrefix(IndentedWriter out, String prefix, String uri, boolean newStyle) {
-        writePrefix(out, prefix, uri, newStyle, 0);
+    public static void writePrefix(IndentedWriter out, String prefix, String uri, DirectiveStyle writeStyle) {
+        writePrefix(out, prefix, uri, writeStyle, 0);
     }
 
-    private static void writePrefix(IndentedWriter out, String prefix, String uri, boolean newStyle, int maxPrefixLength) {
-        if (newStyle)
-            writePrefixNewStyle(out, prefix, uri, maxPrefixLength);
-        else
+    private static void writePrefix(IndentedWriter out, String prefix, String uri, DirectiveStyle writeStyle, int maxPrefixLength) {
+        if ( writeStyle == DirectiveStyle.AT )
             writePrefixOldStyle(out, prefix, uri, maxPrefixLength);
+        else
+            writePrefixNewStyle(out, prefix, uri, maxPrefixLength);
     }
 
     /**

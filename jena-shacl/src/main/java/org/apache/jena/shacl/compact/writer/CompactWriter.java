@@ -30,6 +30,7 @@ import org.apache.jena.riot.out.NodeFormatterTTL;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.riot.system.RiotLib;
+import org.apache.jena.riot.writer.DirectiveStyle;
 import org.apache.jena.riot.writer.WriterConst;
 import org.apache.jena.shacl.ShaclException;
 import org.apache.jena.shacl.Shapes;
@@ -60,7 +61,7 @@ public class CompactWriter {
         if ( baseURI != null ) {
             if ( someOutput )
                 out.println();
-            RiotLib.writeBase(out, baseURI, true);
+            RiotLib.writeBase(out, baseURI, DirectiveStyle.KEYWORD);
             someOutput = true;
         }
 
@@ -68,7 +69,7 @@ public class CompactWriter {
         if ( ! graphPrefixMap.isEmpty() ) {
             if ( someOutput )
                 out.println();
-            RiotLib.writePrefixes(out, graphPrefixMap, true);
+            RiotLib.writePrefixes(out, graphPrefixMap, DirectiveStyle.KEYWORD);
             someOutput = true;
         }
 
