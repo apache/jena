@@ -33,6 +33,7 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterTTL;
 import org.apache.jena.riot.system.RiotLib;
+import org.apache.jena.riot.writer.DirectiveStyle;
 import org.apache.jena.shex.parser.ShExC;
 import org.apache.jena.shex.parser.ShExJ;
 import org.apache.jena.shex.sys.SysShex;
@@ -121,7 +122,7 @@ public class Shex {
             boolean havePrinted = false;
 
             if ( ! shexSchema.getPrefixMap().isEmpty() ) {
-                RiotLib.writePrefixes(iOut, shexSchema.getPrefixMap(), true);
+                RiotLib.writePrefixes(iOut, shexSchema.getPrefixMap(), DirectiveStyle.KEYWORD);
                 havePrinted = true;
             }
 
