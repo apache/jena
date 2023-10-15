@@ -19,12 +19,12 @@
 package org.apache.jena.riot;
 
 import java.util.Locale;
+import java.util.function.Predicate;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.base.Sys;
 import org.junit.Assert;
 import org.junit.Test;
-import org.python.google.common.base.Predicate;
 
 public class TestSysRIOT {
     @Test
@@ -65,9 +65,9 @@ public class TestSysRIOT {
         String x = SysRIOT.chooseBaseIRI(null, input);
         Assert.assertEquals(expected, x);
     }
-    
+
     private void testChooseBaseIRI(String input, Predicate<String> test) {
         String x = SysRIOT.chooseBaseIRI(null, input);
-        Assert.assertTrue(test.apply(x));
+        Assert.assertTrue(test.test(x));
     }
 }
