@@ -398,7 +398,7 @@ public class RDFStar {
         Node p = pReifTriple.getObject();
         Node o = oReifTriple.getObject();
 
-        Node_Triple nodeTriple = new Node_Triple(s, p, o);
+        Node nodeTriple = NodeFactory.createTripleNode(s, p, o);
         if ( false )
             inserts.add(Triple.create(s, p, o));
 

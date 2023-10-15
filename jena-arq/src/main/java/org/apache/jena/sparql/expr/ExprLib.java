@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.expr;
 
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.algebra.optimize.ExprTransformConstantFold ;
@@ -226,10 +225,8 @@ public class ExprLib
     public static Expr nodeToExpr(Node n) {
         if ( n.isVariable() )
             return new ExprVar(n) ;
-        if ( n.isNodeTriple() ) {
-            Node_Triple tripleTerm = (Node_Triple)n;
-            return new ExprTripleTerm(tripleTerm);
-        }
+        if ( n.isNodeTriple() )
+            return new ExprTripleTerm(n);
         return NodeValue.makeNode(n) ;
     }
 

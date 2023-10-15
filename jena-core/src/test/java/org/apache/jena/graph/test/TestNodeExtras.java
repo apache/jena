@@ -35,13 +35,13 @@ public class TestNodeExtras {
 
     private static Triple triple9 = Triple.create(NodeFactory.createBlankNode(),p,o);
 
-    private static Node_Triple newTripleTerm(Triple triple)             { return new Node_Triple(triple); }
+    private static Node newTripleTerm(Triple triple)             { return NodeFactory.createTripleNode(triple); }
 
-    private static Node_Triple newTripleTerm(Node s, Node p , Node o)   { return new Node_Triple(s,p,o); }
+    private static Node newTripleTerm(Node s, Node p , Node o)   { return NodeFactory.createTripleNode(s,p,o); }
 
-    private static Node_Graph newGraphTerm(Graph graph)                 { return new Node_Graph(graph); }
+    private static Node_Graph newGraphTerm(Graph graph)          { return new Node_Graph(graph); }
 
-    private static Node_Graph newGraphTerm()                            { return new Node_Graph(GraphMemFactory.empty()); }
+    private static Node_Graph newGraphTerm()                     { return new Node_Graph(GraphMemFactory.empty()); }
 
      @Test public void term_triple_1() {
         Node nt = newTripleTerm(s,p,o);
