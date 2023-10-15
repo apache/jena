@@ -119,11 +119,11 @@ public class ScriptFunction extends FunctionBase {
                 this.denyList = Set.of("eval", "load");
                 check(lang, name, allowList, denyList);
                 break;
-            case "python":
-                // never allow these.
-                this.denyList = Set.of("eval", "exec");
-                check(lang, name, allowList, denyList);
-                break;
+//            case "python":
+//                // never allow these.
+//                this.denyList = Set.of("eval", "exec");
+//                check(lang, name, allowList, denyList);
+//                break;
             default:
                 throw new ScriptDenyException("Language '"+lang+"' not recognized");
         }
