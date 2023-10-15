@@ -23,10 +23,8 @@ import java.util.Objects;
 import org.apache.jena.shared.PrefixMapping;
 
 /**
-    "variable" nodes; these are outside the RDF2003 specification, but are
-    used internally for "placeholder" nodes where blank nodes would be
-    wrong, most specifically in Query.
-*/
+ * "variable" nodes; these are outside the RDF specification
+ */
 
 public class Node_Variable extends Node
 {
@@ -37,7 +35,6 @@ public class Node_Variable extends Node
         which becomes wrapped in a VariableName.
      */
     public Node_Variable( String name )
-//    { this.varName = Objects.requireNonNull(name) ; }
     { this.varName = name ; }   // Node_RuleVariable
 
     @Override

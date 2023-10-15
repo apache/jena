@@ -34,6 +34,7 @@ import org.apache.jena.sys.JenaSystem;
 public class NodeFactory {
 
     static { JenaSystem.init(); }
+    private NodeFactory() {}
 
     public static RDFDatatype getType(String s) {
         if ( s == null )
