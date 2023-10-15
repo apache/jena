@@ -26,7 +26,7 @@ import org.apache.jena.shared.PrefixMapping;
  */
 public class Node_Marker extends Node_Ext<String> {
 
-    public static Node xlabel(String str) { return new Node_Marker(str); }
+    public static Node marker(String str) { return new Node_Marker(str); }
 
     protected Node_Marker(String label) {
         super(label);

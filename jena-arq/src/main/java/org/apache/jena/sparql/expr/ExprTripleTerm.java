@@ -21,8 +21,10 @@ package org.apache.jena.sparql.expr;
 import java.util.Objects;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.core.Substitute;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.FunctionEnv ;
@@ -37,10 +39,18 @@ public class ExprTripleTerm extends ExprNode {
     private final Node_Triple tripleTerm;
     private final NodeValue nvTripleTerm;
 
-    public ExprTripleTerm(Node_Triple tripleTerm) {
+    public ExprTripleTerm(Node node) {
+        if ( ! node.isNodeTriple() )
+            throw new ARQInternalErrorException("Not a triple term "+node) ;
+        Node_Triple tripleTerm = (Node_Triple)node;
         this.tripleTerm = tripleTerm;
         this.nvTripleTerm = ( tripleTerm.isConcrete() ) ?  NodeValue.makeNode(tripleTerm) : null;
     }
+
+//    public ExprTripleTerm(Node_Triple tripleTerm) {
+//        this.tripleTerm = tripleTerm;
+//        this.nvTripleTerm = ( tripleTerm.isConcrete() ) ?  NodeValue.makeNode(tripleTerm) : null;
+//    }
 
     @Override public void visit(ExprVisitor visitor) { visitor.visit(this); }
 
@@ -50,7 +60,7 @@ public class ExprTripleTerm extends ExprNode {
         Triple t1 = tripleTerm.getTriple();
         Triple t2 = Substitute.substitute(t1, binding);
         if ( t2.isConcrete() ) {
-            Node_Triple tripleTerm2 = new Node_Triple(t2);
+            Node tripleTerm2 = NodeFactory.createTripleNode(t2);
             return NodeValue.makeNode(tripleTerm2);
         }
         throw new VariableNotBoundException("Not concrete: triple "+tripleTerm) ;
@@ -75,7 +85,7 @@ public class ExprTripleTerm extends ExprNode {
         Triple t2 = Substitute.substitute(tripleTerm.getTriple(), binding);
         if ( t2 == t1 )
             return this;
-        Node_Triple nodeTriple = new Node_Triple(t2);
+        Node nodeTriple = NodeFactory.createTripleNode(t2);
         return new ExprTripleTerm(nodeTriple);
     }
 

@@ -27,11 +27,11 @@ public class Node_Triple extends Node {
 
     private final Triple triple;
 
-    public Node_Triple(Node s, Node p, Node o) {
+    /*package*/ Node_Triple(Node s, Node p, Node o) {
         this(Triple.create(s, p, o));
     }
 
-    public Node_Triple(Triple triple) {
+    /*package*/ Node_Triple(Triple triple) {
         this.triple = Objects.requireNonNull(triple);
     }
 
