@@ -35,13 +35,13 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.compose.MultiUnion;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapUnmodifiable;
 import org.apache.jena.shared.Lock;
 import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.system.G;
 
 public abstract class DyadicDatasetGraph extends PairOfSameType<DatasetGraph> implements DatasetGraph {
 

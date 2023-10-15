@@ -27,9 +27,9 @@ import java.util.Objects;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.system.G;
 
 /** An output of triples / quads that print batches of same subject / same graph, same subject.
  *  It writes something that is easier to read than

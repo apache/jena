@@ -28,7 +28,6 @@ import java.util.function.Predicate;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.op.OpBGP ;
@@ -49,6 +48,7 @@ import org.apache.jena.sparql.pfunction.PropertyFunctionFactory ;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry ;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
+import org.apache.jena.system.G;
 
 public class PathLib
 {

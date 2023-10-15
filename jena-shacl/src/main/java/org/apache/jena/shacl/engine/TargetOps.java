@@ -27,7 +27,6 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.ShaclException;
 import org.apache.jena.shacl.engine.constraint.SparqlComponent;
@@ -38,6 +37,7 @@ import org.apache.jena.shacl.validation.EvalSparql;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.system.G;
 
 /** Algorithms concerned with targets */
 public class TargetOps {

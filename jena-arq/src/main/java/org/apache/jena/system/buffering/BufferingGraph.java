@@ -18,8 +18,8 @@
 
 package org.apache.jena.system.buffering;
 
-import static org.apache.jena.riot.other.G.containsBySameTerm;
-import static org.apache.jena.riot.other.G.execTxn;
+import static org.apache.jena.system.G.containsBySameTerm;
+import static org.apache.jena.system.G.execTxn;
 
 import java.util.HashSet;
 import java.util.Iterator;

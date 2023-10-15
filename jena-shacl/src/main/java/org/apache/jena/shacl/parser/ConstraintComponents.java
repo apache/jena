@@ -28,12 +28,12 @@ import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.engine.Parameter;
 import org.apache.jena.shacl.engine.constraint.ConstraintComponentSPARQL;
 import org.apache.jena.shacl.engine.constraint.SparqlComponent;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.vocabulary.SHACL;
+import org.apache.jena.system.G;
 
 public class ConstraintComponents {
     // 6.2.1 Parameter Declarations (sh:parameter)

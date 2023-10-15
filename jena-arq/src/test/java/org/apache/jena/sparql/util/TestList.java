@@ -36,10 +36,10 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.graph.GNode ;
 import org.apache.jena.sparql.util.graph.GraphList ;
+import org.apache.jena.system.G;
 import org.apache.jena.vocabulary.RDF ;
 import org.junit.Test ;
 

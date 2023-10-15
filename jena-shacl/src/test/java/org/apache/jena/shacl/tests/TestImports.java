@@ -29,9 +29,9 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.Imports;
 import org.apache.jena.shacl.Shapes;
+import org.apache.jena.system.G;
 import org.junit.Test;
 
 public class TestImports {
