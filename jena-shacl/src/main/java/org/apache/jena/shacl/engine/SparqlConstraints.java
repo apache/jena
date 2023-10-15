@@ -23,13 +23,13 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.engine.constraint.SparqlConstraint;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.ShaclParseException;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.graph.NodeConst;
+import org.apache.jena.system.G;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 public class SparqlConstraints {

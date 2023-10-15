@@ -30,7 +30,6 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.shacl.lib.ShLib;
@@ -40,6 +39,7 @@ import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.path.*;
 import org.apache.jena.sparql.path.eval.PathEval;
+import org.apache.jena.system.G;
 
 public class ShaclPaths {
 //  SPARQL Property path: ex:parent

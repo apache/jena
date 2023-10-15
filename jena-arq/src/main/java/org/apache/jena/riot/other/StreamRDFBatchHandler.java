@@ -18,35 +18,38 @@
 
 package org.apache.jena.riot.other;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.Quad;
 
-public interface StreamRDFBatchHandler
-{
+public interface StreamRDFBatchHandler {
     /** Start */
-    public void start() ;
-    
-    /** Triple emitted 
-     * @param currentSubject */
-    public void batchTriples(Node currentSubject , List<Triple> triples) ;
+    public void start();
 
-    /** Quad emitted 
-     * @param currentSubject 
-     * @param currentGraph 
+    /**
+     * Triple emitted
+     *
+     * @param currentSubject
+     */
+    public void batchTriples(Node currentSubject, List<Triple> triples);
+
+    /**
+     * Quad emitted
+     *
+     * @param currentSubject
+     * @param currentGraph
      * @param quads
-     * */
-    public void batchQuads(Node currentGraph , Node currentSubject , List<Quad> quads) ;
+     */
+    public void batchQuads(Node currentGraph, Node currentSubject, List<Quad> quads);
 
     /** base declaration seen */
-    public void base(String base) ;
+    public void base(String base);
 
     /** prefix declaration seen */
-    public void prefix(String prefix, String iri) ;
+    public void prefix(String prefix, String iri);
 
     /** Finish parsing */
-    public void finish() ;
+    public void finish();
 }
-

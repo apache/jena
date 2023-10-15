@@ -28,7 +28,6 @@ import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.graph.*;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.system.*;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.Quad;

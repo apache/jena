@@ -26,7 +26,6 @@ import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.engine.ShaclPaths;
 import org.apache.jena.shacl.engine.Target;
 import org.apache.jena.shacl.engine.ValidationContext;
@@ -36,6 +35,7 @@ import org.apache.jena.shacl.parser.PropertyShape;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.event.*;
 import org.apache.jena.sparql.path.Path;
+import org.apache.jena.system.G;
 
 /**
  * The validation algorithm from the

@@ -35,9 +35,9 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotParseException;
-import org.apache.jena.riot.other.G;
-import org.apache.jena.riot.other.RDFDataException;
 import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.system.G;
+import org.apache.jena.system.RDFDataException;
 
 /**
  * Import processing.

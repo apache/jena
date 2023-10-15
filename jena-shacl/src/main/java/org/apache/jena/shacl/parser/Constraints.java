@@ -28,12 +28,12 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.impl.Util;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.engine.SparqlConstraints;
 import org.apache.jena.shacl.engine.constraint.*;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.sys.C;
 import org.apache.jena.shacl.vocabulary.SHACL;
+import org.apache.jena.system.G;
 
 public class Constraints {
 

@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.vocabulary.SHACL;
+import org.apache.jena.system.G;
 
 /** Analyse and record the various kinds of shapes an targets */
 public class Targets {

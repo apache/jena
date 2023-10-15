@@ -26,11 +26,11 @@ import org.apache.commons.collections4.MultiMapUtils;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.engine.Parameter;
 import org.apache.jena.shacl.engine.constraint.SparqlComponent;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.vocabulary.SHACL;
+import org.apache.jena.system.G;
 
 public class TargetExtensions {
     /*package*/ MultiValuedMap<Node, SparqlComponent> paramPathToComponents = MultiMapUtils.newListValuedHashMap();

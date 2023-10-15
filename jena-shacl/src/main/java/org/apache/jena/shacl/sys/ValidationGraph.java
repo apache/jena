@@ -21,9 +21,9 @@ package org.apache.jena.shacl.sys;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.graph.impl.TransactionHandlerBase;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.*;
 import org.apache.jena.sparql.graph.GraphWrapper;
+import org.apache.jena.system.G;
 
 /** A graph that performs SHACL validation on a graph during transaction "commit".
  *  (It does not validate on direct addition of date to the graph outside a transaction).
