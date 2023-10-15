@@ -25,7 +25,6 @@ import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.*;
 import org.apache.jena.graph.impl.AllCapabilities;
 import org.apache.jena.graph.impl.GraphBase ;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.shared.AddDeniedException;
 import org.apache.jena.shared.DeleteDeniedException;
@@ -33,6 +32,7 @@ import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.graph.GraphUnionRead ;
+import org.apache.jena.system.G;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 

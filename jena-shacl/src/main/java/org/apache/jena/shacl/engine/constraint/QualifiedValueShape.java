@@ -23,7 +23,6 @@ import java.util.*;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.ShaclException;
 import org.apache.jena.shacl.ValidationReport;
@@ -37,6 +36,7 @@ import org.apache.jena.shacl.validation.ValidationProc;
 import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnPathNodesWithCompareNodesEvent;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.path.Path;
+import org.apache.jena.system.G;
 
 public class QualifiedValueShape implements Constraint {
 

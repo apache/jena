@@ -30,12 +30,12 @@ import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.*;
-import org.apache.jena.riot.other.G;
-import org.apache.jena.riot.other.Transitive;
 //import org.apache.jena.riot.other.Transitive;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.system.G;
+import org.apache.jena.system.Transitive;
 
 /**
  * Core datastructures needed for RDFS for one vocabulary.

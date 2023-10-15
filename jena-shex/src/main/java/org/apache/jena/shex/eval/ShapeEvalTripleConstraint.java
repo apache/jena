@@ -24,11 +24,11 @@ import java.util.stream.Collectors;
 import org.apache.jena.atlas.lib.StreamOps;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.shex.expressions.ShapeExpression;
 import org.apache.jena.shex.expressions.TripleConstraint;
 import org.apache.jena.shex.sys.ReportItem;
 import org.apache.jena.shex.sys.ValidationContext;
+import org.apache.jena.system.G;
 
 /*package*/ class ShapeEvalTripleConstraint {
 

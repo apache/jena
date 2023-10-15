@@ -26,8 +26,8 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.iterator.IteratorConcat ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.shared.JenaException ;
+import org.apache.jena.system.G;
 
 /** Base class for implementations of a DatasetGraph as a set of graphs.
  * This can be a fixed collection or a changeable collection depending

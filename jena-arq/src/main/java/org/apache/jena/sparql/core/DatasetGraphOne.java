@@ -28,11 +28,11 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.reasoner.InfGraph;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.sparql.graph.GraphOps;
 import org.apache.jena.sparql.graph.GraphZero;
+import org.apache.jena.system.G;
 
 /**
  * DatasetGraph of a single graph as default graph.

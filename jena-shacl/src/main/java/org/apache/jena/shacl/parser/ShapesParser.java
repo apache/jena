@@ -18,10 +18,10 @@
 
 package org.apache.jena.shacl.parser;
 
-import static org.apache.jena.riot.other.G.*;
 import static org.apache.jena.shacl.engine.ShaclPaths.pathToString;
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 import static org.apache.jena.shacl.sys.C.rdfsClass;
+import static org.apache.jena.system.G.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,8 +33,6 @@ import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.other.G;
-import org.apache.jena.riot.other.RDFDataException;
 import org.apache.jena.shacl.Imports;
 import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.engine.ShaclPaths;
@@ -49,6 +47,8 @@ import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.path.Path;
+import org.apache.jena.system.G;
+import org.apache.jena.system.RDFDataException;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 public class ShapesParser {
