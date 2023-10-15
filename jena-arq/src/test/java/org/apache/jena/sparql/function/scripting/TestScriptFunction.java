@@ -58,6 +58,13 @@ public class TestScriptFunction {
 
     /*package*/ static String DIR = "testing/ARQ/Scripting";
 
+    // Python, by having jython on the classpath, worked.
+    // Support removed at the end of Jena4.
+    //
+    // Javascript has been more widely used.
+    // Python  hasn't seen much take up, if any.
+    // Any scripting language support must be careful of security issues.
+
     @Parameterized.Parameters(name="{0}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
@@ -66,17 +73,17 @@ public class TestScriptFunction {
                       + "function ucFirst(word)    { return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();}\n"
                       + "function lcFirst(word)    { return word.toLowerCase(); }\n"
                       + "function cc(word,index)   { return (index == 0) ? lcFirst(word) : ucFirst(word); }\n" }
-                , {"python", DIR+"/test-library.py"
-                        , "def toCamelCase(str):\n"
-                        + "  return ''.join([cc(word, index) for index, word in enumerate(str.split(' '))])\n"
-                        + "def ucFirst(word):\n"
-                        + "  return word[0].upper() + word[1:].lower()\n"
-                        + "def lcFirst(word):\n"
-                        + "  return word.lower()\n"
-                        + "def cc(word,index):\n"
-                        + "  if index == 0:\n"
-                        + "    return lcFirst(word)\n"
-                        + "  return ucFirst(word)\n" }
+//                , {"python", DIR+"/test-library.py"
+//                        , "def toCamelCase(str):\n"
+//                        + "  return ''.join([cc(word, index) for index, word in enumerate(str.split(' '))])\n"
+//                        + "def ucFirst(word):\n"
+//                        + "  return word[0].upper() + word[1:].lower()\n"
+//                        + "def lcFirst(word):\n"
+//                        + "  return word.lower()\n"
+//                        + "def cc(word,index):\n"
+//                        + "  if index == 0:\n"
+//                        + "    return lcFirst(word)\n"
+//                        + "  return ucFirst(word)\n" }
         });
     }
 
@@ -92,7 +99,7 @@ public class TestScriptFunction {
         "rtnDouble",
         "rtnUndef",
         "rtnNull",
-        // Entry point from text defintions above. And no others.
+        // Entry point from text definitions above. And no others.
         "toCamelCase"
     };
 
@@ -129,7 +136,7 @@ public class TestScriptFunction {
         assertTrue(nv.isString());
     }
 
-    //Note: NodeValue isDouble etc means "can be used as" so NodeValue integer isDouble
+    // Note: NodeValue isDouble etc means "can be used as" so NodeValue integer isDouble
     // Use assertDatatype.
 
     @Test public void script_dt_integer() {
