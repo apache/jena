@@ -28,8 +28,8 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.other.G;
-import org.apache.jena.riot.other.RDFDataException;
+import org.apache.jena.system.G;
+import org.apache.jena.system.RDFDataException;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDF;
 

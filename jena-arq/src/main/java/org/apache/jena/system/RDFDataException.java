@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.other;
+package org.apache.jena.system;
 
 import org.apache.jena.shared.JenaException;
 

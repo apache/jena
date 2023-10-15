@@ -30,13 +30,13 @@ import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.engine.ShaclPaths;
 import org.apache.jena.shacl.sys.C;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.shacl.vocabulary.SHACLM;
 import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.system.G;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDF;
 
