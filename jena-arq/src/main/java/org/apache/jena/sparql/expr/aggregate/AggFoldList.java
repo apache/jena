@@ -246,22 +246,8 @@ public class AggFoldList extends AggregatorBase
 
 		@Override
 		public NodeValue getValue() {
-			final Iterator<Binding> it;
-			final Accumulator acc;
-			if ( isDistinct ) {
-				it = new DuplicateEliminationIterator<Binding>( sbag.iterator() );
-				acc = new BasicListAccumulator( getExprList().get(0), false ) {
-					@Override
-					protected void accumulateError( final Binding b, final FunctionEnv e ) {
-						if ( nullValueAdded ) return;
-						super.accumulateError(b, e);
-					}
-				};
-			}
-			else {
-				it = sbag.iterator();
-				acc = new BasicListAccumulator( getExprList().get(0), false );
-			}
+			final Iterator<Binding> it = sbag.iterator();
+			final Accumulator acc = new BasicListAccumulator( getExprList().get(0), isDistinct );
 
 			while ( it.hasNext() ) {
 				acc.accumulate( it.next(), functionEnv );
@@ -270,55 +256,6 @@ public class AggFoldList extends AggregatorBase
 			sbag.close();
 
 			return acc.getValue();
-		}
-	}
-
-	/**
-	 * Wraps another iterator which is assumed to return its elements in a
-	 * sorted order (that is, all elements that are equal to one another are
-	 * returned by the wrapped iterator directly one after another) and, then,
-	 * returns the elements from that wrapped iterator without duplicates.
-	 */
-	protected static class DuplicateEliminationIterator<E> implements Iterator<E> {
-		protected final Iterator<E> input;
-		protected E prevReturnedElmt = null;
-		protected E nextAvailableElmt = null;
-
-		public DuplicateEliminationIterator( final Iterator<E> input ) {
-			this.input = input;
-
-			if ( input.hasNext() ) {
-				nextAvailableElmt = input.next();
-			}
-		}
-
-		@Override
-		public boolean hasNext() {
-			while ( nextAvailableElmt == null ) {
-				if ( ! input.hasNext() )
-					return false;
-
-				nextAvailableElmt = input.next();
-				if (    prevReturnedElmt != null
-				     && prevReturnedElmt.equals(nextAvailableElmt) ) {
-					// the current next element must not be returned because
-					// it is a duplicate of the previous returned element
-					nextAvailableElmt = null;
-				}
-			}
-			return true;
-		}
-
-		@Override
-		public E next() {
-			if ( ! hasNext() ) {
-				throw new NoSuchElementException();
-			}
-
-			prevReturnedElmt = nextAvailableElmt;
-			nextAvailableElmt = null;
-
-			return prevReturnedElmt;
 		}
 	}
 
