@@ -193,6 +193,78 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 	}
 
 	/**
+	 * Assumes that the datatype of both of the given literals is cdt:Map.
+	 */
+	public static int compare( final LiteralLabel value1, final LiteralLabel value2 ) throws ExprNotComparableException {
+		final Map<CDTKey,CDTValue> map1;
+		final Map<CDTKey,CDTValue> map2;
+		try {
+			map1 = getValue(value1);
+			map2 = getValue(value2);
+		}
+		catch ( final DatatypeFormatException e ) {
+			throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+		}
+
+		if ( map1.isEmpty() && map2.isEmpty() ) return Expr.CMP_EQUAL;
+		if ( map1.isEmpty() && ! map2.isEmpty() ) return Expr.CMP_LESS;
+		if ( map2.isEmpty() && ! map1.isEmpty() ) return Expr.CMP_GREATER;
+
+		final CDTKeySorter keySorter = new CDTKeySorter();
+		final TreeSet<CDTKey> sortedKeys1 = new TreeSet<>(keySorter);
+		final TreeSet<CDTKey> sortedKeys2 = new TreeSet<>(keySorter);
+		sortedKeys1.addAll( map1.keySet() );
+		sortedKeys2.addAll( map2.keySet() );
+
+		final Iterator<CDTKey> it1 = sortedKeys1.iterator();
+		final Iterator<CDTKey> it2 = sortedKeys2.iterator();
+		final int n = Math.min( sortedKeys1.size(), sortedKeys2.size() );
+		for ( int i = 0; i < n; i++ ) {
+			final CDTKey k1 = it1.next();
+			final CDTKey k2 = it2.next();
+
+			final int kCmp = keySorter.compare(k1, k2);
+			if ( kCmp < 0 ) return Expr.CMP_LESS;
+			if ( kCmp > 0 ) return Expr.CMP_GREATER;
+
+
+			final CDTValue v1 = map1.get(k1);
+			final CDTValue v2 = map2.get(k2);
+			if ( v1.isNull() || v2.isNull() ) {
+				throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+			}
+
+			final Node n1 = v1.asNode();
+			final Node n2 = v2.asNode();
+			final boolean nEqCmp;
+			try {
+				nEqCmp = n1.sameValueAs(n2);
+			}
+			catch( final Exception e ) {
+				throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+			}
+
+			if ( nEqCmp == false ) {
+				final NodeValue nv1 = NodeValue.makeNode(n1);
+				final NodeValue nv2 = NodeValue.makeNode(n2);
+				try {
+					final int vCmp = NodeValue.compare(nv1, nv2);
+					if ( vCmp != Expr.CMP_EQUAL )
+						return vCmp;
+				}
+				catch( final Exception e ) {
+					throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+				}
+			}
+		}
+
+		final int sizeDiff = map1.size() - map2.size();
+		if ( sizeDiff < 0 ) return Expr.CMP_LESS;
+		if ( sizeDiff > 0 ) return Expr.CMP_GREATER;
+		return Expr.CMP_EQUAL;
+	}
+
+	/**
 	 * Returns true if the given node is a literal with {@link #uri}
 	 * as its datatype URI. Notice that this does not mean that this
 	 * literal is actually valid; for checking validity, use
