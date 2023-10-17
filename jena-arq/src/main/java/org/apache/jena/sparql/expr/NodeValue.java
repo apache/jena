@@ -809,6 +809,19 @@ public abstract class NodeValue extends ExprNode
                 }
             }
 
+            case VSPACE_CDT_MAP:
+            {
+                final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
+                final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
+                try {
+                    return CompositeDatatypeMap.compare(lit1, lit2) ;
+                }
+                catch( final ExprNotComparableException e ) {
+                    raise(e) ;
+                    throw new ARQInternalErrorException("NodeValue.raise returned") ;
+                }
+            }
+
             case VSPACE_UNKNOWN:
             {
                 // One or two unknown value spaces.
