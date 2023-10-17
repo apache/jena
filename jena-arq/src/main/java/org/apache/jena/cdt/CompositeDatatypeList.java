@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.impl.LiteralLabel;
+import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.ExprNotComparableException;
 import org.apache.jena.sparql.expr.NodeValue;
@@ -199,9 +200,9 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 			throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
 		}
 
-		if ( list1.isEmpty() && list2.isEmpty() ) return 0;
-		if ( list1.isEmpty() && ! list2.isEmpty() ) return -1;
-		if ( list2.isEmpty() && ! list1.isEmpty() ) return 1;
+		if ( list1.isEmpty() && list2.isEmpty() ) return Expr.CMP_EQUAL;
+		if ( list1.isEmpty() && ! list2.isEmpty() ) return Expr.CMP_LESS;
+		if ( list2.isEmpty() && ! list1.isEmpty() ) return Expr.CMP_GREATER;
 
 		final int n = Math.min( list1.size(), list2.size() );
 		for ( int i = 0; i < n; i++ ) {
@@ -231,11 +232,14 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 					throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
 				}
 
-				if ( c != 0 ) return c;
+				if ( c != Expr.CMP_EQUAL ) return c;
 			}
 		}
 
-		return ( list1.size() - list2.size() );
+		final int sizeDiff = list1.size() - list2.size();
+		if ( sizeDiff < 0 ) return Expr.CMP_LESS;
+		if ( sizeDiff > 0 ) return Expr.CMP_GREATER;
+		return Expr.CMP_EQUAL;
 	}
 
 	/**
