@@ -86,8 +86,13 @@ public class IRIs {
             if ( scheme != null && scheme.length() == 1 )
                 scheme = "file";
         }
-        if ( scheme != null && scheme.equals("file") )
-            return IRILib.filenameToIRI(baseURI);
+        // File scheme if the URI is "file:" or there is no scheme
+        // and the system base is a "file:" URI
+        boolean isFile = ( scheme != null )
+                ? scheme.equals("file")
+                : IRIs.getSystemBase().hasScheme("file");
+        if ( isFile )
+            baseURI = IRILib.encodeFileURL(baseURI);
         return IRIs.getSystemBase().resolve(baseURI).toString();
     }
 
@@ -172,14 +177,16 @@ public class IRIs {
     // Return the index of the ":" starting from "start"
     // so that start to the returned index is the scheme including ":"
     // Return <= 0 for no scheme.
-    // -1 Syntax error
-    // 0 did not find a colon.
+    // -1 Not a scheme - non-scheme character
+    // 0 did not find a colon or zero characters before the colon.
+    //    A scheme is at least one character.
     private static int scheme(String str, int start) {
         int p = start;
         int end = str.length();
         while (p < end) {
             char c = str.charAt(p);
             if ( c == ':' )
+                // End of scheme.
                 return p;
             if ( ! isAlpha(c) ) {
                 if ( p == start )
