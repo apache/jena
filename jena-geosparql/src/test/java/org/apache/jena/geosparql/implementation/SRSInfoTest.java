@@ -38,6 +38,7 @@ public class SRSInfoTest {
     public SRSInfoTest() {
     }
 
+
     @BeforeClass
     public static void setUpClass() {
     }
@@ -53,6 +54,18 @@ public class SRSInfoTest {
     @After
     public void tearDown() {
     }
+
+    // SIS 1.1
+    //public static final double OS_X1 = -104009.35713717458;
+    //public static final double OS_X2 = 688806.0073395987;
+    //public static final double OS_Y1 = -16627.734528041445;
+    //public static final double OS_Y2 = 1256558.4455361878;
+
+    // SIS 1.4
+    public static final double OS_X1 = -104009.35713717458;
+    public static final double OS_X2 = 688806.0073395987;
+    public static final double OS_Y1 = -16627.734528042376;
+    public static final double OS_Y2 = 1256558.445536187;
 
     /**
      * Test of buildDomainEnvelope method, of class SRSInfo.
@@ -99,10 +112,12 @@ public class SRSInfoTest {
         CoordinateReferenceSystem crs = CRS.forCode(srsURI);
         Boolean isAxisXY = SRSInfo.checkAxisXY(crs);
 
-        // SIS 1.0
-        //Envelope expResult = new Envelope(-118397.00138845091, 751441.7790901454, -16627.734375018626, 1272149.3463499574);
-        // SIS 1.1
-        Envelope expResult = new Envelope(-104009.35713717458, 688806.0073395987, -16627.734528041445, 1256558.4455361878);
+
+        Envelope expResult = new Envelope(OS_X1, OS_X2, OS_Y1, OS_Y2);
+
+
+        //expected:<Env[-104009.35713717458 : 688806.0073395987, -16627.734528041445 : 1256558.4455361878]>
+        // but was:<Env[-104009.35713717458 : 688806.0073395987, -16627.734528042376 : 1256558.445536187]>
 
         Envelope result = SRSInfo.buildDomainEnvelope(crs, isAxisXY);
         assertEquals(expResult, result);

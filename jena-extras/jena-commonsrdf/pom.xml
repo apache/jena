@@ -54,7 +54,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-rdf-api</artifactId>
-      <version>${ver.commonsrdf}</version>
+      <version>${ver.commons-rdf}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -63,7 +63,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-rdf-simple</artifactId>
-      <version>${ver.commonsrdf}</version>
+      <version>${ver.commons-rdf}</version>
       <scope>test</scope>
     </dependency>
 

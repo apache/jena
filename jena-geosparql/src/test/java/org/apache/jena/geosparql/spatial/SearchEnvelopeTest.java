@@ -67,10 +67,15 @@ public class SearchEnvelopeTest {
     //public static final double OS_Y1 = -16627.734375018626;
     //public static final double OS_Y2 = 1272149.3463499574;
     // SIS 1.1
+    //public static final double OS_X1 = -104009.35713717458;
+    //public static final double OS_X2 = 688806.0073395987;
+    //public static final double OS_Y1 = -16627.734528041445;
+    //public static final double OS_Y2 = 1256558.4455361878;
+    // SIS 1.4
     public static final double OS_X1 = -104009.35713717458;
     public static final double OS_X2 = 688806.0073395987;
-    public static final double OS_Y1 = -16627.734528041445;
-    public static final double OS_Y2 = 1256558.4455361878;
+    public static final double OS_Y1 = -16627.734528042376;
+    public static final double OS_Y2 = 1256558.445536187;
 
     /**
      * Test of build method, of class SearchEnvelope.
@@ -184,9 +189,12 @@ public class SearchEnvelopeTest {
 
         GeometryWrapper geometryWrapper = GeometryWrapper.extract("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(10.0 20.0)", WKTDatatype.URI);
         CardinalDirection direction = CardinalDirection.EAST;
-        SearchEnvelope expResult = new SearchEnvelope(new Envelope(10, OS_X2, OS_Y1, OS_Y2), SpatialIndexTestData.OSGB_SRS_INFO);
+        SearchEnvelope expResult = new SearchEnvelope(new Envelope(10.0, OS_X2, OS_Y1, OS_Y2), SpatialIndexTestData.OSGB_SRS_INFO);
         SearchEnvelope result = SearchEnvelope.build(geometryWrapper, SpatialIndexTestData.OSGB_SRS_INFO, direction);
         assertEquals(expResult, result);
+
+        //java.lang.AssertionError: expected:<SearchEnvelope{envelope=Env[10.0 : 688806.0073395987, -16627.734528041445 : 1256558.4455361878], wrappedEnvelope=null}>
+        // but was:<SearchEnvelope{envelope=Env                          [10.0 : 688806.0073395987, -16627.734528042376 : 1256558.445536187], wrappedEnvelope=null}>
     }
 
     /**
