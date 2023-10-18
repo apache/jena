@@ -188,57 +188,143 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 
 	/**
 	 * Assumes that the datatype of both of the given literals is cdt:List.
+	 * If 'sortOrderingCompare' is true, the two lists are compared as per the
+	 * semantics for ORDER BY. If 'sortOrderingCompare' is false, the comparison
+	 * applies the list-less-than semantics.
 	 */
-	public static int compare( final LiteralLabel value1, final LiteralLabel value2 ) throws ExprNotComparableException {
-		final List<CDTValue> list1;
-		final List<CDTValue> list2;
+	public static int compare( final LiteralLabel value1, final LiteralLabel value2, final boolean sortOrderingCompare ) throws ExprNotComparableException {
+		List<CDTValue> list1 = null;
 		try {
 			list1 = getValue(value1);
+		}
+		catch ( final Exception e ) {
+			// do nothing at this point, we will check for errors next
+		}
+
+		List<CDTValue> list2 = null;
+		try {
 			list2 = getValue(value2);
 		}
-		catch ( final DatatypeFormatException e ) {
-			throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+		catch ( final Exception e ) {
+			// do nothing at this point, we will check for errors next
 		}
 
-		if ( list1.isEmpty() && list2.isEmpty() ) return Expr.CMP_EQUAL;
-		if ( list1.isEmpty() && ! list2.isEmpty() ) return Expr.CMP_LESS;
-		if ( list2.isEmpty() && ! list1.isEmpty() ) return Expr.CMP_GREATER;
+		// handling errors / ill-formed literals now
+		if ( list1 == null || list2 == null ) {
+			if ( ! sortOrderingCompare ) {
+				// If comparing as per the list-less-than semantics,
+				// both literals must be well-formed.
+				throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+			}
+			else {
+				// If comparing as per the ORDER BY semantics, the
+				// ill-formed one of the two literals is order higher.
+				if ( list1 != null ) return Expr.CMP_LESS;
+				if ( list2 != null ) return Expr.CMP_GREATER;
 
+				// If both literals are ill-formed, the order
+				// is determined based on the lexical forms.
+				return compareByLexicalForms(value1, value2);
+			}
+		}
+
+		// If at least one of the two lists is empty, we can decide
+		// without a pair-wise comparison of the list elements.
+		if ( list1.isEmpty() || list2.isEmpty() ) {
+			// The literals with the non-empty list is greater
+			// than the literal with the empty list.
+			if ( ! list1.isEmpty() ) return Expr.CMP_GREATER;
+			if ( ! list2.isEmpty() ) return Expr.CMP_LESS;
+
+			// If both lists are empty, under the ORDER BY semantics we then
+			// decide the order based on the lexical forms, and under the
+			// list-less-than semantics, both literals are considered equal.
+			if ( sortOrderingCompare )
+				return compareByLexicalForms(value1, value2);
+			else
+				return Expr.CMP_EQUAL;
+		}
+
+		// Now we go into the pair-wise comparison of the list elements.
 		final int n = Math.min( list1.size(), list2.size() );
 		for ( int i = 0; i < n; i++ ) {
 			final CDTValue elmt1 = list1.get(i);
 			final CDTValue elmt2 = list2.get(i);
 
-			if ( elmt1.isNull() || elmt2.isNull() ) {
-				throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
-			}
+			if ( ! elmt1.isNull() && ! elmt2.isNull() ) {
+				final Node n1 = elmt1.asNode();
+				final Node n2 = elmt2.asNode();
 
-			final Node n1 = elmt1.asNode();
-			final Node n2 = elmt2.asNode();
-
-			if ( n1.isBlank() && n2.isBlank() ) {
-				throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
-			}
-
-			if ( ! elmt1.sameAs(elmt2) ) {
-				final NodeValue nv1 = NodeValue.makeNode(n1);
-				final NodeValue nv2 = NodeValue.makeNode(n2);
-
-				final int c;
-				try {
-					c = NodeValue.compare(nv1, nv2);
-				}
-				catch ( final Exception e ) {
+				if ( ! sortOrderingCompare && n1.isBlank() && n2.isBlank() ) {
 					throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
 				}
 
-				if ( c != Expr.CMP_EQUAL ) return c;
+				// Test whether the two RDF terms are the same value (i.e.,
+				// comparing them using = results in true). If they are, we
+				// can skip to the next pair of list elements. If they are
+				// not, we compare them.
+				if ( ! elmt1.sameAs(elmt2) ) {
+					final NodeValue nv1 = NodeValue.makeNode(n1);
+					final NodeValue nv2 = NodeValue.makeNode(n2);
+
+					final int c;
+					try {
+						if ( sortOrderingCompare )
+							c = NodeValue.compareAlways(nv1, nv2);
+						else
+							c = NodeValue.compare(nv1, nv2);
+					}
+					catch ( final Exception e ) {
+						throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+					}
+
+					if ( c < 0 ) return Expr.CMP_LESS;
+					if ( c > 0 ) return Expr.CMP_GREATER;
+
+					if ( c == 0 && sortOrderingCompare ) return Expr.CMP_INDETERMINATE;
+				}
+			}
+			else {
+				// This else-branch covers cases in which at least one of the
+				// two list elements is null.
+				if ( ! sortOrderingCompare ) {
+					// When comparing as per the list-less-than semantics,
+					// null values cannot be compared to one another.
+					throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+				}
+				else {
+					// When comparing as per the ORDER BY semantics, nulls are
+					// ordered the same. Hence, if both elements are null, we
+					// don't do anything here and simply advance to the next
+					// pair of elements.
+					// However, if only one of the two elements is null, then
+					// the literal with this element is ordered lower than the
+					// other literal.
+					if ( elmt1.isNull() && ! elmt2.isNull() )
+						return Expr.CMP_LESS;
+
+					if ( elmt2.isNull() && ! elmt1.isNull() )
+						return Expr.CMP_GREATER;
+				}
 			}
 		}
 
+		// At this point, the pair-wise comparison of list elements has not
+		// led to any decision. Now, we decide based on the size of the lists.
 		final int sizeDiff = list1.size() - list2.size();
 		if ( sizeDiff < 0 ) return Expr.CMP_LESS;
 		if ( sizeDiff > 0 ) return Expr.CMP_GREATER;
+
+		if ( sortOrderingCompare )
+			return compareByLexicalForms(value1, value2);
+		else
+			return Expr.CMP_EQUAL;
+	}
+
+	protected static int compareByLexicalForms( final LiteralLabel value1, final LiteralLabel value2 ) {
+		final int lexCmp = value1.getLexicalForm().compareTo( value2.getLexicalForm() );
+		if ( lexCmp < 0 ) return Expr.CMP_LESS;
+		if ( lexCmp > 0 ) return Expr.CMP_GREATER;
 		return Expr.CMP_EQUAL;
 	}
 
