@@ -50,6 +50,10 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
     private final Transactional txn;
     private final boolean supportsAbort;
 
+    public static DatasetGraph createRaw(Graph graph) {
+        return new DatasetGraphOne(graph);
+    }
+
     public static DatasetGraph create(Graph graph) {
         // Find the deepest graph, the one that may be attached to a DatasetGraph.
         Graph graph2 = unwrap(graph);

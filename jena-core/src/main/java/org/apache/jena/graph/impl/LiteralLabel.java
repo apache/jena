@@ -370,18 +370,6 @@ final public class LiteralLabel {
         return lang;
     }
 
-//    /**
-//     * Answer a suitable instance of a Java class representing this literal's value.
-//     * May throw an exception if the literal is ill-formed.
-//     */
-//    public Object getValue() throws DatatypeFormatException {
-//    if (wellformed) {
-//        return value;
-//    } else {
-//        throw new DatatypeFormatException(lexicalForm, dtype, exception);
-//    }
-//}
-
     /**
      * Answer a suitable instance of a Java class representing this literal's value.
      * May throw an exception if the literal is ill-formed.
