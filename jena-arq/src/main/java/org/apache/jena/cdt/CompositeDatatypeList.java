@@ -282,6 +282,13 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 		final List<CDTValue> list2;
 		try {
 			list1 = getValue(value1);
+		}
+		catch ( final Exception e ) {
+			// do nothing at this point, we will check for errors next
+		}
+
+		List<CDTValue> list2 = null;
+		try {
 			list2 = getValue(value2);
 		}
 		catch ( final Exception e ) {
