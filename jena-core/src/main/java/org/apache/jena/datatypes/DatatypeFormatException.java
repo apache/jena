@@ -24,16 +24,16 @@ import org.apache.jena.shared.* ;
  * Exception thrown when a lexical form does not match the stated
  * datatype.
  */
-public class DatatypeFormatException extends JenaException 
+public class DatatypeFormatException extends JenaException
 {
 
     /**
      * Constructs a new {@code DatatypeFormatException} with the specified
      * illegal lexical form, datatype and cause. The detail message (for later
-     * retrieval by the {@link #getMessage()} method) is generated using the given 
+     * retrieval by the {@link #getMessage()} method) is generated using the given
      * datatype and illegal lexical form.
-     * 
-     * @param  lexicalForm the illegal lexical form discovered. The illegal lexical form 
+     *
+     * @param  lexicalForm the illegal lexical form discovered. The illegal lexical form
      *         is saved for later retrieval by the {@link #getLexicalForm()} method.
      * @param  dtype the datatype that found the problem. The datatype is saved for
      *         later retrieval by the {@link #getDataType()} method.
@@ -51,8 +51,8 @@ public class DatatypeFormatException extends JenaException
     /**
      * Constructs a new {@code DatatypeFormatException} with the specified
      * illegal lexical form, datatype and detail message.
-     * 
-     * @param  lexicalForm the illegal lexical form discovered. The illegal lexical form 
+     *
+     * @param  lexicalForm the illegal lexical form discovered. The illegal lexical form
      *         is saved for later retrieval by the {@link #getLexicalForm()} method.
      * @param  dtype the datatype that found the problem. The datatype is saved for
      *         later retrieval by the {@link #getDataType()} method.
@@ -69,7 +69,7 @@ public class DatatypeFormatException extends JenaException
     private final RDFDatatype dataType;
 
     /**
-     * Creates a new instance of <code>DatatypeFormatException</code> 
+     * Creates a new instance of <code>DatatypeFormatException</code>
      * without detail message.
      */
     public DatatypeFormatException() {
@@ -80,7 +80,7 @@ public class DatatypeFormatException extends JenaException
     /**
      * Constructs a new {@code DatatypeFormatException} with the specified
      * detail message and cause.
-     * 
+     *
      * @param  message the detail message (which is saved for later retrieval
      *         by the {@link #getMessage()} method).
      * @param  cause the cause (which is saved for later retrieval by the

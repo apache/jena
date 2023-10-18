@@ -115,7 +115,7 @@ public class GraphTxn extends GraphWrapper implements Transactional {
         IteratorTxn(GraphTxn graph, ExtendedIterator<T> base) {
             super(base, true);  // removeDenied.
             this.graph = graph;
-            needIterTxn = graph.getT().isInTransaction();
+            needIterTxn = ! graph.getT().isInTransaction();
             if ( needIterTxn )
                 graph.begin(TxnType.READ);
         }
@@ -129,16 +129,24 @@ public class GraphTxn extends GraphWrapper implements Transactional {
         }
     }
 
+    /**
+     * Whether to read the base graph completely at the point that "find" is called
+     * or to have an iterator over results. Both setting should work in normal situations
+     * Using a {@link IteratorTxn}, which is an {@link ExtendedIterator},
+     * starts a read transaction and that assumes the extended iterator is closed.
+     */
+    private static boolean ISOLATE = false;
+
     @Override
     public ExtendedIterator<Triple> find(Triple triple) {
-        if ( false )
+        if ( ISOLATE )
             return isolate(get().find(triple));
         return new IteratorTxn<Triple>(this, get().find(triple));
     }
 
     @Override
     public ExtendedIterator<Triple> find(Node s, Node p, Node o) {
-        if ( false )
+        if ( ISOLATE )
             return isolate(get().find(s, p, o));
         return new IteratorTxn<Triple>(this, get().find(s, p, o));
     }
