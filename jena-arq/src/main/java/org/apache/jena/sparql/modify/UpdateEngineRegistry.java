@@ -27,20 +27,19 @@ import org.apache.jena.sparql.util.Context ;
 public class UpdateEngineRegistry
 {
     List<UpdateEngineFactory> factories = new ArrayList<>() ;
-    static { init() ; }
 
     // Singleton
-    static UpdateEngineRegistry registry = null ;
+    private static UpdateEngineRegistry registry ;
+    static { init() ; }
+
     static public UpdateEngineRegistry get()
     {
-        if ( registry == null )
-            init() ;
         return registry;
     }
 
     private UpdateEngineRegistry() { }
 
-    private static synchronized void init()
+    private static void init()
     {
         registry = new UpdateEngineRegistry() ;
         registry.add(UpdateEngineMain.getFactory()) ;
