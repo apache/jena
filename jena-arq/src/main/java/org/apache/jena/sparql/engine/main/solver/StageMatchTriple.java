@@ -93,7 +93,7 @@ public class StageMatchTriple {
         return true;
     }
 
-    // Variable or not a variable. Not <<?var>>
+    // Variable or not a variable. Not recursively inside a triple term <<?var>>
     private static Node substituteFlat(Node n, Binding binding) {
         return Var.lookup(binding::get, n);
     }

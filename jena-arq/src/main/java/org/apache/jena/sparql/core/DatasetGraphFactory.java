@@ -62,10 +62,10 @@ public class DatasetGraphFactory
     public static DatasetGraph createTxnMem() { return new DatasetGraphInMemory(); }
 
     /**
-     * Create a general-purpose  {@link Dataset}.<br/>
-     * Any graphs needed are in-memory unless explicitly added with {@link Dataset#addNamedModel}.
+     * Create a general-purpose  {@link DatasetGraph}.<br/>
+     * Any graphs needed are in-memory unless explicitly added with {@link DatasetGraph#addGraph(Node, Graph)}.
      * <p>
-     * This dataset type can contain graphs from any source when added via {@link Dataset#addNamedModel}.
+     * This dataset type can contain graphs from any source.
      * These are held as links to the supplied graph and not copied.
      * <p>
      * <em>This dataset does not support the graph indexing feature of jena-text.</em>
@@ -76,7 +76,25 @@ public class DatasetGraphFactory
      * @return a general-purpose Dataset
      */
     public static DatasetGraph createGeneral() {
-        return new DatasetGraphMapLink(graphMakerMem.create(null), graphMakerMem) ;
+        return createGeneral(graphMakerMem.create(null));
+    }
+
+    /**
+     * Create a general-purpose  {@link DatasetGraph}.<br/>
+     * Any graphs needed are in-memory unless explicitly added with {@link DatasetGraph#addGraph(Node, Graph)}.
+     * <p>
+     * This dataset type can contain graphs from any source.
+     * These are held as links to the supplied graph and not copied.
+     * <p>
+     * <em>This dataset does not support the graph indexing feature of jena-text.</em>
+     * <p>
+     * This dataset does not support serialized transactions (it only provides MRSW locking).
+     *
+     * @see #createTxnMem
+     * @return a general-purpose Dataset
+     */
+    public static DatasetGraph createGeneral(Graph dftGraph) {
+        return new DatasetGraphMapLink(dftGraph, graphMakerMem) ;
     }
 
     /**
