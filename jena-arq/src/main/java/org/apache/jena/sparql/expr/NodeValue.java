@@ -814,7 +814,7 @@ public abstract class NodeValue extends ExprNode
                 final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
                 final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
                 try {
-                    return CompositeDatatypeMap.compare(lit1, lit2) ;
+                    return CompositeDatatypeMap.compare(lit1, lit2, sortOrderingCompare) ;
                 }
                 catch( final ExprNotComparableException e ) {
                     raise(e) ;

@@ -176,28 +176,73 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 
 	/**
 	 * Assumes that the datatype of both of the given literals is cdt:Map.
+	 *
+	 * If 'sortOrderingCompare' is true, the two maps are compared as per the
+	 * semantics for ORDER BY. If 'sortOrderingCompare' is false, the comparison
+	 * applies the map-less-than semantics.
 	 */
-	public static int compare( final LiteralLabel value1, final LiteralLabel value2 ) throws ExprNotComparableException {
-		final Map<CDTKey,CDTValue> map1;
-		final Map<CDTKey,CDTValue> map2;
+	public static int compare( final LiteralLabel value1, final LiteralLabel value2, final boolean sortOrderingCompare ) throws ExprNotComparableException {
+		Map<CDTKey,CDTValue> map1 = null;
 		try {
 			map1 = getValue(value1);
+		}
+		catch ( final Exception e ) {
+			// do nothing at this point, we will check for errors next
+		}
+
+		Map<CDTKey,CDTValue> map2 = null;
+		try {
 			map2 = getValue(value2);
 		}
-		catch ( final DatatypeFormatException e ) {
-			throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+		catch ( final Exception e ) {
+			// do nothing at this point, we will check for errors next
 		}
 
-		if ( map1.isEmpty() && map2.isEmpty() ) return Expr.CMP_EQUAL;
-		if ( map1.isEmpty() && ! map2.isEmpty() ) return Expr.CMP_LESS;
-		if ( map2.isEmpty() && ! map1.isEmpty() ) return Expr.CMP_GREATER;
+		// handling errors / ill-formed literals now
+		if ( map1 == null || map2 == null ) {
+			if ( ! sortOrderingCompare ) {
+				// If comparing as per the map-less-than semantics,
+				// both literals must be well-formed.
+				throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+			}
+			else {
+				// If comparing as per the ORDER BY semantics, the
+				// ill-formed one of the two literals is order higher.
+				if ( map1 != null ) return Expr.CMP_LESS;
+				if ( map2 != null ) return Expr.CMP_GREATER;
 
+				// If both literals are ill-formed, the order
+				// is determined based on the lexical forms.
+				return compareByLexicalForms(value1, value2);
+			}
+		}
+
+		// If at least one of the two maps is empty, we can decide
+		// without a pair-wise comparison of the map entries.
+		if ( map1.isEmpty() || map2.isEmpty() ) {
+			// The literal with the non-empty map is greater
+			// than the literal with the empty map.
+			if ( ! map1.isEmpty() ) return Expr.CMP_GREATER;
+			if ( ! map2.isEmpty() ) return Expr.CMP_LESS;
+
+			// If both maps are empty, under the ORDER BY semantics we then
+			// decide the order based on the lexical forms, and under the
+			// map-less-than semantics, both literals are considered equal.
+			if ( sortOrderingCompare )
+				return compareByLexicalForms(value1, value2);
+			else
+				return Expr.CMP_EQUAL;
+		}
+
+		// Now we go into the pair-wise comparison of the map entries.
+		// To this end, we first need to sort the map entries.
 		final CDTKeySorter keySorter = new CDTKeySorter();
 		final TreeSet<CDTKey> sortedKeys1 = new TreeSet<>(keySorter);
 		final TreeSet<CDTKey> sortedKeys2 = new TreeSet<>(keySorter);
 		sortedKeys1.addAll( map1.keySet() );
 		sortedKeys2.addAll( map2.keySet() );
 
+		// Now we can perform the pair-wise comparison of the map entries.
 		final Iterator<CDTKey> it1 = sortedKeys1.iterator();
 		final Iterator<CDTKey> it2 = sortedKeys2.iterator();
 		final int n = Math.min( sortedKeys1.size(), sortedKeys2.size() );
@@ -209,41 +254,72 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 			if ( kCmp < 0 ) return Expr.CMP_LESS;
 			if ( kCmp > 0 ) return Expr.CMP_GREATER;
 
-
 			final CDTValue v1 = map1.get(k1);
 			final CDTValue v2 = map2.get(k2);
-			if ( v1.isNull() || v2.isNull() ) {
-				throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
-			}
+			if ( ! v1.isNull() && ! v2.isNull() ) {
+				final Node n1 = v1.asNode();
+				final Node n2 = v2.asNode();
 
-			final Node n1 = v1.asNode();
-			final Node n2 = v2.asNode();
-			final boolean nEqCmp;
-			try {
-				nEqCmp = n1.sameValueAs(n2);
-			}
-			catch( final Exception e ) {
-				throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
-			}
+				// Test whether the two RDF terms are the same value (i.e.,
+				// comparing them using = results in true). If they are, we
+				// can skip to the next pair of list elements. If they are
+				// not, we compare them.
+				if ( ! n1.sameValueAs(n2) ) {
+					final NodeValue nv1 = NodeValue.makeNode(n1);
+					final NodeValue nv2 = NodeValue.makeNode(n2);
 
-			if ( nEqCmp == false ) {
-				final NodeValue nv1 = NodeValue.makeNode(n1);
-				final NodeValue nv2 = NodeValue.makeNode(n2);
-				try {
-					final int vCmp = NodeValue.compare(nv1, nv2);
-					if ( vCmp != Expr.CMP_EQUAL )
-						return vCmp;
+					final int c;
+					try {
+						if ( sortOrderingCompare )
+							c = NodeValue.compareAlways(nv1, nv2);
+						else
+							c = NodeValue.compare(nv1, nv2);
+					}
+					catch ( final Exception e ) {
+						throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+					}
+
+					if ( c < 0 ) return Expr.CMP_LESS;
+					if ( c > 0 ) return Expr.CMP_GREATER;
+
+					if ( c == 0 && sortOrderingCompare ) return Expr.CMP_INDETERMINATE;
 				}
-				catch( final Exception e ) {
+			}
+			else {
+				// This else-branch covers cases in which at least one of the
+				// two map entries has null as its value.
+				if ( ! sortOrderingCompare ) {
+					// When comparing as per the map-less-than semantics,
+					// null values cannot be compared to one another.
 					throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+				}
+				else {
+					// When comparing as per the ORDER BY semantics, nulls are
+					// ordered the same. Hence, if both map entries have null
+					// as their value, we don't do anything here and simply
+					// advance to the next pair of map entries.
+					// However, if the map value of only one of the two map
+					// entries is null, then the literal with this map entry
+					// is ordered lower than the other literal.
+					if ( v1.isNull() && ! v2.isNull() )
+						return Expr.CMP_LESS;
+
+					if ( v2.isNull() && ! v1.isNull() )
+						return Expr.CMP_GREATER;
 				}
 			}
 		}
 
+		// At this point, the pair-wise comparison of map entries has not led
+		// to any decision. Now, we decide based on the size of the maps.
 		final int sizeDiff = map1.size() - map2.size();
 		if ( sizeDiff < 0 ) return Expr.CMP_LESS;
 		if ( sizeDiff > 0 ) return Expr.CMP_GREATER;
-		return Expr.CMP_EQUAL;
+
+		if ( sortOrderingCompare )
+			return compareByLexicalForms(value1, value2);
+		else
+			return Expr.CMP_EQUAL;
 	}
 
 	/**

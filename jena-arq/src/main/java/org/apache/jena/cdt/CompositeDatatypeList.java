@@ -231,7 +231,7 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 		// If at least one of the two lists is empty, we can decide
 		// without a pair-wise comparison of the list elements.
 		if ( list1.isEmpty() || list2.isEmpty() ) {
-			// The literals with the non-empty list is greater
+			// The literal with the non-empty list is greater
 			// than the literal with the empty list.
 			if ( ! list1.isEmpty() ) return Expr.CMP_GREATER;
 			if ( ! list2.isEmpty() ) return Expr.CMP_LESS;
@@ -319,13 +319,6 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 			return compareByLexicalForms(value1, value2);
 		else
 			return Expr.CMP_EQUAL;
-	}
-
-	protected static int compareByLexicalForms( final LiteralLabel value1, final LiteralLabel value2 ) {
-		final int lexCmp = value1.getLexicalForm().compareTo( value2.getLexicalForm() );
-		if ( lexCmp < 0 ) return Expr.CMP_LESS;
-		if ( lexCmp > 0 ) return Expr.CMP_GREATER;
-		return Expr.CMP_EQUAL;
 	}
 
 	/**
