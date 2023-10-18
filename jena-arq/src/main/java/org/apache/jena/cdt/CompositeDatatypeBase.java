@@ -20,6 +20,8 @@ package org.apache.jena.cdt;
 
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.graph.impl.LiteralLabel;
+import org.apache.jena.sparql.expr.Expr;
 
 public abstract class CompositeDatatypeBase<T> implements RDFDatatype
 {
@@ -47,4 +49,12 @@ public abstract class CompositeDatatypeBase<T> implements RDFDatatype
 	public abstract T parse( final String lexicalForm ) throws DatatypeFormatException;
 
 	public abstract String unparseValue( final T value );
+
+	// helper for the compare function in each of the subclasses
+	protected static int compareByLexicalForms( final LiteralLabel value1, final LiteralLabel value2 ) {
+		final int lexCmp = value1.getLexicalForm().compareTo( value2.getLexicalForm() );
+		if ( lexCmp < 0 ) return Expr.CMP_LESS;
+		if ( lexCmp > 0 ) return Expr.CMP_GREATER;
+		return Expr.CMP_EQUAL;
+	}
 }
