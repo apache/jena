@@ -25,7 +25,6 @@ import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.Dataset ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.tdb1.StoreConnection;
 import org.apache.jena.tdb1.TDB1Exception;
 import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.setup.StoreParamsConst;
