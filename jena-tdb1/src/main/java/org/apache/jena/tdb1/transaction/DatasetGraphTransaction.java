@@ -31,13 +31,13 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphWrapper;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.tdb1.StoreConnection;
 import org.apache.jena.tdb1.TDB1;
 import org.apache.jena.tdb1.TDB1Exception;
 import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.store.DatasetGraphTDB;
 import org.apache.jena.tdb1.store.GraphTxnTDB;
 import org.apache.jena.tdb1.store.PrefixMapTDB1;
+import org.apache.jena.tdb1.sys.StoreConnection;
 
 /**
  * A transactional {@code DatasetGraph} that allows one active transaction per thread.

@@ -21,7 +21,6 @@ package org.apache.jena.tdb1.sys;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.jena.tdb1.StoreConnection;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;

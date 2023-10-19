@@ -21,7 +21,7 @@ package org.apache.jena.tdb1.transaction;
 import java.io.File ;
 
 import org.apache.jena.tdb1.ConfigTest;
-import org.apache.jena.tdb1.StoreConnection;
+import org.apache.jena.tdb1.sys.StoreConnection;
 import org.apache.jena.tdb1.sys.TDBInternal;
 import org.junit.After ;
 import org.junit.Before ;

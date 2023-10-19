@@ -18,8 +18,8 @@
 
 package org.apache.jena.tdb1.transaction;
 
-import org.apache.jena.tdb1.StoreConnection;
 import org.apache.jena.tdb1.base.file.Location;
+import org.apache.jena.tdb1.sys.StoreConnection;
 import org.apache.jena.tdb1.sys.TDBInternal;
 import org.junit.After ;
 import org.junit.Before ;
