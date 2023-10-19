@@ -27,6 +27,7 @@ import org.apache.jena.query.TxnType;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.tdb1.base.file.Location;
+import org.apache.jena.tdb1.sys.StoreConnection;
 import org.apache.jena.tdb1.transaction.DatasetGraphTxn;
 
 /**
