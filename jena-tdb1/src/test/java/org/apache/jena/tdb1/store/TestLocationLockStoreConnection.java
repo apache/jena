@@ -22,11 +22,11 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.apache.jena.tdb1.StoreConnection;
 import org.apache.jena.tdb1.TDB1Exception;
 import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.base.file.LocationLock;
 import org.apache.jena.tdb1.sys.ProcessUtils;
+import org.apache.jena.tdb1.sys.StoreConnection;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.BeforeClass;

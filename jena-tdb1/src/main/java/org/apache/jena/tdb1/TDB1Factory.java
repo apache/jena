@@ -30,6 +30,7 @@ import org.apache.jena.tdb1.assembler.VocabTDB;
 import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.setup.StoreParams;
 import org.apache.jena.tdb1.store.DatasetGraphTDB;
+import org.apache.jena.tdb1.sys.StoreConnection;
 import org.apache.jena.tdb1.sys.TDBInternal;
 import org.apache.jena.tdb1.sys.TDBMaker;
 import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;

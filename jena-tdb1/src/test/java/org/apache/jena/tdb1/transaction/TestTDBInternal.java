@@ -22,8 +22,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock ;
 
 import org.apache.jena.query.ReadWrite ;
 import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.tdb1.StoreConnection;
 import org.apache.jena.tdb1.TDB1Factory;
+import org.apache.jena.tdb1.sys.StoreConnection;
 import org.apache.jena.tdb1.sys.TDBInternal;
 import org.junit.Assert ;
 import org.junit.Test ;

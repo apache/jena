@@ -21,12 +21,12 @@ package org.apache.jena.fuseki.webapp;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.tdb1.StoreConnection;
 import org.apache.jena.tdb1.TDB1;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb1.base.block.FileMode;
 import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.setup.StoreParams;
+import org.apache.jena.tdb1.sys.StoreConnection;
 import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;
 
 /**

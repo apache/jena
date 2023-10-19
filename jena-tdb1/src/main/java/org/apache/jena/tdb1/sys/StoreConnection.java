@@ -16,23 +16,21 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb1 ;
+package org.apache.jena.tdb1.sys ;
 
 import java.util.HashMap ;
 import java.util.Map ;
 import java.util.Set ;
 
 import org.apache.jena.query.TxnType;
+import org.apache.jena.tdb1.TDB1Exception;
+import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb1.base.file.ChannelManager;
 import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.base.file.LocationLock;
 import org.apache.jena.tdb1.setup.DatasetBuilderStd;
 import org.apache.jena.tdb1.setup.StoreParams;
 import org.apache.jena.tdb1.store.DatasetGraphTDB;
-import org.apache.jena.tdb1.sys.ProcessUtils;
-import org.apache.jena.tdb1.sys.SystemTDB;
-import org.apache.jena.tdb1.sys.TDBInternal;
-import org.apache.jena.tdb1.sys.TDBMaker;
 import org.apache.jena.tdb1.transaction.*;
 
 /** A StoreConnection is the reference to the underlying storage.
