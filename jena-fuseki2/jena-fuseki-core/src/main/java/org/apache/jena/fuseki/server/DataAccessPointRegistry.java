@@ -71,16 +71,6 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
         return accessPoints;
     }
 
-    /**
-     *  @deprecated Use {@link #register(DataAccessPoint)}.
-     * This method ignores the accessPointName argument.
-     */
-    @Override
-    @Deprecated
-    public void put(String accessPointName, DataAccessPoint dap) {
-        register(dap);
-    }
-
     @Override
     public DataAccessPoint get(String key) {
         return super.get(key);
