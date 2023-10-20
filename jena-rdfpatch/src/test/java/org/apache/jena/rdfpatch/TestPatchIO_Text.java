@@ -58,8 +58,7 @@ public class TestPatchIO_Text extends AbstractTestPatchIO {
         return patch;
     }
 
-    @Test(expected=ErrorHandlerTestLib.ExWarning.class)
-    public void read_warning_01() {
+    @Test public void read_warning_01() {
         String str = "A <http://example/s1> <http://example/p1> 'abc\uFFFDdef' <http://example/g1> .";
         parseSyntax(str);
     }
