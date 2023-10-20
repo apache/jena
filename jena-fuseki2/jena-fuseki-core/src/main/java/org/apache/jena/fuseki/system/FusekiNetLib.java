@@ -22,12 +22,9 @@ import java.util.Enumeration;
 import java.util.Iterator;
 
 import jakarta.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections4.MultiMapUtils;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.jena.atlas.web.ContentType;
-import org.apache.jena.atlas.web.WebLib;
-import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -172,15 +169,5 @@ public class FusekiNetLib {
         PrefixMapping pmapSrc = src.getDefaultGraph().getPrefixMapping();
         PrefixMapping pmapDest = dest.getDefaultGraph().getPrefixMapping();
         pmapDest.withDefaultMappings(pmapSrc);
-    }
-
-    /** Use {@link WebLib#choosePort} or start servers with port 0 and then ask which port was allocated. */
-    @Deprecated
-    public static int choosePort() {
-        try {
-            return WebLib.choosePort();
-        } catch (RuntimeException ex) {
-            throw new FusekiException(ex.getMessage());
-        }
     }
 }
