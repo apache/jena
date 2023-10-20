@@ -51,29 +51,33 @@ public final class TokenizerText implements Tokenizer
     // bytecodes and even if it it did, JIT will remove dead branches).
     private static final boolean Checking = false;
 
-    private Token token = null;
     private final StringBuilder stringBuilder = new StringBuilder(200);
     private final PeekReader reader;
     // Whether whitespace between tokens includes newlines (in various forms).
-    private final boolean lineMode;
-    private boolean finished = false;
+    private final boolean singleLineMode;
+    // Indicator. The PeekReader should throw java.nio.charset.MalformedInputException
+    private final boolean isASCII;
     private final TokenChecker checker = null;
-
     // The code assumes that errors throw exception and so stop parsing.
     private final ErrorHandler errorHandler;
+
+    private Token token = null;
+    private boolean finished = false;
+
 
     public static TokenizeTextBuilder create() { return new TokenizeTextBuilder(); }
 
     public static Tokenizer fromString(String string) { return create().fromString(string).build(); }
 
-    /*package*/ static TokenizerText internal(PeekReader reader, boolean lineMode, ErrorHandler errorHandler) {
-        return new TokenizerText(reader, lineMode, errorHandler);
+    /*package*/ static TokenizerText internal(PeekReader reader, boolean singleLineMode, boolean isASCII, ErrorHandler errorHandler) {
+        return new TokenizerText(reader, singleLineMode, isASCII, errorHandler);
     }
 
-    private TokenizerText(PeekReader reader, boolean lineMode, ErrorHandler errorHandler) {
+    private TokenizerText(PeekReader reader, boolean singleLineMode, boolean isASCII, ErrorHandler errorHandler) {
         this.reader = Objects.requireNonNull(reader, "PeekReader");
-        this.lineMode = lineMode;
+        this.singleLineMode = singleLineMode;
         this.errorHandler = Objects.requireNonNull(errorHandler, "ErrorHandler");
+        this.isASCII = isASCII;
     }
 
     @Override
@@ -171,7 +175,7 @@ public final class TokenizerText implements Tokenizer
             }
 
             // Including excess newline chars from comment.
-            if ( lineMode ) {
+            if ( singleLineMode ) {
                 if ( !isHorizontalWhitespace(ch) )
                     break;
             } else {
@@ -538,6 +542,10 @@ public final class TokenizerText implements Tokenizer
                     else
                         warning("Bad character in IRI (space): <%s[space]...>", stringBuilder.toString());
                     break;
+                case REPLACEMENT:
+                    if ( WarnOnReplacmentCharInIRI )
+                        warning("Unicode replacement character U+FFFD in IRI");
+                    break;
                 default:
                     if ( ch <= 0x19 )
                         warning("Illegal character in IRI (control char 0x%02X): <%s[0x%02X]...>", ch, stringBuilder.toString(), ch);
@@ -641,7 +649,23 @@ public final class TokenizerText implements Tokenizer
         return readSegment(true);
     }
 
-    // Read the prefix or localname part of a prefixed.
+    // Controls related to raw use U+FFFD, the Unicode replacement character.
+    // These are a sign that the input has been corrupted at some point, not necessarily the file being read but also in the way it was created,
+    // They do occur in practice.
+
+    // Replacement characters can occur in four places:
+    // * IRIs -- illegal IRI syntax
+    // * Strings -- in lexical forms.
+    // * Prefixed names -- illegal syntax but they end the token so cause a different token.
+    // * Blank node labels -- illegal syntax but they end the token so cause a different token.
+    // Note that when ASCII input, U+FFFD occurs for non-ASCII characters.
+
+    private final static boolean WarnOnReplacmentCharInIRI = false;
+    private final static boolean WarnOnReplacmentCharInString = false;
+    private final static boolean WarnOnReplacmentCharInPrefixedName = true;
+    private final static boolean WarnOnReplacmentCharInBlankNodeLabel = true;
+
+    // Read the prefix or localname part of a prefixed name.
     // Returns "" when there are no valid characters, e.g. prefix for ":foo" or local name for "ex:".
     private String readSegment(boolean isLocalPart) {
         // Prefix: PN_CHARS_BASE                       ((PN_CHARS|'.')* PN_CHARS)?
@@ -665,8 +689,10 @@ public final class TokenizerText implements Tokenizer
                 reader.readChar();
                 processPLX(ch);
             } else if ( RiotChars.isPNChars_U_N(ch) ) {
-                if ( ch == REPLACEMENT )
-                    warning("Unicode replacement character U+FFFD");
+                if ( WarnOnReplacmentCharInPrefixedName ) {
+                    if ( ch == REPLACEMENT )
+                        warning("Unicode replacement character U+FFFD in prefixed name");
+                }
                 insertCodepoint(stringBuilder, ch);
                 reader.readChar();
             } else
@@ -714,8 +740,10 @@ public final class TokenizerText implements Tokenizer
             }
 
             if ( ch != CH_DOT ) {
-                if ( ch == REPLACEMENT )
-                    warning("Unicode replacement character U+FFFD");
+                if ( WarnOnReplacmentCharInPrefixedName ) {
+                    if ( ch == REPLACEMENT )
+                        warning("Unicode replacement character U+FFFD in prefixed name");
+                }
                 insertCodepoint(stringBuilder, ch);
             } else {
                 // DOT - delay until next loop.
@@ -770,11 +798,14 @@ public final class TokenizerText implements Tokenizer
 
         for (;;) {
             int ch = reader.readChar();
-
-            // Raw replacement char in a string.
-            if ( ch == REPLACEMENT )
-                warning("Unicode replacement character U+FFFD in string");
-            else if ( ch == EOF ) {
+            if ( WarnOnReplacmentCharInString ) {
+                // Raw replacement char in a string.
+                if ( ch == REPLACEMENT )
+                    warning("Unicode replacement character U+FFFD in string");
+            }
+            if ( ch == NotACharacter || ch == ReverseOrderBOM )
+                warning("Unicode non-character U+%4X in string", ch);
+            if ( ch == EOF ) {
                 // if ( endNL ) return stringBuilder.toString();
                 fatal("Broken token: %s", stringBuilder.toString());
             }
@@ -785,7 +816,6 @@ public final class TokenizerText implements Tokenizer
             else if ( ch == CH_RSLASH )
                 // Allow escaped replacement character.
                 ch = readLiteralEscape();
-
             insertCodepoint(stringBuilder, ch);
         }
     }
@@ -794,9 +824,12 @@ public final class TokenizerText implements Tokenizer
         stringBuilder.setLength(0);
         for (;;) {
             int ch = reader.readChar();
-            if ( ch == REPLACEMENT )
-                warning("Input has Unicode replacement character U+FFFD in string");
-            else if ( ch == EOF ) {
+            if ( WarnOnReplacmentCharInString ) {
+                // Raw replacement char in a string.
+                if ( ch == REPLACEMENT )
+                    warning("Unicode replacement character U+FFFD in string");
+            }
+            if ( ch == EOF ) {
                 if ( endNL )
                     return stringBuilder.toString();
                 fatal("Broken long string");
@@ -894,8 +927,11 @@ public final class TokenizerText implements Tokenizer
             if ( !RiotChars.isPNChars_U_N(ch) )
                 fatal("Blank node label does not start with alphabetic or _ : '%c'", (char)ch);
             reader.readChar();
-            if ( ch == REPLACEMENT )
-                warning("Unicode replacement character U+FFFD in blank node label");
+            if ( WarnOnReplacmentCharInBlankNodeLabel ) {
+                // Raw replacement char in a string.
+                if ( ch == REPLACEMENT )
+                    warning("Unicode replacement character U+FFFD in blank node label");
+            }
             insertCodepoint(stringBuilder, ch);
         }
 
@@ -919,8 +955,11 @@ public final class TokenizerText implements Tokenizer
             }
 
             if ( ch != CH_DOT ) {
-                if ( ch == REPLACEMENT )
-                    warning("Unicode replacement character U+FFFD in blank node label");
+                if ( WarnOnReplacmentCharInBlankNodeLabel ) {
+                    // Raw replacement char in a string.
+                    if ( ch == REPLACEMENT )
+                        warning("Unicode replacement character U+FFFD in blank node label");
+                }
                 insertCodepoint(stringBuilder, ch);
             } else
                 // DOT - delay until next loop.
