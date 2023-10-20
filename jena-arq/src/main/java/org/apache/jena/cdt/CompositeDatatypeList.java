@@ -193,43 +193,18 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 	 * applies the list-less-than semantics.
 	 */
 	public static int compare( final LiteralLabel value1, final LiteralLabel value2, final boolean sortOrderingCompare ) throws ExprNotComparableException {
-		List<CDTValue> list1 = null;
+		final List<CDTValue> list1;
+		final List<CDTValue> list2;
 		try {
 			list1 = getValue(value1);
-		}
-		catch ( final Exception e ) {
-			// do nothing at this point, we will check for errors next
-		}
-
-		List<CDTValue> list2 = null;
-		try {
 			list2 = getValue(value2);
 		}
 		catch ( final Exception e ) {
-			// do nothing at this point, we will check for errors next
+			throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
 		}
 
-		// handling errors / ill-formed literals now
-		if ( list1 == null || list2 == null ) {
-			if ( ! sortOrderingCompare ) {
-				// If comparing as per the list-less-than semantics,
-				// both literals must be well-formed.
-				throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
-			}
-			else {
-				// If comparing as per the ORDER BY semantics, the
-				// ill-formed one of the two literals is order higher.
-				if ( list1 != null ) return Expr.CMP_LESS;
-				if ( list2 != null ) return Expr.CMP_GREATER;
-
-				// If both literals are ill-formed, the order
-				// is determined based on the lexical forms.
-				return compareByLexicalForms(value1, value2);
-			}
-		}
-
-		// If at least one of the two lists is empty, we can decide
-		// without a pair-wise comparison of the list elements.
+		// If at least one of the two lists is empty, then we can decide their
+		// relative order without a pair-wise comparison of the list elements.
 		if ( list1.isEmpty() || list2.isEmpty() ) {
 			// The literal with the non-empty list is greater
 			// than the literal with the empty list.
