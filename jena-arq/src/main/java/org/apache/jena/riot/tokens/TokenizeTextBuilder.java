@@ -32,14 +32,14 @@ import org.slf4j.Logger;
 public class TokenizeTextBuilder {
 
     // One of these.
-    private PeekReader   peekReader   = null;
-    private InputStream  input        = null;
-    private Reader       reader       = null;
-    private String       string       = null;
+    private PeekReader   peekReader      = null;
+    private InputStream  input           = null;
+    private Reader       reader          = null;
+    private String       string          = null;
 
-    private boolean      lineMode     = false;
-    private boolean      utf8         = true;
-    private ErrorHandler errorHandler = null;
+    private boolean      singleLineMode  = false;
+    private boolean      utf8            = true;
+    private ErrorHandler errorHandler    = null;
 
     TokenizeTextBuilder() {}
 
@@ -75,7 +75,7 @@ public class TokenizeTextBuilder {
     }
 
     public TokenizeTextBuilder lineMode(boolean lineMode) {
-        this.lineMode = lineMode;
+        this.singleLineMode = lineMode;
         return this;
     }
 
@@ -129,6 +129,6 @@ public class TokenizeTextBuilder {
             throw new IllegalStateException("No data source");
         }
 
-        return TokenizerText.internal(pr, lineMode, errHandler);
+        return TokenizerText.internal(pr, singleLineMode, !utf8, errHandler);
     }
 }

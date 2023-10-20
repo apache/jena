@@ -926,24 +926,47 @@ public class TestTokenizer {
     }
 
     @Test
-    public void tokenizer_charset_1() {
+    public void tokenizer_charset_str_1() {
         Tokenizer tokenizer = tokenizerASCII("'abc'") ;
         Token t = tokenizer.next() ;
         assertFalse(tokenizer.hasNext()) ;
     }
 
-    @Test(expected = RiotParseException.class)
-    public void tokenizer_charset_2() {
-        Tokenizer tokenizer = tokenizerASCII("'abcdé'") ;
-        // ASCII only -> bad.
-        Token t = tokenizer.next() ;
+    // Check the RiotParseException is about bad encoding.
+    private void expectBadEncoding(Runnable action) {
+        try {
+            action.run();
+        } catch ( RiotParseException ex ) {
+            assertTrue(ex.getMessage().contains("Bad character encoding"));
+            throw ex;
+        }
     }
 
     @Test(expected = RiotParseException.class)
-    public void tokenizer_charset_3() {
-        Tokenizer tokenizer = tokenizerASCII("<http://example/abcdé>") ;
-        // ASCII only -> bad.
-        Token t = tokenizer.next() ;
+    public void tokenizer_charset_str_2() {
+        expectBadEncoding(()->{
+            Tokenizer tokenizer = tokenizerASCII("'abcdé'") ;
+            // ASCII only -> bad.
+            Token t = tokenizer.next() ;
+        });
+    }
+
+    @Test(expected = RiotParseException.class)
+    public void tokenizer_charset_str_3() {
+        expectBadEncoding(()->{
+            Tokenizer tokenizer = tokenizerASCII("'α'") ;
+            // ASCII only -> bad.
+            Token t = tokenizer.next() ;
+        });
+    }
+
+    @Test(expected = RiotParseException.class)
+    public void tokenizer_charset_uri_1() {
+        expectBadEncoding(()->{
+            Tokenizer tokenizer = tokenizerASCII("<http://example/abcdé>") ;
+            // ASCII only -> bad.
+            Token t = tokenizer.next() ;
+        });
     }
 
     @Test(expected=RiotParseException.class)
@@ -972,10 +995,12 @@ public class TestTokenizer {
         //assertFalse(tokenizer.hasNext()) ;
     }
 
+    private final int CountWaringsOnReplacmeentChar = 0;
+
     // Test for warnings
     @Test
     public void tokenStr_replacmentChar_str_1() {
-        testExpectWarning("'\uFFFD'", TokenType.STRING, 1);
+        testExpectWarning("'\uFFFD'", TokenType.STRING, CountWaringsOnReplacmeentChar);
     }
 
     @Test
@@ -986,7 +1011,7 @@ public class TestTokenizer {
 
     @Test
     public void tokenStr_replacmentChar_str_3() {
-        testExpectWarning("'''\uFFFD'''", TokenType.STRING, 1);
+        testExpectWarning("'''\uFFFD'''", TokenType.STRING, CountWaringsOnReplacmeentChar);
     }
 
     @Test
@@ -997,7 +1022,7 @@ public class TestTokenizer {
 
     @Test
     public void tokenStr_replacmentChar_str_5() {
-        testExpectWarning("'abc\uFFFDdef'", TokenType.STRING, 1);
+        testExpectWarning("'abc\uFFFDdef'", TokenType.STRING, CountWaringsOnReplacmeentChar);
     }
 
     @Test
@@ -1011,7 +1036,7 @@ public class TestTokenizer {
         byte[] bytes = {(byte)0x22, (byte)0xDF, (byte)0x22};
         Reader r = IO.asUTF8(new ByteArrayInputStream(bytes));
         PeekReader pr = PeekReader.make(r);
-        Token t = testExpectWarning(pr, TokenType.STRING, 1);
+        Token t = testExpectWarning(pr, TokenType.STRING, CountWaringsOnReplacmeentChar);
         int char0 = t.getImage().codePointAt(0);
         assertEquals("Expected Unicode REPLACEMENT CHARACTER", 0xFFFD, char0);
     }
@@ -1023,7 +1048,7 @@ public class TestTokenizer {
 
     @Test
     public void tokenStr_replacmentChar_IRI_2() {
-        // As unicode escape. Still bad (it is not a ucschar so not an IRI character)
+        // As unicode escape. Still bad in a URI.
         testExpectWarning("<http://example/\\uFFFD>", TokenType.IRI, 1);
     }
 
