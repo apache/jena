@@ -1078,25 +1078,6 @@ public class FusekiServer {
             return this;
         }
 
-        /** @deprecated Use {@link #fusekiModules(FusekiModules)}. */
-        @Deprecated
-        public Builder setModules(FusekiModules modules) {
-            return fusekiModules(modules);
-        }
-
-        // Conflict with fusekiModules()
-//        /**
-//         * Set the {@link FusekiModules Fuseki Modules} for a server.
-//         * If no modules are added to a builder, then the system-wide default set (found by loading FusekiModules
-//         * via Java's {@link ServiceLoader} mechanism) is used.
-//         * <p>Pass {@code null} to switch back the system-wide default set.
-//         *
-//         * @see FusekiModules
-//         */
-//        public Builder fusekiModules(FusekiModule ...fmods) {
-//            return fusekiModules(FusekiModules.create(fmods));
-//        }
-
         /**
          * Set the {@link FusekiModule Fuseki Module} for a server.
          * If no modules are added to a builder, then the system-wide default set (found by loading FusekiModule

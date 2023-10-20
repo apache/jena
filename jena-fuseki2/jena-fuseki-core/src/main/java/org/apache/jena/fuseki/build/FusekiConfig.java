@@ -104,8 +104,6 @@ public class FusekiConfig {
         if ( allowUpdate ) {
             stdWrite.forEach((name, op) -> accEndpoint(endpoints, op, name));
             stdDatasetWrite.forEach(op -> accEndpoint(endpoints, op));
-            if ( FusekiExt.extraOperationServicesWrite != null )
-                FusekiExt.extraOperationServicesWrite.forEach((name, op) -> accEndpoint(endpoints, op, name));
         } else {
             stdRead.forEach((name, op) -> accEndpoint(endpoints, op, name));
             stdDatasetRead.forEach(op -> accEndpoint(endpoints, op));

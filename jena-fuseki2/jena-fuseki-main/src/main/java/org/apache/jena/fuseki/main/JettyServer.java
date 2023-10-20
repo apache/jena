@@ -314,12 +314,6 @@ public class JettyServer {
             return this;
         }
 
-        /** @deprecated Renamed as {@link #maxServerThreads} */
-        @Deprecated
-        public Builder maxServerNumThreads(int maxThreads) {
-            return maxServerThreads(maxThreads);
-        }
-
         /**
          * Set the maximum number threads used by Jetty.
          * This is equivalent to {@code numServerThreads(-1, maxThreads)}
