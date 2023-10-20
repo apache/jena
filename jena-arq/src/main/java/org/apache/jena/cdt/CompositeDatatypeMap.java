@@ -182,43 +182,18 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 	 * applies the map-less-than semantics.
 	 */
 	public static int compare( final LiteralLabel value1, final LiteralLabel value2, final boolean sortOrderingCompare ) throws ExprNotComparableException {
-		Map<CDTKey,CDTValue> map1 = null;
+		final Map<CDTKey,CDTValue> map1;
+		final Map<CDTKey,CDTValue> map2;
 		try {
 			map1 = getValue(value1);
-		}
-		catch ( final Exception e ) {
-			// do nothing at this point, we will check for errors next
-		}
-
-		Map<CDTKey,CDTValue> map2 = null;
-		try {
 			map2 = getValue(value2);
 		}
 		catch ( final Exception e ) {
-			// do nothing at this point, we will check for errors next
+			throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
 		}
 
-		// handling errors / ill-formed literals now
-		if ( map1 == null || map2 == null ) {
-			if ( ! sortOrderingCompare ) {
-				// If comparing as per the map-less-than semantics,
-				// both literals must be well-formed.
-				throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
-			}
-			else {
-				// If comparing as per the ORDER BY semantics, the
-				// ill-formed one of the two literals is order higher.
-				if ( map1 != null ) return Expr.CMP_LESS;
-				if ( map2 != null ) return Expr.CMP_GREATER;
-
-				// If both literals are ill-formed, the order
-				// is determined based on the lexical forms.
-				return compareByLexicalForms(value1, value2);
-			}
-		}
-
-		// If at least one of the two maps is empty, we can decide
-		// without a pair-wise comparison of the map entries.
+		// If at least one of the two maps is empty, then we can decide their
+		// relative order without a pair-wise comparison of the map entries.
 		if ( map1.isEmpty() || map2.isEmpty() ) {
 			// The literal with the non-empty map is greater
 			// than the literal with the empty map.
