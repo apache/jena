@@ -123,8 +123,6 @@ public class SystemIRIx {
         if ( baseStr == null )
             return IRIx.create(fallbackBaseURI);
         try {
-            if ( !baseStr.endsWith("/") )
-                baseStr = baseStr+"/";
             IRIx base = IRIx.create(baseStr);
             if ( ! base.isReference() )
                 Log.error(IRIs.class, "System base URI is not a reference URI: must have scheme, host and path");
