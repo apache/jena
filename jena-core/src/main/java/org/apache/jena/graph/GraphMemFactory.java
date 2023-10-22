@@ -30,8 +30,20 @@ import org.apache.jena.util.iterator.NullIterator ;
 /**
  * A factory class for creating memory Graphs.
  * <p>
- * Apache Jena is migrating to term semantics graph for consistency across all in-memory and persistent storage graphs
- *
+ * Apache Jena is migrating to term semantics graph for consistency across all in-memory and persistent storage graphs.
+ * <p>
+ * All the graphs that this factory creates are <strong>not thread-safe</strong>.
+ * Note that if the memory Graph is structurally modified at any time after
+ * the iterator has been created by any of the {@code find*} or {@code stream*} methods, the iterator may throw
+ * a {@link java.util.ConcurrentModificationException ConcurrentModificationException}
+ * if continued with it after this modification.
+ * This may happen even if the queried data does not relate directly to the modified data
+ * (i.e. when triple search pattern does not match added or deleted triple).
+ * <p>
+ * The good practice is to explicitly close any {@link ExtendedIterator} immediately after a read operation.
+ * For GraphMem implementations {@code ExtendedIterator}'s materializing methods (such as {@link ExtendedIterator#toList()})
+ * could be used safely without explicit close. The same is true for {@link java.util.stream.Stream Java Stream}'s
+ * terminal operations.
  */
 public class GraphMemFactory
 {

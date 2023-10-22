@@ -34,6 +34,17 @@ import org.apache.jena.util.iterator.NullIterator ;
     of RDF triples. The core interface is small (add, delete, find, contains) and
     is augmented by additional classes to handle more complicated matters
     such as event management.
+    The good practice is to explicitly close every {@link ExtendedIterator} and {@link Stream} produced by the {@code Graph}
+    right after query operation.
+    Depending on the implementation,
+    the iterator and stream may throw a {@link java.util.ConcurrentModificationException}
+    if continued with it after modification operation.
+    This may happen even if the queried data does not relate directly to the modified data
+    (i.e. when triple search pattern does not match added or deleted triple).
+    A {@link ExtendedIterator} and {@link Stream} should be operated on
+    (invoking materializing {@code ExtendedIterator} or terminal {@code Stream} operation) only once;
+    in general reusable are not allowed and may lead to an exception.
+
     @see GraphBase for an implementation framework.
 */
 public interface Graph

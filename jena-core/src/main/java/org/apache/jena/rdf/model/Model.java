@@ -36,7 +36,7 @@ import org.apache.jena.shared.* ;
 <p>
     Models may create Resources [URI nodes and bnodes]. Creating a Resource does
     <i>not</i> make the Resource visible to the model; Resources are only "in" Models
-    if Statements about them are added to the Model. Similarly the only way to "remove"
+    if Statements about them are added to the Model. Similarly, the only way to "remove"
     a Resource from a Model is to remove all the Statements that mention it.
 <p>
     When a Resource or Literal is created by a Model, the Model is free to re-use an
@@ -47,6 +47,17 @@ import org.apache.jena.shared.* ;
     convenience methods which extends this interface, e.g. performing
     automatic type conversions and support for enhanced resources,
     is defined in {@link ModelCon}.</p>
+ <p>
+	The good practice is to close explicitly every {@link org.apache.jena.util.iterator.ExtendedIterator Jena's ExtendedIterator}
+	produced by the {@code Model} right after query operation.
+	Depending on the implementation,
+	the iterator may throw a {@link java.util.ConcurrentModificationException}
+ 	if continued with it after modification operation.
+	This may happen even if the queried data does not relate directly to the modified data
+	(i.e. when triple search pattern does not match added or deleted triple).
+	A {@code  ExtendedIterator} should be operated on
+	(invoking materializing {@code ExtendedIterator} operation) only once;
+	in general reusable are not allowed and may lead to an exception.
 
  <h2>System Properties</h2>
 
