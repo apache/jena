@@ -76,24 +76,32 @@ public class IRIs {
     /**
      * Given a candidate baseURI string, which may be a filename,
      * turn it into a IRI suitable as a base IRI.
+     * This includes encoding characters in a filename (e.g. spaces).
      */
-    public static String toBase(String baseURI) {
-        if ( baseURI == null )
+    public static String toBase(String uriForBase) {
+        if ( uriForBase == null )
             return getBaseStr();
-        String scheme = scheme(baseURI);
+        String scheme = scheme(uriForBase);
         if ( Sys.isWindows ) {
             // Assume a scheme of one letter is a Windows drive letter.
             if ( scheme != null && scheme.length() == 1 )
                 scheme = "file";
         }
-        // File scheme if the URI is "file:" or there is no scheme
-        // and the system base is a "file:" URI
-        boolean isFile = ( scheme != null )
-                ? scheme.equals("file")
-                : IRIs.getSystemBase().hasScheme("file");
-        if ( isFile )
-            baseURI = IRILib.encodeFileURL(baseURI);
-        return IRIs.getSystemBase().resolve(baseURI).toString();
+        if ( scheme == null  ) {
+            // Relative name: it the base is a file: URI, encode the relative
+            // name if it does not look like it is already encoded.
+            boolean isFileBase = IRIs.getSystemBase().hasScheme("file");
+            if ( isFileBase && ! uriForBase.contains("%") )
+                uriForBase = IRILib.encodeFileURL(uriForBase);
+        } else {
+            // If the scheme of the proposed base URI is file: then assume it is a legal IRI as intended.
+            // Pragmatically, fix-up a few characters that are illegal.
+            if ( scheme.equals("file") ) {
+                uriForBase = uriForBase.replace(" ", "%20");
+                uriForBase = uriForBase.replace("\\", "/");
+            }
+        }
+        return IRIs.getSystemBase().resolve(uriForBase).toString();
     }
 
     /** Return a general purpose resolver, with the current system base as its base IRI. */
