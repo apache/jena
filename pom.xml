@@ -898,7 +898,7 @@
          </configuration>
        </plugin>
 
-       <!-- SBOM -->
+       <!-- SBOM : CycloneDX -->
        <plugin>
          <groupId>org.cyclonedx</groupId>
          <artifactId>cyclonedx-maven-plugin</artifactId>
@@ -916,10 +916,17 @@
             <outputName>${project.artifactId}-${project.version}-bom</outputName>
          </configuration>
        </plugin>
+
+       <!-- SBOM : SPDX -->
+       <!-- Example : placeholder
        <plugin>
          <groupId>org.spdx</groupId>
          <artifactId>spdx-maven-plugin</artifactId>
          <version>${ver.plugin.spdx}</version>
+         <configuration>
+           <licenseDeclared>Apache-2.0</licenseDeclared>
+           <copyrightText>See NOTICE file</copyrightText>
+         </configuration>
          <executions>
            <execution>
              <id>build-sbom-spdx</id>
@@ -930,6 +937,7 @@
            </execution>
          </executions>
        </plugin>
+       -->
 
      </plugins>
 
