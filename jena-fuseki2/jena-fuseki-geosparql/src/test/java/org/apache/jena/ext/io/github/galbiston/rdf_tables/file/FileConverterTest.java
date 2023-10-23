@@ -15,18 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.galbiston.rdf_tables.file;
+package org.apache.jena.ext.io.github.galbiston.rdf_tables.file;
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.net.URL;
 
+import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.datatypes.BaseDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.datatypes.xsd.impl.XSDBaseNumericType;
 import org.apache.jena.ext.io.github.galbiston.rdf_tables.datatypes.DatatypeController;
 import org.apache.jena.ext.io.github.galbiston.rdf_tables.datatypes.PrefixController;
-import org.apache.jena.ext.io.github.galbiston.rdf_tables.file.FileConverter;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
@@ -45,7 +46,10 @@ public class FileConverterTest {
 
     @BeforeClass
     public static void setUpClass() {
-        File inputFile = new File(FileConverterTest.class.getClassLoader().getResource("TestData.csv").getFile());
+        URL u = FileConverterTest.class.getClassLoader().getResource("TestData.csv");
+        // These URLs have the file name as an encoded string.
+        String fn = IRILib.decodeHex(u.getFile());
+        File inputFile = new File(fn);
         testModel = ModelFactory.createDefaultModel();
         DatatypeController.addPrefixDatatypeURI("wkt", "http://www.opengis.net/ont/geosparql#wktLiteral");
         PrefixController.addPrefix("other", "http://example.org/other#");
