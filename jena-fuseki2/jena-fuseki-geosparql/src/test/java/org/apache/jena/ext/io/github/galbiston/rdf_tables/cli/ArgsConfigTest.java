@@ -15,12 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.galbiston.rdf_tables.cli;
+package org.apache.jena.ext.io.github.galbiston.rdf_tables.cli;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 
-import org.apache.jena.ext.io.github.galbiston.rdf_tables.cli.ArgsConfig;
 import org.apache.jena.riot.RDFFormat;
 import org.junit.After;
 import org.junit.AfterClass;
