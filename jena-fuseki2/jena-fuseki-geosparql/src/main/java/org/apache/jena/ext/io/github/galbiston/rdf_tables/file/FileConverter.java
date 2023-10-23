@@ -99,9 +99,8 @@ public class FileConverter {
             model.setNsPrefixes(PrefixController.getPrefixes());
 
         } catch (IOException | RuntimeException | CsvValidationException ex) {
-
             LOGGER.error("FileConverter: Line - {}, File - {}, Exception - {}", lineNumber, inputFile.getAbsolutePath(), ex.getMessage());
-            throw new AssertionError("Error loading file: " + inputFile.getAbsolutePath());
+            throw new AssertionError("Error loading file: " + inputFile.getAbsolutePath(), ex);
         }
 
         LOGGER.info("File Conversion Completed: {}", inputFile.getPath());
