@@ -21,13 +21,13 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>4.10.0</version>
+    <version>4.11.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
 
   <name>Apache Jena - Benchmark Suite</name>
   <artifactId>jena-benchmarks</artifactId>
-  <version>4.10.0</version>
+  <version>4.11.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <description>Suite with different benchmarks.
