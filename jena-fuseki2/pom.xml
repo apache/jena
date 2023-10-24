@@ -21,13 +21,13 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>4.10.0-SNAPSHOT</version>
+    <version>4.10.0</version>
     <relativePath>..</relativePath>
   </parent> 
 
   <name>Apache Jena - Fuseki - A SPARQL 1.1 Server</name>
   <artifactId>jena-fuseki</artifactId>
-  <version>4.10.0-SNAPSHOT</version>
+  <version>4.10.0</version>
 
   <description>Fuseki is a SPARQL 1.1 Server which provides the SPARQL query, 
   SPARQL update and SPARQL graph store protocols.
