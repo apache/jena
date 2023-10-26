@@ -176,6 +176,8 @@ public class IRIs {
      * </pre>
      */
     public static String scheme(String str) {
+        if ( str == null )
+            return null;
         int idx = scheme(str, 0);
         if ( idx <= 0 || idx > str.length())
             return null;
