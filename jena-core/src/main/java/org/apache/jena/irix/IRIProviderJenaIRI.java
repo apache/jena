@@ -69,9 +69,15 @@ public class IRIProviderJenaIRI implements IRIProvider {
 
         @Override
         public boolean hasScheme(String scheme) {
-            if ( jenaIRI.getScheme() == null )
+            String iriScheme = scheme();
+            if ( iriScheme == null )
                 return false;
-            return jenaIRI.getScheme().startsWith(scheme);
+            return iriScheme.equalsIgnoreCase(scheme);
+        }
+
+        @Override
+        public String scheme() {
+            return jenaIRI.getScheme();
         }
 
         @Override
@@ -289,11 +295,12 @@ public class IRIProviderJenaIRI implements IRIProvider {
         if ( iriObj.hasViolation(true) )
             // Already has problems.
             return;
-        // Unfortunately, these tests are check/no-check sensitive.
-        if ( iriObj.getRawFragment() != null )
-            throw new IRIException("Fragment used with UUID");
-        if ( iriObj.getRawQuery() != null )
-            throw new IRIException("Query used with UUID");
+        // jena-iri and iri4ld should both be uptodate now..
+//        // Unfortunately, these tests are check/no-check sensitive.
+//        if ( iriObj.getRawFragment() != null )
+//            throw new IRIException("Fragment used with UUID");
+//        if ( iriObj.getRawQuery() != null )
+//            throw new IRIException("Query used with UUID");
         boolean matches = UUID_PATTERN.matcher(original).matches();
         if ( !matches )
             throw new IRIException("Not a valid UUID string: "+original);

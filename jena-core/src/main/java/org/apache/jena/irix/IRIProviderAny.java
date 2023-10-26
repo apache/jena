@@ -43,6 +43,7 @@ public class IRIProviderAny  implements IRIProvider {
         @Override public boolean isAbsolute()               { return true; }
         @Override public boolean isRelative()               { return false; }
         @Override public boolean hasScheme(String scheme)   { return str().startsWith(scheme); }
+        @Override public String  scheme()                   { return IRIs.scheme(str()); }
 
         @Override
         public boolean isReference() {
