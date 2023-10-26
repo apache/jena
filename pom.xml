@@ -913,7 +913,7 @@
            </execution>
          </executions>
          <configuration>
-            <outputName>${project.artifactId}-${project.version}-bom</outputName>
+           <outputName>${project.artifactId}-${project.version}-bom</outputName>
          </configuration>
        </plugin>
 
