@@ -111,6 +111,13 @@ public abstract class IRIx {
     public abstract boolean hasScheme(String scheme);
 
     /**
+     * Return the IRI scheme, if known.
+     * <p>
+     * Returns null for "no scheme" (relative IRI).
+     */
+    public abstract String scheme();
+
+    /**
      * An <em>RDF Reference</em> is an URI which has scheme.
      * If it is hierarchical, it should have a non-empty host authority.
      * It may have a query component and may have a fragment component.
