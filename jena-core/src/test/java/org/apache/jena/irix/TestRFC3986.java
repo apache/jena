@@ -22,6 +22,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.util.Locale;
+
 import org.apache.jena.iri.IRI;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -29,6 +31,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.junit.runners.Parameterized;
 
+/**
+ * Test of parsing and schema violations.
+ * See also plain parse tests in {@link TestParseIRIx}
+ */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(Parameterized.class)
 public class TestRFC3986 extends AbstractTestIRIx {
@@ -125,6 +131,18 @@ public class TestRFC3986 extends AbstractTestIRIx {
     @Test public void parse_urn_04()        { good("urn:x-local:abc/def?+resolve?=123#frag"); }
 
     @Test public void parse_urn_05()        { good("urn:abc0:def"); }
+
+    private static String testUUID = "aa045fc2-a781-11eb-9041-afa3877612ee";
+
+    @Test public void parse_uuid_01() { good("uuid:"+testUUID); }
+
+    @Test public void parse_uuid_02() { good("uuid:"+(testUUID.toUpperCase(Locale.ROOT))); }
+
+    @Test public void parse_uuid_03() { good("urn:uuid:"+testUUID); }
+
+    @Test public void parse_uuid_04() { good("urn:uuid:"+(testUUID.toUpperCase(Locale.ROOT))); }
+
+    // -- FTP
 
     @Test public void parse_ftp_01() { good("ftp://user@host:3333/abc/def?qs=ghi#jkl"); }
 
@@ -234,6 +252,56 @@ public class TestRFC3986 extends AbstractTestIRIx {
 
     @Test public void parse_uuid_bad_03() {
         badSpecific("uuid:06e775ac-2c38-11b2");
+    }
+
+    @Test public void parse_uuid_bad_04() {
+        badSpecific("urn:uuid:06e775ac-ZZZZ-11b2-801c-8086f2cc00c9");
+    }
+
+    // No char fragment is legal.
+    @Test public void parse_uuid_bad_05() {
+        badSpecific("urn:uuid:" + testUUID + "#");
+    }
+
+    // RFC 8141 allows query string must be ?=<one+ char> or ?+<one+ char>
+    @Test public void parse_uuid_bad_06() {
+        badSpecific("urn:uuid:" + testUUID + "?=chars");
+    }
+
+    @Test public void parse_uuid_bad_07() {
+        badSpecific("urn:uuid:" + testUUID + "?+chars");
+    }
+
+    @Test public void parse_uuid_bad_08() {
+        badSpecific("urn:uuid:" + testUUID + "?=");
+    }
+
+    @Test public void parse_uuid_bad_09() {
+        badSpecific("urn:uuid:" + testUUID + "?+");
+    }
+
+    // RFC 8141 allows query and fragment in urn: (limited character set).
+    // RFC 4122 (uuid namespace definition) does not.
+    @Test
+    public void parse_uuid_bad_8141_01() {
+        badSpecific("urn:uuid:" + testUUID + "#frag");
+    }
+
+    // No char fragment is legal.
+    @Test
+    public void parse_uuid_bad_8141_02() {
+        badSpecific("urn:uuid:" + testUUID + "#");
+    }
+
+    // RFC 8141 allows query string must be ?=<one+ char> or ?+<one+ char>
+    @Test
+    public void parse_uuid_bad_8141_03() {
+        badSpecific("urn:uuid:" + testUUID + "?=chars");
+    }
+
+    @Test
+    public void parse_uuid_bad_8141_04() {
+        badSpecific("urn:uuid:" + testUUID + "?+chars");
     }
 
     private void good(String string) {
