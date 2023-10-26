@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,19 +28,19 @@ import java.util.Locale;
 * string and fragment) that may constitute a URI.
 * <p>
 * Parsing of a URI specification is done according to the URI
-* syntax described in 
+* syntax described in
 * <a href="http://www.ietf.org/rfc/rfc2396.txt?number=2396">RFC 2396</a>,
 * and amended by
-* <a href="http://www.ietf.org/rfc/rfc2732.txt?number=2732">RFC 2732</a>. 
+* <a href="http://www.ietf.org/rfc/rfc2732.txt?number=2732">RFC 2732</a>.
 * <p>
-* Every absolute URI consists of a scheme, followed by a colon (':'), 
-* followed by a scheme-specific part. For URIs that follow the 
-* "generic URI" syntax, the scheme-specific part begins with two 
-* slashes ("//") and may be followed by an authority segment (comprised 
-* of user information, host, and port), path segment, query segment 
-* and fragment. Note that RFC 2396 no longer specifies the use of the 
-* parameters segment and excludes the "user:password" syntax as part of 
-* the authority segment. If "user:password" appears in a URI, the entire 
+* Every absolute URI consists of a scheme, followed by a colon (':'),
+* followed by a scheme-specific part. For URIs that follow the
+* "generic URI" syntax, the scheme-specific part begins with two
+* slashes ("//") and may be followed by an authority segment (comprised
+* of user information, host, and port), path segment, query segment
+* and fragment. Note that RFC 2396 no longer specifies the use of the
+* parameters segment and excludes the "user:password" syntax as part of
+* the authority segment. If "user:password" appears in a URI, the entire
 * user/password string is stored as userinfo.
 * <p>
 * For URIs that do not follow the "generic URI" syntax (e.g. mailto),
@@ -86,55 +86,55 @@ import java.util.Locale;
   }
 
   private static final byte [] fgLookupTable = new byte[128];
-  
+
   /**
    * Character Classes
    */
-  
+
   /** reserved characters ;/?:@&=+$,[] */
   //RFC 2732 added '[' and ']' as reserved characters
   private static final int RESERVED_CHARACTERS = 0x01;
-  
+
   /** URI punctuation mark characters: -_.!~*'() - these, combined with
       alphanumerics, constitute the "unreserved" characters */
   private static final int MARK_CHARACTERS = 0x02;
-  
+
   /** scheme can be composed of alphanumerics and these characters: +-. */
   private static final int SCHEME_CHARACTERS = 0x04;
-  
+
   /** userinfo can be composed of unreserved, escaped and these
       characters: ;:&=+$, */
   private static final int USERINFO_CHARACTERS = 0x08;
-  
+
   /** ASCII letter characters */
   private static final int ASCII_ALPHA_CHARACTERS = 0x10;
-  
+
   /** ASCII digit characters */
   private static final int ASCII_DIGIT_CHARACTERS = 0x20;
-  
+
   /** ASCII hex characters */
   private static final int ASCII_HEX_CHARACTERS = 0x40;
-  
+
   /** Path characters */
   private static final int PATH_CHARACTERS = 0x80;
 
   /** Mask for alpha-numeric characters */
   private static final int MASK_ALPHA_NUMERIC = ASCII_ALPHA_CHARACTERS | ASCII_DIGIT_CHARACTERS;
-  
+
   /** Mask for unreserved characters */
   private static final int MASK_UNRESERVED_MASK = MASK_ALPHA_NUMERIC | MARK_CHARACTERS;
-  
+
   /** Mask for URI allowable characters except for % */
   private static final int MASK_URI_CHARACTER = MASK_UNRESERVED_MASK | RESERVED_CHARACTERS;
-  
+
   /** Mask for scheme characters */
   private static final int MASK_SCHEME_CHARACTER = MASK_ALPHA_NUMERIC | SCHEME_CHARACTERS;
-  
+
   /** Mask for userinfo characters */
   private static final int MASK_USERINFO_CHARACTER = MASK_UNRESERVED_MASK | USERINFO_CHARACTERS;
-  
+
   /** Mask for path characters */
-  private static final int MASK_PATH_CHARACTER = MASK_UNRESERVED_MASK | PATH_CHARACTERS; 
+  private static final int MASK_PATH_CHARACTER = MASK_UNRESERVED_MASK | PATH_CHARACTERS;
 
   static {
       // Add ASCII Digits and ASCII Hex Numbers
@@ -192,7 +192,7 @@ import java.util.Locale;
       fgLookupTable['+'] |= USERINFO_CHARACTERS;
       fgLookupTable['$'] |= USERINFO_CHARACTERS;
       fgLookupTable[','] |= USERINFO_CHARACTERS;
-      
+
       // Add Path Characters
       fgLookupTable[';'] |= PATH_CHARACTERS;
       fgLookupTable['/'] |= PATH_CHARACTERS;
@@ -216,7 +216,7 @@ import java.util.Locale;
 
   /** If specified, stores the port for this URI; otherwise -1 */
   private int m_port = -1;
-  
+
   /** If specified, stores the registry based authority for this URI; otherwise -1 */
   private String m_regAuthority = null;
 
@@ -266,7 +266,7 @@ import java.util.Locale;
   public URI(String p_uriSpec) throws MalformedURIException {
     this((URI)null, p_uriSpec);
   }
-  
+
   /**
    * Construct a new URI from a URI specification string. If the
    * specification follows the "generic URI" syntax, (two slashes
@@ -276,11 +276,11 @@ import java.util.Locale;
    * not follow the "generic URI" syntax, the specification is parsed
    * into a scheme and scheme-specific part (stored as the path) only.
    * Construct a relative URI if boolean is assigned to "true"
-   * and p_uriSpec is not valid absolute URI, instead of throwing an exception. 
-   * 
+   * and p_uriSpec is not valid absolute URI, instead of throwing an exception.
+   *
    * @param p_uriSpec the URI specification string (cannot be null or
    *                  empty)
-   * @param allowNonAbsoluteURI true to permit non-absolute URIs, 
+   * @param allowNonAbsoluteURI true to permit non-absolute URIs,
    *                            false otherwise.
    *
    * @exception MalformedURIException if p_uriSpec violates any syntax
@@ -289,7 +289,7 @@ import java.util.Locale;
   public URI(String p_uriSpec, boolean allowNonAbsoluteURI) throws MalformedURIException {
       this((URI)null, p_uriSpec, allowNonAbsoluteURI);
   }
-  
+
  /**
   * Construct a new URI from a base URI and a URI specification string.
   * The URI specification string may be a relative URI.
@@ -305,19 +305,19 @@ import java.util.Locale;
   public URI(URI p_base, String p_uriSpec) throws MalformedURIException {
     initialize(p_base, p_uriSpec);
   }
-  
+
   /**
    * Construct a new URI from a base URI and a URI specification string.
    * The URI specification string may be a relative URI.
    * Construct a relative URI if boolean is assigned to "true"
    * and p_uriSpec is not valid absolute URI and p_base is null
-   * instead of throwing an exception. 
+   * instead of throwing an exception.
    *
    * @param p_base the base URI (cannot be null if p_uriSpec is null or
    *               empty)
    * @param p_uriSpec the URI specification string (cannot be null or
    *                  empty if p_base is null)
-   * @param allowNonAbsoluteURI true to permit non-absolute URIs, 
+   * @param allowNonAbsoluteURI true to permit non-absolute URIs,
    *                            false otherwise.
    *
    * @exception MalformedURIException if p_uriSpec violates any syntax
@@ -461,7 +461,7 @@ import java.util.Locale;
     m_queryString = p_other.getQueryString();
     m_fragment = p_other.getFragment();
   }
-  
+
   /**
    * Initializes this URI from a base URI and a URI specification string.
    * See RFC 2396 Section 4 and Appendix B for specifications on parsing
@@ -473,7 +473,7 @@ import java.util.Locale;
    * @param p_uriSpec the URI spec string which may be an absolute or
    *                  relative URI (can only be null/empty if p_base
    *                  is not null)
-   * @param allowNonAbsoluteURI true to permit non-absolute URIs, 
+   * @param allowNonAbsoluteURI true to permit non-absolute URIs,
    *                         in case of relative URI, false otherwise.
    *
    * @exception MalformedURIException if p_base is null and p_uriSpec
@@ -482,10 +482,10 @@ import java.util.Locale;
    */
   private void initialize(URI p_base, String p_uriSpec, boolean allowNonAbsoluteURI)
       throws MalformedURIException {
-      
+
       String uriSpec = p_uriSpec;
       int uriSpecLen = (uriSpec != null) ? uriSpec.length() : 0;
-      
+
       if (p_base == null && uriSpecLen == 0) {
           if (allowNonAbsoluteURI) {
               m_path = "";
@@ -493,15 +493,15 @@ import java.util.Locale;
           }
           throw new MalformedURIException("Cannot initialize URI with empty parameters.");
       }
-      
+
       // just make a copy of the base if spec is empty
       if (uriSpecLen == 0) {
           initialize(p_base);
           return;
       }
-      
+
       int index = 0;
-      
+
       // Check for scheme, which must be before '/', '?' or '#'.
       int colonIdx = uriSpec.indexOf(':');
       if (colonIdx != -1) {
@@ -510,8 +510,8 @@ import java.util.Locale;
           int slashIdx = uriSpec.lastIndexOf('/', searchFrom);
           int queryIdx = uriSpec.lastIndexOf('?', searchFrom);
           int fragmentIdx = uriSpec.lastIndexOf('#', searchFrom);
-          
-          if (colonIdx == 0 || slashIdx != -1 || 
+
+          if (colonIdx == 0 || slashIdx != -1 ||
               queryIdx != -1 || fragmentIdx != -1) {
               // A standalone base is a valid URI according to spec
               if (colonIdx == 0 || (p_base == null && fragmentIdx != 0 && !allowNonAbsoluteURI)) {
@@ -521,22 +521,22 @@ import java.util.Locale;
           else {
               initializeScheme(uriSpec);
               index = m_scheme.length()+1;
-              
+
               // Neither 'scheme:' or 'scheme:#fragment' are valid URIs.
               if (colonIdx == uriSpecLen - 1 || uriSpec.charAt(colonIdx+1) == '#') {
-                  throw new MalformedURIException("Scheme specific part cannot be empty.");   
+                  throw new MalformedURIException("Scheme specific part cannot be empty.");
               }
           }
       }
       else if (p_base == null && uriSpec.indexOf('#') != 0 && !allowNonAbsoluteURI) {
-          throw new MalformedURIException("No scheme found in URI.");    
+          throw new MalformedURIException("No scheme found in URI.");
       }
-      
+
       // Two slashes means we may have authority, but definitely means we're either
       // matching net_path or abs_path. These two productions are ambiguous in that
-      // every net_path (except those containing an IPv6Reference) is an abs_path. 
-      // RFC 2396 resolves this ambiguity by applying a greedy left most matching rule. 
-      // Try matching net_path first, and if that fails we don't have authority so 
+      // every net_path (except those containing an IPv6Reference) is an abs_path.
+      // RFC 2396 resolves this ambiguity by applying a greedy left most matching rule.
+      // Try matching net_path first, and if that fails we don't have authority so
       // then attempt to match abs_path.
       //
       // net_path = "//" authority [ abs_path ]
@@ -545,7 +545,7 @@ import java.util.Locale;
           (uriSpec.charAt(index) == '/' && uriSpec.charAt(index+1) == '/')) {
           index += 2;
           int startPos = index;
-          
+
           // Authority will be everything up to path, query or fragment
           char testChar = '\0';
           while (index < uriSpecLen) {
@@ -555,7 +555,7 @@ import java.util.Locale;
               }
               index++;
           }
-          
+
           // Attempt to parse authority. If the section is an empty string
           // this is a valid server based authority, so set the host to this
           // value.
@@ -570,9 +570,9 @@ import java.util.Locale;
               m_host = "";
           }
       }
-      
+
       initializePath(uriSpec, index);
-      
+
       // Resolve relative URI to base URI - see RFC 2396 Section 5.2
       // In some cases, it might make more sense to throw an exception
       // (when scheme is specified is the string spec and the base URI
@@ -601,10 +601,10 @@ import java.util.Locale;
   */
   private void initialize(URI p_base, String p_uriSpec)
                          throws MalformedURIException {
-	  
+
     String uriSpec = p_uriSpec;
     int uriSpecLen = (uriSpec != null) ? uriSpec.length() : 0;
-	
+
     if (p_base == null && uriSpecLen == 0) {
       throw new MalformedURIException(
                   "Cannot initialize URI with empty parameters.");
@@ -626,8 +626,8 @@ import java.util.Locale;
         int slashIdx = uriSpec.lastIndexOf('/', searchFrom);
         int queryIdx = uriSpec.lastIndexOf('?', searchFrom);
         int fragmentIdx = uriSpec.lastIndexOf('#', searchFrom);
-       
-        if (colonIdx == 0 || slashIdx != -1 || 
+
+        if (colonIdx == 0 || slashIdx != -1 ||
             queryIdx != -1 || fragmentIdx != -1) {
             // A standalone base is a valid URI according to spec
             if (colonIdx == 0 || (p_base == null && fragmentIdx != 0)) {
@@ -637,22 +637,22 @@ import java.util.Locale;
         else {
             initializeScheme(uriSpec);
             index = m_scheme.length()+1;
-            
+
             // Neither 'scheme:' or 'scheme:#fragment' are valid URIs.
             if (colonIdx == uriSpecLen - 1 || uriSpec.charAt(colonIdx+1) == '#') {
-            	throw new MalformedURIException("Scheme specific part cannot be empty.");	
+            	throw new MalformedURIException("Scheme specific part cannot be empty.");
             }
         }
     }
     else if (p_base == null && uriSpec.indexOf('#') != 0) {
-        throw new MalformedURIException("No scheme found in URI.");    
+        throw new MalformedURIException("No scheme found in URI.");
     }
 
     // Two slashes means we may have authority, but definitely means we're either
     // matching net_path or abs_path. These two productions are ambiguous in that
-    // every net_path (except those containing an IPv6Reference) is an abs_path. 
-    // RFC 2396 resolves this ambiguity by applying a greedy left most matching rule. 
-    // Try matching net_path first, and if that fails we don't have authority so 
+    // every net_path (except those containing an IPv6Reference) is an abs_path.
+    // RFC 2396 resolves this ambiguity by applying a greedy left most matching rule.
+    // Try matching net_path first, and if that fails we don't have authority so
     // then attempt to match abs_path.
     //
     // net_path = "//" authority [ abs_path ]
@@ -721,17 +721,17 @@ import java.util.Locale;
           m_port = p_base.getPort();
           m_regAuthority = p_base.getRegBasedAuthority();
           m_path = p_base.getPath();
-          
+
           if (m_queryString == null) {
               m_queryString = p_base.getQueryString();
-              
+
               if (m_fragment == null) {
                   m_fragment = p_base.getFragment();
               }
           }
           return;
       }
-      
+
       // check for scheme - RFC 2396 5.2 #3
       // if we found a scheme, it means absolute URI, so we're done
       if (m_scheme == null) {
@@ -740,7 +740,7 @@ import java.util.Locale;
       else {
           return;
       }
-      
+
       // check for authority - RFC 2396 5.2 #4
       // if we found a host, then we've got a network path, so we're done
       if (m_host == null && m_regAuthority == null) {
@@ -752,18 +752,18 @@ import java.util.Locale;
       else {
           return;
       }
-      
+
       // check for absolute path - RFC 2396 5.2 #5
       if (m_path.length() > 0 &&
               m_path.startsWith("/")) {
           return;
       }
-      
+
       // if we get to this point, we need to resolve relative path
       // RFC 2396 5.2 #6
       String path = "";
       String basePath = p_base.getPath();
-      
+
       // 6a - get all but the last segment of the base URI path
       if (basePath != null && basePath.length() > 0) {
           int lastSlash = basePath.lastIndexOf('/');
@@ -774,27 +774,27 @@ import java.util.Locale;
       else if (m_path.length() > 0) {
           path = "/";
       }
-      
+
       // 6b - append the relative URI path
       path = path.concat(m_path);
-      
+
       // 6c - remove all "./" where "." is a complete path segment
       int index = -1;
       while ((index = path.indexOf("/./")) != -1) {
           path = path.substring(0, index+1).concat(path.substring(index+3));
       }
-      
+
       // 6d - remove "." if path ends with "." as a complete path segment
       if (path.endsWith("/.")) {
           path = path.substring(0, path.length()-1);
       }
-      
+
       // 6e - remove all "<segment>/../" where "<segment>" is a complete
       // path segment not equal to ".."
       index = 1;
       int segIndex = -1;
       String tempString = null;
-      
+
       while ((index = path.indexOf("/../", index)) > 0) {
           tempString = path.substring(0, path.indexOf("/../"));
           segIndex = tempString.lastIndexOf('/');
@@ -811,7 +811,7 @@ import java.util.Locale;
               index += 4;
           }
       }
-      
+
       // 6f - remove ending "<segment>/.." where "<segment>" is a
       // complete path segment
       if (path.endsWith("/..")) {
@@ -862,12 +862,12 @@ import java.util.Locale;
   * for this URI from a URI string spec.
   *
   * @param p_uriSpec the URI specification (cannot be null)
-  * 
+  *
   * @return true if the given string matched server or registry
   * based authority
   */
   private boolean initializeAuthority(String p_uriSpec) {
-    
+
     int index = 0;
     int start = 0;
     int end = p_uriSpec.length();
@@ -888,7 +888,7 @@ import java.util.Locale;
       index++;
     }
 
-    // host is everything up to last ':', or up to 
+    // host is everything up to last ':', or up to
     // and including ']' if followed by ':'.
     String host = null;
     start = index;
@@ -943,7 +943,7 @@ import java.util.Locale;
         }
       }
     }
-    
+
     if (isValidServerBasedAuthority(host, port, userinfo)) {
       m_host = host;
       m_port = port;
@@ -960,25 +960,25 @@ import java.util.Locale;
     }
     return false;
   }
-  
+
   /**
    * Determines whether the components host, port, and user info
    * are valid as a server authority.
-   * 
+   *
    * @param host the host component of authority
    * @param port the port number component of authority
    * @param userinfo the user info component of authority
-   * 
+   *
    * @return true if the given host, port, and userinfo compose
    * a valid server authority
    */
   private boolean isValidServerBasedAuthority(String host, int port, String userinfo) {
-    
+
     // Check if the host is well formed.
     if (!isWellFormedAddress(host)) {
       return false;
     }
-    
+
     // Check that port is well formed if it exists.
     // REVISIT: There's no restriction on port value ranges, but
     // perform the same check as in setPort to be consistent. Pass
@@ -986,7 +986,7 @@ import java.util.Locale;
     if (port < -1 || port > 65535) {
       return false;
     }
-    
+
     // Check that userinfo is well formed if it exists.
     if (userinfo != null) {
       // Userinfo can contain alphanumerics, mark characters, escaped
@@ -1012,22 +1012,22 @@ import java.util.Locale;
     }
     return true;
   }
-  
+
   /**
    * Determines whether the given string is a registry based authority.
-   * 
+   *
    * @param authority the authority component of a URI
-   * 
+   *
    * @return true if the given string is a registry based authority
    */
   private boolean isValidRegistryBasedAuthority(String authority) {
     int index = 0;
     int end = authority.length();
     char testChar;
-  	
+
     while (index < end) {
       testChar = authority.charAt(index);
-      
+
       // check for valid escape sequence
       if (testChar == '%') {
         if (index+2 >= end ||
@@ -1046,7 +1046,7 @@ import java.util.Locale;
     }
     return true;
   }
-  	
+
  /**
   * Initialize the path for this URI from a URI string spec.
   *
@@ -1071,13 +1071,13 @@ import java.util.Locale;
     if (start < end) {
     	// RFC 2732 only allows '[' and ']' to appear in the opaque part.
     	if (getScheme() == null || p_uriSpec.charAt(start) == '/') {
-    	
+
             // Scan path.
             // abs_path = "/"  path_segments
             // rel_path = rel_segment [ abs_path ]
             while (index < end) {
                 testChar = p_uriSpec.charAt(index);
-            
+
                 // check for valid escape sequence
                 if (testChar == '%') {
                     if (index+2 >= end ||
@@ -1101,16 +1101,16 @@ import java.util.Locale;
             }
         }
         else {
-            
+
             // Scan opaque part.
             // opaque_part = uric_no_slash *uric
             while (index < end) {
                 testChar = p_uriSpec.charAt(index);
-            
+
                 if (testChar == '?' || testChar == '#') {
                     break;
       	        }
-                
+
                 // check for valid escape sequence
                 if (testChar == '%') {
                     if (index+2 >= end ||
@@ -1123,7 +1123,7 @@ import java.util.Locale;
                 }
                 // If the scheme specific part is opaque, it can contain '['
                 // and ']'. uric_no_slash wasn't modified by RFC 2732, which
-                // I've interpreted as an error in the spec, since the 
+                // I've interpreted as an error in the spec, since the
                 // production should be equivalent to (uric - '/'), and uric
                 // contains '[' and ']'. - mrglavas
                 else if (!isURICharacter(testChar)) {
@@ -1209,7 +1209,7 @@ import java.util.Locale;
 
     if (m_host != null || m_regAuthority != null) {
       schemespec.append("//");
-    
+
       // Server based authority.
       if (m_host != null) {
 
@@ -1217,9 +1217,9 @@ import java.util.Locale;
           schemespec.append(m_userinfo);
           schemespec.append('@');
         }
-        
+
         schemespec.append(m_host);
-        
+
         if (m_port != -1) {
           schemespec.append(':');
           schemespec.append(m_port);
@@ -1274,36 +1274,36 @@ import java.util.Locale;
   public int getPort() {
     return m_port;
   }
-  
+
   /**
    * Get the registry based authority for this URI.
-   * 
+   *
    * @return the registry based authority (null if not specified).
    */
   public String getRegBasedAuthority() {
     return m_regAuthority;
   }
-  
+
   /**
    * Get the authority for this URI.
-   * 
+   *
    * @return the authority
    */
   public String getAuthority() {
       StringBuffer authority = new StringBuffer();
       if (m_host != null || m_regAuthority != null) {
           authority.append("//");
-          
+
           // Server based authority.
           if (m_host != null) {
-              
+
               if (m_userinfo != null) {
                   authority.append(m_userinfo);
                   authority.append('@');
               }
-              
+
               authority.append(m_host);
-              
+
               if (m_port != -1) {
                   authority.append(':');
                   authority.append(m_port);
@@ -1448,7 +1448,7 @@ import java.util.Locale;
  /**
   * <p>Set the host for this URI. If null is passed in, the userinfo
   * field is also set to null and the port is set to -1.</p>
-  * 
+  *
   * <p>Note: This method overwrites registry based authority if it
   * previously existed in this URI.</p>
   *
@@ -1497,31 +1497,31 @@ import java.util.Locale;
     }
     m_port = p_port;
   }
-  
+
   /**
    * <p>Sets the registry based authority for this URI.</p>
-   * 
+   *
    * <p>Note: This method overwrites server based authority
    * if it previously existed in this URI.</p>
-   * 
+   *
    * @param authority the registry based authority for this URI
-   * 
+   *
    * @exception MalformedURIException it authority is not a
    * well formed registry based authority
    */
-  public void setRegBasedAuthority(String authority) 
+  public void setRegBasedAuthority(String authority)
     throws MalformedURIException {
 
   	if (authority == null) {
   	  m_regAuthority = null;
   	  return;
   	}
-	// reg_name = 1*( unreserved | escaped | "$" | "," | 
+	// reg_name = 1*( unreserved | escaped | "$" | "," |
 	//            ";" | ":" | "@" | "&" | "=" | "+" )
   	else if (authority.length() < 1 ||
   	  !isValidRegistryBasedAuthority(authority) ||
   	  authority.indexOf('/') != -1) {
-      throw new MalformedURIException("Registry based authority is not well formed.");       	
+      throw new MalformedURIException("Registry based authority is not well formed.");
   	}
   	m_regAuthority = authority;
   	m_host = null;
@@ -1734,17 +1734,18 @@ public String toString() {
     // double-slashes which means generic uri
     return (m_host != null);
   }
-  
-  /**
-   * Returns whether this URI represents an absolute URI.
-   *
-   * @return true if this URI represents an absolute URI, false
-   *         otherwise
-   */
-  public boolean isAbsoluteURI() {
-      // presence of the scheme means absolute uri
-      return (m_scheme != null);
-  }
+
+//  // "absolute" is not the opposite of "relative" in RFC 3986 (it is in RFC 2396).
+//  /**
+//   * Returns whether this URI represents an absolute URI.
+//   *
+//   * @return true if this URI represents an absolute URI, false
+//   *         otherwise
+//   */
+//  public boolean isAbsoluteURI() {
+//      // presence of the scheme means absolute uri
+//      return (m_scheme != null);
+//  }
 
  /**
   * Determine whether a scheme conforms to the rules for a scheme name.
@@ -1776,14 +1777,14 @@ public String toString() {
 
  /**
   * Determine whether a string is syntactically capable of representing
-  * a valid IPv4 address, IPv6 reference or the domain name of a network host. 
+  * a valid IPv4 address, IPv6 reference or the domain name of a network host.
   * A valid IPv4 address consists of four decimal digit groups separated by a
   * '.'. Each group must consist of one to three digits. See RFC 2732 Section 3,
-  * and RFC 2373 Section 2.2, for the definition of IPv6 references. A hostname 
-  * consists of domain labels (each of which must begin and end with an alphanumeric 
+  * and RFC 2373 Section 2.2, for the definition of IPv6 references. A hostname
+  * consists of domain labels (each of which must begin and end with an alphanumeric
   * but may contain '-') separated by a '.'. See RFC 2396 Section 3.2.2.
   *
-  * @return true if the string is a syntactically valid IPv4 address, 
+  * @return true if the string is a syntactically valid IPv4 address,
   * IPv6 reference or hostname
   */
   public static boolean isWellFormedAddress(String address) {
@@ -1795,15 +1796,15 @@ public String toString() {
     if (addrLength == 0) {
       return false;
     }
-    
+
     // Check if the host is a valid IPv6reference.
     if (address.startsWith("[")) {
       return isWellFormedIPv6Reference(address);
     }
 
     // Cannot start with a '.', '-', or end with a '-'.
-    if (address.startsWith(".") || 
-        address.startsWith("-") || 
+    if (address.startsWith(".") ||
+        address.startsWith("-") ||
         address.endsWith("-")) {
       return false;
     }
@@ -1823,14 +1824,14 @@ public String toString() {
       // hostname      = *( domainlabel "." ) toplabel [ "." ]
       // domainlabel   = alphanum | alphanum *( alphanum | "-" ) alphanum
       // toplabel      = alpha | alpha *( alphanum | "-" ) alphanum
-      
-      // RFC 2396 states that hostnames take the form described in 
+
+      // RFC 2396 states that hostnames take the form described in
       // RFC 1034 (Section 3) and RFC 1123 (Section 2.1). According
       // to RFC 1034, hostnames are limited to 255 characters.
       if (addrLength > 255) {
       	return false;
       }
-      
+
       // domain labels can contain alphanumerics and '-"
       // but must start and end with an alphanumeric
       char testChar;
@@ -1858,12 +1859,12 @@ public String toString() {
     }
     return true;
   }
-  
+
   /**
-   * <p>Determines whether a string is an IPv4 address as defined by 
+   * <p>Determines whether a string is an IPv4 address as defined by
    * RFC 2373, and under the further constraint that it must be a 32-bit
-   * address. Though not expressed in the grammar, in order to satisfy 
-   * the 32-bit address constraint, each segment of the address cannot 
+   * address. Though not expressed in the grammar, in order to satisfy
+   * the 32-bit address constraint, each segment of the address cannot
    * be greater than 255 (8 bits of information).</p>
    *
    * <p><code>IPv4address = 1*3DIGIT "." 1*3DIGIT "." 1*3DIGIT "." 1*3DIGIT</code></p>
@@ -1871,7 +1872,7 @@ public String toString() {
    * @return true if the string is a syntactically valid IPv4 address
    */
   public static boolean isWellFormedIPv4Address(String address) {
-      
+
       int addrLength = address.length();
       char testChar;
       int numDots = 0;
@@ -1881,7 +1882,7 @@ public String toString() {
       // any dot separator is preceded and followed by a digit and
       // 3) that we find 3 dots
       //
-      // RFC 2732 amended RFC 2396 by replacing the definition 
+      // RFC 2732 amended RFC 2396 by replacing the definition
       // of IPv4address with the one defined by RFC 2373. - mrglavas
       //
       // IPv4address = 1*3DIGIT "." 1*3DIGIT "." 1*3DIGIT "." 1*3DIGIT
@@ -1890,7 +1891,7 @@ public String toString() {
       for (int i = 0; i < addrLength; i++) {
         testChar = address.charAt(i);
         if (testChar == '.') {
-          if ((i > 0 && !isDigit(address.charAt(i-1))) || 
+          if ((i > 0 && !isDigit(address.charAt(i-1))) ||
               (i+1 < addrLength && !isDigit(address.charAt(i+1)))) {
             return false;
           }
@@ -1911,9 +1912,9 @@ public String toString() {
         else if (numDigits == 3) {
           char first = address.charAt(i-2);
           char second = address.charAt(i-1);
-          if (!(first < '2' || 
-               (first == '2' && 
-               (second < '5' || 
+          if (!(first < '2' ||
+               (first == '2' &&
+               (second < '5' ||
                (second == '5' && testChar <= '5'))))) {
             return false;
           }
@@ -1921,17 +1922,17 @@ public String toString() {
       }
       return (numDots == 3);
   }
-  
+
   /**
    * <p>Determines whether a string is an IPv6 reference as defined
-   * by RFC 2732, where IPv6address is defined in RFC 2373. The 
+   * by RFC 2732, where IPv6address is defined in RFC 2373. The
    * IPv6 address is parsed according to Section 2.2 of RFC 2373,
    * with the additional constraint that the address be composed of
    * 128 bits of information.</p>
    *
    * <p><code>IPv6reference = "[" IPv6address "]"</code></p>
    *
-   * <p>Note: The BNF expressed in RFC 2373 Appendix B does not 
+   * <p>Note: The BNF expressed in RFC 2373 Appendix B does not
    * accurately describe section 2.2, and was in fact removed from
    * RFC 3513, the successor of RFC 2373.</p>
    *
@@ -1942,16 +1943,16 @@ public String toString() {
       int addrLength = address.length();
       int index = 1;
       int end = addrLength-1;
-      
+
       // Check if string is a potential match for IPv6reference.
-      if (!(addrLength > 2 && address.charAt(0) == '[' 
+      if (!(addrLength > 2 && address.charAt(0) == '['
           && address.charAt(end) == ']')) {
           return false;
       }
-      
+
       // Counter for the number of 16-bit sections read in the address.
       int [] counter = new int[1];
-      
+
       // Scan hex sequence before possible '::' or IPv4 address.
       index = scanHexSequence(address, index, end, counter);
       if (index == -1) {
@@ -1961,7 +1962,7 @@ public String toString() {
       else if (index == end) {
           return (counter[0] == 8);
       }
-      
+
       if (index+1 < end && address.charAt(index) == ':') {
           if (address.charAt(index+1) == ':') {
               // '::' represents at least one 16-bit group of zeros.
@@ -1975,34 +1976,34 @@ public String toString() {
               }
           }
           // If the second character wasn't ':', in order to be valid,
-          // the remainder of the string must match IPv4Address, 
+          // the remainder of the string must match IPv4Address,
           // and we must have read exactly 6 16-bit groups.
           else {
-              return (counter[0] == 6) && 
+              return (counter[0] == 6) &&
                   isWellFormedIPv4Address(address.substring(index+1, end));
           }
       }
       else {
           return false;
       }
-      
+
       // 3. Scan hex sequence after '::'.
       int prevCount = counter[0];
       index = scanHexSequence(address, index, end, counter);
 
       // We've either reached the end of the string, the address ends in
-      // an IPv4 address, or it is invalid. scanHexSequence has already 
-      // made sure that we have the right number of bits. 
-      return (index == end) || 
+      // an IPv4 address, or it is invalid. scanHexSequence has already
+      // made sure that we have the right number of bits.
+      return (index == end) ||
           (index != -1 && isWellFormedIPv4Address(
           address.substring((counter[0] > prevCount) ? index+1 : index, end)));
   }
-  
+
   /**
-   * Helper method for isWellFormedIPv6Reference which scans the 
-   * hex sequences of an IPv6 address. It returns the index of the 
-   * next character to scan in the address, or -1 if the string 
-   * cannot match a valid IPv6 address. 
+   * Helper method for isWellFormedIPv6Reference which scans the
+   * hex sequences of an IPv6 address. It returns the index of the
+   * next character to scan in the address, or -1 if the string
+   * cannot match a valid IPv6 address.
    *
    * @param address the string to be scanned
    * @param index the beginning index (inclusive)
@@ -2014,11 +2015,11 @@ public String toString() {
    * string cannot match a valid IPv6 address
    */
   private static int scanHexSequence (String address, int index, int end, int [] counter) {
-  	
+
       char testChar;
       int numDigits = 0;
       int start = index;
-      
+
       // Trying to match the following productions:
       // hexseq = hex4 *( ":" hex4)
       // hex4   = 1*4HEXDIG
@@ -2050,7 +2051,7 @@ public String toString() {
         }
       }
       return (numDigits > 0 && ++counter[0] <= 8) ? end : -1;
-  } 
+  }
 
 
  /**
@@ -2110,7 +2111,7 @@ public String toString() {
   }
 
  /**
-  * Determine whether a char is a URI character (reserved or 
+  * Determine whether a char is a URI character (reserved or
   * unreserved, not including '%' for escaped octets).
   *
   * @return true if the char is a URI character, false otherwise
@@ -2136,10 +2137,10 @@ public String toString() {
   private static boolean isUserinfoCharacter (char p_char) {
       return (p_char <= 'z' && (fgLookupTable[p_char] & MASK_USERINFO_CHARACTER) != 0);
   }
-  
+
  /**
   * Determine whether a char is a path character.
-  * 
+  *
   * @return true if the char is a path character, false otherwise
   */
   private static boolean isPathCharacter (char p_char) {

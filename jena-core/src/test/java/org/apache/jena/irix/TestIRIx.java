@@ -34,7 +34,7 @@ public class TestIRIx extends AbstractTestIRIx {
         super(name, provider);
     }
 
-    // ---- RFC 3986 Grammar
+    // ---- RFC 3986 Grammar : misc parsing.
 
     @Test public void uri_01()      { test("http://example/abc"); }
 
@@ -49,6 +49,7 @@ public class TestIRIx extends AbstractTestIRIx {
     @Test public void uri_06()      { test("http://1.2.3.4/abc"); }
 
     // ---- Compliance with HTTP RFC7230. https://tools.ietf.org/html/rfc7230#section-2.7
+
     @Test(expected=IRIException.class)
     public void http_01() { parse("http:"); }
 
@@ -135,6 +136,18 @@ public class TestIRIx extends AbstractTestIRIx {
 
     @Test public void reference_08() { reference("file:///a:/~jena/file", true); }
 
+    @Test public void reference_09() { reference("http://example/abcd#frag", true); }
+
+    // -- isAbsolute, isRelative : These are not opposites in RFC 3986. (String, isAbsolute, isRelative)
+
+    @Test public void abs_rel_01()   { test_abs_rel("http://example/abc", true, false); }
+
+    @Test public void abs_rel_02()   { test_abs_rel("abc", false, true); }
+
+    @Test public void abs_rel_03()   { test_abs_rel("http://example/abc#def", false, false); }
+
+    @Test public void abs_rel_04()   { test_abs_rel("abc#def", false, true); }
+
     // -- Resolving
     @Test public void resolve_http_01() { resolve("http://example/", "path", "http://example/path"); }
 
@@ -200,6 +213,13 @@ public class TestIRIx extends AbstractTestIRIx {
     private void resolve(String baseUriStr, String otherStr, String expected) {
         String iriStr = IRIs.resolve(baseUriStr, otherStr);
         assertEquals("Base=<"+baseUriStr+"> Rel=<"+otherStr+">", expected, iriStr);
+    }
+
+    // Create - is it suitable for an RDF reference?
+    private void test_abs_rel(String uriStr, boolean isAbsolute, boolean isRelative) {
+        IRIx iri = IRIx.create(uriStr);
+        assertEquals("Absolute test: IRI = "+uriStr, isAbsolute, iri.isAbsolute());
+        assertEquals("Relative test: IRI = "+uriStr, isRelative, iri.isRelative());
     }
 
     // Create - is it suitable for an RDF reference?
