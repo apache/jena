@@ -27,26 +27,32 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+/**
+ * Parse tests.
+ *
+ * {@link TestRFC3986} contained tests with expections scheme errors and warnings.
+ */
 @RunWith(Parameterized.class)
-public class TestIRIx extends AbstractTestIRIx {
+public class TestParseIRIx extends AbstractTestIRIx {
 
-    public TestIRIx(String name, IRIProvider provider) {
+
+    public TestParseIRIx(String name, IRIProvider provider) {
         super(name, provider);
     }
 
     // ---- RFC 3986 Grammar : misc parsing.
 
-    @Test public void uri_01()      { test("http://example/abc"); }
+    @Test public void uri_01()      { parse("http://example/abc"); }
 
-    @Test public void uri_02()      { test("http://example/αβγ"); }
+    @Test public void uri_02()      { parse("http://example/αβγ"); }
 
-    @Test public void uri_03()      { test("http://example/Ẓ"); }
+    @Test public void uri_03()      { parse("http://example/Ẓ"); }
 
-    @Test public void uri_04()      { test("http://[::1]/abc"); }
+    @Test public void uri_04()      { parse("http://[::1]/abc"); }
 
-    @Test public void uri_05()      { test("http://reg123/abc"); }
+    @Test public void uri_05()      { parse("http://reg123/abc"); }
 
-    @Test public void uri_06()      { test("http://1.2.3.4/abc"); }
+    @Test public void uri_06()      { parse("http://1.2.3.4/abc"); }
 
     // ---- Compliance with HTTP RFC7230. https://tools.ietf.org/html/rfc7230#section-2.7
 
@@ -87,22 +93,31 @@ public class TestIRIx extends AbstractTestIRIx {
 
     @Test public void urn_05()  { notStrict("urn", ()->parse("urn:ex:")); }
 
+    @Test public void urn_06()  { parse("urn:NID:NSS?=abc"); }
+
+    @Test public void urn_07()  { parse("urn:NID:NSS?+abc"); }
+
+    @Test public void urn_08()  { parse("urn:NID:NSS#frag"); }
+
+    @Test public void urn_09()  { parse("urn:NID:NSS#"); }
+
     private static String testUUID = "aa045fc2-a781-11eb-9041-afa3877612ee";
 
-    @Test public void uuid_01() { parse("uuid:"+testUUID); }
+    @Test public void parse_uuid_01() { parse("uuid:"+testUUID); }
 
-    @Test public void uuid_02() { parse("uuid:"+(testUUID.toUpperCase(Locale.ROOT))); }
+    @Test public void parse_uuid_02() { parse("uuid:"+(testUUID.toUpperCase(Locale.ROOT))); }
 
-    @Test public void uuid_03() { parse("UUID:"+testUUID); }
+    @Test public void parse_uuid_03() { parse("UUID:"+testUUID); }
 
-    @Test public void uuid_04() { parse("urn:uuid:"+testUUID); }
+    @Test public void parse_uuid_04() { parse("urn:uuid:"+testUUID); }
 
-    @Test public void uuid_05() { parse("urn:uuid:"+(testUUID.toUpperCase(Locale.ROOT))); }
+    @Test public void parse_uuid_05() { parse("urn:uuid:"+(testUUID.toUpperCase(Locale.ROOT))); }
 
-    @Test public void uuid_06() { parse("URN:UUID:"+testUUID); }
+    @Test public void parse_uuid_06() { parse("URN:UUID:"+testUUID); }
 
-    @Test(expected=IRIException.class)
-    public void uuid_07() { parse("urn:uuid:06e775ac-ZZZZ-11b2-801c-8086f2cc00c9"); }
+    // Illegal.
+    // RFC 8141 (urn) allows query and fragment in urn:uuid: (limited character set).
+    // But RFC 4122 (urn:uuid: namespace definition) does not.
 
     // -- Compliance with file scheme: https://tools.ietf.org/html/rfc8089
 
@@ -233,14 +248,7 @@ public class TestIRIx extends AbstractTestIRIx {
         assertEquals("IRI = "+uriStr, expected, iri.isReference());
     }
 
-    // Parser/check/see if the string is the same.
-    private void test(String uriStr) {
-        IRIx iri = IRIx.create(uriStr);
-        String x = iri.str();
-        assertEquals(uriStr, x);
-    }
-
-    // Parse, validate against scheme-specific rules.
+    // Parse, only collect violations from scheme-specific rules.
     private void parse(String string) {
         IRIx iri = IRIx.create(string);
     }
