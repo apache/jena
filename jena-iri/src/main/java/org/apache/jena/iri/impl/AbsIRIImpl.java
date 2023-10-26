@@ -208,7 +208,10 @@ abstract public class AbsIRIImpl extends  IRI implements
 
     @Override
     public boolean isAbsolute() {
-        return has(SCHEME);
+        // Definition from RFC3986 section 4.3
+        return has(SCHEME) && ! has(FRAGMENT);
+        // Definition from RFC2396 section 3.1
+        //return has(SCHEME);
     }
 
     abstract boolean has(int component);
@@ -217,29 +220,6 @@ abstract public class AbsIRIImpl extends  IRI implements
     public boolean isRelative() {
         return !has(SCHEME);
     }
-
-    /*
-     * public boolean isRDFURIReference() { return !hasException(RDF); }
-     *
-     * public boolean isIRI() { return !hasException(IRI); }
-     *
-     * public boolean isURIinASCII() { return !hasException(URI); }
-     */
-    // public boolean isVeryBad() {
-    // return false;
-    // }
-    // public boolean isXSanyURI() {
-    // return !hasException(XMLSchema);
-    // }
-    /*
-    public boolean hasException(int conformance) {
-        return hasExceptionMask(getFactory().recsToMask(conformance));
-    }
-
-    public Iterator exceptions(int conformance) {
-        return exceptionsMask(getFactory().recsToMask(conformance));
-    }
-    */
 
     @Override
     public boolean hasViolation(boolean includeWarnings) {
