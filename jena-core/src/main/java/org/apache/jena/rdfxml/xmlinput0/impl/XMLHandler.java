@@ -386,7 +386,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         if (uri.length() != 0)
              {
                 IRI u = iriFactory().create(uri);
-                if (!u.isAbsolute()) {
+                if (u.isRelative()) {
                     warning(null,
                             WARN_RELATIVE_NAMESPACE_URI_DEPRECATED,
                             "The namespace URI: <"

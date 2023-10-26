@@ -400,7 +400,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
                 } catch (IRIException ex) {
                     u = IRIx.createAny(uri);
                 }
-                if (!u.isAbsolute()) {
+                if (u.isRelative()) {
                     warning(null,
                             WARN_RELATIVE_NAMESPACE_URI_DEPRECATED,
                             "The namespace URI: <"

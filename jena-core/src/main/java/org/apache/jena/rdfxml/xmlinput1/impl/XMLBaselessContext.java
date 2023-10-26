@@ -86,7 +86,8 @@ public class XMLBaselessContext extends AbsXMLContext implements ARPErrorNumbers
     void checkBaseUse(XMLHandler forErrors, Taint taintMe, String relUri, IRIx rslt) throws SAXParseException {
 
         String resolvedURI = rslt.toString();
-        if (relUri.equals(resolvedURI) && rslt.isAbsolute())
+        // "absolute" is not the opposite of "relative" in RFC 3986 (it is in RFC 2396).
+        if (relUri.equals(resolvedURI) && !rslt.isRelative())
             return;
 
         forErrors.warning(taintMe, errno, errmsg + ": <" + relUri + ">");
