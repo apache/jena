@@ -53,9 +53,4 @@ public class FusekiErrorHandler extends ErrorHandler
         //ServletOps.setNoCache(response);
         return super.generateAcceptableResponse(request, response, callback, contentType, utf8List, code, message, cause);
     }
-
-//        int code = response.getStatus();
-//        String message = HttpSC.getMessage(code);
-//        String msg = format("Error %d: %s\n", code, message);
-//        ServletOps.writeMessagePlainTextError(httpResponse, msg);
 }
