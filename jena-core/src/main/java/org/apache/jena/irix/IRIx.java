@@ -84,6 +84,9 @@ public abstract class IRIx {
      * <p>
      * Note that a URI can be both "not absolute" and "not relative", e.g. {@code http://example/path#fragment}.
      * <p>
+     * Beware that <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-3.1">RFC 2396 section 3.1</a> has a
+     * different definition, where the scheme is required but a fragment may be present.
+     * <p>
      * See {@linkplain #isReference()} for testing whether a URI is suitable for use in RDF.
      */
     public abstract boolean isAbsolute();
