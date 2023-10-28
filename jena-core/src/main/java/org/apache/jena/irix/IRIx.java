@@ -60,7 +60,7 @@ public abstract class IRIx {
      * It returns a IRIx holder and does no checking whatsoever.
      * Whether the IRI "works" is down to care by the application.
      */
-    static public IRIx createAny(String iri) throws IRIException {
+    static public IRIx createAny(String iri) {
         Objects.requireNonNull(iri);
         return IRIProviderAny.stringProvider().create(iri);
     }
