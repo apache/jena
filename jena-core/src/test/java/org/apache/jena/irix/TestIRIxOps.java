@@ -21,117 +21,22 @@ package org.apache.jena.irix;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Locale;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 /**
- * Parse tests.
+ * Basic parser tests and IRIx operations.
  *
- * {@link TestRFC3986} contained tests with expections scheme errors and warnings.
+ * {@link TestRFC3986} contained tests with exceptions scheme errors and warnings.
  */
 @RunWith(Parameterized.class)
-public class TestParseIRIx extends AbstractTestIRIx {
+public class TestIRIxOps extends AbstractTestIRIx {
 
 
-    public TestParseIRIx(String name, IRIProvider provider) {
+    public TestIRIxOps(String name, IRIProvider provider) {
         super(name, provider);
     }
-
-    // ---- RFC 3986 Grammar : misc parsing.
-
-    @Test public void uri_01()      { parse("http://example/abc"); }
-
-    @Test public void uri_02()      { parse("http://example/αβγ"); }
-
-    @Test public void uri_03()      { parse("http://example/Ẓ"); }
-
-    @Test public void uri_04()      { parse("http://[::1]/abc"); }
-
-    @Test public void uri_05()      { parse("http://reg123/abc"); }
-
-    @Test public void uri_06()      { parse("http://1.2.3.4/abc"); }
-
-    // ---- Compliance with HTTP RFC7230. https://tools.ietf.org/html/rfc7230#section-2.7
-
-    @Test(expected=IRIException.class)
-    public void http_01() { parse("http:"); }
-
-    @Test(expected=IRIException.class)
-    public void http_02() { parse("http:/"); }
-
-    @Test(expected=IRIException.class)
-    public void http_03() { parse("http://"); }
-
-    @Test public void http_04() { parse("http://x"); }
-
-    @Test(expected=IRIException.class)
-    public void http_05()   { parse("http:abc"); }
-
-    @Test(expected=IRIException.class)
-    public void http_06()   { parse("http:///abc"); }
-
-    @Test(expected=IRIException.class)
-    // [] not in IPv6 address
-    public void http_07()   { parse("http://h/ab[]"); }
-
-    @Test public void http_08() { parse("http://example/~jena/file"); }
-
-    // -- Compliance with URN scheme: https://tools.ietf.org/html/rfc8141
-
-    @Test public void urn_01() { parse("urn:NID:NSS"); }
-
-    @Test(expected=IRIException.class)
-    public void urn_02() { parse("urn:x:abcd"); }
-
-    @Test(expected=IRIException.class)
-    public void urn_03() { parse("urn:ex:"); }
-
-    @Test public void urn_04()  { notStrict("urn", ()->parse("urn:x:abc")); }
-
-    @Test public void urn_05()  { notStrict("urn", ()->parse("urn:ex:")); }
-
-    @Test public void urn_06()  { parse("urn:NID:NSS?=abc"); }
-
-    @Test public void urn_07()  { parse("urn:NID:NSS?+abc"); }
-
-    @Test public void urn_08()  { parse("urn:NID:NSS#frag"); }
-
-    @Test public void urn_09()  { parse("urn:NID:NSS#"); }
-
-    private static String testUUID = "aa045fc2-a781-11eb-9041-afa3877612ee";
-
-    @Test public void parse_uuid_01() { parse("uuid:"+testUUID); }
-
-    @Test public void parse_uuid_02() { parse("uuid:"+(testUUID.toUpperCase(Locale.ROOT))); }
-
-    @Test public void parse_uuid_03() { parse("UUID:"+testUUID); }
-
-    @Test public void parse_uuid_04() { parse("urn:uuid:"+testUUID); }
-
-    @Test public void parse_uuid_05() { parse("urn:uuid:"+(testUUID.toUpperCase(Locale.ROOT))); }
-
-    @Test public void parse_uuid_06() { parse("URN:UUID:"+testUUID); }
-
-    // Illegal.
-    // RFC 8141 (urn) allows query and fragment in urn:uuid: (limited character set).
-    // But RFC 4122 (urn:uuid: namespace definition) does not.
-
-    // -- Compliance with file scheme: https://tools.ietf.org/html/rfc8089
-
-    @Test public void file_01() { parse("file:///path/name"); }
-
-    @Test public void file_02() { parse("file:/path/name"); }
-
-    @Test public void file_03() { parse("file:name"); }
-
-    @Test public void file_04() { parse("file:/path/name"); }
-
-    @Test public void file_05() { parse("file:name"); }
-
-    @Test public void file_06() { parse("file:///c:/~user/file"); }
 
     // --- Use in RDF
 
