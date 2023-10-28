@@ -230,11 +230,12 @@ public class IRIProviderJenaIRI implements IRIProvider {
         if ( STRICT_FILE && isFILE(iri) ) {
             if ( iriStr.startsWith("file://" ) && ! iriStr.startsWith("file:///") )
                 throw new IRIException("file: URLs should start file:///: <"+iriStr+">");
+        } else if ( isUUID(iri, iriStr) ) {
+            checkUUID(iri, iriStr);
+        } else if ( isURNUUID(iri, iriStr) ) {
+            checkURNUUID(iri, iriStr);
         }
 
-        if ( isUUID(iri, iriStr) ) {
-            checkUUID(iri, iriStr);
-        }
         if (!showExceptions)
             return iri;
         if (!iri.hasViolation(includeWarnings))
@@ -283,25 +284,108 @@ public class IRIProviderJenaIRI implements IRIProvider {
     private static boolean isURN(IRI iri)  { return "urn".equalsIgnoreCase(iri.getScheme()); }
     private static boolean isFILE(IRI iri) { return "file".equalsIgnoreCase(iri.getScheme()); }
 
-    private static String UUID_REGEXP = "^(?:urn:uuid|uuid):[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
-    private static Pattern UUID_PATTERN = Pattern.compile(UUID_REGEXP, Pattern.CASE_INSENSITIVE);
-
     private static boolean isUUID(IRI iri, String iriStr) {
-        return iriStr.regionMatches(true, 0, "urn:uuid:", 0, "urn:uuid:".length())
-            || iriStr.regionMatches(true, 0, "uuid:", 0, "uuid:".length());
+        // Ignore case
+        return iriStr.regionMatches(true, 0, "uuid:", 0, "uuid:".length());
     }
+
+    private static boolean isURNUUID(IRI iri, String iriStr) {
+        // Ignore case
+        return iriStr.regionMatches(true, 0, "urn:uuid:", 0, "urn:uuid:".length());
+    }
+
+    // ---- uuid:
+    // UUID match, no anchors or URI scheme.
+    private static String UUID_BASE = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+    private static String UUID_REGEXP = "^uuid:"+UUID_BASE+"$";
+    private static Pattern UUID_PATTERN = Pattern.compile(UUID_REGEXP, Pattern.CASE_INSENSITIVE);
 
     private static void checkUUID(IRI iriObj, String original) {
         if ( iriObj.hasViolation(true) )
             // Already has problems.
             return;
-        // jena-iri and iri4ld should both be uptodate now..
-//        // Unfortunately, these tests are check/no-check sensitive.
-//        if ( iriObj.getRawFragment() != null )
-//            throw new IRIException("Fragment used with UUID");
-//        if ( iriObj.getRawQuery() != null )
-//            throw new IRIException("Query used with UUID");
+        // jena-iri does not have UUID checks.
+        // Unfortunately, these tests are check/no-check sensitive.
+        if ( iriObj.getRawFragment() != null )
+            throw new IRIException("Fragment used with uuid:");
+        if ( iriObj.getRawQuery() != null )
+            throw new IRIException("Query used with uuid:");
         boolean matches = UUID_PATTERN.matcher(original).matches();
+        if ( !matches )
+            throw new IRIException("Not a valid UUID string: "+original);
+    }
+
+
+    // ---- urn:uuid:
+    // RFC 8141 added the possibility for r-component, q-component (combined
+    // into the URI query string) and f-component (restricted fragment). This
+    // regexp has a weak test for r/q/f. It does not check the character
+    // limitations to ASCII on r/q/f
+
+    //private static String A2Z = "[0-9a-z]";
+
+    // Non-strict regexp: Any order r- and q-compoments, UCSchars.
+    private static String URN_UUID_REGEXP_LAX = "^urn:uuid:"+UUID_BASE+"(?:(?:\\?\\+.|\\?=.|#).*)?$";
+
+    // Strict regex for urn:uuid
+    //    Only ASCII.
+    //  pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
+    //  pct-encoded   = "%" HEXDIG HEXDIG
+    //  unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
+    //  iunreserved   = ALPHA / DIGIT / "-" / "." / "_" / "~" / ucschar
+    //  reserved      = gen-delims / sub-delims
+    //  gen-delims    = ":" / "/" / "?" / "#" / "[" / "]" / "@"
+    //  sub-delims    = "!" / "$" / "&" / "'" / "(" / ")"
+    //                / "*" / "+" / "," / ";" / "="
+    // Not:
+    //  ipchar        = iunreserved / pct-encoded / sub-delims / ":" / "@"
+    //                = ipchar / ucschar
+
+//    ucschar        = %xA0-D7FF / %xF900-FDCF / %xFDF0-FFEF
+//            / %x10000-1FFFD / %x20000-2FFFD / %x30000-3FFFD
+//            / %x40000-4FFFD / %x50000-5FFFD / %x60000-6FFFD
+//            / %x70000-7FFFD / %x80000-8FFFD / %x90000-9FFFD
+//            / %xA0000-AFFFD / %xB0000-BFFFD / %xC0000-CFFFD
+//            / %xD0000-DFFFD / %xE1000-EFFFD
+
+    // "(?:  )" is a non-binding group.
+    private static String PCT = "(?:%[a-f][a-f])";
+
+    // As contents of "[]" used in PCHAR
+    private static String UNRESERVED = "-0-9a-z._~";
+    // Or use \p{IsAlphabetic}
+    private static String UCSCHAR = "\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF";
+            /*
+            / %x10000-1FFFD / %x20000-2FFFD / %x30000-3FFFD
+            / %x40000-4FFFD / %x50000-5FFFD / %x60000-6FFFD
+            / %x70000-7FFFD / %x80000-8FFFD / %x90000-9FFFD
+            / %xA0000-AFFFD / %xB0000-BFFFD / %xC0000-CFFFD
+            / %xD0000-DFFFD / %xE1000-EFFFD
+           */
+    // private       = %xE000-F8FF / %xF0000-FFFFD / %x100000-10FFFD
+    //private static String IPRIVATE
+    private static String IUNRESERVED = UNRESERVED+UCSCHAR;
+
+    //private static String GEN_DELIMS = ":/\\?#\\[\\]@";
+    private static String SUB_DELIMS = "!\\$&'\\(\\)\\*\\+,;=";
+    // Switch IUNRESERVED / UNRESERVED
+    private static String PCHARS1 = UNRESERVED+SUB_DELIMS+":"+"@";
+    private static String PCHAR = "(?:(?:["+PCHARS1+"]|"+PCT+"))";
+
+    private static String URN_COMP_X = "/\\?";
+    private static String URN_RQ_COMP_CHAR = PCHAR+URN_COMP_X;
+    private static String URN_R_COMP = "(?:\\?\\+["+URN_RQ_COMP_CHAR+"]+)?";
+    private static String URN_Q_COMP = "(?:\\?=["+URN_RQ_COMP_CHAR+"]+)?";
+    private static String URN_F_COMP = "(?:#["+PCHAR+"]*)?";
+    private static String URN_UUID_REGEXP = "^urn:uuid:"+UUID_BASE+URN_R_COMP+URN_Q_COMP+URN_F_COMP+"$";
+
+    private static Pattern URN_UUID_PATTERN = Pattern.compile(URN_UUID_REGEXP, Pattern.CASE_INSENSITIVE);
+
+    private static void checkURNUUID(IRI iriObj, String original) {
+        if ( iriObj.hasViolation(true) )
+            // Already has problems.
+            return;
+        boolean matches = URN_UUID_PATTERN.matcher(original).matches();
         if ( !matches )
             throw new IRIException("Not a valid UUID string: "+original);
     }
