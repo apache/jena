@@ -84,39 +84,7 @@ public class TestIRIxRIOT {
     @Test public void irix_uuid_1_nt_check()    { testLang(urnuuid01, Lang.NT, UNSET, TRUE, 0, 0); }
     @Test public void irix_uuid_1_ttl()         { testDft (urnuuid01, Lang.TTL, 0, 0); }
 
-    // urn:uuid -- IRI3986 answers
-    //
-//    private static String urnuuid02 = "<urn:uuid:bad>";
-//    @Test public void irix_uuid_2_nt()          { testDft (urnuuid02, Lang.NT, 0, 0); }
-//    @Test public void irix_uuid_2_nt_check()    { testLang(urnuuid02, Lang.NT, UNSET, TRUE, 0, 1); }
-//    @Test public void irix_uuid_2_ttl()         { testDft (urnuuid02, Lang.TTL, 0, 1); }
-//
-//    private static String uuid03 = "<uuid:bad>";
-//    @Test public void irix_uuid_3_nt()          { testDft (uuid03, Lang.NT, 0, 0); }
-//    @Test public void irix_uuid_3_nt_check()    { testLang(uuid03, Lang.NT, UNSET, TRUE, 0, 1); }
-//    @Test public void irix_uuid_3_ttl()         { testDft (uuid03, Lang.TTL, 0, 1); }
-//
-//    private static String urnuuid04 = "<urn:uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79?query>";
-//    @Test public void irix_uuid_4_nt()          { testDft (urnuuid04, Lang.NT, 0, 0); }
-//    @Test public void irix_uuid_4_nt_check()    { testLang(urnuuid04, Lang.NT, UNSET, TRUE, 0, 1); }
-//    @Test public void irix_uuid_4_ttl()         { testDft (urnuuid04, Lang.TTL, 0, 1); }
-//
-//    private static String uruuidurn05 = "<urn:uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79#fragment>";
-//    @Test public void irix_uuid_5_nt()          { testDft (uruuidurn05, Lang.NT, 0, 0); }
-//    @Test public void irix_uuid_5_nt_check()    { testLang(uruuidurn05, Lang.NT, UNSET, TRUE, 0, 1); }
-//    @Test public void irix_uuid_5_ttl()         { testDft (uruuidurn05, Lang.TTL, 0, 1); }
-//
-//    private static String urnuuid06 = "<urn:uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79?query#fragment>";
-//    @Test public void irix_uuid_6_nt()          { testDft (urnuuid06, Lang.NT, 0, 0); }
-//    @Test public void irix_uuid_6_nt_check()    { testLang(urnuuid06, Lang.NT, UNSET, TRUE, 0, 2); }
-//    @Test public void irix_uuid_6_ttl()         { testDft (urnuuid06, Lang.TTL, 0, 2); }
-//
-//    private static String uuid07 = "<uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79?query#fragment>";
-//    @Test public void irix_uuid_7_nt()          { testDft (uuid07, Lang.NT, 0, 0); }
-//    @Test public void irix_uuid_7_nt_check()    { testLang(uuid07, Lang.NT, UNSET, TRUE, 0, 2); }
-//    @Test public void irix_uuid_7_ttl()         { testDft (uuid07, Lang.TTL, 0, 2); }
-
-    // -- urn:uuid -- jena-iri answers
+    // -- uuid: & urn:uuid -- jena-iri answers
     // The warning on bad UUIDs is from IRIProviderjenaIRI, not jena-iri, and so it isn't check/no check sensitive.
     private static String urnuuid02 = "<urn:uuid:bad>";
     @Test public void irix_uuid_2_nt()          { testDft (urnuuid02, Lang.NT, 0, 1); }
@@ -133,10 +101,10 @@ public class TestIRIxRIOT {
     @Test public void irix_uuid_4_nt_check()    { testLang(urnuuid04, Lang.NT, UNSET, TRUE, 0, 1); }
     @Test public void irix_uuid_4_ttl()         { testDft (urnuuid04, Lang.TTL, 0, 1); }
 
-    private static String uruuidurn05 = "<urn:uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79#fragment>";
-    @Test public void irix_uuid_5_nt()          { testDft (uruuidurn05, Lang.NT, 0, 1); }
-    @Test public void irix_uuid_5_nt_check()    { testLang(uruuidurn05, Lang.NT, UNSET, TRUE, 0, 1); }
-    @Test public void irix_uuid_5_ttl()         { testDft (uruuidurn05, Lang.TTL, 0, 1); }
+    private static String urnuuid05 = "<urn:uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79#fragment>";
+    @Test public void irix_uuid_5_nt()          { testDft (urnuuid05, Lang.NT, 0, 0); }
+    @Test public void irix_uuid_5_nt_check()    { testLang(urnuuid05, Lang.NT, UNSET, TRUE, 0, 0); }
+    @Test public void irix_uuid_5_ttl()         { testDft (urnuuid05, Lang.TTL, 0, 0); }
 
     private static String urnuuid06 = "<urn:uuid:6cd401dc-a8d2-11eb-9192-1f162b53dc79?query#fragment>";
     @Test public void irix_uuid_6_nt()          { testDft (urnuuid06, Lang.NT, 0, 0); }
