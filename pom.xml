@@ -957,6 +957,7 @@
            <version>${ver.plugin.compiler}</version>
            <configuration>
              <release>${java.version}</release>
+             <compilerArgument>-proc:none</compilerArgument>
            </configuration>
          </plugin>
 
