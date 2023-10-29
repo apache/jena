@@ -46,7 +46,7 @@ public class ExModelStore01 {
             FusekiLogging.setLogging();
             FusekiServer server = ExamplesServer.startServer(dsName, dsg, false);
             String dataURL = "http://localhost:"+server.getPort()+"/"+dsName;
-            RDFParser.fromString(rdfString).lang(Lang.TTL).parse(someData);
+            RDFParser.fromString(rdfString, Lang.TTL).parse(someData);
             exampleModelStore(dataURL);
 
         } catch (Throwable th) {

@@ -43,7 +43,7 @@ public class TestNTriplesStarParse {
 
     @Test public void parse_nt_good_4()    { parse("<< << <x:s> <x:p> <x:o> >> <x:q> '1' >> <x:q> '2' ."); }
 
-    
+
     @Test(expected=RiotException.class)
     public void parse_nt_bad_1()           { parse("<<<x:s> <x:p> <x:o>>> . "); }
 
@@ -51,6 +51,6 @@ public class TestNTriplesStarParse {
     public void parse_nt_bad_2()           { parse("<<<x:s> 'str' <x:o>>> <x:p> <x:o>. "); }
 
     private void parse(String string) {
-        RDFParser.fromString(string).lang(Lang.NTRIPLES).errorHandler(silent).parse(sink);
+        RDFParser.fromString(string, Lang.NTRIPLES).errorHandler(silent).parse(sink);
     }
 }

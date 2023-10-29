@@ -58,6 +58,6 @@ public class TestTrigStarParse {
 
     private void parse(String string) {
         string = "PREFIX : <http://example/>\n"+string;
-        RDFParser.fromString(string).lang(Lang.TRIG).errorHandler(silent).parse(sink);
+        RDFParser.fromString(string, Lang.TRIG).errorHandler(silent).parse(sink);
     }
 }
