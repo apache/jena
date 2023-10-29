@@ -83,8 +83,8 @@ public class TestAsyncParser {
 
     @Test
     public void sources_1() {
-        RDFParserBuilder b1 = RDFParser.fromString("_:a <p> <o>.").lang(Lang.TTL);
-        RDFParserBuilder b2 = RDFParser.fromString("_:a <p> <o>.").lang(Lang.TTL);
+        RDFParserBuilder b1 = RDFParser.fromString("_:a <p> <o>.", Lang.TTL);
+        RDFParserBuilder b2 = RDFParser.fromString("_:a <p> <o>.", Lang.TTL);
         Graph graph = GraphFactory.createDefaultGraph();
         AsyncParser.asyncParseSources(List.of(b1,b2), StreamRDFLib.graph(graph));
         assertEquals(2, graph.size());
