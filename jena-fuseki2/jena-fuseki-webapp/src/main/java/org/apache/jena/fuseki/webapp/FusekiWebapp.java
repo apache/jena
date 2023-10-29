@@ -312,7 +312,7 @@ public class FusekiWebapp
 
         String str = TemplateFunctions.templateFile(templateFile, params, Lang.TTL);
         Lang lang = RDFLanguages.filenameToLang(templateFile, Lang.TTL);
-        Model model = RDFParser.fromString(str).base(datasetPath).lang(lang).toModel();
+        Model model = RDFParser.fromString(str, lang).base(datasetPath).toModel();
 
         List<DataAccessPoint> defns = FusekiConfig.servicesAndDatasets(model);
         if ( defns.size() != 1 ) {

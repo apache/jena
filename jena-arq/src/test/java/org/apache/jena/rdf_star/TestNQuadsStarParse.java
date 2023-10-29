@@ -38,7 +38,7 @@ public class TestNQuadsStarParse {
     @Test public void parse_nq_good_1()    { parse("<<<x:s> <x:p> <x:o>>> <x:q> '1' . "); }
 
     @Test public void parse_nq_good_2()    { parse("<<<x:s> <x:p> <x:o>>> <x:q> '1' <http://example/g> . "); }
-    
+
     @Test public void parse_nq_good_3()    { parse("<http://ex/x> <http://ex/p> <<<x:s> <x:p> <x:o>>> ."); }
 
     @Test public void parse_nq_good_4()    { parse("<http://ex/x> <http://ex/p> <<<x:s> <x:p> <x:o>>> <http://example/g> ."); }
@@ -56,6 +56,6 @@ public class TestNQuadsStarParse {
     public void parse_nq_bad_3()           { parse("<<<x:s> <x:p>' <x:o> <http://example/g> >> <x:p> <x:o>. "); }
 
     private void parse(String string) {
-        RDFParser.fromString(string).lang(Lang.NQUADS).errorHandler(silent).parse(sink);
+        RDFParser.fromString(string, Lang.NQUADS).errorHandler(silent).parse(sink);
     }
 }

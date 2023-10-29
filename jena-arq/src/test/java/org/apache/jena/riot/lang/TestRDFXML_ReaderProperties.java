@@ -35,7 +35,7 @@ import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.junit.Test;
 
 /**
- * Tests for settign reder properties - specific to ARP0 and ARP1.
+ * Tests for setting reader properties - specific to ARP0 and ARP1.
  */
 public class TestRDFXML_ReaderProperties {
     @Test public void rdfxmlreaderProperties_arp0() {
@@ -46,7 +46,7 @@ public class TestRDFXML_ReaderProperties {
         execTest(RRX.RDFXML_ARP0);
     }
 
-    private void execTest(Lang parser) {
+    private void execTest(Lang parserLang) {
         // Inline illustrative data.
         String data = StrUtils.strjoinNL
                 ("<?xml version=\"1.0\" encoding=\"utf-8\"?>"
@@ -68,8 +68,7 @@ public class TestRDFXML_ReaderProperties {
 
         Model model = ModelFactory.createDefaultModel();
         // Build and run a parser
-        RDFParserBuilder builder = RDFParser.fromString(data)
-            .lang(parser)
+        RDFParserBuilder builder = RDFParser.fromString(data, parserLang)
             // Put a properties object into the Context.
             .set(SysRIOT.sysRdfReaderProperties, properties)
             // Exception on warning or error.

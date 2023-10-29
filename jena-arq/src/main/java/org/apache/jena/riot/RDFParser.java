@@ -57,27 +57,27 @@ import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.Context;
 
 /**
- * An {@link RDFParser} is a process that will generate triples; {@link RDFParserBuilder}
- * provides the means to setup the parser.
+ * An {@link RDFParser} is a process that will generate triples and quads;
+ * {@link RDFParserBuilder} provides the means to create parsers.
  * <p>
  * An {@link RDFParser} has a predefined source; the target for output is given when the
- * "parse" method is called. It can be used multiple times in which case the same source
+ * "parse" step is called. It can be used multiple times in which case the same source
  * is reread. The destination can vary. The application is responsible for concurrency of
  * the destination of the parse operation.
+ * <p>
+ * Parser output is sent to a {@link StreamRDF}.
  *
- * The process is
- *
+ * The general process is
  * <pre>
  *    StreamRDF destination = ...
  *    RDFParser parser = RDFParser.create().source("filename.ttl").build();
  *    parser.parse(destination);
  * </pre>
- * or using abbreviated forms:
+ * There are various convenience forms to perform common tasks such as
+ * to parse a file and create a {@link Model}:
  * <pre>
- * RDFParser.source("filename.ttl").parse(destination);
+ *    Model model = RDFParser.source("filename.ttl").toModel();
  * </pre>
- * The {@code destination} {@link StreamRDF} and can be given as a
- * {@link Graph} or {@link DatasetGraph} as well.
  *
  * @see ReaderRIOT The interface to the syntax parsing process for each RDF syntax.
  */
@@ -150,21 +150,36 @@ public class RDFParser {
      * @param uriOrFile
      * @return RDFParserBuilder
      */
-
     public static RDFParserBuilder source(String uriOrFile) {
         return RDFParserBuilder.create().source(uriOrFile);
     }
 
     /**
-     * Create an {@link RDFParserBuilder} and set content to parse to be the
-     * given string. The syntax must be set with {@code .lang(...)}.
+     * Create an {@link RDFParserBuilder} and set content to be parsed to the
+     * string. The syntax must be set with {@code .lang(...)}.
      * <p>
      * Shortcut for {@code RDFParser.create.fromString(string)}.
+     *
      * @param string
      * @return RDFParserBuilder
+     * @deprecated Use {@link #fromString(String, Lang)}
      */
+    @Deprecated
     public static RDFParserBuilder fromString(String string) {
         return RDFParserBuilder.create().fromString(string);
+    }
+
+    /**
+     * Create an {@link RDFParserBuilder} and set content to be parsed
+     * together with the RDF syntax language.
+     * <p>
+     * Shortcut for {@code RDFParser.create.fromString(string).lang(lang)}.
+     * @param string
+     * @param lang
+     * @return RDFParserBuilder
+     */
+    public static RDFParserBuilder fromString(String string, Lang lang) {
+        return RDFParserBuilder.create().fromString(string).lang(lang);
     }
 
     /**

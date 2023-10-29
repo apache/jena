@@ -59,7 +59,7 @@ public class ExAuth01_RDFConnectionPW {
             server = ExamplesServer.startServerWithAuth(dsName, dsg, true, "u", "p");
             serverURL = "http://localhost:"+server.getPort()+"/";
             dataURL = "http://localhost:"+server.getPort()+"/"+dsName;
-            RDFParser.fromString(rdfString).lang(Lang.TTL).parse(someData);
+            RDFParser.fromString(rdfString, Lang.TTL).parse(someData);
 
             // Examples
             exampleConnectionAuthWithHttpClient();

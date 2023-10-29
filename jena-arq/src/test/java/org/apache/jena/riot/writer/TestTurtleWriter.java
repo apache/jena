@@ -46,8 +46,7 @@ public class TestTurtleWriter {
     static final Model baseTestData;
     static {
         baseTestData = ModelFactory.createDefaultModel();
-        RDFParser.fromString(TestTurtleWriter.basetester)
-            .lang(Lang.TTL)
+        RDFParser.fromString(TestTurtleWriter.basetester, Lang.TTL)
             .parse(baseTestData);
     }
 

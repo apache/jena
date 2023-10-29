@@ -73,6 +73,6 @@ public class TestTurtleStarParse {
         Lang lang2 = TurtleJCC.TTLJCC;
         Lang lang = lang1;
 
-        RDFParser.fromString(string).lang(lang).errorHandler(silent).parse(sink);
+        RDFParser.fromString(string, lang).errorHandler(silent).parse(sink);
     }
 }
