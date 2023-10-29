@@ -44,7 +44,7 @@ public class TestPathQuery {
             ,":x :q :s ."
             );
 
-    static Graph graph1 = RDFParser.fromString(graphStr1).lang(Lang.TTL).toGraph();
+    static Graph graph1 = RDFParser.fromString(graphStr1, Lang.TTL).toGraph();
 
     @Test public void testPathByQuery_unboundEnds_01() {
         // Query with path

@@ -58,7 +58,7 @@ public class ExAuth04_ServicePW {
             server = ExamplesServer.startServerWithAuth(dsName, dsg, true, "u", "p");
             serverURL = "http://localhost:"+server.getPort()+"/";
             dataURL = "http://localhost:"+server.getPort()+"/"+dsName;
-            RDFParser.fromString(rdfString).lang(Lang.TTL).parse(dsg);
+            RDFParser.fromString(rdfString, Lang.TTL).parse(dsg);
 
             exampleServiceByRegistry();
 

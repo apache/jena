@@ -106,7 +106,7 @@ public class TestRDFParser {
     // Shortcut source
     @Test public void source_shortcut_01() {
         Graph graph = GraphFactory.createGraphMem();
-        RDFParser.fromString(testdata).lang(Lang.TTL).parse(graph);
+        RDFParser.fromString(testdata, Lang.TTL).parse(graph);
         assertEquals(1, graph.size());
     }
 
@@ -246,8 +246,7 @@ public class TestRDFParser {
     @Test
     public void parser_fragment() {
         PrefixMap pmap = PrefixMapFactory.create(Map.of("", "http://example/"));
-        Graph g = RDFParser.fromString("<s> :p :o .")
-                .lang(Lang.TTL)
+        Graph g = RDFParser.fromString("<s> :p :o .", Lang.TTL)
                 .prefixes(pmap)
                 .base("http://base/")
                 .toGraph();

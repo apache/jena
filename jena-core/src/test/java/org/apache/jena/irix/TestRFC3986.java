@@ -178,7 +178,7 @@ public class TestRFC3986 extends AbstractTestIRIx {
 
     @Test public void parse_file_01() { good("file:///file/name.txt"); }
 
-    // We reject "file://host/" forms.
+    // This is legal by RFC 8089, but not by earlier versions of the "file:" scheme.
     @Test public void parse_file_02() { badSpecific("file://host/file/name.txt"); }
 
     // This is legal by RFC 8089 (jena-iri, based on the original RFC 1738, fails this with missing authority).

@@ -61,7 +61,7 @@ public class TestJsonLDReader {
         //     }
         String jsonld = "{ '@id': './relative', '@type': 'RelType', 'http://example/p': { '@id' : '#frag' } }";
         jsonld = jsonld.replaceAll("'",  "\"");
-        Graph g = RDFParser.fromString(jsonld).lang(Lang.JSONLD).base("http://base/abc").toGraph();
+        Graph g = RDFParser.fromString(jsonld, Lang.JSONLD).base("http://base/abc").toGraph();
         assertNotNull(g);
         Triple t = SSE.parseTriple("( <http://base/relative> <http://example/p> <http://base/abc#frag> )");
         assertTrue(g.contains(t));

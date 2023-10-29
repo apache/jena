@@ -228,8 +228,7 @@ public class IRIProviderJenaIRI implements IRIProvider {
 
         // errors and warnings.
         if ( STRICT_FILE && isFILE(iri) ) {
-            if ( iriStr.startsWith("file://" ) && ! iriStr.startsWith("file:///") )
-                throw new IRIException("file: URLs should start file:///: <"+iriStr+">");
+            checkFile(iri, iriStr);
         } else if ( isUUID(iri, iriStr) ) {
             checkUUID(iri, iriStr);
         } else if ( isURNUUID(iri, iriStr) ) {
@@ -283,6 +282,11 @@ public class IRIProviderJenaIRI implements IRIProvider {
 
     private static boolean isURN(IRI iri)  { return "urn".equalsIgnoreCase(iri.getScheme()); }
     private static boolean isFILE(IRI iri) { return "file".equalsIgnoreCase(iri.getScheme()); }
+
+    private static void checkFile(IRI iri, String iriStr) {
+        if ( iriStr.startsWith("file://" ) && ! iriStr.startsWith("file:///") )
+            throw new IRIException("file: URLs should start file:///: <"+iriStr+">");
+    }
 
     private static boolean isUUID(IRI iri, String iriStr) {
         // Ignore case
