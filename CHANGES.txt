@@ -1,3 +1,72 @@
+==== Apache Jena 4.10.0
+Released: 2023-11-01
+Issues: https://s.apache.org/jena-4.10.0-issues
+Announcement: https://lists.apache.org/thread/th447c7r0kl26s5f4j1nt5gj10dl8q5x
+
+In this release:
+
+* Prepare for Jena5
+
+   Check use of deprecated API calls
+     These are largely being removed in Jena5.
+
+   Jena5 will require Java17
+
+   jena5 Fuseki will switch from javax.servlet to jakarta.servlet
+     This will require use of Apache Tomcat 10 to run the WAR file.
+
+   jena-jdbc is planned for retirement in Jena 5.0.0
+
+See the Jena5 label in the github issues area:
+
+https://github.com/apache/jena/issues?q=is%3Aissue+label%3Ajena5
+
+* Development will switch to Jena5.
+   The 'main' branch is now for Jena5 development.
+   There is a branch 'jena4' marking the 4.10.0 release
+
+== Notes
+
+All issues: https://s.apache.org/jena-4.10.0-issues
+
+There is a CHANGES.txt in the root of the repository
+with the history of announcement messages.
+
+==== Contributions:
+
+Shawn Smith
+"Race condition with QueryEngineRegistry and
+UpdateEngineRegistry init()"
+   https://issues.apache.org/jira/browse/JENA-2356
+
+Ali Ariff
+"Labeling for Blank Nodes Across Writers"
+   https://github.com/apache/jena/issues/1997
+
+sszuev
+"jena-core: add more javadocs about Graph-mem thread-safety and 
+ConcurrentModificationException"
+   https://github.com/apache/jena/pull/1994
+
+sszuev
+GH-1419: fix DatasetGraphMap#clear
+   https://github.com/apache/jena/issue/1419
+
+sszuev
+GH-1374: add copyWithRegisties Context helper method
+   https://github.com/apache/jena/issue/1374
+
+
+All issues in this release:
+     https://s.apache.org/jena-4.10.0-issues
+
+==== Key upgrades
+
+org.apache.lucene : 9.5.0 -> 9.7.0
+org.apache.commons:commons-lang3: 3.12.0 -> 3.13.0
+org.apache.sis.core:sis-referencing : 1.1 -> 1.4
+
+
 ==== Apache Jena 4.9.0
 Released: 2023-07-08
 Issues: https://s.apache.org/jena-4.9.0-issues
