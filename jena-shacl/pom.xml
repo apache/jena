@@ -114,7 +114,7 @@
         <configuration>
           <windowtitle>Apache Jena SHACL</windowtitle>
           <doctitle>Apache Jena - SHACL ${project.version}</doctitle>
-          <excludePackageNames>*.compact:*.compact.*:*.engine:*.engine.*:*.lib:*.parser:*.sys:*.vocabulary</excludePackageNames>
+          <excludePackageNames>org.apache.jena.shacl.*</excludePackageNames>
         </configuration>
       </plugin>
 
