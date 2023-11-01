@@ -68,10 +68,10 @@
 
     <ver.lucene>9.5.0</ver.lucene>
 
-    <ver.jetty>12.0.2</ver.jetty>
+    <ver.jetty>12.0.3</ver.jetty>
     <ver.shiro>1.12.0</ver.shiro>
 
-    <ver.protobuf>3.24.3</ver.protobuf>
+    <ver.protobuf>3.24.4</ver.protobuf>
     <ver.libthrift>0.19.0</ver.libthrift>
 
     <!-- JSON-LD 1.1 -->
@@ -106,11 +106,11 @@
     <ver.commons-collections>4.4</ver.commons-collections>
     <ver.commons-fileupload>2.0.0-M1</ver.commons-fileupload>
     <ver.dexxcollection>0.7</ver.dexxcollection>
-    <ver.micrometer>1.11.4</ver.micrometer>
+    <ver.micrometer>1.11.5</ver.micrometer>
     <ver.roaringbitmap>1.0.0</ver.roaringbitmap>
 
     <!-- For testing, not shipped -->
-    <ver.graalvm>23.0.1</ver.graalvm>
+    <ver.graalvm>23.0.2</ver.graalvm>
     <ver.org.openjdk.jmh>1.37</ver.org.openjdk.jmh>
 
     <!-- GeoSPARQL related -->
