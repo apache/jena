@@ -25,7 +25,7 @@ import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
 /**
  * Jena core test suite.
  */
-public class TestPackage extends TestCase {
+public class TestPackage_core extends TestCase {
 
     static public TestSuite suite() {
         //JenaSystem.init();

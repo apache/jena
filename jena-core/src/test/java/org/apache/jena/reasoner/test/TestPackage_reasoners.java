@@ -36,7 +36,7 @@ public class TestPackage_reasoners extends TestSuite {
         addTest( "TestTransitiveGraphCache", TestTransitiveGraphCache.suite() );
         addTest( "TestReasoners", TestReasoners.suite() );
         addTest( "TestRDFSReasoners", TestRDFSReasoners.suite() );
-        addTest( "TestRuleReasoners",  org.apache.jena.reasoner.rulesys.test.TestPackage.suite() );
+        addTest( "TestRuleReasoners",  org.apache.jena.reasoner.rulesys.test.TestPackage_Rules.suite() );
         addTest( "TestReasonerPrefixMapping", TestInfPrefixMapping.suite() );
         addTest( "TestInfGraph", TestInfGraph.suite() );
         addTest( "TestInfModel", TestInfModel.suite() );
