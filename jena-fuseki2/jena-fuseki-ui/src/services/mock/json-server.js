@@ -32,7 +32,7 @@ server.use(jsonServer.bodyParser)
 
 const DATASETS = {}
 
-const builtTime = new Date()
+// const builtTime = new Date()
 const startTime = new Date()
 
 // Add custom routes before JSON Server router
@@ -42,7 +42,7 @@ server.get('/index.html', (req, res) => res.jsonp(''))
 // GET SERVER INFO
 server.get('/\\$/server', (req, res) => {
   res.jsonp({
-    version: '4.x.y',
+    version: '5.x.y',
     startDateTime: startTime.toISOString(),
     uptime: parseInt(`${(new Date() - startTime) / 1000}`),
     datasets: Object.values(DATASETS)
