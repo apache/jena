@@ -31,7 +31,7 @@ import org.apache.jena.tdb1.store.nodetupletable.NodeTupleTable;
 
 /**
  * Dataset prefixes; a table of nodes with prefix-centric operations. The table is G-P-U
- * where G is a graph name as a URI (a URI for <> is used for the default graph), P is a
+ * where G is a graph name as a URI (a URI for {@literal <>} is used for the default graph), P is a
  * string (the prefix) and U is the IRI.
  */
 public class DatasetPrefixesTDB implements DatasetPrefixStorage

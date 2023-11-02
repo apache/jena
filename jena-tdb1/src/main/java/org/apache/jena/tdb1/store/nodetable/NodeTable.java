@@ -26,22 +26,22 @@ import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.tdb1.store.NodeId;
 
-/** Node table - conceptually a two way mapping of Node<->NodeId 
- *  where Nodes can be stored and a NodeId allocated
+/** Node table - conceptually a two way mapping of Node {@literal <->} NodeId
+ *  where Nodes can be stored and NodeIds allocated.
  *  @see NodeId
- */ 
+ */
 
 public interface NodeTable extends Sync, Closeable
 {
     /** Store the node in the node table (if not already present) and return the allocated Id. */
     public NodeId getAllocateNodeId(Node node) ;
-    
+
     /** Look up node and return the NodeId - return NodeId.NodeDoesNotExist if not found */
     public NodeId getNodeIdForNode(Node node) ;
-    
+
     /** Look up node id and return the Node - return null if not found */
     public Node getNodeForNodeId(NodeId id) ;
-    
+
     /** Test whether the node table contains an entry for node */
     public boolean containsNode(Node node) ;
 
@@ -50,15 +50,15 @@ public interface NodeTable extends Sync, Closeable
 
     /** Iterate over all nodes (not necessarily fast).  Does not include inlined NodeIds */
     public Iterator<Pair<NodeId, Node>> all() ;
-    
-    /** The offset needed to predicate allocation difference between persistent tables - internal function */  
+
+    /** The offset needed to predicate allocation difference between persistent tables - internal function */
     public NodeId allocOffset() ;
-    
-    /** Anything there? */  
-    public boolean isEmpty() ; 
 
-    /** Return a NodeTable if this instance wraps another, else return null */  
-    public NodeTable wrapped() ; 
+    /** Anything there? */
+    public boolean isEmpty() ;
 
-    
+    /** Return a NodeTable if this instance wraps another, else return null */
+    public NodeTable wrapped() ;
+
+
 }
