@@ -51,29 +51,7 @@ export default defineConfig({
     // Change build paths to make them Maven compatible.
     outDir: 'target/webapp',
     assetsDir: 'static',
-    sourcemap: 'inline',
-    // https://router.vuejs.org/guide/advanced/lazy-loading.html
-    rollupOptions: {
-      // https://rollupjs.org/guide/en/#outputmanualchunks
-      output: {
-        manualChunks: {
-          queryDataset: [
-            'src/views/manage/ExistingDatasets.vue',
-            'src/views/dataset/Query.vue'
-          ],
-          manageDataset: [
-            'src/views/manage/NewDataset.vue',
-            'src/views/dataset/Upload.vue',
-            'src/views/dataset/Edit.vue',
-            'src/views/dataset/Info.vue'
-          ],
-          other: [
-            'src/views/manage/Tasks.vue',
-            'src/views/Help.vue'
-          ]
-        }
-      }
-    }
+    sourcemap: 'inline'
   },
   server: {
     // Default, can be overridden by `--port 1234` in package.json
@@ -84,7 +62,7 @@ export default defineConfig({
         target: `http://localhost:${process.env.FUSEKI_PORT || 3030}`,
         changeOrigin: true,
         secure: false,
-        ws: true,
+        ws: false,
         bypass: (req, res, options) => {
           const accept = req.headers.accept
           const contentType = req.headers['content-type']
