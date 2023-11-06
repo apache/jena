@@ -27,11 +27,12 @@ import org.apache.jena.graph.Node ;
  * Sometimes there is an associated name with a graph, where it lives on the web,
  * or the name in a dataset.
  * <p>
- * This interface is for graph that have one associated name.
- * What "associated" means is left open.  
- * 
+ * This interface is for graph that has one associated name.
+ * What "associated" means is left open.
+ * <p>
+ * This interface is used be Jena Text.
+ *
  * @see GraphView
- * @see NamedGraphWrapper
  */
 
 public interface NamedGraph extends Graph {
@@ -39,7 +40,7 @@ public interface NamedGraph extends Graph {
      * Return the graph name for this graph.
      * Blank nodes can be used.
      * <p>
-     * A named graph of "null" is discouraged - use {@link Quad#defaultGraphIRI} 
+     * A named graph of "null" is discouraged - use {@link Quad#defaultGraphIRI} - but is legal.
      * for a default graph in the context of use.
      */
     public Node getGraphName();
