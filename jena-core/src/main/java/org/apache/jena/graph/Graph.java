@@ -47,8 +47,7 @@ import org.apache.jena.util.iterator.NullIterator ;
 
     @see GraphBase for an implementation framework.
 */
-public interface Graph
-    {
+public interface Graph {
     /**
         An immutable empty graph.
     */
@@ -211,14 +210,24 @@ public interface Graph
     boolean isEmpty();
 
     /**
-     * For a concrete graph this returns the number of triples in the graph. For graphs which
+     * For a concrete graph, this returns the number of triples in the graph. For graphs which
      * might infer additional triples it results an estimated lower bound of the number of triples.
      * For example, an inference graph might return the number of triples in the raw data graph.
+     *
+     * @see #sizeLong
      */
 	 int size();
+
+	 /**
+	  * For a concrete graph, this returns the number of triples in the graph. For graphs which
+	  * might infer additional triples it results an estimated lower bound of the number of triples.
+	  * For example, an inference graph might return the number of triples in the raw data graph.
+	  * This method returns a long.
+	  */
+	 default long sizeLong() { return size(); }
 
     /**
         Answer true iff .close() has been called on this Graph.
     */
     boolean isClosed();
-    }
+}
