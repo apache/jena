@@ -153,7 +153,8 @@ public class NiceIterator<T> implements ExtendedIterator<T>
 
             @Override public void remove()
                 {
-                if (null == removeFrom) throw new IllegalStateException("no calls to next() since last call to remove()");
+                if (null == removeFrom)
+                    throw new IllegalStateException("no calls to next() since last call to remove()");
                 removeFrom.remove();
                 removeFrom = null;
                 }
