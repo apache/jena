@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,26 +16,65 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdf.model.test;
+package org.apache.jena.test.jena4;
+
+import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
 
+import junit.framework.JUnit4TestAdapter;
+import junit.framework.TestSuite;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.mem.GraphMem;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
+import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
+import org.apache.jena.test.X_RDFReaderF;
+import org.apache.jena.util.iterator.ExtendedIterator;
 import org.junit.Assert;
+import org.junit.Test;
 
-public class TestRemoveBug extends AbstractModelTestBase
+@SuppressWarnings("deprecation")
+public class TestRemoveBug
 {
+    // Make test suite runnable on it's own.
+    static { RDFReaderFImpl.alternative(new X_RDFReaderF()); }
 
-	public TestRemoveBug( final TestingModelFactory modelFactory,
-			final String name )
-	{
-		super(modelFactory, name);
-	}
+    public static TestSuite suite() {
+        TestSuite ts = new TestSuite();
+        ts.setName("TestRemoveBug");
+        ts.addTest(new JUnit4TestAdapter(TestRemoveBug.class));
+        return ts;
+    }
 
-	/**
-	 * Test a bug case, intermittent only (about 1 in 50!)
+	public TestRemoveBug(){ }
+
+    @Test
+    public void testRemoveBug_GH2076() {
+        Model model = createModel();
+        model.read("file:testing/reports/graph-mem-broken-iterator-delete-01.ttl", "TURTLE");
+        Graph graph = model.getGraph();
+
+        long x1 = graph.size();
+        ExtendedIterator<Triple> it = graph.find();
+        try {
+            while (it.hasNext()) {
+                Triple t = it.next();
+                it.remove();
+            }
+        } finally {
+            it.close();
+        }
+        long x2 = graph.size();
+        assertEquals(0L, x2);
+    }
+
+	/*
+	 * This seems to be the same bug as testBug2.
+	 * It is intermittent - it fails much less than 1 in 50.
+	 * The test above is a deterministic failure.
 	 */
+	//@Test
 	public void testBug1()
 	{
 		final String src = "@prefix foaf:    <http://xmlns.com/foaf/0.1/> .\n"
@@ -98,4 +137,11 @@ public class TestRemoveBug extends AbstractModelTestBase
 					ian.hasProperty(name));
 		}
 	}
+
+	private Model createModel() {
+	    // Must be GraphMem
+        Graph graph = new GraphMem();
+        Model model = ModelFactory.createModelForGraph(graph);
+        return model;
+    }
 }

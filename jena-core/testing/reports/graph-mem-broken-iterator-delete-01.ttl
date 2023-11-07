@@ -1,0 +1,22 @@
+# graph-mem-broken-iterator-delete-01.ttl
+# This dataset is an ordered dump of HashCommon.keys with jena-4.9.0 and jena-4.10.0
+# It creates a situation where clearing all data using iterator.remove() on the iterator returned by graph.find() fails.
+
+<_:50470aa7-9d2b-4695-be38-a96f6fc1d7c7> <http://lsq.aksw.org/vocab#statusCode> "200"^^<http://www.w3.org/2001/XMLSchema#int> .
+<_:50470aa7-9d2b-4695-be38-a96f6fc1d7c7> <http://lsq.aksw.org/vocab#user> "-" .
+<_:50470aa7-9d2b-4695-be38-a96f6fc1d7c7> <http://www.w3.org/ns/prov#atTime> "2023-06-02T08:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<_:50470aa7-9d2b-4695-be38-a96f6fc1d7c7> <http://lsq.aksw.org/vocab#logRecord> "8955735dbec9f8a013df85d57bac725b - - [02/Jun/2023 10:00:00 +0200] \"GET /sparql?&timeout=60000&query=CONSTRUCT+%7B+%3Fsubject+%3Fproperty+%3Fvalue%7D+WHERE+%7B++%3Fsubject+%3Fproperty+%3Fvalue.+%3Fsubject+a+%3Ftype+.+%3Fsubject+rdfs%3Alabel+%3Flabel++FILTER+%28%28+lang%28%3Flabel%29+%3D+%22%22+%7C%7C+langMatches%28lang%28%3Flabel%29%2C+%22en%22%29%29+%26%26+%3Fsubject+%3D+%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2FLobbyist%3E%29+%7D+ORDER+BY+ASC%28%3Fsubject+%3Fproperty+%3Fvalue%29 HTTP/1.1\" 200 394 \"-\" \"-\" \"-\"" .
+# null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+<_:50470aa7-9d2b-4695-be38-a96f6fc1d7c7> <http://lsq.aksw.org/vocab#query> "CONSTRUCT { ?subject ?property ?value} WHERE {  ?subject ?property ?value. ?subject a ?type . ?subject rdfs:label ?label  FILTER (( lang(?label) = \"\" || langMatches(lang(?label), \"en\")) && ?subject = <http://dbpedia.org/resource/Lobbyist>) } ORDER BY ASC(?subject ?property ?value)" .
+#, null, null, null, null, null, null, null, null, null, null, null, null,
+<_:50470aa7-9d2b-4695-be38-a96f6fc1d7c7> <http://lsq.aksw.org/vocab#sequenceId> "110723"^^<http://www.w3.org/2001/XMLSchema#long> .
+#, null, null, null, null, null, null, null, null, null,
+<_:50470aa7-9d2b-4695-be38-a96f6fc1d7c7> <http://lsq.aksw.org/vocab#uri> "/sparql?&timeout=60000&query=CONSTRUCT+%7B+%3Fsubject+%3Fproperty+%3Fvalue%7D+WHERE+%7B++%3Fsubject+%3Fproperty+%3Fvalue.+%3Fsubject+a+%3Ftype+.+%3Fsubject+rdfs%3Alabel+%3Flabel++FILTER+%28%28+lang%28%3Flabel%29+%3D+%22%22+%7C%7C+langMatches%28lang%28%3Flabel%29%2C+%22en%22%29%29+%26%26+%3Fsubject+%3D+%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2FLobbyist%3E%29+%7D+ORDER+BY+ASC%28%3Fsubject+%3Fproperty+%3Fvalue%29" .
+<_:50470aa7-9d2b-4695-be38-a96f6fc1d7c7> <http://lsq.aksw.org/vocab#verb> "GET" .
+# , null, null, null, null, null,
+<_:50470aa7-9d2b-4695-be38-a96f6fc1d7c7> <http://lsq.aksw.org/vocab#protocol> "HTTP/1.1" .
+# null, null,
+<_:50470aa7-9d2b-4695-be38-a96f6fc1d7c7> <http://lsq.aksw.org/vocab#numResponseBytes> "394"^^<http://www.w3.org/2001/XMLSchema#int> .
+# , null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+<_:50470aa7-9d2b-4695-be38-a96f6fc1d7c7> <http://lsq.aksw.org/vocab#hostHash> "RNxI06DRVty3nU8fTEvds_BV31N6xtLq0JclkZQMNLM" .
+<_:50470aa7-9d2b-4695-be38-a96f6fc1d7c7> <http://lsq.aksw.org/vocab#endpoint> <http://dbpedia.org/sparql> .

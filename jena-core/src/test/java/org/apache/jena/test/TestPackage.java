@@ -61,6 +61,9 @@ public class TestPackage extends TestCase {
         // Local TTL parser for tests - not fully compliant.
         addTest(ts,  "Turtle", org.apache.jena.ttl_test.test.turtle.TurtleTestSuite.suite()) ;
 
+        // Jena4 reports
+        addTest(ts,  "RemoveBug", org.apache.jena.test.jena4.TestRemoveBug.suite());
+
         return ts ;
     }
 
