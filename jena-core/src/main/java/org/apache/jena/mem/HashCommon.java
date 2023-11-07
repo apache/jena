@@ -34,40 +34,40 @@ public abstract class HashCommon<Key>
     /**
         Jeremy suggests, from his experiments, that load factors more than
         0.6 leave the table too dense, and little advantage is gained below 0.4.
-        Although that was with a quadratic probe, I'm borrowing the same 
-        plausible range, and use 0.5 by default. 
+        Although that was with a quadratic probe, I'm borrowing the same
+        plausible range, and use 0.5 by default.
     */
     protected static final double loadFactor = 0.5;
-    
+
     /**
         The keys of whatever table it is we're implementing. Since we share code
         for triple sets and for node->bunch maps, it has to be an Object array; we
         take the casting hit.
      */
     protected Key [] keys;
-    
+
     /**
         The capacity (length) of the key array.
     */
     public int capacity;
-    
+
     /**
         The threshold number of elements above which we resize the table;
         equal to the capacity times the load factor.
     */
     protected int threshold;
-    
+
     /**
         The number of active elements in the table, maintained incrementally.
     */
     protected int size = 0;
-    
+
     /**
         A count of the number of changes applied to this Hash object, used for
         detecting concurrent modifications.
     */
     protected int changes;
-    
+
     /**
         Initialise this hashed thingy to have <code>initialCapacity</code> as its
         capacity and the corresponding threshold. All the key elements start out
@@ -78,7 +78,7 @@ public abstract class HashCommon<Key>
         keys = newKeyArray( capacity = initialCapacity );
         threshold = (int) (capacity * loadFactor);
         }
-    
+
     /**
         Subclasses must implement to answer a new Key[size] array.
     */
@@ -96,40 +96,40 @@ public abstract class HashCommon<Key>
         /**
              A NotifyEmpty instance that ignores the notification.
         */
-        public static NotifyEmpty ignore = new NotifyEmpty() 
+        public static NotifyEmpty ignore = new NotifyEmpty()
             { @Override
             public void emptied() { }};
-        
+
         /**
              Method to call to notify that the collection has become empty.
         */
-        public void emptied(); 
-        }   
+        public void emptied();
+        }
 
     /**
-        When removeFrom [or remove] removes a key, it calls this method to 
-        remove any associated values, passing in the index of the key's slot. 
+        When removeFrom [or remove] removes a key, it calls this method to
+        remove any associated values, passing in the index of the key's slot.
         Subclasses override if they have any associated values.
     */
     protected void removeAssociatedValues( int here )
         {}
 
     /**
-        When removeFrom [or remove] moves a key, it calls this method to move 
+        When removeFrom [or remove] moves a key, it calls this method to move
         any associated values, passing in the index of the slot <code>here</code>
         to move to and the index of the slot <code>scan</code> to move from.
         Subclasses override if they have any associated values.
     */
     protected void moveAssociatedValues( int here, int scan )
         {}
-    
+
     /**
         Answer the item at index <code>i</code> of <code>keys</code>. This
         method is for testing purposes <i>only</i>.
     */
     public Object getItemForTestingAt( int i )
         { return keys[i]; }
-    
+
     /**
         Answer the initial index for the object <code>key</code> in the table.
         With luck, this will be the final position for that object. The initial index
@@ -148,8 +148,8 @@ public abstract class HashCommon<Key>
         voodoo to (try to) eliminate problems experienced by Wolfgang.
     */
     protected int improveHashCode( int hashCode )
-        { return hashCode * 127; }    
-    
+        { return hashCode * 127; }
+
     /**
         Search for the slot in which <code>key</code> is found. If it is absent,
         return the index of the free slot in which it could be placed. If it is present,
@@ -163,11 +163,11 @@ public abstract class HashCommon<Key>
         while (true)
             {
             Key current = keys[index];
-            if (current == null) return index; 
+            if (current == null) return index;
             if (key.equals( current )) return ~index;
             if (--index < 0) index += capacity;
             }
-        }   
+        }
 
     /**
         Remove the object <code>key</code> from this hash's keys if it
@@ -184,7 +184,7 @@ public abstract class HashCommon<Key>
         int slot = findSlot( key );
         if (slot < 0) removeFrom( ~slot );
         }
-    
+
     /**
         Work out the capacity and threshold sizes for a new improved bigger
         table (bigger by a factor of two, at present).
@@ -194,11 +194,11 @@ public abstract class HashCommon<Key>
         capacity = nextSize( capacity * 2 );
         threshold = (int) (capacity * loadFactor);
         }
-     
+
     // Hash tables are 0.25 to 0.5 full so these numbers
-    // are for storing about 1/3 of that number of items. 
+    // are for storing about 1/3 of that number of items.
     // The larger sizes are added so that the system has "soft failure"
-    // rather implying guaranteed performance. 
+    // rather implying guaranteed performance.
     // https://primes.utm.edu/lists/small/millions/
     static final int [] primes =
         {
@@ -206,7 +206,7 @@ public abstract class HashCommon<Key>
         19_853, 39_709, 79_423, 158_849, 317_701, 635_413,
         1_270_849, 2_541_701, 5_083_423
         , 10_166_857
-        , 20_333_759   
+        , 20_333_759
         , 40_667_527
         , 81_335_047
         , 162_670_111
@@ -214,17 +214,17 @@ public abstract class HashCommon<Key>
         , 650_680_469
         , 982_451_653 // 50 millionth prime - Largest at primes.utm.edu.
         };
-    
+
     protected static int nextSize(int atLeast) {
         for ( int prime : primes ) {
             if ( prime > atLeast )
                 return prime;
         }
         //return atLeast ;        // Input is 2*current capacity.
-        // There are some very large numbers in the primes table. 
-        throw new JenaException("Failed to find a 'next size': atleast = "+atLeast) ; 
+        // There are some very large numbers in the primes table.
+        throw new JenaException("Failed to find a 'next size': atleast = "+atLeast) ;
     }
-    
+
     /**
         Remove the triple at element <code>i</code> of <code>contents</code>.
         This is an implementation of Knuth's Algorithm R from tAoCP vol3, p 527,
@@ -268,8 +268,8 @@ public abstract class HashCommon<Key>
                     }
                 }
             }
-        }    
-    
+        }
+
     void showkeys()
         {
         if (false)
@@ -283,7 +283,7 @@ public abstract class HashCommon<Key>
 
     public ExtendedIterator<Key> keyIterator()
         { return keyIterator( NotifyEmpty.ignore ); }
-    
+
     public ExtendedIterator<Key> keyIterator( final NotifyEmpty container )
         {
         showkeys();
@@ -292,7 +292,7 @@ public abstract class HashCommon<Key>
         ExtendedIterator<Key> leftovers = new MovedKeysIterator( changes, container, movedKeys );
         return basic.andThen( leftovers );
         }
-    
+
     /**
         The MovedKeysIterator iterates over the elements of the <code>keys</code>
         list. It's not sufficient to just use List::iterator, because the .remove
@@ -310,14 +310,14 @@ public abstract class HashCommon<Key>
         final NotifyEmpty container;
 
         protected MovedKeysIterator( int initialChanges, NotifyEmpty container, List<Key> keys )
-            { 
-            this.movedKeys = keys; 
-            this.initialChanges = initialChanges; 
+            {
+            this.movedKeys = keys;
+            this.initialChanges = initialChanges;
             this.container = container;
             }
 
         @Override public boolean hasNext()
-            { 
+            {
             return index < movedKeys.size();
             }
 
@@ -335,9 +335,9 @@ public abstract class HashCommon<Key>
             }
 
         @Override public void remove()
-            { 
+            {
             if (changes > initialChanges) throw new ConcurrentModificationException();
-            primitiveRemove( movedKeys.get( index - 1 ) ); 
+            primitiveRemove( movedKeys.get( index - 1 ) );
             if (size == 0) container.emptied();
             }
         }
@@ -357,9 +357,9 @@ public abstract class HashCommon<Key>
         final NotifyEmpty container;
 
         protected BasicKeyIterator( int initialChanges, NotifyEmpty container, List<Key> movedKeys )
-            { 
-            this.movedKeys = movedKeys; 
-            this.initialChanges = initialChanges;  
+            {
+            this.movedKeys = movedKeys;
+            this.initialChanges = initialChanges;
             this.container = container;
             }
 
@@ -394,10 +394,9 @@ public abstract class HashCommon<Key>
         @Override public void remove()
             {
             if (changes > initialChanges) throw new ConcurrentModificationException();
-            // System.err.println( ">> keyIterator::remove, size := " + size +
-            // ", removing " + keys[index + 1] );
             Key moved = removeFrom( pos + 1 );
-            if (moved != null) movedKeys.add( moved );
+            if (moved != null && ! movedKeys.contains(moved) )
+                movedKeys.add( moved );
             if (size == 0) container.emptied();
             if (size < 0) throw new BrokenException( "BROKEN" );
             showkeys();
