@@ -115,7 +115,7 @@ public class GraphTxn extends GraphWrapper implements Transactional {
         IteratorTxn(GraphTxn graph, ExtendedIterator<T> base) {
             super(base, true);  // removeDenied.
             this.graph = graph;
-            needIterTxn = graph.getT().isInTransaction();
+            needIterTxn = ! graph.getT().isInTransaction();
             if ( needIterTxn )
                 graph.begin(TxnType.READ);
         }
