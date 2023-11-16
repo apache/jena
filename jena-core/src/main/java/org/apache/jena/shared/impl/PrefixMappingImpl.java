@@ -23,6 +23,7 @@ import java.util.List ;
 import java.util.Map ;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.shared.PrefixMapping ;
@@ -49,8 +50,8 @@ public class PrefixMappingImpl implements PrefixMapping
         { 
         // ConcurrentHashMaps protects against breaking each datastructure
         // but does not protect against inconsistency.
-        prefixToURI = new ConcurrentHashMap<>();
-        URItoPrefix = new ConcurrentHashMap<>(); 
+        prefixToURI = new ConcurrentSkipListMap<>();
+        URItoPrefix = new ConcurrentSkipListMap<>();
         }
     
     protected void set(String prefix, String uri) {
