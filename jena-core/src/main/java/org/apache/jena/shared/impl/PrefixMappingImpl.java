@@ -24,6 +24,7 @@ import java.util.List ;
 import java.util.Map ;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.shared.PrefixMapping ;
