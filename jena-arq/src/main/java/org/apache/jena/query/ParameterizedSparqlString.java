@@ -138,7 +138,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 
     private StringBuilder cmd = new StringBuilder();
     private String baseUri;
-    private Map<String, Node> params = new LinkedHashMap<>();
+    private Map<String, Node> params = new HashMap<>();
     private Map<Integer, Node> positionalParams = new HashMap<>();
     private PrefixMapping prefixes;
     private Map<String, ValueReplacement> valuesReplacements = new HashMap<>();

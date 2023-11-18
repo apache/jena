@@ -19,6 +19,7 @@
 package org.apache.jena.shared.impl;
 
 import java.util.ArrayList ;
+import java.util.LinkedHashMap;
 import java.util.List ;
 import java.util.Map ;
 import java.util.Map.Entry;
@@ -50,7 +51,7 @@ public class PrefixMappingImpl implements PrefixMapping
         // ConcurrentHashMaps protects against breaking each datastructure
         // but does not protect against inconsistency.
         prefixToURI = new ConcurrentHashMap<>();
-        URItoPrefix = new ConcurrentHashMap<>(); 
+        URItoPrefix = new ConcurrentHashMap<>();
         }
     
     protected void set(String prefix, String uri) {
@@ -187,7 +188,7 @@ public class PrefixMappingImpl implements PrefixMapping
         
     @Override
     public Map<String, String> getNsPrefixMap()
-        { return CollectionFactory.createHashedMap( prefixToURI ); }
+        { return new LinkedHashMap<>( prefixToURI ); }
         
     @Override
     public String getNsURIPrefix( String uri )
