@@ -26,7 +26,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.GraphView;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.exec.QueryExecDataset;
 import org.apache.jena.sparql.exec.QueryExecDatasetBuilder;
 import org.apache.jena.sparql.exec.QueryExecutionCompat;
@@ -64,7 +63,7 @@ public class QueryExecutionFactory
      */
     public static QueryExecution create(Query query) {
         checkArg(query);
-        return make(query);
+        return makeExecution(query);
     }
 
     /**
@@ -100,8 +99,7 @@ public class QueryExecutionFactory
      * @return QueryExecution
      */
     public static QueryExecution create(Query query, Dataset dataset) {
-        // checkArg(dataset); // Allow null
-        return make(query, dataset, null, null);
+        return make(query, dataset, null);
     }
 
     /**
@@ -114,7 +112,7 @@ public class QueryExecutionFactory
     public static QueryExecution create(Query query, DatasetGraph datasetGraph) {
         requireNonNull(query, "Query is null");
         requireNonNull(datasetGraph, "DatasetGraph is null");
-        return make(query, null, datasetGraph, null);
+        return make(query, null, datasetGraph);
     }
 
     /** Create a QueryExecution to execute over the Dataset.
@@ -125,8 +123,7 @@ public class QueryExecutionFactory
      */
     public static QueryExecution create(String queryStr, Dataset dataset) {
         checkArg(queryStr);
-        // checkArg(dataset); // Allow null
-        return make(makeQuery(queryStr), dataset, null, null);
+        return make(makeQuery(queryStr), dataset, null);
     }
 
     /** Create a QueryExecution to execute over the Dataset.
@@ -138,8 +135,7 @@ public class QueryExecutionFactory
      */
     public static QueryExecution create(String queryStr, Syntax syntax, Dataset dataset) {
         checkArg(queryStr);
-        // checkArg(dataset); // Allow null
-        return make(makeQuery(queryStr, syntax), dataset, null, null);
+        return make(makeQuery(queryStr, syntax), dataset, null);
     }
 
     // ---------------- Query + Model
@@ -153,13 +149,13 @@ public class QueryExecutionFactory
     public static QueryExecution create(Query query, Model model) {
         checkArg(query);
         checkArg(model);
-        return make(query, model);
+        return makeExecution(query, model);
     }
 
     /** Create a QueryExecution to execute over the Model.
      *
      * @param queryStr     Query string
-     * @param model     Target of the query
+     * @param model        Target of the query
      * @return QueryExecution
      */
     public static QueryExecution create(String queryStr, Model model) {
@@ -182,33 +178,31 @@ public class QueryExecutionFactory
     }
 
     /** Create a QueryExecution over a Dataset given some initial values of variables.
-     * Use {@code QueryExecution#create(Dataset).query(Query).substitution(QuerySolution).build()}.
      *
      * @param query            Query
      * @param dataset          Target of the query
-     * @param initialBinding    Any initial binding of variables
+     * @param querySolution    Any initial binding of variables
      * @return QueryExecution
-     * @deprecated Use {@code QueryExecution#dataset(Dataset).query(Query).substitution(QuerySolution).build()}.
+     * @deprecated Use {@code QueryExecution.dataset(dataset).query(query).substitution(querySolution).build()}.
      */
     @Deprecated
-    public static QueryExecution create(Query query, Dataset dataset, QuerySolution initialBinding) {
+    public static QueryExecution create(Query query, Dataset dataset, QuerySolution querySolution) {
         checkArg(query);
-        return QueryExecution.dataset(dataset).query(query).substitution(initialBinding).build();
+        return QueryExecution.dataset(dataset).query(query).substitution(querySolution).build();
     }
 
-    /** Create a QueryExecution over a Dataset given some initial values of variables.
-     * Use {@code QueryExecution#create(Dataset).query(Query).substitution(QuerySolution).build()}.
+    /** Create a QueryExecution over a Model given some initial values of variables.
      *
      * @param query            Query
      * @param model            Target of the query
-     * @param initialBinding   Any initial binding of variables
+     * @param querySolution   Any initial binding of variables
      * @return QueryExecution
-     * @deprecated Use {@code QueryExecution#model(Model).query(Query).substitution(QuerySolution).build()}.
+     * @deprecated Use {@code QueryExecution#model(model).query(query).substitution(querySolution).build()}.
      */
     @Deprecated
-    public static QueryExecution create(Query query, Model model, QuerySolution initialBinding) {
+    public static QueryExecution create(Query query, Model model, QuerySolution querySolution) {
         checkArg(query);
-        return QueryExecution.model(model).query(query).substitution(initialBinding).build();
+        return QueryExecution.model(model).query(query).substitution(querySolution).build();
     }
 
     // ---------------- Internal routines
@@ -229,11 +223,11 @@ public class QueryExecutionFactory
         return QueryFactory.create(queryStr, syntax);
     }
 
-    static protected QueryExecution make(Query query) {
+    static protected QueryExecution makeExecution(Query query) {
         return QueryExecution.create().query(query).build();
     }
 
-    protected static QueryExecution make(Query query, Model model) {
+    protected static QueryExecution makeExecution(Query query, Model model) {
         Graph graph = model.getGraph();
         DatasetGraph dataset = DatasetGraphFactory.wrap(graph);
         Graph g = unwrap(graph);
@@ -242,7 +236,7 @@ public class QueryExecutionFactory
             // Copy context of the storage dataset to the wrapper dataset.
             dataset.getContext().putAll(gv.getDataset().getContext());
         }
-        return make(query, null, dataset, (Binding)null);
+        return make(query, null, dataset);
     }
 
     private static Graph unwrap(Graph graph) {
@@ -255,15 +249,17 @@ public class QueryExecutionFactory
         }
     }
 
-    private static QueryExecution make(Query query, Dataset dataset, QuerySolution initialBinding) {
-        Binding binding = null;
-        if ( initialBinding != null )
-            binding = BindingLib.toBinding(initialBinding);
-        return make(query, dataset, null, binding);
+    // Preferred base of all QueryExecution creation in QueryExecutionFactory.
+    // dataset and datasetGraph can't both be set.
+    // Null for both of them is allowed and assumes the query has a dataset description.
+    private static QueryExecution make(Query query, Dataset dataset, DatasetGraph datasetGraph) {
+        return make$(query, dataset, datasetGraph, null);
     }
 
+    // This form of "make" has support for "initialBinding" (seed the execution)
+    // The preferred approach is to use "substitution" )(replace variables with RDF terms).
     @SuppressWarnings("deprecation")
-    private static QueryExecution make(Query query, Dataset dataset, DatasetGraph datasetGraph, Binding initialBinding) {
+    private static QueryExecution make$(Query query, Dataset dataset, DatasetGraph datasetGraph, Binding initialBinding) {
         QueryExecDatasetBuilder builder = QueryExecDataset.newBuilder().query(query);
         if ( initialBinding != null )
             builder.initialBinding(initialBinding);
@@ -280,9 +276,6 @@ public class QueryExecutionFactory
 
     static private void checkArg(Model model)
     { requireNonNull(model, "Model is a null pointer"); }
-
-//    static private void checkArg(Dataset dataset)
-//    { requireNonNull(dataset, "Dataset is a null pointer"); }
 
     static private void checkArg(String queryStr)
     { requireNonNull(queryStr, "Query string is null"); }
