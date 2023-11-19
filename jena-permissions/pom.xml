@@ -137,7 +137,7 @@
               <goal>jar</goal>
             </goals>
             <configuration>
-              <classedDirectory>target</classedDirectory>
+              <classesDirectory>target</classesDirectory>
               <classifier>example</classifier>
               <includes>
                 <include>../src/example/**</include>
