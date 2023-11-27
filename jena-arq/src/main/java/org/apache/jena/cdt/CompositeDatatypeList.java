@@ -168,18 +168,21 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 			final CDTValue v2 = it2.next();
 
 			if ( v1.isNull() || v2.isNull() ) {
-				throw new ExprEvalException("nulls in lists cannot be compared");
+				if ( ! v1.isNull() || ! v2.isNull() ) {
+					throw new ExprEvalException("nulls in lists cannot be compared to something other than nulls");
+				}
 			}
+			else {
+				final Node n1 = v1.asNode();
+				final Node n2 = v2.asNode();
 
-			final Node n1 = v1.asNode();
-			final Node n2 = v2.asNode();
+				if ( n1.isBlank() || n2.isBlank() ) {
+					throw new ExprEvalException("blank nodes in lists cannot be compared");
+				}
 
-			if ( n1.isBlank() || n2.isBlank() ) {
-				throw new ExprEvalException("blank nodes in lists cannot be compared");
-			}
-
-			if ( ! n1.sameValueAs(n2) ) {
-				return false;
+				if ( ! n1.sameValueAs(n2) ) {
+					return false;
+				}
 			}
 		}
 
@@ -227,36 +230,57 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 			final CDTValue elmt2 = list2.get(i);
 
 			if ( ! elmt1.isNull() && ! elmt2.isNull() ) {
-				final Node n1 = elmt1.asNode();
-				final Node n2 = elmt2.asNode();
+				final NodeValue nv1 = NodeValue.makeNode( elmt1.asNode() );
+				final NodeValue nv2 = NodeValue.makeNode( elmt2.asNode() );
 
-				if ( ! sortOrderingCompare && n1.isBlank() && n2.isBlank() ) {
+				if ( ! sortOrderingCompare && nv1.isBlank() && nv2.isBlank() ) {
 					throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
 				}
 
-				// Test whether the two RDF terms are the same value (i.e.,
-				// comparing them using = results in true). If they are, we
-				// can skip to the next pair of list elements. If they are
-				// not, we compare them.
-				if ( ! elmt1.sameAs(elmt2) ) {
-					final NodeValue nv1 = NodeValue.makeNode(n1);
-					final NodeValue nv2 = NodeValue.makeNode(n2);
-
+				// Compare the values represented by the two list elements
+				// in terms of which of them is greater than the other one.
+				try {
 					final int c;
-					try {
-						if ( sortOrderingCompare )
-							c = NodeValue.compareAlways(nv1, nv2);
-						else
-							c = NodeValue.compare(nv1, nv2);
-					}
-					catch ( final Exception e ) {
-						throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
-					}
+					if ( sortOrderingCompare )
+						c = NodeValue.compareAlways(nv1, nv2);
+					else
+						c = NodeValue.compare(nv1, nv2);
 
+					// If one of the two values is greater than the other one,
+					// return this result as the result for comparing the two
+					// lists.
 					if ( c < 0 ) return Expr.CMP_LESS;
 					if ( c > 0 ) return Expr.CMP_GREATER;
+				}
+				catch ( final Exception e ) {
+					// If the comparison failed, simply move on to the
+					// next code block (i.e., nothing to do here).
+				}
 
-					if ( c == 0 && sortOrderingCompare ) return Expr.CMP_INDETERMINATE;
+				// If the comparison of nv1 and nv2 failed with an exception
+				// or none of them is greater than the other, we test whether
+				// they are the same value (i.e., comparing them using =
+				// results in true).
+				boolean sameValueTestResult = false;
+				boolean sameValueTestFailed = false;
+				try {
+					sameValueTestResult = NodeValue.sameAs(nv1, nv2);
+				}
+				catch ( final Exception e ) {
+					sameValueTestFailed = true;
+				}
+
+				// If nv1 and nv2 are not the same value or testing whether
+				// they are the same value failed, we can terminate the whole
+				// comparison (as being done in the following if block).
+				// If, however, nv1 and nv2 are indeed the same value (in which
+				// case the following if condition is not true), we continue to
+				// the next pair of list elements.
+				if ( sameValueTestFailed == true || sameValueTestResult == false ) {
+					if ( sortOrderingCompare )
+						return Expr.CMP_INDETERMINATE;
+					else
+						throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
 				}
 			}
 			else {
@@ -264,8 +288,9 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 				// two list elements is null.
 				if ( ! sortOrderingCompare ) {
 					// When comparing as per the list-less-than semantics,
-					// null values cannot be compared to one another.
-					throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+					// null cannot be compared to anything other than null.
+					if ( ! elmt1.isNull() || ! elmt2.isNull() )
+						throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
 				}
 				else {
 					// When comparing as per the ORDER BY semantics, nulls are
