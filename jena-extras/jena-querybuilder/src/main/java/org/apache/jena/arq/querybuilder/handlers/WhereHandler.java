@@ -46,6 +46,11 @@ import org.apache.jena.vocabulary.RDF;
  *
  */
 public class WhereHandler implements Handler {
+    
+    private static Predicate<Node> checkPredicate = n -> n.isURI() || n.isVariable() ||n.equals(Node.ANY);
+    
+    private static Predicate<Node> checkSubject = n -> checkPredicate.test(n) || n.isBlank() || n.isNodeTriple();
+
 
     // the query to modify
     private final Query query;
@@ -166,9 +171,6 @@ public class WhereHandler implements Handler {
      * @param t The trip to test.
      */
     private static void testTriple(TriplePath t) {
-        private Predicate<Node> checkPredicate = n -> n.isURI() || n.isVariable() ||n.equals(Node.ANY);
-        
-        private Predicate<Node> checkSubject = n -> checkPredicate.test(n) || n.isBlank() || n.isNodeTriple();
         
         // verify Triple is valid
         boolean validSubject = checkSubject.test(t.getSubject());
