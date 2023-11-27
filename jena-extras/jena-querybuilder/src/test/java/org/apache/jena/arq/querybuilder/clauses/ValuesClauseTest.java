@@ -32,6 +32,7 @@ import java.util.Map;
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryBuildException;
 import org.apache.jena.sparql.core.Var;
@@ -255,7 +256,10 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
         builder.addValueVar("?y");
         builder.addValueRow("foo", "bar");
         builder.addValueRow("fu", null);
-
+        Triple expected = Triple.create(NodeFactory.createURI("a"), 
+                NodeFactory.createURI("b"), NodeFactory.createURI("c"));
+        Node tripleNode = NodeFactory.createTripleNode(expected);
+        builder.addValueRow(tripleNode, null);
 
         Query query = builder.build();
         assertTrue( query.hasValues() );
@@ -264,12 +268,15 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
         assertEquals( "x", vars.get(0).getVarName());
         assertEquals( "y", vars.get(1).getVarName());
         List<Binding> bindings = query.getValuesData();
-        assertEquals( 2, bindings.size() );
+        assertEquals( 3, bindings.size() );
         Binding binding = bindings.get(0);
         assertEquals( NodeFactory.createLiteral( "foo"), binding.get("x"));
         assertEquals( NodeFactory.createLiteral( "bar"), binding.get("y"));
         binding = bindings.get(1);
         assertEquals( NodeFactory.createLiteral( "fu"), binding.get("x"));
+        assertNull( binding.get("y"));
+        binding = bindings.get(2);
+        assertEquals( tripleNode, binding.get("x"));
         assertNull( binding.get("y"));
     }
 

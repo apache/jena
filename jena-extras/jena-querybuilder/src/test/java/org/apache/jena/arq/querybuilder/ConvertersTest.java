@@ -167,6 +167,12 @@ public class ConvertersTest {
         n = Converters.makeNode("'text'@en", pMap);
         assertEquals("text", n.getLiteralLexicalForm());
         assertEquals("en", n.getLiteralLanguage());
+
+        Node tripleNode = NodeFactory.createTripleNode(NodeFactory.createURI("a"), 
+                NodeFactory.createURI("b"), NodeFactory.createURI("c"));
+        n = Converters.makeNode(tripleNode, pMap);
+        assertEquals(tripleNode, n);
+
     }
 
     @Test

@@ -26,7 +26,9 @@ import static org.mockito.Mockito.when;
 
 import org.apache.jena.arq.querybuilder.clauses.WhereClause;
 import org.apache.jena.arq.querybuilder.handlers.WhereHandler;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.*;
@@ -648,6 +650,17 @@ public class ExprFactoryTest {
         assertEquals("http://example.com/foo", n.asNode().getURI());
     }
 
+    @Test
+    public void asExprTest_Triplenode() {
+        Triple expected = Triple.create(NodeFactory.createURI("a"), 
+                NodeFactory.createURI("b"), NodeFactory.createURI("c"));
+        Node tripleNode = NodeFactory.createTripleNode(expected);
+        Expr e = factory.asExpr(tripleNode);
+        assertTrue(e instanceof NodeValueNode);
+        NodeValueNode n = (NodeValueNode) e;
+        assertTrue(expected.matches(n.asNode().getTriple()));
+    }
+    
     @Test
     public void asExprTest_URIstring() {
         Expr e = factory.asExpr("http://example.com/foo");
