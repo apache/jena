@@ -17,6 +17,7 @@
  */
 package org.apache.jena.arq.querybuilder;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -211,6 +212,12 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
     }
 
     @Override
+    public ConstructBuilder addWhere(Collection<TriplePath> collection) {
+        getWhereHandler().addWhere(collection);
+        return this;
+    }
+    
+    @Override
     public ConstructBuilder addWhere(Triple t) {
         getWhereHandler().addWhere(new TriplePath(t));
         return this;
@@ -224,7 +231,7 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 
     @Override
     public ConstructBuilder addWhere(Object s, Object p, Object o) {
-        getWhereHandler().addWhere(makeTriplePath(s, p, o));
+        getWhereHandler().addWhere(makeTriplePaths(s, p, o));
         return this;
     }
 
@@ -276,14 +283,19 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 
     @Override
     public ConstructBuilder addOptional(TriplePath t) {
-        getWhereHandler().addOptional(t);
+        getWhereHandler().addOptional(Arrays.asList(t));
         return this;
     }
 
     @Override
-    public ConstructBuilder addOptional(Triple t) {
-        getWhereHandler().addOptional(new TriplePath(t));
+    public ConstructBuilder addOptional(Collection<TriplePath> collection) {
+        getWhereHandler().addOptional(collection);
         return this;
+    }
+    
+    @Override
+    public ConstructBuilder addOptional(Triple t) {
+        return addOptional(new TriplePath(t));
     }
 
     @Override
@@ -294,13 +306,12 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 
     @Override
     public ConstructBuilder addOptional(FrontsTriple t) {
-        getWhereHandler().addOptional(new TriplePath(t.asTriple()));
-        return this;
+        return addOptional(new TriplePath(t.asTriple()));
     }
 
     @Override
     public ConstructBuilder addOptional(Object s, Object p, Object o) {
-        getWhereHandler().addOptional(makeTriplePath(s, p, o));
+        getWhereHandler().addOptional(makeTriplePaths(s, p, o));
         return this;
     }
 
@@ -337,25 +348,29 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
 
     @Override
     public ConstructBuilder addGraph(Object graph, FrontsTriple triple) {
-        getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple.asTriple()));
-        return this;
+        return addGraph(graph, new TriplePath(triple.asTriple()));
     }
 
     @Override
     public ConstructBuilder addGraph(Object graph, Object subject, Object predicate, Object object) {
-        getWhereHandler().addGraph(makeNode(graph), makeTriplePath(subject, predicate, object));
+        getWhereHandler().addGraph(makeNode(graph), makeTriplePaths(subject, predicate, object));
         return this;
     }
 
     @Override
     public ConstructBuilder addGraph(Object graph, Triple triple) {
-        getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple));
-        return this;
+        return addGraph(graph, new TriplePath(triple));
     }
 
     @Override
     public ConstructBuilder addGraph(Object graph, TriplePath triplePath) {
-        getWhereHandler().addGraph(makeNode(graph), triplePath);
+        getWhereHandler().addGraph(makeNode(graph), Arrays.asList(triplePath));
+        return this;
+    }
+    
+    @Override
+    public ConstructBuilder addGraph(Object graph, Collection<TriplePath> collection) {
+        getWhereHandler().addGraph(makeNode(graph), collection);
         return this;
     }
 
@@ -387,6 +402,10 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
         return addConstruct(Triple.create(makeNode(s), makeNode(p), makeNode(o)));
     }
 
+    /*
+     * @deprecated use {@code addWhere(Converters.makeCollection(List.of(Object...)))}, or simply call {@link #addWhere(Object, Object, Object)} passing the collection for one of the objects.
+     */
+    @Deprecated(since="5.0.0")
     @Override
     public Node list(Object... objs) {
         return getWhereHandler().list(objs);

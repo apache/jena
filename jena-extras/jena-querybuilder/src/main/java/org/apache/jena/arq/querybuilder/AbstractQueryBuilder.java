@@ -146,13 +146,45 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
      * @param p the predicate object
      * @param o the object object.
      * @return a TriplePath
+     * @deprecated Use {@link makeTriplePaths(Object, Object, Object)}
      */
+    @Deprecated(since="5.0.0")
     public TriplePath makeTriplePath(Object s, Object p, Object o) {
         final Object po = makeNodeOrPath(p);
         if (po instanceof Path) {
             return new TriplePath(makeNode(s), (Path) po, makeNode(o));
         }
         return new TriplePath(Triple.create(makeNode(s), (Node) po, makeNode(o)));
+    }
+    
+    /**
+     * Make a collecton triple path from the objects.
+     *
+     * For subject, predicate and objects nodes
+     * <ul>
+     * <li>Will return Node.ANY if object is null.</li>
+     * <li>Will return the enclosed Node from a FrontsNode</li>
+     * <li>Will return the object if it is a Node.</li>
+     * <li>For {@code subject} and {@code object} <em>only</em>, if the object is a collection, will convert each item
+     * in the collection into a node and create an RDF list. All RDF list nodes are included in the collection.</li> 
+     * <li>If the object is a String
+     * <ul>
+     * <li>For <code>predicate</code> <em>only</em>, will attempt to parse as a path</li>
+     * <li>for subject, predicate and object will call NodeFactoryExtra.parseNode()
+     * using the currently defined prefixes if the object is a String</li>
+     * </ul>
+     * </li>
+     * <li>Will create a literal representation if the parseNode() fails or for any
+     * other object type.</li>
+     * </ul>
+     *
+     * @param s The subject object
+     * @param p the predicate object
+     * @param o the object object.
+     * @return a TriplePath
+     */
+    public List<TriplePath> makeTriplePaths(Object s, Object p, Object o) {
+        return Converters.makeTriplePaths(s, p, o, query.getPrefixMapping());
     }
 
     /**

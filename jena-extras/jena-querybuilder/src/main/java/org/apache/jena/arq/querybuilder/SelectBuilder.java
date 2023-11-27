@@ -17,6 +17,7 @@
  */
 package org.apache.jena.arq.querybuilder;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -303,6 +304,14 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
     }
 
     @Override
+    public SelectBuilder addWhere(Collection<TriplePath> collection) {
+        getWhereHandler().addWhere(collection);
+        return this;
+    }
+    
+    
+
+    @Override
     public SelectBuilder addWhere(Triple t) {
         getWhereHandler().addWhere(new TriplePath(t));
         return this;
@@ -316,7 +325,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 
     @Override
     public SelectBuilder addWhere(Object s, Object p, Object o) {
-        getWhereHandler().addWhere(makeTriplePath(s, p, o));
+        getWhereHandler().addWhere(makeTriplePaths(s, p, o));
         return this;
     }
 
@@ -368,25 +377,29 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 
     @Override
     public SelectBuilder addOptional(TriplePath t) {
-        getWhereHandler().addOptional(t);
+        getWhereHandler().addOptional(Arrays.asList(t));
         return this;
     }
 
     @Override
     public SelectBuilder addOptional(Triple t) {
-        getWhereHandler().addOptional(new TriplePath(t));
-        return this;
+        return addOptional(new TriplePath(t));
     }
 
     @Override
     public SelectBuilder addOptional(FrontsTriple t) {
-        getWhereHandler().addOptional(new TriplePath(t.asTriple()));
+        return addOptional(new TriplePath(t.asTriple()));
+    }
+
+    @Override
+    public SelectBuilder addOptional(Collection<TriplePath> collection) {
+        getWhereHandler().addOptional(collection);
         return this;
     }
 
     @Override
     public SelectBuilder addOptional(Object s, Object p, Object o) {
-        getWhereHandler().addOptional(makeTriplePath(s, p, o));
+        getWhereHandler().addOptional(makeTriplePaths(s, p, o));
         return this;
     }
 
@@ -429,28 +442,32 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 
     @Override
     public SelectBuilder addGraph(Object graph, FrontsTriple triple) {
-        getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple.asTriple()));
-        return this;
+        return addGraph(graph, new TriplePath(triple.asTriple()));
     }
 
     @Override
     public SelectBuilder addGraph(Object graph, Object subject, Object predicate, Object object) {
-        getWhereHandler().addGraph(makeNode(graph), makeTriplePath(subject, predicate, object));
+        getWhereHandler().addGraph(makeNode(graph), makeTriplePaths(subject, predicate, object));
         return this;
     }
 
     @Override
     public SelectBuilder addGraph(Object graph, Triple triple) {
-        getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple));
-        return this;
+        return addGraph(graph, new TriplePath(triple));
     }
 
     @Override
     public SelectBuilder addGraph(Object graph, TriplePath triplePath) {
-        getWhereHandler().addGraph(makeNode(graph), triplePath);
+        getWhereHandler().addGraph(makeNode(graph), Arrays.asList(triplePath));
         return this;
     }
 
+    @Override
+    public SelectBuilder addGraph(Object graph, Collection<TriplePath> collection) {
+        getWhereHandler().addGraph(makeNode(graph), collection);
+        return this;
+    }
+    
     @Override
     public SelectBuilder addBind(Expr expression, Object var) {
         getWhereHandler().addBind(expression, Converters.makeVar(var));
@@ -468,7 +485,10 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
         return handlerBlock.getSelectHandler();
     }
 
-    @Override
+    /*
+     * @deprecated use {@code addWhere(Converters.makeCollection(List.of(Object...)))}, or simply call {@link #addWhere(Object, Object, Object)} passing the collection for one of the objects.
+     */
+    @Deprecated(since="5.0.0")    @Override
     public Node list(Object... objs) {
         return getWhereHandler().list(objs);
     }

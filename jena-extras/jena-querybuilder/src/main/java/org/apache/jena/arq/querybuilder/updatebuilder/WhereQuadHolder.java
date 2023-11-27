@@ -17,6 +17,7 @@
  */
 package org.apache.jena.arq.querybuilder.updatebuilder;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -222,6 +223,17 @@ public class WhereQuadHolder implements QuadHolder {
     }
 
     /**
+     * Add a {@code TriplePath} collection to the where clause
+     *
+     * @param t The triple path to add.
+     * @throws IllegalArgumentException If the triple path is not a valid triple
+     * path for a where clause.
+     */
+    public void addWhere(Collection<TriplePath> t) throws IllegalArgumentException {
+        t.forEach(this::addWhere);
+    }
+    
+    /**
      * Add an optional triple to the where clause
      *
      * @param t The triple path to add.
@@ -232,6 +244,20 @@ public class WhereQuadHolder implements QuadHolder {
         testTriple(t);
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(t);
+        ElementOptional opt = new ElementOptional(epb);
+        getClause().addElement(opt);
+    }
+    
+    /**
+     * Add an optional TriplePath to the where clause
+     *
+     * @param t The triple path to add.
+     * @throws IllegalArgumentException If the triple is not a valid triple for a
+     * where clause.
+     */
+    public void addOptional(Collection<TriplePath> t) throws IllegalArgumentException {
+        ElementPathBlock epb = new ElementPathBlock();
+        t.forEach( tp -> {testTriple(tp);epb.addTriple(tp);});
         ElementOptional opt = new ElementOptional(epb);
         getClause().addElement(opt);
     }
@@ -379,7 +405,9 @@ public class WhereQuadHolder implements QuadHolder {
      *
      * @param objs the list of objects for the list.
      * @return the first blank node in the list.
+     * @deprecated use {@code Converters.makeCollection(List.of(Object...))}
      */
+    @Deprecated(since="5.0.0")
     public Node list(Object... objs) {
         Node retval = NodeFactory.createBlankNode();
         Node lastObject = retval;

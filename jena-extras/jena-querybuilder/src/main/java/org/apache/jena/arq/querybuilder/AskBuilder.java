@@ -114,6 +114,12 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
     }
 
     @Override
+    public AskBuilder addWhere(Collection<TriplePath> collection) {
+        getWhereHandler().addWhere(collection);
+        return this;
+    }
+
+    @Override
     public AskBuilder addWhere(Triple t) {
         getWhereHandler().addWhere(new TriplePath(t));
         return this;
@@ -127,7 +133,7 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 
     @Override
     public AskBuilder addWhere(Object s, Object p, Object o) {
-        getWhereHandler().addWhere(makeTriplePath(s, p, o));
+        getWhereHandler().addWhere(makeTriplePaths(s, p, o));
         return this;
     }
 
@@ -185,8 +191,7 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 
     @Override
     public AskBuilder addOptional(Triple t) {
-        getWhereHandler().addOptional(new TriplePath(t));
-        return this;
+        return addOptional(new TriplePath(t));
     }
 
     @Override
@@ -196,14 +201,19 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
     }
 
     @Override
-    public AskBuilder addOptional(FrontsTriple t) {
-        getWhereHandler().addOptional(new TriplePath(t.asTriple()));
+    public AskBuilder addOptional(Collection<TriplePath> collection) {
+        getWhereHandler().addOptional(collection);
         return this;
     }
 
     @Override
+    public AskBuilder addOptional(FrontsTriple t) {
+        return addOptional(new TriplePath(t.asTriple()));
+    }
+
+    @Override
     public AskBuilder addOptional(Object s, Object p, Object o) {
-        getWhereHandler().addOptional(makeTriplePath(s, p, o));
+        getWhereHandler().addOptional(makeTriplePaths(s, p, o));
         return this;
     }
 
@@ -240,25 +250,31 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 
     @Override
     public AskBuilder addGraph(Object graph, FrontsTriple triple) {
-        getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple.asTriple()));
+        addGraph(graph, new TriplePath(triple.asTriple()));
         return this;
     }
 
     @Override
     public AskBuilder addGraph(Object graph, Object subject, Object predicate, Object object) {
-        getWhereHandler().addGraph(makeNode(graph), makeTriplePath(subject, predicate, object));
+        getWhereHandler().addGraph(makeNode(graph), makeTriplePaths(subject, predicate, object));
         return this;
     }
 
     @Override
     public AskBuilder addGraph(Object graph, Triple triple) {
-        getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple));
+        addGraph(graph, new TriplePath(triple));
         return this;
     }
 
     @Override
     public AskBuilder addGraph(Object graph, TriplePath triplePath) {
         getWhereHandler().addGraph(makeNode(graph), triplePath);
+        return this;
+    }
+
+    @Override
+    public AskBuilder addGraph(Object graph, Collection<TriplePath> collection) {
+        getWhereHandler().addGraph(makeNode(graph), collection);
         return this;
     }
 
@@ -363,6 +379,10 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
         return handlerBlock.getModifierHandler();
     }
 
+    /*
+     * @deprecated use {@code addWhere(Converters.makeCollection(List.of(Object...)))}, or simply call {@link #addWhere(Object, Object, Object)} passing the collection for one of the objects.
+     */
+    @Deprecated(since="5.0.0")
     @Override
     public Node list(Object... objs) {
         return getWhereHandler().list(objs);

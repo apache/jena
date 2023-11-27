@@ -18,6 +18,7 @@
 
 package org.apache.jena.arq.querybuilder;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -64,13 +65,20 @@ public class WhereBuilder extends AbstractQueryBuilder<WhereBuilder> implements 
     }
 
     @Override
+    public WhereBuilder addWhere(Collection<TriplePath> collection) {
+        getWhereHandler().addWhere(collection);
+        return this;
+    }
+
+    @Override
     public WhereBuilder addWhere(FrontsTriple t) {
         return addWhere(t.asTriple());
     }
 
     @Override
     public WhereBuilder addWhere(Object s, Object p, Object o) {
-        return addWhere(makeTriplePath(s, p, o));
+        handler.addWhere(makeTriplePaths(s, p, o));
+        return this;
     }
 
     @Override
@@ -126,20 +134,26 @@ public class WhereBuilder extends AbstractQueryBuilder<WhereBuilder> implements 
     }
 
     @Override
+    public WhereBuilder addOptional(Collection<TriplePath> collection) {
+        getWhereHandler().addOptional(collection);
+        return this;
+    }
+
+    @Override
     public WhereBuilder addOptional(Triple t) {
-        getWhereHandler().addOptional(new TriplePath(t));
+        addOptional(new TriplePath(t));
         return this;
     }
 
     @Override
     public WhereBuilder addOptional(FrontsTriple t) {
-        getWhereHandler().addOptional(new TriplePath(t.asTriple()));
+        addOptional(new TriplePath(t.asTriple()));
         return this;
     }
 
     @Override
     public WhereBuilder addOptional(Object s, Object p, Object o) {
-        getWhereHandler().addOptional(makeTriplePath(s, p, o));
+        getWhereHandler().addOptional(makeTriplePaths(s, p, o));
         return this;
     }
 
@@ -182,28 +196,34 @@ public class WhereBuilder extends AbstractQueryBuilder<WhereBuilder> implements 
 
     @Override
     public WhereBuilder addGraph(Object graph, FrontsTriple triple) {
-        getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple.asTriple()));
+        addGraph(graph, new TriplePath(triple.asTriple()));
         return this;
     }
 
     @Override
     public WhereBuilder addGraph(Object graph, Object subject, Object predicate, Object object) {
-        getWhereHandler().addGraph(makeNode(graph), makeTriplePath(subject, predicate, object));
+        getWhereHandler().addGraph(makeNode(graph), makeTriplePaths(subject, predicate, object));
         return this;
     }
 
     @Override
     public WhereBuilder addGraph(Object graph, Triple triple) {
-        getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple));
+        addGraph(makeNode(graph), new TriplePath(triple));
         return this;
     }
 
     @Override
     public WhereBuilder addGraph(Object graph, TriplePath triplePath) {
-        getWhereHandler().addGraph(makeNode(graph), triplePath);
+        getWhereHandler().addGraph(makeNode(graph), Arrays.asList(triplePath));
         return this;
     }
 
+    @Override
+    public WhereBuilder addGraph(Object graph, Collection<TriplePath> collection) {
+        getWhereHandler().addGraph(makeNode(graph), collection);
+        return this;
+    }
+    
     @Override
     public WhereBuilder addBind(Expr expression, Object var) {
         getWhereHandler().addBind(expression, Converters.makeVar(var));
@@ -216,7 +236,10 @@ public class WhereBuilder extends AbstractQueryBuilder<WhereBuilder> implements 
         return this;
     }
 
-    @Override
+    /*
+     * @deprecated use {@code addWhere(Converters.makeCollection(List.of(Object...)))}, or simply call {@link #addWhere(Object, Object, Object)} passing the collection for one of the objects.
+     */
+    @Deprecated(since="5.0.0")    @Override
     public Node list(Object... objs) {
         return getWhereHandler().list(objs);
     }

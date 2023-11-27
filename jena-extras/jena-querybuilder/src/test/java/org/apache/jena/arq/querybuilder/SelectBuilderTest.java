@@ -36,7 +36,6 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.XSD;
@@ -55,7 +54,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
     @Test
     public void testSelectAsterisk() {
         builder.addVar("*").addWhere("?s", "?p", "?o");
-
+        
         assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY + var("s") + SPACE + var("p") + SPACE + var("o")
                 + OPT_SPACE + CLOSE_CURLY, builder.buildString());
 
@@ -126,14 +125,13 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
     @Test
     public void testNoVars() {
         builder.addWhere("?s", "?p", "?o");
-        String query = builder.buildString();
-
-        assertContainsRegex(SELECT + "\\*" + SPACE, query);
+        Query q = builder.build();
+        assertTrue( q.isQueryResultStar() );
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testList() {
-
         builder.addVar("*").addWhere(builder.list("<one>", "?two", "'three'"), "<foo>", "<bar>");
         Query query = builder.build();
 
@@ -175,7 +173,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
     }
 
     @Test
-    public void testAggregatorsInSelect() throws ParseException {
+    public void testAggregatorsInSelect() {
         builder.addVar("?x").addVar("count(*)", "?c").addWhere("?x", "?p", "?o").addGroupBy("?x");
 
         Model m = ModelFactory.createDefaultModel();
@@ -218,7 +216,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
     }
 
     @Test
-    public void testAggregatorsInSubQuery() throws ParseException {
+    public void testAggregatorsInSubQuery() {
 
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource("urn:one");
@@ -250,7 +248,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
     }
 
     @Test
-    public void testVarReplacementInSubQuery() throws ParseException {
+    public void testVarReplacementInSubQuery() {
 
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource("urn:one");
