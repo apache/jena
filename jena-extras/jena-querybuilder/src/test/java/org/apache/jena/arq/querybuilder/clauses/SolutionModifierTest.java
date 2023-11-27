@@ -37,7 +37,6 @@ import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprVar;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.junit.After;
 import org.junit.Assert;
 import org.xenei.junit.contract.Contract;
@@ -297,7 +296,7 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
     }
 
     @ContractTest
-    public void testAddHavingString() throws ParseException {
+    public void testAddHavingString() {
         SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = solutionModifier.addHaving("?foo<10");
 
@@ -334,7 +333,7 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
     }
 
     @ContractTest
-    public void testAddHavingObject() throws ParseException {
+    public void testAddHavingObject() {
         SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = solutionModifier.addHaving(Var.alloc("foo"));
         
@@ -361,7 +360,7 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
     }
 
     @ContractTest
-    public void testAddHavingExpr() throws ParseException {
+    public void testAddHavingExpr() {
         SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = solutionModifier.addHaving(new E_Random());
         
@@ -468,7 +467,7 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
     }
 
     @ContractTest
-    public void testSetVarsHaving() throws ParseException {
+    public void testSetVarsHaving() {
         Var v = Var.alloc("v");
         SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = solutionModifier.addHaving("?v");
@@ -484,7 +483,7 @@ public class SolutionModifierTest<T extends SolutionModifierClause<?>> extends A
     }
 
     @ContractTest
-    public void testSetVarsHaving_Node_Variable() throws ParseException {
+    public void testSetVarsHaving_Node_Variable() {
         Node v = NodeFactory.createVariable("v");
         SolutionModifierClause<?> solutionModifier = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = solutionModifier.addHaving(v);

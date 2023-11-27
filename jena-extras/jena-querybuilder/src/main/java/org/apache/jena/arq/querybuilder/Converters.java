@@ -17,11 +17,18 @@
  */
 package org.apache.jena.arq.querybuilder;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
+import org.apache.jena.arq.querybuilder.rewriters.AbstractRewriter;
+import org.apache.jena.arq.querybuilder.rewriters.PathRewriter;
 import org.apache.jena.datatypes.BaseDatatype;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
@@ -29,16 +36,22 @@ import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.graph.FrontsNode;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.ExprVar;
+import org.apache.jena.sparql.lang.arq.ARQParser;
+import org.apache.jena.sparql.lang.arq.ParseException;
 import org.apache.jena.sparql.path.P_Link;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.path.PathParser;
+import org.apache.jena.sparql.syntax.TripleCollectorMark;
 import org.apache.jena.sparql.util.NodeFactoryExtra;
+import org.apache.jena.vocabulary.RDF;
 
 /**
  * A collection of static methods to convert from Objects to various types used
@@ -48,6 +61,16 @@ public class Converters {
 
     private Converters() {
         // do not make instance
+    }
+
+    /**
+     * @param o the object to test.
+     * @return true if the object is a Java collection or a string starting with '(' and ending with ')'
+     */
+    private static boolean isCollection(Object o) {
+        Predicate<String> isLiteralCollection = (s) -> s.charAt(0) == '(' && s.charAt(s.length()-1) == ')';
+        return o != null && (o instanceof Collection || 
+               (o instanceof String && isLiteralCollection.test(((String) o).trim())));
     }
 
     /**
@@ -160,13 +183,13 @@ public class Converters {
         if (o instanceof Node) {
             return checkVar((Node) o);
         }
+
         if (o instanceof String) {
             try {
                 return checkVar(NodeFactoryExtra.parseNode((String) o, PrefixMapFactory.create(pMapping)));
             } catch (final RiotException e) {
                 // expected in some cases -- do nothing
             }
-
         }
         return makeLiteral(o);
     }
@@ -317,4 +340,365 @@ public class Converters {
         return values;
     }
 
+    /**
+     * Gathers the triples and adds them to the collector.
+     * @param collector the collector for the triples.
+     * @param s Subject object may be expanded to an RDF collection.
+     * @param p Subject object may be expanded to an RDF collection.
+     * @param o Subject object may be expanded to an RDF collection.
+     * @param prefixMapping the prefix mapping to use for URI resolution.
+     */
+    private static void gatherTriples(ReadableTripleCollectorMark collector, Object s, Object p, Object o,
+            PrefixMapping prefixMapping) {
+        Node sNode = null;
+        Object pNode = null;
+        Node oNode = null;
+
+        Function<Object, Node> processNode = (n) -> {
+            if (isCollection(n)) {
+                int mark = collector.mark();
+                gatherTriples(collector, n, prefixMapping);
+                return collector.getSubject(mark);
+            }
+            return makeNode(n, prefixMapping);
+        };
+
+        sNode = processNode.apply(s);
+
+        if (isCollection(p)) {
+            int mark = collector.mark();
+            gatherTriples(collector, p, prefixMapping);
+            pNode = collector.getSubject(mark);
+        } else {
+            pNode = makeNodeOrPath(p, prefixMapping);
+        }
+
+        oNode = processNode.apply(o);
+
+        if (pNode instanceof Path) {
+            collector.addTriplePath(new TriplePath(sNode, (Path) pNode, oNode));
+        } else {
+            collector.addTriple(Triple.create(sNode, (Node) pNode, oNode));
+        }
+
+    }
+
+    /**
+     * Creates a collection of {@code TriplePath}s from the {@code s, p, o}. If
+     * {@code s}, {@code p}, or {@code o} is a collection or a String representation of a 
+     * collection like {@code "(a, b, c)"} the
+     * {@code makeCollectionTriplePaths()} conversions are applied. If {@code s} and/or
+     * {@code o} is not a collection the {@code makeNode()} conversions are applied.
+     * if {@code p} is not a collection the @{code makeNodeOrPath()} conversion is
+     * applied.
+     * <p><em>Note: Path objects are not supported in RDF collections.  A custom Datatype would need
+     * to be registered to place them in collections</em></p>
+     * 
+     * @param s the object for the subject.
+     * @param p the object for the predicate.
+     * @param o the object for the object.
+     * @param prefixMapping the PrefixMapping to resolve nodes.
+     * @return A list of {@code TriplePath} objects.
+     * @see #makeNodeOrPath(Object, PrefixMapping)
+     * @see #makeCollectionTriplePaths(Object, PrefixMapping)
+     * @see #makeNode(Object, PrefixMapping)
+     */
+    public static List<TriplePath> makeTriplePaths(Object s, Object p, Object o, PrefixMapping prefixMapping) {
+        ConvertersTriplePathCollector result = new ConvertersTriplePathCollector();
+        gatherTriples(result, s, p, o, prefixMapping);
+        return result.result;
+    }
+
+    /**
+     * Creates a collection of {@code Triple}s from the {@code s, p, o}. If
+     * {@code s}, {@code p}, or {@code o} is a collection or a String representation of a 
+     * collection like {@code "(a, b, c)"} the
+     * {@code makeCollectionTriples()} conversions are applied. If {@code s}, {@code p}, or
+     * {@code o} is not a collection the {@code makeNode()} conversions are applied.
+     * This differs from
+     * {@link #makeTriplePaths(Object, Object, Object, PrefixMapping)} in that the
+     * {@code p} may not be a path.
+     * 
+     * <p><em>Note: Path objects are not supported in RDF collections.  A custom Datatype would need
+     * to be registered to place them in collections</em></p>
+     *  
+     * @param s the object for the subject.
+     * @param p the object for the predicate.
+     * @param o the object for the object.
+     * @param prefixMapping the PrefixMapping to resolve nodes.
+     * @return A list of {@code Triple} objects.
+     * @see #makeNodeOrPath(Object, PrefixMapping)
+     * @see #makeCollectionTriples(Object, PrefixMapping)
+     * @see #makeNode(Object, PrefixMapping)
+     */
+    public static List<Triple> makeTriples(Object s, Object p, Object o, PrefixMapping prefixMapping) {
+        ConvertersTripleCollector result = new ConvertersTripleCollector();
+        gatherTriples(result, s, p, o, prefixMapping);
+        return result.result;
+    }
+
+    /**
+     * Creates an RDF collection from a collection object. The collection object may be either 
+     * a Java collection or an ARQParser collection literal like {@code "(a, b, c)"}. 
+     * @param collector the TripleCollector to add the triples to.
+     * @param collection the collection of objects or string representation of collection to convert.
+     * @param prefixMapping the prefix mapping to use.
+     */
+    @SuppressWarnings("unchecked")
+    private static void gatherTriples(ReadableTripleCollectorMark collector, Object collection,
+            PrefixMapping prefixMapping) {
+        if (collection instanceof Collection) {
+            Node previous = null;
+            for (Object obj : (Collection<Object>) collection) {
+                Node current = NodeFactory.createBlankNode();
+                if (previous != null) {
+                    collector.addTriple(Triple.create(previous, RDF.rest.asNode(), current));
+                }
+                if (isCollection(obj)) {
+                    int mark = collector.mark();
+                    gatherTriples(collector, obj, prefixMapping);
+                    collector.addTriple(Triple.create(current, RDF.first.asNode(), collector.getSubject(mark)));
+                } else {
+                    collector.addTriple(Triple.create(current, RDF.first.asNode(), makeNode(obj, prefixMapping)));
+                }
+                previous = current;
+            }
+            collector.addTriple(Triple.create(previous, RDF.rest.asNode(), RDF.nil.asNode()));
+        } else {
+            String parserInput = collection.toString().trim();
+            ARQParser parser = new ARQParser(new StringReader(parserInput));
+            int mark = collector.mark();
+            try {
+                parser.CollectionPath(collector);
+            } catch (ParseException e) {
+                throw new IllegalArgumentException(String.format("Unable to parse: %s", collection), e);
+            }
+            collector.rewriteFrom(mark);
+        }
+    }
+
+    /**
+     * Create an RDF collection from a collection of objects as per
+     * <a href='http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#collections'>
+     * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#collections</a>
+     * <p>
+     * Embedded collections are recursively expanded and added to the resulting
+     * list. Other object types in the collections are converted using
+     * {@code makeNode} PrefixMapping)}.
+     * <p>
+     * <p><em>Note: Path objects are not supported in RDF collections.  A custom Datatype would need
+     * to be registered to place them in collections</em></p>
+     * Usage:
+     * <ul>
+     * <li>In most cases direct calls to makeCollection are unnecessary as passing
+     * the collection to methods like {@code addWhere(Object, Object, Object)} will
+     * correctly create and add the list.</li>
+     * <li>In cases where makeCollectionTriples is called the Subject of the first
+     * {@code Triple} is the RDF Collection node.</li>
+     * </ul>
+     * </p>
+     * 
+     * @param collection the collections of objects for the list.
+     * @return A list of {@code Triple} objects.
+     * @see #makeNode(Object, PrefixMapping)
+     */
+    public static List<Triple> makeCollectionTriples(Object collection, PrefixMapping prefixMapping) {
+        ConvertersTripleCollector collector = new ConvertersTripleCollector();
+        gatherTriples(collector, collection, prefixMapping);
+        return collector.result;
+    }
+
+    /**
+     * Create an RDF collection from a collection of objects as per
+     * <a href='http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#collections'>
+     * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#collections</a>.
+     * <p>
+     * Embedded collections are recursively expanded and added to the resulting
+     * list. Other object types in the collections are converted using
+     * {@code makeNode} PrefixMapping)}.
+     * <p>
+     * <p><em>Note: Path objects are not supported in RDF collections.  A custom Datatype would need
+     * to be registered to place them in collections</em></p>
+     * Usage:
+     * <ul>
+     * <li>In most cases direct calls to makeCollectionTriplePaths are unnecessary
+     * as passing the collection to methods like
+     * {@code addWhere(Object, Object, Object)} will correctly create and add the
+     * list.</li>
+     * <li>In cases where makeCollectionTriplePath is called the Subject of the
+     * first {@code TriplePath} is the RDF Collection node.</li>
+     * </ul>
+     * </p>
+     * 
+     * @param n the collections of objects for the list.
+     * @return A list of {@code TriplePath} objects.
+     * @see #makeNode(Object, PrefixMapping)
+     */
+    public static List<TriplePath> makeCollectionTriplePaths(Object n, PrefixMapping prefixMapping) {
+        ConvertersTriplePathCollector collector = new ConvertersTriplePathCollector();
+        gatherTriples(collector, n, prefixMapping);
+        return collector.result;
+    }
+
+    /**
+     * defines methods needed by converters to convert collections into into RDF collections.
+     */
+    interface ReadableTripleCollectorMark extends TripleCollectorMark {
+        /**
+         * Get the subject from the entry in the collection at the {@code mark} location.
+         * @param mark the location to retrieve from.
+         * @return the Subject node
+         */
+        Node getSubject(int mark);
+
+        /**
+         * Rewrite the variable nodes in the triples from {@code mark} to the end.
+         * This is required because the parser that converts from literal {@code "(a, b, c)"} 
+         * to the RDF list will number the variables from 0.
+         * @param mark the position to start the rewrite from.
+         */
+        void rewriteFrom(int mark);
+    }
+
+    /**
+     * Collects triples only.
+     */
+    private static class ConvertersTripleCollector implements ReadableTripleCollectorMark {
+        List<Triple> result = new ArrayList<>();
+
+        @Override
+        public void addTriple(Triple t) {
+            result.add(t);
+        }
+
+        @Override
+        public void addTriplePath(TriplePath tPath) {
+            throw new IllegalArgumentException("Path is not allowed in a Triple");
+        }
+
+        @Override
+        public int mark() {
+            return result.size();
+        }
+
+        @Override
+        public void addTriple(int index, Triple t) {
+            result.add(index, t);
+        }
+
+        @Override
+        public void addTriplePath(int index, TriplePath tPath) {
+            throw new IllegalArgumentException("Path is not allowed in a Triple");
+        }
+
+        @Override
+        public Node getSubject(int mark) {
+            return result.get(mark).getSubject();
+        }
+
+        @Override
+        public void rewriteFrom(int mark) {
+            Map<Var, Node> values = new HashMap<>();
+            TripleRewriter rewriter = new TripleRewriter(values);
+            for (int i = mark; i < mark(); i++) {
+                result.set(i, rewriter.rewrite(result.get(i)));
+            }
+        }
+    }
+
+    /**
+     * Collects triple paths.
+     */
+    private static class ConvertersTriplePathCollector implements ReadableTripleCollectorMark {
+        List<TriplePath> result = new ArrayList<>();
+
+        @Override
+        public void addTriple(Triple t) {
+            result.add(new TriplePath(t));
+        }
+
+        @Override
+        public void addTriplePath(TriplePath tPath) {
+            result.add(tPath);
+        }
+
+        @Override
+        public int mark() {
+            return result.size();
+        }
+
+        @Override
+        public void addTriple(int index, Triple t) {
+            result.add(index, new TriplePath(t));
+        }
+
+        @Override
+        public void addTriplePath(int index, TriplePath tPath) {
+            result.add(index, tPath);
+        };
+
+        @Override
+        public Node getSubject(int mark) {
+            return result.get(mark).getSubject();
+        }
+
+        @Override
+        public void rewriteFrom(int mark) {
+            Map<Var, Node> values = new HashMap<>();
+            TripleRewriter rewriter = new TripleRewriter(values);
+            for (int i = mark; i < mark(); i++) {
+                result.set(i, rewriter.rewrite(result.get(i)));
+            }
+        }
+    }
+
+    /**
+     * Rewriter implementation to convert the numbered variables to blank nodes.
+     */
+    private static class TripleRewriter extends AbstractRewriter<Node> {
+        private PathRewriter pathRewriter;
+
+        protected TripleRewriter(Map<Var, Node> values) {
+            super(values);
+            pathRewriter = new PathRewriter(values) {
+                @Override
+                protected Node changeNode(Node n) {
+                    return TripleRewriter.this.changeNode(n);
+                }
+            };
+        }
+
+        @Override
+        protected Node changeNode(Node n) {
+            if (n == null) {
+                return n;
+            }
+            if (n.isVariable() && n.toString().startsWith("??")) {
+                Var key = Var.alloc(n);
+                Node result = values.get(key);
+                if (result == null) {
+                    result = NodeFactory.createBlankNode();
+                    values.put(key, result);
+                }
+                return result;
+            }
+            return n;
+        }
+
+        /**
+         * Rewrite a triple path.
+         * 
+         * @param t The triple path to rewrite.
+         * @return the triple path after rewriting.
+         */
+        @Override
+        public TriplePath rewrite(TriplePath t) {
+            if (t.getPath() == null) {
+                return new TriplePath(Triple.create(changeNode(t.getSubject()), changeNode(t.getPredicate()),
+                        changeNode(t.getObject())));
+            }
+            t.getPath().visit(pathRewriter);
+            return new TriplePath(changeNode(t.getSubject()), pathRewriter.getResult(), changeNode(t.getObject()));
+        }
+    }
 }

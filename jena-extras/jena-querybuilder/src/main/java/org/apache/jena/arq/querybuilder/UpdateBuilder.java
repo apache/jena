@@ -254,13 +254,30 @@ public class UpdateBuilder {
      * @param p the predicate object
      * @param o the object object.
      * @return a TriplePath
+     * @deprecatd use {@link #makeTriplePaths(Object, Object, Object)}
      */
+    @Deprecated(since="5.0.0")
     public TriplePath makeTriplePath(Object s, Object p, Object o) {
         final Object po = Converters.makeNodeOrPath(p, prefixHandler.getPrefixes());
         if (po instanceof Path) {
             return new TriplePath(makeNode(s), (Path) po, makeNode(o));
         }
         return new TriplePath(Triple.create(makeNode(s), (Node) po, makeNode(o)));
+    }
+   
+    /**
+     * Make a collection of one or more {@code TriplePath} objects from the objects.
+     *
+     * Uses {@code Converters.makeTriplePaths} to perform the conversions using the prefixes
+     * defined in this UpdateBuilder.
+     *
+     * @param s The subject object
+     * @param p the predicate object
+     * @param o the object object.
+     * @return a collection of {@code TriplePath}s
+     */
+    public Collection<TriplePath> makeTriplePaths(Object s, Object p, Object o) {
+        return Converters.makeTriplePaths(s, p, o, prefixHandler.getPrefixes());
     }
 
     /**
@@ -311,6 +328,18 @@ public class UpdateBuilder {
     }
 
     /**
+     * Converts the {@code s,p,o} triple into a list of Triples.  List will contain multiple
+     * triples if {@code s} or {@code o} are collections.
+     * @param s The subject object
+     * @param p the predicate object.
+     * @param o the object object.
+     * @return A list of triples.
+     */
+    private List<Triple> makeTriples(Object s, Object p, Object o) {
+        return Converters.makeTriples(s, p, o, prefixHandler.getPrefixes());
+    }
+    
+    /**
      * Add a quad to the insert statement.
      *
      * Arguments are converted to nodes using the makeNode() method.
@@ -323,7 +352,8 @@ public class UpdateBuilder {
      * @return this builder for chaining.
      */
     public UpdateBuilder addInsert(Object g, Object s, Object p, Object o) {
-        return addInsert(new Quad(makeNode(g), makeNode(s), makeNode(p), makeNode(o)));
+        List<Triple> lst = makeTriples(s, p, o);
+        return lst.size()>1? addInsert(g, lst) : addInsert(g, lst.get(0));
     }
 
     /**
@@ -350,8 +380,8 @@ public class UpdateBuilder {
      * @return this builder for chaining.
      */
     public UpdateBuilder addInsert(Object s, Object p, Object o) {
-        addInsert(Triple.create(makeNode(s), makeNode(p), makeNode(o)));
-        return this;
+        List<Triple> lst = makeTriples(s, p, o);
+        return lst.size()>1? addInsert(lst) : addInsert(lst.get(0));
     }
 
     /**
@@ -513,7 +543,8 @@ public class UpdateBuilder {
      * @return this builder for chaining.
      */
     public UpdateBuilder addDelete(Object g, Object s, Object p, Object o) {
-        return addDelete(new Quad(makeNode(g), makeNode(s), makeNode(p), makeNode(o)));
+        List<Triple> lst = makeTriples(s, p, o);
+        return lst.size()>1? addDelete(g, lst) : addDelete(g, lst.get(0));
     }
 
     /**
@@ -550,8 +581,8 @@ public class UpdateBuilder {
      * @return this builder for chaining.
      */
     public UpdateBuilder addDelete(Object s, Object p, Object o) {
-        addDelete(Triple.create(makeNode(s), makeNode(p), makeNode(o)));
-        return this;
+        List<Triple> lst = makeTriples(s, p, o);
+        return lst.size()>1? addDelete(lst) : addDelete(lst.get(0));
     }
 
     /**
@@ -850,6 +881,19 @@ public class UpdateBuilder {
     }
 
     /**
+     * Add an optional triple to the where clause
+     *
+     * @param collection The collection of {@code TriplePath} path to add.
+     * @return The Builder for chaining.
+     * @throws IllegalArgumentException If the triple is not a valid triple for a
+     * where clause.
+     */
+    public UpdateBuilder addOptional(Collection<TriplePath> collection) throws IllegalArgumentException {
+        whereProcessor.addOptional(collection);
+        return this;
+    }
+    
+    /**
      * Add the contents of a where handler as an optional statement.
      *
      * @param whereHandler The where handler to use as the optional statement.
@@ -941,8 +985,47 @@ public class UpdateBuilder {
      *
      * @param objs the list of objects for the list.
      * @return the first blank node in the list.
+     * @deprecated use makeList
+     * @see #makeList(Object...)
      */
+    @Deprecated(since="5.0.0")
     public Node list(Object... objs) {
+        Node retval = NodeFactory.createBlankNode();
+        Node lastObject = retval;
+        for (int i = 0; i < objs.length; i++) {
+            Node n = makeNode(objs[i]);
+            addWhere(new TriplePath(Triple.create(lastObject, RDF.first.asNode(), n)));
+            if (i + 1 < objs.length) {
+                Node nextObject = NodeFactory.createBlankNode();
+                addWhere(new TriplePath(Triple.create(lastObject, RDF.rest.asNode(), nextObject)));
+                lastObject = nextObject;
+            } else {
+                addWhere(new TriplePath(Triple.create(lastObject, RDF.rest.asNode(), RDF.nil.asNode())));
+            }
+
+        }
+
+        return retval;
+    }
+    
+    /**
+     * Create a list node from a list of objects as per RDF Collections.
+     *
+     * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#collections
+     *
+     * See {@link AbstractQueryBuilder#makeNode} for conversion of the param values.
+     * <p>
+     * usage:
+     * <ul>
+     * <li>list( param1, param2, param3, ... )</li>
+     * <li>addWhere( list( param1, param2, param3, ... ), p, o )</li>
+     * <li>addOptional( list( param1, param2, param3, ... ), p, o )</li>
+     * </ul>
+     *
+     * @param objs the list of objects for the list.
+     * @return the first blank node in the list.
+     */
+    public Node makeList(Object... objs) {
         Node retval = NodeFactory.createBlankNode();
         Node lastObject = retval;
         for (int i = 0; i < objs.length; i++) {
@@ -993,7 +1076,8 @@ public class UpdateBuilder {
      * @return The Builder for chaining.
      */
     public UpdateBuilder addWhere(Object s, Object p, Object o) {
-        return addWhere(makeTriplePath(s, p, o));
+        makeTriplePaths(s, p, o).forEach(whereProcessor::addWhere);
+        return this;
     }
 
     /**
@@ -1028,7 +1112,8 @@ public class UpdateBuilder {
      * @return The Builder for chaining.
      */
     public UpdateBuilder addOptional(Object s, Object p, Object o) {
-        return addOptional(makeTriplePath(s, p, o));
+        makeTriplePaths(s, p, o).forEach(whereProcessor::addOptional);
+        return this;
     }
 
     /**
@@ -1154,4 +1239,5 @@ public class UpdateBuilder {
         QuadAcc quadAcc = new QuadAcc(new QBQuadHolder(queryBuilder).getQuads().toList());
         return new UpdateDeleteWhere(quadAcc);
     }
+
 }

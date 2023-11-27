@@ -28,7 +28,6 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.E_Random;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,7 +43,7 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
     }
 
     @Test
-    public void testAddAll() throws ParseException {
+    public void testAddAll() {
         SolutionModifierHandler solutionModifier2 = new SolutionModifierHandler(new Query());
         solutionModifier2.addOrderBy(Var.alloc("orderBy"));
         solutionModifier2.addGroupBy(Var.alloc("groupBy"));
@@ -63,7 +62,7 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
     }
 
     @Test
-    public void testAll() throws ParseException {
+    public void testAll() {
         solutionModifier.addOrderBy(Var.alloc("orderBy"));
         solutionModifier.addGroupBy(Var.alloc("groupBy"));
         solutionModifier.addHaving("SUM(?lprice) > 10");
@@ -130,7 +129,7 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
     }
 
     @Test
-    public void testAddHavingString() throws ParseException {
+    public void testAddHavingString() {
         solutionModifier.addHaving("?having<10");
         assertContainsRegex(HAVING + OPEN_PAREN + var("having") + OPT_SPACE + LT + 10 + CLOSE_PAREN, query.toString());
 
@@ -141,7 +140,7 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
     }
 
     @Test
-    public void testAddHavingVar() throws ParseException {
+    public void testAddHavingVar() {
         solutionModifier.addHaving(Var.alloc("foo"));
         assertContainsRegex(HAVING + var("foo"), query.toString());
 
@@ -150,7 +149,7 @@ public class SolutionModifierHandlerTest extends AbstractHandlerTest {
     }
 
     @Test
-    public void testAddHavingExpr() throws ParseException {
+    public void testAddHavingExpr() {
         solutionModifier.addHaving(new E_Random());
         assertContainsRegex(HAVING + "rand" + OPEN_PAREN + CLOSE_PAREN, query.toString());
 

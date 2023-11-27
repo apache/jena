@@ -43,7 +43,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
     /**
      * Adds a triple to the where clause.
      *
-     * @param t The triple path to add
+     * @param t The triple to add
      * @return This Builder for chaining.
      */
     public T addWhere(Triple t);
@@ -55,6 +55,15 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
      * @return This Builder for chaining.
      */
     public T addWhere(TriplePath t);
+    
+    /**
+     * Adds a collections of triple paths to the where clause.
+     *
+     * @param collection The collection of triple paths to add
+     * @return This Builder for chaining.
+     */
+    public T addWhere(Collection<TriplePath> collection);
+
 
     /**
      * Adds a triple to the where clause.
@@ -227,6 +236,14 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
      * @return This Builder for chaining.
      */
     public T addOptional(TriplePath t);
+    
+    /**
+     * Adds a collection of triple paths as the optional clauses.
+     *
+     * @param collection The collection of triple paths to add
+     * @return This Builder for chaining.
+     */
+    public T addOptional(Collection<TriplePath> collection);
 
     /**
      * Adds an optional triple as to the where clause.
@@ -357,6 +374,15 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
      * @return This builder for chaining.
      */
     public T addGraph(Object graph, TriplePath triplePath);
+    
+    /**
+     * Adds a collection of triple paths as the optional clauses.
+     *
+     * @param graph The iri or variable identifying the graph.
+     * @param collection The collection of triple paths to add
+     * @return This Builder for chaining.
+     */
+    public T addGraph(Object graph, Collection<TriplePath> collection);
 
     /**
      * Add a bind statement to the query *
@@ -401,7 +427,9 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
      *
      * @param objs the list of objects for the list.
      * @return the first blank node in the list.
+     * @deprecated use {@code addWhere(Converters.makeCollection(List.of(Object...)))}, or simply call {@link #addWhere(Object, Object, Object)} passing the collection for one of the objects.
      */
+    @Deprecated(since="5.0.0")
     public Node list(Object... objs);
 
     /**

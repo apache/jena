@@ -102,6 +102,7 @@ public class ConstructBuilderTest extends AbstractRegexpBasedTest {
                 query);
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testList() {
         builder.addWhere(builder.list("<one>", "?two", "'three'"), "<foo>", "<bar>");

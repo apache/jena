@@ -18,7 +18,11 @@
 
 package org.apache.jena.arq.querybuilder;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,11 +38,15 @@ import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.FrontsNode;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.reasoner.rulesys.Node_RuleVariable;
 import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.ExprVar;
+import org.apache.jena.sparql.path.P_Link;
 import org.apache.jena.sparql.path.Path;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.After;
 import org.junit.Test;
@@ -291,6 +299,121 @@ public class ConvertersTest {
         assertEquals("'\"one\"'", Converters.quoted("\"one\""));
         assertEquals("'\"I am the 'one'\"'", Converters.quoted("\"I am the 'one'\""));
         assertEquals("\"'I am the \"one\"'\"", Converters.quoted("'I am the \"one\"'"));
+    }
+
+    private Node getSubject(Object o) {
+        if (o instanceof Triple) {
+            return ((Triple) o).getSubject();
+        }
+        if (o instanceof TriplePath) {
+            return ((TriplePath) o).getSubject();
+        }
+        throw new IllegalArgumentException("o must be Triple or TriplePath");
+    }
+
+    private static List<Object> theTestList = List.of("<one>", "(<two>)", "('an' <embedded> \"array\")", Node.ANY);
+
+    private void assertExpectedTripleList(List<?> lst) {
+
+        assertTriplePath(Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createURI("one")), lst.get(0));
+        assertTriplePath(Triple.create(getSubject(lst.get(0)), RDF.rest.asNode(), getSubject(lst.get(4))), lst.get(1));
+        // sublist 1
+        assertTriplePath(Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createURI("two")), lst.get(2));
+        assertTriplePath(Triple.create(getSubject(lst.get(2)), RDF.rest.asNode(), RDF.nil.asNode()), lst.get(3));
+        // end of sublist 1
+        assertTriplePath(Triple.create(Node.ANY, RDF.first.asNode(), getSubject(lst.get(2))), lst.get(4));
+        assertTriplePath(Triple.create(getSubject(lst.get(4)), RDF.rest.asNode(), getSubject(lst.get(12))), lst.get(5));
+        // sublist 2
+        assertTriplePath(Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createLiteral("an")), lst.get(6));
+        assertTriplePath(Triple.create(getSubject(lst.get(6)), RDF.rest.asNode(), getSubject(lst.get(8))), lst.get(7));
+        assertTriplePath(Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createURI("embedded")), lst.get(8));
+        assertTriplePath(Triple.create(getSubject(lst.get(8)), RDF.rest.asNode(), getSubject(lst.get(10))), lst.get(9));
+        assertTriplePath(Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createLiteral("array")), lst.get(10));
+        assertTriplePath(Triple.create(getSubject(lst.get(10)), RDF.rest.asNode(), RDF.nil.asNode()), lst.get(11));
+        // end of sublist 2
+        assertTriplePath(Triple.create(Node.ANY, RDF.first.asNode(), getSubject(lst.get(6))), lst.get(12));
+        assertTriplePath(Triple.create(getSubject(lst.get(12)), RDF.rest.asNode(), getSubject(lst.get(14))),
+                lst.get(13));
+        assertTriplePath(Triple.create(Node.ANY, RDF.first.asNode(), Node.ANY), lst.get(14));
+        assertTriplePath(Triple.create(getSubject(lst.get(14)), RDF.rest.asNode(), RDF.nil.asNode()), lst.get(15));
+    }
+
+    @Test
+    public void makeCollectionTriplesTest() {
+        PrefixMapping pMap = PrefixMapping.Factory.create();
+        pMap.setNsPrefixes(PrefixMapping.Standard);
+
+        List<Triple> lst = Converters.makeCollectionTriples(theTestList, pMap);
+        assertEquals(16, lst.size());
+        assertExpectedTripleList(lst);
+    }
+
+    private Triple asTriple(Object o) {
+        if (o instanceof Triple) {
+            return (Triple) o;
+        }
+        if (o instanceof TriplePath) {
+            return ((TriplePath) o).asTriple();
+        }
+        throw new IllegalArgumentException("o must be Triple or TriplePath");
+    }
+
+    private TriplePath asTriplePath(Object o) {
+        if (o instanceof Triple) {
+            return new TriplePath((Triple) o);
+        }
+        if (o instanceof TriplePath) {
+            return (TriplePath) o;
+        }
+        throw new IllegalArgumentException("o must be Triple or TriplePath");
+    }
+
+    private void assertTriplePath(TriplePath expected, Object actual) {
+        String errMsg = String.format("Expected '%s', actual '%s'", expected, actual);
+        if (expected.isTriple()) {
+            assertTrue(errMsg, expected.asTriple().matches(asTriple(actual)));
+        } else {
+            assertTrue(errMsg, expected.getSubject().matches(asTriplePath(actual).getSubject()));
+            assertTrue(errMsg, expected.getObject().matches(asTriplePath(actual).getObject()));
+            assertTrue(errMsg, expected.getPath().equalTo(asTriplePath(actual).getPath(), new NodeIsomorphismMap()));
+        }
+    }
+
+    private void assertTriplePath(Triple expected, Object actual) {
+        String errMsg = String.format("Expected '%s', actual '%s'", expected, actual);
+        assertTrue(errMsg, expected.matches(asTriple(actual)));
+    }
+
+    @Test
+    public void makeCollectionTriplePathsTest() {
+        PrefixMapping pMap = PrefixMapping.Factory.create();
+        pMap.setNsPrefixes(PrefixMapping.Standard);
+        List<TriplePath> lst = Converters.makeCollectionTriplePaths(theTestList, pMap);
+        assertEquals(16, lst.size());
+        assertExpectedTripleList(lst);
+    }
+
+    @Test
+    public void makeTriplePathsTest() {
+        PrefixMapping pMap = PrefixMapping.Factory.create();
+        Path p = new P_Link(NodeFactory.createURI("foo"));
+
+        List<TriplePath> result = Converters.makeTriplePaths("<s>", p, theTestList, pMap);
+        assertExpectedTripleList(result);
+        assertEquals(17, result.size());
+        assertTriplePath(new TriplePath(NodeFactory.createURI("s"), p, result.get(0).getSubject()), result.get(16));
+    }
+
+    @Test
+    public void makeTriplesTest() {
+        PrefixMapping pMap = PrefixMapping.Factory.create();
+
+        List<Triple> result = Converters.makeTriples("<s>", "<p>", theTestList, pMap);
+        assertExpectedTripleList(result);
+        assertEquals(17, result.size());
+        assertTriplePath(
+                Triple.create(NodeFactory.createURI("s"), NodeFactory.createURI("p"), result.get(0).getSubject()),
+                result.get(16));
     }
 
     private class NodeFront implements FrontsNode {
