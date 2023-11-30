@@ -1512,6 +1512,16 @@ public class TestParameterizedSparqlString {
         pss.setLiteral(second, " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
 
         pss.asUpdate();
+        // Due to the unpredictability of the order of parameters in this.params,
+        // which is a HashMap, here the reverse order is checked to make sure
+        // an ARQException is thrown
+        pss.setLiteral("var", "a");
+        pss.setLiteral("var2", "b");
+
+        pss.setLiteral(second, "?" + first);
+        pss.setLiteral(first, " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
+
+        pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
     }
 
@@ -1583,6 +1593,16 @@ public class TestParameterizedSparqlString {
 
         pss.setLiteral(first, " ?" + second + " ");
         pss.setLiteral(second, " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
+
+        pss.asUpdate();
+        // Due to the unpredictability of the order of parameters in this.params,
+        // which is a HashMap, here the reverse order is checked to make sure
+        // an ARQException is thrown
+        pss.setLiteral("var", "a");
+        pss.setLiteral("var2", "b");
+
+        pss.setLiteral(second, " ?" + first + " ");
+        pss.setLiteral(first, " . } ; DROP ALL ; INSERT DATA { <s> <p> ");
 
         pss.asUpdate();
         Assert.fail("Attempt to do SPARQL injection should result in an exception");
