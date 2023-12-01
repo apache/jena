@@ -91,6 +91,7 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
         } else {
             // Different graph
             endGraph(g) ;
+            // This does the startBatch.
             startGraph(g) ;
             lastGraph = g ;
         }
@@ -100,33 +101,27 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
         lastSubject = s ;
     }
 
-    private void startBatch() {
-        // Any output so far? prefixes or a previous graph.
-        if ( out.getRow() > 1 )
-            out.println() ;
-        out.flush();
-    }
-
-    private void gap(int gap) {
-        out.print(' ', gap) ;
-    }
-
-    @Override
-    public void prefixSetup(String prefix, String iri) {
-        // Newline between blocks.
-        // After flush, before writing PREFIX
-        boolean addNL = ( activeTripleData || activeQuadData );
-        if ( addNL )
-            out.println();
-    }
-
     @Override
     protected void printBatchTriples(Node s, List<Triple> triples) {
         startBatch();
         printBatch(s, triples) ;
-        // End of cluster.
         out.println(" .") ;
         lastGraph = null;
+    }
+
+    private void startBatch() {
+        if ( lastGraph != null ) {
+            // last batch was quads
+            endGraph(null) ;
+            lastGraph = null;
+        } else {
+            // last batch was triples.
+        }
+
+        // Any output so far? prefixes or a previous graph.
+        if ( out.getRow() > 1 )
+            out.println() ;
+        out.flush();
     }
 
     private void printBatch(Node s, List<Triple> triples) {
@@ -162,11 +157,24 @@ public class WriterStreamRDFBlocks extends WriterStreamRDFBatched
         }
     }
 
+    private void gap(int gap) {
+        out.print(' ', gap) ;
+    }
+
     @Override
     protected void finalizeRun() {
         if ( lastGraph != null )
             // last was a quad
             endGraph(null) ;
+    }
+
+    @Override
+    protected void prefixSetup(String prefix, String iri) {
+        // Newline between blocks.
+        // After flush, before writing PREFIX
+        boolean addNL = ( activeTripleData || activeQuadData );
+        if ( addNL )
+            out.println();
     }
 
     protected boolean dftGraph()        { return lastGraph == Quad.defaultGraphNodeGenerated ; }

@@ -18,6 +18,12 @@
 
 package org.apache.jena.riot.writer;
 
+/**
+ * The "long" Turtle format variant is based on rdflib's "longturtle"
+ * format. It uses a fixed indentation width (2) and linebreaks after
+ * each sequence element.
+ */
+
 enum IndentStyle {
     WIDE, LONG ;
     public static IndentStyle create(String label) {
