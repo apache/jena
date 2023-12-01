@@ -27,7 +27,8 @@ import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
 @SuiteClasses( {
-    TestSerialization.class
+    TestQueryParser.class
+    , TestSerialization.class
     , TestQueryOps.class
     , TestSyntaxTransform.class
     , TestFlattenSyntax.class
