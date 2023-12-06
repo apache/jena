@@ -260,6 +260,15 @@ server.get('/:datasetName/data', (req, res) => {
     .send(dataContent)
 })
 
+let failUpload = false
+
+// Upload data.
+server.post('/:datasetName/data', (req, res) => {
+  res
+    .status(200)
+    .send()
+})
+
 // PING
 // GET PING STATUS
 server.get('/\\$/ping', (req, res) => {
