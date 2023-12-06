@@ -35,7 +35,7 @@
             </div>
             <div class="row">
               <div class="col-sm-12">
-                <h3>Upload files</h3>
+                <h3>Upload files {{ postActionUrl }}</h3>
                 <p>
                   Load data into the default graph of the currently selected dataset, or the given named graph.
                   You may upload any RDF format, such as Turtle, RDF/XML or TRiG.
@@ -100,7 +100,7 @@
                         v-if="!$refs.upload || !$refs.upload.active"
                         @click.prevent="uploadAll()"
                         type="button"
-                        class="btn btn-primary ms-2 d-inline"
+                        class="btn btn-primary ms-2 d-inline upload-files"
                       >
                         <FontAwesomeIcon icon="upload" />
                         <span class="ms-2">upload all</span>
@@ -116,6 +116,30 @@
                       </button>
                       <div class="invalid-feedback">
                         Invalid upload files. Please select at least one file to upload.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pt-2 pb-2">
+                    <div class="progress" style="height: 1.5rem;">
+                      <div
+                        class="progress-bar"
+                        role="progressbar"
+                        :style="`width: ${uploadSucceededPercentage}%`"
+                        :aria-valuenow="uploadSucceededPercentage"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      >
+                        {{ uploadSucceededCount }}/{{ uploadCount }}
+                      </div>
+                      <div
+                        class="progress-bar bg-danger"
+                        role="progressbar"
+                        :style="`width: ${uploadFailedPercentage}%`"
+                        :aria-valuenow="uploadFailedPercentage"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      >
+                        {{ uploadFailedCount }}/{{ uploadCount }}
                       </div>
                     </div>
                   </div>
@@ -161,7 +185,7 @@
                     <button
                       @click.prevent="data.item.success || data.item.error === 'compressing' ? false : $refs.upload.update(data.item, {active: true})"
                       type="button"
-                      class="btn btn-outline-primary me-0 mb-2 d-block"
+                      class="btn btn-outline-primary me-0 mb-2 d-block upload-file"
                     >
                       <FontAwesomeIcon icon="upload" />
                       <span class="ms-2">upload now</span>
@@ -169,7 +193,7 @@
                     <button
                       @click.prevent="remove(data.item)"
                       type="button"
-                      class="btn btn-outline-primary me-0 mb-md-0 d-block d-md-inline-block"
+                      class="btn btn-outline-primary me-0 mb-md-0 d-block d-md-inline-block remove-file"
                     >
                       <FontAwesomeIcon icon="minus-circle" />
                       <span class="ms-2">remove</span>
@@ -254,7 +278,7 @@ export default {
         //   name: ''
         // }
       },
-      datasetTableFields: [
+      datasetTableFields: Object.freeze([
         {
           key: 'name',
           label: 'name',
@@ -279,7 +303,7 @@ export default {
           key: 'actions',
           label: 'actions'
         }
-      ]
+      ])
     }
   },
 
@@ -302,6 +326,36 @@ export default {
       const params = (this.datasetGraphName && this.datasetGraphName !== '') ? `?graph=${this.datasetGraphName}` : ''
       const dataEndpoint = this.services['gsp-rw']['srv.endpoints'].find(endpoint => endpoint !== '') || ''
       return this.$fusekiService.getFusekiUrl(`/${this.datasetName}/${dataEndpoint}${params}`)
+    },
+    uploadCount () {
+      if (!this.upload || !this.upload.files) {
+        return 0
+      }
+      return this.upload.files.length
+    },
+    uploadSucceededCount () {
+      if (!this.upload || !this.upload.files) {
+        return 0
+      }
+      return this.upload.files.filter(f => Boolean(f.success)).length
+    },
+    uploadFailedCount () {
+      if (!this.upload || !this.upload.files) {
+        return 0
+      }
+      return this.upload.files.filter(f => Boolean(f.error)).length
+    },
+    uploadFailedPercentage () {
+      if (this.uploadCount === 0) {
+        return 0
+      }
+      return (this.uploadFailedCount / this.uploadCount) * 100
+    },
+    uploadSucceededPercentage () {
+      if (this.uploadCount === 0) {
+        return 0
+      }
+      return (this.uploadSucceededCount / this.uploadCount) * 100
     }
   },
 

@@ -44,7 +44,7 @@
                       <button
                         @click="$router.push(`/dataset${data.item.name}/query`)"
                         type="button"
-                        class="btn btn-primary me-0 me-md-2 mb-2 mb-md-0 d-block d-md-inline-block"
+                        class="btn btn-primary me-0 me-md-2 mb-2 mb-md-0 d-block d-md-inline-block dataset-query"
                       >
                         <FontAwesomeIcon icon="question-circle" />
                         <span class="ms-1">query</span>
@@ -81,7 +81,7 @@
                         @click="showPopover(`delete-dataset-${data.item.name}`)"
                         type="button"
                         href="#"
-                        class="btn btn-primary me-0 me-md-2 mb-2 mb-md-0 d-block d-md-inline-block"
+                        class="btn btn-primary me-0 me-md-2 mb-2 mb-md-0 d-block d-md-inline-block dataset-remove"
                       >
                         <FontAwesomeIcon icon="times-circle" />
                         <span class="ms-1">remove</span>
@@ -118,7 +118,7 @@
                         @click="showPopover(`backup-dataset-${data.item.name}`)"
                         type="button"
                         href="#"
-                        class="btn btn-primary me-0 me-md-2 me-0 mb-2 mb-md-0 d-block d-md-inline-block"
+                        class="btn btn-primary me-0 me-md-2 me-0 mb-2 mb-md-0 d-block d-md-inline-block dataset-backup"
                       >
                         <FontAwesomeIcon icon="download" />
                         <span class="ms-1">backup</span>
@@ -126,7 +126,7 @@
                       <button
                         @click="$router.push(`/dataset${data.item.name}/upload`)"
                         type="button"
-                        class="btn btn-primary me-0 me-md-2 me-0 mb-2 mb-md-0 d-block d-md-inline-block"
+                        class="btn btn-primary me-0 me-md-2 me-0 mb-2 mb-md-0 d-block d-md-inline-block dataset-add-data"
                       >
                         <FontAwesomeIcon icon="upload" />
                         <span class="ms-1">add data</span>
@@ -134,7 +134,7 @@
                       <button
                         @click="$router.push(`/dataset${data.item.name}/info`)"
                         type="button"
-                        class="btn btn-primary me-0 mb-md-0 d-block d-md-inline-block"
+                        class="btn btn-primary me-0 mb-md-0 d-block d-md-inline-block dataset-info"
                       >
                         <FontAwesomeIcon icon="tachometer-alt" />
                         <span class="ms-1">info</span>
