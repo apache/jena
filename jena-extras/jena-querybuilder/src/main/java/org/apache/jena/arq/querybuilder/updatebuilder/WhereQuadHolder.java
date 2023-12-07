@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.Converters;
@@ -54,6 +55,12 @@ public class WhereQuadHolder implements QuadHolder {
 
     private Element whereClause;
     private final PrefixHandler prefixHandler;
+    
+    
+    private static Predicate<Node> checkPredicate = n -> n.isURI() || n.isVariable() ||n.equals(Node.ANY);
+    
+    private static Predicate<Node> checkSubject = n -> checkPredicate.test(n) || n.isBlank() || n.isNodeTriple();
+
 
     /**
      * Constructor.
@@ -155,19 +162,9 @@ public class WhereQuadHolder implements QuadHolder {
      */
     private static void testTriple(TriplePath t) {
         // verify Triple is valid
-        boolean validSubject = t.getSubject().isURI() || t.getSubject().isBlank() || t.getSubject().isVariable()
-                || t.getSubject().equals(Node.ANY);
-        boolean validPredicate;
-
-        if (t.isTriple()) {
-            validPredicate = t.getPredicate().isURI() || t.getPredicate().isVariable()
-                    || t.getPredicate().equals(Node.ANY);
-        } else {
-            validPredicate = t.getPath() != null;
-        }
-
-        boolean validObject = t.getObject().isURI() || t.getObject().isLiteral() || t.getObject().isBlank()
-                || t.getObject().isVariable() || t.getObject().equals(Node.ANY);
+        boolean validSubject = checkSubject.test(t.getSubject());
+        boolean validPredicate = t.isTriple() ? checkPredicate.test(t.getPredicate()) : t.getPath() != null;
+        boolean validObject = checkSubject.test(t.getObject()) || t.getObject().isLiteral();
 
         if (!validSubject || !validPredicate || !validObject) {
             StringBuilder sb = new StringBuilder();
