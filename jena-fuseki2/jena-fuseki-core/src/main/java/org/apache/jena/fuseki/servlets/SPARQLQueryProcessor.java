@@ -243,9 +243,9 @@ public abstract class SPARQLQueryProcessor extends ActionService
             if ( str.endsWith("\n") )
                 str = str.substring(0, str.length()-1);
             action.log.info(format("[%d] Query = \n%s", action.id, str));
-        }
-        else
+        } else {
             action.log.info(format("[%d] Query = %s", action.id, queryStringLog));
+        }
 
         Query query = null;
         try {
