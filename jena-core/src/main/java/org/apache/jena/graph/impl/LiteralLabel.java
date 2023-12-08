@@ -106,7 +106,7 @@ final public class LiteralLabel {
     /*package*/ LiteralLabel(String lex, String lang, RDFDatatype dtype) {
         this.lexicalForm = lex;
         this.dtype = Objects.requireNonNull(dtype);
-        this.lang = (lang == null ? "" : lang);
+        this.lang = formLangTag(lang);
         hash = calcHashCode();
         if ( valueMode == ValueMode.EAGER ) {
             this.wellformed = setValue(lex, dtype);
@@ -115,6 +115,24 @@ final public class LiteralLabel {
             // Lazy value calculation.
             value = null;
     }
+
+    private static final boolean legacyLangTag = true;
+
+    /** Prepare the language tag - apply formatting normalization */
+    private static String formLangTag(String input) {
+        if ( legacyLangTag )
+            return (input == null ? "" : input);
+        // Format.
+        return (input == null ? "" : input.toLowerCase(Locale.ROOT));
+    }
+
+    /** Calculate the indexing form for a language tag */
+    private static String indexingLang(String lang) {
+        if ( legacyLangTag )
+            return lang.toLowerCase(Locale.ROOT);
+        return lang;
+    }
+
 
     /**
      * Build a typed literal label from its value form using
@@ -304,7 +322,8 @@ final public class LiteralLabel {
         if ( indexingValueIsSelf() )
             return this;
         if ( !lang.equals("") )
-            return getLexicalForm() + "@" + lang.toLowerCase(Locale.ROOT);
+            // Assumed formatted/case-insensitive language tags.
+            return getLexicalForm() + "@" + indexingLang(lang);
         if ( wellformed ) {
             Object value = getValue();
             // JENA-1936
