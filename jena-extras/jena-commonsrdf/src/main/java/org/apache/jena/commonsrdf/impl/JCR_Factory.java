@@ -45,7 +45,7 @@ public class JCR_Factory {
 
     public static Literal createLiteralLang(String lexStr, String langTag) {
         langTag = LangTag.canonical(langTag);
-        return new JCR_Literal(NodeFactory.createLiteral(lexStr, langTag));
+        return new JCR_Literal(NodeFactory.createLiteralLang(lexStr, langTag));
     }
 
     public static BlankNode createBlankNode() {

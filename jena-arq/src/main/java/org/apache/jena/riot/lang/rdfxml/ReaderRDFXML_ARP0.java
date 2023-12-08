@@ -217,7 +217,7 @@ public class ReaderRDFXML_ARP0 implements ReaderRIOT
         private static Node convert(ALiteral lit) {
             String dtURI = lit.getDatatypeURI();
             if (dtURI == null)
-                return NodeFactory.createLiteral(lit.toString(), lit.getLang());
+                return NodeFactory.createLiteralLang(lit.toString(), lit.getLang());
 
             if (lit.isWellFormedXML()) {
                 return NodeFactory.createLiteral(lit.toString(), null, XMLLiteralType.theXMLLiteralType);

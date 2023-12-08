@@ -110,7 +110,7 @@ public class CanonicalizeLiteral implements Function<Node, Node>
         String langTag2 = LangTag.canonical(langTag);
         if ( langTag2.equals(langTag) )
             return null;
-        return NodeFactory.createLiteral(lexicalForm, langTag2);
+        return NodeFactory.createLiteralLang(lexicalForm, langTag2);
     }
 
     private static final RDFDatatype dtPlainLiteral = NodeFactory.getType(RDF.getURI()+"PlainLiteral") ;

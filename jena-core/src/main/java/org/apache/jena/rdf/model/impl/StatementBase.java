@@ -61,7 +61,7 @@ public abstract class StatementBase
 	public abstract RDFNode getObject();
 
 	protected StatementImpl stringReplace(String s, String lang) {
-	    return replace(new LiteralImpl(NodeFactory.createLiteral(s, lang), model));
+	    return replace(new LiteralImpl(NodeFactory.createLiteralLang(s, lang), model));
 	}
 
 	/**

@@ -82,7 +82,7 @@ public abstract class AbstractTestNodeTable
     @Test public void nodetable_07()    { testNode("'نواف'"); }
     @Test public void nodetable_08()    { testNode(SSE.parseNode("<<_:b :p 123>>")); }
 
-    static Node badNode1 = org.apache.jena.graph.NodeFactory.createLiteral("abc", "99bad");
+    static Node badNode1 = org.apache.jena.graph.NodeFactory.createLiteralLang("abc", "99bad");
 
     @Test public void nodetable_bad_01()    { testNodeBad(badNode1); }
     @Test public void nodetable_bad_02() {

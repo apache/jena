@@ -34,7 +34,7 @@ public class TestSSE_Basic
     static Node int1 = org.apache.jena.graph.NodeFactory.createLiteral("1", XSDDatatype.XSDinteger) ;
     static Node int2 = org.apache.jena.graph.NodeFactory.createLiteral("2", XSDDatatype.XSDinteger) ;
     static Node int3 = org.apache.jena.graph.NodeFactory.createLiteral("3", XSDDatatype.XSDinteger) ;
-    static Node strLangEN = org.apache.jena.graph.NodeFactory.createLiteral("xyz", "en") ;
+    static Node strLangEN = org.apache.jena.graph.NodeFactory.createLiteralLang("xyz", "en") ;
 
     static Node typeLit1 = NodeFactoryExtra.createLiteralNode("123", null, "http://example/type") ;
 

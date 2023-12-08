@@ -18,8 +18,6 @@
 
 package org.apache.jena.graph.test;
 
-import static org.apache.jena.graph.NodeFactory.createLiteral;
-
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
 import java.text.SimpleDateFormat ;
@@ -978,7 +976,7 @@ public class TestTypedLiterals extends TestCase {
      */
     public void testDateTimeBug3() {
         final String testLex = "-0001-02-03T04:05:06";
-        Node n = createLiteral(testLex, XSDDatatype.XSDdateTime);
+        Node n = NodeFactory.createLiteral(testLex, XSDDatatype.XSDdateTime);
         assertEquals("Got wrong XSDDateTime representation!", testLex, n.getLiteralValue().toString());
     }
 

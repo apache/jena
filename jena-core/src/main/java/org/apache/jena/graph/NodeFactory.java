@@ -79,18 +79,34 @@ public class NodeFactory {
         return new Node_Literal( lit );
     }
 
+    /*
+     * Make literal which is a string (xsd:string)
+     */
     public static Node createLiteral(String string) {
         Objects.requireNonNull(string, "Argument to NodeFactory.createLiteral is null");
         return new Node_Literal(string);
     }
 
     /**
-     * Make a literal with specified language. lexical form must not be null.
+     * Make a literal with specified language. The lexical form must not be null.
+     *
+     * @param string  the lexical form of the literal
+     * @param lang    the optional language tag
+     *
+     * @deprecated Prefer using {@link #createLiteralLang(String, String)}.
+     */
+    @Deprecated
+    public static Node createLiteral(String string, String lang) {
+        return createLiteralLang(string, lang);
+    }
+
+    /**
+     * Make a literal with specified language. The lexical form must not be null.
      *
      * @param string  the lexical form of the literal
      * @param lang    the optional language tag
      */
-    public static Node createLiteral(String string, String lang) {
+    public static Node createLiteralLang(String string, String lang) {
         Objects.requireNonNull(string, "null lexical form for literal");
         if ( StringUtils.isEmpty(lang) )
             return new Node_Literal(string);
@@ -99,13 +115,32 @@ public class NodeFactory {
     }
 
     /**
-     * Build a literal node from its lexical form.
+     * Make a literal with specified language and language direction.
+     * The lexical form must not be null.
+     * The language must not be null if a non-direction is provided.
+     *
+     * @param string  the lexical form of the literal
+     * @param lang    the optional language tag
+     * @param langDir the optional language direction
+     */
+    public static Node createLiteralLang(String string, String lang, String langDir) {
+        Objects.requireNonNull(string, "null lexical form for literal");
+        if ( StringUtils.isEmpty(lang) ) {
+            if ( !StringUtils.isEmpty(langDir) )
+                throw new JenaException("The language must be gived for a language direction literal");
+            return new Node_Literal(string);
+        } else
+            return new Node_Literal(string, lang);
+    }
+
+    /**
+     * Build a literal node.
      * <p>
      * This is a convenience operation for passing in language and datatype without
-     * needing the caller to differentiate the xsd:string, rdf:langString and other
+     * needing the caller to differentiate between the xsd:string, rdf:langString and other
      * datatype cases.
      * It calls {@link #createLiteral(String)},
-     * {@link #createLiteral(String, String)} or
+     * {@link #createLiteralLang(String, String, String)} or
      * {@link #createLiteral(String, RDFDatatype)}
      * as appropriate.
      *
@@ -114,14 +149,33 @@ public class NodeFactory {
      * @param dtype the type of the literal or null.
      */
     public static Node createLiteral(String lex, String lang, RDFDatatype dtype) {
+        return createLiteral(lex, lang, null, dtype);
+    }
+
+    /**
+     * Build a literal node.
+     * <p>
+     * This is a convenience operation for passing in language and datatype without
+     * needing the caller to differentiate between the xsd:string, rdf:langString, and other
+     * datatype cases.
+     * It calls {@link #createLiteral(String)},
+     * {@link #createLiteralLang(String, String, String)} or
+     * {@link #createLiteral(String, RDFDatatype)}
+     * as appropriate.
+     *
+     * @param lex the lexical form of the literal
+     * @param lang the optional language tag or null or ""
+     * @param langDir the optional language direction or null
+     * @param dtype the type of the literal or null.
+     */
+    public static Node createLiteral(String lex, String lang, String langDir, RDFDatatype dtype) {
         Objects.requireNonNull(lex, "null lexical form for literal");
         boolean hasLang = ! StringUtils.isEmpty(lang);
         if ( hasLang ) {
             if ( dtype != null && ! dtype.equals(RDFLangString.rdfLangString) )
                 throw new JenaException("Datatype is not rdf:langString but a language was given");
-            return createLiteral(lex, lang);
+            return createLiteralLang(lex, lang, langDir);
         }
-
         if ( dtype == null )
             // No datatype, no lang (it is null or "") => xsd:string.
             return createLiteral(lex);

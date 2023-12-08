@@ -202,6 +202,6 @@ class NormalizeValue
         if ( idx == lexicalForm.length()-1 )
             return NodeFactory.createLiteral(lex) ;
         String lang = lexicalForm.substring(idx+1) ;
-        return NodeFactory.createLiteral(lex, lang) ;
+        return NodeFactory.createLiteralLang(lex, lang) ;
     } ;
 }

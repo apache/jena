@@ -315,12 +315,12 @@ public class ResourceFactory {
 
         @Override
         public Literal createStringLiteral( String string ) {
-            return new LiteralImpl(  NodeFactory.createLiteral( string, "" ), null );
+            return new LiteralImpl(  NodeFactory.createLiteralLang( string, "" ), null );
         }
 
         @Override
         public Literal createLangLiteral( String string , String lang ) {
-            return new LiteralImpl(  NodeFactory.createLiteral( string, lang ), null );
+            return new LiteralImpl(  NodeFactory.createLiteralLang( string, lang ), null );
         }
 
         @Override

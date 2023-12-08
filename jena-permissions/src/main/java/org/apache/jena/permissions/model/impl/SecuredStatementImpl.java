@@ -265,7 +265,7 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
         checkUpdate();
         final Triple base = holder.getBaseItem().asTriple();
         final Triple newBase = Triple.create(base.getSubject(), base.getPredicate(),
-                NodeFactory.createLiteral(o, l));
+                NodeFactory.createLiteralLang(o, l));
         checkUpdate(base, newBase);
         return SecuredStatementImpl.getInstance(getModel(), holder.getBaseItem().changeObject(o, l));
     }
@@ -442,7 +442,7 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
     }
 
     private Triple getNewTriple(final Triple t, final Object o) {
-        return Triple.create(t.getSubject(), t.getPredicate(), NodeFactory.createLiteral(String.valueOf(o), ""));
+        return Triple.create(t.getSubject(), t.getPredicate(), NodeFactory.createLiteralLang(String.valueOf(o), ""));
     }
 
     /**
