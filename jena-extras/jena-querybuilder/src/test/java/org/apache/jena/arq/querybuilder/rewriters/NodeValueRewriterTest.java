@@ -238,7 +238,7 @@ public class NodeValueRewriterTest {
 
     @Test
     public void visitNodeValueLangNodeTest() {
-        Node n = NodeFactory.createLiteral("Hello", "fi");
+        Node n = NodeFactory.createLiteralLang("Hello", "fi");
         NodeValue nv = new NodeValueLang(n);
         nv.visit(rewriter);
         NodeValue result = rewriter.getResult();

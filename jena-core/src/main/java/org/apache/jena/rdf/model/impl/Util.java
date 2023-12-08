@@ -17,16 +17,18 @@
  */
 
 package org.apache.jena.rdf.model.impl;
-import java.util.Objects ;
-import java.util.regex.Matcher ;
-import java.util.regex.Pattern ;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.rdf.model.Literal ;
-import org.apache.jena.shared.CannotEncodeCharacterException ;
-import org.apache.jena.util.SplitIRI ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.TextDirection;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.shared.CannotEncodeCharacterException;
+import org.apache.jena.util.SplitIRI;
 import org.apache.jena.util.XMLChar;
 
 /** Some utility functions.
@@ -70,22 +72,22 @@ public class Util extends Object {
         int lg = uri.length();
         if (lg == 0)
             return 0;
-        int i = lg-1 ;
-        for ( ; i >= 1 ; i--) {
+        int i = lg-1;
+        for (; i >= 1; i--) {
             ch = uri.charAt(i);
             if (notNameChar(ch)) break;
         }
 
-        int j = i + 1 ;
+        int j = i + 1;
 
         if ( j >= lg )
-            return lg ;
+            return lg;
 
         // Check we haven't split up a %-encoding.
         if ( j >= 2 && uri.charAt(j-2) == '%' )
-            j = j+1 ;
+            j = j+1;
         if ( j >= 1 && uri.charAt(j-1) == '%' ) {
-            j = j+2 ;
+            j = j+2;
             if ( j > lg )
                 // JENA-1941: Protect against overshoot in the case of "%x"
                 // at end of a (bad) URI.
@@ -99,7 +101,7 @@ public class Util extends Object {
         for (; j < lg; j++) {
             ch = uri.charAt(j);
 //            if (XMLChar.isNCNameStart(ch))
-//                break ;
+//                break;
             if (XMLChar.isNCNameStart(ch))
             {
                 // "mailto:" is special.
@@ -135,7 +137,7 @@ public class Util extends Object {
                 .replaceAll( "\n", "&#xA;" )
                 .replaceAll( "\r", "&#xD;" )
                 .replaceAll( "\"", "&quot;" )
-                ;
+               ;
             }
         else
             return s;
@@ -153,7 +155,7 @@ public class Util extends Object {
              .replaceAll( "'", "&apos;" )
              .replaceAll( "%", "&#37;" )
              .replaceAll( "\"", "&quot;" )
-             ;
+            ;
          }
      else
          return s;
@@ -197,7 +199,7 @@ public class Util extends Object {
         }
 
     public static String replace(String s, String oldString, String newString) {
-        return s.replace(oldString, newString) ;
+        return s.replace(oldString, newString);
     }
 
     /**
@@ -208,27 +210,61 @@ public class Util extends Object {
      * </ul>
      */
     public static boolean isSimpleString(Node n) {
-        Objects.requireNonNull(n) ;
+        Objects.requireNonNull(n);
         if ( ! n.isLiteral() )
-            return false ;
-        RDFDatatype dt = n.getLiteralDatatype() ;
+            return false;
+        RDFDatatype dt = n.getLiteralDatatype();
         if ( dt == null )
-            return !isLangString(n) ;
-        return dt.equals(XSDDatatype.XSDstring) ;
+            return !hasLangTest(n);
+        return dt.equals(XSDDatatype.XSDstring);
     }
 
     /**
-     * A Node is a language string if it has a language tag.
-     * (RDF 1.0 and RDF 1.1)
+     * A Node is a well-formed language string if it has a language tag
+     * and it does not have an initial text direction.
+     * This excludes {@code "abc"^^rdf:langString} which is not well-formed.
      */
     public static boolean isLangString(Node n) {
-        Objects.requireNonNull(n) ;
+        Objects.requireNonNull(n);
         if ( ! n.isLiteral() )
-            return false ;
-        String lang = n.getLiteralLanguage() ;
-        if ( lang == null )
-            return false ;
-        return !lang.equals("") ;
+            return false;
+        return hasLangTest(n) && !hasDirectionText(n);
+    }
+
+    /**
+     * A Node is a well-formed directional language string if it has a language tag
+     * and it has an initial text direction.
+     */
+    public static boolean isDirLangString(Node n) {
+        Objects.requireNonNull(n);
+        if ( ! n.isLiteral() )
+            return false;
+        return hasDirectionText(n) && hasLangTest(n);
+    }
+
+    /** Test whether this node has a language (rdf:langString or rdf:dirLangString) */
+    public static boolean hasLang(Node n) {
+        if ( ! n.isLiteral() )
+            return false;
+        String lang = n.getLiteralLanguage();
+        return hasLangTest(n);
+    }
+
+    /** Test whether this node has an initial text language (rdf:dirLangString) */
+    public static boolean hasDirection(Node n) {
+        if ( ! n.isLiteral() )
+            return false;
+        return hasDirectionText(n);
+    }
+
+    private static boolean hasDirectionText(Node n) {
+        TextDirection textDir = n.getLiteralTextDirection();
+        return textDir != null;
+    }
+
+    private static boolean hasLangTest(Node n) {
+        String lang = n.getLiteralLanguage();
+        return ! Lib.isEmpty(lang);
     }
 
     /** Return true if the literal is a simple string.
@@ -236,19 +272,31 @@ public class Util extends Object {
      *  <p>RDF 1.1 {@literal =>} it has datatype xsd:string
      */
     public static boolean isSimpleString(Literal lit) {
-        Objects.requireNonNull(lit) ;
+        Objects.requireNonNull(lit);
         RDFDatatype dt = lit.getDatatype();
         if (  dt == null )
-            return ! isLangString(lit) ;
+            return ! isLangString(lit);
         return dt.equals(XSDDatatype.XSDstring);
     }
 
-    /** Return true if the literal has a language tag. (RDF 1.0 and RDF 1.1) */
+    /** Return true if the literal has a language tag. */
     public static boolean isLangString(Literal lit) {
-        Objects.requireNonNull(lit) ;
-        String lang = lit.getLanguage() ;
+        Objects.requireNonNull(lit);
+        String lang = lit.getLanguage();
         if ( lang == null )
-            return false ;
-        return ! lang.equals("") ;
+            return false;
+        return ! lang.equals("");
+    }
+
+    /** Return true if the literal is well-formed, has a language tag and a text direction. */
+    public static boolean isDirLangString(Literal lit) {
+        Objects.requireNonNull(lit);
+        String lang = lit.getLanguage();
+        if ( lang == null )
+            return false;
+        String textDir = lit.getTextDirection();
+        if ( textDir == null )
+            return false;
+        return true;
     }
 }

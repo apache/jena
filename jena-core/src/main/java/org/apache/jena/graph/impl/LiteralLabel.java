@@ -18,25 +18,30 @@
 
 package org.apache.jena.graph.impl;
 
+import static org.apache.jena.atlas.lib.Lib.isEmpty;
+
 import java.util.Arrays;
-import java.util.Locale ;
-import java.util.Objects ;
+import java.util.Objects;
 
 import org.apache.jena.atlas.lib.EscapeStr;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.datatypes.xsd.impl.RDFhtml;
 import org.apache.jena.datatypes.xsd.impl.RDFjson;
 import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
-import org.apache.jena.shared.JenaException ;
+import org.apache.jena.graph.TextDirection;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.shared.impl.JenaParameters ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.shared.impl.JenaParameters;
+import org.apache.jena.vocabulary.RDF;
 
 /**
  * Represents the "contents" of a Node_Literal.
  * These contents comprise a lexical form, an optional language tag,
  * and optional datatype structure and a value.
+ * <p>
+ * Create via LiteralLabelFactory which does the checking and adjustments.
  */
 final public class LiteralLabel {
 
@@ -49,6 +54,12 @@ final public class LiteralLabel {
      * The language tag. The empty string is not valid; {@code ""} is used to ensure this field is set.
      */
     private String lang;
+
+    /**
+     * The initial text direction of a language literal.
+     * Datatype rdf:dirLangSring.
+     */
+    private TextDirection textDir;
 
     /**
      * The type of the literal. A null type indicates a classic "plain" literal.
@@ -82,7 +93,6 @@ final public class LiteralLabel {
     // Constructors
 
     // -- LiteralLabel by RDF term.
-    // The value is not checked as being valid until it is asked for (getValue).
 
     /**
      * Build a LiteralLabel with lexical form and datatype.
@@ -92,21 +102,23 @@ final public class LiteralLabel {
      * @param dtype the type of the literal
      */
     LiteralLabel(String lex, RDFDatatype dtype) {
-        this(lex, "", dtype) ;
+        this(lex, "", null, dtype);
     }
 
     /**
      * Build a LiteralLabel with lexical form, lang tag and datatype.
      * The validity of the lexical form a a value is not checked.
      *
-     * @param lex the lexical form of the literal
-     * @param lang the optional language tag, only relevant for rdf:rdfLangString
-     * @param dtype the type of the literal
+     * @param lex       the lexical form of the literal
+     * @param lang      the optional language tag, only relevant for rdf:langString and rdf:dirLangString
+     * @param dirLang   only relevant for rdf:langString and rdf:dirLangString
+     * @param dtype     the type of the literal
      */
-    /*package*/ LiteralLabel(String lex, String lang, RDFDatatype dtype) {
+    /*package*/ LiteralLabel(String lex, String lang, TextDirection textDir, RDFDatatype dtype) {
         this.lexicalForm = lex;
         this.dtype = Objects.requireNonNull(dtype);
-        this.lang = formLangTag(lang);
+        this.lang = lang;
+        this.textDir = textDir;
         hash = calcHashCode();
         if ( valueMode == ValueMode.EAGER ) {
             this.wellformed = setValue(lex, dtype);
@@ -116,23 +128,10 @@ final public class LiteralLabel {
             value = null;
     }
 
-    private static final boolean legacyLangTag = true;
-
-    /** Prepare the language tag - apply formatting normalization */
-    private static String formLangTag(String input) {
-        if ( legacyLangTag )
-            return (input == null ? "" : input);
-        // Format.
-        return (input == null ? "" : input.toLowerCase(Locale.ROOT));
-    }
-
     /** Calculate the indexing form for a language tag */
     private static String indexingLang(String lang) {
-        if ( legacyLangTag )
-            return lang.toLowerCase(Locale.ROOT);
         return lang;
     }
-
 
     /**
      * Build a typed literal label from its value form using
@@ -203,7 +202,7 @@ final public class LiteralLabel {
     // Used by set-by-term.
     // set-by-value is always eager.
 
-    private volatile Object value1 = null ;
+    private volatile Object value1 = null;
     private static Object invalidValue = new Object();
 
     /** Does not return null - returns "invalidValue" */
@@ -254,13 +253,14 @@ final public class LiteralLabel {
     // Methods
 
     /**
-     * Answer true iff this is a well-formed literal.
+     * Answer true iff this is a well-formed literal (the lexical form conforms to the datatype).
+     * String literals (xsd:string, rdf:LangString,m rdf:dirLangString) are always well-formed.
      */
     public boolean isWellFormed() {
         return dtype != null && isWellFormedRaw();
     }
 
-    public boolean isWellFormedRaw() {
+    private boolean isWellFormedRaw() {
         if ( ! wellformed )
             return false;
         // Force initialization.
@@ -273,28 +273,28 @@ final public class LiteralLabel {
     }
 
     public String toString(PrefixMapping pmap, boolean quoting) {
-        StringBuilder b = new StringBuilder() ;
+        StringBuilder b = new StringBuilder();
         if ( ! quoting && simpleLiteral() )
             return getLexicalForm();
 
         quoting = true;
         // Always quoted for language strings and datatypes (not xsd:string).
         if ( quoting )
-            b.append('"') ;
+            b.append('"');
         String elex = EscapeStr.stringEsc(getLexicalForm());
-        b.append(elex) ;
+        b.append(elex);
         if ( quoting )
-            b.append('"') ;
+            b.append('"');
 
         if ( lang != null && !lang.equals("") )
-            b.append("@").append(lang) ;
+            b.append("@").append(lang);
         else if ( ! dtype.equals(XSDDatatype.XSDstring) ) {
                 String dtStr = (pmap != null)
                         ? PrefixMapping.Standard.shortForm(dtype.getURI())
                         : dtype.getURI();
                 b.append("^^").append(dtStr);
         }
-        return b.toString() ;
+        return b.toString();
     }
 
     private boolean simpleLiteral() {
@@ -336,13 +336,14 @@ final public class LiteralLabel {
     }
 
     /**
-     * Return true for datatype with large values (XML, JSON) and
+     * Return true for datatype with large values (XML, JSON, HTML) and
      * the value is the lexical form, the indexing value is this object.
      * Therefore getValueHashCode is the same as hashCode();
      */
     private boolean indexingValueIsSelf() {
         return dtype == XMLLiteralType.theXMLLiteralType ||
-               dtype == RDFjson.rdfJSON ;
+               dtype == RDFjson.rdfJSON ||
+               dtype == RDFhtml.rdfHTML ;
     }
 
     /**
@@ -351,7 +352,7 @@ final public class LiteralLabel {
      * (which is the case for literals with binary value).
      */
     static class ByteArray {
-        private int hashCode = 0 ;
+        private int hashCode = 0;
 
         private final byte[] bytes;
         /*package*/ ByteArray(byte[] bytes) {
@@ -390,6 +391,14 @@ final public class LiteralLabel {
     }
 
     /**
+     * Answer the initial text direction associated with this literal (the empty string if there's
+     * no text direction).
+     */
+    public TextDirection initialTextDirection() {
+        return textDir;
+    }
+
+    /**
      * Answer a suitable instance of a Java class representing this literal's value.
      * May throw an exception if the literal is ill-formed.
      */
@@ -407,7 +416,7 @@ final public class LiteralLabel {
 
     private Object getValueInternal() {
         Object v = getValueLazy();
-        return (v == invalidValue ) ? null : v ;
+        return (v == invalidValue ) ? null : v;
     }
 
     /**
@@ -432,27 +441,27 @@ final public class LiteralLabel {
      */
     @Override
     public boolean equals(Object other) {
-        if ( this == other ) return true ;
+        if ( this == other ) return true;
         if (other == null || !(other instanceof LiteralLabel)) {
             return false;
         }
         LiteralLabel otherLiteral = (LiteralLabel) other;
 
-        boolean typeEquals = Objects.equals(dtype, otherLiteral.getDatatype()) ;
+        boolean typeEquals = Objects.equals(dtype, otherLiteral.getDatatype());
         if ( !typeEquals )
-            return false ;
+            return false;
 
         // Don't just use this.lexcialForm -- need to force delayed calculation from values.
         boolean lexEquals = Objects.equals(getLexicalForm(), otherLiteral.getLexicalForm());
         if ( ! lexEquals )
-            return false ;
+            return false;
 
-        boolean langEquals = Objects.equals(lang, otherLiteral.language()) ;
+        boolean langEquals = Objects.equals(lang, otherLiteral.language());
         if ( ! langEquals )
-            return false ;
+            return false;
         // Ignore xml flag as it is calculated from the lexical form + datatype
         // Ignore value as lexical form + datatype -> value is a function.
-        return true ;
+        return true;
     }
 
     /**
@@ -460,7 +469,7 @@ final public class LiteralLabel {
      * one.
      */
     public boolean sameValueAs( LiteralLabel other ) {
-        return sameValueAs(this, other) ;
+        return sameValueAs(this, other);
     }
     /**
      * Two literal labels are the "same value" if they are the same string,
@@ -470,61 +479,96 @@ final public class LiteralLabel {
      * @return
      */
     private static boolean sameValueAs(LiteralLabel lit1, LiteralLabel lit2) {
-        //return  lit1.sameValueAs(lit2) ;
+        //return  lit1.sameValueAs(lit2);
         if ( lit1 == null )
-            throw new NullPointerException() ;
+            throw new NullPointerException();
         if ( lit2 == null )
-            throw new NullPointerException() ;
-        // Strings.
+            throw new NullPointerException();
+        // -- Strings.
         if ( isStringValue(lit1) && isStringValue(lit2) )
-            return lit1.getLexicalForm().equals(lit2.getLexicalForm()) ;
+            return lit1.getLexicalForm().equals(lit2.getLexicalForm());
+        if ( isStringValue(lit1) ) return false;
+        if ( isStringValue(lit2) ) return false;
 
-        if ( isStringValue(lit1) ) return false ;
-        if ( isStringValue(lit2) ) return false ;
-
-        // Language tag strings
+        // -- Language tag strings
         if ( isLangString(lit1) && isLangString(lit2) ) {
-            String lex1 = lit1.getLexicalForm() ;
-            String lex2 = lit2.getLexicalForm() ;
-            return lex1.equals(lex2) && lit1.language().equalsIgnoreCase(lit2.language()) ;
+            String lex1 = lit1.getLexicalForm();
+            String lex2 = lit2.getLexicalForm();
+            //return lex1.equals(lex2) && lit1.language().equalsIgnoreCase(lit2.language());
+            // Normalized language tags.
+            return lex1.equals(lex2)
+                    && lit1.language().equals(lit2.language());
         }
-        if ( isLangString(lit1) ) return false ;
-        if ( isLangString(lit2) ) return false ;
+        if ( isLangString(lit1) ) return false;
+        if ( isLangString(lit2) ) return false;
 
-        // Both not strings, not lang strings.
+        // -- Language tag strings with initial text direction
+        if ( isLangStringDir(lit1) && isLangStringDir(lit2) ) {
+            String lex1 = lit1.getLexicalForm();
+            String lex2 = lit2.getLexicalForm();
+            return lex1.equals(lex2)
+                    && lit1.language().equals(lit2.language())
+                    && lit1.initialTextDirection().equals(lit2.initialTextDirection());
+        }
+        if ( isLangStringDir(lit1) ) return false;
+        if ( isLangStringDir(lit2) ) return false;
+
+        // -- datatypes.
+        // Both not strings, not lang strings and not dirlang strings.
         // Datatype set.
         if ( lit1.isWellFormedRaw() && lit2.isWellFormedRaw() )
             // Both well-formed.
-            return lit1.getDatatype().isEqual(lit1, lit2) ;
+            return lit1.getDatatype().isEqual(lit1, lit2);
         if ( ! lit1.isWellFormedRaw() && ! lit2.isWellFormedRaw() )
-            return lit1.equals(lit2) ;
+            return lit1.equals(lit2);
         // One is well formed, the other is not.
-        return false ;
+        return false;
     }
 
     /** Return true if the literal label is a string value (RDF 1.0 and RDF 1.1) */
     private static boolean isStringValue(LiteralLabel lit) {
         if ( lit.getDatatype() == null )
             // RDF 1.0
-            return ! isLangString(lit) ;
+            return ! isLangString(lit);
         if ( lit.getDatatype().equals(XSDDatatype.XSDstring)  )
             return true;
-        return false ;
+        return false;
     }
 
-    /** Return true if the literal label is a language string. */
+    /**
+     * Return true if the literal label is a well-formed language string (rdf:langString).
+     * Language strings do not have an initial text direction.
+     * This test excludes "abc"^^rdf:langString (not well-formed).
+     */
     private static boolean isLangString(LiteralLabel lit) {
         // Duplicate of Util.isLangString except for the additional consistency check.
-        String lang = lit.language() ;
-        if ( lang == null )
-            return false ;
-        // Check.
-        if ( lang.equals("") )
-            return false ;
-        // This is an additional check.
+        if ( isEmpty(lit.language()) )
+            return false;
+        if ( lit.initialTextDirection() != null )
+            // Has an initial text direction so it is n't
+            return false;
+        // Internal check.
         if ( ! Objects.equals(lit.getDatatype(), RDF.dtLangString) )
-            throw new JenaException("Literal with language string which is not rdf:langString: "+lit) ;
-        return true ;
+            throw new JenaException("Literal with language string which is not rdf:langString: "+lit);
+        return true;
+    }
+
+    /**
+     * Return true if the literal label is a well-formed language string with text direction.
+     * This excludes "abc"^^rdf:dirLangString.
+     */
+    private static boolean isLangStringDir(LiteralLabel lit) {
+        // Assume well formed.
+        String lang = lit.language();
+        // Allow "abc"@--rtl
+//        if ( isEmpty(lit.language()) )
+//            return false;
+        if ( lit.initialTextDirection() == null )
+            return false;
+        // Internal check.
+        if ( ! Objects.equals(lit.getDatatype(), RDF.dtDirLangString) )
+            throw new JenaException("Literal with language string and text direction which is not rdf:dirLangString: "+lit);
+        return true;
     }
 
     private int calcHashCode() {
@@ -537,7 +581,7 @@ final public class LiteralLabel {
      */
     @Override
     public int hashCode() {
-        return hash ;
+        return hash;
     }
 
     /**
