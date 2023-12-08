@@ -410,7 +410,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredModel add(final Resource s, final Property p, final String o)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(Triple.create(s.asNode(), p.asNode(), NodeFactory.createLiteral(o, "")));
+        checkCreate(Triple.create(s.asNode(), p.asNode(), NodeFactory.createLiteralLang(o, "")));
         holder.getBaseItem().add(s, p, o);
         return holder.getSecuredItem();
     }
@@ -444,7 +444,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredModel add(final Resource s, final Property p, final String o, final String l)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(Triple.create(s.asNode(), p.asNode(), NodeFactory.createLiteral(o, l)));
+        checkCreate(Triple.create(s.asNode(), p.asNode(), NodeFactory.createLiteralLang(o, l)));
         holder.getBaseItem().add(s, p, o, l);
         return holder.getSecuredItem();
     }
@@ -1428,7 +1428,7 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     @Override
     public SecuredStatement createStatement(final Resource s, final Property p, final String o, final String l)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
-        Node n = NodeFactory.createLiteral(o, l);
+        Node n = NodeFactory.createLiteralLang(o, l);
         checkReadOrUpdate(s, p, holder.getBaseItem().getRDFNode(n));
         return SecuredStatementImpl.getInstance(holder.getSecuredItem(),
                 holder.getBaseItem().createStatement(s, p, o, l));

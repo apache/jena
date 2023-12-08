@@ -163,7 +163,7 @@ public class TestOrdering {
 
     @Test
     public void test_lang1() {
-        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteral("abc", "en"));
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteralLang("abc", "en"));
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteral("abc"));
 
         int x = NodeCmp.compareRDFTerms(nv1.asNode(), nv2.asNode());
@@ -172,8 +172,8 @@ public class TestOrdering {
 
     @Test
     public void test_lang2() {
-        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteral("abc", "en"));
-        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteral("abc", "EN"));
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteralLang("abc", "en"));
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("abc", "EN"));
 
         int x = NodeCmp.compareRDFTerms(nv1.asNode(), nv2.asNode());
         assertTrue("Lang tags should sort by case", Expr.CMP_GREATER == x);
@@ -181,8 +181,8 @@ public class TestOrdering {
 
     @Test
     public void test_lang3() {
-        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteral("ABC", "en"));
-        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteral("abc", "EN"));
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteralLang("ABC", "en"));
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("abc", "EN"));
 
         int x = NodeValue.compareAlways(nv1, nv2);
         assertTrue("Lang nodes should sort by lexical if tags value-same", Expr.CMP_LESS == x);
@@ -192,8 +192,8 @@ public class TestOrdering {
 
     @Test
     public void test_lang4() {
-        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteral("ABC", "en"));
-        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteral("abc", "en"));
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteralLang("ABC", "en"));
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("abc", "en"));
 
         int x = NodeValue.compareAlways(nv1, nv2);
         assertTrue("Lang nodes should sort by lexical if tags the same", Expr.CMP_LESS == x);
@@ -204,7 +204,7 @@ public class TestOrdering {
     @Test
     public void test_lang5() {
         NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteral("abc"));
-        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteral("xyz", "en"));
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("xyz", "en"));
 
         int x = NodeValue.compareAlways(nv1, nv2);
         assertTrue("Lang nodes should sort by lexical form if one is plain", Expr.CMP_LESS == x);
@@ -215,7 +215,7 @@ public class TestOrdering {
     @Test
     public void test_lang6() {
         NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteral("xyz"));
-        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteral("abc", "en"));
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("abc", "en"));
 
         int x = NodeValue.compareAlways(nv1, nv2);
         assertTrue("Lang nodes should sort by language before lexical form", Expr.CMP_LESS == x);
@@ -225,8 +225,8 @@ public class TestOrdering {
 
     @Test
     public void test_lang7() {
-        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteral("xyz", "de"));
-        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteral("abc", "en"));
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteralLang("xyz", "de"));
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("abc", "en"));
 
         int x = NodeValue.compareAlways(nv1, nv2);
         assertTrue("Lang nodes should sort by language before lexical form", Expr.CMP_LESS == x);
@@ -237,7 +237,7 @@ public class TestOrdering {
     @Test
     public void test_lang8() {
         NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteral("abc", XSDDatatype.XSDstring));
-        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteral("xyz", "en"));
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("xyz", "en"));
 
         int x = NodeValue.compareAlways(nv1, nv2);
         assertTrue("Lang nodes should sort by lexical form if other is XSD string", Expr.CMP_LESS == x);
@@ -248,7 +248,7 @@ public class TestOrdering {
     @Test
     public void test_lang9() {
         NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteral("xyz", XSDDatatype.XSDstring));
-        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteral("abc", "en"));
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("abc", "en"));
         // xsd:string (RDF 1.1) is a simple string and before @en.
         int x = NodeValue.compareAlways(nv1, nv2);
         assertTrue("Lang nodes should sort by lexical form if other is XSD string", Expr.CMP_LESS == x);

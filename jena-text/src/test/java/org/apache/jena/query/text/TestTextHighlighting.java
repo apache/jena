@@ -276,6 +276,6 @@ public class TestTextHighlighting extends AbstractTestDatasetWithTextIndexBase {
         
         Literal value = literals.get(RESOURCE_BASE + "testResultThreeInModelA");
         assertNotNull(value);
-        assertEquals(NodeFactory.createLiteral("bar ↦testResultThree↤ barfoo foo", "en"), value.asNode());
+        assertEquals(NodeFactory.createLiteralLang("bar ↦testResultThree↤ barfoo foo", "en"), value.asNode());
     }
 }

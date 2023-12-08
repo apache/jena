@@ -247,7 +247,7 @@ public class TestDatasetWithLuceneStoredLiterals extends AbstractTestDatasetWith
         Map<String,Literal> literals = doTestSearchWithLiterals(turtle, queryString, expectedURIs);
         Literal value = literals.get( RESOURCE_BASE + testName );
         assertNotNull(value);
-        assertEquals(NodeFactory.createLiteral("English language text", "en"), value.asNode());
+        assertEquals(NodeFactory.createLiteralLang("English language text", "en"), value.asNode());
     }
 
     @Test

@@ -102,7 +102,7 @@ public class TestNodec
     @Test public void nodec_triple_terms_01()  {
         Node s = NodeFactory.createBlankNode("a");
         Node p = NodeFactory.createURI("http://ex/p");
-        Node o = NodeFactory.createLiteral("testcase", "en");
+        Node o = NodeFactory.createLiteralLang("testcase", "en");
         Node t = NodeFactory.createTripleNode(s, p, o);
         test (t);
     }

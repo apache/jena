@@ -1027,7 +1027,7 @@ public class TestFBRules extends TestCase {
                        getSkolem(a, Util.makeIntNode(43)) );
 
         assertNotSame( getSkolem(a, NodeFactory.createLiteral("foo")),
-                       getSkolem(a, NodeFactory.createLiteral("foo", "en")) );
+                       getSkolem(a, NodeFactory.createLiteralLang("foo", "en")) );
 
         assertEquals( getSkolem(NodeFactory.createLiteral("foo")),
                 getSkolem(NodeFactory.createLiteral("foo")));

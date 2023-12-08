@@ -62,14 +62,14 @@ public class TestNodeFunctions {
     }
 
     @Test public void testSameTerm5() {
-        Node n1 = NodeFactory.createLiteral("xyz", "en") ;
+        Node n1 = NodeFactory.createLiteralLang("xyz", "en") ;
         Node n2 = NodeFactory.createLiteral("xyz") ;
         assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
     }
 
     @Test public void testSameTerm6() {
-        Node n1 = NodeFactory.createLiteral("xyz", "en") ;
-        Node n2 = NodeFactory.createLiteral("xyz", "EN") ;
+        Node n1 = NodeFactory.createLiteralLang("xyz", "en") ;
+        Node n2 = NodeFactory.createLiteralLang("xyz", "EN") ;
         assertTrue(NodeFunctions.sameTerm(n1, n2)) ;
     }
 
@@ -80,8 +80,8 @@ public class TestNodeFunctions {
     }
 
     @Test public void testRDFtermEquals2() {
-        Node n1 = NodeFactory.createLiteral("xyz", "en") ;
-        Node n2 = NodeFactory.createLiteral("xyz", "EN") ;
+        Node n1 = NodeFactory.createLiteralLang("xyz", "en") ;
+        Node n2 = NodeFactory.createLiteralLang("xyz", "EN") ;
         assertTrue(NodeFunctions.rdfTermEquals(n1, n2)) ;
     }
 
@@ -89,7 +89,7 @@ public class TestNodeFunctions {
     public void testRDFtermEquals3() {
         // Unextended - not known to be same (no language tag support).
         Node n1 = NodeFactory.createLiteral("xyz") ;
-        Node n2 = NodeFactory.createLiteral("xyz", "en") ;
+        Node n2 = NodeFactory.createLiteralLang("xyz", "en") ;
         NodeFunctions.rdfTermEquals(n1, n2);
     }
 
@@ -229,7 +229,7 @@ public class TestNodeFunctions {
     }
 
     @Test public void testLang1() {
-        Node n = NodeFactory.createLiteral("abc", "en-gb") ;
+        Node n = NodeFactory.createLiteralLang("abc", "en-gb") ;
         assertEquals("en-gb", NodeFunctions.lang(n)) ;
     }
 

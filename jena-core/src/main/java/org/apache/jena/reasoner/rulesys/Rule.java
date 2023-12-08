@@ -982,7 +982,7 @@ public class Rule implements ClauseEntry {
                 }
             }
             // Default is a plain literal
-            return NodeFactory.createLiteral(lit, "");
+            return NodeFactory.createLiteralLang(lit, "");
         }
 
         /**

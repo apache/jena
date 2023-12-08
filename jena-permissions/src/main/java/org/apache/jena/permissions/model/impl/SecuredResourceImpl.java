@@ -274,7 +274,7 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     public SecuredResource addProperty(final Property p, final String o, final String l)
             throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        checkCreate(Triple.create(holder.getBaseItem().asNode(), p.asNode(), NodeFactory.createLiteral(o, l)));
+        checkCreate(Triple.create(holder.getBaseItem().asNode(), p.asNode(), NodeFactory.createLiteralLang(o, l)));
         holder.getBaseItem().addProperty(p, o, l);
         return holder.getSecuredItem();
     }
