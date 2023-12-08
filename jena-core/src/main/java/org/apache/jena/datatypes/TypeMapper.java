@@ -24,8 +24,7 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.datatypes.xsd.impl.RDFLangString ;
-import org.apache.jena.datatypes.xsd.impl.XMLLiteralType ;
+import org.apache.jena.datatypes.xsd.impl.*;
 import org.apache.jena.shared.impl.JenaParameters ;
 
 /**
@@ -67,8 +66,11 @@ public class TypeMapper {
     static { reset() ; }
     public static void reset() {
         theTypeMap = new TypeMapper();
-        theTypeMap.registerDatatype(XMLLiteralType.theXMLLiteralType);
         theTypeMap.registerDatatype(RDFLangString.rdfLangString) ;
+        theTypeMap.registerDatatype(RDFDirLangString.rdfDirLangString) ;
+        theTypeMap.registerDatatype(RDFjson.rdfJSON);
+        theTypeMap.registerDatatype(XMLLiteralType.theXMLLiteralType);
+        theTypeMap.registerDatatype(RDFhtml.rdfHTML);
         XSDDatatype.loadXSDSimpleTypes(theTypeMap);
 
         // add primitive types
@@ -189,7 +191,7 @@ public class TypeMapper {
             classToDT.put(jc, type);
         }
     }
-    
+
     /**
      * Remove a datatype registration.
      */

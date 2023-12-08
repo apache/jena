@@ -231,17 +231,18 @@ public class TestRDFParser {
         testNormalization("+123.00e0", "1.23E2", builder().canonicalValues(true));
     }
 
-    @Test public void canonical_langTag_1() {
-        testNormalization("'abc'@En-gB", "'abc'@En-gB", builder().langTagAsGiven());
-    }
-
-    @Test public void canonical_langTag_2() {
-        testNormalization("'abc'@En-gB", "'abc'@en-gb", builder().langTagLowerCase());
-    }
-
-    @Test public void canonical_langTag_3() {
-        testNormalization("'abc'@En-gB", "'abc'@en-GB", builder().langTagCanonical());
-    }
+    // Old tests that applied to Java4. Delete in the future.
+//    @Test public void canonical_langTag_1() {
+//        testNormalization("'abc'@En-gB", "'abc'@En-gB", builder().langTagAsGiven());
+//    }
+//
+//    @Test public void canonical_langTag_2() {
+//        testNormalization("'abc'@En-gB", "'abc'@en-gb", builder().langTagLowerCase());
+//    }
+//
+//    @Test public void canonical_langTag_3() {
+//        testNormalization("'abc'@En-gB", "'abc'@en-GB", builder().langTagCanonical());
+//    }
 
     @Test
     public void parser_fragment() {

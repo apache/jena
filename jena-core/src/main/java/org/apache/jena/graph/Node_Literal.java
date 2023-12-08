@@ -21,8 +21,9 @@ package org.apache.jena.graph;
 import java.util.Objects;
 
 import org.apache.jena.datatypes.RDFDatatype;
-import org.apache.jena.graph.impl.*;
-import org.apache.jena.shared.*;
+import org.apache.jena.graph.impl.LiteralLabel;
+import org.apache.jena.graph.impl.LiteralLabelFactory;
+import org.apache.jena.shared.PrefixMapping;
 
 /**
     An RDF node holding a literal value. Literals may have datatypes.
@@ -43,6 +44,13 @@ public class Node_Literal extends Node
         Objects.requireNonNull(string, "null lexical form for literal");
         Objects.requireNonNull(lang, "null language");
         this.label = LiteralLabelFactory.createLang(string, lang);
+    }
+
+    /*package*/ Node_Literal(String lex, String lang, TextDirection textDir) {
+        Objects.requireNonNull(lex, "null lexical form for literal");
+        Objects.requireNonNull(lang, "null language");
+        Objects.requireNonNull(textDir, "null text direction");
+        this.label = LiteralLabelFactory.createDirLang(lex, lang, textDir);
     }
 
     /* package */ Node_Literal(String lex, RDFDatatype dtype) {
@@ -70,6 +78,11 @@ public class Node_Literal extends Node
     @Override
     public final String getLiteralLanguage()
     { return getLiteral().language(); }
+
+    @Override
+    public final TextDirection getLiteralTextDirection()
+    { return getLiteral().initialTextDirection(); }
+
 
     @Override
     public final String getLiteralDatatypeURI()

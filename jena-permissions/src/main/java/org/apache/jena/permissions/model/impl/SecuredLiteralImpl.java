@@ -218,6 +218,18 @@ public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements SecuredLit
      *                                         required to be.
      */
     @Override
+    public String getTextDirection() throws ReadDeniedException, AuthenticationRequiredException {
+        checkRead();
+        return holder.getBaseItem().getTextDirection();
+    }
+
+    /**
+     * @sec.graph Read
+     * @throws ReadDeniedException
+     * @throws AuthenticationRequiredException if user is not authenticated and is
+     *                                         required to be.
+     */
+    @Override
     public String getLexicalForm() throws ReadDeniedException, AuthenticationRequiredException {
         checkRead();
         return holder.getBaseItem().getLexicalForm();

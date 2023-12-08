@@ -25,6 +25,7 @@ import org.apache.jena.enhanced.EnhGraph;
 import org.apache.jena.enhanced.EnhNode;
 import org.apache.jena.enhanced.Implementation;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.TextDirection;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.BadBooleanException;
 import org.apache.jena.shared.BadCharLiteralException;
@@ -246,6 +247,15 @@ public class LiteralImpl extends EnhNode implements Literal {
     public String getLanguage() {
         return asNode().getLiteralLanguage();
     }
+
+    @Override
+    public String getTextDirection() {
+        TextDirection textDir = asNode().getLiteralTextDirection();
+        if ( textDir == null )
+            return null;
+        return textDir.direction();
+    }
+
 
     /**
      * Test that two literals are semantically equivalent.

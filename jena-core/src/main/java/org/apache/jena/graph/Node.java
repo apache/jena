@@ -153,6 +153,14 @@ public abstract class Node implements Serializable {
     public String getLiteralLanguage()
     { throw new NotLiteral( this ); }
 
+    /** Return the initial text direction for an rdf:dirLangString literal.
+     * Does not return null if the literal is a rdf:dirLangString literal.
+     * Returns null if the text direction is not set (and the datatype won't be rdf:dirLangString).
+     * Otherwise die horribly.
+     */
+    public TextDirection getLiteralTextDirection()
+    { throw new NotLiteral( this ); }
+
     /**
      * Answer the data-type URI of this node's literal value, if it is a literal;
      * otherwise die horribly.
