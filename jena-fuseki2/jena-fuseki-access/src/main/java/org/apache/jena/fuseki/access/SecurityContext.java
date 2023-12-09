@@ -48,8 +48,8 @@ public interface SecurityContext {
 
     public static final Node allGraphs = NodeFactory.createURI("urn:jena:accessAllGraphs");
     public static final Node allNamedGraphs = NodeFactory.createURI("urn:jena:accessAllNamedGraphs");
-    public static final Node allNamedGraphsStr = NodeFactory.createLiteral("*");
-    public static final Node allGraphsStr = NodeFactory.createLiteral("**");
+    public static final Node allNamedGraphsStr = NodeFactory.createLiteralString("*");
+    public static final Node allGraphsStr = NodeFactory.createLiteralString("**");
 
     /**
      * Collection of visible graph names.

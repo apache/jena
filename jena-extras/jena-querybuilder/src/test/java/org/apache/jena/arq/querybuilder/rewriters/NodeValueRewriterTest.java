@@ -167,7 +167,7 @@ public class NodeValueRewriterTest {
 
     @Test
     public void visitNodeValueStringNodeTest() {
-        Node n = NodeFactory.createLiteral("Hello");
+        Node n = NodeFactory.createLiteralString("Hello");
         NodeValue nv = new NodeValueString("Hello", n);
         nv.visit(rewriter);
         NodeValue result = rewriter.getResult();
@@ -186,7 +186,7 @@ public class NodeValueRewriterTest {
 
     @Test
     public void visitNodeValueSortKeyNodeTest() {
-        Node n = NodeFactory.createLiteral("Hello");
+        Node n = NodeFactory.createLiteralString("Hello");
         NodeValue nv = new NodeValueSortKey("Hello", "fi", n);
         nv.visit(rewriter);
         NodeValue result = rewriter.getResult();

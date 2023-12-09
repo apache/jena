@@ -172,7 +172,7 @@ public class ReportEntry {
 
     public ReportEntry message(String msg) {
         if ( msg != null )
-            messages.add(NodeFactory.createLiteral(msg));
+            messages.add(NodeFactory.createLiteralString(msg));
         return this;
     }
 

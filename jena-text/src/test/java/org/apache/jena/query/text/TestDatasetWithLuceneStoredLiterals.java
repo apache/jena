@@ -195,7 +195,7 @@ public class TestDatasetWithLuceneStoredLiterals extends AbstractTestDatasetWith
         Map<String,Literal> literals = doTestSearchWithLiterals(turtle, queryString, expectedURIs);
         Literal value = literals.get(R_S1);
         assertNotNull(value);
-        assertEquals(NodeFactory.createLiteral("text"), value.asNode());
+        assertEquals(NodeFactory.createLiteralString("text"), value.asNode());
     }
 
     @Test
@@ -221,7 +221,7 @@ public class TestDatasetWithLuceneStoredLiterals extends AbstractTestDatasetWith
         Map<String,Literal> literals = doTestSearchWithLiterals(turtle, queryString, expectedURIs);
         Literal value = literals.get(RESOURCE_BASE + testName);
         assertNotNull(value);
-        assertEquals(NodeFactory.createLiteral("a text comment"), value.asNode());
+        assertEquals(NodeFactory.createLiteralString("a text comment"), value.asNode());
     }
 
     @Test
@@ -298,8 +298,8 @@ public class TestDatasetWithLuceneStoredLiterals extends AbstractTestDatasetWith
         List<Node> literals = doTestSearchWithLiteralsMultiple(turtle, queryString, expectedURI);
 
         assertEquals(2, literals.size());
-        assertTrue(literals.contains(NodeFactory.createLiteral("a nontext comment")));
-        assertTrue(literals.contains(NodeFactory.createLiteral("another nontext comment")));
+        assertTrue(literals.contains(NodeFactory.createLiteralString("a nontext comment")));
+        assertTrue(literals.contains(NodeFactory.createLiteralString("another nontext comment")));
     }
 
     @Test
@@ -328,8 +328,8 @@ public class TestDatasetWithLuceneStoredLiterals extends AbstractTestDatasetWith
         List<Node> literals = doTestSearchWithLiteralsMultiple(turtle, queryString, expectedURI);
 
         assertEquals(2, literals.size());
-        assertTrue(literals.contains(NodeFactory.createLiteral("a nontext comment")));
-        assertTrue(literals.contains(NodeFactory.createLiteral("another nontext comment")));
+        assertTrue(literals.contains(NodeFactory.createLiteralString("a nontext comment")));
+        assertTrue(literals.contains(NodeFactory.createLiteralString("another nontext comment")));
     }
 
 }

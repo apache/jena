@@ -55,7 +55,7 @@ public class NodeValueString extends NodeValue
     
     @Override
     protected Node makeNode()
-    { return NodeFactory.createLiteral(string) ; }
+    { return NodeFactory.createLiteralString(string) ; }
     
     @Override
     public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }

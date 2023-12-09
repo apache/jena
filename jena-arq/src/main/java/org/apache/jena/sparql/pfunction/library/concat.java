@@ -48,7 +48,7 @@ public class concat extends PFuncSimpleAndList
             x = x+str ;
         }
          
-        return IterLib.oneResult(binding, Var.alloc(subject), NodeFactory.createLiteral(x), execCxt) ;
+        return IterLib.oneResult(binding, Var.alloc(subject), NodeFactory.createLiteralString(x), execCxt) ;
     }
 
 }

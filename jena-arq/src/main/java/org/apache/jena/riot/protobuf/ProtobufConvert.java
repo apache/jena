@@ -173,7 +173,7 @@ public class ProtobufConvert
                     String lex = lit.getLex() ;
                     switch ( lit.getLiteralKindCase() ) {
                         case SIMPLE :
-                            return NodeFactory.createLiteral(lex) ;
+                            return NodeFactory.createLiteralString(lex) ;
                         case LANGTAG : {
                             String lang = lit.getLangtag();
                             return NodeFactory.createLiteralLang(lex, lang) ;

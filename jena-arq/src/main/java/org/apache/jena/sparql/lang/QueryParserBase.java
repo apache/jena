@@ -217,7 +217,7 @@ public class QueryParserBase
         } else if ( langTag != null && !langTag.isEmpty() )
             n = NodeFactory.createLiteralLang(lexicalForm, langTag);
         else
-            n = NodeFactory.createLiteral(lexicalForm);
+            n = NodeFactory.createLiteralString(lexicalForm);
         return n;
     }
 

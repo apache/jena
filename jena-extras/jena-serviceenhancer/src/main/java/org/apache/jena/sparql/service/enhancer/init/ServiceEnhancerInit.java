@@ -276,7 +276,7 @@ public class ServiceEnhancerInit
         if (id == null) {
             DatasetGraph dg = execCxt.getDataset();
             int hashCode = System.identityHashCode(dg);
-            id = NodeFactory.createLiteral(ServiceEnhancerConstants.SELF.getURI() + "@dataset" + hashCode);
+            id = NodeFactory.createLiteralString(ServiceEnhancerConstants.SELF.getURI() + "@dataset" + hashCode);
         }
 
         return id;

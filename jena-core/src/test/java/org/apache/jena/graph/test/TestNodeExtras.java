@@ -84,7 +84,7 @@ public class TestNodeExtras {
 
     @Test(expected=UnsupportedOperationException.class)
     public void term_triple_bad_1() {
-        Node n = NodeFactory.createLiteral("abc");
+        Node n = NodeFactory.createLiteralString("abc");
         n.getTriple();
     }
 

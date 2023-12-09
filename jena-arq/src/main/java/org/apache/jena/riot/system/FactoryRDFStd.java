@@ -67,7 +67,7 @@ public class FactoryRDFStd implements FactoryRDF {
 
     @Override
     public Node createStringLiteral(String lexical) {
-        return NodeFactory.createLiteral(lexical) ;
+        return NodeFactory.createLiteralString(lexical) ;
     }
 
     @Override

@@ -792,18 +792,18 @@ public class TestFBRules extends TestCase {
 
         TestUtil.assertIteratorValues(this, infgraph.find(n1, s, null),
             new Triple[] {
-                Triple.create(n1, s, NodeFactory.createLiteral("literal")),
-                Triple.create(n1, s, NodeFactory.createLiteral("notBNode")),
+                Triple.create(n1, s, NodeFactory.createLiteralString("literal")),
+                Triple.create(n1, s, NodeFactory.createLiteralString("notBNode")),
             });
         TestUtil.assertIteratorValues(this, infgraph.find(n2, s, null),
             new Triple[] {
-                Triple.create(n2, s, NodeFactory.createLiteral("notLiteral")),
-                Triple.create(n2, s, NodeFactory.createLiteral("notBNode")),
+                Triple.create(n2, s, NodeFactory.createLiteralString("notLiteral")),
+                Triple.create(n2, s, NodeFactory.createLiteralString("notBNode")),
             });
         TestUtil.assertIteratorValues(this, infgraph.find(n3, s, null),
             new Triple[] {
-                Triple.create(n3, s, NodeFactory.createLiteral("notLiteral")),
-                Triple.create(n3, s, NodeFactory.createLiteral("bNode")),
+                Triple.create(n3, s, NodeFactory.createLiteralString("notLiteral")),
+                Triple.create(n3, s, NodeFactory.createLiteralString("bNode")),
             });
 
         // Data type checking
@@ -817,7 +817,7 @@ public class TestFBRules extends TestCase {
                        "";
         data = GraphMemFactory.createGraphMem();
         data.add(Triple.create(n1, p, Util.makeIntNode(3)) );
-        data.add(Triple.create(n2, p, NodeFactory.createLiteral("foo")) );
+        data.add(Triple.create(n2, p, NodeFactory.createLiteralString("foo")) );
         data.add(Triple.create(n3, p, NodeFactory.createLiteral("foo", XSDDatatype.XSDstring)) );
         data.add(Triple.create(n4, p, n4));
         data.add(Triple.create(n5, p, NodeFactory.createLiteral("-1", XSDDatatype.XSDnonNegativeInteger)) );
@@ -825,25 +825,25 @@ public class TestFBRules extends TestCase {
 
         TestUtil.assertIteratorValues(this, infgraph.find(null, s, null),
             new Triple[] {
-                Triple.create(n1, s, NodeFactory.createLiteral("isLiteral")),
-                Triple.create(n1, s, NodeFactory.createLiteral("isXSDInt")),
-                Triple.create(n1, s, NodeFactory.createLiteral("notXSDString")),
+                Triple.create(n1, s, NodeFactory.createLiteralString("isLiteral")),
+                Triple.create(n1, s, NodeFactory.createLiteralString("isXSDInt")),
+                Triple.create(n1, s, NodeFactory.createLiteralString("notXSDString")),
 
-                Triple.create(n2, s, NodeFactory.createLiteral("isLiteral")),
-                Triple.create(n2, s, NodeFactory.createLiteral("notXSDInt")),
-                Triple.create(n2, s, NodeFactory.createLiteral("isXSDString")),
+                Triple.create(n2, s, NodeFactory.createLiteralString("isLiteral")),
+                Triple.create(n2, s, NodeFactory.createLiteralString("notXSDInt")),
+                Triple.create(n2, s, NodeFactory.createLiteralString("isXSDString")),
 
-                Triple.create(n3, s, NodeFactory.createLiteral("isLiteral")),
-                Triple.create(n3, s, NodeFactory.createLiteral("notXSDInt")),
-                Triple.create(n3, s, NodeFactory.createLiteral("isXSDString")),
+                Triple.create(n3, s, NodeFactory.createLiteralString("isLiteral")),
+                Triple.create(n3, s, NodeFactory.createLiteralString("notXSDInt")),
+                Triple.create(n3, s, NodeFactory.createLiteralString("isXSDString")),
 
-                Triple.create(n4, s, NodeFactory.createLiteral("notLiteral")),
-                Triple.create(n4, s, NodeFactory.createLiteral("notXSDInt")),
-                Triple.create(n4, s, NodeFactory.createLiteral("notXSDString")),
+                Triple.create(n4, s, NodeFactory.createLiteralString("notLiteral")),
+                Triple.create(n4, s, NodeFactory.createLiteralString("notXSDInt")),
+                Triple.create(n4, s, NodeFactory.createLiteralString("notXSDString")),
 
-                Triple.create(n5, s, NodeFactory.createLiteral("notLiteral")),
-                Triple.create(n5, s, NodeFactory.createLiteral("notXSDInt")),
-                Triple.create(n5, s, NodeFactory.createLiteral("notXSDString")),
+                Triple.create(n5, s, NodeFactory.createLiteralString("notLiteral")),
+                Triple.create(n5, s, NodeFactory.createLiteralString("notXSDInt")),
+                Triple.create(n5, s, NodeFactory.createLiteralString("notXSDString")),
             });
 
         // Literal counting
@@ -885,13 +885,13 @@ public class TestFBRules extends TestCase {
             "[r1: (?x p ?y) strConcat(?z) -> (?x q ?z) ] \n" +
             "[r2: (?x p ?y) uriConcat('http://jena.hpl.hp.com/test#', ?y, ?z) -> (?x q ?z) ]";
         Graph data = GraphMemFactory.createGraphMem();
-        data.add(Triple.create(n1, p, NodeFactory.createLiteral("test")) );
+        data.add(Triple.create(n1, p, NodeFactory.createLiteralString("test")) );
         InfGraph infgraph = createInfGraph(rules, data);
 
         TestUtil.assertIteratorValues(this, infgraph.find(null, q, null),
             new Triple[] {
-            Triple.create(n1, q, NodeFactory.createLiteral("testhttp://www.w3.org/1999/02/22-rdf-syntax-ns#typefoo")),
-            Triple.create(n1, q, NodeFactory.createLiteral("")),
+            Triple.create(n1, q, NodeFactory.createLiteralString("testhttp://www.w3.org/1999/02/22-rdf-syntax-ns#typefoo")),
+            Triple.create(n1, q, NodeFactory.createLiteralString("")),
             Triple.create(n1, q, NodeFactory.createURI("http://jena.hpl.hp.com/test#test")),
             });
 
@@ -900,16 +900,16 @@ public class TestFBRules extends TestCase {
             "[r2: (?x p ?y) regex(?y, '(.*)\\\\s(.*) (f.*)', ?m1, ?m2, ?m3) -> (?x r ?m2) ] \n" +
             "";
         data = GraphMemFactory.createGraphMem();
-        data.add(Triple.create(n1, p, NodeFactory.createLiteral("foo bar foo")) );
-        data.add(Triple.create(n2, p, NodeFactory.createLiteral("foo bar baz")) );
+        data.add(Triple.create(n1, p, NodeFactory.createLiteralString("foo bar foo")) );
+        data.add(Triple.create(n2, p, NodeFactory.createLiteralString("foo bar baz")) );
         infgraph = createInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, infgraph.find(null, q, null),
                 new Triple[] {
-                Triple.create(n1, q, NodeFactory.createLiteral("ok")),
+                Triple.create(n1, q, NodeFactory.createLiteralString("ok")),
                 });
         TestUtil.assertIteratorValues(this, infgraph.find(null, r, null),
                 new Triple[] {
-                Triple.create(n1, r, NodeFactory.createLiteral("bar")),
+                Triple.create(n1, r, NodeFactory.createLiteralString("bar")),
                 });
     }
 
@@ -921,14 +921,14 @@ public class TestFBRules extends TestCase {
             "[r2: (?x p ?y) regex(?y, '((Boys)|(Girls))(.*)', ?m1, ?m2, ?m3, ?m4) ->  (?x q ?m2) (?x r ?m3) (?x s ?m4) ] \n" +
             "";
         Graph data = GraphMemFactory.createGraphMem();
-        data.add(Triple.create(n1, p, NodeFactory.createLiteral("Girls44")) );
+        data.add(Triple.create(n1, p, NodeFactory.createLiteralString("Girls44")) );
         InfGraph infgraph = createInfGraph(rules, data);
         infgraph.prepare();
         TestUtil.assertIteratorValues(this, infgraph.getDeductionsGraph().find(null, null, null),
                 new Triple[] {
-            Triple.create(n1, q, NodeFactory.createLiteral("")),
-            Triple.create(n1, r, NodeFactory.createLiteral("Girls")),
-            Triple.create(n1, s, NodeFactory.createLiteral("44")),
+            Triple.create(n1, q, NodeFactory.createLiteralString("")),
+            Triple.create(n1, r, NodeFactory.createLiteralString("Girls")),
+            Triple.create(n1, s, NodeFactory.createLiteralString("44")),
                 });
     }
 
@@ -1026,14 +1026,14 @@ public class TestFBRules extends TestCase {
         assertNotSame( getSkolem(a, Util.makeIntNode(42)),
                        getSkolem(a, Util.makeIntNode(43)) );
 
-        assertNotSame( getSkolem(a, NodeFactory.createLiteral("foo")),
+        assertNotSame( getSkolem(a, NodeFactory.createLiteralString("foo")),
                        getSkolem(a, NodeFactory.createLiteralLang("foo", "en")) );
 
-        assertEquals( getSkolem(NodeFactory.createLiteral("foo")),
-                getSkolem(NodeFactory.createLiteral("foo")));
+        assertEquals( getSkolem(NodeFactory.createLiteralString("foo")),
+                getSkolem(NodeFactory.createLiteralString("foo")));
 
-        assertNotSame( getSkolem(NodeFactory.createLiteral("foo")),
-                       getSkolem(NodeFactory.createLiteral("bar")));
+        assertNotSame( getSkolem(NodeFactory.createLiteralString("foo")),
+                       getSkolem(NodeFactory.createLiteralString("bar")));
     }
 
     private Node getSkolem(Node x, Node y) {

@@ -222,11 +222,11 @@ public class TestFileData {
 
 		g.add(Triple.create(NodeFactory.createBlankNode("b"),
 				NodeFactory.createURI("http://example.com/p2"), NodeFactory
-						.createLiteral("foo")));
+						.createLiteralString("foo")));
 
 		g.add(Triple.create(NodeFactory.createURI("http://example.com/ns/e"),
 				NodeFactory.createURI("http://example.com/ns/p5"), NodeFactory
-						.createLiteral("verify base works")));
+						.createLiteralString("verify base works")));
 
 		return g;
 	}

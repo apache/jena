@@ -62,7 +62,7 @@ public class str extends PFuncSimple
         if ( object.isBlank() )
             throw new QueryExecException("str: object is a blank node") ;
         
-        Node strValue =  NodeFactory.createLiteral(NodeFunctions.str(object)) ;
+        Node strValue =  NodeFactory.createLiteralString(NodeFunctions.str(object)) ;
         
         if ( Var.isVar(subject) )
             return IterLib.oneResult(binding, Var.alloc(subject), strValue, execCxt) ;

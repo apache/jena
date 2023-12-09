@@ -67,7 +67,7 @@ public class PrefixHandlerBulk implements BulkStartFinish {
 
     public PrefixHandler handler() {
         return (prefix, uriStr) -> {
-            Node p = NodeFactory.createLiteral(prefix);
+            Node p = NodeFactory.createLiteralString(prefix);
             Node u = NodeFactory.createURI(uriStr);
             prefixes.add_ext(Prefixes.nodeDataset, prefix, uriStr);
         };

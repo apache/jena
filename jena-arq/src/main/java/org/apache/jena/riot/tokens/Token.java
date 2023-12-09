@@ -404,7 +404,7 @@ public final class Token
             case LITERAL_LANG :
                 return NodeFactory.createLiteralLang(tokenImage, tokenImage2);
             case STRING :
-                return NodeFactory.createLiteral(tokenImage);
+                return NodeFactory.createLiteralString(tokenImage);
             case VAR :
                 return Var.alloc(tokenImage);
             case KEYWORD :

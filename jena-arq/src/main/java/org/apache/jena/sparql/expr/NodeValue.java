@@ -282,7 +282,7 @@ public abstract class NodeValue extends ExprNode
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatype) ;
             n = NodeFactory.createLiteral(lexicalForm, dType) ;
         } else
-            n = NodeFactory.createLiteral(lexicalForm) ;
+            n = NodeFactory.createLiteralString(lexicalForm) ;
 
         return NodeValue.makeNode(n) ;
     }

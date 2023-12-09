@@ -84,7 +84,7 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
         List<Binding> bindings = query.getValuesData();
         assertEquals( 1, bindings.size() );
         Binding binding = bindings.get(0);
-        assertEquals( NodeFactory.createLiteral( "foo"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "foo"), binding.get("x"));
     }
 
     @ContractTest
@@ -100,9 +100,9 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
         List<Binding> bindings = query.getValuesData();
         assertEquals( 2, bindings.size() );
         Binding binding = bindings.get(0);
-        assertEquals( NodeFactory.createLiteral( "foo"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "foo"), binding.get("x"));
          binding = bindings.get(1);
-        assertEquals( NodeFactory.createLiteral( "bar"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "bar"), binding.get("x"));
     }
 
     @ContractTest
@@ -120,11 +120,11 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
         List<Binding> bindings = query.getValuesData();
         assertEquals( 2, bindings.size() );
         Binding binding = bindings.get(0);
-        assertEquals( NodeFactory.createLiteral( "foo"), binding.get("x"));
-        assertEquals( NodeFactory.createLiteral( "bar"), binding.get("y"));
+        assertEquals( NodeFactory.createLiteralString( "foo"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "bar"), binding.get("y"));
         binding = bindings.get(1);
-        assertEquals( NodeFactory.createLiteral( "fu"), binding.get("x"));
-        assertEquals( NodeFactory.createLiteral( "bear"), binding.get("y"));
+        assertEquals( NodeFactory.createLiteralString( "fu"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "bear"), binding.get("y"));
     }
 
     @ContractTest
@@ -142,10 +142,10 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
         List<Binding> bindings = query.getValuesData();
         assertEquals( 2, bindings.size() );
         Binding binding = bindings.get(0);
-        assertEquals( NodeFactory.createLiteral( "foo"), binding.get("x"));
-        assertEquals( NodeFactory.createLiteral( "bar" ), binding.get("y"));
+        assertEquals( NodeFactory.createLiteralString( "foo"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "bar" ), binding.get("y"));
         binding = bindings.get(1);
-        assertEquals( NodeFactory.createLiteral( "fu" ), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "fu" ), binding.get("x"));
         assertNull( binding.get("y"));
     }
 
@@ -165,14 +165,14 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
         List<Binding> bindings = query.getValuesData();
         assertEquals( 3, bindings.size() );
         Binding binding = bindings.get(0);
-        assertEquals( NodeFactory.createLiteral( "foo"), binding.get("x"));
-        assertEquals( NodeFactory.createLiteral( "bar"), binding.get("y"));
+        assertEquals( NodeFactory.createLiteralString( "foo"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "bar"), binding.get("y"));
         binding = bindings.get(1);
-        assertEquals( NodeFactory.createLiteral( "fu"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "fu"), binding.get("x"));
         assertNull( binding.get("y"));
         binding = bindings.get(2);
         assertNull( binding.get("x"));
-        assertEquals( NodeFactory.createLiteral( "pub"), binding.get("y"));
+        assertEquals( NodeFactory.createLiteralString( "pub"), binding.get("y"));
     }
 
     @ContractTest
@@ -199,11 +199,11 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
         List<Binding> bindings = query.getValuesData();
         assertEquals( 2, bindings.size() );
         Binding binding = bindings.get(0);
-        assertEquals( NodeFactory.createLiteral( "foo"), binding.get("x"));
-        assertEquals( NodeFactory.createLiteral( "bar"), binding.get("y"));
+        assertEquals( NodeFactory.createLiteralString( "foo"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "bar"), binding.get("y"));
         binding = bindings.get(1);
-        assertEquals( NodeFactory.createLiteral( "fu"), binding.get("x"));
-        assertEquals( NodeFactory.createLiteral( "bear"), binding.get("y"));
+        assertEquals( NodeFactory.createLiteralString( "fu"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "bear"), binding.get("y"));
     }
 
     @ContractTest
@@ -221,10 +221,10 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
         List<Binding> bindings = query.getValuesData();
         assertEquals( 2, bindings.size() );
         Binding binding = bindings.get(0);
-        assertEquals( NodeFactory.createLiteral( "foo"), binding.get("x"));
-        assertEquals( NodeFactory.createLiteral( "bar"), binding.get("y"));
+        assertEquals( NodeFactory.createLiteralString( "foo"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "bar"), binding.get("y"));
         binding = bindings.get(1);
-        assertEquals( NodeFactory.createLiteral( "fu"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "fu"), binding.get("x"));
         assertNull( binding.get("y"));
     }
 
@@ -242,10 +242,10 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
         List<Binding> bindings = query.getValuesData();
         assertEquals( 2, bindings.size() );
         Binding binding = bindings.get(0);
-        assertEquals( NodeFactory.createLiteral( "foo"), binding.get("x"));
-        assertEquals( NodeFactory.createLiteral( "bar"), binding.get("y"));
+        assertEquals( NodeFactory.createLiteralString( "foo"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "bar"), binding.get("y"));
         binding = bindings.get(1);
-        assertEquals( NodeFactory.createLiteral( "fu"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "fu"), binding.get("x"));
         assertNull( binding.get("y"));
     }
 
@@ -270,10 +270,10 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
         List<Binding> bindings = query.getValuesData();
         assertEquals( 3, bindings.size() );
         Binding binding = bindings.get(0);
-        assertEquals( NodeFactory.createLiteral( "foo"), binding.get("x"));
-        assertEquals( NodeFactory.createLiteral( "bar"), binding.get("y"));
+        assertEquals( NodeFactory.createLiteralString( "foo"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "bar"), binding.get("y"));
         binding = bindings.get(1);
-        assertEquals( NodeFactory.createLiteral( "fu"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "fu"), binding.get("x"));
         assertNull( binding.get("y"));
         binding = bindings.get(2);
         assertEquals( tripleNode, binding.get("x"));
@@ -284,7 +284,7 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
     public void testAddingMatrix() {
         Map<Object, Collection<Object>> map = new LinkedHashMap<Object, Collection<Object>>();
 
-        map.put("?x", Arrays.asList("foo", NodeFactory.createLiteral("fu")));
+        map.put("?x", Arrays.asList("foo", NodeFactory.createLiteralString("fu")));
         map.put(Var.alloc("y"), Arrays.asList("bar", null));
         AbstractQueryBuilder<?> builder = valuesClause.addValueVars(map);
 
@@ -298,10 +298,10 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
         List<Binding> bindings = query.getValuesData();
         assertEquals( 2, bindings.size() );
         Binding binding = bindings.get(0);
-        assertEquals( NodeFactory.createLiteral( "foo"), binding.get("x"));
-        assertEquals( NodeFactory.createLiteral( "bar"), binding.get("y"));
+        assertEquals( NodeFactory.createLiteralString( "foo"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "bar"), binding.get("y"));
         binding = bindings.get(1);
-        assertEquals( NodeFactory.createLiteral( "fu"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "fu"), binding.get("x"));
         assertNull( binding.get("y"));
     }
 
@@ -309,13 +309,13 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
     public void testAppendingMatrix() {
         Map<Object, Collection<Object>> map = new LinkedHashMap<Object, Collection<Object>>();
 
-        map.put("?x", Arrays.asList("foo", NodeFactory.createLiteral("fu")));
+        map.put("?x", Arrays.asList("foo", NodeFactory.createLiteralString("fu")));
         map.put(Var.alloc("y"), Arrays.asList("bar", null));
         AbstractQueryBuilder<?> builder = valuesClause.addValueVars(map);
 
         Map<Var, Collection<Node>> map2 = new LinkedHashMap<Var, Collection<Node>>();
-        map2.put(Var.alloc("y"), Arrays.asList(NodeFactory.createLiteral("baz"), Var.alloc("z")));
-        map2.put(Var.alloc("z"), Arrays.asList(NodeFactory.createLiteral("dog"), NodeFactory.createLiteral("cat")));
+        map2.put(Var.alloc("y"), Arrays.asList(NodeFactory.createLiteralString("baz"), Var.alloc("z")));
+        map2.put(Var.alloc("z"), Arrays.asList(NodeFactory.createLiteralString("dog"), NodeFactory.createLiteralString("cat")));
 
         builder.addValueVars(map2);
 
@@ -329,23 +329,23 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
         List<Binding> bindings = query.getValuesData();
         assertEquals( 4, bindings.size() );
         Binding binding = bindings.get(0);
-        assertEquals( NodeFactory.createLiteral( "foo"), binding.get("x"));
-        assertEquals( NodeFactory.createLiteral( "bar"), binding.get("y"));
+        assertEquals( NodeFactory.createLiteralString( "foo"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "bar"), binding.get("y"));
         assertNull( binding.get("z"));
         binding = bindings.get(1);
-        assertEquals( NodeFactory.createLiteral( "fu"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "fu"), binding.get("x"));
         assertNull( binding.get("y"));
         assertNull( binding.get("z"));
 
         binding = bindings.get(2);
         assertNull( binding.get("x"));
-        assertEquals( NodeFactory.createLiteral( "baz"), binding.get("y"));
-        assertEquals( NodeFactory.createLiteral( "dog"), binding.get("z"));
+        assertEquals( NodeFactory.createLiteralString( "baz"), binding.get("y"));
+        assertEquals( NodeFactory.createLiteralString( "dog"), binding.get("z"));
 
         binding = bindings.get(3);
         assertNull( binding.get("x"));
         assertEquals( Var.alloc( "z"), binding.get("y"));
-        assertEquals( NodeFactory.createLiteral( "cat"), binding.get("z"));
+        assertEquals( NodeFactory.createLiteralString( "cat"), binding.get("z"));
     }
 
     @ContractTest
@@ -365,10 +365,10 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
         List<Binding> bindings = query.getValuesData();
         assertEquals( 2, bindings.size() );
         Binding binding = bindings.get(0);
-        assertEquals( NodeFactory.createLiteral( "foo"), binding.get("x"));
-        assertEquals( NodeFactory.createLiteral( "bar"), binding.get("y"));
+        assertEquals( NodeFactory.createLiteralString( "foo"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "bar"), binding.get("y"));
         binding = bindings.get(1);
-        assertEquals( NodeFactory.createLiteral( "fu"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "fu"), binding.get("x"));
         assertNull( binding.get("y"));
     }
 
@@ -389,10 +389,10 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
         List<Binding> bindings = query.getValuesData();
         assertEquals( 2, bindings.size() );
         Binding binding = bindings.get(0);
-        assertEquals( NodeFactory.createLiteral( "foo"), binding.get("x"));
-        assertEquals( NodeFactory.createLiteral( "bar"), binding.get("y"));
+        assertEquals( NodeFactory.createLiteralString( "foo"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "bar"), binding.get("y"));
         binding = bindings.get(1);
-        assertEquals( NodeFactory.createLiteral( "fu"), binding.get("x"));
+        assertEquals( NodeFactory.createLiteralString( "fu"), binding.get("x"));
         assertNull( binding.get("y"));
     }
 
@@ -413,12 +413,12 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
         assertEquals(2, map.keySet().size());
         List<Node> nodes = map.get(Var.alloc("x"));
         assertEquals(2, nodes.size());
-        assertEquals(NodeFactory.createLiteral("foo"), nodes.get(0));
-        assertEquals(NodeFactory.createLiteral("fu"), nodes.get(1));
+        assertEquals(NodeFactory.createLiteralString("foo"), nodes.get(0));
+        assertEquals(NodeFactory.createLiteralString("fu"), nodes.get(1));
 
         nodes = map.get(Var.alloc("y"));
         assertEquals(2, nodes.size());
-        assertEquals(NodeFactory.createLiteral("bar"), nodes.get(0));
+        assertEquals(NodeFactory.createLiteralString("bar"), nodes.get(0));
         assertNull(nodes.get(1));
 
         builder.clearValues();

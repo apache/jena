@@ -330,11 +330,11 @@ public class ConvertersTest {
         assertTriplePath(Triple.create(Node.ANY, RDF.first.asNode(), getSubject(lst.get(2))), lst.get(4));
         assertTriplePath(Triple.create(getSubject(lst.get(4)), RDF.rest.asNode(), getSubject(lst.get(12))), lst.get(5));
         // sublist 2
-        assertTriplePath(Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createLiteral("an")), lst.get(6));
+        assertTriplePath(Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createLiteralString("an")), lst.get(6));
         assertTriplePath(Triple.create(getSubject(lst.get(6)), RDF.rest.asNode(), getSubject(lst.get(8))), lst.get(7));
         assertTriplePath(Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createURI("embedded")), lst.get(8));
         assertTriplePath(Triple.create(getSubject(lst.get(8)), RDF.rest.asNode(), getSubject(lst.get(10))), lst.get(9));
-        assertTriplePath(Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createLiteral("array")), lst.get(10));
+        assertTriplePath(Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createLiteralString("array")), lst.get(10));
         assertTriplePath(Triple.create(getSubject(lst.get(10)), RDF.rest.asNode(), RDF.nil.asNode()), lst.get(11));
         // end of sublist 2
         assertTriplePath(Triple.create(Node.ANY, RDF.first.asNode(), getSubject(lst.get(6))), lst.get(12));

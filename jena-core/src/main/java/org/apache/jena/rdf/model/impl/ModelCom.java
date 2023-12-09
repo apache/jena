@@ -369,7 +369,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     @Override
     public StmtIterator listStatements( Resource S, Property P, String O ) {
         return O == null ? listStatements(S, P, Node.ANY)
-                         :  listStatements( S, P, NodeFactory.createLiteral( O ) );
+                         :  listStatements( S, P, NodeFactory.createLiteralString( O ) );
     }
 
     @Override
@@ -564,7 +564,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
      */
     @Override
     public Literal createTypedLiteral(String v)  {
-        return new LiteralImpl(NodeFactory.createLiteral(v), this);
+        return new LiteralImpl(NodeFactory.createLiteralString(v), this);
     }
 
     /**

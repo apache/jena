@@ -54,7 +54,7 @@ public class StoragePrefixesTDB implements StoragePrefixes {
     public String get(Node graphNode, String prefix) {
         requireTxn();
         graphNode = canonicalGraphName(graphNode);
-        Node p = NodeFactory.createLiteral(prefix);
+        Node p = NodeFactory.createLiteralString(prefix);
         Iterator<Tuple<Node>> iter = prefixTable.find(graphNode, p, null);
         if ( ! iter.hasNext() )
             return null;
@@ -90,7 +90,7 @@ public class StoragePrefixesTDB implements StoragePrefixes {
         // added prefixes. Going to the NodeTupleTable prefixTable would skip those and
         // require node creation in the caller as well.
         graphNode = canonicalGraphName(graphNode);
-        Node p = NodeFactory.createLiteral(prefix);
+        Node p = NodeFactory.createLiteralString(prefix);
         Node u = NodeFactory.createURI(iriStr);
         // Delete any existing old mapping of prefix.
         remove_ext(graphNode, p, Node.ANY);
@@ -99,7 +99,7 @@ public class StoragePrefixesTDB implements StoragePrefixes {
 
     @Override
     public void delete(Node graphNode, String prefix) {
-        Node p = NodeFactory.createLiteral(prefix);
+        Node p = NodeFactory.createLiteralString(prefix);
         remove(graphNode, p, null);
     }
 

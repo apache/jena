@@ -79,7 +79,7 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void oneVarOneData() {
-        Node n = NodeFactory.createLiteral("hello");
+        Node n = NodeFactory.createLiteralString("hello");
         Var v = Var.alloc("x");
         handler.addValueVar(v, Arrays.asList(n));
         handler.build();
@@ -99,8 +99,8 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void oneVarTwoData() {
-        Node n = NodeFactory.createLiteral("hello");
-        Node n2 = NodeFactory.createLiteral("there");
+        Node n = NodeFactory.createLiteralString("hello");
+        Node n2 = NodeFactory.createLiteralString("there");
 
         Var v = Var.alloc("x");
         handler.addValueVar(v, Arrays.asList(n, n2));
@@ -127,7 +127,7 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void twoVarOneData() {
-        Node n = NodeFactory.createLiteral("hello");
+        Node n = NodeFactory.createLiteralString("hello");
         Var v = Var.alloc("x");
         Var v2 = Var.alloc("y");
         handler.addValueVar(v, Arrays.asList(n));
@@ -142,10 +142,10 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void twoVarTwoBlocks() {
-        Node n = NodeFactory.createLiteral("hello");
-        Node nn = NodeFactory.createLiteral("hola");
-        Node n2 = NodeFactory.createLiteral("there");
-        Node nn2 = NodeFactory.createLiteral("aqui");
+        Node n = NodeFactory.createLiteralString("hello");
+        Node nn = NodeFactory.createLiteralString("hola");
+        Node n2 = NodeFactory.createLiteralString("there");
+        Node nn2 = NodeFactory.createLiteralString("aqui");
 
         Var v = Var.alloc("x");
         Var v2 = Var.alloc("y");
@@ -186,10 +186,10 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void twoVarTwoBlocksWithVarReplacement() {
-        Node n = NodeFactory.createLiteral("hello");
-        Node nn = NodeFactory.createLiteral("hola");
-        Node n2 = NodeFactory.createLiteral("there");
-        Node nn2 = NodeFactory.createLiteral("aqui");
+        Node n = NodeFactory.createLiteralString("hello");
+        Node nn = NodeFactory.createLiteralString("hola");
+        Node n2 = NodeFactory.createLiteralString("there");
+        Node nn2 = NodeFactory.createLiteralString("aqui");
 
         Var v = Var.alloc("x");
         Var v2 = Var.alloc("y");
@@ -226,9 +226,9 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void twoVarTwoBlocksReplaceDataVar() {
-        Node n = NodeFactory.createLiteral("hello");
-        Node nn = NodeFactory.createLiteral("hola");
-        Node n2 = NodeFactory.createLiteral("there");
+        Node n = NodeFactory.createLiteralString("hello");
+        Node nn = NodeFactory.createLiteralString("hola");
+        Node n2 = NodeFactory.createLiteralString("there");
         Var nn2 = Var.alloc("z");
 
         Var v = Var.alloc("x");
@@ -239,7 +239,7 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
         handler.addValueRow(Arrays.asList(n, n2));
         handler.addValueRow(Arrays.asList(nn, nn2));
 
-        Node rep = NodeFactory.createLiteral("aqui");
+        Node rep = NodeFactory.createLiteralString("aqui");
         Map<Var, Node> replaceVars = new HashMap<Var, Node>();
         replaceVars.put(nn2, rep);
 
@@ -275,8 +275,8 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
 
     @Test
     public void oneVarTwoBlocksWithReplacement() {
-        Node n = NodeFactory.createLiteral("hello");
-        Node n2 = NodeFactory.createLiteral("there");
+        Node n = NodeFactory.createLiteralString("hello");
+        Node n2 = NodeFactory.createLiteralString("there");
 
         Var v = Var.alloc("x");
         handler.addValueVar(v, Arrays.asList(n, n2));
@@ -294,10 +294,10 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
     @Test
     public void testAddSquare() {
 
-        Node n = NodeFactory.createLiteral("hello");
-        Node nn = NodeFactory.createLiteral("hola");
-        Node n2 = NodeFactory.createLiteral("there");
-        Node nn2 = NodeFactory.createLiteral("aqui");
+        Node n = NodeFactory.createLiteralString("hello");
+        Node nn = NodeFactory.createLiteralString("hola");
+        Node n2 = NodeFactory.createLiteralString("there");
+        Node nn2 = NodeFactory.createLiteralString("aqui");
 
         Var v = Var.alloc("x");
         Var v2 = Var.alloc("y");
@@ -306,8 +306,8 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
         handler.addValueVar(v2, Arrays.asList(nn, nn2));
 
         ValuesHandler handler2 = new ValuesHandler(new Query());
-        Node n3 = NodeFactory.createLiteral("why");
-        Node nn3 = NodeFactory.createLiteral("quando");
+        Node n3 = NodeFactory.createLiteralString("why");
+        Node nn3 = NodeFactory.createLiteralString("quando");
         handler2.addValueVar(v, Arrays.asList(n3));
         handler2.addValueVar(v2, Arrays.asList(nn3));
 
@@ -346,10 +346,10 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
     @Test
     public void testAddNotSquare() {
 
-        Node n = NodeFactory.createLiteral("hello");
-        Node nn = NodeFactory.createLiteral("hola");
-        Node n2 = NodeFactory.createLiteral("there");
-        Node nn2 = NodeFactory.createLiteral("aqui");
+        Node n = NodeFactory.createLiteralString("hello");
+        Node nn = NodeFactory.createLiteralString("hola");
+        Node n2 = NodeFactory.createLiteralString("there");
+        Node nn2 = NodeFactory.createLiteralString("aqui");
 
         Var v = Var.alloc("x");
         Var v2 = Var.alloc("y");
@@ -359,8 +359,8 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
         handler.addValueVar(v2, Arrays.asList(nn, nn2));
 
         ValuesHandler handler2 = new ValuesHandler(new Query());
-        Node n3 = NodeFactory.createLiteral("why");
-        Node nn3 = NodeFactory.createLiteral("quando");
+        Node n3 = NodeFactory.createLiteralString("why");
+        Node nn3 = NodeFactory.createLiteralString("quando");
         handler2.addValueVar(v2, Arrays.asList(n3));
         handler2.addValueVar(v3, Arrays.asList(nn3));
 
@@ -401,8 +401,8 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
         final Var x = Var.alloc("x");
         final Node one = NodeFactory.createURI("one");
         final Node two = NodeFactory.createURI("two");
-        final Node three = NodeFactory.createLiteral("three");
-        final Node four = NodeFactory.createLiteral("four");
+        final Node three = NodeFactory.createLiteralString("three");
+        final Node four = NodeFactory.createLiteralString("four");
 
         handler.addValueVar(v, Arrays.asList(one, two));
         handler.addValueVar(x, Arrays.asList(three, four));
@@ -412,10 +412,10 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
         edat.add(x);
 
         Binding binding1 = BindingFactory.binding(v, NodeFactory.createURI("one"), x,
-                NodeFactory.createLiteral("three"));
+                NodeFactory.createLiteralString("three"));
         edat.add(binding1);
         Binding binding2 = BindingFactory.binding(v, NodeFactory.createURI("two"), x,
-                NodeFactory.createLiteral("four"));
+                NodeFactory.createLiteralString("four"));
         edat.add(binding2);
 
         WhereValidator visitor = new WhereValidator(edat);
@@ -446,7 +446,7 @@ public class ValuesHandlerTest extends AbstractHandlerTest {
         Var x = Var.alloc("x");
         Var y = Var.alloc("y");
         Node foo = NodeFactory.createURI("foo");
-        Node bar = NodeFactory.createLiteral("bar");
+        Node bar = NodeFactory.createLiteralString("bar");
 
         assertTrue(handler.getValuesVars().isEmpty());
 

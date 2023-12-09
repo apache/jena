@@ -84,7 +84,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         ElementPathBlock epb = new ElementPathBlock();
         Triple t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
-                NodeFactory.createLiteral("three"));
+                NodeFactory.createLiteralString("three"));
         epb.addTriple(t);
 
         WhereValidator visitor = new WhereValidator(epb);
@@ -214,7 +214,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         ElementPathBlock epb = new ElementPathBlock();
         ElementOptional optional = new ElementOptional(epb);
         Triple t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
-                NodeFactory.createLiteral("three"));
+                NodeFactory.createLiteralString("three"));
         epb.addTriple(t);
 
         WhereValidator visitor = new WhereValidator(optional);
@@ -231,7 +231,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         Path path = new P_Seq(new P_Link(NodeFactory.createURI("two")), new P_Link(NodeFactory.createURI("dos")));
         ElementPathBlock epb = new ElementPathBlock();
         ElementOptional optional = new ElementOptional(epb);
-        TriplePath tp = new TriplePath(NodeFactory.createURI("one"), path, NodeFactory.createLiteral("three"));
+        TriplePath tp = new TriplePath(NodeFactory.createURI("one"), path, NodeFactory.createLiteralString("three"));
         epb.addTriplePath(tp);
 
         WhereValidator visitor = new WhereValidator(optional);
@@ -450,7 +450,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         subQuery.addProjectVars(Arrays.asList("x"));
         subQuery.setQueryPattern(epb);
         Triple t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
-                NodeFactory.createLiteral("three"));
+                NodeFactory.createLiteralString("three"));
         epb.addTriple(t);
 
         WhereValidator visitor = new WhereValidator(union);
@@ -909,7 +909,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         Node one = NodeFactory.createURI("one");
         Var two = Var.alloc("two");
-        Node three = NodeFactory.createLiteral("three");
+        Node three = NodeFactory.createLiteralString("three");
         Node foo = NodeFactory.createURI("foo");
         Node bar = NodeFactory.createURI("bar");
 
@@ -944,7 +944,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         ElementPathBlock epb = new ElementPathBlock();
         ElementMinus minus = new ElementMinus(epb);
         epb.addTriplePath(new TriplePath(Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
-                NodeFactory.createLiteral("three"))));
+                NodeFactory.createLiteralString("three"))));
         WhereValidator visitor = new WhereValidator(minus);
         query.getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
@@ -1135,10 +1135,10 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
     private static void setupBindings(ElementData edat, Var x, Var v) {
         Binding binding1 = BindingFactory.binding(v, NodeFactory.createURI("one"), x,
-                NodeFactory.createLiteral("three"));
+                NodeFactory.createLiteralString("three"));
         edat.add(binding1);
         Binding binding2 = BindingFactory.binding(v, NodeFactory.createURI("two"), x,
-                NodeFactory.createLiteral("four"));
+                NodeFactory.createLiteralString("four"));
         edat.add(binding2);
     }
 
@@ -1363,12 +1363,12 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         assertEquals(2, map.keySet().size());
         List<Node> nodes = map.get(Var.alloc("x"));
         assertEquals(2, nodes.size());
-        assertEquals(NodeFactory.createLiteral("foo"), nodes.get(0));
-        assertEquals(NodeFactory.createLiteral("fu"), nodes.get(1));
+        assertEquals(NodeFactory.createLiteralString("foo"), nodes.get(0));
+        assertEquals(NodeFactory.createLiteralString("fu"), nodes.get(1));
 
         nodes = map.get(Var.alloc("y"));
         assertEquals(2, nodes.size());
-        assertEquals(NodeFactory.createLiteral("bar"), nodes.get(0));
+        assertEquals(NodeFactory.createLiteralString("bar"), nodes.get(0));
         assertNull(nodes.get(1));
 
         whereClause.clearWhereValues();

@@ -273,7 +273,7 @@ public class QueryEvalTest implements Runnable {
                     s = "_:" + n.getBlankNodeLabel();
                 else
                     s = NodeFunctions.str(n);
-                builder.add(v, NodeFactory.createLiteral(s));
+                builder.add(v, NodeFactory.createLiteralString(s));
             }
             bindings.add(builder.build());
         }

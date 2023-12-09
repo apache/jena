@@ -38,32 +38,32 @@ public class TestNodeFunctions {
     private static final double accuracyClose = 0.000001d ;
 
     @Test public void testSameTerm1() {
-        Node n1 = NodeFactory.createLiteral("xyz") ;
-        Node n2 = NodeFactory.createLiteral("xyz") ;
+        Node n1 = NodeFactory.createLiteralString("xyz") ;
+        Node n2 = NodeFactory.createLiteralString("xyz") ;
         assertTrue(NodeFunctions.sameTerm(n1, n2)) ;
     }
 
     @Test public void testSameTerm2() {
-        Node n1 = NodeFactory.createLiteral("xyz") ;
-        Node n2 = NodeFactory.createLiteral("abc") ;
+        Node n1 = NodeFactory.createLiteralString("xyz") ;
+        Node n2 = NodeFactory.createLiteralString("abc") ;
         assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
     }
 
     @Test public void testSameTerm3() {
-        Node n1 = NodeFactory.createLiteral("xyz") ;
+        Node n1 = NodeFactory.createLiteralString("xyz") ;
         Node n2 = NodeFactory.createURI("xyz") ;
         assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
     }
 
     @Test public void testSameTerm4() {
-        Node n1 = NodeFactory.createLiteral("xyz") ;
+        Node n1 = NodeFactory.createLiteralString("xyz") ;
         Node n2 = NodeFactory.createLiteral("xyz", XSDDatatype.XSDstring) ;
         assertTrue(NodeFunctions.sameTerm(n1, n2)) ;
     }
 
     @Test public void testSameTerm5() {
         Node n1 = NodeFactory.createLiteralLang("xyz", "en") ;
-        Node n2 = NodeFactory.createLiteral("xyz") ;
+        Node n2 = NodeFactory.createLiteralString("xyz") ;
         assertFalse(NodeFunctions.sameTerm(n1, n2)) ;
     }
 
@@ -75,7 +75,7 @@ public class TestNodeFunctions {
 
     @Test public void testRDFtermEquals1() {
         Node n1 = NodeFactory.createURI("xyz") ;
-        Node n2 = NodeFactory.createLiteral("xyz") ;
+        Node n2 = NodeFactory.createLiteralString("xyz") ;
         assertFalse(NodeFunctions.rdfTermEquals(n1, n2)) ;
     }
 
@@ -88,7 +88,7 @@ public class TestNodeFunctions {
     @Test(expected=ExprEvalException.class)
     public void testRDFtermEquals3() {
         // Unextended - not known to be same (no language tag support).
-        Node n1 = NodeFactory.createLiteral("xyz") ;
+        Node n1 = NodeFactory.createLiteralString("xyz") ;
         Node n2 = NodeFactory.createLiteralLang("xyz", "en") ;
         NodeFunctions.rdfTermEquals(n1, n2);
     }
@@ -248,7 +248,7 @@ public class TestNodeFunctions {
     }
 
     @Test public void testLang4() {
-        NodeValue nv = NodeValue.makeNode(NodeFactory.createLiteral("simple")) ;
+        NodeValue nv = NodeValue.makeNode(NodeFactory.createLiteralString("simple")) ;
         NodeValue r = NodeFunctions.lang(nv) ;
         NodeValue e = NodeValue.makeString("") ;
         assertEquals(e, r) ;
@@ -345,7 +345,7 @@ public class TestNodeFunctions {
     }
 
     @Test public void testIsIRI_2() {
-        NodeValue nv = NodeValue.makeNode(NodeFactory.createLiteral("http://example/")) ;
+        NodeValue nv = NodeValue.makeNode(NodeFactory.createLiteralString("http://example/")) ;
         NodeValue r = NodeFunctions.isIRI(nv) ;
         assertEquals(NodeValue.FALSE, r) ;
     }
@@ -357,7 +357,7 @@ public class TestNodeFunctions {
     }
 
     @Test public void testIsBlank2() {
-        NodeValue nv = NodeValue.makeNode(NodeFactory.createLiteral("xyz")) ;
+        NodeValue nv = NodeValue.makeNode(NodeFactory.createLiteralString("xyz")) ;
         NodeValue r = NodeFunctions.isBlank(nv) ;
         assertEquals(NodeValue.FALSE, r) ;
     }
@@ -370,7 +370,7 @@ public class TestNodeFunctions {
     }
 
     @Test public void testIsLiteral1() {
-        NodeValue nv = NodeValue.makeNode(NodeFactory.createLiteral("xyz")) ;
+        NodeValue nv = NodeValue.makeNode(NodeFactory.createLiteralString("xyz")) ;
         NodeValue r = NodeFunctions.isLiteral(nv) ;
         assertEquals(NodeValue.TRUE, r) ;
     }

@@ -1217,7 +1217,7 @@ public class TestNodeValue
     @Test
     public void testNotEquals3() { // Literals and URIs are different.
         NodeValue nv1 = NodeValue.makeNode(org.apache.jena.graph.NodeFactory.createURI("http://example"));
-        NodeValue nv2 = NodeValue.makeNode(org.apache.jena.graph.NodeFactory.createLiteral("http://example"));
+        NodeValue nv2 = NodeValue.makeNode(org.apache.jena.graph.NodeFactory.createLiteralString("http://example"));
         assertFalse("NodeValue.equals()", nv1.equals(nv2));
     }
 
