@@ -97,7 +97,7 @@ public class Item extends ItemLocation {
     }
 
     public static void addPair(ItemList list, String key, String value) {
-        addPair(list, Item.createSymbol(key), Item.createNode(NodeFactory.createLiteral(value)));
+        addPair(list, Item.createSymbol(key), Item.createNode(NodeFactory.createLiteralString(value)));
     }
 
     public static void addPair(ItemList list, String key, Node node) {

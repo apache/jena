@@ -562,7 +562,7 @@ public class TextIndexLucene implements TextIndex {
                         literal = NodeFactory.createLiteralLang(lexical, doclang);
                     }
                 } else {
-                    literal = NodeFactory.createLiteral(lexical);
+                    literal = NodeFactory.createLiteralString(lexical);
                 }
             }
 

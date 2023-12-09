@@ -185,7 +185,7 @@ public class ValidationReport {
             if ( shape.getMessages() != null && ! shape.getMessages().isEmpty() )
                 messages = shape.getMessages();
             else
-                messages = Collections.singleton(NodeFactory.createLiteral(message));
+                messages = Collections.singleton(NodeFactory.createLiteralString(message));
 
             ReportEntry e = ReportEntry.create()
                 .focusNode(focusNode)

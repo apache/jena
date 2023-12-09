@@ -85,7 +85,7 @@ public class TestGraphUnionRead
     public void gr_union_03() {
         List<Node> gnodes = list(gn1, gn2, gn9);
         Graph g = new GraphUnionRead(dsg, gnodes);
-        Node o = NodeFactory.createLiteral("g2");
+        Node o = NodeFactory.createLiteralString("g2");
         long x = Iter.count(g.find(null, null, o));
         assertEquals(1, x);
     }
@@ -120,7 +120,7 @@ public class TestGraphUnionRead
         Graph g = new GraphUnionRead(dsg, gnodes);
         long x1 = Iter.count(g.find(null, null, null));
         assertEquals(2, x1);
-        Node o = NodeFactory.createLiteral("g2");
+        Node o = NodeFactory.createLiteralString("g2");
         long x2 = Iter.count(g.find(null, null, o));
         assertEquals(1, x2);
     }

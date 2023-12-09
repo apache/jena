@@ -62,7 +62,7 @@ public class TestSemanticEquivalence {
         Node p1 = NodeFactory.createURI("http://p1");
         Node p2 = NodeFactory.createURI("http://p2");
         Node pSelf = NodeFactory.createURI("http://self");
-        Node o = NodeFactory.createLiteral("object");
+        Node o = NodeFactory.createLiteralString("object");
 
         DatasetGraph dsg = implJoin.asDatasetGraph();
         dsg.add(Quad.defaultGraphNodeGenerated, a, p1, o);

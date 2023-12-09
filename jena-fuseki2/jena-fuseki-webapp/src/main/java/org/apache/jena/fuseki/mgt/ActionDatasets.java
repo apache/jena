@@ -431,7 +431,7 @@ public class ActionDatasets extends ActionContainerItem {
             // -- System database
             // Find graph associated with this dataset name.
             // (Statically configured databases aren't in the system database.)
-            Node n = NodeFactory.createLiteral(DataAccessPoint.canonical(name));
+            Node n = NodeFactory.createLiteralString(DataAccessPoint.canonical(name));
             Quad q = getOne(systemDSG, null, null, pServiceName.asNode(), n);
 //            if ( q == null )
 //                ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");

@@ -80,7 +80,7 @@ public class strSplit extends PFuncSimpleAndList
 
             Iterator<Binding> it = Iter.map(
                     tokens.iterator(),
-                    item -> BindingFactory.binding(binding, subjectVar, NodeFactory.createLiteral(item)));
+                    item -> BindingFactory.binding(binding, subjectVar, NodeFactory.createLiteralString(item)));
             return QueryIterPlainWrapper.create(it, execCxt);
 
         } else if ( Util.isSimpleString(subject) ) {

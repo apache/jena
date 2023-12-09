@@ -45,7 +45,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     @Override
     public synchronized void insertPrefix(String graphName, String prefix, String uri) {
         Node g = NodeFactory.createURI(graphName) ;
-        Node p = NodeFactory.createLiteral(prefix) ;
+        Node p = NodeFactory.createLiteralString(prefix) ;
         Node u = NodeFactory.createURI(uri) ;
         // Remove any previous mapping.
         remove_prefix(g,p,Node.ANY);
@@ -78,7 +78,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     @Override
     public synchronized String readPrefix(String graphName, String prefix) {
         Node g = NodeFactory.createURI(graphName) ;
-        Node p = NodeFactory.createLiteral(prefix) ;
+        Node p = NodeFactory.createLiteralString(prefix) ;
 
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, p, null) ;
         try {
@@ -131,7 +131,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     @Override
     public void removeFromPrefixMap(String graphName, String prefix) {
         Node g = NodeFactory.createURI(graphName) ;
-        Node p = NodeFactory.createLiteral(prefix) ;
+        Node p = NodeFactory.createLiteralString(prefix) ;
         removeAll(g, p, null) ;
     }
 

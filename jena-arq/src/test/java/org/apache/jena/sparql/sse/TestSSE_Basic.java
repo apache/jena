@@ -87,7 +87,7 @@ public class TestSSE_Basic
 
     @Test public void testLit_12()
     {
-        Node n = org.apache.jena.graph.NodeFactory.createLiteral("A\tB") ;
+        Node n = org.apache.jena.graph.NodeFactory.createLiteralString("A\tB") ;
         testNode("'''A\\tB'''", n) ;
     }
 

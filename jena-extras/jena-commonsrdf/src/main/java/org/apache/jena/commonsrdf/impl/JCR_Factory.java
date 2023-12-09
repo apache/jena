@@ -36,7 +36,7 @@ public class JCR_Factory {
     }
 
     public static Literal createLiteral(String lexStr) {
-        return new JCR_Literal(NodeFactory.createLiteral(lexStr));
+        return new JCR_Literal(NodeFactory.createLiteralString(lexStr));
     }
 
     public static Literal createLiteralDT(String lexStr, String datatypeIRI) {

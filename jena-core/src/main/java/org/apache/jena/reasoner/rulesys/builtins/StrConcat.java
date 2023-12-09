@@ -66,7 +66,7 @@ public class StrConcat extends BaseBuiltin {
         for (int i = 0; i < length-1; i++) {
             buff.append( lex(getArg(i, args, context), context) );
         }
-        Node result = NodeFactory.createLiteral(buff.toString());
+        Node result = NodeFactory.createLiteralString(buff.toString());
         return context.getEnv().bind(args[length-1], result);
     }
     

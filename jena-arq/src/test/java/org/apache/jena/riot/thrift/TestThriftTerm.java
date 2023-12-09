@@ -314,7 +314,7 @@ public class TestThriftTerm {
     }
 
     @Test public void round_trip_bytes_02() {
-        testTermBytes(NodeFactory.createLiteral("value"));
+        testTermBytes(NodeFactory.createLiteralString("value"));
     }
 
     @Test public void round_trip_bytes_03() {

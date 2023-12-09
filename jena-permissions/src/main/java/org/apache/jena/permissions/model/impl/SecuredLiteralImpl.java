@@ -97,7 +97,7 @@ public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements SecuredLit
         if (canRead()) {
             throw new ResourceRequiredException(asNode());
         }
-        throw new ResourceRequiredException(NodeFactory.createLiteral("Can not read"));
+        throw new ResourceRequiredException(NodeFactory.createLiteralString("Can not read"));
     }
 
     /**

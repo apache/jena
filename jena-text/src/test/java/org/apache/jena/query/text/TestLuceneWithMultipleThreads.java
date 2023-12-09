@@ -245,7 +245,7 @@ public class TestLuceneWithMultipleThreads
 
             dsg.begin(ReadWrite.WRITE);
 
-            dsg.add(NodeFactory.createURI("http://example.org/graph"), NodeFactory.createURI("http://example.org/test"), RDFS.label.asNode(), NodeFactory.createLiteral("test"));
+            dsg.add(NodeFactory.createURI("http://example.org/graph"), NodeFactory.createURI("http://example.org/test"), RDFS.label.asNode(), NodeFactory.createLiteralString("test"));
 
             // TODO use a Semaphore!
             Thread.sleep(500);

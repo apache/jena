@@ -122,7 +122,7 @@ public class splitIRI extends PropertyFunctionEval
         }
 
         if ( Var.isVar(localnameNode) )
-            builder.add(Var.alloc(localnameNode), NodeFactory.createLiteral(localname)) ;
+            builder.add(Var.alloc(localnameNode), NodeFactory.createLiteralString(localname)) ;
         else
         {
             // Only string literals (plain strings or datatype xsd:string)

@@ -419,7 +419,7 @@ public class TestExpressions
         query.setPrefix("select",  selNS) ;
     }
     static String xsd = XSDDatatype.XSD+"#" ;
-    static Binding env = BindingFactory.binding(Var.alloc("a"), NodeFactory.createLiteral("A"),
+    static Binding env = BindingFactory.binding(Var.alloc("a"), NodeFactory.createLiteralString("A"),
                                                 Var.alloc("b"), NodeFactory.createBlankNode(),
                                                 Var.alloc("x"), NodeFactory.createURI("urn:ex:abcd")) ;
 

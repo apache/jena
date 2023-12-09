@@ -184,7 +184,7 @@ class NormalizeValue
     } ;
 
     /** Convert xsd:string to simple literal */
-    static DatatypeHandler dtXSDString = (Node node, String lexicalForm, RDFDatatype datatype) -> NodeFactory.createLiteral(lexicalForm) ;
+    static DatatypeHandler dtXSDString = (Node node, String lexicalForm, RDFDatatype datatype) -> NodeFactory.createLiteralString(lexicalForm) ;
 
     /** Convert simple literal to xsd:string */
     static DatatypeHandler dtSimpleLiteral = (Node node, String lexicalForm, RDFDatatype datatype) -> NodeFactory.createLiteral(lexicalForm, datatype) ;
@@ -200,7 +200,7 @@ class NormalizeValue
 
         String lex = lexicalForm.substring(0, idx) ;
         if ( idx == lexicalForm.length()-1 )
-            return NodeFactory.createLiteral(lex) ;
+            return NodeFactory.createLiteralString(lex) ;
         String lang = lexicalForm.substring(idx+1) ;
         return NodeFactory.createLiteralLang(lex, lang) ;
     } ;

@@ -20,7 +20,6 @@ package org.apache.jena.graph;
 
 
 import static org.apache.jena.atlas.lib.Lib.isEmpty;
-import static org.apache.jena.graph.NodeFactory.noLangTag;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -88,19 +87,19 @@ public class NodeFactory {
         return new Node_Literal( lit );
     }
 
+    /** @deprecated Use {@link #createLiteral} */
+    @Deprecated
+    public static Node createLiteral(String string) {
+        return createLiteralString(string);
+    }
+
     /*
      * Make literal which is a string (xsd:string)
      */
-    public static Node createLiteral(String string) {
+    public static Node createLiteralString(String string) {
         Objects.requireNonNull(string, "Argument to NodeFactory.createLiteralString is null");
         return new Node_Literal(string);
     }
-
-//    /** @deprecated Use {@link #createLiteral} */
-//    @Deprecated
-//    public static Node createLiteral(String string) {
-//        return createLiteralString(string);
-//    }
 
     /**
      * Make a literal with specified language. The lexical form must not be null.
@@ -169,7 +168,7 @@ public class NodeFactory {
      * This is a convenience operation for passing in language and datatype without
      * needing the caller to differentiate between the xsd:string, rdf:langString and other
      * datatype cases.
-     * It calls {@link #createLiteral(String)},
+     * It calls {@link #createLiteralString(String)},
      * {@link #createLiteralDirLang(String, String, String)} or
      * {@link #createLiteral(String, RDFDatatype)}
      * as appropriate.
@@ -188,7 +187,7 @@ public class NodeFactory {
      * This is a convenience operation for passing in language and datatype without
      * needing the caller to differentiate between the xsd:string, rdf:langString, and other
      * datatype cases.
-     * It calls {@link #createLiteral(String)},
+     * It calls {@link #createLiteralString(String)},
      * {@link #createLiteralDirLang(String, String, String)} or
      * {@link #createLiteral(String, RDFDatatype)}
      * as appropriate.
@@ -209,7 +208,7 @@ public class NodeFactory {
      * This is a convenience operation for passing in language and datatype without
      * needing the caller to differentiate between the xsd:string, rdf:langString, and other
      * datatype cases.
-     * It calls {@link #createLiteral(String)},
+     * It calls {@link #createLiteralString(String)},
      * {@link #createLiteralDirLang(String, String, String)} or
      * {@link #createLiteral(String, RDFDatatype)}
      * as appropriate.
@@ -235,7 +234,7 @@ public class NodeFactory {
         }
         if ( dtype == null )
             // No datatype, no lang (it is null or "") => xsd:string.
-            return createLiteral(lex);
+            return createLiteralString(lex);
 
         // No lang, with a datatype
         if ( dtype.equals(RDFLangString.rdfLangString) )

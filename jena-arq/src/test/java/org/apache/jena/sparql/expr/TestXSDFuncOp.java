@@ -659,7 +659,7 @@ public class TestXSDFuncOp {
     }
 
     @Test public void testCompareGeneral3() {
-        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteral("test:abc"));
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteralString("test:abc"));
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createURI("test:abc"));
 
         // URIs before literals

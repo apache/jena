@@ -45,7 +45,7 @@ public class NodeConst {
     public static final Node nodeTwo       = literal("2", XSDDatatype.XSDinteger);
     public static final Node nodeTen       = literal("10", XSDDatatype.XSDinteger);
     public static final Node nodeMinusOne  = literal("-1", XSDDatatype.XSDinteger);
-    public static final Node emptyString   = NodeFactory.createLiteral("");
+    public static final Node emptyString   = NodeFactory.createLiteralString("");
     public static final Node TRUE = NodeConst.nodeTrue;
     public static final Node FALSE = NodeConst.nodeFalse;
 
