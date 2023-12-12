@@ -19,15 +19,13 @@
 package org.apache.jena.graph;
 
 /**
-	HasNode - interface for objects that front a Node in some context. The critical
-    semantics for HasNode is that classes implementing HasNode promise that
-    their .equals() is based *only* on the underlying Node. 
-
-*/
-public interface FrontsNode 
-    {
+ * HasNode - interface for objects that front a Node in some context. The critical
+ * semantics for HasNode is that classes implementing HasNode promise that their
+ * .equals() is based *only* on the underlying Node.
+ */
+public interface FrontsNode {
     /**
-        Answer the Node associated with this object.
-    */
+     * Answer the Node associated with this object.
+     */
     Node asNode();
-    }
+}

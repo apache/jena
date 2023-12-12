@@ -19,10 +19,9 @@
 package org.apache.jena.graph;
 
 /**
- 	FrontsTriple (see also FrontsNode) is an interface for things that can
- 	be seen as wrappers round triples.
-*/
-public interface FrontsTriple
-	{
-	Triple asTriple();
-	}
+ * FrontsTriple (see also FrontsNode) is an interface for things that can be seen as
+ * wrappers round triples.
+ */
+public interface FrontsTriple {
+    Triple asTriple();
+}
