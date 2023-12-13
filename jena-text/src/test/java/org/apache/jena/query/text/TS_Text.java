@@ -65,6 +65,7 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestTextHighlighting.class
     , TestTextDefineAnalyzers.class
     , TestTextMultilingualEnhancements.class
+    , TestTextMultipleProplistNotWorking.class
 
     , TestPropListsAssembler.class
     , TestTextPropLists.class
