@@ -159,7 +159,7 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 
 			if ( v1.isNull() || v2.isNull() ) {
 				if ( ! v1.isNull() || ! v2.isNull() ) {
-					throw new ExprEvalException("nulls in maps cannot be compared to something other than nulls");
+					return false;
 				}
 			}
 			else {
