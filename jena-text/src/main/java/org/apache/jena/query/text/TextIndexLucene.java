@@ -694,17 +694,18 @@ public class TextIndexLucene implements TextIndex {
 
     private String composeQField(String qs, String textField, String lang, boolean usingSearchFor, List<String> searchForTags) {
         String textClause = "";
+        String fieldGroupingQueryString = "(" + qs + ")";
 
         if (usingSearchFor) {
             for (String tag : searchForTags) {
                 String tf = textField + "_" + tag;
-                textClause += tf + ":" + qs + " ";
+                textClause += tf + ": " + fieldGroupingQueryString + " ";
             }
         } else {
             if (this.isMultilingual && StringUtils.isNotEmpty(lang) && !lang.equals("none")) {
                 textField += "_" + lang;
             }
-            textClause = textField + ":" + qs + " ";
+            textClause = textField + ": " + fieldGroupingQueryString + " ";
         }
 
         return textClause;
