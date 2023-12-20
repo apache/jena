@@ -723,6 +723,10 @@ public class TextIndexLucene implements TextIndex {
         List<String> searchForTags = Util.getSearchForTags(lang);
         boolean usingSearchFor = Util.usingSearchFor(lang);
 
+        // The set will reduce lucene text field expressions
+        // to unique expressions
+        Set<String> uniquePropListQueryStrings = new LinkedHashSet<>();
+
         if (props.isEmpty()) {
             // we got here via
             //    ?s text:query "some query string"
@@ -746,8 +750,9 @@ public class TextIndexLucene implements TextIndex {
 
         log.trace("query$ PROCESSING LIST of properties: {}; Lucene queryString: {}; textFields: {} ", props, qString, textFields) ;
         for (String textField : textFields) {
-            qString += composeQField(qs, textField, lang, usingSearchFor, searchForTags);
+            uniquePropListQueryStrings.add(composeQField(qs, textField, lang, usingSearchFor, searchForTags));
         }
+        qString += String.join("", uniquePropListQueryStrings);
 
         // we need to check whether there was a lang arg either on the query string
         // or explicitly as an input arg and add it to the qString; otherwise, Lucene
