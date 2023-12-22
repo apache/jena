@@ -503,7 +503,7 @@ public class TestServiceEnhancerMisc {
             "   SERVICE <loop:cache:bulk+5> { ?s rdfs:label ?l }",
             "}");
 
-        Dataset ds = RDFParser.fromString(dataStr).lang(Lang.TURTLE).toDataset();
+        Dataset ds = RDFParser.fromString(dataStr, Lang.TURTLE).toDataset();
         Query query = QueryFactory.create(queryStr);
 
         int rsSize;
