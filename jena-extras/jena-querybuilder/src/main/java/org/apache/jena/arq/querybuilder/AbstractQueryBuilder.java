@@ -85,7 +85,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 
     /**
      * Make a node or path from the object using the query prefix mapping.
-     * 
+     *
      * @param o the object to make the node or path from.
      * @return A node or path.
      * @see Converters#makeNodeOrPath(Object, PrefixMapping)
@@ -108,7 +108,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
      * <li>Will create a literal representation if the parseNode() fails or for any
      * other object type.</li>
      * </ul>
-     * 
+     *
      * @param o the object that should be interpreted as a path or a node.
      * @param pMapping the prefix mapping to resolve path or node with
      * @return the Path or Node
@@ -146,7 +146,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
      * @param p the predicate object
      * @param o the object object.
      * @return a TriplePath
-     * @deprecated Use {@link makeTriplePaths(Object, Object, Object)}
+     * @deprecated Use {@link #makeTriplePaths(Object, Object, Object)}
      */
     @Deprecated(since="5.0.0")
     public TriplePath makeTriplePath(Object s, Object p, Object o) {
@@ -156,7 +156,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
         }
         return new TriplePath(Triple.create(makeNode(s), (Node) po, makeNode(o)));
     }
-    
+
     /**
      * Make a collecton triple path from the objects.
      *
@@ -166,7 +166,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
      * <li>Will return the enclosed Node from a FrontsNode</li>
      * <li>Will return the object if it is a Node.</li>
      * <li>For {@code subject} and {@code object} <em>only</em>, if the object is a collection, will convert each item
-     * in the collection into a node and create an RDF list. All RDF list nodes are included in the collection.</li> 
+     * in the collection into a node and create an RDF list. All RDF list nodes are included in the collection.</li>
      * <li>If the object is a String
      * <ul>
      * <li>For <code>predicate</code> <em>only</em>, will attempt to parse as a path</li>
@@ -201,7 +201,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 
     /**
      * A convenience method to quote a string.
-     * 
+     *
      * @param q the string to quote.
      *
      * Will use single quotes if there are no single quotes in the string or if the
@@ -219,7 +219,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 
     /**
      * Verify that any Node_Variable nodes are returned as Var nodes.
-     * 
+     *
      * @param n the node to check
      * @return the node n or a new Var if n is an instance of Node_Variable
      * @deprecated use {@link Converters#checkVar(Node)}
@@ -240,7 +240,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
      * <li>Will create a literal representation if the parseNode() fails or for any
      * other object type.</li>
      * </ul>
-     * 
+     *
      * @param o The object to convert (may be null).
      * @param pMapping The prefix mapping to use for prefix resolution.
      * @return The Node value.
@@ -287,7 +287,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 
     /**
      * Get the HandlerBlock for this query builder.
-     * 
+     *
      * @return The associated handler block.
      */
     public abstract HandlerBlock getHandlerBlock();
@@ -304,7 +304,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 
     /**
      * Gets the where handler used by this QueryBuilder.
-     * 
+     *
      * @return the where handler used by this QueryBuilder.
      */
     public final WhereHandler getWhereHandler() {
@@ -313,7 +313,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 
     /**
      * Adds the contents of the whereClause to the where clause of this builder.
-     * 
+     *
      * @param whereClause the where clause to add.
      * @return this builder for chaining.
      */
@@ -410,7 +410,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 
     /**
      * Creates a collection of nodes from an iterator of Objects.
-     * 
+     *
      * @param iter the iterator of objects, may be null or empty.
      * @param prefixMapping the PrefixMapping to use when nodes are created.
      * @return a Collection of nodes or null if iter is null or empty.
@@ -424,7 +424,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
     /**
      * Creates a collection of nodes from an iterator of Objects. Uses the prefix
      * mapping from the PrologHandler.
-     * 
+     *
      * @param iter the iterator of objects, may be null or empty.
      * @return a Collection of nodes or null if iter is null or empty.
      */
