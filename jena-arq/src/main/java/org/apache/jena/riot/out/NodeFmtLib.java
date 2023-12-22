@@ -164,6 +164,12 @@ public class NodeFmtLib
         return displayStrNodes(t.getSubject(), t.getPredicate(), t.getObject());
     }
 
+    public static String displayStr(Quad q) {
+        if ( q == null )
+            return nullStr;
+        return displayStrNodes(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject());
+    }
+
     public static String displayStr(Node node) {
         if ( node == null )
             return nullStr;

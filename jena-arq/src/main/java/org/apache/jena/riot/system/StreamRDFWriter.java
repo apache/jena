@@ -225,7 +225,17 @@ public class StreamRDFWriter {
         if ( context == null )
             context = RIOT.getContext().copy();
         StreamRDF stream = x.create(output, format, context);
+        if ( ! RDFLanguages.isQuads(format.getLang()) )
+            stream = triplesOnly(stream);
         return stream ;
+    }
+
+
+    /* What to do if a quad is seen when writing in a triples-only syntax. */
+    private static StreamRDF triplesOnly(StreamRDF stream) {
+        // StreamTriplesOnly converts default graph quads to triples.
+        // Otherwise, throw exception.
+        return StreamTriplesOnly.exceptionOnQuads(stream);
     }
 
     public static boolean registered(Lang lang) {
