@@ -47,7 +47,6 @@ import org.apache.jena.sparql.util.Context;
  * <p>
  * For N-Quads and N-triples use {@link WriterStreamRDFPlain}.
  */
-
 public abstract class WriterStreamRDFBase implements StreamRDF
 {
     // What did we do last?

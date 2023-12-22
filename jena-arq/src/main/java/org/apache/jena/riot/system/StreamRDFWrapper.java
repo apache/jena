@@ -28,9 +28,10 @@ import org.apache.jena.sparql.core.Quad ;
 public class StreamRDFWrapper implements StreamRDF
 {
     protected final StreamRDF other ;
+    public final StreamRDF get() { return other; }
 
     public StreamRDFWrapper(StreamRDF other) { this.other = other ; }
-    
+
     @Override
     public void start()
     { other.start() ; }
