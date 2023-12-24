@@ -43,6 +43,7 @@ public class TestPackage_core extends TestCase {
         addTest(ts,  "Mem", org.apache.jena.mem.test.TestMemPackage.suite() );
         addTest(ts,  "Mem2", org.apache.jena.mem.test.TestGraphMemPackage.suite() );
         addTest(ts,  "Model", org.apache.jena.rdf.model.test.TestPackage_model.suite());
+
         addTest(ts,  "StandardModels", org.apache.jena.rdf.model.test.TestStandardModels.suite() );
         // Currently, "ARP[IRIx]"
         addTest(ts,  "XML Input", org.apache.jena.rdfxml.xmlinput1.TestPackage_xmlinput1.suite());
@@ -62,6 +63,7 @@ public class TestPackage_core extends TestCase {
 
         // Local TTL parser for tests - not fully compliant.
         addTest(ts,  "Turtle", org.apache.jena.ttl_test.test.turtle.TurtleTestSuite.suite()) ;
+        addTest(ts,  "ModelUtils", org.apache.jena.test.TestModelUtil.suite());
 
         return ts ;
     }

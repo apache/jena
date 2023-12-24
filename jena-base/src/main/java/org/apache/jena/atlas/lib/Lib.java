@@ -146,8 +146,6 @@ public class Lib
         return string.toUpperCase(Locale.ROOT);
     }
 
-
-
     public static final void sleep(int milliSeconds) {
         try  { Thread.sleep(milliSeconds); }
         catch (InterruptedException ex) { Log.warn(Lib.class, "interrupted", ex); }
