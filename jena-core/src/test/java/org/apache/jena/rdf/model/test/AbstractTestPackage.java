@@ -56,9 +56,7 @@ public abstract class AbstractTestPackage extends TestSuite
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	protected AbstractTestPackage( final String suiteName,
-			final TestingModelFactory modelFactory )
-	{
+	protected AbstractTestPackage( String suiteName, TestingModelFactory modelFactory ) {
 		super(suiteName);
 
 		addTest(TestModelFactory.class);
