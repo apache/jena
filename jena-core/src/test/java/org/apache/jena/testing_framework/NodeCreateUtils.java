@@ -25,8 +25,6 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.LiteralLabel ;
-import org.apache.jena.graph.impl.LiteralLabelFactory ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
 
@@ -80,14 +78,13 @@ public class NodeCreateUtils {
 	 *            the string encoding the node to create
 	 * @return a node with the appropriate type and label
 	 */
-    @SuppressWarnings("deprecation")
 	public static Node create(PrefixMapping pm, String x) {
 		if (x.equals(""))
 			throw new JenaException(
 					"Node.create does not accept an empty string as argument");
 		char first = x.charAt(0);
 		if (first == '\'' || first == '\"')
-			return NodeFactory.createLiteral(newString(pm, first, x));
+			return newLiteral(pm, first, x);
 		if (Character.isDigit(first))
 			return NodeFactory.createLiteral(x, "", XSDDatatype.XSDinteger);
 		if (first == '_')
@@ -138,21 +135,20 @@ public class NodeCreateUtils {
 		}
 	}
 
-	public static LiteralLabel literal(PrefixMapping pm, String spelling,
-			String langOrType) {
+	public static Node literal(PrefixMapping pm, String spelling, String langOrType) {
 		String content = unEscape(spelling);
 		int colon = langOrType.indexOf(':');
-		if ( colon < 0 )
-		    return LiteralLabelFactory.createLang(content, langOrType);
-		else {
+		if ( colon < 0 ) {
+		    // It's a language
+		    return NodeFactory.createLiteralLang(content, langOrType);
+		} else {
 		    String dtURI = pm.expandPrefix(langOrType);
 		    RDFDatatype dt = NodeFactory.getType(dtURI);
-		    return LiteralLabelFactory.create(content, dt);
+		    return NodeFactory.createLiteral(content, dt);
 		}
 	}
 
-	public static LiteralLabel newString(PrefixMapping pm, char quote,
-			String nodeString) {
+	public static Node newLiteral(PrefixMapping pm, char quote, String nodeString) {
 		int close = nodeString.lastIndexOf(quote);
 		return literal(pm, nodeString.substring(1, close),
 				nodeString.substring(close + 1));

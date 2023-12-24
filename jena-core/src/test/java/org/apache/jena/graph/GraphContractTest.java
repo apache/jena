@@ -18,30 +18,8 @@
 
 package org.apache.jena.graph;
 
-import static org.apache.jena.testing_framework.GraphHelper.assertContainsAll;
-import static org.apache.jena.testing_framework.GraphHelper.assertIsomorphic;
-import static org.apache.jena.testing_framework.GraphHelper.assertOmitsAll;
-import static org.apache.jena.testing_framework.GraphHelper.graphAddTxn;
-import static org.apache.jena.testing_framework.GraphHelper.graphWith;
-import static org.apache.jena.testing_framework.GraphHelper.iteratorToSet;
-import static org.apache.jena.testing_framework.GraphHelper.memGraph;
-import static org.apache.jena.testing_framework.GraphHelper.node;
-import static org.apache.jena.testing_framework.GraphHelper.nodeSet;
-import static org.apache.jena.testing_framework.GraphHelper.triple;
-import static org.apache.jena.testing_framework.GraphHelper.tripleArray;
-import static org.apache.jena.testing_framework.GraphHelper.tripleSet;
-import static org.apache.jena.testing_framework.GraphHelper.txnBegin;
-import static org.apache.jena.testing_framework.GraphHelper.txnRun;
-import static org.apache.jena.testing_framework.GraphHelper.txnCommit;
-import static org.apache.jena.testing_framework.GraphHelper.txnRollback;
-import static org.apache.jena.testing_framework.TestUtils.assertDiffer;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.apache.jena.testing_framework.GraphHelper.*;
+import static org.junit.Assert.*;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -858,7 +836,7 @@ public class GraphContractTest<T extends Graph>
 		if (g.getCapabilities().handlesLiteralTyping())
 		{
 			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
-			assertDiffer(chaten, chatEN);
+			assertEquals(chaten, chatEN);
 			assertTrue(chaten.sameValueAs(chatEN));
 			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
 			txnBegin(g);
@@ -875,7 +853,7 @@ public class GraphContractTest<T extends Graph>
 		if (g.getCapabilities().handlesLiteralTyping())
 		{
 			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
-			assertDiffer(chaten, chatEN);
+			assertEquals(chaten, chatEN);
 			assertTrue(chaten.sameValueAs(chatEN));
 			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
 			txnBegin(g);
@@ -995,7 +973,7 @@ public class GraphContractTest<T extends Graph>
 		if (g.getCapabilities().handlesLiteralTyping())
 		{
 			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
-			assertDiffer(chaten, chatEN);
+			assertEquals(chaten, chatEN);
 			assertTrue(chaten.sameValueAs(chatEN));
 			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
 			txnBegin(g);
@@ -1014,7 +992,7 @@ public class GraphContractTest<T extends Graph>
 		if (g.getCapabilities().handlesLiteralTyping())
 		{
 			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
-			assertDiffer(chaten, chatEN);
+			assertEquals(chaten, chatEN);
 			assertTrue(chaten.sameValueAs(chatEN));
 			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
 			txnBegin(g);
