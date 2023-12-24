@@ -25,6 +25,7 @@ import java.util.function.Function;
 
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.impl.LiteralLabel ;
+import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sys.Serializer;
@@ -51,7 +52,19 @@ public abstract class Node implements Serializable {
      */
     public static final Node ANY = Node_ANY.nodeANY;
 
-    static final String RDFprefix = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+    /**
+     * The string used when a literal does not have a language tag.
+     * Accessing the language of a non-literal will throw an exception.
+     * @see Util#hasLang(Node)
+     */
+    public static final String noLangTag = "";
+
+    /**
+     * The TextDirection used when a literal does not have an initial text direction setting.
+     * Accessing the initial text direction of a non-literal will throw an exception.
+     * @see Util#hasDirection(Node)
+     */
+    public static final TextDirection noTextDirection = null;
 
     // Constants to separate hashes.
     // e.g. label is string so we perturb the hash code.

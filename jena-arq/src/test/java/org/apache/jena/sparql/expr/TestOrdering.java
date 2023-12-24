@@ -175,8 +175,9 @@ public class TestOrdering {
         NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteralLang("abc", "en"));
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("abc", "EN"));
 
+        // Jena5: same langtag (there are the same RDF term)
         int x = NodeCmp.compareRDFTerms(nv1.asNode(), nv2.asNode());
-        assertTrue("Lang tags should sort by case", Expr.CMP_GREATER == x);
+        assertTrue("Lang tags should sort by case", Expr.CMP_EQUAL == x);
     }
 
     @Test

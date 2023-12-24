@@ -132,7 +132,7 @@ public final class StatsMatcher {
             // (<uri> weight)
             Node n = pat.getNode();
             if ( !n.isURI() ) {
-                log.warn("Not a preicate URI: " + pat.toString());
+                log.warn("Not a predicate URI: " + pat.toString());
                 return;
             }
             addAbbreviation(elt);

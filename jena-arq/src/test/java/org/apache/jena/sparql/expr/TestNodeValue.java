@@ -1123,7 +1123,8 @@ public class TestNodeValue
         Node n2 = org.apache.jena.graph.NodeFactory.createLiteralLang("xyz", "EN");
         NodeValue nv2 = NodeValue.makeNode(n2);
         assertTrue(NodeValue.sameValueAs(nv1, nv2));
-        assertFalse(nv1.equals(nv2));
+        // Jena5 - langtags are formatted on creation so node are unique upto case.
+        assertTrue(nv1.equals(nv2));
     }
 
     @Test
@@ -1140,7 +1141,8 @@ public class TestNodeValue
         NodeValue nv1 = parse("'xyz'@en");
         NodeValue nv2 = parse("'xyz'@EN");
         assertFalse(NodeValue.notSameValueAs(nv1, nv2));
-        assertFalse(nv1.equals(nv2));
+        // Jena5 - langtags are formatted on creation so node are unique upto case.
+        assertTrue(nv1.equals(nv2));
     }
 
     //Compare value first and then language tag

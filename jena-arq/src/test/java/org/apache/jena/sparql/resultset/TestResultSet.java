@@ -537,10 +537,13 @@ public class TestResultSet
     {
         ResultSetRewindable rs1 = make(StrUtils.strjoinNL(rs1$));
         ResultSetRewindable rs2 = make(StrUtils.strjoinNL(rs2$));
+
         assertTrue(ResultSetCompare.isomorphic(rs1, rs2));
         rs1.reset();
         rs2.reset();
         assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
+        rs1.reset();
+        rs2.reset();
         assertTrue(ResultSetCompare.equalsByValue(rs1, rs2));
     }
 
