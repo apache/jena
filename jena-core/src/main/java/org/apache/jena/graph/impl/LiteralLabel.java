@@ -487,8 +487,10 @@ final public class LiteralLabel {
         // -- Strings.
         if ( isStringValue(lit1) && isStringValue(lit2) )
             return lit1.getLexicalForm().equals(lit2.getLexicalForm());
-        if ( isStringValue(lit1) ) return false;
-        if ( isStringValue(lit2) ) return false;
+        else {
+            if ( isStringValue(lit1) ) return false;
+            if ( isStringValue(lit2) ) return false;
+        }
 
         // -- Language tag strings
         if ( isLangString(lit1) && isLangString(lit2) ) {
@@ -497,21 +499,23 @@ final public class LiteralLabel {
             //return lex1.equals(lex2) && lit1.language().equalsIgnoreCase(lit2.language());
             // Normalized language tags.
             return lex1.equals(lex2)
-                    && lit1.language().equals(lit2.language());
+                    && lit1.language().equalsIgnoreCase(lit2.language());
+        } else {
+            if ( isLangString(lit1) ) return false;
+            if ( isLangString(lit2) ) return false;
         }
-        if ( isLangString(lit1) ) return false;
-        if ( isLangString(lit2) ) return false;
 
         // -- Language tag strings with initial text direction
         if ( isLangStringDir(lit1) && isLangStringDir(lit2) ) {
             String lex1 = lit1.getLexicalForm();
             String lex2 = lit2.getLexicalForm();
             return lex1.equals(lex2)
-                    && lit1.language().equals(lit2.language())
+                    && lit1.language().equalsIgnoreCase(lit2.language())
                     && lit1.initialTextDirection().equals(lit2.initialTextDirection());
+        } else {
+            if ( isLangStringDir(lit1) ) return false;
+            if ( isLangStringDir(lit2) ) return false;
         }
-        if ( isLangStringDir(lit1) ) return false;
-        if ( isLangStringDir(lit2) ) return false;
 
         // -- datatypes.
         // Both not strings, not lang strings and not dirlang strings.

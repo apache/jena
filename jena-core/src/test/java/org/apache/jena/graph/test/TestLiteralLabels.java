@@ -109,6 +109,7 @@ public class TestLiteralLabels extends GraphTestBase
     public void testEquality4() {
         LiteralLabel A = LiteralLabelFactory.createLang("xyz", "en-UK");
         LiteralLabel B = LiteralLabelFactory.createLang("xyz", "en-uk");
+        // Jena5: language tags are not normalized by LoiteralLabel but in NodeFactory.
         assertFalse(A.equals(B));
         assertTrue(A.sameValueAs(B));
     }

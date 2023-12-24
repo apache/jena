@@ -19,12 +19,11 @@
 package org.apache.jena.graph.impl;
 
 import static org.apache.jena.atlas.lib.Lib.isEmpty;
-import static org.apache.jena.graph.NodeFactory.noLangTag;
-import static org.apache.jena.graph.NodeFactory.noTextDirection;
 
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.TextDirection;
 import org.apache.jena.vocabulary.RDF;
@@ -53,7 +52,7 @@ public class LiteralLabelFactory
 
     /** Create a string literal */
     public static LiteralLabel createString(String lex) {
-        return new LiteralLabel(lex, noLangTag, noTextDirection, XSDDatatype.XSDstring);
+        return new LiteralLabel(lex, Node.noLangTag, Node.noTextDirection, XSDDatatype.XSDstring);
     }
 
     /**
@@ -62,8 +61,8 @@ public class LiteralLabelFactory
      * @param lang the optional language tag
      */
     public static LiteralLabel createLang(String lex, String lang) {
-        RDFDatatype dt = fixDatatype(null, lang, noTextDirection);
-        return new LiteralLabel(lex, lang, noTextDirection, dt);
+        RDFDatatype dt = fixDatatype(null, lang, Node.noTextDirection);
+        return new LiteralLabel(lex, lang, Node.noTextDirection, dt);
     }
 
     /**

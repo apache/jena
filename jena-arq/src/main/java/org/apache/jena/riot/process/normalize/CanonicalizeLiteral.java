@@ -40,7 +40,7 @@ public class CanonicalizeLiteral implements Function<Node, Node>
     private CanonicalizeLiteral() {}
 
     /**
-     * Canonicaize a literal, both lexical form and language tag (RFc canonical).
+     * Canonicalize a literal, both lexical form and language tag (RFc canonical).
      */
     @Override
     public Node apply(Node node) {
@@ -64,7 +64,7 @@ public class CanonicalizeLiteral implements Function<Node, Node>
             // RDF 1.0 / no lang.
             n2 = NormalizeValue.dtSimpleLiteral.handle(node, node.getLiteralLexicalForm(), null) ;
         } else {
-            // Dataype, not rdf:langString (RDF 1.1).
+            // Datatype, not rdf:langString (RDF 1.1).
             DatatypeHandler handler = dispatch.get(dt) ;
             if ( handler == null )
                 return node ;
