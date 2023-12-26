@@ -18,6 +18,8 @@
 
 package org.apache.jena.riot.process.normalize;
 
+import static org.apache.jena.atlas.lib.Lib.lowercase;
+
 import java.util.IllformedLocaleException;
 import java.util.Locale;
 import java.util.function.BiFunction;
@@ -72,6 +74,6 @@ public class StreamCanonicalLangTag extends StreamRDFApplyObject {
     }
 
     public static String langTagLC(Locale.Builder locBuild, String str) {
-        return str.toLowerCase(Locale.ROOT);
+        return lowercase(str);
     }
 }

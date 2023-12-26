@@ -19,9 +19,9 @@
 package org.apache.jena.http.auth;
 
 import static org.apache.jena.atlas.lib.Chars.CH_RSLASH;
+import static org.apache.jena.atlas.lib.Lib.lowercase;
 
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.IntPredicate;
 
@@ -414,7 +414,7 @@ public class AuthHeader {
                 String value = tokenOrQuotedString();
                 if ( value == null )
                     return null;
-                String lcKey = key.toLowerCase(Locale.ROOT);
+                String lcKey = lowercase(key);
                 map.put(lcKey, value);
                 skipWhitespaceComma();
             }

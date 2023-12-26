@@ -19,12 +19,10 @@ package org.apache.jena.graph.impl;
 
 import java.util.Collection ;
 import java.util.HashSet ;
-import java.util.Locale ;
 import java.util.Set ;
 
 import org.apache.jena.graph.Capabilities ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
@@ -53,22 +51,7 @@ public class CollectionGraph extends GraphBase
     }
 
     private static boolean equalNode(Node m, Node n) {
-        n = fixupNode(n);
-        m = fixupNode(m);
         return (m == null) || (m == Node.ANY) || m.equals(n);
-    }
-
-    private static Node fixupNode(Node node) {
-        if ( node == null || node == Node.ANY )
-            return node;
-
-        // RDF says ... language tags should be canonicalized to lower case.
-        if ( node.isLiteral() ) {
-            String lang = node.getLiteralLanguage();
-            if ( lang != null && !lang.equals("") )
-                node = NodeFactory.createLiteralLang(node.getLiteralLexicalForm(), lang.toLowerCase(Locale.ROOT));
-        }
-        return node;
     }
 
     // the collection

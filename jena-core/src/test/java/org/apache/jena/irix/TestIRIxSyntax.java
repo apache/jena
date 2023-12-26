@@ -18,7 +18,7 @@
 
 package org.apache.jena.irix;
 
-import java.util.Locale;
+import static org.apache.jena.atlas.lib.Lib.uppercase;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -99,13 +99,13 @@ public class TestIRIxSyntax extends AbstractTestIRIx {
 
     @Test public void parse_uuid_01() { parse("uuid:"+testUUID); }
 
-    @Test public void parse_uuid_02() { parse("uuid:"+(testUUID.toUpperCase(Locale.ROOT))); }
+    @Test public void parse_uuid_02() { parse("uuid:"+uppercase(testUUID)); }
 
     @Test public void parse_uuid_03() { parse("UUID:"+testUUID); }
 
     @Test public void parse_uuid_04() { parse("urn:uuid:"+testUUID); }
 
-    @Test public void parse_uuid_05() { parse("urn:uuid:"+(testUUID.toUpperCase(Locale.ROOT))); }
+    @Test public void parse_uuid_05() { parse("urn:uuid:"+uppercase(testUUID)); }
 
     @Test public void parse_uuid_06() { parse("URN:UUID:"+testUUID); }
 

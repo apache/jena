@@ -18,19 +18,19 @@
 
 package org.apache.jena.sparql.expr;
 
-import java.util.Locale ;
+import static org.apache.jena.atlas.lib.Lib.uppercase;
 
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.sse.Tags;
 
-public class E_SHA384 extends ExprDigest
-{
-    private static final String symbol = Tags.tagSHA384.toUpperCase(Locale.ROOT) ;
+public class E_SHA384 extends ExprDigest {
+    private static final String symbol = uppercase(Tags.tagSHA384);
 
-    public E_SHA384(Expr expr)
-    {
-        super(expr, symbol, "SHA-384") ;
+    public E_SHA384(Expr expr) {
+        super(expr, symbol, "SHA-384");
     }
-    
+
     @Override
-    public Expr copy(Expr expr) { return new E_SHA384(expr) ; } 
+    public Expr copy(Expr expr) {
+        return new E_SHA384(expr);
+    }
 }

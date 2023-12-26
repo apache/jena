@@ -18,7 +18,8 @@
 
 package org.apache.jena.sparql.expr.aggregate;
 
-import java.util.Locale;
+import static org.apache.jena.atlas.lib.Lib.lowercase;
+
 import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
@@ -81,7 +82,7 @@ public class AggCustom extends AggregatorBase {
     public String toPrefixString() {
         IndentedLineBuffer x = new IndentedLineBuffer();
         x.append("(");
-        x.append(getName().toLowerCase(Locale.ROOT));
+        x.append(lowercase(getName()));
         x.append(" <");
         x.append(iri);
         x.append("> ");

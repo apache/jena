@@ -18,9 +18,13 @@
 
 package org.apache.jena.riot;
 
+import static org.apache.jena.atlas.lib.Lib.lowercase;
 import static org.apache.jena.riot.WebContent.*;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.ContentType;
@@ -462,7 +466,7 @@ public class RDFLanguages
         return lang;
     }
 
-    private static String canonicalKey(String x) { return x.toLowerCase(Locale.ROOT); }
+    private static String canonicalKey(String x) { return lowercase(x); }
 
     public static ContentType guessContentType(String resourceName) {
         if ( resourceName == null )

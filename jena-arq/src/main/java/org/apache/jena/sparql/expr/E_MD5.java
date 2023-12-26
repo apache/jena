@@ -18,19 +18,19 @@
 
 package org.apache.jena.sparql.expr;
 
-import java.util.Locale ;
+import static org.apache.jena.atlas.lib.Lib.uppercase;
 
 import org.apache.jena.sparql.sse.Tags ;
 
 public class E_MD5 extends ExprDigest
 {
-    private static final String symbol = Tags.tagMD5.toUpperCase(Locale.ROOT) ;
+    private static final String symbol = uppercase(Tags.tagMD5) ;
 
     public E_MD5(Expr expr)
     {
         super(expr, symbol, "MD5") ;
     }
-    
+
     @Override
-    public Expr copy(Expr expr) { return new E_MD5(expr) ; } 
+    public Expr copy(Expr expr) { return new E_MD5(expr) ; }
 }

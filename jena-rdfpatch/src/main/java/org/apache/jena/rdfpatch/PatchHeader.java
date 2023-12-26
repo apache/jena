@@ -18,7 +18,8 @@
 
 package org.apache.jena.rdfpatch;
 
-import java.util.Locale;
+import static org.apache.jena.atlas.lib.Lib.lowercase;
+
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -82,7 +83,7 @@ public class PatchHeader {
     }
 
     private static String lc(String str) {
-        return str.toLowerCase(Locale.ROOT);
+        return lowercase(str);
     }
 
     @Override
