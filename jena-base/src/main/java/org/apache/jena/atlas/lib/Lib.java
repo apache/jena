@@ -134,13 +134,13 @@ public class Lib
         return StringUtils.isEmpty(cs);
     }
 
-    /** Non-locale lowercase */
+    /** Non-locale lowercase {@link Locale#ROOT} */
     public static String lowercase(String string) {
         // Hide implementation
         return string.toLowerCase(Locale.ROOT);
     }
 
-    /** Non-locale uppercase */
+    /** Non-locale uppercase {@link Locale#ROOT} */
     public static String uppercase(String string) {
         // Hide implementation
         return string.toUpperCase(Locale.ROOT);

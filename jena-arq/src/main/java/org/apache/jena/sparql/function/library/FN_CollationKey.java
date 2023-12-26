@@ -18,30 +18,31 @@
 
 package org.apache.jena.sparql.function.library;
 
+import static org.apache.jena.atlas.lib.Lib.lowercase;
+
 import java.nio.charset.StandardCharsets ;
 import java.util.Base64 ;
-import java.util.Locale ;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.function.FunctionBase2 ;
 
 /** XPath and XQuery Functions and Operators 3.1
- * <p> 
+ * <p>
  * {@code fn:collation-key($key as xs:string, $collation as xs:string) as xs:base64Binary}
  */
 public class FN_CollationKey extends FunctionBase2 {
 
     // The function2 variant
-    // Function1 is default collation -> codepoint. 
-    
+    // Function1 is default collation -> codepoint.
+
     @Override
     public NodeValue exec(NodeValue v1, NodeValue v2) {
         //fn:collation-key($key as xs:string, $collation as xs:string) as xs:base64Binary
         if ( ! v1.isString() ) {}
         if ( ! v2.isString() ) {}
-        String collation = v2 == null ? "" : v2.getString().toLowerCase(Locale.ROOT); 
-        
+        String collation = v2 == null ? "" : lowercase(v2.getString());
+
         // The irony of using the lexical form of old rdf:plainLiteral (RDF 1.1 does not
         // need rdf:plainLiteral and rdf:plainLiteral should never appear in RDF)
         String x = v1.getString()+"@"+v2.getString();

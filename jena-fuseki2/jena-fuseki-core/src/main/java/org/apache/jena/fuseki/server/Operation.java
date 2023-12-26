@@ -18,8 +18,9 @@
 
 package org.apache.jena.fuseki.server;
 
+import static org.apache.jena.atlas.lib.Lib.lowercase;
+
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -73,7 +74,7 @@ public class Operation {
         // Currently, (3.13.0) the JS name is the short display name in lower
         // case. Just in case it diverges in the future, leave provision for
         // a different setting.
-        return new Operation(id, shortName, shortName.toLowerCase(Locale.ROOT), description);
+        return new Operation(id, shortName, lowercase(shortName), description);
     }
 
     public static final Operation Query    = alloc(FusekiVocab.opQuery.asNode(),   "query",   "SPARQL Query");

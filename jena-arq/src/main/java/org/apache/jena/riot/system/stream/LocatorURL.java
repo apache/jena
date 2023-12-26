@@ -18,39 +18,38 @@
 
 package org.apache.jena.riot.system.stream;
 
-import java.util.Locale ;
-
-import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.irix.IRIs;
-import org.slf4j.Logger ;
+import org.slf4j.Logger;
 
 public abstract class LocatorURL implements Locator
 {
-    private final String[] schemeNames ;
+    private final String[] schemeNames;
 
     protected LocatorURL(String[] sNames) {
-        schemeNames = sNames ;
+        schemeNames = sNames;
     }
 
-    protected abstract Logger log() ;
+    protected abstract Logger log();
 
     @Override
     public TypedInputStream open(String uri) {
         if ( ! acceptByScheme(uri) ) {
             if ( StreamManager.logAllLookups && log().isTraceEnabled() )
-                log().trace("Not found : "+uri) ;
+                log().trace("Not found : "+uri);
             return null;
         }
-        return performOpen(uri) ;
+        return performOpen(uri);
     }
 
-    protected abstract TypedInputStream performOpen(String uri) ;
+    protected abstract TypedInputStream performOpen(String uri);
 
     protected boolean acceptByScheme(String filenameOrURI) {
-        String uriSchemeName = IRIs.scheme(filenameOrURI) ;
+        String uriSchemeName = IRIs.scheme(filenameOrURI);
         if ( uriSchemeName == null )
-            return false ;
-        uriSchemeName = uriSchemeName.toLowerCase(Locale.ROOT) ;
+            return false;
+        uriSchemeName = Lib.lowercase(uriSchemeName);
         for ( String schemeName : schemeNames )
         {
             if ( uriSchemeName.equals( schemeName ) )
@@ -58,17 +57,17 @@ public abstract class LocatorURL implements Locator
                 return true;
             }
         }
-        return false ;
+        return false;
     }
 
     @Override
-    public abstract int hashCode() ;
+    public abstract int hashCode();
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true ;
-        if (obj == null) return false ;
-        return getClass() == obj.getClass() ;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        return getClass() == obj.getClass();
     }
 }
 

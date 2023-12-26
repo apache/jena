@@ -18,7 +18,8 @@
 
 package org.apache.jena.rdfpatch.filelog;
 
-import java.util.Locale;
+import static org.apache.jena.atlas.lib.Lib.lowercase;
+
 import java.util.Objects;
 
 import org.apache.jena.rdfpatch.filelog.rotate.FileRotateException;
@@ -52,7 +53,7 @@ public enum FilePolicy {
 
     public static FilePolicy policy(String name) {
         Objects.requireNonNull(name);
-        String nameLC = name.toLowerCase(Locale.ROOT);
+        String nameLC = lowercase(name);
         switch(nameLC) {
             case "date" :       return DATE;
             case "timestamp" :  return TIMESTAMP;

@@ -18,11 +18,10 @@
 
 package org.apache.jena.irix;
 
+import static org.apache.jena.atlas.lib.Lib.uppercase;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-
-import java.util.Locale;
 
 import org.apache.jena.iri.IRI;
 import org.junit.FixMethodOrder;
@@ -261,7 +260,7 @@ public class TestRFC3986 extends AbstractTestIRIx {
 
     @Test public void parse_uuid_01() { good("uuid:"+testUUID); }
 
-    @Test public void parse_uuid_02() { good("uuid:"+(testUUID.toUpperCase(Locale.ROOT))); }
+    @Test public void parse_uuid_02() { good("uuid:"+(uppercase(testUUID))); }
 
     @Test public void parse_uuid_bad_01() { badSpecific("uuid:06e775ac-2c38-11b2-801c-8086f2cc00c9?query=foo"); }
 
@@ -291,7 +290,7 @@ public class TestRFC3986 extends AbstractTestIRIx {
 
     @Test public void parse_urn_uuid_01() { good("urn:uuid:"+testUUID); }
 
-    @Test public void parse_urn_uuid_02() { good("urn:uuid:"+(testUUID.toUpperCase(Locale.ROOT))); }
+    @Test public void parse_urn_uuid_02() { good("urn:uuid:"+uppercase(testUUID)); }
 
     @Test public void parse_urn_uuid_03() { parse_uuid_8141("urn:uuid:"+testUUID+"#frag"); }
 
