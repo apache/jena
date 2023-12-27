@@ -34,13 +34,15 @@ import org.apache.jena.sparql.graph.GraphWrapper;
 import org.apache.jena.sparql.syntax.Element;
 
 /**
- * {@code QueryExecutionFactory} provides some convenience operations for making {@link QueryExecution} objects.
- * It is not comprehensive and only covers common, simple cases.
+ * {@code QueryExecutionFactory} provides some convenience operations for making
+ * {@link QueryExecution} objects. It is not comprehensive and only covers common,
+ * simple cases.
  * <p>
- * For more control of building a local or remote {@link QueryExecution} object see the builder pattern:
+ * For more control of building a local or remote {@link QueryExecution} object see
+ * the builder patterns such as:
  * <ul>
  * <li>{@code QueryExecution.create(). ... .build()} for querying local data.</li>
- * <li>{@code QueryExecutionHTTP.service(url). ... .build()} for querying a remote store using HTTP.</li>
+ * <li>{@code QueryExecution.service(url). ... .build()} for querying a remote store using HTTP.</li>
  * </ul>
  * <p>
  * See also {@code RDFConnection} for working with SPARQL Query, SPARQL Update and SPARQL Graph Store Protocol together.
