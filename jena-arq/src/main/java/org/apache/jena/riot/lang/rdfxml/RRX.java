@@ -24,8 +24,8 @@ import org.apache.jena.riot.lang.rdfxml.rrx_stax_ev.ReaderRDFXML_StAX_EV;
 import org.apache.jena.riot.lang.rdfxml.rrx_stax_sr.ReaderRDFXML_StAX_SR;
 
 /**
- * Addition registration of RDF/XML parsers to given each it's own {@link Lang} name.
- * Each parser has it's own short names for use with {@code --syntax} argument of the
+ * Addition registration of RDF/XML parsers to given each its own {@link Lang} name.
+ * Each parser has its own short names for use with {@code --syntax} argument of the
  * {@code riot} command. NB Each Content-Type must be unique.
  */
 public class RRX {
@@ -47,14 +47,22 @@ public class RRX {
             .addFileExtensions("rdfstaxev")
             .build();
 
-    /** <a href="http://www.w3.org/TR/rdf-syntax-grammar/">RDF/XML</a> implemented by ARP1 */
+    /**
+     * <a href="http://www.w3.org/TR/rdf-syntax-grammar/">RDF/XML</a> implemented by ARP1.
+     * @deprecated To be removed. Transition only.
+     */
+    @Deprecated
     public static final Lang RDFXML_ARP1 = LangBuilder.create("RDFXML-ARP1", "application/rdf+arp1")
             .addAltContentTypes("application/rdf+arp")
-            .addAltNames("arp1", "arp")
+            .addAltNames("arp1", "arp", "RDFXML-ARP")
             .addFileExtensions("arp1", "arp")
             .build();
 
-    /** <a href="http://www.w3.org/TR/rdf-syntax-grammar/">RDF/XML</a> implemented by ARP1 */
+    /**
+     * <a href="http://www.w3.org/TR/rdf-syntax-grammar/">RDF/XML</a> implemented by ARP0.
+     * @deprecated To be removed. Transition only.
+     */
+    @Deprecated
     public static final Lang RDFXML_ARP0 = LangBuilder.create("RDFXML-ARP0", "application/rdf+arp0")
             .addAltNames("arp0")
             .addFileExtensions("arp0")

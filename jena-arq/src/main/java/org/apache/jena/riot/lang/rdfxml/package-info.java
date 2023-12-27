@@ -70,13 +70,13 @@
  * </tr>
  * <tr>
  *   <td>ARP1</td>
- *   <td><code>None</code></td>
+ *   <td><code>RRX.RDFXML-ARP1</code></td>
  *   <td><code>arp1</code></td>
  *   <td></td>
  * </tr>
- *  * <tr>
+ *  <tr>
  *   <td>ARP0</td>
- *   <td><code>None</code></td>
+ *   <td><code>RRX.RDFXML_ARP0</code></td>
  *   <td><code>arp0</code></td>
  *   <td></td>
  * </tr>

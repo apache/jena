@@ -92,7 +92,7 @@ public class RDFParserRegistry
         // Lang = TurtleJCC.TTLJCC.
         // File extension = ".ttljcc"
         TurtleJCC.register();
-        // Languagfes to access specific RDF parsers
+        // Languages to access specific RDF parsers
         RRX.register();
     }
 
