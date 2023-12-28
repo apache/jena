@@ -91,6 +91,22 @@ public class TestRDFStringLiterals {
         test(n, "abc", "", null, XSDDatatype.XSDstring, "abc");
     }
 
+    // language tags
+    @Test public void strLangTag01() {
+        Node n = NodeFactory.createLiteralLang("abc", "en");
+        test(n, "abc", "en", null, RDF.dtLangString, "abc@en");
+    }
+
+    @Test public void strLangTag02() {
+        Node n = NodeFactory.createLiteralLang("abc", "EN-GB");
+        test(n, "abc", "en-GB", null, RDF.dtLangString, "abc@en-GB");
+    }
+
+    @Test public void strLangTag03() {
+        // "" is a convenience of no direction.
+        Node n = NodeFactory.createLiteralLang("abc", "EN-LATN-GB");
+        test(n, "abc", "en-Latn-GB", null, RDF.dtLangString, "abc@en-Latn-GB");
+    }
 
     // ---- rdf:dirLangString
 

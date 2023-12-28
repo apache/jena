@@ -244,15 +244,6 @@ public class NodeFactory {
         return n;
     }
 
-    /** Prepare the initial text direction - apply formatting normalization */
-    private static TextDirection initialTextDirection(String input) {
-        if ( isEmpty(input) )
-            return Node.noTextDirection;
-        // Throws JenaException on bad input.
-        TextDirection textDir = TextDirection.create(input);
-        return textDir;
-    }
-
     /*package*/ static final boolean legacyLangTag = false;
     /** Prepare the language tag - apply formatting normalization */
     private static String formatLanguageTag(String langTagStr) {
@@ -262,8 +253,16 @@ public class NodeFactory {
             return langTagStr;
         if ( langTagStr.isEmpty() )
             return langTagStr;
-        //return Lib.lowercase(langTagStr);
         return LangTags.basicFormat(langTagStr);
+    }
+
+    /** Prepare the initial text direction - apply formatting normalization */
+    private static TextDirection initialTextDirection(String input) {
+        if ( isEmpty(input) )
+            return Node.noTextDirection;
+        // Throws JenaException on bad input.
+        TextDirection textDir = TextDirection.create(input);
+        return textDir;
     }
 
     /**
