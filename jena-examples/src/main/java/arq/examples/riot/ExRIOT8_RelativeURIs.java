@@ -18,8 +18,8 @@
 
 package arq.examples.riot;
 
-import org.apache.jena.atlas.logging.LogCtl ;
-import org.apache.jena.rdf.model.Model ;
+import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
@@ -33,8 +33,8 @@ public class ExRIOT8_RelativeURIs
     
     public static void main(String[] args)
     {
-        System.out.println("## Example of I/O with relative URIs.") ; 
-        System.out.println() ;
+        System.out.println("## Example of I/O with relative URIs."); 
+        System.out.println();
         
         Model model = ModelFactory.createDefaultModel(); 
         

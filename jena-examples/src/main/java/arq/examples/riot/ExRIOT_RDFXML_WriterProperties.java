@@ -19,8 +19,8 @@
 package arq.examples.riot;
 
 import java.io.StringReader;
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.logging.LogCtl;
@@ -57,14 +57,13 @@ public class ExRIOT_RDFXML_WriterProperties {
         //   https://jena.apache.org/documentation/io/rdfxml-io.html
         //   https://jena.apache.org/documentation/io/rdfxml-output.html
         // for details of properties.
-        Map<String, Object> properties = new HashMap<>() ;
+        Map<String, Object> properties = new HashMap<>();
         properties.put("showXmlDeclaration", "true");
 
-        RDFWriter.create()
+        RDFWriter.source(model)
             .base("http://example.org/")
             .format(RDFFormat.RDFXML_PLAIN)
             .set(SysRIOT.sysRdfWriterProperties, properties)
-            .source(model)
             .output(System.out);
     }
 }

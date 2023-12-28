@@ -49,7 +49,5 @@ public class ExRIOT_RDFXML_WritePlain {
 
         System.out.println("**** RDFXML_PLAIN");
         RDFDataMgr.write(System.out, model, RDFFormat.RDFXML_PLAIN);
-
-
     }
 }
