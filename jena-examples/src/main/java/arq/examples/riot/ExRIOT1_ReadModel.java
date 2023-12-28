@@ -18,35 +18,40 @@
 
 package arq.examples.riot;
 
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RDFParser;
 
-/** Example of using RIOT with Jena readers.
- * An application can use model.read or RDFDataMgr.
+/**
+ * Example of using RIOT with Jena readers.
+ * An application can use model.read or RDFDataMgr or RDFParser
  */
 public class ExRIOT1_ReadModel
 {
     public static void main(String...argv)
     {
-        Model m = ModelFactory.createDefaultModel() ;
+        Model m = ModelFactory.createDefaultModel();
         // read into the model.
-        m.read("data.ttl") ;
-        
+        m.read("data.ttl");
+
         // Alternatively, use the RDFDataMgr, which reads from the web,
-        // with content negotiation.  Plain names are assumed to be 
-        // local files where file extension indicates the syntax.  
-        
-        Model m2 = RDFDataMgr.loadModel("data.ttl") ;
-        
+        // with content negotiation.  Plain names are assumed to be
+        // local files where file extension indicates the syntax.
+
+        Model m2 = RDFDataMgr.loadModel("data.ttl");
+
         // read in more data, the remote server serves up the data
         // with the right MIME type.
-        RDFDataMgr.read(m2, "http://host/some-published-data") ;
-        
-        
+        RDFDataMgr.read(m2, "http://host/some-published-data");
+
         // Read some data but also give a hint for the synatx if it is not
-        // discovered by inspecting the file or by HTTP content negotiation.  
-        RDFDataMgr.read(m2, "some-more-data.out", RDFLanguages.TURTLE) ;
+        // discovered by inspecting the file or by HTTP content negotiation.
+        RDFDataMgr.read(m2, "some-more-data.out", RDFLanguages.TURTLE);
+
+        // read data, setting up the process by using RDFParser.Builder.
+        Model m3 = ModelFactory.createDefaultModel();
+        RDFParser.source("data.ttl").parse(m3);
     }
 }

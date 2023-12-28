@@ -18,7 +18,6 @@
 
 package arq.examples.riot;
 
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +52,8 @@ public class ExRIOT_RDFXML_ReaderProperties {
             );
         System.out.println(data);
         System.out.println();
+        @SuppressWarnings("deprecation")
+        Lang legacyARP1 = RRX.RDFXML_ARP1;
         // Properties to be set.
         // See
         //   https://jena.apache.org/documentation/io/rdfxml-io.html
@@ -64,9 +65,7 @@ public class ExRIOT_RDFXML_ReaderProperties {
 
         Model model = ModelFactory.createDefaultModel();
         // Build and run a parser
-        RDFParser.create()
-            .lang(RRX.RDFXML_ARP1)
-            .source(new StringReader(data))
+        RDFParser.fromString(data, legacyARP1)
             .set(SysRIOT.sysRdfReaderProperties, properties)
             .base("http://example/base/")
             .parse(model);

@@ -24,7 +24,7 @@ import java.util.Iterator;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IOX;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.lang.IteratorParsers;
 import org.apache.jena.riot.system.AsyncParser;
 import org.apache.jena.riot.system.StreamRDF;

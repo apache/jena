@@ -18,8 +18,8 @@
 
 package arq.examples.riot;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.RDFParser ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.lang.CollectorStreamBase;
 import org.apache.jena.riot.lang.CollectorStreamTriples;
 
