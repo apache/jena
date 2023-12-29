@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,7 @@ import org.apache.jena.ext.xerces.impl.dv.util.ByteListImpl;
 /**
  * Represent the schema type "base64Binary"
  *
- * {@literal @xerces.internal} 
+ * {@literal @xerces.internal}
  *
  * @author Neeraj Bajaj, Sun Microsystems, inc.
  * @author Sandy Gao, IBM
@@ -60,13 +60,17 @@ public class Base64BinaryDV extends TypeValidator {
         public XBase64(byte[] data) {
             super(data);
         }
-        public synchronized String toString() {
+
+        public String toString() {
             if (canonical == null) {
-                canonical = Base64.encode(data);
+                synchronized(this) {
+                    if (canonical == null)
+                        canonical =  Base64.encode(data);
+                }
             }
             return canonical;
         }
-        
+
         public boolean equals(Object obj) {
             if (!(obj instanceof XBase64))
                 return false;
@@ -80,7 +84,7 @@ public class Base64BinaryDV extends TypeValidator {
             }
             return true;
         }
-        
+
         public int hashCode() {
             int hash = 0;
             for (int i = 0; i < data.length; ++i) {

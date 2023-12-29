@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ import org.apache.jena.ext.xerces.xs.datatypes.XSDecimal;
 /**
  * Represent the schema type "decimal"
  *
- * {@literal @xerces.internal} 
+ * {@literal @xerces.internal}
  *
  * @author Neeraj Bajaj, Sun Microsystems, inc.
  * @author Sandy Gao, IBM
@@ -64,7 +64,7 @@ public class DecimalDV extends TypeValidator {
     public final int getFractionDigits(Object value){
         return ((XDecimal)value).fracDigits;
     }
-    
+
     // Avoid using the heavy-weight java.math.BigDecimal
     static class XDecimal implements XSDecimal {
         // sign: 0 for vlaue 0; 1 for positive values; -1 for negative values
@@ -81,7 +81,7 @@ public class DecimalDV extends TypeValidator {
         String fvalue = "";
         // whether the canonical form contains decimal point
         boolean integer = false;
-        
+
         XDecimal(String content) throws NumberFormatException {
             initD(content);
         }
@@ -95,11 +95,11 @@ public class DecimalDV extends TypeValidator {
             int len = content.length();
             if (len == 0)
                 throw new NumberFormatException();
-    
+
             // these 4 variables are used to indicate where the integre/fraction
             // parts start/end.
             int intStart = 0, intEnd = 0, fracStart = 0, fracEnd = 0;
-            
+
             // Deal with leading sign symbol if present
             if (content.charAt(0) == '+') {
                 // skip '+', so intStart should be 1
@@ -110,48 +110,48 @@ public class DecimalDV extends TypeValidator {
                 intStart = 1;
                 sign = -1;
             }
-    
+
             // skip leading zeroes in integer part
             int actualIntStart = intStart;
             while (actualIntStart < len && content.charAt(actualIntStart) == '0') {
                 actualIntStart++;
             }
-    
+
             // Find the ending position of the integer part
             for (intEnd = actualIntStart;
                  intEnd < len && TypeValidator.isDigit(content.charAt(intEnd));
                  intEnd++);
-    
+
             // Not reached the end yet
             if (intEnd < len) {
                 // the remaining part is not ".DDD", error
                 if (content.charAt(intEnd) != '.')
                     throw new NumberFormatException();
-    
+
                 // fraction part starts after '.', and ends at the end of the input
                 fracStart = intEnd + 1;
                 fracEnd = len;
             }
-    
+
             // no integer part, no fraction part, error.
             if (intStart == intEnd && fracStart == fracEnd)
                 throw new NumberFormatException();
-    
+
             // ignore trailing zeroes in fraction part
             while (fracEnd > fracStart && content.charAt(fracEnd-1) == '0') {
                 fracEnd--;
             }
-    
+
             // check whether there is non-digit characters in the fraction part
             for (int fracPos = fracStart; fracPos < fracEnd; fracPos++) {
                 if (!TypeValidator.isDigit(content.charAt(fracPos)))
                     throw new NumberFormatException();
             }
-    
+
             intDigits = intEnd - actualIntStart;
             fracDigits = fracEnd - fracStart;
             totalDigits = intDigits + fracDigits;
-    
+
             if (intDigits > 0) {
                 ivalue = content.substring(actualIntStart, intEnd);
                 if (fracDigits > 0)
@@ -171,10 +171,10 @@ public class DecimalDV extends TypeValidator {
             int len = content.length();
             if (len == 0)
                 throw new NumberFormatException();
-    
+
             // these 2 variables are used to indicate where the integre start/end.
             int intStart = 0, intEnd = 0;
-    
+
             // Deal with leading sign symbol if present
             if (content.charAt(0) == '+') {
                 // skip '+', so intStart should be 1
@@ -185,30 +185,30 @@ public class DecimalDV extends TypeValidator {
                 intStart = 1;
                 sign = -1;
             }
-    
+
             // skip leading zeroes in integer part
             int actualIntStart = intStart;
             while (actualIntStart < len && content.charAt(actualIntStart) == '0') {
                 actualIntStart++;
             }
-    
+
             // Find the ending position of the integer part
             for (intEnd = actualIntStart;
                  intEnd < len && TypeValidator.isDigit(content.charAt(intEnd));
                  intEnd++);
-    
+
             // Not reached the end yet, error
             if (intEnd < len)
                 throw new NumberFormatException();
-    
+
             // no integer part, error.
             if (intStart == intEnd)
                 throw new NumberFormatException();
-    
+
             intDigits = intEnd - actualIntStart;
             fracDigits = 0;
             totalDigits = intDigits;
-    
+
             if (intDigits > 0) {
                 ivalue = content.substring(actualIntStart, intEnd);
             }
@@ -216,23 +216,23 @@ public class DecimalDV extends TypeValidator {
                 // "00", treat it as "0"
                 sign = 0;
             }
-            
+
             integer = true;
         }
         @Override
         public boolean equals(Object val) {
             if (val == this)
                 return true;
-    
+
             if (!(val instanceof XDecimal))
                 return false;
             XDecimal oval = (XDecimal)val;
-            
+
             if (sign != oval.sign)
                return false;
             if (sign == 0)
                 return true;
-            
+
             return intDigits == oval.intDigits && fracDigits == oval.fracDigits &&
                    ivalue.equals(oval.ivalue) && fvalue.equals(oval.fvalue);
         }
@@ -252,15 +252,19 @@ public class DecimalDV extends TypeValidator {
             ret = fvalue.compareTo(val.fvalue);
             return ret == 0 ? 0 : (ret > 0 ? 1 : -1);
         }
-        private String canonical;
+
+        private String canonical = null;
         @Override
-        public synchronized String toString() {
-            if (canonical == null) {
-                makeCanonical();
+        public String toString() {
+            if ( canonical == null ) {
+                synchronized (this) {
+                    if ( canonical == null )
+                        makeCanonical();
+                }
             }
             return canonical;
         }
-        
+
         private void makeCanonical() {
             if (sign == 0) {
                 if (integer)
@@ -292,7 +296,7 @@ public class DecimalDV extends TypeValidator {
             }
             canonical = buffer.toString();
         }
-        
+
         @Override
         public BigDecimal getBigDecimal() {
             if (sign == 0) {
@@ -300,7 +304,7 @@ public class DecimalDV extends TypeValidator {
             }
             return new BigDecimal(toString());
         }
-        
+
         @Override
         public BigInteger getBigInteger() throws NumberFormatException {
             if (fracDigits != 0) {
@@ -314,7 +318,7 @@ public class DecimalDV extends TypeValidator {
             }
             return new BigInteger("-" + ivalue);
         }
-        
+
         @Override
         public long getLong() throws NumberFormatException {
             if (fracDigits != 0) {
@@ -328,7 +332,7 @@ public class DecimalDV extends TypeValidator {
             }
             return Long.parseLong("-" + ivalue);
         }
-        
+
         @Override
         public int getInt() throws NumberFormatException {
             if (fracDigits != 0) {
@@ -342,7 +346,7 @@ public class DecimalDV extends TypeValidator {
             }
             return Integer.parseInt("-" + ivalue);
         }
-        
+
         @Override
         public short getShort() throws NumberFormatException {
             if (fracDigits != 0) {
@@ -356,7 +360,7 @@ public class DecimalDV extends TypeValidator {
             }
             return Short.parseShort("-" + ivalue);
         }
-        
+
         @Override
         public byte getByte() throws NumberFormatException {
             if (fracDigits != 0) {
