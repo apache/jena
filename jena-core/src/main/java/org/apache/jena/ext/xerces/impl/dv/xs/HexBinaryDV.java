@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,7 @@ import org.apache.jena.ext.xerces.impl.dv.util.HexBin;
 /**
  * Represent the schema type "hexBinary"
  *
- * {@literal @xerces.internal} 
+ * {@literal @xerces.internal}
  *
  * @author Neeraj Bajaj, Sun Microsystems, inc.
  * @author Sandy Gao, IBM
@@ -62,11 +62,15 @@ public class HexBinaryDV extends TypeValidator {
         @Override
         public synchronized String toString() {
             if (canonical == null) {
-                canonical = HexBin.encode(data);
+                synchronized(this) {
+                    if (canonical == null) {
+                        canonical = HexBin.encode(data);
+                    }
+                }
             }
             return canonical;
         }
-        
+
         @Override
         public boolean equals(Object obj) {
             if (!(obj instanceof XHex))
@@ -81,7 +85,7 @@ public class HexBinaryDV extends TypeValidator {
             }
             return true;
         }
-        
+
         @Override
         public int hashCode() {
             int hash = 0;

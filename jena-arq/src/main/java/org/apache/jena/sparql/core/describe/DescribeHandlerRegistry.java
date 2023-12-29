@@ -35,7 +35,7 @@ public class DescribeHandlerRegistry {
 
     private DescribeHandlerRegistry() {}
 
-    private static synchronized DescribeHandlerRegistry standardRegistry() {
+    private static DescribeHandlerRegistry standardRegistry() {
         DescribeHandlerRegistry reg = new DescribeHandlerRegistry();
         reg.add(new DescribeBNodeClosureFactory());
         return reg;
@@ -55,8 +55,12 @@ public class DescribeHandlerRegistry {
         // Initialize if there is no registry already set
         DescribeHandlerRegistry reg = get(ARQ.getContext());
         if ( reg == null ) {
-            reg = standardRegistry();
-            set(ARQ.getContext(), reg);
+            synchronized(DescribeHandlerRegistry.class) {
+                if ( reg == null ) {
+                    reg = standardRegistry();
+                    set(ARQ.getContext(), reg);
+                }
+            }
         }
         return reg;
     }
