@@ -215,9 +215,9 @@ public class QueryParserBase
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatypeURI);
             n = NodeFactory.createLiteral(lexicalForm, dType);
         } else if ( langTag != null && !langTag.isEmpty() )
-            n = NodeFactory.createLiteral(lexicalForm, langTag);
+            n = NodeFactory.createLiteralLang(lexicalForm, langTag);
         else
-            n = NodeFactory.createLiteral(lexicalForm);
+            n = NodeFactory.createLiteralString(lexicalForm);
         return n;
     }
 

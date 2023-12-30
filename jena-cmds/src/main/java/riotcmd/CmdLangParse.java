@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.zip.GZIPOutputStream;
 
 import arq.cmdline.ModContext;
@@ -82,12 +83,12 @@ public abstract class CmdLangParse extends CmdGeneral {
     }
 
     protected List<ParseRecord> outcomes = new ArrayList<>();
-
     protected OutputStream outputWrite = System.out;
     protected StreamRDF parserOutputStream = null;
     protected String parserBaseIRI = null;
     protected boolean passRelativeURIs = false;
     protected String writerBaseIRI = null;
+
     @Override
     protected void processModulesAndArgs() {
         cmdStrictMode = super.contains(argStrict);
@@ -202,18 +203,18 @@ public abstract class CmdLangParse extends CmdGeneral {
 
         if ( ! modLangParse.mergeQuads() && ! isQuadsOutput() ) {
             // Only pass through triples.
-            final StreamRDF dest = parserOutputStream;
             if ( isStreamingOutput() ) {
-                Runnable action = () -> {
+                Function<Quad, StreamTriplesOnly.QuadPolicy> action = (quad) -> {
                     // dest may be significantly buffered over the top of the output stream.
                     // The log message does not necessarily come out in the right place - it may be early.
+                    // "Best effort" attempt to align log message to output.
                     IO.flush(outputWrite);
                     Log.warn(SysRIOT.getLogger(), "Quads in triples output - quads ignored.");
+                    return StreamTriplesOnly.QuadPolicy.IGNORE;
                 };
-                parserOutputStream = StreamTriplesOnly.actionIfQuads(parserOutputStream, action);
-            } else {
-                // Not streaming - code can issue error before formatting.
+                parserOutputStream = StreamTriplesOnly.setActionIfQuads(parserOutputStream, action);
             }
+            // If not streaming, leave to the writer,
         }
 
         // If QuadsToTriples is added here, then counts will be "triples only"

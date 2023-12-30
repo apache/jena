@@ -224,7 +224,7 @@ public final class Id {
     public Node asNode() {
         if ( uuid != null )
             return NodeFactory.createURI(SchemeUuid+uuid.toString());
-        return NodeFactory.createLiteral(string);
+        return NodeFactory.createLiteralString(string);
     }
 
     @Override

@@ -36,7 +36,7 @@ public class StringUtils
     {
         return integerFormat.format(v) ;
     }
-    
+
     static FastDateFormat dateTimeFormat = FastDateFormat.getInstance( "yyyy/MM/dd HH:mm:ss") ;
     public static String str(Date date)
     {
@@ -48,19 +48,19 @@ public class StringUtils
     {
         return decimalFormat.format(value) ;
     }
-    
+
     public static String str(double value)
     {
         return decimalFormat.format(value) ;
     }
-    
+
     public static <T> String str(T[] array)
     {
         return Arrays.asList(array).toString() ;
     }
 
-    private static Pattern p = Pattern.compile("http:[^ \n]*[#/]([^/ \n]*)") ;
-    /** Abbreviate, crudely, URI in strings, leaving only their last component. */ 
+    private static Pattern p = Pattern.compile("https?:[^ \n]*[#/]([^/ \n]*)") ;
+    /** Abbreviate, crudely, URI in strings, leaving only their last component. */
     public static String printAbbrev(Object obj)
     {
         if ( obj==null )
@@ -68,8 +68,8 @@ public class StringUtils
         String x = obj.toString() ;
         return p.matcher(x).replaceAll("::$1") ;
     }
-    
-    /** Abbreviate, crudely, URI in strings, leaving only their last component. */ 
+
+    /** Abbreviate, crudely, URI in strings, leaving only their last component. */
     public static <T> String printAbbrevList(List<T> objs)
     {
         String x = Iter.asString(objs.iterator(), "\n") ;

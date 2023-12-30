@@ -277,12 +277,12 @@ public abstract class NodeValue extends ExprNode
 
         Node n = null ;
         if ( langTag != null )
-            n = NodeFactory.createLiteral(lexicalForm, langTag) ;
+            n = NodeFactory.createLiteralLang(lexicalForm, langTag) ;
         else if ( datatype != null) {
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatype) ;
             n = NodeFactory.createLiteral(lexicalForm, dType) ;
         } else
-            n = NodeFactory.createLiteral(lexicalForm) ;
+            n = NodeFactory.createLiteralString(lexicalForm) ;
 
         return NodeValue.makeNode(n) ;
     }

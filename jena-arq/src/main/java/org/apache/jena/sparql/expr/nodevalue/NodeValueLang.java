@@ -65,7 +65,7 @@ public class NodeValueLang extends NodeValue {
     
     @Override
     protected Node makeNode()
-    { return NodeFactory.createLiteral(string, lang) ; }
+    { return NodeFactory.createLiteralLang(string, lang) ; }
     
     @Override
     public String toString() { 

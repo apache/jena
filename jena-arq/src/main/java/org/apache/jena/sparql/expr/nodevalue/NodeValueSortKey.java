@@ -86,7 +86,7 @@ public final class NodeValueSortKey extends NodeValue implements Comparable<Node
      */
     @Override
     protected Node makeNode() {
-        return NodeFactory.createLiteral(string);
+        return NodeFactory.createLiteralString(string);
     }
 
     @Override

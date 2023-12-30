@@ -18,20 +18,38 @@
 
 package org.apache.jena.graph;
 
-/**
-    this interface describes types that can have a triple extracted using
-    a <code>getTriple</code> method. It was constructed so that Node's 
-    can have possibly embedded triples but defer to a GetTriple object if 
-    they have no triple of their own; the particular GetTriple used initially is
-    in Reifier, but that seemed excessively special.
-*/
+import static org.apache.jena.atlas.lib.Lib.lowercase;
 
-public interface GetTriple
-    {
-    /**
-        Answer the triple associated with the node <code>n</code>.
-        @param n the node to use as the key
-        @return the associated triple, or <code>null</code> if none
-    */
-    public Triple getTriple( Node n );
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.vocabulary.RDF;
+
+public enum TextDirection {
+
+    LTR("ltr"), RTL("rtl") ;
+
+    // "name" is used by enum.
+    private final String direction;
+
+    private TextDirection(String string) {
+        this.direction = string;
     }
+
+    public String direction() {
+        return direction;
+    }
+
+    @Override
+    public String toString() {
+        return direction;
+    }
+
+    public static TextDirection create(String label) {
+        String s = lowercase(label);
+        return switch(s) {
+            case "ltr" -> LTR;
+            case "rtl"-> RTL;
+            default ->
+                throw new JenaException(String .format("Initial text direction must be 'ltr' or 'rtl'", RDF.dirLTR, RDF.dirRTL));
+        };
+    }
+}

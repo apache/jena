@@ -132,7 +132,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     }
 
     private Literal literal( String s, String lang)
-    { return new LiteralImpl( NodeFactory.createLiteral( s, lang), this ); }
+    { return new LiteralImpl( NodeFactory.createLiteralLang( s, lang), this ); }
 
     private Literal literal( String lex, RDFDatatype datatype)
     { return new LiteralImpl( NodeFactory.createLiteral( lex, datatype), this ); }
@@ -369,7 +369,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     @Override
     public StmtIterator listStatements( Resource S, Property P, String O ) {
         return O == null ? listStatements(S, P, Node.ANY)
-                         :  listStatements( S, P, NodeFactory.createLiteral( O ) );
+                         :  listStatements( S, P, NodeFactory.createLiteralString( O ) );
     }
 
     @Override
@@ -377,7 +377,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
         if (O != null) {
             // this is not OK when L is null: returns only the statements whose lang is ""
             // return listStatements( S, P, Node.createLiteral( O, L, false ) );
-            if (L != null) return listStatements( S, P, NodeFactory.createLiteral( O, L ) );
+            if (L != null) return listStatements( S, P, NodeFactory.createLiteralLang( O, L ) );
             // there's maybe a better way
             return new StringFilteredStmtIterator(O, listStatements(S, P, Node.ANY));
         } else {
@@ -564,7 +564,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
      */
     @Override
     public Literal createTypedLiteral(String v)  {
-        return new LiteralImpl(NodeFactory.createLiteral(v), this);
+        return new LiteralImpl(NodeFactory.createLiteralString(v), this);
     }
 
     /**

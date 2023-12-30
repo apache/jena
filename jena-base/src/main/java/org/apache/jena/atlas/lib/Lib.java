@@ -21,12 +21,13 @@ package org.apache.jena.atlas.lib;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Stream;
-import java.util.zip.Adler32 ;
-import java.util.zip.CRC32 ;
-import java.util.zip.Checksum ;
+import java.util.zip.Adler32;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
 
 import org.apache.commons.codec.digest.MurmurHash3;
-import org.apache.jena.atlas.logging.Log ;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.atlas.logging.Log;
 
 public class Lib
 {
@@ -61,12 +62,12 @@ public class Lib
 
     /** "ConcurrentHashSet" */
     public static final <X> Set<X> concurrentHashSet() {
-        return SetUtils.concurrentHashSet() ;
+        return SetUtils.concurrentHashSet();
     }
 
     public static final void sync(Object object) {
         if ( object instanceof Sync syncobj )
-            syncobj.sync() ;
+            syncobj.sync();
     }
 
     /**
@@ -75,33 +76,33 @@ public class Lib
      */
     public static final <T> boolean equals(T obj1, T obj2) {
         // Include because other equals* operations are here.
-        return Objects.equals(obj1, obj2) ;
+        return Objects.equals(obj1, obj2);
     }
 
     /** Return true if obj1 and obj are both null or are .equals, else return false */
     public static final boolean equalsIgnoreCase(String str1, String str2) {
         if ( str1 == null )
-            return str2 == null ;
-        return str1.equalsIgnoreCase(str2) ;
+            return str2 == null;
+        return str1.equalsIgnoreCase(str2);
     }
 
     /** Return true if obj1 and obj are not equal */
     public static final <T> boolean notEqual(T obj1, T obj2) {
-        return !Objects.equals(obj1, obj2) ;
+        return !Objects.equals(obj1, obj2);
     }
 
     /** Safely return the class short name for an object -- obj.getClass().getSimpleName() */
     static public final String className(Object obj) {
         if ( obj == null )
-            return "null" ;
-        return classShortName(obj.getClass()) ;
+            return "null";
+        return classShortName(obj.getClass());
     }
 
     /** Safely return the class short name for a class */
     static public final String classShortName(Class<? > cls) {
         if ( cls == null )
-            return "null" ;
-        return cls.getSimpleName() ;
+            return "null";
+        return cls.getSimpleName();
     }
 
     /** Create {@link UnsupportedOperationException} with formatted message. */
@@ -112,25 +113,42 @@ public class Lib
     /** Do two lists have the same elements without considering the order of the lists nor duplicates? */
     public static <T> boolean equalsListAsSet(List<T> list1, List<T> list2) {
         if ( list1 == null && list2 == null )
-            return true ;
-        if ( list1 == null ) return false ;
-        if ( list2 == null ) return false ;
-        return list1.containsAll(list2) && list2.containsAll(list1) ;
+            return true;
+        if ( list1 == null ) return false;
+        if ( list2 == null ) return false;
+        return list1.containsAll(list2) && list2.containsAll(list1);
     }
 
     /** HashCode - allow nulls */
-    public static final int hashCodeObject(Object obj) { return hashCodeObject(obj, -4) ; }
+    public static final int hashCodeObject(Object obj) { return hashCodeObject(obj, -4); }
 
     /** HashCode - allow nulls */
     public static final int hashCodeObject(Object obj, int nullHashCode) {
         if ( obj == null )
-            return nullHashCode ;
-        return obj.hashCode() ;
+            return nullHashCode;
+        return obj.hashCode();
+    }
+
+    public static boolean isEmpty(CharSequence cs) {
+        // Hide implementation
+        return StringUtils.isEmpty(cs);
+    }
+
+    /** Non-locale lowercase {@link Locale#ROOT} */
+    public static String lowercase(String string) {
+        // Hide implementation
+        return string.toLowerCase(Locale.ROOT);
+    }
+
+    /** Non-locale uppercase {@link Locale#ROOT} */
+    public static String uppercase(String string) {
+        // Hide implementation
+        return string.toUpperCase(Locale.ROOT);
     }
 
     public static final void sleep(int milliSeconds) {
-        try  { Thread.sleep(milliSeconds) ; }
-        catch (InterruptedException ex) { Log.warn(Lib.class, "interrupted", ex) ; }
+        try  { Thread.sleep(milliSeconds); }
+        catch (InterruptedException ex) { Log.warn(Lib.class, "interrupted", ex); }
     }
 
     /** Get an environment variable value; if not found try in the system properties. */
@@ -173,7 +191,7 @@ public class Lib
         X x = threadLocal.get();
         if ( x == null )
             threadLocal.remove();
-        return x ;
+        return x;
     }
 
     /**
@@ -181,20 +199,20 @@ public class Lib
      */
     public static long crc32(byte[] bytes)
     {
-        return crc(new CRC32(), bytes) ;
+        return crc(new CRC32(), bytes);
     }
 
     /** Faster than CRC32, nearly as good.
      * @see Adler32
      */
     public static long adler32(byte[] bytes) {
-        return crc(new Adler32(), bytes) ;
+        return crc(new Adler32(), bytes);
     }
 
     private static long crc(Checksum alg, byte[] bytes) {
-        alg.reset() ;
-        alg.update(bytes, 0, bytes.length) ;
-        return alg.getValue() ;
+        alg.reset();
+        alg.update(bytes, 0, bytes.length);
+        return alg.getValue();
     }
 
     /** Calculate the Murmur3 hash of a string, and return it as a hex-encoded string. */
@@ -215,7 +233,7 @@ public class Lib
         // Avoiding generating intermediate strings from e.g. Bytes.asHexLC
         // Byte loop.
         // Bytes get encoded "high bits first". "AF" is value A*16+F
-        for ( int idx = 0 ; idx < 8 ; idx++ ) {
+        for ( int idx = 0; idx < 8; idx++ ) {
             int i = idx * 8;
             int bValue = (int)((value >> i) & 0xFF);
             // Keep order of the byte - high nibble, low nibble.

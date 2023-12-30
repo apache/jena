@@ -354,7 +354,8 @@ public class TestNode extends GraphTestBase
         Node n1 = NodeCreateUtils.create( "'chat'en-UK" );
         Node n2 = NodeCreateUtils.create( "'chat'EN-UK" );
         assertTrue( n1.sameValueAs(n2) ) ;
-        assertFalse( n1.equals(n2) ) ;
+        // Jena5: normalized language tags.
+        assertTrue( n1.equals(n2) ) ;
     }
 
     public void testCreateLanguagedLiteralXY()
@@ -621,11 +622,11 @@ public class TestNode extends GraphTestBase
     {
         TypeMapper tm = TypeMapper.getInstance();
         RDFDatatype dtInt = tm.getTypeByValue( Integer.valueOf( 10 ) );
-        Node plain = NodeFactory.createLiteral( "rhubarb", "");
-        Node english = NodeFactory.createLiteral( "eccentric", "en_UK");
+        Node plain = NodeFactory.createLiteralLang( "rhubarb", "");
+        Node english = NodeFactory.createLiteralLang( "eccentric", "en-UK");
         Node typed = NodeFactory.createLiteral( "10", dtInt );
         assertEquals( "\"rhubarb\"", plain.toString() );
-        assertEquals( "\"eccentric\"@en_UK", english.toString() );
+        assertEquals( "\"eccentric\"@en-UK", english.toString() );
         assertEquals( "\"10\"^^xsd:int", typed.toString() );
     }
 

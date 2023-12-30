@@ -142,10 +142,10 @@ public class cacheLs
                     Op normOp = key.getOp();
                     Op op = Rename.reverseVarRename(normOp, true);
                     Query query = OpAsQuery.asQuery(op);
-                    return NodeFactory.createLiteral(query.toString());
+                    return NodeFactory.createLiteralString(query.toString());
                 });
 
-                parentBuilder = processArg(parentBuilder, objectArgs, 2, () -> NodeFactory.createLiteral(key.getBinding().toString()));
+                parentBuilder = processArg(parentBuilder, objectArgs, 2, () -> NodeFactory.createLiteralString(key.getBinding().toString()));
 
                 Optional<Binding> parentBindingOpt = parentBuilder.map(BindingBuilder::build);
 

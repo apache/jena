@@ -172,10 +172,18 @@ public interface Literal extends RDFNode {
     public String getString() ;
 
     /**
-         If a language is defined for this literal return it
-         @return the language for this literal if it exists, or empty string if none
-    */
+     * If a language is defined for this literal return it
+     *
+     * @return the language for this literal if it exists, or empty string if none
+     */
     public String getLanguage();
+
+    /**
+     * If a text direction is defined for this literal return it
+     *
+     * @return the text direction for this literal if it exists, or null if none
+     */
+    public String getTextDirection();
 
     /** Test whether another object is equal to this object.
      *

@@ -54,6 +54,8 @@ public class TestLiteralLabelSameValueAs
     }
 
     private static LiteralLabel gen(String lex, String lang) {
+        // LiteralLabels do not normalize language tags.
+        // That happens in NodeFactory.
         return LiteralLabelFactory.createLang(lex, lang) ;
     }
 

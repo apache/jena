@@ -528,7 +528,7 @@ public class UpdateBuilderTest {
     public void example1() {
         Node n = NodeFactory.createURI("http://example/book1");
         Node priceN = NodeFactory.createURI("http://example.org/ns#price");
-        Node priceV = NodeFactory.createLiteral("42");
+        Node priceV = NodeFactory.createLiteralString("42");
         UpdateBuilder builder = new UpdateBuilder().addPrefix("dc", DC_11.NS).addInsert(n, DC_11.title, "A new book")
                 .addInsert(n, DC_11.creator, "A.N.Other");
 

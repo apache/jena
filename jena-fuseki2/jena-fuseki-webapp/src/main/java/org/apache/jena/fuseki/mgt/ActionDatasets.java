@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.mgt;
 
 import static java.lang.String.format;
+import static org.apache.jena.atlas.lib.Lib.lowercase;
 import static org.apache.jena.fuseki.build.FusekiPrefixes.PREFIXES;
 
 import java.io.IOException;
@@ -431,7 +432,7 @@ public class ActionDatasets extends ActionContainerItem {
             // -- System database
             // Find graph associated with this dataset name.
             // (Statically configured databases aren't in the system database.)
-            Node n = NodeFactory.createLiteral(DataAccessPoint.canonical(name));
+            Node n = NodeFactory.createLiteralString(DataAccessPoint.canonical(name));
             Quad q = getOne(systemDSG, null, null, pServiceName.asNode(), n);
 //            if ( q == null )
 //                ServletOps.errorBadRequest("Failed to find dataset for '"+name+"'");
@@ -477,7 +478,7 @@ public class ActionDatasets extends ActionContainerItem {
 
         //action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType ));
 
-        String template = dbTypeToTemplate.get(dbType.toLowerCase(Locale.ROOT));
+        String template = dbTypeToTemplate.get(lowercase(dbType));
         if ( template == null )
             ServletOps.errorBadRequest(format("dbType can be only '%s', '%s' or '%s'", tDatabaseTDB, tDatabaseTDB2, tDatabaseMem));
 

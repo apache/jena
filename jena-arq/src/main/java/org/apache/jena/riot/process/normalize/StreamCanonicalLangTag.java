@@ -18,6 +18,8 @@
 
 package org.apache.jena.riot.process.normalize;
 
+import static org.apache.jena.atlas.lib.Lib.lowercase;
+
 import java.util.IllformedLocaleException;
 import java.util.Locale;
 import java.util.function.BiFunction;
@@ -28,7 +30,7 @@ import org.apache.jena.riot.process.StreamRDFApplyObject;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.util.NodeUtils;
 
-/** {@link StreamRDF} that converts language tags to lower case o rto canokcal form (RFC 4646). */
+/** {@link StreamRDF} that converts language tags to lower case or to canonical form (RFC 4646, 5646). */
 public class StreamCanonicalLangTag extends StreamRDFApplyObject {
     /** Return a {@link StreamRDF} that converts language tags to lower case */
     public static StreamRDF toLC(StreamRDF other) {
@@ -58,11 +60,10 @@ public class StreamCanonicalLangTag extends StreamRDFApplyObject {
         String langTag2 = tagMapper.apply(locBuild, langTag);
         if ( langTag == langTag2 )
             return n;
-        Node obj2 = NodeFactory.createLiteral(n.getLiteralLexicalForm(), langTag2);
+        Node obj2 = NodeFactory.createLiteralLang(n.getLiteralLexicalForm(), langTag2);
         return obj2;
     }
 
-    // From taken from "xsd4ld" (which has an Apache License).
     public static String langTagCanonical(Locale.Builder locBuild, String str) {
         try {
             // Does not do conversion of language for ISO 639 codes that have changed.
@@ -73,6 +74,6 @@ public class StreamCanonicalLangTag extends StreamRDFApplyObject {
     }
 
     public static String langTagLC(Locale.Builder locBuild, String str) {
-        return str.toLowerCase(Locale.ROOT);
+        return lowercase(str);
     }
 }

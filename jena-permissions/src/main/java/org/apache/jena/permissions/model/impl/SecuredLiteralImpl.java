@@ -97,7 +97,7 @@ public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements SecuredLit
         if (canRead()) {
             throw new ResourceRequiredException(asNode());
         }
-        throw new ResourceRequiredException(NodeFactory.createLiteral("Can not read"));
+        throw new ResourceRequiredException(NodeFactory.createLiteralString("Can not read"));
     }
 
     /**
@@ -209,6 +209,18 @@ public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements SecuredLit
     public String getLanguage() throws ReadDeniedException, AuthenticationRequiredException {
         checkRead();
         return holder.getBaseItem().getLanguage();
+    }
+
+    /**
+     * @sec.graph Read
+     * @throws ReadDeniedException
+     * @throws AuthenticationRequiredException if user is not authenticated and is
+     *                                         required to be.
+     */
+    @Override
+    public String getTextDirection() throws ReadDeniedException, AuthenticationRequiredException {
+        checkRead();
+        return holder.getBaseItem().getTextDirection();
     }
 
     /**

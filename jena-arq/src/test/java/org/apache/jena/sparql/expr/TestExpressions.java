@@ -346,9 +346,29 @@ public class TestExpressions
     @Test public void boolean_126() { testBoolean("datatype('fred') = <"+XSD.xstring.getURI()+">", true) ; }
     @Test public void boolean_127() { testBoolean("datatype('fred'^^<urn:test:foo>) = <urn:test:foo>", true) ; }
     @Test public void boolean_128() { testBoolean("datatype('fred'^^<foo>) = <Foo>", false) ; }
-    @Test public void string_15() { testString("lang('fred'@en)", "en") ; }
-    @Test public void string_16() { testString("lang('fred'@en-uk)", "en-uk") ; }
-    @Test public void string_17() { testString("lang('fred')", "") ; }
+
+    @Test public void lang_01() { testString("LANG('tea time'@en)", "en") ; }
+    // Aside For some strange reason, the language code is GB not UK.
+    // The state is UK! "The United Kingdom of Great Britain and Norther Ireland."
+    // The four countries England, Scotland, Wales and Northern Ireland (since 1922).
+    // It's complicated: https://en.wikipedia.org/wiki/United_Kingdom
+    @Test public void lang_02() { testString("LANG('tea time'@en-gb)", "en-GB") ; }
+    @Test public void lang_03() { testString("LANG('tea time')", "") ; }
+
+    @Test public void langmatches_01() { testBoolean("LANGMATCHES('EN', 'en')", true) ; }
+    @Test public void langmatches_02() { testBoolean("LANGMATCHES('en', 'en')", true) ; }
+    @Test public void langmatches_03() { testBoolean("LANGMATCHES('EN', 'EN')", true) ; }
+    @Test public void langmatches_04() { testBoolean("LANGMATCHES('en', 'EN')", true) ; }
+    @Test public void langmatches_05() { testBoolean("LANGMATCHES('fr', 'EN')", false) ; }
+
+    @Test public void langmatches_06() { testBoolean("LANGMATCHES('en', 'en-gb')", false) ; }
+    @Test public void langmatches_07() { testBoolean("LANGMATCHES('en-GB', 'en-GB')", true) ; }
+    @Test public void langmatches_08() { testBoolean("LANGMATCHES('en-Latn-gb', 'en-Latn')", true) ; }
+    @Test public void langmatches_09() { testBoolean("LANGMATCHES('en-gb', 'en-Latn')", false) ; }
+
+    @Test public void langmatches_10() { testBoolean("LANGMATCHES('', '*')", false) ; }
+    @Test public void langmatches_11() { testBoolean("LANGMATCHES('en-us', '*')", true) ; }
+
     @Test public void boolean_129() { testBoolean("isURI(?x)", true, env) ; }
     @Test public void boolean_130() { testBoolean("isURI(?a)", false, env) ; }
     @Test public void boolean_131() { testBoolean("isURI(?b)", false, env) ; }
@@ -419,7 +439,7 @@ public class TestExpressions
         query.setPrefix("select",  selNS) ;
     }
     static String xsd = XSDDatatype.XSD+"#" ;
-    static Binding env = BindingFactory.binding(Var.alloc("a"), NodeFactory.createLiteral("A"),
+    static Binding env = BindingFactory.binding(Var.alloc("a"), NodeFactory.createLiteralString("A"),
                                                 Var.alloc("b"), NodeFactory.createBlankNode(),
                                                 Var.alloc("x"), NodeFactory.createURI("urn:ex:abcd")) ;
 

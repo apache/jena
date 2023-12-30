@@ -369,7 +369,9 @@ public class RDFParserBuilder {
      * This option can slow parsing down.
      *
      * @see #langTagCanonical
+     * @deprecated In Jena5, language tags are always converted to RFC 5646 case format.
      */
+    @Deprecated
     public RDFParserBuilder langTagLowerCase() {
         return langTagForm(LangTagForm.LOWER_CASE);
     }
@@ -388,7 +390,9 @@ public class RDFParserBuilder {
      * This option can slow parsing down.
      * </p>
      * @see #langTagLowerCase
+     * @deprecated In Jena5, language tags are always converted to RFC 5646 case format.
      */
+    @Deprecated
     public RDFParserBuilder langTagCanonical() {
         return langTagForm(LangTagForm.CANONICAL);
     }
@@ -398,13 +402,17 @@ public class RDFParserBuilder {
      * This is the default behaviour of parsing.
      * @see #langTagLowerCase
      * @see #langTagCanonical
+     * @deprecated In Jena5, language tags are always converted to RFC 5646 case format.
      */
+    @Deprecated
     public RDFParserBuilder langTagAsGiven() {
         return langTagForm(LangTagForm.NONE);
     }
 
     private RDFParserBuilder langTagForm(LangTagForm form) {
-        this.langTagForm = form;
+        // Ignore!
+        // language tags are always converted to RFC 5646 case format.
+        //this.langTagForm = form;
         return this;
     }
 

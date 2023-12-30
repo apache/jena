@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format;
+import static org.apache.jena.atlas.lib.Lib.uppercase;
 import static org.apache.jena.fuseki.server.CounterName.QueryTimeouts;
 import static org.apache.jena.fuseki.servlets.ActionExecLib.incCounter;
 import static org.apache.jena.riot.WebContent.ctHTMLForm;
@@ -111,7 +112,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
      */
     @Override
     public void validate(HttpAction action) {
-        String method = action.getRequestMethod().toUpperCase(Locale.ROOT);
+        String method = uppercase(action.getRequestMethod());
 
         if ( HttpNames.METHOD_OPTIONS.equals(method) )
             return;
@@ -243,9 +244,9 @@ public abstract class SPARQLQueryProcessor extends ActionService
             if ( str.endsWith("\n") )
                 str = str.substring(0, str.length()-1);
             action.log.info(format("[%d] Query = \n%s", action.id, str));
-        }
-        else
+        } else {
             action.log.info(format("[%d] Query = %s", action.id, queryStringLog));
+        }
 
         Query query = null;
         try {

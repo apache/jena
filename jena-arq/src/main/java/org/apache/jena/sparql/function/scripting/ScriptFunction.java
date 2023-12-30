@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.function.scripting;
 
+import static org.apache.jena.atlas.lib.Lib.lowercase;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
@@ -112,7 +114,7 @@ public class ScriptFunction extends FunctionBase {
         this.name = localPart.substring(separatorPos + 1);
         this.allowList = allowList(cxt, ARQ.symCustomFunctionScriptAllowList);
 
-        String cname = lang.toLowerCase(Locale.ROOT);
+        String cname = lowercase(lang);
         switch(cname) {
             case "js":
                 // never allow these.

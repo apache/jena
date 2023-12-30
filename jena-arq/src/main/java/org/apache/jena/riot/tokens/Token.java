@@ -402,9 +402,9 @@ public final class Token
                 return NodeFactory.createLiteral(lexToken.getImage(), dt);
             }
             case LITERAL_LANG :
-                return NodeFactory.createLiteral(tokenImage, tokenImage2);
+                return NodeFactory.createLiteralLang(tokenImage, tokenImage2);
             case STRING :
-                return NodeFactory.createLiteral(tokenImage);
+                return NodeFactory.createLiteralString(tokenImage);
             case VAR :
                 return Var.alloc(tokenImage);
             case KEYWORD :

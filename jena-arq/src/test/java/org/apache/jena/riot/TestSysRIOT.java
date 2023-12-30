@@ -18,7 +18,8 @@
 
 package org.apache.jena.riot;
 
-import java.util.Locale;
+import static org.apache.jena.atlas.lib.Lib.lowercase;
+
 import java.util.function.Predicate;
 
 import org.apache.jena.atlas.io.IO;
@@ -42,7 +43,7 @@ public class TestSysRIOT {
     public void chooseBaseIRI_3() {
         if ( Sys.isWindows ) {
             if ( IO.exists("c:/") )
-                testChooseBaseIRI("c:", s->s.toLowerCase(Locale.ROOT).startsWith("file:///c:/"));
+                testChooseBaseIRI("c:", s->lowercase(s).startsWith("file:///c:/"));
         } else
             testChooseBaseIRI("x:", "x:");
     }
@@ -51,7 +52,7 @@ public class TestSysRIOT {
     public void chooseBaseIRI_4() {
         if ( Sys.isWindows ) {
             if ( IO.exists("c:/") )
-                testChooseBaseIRI("c:", s->s.toLowerCase(Locale.ROOT).startsWith("file:///c:/"));
+                testChooseBaseIRI("c:", s->lowercase(s).startsWith("file:///c:/"));
         } else
             testChooseBaseIRI("x:/", "x:/");
     }

@@ -559,10 +559,10 @@ public class TextIndexLucene implements TextIndex {
                         TypeMapper tmap = TypeMapper.getInstance();
                         literal = NodeFactory.createLiteral(lexical, tmap.getSafeTypeByName(datatype));
                     } else {
-                        literal = NodeFactory.createLiteral(lexical, doclang);
+                        literal = NodeFactory.createLiteralLang(lexical, doclang);
                     }
                 } else {
-                    literal = NodeFactory.createLiteral(lexical);
+                    literal = NodeFactory.createLiteralString(lexical);
                 }
             }
 
@@ -666,7 +666,7 @@ public class TextIndexLucene implements TextIndex {
                 TextFragment[] frags = highlighter.getBestTextFragments(tokenStream, lexical, opts.joinFrags, opts.maxFrags);
                 String rez = frags2string(frags, opts);
                 log.trace("result: {}, #frags: {}", rez, frags.length) ;
-                literal = NodeFactory.createLiteral(rez, docLang);
+                literal = NodeFactory.createLiteralLang(rez, docLang);
             }
 
             String graf = docDef.getGraphField() != null ? doc.get(docDef.getGraphField()) : null ;

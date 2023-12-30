@@ -18,10 +18,9 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import static org.apache.jena.atlas.lib.Lib.uppercase;
 import static org.apache.jena.fuseki.servlets.ActionExecLib.incCounter;
 import static org.apache.jena.riot.web.HttpNames.*;
-
-import java.util.Locale;
 
 import org.apache.jena.fuseki.server.CounterName;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -36,7 +35,7 @@ public abstract class ActionREST extends ActionService
     @Override
     public void execute(HttpAction action) {
         // Intercept to put counters around calls.
-        String method = action.getRequestMethod().toUpperCase(Locale.ROOT);
+        String method = uppercase(action.getRequestMethod());
 
         if (method.equals(METHOD_GET))
             doGet$(action);

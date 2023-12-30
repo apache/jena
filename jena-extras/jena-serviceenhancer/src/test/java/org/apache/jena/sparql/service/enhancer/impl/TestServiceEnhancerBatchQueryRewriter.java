@@ -48,8 +48,8 @@ public class TestServiceEnhancerBatchQueryRewriter {
 
         Batch<Integer, PartitionRequest<Binding>> batch = BatchImpl.forInteger();
         Var o = Var.alloc("o");
-        batch.put(0, new PartitionRequest<>(0, BindingFactory.binding(o, NodeFactory.createLiteral("x1")), 1, 5));
-        batch.put(1, new PartitionRequest<>(1, BindingFactory.binding(o, NodeFactory.createLiteral("x2")), 2, 6));
+        batch.put(0, new PartitionRequest<>(0, BindingFactory.binding(o, NodeFactory.createLiteralString("x1")), 1, 5));
+        batch.put(1, new PartitionRequest<>(1, BindingFactory.binding(o, NodeFactory.createLiteralString("x2")), 2, 6));
 
         BatchQueryRewriter rewriter = new BatchQueryRewriter(new OpServiceInfo(op), Var.alloc("idx"), false, false, false);
         BatchQueryRewriteResult rewrite = rewriter.rewrite(batch);

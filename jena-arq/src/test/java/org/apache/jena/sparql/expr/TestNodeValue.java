@@ -742,14 +742,14 @@ public class TestNodeValue
     // EBV includes plain literals which includes language tagged literals.
     @Test
     public void testEBV7() {
-        Node x = NodeFactory.createLiteral("", "en");
+        Node x = NodeFactory.createLiteralLang("", "en");
         NodeValue v = NodeValue.makeNode(x);
         assertFalse("Not EBV false: " + v, XSDFuncOp.booleanEffectiveValue(v));
     }
 
     @Test
     public void testEBV8() {
-        Node x = NodeFactory.createLiteral("not empty", "en");
+        Node x = NodeFactory.createLiteralLang("not empty", "en");
         NodeValue v = NodeValue.makeNode(x);
         assertTrue("Not EBV true: " + v, XSDFuncOp.booleanEffectiveValue(v));
     }
@@ -1109,28 +1109,29 @@ public class TestNodeValue
 
     @Test
     public void testLang1() {
-        Node n1 = org.apache.jena.graph.NodeFactory.createLiteral("xyz", "en");
+        Node n1 = org.apache.jena.graph.NodeFactory.createLiteralLang("xyz", "en");
         NodeValue nv1 = NodeValue.makeNode(n1);
-        Node n2 = org.apache.jena.graph.NodeFactory.createLiteral("xyz", "en");
+        Node n2 = org.apache.jena.graph.NodeFactory.createLiteralLang("xyz", "en");
         NodeValue nv2 = NodeValue.makeNode(n2);
         assertTrue(NodeValue.sameValueAs(nv1, nv2));
     }
 
     @Test
     public void testLang2() {
-        Node n1 = org.apache.jena.graph.NodeFactory.createLiteral("xyz", "en");
+        Node n1 = org.apache.jena.graph.NodeFactory.createLiteralLang("xyz", "en");
         NodeValue nv1 = NodeValue.makeNode(n1);
-        Node n2 = org.apache.jena.graph.NodeFactory.createLiteral("xyz", "EN");
+        Node n2 = org.apache.jena.graph.NodeFactory.createLiteralLang("xyz", "EN");
         NodeValue nv2 = NodeValue.makeNode(n2);
         assertTrue(NodeValue.sameValueAs(nv1, nv2));
-        assertFalse(nv1.equals(nv2));
+        // Jena5 - langtags are formatted on creation so node are unique upto case.
+        assertTrue(nv1.equals(nv2));
     }
 
     @Test
     public void testLang3() {
-        Node n1 = org.apache.jena.graph.NodeFactory.createLiteral("xyz", "en");
+        Node n1 = org.apache.jena.graph.NodeFactory.createLiteralLang("xyz", "en");
         NodeValue nv1 = NodeValue.makeNode(n1);
-        Node n2 = org.apache.jena.graph.NodeFactory.createLiteral("xyz", "en");
+        Node n2 = org.apache.jena.graph.NodeFactory.createLiteralLang("xyz", "en");
         NodeValue nv2 = NodeValue.makeNode(n2);
         assertFalse(NodeValue.notSameValueAs(nv1, nv2));
     }
@@ -1140,7 +1141,8 @@ public class TestNodeValue
         NodeValue nv1 = parse("'xyz'@en");
         NodeValue nv2 = parse("'xyz'@EN");
         assertFalse(NodeValue.notSameValueAs(nv1, nv2));
-        assertFalse(nv1.equals(nv2));
+        // Jena5 - langtags are formatted on creation so node are unique upto case.
+        assertTrue(nv1.equals(nv2));
     }
 
     //Compare value first and then language tag
@@ -1217,7 +1219,7 @@ public class TestNodeValue
     @Test
     public void testNotEquals3() { // Literals and URIs are different.
         NodeValue nv1 = NodeValue.makeNode(org.apache.jena.graph.NodeFactory.createURI("http://example"));
-        NodeValue nv2 = NodeValue.makeNode(org.apache.jena.graph.NodeFactory.createLiteral("http://example"));
+        NodeValue nv2 = NodeValue.makeNode(org.apache.jena.graph.NodeFactory.createLiteralString("http://example"));
         assertFalse("NodeValue.equals()", nv1.equals(nv2));
     }
 

@@ -244,7 +244,7 @@ public class TestFunctions
     @Test public void exprNotOneOf_06()  { test("57 not in (1,2,3)",                TRUE) ; }
 
 
-    static Node xyz_en = NodeFactory.createLiteral("xyz", "en") ;
+    static Node xyz_en = NodeFactory.createLiteralLang("xyz", "en") ;
     static NodeValue nv_xyz_en = NodeValue.makeNode(xyz_en) ;
 
     static Node xyz_xsd_string = NodeFactory.createLiteral("xyz", XSDDatatype.XSDstring) ;

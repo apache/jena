@@ -143,7 +143,7 @@ public class RDFXMLReader implements RDFReaderI, ARPErrorNumbers {
     private static Node convert(ALiteral lit) {
         String dtURI = lit.getDatatypeURI();
         if (dtURI == null)
-            return NodeFactory.createLiteral(lit.toString(), lit.getLang());
+            return NodeFactory.createLiteralLang(lit.toString(), lit.getLang());
 
         if (lit.isWellFormedXML()) {
             return NodeFactory.createLiteral(lit.toString(), null, XMLLiteralType.theXMLLiteralType);

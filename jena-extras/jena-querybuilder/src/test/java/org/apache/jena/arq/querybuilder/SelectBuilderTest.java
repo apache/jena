@@ -137,7 +137,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
 
         Node one = NodeFactory.createURI("one");
         Node two = Var.alloc("two");
-        Node three = NodeFactory.createLiteral("three");
+        Node three = NodeFactory.createLiteralString("three");
         Node foo = NodeFactory.createURI("foo");
         Node bar = NodeFactory.createURI("bar");
 

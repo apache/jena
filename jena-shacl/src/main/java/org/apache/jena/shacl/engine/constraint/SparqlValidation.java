@@ -263,7 +263,7 @@ import org.apache.jena.sparql.util.ModelUtils;
         Pattern pattern = Pattern.compile("{[$?][^{}]+}");
         if ( path != null )
             // PATH is special.
-            substitions.put(Var.alloc("PATH"), NodeFactory.createLiteral(ShaclPaths.pathToString(path)));
+            substitions.put(Var.alloc("PATH"), NodeFactory.createLiteralString(ShaclPaths.pathToString(path)));
         return subsitute(message, substitions);
     }
 

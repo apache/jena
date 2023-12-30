@@ -93,12 +93,13 @@ public class TestSortOrdering {
         test(s1, s2, s3);
     }
 
-    @Test public void ordering_13() {
-        String s1 = "'a'@EN";
-        String s2 = "'a'@En";
-        String s3 = "'a'@en";
-        test(s1, s2, s3);
-    }
+//    // Jena5 : those are the same RDF term
+//    @Test public void ordering_13() {
+//        String s1 = "'a'@EN";
+//        String s2 = "'a'@En";
+//        String s3 = "'a'@en";
+//        test(s1, s2, s3);
+//    }
 
     @Test public void ordering_20() {
         String s1 = "<<:s1 :p :o>>";

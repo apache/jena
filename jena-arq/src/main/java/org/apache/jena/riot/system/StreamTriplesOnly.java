@@ -18,6 +18,10 @@
 
 package org.apache.jena.riot.system;
 
+import java.util.function.Function;
+
+import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.sparql.core.Quad;
 
 /**
@@ -27,27 +31,51 @@ import org.apache.jena.sparql.core.Quad;
  */
 public class StreamTriplesOnly extends StreamRDFWrapper {
 
-    public static StreamRDF actionIfQuads(StreamRDF stream, Runnable action) {
+    public static enum QuadPolicy { CALL, IGNORE }
+
+    /** Exception on non-delfault graph quad */
+    private static Function<Quad, QuadPolicy> actionException = (q) -> {
+        throw new RiotException("Quad in Triple output: "+NodeFmtLib.str(q));
+    };
+
+    /** Replace an existing wrapper with a new policy for quads */
+    public static StreamRDF setActionIfQuads(StreamRDF stream, Function<Quad, QuadPolicy> action) {
+        // Strip existing layers.
+        while ( stream instanceof StreamTriplesOnly stream2 ) {
+            stream = stream2.get();
+        }
+        return addActionIfQuads(stream, action);
+    }
+
+    /** Add a new policy layer for quads */
+    public static StreamRDF addActionIfQuads(StreamRDF stream, Function<Quad, QuadPolicy> action) {
         return new StreamTriplesOnly(stream, action);
     }
 
-    private boolean seenQuads = false;
-    private final Runnable action;
+    /** Throw a {@link RiotException} if a non-default graph quad is seen. */
+    public static StreamRDF exceptionOnQuads(StreamRDF stream) {
+        return new StreamTriplesOnly(stream, actionException);
+    }
 
-    private StreamTriplesOnly(StreamRDF sink, Runnable action) {
+    private QuadPolicy quadAction = QuadPolicy.CALL;
+    // The policy when seeing a quad that isn't in the default graph.
+    // Return true for "continue calling"
+    // Return false for "don't call again, ignore from now on"
+    private final Function<Quad, QuadPolicy> action;
+
+    private StreamTriplesOnly(StreamRDF sink, Function<Quad, QuadPolicy> action) {
         super(sink) ;
         this.action = action;
     }
 
     @Override
     public void quad(Quad quad) {
-        if ( quad.isTriple() || quad.isDefaultGraph() || quad.isUnionGraph() ) {
+        if ( quad.getGraph() == null || quad.isTriple() || quad.isDefaultGraph() ) {
             triple(quad.asTriple()) ;
             return;
         }
-        if ( ! seenQuads ) {
-            action.run();
-            seenQuads = true;
+        if ( quadAction == QuadPolicy.CALL ) {
+            quadAction = action.apply(quad);
         }
     }
 

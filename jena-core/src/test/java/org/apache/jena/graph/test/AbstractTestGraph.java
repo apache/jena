@@ -159,7 +159,8 @@ public abstract class AbstractTestGraph extends GraphTestBase
         if (m.getCapabilities().handlesLiteralTyping())
         {
             Node chaten = node( "'chat'en" ), chatEN = node( "'chat'EN" );
-            assertDiffer( chaten, chatEN );
+            //assertDiffer( chaten, chatEN ); // Up to Jena4.
+            assertEquals( chaten, chatEN ); // Jena5 -- the nodes are now the same due to normalized langtags
             assertTrue( chaten.sameValueAs( chatEN ) );
             assertEquals( chaten.getIndexingValue(), chatEN.getIndexingValue() );
             assertEquals( 1, m.find( Node.ANY, Node.ANY, chaten ).toList().size() );
@@ -173,11 +174,19 @@ public abstract class AbstractTestGraph extends GraphTestBase
         if (m.getCapabilities().handlesLiteralTyping())
         {
             Node chaten = node( "'chat'en" ), chatEN = node( "'chat'EN" );
-            assertDiffer( chaten, chatEN );
+            // Jena4.
+//            assertDiffer( chaten, chatEN ); // Up to Jena4.
+//            assertTrue( chaten.sameValueAs( chatEN ) );
+//            assertEquals( chaten.getIndexingValue(), chatEN.getIndexingValue() );
+//            assertEquals( 2, m.find( Node.ANY, Node.ANY, chaten ).toList().size() );
+//            assertEquals( 2, m.find( Node.ANY, Node.ANY, chatEN ).toList().size() );
+
+            // Jena5 -- the nodes are now the same due to normalized langtags
+            assertEquals( chaten, chatEN ); // Jena5 -- the nodes are now the same due to normalized langtags
             assertTrue( chaten.sameValueAs( chatEN ) );
             assertEquals( chaten.getIndexingValue(), chatEN.getIndexingValue() );
-            assertEquals( 2, m.find( Node.ANY, Node.ANY, chaten ).toList().size() );
-            assertEquals( 2, m.find( Node.ANY, Node.ANY, chatEN ).toList().size() );
+            assertEquals( 1, m.find( Node.ANY, Node.ANY, chaten ).toList().size() );
+            assertEquals( 1, m.find( Node.ANY, Node.ANY, chatEN ).toList().size() );
         }
     }
 
@@ -187,7 +196,8 @@ public abstract class AbstractTestGraph extends GraphTestBase
         if (m.getCapabilities().handlesLiteralTyping())
         {
             Node chaten = node( "'chat'en" ), chatEN = node( "'chat'EN" );
-            assertDiffer( chaten, chatEN );
+            //assertDiffer( chaten, chatEN ); // Up to Jena4.
+            assertEquals( chaten, chatEN ); // Jena5 -- the nodes are now the same due to normalized langtags
             assertTrue( chaten.sameValueAs( chatEN ) );
             assertEquals( chaten.getIndexingValue(), chatEN.getIndexingValue() );
             assertEquals( 1, m.find( Node.ANY, Node.ANY, chaten ).toList().size() );
