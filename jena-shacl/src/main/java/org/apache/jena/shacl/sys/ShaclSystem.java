@@ -26,14 +26,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ShaclSystem {
-    public static Logger systemShaclLogger = LoggerFactory.getLogger("SHACL"); 
-    public static ErrorHandler systemShaclErrorHandler = ErrorHandlerFactory.errorHandlerStd(systemShaclLogger);
-    
+    public static Logger shaclSystemLogger = LoggerFactory.getLogger("org.apache.jena.shacl.SHACL");
+    public static ErrorHandler systemShaclErrorHandler = ErrorHandlerFactory.errorHandlerStd(shaclSystemLogger);
+
     private static ShaclValidator globalDefault = new ShaclPlainValidator();
-    
+
     /** Set the current system-wide {@link ShaclValidator}. */
     public static void set(ShaclValidator validator) { globalDefault = validator; }
 
-    /** The current system-wide {@link ShaclValidator}. */ 
+    /** The current system-wide {@link ShaclValidator}. */
     public static ShaclValidator get() { return globalDefault; }
 }

@@ -49,7 +49,7 @@ public class JLogConstraint extends ConstraintTerm {
     @Override
     public ReportItem validate(ValidationContext vCxt, Node n) {
         String msg = String.format("%s[%s]", message, ShLib.displayStr(n));
-        ShaclSystem.systemShaclLogger.warn(msg);
+        ShaclSystem.shaclSystemLogger.warn(msg);
         return null;
     }
 

@@ -18,6 +18,7 @@
 
 package org.apache.jena.shacl.engine;
 
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.riot.system.ErrorHandler;
@@ -44,8 +45,8 @@ public class ValidationContext {
     private final Graph dataGraph;
     private boolean strict = false;
     private final ValidationListener validationListener;
-
     private final ErrorHandler errorHandler;
+    private final IndentedWriter out;
 
     public static ValidationContext create(Shapes shapes, Graph data) {
         return create(shapes, data, ShaclSystem.systemShaclErrorHandler, null);
@@ -74,17 +75,19 @@ public class ValidationContext {
         this.dataGraph = vCxt.dataGraph;
         this.verbose = vCxt.verbose;
         this.strict = vCxt.strict;
-        this.errorHandler = vCxt.errorHandler;
         this.validationListener = vCxt.validationListener;
+        this.errorHandler = vCxt.errorHandler;
+        this.out = vCxt.out;
     }
 
     private ValidationContext(Shapes shapes, Graph data, ErrorHandler errorHandler, ValidationListener validationListener) {
         this.shapes = shapes;
         this.dataGraph = data;
+        this.validationListener = validationListener;
         if ( errorHandler == null )
             errorHandler = ShaclSystem.systemShaclErrorHandler;
         this.errorHandler = errorHandler;
-        this.validationListener = validationListener;
+        this.out = IndentedWriter.stdout.clone();
         validationReportBuilder.addPrefixes(data.getPrefixMapping());
         validationReportBuilder.addPrefixes(shapes.getGraph().getPrefixMapping());
     }
@@ -105,6 +108,8 @@ public class ValidationContext {
     public ValidationReport generateReport() {
         return validationReportBuilder.build();
     }
+
+    public IndentedWriter out() { return out; }
 
     public boolean hasViolation() { return seenValidationReportEntry; }
 
@@ -134,7 +139,7 @@ public class ValidationContext {
     public Graph getDataGraph() {
         return dataGraph;
     }
-    
+
     public ErrorHandler getErrorHandler() {
         return errorHandler;
     }
