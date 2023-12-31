@@ -247,6 +247,7 @@ public class NodeFactory {
     /*package*/ static final boolean legacyLangTag = false;
     /** Prepare the language tag - apply formatting normalization */
     private static String formatLanguageTag(String langTagStr) {
+        // LangTags.formatLangtag(input) except with the legacy option.
         if ( langTagStr == null )
             return Node.noLangTag;
         if ( legacyLangTag )
