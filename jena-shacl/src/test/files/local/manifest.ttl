@@ -7,6 +7,10 @@ PREFIX sh: <http://www.w3.org/ns/shacl#>
 PREFIX sht: <http://www.w3.org/ns/shacl-test#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
+## Not all the test are controlled by manifest because they
+## test features not easily captured in a single test file.
+## e.g. split shapes and data
+
 <>
   rdf:type mf:Manifest ;
   mf:include <additional/lang-simple-1.ttl> ;
