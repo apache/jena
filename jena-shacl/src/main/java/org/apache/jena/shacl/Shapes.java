@@ -57,7 +57,7 @@ public class Shapes implements Iterable<Shape> {
     private final Collection<Shape> rootShapes;
     // Declared shapes, not in targetShapes.
     private final Collection<Shape> declShapes;
-    // Shapes that are not declared shapes (by type), and not accessible from in targets.
+    // Shapes that are not declared shapes (by type), and not accessible from targets.
     // This is placeholder.
     // It should be disjoint with rootShapes and declShapes.
     private final Collection<Shape> otherShapes;

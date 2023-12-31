@@ -18,6 +18,8 @@
 
 package org.apache.jena.shacl.vocabulary;
 
+import java.util.Set;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 
@@ -831,4 +833,26 @@ public class SHACL {
     public static final Node XoneConstraintComponent = createResource( "http://www.w3.org/ns/shacl#XoneConstraintComponent" );
 
     public static final Node XoneConstraintComponent_xone = createResource( "http://www.w3.org/ns/shacl#XoneConstraintComponent-xone" );
+
+    /** Set of all the constraint components in SHACL 1.0 Core and SPARQL : 32 items */
+    public static final Set<Node> allStdConstraintComponents;
+
+    static {
+        // Not including ConstraintComponent which is the class of constraint components
+        Node arrayAllConstraintComponents[] = {
+            AndConstraintComponent, ClassConstraintComponent, ClosedConstraintComponent, DatatypeConstraintComponent,
+            DisjointConstraintComponent, EqualsConstraintComponent, ExpressionConstraintComponent, HasValueConstraintComponent,
+            InConstraintComponent, JSConstraintComponent, LanguageInConstraintComponent,
+            LessThanConstraintComponent, LessThanOrEqualsConstraintComponent,
+            MaxCountConstraintComponent, MaxExclusiveConstraintComponent,
+            MaxInclusiveConstraintComponent, MaxLengthConstraintComponent,
+            MinCountConstraintComponent, MinExclusiveConstraintComponent,
+            MinInclusiveConstraintComponent, MinLengthConstraintComponent,
+            NodeConstraintComponent, NodeKindConstraintComponent,
+            NotConstraintComponent, OrConstraintComponent, PatternConstraintComponent, PropertyConstraintComponent,
+            QualifiedMaxCountConstraintComponent, QualifiedMinCountConstraintComponent, SPARQLConstraintComponent,
+            UniqueLangConstraintComponent, XoneConstraintComponent
+        };
+        allStdConstraintComponents = Set.of(arrayAllConstraintComponents);
+    }
 }

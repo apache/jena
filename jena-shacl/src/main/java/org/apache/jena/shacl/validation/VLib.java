@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -85,13 +84,12 @@ public class VLib {
     * graphs that were used to construct the shapes graph or the data graph. SHACL
     * processing is thus idempotent.
     */
-    private static IndentedWriter out  = IndentedWriter.clone(IndentedWriter.stdout);
-
     public static void validateShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
         if ( shape.deactivated() )
             return;
+        vCxt.out().incIndent();
         if ( vCxt.isVerbose() )
-            out.println("S: "+shape);
+            vCxt.out().println("S: "+shape);
         vCxt.notifyValidationListener(() -> new FocusNodeValidationStartedEvent(vCxt, shape, focusNode));
         Path path;
         Set<Node> vNodes;
@@ -104,22 +102,23 @@ public class VLib {
             vCxt.notifyValidationListener(() -> new ValueNodesDeterminedForPropertyShapeEvent(vCxt, shape, focusNode, path, vNodes));
         } else {
             if ( vCxt.isVerbose() )
-                out.println("Z: "+shape);
+                vCxt.out().println("Z: "+shape);
             return;
         }
 
         // Constraints of this shape.
         for ( Constraint c : shape.getConstraints() ) {
+            vCxt.out().incIndent();
             if ( vCxt.isVerbose() )
-                out.println("C: "+c);
+                vCxt.out().println("C: "+c);
             evalConstraint(vCxt, data, shape, focusNode, path, vNodes, c);
+            vCxt.out().decIndent();
         }
 
         // Reachable shapes.
         // Follow sh:property (sh:node behaves as a constraint).
         validationPropertyShapes(vCxt, data, shape.getPropertyShapes(), focusNode);
-        if ( vCxt.isVerbose() )
-            out.println();
+        vCxt.out().decIndent();
         vCxt.notifyValidationListener(() -> new FocusNodeValidationFinishedEvent(vCxt, shape, focusNode));
     }
 
@@ -138,16 +137,18 @@ public class VLib {
         if ( propertyShape.deactivated() )
             return;
         if ( vCxt.isVerbose() )
-            out.println("P: "+propertyShape);
+            vCxt.out().println("P: "+propertyShape);
         vCxt.notifyValidationListener(() -> new FocusNodeValidationStartedEvent(vCxt, propertyShape, focusNode));
         Path path = propertyShape.getPath();
         Set<Node> vNodes = ShaclPaths.valueNodes(data, focusNode, path);
         vCxt.notifyValidationListener(() -> new ValueNodesDeterminedForPropertyShapeEvent(vCxt, propertyShape, focusNode, path, vNodes));
         for ( Constraint c : propertyShape.getConstraints() ) {
+            vCxt.out().incIndent();
             if ( vCxt.isVerbose() )
-                out.println("C: "+focusNode+" :: "+c);
+                vCxt.out().println("C: "+focusNode+" :: "+c);
             // Pass vNodes here.
             evalConstraint(vCxt, data, propertyShape, focusNode, path, vNodes, c);
+            vCxt.out().decIndent();
         }
         vNodes.forEach(vNode->{
             validationPropertyShapes(vCxt, data, propertyShape.getPropertyShapes(), vNode);
