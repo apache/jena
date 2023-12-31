@@ -28,6 +28,7 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.shacl.Imports;
 import org.apache.jena.shacl.ShaclValidator;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.engine.ValidationContext;
@@ -116,12 +117,17 @@ public class shacl_validate extends CmdGeneral {
             node = NodeFactory.createURI(x);
         }
 
+        shapesGraph = Imports.withImports(shapesfile, shapesGraph);
+
         if ( isVerbose() )
             ValidationContext.VERBOSE = true;
 
         ValidationReport report = ( node != null )
             ? ShaclValidator.get().validate(shapesGraph, dataGraph, node)
             : ShaclValidator.get().validate(shapesGraph, dataGraph);
+
+        if ( isVerbose() )
+            System.out.println();
 
         if ( textOutput )
             ShLib.printReport(report);
