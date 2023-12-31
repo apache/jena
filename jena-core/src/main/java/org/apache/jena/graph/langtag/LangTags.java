@@ -38,18 +38,22 @@ public class LangTags {
             return Node.noLangTag;
         if ( input.isEmpty() )
             return input;
-        return lowercase(input);
-        //return basicFormat(input);
+        return basicFormat(input);
     }
+
+//    /**
+//     * Language tag formatter.
+//     * <a href="https://datatracker.ietf.org/doc/html/rfc5646#section-2.1.1">RFC 5646 section 2.1.1</a>
+//     */
+//    public static String formatRFC5646(String string) {
+//        return basicFormat(string);
+//    }
 
     /**
-     * Basic language tag formatter.
+     * Format an language tag assumed to be valid.
+     * This code only deals with langtags by the string length of the subtags.
      * <a href="https://datatracker.ietf.org/doc/html/rfc5646#section-2.1.1">RFC 5646 section 2.1.1</a>
      */
-    public static String format(String string) {
-        return basicFormat(string);
-    }
-
     public static String basicFormat(String string) {
         // with the interpretation that "after singleton" means anywhere after the singleton.
         if ( string == null )

@@ -20,12 +20,12 @@ package org.apache.jena.riot.process.normalize;
 
 import static org.apache.jena.atlas.lib.Lib.lowercase;
 
-import java.util.IllformedLocaleException;
 import java.util.Locale;
 import java.util.function.BiFunction;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.langtag.LangTags;
 import org.apache.jena.riot.process.StreamRDFApplyObject;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.util.NodeUtils;
@@ -65,12 +65,7 @@ public class StreamCanonicalLangTag extends StreamRDFApplyObject {
     }
 
     public static String langTagCanonical(Locale.Builder locBuild, String str) {
-        try {
-            // Does not do conversion of language for ISO 639 codes that have changed.
-            return locBuild.setLanguageTag(str).build().toLanguageTag();
-        } catch (IllformedLocaleException ex) {
-            return str;
-        }
+        return LangTags.basicFormat(str);
     }
 
     public static String langTagLC(Locale.Builder locBuild, String str) {
