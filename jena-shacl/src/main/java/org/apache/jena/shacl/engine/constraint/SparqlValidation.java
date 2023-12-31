@@ -33,6 +33,7 @@ import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.shacl.engine.Parameter;
 import org.apache.jena.shacl.engine.ShaclPaths;
@@ -41,9 +42,7 @@ import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
 import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnSinglePathNodeEvent;
-import org.apache.jena.sparql.core.PathBlock;
-import org.apache.jena.sparql.core.TriplePath;
-import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.core.*;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.path.P_Link;
 import org.apache.jena.sparql.path.Path;
@@ -109,6 +108,7 @@ import org.apache.jena.sparql.util.ModelUtils;
         if ( path != null && !(path instanceof P_Link ) )
             query = QueryTransformOps.transform(query, new ElementTransformPath(SparqlConstraint.varPath, path));
 
+
         if ( USE_QueryTransformOps ) {
             // Done with QueryTransformOps.transform
             Map<Var, Node> substitutions = parameterMapToSyntaxSubstitutions(parameterMap, focusNode, path);
@@ -121,7 +121,18 @@ import org.apache.jena.sparql.util.ModelUtils;
             QuerySolutionMap qsm = parameterMapToPreBinding(parameterMap, focusNode, path, model);
             if ( query.isAskType() )
                 qsm.add("value", ModelUtils.convertGraphNodeToRDFNode(valueNode, model));
-            qExec = QueryExecution.create().query(query).model(model).initialBinding(qsm).build();
+            //qExec = QueryExecution.create().query(query).model(model).initialBinding(qsm).build();
+
+            // ---- Dataset needed for the shapes graph
+            Resource shapesGraphResource = model.createResource("foo");
+            qsm.add("currentShape", ModelUtils.convertGraphNodeToRDFNode(shape.getShapeNode(), model));
+            qsm.add("shapesGraph", shapesGraphResource);
+
+            // No copying of graphs.  Set the default graph on creation.
+            DatasetGraph dsg = DatasetGraphFactory.createGeneral(model.getGraph()); // Dataset by links.
+            dsg.addGraph(shapesGraphResource.asNode(), shape.getShapeGraph());
+            Dataset ds = DatasetFactory.wrap(dsg);
+            qExec = QueryExecution.create().query(query).dataset(ds).initialBinding(qsm).build();
         }
 
         // ASK validator.
@@ -133,14 +144,16 @@ import org.apache.jena.sparql.util.ModelUtils;
                     : substitute(violationTemplate, parameterMap, focusNode, path, valueNode);
                 vCxt.reportEntry(msg, shape, focusNode, path, valueNode, reportConstraint);
             }
-            vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape, focusNode, reportConstraint, path, valueNode,
-                            b));
+            vCxt.notifyValidationListener(() ->
+                new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape, focusNode, reportConstraint, path, valueNode,b));
             return b;
         }
 
+        // SELECT validator.
         ResultSet rs = qExec.execSelect();
         if ( ! rs.hasNext() ) {
-            vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape, focusNode, reportConstraint, path, valueNode, true));
+            vCxt.notifyValidationListener(() ->
+                new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape, focusNode, reportConstraint, path, valueNode, true));
             return true;
         }
 
@@ -168,8 +181,8 @@ import org.apache.jena.sparql.util.ModelUtils;
             }
             final Path finalRPath = rPath;
             final Node finalValue = value;
-            vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape, focusNode, reportConstraint, finalRPath, finalValue,
-                            false));
+            vCxt.notifyValidationListener(() ->
+                new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape, focusNode, reportConstraint, finalRPath, finalValue, false));
             vCxt.reportEntry(msg, shape, focusNode, rPath, value, reportConstraint);
         }
         return false;

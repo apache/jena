@@ -1,0 +1,10 @@
+PREFIX : <http://example/>
+
+:testDataSubject1 :p1 1 .
+   
+:testDataSubject2 :p1 2 .
+
+:testDataSubject3 :p2 1 .
+
+:testDataSubject3 :p2 2 .
+
