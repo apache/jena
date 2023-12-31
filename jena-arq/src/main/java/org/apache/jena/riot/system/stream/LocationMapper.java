@@ -29,15 +29,15 @@ import org.apache.jena.vocabulary.LocationMappingVocab ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-/** 
+/**
  * Alternative locations for URIs.  Maintains two maps:
  * single item alternatives and alternative prefixes.
  * To suggest an alternative location, first check the single items,
  * then check the prefixes.
- *    
+ *
  * A LocationMapper can be configured by an RDF file.  The default for this
  * is "etc/location-mapping.n3".
- * 
+ *
  * There is a default LocationMapper which is used by the global @link{StreamManager}.
  */
 
@@ -46,10 +46,10 @@ public class LocationMapper
     static Logger log = LoggerFactory.getLogger(LocationMapper.class)  ;
     Map<String, String> altLocations = new HashMap<>() ;
     Map<String, String> altPrefixes = new HashMap<>() ;
-    
+
     /** Create a LocationMapper with no mapping yet */
     public LocationMapper() { }
-    
+
     /** Deep copy of location and prefix maps */
     @Override
     public LocationMapper clone() {
@@ -80,7 +80,7 @@ public class LocationMapper
      * Apply mappings: first try for an exact alternative location, then try to
      * remap by prefix, finally, try the special case of filenames in a specific
      * base directory.
-     * 
+     *
      * @param uri
      * @param otherwise
      * @return The alternative location chosen
@@ -143,6 +143,11 @@ public class LocationMapper
 
     public String getAltPrefix(String uriPrefix) {
         return altPrefixes.get(uriPrefix) ;
+    }
+
+    /** Iterate over all the entries registered */
+    public boolean isEmpty() {
+        return altLocations.isEmpty() && altPrefixes.isEmpty();
     }
 
     @Override

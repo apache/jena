@@ -140,7 +140,7 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
     }
 
     public AdapterFileManager(StreamManager streamManager) {
-        this(streamManager, streamManager == null ? null : streamManager.getLocationMapper()) ;
+        this(streamManager, streamManager == null ? null : streamManager.locationMapper()) ;
     }
 
     /** Create a FileManger using a RIOT StreamManager and RIOT LocationMapper */
@@ -148,7 +148,8 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
         if ( streamManager == null )
             streamManager = new StreamManager() ;
         this.streamManager = streamManager ;
-        streamManager.setLocationMapper(mapper) ;
+        if ( mapper != null )
+            streamManager.locationMapper(mapper) ;
     }
 
     /** Create a "standard" FileManager. */
@@ -165,13 +166,13 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
     /** Set the location mapping */
     @Override
     public void setLocationMapper(org.apache.jena.util.LocationMapper mapper) {
-        streamManager.setLocationMapper(AdapterLib.copyConvert(mapper)) ;
+        streamManager.locationMapper(AdapterLib.copyConvert(mapper)) ;
     }
 
     /** Get the location mapping */
     @Override
     public org.apache.jena.util.LocationMapper getLocationMapper() {
-        return new AdapterLocationMapper(streamManager.getLocationMapper()) ;
+        return new AdapterLocationMapper(streamManager.locationMapper()) ;
     }
 
     /** Return an iterator over all the handlers */
