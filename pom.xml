@@ -92,7 +92,7 @@
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
     <ver.micrometer>1.12.0</ver.micrometer>
-    <ver.roaringbitmap>1.0.0</ver.roaringbitmap>
+    <ver.roaringbitmap>1.0.1</ver.roaringbitmap>
 
     <!-- Testing -->
     <ver.junit>4.13.2</ver.junit>  
