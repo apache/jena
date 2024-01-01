@@ -1,5 +1,5 @@
 Apache Jena
-Copyright 2011-2023 The Apache Software Foundation
+Copyright 2011-2024 The Apache Software Foundation
 
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
@@ -12,10 +12,6 @@ These have been licensed to the Apache Software Foundation under a software gran
 
 This product includes software developed by
 PluggedIn Software under a BSD license.
-
-This product includes software developed by Mort Bay Consulting Pty. Ltd.
-   Copyright (c) 2004-2009 Mort Bay Consulting Pty. Ltd.
-   under an Apache License.
 
 Portions of this software are from Apache Xerces and were originally based on the following:
   - software copyright (c) 1999, IBM Corporation., http://www.ibm.com.
