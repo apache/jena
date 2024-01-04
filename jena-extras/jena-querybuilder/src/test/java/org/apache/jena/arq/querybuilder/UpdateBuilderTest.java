@@ -29,12 +29,15 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.CollectionGraph;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.modify.request.UpdateDataDelete;
@@ -47,6 +50,7 @@ import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateAction;
+import org.apache.jena.update.UpdateRequest;
 import org.apache.jena.vocabulary.DC_11;
 import org.junit.Test;
 
@@ -491,6 +495,38 @@ public class UpdateBuilderTest {
         assertEquals(builder.makeNode("foo"), t.getObject());
         assertTrue(Var.isVar(t.getPredicate()));
     }
+
+    @Test
+    public void testInsertAndDeleteWithGraphClauses() {
+        // Test based upon GH-2150
+        // Simplified slightly as the actual URIs used were irrelevant to the issue
+        RDFConnection conn = RDFConnection.connect(DatasetFactory.create());
+
+        UpdateBuilder updateBuilder = new UpdateBuilder();
+        updateBuilder.addInsert(g, s, p, o);
+
+        SelectBuilder where = new SelectBuilder();
+        where.addWhere(s, p, o);
+        updateBuilder.addGraph(g, where);
+
+
+        SelectBuilder notExists = new SelectBuilder();
+        notExists.addWhere(s, p, o);
+        SelectBuilder where2 = new SelectBuilder();
+        where2.addFilter(where2.getExprFactory().notexists(notExists));
+        updateBuilder.addGraph(g, where2);
+
+        UpdateRequest updateRequest = updateBuilder.buildRequest();
+
+        conn.begin(ReadWrite.WRITE);
+        try {
+            conn.update(updateRequest);
+            conn.commit();
+        } finally {
+            conn.end();
+        }
+    }
+
     // testsbased on the examples
 
     /*

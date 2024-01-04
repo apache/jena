@@ -125,8 +125,16 @@ public class BuildElementVisitor implements ElementVisitor {
             // noting to do
             result = el;
         } else if (lst.size() == 1) {
-            lst.get(0).visit(this);
-            // result is now set properly
+            // GH-2150 If the single element is an ElementFilter need to leave it as-is otherwise some built queries
+            // and updates will fail when we attempt to execute them as the Element AST will be considered invalid by
+            // AlgebraGenerator
+            Element singleton = lst.get(0);
+            if (singleton instanceof ElementFilter) {
+                result = el;
+            } else {
+                lst.get(0).visit(this);
+                // result is now set properly
+            }
         } else {
             updateList(lst);
             result = el;
