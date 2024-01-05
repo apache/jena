@@ -124,6 +124,9 @@ public class AlgebraGenerator
 
     // This is the operation to call for recursive application.
     protected Op compileElement(Element elt) {
+        if ( elt == null )
+            return OpNull.create();
+
         if ( elt instanceof ElementGroup elt2)
             return compileElementGroup(elt2);
 
@@ -136,23 +139,32 @@ public class AlgebraGenerator
         if ( elt instanceof ElementService elt2 )
             return compileElementService(elt2);
 
-        // This is only here for queries built programmatically
-        // (triple patterns not in a group)
+        if ( elt instanceof ElementSubQuery elt2 )
+            return compileElementSubquery(elt2);
+
         if ( elt instanceof ElementTriplesBlock elt2 )
             return compileBasicPattern(elt2.getPattern());
 
-        // Ditto.
         if ( elt instanceof ElementPathBlock elt2 )
             return compilePathBlock(elt2.getPattern());
-
-        if ( elt instanceof ElementSubQuery elt2 )
-            return compileElementSubquery(elt2);
 
         if ( elt instanceof ElementData elt2 )
             return compileElementData(elt2);
 
-        if ( elt == null )
-            return OpNull.create();
+        // Special cases. Elements without being in an ElementGroup.
+        if ( elt instanceof ElementFilter elt2 )
+            return compileElementFilter(elt2);
+        if ( elt instanceof ElementBind elt2 )
+            return compileElementBind(elt2);
+        if ( elt instanceof ElementAssign elt2 )
+            return compileElementAssign(elt2);
+
+        // Special cases. Element that have binary Ops with when used outside an ElementGroup.
+        // Put in the "group start" state.
+        if ( elt instanceof ElementOptional elt2 )
+            return compileElementOptional(OpTable.unit(), elt2);
+        if ( elt instanceof ElementMinus elt2 )
+            return compileElementMinus(OpTable.unit(), elt2);
 
         return compileUnknownElement(elt, "compile(Element)/Not a structural element: "+Lib.className(elt));
     }
@@ -290,10 +302,10 @@ public class AlgebraGenerator
             return OpExtend.create(current, bind.getVar(), bind.getExpr());
 
         if ( elt instanceof ElementOptional eltOpt )
-            return compileElementOptional(eltOpt, current);
+            return compileElementOptional(current, eltOpt);
 
         if ( elt instanceof ElementLateral eltLateral )
-            return compileElementLateral(eltLateral, current);
+            return compileElementLateral(current, eltLateral);
 
         if ( elt instanceof ElementMinus elt2 )
             return compileElementMinus(current, elt2);
@@ -305,8 +317,6 @@ public class AlgebraGenerator
             Op op = compileElement(elt);
             return join(current, op);
         }
-
-        // Specials.
 
         if ( elt instanceof ElementExists elt2 )
             return compileElementExists(current, elt2);
@@ -320,14 +330,6 @@ public class AlgebraGenerator
             return OpFilter.filter(ef.getExpr(), current);
 
         return compileUnknownElement(elt, "compile/Element not recognized: "+Lib.className(elt));
-    }
-
-    protected Op compileElementFilter(ElementFilter elt) {
-        // Filters should appear in a ElementGroup.
-        // If the query was created programmatically, the app or querybuilder may
-        // have omitted the ElementGroup. Deal with this by creating the same Op structure
-        // as a group-of-one with ElementFilter.
-        return OpFilter.filter(elt.getExpr(), OpLib.unit());
     }
 
     protected Op compileElementUnion(ElementUnion el) {
@@ -371,7 +373,7 @@ public class AlgebraGenerator
         return opUnion;
     }
 
-    protected Op compileElementOptional(ElementOptional eltOpt, Op current) {
+    protected Op compileElementOptional(Op current, ElementOptional eltOpt) {
         Element subElt = eltOpt.getOptionalElement();
         Op op = compileElement(subElt);
 
@@ -389,7 +391,7 @@ public class AlgebraGenerator
         return current;
     }
 
-    protected Op compileElementLateral(ElementLateral eltLateral, Op current) {
+    protected Op compileElementLateral(Op current, ElementLateral eltLateral) {
         Element subElt = eltLateral.getLateralElement();
         Op op = compileElement(subElt);
         return OpLateral.create(current, op);
@@ -424,6 +426,29 @@ public class AlgebraGenerator
         AlgebraGenerator gen = new AlgebraGenerator(context, subQueryDepth + 1);
         return gen.compile(eltSubQuery.getQuery());
     }
+
+    // ----
+    // Elements should appear in a ElementGroup - they operate on the input from the earlier part of the group.
+    // If the query was created programmatically, the app or querybuilder may
+    // have omitted the ElementGroup.
+    // Deal with this by creating the same Op structure as a group-of-one with ElementFilter,
+    // that is unit input.
+
+    protected Op compileElementFilter(ElementFilter elt) {
+        return OpFilter.filter(elt.getExpr(), OpTable.unit());
+    }
+
+    protected Op compileElementBind(ElementBind elt) {
+        VarExprList varExpList = new VarExprList(elt.getVar(), elt.getExpr());
+        return OpExtend.extend(OpTable.unit(), varExpList);
+    }
+
+    protected Op compileElementAssign(ElementAssign elt) {
+        VarExprList varExpList = new VarExprList(elt.getVar(), elt.getExpr());
+        return OpAssign.assign(OpTable.unit(), varExpList);
+    }
+
+    // ----
 
     /** Compile query modifiers */
     protected Op compileModifiers(Query query, Op pattern) {
