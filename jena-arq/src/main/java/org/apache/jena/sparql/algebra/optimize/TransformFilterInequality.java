@@ -120,7 +120,7 @@ public class TransformFilterInequality extends TransformCopy {
         // Special case : deduce that the filter will always "eval unbound"
         // hence eliminate all rows. Return the empty table.
         if (testSpecialCaseUnused(subOp, inequalities, remaining))
-            return OpTable.empty();
+            return OpLib.empty();
 
         // Special case: the deep left op of a OpConditional/OpLeftJoin is unit
         // table.
@@ -355,7 +355,7 @@ public class TransformFilterInequality extends TransformCopy {
     }
 
     private static Op rebuild(Op2 subOp, List<Op> ops) {
-        Op chain = OpTable.unit();
+        Op chain = OpLib.unit();
         for (Op op : ops) {
             chain = subOp.copy(chain, op);
         }

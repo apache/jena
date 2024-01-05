@@ -25,9 +25,9 @@ import static org.junit.Assert.assertTrue;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpLib;
 import org.apache.jena.sparql.algebra.op.OpAssign;
 import org.apache.jena.sparql.algebra.op.OpExtend;
-import org.apache.jena.sparql.algebra.op.OpTable;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.VarExprList;
 import org.apache.jena.sparql.expr.ExprVar;
@@ -272,7 +272,7 @@ public class TestOptimizer {
     }
 
     @Test public void combine_extend_01() {
-        Op extend = OpExtend.create(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        Op extend = OpExtend.create(OpLib.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
         extend = OpExtend.create(extend, new VarExprList(Var.alloc("y"), new NodeValueInteger(2)));
 
         String opExpectedString = StrUtils.strjoinNL(
@@ -283,7 +283,7 @@ public class TestOptimizer {
     }
 
     @Test public void combine_extend_02() {
-        Op extend = OpExtend.create(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        Op extend = OpExtend.create(OpLib.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
         extend = OpExtend.create(extend, new VarExprList(Var.alloc("y"), new ExprVar("x")));
 
         String opExpectedString = StrUtils.strjoinNL(
@@ -295,7 +295,7 @@ public class TestOptimizer {
 
     @Test public void combine_extend_03() {
         // Technically illegal SPARQL here but useful to validate that the optimizer doesn't do the wrong thing
-        Op extend = OpExtend.create(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        Op extend = OpExtend.create(OpLib.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
         extend = OpExtend.create(extend, new VarExprList(Var.alloc("x"), new NodeValueInteger(2)));
 
         String opExpectedString = StrUtils.strjoinNL(
@@ -335,7 +335,7 @@ public class TestOptimizer {
 
 
     @Test public void combine_assign_01() {
-        Op assign = OpAssign.create(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        Op assign = OpAssign.create(OpLib.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
         assign = OpAssign.create(assign, new VarExprList(Var.alloc("y"), new NodeValueInteger(2)));
 
         String opExpectedString = StrUtils.strjoinNL(
@@ -346,7 +346,7 @@ public class TestOptimizer {
     }
 
     @Test public void combine_assign_02() {
-        Op assign = OpAssign.create(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        Op assign = OpAssign.create(OpLib.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
         assign = OpAssign.create(assign, new VarExprList(Var.alloc("y"), new ExprVar("x")));
 
         String opExpectedString = StrUtils.strjoinNL(
@@ -357,7 +357,7 @@ public class TestOptimizer {
     }
 
     @Test public void combine_assign_03() {
-        Op assign = OpAssign.create(OpTable.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
+        Op assign = OpAssign.create(OpLib.unit(), new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
         assign = OpAssign.create(assign, new VarExprList(Var.alloc("x"), new NodeValueInteger(2)));
 
         String opExpectedString = StrUtils.strjoinNL(

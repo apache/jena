@@ -28,7 +28,6 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.algebra.op.OpBGP ;
 import org.apache.jena.sparql.algebra.op.OpPropFunc ;
 import org.apache.jena.sparql.algebra.op.OpSequence ;
-import org.apache.jena.sparql.algebra.op.OpTable ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.expr.Expr ;
 import org.apache.jena.sparql.expr.ExprLib;
@@ -185,7 +184,7 @@ public class PropertyFunctionGenerator
         if ( pattern == null || pattern.isEmpty() )
         {
             if ( op == null )
-                return OpTable.unit() ;
+                return OpLib.unit() ;
             return op ;
         }
         OpBGP opBGP = new OpBGP(pattern) ;

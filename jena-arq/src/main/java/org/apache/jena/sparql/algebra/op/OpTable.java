@@ -25,16 +25,17 @@ import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpTable extends Op0
 {
+    /** Prefer {@link OpLib#unit} for a unit {@code Op}. Use this function specifically for a unit table. */
     public static OpTable unit()
     { return new OpTable(TableFactory.createUnit()); }
 
-    public static OpTable create(Table table)
-    // Check for Unit-ness?
-    { return new OpTable(table); }
-
+    /** Prefer {@link OpLib#empty} for a zero {@code Op}. Use this function specifically for a zero table. */
     public static OpTable empty()
-    // Check for Unit-ness?
     { return new OpTable(TableFactory.createEmpty()); }
+
+    public static OpTable create(Table table) {
+        return new OpTable(table);
+    }
 
     private Table table;
 

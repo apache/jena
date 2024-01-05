@@ -35,11 +35,8 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.OpAsQuery;
-import org.apache.jena.sparql.algebra.op.OpExtend;
-import org.apache.jena.sparql.algebra.op.OpOrder;
-import org.apache.jena.sparql.algebra.op.OpSlice;
-import org.apache.jena.sparql.algebra.op.OpTable;
-import org.apache.jena.sparql.algebra.op.OpUnion;
+import org.apache.jena.sparql.algebra.OpLib;
+import org.apache.jena.sparql.algebra.op.*;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.main.QC;
@@ -141,7 +138,7 @@ public class BatchQueryRewriter {
         sortConditions.addAll(localSortConditions);
 
         if (!omitEndMarker) {
-            Op endMarker = OpExtend.create(OpTable.unit(), idxVar, NV_REMOTE_END_MARKER);
+            Op endMarker = OpExtend.create(OpLib.unit(), idxVar, NV_REMOTE_END_MARKER);
             newOp = newOp == null ? endMarker : OpUnion.create(newOp, endMarker);
         }
 

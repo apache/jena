@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.OpLib;
 import org.apache.jena.sparql.algebra.TableFactory;
 import org.apache.jena.sparql.algebra.op.OpLabel ;
 import org.apache.jena.sparql.algebra.op.OpNull ;
@@ -56,7 +57,7 @@ public class TestSSE_Builder
     @Test public void testOp_02() { opSame("(null)", OpNull.create()) ; }
     @Test public void testOp_03() { opSame("(bgp [triple ?s ?p ?o])") ; }
 
-    @Test public void testOp_04() { opSame("(label 'ABC' (table unit))", OpLabel.create("ABC", OpTable.unit())) ; }
+    @Test public void testOp_04() { opSame("(label 'ABC' (table unit))", OpLabel.create("ABC", OpLib.unit())) ; }
 
     private static void opSame(String str) {
         opSame(str, SSE.parseOp(str)) ;
@@ -249,14 +250,14 @@ public class TestSSE_Builder
 
     @Test
     public void testBuildTable_01() {
-        Op expected = OpTable.unit();
+        Op expected = OpLib.unit();
         Op actual = SSE.parseOp("(table unit)");
         assertEquals(expected, actual);
     }
 
     @Test
     public void testBuildTable_02() {
-        Op expected = OpTable.empty();
+        Op expected = OpLib.empty();
         Op actual = SSE.parseOp("(table empty)");
         assertEquals(expected, actual);
     }
