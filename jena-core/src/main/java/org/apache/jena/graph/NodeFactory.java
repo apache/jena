@@ -83,7 +83,7 @@ public class NodeFactory {
         return new Node_Literal( lit );
     }
 
-    /** @deprecated Use {@link #createLiteral} */
+    /** @deprecated Use {@link #createLiteralString} */
     @Deprecated
     public static Node createLiteral(String string) {
         return createLiteralString(string);
