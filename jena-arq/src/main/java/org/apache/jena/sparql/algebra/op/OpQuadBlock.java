@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpLib;
 import org.apache.jena.sparql.algebra.OpVisitor;
 import org.apache.jena.sparql.algebra.Transform;
 import org.apache.jena.sparql.core.BasicPattern;
@@ -105,7 +106,7 @@ public class OpQuadBlock extends Op0
     /** Convenience - convert to OpQuadPatterns which are more widely used (currently?) */
     public Op convertOp()    {
         if ( quads.size() == 0 )
-            return  OpTable.empty();
+            return  OpLib.empty();
 
         if ( quads.size() == 1 )
         {

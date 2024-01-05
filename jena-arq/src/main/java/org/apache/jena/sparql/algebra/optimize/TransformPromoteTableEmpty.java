@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.algebra.optimize;
 
 import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.OpLib;
 import org.apache.jena.sparql.algebra.TransformCopy ;
 import org.apache.jena.sparql.algebra.op.* ;
 
@@ -109,7 +110,7 @@ public class TransformPromoteTableEmpty extends TransformCopy {
     public Op transform(OpJoin opJoin, Op left, Op right) {
         // If either side is table empty return table empty
         if (isTableEmpty(left) || isTableEmpty(right)) {
-            return OpTable.empty();
+            return OpLib.empty();
         }
         return super.transform(opJoin, left, right);
     }
@@ -119,7 +120,7 @@ public class TransformPromoteTableEmpty extends TransformCopy {
         // If LHS is table empty return table empty
         // If RHS is table empty can eliminate left join and just leave LHS
         if (isTableEmpty(left)) {
-            return OpTable.empty();
+            return OpLib.empty();
         } else if (isTableEmpty(right)) {
             return left;
         }
@@ -132,7 +133,7 @@ public class TransformPromoteTableEmpty extends TransformCopy {
         // If RHS is table empty can eliminate minus and just leave LHS since no
         // shared variables means no effect
         if (isTableEmpty(left)) {
-            return OpTable.empty();
+            return OpLib.empty();
         } else if (isTableEmpty(right)) {
             return left;
         }
@@ -145,7 +146,7 @@ public class TransformPromoteTableEmpty extends TransformCopy {
         // If both are table empty return table empty
         if (isTableEmpty(left)) {
             if (isTableEmpty(right)) {
-                return OpTable.empty();
+                return OpLib.empty();
             } else {
                 return right;
             }

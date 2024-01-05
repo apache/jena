@@ -28,6 +28,7 @@ import java.util.Set;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.OpLib;
 import org.apache.jena.sparql.algebra.OpVars ;
 import org.apache.jena.sparql.algebra.TransformCopy ;
 import org.apache.jena.sparql.algebra.op.* ;
@@ -439,7 +440,7 @@ public class TransformFilterImplicitJoin extends TransformCopy {
     }
 
     private static Op rebuild(Op2 subOp, List<Op> ops) {
-        Op chain = OpTable.unit();
+        Op chain = OpLib.unit();
         for (Op op : ops) {
             chain = subOp.copy(chain, op);
         }
@@ -470,7 +471,7 @@ public class TransformFilterImplicitJoin extends TransformCopy {
     		}
 
     		// If both sides of the union guarantee to produce errors then just replace the whole thing with table empty
-    		if (leftEmpty && rightEmpty) return OpTable.empty();
+    		if (leftEmpty && rightEmpty) return OpLib.empty();
     		if (leftEmpty) return union.getRight();
     		if (rightEmpty) return union.getLeft();
     	}

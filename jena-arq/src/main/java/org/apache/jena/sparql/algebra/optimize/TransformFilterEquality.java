@@ -24,6 +24,7 @@ import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.OpLib;
 import org.apache.jena.sparql.algebra.OpVars ;
 import org.apache.jena.sparql.algebra.TransformCopy ;
 import org.apache.jena.sparql.algebra.op.* ;
@@ -371,7 +372,7 @@ public class TransformFilterEquality extends TransformCopy {
     }
 
     private static Op rebuild(Op2 subOp, List<Op> ops) {
-        Op chain = OpTable.unit();
+        Op chain = OpLib.unit();
         for (Op op : ops) {
             chain = subOp.copy(chain, op);
         }

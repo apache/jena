@@ -22,6 +22,7 @@ import java.util.List ;
 
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.OpLib;
 import org.apache.jena.sparql.algebra.TransformCopy ;
 import org.apache.jena.sparql.algebra.op.* ;
 import org.apache.jena.sparql.core.BasicPattern ;
@@ -52,7 +53,7 @@ public class TransformPattern2Join extends TransformCopy
     private static Op expand(BasicPattern bgp)
     {
         if ( bgp.getList().isEmpty() )
-            return OpTable.unit() ;
+            return OpLib.unit() ;
         Op op = null ;
         for ( Triple t : bgp.getList() )
         {
@@ -65,7 +66,7 @@ public class TransformPattern2Join extends TransformCopy
     private static Op expand(QuadPattern quads)
     {
         if ( quads.getList().isEmpty() )
-            return OpTable.unit() ;
+            return OpLib.unit() ;
         Op op = null ;
         for ( Quad q : quads.getList() )
         {

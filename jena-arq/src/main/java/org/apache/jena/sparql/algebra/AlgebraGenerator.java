@@ -195,7 +195,7 @@ public class AlgebraGenerator
 
         // Compile the consolidated group elements.
         // "current" is the completed part only - there may be thing pushed into the accumulator.
-        Op current = OpTable.unit();
+        Op current = OpLib.unit();
         Deque<Op> acc = new ArrayDeque<>();
 
         for ( Element elt : groupElts ) {
@@ -322,6 +322,14 @@ public class AlgebraGenerator
         return compileUnknownElement(elt, "compile/Element not recognized: "+Lib.className(elt));
     }
 
+    protected Op compileElementFilter(ElementFilter elt) {
+        // Filters should appear in a ElementGroup.
+        // If the query was created programmatically, the app or querybuilder may
+        // have omitted the ElementGroup. Deal with this by creating the same Op structure
+        // as a group-of-one with ElementFilter.
+        return OpFilter.filter(elt.getExpr(), OpLib.unit());
+    }
+
     protected Op compileElementUnion(ElementUnion el) {
         Op current = null;
 
@@ -394,7 +402,7 @@ public class AlgebraGenerator
     protected Op compilePathBlock(PathBlock pathBlock) {
         // Empty path block : the parser does not generate this case.
         if ( pathBlock.size() == 0 )
-            return OpTable.unit();
+            return OpLib.unit();
 
         // Always turns the most basic paths to triples.
         return PathLib.pathToTriples(pathBlock);

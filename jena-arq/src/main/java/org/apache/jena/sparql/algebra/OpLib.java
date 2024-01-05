@@ -18,8 +18,10 @@
 
 package org.apache.jena.sparql.algebra;
 
+import org.apache.jena.sparql.algebra.op.OpTable;
 import org.apache.jena.sparql.core.Quad;
 
+/** Functions relating to {@link Op}s. */
 public class OpLib
 {
     /** Convert a pattern, assumed to be quad form,
@@ -32,4 +34,22 @@ public class OpLib
         op = Transformer.transform(t, op);
         return op;
     }
+
+    // XXX These may change to be a specific Op implementation.
+    // Needs a visitor change.
+
+    /**
+     * Return an {@code Op} that is the join unit - {@code (join unit(), X) = X)}.
+     * It is one row of zero columns.
+     */
+    public static Op unit() {
+        return OpTable.unit();
+    }
+
+    /**
+     * Return an {@code Op} that is the join zero - {@code (join empty(), X) = empty)}.
+     * It is zero rows.
+     */
+    public static Op empty()
+    { return OpTable.empty(); }
 }
