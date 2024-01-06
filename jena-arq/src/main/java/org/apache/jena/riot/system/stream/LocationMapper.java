@@ -18,9 +18,9 @@
 
 package org.apache.jena.riot.system.stream;
 
-import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
@@ -43,9 +43,9 @@ import org.slf4j.LoggerFactory ;
 
 public class LocationMapper
 {
-    static Logger log = LoggerFactory.getLogger(LocationMapper.class)  ;
-    Map<String, String> altLocations = new HashMap<>() ;
-    Map<String, String> altPrefixes = new HashMap<>() ;
+    private static Logger log = LoggerFactory.getLogger(LocationMapper.class)  ;
+    private Map<String, String> altLocations = new ConcurrentHashMap<>() ;
+    private Map<String, String> altPrefixes = new ConcurrentHashMap<>() ;
 
     /** Create a LocationMapper with no mapping yet */
     public LocationMapper() { }
