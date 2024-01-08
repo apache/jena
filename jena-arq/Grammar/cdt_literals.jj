@@ -140,8 +140,6 @@ CDTKey MapKey() : { String iri; Node n; }
 {
   iri = IRI_REF()       { n = createNode(iri);  return CDTFactory.createKey(n); }
 |
-  n = BlankNode()       { return CDTFactory.createKey(n); }
-| 
   n = RDFLiteral()      { return CDTFactory.createKey(n); }
 |
   n = NumericLiteral()  { return CDTFactory.createKey(n); }
