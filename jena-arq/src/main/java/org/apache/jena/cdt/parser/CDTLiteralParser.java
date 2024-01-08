@@ -139,7 +139,6 @@ public class CDTLiteralParser extends CDTLiteralParserBase implements CDTLiteral
     case STRING_LITERAL_LONG1:
     case STRING_LITERAL_LONG2:
     case IRIref:
-    case BLANK_NODE_LABEL:
       NonEmptyMapContent(m);
       break;
     default:
@@ -183,10 +182,6 @@ public class CDTLiteralParser extends CDTLiteralParserBase implements CDTLiteral
     case IRIref:
       iri = IRI_REF();
                           n = createNode(iri);  {if (true) return CDTFactory.createKey(n);}
-      break;
-    case BLANK_NODE_LABEL:
-      n = BlankNode();
-                          {if (true) return CDTFactory.createKey(n);}
       break;
     case STRING_LITERAL1:
     case STRING_LITERAL2:
@@ -401,7 +396,7 @@ public class CDTLiteralParser extends CDTLiteralParserBase implements CDTLiteral
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x2c6f0f80,0x80000000,0x2c6f0f80,0x6f0f80,0x80000000,0x6f0f80,0x2c6f0f80,0xe00,0x180,0x800000,0x800000,0xf0000,};
+      jj_la1_0 = new int[] {0x2c6f0f80,0x80000000,0x2c6f0f80,0x2f0f80,0x80000000,0x2f0f80,0x2c6f0f80,0xe00,0x180,0x800000,0x800000,0xf0000,};
    }
    private static void jj_la1_init_1() {
       jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x2,0x0,};
