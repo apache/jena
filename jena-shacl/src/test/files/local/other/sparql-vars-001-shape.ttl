@@ -1,10 +1,9 @@
 # Test ?currentShape and ?shapesGraph
-
-PREFIX :      <http://example/>
-PREFIX rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX sh:        <http://www.w3.org/ns/shacl#>
+BASE            <http://jena.apache.org/test/shape>
+PREFIX :        <http://example/>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sh:      <http://www.w3.org/ns/shacl#>
 ## PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
-
 
 <#prefixes>
   sh:declare [ sh:prefix "ex";     sh:namespace "http://example/" ] ;
