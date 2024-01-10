@@ -19,9 +19,6 @@
  */
 
 package org.apache.jena.riot.lang.extra.javacc;
-import org.apache.jena.graph.*;
-import org.apache.jena.riot.lang.extra.* ;
-import static org.apache.jena.riot.lang.extra.LangParserLib.*;
 
 /** Token Manager. */
 @SuppressWarnings ("unused")

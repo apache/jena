@@ -40,7 +40,6 @@ import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
 
 import javax.xml.datatype.DatatypeConstants ;
-import javax.xml.datatype.DatatypeConstants.Field ;
 import javax.xml.datatype.Duration ;
 import javax.xml.datatype.XMLGregorianCalendar ;
 
