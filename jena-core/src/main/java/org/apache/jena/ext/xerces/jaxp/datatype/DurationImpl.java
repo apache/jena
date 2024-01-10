@@ -17,7 +17,6 @@
 
 package org.apache.jena.ext.xerces.jaxp.datatype;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;

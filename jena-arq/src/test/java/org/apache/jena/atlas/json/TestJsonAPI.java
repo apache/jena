@@ -18,7 +18,6 @@
 
 package org.apache.jena.atlas.json;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.*;
 
 import org.junit.Test ;

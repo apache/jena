@@ -19,12 +19,6 @@
  */
 
 package org.apache.jena.shex.parser.javacc;
-import static org.apache.jena.shex.sys.SysShex.*;
-import org.apache.jena.shex.parser.*;
-import org.apache.jena.shex.expressions.*;
-import org.apache.jena.graph.*;
-import static org.apache.jena.riot.lang.extra.LangParserLib.*;
-import java.util.*;
 
 /** Token Manager. */
 @SuppressWarnings ("unused")
