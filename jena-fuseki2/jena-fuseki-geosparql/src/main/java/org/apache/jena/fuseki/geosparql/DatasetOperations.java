@@ -165,7 +165,7 @@ public class DatasetOperations {
                         LOGGER.info("Reading RDF - Completed - File: {}, Graph Name: {}, RDF Format: {}", rdfFile, graphName, rdfFormat);
                     } else {
                         dataset.abort();
-                        LOGGER.info("Reading RDF - Not Completed - File: {} does not exist", rdfFile, graphName, rdfFormat);
+                        LOGGER.info("Reading RDF - Not Completed - File: {} does not exist", rdfFile);
                     }
                 }
             } catch (Throwable ex) {

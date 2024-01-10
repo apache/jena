@@ -49,7 +49,7 @@ public enum TextDirection {
             case "ltr" -> LTR;
             case "rtl"-> RTL;
             default ->
-                throw new JenaException(String .format("Initial text direction must be 'ltr' or 'rtl'", RDF.dirLTR, RDF.dirRTL));
+                throw new JenaException("Initial text direction must be 'ltr' or 'rtl'");
         };
     }
 }

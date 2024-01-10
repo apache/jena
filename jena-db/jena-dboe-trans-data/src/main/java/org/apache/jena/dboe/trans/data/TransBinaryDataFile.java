@@ -166,7 +166,7 @@ public class TransBinaryDataFile extends TransactionalComponentLifecycle<TransBi
             // Internal consistency check.
             // (Abort after commit would trigger the warning.)
             if ( txnResetState.length != x )
-                Log.warn(this, format("Mismatch: state.length = %d,  committedLength = %d", txnResetState.length != x));
+                Log.warn(this, format("Mismatch: state.length = %d,  committedLength = %d", txnResetState.length, x));
             binFile.truncate(x);
             binFile.sync();
         }

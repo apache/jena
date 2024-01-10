@@ -370,7 +370,7 @@ public class ActionDatasets extends ActionContainerItem {
 
             if ( configurationFiles.isEmpty() ) {
                 // ---- Unmanaged
-                action.log.warn(format("[%d] Can't delete database configuration - not a managed database", action.id, name));
+                action.log.warn(format("[%d] Can't delete database configuration - not a managed database; dataset=%s", action.id, name));
 //                ServletOps.errorOccurred(format("Can't delete database - not a managed configuration", name));
                 systemDSG.commit();
                 committed = true;
@@ -417,7 +417,7 @@ public class ActionDatasets extends ActionContainerItem {
                 if ( Files.exists(pDatabase)) {
                     try {
                         if ( Files.isSymbolicLink(pDatabase)) {
-                            action.log.info(format("[%d] Database is a symbolic link, not removing files", action.id, pDatabase));
+                            action.log.info(format("[%d] Database is a symbolic link, not removing files %s", action.id, pDatabase));
                         } else {
                             IO.deleteAll(pDatabase);
                             action.log.info(format("[%d] Deleted database files %s", action.id, pDatabase));
