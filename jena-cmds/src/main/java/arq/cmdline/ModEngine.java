@@ -70,7 +70,7 @@ public class ModEngine extends ModBase
 				case "ref":
 					QueryEngineRef.register();
 					continue;
-				case "refQuad":
+				case "refquad":
 					QueryEngineRefQuad.register();
 					continue;
 				case "main":
@@ -91,7 +91,7 @@ public class ModEngine extends ModBase
 				case "ref":
 					QueryEngineRef.register();
 					continue;
-				case "refQuad":
+				case "refquad":
 					QueryEngineRefQuad.register();
 					continue;
 				case "main":
