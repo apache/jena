@@ -234,7 +234,7 @@ public class ThriftConvert
 
     /** Build a {@link Node} from an {@link RDF_Term}. */
     public static Node convert(Cache<String, Node> uriCache, RDF_Term term) {
-        return convert(null, term);
+        return convert(uriCache, term, null);
     }
 
     /** Build a {@link Node} from an {@link RDF_Term}. */
