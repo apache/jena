@@ -507,7 +507,7 @@ public class NodeFunctions {
     public static Duration duration(int seconds) {
         if ( seconds == 0 )
             return XSDFuncOp.zeroDuration;
-        Duration dur = NodeValue.xmlDatatypeFactory.newDuration(1000*seconds);
+        Duration dur = NodeValue.xmlDatatypeFactory.newDuration(1000L*seconds);
         // Neaten the duration. Not all the fields are zero.
         dur = NodeValue.xmlDatatypeFactory.newDuration(dur.getSign()>=0,
                                                        field(dur, DatatypeConstants.YEARS),
