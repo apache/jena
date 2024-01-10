@@ -260,7 +260,7 @@ public class RunTestRDFXML {
 
         public String summary() {
             if ( fatals.isEmpty() )
-                return format("E:%d W:%d", errors.size(), warnings.size(), fatals.size());
+                return format("E:%d W:%d", errors.size(), warnings.size());
             return format("E:%d W:%d F:%d", errors.size(), warnings.size(), fatals.size());
         }
 

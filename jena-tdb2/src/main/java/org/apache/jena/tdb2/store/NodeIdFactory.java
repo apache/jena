@@ -92,7 +92,7 @@ public class NodeIdFactory
         v2 = BitsLong.clear(v2, 56, 64);
         NodeIdType type = NodeIdType.intToEnum(t);
         if ( type == NodeIdType.SPECIAL )
-            throw new TDBException(String.format("Attempt to create a special from a long: 0x%016", v2));
+            throw new TDBException(String.format("Attempt to create a special from a long: 0x%016X", v2));
         return NodeId.createRaw(type, v2);
     }
 
@@ -102,7 +102,7 @@ public class NodeIdFactory
         int t = v1 >> 24;
         NodeIdType type = NodeIdType.intToEnum(t);
         if ( type == NodeIdType.SPECIAL )
-            throw new TDBException(String.format("Attempt to create a special from a long: 0x%016", v2));
+            throw new TDBException(String.format("Attempt to create a special from a long: 0x%016X", v2));
         return createNew(type, 0, v2);
     }
 

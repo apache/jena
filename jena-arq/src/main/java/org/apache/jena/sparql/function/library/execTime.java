@@ -46,7 +46,7 @@ public class execTime extends FunctionBase {
         if ( ! str.isEmpty() )
             System.err.printf("%s : %d ms\n",str, System.currentTimeMillis()) ;
         else
-            System.err.printf("---- %d ms\n",str, System.currentTimeMillis()) ;
+            System.err.printf("---- %d ms\n", System.currentTimeMillis()) ;
         lastms = now ;
         return NodeValue.TRUE ;
     }
