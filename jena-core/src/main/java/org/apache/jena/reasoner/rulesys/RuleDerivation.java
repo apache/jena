@@ -32,19 +32,19 @@ import org.apache.jena.util.PrintUtil ;
  * provide more specific information.
  */
 public class RuleDerivation implements Derivation {
-    
+
     /** The rule which asserted this triple */
     protected Rule rule;
-    
+
     /** The triple which was asserted */
     protected Triple conclusion;
-    
+
     /** The list of triple matches that fired the rule */
     protected List<Triple> matches;
 
     /** The InfGraph which produced this derivation */
     protected InfGraph infGraph;
-    
+
     /**
      * Constructor
      * @param rule the rule which created this derivation
@@ -58,7 +58,7 @@ public class RuleDerivation implements Derivation {
         this.matches = matches;
         this.infGraph = infGraph;
     }
-    
+
     /**
      * Return a short-form description of this derivation.
      */
@@ -70,9 +70,9 @@ public class RuleDerivation implements Derivation {
             return "Rule " + rule.toShortString();
         }
     }
-    
+
     /**
-     * Print a deep traceback of this derivation back to axioms and 
+     * Print a deep traceback of this derivation back to axioms and
      * source assertions.
      * @param out the stream to print the trace out to
      * @param bindings set to true to print intermediate variable bindings for
@@ -82,9 +82,9 @@ public class RuleDerivation implements Derivation {
     public void printTrace(PrintWriter out, boolean bindings) {
        printTrace(out, bindings, 0, new HashSet<RuleDerivation>());
     }
-    
+
      /**
-     * Print a deep traceback of this derivation back to axioms and 
+     * Print a deep traceback of this derivation back to axioms and
      * source assertions.
      * @param out the stream to print the trace out to
      * @param bindings set to true to print intermediate variable bindings for
@@ -128,7 +128,7 @@ public class RuleDerivation implements Derivation {
             }
         }
     }
-    
+
 
     /**
      * @return the triple concluded by the derivation
@@ -152,19 +152,13 @@ public class RuleDerivation implements Derivation {
     }
 
     /**
-     * Compare two derivations. This is a shallow comparison, two derivations 
-     * are the same if they contain the same conclusion, rule and match list. 
+     * Compare two derivations. This is a shallow comparison, two derivations
+     * are the same if they contain the same conclusion, rule and match list.
      * They do not need to be derived from the same (or any) infGraph.
      */
-    @Override
-    public boolean equals(Object other) {
-        if (other instanceof RuleDerivation) {
-            RuleDerivation otherD = (RuleDerivation)other;
-            return conclusion.equals(otherD.getConclusion()) &&
-                    matches.equals(otherD.getMatches()) &&
-                    rule.equals(otherD.getRule());
-        } else {
-            return false;
-        }
+    public boolean sameAs(RuleDerivation other) {
+        return conclusion.equals(other.getConclusion()) &&
+                matches.equals(other.getMatches()) &&
+                rule.equals(other.getRule());
     }
 }

@@ -19,6 +19,7 @@ package org.apache.jena.ext.xerces.impl.dv.xs;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Objects;
 
 import org.apache.jena.ext.xerces.impl.dv.InvalidDatatypeValueException;
 import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
@@ -219,23 +220,6 @@ public class DecimalDV extends TypeValidator {
 
             integer = true;
         }
-        @Override
-        public boolean equals(Object val) {
-            if (val == this)
-                return true;
-
-            if (!(val instanceof XDecimal))
-                return false;
-            XDecimal oval = (XDecimal)val;
-
-            if (sign != oval.sign)
-               return false;
-            if (sign == 0)
-                return true;
-
-            return intDigits == oval.intDigits && fracDigits == oval.fracDigits &&
-                   ivalue.equals(oval.ivalue) && fvalue.equals(oval.fvalue);
-        }
         public int compareTo(XDecimal val) {
             if (sign != val.sign)
                 return sign > val.sign ? 1 : -1;
@@ -374,6 +358,32 @@ public class DecimalDV extends TypeValidator {
             }
             return Byte.parseByte("-" + ivalue);
         }
+
+        @Override
+        public int hashCode() {
+            // Writen to align with equals below
+            return Objects.hash(sign, intDigits, fracDigits, ivalue, fvalue);
+        }
+
+        @Override
+        public boolean equals(Object val) {
+            // From the original in Xerces.
+            if (val == this)
+                return true;
+
+            if (!(val instanceof XDecimal))
+                return false;
+            XDecimal oval = (XDecimal)val;
+
+            if (sign != oval.sign)
+                return false;
+            if (sign == 0)
+                return true;
+
+            return intDigits == oval.intDigits && fracDigits == oval.fracDigits &&
+                    ivalue.equals(oval.ivalue) && fvalue.equals(oval.fvalue);
+        }
+
     }
 } // class DecimalDV
 

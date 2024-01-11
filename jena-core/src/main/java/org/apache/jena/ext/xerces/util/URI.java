@@ -20,6 +20,7 @@ package org.apache.jena.ext.xerces.util;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.Objects;
 
 /**********************************************************************
 * A class to represent a Uniform Resource Identifier (URI). This class
@@ -1676,33 +1677,40 @@ import java.util.Locale;
   * @return true if p_test is a URI with all values equal to this
   *         URI, false otherwise
   */
-@Override
-public boolean equals(Object p_test) {
-    if (p_test instanceof URI) {
-      URI testURI = (URI) p_test;
-      if (((m_scheme == null && testURI.m_scheme == null) ||
-           (m_scheme != null && testURI.m_scheme != null &&
-            m_scheme.equals(testURI.m_scheme))) &&
-          ((m_userinfo == null && testURI.m_userinfo == null) ||
-           (m_userinfo != null && testURI.m_userinfo != null &&
+  @Override
+  public boolean equals(Object p_test) {
+      // The original .equals.
+      if (p_test instanceof URI) {
+        URI testURI = (URI) p_test;
+        if (((m_scheme == null && testURI.m_scheme == null) ||
+             (m_scheme != null && testURI.m_scheme != null &&
+              m_scheme.equals(testURI.m_scheme))) &&
+            ((m_userinfo == null && testURI.m_userinfo == null) ||
+             (m_userinfo != null && testURI.m_userinfo != null &&
             m_userinfo.equals(testURI.m_userinfo))) &&
-          ((m_host == null && testURI.m_host == null) ||
-           (m_host != null && testURI.m_host != null &&
-            m_host.equals(testURI.m_host))) &&
-            m_port == testURI.m_port &&
-          ((m_path == null && testURI.m_path == null) ||
-           (m_path != null && testURI.m_path != null &&
-            m_path.equals(testURI.m_path))) &&
-          ((m_queryString == null && testURI.m_queryString == null) ||
-           (m_queryString != null && testURI.m_queryString != null &&
-            m_queryString.equals(testURI.m_queryString))) &&
-          ((m_fragment == null && testURI.m_fragment == null) ||
-           (m_fragment != null && testURI.m_fragment != null &&
-            m_fragment.equals(testURI.m_fragment)))) {
-        return true;
+            ((m_host == null && testURI.m_host == null) ||
+             (m_host != null && testURI.m_host != null &&
+              m_host.equals(testURI.m_host))) &&
+              m_port == testURI.m_port &&
+            ((m_path == null && testURI.m_path == null) ||
+             (m_path != null && testURI.m_path != null &&
+              m_path.equals(testURI.m_path))) &&
+            ((m_queryString == null && testURI.m_queryString == null) ||
+             (m_queryString != null && testURI.m_queryString != null &&
+              m_queryString.equals(testURI.m_queryString))) &&
+            ((m_fragment == null && testURI.m_fragment == null) ||
+             (m_fragment != null && testURI.m_fragment != null &&
+              m_fragment.equals(testURI.m_fragment)))) {
+            return true;
+          }
+        }
+        return false;
       }
-    }
-    return false;
+
+  @Override
+  public int hashCode() {
+      // Aligned to .equals.
+      return Objects.hash(m_scheme, m_userinfo, m_host, m_port, m_path, m_queryString, m_fragment);
   }
 
  /**
