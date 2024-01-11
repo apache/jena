@@ -27,7 +27,7 @@
     "@vue/compat": "^3.3.6",
     "axios": "^1.6.1",
     "bootstrap": "^5.3.2",
-    "follow-redirects": "^1.15.3",
+    "follow-redirects": "^1.15.4",
     "mitt": "^3.0.1",
     "vue": "^3.3.6",
     "vue-router": "^4.2.5",
