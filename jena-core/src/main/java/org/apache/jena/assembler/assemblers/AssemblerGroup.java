@@ -18,10 +18,7 @@
 
 package org.apache.jena.assembler.assemblers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.AssemblerHelp;
@@ -38,44 +35,50 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.RDFS;
 
 public abstract class AssemblerGroup extends AssemblerBase implements Assembler
-    {    
+    {
     public abstract AssemblerGroup implementWith( Resource type, Assembler a );
 
     public abstract Assembler assemblerFor( Resource type );
 
     @Override public Model openModel( Resource resource )
         { return (Model) open( resource ); }
-    
+
     public static AssemblerGroup create()
         { return new ExpandingAssemblerGroup(); }
-    
+
     public AssemblerGroup copy()
         {
         ExpandingAssemblerGroup result = (ExpandingAssemblerGroup) create();
         result.internal.mappings.putAll( ((ExpandingAssemblerGroup) this).internal.mappings );
         return result;
         }
-    
+
     public static class Frame
         {
         public final Resource root;
         public final Resource type;
         public final Class< ? extends Assembler> assembler;
-        
+
         public Frame( Resource root, Resource type, Class< ? extends Assembler> assembler )
             { this.root = root; this.type = type; this.assembler = assembler; }
-        
-        @Override public boolean equals( Object other )
-            { return other instanceof Frame && same( (Frame) other ); }
-        
-        protected boolean same( Frame other )
-            { 
-            return root.equals( other.root )
-                && type.equals( other.type )
-                && assembler.equals( other.assembler )
-                ; 
-            }
-        
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(assembler, root, type);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if ( this == obj )
+                return true;
+            if ( !(obj instanceof Frame) )
+                return false;
+            Frame other = (Frame)obj;
+            return Objects.equals(assembler, other.assembler) &&
+                   Objects.equals(root, other.root) &&
+                   Objects.equals(type, other.type);
+        }
+
         @Override public String toString()
             { return "root: " + root + " with type: " + type + " assembler class: " + assembler; }
         }
@@ -84,7 +87,7 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
         {
         PlainAssemblerGroup internal = new PlainAssemblerGroup();
         Model implementTypes = ModelFactory.createDefaultModel();
-        
+
         @Override public Object open( Assembler a, Resource suppliedRoot, Mode mode )
             {
             Resource root = AssemblerHelp.withFullModel( suppliedRoot );
@@ -96,7 +99,7 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
         public void loadClasses( Model model )
             {
             AssemblerHelp.loadArbitraryClasses( this, model );
-            AssemblerHelp.loadAssemblerClasses( this, model ); 
+            AssemblerHelp.loadAssemblerClasses( this, model );
             }
 
         @Override public AssemblerGroup implementWith( Resource type, Assembler a )
@@ -110,12 +113,12 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
 
         @Override public Assembler assemblerFor( Resource type )
             { return internal.assemblerFor( type ); }
-        
+
         public Set<Resource> implementsTypes()
-            { 
+            {
             return implementTypes.listStatements().mapWith( Statement::getSubject ).toSet(); }
             }
-    
+
     static class PlainAssemblerGroup extends AssemblerGroup
         {
         Map<Resource, Assembler> mappings = new HashMap<>();
@@ -149,24 +152,24 @@ public abstract class AssemblerGroup extends AssemblerBase implements Assembler
             Assembler toUse = assemblerFor( type );
             Class<? extends Assembler> aClass = toUse == null ? null : toUse.getClass();
             Frame frame = new Frame( root, type, aClass );
-            try 
-                { 
+            try
+                {
                 if (toUse == null)
                     throw new NoImplementationException( this, root, type );
                 else
-                    return toUse.open( a, root, mode ); 
+                    return toUse.open( a, root, mode );
                 }
-            catch (AssemblerException e) 
-                { 
-                throw e.pushDoing( frame ); 
+            catch (AssemblerException e)
+                {
+                throw e.pushDoing( frame );
                 }
-            catch (Exception e) 
-                { 
-                AssemblerException x = new AssemblerException( root, "caught: " + e.getMessage(), e ); 
+            catch (Exception e)
+                {
+                AssemblerException x = new AssemblerException( root, "caught: " + e.getMessage(), e );
                 throw x.pushDoing( frame );
                 }
             }
-        
+
         @Override public AssemblerGroup implementWith( Resource type, Assembler a )
             {
             mappings.put( type, a );

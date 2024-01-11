@@ -1377,13 +1377,18 @@ class Rational {
         return "rational[" + numerator + "/" + denominator + "]";
     }
 
-    /**
-     * Equality check
-     */
     @Override
-    public boolean equals(Object o) {
-        if (o == null || !(o instanceof Rational)) return false;
-        Rational or = (Rational)o;
-        return (numerator == or.numerator && denominator == or.denominator);
+    public int hashCode() {
+        return Objects.hash(denominator, numerator);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( !(obj instanceof Rational) )
+            return false;
+        Rational other = (Rational)obj;
+        return denominator == other.denominator && numerator == other.numerator;
     }
 }
