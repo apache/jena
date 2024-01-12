@@ -28,6 +28,7 @@ import java.util.Map;
 import org.apache.jena.cdt.parser.CDTLiteralParser;
 import org.apache.jena.cdt.parser.ParseException;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.ttl.turtle.parser.TokenMgrError;
 import org.apache.jena.util.FileUtils;
 
@@ -59,6 +60,7 @@ public class ParserForCDTLiterals
 		final List<CDTValue> list;
 		try {
 			final CDTLiteralParser parser = new CDTLiteralParser(reader);
+			parser.setProfile( RiotLib.dftProfile() );
 			list = parser.List();
 		}
 		catch ( final ParseException | TokenMgrError ex ) {
@@ -117,6 +119,7 @@ public class ParserForCDTLiterals
 		final Map<CDTKey,CDTValue> map;
 		try {
 			final CDTLiteralParser parser = new CDTLiteralParser(reader);
+			parser.setProfile( RiotLib.dftProfile() );
 			map = parser.Map();
 		}
 		catch ( final ParseException | TokenMgrError ex ) {
