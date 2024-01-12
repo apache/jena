@@ -17,7 +17,7 @@
 
 # Parser builder
 
-DIR="../src/main/java/org/apache/jena/cdt/parser"
+DIR="../../src/main/java/org/apache/jena/cdt/parser"
 FILE=cdt_literals.jj
 CLASS=CDTLiteralParser
 
@@ -57,8 +57,8 @@ sed -e 's/@SuppressWarnings("serial")//' \
 mv F $F
 
 echo "---- Create HTML form ----"
-./jj2html ${FILE%%.jj}.txt 'tokens.txt' > ${FILE%%.jj}-1.html
-./grammarExtracts < ${FILE%%.jj}-1.html > ${FILE%%.jj}-2.html
+../jj2html ${FILE%%.jj}.txt '../tokens.txt' > ${FILE%%.jj}-1.html
+../grammarExtracts < ${FILE%%.jj}-1.html > ${FILE%%.jj}-2.html
 
 echo "Check X and Y for IRI_REF because \" became '"
 
