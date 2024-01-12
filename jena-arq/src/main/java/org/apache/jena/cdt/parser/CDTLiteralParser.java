@@ -27,6 +27,8 @@ import java.util.Map;
 import org.apache.jena.cdt.*;
 import org.apache.jena.graph.Node;
 
+import static org.apache.jena.riot.lang.extra.LangParserLib.*;
+
 public class CDTLiteralParser extends CDTLiteralParserBase implements CDTLiteralParserConstants {
 
 // --- Entry point for cdt:List literals
@@ -81,7 +83,7 @@ public class CDTLiteralParser extends CDTLiteralParserBase implements CDTLiteral
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
       iri = IRI_REF();
-                          n = createNode(iri);  l.add( CDTFactory.createValue(n) );
+                          n = createURI(iri, token.beginLine, token.beginColumn);  l.add( CDTFactory.createValue(n) );
       break;
     case BLANK_NODE_LABEL:
       n = BlankNode();
@@ -181,7 +183,7 @@ public class CDTLiteralParser extends CDTLiteralParserBase implements CDTLiteral
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
       iri = IRI_REF();
-                          n = createNode(iri);  {if (true) return CDTFactory.createKey(n);}
+                          n = createURI(iri, token.beginLine, token.beginColumn);  {if (true) return CDTFactory.createKey(n);}
       break;
     case STRING_LITERAL1:
     case STRING_LITERAL2:
@@ -214,7 +216,7 @@ public class CDTLiteralParser extends CDTLiteralParserBase implements CDTLiteral
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
       iri = IRI_REF();
-                          n = createNode(iri);  {if (true) return CDTFactory.createValue(n);}
+                          n = createURI(iri, token.beginLine, token.beginColumn);  {if (true) return CDTFactory.createValue(n);}
       break;
     case BLANK_NODE_LABEL:
       n = BlankNode();
@@ -278,15 +280,15 @@ public class CDTLiteralParser extends CDTLiteralParserBase implements CDTLiteral
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER:
       t = jj_consume_token(INTEGER);
-                  {if (true) return createLiteralInteger(t.image);}
+                  {if (true) return createLiteralInteger(t.image, t.beginLine, t.beginColumn);}
       break;
     case DECIMAL:
       t = jj_consume_token(DECIMAL);
-                  {if (true) return createLiteralDecimal(t.image);}
+                  {if (true) return createLiteralDecimal(t.image, t.beginLine, t.beginColumn);}
       break;
     case DOUBLE:
       t = jj_consume_token(DOUBLE);
-                  {if (true) return createLiteralDouble(t.image);}
+                  {if (true) return createLiteralDouble(t.image, t.beginLine, t.beginColumn);}
       break;
     default:
       jj_la1[7] = jj_gen;
@@ -339,7 +341,7 @@ public class CDTLiteralParser extends CDTLiteralParserBase implements CDTLiteral
       jj_la1[10] = jj_gen;
       ;
     }
-    {if (true) return createLiteral(lex, lang, dt);}
+    {if (true) return createLiteral(lex, lang, dt, token.beginLine, token.beginColumn);}
     throw new Error("Missing return statement in function");
   }
 

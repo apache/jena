@@ -58,6 +58,8 @@ import java.util.Map;
 import org.apache.jena.cdt.*;
 import org.apache.jena.graph.Node;
 
+import static org.apache.jena.riot.lang.extra.LangParserLib.*;
+
 public class CDTLiteralParser extends CDTLiteralParserBase
 {
 }
@@ -85,7 +87,7 @@ void NonEmptyListContent(List<CDTValue> l) : { }
 
 void ListElement(List<CDTValue> l) : { String iri; Node n; List<CDTValue> subList; Map<CDTKey,CDTValue> m; }
 {
-  iri = IRI_REF()       { n = createNode(iri);  l.add( CDTFactory.createValue(n) ); }
+  iri = IRI_REF()       { n = createURI(iri, token.beginLine, token.beginColumn);  l.add( CDTFactory.createValue(n) ); }
 |
   n = BlankNode()       { l.add( CDTFactory.createValue(n) ); }
 | 
@@ -138,7 +140,7 @@ void MapEntry(Map<CDTKey,CDTValue> m) : { CDTKey key; CDTValue value; }
 
 CDTKey MapKey() : { String iri; Node n; }
 {
-  iri = IRI_REF()       { n = createNode(iri);  return CDTFactory.createKey(n); }
+  iri = IRI_REF()       { n = createURI(iri, token.beginLine, token.beginColumn);  return CDTFactory.createKey(n); }
 |
   n = RDFLiteral()      { return CDTFactory.createKey(n); }
 |
@@ -149,7 +151,7 @@ CDTKey MapKey() : { String iri; Node n; }
 
 CDTValue MapValue() : { String iri; Node n; List<CDTValue> subList; Map<CDTKey,CDTValue> m; }
 {
-  iri = IRI_REF()       { n = createNode(iri);  return CDTFactory.createValue(n); }
+  iri = IRI_REF()       { n = createURI(iri, token.beginLine, token.beginColumn);  return CDTFactory.createValue(n); }
 |
   n = BlankNode()       { return CDTFactory.createValue(n); }
 | 
@@ -186,9 +188,9 @@ Node BlankNode() :  { Token t = null ; }
 
 Node NumericLiteral() : { Token t ; }
 {
-  t = <INTEGER> { return createLiteralInteger(t.image); }
-| t = <DECIMAL> { return createLiteralDecimal(t.image); }
-| t = <DOUBLE>  { return createLiteralDouble(t.image); }
+  t = <INTEGER> { return createLiteralInteger(t.image, t.beginLine, t.beginColumn); }
+| t = <DECIMAL> { return createLiteralDecimal(t.image, t.beginLine, t.beginColumn); }
+| t = <DOUBLE>  { return createLiteralDouble(t.image, t.beginLine, t.beginColumn); }
 }
 
 Node BooleanLiteral() : {}
@@ -210,7 +212,7 @@ Node RDFLiteral() : { String lex = null ; }
   )?
 
   {
-    return createLiteral(lex, lang, dt);
+    return createLiteral(lex, lang, dt, token.beginLine, token.beginColumn);
   }
 } 
 
