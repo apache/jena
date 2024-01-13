@@ -21,7 +21,6 @@ package org.apache.jena.graph;
 import static org.apache.jena.atlas.lib.Lib.lowercase;
 
 import org.apache.jena.shared.JenaException;
-import org.apache.jena.vocabulary.RDF;
 
 public enum TextDirection {
 

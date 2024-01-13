@@ -21,7 +21,6 @@
 package org.apache.jena.ttl_test.turtle.parser;
 
 /** Token Manager. */
-@SuppressWarnings ("unused")
 public class TurtleParserTokenManager implements TurtleParserConstants {
 
   /** Debug output. */
@@ -1177,12 +1176,12 @@ private int jjMoveNfa_0(int startState, int curPos)
 
 /** Token literal values. */
 public static final String[] jjstrLiteralImages = {
-"", "\41", "\174", "\136", "\55\76", "\74\55", null, null, null, null, null, 
-null, null, "\141", "\100\160\162\145\146\151\170", "\100\142\141\163\145", null, 
-null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
-null, null, null, null, null, null, null, "\50", "\51", null, "\173", "\175", 
-"\133", "\135", null, "\73", "\54", "\56", "\75", "\75\76", "\44", "\77", "\176", 
-"\72", "\52", "\57", "\134", "\ufeff", "\136\136", "\100", null, null, null, null, 
+"", "\41", "\174", "\136", "\55\76", "\74\55", null, null, null, null, null,
+null, null, "\141", "\100\160\162\145\146\151\170", "\100\142\141\163\145", null,
+null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+null, null, null, null, null, null, null, "\50", "\51", null, "\173", "\175",
+"\133", "\135", null, "\73", "\54", "\56", "\75", "\75\76", "\44", "\77", "\176",
+"\72", "\52", "\57", "\134", "\ufeff", "\136\136", "\100", null, null, null, null,
 null, null, null, };
 protected Token jjFillToken()
 {
@@ -1208,11 +1207,11 @@ protected Token jjFillToken()
    return t;
 }
 static final int[] jjnextStates = {
-   73, 74, 75, 85, 86, 91, 92, 96, 73, 74, 77, 79, 84, 57, 60, 61, 
-   1, 2, 4, 13, 14, 16, 8, 9, 11, 18, 19, 21, 23, 24, 26, 30, 
-   31, 33, 35, 36, 38, 57, 58, 59, 63, 60, 61, 65, 66, 67, 71, 68, 
-   69, 65, 68, 69, 85, 86, 91, 92, 99, 100, 102, 103, 99, 100, 101, 102, 
-   103, 104, 42, 43, 82, 83, 89, 90, 93, 94, 
+   73, 74, 75, 85, 86, 91, 92, 96, 73, 74, 77, 79, 84, 57, 60, 61,
+   1, 2, 4, 13, 14, 16, 8, 9, 11, 18, 19, 21, 23, 24, 26, 30,
+   31, 33, 35, 36, 38, 57, 58, 59, 63, 60, 61, 65, 66, 67, 71, 68,
+   69, 65, 68, 69, 85, 86, 91, 92, 99, 100, 102, 103, 99, 100, 101, 102,
+   103, 104, 42, 43, 82, 83, 89, 90, 93, 94,
 };
 private static final boolean jjCanMove_0(int hiByte, int i1, int i2, long l1, long l2)
 {
@@ -1283,7 +1282,7 @@ int jjmatchedPos;
 int jjmatchedKind;
 
 /** Get the next Token. */
-public Token getNextToken() 
+public Token getNextToken()
 {
   Token specialToken = null;
   Token matchedToken;
@@ -1425,7 +1424,7 @@ private void jjCheckNAddStates(int start, int end)
   }
 
   /** Reinitialise parser. */
-  
+
   public void ReInit(JavaCharStream stream)
   {
 
@@ -1448,7 +1447,7 @@ private void jjCheckNAddStates(int start, int end)
 
   /** Reinitialise parser. */
   public void ReInit(JavaCharStream stream, int lexState)
-  
+
   {
     ReInit(stream);
     SwitchTo(lexState);
@@ -1471,21 +1470,21 @@ public static final String[] lexStateNames = {
 
 /** Lex State array. */
 public static final int[] jjnewLexState = {
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 };
 static final long[] jjtoToken = {
-   0x1fffffcfff1fe03fL, 0x0L, 
+   0x1fffffcfff1fe03fL, 0x0L,
 };
 static final long[] jjtoSkip = {
-   0x17c0L, 0x0L, 
+   0x17c0L, 0x0L,
 };
 static final long[] jjtoSpecial = {
-   0x1000L, 0x0L, 
+   0x1000L, 0x0L,
 };
 static final long[] jjtoMore = {
-   0x0L, 0x0L, 
+   0x0L, 0x0L,
 };
     protected JavaCharStream  input_stream;
 
