@@ -3,7 +3,6 @@
 package org.apache.jena.sparql.lang.arq ;
 
 /** Token Manager. */
-@SuppressWarnings ("unused")
 public class ARQParserTokenManager implements ARQParserConstants {
 
   /** Debug output. */
@@ -4402,23 +4401,23 @@ private int jjMoveNfa_0(int startState, int curPos)
 
 /** Token literal values. */
 public static final String[] jjstrLiteralImages = {
-"", null, null, null, null, null, null, null, null, "\ufeff", null, null, null, 
-null, null, null, null, null, null, "\141", null, null, null, null, null, null, null, 
-null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
-null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
-null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
-null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
-null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
-null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
-null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
-null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
-null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
-null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
-null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
-null, null, "\50", "\51", null, "\173", "\175", "\133", "\135", null, "\73", "\54", 
-"\56", "\75", "\41\75", "\76", "\74", "\74\75", "\76\75", "\76\76", "\74\74", 
-"\173\174", "\174\175", "\41", "\176", "\72", "\174\174", "\46\46", "\53", "\55", "\52", 
-"\57", "\136\136", "\100", "\72\75", "\174", "\136", "\55\76", "\74\55", "\77", null, 
+"", null, null, null, null, null, null, null, null, "\ufeff", null, null, null,
+null, null, null, null, null, null, "\141", null, null, null, null, null, null, null,
+null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+null, null, "\50", "\51", null, "\173", "\175", "\133", "\135", null, "\73", "\54",
+"\56", "\75", "\41\75", "\76", "\74", "\74\75", "\76\75", "\76\76", "\74\74",
+"\173\174", "\174\175", "\41", "\176", "\72", "\174\174", "\46\46", "\53", "\55", "\52",
+"\57", "\136\136", "\100", "\72\75", "\174", "\136", "\55\76", "\74\55", "\77", null,
 null, null, null, null, null, null, null, null, null, null, null, };
 protected Token jjFillToken()
 {
@@ -4444,18 +4443,18 @@ protected Token jjFillToken()
    return t;
 }
 static final int[] jjnextStates = {
-   237, 238, 239, 241, 242, 247, 248, 278, 279, 280, 282, 287, 257, 258, 259, 261, 
-   266, 176, 190, 192, 195, 151, 154, 155, 39, 43, 6, 7, 8, 1, 2, 4, 
-   33, 37, 85, 86, 87, 67, 68, 69, 23, 29, 24, 25, 26, 49, 50, 51, 
-   58, 52, 56, 49, 52, 56, 103, 104, 105, 107, 106, 123, 127, 128, 129, 131, 
-   130, 147, 151, 152, 153, 157, 154, 155, 159, 160, 161, 165, 162, 163, 159, 162, 
-   163, 167, 168, 170, 173, 174, 197, 177, 178, 179, 181, 183, 184, 186, 206, 207, 
-   208, 215, 209, 213, 206, 209, 213, 221, 222, 223, 231, 224, 229, 221, 224, 229, 
-   267, 268, 273, 274, 288, 289, 294, 295, 167, 168, 169, 173, 174, 175, 197, 170, 
-   219, 235, 9, 18, 70, 71, 80, 88, 89, 98, 108, 109, 118, 132, 133, 142, 
-   182, 188, 245, 246, 249, 250, 254, 255, 264, 265, 271, 272, 275, 276, 285, 286, 
-   292, 293, 296, 297, 201, 202, 27, 28, 171, 172, 180, 189, 198, 199, 167, 168, 
-   169, 170, 173, 174, 175, 197, 
+   237, 238, 239, 241, 242, 247, 248, 278, 279, 280, 282, 287, 257, 258, 259, 261,
+   266, 176, 190, 192, 195, 151, 154, 155, 39, 43, 6, 7, 8, 1, 2, 4,
+   33, 37, 85, 86, 87, 67, 68, 69, 23, 29, 24, 25, 26, 49, 50, 51,
+   58, 52, 56, 49, 52, 56, 103, 104, 105, 107, 106, 123, 127, 128, 129, 131,
+   130, 147, 151, 152, 153, 157, 154, 155, 159, 160, 161, 165, 162, 163, 159, 162,
+   163, 167, 168, 170, 173, 174, 197, 177, 178, 179, 181, 183, 184, 186, 206, 207,
+   208, 215, 209, 213, 206, 209, 213, 221, 222, 223, 231, 224, 229, 221, 224, 229,
+   267, 268, 273, 274, 288, 289, 294, 295, 167, 168, 169, 173, 174, 175, 197, 170,
+   219, 235, 9, 18, 70, 71, 80, 88, 89, 98, 108, 109, 118, 132, 133, 142,
+   182, 188, 245, 246, 249, 250, 254, 255, 264, 265, 271, 272, 275, 276, 285, 286,
+   292, 293, 296, 297, 201, 202, 27, 28, 171, 172, 180, 189, 198, 199, 167, 168,
+   169, 170, 173, 174, 175, 197,
 };
 private static final boolean jjCanMove_0(int hiByte, int i1, int i2, long l1, long l2)
 {
@@ -4776,7 +4775,7 @@ int jjmatchedPos;
 int jjmatchedKind;
 
 /** Get the next Token. */
-public Token getNextToken() 
+public Token getNextToken()
 {
   Token specialToken = null;
   Token matchedToken;
@@ -4918,7 +4917,7 @@ private void jjCheckNAddStates(int start, int end)
   }
 
   /** Reinitialise parser. */
-  
+
   public void ReInit(SimpleCharStream stream)
   {
 
@@ -4941,7 +4940,7 @@ private void jjCheckNAddStates(int start, int end)
 
   /** Reinitialise parser. */
   public void ReInit(SimpleCharStream stream, int lexState)
-  
+
   {
     ReInit(stream);
     SwitchTo(lexState);
@@ -4964,28 +4963,28 @@ public static final String[] lexStateNames = {
 
 /** Lex State array. */
 public static final int[] jjnewLexState = {
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-   -1, -1, -1, -1, -1, -1, -1, -1, 
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+   -1, -1, -1, -1, -1, -1, -1, -1,
 };
 static final long[] jjtoToken = {
-   0xfffffffffff9fe01L, 0xffffffffffffffffL, 0xfff88ffbffffffffL, 0x1fffffffL, 
+   0xfffffffffff9fe01L, 0xffffffffffffffffL, 0xfff88ffbffffffffL, 0x1fffffffL,
 };
 static final long[] jjtoSkip = {
-   0x7eL, 0x0L, 0x0L, 0x0L, 
+   0x7eL, 0x0L, 0x0L, 0x0L,
 };
 static final long[] jjtoSpecial = {
-   0x40L, 0x0L, 0x0L, 0x0L, 
+   0x40L, 0x0L, 0x0L, 0x0L,
 };
 static final long[] jjtoMore = {
-   0x0L, 0x0L, 0x0L, 0x0L, 
+   0x0L, 0x0L, 0x0L, 0x0L,
 };
     protected SimpleCharStream  input_stream;
 
