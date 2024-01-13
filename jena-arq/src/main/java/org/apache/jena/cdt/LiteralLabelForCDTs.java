@@ -48,6 +48,19 @@ public abstract class LiteralLabelForCDTs<T> implements LiteralLabel
 		this.hash = lexicalForm.hashCode();
 	}
 
+	/**
+	 * Use this constructor only if you have made sure that the given lexical
+	 * form parses indeed into the given value form, which implicitly also
+	 * means that the given lexical form is well formed.
+	 */
+	public LiteralLabelForCDTs( final String lexicalForm, final T valueForm ) {
+		this.valueForm = valueForm;
+		this.lexicalForm = lexicalForm;
+
+		this.lexicalFormTested = true;
+		this.hash = lexicalForm.hashCode();
+	}
+
 	@Override
 	public abstract CompositeDatatypeBase<T> getDatatype();
 
