@@ -289,7 +289,7 @@ public class FusekiMain extends CmdARQ {
         //---- check: Invalid: --conf + service name.
         if ( contains(argConfig) ) {
             if ( getPositional().size() != 0 )
-                throw new CmdException("Can't have both a configutation file and a service name");
+                throw new CmdException("Can't have both a configuration file and a service name");
             if ( contains(argRDFS) )
                 throw new CmdException("Need to define RDFS setup in the configuration file.");
         } else {
