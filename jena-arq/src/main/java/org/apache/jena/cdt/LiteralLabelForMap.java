@@ -32,6 +32,15 @@ public class LiteralLabelForMap extends LiteralLabelForCDTs<Map<CDTKey,CDTValue>
 		super(lexicalForm);
 	}
 
+	/**
+	 * Use this constructor only if you have made sure that the given lexical
+	 * form parses indeed into the given value form, which implicitly also
+	 * means that the given lexical form is well formed.
+	 */
+	public LiteralLabelForMap( final String lexicalForm, final Map<CDTKey,CDTValue> valueForm ) {
+		super(lexicalForm, valueForm);
+	}
+
 	@Override
 	public CompositeDatatypeMap getDatatype() {
 		return CompositeDatatypeMap.type;
