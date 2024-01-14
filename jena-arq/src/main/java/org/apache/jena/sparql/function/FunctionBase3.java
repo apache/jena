@@ -27,33 +27,26 @@ import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
 
-/** Support for a function of one argument. */
+/** Support for functions of three arguments. */
+public abstract class FunctionBase3 extends FunctionBase {
 
-public abstract class FunctionBase3 extends FunctionBase
-{
     @Override
-    public void checkBuild(String uri, ExprList args)
-    { 
+    public void checkBuild(String uri, ExprList args) {
         if ( args.size() != 3 )
-            throw new QueryBuildException("Function '"+Lib.className(this)+"' takes three arguments") ;
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes three arguments");
     }
-    
+
     @Override
-    public final NodeValue exec(List<NodeValue> args)
-    {
+    public final NodeValue exec(List<NodeValue> args) {
         if ( args == null )
-            // The contract on the function interface is that this should not happen.
-            throw new ARQInternalErrorException(Lib.className(this)+": Null args list") ;
-        
+            throw new ARQInternalErrorException(Lib.className(this) + ": Null args list");
         if ( args.size() != 3 )
-            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 3, got "+args.size()) ;
-        
-        NodeValue v1 = args.get(0) ;
-        NodeValue v2 = args.get(1) ;
-        NodeValue v3 = args.get(2) ;
-        
-        return exec(v1, v2, v3) ;
+            throw new ExprEvalException(Lib.className(this) + ": Wrong number of arguments: Wanted 3, got " + args.size());
+        NodeValue v1 = args.get(0);
+        NodeValue v2 = args.get(1);
+        NodeValue v3 = args.get(2);
+        return exec(v1, v2, v3);
     }
-    
-    public abstract NodeValue exec(NodeValue v1, NodeValue v2, NodeValue v3) ;
+
+    public abstract NodeValue exec(NodeValue v1, NodeValue v2, NodeValue v3);
 }

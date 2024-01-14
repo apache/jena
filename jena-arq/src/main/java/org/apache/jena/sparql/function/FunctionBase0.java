@@ -27,29 +27,22 @@ import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
 
-/** Support for a function of zero arguments. */
+/** Support for functions of zero arguments. */
+public abstract class FunctionBase0 extends FunctionBase {
+    @Override
+    public void checkBuild(String uri, ExprList args) {
+        if ( args.size() != 0 )
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes no arguments");
+    }
 
-public abstract class FunctionBase0 extends FunctionBase
-{
     @Override
-    public void checkBuild(String uri, ExprList args)
-    { 
-        if ( args.size() != 0 )
-            throw new QueryBuildException("Function '"+Lib.className(this)+"' takes no arguments") ;
-    }
-    
-    @Override
-    public final NodeValue exec(List<NodeValue> args)
-    {
+    public final NodeValue exec(List<NodeValue> args) {
         if ( args == null )
-            // The contract on the function interface is that this should not happen.
-            throw new ARQInternalErrorException("Function '"+Lib.className(this)+" Null args list") ;
-        
+            throw new ARQInternalErrorException("Function '" + Lib.className(this) + " Null args list");
         if ( args.size() != 0 )
-            throw new ExprEvalException("Function '"+Lib.className(this)+" Wanted 0, got "+args.size()) ;
-        
-        return exec() ;
+            throw new ExprEvalException("Function '" + Lib.className(this) + " Wanted 0, got " + args.size());
+        return exec();
     }
-    
-    public abstract NodeValue exec() ;
+
+    public abstract NodeValue exec();
 }

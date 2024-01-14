@@ -150,7 +150,7 @@ public class ScriptFunction extends FunctionBase {
     }
 
     @Override
-    protected NodeValue exec(List<NodeValue> args, FunctionEnv env) {
+    public NodeValue exec(List<NodeValue> args, FunctionEnv env) {
         env.getContext();
         return exec(args);
     }
@@ -231,15 +231,6 @@ public class ScriptFunction extends FunctionBase {
         }
 
         Invocable invocable = (Invocable) engine;
-//        for (String name : engine.getFactory().getNames()) {
-//            try {
-//                invocable.invokeFunction("arq" + name + "init");
-//            } catch (NoSuchMethodException ignore) {
-//                /* empty */
-//            } catch (ScriptException ex) {
-//                throw new ExprException("Failed to call " + lang + " initialization function", ex);
-//            }
-//        }
         return invocable;
     }
 

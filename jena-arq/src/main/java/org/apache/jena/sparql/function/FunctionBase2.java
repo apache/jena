@@ -27,33 +27,25 @@ import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
 
-/** Support for a function of one argument. */
+/** Support for functions with two arguments. */
+public abstract class FunctionBase2 extends FunctionBase {
 
-public abstract class FunctionBase2 extends FunctionBase
-{
     @Override
-    public void checkBuild(String uri, ExprList args)
-    { 
+    public void checkBuild(String uri, ExprList args) {
         if ( args.size() != 2 )
-            throw new QueryBuildException("Function '"+Lib.className(this)+"' takes two arguments") ;
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes two arguments");
     }
 
-    
     @Override
-    public final NodeValue exec(List<NodeValue> args)
-    {
+    public final NodeValue exec(List<NodeValue> args) {
         if ( args == null )
-            // The contract on the function interface is that this should not happen.
-            throw new ARQInternalErrorException(Lib.className(this)+": Null args list") ;
-        
+            throw new ARQInternalErrorException(Lib.className(this) + ": Null args list");
         if ( args.size() != 2 )
-            throw new ExprEvalException(Lib.className(this)+": Wrong number of arguments: Wanted 2, got "+args.size()) ;
-        
-        NodeValue v1 = args.get(0) ;
-        NodeValue v2 = args.get(1) ;
-        
-        return exec(v1, v2) ;
+            throw new ExprEvalException(Lib.className(this) + ": Wrong number of arguments: Wanted 2, got " + args.size());
+        NodeValue v1 = args.get(0);
+        NodeValue v2 = args.get(1);
+        return exec(v1, v2);
     }
-    
-    public abstract NodeValue exec(NodeValue v1, NodeValue v2) ;
+
+    public abstract NodeValue exec(NodeValue v1, NodeValue v2);
 }

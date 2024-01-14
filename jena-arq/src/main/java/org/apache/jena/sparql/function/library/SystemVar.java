@@ -44,12 +44,12 @@ public class SystemVar extends FunctionBase0 {
 
     @Override
     public NodeValue exec() {
-        throw new InternalErrorException("SystemVar.exec shoudl not have been called");
+        throw new InternalErrorException("SystemVar.exec should not have been called");
     }
 
     // Need to intercept exec so we can get to the FunctionEnv
     @Override
-    protected NodeValue exec(List<NodeValue> args, FunctionEnv env) {
+    public NodeValue exec(List<NodeValue> args, FunctionEnv env) {
         return get(systemSymbol, env);
     }
 
