@@ -112,7 +112,7 @@
     <ver.jts>1.19.0</ver.jts>
 
     <!-- Plugins -->
-    <ver.plugin.rat>0.15</ver.plugin.rat>
+    <ver.plugin.rat>0.16</ver.plugin.rat>
     <ver.plugin.assembly>3.6.0</ver.plugin.assembly>
     <ver.plugin.compiler>3.11.0</ver.plugin.compiler>
     <ver.plugin.surefire>3.2.3</ver.plugin.surefire>
