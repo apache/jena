@@ -25,35 +25,27 @@ import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.ExprList;
 import org.apache.jena.sparql.expr.NodeValue;
 
-/**
- * Support for a function of one argument.
- */
+/** Support for functions with five arguments. */
 public abstract class FunctionBase5 extends FunctionBase {
 
     @Override
     public void checkBuild(String uri, ExprList args) {
-        if (args.size() != 5) {
+        if ( args.size() != 5 ) {
             throw new QueryBuildException("Function '" + Lib.className(this) + "' takes five arguments");
         }
     }
 
     @Override
     public final NodeValue exec(List<NodeValue> args) {
-        if (args == null) // The contract on the function interface is that this should not happen.
-        {
+        if ( args == null )
             throw new ARQInternalErrorException(Lib.className(this) + ": Null args list");
-        }
-
-        if (args.size() != 5) {
+        if ( args.size() != 5 )
             throw new ExprEvalException(Lib.className(this) + ": Wrong number of arguments: Wanted 5, got " + args.size());
-        }
-
         NodeValue v1 = args.get(0);
         NodeValue v2 = args.get(1);
         NodeValue v3 = args.get(2);
         NodeValue v4 = args.get(3);
         NodeValue v5 = args.get(4);
-
         return exec(v1, v2, v3, v4, v5);
     }
 

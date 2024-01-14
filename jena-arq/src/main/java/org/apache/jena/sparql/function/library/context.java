@@ -44,7 +44,7 @@ public class context extends FunctionBase {
     }
 
     @Override
-    protected NodeValue exec(List<NodeValue> args, FunctionEnv env) {
+    public NodeValue exec(List<NodeValue> args, FunctionEnv env) {
         NodeValue v = args.get(0);
         if ( ! v.isString() )
             throw new ExprEvalException("Not a string: function afn:context("+v+")");
