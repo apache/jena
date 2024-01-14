@@ -115,7 +115,7 @@
     <ver.plugin.rat>0.15</ver.plugin.rat>
     <ver.plugin.assembly>3.6.0</ver.plugin.assembly>
     <ver.plugin.compiler>3.11.0</ver.plugin.compiler>
-    <ver.plugin.surefire>3.2.3</ver.plugin.surefire>
+    <ver.plugin.surefire>3.2.5</ver.plugin.surefire>
     <ver.plugin.javadoc>3.6.3</ver.plugin.javadoc>
     <ver.plugin.war>3.3.2</ver.plugin.war>
     <ver.plugin.shade>3.4.1</ver.plugin.shade>
