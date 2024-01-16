@@ -26,6 +26,7 @@ import org.junit.runners.Suite ;
 	  TestDatasets.class
     , TestGraphsMem.class
     , TestGraphUnionRead.class
+    , TestGraphTxn.class
     , TestPrefixMappingMem.class
     , TestPrefixMappingPrefixMap.class
     , TestGraphReadOnly.class

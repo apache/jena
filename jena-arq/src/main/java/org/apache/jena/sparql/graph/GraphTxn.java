@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.graph;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -111,6 +112,7 @@ public class GraphTxn extends GraphWrapper implements Transactional {
 
         private final GraphTxn graph;
         private final boolean needIterTxn;
+        private boolean isClosed = false;
 
         IteratorTxn(GraphTxn graph, ExtendedIterator<T> base) {
             super(base, true);  // removeDenied.
@@ -120,8 +122,36 @@ public class GraphTxn extends GraphWrapper implements Transactional {
                 graph.begin(TxnType.READ);
         }
 
+        // Ensure that GraphTxn is called, not bypassed by WrappedIterator.forEach/forEachRemaining.
+        @Override
+        public void forEachRemaining(Consumer<? super T> action) {
+            try {
+                while (hasNext())
+                    action.accept(next());
+            } finally { close(); }
+        }
+
+        @Override
+        public void forEach(Consumer<T> action) {
+            try {
+                while (hasNext())
+                    action.accept(next());
+            } finally { close(); }
+        }
+
+        @Override
+        public boolean hasNext() {
+            boolean b = super.hasNext();
+            if ( ! b )
+                close();
+            return b;
+        }
+
         @Override
         public void close() {
+            if ( isClosed)
+                return ;
+            isClosed = true;
             if ( needIterTxn ) {
                 graph.commit();
                 graph.end();
