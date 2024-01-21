@@ -185,7 +185,7 @@ public class QueryValidatorHTML {
     }
 
     private static void outputAlgebraOpt(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException {
-        outStream.println("<p>Alebgra, with general triple optimizations:</p>");
+        outStream.println("<p>Algebra, with general triple optimizations:</p>");
         final Op op = Algebra.optimize(Algebra.compile(query));
         outputQueryOp(outStream, query, op, lineNumbers);
     }
@@ -197,7 +197,7 @@ public class QueryValidatorHTML {
     }
 
     private static void outputAlgebraOptQuads(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException {
-        outStream.println("<p>Alebgra, with general quads optimizations:</p>");
+        outStream.println("<p>Algebra, with general quads optimizations:</p>");
         final Op op = Algebra.optimize(Algebra.toQuadForm(Algebra.compile(query)));
         outputQueryOp(outStream, query, op, lineNumbers);
     }
