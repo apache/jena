@@ -101,7 +101,7 @@
     <ver.contract.tests>0.2.0</ver.contract.tests>
 
     <!-- For testing, not shipped -->
-    <ver.graalvm>23.0.2</ver.graalvm>
+    <ver.graalvm>23.0.3</ver.graalvm>
     <ver.org.openjdk.jmh>1.37</ver.org.openjdk.jmh>
 
     <!-- GeoSPARQL related -->
