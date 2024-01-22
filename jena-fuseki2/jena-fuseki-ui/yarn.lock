@@ -1845,9 +1845,9 @@ csstype@^3.1.2:
   integrity sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==
 
 cypress-vite@^1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/cypress-vite/-/cypress-vite-1.4.2.tgz#56a93d1d6329306e27ce2f2ba30787fde0e51d1c"
-  integrity sha512-uKsCo6KC1KJgubDCs7PqqI0AVXaYDPLocNvZplw2kJ2Z8M1793oCcr9D2/dKxYllRkhfFuYPPNjme/Kr2YWojQ==
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/cypress-vite/-/cypress-vite-1.5.0.tgz#471ecc1175c7ab51b3b132c595dc3c7e222fe944"
+  integrity sha512-vvTMqJZgI3sN2ylQTi4OQh8LRRjSrfrIdkQD5fOj+EC/e9oHkxS96lif1SyDF1PwailG1tnpJE+VpN6+AwO/rg==
   dependencies:
     chokidar "^3.5.3"
     debug "^4.3.4"
