@@ -120,7 +120,7 @@
     <ver.plugin.war>3.4.0</ver.plugin.war>
     <ver.plugin.shade>3.5.1</ver.plugin.shade>
     <ver.plugin.enforcer>3.4.1</ver.plugin.enforcer>
-    <ver.plugin.cyclonedx>2.7.10</ver.plugin.cyclonedx>
+    <ver.plugin.cyclonedx>2.7.11</ver.plugin.cyclonedx>
     <ver.plugin.spdx>0.7.0</ver.plugin.spdx>
   </properties>
 
