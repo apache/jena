@@ -541,6 +541,19 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@json2csv/formatters@^7.0.5":
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@json2csv/formatters/-/formatters-7.0.5.tgz#530193d4a584f9f6b410fd0a95a7f8185d15d759"
+  integrity sha512-ihONIB8S1ZG0ji5nDFpfCUPphVLnEKlLxDmDqRMjmPhzw8WCvyLX2trIrNHCf1t2IV8rx+1tNYaDb1dh87jHgA==
+
+"@json2csv/plainjs@^7.0.4":
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@json2csv/plainjs/-/plainjs-7.0.5.tgz#03ae99af741153ccc4422424a9d67d859f2dc9cc"
+  integrity sha512-iJsYEzgRZUhRb8LltCeuBQyexQVUbovRZFF73Lo0iIvi5SUWsfXGTtbriIROsOKgfZPtYxmkZV+FYlsnBu9ybQ==
+  dependencies:
+    "@json2csv/formatters" "^7.0.5"
+    "@streamparser/json" "^0.0.19"
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
@@ -635,6 +648,11 @@
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.2.tgz#5981a8db18b56ba38ef0efb7d995b12aa7b51918"
   integrity sha512-sXXKG+uL9IrKqViTtao2Ws6dy0znu9sOaP1di/jKGW1M6VssO8vlpXCQcpZ+jisQ1tTFAC5Jo/EOzFbggBagFQ==
+
+"@streamparser/json@^0.0.19":
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/@streamparser/json/-/json-0.0.19.tgz#d9c264b54e366186ea4459bbb16c10238dc9e2a4"
+  integrity sha512-VTxtZGME6ZSWNCSjZ0Zd2LNNodx62XvmARb/liHIwGlInuuvoDzioLuRP8ajV8iLBknsTrsqpRDGlvzKSzpNEw==
 
 "@tootallnate/once@2":
   version "2.0.0"
@@ -948,7 +966,7 @@
     js-beautify "1.14.9"
     vue-component-type-helpers "1.8.4"
 
-"@zazuko/yasgui-utils@^4.2.32", "@zazuko/yasgui-utils@^4.2.33":
+"@zazuko/yasgui-utils@^4.2.33":
   version "4.2.33"
   resolved "https://registry.yarnpkg.com/@zazuko/yasgui-utils/-/yasgui-utils-4.2.33.tgz#79dba1e6f70f03d5e3569a558a91f9c337137297"
   integrity sha512-InVdFCoZ9UStksTtdQLh5xNFDXaxK73ak5borC2G/9LDne5qiwILdp7V/7kpeIl/DluAwSw2N/cK2Yqayq0eDg==
@@ -957,7 +975,7 @@
     dompurify "^2.0.7"
     store "^2.0.12"
 
-"@zazuko/yasqe@^4.2.32":
+"@zazuko/yasqe@^4.2.32", "@zazuko/yasqe@^4.2.33":
   version "4.2.33"
   resolved "https://registry.yarnpkg.com/@zazuko/yasqe/-/yasqe-4.2.33.tgz#17f22b8620ad227eeeb5b047a4519845270715f6"
   integrity sha512-hW4zPOHqcuLa/kdaTWS0dCL1R9iTkxrBY9E8cB5RmWmyzSGS0KKuz/pmrYE8QfLtf6sijY5D+6WhfgVDngYJZg==
@@ -970,14 +988,15 @@
     superagent "^8.1.2"
 
 "@zazuko/yasr@^4.2.32":
-  version "4.2.32"
-  resolved "https://registry.yarnpkg.com/@zazuko/yasr/-/yasr-4.2.32.tgz#ddedc7e888a655fd60ab0b5ef6ff613bf47463d8"
-  integrity sha512-B2erAT9mZNWjCD+FK8A0E3NtzkYSF/agan8vcoPUngcTmGNTvvr6ReYByLyszCqW0kdw1iroSzIJM9OLP5XOSg==
+  version "4.2.33"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasr/-/yasr-4.2.33.tgz#7c12221c3a7e293b4799e4ec18c77ed507b94ce5"
+  integrity sha512-JW9fX/JxLSR/FnucI/Dgh6XaWPVNnX0e05YDph5oAYYO0zR8y7kDgzb3VYjRRNNacCr/X3dGEnDxGj/D93/2Ig==
   dependencies:
     "@fortawesome/free-solid-svg-icons" "^5.14.0"
+    "@json2csv/plainjs" "^7.0.4"
     "@types/lodash-es" "^4.17.3"
-    "@zazuko/yasgui-utils" "^4.2.32"
-    "@zazuko/yasqe" "^4.2.32"
+    "@zazuko/yasgui-utils" "^4.2.33"
+    "@zazuko/yasqe" "^4.2.33"
     codemirror "^5.51.0"
     colors "^1.4.0"
     column-resizer "^1.3.4"
@@ -985,7 +1004,6 @@
     datatables.net-dt "^1.10.24"
     dompurify "^2.0.7"
     jquery "^3.5.0"
-    json2csv "^5.0.1"
     lodash-es "^4.17.15"
     n3 "^1.3.5"
     papaparse "^5.3.1"
@@ -1670,7 +1688,7 @@ commander@^10.0.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-10.0.1.tgz#881ee46b4f77d1c1dccc5823433aa39b022cbe06"
   integrity sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==
 
-commander@^6.1.0, commander@^6.2.1:
+commander@^6.2.1:
   version "6.2.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-6.2.1.tgz#0792eb682dfbc325999bb2b84fddddba110ac73c"
   integrity sha512-U7VdrJFnJgo4xjrHpTzu0yrHPGImdsmD95ZlgYSEajAn2JKzDhDTPG9kBTefmObL2w/ngeZnilk+OV9CG3d7UA==
@@ -3621,15 +3639,6 @@ json-stringify-safe@~5.0.1:
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
   integrity sha512-ZClg6AaYvamvYEE82d3Iyd3vSSIjQ+odgjaTzRuO3s7toCdFKczob2i0zCh7JE8kWn17yvAWhUVxvqGwUalsRA==
 
-json2csv@^5.0.1:
-  version "5.0.7"
-  resolved "https://registry.yarnpkg.com/json2csv/-/json2csv-5.0.7.tgz#f3a583c25abd9804be873e495d1e65ad8d1b54ae"
-  integrity sha512-YRZbUnyaJZLZUJSRi2G/MqahCyRv9n/ds+4oIetjDF3jWQA7AG7iSeKTiZiCNqtMZM7HDyt0e/W6lEnoGEmMGA==
-  dependencies:
-    commander "^6.1.0"
-    jsonparse "^1.3.1"
-    lodash.get "^4.4.2"
-
 json5@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/json5/-/json5-1.0.2.tgz#63d98d60f21b313b77c4d6da18bfa69d80e1d593"
@@ -3655,11 +3664,6 @@ jsonfile@^6.0.1:
     universalify "^2.0.0"
   optionalDependencies:
     graceful-fs "^4.1.6"
-
-jsonparse@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/jsonparse/-/jsonparse-1.3.1.tgz#3f4dae4a91fac315f71062f8521cc239f1366280"
-  integrity sha512-POQXvpdL69+CluYsillJ7SUhKvytYjW9vG/GKpnf+xP8UWgYEM/RaMzHHofbALDiKbbP1W8UEYmgGl39WkPZsg==
 
 jsprim@^2.0.2:
   version "2.0.2"
