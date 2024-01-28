@@ -19,6 +19,8 @@
 package org.apache.jena.sparql.engine.binding;
 
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 import org.apache.jena.atlas.iterator.IteratorConcat;
@@ -45,12 +47,18 @@ abstract public class BindingBase implements Binding
 //    public Binding getParent() { return parent; }
 
     @Override
-    final public Iterator<Var> vars()
-    {
+    final public Iterator<Var> vars() {
         Iterator<Var> iter = vars1();
         if ( parent != null )
             iter = IteratorConcat.concat(parent.vars(), iter);
         return iter;
+    }
+
+    @Override
+    final public Set<Var> varsMentioned() {
+        Set<Var> result = new LinkedHashSet<>();
+        vars().forEachRemaining(result::add);
+        return result;
     }
 
     /** Operate on each entry. */

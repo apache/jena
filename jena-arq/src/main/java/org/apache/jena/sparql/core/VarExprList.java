@@ -35,10 +35,10 @@ public class VarExprList {
     private List<Var> vars;
     private LinkedHashMap<Var, Expr> exprs;   // Preserve order.
 
-    public VarExprList(List<Var> vars) {
-        this.vars = new ArrayList<>(vars);
-        this.exprs = new LinkedHashMap<>();
-    }
+//    public VarExprList(List<Var> vars) {
+//        this.vars = new ArrayList<>(vars);
+//        this.exprs = new LinkedHashMap<>();
+//    }
 
     public VarExprList(VarExprList other) {
         this.vars = new ArrayList<>(other.vars);

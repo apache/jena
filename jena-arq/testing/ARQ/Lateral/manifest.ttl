@@ -37,6 +37,8 @@ PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
       <#lateral-3>
       <#lateral-4>
       <#lateral-5>
+      <#lateral-6>
+      <#lateral-7>
     ).
 
 <#lateral-1> rdf:type mf:QueryEvaluationTest ;
@@ -82,6 +84,24 @@ PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
        qt:data   <data.ttl>
     ] ;
     mf:result  <lateral-5.srj>
+    .
+
+<#lateral-6> rdf:type mf:QueryEvaluationTest ;
+    mf:name      "LATERAL - LATERAL inside OPTIONAL" ;
+    mf:action [
+       qt:query  <lateral-in-optional.arq> ;
+       qt:data   <data2.ttl>
+    ] ;
+    mf:result  <lateral-in-optional.srj>
+    .
+
+<#lateral-7> rdf:type mf:QueryEvaluationTest ;
+    mf:name      "LATERAL - OPTIONAL inside LATERAL" ;
+    mf:action [
+       qt:query  <optional-in-lateral.arq> ;
+       qt:data   <data2.ttl>
+    ] ;
+    mf:result  <optional-in-lateral.srj>
     .
 
 
