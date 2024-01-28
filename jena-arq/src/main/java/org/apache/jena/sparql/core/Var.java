@@ -16,19 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core ;
+package org.apache.jena.sparql.core;
 
-import java.util.ArrayList ;
-import java.util.Collection ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Node_Variable ;
-import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.ExprVar ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Node_Variable;
+import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.ExprVar;
 import org.apache.jena.sys.JenaSystem;
 
 /** A SPARQL variable */
@@ -44,22 +45,23 @@ public class Var extends Node_Variable
 
     // Legal SPARQL variable name but note it must be exactly this
     // object, not just the same name, to be anonymous.
-    public static Var ANON = new Var("?_") ;
+    public static Var ANON = new Var("?_");
 
     public static Var alloc(String varName) {
+        Objects.requireNonNull(varName);
 //        if ( varName.equals("_") )
-//            return ANON ;
-        return new Var(varName) ;
+//            return ANON;
+        return new Var(varName);
     }
 
-    public static Var alloc(Node_Variable v) // asVar?
-    {
+    public static Var alloc(Node_Variable v) {
         if ( v instanceof Var )
             return (Var)v;
         return new Var(v);
     }
 
     public static Var alloc(Node v) {
+        Objects.requireNonNull(v);
         if ( v instanceof Var )
             return (Var)v;
         if ( v instanceof Node_Variable )
@@ -68,13 +70,15 @@ public class Var extends Node_Variable
     }
 
     public static Var alloc(Var v) {
-        return v;
+        return Objects.requireNonNull(v);
     }
 
-    public static Var alloc(ExprVar nv)         { return new Var(nv) ; }
+    public static Var alloc(ExprVar nv)         { return new Var(nv); }
 
     /** Return the value in the binding (if node is a Var) or the node itself. */
     public static Node lookup(Binding binding, Node node) {
+        Objects.requireNonNull(binding);
+        Objects.requireNonNull(node);
         if ( !Var.isVar(node) )
             return node;
         Var var = Var.alloc(node);
@@ -83,6 +87,7 @@ public class Var extends Node_Variable
 
     /** Return the value in the binding or the variable itself. */
     public static Node lookup(Binding binding, Var var) {
+        Objects.requireNonNull(var);
         Node n = binding.get(var);
         if ( n != null )
             return n;
@@ -106,41 +111,41 @@ public class Var extends Node_Variable
     }
 
     // Precalulated the hash code because hashCode() is used so heavily with Var's
-    private final int hashCodeValue ;
+    private final int hashCodeValue;
 
-    private Var(String varName)      { super(varName) ; hashCodeValue = super.hashCode() ; }
+    private Var(String varName)      { super(varName); hashCodeValue = super.hashCode(); }
 
-    private Var(Node_Variable v)     { this(v.getName()) ; }
+    private Var(Node_Variable v)     { this(v.getName()); }
 
-    private Var(ExprVar v)           { this(v.getVarName()) ; }
+    private Var(ExprVar v)           { this(v.getVarName()); }
 
-    public String getVarName()       { return getName() ; }
+    public String getVarName()       { return getName(); }
 
     static class NotAVariableException extends ARQInternalErrorException {
-        NotAVariableException(String msg) { super(msg) ; }
+        NotAVariableException(String msg) { super(msg); }
     }
 
     @Override
-    public final int hashCode() { return hashCodeValue ; }
+    public final int hashCode() { return hashCodeValue; }
 
     @Override
     public final boolean equals(Object other) {
-        if ( this == other ) return true ;
+        if ( this == other ) return true;
         if ( ! ( other instanceof Var ) )
-            return false ;
-        return super.equals(other) ;
+            return false;
+        return super.equals(other);
     }
 
 //    @Override
-//    public String toString() { return node.toString() ; }
+//    public String toString() { return node.toString(); }
 
-    public boolean isNamedVar() { return isNamedVarName(getName()) ; }
+    public boolean isNamedVar() { return isNamedVarName(getName()); }
 
-    public boolean isBlankNodeVar() { return isBlankNodeVarName(getName()) ; }
+    public boolean isBlankNodeVar() { return isBlankNodeVarName(getName()); }
 
-    public boolean isAllocVar() { return isAllocVarName(getName()) ; }
+    public boolean isAllocVar() { return isAllocVarName(getName()); }
 
-    public boolean isAnonVar() { return isAnonVar(this) ; }
+    public boolean isAnonVar() { return isAnonVar(this); }
 
     // -------
 
@@ -161,28 +166,28 @@ public class Var extends Node_Variable
     }
 
     public static boolean isRenamedVar(Node node)
-    { return node.isVariable() && isRenamedVar(node.getName()) ; }
+    { return node.isVariable() && isRenamedVar(node.getName()); }
 
     public static boolean isRenamedVar(String x)
-    { return x.startsWith(ARQConstants.allocVarScopeHiding) ; }
+    { return x.startsWith(ARQConstants.allocVarScopeHiding); }
 
     public static boolean isNamedVar(Node node)
-    { return node.isVariable() && isNamedVarName(node.getName()) ; }
+    { return node.isVariable() && isNamedVarName(node.getName()); }
 
     public static boolean isNamedVarName(String x)
-    { return ! isBlankNodeVarName(x) && ! isAllocVarName(x) ; }
+    { return ! isBlankNodeVarName(x) && ! isAllocVarName(x); }
 
     public static boolean isBlankNodeVar(Node node)
-    { return node.isVariable() && isBlankNodeVarName(node.getName()) ; }
+    { return node.isVariable() && isBlankNodeVarName(node.getName()); }
 
     public static boolean isBlankNodeVarName(String x)
-    { return x.startsWith(ARQConstants.allocVarAnonMarker) ; }
+    { return x.startsWith(ARQConstants.allocVarAnonMarker); }
 
     public static boolean isAllocVar(Node node)
-    { return node.isVariable() && isAllocVarName(node.getName()) ; }
+    { return node.isVariable() && isAllocVarName(node.getName()); }
 
     public static boolean isAllocVarName(String x)
-    { return x.startsWith(ARQConstants.allocVarMarker) ; }
+    { return x.startsWith(ARQConstants.allocVarMarker); }
 
     /** Convert a collection of variable names to variables */
     public static List<Var> varList(Collection<String> varNames) {
