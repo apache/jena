@@ -20,16 +20,19 @@ package org.apache.jena.sparql.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.Transform;
 import org.apache.jena.sparql.algebra.TransformCopy;
 import org.apache.jena.sparql.algebra.Transformer;
 import org.apache.jena.sparql.algebra.op.*;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.engine.iterator.QueryIterLateral;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprList;
 import org.apache.jena.sparql.pfunction.PropFuncArg;
@@ -40,12 +43,42 @@ import org.apache.jena.sparql.syntax.syntaxtransform.UpdateTransformOps;
  * Substitution in SPARQL algebra.
  * <p>
  * See also {@link QueryTransformOps} and {@link UpdateTransformOps} which operate on SPARQL syntax.
+ * <p>
+ * {@link #inject} provides the substitution, while leaving a variable present, used by LATERAL.
  */
 public class Substitute {
+    /**
+     * Inject takes an {@link Op} to transform using a {Binding binding}. The
+     * transformation assumes the Ope structure is legal for the operation. The
+     * transformation is to wrap each place a variable is used (BGP, GRAPH, Path and
+     * some equivalent operations) with a {@code BIND} to restrict the vartibale to a specific value
+     * while still retaining the variable (e.g for FILETERs).
+     * <p>
+     * <pre>
+     *   (bgp
+     *     (?s :p 123)
+     *     (?s :q ?a)
+     *   )
+     * </pre>
+     * with binding {@code ?s = :x } becomes
+     * <pre>
+     * (assign (?s :x)
+     *    (bgp
+     *      (:x :p 123)
+     *      (:x :q ?a)
+     *    ))
+     * </pre>
+     */
+    public static Op inject(Op opInput, Binding binding) {
+        Set<Var> injectVars = binding.varsMentioned();
+        Transform transform = new QueryIterLateral.TransformInject(injectVars, binding::get);
+        Op opOutput = Transformer.transform(transform, opInput);
+        return opOutput;
+    }
+
     public static Op substitute(Op op, Binding binding) {
         // Want to avoid cost if the binding is empty
         // but the empty test is not zero-cost on non-empty things.
-
         if ( isNotNeeded(binding) )
             return op;
         return Transformer.transform(new OpSubstituteWorker(binding), op);

@@ -49,7 +49,6 @@ import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import org.apache.jena.sparql.engine.iterator.QueryIterRoot;
 import org.apache.jena.sparql.engine.main.QC;
 
-// Spit out a few of the longer ops.
 public class RefEval {
     public static Table eval(Evaluator evaluator, Op op) {
         EvaluatorDispatch ev = new EvaluatorDispatch(evaluator);
@@ -58,6 +57,7 @@ public class RefEval {
         return table;
     }
 
+    // Spit out a few of the longer ops.
     static Table evalDS(OpDatasetNames opDSN, Evaluator evaluator) {
         Node graphNode = opDSN.getGraphNode();
         if ( graphNode.isURI() ) {

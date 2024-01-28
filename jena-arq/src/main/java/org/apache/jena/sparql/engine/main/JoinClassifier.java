@@ -60,6 +60,9 @@ public class JoinClassifier
         if ( right instanceof OpTopN )      return false ;
         if ( right instanceof OpOrder )     return false ;
 
+        // Lateral is different.
+        if ( right instanceof OpLateral )   return false ;
+
         // Assume something will not commute these later on.
         return check(left, right) ;
     }
@@ -67,7 +70,9 @@ public class JoinClassifier
     // -- pre check for ops we can't handle in a linear fashion.
     // These are the negation patterns (minus and diff)
     // FILTER NOT EXISTS is safe - it's defined by iteration like the linear execution algorithm.
-    private static class UnsafeLineraOpException extends RuntimeException {}
+    private static class UnsafeLineraOpException extends RuntimeException {
+        @Override public Throwable fillInStackTrace() { return this; }
+    }
     private static OpVisitor checkForUnsafeVisitor = new OpVisitorBase() {
         @Override public void visit(OpMinus opMinus) { throw new UnsafeLineraOpException(); }
         @Override public void visit(OpDiff opDiff)   { throw new UnsafeLineraOpException(); }

@@ -31,21 +31,29 @@ import org.apache.jena.sparql.syntax.*;
 
 /** Calculate in-scope variables from the AST */
 public class SyntaxVarScope {
+    // @formatter:off
     /* SPARQL 1.1 "in scope" rules These define the variables from a pattern that are
      * in-scope These are not the usage rules.
      *
-     * Syntax Form In-scope variables
+     * <a href="https://www.w3.org/TR/sparql11-query/#variableScope">18.2.1 Variable Scope</a>
      *
-     * Basic Graph Pattern (BGP) v occurs in the BGP Path v occurs in the path Group
-     * { P1 P2 ... } v is in-scope if in-scope in one or more of P1, P2, ... GRAPH
-     * term { P } v is term or v is in-scope in P { P1 } UNION { P2 } v is in-scope
-     * in P1 or in-scope in P2 OPTIONAL {P} v is in-scope in P SERVICE term {P} v is
-     * term or v is in-scope in P (expr AS v) for BIND, SELECT and GROUP BY v is
-     * in-scope SELECT ..v .. { P } v is in-scope if v is mentioned as a project
-     * variable SELECT * { P } v is in-scope in P VALUES var (values) v is in-scope
-     * if v is in varlist VALUES varlist (values) v is in-scope if v is in varlist */
-
-    // Weakness : EXISTS inside FILTERs?
+     * Syntax Form In-scope variables
+     * <pre>
+     * Basic Graph Pattern (BGP) v occurs in the BGP
+     * Path                      v occurs in the path
+     * Group { P1 P2 ... }       v is in-scope if in-scope in one or more of P1, P2, ...
+     * GRAPH term { P }          v is term or v is in-scope in P
+     * { P1 } UNION { P2 }       v is in-scope in P1 or in-scope in P2
+     * OPTIONAL {P}              v is in-scope in P
+     * SERVICE term {P}          v is term or v is in-scope in P
+     * (expr AS v) for BIND, SELECT and GROUP BY   v is in-scope
+     * SELECT ..v .. { P }       v is in-scope if v is mentioned as a project variable
+     * SELECT * { P }            v is in-scope in P
+     * VALUES var (values)       v is in-scope
+     * VALUES varlist (values)   v is in-scope if v is in varlist
+     * </pre>
+     */
+    //@formatter:on
 
     public static void check(Query query) {
         if ( query.getQueryPattern() == null )
@@ -220,17 +228,17 @@ public class SyntaxVarScope {
             for ( int i = 0 ; i < el.size() ; i++ ) {
                 Element e = el.get(i);
                 // Tests.
-                if ( e instanceof ElementBind ) {
+                if ( e instanceof ElementBind eltBind) {
                     Collection<Var> accScope = calcScopeAll(el.getElements(), i);
-                    checkBIND(accScope, (ElementBind)e);
+                    checkBIND(accScope, eltBind);
                 }
-                if ( e instanceof ElementService ) {
+                if ( e instanceof ElementService eltSvc ) {
                     Collection<Var> accScope = calcScopeAll(el.getElements(), i);
-                    checkSERVICE(accScope, (ElementService)e);
+                    checkSERVICE(accScope, eltSvc);
                 }
-                if ( e instanceof ElementLateral ) {
+                if ( e instanceof ElementLateral eltLat) {
                     Collection<Var> accScope = calcScopeAll(el.getElements(), i);
-                    checkLATERAL(accScope, e);
+                    checkLATERAL(accScope, eltLat);
                 }
             }
         }
@@ -285,6 +293,7 @@ public class SyntaxVarScope {
 
                 @Override
                 public void visit(ElementSubQuery eltSubQuery) {
+
                     // Only called when there is an expression.
                     eltSubQuery.getQuery().getProject().forEachExpr((var, expr) -> {
                         if ( accScope.contains(var) )
@@ -293,19 +302,23 @@ public class SyntaxVarScope {
                     // Check inside query pattern
                     Query subQuery = eltSubQuery.getQuery();
                     Collection<Var> accScope2 = accScope;
-                    //eltSubQuery.getQuery().setResultVars();
                     if ( ! subQuery.isQueryResultStar() ) {
                         List<Var> projectVars = eltSubQuery.getQuery().getProject().getVars();
-                        // Calculate variables passed down : scope which are in the project vars.
+                        // Copy
                         accScope2 = new ArrayList<>(accScope);
+                        // Calculate variables passed down : remove any that are not in the project vars
+                        // Any reused name will be renamed apart later.
                         accScope2.removeIf(v->!projectVars.contains(v));
                     }
+                    if ( accScope2.isEmpty() )
+                        // No work to do.
+                        return;
                     Element el2 = eltSubQuery.getQuery().getQueryPattern();
                     checkLATERAL(accScope2, el2);
                 }
             };
 
-            // Does not walk into subqueries but we need to change the scoep for sub-queries.
+            // Does not walk into subqueries but we need to change the scope for sub-queries.
             ElementWalker.walk(el, checker);
         }
     }
