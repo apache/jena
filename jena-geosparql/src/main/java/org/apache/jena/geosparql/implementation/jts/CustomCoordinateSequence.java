@@ -394,7 +394,14 @@ public class CustomCoordinateSequence implements CoordinateSequence, Serializabl
     public void getCoordinate(int index, Coordinate coord) {
         coord.setX(x[index]);
         coord.setY(y[index]);
-        coord.setZ(z[index]);
+
+        if (spatialDimension > 2) {
+            coord.setZ(z[index]);
+        }
+
+        if (measuresDimension == 1) {
+            coord.setM(m[index]);
+        }
     }
 
     @Override
