@@ -999,4 +999,86 @@ public abstract class AbstractTripleStoreTest {
                 NodeFactory.createURI("R"))));
     }
 
+    @Test
+    public void testCopy() {
+        sut.add(triple("s p o"));
+        sut.add(triple("s1 p1 o1"));
+        sut.add(triple("s2 p2 o2"));
+        assertEquals(3, sut.countTriples());
+
+        var copy = sut.copy();
+        assertEquals(3, copy.countTriples());
+        assertTrue(copy.contains(triple("s p o")));
+        assertTrue(copy.contains(triple("s1 p1 o1")));
+        assertTrue(copy.contains(triple("s2 p2 o2")));
+        assertFalse(copy.contains(triple("s3 p3 o3")));
+    }
+
+    @Test
+    public void testCopyHasNoSideEffects() {
+        sut.add(triple("s p o"));
+        sut.add(triple("s1 p1 o1"));
+        sut.add(triple("s2 p2 o2"));
+        assertEquals(3, sut.countTriples());
+
+        var copy = sut.copy();
+        copy.remove(triple("s1 p1 o1"));
+        copy.add(triple("s3 p3 o3"));
+        copy.add(triple("s4 p4 o4"));
+
+        assertEquals(4, copy.countTriples());
+        assertTrue(copy.contains(triple("s p o")));
+        assertFalse(copy.contains(triple("s1 p1 o1")));
+        assertTrue(copy.contains(triple("s2 p2 o2")));
+        assertTrue(copy.contains(triple("s3 p3 o3")));
+        assertTrue(copy.contains(triple("s4 p4 o4")));
+
+
+        assertEquals(3, sut.countTriples());
+        assertTrue(sut.contains(triple("s p o")));
+        assertTrue(sut.contains(triple("s1 p1 o1")));
+        assertTrue(sut.contains(triple("s2 p2 o2")));
+        assertFalse(sut.contains(triple("s3 p3 o3")));
+    }
+
+    @Test
+    public void testCopyWithEnoughTriplesToUseHashedBunched() {
+        for (int i = 0; i < 100; i++) {
+            sut.add(triple("s p" + i + " o" + i));
+        }
+        assertEquals(100, sut.countTriples());
+
+        var copy = sut.copy();
+        assertEquals(100, copy.countTriples());
+        assertTrue(copy.contains(triple("s p0 o0")));
+        assertTrue(copy.contains(triple("s p99 o99")));
+        assertFalse(copy.contains(triple("s p100 o100")));
+    }
+
+    @Test
+    public void testCopyHasNoSideEffectsWithEnoughTriplesToUseHashedBunched() {
+        for (int i = 0; i < 100; i++) {
+            sut.add(triple("s p" + i + " o" + i));
+        }
+        assertEquals(100, sut.countTriples());
+
+
+        var copy = sut.copy();
+        copy.remove(triple("s p50 o50"));
+        copy.add(triple("s p100 o100"));
+        copy.add(triple("s p101 o101"));
+
+        assertEquals(101, copy.countTriples());
+        assertTrue(copy.contains(triple("s p0 o0")));
+        assertFalse(copy.contains(triple("s p50 o50")));
+        assertTrue(copy.contains(triple("s p100 o100")));
+        assertTrue(copy.contains(triple("s p101 o101")));
+
+
+        assertEquals(100, sut.countTriples());
+        assertTrue(sut.contains(triple("s p0 o0")));
+        assertTrue(sut.contains(triple("s p99 o99")));
+        assertFalse(sut.contains(triple("s p100 o100")));
+    }
+
 }

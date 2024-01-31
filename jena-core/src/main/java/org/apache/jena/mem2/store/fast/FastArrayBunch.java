@@ -43,6 +43,19 @@ public abstract class FastArrayBunch implements FastTripleBunch {
         elements = new Triple[INITIAL_SIZE];
     }
 
+    /**
+     * Copy constructor.
+     * The new bunch will contain all the same triples of the bunch to copy.
+     * But it will reserve only the space needed to contain them. Growing is still possible.
+     *
+     * @param bunchToCopy
+     */
+    protected FastArrayBunch(final FastArrayBunch bunchToCopy) {
+        this.elements = new Triple[bunchToCopy.size];
+        System.arraycopy(bunchToCopy.elements, 0, this.elements, 0, bunchToCopy.size);
+        this.size = bunchToCopy.size;
+    }
+
     public abstract boolean areEqual(final Triple a, final Triple b);
 
     @Override

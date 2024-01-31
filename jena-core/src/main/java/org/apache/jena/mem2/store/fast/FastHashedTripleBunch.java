@@ -35,6 +35,16 @@ public class FastHashedTripleBunch extends FastHashSet<Triple> implements FastTr
         set.keyIterator().forEachRemaining(this::addUnchecked);
     }
 
+    /**
+     * Copy constructor.
+     * The new bunch will contain all the same triples of the bunch to copy.
+     *
+     * @param bunchToCopy
+     */
+    private FastHashedTripleBunch(final FastHashedTripleBunch bunchToCopy) {
+        super(bunchToCopy);
+    }
+
     public FastHashedTripleBunch() {
         super();
     }
@@ -47,5 +57,10 @@ public class FastHashedTripleBunch extends FastHashSet<Triple> implements FastTr
     @Override
     public boolean isArray() {
         return false;
+    }
+
+    @Override
+    public FastHashedTripleBunch copy() {
+        return new FastHashedTripleBunch(this);
     }
 }

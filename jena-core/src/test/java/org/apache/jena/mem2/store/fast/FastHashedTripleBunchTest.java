@@ -34,30 +34,39 @@ public class FastHashedTripleBunchTest extends AbstractJenaSetTripleTest {
 
     @Test
     public void testConstructorWithArrayBunchEmpty() {
-        final var arrayBunch = new FastArrayBunch() {
-
-            @Override
-            public boolean areEqual(Triple a, Triple b) {
-                return a.equals(b);
-            }
-        };
+        final var arrayBunch = new FastTripleArrayBunch();
         final var sut = new FastHashedTripleBunch(arrayBunch);
         assertEquals(0, sut.size());
     }
 
     @Test
     public void testConstructorWithArrayBunch() {
-        final var arrayBunch = new FastArrayBunch() {
-
-            @Override
-            public boolean areEqual(Triple a, Triple b) {
-                return a.equals(b);
-            }
-        };
+        final var arrayBunch = new FastTripleArrayBunch();
         arrayBunch.tryAdd(triple("s P o"));
         arrayBunch.tryAdd(triple("s P o1"));
         arrayBunch.tryAdd(triple("s P o2"));
         final var sut = new FastHashedTripleBunch(arrayBunch);
         assertEquals(3, sut.size());
+    }
+
+    private static class FastTripleArrayBunch extends FastArrayBunch {
+
+        public FastTripleArrayBunch() {
+            super();
+        }
+
+        private FastTripleArrayBunch(FastTripleArrayBunch bunchToCopy) {
+            super(bunchToCopy);
+        }
+
+        @Override
+        public FastTripleArrayBunch copy() {
+            return new FastTripleArrayBunch(this);
+        }
+
+        @Override
+        public boolean areEqual(final Triple a, final Triple b) {
+            return a.equals(b);
+        }
     }
 }

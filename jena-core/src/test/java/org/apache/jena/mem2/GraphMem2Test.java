@@ -26,8 +26,7 @@ import java.util.stream.Stream;
 
 import static org.apache.jena.testing_framework.GraphHelper.node;
 import static org.apache.jena.testing_framework.GraphHelper.triple;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class GraphMem2Test {
@@ -169,5 +168,19 @@ public class GraphMem2Test {
         assertTrue(capapbilities.deleteAllowed());
         assertFalse(capapbilities.handlesLiteralTyping());
 
+    }
+
+    @Test
+    public void testCopy() {
+        TripleStore mockStore = mock();
+        TripleStore mockStoreCopy = mock();
+
+        when(mockStore.copy()).thenReturn(mockStoreCopy);
+
+        var sut = new GraphMem2(mockStore);
+        var copy = sut.copy();
+
+        assertTrue(copy instanceof GraphMem2);
+        assertEquals(mockStoreCopy, copy.tripleStore);
     }
 }

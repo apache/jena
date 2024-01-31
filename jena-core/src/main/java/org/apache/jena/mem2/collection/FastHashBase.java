@@ -86,7 +86,27 @@ public abstract class FastHashBase<K> implements JenaMapSetCommon<K> {
         this.positions = new int[MINIMUM_HASHES_SIZE];
         this.keys = newKeysArray(MINIMUM_ELEMENTS_SIZE);
         this.hashCodesOrDeletedIndices = new int[MINIMUM_ELEMENTS_SIZE];
+    }
 
+    /**
+     * Copy constructor.
+     * The new map will contain all the same keys of the map to copy.
+     *
+     * @param baseToCopy
+     */
+    protected <T extends FastHashBase> FastHashBase(final T baseToCopy)  {
+        this.positions = new int[baseToCopy.positions.length];
+        System.arraycopy(baseToCopy.positions, 0, this.positions, 0, baseToCopy.positions.length);
+
+        this.hashCodesOrDeletedIndices = new int[baseToCopy.hashCodesOrDeletedIndices.length];
+        System.arraycopy(baseToCopy.hashCodesOrDeletedIndices, 0, this.hashCodesOrDeletedIndices, 0, baseToCopy.hashCodesOrDeletedIndices.length);
+
+        this.keys = newKeysArray(baseToCopy.keys.length);
+        System.arraycopy(baseToCopy.keys, 0, this.keys, 0, baseToCopy.keys.length);
+
+        this.keysPos = baseToCopy.keysPos;
+        this.lastDeletedIndex = baseToCopy.lastDeletedIndex;
+        this.removedKeysCount = baseToCopy.removedKeysCount;
     }
 
     /**

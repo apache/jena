@@ -18,6 +18,7 @@
 
 package org.apache.jena.mem2;
 
+import org.apache.jena.atlas.lib.Copyable;
 import org.apache.jena.graph.Capabilities;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -36,11 +37,11 @@ import java.util.stream.Stream;
  * Implementation must always comply to term-equality semantics. The characteristics of the
  * implementations always have handlesLiteralTyping() == false.
  */
-public class GraphMem2 extends GraphMemBase implements GraphWithPerform {
+public class GraphMem2 extends GraphMemBase implements GraphWithPerform, Copyable<GraphMem2> {
 
     final TripleStore tripleStore;
 
-    public GraphMem2(TripleStore tripleStore) {
+    protected GraphMem2(TripleStore tripleStore) {
         super();
         this.tripleStore = tripleStore;
     }
@@ -145,5 +146,17 @@ public class GraphMem2 extends GraphMemBase implements GraphWithPerform {
     @Override
     public Capabilities getCapabilities() {
         return AllCapabilities.updateAllowed;
+    }
+
+    /**
+     * Creates a copy of this graph.
+     * Since the triples and nodes are immutable, the copy contains the same triples and nodes as this graph.
+     * Modifications to the copy will not affect this graph.
+     *
+     * @return independent copy of the current graph
+     */
+    @Override
+    public GraphMem2 copy() {
+        return new GraphMem2(this.tripleStore.copy());
     }
 }

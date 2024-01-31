@@ -18,6 +18,7 @@
 
 package org.apache.jena.mem2.store.legacy;
 
+import org.apache.jena.atlas.lib.Copyable;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.mem2.collection.JenaSet;
 
@@ -26,7 +27,7 @@ import org.apache.jena.mem2.collection.JenaSet;
  * bunch is expected to store triples that share some useful property
  * (such as having the same subject or predicate).
  */
-public interface TripleBunch extends JenaSet<Triple> {
+public interface TripleBunch extends JenaSet<Triple>, Copyable<TripleBunch> {
     /**
      * Answer true iff this bunch is implemented as an array.
      * This field is used to optimize some operations by avoiding the need for instanceOf tests.

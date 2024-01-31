@@ -50,6 +50,35 @@ public abstract class FastHashMap<K, V> extends FastHashBase<K> implements JenaM
         this.values = newValuesArray(keys.length);
     }
 
+    /**
+     * Copy constructor.
+     * The new map will contain all the same keys and values of the map to copy.
+     *
+     * @param mapToCopy
+     */
+    protected FastHashMap(final FastHashMap<K, V> mapToCopy) {
+        super(mapToCopy);
+        this.values = newValuesArray(keys.length);
+        System.arraycopy(mapToCopy.values, 0, this.values, 0, mapToCopy.values.length);
+    }
+
+    /**
+     * Copy constructor with value processor.
+     *
+     * @param mapToCopy
+     * @param valueProcessor
+     */
+    protected FastHashMap(final FastHashMap<K, V> mapToCopy, final UnaryOperator<V> valueProcessor) {
+        super(mapToCopy);
+        this.values = newValuesArray(keys.length);
+        for (int i = 0; i < mapToCopy.values.length; i++) {
+            final var value = mapToCopy.values[i];
+            if (value != null) {
+                this.values[i] = valueProcessor.apply(value);
+            }
+        }
+    }
+
     protected abstract V[] newValuesArray(int size);
 
     @Override

@@ -17,12 +17,10 @@
  */
 package org.apache.jena.mem2;
 
-import org.apache.jena.graph.Graph;
-
 public class GraphMem2LegacyTest extends AbstractGraphMem2Test {
 
     @Override
-    protected Graph createGraph() {
+    protected GraphMem2 createGraph() {
         return new GraphMem2Legacy();
     }
 }

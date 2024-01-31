@@ -68,10 +68,23 @@ public class FastTripleStore implements TripleStore {
     protected static final int THRESHOLD_FOR_SECONDARY_LOOKUP = 400;
     protected static final int MAX_ARRAY_BUNCH_SIZE_SUBJECT = 16;
     protected static final int MAX_ARRAY_BUNCH_SIZE_PREDICATE_OBJECT = 32;
-    final FastHashedBunchMap subjects = new FastHashedBunchMap();
-    final FastHashedBunchMap predicates = new FastHashedBunchMap();
-    final FastHashedBunchMap objects = new FastHashedBunchMap();
+    final FastHashedBunchMap subjects;
+    final FastHashedBunchMap predicates;
+    final FastHashedBunchMap objects;
     private int size = 0;
+
+    public FastTripleStore() {
+        subjects = new FastHashedBunchMap();
+        predicates = new FastHashedBunchMap();
+        objects = new FastHashedBunchMap();
+    }
+
+    private FastTripleStore(final FastTripleStore tripleStoreToCopy) {
+        subjects = tripleStoreToCopy.subjects.copy();
+        predicates = tripleStoreToCopy.predicates.copy();
+        objects = tripleStoreToCopy.objects.copy();
+        size = tripleStoreToCopy.size;
+    }
 
     @Override
     public void add(Triple triple) {
@@ -359,7 +372,25 @@ public class FastTripleStore implements TripleStore {
         }
     }
 
+    @Override
+    public FastTripleStore copy() {
+        return new FastTripleStore(this);
+    }
+
     protected static class ArrayBunchWithSameSubject extends FastArrayBunch {
+
+        public ArrayBunchWithSameSubject() {
+            super();
+        }
+
+        private ArrayBunchWithSameSubject(ArrayBunchWithSameSubject bunchToCopy) {
+            super(bunchToCopy);
+        }
+
+        @Override
+        public ArrayBunchWithSameSubject copy() {
+            return new ArrayBunchWithSameSubject(this);
+        }
 
         @Override
         public boolean areEqual(final Triple a, final Triple b) {
@@ -369,6 +400,20 @@ public class FastTripleStore implements TripleStore {
     }
 
     protected static class ArrayBunchWithSamePredicate extends FastArrayBunch {
+
+        public ArrayBunchWithSamePredicate() {
+            super();
+        }
+
+        private ArrayBunchWithSamePredicate(ArrayBunchWithSamePredicate bunchToCopy) {
+            super(bunchToCopy);
+        }
+
+        @Override
+        public ArrayBunchWithSamePredicate copy() {
+            return new ArrayBunchWithSamePredicate(this);
+        }
+
         @Override
         public boolean areEqual(final Triple a, final Triple b) {
             return a.getSubject().equals(b.getSubject())
@@ -377,6 +422,20 @@ public class FastTripleStore implements TripleStore {
     }
 
     protected static class ArrayBunchWithSameObject extends FastArrayBunch {
+
+        public ArrayBunchWithSameObject() {
+            super();
+        }
+
+        private ArrayBunchWithSameObject(ArrayBunchWithSameObject bunchToCopy) {
+            super(bunchToCopy);
+        }
+
+        @Override
+        public ArrayBunchWithSameObject copy() {
+            return new ArrayBunchWithSameObject(this);
+        }
+
         @Override
         public boolean areEqual(final Triple a, final Triple b) {
             return a.getSubject().equals(b.getSubject())

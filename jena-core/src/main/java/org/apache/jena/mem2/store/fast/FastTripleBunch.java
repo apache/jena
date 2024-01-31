@@ -18,6 +18,7 @@
 
 package org.apache.jena.mem2.store.fast;
 
+import org.apache.jena.atlas.lib.Copyable;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.mem2.collection.JenaMapSetCommon;
 import org.apache.jena.mem2.collection.JenaSetHashOptimized;
@@ -29,7 +30,7 @@ import java.util.function.Predicate;
  * bunch is expected to store triples that share some useful property
  * (such as having the same subject or predicate).
  */
-public interface FastTripleBunch extends JenaSetHashOptimized<Triple> {
+public interface FastTripleBunch extends JenaSetHashOptimized<Triple>, Copyable<FastTripleBunch> {
     /**
      * Answer true iff this bunch is implemented as an array.
      * This field is used to optimize some operations by avoiding the need for instanceOf tests.

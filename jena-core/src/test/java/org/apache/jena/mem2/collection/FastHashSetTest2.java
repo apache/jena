@@ -20,6 +20,7 @@ package org.apache.jena.mem2.collection;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.apache.jena.testing_framework.GraphHelper.node;
 import static org.junit.Assert.*;
 
 /**
@@ -135,11 +136,59 @@ public class FastHashSetTest2 {
         assertFalse(sut.anyMatchRandomOrder(k -> k.equals("d")));
     }
 
+    @Test
+    public void testCopyConstructor() {
+        var original = new FastObjectHashSet();
+        original.addAndGetIndex(node("s"));
+        original.addAndGetIndex(node("s1"));
+        original.addAndGetIndex(node("s2"));
+        assertEquals(3, original.size());
+
+        var copy = new FastObjectHashSet(original);
+        assertEquals(3, copy.size());
+        assertTrue(copy.containsKey(node("s")));
+        assertTrue(copy.containsKey(node("s1")));
+        assertTrue(copy.containsKey(node("s2")));
+        assertFalse(copy.containsKey(node("s3")));
+    }
+
+    @Test
+    public void testCopyConstructorAddAndDeleteHasNoSideEffects() {
+        var original = new FastObjectHashSet();
+        original.addAndGetIndex(node("s"));
+        original.addAndGetIndex(node("s1"));
+        original.addAndGetIndex(node("s2"));
+        assertEquals(3, original.size());
+
+        var copy = new FastObjectHashSet(original);
+        copy.removeAndGetIndex(node("s1"));
+        copy.addAndGetIndex(node("s3"));
+        copy.addAndGetIndex(node("s4"));
+
+        assertEquals(4, copy.size());
+        assertTrue(copy.containsKey(node("s")));
+        assertFalse(copy.containsKey(node("s1")));
+        assertTrue(copy.containsKey(node("s2")));
+        assertTrue(copy.containsKey(node("s3")));
+        assertTrue(copy.containsKey(node("s4")));
+
+
+        assertEquals(3, original.size());
+        assertTrue(original.containsKey(node("s")));
+        assertTrue(original.containsKey(node("s1")));
+        assertTrue(original.containsKey(node("s2")));
+        assertFalse(original.containsKey(node("s3")));
+    }
+
 
     private static class FastObjectHashSet extends FastHashSet<Object> {
 
         public FastObjectHashSet() {
             super();
+        }
+
+        public FastObjectHashSet(FastHashSet<Object> setToCopy) {
+            super(setToCopy);
         }
 
         @Override

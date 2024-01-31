@@ -17,16 +17,29 @@
  */
 package org.apache.jena.mem2.store.fast;
 
+import org.apache.jena.atlas.lib.Copyable;
 import org.apache.jena.graph.Node;
 import org.apache.jena.mem2.collection.FastHashMap;
 
 /**
  * Map from nodes to triple bunches.
  */
-public class FastHashedBunchMap extends FastHashMap<Node, FastTripleBunch> {
+public class FastHashedBunchMap
+        extends FastHashMap<Node, FastTripleBunch>
+        implements Copyable<FastHashedBunchMap> {
 
     public FastHashedBunchMap() {
         super();
+    }
+
+    /**
+     * Copy constructor.
+     * The new map will contain all the same nodes as keys of the map to copy, but copies of the bunches as values .
+     *
+     * @param mapToCopy
+     */
+    private FastHashedBunchMap(final FastHashedBunchMap mapToCopy) {
+        super(mapToCopy, FastTripleBunch::copy);
     }
 
     @Override
@@ -37,5 +50,10 @@ public class FastHashedBunchMap extends FastHashMap<Node, FastTripleBunch> {
     @Override
     protected FastTripleBunch[] newValuesArray(int size) {
         return new FastTripleBunch[size];
+    }
+
+    @Override
+    public FastHashedBunchMap copy() {
+        return new FastHashedBunchMap(this);
     }
 }

@@ -18,6 +18,7 @@
 
 package org.apache.jena.mem2;
 
+import org.apache.jena.mem2.store.TripleStore;
 import org.apache.jena.mem2.store.roaring.RoaringTripleStore;
 
 /**
@@ -41,9 +42,16 @@ import org.apache.jena.mem2.store.roaring.RoaringTripleStore;
  * - The bitmaps contain the indices of the triples in the central hash set.
  */
 public class GraphMem2Roaring extends GraphMem2 {
-
     public GraphMem2Roaring() {
         super(new RoaringTripleStore());
     }
 
+    private GraphMem2Roaring(final TripleStore tripleStore) {
+        super(tripleStore);
+    }
+
+    @Override
+    public GraphMem2Roaring copy() {
+        return new GraphMem2Roaring(this.tripleStore.copy());
+    }
 }

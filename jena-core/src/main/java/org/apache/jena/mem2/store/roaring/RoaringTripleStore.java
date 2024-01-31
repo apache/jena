@@ -18,6 +18,7 @@
 
 package org.apache.jena.mem2.store.roaring;
 
+import org.apache.jena.atlas.lib.Copyable;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.mem2.collection.FastHashMap;
@@ -56,10 +57,24 @@ public class RoaringTripleStore implements TripleStore {
 
     private static final String UNKNOWN_PATTERN_CLASSIFIER = "Unknown pattern classifier: %s";
     private static final RoaringBitmap EMPTY_BITMAP = new RoaringBitmap();
-    final NodesToBitmapsMap subjectBitmaps = new NodesToBitmapsMap();
-    final NodesToBitmapsMap predicateBitmaps = new NodesToBitmapsMap();
-    final NodesToBitmapsMap objectBitmaps = new NodesToBitmapsMap();
-    final TripleSet triples = new TripleSet(); // We use a list here to maintain the order of triples
+    final NodesToBitmapsMap subjectBitmaps;
+    final NodesToBitmapsMap predicateBitmaps;
+    final NodesToBitmapsMap objectBitmaps;
+    final TripleSet triples; // In this special set, each element has an index
+
+    public RoaringTripleStore() {
+        subjectBitmaps = new NodesToBitmapsMap();
+        predicateBitmaps = new NodesToBitmapsMap();
+        objectBitmaps = new NodesToBitmapsMap();
+        triples = new TripleSet();
+    }
+
+    private RoaringTripleStore(final RoaringTripleStore storeToCopy) {
+        subjectBitmaps = storeToCopy.subjectBitmaps.copy();
+        predicateBitmaps = storeToCopy.predicateBitmaps.copy();
+        objectBitmaps = storeToCopy.objectBitmaps.copy();
+        triples = storeToCopy.triples.copy();
+    }
 
     private static void addIndex(final NodesToBitmapsMap map, final Node node, final int index) {
         final var bitmap = map.computeIfAbsent(node, RoaringBitmap::new);
@@ -119,12 +134,12 @@ public class RoaringTripleStore implements TripleStore {
         final var matchPattern = PatternClassifier.classify(tripleMatch);
         switch (matchPattern) {
 
-            case SUB_ANY_ANY:
-            case ANY_PRE_ANY:
-            case ANY_ANY_OBJ:
-            case SUB_PRE_ANY:
-            case ANY_PRE_OBJ:
-            case SUB_ANY_OBJ:
+            case SUB_ANY_ANY,
+                 ANY_PRE_ANY,
+                 ANY_ANY_OBJ,
+                 SUB_PRE_ANY,
+                 ANY_PRE_OBJ,
+                 SUB_ANY_OBJ:
                 return hasMatchInBitmaps(tripleMatch, matchPattern);
 
             case SUB_PRE_OBJ:
@@ -265,12 +280,12 @@ public class RoaringTripleStore implements TripleStore {
             case SUB_PRE_OBJ:
                 return this.triples.containsKey(tripleMatch) ? Stream.of(tripleMatch) : Stream.empty();
 
-            case SUB_PRE_ANY:
-            case SUB_ANY_OBJ:
-            case SUB_ANY_ANY:
-            case ANY_PRE_OBJ:
-            case ANY_PRE_ANY:
-            case ANY_ANY_OBJ:
+            case SUB_PRE_ANY,
+                 SUB_ANY_OBJ,
+                 SUB_ANY_ANY,
+                 ANY_PRE_OBJ,
+                 ANY_PRE_ANY,
+                    ANY_ANY_OBJ:
                 return this.getBitmapForMatch(tripleMatch, pattern)
                         .stream().mapToObj(this.triples::getKeyAt);
 
@@ -290,12 +305,12 @@ public class RoaringTripleStore implements TripleStore {
             case SUB_PRE_OBJ:
                 return this.triples.containsKey(tripleMatch) ? new SingletonIterator<>(tripleMatch) : NiceIterator.emptyIterator();
 
-            case SUB_PRE_ANY:
-            case SUB_ANY_OBJ:
-            case SUB_ANY_ANY:
-            case ANY_PRE_OBJ:
-            case ANY_PRE_ANY:
-            case ANY_ANY_OBJ:
+            case SUB_PRE_ANY,
+                 SUB_ANY_OBJ,
+                 SUB_ANY_ANY,
+                 ANY_PRE_OBJ,
+                 ANY_PRE_ANY,
+                 ANY_ANY_OBJ:
                 return new RoaringBitmapTripleIterator(this.getBitmapForMatch(tripleMatch, pattern), this.triples);
 
             case ANY_ANY_ANY:
@@ -306,21 +321,56 @@ public class RoaringTripleStore implements TripleStore {
         }
     }
 
+    @Override
+    public RoaringTripleStore copy() {
+        return new RoaringTripleStore(this);
+    }
+
     /**
      * Set of triples that is backed by a {@link TripleSet}.
      */
-    private static class TripleSet extends FastHashSet<Triple> {
+    private static class TripleSet
+            extends FastHashSet<Triple>
+            implements Copyable<TripleSet>{
+
+        public TripleSet() {
+            super();
+        }
+
+        private TripleSet(final FastHashSet<Triple> setToCopy) {
+            super(setToCopy);
+        }
 
         @Override
         protected Triple[] newKeysArray(int size) {
             return new Triple[size];
+        }
+
+        /**
+         * Create a copy of this set.
+         *
+         * @return
+         */
+        @Override
+        public TripleSet copy() {
+            return new TripleSet(this);
         }
     }
 
     /**
      * Map from {@link Node} to {@link RoaringBitmap}.
      */
-    private static class NodesToBitmapsMap extends FastHashMap<Node, RoaringBitmap> {
+    private static class NodesToBitmapsMap
+            extends FastHashMap<Node, RoaringBitmap>
+            implements Copyable<NodesToBitmapsMap> {
+
+        public NodesToBitmapsMap() {
+            super();
+        }
+
+        public NodesToBitmapsMap(final NodesToBitmapsMap mapToCopy) {
+            super(mapToCopy, RoaringBitmap::clone);
+        }
 
         @Override
         protected Node[] newKeysArray(int size) {
@@ -330,6 +380,17 @@ public class RoaringTripleStore implements TripleStore {
         @Override
         protected RoaringBitmap[] newValuesArray(int size) {
             return new RoaringBitmap[size];
+        }
+
+        /**
+         * Create a copy of this map.
+         * The new map will contain all the same nodes as keys of this map, but clones of the bitmaps as values.
+         *
+         * @return a copy of this map
+         */
+        @Override
+        public NodesToBitmapsMap copy() {
+            return new NodesToBitmapsMap(this);
         }
     }
 }

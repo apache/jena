@@ -23,14 +23,29 @@ import org.apache.jena.mem2.collection.JenaSet;
 
 public class FastArrayBunchTest extends AbstractJenaSetTripleTest {
 
-
     @Override
     protected JenaSet<Triple> createTripleSet() {
-        return new FastArrayBunch() {
-            @Override
-            public boolean areEqual(Triple a, Triple b) {
-                return a.equals(b);
-            }
-        };
+        return new FastTripleArrayBunch();
+    }
+
+    private static class FastTripleArrayBunch extends FastArrayBunch {
+
+        public FastTripleArrayBunch() {
+            super();
+        }
+
+        private FastTripleArrayBunch(FastTripleArrayBunch bunchToCopy) {
+            super(bunchToCopy);
+        }
+
+        @Override
+        public FastTripleArrayBunch copy() {
+            return new FastTripleArrayBunch(this);
+        }
+
+        @Override
+        public boolean areEqual(final Triple a, final Triple b) {
+            return a.equals(b);
+        }
     }
 }

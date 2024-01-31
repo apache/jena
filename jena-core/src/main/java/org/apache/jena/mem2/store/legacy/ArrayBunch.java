@@ -46,6 +46,19 @@ public class ArrayBunch implements TripleBunch {
         elements = new Triple[INITIAL_SIZE];
     }
 
+    /**
+     * Copy constructor.
+     * The new bunch will contain all the same triples of the bunch to copy.
+     * But it will reserve only the space needed to contain them. Growing is still possible.
+     *
+     * @param bunchToCopy
+     */
+    private ArrayBunch(final ArrayBunch bunchToCopy) {
+        this.elements = new Triple[bunchToCopy.size];
+        System.arraycopy(bunchToCopy.elements, 0, this.elements, 0, bunchToCopy.size);
+        this.size = bunchToCopy.size;
+    }
+
     @Override
     public boolean containsKey(Triple t) {
         int i = size;
@@ -162,5 +175,10 @@ public class ArrayBunch implements TripleBunch {
     @Override
     public boolean isArray() {
         return true;
+    }
+
+    @Override
+    public ArrayBunch copy() {
+        return new ArrayBunch(this);
     }
 }

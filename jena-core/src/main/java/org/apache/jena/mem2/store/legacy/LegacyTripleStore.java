@@ -47,12 +47,21 @@ import java.util.stream.Stream;
  */
 public class LegacyTripleStore implements TripleStore {
 
-    private final NodeToTriplesMap subjects
-            = new NodeToTriplesMapMem(Triple.Field.fieldSubject, Triple.Field.fieldPredicate, Triple.Field.fieldObject);
-    private final NodeToTriplesMap predicates
-            = new NodeToTriplesMapMem(Triple.Field.fieldPredicate, Triple.Field.fieldObject, Triple.Field.fieldSubject);
-    private final NodeToTriplesMap objects
-            = new NodeToTriplesMapMem(Triple.Field.fieldObject, Triple.Field.fieldSubject, Triple.Field.fieldPredicate);
+    private final NodeToTriplesMap subjects;
+    private final NodeToTriplesMap predicates;
+    private final NodeToTriplesMap objects;
+
+    public LegacyTripleStore() {
+        subjects = new NodeToTriplesMapMem(Triple.Field.fieldSubject, Triple.Field.fieldPredicate, Triple.Field.fieldObject);
+        predicates = new NodeToTriplesMapMem(Triple.Field.fieldPredicate, Triple.Field.fieldObject, Triple.Field.fieldSubject);
+        objects = new NodeToTriplesMapMem(Triple.Field.fieldObject, Triple.Field.fieldSubject, Triple.Field.fieldPredicate);
+    }
+
+    private LegacyTripleStore(final LegacyTripleStore toCopy) {
+        subjects = toCopy.subjects.copy();
+        predicates = toCopy.predicates.copy();
+        objects = toCopy.objects.copy();
+    }
 
     @Override
     public void add(Triple triple) {
@@ -148,5 +157,10 @@ public class LegacyTripleStore implements TripleStore {
             return predicates.iteratorForMatches(pm, om, sm);
         else
             return subjects.keyIterator();
+    }
+
+    @Override
+    public LegacyTripleStore copy() {
+        return new LegacyTripleStore(this);
     }
 }

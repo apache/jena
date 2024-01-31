@@ -30,6 +30,10 @@ public class HashedTripleBunch extends HashCommonSet<Triple> implements TripleBu
         b.keyIterator().forEachRemaining(this::addUnchecked);
     }
 
+    private HashedTripleBunch(final HashedTripleBunch bunchToCopy) {
+        super(bunchToCopy);
+    }
+
     public HashedTripleBunch() {
         super(8);
     }
@@ -47,5 +51,10 @@ public class HashedTripleBunch extends HashCommonSet<Triple> implements TripleBu
     @Override
     public boolean isArray() {
         return false;
+    }
+
+    @Override
+    public HashedTripleBunch copy() {
+        return new HashedTripleBunch(this);
     }
 }

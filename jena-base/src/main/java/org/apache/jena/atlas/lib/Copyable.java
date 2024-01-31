@@ -15,12 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.mem2;
 
-public class GraphMem2RoaringTest extends AbstractGraphMem2Test {
+package org.apache.jena.atlas.lib;
 
-    @Override
-    protected GraphMem2 createGraph() {
-        return new GraphMem2Roaring();
-    }
+/**
+ * Generic interface for objects that can create an independent copy of themselves.
+ * Any operations on the copy must not affect the original in any way.
+ * @param <T> must be the type of the implementing class
+ */
+public interface Copyable<T> {
+
+    /**
+     * Create a copy of this object.
+     * @return
+     */
+    T copy();
 }

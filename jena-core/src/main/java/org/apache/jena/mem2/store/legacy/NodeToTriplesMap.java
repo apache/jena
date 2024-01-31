@@ -58,4 +58,12 @@ public interface NodeToTriplesMap extends JenaSet<Triple> {
      * @return True iff this map contains a triple that matches the pattern.
      */
     boolean containsMatch(Node index, Node n2, Node n3);
+
+    /**
+     * Create a copy of this map.
+     * The new map will contain all the same nodes as keys of this map, but copies of the bunches as values.
+     *
+     * @return an independent copy of this map
+     */
+    NodeToTriplesMap copy();
 }

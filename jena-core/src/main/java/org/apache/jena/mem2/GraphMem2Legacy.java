@@ -18,6 +18,7 @@
 
 package org.apache.jena.mem2;
 
+import org.apache.jena.mem2.store.TripleStore;
 import org.apache.jena.mem2.store.legacy.LegacyTripleStore;
 
 /**
@@ -44,4 +45,12 @@ public class GraphMem2Legacy extends GraphMem2 {
         super(new LegacyTripleStore());
     }
 
+    private GraphMem2Legacy(final TripleStore tripleStore) {
+        super(tripleStore);
+    }
+
+    @Override
+    public GraphMem2Legacy copy() {
+        return new GraphMem2Legacy(this.tripleStore.copy());
+    }
 }

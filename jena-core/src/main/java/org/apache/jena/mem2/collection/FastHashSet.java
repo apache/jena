@@ -37,6 +37,16 @@ public abstract class FastHashSet<K> extends FastHashBase<K> implements JenaSetH
         super();
     }
 
+    /**
+     * Copy constructor.
+     * The new set will contain all the same keys of the set to copy.
+     *
+     * @param setToCopy
+     */
+    protected FastHashSet(final FastHashSet<K> setToCopy) {
+        super(setToCopy);
+    }
+
     @Override
     public boolean tryAdd(K key) {
         return tryAdd(key, key.hashCode());
