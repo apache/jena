@@ -31,6 +31,16 @@ public abstract class HashCommonSet<K> extends HashCommonBase<K> implements Jena
         super(initialCapacity);
     }
 
+    /**
+     * Copy constructor.
+     * The new set will contain all the same keys of the set to copy.
+     *
+     * @param setToCopy
+     */
+    protected HashCommonSet(final HashCommonSet<K> setToCopy) {
+        super(setToCopy);
+    }
+
     @Override
     public boolean tryAdd(K key) {
         final var slot = findSlot(key);

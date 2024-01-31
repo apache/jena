@@ -19,7 +19,6 @@
 package org.apache.jena.mem2;
 
 import org.apache.jena.datatypes.xsd.impl.XSDDouble;
-import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.hamcrest.collection.IsEmptyCollection;
@@ -36,9 +35,9 @@ import static org.junit.Assert.*;
 
 public abstract class AbstractGraphMem2Test {
 
-    protected Graph sut;
+    protected GraphMem2 sut;
 
-    protected abstract Graph createGraph();
+    protected abstract GraphMem2 createGraph();
 
     @Before
     public void setUp() throws Exception {
@@ -53,7 +52,6 @@ public abstract class AbstractGraphMem2Test {
         assertEquals(0, sut.size());
         assertTrue(sut.isEmpty());
     }
-
 
     @Test
     public void testDelete() {
@@ -998,6 +996,48 @@ public abstract class AbstractGraphMem2Test {
                 NodeFactory.createURI("x"),
                 NodeFactory.createLiteral("0.11", XSDDouble.XSDdouble),
                 NodeFactory.createURI("R"))));
+    }
+
+    @Test
+    public void testCopy() {
+        sut.add(triple("s p o"));
+        sut.add(triple("s1 p1 o1"));
+        sut.add(triple("s2 p2 o2"));
+        assertEquals(3, sut.size());
+
+        var copy = sut.copy();
+        assertEquals(3, copy.size());
+        assertTrue(copy.contains(triple("s p o")));
+        assertTrue(copy.contains(triple("s1 p1 o1")));
+        assertTrue(copy.contains(triple("s2 p2 o2")));
+        assertFalse(copy.contains(triple("s3 p3 o3")));
+    }
+
+    @Test
+    public void testCopyHasNoSideEffects() {
+        sut.add(triple("s p o"));
+        sut.add(triple("s1 p1 o1"));
+        sut.add(triple("s2 p2 o2"));
+        assertEquals(3, sut.size());
+
+        var copy = sut.copy();
+        copy.delete(triple("s1 p1 o1"));
+        copy.add(triple("s3 p3 o3"));
+        copy.add(triple("s4 p4 o4"));
+
+        assertEquals(4, copy.size());
+        assertTrue(copy.contains(triple("s p o")));
+        assertFalse(copy.contains(triple("s1 p1 o1")));
+        assertTrue(copy.contains(triple("s2 p2 o2")));
+        assertTrue(copy.contains(triple("s3 p3 o3")));
+        assertTrue(copy.contains(triple("s4 p4 o4")));
+
+
+        assertEquals(3, sut.size());
+        assertTrue(sut.contains(triple("s p o")));
+        assertTrue(sut.contains(triple("s1 p1 o1")));
+        assertTrue(sut.contains(triple("s2 p2 o2")));
+        assertFalse(sut.contains(triple("s3 p3 o3")));
     }
 
 }

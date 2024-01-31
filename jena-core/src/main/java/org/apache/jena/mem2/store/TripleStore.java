@@ -18,6 +18,7 @@
 
 package org.apache.jena.mem2.store;
 
+import org.apache.jena.atlas.lib.Copyable;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
@@ -27,7 +28,7 @@ import java.util.stream.Stream;
  * A triple store is a collection of triples that supports access to
  * triples matching a triple pattern.
  */
-public interface TripleStore {
+public interface TripleStore extends Copyable<TripleStore> {
 
     /**
      * Add a triple to the map.
@@ -87,4 +88,12 @@ public interface TripleStore {
      * Returns an {@link ExtendedIterator} of all triples in the graph matching the given triple match.
      */
     ExtendedIterator<Triple> find(final Triple tripleMatch);
+
+    /**
+     * Return a new triple store that is a copy of this one.
+     * Since Nodes and Triples are immutable and shared, the copy can share the same Nodes and Triples.
+     *
+     * @return an independent copy of this store
+     */
+    TripleStore copy();
 }

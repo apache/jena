@@ -18,14 +18,8 @@
 
 package org.apache.jena.system;
 
-import static org.apache.jena.graph.Node.ANY;
-
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.lib.Copyable;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.*;
@@ -38,6 +32,13 @@ import org.apache.jena.sparql.util.graph.GNode;
 import org.apache.jena.sparql.util.graph.GraphList;
 import org.apache.jena.util.IteratorCollection;
 import org.apache.jena.util.iterator.ExtendedIterator;
+
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+import static org.apache.jena.graph.Node.ANY;
 
 /**
  * A library of functions for working with {@link Graph}. Internally all
@@ -805,6 +806,23 @@ public class G {
      */
     public static void copyGraphSrcToDst(Graph src, Graph dst) {
         apply(src, dst::add);
+    }
+
+    /**
+     * Creates a copy of the given graph.
+     * If the graph implements Copyable<Graph> then the copy method is called.
+     * Otherwise, a new system default memory-based graph is created and the triples are copied
+     * into it.
+     * @param src the graph to copy
+     * @return a copy of the graph
+     */
+    public static Graph copy(Graph src) {
+        if(src instanceof Copyable<?>) {
+            return ((Copyable<Graph>)src).copy();
+        }
+        Graph dst = GraphMemFactory.createDefaultGraph();
+        copyGraphSrcToDst(src, dst);
+        return dst;
     }
 
     /**

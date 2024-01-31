@@ -19,7 +19,6 @@ package org.apache.jena.mem2.store.legacy;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.mem2.collection.JenaMap;
 import org.apache.jena.mem2.iterator.IteratorOfJenaSets;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NullIterator;
@@ -31,7 +30,7 @@ import java.util.stream.StreamSupport;
 
 public class NodeToTriplesMapMem implements NodeToTriplesMap {
 
-    private final JenaMap<Node, TripleBunch> bunchMap = new HashedBunchMap();
+    private final HashedBunchMap bunchMap;
     private final Triple.Field indexField;
     private final Triple.Field f2;
     private final Triple.Field f3;
@@ -42,10 +41,19 @@ public class NodeToTriplesMapMem implements NodeToTriplesMap {
      */
     private int size = 0;
 
-    public NodeToTriplesMapMem(Triple.Field indexField, Triple.Field f2, Triple.Field f3) {
+    public NodeToTriplesMapMem(final Triple.Field indexField, final Triple.Field f2, final Triple.Field f3) {
         this.indexField = indexField;
         this.f2 = f2;
         this.f3 = f3;
+        this.bunchMap = new HashedBunchMap();
+    }
+
+    private NodeToTriplesMapMem(final NodeToTriplesMapMem mapToCopy) {
+        this.indexField = mapToCopy.indexField;
+        this.f2 = mapToCopy.f2;
+        this.f3 = mapToCopy.f3;
+        this.size = mapToCopy.size;
+        this.bunchMap = mapToCopy.bunchMap.copy();
     }
 
     private Node getIndexNode(Triple t) {
@@ -74,14 +82,16 @@ public class NodeToTriplesMapMem implements NodeToTriplesMap {
 
         TripleBunch s = bunchMap.get(node);
         if (s == null) {
-            bunchMap.put(node, s = new ArrayBunch());
+            s = new ArrayBunch();
+            bunchMap.put(node, s);
             s.addUnchecked(t);
             size++;
             return true;
         }
 
         if ((s.isArray()) && s.size() == 9) {
-            bunchMap.put(node, s = new HashedTripleBunch(s));
+            s = new HashedTripleBunch(s);
+            bunchMap.put(node, s);
         }
         if (s.tryAdd(t)) {
             size++;
@@ -182,6 +192,11 @@ public class NodeToTriplesMapMem implements NodeToTriplesMap {
         if (!filter.hasFilter())
             return true;
         return s.anyMatch(filter.getFilter());
+    }
+
+    @Override
+    public NodeToTriplesMapMem copy() {
+        return new NodeToTriplesMapMem(this);
     }
 
     @Override

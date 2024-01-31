@@ -71,6 +71,19 @@ public abstract class HashCommonBase<E> {
         threshold = (int) (keys.length * LOAD_FACTOR);
     }
 
+    /**
+     * Copy constructor.
+     * The new table will contain all the same keys of the table to copy.
+     *
+     * @param baseToCopy
+     */
+    protected HashCommonBase(final HashCommonBase<E> baseToCopy) {
+        this.keys = newKeysArray(baseToCopy.keys.length);
+        System.arraycopy(baseToCopy.keys, 0, this.keys, 0, baseToCopy.keys.length);
+        this.threshold = baseToCopy.threshold;
+        this.size = baseToCopy.size;
+    }
+
     protected static int nextSize(int atLeast) {
         for (int prime : primes) {
             if (prime > atLeast) return prime;

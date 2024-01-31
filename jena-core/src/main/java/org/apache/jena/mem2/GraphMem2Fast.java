@@ -18,6 +18,7 @@
 
 package org.apache.jena.mem2;
 
+import org.apache.jena.mem2.store.TripleStore;
 import org.apache.jena.mem2.store.fast.FastTripleStore;
 
 /**
@@ -42,4 +43,12 @@ public class GraphMem2Fast extends GraphMem2 {
         super(new FastTripleStore());
     }
 
+    private GraphMem2Fast(final TripleStore tripleStore) {
+        super(tripleStore);
+    }
+
+    @Override
+    public GraphMem2Fast copy() {
+        return new GraphMem2Fast(this.tripleStore.copy());
+    }
 }

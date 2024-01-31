@@ -29,6 +29,17 @@ public class HashedBunchMap extends HashCommonMap<Node, TripleBunch> {
         super(10);
     }
 
+    /**
+     * Copy constructor.
+     * The new map will contain all the same nodes as keys of the map to copy, but copies of the bunches as values .
+     *
+     * @param mapToCopy
+     */
+    private HashedBunchMap(final HashedBunchMap mapToCopy) {
+        super(mapToCopy, TripleBunch::copy);
+    }
+
+
     @Override
     protected Node[] newKeysArray(int size) {
         return new Node[size];
@@ -42,5 +53,15 @@ public class HashedBunchMap extends HashCommonMap<Node, TripleBunch> {
     @Override
     public void clear() {
         super.clear(10);
+    }
+
+    /**
+     * Create a copy of this map.
+     * The new map will contain all the same nodes as keys of this map, but copies of the bunches as values.
+     *
+     * @return an independent copy of this map
+     */
+    public HashedBunchMap copy() {
+        return new HashedBunchMap(this);
     }
 }
