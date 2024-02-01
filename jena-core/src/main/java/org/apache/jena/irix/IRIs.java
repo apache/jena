@@ -84,8 +84,10 @@ public class IRIs {
         String scheme = scheme(uriForBase);
         if ( Sys.isWindows ) {
             // Assume a scheme of one letter is a Windows drive letter.
-            if ( scheme != null && scheme.length() == 1 )
+            if ( scheme != null && scheme.length() == 1 ) {
                 scheme = "file";
+                uriForBase = "file:/"+uriForBase;
+            }
         }
         if ( scheme == null  ) {
             // Relative name: it the base is a file: URI, encode the relative
