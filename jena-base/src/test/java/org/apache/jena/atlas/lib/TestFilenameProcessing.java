@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File ;
 import java.nio.file.Path;
 
+import org.apache.jena.base.Sys;
 import org.junit.Test ;
 
 public class TestFilenameProcessing
@@ -37,7 +38,7 @@ public class TestFilenameProcessing
     // ---- Main tests.
     // Portablility
 
-    static boolean isWindows = File.separatorChar != '/' ;
+    static boolean isWindows = Sys.isWindows;
 
     private static String cwd = Path.of(".").toAbsolutePath().normalize().toString() ;
     // Sort out cwd, not using the IRILib code.

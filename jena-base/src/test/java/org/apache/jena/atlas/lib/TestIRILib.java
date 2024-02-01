@@ -22,6 +22,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+/*
+ * @see TestFilenameProcessing
+ */
 public class TestIRILib {
 
     @Test public void encodeDecode01() { encodeDecode("", ""); }
