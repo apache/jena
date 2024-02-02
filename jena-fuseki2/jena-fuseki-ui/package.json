@@ -62,7 +62,7 @@
     "vite-plugin-istanbul": "^5.0.0",
     "vitest": "^0.34.6",
     "wait-on": "^7.0.1",
-    "nanoid": "^4.0.2"
+    "nanoid": "^5.0.5"
   },
   "overrides": {
     "terser": "^5.14.2",
