@@ -39,25 +39,16 @@ public class ParserSPARQL11 extends SPARQLParser
     protected Query parse$(final Query query, String queryString) {
         query.setSyntax(Syntax.syntaxSPARQL_11);
 
-        Action action = new Action() {
-            @Override
-            public void exec(SPARQLParser11 parser) throws Exception {
-                parser.QueryUnit();
-            }
-        };
-
+        Action action = (SPARQLParser11 parser) -> parser.QueryUnit();
         perform(query, queryString, action);
         return query;
     }
 
     public static Element parseElement(String string) {
         final Query query = new Query();
-        Action action = new Action() {
-            @Override
-            public void exec(SPARQLParser11 parser) throws Exception {
-                Element el = parser.GroupGraphPattern();
-                query.setQueryPattern(el);
-            }
+        Action action = (SPARQLParser11 parser) -> {
+            Element el = parser.GroupGraphPattern();
+            query.setQueryPattern(el);
         };
         perform(query, string, action);
         return query.getQueryPattern();
@@ -65,12 +56,9 @@ public class ParserSPARQL11 extends SPARQLParser
 
     public static Template parseTemplate(String string) {
         final Query query = new Query();
-        Action action = new Action() {
-            @Override
-            public void exec(SPARQLParser11 parser) throws Exception {
-                Template t = parser.ConstructTemplate();
-                query.setConstructTemplate(t);
-            }
+        Action action = (SPARQLParser11 parser) -> {
+            Template t = parser.ConstructTemplate();
+            query.setConstructTemplate(t);
         };
         perform(query, string, action);
         return query.getConstructTemplate();
