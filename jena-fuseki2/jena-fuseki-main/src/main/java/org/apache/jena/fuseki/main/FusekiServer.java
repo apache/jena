@@ -147,6 +147,16 @@ public class FusekiServer {
         return new Builder(serviceDispatchRegistry);
     }
 
+    /**
+     * Default port when running in Java via {@code FusekiServer....build()}.
+     * The server will be http://localhost:3330.
+     *
+     * This is not the command line port (3030) which the command line programme sets.
+     *
+     * See {@link FusekiMain#defaultPort} and {@link FusekiMain#defaultHttpsPort}.
+     */
+    public static final int DefaultServerPort  = 3330;
+
     private final Server server;
     private int httpPort;
     private int httpsPort;
@@ -375,7 +385,6 @@ public class FusekiServer {
 
     /** FusekiServer.Builder */
     public static class Builder {
-        private static final int DefaultServerPort  = 3330;
         private static final int PortUnset          = -2;
         private static final int PortInactive       = -3;
 

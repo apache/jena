@@ -28,9 +28,11 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.Operation;
@@ -99,14 +101,33 @@ public class TestFusekiServerBuild {
 
     // Build with defaults.
     @Test public void fuseki_build_dft_port_01() {
+        // In case another unrelated Fuseki server is running on port 3330 in another JVM,
+        // this test logs the bind failure but does not fail the test.
+        // Because this tests for "defaults", it's quite easy to have another server running.
+
         DatasetGraph dsg = dataset();
-        int port = 3330;   // Default port.
+        // Default embedded server port (command line default is 3030).
+        int port = FusekiServer.DefaultServerPort;
+        // Server, using the defaults.
         FusekiServer server = FusekiServer.create()
                 .add("/ds", dsg)
                 .build();
         try {
             assertTrue(server.getDataAccessPointRegistry().isRegistered("/ds"));
-            server.start();
+            try {
+                server.start();
+            } catch (FusekiException ex) {
+                //org.apache.jena.fuseki.FusekiException: java.io.IOException: Failed to bind to 0.0.0.0/0.0.0.0:3330
+                if ( ex.getCause() instanceof IOException ex2 ) {
+                    if ( ex2.getMessage().matches("Failed to bind to .*:"+port) ) {
+                        // Some other Fuseki running on this machine.
+                        Log.warn(this, "Failed to bind port "+port+" - another Fuseki running on this machine?");
+                        return;
+                    }
+                }
+                // Not a port binding problem - it's a real test failure.
+                throw ex;
+            }
             query("http://localhost:"+port+"/ds/query", "SELECT * { ?s ?p ?o}", qExec-> {
                 RowSet rs = qExec.select();
                 assertFalse(rs.hasNext());

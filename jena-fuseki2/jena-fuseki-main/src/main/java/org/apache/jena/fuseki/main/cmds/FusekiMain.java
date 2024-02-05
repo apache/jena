@@ -64,8 +64,10 @@ import org.apache.jena.tdb1.transaction.TransactionManager;
 import org.slf4j.Logger;
 
 public class FusekiMain extends CmdARQ {
-    private static int defaultPort          = 3030;
-    private static int defaultHttpsPort     = 3043;
+    /** Default HTTP port when running from the command line. */
+    public static int defaultPort          = 3030;
+    /** Default HTTPS port when running from the command line. */
+    public static int defaultHttpsPort     = 3043;
 
     private static ArgDecl  argMem          = new ArgDecl(ArgDecl.NoValue,  "mem");
     private static ArgDecl  argUpdate       = new ArgDecl(ArgDecl.NoValue,  "update", "allowUpdate");
