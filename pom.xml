@@ -78,7 +78,7 @@
     <ver.guava>33.0.0-jre</ver.guava>
 
     <ver.gson>2.10.1</ver.gson>
-    <ver.lucene>9.9.1</ver.lucene>
+    <ver.lucene>9.9.2</ver.lucene>
 
     <ver.commons-io>2.15.1</ver.commons-io>
     <ver.commons-cli>1.6.0</ver.commons-cli>
