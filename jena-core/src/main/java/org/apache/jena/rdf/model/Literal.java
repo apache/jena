@@ -163,11 +163,8 @@ public interface Literal extends RDFNode {
 
     /**
      * If the literal is interpretable as a string return its value.
-     * For typed literals this will throw an error for non string
-     * literals and one needs to use getLexicalForm to return the
-     * string form of other datatypes.
      *
-     * @return the literal string
+     * @return the literal string or its lexical value
      */
     public String getString() ;
 
