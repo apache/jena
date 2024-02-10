@@ -147,6 +147,11 @@ public class QueryExecHTTP implements QueryExec {
         this.httpClient = HttpLib.dft(httpClient, HttpEnv.getDftHttpClient());
     }
 
+    /** Getter for the appProvidedAcceptHeader. Only used for testing. */
+    public String getAppProvidedAcceptHeader() {
+        return appProvidedAcceptHeader;
+    }
+
     /** The Content-Type response header received (null before the remote operation is attempted). */
     public String getHttpResponseContentType() {
         return httpResponseContentType;

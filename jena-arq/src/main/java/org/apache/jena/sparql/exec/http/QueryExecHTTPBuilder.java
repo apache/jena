@@ -36,7 +36,7 @@ public class QueryExecHTTPBuilder extends ExecHTTPBuilder<QueryExecHTTP, QueryEx
 
     public static QueryExecHTTPBuilder service(String serviceURL) { return create().endpoint(serviceURL); }
 
-    private QueryExecHTTPBuilder() {}
+    protected QueryExecHTTPBuilder() {}
 
     @Override
     protected QueryExecHTTPBuilder thisBuilder() {

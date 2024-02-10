@@ -109,7 +109,7 @@ public abstract class ExecHTTPBuilder<X, Y> {
     }
 
     /** Set the query */
-    private void setQuery(Query query, String queryStr) {
+    protected void setQuery(Query query, String queryStr) {
         this.query = query;
         this.queryString = queryStr;
     }
