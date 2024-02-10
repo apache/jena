@@ -96,16 +96,6 @@ case "$(uname)" in
    CYGWIN*) JENA_CP="$(cygpath -wp "$JENA_CP");";;
 esac
 
-# Respect TMPDIR or TMP (windows?) if present
-# important for tdbloader spill
-if [ -n "$TMPDIR" ]
-then
-    JVM_ARGS="$JVM_ARGS -Djava.io.tmpdir=\"$TMPDIR\""
-elif [ -n "$TMP" ]
-then
-    JVM_ARGS="$JVM_ARGS -Djava.io.tmpdir=\"$TMP\""
-fi
-
 ## Append any custom classpath
 if [ -n "$CLASSPATH" ]
 then
