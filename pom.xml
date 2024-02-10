@@ -24,7 +24,7 @@
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>https://jena.apache.org/</url>
-  <version>5.0.0-rc1</version>
+  <version>5.0.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache</groupId>
@@ -55,7 +55,7 @@
     <!-- Build -->
     <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.outputTimestamp>2024-02-10T17:40:19Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-10T17:55:09Z</project.build.outputTimestamp>
 
     <!-- Logging -->
     <ver.slf4j>2.0.7</ver.slf4j>
