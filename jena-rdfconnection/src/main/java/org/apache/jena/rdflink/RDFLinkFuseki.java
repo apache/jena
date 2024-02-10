@@ -20,11 +20,12 @@ package org.apache.jena.rdflink;
 
 import java.net.http.HttpClient;
 
-import org.apache.jena.rdflink.RDFLinkFuseki;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.sparql.exec.http.QuerySendMode;
+import org.apache.jena.sparql.exec.http.UpdateSendMode;
 
 /**
  * Implementation of the {@link RDFLink} interface for connecting to an Apache Jena Fuseki.
@@ -87,19 +88,22 @@ public class RDFLinkFuseki extends RDFLinkHTTP {
             base.outputQuads, base.outputTriples,
             base.acceptDataset, base.acceptGraph,
             base.acceptSparqlResults, base.acceptSelectResult, base.acceptAskResult,
-            base.parseCheckQueries, base.parseCheckUpdates);
+            base.parseCheckQueries, base.parseCheckUpdates,
+            base.querySendMode, base.updateSendMode);
     }
 
     protected RDFLinkFuseki(Transactional txnLifecycle, HttpClient httpClient, String destination,
                             String queryURL, String updateURL, String gspURL, RDFFormat outputQuads, RDFFormat outputTriples,
                             String acceptDataset, String acceptGraph,
                             String acceptSparqlResults, String acceptSelectResult, String acceptAskResult,
-                            boolean parseCheckQueries, boolean parseCheckUpdates) {
+                            boolean parseCheckQueries, boolean parseCheckUpdates,
+                            QuerySendMode querySendMode, UpdateSendMode updateSendMode) {
         super(txnLifecycle, httpClient,
               destination, queryURL, updateURL, gspURL,
               outputQuads, outputTriples,
               acceptDataset, acceptGraph,
-              acceptSparqlResults, acceptSelectResult, acceptAskResult, parseCheckQueries, parseCheckUpdates);
+              acceptSparqlResults, acceptSelectResult, acceptAskResult, parseCheckQueries, parseCheckUpdates,
+              querySendMode, updateSendMode);
     }
 
     // Fuseki specific operations.
