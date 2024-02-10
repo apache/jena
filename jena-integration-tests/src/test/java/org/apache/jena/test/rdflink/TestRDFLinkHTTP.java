@@ -109,4 +109,12 @@ public class TestRDFLinkHTTP extends AbstractTestRDFLink {
             }
         }
     }
+
+    @Test(expected = QueryParseException.class)
+    public void non_standard_syntax_3() {
+        RDFLink link = link(true);
+        try (link) {
+            link.query("custom");
+        }
+    }
 }
