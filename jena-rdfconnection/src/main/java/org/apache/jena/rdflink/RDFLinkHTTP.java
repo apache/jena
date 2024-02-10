@@ -39,7 +39,9 @@ import org.apache.jena.sparql.exec.http.DSP;
 import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.exec.http.QueryExecHTTP;
 import org.apache.jena.sparql.exec.http.QueryExecHTTPBuilder;
+import org.apache.jena.sparql.exec.http.QuerySendMode;
 import org.apache.jena.sparql.exec.http.UpdateExecHTTPBuilder;
+import org.apache.jena.sparql.exec.http.UpdateSendMode;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateFactory;
@@ -79,6 +81,9 @@ public class RDFLinkHTTP implements RDFLink {
     // Whether to check SPARQL updates given as strings by parsing them.
     protected final boolean parseCheckUpdates;
 
+    protected final QuerySendMode querySendMode;
+    protected final UpdateSendMode updateSendMode;
+
     /** Create a {@link RDFLinkHTTPBuilder}. */
     public static RDFLinkHTTPBuilder newBuilder() {
         return new RDFLinkHTTPBuilder();
@@ -103,7 +108,8 @@ public class RDFLinkHTTP implements RDFLink {
                           String acceptDataset, String acceptGraph,
                           String acceptSparqlResults,
                           String acceptSelectResult, String acceptAskResult,
-                          boolean parseCheckQueries, boolean parseCheckUpdates) {
+                          boolean parseCheckQueries, boolean parseCheckUpdates,
+                          QuerySendMode querySendMode, UpdateSendMode updateSendMode) {
         // Any defaults.
         HttpClient hc =  httpClient!=null ? httpClient : HttpEnv.getDftHttpClient();
         if ( txnLifecycle == null )
@@ -124,6 +130,8 @@ public class RDFLinkHTTP implements RDFLink {
         this.acceptAskResult = acceptAskResult;
         this.parseCheckQueries = parseCheckQueries;
         this.parseCheckUpdates = parseCheckUpdates;
+        this.querySendMode = querySendMode;
+        this.updateSendMode = updateSendMode;
     }
 
     @Override
@@ -365,7 +373,7 @@ public class RDFLinkHTTP implements RDFLink {
     private QueryExecHTTPBuilderOverRDFLinkHTTP createQExecBuilder() {
         checkQuery();
         QueryExecHTTPBuilderOverRDFLinkHTTP builder = new QueryExecHTTPBuilderOverRDFLinkHTTP();
-        builder.endpoint(svcQuery).httpClient(httpClient);
+        builder.endpoint(svcQuery).httpClient(httpClient).sendMode(querySendMode);
         return builder;
     }
 
@@ -376,7 +384,6 @@ public class RDFLinkHTTP implements RDFLink {
             sBuff.append(", ");
         sBuff.append(acceptString);
     }
-
 
     /**
      * Return a {@link UpdateExecBuilder} that is initially configured for this link
@@ -392,7 +399,8 @@ public class RDFLinkHTTP implements RDFLink {
 
     /** Create a builder, configured with the link setup. */
     private UpdateExecHTTPBuilder createUExecBuilder() {
-        return UpdateExecHTTPBuilder.create().endpoint(svcUpdate).httpClient(httpClient);
+        return UpdateExecHTTPBuilder.create().endpoint(svcUpdate).httpClient(httpClient)
+                .sendMode(updateSendMode);
     }
 
     @Override

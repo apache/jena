@@ -25,10 +25,11 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.apache.jena.http.HttpEnv;
-import org.apache.jena.rdflink.RDFLinkHTTPBuilder;
 import org.apache.jena.riot.*;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalLock;
+import org.apache.jena.sparql.exec.http.QuerySendMode;
+import org.apache.jena.sparql.exec.http.UpdateSendMode;
 
 /** Builder class for {@link RDFLinkHTTP} */
 public class RDFLinkHTTPBuilder {
@@ -61,6 +62,9 @@ public class RDFLinkHTTPBuilder {
     protected boolean       parseCheckQueries   = true;
     protected boolean       parseCheckUpdates   = true;
 
+    protected QuerySendMode  querySendMode      = QuerySendMode.systemDefault;
+    protected UpdateSendMode updateSendMode     = UpdateSendMode.systemDefault;
+
     protected RDFLinkHTTPBuilder() {
         // Default settings are the member declarations.
     }
@@ -85,6 +89,8 @@ public class RDFLinkHTTPBuilder {
         acceptAskResult     = base.acceptAskResult;
         parseCheckQueries   = base.parseCheckQueries;
         parseCheckUpdates   = base.parseCheckUpdates;
+
+        querySendMode       = base.querySendMode;
     }
 
     /** URL of the remote SPARQL endpoint.
@@ -274,6 +280,24 @@ public class RDFLinkHTTPBuilder {
         return this;
     }
 
+    /**
+     * Set the strategy that determines how to send a query over HTTP.
+     * See {@link QuerySendMode}.
+     */
+    public RDFLinkHTTPBuilder querySendMode(QuerySendMode sendMode) {
+        this.querySendMode = sendMode;
+        return this;
+    }
+
+    /**
+     * Set the strategy that determines how to send an update request over HTTP.
+     * See {@link UpdateSendMode}.
+     */
+    public RDFLinkHTTPBuilder updateSendMode(UpdateSendMode sendMode) {
+        this.updateSendMode = sendMode;
+        return this;
+    }
+
     private Function<RDFLinkHTTPBuilder, RDFLink> creator = null;
     /** Provide an alternative function to make the {@link RDFLink} object.
      * <p>
@@ -310,6 +334,7 @@ public class RDFLinkHTTPBuilder {
                                outputQuads, outputTriples,
                                acceptDataset, acceptGraph,
                                acceptSparqlResults, acceptSelectResult, acceptAskResult,
-                               parseCheckQueries, parseCheckUpdates);
+                               parseCheckQueries, parseCheckUpdates,
+                               querySendMode, updateSendMode);
     }
 }

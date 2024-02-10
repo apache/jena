@@ -28,6 +28,8 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.sparql.exec.http.QuerySendMode;
+import org.apache.jena.sparql.exec.http.UpdateSendMode;
 
 /** Builder class for {@link RDFConnectionRemote} */
 
@@ -102,7 +104,7 @@ public class RDFConnectionRemoteBuilder {
      * Use null for "none".
      */
     public RDFConnectionRemoteBuilder gspEndpoint(String sGSP) {
-		builder.gspEndpoint(sGSP);
+        builder.gspEndpoint(sGSP);
         return this;
     }
 
@@ -115,7 +117,7 @@ public class RDFConnectionRemoteBuilder {
 
     /** Set the {@link HttpClient} for the connection to be built */
     public RDFConnectionRemoteBuilder httpClient(HttpClient httpClient) {
-		builder.httpClient(httpClient);
+        builder.httpClient(httpClient);
         return this;
     }
 
@@ -124,7 +126,7 @@ public class RDFConnectionRemoteBuilder {
      * This must be a quads format.
      */
     public RDFConnectionRemoteBuilder quadsFormat(RDFFormat fmtQuads) {
-		builder.quadsFormat(fmtQuads);
+        builder.quadsFormat(fmtQuads);
         return this;
     }
 
@@ -134,7 +136,7 @@ public class RDFConnectionRemoteBuilder {
      * This must be a quads format.
      */
     public RDFConnectionRemoteBuilder quadsFormat(Lang langQuads) {
-		builder.quadsFormat(langQuads);
+        builder.quadsFormat(langQuads);
         return this;
     }
 
@@ -143,7 +145,7 @@ public class RDFConnectionRemoteBuilder {
      * This must be a quads format.
      */
     public RDFConnectionRemoteBuilder quadsFormat(String langQuads) {
-		builder.quadsFormat(langQuads);
+        builder.quadsFormat(langQuads);
         return this;
     }
 
@@ -151,7 +153,7 @@ public class RDFConnectionRemoteBuilder {
      * This is used for the SPARQ Graph Store Protocol.
      */
     public RDFConnectionRemoteBuilder triplesFormat(RDFFormat fmtTriples) {
-		builder.triplesFormat(fmtTriples);
+        builder.triplesFormat(fmtTriples);
         return this;
     }
 
@@ -159,7 +161,7 @@ public class RDFConnectionRemoteBuilder {
      * This is used for the SPARQ Graph Store Protocol.
      */
     public RDFConnectionRemoteBuilder triplesFormat(Lang langTriples) {
-		builder.triplesFormat(langTriples);
+        builder.triplesFormat(langTriples);
         return this;
     }
 
@@ -167,7 +169,7 @@ public class RDFConnectionRemoteBuilder {
      * This is used for the SPARQ Graph Store Protocol.
      */
     public RDFConnectionRemoteBuilder triplesFormat(String langTriples) {
-		builder.triplesFormat(langTriples);
+        builder.triplesFormat(langTriples);
         Lang lang = RDFLanguages.nameToLang(langTriples);
         if ( lang == null )
             throw new RiotException("Language name not recognized: "+langTriples);
@@ -177,25 +179,25 @@ public class RDFConnectionRemoteBuilder {
 
     /** Set the HTTP {@code Accept:} header used to fetch RDF graph using the SPARQL Graph Store Protocol. */
     public RDFConnectionRemoteBuilder acceptHeaderGraph(String acceptGraph) {
-		builder.acceptHeaderGraph(acceptGraph);
+        builder.acceptHeaderGraph(acceptGraph);
         return this;
     }
 
     /** Set the HTTP {@code Accept:} header used to fetch RDF datasets using HTTP GET operations. */
     public RDFConnectionRemoteBuilder acceptHeaderDataset(String acceptDataset) {
-		builder.acceptHeaderDataset(acceptDataset);
+        builder.acceptHeaderDataset(acceptDataset);
         return this;
     }
 
     /** Set the HTTP {@code Accept:} header used to when making a SPARQL Protocol SELECT query. */
     public RDFConnectionRemoteBuilder acceptHeaderSelectQuery(String acceptSelectHeader) {
-		builder.acceptHeaderSelectQuery(acceptSelectHeader);
+        builder.acceptHeaderSelectQuery(acceptSelectHeader);
         return this;
     }
 
     /** Set the HTTP {@code Accept:} header used to when making a SPARQL Protocol ASK query. */
     public RDFConnectionRemoteBuilder acceptHeaderAskQuery(String acceptAskHeader) {
-		builder.acceptHeaderAskQuery(acceptAskHeader);
+        builder.acceptHeaderAskQuery(acceptAskHeader);
         return this;
     }
 
@@ -203,7 +205,7 @@ public class RDFConnectionRemoteBuilder {
      * SPARQL Protocol query if no query type specific setting available.
      */
     public RDFConnectionRemoteBuilder acceptHeaderQuery(String acceptHeader) {
-		builder.acceptHeaderQuery(acceptHeader);
+        builder.acceptHeaderQuery(acceptHeader);
         return this;
     }
 
@@ -211,7 +213,25 @@ public class RDFConnectionRemoteBuilder {
      * Set the flag for whether to check SPARQL queries and SPARQL updates provided as a string.
      */
     public RDFConnectionRemoteBuilder parseCheckSPARQL(boolean parseCheck) {
-		builder.parseCheckSPARQL(parseCheck);
+        builder.parseCheckSPARQL(parseCheck);
+        return this;
+    }
+
+    /**
+     * Set the strategy that determines how to send a query over HTTP.
+     * See {@link QuerySendMode}.
+     */
+    public RDFConnectionRemoteBuilder querySendMode(QuerySendMode sendMode) {
+        builder.querySendMode(sendMode);
+        return this;
+    }
+
+    /**
+     * Set the strategy that determines how to send an update request over HTTP.
+     * See {@link UpdateSendMode}.
+     */
+    public RDFConnectionRemoteBuilder updateSendMode(UpdateSendMode sendMode) {
+        builder.updateSendMode(sendMode);
         return this;
     }
 
