@@ -22,12 +22,6 @@ See https://github.com/HdrHistogram/HdrHistogram/blob/master/LICENSE.txt
 
 - - - - - - - - - - - - - - - - - - - - - - -
 
-This product bundles "jsonld-java", which is available under a
-BSD license (BSD-3-Clause). See 
-https://github.com/jsonld-java/jsonld-java/blob/master/LICENCE
-
-- - - - - - - - - - - - - - - - - - - - - - -
-
 This product bundles "Dexx Collections", which is available under an
 MIT license (MIT).  See https://github.com/andrewoma/dexx/blob/master/LICENSE.txt
   
