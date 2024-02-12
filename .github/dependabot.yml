@@ -6,6 +6,10 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      maven-patch-group:
+        update-types:
+        - "patch"
     open-pull-requests-limit: 10
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -17,4 +21,8 @@ updates:
     schedule:
       interval: "weekly"
     versioning-strategy: increase-if-necessary
+    groups:
+      npm-patch-group:
+        update-types:
+        - "patch"
     open-pull-requests-limit: 10
