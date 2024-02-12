@@ -19,7 +19,6 @@
 package org.apache.jena.rdfpatch.system;
 
 import org.apache.jena.rdfpatch.filelog.VocabPatch;
-import org.apache.jena.sys.JenaSystem;
 
 public class PatchSystem {
 
@@ -35,14 +34,10 @@ public class PatchSystem {
         if ( initialized )
             return;
         synchronized(initLock) {
-            if ( initialized ) {
-                JenaSystem.logLifecycle("Patch.init - return");
+            if ( initialized )
                 return;
-            }
             initialized = true;
-            JenaSystem.logLifecycle("Patch.init - start");
             VocabPatch.init();
-            JenaSystem.logLifecycle("Patch.init - finish");
         }
     }
 
