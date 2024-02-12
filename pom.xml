@@ -83,7 +83,7 @@
     <ver.commons-lang3>3.14.0</ver.commons-lang3>
     <ver.commons-rdf>0.5.0</ver.commons-rdf>
     <ver.commons-csv>1.10.0</ver.commons-csv>
-    <ver.commons-codec>1.16.0</ver.commons-codec>
+    <ver.commons-codec>1.16.1</ver.commons-codec>
     <ver.commons-compress>1.25.0</ver.commons-compress>
     <ver.commons-collections>4.4</ver.commons-collections>
     <ver.commons-fileupload>2.0.0-M1</ver.commons-fileupload>
