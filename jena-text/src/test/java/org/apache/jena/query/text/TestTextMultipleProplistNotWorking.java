@@ -18,6 +18,14 @@
 
 package org.apache.jena.query.text;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.*;
+
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.*;
@@ -26,21 +34,9 @@ import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
-
-
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.*;
-
-import static org.junit.Assert.*;
 
 // GH-2094
 public class TestTextMultipleProplistNotWorking extends AbstractTestDatasetWithTextIndexBase {
@@ -57,7 +53,7 @@ public class TestTextMultipleProplistNotWorking extends AbstractTestDatasetWithT
             "@prefix mx: <http://id.example.test/mx/#> ."
 
             );
-    protected static final String QUERY_PROLOG2 = 
+    protected static final String QUERY_PROLOG2 =
             StrUtils.strjoinNL(
                     "prefix res:  <" + RES_BASE + "> ",
                     "prefix spec: <" + SPEC_BASE + "> ",
@@ -244,12 +240,12 @@ public class TestTextMultipleProplistNotWorking extends AbstractTestDatasetWithT
         );
         Set<String> expectedURIs = new HashSet<>() ;
         expectedURIs.addAll( Arrays.asList("http://id.example.test/1","http://id.example.test/2")) ;
-        
+
         Map<String, Literal> literals = doTestSearchWithLiterals(queryString, expectedURIs) ;
 
         Map<String,Literal> literalsFromMtNote = doTestSearchWithLiterals(queryStringMtNote,expectedURIs);
         assertEquals(2, literals.size());
-        
+
         Literal value = literals.get("http://id.example.test/1");
         assertNotNull(value);
 
