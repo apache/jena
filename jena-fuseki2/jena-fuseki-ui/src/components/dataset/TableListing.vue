@@ -70,8 +70,8 @@
         </jena-table>
       </div>
     </div>
-    <div class="row g-0">
-      <div class="col-12">
+    <div class="row">
+      <div class="col-12 p-0">
         <pagination
           :value="currentPage"
           :per-page="perPage"
