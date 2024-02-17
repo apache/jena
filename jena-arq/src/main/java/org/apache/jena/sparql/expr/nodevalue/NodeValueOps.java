@@ -18,88 +18,38 @@
 
 package org.apache.jena.sparql.expr.nodevalue;
 
-import static javax.xml.datatype.DatatypeConstants.FIELD_UNDEFINED ;
-import static org.apache.jena.datatypes.xsd.XSDDatatype.XSD ;
-import static org.apache.jena.sparql.expr.ValueSpace.* ;
+import static javax.xml.datatype.DatatypeConstants.FIELD_UNDEFINED;
+import static org.apache.jena.sparql.expr.ValueSpace.*;
 
-import java.math.BigDecimal ;
-import java.util.GregorianCalendar ;
+import java.math.BigDecimal;
+import java.util.GregorianCalendar;
 
-import javax.xml.datatype.Duration ;
-import javax.xml.datatype.XMLGregorianCalendar ;
+import javax.xml.datatype.Duration;
+import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.expr.ExprEvalTypeException ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.ValueSpace ;
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.sparql.expr.ExprEvalTypeException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.ValueSpace;
 
 /** The code parts of arithmetic operations on {@link NodeValue}s.
  */
 public class NodeValueOps
 {
-    /* Date/time/duration coverage
-     * add, subtract (duration, duration)
-     *
-(xsd:duration, xsd:duration) -> xsd:duration
-        10.6.1 op:add-yearMonthDurations
-        10.6.2 op:subtract-yearMonthDurations
-(xsd:duration, xsd:duration) -> xsd:duration
-        10.6.6 op:add-dayTimeDurations
-        10.6.7 op:subtract-dayTimeDurations
-** Java has general duration subtract
-
-    * Subtract two date/times
-
-(xsd:dateTime, xsd:dateTime) -> xsd:duration
-        10.8.1 op:subtract-dateTimes -> xsd:dayTimeDuration
-(xsd:date, xsd:date) -> xsd:duration
-        10.8.2 op:subtract-dates
-(xsd:time, xsd:time) -> xsd:duration
-        10.8.3 op:subtract-times
-
-    * Date/time and duration
-** Java has general duration subtract (error needed?)
-
-(xsd:dateTime, xsd:duration) -> xsd:dateTime
-        10.8.4 op:add-yearMonthDuration-to-dateTime
-        10.8.5 op:add-dayTimeDuration-to-dateTime
-        10.8.6 op:subtract-yearMonthDuration-from-dateTime
-        10.8.7 op:subtract-dayTimeDuration-from-dateTime
-
-(xsd:date, xsd:duration) -> xsd:date
-        10.8.8 op:add-yearMonthDuration-to-date
-        10.8.9 op:add-dayTimeDuration-to-date
-        10.8.10 op:subtract-yearMonthDuration-from-date
-        10.8.11 op:subtract-dayTimeDuration-from-date
-
-(xsd:time, xsd:duration) -> xsd:time
-        10.8.12 op:add-dayTimeDuration-to-time
-        10.8.13 op:subtract-dayTimeDuration-from-time
-
-(xsd:duration, xsd:double) -> xsd:duration
-        10.6.8 op:multiply-dayTimeDuration
-        */
-
-        /* Missing:
-(xsd:duration, xsd:double) -> xsd:duration
-        10.6.9 op:divide-dayTimeDuration
-
-(xsd:duration, xsd:duration) -> xsd:decimal
-        10.6.10 op:divide-dayTimeDuration-by-dayTimeDuration
-         */
-    /* Notes:
-     * Does not consider whether a duration is dayTime or yearMonth
-     * for addition and subtraction.
+    /*
+     * Notes:
+     * Does not consider whether a duration is dayTime or yearMonth for
+     * multiplication and division where the operation can changes the result type.
      * As per the Java (Xerces) implementation, it just work on durations.
      */
 
-    // Until part of Jena datatypes.
-    private static final String dtXSDdateTimeStamp      = XSD+"#dateTimeStamp" ;
-    private static final String dtXSDdayTimeDuration    = XSD+"#dayTimeDuration" ;
-    private static final String dtXSDyearMonthDuration  = XSD+"#yearMonthDuration" ;
+    //private static final String dtXSDdateTimeStamp      = XSDDatatype.XSDdateTimeStamp.getURI();
+    private static final String dtXSDdayTimeDuration    = XSDDatatype.XSDdayTimeDuration.getURI();
+    private static final String dtXSDyearMonthDuration  = XSDDatatype.XSDyearMonthDuration.getURI();
 
+    /** Add two {@link NodeValue NodeValues}, with all the extra datatypes and extensions supported. */
     public static NodeValue additionNV(NodeValue nv1, NodeValue nv2) {
         ValueSpace vs1 = nv1.getValueSpace();
         ValueSpace vs2 = nv2.getValueSpace();
@@ -117,11 +67,11 @@ public class NodeValueOps
             String lex = d3.toString();
             Node n;
             if ( isDTDur )
-                n = NodeFactoryExtra.createLiteralNode(lex, null, dtXSDdayTimeDuration);
+                n = NodeFactory.createLiteral(lex, XSDDatatype.XSDdayTimeDuration);
             else if ( isYMDur )
-                n = NodeFactoryExtra.createLiteralNode(lex, null, dtXSDyearMonthDuration);
+                n = NodeFactory.createLiteral(lex, XSDDatatype.XSDyearMonthDuration);
             else
-                n = org.apache.jena.graph.NodeFactory.createLiteral(lex, XSDDatatype.XSDduration);
+                n = NodeFactory.createLiteral(lex, XSDDatatype.XSDduration);
             return NodeValue.makeNodeDuration(d3, n);
         }
 
@@ -147,14 +97,10 @@ public class NodeValueOps
             NodeValue r = NodeValue.makeNode(result.toXMLFormat(), XSDDatatype.XSDtime);
             return r;
         }
-
-        if ( isDT(vs2) && vs1.equals(VSPACE_DURATION) )
-            // Carefully ...
-            return additionNV(nv2, nv1);
         throw new ExprEvalTypeException("Operator '+' : Undefined addition: " + nv1 + " and " + nv2);
     }
 
-    // NodeFunctions
+    /** Subtract two {@link NodeValue NodeValues}, with all the extra datatypes and extensions supported. */
     public static NodeValue subtractionNV(NodeValue nv1, NodeValue nv2) {
         ValueSpace vs1 = nv1.getValueSpace();
         ValueSpace vs2 = nv2.getValueSpace();
@@ -170,9 +116,9 @@ public class NodeValueOps
             String lex = d3.toString();
             Node n;
             if ( isDTDur )
-                n = NodeFactoryExtra.createLiteralNode(lex, null, dtXSDdayTimeDuration);
+                n = NodeFactory.createLiteral(lex, XSDDatatype.XSDdayTimeDuration);
             else if ( isYMDur )
-                n = NodeFactoryExtra.createLiteralNode(lex, null, dtXSDyearMonthDuration);
+                n = NodeFactory.createLiteral(lex, XSDDatatype.XSDyearMonthDuration);
             else
                 n = org.apache.jena.graph.NodeFactory.createLiteral(lex, XSDDatatype.XSDduration);
             return NodeValue.makeNodeDuration(d3, n);
@@ -215,6 +161,7 @@ public class NodeValueOps
         throw new ExprEvalTypeException("Operator '-' : Undefined subtraction: " + nv1 + " and " + nv2);
     }
 
+    /** Multiple two {@link NodeValue NodeValues}, with all the extra datatypes and extensions supported. */
     public static NodeValue multiplicationNV(NodeValue nv1, NodeValue nv2) {
         ValueSpace vs1 = nv1.getValueSpace();
         ValueSpace vs2 = nv2.getValueSpace();
@@ -230,12 +177,13 @@ public class NodeValueOps
                 throw new ExprEvalTypeException("Operator '*': only dayTime duration.  Got: " + nv1);
             BigDecimal dec = nv2.getDecimal();
             Duration r = dur.multiply(dec);
-            Node n = NodeFactoryExtra.createLiteralNode(r.toString(), null, dtXSDdayTimeDuration);
+            Node n = NodeFactory.createLiteral(r.toString(), XSDDatatype.XSDduration);
             return NodeValue.makeNodeDuration(r, n);
         }
         throw new ExprEvalTypeException("Operator '*' : Undefined multiply: " + nv1 + " and " + nv2);
     }
 
+    /** Divide two {@link NodeValue NodeValues}, with all the extra datatypes and extensions supported. */
     public static NodeValue divisionNV(NodeValue nv1, NodeValue nv2) {
         ValueSpace vs1 = nv1.getValueSpace();
         ValueSpace vs2 = nv2.getValueSpace();
@@ -243,7 +191,62 @@ public class NodeValueOps
         if ( vs1.equals(VSPACE_NUM) && vs2.equals(VSPACE_NUM) )
             return XSDFuncOp.numDivide(nv1, nv2);
 
+        // Duration divided by number
+        if ( vs1.equals(VSPACE_DURATION) && vs2.equals(VSPACE_NUM) ) {
+            Duration dur = nv1.getDuration();
+            // Multiply by 1/number.
+            BigDecimal dec = nv2.getDecimal();
+            if ( dec.equals(BigDecimal.ZERO) )
+                throw new ExprEvalTypeException("Divide by zero in duration division");
+
+            BigDecimal dec1 = BigDecimal.ONE.divide(dec);
+            Duration r = dur.multiply(dec1);
+            // Should normalize but not Duration.normalizeWith for a general duration.
+            // DT or YM specific normalization could be done. e.g. days can go over 31.
+            Node n = NodeFactory.createLiteral(r.toString(), XSDDatatype.XSDduration);
+            return NodeValue.makeNodeDuration(r, n);
+        }
+
+        // Duration divided by duration
+        if ( vs1.equals(VSPACE_DURATION) && vs2.equals(VSPACE_DURATION) ) {
+            // Ratio as a BigDecimal
+            Duration dur1 = nv1.getDuration();
+            Duration dur2 = nv2.getDuration();
+            if ( XSDFuncOp.isDayTime(dur1) && XSDFuncOp.isDayTime(dur2) ) {
+                // In seconds. Ignores fractional seconds.
+                double x1 = durationDayTimeAsSeconds(dur1);
+                double x2 = durationDayTimeAsSeconds(dur2);
+                if ( x2 == 0 )
+                    throw new ExprEvalTypeException("Divide by zero duration in xsd:dayTimeDuration division");
+                return NodeValue.makeDecimal(x1/x2);
+            }
+            if ( XSDFuncOp.isYearMonth(dur1) && XSDFuncOp.isYearMonth(dur2) ) {
+                // In months
+                double x1 = durationYearMonthAsMonths(dur1);
+                double x2 = durationYearMonthAsMonths(dur2);
+                if ( x2 == 0 )
+                    throw new ExprEvalTypeException("Divide by zero duration in xsd:YearMonthDuration division");
+                return NodeValue.makeDecimal(x1/x2);
+            }
+            throw new ExprEvalTypeException("Durations not both day-time nor year-month: " + nv1 + " and " + nv2);
+        }
+
         throw new ExprEvalTypeException("Operator '/' : Undefined division: " + nv1 + " and " + nv2);
+    }
+
+    private static double durationYearMonthAsMonths(Duration dur) {
+        return 12*dur.getYears() + dur.getMonths();
+    }
+
+    private static double durationDayTimeAsSeconds(Duration dur) {
+        double x = dur.getDays();
+        x = x * 24;
+        x = x + dur.getHours();
+        x = x * 60;
+        x = x + dur.getMinutes();
+        x = x * 60;
+        x = x + dur.getSeconds();
+        return x;
     }
 
     private static boolean isDT(ValueSpace vs) {
@@ -256,9 +259,9 @@ public class NodeValueOps
 //            case VSPACE_G_MONTHDAY:
 //            case VSPACE_G_MONTH:
 //            case VSPACE_G_DAY:
-                return true ;
+                return true;
             default:
-                return false ;
+                return false;
         }
     }
 
