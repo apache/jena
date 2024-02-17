@@ -97,10 +97,11 @@
                           count triples in all graphs
                         </button>
                       </div>
-                      <jena-table
+                      <table-listing
                         :fields="countGraphFields"
                         :items="countGraphItems"
                         :busy="isDatasetSizeLoading"
+                        :filterable="false"
                         id="dataset-size-table"
                         class="mt-3"
                         bordered
@@ -118,7 +119,7 @@
                         <template #empty>
                           <span>No data</span>
                         </template>
-                      </jena-table>
+                      </table-listing>
                     </div>
                   </div>
                 </div>
@@ -168,11 +169,13 @@ import currentDatasetMixin from '@/mixins/current-dataset'
 import currentDatasetMixinNavigationGuards from '@/mixins/current-dataset-navigation-guards'
 import { Popover } from 'bootstrap'
 import JenaTable from '@/components/dataset/JenaTable.vue'
+import TableListing from "@/components/dataset/TableListing.vue";
 
 export default {
   name: 'DatasetInfo',
 
   components: {
+    TableListing,
     JenaTable,
     Menu
   },
