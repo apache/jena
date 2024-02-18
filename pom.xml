@@ -1001,7 +1001,7 @@
             <links>
               <link>https://jena.apache.org/documentation/javadoc/jena/</link>
               <link>https://jena.apache.org/documentation/javadoc/arq/</link>
-              <link>https://jena.apache.org/documentation/javadoc/tdb/</link>
+              <link>https://jena.apache.org/documentation/javadoc/tdb2/</link>
               <link>https://jena.apache.org/documentation/javadoc/text/</link>
               <link>https://jena.apache.org/documentation/javadoc/rdfconnection/</link>
               <link>https://jena.apache.org/documentation/javadoc/fuseki2/</link>
