@@ -30,7 +30,7 @@ import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.fileupload2.core.FileItemInput;
 import org.apache.commons.fileupload2.core.FileItemInputIterator;
-import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
+import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.fuseki.servlets.*;
