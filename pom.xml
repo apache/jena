@@ -62,7 +62,7 @@
     <ver.log4j2>2.22.1</ver.log4j2>
 
     <!-- JSON-LD 1.1 -->
-    <ver.titanium-json-ld>1.3.3</ver.titanium-json-ld>
+    <ver.titanium-json-ld>1.4.0</ver.titanium-json-ld>
     <ver.jakarta.json>2.0.1</ver.jakarta.json>
 
     <ver.jetty>12.0.6</ver.jetty>
