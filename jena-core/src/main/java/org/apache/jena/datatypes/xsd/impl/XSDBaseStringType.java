@@ -61,4 +61,14 @@ public class XSDBaseStringType extends XSDDatatype {
             return value1.getValue().equals(value2.getValue());
         return false;
     }
+
+    /**
+     * Canonicalise a java Object value to a normal form.
+     * Used when objects are passed in as xsd:string type
+     * to ensure that indexing of typed literals works.
+     */
+    @Override
+    public Object cannonicalise( Object value ) {
+        return value.toString();
+    }
  }
