@@ -451,7 +451,7 @@ final public class LiteralLabel {
         if ( !typeEquals )
             return false;
 
-        // Don't just use this.lexcialForm -- need to force delayed calculation from values.
+        // Don't just use this.lexicalForm -- need to force delayed calculation from values.
         boolean lexEquals = Objects.equals(getLexicalForm(), otherLiteral.getLexicalForm());
         if ( ! lexEquals )
             return false;
