@@ -44,7 +44,7 @@ public class TestStoreParamsCreate {
     // This may be different for each test
     private final String DB_DIR = ConfigTest.getCleanDir();
     private final Path dbContainer = Path.of(DB_DIR);
-    private final Path dbStorage = dbContainer.resolve(DatabaseOps.dbPrefix+DatabaseOps.SEP+DatabaseOps.startCount);
+    private final Path dbStorage = dbContainer.resolve(DatabaseOps.dbNameBase+DatabaseOps.SEP+DatabaseOps.startCount);
 
     private final Path cfgContainer = dbContainer.resolve(Names.TDB_CONFIG_FILE);
     private final Path cfgStorage = dbStorage.resolve(Names.TDB_CONFIG_FILE);

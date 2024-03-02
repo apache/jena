@@ -126,7 +126,6 @@ public class TDB2 {
 
             SystemTDB.init();
             EnvTDB.processGlobalSystemProperties();
-
             MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace);
             AssemblerUtils.init();
             VocabTDB2.init();
