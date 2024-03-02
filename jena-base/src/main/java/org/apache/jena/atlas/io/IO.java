@@ -579,7 +579,7 @@ public class IO
      * This function does not follow symbolic links.
      */
     public static void deleteAll(Path start) {
-        // Walks down the tree and delete directories on the way backup.
+        // Walk down the tree deleting files, and delete directories on the way backup.
         try {
             Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
                 @Override
@@ -598,7 +598,7 @@ public class IO
                 }
             });
         }
-        catch (IOException ex) { IO.exception(ex); return; }
+        catch (IOException ex) { throw IOX.exception(ex); }
     }
 
     // Do nothing buffer.  Never read from this, it may be corrupt because it is shared.
