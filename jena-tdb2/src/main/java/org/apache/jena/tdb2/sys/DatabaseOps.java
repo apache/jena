@@ -23,15 +23,14 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
 
 import org.apache.jena.atlas.RuntimeIOException;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IOX;
-import org.apache.jena.atlas.lib.DateTimeUtils;
-import org.apache.jena.atlas.lib.Lib;
-import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.atlas.lib.*;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.DBOpEnvException;
@@ -48,7 +47,10 @@ import org.apache.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
 import org.apache.jena.sparql.sse.SSE_ParseException;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb2.TDBException;
-import org.apache.jena.tdb2.params.*;
+import org.apache.jena.tdb2.params.StoreParams;
+import org.apache.jena.tdb2.params.StoreParamsBuilder;
+import org.apache.jena.tdb2.params.StoreParamsCodec;
+import org.apache.jena.tdb2.params.StoreParamsFactory;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.slf4j.Logger;
@@ -82,11 +84,13 @@ public class DatabaseOps {
 
     // Additional suffix used during compact
     private static final String dbTmpSuffix      = "-tmp";
-    private static final String dbTmpPattern     = "[\\d]+"+dbTmpSuffix;
+    private static final String dbTmpPattern     = "[\\d]+-tmp";
 
     private static final String BACKUPS_DIR  = "Backups";
     // Basename of the backup file. "backup_{DateTime}.nq.gz
     private static final String BACKUPS_FN   = "backup";
+
+    private enum ScanAccept { EXACT, SKIP }
 
     /**
      * Create a fresh database - called by {@code DatabaseMgr}.
@@ -160,6 +164,11 @@ public class DatabaseOps {
      * Clear out any partial compactions.
      */
     private static void cleanDatabaseDirectory(Path directory) {
+        List<Path> tmpDirs = scanForDirByPattern(directory, dbNameBase, SEP, dbTmpPattern, ScanAccept.SKIP);
+        for ( Path dir : tmpDirs ) {
+            FmtLog.info(LOG, "Remove incomplete compaction temporary directory: "+dir);
+            IO.deleteAll(dir);
+        }
     }
 
     private static ReorderTransformation maybeTransform(ReorderTransformation reorderTransform, Location location) {
@@ -292,25 +301,28 @@ public class DatabaseOps {
             String next = FilenameUtils.filename(dbNameBase, SEP, v+1);
 
             Path db2 = db1.getParent().resolve(next);
-            IOX.createDirectory(db2);
-            Location loc2 = IO_DB.asLocation(db2);
             LOG.debug(String.format("Compact %s -> %s\n", db1.getFileName(), db2.getFileName()));
+            if ( Files.exists(db2) )
+                throw new TDBException("Inconsistent : "+db2+" already exists");
 
-            Location loc2tmp = loc2;
+            // Location of the storage area for the compacted database.
+            // This is a temporary direction that is atomically moved into place when complete.
+            Path tmpDir = makeTempDirName(db2);
+            if ( Files.exists(tmpDir) )
+                throw new TDBException("Inconsistent : tmpdir"+tmpDir+" already exists");
+            IOX.createDirectory(tmpDir);
+            Location loc2tmp = Location.create(tmpDir);
+
             try {
-                compact(container, loc1, loc2tmp);
-
-                Path path2 = Path.of(loc2.getDirectoryPath());
-                Path path2tmp = Path.of(loc2tmp.getDirectoryPath());
-
-                Files.move(path2tmp, path2);
-
-                // Move loc2tmp to loc2
-            } catch (IOException ex) {
-                // Delete loc2tmp;
-                throw IOX.exception(ex);
+                compact(container, loc1, loc2tmp, db2);
+                // Container now using the new location.
+            } catch (RuntimeIOException ex) {
+                // Clear up - disk problems.
+                try { IO.deleteAll(tmpDir); } catch (Throwable th) { /* Continue with original error. */ }
+                throw ex;
             } catch (Throwable th) {
-                // Delete loc2tmp;
+                // Jena and Java errors
+                try { IO.deleteAll(tmpDir); } catch (Throwable th2) { /* Continue with original error. */ }
                 throw th;
             }
 
@@ -319,25 +331,22 @@ public class DatabaseOps {
                 // There are no previous transactions on the old database at this point.
                 Path loc1Path = IO_DB.asPath(loc1);
                 LOG.debug("Deleting old database after successful compaction (old db path='" + loc1Path + "')...");
-                deleteDatabase(loc1Path);
+                IO.deleteAll(loc1Path);
             }
         }
     }
 
-    private static void deleteDatabase(Path locationPath) {
-        try (Stream<Path> walk = Files.walk(locationPath)){
-            walk.sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
-        } catch (IOException ex) {
-            throw IOX.exception(ex);
-        }
+    private static Path makeTempDirName(Path path) {
+        String dirname = path.toString();
+        if ( dirname.endsWith("/"))
+            dirname = StrUtils.chop(dirname);
+        return Path.of(dirname+dbTmpSuffix);
     }
 
     /** Copy the latest version from one location to another. */
-    private static void compact(DatasetGraphSwitchable container, Location loc1, Location loc2) {
-        if ( loc1.isMem() || loc2.isMem() )
-            throw new TDBException("Compact involves a memory location: "+loc1+" : "+loc2);
+    private static void compact(DatasetGraphSwitchable container, Location loc1, Location loc2tmp, Path path2final) {
+        if ( loc1.isMem() || loc2tmp.isMem() )
+            throw new TDBException("Compact involves a memory location: "+loc1+" : "+loc2tmp);
 
         StoreConnection srcConn = StoreConnection.connectExisting(loc1);
 
@@ -370,19 +379,27 @@ public class DatabaseOps {
             // These are held up on a lock in the switchable container.
 
             // -- Copy the current state to the new area.
-            copyConfigFiles(loc1, loc2);
-            DatasetGraphTDB dsgCompact = StoreConnection.connectCreate(loc2).getDatasetGraphTDB();
-            CopyDSG.copy(dsgBase, dsgCompact);
+            copyConfigFiles(loc1, loc2tmp);
 
+            DatasetGraphTDB dsgTmpCompact = StoreConnection.connectCreate(loc2tmp).getDatasetGraphTDB();
             if ( false ) {
                 // DEVELOPMENT. Fake a long copy time in state copy.
                 System.err.println("-- Inside compact 1");
                 Lib.sleep(3_000);
                 System.err.println("-- Inside compact 2");
             }
+            CopyDSG.copy(dsgBase, dsgTmpCompact);
+            StoreConnection.internalExpel(loc2tmp, true);
+            // Now on-disk in tmp location.
 
-            TransactionCoordinator txnMgr2 = dsgCompact.getTxnSystem().getTxnMgr();
+            moveDirectory(loc2tmp, path2final);
+            Location loc2final = Location.create(path2final);   // Location must exist.
+
+            // Next generation storage datasetGraph.
+            DatasetGraphTDB dsgCompact = StoreConnection.connectCreate(loc2final).getDatasetGraphTDB();
+
             // Update TransactionCoordinator and switch over.
+            TransactionCoordinator txnMgr2 = dsgCompact.getTxnSystem().getTxnMgr();
             txnMgr2.execExclusive(()->{
                 // No active transactions in either database.
                 txnMgr2.takeOverFrom(txnMgr1);
@@ -417,6 +434,13 @@ public class DatabaseOps {
         txnMgr1.startExclusiveMode();
         // Clean-up.
         StoreConnection.release(dsgBase.getLocation());
+    }
+
+    private static void moveDirectory(Location locTmp, Path pathDst) {
+        Path pathSrc = IO_DB.asPath(locTmp);
+        try {
+            Files.move(pathSrc, pathDst);
+        } catch (IOException ex) { throw IOX.exception(ex); }
     }
 
     /** Copy certain configuration files from {@code loc1} to {@code loc2}. */
@@ -454,20 +478,20 @@ public class DatabaseOps {
      * @param nameSep  Separator
      * @param trailerPattern Pattern for the part of the name after the namebase.
      * @return List<Path> List sorted low to high
-     *
      */
-    private static List<Path> scanForDirByPattern(Path directory, String namebase, String nameSep, String trailerPattern) {
+    private static List<Path> scanForDirByPattern(Path directory, String namebase, String nameSep, String trailerPattern, ScanAccept skipOthers) {
         Pattern pattern = Pattern.compile(Pattern.quote(namebase)+
                                           Pattern.quote(nameSep)+
                                           trailerPattern);
         List<Path> paths = new ArrayList<>();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory, namebase + "*")) {
             for ( Path entry : stream ) {
-                if ( !pattern.matcher(entry.getFileName().toString()).matches() ) {
-                    throw new DBOpEnvException("Invalid filename for matching: "+entry.getFileName());
-                    // Alternative: Skip bad trailing parts but more likely there is a naming problem.
-                    //   LOG.warn("Invalid filename for matching: {} skipped", entry.getFileName());
-                    //   continue;
+                String filename = entry.getFileName().toString();
+                if ( !pattern.matcher(filename).matches() ) {
+                    switch ( skipOthers ) {
+                        case EXACT: throw new DBOpEnvException("Invalid filename for matching: "+entry.getFileName());
+                        case SKIP:  continue;
+                    }
                 }
                 // Follows symbolic links.
                 if ( !Files.isDirectory(entry) )
@@ -489,12 +513,17 @@ public class DatabaseOps {
         return paths;
     }
 
-    /** Given a filename in "base-NNNN" format, return the value of NNNN */
-    public static int extractIndex(String name, String namebase, String nameSep) {
-        int i = namebase.length()+nameSep.length();
-        String numStr = name.substring(i);
-        int num = Integer.parseInt(numStr);
-        return num;
+    private static Pattern numberPattern = Pattern.compile("[\\d]+");
+    /** Given a filename in "base-NNNN(-text)" format, return the value of NNNN */
+    private static int extractIndex(String name, String namebase, String nameSep) {
+        Matcher matcher = numberPattern.matcher(name);
+        if ( matcher.find() ) {
+            var numStr = matcher.group();
+            int num = Integer.parseInt(numStr);
+            return num;
+        } else {
+            throw new InternalErrorException("Expected to find a number in '"+name+"'");
+        }
     }
 
     /**
@@ -514,7 +543,7 @@ public class DatabaseOps {
         if ( ! Files.exists(directory) )
             return null;
         // In-order, low to high.
-        List<Path> maybe = scanForDirByPattern(directory, dbNameBase, SEP, dbSuffixPattern);
+        List<Path> maybe = scanForDirByPattern(directory, dbNameBase, SEP, dbSuffixPattern, ScanAccept.EXACT);
         return Util.getLastOrNull(maybe);
     }
 

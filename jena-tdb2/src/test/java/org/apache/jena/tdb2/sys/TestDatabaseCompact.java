@@ -21,6 +21,9 @@ package org.apache.jena.tdb2.sys;
 import static org.junit.Assert.*;
 import static org.junit.Assume.assumeFalse;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.io.FileUtils;
@@ -297,5 +300,37 @@ public class TestDatabaseCompact
 
         Txn.executeWrite(dsg, ()->{});
         assertEquals(2, counter.get());
+    }
+
+    @Test public void compact_recovery_1() throws IOException {
+        DatasetGraph dsg = DatabaseMgr.connectDatasetGraph(dir);
+        Txn.executeWrite(dsg, ()->dsg.add(quad1));
+
+        DatasetGraphSwitchable dsgs = (DatasetGraphSwitchable)dsg;
+        DatasetGraph dsg1 = dsgs.get();
+        Location loc1 = ((DatasetGraphTDB)dsg1).getLocation();
+
+        // Mock some temporary files.
+        Path pathTmp1 = dsgs.getContainerPath().resolve("Data-9999-tmp");
+        Files.createDirectory(pathTmp1);
+        Path pathTmp2 = dsgs.getContainerPath().resolve("Data-9998-tmp");
+        Files.createDirectory(pathTmp2);
+        Path pathFile2 = pathTmp2.resolve("data");
+        Files.writeString(pathFile2, "Hello world");
+
+        assertTrue(Files.exists(pathTmp1));
+        assertTrue(Files.exists(pathFile2));
+        assertTrue(Files.exists(pathTmp2));
+        // Drop database
+        TDBInternal.expel(dsg);
+
+        // Reconnect
+        DatasetGraph dsg2 = DatabaseMgr.connectDatasetGraph(dir);
+        Txn.executeRead(dsg2, ()->assertTrue(dsg2.contains(quad1)));
+
+        // These should no longer exist.
+        assertFalse(Files.exists(pathTmp1));
+        assertFalse(Files.exists(pathFile2));
+        assertFalse(Files.exists(pathTmp2));
     }
 }
