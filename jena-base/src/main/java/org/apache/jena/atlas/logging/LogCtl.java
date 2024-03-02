@@ -285,9 +285,23 @@ public class LogCtl {
 
     private static final String[] log4j2files = {"log4j2.properties", "log4j2.xml"};
 
+    /**
+     * Environment variable for debugging logging initialization.
+     * Set "true" to get trace on stderr.
+     */
+    // Must be final for static LogLogging to work.
+    public static final String envLogLoggingProperty = "JENA_LOGLOGGING";
+
+    /**
+     * Property variable for debugging logging initialization. Set "true" to get
+     * trace on stderr.
+     */
+    // Must be final for static LogLogging to work.
+    public static final String logLoggingProperty = "jena.logLogging";
+
     private static final boolean LogLogging =
-            System.getenv("JENA_LOGLOGGING") != null ||
-            System.getProperty("jena.loglogging") != null;
+            System.getenv(envLogLoggingProperty) != null ||
+            System.getProperty(logLoggingProperty) != null;
 
     private static void logLogging(String fmt, Object ... args) {
         if ( LogLogging ) {
