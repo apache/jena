@@ -33,7 +33,6 @@ import org.apache.jena.tdb2.TDBException;
 import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.params.StoreParamsCodec;
 import org.apache.jena.tdb2.sys.DatabaseOps;
-import org.apache.jena.tdb2.sys.Util;
 
 class SpotTDB2 {
 
@@ -115,19 +114,9 @@ class SpotTDB2 {
 
     /** Return the current active database area within a database directory. */
     private static Path storageDir(Location location) {
-        // Database directory
-        Path path = IO_DB.asPath(location);
         // Storage directory in database directory.
-        Path db = findLocation(path, DatabaseOps.dbPrefix);
+        Path db = DatabaseOps.findStorageLocation(location);
         return db;
-    }
-
-    private static Path findLocation(Path directory, String namebase) {
-        if ( ! Files.exists(directory) )
-            return null;
-        // In-order, low to high.
-        List<Path> maybe = IO_DB.scanForDirByPattern(directory, namebase, DatabaseOps.SEP);
-        return Util.getLastOrNull(maybe);
     }
 
     // Places for StoreParams: location or default

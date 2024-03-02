@@ -20,8 +20,10 @@ package org.apache.jena.tdb2.sys;
 
 import java.io.*;
 import java.nio.file.*;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
 
@@ -30,7 +32,9 @@ import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.dboe.DBOpEnvException;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.sys.IO_DB;
 import org.apache.jena.dboe.sys.Names;
@@ -50,7 +54,8 @@ import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Operations on and about TDB2 databases.
+/**
+ * Operations related to TDB2 databases.
  * <p>
  * TDB2 uses a hierarchical structure to manage on disk.
  * <p>
@@ -68,9 +73,16 @@ import org.slf4j.LoggerFactory;
  */
 public class DatabaseOps {
     private static Logger LOG = LoggerFactory.getLogger(DatabaseOps.class);
-    public static final String dbPrefix     = "Data";
-    public static final String SEP          = "-";
-    public static final String startCount   = "0001";
+    // Composition of a database storage area directory name.
+    public static final String dbNameBase       = "Data";
+    public static final String SEP              = "-";
+    public static final String dbSuffixPattern  = "[\\d]+";
+
+    public static final String startCount       = "0001";
+
+    // Additional suffix used during compact
+    private static final String dbTmpSuffix      = "-tmp";
+    private static final String dbTmpPattern     = "[\\d]+"+dbTmpSuffix;
 
     private static final String BACKUPS_DIR  = "Backups";
     // Basename of the backup file. "backup_{DateTime}.nq.gz
@@ -101,15 +113,20 @@ public class DatabaseOps {
         if ( ! containerLocation.exists() )
             throw new TDBException("No such location: "+containerLocation);
         Path path = IO_DB.asPath(containerLocation);
+
+        // Clean any temporary files and directories that there might be.
+        cleanDatabaseDirectory(path);
+
         // Scan for DBs
-        Path existingStorage = findLocation(path, dbPrefix);
+        Path existingStorage = findStorageLocation(path);
         boolean isNewArea = (existingStorage == null);
 
         Path db = existingStorage;
         if ( db == null ) {
-            db = path.resolve(dbPrefix+SEP+startCount);
+            db = path.resolve(dbNameBase+SEP+startCount);
             IOX.createDirectory(db);
         }
+
         Location storageLocation = IO_DB.asLocation(db);
 
         // ---- Find the params (if any).
@@ -139,6 +156,11 @@ public class DatabaseOps {
         return appDSG;
     }
 
+    /**
+     * Clear out any partial compactions.
+     */
+    private static void cleanDatabaseDirectory(Path directory) {
+    }
 
     private static ReorderTransformation maybeTransform(ReorderTransformation reorderTransform, Location location) {
         if ( reorderTransform != null )
@@ -249,10 +271,10 @@ public class DatabaseOps {
     public static void compact(DatasetGraphSwitchable container, boolean shouldDeleteOld) {
         checkSupportsAdmin(container);
         synchronized(compactionLock) {
-            Path base = container.getContainerPath();
-            Path db1 = findLocation(base, dbPrefix);
+            Path containerPath = container.getContainerPath();
+            Path db1 = findStorageLocation(containerPath);
             if ( db1 == null )
-                throw new TDBException("No location: ("+base+", "+dbPrefix+")");
+                throw new TDBException("No location: ("+containerPath+", "+dbNameBase+")");
             Location loc1 = IO_DB.asLocation(db1);
 
             // -- Checks
@@ -266,15 +288,31 @@ public class DatabaseOps {
                 throw new TDBException("Inconsistent (not latest?) : "+loc1a+" : "+loc1);
 
             // Check version
-            int v = IO_DB.extractIndex(db1.getFileName().toString(), dbPrefix, SEP);
-            String next = FilenameUtils.filename(dbPrefix, SEP, v+1);
+            int v = extractIndex(db1.getFileName().toString(), dbNameBase, SEP);
+            String next = FilenameUtils.filename(dbNameBase, SEP, v+1);
 
             Path db2 = db1.getParent().resolve(next);
             IOX.createDirectory(db2);
             Location loc2 = IO_DB.asLocation(db2);
             LOG.debug(String.format("Compact %s -> %s\n", db1.getFileName(), db2.getFileName()));
 
-            compact(container, loc1, loc2);
+            Location loc2tmp = loc2;
+            try {
+                compact(container, loc1, loc2tmp);
+
+                Path path2 = Path.of(loc2.getDirectoryPath());
+                Path path2tmp = Path.of(loc2tmp.getDirectoryPath());
+
+                Files.move(path2tmp, path2);
+
+                // Move loc2tmp to loc2
+            } catch (IOException ex) {
+                // Delete loc2tmp;
+                throw IOX.exception(ex);
+            } catch (Throwable th) {
+                // Delete loc2tmp;
+                throw th;
+            }
 
             if ( shouldDeleteOld ) {
                 // Compact put each of the databases into exclusive mode to do the switchover.
@@ -337,7 +375,7 @@ public class DatabaseOps {
             CopyDSG.copy(dsgBase, dsgCompact);
 
             if ( false ) {
-                // DEVELOMENT. FAke a long copy time in state copy.
+                // DEVELOPMENT. Fake a long copy time in state copy.
                 System.err.println("-- Inside compact 1");
                 Lib.sleep(3_000);
                 System.err.println("-- Inside compact 2");
@@ -371,7 +409,6 @@ public class DatabaseOps {
             // Old readers continue on db1.
 
         });
-
 
         // This switches off the source database.
         // It waits until all transactions (readers) have finished.
@@ -407,11 +444,77 @@ public class DatabaseOps {
         }
     }
 
-    private static Path findLocation(Path directory, String namebase) {
+    /**
+     * Find the files in this directory that have namebase as a prefix and
+     * are then numbered.
+     *  <p>
+     * Returns a sorted list from, low to high index.
+     * @param directory Path to the data base directory
+     * @param namebase Initial common component of the name
+     * @param nameSep  Separator
+     * @param trailerPattern Pattern for the part of the name after the namebase.
+     * @return List<Path> List sorted low to high
+     *
+     */
+    private static List<Path> scanForDirByPattern(Path directory, String namebase, String nameSep, String trailerPattern) {
+        Pattern pattern = Pattern.compile(Pattern.quote(namebase)+
+                                          Pattern.quote(nameSep)+
+                                          trailerPattern);
+        List<Path> paths = new ArrayList<>();
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory, namebase + "*")) {
+            for ( Path entry : stream ) {
+                if ( !pattern.matcher(entry.getFileName().toString()).matches() ) {
+                    throw new DBOpEnvException("Invalid filename for matching: "+entry.getFileName());
+                    // Alternative: Skip bad trailing parts but more likely there is a naming problem.
+                    //   LOG.warn("Invalid filename for matching: {} skipped", entry.getFileName());
+                    //   continue;
+                }
+                // Follows symbolic links.
+                if ( !Files.isDirectory(entry) )
+                    throw new DBOpEnvException("Not a directory: "+entry);
+                paths.add(entry);
+            }
+        }
+        catch (IOException ex) {
+            FmtLog.warn(IO_DB.class, "Can't inspect directory: (%s, %s)", directory, namebase);
+            throw new DBOpEnvException(ex);
+        }
+        Comparator<Path> comp = (f1, f2) -> {
+            int num1 = extractIndex(f1.getFileName().toString(), namebase, nameSep);
+            int num2 = extractIndex(f2.getFileName().toString(), namebase, nameSep);
+            return Integer.compare(num1, num2);
+        };
+        paths.sort(comp);
+        //indexes.sort(Long::compareTo);
+        return paths;
+    }
+
+    /** Given a filename in "base-NNNN" format, return the value of NNNN */
+    public static int extractIndex(String name, String namebase, String nameSep) {
+        int i = namebase.length()+nameSep.length();
+        String numStr = name.substring(i);
+        int num = Integer.parseInt(numStr);
+        return num;
+    }
+
+    /**
+     * Find the active working storage area for a TDB2 database.
+     * Return null if none.
+     */
+    public static Path findStorageLocation(Location directory) {
+        Path dirPath = IO_DB.asPath(directory);
+        return findStorageLocation(dirPath);
+    }
+
+    /**
+     * Find the active working storage area for a TDB2 database.
+     * Return null if none.
+     */
+    public static Path findStorageLocation(Path directory) {
         if ( ! Files.exists(directory) )
             return null;
         // In-order, low to high.
-        List<Path> maybe = IO_DB.scanForDirByPattern(directory, namebase, SEP);
+        List<Path> maybe = scanForDirByPattern(directory, dbNameBase, SEP, dbSuffixPattern);
         return Util.getLastOrNull(maybe);
     }
 
