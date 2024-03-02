@@ -46,7 +46,7 @@ public class IO_DB {
     }
 
     /** Convert a {@link Location} to a {@link File}. */
-    public static File asFile(org.apache.jena.dboe.base.file.Location loc) {
+    public static File asFile(Location loc) {
         return new File(loc.getDirectoryPath());
     }
 }
