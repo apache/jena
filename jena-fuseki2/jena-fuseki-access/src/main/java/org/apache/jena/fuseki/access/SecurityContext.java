@@ -24,6 +24,8 @@ import java.util.Collection;
 import java.util.function.Predicate;
 
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.fuseki.servlets.HttpAction;
+import org.apache.jena.fuseki.servlets.SPARQLQueryProcessor;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Query;
@@ -31,6 +33,9 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.QueryExecDatasetBuilder;
+import org.apache.jena.sparql.exec.QueryExecutionAdapter;
 import org.apache.jena.sparql.util.Context;
 
 /** A {@link SecurityContext} is the things actor (user, role) is allowed to do.
@@ -78,11 +83,22 @@ public interface SecurityContext {
 
     public boolean visableDefaultGraph();
 
-    public default QueryExecution createQueryExecution(String queryString, DatasetGraph dsg) {
-        return createQueryExecution(QueryFactory.create(queryString), dsg);
+    public default QueryExecution createQueryExecution(HttpAction action, String queryString, DatasetGraph dsg) {
+        return createQueryExecution(action, QueryFactory.create(queryString), dsg);
     }
 
-    public QueryExecution createQueryExecution(Query query, DatasetGraph dsg);
+    public default QueryExecution createQueryExecution(HttpAction action, Query query, DatasetGraph dsg) {
+        QueryExecDatasetBuilder builder = QueryExec.newBuilder()
+            .dataset(dsg)
+            .query(query)
+            .context(action.getContext())
+            ;
+        // Note: Instead of this call (and the above build), the equivalent code from
+        // SPARQLQueryProcessor.createQueryExecution should somehow be used.
+        SPARQLQueryProcessor.setTimeouts(builder, action);
+        QueryExec qExec = builder.build();
+        return QueryExecutionAdapter.adapt(qExec);
+    }
 
     /**
      * Quad filter to reflect the security policy of this {@link SecurityContext}. It is
