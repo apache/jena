@@ -52,6 +52,7 @@ class ServerConfig {
     public FusekiModules fusekiModules  = null;
 
     public boolean withCORS             = true;
+    public String corsConfigFile        = null;
     public boolean withPing             = false;
     public boolean withStats            = false;
     public boolean withMetrics          = false;

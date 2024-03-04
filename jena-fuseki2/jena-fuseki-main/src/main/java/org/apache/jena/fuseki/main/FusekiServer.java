@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.main;
 
 import static java.util.Objects.requireNonNull;
+import static org.apache.jena.atlas.lib.PropertyUtils.loadFromFile;
 import static org.apache.jena.fuseki.Fuseki.serverLog;
 
 import java.io.IOException;
@@ -555,8 +556,16 @@ public class FusekiServer {
         /** Add the Cross Origin (CORS) filter.
          * {@link CrossOriginFilter}.
          */
-        public Builder enableCors(boolean withCORS) {
-            corsInitParams = withCORS ? corsInitParamsDft : null ;
+        public Builder enableCors(boolean withCORS, String corsConfigFile) {
+            if (withCORS) {
+                if(null == corsConfigFile) {
+                    corsInitParams = corsInitParamsDft;
+                } else {
+                    corsInitParams = parseCORSConfigFile(corsConfigFile);
+                }
+            } else {
+                corsInitParams = null;
+            }
             return this;
         }
 
@@ -1711,6 +1720,19 @@ public class FusekiServer {
                 if ( connectors[i] instanceof ServerConnector serverConnector) {
                     serverConnector.setHost("localhost");
                 }
+            }
+        }
+
+        private static Map<String, String> parseCORSConfigFile(String filename) {
+            try {
+                Properties properties = loadFromFile(filename);
+                Map<String, String> map = new HashMap<>(properties.size());
+                for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+                    map.put((String) entry.getKey(), (String) entry.getValue());
+                }
+                return map;
+            } catch (Exception ex) {
+                throw new FusekiConfigException("Failed to read the CORS config file: "+ filename, ex);
             }
         }
     }

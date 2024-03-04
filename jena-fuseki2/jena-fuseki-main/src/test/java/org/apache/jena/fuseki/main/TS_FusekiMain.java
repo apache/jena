@@ -33,6 +33,7 @@ import org.junit.runners.Suite.SuiteClasses;
   , TestMultipleEmbedded.class
   , TestFusekiCustomOperation.class
   , TestFusekiMainCmd.class
+  , TestFusekiMainCmdArguments.class
   , TestFusekiStdSetup.class
   , TestFusekiStdReadOnlySetup.class
   , TestConfigFile.class

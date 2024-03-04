@@ -98,8 +98,7 @@ public class FusekiMain extends CmdARQ {
     // Static files. URLs are affected by argPathBase
     private static ArgDecl  argBase         = new ArgDecl(ArgDecl.HasValue, "base", "files");
 
-    // This is now a no-op - CORS is included unless "--no-cors" is used.
-    private static ArgDecl  argCORS         = new ArgDecl(ArgDecl.NoValue,  "withCORS", "cors", "CORS");
+    private static ArgDecl  argCORS         = new ArgDecl(ArgDecl.HasValue,  "withCORS", "cors", "CORS", "cors-config");
     private static ArgDecl  argNoCORS       = new ArgDecl(ArgDecl.NoValue,  "noCORS", "no-cors");
     private static ArgDecl  argWithPing     = new ArgDecl(ArgDecl.NoValue,  "withPing", "ping");
     private static ArgDecl  argWithStats    = new ArgDecl(ArgDecl.NoValue,  "withStats", "stats");
@@ -233,7 +232,7 @@ public class FusekiMain extends CmdARQ {
             "Password file");
         add(argJettyConfig, "--jetty=FILE",
             "jetty.xml server configuration");
-        add(argCORS); //, "--cors"); "Enable CORS");
+        add(argCORS, "--cors=FILE", "Configure CORS settings from file");
         add(argNoCORS, "--no-cors", "Disable CORS");
         // put in the configuration file
 //            add(argRealm, "--realm=REALM", "Realm name");
@@ -318,18 +317,18 @@ public class FusekiMain extends CmdARQ {
 
         if ( contains(argPort) ) {
             if ( hasJettyConfigFile )
-                throw new CmdException("Can't specify the port and also provide a Jetty configuration file");
+                throw new CmdException("Cannot specify the port and also provide a Jetty configuration file");
             serverConfig.port = portNumber(argPort);
         }
 
         if ( contains(argLocalhost) ) {
             if ( hasJettyConfigFile )
-                throw new CmdException("Can't specify 'localhost' and also provide a Jetty configuration file");
+                throw new CmdException("Cannot specify 'localhost' and also provide a Jetty configuration file");
             serverConfig.loopback = true;
         }
 
         // ---- Dataset
-        // Only one of these is choose from the checking above.
+        // Only one of these is chosen from the checking above.
 
         // Which TDB to use to create a command line TDB database.
         if ( contains(argTDB1mode) )
@@ -357,7 +356,7 @@ public class FusekiMain extends CmdARQ {
             serverConfig.serverConfig = getValue(argConfig);
         }
 
-        // Ways to setup a dataset.
+        // Ways to set up a dataset.
         if ( contains(argMem) ) {
             serverConfig.datasetDescription = "in-memory";
             // Only one setup should be called by the test above but to be safe
@@ -384,7 +383,7 @@ public class FusekiMain extends CmdARQ {
                 // INITIAL DATA.
                 Lang language = RDFLanguages.filenameToLang(filename);
                 if ( language == null )
-                    throw new CmdException("Can't guess language for file: " + filename);
+                    throw new CmdException("Cannot guess language for file: " + filename);
                 Txn.executeWrite(serverConfig.dsg,  ()-> {
                     try {
                         log.info("Dataset: in-memory: load file: " + filename);
@@ -507,7 +506,7 @@ public class FusekiMain extends CmdARQ {
             serverConfig.jettyConfigFile = jettyConfigFile;
         }
 
-        boolean withModules = hasValueOfTrue(argEnableModules);;
+        boolean withModules = hasValueOfTrue(argEnableModules);
         if ( withModules ) {
             // Use the discovered ones.
             FusekiAutoModules.enable(true);
@@ -525,8 +524,15 @@ public class FusekiMain extends CmdARQ {
             }
         }
 
-        // 2020-10: Ignore argCORS - CORS is now on by default in Fuseki Main cmd
-        serverConfig.withCORS = ! contains(argNoCORS);
+        if ( contains(argCORS) ) {
+            String corsConfigFile = getValue(argCORS);
+            if ( ! FileOps.exists(corsConfigFile) )
+                throw new CmdException("CORS config file not found: "+corsConfigFile);
+            serverConfig.corsConfigFile = corsConfigFile;
+        } else if (contains(argNoCORS)) {
+            serverConfig.withCORS = ! contains(argNoCORS);
+        }
+
         serverConfig.withPing = contains(argWithPing);
         serverConfig.withStats = contains(argWithStats);
         serverConfig.withMetrics = contains(argWithMetrics);
@@ -652,7 +658,7 @@ public class FusekiMain extends CmdARQ {
             builder.auth(serverConfig.authScheme);
 
         if ( serverConfig.withCORS )
-            builder.enableCors(true);
+            builder.enableCors(true, serverConfig.corsConfigFile);
 
         if ( serverConfig.withPing )
             builder.enablePing(true);

@@ -69,7 +69,15 @@ public class CommandLineBase {
 
         boolean positional = false;
 
+        if (null == argv) {
+            return argList;
+        }
+
         for ( String anArgv : argv ) {
+            if (null == anArgv) {
+                continue;
+            }
+
             String argStr = anArgv;
 
             if ( positional || !argStr.startsWith("-") ) {
