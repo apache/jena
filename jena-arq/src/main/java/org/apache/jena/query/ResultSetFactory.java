@@ -18,10 +18,12 @@
 
 package org.apache.jena.query;
 
+import java.io.IOException;
 import java.io.InputStream ;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
@@ -53,7 +55,6 @@ public class ResultSetFactory {
      * @param filenameOrURI
      * @return ResultSet
      */
-
     public static ResultSet load(String filenameOrURI) {
         return load(filenameOrURI, null);
     }
@@ -65,11 +66,10 @@ public class ResultSetFactory {
      * @param format
      * @return ResultSet
      */
-
     public static ResultSet load(String filenameOrURI, ResultsFormat format) {
         if (format == null)
             format = ResultsFormat.guessSyntax(filenameOrURI);
-        InputStream in = IO.openFile(filenameOrURI) ;
+        InputStream in = IO.openFile(filenameOrURI);
         return load(in, format) ;
     }
 
@@ -80,7 +80,6 @@ public class ResultSetFactory {
      * @param format
      * @return ResultSet
      */
-
     public static ResultSet load(InputStream input, ResultsFormat format) {
         if (format == null) {
             Log.warn(ResultSet.class, "Null format - defaulting to XML");
@@ -123,7 +122,6 @@ public class ResultSetFactory {
 
         Log.warn(ResultSet.class, "Unknown result set syntax: " + format);
         return null;
-
     }
 
     /**
@@ -132,7 +130,6 @@ public class ResultSetFactory {
      * @param filenameOrURI
      * @return Model
      */
-
     public static Model loadAsModel(String filenameOrURI) {
         return loadAsModel(null, filenameOrURI, null);
     }
@@ -156,14 +153,13 @@ public class ResultSetFactory {
      * @param format
      * @return Model
      */
-
     public static Model loadAsModel(String filenameOrURI, ResultsFormat format) {
         return loadAsModel(null, filenameOrURI, format);
     }
 
     /**
      * Load a result set (or any other model) from file or URL. Does not have to
-     * be a result set (e.g. CONSTRUCt results) but it does interpret the
+     * be a result set (e.g. CONSTRUCT results) but it does interpret the
      * ResultSetFormat possibilities.
      *
      * @param model
@@ -172,7 +168,6 @@ public class ResultSetFactory {
      * @param format
      * @return Model
      */
-
     public static Model loadAsModel(Model model, String filenameOrURI, ResultsFormat format) {
         if (model == null)
             model = GraphFactory.makeDefaultModel();
@@ -334,10 +329,12 @@ public class ResultSetFactory {
         return new ResultSetPeeking(resultSet);
     }
 
-    /** Return a closable resultset for a {@link QueryExecution}.
-     * The {@link QueryExecution} must be for a {@code SELECT} query.
+    /**
+     * Return a closable resultset for a {@link QueryExecution}. The
+     * {@link QueryExecution} must be for a {@code SELECT} query.
      * <p>
      * Example:
+     *
      * <pre>
      *   QueryExecution qExec = QueryExecutionFactory.create(...);
      *   try (ResultSetCloseable rs = ResultSetFactory.closableResultSet(qExec) ) {
@@ -345,7 +342,8 @@ public class ResultSetFactory {
      * }
      * </pre>
      *
-     * @param queryExecution {@code QueryExecution} must be for a {@code SELECT} query.
+     * @param queryExecution {@code QueryExecution} must be for a {@code SELECT}
+     *     query.
      * @return ResultSetCloseable
      */
     public static ResultSetCloseable closeableResultSet(QueryExecution queryExecution) {
