@@ -32,22 +32,20 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.ReadAnything;
 import org.apache.jena.riot.ResultSetMgr ;
 import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.riot.resultset.ResultSetOnClose;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.ResultSetStream ;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.resultset.* ;
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.sse.builders.BuilderTable ;
 
 /** ResultSetFactory - make result sets from places other than a query. */
 
 public class ResultSetFactory {
     // See also ResultSetMgr - which post-dates this code.
     // Ideally, read operations here should call ResultSetMgr.
-    // The exception is XML from a string and the arcachic RDF to ResultSet forms.
+    // The exception is XML from a string and the archaic RDF to ResultSet forms.
 
     /**
      * Load a result set from file or URL into a result set (memory backed).
@@ -69,8 +67,18 @@ public class ResultSetFactory {
     public static ResultSet load(String filenameOrURI, ResultsFormat format) {
         if (format == null)
             format = ResultsFormat.guessSyntax(filenameOrURI);
-        InputStream in = IO.openFile(filenameOrURI);
-        return load(in, format) ;
+        // Result sets are iterators.
+        // The input stream isn't finished with when the result set is created.
+        // Close input stream when the result set is finished with
+        // (exhausted or closed).
+        InputStream in = IO.openFile(filenameOrURI) ;
+        ResultSet rs = load(in, format) ;
+        Runnable onClose = ()-> {
+            try { in.close(); }
+            catch (IOException ex) { throw IOX.exception(ex); }
+        };
+        ResultSet rs2 = new ResultSetOnClose(rs, onClose);
+        return rs;
     }
 
     /**
@@ -159,7 +167,7 @@ public class ResultSetFactory {
 
     /**
      * Load a result set (or any other model) from file or URL. Does not have to
-     * be a result set (e.g. CONSTRUCT results) but it does interpret the
+     * be a result set (e.g. CONSTRUCt results) but it does interpret the
      * ResultSetFormat possibilities.
      *
      * @param model
@@ -167,7 +175,10 @@ public class ResultSetFactory {
      * @param filenameOrURI
      * @param format
      * @return Model
+     *
+     * @deprecated This functions will become be internal.
      */
+    @Deprecated
     public static Model loadAsModel(Model model, String filenameOrURI, ResultsFormat format) {
         if (model == null)
             model = GraphFactory.makeDefaultModel();
@@ -237,25 +248,6 @@ public class ResultSetFactory {
     }
 
     /**
-     * Read from an input stream which is the format of the SPARQL result set
-     * format in SSE.
-     *
-     * @param in
-     *            InputStream
-     * @return ResultSet
-     */
-    public static ResultSet fromSSE(InputStream in) {
-        Item item = SSE.parse(in);
-        Log.warn(ResultSet.class, "Reading SSE result set not full implemented");
-        // See SPARQLResult. Have a level of ResultSetFactory that does
-        // "get SPARQLResult".
-        // Or just boolean/result set because those are both srx. etc.
-
-        BuilderTable.build(item);
-        return null;
-    }
-
-    /**
      * Turns an RDF model, with properties and classes from the result set
      * vocabulary, into a SPARQL result set. The result set formed is a copy in
      * memory.
@@ -263,7 +255,7 @@ public class ResultSetFactory {
      * @param model
      * @return ResultSet
      */
-    static public ResultSet makeResults(Model model) {
+    public static ResultSet makeResults(Model model) {
         return new RDFInput(model);
     }
 
@@ -275,7 +267,7 @@ public class ResultSetFactory {
      * @param model
      * @return ResultSetRewindable
      */
-    static public ResultSetRewindable makeRewindable(Model model) {
+    public static ResultSetRewindable makeRewindable(Model model) {
         return new RDFInput(model);
     }
 
@@ -287,7 +279,7 @@ public class ResultSetFactory {
      * @param resultSet
      * @return ResultSetRewindable
      */
-    static public ResultSetRewindable makeRewindable(ResultSet resultSet) {
+    public static ResultSetRewindable makeRewindable(ResultSet resultSet) {
         if ( resultSet instanceof ResultSetRewindable ) {
             ResultSetRewindable rsw = (ResultSetRewindable)resultSet;
             rsw.reset();
@@ -303,10 +295,9 @@ public class ResultSetFactory {
      * @param rowSet
      * @return ResultSetRewindable
      */
-    static public ResultSetRewindable makeRewindable(RowSet rowSet) {
+    public static ResultSetRewindable makeRewindable(RowSet rowSet) {
         return makeRewindable(ResultSet.adapt(rowSet));
     }
-
 
     /**
      * Turns an existing result set into one with peeking capabilities
@@ -325,16 +316,14 @@ public class ResultSetFactory {
      *            Result set to wrap
      * @return Peekable results
      */
-    static public ResultSetPeekable makePeekable(ResultSet resultSet) {
+    public static ResultSetPeekable makePeekable(ResultSet resultSet) {
         return new ResultSetPeeking(resultSet);
     }
 
-    /**
-     * Return a closable resultset for a {@link QueryExecution}. The
-     * {@link QueryExecution} must be for a {@code SELECT} query.
+    /** Return a closable resultset for a {@link QueryExecution}.
+     * The {@link QueryExecution} must be for a {@code SELECT} query.
      * <p>
      * Example:
-     *
      * <pre>
      *   QueryExecution qExec = QueryExecutionFactory.create(...);
      *   try (ResultSetCloseable rs = ResultSetFactory.closableResultSet(qExec) ) {
@@ -342,8 +331,7 @@ public class ResultSetFactory {
      * }
      * </pre>
      *
-     * @param queryExecution {@code QueryExecution} must be for a {@code SELECT}
-     *     query.
+     * @param queryExecution {@code QueryExecution} must be for a {@code SELECT} query.
      * @return ResultSetCloseable
      */
     public static ResultSetCloseable closeableResultSet(QueryExecution queryExecution) {
@@ -358,7 +346,7 @@ public class ResultSetFactory {
      * @param results
      * @return ResultSet
      */
-    static public ResultSetRewindable copyResults(ResultSet results) {
+    public static ResultSetRewindable copyResults(ResultSet results) {
         return new ResultSetMem(results);
     }
 
@@ -370,7 +358,7 @@ public class ResultSetFactory {
      *            List of variables, by name, for the result set
      * @return ResultSet
      */
-    static public ResultSet create(QueryIterator queryIterator, List<String> vars) {
+    public static ResultSet create(QueryIterator queryIterator, List<String> vars) {
         return ResultSetStream.create(Var.varList(vars), queryIterator);
     }
 }

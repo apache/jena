@@ -18,16 +18,15 @@
 
 package org.apache.jena.query;
 
-import java.io.Closeable ;
+import org.apache.jena.riot.resultset.ResultSetOnClose;
 
-import org.apache.jena.sparql.resultset.ResultSetWrapper ;
-
-/** A {@link ResultSet} that closes the associated {@link QueryExecution} 
+/**
+ * A {@link ResultSet} that closes the associated {@link QueryExecution}
  * via {@link AutoCloseable}.
- */  
-public class ResultSetCloseable extends ResultSetWrapper implements AutoCloseable, Closeable {
+ */
+public class ResultSetCloseable extends ResultSetOnClose implements AutoCloseable {
 
-    /** Return a closable resultset for a {@link QueryExecution}.
+    /** Return a closable result set for a {@link QueryExecution}.
      * The {@link QueryExecution} must be for a {@code SELECT} query.
      * @param queryExecution {@code QueryExecution} must be for a {@code SELECT} query.
      * @return ResultSetCloseable
@@ -37,16 +36,10 @@ public class ResultSetCloseable extends ResultSetWrapper implements AutoCloseabl
             throw new IllegalArgumentException("Not an execution for a SELECT query");
         return new ResultSetCloseable(queryExecution.execSelect(), queryExecution) ;
     }
-    
-    private QueryExecution qexec ;
 
+    /** @deprecated The constructor will become private. Use {@link #closeableResultSet}. */
+    @Deprecated
     public ResultSetCloseable(ResultSet rs, QueryExecution qexec) {
-        super(rs) ;
-        this.qexec = qexec ;
-    }
-
-    @Override
-    public void close() {
-        qexec.close() ;
+        super(rs, ()->qexec.close()) ;
     }
 }
