@@ -175,7 +175,6 @@ public class ResultSetFactory {
      * @param filenameOrURI
      * @param format
      * @return Model
-     *
      * @deprecated This functions will become be internal.
      */
     @Deprecated
