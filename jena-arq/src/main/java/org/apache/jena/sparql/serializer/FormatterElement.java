@@ -248,7 +248,7 @@ public class FormatterElement extends FormatterBase implements ElementVisitor {
             return ;
         }
 
-        if ( el.getElements().size() == 0 ) {
+        if ( el.getElements().size() == 1 ) {
             // If this is a union of one elements, put in a {}-group
             visitAsGroup(el.getElements().get(0));
             return;
