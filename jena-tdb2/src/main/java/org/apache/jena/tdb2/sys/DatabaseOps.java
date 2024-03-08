@@ -33,6 +33,7 @@ import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.lib.*;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.base.Sys;
 import org.apache.jena.dboe.DBOpEnvException;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.sys.IO_DB;
@@ -278,6 +279,13 @@ public class DatabaseOps {
     }
 
     public static void compact(DatasetGraphSwitchable container, boolean shouldDeleteOld) {
+        if ( Sys.isWindows) {
+            // Windows does not support Files.move when the directory contains memory mapped files.
+            // https://github.com/apache/jena/issues/2315
+            DatabaseOpsWindows.compact_win(container, shouldDeleteOld);
+            return;
+        }
+
         checkSupportsAdmin(container);
         synchronized(compactionLock) {
             Path containerPath = container.getContainerPath();
@@ -305,8 +313,12 @@ public class DatabaseOps {
             if ( Files.exists(db2) )
                 throw new TDBException("Inconsistent : "+db2+" already exists");
 
+            // MS Windows: 2024-03-08 https://github.com/apache/jena/issues/2315
+            // Moving the temporary directory does not work.
+
             // Location of the storage area for the compacted database.
-            // This is a temporary direction that is atomically moved into place when complete.
+            // This is a temporary directory that is atomically moved into place when complete.
+
             Path tmpDir = makeTempDirName(db2);
             if ( Files.exists(tmpDir) )
                 throw new TDBException("Inconsistent : tmpdir"+tmpDir+" already exists");
@@ -314,7 +326,7 @@ public class DatabaseOps {
             Location loc2tmp = Location.create(tmpDir);
 
             try {
-                compact(container, loc1, loc2tmp, db2);
+                compaction(container, loc1, loc2tmp, db2);
                 // Container now using the new location.
             } catch (RuntimeIOException ex) {
                 // Clear up - disk problems.
@@ -344,7 +356,7 @@ public class DatabaseOps {
     }
 
     /** Copy the latest version from one location to another. */
-    private static void compact(DatasetGraphSwitchable container, Location loc1, Location loc2tmp, Path path2final) {
+    private static void compaction(DatasetGraphSwitchable container, Location loc1, Location loc2tmp, Path path2final) {
         if ( loc1.isMem() || loc2tmp.isMem() )
             throw new TDBException("Compact involves a memory location: "+loc1+" : "+loc2tmp);
 
@@ -381,13 +393,11 @@ public class DatabaseOps {
             // -- Copy the current state to the new area.
             copyConfigFiles(loc1, loc2tmp);
 
+            // -- Copy to temporary area so that if the copy is interrupted
+            // (e.g. the server exits mid-copy) the restart does choose the
+            // directory as the data storage.
+
             DatasetGraphTDB dsgTmpCompact = StoreConnection.connectCreate(loc2tmp).getDatasetGraphTDB();
-            if ( false ) {
-                // DEVELOPMENT. Fake a long copy time in state copy.
-                System.err.println("-- Inside compact 1");
-                Lib.sleep(3_000);
-                System.err.println("-- Inside compact 2");
-            }
             CopyDSG.copy(dsgBase, dsgTmpCompact);
             StoreConnection.internalExpel(loc2tmp, true);
             // Now on-disk in tmp location.
@@ -398,6 +408,7 @@ public class DatabaseOps {
             // Next generation storage datasetGraph.
             DatasetGraphTDB dsgCompact = StoreConnection.connectCreate(loc2final).getDatasetGraphTDB();
 
+            // -- Switch
             // Update TransactionCoordinator and switch over.
             TransactionCoordinator txnMgr2 = dsgCompact.getTxnSystem().getTxnMgr();
             txnMgr2.execExclusive(()->{
@@ -439,6 +450,7 @@ public class DatabaseOps {
     private static void moveDirectory(Location locTmp, Path pathDst) {
         Path pathSrc = IO_DB.asPath(locTmp);
         try {
+            // MS Windows: Fails when the directory has memory mapped files in it.
             Files.move(pathSrc, pathDst);
         } catch (IOException ex) { throw IOX.exception(ex); }
     }
