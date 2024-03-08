@@ -114,8 +114,11 @@ public class tdbloader extends CmdTDBGraph {
 
         for ( String url : urls ) {
             Lang lang = RDFLanguages.filenameToLang(url);
-            if ( lang != null && RDFLanguages.isQuads(lang) ) {
-                throw new CmdException("Warning: Quads format given - only the default graph is loaded into the graph for --graph");
+            if ( lang != null && ! Lang.JSONLD.equals(lang) && RDFLanguages.isQuads(lang) ) {
+                // People think JSONLD is a single graph format.
+                if ( RDFLanguages.isQuads(lang) ) {
+                    System.err.println("Warning: Quads format given - only the default graph from the data is loaded into the graph for --graph");
+                }
             }
         }
 
