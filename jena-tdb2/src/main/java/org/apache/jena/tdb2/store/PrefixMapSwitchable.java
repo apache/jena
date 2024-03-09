@@ -22,17 +22,14 @@ import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapWrapper;
 
 /**
- * {@link PrefixMap} that goes to the current DatasetGraphTDB prefixes.
+ * A {@link PrefixMap} that indirects to the prefixes via the current storage
+ * setting of {@link DatasetGraphSwitchable}.
  */
-public class PrefixMapSwitchable extends PrefixMapWrapper {
-    // PrefixMapProxy not needed.
-    // TDB2 datasets already have switchability built-in.
-
+class PrefixMapSwitchable extends PrefixMapWrapper {
     private final DatasetGraphSwitchable dsgx;
-    protected DatasetGraphSwitchable getx() { return dsgx; }
 
     protected PrefixMapSwitchable(DatasetGraphSwitchable dsg) {
-        // We override get() so don't set the wrapped object
+        // We override PrefixMapWrapper getR() and getW() so don't set the wrapped object.
         super(null);
         this.dsgx = dsg;
     }
