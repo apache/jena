@@ -42,3 +42,25 @@ PORT=1313 FUSEKI_PORT=9999 yarn run serve:offline
 FUSEKI_PORT=3031 PORT=8081 yarn run test:e2e
 ...
 ```
+
+### Using Vitest UI
+
+[Vitest UI](https://vitest.dev/guide/ui.html) is a user interface
+provided by Vitest that can be used to visualize tests and coverage.
+
+It is similar to the Maven Surefire Plug-in, but in a more interactive
+web page, where you can visualize the test code, its coverage, and the
+code related to that test in a visual graph.
+
+```bash
+$ # To run Vitest UI
+$ npx vitest --ui
+$ # If you want to look at the coverage
+$ npx vitest --ui --coverage.enabled=true
+```
+
+> [!NOTE]
+> This command is only available for the unit tests. For e2e tests
+> you must still use `yarn run coverage:e2e`, as it uses Cypress
+> with Istanbul to measure the coverage, instead of vitest only.
+

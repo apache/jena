@@ -16,6 +16,7 @@
  */
 
 import { defineConfig } from 'vite'
+import { configDefaults } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 import istanbul from "vite-plugin-istanbul";
 const path = require("path")
@@ -27,7 +28,7 @@ export default defineConfig({
     istanbul({
       include: "src/*",
       exclude: [
-        "node_modules",
+        "**/node_modules/**",
         "tests",
         "coverage",
         "src/services/mock/*"
@@ -52,6 +53,32 @@ export default defineConfig({
     outDir: 'target/webapp',
     assetsDir: 'static',
     sourcemap: 'inline'
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    css: true,
+    mockReset: true,
+    restoreMocks: true,
+    clearMocks: true,
+    include: [
+      ...configDefaults.include,
+      './tests/unit/**/*.{test,spec}.{.js,ts,jsx,cjs}',
+    ],
+    exclude: [
+      ...configDefaults.exclude,
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/cypress/**',
+      '**/.{idea,git,cache,output,temp}/**',
+    ],
+    coverage: {
+      all: false,
+      exclude: [
+        ...configDefaults.coverage.exclude,
+        '**/node_modules/**',
+      ]
+    }
   },
   server: {
     // Default, can be overridden by `--port 1234` in package.json
