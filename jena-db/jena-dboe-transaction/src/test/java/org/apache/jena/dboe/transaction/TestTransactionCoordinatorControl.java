@@ -25,7 +25,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.jena.atlas.lib.ThreadLib;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.transaction.txn.Transaction;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
 import org.apache.jena.dboe.transaction.txn.TransactionException;
@@ -33,6 +32,7 @@ import org.apache.jena.dboe.transaction.txn.TransactionalBase;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.system.ThreadAction;
 import org.apache.jena.system.ThreadTxn;
+import org.apache.jena.system.Txn;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -152,6 +152,39 @@ public class TestTransactionCoordinatorControl {
         Txn.executeWrite(unit, ()->{});
         b = txnMgr.tryExclusiveMode(false);
         assertTrue(b);
+    }
+
+    public void txn_coord_shutdown_1() {
+        txnMgr.shutdown();
+        txnMgr.shutdown();
+        // And again in after().
+    }
+
+    @Test(expected=TransactionException.class)
+    public void txn_coord_shutdown_2() {
+        Transaction txn = txnMgr.begin(TxnType.READ);
+        txnMgr.shutdown(true);
+        txn.commit();
+    }
+
+    @Test(expected=TransactionException.class)
+    public void txn_coord_shutdown_3() {
+        Transaction txn = txnMgr.begin(TxnType.WRITE);
+        txnMgr.shutdown(true);
+        txn.commit();
+    }
+
+    @Test(expected=TransactionException.class)
+    public void txn_coord_shutdown_4() {
+        txnMgr.shutdown(true);
+        txnMgr.begin(TxnType.READ);
+    }
+
+
+    @Test(expected=TransactionException.class)
+    public void txn_coord_shutdown_5() {
+        txnMgr.shutdown(true);
+        txnMgr.begin(TxnType.READ);
     }
 }
 
