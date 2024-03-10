@@ -31,6 +31,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import org.apache.jena.atlas.RuntimeIOException;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.lib.Lib;
@@ -82,13 +84,41 @@ class DatabaseOpsWindows {
             // Check version
             int v = extractIndexX(db1.getFileName().toString(), dbPrefix, SEP);
             String next = FilenameUtils.filename(dbPrefix, SEP, v+1);
-
             Path db2 = db1.getParent().resolve(next);
+
+            // Write note about location to be used into the container
+            Path inProgress = base.resolve(DatabaseOps.incompleteWIP);
+            try {
+                Files.writeString(inProgress, db2.toAbsolutePath().toString()+"\n");
+            } catch(IOException ex) {
+                // Try clean-up
+                try { Files.delete(inProgress); } catch(IOException ex2) { }
+                throw IOX.exception(ex);
+            }
+
             IOX.createDirectory(db2);
             Location loc2 = IO_DB.asLocation(db2);
             LOG.debug(String.format("Compact %s -> %s\n", db1.getFileName(), db2.getFileName()));
 
-            compaction(container, loc1, loc2);
+            try {
+                compaction(container, loc1, loc2);
+                // Container now using the new location.
+            } catch (RuntimeIOException ex) {
+                // Clear up - disk problems.
+                try { IO.deleteAll(db2); } catch (Throwable th) { /* Continue with original error. */ }
+                throw ex;
+            } catch (Throwable th) {
+                // Jena and Java errors
+                try { IO.deleteAll(db2); } catch (Throwable th2) { /* Continue with original error. */ }
+                throw th;
+            }
+
+            try {
+                // Remove note about location.
+                Files.delete(inProgress);
+            } catch(IOException ex) {
+                throw IOX.exception(ex);
+            }
 
             if ( shouldDeleteOld ) {
                 // Compact put each of the databases into exclusive mode to do the switchover.
