@@ -369,19 +369,65 @@ public class TransactionCoordinator implements TransactionalSystemControl {
         });
     }
 
+    /**
+     * Shutdown the coordinator; this operation does not check the state of the transaction system.
+     * <p>
+     * It expects the caller to decide when to shutdown; maybe waiting for all transactions
+     * to finish or maybe forcing the system to shutdown for some reason, causing later
+     * transaction exceptions.
+     * <p>
+     * Use inside exclusive mode to be sure no active transaction are present.
+     */
     public void shutdown() {
         shutdown(false);
     }
 
+    /**
+     * Shutdown the coordinator; this operation does not check the state of the transaction system.
+     * <p>
+     * It expects the caller to decide when to shutdown; maybe waiting for all transactions
+     * to finish or maybe forcing the system to shutdown for some reason, causing later
+     * transaction exceptions.
+     * <p>
+     * Use inside exclusive mode to be sure no active transaction are present.
+     */
     public void shutdown(boolean silent) {
-        if ( coordinatorLock == null )
+        // See also getCoordinatorLock()
+        var coordLock = coordinatorLock;
+        if ( coordLock == null )
             return;
-        if ( ! silent && countActive() > 0 )
-            FmtLog.warn(SysErr, "Transactions active: W=%d, R=%d", countActiveWriter(), countActiveReaders());
-        components.forEach((id, c) -> c.shutdown());
-        shutdownHooks.forEach((h)-> h.shutdown());
-        coordinatorLock = null;
-        journal.close();
+        synchronized(coordLock) {
+            // Check again
+            if ( coordinatorLock == null )
+                return;
+            if ( ! silent && countActive() > 0 )
+                FmtLog.warn(SysErr, "Transactions active: W=%d, R=%d", countActiveWriter(), countActiveReaders());
+            components.forEach((id, c) -> c.shutdown());
+            shutdownHooks.forEach((h)-> h.shutdown());
+            coordinatorLock = null;
+            journal.close();
+        }
+    }
+
+    /**
+     * Get the coordinator lock in a safe way or throw a {@link TransactionException}
+     * <p>
+     * Another thread may call {@link #shutdown(boolean)} at any time. Using the
+     * coordinatorLock for a synchronized block may cause a
+     * {@code NullPointerException}.
+     * <p>
+     * Code may still need to call
+     * {@link #checkActive()} inside the synchronized block.
+     */
+    private Object getCoordinatorLock() {
+        // Read once and the return.
+        var coordLock = coordinatorLock;
+        // The coordinatorLock can only go non-null to null.
+        // An operation using the coordinatorLock with synchronized{} needs a non-null value.
+        // If "coordLock" is null, then coordinatorLock was null and checkActive() will fail.
+        checkActive();
+        // Non-null - synchronized{} will not NPE.
+        return coordLock;
     }
 
     @Override
@@ -632,7 +678,10 @@ public class TransactionCoordinator implements TransactionalSystemControl {
     }
 
     private Transaction begin$(TxnType txnType) {
-        synchronized(coordinatorLock) {
+        // Read once.
+        var coordLock = getCoordinatorLock();
+        // Async shutdown may have happened.
+        synchronized(coordLock) {
             // Inside the lock - check again.
             checkActive();
             // Thread safe part of 'begin'
@@ -703,11 +752,14 @@ public class TransactionCoordinator implements TransactionalSystemControl {
 
     private boolean promoteTxn$(Transaction transaction, boolean readCommittedPromotion) {
         // == Read committed path.
+        // Read once.
+        var coordLock = getCoordinatorLock();
         if ( transaction.getTxnType() == TxnType.READ_COMMITTED_PROMOTE ) {
             if ( ! promotionWaitForWriters() )
                 return false;
             // Now single writer.
-            synchronized(coordinatorLock) {
+            synchronized(coordLock) {
+                checkActive();
                 try {
                     transaction.promoteComponents();
                     // Because we want to see the new state of the data.
@@ -736,7 +788,8 @@ public class TransactionCoordinator implements TransactionalSystemControl {
             return false;
 
         // Now a proto-writer. We need to confirm when inside the synchronized.
-        synchronized(coordinatorLock) {
+        synchronized(coordLock) {
+            checkActive();
             // Not read committed.
             // Need to check the data version once we are the writer and all previous
             // writers have committed or aborted.
@@ -826,7 +879,8 @@ public class TransactionCoordinator implements TransactionalSystemControl {
     }
 
     private void executeCommitWriter(Transaction transaction, Runnable commit, Runnable finish, Runnable sysabort) {
-        synchronized(coordinatorLock) {
+        var coordLock = getCoordinatorLock();
+        synchronized(coordLock) {
             try {
                 // *** COMMIT POINT
                 journal.writeJournal(JournalEntry.COMMIT);
@@ -937,8 +991,8 @@ public class TransactionCoordinator implements TransactionalSystemControl {
     private AtomicLong activeWritersCount = new AtomicLong(0);
 
     private void startActiveTransaction(Transaction transaction) {
-        synchronized(coordinatorLock) {
-            // Use lock to ensure all the counters move together.
+        var coordLock = getCoordinatorLock();
+        synchronized(coordLock) {            // Use lock to ensure all the counters move together.
             // Thread safe - we have not let the Transaction object out yet.
             countBegin.incrementAndGet();
             switch(transaction.getMode()) {
@@ -957,8 +1011,8 @@ public class TransactionCoordinator implements TransactionalSystemControl {
     }
 
     private void finishActiveTransaction(Transaction transaction) {
-        synchronized(coordinatorLock) {
-            // Idempotent.
+        var coordLock = getCoordinatorLock();
+        synchronized(coordLock) {            // Idempotent.
             boolean x = activeTransactions.remove(transaction);
             if ( ! x )
                 return;
