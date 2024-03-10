@@ -72,9 +72,9 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     public static <T> Stream<T> asStream(Iterator<T> iterator, boolean parallel) {
         int characteristics = Spliterator.IMMUTABLE;
-        Stream<T> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, characteristics), parallel);
-        stream.onClose(()->close(iterator));
-        return stream;
+        Stream<T> stream1 = StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, characteristics), parallel);
+        Stream<T> stream2 = stream1.onClose(()->close(iterator));
+        return stream2;
     }
 
     // ---- Special iterators.
