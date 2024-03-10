@@ -30,7 +30,10 @@ import java.util.zip.GZIPOutputStream;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IOX;
-import org.apache.jena.atlas.lib.*;
+import org.apache.jena.atlas.lib.DateTimeUtils;
+import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.base.Sys;
@@ -85,11 +88,15 @@ public class DatabaseOps {
 
     // Additional suffix used during compact
     private static final String dbTmpSuffix      = "-tmp";
-    private static final String dbTmpPattern     = "[\\d]+-tmp";
+    private static final String dbTmpPattern     = "[\\d]+"+dbTmpSuffix;
 
-    private static final String BACKUPS_DIR  = "Backups";
+    private static final String BACKUPS_DIR      = "Backups";
     // Basename of the backup file. "backup_{DateTime}.nq.gz
-    private static final String BACKUPS_FN   = "backup";
+    private static final String BACKUPS_FN       = "backup";
+
+    // A file name for a list of files to remove in cleanDatabaseDirectory()
+    // while initializing the area for TDB2 usage in this JVM.
+    /*package*/ static final String incompleteWIP    = "jena-tdb-temp-files";
 
     private enum ScanAccept { EXACT, SKIP }
 
@@ -164,11 +171,34 @@ public class DatabaseOps {
     /**
      * Clear out any partial compactions.
      */
-    private static void cleanDatabaseDirectory(Path directory) {
-        List<Path> tmpDirs = scanForDirByPattern(directory, dbNameBase, SEP, dbTmpPattern, ScanAccept.SKIP);
+    private static void cleanDatabaseDirectory(Path containerDirectory) {
+        // Remove "-tmp" directories.
+        List<Path> tmpDirs = scanForDirByPattern(containerDirectory, dbNameBase, SEP, dbTmpPattern, ScanAccept.SKIP);
         for ( Path dir : tmpDirs ) {
             FmtLog.info(LOG, "Remove incomplete compaction temporary directory: "+dir);
             IO.deleteAll(dir);
+        }
+        // Remove anything listed in "jena-tdb-temp-files" (used by Windows compaction)
+        try {
+            Path workfileList = containerDirectory.resolve(incompleteWIP);
+            if ( Files.exists(workfileList) ) {
+                List<String> filenames = Files.readAllLines(workfileList);
+                for ( String fn : filenames) {
+                    FmtLog.info(LOG, "Remove incomplete work-in-progress: "+fn);
+                    Path path = Path.of(fn);
+                    if ( Files.exists(path) ) {
+                        try {
+                            IO.deleteAll(path);
+                        } catch (Throwable ex) {
+                            FmtLog.error(LOG, "Exception while deleting "+fn+ " : manual clean-up required");
+                        }
+                    }
+                }
+                // Remove the list of clean-ups.
+                Files.delete(workfileList);
+            }
+        } catch (IOException e) {
+            throw IOX.exception(e);
         }
     }
 
