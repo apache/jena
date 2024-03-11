@@ -55,17 +55,15 @@ import org.eclipse.jetty.security.UserStore;
 public class EnvTest {
 
 /* Cut&Paste
-    private static EnvTest env;
-    @BeforeClass public static void beforeClass() {
-        //FusekiLogging.setLogging(); -- development only
+  For MS Windows
+
+    private EnvTest env;
+
+    @Before public void before() {
         env = EnvTest.create("/ds");
     }
 
-    @Before public void before() {
-        env.clear();
-    }
-
-    @AfterClass public static void afterClass() {
+    @After public void after() {
         EnvTest.stop(env);
     }
 */
@@ -129,8 +127,7 @@ public class EnvTest {
                    .serverAuthPolicy(Auth.policyAllowSpecific(user));
         }
 
-        FusekiServer server = builder.build();
-        server.start();
+        FusekiServer server = builder.start();
         return server;
     }
 

@@ -41,9 +41,8 @@ import org.apache.jena.sparql.exec.http.UpdateExecHTTP;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.test.conn.EnvTest;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -53,17 +52,13 @@ public class TestAuthRemote {
     private static String user = "user";
     private static String password = "password";
 
-    private static EnvTest env;
-    @BeforeClass public static void beforeClass() {
+    private EnvTest env;
+    @Before public void beforeClass() {
         //FusekiLogging.setLogging();
         env = EnvTest.createAuth("/ds", DatasetGraphFactory.createTxnMem(), user, password);
     }
 
-    @Before public void before() {
-        env.clear();
-    }
-
-    @AfterClass public static void afterClass() {
+    @After public void after() {
         EnvTest.stop(env);
     }
 

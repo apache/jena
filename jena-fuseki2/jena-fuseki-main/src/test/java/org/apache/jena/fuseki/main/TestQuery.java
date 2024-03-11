@@ -308,7 +308,7 @@ public class TestQuery extends AbstractFusekiTest {
         Assert.assertTrue(result.contains("http://example/x"));
     }
 
-    private static void execQuery(String queryString, int exceptedRowCount) {
+    private void execQuery(String queryString, int exceptedRowCount) {
         try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), queryString) ) {
             ResultSet rs = qExec.execSelect();
             int x = ResultSetFormatter.consume(rs);
@@ -316,7 +316,7 @@ public class TestQuery extends AbstractFusekiTest {
         }
     }
 
-    private static void execQuery(String queryString, ResultSet expectedResultSet) {
+    private void execQuery(String queryString, ResultSet expectedResultSet) {
         try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), queryString) ) {
             ResultSet rs = qExec.execSelect();
             boolean b = ResultSetCompare.equalsByTerm(rs, expectedResultSet);

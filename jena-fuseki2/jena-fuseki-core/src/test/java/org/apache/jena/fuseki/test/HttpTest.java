@@ -70,10 +70,10 @@ public class HttpTest {
             Assert.fail("Expected HttpException "+expectedStatusCode);
         } catch (QueryExceptionHTTP ex) {
             if ( expectedStatusCode > 0 )
-                Assert.assertEquals(ex.getMessage()+":: ", expectedStatusCode, ex.getStatusCode());
+                Assert.assertEquals(ex.getMessage()+" ::", expectedStatusCode, ex.getStatusCode());
         } catch (HttpException ex) {
             if ( expectedStatusCode > 0 )
-                Assert.assertEquals(ex.getMessage()+":: ", expectedStatusCode, ex.getStatusCode());
+                Assert.assertEquals(ex.getMessage()+" ::", expectedStatusCode, ex.getStatusCode());
         }
     }
 
