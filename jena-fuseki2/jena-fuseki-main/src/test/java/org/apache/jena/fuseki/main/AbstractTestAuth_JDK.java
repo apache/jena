@@ -22,24 +22,31 @@ import java.net.Authenticator;
 import java.net.http.HttpClient;
 
 import org.apache.jena.http.auth.AuthLib;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
 import org.apache.jena.sparql.exec.http.UpdateExecutionHTTP;
 import org.apache.jena.sparql.exec.http.UpdateExecutionHTTPBuilder;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
-public class AbstractTestAuth_JDK extends BaseFusekiTest {
+/**
+ * Common setup for running a server with an initially empty database with authentication by password file.
+ */
 
-    @BeforeClass public static void startServer() {
+public class AbstractTestAuth_JDK {
 
-//      FusekiLogging.setLogging();
-//      LogCtl.enable(Fuseki.actionLog);
-//      LogCtl.enable(Fuseki.serverLog);
+    private FusekiServer server;
 
+    protected String datasetName()    { return "database"; }
+    protected String datasetPath()    { return "/"+datasetName(); }
+    protected String databaseURL()    { return server.datasetURL(datasetPath()); }
+    protected String serverURL()      { return server.serverURL(); }
+
+    @Before public void startServer() {
         String passwordFile = "testing/Access/auth-jdk-passwd";
+        DatasetGraph dsgTesting = DatasetGraphFactory.createTxnMem();
         server = FusekiServer.create()
                 .port(0)
                 .passwordFile(passwordFile)
@@ -48,23 +55,12 @@ public class AbstractTestAuth_JDK extends BaseFusekiTest {
                 .add(datasetPath(), dsgTesting)
                 .build();
         server.start();
-        port = server.getPort();
-        serverURL = "http://localhost:"+port+"/";
-        //String authServiceQuery
     }
 
-    @AfterClass public static void stopServer() {
-//        try {
-//            if ( server != null )
-//                server.stop();
-//            server = null;
-//        } catch (Throwable th) {
-//            th.printStackTrace();
-//        }
+    @After public void stopServer() {
+        if ( server != null )
+            server.stop();
     }
-
-    @Before public void beforeTest() { resetDatabase(); }
-    @After public void afterTest() {}
 
     public static QueryExecutionHTTP withAuthJDK(QueryExecutionHTTPBuilder builder, String user, String passwd) {
         Authenticator authenticator = AuthLib.authenticator(user, passwd);

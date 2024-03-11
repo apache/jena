@@ -34,17 +34,17 @@ import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
 import org.apache.jena.sparql.exec.http.UpdateExecutionHTTP;
 import org.apache.jena.sparql.exec.http.UpdateExecutionHTTPBuilder;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 
 public class AbstractTestWebappAuth_JDK {
 
-    protected static final int authPort             = WebLib.choosePort();
-    protected static final String authUrlRoot       = "http://localhost:"+authPort+"/";
-    protected static final String authDatasetPath   = "/dataset";
-    protected static final String authServiceUpdate = "http://localhost:"+authPort+authDatasetPath+"/update";
-    protected static final String authServiceQuery  = "http://localhost:"+authPort+authDatasetPath+"/query";
-    protected static final String authServiceREST   = "http://localhost:"+authPort+authDatasetPath+"/data";
+    protected int authPort               = WebLib.choosePort();
+    protected String authUrlRoot()       { return "http://localhost:"+authPort+"/"; }
+    protected String authDatasetPath()   { return "/dataset"; }
+    protected String authServiceUpdate() { return "http://localhost:"+authPort+authDatasetPath()+"/update"; }
+    protected String authServiceQuery()  { return "http://localhost:"+authPort+authDatasetPath()+"/query"; }
+    protected String authServiceREST()   { return "http://localhost:"+authPort+authDatasetPath()+"/data";}
     private static File realmFile;
 
     private static final String FusekiTestHome = "target/FusekiTest";
@@ -53,7 +53,7 @@ public class AbstractTestWebappAuth_JDK {
     // False when in TS_FusekiWebapp
     public static boolean RunDependently = true;
 
-    @BeforeClass public static void setupFusekiServer() throws IOException {
+    @Before public void setupFusekiServer() throws IOException {
         ensureEnvironment();
 
         realmFile = File.createTempFile("realm", ".properties");
@@ -64,7 +64,7 @@ public class AbstractTestWebappAuth_JDK {
             writer.write("forbidden: password, other");
         }
 
-        ServerCtl.setupServer(authPort, realmFile.getAbsolutePath(), authDatasetPath, true);
+        ServerCtl.setupServer(authPort, realmFile.getAbsolutePath(), authDatasetPath(), true);
     }
 
     private static void ensureEnvironment() {
@@ -79,7 +79,7 @@ public class AbstractTestWebappAuth_JDK {
        }
     }
 
-    @AfterClass public static void teardownServer() {
+    @After public void teardownServer() {
         JettyFusekiWebapp.instance.stop();
     }
 

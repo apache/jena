@@ -72,7 +72,7 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
     public void query_authenv_02_prefix_good() {
         QueryExecutionHTTP qe = QueryExecutionHTTP.create().endpoint(databaseURL()).query("ASK { }").build();
         // Server URL - a prefix.
-        String dsURL = serverURL;
+        String dsURL = serverURL();
         URI uri = URI.create(dsURL);
         AuthEnv.get().registerUsernamePassword(uri, "user", "password");
         try {
@@ -86,7 +86,7 @@ public class TestAuthQuery_JDK extends AbstractTestAuth_JDK {
     public void query_authenv_03_bad_endpoint() {
         QueryExecutionHTTP qe = QueryExecutionHTTP.create().endpoint(databaseURL()).query("ASK { }").build();
         // Wrong registration
-        String dsURL = serverURL+"anotherPlace";
+        String dsURL = serverURL()+"anotherPlace";
         URI uri = URI.create(dsURL);
         AuthEnv.get().registerUsernamePassword(uri, "user", "password");
         try {

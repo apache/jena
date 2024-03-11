@@ -35,7 +35,7 @@ public class TestMetrics extends AbstractFusekiTest {
 
     @Test
     public void can_retrieve_metrics() {
-        String r = urlRoot() + "$/metrics";
+        String r = serverURL() + "$/metrics";
         HttpRequest request = HttpRequest.newBuilder().uri(HttpLib.toRequestURI(r)).build();
         HttpResponse<InputStream> response = HttpLib.executeJDK(HttpEnv.getDftHttpClient(), request, BodyHandlers.ofInputStream());
         String body = handleResponseRtnString(response);
