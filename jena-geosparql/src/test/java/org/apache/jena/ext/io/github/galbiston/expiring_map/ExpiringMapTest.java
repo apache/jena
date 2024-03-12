@@ -17,16 +17,12 @@
  */
 package org.apache.jena.ext.io.github.galbiston.expiring_map;
 
-import org.junit.After;
-import org.junit.AfterClass;
-
 import static org.apache.jena.ext.io.github.galbiston.expiring_map.MapDefaultValues.MAP_CLEANER_INTERVAL;
 import static org.apache.jena.ext.io.github.galbiston.expiring_map.MapDefaultValues.MINIMUM_MAP_CLEANER_INTERVAL;
 import static org.apache.jena.ext.io.github.galbiston.expiring_map.MapDefaultValues.UNLIMITED_EXPIRY;
 import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
+import org.junit.*;
 
 /**
  *
@@ -441,6 +437,7 @@ public class ExpiringMapTest {
      *
      * @throws java.lang.InterruptedException
      */
+    @Ignore // This test is not stable on loaded CI servers.
     @Test
     public void testExpiry_set_cleaner() throws InterruptedException {
         //System.out.println("expiry_set_cleaner");

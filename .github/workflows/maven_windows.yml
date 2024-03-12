@@ -31,6 +31,5 @@ jobs:
       run: bash -c "cp -r /d/a/jena/jena /c/jena"
 
     - name: Build with Maven for windows-latest
-      # If Windows and java 11, then MJAVADOC-586 / JDK issue.
       run: bash -c "mvn -B --file pom.xml -Dmaven.javadoc.skip=true install"
       working-directory: c:\jena
