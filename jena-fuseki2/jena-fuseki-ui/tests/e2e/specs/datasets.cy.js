@@ -300,7 +300,7 @@ describe('datasets', () => {
         .should('be.visible')
       // Dataset Size displays no data by default.
       cy
-        .get('table#dataset-size-table > tbody > tr > td')
+        .get('#dataset-size-table * table > tbody > tr > td')
         .should('contain', 'No data')
       // Count the triples.
       cy
@@ -314,19 +314,19 @@ describe('datasets', () => {
         .should('not.exist')
       // Now the table must have the new column header and body.
       cy
-        .get('table#dataset-size-table > thead > tr > th')
+        .get('#dataset-size-table * table > thead > tr > th')
         .eq(0)
         .should('contain', 'graph name')
       cy
-        .get('table#dataset-size-table > thead > tr > th')
+        .get('#dataset-size-table * table > thead > tr > th')
         .eq(1)
         .should('contain', 'triples')
       cy
-        .get('table#dataset-size-table > tbody > tr > td')
+        .get('#dataset-size-table * table > tbody > tr > td')
         .eq(0)
         .should('contain', 'default graph')
       cy
-        .get('table#dataset-size-table > tbody > tr > td')
+        .get('#dataset-size-table * table > tbody > tr > td')
         .eq(1)
         .should('contain', '42')
     })
