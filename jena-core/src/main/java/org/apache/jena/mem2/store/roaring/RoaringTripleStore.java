@@ -349,7 +349,7 @@ public class RoaringTripleStore implements TripleStore {
         /**
          * Create a copy of this set.
          *
-         * @return
+         * @return TripleSet
          */
         @Override
         public TripleSet copy() {

@@ -177,10 +177,10 @@ public class GraphMem2Test {
 
         when(mockStore.copy()).thenReturn(mockStoreCopy);
 
-        var sut = new GraphMem2(mockStore);
-        var copy = sut.copy();
+        GraphMem2 sut = new GraphMem2(mockStore);
+        GraphMem2 copy = sut.copy();
 
-        assertTrue(copy instanceof GraphMem2);
+        assertNotNull(copy);
         assertEquals(mockStoreCopy, copy.tripleStore);
     }
 }

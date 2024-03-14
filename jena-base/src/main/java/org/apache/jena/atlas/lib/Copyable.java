@@ -27,7 +27,7 @@ public interface Copyable<T> {
 
     /**
      * Create a copy of this object.
-     * @return
+     * @return T
      */
     T copy();
 }

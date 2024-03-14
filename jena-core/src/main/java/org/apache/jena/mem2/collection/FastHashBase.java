@@ -94,7 +94,7 @@ public abstract class FastHashBase<K> implements JenaMapSetCommon<K> {
      *
      * @param baseToCopy
      */
-    protected <T extends FastHashBase> FastHashBase(final T baseToCopy)  {
+    protected <T extends FastHashBase<?>> FastHashBase(final T baseToCopy)  {
         this.positions = new int[baseToCopy.positions.length];
         System.arraycopy(baseToCopy.positions, 0, this.positions, 0, baseToCopy.positions.length);
 

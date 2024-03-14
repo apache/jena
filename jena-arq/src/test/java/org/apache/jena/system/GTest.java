@@ -26,6 +26,7 @@ import org.junit.Test;
 import static org.apache.jena.testing_framework.GraphHelper.triple;
 import static org.junit.Assert.*;
 
+@SuppressWarnings("deprecation")
 public class GTest {
 
     @Test
@@ -33,8 +34,6 @@ public class GTest {
         // Test graph which implements Copyable<>
         {
             var graphImplementingCopyable = new GraphMem2Fast();
-
-            assertTrue(graphImplementingCopyable instanceof Copyable<?>);
 
             graphImplementingCopyable.add(triple("s1 p1 o1"));
             graphImplementingCopyable.add(triple("s1 p2 o1"));
@@ -56,7 +55,7 @@ public class GTest {
 
         // Test graph which does not implement Copyable<>
         {
-            var notCopyableGraph = new GraphMem();
+            GraphMem notCopyableGraph = new GraphMem();
 
             assertFalse(notCopyableGraph instanceof Copyable<?>);
 
