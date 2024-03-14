@@ -53,42 +53,42 @@
     </dependency>
 
     <dependency>
-        <groupId>org.apache.jena</groupId>
-        <artifactId>jena-iri</artifactId>
-        <version>5.0.0-SNAPSHOT</version>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-iri</artifactId>
+      <version>5.0.0-SNAPSHOT</version>
     </dependency>
-
-      <dependency>
-          <artifactId>commons-cli</artifactId>
-          <groupId>commons-cli</groupId>
-      </dependency>
-
-      <dependency>
-          <groupId>org.roaringbitmap</groupId>
-          <artifactId>RoaringBitmap</artifactId>
-      </dependency>
-
-      <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <scope>test</scope>
-      </dependency>
-
-      <dependency>
-          <groupId>org.xenei</groupId>
-          <artifactId>junit-contracts</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>commons-cli</artifactId>
-          <groupId>commons-cli</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-logging</artifactId>
-          <groupId>commons-logging</groupId>
-        </exclusion>
-      </exclusions>
+    
+    <dependency>
+      <artifactId>commons-cli</artifactId>
+      <groupId>commons-cli</groupId>
     </dependency>
+    
+      <dependency>
+        <groupId>org.roaringbitmap</groupId>
+        <artifactId>RoaringBitmap</artifactId>
+      </dependency>
+
+      <dependency>
+        <groupId>org.junit.vintage</groupId>
+        <artifactId>junit-vintage-engine</artifactId>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.xenei</groupId>
+        <artifactId>junit-contracts</artifactId>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <artifactId>commons-cli</artifactId>
+            <groupId>commons-cli</groupId>
+          </exclusion>
+          <exclusion>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -151,7 +151,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
-            <include>org/apache/jena/test/TestPackage.java</include>
+            <include>org/apache/jena/test/TestPackage_core.java</include>
             <include>**/*_CS.java</include>
           </includes>
         </configuration>
