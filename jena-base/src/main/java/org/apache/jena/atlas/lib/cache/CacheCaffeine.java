@@ -131,5 +131,12 @@ final public class CacheCaffeine<K,V> implements Cache<K, V>
     public long size() {
         return cache.estimatedSize() ;
     }
+
+    /**
+     * Forces the cache to clean up stale entries
+     */
+    public void cleanUp() {
+        this.cache.cleanUp();
+    }
 }
 

@@ -17,13 +17,12 @@
  */
 package org.apache.jena.geosparql.implementation.index;
 
-import static org.apache.jena.ext.io.github.galbiston.expiring_map.MapDefaultValues.MAP_EXPIRY_INTERVAL;
-import static org.apache.jena.ext.io.github.galbiston.expiring_map.MapDefaultValues.UNLIMITED_MAP;
+import static org.apache.jena.geosparql.implementation.index.CacheConfiguration.MAP_EXPIRY_INTERVAL;
+import static org.apache.jena.geosparql.implementation.index.CacheConfiguration.UNLIMITED_MAP;
 
 import java.util.Objects;
 
-import org.apache.jena.ext.io.github.galbiston.expiring_map.ExpiringMap;
-import org.apache.jena.ext.io.github.galbiston.expiring_map.ExpiringMaps;
+import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.geosparql.implementation.DimensionInfo;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.jts.GeometryTransformation;
@@ -43,8 +42,8 @@ import org.opengis.util.FactoryException;
 public class GeometryTransformIndex {
 
     private static boolean INDEX_ACTIVE = false;
-    private static final String GEOMETRY_TRANSFORM_LABEL = "Geometry Transform";
-    private static ExpiringMap<IndexKey, GeometryWrapper> GEOMETRY_TRANSFORM_INDEX = ExpiringMaps.newExpiringMap(GEOMETRY_TRANSFORM_LABEL, UNLIMITED_MAP, MAP_EXPIRY_INTERVAL);
+    private static Cache<IndexKey, GeometryWrapper>
+            GEOMETRY_TRANSFORM_INDEX = CacheConfiguration.create(UNLIMITED_MAP, MAP_EXPIRY_INTERVAL);
 
     /**
      *
@@ -62,7 +61,7 @@ public class GeometryTransformIndex {
 
         if (INDEX_ACTIVE && storeSRSTransform) {
 
-            transformedGeometryWrapper = GEOMETRY_TRANSFORM_INDEX.get(key);
+            transformedGeometryWrapper = GEOMETRY_TRANSFORM_INDEX.getIfPresent(key);
             if (transformedGeometryWrapper == null) {
                 transformedGeometryWrapper = transform(sourceGeometryWrapper, srsURI);
                 GEOMETRY_TRANSFORM_INDEX.put(key, transformedGeometryWrapper);
@@ -98,30 +97,11 @@ public class GeometryTransformIndex {
     }
 
     /**
-     * Sets whether the maximum size of the Geometry Transform Index.
-     *
-     * @param maxSize : use -1 for unlimited size
-     */
-    public static final void setMaxSize(int maxSize) {
-        GEOMETRY_TRANSFORM_INDEX.setMaxSize(maxSize);
-    }
-
-    /**
-     * Sets the expiry time in milliseconds of the Geometry Transform Index, if
-     * active.
-     *
-     * @param expiryInterval : use 0 or negative for unlimited timeout
-     */
-    public static final void setExpiry(long expiryInterval) {
-        GEOMETRY_TRANSFORM_INDEX.setExpiryInterval(expiryInterval);
-    }
-
-    /**
      *
      * @return Number of items in the index.
      */
     public static final long getGeometryTransformIndexSize() {
-        return GEOMETRY_TRANSFORM_INDEX.mappingCount();
+        return GEOMETRY_TRANSFORM_INDEX.size();
     }
 
     /**
@@ -139,11 +119,6 @@ public class GeometryTransformIndex {
      */
     public static void setIndexActive(boolean indexActive) {
         INDEX_ACTIVE = indexActive;
-        if (INDEX_ACTIVE) {
-            GEOMETRY_TRANSFORM_INDEX.startExpiry();
-        } else {
-            GEOMETRY_TRANSFORM_INDEX.stopExpiry();
-        }
     }
 
     /**
@@ -154,7 +129,7 @@ public class GeometryTransformIndex {
      * @param expiryInterval
      */
     public static void reset(int maxSize, long expiryInterval) {
-        GEOMETRY_TRANSFORM_INDEX = ExpiringMaps.newExpiringMap(GEOMETRY_TRANSFORM_LABEL, maxSize, expiryInterval);
+        GEOMETRY_TRANSFORM_INDEX = CacheConfiguration.create(maxSize, expiryInterval);
     }
 
     private static class IndexKey {
