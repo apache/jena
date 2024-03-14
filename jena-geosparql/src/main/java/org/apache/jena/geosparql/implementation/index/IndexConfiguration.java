@@ -17,10 +17,11 @@
  */
 package org.apache.jena.geosparql.implementation.index;
 
-import static org.apache.jena.ext.io.github.galbiston.expiring_map.MapDefaultValues.NO_MAP;
-import static org.apache.jena.ext.io.github.galbiston.expiring_map.MapDefaultValues.UNLIMITED_MAP;
+import static org.apache.jena.geosparql.implementation.index.CacheConfiguration.NO_MAP;
+import static org.apache.jena.geosparql.implementation.index.CacheConfiguration.UNLIMITED_MAP;
 
 import java.util.UUID;
+
 import org.apache.jena.geosparql.implementation.registry.MathTransformRegistry;
 import org.apache.jena.geosparql.implementation.registry.SRSRegistry;
 
@@ -57,8 +58,8 @@ public class IndexConfiguration {
     private static void setupNoIndex() {
         IndexConfiguration.resetIndexes();
         IndexConfiguration.stopIndexes();
-        GeometryLiteralIndex.setMaxSize(NO_MAP);
-        GeometryTransformIndex.setMaxSize(NO_MAP);
+        GeometryLiteralIndex.reset(NO_MAP, 0);
+        GeometryTransformIndex.reset(NO_MAP, 0);
         QueryRewriteIndex.setMaxSize(NO_MAP);
     }
 
@@ -66,8 +67,8 @@ public class IndexConfiguration {
      * Indexes are set to unlimited storage and started.
      */
     private static void setupMemoryIndex() {
-        GeometryLiteralIndex.setMaxSize(UNLIMITED_MAP);
-        GeometryTransformIndex.setMaxSize(UNLIMITED_MAP);
+        GeometryLiteralIndex.reset(UNLIMITED_MAP, 0);
+        GeometryTransformIndex.reset(UNLIMITED_MAP, 0);
         QueryRewriteIndex.setMaxSize(UNLIMITED_MAP);
         IndexConfiguration.startIndexes();
     }
@@ -88,33 +89,6 @@ public class IndexConfiguration {
         GeometryLiteralIndex.setIndexActive(false);
         GeometryTransformIndex.setIndexActive(false);
         //QueryRewriteIndex are on a Dataset basis.
-    }
-
-    /**
-     * Set the maximum size of the indexes.<br>
-     * Zero for no index and -1 for unlimited size.
-     *
-     * @param geometryLiteralIndex
-     * @param geometryTransformIndex
-     * @param queryRewriteIndex
-     */
-    public static final void setIndexMaxSize(int geometryLiteralIndex, int geometryTransformIndex, int queryRewriteIndex) {
-        GeometryLiteralIndex.setMaxSize(geometryLiteralIndex);
-        GeometryTransformIndex.setMaxSize(geometryTransformIndex);
-        QueryRewriteIndex.setMaxSize(queryRewriteIndex);
-    }
-
-    /**
-     * Set the index expiry interval in milliseconds.
-     *
-     * @param geometryLiteralIndex
-     * @param geometryTransformIndex
-     * @param queryRewriteIndex
-     */
-    public static final void setIndexExpiry(long geometryLiteralIndex, long geometryTransformIndex, long queryRewriteIndex) {
-        GeometryLiteralIndex.setExpiry(geometryLiteralIndex);
-        GeometryTransformIndex.setExpiry(geometryTransformIndex);
-        QueryRewriteIndex.setExpiry(queryRewriteIndex);
     }
 
     public static final void resetIndexes() {

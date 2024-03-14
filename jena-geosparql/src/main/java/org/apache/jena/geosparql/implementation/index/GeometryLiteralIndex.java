@@ -17,13 +17,10 @@
  */
 package org.apache.jena.geosparql.implementation.index;
 
-import static org.apache.jena.ext.io.github.galbiston.expiring_map.MapDefaultValues.MAP_EXPIRY_INTERVAL;
-import static org.apache.jena.ext.io.github.galbiston.expiring_map.MapDefaultValues.UNLIMITED_MAP;
+import static org.apache.jena.geosparql.implementation.index.CacheConfiguration.MAP_EXPIRY_INTERVAL;
+import static org.apache.jena.geosparql.implementation.index.CacheConfiguration.UNLIMITED_MAP;
 
-import java.util.Map;
-
-import org.apache.jena.ext.io.github.galbiston.expiring_map.ExpiringMap;
-import org.apache.jena.ext.io.github.galbiston.expiring_map.ExpiringMaps;
+import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 
@@ -34,10 +31,9 @@ import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 public class GeometryLiteralIndex {
 
     private static boolean INDEX_ACTIVE = false;
-    private static final String PRIMARY_INDEX_LABEL = "Primary Geometry Literal Index";
-    private static final String SECONDARY_INDEX_LABEL = "Secondary Geometry Literal Index";
-    private static ExpiringMap<String, GeometryWrapper> PRIMARY_INDEX = ExpiringMaps.newExpiringMap(PRIMARY_INDEX_LABEL, UNLIMITED_MAP, MAP_EXPIRY_INTERVAL);
-    private static ExpiringMap<String, GeometryWrapper> SECONDARY_INDEX = ExpiringMaps.newExpiringMap(SECONDARY_INDEX_LABEL, UNLIMITED_MAP, MAP_EXPIRY_INTERVAL);
+    private static Cache<String, GeometryWrapper>
+            PRIMARY_INDEX = CacheConfiguration.create(UNLIMITED_MAP, MAP_EXPIRY_INTERVAL);
+    private static Cache<String, GeometryWrapper> SECONDARY_INDEX = CacheConfiguration.create(UNLIMITED_MAP, MAP_EXPIRY_INTERVAL);
 
     public enum GeometryIndex {
         PRIMARY, SECONDARY
@@ -57,15 +53,15 @@ public class GeometryLiteralIndex {
         return geometryWrapper;
     }
 
-    private static GeometryWrapper retrieveMemoryIndex(String geometryLiteral, GeometryDatatype geometryDatatype, Map<String, GeometryWrapper> index, Map<String, GeometryWrapper> otherIndex) {
+    private static GeometryWrapper retrieveMemoryIndex(String geometryLiteral, GeometryDatatype geometryDatatype, Cache<String, GeometryWrapper> index, Cache<String, GeometryWrapper> otherIndex) {
 
         GeometryWrapper geometryWrapper;
 
         if (INDEX_ACTIVE) {
 
-            geometryWrapper = index.get(geometryLiteral);
+            geometryWrapper = index.getIfPresent(geometryLiteral);
             if (geometryWrapper == null) {
-                geometryWrapper = otherIndex.get(geometryLiteral);
+                geometryWrapper = otherIndex.getIfPresent(geometryLiteral);
                 if (geometryWrapper == null) {
                     geometryWrapper = geometryDatatype.read(geometryLiteral);
                 }
@@ -88,32 +84,11 @@ public class GeometryLiteralIndex {
     }
 
     /**
-     * Sets the maximum size of Geometry Literal Index.
-     *
-     * @param maxSize : use -1 for unlimited size
-     */
-    public static final void setMaxSize(int maxSize) {
-        PRIMARY_INDEX.setMaxSize(maxSize);
-        SECONDARY_INDEX.setMaxSize(maxSize);
-    }
-
-    /**
-     * Sets the expiry time in milliseconds of the Geometry Literal Indexes, if
-     * active.
-     *
-     * @param expiryInterval : use 0 or negative for unlimited timeout
-     */
-    public static final void setExpiry(long expiryInterval) {
-        PRIMARY_INDEX.setExpiryInterval(expiryInterval);
-        SECONDARY_INDEX.setExpiryInterval(expiryInterval);
-    }
-
-    /**
      *
      * @return Number of items in the primary index.
      */
     public static final long getPrimaryIndexSize() {
-        return PRIMARY_INDEX.mappingCount();
+        return PRIMARY_INDEX.size();
     }
 
     /**
@@ -121,7 +96,7 @@ public class GeometryLiteralIndex {
      * @return Number of items in the secondary index.
      */
     public static final long getSecondaryIndexSize() {
-        return SECONDARY_INDEX.mappingCount();
+        return SECONDARY_INDEX.size();
     }
 
     /**
@@ -139,13 +114,6 @@ public class GeometryLiteralIndex {
      */
     public static void setIndexActive(boolean indexActive) {
         INDEX_ACTIVE = indexActive;
-        if (INDEX_ACTIVE) {
-            PRIMARY_INDEX.startExpiry();
-            SECONDARY_INDEX.startExpiry();
-        } else {
-            PRIMARY_INDEX.stopExpiry();
-            SECONDARY_INDEX.stopExpiry();
-        }
     }
 
     /**
@@ -156,8 +124,8 @@ public class GeometryLiteralIndex {
      * @param expiryInterval
      */
     public static void reset(int maxSize, long expiryInterval) {
-        PRIMARY_INDEX = ExpiringMaps.newExpiringMap(PRIMARY_INDEX_LABEL, maxSize, expiryInterval);
-        SECONDARY_INDEX = ExpiringMaps.newExpiringMap(SECONDARY_INDEX_LABEL, maxSize, expiryInterval);
+        PRIMARY_INDEX = CacheConfiguration.create(maxSize, expiryInterval);
+        SECONDARY_INDEX = CacheConfiguration.create(maxSize, expiryInterval);
     }
 
 }
