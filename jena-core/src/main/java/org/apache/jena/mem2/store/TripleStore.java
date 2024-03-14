@@ -95,5 +95,6 @@ public interface TripleStore extends Copyable<TripleStore> {
      *
      * @return an independent copy of this store
      */
+    @Override
     TripleStore copy();
 }

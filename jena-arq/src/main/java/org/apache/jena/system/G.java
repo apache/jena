@@ -816,9 +816,11 @@ public class G {
      * @param src the graph to copy
      * @return a copy of the graph
      */
+    @SuppressWarnings("unchecked")
     public static Graph copy(Graph src) {
-        if(src instanceof Copyable<?>) {
-            return ((Copyable<Graph>)src).copy();
+        if(src instanceof Copyable<?> copyable) {
+            Copyable<Graph> copyableGraph = (Copyable<Graph>)copyable;
+            return copyableGraph.copy();
         }
         Graph dst = GraphMemFactory.createDefaultGraph();
         copyGraphSrcToDst(src, dst);
