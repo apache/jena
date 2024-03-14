@@ -93,7 +93,10 @@
     <ver.roaringbitmap>1.0.5</ver.roaringbitmap>
 
     <!-- Testing -->
-    <ver.junit>4.13.2</ver.junit>  
+    <ver.junit4>4.13.2</ver.junit4>
+    <ver.junit5>5.10.2</ver.junit5>
+    <ver.junit5-platform>1.10.2</ver.junit5-platform>
+ 
     <ver.mockito>5.11.0</ver.mockito>
     <ver.awaitility>4.2.0</ver.awaitility>
     <ver.contract.tests>0.2.0</ver.contract.tests>
@@ -286,10 +289,33 @@
 
   <dependencyManagement>
     <dependencies>
+
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${ver.junit5}</version>
+        <scope>test</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.junit.platform</groupId>
+        <artifactId>junit-platform-suite</artifactId>
+        <version>${ver.junit5-platform}</version>
+        <scope>test</scope>
+      </dependency>
+      
+      <!-- Includes JUnit 4 : Needed for older testing code. -->
+      <dependency>
+        <groupId>org.junit.vintage</groupId>
+        <artifactId>junit-vintage-engine</artifactId>
+        <version>${ver.junit5}</version>
+        <scope>test</scope>
+      </dependency>
+
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>${ver.junit}</version>
+        <version>${ver.junit4}</version>
         <scope>test</scope>
       </dependency>
 

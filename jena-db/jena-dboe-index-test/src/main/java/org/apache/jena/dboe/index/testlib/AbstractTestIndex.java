@@ -18,19 +18,23 @@
 
 package org.apache.jena.dboe.index.testlib;
 
-import static org.apache.jena.dboe.index.testlib.IndexTestLib.*;
+import static org.apache.jena.dboe.index.testlib.IndexTestLib.testDelete;
+import static org.apache.jena.dboe.index.testlib.IndexTestLib.testIndexContents;
+import static org.apache.jena.dboe.index.testlib.IndexTestLib.testInsert;
 import static org.apache.jena.dboe.test.RecordLib.intToRecord;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.index.Index;
 import org.apache.jena.dboe.test.RecordLib;
-import org.junit.Assert;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.After ;
+import org.junit.Test ;
 
 //import org.apache.jena.tdb.base.record.RecordLib;
 
-public abstract class AbstractTestIndex extends Assert
+public abstract class AbstractTestIndex
 {
     Index index = null;
 
