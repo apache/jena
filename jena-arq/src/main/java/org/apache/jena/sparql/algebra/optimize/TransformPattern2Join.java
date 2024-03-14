@@ -18,75 +18,56 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import java.util.List ;
-
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.OpLib;
-import org.apache.jena.sparql.algebra.TransformCopy ;
-import org.apache.jena.sparql.algebra.op.* ;
-import org.apache.jena.sparql.core.BasicPattern ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.core.QuadPattern ;
+import org.apache.jena.sparql.algebra.TransformCopy;
+import org.apache.jena.sparql.algebra.op.*;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.QuadPattern;
 
-/** Expand to joins of triples and quads. */ 
-public class TransformPattern2Join extends TransformCopy
-{
-    /*
-     * Get standard shaped trees?
-     * Alternative is hard flattening to (sequence of all the quads, triples) 
-     */
-    
-    @Override
-    public Op transform(OpBGP opBGP)                        { return expand(opBGP.getPattern()) ; }
-    
-    @Override
-    public Op transform(OpQuadPattern quadPattern)          { return expand(quadPattern.getPattern()) ; }
+/**
+ * Expand basic graph patterns and quad patterns to
+ * joins of {@code (triple)} and {@code (quad)}.
+ */
+public class TransformPattern2Join extends TransformCopy {
+
+    public TransformPattern2Join()  {}
 
     @Override
-    public Op transform(OpSequence opSeq, List<Op> elts)    { return expand(opSeq, elts) ; }
+    public Op transform(OpBGP opBGP) {
+        return expand(opBGP.getPattern());
+    }
 
-//    @Override
-//    public Op transform(OpJoin opJoin, Op left, Op right)
-//    { return super.transform(opJoin, left, right) ; }
+    @Override
+    public Op transform(OpQuadPattern quadPattern) {
+        return expand(quadPattern.getPattern());
+    }
 
-    private static Op expand(BasicPattern bgp)
-    {
+    private static Op expand(BasicPattern bgp) {
         if ( bgp.getList().isEmpty() )
-            return OpLib.unit() ;
-        Op op = null ;
-        for ( Triple t : bgp.getList() )
-        {
-            OpTriple x = new OpTriple(t) ;
-            op = join(op, x) ;
+            return OpLib.unit();
+        Op op = null;
+        for ( Triple t : bgp.getList() ) {
+            OpTriple x = new OpTriple(t);
+            op = join(op, x);
         }
-        return op ;
-    }
-    
-    private static Op expand(QuadPattern quads)
-    {
-        if ( quads.getList().isEmpty() )
-            return OpLib.unit() ;
-        Op op = null ;
-        for ( Quad q : quads.getList() )
-        {
-            OpQuad x = new OpQuad(q) ;
-            op = join(op, x) ;
-        }
-        return op ;
-    }
-    
-    private static Op expand(OpSequence opSeq, List<Op> elts)
-    {
-        Op x = null ;
-        // shape choices.
-        for ( Op op : elts )
-            x = join(x, op) ;
-        return x ;
+        return op;
     }
 
-    private static Op join(Op left, Op right)
-    {
-      return OpJoin.createReduce(left, right) ;
-  }
+    private static Op expand(QuadPattern quads) {
+        if ( quads.getList().isEmpty() )
+            return OpLib.unit();
+        Op op = null;
+        for ( Quad q : quads.getList() ) {
+            OpQuad x = new OpQuad(q);
+            op = join(op, x);
+        }
+        return op;
+    }
+
+    private static Op join(Op left, Op right) {
+        return OpJoin.createReduce(left, right);
+    }
 }
