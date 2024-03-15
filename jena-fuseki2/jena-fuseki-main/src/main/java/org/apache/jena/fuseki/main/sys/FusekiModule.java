@@ -73,26 +73,33 @@ public interface FusekiModule extends FusekiBuildCycle, FusekiStartStop, FusekiA
         dapRegistry.accessPoints().forEach(accessPoint->configDataAccessPoint(accessPoint, configModel));
     }
 
+    /** {@inheritDoc} */
     @Override
     public default void configDataAccessPoint(DataAccessPoint dap, Model configModel) {}
 
+    /** {@inheritDoc} */
     @Override
     public default void server(FusekiServer server) { }
 
+    /** {@inheritDoc} */
     @Override
     public default boolean serverConfirmReload(FusekiServer server) { return true; }
 
+    /** {@inheritDoc} */
     @Override
     public default void serverReload(FusekiServer server) { }
 
     // ---- Server start-stop.
 
+    /** {@inheritDoc} */
     @Override
     public default void serverBeforeStarting(FusekiServer server) { }
 
+    /** {@inheritDoc} */
     @Override
     public default void serverAfterStarting(FusekiServer server) { }
 
+    /** {@inheritDoc} */
     @Override
     public default void serverStopped(FusekiServer server) { }
 }
