@@ -71,36 +71,45 @@ public interface FusekiAutoModule extends FusekiModule, SubsystemLifecycle {
 
     // ---- SubsystemLifecycle
 
+    /** {@inheritDoc} */
     @Override
     public default void start() { }
 
+    /** {@inheritDoc} */
     @Override
     public default void stop() {}
 
     // ---- Build cycle
 
+    /** {@inheritDoc} */
     @Override
     public default void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) { }
 
+    /** {@inheritDoc} */
     @Override
     public default void configured(FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
         dapRegistry.accessPoints().forEach(accessPoint->configDataAccessPoint(accessPoint, configModel));
     }
 
+    /** {@inheritDoc} */
     @Override
     public default void configDataAccessPoint(DataAccessPoint dap, Model configModel) {}
 
+    /** {@inheritDoc} */
     @Override
     public default void server(FusekiServer server) { }
 
+    /** {@inheritDoc} */
     @Override
     public default void serverBeforeStarting(FusekiServer server) { }
 
     // ---- Server start-stop.
 
+    /** {@inheritDoc} */
     @Override
     public default void serverAfterStarting(FusekiServer server) { }
 
+    /** {@inheritDoc} */
     @Override
     public default void serverStopped(FusekiServer server) { }
 }

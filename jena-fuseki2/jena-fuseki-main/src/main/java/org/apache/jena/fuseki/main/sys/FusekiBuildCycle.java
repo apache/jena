@@ -68,7 +68,7 @@ public interface FusekiBuildCycle {
     public default void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) { }
 
      /**
-      * Called after the DataAccessPointRegistry has been built.
+      * Called after the {@link DataAccessPointRegistry} has been built.
       * <p>
       * The default implementation is to call {@link #configDataAccessPoint(DataAccessPoint, Model)}
       * for each {@link DataAccessPoint}.
@@ -88,7 +88,8 @@ public interface FusekiBuildCycle {
     public default void configDataAccessPoint(DataAccessPoint dap, Model configModel) {}
 
     /**
-     * Built, not started, about to be returned to the builder caller.
+     * Called when the server is built at the point where it is returned from the {@link Builder Fuseki server builder}.
+     * The server has not yet been started.
      */
     public default void server(FusekiServer server) { }
 
