@@ -18,9 +18,10 @@
 
 package org.apache.jena.riot.protobuf;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
 
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.GeneratedMessage;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.InternalErrorException;
@@ -39,7 +40,7 @@ class PBufRDF {
 
     private static PrefixMap PMAP0 = PrefixMapFactory.emptyPrefixMap();
 
-    public static void writeDelimitedTo(GeneratedMessageV3 gmv3, OutputStream output) {
+    public static void writeDelimitedTo(GeneratedMessage gmv3, OutputStream output) {
         try {
             gmv3.writeDelimitedTo(output);
         } catch (IOException e) { IO.exception(e); }
