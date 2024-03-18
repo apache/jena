@@ -89,7 +89,7 @@
     <ver.commons-fileupload>2.0.0-M2</ver.commons-fileupload>
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
-    <ver.micrometer>1.12.3</ver.micrometer>
+    <ver.micrometer>1.12.4</ver.micrometer>
     <ver.roaringbitmap>1.0.5</ver.roaringbitmap>
 
     <!-- Testing -->
@@ -98,7 +98,7 @@
     <ver.junit5-platform>1.10.2</ver.junit5-platform>
  
     <ver.mockito>5.11.0</ver.mockito>
-    <ver.awaitility>4.2.0</ver.awaitility>
+    <ver.awaitility>4.2.1</ver.awaitility>
     <ver.contract.tests>0.2.0</ver.contract.tests>
 
     <!-- For testing, not shipped -->
