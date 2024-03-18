@@ -21,7 +21,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.jena.graph.FrontsNode;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Node_Literal;
+import org.apache.jena.graph.Node_URI;
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.Var;
 
@@ -54,24 +57,42 @@ public class DatasetHandler implements Handler {
     }
 
     /**
+     * Converts an object into a graph name.
+     * @param graphName the object that represents the graph name.
+     * @return the string that is the graph name.
+     */
+    String asGraphName(Object graphName) {
+        // package private for testing access
+        if (graphName instanceof String) {
+            return (String) graphName;
+        }
+        if (graphName instanceof FrontsNode) {
+            return asGraphName(((FrontsNode)graphName).asNode());
+        }
+        if (graphName instanceof Node_URI) {
+            return ((Node_URI)graphName).getURI();
+        }
+        if (graphName instanceof Node_Literal) {
+            return asGraphName(((Node_Literal)graphName).getLiteralValue());
+        }
+
+        return graphName.toString();
+    }
+
+    /**
      * Add a graph name to the from named list.
      *
      * @param graphName The graph name to add.
      */
-    public void fromNamed(String graphName) {
-        query.addNamedGraphURI(graphName);
-    }
-
-    /**
-     * Add the graph names to the from named list.
-     *
-     * The names are ordered in as defined in the collection.
-     *
-     * @param graphNames The from names to add.
-     */
-    public void fromNamed(Collection<String> graphNames) {
-        for (String uri : graphNames) {
-            query.addNamedGraphURI(uri);
+    public void fromNamed(Object graphName) {
+        if (graphName instanceof Collection) {
+            ((Collection<?>)graphName).forEach(this::fromNamed);
+        } else if (graphName instanceof Object[]) {
+            for (Object o : ((Object[])graphName)) {
+                fromNamed(o);
+            }
+        } else {
+            query.addNamedGraphURI(asGraphName(graphName));
         }
     }
 
@@ -80,20 +101,15 @@ public class DatasetHandler implements Handler {
      *
      * @param graphName the name to add.
      */
-    public void from(String graphName) {
-        query.addGraphURI(graphName);
-    }
-
-    /**
-     * Add the graph names to the named list.
-     *
-     * The names are ordered in as defined in the collection.
-     *
-     * @param graphNames The names to add.
-     */
-    public void from(Collection<String> graphNames) {
-        for (String uri : graphNames) {
-            query.addGraphURI(uri);
+    public void from(Object graphName) {
+        if (graphName instanceof Collection) {
+            ((Collection<?>)graphName).forEach(this::from);
+        } else if (graphName instanceof Object[]) {
+            for (Object o : ((Object[])graphName)) {
+                from(o);
+            }
+        } else {
+            query.addGraphURI(asGraphName(graphName));
         }
     }
 

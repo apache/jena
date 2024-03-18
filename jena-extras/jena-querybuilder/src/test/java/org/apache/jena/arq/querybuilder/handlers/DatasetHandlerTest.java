@@ -17,15 +17,20 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Query;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.core.Var;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,6 +75,18 @@ public class DatasetHandlerTest extends AbstractHandlerTest {
     public void fromString() {
         handler.from("foo");
         assertTrue(query.toString().contains("FROM <foo>"));
+    }
+
+    @Test
+    public void asGraphNameTest() throws URISyntaxException {
+        assertEquals("urn:example.com:uri", handler.asGraphName(new URI("urn:example.com:uri")));
+        assertEquals("urn:example.com:node", handler.asGraphName(NodeFactory.createURI("urn:example.com:node")));
+        assertEquals("five", handler.asGraphName(ResourceFactory.createPlainLiteral("five")));
+        assertEquals("6", handler.asGraphName(ResourceFactory.createTypedLiteral(6)));
+        Node n = NodeFactory.createBlankNode();
+        assertEquals(n.toString(), handler.asGraphName(n));
+        UUID uuid = UUID.randomUUID();
+        assertEquals(uuid.toString(), handler.asGraphName(uuid));
     }
 
     @Test

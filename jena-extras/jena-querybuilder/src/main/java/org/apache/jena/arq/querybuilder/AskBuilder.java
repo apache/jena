@@ -84,25 +84,13 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
     }
 
     @Override
-    public AskBuilder fromNamed(String graphName) {
+    public AskBuilder fromNamed(Object graphName) {
         getDatasetHandler().fromNamed(graphName);
         return this;
     }
 
     @Override
-    public AskBuilder fromNamed(Collection<String> graphNames) {
-        getDatasetHandler().fromNamed(graphNames);
-        return this;
-    }
-
-    @Override
-    public AskBuilder from(String graphName) {
-        getDatasetHandler().from(graphName);
-        return this;
-    }
-
-    @Override
-    public AskBuilder from(Collection<String> graphName) {
+    public AskBuilder from(Object graphName) {
         getDatasetHandler().from(graphName);
         return this;
     }

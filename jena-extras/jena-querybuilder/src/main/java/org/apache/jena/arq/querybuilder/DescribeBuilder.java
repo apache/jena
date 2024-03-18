@@ -386,25 +386,13 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
     }
 
     @Override
-    public DescribeBuilder fromNamed(String graphName) {
+    public DescribeBuilder fromNamed(Object graphName) {
         getDatasetHandler().fromNamed(graphName);
         return this;
     }
 
     @Override
-    public DescribeBuilder fromNamed(Collection<String> graphNames) {
-        getDatasetHandler().fromNamed(graphNames);
-        return this;
-    }
-
-    @Override
-    public DescribeBuilder from(String graphName) {
-        getDatasetHandler().from(graphName);
-        return this;
-    }
-
-    @Override
-    public DescribeBuilder from(Collection<String> graphName) {
+    public DescribeBuilder from(Object graphName) {
         getDatasetHandler().from(graphName);
         return this;
     }
