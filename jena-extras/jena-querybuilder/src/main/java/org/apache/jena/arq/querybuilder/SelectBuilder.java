@@ -138,25 +138,13 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
     }
 
     @Override
-    public SelectBuilder fromNamed(String graphName) {
+    public SelectBuilder fromNamed(Object graphName) {
         getDatasetHandler().fromNamed(graphName);
         return this;
     }
 
     @Override
-    public SelectBuilder fromNamed(Collection<String> graphNames) {
-        getDatasetHandler().fromNamed(graphNames);
-        return this;
-    }
-
-    @Override
-    public SelectBuilder from(String graphName) {
-        getDatasetHandler().from(graphName);
-        return this;
-    }
-
-    @Override
-    public SelectBuilder from(Collection<String> graphName) {
+    public SelectBuilder from(Object graphName) {
         getDatasetHandler().from(graphName);
         return this;
     }

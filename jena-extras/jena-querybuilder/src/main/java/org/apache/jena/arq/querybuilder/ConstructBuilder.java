@@ -98,25 +98,13 @@ public class ConstructBuilder extends AbstractQueryBuilder<ConstructBuilder> imp
     }
 
     @Override
-    public ConstructBuilder fromNamed(String graphName) {
+    public ConstructBuilder fromNamed(Object graphName) {
         getDatasetHandler().fromNamed(graphName);
         return this;
     }
 
     @Override
-    public ConstructBuilder fromNamed(Collection<String> graphNames) {
-        getDatasetHandler().fromNamed(graphNames);
-        return this;
-    }
-
-    @Override
-    public ConstructBuilder from(String graphName) {
-        getDatasetHandler().from(graphName);
-        return this;
-    }
-
-    @Override
-    public ConstructBuilder from(Collection<String> graphName) {
+    public ConstructBuilder from(Object graphName) {
         getDatasetHandler().from(graphName);
         return this;
     }
