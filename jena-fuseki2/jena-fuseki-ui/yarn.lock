@@ -255,6 +255,13 @@
   dependencies:
     regenerator-runtime "^0.14.0"
 
+"@babel/runtime@^7.9.2":
+  version "7.24.0"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.24.0.tgz#584c450063ffda59697021430cb47101b085951e"
+  integrity sha512-Chk32uHMg6TnQdvw2e9IlqPpFX/6NLuK0Ys2PqLb7/gL5uFn9mXvK715FGLlOLQrcO4qIkNHkvPGktzzXexsFw==
+  dependencies:
+    regenerator-runtime "^0.14.0"
+
 "@babel/template@^7.22.15":
   version "7.22.15"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.22.15.tgz#09576efc3830f0430f4548ef971dde1350ef2f38"
@@ -858,6 +865,11 @@
   resolved "https://registry.yarnpkg.com/@streamparser/json/-/json-0.0.19.tgz#d9c264b54e366186ea4459bbb16c10238dc9e2a4"
   integrity sha512-VTxtZGME6ZSWNCSjZ0Zd2LNNodx62XvmARb/liHIwGlInuuvoDzioLuRP8ajV8iLBknsTrsqpRDGlvzKSzpNEw==
 
+"@tarekraafat/autocomplete.js@^7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@tarekraafat/autocomplete.js/-/autocomplete.js-7.2.0.tgz#d6ac9fe78db92d864ec096639e577f7e4b323829"
+  integrity sha512-p1aEcKC/WHpVBuFyRhXq/ie+mgO4QqCNEsdVIPUBgmNqmxV4dVfqYEpk///9vvKyranUUvrlVu4e2tdzAaXKIg==
+
 "@types/estree@1.0.5", "@types/estree@^1.0.0":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.5.tgz#a6ce3e556e00fd9895dd872dd172ad0d4bd687f4"
@@ -1102,6 +1114,26 @@
     "@types/node" "^20.10.3"
     dompurify "^2.0.7"
     store "^2.0.12"
+
+"@zazuko/yasgui@^4.2.34":
+  version "4.2.34"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasgui/-/yasgui-4.2.34.tgz#2315465b0b61ec9e5e2b6f1e4191e3e318456403"
+  integrity sha512-MdbsdMtCQe9JzpDKAsmnAqCYIBg6ptV1TnqEtcWsBr8hrWWhP9RnE1ubxSZ2doQC+yvht8kCnsfqgLODHsDBnQ==
+  dependencies:
+    "@tarekraafat/autocomplete.js" "^7.2.0"
+    "@types/lodash-es" "^4.17.3"
+    "@zazuko/yasgui-utils" "^4.2.34"
+    "@zazuko/yasqe" "^4.2.34"
+    "@zazuko/yasr" "^4.2.34"
+    autosuggest-highlight "^3.1.1"
+    blueimp-md5 "^2.12.0"
+    choices.js "^9.0.1"
+    dompurify "^2.0.7"
+    es6-object-assign "^1.1.0"
+    jsuri "^1.3.1"
+    lodash-es "^4.17.15"
+    sortablejs "^1.10.2"
+    superagent "^8.1.2"
 
 "@zazuko/yasqe@^4.2.34":
   version "4.2.34"
@@ -1404,6 +1436,13 @@ at-least-node@^1.0.0:
   resolved "https://registry.yarnpkg.com/at-least-node/-/at-least-node-1.0.0.tgz#602cd4b46e844ad4effc92a8011a3c46e0238dc2"
   integrity sha512-+q/t7Ekv1EDY2l6Gda6LLiX14rU9TV20Wa3ofeQmwPFZbOMo9DXrLbOjFaaclkXKWidIaopwAObQDqwWtGUjqg==
 
+autosuggest-highlight@^3.1.1:
+  version "3.3.4"
+  resolved "https://registry.yarnpkg.com/autosuggest-highlight/-/autosuggest-highlight-3.3.4.tgz#d71b575ba8eab40b5adba73df9244e9ba88cc387"
+  integrity sha512-j6RETBD2xYnrVcoV1S5R4t3WxOlWZKyDQjkwnggDPSjF5L4jV98ZltBpvPvbkM1HtoSe5o+bNrTHyjPbieGeYA==
+  dependencies:
+    remove-accents "^0.4.2"
+
 available-typed-arrays@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
@@ -1471,6 +1510,11 @@ bluebird@^3.7.2:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
+
+blueimp-md5@^2.12.0:
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/blueimp-md5/-/blueimp-md5-2.19.0.tgz#b53feea5498dcb53dc6ec4b823adb84b729c4af0"
+  integrity sha512-DRQrD6gJyy8FbiE4s+bDoXS9hiW3Vbx5uCdwvcCf3zLHL+Iv7LtGHLpr+GZV8rHG8tK766FGYBwRbu8pELTt+w==
 
 body-parser@1.20.2, body-parser@^1.19.0:
   version "1.20.2"
@@ -1703,6 +1747,15 @@ check-more-types@^2.24.0:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/check-more-types/-/check-more-types-2.24.0.tgz#1420ffb10fd444dcfc79b43891bbfffd32a84600"
   integrity sha512-Pj779qHxV2tuapviy1bSZNEL1maXr13bPYpsvSDB68HlYcYuhlDrmGd63i0JHMCLKzc7rUSNIrpdJlhVlNwrxA==
+
+choices.js@^9.0.1:
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/choices.js/-/choices.js-9.1.0.tgz#fdf5c1f9df4f85f015fb82c01841f22d15b56ee0"
+  integrity sha512-6NnqiE/MNnNAiMzdW7phJ49nMQylkKMQ6La6PAS1+h1VhrGt38MOPnjzEJ3cRaECieqaGpl9eFGtI2icW27r8A==
+  dependencies:
+    deepmerge "^4.2.2"
+    fuse.js "^3.4.6"
+    redux "^4.1.2"
 
 "chokidar@>=3.0.0 <4.0.0", chokidar@^3.5.2, chokidar@^3.5.3:
   version "3.5.3"
@@ -2154,6 +2207,11 @@ deep-is@^0.1.3:
   resolved "https://registry.yarnpkg.com/deep-is/-/deep-is-0.1.4.tgz#a6f2dce612fadd2ef1f519b73551f17e85199831"
   integrity sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==
 
+deepmerge@^4.2.2:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.3.1.tgz#44b5f2147cd3b00d4b56137685966f26fd25dd4a"
+  integrity sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==
+
 default-require-extensions@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/default-require-extensions/-/default-require-extensions-3.0.1.tgz#bfae00feeaeada68c2ae256c62540f60b80625bd"
@@ -2408,6 +2466,11 @@ es6-error@^4.0.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/es6-error/-/es6-error-4.1.1.tgz#9e3af407459deed47e9a91f9b885a84eb05c561d"
   integrity sha512-Um/+FxMr9CISWh0bi5Zv0iOD+4cFh5qLeks1qhAopKVAJw3drgKbKySikp7wGhDL0HPeaja0P5ULZrxLkniUVg==
+
+es6-object-assign@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/es6-object-assign/-/es6-object-assign-1.1.0.tgz#c2c3582656247c39ea107cb1e6652b6f9f24523c"
+  integrity sha512-MEl9uirslVwqQU369iHNWZXsI8yaZYGg/D65aOgZkeyFJwHYSxilf7rQzXKI7DdDuBPrBXbfk3sl9hJhmd5AUw==
 
 esbuild@^0.19.3:
   version "0.19.12"
@@ -3093,6 +3156,11 @@ functions-have-names@^1.2.3:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/functions-have-names/-/functions-have-names-1.2.3.tgz#0404fe4ee2ba2f607f0e0ec3c80bae994133b834"
   integrity sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
+
+fuse.js@^3.4.6:
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.6.1.tgz#7de85fdd6e1b3377c23ce010892656385fd9b10c"
+  integrity sha512-hT9yh/tiinkmirKrlv4KWOjztdoZo1mx9Qh4KvWqC7isoXwdUY3PNWUxceF4/qO9R6riA2C29jdTOeQOIROjgw==
 
 gensync@^1.0.0-beta.2:
   version "1.0.0-beta.2"
@@ -3934,6 +4002,11 @@ jsprim@^2.0.2:
     extsprintf "1.3.0"
     json-schema "0.4.0"
     verror "1.10.0"
+
+jsuri@^1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/jsuri/-/jsuri-1.3.1.tgz#cd93fc6a87b255142cb7b0f479f00517ab9395ed"
+  integrity sha512-LLdAeqOf88/X0hylAI7oSir6QUsz/8kOW0FcJzzu/SJRfORA/oPHycAOthkNp7eLPlTAbqVDFbqNRHkRVzEA3g==
 
 just-extend@^4.0.2:
   version "4.2.1"
@@ -4903,6 +4976,13 @@ readdirp@~3.6.0:
   dependencies:
     picomatch "^2.2.1"
 
+redux@^4.1.2:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/redux/-/redux-4.2.1.tgz#c08f4306826c49b5e9dc901dee0452ea8fce6197"
+  integrity sha512-LAUYz4lc+Do8/g7aeRa8JkyDErK6ekstQaqWQrNRW//MY1TvCEpMtpTWvlQ+FPbWCx+Xixu/6SHt5N0HR+SB4w==
+  dependencies:
+    "@babel/runtime" "^7.9.2"
+
 regenerator-runtime@^0.14.0:
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.14.0.tgz#5e19d68eb12d486f797e15a3c6a918f7cec5eb45"
@@ -4928,6 +5008,11 @@ release-zalgo@^1.0.0:
   integrity sha512-gUAyHVHPPC5wdqX/LG4LWtRYtgjxyX78oanFNTMMyFEfOqdC54s3eE82imuWKbOeqYht2CrNf64Qb8vgmmtZGA==
   dependencies:
     es6-error "^4.0.1"
+
+remove-accents@^0.4.2:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/remove-accents/-/remove-accents-0.4.4.tgz#73704abf7dae3764295d475d2b6afac4ea23e4d9"
+  integrity sha512-EpFcOa/ISetVHEXqu+VwI96KZBmq+a8LJnGkaeFw45epGlxIZz5dhEEnNZMsQXgORu3qaMoLX4qJCzOik6ytAg==
 
 request-progress@^3.0.0:
   version "3.0.0"
@@ -5251,6 +5336,11 @@ slice-ansi@^4.0.0:
     ansi-styles "^4.0.0"
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
+
+sortablejs@^1.10.2:
+  version "1.15.2"
+  resolved "https://registry.yarnpkg.com/sortablejs/-/sortablejs-1.15.2.tgz#4e9f7bda4718bd1838add9f1866ec77169149809"
+  integrity sha512-FJF5jgdfvoKn1MAKSdGs33bIqLi3LmsgVTliuX6iITj834F+JRQZN90Z93yql8h0K2t0RwDPBmxwlbZfDcxNZA==
 
 "source-map-js@>=0.6.2 <2.0.0", source-map-js@^1.0.2:
   version "1.0.2"

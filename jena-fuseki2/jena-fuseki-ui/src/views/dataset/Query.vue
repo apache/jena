@@ -68,93 +68,6 @@
                   </fieldset>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-sm-12 col-md-4">
-                  <fieldset
-                    class="form-group"
-                    aria-labelledby="sparql-endpoint-label"
-                  >
-                    <div class="form-row">
-                      <label
-                        tabindex="-1"
-                        for="sparql-endpoint"
-                        class="col-6 col-form-label"
-                        id="sparql-endpoint-label"
-                      >SPARQL Endpoint</label>
-                      <div class="col">
-                        <input
-                          v-model="currentDatasetUrl"
-                          id="sparql-endpoint"
-                          type="text"
-                          class="form-control"
-                        />
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
-                <div class="col-sm-12 col-md-4">
-                  <fieldset
-                    class="form-group"
-                    aria-labelledby="content-type-label"
-                  >
-                    <div class="form-row">
-                      <label
-                        tabindex="-1"
-                        for="content-type-select"
-                        class="col-6 col-form-label"
-                        id="content-type-select-label"
-                      >Content Type (SELECT)</label>
-                      <div class="col">
-                        <select
-                          v-model="contentTypeSelect"
-                          id="content-type-select"
-                          class="form-select"
-                          aria-label="Content Type select"
-                        >
-                          <option
-                            v-for="contentTypeSelectOption of contentTypeSelectOptions"
-                            :key="contentTypeSelectOption.value"
-                            :value="contentTypeSelectOption.value"
-                          >
-                            {{ contentTypeSelectOption.text }}
-                          </option>
-                        </select>
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
-                <div class="col-sm-12 col-md-4">
-                  <fieldset
-                    class="form-group"
-                    aria-labelledby="content-type-graph-label"
-                  >
-                    <div class="form-row">
-                      <label
-                        tabindex="-1"
-                        for="content-type-graph"
-                        class="col-6 col-form-label"
-                        id="content-type-graph-label"
-                      >Content Type (GRAPH)</label>
-                      <div class="col">
-                        <select
-                          v-model="contentTypeGraph"
-                          id="content-type-graph"
-                          class="form-select"
-                          aria-label="Content Type select"
-                        >
-                          <option
-                            v-for="contentTypeGraphOption of contentTypeGraphOptions"
-                            :key="contentTypeGraphOption.value"
-                            :value="contentTypeGraphOption.value"
-                          >
-                            {{ contentTypeGraphOption.text }}
-                          </option>
-                        </select>
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
-              </div>
             </div>
             <!-- This div cannot use v-if or v-show, as YASQE/YASR seem to fail to calculate the margins and
                  paddings if the element is not already rendered/existing in the DOM? -->
@@ -164,10 +77,7 @@
               </div>
               <div class="row">
                 <div class="col-sm-12">
-                  <div id="yasqe"></div>
-                </div>
-                <div class="col-sm-12">
-                  <div id="yasr"></div>
+                  <div id="yasgui"></div>
                 </div>
               </div>
             </div>
@@ -180,8 +90,7 @@
 
 <script>
 import Menu from '@/components/dataset/Menu.vue'
-import Yasqe from '@zazuko/yasqe'
-import Yasr from '@zazuko/yasr'
+import Yasgui from '@zazuko/yasgui'
 import { createShareableLink } from '@/utils/query'
 import { nextTick } from 'vue'
 import currentDatasetMixin from '@/mixins/current-dataset'
@@ -203,6 +112,8 @@ WHERE {
   OPTIONAL { ?class rdfs:comment ?description}
 }
 LIMIT 25`
+
+let yasgui
 
 export default {
   name: 'DatasetQuery',
@@ -265,52 +176,47 @@ export default {
   },
 
   created () {
-    this.yasqe = null
-    this.yasr = null
     this.$nextTick(() => {
-      setTimeout(() => {
-        const vm = this
+      const yasguiElement = document.getElementById('yasgui')
+      yasguiElement.innerHTML = ''
 
-        document.getElementById('yasr').innerHTML = ''
-        document.getElementById('yasqe').innerHTML = ''
+      // Save current hash: https://github.com/TriplyDB/Yasgui/issues/167#issuecomment-1437158547
+      const hash = location.hash
 
-        // results area
-        vm.yasr = new Yasr(
-          document.getElementById('yasr'),
-          {
-            // we do not want to save the results, otherwise we will have query results showing in different
-            // dataset views
-            persistenceId: null
-          }
-        )
-        // Curried function to create shareable links. YASQE expects a function
-        // that accepts only an instance of YASQE.
-        const curriedCreateShareableLink = yasqe => {
-          return createShareableLink(yasqe.getValue(), vm.$route.path)
-        }
-        // query editor
+      // Curried function to create shareable links. YASQE expects a function
+      // that accepts only an instance of YASQE.
+      const curriedCreateShareableLink = yasqe => {
+        return createShareableLink(yasqe.getValue(), this.$route.path)
+      }
+      yasgui = new Yasgui(yasguiElement, {
+        requestConfig: {
+          endpoint: this.$fusekiService.getFusekiUrl(this.currentDatasetUrl)
+        },
+        copyEndpointOnNewTab: false,
+        yasr: {
+          persistenceId: null,
+        },
         // NOTE: the full screen functionality was removed from YASQE: https://github.com/Triply-Dev/YASGUI.YASQE-deprecated/issues/139#issuecomment-573656137
-        vm.yasqe = new Yasqe(
-          document.getElementById('yasqe'),
-          {
-            showQueryButton: true,
-            resizeable: true,
-            requestConfig: {
-              endpoint: this.$fusekiService.getFusekiUrl(this.currentDatasetUrl)
-            },
-            createShareableLink: curriedCreateShareableLink
-          }
-        )
-        vm.yasqe.on('queryResponse', (yasqe, response, duration) => {
-          vm.yasqe.saveQuery()
-          vm.yasr.setResponse(response, duration)
-        })
-        if (this.$route.query.query !== undefined) {
-          vm.setQuery(this.$route.query.query)
+        yasqe: {
+          showQueryButton: true,
+          resizeable: true,
+          createShareableLink: curriedCreateShareableLink
         }
-        this.syncYasqePrefixes()
-        this.loading = false
-      }, 300)
+      })
+      console.log(yasgui)
+      // Restore hash
+      location.hash = hash
+
+      // yasgui.on('queryResponse', (yasqe, response, duration) => {
+      //   yasgui.saveQuery()
+      //   yasgui.setResponse(response, duration)
+      // })
+      // if (this.$route.query.query !== undefined) {
+      //   this.setQuery(this.$route.query.query)
+      // }
+      // this.syncYasqePrefixes()
+
+      this.loading = false
     })
   },
 
@@ -331,18 +237,19 @@ export default {
       this.currentDatasetUrl = val
     },
     currentDatasetUrl: function (val, oldVal) {
-      if (this.yasqe) {
-        this.yasqe.options.requestConfig.endpoint = this.$fusekiService.getFusekiUrl(val)
-      }
+      // console.log(this.$fusekiService.getFusekiUrl(val))
+      // if (yasgui) {
+      //   yasgui.setEndpoint(this.$fusekiService.getFusekiUrl(val))
+      // }
     },
     contentTypeSelect: function (val, oldVal) {
-      if (this.yasqe) {
-        this.yasqe.options.requestConfig.acceptHeaderSelect = this.contentTypeSelect
+      if (yasgui) {
+        yasgui.options.requestConfig.acceptHeaderSelect = this.contentTypeSelect
       }
     },
     contentTypeGraph: function (val, oldVal) {
-      if (this.yasqe) {
-        this.yasqe.options.requestConfig.acceptHeaderGraph = this.contentTypeGraph
+      if (yasgui) {
+        yasgui.options.requestConfig.acceptHeaderGraph = this.contentTypeGraph
       }
     }
   },
@@ -354,7 +261,7 @@ export default {
       // trigger a popup/alert by modifying the query passed, looks like YASQE does
       // the query cleaning before displaying it.
       // See: https://github.com/payloadbox/xss-payload-list
-      this.yasqe.setValue(query)
+      yasgui.setValue(query)
       this.syncYasqePrefixes()
     },
     getPrefixBadgeVariant (prefix) {
@@ -364,7 +271,7 @@ export default {
       return 'light'
     },
     syncYasqePrefixes () {
-      const prefixes = this.yasqe.getPrefixesFromQuery()
+      const prefixes = yasgui.getPrefixesFromQuery()
       this.currentQueryPrefixes = []
       for (const uri of Object.values(prefixes)) {
         this.currentQueryPrefixes.push(uri)
@@ -375,10 +282,10 @@ export default {
         [prefix.text]: prefix.uri
       }
       if (this.currentQueryPrefixes.includes(prefix.uri)) {
-        this.yasqe.removePrefixes(newPrefix)
+        yasgui.removePrefixes(newPrefix)
         this.currentQueryPrefixes.splice(this.currentQueryPrefixes.indexOf(prefix.uri), 1)
       } else {
-        this.yasqe.addPrefixes(newPrefix)
+        yasgui.addPrefixes(newPrefix)
         this.currentQueryPrefixes.push(prefix.uri)
       }
     }
@@ -387,31 +294,36 @@ export default {
 </script>
 
 <style lang="scss">
-@import '@zazuko/yasqe/build/yasqe.min.css';
-@import '@zazuko/yasr/build/yasr.min.css';
+//@import '@zazuko/yasqe/build/yasqe.min.css';
+//@import '@zazuko/yasr/build/yasr.min.css';
+//
+//// N.B: these were copied from an old release of YASR due to this
+////      change: https://github.com/TriplyDB/Yasgui/commit/19521998f035e718d3f1d5cfa6073ce2e34242e7
+////      for more: https://github.com/apache/jena/pull/1153
+//.yasr table.dataTable {
+//  border: 1px solid rgb(217, 217, 217);
+//  border-image-source: initial;
+//  border-image-slice: initial;
+//  border-image-repeat: initial;
+//  tbody {
+//    tr {
+//      td {
+//        border-top: 1px solid #ddd;
+//      }
+//      &:last-of-type {
+//        td {
+//          border-bottom: 1px solid #ddd;
+//        }
+//      }
+//      &:nth-child(even) {
+//        background-color: #f9f9f9;
+//      }
+//    }
+//  }
+//}
+@import '@zazuko/yasgui/build/yasgui.min.css';
 
-// N.B: these were copied from an old release of YASR due to this
-//      change: https://github.com/TriplyDB/Yasgui/commit/19521998f035e718d3f1d5cfa6073ce2e34242e7
-//      for more: https://github.com/apache/jena/pull/1153
-.yasr table.dataTable {
-  border: 1px solid rgb(217, 217, 217);
-  border-image-source: initial;
-  border-image-slice: initial;
-  border-image-repeat: initial;
-  tbody {
-    tr {
-      td {
-        border-top: 1px solid #ddd;
-      }
-      &:last-of-type {
-        td {
-          border-bottom: 1px solid #ddd;
-        }
-      }
-      &:nth-child(even) {
-        background-color: #f9f9f9;
-      }
-    }
-  }
+.yasgui .autocompleteWrapper {
+  display: none !important;
 }
 </style>
