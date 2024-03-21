@@ -41,20 +41,21 @@ import org.junit.Test;
 public class TestPasswdOnly {
     protected static FusekiServer server;
     protected static int port;
-
-    private static AuthSetup auth1 = new AuthSetup("localhost", port, "user1", "pw1", null);
+    private static AuthSetup auth1;
 
     @BeforeClass public static void beforeClass () {
         port = WebLib.choosePort();
         server = FusekiServer.create()
             //.verbose(true)
-            .port(port)
+            .port(0)
             .add("/db", DatasetGraphFactory.createTxnMem())
             .passwordFile("testing/Access/passwd")
             // Should be default.
             //.serverAuthPolicy(Auth.ANY_USER)
             .build();
         server.start();
+        port = server.getPort();
+        auth1 = new AuthSetup("localhost", port, "user1", "pw1", null);
     }
 
     @AfterClass public static void afterClass () {

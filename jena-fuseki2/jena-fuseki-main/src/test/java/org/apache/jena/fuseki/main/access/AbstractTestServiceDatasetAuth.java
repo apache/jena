@@ -43,9 +43,6 @@ public abstract class AbstractTestServiceDatasetAuth {
     private static AuthSetup auth2 = new AuthSetup("localhost", port, "user2", "pw2", null);
     private static AuthSetup auth3 = new AuthSetup("localhost", port, "user3", "pw3", null);
 
-    // @BeforeClass : subclass must set "server".
-    // Setup : user1 and user2 can query, user1 and user3 can update.
-
     @Test public void no_auth() {
         // No user -> fails login
         expectQuery401(() -> {
