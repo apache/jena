@@ -119,9 +119,11 @@ public class RIOT {
     private static String RDFXML_SYMBOL_BASE = "http://jena.apache.org/riot/rdfxml#";
 
     /**
-     * Access to the original legacy RDF/XML parser
-     * Use Lang constant {@link RRX#RDFXML_ARP0}
-     * @deprecated Do not use! This will be removed.
+     * Legacy access to the original legacy RDF/XML parser.
+     * The original ARP parser will be removed.
+     * Use {@link Lang} constant {@link RRX#RDFXML_ARP1} or {@link RRX#RDFXML_ARP0}
+     * to access ARP v1 (RIOT integration) or ARP v0 (the original ARP parser).
+     * @deprecated Do not use this symbol! This will be removed.
      */
     @Deprecated
     public static Symbol symRDFXML0 = SystemARQ.allocSymbol(RDFXML_SYMBOL_BASE, "rdfxml0");

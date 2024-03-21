@@ -22,6 +22,7 @@ import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.sse.Tags;
 
+/** Helper code for wring SSE. */
 public class SSEWriteLib
 {
     static final int UNDEF = 0;
@@ -33,51 +34,51 @@ public class SSEWriteLib
 
     // -- Normal markers
 
-    /** Start a tagged item - all one line - usual bracketting */
+    /** Start a tagged item - all one line - usual bracketing */
     public static void startOneLine(IndentedWriter out, String tag) {
         _start(out, Tags.LPAREN);
         out.print(tag);
         out.print(" ");
     }
 
-    /** Finish a tagged item - all one line - usual bracketting */
+    /** Finish a tagged item - all one line - usual bracketing */
     public static void finishOneLine(IndentedWriter out, String tag) {
         _finish(out, Tags.RPAREN);
     }
 
-    /** Start a tagged item - usual bracketting */
+    /** Start a tagged item - usual bracketing */
     public static void start(IndentedWriter out, String tag, int linePolicy)
     { _start(out, tag, linePolicy, Tags.LPAREN); }
 
-    /** Finish a tagged item - usual bracketting */
+    /** Finish a tagged item - usual bracketing */
     public static void finish(IndentedWriter out, String tag)
     { _finish(out, tag, Tags.RPAREN); }
 
-    /** Start an item - no tag - usual bracketting */
+    /** Start an item - no tag - usual bracketing */
     public static void start(IndentedWriter out)
     { _start(out, Tags.LPAREN); }
 
-    /** Finish an item - no tag - usual bracketting */
+    /** Finish an item - no tag - usual bracketing */
     public static void finish(IndentedWriter out)
     {  _finish(out, Tags.RPAREN);  }
 
     // -- With the other markers (conventionally, short things)
 
-    /** Start an item - alternative bracketting */
+    /** Start an item - alternative bracketing */
     public static void start2(IndentedWriter out, String tag, int linePolicy)
     { _start(out, tag, linePolicy, Tags.LBRACKET); }
 
-    /** Finish an item - alternative bracketting */
+    /** Finish an item - alternative bracketing */
     public static void finish2(IndentedWriter out, String tag)
     { _finish(out, tag, Tags.RBRACKET);  }
 
-    /** Start an item - no tag - alternative bracketting */
+    /** Start an item - no tag - alternative bracketing */
     public static void start2(IndentedWriter out)
     { _start(out, Tags.LBRACKET); }
 
-    /** Finish an item - no tag - alternative bracketting */
+    /** Finish an item - no tag - alternative bracketing */
     public static void finish2(IndentedWriter out)
-    { _finish(out, Tags.RBRACKET);  }
+    { _finish(out, Tags.RBRACKET); }
 
     // ---- Workers
 
@@ -89,7 +90,7 @@ public class SSEWriteLib
             case NL:    out.println(); break;
             case NoNL:  out.print(" "); break;
             case NoSP:  break;
-            case UNDEF: throw new ARQInternalErrorException("Explicit tag not no line policy");
+            case UNDEF: throw new ARQInternalErrorException("Tag provided but no line policy");
         }
         out.incIndent();
     }
