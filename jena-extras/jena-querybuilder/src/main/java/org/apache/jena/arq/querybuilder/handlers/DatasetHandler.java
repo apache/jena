@@ -17,9 +17,9 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.apache.jena.graph.FrontsNode;
 import org.apache.jena.graph.Node;
@@ -80,37 +80,47 @@ public class DatasetHandler implements Handler {
     }
 
     /**
-     * Add a graph name to the from named list.
+     * Add one or more named graphs to the query.
+     * if {@code graphName} is a {@code collection} or an array each element in the 
+     * @code collection} or array is converted to a string and the result added to the 
+     * query.
      *
-     * @param graphName The graph name to add.
+     * @param graphName the name to add.
+     * @see #asGraphName(Object)
      */
     public void fromNamed(Object graphName) {
-        if (graphName instanceof Collection) {
-            ((Collection<?>)graphName).forEach(this::fromNamed);
-        } else if (graphName instanceof Object[]) {
-            for (Object o : ((Object[])graphName)) {
-                fromNamed(o);
-            }
-        } else {
-            query.addNamedGraphURI(asGraphName(graphName));
-        }
+        processGraphName(query::addNamedGraphURI, graphName);
     }
 
     /**
-     * Add the graph names to the from list.
-     *
-     * @param graphName the name to add.
+     * Converts performs a single level of unwrapping an Iterable before calling
+     * the {@code process} method with the graph name converted to a string.
+     * @param process the process that accepts the string graph name.
+     * @param graphName the Object that represents one or more graph names.
+     * @see #asGraphName(Object)
      */
-    public void from(Object graphName) {
-        if (graphName instanceof Collection) {
-            ((Collection<?>)graphName).forEach(this::from);
-        } else if (graphName instanceof Object[]) {
-            for (Object o : ((Object[])graphName)) {
-                from(o);
+    private void processGraphName(Consumer<String> process, Object graphName) {
+        if (graphName instanceof Iterable collection) {
+            for (Object o : collection) {
+                process.accept(asGraphName(o));
             }
         } else {
-            query.addGraphURI(asGraphName(graphName));
+            process.accept(asGraphName(graphName));
         }
+    }
+
+
+    /**
+     * Add one or more graph names to the query.
+     * if {@code graphName} is a {@code collection} or an array each element in the 
+     * @code collection} or array is converted to a string and the result added to the 
+     * query.
+     *
+     * @param graphName the name to add.
+     * @see #asGraphName(Object)
+     */
+    public void from(Object graphName) {
+        processGraphName(query::addGraphURI, graphName);
     }
 
     /**

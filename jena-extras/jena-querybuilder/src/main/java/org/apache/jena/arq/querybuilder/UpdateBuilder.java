@@ -123,8 +123,8 @@ public class UpdateBuilder {
     }
 
     /**
-     * Checks that deletes or inserts have been added to the builder.
-     * @return true if there are any delete or insert statements.
+     * Checks that no deletes or inserts have been added to the builder.
+     * @return true if there are no delete or insert statements.
      */
     public boolean isEmpty() {
         return deletes.isEmpty() && inserts.isEmpty();
