@@ -100,8 +100,8 @@ public class DatasetHandler implements Handler {
      * @see #asGraphName(Object)
      */
     private void processGraphName(Consumer<String> process, Object graphName) {
-        if (graphName instanceof Iterable collection) {
-            for (Object o : collection) {
+        if (graphName instanceof Iterable) {
+            for (Object o : (Iterable)graphName) {
                 process.accept(asGraphName(o));
             }
         } else {
