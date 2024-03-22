@@ -17,8 +17,6 @@
  */
 package org.apache.jena.arq.querybuilder.clauses;
 
-import java.util.Collection;
-
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.handlers.DatasetHandler;
 
@@ -35,15 +33,7 @@ public interface DatasetClause<T extends AbstractQueryBuilder<T>> {
      * @param graphName the graph name to add.
      * @return This builder for chaining.
      */
-    public T fromNamed(String graphName);
-
-    /**
-     * Add several "FROM NAMED" graph names.
-     * 
-     * @param graphNames the collection graph names to add.
-     * @return This builder for chaining.
-     */
-    public T fromNamed(Collection<String> graphNames);
+    public T fromNamed(Object graphName);
 
     /**
      * Add the "FROM" graph name.
@@ -51,15 +41,7 @@ public interface DatasetClause<T extends AbstractQueryBuilder<T>> {
      * @param graphName the graph name to add.
      * @return This builder for chaining.
      */
-    public T from(String graphName);
-
-    /**
-     * Add several "FROM" graph names.
-     * 
-     * @param graphName the collection graph names to add.
-     * @return This builder for chaining.
-     */
-    public T from(Collection<String> graphName);
+    public T from(Object graphName);
 
     /**
      * Get the Dataset handler for this clause.
