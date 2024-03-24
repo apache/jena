@@ -24,10 +24,10 @@ package org.apache.jena.atlas.io;
 public abstract class AWriterBase implements AWriter
 {
     @Override
-    public final AWriter write(char ch)          { return print(ch) ; }
+    public final void write(char ch)          { print(ch) ; }
     @Override
-    public final AWriter write(char[] cbuf)      { return print(cbuf) ; }
+    public final void write(char[] cbuf)      { print(cbuf) ; }
     @Override
-    public final AWriter write(String string)    { return print(string) ; }
+    public final void write(String string)    { print(string) ; }
 }
 

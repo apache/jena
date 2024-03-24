@@ -25,18 +25,18 @@ import org.apache.jena.atlas.lib.Closeable ;
 
 public interface AWriter extends Closeable, AutoCloseable
 {
-    public AWriter write(char ch) ;
-    public AWriter write(char[] cbuf) ;
-    public AWriter write(String string) ;
+    public void write(char ch) ;
+    public void write(char[] cbuf) ;
+    public void write(String string) ;
 
-    public AWriter print(char ch) ;
-    public AWriter print(char[] cbuf) ;
-    public AWriter print(String string) ;
-    public AWriter printf(String fmt, Object ...arg) ;
-    public AWriter println(String object) ;
-    public AWriter println() ;
+    public void print(char ch) ;
+    public void print(char[] cbuf) ;
+    public void print(String string) ;
+    public void printf(String fmt, Object ...arg) ;
+    public void println(String object) ;
+    public void println() ;
 
-    public AWriter flush() ;
+    public void flush() ;
     @Override
     public void close() ;
 }
