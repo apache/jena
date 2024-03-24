@@ -420,9 +420,11 @@ public class ParserRDFXML_SAX
 // private ParseType parseType = null;
     public ParserRDFXML_SAX(String xmlBase, ParserProfile parserProfile, StreamRDF destination, Context context) {
         // Debug
-        if ( TRACE )
-        {
-            IndentedWriter out1 = IndentedWriter.stdout.clone().setFlushOnNewline(true).setUnitIndent(4).setLinePrefix("# ");
+        if ( TRACE ) {
+            IndentedWriter out1 = IndentedWriter.stdout.clone();
+            out1.setFlushOnNewline(true);
+            out1.setUnitIndent(4);
+            out1.setLinePrefix("# ");
             this.trace = out1;
             //IndentedWriter out2 = IndentedWriter.stdout.clone().setFlushOnNewline(true).setUnitIndent(4).setLinePrefix("! ");
         } else {

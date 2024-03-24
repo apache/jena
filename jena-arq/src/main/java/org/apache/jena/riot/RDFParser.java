@@ -451,7 +451,6 @@ public class RDFParser {
         throw new InternalErrorException("Both inputStream and javaReader are null");
     }
 
-    @SuppressWarnings("resource")
     private TypedInputStream openTypedInputStream(String urlStr, Path path) {
         // If path, use that.
         if ( path != null ) {

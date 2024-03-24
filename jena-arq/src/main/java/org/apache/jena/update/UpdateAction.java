@@ -321,7 +321,6 @@ public class UpdateAction
     }
 
     /** Parse update operations into a DatasetGraph by reading it from a file */
-    @SuppressWarnings("resource")
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName, Binding inputBinding, String baseURI, Syntax syntax)
     {
         InputStream in = null ;
