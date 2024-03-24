@@ -46,8 +46,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
         text:entityMap <#entMap> ;
         .
     */
-    
-    @SuppressWarnings("resource")
+
     @Override
     public TextIndex open(Assembler a, Resource root, Mode mode) {
         try {
@@ -55,10 +54,10 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 throw new TextIndexException("No 'text:directory' property on " + root) ;
 
             Directory directory ;
-            
+
             RDFNode n = root.getProperty(pDirectory).getObject() ;
             if ( n.isLiteral() ) {
-                String literalValue = n.asLiteral().getLexicalForm() ; 
+                String literalValue = n.asLiteral().getLexicalForm() ;
                 if (literalValue.equals("mem")) {
                     directory = new ByteBuffersDirectory() ;
                 } else {
@@ -71,7 +70,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 File dir = new File(path) ;
                 directory = FSDirectory.open(dir.toPath()) ;
             }
-            
+
             String queryParser = null;
             Statement queryParserStatement = root.getProperty(pQueryParser);
             if (null != queryParserStatement) {
@@ -112,14 +111,14 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
             Statement propListsStmt = root.getProperty(pPropLists);
             if (null != propListsStmt) {
                 RDFNode aNode = propListsStmt.getObject();
-                
+
                 if (! aNode.isResource()) {
                     throw new TextIndexException("text:propLists property is not a resource (list) : " + aNode);
                 }
-                
+
                 PropListsAssembler.open(a, (Resource) aNode);
             }
-            
+
             //define any filters and tokenizers first so they can be referenced in analyzer definitions if need be
             Statement defAnalyzersStatement = root.getProperty(pDefAnalyzers);
             if (null != defAnalyzersStatement) {
@@ -127,7 +126,7 @@ public class TextIndexLuceneAssembler extends AssemblerBase {
                 if (! aNode.isResource()) {
                     throw new TextIndexException("text:defineAnalyzers property is not a resource (list) : " + aNode);
                 }
-                
+
                 DefineFiltersAssembler.open(a, (Resource) aNode);
 
                 DefineTokenizersAssembler.open(a, (Resource) aNode);

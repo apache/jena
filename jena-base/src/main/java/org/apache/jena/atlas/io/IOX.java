@@ -125,7 +125,7 @@ public class IOX {
     }
 
     /**
-     * Write a file safely, but allow system to use copy-delete if the chnage can not
+     * Write a file safely, but allow system to use copy-delete if the change can not
      * be done atomically. Prefer {@link #safeWrite} which requires an atomic move.
      */
     public static boolean safeWriteOrCopy(Path file, Path tmpFile, IOConsumer<OutputStream> writerAction) {

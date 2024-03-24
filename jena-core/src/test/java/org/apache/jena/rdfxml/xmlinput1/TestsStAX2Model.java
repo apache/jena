@@ -1160,20 +1160,15 @@ public class TestsStAX2Model extends TestCase {
         Model expected = ModelFactory.createDefaultModel();
         Model got = ModelFactory.createDefaultModel();
 
-        InputStream in;
-
         // Load expected using normal mechanism
-        try {
-            in = new FileInputStream(file);
+        try (InputStream in = new FileInputStream(file)) {
             expected.read(in, base);
-            in.close();
         } catch (Exception e) { return; }
 
-        in = new FileInputStream(file);
-        XMLEventReader eventStream = inputFactory.createXMLEventReader(base, in);
-        StAX2Model.read(eventStream, got, base);
-        in.close();
-
+        try (InputStream in = new FileInputStream(file)) {
+            XMLEventReader eventStream = inputFactory.createXMLEventReader(base, in);
+            StAX2Model.read(eventStream, got, base);
+        }
         boolean result = expected.isIsomorphicWith(got);
 
         /*if (!result) {
