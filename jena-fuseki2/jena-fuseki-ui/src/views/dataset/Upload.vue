@@ -60,7 +60,7 @@
                         placeholder="Leave blank for default graph"
                       />
                       <div class="invalid-feedback">
-                        Invalid graph name. Please remove any spaces.
+                        Invalid graph name. Please remove any spaces, and provide a valid URI (RFC 3986).
                       </div>
                     </div>
                   </div>
@@ -221,6 +221,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import currentDatasetMixin from '@/mixins/current-dataset'
 import currentDatasetMixinNavigationGuards from '@/mixins/current-dataset-navigation-guards'
 import { displayError } from '@/utils'
+import { validateGraphName } from '@/utils/validation'
 
 library.add(faPlus, faUpload, faTimesCircle, faMinusCircle)
 
@@ -418,15 +419,11 @@ export default {
       return this.validateGraphName() && this.validateFiles()
     },
     validateGraphName () {
-      // No spaces allowed in graph names.
-      const pattern = /^[^\s]+$/
       const graphName = this.$refs['dataset-graph-name'].value
-      if (graphName === '' || pattern.test(graphName)) {
-        this.graphNameClasses = ['form-control is-valid']
-        return true
-      }
-      this.graphNameClasses = ['form-control is-invalid']
-      return false
+      const isValidGraphName = validateGraphName(graphName)
+      const formValidationClass = isValidGraphName ? 'is-valid' : 'is-invalid'
+      this.graphNameClasses = ['form-control', formValidationClass]
+      return isValidGraphName
     },
     validateFiles () {
       if (this.upload.files !== null && this.upload.files.length > 0) {
