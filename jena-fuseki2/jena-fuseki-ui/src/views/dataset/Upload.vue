@@ -122,20 +122,22 @@
                   <div class="pt-2 pb-2">
                     <div class="progress" style="height: 1.5rem;">
                       <div
-                        class="progress-bar"
-                        role="progressbar"
                         :style="`width: ${uploadSucceededPercentage}%`"
                         :aria-valuenow="uploadSucceededPercentage"
+                        :title="`${uploadSucceededCount}/${uploadCount}`"
+                        class="progress-bar"
+                        role="progressbar"
                         aria-valuemin="0"
                         aria-valuemax="100"
                       >
                         {{ uploadSucceededCount }}/{{ uploadCount }}
                       </div>
                       <div
-                        class="progress-bar bg-danger"
-                        role="progressbar"
                         :style="`width: ${uploadFailedPercentage}%`"
                         :aria-valuenow="uploadFailedPercentage"
+                        :title="`${uploadFailedCount}/${uploadCount}`"
+                        class="progress-bar bg-danger"
+                        role="progressbar"
                         aria-valuemin="0"
                         aria-valuemax="100"
                       >
