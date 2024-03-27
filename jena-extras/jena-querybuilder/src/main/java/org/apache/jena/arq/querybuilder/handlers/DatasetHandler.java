@@ -81,8 +81,8 @@ public class DatasetHandler implements Handler {
 
     /**
      * Add one or more named graphs to the query.
-     * if {@code graphName} is a {@code collection} or an array each element in the 
-     * @code collection} or array is converted to a string and the result added to the 
+     * if {@code graphName} is a {@code collection} or an array each element in the
+     * @code collection} or array is converted to a string and the result added to the
      * query.
      *
      * @param graphName the name to add.
@@ -100,8 +100,8 @@ public class DatasetHandler implements Handler {
      * @see #asGraphName(Object)
      */
     private void processGraphName(Consumer<String> process, Object graphName) {
-        if (graphName instanceof Iterable) {
-            for (Object o : (Iterable)graphName) {
+        if (graphName instanceof Iterable iterGraphName) {
+            for (Object o : iterGraphName) {
                 process.accept(asGraphName(o));
             }
         } else {
@@ -109,11 +109,10 @@ public class DatasetHandler implements Handler {
         }
     }
 
-
     /**
      * Add one or more graph names to the query.
-     * if {@code graphName} is a {@code collection} or an array each element in the 
-     * @code collection} or array is converted to a string and the result added to the 
+     * if {@code graphName} is a {@code collection} or an array each element in the
+     * @code collection} or array is converted to a string and the result added to the
      * query.
      *
      * @param graphName the name to add.
