@@ -104,6 +104,14 @@ public class TestNodeValue
         assertTrue("Not same float: " + v1 + " & " + v2, v1.getFloat() == v2.getFloat());
         assertTrue("Not same float as double: " + v1 + " & " + v2, v1.getDouble() == v2.getDouble());
     }
+    
+    @Test
+    public void testFloat4() {
+        NodeValue v1 = NodeValue.makeNodeFloat("5.7");
+        NodeValue v2 = NodeValue.makeFloat(5.7f);
+        assertTrue("Not same float: " + v1 + " & " + v2, v1.getFloat() == v2.getFloat());
+        assertTrue("Not same float as double: " + v1 + " & " + v2, v1.getDouble() == v2.getDouble());
+    }
 
     @Test
     public void testDouble1() {

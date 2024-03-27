@@ -319,7 +319,7 @@ public abstract class NodeValue extends ExprNode
 
     public static NodeValue makeNodeFloat(String lexicalForm)
     {
-        NodeValue nv = makeNode(lexicalForm, null, XSDdouble.getURI()) ;
+        NodeValue nv = makeNode(lexicalForm, null, XSDfloat.getURI()) ;
         return nv ;
     }
 
