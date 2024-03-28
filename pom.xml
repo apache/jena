@@ -980,12 +980,6 @@
                  https://maven.apache.org/guides/mini/guide-reproducible-builds.html
             -->
             <notimestamp>true</notimestamp>
-
-            <!-- Java11 javadoc: "syntax,html" fails on things that aren't 
-                 wrong and applies unrequested checks such as group "missing".
-                 Java17 has fixed these and behaves as expected:
-                 <doclint>syntax,html,reference</doclint>
-            -->
             <doclint>none</doclint>
             <quiet>true</quiet>
             <version>true</version>
@@ -1001,7 +995,6 @@
               <link>https://jena.apache.org/documentation/javadoc/text/</link>
               <link>https://jena.apache.org/documentation/javadoc/rdfconnection/</link>
               <link>https://jena.apache.org/documentation/javadoc/fuseki2/</link>
-              <link>https://jena.apache.org/documentation/javadoc/permissions/</link>
             </links>
             <!-- Settings for @apiNote, @implSpec and @implNote -->
             <tags>
