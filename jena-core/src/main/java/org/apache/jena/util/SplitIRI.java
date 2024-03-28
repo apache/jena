@@ -18,28 +18,43 @@
 
 package org.apache.jena.util;
 
+import java.util.Objects;
+
+import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Node;
-import org.apache.jena.rdf.model.impl.Util;
-//import org.apache.jena.riot.system.RiotChars;
+//Has copies of    import org.apache.jena.riot.system.RiotChars;
 
 /**
  * Code to split an URI or IRI into prefix and local part.
+ * This code does <em>not</em> consider any prefix mapping.
+ * The split is based on finding the last {@code /} or {@code #}
+ * character.
+ * <p>
  * Historically, 'prefix' is referred to as 'namespace'
  * reflecting RDF/XML history.
  * <p>
  * For display, use {@link #localname} and {@link #namespace}.
- * This follows Turtle, adds some pragmatic rules but does not escape
- * any characters. A URI is split never split before the last {@code /}
- * or last {@code #}, if present.
+ * These pragmatic follow Turtle (e.g. localname allows a plain trailing dot)
+ * but does not escape any characters.
+ *
+ * These operations are for display (c.f. {@link Object#toString} and do not guarantee a round-trip;
+ * namespace+localname may not be the  exact input IRI.
+ * A URI is split never split before the last {@code /} or {@code #}, if present.
  * See {@link #splitpoint} for more details.
  * <p>
- * This code forms the machinery behind {@link Node#getLocalName}
- * {@link Node#getNameSpace} for URI Nodes following the XML rules.
- * <p>
- * {@link #namespaceTTL} and {@link #localnameTTL} is strict Turtle; the local name is escaped if necessary.
+ * The functions
+ * {@link #namespaceTTL} and {@link #localnameTTL}
+ * provide a strict Turtle split, if possible;
+ * the local name is escaped if necessary.
+ * {@link #namespaceTTL} can be used to build a set of prefix mappings.
+ * {@link #localnameTTLNoEsc} is the same as {@link #localnameTTL}
+ * without the escaping applied.
  * <p>
  * The functions {@link #namespaceXML} and {@link #localnameXML}
  * apply the rules for XML qnames.
+ * <p>
+ * This code forms the machinery behind {@link Node#getLocalName}
+ * {@link Node#getNameSpace} for URI Nodes following the XML rules.
  */
 public class SplitIRI
 {
@@ -48,6 +63,7 @@ public class SplitIRI
      * Return the input string if there is no splitpoint.
      */
     public static String namespace(String string) {
+        Objects.requireNonNull(string, "string argument is null");
         int i = splitpoint(string);
         if ( i < 0 )
             return string;
@@ -57,9 +73,10 @@ public class SplitIRI
     /** Calculate a localname - do not escape PN_LOCAL_ESC.
      * This is not guaranteed to be legal Turtle.
      * Use with {@link #namespace}
-     * Return an empty string if there is no splitpoint.
+     * Return an empty string if there is no split point.
      */
     public static String localname(String string) {
+        Objects.requireNonNull(string, "string argument is null");
         int i = splitpoint(string);
         if ( i < 0 )
             return "";
@@ -68,22 +85,47 @@ public class SplitIRI
 
     /**
      * Return the 'namespace' (prefix) for a URI string,
-     * legal for Turtle and goes with {@link #localnameTTL}
+     * legal for Turtle and goes with {@link #localnameTTL}.
+     * This operation does not guaratee that the argument has a legal localname.
      */
     public static String namespaceTTL(String string) {
-        return namespace(string);
+        int i = splitpoint(string);
+        if ( i < 0 )
+            return string;
+        String ns = string.substring(0, i);
+        return ns;
     }
 
     /**
      * Calculate a localname - enforce legal Turtle
-     * escape PN_LOCAL_ESC, check for final '.'
+     * escapes for localnames (rule PN_LOCAL_ESC),
+     * A final '.' is escaped.
+     * Return "" for "no split".
      * Use with {@link #namespaceTTL}
      */
     public static String localnameTTL(String string) {
         String x = localname(string);
         if ( x.isEmpty())
             return x;
+        // This will escape the final DOT but leave internal dots alone.
         return escape_PN_LOCAL_ESC(x);
+    }
+
+    /**
+     * Calculate a localname - enforce legal Turtle
+     * without applying the escape PN_LOCAL_ESC.
+     * Return "" for 'no split'
+     * Check for final '.' - if present, return "".
+     */
+    public static String localnameTTLNoEsc(String string) {
+        String x = localname(string);
+        if ( x.isEmpty())
+            return x;
+        char lastChar = StrUtils.lastChar(x);
+        if ( lastChar == '.' )
+            // No legal localname.
+            return "";
+        return x;
     }
 
     private static String escape_PN_LOCAL_ESC(String x) {
@@ -113,8 +155,26 @@ public class SplitIRI
         return sb.toString();
     }
 
+    /**
+     * Scan for chars needing escape.
+     * Return the index of the first.
+     * Return -1 for no escape needed.
+     *
+     */
+    private static int needsEscape(String x) {
+        int N = x.length();
+        for ( int i = 0; i < N; i++ ) {
+            char ch = x.charAt(i);
+            if ( needsEscape(ch, (i==N-1)) ) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     private static boolean needsEscape(char ch, boolean finalChar) {
         if ( ch == '.' )
+            // Only needed at the end.
             return finalChar;
         return isPN_LOCAL_ESC(ch);
     }
@@ -146,6 +206,8 @@ public class SplitIRI
      * and {@code path/abc} .
      * <p>
      * Split URN's after ':'.
+     * <p>
+     * This function does not enforce the Turtle rule that the final character can not be '.'.
      *
      * @param uri URI string
      * @return The split point, or -1 for "not found".
@@ -245,9 +307,8 @@ public class SplitIRI
      */
     /** Split point, according to XML qname rules.
      * This is the longest NCName at the end of the uri.
-     * See {@link Util#splitNamespaceXML}.
      */
-    public static int splitXML(String string) { return Util.splitNamespaceXML(string); }
+    public static int splitXML(String string) { return splitNamespaceXML(string); }
 
     /** Namespace, according to XML qname rules.
      * Use with {@link #localnameXML}.
@@ -331,6 +392,90 @@ public class SplitIRI
 
     private static boolean range(int ch, char a, char b) {
         return (ch >= a && ch <= b);
+    }
+
+    // -------- --------
+    /**
+     * Given an absolute URI, determine the split point between the namespace
+     * part and the localname part. If there is no valid localname part then the
+     * length of the string is returned. The algorithm tries to find the longest
+     * NCName at the end of the uri, not immediately preceeded by the first
+     * colon in the string.
+     * <p>
+     * This operation follows XML QName rules which are more complicated than
+     * needed for Turtle and TriG.   For example, QName can't start with a digit.
+     *
+     * @param uri
+     * @return the index of the first character of the localname
+     * @see SplitIRI
+     */
+    public static int splitNamespaceXML(String uri) {
+
+        // XML Namespaces 1.0:
+        // A qname name is NCName ':' NCName
+        // NCName             ::=      NCNameStartChar NCNameChar*
+        // NCNameChar         ::=      NameChar - ':'
+        // NCNameStartChar    ::=      Letter | '_'
+        //
+        // XML 1.0
+        // NameStartChar      ::= ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] |
+        //                        [#xD8-#xF6] | [#xF8-#x2FF] |
+        //                        [#x370-#x37D] | [#x37F-#x1FFF] |
+        //                        [#x200C-#x200D] | [#x2070-#x218F] |
+        //                        [#x2C00-#x2FEF] | [#x3001-#xD7FF] |
+        //                        [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+        // NameChar           ::= NameStartChar | "-" | "." | [0-9] | #xB7 |
+        //                        [#x0300-#x036F] | [#x203F-#x2040]
+        // Name               ::= NameStartChar (NameChar)*
+
+        char ch;
+        int lg = uri.length();
+        if (lg == 0)
+            return 0;
+        int i = lg-1;
+        for (; i >= 1; i--) {
+            ch = uri.charAt(i);
+            if ( !XMLChar.isNCName(ch) )
+                break;
+        }
+
+        int j = i + 1;
+
+        if ( j >= lg )
+            return lg;
+
+        // Check we haven't split up a %-encoding.
+        if ( j >= 2 && uri.charAt(j-2) == '%' )
+            j = j+1;
+        if ( j >= 1 && uri.charAt(j-1) == '%' ) {
+            j = j+2;
+            if ( j > lg )
+                // JENA-1941: Protect against overshoot in the case of "%x"
+                // at end of a (bad) URI.
+                return lg;
+        }
+
+        // Have found the leftmost NCNameChar from the
+        // end of the URI string.
+        // Now scan forward for an NCNameStartChar
+        // The split must start with NCNameStart.
+        for (; j < lg; j++) {
+            ch = uri.charAt(j);
+//            if (XMLChar.isNCNameStart(ch))
+//                break;
+            if (XMLChar.isNCNameStart(ch))
+            {
+                // "mailto:" is special.
+                // split "mailto:me" as "mailto:m" and "e" !
+                // Keep part after mailto: with at least one character.
+                if ( j == 7 && uri.startsWith("mailto:"))
+                    // Don't split at "mailto:"
+                    continue;
+                else
+                    break;
+            }
+        }
+        return j;
     }
 }
 
