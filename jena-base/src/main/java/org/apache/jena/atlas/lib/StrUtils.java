@@ -138,6 +138,15 @@ public class StrUtils //extends StringUtils
         return x.isEmpty() ? x : x.substring(0, x.length() - 1) ;
     }
 
+    /**
+     * Return the last character of a string,
+     * return char zero if the string is zero
+     * length.
+     */
+    public static char lastChar(String x) {
+        return x.isEmpty() ? 0 : x.charAt(x.length()-1);
+    }
+
     public static String noNewlineEnding(String x) {
         while (x.endsWith("\n") || x.endsWith("\r"))
             x = StrUtils.chop(x) ;
