@@ -29,103 +29,22 @@ import org.apache.jena.graph.TextDirection;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.shared.CannotEncodeCharacterException;
 import org.apache.jena.util.SplitIRI;
-import org.apache.jena.util.XMLChar;
 
 /** Some utility functions.
  */
 public class Util extends Object {
 
-    /**
-     * Given an absolute URI, determine the split point between the namespace
-     * part and the localname part. If there is no valid localname part then the
-     * length of the string is returned. The algorithm tries to find the longest
-     * NCName at the end of the uri, not immediately preceeded by the first
-     * colon in the string.
-     * <p>
-     * This operation follows XML QName rules which are more complicated than
-     * needed for Turtle and TriG.   For example, QName can't start with a digit.
-     *
-     * @param uri
-     * @return the index of the first character of the localname
-     * @see SplitIRI
-     */
-    public static int splitNamespaceXML(String uri) {
-
-        // XML Namespaces 1.0:
-        // A qname name is NCName ':' NCName
-        // NCName             ::=      NCNameStartChar NCNameChar*
-        // NCNameChar         ::=      NameChar - ':'
-        // NCNameStartChar    ::=      Letter | '_'
-        //
-        // XML 1.0
-        // NameStartChar      ::= ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] |
-        //                        [#xD8-#xF6] | [#xF8-#x2FF] |
-        //                        [#x370-#x37D] | [#x37F-#x1FFF] |
-        //                        [#x200C-#x200D] | [#x2070-#x218F] |
-        //                        [#x2C00-#x2FEF] | [#x3001-#xD7FF] |
-        //                        [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
-        // NameChar           ::= NameStartChar | "-" | "." | [0-9] | #xB7 |
-        //                        [#x0300-#x036F] | [#x203F-#x2040]
-        // Name               ::= NameStartChar (NameChar)*
-
-        char ch;
-        int lg = uri.length();
-        if (lg == 0)
-            return 0;
-        int i = lg-1;
-        for (; i >= 1; i--) {
-            ch = uri.charAt(i);
-            if (notNameChar(ch)) break;
-        }
-
-        int j = i + 1;
-
-        if ( j >= lg )
-            return lg;
-
-        // Check we haven't split up a %-encoding.
-        if ( j >= 2 && uri.charAt(j-2) == '%' )
-            j = j+1;
-        if ( j >= 1 && uri.charAt(j-1) == '%' ) {
-            j = j+2;
-            if ( j > lg )
-                // JENA-1941: Protect against overshoot in the case of "%x"
-                // at end of a (bad) URI.
-                return lg;
-        }
-
-        // Have found the leftmost NCNameChar from the
-        // end of the URI string.
-        // Now scan forward for an NCNameStartChar
-        // The split must start with NCNameStart.
-        for (; j < lg; j++) {
-            ch = uri.charAt(j);
-//            if (XMLChar.isNCNameStart(ch))
-//                break;
-            if (XMLChar.isNCNameStart(ch))
-            {
-                // "mailto:" is special.
-                // split "mailto:me" as "mailto:m" and "e" !
-                // Keep part after mailto: with at least one character.
-                if ( j == 7 && uri.startsWith("mailto:"))
-                    // Don't split at "mailto:"
-                    continue;
-                else
-                    break;
-            }
-        }
-        return j;
-    }
-
-    /**
-	    answer true iff this is not a legal NCName character, ie, is
-	    a possible split-point start.
-    */
-    public static boolean notNameChar( char ch )
-        { return !XMLChar.isNCName( ch ); }
-
     protected static Pattern standardEntities =
         Pattern.compile( "&|<|>|\t|\n|\r|\'|\"" );
+
+    /**
+     * Given an absolute URI, determine the split point between the namespace
+     * part and the localname part. See {@link SplitIRI#splitNamespaceXML} for details.
+     */
+    public static int splitNamespaceXML(String uri) {
+        // Legacy. Call the moved code.
+        return SplitIRI.splitNamespaceXML(uri);
+    }
 
     public static String substituteStandardEntities( String s )
         {

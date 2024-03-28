@@ -31,23 +31,26 @@ public class TestPackage_util extends TestSuite {
     static public TestSuite suite() {
         return new TestPackage_util();
     }
-    
+
     /** Creates new TestPackage */
     private TestPackage_util() {
         super( "util" );
-        addTest( "TestTokenzier",         TestTokenizer.suite());
-        addTest( "TestFileUtils",         TestFileUtils.suite() );
-        addTest( "TestHashUtils",         TestCollectionFactory.suite() );
-        addTest( "TestLocationMapper",    TestLocationMapper.suite() ) ;
-        addTest( "TestFileManager",       TestFileManager.suite()) ;
-        addTest( "TestMonitors",          TestMonitors.suite()) ;
-        addTest( "TestPrintUtil",         TestPrintUtil.suite()) ;
+        addTest( "TestTokenzier",          TestTokenizer.suite());
+        addTest( "TestFileUtils",          TestFileUtils.suite() );
+        addTest( "TestHashUtils",          TestCollectionFactory.suite() );
+        addTest( "TestLocationMapper",     TestLocationMapper.suite() ) ;
+        addTest( "TestFileManager",        TestFileManager.suite()) ;
+        addTest( "TestMonitors",           TestMonitors.suite()) ;
+        addTest( "TestPrintUtil",          TestPrintUtil.suite()) ;
         addTest( "TestPrefixMappingUtils", TestPrefixMappingUtils.suite() );
-        addTest( TestIteratorCollection.suite() );
-        addTest( "TestSplitIRI_XML",      TestSplitIRI_XML.suite()) ;
-        addTest( "TestSplitIRI_TTL",      TestSplitIRI_TTL.suite()) ;
-        addTest( "TestModelCollector",    TestModelCollector.suite()) ;
-        
+        addTest( "TestIteratorCollection", TestIteratorCollection.suite() );
+        addTest( "TestModelCollector",     TestModelCollector.suite()) ;
+
+        addTest( "TestSplitIRI_Display",   TestSplitIRI_Display.suite()) ;
+        addTest( "TestSplitIRI_XML",       TestSplitIRI_XML.suite()) ;
+        addTest( "TestSplitIRI_TTL",       TestSplitIRI_TTL.suite()) ;
+
+        // Needs the legacy N3 reader loaded.
         addTestSuite( TestLocators.class );
         addTestSuite( TestOneToManyMap.class );
     }
@@ -55,7 +58,7 @@ public class TestPackage_util extends TestSuite {
     private void addTest(String name, TestSuite tc) {
         tc.setName(name);
         addTest(tc);
-    }        
+    }
     private void addTest(String name, Test tc) {
         addTest(tc);
     }

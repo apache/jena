@@ -37,22 +37,22 @@ import org.apache.jena.util.XMLChar;
 public class PrefixMappingImpl implements PrefixMapping
     // See also PrefixMappingBase, PrefixMappingMem
     // in org.apache.jena.sparql.graph
-    // for a different implementation  
+    // for a different implementation
 
 
     {
     private Map<String, String> prefixToURI;
     private Map<String, String> URItoPrefix;
     private boolean locked;
-    
+
     public PrefixMappingImpl()
-        { 
+        {
         // ConcurrentHashMaps protects against breaking each datastructure
         // but does not protect against inconsistency.
         prefixToURI = new ConcurrentHashMap<>();
-        URItoPrefix = new ConcurrentHashMap<>(); 
+        URItoPrefix = new ConcurrentHashMap<>();
         }
-    
+
     protected void set(String prefix, String uri) {
         prefixToURI.put(prefix, uri) ;
         URItoPrefix.put(uri, prefix) ;
@@ -68,13 +68,13 @@ public class PrefixMappingImpl implements PrefixMapping
 
     @Override
     public PrefixMapping lock()
-        { 
-        locked = true; 
+        {
+        locked = true;
         return this;
         }
-        
+
     @Override
-    public PrefixMapping setNsPrefix( String prefix, String uri ) 
+    public PrefixMapping setNsPrefix( String prefix, String uri )
         {
         checkUnlocked();
         checkLegal( prefix );
@@ -83,7 +83,7 @@ public class PrefixMappingImpl implements PrefixMapping
         set( prefix, uri );
         return this;
         }
-    
+
     @Override
     public PrefixMapping removeNsPrefix( String prefix )
         {
@@ -92,7 +92,7 @@ public class PrefixMappingImpl implements PrefixMapping
         regenerateReverseMapping() ;
         return this;
         }
-    
+
     @Override
     public PrefixMapping clearNsPrefixMap() {
         checkUnlocked();
@@ -103,42 +103,42 @@ public class PrefixMappingImpl implements PrefixMapping
         regenerateReverseMapping() ;
         return this ;
     }
-    
+
     protected void regenerateReverseMapping()
         {
         URItoPrefix.clear();
         for (Map.Entry<String, String> e: prefixToURI.entrySet())
             URItoPrefix.put( e.getValue(), e.getKey() );
         }
-        
+
     protected void checkUnlocked()
         { if (locked) throw new JenaLockedException( this ); }
-        
+
     private void checkProper( String uri )
-        { 
+        {
         // suppressed by popular demand. TODO consider optionality
         // if (!isNiceURI( uri )) throw new NamespaceEndsWithNameCharException( uri );
         }
-        
+
     public static boolean isNiceURI( String uri )
         {
         if (uri.equals( "" )) return false;
         char last = uri.charAt( uri.length() - 1 );
-        return Util.notNameChar( last ); 
+        return !XMLChar.isNCName(last);
         }
-        
+
     /**
-        Add the bindings of other to our own. We defer to the general case 
+        Add the bindings of other to our own. We defer to the general case
         because we have to ensure the URIs are checked.
-        
+
         @param other the PrefixMapping whose bindings we are to add to this.
     */
     @Override
     public PrefixMapping setNsPrefixes( PrefixMapping other )
         { return setNsPrefixes( other.getNsPrefixMap() ); }
-    
+
     /**
-         Answer this PrefixMapping after updating it with the <code>(p, u)</code> 
+         Answer this PrefixMapping after updating it with the <code>(p, u)</code>
          mappings in <code>other</code> where neither <code>p</code> nor
          <code>u</code> appear in this mapping.
     */
@@ -154,13 +154,13 @@ public class PrefixMappingImpl implements PrefixMapping
             }
         return this;
         }
-        
+
     /**
         Add the bindings in the prefixToURI to our own. This will fail with a ClassCastException
         if any key or value is not a String; we make no guarantees about order or
         completeness if this happens. It will fail with an IllegalPrefixException if
         any prefix is illegal; similar provisos apply.
-        
+
          @param other the Map whose bindings we are to add to this.
     */
     @Override
@@ -171,28 +171,28 @@ public class PrefixMappingImpl implements PrefixMapping
             setNsPrefix( e.getKey(), e.getValue() );
         return this;
         }
-         
+
     /**
         Checks that a prefix is "legal" - it must be a valid XML NCName.
     */
     private void checkLegal( String prefix )
         {
         if (prefix.length() > 0 && !XMLChar.isValidNCName( prefix ))
-            throw new PrefixMapping.IllegalPrefixException( prefix ); 
+            throw new PrefixMapping.IllegalPrefixException( prefix );
         }
-        
+
     @Override
-    public String getNsPrefixURI( String prefix ) 
+    public String getNsPrefixURI( String prefix )
         { return get( prefix ); }
-        
+
     @Override
     public Map<String, String> getNsPrefixMap()
         { return CollectionFactory.createHashedMap( prefixToURI ); }
-        
+
     @Override
     public String getNsURIPrefix( String uri )
         { return URItoPrefix.get( uri ); }
-        
+
     /**
         Expand a prefixed URI. There's an assumption that any URI of the form
         Head:Tail is subject to mapping if Head is in the prefix mapping. So, if
@@ -202,22 +202,22 @@ public class PrefixMappingImpl implements PrefixMapping
     public String expandPrefix( String prefixed )
         {
         int colon = prefixed.indexOf( ':' );
-        if (colon < 0) 
+        if (colon < 0)
             return prefixed;
         else
             {
             String uri = get( prefixed.substring( 0, colon ) );
             return uri == null ? prefixed : uri + prefixed.substring( colon + 1 );
-            } 
+            }
         }
-        
+
     /**
         Answer a readable (we hope) representation of this prefix mapping.
     */
     @Override
     public String toString()
         { return "pm:" + prefixToURI; }
-        
+
     /**
         Answer the qname for <code>uri</code> which uses a prefix from this
         mapping, or null if there isn't one.
@@ -225,19 +225,19 @@ public class PrefixMappingImpl implements PrefixMapping
         Relies on <code>splitNamespace</code> to carve uri into namespace and
         localname components; this ensures that the localname is legal and we just
         have to (reverse-)lookup the namespace in the prefix table.
-        
+
      	@see org.apache.jena.shared.PrefixMapping#qnameFor(java.lang.String)
     */
     @Override
     public String qnameFor( String uri )
-        { 
+        {
         int split = Util.splitNamespaceXML( uri );
         String ns = uri.substring( 0, split ), local = uri.substring( split );
         if (local.equals( "" )) return null;
         String prefix = URItoPrefix.get( ns );
         return prefix == null ? null : prefix + ":" + local;
         }
-    
+
     /**
         Compress the URI using the prefix mapping. This version of the code looks
         through all the maplets and checks each candidate prefix URI for being a
@@ -251,16 +251,16 @@ public class PrefixMappingImpl implements PrefixMapping
         Entry<String, String> e = findMapping( uri, true );
         return e == null ? uri : e.getKey() + ":" + uri.substring( (e.getValue()).length() );
         }
-        
+
     @Override
     public boolean samePrefixMappingAs( PrefixMapping other )
         {
-        return other instanceof PrefixMappingImpl 
+        return other instanceof PrefixMappingImpl
             ? equals( (PrefixMappingImpl) other )
             : equalsByMap( other )
             ;
         }
-    
+
     @Override
     public boolean hasNoMappings()
         { return prefixToURI.isEmpty(); }
@@ -268,22 +268,22 @@ public class PrefixMappingImpl implements PrefixMapping
     @Override
     public int numPrefixes()
         { return prefixToURI.size(); }
-    
+
     protected boolean equals( PrefixMappingImpl other )
         { return other.sameAs( this ); }
-    
+
     protected boolean sameAs( PrefixMappingImpl other )
         { return prefixToURI.equals( other.prefixToURI ); }
-    
+
     protected final boolean equalsByMap( PrefixMapping other )
         { return getNsPrefixMap().equals( other.getNsPrefixMap() ); }
-    
+
     /**
         Answer a prefixToURI entry in which the value is an initial substring of <code>uri</code>.
         If <code>partial</code> is false, then the value must equal <code>uri</code>.
-        
+
         Does a linear search of the entire prefixToURI, so not terribly efficient for large maps.
-        
+
         @param uri the value to search for
         @param partial true if the match can be any leading substring, false for exact match
         @return some entry (k, v) such that uri starts with v [equal for partial=false]
@@ -294,8 +294,8 @@ public class PrefixMappingImpl implements PrefixMapping
             {
             String ss = e.getValue();
             if (uri.startsWith( ss ) && (partial || ss.length() == uri.length())) return e;
-            } 
-        return null;         
-        }    
+            }
+        return null;
+        }
 
     }
