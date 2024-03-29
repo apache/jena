@@ -3,6 +3,8 @@ Released: 2024-03-20
 Issues: https://s.apache.org/jena-5.0.0-issues
 which includes the ones specifically related to Jena5:
   https://github.com/apache/jena/issues?q=label%3Ajena5
+Announcement:
+https://lists.apache.org/thread/hn1d1mpg9hwv7m0m620j53jgpw2rrdyz
 
 == Apache Jena 5.0.0-rc1
 Released: 2024-02-14
