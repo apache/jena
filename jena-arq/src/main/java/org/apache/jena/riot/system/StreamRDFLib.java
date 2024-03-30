@@ -215,7 +215,7 @@ public class StreamRDFLib
 
         @Override
         public void prefix(String prefix, String uri) {
-            try { // Some graphs applies XML rules to prefixes.
+            try { // Some graphs apply XML rules to prefixes.
                 graph.getPrefixMapping().setNsPrefix(prefix, uri);
             } catch (JenaException ex) {}
         }
