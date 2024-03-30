@@ -20,6 +20,8 @@ package org.apache.jena.sparql.graph;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 
 import org.apache.jena.atlas.iterator.Iter;
@@ -81,8 +83,13 @@ public class GraphUnionRead extends GraphBase {
     protected PrefixMapping createPrefixMapping() {
         PrefixMapping pmap = new PrefixMappingImpl();
         forEachGraph((g) -> {
-            PrefixMapping pmapNamedGraph = g.getPrefixMapping();
-            pmap.setNsPrefixes(pmapNamedGraph);
+            Map<String, String> map = g.getPrefixMapping().getNsPrefixMap();
+            for (Entry<String, String> e: map.entrySet()) {
+                try {
+                    // PrefixMapping protects against RDF/XML illegal prefixes.
+                    pmap.setNsPrefix( e.getKey(), e.getValue() );
+                } catch (PrefixMapping.IllegalPrefixException ex) { /* ignore unacceptable prefixes */ }
+            }
         });
         return pmap;
     }
