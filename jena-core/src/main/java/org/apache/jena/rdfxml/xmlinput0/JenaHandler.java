@@ -40,7 +40,7 @@ final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler, 
 
     public JenaHandler( Graph g, Model m, RDFErrorHandler e )
         { this( g, modelToPrefixMapping( m ), e ); }
-    
+
     private JenaHandler( Graph graph, RDFErrorHandler e )
         { this( graph, graph.getPrefixMapping(), e ); }
 
@@ -48,13 +48,13 @@ final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler, 
         {
         super( errorHandler );
         this.graph = graph ;
-        this.prefixMapping = prefixMapping; 
+        this.prefixMapping = prefixMapping;
         }
-    
+
     private static PrefixMapping modelToPrefixMapping( Model model )
         {
-        return model == null 
-            ? PrefixMapping.Factory.create() 
+        return model == null
+            ? PrefixMapping.Factory.create()
             : model.getGraph().getPrefixMapping()
             ;
         }
@@ -93,6 +93,7 @@ final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler, 
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void startPrefixMapping( String prefix, String uri )
         {
         if (PrefixMappingImpl.isNiceURI( uri )) prefixMapping.setNsPrefix( prefix, uri );

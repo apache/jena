@@ -28,8 +28,6 @@ import org.apache.jena.vocabulary.RDFSyntax ;
  * set on RDF/XML and RDF/XML-ABBREV writers.
  */
 public interface RDFXMLWriterI extends RDFWriterI {
-    /** Suppress a compiler warning. */
-   Object _NotInteresting = RDFSyntax.parseCollection;
 
 /** Sets properties on this writer.
 
@@ -217,9 +215,6 @@ This is a list of
  * @return the old value for this property, or <code>null</code>
  * if no value was set.
  */
- @Override
-Object setProperty(
-    String propName,
-    Object propValue);
-
+    @Override
+    Object setProperty(String propName, Object propValue);
 }

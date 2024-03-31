@@ -39,6 +39,7 @@ import org.apache.jena.rdfxml.xmloutput.RDFXMLWriterI ;
 import org.apache.jena.shared.* ;
 import org.apache.jena.util.CharEncoding ;
 import org.apache.jena.util.FileUtils ;
+import org.apache.jena.util.SplitIRI;
 import org.apache.jena.util.XMLChar;
 import org.apache.jena.vocabulary.* ;
 import org.slf4j.Logger ;
@@ -101,7 +102,18 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     abstract protected void writeBody
         ( Model mdl, PrintWriter pw, String baseUri, boolean inclXMLBase );
 
-	static private Set<String> badRDF = new HashSet<>();
+	static private Set<String> badRDF = Set.of("RDF",
+	                                           "Description",
+	                                           "li",
+	                                           "about",
+	                                           "aboutEach",
+	                                           "aboutEachPrefix",
+	                                           "ID",
+	                                           "nodeID",
+	                                           "parseType",
+	                                           "datatype",
+	                                           "bagID",
+	                                           "resource");
 
     /**
         Counter used for allocating Jena transient namespace declarations.
@@ -111,25 +123,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	static String RDFNS = RDF.getURI();
 
 
-	static private Pattern jenaNamespace;
-
-	static {
-	    jenaNamespace =
-				Pattern.compile("j\\.([1-9][0-9]*|cook\\.up)");
-
-		badRDF.add("RDF");
-		badRDF.add("Description");
-		badRDF.add("li");
-		badRDF.add("about");
-		badRDF.add("aboutEach");
-		badRDF.add("aboutEachPrefix");
-		badRDF.add("ID");
-		badRDF.add("nodeID");
-		badRDF.add("parseType");
-		badRDF.add("datatype");
-		badRDF.add("bagID");
-		badRDF.add("resource");
-	}
+	static private final Pattern jenaNamespace = Pattern.compile("j\\.([1-9][0-9]*|cook\\.up)");
 
 	String xmlBase = null;
 
@@ -222,36 +216,30 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         while (nsIter.hasNext()) this.addNameSpace( nsIter.nextNs() );
     }
 
-    private void primeNamespace( Model model )
-    {
+    private void primeNamespace(Model model) {
         Map<String, String> m = model.getNsPrefixMap();
-        for ( Entry<String, String> e : m.entrySet() )
-        {
+        for ( Entry<String, String> e : m.entrySet() ) {
             String value = e.getValue();
-            String already = this.getPrefixFor( value );
-            if ( already == null )
-            {
-                this.setNsPrefix( model.getNsURIPrefix( value ), value );
-                if ( writingAllModelPrefixNamespaces )
-                {
-                    this.addNameSpace( value );
+            String already = this.getPrefixFor(value);
+            if ( already == null ) {
+                this.setNsPrefix(model.getNsURIPrefix(value), value);
+                if ( writingAllModelPrefixNamespaces ) {
+                    this.addNameSpace(value);
                 }
             }
         }
 
-        if ( usesPrefix(model, "") )
-        {
-            // Doing "" prefix.  Ensure it is a non-clashing, non-empty entity name.
-            String entityForEmptyPrefix = DEFAULT_NS_ENTITY_NAME ;
+        if ( usesPrefix(model, "") ) {
+            // Doing "" prefix. Ensure it is a non-clashing, non-empty entity name.
+            String entityForEmptyPrefix = DEFAULT_NS_ENTITY_NAME;
             if ( usesPrefix(model, entityForEmptyPrefix) )
-                entityForEmptyPrefix = DEFAULT_NS_ENTITY_NAME_ALT ;
-            int i = 0 ;
-            while ( usesPrefix(model,entityForEmptyPrefix) )
-            {
-                entityForEmptyPrefix = DEFAULT_NS_ENTITY_NAME_ALT+"."+i ;
-                i++ ;
+                entityForEmptyPrefix = DEFAULT_NS_ENTITY_NAME_ALT;
+            int i = 0;
+            while (usesPrefix(model, entityForEmptyPrefix)) {
+                entityForEmptyPrefix = DEFAULT_NS_ENTITY_NAME_ALT + "." + i;
+                i++;
             }
-            defaultNSEntityName = entityForEmptyPrefix ;
+            defaultNSEntityName = entityForEmptyPrefix;
         }
     }
 
@@ -287,40 +275,34 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     }
 
     private void setFromGivenNamespaces( Map<String, String> ns, Set<String> prefixesUsed ) {
-        for ( String uri : namespacesNeeded )
-        {
-            if ( ns.containsKey( uri ) )
-            {
+        for ( String uri : namespacesNeeded ) {
+            if ( ns.containsKey(uri) ) {
                 continue;
             }
             String val = null;
-            Set<String> s = nameSpaces.forward( uri );
-            if ( s != null )
-            {
+            Set<String> s = nameSpaces.forward(uri);
+            if ( s != null ) {
                 Iterator<String> it2 = s.iterator();
-                if ( it2.hasNext() )
-                {
+                if ( it2.hasNext() ) {
                     val = it2.next();
                 }
-                if ( prefixesUsed.contains( val ) )
-                {
+                if ( prefixesUsed.contains(val) ) {
                     val = null;
                 }
             }
-            if ( val == null )
-            {
-                // just in case the prefix has already been used, look for a free one.
-                // (the usual source of such prefixes is reading in a model we wrote out earlier)
-                do
-                {
-                    val = "j." + ( jenaPrefixCount++ );
-                }
-                while ( prefixesUsed.contains( val ) );
+            if ( val == null ) {
+                // just in case the prefix has already been used, look for a free
+                // one.
+                // (the usual source of such prefixes is reading in a model we wrote
+                // out earlier)
+                do {
+                    val = "j." + (jenaPrefixCount++);
+                } while (prefixesUsed.contains(val));
             }
-            ns.put( uri, val );
-            prefixesUsed.add( val );
+            ns.put(uri, val);
+            prefixesUsed.add(val);
         }
-	}
+    }
 
 	final synchronized public void setNsPrefix(String prefix, String ns) {
         if (checkLegalPrefix(prefix)) {
@@ -328,15 +310,14 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         }
     }
 
-    final public String getPrefixFor( String uri )
-        {
+    final public String getPrefixFor( String uri ) {
             // xml and xmlns namespaces are pre-bound
             if ("http://www.w3.org/XML/1998/namespace".equals(uri)) return "xml";
             if ("http://www.w3.org/2000/xmlns/".equals(uri)) return "xmlns";
         Set<String> s = nameSpaces.backward( uri );
         if (s != null && s.size() == 1) return s.iterator().next();
         return null;
-        }
+    }
 
 	String xmlnsDecl() {
 		workOutNamespaces();
@@ -392,13 +373,12 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	}
 
 	String splitTag(String uriref, int type) {
-		int split = Util.splitNamespaceXML( uriref );
+		int split = SplitIRI.splitXML( uriref );
 		if (split == uriref.length()) throw new InvalidPropertyURIException( uriref );
 		return tag( uriref.substring( 0, split ), uriref.substring( split ), type, true );
     }
 
-	String tag( String namespace, String local, int type, boolean localIsQname)  {
-		String prefix = ns.get( namespace );
+	String tag( String namespace, String local, int type, boolean localIsQname) {
 		if (type != FAST && type != FASTATTR) {
 			if ((!localIsQname) && !XMLChar.isValidNCName(local))
 				return splitTag(namespace + local, type);
@@ -411,14 +391,12 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 				}
 			}
 		}
+        String prefix = ns.get( namespace );
 		boolean cookUp = false;
 		if (prefix == null) {
             checkURI( namespace );
-			logger.warn(
-				"Internal error: unexpected QName URI: <"
-					+ namespace
-					+ ">.  Fixing up with j.cook.up code.",
-				new BrokenException( "unexpected QName URI " + namespace ));
+            logger.warn("Internal error: unexpected QName URI: <" + namespace + ">.  Fixing up.",
+        				new BrokenException( "unexpected QName URI " + namespace ));
 			cookUp = true;
 		} else if (prefix.length() == 0) {
 			if (type == ATTR || type == FASTATTR)
@@ -430,8 +408,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		return prefix + ":" + local;
 	}
 
-    private String cookUpAttribution( int type, String namespace, String local )
-        {
+    private String cookUpAttribution( int type, String namespace, String local ) {
         String prefix = "j.cook.up";
         switch (type) {
             case FASTATTR :
@@ -445,8 +422,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             case FAST :
               //  logger.error("Unreachable code - reached.");
                 throw new BrokenException( "cookup reached final FAST" );
-            }
         }
+    }
 
 	/** Write out an XML serialization of a model.
 	 * @param model the model to be serialized
@@ -455,37 +432,36 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 */
 	@Override
     final public void write(Model model, OutputStream out, String base)
-		 { write( model, FileUtils.asUTF8(out), base ); }
+	{ write( model, FileUtils.asUTF8(out), base ); }
 
 	/** Serialize Model <code>model</code> to Writer <code>out</code>.
      * @param model The model to be written.
 	 * @param out The Writer to which the serialization should be sent.
 	 * @param base the base URI for relative URI calculations.  <code>null</code> means use only absolute URI's.
 	 */
-	@Override
-    synchronized public void write(Model model, Writer out, String base)
-		 {
-		setupNamespaces( model );
-		PrintWriter pw = out instanceof PrintWriter ? (PrintWriter) out : new PrintWriter( out );
-		if (!Boolean.FALSE.equals(showXmlDeclaration)) writeXMLDeclaration( out, pw );
-		writeXMLBody( model, pw, base );
-		pw.flush();
-	}
+    @Override
+    synchronized public void write(Model model, Writer out, String base) {
+        setupNamespaces(model);
+        PrintWriter pw = out instanceof PrintWriter ? (PrintWriter)out : new PrintWriter(out);
+        if ( !Boolean.FALSE.equals(showXmlDeclaration) )
+            writeXMLDeclaration(out, pw);
+        writeXMLBody(model, pw, base);
+        pw.flush();
+    }
 
     /**
      	@param baseModel
      	@param model
     */
-    private void setupNamespaces( Model model )
-        {
+    private void setupNamespaces(Model model) {
         this.namespacesNeeded = new HashSet<>();
         this.ns = null;
         this.modelPrefixMapping = model;
-        primeNamespace( model );
-        addNameSpace( RDF.getURI() );
+        primeNamespace(model);
+        addNameSpace(RDF.getURI());
         addNameSpaces(model);
         jenaPrefixCount = 0;
-        }
+    }
 
 	private void writeXMLBody( Model model, PrintWriter pw, String base ) {
         if (showDoctypeDeclaration.booleanValue())
@@ -503,63 +479,55 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	protected static final Pattern predefinedEntityNames = Pattern.compile( "amp|lt|gt|apos|quot" );
 
     public boolean isPredefinedEntityName( String name )
-        { return predefinedEntityNames.matcher( name ).matches(); }
+    { return predefinedEntityNames.matcher( name ).matches(); }
 
     private String attributeQuoteChar ="\"";
 
     protected String attributeQuoted( String s )
-        { return attributeQuoteChar + s + attributeQuoteChar; }
+    { return attributeQuoteChar + s + attributeQuoteChar; }
 
-    protected String substitutedAttribute( String s )
-        {
+    protected String substitutedAttribute( String s ) {
         String substituted = Util.substituteStandardEntities( s );
         if (!showDoctypeDeclaration.booleanValue())
             return attributeQuoted( substituted );
-        else
-            {
-            int split = Util.splitNamespaceXML( substituted );
+        else {
+            int split = SplitIRI.splitXML( substituted );
             String namespace = substituted.substring(  0, split );
             String prefix = modelPrefixMapping.getNsURIPrefix( namespace );
             return prefix == null || isPredefinedEntityName( prefix )
                 ? attributeQuoted( substituted )
                 : attributeQuoted( "&" + strForPrefix(prefix) + ";" + substituted.substring( split ) )
                 ;
-            }
         }
+    }
 
-    private void generateDoctypeDeclaration( Model model, PrintWriter pw )
-        {
+    private void generateDoctypeDeclaration( Model model, PrintWriter pw ) {
         String rdfns = RDF.getURI();
-		String rdfRDF = model.qnameFor( rdfns + "RDF" );
+        String rdfRDF = model.qnameFor( rdfns + "RDF" );
         if ( rdfRDF == null ) {
-        	model.setNsPrefix("rdf",rdfns);
-        	rdfRDF = "rdf:RDF";
+            model.setNsPrefix("rdf",rdfns);
+            rdfRDF = "rdf:RDF";
         }
         Map<String, String> prefixes = model.getNsPrefixMap();
         pw.print( "<!DOCTYPE " + rdfRDF +" [" );
-            for ( String prefix : prefixes.keySet() )
-            {
-                if ( isPredefinedEntityName( prefix ) )
-                {
-                    continue;
-                }
-                pw.print(
-                    newline + "  <!ENTITY " + strForPrefix( prefix ) + " '" + Util.substituteEntitiesInEntityValue(
-                        prefixes.get( prefix ) ) + "'>" );
-            }
-        pw.print( "]>" + newline );
+        for ( String prefix : prefixes.keySet() ) {
+            if ( isPredefinedEntityName( prefix ) )
+                continue;
+            pw.print(newline
+                     + "  <!ENTITY " + strForPrefix( prefix ) + " '" + Util.substituteEntitiesInEntityValue(prefixes.get( prefix ) )
+                     + "'>" );
         }
-
-	private String strForPrefix(String prefix)
-    {
-        if ( prefix.length() == 0 )
-            return defaultNSEntityName ;
-        return prefix ;
+        pw.print( "]>" + newline );
     }
 
-	private static boolean usesPrefix(Model model, String prefix)
-	{
-	    return model.getNsPrefixURI(prefix) != null ;
+    private String strForPrefix(String prefix) {
+        if ( prefix.length() == 0 )
+            return defaultNSEntityName;
+        return prefix;
+    }
+
+    private static boolean usesPrefix(Model model, String prefix) {
+        return model.getNsPrefixURI(prefix) != null;
     }
 
     private void writeXMLDeclaration(Writer out, PrintWriter pw) {
@@ -711,19 +679,17 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		return result;
 	}
 
-    private String setShowDoctypeDeclaration( Object propValue )
-        {
+    private String setShowDoctypeDeclaration(Object propValue) {
         String oldValue = showDoctypeDeclaration.toString();
         showDoctypeDeclaration = getBooleanValue( propValue, Boolean.FALSE );
         return oldValue;
         }
 
-    private String setShowXmlDeclaration( Object propValue )
-        {
+    private String setShowXmlDeclaration( Object propValue ) {
         String oldValue = showXmlDeclaration == null ? null : showXmlDeclaration.toString();
         showXmlDeclaration = getBooleanValue( propValue, null );
         return oldValue;
-        }
+    }
 
     /**
         Answer the boolean value corresponding to o, which must either be a Boolean,
@@ -732,8 +698,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     static private boolean getBoolean( Object o )
         { return getBooleanValue( o, Boolean.FALSE ).booleanValue(); }
 
-    private static Boolean getBooleanValue( Object propValue, Boolean theDefault )
-        {
+    private static Boolean getBooleanValue( Object propValue, Boolean theDefault ) {
         if (propValue == null)
             return theDefault;
         else if (propValue instanceof Boolean)
@@ -742,15 +707,14 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             return stringToBoolean( (String) propValue, theDefault );
         else
             throw new JenaException( "cannot treat as boolean: " + propValue );
-        }
+    }
 
-	private static Boolean stringToBoolean( String b, Boolean theDefault )
-        {
+	private static Boolean stringToBoolean( String b, Boolean theDefault ) {
         if (b.equals( "default" )) return theDefault;
         if (b.equalsIgnoreCase( "true" )) return Boolean.TRUE;
         if (b.equalsIgnoreCase( "false" )) return Boolean.FALSE;
         throw new BadBooleanException( b );
-        }
+	}
 
 	Resource[] setTypes( Resource x[] ) {
 		logger.warn( "prettyTypes is not a property on the Basic RDF/XML writer." );

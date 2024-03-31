@@ -90,6 +90,7 @@ final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler, 
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void startPrefixMapping(String prefix, String uri) {
         if ( PrefixMappingImpl.isNiceURI(uri) )
             prefixMapping.setNsPrefix(prefix, uri);

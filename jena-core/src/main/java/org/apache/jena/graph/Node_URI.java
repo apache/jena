@@ -20,8 +20,8 @@ package org.apache.jena.graph;
 
 import java.util.Objects;
 
-import org.apache.jena.rdf.model.impl.Util ;
-import org.apache.jena.shared.* ;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.util.SplitIRI;
 
 /**
     RDF nodes with a global identity given by a URI.
@@ -73,12 +73,12 @@ public class Node_URI extends Node
 
     @Override
     public String getNameSpace() {
-        return uriStr.substring(0, Util.splitNamespaceXML(uriStr));
+        return uriStr.substring(0, SplitIRI.splitXML(uriStr));
     }
 
     @Override
     public String getLocalName() {
-        return uriStr.substring(Util.splitNamespaceXML(uriStr));
+        return uriStr.substring(SplitIRI.splitXML(uriStr));
     }
 
     @Override

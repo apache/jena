@@ -20,7 +20,6 @@ package org.apache.jena.graph.test;
 
 
 import junit.framework.TestSuite ;
-
 import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
@@ -28,9 +27,9 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.* ;
 import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.graph.impl.LiteralLabelFactory ;
-import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.util.SplitIRI;
 import org.apache.jena.vocabulary.* ;
 
 /**
@@ -714,7 +713,7 @@ public class TestNode extends GraphTestBase
     {
         for ( String uri : someURIs )
         {
-            int split = Util.splitNamespaceXML( uri );
+            int split = SplitIRI.splitXML( uri );
             Node n = NodeCreateUtils.create( uri );
             assertEquals( "check namespace", uri.substring( 0, split ), n.getNameSpace() );
             assertEquals( "check localname", uri.substring( split ), n.getLocalName() );
