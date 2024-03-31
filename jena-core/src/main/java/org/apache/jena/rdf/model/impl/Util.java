@@ -46,39 +46,36 @@ public class Util extends Object {
         return SplitIRI.splitXML(uri);
     }
 
-    public static String substituteStandardEntities( String s )
-        {
-        if (standardEntities.matcher( s ).find())
-            {
+    public static String substituteStandardEntities( String s ) {
+        if (standardEntities.matcher( s ).find()) {
             return substituteEntitiesInElementContent( s )
-                .replaceAll( "'", "&apos;" )
-                .replaceAll( "\t","&#9;" )
-                .replaceAll( "\n", "&#xA;" )
-                .replaceAll( "\r", "&#xD;" )
-                .replaceAll( "\"", "&quot;" )
-               ;
-            }
+                    .replaceAll( "'", "&apos;" )
+                    .replaceAll( "\t","&#9;" )
+                    .replaceAll( "\n", "&#xA;" )
+                    .replaceAll( "\r", "&#xD;" )
+                    .replaceAll( "\"", "&quot;" )
+                    ;
+        }
         else
             return s;
-        }
+    }
 
     protected static Pattern entityValueEntities =
         Pattern.compile( "&|%|\'|\"" );
 
-   public static String substituteEntitiesInEntityValue( String s )
-     {
-     if (entityValueEntities.matcher( s ).find())
-         {
-         return s
-             .replaceAll( "&","&amp;" )
-             .replaceAll( "'", "&apos;" )
-             .replaceAll( "%", "&#37;" )
-             .replaceAll( "\"", "&quot;" )
-            ;
-         }
-     else
-         return s;
-     }
+   public static String substituteEntitiesInEntityValue( String s ) {
+       if (entityValueEntities.matcher( s ).find()) {
+           return s
+                   .replaceAll( "&","&amp;" )
+                   .replaceAll( "'", "&apos;" )
+                   .replaceAll( "%", "&#37;" )
+                   .replaceAll( "\"", "&quot;" )
+                   ;
+       }
+       else
+           return s;
+   }
+
     protected static Pattern elementContentEntities = Pattern.compile( "<|>|&|[\0-\37&&[^\n\t]]|\uFFFF|\uFFFE" );
     /**
         Answer <code>s</code> modified to replace &lt;, &gt;, and &amp; by
@@ -89,33 +86,38 @@ public class Util extends Object {
         the obvious cascade of replaceAll calls is replaced by an explicit
         loop that looks for all three special characters at once.
     */
-    public static String substituteEntitiesInElementContent( String s )
-        {
-        Matcher m = elementContentEntities.matcher( s );
-        if (!m.find())
+    public static String substituteEntitiesInElementContent(String s) {
+        Matcher m = elementContentEntities.matcher(s);
+        if ( !m.find() )
             return s;
-        else
-            {
+        else {
             int start = 0;
             StringBuilder result = new StringBuilder();
-            do
-                {
-                result.append( s.substring( start, m.start() ) );
-                char ch = s.charAt( m.start() );
-                switch ( ch )
-                {
-                    case '\r': result.append( "&#xD;" ); break;
-                    case '<': result.append( "&lt;" ); break;
-                    case '&': result.append( "&amp;" ); break;
-                    case '>': result.append( "&gt;" ); break;
-                    default: throw new CannotEncodeCharacterException( ch, "XML" );
+            do {
+                result.append(s.substring(start, m.start()));
+                char ch = s.charAt(m.start());
+                switch (ch) {
+                    case '\r' :
+                        result.append("&#xD;");
+                        break;
+                    case '<' :
+                        result.append("&lt;");
+                        break;
+                    case '&' :
+                        result.append("&amp;");
+                        break;
+                    case '>' :
+                        result.append("&gt;");
+                        break;
+                    default :
+                        throw new CannotEncodeCharacterException(ch, "XML");
                 }
                 start = m.end();
-                } while (m.find( start ));
-            result.append( s.substring( start ) );
+            } while (m.find(start));
+            result.append(s.substring(start));
             return result.toString();
-            }
         }
+    }
 
     public static String replace(String s, String oldString, String newString) {
         return s.replace(oldString, newString);
