@@ -19,18 +19,24 @@
 package org.apache.jena.system.buffering;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.shared.impl.PrefixMappingImpl;
+import org.apache.jena.sparql.graph.PrefixMappingBase;
+import org.apache.jena.sparql.graph.PrefixMappingMem;
 
-/** A {@link PrefixMapping} that buffers changes until {@link #flush()} is called. */
-public class BufferingPrefixMapping extends PrefixMappingImpl implements BufferingCtl {
+/**
+ * A {@link PrefixMapping} that buffers changes until {@link #flush()} is called.
+ */
+public class BufferingPrefixMapping extends PrefixMappingBase implements BufferingCtl {
 
     private static final boolean CHECK = false;
-    // Depends on the fact that PrefixMappingImpl maps everything get/set/remove.
-    private final PrefixMapping added = new PrefixMappingImpl();
+
+    private final PrefixMapping added = new PrefixMappingMem();
     private final Set<String> deleted = new HashSet<>();
+    // The underlying PrefixMapping
     private final PrefixMapping other;
 
     public BufferingPrefixMapping(PrefixMapping other) {
@@ -57,7 +63,7 @@ public class BufferingPrefixMapping extends PrefixMappingImpl implements Bufferi
     }
 
     @Override
-    protected void set(String prefix, String uri) {
+    protected void add(String prefix, String uri) {
         if ( CHECK ) {
             String u = other.getNsPrefixURI(prefix);
             if ( uri.equals(u) )
@@ -67,13 +73,26 @@ public class BufferingPrefixMapping extends PrefixMappingImpl implements Bufferi
     }
 
     @Override
-    protected String get(String prefix) {
+    protected String prefixToUri(String prefix) {
         if ( deleted.contains(prefix) )
             return null;
         String uri = added.getNsPrefixURI(prefix);
         if ( uri != null )
             return uri;
         return other.getNsPrefixURI(prefix);
+    }
+
+    @Override
+    protected String uriToPrefix(String uri) {
+        String prefix1 = added.getNsURIPrefix(uri);
+        if ( prefix1 != null )
+            return prefix1;
+        String prefix2 = other.getNsURIPrefix(uri);
+        if ( prefix2 == null )
+            return null;
+        if ( deleted.contains(prefix2) )
+            return null;
+        return prefix2;
     }
 
     @Override
@@ -90,5 +109,38 @@ public class BufferingPrefixMapping extends PrefixMappingImpl implements Bufferi
     @Override
     public boolean hasNoMappings() {
         return numPrefixes() == 0 ;
+    }
+
+    @Override
+    protected void clear() {
+        apply((prefix, iri) -> remove(prefix));
+    }
+
+    @Override
+    protected boolean isEmpty() {
+        return size() == 0;
+    }
+
+    @Override
+    protected int size() {
+        return numPrefixes();
+    }
+
+    @Override
+    protected Map<String, String> asMap() {
+        return asMapCopy();
+    }
+
+    @Override
+    protected Map<String, String> asMapCopy() {
+        Map<String, String> map = other.getNsPrefixMap();
+        deleted.forEach(prefix->map.remove(prefix));
+        map.putAll(added.getNsPrefixMap());
+        return map;
+    }
+
+    @Override
+    protected void apply(BiConsumer<String, String> action) {
+        asMap().forEach(action);
     }
 }

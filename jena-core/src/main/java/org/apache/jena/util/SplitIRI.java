@@ -305,12 +305,16 @@ public class SplitIRI
         }
 
      */
-    /** Split point, according to XML qname rules.
+    /**
+     * Split point, according to XML qname rules.
      * This is the longest NCName at the end of the uri.
+     * Return a split at the end of the string if there is no match
+     * (e.g. the URI string ends in '/' or '#').
      */
     public static int splitXML(String string) { return splitNamespaceXML(string); }
 
-    /** Namespace, according to XML qname rules.
+    /**
+     * Namespace, according to XML qname rules.
      * Use with {@link #localnameXML}.
      */
     public static String namespaceXML(String string) {
@@ -409,7 +413,7 @@ public class SplitIRI
      * @return the index of the first character of the localname
      * @see SplitIRI
      */
-    public static int splitNamespaceXML(String uri) {
+    private static int splitNamespaceXML(String uri) {
 
         // XML Namespaces 1.0:
         // A qname name is NCName ':' NCName
