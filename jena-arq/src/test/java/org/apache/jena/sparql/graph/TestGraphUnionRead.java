@@ -142,8 +142,8 @@ public class TestGraphUnionRead
 
     @Test
     public void gr_union_prefixes_bad_PrefixMapping() {
-        // Turtle-valid, RDF/XML invalid prefix.
-        Graph graph = setupPrefixGraph("😀", "http://example/");
+        // Not valid.
+        Graph graph = setupPrefixGraph("-", "http://example/");
 
         // Test : Must be createGeneral
         DatasetGraph dsg = DatasetGraphFactory.createGeneral();

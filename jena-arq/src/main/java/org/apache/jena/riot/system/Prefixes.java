@@ -31,7 +31,7 @@ import org.apache.jena.query.ARQ;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.graph.PrefixMappingAdapter;
-
+import org.apache.jena.util.XML11Char;
 
 /**
  * Functions related to {@link PrefixMap}.
@@ -92,23 +92,6 @@ public class Prefixes {
     private static final String dftUri1           = Quad.defaultGraphIRI.getURI();
     private static final String dftUri2           = Quad.defaultGraphNodeGenerated.getURI();
 
-    // Unused : datasets have prefix sets and all graphs for the dataset use that prefix set.
-//    /** Is this a name for the default graph prefix set? */
-//    public static boolean isDftGraph(String graphName) {
-//        return graphName == null
-//               //|| graphName.equals(dftGraphPrefixSet)
-//               || graphName.equals(dftUri1) || graphName.equals(dftUri2);
-//    }
-//
-//    /** Is this a name node for the default graph prefix set? */
-//    public static boolean isDftGraph(Node graphName) {
-//        if ( !graphName.isURI() )
-//            return false;
-//        return graphName == null
-//            //|| graphName.equals(nodeDefaultGraph)
-//            || Quad.isDefaultGraph(graphName);
-//    }
-
     /**
      * Canonical prefix - remove a trailing ":". The return is not null.
      */
@@ -122,9 +105,27 @@ public class Prefixes {
     }
 
     /**
+     * Test whether a prefix string is legal for Turtle.
+     * Turtle grammar rule
+     * <a href="https://www.w3.org/TR/rdf-turtle/#grammar-production-PN_PREFIX">PN_PREFIX</a>.
+     * This rule is the same as the XML 1.1 QName namespace production
+     * with the addition of allowing the empty string.
+     * A "prefix" does not include any trailing ":" character.
+     */
+    public static boolean isLegalPrefix(String prefix) {
+        Objects.requireNonNull(prefix, "Prefix argument is null");
+        if ( prefix.isEmpty() )
+            return true;
+        String prefixStr = prefix;
+        if ( prefix.endsWith(":") )
+            prefixStr = prefix.substring(prefix.length() - 1);
+        return XML11Char.isXML11ValidNCName(prefixStr);
+    }
+
+    /**
      * Reverse lookup of URI to a prefix. General implementation by scanning the
-     * {@link PrefixMap}. Returns a prefix if found or null. If several prefixes for
-     * the same URI, returns one at random.
+     * {@link PrefixMap}. Returns a prefix if found or null. If there are
+     * several prefixes for the same URI, returns one at random.
      */
     public static String findByURI(PrefixMap pmap, String uriStr) {
         return pmap.getMapping().entrySet().stream()

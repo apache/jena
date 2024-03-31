@@ -25,7 +25,7 @@ import org.apache.jena.rdf.model.RDFErrorHandler ;
 import org.apache.jena.rdfxml.xmlinput0.impl.ARPSaxErrorHandler;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.shared.impl.PrefixMappingImpl ;
+import org.apache.jena.util.XMLChar;
 
 final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler
     {
@@ -92,14 +92,22 @@ final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler, 
         }
     }
 
-    @Override
-    @SuppressWarnings("deprecation")
-    public void startPrefixMapping( String prefix, String uri )
-        {
-        if (PrefixMappingImpl.isNiceURI( uri )) prefixMapping.setNsPrefix( prefix, uri );
-        }
+    /**
+     * Test whether a URI is "nice" for RDF/XML (ends in a non-NCName character).
+     */
+    static boolean isNiceURI(String uri) {
+        if ( uri.equals("") )
+            return false;
+        char last = uri.charAt(uri.length() - 1);
+        return !XMLChar.isNCName(last);
+    }
 
     @Override
-    public void endPrefixMapping( String prefix )
-        {}
+    public void startPrefixMapping(String prefix, String uri) {
+        if ( isNiceURI(uri) )
+            prefixMapping.setNsPrefix(prefix, uri);
+    }
+
+    @Override
+    public void endPrefixMapping(String prefix) {}
     }

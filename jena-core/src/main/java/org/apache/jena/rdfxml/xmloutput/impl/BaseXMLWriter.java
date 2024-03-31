@@ -39,7 +39,6 @@ import org.apache.jena.rdfxml.xmloutput.RDFXMLWriterI ;
 import org.apache.jena.shared.* ;
 import org.apache.jena.util.CharEncoding ;
 import org.apache.jena.util.FileUtils ;
-import org.apache.jena.util.SplitIRI;
 import org.apache.jena.util.XMLChar;
 import org.apache.jena.vocabulary.* ;
 import org.slf4j.Logger ;
@@ -373,7 +372,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	}
 
 	String splitTag(String uriref, int type) {
-		int split = SplitIRI.splitXML( uriref );
+		int split = SplitRDFXML.splitXML10( uriref );
 		if (split == uriref.length()) throw new InvalidPropertyURIException( uriref );
 		return tag( uriref.substring( 0, split ), uriref.substring( split ), type, true );
     }
@@ -491,7 +490,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         if (!showDoctypeDeclaration.booleanValue())
             return attributeQuoted( substituted );
         else {
-            int split = SplitIRI.splitXML( substituted );
+            int split = SplitRDFXML.splitXML10( substituted );
             String namespace = substituted.substring(  0, split );
             String prefix = modelPrefixMapping.getNsURIPrefix( namespace );
             return prefix == null || isPredefinedEntityName( prefix )
@@ -864,7 +863,6 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             return true;
         return false;
     }
-
 
     static private String flags2str(int f) {
 	StringBuffer oldValue = new StringBuffer(64);

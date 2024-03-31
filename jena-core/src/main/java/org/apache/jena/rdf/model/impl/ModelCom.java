@@ -18,8 +18,6 @@
 
 package org.apache.jena.rdf.model.impl;
 
-import static org.apache.jena.shared.impl.PrefixMappingImpl.isNiceURI;
-
 import java.io.*;
 import java.net.URL;
 import java.util.*;
@@ -955,10 +953,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
             Set<String> values = e.getValue();
             Set<String> niceValues = CollectionFactory.createHashedSet();
             for ( String uri : values ) {
-                @SuppressWarnings("deprecation")
-                boolean b = isNiceURI(uri);
-                if ( b )
-                    niceValues.add(uri);
+                niceValues.add(uri);
             }
             if ( niceValues.size() == 1 ) {
                 pm.setNsPrefix(key, niceValues.iterator().next());

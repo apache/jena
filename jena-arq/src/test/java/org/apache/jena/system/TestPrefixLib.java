@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.dboe.storage.prefixes;
+package org.apache.jena.system;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
