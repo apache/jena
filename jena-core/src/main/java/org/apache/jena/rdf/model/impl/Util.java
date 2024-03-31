@@ -39,11 +39,11 @@ public class Util extends Object {
 
     /**
      * Given an absolute URI, determine the split point between the namespace
-     * part and the localname part. See {@link SplitIRI#splitNamespaceXML} for details.
+     * part and the localname part. See {@link SplitIRI#splitXML} for details.
      */
     public static int splitNamespaceXML(String uri) {
         // Legacy. Call the moved code.
-        return SplitIRI.splitNamespaceXML(uri);
+        return SplitIRI.splitXML(uri);
     }
 
     public static String substituteStandardEntities( String s )

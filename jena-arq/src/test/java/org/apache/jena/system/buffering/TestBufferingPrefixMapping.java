@@ -31,9 +31,13 @@ import org.junit.runners.MethodSorters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestBufferingPrefixMapping {
 
+    protected PrefixMapping create(PrefixMapping base) {
+        return new BufferingPrefixMapping(base);
+    }
+
     @Test public void buffering_prefix_01_basic() {
         PrefixMapping base = new PrefixMappingImpl();
-        PrefixMapping pmap = new BufferingPrefixMapping(base);
+        PrefixMapping pmap = create(base);
         assertEquals(0, pmap.numPrefixes());
         assertTrue(pmap.hasNoMappings());
     }
@@ -42,7 +46,7 @@ public class TestBufferingPrefixMapping {
         // Base has a prefix.
         PrefixMapping base = new PrefixMappingImpl();
         base.setNsPrefix("x", "http://example/");
-        PrefixMapping pmap = new BufferingPrefixMapping(base);
+        PrefixMapping pmap = create(base);
         assertEquals(1, pmap.numPrefixes());
         assertFalse(pmap.hasNoMappings());
     }
@@ -50,7 +54,7 @@ public class TestBufferingPrefixMapping {
     @Test public void buffering_prefix_03_add() {
         PrefixMapping base = new PrefixMappingImpl();
 
-        PrefixMapping pmap = new BufferingPrefixMapping(base);
+        PrefixMapping pmap = create(base);
         pmap.setNsPrefix("x", "http://example/");
         assertFalse(pmap.hasNoMappings());
         assertEquals(1, pmap.numPrefixes());
@@ -62,7 +66,7 @@ public class TestBufferingPrefixMapping {
     @Test public void buffering_prefix_04_base_add() {
         PrefixMapping base = new PrefixMappingImpl();
         base.setNsPrefix("x1", "http://example/1#");
-        PrefixMapping pmap = new BufferingPrefixMapping(base);
+        PrefixMapping pmap = create(base);
         pmap.setNsPrefix("x2", "http://example/2#");
         assertEquals(2, pmap.numPrefixes());
         assertEquals(1, base.numPrefixes());
@@ -72,7 +76,7 @@ public class TestBufferingPrefixMapping {
     @Test public void buffering_prefix_05_add_remove() {
         PrefixMapping base = new PrefixMappingImpl();
         base.setNsPrefix("x", "http://example/");
-        PrefixMapping pmap = new BufferingPrefixMapping(base);
+        PrefixMapping pmap = create(base);
         pmap.removeNsPrefix("x");
 
         assertTrue(pmap.hasNoMappings());
@@ -85,12 +89,14 @@ public class TestBufferingPrefixMapping {
     @Test public void buffering_prefix_06_flush() {
         PrefixMapping base = new PrefixMappingImpl();
         base.setNsPrefix("x1", "http://example/1#");
-        BufferingPrefixMapping pmap = new BufferingPrefixMapping(base);
+        PrefixMapping pmap = create(base);
+        BufferingCtl ctl = (BufferingCtl)pmap;
         pmap.setNsPrefix("x2", "http://example/2#");
         assertEquals(2, pmap.numPrefixes());
         assertEquals(1, base.numPrefixes());
 
-        pmap.flush();
+        ctl.flush();
+
         assertEquals(2, base.numPrefixes());
         assertEquals("http://example/2#", base.getNsPrefixURI("x2"));
     }
