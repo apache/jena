@@ -95,8 +95,8 @@ public class RDFXML_Basic extends BaseXMLWriter
 		writer.print(space+space+
 			"<"
 				+ startElementTag(
-					predicate.getNameSpace(),
-					predicate.getLocalName()));
+					SplitRDFXML.namespace(predicate),
+					SplitRDFXML.localname(predicate)));
 
 		if (object instanceof Resource) {
 			writer.print(" ");
@@ -106,7 +106,7 @@ public class RDFXML_Basic extends BaseXMLWriter
 			writeLiteral((Literal) object, writer);
 			writer.println(
 				"</"
-					+ endElementTag(predicate.getNameSpace(), predicate.getLocalName())
+					+ endElementTag(SplitRDFXML.namespace(predicate), SplitRDFXML.localname(predicate))
 					+ ">");
 		}
 	}

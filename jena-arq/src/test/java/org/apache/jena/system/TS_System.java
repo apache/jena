@@ -31,6 +31,8 @@ import org.junit.runners.Suite ;
     , TestTxnThread.class
     , TestJenaTitanium.class
     , TestReadXML.class
+    , TestPrefixes.class
+    , TestPrefixLib.class
     , TestRDFStarTranslation.class
 })
 

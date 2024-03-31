@@ -127,7 +127,6 @@ import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.shared.BrokenException ;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PropertyNotFoundException ;
-import org.apache.jena.util.SplitIRI;
 import org.apache.jena.util.XMLChar;
 import org.apache.jena.util.iterator.* ;
 import org.apache.jena.vocabulary.RDF ;
@@ -1179,7 +1178,7 @@ class Unparser {
             throw new BrokenException("Internal error: getNameSpace(bNode)");
         }
         String uri = r.getURI();
-        int split = SplitIRI.splitXML(uri);
+        int split = SplitRDFXML.splitXML10(uri);
         return uri.substring(0, split);
     }
 
@@ -1211,13 +1210,12 @@ class Unparser {
 
     private String getXMLLocalName(Resource r) {
         if (r.isAnon()) {
-            logger.error("Internal error - giving up - Unparser.getLocalName");
-            throw new BrokenException("Internal error: getLocalName(bNode)");
+            logger.error("Internal error - giving up - Unparser.getXMLLocalName");
+            throw new BrokenException("Internal error: getXMLLocalName(bNode)");
         }
         String uri = r.getURI();
-        int split = SplitIRI.splitXML(uri);
+        int split = SplitRDFXML.splitXML10(uri);
         return uri.substring(split);
-
     }
 
     /**
@@ -1497,7 +1495,7 @@ class Unparser {
         // Only allow resources with namespace and fragment ID
         String uri = ((Resource) n).getURI();
 
-        int split = SplitIRI.splitXML(uri);
+        int split = SplitRDFXML.splitXML10(uri);
         if (split == 0 || split == uri.length())
             return -1;
         return split;

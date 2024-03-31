@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.util.CollectionFactory ;
 import org.apache.jena.util.SplitIRI;
-import org.apache.jena.util.XMLChar;
+import org.apache.jena.util.XML11Char;
 
 /**
     An implementation of PrefixMapping. The mappings are stored in a pair
@@ -111,30 +111,34 @@ public class PrefixMappingImpl implements PrefixMapping
             throw new JenaLockedException(this);
     }
 
+    // Is this suitable for use as a prefix.
+    // Turtle does not have the XML QName restrictions.
     private void checkProperURI(String uri) {
-        // suppressed by popular demand.
-        // if (!isNiceURI( uri )) throw new NamespaceEndsWithNameCharException( uri
-        // );
+//        if ( !isNiceURI(uri) )
+//            throw new NamespaceEndsWithNameCharException(uri);
     }
 
     /**
      * Checks that a prefix is "legal" - it must be a valid XML NCName.
+     * Jena 5.1.0 loosen the test from XML 1.0 to XML 1.1 NCName
+     * which aligns with Turtle.
      */
     private void checkLegalPrefix(String prefix) {
-        if ( prefix.length() > 0 && !XMLChar.isValidNCName(prefix) )
+        if ( prefix.length() > 0 && !XML11Char.isXML11ValidNCName(prefix) )
             throw new PrefixMapping.IllegalPrefixException(prefix);
     }
 
     /**
-     * Test whether a URI is "nice" for RDF/XML (ends in a non-NCName character).
+     * Test whether a URI is "nice" for RDF/XML (ends in a non-NCName character according to XML 1.0).
      * @deprecated To be removed.
      */
     @Deprecated
     public static boolean isNiceURI(String uri) {
+        // Not used in Jena anymore.
         if ( uri.equals("") )
             return false;
         char last = uri.charAt(uri.length() - 1);
-        return !XMLChar.isNCName(last);
+        return !org.apache.jena.util.XMLChar.isNCName(last);
     }
 
     /**
@@ -165,10 +169,10 @@ public class PrefixMappingImpl implements PrefixMapping
     }
 
     /**
-     * Add the bindings in the prefixToURI to our own. This will fail with a
-     * ClassCastException if any key or value is not a String; we make no guarantees
-     * about order or completeness if this happens. It will fail with an
-     * IllegalPrefixException if any prefix is illegal; similar provisos apply.
+     * Add the bindings in the prefixToURI to our own.
+     * <p>
+     * It will fail with an IllegalPrefixException if any prefix is illegal; we make
+     * no guarantees about order or completeness if this happens.
      *
      * @param other the Map whose bindings we are to add to this.
      */

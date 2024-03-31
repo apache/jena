@@ -24,9 +24,9 @@ import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.BiConsumer;
 
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.util.SplitIRI;
-import org.apache.jena.util.XMLChar;
 
 /**
  * Framework for implementing {@link PrefixMapping}. It is stateless (unlike
@@ -64,9 +64,6 @@ public abstract class PrefixMappingBase implements PrefixMapping {
      * PrefixMappingMem does.
      * Database backed ones typically don't.
      */
-
-    /** Whether to apply XML 1.0 prefix restrictions. */
-    private static final boolean XML_PREFIX_RULES = true;
 
     protected PrefixMappingBase() {}
 
@@ -143,18 +140,14 @@ public abstract class PrefixMappingBase implements PrefixMapping {
     }
 
     /**
-     *
-     * <p>
-     * See also {@link #qnameFor}.
+     * Check for legal prefix. If not, throw
+     * {@link org.apache.jena.shared.PrefixMapping.IllegalPrefixException}
      */
-    public static void checkLegalPrefix(String prefix) {
+    private static void checkLegalPrefix(String prefix) {
         if ( prefix == null )
             throw new PrefixMapping.IllegalPrefixException("null for prefix");
-        if ( XML_PREFIX_RULES ) {
-            // For Full compatibility with PrefixMappingImpl.
-            if ( prefix.length() > 0 && !XMLChar.isValidNCName(prefix) )
-                throw new PrefixMapping.IllegalPrefixException(prefix);
-        }
+        if ( ! Prefixes.isLegalPrefix(prefix) )
+            throw new PrefixMapping.IllegalPrefixException(prefix);
     }
 
     @Override
@@ -231,9 +224,7 @@ public abstract class PrefixMappingBase implements PrefixMapping {
         // This operation applies a fixed splitting rule and
         // does not search for other possibilities.
         // See findMapping.
-        int split = XML_PREFIX_RULES
-                ? SplitIRI.splitXML(uri)     // The longest XML NCName at the end of the URI
-                : SplitIRI.splitpoint(uri);  // Split at last "#", "/" (or ":" for urn's).
+        int split = SplitIRI.splitXML(uri); // Split by XML rules (no digit starting the local part.)
         String ns = uri.substring(0, split);
         String local = uri.substring(split);
         if ( local.equals("") )

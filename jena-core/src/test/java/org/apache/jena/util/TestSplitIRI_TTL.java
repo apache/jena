@@ -103,12 +103,6 @@ public class TestSplitIRI_TTL {
                              expectedLocalname, localnameTTL(string)) ;
     }
 
-    private void testPrefixLocalnameTTLnoESC(String string, String expectedNamespace, String expectedLocalname) {
-        checkPrefixLocalname(string,
-                             expectedNamespace, namespaceTTL(string),
-                             expectedLocalname, localnameTTLNoEsc(string)) ;
-    }
-
     private void checkPrefixLocalname(String string,
                                       String expectedNamespace, String actualNamespace,
                                       String expectedLocalname, String actualLocalName) {

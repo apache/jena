@@ -20,7 +20,6 @@ package org.apache.jena.util;
 
 import java.util.Objects;
 
-import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Node;
 //Has copies of    import org.apache.jena.riot.system.RiotChars;
 
@@ -47,8 +46,6 @@ import org.apache.jena.graph.Node;
  * provide a strict Turtle split, if possible;
  * the local name is escaped if necessary.
  * {@link #namespaceTTL} can be used to build a set of prefix mappings.
- * {@link #localnameTTLNoEsc} is the same as {@link #localnameTTL}
- * without the escaping applied.
  * <p>
  * The functions {@link #namespaceXML} and {@link #localnameXML}
  * apply the rules for XML qnames.
@@ -109,23 +106,6 @@ public class SplitIRI
             return x;
         // This will escape the final DOT but leave internal dots alone.
         return escape_PN_LOCAL_ESC(x);
-    }
-
-    /**
-     * Calculate a localname - enforce legal Turtle
-     * without applying the escape PN_LOCAL_ESC.
-     * Return "" for 'no split'
-     * Check for final '.' - if present, return "".
-     */
-    public static String localnameTTLNoEsc(String string) {
-        String x = localname(string);
-        if ( x.isEmpty())
-            return x;
-        char lastChar = StrUtils.lastChar(x);
-        if ( lastChar == '.' )
-            // No legal localname.
-            return "";
-        return x;
     }
 
     private static String escape_PN_LOCAL_ESC(String x) {
@@ -290,31 +270,31 @@ public class SplitIRI
         return /*RiotChars.*/isHexChar(uri.charAt(i));
     }
 
-    // Assuming legal URIs, there is no work to be done
-    // for %XX.  If illegal (e.g. %X), the best we can do
-    // is not mess them up.
-    /*
-        // %  - just need to check that it is followed by two hex.
-        if ( ch == '%' ) {
-            if ( i+2 >= uri.length() ) {
-                // Too short
-                return -1;
-            }
-            if ( ! checkhex(uri, i+1) || ! checkhex(uri, i+2) )
-                return -1;
-        }
-
-     */
     /**
-     * Split point, according to XML qname rules.
-     * This is the longest NCName at the end of the uri.
+     * Split point, according to XML 1.0 qname rules.
+     * This is the longest XML 1.0 NCName at the end of the uri.
      * Return a split at the end of the string if there is no match
      * (e.g. the URI string ends in '/' or '#').
      */
-    public static int splitXML(String string) { return splitNamespaceXML(string); }
+    public static int splitXML(String string) { return splitXML11(string); }
 
     /**
-     * Namespace, according to XML qname rules.
+     * splitXML with local stricter XML 1.0 rules (only single Java characters)
+     * @deprecated Retained as a record of previous split handling.
+     */
+    @Deprecated
+    public static int splitXML10(String string) { return splitNamespaceXML10(string); }
+
+    /**
+     * Split point, according to XML 1.1 qname rules.
+     * This is the longest XML 1.1 NCName at the end of the uri.
+     * Return a split at the end of the string if there is no match
+     * (e.g. the URI string ends in '/' or '#').
+     */
+    private static int splitXML11(String string) { return splitNamespaceXML11(string); }
+
+    /**
+     * Namespace, according to XML 1.0 qname rules.
      * Use with {@link #localnameXML}.
      */
     public static String namespaceXML(String string) {
@@ -322,7 +302,7 @@ public class SplitIRI
         return string.substring(0, i);
     }
 
-    /** Localname, according to XML qname rules. */
+    /** Localname, according to XML 1.0 qname rules. */
     public static String localnameXML(String string) {
         int i = splitXML(string);
         return string.substring(i);
@@ -399,11 +379,36 @@ public class SplitIRI
     }
 
     // -------- --------
+    // Splitting for XML.
+    //   An additional rule is that the local part can not start with a digit.
+    //   In Turtle, it can.
+
+    // XML Namespaces:
+    // A qname name is NCName ':' NCName
+    // NCName             ::=      NCNameStartChar NCNameChar*
+    // NCNameChar         ::=      NameChar - ':'
+    // NCNameStartChar    ::=      Letter | '_'
+    //
+    // XML 1.0
+    // NameStartChar      ::= ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] |
+    //                        [#xD8-#xF6] | [#xF8-#x2FF] |
+    //                        [#x370-#x37D] | [#x37F-#x1FFF] |
+    //                        [#x200C-#x200D] | [#x2070-#x218F] |
+    //                        [#x2C00-#x2FEF] | [#x3001-#xD7FF] |
+    //                        [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+    // NameChar           ::= NameStartChar | "-" | "." | [0-9] | #xB7 |
+    //                        [#x0300-#x036F] | [#x203F-#x2040]
+    // Name               ::= NameStartChar (NameChar)*
+
+    // XMLChar does not support [#x10000-#xEFFFF]
+    // XML11Char does support [#x10000-#xEFFFF]
+
+
     /**
      * Given an absolute URI, determine the split point between the namespace
      * part and the localname part. If there is no valid localname part then the
      * length of the string is returned. The algorithm tries to find the longest
-     * NCName at the end of the uri, not immediately preceeded by the first
+     * NCName at the end of the uri, not immediately preceded by the first
      * colon in the string.
      * <p>
      * This operation follows XML QName rules which are more complicated than
@@ -413,25 +418,61 @@ public class SplitIRI
      * @return the index of the first character of the localname
      * @see SplitIRI
      */
-    private static int splitNamespaceXML(String uri) {
+    private static int splitNamespaceXML11(String uri) {
+        // Updated for XML 1.1
+        // The main difference is that XML11Char class works for character beyond 0xFFFF.
+        // This is not a restriction in XML 1.0 itself.
 
-        // XML Namespaces 1.0:
-        // A qname name is NCName ':' NCName
-        // NCName             ::=      NCNameStartChar NCNameChar*
-        // NCNameChar         ::=      NameChar - ':'
-        // NCNameStartChar    ::=      Letter | '_'
-        //
-        // XML 1.0
-        // NameStartChar      ::= ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] |
-        //                        [#xD8-#xF6] | [#xF8-#x2FF] |
-        //                        [#x370-#x37D] | [#x37F-#x1FFF] |
-        //                        [#x200C-#x200D] | [#x2070-#x218F] |
-        //                        [#x2C00-#x2FEF] | [#x3001-#xD7FF] |
-        //                        [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
-        // NameChar           ::= NameStartChar | "-" | "." | [0-9] | #xB7 |
-        //                        [#x0300-#x036F] | [#x203F-#x2040]
-        // Name               ::= NameStartChar (NameChar)*
+        char ch;
+        int lg = uri.length();
+        if (lg == 0)
+            return 0;
+        int i = lg-1;
+        for (; i >= 1; i--) {
+            ch = uri.charAt(i);
+            if ( !XML11Char.isXML11NCName(ch) ) // ****
+                break;
+        }
 
+        int j = i + 1;
+
+        if ( j >= lg )
+            return lg;
+
+        // Check we haven't split up a %-encoding.
+        if ( j >= 2 && uri.charAt(j-2) == '%' )
+            j = j+1;
+        if ( j >= 1 && uri.charAt(j-1) == '%' ) {
+            j = j+2;
+            if ( j > lg )
+                // JENA-1941: Protect against overshoot in the case of "%x"
+                // at end of a (bad) URI.
+                return lg;
+        }
+
+        // Have found the leftmost NCNameChar from the
+        // end of the URI string.
+        // Now scan forward for an NCNameStartChar
+        // The split must start with NCNameStart.
+        for (; j < lg; j++) {
+            ch = uri.charAt(j);
+            if (XML11Char.isXML11NCNameStart(ch)) // ****
+            {
+                // "mailto:" is special.
+                // split "mailto:me" as "mailto:m" and "e" !
+                // Keep part after mailto: with at least one character.
+                if ( j == 7 && uri.startsWith("mailto:"))
+                    // Don't split at "mailto:"
+                    continue;
+                else
+                    break;
+            }
+        }
+        return j;
+    }
+
+    private static int splitNamespaceXML10(String uri) {
+        // The original code.
         char ch;
         int lg = uri.length();
         if (lg == 0)
@@ -465,8 +506,6 @@ public class SplitIRI
         // The split must start with NCNameStart.
         for (; j < lg; j++) {
             ch = uri.charAt(j);
-//            if (XMLChar.isNCNameStart(ch))
-//                break;
             if (XMLChar.isNCNameStart(ch))
             {
                 // "mailto:" is special.
@@ -481,5 +520,6 @@ public class SplitIRI
         }
         return j;
     }
+
 }
 
