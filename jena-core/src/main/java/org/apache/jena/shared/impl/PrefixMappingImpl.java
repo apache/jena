@@ -24,9 +24,9 @@ import java.util.Map ;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.util.CollectionFactory ;
+import org.apache.jena.util.SplitIRI;
 import org.apache.jena.util.XMLChar;
 
 /**
@@ -126,9 +126,10 @@ public class PrefixMappingImpl implements PrefixMapping
     }
 
     /**
-     * Test whether a URI is "nice" for RDF/XML (ends in a non NCName character).
+     * Test whether a URI is "nice" for RDF/XML (ends in a non-NCName character).
+     * @deprecated To be removed.
      */
-
+    @Deprecated
     public static boolean isNiceURI(String uri) {
         if ( uri.equals("") )
             return false;
@@ -226,28 +227,25 @@ public class PrefixMappingImpl implements PrefixMapping
      * Relies on <code>splitNamespace</code> to carve uri into namespace and
      * localname components; this ensures that the localname is legal and we just
      * have to (reverse-)lookup the namespace in the prefix table.
-     *
-     * @see org.apache.jena.shared.PrefixMapping#qnameFor(java.lang.String)
      */
     @Override
     public String qnameFor(String uri) {
-        int split = Util.splitNamespaceXML(uri);
-        String ns = uri.substring(0, split), local = uri.substring(split);
-        if ( local.equals("") )
+        int split = SplitIRI.splitXML(uri);
+        if ( split == uri.length() )
             return null;
+        String ns = uri.substring(0, split);
+        String local = uri.substring(split);
         String prefix = URItoPrefix.get(ns);
         return prefix == null ? null : prefix + ":" + local;
     }
 
     /**
-     * Compress the URI using the prefix mapping. This version of the code looks
-     * through all the maplets and checks each candidate prefix URI for being a
-     * leading substring of the argument URI. There's probably a much more efficient
-     * algorithm available, preprocessing the prefix strings into some kind of search
-     * table, but for the moment we don't need it.
+     * Compress the URI using the prefix mapping.
      */
     @Override
     public String shortForm(String uri) {
+        // This version of the code looks through all the maplets and checks each
+        // candidate prefix URI for being a leading substring of the argument URI.
         Entry<String, String> e = findMapping(uri, true);
         return e == null ? uri : e.getKey() + ":" + uri.substring((e.getValue()).length());
     }

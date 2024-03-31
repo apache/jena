@@ -106,9 +106,7 @@ public class RDFXML_Basic extends BaseXMLWriter
 			writeLiteral((Literal) object, writer);
 			writer.println(
 				"</"
-					+ endElementTag(
-						predicate.getNameSpace(),
-						predicate.getLocalName())
+					+ endElementTag(predicate.getNameSpace(), predicate.getLocalName())
 					+ ">");
 		}
 	}

@@ -18,6 +18,8 @@
 
 package org.apache.jena.rdf.model.impl;
 
+import static org.apache.jena.shared.impl.PrefixMappingImpl.isNiceURI;
+
 import java.io.*;
 import java.net.URL;
 import java.util.*;
@@ -35,9 +37,9 @@ import org.apache.jena.graph.* ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.* ;
 import org.apache.jena.shared.impl.JenaParameters;
-import org.apache.jena.shared.impl.PrefixMappingImpl ;
 import org.apache.jena.sys.JenaSystem ;
 import org.apache.jena.util.CollectionFactory ;
+import org.apache.jena.util.SplitIRI;
 import org.apache.jena.util.iterator.ClosableIterator;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.FilterIterator;
@@ -830,7 +832,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
             Node node = it.next();
             if ( node.isURI() ) {
                 String uri = node.getURI();
-                String ns = uri.substring(0, Util.splitNamespaceXML(uri));
+                String ns = uri.substring(0,  SplitIRI.splitXML(uri));
                 // String ns = IteratorFactory.asResource( node, this
                 // ).getNameSpace();
                 set.add(ns);
@@ -953,9 +955,10 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
             Set<String> values = e.getValue();
             Set<String> niceValues = CollectionFactory.createHashedSet();
             for ( String uri : values ) {
-                if ( PrefixMappingImpl.isNiceURI(uri) ) {
+                @SuppressWarnings("deprecation")
+                boolean b = isNiceURI(uri);
+                if ( b )
                     niceValues.add(uri);
-                }
             }
             if ( niceValues.size() == 1 ) {
                 pm.setNsPrefix(key, niceValues.iterator().next());
