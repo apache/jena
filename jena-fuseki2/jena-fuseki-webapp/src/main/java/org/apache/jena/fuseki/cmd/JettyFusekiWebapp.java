@@ -44,7 +44,6 @@ import org.eclipse.jetty.util.resource.ResourceFactory;
 import org.eclipse.jetty.xml.XmlConfiguration;
 
 /** Standalone full server, not run as a WAR file.
- * Used in testing and development.
  *
  * SPARQLServer is the Jena server instance which wraps/utilizes
  * {@link org.eclipse.jetty.server.Server}. This class provides
@@ -73,11 +72,10 @@ public class JettyFusekiWebapp {
     private Server              server         = null;
     private ServletContext      servletContext = null;
 
-    // webapp setup - standard maven layout
-    public static       String contextpath     = "/";
-    // Standalone jar
+    // Location of webapp static resources.
+    // -- Standalone jar
     public static final String baseResource1   = "webapp";
-    // Development
+    // -- Development
     public static final String baseResource2   = "target/webapp";
 
     /**
@@ -86,7 +84,6 @@ public class JettyFusekiWebapp {
      * name etc.
      * @param config
      */
-
     public static void initializeServer(JettyServerConfig config) {
         instance = new JettyFusekiWebapp(config);
     }
@@ -171,6 +168,7 @@ public class JettyFusekiWebapp {
             baseResource4 = HOME+"/"+baseResource2;
         }
 
+        // The location in the webapp, not the URL names.
         String baseResource = tryBaseResource(baseResource1, null);
         baseResource = tryBaseResource(baseResource2, baseResource);
         baseResource = tryBaseResource(baseResource3, baseResource);
@@ -186,8 +184,8 @@ public class JettyFusekiWebapp {
         }
 
         webapp.setDescriptor(baseResource+"/WEB-INF/web.xml");
-        webapp.getContext().getServletContextHandler().setBaseResourceAsString(baseResource);
         webapp.setContextPath(contextPath);
+        webapp.getContext().getServletContextHandler().setBaseResourceAsString(baseResource);
 
         //-- Jetty setup for the ServletContext logger.
         // The name of the Jetty-allocated slf4j/log4j logger is
@@ -275,30 +273,7 @@ public class JettyFusekiWebapp {
         securityHandler.addConstraintMapping(mapping);
 
         context.setSecurityHandler(securityHandler);
-
-//        Constraint constraint = new Constraint();
-//        constraint.setName(Constraint.__BASIC_AUTH);
-//        constraint.setRoles(new String[]{"fuseki"});
-//        constraint.setAuthenticate(true);
-//
-//        ConstraintMapping mapping = new ConstraintMapping();
-//        mapping.setConstraint(constraint);
-//        mapping.setPathSpec("/*");
-//
-//        IdentityService identService = new DefaultIdentityService();
-//
-//        securityHandler.addConstraintMapping(mapping);
-//        securityHandler.setIdentityService(identService);
-//
-//        HashLoginService loginService = new HashLoginService("Fuseki Authentication", authfile);
-//        loginService.setIdentityService(identService);
-//
-//        securityHandler.setLoginService(loginService);
-//        securityHandler.setAuthenticator(new BasicAuthenticator());
-//
-//        context.setSecurityHandler(securityHandler);
-//
-//        serverLog.debug("Basic Auth Configuration = " + authfile);
+        serverLog.debug("Basic Auth Configuration = " + authfile);
     }
 
     /**
@@ -322,21 +297,10 @@ public class JettyFusekiWebapp {
         return ResourceFactory.root().newResource(filename);
     }
 
-    private void configServer(String jettyConfig) {
-        try {
-            serverLog.info("Jetty server config file = " + jettyConfig);
-            server = new Server();
-            Resource configXml = ResourceFactory.root().newResource(jettyConfig);
-            XmlConfiguration configuration = new XmlConfiguration(configXml);
-            configuration.configure(server);
-            serverConnector = (ServerConnector)server.getConnectors()[0];
-        } catch (Exception ex) {
-            serverLog.error("SPARQLServer: Failed to configure server: " + ex.getMessage(), ex);
-            throw new FusekiException("Failed to configure a server using configuration file '" + jettyConfig + "'");
-        }
-    }
-
     private void defaultServerConfig(int port, boolean loopback) {
+        // At least 3.
+//        ThreadPool threadPool = new QueuedThreadPool(4);
+//        server = new Server(threadPool);
         server = new Server();
         HttpConnectionFactory f1 = new HttpConnectionFactory();
         // Some people do try very large operations ... really, should use POST.
@@ -356,5 +320,19 @@ public class JettyFusekiWebapp {
         if ( loopback )
             connector.setHost("localhost");
         serverConnector = connector;
+    }
+
+    private void configServer(String jettyConfig) {
+        try {
+            serverLog.info("Jetty server config file = " + jettyConfig);
+            server = new Server();
+            Resource configXml = ResourceFactory.root().newResource(jettyConfig);
+            XmlConfiguration configuration = new XmlConfiguration(configXml);
+            configuration.configure(server);
+            serverConnector = (ServerConnector)server.getConnectors()[0];
+        } catch (Exception ex) {
+            serverLog.error("SPARQLServer: Failed to configure server: " + ex.getMessage(), ex);
+            throw new FusekiException("Failed to configure a server using configuration file '" + jettyConfig + "'");
+        }
     }
 }
