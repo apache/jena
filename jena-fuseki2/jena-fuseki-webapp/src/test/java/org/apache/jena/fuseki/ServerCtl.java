@@ -33,13 +33,11 @@ import org.apache.jena.fuseki.cmd.JettyServerConfig;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.apache.jena.fuseki.webapp.FusekiServerListener;
 import org.apache.jena.fuseki.webapp.FusekiWebapp;
-import org.apache.jena.fuseki.webapp.SystemState;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.modify.request.Target;
 import org.apache.jena.sparql.modify.request.UpdateDrop;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateProcessor;
@@ -230,9 +228,6 @@ public class ServerCtl {
     }
 
     public static void setupServer(int port, String authConfigFile, String datasetPath, boolean updateable) {
-        SystemState.location = Location.mem();
-        SystemState.init$();
-
         FusekiArgs params = new FusekiArgs();
         dsgTesting = DatasetGraphFactory.createTxnMem();
         params.dsg = dsgTesting;

@@ -46,24 +46,6 @@ public class TestAdminAPI extends AbstractFusekiWebappTest {
         testAddDelete("db_mem", "mem", false);
     }
 
-    // These aren't stable on github-actions.
-    // Outstanding transactions infer with cleanup.
-    // See ActionDataset.execDeleteItem.
-
-//    @Test public void add_delete_api_2() throws Exception {
-//        // Deleted mmap files on Windows does not go away until the JVM exits.
-//        if ( org.apache.jena.tdb.sys.SystemTDB.isWindows )
-//            return;
-//        testAddDelete("db_tdb", "tdb", true);
-//    }
-//
-//    @Test public void add_delete_api_3() throws Exception {
-//        // Deleted mmap files on Windows does not go away until the JVM exits.
-//        if ( org.apache.jena.tdb.sys.SystemTDB.isWindows )
-//            return;
-//        testAddDelete("db_tdb2", "tdb2", true);
-//    }
-
     private static void testAddDelete(String dbName, String dbType, boolean hasFiles) {
         String datasetURL = ServerCtl.urlRoot()+dbName;
         String admin = ServerCtl.urlRoot()+"$/";
