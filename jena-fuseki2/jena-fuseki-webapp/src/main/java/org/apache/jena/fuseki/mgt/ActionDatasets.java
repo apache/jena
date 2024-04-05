@@ -26,7 +26,10 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -53,13 +56,10 @@ import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.fuseki.system.DataUploader;
 import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.fuseki.webapp.FusekiWebapp;
-import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.util.FmtUtils;
 import org.apache.jena.vocabulary.RDF;
@@ -73,6 +73,7 @@ public class ActionDatasets extends ActionContainerItem {
     private static final String paramDatasetName    = "dbName";
     private static final String paramDatasetType    = "dbType";
     private static final String tDatabaseTDB        = "tdb";
+    private static final String tDatabaseTDB1       = "tdb1";
     private static final String tDatabaseTDB2       = "tdb2";
     private static final String tDatabaseMem        = "mem";
 
@@ -195,12 +196,6 @@ public class ActionDatasets extends ActionContainerItem {
                 try ( OutputStream outCopy = IO.openOutputFile(configFile) ) {
                     RDFDataMgr.write(outCopy, modelData, Lang.TURTLE);
                 }
-
-                // Currently do nothing with the system database.
-                // In the future ... maybe ...
-//            Model modelSys = system.getNamedModel(gn.getURI());
-//            modelSys.removeAll(null, pStatus, null);
-//            modelSys.add(subject, pStatus, FusekiVocab.stateActive);
 
                 // Need to be in Resource space at this point.
                 DataAccessPoint dataAccessPoint = FusekiConfig.buildDataAccessPoint(subject, registry);
@@ -330,7 +325,7 @@ public class ActionDatasets extends ActionContainerItem {
             if  ( configurationFiles.size() > 1 ) {
                 // -- This should not happen.
                 action.log.warn(format("[%d] There are %d configuration files, not one.", action.id, configurationFiles.size()));
-                ServletOps.errorOccurred(format("There are %d configuration files, not one. Delete not performed; clearup of the filesystem needed.",
+                ServletOps.errorOccurred(format("There are %d configuration files, not one. Delete not performed; manual clean up of the filesystem needed.",
                                                 configurationFiles.size()));
                 return;
             }
@@ -383,12 +378,14 @@ public class ActionDatasets extends ActionContainerItem {
         bodyAsGraph(action, dest);
     }
 
-    private static Map<String, String> dbTypeToTemplate = new HashMap<>();
-    static {
-        dbTypeToTemplate.put(tDatabaseTDB,  Template.templateTDB1_FN);
-        dbTypeToTemplate.put(tDatabaseTDB2, Template.templateTDB2_FN);
-        dbTypeToTemplate.put(tDatabaseMem,  Template.templateTIM_MemFN);
-    }
+    private static Map<String, String> dbTypeToTemplate = Map.of(
+            // Default TDB
+            tDatabaseTDB,  Template.templateTDB2_FN,
+            // Specific TDB
+            tDatabaseTDB1,  Template.templateTDB1_FN,
+            tDatabaseTDB2, Template.templateTDB2_FN,
+            // Transactional, in-memory
+            tDatabaseMem,  Template.templateTIM_MemFN);
 
     private static void assemblerFromForm(HttpAction action, StreamRDF dest) {
         String x = action.getRequestQueryString();
@@ -409,7 +406,7 @@ public class ActionDatasets extends ActionContainerItem {
 
         String template = dbTypeToTemplate.get(lowercase(dbType));
         if ( template == null )
-            ServletOps.errorBadRequest(format("dbType can be only '%s', '%s' or '%s'", tDatabaseTDB, tDatabaseTDB2, tDatabaseMem));
+            ServletOps.errorBadRequest(format("dbType can be only '%s' ('%s','%s') or '%s'", tDatabaseTDB, tDatabaseTDB1, tDatabaseTDB2, tDatabaseMem));
 
         String syntax = TemplateFunctions.templateFile(template, params, Lang.TTL);
         RDFParser.create().source(new StringReader(syntax)).base("http://base/").lang(Lang.TTL).parse(dest);
@@ -417,18 +414,6 @@ public class ActionDatasets extends ActionContainerItem {
 
     private static void assemblerFromUpload(HttpAction action, StreamRDF dest) {
         DataUploader.incomingData(action, dest);
-    }
-
-    // ---- Auxiliary functions
-
-    private static Quad getOne(DatasetGraph dsg, Node g, Node s, Node p, Node o) {
-        Iterator<Quad> iter = dsg.findNG(g, s, p, o);
-        if ( ! iter.hasNext() )
-            return null;
-        Quad q = iter.next();
-        if ( iter.hasNext() )
-            return null;
-        return q;
     }
 
     private static Statement getOne(Model m, Resource s, Property p, RDFNode o) {
