@@ -98,7 +98,7 @@ public class FusekiMain extends CmdARQ {
     // Static files. URLs are affected by argPathBase
     private static ArgDecl  argBase         = new ArgDecl(ArgDecl.HasValue, "base", "files");
 
-    private static ArgDecl  argCORS         = new ArgDecl(ArgDecl.HasValue,  "withCORS", "cors", "CORS", "cors-config");
+    private static ArgDecl  argCORS         = new ArgDecl(ArgDecl.HasValue, "withCORS", "cors", "CORS", "cors-config");
     private static ArgDecl  argNoCORS       = new ArgDecl(ArgDecl.NoValue,  "noCORS", "no-cors");
     private static ArgDecl  argWithPing     = new ArgDecl(ArgDecl.NoValue,  "withPing", "ping");
     private static ArgDecl  argWithStats    = new ArgDecl(ArgDecl.NoValue,  "withStats", "stats");

@@ -76,7 +76,6 @@ public class FusekiCmd {
         private static ArgDecl argMemTDB        = new ArgDecl(ArgDecl.NoValue,  "memtdb", "memTDB", "tdbmem");
         // And not ModLocation.
         private static ArgDecl argTDB           = new ArgDecl(ArgDecl.HasValue, "loc", "location", "tdb");
-        private static ArgDecl argAssemblerDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset");
 
         // RDFS vocabulary applied to command line defined dataset.
         private static ArgDecl argRDFS          = new ArgDecl(ArgDecl.HasValue, "rdfs");
@@ -87,6 +86,7 @@ public class FusekiCmd {
         private static ArgDecl argFusekiConfig  = new ArgDecl(ArgDecl.HasValue, "config", "conf");
         private static ArgDecl argJettyConfig   = new ArgDecl(ArgDecl.HasValue, "jetty-config", "jetty");
         private static ArgDecl argGZip          = new ArgDecl(ArgDecl.HasValue, "gzip");
+        private static ArgDecl argContextPath   = new ArgDecl(ArgDecl.HasValue, "pathBase", "contextPath");
 
         // Deprecated.  Use shiro.
         private static ArgDecl argBasicAuth     = new ArgDecl(ArgDecl.HasValue, "basic-auth");
@@ -130,10 +130,6 @@ public class FusekiCmd {
             add(argMemTDB, "--memTDB",
                 "Create an in-memory, non-persistent dataset using TDB (testing only)");
 
-            // This has proven confusing because it is like --conf.
-//            add(argAssemblerDecl, "--desc",
-//                "Assembler description of a single database");
-
             add(argRDFS, "--rdfs=FILE",
                 "Apply RDFS on top of the dataset");
             add(argPort, "--port",
@@ -145,10 +141,13 @@ public class FusekiCmd {
                 "Global timeout applied to queries (value in ms) -- format is X[,Y] ");
             add(argUpdate, "--update",
                 "Allow updates (via SPARQL Update and SPARQL HTTP Update)");
+            add(argContextPath, "--contextPath=PATH",
+                "Set up the server context (root) path");
             add(argFusekiConfig, "--config=",
                 "Use a configuration file to determine the services");
             add(argJettyConfig, "--jetty-config=FILE",
-                "Set up the server (not services) with a Jetty XML file");
+                    "Set up the server (not services) with a Jetty XML file");
+
             add(argBasicAuth);
             add(argGZip, "--gzip=on|off",
                 "Enable GZip compression (HTTP Accept-Encoding) if request header set");
@@ -193,8 +192,6 @@ public class FusekiCmd {
             if ( contains(argMem) )
                 x++;
             if ( contains(argFile) )
-                x++;
-            if ( contains(argAssemblerDecl) )
                 x++;
             if ( contains(argTDB) )
                 x++;
@@ -351,6 +348,10 @@ public class FusekiCmd {
                 } catch (NumberFormatException ex) {
                     throw new CmdException(argPort.getKeyName() + " : bad port number: " + portStr);
                 }
+            }
+
+            if ( contains(argContextPath) ) {
+                jettyServerConfig.contextPath = getValue(argContextPath);
             }
 
             if ( contains(argJettyConfig) ) {
