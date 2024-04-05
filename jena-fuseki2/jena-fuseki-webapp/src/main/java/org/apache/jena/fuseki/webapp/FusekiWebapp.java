@@ -219,12 +219,9 @@ public class FusekiWebapp
     public static void initializeDataAccessPoints(DataAccessPointRegistry registry, FusekiArgs initialSetup, String configDir) {
         List<DataAccessPoint> configFileDBs = initServerConfiguration(initialSetup);
         List<DataAccessPoint> directoryDBs =  FusekiConfig.readConfigurationDirectory(configDir);
-        List<DataAccessPoint> systemDBs =     FusekiConfig.readSystemDatabase(SystemState.getDataset());
-
         List<DataAccessPoint> datapoints = new ArrayList<>();
         datapoints.addAll(configFileDBs);
         datapoints.addAll(directoryDBs);
-        datapoints.addAll(systemDBs);
 
         datapoints.forEach(registry::register);
     }

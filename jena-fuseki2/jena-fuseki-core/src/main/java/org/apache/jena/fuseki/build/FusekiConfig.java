@@ -39,7 +39,6 @@ import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.JA;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.Pair;
-import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
@@ -52,7 +51,6 @@ import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.Util;
@@ -654,49 +652,5 @@ public class FusekiConfig {
         ds = (Dataset)Assembler.general.open(datasetDesc);
         dsDescMap.register(datasetDesc, ds);
         return ds;
-    }
-
-    // ---- System database
-    /** Read the system database */
-    public static List<DataAccessPoint> readSystemDatabase(Dataset ds) {
-        // Webapp only.
-        DatasetDescriptionMap dsDescMap = new DatasetDescriptionMap();
-        String qs = StrUtils.strjoinNL
-            (FusekiPrefixes.PREFIXES ,
-             "SELECT * {" ,
-             "  GRAPH ?g {",
-             "     ?s fu:name ?name;" ,
-             "        fu:status ?status ." ,
-             "  }",
-             "}"
-             );
-
-        List<DataAccessPoint> refs = new ArrayList<>();
-
-        ds.begin(ReadWrite.WRITE);
-        try {
-            ResultSet rs = BuildLib.query(qs, ds);
-
-            for (; rs.hasNext(); ) {
-                QuerySolution row = rs.next();
-                Resource s = row.getResource("s");
-                Resource g = row.getResource("g");
-                Resource rStatus = row.getResource("status");
-                //String name = row.getLiteral("name").getLexicalForm();
-                DataServiceStatus status = DataServiceStatus.status(rStatus);
-
-                Model m = ds.getNamedModel(g.getURI());
-                // Rebase the resource of the service description to the containing graph.
-                Resource svc = m.wrapAsResource(s.asNode());
-                DataAccessPoint ref = buildDataAccessPoint(svc, dsDescMap);
-                if ( ref != null )
-                    refs.add(ref);
-            }
-            ds.commit();
-            return refs;
-        } catch (Throwable th) {
-            th.printStackTrace();
-            return refs;
-        } finally { ds.end(); }
     }
 }
