@@ -103,16 +103,9 @@ public class DataUploader {
         }
     }
 
-    // HttpServletRequests.getParts.
-    // This operation combines the multi-part parsing and the handling the files.
-    // Out code wishes to stream straigh to the destination graph or dataset.
+    // Previously, Jena has used HttpServletRequests.getParts.
     // Each application server (Tomcat and Jetty) has special configuration.
-    //
-    // As of Jetty12, the config object is in the servlet holder and the code
-    // has special handling for request.getAttribute("org.eclipse.jetty.multipartConfig");
-    //
-    // Fuseki is not a servlet!
-    // Use Apache Commons FileUpload as the mulipart parser.
+    // Use Apache Commons FileUpload as the mulipart parser as it is portable.
 
     /**
      * Process an HTTP upload of RDF files (triples or quads) with content type
@@ -207,111 +200,3 @@ public class DataUploader {
         }
     }
 }
-
-//    // ----
-//    // ---- This code is kept temporarily as we switch back to using Apache Commons FileUpload.
-//
-//    //     Version that works using HttpServletrequets.getParts.
-//    //     That means in Tomcat and Jetty, special configuration has to be done.
-//    //
-//    //     Tomcat: In the WAR file: META-INF/context.xml
-//    //     <Context allowCasualMultipartParsing="true">
-//    //     </Context>
-//    //
-//    //     At Jetty12, this no longer works.
-//    //
-//
-// Apache Commons FileUploader is a portable solution
-//
-//    // @MultipartConfig but for ServletFilters
-//    // * @MultipartConfig only works on servlets.
-//    // * Jetty: attribute setting.
-//    // * Tomcat: META-INF/context.xml setting
-//
-//    // Jetty requires a setting of this annotation object as a request attribute.
-//    private static final MultipartConfigElement multipartConfigElement;
-//    private static final String jettyMultipartAttributeName;
-//
-//    static {
-//        String x;
-//        MultipartConfigElement y;
-//        // May not be on the classpath
-//        try {
-//            Class.forName("org.eclipse.jetty.server.handler.ContextRequest");
-//            //Portable across ee versions
-//            x = org.eclipse.jetty.ee10.servlet.ServletContextRequest.MULTIPART_CONFIG_ELEMENT;
-//            //x = "org.eclipse.jetty.multipartConfig";
-//            y = new MultipartConfigElement("");
-//        }
-//        catch (ClassNotFoundException th) { x = null; y = null; }
-//        jettyMultipartAttributeName = x;
-//        multipartConfigElement  = y;
-//    }
-//
-//    /**
-//     * Process an HTTP upload of RDF files (triples or quads) with content type
-//     * "multipart/form-data" or "multipart/mixed".
-//     * <p>
-//     * Data is streamed straight into the destination graph or dataset.
-//     * <p>
-//     * This function assumes it is inside a transaction.
-//     */
-//    private static UploadDetails multipartJakartaParts(HttpAction action, StreamRDF dest) {
-//        HttpServletRequest request = action.getRequest();
-//        String base = ActionLib.wholeRequestURL(request);
-//        StreamRDFCounting countingDest =  StreamRDFLib.count(dest);
-//
-//        // Jetty
-//        if ( jettyMultipartAttributeName != null && request.getAttribute(jettyMultipartAttributeName) == null ) {
-//            request.setAttribute(jettyMultipartAttributeName, multipartConfigElement);
-//        }
-//
-//        // But the this goes to the Jetty Servlet holder, not the request attributes.
-//        // Maybe there is a way to inject the object at build time.
-//
-//        {
-//            // This call is made internally to Jetty.
-//            // This redirects to the servletHolder specifically for jettyMultipartAttributeName
-//            // ServletContextRequest line 273: of getAttribute:
-//            // case ServletContextRequest.MULTIPART_CONFIG_ELEMENT -> _matchedResource.getResource().getServletHolder().getMultipartConfigElement();
-//
-//            //servletHolder.getRegistration().setMultipartConfig(multipartConfigElement);
-//            // But then it fails because there no file directory to use (which we don't care about).
-//
-//            Object x = request.getAttribute(jettyMultipartAttributeName);
-//        }
-//
-//        try {
-//            for ( Part part : request.getParts() ) {
-//                InputStream input = part.getInputStream();
-//                boolean isFile = part.getHeader("Content-disposition") != null ;
-//                if ( ! isFile ) {
-//                    // Form field - this code only supports multipart file upload.
-//                    String fieldName = part.getName();
-//                    InputStream stream = part.getInputStream();
-//                    String value = IO.readWholeFileAsUTF8(stream);
-//                    // This code is currently used to put multiple files into a single destination.
-//                    // Additional field/values do not make sense.
-//                    ServletOps.errorBadRequest(format("Only files accepted in multipart file upload (got %s=%s)", fieldName, value));
-//                    // errorBadRequest does not return.
-//                    return null;
-//                }
-//
-//                String contentTypeHeader = part.getContentType();
-//                ContentType ct = ContentType.create(contentTypeHeader);
-//                String partName = part.getName(); // AKA fieldName
-//                String submittedFileName = part.getSubmittedFileName();
-//
-//                handlePart(action, input, base, ct, submittedFileName, countingDest);
-//            }
-//        }
-//        catch (ActionErrorException ex) { throw ex; }
-//        catch (Exception ex)            {
-//            ex.printStackTrace();
-//            ServletOps.errorOccurred(ex.getMessage());
-//        }
-//        // Overall results.
-//        UploadDetails details = new UploadDetails(countingDest.count(), countingDest.countTriples(),countingDest.countQuads());
-//        return details;
-//    }
-

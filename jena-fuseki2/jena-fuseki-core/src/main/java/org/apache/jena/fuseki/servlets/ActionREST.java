@@ -36,26 +36,17 @@ public abstract class ActionREST extends ActionService
     public void execute(HttpAction action) {
         // Intercept to put counters around calls.
         String method = uppercase(action.getRequestMethod());
-
-        if (method.equals(METHOD_GET))
-            doGet$(action);
-        else if (method.equals(METHOD_HEAD))
-            doHead$(action);
-        else if (method.equals(METHOD_POST))
-            doPost$(action);
-        else if (method.equals(METHOD_PATCH))
-            doPatch$(action);
-        else if (method.equals(METHOD_OPTIONS))
-            doOptions$(action);
-        else if (method.equals(METHOD_TRACE))
-            //doTrace(action);
-            ServletOps.errorMethodNotAllowed("TRACE");
-        else if (method.equals(METHOD_PUT))
-            doPut$(action);
-        else if (method.equals(METHOD_DELETE))
-            doDelete$(action);
-        else
-            ServletOps.errorNotImplemented("Unknown method: "+method);
+        switch(method) {
+            case METHOD_GET ->      doGet$(action);
+            case METHOD_HEAD ->     doHead$(action);
+            case METHOD_POST ->     doPost$(action);
+            case METHOD_PATCH ->    doPatch$(action);
+            case METHOD_PUT ->      doPut$(action);
+            case METHOD_DELETE ->   doDelete$(action);
+            case METHOD_OPTIONS ->  doOptions$(action);
+            case METHOD_TRACE ->    doTrace$(action);
+            default -> ServletOps.errorNotImplemented("Unknown method: "+method);
+        }
     }
 
     /**
@@ -145,16 +136,20 @@ public abstract class ActionREST extends ActionService
         }
     }
 
-  protected abstract void doGet(HttpAction action);
-  protected abstract void doHead(HttpAction action);
-  protected abstract void doPost(HttpAction action);
-  protected abstract void doPut(HttpAction action);
-  protected abstract void doDelete(HttpAction action);
-  protected abstract void doPatch(HttpAction action);
-  protected abstract void doOptions(HttpAction action);
+    private final void doTrace$(HttpAction action) {
+        ServletOps.errorMethodNotAllowed("TRACE");
+    }
 
-  // If not final in ActionBase
-  //@Override public void process(HttpAction action)      { executeLifecycle(action); }
+    protected abstract void doGet(HttpAction action);
+    protected abstract void doHead(HttpAction action);
+    protected abstract void doPost(HttpAction action);
+    protected abstract void doPut(HttpAction action);
+    protected abstract void doDelete(HttpAction action);
+    protected abstract void doPatch(HttpAction action);
+    protected abstract void doOptions(HttpAction action);
 
-  @Override public void execAny(String methodName, HttpAction action)     { executeLifecycle(action); }
+    // If not final in ActionBase
+    @Override public void process(HttpAction action)      { executeLifecycle(action); }
+
+    @Override public void execAny(String methodName, HttpAction action)     { executeLifecycle(action); }
 }
