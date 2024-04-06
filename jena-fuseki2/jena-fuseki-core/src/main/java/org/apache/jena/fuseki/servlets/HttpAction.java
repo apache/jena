@@ -647,20 +647,12 @@ public class HttpAction
         String encoding = action.request.getHeader(HttpNames.hContentEncoding);
         if ( encoding == null )
             return input;
-        switch (encoding) {
-            case WebContent.encodingGzip :
-                return new GZIPInputStream(input, 8192);
-            case WebContent.encodingDeflate :
-                return new DeflaterInputStream(input);
-                // Not supported:
-            case "br" :
-                // From Apache Common Compress but needs extra org.brotli.dec.BrotliInputStream
-            case "compress" :
-                // Legacy - not supported
-            default :
-        }
-        // Not supported or not understood.
-        ServletOps.error(HttpSC.BAD_REQUEST_400, HttpNames.hContentEncoding+" '"+encoding+"' encoding not supported");
-        return null;
+        return switch (encoding) {
+            case WebContent.encodingGzip -> new GZIPInputStream(input, 8192);
+            case WebContent.encodingDeflate -> new DeflaterInputStream(input);
+//            case "br" :
+//            case "compress" :
+            default-> { ServletOps.error(HttpSC.BAD_REQUEST_400, HttpNames.hContentEncoding+" '"+encoding+"' encoding not supported");  yield null; }
+        };
     }
 }

@@ -30,16 +30,15 @@ public interface ActionProcessor {
      */
     public default void process(HttpAction action) {
         switch ( action.getMethod() ) {
-            case METHOD_GET:        execGet(action);      break;
-            case METHOD_POST:       execPost(action);     break;
-            case METHOD_PATCH:      execPatch(action);    break;
-            case METHOD_PUT:        execPut(action);      break;
-            case METHOD_DELETE:     execDelete(action);   break;
-            case METHOD_HEAD:       execHead(action);     break;
-            case METHOD_OPTIONS:    execOptions(action);  break;
-            case METHOD_TRACE:      execTrace(action);    break;
-            // Unknown.
-            default:                execAny(action.getMethod(), action); break;
+            case METHOD_GET ->       execGet(action);
+            case METHOD_POST ->      execPost(action);
+            case METHOD_PATCH ->     execPatch(action);
+            case METHOD_PUT ->       execPut(action);
+            case METHOD_DELETE ->    execDelete(action);
+            case METHOD_HEAD ->      execHead(action);
+            case METHOD_OPTIONS->    execOptions(action);
+            case METHOD_TRACE ->     execTrace(action);
+            default -> execAny(action.getMethod(), action);
         }
     }
 

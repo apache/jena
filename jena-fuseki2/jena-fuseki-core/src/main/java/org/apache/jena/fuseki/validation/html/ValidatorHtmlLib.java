@@ -69,18 +69,10 @@ public class ValidatorHtmlLib {
         for ( int i = 0; i < str.length(); i++ ) {
             char ch = str.charAt(i);
             switch (ch) {
-                case '<' :
-                    sBuff.append("&lt;");
-                    break;
-                case '>' :
-                    sBuff.append("&gt;");
-                    break;
-                case '&' :
-                    sBuff.append("&amp;");
-                    break;
-                default :
-                    sBuff.append(ch);
-                    break;
+                case '<' -> sBuff.append("&lt;");
+                case '>' -> sBuff.append("&gt;");
+                case '&' -> sBuff.append("&amp;");
+                default ->  sBuff.append(ch);
             }
         }
         return sBuff.toString();
