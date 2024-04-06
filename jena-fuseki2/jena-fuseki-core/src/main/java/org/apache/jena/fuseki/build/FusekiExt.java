@@ -31,7 +31,7 @@ public class FusekiExt {
 
     // Additional operations provided by extension, added via Jena init / typically ServiceLoader
     // These are used in FuskeiConfig.
-    // Left in case in the future we want to have customized defautl setup.
+    // Left in case in the future we want to have customized default setup.
     // Currently, Jena5, the preferred way is to have control via config.ttl or FusekiServer.Builder.
     /*package*/ static Map<String, Operation> extraOperationServicesRead = null;
     /*package*/ static Map<String, Operation> extraOperationServicesWrite = null;

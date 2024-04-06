@@ -20,7 +20,6 @@ package org.apache.jena.fuseki.main.sys;
 
 import java.util.Set;
 
-import org.apache.jena.base.module.SubsystemLifecycle;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
@@ -62,10 +61,11 @@ import org.apache.jena.rdf.model.Model;
  *     Modules must not rely on a call to {@code serverStopped} happening.</li>
  * </ul>
  */
-public interface FusekiAutoModule extends FusekiModule, SubsystemLifecycle {
+public interface FusekiAutoModule extends FusekiModule, FusekiLifecycle {
     // Inherited javadoc.
     // Methods mentioned here to show all method interfaces in one place.
 
+    /** {@inheritDoc} */
     @Override
     public String name();
 

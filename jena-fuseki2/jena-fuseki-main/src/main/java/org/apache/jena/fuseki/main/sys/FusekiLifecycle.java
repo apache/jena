@@ -18,7 +18,16 @@
 
 package org.apache.jena.fuseki.main.sys;
 
-/** Extension access to Fuseki dispatch and execution. */
-public interface FusekiActionCycle {
+import org.apache.jena.base.module.SubsystemLifecycle;
+
+/**
+ * A {@link SubsystemLifecycle} for Fuseki.
+ * This lifecycle is run after Jena system initialization.
+ * Jena system initialization includes system initialization of Fuseki itself
+ * in {@link InitFuseki}.
+ * This lifecycle is for extensions to an initialized Fuseki server
+ * and is used via {@link FusekiAutoModule}.
+ */
+public interface FusekiLifecycle extends SubsystemLifecycle {
     // Placeholder.
 }
