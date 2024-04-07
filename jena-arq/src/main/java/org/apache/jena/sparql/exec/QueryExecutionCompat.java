@@ -38,7 +38,7 @@ import org.apache.jena.sparql.util.Context;
  */
 public class QueryExecutionCompat extends QueryExecutionAdapter {
     private final QueryExecMod qExecBuilder;
-    private QueryExec qExecHere = null;
+    private volatile QueryExec qExecHere = null;
     private final Dataset datasetHere;
     private final Query queryHere;
 
@@ -60,9 +60,14 @@ public class QueryExecutionCompat extends QueryExecutionAdapter {
     }
 
     private void execution() {
-        // Delay until used so setTimeout and initalBindings work.
-        if ( qExecHere == null )
-            qExecHere = qExecBuilder.build();
+        if ( qExecHere == null) {
+            // Synchronized because there may be an async call to abort()
+            synchronized (this) {
+                // Delay until used so setTimeout and initalBindings work.
+                if ( qExecHere == null )
+                    qExecHere = qExecBuilder.build();
+            }
+        }
     }
 
     @Override
