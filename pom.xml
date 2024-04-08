@@ -64,7 +64,7 @@
     <ver.titanium-json-ld>1.4.0</ver.titanium-json-ld>
     <ver.jakarta.json>2.0.1</ver.jakarta.json>
 
-    <ver.jetty>12.0.7</ver.jetty>
+    <ver.jetty>12.0.8</ver.jetty>
     <ver.shiro>2.0.0</ver.shiro>
 
     <ver.protobuf>4.26.1</ver.protobuf>
@@ -77,7 +77,7 @@
     <ver.gson>2.10.1</ver.gson>
     <ver.lucene>9.10.0</ver.lucene>
 
-    <ver.commons-io>2.16.0</ver.commons-io>
+    <ver.commons-io>2.16.1</ver.commons-io>
     <ver.commons-cli>1.6.0</ver.commons-cli>
     <ver.commons-lang3>3.14.0</ver.commons-lang3>
     <ver.commons-rdf>0.5.0</ver.commons-rdf>
@@ -88,7 +88,7 @@
     <ver.commons-fileupload>2.0.0-M2</ver.commons-fileupload>
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
-    <ver.micrometer>1.12.4</ver.micrometer>
+    <ver.micrometer>1.12.5</ver.micrometer>
     <ver.roaringbitmap>1.0.5</ver.roaringbitmap>
 
     <!-- Testing -->
