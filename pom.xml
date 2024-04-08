@@ -64,7 +64,7 @@
     <ver.titanium-json-ld>1.4.0</ver.titanium-json-ld>
     <ver.jakarta.json>2.0.1</ver.jakarta.json>
 
-    <ver.jetty>12.0.7</ver.jetty>
+    <ver.jetty>12.0.8</ver.jetty>
     <ver.shiro>2.0.0</ver.shiro>
 
     <ver.protobuf>4.26.1</ver.protobuf>
