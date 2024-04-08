@@ -1,0 +1,26 @@
+PREFIX : <http://www.example.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+:join_matrix_sweked_a_10
+  rdfs:label "join_matrix_sweked_a_10" ;
+  :expectedResultSetSize 9 ;
+  :queryString
+"""
+# Join of two tables where each column has an UNDEF entry
+# This test is mainly for correctness testing
+# Each row is compatible with all others; no selectivity -> no significant performance differences expected
+SELECT *
+{
+  VALUES (?v0 ?v1 ?v2) {
+    (UNDEF 1 2)
+    (0 UNDEF 2)
+    (0 1 UNDEF)
+  }
+  VALUES (?v0 ?v1 ?v2) {
+    (UNDEF 1 2)
+    (0 UNDEF 2)
+    (0 1 UNDEF)
+  }
+}
+""" ;
+  .

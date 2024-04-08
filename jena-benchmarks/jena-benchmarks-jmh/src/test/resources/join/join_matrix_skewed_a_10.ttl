@@ -1,0 +1,41 @@
+PREFIX : <http://www.example.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+:join_matrix_sweked_a_3
+  rdfs:label "join_matrix_sweked_a_3" ;
+  :expectedResultSetSize 100 ;
+  :queryString
+"""
+# Join of two tables where each column has an UNDEF entry
+# This test is mainly for correctness testing
+# Each row is compatible with all others; no selectivity -> no significant performance differences expected
+SELECT *
+{
+  VALUES (?v0 ?v1 ?v2 ?v3 ?v4 ?v5 ?v6 ?v7 ?v8 ?v9) {
+    (UNDEF 1 2 3 4 5 6 7 8 9)
+    (0 UNDEF 2 3 4 5 6 7 8 9)
+    (0 1 UNDEF 3 4 5 6 7 8 9)
+    (0 1 2 UNDEF 4 5 6 7 8 9)
+    (0 1 2 3 UNDEF 5 6 7 8 9)
+    (0 1 2 3 4 UNDEF 6 7 8 9)
+    (0 1 2 3 4 5 UNDEF 7 8 9)
+    (0 1 2 3 4 5 6 UNDEF 8 9)
+    (0 1 2 3 4 5 6 7 UNDEF 9)
+    (0 1 2 3 4 5 6 7 8 UNDEF)
+  }
+  VALUES (?v0 ?v1 ?v2 ?v3 ?v4 ?v5 ?v6 ?v7 ?v8 ?v9) {
+    (UNDEF 1 2 3 4 5 6 7 8 9)
+    (0 UNDEF 2 3 4 5 6 7 8 9)
+    (0 1 UNDEF 3 4 5 6 7 8 9)
+    (0 1 2 UNDEF 4 5 6 7 8 9)
+    (0 1 2 3 UNDEF 5 6 7 8 9)
+    (0 1 2 3 4 UNDEF 6 7 8 9)
+    (0 1 2 3 4 5 UNDEF 7 8 9)
+    (0 1 2 3 4 5 6 UNDEF 8 9)
+    (0 1 2 3 4 5 6 7 UNDEF 9)
+    (0 1 2 3 4 5 6 7 8 UNDEF)
+  }
+}
+""" ;
+  .
+

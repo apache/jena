@@ -18,13 +18,12 @@
 
 package org.apache.jena.sparql.engine.join;
 
-import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator ;
 
-/** Hash left join. 
+/** Hash left join.
  * This code materializes the right into a probe table
  * then hash joins from the left.
  */
@@ -33,7 +32,7 @@ import org.apache.jena.sparql.engine.iterator.QueryIterNullIterator ;
 //* then hash joins from the right.
 
 public class QueryIterHashJoin extends AbstractIterHashJoin {
-    
+
     /**
      * Create a hashjoin QueryIterator.
      * @param joinKey  Join key - if null, one is guessed by snooping the input QueryIterators
@@ -49,11 +48,10 @@ public class QueryIterHashJoin extends AbstractIterHashJoin {
             right.close() ;
             return QueryIterNullIterator.create(execCxt) ;
         }
-        if ( joinKey != null && joinKey.length() > 1 )
-            Log.warn(QueryIterHashJoin.class, "Multivariable join key") ; 
-        return new QueryIterHashJoin(joinKey, left, right, execCxt) ; 
+
+        return new QueryIterHashJoin(joinKey, left, right, execCxt) ;
     }
-    
+
     /**
      * Create a hashjoin QueryIterator.
      * @param left
@@ -61,11 +59,11 @@ public class QueryIterHashJoin extends AbstractIterHashJoin {
      * @param execCxt
      * @return QueryIterator
      */
- 
+
     public static QueryIterator create(QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
         return create(null, left, right, execCxt) ;
     }
-    
+
     private QueryIterHashJoin(JoinKey joinKey, QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
         super(joinKey, left, right, execCxt) ;
     }
@@ -79,7 +77,7 @@ public class QueryIterHashJoin extends AbstractIterHashJoin {
     protected Binding noYieldedRows(Binding rowCurrentProbe) {
         return null;
     }
-    
+
     @Override
     protected QueryIterator joinFinished() {
         return null;

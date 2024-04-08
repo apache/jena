@@ -37,13 +37,22 @@ class HashProbeTable {
     /*package*/ long s_maxMatchGroup   = 0;
     /*package*/ long s_countScanMiss   = 0;
 
-    private final List<Binding>             noKeyBucket = new ArrayList<>();
+    private final List<Binding>                   noKeyBucket = new ArrayList<>();
     private final MultiValuedMap<Object, Binding> buckets;
-    private final JoinKey                   joinKey;
+    private final JoinKey                         joinKey;
 
     HashProbeTable(JoinKey joinKey) {
         this.joinKey = joinKey;
         buckets = MultiMapUtils.newListValuedHashMap();
+    }
+
+    public JoinKey getJoinKey() {
+        return joinKey;
+    }
+
+    public void putNoKey(Binding row) {
+        s_count++;
+        noKeyBucket.add(row);
     }
 
     public void put(Binding row) {
@@ -56,7 +65,19 @@ class HashProbeTable {
         buckets.put(longHash, row);
     }
 
+    /** Shorthand for {@code getCandidates(row, true)}. See {@link #getCandidates(Binding, boolean)}. */
     public Iterator<Binding> getCandidates(Binding row) {
+        return getCandidates(row, true);
+    }
+
+    /**
+     * Find the rows of this table that are compatible with a given lookup binding.
+     *
+     * @param row The lookup binding.
+     * @param appendNoBucket If true then also append the data from the no-key-bucket (if present).
+     * @return An iterator over the rows in this table that are compatible with the lookup binding.
+     */
+    public Iterator<Binding> getCandidates(Binding row, boolean appendNoBucket) {
         Iterator<Binding> iter = null;
         Object longHash = JoinLib.hash(joinKey, row);
         if ( longHash == JoinLib.noKeyHash )
@@ -71,7 +92,7 @@ class HashProbeTable {
             }
         }
         // And the rows with no common hash key
-        if ( noKeyBucket != null )
+        if ( appendNoBucket && noKeyBucket != null )
             iter = Iter.concat(iter, noKeyBucket.iterator());
         return iter;
     }
@@ -90,19 +111,8 @@ class HashProbeTable {
         // What to do with them?
     }
 
-    // Should not need these operations.
-    public Collection<Binding> getNoKey$() {
-        if ( noKeyBucket == null )
-            return null;
+    public Collection<Binding> getNoKey() {
         return noKeyBucket;
-    }
-
-    public Collection<Binding> getHashMatch$(Binding row) {
-        Object longHash = JoinLib.hash(joinKey, row);
-        if ( longHash == JoinLib.noKeyHash )
-            return noKeyBucket;
-        Collection<Binding> list = buckets.get(longHash);
-        return list;
     }
 
     public Iterator<Binding> values() {
@@ -112,5 +122,14 @@ class HashProbeTable {
 
     public void clear() {
         buckets.clear();
+    }
+
+    @Override
+    public String toString() {
+        stats();
+        long hashedItems = s_count - s_noKeyBucketSize;
+        String str = String.format("JoinKey=%s Items=%d HashedItems=%d NoKeyItems=%d Buckets=%d RightMisses=%d MaxBucket=%d",
+                joinKey, s_count, hashedItems, s_noKeyBucketSize, s_bucketCount, s_countScanMiss, s_maxBucketSize);
+        return str;
     }
 }
