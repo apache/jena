@@ -71,13 +71,13 @@ public abstract class AbstractTestFusekiSecurityAssembler {
 
     private boolean sharedDatabase;
 
-    // Parameterized tests don't provide a convenient way to run code at the start and end of each parameter run and access the parameters.
     private static FusekiServer server;
     private FusekiServer getServer() {
         if ( server == null )
             server = setup(assemblerFile, false);
         return server;
     }
+
     @AfterClass public static void afterClass() {
         server.stop();
         server = null;

@@ -29,7 +29,7 @@ public class TestServiceDataAuthBuild extends AbstractTestServiceDatasetAuth {
 
     private FusekiServer server;
 
-    @Before public void before () {
+    @Before public void before() {
         server = FusekiServer.create()
             //.verbose(true)
             .port(port)
@@ -38,7 +38,7 @@ public class TestServiceDataAuthBuild extends AbstractTestServiceDatasetAuth {
         server.start();
     }
 
-    @After public void afterClass () {
+    @After public void after () {
         server.stop();
     }
 
