@@ -37,13 +37,17 @@ class HashProbeTable {
     /*package*/ long s_maxMatchGroup   = 0;
     /*package*/ long s_countScanMiss   = 0;
 
-    private final List<Binding>             noKeyBucket = new ArrayList<>();
+    private final List<Binding>                   noKeyBucket = new ArrayList<>();
     private final MultiValuedMap<Object, Binding> buckets;
-    private final JoinKey                   joinKey;
+    private final JoinKey                         joinKey;
 
     HashProbeTable(JoinKey joinKey) {
         this.joinKey = joinKey;
         buckets = MultiMapUtils.newListValuedHashMap();
+    }
+
+    public JoinKey getJoinKey() {
+        return joinKey;
     }
 
     public void put(Binding row) {
@@ -57,6 +61,10 @@ class HashProbeTable {
     }
 
     public Iterator<Binding> getCandidates(Binding row) {
+        return getCandidates(row, true);
+    }
+
+    public Iterator<Binding> getCandidates(Binding row, boolean appendNoBucket) {
         Iterator<Binding> iter = null;
         Object longHash = JoinLib.hash(joinKey, row);
         if ( longHash == JoinLib.noKeyHash )
@@ -71,7 +79,7 @@ class HashProbeTable {
             }
         }
         // And the rows with no common hash key
-        if ( noKeyBucket != null )
+        if ( appendNoBucket && noKeyBucket != null )
             iter = Iter.concat(iter, noKeyBucket.iterator());
         return iter;
     }
@@ -112,5 +120,10 @@ class HashProbeTable {
 
     public void clear() {
         buckets.clear();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Buckets=%d RightMisses=%d MaxBucket=%d NoKeyBucket=%d", s_count, s_countScanMiss, s_maxBucketSize, s_noKeyBucketSize);
     }
 }

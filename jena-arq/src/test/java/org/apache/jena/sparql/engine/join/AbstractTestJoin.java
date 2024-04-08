@@ -225,6 +225,14 @@ public abstract class AbstractTestJoin extends Assert {
                              ,"  (row (?z <http://example/z1>) (?x <http://example/x>) (?w 'w11-1'))"
                              ,"  (row (?z <http://example/z4>) (?x <http://example/x>)))"
                             ); }
+
+    // This is tableS1 with reversed order of bindings
+    protected static Table tableS1b() {
+        return parseTableInt("(table"
+                             ,"  (row (?z <http://example/z4>) (?x <http://example/x>))"
+                             ,"  (row (?z <http://example/z1>) (?x <http://example/x>) (?w 'w11-1')))"
+                            ); }
+
     protected static Table tableS2() {
         return parseTableInt("(table (row (?x <http://example/x>) (?w <http://example/z1>)))") ;
     }

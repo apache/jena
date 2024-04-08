@@ -1,0 +1,33 @@
+PREFIX : <http://www.example.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+:join_2columns_skewed_a_10
+  rdfs:label "join_2columns_skewed_a_10" ;
+  :expectedResultSetSize 9758200 ;
+  :skipExecution "4.8.0" ; # On jena 4.8.0 this task takes very long (more than a minute); on "current" it should be only a few seconds
+  :skipValidation "4.8.0" ; # On jena 4.8.0 the actual result set size is incorrectly 16020400 ;
+  :queryString
+"""
+# SELECT  (count(*) AS ?C) {
+SELECT * {
+  { SELECT  ?X ?Y {
+      VALUES ?X_i { UNDEF 0 1 2 3 4 5 6 7 8 9 }
+      VALUES ?X_j { UNDEF 0 1 2 3 4 5 6 7 8 9 }
+      BIND(( ?X_i + ( 10 * ?X_j ) ) AS ?X)
+      VALUES ?Y_i { UNDEF 0 1 2 3 4 5 6 7 8 9 }
+      VALUES ?Y_j { UNDEF 0 1 2 3 4 5 6 7 8 9 }
+      BIND(( ?Y_i + ( 10 * ?Y_j ) ) AS ?Y)
+      FILTER(bound(?X) || bound(?Y))
+  } }
+  { SELECT  ?X ?Y {
+      VALUES ?X_i { UNDEF 0 1 2 3 4 5 6 7 8 9 }
+      VALUES ?X_j { UNDEF 0 1 2 3 4 5 6 7 8 9 }
+      BIND(( ?X_i + ( 10 * ?X_j ) ) AS ?X)
+      VALUES ?Y_i { UNDEF 0 1 2 3 4 5 6 7 8 9 }
+      VALUES ?Y_j { UNDEF 0 1 2 3 4 5 6 7 8 9 }
+      BIND(( ?Y_i + ( 10 * ?Y_j ) ) AS ?Y)
+      FILTER(bound(?X) || bound(?Y))
+  } }
+}
+""" ;
+  .
