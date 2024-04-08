@@ -1,0 +1,42 @@
+PREFIX : <http://www.example.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+:join_2columns_skewed_a_1
+  rdfs:label "join_2columns_skewed_a_1" ;
+  :expectedResultSetSize 1336 ;
+  :skipValidation "4.8.0" ; # On jena 4.8.0 the actual result set size is incorrectly 2736 ;
+  :queryString
+"""
+# SELECT  (count(*) AS ?C)
+SELECT *
+WHERE
+  { { SELECT  ?X ?Y
+      WHERE
+        { VALUES ?X_i { UNDEF 0 1 }
+          VALUES ?X_j { UNDEF 0 1 }
+          BIND(( ?X_i + ( 2 * ?X_j ) ) AS ?X)
+          VALUES ?Y_i { UNDEF 0 1 }
+          VALUES ?Y_j { UNDEF 0 1 }
+          BIND(( ?Y_i + ( 2 * ?Y_j ) ) AS ?Y)
+          FILTER(bound(?X) || bound(?Y))
+        }
+    }
+    { SELECT  ?X ?Y
+      WHERE
+        { { SELECT  ?X ?Y # ("x" AS ?RAND)
+            WHERE
+              { VALUES ?X_i { UNDEF 0 1 }
+                VALUES ?X_j { UNDEF 0 1 }
+                BIND(( ?X_i + ( 2 * ?X_j ) ) AS ?X)
+                VALUES ?Y_i { UNDEF 0 1 }
+                VALUES ?Y_j { UNDEF 0 1 }
+                BIND(( ?Y_i + ( 2 * ?Y_j ) ) AS ?Y)
+                FILTER(bound(?X) || bound(?Y))
+              }
+          }
+          # FILTER ( ?RAND < 0.95 )
+        }
+    }
+  }
+""" ;
+  .

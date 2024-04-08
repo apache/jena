@@ -31,7 +31,7 @@ import org.apache.jena.sparql.engine.iterator.QueryIter2 ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPeek ;
 
 /** Hash join algorithm
- *  
+ *
  * This code materializes one input into the probe table
  * then hash joins the other input from the stream side.
  */
@@ -42,47 +42,51 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
     protected long s_countResults         = 0 ;       // Overall result size.
     protected long s_trailerResults       = 0 ;       // Results from the trailer iterator.
     // See also stats in the probe table.
-    
+
     protected final JoinKey               joinKey ;
-    protected final HashProbeTable        hashTable ;
+    protected final MultiHashProbeTable   hashTable ;
 
     private QueryIterator               iterStream ;
     private Binding                     rowStream       = null ;
     private Iterator<Binding>           iterCurrent ;
-    private boolean                     yielded ;       // Flag to note when current probe causes a result. 
+    private boolean                     yielded ;       // Flag to note when current probe causes a result.
     // Hanlde any "post join" additions.
     private Iterator<Binding>           iterTail        = null ;
-    
+
     enum Phase { INIT, HASH , STREAM, TRAILER, DONE }
     Phase state = Phase.INIT ;
-    
+
     private Binding slot = null ;
 
-    protected AbstractIterHashJoin(JoinKey joinKey, QueryIterator probeIter, QueryIterator streamIter, ExecutionContext execCxt) {
+    protected AbstractIterHashJoin(JoinKey initialJoinKey, QueryIterator probeIter, QueryIterator streamIter, ExecutionContext execCxt) {
         super(probeIter, streamIter, execCxt) ;
-        
-        if ( joinKey == null ) {
+
+        if ( initialJoinKey == null ) {
+            // This block computes an initial join key from the common variables of each iterator's first binding.
             QueryIterPeek pProbe = QueryIterPeek.create(probeIter, execCxt) ;
             QueryIterPeek pStream = QueryIterPeek.create(streamIter, execCxt) ;
-            
+
             Binding bLeft = pProbe.peek() ;
             Binding bRight = pStream.peek() ;
-            
+
             List<Var> varsLeft = Iter.toList(bLeft.vars()) ;
             List<Var> varsRight = Iter.toList(bRight.vars()) ;
-            joinKey = JoinKey.createVarKey(varsLeft, varsRight) ;
+
+            initialJoinKey = JoinKey.create(varsLeft, varsRight) ;
+
             probeIter = pProbe ;
             streamIter = pStream ;
         }
-        
-        this.joinKey = joinKey ;
+
+        JoinKey maxJoinKey = null;
+
+        this.joinKey = initialJoinKey ;
         this.iterStream = streamIter ;
-        this.hashTable = new HashProbeTable(joinKey) ;
+        this.hashTable = new MultiHashProbeTable(maxJoinKey, initialJoinKey) ;
         this.iterCurrent = null ;
         buildHashTable(probeIter) ;
-        
     }
-        
+
     private void buildHashTable(QueryIterator iter1) {
         state = Phase.HASH ;
         for (; iter1.hasNext();) {
@@ -96,7 +100,7 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
 
     @Override
     protected boolean hasNextBinding() {
-        if ( isFinished() ) 
+        if ( isFinished() )
             return false ;
         if ( slot == null ) {
             slot = moveToNextBindingOrNull() ;
@@ -117,21 +121,21 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
 
     protected Binding moveToNextBindingOrNull() {
         // iterCurrent is the iterator of entries in the
-        // probe hashed table for the current stream row.     
+        // probe hashed table for the current stream row.
         // iterStream is the stream of incoming rows.
-        
+
         switch ( state ) {
             case DONE : return null ;
-            case HASH : 
+            case HASH :
             case INIT :
                 throw new IllegalStateException() ;
             case TRAILER :
                 return doOneTail() ;
             case STREAM :
         }
-        
+
         for(;;) {
-            // Ensure we are processing a row. 
+            // Ensure we are processing a row.
             while ( iterCurrent == null ) {
                 // Move on to the next row from the right.
                 if ( ! iterStream.hasNext() ) {
@@ -146,8 +150,8 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
                 iterCurrent = hashTable.getCandidates(rowStream) ;
                 yielded = false ;
             }
-            
-            // Emit one row using the rightRow and the current matched left rows. 
+
+            // Emit one row using the rightRow and the current matched left rows.
             if ( ! iterCurrent.hasNext() ) {
                 iterCurrent = null ;
                 if ( ! yielded ) {
@@ -162,11 +166,11 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
 
             // Nested loop join, only on less.
             //Iterator<Binding> iter = nestedLoop(iterCurrent, rowStream) ;
-            
+
             Binding rowCurrentProbe = iterCurrent.next() ;
             Binding r = Algebra.merge(rowCurrentProbe, rowStream) ;
             Binding r2 = null ;
-            
+
             if (r != null)
                 r2 = yieldOneResult(rowCurrentProbe, rowStream, r) ;
             if ( r2 == null ) {
@@ -177,9 +181,9 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
                 return r2 ;
             }
         }
-    }    
-    
-    
+    }
+
+
     private Binding doOneTail() {
         // Only in TRAILING
         if ( iterTail.hasNext() ) {
@@ -192,19 +196,19 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
         iterTail = null ;
         return null ;
     }
-    
+
     /**
      * Signal about to return a result.
      * @param rowCurrentProbe
      * @param rowStream
      * @param rowResult
-     * @return 
+     * @return
      */
     protected abstract Binding yieldOneResult(Binding rowCurrentProbe, Binding rowStream, Binding rowResult) ;
 
     /** Signal a row that yields no matches.
      *  This method can return a binding (the outer join case)
-     *  which will then be yielded. {@code yieldOneResult} will <em>not</em> be called. 
+     *  which will then be yielded. {@code yieldOneResult} will <em>not</em> be called.
      * @param rowStream
      * @return
      */
@@ -216,23 +220,23 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
      * @return QueryIterator or null
      */
     protected abstract QueryIterator joinFinished() ;
-        
+
     @Override
     protected void closeSubIterator() {
         if ( JoinLib.JOIN_EXPLAIN ) {
             String x = String.format(
-                         "HashJoin: LHS=%d RHS=%d Results=%d RightMisses=%d MaxBucket=%d NoKeyBucket=%d",
-                         s_countProbe, s_countScan, s_countResults, 
-                         hashTable.s_countScanMiss, hashTable.s_maxBucketSize, hashTable.s_noKeyBucketSize) ;
+                         "HashJoin: LHS=%d RHS=%d Results=%d Table=%s",
+                         s_countProbe, s_countScan, s_countResults,
+                         hashTable.toString()) ;
             System.out.println(x) ;
         }
         // In case it's a peek iterator.
         iterStream.close() ;
-        hashTable.clear(); 
+        hashTable.clear();
     }
 
     @Override
-    protected void requestSubCancel() 
+    protected void requestSubCancel()
     { }
 }
 

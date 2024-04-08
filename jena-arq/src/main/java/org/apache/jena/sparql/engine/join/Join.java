@@ -50,12 +50,26 @@ public class Join {
      * @return QueryIterator
      */
     public static QueryIterator join(QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
+        return join(null, left, right, execCxt);
+    }
+
+    /**
+     * Standard entry point to a join of two streams.
+     * This is not a substitution/index join.
+     * (See {@link OpExecutor} for streamed execution using substitution).
+     * @param joinKey
+     * @param left
+     * @param right
+     * @param execCxt
+     * @return QueryIterator
+     */
+    public static QueryIterator join(JoinKey joinKey, QueryIterator left, QueryIterator right, ExecutionContext execCxt) {
         if ( false )
             return debug(left, right, execCxt,
-                         (_left, _right)->hashJoin(_left, _right, execCxt)) ;
+                         (_left, _right)->hashJoin(joinKey, _left, _right, execCxt)) ;
         if ( useNestedLoopJoin )
             return nestedLoopJoin(left, right, execCxt) ;
-        return hashJoin(left, right, execCxt) ;
+        return hashJoin(joinKey, left, right, execCxt) ;
     }
 
     /** Standard entry point to a left join of two streams.
