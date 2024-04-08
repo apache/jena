@@ -523,7 +523,9 @@ public class FusekiServer {
             requireNonNull(directory, "directory");
             if ( ! FileOps.exists(directory) )
                 Fuseki.configLog.warn("File area not found: "+directory);
-            this.staticContentDir = directory;
+            // Resolve path.
+            String dir = Path.of(directory).toAbsolutePath().toString();
+            this.staticContentDir = dir;
             return this;
         }
 
