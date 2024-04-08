@@ -1,0 +1,21 @@
+# SELECT  (count(*) AS ?C) {
+SELECT * {
+  { SELECT  ?X ?Y {
+      VALUES ?X_i { UNDEF 0 1 2 3 4 5 6 7 8 9 }
+      VALUES ?X_j { UNDEF 0 1 2 3 4 5 6 7 8 9 }
+      BIND(( ?X_i + ( 10 * ?X_j ) ) AS ?X)
+      VALUES ?Y_i { UNDEF 0 1 2 3 4 5 6 7 8 9 }
+      VALUES ?Y_j { UNDEF 0 1 2 3 4 5 6 7 8 9 }
+      BIND(( ?Y_i + ( 10 * ?Y_j ) ) AS ?Y)
+      FILTER(bound(?X) || bound(?Y))
+  } }
+  { SELECT  ?X ?Y {
+      VALUES ?X_i { UNDEF 0 1 2 3 4 5 6 7 8 9 }
+      VALUES ?X_j { UNDEF 0 1 2 3 4 5 6 7 8 9 }
+      BIND(( ?X_i + ( 10 * ?X_j ) ) AS ?X)
+      VALUES ?Y_i { UNDEF 0 1 2 3 4 5 6 7 8 9 }
+      VALUES ?Y_j { UNDEF 0 1 2 3 4 5 6 7 8 9 }
+      BIND(( ?Y_i + ( 10 * ?Y_j ) ) AS ?Y)
+      FILTER(bound(?X) || bound(?Y))
+  } }
+}

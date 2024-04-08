@@ -40,6 +40,7 @@ import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.iterator.*;
 import org.apache.jena.sparql.engine.join.Join;
+import org.apache.jena.sparql.engine.join.JoinKey;
 import org.apache.jena.sparql.engine.main.iterator.QueryIterGraph;
 import org.apache.jena.sparql.engine.main.iterator.QueryIterOptionalIndex;
 import org.apache.jena.sparql.engine.main.iterator.QueryIterUnion;
@@ -210,10 +211,19 @@ public class OpExecutor {
             QueryIterator qIter = Join.join(left, right, execCxt);
             return qIter;
         }
+
+        JoinKey joinKey = null;
+        if (false) {
+            // Disabled because variable analysis may fail when custom ops are involved.
+            Set<Var> leftVars = OpVars.visibleVars(opJoin.getLeft());
+            Set<Var> rightVars = OpVars.visibleVars(opJoin.getRight());
+            joinKey = JoinKey.create(leftVars, rightVars);
+        }
+
         QueryIterator left = exec(opJoin.getLeft(), input);
         QueryIterator right = exec(opJoin.getRight(), root());
-        // Join key.
-        QueryIterator qIter = Join.join(left, right, execCxt);
+
+        QueryIterator qIter = Join.join(joinKey, left, right, execCxt);
         return qIter;
     }
 
