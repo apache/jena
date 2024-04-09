@@ -19,9 +19,8 @@
 package org.apache.jena.http;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Objects;
-
-import org.apache.commons.codec.binary.Base64;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -49,7 +48,7 @@ public class AuthBearerTestLib {
                 log.warn("Bad token: '"+token+"'");
                 return null;
             }
-            byte[] jsonBytes = Base64.decodeBase64(parts[1]);
+            byte[] jsonBytes = Base64.getDecoder().decode(parts[1]);
             String jsonStr = new String(jsonBytes, StandardCharsets.UTF_8);
             JsonObject obj = new Gson().fromJson(jsonStr, JsonObject.class);
             JsonElement field = obj.get("sub");
@@ -81,7 +80,7 @@ public class AuthBearerTestLib {
     private static String enc64(String x) {
         byte[] bytes = x.getBytes(StandardCharsets.UTF_8);
         // URL encoding, no padding, no chunking line breaks.
-        String s = org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString(bytes);
+        String s = Base64.getUrlEncoder().encodeToString(bytes);
         return s;
     }
 
