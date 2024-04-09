@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -31,7 +32,9 @@ import org.apache.jena.rdfpatch.changes.RDFChangesCollector;
 import org.apache.jena.riot.thrift.TRDF;
 import org.apache.jena.riot.thrift.wire.*;
 import org.apache.thrift.TException;
+import org.apache.thrift.TUnion;
 import org.apache.thrift.protocol.TProtocol;
+import org.apache.thrift.protocol.TProtocolUtil;
 import org.apache.thrift.transport.TTransportException;
 
 /**
@@ -39,6 +42,11 @@ import org.apache.thrift.transport.TTransportException;
  * @see PatchProcessor
  */
 public class RDFPatchReaderBinary implements PatchProcessor {
+    private static final RDF_Patch_Row EMPTY_ROW = new RDF_Patch_Row();
+    private static final String TPROTOCOL_UTIL = TProtocolUtil.class.getCanonicalName();
+    private static final String TUNION = TUnion.class.getCanonicalName();
+    private static final String SKIP = "skip";
+    private static final String READ = "read";
     private final InputStream input;
 
     private RDFPatchReaderBinary(InputStream input) {
@@ -88,8 +96,12 @@ public class RDFPatchReaderBinary implements PatchProcessor {
             row.clear();
             try { row.read(protocol) ; }
             catch (TTransportException e) {
-                if ( e.getType() == TTransportException.END_OF_FILE )
+                if ( e.getType() == TTransportException.END_OF_FILE) {
+                    if (eofDueToMalformedInput(e)) {
+                        throw new PatchException("Thrift exception", e);
+                    }
                     break;
+                }
                 throw new PatchException("Thrift exception", e);
             }
             catch (TException e) {
@@ -120,8 +132,11 @@ public class RDFPatchReaderBinary implements PatchProcessor {
             row.clear();
             try { row.read(protocol) ; }
             catch (TTransportException e) {
-                if ( e.getType() == TTransportException.END_OF_FILE ) {
+                if ( e.getType() == TTransportException.END_OF_FILE) {
                     changes.finish();
+                    if (eofDueToMalformedInput(e)) {
+                        throw new PatchException("Thrift exception", e);
+                    }
                     return;
                 }
                 throw new PatchException("Thrift exception", e);
@@ -132,6 +147,37 @@ public class RDFPatchReaderBinary implements PatchProcessor {
 
             dispatch(row, changes);
         }
+    }
+
+    /**
+     * Makes the best effort to detect whether we've hit an EOF exception due to genuine EOF versus malformed input
+     * <p>
+     * This is somewhat brittle as the Thrift exception doesn't tell us directly where the read was when the error
+     * happened, rather we have to go through the stack trace and detect where we were.  This looks for two clear
+     * indicators of malformed input.  Firstly a {@link TProtocolUtil#skip(TProtocol, byte)} call as those happen when
+     * encountering a valid field ID with a mismatched type ID.  Secondly for recursive calls into
+     * {@link TUnion#read(TProtocol)} as that indicates we were partway through reading a valid data structure when we
+     * encountered the EOF.
+     * </p>
+     * @param e EOF Exception
+     * @return True if EOF due to malformed input, false if due to genuine EOF.
+     */
+    private static boolean eofDueToMalformedInput(TTransportException e) {
+        int unionReadCount = 0;
+
+        for (StackTraceElement element : e.getStackTrace()) {
+            // Firstly TProtocolUtil.skip() is invoked when Thrift encounters a valid field ID but a wrong type ID, if
+            // while attempting to skip over the malformed field we hit an EOF then this is definitely malformed input
+            if (element.getClassName().equals(TPROTOCOL_UTIL) && StringUtils.equals(element.getMethodName(), SKIP)) {
+                return true;
+            } else if (element.getClassName().equals(TUNION) && StringUtils.equals(element.getMethodName(), READ)) {
+                unionReadCount++;
+            }
+        }
+        // Secondly TUnion.read() is invoked for reading union types, since the top level type in the schema is a
+        // union type then we always expect to see this invoked once.  However, if invoked more than once this means
+        // we started reading a valid data item and then hit an unexpected EOF e.g. due to truncated/corrupted data
+        return unionReadCount > 1 ? true : false;
     }
 
     private static void dispatch(RDF_Patch_Row row, RDFChanges changes) {

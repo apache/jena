@@ -111,5 +111,9 @@ public class PatchSummary {
     public long getCountSegment() {
         return countSegment;
     }
+
+    public boolean isEmpty() {
+        return (this.countStart +  this.countFinish + this.countHeader +  this.countAddData + this.countDeleteData + this.countAddPrefix + this.countDeletePrefix + this.countTxnBegin + this.countTxnCommit + this.countTxnAbort + this.countSegment) == 0;
+    }
 }
 

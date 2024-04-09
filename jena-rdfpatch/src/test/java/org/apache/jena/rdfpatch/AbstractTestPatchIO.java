@@ -18,17 +18,21 @@
 
 package org.apache.jena.rdfpatch;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.rdfpatch.changes.PatchSummary;
 import org.apache.jena.rdfpatch.changes.RDFChangesCollector;
 import org.apache.jena.sparql.sse.SSE;
+import org.junit.Assert;
 import org.junit.Test;
 
 public abstract class AbstractTestPatchIO {
@@ -123,5 +127,32 @@ public abstract class AbstractTestPatchIO {
             //changes.add(g2, s3, p2, o3);
             changes.txnCommit();
         });
+    }
+
+    @Test(expected = RuntimeException.class) public void write_read_trailing_junk_01() {
+        RDFPatch patch1 = makePatch(changes-> { changes.txnBegin(); changes.add(g1, s1, p1, o1); changes.txnCommit(); });
+        byte[] data = write(patch1);
+        // Add some junk null bytes to the end of the data and try to read it back in
+        byte[] withTrailer = new byte[data.length + 10];
+        System.arraycopy(data, 0, withTrailer, 0, data.length);
+        read(withTrailer);
+    }
+
+    @Test(expected = RuntimeException.class) public void write_read_trailing_junk_02() {
+        RDFPatch patch1 = makePatch(changes-> { changes.txnBegin(); changes.add(g1, s1, p1, o1); changes.txnCommit(); });
+        byte[] data = write(patch1);
+        // Add some junk bytes to the end of the data and try to read it back in
+        byte[] withTrailer = new byte[data.length + 10];
+        System.arraycopy(data, 0, withTrailer, 0, data.length);
+        System.arraycopy("junk".getBytes(StandardCharsets.UTF_8), 0, withTrailer, data.length, 4);
+        read(withTrailer);
+    }
+
+    @Test
+    public void read_empty() {
+        byte[] empty = new byte[0];
+        RDFPatch patch = this.read(empty);
+        PatchSummary summary = RDFPatchOps.summary(patch);
+        assertTrue(summary.isEmpty());
     }
 }
