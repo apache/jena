@@ -42,7 +42,7 @@ import org.apache.thrift.transport.TTransportException;
  * @see PatchProcessor
  */
 public class RDFPatchReaderBinary implements PatchProcessor {
-    private static final RDF_Patch_Row EMPTY_ROW = new RDF_Patch_Row();
+
     private static final String TPROTOCOL_UTIL = TProtocolUtil.class.getCanonicalName();
     private static final String TUNION = TUnion.class.getCanonicalName();
     private static final String SKIP = "skip";
@@ -130,6 +130,7 @@ public class RDFPatchReaderBinary implements PatchProcessor {
         changes.start();
         for (;;) {
             row.clear();
+
             try { row.read(protocol) ; }
             catch (TTransportException e) {
                 if ( e.getType() == TTransportException.END_OF_FILE) {
