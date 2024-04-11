@@ -42,6 +42,7 @@ import org.junit.runners.Suite;
     , TestDatasetTDB.class
     , TestDatasetTDBPersist.class
     , Test_SPARQL_TDB.class
+    , TestQueryExecTDB.class
     , TestDynamicDatasetTDB.class
     , TestStoreConnectionMem.class
     , TestStoreConnectionDirect.class

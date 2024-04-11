@@ -32,6 +32,7 @@ import org.junit.Test;
 
 public class TestQueryExecDataset {
     // Most QueryExec testing gets tested via QueryExecution usage
+    // See also AbstractTestQueryExec
 
     @Test public void queryExec_substitution_01() {
         QueryExec queryExec = QueryExec.dataset(DatasetGraphFactory.empty())

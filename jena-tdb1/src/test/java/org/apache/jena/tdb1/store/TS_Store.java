@@ -39,6 +39,7 @@ import org.junit.runners.Suite ;
     , TestLoader.class
     , Test_SPARQL_TDB.class
     , TestConcurrentAccess.class
+    , TestQueryExecTDB.class
     , TestDynamicDatasetTDB.class
     , TestStoreConnectionsDirect.class
     , TestStoreConnectionsMapped.class

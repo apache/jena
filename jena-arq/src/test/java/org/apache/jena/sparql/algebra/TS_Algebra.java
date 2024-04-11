@@ -33,6 +33,7 @@ import org.junit.runners.Suite ;
     , TestPattern2Join.class
     , TestTransformQuads.class
     , TestVarFinder.class
+    , TestVarFinder2.class
     , TestTransformOpExt.class
 })
 
