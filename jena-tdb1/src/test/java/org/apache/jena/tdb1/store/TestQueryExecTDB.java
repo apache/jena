@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,17 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.exec;
+package org.apache.jena.tdb1.store;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.sparql.core.AbstractTestQueryExec;
+import org.apache.jena.tdb1.TDB1Factory;
+import org.apache.jena.tdb1.sys.TDBInternal;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestExecEnvironment.class
-    , TestQueryExecDataset.class
-} )
- 
-public class TS_ExecSPARQL {
+public class TestQueryExecTDB extends AbstractTestQueryExec
+{
+    @Override
+    protected Dataset createDataset()
+    {
+        return TDB1Factory.createDataset() ;
+    }
 
+    @Override
+    protected void releaseDataset(Dataset ds) {
+        TDBInternal.expel(ds.asDatasetGraph());
+    }
 }
+

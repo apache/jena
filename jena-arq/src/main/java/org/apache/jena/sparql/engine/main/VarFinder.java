@@ -25,18 +25,26 @@ import static org.apache.jena.sparql.util.VarUtils.addVarsFromTriple ;
 import static org.apache.jena.sparql.util.VarUtils.addVarsFromTriplePath ;
 
 import java.io.PrintStream ;
+import java.util.ArrayList;
 import java.util.HashSet ;
+import java.util.Iterator;
 import java.util.List ;
 import java.util.Set ;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.SetUtils ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVisitor ;
+import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.algebra.op.* ;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.expr.E_Bound;
+import org.apache.jena.sparql.expr.E_Coalesce;
 import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.expr.ExprFunction;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.ExprVars;
 import org.apache.jena.sparql.util.VarUtils ;
@@ -329,10 +337,43 @@ public class VarFinder
 
         private void processAssignVarExprList(VarExprList varExprList) {
             varExprList.forEachVarExpr((v,e)-> {
-                defines.add(v) ; // Expression may eval to error -> unset?
-                if ( e != null )
+                if ( e != null ) {
+                    boolean isLikelyToBeDefined = isLikelyToBeDefined(e);
+                    if (isLikelyToBeDefined) {
+                        defines.add(v) ; // Expression may eval to error -> unset?
+                    } else {
+                        optDefines.add(v);
+                    }
                     ExprVars.nonOpVarsMentioned(assignMentions, e);
+                }
             }) ;
+        }
+
+        /**
+         * Heuristic to check whether the expression's evaluation result is likely
+         * to always be defined (i.e. never null / type error).
+         * Does not detect runtime type errors, such as when
+         * expr is (?x < 1) and ?x is assigned a string.
+         */
+        private boolean isLikelyToBeDefined(Expr expr) {
+            boolean result;
+            if (expr.isVariable()) {
+                result = defines.contains(expr.asVar());
+            } else if (expr.isConstant() || expr instanceof E_Bound) {
+                result = true;
+            } else if (expr.isFunction()) {
+                ExprFunction fn = expr.getFunction();
+                List<Expr> args = fn.getArgs();
+                if (fn instanceof E_Coalesce) {
+                    result = Iter.anyMatch(args.iterator(), this::isLikelyToBeDefined);
+                } else {
+                    result = Iter.allMatch(args.iterator(), this::isLikelyToBeDefined);
+                }
+            } else {
+                // Should never happen
+                result = false;
+            }
+            return result;
         }
 
         @Override
@@ -351,9 +392,35 @@ public class VarFinder
             assignMentions.addAll(subUsage.assignMentions);
         }
 
+
         @Override
         public void visit(OpTable opTable) {
-            defines.addAll(opTable.getTable().getVars());
+            Table table = opTable.getTable();
+
+            // Start with a a copy of the table's declared variables.
+            // Then sieve out those variables which are unbound in any row.
+            Set<Var> remainingDefinedVars = new HashSet<>(table.getVars());
+
+            // The list of detected unbound variables.
+            // Tracked in a separate collection for clarity - could be added to optDefines directly.
+            List<Var> optVars = new ArrayList<>();
+
+            Iterator<Binding> rowIt = table.rows();
+            while (rowIt.hasNext()) {
+                Binding row = rowIt.next();
+
+                // Only the remaining defined variables need to be checked for unbound values
+                Iterator<Var> varIt = remainingDefinedVars.iterator();
+                while (varIt.hasNext()) {
+                    Var var = varIt.next();
+                    if (!row.contains(var)) {
+                        varIt.remove(); // Removes the current var from remainingDefinedVars
+                        optVars.add(var);
+                    }
+                }
+            }
+            defines.addAll(remainingDefinedVars);
+            optDefines.addAll(optVars);
         }
 
         @Override

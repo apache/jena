@@ -33,56 +33,56 @@ import org.junit.Test ;
 public class TestClassify
 {
     @Test public void testClassify_Join_01()
-	{ classifyJ("{?s :p :o . { ?s :p :o FILTER(true) } }", true) ; }
+    { classifyJ("{?s :p :o . { ?s :p :o FILTER(true) } }", true) ; }
 
     @Test public void testClassify_Join_02()
-	{ classifyJ("{?s :p :o . { ?s :p :o FILTER(?s) } }", true) ; }
+    { classifyJ("{?s :p :o . { ?s :p :o FILTER(?s) } }", true) ; }
 
     @Test public void testClassify_Join_03()
-	{ classifyJ("{?s :p :o . { ?s :p ?o FILTER(?o) } }", true) ; }
+    { classifyJ("{?s :p :o . { ?s :p ?o FILTER(?o) } }", true) ; }
 
     // JENA-1167
     // This safe; ?o is not an input to the filter block.
     @Test public void testClassify_Join_04()
-	{ classifyJ("{?s :p :o . { ?s :p :o FILTER(?o) } }", true) ; }
+    { classifyJ("{?s :p :o . { ?s :p :o FILTER(?o) } }", true) ; }
 
     @Test public void testClassify_Join_05()
-	{ classifyJ("{?s :p :o . { ?x :p :o FILTER(?s) } }", false) ; }
+    { classifyJ("{?s :p :o . { ?x :p :o FILTER(?s) } }", false) ; }
 
     @Test public void testClassify_Join_06()
-	{ classifyJ("{ { ?s :p :o FILTER(true) } ?s :p :o }", true) ; }
+    { classifyJ("{ { ?s :p :o FILTER(true) } ?s :p :o }", true) ; }
 
-	@Test public void testClassify_Join_07()
-	{ classifyJ("{ { ?s :p :o FILTER(?s) }   ?s :p :o }", true) ; }
+    @Test public void testClassify_Join_07()
+    { classifyJ("{ { ?s :p :o FILTER(?s) }   ?s :p :o }", true) ; }
 
-	@Test public void testClassify_Join_08()
-	{ classifyJ("{ { ?s :p ?o FILTER(?o) }   ?s :p :o }", true) ; }
+    @Test public void testClassify_Join_08()
+    { classifyJ("{ { ?s :p ?o FILTER(?o) }   ?s :p :o }", true) ; }
 
-	@Test public void testClassify_Join_09()
-	{ classifyJ("{ { ?s :p :o FILTER(?o) }   ?s :p :o }", true) ; }
+    @Test public void testClassify_Join_09()
+    { classifyJ("{ { ?s :p :o FILTER(?o) }   ?s :p :o }", true) ; }
 
     // Actually, this is safe IF executed left, then streamed to right.
-	@Test public void testClassify_Join_10()
-	{ classifyJ("{ { ?x :p :o FILTER(?s) }   ?s :p :o }", true) ; }
+    @Test public void testClassify_Join_10()
+    { classifyJ("{ { ?x :p :o FILTER(?s) }   ?s :p :o }", true) ; }
 
 
     // OPTIONAL nested inside {} so it is a join of the LHS and the {}-RHS.
 
     // Not safe: ?s
     // Other parts of RHS may restrict ?s to things that can't match the LHS.
-	@Test public void testClassify_Join_11()
-	{ classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o } } }", false) ; }
+    @Test public void testClassify_Join_11()
+    { classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o } } }", false) ; }
 
     // Not safe: ?s
-	@Test public void testClassify_Join_12()
-	{ classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(?s) } } }", false) ; }
+    @Test public void testClassify_Join_12()
+    { classifyJ("{?s :p :o . { OPTIONAL { ?s :p :o FILTER(?s) } } }", false) ; }
 
-	@Test public void testClassify_Join_13()
-	{ classifyJ("{?s :p :o . { ?x :p :o OPTIONAL { :s :p :o FILTER(?x) } } }", true) ; }
+    @Test public void testClassify_Join_13()
+    { classifyJ("{?s :p :o . { ?x :p :o OPTIONAL { :s :p :o FILTER(?x) } } }", true) ; }
 
-	// See testClassify_Join_04()
-	@Test public void testClassify_Join_14()
-	{ classifyJ("{?s :p :o . { OPTIONAL { :s :p :o FILTER(?o) } } }", true) ; }
+    // See testClassify_Join_04()
+    @Test public void testClassify_Join_14()
+    { classifyJ("{?s :p :o . { OPTIONAL { :s :p :o FILTER(?o) } } }", true) ; }
 
     @Test public void testClassify_Join_14a()
     { classifyJ("{?s :p :o . { OPTIONAL { :s :p ?o FILTER(?o) } } }", true) ; }
@@ -91,7 +91,7 @@ public class TestClassify
     { classifyJ("{?s :p ?o . { OPTIONAL { :s :p :o FILTER(?o) } } }", false) ; }
 
     @Test public void testClassify_Join_15()
-	{ classifyJ("{?s :p :o . { OPTIONAL { ?x :p :o FILTER(?s) } } }", false) ; }
+    { classifyJ("{?s :p :o . { OPTIONAL { ?x :p :o FILTER(?s) } } }", false) ; }
 
     @Test public void testClassify_Join_20()
     { classifyJ("{ {?s :p ?x } . { {} OPTIONAL { :s :p ?x } } }", false) ; }
@@ -171,6 +171,42 @@ public class TestClassify
     @Test public void testClassify_Join_60() {
         String x1 = "{ ?s  ?p  ?V SERVICE <test:g> { SELECT (?w AS ?V) { ?t  ?q  ?w } GROUP BY ?w } }";
         TestClassify.classifyJ(x1, false);
+    }
+
+    /** Can't linearize because rhs does not bind ?x */
+    @Test public void testClassify_Join_70a() {
+        String x1 = "{ VALUES ?x { UNDEF } VALUES ?x { UNDEF } }";
+        TestClassify.classifyJ(x1, false);
+    }
+
+    /** Can linearize because rhs binds ?x*/
+    @Test public void testClassify_Join_70b() {
+        String x1 = "{ VALUES ?x { UNDEF } VALUES ?x { 0 } }";
+        TestClassify.classifyJ(x1, true);
+    }
+
+    /** Can't linearize because rhs does not bind ?x */
+    @Test public void testClassify_Join_71() {
+        String x1 = "{ VALUES ?x { 0 } VALUES ?x { UNDEF } }";
+        TestClassify.classifyJ(x1, false);
+    }
+
+    /** Can't linearize because rhs does not bind ?x */
+    @Test public void testClassify_Join_80() {
+        String x1 = "{ BIND(0 AS ?x) { VALUES ?x { UNDEF } FILTER(bound(?x)) } }";
+        TestClassify.classifyJ(x1, false);
+    }
+
+    /** Can't linearize because rhs does not bind ?x */
+    @Test public void testClassify_Join_81() {
+        String x1 = "{ BIND(0 AS ?x) { BIND(coalesce() AS ?x) FILTER(bound(?x)) } }";
+        TestClassify.classifyJ(x1, false);
+    }
+
+    /** Can linearize because rhs binds ?x*/
+    @Test public void testClassify_Join_82() {
+        String x1 = "{ BIND('x' AS ?x) { BIND('y' AS ?x) FILTER(?x < 1) } }";
+        TestClassify.classifyJ(x1, true);
     }
 
     public static void classifyJ(String pattern, boolean expected)
