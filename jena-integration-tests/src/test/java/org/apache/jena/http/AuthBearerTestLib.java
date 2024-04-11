@@ -80,7 +80,7 @@ public class AuthBearerTestLib {
     private static String enc64(String x) {
         byte[] bytes = x.getBytes(StandardCharsets.UTF_8);
         // URL encoding, no padding, no chunking line breaks.
-        String s = Base64.getUrlEncoder().encodeToString(bytes);
+        String s = Base64.getEncoder().encodeToString(bytes);
         return s;
     }
 
