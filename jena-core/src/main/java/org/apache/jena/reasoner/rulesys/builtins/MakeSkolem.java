@@ -20,8 +20,8 @@ package org.apache.jena.reasoner.rulesys.builtins;
 
 import java.security.MessageDigest ;
 import java.security.NoSuchAlgorithmException ;
+import java.util.Base64;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.reasoner.rulesys.RuleContext ;
@@ -75,7 +75,7 @@ public class MakeSkolem extends BaseBuiltin {
             MessageDigest digester = MessageDigest.getInstance("MD5");
             digester.reset();
             byte[] digest = digester.digest(key.toString().getBytes());
-            String label = Base64.encodeBase64String(digest);
+            String label = Base64.getEncoder().encodeToString(digest);
             Node skolem = NodeFactory.createBlankNode(label);
             return context.getEnv().bind(args[0], skolem); 
         } catch (NoSuchAlgorithmException e) {
