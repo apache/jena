@@ -56,8 +56,9 @@ import org.apache.jena.vocabulary.RDF;
  * This was the ResultSet/RowSet reader for JSON up to and including Jena 4.4.0.
  * Jena 4.5.0 introduced {@link RowSetReaderJSONStreaming}.
  * <p>
- * To switch back, call {@link RowSetReaderJSON_V1#install}.
+ * @deprecated To be removed.
  */
+@Deprecated(since="5.0.0", forRemoval=true)
 public class RowSetReaderJSON_V1 implements RowSetReader {
 
     public static void install() {
