@@ -18,27 +18,27 @@
 
 package org.apache.jena.sparql.algebra;
 
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.Iterator;
+import java.util.List;
 
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.RowSet;
 
 public interface Table
 {
-    public void close() ;
-    public List<Var> getVars() ;
-    public List<String> getVarNames() ;
-    public int size() ;
-    public boolean isEmpty() ;
+    public void close();
+    public List<Var> getVars();
+    public List<String> getVarNames();
+    public int size();
+    public boolean isEmpty();
     /** Return a QueryIterator over the whole table. */
-    public QueryIterator iterator(ExecutionContext execCxt) ;
+    public QueryIterator iterator(ExecutionContext execCxt);
     /** Return a fresh iterator over the whole table. */
-    public Iterator<Binding> rows() ;
-    public void addBinding(Binding binding) ;
-    public boolean contains(Binding binding) ;
+    public Iterator<Binding> rows();
+    public void addBinding(Binding binding);
+    public boolean contains(Binding binding);
     public RowSet toRowSet();
 }
