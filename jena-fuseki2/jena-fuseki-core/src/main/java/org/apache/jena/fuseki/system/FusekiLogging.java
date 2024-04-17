@@ -68,7 +68,9 @@ public class FusekiLogging
     public static String logLoggingProperty = "fuseki.logLogging";
     private static String logLoggingPropertyAlt = "fuseki.loglogging";
 
-    private static final boolean LogLogging = getLogLogging();
+    // This is also set every call of seLogging.
+    // That picks up any in-code settings of the logging properties.
+    private static boolean logLogging = getLogLogging();
 
     private static final boolean getLogLogging() {
         String x = System.getProperty(logLoggingPropertyAlt);
@@ -115,12 +117,13 @@ public class FusekiLogging
      * @param extraDir
      */
     public static synchronized void setLogging(Path extraDir) {
+
         // Cope with repeated calls so code can call this to ensure
-        // logging setup has happened.
         if ( loggingInitialized )
             return;
         loggingInitialized = true;
 
+        logLogging = getLogLogging();
         logLogging("Set logging");
 
         // Is there a log4j setup provided?
@@ -216,7 +219,7 @@ public class FusekiLogging
     }
 
     private static void logLogging(String fmt, Object ... args) {
-        if ( LogLogging ) {
+        if ( logLogging ) {
             System.err.print("Fuseki Logging: ");
             System.err.printf(fmt, args);
             System.err.println();
