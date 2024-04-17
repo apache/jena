@@ -16,13 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.writer ;
+package org.apache.jena.riot.writer;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.riot.RIOT;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.util.Context;
 
 public class TriGWriterLong extends TriGWriter {
 

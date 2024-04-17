@@ -25,14 +25,14 @@ package org.apache.jena.riot.writer;
  */
 
 enum IndentStyle {
-    WIDE, LONG ;
+    WIDE, LONG;
     public static IndentStyle create(String label) {
-        String s = label.toLowerCase() ;
+        String s = label.toLowerCase();
         switch(s) {
             case "wide":
-                return IndentStyle.WIDE ;
+                return IndentStyle.WIDE;
             case "long":
-                return IndentStyle.LONG ;
+                return IndentStyle.LONG;
         }
         return null;
     }

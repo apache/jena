@@ -18,13 +18,13 @@
 
 package org.apache.jena.riot.out;
 
-import org.apache.jena.atlas.io.AWriter ;
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Node ;
+import org.apache.jena.atlas.io.AWriter;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Node_Triple;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.sparql.ARQInternalErrorException;
 
 /**
  * Provide implementations of the operations of {@link NodeFormatter} in terms
@@ -33,25 +33,23 @@ import org.apache.jena.sparql.ARQInternalErrorException ;
 public abstract class NodeFormatterBase implements NodeFormatter
 {
     @Override
-    public void format(AWriter w, Node n)
-    {
-        // Can't use a fixed visitor because of the writer?
+    public void format(AWriter w, Node n) {
         if ( n.isBlank() )
-            formatBNode(w, n) ;
+            formatBNode(w, n);
         else if ( n.isURI() )
-            formatURI(w, n) ;
+            formatURI(w, n);
         else if ( n.isLiteral() )
-            formatLiteral(w, n) ;
+            formatLiteral(w, n);
         else if ( n.isVariable() )
-            formatVar(w, n) ;
+            formatVar(w, n);
         else if ( Node.ANY.equals(n) )
-            w.print("ANY") ;
+            w.print("ANY");
         else if ( n instanceof Node_Triple )
             formatNodeTriple(w, n);
 //        else if ( n instanceof Node_Graph )
 //            formatNodeGraph(w, (Node_Graph)n);
         else
-            throw new ARQInternalErrorException("Unknown node type: "+n) ;
+            throw new ARQInternalErrorException("Unknown node type: "+n);
     }
 
     protected void formatNodeTriple(AWriter w, Node n) {
@@ -66,32 +64,31 @@ public abstract class NodeFormatterBase implements NodeFormatter
     }
 
     @Override
-    public void formatURI(AWriter w, Node n)         { formatURI(w, n.getURI()) ; }
+    public void formatURI(AWriter w, Node n)         { formatURI(w, n.getURI()); }
 
     @Override
-    public void formatBNode(AWriter w, Node n)       { formatBNode(w, n.getBlankNodeLabel()) ; }
+    public void formatBNode(AWriter w, Node n)       { formatBNode(w, n.getBlankNodeLabel()); }
 
     @Override
-    public void formatLiteral(AWriter w, Node n)
-    {
-        RDFDatatype dt = n.getLiteralDatatype() ;
-        String lang = n.getLiteralLanguage() ;
-        String lex = n.getLiteralLexicalForm() ;
+    public void formatLiteral(AWriter w, Node n) {
+        RDFDatatype dt = n.getLiteralDatatype();
+        String lang = n.getLiteralLanguage();
+        String lex = n.getLiteralLexicalForm();
 
         if ( lang != null && ! lang.equals("") ) {
-            formatLitLang(w, lex, lang) ;
+            formatLitLang(w, lex, lang);
         } else if ( dt == null ) {
             // RDF 1.0, simple literal.
-            formatLitString(w, lex) ;
+            formatLitString(w, lex);
         } else if ( dt.equals(XSDDatatype.XSDstring) ) {
             // RDF 1.1, xsd:string - output as short string.
-            formatLitString(w, lex) ;
+            formatLitString(w, lex);
         } else {
             // Datatype, no language tag, not short string.
-            formatLitDT(w, lex, dt.getURI()) ;
+            formatLitDT(w, lex, dt.getURI());
         }
     }
 
     @Override
-    public void formatVar(AWriter w, Node n)         { formatVar(w, n.getName()) ; }
+    public void formatVar(AWriter w, Node n)         { formatVar(w, n.getName()); }
 }

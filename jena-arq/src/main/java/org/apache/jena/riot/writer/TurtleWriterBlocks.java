@@ -18,12 +18,12 @@
 
 package org.apache.jena.riot.writer;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.StreamRDFOps ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.StreamRDFOps;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.sparql.util.Context;
 
 /** Turtle writer that streams - print in blocks of triples formatted
  *  by adjacent same subject.

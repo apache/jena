@@ -18,17 +18,17 @@
 
 package org.apache.jena.riot.out.quoted;
 
-import org.apache.jena.atlas.lib.CharSpace ;
-import org.apache.jena.atlas.lib.Chars ;
+import org.apache.jena.atlas.lib.CharSpace;
+import org.apache.jena.atlas.lib.Chars;
 
 /** Escape processor for N-Triples/N-Quads */
 public class QuotedStringOutputNT extends QuotedStringOutputBase {
     
     public QuotedStringOutputNT() {
-        this(CharSpace.UTF8) ;
+        this(CharSpace.UTF8);
     }
     
     public QuotedStringOutputNT(CharSpace charSpace) {
-        super(Chars.CH_QUOTE2, charSpace) ; 
+        super(Chars.CH_QUOTE2, charSpace); 
     } 
 }

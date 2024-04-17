@@ -18,12 +18,12 @@
 
 package org.apache.jena.riot.out.quoted;
 
-import org.apache.jena.atlas.io.AWriter ;
+import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.io.OutputUtils;
-import org.apache.jena.atlas.lib.CharSpace ;
-import org.apache.jena.atlas.lib.Chars ;
-import org.apache.jena.atlas.lib.EscapeStr ;
+import org.apache.jena.atlas.lib.CharSpace;
+import org.apache.jena.atlas.lib.Chars;
+import org.apache.jena.atlas.lib.EscapeStr;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.SysRIOT;
@@ -42,10 +42,10 @@ import org.apache.jena.riot.SysRIOT;
  */
 public class QuotedURI {
 
-    private final CharSpace charSpace ;
+    private final CharSpace charSpace;
 
     public QuotedURI() {
-        this(CharSpace.UTF8) ;
+        this(CharSpace.UTF8);
     }
 
     /** Write a replacement for a bad character. */
@@ -57,7 +57,7 @@ public class QuotedURI {
     private interface BadCharHandler { void badChar(int idx, String str, char ch); }
 
     public QuotedURI(CharSpace charSpace) {
-        this.charSpace = charSpace ;
+        this.charSpace = charSpace;
     }
 
     /** Write a string for a URI on one line. */
@@ -321,7 +321,7 @@ public class QuotedURI {
      * Control chars mentioned in the specs.
      */
     private static boolean isControlChar(char c) {
-        return c < 20 ;
+        return c < 20;
         // Unicode has a another control char block at 007F to 09FF
         // In the range [U+0000, U+001F], or range [U+007F, U+009F]
         //return Character.isISOControl(c);

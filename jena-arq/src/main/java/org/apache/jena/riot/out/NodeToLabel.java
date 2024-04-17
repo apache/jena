@@ -18,13 +18,13 @@
 
 package org.apache.jena.riot.out;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.system.MapWithScope ;
-import org.apache.jena.riot.system.SyntaxLabels ;
+import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.graph.Node;
+import org.apache.jena.riot.system.MapWithScope;
+import org.apache.jena.riot.system.SyntaxLabels;
 
 /** Map nodes to string (usually, blank nodes to labels).
  * See {@link SyntaxLabels#createNodeToLabel} for getting a default setup.
@@ -34,39 +34,39 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
 {
     /** Allocation from a single scope; just the label matters. */
     static public NodeToLabel createScopeByDocument()
-    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorIncLabel()) ; }
+    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorIncLabel()); }
 
 //    /** Allocation scoped by graph and label. */
 //    public static NodeToLabel createScopeByGraph()
-//    { return new NodeToLabel(new GraphScopePolicy(), new AllocatorIncLabel()) ; }
+//    { return new NodeToLabel(new GraphScopePolicy(), new AllocatorIncLabel()); }
 
     /** Allocation as per internal label, with an encoded safe label. */
     public static NodeToLabel createBNodeByLabelEncoded()
-    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorInternalSafe()) ; }
+    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorInternalSafe()); }
 
     /** Allocation as per internal label */
     public static NodeToLabel createBNodeByLabelAsGiven()
-    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorInternalRaw()) ; }
+    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorInternalRaw()); }
 
     /** Allocation as per internal label */
     public static NodeToLabel createBNodeByIRI()
-    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorBNodeAsIRI()) ; }
+    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorBNodeAsIRI()); }
 
-    private static final NodeToLabel _internal = createBNodeByLabelEncoded() ;
-    public static NodeToLabel labelByInternal() { return _internal ; }
+    private static final NodeToLabel _internal = createBNodeByLabelEncoded();
+    public static NodeToLabel labelByInternal() { return _internal; }
 
     private NodeToLabel(ScopePolicy<Node, String, Node> scopePolicy, Allocator<Node, String, Node> allocator)
     {
-        super(scopePolicy, allocator) ;
+        super(scopePolicy, allocator);
     }
     // ======== Scope Policies
 
     /** Single scope */
     private static class SingleScopePolicy implements ScopePolicy<Node, String, Node>
     {
-        private Map<Node, String> map = new HashMap<>() ;
+        private Map<Node, String> map = new HashMap<>();
         @Override
-        public Map<Node, String> getScope(Node scope) { return map ; }
+        public Map<Node, String> getScope(Node scope) { return map; }
         @Override
         public void clear() { map.clear(); }
     }
@@ -74,21 +74,21 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
     /** One scope for labels per graph */
     private static class GraphScopePolicy implements ScopePolicy<Node, String, Node>
     {
-        private Map<Node, String> dftMap = new HashMap<>() ;
-        private Map<Node, Map<Node, String>> map = new HashMap<>() ;
+        private Map<Node, String> dftMap = new HashMap<>();
+        private Map<Node, Map<Node, String>> map = new HashMap<>();
         @Override
         public Map<Node, String> getScope(Node scope)
         {
             if ( scope == null )
-                return dftMap ;
+                return dftMap;
 
-            Map<Node, String> x = map.get(scope) ;
+            Map<Node, String> x = map.get(scope);
             if ( x == null )
             {
-                x = new HashMap<>() ;
-                map.put(scope, x) ;
+                x = new HashMap<>();
+                map.put(scope, x);
             }
-            return x ;
+            return x;
         }
         @Override
         public void clear() { map.clear(); }
@@ -172,7 +172,7 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
         @Override
         protected String labelForBlank(Node node) {
             // Needs to be safe?
-            // String str = NodeFmtLib.safeBNodeLabel(node.getBlankNodeLabel()) ;
+            // String str = NodeFmtLib.safeBNodeLabel(node.getBlankNodeLabel());
             String str = node.getBlankNodeLabel();
             return "<_:" + str + ">";
         }

@@ -31,11 +31,11 @@ import org.apache.jena.sparql.util.Context;
         if ( context == null )
             return DirectiveStyle.systemDefault;
 
-        Object x = context.get(RIOT.symTurtleDirectiveStyle) ;
+        Object x = context.get(RIOT.symTurtleDirectiveStyle);
         if ( x instanceof String s )
             return DirectiveStyle.create(s);
         if ( x instanceof DirectiveStyle directive)
-            return directive ;
+            return directive;
 
         // Default choice; includes null in context.
         return DirectiveStyle.systemDefault;
@@ -44,7 +44,7 @@ import org.apache.jena.sparql.util.Context;
     /*package*/ static IndentStyle indentStyle(Context context) {
         if ( context == null )
             return dftIndentStyle;
-        Object x = context.get(RIOT.symTurtleIndentStyle) ;
+        Object x = context.get(RIOT.symTurtleIndentStyle);
 
         if ( x instanceof String s ) {
             IndentStyle style = IndentStyle.create(s);

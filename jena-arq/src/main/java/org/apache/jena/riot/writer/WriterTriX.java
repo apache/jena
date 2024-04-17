@@ -18,22 +18,22 @@
 
 package org.apache.jena.riot.writer;
 
-import java.io.OutputStream ;
-import java.io.Writer ;
+import java.io.OutputStream;
+import java.io.Writer;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.datatypes.xsd.impl.XMLLiteralType ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.WriterDatasetRIOT ;
-import org.apache.jena.riot.WriterGraphRIOT ;
-import org.apache.jena.riot.lang.ReaderTriX ;
-import org.apache.jena.riot.lang.TriX ;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.RiotLib ;
-import org.apache.jena.riot.system.StreamRDFOps ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.WriterDatasetRIOT;
+import org.apache.jena.riot.WriterGraphRIOT;
+import org.apache.jena.riot.lang.ReaderTriX;
+import org.apache.jena.riot.lang.TriX;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.RiotLib;
+import org.apache.jena.riot.system.StreamRDFOps;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.util.Context;
 
 /** Write TriX.
  * See {@link TriX} for details.
@@ -43,48 +43,48 @@ import org.apache.jena.sparql.util.Context ;
  * @see StreamWriterTriX
  */
 public class WriterTriX implements WriterDatasetRIOT, WriterGraphRIOT {
-    private static String rdfXMLLiteral = XMLLiteralType.theXMLLiteralType.getURI() ;
+    private static String rdfXMLLiteral = XMLLiteralType.theXMLLiteralType.getURI();
 
     // Common pattern.
     @Override
     public Lang getLang() {
-        return Lang.TRIX ;
+        return Lang.TRIX;
     }
 
     // Dataset
     @Override
     public void write(OutputStream out, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context) {
-        IndentedWriter iOut = new IndentedWriter(out) ;
-        write(iOut, datasetGraph, prefixMap, baseURI, null) ;
+        IndentedWriter iOut = new IndentedWriter(out);
+        write(iOut, datasetGraph, prefixMap, baseURI, null);
     }
 
     @Override
     public void write(Writer out, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context) {
-        IndentedWriter iOut = RiotLib.create(out) ;
-        write(iOut, datasetGraph, prefixMap, baseURI, null) ;
+        IndentedWriter iOut = RiotLib.create(out);
+        write(iOut, datasetGraph, prefixMap, baseURI, null);
     }
 
     private void write(IndentedWriter out, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context) {
-        StreamWriterTriX w = new StreamWriterTriX(out, prefixMap) ;
-        StreamRDFOps.datasetToStream(datasetGraph, w) ;
+        StreamWriterTriX w = new StreamWriterTriX(out, prefixMap);
+        StreamRDFOps.datasetToStream(datasetGraph, w);
     }
 
     // Graph
     @Override
     public void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
-        IndentedWriter iOut = new IndentedWriter(out) ;
-        write(iOut, graph, prefixMap, baseURI, null) ;
+        IndentedWriter iOut = new IndentedWriter(out);
+        write(iOut, graph, prefixMap, baseURI, null);
     }
 
     @Override
     public void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
-        IndentedWriter iOut = RiotLib.create(out) ;
-        write(iOut, graph, prefixMap, baseURI, null) ;
+        IndentedWriter iOut = RiotLib.create(out);
+        write(iOut, graph, prefixMap, baseURI, null);
     }
 
     private static void write(IndentedWriter out, Graph graph, PrefixMap prefixMap, String baseURI, Object context) {
-        StreamWriterTriX w = new StreamWriterTriX(out, prefixMap) ;
-        StreamRDFOps.graphToStream(graph, w) ;
+        StreamWriterTriX w = new StreamWriterTriX(out, prefixMap);
+        StreamRDFOps.graphToStream(graph, w);
     }
 }
 

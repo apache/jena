@@ -18,15 +18,15 @@
 
 package org.apache.jena.riot.out.quoted;
 
-import org.apache.jena.atlas.io.AWriter ;
+import org.apache.jena.atlas.io.AWriter;
 
 /** Interface for writing quoted strings for Turtle, TriG, N-triples and N-Quads */ 
 public interface QuotedStringOutput {
-    public char getQuoteChar() ; 
+    public char getQuoteChar(); 
     
     /** Write a string on one line */
-    public void writeStr(AWriter writer, String s) ;
+    public void writeStr(AWriter writer, String s);
     
     /** Write a string, possible on several lines */
-    public void writeStrMultiLine(AWriter writer, String s) ;
+    public void writeStrMultiLine(AWriter writer, String s);
 }

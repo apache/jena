@@ -18,23 +18,23 @@
 
 package org.apache.jena.riot.writer;
 
-import org.apache.jena.rdf.model.RDFWriterI ;
-import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Basic ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.adapters.AdapterRDFWriter ;
+import org.apache.jena.rdf.model.RDFWriterI;
+import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Basic;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.adapters.AdapterRDFWriter;
 
 /** Wrapper to the RDF/XML writer (preRIOT). */
 
-public class RDFXMLPlainWriter extends AdapterRDFWriter
-{
+public class RDFXMLPlainWriter extends AdapterRDFWriter {
     public RDFXMLPlainWriter() {}
-    
+
     @Override
-    protected RDFWriterI create() { return new RDFXML_Basic() ; }
-    
+    protected RDFWriterI create() {
+        return new RDFXML_Basic();
+    }
+
     @Override
-    public Lang getLang()
-    {
-        return Lang.RDFXML ;
+    public Lang getLang() {
+        return Lang.RDFXML;
     }
 }

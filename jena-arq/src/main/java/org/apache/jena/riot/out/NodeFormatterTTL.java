@@ -16,23 +16,23 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.out ;
+package org.apache.jena.riot.out;
 
 import static org.apache.jena.riot.system.RiotChars.isDigit;
 import static org.apache.jena.riot.system.RiotChars.isPNChars;
 import static org.apache.jena.riot.system.RiotChars.isPNCharsBase;
 import static org.apache.jena.riot.system.RiotChars.isPNChars_U;
 
-import org.apache.jena.atlas.io.AWriter ;
-import org.apache.jena.atlas.lib.CharSpace ;
-import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Node ;
+import org.apache.jena.atlas.io.AWriter;
+import org.apache.jena.atlas.lib.CharSpace;
+import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node;
 import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIx;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.PrefixMapFactory ;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapFactory;
 
 /** Node formatter for Turtle using single line strings */
 public class NodeFormatterTTL extends NodeFormatterNT
@@ -44,20 +44,20 @@ public class NodeFormatterTTL extends NodeFormatterNT
 
     // Turtle: abbreviations for literals but no use of prefixes or base.
     public NodeFormatterTTL() {
-        this(null, null, NodeToLabel.createBNodeByLabelEncoded()) ;
+        this(null, null, NodeToLabel.createBNodeByLabelEncoded());
     }
 
     public NodeFormatterTTL(String baseIRI, PrefixMap prefixMap) {
-        this(baseIRI, prefixMap, NodeToLabel.createBNodeByLabelEncoded()) ;
+        this(baseIRI, prefixMap, NodeToLabel.createBNodeByLabelEncoded());
     }
 
     public NodeFormatterTTL(String baseIRI, PrefixMap prefixMap, NodeToLabel nodeToLabel) {
-        super(CharSpace.UTF8) ;
-        this.nodeToLabel = nodeToLabel ;
+        super(CharSpace.UTF8);
+        this.nodeToLabel = nodeToLabel;
         if ( prefixMap == null )
-            prefixMap = PrefixMapFactory.create() ;
-        this.prefixMap = prefixMap ;
-        this.baseStrIRI = baseIRI ;
+            prefixMap = PrefixMapFactory.create();
+        this.prefixMap = prefixMap;
+        this.baseStrIRI = baseIRI;
         if ( baseIRI != null ) {
             this.baseIRI = IRIs.resolveIRI(baseIRI);
             if ( ! this.baseIRI.isReference() )
@@ -68,35 +68,35 @@ public class NodeFormatterTTL extends NodeFormatterNT
 
     @Override
     public void formatURI(AWriter w, String uriStr) {
-        Pair<String, String> pName = prefixMap.abbrev(uriStr) ;
+        Pair<String, String> pName = prefixMap.abbrev(uriStr);
         // Check if legal
         if ( pName != null ) {
             // Check legal - need to check its legal, not for illegal.
             // The splitter in "abbrev" only has a weak rule.
-            String prefix = pName.getLeft() ;
-            String localname = pName.getRight() ;
+            String prefix = pName.getLeft();
+            String localname = pName.getRight();
 
             if ( safePrefixName(prefix, localname) ) {
-                w.print(prefix) ;
-                w.print(':') ;
-                w.print(localname) ;
-                return ;
+                w.print(prefix);
+                w.print(':');
+                w.print(localname);
+                return;
             }
         }
 
         // Attempt base abbreviation.
         if ( baseIRI != null ) {
-            String x = abbrevByBase(uriStr) ;
+            String x = abbrevByBase(uriStr);
             if ( x != null ) {
-                w.print('<') ;
-                w.print(x) ;
-                w.print('>') ;
-                return ;
+                w.print('<');
+                w.print(x);
+                w.print('>');
+                return;
             }
         }
 
         // else
-        super.formatURI(w, uriStr) ;
+        super.formatURI(w, uriStr);
     }
 
     private String abbrevByBase(String uriStr) {
@@ -109,8 +109,8 @@ public class NodeFormatterTTL extends NodeFormatterNT
 
     @Override
     public void formatBNode(AWriter w, Node n) {
-        String x = nodeToLabel.get(null, n) ;
-        w.print(x) ;
+        String x = nodeToLabel.get(null, n);
+        w.print(x);
     }
 
     // From NodeFormatterNT:
@@ -125,7 +125,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
     // public void formatLitLang(WriterI w, String lex, String langTag)
 
     static boolean safePrefixName(String prefix, String localname) {
-        return safeForPrefix(prefix) && safeForPrefixLocalname(localname) ;
+        return safeForPrefix(prefix) && safeForPrefixLocalname(localname);
     }
 
     // [139s]  PNAME_NS        ::=     PN_PREFIX? ':'
@@ -146,112 +146,112 @@ public class NodeFormatterTTL extends NodeFormatterNT
     /* private-testing */
     static boolean safeForPrefix(String str) {
         // PN_PREFIX ::= PN_CHARS_BASE ((PN_CHARS | '.')* PN_CHARS)?
-        int N = str.length() ;
+        int N = str.length();
         if ( N == 0 )
-            return true ;
-        int idx = 0 ;
-        idx = skip1_PN_CHARS_BASE(str, idx) ;
+            return true;
+        int idx = 0;
+        idx = skip1_PN_CHARS_BASE(str, idx);
         if ( idx == -1 )
-            return false ;
-        idx = skipAny_PN_CHARS_or_DOT(str, idx, N - 1) ;
+            return false;
+        idx = skipAny_PN_CHARS_or_DOT(str, idx, N - 1);
         if ( idx == -1 )
-            return false ;
-        idx = skip1_PN_CHARS(str, idx) ;
+            return false;
+        idx = skip1_PN_CHARS(str, idx);
         if ( idx == -1 )
-            return false ;
-        return (idx == N) ;
+            return false;
+        return (idx == N);
     }
 
     /* private-testing */static boolean safeForPrefixLocalname(String str) {
         // PN_LOCAL ::=  (PN_CHARS_U | ':' | [0-9] | PLX) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX))?
         // This code does not consider PLX (which is more than one character).
-        int N = str.length() ;
+        int N = str.length();
         if ( N == 0 )
-            return true ;
-        int idx = 0 ;
-        idx = skip1_PN_CHARS_U_or_digit_or_COLON(str, idx) ;
+            return true;
+        int idx = 0;
+        idx = skip1_PN_CHARS_U_or_digit_or_COLON(str, idx);
         if ( idx == -1 )
-            return false ;
-        idx = skipAny_PN_CHARS_or_DOT_or_COLON(str, idx, N - 1) ;
+            return false;
+        idx = skipAny_PN_CHARS_or_DOT_or_COLON(str, idx, N - 1);
         if ( idx == -1 )
-            return false ;
+            return false;
         // Final char
-        idx = skip1_PN_CHARS_or_COLON(str, idx) ;
+        idx = skip1_PN_CHARS_or_COLON(str, idx);
         if ( idx == -1 )
-            return false ;
+            return false;
         // We got to the end.
-        return (idx == N) ;
+        return (idx == N);
     }
 
     // ---- Prefix name : prefix part
 
     private static int skip1_PN_CHARS_BASE(String str, int idx) {
-        char ch = str.charAt(idx) ;
+        char ch = str.charAt(idx);
         if ( isPNCharsBase(ch) )
-            return idx + 1 ;
-        return -1 ;
+            return idx + 1;
+        return -1;
     }
 
     private static int skipAny_PN_CHARS_or_DOT(String str, int idx, int max) {
         for (int i = idx; i < max; i++) {
-            char ch = str.charAt(i) ;
+            char ch = str.charAt(i);
             if ( !isPNChars(ch) && ch != '.' )
-                return i ;
+                return i;
         }
-        return max ;
+        return max;
     }
 
     private static int skip1_PN_CHARS(String str, int idx) {
-        char ch = str.charAt(idx) ;
+        char ch = str.charAt(idx);
         if ( isPNChars(ch) )
-            return idx + 1 ;
-        return -1 ;
+            return idx + 1;
+        return -1;
     }
 
     // ---- Prefix name : local part
 
     private static int skip1_PN_CHARS_U_or_digit_or_COLON(String str, int idx) {
-        char ch = str.charAt(idx) ;
+        char ch = str.charAt(idx);
         if ( isPNChars_U(ch) )
-            return idx + 1 ;
+            return idx + 1;
         if ( isDigit(ch) )
-            return idx + 1 ;
+            return idx + 1;
         if ( ch == ':' )
-            return idx + 1 ;
-        return -1 ;
+            return idx + 1;
+        return -1;
     }
 
     private static int skipAny_PN_CHARS_or_DOT_or_COLON(String str, int idx, int max) {
         for (int i = idx; i < max; i++) {
-            char ch = str.charAt(i) ;
+            char ch = str.charAt(i);
             if ( !isPNChars(ch) && ch != '.' && ch != ':' )
-                return i ;
+                return i;
         }
-        return max ;
+        return max;
     }
 
     private static int skip1_PN_CHARS_or_COLON(String str, int idx) {
-        char ch = str.charAt(idx) ;
+        char ch = str.charAt(idx);
         if ( isPNChars(ch) )
-            return idx + 1 ;
+            return idx + 1;
         if ( ch == ':' )
-            return idx + 1 ;
-        return -1 ;
+            return idx + 1;
+        return -1;
     }
 
     // ----
 
-    private static final String dtDecimal = XSDDatatype.XSDdecimal.getURI() ;
-    private static final String dtInteger = XSDDatatype.XSDinteger.getURI() ;
-    private static final String dtDouble  = XSDDatatype.XSDdouble.getURI() ;
-    private static final String dtBoolean = XSDDatatype.XSDboolean.getURI() ;
+    private static final String dtDecimal = XSDDatatype.XSDdecimal.getURI();
+    private static final String dtInteger = XSDDatatype.XSDinteger.getURI();
+    private static final String dtDouble  = XSDDatatype.XSDdouble.getURI();
+    private static final String dtBoolean = XSDDatatype.XSDboolean.getURI();
 
     @Override
     public void formatLitDT(AWriter w, String lex, String datatypeURI) {
-        boolean b = writeLiteralAbbreviated(w, lex, datatypeURI) ;
+        boolean b = writeLiteralAbbreviated(w, lex, datatypeURI);
         if ( b )
-            return ;
-        writeLiteralWithDT(w, lex, datatypeURI) ;
+            return;
+        writeLiteralWithDT(w, lex, datatypeURI);
     }
 
     protected void writeLiteralWithDT(AWriter w, String lex, String datatypeURI) {
@@ -259,7 +259,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
     }
 
     protected void writeLiteralOneLine(AWriter w, String lex, String datatypeURI) {
-        super.formatLitDT(w, lex, datatypeURI) ;
+        super.formatLitDT(w, lex, datatypeURI);
     }
 
     /** Write in a short form, e.g. integer.
@@ -268,107 +268,107 @@ public class NodeFormatterTTL extends NodeFormatterNT
     protected boolean writeLiteralAbbreviated(AWriter w, String lex, String datatypeURI) {
         if ( dtDecimal.equals(datatypeURI) ) {
             if ( validDecimal(lex) ) {
-                w.print(lex) ;
-                return true ;
+                w.print(lex);
+                return true;
             }
         } else if ( dtInteger.equals(datatypeURI) ) {
             if ( validInteger(lex) ) {
-                w.print(lex) ;
-                return true ;
+                w.print(lex);
+                return true;
             }
         } else if ( dtDouble.equals(datatypeURI) ) {
             if ( validDouble(lex) ) {
-                w.print(lex) ;
-                return true ;
+                w.print(lex);
+                return true;
             }
         } else if ( dtBoolean.equals(datatypeURI) ) {
             // We leave "0" and "1" as-is assuming that if written like that,
             // there was a reason.
             if ( lex.equals("true") || lex.equals("false") ) {
-                w.print(lex) ;
-                return true ;
+                w.print(lex);
+                return true;
             }
         }
-        return false ;
+        return false;
     }
 
     private static boolean validInteger(String lex) {
-        int N = lex.length() ;
+        int N = lex.length();
         if ( N == 0 )
-            return false ;
-        int idx = 0 ;
+            return false;
+        int idx = 0;
 
-        idx = skipSign(lex, idx) ;
-        idx = skipDigits(lex, idx) ;
-        return (idx == N) ;
+        idx = skipSign(lex, idx);
+        idx = skipDigits(lex, idx);
+        return (idx == N);
     }
 
     private static boolean validDecimal(String lex) {
         // case : In N3, "." illegal, as is "+." and -." but legal in Turtle.
-        int N = lex.length() ;
+        int N = lex.length();
         if ( N <= 1 )
-            return false ;
-        int idx = 0 ;
+            return false;
+        int idx = 0;
 
-        idx = skipSign(lex, idx) ;
-        idx = skipDigits(lex, idx) ; // Maybe none.
+        idx = skipSign(lex, idx);
+        idx = skipDigits(lex, idx); // Maybe none.
 
         // DOT required.
         if ( idx >= N )
-            return false ;
+            return false;
 
-        char ch = lex.charAt(idx) ;
+        char ch = lex.charAt(idx);
         if ( ch != '.' )
-            return false ;
-        idx++ ;
+            return false;
+        idx++;
         // Digit required.
         if ( idx >= N )
-            return false ;
-        idx = skipDigits(lex, idx) ;
-        return (idx == N) ;
+            return false;
+        idx = skipDigits(lex, idx);
+        return (idx == N);
     }
 
     private static boolean validDouble(String lex) {
-        int N = lex.length() ;
+        int N = lex.length();
         if ( N == 0 )
-            return false ;
-        int idx = 0 ;
+            return false;
+        int idx = 0;
 
         // Decimal part (except 12. is legal)
 
-        idx = skipSign(lex, idx) ;
+        idx = skipSign(lex, idx);
 
-        int idx2 = skipDigits(lex, idx) ;
-        boolean initialDigits = (idx != idx2) ;
-        idx = idx2 ;
+        int idx2 = skipDigits(lex, idx);
+        boolean initialDigits = (idx != idx2);
+        idx = idx2;
         // Exponent required.
         if ( idx >= N )
-            return false ;
-        char ch = lex.charAt(idx) ;
+            return false;
+        char ch = lex.charAt(idx);
         if ( ch == '.' ) {
-            idx++ ;
+            idx++;
             if ( idx >= N )
-                return false ;
-            idx2 = skipDigits(lex, idx) ;
-            boolean trailingDigits = (idx != idx2) ;
-            idx = idx2 ;
+                return false;
+            idx2 = skipDigits(lex, idx);
+            boolean trailingDigits = (idx != idx2);
+            idx = idx2;
             if ( idx >= N )
-                return false ;
+                return false;
             if ( !initialDigits && !trailingDigits )
-                return false ;
+                return false;
         }
         // "e" or "E"
-        ch = lex.charAt(idx) ;
+        ch = lex.charAt(idx);
         if ( ch != 'e' && ch != 'E' )
-            return false ;
-        idx++ ;
+            return false;
+        idx++;
         if ( idx >= N )
-            return false ;
-        idx = skipSign(lex, idx) ;
+            return false;
+        idx = skipSign(lex, idx);
         if ( idx >= N )
-            return false ; // At least one digit.
-        idx = skipDigits(lex, idx) ;
-        return (idx == N) ;
+            return false; // At least one digit.
+        idx = skipDigits(lex, idx);
+        return (idx == N);
     }
 
     /**
@@ -376,21 +376,21 @@ public class NodeFormatterTTL extends NodeFormatterNT
      * be beyond the length of the string. May skip zero.
      */
     private static int skipDigits(String str, int start) {
-        int N = str.length() ;
+        int N = str.length();
         for (int i = start; i < N; i++) {
-            char ch = str.charAt(i) ;
+            char ch = str.charAt(i);
             if ( ! isDigit(ch) )
-                return i ;
+                return i;
         }
-        return N ;
+        return N;
     }
 
     /** Skip any plus or minus */
     private static int skipSign(String str, int idx) {
-        int N = str.length() ;
-        char ch = str.charAt(idx) ;
+        int N = str.length();
+        char ch = str.charAt(idx);
         if ( ch == '+' || ch == '-' )
-            return idx + 1 ;
-        return idx ;
+            return idx + 1;
+        return idx;
     }
 }
