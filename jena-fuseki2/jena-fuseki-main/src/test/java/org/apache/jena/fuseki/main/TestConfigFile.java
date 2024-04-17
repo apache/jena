@@ -25,7 +25,6 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.base.Sys;
 import org.apache.jena.graph.Graph;
@@ -42,13 +41,14 @@ public class TestConfigFile {
 
     private static final String DIR = "testing/Config/";
 
-    private static final String PREFIXES = StrUtils.strjoinNL
-        ("PREFIX afn: <http://jena.apache.org/ARQ/function#>"
-        ,"PREFIX fuseki: <http://jena.apache.org/fuseki#>"
-        ,"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
-        ,"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
-        , ""
-        );
+    private static final String PREFIXES = """
+        PREFIX afn: <http://jena.apache.org/ARQ/function#>
+        PREFIX fuseki: <http://jena.apache.org/fuseki#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+        """;
+
 
     private static RDFConnection namedServices(String baseURL) {
         return RDFConnectionRemote.newBuilder()

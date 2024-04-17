@@ -43,17 +43,21 @@ public abstract class AbstractTestAdditional {
     /** Check substitution into patterns. */
     @Test public void substitute_1() {
         Dataset dataset = dataset();
-        String resultsStr = StrUtils.strjoinNL("(resultset (?s ?p ?o)"
-                                               , "(row (?s :s1) (?p :p) (?o :o))"
-                                              ,")" );
+        String resultsStr = """
+                (resultset (?s ?p ?o)
+                  (row (?s :s1) (?p :p) (?o :o))
+                )
+                        """;
         RowSetRewindable expected = SSE.parseRowSet(resultsStr).rewindable();
         Txn.executeWrite(dataset, ()->{
-            String data = StrUtils.strjoinNL("(dataset"
-                                            ,"  (:g1 :s1 :p :o)"
-                                            ,"  (:g1 :s2 :p :o)"
-                                            ,"  (:g2 :s1 :p :o)"
-                                            ,"  (:g2 :s2 :p :o)"
-                                            ,")");
+            String data = """
+                    (dataset
+                      (:g1 :s1 :p :o)
+                      (:g1 :s2 :p :o)
+                      (:g2 :s1 :p :o)
+                      (:g2 :s2 :p :o)
+                    )
+                    """;
             DatasetGraph dsg = SSE.parseDatasetGraph(data);
             dataset.asDatasetGraph().addAll(dsg);
             String qs = PREFIXES+"SELECT * { VALUES ?s { :s1 } GRAPH <"+Quad.unionGraph.getURI()+"> { ?s ?p ?o } }";

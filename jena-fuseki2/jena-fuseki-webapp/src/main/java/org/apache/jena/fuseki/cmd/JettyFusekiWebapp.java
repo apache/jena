@@ -21,6 +21,8 @@ package org.apache.jena.fuseki.cmd;
 import static java.lang.String.format;
 import static org.apache.jena.fuseki.Fuseki.serverLog;
 
+import java.nio.file.Path;
+
 import jakarta.servlet.ServletContext;
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.lib.FileOps;
@@ -183,9 +185,14 @@ public class JettyFusekiWebapp {
             throw new FusekiException("Failed to start");
         }
 
-        webapp.setDescriptor(baseResource+"/WEB-INF/web.xml");
+        String web_xml = baseResource+"/WEB-INF/web.xml";
+        if ( ! FileOps.exists(web_xml) )
+            Fuseki.serverLog.warn("Can't find WEB-INF/web.xml in "+baseResource);
+        webapp.setDescriptor(web_xml);
         webapp.setContextPath(contextPath);
-        webapp.getContext().getServletContextHandler().setBaseResourceAsString(baseResource);
+        // Avoid BaseResource aliasing warnings.
+        Path absBaseResource = Path.of(baseResource).toAbsolutePath();
+        webapp.getContext().getServletContextHandler().setBaseResourceAsPath(absBaseResource);
 
         //-- Jetty setup for the ServletContext logger.
         // The name of the Jetty-allocated slf4j/log4j logger is

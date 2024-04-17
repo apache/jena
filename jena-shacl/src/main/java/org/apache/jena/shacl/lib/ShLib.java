@@ -150,18 +150,19 @@ public class ShLib {
 
         String qs = StrUtils.strjoinNL
             (PREFIXES
-                ,"SELECT * {"
-                //, "    [ a sh:ValidationReport ; sh:result ?R ]
-                , "    [] sh:result ?R ."
-                , "    ?R"
-                , "       sh:focusNode ?focusNode ;"
-                , "       sh:resultMessage ?message ;"
-                , "       sh:resultSeverity  ?severity ; "
-                , "       ."
-                , "    OPTIONAL { ?R sh:sourceConstraintComponent ?component }"
-                , "    OPTIONAL { ?R sh:sourceShape ?sourceShape }"
-                , "    OPTIONAL { ?R sh:resultPath    ?path}"
-                ,"}");
+            ,"""
+               SELECT * {
+                        #[ a sh:ValidationReport ; sh:result ?R ]
+                   [] sh:result ?R .
+                   ?R sh:focusNode ?focusNode ;
+                      sh:resultMessage ?message ;
+                      sh:resultSeverity  ?severity ;
+                      .
+                   OPTIONAL { ?R sh:sourceConstraintComponent ?component }
+                   OPTIONAL { ?R sh:sourceShape ?sourceShape }
+                   OPTIONAL { ?R sh:resultPath  ?path}
+               }
+               """);
         try ( QueryExecution qExec = QueryExecutionFactory.create(qs, report.getModel()) ) {
             ResultSet rs = qExec.execSelect();
             if ( ! rs.hasNext() ) {
