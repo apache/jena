@@ -107,38 +107,38 @@ public class VR {
 
 
     private static String qs = StrUtils.strjoinNL
-        (PREFIXES
-            ,"CONSTRUCT {"
-            , "    ?X a sh:ValidationReport ;"
-            , "        sh:conforms ?conforms ;"
-            , "        sh:result ?R"
-            , "    ."
-            , "    ?R"
-            , "       sh:focusNode ?focusNode ;"
-            , "       sh:resultMessage ?message ;"
-            , "       sh:resultSeverity  ?severity ; "
-            , "       sh:sourceConstraint ?constraint ;"
-            , "       sh:sourceConstraintComponent ?component ;"
-            , "       sh:sourceShape ?sourceShape ;"
-            , "       sh:resultPath  ?path ;"
-            , "       sh:value ?value ;"
-            , "."
-            ,"}"
-            ," WHERE {"
-            , "    ?X a sh:ValidationReport ;"
-            , "       sh:result ?R"
-            , "    OPTIONAL { ?X sh:conforms ?conforms }"
-            , "    ?R"
-            , "       sh:focusNode ?focusNode ;"
-            , "       sh:resultSeverity  ?severity ; "
-            , "       ."
-            , "    OPTIONAL { ?R sh:resultMessage ?message }"
-            , "    OPTIONAL { ?R sh:sourceConstraintComponent ?component }"
-            , "    OPTIONAL { ?R sh:sourceConstraint ?constraint }"
-            , "    OPTIONAL { ?R sh:sourceShape ?sourceShape }"
-            , "    OPTIONAL { ?R sh:resultPath  ?path }"
-            , "    OPTIONAL { ?R sh:value ?value }"
-            ,"}");
+        (PREFIXES,
+         """
+            CONSTRUCT {
+               ?X a sh:ValidationReport ;
+                   sh:conforms ?conforms ;
+                   sh:result ?R
+               .
+               ?R sh:focusNode ?focusNode ;
+                  sh:resultMessage ?message ;
+                  sh:resultSeverity  ?severity ;
+                  sh:sourceConstraint ?constraint ;
+                  sh:sourceConstraintComponent ?component ;
+                  sh:sourceShape ?sourceShape ;
+                  sh:resultPath  ?path ;
+                  sh:value ?value ;
+                  .
+            }
+            WHERE {
+               ?X a sh:ValidationReport ;
+                  sh:result ?R
+               OPTIONAL { ?X sh:conforms ?conforms }
+               ?R sh:focusNode ?focusNode ;
+                  sh:resultSeverity  ?severity ;
+                  .
+               OPTIONAL { ?R sh:resultMessage ?message }
+               OPTIONAL { ?R sh:sourceConstraintComponent ?component }
+               OPTIONAL { ?R sh:sourceConstraint ?constraint }
+               OPTIONAL { ?R sh:sourceShape ?sourceShape }
+               OPTIONAL { ?R sh:resultPath  ?path }
+               OPTIONAL { ?R sh:value ?value }
+            }
+            """);
     private static Query query = QueryFactory.create(qs);
 
     public static Model strip(Model model) {

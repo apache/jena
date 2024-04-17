@@ -18,7 +18,6 @@
 
 package org.apache.jena.fuseki.main.examples;
 
-import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.system.FusekiLogging;
@@ -69,12 +68,12 @@ public class ExFuseki_05_CustomFunction {
         server.start();
 
         // -- Call the server
-        String queryString = StrUtils.strjoinNL(
-            "SELECT * { "
-            , "  VALUES ?Z { 123 'abc'}"
-            , "  BIND (<http://my/num>(?Z) AS ?X )"
-            ,"}"
-            );
+        String queryString = """
+            SELECT * {
+                VALUES ?Z { 123 'abc'}
+                BIND (<http://my/num>(?Z) AS ?X )
+            }
+            """;
 
         try {
             String url = "http://localhost:"+PORT+"/ds";
