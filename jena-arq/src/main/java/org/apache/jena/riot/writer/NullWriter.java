@@ -18,42 +18,44 @@
 
 package org.apache.jena.riot.writer;
 
-import java.io.OutputStream ;
-import java.io.Writer ;
+import java.io.OutputStream;
+import java.io.Writer;
 
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFFormat ;
-import org.apache.jena.riot.WriterDatasetRIOT ;
-import org.apache.jena.riot.WriterDatasetRIOTFactory ;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFFormat;
+import org.apache.jena.riot.WriterDatasetRIOT;
+import org.apache.jena.riot.WriterDatasetRIOTFactory;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.util.Context;
 
-/** Null writer for datasets - can be used for RDF graphs via the adapter in from RiotWriterLib */ 
-public class NullWriter implements WriterDatasetRIOT
-{
+/**
+ * Null writer for datasets.
+ * <p>
+ * A sink for writer output.
+ */
+public class NullWriter implements WriterDatasetRIOT {
     public static WriterDatasetRIOTFactory factory = new WriterDatasetRIOTFactory() {
         @Override
-        public WriterDatasetRIOT create(RDFFormat syntaxForm)
-        {
-            return new NullWriter(syntaxForm) ;
-        }} ;
-        
-    private RDFFormat format ;
-    
-    private NullWriter(RDFFormat format) { this.format = format ; }
-        
-    @Override
-    public Lang getLang()
-    {
-        return format.getLang() ;
+        public WriterDatasetRIOT create(RDFFormat syntaxForm) {
+            return new NullWriter(syntaxForm);
+        }
+    };
+
+    private RDFFormat format;
+
+    private NullWriter(RDFFormat format) {
+        this.format = format;
     }
 
     @Override
-    public void write(OutputStream out, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context)
-    {}
+    public Lang getLang() {
+        return format.getLang();
+    }
 
     @Override
-    public void write(Writer out, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context)
-    {}
+    public void write(OutputStream out, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context) {}
+
+    @Override
+    public void write(Writer out, DatasetGraph datasetGraph, PrefixMap prefixMap, String baseURI, Context context) {}
 }

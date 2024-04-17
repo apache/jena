@@ -18,93 +18,82 @@
 
 package org.apache.jena.riot.writer;
 
-import java.io.OutputStream ;
-import java.io.Writer ;
-import java.util.Iterator ;
+import java.io.OutputStream;
+import java.io.Writer;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.CharSpace ;
-import static org.apache.jena.atlas.lib.CharSpace.* ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.StreamRDFOps ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.CharSpace;
+import static org.apache.jena.atlas.lib.CharSpace.*;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.StreamRDFOps;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFLib;
+import org.apache.jena.sparql.util.Context;
 
-public class NTriplesWriter extends WriterGraphRIOTBase
-{
-    public static void write(OutputStream out, Iterator<Triple> iter)
-    {
+public class NTriplesWriter extends WriterGraphRIOTBase {
+    public static void write(OutputStream out, Iterator<Triple> iter) {
         write(out, iter, CharSpace.UTF8);
     }
-    
-    public static void write(OutputStream out, Iterator<Triple> iter, CharSpace charSpace)
-    {
-        StreamRDF s = StreamRDFLib.writer(out, charSpace) ;
-        write$(s, iter) ;
-    }
-    
-    public static void write(Writer out, Iterator<Triple> iter)
-    {
-        write(out, iter, CharSpace.UTF8);
-    }
-    
-    public static void write(Writer out, Iterator<Triple> iter, CharSpace charSpace)
-    {
-        StreamRDF s = StreamRDFLib.writer(out, charSpace) ;
-        write$(s, iter) ;
+
+    public static void write(OutputStream out, Iterator<Triple> iter, CharSpace charSpace) {
+        StreamRDF s = StreamRDFLib.writer(out, charSpace);
+        write$(s, iter);
     }
 
-    private static void write$(StreamRDF s, Iterator<Triple> iter)
-    {
-        s.start() ;
-        StreamRDFOps.sendTriplesToStream(iter, s) ;
+    public static void write(Writer out, Iterator<Triple> iter) {
+        write(out, iter, CharSpace.UTF8);
+    }
+
+    public static void write(Writer out, Iterator<Triple> iter, CharSpace charSpace) {
+        StreamRDF s = StreamRDFLib.writer(out, charSpace);
+        write$(s, iter);
+    }
+
+    private static void write$(StreamRDF s, Iterator<Triple> iter) {
+        s.start();
+        StreamRDFOps.sendTriplesToStream(iter, s);
         s.finish();
     }
 
-    private final CharSpace charSpace ;
+    private final CharSpace charSpace;
 
-    public NTriplesWriter()
-    { this(UTF8); }  
-    
-    public NTriplesWriter(CharSpace charSpace)
-    { 
-        this.charSpace = charSpace ;
+    public NTriplesWriter() {
+        this(UTF8);
+    }
+
+    public NTriplesWriter(CharSpace charSpace) {
+        this.charSpace = charSpace;
     }
 
     @Override
-    public Lang getLang()
-    {
-        return Lang.NTRIPLES ;
+    public Lang getLang() {
+        return Lang.NTRIPLES;
     }
 
     @Override
-    public void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context)
-    {
-        Iterator<Triple> iter = graph.find(null, null, null) ;
+    public void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
+        Iterator<Triple> iter = graph.find(null, null, null);
         if ( charSpace == UTF8 )
-            write(out, iter) ;
-        else
-        {
-            StreamRDF s = new WriterStreamRDFPlain(IO.wrap(out), ASCII) ;
-            write$(s, iter) ;
+            write(out, iter);
+        else {
+            StreamRDF s = new WriterStreamRDFPlain(IO.wrap(out), ASCII);
+            write$(s, iter);
         }
     }
 
     @Override
-    public void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context)
-    {
-        Iterator<Triple> iter = graph.find(null, null, null) ;
+    public void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
+        Iterator<Triple> iter = graph.find(null, null, null);
         if ( charSpace == UTF8 )
-            write(out, iter) ;
-        else
-        {
-            StreamRDF s = new WriterStreamRDFPlain(IO.wrapASCII(out), ASCII) ;
-            write$(s, iter) ;
+            write(out, iter);
+        else {
+            StreamRDF s = new WriterStreamRDFPlain(IO.wrapASCII(out), ASCII);
+            write$(s, iter);
         }
-     
+
     }
 }

@@ -18,19 +18,18 @@
 
 package org.apache.jena.riot.writer;
 
-import java.io.OutputStream ;
-import java.io.Writer ;
+import java.io.OutputStream;
+import java.io.Writer;
 
-import org.apache.jena.riot.WriterDatasetRIOT ;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.riot.WriterDatasetRIOT;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.util.Context;
 
-public abstract class WriterDatasetRIOTBase implements WriterDatasetRIOT
-{
+public abstract class WriterDatasetRIOTBase implements WriterDatasetRIOT {
     @Override
-    public abstract void write(Writer out, DatasetGraph dataset, PrefixMap prefixMap, String baseURI, Context context) ;
+    public abstract void write(Writer out, DatasetGraph dataset, PrefixMap prefixMap, String baseURI, Context context);
 
     @Override
-    public abstract void write(OutputStream out, DatasetGraph dataset, PrefixMap prefixMap, String baseURI, Context context) ;
+    public abstract void write(OutputStream out, DatasetGraph dataset, PrefixMap prefixMap, String baseURI, Context context);
 }

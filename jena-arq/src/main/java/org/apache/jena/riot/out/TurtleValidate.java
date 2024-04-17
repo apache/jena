@@ -18,10 +18,10 @@
 
 package org.apache.jena.riot.out;
 
-import java.text.CharacterIterator ;
-import java.text.StringCharacterIterator ;
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 
-import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.RiotException;
 
 
 /** Validation of Turtle terms */
@@ -32,7 +32,7 @@ public class TurtleValidate
     // These tests must agree, or be more restrictive, than the parser. 
     protected static boolean checkValidPrefixedName(String ns, String local)
     {
-        return checkValidPrefixPart(ns) && checkValidNamePart(local) ;
+        return checkValidPrefixPart(ns) && checkValidNamePart(local);
     }
     
     /* http://www.w3.org/TeamSubmission/turtle/#sec-grammar-grammar
@@ -47,69 +47,69 @@ public class TurtleValidate
     {
         if ( s.length() == 0 )
             return true;
-        CharacterIterator cIter = new StringCharacterIterator(s) ;
-        char ch = cIter.first() ;
+        CharacterIterator cIter = new StringCharacterIterator(s);
+        char ch = cIter.first();
         if ( ! checkNameStartChar(ch) )
-            return false ;
+            return false;
         if ( ch == '_' )    // Can't start with _ (bnodes labels handled separately) 
-            return false ;
-        return checkNameTail(cIter) ;
+            return false;
+        return checkNameTail(cIter);
     }
 
   private static boolean checkValidPrefixName(String prefixedName)
   {
       // Split it to get the parts.
-      int i = prefixedName.indexOf(':') ;
+      int i = prefixedName.indexOf(':');
       if ( i < 0 )
-          throw new RiotException("Broken short form -- "+prefixedName) ;
-      String p = prefixedName.substring(0,i) ;
-      String x = prefixedName.substring(i+1) ; 
+          throw new RiotException("Broken short form -- "+prefixedName);
+      String p = prefixedName.substring(0,i);
+      String x = prefixedName.substring(i+1); 
       // Check legality
       if ( checkValidPrefixedName(p, x) )
-          return true ;
-      return false ;
+          return true;
+      return false;
   }
     
     protected static boolean checkValidNamePart(String s)
     {
         if ( s.length() == 0 )
             return true; 
-        CharacterIterator cIter = new StringCharacterIterator(s) ;
-        char ch = cIter.first() ;
+        CharacterIterator cIter = new StringCharacterIterator(s);
+        char ch = cIter.first();
         if ( ! checkNameStartChar(ch) )
-            return false ;
-        return checkNameTail(cIter) ;
+            return false;
+        return checkNameTail(cIter);
     }
     
 //  private static boolean checkValidLocalname(String localname)
 //  {
 //      if ( localname.length() == 0 )
-//          return true ;
+//          return true;
 //      
-//      for ( int idx = 0 ; idx < localname.length() ; idx++ )
+//      for ( int idx = 0; idx < localname.length(); idx++ )
 //      {
-//          char ch = localname.charAt(idx) ;
+//          char ch = localname.charAt(idx);
 //          if ( ! validPNameChar(ch) )
-//              return false ;
+//              return false;
 //      }
 //      
 //      // Test start and end - at least one character in the name.
 //      
 //      if ( localname.endsWith(".") )
-//          return false ;
+//          return false;
 //      if ( localname.startsWith(".") )
-//          return false ;
+//          return false;
 //      
-//      return true ;
+//      return true;
 //  }
 //  
 //  private static boolean validPNameChar(char ch)
 //  {
-//      if ( Character.isLetterOrDigit(ch) ) return true ;
-//      if ( ch == '.' )    return true ;
-//      if ( ch == '-' )    return true ;
-//      if ( ch == '_' )    return true ;
-//      return false ;
+//      if ( Character.isLetterOrDigit(ch) ) return true;
+//      if ( ch == '.' )    return true;
+//      if ( ch == '-' )    return true;
+//      if ( ch == '_' )    return true;
+//      return false;
 //  }
 
     
@@ -117,34 +117,34 @@ public class TurtleValidate
     {
         // Assumes cIter.first already called but nothing else.
         // Skip first char.
-        char ch = cIter.next() ;
-        for ( ; ch != java.text.CharacterIterator.DONE ; ch = cIter.next() )
+        char ch = cIter.next();
+        for (; ch != java.text.CharacterIterator.DONE; ch = cIter.next() )
         {
             if ( ! checkNameChar(ch) )
-                return false ;
+                return false;
         } 
-        return true ;
+        return true;
     }
 
     protected static boolean checkNameStartChar(char ch)
     {
         if ( Character.isLetter(ch) )
-            return true ;
+            return true;
         if ( ch == '_' )
-            return true ;
-        return false ;
+            return true;
+        return false;
     }
 
     // Dotted parts for SPARQL?
     protected static boolean checkNameChar(char ch)
     {
         if ( Character.isLetterOrDigit(ch) )
-            return true ;
+            return true;
         if ( ch == '_' )
-            return true ;
+            return true;
         if ( ch == '-' )
-            return true ;
-        return false ;
+            return true;
+        return false;
     }
 
     

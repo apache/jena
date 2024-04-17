@@ -18,21 +18,21 @@
 
 package org.apache.jena.riot.writer;
 
-import java.io.OutputStream ;
-import java.util.Objects ;
+import java.io.OutputStream;
+import java.util.Objects;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.datatypes.xsd.impl.XMLLiteralType ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.rdf.model.impl.Util ;
-import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.lang.ReaderTriX ;
-import org.apache.jena.riot.lang.TriX ;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.PrefixMapFactory ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.impl.Util;
+import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.lang.ReaderTriX;
+import org.apache.jena.riot.lang.TriX;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapFactory;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.sparql.core.Quad;
 
 
 /** Write TriX by streaming.
@@ -53,12 +53,12 @@ public class StreamWriterTriX implements StreamRDF {
      */
 
     private final static String rdfXMLLiteral = XMLLiteralType.XMLLiteralTypeURI;
-    private final IndentedWriter out ;
-    private Node gn = null ;
-    private boolean inGraph = false ;
+    private final IndentedWriter out;
+    private Node gn = null;
+    private boolean inGraph = false;
     private final PrefixMap pmap;
     // StreamRDF.start/finish count
-    private int depth = 0 ;
+    private int depth = 0;
 
     public StreamWriterTriX(OutputStream out, PrefixMap prefixMap) {
         this(new IndentedWriter(out), prefixMap);
@@ -80,15 +80,15 @@ public class StreamWriterTriX implements StreamRDF {
     @Override public void start() {
         if ( depth == 0 )
             writeStart();
-        depth ++ ;
+        depth ++;
     }
 
     @Override public void finish() {
-        depth-- ;
+        depth--;
         if ( depth != 0 )
-            return ;
+            return;
         writeFinish();
-        out.flush() ;
+        out.flush();
     }
 
     @Override public void base(String base) {} // Ignore.
@@ -101,201 +101,201 @@ public class StreamWriterTriX implements StreamRDF {
     @Override
     public void triple(Triple triple) {
         if ( inGraph && gn != null ) {
-            StreamWriterTriX.endTag(out, TriX.tagGraph) ;
-            out.println() ;
-            inGraph = false ;
+            StreamWriterTriX.endTag(out, TriX.tagGraph);
+            out.println();
+            inGraph = false;
         }
 
         if ( ! inGraph ) {
-            StreamWriterTriX.startTag(out, TriX.tagGraph) ;
-            out.println() ;
+            StreamWriterTriX.startTag(out, TriX.tagGraph);
+            out.println();
         }
-        inGraph = true ;
-        gn = null ;
+        inGraph = true;
+        gn = null;
         //end graph?
-        StreamWriterTriX.write(out, triple, pmap) ;
+        StreamWriterTriX.write(out, triple, pmap);
     }
 
     @Override
     public void quad(Quad quad) {
-        Node g = quad.getGraph() ;
+        Node g = quad.getGraph();
 
         if ( g == null || Quad.isDefaultGraph(g) ) {
-            triple(quad.asTriple()) ;
-            return ;
+            triple(quad.asTriple());
+            return;
         }
 
         if ( inGraph ) {
             if ( ! Objects.equals(g, gn) ) {
-                StreamWriterTriX.endTag(out, TriX.tagGraph) ;
-                out.println() ;
-                inGraph = false ;
+                StreamWriterTriX.endTag(out, TriX.tagGraph);
+                out.println();
+                inGraph = false;
             }
         }
         if ( ! inGraph ) {
-            StreamWriterTriX.startTag(out, TriX.tagGraph) ;
-            out.println() ;
+            StreamWriterTriX.startTag(out, TriX.tagGraph);
+            out.println();
             if ( gn == null || ! Quad.isDefaultGraph(gn) ) {
-                gn = quad.getGraph() ;
-                StreamWriterTriX.write(out, gn, pmap) ;
+                gn = quad.getGraph();
+                StreamWriterTriX.write(out, gn, pmap);
             }
         }
-        inGraph = true ;
-        gn = g ;
-        StreamWriterTriX.write(out, quad.asTriple(), pmap) ;
+        inGraph = true;
+        gn = g;
+        StreamWriterTriX.write(out, quad.asTriple(), pmap);
     }
 
     private static void write(IndentedWriter out, Triple triple, PrefixMap prefixMap) {
-        out.println("<triple>") ;
+        out.println("<triple>");
         out.incIndent();
-        write(out, triple.getSubject(), prefixMap) ;
-        write(out, triple.getPredicate(), prefixMap) ;
-        write(out, triple.getObject(), prefixMap) ;
+        write(out, triple.getSubject(), prefixMap);
+        write(out, triple.getPredicate(), prefixMap);
+        write(out, triple.getObject(), prefixMap);
         out.decIndent();
-        out.println("</triple>") ;
+        out.println("</triple>");
     }
 
     private static void write(IndentedWriter out, Node node, PrefixMap prefixMap) {
         if ( node.isURI() ) {
-            String uri = node.getURI() ;
+            String uri = node.getURI();
             // The decent use of TriX is very regular output as we do not use <qname>.
             // See notes on qnames above.
             if ( prefixMap != null ) {
-                String abbrev = prefixMap.abbreviate(uri) ;
+                String abbrev = prefixMap.abbreviate(uri);
                 if ( abbrev != null ) {
-                    startTag(out, TriX.tagQName) ;
-                    writeText(out, abbrev) ;
-                    endTag(out, TriX.tagQName) ;
-                    out.println() ;
-                    return ;
+                    startTag(out, TriX.tagQName);
+                    writeText(out, abbrev);
+                    endTag(out, TriX.tagQName);
+                    out.println();
+                    return;
                 }
             }
 
-            startTag(out, TriX.tagURI) ;
-            writeText(out, node.getURI()) ;
-            endTag(out, TriX.tagURI) ;
-            out.println() ;
-            return ;
+            startTag(out, TriX.tagURI);
+            writeText(out, node.getURI());
+            endTag(out, TriX.tagURI);
+            out.println();
+            return;
         }
 
         if ( node.isBlank() ) {
-            startTag(out, TriX.tagId) ;
-            writeText(out, node.getBlankNodeLabel()) ;
-            endTag(out, TriX.tagId) ;
-            out.println() ;
-            return ;
+            startTag(out, TriX.tagId);
+            writeText(out, node.getBlankNodeLabel());
+            endTag(out, TriX.tagId);
+            out.println();
+            return;
         }
 
         if ( node.isLiteral() ) {
             // RDF 1.1
             if ( Util.isSimpleString(node) ) {
-                startTag(out, TriX.tagPlainLiteral) ;
-                writeTextNoIndent(out, node.getLiteralLexicalForm()) ;
-                endTag(out, TriX.tagPlainLiteral) ;
-                out.println() ;
-                return ;
+                startTag(out, TriX.tagPlainLiteral);
+                writeTextNoIndent(out, node.getLiteralLexicalForm());
+                endTag(out, TriX.tagPlainLiteral);
+                out.println();
+                return;
             }
 
             if ( Util.isLangString(node) ) {
-                String lang = node.getLiteralLanguage() ;
-                startTag(out, TriX.tagPlainLiteral, "xml:lang", lang) ;
-                writeTextNoIndent(out, node.getLiteralLexicalForm()) ;
-                endTag(out, TriX.tagPlainLiteral) ;
-                out.println() ;
-                return ;
+                String lang = node.getLiteralLanguage();
+                startTag(out, TriX.tagPlainLiteral, "xml:lang", lang);
+                writeTextNoIndent(out, node.getLiteralLexicalForm());
+                endTag(out, TriX.tagPlainLiteral);
+                out.println();
+                return;
             }
 
-            String dt = node.getLiteralDatatypeURI() ;
-            startTag(out, TriX.tagTypedLiteral, TriX.attrDatatype, dt) ;
-            String lex = node.getLiteralLexicalForm() ;
+            String dt = node.getLiteralDatatypeURI();
+            startTag(out, TriX.tagTypedLiteral, TriX.attrDatatype, dt);
+            String lex = node.getLiteralLexicalForm();
             if ( rdfXMLLiteral.equals(dt) ) {
-                int x = out.getAbsoluteIndent() ;
-                out.setAbsoluteIndent(0) ;
-                out.print(lex) ;    // Write raw
-                out.setAbsoluteIndent(x) ;
+                int x = out.getAbsoluteIndent();
+                out.setAbsoluteIndent(0);
+                out.print(lex);    // Write raw
+                out.setAbsoluteIndent(x);
             }
             else
-                writeTextNoIndent(out, lex) ;
-            endTag(out, TriX.tagTypedLiteral) ;
-            out.println() ;
-            return ;
+                writeTextNoIndent(out, lex);
+            endTag(out, TriX.tagTypedLiteral);
+            out.println();
+            return;
         }
         if ( node.isNodeTriple() ) {
-            StreamWriterTriX.write(out, node.getTriple(), prefixMap) ;
+            StreamWriterTriX.write(out, node.getTriple(), prefixMap);
             return;
         }
 
-        throw new RiotException("Not a concrete node: "+node) ;
+        throw new RiotException("Not a concrete node: "+node);
     }
 
     private static void writeText(IndentedWriter out, String string) {
-        string = Util.substituteEntitiesInElementContent(string) ;
-        out.print(string) ;
+        string = Util.substituteEntitiesInElementContent(string);
+        out.print(string);
     }
 
     private static void writeTextNoIndent(IndentedWriter out, String string) {
-        int x = out.getAbsoluteIndent() ;
-        out.setAbsoluteIndent(0) ;
-        writeText(out, string) ;
-        out.setAbsoluteIndent(x) ;
+        int x = out.getAbsoluteIndent();
+        out.setAbsoluteIndent(0);
+        writeText(out, string);
+        out.setAbsoluteIndent(x);
     }
 
     private static void startXML(IndentedWriter out) {
-        //out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>") ;
+        //out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
     }
 
      void writeStart() {
-        StreamWriterTriX.startXML(out) ;
+        StreamWriterTriX.startXML(out);
         // Write using the element name from the W3C DTD.
         if ( pmap == null || pmap.isEmpty() )
-            StreamWriterTriX.startTag(out, TriX.tagTriX, "xmlns", TriX.NS) ;
+            StreamWriterTriX.startTag(out, TriX.tagTriX, "xmlns", TriX.NS);
         else
-            StreamWriterTriX.startTagNS(out, TriX.tagTriX, "xmlns", TriX.NS, pmap) ;
-        out.println() ;
+            StreamWriterTriX.startTagNS(out, TriX.tagTriX, "xmlns", TriX.NS, pmap);
+        out.println();
     }
 
     private void writeFinish() {
         if ( inGraph ) {
-            StreamWriterTriX.endTag(out, TriX.tagGraph) ;
-            out.println() ;
+            StreamWriterTriX.endTag(out, TriX.tagGraph);
+            out.println();
         }
-        StreamWriterTriX.endTag(out, TriX.tagTriX) ;
-        out.println() ;
+        StreamWriterTriX.endTag(out, TriX.tagTriX);
+        out.println();
     }
 
     private static void startTag(IndentedWriter out, String text) {
-        out.print("<") ;
-        out.print(text) ;
-        out.print(">") ;
+        out.print("<");
+        out.print(text);
+        out.print(">");
         out.incIndent();
     }
 
     private static void startTag(IndentedWriter out, String text, String attr, String attrValue) {
-        out.print("<") ;
-        out.print(text) ;
-        out.print(" ") ;
-        out.print(attr) ;
-        out.print("=\"") ;
-        attrValue = Util.substituteStandardEntities(attrValue) ;
-        out.print(attrValue) ;
-        out.print("\"") ;
-        out.print(">") ;
+        out.print("<");
+        out.print(text);
+        out.print(" ");
+        out.print(attr);
+        out.print("=\"");
+        attrValue = Util.substituteStandardEntities(attrValue);
+        out.print(attrValue);
+        out.print("\"");
+        out.print(">");
         out.incIndent();
     }
 
     // Write start with namespaces.
     private static void startTagNS(IndentedWriter out, String text, String attr, String attrValue, PrefixMap pmap) {
-        out.print("<") ;
-        out.print(text) ;
-        out.print(" ") ;
+        out.print("<");
+        out.print(text);
+        out.print(" ");
         // Alignment of namespaces.
         int offset = out.getCurrentOffset();
 
-        out.print("xmlns") ;
-        out.print("=\"") ;
-        attrValue = Util.substituteStandardEntities(attrValue) ;
-        out.print(attrValue) ;
-        out.print("\"") ;
+        out.print("xmlns");
+        out.print("=\"");
+        attrValue = Util.substituteStandardEntities(attrValue);
+        out.print(attrValue);
+        out.print("\"");
 
         // prefixes as XML namespaces.
         // Can't write the empty namespace - it's used by TriX itself in this writer.
@@ -312,15 +312,15 @@ public class StreamWriterTriX implements StreamRDF {
         });
         out.decIndent(offset);
 
-        out.print(">") ;
+        out.print(">");
         out.incIndent();
     }
 
     private static void endTag(IndentedWriter out, String text) {
         out.decIndent();
-        out.print("</") ;
-        out.print(text) ;
-        out.print(">") ;
+        out.print("</");
+        out.print(text);
+        out.print(">");
     }
 }
 

@@ -18,71 +18,71 @@
 
 package org.apache.jena.riot.writer;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.vocabulary.RDF;
 
 public class WriterConst
 {
     // See INDENT_PREDICATE
-//    public static final int MIN_SUBJECT     = 4 ;
-    
-    /** Minimum width of the predicate columns. */
-    public static final int MIN_PREDICATE   = 4 ;
+//    public static final int MIN_SUBJECT     = 4;
 
-    /** Subjects longer than this have a NL after them. */ 
-    public static final int LONG_SUBJECT    = 20 ;
+    /** Minimum width of the predicate columns. */
+    public static final int MIN_PREDICATE   = 4;
+
+    /** Subjects longer than this have a NL after them. */
+    public static final int LONG_SUBJECT    = 20;
     /** Predicates longer than this have a NL after them. */
-    public static final int LONG_PREDICATE  = 30 ;
-    
+    public static final int LONG_PREDICATE  = 30;
+
     /** The IRI column in a prefix. */
     public static final int PREFIX_IRI      = 15;
-    
+
     // Pretty writers - do object lists?
-    // The block writers do not do object lists. 
-    public static boolean OBJECT_LISTS      = true ;
-    
+    // The block writers do not do object lists.
+    public static boolean OBJECT_LISTS      = true;
+
 //    // Fixed column widths (unused).
-//    public static int COLW_SUBJECT          = 6 ;
-//    public static int COLW_PREDICATE        = 10 ;
-    
-    /** Column for start of predicate */  
-    public static final int INDENT_PREDICATE = 8 ;
-    
+//    public static int COLW_SUBJECT          = 6;
+//    public static int COLW_PREDICATE        = 10;
+
+    /** Column for start of predicate */
+    public static final int INDENT_PREDICATE = 8;
+
     /** Column for start of object */
-    public static final int INDENT_OBJECT   = 8 ;
+    public static final int INDENT_OBJECT   = 8;
 
     /** Minimum gap from S to P and from P to O */
-    public static final int MIN_GAP         = 2 ;
+    public static final int MIN_GAP         = 2;
 
     /** Minimum gap from S to P */
-    public static final int GAP_S_P         = MIN_GAP ;         
+    public static final int GAP_S_P         = MIN_GAP;
     /** Minimum gap from P to O */
-    public static final int GAP_P_O         = MIN_GAP ;  
-    
+    public static final int GAP_P_O         = MIN_GAP;
+
     // TriG constants.
-    /** Whether to put in {} for the default graph when pretty writing */   
-    public static final boolean GDFT_BRACE      =  false ;
-    
-    /** Whether to put in a newline after the opening { of a default graph block */   
-    public static final boolean NL_GDFT_START   =  false ;
-    /** Whether to put in a newline after the opening { of a named graph block */   
-    public static final boolean NL_GNMD_START   =  true ;
-    
+    /** Whether to put in {} for the default graph when pretty writing */
+    public static final boolean GDFT_BRACE      =  false;
+
+    /** Whether to put in a newline after the opening { of a default graph block */
+    public static final boolean NL_GDFT_START   =  false;
+    /** Whether to put in a newline after the opening { of a named graph block */
+    public static final boolean NL_GNMD_START   =  true;
+
     /** Whether to put the closing } of a default graph block on a newline */
-    public static final boolean NL_GDFT_END     =  true ;
+    public static final boolean NL_GDFT_END     =  true;
     /** Whether to put the closing } of a named graph block on a newline */
-    public static final boolean NL_GNMD_END     =  true ;
+    public static final boolean NL_GNMD_END     =  true;
 
     /** Indent for triples in default graph blocks if inside {} */
-    public static final int INDENT_GDFT          = 2 ;
+    public static final int INDENT_GDFT          = 2;
     /** Indent for trinples in named graph blocks */
-    public static final int INDENT_GNMD          = 4 ;
+    public static final int INDENT_GNMD          = 4;
 
     // Constants.
-    public static final String rdfNS        = RDF.getURI() ;
-    public static final Node RDF_type       = RDF.Nodes.type ;
-    public static final Node RDF_First      = RDF.Nodes.first ;
-    public static final Node RDF_Rest       = RDF.Nodes.rest ;
-    public static final Node RDF_Nil        = RDF.Nodes.nil ;
+    public static final String rdfNS        = RDF.getURI();
+    public static final Node RDF_type       = RDF.Nodes.type;
+    public static final Node RDF_First      = RDF.Nodes.first;
+    public static final Node RDF_Rest       = RDF.Nodes.rest;
+    public static final Node RDF_Nil        = RDF.Nodes.nil;
 }
 

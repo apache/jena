@@ -18,21 +18,21 @@
 
 package org.apache.jena.riot.writer;
 import static org.apache.jena.riot.writer.WriterConst.rdfNS;
-import java.io.BufferedWriter ;
-import java.io.OutputStream ;
-import java.io.Writer ;
+import java.io.BufferedWriter;
+import java.io.OutputStream;
+import java.io.Writer;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RIOT;
-import org.apache.jena.riot.out.NodeFormatterTTL ;
-import org.apache.jena.riot.out.NodeToLabel ;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.PrefixMapFactory ;
-import org.apache.jena.riot.system.RiotLib ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.riot.out.NodeFormatterTTL;
+import org.apache.jena.riot.out.NodeToLabel;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapFactory;
+import org.apache.jena.riot.system.RiotLib;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
 
 /**
@@ -50,16 +50,16 @@ import org.apache.jena.sparql.util.Context;
 public abstract class WriterStreamRDFBase implements StreamRDF
 {
     // What did we do last?
-    protected boolean activeTripleData  = false ;
-    protected boolean activeQuadData    = false ;
-    protected boolean lastWasDirective  = false ;
+    protected boolean activeTripleData  = false;
+    protected boolean activeQuadData    = false;
+    protected boolean lastWasDirective  = false;
 
-    protected final PrefixMap pMap ;
-    protected String baseURI = null ;
-    protected final NodeToLabel nodeToLabel ;
+    protected final PrefixMap pMap;
+    protected String baseURI = null;
+    protected final NodeToLabel nodeToLabel;
 
-    protected NodeFormatterTTL fmt ;
-    protected final IndentedWriter out ;
+    protected NodeFormatterTTL fmt;
+    protected final IndentedWriter out;
     protected final DirectiveStyle directiveStyle;
     // Allows for ability to write RDF without writing the base URI.
     protected final boolean printBase;
@@ -67,7 +67,7 @@ public abstract class WriterStreamRDFBase implements StreamRDF
     protected int countPrefixesForRDF = 0;
 
     protected WriterStreamRDFBase(OutputStream output, Context context) {
-        this(new IndentedWriter(output), context) ;
+        this(new IndentedWriter(output), context);
     }
 
     protected WriterStreamRDFBase(Writer output, Context context) {
@@ -88,13 +88,13 @@ public abstract class WriterStreamRDFBase implements StreamRDF
         // Stream writing does not take an external base URI from the API "write"
         // call. The base URI is output if StreamRDF.base() called, which means BASE
         // was in the data stream.
-        this.out = output ;
-        this.baseURI = null ;
-        this.pMap = PrefixMapFactory.create() ;
-        this.nodeToLabel = nodeToLabel ;
+        this.out = output;
+        this.baseURI = null;
+        this.pMap = PrefixMapFactory.create();
+        this.nodeToLabel = nodeToLabel;
         this.directiveStyle = directiveStyle;
         this.printBase = printBase;
-        setFormatter() ;
+        setFormatter();
     }
 
     // Set and reset the formatter. It needs resetting if BASE is encountered.
@@ -182,7 +182,7 @@ public abstract class WriterStreamRDFBase implements StreamRDF
         if ( countPrefixesForRDF <= 0 && WriterConst.RDF_type.equals(p) )
             out.print('a');
         else
-            outputNode(p) ;
+            outputNode(p);
     }
 
     // Subclass contract

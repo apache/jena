@@ -19,15 +19,15 @@
 package org.apache.jena.riot.writer;
 
 public enum DirectiveStyle {
-    AT, KEYWORD ;
+    AT, KEYWORD;
 
     public static DirectiveStyle systemDefault = DirectiveStyle.KEYWORD;
 
     public static DirectiveStyle create(String label) {
-        String s = label.toLowerCase() ;
+        String s = label.toLowerCase();
         return switch(s) {
-            case "rdf_10", "rdf10", "at"     -> DirectiveStyle.AT ;
-            case "rdf_11", "rdf11", "sparql" -> DirectiveStyle.KEYWORD ;
+            case "rdf_10", "rdf10", "at"     -> DirectiveStyle.AT;
+            case "rdf_11", "rdf11", "sparql" -> DirectiveStyle.KEYWORD;
             default -> systemDefault;
         };
     }

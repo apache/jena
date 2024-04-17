@@ -18,13 +18,13 @@
 
 package org.apache.jena.riot.writer;
 
-import java.io.OutputStream ;
+import java.io.OutputStream;
 import java.io.Writer;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
 
 /**
@@ -61,38 +61,38 @@ public class WriterStreamRDFFlat extends WriterStreamRDFBase
     @Override
     protected void print(Triple triple)
     {
-        Node s = triple.getSubject() ;
-        Node p = triple.getPredicate() ;
-        Node o = triple.getObject() ;
+        Node s = triple.getSubject();
+        Node p = triple.getPredicate();
+        Node o = triple.getObject();
 
-        outputNode(s) ;
-        out.print(' ') ;
+        outputNode(s);
+        out.print(' ');
         printProperty(p);
-        out.print(' ') ;
-        outputNode(o) ;
-        out.println(" .") ;
+        out.print(' ');
+        outputNode(o);
+        out.println(" .");
     }
 
     @Override
     protected void print(Quad quad)
     {
-        Node g = quad.getGraph() ;
-        Node s = quad.getSubject() ;
-        Node p = quad.getPredicate() ;
-        Node o = quad.getObject() ;
+        Node g = quad.getGraph();
+        Node s = quad.getSubject();
+        Node p = quad.getPredicate();
+        Node o = quad.getObject();
 
         if ( g != null && ! Quad.isDefaultGraph(g) )
         {
-            outputNode(g) ;
-            out.print(" { ") ;
+            outputNode(g);
+            out.print(" { ");
         }
         else
-            out.print("{ ") ;
-        outputNode(s) ;
-        out.print(' ') ;
+            out.print("{ ");
+        outputNode(s);
+        out.print(' ');
         printProperty(p);
-        out.print(' ') ;
-        outputNode(o) ;
-        out.println(" }") ;
+        out.print(' ');
+        outputNode(o);
+        out.println(" }");
     }
 }

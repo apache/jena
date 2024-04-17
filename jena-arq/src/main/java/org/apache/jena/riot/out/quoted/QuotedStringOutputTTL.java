@@ -18,24 +18,24 @@
 
 package org.apache.jena.riot.out.quoted;
 
-import org.apache.jena.atlas.lib.CharSpace ;
-import org.apache.jena.atlas.lib.Chars ;
+import org.apache.jena.atlas.lib.CharSpace;
+import org.apache.jena.atlas.lib.Chars;
 
 /** Escape processor for Turtle. */
 public class QuotedStringOutputTTL extends QuotedStringOutputBase {
 
     public QuotedStringOutputTTL() {
-        this(Chars.CH_QUOTE2, CharSpace.UTF8) ;
+        this(Chars.CH_QUOTE2, CharSpace.UTF8);
     }
 
     /** Always use the given quote character (0 means use " or ' as needed) */
     public QuotedStringOutputTTL(char quoteChar) {
-        this(quoteChar, CharSpace.UTF8) ;
+        this(quoteChar, CharSpace.UTF8);
     }
     
     /** Turtle is UTF-8 : ASCII is for non-standard needs */
     protected QuotedStringOutputTTL(char quoteChar, CharSpace charSpace) {
-        super(quoteChar, charSpace) ;
+        super(quoteChar, charSpace);
     }
 }
 
