@@ -25,6 +25,7 @@ import org.apache.jena.graph.Triple ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.util.iterator.ExtendedIterator;
 
 /* TODO
  * org.apache.jena.riot.streamrdf?
@@ -103,30 +104,33 @@ public class StreamRDFOps {
             stream.base(baseURI);
         if ( prefixMap != null )
             sendPrefixesToStream(prefixMap, stream) ;
-        Iterator<Triple> iter = graph.find(null, null, null) ;
-        StreamRDFOps.sendTriplesToStream(iter, stream) ;
+        ExtendedIterator<Triple> iter = graph.find(null, null, null) ;
+        try {
+            StreamRDFOps.sendTriplesToStream(iter, stream) ;
+        } finally { iter.close(); }
     }
 
-    /** Send the triples of graph to a StreamRDF (no prefix mapping) */
+    /**
+     * Send the triples of graph to a StreamRDF (no prefix mapping)
+     * See also {@link #sendGraphToStream} which does send the prefix mapping.
+     */
     public static void sendTriplesToStream(Graph graph, StreamRDF stream) {
         sendGraphToStream(graph, stream, null, null) ;
     }
 
     /** Set triples to a StreamRDF - does not call .start/.finish */
-    public static void sendTriplesToStream(Iterator<Triple> iter, StreamRDF dest)
-    {
+    public static void sendTriplesToStream(Iterator<Triple> iter, StreamRDF dest) {
         iter.forEachRemaining(dest::triple);
     }
 
     /** Send quads of a dataset (including default graph as quads) to a StreamRDF, without prefixes */
     public static void sendQuadsToStream(DatasetGraph datasetGraph, StreamRDF stream) {
-        Iterator<Quad> iter2 = datasetGraph.find(null, null, null, null) ;
-        StreamRDFOps.sendQuadsToStream(iter2, stream) ;
+        Iterator<Quad> iter2 = datasetGraph.find(null, null, null, null);
+        StreamRDFOps.sendQuadsToStream(iter2, stream);
     }
 
     /** Set quads to a StreamRDF - does not call .start/.finish */
-    public static void sendQuadsToStream(Iterator<Quad> iter, StreamRDF dest)
-    {
+    public static void sendQuadsToStream(Iterator<Quad> iter, StreamRDF dest) {
         iter.forEachRemaining(dest::quad);
     }
 }
