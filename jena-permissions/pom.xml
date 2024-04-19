@@ -84,13 +84,11 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <detectJavaApiLink>false</detectJavaApiLink>
-          <source>8</source>
-          <doclint>none</doclint>
           <excludePackageNames>org.apache.jena.security.example:org.apache.jena.security.example.*</excludePackageNames>
           <tags>
             <tag>
@@ -109,6 +107,7 @@
           <overview>${basedir}/src/main/overview.html</overview>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -192,9 +191,21 @@
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>apache-jena-libs</artifactId>
+      <artifactId>jena-arq</artifactId>
       <version>${project.version}</version>
-      <type>pom</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb1</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb2</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
