@@ -29,7 +29,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>31</version>
+    <version>32</version>
   </parent>
 
   <licenses>
@@ -53,6 +53,7 @@
   <properties>
     <!-- Build -->
     <java.version>17</java.version>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.outputTimestamp>2024-03-16T16:17:59Z</project.build.outputTimestamp>
 
@@ -970,9 +971,8 @@
             </execution>
           </executions>
           <configuration>
+            <release>${java.version}</release>
             <detectJavaApiLink>false</detectJavaApiLink>
-            <source>${java.version}</source>
-
             <!-- To allow the build to keep going despite javadoc problems:
                  <failOnError>false</failOnError>
             -->
