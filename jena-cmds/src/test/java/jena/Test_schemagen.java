@@ -46,7 +46,6 @@ import org.junit.Test ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * <p>
  * Unit tests for schemagen
@@ -57,10 +56,12 @@ public class Test_schemagen
     // Constants
     //////////////////////////////////
 
-    String PREFIX = "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n" +
-            "@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n" +
-            "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n" +
-            "@prefix ex: <http://example.com/sg#> .\n";
+    String PREFIX = """
+            PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            PREFIX owl:    <http://www.w3.org/2002/07/owl#>
+            PREFIX ex:     <http://example.com/sg#>
+            """;
 
     // Static variables
     //////////////////////////////////
