@@ -331,7 +331,7 @@ public class LogCtl {
             }
             // Nothing found - built-in default.
             logLogging("Log4j2: built-in default");
-            LogCtlLog4j2.resetLogging(LogCtlLog4j2.log4j2setup);
+            LogCtlLog4j2.reconfigureLog4j2fromString(LogCtlLog4j2.log4j2setup, LogCtlLog4j2.SyntaxHint.PROPERTIES);
         } else {
             if ( isSetLog4j2property(log4j2ConfigFilePropertyLegacy) )
                 logLogging("Already set: %s=%s", log4j2ConfigFilePropertyLegacy, System.getProperty(log4j2ConfigFilePropertyLegacy));
