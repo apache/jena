@@ -1089,42 +1089,42 @@
     js-beautify "^1.14.9"
     vue-component-type-helpers "^2.0.0"
 
-"@zazuko/yasgui-utils@^4.2.34":
-  version "4.2.34"
-  resolved "https://registry.yarnpkg.com/@zazuko/yasgui-utils/-/yasgui-utils-4.2.34.tgz#3b244cab03a6a537ca18753d4bc360db895a807e"
-  integrity sha512-UJEPmx8DiEfqFvmCajDHWL6GcjaivIfPP26eqHIXx8brQ5zJnqImsNXfW3nMQCMKUO/3nENFP+d9I6/JK/b68w==
+"@zazuko/yasgui-utils@^4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasgui-utils/-/yasgui-utils-4.3.0.tgz#cec3430bbe9bb8eff30eeeba167c8f639374c253"
+  integrity sha512-owWzqWwJnY7cAhxyKNA3M9GdG/992lowYSvZlUL4oaeM9TRVaZ/sx3mKJT07CeFZiSBBWj0pZZ1F0CAjIkd9sw==
   dependencies:
     "@types/node" "^20.10.3"
     dompurify "^2.0.7"
     store "^2.0.12"
 
-"@zazuko/yasqe@^4.2.34":
-  version "4.2.34"
-  resolved "https://registry.yarnpkg.com/@zazuko/yasqe/-/yasqe-4.2.34.tgz#27c63b6868360b87dca1842c29ae4770d1e4f9a8"
-  integrity sha512-yEtIfCJUY9DcvC/z3JMHwL2dlGKCQgDfbSvtZDRqtE4UU+Vr++qiQVOnoXD3cO62pi5zWpXxrg5IKHZb7bzFmg==
+"@zazuko/yasqe@^4.2.34", "@zazuko/yasqe@^4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasqe/-/yasqe-4.3.0.tgz#5c24c8f3d6acf42059208f26c81c2327c3adf156"
+  integrity sha512-Hefed/57RE/IbF2y+1EyYA0ndOK1q/nlQtKxDTm4ld2stz+0elp/0JKmWEr0FOgrk+7Uyi3Grx/mtTCFl6ywDw==
   dependencies:
     "@types/lodash-es" "^4.17.3"
-    "@zazuko/yasgui-utils" "^4.2.34"
+    "@zazuko/yasgui-utils" "^4.3.0"
     codemirror "^5.51.0"
     lodash-es "^4.17.15"
     query-string "^6.10.1"
     superagent "^8.1.2"
 
 "@zazuko/yasr@^4.2.34":
-  version "4.2.34"
-  resolved "https://registry.yarnpkg.com/@zazuko/yasr/-/yasr-4.2.34.tgz#06fd731b43c21bccda0f856e18a640e24d89af70"
-  integrity sha512-b3U1u/Yuv2+6OZQWDefIO3zr8A48fkgepjN3HRwNZ9XFF6g8wJA8RYPi15Lpo09SGVgcEGrC5wUWkSTgqCNp0Q==
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasr/-/yasr-4.3.0.tgz#6db99b276ee87412636bdab127cfce7cf28ce143"
+  integrity sha512-hwqipI4AjMkpBPLx0ZkdbqacmtFDWVoCHNwGpGYaGFN6EYnBtf30x6Q3CUgZPLSfIvlMs08a2a/Dhfu4gkmvhg==
   dependencies:
     "@fortawesome/free-solid-svg-icons" "^5.14.0"
     "@json2csv/plainjs" "^7.0.4"
     "@types/lodash-es" "^4.17.3"
-    "@zazuko/yasgui-utils" "^4.2.34"
-    "@zazuko/yasqe" "^4.2.34"
+    "@zazuko/yasgui-utils" "^4.3.0"
+    "@zazuko/yasqe" "^4.3.0"
     codemirror "^5.51.0"
     colors "^1.4.0"
-    column-resizer "^1.3.4"
-    datatables.net "^1.10.24"
-    datatables.net-dt "^1.10.24"
+    column-resizer "^1.4.0"
+    datatables.net "^2.0.4"
+    datatables.net-dt "^2.0.4"
     dompurify "^2.0.7"
     jquery "^3.5.0"
     lodash-es "^4.17.15"
@@ -1814,7 +1814,7 @@ colors@^1.4.0:
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.4.0.tgz#c50491479d4c1bdaed2c9ced32cf7c7dc2360f78"
   integrity sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==
 
-column-resizer@^1.3.4:
+column-resizer@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/column-resizer/-/column-resizer-1.4.0.tgz#baebab36acd81102787aec5cd966193159340186"
   integrity sha512-KM5Jh/UBKwVUr01oEGN/OvxF6gZIEn4c1Qde4iHSqNru9hxq93ao3u93qb9N1E1TZ2Sxjh4x7OHGe8v/P8FgkA==
@@ -2060,25 +2060,18 @@ data-urls@^5.0.0:
     whatwg-mimetype "^4.0.0"
     whatwg-url "^14.0.0"
 
-datatables.net-dt@^1.10.24:
-  version "1.13.10"
-  resolved "https://registry.yarnpkg.com/datatables.net-dt/-/datatables.net-dt-1.13.10.tgz#85604f0db9ceeb67228047bebbaa9cdc4ac652d4"
-  integrity sha512-7Yujk3WGZjUBkQJzlRS2ResAtVXkODXLG73MEsC3tabyCiVXH42eA/79jwDBidmZWD8uvAfpAzWHTxjba4+QIQ==
+datatables.net-dt@^2.0.4:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/datatables.net-dt/-/datatables.net-dt-2.0.5.tgz#60a3127a546c84403df0c114dd3598d06086303b"
+  integrity sha512-YVlBgz2rg5iWCp1wvtgknfgeoyuf+7YL5cR7avP0B10E6af+sIcCzcoMiP0g6wvnoyCVhlyah8alw2wNuRrBeA==
   dependencies:
-    datatables.net "1.13.8"
+    datatables.net "2.0.5"
     jquery ">=1.7"
 
-datatables.net@1.13.8:
-  version "1.13.8"
-  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.13.8.tgz#05a2fb5a036b0b65b66d1bb1eae0ba018aaea8a3"
-  integrity sha512-2pDamr+GUwPTby2OgriVB9dR9ftFKD2AQyiuCXzZIiG4d9KkKFQ7gqPfNmG7uj9Tc5kDf+rGj86do4LAb/V71g==
-  dependencies:
-    jquery ">=1.7"
-
-datatables.net@^1.10.24:
-  version "1.13.10"
-  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.13.10.tgz#4527e2b5428394732331c8b7db8fa20a56c0cc7b"
-  integrity sha512-lVjpXGX9VzOpiPYnJ/KxOsYMAVa3oc3UniYGGo6pLBVCyajzMo80yisgXRz8J392wkZOc3bpp6VPs2pDbpKlyw==
+datatables.net@2.0.5, datatables.net@^2.0.4:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-2.0.5.tgz#e9fdaa6a1a859705f448fa67d8b202615b566838"
+  integrity sha512-Eu7z0ErFyr44hopfLQ7kyIWRdfqH2zFG93aHcnGKGrt/ICWXUsLrjUwghuN5b1pktnKzXCFYsl6Ad9WypiSNeA==
   dependencies:
     jquery ">=1.7"
 
