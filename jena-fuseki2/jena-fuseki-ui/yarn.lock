@@ -1089,22 +1089,22 @@
     js-beautify "^1.14.9"
     vue-component-type-helpers "^2.0.0"
 
-"@zazuko/yasgui-utils@^4.2.34":
-  version "4.2.34"
-  resolved "https://registry.yarnpkg.com/@zazuko/yasgui-utils/-/yasgui-utils-4.2.34.tgz#3b244cab03a6a537ca18753d4bc360db895a807e"
-  integrity sha512-UJEPmx8DiEfqFvmCajDHWL6GcjaivIfPP26eqHIXx8brQ5zJnqImsNXfW3nMQCMKUO/3nENFP+d9I6/JK/b68w==
+"@zazuko/yasgui-utils@^4.2.34", "@zazuko/yasgui-utils@^4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasgui-utils/-/yasgui-utils-4.3.0.tgz#cec3430bbe9bb8eff30eeeba167c8f639374c253"
+  integrity sha512-owWzqWwJnY7cAhxyKNA3M9GdG/992lowYSvZlUL4oaeM9TRVaZ/sx3mKJT07CeFZiSBBWj0pZZ1F0CAjIkd9sw==
   dependencies:
     "@types/node" "^20.10.3"
     dompurify "^2.0.7"
     store "^2.0.12"
 
 "@zazuko/yasqe@^4.2.34":
-  version "4.2.34"
-  resolved "https://registry.yarnpkg.com/@zazuko/yasqe/-/yasqe-4.2.34.tgz#27c63b6868360b87dca1842c29ae4770d1e4f9a8"
-  integrity sha512-yEtIfCJUY9DcvC/z3JMHwL2dlGKCQgDfbSvtZDRqtE4UU+Vr++qiQVOnoXD3cO62pi5zWpXxrg5IKHZb7bzFmg==
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasqe/-/yasqe-4.3.0.tgz#5c24c8f3d6acf42059208f26c81c2327c3adf156"
+  integrity sha512-Hefed/57RE/IbF2y+1EyYA0ndOK1q/nlQtKxDTm4ld2stz+0elp/0JKmWEr0FOgrk+7Uyi3Grx/mtTCFl6ywDw==
   dependencies:
     "@types/lodash-es" "^4.17.3"
-    "@zazuko/yasgui-utils" "^4.2.34"
+    "@zazuko/yasgui-utils" "^4.3.0"
     codemirror "^5.51.0"
     lodash-es "^4.17.15"
     query-string "^6.10.1"
