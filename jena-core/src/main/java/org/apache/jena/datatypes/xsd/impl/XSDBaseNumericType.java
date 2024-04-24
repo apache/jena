@@ -29,23 +29,23 @@ import org.apache.jena.shared.impl.JenaParameters ;
 /**
  * Base implementation for all numeric datatypes derived from
  * xsd:decimal. The only purpose of this place holder is
- * to support the isValidLiteral tests across numeric types. 
+ * to support the isValidLiteral tests across numeric types.
  *  * <p>Note that float and double are not included in this set.
  */
 public class XSDBaseNumericType extends XSDDatatype {
 
     /**
-     * Constructor. 
-     * @param typeName the name of the XSD type to be instantiated, this is 
+     * Constructor.
+     * @param typeName the name of the XSD type to be instantiated, this is
      * used to lookup a type definition from the Xerces schema factory.
      */
     public XSDBaseNumericType(String typeName) {
         super(typeName);
     }
-    
+
     /**
-     * Constructor. 
-     * @param typeName the name of the XSD type to be instantiated, this is 
+     * Constructor.
+     * @param typeName the name of the XSD type to be instantiated, this is
      * used to lookup a type definition from the Xerces schema factory.
      * @param javaClass the java class for which this xsd type is to be
      * treated as the cannonical representation
@@ -54,7 +54,7 @@ public class XSDBaseNumericType extends XSDDatatype {
         super(typeName, javaClass);
     }
 
-    
+
     /**
      * Test whether the given LiteralLabel is a valid instance
      * of this datatype. This takes into account typing information
@@ -79,7 +79,7 @@ public class XSDBaseNumericType extends XSDDatatype {
             return false;
         }
     }
-     
+
     /**
      * Test whether the given object is a legal value form
      * of this datatype. Brute force implementation.
@@ -92,16 +92,16 @@ public class XSDBaseNumericType extends XSDDatatype {
             return false;
         }
     }
-    
+
     /**
      * Cannonicalise a java Object value to a normal form.
      * Primarily used in cases such as xsd:integer to reduce
      * the Java object representation to the narrowest of the Number
-     * subclasses to ensure that indexing of typed literals works. 
+     * subclasses to ensure that indexing of typed literals works.
      */
     @Override
     public Object cannonicalise( Object value ) {
-        
+
         if (value instanceof BigInteger) {
             return cannonicalizeInteger( (BigInteger)value );
         } else if (value instanceof BigDecimal) {
@@ -109,7 +109,7 @@ public class XSDBaseNumericType extends XSDDatatype {
         }
         return suitableInteger( ((Number)value).longValue() );
     }
-    
+
     private static final BigInteger ten = new BigInteger("10");
     private static final int QUOT = 0;
     private static final int REM = 1;
@@ -139,7 +139,7 @@ public class XSDBaseNumericType extends XSDDatatype {
             return cannonicalizeInteger( value.toBigInteger() );
         }
     }
-    
+
     /**
      * Cannonicalize a big integer
      */
@@ -150,31 +150,31 @@ public class XSDBaseNumericType extends XSDDatatype {
             return suitableInteger( value.longValue() );
         }
     }
-   
+
     /**
      * Parse a lexical form of this datatype to a value
      * @throws DatatypeFormatException if the lexical form is not legal
      */
     @Override
     public Object parse(String lexicalForm) throws DatatypeFormatException {
-        checkWhitespace(lexicalForm);        
+        checkWhitespace(lexicalForm);
         return super.parse(lexicalForm);
     }
-    
+
     /**
      * Convert a value of this datatype to lexical form.
-     * Certain forms are not a simple matter of java's toString on the Number object. 
+     * Certain forms are not a simple matter of java's toString on the Number object.
      */
     @Override
     public String unparse(Object value) {
         if ( value instanceof BigDecimal )
             // Avoid exponent usage.
             return ((BigDecimal)value).toPlainString() ;
-        // See also for XSDfloat and XSDdouble. 
+        // See also for XSDfloat and XSDdouble.
         // Integer hierarchy is OK.
         return value.toString();
     }
-    
+
     /**
      * Check for whitespace violations.
      * Turned off by default.
@@ -186,7 +186,7 @@ public class XSDBaseNumericType extends XSDDatatype {
             }
         }
     }
-    
+
     /**
      * Compares two instances of values of the given datatype.
      */
@@ -199,7 +199,7 @@ public class XSDBaseNumericType extends XSDDatatype {
             // us just that equals doesn't work on BigDecimals in the way you expect
             if (n1 instanceof BigDecimal && n2 instanceof BigDecimal) {
                 return  ((BigDecimal)n1).compareTo((BigDecimal)n2) == 0;
-            } 
+            }
             return n1.equals(n2);
         } else {
             // At least one arg is not part of the integer hierarchy

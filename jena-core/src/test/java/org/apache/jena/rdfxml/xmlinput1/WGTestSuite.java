@@ -775,10 +775,9 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 Model m2 = read(out, outtype);
                 super.runTest();
                 if (!m1.isIsomorphicWith(m2)) {
-                    //  save(output);
-                    System.err.println("=====");
+                    System.err.println("== m1 ==");
                     m1.write(System.err,"N-TRIPLE");
-                    System.err.println("=====");
+                    System.err.println("== m2 ==");
                     m2.write(System.err,"N-TRIPLE");
                     System.err.println("=====");
                     fail("Models were not equal.");

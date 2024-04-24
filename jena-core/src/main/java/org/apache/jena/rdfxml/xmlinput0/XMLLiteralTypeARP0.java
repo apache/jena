@@ -21,9 +21,10 @@ package org.apache.jena.rdfxml.xmlinput0;
 import java.io.IOException ;
 import java.io.StringReader ;
 
-import org.apache.jena.datatypes.BaseDatatype ;
+import org.apache.jena.datatypes.BaseDatatype;
 import org.apache.jena.datatypes.DatatypeFormatException ;
-import org.apache.jena.datatypes.RDFDatatype ;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.shared.BrokenException ;
 import org.xml.sax.ErrorHandler ;
 import org.xml.sax.SAXException ;
@@ -32,19 +33,14 @@ import org.xml.sax.SAXParseException ;
 /**
  * Builtin data type to represent XMLLiteral (i.e. items created
  * by use of <code>rdf:parsetype='literal'</code>.
+ * Version of rdf:XMLLiteral using ARP1 and hence has RDF1.0 semantics for the value space
  */
-public class XMLLiteralType0 extends BaseDatatype implements RDFDatatype {
+@Deprecated(forRemoval=true, since="5.0.0")
+public class XMLLiteralTypeARP0 extends BaseDatatype implements RDFDatatype {
 
+    public static final RDFDatatype dtRDF10 =  new XMLLiteralTypeARP0(XMLLiteralType.XMLLiteralTypeURI);
 
-    public static String XMLLiteralTypeURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral";
-    /** Singleton instance */
-    // Include the string for the RDF namespace, not use RDF.getURI(), to avoid an initializer circularity
-    public static final RDFDatatype theXMLLiteralType = new XMLLiteralType0(XMLLiteralTypeURI);
-
-    /**
-     * Private constructor.
-     */
-    private XMLLiteralType0(String uri) {
+    private XMLLiteralTypeARP0(String uri) {
         super(uri);
     }
 
@@ -73,7 +69,6 @@ public class XMLLiteralType0 extends BaseDatatype implements RDFDatatype {
      * of this datatype.
      */
     @Override
-    @SuppressWarnings("deprecation")
     public boolean isValid(final String lexicalForm) {
         /*
          * To check the lexical form we construct

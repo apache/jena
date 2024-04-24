@@ -471,6 +471,7 @@ final public class LiteralLabel {
     public boolean sameValueAs( LiteralLabel other ) {
         return sameValueAs(this, other);
     }
+
     /**
      * Two literal labels are the "same value" if they are the same string,
      * or same language string or same value-by-datatype or .equals (= Same RDF Term)

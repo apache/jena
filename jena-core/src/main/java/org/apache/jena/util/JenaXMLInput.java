@@ -49,7 +49,6 @@ import org.xml.sax.XMLReader;
 public class JenaXMLInput {
 
     // ---- SAX
-    // RDFXMLParser
     private static SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
 
     static {
@@ -72,6 +71,7 @@ public class JenaXMLInput {
     }
 
     public static XMLReader createXMLReader() throws ParserConfigurationException, SAXException {
+        // Used by RRX: ReaderRDFXML_SAX
         /*
          * https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html#xmlreader
          * ----
@@ -111,7 +111,8 @@ public class JenaXMLInput {
     static { initXMLInputFactory(xmlInputFactory); }
 
     // ---- StAX
-    // RRX SR and RRX EV, TriX and SPARQL XML Results.
+    // Used by SysRRX for RRX SR (StreamReader) and RRX EV (XMLEventReader),
+    // for TriX and for SPARQL XML Results.
     /**
      * Initialize an XMLInputFactory to Jena settings such as protecting against XXE.
      * Return the XMLInputFactory.
@@ -151,7 +152,7 @@ public class JenaXMLInput {
             setXMLInputFactoryProperty(xmlInputFactory, XMLConstants.ACCESS_EXTERNAL_DTD, "");
 
         return xmlInputFactory;
-        // RRX
+        // Modified by RRX SysRRX.createXMLInputFactory()
 //        private static XMLInputFactory createXMLInputFactory() {
 //            XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 //            JenaXMLInput.initXMLInputFactory(xmlInputFactory);
@@ -162,8 +163,6 @@ public class JenaXMLInput {
 //            xmlInputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
 //            return xmlInputFactory;
 //        }
-
-
     }
 
     /**
@@ -195,9 +194,11 @@ public class JenaXMLInput {
     }
 
     // ---- DocumentBuilder
-    // For reference - not used in Jena src/main, but is used in src/test DOM2RDFTest and MoreDOM2RDFTest
+    // Used by XMLLiteralType (rdf:XMLLitral)
+
     public static DocumentBuilderFactory newDocumentBuilderFactory() throws ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
         // Causes SAXParseException if there is an external entity.
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         return factory;
