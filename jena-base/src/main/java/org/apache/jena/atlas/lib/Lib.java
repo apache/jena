@@ -110,6 +110,18 @@ public class Lib
         return new UnsupportedOperationException(Lib.className(object) + "." + method);
     }
 
+    /**
+     * Return a {@linkplain RuntimeException}. If the argument is already
+     * {@code RuntimeException}, return the argument. Otherwise, wrap in
+     * {@code RuntimeException}, with the same message, and return the
+     * {@code RuntimeException}
+     */
+    public static RuntimeException runtimeException(Exception ex) {
+        if ( ex instanceof RuntimeException ex2)
+            throw ex2;
+        return new RuntimeException(ex.getMessage(), ex);
+    }
+
     /** Do two lists have the same elements without considering the order of the lists nor duplicates? */
     public static <T> boolean equalsListAsSet(List<T> list1, List<T> list2) {
         if ( list1 == null && list2 == null )
