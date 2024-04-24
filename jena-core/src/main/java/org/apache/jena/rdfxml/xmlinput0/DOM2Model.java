@@ -20,12 +20,12 @@ package org.apache.jena.rdfxml.xmlinput0;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.shared.JenaException ;
+import org.apache.jena.util.JenaXMLOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -36,12 +36,12 @@ import org.xml.sax.SAXParseException;
  * 1.4.1.
  */
 public class DOM2Model extends SAX2Model {
-	
+
 	 static Logger logger = LoggerFactory.getLogger(DOM2Model.class) ;
-	   
+
     /**
      * Create a new DOM2Model.
-     * 
+     *
      * @param base
      *            The retrieval URL, or the base URI to be used while parsing.
      * @param m
@@ -49,8 +49,8 @@ public class DOM2Model extends SAX2Model {
      *            it is null, then use {@link SAX2RDF#getHandlers}or
      *            {@link SAX2RDF#setHandlersWith}to provide a {@link StatementHandler},
      *            and usually an {@link org.xml.sax.ErrorHandler}
-     * @throws SAXParseException 
-     */    
+     * @throws SAXParseException
+     */
     static public DOM2Model createD2M(String base, Model m) throws  SAXParseException {
         return new DOM2Model(base,  m, "", true) ;
     }
@@ -60,7 +60,7 @@ public class DOM2Model extends SAX2Model {
      * needs to find this value in the outer context. Optionally, namespace
      * prefixes can be passed from the outer context using
      * {@link SAX2RDF#startPrefixMapping}.
-     * 
+     *
      * @param base
      *            The retrieval URL, or the base URI to be used while parsing.
      * @param m
@@ -71,7 +71,7 @@ public class DOM2Model extends SAX2Model {
      * @param lang
      *            The current value of <code>xml:lang</code> when parsing
      *            starts, usually "".
-     * @throws SAXParseException 
+     * @throws SAXParseException
      */
     static public DOM2Model createD2M(String base, Model m, String lang) throws  SAXParseException {
         return new DOM2Model(base,  m, lang, true) ;
@@ -85,7 +85,7 @@ public class DOM2Model extends SAX2Model {
     /**
      * Parse a DOM Node with the RDF/XML parser, loading the triples into the
      * associated Model. Known not to work with Java 1.4.1.
-     * 
+     *
      * @param document
      */
     public void load(Node document) {
@@ -96,17 +96,16 @@ public class DOM2Model extends SAX2Model {
         output.setLexicalHandler(this);
 
         // Run transform
-        TransformerFactory xformFactory = TransformerFactory.newInstance();
         try {
-            Transformer idTransform = xformFactory.newTransformer();
+            Transformer idTransform = JenaXMLOutput.xmlTransformer();
             idTransform.transform(input, output);
         }
         catch (FatalParsingErrorException e) {
             // Old code ignored this,
         	// given difficult bug report, don't be silent.
         	logger.error("Unexpected exception in DOM2Model", e) ;
-            
-        } 
+
+        }
         catch (RuntimeException rte) {
             throw rte;
         } catch (Exception nrte) {

@@ -104,6 +104,7 @@ public class RiotEvalTest implements Runnable {
                 System.out.println("---- Parsed");
                 RDFDataMgr.write(System.out, graph, Lang.TURTLE);
                 System.out.println("---- Expected");
+                results.getPrefixMapping().setNsPrefixes(graph.getPrefixMapping());
                 RDFDataMgr.write(System.out, results, Lang.TURTLE);
                 System.out.println("--------");
             }

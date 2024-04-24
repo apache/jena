@@ -427,24 +427,26 @@ class Unparser {
      * [6.12.2] propertyElt ::= '<' propName idAttr? parseLiteral '>' literal '</'
      * propName '>'
      */
-    private boolean wPropertyEltLiteral(WType wt, Property prop, Statement s, RDFNode r) {
+    private boolean wPropertyEltLiteral(WType wt, Property prop, Statement statement, RDFNode rdfNode) {
         if (prettyWriter.sParseTypeLiteralPropertyElt)
             return false;
-        boolean isXML = (r instanceof Literal) && XMLLiteralType.theXMLLiteralType.equals(((Literal) r).getDatatype());
-        if (! isXML ) {
+        if ( ! (rdfNode instanceof Literal lit) )
             return false;
-        }
+
+        if (! XMLLiteralType.isXMLLiteral(lit.getDatatype()) )
+            return false;
+
         // print out.
-        done(s);
+        done(statement);
         tab();
         print("<");
         wt.wTypeStart(prop);
-        wIdAttrReified(s);
+        wIdAttrReified(statement);
         maybeNewline();
         wParseLiteral();
         maybeNewline();
         print(">");
-        print(((Literal) r).getLexicalForm());
+        print(lit.getLexicalForm());
         print("</");
         wt.wTypeEnd(prop);
         print(">");

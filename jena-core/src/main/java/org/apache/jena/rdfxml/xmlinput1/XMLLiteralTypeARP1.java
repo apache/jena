@@ -16,18 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.datatypes.xsd.impl;
+package org.apache.jena.rdfxml.xmlinput1;
 
 import java.io.IOException ;
 import java.io.StringReader ;
 
-import org.apache.jena.datatypes.BaseDatatype ;
+import org.apache.jena.datatypes.BaseDatatype;
 import org.apache.jena.datatypes.DatatypeFormatException ;
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.rdfxml.xmlinput1.ALiteral;
-import org.apache.jena.rdfxml.xmlinput1.ARP;
-import org.apache.jena.rdfxml.xmlinput1.AResource;
-import org.apache.jena.rdfxml.xmlinput1.StatementHandler;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.shared.BrokenException ;
 import org.xml.sax.ErrorHandler ;
 import org.xml.sax.SAXException ;
@@ -36,20 +33,14 @@ import org.xml.sax.SAXParseException ;
 /**
  * Builtin data type to represent XMLLiteral (i.e. items created
  * by use of <code>rdf:parsetype='literal'</code>.
+ * Version of rdf:XMLLiteral using ARP1 and hence has RDF1.0 semantics for the value space
  */
-@SuppressWarnings("deprecation")
-public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
+@Deprecated(forRemoval=true, since="5.0.0")
+public class XMLLiteralTypeARP1 extends BaseDatatype implements RDFDatatype {
 
+    public static final RDFDatatype dtRDF10 =  new XMLLiteralTypeARP1(XMLLiteralType.XMLLiteralTypeURI);
 
-    public static String XMLLiteralTypeURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral";
-    /** Singleton instance */
-    // Include the string for the RDF namespace, not use RDF.getURI(), to avoid an initializer circularity
-    public static final RDFDatatype theXMLLiteralType = new XMLLiteralType(XMLLiteralTypeURI);
-
-    /**
-     * Private constructor.
-     */
-    private XMLLiteralType(String uri) {
+    private XMLLiteralTypeARP1(String uri) {
         super(uri);
     }
 

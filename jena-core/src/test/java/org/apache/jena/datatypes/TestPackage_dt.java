@@ -31,11 +31,12 @@ public class TestPackage_dt extends TestSuite {
     static public TestSuite suite() {
         return new TestPackage_dt();
     }
-    
+
     /** Creates new TestPackage */
     private TestPackage_dt() {
         super("datatypes");
         addTest(new JUnit4TestAdapter(TestDatatypes.class)) ;
         addTest(new JUnit4TestAdapter(TestDatatypeValues.class)) ;
+        addTest(new JUnit4TestAdapter(TestRDFXMLiteral.class)) ;
     }
 }

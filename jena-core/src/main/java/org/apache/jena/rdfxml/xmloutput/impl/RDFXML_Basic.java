@@ -151,11 +151,11 @@ public class RDFXML_Basic extends BaseXMLWriter
 		}
 	}
 
-    protected void writeLiteral( Literal l, PrintWriter writer ) {
-		String lang = l.getLanguage();
-        String form = l.getLexicalForm();
-        boolean isXML = XMLLiteralType.theXMLLiteralType.equals(l.getDatatype());
-		if (Util.isLangString(l)) {
+    protected void writeLiteral( Literal literal, PrintWriter writer ) {
+		String lang = literal.getLanguage();
+        String form = literal.getLexicalForm();
+        boolean isXML = XMLLiteralType.isXMLLiteral(literal.getDatatype());
+		if (Util.isLangString(literal)) {
 			writer.print(" xml:lang=" + attributeQuoted( lang ));
 		} else if ( isXML && !blockLiterals) {
 		    // RDF XML Literals inline.
@@ -164,8 +164,8 @@ public class RDFXML_Basic extends BaseXMLWriter
 			return ;
 		} else {
 	        // Datatype (if not xsd:string and RDF 1.1)
-	        String dt = l.getDatatypeURI();
-	        if ( ! Util.isSimpleString(l) )
+	        String dt = literal.getDatatypeURI();
+	        if ( ! Util.isSimpleString(literal) )
 	            writer.print( " " + rdfAt( "datatype" ) + "=" + substitutedAttribute( dt ) );
 		}
 		// Content.
