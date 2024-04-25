@@ -55,6 +55,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.system.Txn;
 
 /**
  * An {@link RDFParser} is a process that will generate triples and quads;
@@ -325,19 +326,27 @@ public class RDFParser {
 
     /**
      * Parse the source in to a fresh {@link Dataset} and return the dataset.
+     * <p>
+     * It may be preferable to instead call {@link #parse(Dataset)} supplying your desired {@link Dataset}
+     * implementation instead depending on how you intend to further process the parsed data.
+     * </p>
      */
     public Dataset toDataset() {
         Dataset dataset = DatasetFactory.createTxnMem();
-        parse(dataset);
+        dataset.executeWrite(() -> parse(dataset));
         return dataset;
     }
 
     /**
      * Parse the source in to a fresh {@link DatasetGraph} and return the DatasetGraph.
+     * <p>
+     * It may be preferable to instead call {@link #parse(DatasetGraph)} supplying your desired {@link DatasetGraph}
+     * implementation instead depending on how you intend to further process the parsed data.
+     * </p>
      */
     public DatasetGraph toDatasetGraph() {
         DatasetGraph dataset = DatasetGraphFactory.createTxnMem();
-        parse(StreamRDFLib.dataset(dataset));
+        dataset.executeWrite(() -> parse(StreamRDFLib.dataset(dataset)));
         return dataset;
     }
 
