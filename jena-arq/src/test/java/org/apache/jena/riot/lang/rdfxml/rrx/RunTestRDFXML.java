@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IOX;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.rdfxml.ReaderRDFXML_ARP1;
@@ -328,6 +329,17 @@ public class RunTestRDFXML {
             output.printf("## Expected RiotExpection : %-4s : %s : %s", subjectLabel, testLabel, filename);
         });
         checkErrorHandler(testLabel, actualErrorHandler, -1, 1, -1);
+    }
+
+    /** Run a test expecting a warning.. */
+    static void runTestExpectWarning(String testLabel,
+                                     ReaderRIOTFactory testSubjectFactory, String subjectLabel,
+                                     String filename) {
+        ErrorHandlerCollector actualErrorHandler = new ErrorHandlerCollector();
+        LogCtl.withLevel(SysRIOT.getLogger(), "Error", ()->
+            parseFile(testSubjectFactory, actualErrorHandler, filename)
+            );
+        checkErrorHandler(testLabel, actualErrorHandler, 0, 0, 1);
     }
 
     /**
