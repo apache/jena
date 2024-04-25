@@ -28,6 +28,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.graph.Node;
@@ -37,6 +38,7 @@ import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIx;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.riot.lang.rdfxml.RDFXMLParseException;
 import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.riot.system.FactoryRDF;
@@ -1046,7 +1048,12 @@ public class ParserRDFXML_SAX
         if ( parseTypeStr == null )
             return ObjectParseType.Plain;
         try {
-            return ObjectParseType.valueOf(parseTypeStr);
+            String parseTypeName = parseTypeStr;
+            if ( parseTypeName.equals("literal") ) {
+                Log.warn(SysRIOT.getLogger(), "Encountered rdf:parseType='literal'. Treated as rdf:parseType='literal'");
+                parseTypeName = "Literal";
+            }
+            return ObjectParseType.valueOf(parseTypeName);
         } catch (IllegalArgumentException ex) {
             throw RDFXMLparseError("Not a legal value for rdf:parseType: '"+parseTypeStr+"'", position);
         }

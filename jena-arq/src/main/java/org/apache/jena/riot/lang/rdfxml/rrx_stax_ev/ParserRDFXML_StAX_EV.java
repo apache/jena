@@ -31,6 +31,7 @@ import javax.xml.stream.events.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.graph.Node;
@@ -39,6 +40,7 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIx;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.riot.lang.rdfxml.RDFXMLParseException;
 import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.ParserProfile;
@@ -198,9 +200,10 @@ public class ParserRDFXML_StAX_EV {
     // whitespace characters inside elements. Skip it.
     private static final QName xmlQNameSpace = new QName(XMLConstants.XML_NS_URI, "space");
 
-    private static final String parseTypeCollection = "Collection";
-    private static final String parseTypeLiteral = "Literal";
-    private static final String parseTypeResource = "Resource";
+    private static final String parseTypeCollection  = "Collection";
+    private static final String parseTypeLiteral     = "Literal";
+    private static final String parseTypeLiteralAlt  = "literal";
+    private static final String parseTypeResource    = "Resource";
     // This is a dummy parseType for when there is no given rdf:parseType.
     private static final String parseTypePlain = "$$";
 
@@ -634,30 +637,34 @@ public class ParserRDFXML_StAX_EV {
             return event;
         }
 
-        switch(parseType) {
-            case parseTypeResource: {
+        String parseTypeName = parseType;
+        if ( parseTypeName.equals(parseTypeLiteralAlt) ) {
+            Log.warn(SysRIOT.getLogger(), "Encountered rdf:parseType='literal'. Treated as rdf:parseType='literal'");
+            parseTypeName = "Literal";
+        }
+
+        switch(parseTypeName) {
+            case parseTypeResource -> {
                 // Implicit <rdf:Description><rdf:Description> i.e. fresh blank node
                 if ( TRACE )
                     trace.println("rdfParseType=Resource");
                 XMLEvent event = parseTypeResource(subject, property, emitter, startElt);
                 return event;
             }
-            case parseTypeLiteral: {
+            case parseTypeLiteral -> {
                 if ( TRACE )
                     trace.println("rdfParseType=Literal");
                 XMLEvent event = parseTypeLiteral(subject, property, emitter, startElt);
                 return event;
             }
-            case parseTypeCollection:  {
+            case parseTypeCollection -> {
                 if ( TRACE )
                     trace.println("rdfParseType=Collection");
                 XMLEvent event = parseTypeCollection(subject, property, emitter, startElt);
                 return event;
             }
-            case parseTypePlain:
-                // The code below.
-                break;
-            default:
+            case parseTypePlain -> {} // The code below.
+            default ->
                 throw RDFXMLparseError("Not a legal defined rdf:parseType: "+parseType, startElt);
         }
 
@@ -1177,23 +1184,21 @@ public class ParserRDFXML_StAX_EV {
                 XMLEvent ev = xmlEventReader.nextEvent();
                 int evType = ev.getEventType();
                 switch (evType) {
-                    case START_ELEMENT, END_ELEMENT:
+                    case START_ELEMENT, END_ELEMENT -> {
                         if ( EVENTS )
                             System.out.println("-- Tag: "+str(ev));
                         return ev;
-                    case CHARACTERS, CDATA:
+                    }
+                    case CHARACTERS, CDATA -> {
                         Characters chars = ev.asCharacters();
                         if ( ! isWhitespace(ev) )
                             throw RDFXMLparseError("Read "+str(ev)+" when expecting a start or end element.", ev);
-                        // Skip
-                        break;
-                    case COMMENT, DTD:
-                        // Skip
-                        break;
-                        //case SPACE:
-                        //case PROCESSING_INSTRUCTION:
-                        //case ENTITY_DECLARATION:
-                    default:
+                    }
+                    case COMMENT, DTD -> { } // Skip
+                    //case SPACE ->
+                    //case PROCESSING_INSTRUCTION ->
+                    //case ENTITY_DECLARATION ->
+                    default ->
                         // Not expecting any other type of event.
                         throw RDFXMLparseError("Unexpected  event "+str(ev), ev);
                 }
@@ -1599,33 +1604,23 @@ public class ParserRDFXML_StAX_EV {
     }
 
     private static String str(XMLEvent event) {
-        switch (event.getEventType()) {
-            case XMLEvent.START_ELEMENT:
-                return str(event.asStartElement().getName());
-            case XMLEvent.END_ELEMENT:
-                return "/"+str(event.asEndElement().getName());
-            case XMLEvent.CHARACTERS:
-                return "Event Characters";
+        return switch (event.getEventType()) {
+            case XMLEvent.START_ELEMENT ->   str(event.asStartElement().getName());
+            case XMLEvent.END_ELEMENT ->     "/"+str(event.asEndElement().getName());
+            case XMLEvent.CHARACTERS ->      "Event Characters";
             // @see #ATTRIBUTE
             // @see #NAMESPACE
             // @see #PROCESSING_INSTRUCTION
             // @see #SPACE:
-            case XMLEvent.COMMENT:
-                return "Event Comment";
-            case XMLEvent.START_DOCUMENT:
-                return "Event StartDocument";
-            case XMLEvent.END_DOCUMENT:
-                return "Event EndDocument";
-            case XMLEvent.DTD:
-                return "DTD";
-            case XMLEvent.ENTITY_DECLARATION:
-                return "DTD Entity Decl";
-            case XMLEvent.ENTITY_REFERENCE:
-                return "DTD Entity Ref";
+            case XMLEvent.COMMENT ->         "Event Comment";
+            case XMLEvent.START_DOCUMENT ->  "Event StartDocument";
+            case XMLEvent.END_DOCUMENT ->    "Event EndDocument";
+            case XMLEvent.DTD ->             "DTD";
+            case XMLEvent.ENTITY_DECLARATION -> "DTD Entity Decl";
+            case XMLEvent.ENTITY_REFERENCE ->   "DTD Entity Ref";
             // @see #DTD
-                default:
-                    return ""+event.getEventType();
-        }
+                default ->""+event.getEventType();
+        };
     }
 
     /** The string for the first non-whitespace index. */
@@ -1638,5 +1633,4 @@ public class ParserRDFXML_StAX_EV {
         }
         throw new RDFXMLParseException("Failed to find any non-whitespace characters");
     }
-
 }

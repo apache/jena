@@ -65,7 +65,11 @@ public class TestRRX {
     }
 
     @Test public void error02() {
-        errorTest("error02.rdf");
+        // Now valid. parseType="literal" -> parseType="Literal"
+        // because ARP behaved that way.
+        //errorTest("error02.rdf");
+        // Warning issued.
+        warningTest("error02.rdf");
     }
 
     @Test public void noBase01() {
@@ -92,6 +96,12 @@ public class TestRRX {
         } catch (IOException ex) {
             throw IOX.exception(ex);
         }
+    }
+
+    private void warningTest(String filename) {
+        ReaderRIOTFactory factory = RDFParserRegistry.getFactory(lang);
+        String fn = "testing/RIOT/rrx-files/"+filename;
+        RunTestRDFXML.runTestExpectWarning(filename, factory, label, fn);
     }
 
     private void errorTest(String filename) {
