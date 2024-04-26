@@ -59,8 +59,8 @@ public class LPBRuleEngine {
     /** Set to true to flag that derivations should be logged */
     protected boolean recordDerivations;
 
-    /** List of engine instances which are still processing queries */
-    protected List<LPInterpreter> activeInterpreters = new LinkedList<>();
+    /** Set of engine instances which are still processing queries */
+    protected Collection<LPInterpreter> activeInterpreters = new HashSet<>();
 
     protected final int MAX_CACHED_TABLED_GOALS = Integer.parseInt(
     		JenaRuntime.getSystemProperty("jena.rulesys.lp.max_cached_tabled_goals", "524288"));
