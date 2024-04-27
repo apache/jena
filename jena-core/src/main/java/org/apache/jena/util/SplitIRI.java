@@ -282,7 +282,7 @@ public class SplitIRI
      * splitXML with local stricter XML 1.0 rules (only single Java characters)
      * @deprecated Retained as a record of previous split handling.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static int splitXML10(String string) { return splitNamespaceXML10(string); }
 
     /**

@@ -84,7 +84,7 @@ public class NodeFactory {
     }
 
     /** @deprecated Use {@link #createLiteralString} */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static Node createLiteral(String string) {
         return createLiteralString(string);
     }

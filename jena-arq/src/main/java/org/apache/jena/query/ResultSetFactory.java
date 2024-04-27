@@ -175,7 +175,7 @@ public class ResultSetFactory {
      * @param filenameOrURI
      * @param format
      * @return Model
-     * @deprecated This functions will become be internal.
+     * @deprecated This function will become be internal.
      */
     @Deprecated
     public static Model loadAsModel(Model model, String filenameOrURI, ResultsFormat format) {

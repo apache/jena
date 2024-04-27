@@ -92,7 +92,7 @@ public class Shapes implements Iterable<Shape> {
      *
      * @deprecated Use {@link #parse(Graph)}.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static Shapes parseTargets(Graph graph) {
         Shapes shapes = parseProcess(graph, Collections.emptyList());
         return shapes;

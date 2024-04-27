@@ -26,13 +26,13 @@ import org.apache.jena.shared.* ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
 @SuppressWarnings("deprecation")
-public class TestGraphMem extends AbstractTestGraph
+public class TestGraphMemValue extends AbstractTestGraph
     {
-    public TestGraphMem( String name )
+    public TestGraphMemValue( String name )
         { super( name ); }
 
     public static TestSuite suite()
-        { return new TestSuite( TestGraphMem.class ); }
+        { return new TestSuite( TestGraphMemValue.class ); }
 
     @Override public Graph getGraph()
         { return new GraphMem(); }

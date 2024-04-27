@@ -38,7 +38,7 @@ public class UpdateStreaming {
      * @param datasetGraph
      * @return UpdateExecution
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph) {
         return makeStreaming(datasetGraph, null, null);
     }
@@ -52,7 +52,7 @@ public class UpdateStreaming {
      *     can apply an initial binding (i.e. UpdateDeleteWhere, UpdateModify)
      * @return UpdateExecution
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static UpdateProcessorStreaming createStreaming(Dataset dataset, QuerySolution inputBinding) {
         return createStreaming(dataset.asDatasetGraph(), BindingLib.asBinding(inputBinding));
     }
@@ -67,7 +67,7 @@ public class UpdateStreaming {
      * @return UpdateExecution
      * @deprecated Use {@code UpdateExecution.dataset(dataset)... build()}
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph, Binding inputBinding) {
         return makeStreaming(datasetGraph, inputBinding, null);
     }
@@ -80,7 +80,6 @@ public class UpdateStreaming {
      * @param context (null means use merge of global and graph store context))
      * @return UpdateExecution
      */
-    @Deprecated
     public static UpdateProcessorStreaming createStreaming(Dataset dataset, Context context) {
         return makeStreaming(dataset.asDatasetGraph(), null, context);
     }
@@ -93,7 +92,7 @@ public class UpdateStreaming {
      * @param context (null means use merge of global and graph store context))
      * @return UpdateExecution
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static UpdateProcessorStreaming createStreaming(DatasetGraph datasetGraph, Context context) {
         return makeStreaming(datasetGraph, null, context);
     }

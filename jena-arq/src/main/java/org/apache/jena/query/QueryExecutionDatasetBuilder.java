@@ -98,7 +98,8 @@ public class QueryExecutionDatasetBuilder implements QueryExecutionBuilder {
     }
 
     /** @deprecated Prefer {@link #substitution(Binding)} which substitutes variables for values in the the query before execution. */
-    @Deprecated
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("all")
     public QueryExecutionDatasetBuilder initialBinding(Binding binding) {
         builder.initialBinding(binding);
         return this;

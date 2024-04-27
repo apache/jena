@@ -26,7 +26,7 @@ package arq;
  * </pre>
  * @deprecated Use "rdftests"
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class qtest {
     public static void main(String...argv) {
         System.err.println("** Run arq.rdftests");

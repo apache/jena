@@ -136,7 +136,7 @@ public class ThreadBufferingCache<Key,Value> implements Cache<Key,Value> {
         return baseCache.getIfPresent(key);
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     @Override
     public Value getOrFill(Key key, Callable<Value> callable) {
         if ( ! buffering() )

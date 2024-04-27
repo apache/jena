@@ -69,7 +69,7 @@ public class TestGraphCopy {
     }
 
     private GraphMem2 findAndAddAll() {
-        var copy = (GraphMem2) newGraphSupplier.get();
+        var copy = newGraphSupplier.get();
         sutCurrent.find().forEachRemaining(copy::add);
         return copy;
     }

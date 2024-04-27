@@ -91,6 +91,7 @@ public class UpdateExecutionFactory
      * @param dataset
      * @return UpdateExecution
      */
+    @Deprecated(forRemoval = true)
     public static UpdateProcessorStreaming createStreaming(Dataset dataset) {
         return UpdateStreaming.makeStreaming(dataset.asDatasetGraph(), null, null);
     }

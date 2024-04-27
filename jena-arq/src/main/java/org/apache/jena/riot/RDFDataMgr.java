@@ -824,7 +824,7 @@ public class RDFDataMgr
      * @return Iterator over the triples
      * @deprecated Use {@link AsyncParser#asyncParseTriples} or for N-Triples, {@link IteratorParsers#createIteratorNTriples}
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseIRI) {
         // Special case N-Triples, because the RIOT reader has a pull interface
         if ( RDFLanguages.sameLang(RDFLanguages.NTRIPLES, lang) )
@@ -843,7 +843,7 @@ public class RDFDataMgr
      * @return Iterator over the quads
      * @deprecated Use {@link AsyncParser#asyncParseQuads} or for N-Triples, {@link IteratorParsers#createIteratorNQuads}
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static Iterator<Quad> createIteratorQuads(InputStream input, Lang lang, String baseIRI) {
         // Special case N-Quads, because the RIOT reader has a pull interface
         if ( RDFLanguages.sameLang(RDFLanguages.NQUADS, lang) )

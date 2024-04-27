@@ -271,7 +271,7 @@ public class LogCtl {
     /**
      * @deprecated Use {@link #setLogging}.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static void setCmdLogging() {
         setLogging();
     }

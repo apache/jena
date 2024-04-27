@@ -40,7 +40,7 @@ public class CacheWrapper<Key,T> implements Cache<Key,T>
     @Override
     public T getIfPresent(Key key)                  { return cache.getIfPresent(key) ; }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     @Override
     public T getOrFill(Key key, Callable<T> callable)  { return cache.getOrFill(key, callable) ; }
 

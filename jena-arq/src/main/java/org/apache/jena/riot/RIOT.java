@@ -125,7 +125,7 @@ public class RIOT {
      * to access ARP v1 (RIOT integration) or ARP v0 (the original ARP parser).
      * @deprecated Do not use this symbol! This will be removed.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static Symbol symRDFXML0 = SystemARQ.allocSymbol(RDFXML_SYMBOL_BASE, "rdfxml0");
 
     /**

@@ -219,7 +219,7 @@ public class ServiceExecutorRegistry
      * Execution
      * @deprecated To be removed. Moved to {@link ServiceExec#exec}.
      */
-    @Deprecated(since = "4.9.0")
+    @Deprecated(forRemoval = true, since = "4.9.0")
     public static QueryIterator exec(QueryIterator input, OpService opService, ExecutionContext execCxt) {
         return ServiceExec.exec(input, opService, execCxt);
     }

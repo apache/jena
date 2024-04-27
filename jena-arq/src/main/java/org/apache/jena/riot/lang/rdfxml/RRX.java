@@ -51,7 +51,7 @@ public class RRX {
      * <a href="http://www.w3.org/TR/rdf-syntax-grammar/">RDF/XML</a> implemented by ARP1.
      * @deprecated To be removed. Transition only.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static final Lang RDFXML_ARP1 = LangBuilder.create("RDFXML-ARP1", "application/rdf+arp1")
             .addAltContentTypes("application/rdf+arp")
             .addAltNames("arp1", "arp", "RDFXML-ARP")
@@ -62,7 +62,7 @@ public class RRX {
      * <a href="http://www.w3.org/TR/rdf-syntax-grammar/">RDF/XML</a> implemented by ARP0.
      * @deprecated To be removed. Transition only.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static final Lang RDFXML_ARP0 = LangBuilder.create("RDFXML-ARP0", "application/rdf+arp0")
             .addAltNames("arp0")
             .addFileExtensions("arp0")

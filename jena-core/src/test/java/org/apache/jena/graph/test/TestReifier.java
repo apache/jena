@@ -22,14 +22,13 @@ import java.lang.reflect.Constructor ;
 
 import junit.framework.TestSuite ;
 import org.apache.jena.graph.Graph ;
-import org.apache.jena.mem.GraphMem ;
+import org.apache.jena.mem2.GraphMem2Fast;
 import org.apache.jena.shared.JenaException ;
 
 /**
     This class tests the reifiers of ordinary GraphMem graphs.
     Old test suite - kept to ensure compatibility for the one and only Standard mode
 */
-@SuppressWarnings("deprecation")
 public class TestReifier extends AbstractTestReifier
     {
     public TestReifier( String name )
@@ -46,7 +45,7 @@ public class TestReifier extends AbstractTestReifier
     public static TestSuite suite()
         {
         TestSuite result = new TestSuite();
-        result.addTest( MetaTestGraph.suite( TestReifier.class, GraphMem.class ) );
+        result.addTest( MetaTestGraph.suite( TestReifier.class, GraphMem2Fast.class ) );
         result.setName(TestReifier.class.getSimpleName());
         return result;
         }

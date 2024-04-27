@@ -46,7 +46,7 @@ public class ValidationContext {
     private final ShexReport.Builder reportBuilder = ShexReport.create();
 
     /** @deprecated Use method {@link #create()} */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static ValidationContext create(ValidationContext vCxt) {
         return vCxt.create();
     }
