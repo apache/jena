@@ -31,7 +31,7 @@ import org.apache.jena.util.SplitIRI;
  */
 class SplitRDFXML {
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     static int splitXML10(String uri) {
         return SplitIRI.splitXML10(uri);
     }

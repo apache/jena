@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory ;
 /**
  * @deprecated Use {@link org.apache.jena.tdb1.TDB1}
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class TDB {
 
     private TDB() {}

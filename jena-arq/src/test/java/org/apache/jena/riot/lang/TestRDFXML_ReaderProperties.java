@@ -37,13 +37,12 @@ import org.junit.Test;
 /**
  * Tests for setting reader properties - specific to ARP0 and ARP1.
  */
+@SuppressWarnings("removal")
 public class TestRDFXML_ReaderProperties {
-    @SuppressWarnings("deprecation")
     @Test public void rdfxmlreaderProperties_arp0() {
         execTest(RRX.RDFXML_ARP0);
     }
 
-    @SuppressWarnings("deprecation")
     @Test public void rdfxmlreaderProperties_arp1() {
         execTest(RRX.RDFXML_ARP0);
     }

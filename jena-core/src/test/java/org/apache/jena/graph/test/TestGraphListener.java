@@ -25,14 +25,13 @@ import java.util.List ;
 
 import junit.framework.TestSuite ;
 import org.apache.jena.graph.* ;
-import org.apache.jena.mem.GraphMem ;
+import org.apache.jena.mem2.GraphMem2Fast;
 
 /**
  * Version of graph tests that set up a listener that copies all changes
  * and verifies that after every notification modified graph
  * and original are isomorphic.
  */
-@SuppressWarnings("deprecation")
 public class TestGraphListener extends MetaTestGraph {
 	public TestGraphListener(String name) {
 		super(name);
@@ -41,7 +40,7 @@ public class TestGraphListener extends MetaTestGraph {
     { super( graphClass, name); }
 
     public static TestSuite suite()
-    { return MetaTestGraph.suite( TestGraphListener.class, GraphMem.class ); }
+    { return MetaTestGraph.suite( TestGraphListener.class, GraphMem2Fast.class ); }
 	/**
 	 * A listener to check that a graph is being tracked
 	 * correctly by its events.

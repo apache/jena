@@ -69,11 +69,6 @@ final public class CacheCaffeine<K,V> implements Cache<K, V>
         this.size = -1;     // Unknown
     }
 
-    @Override
-    public V getOrFill(K key, Callable<V> filler) {
-        return cache.get(key, k->call(filler));
-    }
-
     // Callable to function conversion.
     private static <X> X call(Callable<X> filler) {
         try {

@@ -44,7 +44,7 @@ public interface Cache<Key, Value>
      *  to try to fill the cache. This operation should be atomic.
      *  @deprecated Use {@link #get(Object, Function)}
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public default Value getOrFill(Key key, Callable<Value> callable) {
         return get(key, k->{
             try {

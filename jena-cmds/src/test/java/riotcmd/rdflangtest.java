@@ -30,7 +30,7 @@ import arq.rdftests;
  * </pre>
  * @deprecated Use "rdftests"
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class rdflangtest {
     public static void main (String... argv) {
         System.err.println("** Run arq.rdftests");

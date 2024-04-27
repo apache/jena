@@ -38,7 +38,7 @@ import org.apache.jena.sys.JenaSystem;
  * </p>
  * @deprecated See individual static methods for replacements.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class RDFConnectionFactory {
     static { JenaSystem.init(); }
 

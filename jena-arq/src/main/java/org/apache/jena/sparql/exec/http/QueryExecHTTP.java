@@ -327,7 +327,7 @@ public class QueryExecHTTP implements QueryExec {
         return dataset;
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     private Iterator<Triple> execTriples(String acceptHeader) {
         Pair<InputStream, Lang> p = execRdfWorker(acceptHeader, WebContent.contentTypeRDFXML);
         InputStream input = p.getLeft();
@@ -338,7 +338,7 @@ public class QueryExecHTTP implements QueryExec {
         return Iter.onCloseIO(iter, input);
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     private Iterator<Quad> execQuads() {
         checkNotClosed();
         Pair<InputStream, Lang> p = execRdfWorker(datasetAcceptHeader, WebContent.contentTypeNQuads);

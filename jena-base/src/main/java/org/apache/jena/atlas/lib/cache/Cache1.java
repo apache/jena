@@ -20,7 +20,6 @@ package org.apache.jena.atlas.lib.cache;
 
 import java.util.Iterator;
 import java.util.Objects;
-import java.util.concurrent.Callable;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -56,11 +55,6 @@ public class Cache1<K, V> implements Cache<K, V> {
         if ( cacheKey.equals(key) )
             return cacheValue;
         return null;
-    }
-
-    @Override
-    public V getOrFill(K key, Callable<V> callable) {
-        return CacheOps.getOrFillSync(this, key, callable);
     }
 
     @Override

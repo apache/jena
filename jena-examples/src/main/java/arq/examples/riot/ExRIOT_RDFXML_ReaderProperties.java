@@ -52,7 +52,7 @@ public class ExRIOT_RDFXML_ReaderProperties {
             );
         System.out.println(data);
         System.out.println();
-        @SuppressWarnings("deprecation")
+        @SuppressWarnings("removal")
         Lang legacyARP1 = RRX.RDFXML_ARP1;
         // Properties to be set.
         // See

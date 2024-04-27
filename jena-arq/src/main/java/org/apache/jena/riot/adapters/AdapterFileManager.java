@@ -413,7 +413,7 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
      * @deprecated Use {@link IO#readWholeFileAsUTF8(InputStream)}
      */
     @Override
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public String readWholeFileAsUTF8(InputStream in) {
         return IO.readWholeFileAsUTF8(in);
     }
@@ -421,8 +421,8 @@ public class AdapterFileManager implements org.apache.jena.util.FileManager
     /**
      * @deprecated Use {@link IO#readWholeFileAsUTF8(String)}
      */
-    @Deprecated
     @Override
+    @Deprecated(forRemoval = true)
     public String readWholeFileAsUTF8(String filename)
     {
         InputStream in = open(filename) ;

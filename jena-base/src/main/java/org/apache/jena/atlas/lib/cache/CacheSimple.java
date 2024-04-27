@@ -101,11 +101,6 @@ public class CacheSimple<K, V> implements Cache<K, V> {
     }
 
     @Override
-    public V getOrFill(K key, Callable<V> callable) {
-        return getOrFillNoSync(this, key, callable);
-    }
-
-    @Override
     public V get(K key, Function<K, V> function) {
         return getOrFillNoSync(this, key, function);
     }

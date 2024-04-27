@@ -83,7 +83,7 @@ public class TextVocab
      *
      * @deprecated Do not use. To be removed.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static final Resource standardFilter = Vocab.resource(NS, "StandardFilter");
 
     public static final Resource lowerCaseFilter    = Vocab.resource(NS, "LowerCaseFilter");

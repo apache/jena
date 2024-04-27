@@ -40,7 +40,7 @@ import org.apache.jena.sparql.util.Context;
  * New code should register extensions at a {@link ServiceExecutorRegistry}.
  * @deprecated To be removed. Migrate to {@link ServiceExecutorRegistry}.
  */
-@Deprecated(since = "4.6.0")
+@Deprecated(forRemoval = true, since = "4.6.0")
 public class QueryIterService extends QueryIterRepeatApply
 {
     protected OpService opService ;

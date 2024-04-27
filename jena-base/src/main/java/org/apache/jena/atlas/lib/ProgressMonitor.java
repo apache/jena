@@ -27,7 +27,7 @@ import org.slf4j.Logger ;
  * Once per item processed, call the {@link #tick()} operation.
  * @deprecated Use RIOT's {@code org.apache.system.progress.ProgressMonitor}.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class ProgressMonitor {
     @FunctionalInterface
     public interface Output {

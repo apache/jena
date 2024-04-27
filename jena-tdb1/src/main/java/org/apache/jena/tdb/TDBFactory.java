@@ -30,7 +30,7 @@ import org.apache.jena.tdb1.setup.StoreParams;
  * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory}
  *
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class TDBFactory {
     static {
         JenaSystem.init();

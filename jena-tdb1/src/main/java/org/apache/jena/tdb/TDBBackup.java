@@ -27,14 +27,14 @@ import org.apache.jena.tdb1.base.file.Location;
  * Backup a database.
  * @deprecated Use {@link org.apache.jena.tdb1.TDB1Backup}
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class TDBBackup
 {
     /**
      * @deprecated Use
      *     {@link org.apache.jena.tdb1.TDB1Backup#backup(Location, String)}
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static void backup(Location location, String backupfile) {
         TDB1Backup.backup(location, backupfile);
     }
@@ -43,7 +43,7 @@ public class TDBBackup
      * @deprecated Use
      *     {@link org.apache.jena.tdb1.TDB1Backup#backup(Location, OutputStream)}
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static void backup(Location location, OutputStream backupfile) {
         TDB1Backup.backup(location, backupfile);
     }

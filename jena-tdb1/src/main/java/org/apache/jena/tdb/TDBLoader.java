@@ -32,7 +32,7 @@ import org.apache.jena.tdb1.store.GraphTDB;
  *
  * @deprecated Use {@link org.apache.jena.tdb1.TDB1Loader}
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class TDBLoader
 {
     /** Load the contents of URL into a dataset.

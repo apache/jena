@@ -93,7 +93,7 @@ class LibTestARP1 {
                      "ERROR", ()->runPositive1(inputURI, fnInput, fnOutput));
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     private static void runPositive1(String baseURI, String fnInput, String fnOutput) {
         String label = "RDF: "+fnInput;
         Graph actual;
@@ -129,7 +129,7 @@ class LibTestARP1 {
         }
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     static void negativeTest(String testURI,
                              String inputURI
                              ) {

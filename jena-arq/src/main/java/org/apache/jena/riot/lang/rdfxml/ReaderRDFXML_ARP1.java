@@ -133,7 +133,7 @@ public class ReaderRDFXML_ARP1 implements ReaderRIOT
         options.setErrorMode(cond, val);
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({"deprecation", "removal"})
     private void parse(InputStream input, Reader reader, String xmlBase, ContentType ct, StreamRDF sink, Context context) {
         // One of input and reader is null.
         boolean legacySwitch = context.isTrue(RIOT.symRDFXML0);
