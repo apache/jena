@@ -55,7 +55,6 @@
         This works ... 
         except it breaks javadoc:javadoc building with Java11.
         But it does work if Java17 is used for the build
-        
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>apache-jena-libs</artifactId>
@@ -101,6 +100,11 @@
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-rdfconnection</artifactId>
       <version>5.1.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-cli</artifactId>
+      <groupId>commons-cli</groupId>
     </dependency>
 
     <!-- Pull test code into scope -->

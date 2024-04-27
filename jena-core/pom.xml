@@ -59,36 +59,21 @@
     </dependency>
     
     <dependency>
-      <artifactId>commons-cli</artifactId>
-      <groupId>commons-cli</groupId>
+      <groupId>org.roaringbitmap</groupId>
+      <artifactId>RoaringBitmap</artifactId>
     </dependency>
-    
-      <dependency>
-        <groupId>org.roaringbitmap</groupId>
-        <artifactId>RoaringBitmap</artifactId>
-      </dependency>
 
-      <dependency>
-        <groupId>org.junit.vintage</groupId>
-        <artifactId>junit-vintage-engine</artifactId>
-        <scope>test</scope>
-      </dependency>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-      <dependency>
-        <groupId>org.xenei</groupId>
-        <artifactId>junit-contracts</artifactId>
-        <scope>test</scope>
-        <exclusions>
-          <exclusion>
-            <artifactId>commons-cli</artifactId>
-            <groupId>commons-cli</groupId>
-          </exclusion>
-          <exclusion>
-            <artifactId>commons-logging</artifactId>
-            <groupId>commons-logging</groupId>
-          </exclusion>
-        </exclusions>
-      </dependency>
+    <dependency>
+      <groupId>org.xenei</groupId>
+      <artifactId>junit-contracts</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
