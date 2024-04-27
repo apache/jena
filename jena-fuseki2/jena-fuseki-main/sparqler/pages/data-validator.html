@@ -25,35 +25,25 @@
       <form action="$/validate/data" method="post" accept-charset="UTF-8" >
 	    <textarea name="data" cols="70" rows="30">
 # Prefixes for Turtle or TriG - these can be edited or removed.
-@base          &lt;http://example.org/base/> .
-@prefix :      &lt;http://example.org/> .
-@prefix xsd:   &lt;http://www.w3.org/2001/XMLSchema#> .
-@prefix rdf:   &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs:  &lt;http://www.w3.org/2000/01/rdf-schema#> .
-@prefix owl:   &lt;http://www.w3.org/2002/07/owl#> .
-
+BASE          &lt;http://example.org/base/&gt;
+PREFIX :      &lt;http://example.org/&gt;
+PREFIX xsd:   &lt;http://www.w3.org/2001/XMLSchema#&gt;
+PREFIX rdf:   &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+PREFIX rdfs:  &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+PREFIX owl:   &lt;http://www.w3.org/2002/07/owl#&gt;
+PREFIX sh:    &lt;http://www.w3.org/ns/shacl#&gt;
 
 </textarea>
 <br/>
 Input syntax:
+<p>
 <input type="radio" name="languageSyntax" value="Turtle" checked="checked"/>Turtle
 <input type="radio" name="languageSyntax" value="TriG"/>TriG
 <input type="radio" name="languageSyntax" value="N-Triples"/>N-Triples
 <input type="radio" name="languageSyntax" value="N-Quads"/>N-Quad
-  <br/>
-      <!--
-Output syntax:
-  <input type="checkbox" name="outputFormat" value="sparql" checked="checked"/>SPARQL
-  <input type="checkbox" name="outputFormat" value="algebra"/>SPARQL algebra
-  <input type="checkbox" name="outputFormat" value="quads"/>SPARQL algebra (quads)
-  <br/>
-
-  Line numbers:
-  <input type="radio" name="linenumbers" value="true" checked="checked"/>Yes
-  <input type="radio" name="linenumbers" value="false"/>No
-  <br/>
-      -->
-        <input type="submit" value="Validate RDF Data" />
+<input type="radio" name="languageSyntax" value="RDF/XML"/>RDF-XML
+</p>
+<input type="submit" value="Validate RDF Data"/>
       </form>
       <hr/>
 Parsing provided by <a href="http://jena.apache.org/documentation/io/">Jena/RIOT</a>.
