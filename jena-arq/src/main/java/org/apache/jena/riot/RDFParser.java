@@ -55,7 +55,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.system.Txn;
 
 /**
  * An {@link RDFParser} is a process that will generate triples and quads;

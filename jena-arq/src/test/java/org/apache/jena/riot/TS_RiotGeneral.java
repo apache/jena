@@ -31,10 +31,9 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestJenaReaderRIOT.class
     , TestReadData.class
     , TestRiotReader.class
-    , TestRDFParser.class
     , TestParserRegistry.class
-    , TestRDFWriter.class
     , TestRDFParser.class
+    , TestRDFWriter.class
     , TestParseURISchemeBases.class
 
     , TestTurtleTrigWriter.class

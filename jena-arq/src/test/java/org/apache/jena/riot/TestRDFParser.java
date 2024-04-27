@@ -26,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Map;
 
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -313,7 +314,8 @@ public class TestRDFParser {
         RDFParserBuilder builder = RDFParserBuilder.create().lang(Lang.TRIG).fromString(testdata + "\njunk data goes here");
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         try {
-            Txn.executeWrite(dsg, () -> builder.parse(dsg));
+            LogCtl.withLevel(SysRIOT.getLogger(), "FATAL", ()->
+                Txn.executeWrite(dsg, () -> builder.parse(dsg)));
             Assert.fail("Parsing should have produced an error");
         } catch (RiotException e) {
             // Size should be zero as failure to parse should abort the transaction and produce an empty dataset
@@ -322,11 +324,12 @@ public class TestRDFParser {
     }
 
     @Test
-    public void parse_to_dataset_malformed_01a() {
+    public void parse_to_dataset_malformed_02() {
         RDFParserBuilder builder = RDFParserBuilder.create().lang(Lang.TRIG).fromString(testdata + "\njunk data goes here");
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         try {
-            builder.parse(dsg);
+            LogCtl.withLevel(SysRIOT.getLogger(), "FATAL", ()->
+                 builder.parse(dsg));
             Assert.fail("Parsing should have produced an error");
         } catch (RiotException e) {
             // Without a transaction the valid quad would have gone into the dataset prior to the error occurring
@@ -335,14 +338,16 @@ public class TestRDFParser {
     }
 
     @Test
-    public void parse_to_dataset_malformed_02() {
+    public void parse_to_dataset_malformed_03() {
         RDFParserBuilder builder = RDFParserBuilder.create().lang(Lang.TRIG).fromString(testdata + "\njunk data goes here");
-        DatasetGraph dsg = null;
-        try {
-            dsg = builder.toDatasetGraph();
-            Assert.fail("Parsing should have produced an error");
-        } catch (RiotException e) {
-            assertNull(dsg);
-        }
+        LogCtl.withLevel(SysRIOT.getLogger(), "FATAL", ()-> {
+            DatasetGraph dsg = null;
+            try {
+                dsg = builder.toDatasetGraph();
+                Assert.fail("Parsing should have produced an error");
+            } catch (RiotException e) {
+                assertNull(dsg);
+            }
+        });
     }
 }
