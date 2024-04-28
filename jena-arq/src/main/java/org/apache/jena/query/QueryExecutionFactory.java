@@ -260,7 +260,7 @@ public class QueryExecutionFactory
 
     // This form of "make" has support for "initialBinding" (seed the execution)
     // The preferred approach is to use "substitution" )(replace variables with RDF terms).
-    @SuppressWarnings("removal")
+    @SuppressWarnings("all")
     private static QueryExecution make$(Query query, Dataset dataset, DatasetGraph datasetGraph, Binding initialBinding) {
         QueryExecDatasetBuilder builder = QueryExecDataset.newBuilder().query(query);
         if ( initialBinding != null )

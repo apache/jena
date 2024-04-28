@@ -247,7 +247,7 @@ public class UpdateAction {
     // All non-streaming updates come through here.
 
     private static void execute$(UpdateRequest request, DatasetGraph datasetGraph, Binding inputBinding) {
-        @SuppressWarnings("removal")
+        @SuppressWarnings("all")
         UpdateExec uProc = UpdateExec.newBuilder().update(request).dataset(datasetGraph).initialBinding(inputBinding).build();
         if ( uProc == null )
             throw new ARQException("No suitable update procesors are registered/able to execute your updates");
