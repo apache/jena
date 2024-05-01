@@ -34,8 +34,10 @@ import org.apache.jena.mem2.store.fast.FastTripleStore;
  * Benefits from multiple small optimizations. (see: {@link FastTripleStore})
  * <p>
  * The heritage of GraphMem:
- * - Also uses 3 hash-maps indexed by subjects, predicates, and objects
- * - Values of the maps also switch from arrays to hash sets for the triples
+ * <ul>
+ * <li>Also uses 3 hash-maps indexed by subjects, predicates, and objects
+ * <li>Values of the maps also switch from arrays to hash sets for the triples
+ * </ul>
  */
 public class GraphMem2Fast extends GraphMem2 {
 

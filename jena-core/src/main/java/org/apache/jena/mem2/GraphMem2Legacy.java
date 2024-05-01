@@ -31,9 +31,11 @@ import org.apache.jena.mem2.store.legacy.LegacyTripleStore;
  * Simplified implementation, primarily due to lack of support for Iterator#remove
  * <p>
  * The heritage of GraphMem:
- * - Same basic structure
- * - Same memory consumption
- * - Also based on HashCommon
+ * <ul>
+ * <li>Same basic structure
+ * <li>Same memory consumption
+ * <li>Also based on HashCommon
+ * </ul>
  * <p>
  * This implementation is based on the original {@link org.apache.jena.mem.GraphMem} implementation.
  * The main difference is that it strictly uses term equality for all nodes.
