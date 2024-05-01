@@ -52,7 +52,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * <a href="https://www.w3.org/TR/rdf-concepts/#section-XMLLiteral"<rdf:XMLLiteral</a>.
+ * <a href="https://www.w3.org/TR/rdf-concepts/#section-XMLLiteral">rdf:XMLLiteral</a>.
  * <p>
  * This implementation has RDF 1.1/RDF1.2 semantics.
  * <p>
