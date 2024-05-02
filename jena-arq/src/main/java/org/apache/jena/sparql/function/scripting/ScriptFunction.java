@@ -126,6 +126,7 @@ public class ScriptFunction extends FunctionBase {
 //                this.denyList = Set.of("eval", "exec");
 //                check(lang, name, allowList, denyList);
 //                break;
+                // No other names allowed, not even synonyms.
             default:
                 throw new ScriptDenyException("Language '"+lang+"' not recognized");
         }
@@ -197,7 +198,8 @@ public class ScriptFunction extends FunctionBase {
     }
 
     private Invocable createEngine() {
-        ScriptEngine engine = scriptEngineManager.getEngineByName(lang);
+        String lookupLang =  "js".equals(lang) ? "javascript" : lang;
+        ScriptEngine engine = scriptEngineManager.getEngineByName(lookupLang);
         if (engine == null)
             throw new ExprException("Unknown scripting language: " + lang);
         // Enforce Nashorn compatibility for Graal.js
