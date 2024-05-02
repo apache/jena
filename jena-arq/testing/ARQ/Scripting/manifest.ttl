@@ -47,5 +47,5 @@
               qt:data   <data.ttl> ] ;
          mf:result  <js-query-4.srj>
       ]
-      ## js-query-5 is a build time error.
+      ## js-query-5 is an error and run separately.
     ).
