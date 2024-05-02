@@ -76,20 +76,15 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-fileupload2-jakarta-servlet6</artifactId>
     </dependency>
-
+    
+    <!--
+        jena-fuseki-core is independent of Jetty.
+        This needs to be in-step with Jetty.
+        The version ismanaged in the top Jena POM.
+    -->
     <dependency>
-      <groupId>org.eclipse.jetty.ee10</groupId>
-      <artifactId>jetty-ee10-servlet</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.jetty.ee10</groupId>
-      <artifactId>jetty-ee10-servlets</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-security</artifactId>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
     </dependency>
 
     <dependency>
