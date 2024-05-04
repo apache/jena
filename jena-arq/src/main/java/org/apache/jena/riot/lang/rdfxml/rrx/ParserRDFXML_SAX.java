@@ -53,7 +53,7 @@ import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.EntityResolver2;
 import org.xml.sax.ext.LexicalHandler;
 
-public class ParserRDFXML_SAX
+class ParserRDFXML_SAX
         implements
             ContentHandler,
             ErrorHandler,
@@ -62,7 +62,6 @@ public class ParserRDFXML_SAX
             LexicalHandler,
             DeclHandler,
             EntityResolver2 {
-    public static boolean TRACE = false;
     private static boolean VERBOSE = false;
     // Addition tracing for SAX events we don't care about.
     private static boolean EVENTS = false;
@@ -281,7 +280,7 @@ public class ParserRDFXML_SAX
 
     // Called directly when ObjectLex turns out to be a resource object after all.
     private void pushParserFrame(ParserMode frameParserMode) {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.printf("Push frame: S: %s P: %s -- mode=%s\n",
                          str(currentSubject), str(currentProperty), frameParserMode);
 
@@ -297,7 +296,7 @@ public class ParserRDFXML_SAX
     private void popParserFrame() {
         ParserFrame frame = parserStack.pop();
 
-        if ( TRACE ) {
+        if ( ReaderRDFXML_SAX.TRACE ) {
             trace.printf("Pop frame: S: %s -> %s : P: %s -> %s\n", str(currentSubject), frame.subject,
                          str(currentProperty), frame.property);
         }
@@ -389,13 +388,13 @@ public class ParserRDFXML_SAX
     // the beginning of "endElement". Used for collecting XML Literals.
     private int elementDepth = 0;
     private void incElementDepth() {
-        if ( TRACE && VERBOSE )
+        if ( ReaderRDFXML_SAX.TRACE && VERBOSE )
             trace.printf("~~ incElementDepth %d -> %d\n", elementDepth, elementDepth + 1);
         elementDepth++;
     }
 
     private void decElementDepth() {
-        if ( TRACE && VERBOSE )
+        if ( ReaderRDFXML_SAX.TRACE && VERBOSE )
             trace.printf("~~ decElementDepth %d -> %d\n", elementDepth, elementDepth - 1);
         --elementDepth;
     }
@@ -420,9 +419,9 @@ public class ParserRDFXML_SAX
 
 // // Forming objects.
 // private ParseType parseType = null;
-    public ParserRDFXML_SAX(String xmlBase, ParserProfile parserProfile, StreamRDF destination, Context context) {
+    ParserRDFXML_SAX(String xmlBase, ParserProfile parserProfile, StreamRDF destination, Context context) {
         // Debug
-        if ( TRACE ) {
+        if ( ReaderRDFXML_SAX.TRACE ) {
             IndentedWriter out1 = IndentedWriter.stdout.clone();
             out1.setFlushOnNewline(true);
             out1.setUnitIndent(4);
@@ -433,7 +432,7 @@ public class ParserRDFXML_SAX
             this.trace = null;
         }
         this.traceXML = this.trace;
-        EVENTS = TRACE;
+        EVENTS = ReaderRDFXML_SAX.TRACE;
         // Debug
 
         this.parserProfile = parserProfile;
@@ -456,27 +455,27 @@ public class ParserRDFXML_SAX
 
     @Override
     public void startDocument() throws SAXException {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             traceXML.println("Doc start");
         hasDocument = true;
     }
 
     @Override
     public void endDocument() throws SAXException {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             traceXML.println("Doc end");
     }
 
     @Override
     public void startElement(final String namespaceURI, final String localName, String qName, Attributes attributes) {
         if ( xmlLiteralCollecting() ) {
-            if ( TRACE )
+            if ( ReaderRDFXML_SAX.TRACE )
                 trace.printf("startElement: XML Literal[%s]: depth = %d\n", qName, elementDepth);
             xmlLiteralCollectStartElement(namespaceURI, localName, qName, attributes);
             return;
         }
 
-        if ( TRACE ) {
+        if ( ReaderRDFXML_SAX.TRACE ) {
             trace.printf("%s StartElement(%s", here(), qName);
             for ( int i = 0 ; i < attributes.getLength() ; i++ ) {
                 String x = attributes.getQName(i);
@@ -488,7 +487,7 @@ public class ParserRDFXML_SAX
         incIndent();
         Position position = position();
 
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.printf("StartElement parserMode=%s\n", parserMode);
 
         // Special case.
@@ -560,7 +559,7 @@ public class ParserRDFXML_SAX
             return;
         }
 
-        if ( TRACE ) {
+        if ( ReaderRDFXML_SAX.TRACE ) {
             decIndent();
             trace.printf("%s enter endElement(%s) mode = %s\n", here(), qName, parserMode);
             incIndent();
@@ -568,16 +567,16 @@ public class ParserRDFXML_SAX
 
         Position position = position();
         if ( xmlLiteralCollecting() ) {
-            if ( TRACE )
+            if ( ReaderRDFXML_SAX.TRACE )
                 trace.printf("Collecting: elementDepth=%d / xmlLiteralStartDepth=%s\n", elementDepth, xmlLiteralStartDepth);
             if ( elementDepth-1 > xmlLiteralStartDepth ) {
-                if ( TRACE )
+                if ( ReaderRDFXML_SAX.TRACE )
                     trace.print("Continue collecting\n");
                 xmlLiteralCollectEndElement(namespaceURI, localName, qName);
                 return;
             }
             endXMLLiteral(position);
-            if ( TRACE )
+            if ( ReaderRDFXML_SAX.TRACE )
                 trace.printf("**** End XML Literal[%s]: elementDepth=%d / xmlLiteralStartDepth=%s\n", qName, elementDepth, xmlLiteralStartDepth);
             // Keep going to finish the end tag.
         }
@@ -612,12 +611,12 @@ public class ParserRDFXML_SAX
 
         decIndent();
         decElementDepth();
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.printf("%s EndElement(%s) mode = %s\n", here(), qName, parserMode);
     }
 
     private void rdfRDF(String namespaceURI, String localName, String qName, Attributes attributes, Position position) {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.println("rdf:RDF");
         if ( hasRDF )
             throw RDFXMLparseError("Nested rdf:RDF", position);
@@ -668,7 +667,7 @@ public class ParserRDFXML_SAX
     private void startNodeElementWithSubject(Node thisSubject,
                                              String namespaceURI, String localName, String qName, Attributes attributes,
                                              Position position) {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.printf("Start nodeElement: subject = %s\n", str(thisSubject));
 
         currentSubject = thisSubject;
@@ -696,12 +695,12 @@ public class ParserRDFXML_SAX
     }
 
     private void endNodeElement(Position position) {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.println("endNodeElement. ParserMode = "+parserMode);
     }
 
     private void startPropertyElement(String namespaceURI, String localName, String qName, Attributes attributes, Position position) {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.printf("Start propertyElement: subject = %s\n", str(currentSubject));
 
         if ( ! allowedPropertyElementURIs(namespaceURI, localName) )
@@ -717,7 +716,7 @@ public class ParserRDFXML_SAX
         } else
             currentProperty = qNameToIRI(namespaceURI, localName, position);
 
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.printf("Property = %s\n", str(currentProperty));
 
         String dt = attributes.getValue(rdfNS, rdfDatatype);
@@ -780,7 +779,7 @@ public class ParserRDFXML_SAX
             case Resource:
                 // Change of subject to a blank node subject.
                 Node nested = blankNode(position);
-                if ( TRACE )
+                if ( ReaderRDFXML_SAX.TRACE )
                     trace.printf("Subject = %s\n", str(nested));
                 currentEmitter.emit(currentSubject, currentProperty, nested, position);
                 // Clear property now it's been used.
@@ -808,7 +807,7 @@ public class ParserRDFXML_SAX
     }
 
     private void endPropertyElement(Position position) {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.println("endPropertyElement");
     }
 
@@ -826,7 +825,7 @@ public class ParserRDFXML_SAX
         // Start element encountered when expecting a ObjectCollection
         private void startCollectionItem(String namespaceURI, String localName, String qName, Attributes attributes, Position position) {
             // Finish last list cell, start new one.
-            if ( TRACE )
+            if ( ReaderRDFXML_SAX.TRACE )
                 trace.println("Generate list cell");
             // Preceding cell in list.
             Node previousCollectionNode = collectionNode.node;
@@ -846,7 +845,7 @@ public class ParserRDFXML_SAX
         }
 
     private void endCollectionItem(Position position) {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.println("endObjectCollectionItem");
         if ( collectionNode.node != null ) {
             emit(collectionNode.node, Nodes.rest, Nodes.nil, position);
@@ -857,7 +856,7 @@ public class ParserRDFXML_SAX
     }
 
     private void endObjectLexical(Position position) {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.println("endObjectLexical");
         Node object = generateLiteral(position);
         currentEmitter.emit(currentSubject, currentProperty, object, position);
@@ -866,7 +865,7 @@ public class ParserRDFXML_SAX
     }
 
     private void endObjectXMLLiteral(Position position) {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.println("endObjectXMLLiteral");
         Node object = generateXMLLiteral(position);
         currentEmitter.emit(currentSubject, currentProperty, object, position);
@@ -1111,7 +1110,7 @@ public class ParserRDFXML_SAX
     // These happen before startElement.
     @Override
     public void startPrefixMapping(String prefix, String uri) throws SAXException {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.printf("startPrefixMapping: %s: <%s>\n", prefix, uri);
         // Output only the top level prefix mappings.
         // Done in startElement to test for rdf:RDF
@@ -1119,7 +1118,7 @@ public class ParserRDFXML_SAX
 
     @Override
     public void endPrefixMapping(String prefix) throws SAXException {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.printf("endPrefixMapping: %s\n", prefix);
     }
 
@@ -1168,7 +1167,7 @@ public class ParserRDFXML_SAX
 
     @Override
     public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             traceXML.println("ignorableWhitespace");
     }
 
@@ -1441,19 +1440,19 @@ public class ParserRDFXML_SAX
     // ---- Development
 
     private void incIndent() {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.incIndent();
     }
 
     private void decIndent() {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.decIndent();
     }
 
     // ---- RDF XML Literal
 
     private void startXMLLiteral(Position position) {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.printf("Start XML Literal : depth=%d\n", elementDepth);
         incIndent();
         parserMode(ParserMode.ObjectParseTypeLiteral);
@@ -1463,7 +1462,7 @@ public class ParserRDFXML_SAX
 
     private void endXMLLiteral(Position position) {
         decIndent();
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.printf("End XML Literal : depth=%d\n", elementDepth);
         xmlLiteralStartDepth = -1;
     }
@@ -1495,7 +1494,7 @@ public class ParserRDFXML_SAX
      private Deque<Map<String, String>> stackNamespaces = new ArrayDeque<>();
 
      private void xmlLiteralCollectStartElement(String namespaceURI, String localName, String qName, Attributes attributes) {
-         if ( TRACE )
+         if ( ReaderRDFXML_SAX.TRACE )
              trace.printf("XML Literal[%s]: depth=%d\n", qName, elementDepth);
          incIndent();
          incElementDepth();
@@ -1588,12 +1587,12 @@ public class ParserRDFXML_SAX
         namespaces = stackNamespaces.pop();
         decElementDepth();
         decIndent();
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.printf("XML Literal[/%s]: depth=%d\n", qName, elementDepth);
     }
 
     private void xmlLiteralCollectCharacters(char[] ch, int start, int length) {
-        if ( TRACE )
+        if ( ReaderRDFXML_SAX.TRACE )
             trace.printf("XML Literal Characters: depth=%d\n", elementDepth);
         String s = new String(ch, start, length);
         s = xmlLiteralEscapeText(s);
