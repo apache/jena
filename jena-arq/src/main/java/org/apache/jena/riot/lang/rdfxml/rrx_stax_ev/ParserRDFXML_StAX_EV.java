@@ -51,8 +51,8 @@ import org.apache.jena.util.XML11Char;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDF.Nodes;
 
-public class ParserRDFXML_StAX_EV {
-    public static boolean TRACE = false;
+/** StAX events */
+class ParserRDFXML_StAX_EV {
     private static boolean EVENTS = false;
     private final IndentedWriter trace;
 
@@ -155,7 +155,7 @@ public class ParserRDFXML_StAX_EV {
         out.setUnitIndent(4);
         out.setLinePrefix("# ");
         this.trace = out;
-        EVENTS = TRACE;
+        EVENTS = ReaderRDFXML_StAX_EV.TRACE;
         // Debug
 
         this.xmlEventReader = reader;
@@ -298,13 +298,13 @@ public class ParserRDFXML_StAX_EV {
     // doc or production nodeElement.
     // start:
     //  6.2.9 Production RDF
-    public void parse() {
+    void parse() {
         boolean hasDocument = false;
 
         XMLEvent event = nextEventAny();
 
         if ( event.isStartDocument() ) {
-            if ( TRACE )
+            if ( ReaderRDFXML_StAX_EV.TRACE )
                 trace.println("Start document");
             hasDocument = true;
             event = nextEventTag();
@@ -323,7 +323,7 @@ public class ParserRDFXML_StAX_EV {
 
         // <rdf:RDF>
         if ( qNameMatches(rdfRDF, rdfStartElt.getName()) ) {
-            if ( TRACE )
+            if ( ReaderRDFXML_StAX_EV.TRACE )
                 trace.println("rdf:RDF");
             // Not necessary to track this element when parsing.
             hasFrame = startElement(rdfStartElt);
@@ -346,7 +346,7 @@ public class ParserRDFXML_StAX_EV {
             if ( !qNameMatches(rdfRDF, event.asEndElement().getName()) )
                 throw RDFXMLparseError("Expected </"+rdfStartElt.getName().getPrefix()+":RDF>  got "+str(event), event);
             endElement(hasFrame);
-            if ( TRACE )
+            if ( ReaderRDFXML_StAX_EV.TRACE )
                 trace.println("/rdf:RDF");
             event = nextEventAny();
         }
@@ -358,7 +358,7 @@ public class ParserRDFXML_StAX_EV {
         if ( hasDocument ) {
             if ( !event.isEndDocument() )
                 throw RDFXMLparseError("Expected end of document: got "+str(event), event);
-            if ( TRACE )
+            if ( ReaderRDFXML_StAX_EV.TRACE )
                 trace.println("End document");
         }
     }
@@ -413,7 +413,7 @@ public class ParserRDFXML_StAX_EV {
      */
     private void nodeElement(Node subject, StartElement startElt) {
 
-        if ( TRACE )
+        if ( ReaderRDFXML_StAX_EV.TRACE )
             trace.println(">> nodeElement: "+str(startElt.getLocation())+" "+str(startElt));
 
         if ( ! allowedNodeElementURIs(startElt.getName()) )
@@ -427,7 +427,7 @@ public class ParserRDFXML_StAX_EV {
         endElement(hasFrame);
         decIndent();
 
-        if ( TRACE )
+        if ( ReaderRDFXML_StAX_EV.TRACE )
             trace.println("<< nodeElement: "+str(endElt.getLocation())+" "+str(endElt));
     }
 
@@ -557,7 +557,7 @@ public class ParserRDFXML_StAX_EV {
      */
     private void propertyElement(Node subject, StartElement startElt, Counter listElementCounter) {
         // Move logging inside?
-        if ( TRACE )
+        if ( ReaderRDFXML_StAX_EV.TRACE )
             trace.println(">> propertyElement: "+str(startElt.getLocation())+" "+str(startElt));
 
         incIndent();
@@ -574,7 +574,7 @@ public class ParserRDFXML_StAX_EV {
         endElement(hasFrame);
         decIndent();
 
-        if ( TRACE )
+        if ( ReaderRDFXML_StAX_EV.TRACE )
             trace.println("<< propertyElement: "+str(event.getLocation())+" "+str(event));
     }
 
@@ -646,19 +646,19 @@ public class ParserRDFXML_StAX_EV {
         switch(parseTypeName) {
             case parseTypeResource -> {
                 // Implicit <rdf:Description><rdf:Description> i.e. fresh blank node
-                if ( TRACE )
+                if ( ReaderRDFXML_StAX_EV.TRACE )
                     trace.println("rdfParseType=Resource");
                 XMLEvent event = parseTypeResource(subject, property, emitter, startElt);
                 return event;
             }
             case parseTypeLiteral -> {
-                if ( TRACE )
+                if ( ReaderRDFXML_StAX_EV.TRACE )
                     trace.println("rdfParseType=Literal");
                 XMLEvent event = parseTypeLiteral(subject, property, emitter, startElt);
                 return event;
             }
             case parseTypeCollection -> {
-                if ( TRACE )
+                if ( ReaderRDFXML_StAX_EV.TRACE )
                     trace.println("rdfParseType=Collection");
                 XMLEvent event = parseTypeCollection(subject, property, emitter, startElt);
                 return event;
@@ -1265,7 +1265,7 @@ public class ParserRDFXML_StAX_EV {
         //Object x = startElt.getNamespaceContext();
         Iterator<Namespace> iter = startElt.getNamespaces();
         boolean result = iter.hasNext();
-        if ( TRACE ) {
+        if ( ReaderRDFXML_StAX_EV.TRACE ) {
             iter.forEachRemaining(namespace->{
                 String prefix = namespace.getPrefix();
                 String iriStr = namespace.getValue();
@@ -1286,7 +1286,7 @@ public class ParserRDFXML_StAX_EV {
 
         String xmlBase = attribute(startElt, xmlQNameBase);
         String xmlLang = attribute(startElt, xmlQNameLang);
-        if ( TRACE ) {
+        if ( ReaderRDFXML_StAX_EV.TRACE ) {
             if ( xmlBase != null )
                 trace.printf("+ BASE <%s>\n", xmlBase);
             if ( xmlLang != null )
@@ -1550,12 +1550,12 @@ public class ParserRDFXML_StAX_EV {
     }
 
     private void incIndent() {
-        if ( TRACE )
+        if ( ReaderRDFXML_StAX_EV.TRACE )
             trace.incIndent();
     }
 
     private void decIndent() {
-        if ( TRACE )
+        if ( ReaderRDFXML_StAX_EV.TRACE )
             trace.decIndent();
     }
 

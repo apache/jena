@@ -38,13 +38,13 @@ public class RRX {
     /** <a href="http://www.w3.org/TR/rdf-xml/">RDF/XML</a> implemented by RRX-StAXev */
     public static final Lang RDFXML_StAX_ev = LangBuilder.create("RDFXML-StAX-EV", "application/rdf+stax-ev")
             .addAltNames("RRX-StAX-ev", "rrxstaxev")
-            .addFileExtensions("rdfstax")
+            .addFileExtensions("rdfstaxev")
             .build();
 
     /** <a href="http://www.w3.org/TR/rdf-xml/">RDF/XML</a> implemented by RRX-StAXsr */
     public static final Lang RDFXML_StAX_sr = LangBuilder.create("RDFXML-StAX-SR", "application/rdf+stax-sr")
             .addAltNames("RRX-StAX-sr", "rrxstaxsr")
-            .addFileExtensions("rdfstaxev")
+            .addFileExtensions("rdfstaxsr")
             .build();
 
     /**
