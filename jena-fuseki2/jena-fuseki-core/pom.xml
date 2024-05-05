@@ -80,7 +80,7 @@
     <!--
         jena-fuseki-core is independent of Jetty.
         This needs to be in-step with Jetty.
-        The version ismanaged in the top Jena POM.
+        The version is managed in the top Jena POM.
     -->
     <dependency>
       <groupId>jakarta.servlet</groupId>
