@@ -603,9 +603,7 @@
         </exclusions>
       </dependency>
 
-      <!-- And intercept any uses of Jakarta Commons Logging 
-           e.g. Apache Common HTTP client. 
-      -->
+      <!-- Commons Logging intercept -->
 
       <dependency>
         <groupId>org.slf4j</groupId>
