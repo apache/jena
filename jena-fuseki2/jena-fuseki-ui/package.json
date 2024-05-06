@@ -1,5 +1,6 @@
 {
   "name": "apache-jena-fuseki",
+  "type": "module",
   "version": "1.0.0",
   "private": false,
   "description": "Apache Jena Fuseki UI",
@@ -11,7 +12,7 @@
     "build": "vite build",
     "test:unit": "vitest run --environment jsdom",
     "test:e2e": "cross-env FUSEKI_PORT=\"${FUSEKI_PORT:=3030}\" PORT=\"${PORT:=8080}\" concurrently --names 'SERVER,CLIENT,TESTS' --prefix-colors 'yellow,blue,green' --success 'first' --kill-others 'yarn run serve:fuseki' 'yarn wait-on http://localhost:${FUSEKI_PORT}/$/ping && yarn run dev' 'yarn wait-on http-get://localhost:${PORT}/index.html && cypress run $@'",
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
+    "lint": "eslint --fix src",
     "coverage:unit": "yarn run test:unit --coverage",
     "coverage:e2e": "cross-env-shell CYPRESS_COVERAGE=true yarn run test:e2e",
     "serve:fuseki": "nodemon src/services/mock/json-server.js",
@@ -36,8 +37,9 @@
   "devDependencies": {
     "@cypress/code-coverage": "^3.12.4",
     "@cypress/vue": "^6.0.0",
+    "@eslint/js": "^9.2.0",
     "@vitejs/plugin-vue": "^5.0.3",
-    "@vitest/coverage-c8": "^0.33.0",
+    "@vitest/coverage-v8": "^1.6.0",
     "@vue/compiler-sfc": "^3.3.6",
     "@vue/eslint-config-standard": "^8.0.1",
     "@vue/test-utils": "^2.4.1",
@@ -60,7 +62,7 @@
     "sass": "^1.69.4",
     "sinon": "^17.0.0",
     "vite": "^5.0.12",
-    "vite-plugin-istanbul": "6.0.0",
+    "vite-plugin-istanbul": "^6.0.2",
     "vitest": "^1.3.1",
     "wait-on": "^7.0.1"
   },

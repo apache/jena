@@ -18,10 +18,13 @@
 /**
  * Tests the Query view and YASGUI & family components.
  */
-describe('Query', () => {
-  beforeEach(() => {
+describe('Query', function() {
+  beforeEach(function() {
     // Special endpoint that clears the datasets data.
-    cy.request('/tests/reset')
+    cy.request({
+      url: '/tests/reset',
+      retryOnStatusCodeFailure: true
+    })
     // Create a sample dataset.
     cy
       .visit('/#/manage/new')
@@ -41,14 +44,18 @@ describe('Query', () => {
           .should('be.visible')
       })
   })
-  afterEach(() => {
+
+  afterEach(function() {
     // Special endpoint that clears the datasets data.
-    cy.request('/tests/reset')
+    cy.request({
+      url: '/tests/reset',
+      retryOnStatusCodeFailure: true
+    })
   })
   /**
    * Bug: https://github.com/apache/jena/issues/1443
    */
-  it('Uses the correct SPARQL Endpoint', () => {
+  it('Uses the correct SPARQL Endpoint', function() {
     const SPARQL_ENDPOINT = '/skosmos/update'
     cy.visit('/#/dataset/skosmos/query')
     cy
@@ -75,7 +82,8 @@ describe('Query', () => {
       .its('response')
       .should('have.property', 'statusCode', 203)
   })
-  it('Can resize the query editor', () => {
+
+  it('Can resize the query editor', function() {
     cy.visit('/#/dataset/skosmos/query')
     // TODO: The .then(() => {}) is a bug/regression in Cypress 12 - https://github.com/cypress-io/cypress/issues/25173#issuecomment-1358017970
     cy

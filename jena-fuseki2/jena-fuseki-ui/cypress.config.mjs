@@ -15,11 +15,14 @@
  * limitations under the License.
  */
 
-const { defineConfig } = require('cypress')
-const vitePreprocessor = require('./tests/e2e/support/vite-preprocessor')
-const path = require('path')
+import {defineConfig} from 'cypress'
+import codeCoverageTask from '@cypress/code-coverage/task.js'
+import vitePreprocessor from 'cypress-vite'
+import {resolve} from 'path'
 
-module.exports = defineConfig({
+const __dirname = resolve()
+
+export default defineConfig({
   video: false,
   defaultCommandTimeout: 20000,
   execTimeout: 30000,
@@ -31,14 +34,18 @@ module.exports = defineConfig({
   e2e: {
     baseUrl: 'http://localhost:' + (process.env.PORT || 8080),
     setupNodeEvents (on, config) {
-      // For test coverage
-      require('@cypress/code-coverage/task')(on, config)
-
-      on(
-        'file:preprocessor',
-        vitePreprocessor(path.resolve(__dirname, 'vite.config.js'))
-      )
-      return require('./tests/e2e/plugins/index.js')(on, config)
+      codeCoverageTask(on, config)
+      on('before:browser:launch', (browser, launchOptions) => {
+        if (browser.name === 'chrome' && browser.isHeadless) {
+          launchOptions.args.push('--window-size=1440,1024', '--force-device-scale-factor=1')
+        }
+        return launchOptions
+      })
+      on('file:preprocessor', vitePreprocessor({
+        configFile: resolve(__dirname, './vite.config.js'),
+        mode: 'development',
+      }))
+      return config
     },
     specPattern: 'tests/e2e/specs/**/*.cy.{js,jsx,ts,tsx}',
     fixturesFolder: 'tests/e2e/fixtures',

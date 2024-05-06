@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
+import jsonServer from 'json-server'
+
 const PORT = process.env.FUSEKI_PORT || 3030
 
 const data = {}
-
-const jsonServer = require('json-server')
 
 const server = jsonServer.create()
 const router = jsonServer.router(data)
@@ -260,8 +260,6 @@ server.get('/:datasetName/data', (req, res) => {
     .send(dataContent)
 })
 
-let failUpload = false
-
 // Upload data.
 server.post('/:datasetName/data', (req, res) => {
   res
@@ -282,9 +280,15 @@ server.get('/\\$/ping', (req, res) => {
 // RESET TEST DATA
 server.get('/tests/reset', (req, res) => {
   // Just delete the datasets to clean up for other tests to have a
-  // brand new environment.
-  for (const dataset in DATASETS) {
-    delete DATASETS[dataset]
+  // brand-new environment.
+  if (DATASETS) {
+    try {
+      for (const dataset in DATASETS) {
+        delete DATASETS[dataset]
+      }
+    } catch (e) {
+      console.log(e)
+    }
   }
   res.sendStatus(200)
 })

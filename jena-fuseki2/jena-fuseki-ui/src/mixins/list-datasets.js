@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-import { BUS } from '@/events'
-
 export default {
   data () {
     return {

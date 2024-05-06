@@ -19,7 +19,7 @@ import { defineConfig } from 'vite'
 import { configDefaults } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 import istanbul from "vite-plugin-istanbul";
-const path = require("path")
+import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -91,7 +91,7 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
         ws: false,
-        bypass: (req, res, options) => {
+        bypass: (req) => {
           const accept = req.headers.accept
           const contentType = req.headers['content-type']
           // webpack-dev-server automatically handled fall-through, as it was requested (and quickly
@@ -100,10 +100,11 @@ export default defineConfig({
           // So we bypass requests from the proxy that do not contain the header Accept: application/json.*,
           // or that are requesting /node_modules/ (dev Vite/Vue/JS modules).
           const sendToUI =
+            req.url.endsWith('index.html') ||
             req.method !== 'POST' &&
             req.url.indexOf('tests/reset') < 0 &&
             (
-              (req.hasOwnProperty('originalUrl') && req.originalUrl.includes('node_modules')) ||
+              (Object.prototype.hasOwnProperty.call(req, 'originalUrl') && req.originalUrl.includes('node_modules')) ||
               (
                 (accept !== undefined && accept !== null) &&
                 !(accept.includes('application/json') || accept.includes('text/turtle') || accept.includes('application/sparql-results+json')

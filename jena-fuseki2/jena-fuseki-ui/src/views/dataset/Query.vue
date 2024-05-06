@@ -327,6 +327,7 @@ export default {
   },
 
   watch: {
+    /* eslint-disable no-unused-vars */
     datasetUrl: function (val, oldVal) {
       this.currentDatasetUrl = val
     },
@@ -345,6 +346,7 @@ export default {
         this.yasqe.options.requestConfig.acceptHeaderGraph = this.contentTypeGraph
       }
     }
+    /* eslint-enable no-unused-vars */
   },
 
   methods: {

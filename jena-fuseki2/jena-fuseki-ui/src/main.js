@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { createApp, h } from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import 'bootstrap/dist/js/bootstrap.bundle.min'

@@ -22,12 +22,15 @@
  * add new datasets. So we also cover parts of the Manage view.
  */
 
-describe('upload', () => {
-  beforeEach(() => {
+describe('upload', function () {
+  beforeEach(function () {
     // Intercept new dataset request.
     cy.intercept('POST', '/$/datasets').as('createDataset')
     // Special endpoint that clears the datasets data.
-    cy.request('/tests/reset')
+    cy.request({
+      url: '/tests/reset',
+      retryOnStatusCodeFailure: true
+    })
     // Create a sample dataset.
     cy
       .visit('/#/manage/new')
@@ -56,11 +59,14 @@ describe('upload', () => {
     cy.wait('@server')
     cy.intercept('/$/server').as('server')
   })
-  afterEach(() => {
+  afterEach(function () {
     // Special endpoint that clears the datasets data.
-    cy.request('/tests/reset')
+    cy.request({
+      url: '/tests/reset',
+      retryOnStatusCodeFailure: true
+    })
   })
-  it('displays an empty progress bar by default', () => {
+  it('displays an empty progress bar by default', function () {
     // The progress is present.
     cy
       .get('.progress')
@@ -78,7 +84,7 @@ describe('upload', () => {
           .should('have.attr', 'aria-valuenow', 0)
       })
   })
-  it('displays the progress for success and failure', () => {
+  it('displays the progress for success and failure', function () {
     // Intercept upload calls.
     // Fails every other upload.
     let fail = false

@@ -261,7 +261,6 @@ export default {
       this.loadingGraph = true
       this.selectedGraph = graphName
       try {
-        const dataEndpoint = this.services['gsp-rw']['srv.endpoints'].find(endpoint => endpoint !== '') || ''
         const result = await this.$fusekiService.fetchGraph(
           this.datasetName,
           this.services['gsp-rw']['srv.endpoints'],
