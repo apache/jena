@@ -25,11 +25,17 @@ describe('datasets', () => {
   describe('without any datasets', () => {
     before(() => {
       // Special endpoint that clears the datasets data.
-      cy.request('/tests/reset')
+      cy.request({
+        url: '/tests/reset',
+        retryOnStatusCodeFailure: true
+      })
     })
     after(() => {
       // Special endpoint that clears the datasets data.
-      cy.request('/tests/reset')
+      cy.request({
+        url: '/tests/reset',
+        retryOnStatusCodeFailure: true
+      })
     })
     it('Visits datasets page, also the application landing-page', () => {
       cy.visit('/')
@@ -59,7 +65,10 @@ describe('datasets', () => {
   describe('after creating new datasets', () => {
     before(() => {
       // Special endpoint that clears the datasets data.
-      cy.request('/tests/reset')
+      cy.request({
+        url: '/tests/reset',
+        retryOnStatusCodeFailure: true
+      })
       for (const datasetName of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k']) {
         // NOTE: Cypress appears to get confused when re-using the same URL,
         //       so we use a ?temp=... in the URL to force distinct requests.
@@ -84,7 +93,10 @@ describe('datasets', () => {
     })
     after(() => {
       // Special endpoint that clears the datasets data.
-      cy.request('/tests/reset')
+      cy.request({
+        url: '/tests/reset',
+        retryOnStatusCodeFailure: true
+      })
     })
     it('Edits the graph', () => {
       cy.visit('/#/dataset/a/edit')
