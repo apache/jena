@@ -312,7 +312,7 @@ public class TestFusekiMainCmdArguments {
         List<String> arguments = List.of("--file=testing/Config/invalid.ttl", "/dataset");
         String expectedMessage = "Failed to load file: testing/Config/invalid.ttl";
         // when, then
-        LogCtl.withLevel(SysRIOT.getLogger(), "fatal",
+        LogCtl.withLevel(SysRIOT.getLogger(), "FATAL",
                          ()-> testForCmdException(arguments, expectedMessage)
                          );
     }
@@ -431,7 +431,6 @@ public class TestFusekiMainCmdArguments {
         assertTrue("Expecting correct exception", (actual instanceof CmdException));
         assertEquals("Expecting correct message", expectedMessage, actual.getMessage());
     }
-
 
     private static String[] buildCmdLineArguments(List<String> listArgs) {
         return listArgs.toArray(new String[0]);
