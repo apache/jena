@@ -25,8 +25,10 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
+import org.apache.jena.riot.SysRIOT;
 import org.junit.After;
 import org.junit.Test;
 
@@ -251,7 +253,9 @@ public class TestFusekiMainCmdArguments {
         List<String> arguments = List.of("--file=testing/Config/invalid.ttl", "/dataset");
         String expectedMessage = "Failed to load file: testing/Config/invalid.ttl";
         // when, then
-        testForCmdException(arguments, expectedMessage);
+        LogCtl.withLevel(SysRIOT.getLogger(), "FATAL", ()->
+            testForCmdException(arguments, expectedMessage)
+        );
     }
 
     @Test
@@ -368,7 +372,6 @@ public class TestFusekiMainCmdArguments {
         assertTrue("Expecting correct exception", (actual instanceof CmdException));
         assertEquals("Expecting correct message", expectedMessage, actual.getMessage());
     }
-
 
     private static String[] buildCmdLineArguments(List<String> listArgs) {
         return listArgs.toArray(new String[0]);
