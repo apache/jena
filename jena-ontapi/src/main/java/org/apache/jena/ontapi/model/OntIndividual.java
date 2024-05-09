@@ -19,12 +19,12 @@
 package org.apache.jena.ontapi.model;
 
 import org.apache.jena.ontapi.OntJenaException;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -124,7 +124,7 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
      * @return {@code Stream} of {@link OntIndividual}s
      */
     default Stream<OntIndividual> sameIndividuals() {
-        return objects(OWL.sameAs, OntIndividual.class);
+        return objects(OWL2.sameAs, OntIndividual.class);
     }
 
     /**
@@ -146,7 +146,7 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
      * @see OntDisjoint.Individuals
      */
     default Stream<OntIndividual> differentIndividuals() {
-        return objects(OWL.differentFrom, OntIndividual.class);
+        return objects(OWL2.differentFrom, OntIndividual.class);
     }
 
     /**
@@ -174,7 +174,7 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
      * @return {@code Stream} of {@link OntNegativeAssertion negative property assertion}s
      */
     default Stream<OntNegativeAssertion> negativeAssertions() {
-        return getModel().statements(null, OWL.sourceIndividual, this)
+        return getModel().statements(null, OWL2.sourceIndividual, this)
                 .map(x -> x.getSubject().getAs(OntNegativeAssertion.class))
                 .filter(Objects::nonNull);
     }
@@ -206,7 +206,7 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
     }
 
     /**
-     * Adds a {@link OWL#differentFrom owl:differentFrom} individual statement.
+     * Adds a {@link OWL2#differentFrom owl:differentFrom} individual statement.
      *
      * @param other {@link OntIndividual}, not {@code null}
      * @return {@link OntStatement} to provide the ability to add annotations subsequently
@@ -215,7 +215,7 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
      * @see OntDisjoint.Individuals
      */
     default OntStatement addDifferentFromStatement(OntIndividual other) {
-        return addStatement(OWL.differentFrom, other);
+        return addStatement(OWL2.differentFrom, other);
     }
 
     /**
@@ -228,7 +228,7 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
      * @see <a href='https://www.w3.org/TR/owl2-syntax/#Individual_Equality'>9.6.1 Individual Equality</a>
      */
     default OntStatement addSameAsStatement(OntIndividual other) {
-        return addStatement(OWL.sameAs, other);
+        return addStatement(OWL2.sameAs, other);
     }
 
     /**
@@ -245,7 +245,7 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
     }
 
     /**
-     * Adds a {@link OWL#differentFrom owl:differentFrom} individual statement
+     * Adds a {@link OWL2#differentFrom owl:differentFrom} individual statement
      * and returns this object itself to allow cascading calls.
      *
      * @param other {@link OntIndividual}, not {@code null}
@@ -261,7 +261,7 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
     }
 
     /**
-     * Adds a {@link OWL#sameAs owl:sameAs} individual statement
+     * Adds a {@link OWL2#sameAs owl:sameAs} individual statement
      * and returns this object itself to allow cascading calls.
      *
      * @param other other {@link OntIndividual}, not {@code null}
@@ -423,7 +423,7 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
      * @see OntDisjoint.Individuals
      */
     default OntIndividual removeDifferentIndividual(Resource other) {
-        remove(OWL.differentFrom, other);
+        remove(OWL2.differentFrom, other);
         return this;
     }
 
@@ -439,7 +439,7 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
      * @see #addSameIndividual(OntIndividual)
      */
     default OntIndividual removeSameIndividual(Resource other) {
-        remove(OWL.sameAs, other);
+        remove(OWL2.sameAs, other);
         return this;
     }
 
@@ -493,7 +493,7 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
     }
 
     /**
-     * An interface for <b>Named</b> Individual which is an {@link OWL Entity OntEntity}.
+     * An interface for <b>Named</b> Individual which is an {@link OWL2 Entity OntEntity}.
      *
      * @see <a href='https://www.w3.org/TR/owl2-syntax/#Named_Individuals'>5.6.1 Named Individuals</a>
      */
@@ -512,13 +512,13 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
      * <li>it has a class declaration (i.e. there is a triple {@code _:a rdf:type C},
      * where {@code C} is a {@link OntClass class expression})</li>
      * <li>it is a subject or an object in a statement with predicate
-     * {@link OWL#sameAs owl:sameAs} or {@link OWL#differentFrom owl:differentFrom}</li>
+     * {@link OWL2#sameAs owl:sameAs} or {@link OWL2#differentFrom owl:differentFrom}</li>
      * <li>it is contained in a {@code rdf:List} with predicate {@code owl:distinctMembers} or {@code owl:members}
      * in a blank node with {@code rdf:type = owl:AllDifferent}, see {@link OntDisjoint.Individuals}</li>
      * <li>it is contained in a {@code rdf:List} with predicate {@code owl:oneOf}
      * in a blank node with {@code rdf:type = owl:Class}, see {@link OntClass.OneOf}</li>
      * <li>it is a part of {@link OntNegativeAssertion owl:NegativePropertyAssertion} section with predicates
-     * {@link OWL#sourceIndividual owl:sourceIndividual} or {@link OWL#targetIndividual owl:targetIndividual}</li>
+     * {@link OWL2#sourceIndividual owl:sourceIndividual} or {@link OWL2#targetIndividual owl:targetIndividual}</li>
      * <li>it is an object with predicate {@code owl:hasValue} inside {@code _:x rdf:type owl:Restriction}
      * (see {@link OntClass.ObjectHasValue Object Property HasValue Restriction})</li>
      * <li>it is a subject or an object in a statement where predicate is

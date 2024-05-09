@@ -18,6 +18,8 @@
 
 package org.apache.jena.ontapi.impl.objects;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.OntModelControls;
 import org.apache.jena.ontapi.impl.HierarchySupport;
@@ -26,11 +28,9 @@ import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntProperty;
 import org.apache.jena.ontapi.model.OntRelationalProperty;
 import org.apache.jena.ontapi.model.OntStatement;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL2;
 import org.apache.jena.vocabulary.RDFS;
 
 import java.util.Set;
@@ -98,34 +98,34 @@ public abstract class OntPropertyImpl extends OntObjectImpl implements OntProper
         if (!OntGraphModelImpl.configValue(m, OntModelControls.USE_OWL2_PROPERTY_DISJOINT_WITH_FEATURE)) {
             return Stream.empty();
         }
-        return property.objects(OWL.propertyDisjointWith, type);
+        return property.objects(OWL2.propertyDisjointWith, type);
     }
 
     public static <X extends OntRelationalProperty> OntStatement addDisjointWith(OntGraphModelImpl m, Class<X> type, X property, X other) {
         OntGraphModelImpl.checkFeature(m, OntModelControls.USE_OWL2_PROPERTY_DISJOINT_WITH_FEATURE, "owl:propertyDisjointWith");
-        return property.addStatement(OWL.propertyDisjointWith, other);
+        return property.addStatement(OWL2.propertyDisjointWith, other);
     }
 
     public static <X extends OntRelationalProperty> void removeDisjointWith(OntGraphModelImpl m, X property, Resource other) {
         OntGraphModelImpl.checkFeature(m, OntModelControls.USE_OWL2_PROPERTY_DISJOINT_WITH_FEATURE, "owl:propertyDisjointWith");
-        property.remove(OWL.propertyDisjointWith, other);
+        property.remove(OWL2.propertyDisjointWith, other);
     }
 
     public static <X extends OntRelationalProperty> Stream<X> equivalentProperties(OntGraphModelImpl m, Class<X> type, X property) {
         if (!OntGraphModelImpl.configValue(m, OntModelControls.USE_OWL_PROPERTY_EQUIVALENT_FEATURE)) {
             return Stream.empty();
         }
-        return property.objects(OWL.equivalentProperty, type);
+        return property.objects(OWL2.equivalentProperty, type);
     }
 
     public static <X extends OntRelationalProperty> OntStatement addEquivalentProperty(OntGraphModelImpl m, Class<X> type, X property, X other) {
         OntGraphModelImpl.checkFeature(m, OntModelControls.USE_OWL_PROPERTY_EQUIVALENT_FEATURE, "owl:equivalentProperty");
-        return property.addStatement(OWL.equivalentProperty, other);
+        return property.addStatement(OWL2.equivalentProperty, other);
     }
 
     public static <X extends OntRelationalProperty> void removeEquivalentProperty(OntGraphModelImpl m, X property, Resource other) {
         OntGraphModelImpl.checkFeature(m, OntModelControls.USE_OWL_PROPERTY_EQUIVALENT_FEATURE, "owl:equivalentProperty");
-        property.remove(OWL.equivalentProperty, other);
+        property.remove(OWL2.equivalentProperty, other);
     }
 
     static <X extends OntProperty> Stream<X> explicitSubProperties(X property, Property predicate, Class<X> type) {

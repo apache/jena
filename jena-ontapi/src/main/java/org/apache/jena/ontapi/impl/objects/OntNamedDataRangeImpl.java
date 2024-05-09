@@ -18,16 +18,16 @@
 
 package org.apache.jena.ontapi.impl.objects;
 
-import org.apache.jena.ontapi.OntModelControls;
-import org.apache.jena.ontapi.impl.OntGraphModelImpl;
-import org.apache.jena.ontapi.model.OntDataRange;
-import org.apache.jena.ontapi.model.OntStatement;
-import org.apache.jena.ontapi.vocabulary.OWL;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.enhanced.EnhGraph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.ontapi.OntModelControls;
+import org.apache.jena.ontapi.impl.OntGraphModelImpl;
 import org.apache.jena.ontapi.model.OntClass;
+import org.apache.jena.ontapi.model.OntDataRange;
+import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL2;
 import org.apache.jena.vocabulary.RDFS;
 
 import java.util.Optional;
@@ -65,19 +65,19 @@ public class OntNamedDataRangeImpl extends OntObjectImpl implements OntDataRange
         if (!OntGraphModelImpl.configValue(getModel(), OntModelControls.USE_OWL_CLASS_EQUIVALENT_FEATURE)) {
             return Stream.empty();
         }
-        return objects(OWL.equivalentClass, OntDataRange.class);
+        return objects(OWL2.equivalentClass, OntDataRange.class);
     }
 
     @Override
     public OntStatement addEquivalentClassStatement(OntDataRange other) {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_CLASS_EQUIVALENT_FEATURE, "owl:equivalentClass");
-        return addStatement(OWL.equivalentClass, other);
+        return addStatement(OWL2.equivalentClass, other);
     }
 
     @Override
     public Named removeEquivalentClass(Resource other) {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_CLASS_EQUIVALENT_FEATURE, "owl:equivalentClass");
-        remove(OWL.equivalentClass, other);
+        remove(OWL2.equivalentClass, other);
         return this;
     }
 

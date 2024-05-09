@@ -18,6 +18,11 @@
 
 package org.apache.jena.ontapi.impl.objects;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.enhanced.UnsupportedPolymorphismException;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.common.OntEnhGraph;
 import org.apache.jena.ontapi.impl.OntGraphModelImpl;
@@ -28,13 +33,6 @@ import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.ontapi.utils.Graphs;
 import org.apache.jena.ontapi.utils.Iterators;
 import org.apache.jena.ontapi.utils.StdModels;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.enhanced.UnsupportedPolymorphismException;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFList;
@@ -46,6 +44,8 @@ import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.shared.PropertyNotFoundException;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NullIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -297,7 +297,7 @@ public abstract class OntListImpl<E extends RDFNode> extends ResourceImpl implem
                                                               Resource subject,
                                                               Property predicate,
                                                               RDFNode obj) {
-        return m.listAnnotations(OWL.Axiom, subject, predicate, obj);
+        return m.listAnnotations(OWL2.Axiom, subject, predicate, obj);
     }
 
     /**
@@ -384,7 +384,7 @@ public abstract class OntListImpl<E extends RDFNode> extends ResourceImpl implem
         }
         if (!objectRDFList.equals(list)) {
             listAnnotations(m, subject, predicate, objectRDFList).toSet()
-                    .forEach(a -> m.remove(a, OWL.annotatedTarget, objectRDFList).add(a, OWL.annotatedTarget, list));
+                    .forEach(a -> m.remove(a, OWL2.annotatedTarget, objectRDFList).add(a, OWL2.annotatedTarget, list));
         }
         this.objectRDFList = list;
         return this;

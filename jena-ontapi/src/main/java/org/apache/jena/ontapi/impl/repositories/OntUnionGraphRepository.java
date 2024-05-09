@@ -18,17 +18,17 @@
 
 package org.apache.jena.ontapi.impl.repositories;
 
-import org.apache.jena.ontapi.GraphRepository;
-import org.apache.jena.ontapi.OntJenaException;
-import org.apache.jena.ontapi.UnionGraph;
-import org.apache.jena.ontapi.utils.Graphs;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.ontapi.GraphRepository;
+import org.apache.jena.ontapi.OntJenaException;
+import org.apache.jena.ontapi.UnionGraph;
 import org.apache.jena.ontapi.model.OntModel;
+import org.apache.jena.ontapi.utils.Graphs;
 import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -285,7 +285,7 @@ public class OntUnionGraphRepository {
 
     private Graph newGraph(Node name) {
         Graph res = baseGraphFactory.get();
-        res.add(name, RDF.type.asNode(), OWL.Ontology.asNode());
+        res.add(name, RDF.type.asNode(), OWL2.Ontology.asNode());
         return res;
     }
 

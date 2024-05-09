@@ -18,17 +18,15 @@
 
 package org.apache.jena.ontapi;
 
-import org.apache.jena.ontapi.impl.UnionGraphImpl;
-import org.apache.jena.ontapi.model.OntModel;
-import org.apache.jena.ontapi.testutils.ModelTestUtils;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.mem.GraphMem;
+import org.apache.jena.ontapi.impl.UnionGraphImpl;
+import org.apache.jena.ontapi.model.OntModel;
+import org.apache.jena.ontapi.testutils.ModelTestUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.shared.AddDeniedException;
 import org.apache.jena.shared.ClosedException;
@@ -36,6 +34,8 @@ import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.graph.GraphReadOnly;
 import org.apache.jena.sparql.graph.GraphWrapper;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -117,8 +117,8 @@ public class UnionGraphTest {
 
     @Test
     public void testWrapAsUnmodified() {
-        Triple a = Triple.create(NodeFactory.createURI("a"), RDF.Nodes.type, OWL.Class.asNode());
-        Triple b = Triple.create(NodeFactory.createURI("b"), RDF.Nodes.type, OWL.Class.asNode());
+        Triple a = Triple.create(NodeFactory.createURI("a"), RDF.Nodes.type, OWL2.Class.asNode());
+        Triple b = Triple.create(NodeFactory.createURI("b"), RDF.Nodes.type, OWL2.Class.asNode());
 
         Graph base = GraphMemFactory.createDefaultGraph();
         base.getPrefixMapping().setNsPrefixes(OntModelFactory.STANDARD);
@@ -345,17 +345,17 @@ public class UnionGraphTest {
         Assertions.assertEquals(2, b.subGraphs().count());
         Assertions.assertEquals(0, c.subGraphs().count());
 
-        mA.createResource("A", OWL.Class);
+        mA.createResource("A", OWL2.Class);
         Assertions.assertEquals(4, a.stream().count());
         Assertions.assertEquals(4, b.stream().count());
         Assertions.assertEquals(1, c.stream().count());
 
-        mB.createResource("B", OWL.Class);
+        mB.createResource("B", OWL2.Class);
         Assertions.assertEquals(5, a.stream().count());
         Assertions.assertEquals(5, b.stream().count());
         Assertions.assertEquals(1, c.stream().count());
 
-        mC.createResource("C", OWL.Class);
+        mC.createResource("C", OWL2.Class);
         Assertions.assertEquals(6, a.stream().count());
         Assertions.assertEquals(6, b.stream().count());
         Assertions.assertEquals(2, c.stream().count());

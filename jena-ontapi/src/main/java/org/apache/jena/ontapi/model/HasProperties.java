@@ -19,11 +19,11 @@
 package org.apache.jena.ontapi.model;
 
 import org.apache.jena.ontapi.OntJenaException;
-import org.apache.jena.ontapi.vocabulary.OWL;
+import org.apache.jena.vocabulary.OWL2;
 
 /**
  * A technical interface to access {@link P} properties from a []-list
- * on predicate {@link OWL#onProperties owl:onProperties}.
+ * on predicate {@link OWL2#onProperties owl:onProperties}.
  *
  * @param <P> - any subtype of {@link OntRelationalProperty} in general case,
  *            but in the current model it can only be {@link OntDataProperty}

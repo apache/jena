@@ -18,6 +18,9 @@
 
 package org.apache.jena.ontapi.impl.objects;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.graph.FrontsNode;
+import org.apache.jena.graph.Node;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.OntModelControls;
 import org.apache.jena.ontapi.impl.OntGraphModelImpl;
@@ -29,15 +32,12 @@ import org.apache.jena.ontapi.model.OntObject;
 import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.ontapi.utils.Iterators;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.graph.FrontsNode;
-import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.Collection;
 import java.util.List;
@@ -46,8 +46,8 @@ import java.util.stream.Stream;
 
 /**
  * Implementation of the Object Property Expression abstraction.
- * Named instances should have a {@link OWL#ObjectProperty owl:ObjectProperty} type declarations.
- * Anonymous instances should have {@link OWL#inverseOf owl:inverseOf} predicate.
+ * Named instances should have a {@link OWL2#ObjectProperty owl:ObjectProperty} type declarations.
+ * Anonymous instances should have {@link OWL2#inverseOf owl:inverseOf} predicate.
  */
 @SuppressWarnings("WeakerAccess")
 public abstract class OntObjectPropertyImpl extends OntPropertyImpl implements OntObjectProperty {
@@ -79,7 +79,7 @@ public abstract class OntObjectPropertyImpl extends OntPropertyImpl implements O
     @Override
     public OntList<OntObjectProperty> createPropertyChain(Collection<OntObjectProperty> properties) {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_CHAIN_AXIOM_FEATURE, "owl:propertyChainAxiom");
-        return getModel().createOntList(this, OWL.propertyChainAxiom, OntObjectProperty.class, properties.iterator());
+        return getModel().createOntList(this, OWL2.propertyChainAxiom, OntObjectProperty.class, properties.iterator());
     }
 
     @Override
@@ -87,13 +87,13 @@ public abstract class OntObjectPropertyImpl extends OntPropertyImpl implements O
         if (!OntGraphModelImpl.configValue(getModel(), OntModelControls.USE_OWL_PROPERTY_CHAIN_AXIOM_FEATURE)) {
             return Stream.empty();
         }
-        return OntListImpl.stream(getModel(), this, OWL.propertyChainAxiom, OntObjectProperty.class);
+        return OntListImpl.stream(getModel(), this, OWL2.propertyChainAxiom, OntObjectProperty.class);
     }
 
     @Override
     public OntObjectPropertyImpl removePropertyChain(Resource rdfList) throws OntJenaException.IllegalArgument {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_CHAIN_AXIOM_FEATURE, "owl:propertyChainAxiom");
-        getModel().deleteOntList(this, OWL.propertyChainAxiom, findPropertyChain(rdfList).orElse(null));
+        getModel().deleteOntList(this, OWL2.propertyChainAxiom, findPropertyChain(rdfList).orElse(null));
         return this;
     }
 
@@ -132,127 +132,127 @@ public abstract class OntObjectPropertyImpl extends OntPropertyImpl implements O
     @Override
     public boolean isFunctional() {
         return OntGraphModelImpl.configValue(getModel(), OntModelControls.USE_OWL_OBJECT_PROPERTY_FUNCTIONAL_FEATURE) &&
-                hasType(OWL.FunctionalProperty);
+                hasType(OWL2.FunctionalProperty);
     }
 
     @Override
     public OntObjectPropertyImpl setFunctional(boolean functional) {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_OBJECT_PROPERTY_FUNCTIONAL_FEATURE, "owl:FunctionalProperty");
-        return changeRDFType(OWL.FunctionalProperty, functional);
+        return changeRDFType(OWL2.FunctionalProperty, functional);
     }
 
     @Override
     public OntStatement addFunctionalDeclaration() {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_OBJECT_PROPERTY_FUNCTIONAL_FEATURE, "owl:FunctionalProperty");
-        return addStatement(RDF.type, OWL.FunctionalProperty);
+        return addStatement(RDF.type, OWL2.FunctionalProperty);
     }
 
     @Override
     public boolean isInverseFunctional() {
         return OntGraphModelImpl.configValue(getModel(), OntModelControls.USE_OWL_PROPERTY_INVERSE_FUNCTIONAL_FEATURE) &&
-                hasType(OWL.InverseFunctionalProperty);
+                hasType(OWL2.InverseFunctionalProperty);
     }
 
     @Override
     public OntObjectPropertyImpl setInverseFunctional(boolean inverseFunctional) {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_INVERSE_FUNCTIONAL_FEATURE, "owl:InverseFunctionalProperty");
-        return changeRDFType(OWL.InverseFunctionalProperty, inverseFunctional);
+        return changeRDFType(OWL2.InverseFunctionalProperty, inverseFunctional);
     }
 
     @Override
     public OntStatement addInverseFunctionalDeclaration() {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_INVERSE_FUNCTIONAL_FEATURE, "owl:InverseFunctionalProperty");
-        return addStatement(RDF.type, OWL.InverseFunctionalProperty);
+        return addStatement(RDF.type, OWL2.InverseFunctionalProperty);
     }
 
     @Override
     public boolean isSymmetric() {
         return OntGraphModelImpl.configValue(getModel(), OntModelControls.USE_OWL_PROPERTY_SYMMETRIC_FEATURE) &&
-                hasType(OWL.SymmetricProperty);
+                hasType(OWL2.SymmetricProperty);
     }
 
     @Override
     public OntObjectPropertyImpl setSymmetric(boolean symmetric) {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_SYMMETRIC_FEATURE, "owl:SymmetricProperty");
-        return changeRDFType(OWL.SymmetricProperty, symmetric);
+        return changeRDFType(OWL2.SymmetricProperty, symmetric);
     }
 
     @Override
     public OntStatement addSymmetricDeclaration() {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_SYMMETRIC_FEATURE, "owl:SymmetricProperty");
-        return addStatement(RDF.type, OWL.SymmetricProperty);
+        return addStatement(RDF.type, OWL2.SymmetricProperty);
     }
 
     @Override
     public boolean isAsymmetric() {
         return OntGraphModelImpl.configValue(getModel(), OntModelControls.USE_OWL_PROPERTY_ASYMMETRIC_FEATURE) &&
-                hasType(OWL.AsymmetricProperty);
+                hasType(OWL2.AsymmetricProperty);
     }
 
     @Override
     public OntObjectPropertyImpl setAsymmetric(boolean asymmetric) {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_ASYMMETRIC_FEATURE, "owl:AsymmetricProperty");
-        return changeRDFType(OWL.AsymmetricProperty, asymmetric);
+        return changeRDFType(OWL2.AsymmetricProperty, asymmetric);
     }
 
     @Override
     public OntStatement addAsymmetricDeclaration() {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_ASYMMETRIC_FEATURE, "owl:AsymmetricProperty");
-        return addStatement(RDF.type, OWL.AsymmetricProperty);
+        return addStatement(RDF.type, OWL2.AsymmetricProperty);
     }
 
     @Override
     public boolean isTransitive() {
         return OntGraphModelImpl.configValue(getModel(), OntModelControls.USE_OWL_PROPERTY_TRANSITIVE_FEATURE) &&
-                hasType(OWL.TransitiveProperty);
+                hasType(OWL2.TransitiveProperty);
     }
 
     @Override
     public OntObjectPropertyImpl setTransitive(boolean transitive) {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_TRANSITIVE_FEATURE, "owl:TransitiveProperty");
-        return changeRDFType(OWL.TransitiveProperty, transitive);
+        return changeRDFType(OWL2.TransitiveProperty, transitive);
     }
 
     @Override
     public OntStatement addTransitiveDeclaration() {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_TRANSITIVE_FEATURE, "owl:TransitiveProperty");
-        return addStatement(RDF.type, OWL.TransitiveProperty);
+        return addStatement(RDF.type, OWL2.TransitiveProperty);
     }
 
     @Override
     public boolean isReflexive() {
         return OntGraphModelImpl.configValue(getModel(), OntModelControls.USE_OWL_PROPERTY_REFLEXIVE_FEATURE) &&
-                hasType(OWL.ReflexiveProperty);
+                hasType(OWL2.ReflexiveProperty);
     }
 
     @Override
     public OntObjectPropertyImpl setReflexive(boolean reflexive) {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_REFLEXIVE_FEATURE, "owl:ReflexiveProperty");
-        return changeRDFType(OWL.ReflexiveProperty, reflexive);
+        return changeRDFType(OWL2.ReflexiveProperty, reflexive);
     }
 
     @Override
     public OntStatement addReflexiveDeclaration() {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_REFLEXIVE_FEATURE, "owl:ReflexiveProperty");
-        return addStatement(RDF.type, OWL.ReflexiveProperty);
+        return addStatement(RDF.type, OWL2.ReflexiveProperty);
     }
 
     @Override
     public boolean isIrreflexive() {
         return OntGraphModelImpl.configValue(getModel(), OntModelControls.USE_OWL_PROPERTY_IRREFLEXIVE_FEATURE) &&
-                hasType(OWL.IrreflexiveProperty);
+                hasType(OWL2.IrreflexiveProperty);
     }
 
     @Override
     public OntObjectPropertyImpl setIrreflexive(boolean irreflexive) {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_IRREFLEXIVE_FEATURE, "owl:IrreflexiveProperty");
-        return changeRDFType(OWL.IrreflexiveProperty, irreflexive);
+        return changeRDFType(OWL2.IrreflexiveProperty, irreflexive);
     }
 
     @Override
     public OntStatement addIrreflexiveDeclaration() {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_IRREFLEXIVE_FEATURE, "owl:IrreflexiveProperty");
-        return addStatement(RDF.type, OWL.IrreflexiveProperty);
+        return addStatement(RDF.type, OWL2.IrreflexiveProperty);
     }
 
     @Override
@@ -260,7 +260,7 @@ public abstract class OntObjectPropertyImpl extends OntPropertyImpl implements O
         if (!OntGraphModelImpl.configValue(getModel(), OntModelControls.USE_OWL_PROPERTY_INVERSE_OF_FEATURE)) {
             return Stream.empty();
         }
-        return objects(OWL.inverseOf, OntObjectProperty.class);
+        return objects(OWL2.inverseOf, OntObjectProperty.class);
     }
 
     @Override
@@ -269,13 +269,13 @@ public abstract class OntObjectPropertyImpl extends OntPropertyImpl implements O
         if (this.isURIResource() && other.isAnon()) {
             OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_INVERSE_OBJECT_PROPERTY_FEATURE, "owl:inverseOf");
         }
-        return addStatement(OWL.inverseOf, other);
+        return addStatement(OWL2.inverseOf, other);
     }
 
     @Override
     public OntObjectProperty removeInverseProperty(Resource other) {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_INVERSE_OF_FEATURE, "owl:inverseOf");
-        remove(OWL.inverseOf, other);
+        remove(OWL2.inverseOf, other);
         return this;
     }
 
@@ -297,7 +297,7 @@ public abstract class OntObjectPropertyImpl extends OntPropertyImpl implements O
             OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_INVERSE_OBJECT_PROPERTY_FEATURE, "owl:inverseOf");
             OntGraphModelImpl m = getModel();
             m.checkType(OntObjectProperty.Inverse.class);
-            List<Node> nodes = m.localStatements(null, OWL.inverseOf, this)
+            List<Node> nodes = m.localStatements(null, OWL2.inverseOf, this)
                     .map(OntStatement::getSubject)
                     .filter(RDFNode::isAnon)
                     .map(FrontsNode::asNode)
@@ -308,7 +308,7 @@ public abstract class OntObjectPropertyImpl extends OntPropertyImpl implements O
                         nodes + " owl:inverseOf " + this + "]");
             }
             Node n = nodes.isEmpty() ?
-                    m.createResource().addProperty(OWL.inverseOf, NamedImpl.this).asNode() :
+                    m.createResource().addProperty(OWL2.inverseOf, NamedImpl.this).asNode() :
                     nodes.get(0);
             return m.getNodeAs(n, Inverse.class);
         }
@@ -330,7 +330,7 @@ public abstract class OntObjectPropertyImpl extends OntPropertyImpl implements O
 
         @Override
         public Optional<OntStatement> findRootStatement() {
-            return getOptionalRootStatement(this, OWL.ObjectProperty);
+            return getOptionalRootStatement(this, OWL2.ObjectProperty);
         }
 
         @Override
@@ -347,7 +347,7 @@ public abstract class OntObjectPropertyImpl extends OntPropertyImpl implements O
 
         @Override
         public Optional<OntStatement> findRootStatement() {
-            return Optional.of(getModel().createStatement(this, OWL.inverseOf, getDirect()).asRootStatement());
+            return Optional.of(getModel().createStatement(this, OWL2.inverseOf, getDirect()).asRootStatement());
         }
 
         @Override
@@ -358,7 +358,7 @@ public abstract class OntObjectPropertyImpl extends OntPropertyImpl implements O
         @Override
         public Named getDirect() {
             OntGraphModelImpl m = getModel();
-            List<Resource> res = Iterators.distinct(listObjects(OWL.inverseOf, Resource.class)
+            List<Resource> res = Iterators.distinct(listObjects(OWL2.inverseOf, Resource.class)
                     .filterKeep(RDFNode::isURIResource)).toList();
             if (res.size() != 1)
                 throw new OntJenaException.IllegalState("Expected one and only one owl:inverseOf statement, but found: [" +

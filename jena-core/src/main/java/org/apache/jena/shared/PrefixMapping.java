@@ -18,12 +18,18 @@
 
 package org.apache.jena.shared;
 
-import java.util.Map;
-
-import org.apache.jena.assembler.JA ;
+import org.apache.jena.assembler.JA;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.vocabulary.DC_11;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.RSS;
+import org.apache.jena.vocabulary.VCARD;
+import org.apache.jena.vocabulary.XSD;
+
+import java.util.Map;
 
 /**
     Methods for recording namespace prefix mappings and applying and

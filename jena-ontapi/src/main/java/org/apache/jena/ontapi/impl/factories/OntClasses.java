@@ -18,6 +18,15 @@
 
 package org.apache.jena.ontapi.impl.factories;
 
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.enhanced.EnhNode;
+import org.apache.jena.enhanced.Implementation;
+import org.apache.jena.graph.FrontsNode;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.OntModelControls;
 import org.apache.jena.ontapi.common.BaseEnhNodeFactoryImpl;
@@ -41,18 +50,6 @@ import org.apache.jena.ontapi.model.OntProperty;
 import org.apache.jena.ontapi.utils.Graphs;
 import org.apache.jena.ontapi.utils.Iterators;
 import org.apache.jena.ontapi.utils.StdModels;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.ontapi.vocabulary.XSD;
-import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.enhanced.EnhNode;
-import org.apache.jena.enhanced.Implementation;
-import org.apache.jena.graph.FrontsNode;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFList;
@@ -60,7 +57,10 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.impl.RDFListImpl;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NullIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.XSD;
 
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -73,11 +73,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 final class OntClasses {
-    public static final EnhNodeFinder CLASS_FINDER = new EnhNodeFinder.ByType(OWL.Class);
-    public static final EnhNodeFinder RESTRICTION_FINDER = new EnhNodeFinder.ByType(OWL.Restriction);
+    public static final EnhNodeFinder CLASS_FINDER = new EnhNodeFinder.ByType(OWL2.Class);
+    public static final EnhNodeFinder RESTRICTION_FINDER = new EnhNodeFinder.ByType(OWL2.Restriction);
 
     // legacy Jena's OntModel allows these types
-    private static final Set<Node> COMPATIBLE_TYPES = Stream.of(OWL.Class, RDFS.Class, RDFS.Datatype)
+    private static final Set<Node> COMPATIBLE_TYPES = Stream.of(OWL2.Class, RDFS.Class, RDFS.Datatype)
             .map(FrontsNode::asNode).collect(Collectors.toUnmodifiableSet());
 
     public static boolean canBeNamedClass(Node n, EnhGraph eg, boolean useLegacyCheck) {
@@ -90,7 +90,7 @@ final class OntClasses {
         Graph g = eg.asGraph();
         Set<Node> punnings = OntEnhGraph.asPersonalityModel(eg).getOntPersonality().getPunnings().getNamedClasses();
         if (!useLegacyCheck) {
-            return g.contains(n, RDF.type.asNode(), OWL.Class.asNode()) && !Graphs.hasOneOfType(n, g, punnings);
+            return g.contains(n, RDF.type.asNode(), OWL2.Class.asNode()) && !Graphs.hasOneOfType(n, g, punnings);
         }
         if (Graphs.hasOneOfType(n, g, punnings)) {
             return false;
@@ -153,9 +153,9 @@ final class OntClasses {
             Class<? extends RDFNode> view,
             BiFunction<Node, EnhGraph, EnhNode> producer,
             OntConfig config) {
-        EnhNodeProducer maker = new EnhNodeProducer.WithType(impl, OWL.Class, producer);
+        EnhNodeProducer maker = new EnhNodeProducer.WithType(impl, OWL2.Class, producer);
         EnhNodeFilter primary = config.getBoolean(OntModelControls.ALLOW_NAMED_CLASS_EXPRESSIONS) ? EnhNodeFilter.TRUE : EnhNodeFilter.ANON;
-        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL.Class))
+        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL2.Class))
                 .and((n, g) -> {
                     ExtendedIterator<Triple> res = g.asGraph().find(n, predicate.asNode(), Node.ANY);
                     try {
@@ -179,9 +179,9 @@ final class OntClasses {
             OntClassImpl.CardinalityType cardinalityType,
             BiFunction<Node, EnhGraph, EnhNode> producer,
             OntConfig config) {
-        EnhNodeProducer maker = new EnhNodeProducer.WithType(impl, OWL.Restriction, producer);
+        EnhNodeProducer maker = new EnhNodeProducer.WithType(impl, OWL2.Restriction, producer);
         EnhNodeFilter primary = config.getBoolean(OntModelControls.ALLOW_NAMED_CLASS_EXPRESSIONS) ? EnhNodeFilter.TRUE : EnhNodeFilter.ANON;
-        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL.Restriction))
+        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL2.Restriction))
                 .and(getCardinalityFilter(cardinalityType,
                         objectType.view(),
                         config.getBoolean(OntModelControls.USE_OWL2_QUALIFIED_CARDINALITY_RESTRICTION_FEATURE)))
@@ -196,9 +196,9 @@ final class OntClasses {
             Property predicate,
             BiFunction<Node, EnhGraph, EnhNode> producer,
             OntConfig config) {
-        EnhNodeProducer maker = new EnhNodeProducer.WithType(impl, OWL.Restriction, producer);
+        EnhNodeProducer maker = new EnhNodeProducer.WithType(impl, OWL2.Restriction, producer);
         EnhNodeFilter primary = config.getBoolean(OntModelControls.ALLOW_NAMED_CLASS_EXPRESSIONS) ? EnhNodeFilter.TRUE : EnhNodeFilter.ANON;
-        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL.Restriction))
+        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL2.Restriction))
                 .and(propertyType.getFilter())
                 .and(objectType.getFilter(predicate));
         return OntEnhNodeFactories.createCommon(maker, RESTRICTION_FINDER, filter);
@@ -207,9 +207,9 @@ final class OntClasses {
     public static EnhNodeFactory createNaryRestrictionFactory(
             Class<? extends OntClassImpl.NaryRestrictionImpl<?, ?, ?>> impl,
             Property predicate) {
-        EnhNodeProducer maker = new EnhNodeProducer.WithType(impl, OWL.Restriction);
-        EnhNodeFilter filter = EnhNodeFilter.ANON.and(new EnhNodeFilter.HasType(OWL.Restriction))
-                .and(new EnhNodeFilter.HasPredicate(OWL.onProperties))
+        EnhNodeProducer maker = new EnhNodeProducer.WithType(impl, OWL2.Restriction);
+        EnhNodeFilter filter = EnhNodeFilter.ANON.and(new EnhNodeFilter.HasType(OWL2.Restriction))
+                .and(new EnhNodeFilter.HasPredicate(OWL2.onProperties))
                 .and(new EnhNodeFilter.HasPredicate(predicate));
         return OntEnhNodeFactories.createCommon(maker, RESTRICTION_FINDER, filter);
     }
@@ -224,11 +224,11 @@ final class OntClasses {
     @SuppressWarnings("DuplicatedCode")
     public static EnhNodeFactory createOWL2ELObjectOneOfFactory(
             OntConfig config) {
-        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.OneOfImpl.class, OWL.Class, OntClassImpl.OneOfImpl::new);
+        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.OneOfImpl.class, OWL2.Class, OntClassImpl.OneOfImpl::new);
         EnhNodeFilter primary = config.getBoolean(OntModelControls.ALLOW_NAMED_CLASS_EXPRESSIONS) ? EnhNodeFilter.TRUE : EnhNodeFilter.ANON;
-        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL.Class))
+        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL2.Class))
                 .and((n, g) -> {
-                    RDFList list = Iterators.findFirst(g.asGraph().find(n, OWL.oneOf.asNode(), Node.ANY).filterKeep(
+                    RDFList list = Iterators.findFirst(g.asGraph().find(n, OWL2.oneOf.asNode(), Node.ANY).filterKeep(
                             it -> STDObjectFactories.RDF_LIST.canWrap(it.getObject(), g)
                     ).mapWith(it -> new RDFListImpl(it.getObject(), g))).orElse(null);
                     if (list == null) {
@@ -240,24 +240,24 @@ final class OntClasses {
     }
 
     public static EnhNodeFactory createOWL2QLObjectSomeValuesFromFactory(OntConfig config) {
-        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.QLObjectSomeValuesFromImpl.class, OWL.Restriction,
+        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.QLObjectSomeValuesFromImpl.class, OWL2.Restriction,
                 OntClassImpl.QLObjectSomeValuesFromImpl::new);
         EnhNodeFilter primary = config.getBoolean(OntModelControls.ALLOW_NAMED_CLASS_EXPRESSIONS) ? EnhNodeFilter.TRUE : EnhNodeFilter.ANON;
-        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL.Restriction))
+        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL2.Restriction))
                 .and(RestrictionType.OBJECT.getFilter())
                 // either owl:Thing or named class
-                .and(ObjectRestrictionType.NAMED_CLASS.getFilter(OWL.someValuesFrom));
+                .and(ObjectRestrictionType.NAMED_CLASS.getFilter(OWL2.someValuesFrom));
         return OntEnhNodeFactories.createCommon(maker, RESTRICTION_FINDER, filter);
     }
 
     public static EnhNodeFactory createOWL2RLObjectSomeValuesFromFactory(OntConfig config) {
-        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.RLObjectSomeValuesFromImpl.class, OWL.Restriction,
+        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.RLObjectSomeValuesFromImpl.class, OWL2.Restriction,
                 OntClassImpl.RLObjectSomeValuesFromImpl::new);
         EnhNodeFilter primary = config.getBoolean(OntModelControls.ALLOW_NAMED_CLASS_EXPRESSIONS) ? EnhNodeFilter.TRUE : EnhNodeFilter.ANON;
-        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL.Restriction))
+        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL2.Restriction))
                 .and(RestrictionType.OBJECT.getFilter())
                 .and((n, g) -> {
-                    ExtendedIterator<Triple> res = g.asGraph().find(n, OWL.someValuesFrom.asNode(), Node.ANY);
+                    ExtendedIterator<Triple> res = g.asGraph().find(n, OWL2.someValuesFrom.asNode(), Node.ANY);
                     try {
                         while (res.hasNext()) {
                             Node node = res.next().getObject();
@@ -265,7 +265,7 @@ final class OntClasses {
                             if (clazz == null) {
                                 continue;
                             }
-                            if (OWL.Thing.equals(clazz) || clazz.asSubClass() != null) {
+                            if (OWL2.Thing.equals(clazz) || clazz.asSubClass() != null) {
                                 return true;
                             }
                         }
@@ -278,13 +278,13 @@ final class OntClasses {
     }
 
     public static EnhNodeFactory createOWL2RLObjectAllValuesFromFactory(OntConfig config) {
-        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.RLObjectAllValuesFromImpl.class, OWL.Restriction,
+        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.RLObjectAllValuesFromImpl.class, OWL2.Restriction,
                 OntClassImpl.RLObjectAllValuesFromImpl::new);
         EnhNodeFilter primary = config.getBoolean(OntModelControls.ALLOW_NAMED_CLASS_EXPRESSIONS) ? EnhNodeFilter.TRUE : EnhNodeFilter.ANON;
-        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL.Restriction))
+        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL2.Restriction))
                 .and(RestrictionType.OBJECT.getFilter())
                 .and((n, g) -> {
-                    ExtendedIterator<Triple> res = g.asGraph().find(n, OWL.allValuesFrom.asNode(), Node.ANY);
+                    ExtendedIterator<Triple> res = g.asGraph().find(n, OWL2.allValuesFrom.asNode(), Node.ANY);
                     try {
                         while (res.hasNext()) {
                             Node node = res.next().getObject();
@@ -302,12 +302,12 @@ final class OntClasses {
     }
 
     public static EnhNodeFactory createOWL2QLIntersectionOfFactory(OntConfig config) {
-        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.QLIntersectionOfImpl.class, OWL.Class,
+        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.QLIntersectionOfImpl.class, OWL2.Class,
                 OntClassImpl.QLIntersectionOfImpl::new);
         EnhNodeFilter primary = config.getBoolean(OntModelControls.ALLOW_NAMED_CLASS_EXPRESSIONS) ? EnhNodeFilter.TRUE : EnhNodeFilter.ANON;
-        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL.Class))
+        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL2.Class))
                 .and((n, g) -> {
-                    ExtendedIterator<Triple> res = g.asGraph().find(n, OWL.intersectionOf.asNode(), Node.ANY);
+                    ExtendedIterator<Triple> res = g.asGraph().find(n, OWL2.intersectionOf.asNode(), Node.ANY);
                     try {
                         while (res.hasNext()) {
                             Node listNode = res.next().getObject();
@@ -333,12 +333,12 @@ final class OntClasses {
     }
 
     public static EnhNodeFactory createOWL2RLIntersectionOfFactory(OntConfig config) {
-        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.RLIntersectionOfImpl.class, OWL.Class,
+        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.RLIntersectionOfImpl.class, OWL2.Class,
                 OntClassImpl.RLIntersectionOfImpl::new);
         EnhNodeFilter primary = config.getBoolean(OntModelControls.ALLOW_NAMED_CLASS_EXPRESSIONS) ? EnhNodeFilter.TRUE : EnhNodeFilter.ANON;
-        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL.Class))
+        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL2.Class))
                 .and((n, g) -> {
-                    ExtendedIterator<Triple> res = g.asGraph().find(n, OWL.intersectionOf.asNode(), Node.ANY);
+                    ExtendedIterator<Triple> res = g.asGraph().find(n, OWL2.intersectionOf.asNode(), Node.ANY);
                     try {
                         while (res.hasNext()) {
                             Node listNode = res.next().getObject();
@@ -383,12 +383,12 @@ final class OntClasses {
     }
 
     public static EnhNodeFactory createOWL2RLQLComplementOfFactory(OntConfig config) {
-        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.RLQLComplementOfImpl.class, OWL.Class,
+        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.RLQLComplementOfImpl.class, OWL2.Class,
                 OntClassImpl.RLQLComplementOfImpl::new);
         EnhNodeFilter primary = config.getBoolean(OntModelControls.ALLOW_NAMED_CLASS_EXPRESSIONS) ? EnhNodeFilter.TRUE : EnhNodeFilter.ANON;
-        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL.Class))
+        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL2.Class))
                 .and((n, g) -> {
-                    ExtendedIterator<Triple> res = g.asGraph().find(n, OWL.complementOf.asNode(), Node.ANY);
+                    ExtendedIterator<Triple> res = g.asGraph().find(n, OWL2.complementOf.asNode(), Node.ANY);
                     try {
                         while (res.hasNext()) {
                             Node node = res.next().getObject();
@@ -409,12 +409,12 @@ final class OntClasses {
     }
 
     public static EnhNodeFactory createOWL2RLUnionOfFactory(OntConfig config) {
-        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.RLUnionOfImpl.class, OWL.Class,
+        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.RLUnionOfImpl.class, OWL2.Class,
                 OntClassImpl.RLUnionOfImpl::new);
         EnhNodeFilter primary = config.getBoolean(OntModelControls.ALLOW_NAMED_CLASS_EXPRESSIONS) ? EnhNodeFilter.TRUE : EnhNodeFilter.ANON;
-        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL.Class))
+        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL2.Class))
                 .and((n, g) -> {
-                    ExtendedIterator<Triple> res = g.asGraph().find(n, OWL.unionOf.asNode(), Node.ANY);
+                    ExtendedIterator<Triple> res = g.asGraph().find(n, OWL2.unionOf.asNode(), Node.ANY);
                     try {
                         while (res.hasNext()) {
                             Node listNode = res.next().getObject();
@@ -440,13 +440,13 @@ final class OntClasses {
     }
 
     public static EnhNodeFactory createOWL2RLObjectMaxCardinalityFactory(OntConfig config) {
-        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.RLObjectMaxCardinalityImpl.class, OWL.Restriction,
+        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.RLObjectMaxCardinalityImpl.class, OWL2.Restriction,
                 OntClassImpl.RLObjectMaxCardinalityImpl::new);
         EnhNodeFilter primary = config.getBoolean(OntModelControls.ALLOW_NAMED_CLASS_EXPRESSIONS) ? EnhNodeFilter.TRUE : EnhNodeFilter.ANON;
-        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL.Restriction))
+        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL2.Restriction))
                 .and(RestrictionType.OBJECT.getFilter())
                 .and((n, g) -> {
-                    ExtendedIterator<Triple> byMaxQualifiedCardinality = g.asGraph().find(n, OWL.maxQualifiedCardinality.asNode(), Node.ANY);
+                    ExtendedIterator<Triple> byMaxQualifiedCardinality = g.asGraph().find(n, OWL2.maxQualifiedCardinality.asNode(), Node.ANY);
                     try {
                         while (byMaxQualifiedCardinality.hasNext()) {
                             Node cardinality = byMaxQualifiedCardinality.next().getObject();
@@ -454,7 +454,7 @@ final class OntClasses {
                                 continue;
                             }
                             if (Iterators.anyMatch(
-                                    g.asGraph().find(n, OWL.onClass.asNode(), Node.ANY)
+                                    g.asGraph().find(n, OWL2.onClass.asNode(), Node.ANY)
                                             .mapWith(it ->
                                                     OntEnhGraph.asPersonalityModel(g)
                                                             .safeFindNodeAs(it.getObject(), OntClass.class)
@@ -467,20 +467,20 @@ final class OntClasses {
                         byMaxQualifiedCardinality.close();
                     }
                     return Iterators.anyMatch(
-                            g.asGraph().find(n, OWL.maxCardinality.asNode(), Node.ANY).mapWith(Triple::getObject),
+                            g.asGraph().find(n, OWL2.maxCardinality.asNode(), Node.ANY).mapWith(Triple::getObject),
                             OntClasses::isZeroOrOneNonNegativeInteger);
                 });
         return OntEnhNodeFactories.createCommon(maker, RESTRICTION_FINDER, filter);
     }
 
     public static EnhNodeFactory createOWL2RLDataMaxCardinalityFactory(OntConfig config) {
-        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.RLDataMaxCardinalityImpl.class, OWL.Restriction,
+        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.RLDataMaxCardinalityImpl.class, OWL2.Restriction,
                 OntClassImpl.RLDataMaxCardinalityImpl::new);
         EnhNodeFilter primary = config.getBoolean(OntModelControls.ALLOW_NAMED_CLASS_EXPRESSIONS) ? EnhNodeFilter.TRUE : EnhNodeFilter.ANON;
-        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL.Restriction))
+        EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL2.Restriction))
                 .and(RestrictionType.DATA.getFilter())
                 .and((n, g) -> {
-                    ExtendedIterator<Triple> byMaxQualifiedCardinality = g.asGraph().find(n, OWL.maxQualifiedCardinality.asNode(), Node.ANY);
+                    ExtendedIterator<Triple> byMaxQualifiedCardinality = g.asGraph().find(n, OWL2.maxQualifiedCardinality.asNode(), Node.ANY);
                     try {
                         while (byMaxQualifiedCardinality.hasNext()) {
                             Node cardinality = byMaxQualifiedCardinality.next().getObject();
@@ -488,7 +488,7 @@ final class OntClasses {
                                 continue;
                             }
                             if (Iterators.anyMatch(
-                                    g.asGraph().find(n, OWL.onDataRange.asNode(), Node.ANY)
+                                    g.asGraph().find(n, OWL2.onDataRange.asNode(), Node.ANY)
                                             .mapWith(it -> OntEnhGraph.asPersonalityModel(g)
                                                     .findNodeAs(it.getObject(), OntDataRange.class)
                                             ), Objects::nonNull)) {
@@ -499,7 +499,7 @@ final class OntClasses {
                         byMaxQualifiedCardinality.close();
                     }
                     return Iterators.anyMatch(
-                            g.asGraph().find(n, OWL.maxCardinality.asNode(), Node.ANY).mapWith(Triple::getObject),
+                            g.asGraph().find(n, OWL2.maxCardinality.asNode(), Node.ANY).mapWith(Triple::getObject),
                             OntClasses::isZeroOrOneNonNegativeInteger);
                 });
         return OntEnhNodeFactories.createCommon(maker, RESTRICTION_FINDER, filter);
@@ -569,7 +569,7 @@ final class OntClasses {
         }
 
         public EnhNodeFilter getFilter() {
-            return getFilter(OWL.onProperty);
+            return getFilter(OWL2.onProperty);
         }
 
         @Override
@@ -602,19 +602,19 @@ final class OntClasses {
     public static class HasSelfFilter implements EnhNodeFilter {
         @Override
         public boolean test(Node n, EnhGraph g) {
-            return g.asGraph().contains(n, OWL.hasSelf.asNode(), StdModels.TRUE.asNode());
+            return g.asGraph().contains(n, OWL2.hasSelf.asNode(), StdModels.TRUE.asNode());
         }
     }
 
     public static class HasSelfMaker extends EnhNodeProducer.WithType {
         public HasSelfMaker() {
-            super(OntClassImpl.HasSelfImpl.class, OWL.Restriction);
+            super(OntClassImpl.HasSelfImpl.class, OWL2.Restriction);
         }
 
         @Override
         public void doInsert(Node node, EnhGraph eg) {
             super.doInsert(node, eg);
-            eg.asGraph().add(Triple.create(node, OWL.hasSelf.asNode(), StdModels.TRUE.asNode()));
+            eg.asGraph().add(Triple.create(node, OWL2.hasSelf.asNode(), StdModels.TRUE.asNode()));
         }
     }
 
@@ -627,26 +627,26 @@ final class OntClasses {
         private static final Implementation LIST_FACTORY = STDObjectFactories.RDF_LIST;
         private static final Node ANY = Node.ANY;
         private static final Node TYPE = RDF.Nodes.type;
-        private static final Node CLASS = OWL.Class.asNode();
-        private static final Node RESTRICTION = OWL.Restriction.asNode();
-        private static final Node ON_PROPERTY = OWL.onProperty.asNode();
-        private static final Node HAS_VALUE = OWL.hasValue.asNode();
-        private static final Node QUALIFIED_CARDINALITY = OWL.qualifiedCardinality.asNode();
-        private static final Node CARDINALITY = OWL.cardinality.asNode();
-        private static final Node MIN_QUALIFIED_CARDINALITY = OWL.minQualifiedCardinality.asNode();
-        private static final Node MIN_CARDINALITY = OWL.minCardinality.asNode();
-        private static final Node MAX_QUALIFIED_CARDINALITY = OWL.maxQualifiedCardinality.asNode();
-        private static final Node MAX_CARDINALITY = OWL.maxCardinality.asNode();
-        private static final Node SOME_VALUES_FROM = OWL.someValuesFrom.asNode();
-        private static final Node ALL_VALUES_FROM = OWL.allValuesFrom.asNode();
-        private static final Node ON_CLASS = OWL.onClass.asNode();
-        private static final Node ON_DATA_RANGE = OWL.onDataRange.asNode();
-        private static final Node HAS_SELF = OWL.hasSelf.asNode();
-        private static final Node ON_PROPERTIES = OWL.onProperties.asNode();
-        private static final Node INTERSECTION_OF = OWL.intersectionOf.asNode();
-        private static final Node UNION_OF = OWL.unionOf.asNode();
-        private static final Node ONE_OF = OWL.oneOf.asNode();
-        private static final Node COMPLEMENT_OF = OWL.complementOf.asNode();
+        private static final Node CLASS = OWL2.Class.asNode();
+        private static final Node RESTRICTION = OWL2.Restriction.asNode();
+        private static final Node ON_PROPERTY = OWL2.onProperty.asNode();
+        private static final Node HAS_VALUE = OWL2.hasValue.asNode();
+        private static final Node QUALIFIED_CARDINALITY = OWL2.qualifiedCardinality.asNode();
+        private static final Node CARDINALITY = OWL2.cardinality.asNode();
+        private static final Node MIN_QUALIFIED_CARDINALITY = OWL2.minQualifiedCardinality.asNode();
+        private static final Node MIN_CARDINALITY = OWL2.minCardinality.asNode();
+        private static final Node MAX_QUALIFIED_CARDINALITY = OWL2.maxQualifiedCardinality.asNode();
+        private static final Node MAX_CARDINALITY = OWL2.maxCardinality.asNode();
+        private static final Node SOME_VALUES_FROM = OWL2.someValuesFrom.asNode();
+        private static final Node ALL_VALUES_FROM = OWL2.allValuesFrom.asNode();
+        private static final Node ON_CLASS = OWL2.onClass.asNode();
+        private static final Node ON_DATA_RANGE = OWL2.onDataRange.asNode();
+        private static final Node HAS_SELF = OWL2.hasSelf.asNode();
+        private static final Node ON_PROPERTIES = OWL2.onProperties.asNode();
+        private static final Node INTERSECTION_OF = OWL2.intersectionOf.asNode();
+        private static final Node UNION_OF = OWL2.unionOf.asNode();
+        private static final Node ONE_OF = OWL2.oneOf.asNode();
+        private static final Node COMPLEMENT_OF = OWL2.complementOf.asNode();
         private static final Node TRUE = NodeFactory.createLiteralByValue(Boolean.TRUE, XSDDatatype.XSDboolean);
         private static final Node SUB_CLASS_OF = RDFS.subClassOf.asNode();
         private static final String NON_NEGATIVE_INTEGER_URI = XSD.nonNegativeInteger.getURI();

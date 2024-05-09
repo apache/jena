@@ -21,10 +21,10 @@ package org.apache.jena.ontapi;
 import org.apache.jena.ontapi.model.OntDataRange;
 import org.apache.jena.ontapi.model.OntFacetRestriction;
 import org.apache.jena.ontapi.model.OntModel;
-import org.apache.jena.ontapi.vocabulary.XSD;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.vocabulary.XSD;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

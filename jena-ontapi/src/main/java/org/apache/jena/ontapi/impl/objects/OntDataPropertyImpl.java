@@ -18,6 +18,8 @@
 
 package org.apache.jena.ontapi.impl.objects;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.ontapi.OntModelControls;
 import org.apache.jena.ontapi.impl.OntGraphModelImpl;
 import org.apache.jena.ontapi.model.OntClass;
@@ -25,20 +27,18 @@ import org.apache.jena.ontapi.model.OntDataProperty;
 import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.model.OntNegativeAssertion;
 import org.apache.jena.ontapi.model.OntStatement;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * An ontology object implementation with declarative type {@link OWL#DatatypeProperty owl:DatatypeProperty}.
+ * An ontology object implementation with declarative type {@link OWL2#DatatypeProperty owl:DatatypeProperty}.
  */
 public class OntDataPropertyImpl extends OntPropertyImpl implements OntDataProperty {
 
@@ -106,20 +106,20 @@ public class OntDataPropertyImpl extends OntPropertyImpl implements OntDataPrope
     @Override
     public boolean isFunctional() {
         return OntGraphModelImpl.configValue(getModel(), OntModelControls.USE_OWL_DATA_PROPERTY_FUNCTIONAL_FEATURE) &&
-                hasType(OWL.FunctionalProperty);
+                hasType(OWL2.FunctionalProperty);
     }
 
     @Override
     public OntDataPropertyImpl setFunctional(boolean functional) {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_DATA_PROPERTY_FUNCTIONAL_FEATURE, "owl:FunctionalProperty");
-        changeRDFType(OWL.FunctionalProperty, functional);
+        changeRDFType(OWL2.FunctionalProperty, functional);
         return this;
     }
 
     @Override
     public OntStatement addFunctionalDeclaration() {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_DATA_PROPERTY_FUNCTIONAL_FEATURE, "owl:FunctionalProperty");
-        return addStatement(RDF.type, OWL.FunctionalProperty);
+        return addStatement(RDF.type, OWL2.FunctionalProperty);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class OntDataPropertyImpl extends OntPropertyImpl implements OntDataPrope
 
     @Override
     public Optional<OntStatement> findRootStatement() {
-        return getOptionalRootStatement(this, OWL.DatatypeProperty);
+        return getOptionalRootStatement(this, OWL2.DatatypeProperty);
     }
 
     @Override

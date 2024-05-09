@@ -24,11 +24,11 @@ import org.apache.jena.ontapi.model.OntDataProperty;
 import org.apache.jena.ontapi.model.OntDataRange;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.model.OntObjectProperty;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.ontapi.vocabulary.XSD;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.SKOS;
+import org.apache.jena.vocabulary.XSD;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +37,7 @@ public class OntEntityTest {
     @Test
     public void testDefaultBuiltinClasses() {
         OntModel m = OntModelFactory.createModel();
-        Assertions.assertTrue(OWL.Thing.inModel(m).canAs(OntClass.class));
+        Assertions.assertTrue(OWL2.Thing.inModel(m).canAs(OntClass.class));
         Assertions.assertTrue(SKOS.Collection.inModel(m).canAs(OntClass.class));
 
         Assertions.assertFalse(RDF.type.inModel(m).canAs(OntClass.class));
@@ -57,14 +57,14 @@ public class OntEntityTest {
         Assertions.assertFalse(RDFS.Resource.inModel(m).canAs(OntDataRange.class));
         Assertions.assertFalse(RDF.Bag.inModel(m).canAs(OntDataRange.class));
         Assertions.assertFalse(SKOS.broader.inModel(m).canAs(OntDataRange.class));
-        Assertions.assertFalse(OWL.Nothing.inModel(m).canAs(OntDataRange.class));
-        Assertions.assertFalse(OWL.bottomDataProperty.inModel(m).canAs(OntDataRange.class));
+        Assertions.assertFalse(OWL2.Nothing.inModel(m).canAs(OntDataRange.class));
+        Assertions.assertFalse(OWL2.bottomDataProperty.inModel(m).canAs(OntDataRange.class));
     }
 
     @Test
     public void testDefaultBuiltinDatatypeProperties() {
         OntModel m = OntModelFactory.createModel();
-        Assertions.assertTrue(OWL.topDataProperty.inModel(m).canAs(OntDataProperty.class));
+        Assertions.assertTrue(OWL2.topDataProperty.inModel(m).canAs(OntDataProperty.class));
 
         Assertions.assertFalse(SKOS.altLabel.inModel(m).canAs(OntDataProperty.class));
         Assertions.assertFalse(RDFS.comment.inModel(m).canAs(OntDataProperty.class));
@@ -72,14 +72,14 @@ public class OntEntityTest {
         Assertions.assertFalse(RDFS.Resource.inModel(m).canAs(OntDataProperty.class));
         Assertions.assertFalse(RDF.Bag.inModel(m).canAs(OntDataProperty.class));
         Assertions.assertFalse(SKOS.ConceptScheme.inModel(m).canAs(OntDataProperty.class));
-        Assertions.assertFalse(OWL.Thing.inModel(m).canAs(OntDataProperty.class));
-        Assertions.assertFalse(OWL.topObjectProperty.inModel(m).canAs(OntDataProperty.class));
+        Assertions.assertFalse(OWL2.Thing.inModel(m).canAs(OntDataProperty.class));
+        Assertions.assertFalse(OWL2.topObjectProperty.inModel(m).canAs(OntDataProperty.class));
     }
 
     @Test
     public void testDefaultBuiltinObjectProperties() {
         OntModel m = OntModelFactory.createModel();
-        Assertions.assertTrue(OWL.topObjectProperty.inModel(m).canAs(OntObjectProperty.class));
+        Assertions.assertTrue(OWL2.topObjectProperty.inModel(m).canAs(OntObjectProperty.class));
         Assertions.assertTrue(SKOS.exactMatch.inModel(m).canAs(OntObjectProperty.class));
 
         Assertions.assertFalse(SKOS.altLabel.inModel(m).canAs(OntObjectProperty.class));
@@ -88,13 +88,13 @@ public class OntEntityTest {
         Assertions.assertFalse(RDFS.Resource.inModel(m).canAs(OntObjectProperty.class));
         Assertions.assertFalse(RDF.Bag.inModel(m).canAs(OntObjectProperty.class));
         Assertions.assertFalse(SKOS.ConceptScheme.inModel(m).canAs(OntObjectProperty.class));
-        Assertions.assertFalse(OWL.Thing.inModel(m).canAs(OntObjectProperty.class));
+        Assertions.assertFalse(OWL2.Thing.inModel(m).canAs(OntObjectProperty.class));
     }
 
     @Test
     public void testDefaultBuiltinAnnotationProperties() {
         OntModel m = OntModelFactory.createModel();
-        Assertions.assertTrue(OWL.incompatibleWith.inModel(m).canAs(OntAnnotationProperty.class));
+        Assertions.assertTrue(OWL2.incompatibleWith.inModel(m).canAs(OntAnnotationProperty.class));
         Assertions.assertTrue(SKOS.altLabel.inModel(m).canAs(OntAnnotationProperty.class));
         Assertions.assertTrue(RDFS.comment.inModel(m).canAs(OntAnnotationProperty.class));
 
@@ -102,7 +102,7 @@ public class OntEntityTest {
         Assertions.assertFalse(RDFS.Resource.inModel(m).canAs(OntAnnotationProperty.class));
         Assertions.assertFalse(RDF.Bag.inModel(m).canAs(OntAnnotationProperty.class));
         Assertions.assertFalse(SKOS.ConceptScheme.inModel(m).canAs(OntAnnotationProperty.class));
-        Assertions.assertFalse(OWL.Thing.inModel(m).canAs(OntAnnotationProperty.class));
-        Assertions.assertFalse(OWL.topObjectProperty.inModel(m).canAs(OntAnnotationProperty.class));
+        Assertions.assertFalse(OWL2.Thing.inModel(m).canAs(OntAnnotationProperty.class));
+        Assertions.assertFalse(OWL2.topObjectProperty.inModel(m).canAs(OntAnnotationProperty.class));
     }
 }

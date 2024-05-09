@@ -18,19 +18,19 @@
 
 package org.apache.jena.ontapi.impl.factories;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.graph.FrontsNode;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.common.OntEnhGraph;
 import org.apache.jena.ontapi.common.OntPersonality;
 import org.apache.jena.ontapi.impl.OntGraphModelImpl;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntIndividual;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.ontapi.vocabulary.SWRL;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.graph.FrontsNode;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.SWRL;
 
 import java.util.Map;
 import java.util.Set;
@@ -41,12 +41,12 @@ final class OntIndividuals {
     private static final String FORBIDDEN_SUBJECTS = OntIndividual.Anonymous.class.getName() + ".InSubject";
     private static final String FORBIDDEN_OBJECTS = OntIndividual.Anonymous.class.getName() + ".InObject";
     // allowed predicates for a subject (the pattern '_:x p ANY'):
-    private static final Set<Node> FOR_SUBJECT = Stream.of(OWL.sameAs, OWL.differentFrom)
+    private static final Set<Node> FOR_SUBJECT = Stream.of(OWL2.sameAs, OWL2.differentFrom)
             .map(FrontsNode::asNode).collect(Collectors.toUnmodifiableSet());
     // allowed predicates for an object (the pattern 'ANY p _:x'):
-    private static final Set<Node> FOR_OBJECT = Stream.of(OWL.sameAs, OWL.differentFrom,
-                    OWL.sourceIndividual, OWL.targetIndividual, OWL.hasValue,
-                    OWL.annotatedSource, OWL.annotatedTarget,
+    private static final Set<Node> FOR_OBJECT = Stream.of(OWL2.sameAs, OWL2.differentFrom,
+                    OWL2.sourceIndividual, OWL2.targetIndividual, OWL2.hasValue,
+                    OWL2.annotatedSource, OWL2.annotatedTarget,
                     RDF.first, SWRL.argument1, SWRL.argument2)
             .map(FrontsNode::asNode).collect(Collectors.toUnmodifiableSet());
 

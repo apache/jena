@@ -19,11 +19,11 @@
 package org.apache.jena.ontapi.model;
 
 import org.apache.jena.ontapi.OntJenaException;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.ontapi.vocabulary.SWRL;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.SWRL;
 
 import java.util.Collection;
 import java.util.Optional;

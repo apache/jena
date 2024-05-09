@@ -18,7 +18,7 @@
 
 package org.apache.jena.ontapi.model;
 
-import org.apache.jena.ontapi.vocabulary.OWL;
+import org.apache.jena.vocabulary.OWL2;
 
 import java.util.Collection;
 import java.util.stream.Stream;
@@ -59,8 +59,8 @@ public interface OntDisjoint<O extends OntObject> extends OntObject, HasRDFNodeL
 
         /**
          * Gets an {@link OntList ONT-List}.
-         * Since both predicates {@link OWL#members owl:members} and
-         * {@link OWL#distinctMembers owl:distinctMembers} are allowed by specification,
+         * Since both predicates {@link OWL2#members owl:members} and
+         * {@link OWL2#distinctMembers owl:distinctMembers} are allowed by specification,
          * this method returns most bulky list.
          * In case both lists have the same dimension, the method chooses one that is on predicate {@code owl:members}.
          * The method {@link OntModel#createDifferentIndividuals(Collection)} also prefers {@code owl:members} predicate.
@@ -73,9 +73,9 @@ public interface OntDisjoint<O extends OntObject> extends OntObject, HasRDFNodeL
         OntList<OntIndividual> getList();
 
         /**
-         * Lists all members from []-list on predicate {@link OWL#members owl:members}
+         * Lists all members from []-list on predicate {@link OWL2#members owl:members}
          * with concatenation all members from []-list
-         * on predicate {@link OWL#distinctMembers owl:distinctMembers}.
+         * on predicate {@link OWL2#distinctMembers owl:distinctMembers}.
          *
          * @return <b>not distinct</b> Stream of {@link OntIndividual individual}s
          */

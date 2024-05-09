@@ -18,19 +18,19 @@
 
 package org.apache.jena.ontapi.impl.repositories;
 
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphListener;
+import org.apache.jena.graph.GraphMemFactory;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.UnionGraph;
 import org.apache.jena.ontapi.impl.GraphListenerBase;
 import org.apache.jena.ontapi.impl.OntModelEvent;
 import org.apache.jena.ontapi.utils.Graphs;
 import org.apache.jena.ontapi.utils.Iterators;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.GraphListener;
-import org.apache.jena.graph.GraphMemFactory;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +105,7 @@ public class OntUnionGraphListener extends GraphListenerBase implements UnionGra
             Graph thisOntBaseGraph = thisGraph.getBaseGraph();
             Node ontology = Graphs.ontologyNode(thisOntBaseGraph)
                     .orElseGet(() -> Graphs.createOntologyHeaderNode(thisOntBaseGraph, null));
-            thisOntBaseGraph.add(ontology, OWL.imports.asNode(), ontSubGraphIri);
+            thisOntBaseGraph.add(ontology, OWL2.imports.asNode(), ontSubGraphIri);
 
             UnionGraph ontSubGraph = ontGraphRepository.put(subGraph);
             if (subGraph != ontSubGraph) {
@@ -131,7 +131,7 @@ public class OntUnionGraphListener extends GraphListenerBase implements UnionGra
         if (superGraphOntology != null) {
             Node graphName = Graphs.findOntologyNameNode(graph.getBaseGraph()).filter(Node::isURI).orElse(null);
             if (graphName != null) {
-                superGraph.getBaseGraph().add(superGraphOntology, OWL.imports.asNode(), graphName);
+                superGraph.getBaseGraph().add(superGraphOntology, OWL2.imports.asNode(), graphName);
                 ontGraphRepository.put(superGraph);
             }
         }
@@ -153,7 +153,7 @@ public class OntUnionGraphListener extends GraphListenerBase implements UnionGra
                 Graph thisOntBaseGraph = graph.getBaseGraph();
                 Node ontology = Graphs.ontologyNode(thisOntBaseGraph)
                         .orElseGet(() -> Graphs.createOntologyHeaderNode(thisOntBaseGraph, null));
-                thisOntBaseGraph.delete(ontology, OWL.imports.asNode(), ontSubGraphIri);
+                thisOntBaseGraph.delete(ontology, OWL2.imports.asNode(), ontSubGraphIri);
                 List<Graph> toDetach = graph.subGraphs()
                         .filter(it -> it instanceof UnionGraph)
                         .filter(
@@ -290,12 +290,12 @@ public class OntUnionGraphListener extends GraphListenerBase implements UnionGra
     }
 
     private boolean isNameTriple(Triple t) {
-        return t.getPredicate().equals(RDF.type.asNode()) && t.getObject().equals(OWL.Ontology.asNode()) ||
-                t.getPredicate().equals(OWL.versionIRI.asNode()) && t.getObject().isURI();
+        return t.getPredicate().equals(RDF.type.asNode()) && t.getObject().equals(OWL2.Ontology.asNode()) ||
+                t.getPredicate().equals(OWL2.versionIRI.asNode()) && t.getObject().isURI();
     }
 
     private boolean isImportTriple(Triple t, Graph g) {
-        if (!t.getObject().isURI() || !OWL.imports.asNode().equals(t.getPredicate())) {
+        if (!t.getObject().isURI() || !OWL2.imports.asNode().equals(t.getPredicate())) {
             return false;
         }
         Node subject = Graphs.ontologyNode(g).orElse(null);

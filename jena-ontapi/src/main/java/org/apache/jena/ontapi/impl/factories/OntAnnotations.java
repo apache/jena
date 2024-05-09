@@ -18,32 +18,32 @@
 
 package org.apache.jena.ontapi.impl.factories;
 
-import org.apache.jena.ontapi.impl.objects.OntAnnotationImpl;
-import org.apache.jena.ontapi.model.OntAnnotation;
-import org.apache.jena.ontapi.utils.Iterators;
-import org.apache.jena.ontapi.utils.StdModels;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.enhanced.EnhGraph;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.ontapi.impl.objects.OntAnnotationImpl;
+import org.apache.jena.ontapi.model.OntAnnotation;
+import org.apache.jena.ontapi.utils.Iterators;
+import org.apache.jena.ontapi.utils.StdModels;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.Set;
 
 final class OntAnnotations {
     public static final Set<Node> REQUIRED_PROPERTY_NODES = StdModels.asUnmodifiableNodeSet(OntAnnotationImpl.REQUIRED_PROPERTIES);
-    public static final Node AXIOM = OWL.Axiom.asNode();
-    public static final Node ANNOTATION = OWL.Annotation.asNode();
+    public static final Node AXIOM = OWL2.Axiom.asNode();
+    public static final Node ANNOTATION = OWL2.Annotation.asNode();
     public static final Set<Node> EXTRA_ROOT_TYPES_AS_NODES = StdModels.asUnmodifiableNodeSet(OntAnnotationImpl.EXTRA_ROOT_TYPES);
 
     /**
      * Lists all root {@link Node}s of top-level {@link OntAnnotation}s in the given model.
      * In OWL2 a top-level annotation must have one of the following {@code rdf:type}s:
-     * {@link OWL#Axiom owl:Axiom}, {@link OWL#AllDisjointClasses owl:AllDisjointClasses},
-     * {@link OWL#AllDisjointProperties owl:AllDisjointProperties}, {@link OWL#AllDifferent owl:AllDifferent} or
-     * {@link OWL#NegativePropertyAssertion owl:NegativePropertyAssertion}
+     * {@link OWL2#Axiom owl:Axiom}, {@link OWL2#AllDisjointClasses owl:AllDisjointClasses},
+     * {@link OWL2#AllDisjointProperties owl:AllDisjointProperties}, {@link OWL2#AllDifferent owl:AllDifferent} or
+     * {@link OWL2#NegativePropertyAssertion owl:NegativePropertyAssertion}
      *
      * @param eg {@link EnhGraph} model to search in
      * @return {@link ExtendedIterator} of {@link Node}s

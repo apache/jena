@@ -19,13 +19,13 @@
 package org.apache.jena.ontapi.model;
 
 import org.apache.jena.ontapi.OntJenaException;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 import java.util.Arrays;
@@ -206,7 +206,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
 
     /**
      * Lists all {@code HasKey} {@link OntList ontology []-list}s
-     * that are attached to this class expression on predicate {@link OWL#hasKey owl:hasKey}.
+     * that are attached to this class expression on predicate {@link OWL2#hasKey owl:hasKey}.
      *
      * @return {@code Stream} of {@link OntList}s with parameter-type {@code OntDOP}
      */
@@ -234,7 +234,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
     /**
      * Creates a {@code HasKey} logical construction as {@link OntList ontology []-list}
      * of {@link OntRelationalProperty Object or Data Property Expression}s
-     * that is attached to this Class Expression using the predicate {@link OWL#hasKey owl:hasKey}.
+     * that is attached to this Class Expression using the predicate {@link OWL2#hasKey owl:hasKey}.
      * The resulting rdf-list will consist of all the elements of the specified collection
      * in the same order but with exclusion of duplicates.
      * Note: {@code null}s in the collection will cause {@link OntJenaException.IllegalArgument exception}.
@@ -451,7 +451,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
      * @see OntDisjoint.Classes
      */
     default OntStatement addDisjointWithStatement(OntClass other) {
-        return addStatement(OWL.disjointWith, other);
+        return addStatement(OWL2.disjointWith, other);
     }
 
     /**
@@ -465,7 +465,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
      * @see OntDataRange.Named#addEquivalentClassStatement(OntDataRange)
      */
     default OntStatement addEquivalentClassStatement(OntClass other) {
-        return addStatement(OWL.equivalentClass, other);
+        return addStatement(OWL2.equivalentClass, other);
     }
 
     /**
@@ -602,7 +602,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
     /**
      * Removes the specified disjoint class resource.
      * No-op in case no match found.
-     * Removes all {@link OWL#disjointWith owl:disjointWith} statements with all their annotations
+     * Removes all {@link OWL2#disjointWith owl:disjointWith} statements with all their annotations
      * in case {@code null} is specified.
      *
      * @param other {@link Resource}, or {@code null} to remove all disjoint classes
@@ -612,14 +612,14 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
      * @see OntDisjoint.Classes
      */
     default OntClass removeDisjointClass(Resource other) {
-        remove(OWL.disjointWith, other);
+        remove(OWL2.disjointWith, other);
         return this;
     }
 
     /**
      * Removes the given equivalent class resource including the statement's annotations.
      * No-op in case no match found.
-     * Removes all {@link OWL#equivalentClass owl:equivalentClass} statements with all their annotations
+     * Removes all {@link OWL2#equivalentClass owl:equivalentClass} statements with all their annotations
      * in case {@code null} is specified.
      *
      * @param other {@link Resource}, or {@code null} to remove all equivalent classes
@@ -629,14 +629,14 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
      * @see OntDataRange.Named#removeEquivalentClass(Resource)
      */
     default OntClass removeEquivalentClass(Resource other) {
-        remove(OWL.equivalentClass, other);
+        remove(OWL2.equivalentClass, other);
         return this;
     }
 
     /**
      * Deletes all {@code HasKey} []-list including its annotations,
      * i.e., all those statements with the predicate
-     * {@link OWL#hasKey owl:hasKey} for which this resource is a subject.
+     * {@link OWL2#hasKey owl:hasKey} for which this resource is a subject.
      *
      * @return <b>this</b> instance to allow cascading calls
      * @throws OntJenaException if the list is not found
@@ -888,7 +888,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
 
         /**
          * Lists all {@code DisjointUnion} {@link OntList ontology list}s that are attached to this OWL Class
-         * on predicate {@link OWL#disjointUnionOf owl:disjointUnionOf}.
+         * on predicate {@link OWL2#disjointUnionOf owl:disjointUnionOf}.
          *
          * @return {@code Stream} of {@link OntList}s with parameter-type {@code OntCE}
          */
@@ -896,7 +896,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
 
         /**
          * Creates a {@code DisjointUnion} as {@link OntList ontology []-list} of {@link OntClass Class Expression}s
-         * that is attached to this OWL Class using the predicate {@link OWL#disjointUnionOf owl:disjointUnionOf}.
+         * that is attached to this OWL Class using the predicate {@link OWL2#disjointUnionOf owl:disjointUnionOf}.
          * The resulting rdf-list will consist of all the elements of the specified collection
          * in the same order but with exclusion of duplicates.
          * Note: {@code null}s in the collection will cause {@link OntJenaException.IllegalArgument exception}.
@@ -1083,7 +1083,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
 
         /**
          * Deletes all {@code DisjointUnion} []-lists including their annotations,
-         * i.e., all those statements with the predicate {@link OWL#disjointUnionOf owl:disjointUnionOf}
+         * i.e., all those statements with the predicate {@link OWL2#disjointUnionOf owl:disjointUnionOf}
          * for which this resource is a subject.
          *
          * @return <b>this</b> instance to allow cascading calls
@@ -1096,7 +1096,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
 
         /**
          * Returns all class expressions from the right part of the statement with this class as a subject
-         * and {@link OWL#disjointUnionOf owl:disjointUnionOf} as a predicate
+         * and {@link OWL2#disjointUnionOf owl:disjointUnionOf} as a predicate
          * (the triple pattern: {@code CN owl:disjointUnionOf ( C1 ... Cn )}).
          * If there are several []-lists in the model that satisfy these conditions,
          * all their content will be merged into the one distinct stream.
@@ -1197,7 +1197,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
 
     /**
      * An abstraction that unites all {@link Restriction Restriction}s
-     * with the predicate {@link OWL#onProperties owl:onProperties}.
+     * with the predicate {@link OWL2#onProperties owl:onProperties}.
      *
      * @param <O> a value type
      * @param <P> any subtype of {@link OntRelationalProperty}
@@ -1208,7 +1208,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
 
     /**
      * An abstract class expression that unites all {@link Restriction Restriction}s
-     * with the predicate {@link OWL#onProperty owl:onProperty}.
+     * with the predicate {@link OWL2#onProperty owl:onProperty}.
      *
      * @param <P> any subtype of {@link OntRelationalProperty}
      */
@@ -1216,7 +1216,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
     }
 
     /**
-     * A supertype for all class expressions with the type {@link OWL#Restriction}.
+     * A supertype for all class expressions with the type {@link OWL2#Restriction}.
      */
     interface Restriction extends OntClass {
     }

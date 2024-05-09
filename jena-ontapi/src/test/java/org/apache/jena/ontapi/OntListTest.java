@@ -18,6 +18,7 @@
 
 package org.apache.jena.ontapi;
 
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.ontapi.impl.OntGraphModelImpl;
 import org.apache.jena.ontapi.model.OntAnnotationProperty;
 import org.apache.jena.ontapi.model.OntClass;
@@ -32,9 +33,6 @@ import org.apache.jena.ontapi.model.OntRelationalProperty;
 import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.ontapi.testutils.ModelTestUtils;
 import org.apache.jena.ontapi.utils.Iterators;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFList;
@@ -42,6 +40,8 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.util.iterator.NullIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
 import org.junit.jupiter.api.Assertions;
@@ -313,7 +313,7 @@ public class OntListTest {
 
         list.add(p2).add(p3).add(p4);
         Assertions.assertEquals(6, list.spec().count());
-        Set<Statement> set = ModelTestUtils.getAssociatedStatements(m.listStatements(null, OWL.propertyChainAxiom, (RDFNode) null)
+        Set<Statement> set = ModelTestUtils.getAssociatedStatements(m.listStatements(null, OWL2.propertyChainAxiom, (RDFNode) null)
                 .mapWith(Statement::getObject).mapWith(RDFNode::asResource).toList().get(0));
         Assertions.assertEquals(set, list.spec().collect(Collectors.toSet()));
 
@@ -427,10 +427,10 @@ public class OntListTest {
         Assertions.assertEquals(Arrays.asList(p2, p3), p23.members().collect(Collectors.toList()));
         p334.getMainStatement().annotate(m.getRDFSComment(), m.createLiteral("p3, p3, p4"));
         p23.getMainStatement().annotate(m.getRDFSComment(), m.createLiteral("p2, p3"));
-        Assertions.assertEquals(2, m.statements(null, RDF.type, OWL.Axiom).count());
+        Assertions.assertEquals(2, m.statements(null, RDF.type, OWL2.Axiom).count());
         Assertions.assertSame(p1, p1.removePropertyChain(p334));
         Assertions.assertEquals(2, m.objectProperties().flatMap(OntObjectProperty::propertyChains).count());
-        Assertions.assertEquals(1, m.statements(null, RDF.type, OWL.Axiom).count());
+        Assertions.assertEquals(1, m.statements(null, RDF.type, OWL2.Axiom).count());
         Assertions.assertSame(p1, p1.clearPropertyChains());
         Assertions.assertEquals(4, m.size());
     }
@@ -467,11 +467,11 @@ public class OntListTest {
 
         d451.getMainStatement().addAnnotation(m.getRDFSLabel(), "ce4, ce5, ce1");
         d23.getMainStatement().addAnnotation(m.getRDFSLabel(), "ce2, ce3");
-        Assertions.assertEquals(2, m.statements(null, RDF.type, OWL.Axiom).count());
+        Assertions.assertEquals(2, m.statements(null, RDF.type, OWL2.Axiom).count());
         clazz.asNamed().removeDisjointUnion(d451);
 
         Assertions.assertEquals(2, m.classes().flatMap(OntClass.Named::disjointUnions).count());
-        Assertions.assertEquals(1, m.statements(null, RDF.type, OWL.Axiom).count());
+        Assertions.assertEquals(1, m.statements(null, RDF.type, OWL2.Axiom).count());
         clazz.asNamed().clearDisjointUnions();
         Assertions.assertEquals(12, m.size());
     }
@@ -510,11 +510,11 @@ public class OntListTest {
 
         h451.getMainStatement().addAnnotation(m.getRDFSComment(), "p4, p5, p1");
         h23.getMainStatement().addAnnotation(m.getRDFSComment(), "p2, p3");
-        Assertions.assertEquals(2, m.statements(null, RDF.type, OWL.Axiom).count());
+        Assertions.assertEquals(2, m.statements(null, RDF.type, OWL2.Axiom).count());
         Assertions.assertSame(clazz, clazz.removeHasKey(h451));
 
         Assertions.assertEquals(2, m.classes().flatMap(OntClass::hasKeys).count());
-        Assertions.assertEquals(1, m.statements(null, RDF.type, OWL.Axiom).count());
+        Assertions.assertEquals(1, m.statements(null, RDF.type, OWL2.Axiom).count());
         Assertions.assertSame(clazz, clazz.clearHasKeys());
         Assertions.assertEquals(7, m.size());
     }
@@ -556,7 +556,7 @@ public class OntListTest {
         OntDisjoint.Individuals d2 = m.createDifferentIndividuals(ce2.createIndividual(), ce3.createIndividual("I"));
 
 
-        Assertions.assertEquals(2, m.statements(null, OWL.members, null).count());
+        Assertions.assertEquals(2, m.statements(null, OWL2.members, null).count());
         Assertions.assertEquals(2, m.ontObjects(OntDisjoint.class).count());
 
         Assertions.assertEquals(1, d1.getList().get(1).removeFirst().members().count());
@@ -576,7 +576,7 @@ public class OntListTest {
         Assertions.assertEquals(3, list.size());
         Assertions.assertEquals(3, list.members().count());
 
-        OntStatement s = m.statements(null, null, OWL.Thing).findFirst().orElseThrow(AssertionError::new);
+        OntStatement s = m.statements(null, null, OWL2.Thing).findFirst().orElseThrow(AssertionError::new);
         m.remove(s).add(s.getSubject(), s.getPredicate(), m.createTypedLiteral(0));
 
         Assertions.assertFalse(list.isEmpty());

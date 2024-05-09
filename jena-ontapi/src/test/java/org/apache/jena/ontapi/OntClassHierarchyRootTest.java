@@ -20,7 +20,7 @@ package org.apache.jena.ontapi;
 
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntModel;
-import org.apache.jena.ontapi.vocabulary.OWL;
+import org.apache.jena.vocabulary.OWL2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -95,8 +95,8 @@ public class OntClassHierarchyRootTest {
         // |         \ .
         // A           G
         OntModel m = TestModelFactory.createClassesDGCFKBEHAG(OntModelFactory.createModel(spec.inst));
-        OntClass Thing = OWL.Thing.inModel(m).as(OntClass.class);
-        OntClass Nothing = OWL.Nothing.inModel(m).as(OntClass.class);
+        OntClass Thing = OWL2.Thing.inModel(m).as(OntClass.class);
+        OntClass Nothing = OWL2.Nothing.inModel(m).as(OntClass.class);
         m.getOntClass(TestModelFactory.NS + "F").addSuperClass(Thing);
 
         Assertions.assertFalse(m.getOntClass(TestModelFactory.NS + "A").isHierarchyRoot());
@@ -127,8 +127,8 @@ public class OntClassHierarchyRootTest {
         // |         \ .
         // A           G
         OntModel m = TestModelFactory.createClassesDGCFKBEHAG(OntModelFactory.createModel(spec.inst));
-        OntClass Thing = OWL.Thing.inModel(m).as(OntClass.class);
-        OntClass Nothing = OWL.Nothing.inModel(m).as(OntClass.class);
+        OntClass Thing = OWL2.Thing.inModel(m).as(OntClass.class);
+        OntClass Nothing = OWL2.Nothing.inModel(m).as(OntClass.class);
         m.getOntClass(TestModelFactory.NS + "F").addSuperClass(Thing);
 
         Assertions.assertFalse(m.getOntClass(TestModelFactory.NS + "A").isHierarchyRoot());

@@ -18,6 +18,8 @@
 
 package org.apache.jena.ontapi;
 
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntID;
 import org.apache.jena.ontapi.model.OntModel;
@@ -27,16 +29,14 @@ import org.apache.jena.ontapi.testutils.ModelTestUtils;
 import org.apache.jena.ontapi.utils.Iterators;
 import org.apache.jena.ontapi.utils.OntModels;
 import org.apache.jena.ontapi.utils.StdModels;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -81,7 +81,7 @@ public class ModelUtilsTest {
                 .map(Statement::getObject)
                 .filter(RDFNode::isAnon)
                 .map(RDFNode::asResource)
-                .filter(s -> s.hasProperty(OWL.someValuesFrom))
+                .filter(s -> s.hasProperty(OWL2.someValuesFrom))
                 .findFirst()
                 .orElseThrow(IllegalStateException::new);
 
@@ -107,7 +107,7 @@ public class ModelUtilsTest {
                 .addVersionInfo("lab5", "e2")
                 .addVersionInfo("lab5");
 
-        Property p = OWL.versionInfo;
+        Property p = OWL2.versionInfo;
         Assertions.assertEquals(2, ModelTestUtils.langValues(id, p, null).count());
         Assertions.assertEquals(3, ModelTestUtils.langValues(id, p, "e2").count());
         Assertions.assertEquals(1, ModelTestUtils.langValues(id, p, "language3").count());
@@ -153,12 +153,12 @@ public class ModelUtilsTest {
                 .addComment("A2")
                 .addComment("A3");
 
-        Triple t1 = Iterators.findFirst(m.getBaseGraph().find(Node.ANY, RDF.type.asNode(), OWL.AllDisjointClasses.asNode()))
+        Triple t1 = Iterators.findFirst(m.getBaseGraph().find(Node.ANY, RDF.type.asNode(), OWL2.AllDisjointClasses.asNode()))
                 .orElseThrow(AssertionError::new);
         OntStatement s1 = OntModels.toOntStatement(t1, m);
         Assertions.assertEquals(2, s1.annotations().count());
 
-        Triple t2 = Iterators.findFirst(m.getBaseGraph().find(Node.ANY, RDF.type.asNode(), OWL.Class.asNode()))
+        Triple t2 = Iterators.findFirst(m.getBaseGraph().find(Node.ANY, RDF.type.asNode(), OWL2.Class.asNode()))
                 .orElseThrow(AssertionError::new);
         OntStatement s2 = OntModels.toOntStatement(t2, m);
         Assertions.assertEquals(1, s2.annotations().count());

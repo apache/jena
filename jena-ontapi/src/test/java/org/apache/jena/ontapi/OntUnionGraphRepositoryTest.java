@@ -18,19 +18,19 @@
 
 package org.apache.jena.ontapi;
 
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.ontapi.impl.repositories.DocumentGraphRepository;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.testutils.RDFIOTestUtils;
 import org.apache.jena.ontapi.utils.Graphs;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ModelGraphInterface;
 import org.apache.jena.reasoner.InfGraph;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -74,8 +74,8 @@ public class OntUnionGraphRepositoryTest {
     public void testReadDataToModel(@TempDir Path dir) throws IOException {
         String ns = "http://ex.com#";
         Model m = ModelFactory.createDefaultModel();
-        m.createResource(ns + "A").addProperty(OWL.imports, m.createResource(ns + "B"));
-        m.createResource(ns + "A-C-2", OWL.Class);
+        m.createResource(ns + "A").addProperty(OWL2.imports, m.createResource(ns + "B"));
+        m.createResource(ns + "A-C-2", OWL2.Class);
 
         Path dataFile = Files.createTempFile(dir, "testReadDataToModel-", ".ttl");
         RDFIOTestUtils.save(m, dataFile, Lang.TURTLE);
@@ -148,9 +148,9 @@ public class OntUnionGraphRepositoryTest {
         Assertions.assertEquals("C", c.getID().getImportsIRI());
         Assertions.assertEquals(List.of("A-Y", "B", "C"), repository.ids().sorted().collect(Collectors.toList()));
 
-        a.statements(null, RDF.type, OWL.Ontology).findFirst().orElseThrow().getSubject()
-                .removeAll(OWL.versionIRI)
-                .addProperty(OWL.versionIRI, a.createResource("A-Q"));
+        a.statements(null, RDF.type, OWL2.Ontology).findFirst().orElseThrow().getSubject()
+                .removeAll(OWL2.versionIRI)
+                .addProperty(OWL2.versionIRI, a.createResource("A-Q"));
         Assertions.assertEquals("A-X", a.getID().getURI());
         Assertions.assertEquals("B", b.getID().getURI());
         Assertions.assertEquals("C", c.getID().getURI());
@@ -181,7 +181,7 @@ public class OntUnionGraphRepositoryTest {
         Assertions.assertEquals("C", c.getID().getImportsIRI());
 
         Assertions.assertThrows(OntJenaException.IllegalArgument.class,
-                () -> b.createResource().addProperty(RDF.type, OWL.Ontology)
+                () -> b.createResource().addProperty(RDF.type, OWL2.Ontology)
         );
 
         Assertions.assertEquals("A", a.getID().getImportsIRI());
@@ -192,7 +192,7 @@ public class OntUnionGraphRepositoryTest {
                 () -> b.getGraph().add(
                         NodeFactory.createURI("B-v1"),
                         RDF.type.asNode(),
-                        OWL.Ontology.asNode()
+                        OWL2.Ontology.asNode()
                 )
         );
 
@@ -204,7 +204,7 @@ public class OntUnionGraphRepositoryTest {
                 () -> b.getGraph().delete(
                         Graphs.ontologyNode(b.getGraph()).orElseThrow(),
                         RDF.type.asNode(),
-                        OWL.Ontology.asNode()
+                        OWL2.Ontology.asNode()
                 )
         );
 
@@ -339,7 +339,7 @@ public class OntUnionGraphRepositoryTest {
     public void testAddImportModel2() {
         GraphRepository repository = GraphRepository.createGraphDocumentRepositoryMem();
         Model data = ModelFactory.createDefaultModel();
-        data.createResource("A", OWL.Ontology);
+        data.createResource("A", OWL2.Ontology);
         OntModel a = OntModelFactory.createModel(data.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_INF, repository);
 
         Assertions.assertEquals(List.of("A"), repository.ids().collect(Collectors.toList()));
@@ -380,7 +380,7 @@ public class OntUnionGraphRepositoryTest {
     public void testAddImportModel3() {
         GraphRepository repository = GraphRepository.createGraphDocumentRepositoryMem();
         Model data = ModelFactory.createDefaultModel();
-        data.createResource("A", OWL.Ontology);
+        data.createResource("A", OWL2.Ontology);
         OntModel a = OntModelFactory.createModel(data.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_INF, repository);
 
         Assertions.assertEquals(List.of("A"), repository.ids().collect(Collectors.toList()));
@@ -417,7 +417,7 @@ public class OntUnionGraphRepositoryTest {
         Assertions.assertFalse(ag.hasSubGraph());
         Assertions.assertFalse(a.getID().imports().findFirst().isPresent());
 
-        b.createResource("B", OWL.Ontology);
+        b.createResource("B", OWL2.Ontology);
 
         a.getID().addImport("B");
         Assertions.assertEquals(List.of("B"), a.getID().imports().collect(Collectors.toList()));
@@ -441,8 +441,8 @@ public class OntUnionGraphRepositoryTest {
         b.createOntClass("C-B");
 
         Model data1 = ModelFactory.createDefaultModel();
-        data1.createResource("C-A-2", OWL.Class);
-        data1.createResource("A").addProperty(OWL.imports, data1.createResource("B"));
+        data1.createResource("C-A-2", OWL2.Class);
+        data1.createResource("A").addProperty(OWL2.imports, data1.createResource("B"));
 
         a.add(data1);
 
@@ -455,7 +455,7 @@ public class OntUnionGraphRepositoryTest {
         );
 
         Model data2 = ModelFactory.createDefaultModel();
-        data2.createResource("X").addProperty(RDF.type, OWL.Ontology);
+        data2.createResource("X").addProperty(RDF.type, OWL2.Ontology);
 
         // Adding data will result in invalid ontology ID
         Assertions.assertThrows(OntJenaException.IllegalArgument.class, () -> a.add(data2));
@@ -464,7 +464,7 @@ public class OntUnionGraphRepositoryTest {
 
         // change id
         Model data3 = ModelFactory.createDefaultModel();
-        data3.createResource("A").addProperty(OWL.versionIRI, data3.createResource("A-X"));
+        data3.createResource("A").addProperty(OWL2.versionIRI, data3.createResource("A-X"));
         a.add(data3);
 
         Assertions.assertEquals(3, a.classes().count());
@@ -487,14 +487,14 @@ public class OntUnionGraphRepositoryTest {
         Assertions.assertEquals(List.of("A", "B"), repository.ids().sorted().collect(Collectors.toList()));
 
         Model data1 = ModelFactory.createDefaultModel();
-        data1.createResource("B", OWL.Ontology);
+        data1.createResource("B", OWL2.Ontology);
 
         b.add(data1);
         Assertions.assertEquals(List.of("A", "B"), repository.ids().sorted().collect(Collectors.toList()));
         Assertions.assertEquals(3, A.size());
 
         Model data2 = ModelFactory.createDefaultModel();
-        data2.createResource("B", OWL.Ontology).addProperty(OWL.versionIRI, data2.createResource("B-v1"));
+        data2.createResource("B", OWL2.Ontology).addProperty(OWL2.versionIRI, data2.createResource("B-v1"));
 
         // Can't change ontology ID <B>: it is used by <A>
         Assertions.assertThrows(OntJenaException.IllegalArgument.class, () -> b.add(data2));
@@ -515,8 +515,8 @@ public class OntUnionGraphRepositoryTest {
         Assertions.assertEquals(3, a.classes().count());
 
         Model data = OntModelFactory.createDefaultModel();
-        data.createResource("A").addProperty(OWL.imports, data.createResource("B"));
-        data.createResource("A-C-2", OWL.Class);
+        data.createResource("A").addProperty(OWL2.imports, data.createResource("B"));
+        data.createResource("A-C-2", OWL2.Class);
 
         a.remove(data);
 
@@ -537,8 +537,8 @@ public class OntUnionGraphRepositoryTest {
         Assertions.assertEquals(List.of("Av"), repository.ids().collect(Collectors.toList()));
 
         Model data = OntModelFactory.createDefaultModel();
-        data.createResource("A").addProperty(OWL.versionIRI, data.createResource("Av"));
-        data.createResource("A-C-2", OWL.Class);
+        data.createResource("A").addProperty(OWL2.versionIRI, data.createResource("Av"));
+        data.createResource("A-C-2", OWL2.Class);
 
         a.remove(data);
 
@@ -566,8 +566,8 @@ public class OntUnionGraphRepositoryTest {
         Assertions.assertEquals(List.of("Av", "B", "C"), repository.ids().sorted().collect(Collectors.toList()));
 
         Model data = OntModelFactory.createDefaultModel();
-        data.createResource("A").addProperty(OWL.versionIRI, data.createResource("Av"));
-        data.createResource("A-C-2", OWL.Class);
+        data.createResource("A").addProperty(OWL2.versionIRI, data.createResource("Av"));
+        data.createResource("A-C-2", OWL2.Class);
 
         // Can't change ontology ID <Av>: it is used by <B>
         Assertions.assertThrows(OntJenaException.IllegalArgument.class, () -> a.remove(data));

@@ -18,15 +18,15 @@
 
 package org.apache.jena.ontapi;
 
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.impl.GraphListenerBase;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntModel;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -39,8 +39,8 @@ public class OntModelMiscTest {
         // test there is no StackOverflowError
         Assertions.assertThrows(OntJenaException.Recursion.class, () -> {
             Model m = OntModelFactory.createDefaultModel().setNsPrefixes(OntModelFactory.STANDARD);
-            Resource anon = m.createResource().addProperty(RDF.type, OWL.Class);
-            anon.addProperty(OWL.complementOf, anon);
+            Resource anon = m.createResource().addProperty(RDF.type, OWL2.Class);
+            anon.addProperty(OWL2.complementOf, anon);
             OntModel ont = OntModelFactory.createModel(m.getGraph());
             List<OntClass> ces = ont.ontObjects(OntClass.class).toList();
             Assertions.assertEquals(0, ces.size());

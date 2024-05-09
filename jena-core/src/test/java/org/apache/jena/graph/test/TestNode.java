@@ -19,18 +19,35 @@
 package org.apache.jena.graph.test;
 
 
-import junit.framework.TestSuite ;
+import junit.framework.TestSuite;
 import org.apache.jena.atlas.lib.Creator;
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.datatypes.TypeMapper ;
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.* ;
-import org.apache.jena.graph.impl.LiteralLabel ;
-import org.apache.jena.graph.impl.LiteralLabelFactory ;
-import org.apache.jena.shared.JenaException ;
-import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.TypeMapper;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.BlankNodeId;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphMemFactory;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.NodeVisitor;
+import org.apache.jena.graph.Node_ANY;
+import org.apache.jena.graph.Node_Blank;
+import org.apache.jena.graph.Node_Graph;
+import org.apache.jena.graph.Node_Literal;
+import org.apache.jena.graph.Node_Triple;
+import org.apache.jena.graph.Node_URI;
+import org.apache.jena.graph.Node_Variable;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.impl.LiteralLabel;
+import org.apache.jena.graph.impl.LiteralLabelFactory;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.util.SplitIRI;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.vocabulary.DC;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RSS;
+import org.apache.jena.vocabulary.VCARD;
 
 /**
     Exercise nodes. Make sure that the different node types do not overlap
@@ -418,7 +435,7 @@ public class TestNode extends GraphTestBase
         testCreateURI( "dc:creator", DC.getURI() + "creator" );
         testCreateURI( "rss:something", RSS.getURI() + "something" );
         testCreateURI( "vcard:TITLE", VCARD.getURI() + "TITLE" );
-        testCreateURI( "owl:wol", OWL.NAMESPACE.getURI() + "wol" );
+        testCreateURI( "owl:wol", OWL.getURI() + "wol" );
     }
 
     public void testCreateURIOtherMap()

@@ -23,12 +23,18 @@ package org.apache.jena.ontology.impl;
 
 // Imports
 ///////////////
-import org.apache.jena.ontology.* ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.reasoner.test.TestUtil ;
-import org.apache.jena.vocabulary.* ;
+
+import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.reasoner.test.TestUtil;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 
 
 /**
@@ -200,8 +206,8 @@ public class TestOntClass
         OntClass e = m.getOntClass( NS + "E" );
         OntClass f = m.getOntClass( NS + "F" );
 
-        TestUtil.assertIteratorValues( this, a.listSubClasses(), new Object[] {b,c,d,e,f,OWL.Nothing} );
-        TestUtil.assertIteratorValues( this, a.listSubClasses( false ), new Object[] {b,c,d,e,f,OWL.Nothing} );
+        TestUtil.assertIteratorValues( this, a.listSubClasses(), new Object[] {b,c,d,e,f, OWL.Nothing} );
+        TestUtil.assertIteratorValues( this, a.listSubClasses( false ), new Object[] {b,c,d,e,f, OWL.Nothing} );
         TestUtil.assertIteratorValues( this, a.listSubClasses( true ), new Object[] {b,c} );
         TestUtil.assertIteratorValues( this, b.listSubClasses( true ), new Object[] {d,e} );
     }
@@ -228,8 +234,8 @@ public class TestOntClass
         OntClass c = m.getOntClass( NS + "C" );
         OntClass e = m.getOntClass( NS + "E" );
 
-        TestUtil.assertIteratorValues( this, e.listSuperClasses(), new Object[] {b,c,a,RDFS.Resource,OWL.Thing} );
-        TestUtil.assertIteratorValues( this, e.listSuperClasses( false ), new Object[] {b,c,a,RDFS.Resource,OWL.Thing} );
+        TestUtil.assertIteratorValues( this, e.listSuperClasses(), new Object[] {b,c,a,RDFS.Resource, OWL.Thing} );
+        TestUtil.assertIteratorValues( this, e.listSuperClasses( false ), new Object[] {b,c,a,RDFS.Resource, OWL.Thing} );
         TestUtil.assertIteratorValues( this, e.listSuperClasses( true ), new Object[] {b,c} );
         TestUtil.assertIteratorValues( this, b.listSuperClasses( true ), new Object[] {a} );
     }
@@ -242,8 +248,8 @@ public class TestOntClass
         OntClass c = m.getOntClass( NS + "C" );
         OntClass e = m.getOntClass( NS + "E" );
 
-        TestUtil.assertIteratorValues( this, e.listSuperClasses(), new Object[] {b,c,a,OWL.Thing} );
-        TestUtil.assertIteratorValues( this, e.listSuperClasses( false ), new Object[] {b,c,a,OWL.Thing} );
+        TestUtil.assertIteratorValues( this, e.listSuperClasses(), new Object[] {b,c,a, OWL.Thing} );
+        TestUtil.assertIteratorValues( this, e.listSuperClasses( false ), new Object[] {b,c,a, OWL.Thing} );
         TestUtil.assertIteratorValues( this, e.listSuperClasses( true ), new Object[] {b,c} );
         TestUtil.assertIteratorValues( this, b.listSuperClasses( true ), new Object[] {a} );
     }

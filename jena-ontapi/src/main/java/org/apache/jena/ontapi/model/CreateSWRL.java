@@ -18,9 +18,9 @@
 
 package org.apache.jena.ontapi.model;
 
-import org.apache.jena.ontapi.vocabulary.SWRL;
-import org.apache.jena.ontapi.vocabulary.SWRLB;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.SWRL;
+import org.apache.jena.vocabulary.SWRLB;
 
 import java.util.Collection;
 

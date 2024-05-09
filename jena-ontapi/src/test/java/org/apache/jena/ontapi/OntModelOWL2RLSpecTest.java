@@ -25,13 +25,13 @@ import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.model.OntObject;
 import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.testutils.RDFIOTestUtils;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.ontapi.vocabulary.XSD;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.XSD;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -87,7 +87,7 @@ public class OntModelOWL2RLSpecTest {
         testListObjects(m, expected);
 
         List<OntClass.Named> classes = m.ontObjects(OntClass.Named.class).toList();
-        int expectedClassesCount = m.listStatements(null, RDF.type, OWL.Class)
+        int expectedClassesCount = m.listStatements(null, RDF.type, OWL2.Class)
                 .mapWith(Statement::getSubject).filterKeep(RDFNode::isURIResource).toSet().size();
         int actualClassesCount = classes.size();
         Assertions.assertEquals(expectedClassesCount, actualClassesCount);
@@ -357,15 +357,15 @@ public class OntModelOWL2RLSpecTest {
         OntClass c1 = m.createOntClass("c1");
         c0.addSuperClass(c1);
 
-        c0.addProperty(RDFS.subClassOf, OWL.Thing);
+        c0.addProperty(RDFS.subClassOf, OWL2.Thing);
         Assertions.assertEquals(List.of(c1), c0.superClasses().collect(Collectors.toList()));
         Assertions.assertThrows(OntJenaException.Unsupported.class, () -> c1.addSuperClass(m.getOWLThing()));
 
-        OWL.Thing.inModel(m).addProperty(RDFS.subClassOf, c1);
+        OWL2.Thing.inModel(m).addProperty(RDFS.subClassOf, c1);
         Assertions.assertEquals(List.of(c0), c1.subClasses().collect(Collectors.toList()));
         Assertions.assertThrows(OntJenaException.Unsupported.class, () -> m.getOWLThing().addSuperClass(m.getOWLThing()));
 
-        c0.addProperty(OWL.equivalentClass, OWL.Thing).addProperty(OWL.equivalentClass, c1);
+        c0.addProperty(OWL2.equivalentClass, OWL2.Thing).addProperty(OWL2.equivalentClass, c1);
         Assertions.assertEquals(List.of(c0), c1.equivalentClasses().collect(Collectors.toList()));
         Assertions.assertEquals(List.of(c1), c0.equivalentClasses().collect(Collectors.toList()));
     }

@@ -18,6 +18,8 @@
 
 package org.apache.jena.ontapi.common;
 
+import org.apache.jena.graph.FrontsNode;
+import org.apache.jena.graph.Node;
 import org.apache.jena.ontapi.OntModelControls;
 import org.apache.jena.ontapi.model.OntAnnotationProperty;
 import org.apache.jena.ontapi.model.OntClass;
@@ -26,11 +28,9 @@ import org.apache.jena.ontapi.model.OntDataRange;
 import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.model.OntObject;
 import org.apache.jena.ontapi.model.OntObjectProperty;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.graph.FrontsNode;
-import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 import java.util.Collection;
@@ -91,32 +91,32 @@ public enum PunningsMode {
     ;
 
     private static final Set<Resource> OWL2_ALL_OBJECT_PROPERTIES = Set.of(
-            OWL.ObjectProperty,
-            OWL.InverseFunctionalProperty,
-            OWL.ReflexiveProperty,
-            OWL.IrreflexiveProperty,
-            OWL.SymmetricProperty,
-            OWL.AsymmetricProperty,
-            OWL.TransitiveProperty
+            OWL2.ObjectProperty,
+            OWL2.InverseFunctionalProperty,
+            OWL2.ReflexiveProperty,
+            OWL2.IrreflexiveProperty,
+            OWL2.SymmetricProperty,
+            OWL2.AsymmetricProperty,
+            OWL2.TransitiveProperty
     );
     private static final Set<Resource> OWL1_ALL_OBJECT_PROPERTIES = Set.of(
-            OWL.ObjectProperty,
-            OWL.InverseFunctionalProperty,
-            OWL.SymmetricProperty,
-            OWL.TransitiveProperty
+            OWL2.ObjectProperty,
+            OWL2.InverseFunctionalProperty,
+            OWL2.SymmetricProperty,
+            OWL2.TransitiveProperty
     );
     private static final Set<Resource> OWL2_OBJECT_PROPERTIES = Set.of(
-            OWL.ObjectProperty
+            OWL2.ObjectProperty
     );
-    private static final Set<Resource> DATATYPE_PROPERTIES = Set.of(OWL.DatatypeProperty);
-    private static final Set<Resource> ANNOTATION_PROPERTIES = Set.of(OWL.AnnotationProperty);
+    private static final Set<Resource> DATATYPE_PROPERTIES = Set.of(OWL2.DatatypeProperty);
+    private static final Set<Resource> ANNOTATION_PROPERTIES = Set.of(OWL2.AnnotationProperty);
     private static final Set<Resource> RDF_PROPERTIES = Set.of(RDF.Property);
-    private static final Set<Resource> OWL2_CLASSES = Set.of(OWL.Class);
-    private static final Set<Resource> OWL1_CLASSES = Set.of(OWL.Class);
-    private static final Set<Resource> OWL1_ALL_CLASSES = Set.of(OWL.Class, OWL.Restriction, RDFS.Class, RDFS.Datatype);
+    private static final Set<Resource> OWL2_CLASSES = Set.of(OWL2.Class);
+    private static final Set<Resource> OWL1_CLASSES = Set.of(OWL2.Class);
+    private static final Set<Resource> OWL1_ALL_CLASSES = Set.of(OWL2.Class, OWL2.Restriction, RDFS.Class, RDFS.Datatype);
     private static final Set<Resource> OWL2_DATATYPES = Set.of(RDFS.Datatype);
-    private static final Set<Resource> OWL1_DATATYPES = Set.of(OWL.DataRange);
-    private static final Set<Resource> OWL2_INDIVIDUALS = Set.of(OWL.NamedIndividual);
+    private static final Set<Resource> OWL1_DATATYPES = Set.of(OWL2.DataRange);
+    private static final Set<Resource> OWL2_INDIVIDUALS = Set.of(OWL2.NamedIndividual);
 
     static Map<Class<? extends OntObject>, Set<Node>> toMap(PunningsMode mode) {
         Map<Class<? extends OntObject>, Set<Set<Resource>>> res;

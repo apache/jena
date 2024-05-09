@@ -23,10 +23,16 @@ package org.apache.jena.ontology;
 
 // Imports
 ///////////////
-import java.util.*;
 
-import org.apache.jena.ontology.impl.* ;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.ontology.impl.OWLDLProfile;
+import org.apache.jena.ontology.impl.OWLLiteProfile;
+import org.apache.jena.ontology.impl.OWLProfile;
+import org.apache.jena.ontology.impl.RDFSProfile;
+import org.apache.jena.vocabulary.OWL1;
+import org.apache.jena.vocabulary.RDFS;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -40,13 +46,13 @@ public class ProfileRegistry {
     //////////////////////////////////
 
     /** The URI that maps to the language profile for OWL-Full */
-    public static final String OWL_LANG = OWL.FULL_LANG.getURI();
+    public static final String OWL_LANG = OWL1.FULL_LANG.getURI();
 
     /** The URI that maps to the language profile for OWL-DL */
-    public static final String OWL_DL_LANG = OWL.DL_LANG.getURI();
+    public static final String OWL_DL_LANG = OWL1.DL_LANG.getURI();
 
     /** The URI that maps to the language profile for OWL-Lite */
-    public static final String OWL_LITE_LANG = OWL.LITE_LANG.getURI();
+    public static final String OWL_LITE_LANG = OWL1.LITE_LANG.getURI();
 
     /** The URI that maps to the language profile for RDFS */
     public static final String RDFS_LANG = RDFS.getURI();

@@ -18,8 +18,8 @@
 
 package org.apache.jena.ontapi.model;
 
-import org.apache.jena.ontapi.vocabulary.OWL;
 import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.vocabulary.OWL2;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -127,7 +127,7 @@ interface CreateClasses {
 
     /**
      * Creates an Object Minimum Cardinality Restriction, possible Qualified.
-     * If {@code ce} is {@code null}, it is taken to be {@link OWL#Thing owl:Thing}.
+     * If {@code ce} is {@code null}, it is taken to be {@link OWL2#Thing owl:Thing}.
      * In that case the return restriction is unqualified.
      * The RDF structure:
      * <pre>{@code
@@ -176,7 +176,7 @@ interface CreateClasses {
 
     /**
      * Creates an Object Maximum Cardinality Restriction, possible Qualified.
-     * If {@code ce} is {@code null}, it is taken to be {@link OWL#Thing owl:Thing}.
+     * If {@code ce} is {@code null}, it is taken to be {@link OWL2#Thing owl:Thing}.
      * In that case the return restriction is unqualified.
      * The RDF structure:
      * <pre>{@code
@@ -225,7 +225,7 @@ interface CreateClasses {
 
     /**
      * Creates an Object Exact Cardinality Restriction, possible Qualified.
-     * If {@code ce} is {@code null}, it is taken to be {@link OWL#Thing owl:Thing}.
+     * If {@code ce} is {@code null}, it is taken to be {@link OWL2#Thing owl:Thing}.
      * In that case the return restriction is unqualified.
      * The RDF structure:
      * <pre>{@code

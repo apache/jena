@@ -18,6 +18,8 @@
 
 package org.apache.jena.ontapi.impl.objects;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.OntModelControls;
 import org.apache.jena.ontapi.impl.HierarchySupport;
@@ -28,14 +30,12 @@ import org.apache.jena.ontapi.model.OntNegativeAssertion;
 import org.apache.jena.ontapi.model.OntObject;
 import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.ontapi.utils.Iterators;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 import java.util.Objects;
@@ -100,19 +100,19 @@ public abstract class OntIndividualImpl extends OntObjectImpl implements OntIndi
         if (!OntGraphModelImpl.configValue(getModel(), OntModelControls.USE_OWL_INDIVIDUAL_SAME_AS_FEATURE)) {
             return Stream.empty();
         }
-        return objects(OWL.sameAs, OntIndividual.class);
+        return objects(OWL2.sameAs, OntIndividual.class);
     }
 
     @Override
     public OntStatement addSameAsStatement(OntIndividual other) {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_INDIVIDUAL_SAME_AS_FEATURE, "owl:sameAs");
-        return addStatement(OWL.sameAs, other);
+        return addStatement(OWL2.sameAs, other);
     }
 
     @Override
     public OntIndividual removeSameIndividual(Resource other) {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_INDIVIDUAL_SAME_AS_FEATURE, "owl:sameAs");
-        remove(OWL.sameAs, other);
+        remove(OWL2.sameAs, other);
         return this;
     }
 
@@ -121,19 +121,19 @@ public abstract class OntIndividualImpl extends OntObjectImpl implements OntIndi
         if (!OntGraphModelImpl.configValue(getModel(), OntModelControls.USE_OWL_INDIVIDUAL_DIFFERENT_FROM_FEATURE)) {
             return Stream.empty();
         }
-        return objects(OWL.differentFrom, OntIndividual.class);
+        return objects(OWL2.differentFrom, OntIndividual.class);
     }
 
     @Override
     public OntStatement addDifferentFromStatement(OntIndividual other) {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_INDIVIDUAL_DIFFERENT_FROM_FEATURE, "owl:differentFrom");
-        return addStatement(OWL.differentFrom, other);
+        return addStatement(OWL2.differentFrom, other);
     }
 
     @Override
     public OntIndividual removeDifferentIndividual(Resource other) {
         OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_INDIVIDUAL_DIFFERENT_FROM_FEATURE, "owl:differentFrom");
-        remove(OWL.differentFrom, other);
+        remove(OWL2.differentFrom, other);
         return this;
     }
 
@@ -198,7 +198,7 @@ public abstract class OntIndividualImpl extends OntObjectImpl implements OntIndi
 
     @SuppressWarnings("rawtypes")
     public ExtendedIterator<OntNegativeAssertion> listNegativeAssertions() {
-        return listSubjects(OWL.sourceIndividual, OntNegativeAssertion.class);
+        return listSubjects(OWL2.sourceIndividual, OntNegativeAssertion.class);
     }
 
     @Override
@@ -219,7 +219,7 @@ public abstract class OntIndividualImpl extends OntObjectImpl implements OntIndi
 
         @Override
         public Optional<OntStatement> findRootStatement() {
-            return Optional.of(getModel().createStatement(this, RDF.type, OWL.NamedIndividual).asRootStatement())
+            return Optional.of(getModel().createStatement(this, RDF.type, OWL2.NamedIndividual).asRootStatement())
                     .filter(r -> getModel().contains(r));
         }
 
@@ -237,7 +237,7 @@ public abstract class OntIndividualImpl extends OntObjectImpl implements OntIndi
         public NamedImpl detachClass(Resource clazz) {
             OntGraphModelImpl m = getModel();
             m.listOntStatements(this, RDF.type, clazz)
-                    .filterDrop(s -> OWL.NamedIndividual.equals(s.getObject()))
+                    .filterDrop(s -> OWL2.NamedIndividual.equals(s.getObject()))
                     .toList()
                     .forEach(s -> m.remove(s.clearAnnotations()));
             return this;

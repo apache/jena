@@ -18,6 +18,8 @@
 
 package org.apache.jena.ontapi.impl.objects;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.OntModelControls;
 import org.apache.jena.ontapi.impl.OntGraphModelImpl;
@@ -26,16 +28,14 @@ import org.apache.jena.ontapi.model.OntFacetRestriction;
 import org.apache.jena.ontapi.model.OntObject;
 import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.ontapi.utils.Iterators;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 import java.util.Objects;
@@ -54,7 +54,7 @@ public class OntDataRangeImpl extends OntObjectImpl implements OntDataRange {
 
     private static Resource create(OntGraphModelImpl model) {
         Resource type = OntGraphModelImpl.configValue(model, OntModelControls.USE_OWL1_DATARANGE_DECLARATION_FEATURE) ?
-                OWL.DataRange :
+                OWL2.DataRange :
                 RDFS.Datatype;
         return model.createResource().addProperty(RDF.type, type);
     }
@@ -63,7 +63,7 @@ public class OntDataRangeImpl extends OntObjectImpl implements OntDataRange {
         OntJenaException.notNull(values, "Null values stream.");
         RDFList items = model.createList(values
                 .peek(f -> OntJenaException.notNull(f, "OntDR: null literal.")).iterator());
-        Resource res = create(model).addProperty(OWL.oneOf, items);
+        Resource res = create(model).addProperty(OWL2.oneOf, items);
         return model.getNodeAs(res.asNode(), OneOf.class);
     }
 
@@ -74,14 +74,14 @@ public class OntDataRangeImpl extends OntObjectImpl implements OntDataRange {
                 .peek(f -> OntJenaException.notNull(f, "OntDR: null faced restriction."))
                 .iterator());
         Resource res = create(model)
-                .addProperty(OWL.onDatatype, dataType)
-                .addProperty(OWL.withRestrictions, items);
+                .addProperty(OWL2.onDatatype, dataType)
+                .addProperty(OWL2.withRestrictions, items);
         return model.getNodeAs(res.asNode(), Restriction.class);
     }
 
     public static ComplementOf createComplementOf(OntGraphModelImpl model, OntDataRange other) {
         OntJenaException.notNull(other, "Null data range.");
-        Resource res = create(model).addProperty(OWL.datatypeComplementOf, other);
+        Resource res = create(model).addProperty(OWL2.datatypeComplementOf, other);
         return model.getNodeAs(res.asNode(), ComplementOf.class);
     }
 
@@ -91,7 +91,7 @@ public class OntDataRangeImpl extends OntObjectImpl implements OntDataRange {
                 .peek(f -> OntJenaException.notNull(f, "OntDR: null data range."))
                 .iterator());
         Resource res = create(model)
-                .addProperty(OWL.unionOf, items);
+                .addProperty(OWL2.unionOf, items);
         return model.getNodeAs(res.asNode(), UnionOf.class);
     }
 
@@ -100,14 +100,14 @@ public class OntDataRangeImpl extends OntObjectImpl implements OntDataRange {
         RDFList items = model.createList(values
                 .peek(f -> OntJenaException.notNull(f, "OntDR: null data range."))
                 .iterator());
-        Resource res = create(model).addProperty(OWL.intersectionOf, items);
+        Resource res = create(model).addProperty(OWL2.intersectionOf, items);
         return model.getNodeAs(res.asNode(), IntersectionOf.class);
     }
 
     @Override
     public Optional<OntStatement> findRootStatement() {
         Resource type = OntGraphModelImpl.configValue(getModel(), OntModelControls.USE_OWL1_DATARANGE_DECLARATION_FEATURE) ?
-                OWL.DataRange :
+                OWL2.DataRange :
                 RDFS.Datatype;
         return getRequiredRootStatement(this, type);
     }
@@ -119,12 +119,12 @@ public class OntDataRangeImpl extends OntObjectImpl implements OntDataRange {
 
         @Override
         public OntDataRange getValue() {
-            return getRequiredObject(OWL.datatypeComplementOf, OntDataRange.class);
+            return getRequiredObject(OWL2.datatypeComplementOf, OntDataRange.class);
         }
 
         @Override
         public ExtendedIterator<OntStatement> listSpec() {
-            return Iterators.concat(super.listSpec(), listRequired(OWL.datatypeComplementOf));
+            return Iterators.concat(super.listSpec(), listRequired(OWL2.datatypeComplementOf));
         }
 
         @Override
@@ -135,14 +135,14 @@ public class OntDataRangeImpl extends OntObjectImpl implements OntDataRange {
         @Override
         public ComplementOf setValue(OntDataRange value) {
             Objects.requireNonNull(value);
-            removeAll(OWL.datatypeComplementOf).addProperty(OWL.datatypeComplementOf, value);
+            removeAll(OWL2.datatypeComplementOf).addProperty(OWL2.datatypeComplementOf, value);
             return this;
         }
     }
 
     public static class OneOfImpl extends CombinationImpl<Literal> implements OneOf {
         public OneOfImpl(Node n, EnhGraph m) {
-            super(n, m, OWL.oneOf, Literal.class);
+            super(n, m, OWL2.oneOf, Literal.class);
         }
 
         @Override
@@ -153,7 +153,7 @@ public class OntDataRangeImpl extends OntObjectImpl implements OntDataRange {
 
     public static class RestrictionImpl extends CombinationImpl<OntFacetRestriction> implements Restriction {
         public RestrictionImpl(Node n, EnhGraph m) {
-            super(n, m, OWL.withRestrictions, OntFacetRestriction.class);
+            super(n, m, OWL2.withRestrictions, OntFacetRestriction.class);
         }
 
         @Override
@@ -163,19 +163,19 @@ public class OntDataRangeImpl extends OntObjectImpl implements OntDataRange {
 
         @Override
         public Named getValue() {
-            return getRequiredObject(OWL.onDatatype, Named.class);
+            return getRequiredObject(OWL2.onDatatype, Named.class);
         }
 
         @Override
         public RestrictionImpl setValue(Named value) {
             Objects.requireNonNull(value);
-            removeAll(OWL.onDatatype).addProperty(OWL.onDatatype, value);
+            removeAll(OWL2.onDatatype).addProperty(OWL2.onDatatype, value);
             return this;
         }
 
         @Override
         public ExtendedIterator<OntStatement> listSpec() {
-            return Iterators.concat(listDeclaration(), listRequired(OWL.onDatatype), withRestrictionsSpec());
+            return Iterators.concat(listDeclaration(), listRequired(OWL2.onDatatype), withRestrictionsSpec());
         }
 
         public ExtendedIterator<OntStatement> withRestrictionsSpec() {
@@ -191,7 +191,7 @@ public class OntDataRangeImpl extends OntObjectImpl implements OntDataRange {
 
     public static class UnionOfImpl extends CombinationImpl<OntDataRange> implements UnionOf {
         public UnionOfImpl(Node n, EnhGraph m) {
-            super(n, m, OWL.unionOf, OntDataRange.class);
+            super(n, m, OWL2.unionOf, OntDataRange.class);
         }
 
         @Override
@@ -203,7 +203,7 @@ public class OntDataRangeImpl extends OntObjectImpl implements OntDataRange {
     public static class IntersectionOfImpl extends CombinationImpl<OntDataRange> implements IntersectionOf {
 
         public IntersectionOfImpl(Node n, EnhGraph m) {
-            super(n, m, OWL.intersectionOf, OntDataRange.class);
+            super(n, m, OWL2.intersectionOf, OntDataRange.class);
         }
 
         @Override

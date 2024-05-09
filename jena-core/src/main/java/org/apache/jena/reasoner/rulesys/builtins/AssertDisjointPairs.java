@@ -18,11 +18,13 @@
 
 package org.apache.jena.reasoner.rulesys.builtins;
 
-import java.util.*;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.reasoner.rulesys.RuleContext;
+import org.apache.jena.reasoner.rulesys.Util;
+import org.apache.jena.vocabulary.OWL;
 
-import org.apache.jena.graph.* ;
-import org.apache.jena.reasoner.rulesys.* ;
-import org.apache.jena.vocabulary.OWL ;
+import java.util.List;
 
 /**
  * Assert the n^2 differtFrom pairs from a distinctMembers list

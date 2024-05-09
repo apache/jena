@@ -18,8 +18,8 @@
 
 package org.apache.jena.ontapi.model;
 
-import org.apache.jena.ontapi.vocabulary.OWL;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.vocabulary.OWL2;
 
 /**
  * A technical generic interface to provide {@link RDFNode} value,
@@ -38,7 +38,7 @@ interface HasValue<V extends RDFNode> {
      * <p>
      * The result is not {@code null} even if it is an Unqualified Cardinality Restriction,
      * that has no explicit filler in RDF
-     * (the filler is expected to be either {@link OWL#Thing owl:Thing}
+     * (the filler is expected to be either {@link OWL2#Thing owl:Thing}
      * for object restriction or {@link org.apache.jena.vocabulary.RDFS#Literal} for data restriction).
      *
      * @return {@link V}, not {@code null}

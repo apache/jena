@@ -18,11 +18,11 @@
 
 package org.apache.jena.ontapi.model;
 
-import org.apache.jena.ontapi.vocabulary.OWL;
+import org.apache.jena.vocabulary.OWL2;
 
 /**
  * A technical interface to access {@link P} property
- * on predicate {@link OWL#onProperty owl:onProperty}.
+ * on predicate {@link OWL2#onProperty owl:onProperty}.
  *
  * @param <P> - {@link OntRelationalProperty Data or Object} property expression
  * @see SetProperty
@@ -31,7 +31,7 @@ interface HasProperty<P extends OntRelationalProperty> {
     /**
      * Gets the property,
      * that this {@link OntClass.UnaryRestriction} has inside its RDF structure
-     * on predicate {@link OWL#onProperty owl:onProperty}.
+     * on predicate {@link OWL2#onProperty owl:onProperty}.
      *
      * @return {@link P}
      */

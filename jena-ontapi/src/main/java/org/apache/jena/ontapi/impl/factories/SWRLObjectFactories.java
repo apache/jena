@@ -23,12 +23,12 @@ import org.apache.jena.ontapi.common.EnhNodeFinder;
 import org.apache.jena.ontapi.common.EnhNodeProducer;
 import org.apache.jena.ontapi.common.OntEnhGraph;
 import org.apache.jena.ontapi.common.OntEnhNodeFactories;
+import org.apache.jena.ontapi.common.OntPersonality;
 import org.apache.jena.ontapi.impl.objects.OntSWRLImpl;
 import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.model.OntSWRL;
-import org.apache.jena.ontapi.vocabulary.SWRL;
-import org.apache.jena.ontapi.common.OntPersonality;
 import org.apache.jena.rdf.model.impl.LiteralImpl;
+import org.apache.jena.vocabulary.SWRL;
 
 /**
  * A helper-factory to produce (SWRL) {@link EnhNodeFactory} factories;

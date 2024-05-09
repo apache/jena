@@ -18,7 +18,6 @@
 
 package org.apache.jena.ontapi.impl.factories;
 
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.enhanced.EnhGraph;
 import org.apache.jena.enhanced.EnhNode;
 import org.apache.jena.enhanced.Implementation;
@@ -34,6 +33,7 @@ import org.apache.jena.rdf.model.impl.RDFListImpl;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.rdf.model.impl.SeqImpl;
 import org.apache.jena.shared.JenaException;
+import org.apache.jena.vocabulary.RDF;
 
 public class STDObjectFactories {
 

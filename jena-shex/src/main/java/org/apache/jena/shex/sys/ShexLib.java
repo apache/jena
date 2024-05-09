@@ -18,8 +18,6 @@
 
 package org.apache.jena.shex.sys;
 
-import java.io.OutputStream;
-
 import org.apache.jena.atlas.io.AWriter;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IndentedLineBuffer;
@@ -32,11 +30,18 @@ import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.shex.ShexRecord;
 import org.apache.jena.shex.ShexReport;
 import org.apache.jena.shex.ShexStatus;
-import org.apache.jena.shex.expressions.*;
+import org.apache.jena.shex.expressions.NodeConstraintVisitor;
+import org.apache.jena.shex.expressions.ShapeExprVisitor;
+import org.apache.jena.shex.expressions.ShapeExprWalker;
+import org.apache.jena.shex.expressions.ShapeExpression;
+import org.apache.jena.shex.expressions.TripleConstraint;
+import org.apache.jena.shex.expressions.TripleExprVisitor;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
+
+import java.io.OutputStream;
 
 public class ShexLib {
     /** Extract the fragment from a URI. Return "". */

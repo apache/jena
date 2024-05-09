@@ -18,6 +18,11 @@
 
 package org.apache.jena.ontapi.impl.factories;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.enhanced.EnhNode;
+import org.apache.jena.graph.FrontsNode;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.OntModelControls;
 import org.apache.jena.ontapi.common.EnhNodeFactory;
 import org.apache.jena.ontapi.common.EnhNodeFilter;
@@ -42,15 +47,10 @@ import org.apache.jena.ontapi.model.OntEntity;
 import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.utils.Graphs;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.enhanced.EnhNode;
-import org.apache.jena.graph.FrontsNode;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 import java.util.ArrayList;
@@ -71,24 +71,24 @@ final class OntEntities {
 
     public static EnhNodeFactory createNamedObjectPropertyFactory(OntConfig config) {
         Set<Resource> objectPropertyTypes = new LinkedHashSet<>();
-        objectPropertyTypes.add(OWL.ObjectProperty);
+        objectPropertyTypes.add(OWL2.ObjectProperty);
         if (config.getBoolean(OntModelControls.USE_OWL_PROPERTY_INVERSE_FUNCTIONAL_FEATURE)) {
-            objectPropertyTypes.add(OWL.InverseFunctionalProperty);
+            objectPropertyTypes.add(OWL2.InverseFunctionalProperty);
         }
         if (config.getBoolean(OntModelControls.USE_OWL_PROPERTY_REFLEXIVE_FEATURE)) {
-            objectPropertyTypes.add(OWL.ReflexiveProperty);
+            objectPropertyTypes.add(OWL2.ReflexiveProperty);
         }
         if (config.getBoolean(OntModelControls.USE_OWL_PROPERTY_IRREFLEXIVE_FEATURE)) {
-            objectPropertyTypes.add(OWL.IrreflexiveProperty);
+            objectPropertyTypes.add(OWL2.IrreflexiveProperty);
         }
         if (config.getBoolean(OntModelControls.USE_OWL_PROPERTY_SYMMETRIC_FEATURE)) {
-            objectPropertyTypes.add(OWL.SymmetricProperty);
+            objectPropertyTypes.add(OWL2.SymmetricProperty);
         }
         if (config.getBoolean(OntModelControls.USE_OWL_PROPERTY_ASYMMETRIC_FEATURE)) {
-            objectPropertyTypes.add(OWL.AsymmetricProperty);
+            objectPropertyTypes.add(OWL2.AsymmetricProperty);
         }
         if (config.getBoolean(OntModelControls.USE_OWL_PROPERTY_TRANSITIVE_FEATURE)) {
-            objectPropertyTypes.add(OWL.TransitiveProperty);
+            objectPropertyTypes.add(OWL2.TransitiveProperty);
         }
         return createOntEntityFactory(
                 OntObjectProperty.Named.class,
@@ -96,7 +96,7 @@ final class OntEntities {
                 OntObjectPropertyImpl.NamedImpl::new,
                 OntPersonality.Builtins::getObjectProperties,
                 OntPersonality.Punnings::getObjectProperties,
-                OWL.ObjectProperty,
+                OWL2.ObjectProperty,
                 objectPropertyTypes.toArray(new Resource[0])
         );
     }
@@ -108,7 +108,7 @@ final class OntEntities {
                 OntDataPropertyImpl::new,
                 OntPersonality.Builtins::getDatatypeProperties,
                 OntPersonality.Punnings::getDatatypeProperties,
-                OWL.DatatypeProperty
+                OWL2.DatatypeProperty
         );
     }
 
@@ -119,7 +119,7 @@ final class OntEntities {
                 OntAnnotationPropertyImpl::new,
                 OntPersonality.Builtins::getAnnotationProperties,
                 OntPersonality.Punnings::getAnnotationProperties,
-                OWL.AnnotationProperty
+                OWL2.AnnotationProperty
         );
     }
 
@@ -130,7 +130,7 @@ final class OntEntities {
                 OntSimpleClassImpl.NamedImpl::new,
                 OntPersonality.Builtins::getNamedClasses,
                 OntPersonality.Punnings::getNamedClasses,
-                OWL.Class
+                OWL2.Class
         );
     }
 
@@ -141,21 +141,21 @@ final class OntEntities {
                 OntSimpleClassImpl.RLNamedImpl::new,
                 OntPersonality.Builtins::getNamedClasses,
                 OntPersonality.Punnings::getNamedClasses,
-                OWL.Class
+                OWL2.Class
         );
     }
 
     public static Function<OntConfig, EnhNodeFactory> createOWL1NamedClassFactory() {
-        Set<Node> compatibleTypes = Stream.of(OWL.Class, RDFS.Class, RDFS.Datatype)
+        Set<Node> compatibleTypes = Stream.of(OWL2.Class, RDFS.Class, RDFS.Datatype)
                 .map(FrontsNode::asNode).collect(Collectors.toUnmodifiableSet());
         return config -> {
             Function<OntPersonality.Punnings, Set<Node>> punnings = OntPersonality.Punnings::getNamedClasses;
             Function<OntPersonality.Builtins, Set<Node>> builtins = OntPersonality.Builtins::getNamedClasses;
             boolean useLegacyClassTesting = config.getBoolean(OntModelControls.USE_LEGACY_COMPATIBLE_NAMED_CLASS_FACTORY);
-            EnhNodeFinder finder = new EnhNodeFinder.ByType(OWL.Class);
+            EnhNodeFinder finder = new EnhNodeFinder.ByType(OWL2.Class);
             EnhNodeFilter filter = (n, g) -> OntClasses.canBeNamedClass(n, g, useLegacyClassTesting);
             EnhNodeProducer maker =
-                    new EnhNodeProducer.WithType(OntSimpleClassImpl.NamedImpl.class, OWL.Class, OntSimpleClassImpl.NamedImpl::new)
+                    new EnhNodeProducer.WithType(OntSimpleClassImpl.NamedImpl.class, OWL2.Class, OntSimpleClassImpl.NamedImpl::new)
                             .restrict(createIllegalPunningsFilter(punnings));
             return OntEnhNodeFactories.createCommon(OntClass.Named.class, maker, finder, filter);
         };
@@ -182,10 +182,10 @@ final class OntEntities {
     }
 
     public static EnhNodeFactory createNamedIndividualFactory() {
-        EnhNodeFinder finder = new EnhNodeFinder.ByType(OWL.NamedIndividual);
+        EnhNodeFinder finder = new EnhNodeFinder.ByType(OWL2.NamedIndividual);
         EnhNodeFilter filter = (n, g) -> n.isURI() && testNamedIndividualType(n, g);
         EnhNodeProducer maker = new EnhNodeProducer.WithType(
-                OntIndividualImpl.NamedImpl.class, OWL.NamedIndividual, OntIndividualImpl.NamedImpl::new
+                OntIndividualImpl.NamedImpl.class, OWL2.NamedIndividual, OntIndividualImpl.NamedImpl::new
         ).restrict(createIllegalPunningsFilter(OntPersonality.Punnings::getNamedClasses));
         return OntEnhNodeFactories.createCommon(OntIndividual.Named.class, maker, finder, filter);
     }
@@ -205,7 +205,7 @@ final class OntEntities {
                 if (forbidden.contains(type)) {
                     return false;
                 }
-                if (OWL.NamedIndividual.asNode().equals(type)) {
+                if (OWL2.NamedIndividual.asNode().equals(type)) {
                     hasDeclaration = true;
                 } else {
                     candidates.add(type);

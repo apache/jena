@@ -18,9 +18,9 @@
 
 package org.apache.jena.ontapi.model;
 
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 import java.util.Objects;
@@ -99,9 +99,9 @@ public interface OntRelationalProperty extends OntProperty {
     /**
      * Lists all negative property assertions.
      * A negative property assertion is anonymous resource
-     * with the type {@link OWL#NegativePropertyAssertion owl:NegativePropertyAssertion}
+     * with the type {@link OWL2#NegativePropertyAssertion owl:NegativePropertyAssertion}
      * that has a data or object property expression as an object
-     * on the predicate {@link OWL#assertionProperty owl:assertionProperty}.
+     * on the predicate {@link OWL2#assertionProperty owl:assertionProperty}.
      *
      * @return {@code Stream} of {@link OntNegativeAssertion}
      */
@@ -137,7 +137,7 @@ public interface OntRelationalProperty extends OntProperty {
 
     /**
      * Removes the equivalent property statement
-     * (a statement with the predicate {@link OWL#equivalentProperty owl:equivalentProperty})
+     * (a statement with the predicate {@link OWL2#equivalentProperty owl:equivalentProperty})
      * for the specified resource (considered as an object), including the corresponding statement's annotations.
      * No-op in case no such equivalent property relationship is found.
      * Removes all triples with predicate {@code owl:equivalentProperty} (and all theirs annotation triples)
@@ -150,7 +150,7 @@ public interface OntRelationalProperty extends OntProperty {
 
     /**
      * Removes the {@code owl:propertyDisjointWith} statement
-     * (a statement with the predicate {@link OWL#propertyDisjointWith owl:propertyDisjointWith})
+     * (a statement with the predicate {@link OWL2#propertyDisjointWith owl:propertyDisjointWith})
      * for the specified resource (considered as an object), including the corresponding statement's annotations.
      * No-op in case no such disjoint property relationship is found.
      * Removes all triples with predicate {@code owl:propertyDisjointWith} (and all theirs annotation triples)
@@ -183,10 +183,10 @@ public interface OntRelationalProperty extends OntProperty {
     default Stream<OntClass.Restriction> referringRestrictions() {
         //noinspection unchecked
         return Stream.concat(
-                getModel().statements(null, OWL.onProperty, this)
+                getModel().statements(null, OWL2.onProperty, this)
                         .map(it -> it.getSubject().getAs(OntClass.UnaryRestriction.class))
                         .filter(Objects::nonNull),
-                getModel().statements(null, OWL.onProperties, null)
+                getModel().statements(null, OWL2.onProperties, null)
                         .map(it -> it.getSubject().getAs(OntClass.NaryRestriction.class))
                         .filter(Objects::nonNull)
                         .filter(it -> it.getList().contains(OntRelationalProperty.this))
@@ -246,7 +246,7 @@ public interface OntRelationalProperty extends OntProperty {
      * @see #setFunctional(boolean)
      */
     default OntStatement addFunctionalDeclaration() {
-        return addStatement(RDF.type, OWL.FunctionalProperty);
+        return addStatement(RDF.type, OWL2.FunctionalProperty);
     }
 
     /**
@@ -257,11 +257,11 @@ public interface OntRelationalProperty extends OntProperty {
      * @return boolean
      */
     default boolean isFunctional() {
-        return hasType(OWL.FunctionalProperty);
+        return hasType(OWL2.FunctionalProperty);
     }
 
     /**
-     * Adds or removes {@link OWL#FunctionalProperty owl:FunctionalProperty} declaration
+     * Adds or removes {@link OWL2#FunctionalProperty owl:FunctionalProperty} declaration
      * for this property according to the given boolean flag.
      * Note: the statement is removed along with all its annotations.
      *

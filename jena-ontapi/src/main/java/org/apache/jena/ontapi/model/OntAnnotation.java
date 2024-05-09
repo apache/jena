@@ -18,8 +18,8 @@
 
 package org.apache.jena.ontapi.model;
 
-import org.apache.jena.ontapi.vocabulary.OWL;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.vocabulary.OWL2;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -28,8 +28,8 @@ import java.util.stream.Stream;
  * A Bulk Annotation {@link OntObject Ontology Object}.
  * It's an anonymous jena-resource with one of the two types:
  * <ul>
- * <li>{@link OWL#Axiom owl:Axiom} for root annotations, it is usually owned by axiomatic statements.</li>
- * <li>{@link OWL#Annotation owl:Annotation} for sub-annotations,
+ * <li>{@link OWL2#Axiom owl:Axiom} for root annotations, it is usually owned by axiomatic statements.</li>
+ * <li>{@link OWL2#Annotation owl:Annotation} for sub-annotations,
  * and also for annotation of several specific axioms with main-statement {@code _:x rdf:type @type} where {@code @type} is
  * {@code owl:AllDisjointClasses}, {@code owl:AllDisjointProperties}, {@code owl:AllDifferent} or {@code owl:NegativePropertyAssertion}.</li>
  * </ul>
@@ -74,8 +74,8 @@ public interface OntAnnotation extends OntObject {
 
     /**
      * Lists all descendants of this ont-annotation resource.
-     * The resulting resources must have {@link OWL#Annotation owl:Annotation} type
-     * and this object on predicate {@link OWL#annotatedSource owl:annotatedSource}.
+     * The resulting resources must have {@link OWL2#Annotation owl:Annotation} type
+     * and this object on predicate {@link OWL2#annotatedSource owl:annotatedSource}.
      * The method {@link #parent()} called on descendants must return the annotation equals to this.
      *
      * @return {@code Stream} of {@link OntAnnotation}s

@@ -18,8 +18,6 @@
 
 package org.apache.jena.shacl.compact.reader;
 
-import java.util.*;
-
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
@@ -36,6 +34,15 @@ import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDFS;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * The engine for translating SHACL Compact Syntax into a SHACL graph of triples.

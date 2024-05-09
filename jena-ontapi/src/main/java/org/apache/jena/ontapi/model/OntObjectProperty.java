@@ -19,13 +19,13 @@
 package org.apache.jena.ontapi.model;
 
 import org.apache.jena.ontapi.OntJenaException;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 import java.util.Arrays;
@@ -72,7 +72,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
     /**
      * Returns a {@code Stream} over all property chain {@link OntList ontology list}s
      * that are attached to this Object Property Expression
-     * on the predicate {@link OWL#propertyChainAxiom owl:propertyChainAxiom}.
+     * on the predicate {@link OWL2#propertyChainAxiom owl:propertyChainAxiom}.
      *
      * @return {@code Stream} of {@link OntList}s with generic-parameter {@code OntOPE}
      */
@@ -92,7 +92,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * Creates a property chain logical constructions
      * as a {@link OntList ontology []-list} of {@link OntObjectProperty Object Property Expression}s
      * that is attached to this Object Property Expression
-     * at object positions with the predicate {@link OWL#propertyChainAxiom owl:propertyChainAxiom}.
+     * at object positions with the predicate {@link OWL2#propertyChainAxiom owl:propertyChainAxiom}.
      * The resulting rdf-list will consist of all the elements of the specified collection
      * in the given order with the possibility of duplication.
      * Note: Any {@code null}s in a collection will cause {@link OntJenaException.IllegalArgument exception}.
@@ -214,7 +214,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      */
     @Override
     default Stream<OntObjectProperty> disjointProperties() {
-        return objects(OWL.propertyDisjointWith, OntObjectProperty.class);
+        return objects(OWL2.propertyDisjointWith, OntObjectProperty.class);
     }
 
     /**
@@ -226,7 +226,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      */
     @Override
     default Stream<OntObjectProperty> equivalentProperties() {
-        return objects(OWL.equivalentProperty, OntObjectProperty.class);
+        return objects(OWL2.equivalentProperty, OntObjectProperty.class);
     }
 
     /**
@@ -237,7 +237,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @see Named#createInverse()
      */
     default Stream<OntObjectProperty> inverseProperties() {
-        return objects(OWL.inverseOf, OntObjectProperty.class);
+        return objects(OWL2.inverseOf, OntObjectProperty.class);
     }
 
     /**
@@ -342,7 +342,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @see #setInverseFunctional(boolean)
      */
     default OntStatement addInverseFunctionalDeclaration() {
-        return addStatement(RDF.type, OWL.InverseFunctionalProperty);
+        return addStatement(RDF.type, OWL2.InverseFunctionalProperty);
     }
 
     /**
@@ -353,7 +353,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @see #setTransitive(boolean)
      */
     default OntStatement addTransitiveDeclaration() {
-        return addStatement(RDF.type, OWL.TransitiveProperty);
+        return addStatement(RDF.type, OWL2.TransitiveProperty);
     }
 
     /**
@@ -364,7 +364,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @see #setSymmetric(boolean)
      */
     default OntStatement addSymmetricDeclaration() {
-        return addStatement(RDF.type, OWL.SymmetricProperty);
+        return addStatement(RDF.type, OWL2.SymmetricProperty);
     }
 
     /**
@@ -375,7 +375,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @see #setAsymmetric(boolean)
      */
     default OntStatement addAsymmetricDeclaration() {
-        return addStatement(RDF.type, OWL.AsymmetricProperty);
+        return addStatement(RDF.type, OWL2.AsymmetricProperty);
     }
 
     /**
@@ -386,7 +386,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @see #setReflexive(boolean)
      */
     default OntStatement addReflexiveDeclaration() {
-        return addStatement(RDF.type, OWL.ReflexiveProperty);
+        return addStatement(RDF.type, OWL2.ReflexiveProperty);
     }
 
     /**
@@ -397,7 +397,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @see #setIrreflexive(boolean)
      */
     default OntStatement addIrreflexiveDeclaration() {
-        return addStatement(RDF.type, OWL.IrreflexiveProperty);
+        return addStatement(RDF.type, OWL2.IrreflexiveProperty);
     }
 
     /**
@@ -409,11 +409,11 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @see #inverseProperties()
      */
     default OntStatement addInverseOfStatement(OntObjectProperty other) {
-        return addStatement(OWL.inverseOf, other);
+        return addStatement(OWL2.inverseOf, other);
     }
 
     /**
-     * Creates and returns a new {@link OWL#equivalentProperty owl:equivalentProperty} statement
+     * Creates and returns a new {@link OWL2#equivalentProperty owl:equivalentProperty} statement
      * with the given property as an object and this property as a subject.
      *
      * @param other {@link OntObjectProperty}, not {@code null}
@@ -423,7 +423,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @see OntDataProperty#addEquivalentPropertyStatement(OntDataProperty)
      */
     default OntStatement addEquivalentPropertyStatement(OntObjectProperty other) {
-        return addStatement(OWL.equivalentProperty, other);
+        return addStatement(OWL2.equivalentProperty, other);
     }
 
     /**
@@ -437,7 +437,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @see OntDisjoint.ObjectProperties
      */
     default OntStatement addPropertyDisjointWithStatement(OntObjectProperty other) {
-        return addStatement(OWL.propertyDisjointWith, other);
+        return addStatement(OWL2.propertyDisjointWith, other);
     }
 
     /**
@@ -480,7 +480,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
     }
 
     /**
-     * Adds a new {@link OWL#equivalentProperty owl:equivalentProperty} statement.
+     * Adds a new {@link OWL2#equivalentProperty owl:equivalentProperty} statement.
      *
      * @param other {@link OntObjectProperty}, not {@code null}
      * @return <b>this</b> instance to allow cascading calls
@@ -494,7 +494,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
     }
 
     /**
-     * Adds a new {@link OWL#propertyDisjointWith owl:propertyDisjointWith} statement
+     * Adds a new {@link OWL2#propertyDisjointWith owl:propertyDisjointWith} statement
      * for this and the specified property.
      *
      * @param other {@link OntDataProperty}, not {@code null}
@@ -563,7 +563,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      */
     @Override
     default OntObjectProperty removeEquivalentProperty(Resource property) {
-        remove(OWL.equivalentProperty, property);
+        remove(OWL2.equivalentProperty, property);
         return this;
     }
 
@@ -572,7 +572,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      */
     @Override
     default OntObjectProperty removeDisjointProperty(Resource property) {
-        remove(OWL.propertyDisjointWith, property);
+        remove(OWL2.propertyDisjointWith, property);
         return this;
     }
 
@@ -595,7 +595,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
     }
 
     /**
-     * Removes the statement with the predicate {@link OWL#inverseOf owl:inverseOf}
+     * Removes the statement with the predicate {@link OWL2#inverseOf owl:inverseOf}
      * and the given object property as an object.
      * If the argument is {@code null}, all {@code owl:inverseOf} statements will be removed for this object property.
      * No-op in case there is no {@code owl:inverseOf} statements.
@@ -605,7 +605,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @see #addInverseProperty(OntObjectProperty)
      */
     default OntObjectProperty removeInverseProperty(Resource other) {
-        remove(OWL.inverseOf, other);
+        remove(OWL2.inverseOf, other);
         return this;
     }
 
@@ -617,7 +617,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
         if (functional) {
             addFunctionalDeclaration();
         } else {
-            remove(RDF.type, OWL.FunctionalProperty);
+            remove(RDF.type, OWL2.FunctionalProperty);
         }
         return this;
     }
@@ -644,7 +644,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @return {@code true} iff it is an inverse functional property
      */
     default boolean isInverseFunctional() {
-        return hasType(OWL.InverseFunctionalProperty);
+        return hasType(OWL2.InverseFunctionalProperty);
     }
 
     /**
@@ -660,7 +660,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
         if (inverseFunctional) {
             addInverseFunctionalDeclaration();
         } else {
-            remove(RDF.type, OWL.InverseFunctionalProperty);
+            remove(RDF.type, OWL2.InverseFunctionalProperty);
         }
         return this;
     }
@@ -669,7 +669,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @return {@code true} iff it is a transitive property
      */
     default boolean isTransitive() {
-        return hasType(OWL.TransitiveProperty);
+        return hasType(OWL2.TransitiveProperty);
     }
 
     /**
@@ -685,7 +685,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
         if (transitive) {
             addTransitiveDeclaration();
         } else {
-            remove(RDF.type, OWL.TransitiveProperty);
+            remove(RDF.type, OWL2.TransitiveProperty);
         }
         return this;
     }
@@ -694,7 +694,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @return {@code true} iff it is a symmetric property
      */
     default boolean isSymmetric() {
-        return hasType(OWL.SymmetricProperty);
+        return hasType(OWL2.SymmetricProperty);
     }
 
     /**
@@ -710,7 +710,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
         if (symmetric) {
             addSymmetricDeclaration();
         } else {
-            remove(RDF.type, OWL.SymmetricProperty);
+            remove(RDF.type, OWL2.SymmetricProperty);
         }
         return this;
     }
@@ -719,7 +719,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @return {@code true} iff it is an asymmetric property
      */
     default boolean isAsymmetric() {
-        return hasType(OWL.AsymmetricProperty);
+        return hasType(OWL2.AsymmetricProperty);
     }
 
     /**
@@ -735,7 +735,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
         if (asymmetric) {
             addAsymmetricDeclaration();
         } else {
-            remove(RDF.type, OWL.AsymmetricProperty);
+            remove(RDF.type, OWL2.AsymmetricProperty);
         }
         return this;
     }
@@ -744,7 +744,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @return {@code true} iff it is a reflexive property
      */
     default boolean isReflexive() {
-        return hasType(OWL.ReflexiveProperty);
+        return hasType(OWL2.ReflexiveProperty);
     }
 
     /**
@@ -760,7 +760,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
         if (reflexive) {
             addReflexiveDeclaration();
         } else {
-            remove(RDF.type, OWL.ReflexiveProperty);
+            remove(RDF.type, OWL2.ReflexiveProperty);
         }
         return this;
     }
@@ -769,7 +769,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @return {@code true} iff it is an irreflexive property
      */
     default boolean isIrreflexive() {
-        return hasType(OWL.IrreflexiveProperty);
+        return hasType(OWL2.IrreflexiveProperty);
     }
 
     /**
@@ -785,7 +785,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
         if (irreflexive) {
             addIrreflexiveDeclaration();
         } else {
-            remove(RDF.type, OWL.IrreflexiveProperty);
+            remove(RDF.type, OWL2.IrreflexiveProperty);
         }
         return this;
     }

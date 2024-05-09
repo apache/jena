@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,26 +18,36 @@
 
 package org.apache.jena.query;
 
-import java.util.*;
-
 import org.apache.jena.datatypes.TypeMapper;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.irix.IRIx;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.shared.impl.PrefixMappingImpl ;
-import org.apache.jena.sparql.ARQException ;
-import org.apache.jena.sparql.syntax.Element ;
-import org.apache.jena.sparql.syntax.ElementGroup ;
-import org.apache.jena.sparql.syntax.ElementTriplesBlock ;
-import org.apache.jena.update.UpdateExecutionFactory ;
-import org.apache.jena.update.UpdateExecution ;
-import org.apache.jena.update.UpdateRequest ;
-import org.apache.jena.vocabulary.OWL ;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.XSD ;
-import org.junit.Assert ;
-import org.junit.Test ;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
+import org.apache.jena.sparql.ARQException;
+import org.apache.jena.sparql.syntax.Element;
+import org.apache.jena.sparql.syntax.ElementGroup;
+import org.apache.jena.sparql.syntax.ElementTriplesBlock;
+import org.apache.jena.update.UpdateExecution;
+import org.apache.jena.update.UpdateExecutionFactory;
+import org.apache.jena.update.UpdateRequest;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.XSD;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Tests for the {@link ParameterizedSparqlString}

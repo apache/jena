@@ -25,9 +25,9 @@ import org.apache.jena.ontapi.model.OntDataProperty;
 import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.model.OntObject;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -153,8 +153,8 @@ public class StreamsTest {
         assertFalseConstant(m.localStatements(), Spliterator.IMMUTABLE);
         assertFalseConstant(m.localStatements(), Spliterator.ORDERED);
 
-        Supplier<Stream<?>> s1 = () -> m.statements(null, RDF.type, OWL.Class);
-        Supplier<Stream<?>> s2 = () -> m.localStatements(null, RDF.type, OWL.Class);
+        Supplier<Stream<?>> s1 = () -> m.statements(null, RDF.type, OWL2.Class);
+        Supplier<Stream<?>> s2 = () -> m.localStatements(null, RDF.type, OWL2.Class);
         Stream.of(s1, s2).forEach(s -> {
             assertTrueConstant(s.get(), Spliterator.NONNULL);
             assertFalseConstant(s.get(), Spliterator.SIZED);
@@ -169,8 +169,8 @@ public class StreamsTest {
         OntModel m = OntModelFactory.createModel().addImport(OntModelFactory.createModel().setID("base").getModel());
         assertTrueConstant(m.localStatements(), Spliterator.SIZED);
         assertFalseConstant(m.statements(), Spliterator.SIZED);
-        assertFalseConstant(m.statements(null, RDF.type, OWL.Class), Spliterator.SIZED);
-        assertFalseConstant(m.localStatements(null, RDF.type, OWL.Class), Spliterator.SIZED);
+        assertFalseConstant(m.statements(null, RDF.type, OWL2.Class), Spliterator.SIZED);
+        assertFalseConstant(m.localStatements(null, RDF.type, OWL2.Class), Spliterator.SIZED);
     }
 
     @Test
@@ -186,19 +186,19 @@ public class StreamsTest {
 
         assertTrueConstant(a.localStatements(), Spliterator.DISTINCT);
         assertFalseConstant(a.statements(), Spliterator.DISTINCT);
-        assertFalseConstant(a.statements(null, RDF.type, OWL.Class), Spliterator.DISTINCT);
-        assertTrueConstant(a.localStatements(null, RDF.type, OWL.Class), Spliterator.DISTINCT);
+        assertFalseConstant(a.statements(null, RDF.type, OWL2.Class), Spliterator.DISTINCT);
+        assertTrueConstant(a.localStatements(null, RDF.type, OWL2.Class), Spliterator.DISTINCT);
 
         assertFalseConstant(a.ontObjects(OntClass.Named.class), Spliterator.DISTINCT);
 
         Assertions.assertEquals(2, a.classes().count());
         Assertions.assertEquals(2, a.ontObjects(OntClass.Named.class).count());
         Assertions.assertEquals(2, a.ontEntities().count());
-        Assertions.assertEquals(2, a.statements(null, RDF.type, OWL.Class).count());
+        Assertions.assertEquals(2, a.statements(null, RDF.type, OWL2.Class).count());
 
         Assertions.assertEquals(1, a.classes().distinct().count());
         Assertions.assertEquals(1, a.ontObjects(OntClass.Named.class).distinct().count());
         Assertions.assertEquals(1, a.ontEntities().distinct().count());
-        Assertions.assertEquals(1, a.statements(null, RDF.type, OWL.Class).distinct().count());
+        Assertions.assertEquals(1, a.statements(null, RDF.type, OWL2.Class).distinct().count());
     }
 }

@@ -18,6 +18,8 @@
 
 package org.apache.jena.ontapi.impl.objects;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.ontapi.impl.OntGraphModelImpl;
 import org.apache.jena.ontapi.model.OntDataProperty;
 import org.apache.jena.ontapi.model.OntIndividual;
@@ -27,15 +29,13 @@ import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.model.OntRelationalProperty;
 import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.ontapi.utils.Iterators;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.Optional;
 
@@ -54,8 +54,8 @@ public abstract class OntNegativePropertyAssertionImpl<P extends OntRelationalPr
                                           OntIndividual source,
                                           OntDataProperty property,
                                           Literal target) {
-        Resource res = create(model, source).addProperty(OWL.assertionProperty, property)
-                .addProperty(OWL.targetValue, target);
+        Resource res = create(model, source).addProperty(OWL2.assertionProperty, property)
+                .addProperty(OWL2.targetValue, target);
         return model.getNodeAs(res.asNode(), WithDataProperty.class);
     }
 
@@ -64,26 +64,26 @@ public abstract class OntNegativePropertyAssertionImpl<P extends OntRelationalPr
                                             OntObjectProperty property,
                                             OntIndividual target) {
         Resource res = create(model, source)
-                .addProperty(OWL.assertionProperty, property)
-                .addProperty(OWL.targetIndividual, target);
+                .addProperty(OWL2.assertionProperty, property)
+                .addProperty(OWL2.targetIndividual, target);
         return model.getNodeAs(res.asNode(), WithObjectProperty.class);
     }
 
     private static Resource create(OntModel model, OntIndividual source) {
         Resource res = model.createResource();
-        res.addProperty(RDF.type, OWL.NegativePropertyAssertion);
-        res.addProperty(OWL.sourceIndividual, source);
+        res.addProperty(RDF.type, OWL2.NegativePropertyAssertion);
+        res.addProperty(OWL2.sourceIndividual, source);
         return res;
     }
 
     @Override
     public Optional<OntStatement> findRootStatement() {
-        return getRequiredRootStatement(this, OWL.NegativePropertyAssertion);
+        return getRequiredRootStatement(this, OWL2.NegativePropertyAssertion);
     }
 
     @Override
     public ExtendedIterator<OntStatement> listSpec() {
-        return Iterators.concat(super.listSpec(), listRequired(OWL.sourceIndividual, OWL.assertionProperty, targetPredicate()));
+        return Iterators.concat(super.listSpec(), listRequired(OWL2.sourceIndividual, OWL2.assertionProperty, targetPredicate()));
     }
 
     abstract Class<P> propertyClass();
@@ -92,12 +92,12 @@ public abstract class OntNegativePropertyAssertionImpl<P extends OntRelationalPr
 
     @Override
     public OntIndividual getSource() {
-        return getRequiredObject(OWL.sourceIndividual, OntIndividual.class);
+        return getRequiredObject(OWL2.sourceIndividual, OntIndividual.class);
     }
 
     @Override
     public P getProperty() {
-        return getRequiredObject(OWL.assertionProperty, propertyClass());
+        return getRequiredObject(OWL2.assertionProperty, propertyClass());
     }
 
     public static class ObjectAssertionImpl extends OntNegativePropertyAssertionImpl<OntObjectProperty, OntIndividual> implements WithObjectProperty {
@@ -112,7 +112,7 @@ public abstract class OntNegativePropertyAssertionImpl<P extends OntRelationalPr
 
         @Override
         Property targetPredicate() {
-            return OWL.targetIndividual;
+            return OWL2.targetIndividual;
         }
 
         @Override
@@ -140,7 +140,7 @@ public abstract class OntNegativePropertyAssertionImpl<P extends OntRelationalPr
 
         @Override
         Property targetPredicate() {
-            return OWL.targetValue;
+            return OWL2.targetValue;
         }
 
         @Override

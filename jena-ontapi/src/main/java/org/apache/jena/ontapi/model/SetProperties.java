@@ -18,12 +18,12 @@
 
 package org.apache.jena.ontapi.model;
 
-import org.apache.jena.ontapi.vocabulary.OWL;
+import org.apache.jena.vocabulary.OWL2;
 
 /**
  * A technical interface to provide a possibility to assign {@link OntDataProperty} properties
  * into {@link OntClass.NaryRestriction n-ary restriction class expression}
- * on predicate {@link OWL#onProperties owl:onProperties}.
+ * on predicate {@link OWL2#onProperties owl:onProperties}.
  *
  * @param <P> - any subtype of {@link OntRelationalProperty} in general case, but in the current model it can only be {@link OntDataProperty}
  * @param <R> - return type, a subtype of {@link OntClass.NaryRestriction}

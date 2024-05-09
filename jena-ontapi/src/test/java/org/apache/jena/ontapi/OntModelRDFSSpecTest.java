@@ -18,6 +18,9 @@
 
 package org.apache.jena.ontapi;
 
+import org.apache.jena.enhanced.UnsupportedPolymorphismException;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntDataProperty;
 import org.apache.jena.ontapi.model.OntEntity;
@@ -28,16 +31,13 @@ import org.apache.jena.ontapi.model.OntProperty;
 import org.apache.jena.ontapi.model.OntRelationalProperty;
 import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.ontapi.utils.StdModels;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.enhanced.UnsupportedPolymorphismException;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -58,7 +58,7 @@ public class OntModelRDFSSpecTest {
     })
     public void testClasses(TestSpec spec) {
         Model base = ModelFactory.createDefaultModel();
-        base.createResource("1", OWL.Class);
+        base.createResource("1", OWL2.Class);
         base.createResource("2", RDFS.Datatype);
         base.createResource("3", RDFS.Class);
         base.createResource("4", RDFS.Class);
@@ -94,9 +94,9 @@ public class OntModelRDFSSpecTest {
     public void testProperties(TestSpec spec) {
         OntModel m = OntModelFactory.createModel(spec.inst);
         Resource p1 = m.createResource("1", RDF.Property);
-        Resource p2 = m.createResource("2", OWL.ObjectProperty);
-        Resource p3 = m.createResource("3", OWL.DatatypeProperty);
-        Resource p4 = m.createResource("4", OWL.AnnotationProperty);
+        Resource p2 = m.createResource("2", OWL2.ObjectProperty);
+        Resource p3 = m.createResource("3", OWL2.DatatypeProperty);
+        Resource p4 = m.createResource("4", OWL2.AnnotationProperty);
 
         Assertions.assertEquals(List.of("1"),
                 m.properties().map(Resource::getURI).collect(Collectors.toList())
@@ -165,7 +165,7 @@ public class OntModelRDFSSpecTest {
     })
     public void testUnsupportedObjects(TestSpec spec) {
         OntModel m = OntModelFactory.createModel(spec.inst);
-        Resource x = m.createResource("x", OWL.DatatypeProperty);
+        Resource x = m.createResource("x", OWL2.DatatypeProperty);
         Assertions.assertThrows(UnsupportedPolymorphismException.class, () -> x.as(OntDataProperty.class));
 
         Assertions.assertThrows(OntJenaException.Unsupported.class, () -> m.createDataHasValue(null, null));
@@ -181,10 +181,10 @@ public class OntModelRDFSSpecTest {
         Model g = ModelFactory.createDefaultModel();
         Resource namedRdfsClass = g.createResource("rdfsClass", RDFS.Class);
         Resource namedRdfsDatatype = g.createResource("rdfsDatatype", RDFS.Datatype);
-        Resource namedOwlClass = g.createResource("owlClass", OWL.Class);
+        Resource namedOwlClass = g.createResource("owlClass", OWL2.Class);
         Resource anonRdfsClass = g.createResource(RDFS.Class);
         Resource anonRdfsDatatype = g.createResource(RDFS.Datatype);
-        Resource anonOwlClass = g.createResource(OWL.Class);
+        Resource anonOwlClass = g.createResource(OWL2.Class);
         Resource anonRdfsDomain = g.createResource();
         Resource anonRdfsRange = g.createResource();
         Resource namedRdfsDomain = g.createResource("rdfsDomain");

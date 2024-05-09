@@ -18,6 +18,9 @@
 
 package org.apache.jena.ontapi.impl.objects;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.common.OntEnhGraph;
 import org.apache.jena.ontapi.impl.OntGraphModelImpl;
@@ -29,11 +32,6 @@ import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.ontapi.utils.Graphs;
 import org.apache.jena.ontapi.utils.Iterators;
 import org.apache.jena.ontapi.utils.StdModels;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
@@ -44,6 +42,8 @@ import org.apache.jena.rdf.model.impl.ModelCom;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.rdf.model.impl.StatementImpl;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.Collections;
 import java.util.List;
@@ -57,7 +57,7 @@ import java.util.stream.Stream;
  * This is an extended Jena {@link StatementImpl} with possibility to add, delete and find annotations
  * in the same form of {@code OntStatement}.
  * Annotations can be plain (annotation assertion) or bulk (anonymous resource with
- * {@code rdf:type} {@link OWL#Axiom owl:Axiom} or {@link OWL#Annotation owl:Annotation},
+ * {@code rdf:type} {@link OWL2#Axiom owl:Axiom} or {@link OWL2#Annotation owl:Annotation},
  * for more details see {@link OntAnnotation}).
  * The examples of how to write bulk-annotations in RDF-graph see here:
  * <a href="https://www.w3.org/TR/owl2-mapping-to-rdf/#Translation_of_Annotations">2.2 Translation of Annotations</a>.
@@ -200,18 +200,18 @@ public class OntStatementImpl extends StatementImpl implements OntStatement {
 
     /**
      * Determines the annotation type.
-     * Root annotations (including some anon-axioms bodies) go with the type owl:Axiom {@link OWL#Axiom},
+     * Root annotations (including some anon-axioms bodies) go with the type owl:Axiom {@link OWL2#Axiom},
      * sub-annotations have type owl:Annotation.
      *
      * @param s {@link Resource} the subject resource to test
-     * @return {@link OWL#Axiom} or {@link OWL#Annotation}
+     * @return {@link OWL2#Axiom} or {@link OWL2#Annotation}
      */
     protected static Resource getAnnotationRootType(Resource s) {
         Model m = s.getModel();
         if (s.isAnon() && OntAnnotationImpl.ROOT_TYPES.stream().anyMatch(t -> m.contains(s, RDF.type, t))) {
-            return OWL.Annotation;
+            return OWL2.Annotation;
         }
-        return OWL.Axiom;
+        return OWL2.Axiom;
     }
 
     protected int getCharacteristics() {
@@ -254,7 +254,7 @@ public class OntStatementImpl extends StatementImpl implements OntStatement {
 
     public boolean isAnnotationRootStatement() {
         return subject.isAnon() && RDF.type.equals(predicate) &&
-                (OWL.Axiom.equals(object) || OWL.Annotation.equals(object));
+                (OWL2.Axiom.equals(object) || OWL2.Annotation.equals(object));
     }
 
     @Override
@@ -399,7 +399,7 @@ public class OntStatementImpl extends StatementImpl implements OntStatement {
     /**
      * Returns the {@code rdf:type} of the attached annotation objects.
      *
-     * @return {@link OWL#Axiom {@code owl:Axiom}} or {@link OWL#Annotation {@code owl:Annotation}}
+     * @return {@link OWL2#Axiom {@code owl:Axiom}} or {@link OWL2#Annotation {@code owl:Annotation}}
      */
     protected Resource getAnnotationResourceType() {
         return getAnnotationRootType(subject);
@@ -416,19 +416,19 @@ public class OntStatementImpl extends StatementImpl implements OntStatement {
     }
 
     public boolean belongsToOWLAnnotation() {
-        return subject.hasProperty(RDF.type, OWL.Annotation);
+        return subject.hasProperty(RDF.type, OWL2.Annotation);
     }
 
     public boolean belongsToOWLAxiom() {
-        return subject.hasProperty(RDF.type, OWL.Axiom);
+        return subject.hasProperty(RDF.type, OWL2.Axiom);
     }
 
     public boolean hasAnnotatedProperty(Property property) {
-        return subject.hasProperty(OWL.annotatedProperty, property);
+        return subject.hasProperty(OWL2.annotatedProperty, property);
     }
 
     public boolean hasAnnotatedTarget(RDFNode object) {
-        return subject.hasProperty(OWL.annotatedTarget, object);
+        return subject.hasProperty(OWL2.annotatedTarget, object);
     }
 
     /**

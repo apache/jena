@@ -20,10 +20,10 @@ package org.apache.jena.ontapi.model;
 
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.utils.StdModels;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.List;
 import java.util.Objects;

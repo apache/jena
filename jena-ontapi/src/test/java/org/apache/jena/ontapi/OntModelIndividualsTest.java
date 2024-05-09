@@ -18,19 +18,19 @@
 
 package org.apache.jena.ontapi;
 
+import org.apache.jena.graph.Graph;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.testutils.RDFIOTestUtils;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.graph.Graph;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.reasoner.InfGraph;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -85,8 +85,8 @@ public class OntModelIndividualsTest {
     public void testListIndividuals2(TestSpec spec) {
         OntModel m = OntModelFactory.createModel(spec.inst);
         Resource a0 = m.createResource(NS + "A0");
-        m.add(a0, RDF.type, OWL.Class);
-        m.add(OWL.Class, RDF.type, RDFS.Class);
+        m.add(a0, RDF.type, OWL2.Class);
+        m.add(OWL2.Class, RDF.type, RDFS.Class);
         Assertions.assertTrue(m.individuals().findFirst().isEmpty());
     }
 
@@ -108,8 +108,8 @@ public class OntModelIndividualsTest {
     public void testListIndividuals3(TestSpec spec) {
         OntModel m = OntModelFactory.createModel(spec.inst);
         Resource a0 = m.createResource(NS + "A0");
-        m.add(a0, RDF.type, OWL.Class);
-        m.add(OWL.Class, RDF.type, OWL.Class);
+        m.add(a0, RDF.type, OWL2.Class);
+        m.add(OWL2.Class, RDF.type, OWL2.Class);
         Assertions.assertTrue(m.individuals().findFirst().isEmpty());
     }
 
@@ -134,7 +134,7 @@ public class OntModelIndividualsTest {
         // For inference model
         OntModel m = OntModelFactory.createModel(spec.inst);
         Resource a0 = m.createResource(NS + "A0");
-        m.add(a0, RDF.type, OWL.Class);
+        m.add(a0, RDF.type, OWL2.Class);
         Assertions.assertTrue(m.individuals().findFirst().isEmpty());
     }
 
@@ -157,8 +157,8 @@ public class OntModelIndividualsTest {
         // a0 should be an individual, since we are punning
         Resource a0 = m.createResource(NS + "A0");
         Resource a1 = m.createResource(NS + "A1");
-        m.add(a0, RDF.type, OWL.Class);
-        m.add(a1, RDF.type, OWL.Class);
+        m.add(a0, RDF.type, OWL2.Class);
+        m.add(a1, RDF.type, OWL2.Class);
         m.add(a0, RDF.type, a1);
         Assertions.assertEquals(List.of(NS + "A0"), m.individuals().map(Resource::getURI).collect(Collectors.toList()));
     }
@@ -270,8 +270,8 @@ public class OntModelIndividualsTest {
         Model data = ModelFactory.createDefaultModel();
         Resource c = schema.createResource("http://example.com/foo#AClass");
         Resource i = data.createResource("http://example.com/foo#anInd");
-        schema.add(c, org.apache.jena.vocabulary.RDF.type, org.apache.jena.vocabulary.OWL.Class);
-        data.add(i, org.apache.jena.vocabulary.RDF.type, c);
+        schema.add(c, RDF.type, OWL2.Class);
+        data.add(i, RDF.type, c);
 
         OntModel composite = OntModelFactory.createModel(schema.getGraph(), spec.inst);
         Graph g = composite.getGraph();
@@ -298,9 +298,9 @@ public class OntModelIndividualsTest {
         OntClass.Named c3 = m.createOntClass(NS + "C3");
 
         OntIndividual i1 = c0.createIndividual(NS + "I1");
-        OntIndividual i2 = m.createResource(NS + "I2", OWL.NamedIndividual).as(OntIndividual.class);
-        OntIndividual i3 = m.createResource(NS + "I3", OWL.NamedIndividual).as(OntIndividual.class);
-        OntIndividual i4 = m.createResource(NS + "I4", OWL.NamedIndividual).as(OntIndividual.class);
+        OntIndividual i2 = m.createResource(NS + "I2", OWL2.NamedIndividual).as(OntIndividual.class);
+        OntIndividual i3 = m.createResource(NS + "I3", OWL2.NamedIndividual).as(OntIndividual.class);
+        OntIndividual i4 = m.createResource(NS + "I4", OWL2.NamedIndividual).as(OntIndividual.class);
         OntIndividual i6 = c3.createIndividual();
         OntIndividual i5 = c1.createIndividual(NS + "I5");
 

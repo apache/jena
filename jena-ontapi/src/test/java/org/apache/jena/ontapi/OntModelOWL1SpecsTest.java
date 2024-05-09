@@ -32,14 +32,14 @@ import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.model.OntProperty;
 import org.apache.jena.ontapi.model.OntRelationalProperty;
 import org.apache.jena.ontapi.testutils.RDFIOTestUtils;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -151,10 +151,10 @@ public class OntModelOWL1SpecsTest {
 
         OntDataRange.OneOf d1 = m.createDataOneOf(m.createTypedLiteral(42));
         OntDataRange.OneOf d2 = m.createDataOneOf(m.createTypedLiteral("A"), m.createLiteral("B"));
-        OntDataRange.OneOf d3 = m.createResource("X", OWL.DataRange)
-                .addProperty(OWL.oneOf, m.createList(m.createLiteral("C"))).as(OntDataRange.OneOf.class);
+        OntDataRange.OneOf d3 = m.createResource("X", OWL2.DataRange)
+                .addProperty(OWL2.oneOf, m.createList(m.createLiteral("C"))).as(OntDataRange.OneOf.class);
         m.createResource("X", RDFS.Datatype)
-                .addProperty(OWL.oneOf, m.createList(m.createLiteral("C")));
+                .addProperty(OWL2.oneOf, m.createList(m.createLiteral("C")));
         Assertions.assertEquals(
                 List.of(42),
                 d1.getList().members().map(Literal::getInt).collect(Collectors.toList())
@@ -222,10 +222,10 @@ public class OntModelOWL1SpecsTest {
         Model g = ModelFactory.createDefaultModel();
         Resource namedRdfsClass = g.createResource("rdfsClass", RDFS.Class);
         Resource namedRdfsDatatype = g.createResource("rdfsDatatype", RDFS.Datatype);
-        Resource namedOwlClass = g.createResource("owlClass", OWL.Class);
+        Resource namedOwlClass = g.createResource("owlClass", OWL2.Class);
         Resource anonRdfsClass = g.createResource(RDFS.Class);
         Resource anonRdfsDatatype = g.createResource(RDFS.Datatype);
-        Resource anonOwlClass = g.createResource(OWL.Class);
+        Resource anonOwlClass = g.createResource(OWL2.Class);
         Resource anonRdfsDomain = g.createResource();
         Resource anonRdfsRange = g.createResource();
         Resource namedRdfsDomain = g.createResource("rdfsDomain");

@@ -21,7 +21,7 @@ package org.apache.jena.ontapi;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.OWL2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -98,7 +98,7 @@ public class OntModelHierarchyRootsTest {
         OntModel m = OntModelFactory.createModel(spec.inst);
         m.read(new StringReader(doc), NS, "N3");
         // in RDFS vocabulary, there is no owl:Class, so `owl:Class rdf:type rdfs:Class` is a declaration of a valid OntClass
-        Assertions.assertEquals(List.of(OWL.Class), m.hierarchyRoots().collect(Collectors.toList()));
+        Assertions.assertEquals(List.of(OWL2.Class), m.hierarchyRoots().collect(Collectors.toList()));
     }
 
     @ParameterizedTest
@@ -164,7 +164,7 @@ public class OntModelHierarchyRootsTest {
         m.read(new StringReader(doc), NS, "N3");
         Resource A = m.getResource(NS + "A");
         // in RDFS vocabulary, there is no owl:Class, so `owl:Class rdf:type rdfs:Class` is a declaration of a valid OntClass
-        Assertions.assertEquals(Set.of(A, OWL.Class), m.hierarchyRoots().collect(Collectors.toSet()));
+        Assertions.assertEquals(Set.of(A, OWL2.Class), m.hierarchyRoots().collect(Collectors.toSet()));
     }
 
     @ParameterizedTest
