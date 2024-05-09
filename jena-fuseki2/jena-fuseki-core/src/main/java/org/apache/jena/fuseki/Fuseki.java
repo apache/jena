@@ -40,37 +40,33 @@ import org.slf4j.LoggerFactory;
 
 public class Fuseki {
     // General fixed constants.
-    // See also FusekiServer for the naming on the filesystem
 
     /** Path as package name */
-    static public String    PATH                         = "org.apache.jena.fuseki";
+    static public final String PATH               = "org.apache.jena.fuseki";
 
     /** a unique IRI for the Fuseki namespace */
-    static public String    FusekiIRI                    = "http://jena.apache.org/Fuseki";
+    static public final String FusekiIRI          = "http://jena.apache.org/Fuseki";
 
     /**
      * a unique IRI including the symbol notation for which properties should be
      * appended
      */
-    static public String    FusekiSymbolIRI              = "http://jena.apache.org/fuseki#";
+    static public final String FusekiSymbolIRI    = "http://jena.apache.org/fuseki#";
 
     /** Default location of the pages for the Fuseki UI  */
-    static public String    PagesStatic                  = "pages";
+    static public final String PagesStatic        = "pages";
 
     /** Dummy base URi string for parsing SPARQL Query and Update requests */
-    static public final String BaseParserSPARQL          = "http://server/unset-base/";
+    static public final String BaseParserSPARQL   = "http://server/unset-base/";
 
     /** Dummy base URi string for parsing SPARQL Query and Update requests */
-    static public final String BaseUpload                = "http://server/unset-base/";
-
-    /** Add CORS header */
-    static public final boolean CORS_ENABLED = false;
+    static public final String BaseUpload         = "http://server/unset-base/";
 
     /** The name of the Fuseki server.*/
-    static public final String        NAME              = "Apache Jena Fuseki";
+    static public final String  NAME              = "Apache Jena Fuseki";
 
     /** Version of this Fuseki instance */
-    static public final String        VERSION           = Version.versionForClass(Fuseki.class).orElse("<development>");
+    static public final String  VERSION           = Version.versionForClass(Fuseki.class).orElse("<development>");
 
     /** Supporting Graph Store Protocol direct naming.
      * <p>
@@ -175,6 +171,7 @@ public class Fuseki {
     public static final String attrNameRegistry            = "org.apache.jena.fuseki:DataAccessPointRegistry";
     public static final String attrOperationRegistry       = "org.apache.jena.fuseki:OperationRegistry";
     public static final String attrAuthorizationService    = "org.apache.jena.fuseki:AuthorizationService";
+    public static final String attrFusekiServer            = "org.apache.jena.fuseki:Server";
 
     public static void setVerbose(ServletContext cxt, boolean verbose) {
         cxt.setAttribute(attrVerbose, Boolean.valueOf(verbose));

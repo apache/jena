@@ -388,11 +388,11 @@ public class Dispatcher {
             } else if ( GSP_RW.equals(operation) ) {
                 // If asking for GSP_RW, but only GSP_R is available ...
                 // ... if OPTIONS, use GSP_R.
-                if ( action.getMethod().equals(HttpNames.METHOD_OPTIONS) && epSet.contains(GSP_R) )
+                if ( action.getRequestMethod().equals(HttpNames.METHOD_OPTIONS) && epSet.contains(GSP_R) )
                         return GSP_R;
                 // ... else 405
                 if ( epSet.contains(GSP_R) )
-                    ServletOps.errorMethodNotAllowed(action.getMethod());
+                    ServletOps.errorMethodNotAllowed(action.getRequestMethod());
             }
         }
         return operation;

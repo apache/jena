@@ -55,9 +55,11 @@ import org.junit.platform.suite.api.Suite;
   , TestFusekiCustomScriptFunc.class
 
   , PrefixesServiceTests.class
-
   , TestMetrics.class
   , TestFusekiShaclValidation.class
+
+  , TestFusekiMainAdmin.class
+
 })
 public class TS_FusekiMain {}
 

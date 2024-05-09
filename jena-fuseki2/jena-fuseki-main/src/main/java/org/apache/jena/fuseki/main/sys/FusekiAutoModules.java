@@ -26,17 +26,19 @@ import java.util.function.Function;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.lib.Version;
 import org.apache.jena.atlas.logging.FmtLog;
-import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Management of {@link FusekiAutoModule automatically loaded modules} found via {@link ServiceLoader}.
  */
 public class FusekiAutoModules {
 
-    private static final Logger LOG = Fuseki.serverLog;
+    // Separate from Fuseki.serverLog;
+    private static final Logger LOG = LoggerFactory.getLogger(FusekiAutoModules.class);
+
     private static final Object lock = new Object();
 
     public static final String logLoadingProperty = "fuseki.logLoading";
@@ -173,7 +175,7 @@ public class FusekiAutoModules {
             try {
                 ServiceLoader<FusekiModule> newServiceLoader = ServiceLoader.load(moduleClass, this.getClass().getClassLoader());
                 newServiceLoader.stream().forEach(provider->{
-                    FmtLog.warn(FusekiAutoModules.class, "Ignored: \"%s\" : legacy use of interface FusekiModule which has changed to FusekiAutoModule", provider.type().getSimpleName());
+                    FmtLog.warn(LOG, "Ignored: \"%s\" : legacy use of interface FusekiModule which has changed to FusekiAutoModule", provider.type().getSimpleName());
                 });
             } catch (ServiceConfigurationError ex) {
                 // Ignore - we were only checking.
@@ -218,7 +220,7 @@ public class FusekiAutoModules {
                 String name = m.name();
                 if ( name == null )
                     name = m.getClass().getSimpleName();
-                FmtLog.info(LOG, "Module: %s (%s)",
+                FmtLog.debug(LOG, "Module: %s (%s)",
                                  name,
                                  Version.versionForClass(m.getClass()).orElse("unknown"));
             });

@@ -77,7 +77,7 @@ public class FusekiModuleStep {
     }
 
     /**
-     * Sever reload.
+     * Server reload.
      * Return true if reload happened, else false.
      * @see FusekiBuildCycle#serverConfirmReload
      * @see FusekiBuildCycle#serverReload

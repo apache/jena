@@ -322,9 +322,6 @@ public class FusekiConfig {
         // ---- Services
         // Server to services.
         RowSet rs = BuildLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", configuration, "s", server);
-
-        List<Node> services = rs.stream().map(b->b.get("service")).toList();
-
         List<DataAccessPoint> accessPoints = new ArrayList<>();
 
         // If none, look for services by type.
