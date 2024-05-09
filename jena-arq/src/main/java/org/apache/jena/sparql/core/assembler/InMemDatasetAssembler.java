@@ -27,8 +27,6 @@ import static org.apache.jena.sparql.util.graph.GraphUtils.getAsStringValue;
 import static org.apache.jena.sparql.util.graph.GraphUtils.multiValueAsString;
 import static org.apache.jena.sparql.util.graph.GraphUtils.multiValueResource;
 
-import java.util.Map;
-
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -47,11 +45,6 @@ import org.apache.jena.vocabulary.RDF;
 public class InMemDatasetAssembler extends NamedDatasetAssembler {
 
     public InMemDatasetAssembler() {}
-
-    @Override
-    public Map<String, DatasetGraph> pool() {
-        return sharedDatasetPool;
-    }
 
     public static Resource getType() {
         return DatasetAssemblerVocab.tMemoryDataset ;
