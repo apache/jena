@@ -24,7 +24,7 @@ import org.apache.jena.ontapi.model.OntDataProperty;
 import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.model.OntObjectProperty;
-import org.apache.jena.ontapi.vocabulary.OWL;
+import org.apache.jena.vocabulary.OWL2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -104,14 +104,14 @@ public class OntIndividualMiscTest {
         Assertions.assertEquals(4, i1.negativeAssertions().count());
         Assertions.assertEquals(0, i1.positiveAssertions().count());
 
-        Assertions.assertEquals(2, m.statements(null, OWL.targetIndividual, null).count());
-        Assertions.assertEquals(2, m.statements(null, OWL.targetValue, null).count());
+        Assertions.assertEquals(2, m.statements(null, OWL2.targetIndividual, null).count());
+        Assertions.assertEquals(2, m.statements(null, OWL2.targetValue, null).count());
         Assertions.assertEquals(21, m.size());
 
         Assertions.assertSame(i1, i1.removeNegativeAssertion(d, null).removeNegativeAssertion(p.asNamed(), i3));
         Assertions.assertEquals(1, i1.negativeAssertions().count());
-        Assertions.assertEquals(1, m.statements(null, OWL.targetIndividual, null).count());
-        Assertions.assertEquals(0, m.statements(null, OWL.targetValue, null).count());
+        Assertions.assertEquals(1, m.statements(null, OWL2.targetIndividual, null).count());
+        Assertions.assertEquals(0, m.statements(null, OWL2.targetValue, null).count());
 
         Assertions.assertSame(i1, i1.removeNegativeAssertion(null, null));
         Assertions.assertEquals(5, m.size());

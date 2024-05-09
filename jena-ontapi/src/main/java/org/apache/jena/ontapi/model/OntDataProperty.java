@@ -18,11 +18,11 @@
 
 package org.apache.jena.ontapi.model;
 
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 import java.util.stream.Stream;
@@ -151,7 +151,7 @@ public interface OntDataProperty extends OntRelationalProperty, OntNamedProperty
      */
     @Override
     default Stream<OntDataProperty> disjointProperties() {
-        return objects(OWL.propertyDisjointWith, OntDataProperty.class);
+        return objects(OWL2.propertyDisjointWith, OntDataProperty.class);
     }
 
     /**
@@ -164,11 +164,11 @@ public interface OntDataProperty extends OntRelationalProperty, OntNamedProperty
      */
     @Override
     default Stream<OntDataProperty> equivalentProperties() {
-        return objects(OWL.equivalentProperty, OntDataProperty.class);
+        return objects(OWL2.equivalentProperty, OntDataProperty.class);
     }
 
     /**
-     * Creates and returns a new {@link OWL#equivalentProperty owl:equivalentProperty} statement
+     * Creates and returns a new {@link OWL2#equivalentProperty owl:equivalentProperty} statement
      * with the given property as an object and this property as a subject.
      *
      * @param other {@link OntDataProperty}, not {@code null}
@@ -178,7 +178,7 @@ public interface OntDataProperty extends OntRelationalProperty, OntNamedProperty
      * @see OntObjectProperty#addEquivalentPropertyStatement(OntObjectProperty)
      */
     default OntStatement addEquivalentPropertyStatement(OntDataProperty other) {
-        return addStatement(OWL.equivalentProperty, other);
+        return addStatement(OWL2.equivalentProperty, other);
     }
 
     /**
@@ -192,7 +192,7 @@ public interface OntDataProperty extends OntRelationalProperty, OntNamedProperty
      * @see OntDisjoint.ObjectProperties
      */
     default OntStatement addPropertyDisjointWithStatement(OntDataProperty other) {
-        return addStatement(OWL.propertyDisjointWith, other);
+        return addStatement(OWL2.propertyDisjointWith, other);
     }
 
     /**
@@ -230,7 +230,7 @@ public interface OntDataProperty extends OntRelationalProperty, OntNamedProperty
     }
 
     /**
-     * Adds a new {@link OWL#equivalentProperty owl:equivalentProperty} statement.
+     * Adds a new {@link OWL2#equivalentProperty owl:equivalentProperty} statement.
      *
      * @param other {@link OntDataProperty}, not {@code null}
      * @return {@link OntDataProperty} <b>this</b> instance to allow cascading calls
@@ -244,7 +244,7 @@ public interface OntDataProperty extends OntRelationalProperty, OntNamedProperty
     }
 
     /**
-     * Adds a new {@link OWL#propertyDisjointWith owl:propertyDisjointWith} statement
+     * Adds a new {@link OWL2#propertyDisjointWith owl:propertyDisjointWith} statement
      * for this and the specified property.
      *
      * @param other {@link OntDataProperty}, not {@code null}
@@ -291,7 +291,7 @@ public interface OntDataProperty extends OntRelationalProperty, OntNamedProperty
      */
     @Override
     default OntDataProperty removeEquivalentProperty(Resource property) {
-        remove(OWL.equivalentProperty, property);
+        remove(OWL2.equivalentProperty, property);
         return this;
     }
 
@@ -300,7 +300,7 @@ public interface OntDataProperty extends OntRelationalProperty, OntNamedProperty
      */
     @Override
     default OntDataProperty removeDisjointProperty(Resource property) {
-        remove(OWL.propertyDisjointWith, property);
+        remove(OWL2.propertyDisjointWith, property);
         return this;
     }
 
@@ -312,7 +312,7 @@ public interface OntDataProperty extends OntRelationalProperty, OntNamedProperty
         if (functional) {
             addFunctionalDeclaration();
         } else {
-            remove(RDF.type, OWL.FunctionalProperty);
+            remove(RDF.type, OWL2.FunctionalProperty);
         }
         return this;
     }

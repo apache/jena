@@ -18,19 +18,44 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import java.io.* ;
-import java.util.* ;
-
-import org.apache.jena.ontology.OntModelSpec ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.RDFWriterI;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev;
-import org.apache.jena.reasoner.InfGraph ;
-import org.apache.jena.reasoner.Reasoner ;
-import org.apache.jena.reasoner.ReasonerException ;
-import org.apache.jena.reasoner.ReasonerRegistry ;
-import org.apache.jena.reasoner.rulesys.FBRuleInfGraph ;
-import org.apache.jena.reasoner.test.WGReasonerTester ;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.ReasonerException;
+import org.apache.jena.reasoner.ReasonerRegistry;
+import org.apache.jena.reasoner.rulesys.FBRuleInfGraph;
+import org.apache.jena.reasoner.test.WGReasonerTester;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.OWLResults;
+import org.apache.jena.vocabulary.OWLTest;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.RDFTest;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Test harness for running the WebOnt working group tests relevant

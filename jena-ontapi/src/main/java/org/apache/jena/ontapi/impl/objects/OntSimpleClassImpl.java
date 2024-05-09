@@ -18,22 +18,22 @@
 
 package org.apache.jena.ontapi.impl.objects;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.OntModelControls;
 import org.apache.jena.ontapi.impl.OntGraphModelImpl;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntDataProperty;
+import org.apache.jena.ontapi.model.OntEntity;
 import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.model.OntList;
 import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.model.OntProperty;
 import org.apache.jena.ontapi.model.OntRelationalProperty;
 import org.apache.jena.ontapi.model.OntStatement;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.ontapi.model.OntEntity;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL2;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -56,7 +56,7 @@ public class OntSimpleClassImpl extends OntObjectImpl implements OntClass {
 
     @Override
     public Optional<OntStatement> findRootStatement() {
-        return getOptionalRootStatement(this, OWL.Class);
+        return getOptionalRootStatement(this, OWL2.Class);
     }
 
     @Override
@@ -181,22 +181,22 @@ public class OntSimpleClassImpl extends OntObjectImpl implements OntClass {
 
         @Override
         public OntClass asSubClass() {
-            return OWL.Thing.equals(this) ? null : this;
+            return OWL2.Thing.equals(this) ? null : this;
         }
 
         @Override
         public OntClass asSuperClass() {
-            return OWL.Thing.equals(this) ? null : this;
+            return OWL2.Thing.equals(this) ? null : this;
         }
 
         @Override
         public OntClass asEquivalentClass() {
-            return OWL.Thing.equals(this) ? null : this;
+            return OWL2.Thing.equals(this) ? null : this;
         }
 
         @Override
         public OntClass asDisjointClass() {
-            return OWL.Thing.equals(this) ? null : this;
+            return OWL2.Thing.equals(this) ? null : this;
         }
     }
 
@@ -233,20 +233,20 @@ public class OntSimpleClassImpl extends OntObjectImpl implements OntClass {
             if (!OntGraphModelImpl.configValue(getModel(), OntModelControls.USE_OWL2_NAMED_CLASS_DISJOINT_UNION_FEATURE)) {
                 return Stream.empty();
             }
-            return OntListImpl.stream(getModel(), this, OWL.disjointUnionOf, OntClass.class);
+            return OntListImpl.stream(getModel(), this, OWL2.disjointUnionOf, OntClass.class);
         }
 
         @Override
         public OntList<OntClass> createDisjointUnion(Collection<OntClass> classes) {
             OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL2_NAMED_CLASS_DISJOINT_UNION_FEATURE, "owl:disjointUnionOf");
-            return getModel().createOntList(this, OWL.disjointUnionOf, OntClass.class,
+            return getModel().createOntList(this, OWL2.disjointUnionOf, OntClass.class,
                     Objects.requireNonNull(classes).stream().distinct().iterator());
         }
 
         @Override
         public OntClass.Named removeDisjointUnion(Resource rdfList) throws OntJenaException.IllegalArgument {
             OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL2_NAMED_CLASS_DISJOINT_UNION_FEATURE, "owl:disjointUnionOf");
-            getModel().deleteOntList(this, OWL.disjointUnionOf, findDisjointUnion(rdfList).orElse(null));
+            getModel().deleteOntList(this, OWL2.disjointUnionOf, findDisjointUnion(rdfList).orElse(null));
             return this;
         }
 

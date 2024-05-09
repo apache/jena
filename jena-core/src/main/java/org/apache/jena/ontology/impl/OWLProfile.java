@@ -23,16 +23,48 @@ package org.apache.jena.ontology.impl;
 
 // Imports
 ///////////////
-import java.util.*;
 
-import org.apache.jena.enhanced.* ;
-import org.apache.jena.graph.* ;
-import org.apache.jena.graph.compose.Polyadic ;
-import org.apache.jena.ontology.* ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.InfGraph ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.compose.Polyadic;
+import org.apache.jena.ontology.AllDifferent;
+import org.apache.jena.ontology.AllValuesFromRestriction;
+import org.apache.jena.ontology.AnnotationProperty;
+import org.apache.jena.ontology.CardinalityRestriction;
+import org.apache.jena.ontology.DataRange;
+import org.apache.jena.ontology.DatatypeProperty;
+import org.apache.jena.ontology.FunctionalProperty;
+import org.apache.jena.ontology.HasValueRestriction;
+import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.InverseFunctionalProperty;
+import org.apache.jena.ontology.MaxCardinalityRestriction;
+import org.apache.jena.ontology.MinCardinalityRestriction;
+import org.apache.jena.ontology.ObjectProperty;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntProperty;
+import org.apache.jena.ontology.Ontology;
+import org.apache.jena.ontology.Restriction;
+import org.apache.jena.ontology.SomeValuesFromRestriction;
+import org.apache.jena.ontology.SymmetricProperty;
+import org.apache.jena.ontology.TransitiveProperty;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFList;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 
 
@@ -410,7 +442,7 @@ public class OWLProfile
         {  ObjectProperty.class,        new SupportsCheck() {
                                             @Override
                                             public boolean doCheck( Node n, EnhGraph g ) {
-                                                return hasType( n, g, new Resource[] {OWL.ObjectProperty,OWL.TransitiveProperty,
+                                                return hasType( n, g, new Resource[] {OWL.ObjectProperty, OWL.TransitiveProperty,
                                                                                       OWL.SymmetricProperty, OWL.InverseFunctionalProperty} );
                                             }
                                         }

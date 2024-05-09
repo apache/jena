@@ -25,11 +25,11 @@ import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.model.OntObject;
 import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.testutils.RDFIOTestUtils;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
 import org.junit.jupiter.api.Assertions;
@@ -88,7 +88,7 @@ public class OntModelOWL2QLSpecTest {
         testListObjects(m, expected);
 
         List<OntClass.Named> classes = m.ontObjects(OntClass.Named.class).toList();
-        int expectedClassesCount = m.listStatements(null, RDF.type, OWL.Class)
+        int expectedClassesCount = m.listStatements(null, RDF.type, OWL2.Class)
                 .mapWith(Statement::getSubject).filterKeep(RDFNode::isURIResource).toSet().size();
         int actualClassesCount = classes.size();
         Assertions.assertEquals(expectedClassesCount, actualClassesCount);
@@ -151,7 +151,7 @@ public class OntModelOWL2QLSpecTest {
 
         OntClass c2 = data.createObjectSomeValuesFrom(op, c0);
         OntClass c3 = data.createDataSomeValuesFrom(dp, data.getDatatype(XSD.xstring.getURI()));
-        OntClass c4 = data.createDataSomeValuesFrom(dp, data.getDatatype(OWL.rational.getURI()));
+        OntClass c4 = data.createDataSomeValuesFrom(dp, data.getDatatype(OWL2.rational.getURI()));
         OntClass c5 = data.createObjectSomeValuesFrom(op, data.getOWLThing());
 
         OntClass c6 = data.createObjectIntersectionOf(c2, c1);
@@ -314,7 +314,7 @@ public class OntModelOWL2QLSpecTest {
         Assertions.assertEquals(List.of(c0), c1.disjointClasses().collect(Collectors.toList()));
         Assertions.assertEquals(List.of(c1), c0.disjointClasses().collect(Collectors.toList()));
 
-        c1.addProperty(OWL.disjointWith, c2);
+        c1.addProperty(OWL2.disjointWith, c2);
         Assertions.assertEquals(List.of(c0), c1.disjointClasses().collect(Collectors.toList()));
         Assertions.assertEquals(List.of(), c2.disjointClasses().collect(Collectors.toList()));
     }
@@ -339,7 +339,7 @@ public class OntModelOWL2QLSpecTest {
         Assertions.assertEquals(List.of(c0), c1.equivalentClasses().collect(Collectors.toList()));
         Assertions.assertEquals(List.of(c1), c0.equivalentClasses().collect(Collectors.toList()));
 
-        c1.addProperty(OWL.equivalentClass, c2);
+        c1.addProperty(OWL2.equivalentClass, c2);
         Assertions.assertEquals(List.of(c0), c1.equivalentClasses().collect(Collectors.toList()));
         Assertions.assertEquals(List.of(), c2.equivalentClasses().collect(Collectors.toList()));
     }

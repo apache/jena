@@ -18,6 +18,12 @@
 
 package org.apache.jena.ontapi.impl.factories;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.enhanced.EnhNode;
+import org.apache.jena.graph.FrontsNode;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.OntModelControls;
 import org.apache.jena.ontapi.common.EnhNodeFactory;
 import org.apache.jena.ontapi.common.EnhNodeFilter;
@@ -26,6 +32,7 @@ import org.apache.jena.ontapi.common.EnhNodeProducer;
 import org.apache.jena.ontapi.common.OntConfig;
 import org.apache.jena.ontapi.common.OntEnhGraph;
 import org.apache.jena.ontapi.common.OntEnhNodeFactories;
+import org.apache.jena.ontapi.common.OntPersonality;
 import org.apache.jena.ontapi.impl.objects.OntAnnotationPropertyImpl;
 import org.apache.jena.ontapi.impl.objects.OntIndividualImpl;
 import org.apache.jena.ontapi.impl.objects.OntObjectImpl;
@@ -38,16 +45,9 @@ import org.apache.jena.ontapi.model.OntObject;
 import org.apache.jena.ontapi.model.OntProperty;
 import org.apache.jena.ontapi.utils.Graphs;
 import org.apache.jena.ontapi.utils.Iterators;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.enhanced.EnhNode;
-import org.apache.jena.graph.FrontsNode;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
-import org.apache.jena.ontapi.common.OntPersonality;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 import java.util.Set;

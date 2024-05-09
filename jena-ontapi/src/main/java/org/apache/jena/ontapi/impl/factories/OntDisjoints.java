@@ -18,6 +18,11 @@
 
 package org.apache.jena.ontapi.impl.factories;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.enhanced.EnhNode;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.OntModelControls;
 import org.apache.jena.ontapi.common.EnhNodeFactory;
 import org.apache.jena.ontapi.common.EnhNodeFilter;
@@ -29,40 +34,35 @@ import org.apache.jena.ontapi.common.OntEnhNodeFactories;
 import org.apache.jena.ontapi.impl.objects.OntDisjointImpl;
 import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.utils.Iterators;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.enhanced.EnhNode;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL2;
 
 import java.util.function.BiFunction;
 
 final class OntDisjoints {
-    public static final EnhNodeFinder PROPERTIES_FINDER = new EnhNodeFinder.ByType(OWL.AllDisjointProperties);
-    public static final EnhNodeFinder DISJOINT_FINDER = OntEnhNodeFactories.createFinder(OWL.AllDisjointClasses,
-            OWL.AllDifferent, OWL.AllDisjointProperties);
+    public static final EnhNodeFinder PROPERTIES_FINDER = new EnhNodeFinder.ByType(OWL2.AllDisjointProperties);
+    public static final EnhNodeFinder DISJOINT_FINDER = OntEnhNodeFactories.createFinder(OWL2.AllDisjointClasses,
+            OWL2.AllDifferent, OWL2.AllDisjointProperties);
 
     public static EnhNodeFactory createDifferentIndividualsFactory(OntConfig config) {
         boolean useDistinctMembers = config.getBoolean(OntModelControls.USE_OWL1_DISTINCT_MEMBERS_PREDICATE_FEATURE);
         boolean compatible = config.getBoolean(OntModelControls.USE_OWL2_DEPRECATED_VOCABULARY_FEATURE);
         Property[] predicates;
         if (useDistinctMembers) {
-            predicates = new Property[]{OWL.distinctMembers};
+            predicates = new Property[]{OWL2.distinctMembers};
         } else if (compatible) {
-            predicates = new Property[]{OWL.members, OWL.distinctMembers};
+            predicates = new Property[]{OWL2.members, OWL2.distinctMembers};
         } else {
-            predicates = new Property[]{OWL.members};
+            predicates = new Property[]{OWL2.members};
         }
         return createFactory(
                 OntDisjointImpl.IndividualsImpl.class,
                 (n, g) -> new OntDisjointImpl.IndividualsImpl(n, g, !compatible, useDistinctMembers),
-                OWL.AllDifferent,
+                OWL2.AllDifferent,
                 OntIndividual.class,
                 true,
                 predicates

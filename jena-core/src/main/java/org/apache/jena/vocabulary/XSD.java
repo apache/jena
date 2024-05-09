@@ -18,214 +18,203 @@
 
 package org.apache.jena.vocabulary;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.rdf.model.ResourceFactory ;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 
 /**
  * Defines Jena resources corresponding to the URIs for 
- * the XSD primitive datatypes which are known to Jena. 
+ * the XSD primitive datatypes which are known to Jena.
+ * See <a href="http://www.w3.org/2001/XMLSchema">XSD</a>
  */
 public class XSD {  
 	/**
 	 * The namespace of the vocabulary as a string
 	 */
-	public static final String NS = XSDDatatype.XSD + "#";
+	public static final String NS = "http://www.w3.org/2001/XMLSchema#";
     /**
      * The RDF-friendly version of the XSD namespace
      * with trailing # character.
      */
     public static String getURI() { return NS; }
+
+    protected static Resource resource(String local) {
+        return ResourceFactory.createResource(NS + local);
+    }
+
+    protected static Property property(String local) {
+        return ResourceFactory.createProperty(NS, local);
+    }
     
     /** Resource URI for xsd:float */
-    public static Resource xfloat;
+    public static final Resource xfloat = resource("float");
     
     /** Resource URI for xsd:double */
-    public static Resource xdouble;
+    public static final Resource xdouble = resource("double");
     
     /** Resource URI for xsd:int */
-    public static Resource xint;
+    public static final Resource xint = resource("int");
     
     /** Resource URI for xsd:long */
-    public static Resource xlong;
+    public static final Resource xlong = resource("long");
        
     /** Resource URI for xsd:short */
-    public static Resource xshort;
+    public static final Resource xshort = resource("short");
        
     /** Resource URI for xsd:byte */
-    public static Resource xbyte;
+    public static final Resource xbyte = resource("byte");
        
     /** Resource URI for xsd:boolean */
-    public static Resource xboolean;
+    public static final Resource xboolean = resource("boolean");
     
     /** Resource URI for xsd:string */
-    public static Resource xstring;
+    public static final Resource xstring = resource("string");
     
     /** Resource URI for xsd:unsignedByte */
-    public static Resource unsignedByte;
+    public static final Resource unsignedByte = resource("unsignedByte");
        
     /** Resource URI for xsd:unsignedShort */
-    public static Resource unsignedShort;
+    public static final Resource unsignedShort = resource("unsignedShort");
        
     /** Resource URI for xsd:unsignedInt */
-    public static Resource unsignedInt;
+    public static final Resource unsignedInt = resource("unsignedInt");
        
     /** Resource URI for xsd:unsignedLong */
-    public static Resource unsignedLong;
+    public static final Resource unsignedLong = resource("unsignedLong");
        
     /** Resource URI for xsd:decimal */
-    public static Resource decimal;
+    public static final Resource decimal = resource("decimal");
        
     /** Resource URI for xsd:integer */
-    public static Resource integer;
+    public static final Resource integer = resource("integer");
        
     /** Resource URI for xsd:nonPositiveInteger */
-    public static Resource nonPositiveInteger;
+    public static final Resource nonPositiveInteger = resource("nonPositiveInteger");
        
     /** Resource URI for xsd:nonNegativeInteger */
-    public static Resource nonNegativeInteger;
+    public static final Resource nonNegativeInteger = resource("nonNegativeInteger");
        
     /** Resource URI for xsd:positiveInteger */
-    public static Resource positiveInteger;
+    public static final Resource positiveInteger = resource("positiveInteger");
        
     /** Resource URI for xsd:negativeInteger */
-    public static Resource negativeInteger;
+    public static final Resource negativeInteger = resource("negativeInteger");
        
     /** Resource URI for xsd:normalizedString */
-    public static Resource normalizedString;
+    public static final Resource normalizedString = resource("normalizedString");
     
     /** Resource URI for xsd:anyURI */
-    public static Resource anyURI;
+    public static final Resource anyURI = resource("anyURI");
     
     /** Resource URI for xsd:token */
-    public static Resource token;
+    public static final Resource token = resource("token");
 
     /** Resource URI for xsd:Name */
-    public static Resource Name;
+    public static final Resource Name = resource("Name");
 
     /** Resource URI for xsd:QName */
-    public static Resource QName;
+    public static final Resource QName = resource("QName");
 
     /** Resource URI for xsd:language */
-    public static Resource language;
+    public static final Resource language = resource("language");
 
     /** Resource URI for xsd:NMTOKEN */
-    public static Resource NMTOKEN;
+    public static final Resource NMTOKEN = resource("NMTOKEN");
 
     /** Resource URI for xsd:ENTITIES */
-    public static Resource ENTITIES;
+    public static final Resource ENTITIES = resource("ENTITIES");
 
     /** Resource URI for xsd:NMTOKENS */
-    public static Resource NMTOKENS;
+    public static final Resource NMTOKENS = resource("NMTOKENS");
 
     /** Resource URI for xsd:ENTITY */
-    public static Resource ENTITY;
+    public static final Resource ENTITY = resource("ENTITY");
 
     /** Resource URI for xsd:ID */
-    public static Resource ID;
+    public static final Resource ID = resource("ID");
 
     /** Resource URI for xsd:NCName */
-    public static Resource NCName;
+    public static final Resource NCName = resource("NCName");
 
     /** Resource URI for xsd:IDREF */
-    public static Resource IDREF;
+    public static final Resource IDREF = resource("IDREF");
 
     /** Resource URI for xsd:IDREFS */
-    public static Resource IDREFS;
+    public static final Resource IDREFS = resource("IDREFS");
 
     /** Resource URI for xsd:NOTATION */
-    public static Resource NOTATION;
+    public static final Resource NOTATION = resource("NOTATION");
 
     /** Resource URI for xsd:hexBinary */
-    public static Resource hexBinary;
+    public static final Resource hexBinary = resource("hexBinary");
 
     /** Resource URI for xsd:base64Binary */
-    public static Resource base64Binary;
+    public static final Resource base64Binary = resource("base64Binary");
 
     /** Resource URI for xsd:date */
-    public static Resource date;
+    public static final Resource date = resource("date");
 
     /** Resource URI for xsd:time */
-    public static Resource time;
+    public static final Resource time = resource("time");
 
     /** Resource URI for xsd:dateTime */
-    public static Resource dateTime;
+    public static final Resource dateTime = resource("dateTime");
 
     /** Resource URI for xsd:dateTimeStamp */
-    public static Resource dateTimeStamp;
+    public static final Resource dateTimeStamp = resource("dateTimeStamp");
 
     /** Resource URI for xsd:duration */
-    public static Resource duration;
+    public static final Resource duration = resource("duration");
 
     /** Resource URI for xsd:yearMonthDuration */
-    public static Resource yearMonthDuration;
+    public static final Resource yearMonthDuration = resource("yearMonthDuration");
 
     /** Resource URI for xsd:dayTimeDuration */
-    public static Resource dayTimeDuration;
+    public static final Resource dayTimeDuration = resource("dayTimeDuration");
 
     /** Resource URI for xsd:gDay */
-    public static Resource gDay;
+    public static final Resource gDay = resource("gDay");
 
     /** Resource URI for xsd:gMonth */
-    public static Resource gMonth;
+    public static final Resource gMonth = resource("gMonth");
 
     /** Resource URI for xsd:gYear */
-    public static Resource gYear;
+    public static final Resource gYear = resource("gYear");
 
     /** Resource URI for xsd:gYearMonth */
-    public static Resource gYearMonth;
+    public static final Resource gYearMonth = resource("gYearMonth");
 
     /** Resource URI for xsd:gMonthDay */
-    public static Resource gMonthDay;
+    public static final Resource gMonthDay = resource("gMonthDay");
 
-    // Initializer
-    static {
-        xfloat = ResourceFactory.createResource(XSDDatatype.XSDfloat.getURI());
-        xdouble = ResourceFactory.createResource(XSDDatatype.XSDdouble.getURI());
-        xint = ResourceFactory.createResource(XSDDatatype.XSDint.getURI());
-        xlong = ResourceFactory.createResource(XSDDatatype.XSDlong.getURI());
-        xshort = ResourceFactory.createResource(XSDDatatype.XSDshort.getURI());
-        xbyte = ResourceFactory.createResource(XSDDatatype.XSDbyte.getURI());
-        unsignedByte = ResourceFactory.createResource(XSDDatatype.XSDunsignedByte.getURI());
-        unsignedShort = ResourceFactory.createResource(XSDDatatype.XSDunsignedShort.getURI());
-        unsignedInt = ResourceFactory.createResource(XSDDatatype.XSDunsignedInt.getURI());
-        unsignedLong = ResourceFactory.createResource(XSDDatatype.XSDunsignedLong.getURI());
-        decimal = ResourceFactory.createResource(XSDDatatype.XSDdecimal.getURI());
-        integer = ResourceFactory.createResource(XSDDatatype.XSDinteger.getURI());
-        nonPositiveInteger = ResourceFactory.createResource(XSDDatatype.XSDnonPositiveInteger.getURI());
-        nonNegativeInteger = ResourceFactory.createResource(XSDDatatype.XSDnonNegativeInteger.getURI());
-        positiveInteger = ResourceFactory.createResource(XSDDatatype.XSDpositiveInteger.getURI());
-        negativeInteger = ResourceFactory.createResource(XSDDatatype.XSDnegativeInteger.getURI());
-        xboolean = ResourceFactory.createResource(XSDDatatype.XSDboolean.getURI());
-        xstring = ResourceFactory.createResource(XSDDatatype.XSDstring.getURI());
-        normalizedString = ResourceFactory.createResource(XSDDatatype.XSDnormalizedString.getURI());
-        anyURI = ResourceFactory.createResource(XSDDatatype.XSDanyURI.getURI());
-        token = ResourceFactory.createResource(XSDDatatype.XSDtoken.getURI());
-        Name = ResourceFactory.createResource(XSDDatatype.XSDName.getURI());
-        QName = ResourceFactory.createResource(XSDDatatype.XSDQName.getURI());
-        language = ResourceFactory.createResource(XSDDatatype.XSDlanguage.getURI());
-        NMTOKEN = ResourceFactory.createResource(XSDDatatype.XSDNMTOKEN.getURI());
-        ENTITY = ResourceFactory.createResource(XSDDatatype.XSDENTITY.getURI());
-        ID = ResourceFactory.createResource(XSDDatatype.XSDID.getURI());
-        NCName = ResourceFactory.createResource(XSDDatatype.XSDNCName.getURI());
-        IDREF = ResourceFactory.createResource(XSDDatatype.XSDIDREF.getURI());
-        NOTATION = ResourceFactory.createResource(XSDDatatype.XSDNOTATION.getURI());
-        hexBinary = ResourceFactory.createResource(XSDDatatype.XSDhexBinary.getURI());
-        base64Binary = ResourceFactory.createResource(XSDDatatype.XSDbase64Binary.getURI());
-        date = ResourceFactory.createResource(XSDDatatype.XSDdate.getURI());
-        time = ResourceFactory.createResource(XSDDatatype.XSDtime.getURI());
-        dateTime = ResourceFactory.createResource(XSDDatatype.XSDdateTime.getURI());
-        dateTimeStamp = ResourceFactory.createResource(XSDDatatype.XSDdateTimeStamp.getURI());
-        duration = ResourceFactory.createResource(XSDDatatype.XSDduration.getURI());
-        yearMonthDuration = ResourceFactory.createResource(XSDDatatype.XSDyearMonthDuration.getURI());
-        dayTimeDuration = ResourceFactory.createResource(XSDDatatype.XSDdayTimeDuration.getURI());
-        gDay = ResourceFactory.createResource(XSDDatatype.XSDgDay.getURI());
-        gMonth = ResourceFactory.createResource(XSDDatatype.XSDgMonth.getURI());
-        gYear = ResourceFactory.createResource(XSDDatatype.XSDgYear.getURI());
-        gYearMonth = ResourceFactory.createResource(XSDDatatype.XSDgYearMonth.getURI());
-        gMonthDay = ResourceFactory.createResource(XSDDatatype.XSDgMonthDay.getURI());
-//        ENTITIES = ResourceFactory.createResource(XSDDatatype.XSDENTITIES.getURI());
-//        NMTOKENS = ResourceFactory.createResource(XSDDatatype.XSDNMTOKENS.getURI());
-//        IDREFS = ResourceFactory.createResource(XSDDatatype.XSDIDREFS.getURI());
-    }
+    /** Property URI for xsd:length */
+    public static final Property length = property("length");
+
+    /** Property URI for xsd:minLength */
+    public static final Property minLength = property("minLength");
+
+    /** Property URI for xsd:maxLength */
+    public static final Property maxLength = property("maxLength");
+
+    /** Property URI for xsd:pattern */
+    public static final Property pattern = property("pattern");
+
+    /** Property URI for xsd:minInclusive */
+    public static final Property minInclusive = property("minInclusive");
+
+    /** Property URI for xsd:minExclusive */
+    public static final Property minExclusive = property("minExclusive");
+
+    /** Property URI for xsd:maxInclusive */
+    public static final Property maxInclusive = property("maxInclusive");
+
+    /** Property URI for xsd:maxExclusive */
+    public static final Property maxExclusive = property("maxExclusive");
+
+    /** Property URI for xsd:totalDigits */
+    public static final Property totalDigits = property("totalDigits");
+
+    /** Property URI for xsd:fractionDigits */
+    public static final Property fractionDigits = property("fractionDigits");
+
 }

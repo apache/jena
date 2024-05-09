@@ -18,16 +18,16 @@
 
 package org.apache.jena.ontapi.common;
 
-import org.apache.jena.ontapi.OntJenaException;
-import org.apache.jena.ontapi.impl.objects.OntObjectImpl;
-import org.apache.jena.ontapi.model.OntObject;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.enhanced.EnhGraph;
 import org.apache.jena.enhanced.EnhNode;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.ontapi.OntJenaException;
+import org.apache.jena.ontapi.impl.objects.OntObjectImpl;
+import org.apache.jena.ontapi.model.OntObject;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.shared.JenaException;
+import org.apache.jena.vocabulary.RDF;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.BiFunction;

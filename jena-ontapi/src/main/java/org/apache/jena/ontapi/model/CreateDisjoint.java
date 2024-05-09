@@ -18,7 +18,7 @@
 
 package org.apache.jena.ontapi.model;
 
-import org.apache.jena.ontapi.vocabulary.OWL;
+import org.apache.jena.vocabulary.OWL2;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -50,8 +50,8 @@ interface CreateDisjoint {
      * _:x rdf:type owl:AllDifferent .
      * _:x owl:members ( a1 ... an ).
      * }</pre>
-     * Note: instead of {@link OWL#members owl:members}, alternatively,
-     * the predicate {@link OWL#distinctMembers owl:distinctMembers} can be used.
+     * Note: instead of {@link OWL2#members owl:members}, alternatively,
+     * the predicate {@link OWL2#distinctMembers owl:distinctMembers} can be used.
      *
      * @param individuals {@code Collection} of {@link OntIndividual Individual}s without {@code null}-elements
      * @return {@link OntDisjoint.Individuals}

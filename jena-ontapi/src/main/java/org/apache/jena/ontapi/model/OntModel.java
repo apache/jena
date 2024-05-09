@@ -18,14 +18,11 @@
 
 package org.apache.jena.ontapi.model;
 
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.common.OntPersonality;
 import org.apache.jena.ontapi.utils.Graphs;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.ontapi.vocabulary.XSD;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
@@ -34,7 +31,10 @@ import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.XSD;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -162,7 +162,7 @@ public interface OntModel extends Model,
     Stream<OntModel> imports();
 
     /**
-     * Answers {@code true} if the given model is present in the {@link OWL#imports owl:imports} of this model.
+     * Answers {@code true} if the given model is present in the {@link OWL2#imports owl:imports} of this model.
      * This means that at the top-level of the import hierarchy there is a base graph of the given {@code other} model.
      * Please note: the model may contain the same uri as that of the specified model, but a different (base) graph,
      * i.e. if the method {@link #hasImport(String)} returns {@code true},
@@ -218,7 +218,7 @@ public interface OntModel extends Model,
      * even those which have no explicit declarations (e.g. any part of {@code owl:sameAs} is an individual),
      * while this method returns only class-asserted individuals.
      * Also notice: the method {@link #namedIndividuals()} must return only explicitly declared named individuals,
-     * while this method does not require the declaration {@link OWL#NamedIndividual owl:NamedIndividual}
+     * while this method does not require the declaration {@link OWL2#NamedIndividual owl:NamedIndividual}
      * to be present for an individual: according to the specification, it is optional; for more details see
      * <a href="https://www.w3.org/TR/owl2-syntax/#Typing_Constraints_of_OWL_2_DL">5.8.1 Typing Constraints of OWL 2 DL</a>.
      * Also note: in case of valid distinct {@link #getGraph() RDF graph}
@@ -374,7 +374,7 @@ public interface OntModel extends Model,
      * <p>
      * Since OWL2 graph can only contain the one {@code @uri rdf:type owl:Ontology} triple inside,
      * this method creates such a statement if it absent;
-     * in case there are more than one {@code Resource} with the type equaled to {@link OWL#Ontology owl:Ontology},
+     * in case there are more than one {@code Resource} with the type equaled to {@link OWL2#Ontology owl:Ontology},
      * it chooses the most bulky one (i.e. those that contains the largest number of associated statements)
      * and all the others leave intact.
      *
@@ -639,7 +639,7 @@ public interface OntModel extends Model,
 
     /**
      * Lists all named individuals,
-     * i.e. all those individuals which have explicitly {@link OWL#NamedIndividual owl:NamedIndividual} declaration.
+     * i.e. all those individuals which have explicitly {@link OWL2#NamedIndividual owl:NamedIndividual} declaration.
      *
      * @return {@code Stream} of {@link OntIndividual.Named Named Individual}s
      * @see #individuals()
@@ -684,11 +684,11 @@ public interface OntModel extends Model,
     }
 
     default OntClass.Named getOWLThing() {
-        return getOntClass(OWL.Thing);
+        return getOntClass(OWL2.Thing);
     }
 
     default OntClass.Named getOWLNothing() {
-        return getOntClass(OWL.Nothing);
+        return getOntClass(OWL2.Nothing);
     }
 
     default OntDataRange.Named getRDFSLiteral() {
@@ -696,18 +696,18 @@ public interface OntModel extends Model,
     }
 
     default OntObjectProperty.Named getOWLTopObjectProperty() {
-        return getObjectProperty(OWL.topObjectProperty);
+        return getObjectProperty(OWL2.topObjectProperty);
     }
 
     default OntObjectProperty.Named getOWLBottomObjectProperty() {
-        return getObjectProperty(OWL.bottomObjectProperty);
+        return getObjectProperty(OWL2.bottomObjectProperty);
     }
 
     default OntDataProperty getOWLTopDataProperty() {
-        return getDataProperty(OWL.topDataProperty);
+        return getDataProperty(OWL2.topDataProperty);
     }
 
     default OntDataProperty getOWLBottomDataProperty() {
-        return getDataProperty(OWL.bottomDataProperty);
+        return getDataProperty(OWL2.bottomDataProperty);
     }
 }

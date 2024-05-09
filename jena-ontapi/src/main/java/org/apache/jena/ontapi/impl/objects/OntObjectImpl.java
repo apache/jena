@@ -34,7 +34,6 @@ import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.ontapi.utils.Graphs;
 import org.apache.jena.ontapi.utils.Iterators;
 import org.apache.jena.ontapi.utils.StdModels;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Property;
@@ -49,6 +48,7 @@ import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.PropertyNotFoundException;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NullIterator;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.Arrays;
 import java.util.Comparator;

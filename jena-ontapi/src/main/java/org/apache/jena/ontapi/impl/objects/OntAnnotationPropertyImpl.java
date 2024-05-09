@@ -18,16 +18,16 @@
 
 package org.apache.jena.ontapi.impl.objects;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.ontapi.model.OntAnnotationProperty;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntStatement;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL2;
 import org.apache.jena.vocabulary.RDFS;
 
 import java.util.Optional;
@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 
 /**
  * Implementation of Annotation Property abstraction
- * (a URI-{@link Resource} with {@link OWL#AnnotationProperty owl:AnnotationProperty} type).
+ * (a URI-{@link Resource} with {@link OWL2#AnnotationProperty owl:AnnotationProperty} type).
  */
 public class OntAnnotationPropertyImpl extends OntPropertyImpl implements OntAnnotationProperty {
 
@@ -95,7 +95,7 @@ public class OntAnnotationPropertyImpl extends OntPropertyImpl implements OntAnn
 
     @Override
     public Optional<OntStatement> findRootStatement() {
-        return getOptionalRootStatement(this, OWL.AnnotationProperty);
+        return getOptionalRootStatement(this, OWL2.AnnotationProperty);
     }
 
     @Override

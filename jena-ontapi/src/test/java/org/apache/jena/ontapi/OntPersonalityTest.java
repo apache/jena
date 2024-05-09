@@ -18,6 +18,10 @@
 
 package org.apache.jena.ontapi;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.enhanced.EnhNode;
+import org.apache.jena.graph.GraphMemFactory;
+import org.apache.jena.graph.Node;
 import org.apache.jena.ontapi.common.CommonEnhNodeFactoryImpl;
 import org.apache.jena.ontapi.common.EnhNodeFactory;
 import org.apache.jena.ontapi.common.EnhNodeFilter;
@@ -39,18 +43,14 @@ import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.model.OntObject;
 import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.model.OntStatement;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.enhanced.EnhNode;
-import org.apache.jena.graph.GraphMemFactory;
-import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.vocabulary.FOAF;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -86,7 +86,7 @@ public class OntPersonalityTest {
             }
         };
         EnhNodeFinder finder = new EnhNodeFinder.ByPredicate(RDF.type);
-        EnhNodeFilter filter = EnhNodeFilter.URI.and(new EnhNodeFilter.HasType(OWL.NamedIndividual));
+        EnhNodeFilter filter = EnhNodeFilter.URI.and(new EnhNodeFilter.HasType(OWL2.NamedIndividual));
         return new CommonEnhNodeFactoryImpl(maker, finder, filter) {
             @Override
             public String toString() {
@@ -105,7 +105,7 @@ public class OntPersonalityTest {
                 .setNsPrefix("x", ns)
                 .setNsPrefix("foaf", FOAF.NS);
         String clazz = ns + "Class";
-        g.createResource(clazz, OWL.Class).addProperty(RDFS.subClassOf, agent);
+        g.createResource(clazz, OWL2.Class).addProperty(RDFS.subClassOf, agent);
 
 
         OntPersonality p1 = OntObjectPersonalityBuilder.from(TestOntPersonalities.OWL2_PERSONALITY_STRICT_PUNNS)
@@ -116,7 +116,7 @@ public class OntPersonalityTest {
         Assertions.assertNull(m1.getOntClass(document));
         Assertions.assertEquals(0, m1.getOntClass(clazz).superClasses().count());
 
-        OntVocabulary SIMPLE_FOAF_VOC = OntVocabulary.Impls.create(OWL.Class, agent, document);
+        OntVocabulary SIMPLE_FOAF_VOC = OntVocabulary.Impls.create(OWL2.Class, agent, document);
         OntVocabulary voc = OntVocabulary.Impls.create(OntVocabulary.OWL2_FULL, SIMPLE_FOAF_VOC);
         OntPersonality p2 = OntObjectPersonalityBuilder.from(TestOntPersonalities.OWL2_PERSONALITY_STRICT_PUNNS)
                 .setBuiltins(OntPersonalities.createBuiltinsVocabulary(voc)).build();
@@ -136,8 +136,8 @@ public class OntPersonalityTest {
                 .setNsPrefixes(OntModelFactory.STANDARD)
                 .setNsPrefix("x", ns);
         Property p = g.createProperty(ns + "someProp");
-        Resource individual = g.createResource(ns + "Individual", OWL.NamedIndividual);
-        g.createResource().addProperty(OWL.sameAs, individual).addProperty(p, "Some assertion");
+        Resource individual = g.createResource(ns + "Individual", OWL2.NamedIndividual);
+        g.createResource().addProperty(OWL2.sameAs, individual).addProperty(p, "Some assertion");
 
 
         OntModel m1 = OntModelFactory.createModel(g.getGraph());
@@ -172,22 +172,22 @@ public class OntPersonalityTest {
             @Override
             public Set<Node> get(Class<? extends OntObject> type) throws OntJenaException {
                 if (OntIndividual.Named.class.equals(type)) {
-                    return Set.of(OWL.Class.asNode(), RDFS.Datatype.asNode());
+                    return Set.of(OWL2.Class.asNode(), RDFS.Datatype.asNode());
                 }
                 if (OntClass.Named.class.equals(type)) {
-                    return Set.of(RDFS.Datatype.asNode(), OWL.NamedIndividual.asNode());
+                    return Set.of(RDFS.Datatype.asNode(), OWL2.NamedIndividual.asNode());
                 }
                 if (OntDataRange.Named.class.equals(type)) {
-                    return Set.of(OWL.Class.asNode(), OWL.NamedIndividual.asNode());
+                    return Set.of(OWL2.Class.asNode(), OWL2.NamedIndividual.asNode());
                 }
                 if (OntObjectProperty.Named.class.equals(type)) {
-                    return Set.of(OWL.AnnotationProperty.asNode(), OWL.DatatypeProperty.asNode());
+                    return Set.of(OWL2.AnnotationProperty.asNode(), OWL2.DatatypeProperty.asNode());
                 }
                 if (OntDataProperty.class.equals(type)) {
-                    return Set.of(OWL.AnnotationProperty.asNode(), OWL.ObjectProperty.asNode());
+                    return Set.of(OWL2.AnnotationProperty.asNode(), OWL2.ObjectProperty.asNode());
                 }
                 if (OntAnnotationProperty.class.equals(type)) {
-                    return Set.of(OWL.ObjectProperty.asNode(), OWL.DatatypeProperty.asNode());
+                    return Set.of(OWL2.ObjectProperty.asNode(), OWL2.DatatypeProperty.asNode());
                 }
                 throw new AssertionError();
             }
@@ -351,7 +351,7 @@ public class OntPersonalityTest {
 
         @Override
         public Optional<OntStatement> findRootStatement() {
-            return getRequiredRootStatement(this, OWL.NamedIndividual);
+            return getRequiredRootStatement(this, OWL2.NamedIndividual);
         }
     }
 }

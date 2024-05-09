@@ -18,6 +18,10 @@
 
 package org.apache.jena.ontapi.impl.objects;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.enhanced.UnsupportedPolymorphismException;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.impl.OntGraphModelImpl;
 import org.apache.jena.ontapi.model.OntClass;
@@ -29,18 +33,14 @@ import org.apache.jena.ontapi.model.OntProperty;
 import org.apache.jena.ontapi.model.OntSWRL;
 import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.ontapi.utils.Iterators;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.SWRL;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.enhanced.UnsupportedPolymorphismException;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NullIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.SWRL;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -135,7 +135,7 @@ public class OntSWRLImpl extends OntObjectImpl implements OntSWRL {
         Resource res = model.createResource(SWRL.DifferentIndividualsAtom)
                 .addProperty(SWRL.argument1, firstArg)
                 .addProperty(SWRL.argument2, secondArg);
-        model.fetchOntEntity(OntObjectProperty.Named.class, OWL.differentFrom.getURI());
+        model.fetchOntEntity(OntObjectProperty.Named.class, OWL2.differentFrom.getURI());
         return model.getNodeAs(res.asNode(), Atom.WithDifferentIndividuals.class);
     }
 
@@ -147,7 +147,7 @@ public class OntSWRLImpl extends OntObjectImpl implements OntSWRL {
         Resource res = model.createResource(SWRL.SameIndividualAtom)
                 .addProperty(SWRL.argument1, firstArg)
                 .addProperty(SWRL.argument2, secondArg);
-        model.fetchOntEntity(OntObjectProperty.Named.class, OWL.sameAs.getURI());
+        model.fetchOntEntity(OntObjectProperty.Named.class, OWL2.sameAs.getURI());
         return model.getNodeAs(res.asNode(), Atom.WithSameIndividuals.class);
     }
 
@@ -435,7 +435,7 @@ public class OntSWRLImpl extends OntObjectImpl implements OntSWRL {
 
     public static class DifferentIndividualsAtomImpl extends IndividualsAtomImpl implements Atom.WithDifferentIndividuals {
         public DifferentIndividualsAtomImpl(Node n, EnhGraph m) {
-            super(n, m, OWL.differentFrom);
+            super(n, m, OWL2.differentFrom);
         }
 
         @Override
@@ -451,7 +451,7 @@ public class OntSWRLImpl extends OntObjectImpl implements OntSWRL {
 
     public static class SameIndividualsAtomImpl extends IndividualsAtomImpl implements Atom.WithSameIndividuals {
         public SameIndividualsAtomImpl(Node n, EnhGraph m) {
-            super(n, m, OWL.sameAs);
+            super(n, m, OWL2.sameAs);
         }
 
         @Override

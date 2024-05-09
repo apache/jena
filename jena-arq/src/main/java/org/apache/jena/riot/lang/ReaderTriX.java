@@ -18,21 +18,11 @@
 
 package org.apache.jena.riot.lang;
 
-import static org.apache.jena.riot.lang.ReaderTriX.State.*;
-
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
@@ -53,6 +43,19 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.util.JenaXMLInput;
 import org.apache.jena.vocabulary.RDF;
+
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+
+import static org.apache.jena.riot.lang.ReaderTriX.State.E_TRIPLE;
+import static org.apache.jena.riot.lang.ReaderTriX.State.GRAPH;
+import static org.apache.jena.riot.lang.ReaderTriX.State.OUTER;
+import static org.apache.jena.riot.lang.ReaderTriX.State.TRIPLE;
+import static org.apache.jena.riot.lang.ReaderTriX.State.TRIX;
 
 /** Read TriX.
  *  See {@link TriX} for details.
@@ -113,7 +116,7 @@ public class ReaderTriX implements ReaderRIOT {
     private static String nsRDF = RDF.getURI();
     private static String nsXSD = XSDDatatype.XSD; // No "#"
     private static String nsXML0 = "http://www.w3.org/XML/1998/namespace";
-    private static String rdfXMLLiteral = RDF.Init.xmlLiteral().getURI();
+    private static String rdfXMLLiteral = RDF.xmlLiteral.getURI();
 
     // State TRIPLE is "asserted triple" - a triple that will go into the output.
     // State E_TRIPLE is an "embedded triple" (<<>>) that will be term in another triple/quad.

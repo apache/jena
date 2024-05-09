@@ -18,6 +18,10 @@
 
 package org.apache.jena.ontapi.impl.factories;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.enhanced.EnhNode;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.OntModelControls;
 import org.apache.jena.ontapi.common.BaseEnhNodeFactoryImpl;
@@ -31,16 +35,12 @@ import org.apache.jena.ontapi.common.WrappedEnhNodeFactory;
 import org.apache.jena.ontapi.impl.objects.OntDataRangeImpl;
 import org.apache.jena.ontapi.model.OntDataRange;
 import org.apache.jena.ontapi.utils.Iterators;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.enhanced.EnhNode;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.impl.RDFListImpl;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 import java.util.LinkedHashSet;
@@ -49,13 +49,13 @@ import java.util.Objects;
 import java.util.Set;
 
 final class OntDataRanges {
-    private static final EnhNodeFinder DR_FINDER_OWL1 = new EnhNodeFinder.ByType(OWL.DataRange);
-    private static final EnhNodeFilter DR_FILTER_OWL1 = new EnhNodeFilter.HasType(OWL.DataRange);
+    private static final EnhNodeFinder DR_FINDER_OWL1 = new EnhNodeFinder.ByType(OWL2.DataRange);
+    private static final EnhNodeFilter DR_FILTER_OWL1 = new EnhNodeFilter.HasType(OWL2.DataRange);
 
     private static final EnhNodeFinder DR_FINDER_OWL2 = new EnhNodeFinder.ByType(RDFS.Datatype);
     private static final EnhNodeFilter DR_FILTER_OWL2 = EnhNodeFilter.ANON.and(new EnhNodeFilter.HasType(RDFS.Datatype));
 
-    private static final EnhNodeFinder DR_FINDER_OWL2_COMPATIBLE = new EnhNodeFinder.ByTypes(Set.of(RDFS.Datatype, OWL.DataRange));
+    private static final EnhNodeFinder DR_FINDER_OWL2_COMPATIBLE = new EnhNodeFinder.ByTypes(Set.of(RDFS.Datatype, OWL2.DataRange));
     private static final EnhNodeFilter DR_FILTER_OWL2_COMPATIBLE = DR_FILTER_OWL2.or(DR_FILTER_OWL1);
 
     public static EnhNodeFinder makeFacetRestrictionFinder(Property predicate) {
@@ -98,7 +98,7 @@ final class OntDataRanges {
         );
         EnhNodeFilter filter = makeOWLFilter(config)
                 .and((n, g) -> {
-                    RDFList list = Iterators.findFirst(g.asGraph().find(n, OWL.oneOf.asNode(), Node.ANY).filterKeep(
+                    RDFList list = Iterators.findFirst(g.asGraph().find(n, OWL2.oneOf.asNode(), Node.ANY).filterKeep(
                             it -> STDObjectFactories.RDF_LIST.canWrap(it.getObject(), g)
                     ).mapWith(it -> new RDFListImpl(it.getObject(), g))).orElse(null);
                     if (list == null) {
@@ -146,7 +146,7 @@ final class OntDataRanges {
         private static final Node ANY = Node.ANY;
         private static final Node PRIMARY_DATATYPE_TYPE = RDFS.Datatype.asNode();
         // owl:DataRange is deprecated in OWL 2, replaced by rdfs:Datatype, but for compatibility needs to handle it
-        private static final Node SECONDARY_DATATYPE_TYPE = OWL.DataRange.asNode();
+        private static final Node SECONDARY_DATATYPE_TYPE = OWL2.DataRange.asNode();
 
         private static final EnhNodeFactory NAMED_FACTORY = WrappedEnhNodeFactory.of(OntDataRange.Named.class);
         private static final EnhNodeFactory ONE_OF_FACTORY = WrappedEnhNodeFactory.of(OntDataRange.OneOf.class);

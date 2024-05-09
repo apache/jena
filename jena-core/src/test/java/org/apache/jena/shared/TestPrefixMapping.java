@@ -18,10 +18,15 @@
 
 package org.apache.jena.shared;
 
-import junit.framework.TestSuite ;
-import org.apache.jena.assembler.JA ;
-import org.apache.jena.shared.impl.PrefixMappingImpl ;
-import org.apache.jena.vocabulary.* ;
+import junit.framework.TestSuite;
+import org.apache.jena.assembler.JA;
+import org.apache.jena.shared.impl.PrefixMappingImpl;
+import org.apache.jena.vocabulary.DC_11;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.RSS;
+import org.apache.jena.vocabulary.VCARD;
 
 /**
     Tests PrefixMappingImpl by subclassing AbstractTestPrefixMapping, qv.

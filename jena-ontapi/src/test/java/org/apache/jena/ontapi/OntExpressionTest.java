@@ -25,12 +25,12 @@ import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.model.OntRelationalProperty;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.ontapi.vocabulary.XSD;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.XSD;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -168,20 +168,20 @@ public class OntExpressionTest {
 
         OntClass.DataCardinality r1 = m.createDataCardinality(dp1, v.getInt(), d1);
         Assertions.assertEquals(d1, r1.getValue());
-        Assertions.assertFalse(m.containsResource(OWL.cardinality));
-        Assertions.assertTrue(m.contains(null, OWL.qualifiedCardinality, v));
+        Assertions.assertFalse(m.containsResource(OWL2.cardinality));
+        Assertions.assertTrue(m.contains(null, OWL2.qualifiedCardinality, v));
         Assertions.assertSame(r1, r1.setValue(null));
         Assertions.assertEquals(RDFS.Literal, r1.getValue());
-        Assertions.assertFalse(m.containsResource(OWL.qualifiedCardinality));
-        Assertions.assertTrue(m.contains(null, OWL.cardinality, v));
+        Assertions.assertFalse(m.containsResource(OWL2.qualifiedCardinality));
+        Assertions.assertTrue(m.contains(null, OWL2.cardinality, v));
 
         OntClass.ObjectMinCardinality r2 = m.createObjectMinCardinality(op2, v.getInt(), null);
-        Assertions.assertEquals(OWL.Thing, r2.getValue());
-        Assertions.assertFalse(m.containsResource(OWL.minQualifiedCardinality));
-        Assertions.assertTrue(m.contains(null, OWL.minCardinality, v));
+        Assertions.assertEquals(OWL2.Thing, r2.getValue());
+        Assertions.assertFalse(m.containsResource(OWL2.minQualifiedCardinality));
+        Assertions.assertTrue(m.contains(null, OWL2.minCardinality, v));
         Assertions.assertEquals(c1, r2.setValue(c1).getValue());
-        Assertions.assertFalse(m.containsResource(OWL.minCardinality));
-        Assertions.assertTrue(m.contains(null, OWL.minQualifiedCardinality, v));
+        Assertions.assertFalse(m.containsResource(OWL2.minCardinality));
+        Assertions.assertTrue(m.contains(null, OWL2.minQualifiedCardinality, v));
     }
 
     @Test
@@ -198,8 +198,8 @@ public class OntExpressionTest {
         Assertions.assertEquals(d2, r1.getValue());
         Assertions.assertEquals(dp1, r1.getProperty());
         Assertions.assertEquals(s, m.size());
-        Assertions.assertFalse(m.contains(null, OWL.someValuesFrom, (RDFNode) null));
-        Assertions.assertTrue(m.contains(null, OWL.allValuesFrom, (RDFNode) null));
+        Assertions.assertFalse(m.contains(null, OWL2.someValuesFrom, (RDFNode) null));
+        Assertions.assertTrue(m.contains(null, OWL2.allValuesFrom, (RDFNode) null));
 
         try {
             m.createDataAllValuesFrom(Arrays.asList(dp1, dp2), d1);
@@ -211,8 +211,8 @@ public class OntExpressionTest {
 
         OntClass.NaryDataSomeValuesFrom r2 = m.createDataSomeValuesFrom(Collections.singleton(dp2), d1);
         Assertions.assertEquals(s = s + 5, m.size());
-        Assertions.assertTrue(m.contains(null, OWL.someValuesFrom, (RDFNode) null));
-        Assertions.assertTrue(m.contains(null, OWL.allValuesFrom, (RDFNode) null));
+        Assertions.assertTrue(m.contains(null, OWL2.someValuesFrom, (RDFNode) null));
+        Assertions.assertTrue(m.contains(null, OWL2.allValuesFrom, (RDFNode) null));
 
         try {
             r2.setComponents(dp1, dp2);

@@ -18,6 +18,10 @@
 
 package org.apache.jena.ontapi.impl.factories;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.enhanced.EnhNode;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.OntModelControls;
 import org.apache.jena.ontapi.common.BaseEnhNodeFactoryImpl;
@@ -30,53 +34,49 @@ import org.apache.jena.ontapi.impl.objects.OntObjectPropertyImpl;
 import org.apache.jena.ontapi.impl.objects.OntSimplePropertyImpl;
 import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.utils.Iterators;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.enhanced.EnhNode;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 final class OntProperties {
-    public static final EnhNodeFinder NEGATIVE_PROPERTY_ASSERTION_FINDER = new EnhNodeFinder.ByType(OWL.NegativePropertyAssertion);
+    public static final EnhNodeFinder NEGATIVE_PROPERTY_ASSERTION_FINDER = new EnhNodeFinder.ByType(OWL2.NegativePropertyAssertion);
     public static final EnhNodeFilter NEGATIVE_PROPERTY_ASSERTION_FILTER = EnhNodeFilter.ANON
-            .and(new EnhNodeFilter.HasPredicate(OWL.sourceIndividual))
-            .and(new EnhNodeFilter.HasPredicate(OWL.assertionProperty));
+            .and(new EnhNodeFilter.HasPredicate(OWL2.sourceIndividual))
+            .and(new EnhNodeFilter.HasPredicate(OWL2.assertionProperty));
     private static final EnhNodeFactory NAMED_OBJECT_PROPERTY_FACTORY_REFERENCE = WrappedEnhNodeFactory.of(OntObjectProperty.Named.class);
     private static final EnhNodeFactory ANONYMOUS_OBJECT_PROPERTY_FACTORY_REFERENCE = WrappedEnhNodeFactory.of(OntObjectProperty.Inverse.class);
 
     public static Factory createFactory(OntConfig config) {
         List<Node> objectPropertyTypes = new ArrayList<>();
         List<Node> allPropertyTypes = new ArrayList<>();
-        objectPropertyTypes.add(OWL.ObjectProperty.asNode());
+        objectPropertyTypes.add(OWL2.ObjectProperty.asNode());
         if (config.getBoolean(OntModelControls.USE_OWL_PROPERTY_INVERSE_FUNCTIONAL_FEATURE)) {
-            objectPropertyTypes.add(OWL.InverseFunctionalProperty.asNode());
+            objectPropertyTypes.add(OWL2.InverseFunctionalProperty.asNode());
         }
         if (config.getBoolean(OntModelControls.USE_OWL_PROPERTY_REFLEXIVE_FEATURE)) {
-            objectPropertyTypes.add(OWL.ReflexiveProperty.asNode());
+            objectPropertyTypes.add(OWL2.ReflexiveProperty.asNode());
         }
         if (config.getBoolean(OntModelControls.USE_OWL_PROPERTY_IRREFLEXIVE_FEATURE)) {
-            objectPropertyTypes.add(OWL.IrreflexiveProperty.asNode());
+            objectPropertyTypes.add(OWL2.IrreflexiveProperty.asNode());
         }
         if (config.getBoolean(OntModelControls.USE_OWL_PROPERTY_SYMMETRIC_FEATURE)) {
-            objectPropertyTypes.add(OWL.SymmetricProperty.asNode());
+            objectPropertyTypes.add(OWL2.SymmetricProperty.asNode());
         }
         if (config.getBoolean(OntModelControls.USE_OWL_PROPERTY_ASYMMETRIC_FEATURE)) {
-            objectPropertyTypes.add(OWL.AsymmetricProperty.asNode());
+            objectPropertyTypes.add(OWL2.AsymmetricProperty.asNode());
         }
         if (config.getBoolean(OntModelControls.USE_OWL_PROPERTY_TRANSITIVE_FEATURE)) {
-            objectPropertyTypes.add(OWL.TransitiveProperty.asNode());
+            objectPropertyTypes.add(OWL2.TransitiveProperty.asNode());
         }
         allPropertyTypes.add(RDF.Property.asNode());
-        allPropertyTypes.add(OWL.AnnotationProperty.asNode());
-        allPropertyTypes.add(OWL.DatatypeProperty.asNode());
-        allPropertyTypes.add(OWL.FunctionalProperty.asNode());
+        allPropertyTypes.add(OWL2.AnnotationProperty.asNode());
+        allPropertyTypes.add(OWL2.DatatypeProperty.asNode());
+        allPropertyTypes.add(OWL2.FunctionalProperty.asNode());
         allPropertyTypes.addAll(objectPropertyTypes);
         return new Factory(
                 allPropertyTypes.stream().toList(),
@@ -121,7 +121,7 @@ final class OntProperties {
     }
 
     public static class AnonymousObjectPropertyFactory extends BaseEnhNodeFactoryImpl {
-        private static final Node OWL_INVERSE_OF = OWL.inverseOf.asNode();
+        private static final Node OWL_INVERSE_OF = OWL2.inverseOf.asNode();
 
         @Override
         public ExtendedIterator<EnhNode> iterator(EnhGraph eg) {
@@ -175,7 +175,7 @@ final class OntProperties {
                 return named.mapWith(it -> createInstance(it, eg));
             }
             ExtendedIterator<Node> anonymous = Iterators.distinct(
-                    eg.asGraph().find(Node.ANY, OWL.inverseOf.asNode(), Node.ANY).mapWith(triple -> {
+                    eg.asGraph().find(Node.ANY, OWL2.inverseOf.asNode(), Node.ANY).mapWith(triple -> {
                         if (!triple.getSubject().isBlank()) {
                             return null;
                         }
@@ -211,7 +211,7 @@ final class OntProperties {
 
         private boolean isInverseObjectProperty(Node node, EnhGraph eg) {
             return Iterators.findFirst(
-                    eg.asGraph().find(node, OWL.inverseOf.asNode(), Node.ANY)
+                    eg.asGraph().find(node, OWL2.inverseOf.asNode(), Node.ANY)
                             .mapWith(Triple::getObject)
                             .filterKeep(it -> isNamedObjectProperty(it, eg))
             ).isPresent();

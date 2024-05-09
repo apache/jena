@@ -32,9 +32,9 @@ import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.model.OntProperty;
 import org.apache.jena.ontapi.model.OntRelationalProperty;
 import org.apache.jena.ontapi.testutils.RDFIOTestUtils;
-import org.apache.jena.ontapi.vocabulary.OWL;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.vocabulary.OWL2;
 import org.apache.jena.vocabulary.RDFS;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -142,14 +142,14 @@ public class OntModelOWLLiteSpecTest {
         Assertions.assertEquals(0, m.ontObjects(OntDataRange.Restriction.class).count());
         Assertions.assertEquals(0, m.datatypes().count());
 
-        m.createResource("X", OWL.DataRange)
-                .addProperty(OWL.oneOf, m.createList(m.createLiteral("A")));
-        m.createResource(null, OWL.DataRange)
-                .addProperty(OWL.oneOf, m.createList(m.createLiteral("B")));
+        m.createResource("X", OWL2.DataRange)
+                .addProperty(OWL2.oneOf, m.createList(m.createLiteral("A")));
+        m.createResource(null, OWL2.DataRange)
+                .addProperty(OWL2.oneOf, m.createList(m.createLiteral("B")));
         m.createResource(null, RDFS.Datatype)
-                .addProperty(OWL.oneOf, m.createList(m.createLiteral("C")));
+                .addProperty(OWL2.oneOf, m.createList(m.createLiteral("C")));
         m.createResource("Q", RDFS.Datatype)
-                .addProperty(OWL.oneOf, m.createList(m.createLiteral("D")));
+                .addProperty(OWL2.oneOf, m.createList(m.createLiteral("D")));
 
         Assertions.assertThrows(OntJenaException.Unsupported.class, () -> m.createDataOneOf(m.createTypedLiteral(42)));
         Assertions.assertThrows(OntJenaException.Unsupported.class, m::createDataUnionOf);
@@ -165,9 +165,9 @@ public class OntModelOWLLiteSpecTest {
     @Test
     public void testDisabledFeaturesOWL1Lite() {
         Model d = OntModelFactory.createDefaultModel();
-        d.createResource("X", OWL.Class).addProperty(OWL.disjointWith, d.createResource("Q", OWL.Class));
-        d.createResource("iW", d.createResource("W", OWL.Class))
-                .addProperty(OWL.sameAs, d.createResource("iQ", d.getResource("Q")));
+        d.createResource("X", OWL2.Class).addProperty(OWL2.disjointWith, d.createResource("Q", OWL2.Class));
+        d.createResource("iW", d.createResource("W", OWL2.Class))
+                .addProperty(OWL2.sameAs, d.createResource("iQ", d.getResource("Q")));
 
         OntModel m = OntModelFactory.createModel(d.getGraph(), OntSpecification.OWL1_LITE_MEM);
         OntClass.Named x = m.getOntClass("X");

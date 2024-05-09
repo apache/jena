@@ -23,15 +23,37 @@ package org.apache.jena.ontology.impl;
 
 // Imports
 ///////////////
-import junit.framework.*;
 
-import java.util.*;
-
-import org.apache.jena.ontology.* ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.vocabulary.* ;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.apache.jena.ontology.AllDifferent;
+import org.apache.jena.ontology.AnnotationProperty;
+import org.apache.jena.ontology.FunctionalProperty;
+import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.InverseFunctionalProperty;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntDocumentManager;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.ontology.OntProperty;
+import org.apache.jena.ontology.Ontology;
+import org.apache.jena.ontology.OntologyException;
+import org.apache.jena.ontology.Restriction;
+import org.apache.jena.ontology.SymmetricProperty;
+import org.apache.jena.ontology.TransitiveProperty;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 

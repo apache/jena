@@ -18,15 +18,31 @@
 
 package org.apache.jena.assembler.assemblers;
 
-import java.io.StringReader;
-import java.util.*;
+import org.apache.jena.assembler.Assembler;
+import org.apache.jena.assembler.Content;
+import org.apache.jena.assembler.JA;
+import org.apache.jena.assembler.Mode;
+import org.apache.jena.assembler.exceptions.UnknownEncodingException;
+import org.apache.jena.graph.Node;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.util.FileManager;
+import org.apache.jena.util.ResourceUtils;
+import org.apache.jena.vocabulary.DC_11;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 
-import org.apache.jena.assembler.* ;
-import org.apache.jena.assembler.exceptions.UnknownEncodingException ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.util.* ;
-import org.apache.jena.vocabulary.* ;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ContentAssembler extends AssemblerBase implements Assembler
     {

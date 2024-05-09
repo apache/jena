@@ -18,9 +18,6 @@
 
 package org.apache.jena.ontapi.utils;
 
-import org.apache.jena.ontapi.UnionGraph;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphUtil;
 import org.apache.jena.graph.Node;
@@ -30,12 +27,16 @@ import org.apache.jena.graph.compose.Dyadic;
 import org.apache.jena.graph.compose.Polyadic;
 import org.apache.jena.graph.impl.WrappedGraph;
 import org.apache.jena.mem.GraphMemBase;
+import org.apache.jena.ontapi.UnionGraph;
 import org.apache.jena.reasoner.InfGraph;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.graph.GraphWrapper;
 import org.apache.jena.sparql.util.graph.GraphUtils;
+import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NullIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -66,6 +67,10 @@ import java.util.stream.Stream;
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class Graphs {
+
+    static {
+        JenaSystem.init();
+    }
 
     /**
      * Extracts and lists all top-level sub-graphs from the given composite graph-container,
@@ -423,7 +428,7 @@ public class Graphs {
      * @return boolean
      */
     public static boolean isOntGraph(Graph graph) {
-        return graph.contains(Node.ANY, RDF.type.asNode(), OWL.Ontology.asNode());
+        return graph.contains(Node.ANY, RDF.type.asNode(), OWL2.Ontology.asNode());
     }
 
     /**
@@ -507,7 +512,7 @@ public class Graphs {
         Objects.requireNonNull(graph, "graph is null");
         Objects.requireNonNull(newOntology, "ontology node is null");
         Set<Triple> prev = Iterators.addAll(Iterators.flatMap(
-                graph.find(Node.ANY, RDF.type.asNode(), OWL.Ontology.asNode()),
+                graph.find(Node.ANY, RDF.type.asNode(), OWL2.Ontology.asNode()),
                 it -> graph.find(it.getSubject(), Node.ANY, Node.ANY)), new HashSet<>());
         Set<Node> subjects = prev.stream().map(Triple::getSubject).collect(Collectors.toSet());
         if (subjects.contains(newOntology)) {
@@ -516,7 +521,7 @@ public class Graphs {
                 return newOntology;
             }
         } else {
-            graph.add(newOntology, RDF.type.asNode(), OWL.Ontology.asNode());
+            graph.add(newOntology, RDF.type.asNode(), OWL2.Ontology.asNode());
         }
         prev.forEach(t -> {
             if (!newOntology.equals(t.getSubject())) {
@@ -576,7 +581,7 @@ public class Graphs {
      */
     public static Optional<Node> findVersionIRI(Graph graph, Node header) {
         Set<Node> versionNodes = Iterators.takeAsSet(
-                graph.find(header, OWL.versionIRI.asNode(), Node.ANY)
+                graph.find(header, OWL2.versionIRI.asNode(), Node.ANY)
                         .mapWith(Triple::getObject)
                         .filterKeep(Node::isURI), 2);
         if (versionNodes.size() == 1) {
@@ -656,7 +661,7 @@ public class Graphs {
      * @return {@link ExtendedIterator} of {@link Node}
      */
     public static ExtendedIterator<Node> listOntologyNodes(Graph graph) {
-        return graph.find(Node.ANY, RDF.Nodes.type, OWL.Ontology.asNode())
+        return graph.find(Node.ANY, RDF.Nodes.type, OWL2.Ontology.asNode())
                 .mapWith(t -> {
                     Node n = t.getSubject();
                     return n.isURI() || n.isBlank() ? n : null;
@@ -715,7 +720,7 @@ public class Graphs {
     }
 
     private static ExtendedIterator<String> listImports(Node ontology, Graph graph) {
-        return graph.find(ontology, OWL.imports.asNode(), Node.ANY).mapWith(t -> {
+        return graph.find(ontology, OWL2.imports.asNode(), Node.ANY).mapWith(t -> {
             Node n = t.getObject();
             return n.isURI() ? n.getURI() : null;
         }).filterDrop(Objects::isNull);
@@ -729,9 +734,9 @@ public class Graphs {
      */
     public static ExtendedIterator<Triple> listOntHeaderTriples(Graph graph) {
         return Iterators.concat(
-                graph.find(Node.ANY, RDF.type.asNode(), OWL.Ontology.asNode()),
-                graph.find(Node.ANY, OWL.imports.asNode(), Node.ANY),
-                graph.find(Node.ANY, OWL.versionIRI.asNode(), Node.ANY)
+                graph.find(Node.ANY, RDF.type.asNode(), OWL2.Ontology.asNode()),
+                graph.find(Node.ANY, OWL2.imports.asNode(), Node.ANY),
+                graph.find(Node.ANY, OWL2.versionIRI.asNode(), Node.ANY)
         );
     }
 

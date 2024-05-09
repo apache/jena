@@ -18,6 +18,16 @@
 
 package org.apache.jena.ontapi.impl;
 
+import org.apache.jena.datatypes.BaseDatatype;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.TypeMapper;
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.enhanced.PersonalityConfigException;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphMemFactory;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.OntModelControls;
 import org.apache.jena.ontapi.UnionGraph;
@@ -55,18 +65,6 @@ import org.apache.jena.ontapi.utils.Graphs;
 import org.apache.jena.ontapi.utils.Iterators;
 import org.apache.jena.ontapi.utils.OntModels;
 import org.apache.jena.ontapi.utils.StdModels;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.datatypes.BaseDatatype;
-import org.apache.jena.datatypes.RDFDatatype;
-import org.apache.jena.datatypes.TypeMapper;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.enhanced.PersonalityConfigException;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.GraphMemFactory;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
@@ -87,6 +85,8 @@ import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NullIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.ReasonerVocabulary;
 
@@ -274,7 +274,7 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
         if (model.getOntPersonality().getBuiltins().getNamedClasses().contains(candidate)) {
             return true;
         }
-        return Graphs.hasOneOfType(candidate, model.getGraph(), Set.of(OWL.Class.asNode(), OWL.Restriction.asNode()));
+        return Graphs.hasOneOfType(candidate, model.getGraph(), Set.of(OWL2.Class.asNode(), OWL2.Restriction.asNode()));
     }
 
     private static boolean testIsRDFSClass(Model model, Node candidate) {
@@ -685,7 +685,7 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
             Model capabilities = getReasonerCapabilities();
             if (capabilities != null &&
                     capabilities.contains(null, ReasonerVocabulary.supportsP, ReasonerVocabulary.individualAsThingP)) {
-                return listStatements(null, RDF.type, OWL.Thing).mapWith(it -> it.getSubject().as(OntIndividual.class));
+                return listStatements(null, RDF.type, OWL2.Thing).mapWith(it -> it.getSubject().as(OntIndividual.class));
             }
         }
         return listIndividuals(this,
@@ -702,7 +702,7 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
         if (OntPersonalities.supportsOWLThing(getOntPersonality())) {
             Model capabilities = getReasonerCapabilities();
             if (capabilities != null && capabilities.contains(null, ReasonerVocabulary.supportsP, ReasonerVocabulary.directSubClassOf)) {
-                return listStatements(null, ReasonerVocabulary.directSubClassOf, OWL.Thing).mapWith(it -> it.getSubject().as(OntClass.class));
+                return listStatements(null, ReasonerVocabulary.directSubClassOf, OWL2.Thing).mapWith(it -> it.getSubject().as(OntClass.class));
             }
         }
         Set<Node> reserved = getOntPersonality().getReserved().getAllResources();
@@ -929,16 +929,16 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
     /**
      * Lists all (bulk) annotation anonymous resources for the given {@code rdf:type} and SPO.
      *
-     * @param t {@link Resource} either {@link OWL#Axiom owl:Axiom} or {@link OWL#Annotation owl:Annotation}
+     * @param t {@link Resource} either {@link OWL2#Axiom owl:Axiom} or {@link OWL2#Annotation owl:Annotation}
      * @param s {@link Resource} subject
      * @param p {@link Property} predicate
      * @param o {@link RDFNode} object
      * @return {@link ExtendedIterator} of annotation {@link Resource resource}s
      */
     public ExtendedIterator<Resource> listAnnotations(Resource t, Resource s, Property p, RDFNode o) {
-        return getGraph().find(Node.ANY, OWL.annotatedSource.asNode(), s.asNode())
+        return getGraph().find(Node.ANY, OWL2.annotatedSource.asNode(), s.asNode())
                 .mapWith(this::asStatement)
-                .filterKeep(x -> (OWL.Axiom == t ? x.belongsToOWLAxiom() : x.belongsToOWLAnnotation())
+                .filterKeep(x -> (OWL2.Axiom == t ? x.belongsToOWLAxiom() : x.belongsToOWLAnnotation())
                         && x.hasAnnotatedProperty(p) && x.hasAnnotatedTarget(o))
                 .mapWith(Statement::getSubject);
     }
@@ -1029,41 +1029,41 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
     public OntClass.ObjectSomeValuesFrom createObjectSomeValuesFrom(OntObjectProperty property, OntClass ce) {
         checkType(OntClass.ObjectSomeValuesFrom.class);
         return checkCreate(model -> OntClassImpl.createComponentRestrictionCE(model,
-                OntClass.ObjectSomeValuesFrom.class, property, ce, OWL.someValuesFrom), OntClass.ObjectSomeValuesFrom.class);
+                OntClass.ObjectSomeValuesFrom.class, property, ce, OWL2.someValuesFrom), OntClass.ObjectSomeValuesFrom.class);
     }
 
     @Override
     public OntClass.DataSomeValuesFrom createDataSomeValuesFrom(OntDataProperty property, OntDataRange dr) {
         checkType(OntClass.DataSomeValuesFrom.class);
         return checkCreate(model -> OntClassImpl.createComponentRestrictionCE(model,
-                OntClass.DataSomeValuesFrom.class, property, dr, OWL.someValuesFrom), OntClass.DataSomeValuesFrom.class);
+                OntClass.DataSomeValuesFrom.class, property, dr, OWL2.someValuesFrom), OntClass.DataSomeValuesFrom.class);
     }
 
     @Override
     public OntClass.ObjectAllValuesFrom createObjectAllValuesFrom(OntObjectProperty property, OntClass ce) {
         checkType(OntClass.ObjectAllValuesFrom.class);
         return checkCreate(model -> OntClassImpl.createComponentRestrictionCE(model,
-                OntClass.ObjectAllValuesFrom.class, property, ce, OWL.allValuesFrom), OntClass.ObjectAllValuesFrom.class);
+                OntClass.ObjectAllValuesFrom.class, property, ce, OWL2.allValuesFrom), OntClass.ObjectAllValuesFrom.class);
     }
 
     @Override
     public OntClass.DataAllValuesFrom createDataAllValuesFrom(OntDataProperty property, OntDataRange dr) {
         checkType(OntClass.DataAllValuesFrom.class);
         return OntClassImpl.createComponentRestrictionCE(this,
-                OntClass.DataAllValuesFrom.class, property, dr, OWL.allValuesFrom);
+                OntClass.DataAllValuesFrom.class, property, dr, OWL2.allValuesFrom);
     }
 
     @Override
     public OntClass.ObjectHasValue createObjectHasValue(OntObjectProperty property, OntIndividual individual) {
         checkType(OntClass.ObjectHasValue.class);
         return OntClassImpl.createComponentRestrictionCE(this,
-                OntClass.ObjectHasValue.class, property, individual, OWL.hasValue);
+                OntClass.ObjectHasValue.class, property, individual, OWL2.hasValue);
     }
 
     @Override
     public OntClass.DataHasValue createDataHasValue(OntDataProperty property, Literal literal) {
         checkType(OntClass.DataHasValue.class);
-        return OntClassImpl.createComponentRestrictionCE(this, OntClass.DataHasValue.class, property, literal, OWL.hasValue);
+        return OntClassImpl.createComponentRestrictionCE(this, OntClass.DataHasValue.class, property, literal, OWL2.hasValue);
     }
 
     @Override
@@ -1111,7 +1111,7 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
     public OntClass.UnionOf createObjectUnionOf(Collection<OntClass> classes) {
         checkType(OntClass.UnionOf.class);
         return checkCreate(model ->
-                        OntClassImpl.createComponentsCE(model, OntClass.UnionOf.class, OntClass.class, OWL.unionOf, classes.stream()),
+                        OntClassImpl.createComponentsCE(model, OntClass.UnionOf.class, OntClass.class, OWL2.unionOf, classes.stream()),
                 OntClass.UnionOf.class);
     }
 
@@ -1119,14 +1119,14 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
     public OntClass.IntersectionOf createObjectIntersectionOf(Collection<OntClass> classes) {
         checkType(OntClass.IntersectionOf.class);
         return checkCreate(model -> OntClassImpl.createComponentsCE(model,
-                OntClass.IntersectionOf.class, OntClass.class, OWL.intersectionOf, classes.stream()), OntClass.IntersectionOf.class);
+                OntClass.IntersectionOf.class, OntClass.class, OWL2.intersectionOf, classes.stream()), OntClass.IntersectionOf.class);
     }
 
     @Override
     public OntClass.OneOf createObjectOneOf(Collection<OntIndividual> individuals) {
         checkType(OntClass.OneOf.class);
         return checkCreate(model -> OntClassImpl.createComponentsCE(model,
-                OntClass.OneOf.class, OntIndividual.class, OWL.oneOf, individuals.stream()), OntClass.OneOf.class);
+                OntClass.OneOf.class, OntIndividual.class, OWL2.oneOf, individuals.stream()), OntClass.OneOf.class);
     }
 
     @Override
@@ -1546,7 +1546,7 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
 
     @Override
     public OntClass.Named getOWLThing() {
-        return findNodeAs(OWL.Thing.asNode(), OntClass.Named.class);
+        return findNodeAs(OWL2.Thing.asNode(), OntClass.Named.class);
     }
 
     @Override
@@ -1556,27 +1556,27 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
 
     @Override
     public OntClass.Named getOWLNothing() {
-        return findNodeAs(OWL.Nothing.asNode(), OntClass.Named.class);
+        return findNodeAs(OWL2.Nothing.asNode(), OntClass.Named.class);
     }
 
     @Override
     public OntObjectProperty.Named getOWLTopObjectProperty() {
-        return findNodeAs(OWL.topObjectProperty.asNode(), OntObjectProperty.Named.class);
+        return findNodeAs(OWL2.topObjectProperty.asNode(), OntObjectProperty.Named.class);
     }
 
     @Override
     public OntObjectProperty.Named getOWLBottomObjectProperty() {
-        return findNodeAs(OWL.bottomObjectProperty.asNode(), OntObjectProperty.Named.class);
+        return findNodeAs(OWL2.bottomObjectProperty.asNode(), OntObjectProperty.Named.class);
     }
 
     @Override
     public OntDataProperty getOWLTopDataProperty() {
-        return findNodeAs(OWL.topDataProperty.asNode(), OntDataProperty.class);
+        return findNodeAs(OWL2.topDataProperty.asNode(), OntDataProperty.class);
     }
 
     @Override
     public OntDataProperty getOWLBottomDataProperty() {
-        return findNodeAs(OWL.bottomDataProperty.asNode(), OntDataProperty.class);
+        return findNodeAs(OWL2.bottomDataProperty.asNode(), OntDataProperty.class);
     }
 
     /**

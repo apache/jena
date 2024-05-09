@@ -18,8 +18,8 @@
 
 package org.apache.jena.ontapi.model;
 
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.XSD;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.XSD;
 
 /**
  * A technical interface to provide a non-negative integer value, that is a restriction cardinality.
@@ -39,7 +39,7 @@ interface HasCardinality {
     /**
      * Determines if this restriction is qualified.
      * Qualified cardinality restrictions are defined to be cardinality restrictions
-     * that have fillers which aren't TOP ({@link OWL#Thing owl:Thing} or
+     * that have fillers which aren't TOP ({@link OWL2#Thing owl:Thing} or
      * {@link org.apache.jena.vocabulary.RDFS#Literal rdfs:Literal}).
      * An object restriction is unqualified if it has a filler that is {@code owl:Thing}.
      * A data restriction is unqualified

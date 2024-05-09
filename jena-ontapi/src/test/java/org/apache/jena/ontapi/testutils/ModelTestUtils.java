@@ -28,8 +28,6 @@ import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.utils.Graphs;
 import org.apache.jena.ontapi.utils.Iterators;
 import org.apache.jena.ontapi.utils.StdModels;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
@@ -39,6 +37,8 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NullIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.ArrayDeque;
 import java.util.Comparator;
@@ -260,7 +260,7 @@ public class ModelTestUtils {
         if (id.isEmpty()) {
             return ANONYMOUS_ONTOLOGY_IDENTIFIER;
         }
-        ExtendedIterator<String> versions = graph.find(id.get(), OWL.versionIRI.asNode(), Node.ANY)
+        ExtendedIterator<String> versions = graph.find(id.get(), OWL2.versionIRI.asNode(), Node.ANY)
                 .mapWith(Triple::getObject).mapWith(Node::toString);
         try {
             Set<String> res = versions.toSet();
@@ -312,14 +312,14 @@ public class ModelTestUtils {
                 continue;
             }
             Node ont = Graphs.ontologyNode(base).orElseThrow();
-            base.remove(Node.ANY, OWL.imports.asNode(), Node.ANY);
+            base.remove(Node.ANY, OWL2.imports.asNode(), Node.ANY);
             if (!(next instanceof UnionGraph)) {
                 continue;
             }
             ((UnionGraph) next).subGraphs().forEach(it -> {
                 Node uri = Graphs.findOntologyNameNode(Graphs.getPrimary(it)).filter(Node::isURI).orElse(null);
                 if (uri != null) {
-                    next.add(ont, OWL.imports.asNode(), uri);
+                    next.add(ont, OWL2.imports.asNode(), uri);
                     queue.add(it);
                 }
             });

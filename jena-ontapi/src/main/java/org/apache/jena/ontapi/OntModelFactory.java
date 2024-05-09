@@ -18,21 +18,19 @@
 
 package org.apache.jena.ontapi;
 
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphMemFactory;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.ontapi.common.OntConfigs;
 import org.apache.jena.ontapi.common.OntObjectPersonalityBuilder;
 import org.apache.jena.ontapi.common.OntPersonality;
 import org.apache.jena.ontapi.impl.OntGraphModelImpl;
 import org.apache.jena.ontapi.impl.UnionGraphImpl;
 import org.apache.jena.ontapi.impl.repositories.OntUnionGraphRepository;
+import org.apache.jena.ontapi.model.OntID;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.utils.Graphs;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.GraphMemFactory;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.ontapi.model.OntID;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.impl.ModelCom;
 import org.apache.jena.reasoner.InfGraph;
@@ -40,6 +38,8 @@ import org.apache.jena.reasoner.Reasoner;
 import org.apache.jena.reasoner.ReasonerFactory;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sys.JenaSystem;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
 
@@ -56,7 +56,7 @@ public class OntModelFactory {
      * A {@code PrefixMapping} that contains the "standard" for OWL2 prefixes we know about, viz rdf, rdfs, xsd, and owl.
      */
     public static final PrefixMapping STANDARD = PrefixMapping.Factory.create()
-            .setNsPrefix("owl", OWL.NS)
+            .setNsPrefix("owl", OWL2.NS)
             .setNsPrefix("rdfs", RDFS.uri)
             .setNsPrefix("rdf", RDF.uri)
             .setNsPrefix("xsd", XSD.NS)
@@ -209,7 +209,7 @@ public class OntModelFactory {
     public static OntModel createModel(String uri, GraphRepository repository) {
         Objects.requireNonNull(uri);
         return createModel(
-                createDefaultModel().createResource(uri, OWL.Ontology).getModel().getGraph(),
+                createDefaultModel().createResource(uri, OWL2.Ontology).getModel().getGraph(),
                 OntSpecification.OWL2_DL_MEM_BUILTIN_INF,
                 repository
         ).setNsPrefixes(STANDARD);

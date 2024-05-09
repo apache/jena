@@ -21,12 +21,12 @@ package org.apache.jena.ontapi;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.model.OntRelationalProperty;
 import org.apache.jena.ontapi.testutils.RDFIOTestUtils;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,8 +46,8 @@ public class OntModelPropertiesTest {
     @Test
     public void testListPropertiesWithPunnings() {
         OntModel m = OntModelFactory.createModel(TestSpec.OWL2_DL_MEM_RDFS_BUILTIN_INF.inst);
-        m.createResource("X", OWL.ObjectProperty);
-        m.createResource("X", OWL.DatatypeProperty);
+        m.createResource("X", OWL2.ObjectProperty);
+        m.createResource("X", OWL2.DatatypeProperty);
         Assertions.assertEquals(0, m.objectProperties().count());
         Assertions.assertEquals(0, m.dataProperties().count());
         Assertions.assertEquals(0, m.ontObjects(OntRelationalProperty.class).count());
@@ -63,13 +63,13 @@ public class OntModelPropertiesTest {
     public void testListAllOntProperties1a(TestSpec spec) {
         OntModel m = OntModelFactory.createModel(spec.inst);
         // named object property
-        Resource op = m.createResource(NS + "op", OWL.ObjectProperty);
+        Resource op = m.createResource(NS + "op", OWL2.ObjectProperty);
         // inverse object property:
-        m.createResource().addProperty(OWL.inverseOf, op);
+        m.createResource().addProperty(OWL2.inverseOf, op);
         // datatype property
-        m.createResource(NS + "dp", OWL.DatatypeProperty);
+        m.createResource(NS + "dp", OWL2.DatatypeProperty);
         // annotation property
-        m.createResource(NS + "ap", OWL.AnnotationProperty);
+        m.createResource(NS + "ap", OWL2.AnnotationProperty);
 
         m.createResource(NS + "rp1", RDF.Property);
         m.createResource(NS + "rp2", RDF.Property);
@@ -97,13 +97,13 @@ public class OntModelPropertiesTest {
     public void testListAllOntProperties1b(TestSpec spec) {
         OntModel m = OntModelFactory.createModel(spec.inst);
         // named object property
-        Resource op = m.createResource(NS + "op", OWL.ObjectProperty);
+        Resource op = m.createResource(NS + "op", OWL2.ObjectProperty);
         // inverse object property:
-        m.createResource().addProperty(OWL.inverseOf, op);
+        m.createResource().addProperty(OWL2.inverseOf, op);
         // datatype property
-        m.createResource(NS + "dp", OWL.DatatypeProperty);
+        m.createResource(NS + "dp", OWL2.DatatypeProperty);
         // annotation property
-        m.createResource(NS + "ap", OWL.AnnotationProperty);
+        m.createResource(NS + "ap", OWL2.AnnotationProperty);
 
         m.createResource(NS + "rp1", RDF.Property);
         m.createResource(NS + "rp2", RDF.Property);
@@ -133,13 +133,13 @@ public class OntModelPropertiesTest {
     public void testListAllOntProperties1e(TestSpec spec) {
         OntModel m = OntModelFactory.createModel(spec.inst);
         // named object property
-        Resource op = m.createResource(NS + "op", OWL.ObjectProperty);
+        Resource op = m.createResource(NS + "op", OWL2.ObjectProperty);
         // inverse object property:
-        m.createResource().addProperty(OWL.inverseOf, op);
+        m.createResource().addProperty(OWL2.inverseOf, op);
         // datatype property
-        m.createResource(NS + "dp", OWL.DatatypeProperty);
+        m.createResource(NS + "dp", OWL2.DatatypeProperty);
         // annotation property
-        m.createResource(NS + "ap", OWL.AnnotationProperty);
+        m.createResource(NS + "ap", OWL2.AnnotationProperty);
 
         m.createResource(NS + "rp1", RDF.Property);
         m.createResource(NS + "rp2", RDF.Property);
@@ -305,19 +305,19 @@ public class OntModelPropertiesTest {
                                         long expectedDataProperties,
                                         long expectedAnnotationProperties) {
         Model g = ModelFactory.createDefaultModel();
-        g.createResource(NS + "op1", OWL.ObjectProperty);
-        g.createResource(NS + "op1", OWL.SymmetricProperty);
-        g.createResource(NS + "op2", OWL.SymmetricProperty);
-        g.createResource(NS + "op3", OWL.InverseFunctionalProperty);
-        g.createResource(NS + "op4", OWL.ReflexiveProperty);
-        g.createResource(NS + "op5", OWL.IrreflexiveProperty);
-        g.createResource(NS + "op6", OWL.SymmetricProperty);
-        g.createResource(NS + "op6", OWL.TransitiveProperty);
-        g.createResource(NS + "op7", OWL.TransitiveProperty);
-        g.createResource(NS + "dp1", OWL.DatatypeProperty);
-        g.createResource(NS + "dp2", OWL.DatatypeProperty);
-        g.createResource(NS + "xp1", OWL.FunctionalProperty);
-        g.createResource(NS + "ap1", OWL.AnnotationProperty);
+        g.createResource(NS + "op1", OWL2.ObjectProperty);
+        g.createResource(NS + "op1", OWL2.SymmetricProperty);
+        g.createResource(NS + "op2", OWL2.SymmetricProperty);
+        g.createResource(NS + "op3", OWL2.InverseFunctionalProperty);
+        g.createResource(NS + "op4", OWL2.ReflexiveProperty);
+        g.createResource(NS + "op5", OWL2.IrreflexiveProperty);
+        g.createResource(NS + "op6", OWL2.SymmetricProperty);
+        g.createResource(NS + "op6", OWL2.TransitiveProperty);
+        g.createResource(NS + "op7", OWL2.TransitiveProperty);
+        g.createResource(NS + "dp1", OWL2.DatatypeProperty);
+        g.createResource(NS + "dp2", OWL2.DatatypeProperty);
+        g.createResource(NS + "xp1", OWL2.FunctionalProperty);
+        g.createResource(NS + "ap1", OWL2.AnnotationProperty);
         g.createResource(NS + "ap1", RDF.Property);
         g.createResource(NS + "rp1", RDF.Property);
         g.createResource(NS + "rp2", RDF.Property);

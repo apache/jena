@@ -29,9 +29,6 @@ import org.apache.jena.ontapi.model.OntObject;
 import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.model.OntProperty;
 import org.apache.jena.ontapi.testutils.RDFIOTestUtils;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.ontapi.vocabulary.XSD;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -39,7 +36,10 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.XSD;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -95,7 +95,7 @@ public class OntModelOWL2ELSpecTest {
         OntModelOWLSpecsTest.testListObjects(m, expected);
 
         List<OntClass.Named> classes = m.ontObjects(OntClass.Named.class).toList();
-        int expectedClassesCount = m.listStatements(null, RDF.type, OWL.Class)
+        int expectedClassesCount = m.listStatements(null, RDF.type, OWL2.Class)
                 .mapWith(Statement::getSubject).filterKeep(RDFNode::isURIResource).toSet().size();
         int actualClassesCount = classes.size();
         Assertions.assertEquals(expectedClassesCount, actualClassesCount);
@@ -113,7 +113,7 @@ public class OntModelOWL2ELSpecTest {
         OntObjectProperty p1 = m.createObjectProperty("op-1");
         OntObjectProperty p2 = m.createObjectProperty("op-2");
         OntDataProperty d = m.createDataProperty("dp");
-        Resource i = m.createResource().addProperty(OWL.inverseOf, p1);
+        Resource i = m.createResource().addProperty(OWL2.inverseOf, p1);
 
         Stream.of(
                 OntProperty.class,
@@ -122,16 +122,16 @@ public class OntModelOWL2ELSpecTest {
                 OntObjectProperty.Inverse.class,
                 OntAnnotationProperty.class,
                 OntAnnotationProperty.class).forEach(t -> {
-            Assertions.assertFalse(m.createResource("x", OWL.IrreflexiveProperty).canAs(t));
-            Assertions.assertFalse(m.createResource("q", OWL.InverseFunctionalProperty).canAs(t));
-            Assertions.assertFalse(m.createResource("s", OWL.IrreflexiveProperty).canAs(t));
-            Assertions.assertFalse(m.createResource("d", OWL.SymmetricProperty).canAs(t));
-            Assertions.assertFalse(m.createResource("f", OWL.AsymmetricProperty).canAs(t));
+            Assertions.assertFalse(m.createResource("x", OWL2.IrreflexiveProperty).canAs(t));
+            Assertions.assertFalse(m.createResource("q", OWL2.InverseFunctionalProperty).canAs(t));
+            Assertions.assertFalse(m.createResource("s", OWL2.IrreflexiveProperty).canAs(t));
+            Assertions.assertFalse(m.createResource("d", OWL2.SymmetricProperty).canAs(t));
+            Assertions.assertFalse(m.createResource("f", OWL2.AsymmetricProperty).canAs(t));
             Assertions.assertFalse(i.canAs(t), "Can as " + t.getSimpleName());
         });
 
-        p1.addProperty(RDF.type, OWL.FunctionalProperty);
-        d.addProperty(RDF.type, OWL.FunctionalProperty);
+        p1.addProperty(RDF.type, OWL2.FunctionalProperty);
+        d.addProperty(RDF.type, OWL2.FunctionalProperty);
         Assertions.assertTrue(d.isFunctional());
         Assertions.assertFalse(p1.isFunctional());
 
@@ -209,12 +209,12 @@ public class OntModelOWL2ELSpecTest {
     })
     public void testObjectOneOf(TestSpec spec) {
         Model m = ModelFactory.createDefaultModel();
-        Resource c0 = m.createResource("C", OWL.Class);
+        Resource c0 = m.createResource("C", OWL2.Class);
         Resource i1 = m.createResource("i1", c0);
         Resource i2 = m.createResource("i2", c0);
-        Resource c1 = m.createResource().addProperty(RDF.type, OWL.Class).addProperty(OWL.oneOf, m.createList());
-        Resource c2 = m.createResource().addProperty(RDF.type, OWL.Class).addProperty(OWL.oneOf, m.createList(i1));
-        Resource c3 = m.createResource().addProperty(RDF.type, OWL.Class).addProperty(OWL.oneOf, m.createList(i1, i2));
+        Resource c1 = m.createResource().addProperty(RDF.type, OWL2.Class).addProperty(OWL2.oneOf, m.createList());
+        Resource c2 = m.createResource().addProperty(RDF.type, OWL2.Class).addProperty(OWL2.oneOf, m.createList(i1));
+        Resource c3 = m.createResource().addProperty(RDF.type, OWL2.Class).addProperty(OWL2.oneOf, m.createList(i1, i2));
 
         OntModel om = OntModelFactory.createModel(m.getGraph(), spec.inst);
         OntIndividual oi1 = Objects.requireNonNull(om.getIndividual("i1"));
@@ -237,9 +237,9 @@ public class OntModelOWL2ELSpecTest {
         Model m = ModelFactory.createDefaultModel();
         Literal v1 = m.createTypedLiteral(42);
         Literal v2 = m.createTypedLiteral("42");
-        Resource c1 = m.createResource().addProperty(RDF.type, RDFS.Datatype).addProperty(OWL.oneOf, m.createList());
-        Resource c2 = m.createResource().addProperty(RDF.type, RDFS.Datatype).addProperty(OWL.oneOf, m.createList(v1));
-        Resource c3 = m.createResource().addProperty(RDF.type, RDFS.Datatype).addProperty(OWL.oneOf, m.createList(v1, v2));
+        Resource c1 = m.createResource().addProperty(RDF.type, RDFS.Datatype).addProperty(OWL2.oneOf, m.createList());
+        Resource c2 = m.createResource().addProperty(RDF.type, RDFS.Datatype).addProperty(OWL2.oneOf, m.createList(v1));
+        Resource c3 = m.createResource().addProperty(RDF.type, RDFS.Datatype).addProperty(OWL2.oneOf, m.createList(v1, v2));
 
         OntModel om = OntModelFactory.createModel(m.getGraph(), spec.inst);
         OntDataRange.OneOf oc2 = om.ontObjects(OntDataRange.OneOf.class).findFirst().orElseThrow(AssertionError::new);
@@ -272,8 +272,8 @@ public class OntModelOWL2ELSpecTest {
         Assertions.assertNotNull(m.getOWLTopObjectProperty());
         Assertions.assertNotNull(m.getOWLTopDataProperty());
 
-        OWL.real.inModel(m).as(OntEntity.class);
-        OWL.rational.inModel(m).as(OntEntity.class);
+        OWL2.real.inModel(m).as(OntEntity.class);
+        OWL2.rational.inModel(m).as(OntEntity.class);
         XSD.xstring.inModel(m).as(OntEntity.class);
         Stream.of(XSD.xdouble, XSD.xfloat, XSD.nonPositiveInteger, XSD.positiveInteger, XSD.negativeInteger,
                         XSD.xlong, XSD.xint, XSD.xshort, XSD.unsignedLong, XSD.unsignedInt, XSD.unsignedShort,

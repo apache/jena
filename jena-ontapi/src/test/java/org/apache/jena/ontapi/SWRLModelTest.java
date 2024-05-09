@@ -18,6 +18,7 @@
 
 package org.apache.jena.ontapi;
 
+import org.apache.jena.graph.Graph;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntDataProperty;
 import org.apache.jena.ontapi.model.OntDataRange;
@@ -27,15 +28,14 @@ import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.model.OntSWRL;
 import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.ontapi.testutils.RDFIOTestUtils;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.ontapi.vocabulary.SWRL;
-import org.apache.jena.ontapi.vocabulary.SWRLB;
-import org.apache.jena.graph.Graph;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.SWRL;
+import org.apache.jena.vocabulary.SWRLB;
 import org.apache.jena.vocabulary.XSD;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -233,7 +233,7 @@ public class SWRLModelTest {
                 .as(OntSWRL.Atom.WithSameIndividuals.class);
         Assertions.assertEquals(i1, a2.getFirstArg());
         Assertions.assertEquals(i2, a2.getSecondArg());
-        Assertions.assertEquals(OWL.sameAs, a2.getPredicate());
+        Assertions.assertEquals(OWL2.sameAs, a2.getPredicate());
 
         OntSWRL.Atom.WithObjectProperty a3 = m.createResource(SWRL.IndividualPropertyAtom)
                 .addProperty(SWRL.argument1, i1)

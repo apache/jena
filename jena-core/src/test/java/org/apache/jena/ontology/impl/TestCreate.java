@@ -23,10 +23,41 @@ package org.apache.jena.ontology.impl;
 
 // Imports
 ///////////////
-import junit.framework.*;
-import org.apache.jena.ontology.* ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.vocabulary.OWL ;
+
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.apache.jena.ontology.AllDifferent;
+import org.apache.jena.ontology.AllValuesFromRestriction;
+import org.apache.jena.ontology.AnnotationProperty;
+import org.apache.jena.ontology.CardinalityRestriction;
+import org.apache.jena.ontology.ComplementClass;
+import org.apache.jena.ontology.DatatypeProperty;
+import org.apache.jena.ontology.EnumeratedClass;
+import org.apache.jena.ontology.FunctionalProperty;
+import org.apache.jena.ontology.HasValueRestriction;
+import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.IntersectionClass;
+import org.apache.jena.ontology.InverseFunctionalProperty;
+import org.apache.jena.ontology.MaxCardinalityRestriction;
+import org.apache.jena.ontology.MinCardinalityRestriction;
+import org.apache.jena.ontology.ObjectProperty;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntDocumentManager;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntResource;
+import org.apache.jena.ontology.Ontology;
+import org.apache.jena.ontology.ProfileRegistry;
+import org.apache.jena.ontology.Restriction;
+import org.apache.jena.ontology.SomeValuesFromRestriction;
+import org.apache.jena.ontology.SymmetricProperty;
+import org.apache.jena.ontology.TransitiveProperty;
+import org.apache.jena.ontology.UnionClass;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFList;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL;
 
 
 

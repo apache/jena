@@ -20,14 +20,14 @@ package org.apache.jena.ontapi;
 
 import org.apache.jena.ontapi.common.OntConfig;
 import org.apache.jena.ontapi.model.OntClass;
-import org.apache.jena.ontapi.model.OntIndividual;
-import org.apache.jena.ontapi.model.OntObjectProperty;
-import org.apache.jena.ontapi.model.OntRelationalProperty;
 import org.apache.jena.ontapi.model.OntDataProperty;
 import org.apache.jena.ontapi.model.OntID;
+import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.model.OntModel;
-import org.apache.jena.ontapi.vocabulary.OWL;
+import org.apache.jena.ontapi.model.OntObjectProperty;
+import org.apache.jena.ontapi.model.OntRelationalProperty;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL2;
 
 /**
  * Default settings for {@link OntConfig}.
@@ -115,12 +115,12 @@ public enum OntModelControls {
     USE_LEGACY_COMPATIBLE_NAMED_CLASS_FACTORY,
     /**
      * If this key is set to {@code true},
-     * then {@link OWL#NamedIndividual owl:NamedIndividual}
+     * then {@link OWL2#NamedIndividual owl:NamedIndividual}
      * declaration is used for creating individuals.
      */
     USE_OWL2_NAMED_INDIVIDUAL_DECLARATION_FEATURE,
     /**
-     * Controls {@link OWL#hasKey owl:hasKey} functionality.
+     * Controls {@link OWL2#hasKey owl:hasKey} functionality.
      * If disabled,
      * {@link OntClass#hasKeys() OntClass#hasKeys()} will return empty {@code Stream},
      * modification operations, such as
@@ -129,7 +129,7 @@ public enum OntModelControls {
      */
     USE_OWL2_CLASS_HAS_KEY_FEATURE,
     /**
-     * Controls {@link OWL#disjointUnionOf owl:disjointUnionOf} functionality.
+     * Controls {@link OWL2#disjointUnionOf owl:disjointUnionOf} functionality.
      * If disabled,
      * {@link OntClass.Named#disjointUnions() OntClass.Named#disjointUnions()}
      * will return empty {@code Stream}, modification operations, such as
@@ -138,7 +138,7 @@ public enum OntModelControls {
      */
     USE_OWL2_NAMED_CLASS_DISJOINT_UNION_FEATURE,
     /**
-     * Controls {@link OWL#disjointWith owl:disjointWith} functionality.
+     * Controls {@link OWL2#disjointWith owl:disjointWith} functionality.
      * If disabled,
      * {@link OntClass#disjoints() OntClass#disjoints()}
      * will return empty {@code Stream}, modification operations, such as
@@ -147,7 +147,7 @@ public enum OntModelControls {
      */
     USE_OWL_CLASS_DISJOINT_WITH_FEATURE,
     /**
-     * Controls {@link OWL#equivalentClass owl:equivalentClass} functionality.
+     * Controls {@link OWL2#equivalentClass owl:equivalentClass} functionality.
      * If disabled,
      * {@link OntClass#equivalentClasses() OntClass#equivalentClasses()}
      * will return empty {@code Stream}, modification operations, such as
@@ -156,7 +156,7 @@ public enum OntModelControls {
      */
     USE_OWL_CLASS_EQUIVALENT_FEATURE,
     /**
-     * Controls {@link OWL#propertyDisjointWith owl:propertyDisjointWith} functionality.
+     * Controls {@link OWL2#propertyDisjointWith owl:propertyDisjointWith} functionality.
      * If disabled,
      * {@link OntRelationalProperty#disjointProperties() OntRelationalProperty#disjointProperties()}
      * will return empty {@code Stream}, modification operations, such as
@@ -165,7 +165,7 @@ public enum OntModelControls {
      */
     USE_OWL2_PROPERTY_DISJOINT_WITH_FEATURE,
     /**
-     * Controls {@link OWL#equivalentProperty owl:equivalentProperty} functionality.
+     * Controls {@link OWL2#equivalentProperty owl:equivalentProperty} functionality.
      * If disabled,
      * {@link OntRelationalProperty#equivalentProperties() OntRelationalProperty#equivalentProperties()}
      * will return empty {@code Stream}, modification operations, such as
@@ -174,7 +174,7 @@ public enum OntModelControls {
      */
     USE_OWL_PROPERTY_EQUIVALENT_FEATURE,
     /**
-     * Controls data {@link OWL#FunctionalProperty owl:FunctionalProperty} functionality.
+     * Controls data {@link OWL2#FunctionalProperty owl:FunctionalProperty} functionality.
      * If disabled,
      * {@link OntDataProperty#isFunctional() OntDataProperty#isFunctional()}
      * will return {@code false}, modification operations, such as
@@ -183,7 +183,7 @@ public enum OntModelControls {
      */
     USE_OWL_DATA_PROPERTY_FUNCTIONAL_FEATURE,
     /**
-     * Controls object {@link OWL#FunctionalProperty owl:FunctionalProperty} functionality.
+     * Controls object {@link OWL2#FunctionalProperty owl:FunctionalProperty} functionality.
      * If disabled,
      * {@link OntObjectProperty#isFunctional() OntObjectProperty#isFunctional()}
      * will return {@code false}, modification operations, such as
@@ -192,7 +192,7 @@ public enum OntModelControls {
      */
     USE_OWL_OBJECT_PROPERTY_FUNCTIONAL_FEATURE,
     /**
-     * Controls {@link OWL#InverseFunctionalProperty owl:InverseFunctionalProperty} functionality.
+     * Controls {@link OWL2#InverseFunctionalProperty owl:InverseFunctionalProperty} functionality.
      * If disabled,
      * {@link OntObjectProperty#isInverseFunctional() OntObjectProperty#isInverseFunctional()}
      * will return {@code false}, modification operations, such as
@@ -201,7 +201,7 @@ public enum OntModelControls {
      */
     USE_OWL_PROPERTY_INVERSE_FUNCTIONAL_FEATURE,
     /**
-     * Controls {@link OWL#SymmetricProperty owl:SymmetricProperty} functionality.
+     * Controls {@link OWL2#SymmetricProperty owl:SymmetricProperty} functionality.
      * If disabled,
      * {@link OntObjectProperty#isSymmetric() OntObjectProperty#isSymmetric()}
      * will return {@code false}, modification operations, such as
@@ -210,7 +210,7 @@ public enum OntModelControls {
      */
     USE_OWL_PROPERTY_SYMMETRIC_FEATURE,
     /**
-     * Controls {@link OWL#AsymmetricProperty owl:AsymmetricProperty} functionality.
+     * Controls {@link OWL2#AsymmetricProperty owl:AsymmetricProperty} functionality.
      * If disabled,
      * {@link OntObjectProperty#isAsymmetric() OntObjectProperty#isAsymmetric()}
      * will return {@code false}, modification operations, such as
@@ -219,7 +219,7 @@ public enum OntModelControls {
      */
     USE_OWL_PROPERTY_ASYMMETRIC_FEATURE,
     /**
-     * Controls {@link OWL#TransitiveProperty owl:TransitiveProperty} functionality.
+     * Controls {@link OWL2#TransitiveProperty owl:TransitiveProperty} functionality.
      * If disabled,
      * {@link OntObjectProperty#isTransitive() OntObjectProperty#isTransitive()}
      * will return {@code false}, modification operations, such as
@@ -228,7 +228,7 @@ public enum OntModelControls {
      */
     USE_OWL_PROPERTY_TRANSITIVE_FEATURE,
     /**
-     * Controls {@link OWL#ReflexiveProperty owl:ReflexiveProperty} functionality.
+     * Controls {@link OWL2#ReflexiveProperty owl:ReflexiveProperty} functionality.
      * If disabled,
      * {@link OntObjectProperty#isReflexive() OntObjectProperty#isReflexive()}
      * will return {@code false}, modification operations, such as
@@ -237,7 +237,7 @@ public enum OntModelControls {
      */
     USE_OWL_PROPERTY_REFLEXIVE_FEATURE,
     /**
-     * Controls {@link OWL#IrreflexiveProperty owl:IrreflexiveProperty} functionality.
+     * Controls {@link OWL2#IrreflexiveProperty owl:IrreflexiveProperty} functionality.
      * If disabled,
      * {@link OntObjectProperty#isIrreflexive() OntObjectProperty#isIrreflexive()}
      * will return {@code false}, modification operations, such as
@@ -246,7 +246,7 @@ public enum OntModelControls {
      */
     USE_OWL_PROPERTY_IRREFLEXIVE_FEATURE,
     /**
-     * Controls {@link OWL#inverseOf owl:inverseOf} functionality.
+     * Controls {@link OWL2#inverseOf owl:inverseOf} functionality.
      * If disabled,
      * {@link OntObjectProperty#inverseProperties() OntObjectProperty#inverseProperties()}
      * will return {@code false}, modification operations, such as
@@ -260,7 +260,7 @@ public enum OntModelControls {
      */
     USE_OWL_INVERSE_OBJECT_PROPERTY_FEATURE,
     /**
-     * Controls {@link OWL#propertyChainAxiom owl:propertyChainAxiom} functionality.
+     * Controls {@link OWL2#propertyChainAxiom owl:propertyChainAxiom} functionality.
      * If disabled,
      * {@link OntObjectProperty#propertyChains() OntObjectProperty#propertyChains()}
      * will return {@code false}, modification operations, such as
@@ -269,7 +269,7 @@ public enum OntModelControls {
      */
     USE_OWL_PROPERTY_CHAIN_AXIOM_FEATURE,
     /**
-     * Controls {@link OWL#sameAs owl:sameAs} functionality.
+     * Controls {@link OWL2#sameAs owl:sameAs} functionality.
      * If disabled,
      * {@link OntIndividual#sameIndividuals() OntIndividual#sameIndividuals()}
      * will return {@code false}, modification operations, such as
@@ -278,7 +278,7 @@ public enum OntModelControls {
      */
     USE_OWL_INDIVIDUAL_SAME_AS_FEATURE,
     /**
-     * Controls {@link OWL#differentFrom owl:differentFrom} functionality.
+     * Controls {@link OWL2#differentFrom owl:differentFrom} functionality.
      * If disabled,
      * {@link OntIndividual#differentIndividuals() OntIndividual#differentIndividuals()}
      * will return {@code false}, modification operations, such as
@@ -288,9 +288,9 @@ public enum OntModelControls {
     USE_OWL_INDIVIDUAL_DIFFERENT_FROM_FEATURE,
     /**
      * If this key is set to {@code true},
-     * then {@link OWL#qualifiedCardinality owl:qualifiedCardinality},
-     * {@link OWL#maxQualifiedCardinality owl:maxQualifiedCardinality},
-     * {@link OWL#minQualifiedCardinality owl:minQualifiedCardinality}
+     * then {@link OWL2#qualifiedCardinality owl:qualifiedCardinality},
+     * {@link OWL2#maxQualifiedCardinality owl:maxQualifiedCardinality},
+     * {@link OWL2#minQualifiedCardinality owl:minQualifiedCardinality}
      * predicates are allowed for Cardinality restrictions.
      */
     USE_OWL2_QUALIFIED_CARDINALITY_RESTRICTION_FEATURE,

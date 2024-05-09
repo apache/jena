@@ -18,6 +18,8 @@
 
 package org.apache.jena.ontapi.common;
 
+import org.apache.jena.enhanced.Personality;
+import org.apache.jena.graph.Node;
 import org.apache.jena.ontapi.impl.factories.OWL1ObjectFactories;
 import org.apache.jena.ontapi.impl.factories.OWL2ObjectFactories;
 import org.apache.jena.ontapi.impl.factories.RDFSObjectFactories;
@@ -42,9 +44,6 @@ import org.apache.jena.ontapi.model.OntProperty;
 import org.apache.jena.ontapi.model.OntRelationalProperty;
 import org.apache.jena.ontapi.model.OntSWRL;
 import org.apache.jena.ontapi.utils.StdModels;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.enhanced.Personality;
-import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Alt;
 import org.apache.jena.rdf.model.Bag;
 import org.apache.jena.rdf.model.Container;
@@ -54,6 +53,7 @@ import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Seq;
+import org.apache.jena.vocabulary.OWL2;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -692,7 +692,7 @@ public class OntPersonalities {
      * @return {@code true} if the specified {@link OntPersonality} supports {@code owl:Thing}
      */
     public static boolean supportsOWLThing(OntPersonality personality) {
-        return personality.getBuiltins().getNamedClasses().contains(OWL.Thing.asNode());
+        return personality.getBuiltins().getNamedClasses().contains(OWL2.Thing.asNode());
     }
 
     /**

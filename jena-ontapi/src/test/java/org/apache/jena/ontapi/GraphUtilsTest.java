@@ -19,11 +19,6 @@
 package org.apache.jena.ontapi;
 
 import com.github.andrewoma.dexx.collection.Sets;
-import org.apache.jena.ontapi.impl.UnionGraphImpl;
-import org.apache.jena.ontapi.testutils.ModelTestUtils;
-import org.apache.jena.ontapi.utils.Graphs;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Triple;
@@ -31,12 +26,17 @@ import org.apache.jena.graph.compose.MultiUnion;
 import org.apache.jena.graph.impl.GraphBase;
 import org.apache.jena.graph.impl.WrappedGraph;
 import org.apache.jena.mem.GraphMem;
+import org.apache.jena.ontapi.impl.UnionGraphImpl;
+import org.apache.jena.ontapi.testutils.ModelTestUtils;
+import org.apache.jena.ontapi.utils.Graphs;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.ModelGraphInterface;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.graph.GraphWrapper;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -202,21 +202,21 @@ public class GraphUtilsTest {
         // с   g  f
         //       /
         //      h
-        mA.createResource().addProperty(RDF.type, OWL.Ontology)
-                .addProperty(OWL.imports, mA.createResource(B))
-                .addProperty(OWL.imports, mA.createResource(C));
-        mB.createResource(B, OWL.Ontology);
-        mC.createResource(C, OWL.Ontology).addProperty(OWL.imports, mC.createResource(D));
-        mD.createResource(D, OWL.Ontology).addProperty(OWL.imports, mD.createResource(E));
-        mE.createResource(E, OWL.Ontology)
-                .addProperty(OWL.imports, mE.createResource(F))
-                .addProperty(OWL.imports, mE.createResource(G))
-                .addProperty(OWL.imports, mE.createResource(C)); // cycle
-        mF.createResource(F, OWL.Ontology)
-                .addProperty(OWL.imports, mE.createResource(H));
-        mG.createResource(G, OWL.Ontology);
-        mH.createResource(H, OWL.Ontology);
-        mK.createResource(K, OWL.Ontology);
+        mA.createResource().addProperty(RDF.type, OWL2.Ontology)
+                .addProperty(OWL2.imports, mA.createResource(B))
+                .addProperty(OWL2.imports, mA.createResource(C));
+        mB.createResource(B, OWL2.Ontology);
+        mC.createResource(C, OWL2.Ontology).addProperty(OWL2.imports, mC.createResource(D));
+        mD.createResource(D, OWL2.Ontology).addProperty(OWL2.imports, mD.createResource(E));
+        mE.createResource(E, OWL2.Ontology)
+                .addProperty(OWL2.imports, mE.createResource(F))
+                .addProperty(OWL2.imports, mE.createResource(G))
+                .addProperty(OWL2.imports, mE.createResource(C)); // cycle
+        mF.createResource(F, OWL2.Ontology)
+                .addProperty(OWL2.imports, mE.createResource(H));
+        mG.createResource(G, OWL2.Ontology);
+        mH.createResource(H, OWL2.Ontology);
+        mK.createResource(K, OWL2.Ontology);
 
         UnionGraph actual = Graphs.makeOntUnion(
                 mA.getGraph(),
@@ -271,13 +271,13 @@ public class GraphUtilsTest {
         Model mC = ModelFactory.createDefaultModel();
         Model mD = ModelFactory.createDefaultModel();
         Model mE = ModelFactory.createDefaultModel();
-        mA.createResource(A, OWL.Ontology)
-                .addProperty(OWL.imports, mA.createResource(B))
-                .addProperty(OWL.imports, mA.createResource(C))
-                .addProperty(OWL.imports, mD.createResource(E));
-        mB.createResource(B, OWL.Ontology);
-        mC.createResource(C, OWL.Ontology).addProperty(OWL.imports, mC.createResource(D));
-        mD.createResource(D, OWL.Ontology);
+        mA.createResource(A, OWL2.Ontology)
+                .addProperty(OWL2.imports, mA.createResource(B))
+                .addProperty(OWL2.imports, mA.createResource(C))
+                .addProperty(OWL2.imports, mD.createResource(E));
+        mB.createResource(B, OWL2.Ontology);
+        mC.createResource(C, OWL2.Ontology).addProperty(OWL2.imports, mC.createResource(D));
+        mD.createResource(D, OWL2.Ontology);
 
         UnionGraph u = new UnionGraphImpl(mA.getGraph())
                 .addSubGraph(new UnionGraphImpl(mB.getGraph()))
@@ -289,7 +289,7 @@ public class GraphUtilsTest {
         u.addSubGraph(new UnionGraphImpl(mE.getGraph()));
         Assertions.assertFalse(Graphs.isOntUnionGraph(u, false));
 
-        mE.createResource(E, OWL.Ontology);
+        mE.createResource(E, OWL2.Ontology);
         Assertions.assertTrue(Graphs.isOntUnionGraph(u, false));
     }
 

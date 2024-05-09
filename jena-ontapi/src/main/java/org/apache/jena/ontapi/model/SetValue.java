@@ -18,8 +18,8 @@
 
 package org.apache.jena.ontapi.model;
 
-import org.apache.jena.ontapi.vocabulary.OWL;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.vocabulary.OWL2;
 
 /**
  * A technical generic interface to provide a possibility to assign {@link RDFNode} value (so-called filler)
@@ -39,7 +39,7 @@ interface SetValue<V extends RDFNode, R extends OntObject> {
      * into this {@link OntClass class} or {@link OntDataRange data range} expression.
      * <p>
      * A {@code value} can be {@code null} if this is a Cardinality Restriction
-     * (the null-filler is considered as {@link OWL#Thing owl:Thing}
+     * (the null-filler is considered as {@link OWL2#Thing owl:Thing}
      * for an object restriction and as {@link org.apache.jena.vocabulary.RDFS#Literal} for a data restriction).
      *
      * @param value {@link V}, possible {@code null} in case of Cardinality Restriction

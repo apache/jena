@@ -18,15 +18,15 @@
 
 package org.apache.jena.rdfxml.xmloutput.impl;
 
-import java.io.PrintWriter;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFErrorHandler;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.RDFSyntax;
 
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.RDFErrorHandler ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.vocabulary.OWL ;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.RDFS ;
-import org.apache.jena.vocabulary.RDFSyntax ;
+import java.io.PrintWriter;
 
 /** Writes out RDF in the abbreviated syntax,  for human consumption 
    not only machine readable.

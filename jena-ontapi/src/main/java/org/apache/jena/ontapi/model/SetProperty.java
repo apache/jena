@@ -18,7 +18,7 @@
 
 package org.apache.jena.ontapi.model;
 
-import org.apache.jena.ontapi.vocabulary.OWL;
+import org.apache.jena.vocabulary.OWL2;
 
 /**
  * A technical interface to provide a possibility to assign {@link OntRelationalProperty data or object} property
@@ -32,7 +32,7 @@ interface SetProperty<P extends OntRelationalProperty, R extends OntClass.Restri
 
     /**
      * Sets the given property into this Restriction
-     * (as an object with predicate {@link OWL#onProperty owl:onProperty}
+     * (as an object with predicate {@link OWL2#onProperty owl:onProperty}
      * if it is Unary Restriction).
      *
      * @param property {@link P}, not {@code null}

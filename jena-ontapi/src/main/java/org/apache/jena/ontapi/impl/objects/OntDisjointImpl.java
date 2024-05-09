@@ -18,6 +18,8 @@
 
 package org.apache.jena.ontapi.impl.objects;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.OntModelControls;
 import org.apache.jena.ontapi.common.OntEnhNodeFactories;
@@ -31,14 +33,12 @@ import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.model.OntRelationalProperty;
 import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.ontapi.utils.Iterators;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -54,14 +54,14 @@ public abstract class OntDisjointImpl<O extends OntObject> extends OntObjectImpl
     }
 
     public static Classes createDisjointClasses(OntGraphModelImpl model, Stream<OntClass> classes) {
-        return create(model, OWL.AllDisjointClasses, Classes.class, OntClass.class, classes, OWL.members);
+        return create(model, OWL2.AllDisjointClasses, Classes.class, OntClass.class, classes, OWL2.members);
     }
 
     /**
      * Creates blank node {@code _:x rdf:type owl:AllDifferent. _:x owl:members (a1 ... an).}
      * <p>
-     * Note: the predicate is {@link OWL#members owl:members},
-     * not {@link OWL#distinctMembers owl:distinctMembers} (but the last one is correct also)
+     * Note: the predicate is {@link OWL2#members owl:members},
+     * not {@link OWL2#distinctMembers owl:distinctMembers} (but the last one is correct also)
      * It is chosen as the preferred from considerations of uniformity.
      *
      * @param model       {@link OntGraphModelImpl}
@@ -71,17 +71,17 @@ public abstract class OntDisjointImpl<O extends OntObject> extends OntObjectImpl
      */
     public static Individuals createDifferentIndividuals(OntGraphModelImpl model, Stream<OntIndividual> individuals) {
         Property membersPredicate = OntGraphModelImpl.configValue(model, OntModelControls.USE_OWL1_DISTINCT_MEMBERS_PREDICATE_FEATURE) ?
-                OWL.distinctMembers :
-                OWL.members;
-        return create(model, OWL.AllDifferent, Individuals.class, OntIndividual.class, individuals, membersPredicate);
+                OWL2.distinctMembers :
+                OWL2.members;
+        return create(model, OWL2.AllDifferent, Individuals.class, OntIndividual.class, individuals, membersPredicate);
     }
 
     public static ObjectProperties createDisjointObjectProperties(OntGraphModelImpl model, Stream<OntObjectProperty> properties) {
-        return create(model, OWL.AllDisjointProperties, ObjectProperties.class, OntObjectProperty.class, properties, OWL.members);
+        return create(model, OWL2.AllDisjointProperties, ObjectProperties.class, OntObjectProperty.class, properties, OWL2.members);
     }
 
     public static DataProperties createDisjointDataProperties(OntGraphModelImpl model, Stream<OntDataProperty> properties) {
-        return create(model, OWL.AllDisjointProperties, DataProperties.class, OntDataProperty.class, properties, OWL.members);
+        return create(model, OWL2.AllDisjointProperties, DataProperties.class, OntDataProperty.class, properties, OWL2.members);
     }
 
     public static <R extends OntDisjoint<?>, E extends OntObject> R create(OntGraphModelImpl model,
@@ -107,7 +107,7 @@ public abstract class OntDisjointImpl<O extends OntObject> extends OntObjectImpl
     }
 
     protected Property getPredicate() {
-        return OWL.members;
+        return OWL2.members;
     }
 
     protected abstract Class<O> getComponentType();
@@ -151,7 +151,7 @@ public abstract class OntDisjointImpl<O extends OntObject> extends OntObjectImpl
 
         @Override
         protected Resource getResourceType() {
-            return OWL.AllDisjointClasses;
+            return OWL2.AllDisjointClasses;
         }
     }
 
@@ -229,7 +229,7 @@ public abstract class OntDisjointImpl<O extends OntObject> extends OntObjectImpl
         }
 
         protected Property getAlternativePredicate() {
-            return OWL.distinctMembers;
+            return OWL2.distinctMembers;
         }
 
         @Override
@@ -239,7 +239,7 @@ public abstract class OntDisjointImpl<O extends OntObject> extends OntObjectImpl
 
         @Override
         protected Resource getResourceType() {
-            return OWL.AllDifferent;
+            return OWL2.AllDifferent;
         }
     }
 
@@ -252,7 +252,7 @@ public abstract class OntDisjointImpl<O extends OntObject> extends OntObjectImpl
 
         @Override
         protected Resource getResourceType() {
-            return OWL.AllDisjointProperties;
+            return OWL2.AllDisjointProperties;
         }
     }
 

@@ -20,8 +20,8 @@ package org.apache.jena.ontapi.model;
 
 import org.apache.jena.ontapi.common.OntPersonality;
 import org.apache.jena.ontapi.utils.Iterators;
-import org.apache.jena.ontapi.vocabulary.OWL;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL2;
 
 import java.util.Set;
 
@@ -95,7 +95,7 @@ public interface OntEntity extends OntObject {
      * and this method will return a different result.
      *
      * @return {@code true} if it is a built-in entity
-     * @see OWL
+     * @see OWL2
      * @see OntPersonality.Builtins
      */
     boolean isBuiltIn();

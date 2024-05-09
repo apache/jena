@@ -18,9 +18,9 @@
 
 package org.apache.jena.ontapi.model;
 
-import org.apache.jena.ontapi.vocabulary.SWRL;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.SWRL;
 
 import java.util.Collection;
 import java.util.stream.Stream;

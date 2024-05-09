@@ -20,8 +20,8 @@ package org.apache.jena.ontapi.model;
 
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.UnionGraph;
-import org.apache.jena.ontapi.vocabulary.OWL;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.vocabulary.OWL2;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -94,7 +94,7 @@ public interface OntID extends OntObject {
     }
 
     /**
-     * Returns an IRI that can be used to create {@link OWL#imports owl:imports}
+     * Returns an IRI that can be used to create {@link OWL2#imports owl:imports}
      * statement in another model to make a reference between a model to which this id belongs and another model.
      * According to the specification, a version IRI is primary.
      *
@@ -124,7 +124,7 @@ public interface OntID extends OntObject {
     }
 
     /**
-     * Adds a {@link OWL#versionInfo owl:versionInfo} description.
+     * Adds a {@link OWL2#versionInfo owl:versionInfo} description.
      *
      * @param txt String, the literal lexical form, not {@code null}
      * @return this ID-object to allow cascading calls
@@ -134,7 +134,7 @@ public interface OntID extends OntObject {
     }
 
     /**
-     * Annotates this object with {@link OWL#versionInfo owl:versionInfo} predicate
+     * Annotates this object with {@link OWL2#versionInfo owl:versionInfo} predicate
      * and the specified language-tagged literal.
      *
      * @param txt  String, the literal lexical form, not {@code null}
@@ -142,7 +142,7 @@ public interface OntID extends OntObject {
      * @return this ID-object to allow cascading calls
      */
     default OntID addVersionInfo(String txt, String lang) {
-        return annotate(getModel().getAnnotationProperty(OWL.versionInfo), txt, lang);
+        return annotate(getModel().getAnnotationProperty(OWL2.versionInfo), txt, lang);
     }
 
     /**
@@ -166,7 +166,7 @@ public interface OntID extends OntObject {
      * or {@code null} if there is no version info
      */
     default String getVersionInfo(String lang) {
-        try (Stream<String> res = annotationValues(getModel().getAnnotationProperty(OWL.versionInfo), lang)) {
+        try (Stream<String> res = annotationValues(getModel().getAnnotationProperty(OWL2.versionInfo), lang)) {
             return res.findFirst().orElse(null);
         }
     }

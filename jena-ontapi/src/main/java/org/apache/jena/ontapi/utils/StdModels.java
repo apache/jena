@@ -18,13 +18,12 @@
 
 package org.apache.jena.ontapi.utils;
 
-import org.apache.jena.ontapi.impl.objects.OntListImpl;
-import org.apache.jena.ontapi.model.OntList;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.enhanced.EnhGraph;
 import org.apache.jena.graph.FrontsNode;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.ontapi.impl.objects.OntListImpl;
+import org.apache.jena.ontapi.model.OntList;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
@@ -40,6 +39,7 @@ import org.apache.jena.rdf.model.impl.StmtIteratorImpl;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.util.NodeCmp;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.Collection;
 import java.util.Comparator;

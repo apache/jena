@@ -23,17 +23,43 @@ package org.apache.jena.ontology.impl;
 
 // Imports
 ///////////////
-import java.io.*;
-import java.util.*;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.ontology.* ;
-import org.apache.jena.ontology.impl.OWLProfile.SupportsCheck ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.reasoner.rulesys.test.TestBugs ;
-import org.apache.jena.reasoner.test.TestUtil ;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.ontology.AnnotationProperty;
+import org.apache.jena.ontology.DataRange;
+import org.apache.jena.ontology.DatatypeProperty;
+import org.apache.jena.ontology.HasValueRestriction;
+import org.apache.jena.ontology.ObjectProperty;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntDocumentManager;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.ontology.OntProperty;
+import org.apache.jena.ontology.OntResource;
+import org.apache.jena.ontology.Ontology;
+import org.apache.jena.ontology.impl.OWLProfile.SupportsCheck;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFList;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.test.ModelTestBase;
+import org.apache.jena.reasoner.rulesys.test.TestBugs;
+import org.apache.jena.reasoner.test.TestUtil;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 

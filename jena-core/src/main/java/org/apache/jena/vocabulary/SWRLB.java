@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.ontapi.vocabulary;
+package org.apache.jena.vocabulary;
 
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.ResourceFactory;

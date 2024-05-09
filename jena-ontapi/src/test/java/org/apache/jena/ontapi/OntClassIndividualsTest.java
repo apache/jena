@@ -21,9 +21,9 @@ package org.apache.jena.ontapi;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.model.OntModel;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -62,8 +62,8 @@ public class OntClassIndividualsTest {
                 .setNsPrefixes(OntModelFactory.STANDARD);
         OntClass c1 = m.createOntClass(":C1");
         OntClass c2 = m.createOntClass(":C2");
-        Resource i1 = m.createResource(":I1", c1).addProperty(RDF.type, OWL.NamedIndividual);
-        m.createResource(":I2", c2).addProperty(RDF.type, OWL.NamedIndividual);
+        Resource i1 = m.createResource(":I1", c1).addProperty(RDF.type, OWL2.NamedIndividual);
+        m.createResource(":I2", c2).addProperty(RDF.type, OWL2.NamedIndividual);
         Assertions.assertEquals(2, m.individuals().count());
 
         Assertions.assertSame(c1, c1.removeIndividual(i1));

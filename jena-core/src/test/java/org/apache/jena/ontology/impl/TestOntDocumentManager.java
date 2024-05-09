@@ -23,25 +23,37 @@ package org.apache.jena.ontology.impl;
 
 // Imports
 ///////////////
-import java.io.StringReader;
-import java.util.*;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.ontology.* ;
-import org.apache.jena.ontology.OntDocumentManager.ReadFailureHandler ;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntDocumentManager;
+import org.apache.jena.ontology.OntDocumentManager.ReadFailureHandler;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.ontology.ProfileRegistry;
 import org.apache.jena.ontology.models.ModelMaker;
 import org.apache.jena.ontology.models.ModelMakerImpl;
 import org.apache.jena.ontology.models.SimpleGraphMaker;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
-import org.apache.jena.reasoner.test.TestUtil ;
+import org.apache.jena.reasoner.test.TestUtil;
 import org.apache.jena.test.X_RDFReaderF;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.OntDocManagerVocab;
 import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 
 

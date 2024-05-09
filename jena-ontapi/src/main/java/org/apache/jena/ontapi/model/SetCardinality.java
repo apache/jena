@@ -19,7 +19,7 @@
 package org.apache.jena.ontapi.model;
 
 import org.apache.jena.ontapi.OntJenaException;
-import org.apache.jena.ontapi.vocabulary.XSD;
+import org.apache.jena.vocabulary.XSD;
 
 /**
  * A technical interface to set new cardinality value.

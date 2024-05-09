@@ -18,6 +18,9 @@
 
 package org.apache.jena.ontapi.impl.factories;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.common.EnhNodeFactory;
 import org.apache.jena.ontapi.common.EnhNodeFilter;
 import org.apache.jena.ontapi.common.EnhNodeFinder;
@@ -32,13 +35,10 @@ import org.apache.jena.ontapi.impl.objects.OntObjectImpl;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.utils.Iterators;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.function.Function;
 
@@ -51,8 +51,8 @@ public class OWL1ObjectFactories {
     );
     public static final EnhNodeFactory ID = OntEnhNodeFactories.createCommon(
             OntIDImpl.class,
-            new EnhNodeFinder.ByType(OWL.Ontology),
-            new EnhNodeFilter.HasType(OWL.Ontology)
+            new EnhNodeFinder.ByType(OWL2.Ontology),
+            new EnhNodeFilter.HasType(OWL2.Ontology)
     );
 
     public static final Function<OntConfig, EnhNodeFactory> NAMED_CLASS = OntEntities.createOWL1NamedClassFactory();
@@ -105,28 +105,28 @@ public class OWL1ObjectFactories {
     public static final Function<OntConfig, EnhNodeFactory> UNION_OF_CLASS =
             config -> OntClasses.createBooleanConnectivesAndIndividualEnumerationFactory(
                     OntClassImpl.UnionOfImpl.class,
-                    OWL.unionOf,
+                    OWL2.unionOf,
                     RDFList.class,
                     OntClassImpl.UnionOfImpl::new,
                     config);
     public static final Function<OntConfig, EnhNodeFactory> INTERSECTION_OF_CLASS =
             config -> OntClasses.createBooleanConnectivesAndIndividualEnumerationFactory(
                     OntClassImpl.IntersectionOfImpl.class,
-                    OWL.intersectionOf,
+                    OWL2.intersectionOf,
                     RDFList.class,
                     OntClassImpl.IntersectionOfImpl::new,
                     config);
     public static final Function<OntConfig, EnhNodeFactory> ONE_OF_CLASS =
             config -> OntClasses.createBooleanConnectivesAndIndividualEnumerationFactory(
                     OntClassImpl.OneOfImpl.class,
-                    OWL.oneOf,
+                    OWL2.oneOf,
                     RDFList.class,
                     OntClassImpl.OneOfImpl::new,
                     config);
     public static final Function<OntConfig, EnhNodeFactory> COMPLEMENT_OF_CLASS =
             config -> OntClasses.createBooleanConnectivesAndIndividualEnumerationFactory(
                     OntClassImpl.ComplementOfImpl.class,
-                    OWL.complementOf,
+                    OWL2.complementOf,
                     OntClass.class,
                     OntClassImpl.ComplementOfImpl::new,
                     config);
@@ -136,7 +136,7 @@ public class OWL1ObjectFactories {
                     OntClassImpl.ObjectSomeValuesFromImpl.class,
                     OntClasses.RestrictionType.OBJECT,
                     OntClasses.ObjectRestrictionType.CLASS,
-                    OWL.someValuesFrom,
+                    OWL2.someValuesFrom,
                     OntClassImpl.ObjectSomeValuesFromImpl::new,
                     config);
     public static final Function<OntConfig, EnhNodeFactory> DATA_SOME_VALUES_FROM_CLASS =
@@ -144,7 +144,7 @@ public class OWL1ObjectFactories {
                     OntClassImpl.DataSomeValuesFromImpl.class,
                     OntClasses.RestrictionType.DATA,
                     OntClasses.ObjectRestrictionType.DATA_RANGE,
-                    OWL.someValuesFrom,
+                    OWL2.someValuesFrom,
                     OntClassImpl.DataSomeValuesFromImpl::new,
                     config);
     public static final Function<OntConfig, EnhNodeFactory> OBJECT_ALL_VALUES_FROM_CLASS =
@@ -152,7 +152,7 @@ public class OWL1ObjectFactories {
                     OntClassImpl.ObjectAllValuesFromImpl.class,
                     OntClasses.RestrictionType.OBJECT,
                     OntClasses.ObjectRestrictionType.CLASS,
-                    OWL.allValuesFrom,
+                    OWL2.allValuesFrom,
                     OntClassImpl.ObjectAllValuesFromImpl::new,
                     config);
     public static final Function<OntConfig, EnhNodeFactory> DATA_ALL_VALUES_FROM_CLASS =
@@ -160,7 +160,7 @@ public class OWL1ObjectFactories {
                     OntClassImpl.DataAllValuesFromImpl.class,
                     OntClasses.RestrictionType.DATA,
                     OntClasses.ObjectRestrictionType.DATA_RANGE,
-                    OWL.allValuesFrom,
+                    OWL2.allValuesFrom,
                     OntClassImpl.DataAllValuesFromImpl::new,
                     config);
     public static final Function<OntConfig, EnhNodeFactory> OBJECT_HAS_VALUE_CLASS =
@@ -168,7 +168,7 @@ public class OWL1ObjectFactories {
                     OntClassImpl.ObjectHasValueImpl.class,
                     OntClasses.RestrictionType.OBJECT,
                     OntClasses.ObjectRestrictionType.INDIVIDUAL,
-                    OWL.hasValue,
+                    OWL2.hasValue,
                     OntClassImpl.ObjectHasValueImpl::new,
                     config);
     public static final Function<OntConfig, EnhNodeFactory> DATA_HAS_VALUE_CLASS =
@@ -176,7 +176,7 @@ public class OWL1ObjectFactories {
                     OntClassImpl.DataHasValueImpl.class,
                     OntClasses.RestrictionType.DATA,
                     OntClasses.ObjectRestrictionType.LITERAL,
-                    OWL.hasValue,
+                    OWL2.hasValue,
                     OntClassImpl.DataHasValueImpl::new,
                     config);
     public static final Function<OntConfig, EnhNodeFactory> DATA_MIN_CARDINALITY_CLASS =
@@ -360,7 +360,7 @@ public class OWL1ObjectFactories {
     public static final Function<OntConfig, EnhNodeFactory> ONE_OF_DATARANGE = config -> OntEnhNodeFactories.createCommon(
             OntDataRangeImpl.OneOfImpl.class,
             OntDataRanges.makeOWLFinder(config),
-            OntDataRanges.makeOWLFilter(config).and(new EnhNodeFilter.HasPredicate(OWL.oneOf))
+            OntDataRanges.makeOWLFilter(config).and(new EnhNodeFilter.HasPredicate(OWL2.oneOf))
     );
     public static final Function<OntConfig, EnhNodeFactory> ANY_COMPONENTS_DATARANGE = ONE_OF_DATARANGE;
     public static final Function<OntConfig, EnhNodeFactory> ANY_DATARANGE = config -> OntEnhNodeFactories.createFrom(

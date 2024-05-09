@@ -18,12 +18,12 @@
 
 package org.apache.jena.ontapi.model;
 
-import org.apache.jena.ontapi.vocabulary.OWL;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL2;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -144,7 +144,7 @@ public interface OntDataRange extends OntObject, AsNamed<OntDataRange.Named> {
          * @see OntClass#equivalentClasses()
          */
         default Stream<OntDataRange> equivalentClasses() {
-            return objects(OWL.equivalentClass, OntDataRange.class);
+            return objects(OWL2.equivalentClass, OntDataRange.class);
         }
 
         /**
@@ -157,7 +157,7 @@ public interface OntDataRange extends OntObject, AsNamed<OntDataRange.Named> {
          * @see OntClass#addEquivalentClassStatement(OntClass)
          */
         default OntStatement addEquivalentClassStatement(OntDataRange other) {
-            return addStatement(OWL.equivalentClass, other);
+            return addStatement(OWL2.equivalentClass, other);
         }
 
         /**
@@ -176,10 +176,10 @@ public interface OntDataRange extends OntObject, AsNamed<OntDataRange.Named> {
 
         /**
          * Removes the given equivalent data range,
-         * that is attached to this data-type on predicate {@link OWL#equivalentClass owl:equivalenrClass},
+         * that is attached to this data-type on predicate {@link OWL2#equivalentClass owl:equivalenrClass},
          * including all the statement's related annotations.
          * No-op in case nothing is found.
-         * The {@code null} input means removing all {@link OWL#equivalentClass owl:equivalentClass} statements
+         * The {@code null} input means removing all {@link OWL2#equivalentClass owl:equivalentClass} statements
          * with all their annotations.
          *
          * @param other {@link Resource}, or {@code null} to remove all equivalent data ranges
@@ -189,7 +189,7 @@ public interface OntDataRange extends OntObject, AsNamed<OntDataRange.Named> {
          * @see OntClass#removeEquivalentClass(Resource)
          */
         default Named removeEquivalentClass(Resource other) {
-            remove(OWL.equivalentClass, other);
+            remove(OWL2.equivalentClass, other);
             return this;
         }
 

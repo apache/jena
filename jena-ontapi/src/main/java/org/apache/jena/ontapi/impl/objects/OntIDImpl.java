@@ -18,16 +18,16 @@
 
 package org.apache.jena.ontapi.impl.objects;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.model.OntID;
 import org.apache.jena.ontapi.utils.Iterators;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL2;
 
 import java.util.Set;
 import java.util.stream.Stream;
@@ -44,7 +44,7 @@ public class OntIDImpl extends OntObjectImpl implements OntID {
 
     @Override
     public String getVersionIRI() {
-        Set<String> res = Iterators.takeAsSet(listProperties(OWL.versionIRI)
+        Set<String> res = Iterators.takeAsSet(listProperties(OWL2.versionIRI)
                         .mapWith(Statement::getObject)
                         .filterKeep(RDFNode::isURIResource)
                         .mapWith(RDFNode::asResource)
@@ -60,9 +60,9 @@ public class OntIDImpl extends OntObjectImpl implements OntID {
             throw new OntJenaException.IllegalArgument("Attempt to add version IRI (" + uri +
                     ") to anonymous ontology (" + asNode().toString() + ").");
         }
-        removeAll(OWL.versionIRI);
+        removeAll(OWL2.versionIRI);
         if (uri != null) {
-            addProperty(OWL.versionIRI, getModel().createResource(uri));
+            addProperty(OWL2.versionIRI, getModel().createResource(uri));
         }
         return this;
     }
@@ -89,17 +89,17 @@ public class OntIDImpl extends OntObjectImpl implements OntID {
     }
 
     public ExtendedIterator<Resource> listImportResources() {
-        return listObjects(OWL.imports)
+        return listObjects(OWL2.imports)
                 .filterKeep(RDFNode::isURIResource)
                 .mapWith(RDFNode::asResource);
     }
 
     public void addImportResource(Resource uri) {
-        addProperty(OWL.imports, uri);
+        addProperty(OWL2.imports, uri);
     }
 
     public void removeImportResource(Resource uri) {
-        getModel().remove(this, OWL.imports, uri);
+        getModel().remove(this, OWL2.imports, uri);
     }
 
     @Override

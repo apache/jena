@@ -18,8 +18,8 @@
 
 package org.apache.jena.ontapi.model;
 
-import org.apache.jena.ontapi.vocabulary.XSD;
 import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.vocabulary.XSD;
 
 /**
  * Interface encapsulating an Ontology Facet Restriction abstraction.

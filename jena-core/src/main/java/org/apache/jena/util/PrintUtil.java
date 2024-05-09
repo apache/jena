@@ -18,21 +18,25 @@
 
 package org.apache.jena.util;
 
-import java.io.PrintWriter ;
-import java.util.Iterator ;
-import java.util.Map ;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Node_ANY;
+import org.apache.jena.graph.Node_Literal;
+import org.apache.jena.graph.Node_URI;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.impl.Util;
+import org.apache.jena.reasoner.TriplePattern;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.ReasonerVocabulary;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.* ;
-import org.apache.jena.rdf.model.RDFNode ;
-import org.apache.jena.rdf.model.Statement ;
-import org.apache.jena.rdf.model.impl.Util ;
-import org.apache.jena.reasoner.TriplePattern ;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.vocabulary.OWL ;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.RDFS ;
-import org.apache.jena.vocabulary.ReasonerVocabulary ;
+import java.io.PrintWriter;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * A collection of small utilities for pretty printing nodes, triples

@@ -20,20 +20,47 @@ package org.apache.jena.reasoner.rulesys.test;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
-import java.util.*;
-import java.io.*;
-
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.TypeMapper;
-import org.apache.jena.graph.* ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.* ;
-import org.apache.jena.reasoner.rulesys.* ;
-import org.apache.jena.reasoner.rulesys.impl.* ;
-import org.apache.jena.reasoner.test.TestUtil ;
-import org.apache.jena.util.PrintUtil ;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphMemFactory;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.reasoner.Derivation;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.StandardValidityReport;
+import org.apache.jena.reasoner.TriplePattern;
+import org.apache.jena.reasoner.ValidityReport;
+import org.apache.jena.reasoner.rulesys.BasicForwardRuleInfGraph;
+import org.apache.jena.reasoner.rulesys.BasicForwardRuleReasoner;
+import org.apache.jena.reasoner.rulesys.ForwardRuleInfGraphI;
+import org.apache.jena.reasoner.rulesys.FunctorDatatype;
+import org.apache.jena.reasoner.rulesys.Node_RuleVariable;
+import org.apache.jena.reasoner.rulesys.Rule;
+import org.apache.jena.reasoner.rulesys.RuleContext;
+import org.apache.jena.reasoner.rulesys.Util;
+import org.apache.jena.reasoner.rulesys.impl.BFRuleContext;
+import org.apache.jena.reasoner.rulesys.impl.BindingStack;
+import org.apache.jena.reasoner.rulesys.impl.FRuleEngine;
+import org.apache.jena.reasoner.test.TestUtil;
+import org.apache.jena.util.PrintUtil;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.ReasonerVocabulary;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Unit tests for simple infrastructure pieces of the rule systems.

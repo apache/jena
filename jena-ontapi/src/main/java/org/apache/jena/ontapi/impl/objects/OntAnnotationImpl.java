@@ -18,6 +18,8 @@
 
 package org.apache.jena.ontapi.impl.objects;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.impl.OntGraphModelImpl;
 import org.apache.jena.ontapi.model.OntAnnotation;
@@ -26,16 +28,14 @@ import org.apache.jena.ontapi.model.OntObject;
 import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.ontapi.utils.Iterators;
 import org.apache.jena.ontapi.utils.StdModels;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.Comparator;
 import java.util.List;
@@ -51,8 +51,8 @@ import java.util.stream.Stream;
  */
 @SuppressWarnings("WeakerAccess")
 public class OntAnnotationImpl extends OntObjectImpl implements OntAnnotation {
-    public static final Set<Property> REQUIRED_PROPERTIES = Set.of(OWL.annotatedSource,
-            OWL.annotatedProperty, OWL.annotatedTarget);
+    public static final Set<Property> REQUIRED_PROPERTIES = Set.of(OWL2.annotatedSource,
+            OWL2.annotatedProperty, OWL2.annotatedTarget);
     public static final Set<Property> SPEC = Stream.concat(Stream.of(RDF.type), REQUIRED_PROPERTIES.stream())
             .collect(Collectors.toUnmodifiableSet());
     /**
@@ -73,9 +73,9 @@ public class OntAnnotationImpl extends OntObjectImpl implements OntAnnotation {
         return -res;
     };
     public static final Set<Resource> EXTRA_ROOT_TYPES =
-            Set.of(OWL.AllDisjointClasses, OWL.AllDisjointProperties, OWL.AllDifferent, OWL.NegativePropertyAssertion);
+            Set.of(OWL2.AllDisjointClasses, OWL2.AllDisjointProperties, OWL2.AllDifferent, OWL2.NegativePropertyAssertion);
     public static final List<Resource> ROOT_TYPES = Stream.concat(
-            Stream.of(OWL.Axiom, OWL.Annotation),
+            Stream.of(OWL2.Axiom, OWL2.Annotation),
             EXTRA_ROOT_TYPES.stream()).toList();
 
     public OntAnnotationImpl(Node n, EnhGraph m) {
@@ -96,9 +96,9 @@ public class OntAnnotationImpl extends OntObjectImpl implements OntAnnotation {
             throw new OntJenaException.IllegalArgument("Can't find " + StdModels.toString(base));
         }
         res.addProperty(RDF.type, type);
-        res.addProperty(OWL.annotatedSource, base.getSubject());
-        res.addProperty(OWL.annotatedProperty, base.getPredicate());
-        res.addProperty(OWL.annotatedTarget, base.getObject());
+        res.addProperty(OWL2.annotatedSource, base.getSubject());
+        res.addProperty(OWL2.annotatedProperty, base.getPredicate());
+        res.addProperty(OWL2.annotatedTarget, base.getObject());
         return res.as(OntAnnotation.class);
     }
 
@@ -129,12 +129,12 @@ public class OntAnnotationImpl extends OntObjectImpl implements OntAnnotation {
 
     @Override
     public OntStatement getBase() {
-        if (!hasType(OWL.Axiom) && !hasType(OWL.Annotation)) {
+        if (!hasType(OWL2.Axiom) && !hasType(OWL2.Annotation)) {
             return null;
         }
-        Resource s = getRequiredObject(OWL.annotatedSource, Resource.class);
-        Property p = getRequiredObject(OWL.annotatedProperty, Property.class);
-        RDFNode o = getRequiredObject(OWL.annotatedTarget, RDFNode.class);
+        Resource s = getRequiredObject(OWL2.annotatedSource, Resource.class);
+        Property p = getRequiredObject(OWL2.annotatedProperty, Property.class);
+        RDFNode o = getRequiredObject(OWL2.annotatedTarget, RDFNode.class);
         return getModel().createStatement(s, p, o);
     }
 
@@ -166,7 +166,7 @@ public class OntAnnotationImpl extends OntObjectImpl implements OntAnnotation {
     }
 
     protected ExtendedIterator<OntStatement> listAnnotatedSources() {
-        return getModel().listOntStatements(null, OWL.annotatedSource, this);
+        return getModel().listOntStatements(null, OWL2.annotatedSource, this);
     }
 
     @Override

@@ -18,18 +18,18 @@
 
 package org.apache.jena.ontapi.common;
 
-import org.apache.jena.ontapi.utils.Graphs;
-import org.apache.jena.ontapi.utils.Iterators;
-import org.apache.jena.ontapi.vocabulary.RDF;
 import org.apache.jena.enhanced.EnhGraph;
 import org.apache.jena.graph.FrontsNode;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.ontapi.utils.Graphs;
+import org.apache.jena.ontapi.utils.Iterators;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NullIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.Collection;
 import java.util.List;

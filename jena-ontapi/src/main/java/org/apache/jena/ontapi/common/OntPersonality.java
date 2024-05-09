@@ -18,6 +18,9 @@
 
 package org.apache.jena.ontapi.common;
 
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.enhanced.Personality;
+import org.apache.jena.graph.Node;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.model.OntAnnotationProperty;
 import org.apache.jena.ontapi.model.OntClass;
@@ -29,14 +32,11 @@ import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.model.OntObject;
 import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.model.OntProperty;
-import org.apache.jena.ontapi.vocabulary.OWL;
-import org.apache.jena.ontapi.vocabulary.RDF;
-import org.apache.jena.enhanced.EnhGraph;
-import org.apache.jena.enhanced.Personality;
-import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDF;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -230,7 +230,7 @@ public interface OntPersonality {
      * cannot contain entities with the IRIs from this vocabulary.
      * <p>
      * Example of such a forbidden {@link Property} returned by this vocabulary is
-     * {@link OWL#sameAs owl:sameAs},
+     * {@link OWL2#sameAs owl:sameAs},
      * since it is used by a model to build individual equality and, therefore, it cannot be used in other cases.
      * An {@link OntModel ontology model} cannot contain an OWL entity with this IRI.
      * All these things are customizable, and vocabularies may contain more or less restrictions.
@@ -273,7 +273,7 @@ public interface OntPersonality {
      * can contain entities without explicit declarations, if their IRIs are determined by this vocabulary.
      * <p>
      * For example, the OWL standard vocabulary determines
-     * {@link OWL#Thing owl:Thing} as a built-in OWL class.
+     * {@link OWL2#Thing owl:Thing} as a built-in OWL class.
      * To describe this case the expression {@code voc.get(OntClass.class)},
      * where {@code voc} is an instance of this class,
      * should return a {@code Set} containing {@code owl:Thing} in the form of {@link Node}.
