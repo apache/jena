@@ -54,7 +54,7 @@ public class UploadRDF extends ActionREST {
     @Override protected void doPatch(HttpAction action)     { unsupported(action); }
 
     private void unsupported(HttpAction action) {
-        ServletOps.errorMethodNotAllowed(action.getMethod());
+        ServletOps.errorMethodNotAllowed(action.getRequestMethod());
     }
 
     @Override

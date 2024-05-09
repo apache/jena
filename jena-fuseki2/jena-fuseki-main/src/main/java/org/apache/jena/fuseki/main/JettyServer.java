@@ -393,6 +393,7 @@ public class JettyServer {
             try {
                 Fuseki.setVerbose(cxt, verbose);
                 OperationRegistry.set(cxt, OperationRegistry.createEmpty());
+                // Empty DataAccessPointRegistry, no nulls!
                 DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry());
             } catch (NoClassDefFoundError err) {
                 LOG.info("Fuseki classes not found");

@@ -252,11 +252,11 @@ public class ServletOps {
     }
 
     public static void error(int statusCode) {
-        throw new ActionErrorException(statusCode, null, null);
+        throw actionErrorException(statusCode, null, null);
     }
 
     public static void error(int statusCode, String string) {
-        throw new ActionErrorException(statusCode, string, null);
+        throw actionErrorException(statusCode, string, null);
     }
 
     public static void errorOccurred(String message) {
@@ -268,11 +268,14 @@ public class ServletOps {
     }
 
     public static void errorOccurred(String message, Throwable ex) {
-        if ( message == null )
-            System.err.println();
         if ( ex instanceof ActionErrorException actionErr )
             throw actionErr;
-        throw new ActionErrorException(HttpSC.INTERNAL_SERVER_ERROR_500, message, ex);
+        throw actionErrorException(HttpSC.INTERNAL_SERVER_ERROR_500, message, ex);
+        /* Does not return */
+    }
+
+    private static ActionErrorException actionErrorException(int statusCode, String message, Throwable ex) {
+        return new ActionErrorException(statusCode, message, ex);
     }
 
     public static String formatForLog(String string) {

@@ -29,6 +29,7 @@ import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
+import org.apache.jena.fuseki.servlets.HttpAction;
 
 /**
  * Registry of (dataset name, {@link DataAccessPoint}).
@@ -66,7 +67,7 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
      */
     public List<DataAccessPoint> accessPoints() {
         List<DataAccessPoint> accessPoints = new ArrayList<>(size());
-        // Make a copy for safety.
+        // Copy for safety.
         forEach((_name, accessPoint) -> accessPoints.add(accessPoint));
         return accessPoints;
     }
@@ -97,7 +98,14 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
         });
     }
 
-    // The server DataAccessPointRegistry is held in the ServletContext for the server.
+    /** The server DataAccessPointRegistry is held in the ServletContext.
+     * <p>
+     * Reload may change this object for another one. Therefore, code should obtain the
+     * DataAccessPointRegistry once per operation.
+     * <p>
+     * Each request, has a stable {@link HttpAction#getDataAccessPointRegistry()}.
+     * <p>Getting the {@link DataAccessPointRegistry} is atomic.
+     */
     public static DataAccessPointRegistry get(ServletContext cxt) {
         DataAccessPointRegistry registry = (DataAccessPointRegistry)cxt.getAttribute(Fuseki.attrNameRegistry);
         if ( registry == null )
@@ -105,6 +113,10 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
         return registry;
     }
 
+    /**
+     * Set or change the {@link DataAccessPointRegistry}.
+     * This is atomic. (In Jetty, it is backed by a ConcurrentHashMap).
+     */
     public static void set(ServletContext cxt, DataAccessPointRegistry registry) {
         cxt.setAttribute(Fuseki.attrNameRegistry, registry);
     }

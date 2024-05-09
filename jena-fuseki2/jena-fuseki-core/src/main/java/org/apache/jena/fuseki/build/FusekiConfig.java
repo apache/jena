@@ -285,7 +285,7 @@ public class FusekiConfig {
         NamedDatasetAssembler.sharedDatasetPool.clear();
         // ---- Services
         // Server to services.
-        ResultSet rs = BuildLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", model, "s", server);
+        ResultSet rs = BuildLib.query("SELECT ?service { ?s fu:services [ list:member ?service ] }", model, "s", server);
         List<DataAccessPoint> accessPoints = new ArrayList<>();
 
         // If none, look for services by type.
