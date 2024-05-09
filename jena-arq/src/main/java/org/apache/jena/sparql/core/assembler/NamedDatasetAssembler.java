@@ -49,6 +49,11 @@ public abstract class NamedDatasetAssembler extends DatasetAssembler {
         return createDataset(a, root);
     }
 
-    /** Shared {@link DatasetGraph} objects */
-    public abstract Map<String, DatasetGraph> pool();
+    /**
+     * Shared {@link DatasetGraph} objects.
+     * Subclasses may override for a different policy, or return null for "don't pool".
+     * Pools only affect {@link #createNamedDataset} and then only when {@code ja:name}
+     * ({@code DatasetAssemblerVocab.pDatasetName}) is present.
+     */
+    public Map<String, DatasetGraph> pool() { return sharedDatasetPool; }
 }

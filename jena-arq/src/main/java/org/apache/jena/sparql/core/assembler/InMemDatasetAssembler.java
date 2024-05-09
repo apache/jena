@@ -21,8 +21,6 @@ package org.apache.jena.sparql.core.assembler;
 import static org.apache.jena.sparql.core.assembler.AssemblerUtils.loadData;
 import static org.apache.jena.sparql.core.assembler.AssemblerUtils.mergeContext;
 
-import java.util.Map;
-
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Resource;
@@ -38,11 +36,6 @@ import org.apache.jena.vocabulary.RDF;
 public class InMemDatasetAssembler extends NamedDatasetAssembler {
 
     public InMemDatasetAssembler() {}
-
-    @Override
-    public Map<String, DatasetGraph> pool() {
-        return sharedDatasetPool;
-    }
 
     public static Resource getType() {
         return DatasetAssemblerVocab.tMemoryDataset ;
