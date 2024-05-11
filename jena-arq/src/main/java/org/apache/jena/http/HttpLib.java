@@ -578,7 +578,26 @@ public class HttpLib {
     }
 
     /**
-     * Execute request and return a response without authentication challenge handling.
+     * Execute request and return a {@code HttpResponse<InputStream>} response.
+     * Status codes have not been handled. The response can be passed to
+     * {@link #handleResponseInputStream(HttpResponse)} which will convert non-2xx
+     * status code to {@link HttpException HttpExceptions}.
+     *
+     * @param httpClient
+     * @param httpRequest
+     * @return HttpResponse
+     */
+    public static HttpResponse<InputStream> executeJDK(HttpClient httpClient, HttpRequest httpRequest) {
+        return execute(httpClient, httpRequest, BodyHandlers.ofInputStream());
+    }
+
+    /**
+     * Execute request and return a response without authentication challenge
+     * handling. Status codes have not been handled. This is a call to
+     * {@code HttpClient.send} converting exceptions to {@link HttpException}.
+     * request and responses are logged as "debug" to logger
+     * {@code org.apache.jena.http.HTTP}.
+     *
      * @param httpClient
      * @param httpRequest
      * @param bodyHandler
