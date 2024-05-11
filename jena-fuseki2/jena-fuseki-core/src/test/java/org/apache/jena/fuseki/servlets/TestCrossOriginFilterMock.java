@@ -36,7 +36,7 @@ import static java.util.Collections.emptyMap;
 import static org.apache.jena.fuseki.servlets.CrossOriginFilter.*;
 import static org.mockito.Mockito.*;
 
-public class TestCrossOriginFilter {
+public class TestCrossOriginFilterMock {
     private static class TestFilterConfig implements FilterConfig {
         Map<String,String> parameterMap;
 

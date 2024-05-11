@@ -555,16 +555,25 @@ public class FusekiServer {
             return this;
         }
 
-        /** Add the Cross Origin (CORS) filter.
-         * {@link CrossOriginFilter}.
+        /**
+         * Enable or disable a Cross Origin (CORS) filter with default settings.
+         * @see CrossOriginFilter
+         */
+        public Builder enableCors(boolean withCORS) {
+            return enableCors(withCORS, null);
+
+        }
+        /**
+         * Enable a Cross Origin (CORS) filter with a specific configuration,
+         * or disable CORS processing.
+         *
+         * @see CrossOriginFilter
          */
         public Builder enableCors(boolean withCORS, String corsConfigFile) {
-            if (withCORS) {
-                if(null == corsConfigFile) {
-                    corsInitParams = corsInitParamsDft;
-                } else {
-                    corsInitParams = parseCORSConfigFile(corsConfigFile);
-                }
+            if ( withCORS ) {
+                corsInitParams = (corsConfigFile == null)
+                        ? corsInitParamsDft
+                        : parseCORSConfigFile(corsConfigFile);
             } else {
                 corsInitParams = null;
             }

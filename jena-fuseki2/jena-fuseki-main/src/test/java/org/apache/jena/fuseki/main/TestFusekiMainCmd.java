@@ -18,34 +18,30 @@
 
 package org.apache.jena.fuseki.main;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 import org.apache.jena.atlas.json.JSON;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.system.FusekiLogging;
-import org.apache.jena.http.HttpEnv;
-import org.apache.jena.http.HttpLib;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.riot.web.HttpNames;
 import org.junit.After;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import static org.apache.jena.http.HttpLib.execute;
-import static org.apache.jena.http.HttpLib.toRequestURI;
-import static org.apache.jena.riot.web.HttpNames.METHOD_OPTIONS;
-import static org.junit.Assert.*;
-
-/** Test features */
+/**
+ * Test Fuseki Main command line.
+ *
+ * @see TestCrossOriginFilter for CORS
+ */
 public class TestFusekiMainCmd {
 
     private static final String DATABASES="target/Databases";
@@ -130,80 +126,5 @@ public class TestFusekiMainCmd {
         String x1 = HttpOp.httpGetString(serverURL+"/$/tasks");
         assertNotNull(x1);
         // Leaves "DB-compact" behind.
-    }
-
-    @Test public void test_CORS_default_success() {
-        // given
-        String defaultHeaders = "X-Requested-With, Content-Type, Accept, Origin, Last-Modified, Authorization";
-        Map<String,String> headersToPass = Map.of("Access-Control-Request-Method", "POST",
-                                                  "Origin", "localhost:12345",
-                                                  "Access-Control-Request-Headers", defaultHeaders);
-        String expectedAllowedHeaders = "X-Requested-With,Content-Type,Accept,Origin,Last-Modified,Authorization";
-        server("--mem", "/ds");
-        // when
-        HttpResponse<InputStream> response = makeOptionsCall(serverURL + "/ds", headersToPass);
-        // then
-        assertNotNull(response);
-        assertEquals(response.statusCode(), 200);
-        String actualAllowedHeaders = HttpLib.responseHeader(response, HttpNames.hAccessControlAllowHeaders);
-        assertNotNull("Expecting valid headers", actualAllowedHeaders);
-        assertEquals(expectedAllowedHeaders, actualAllowedHeaders);
-    }
-
-    @Test public void test_CORS_default_fail() {
-        // given
-        String unrecognisedHeader = "Content-Type, unknown-header";
-        Map<String,String> headersToPass = Map.of("Access-Control-Request-Method", "POST","Access-Control-Request-Headers", unrecognisedHeader);
-        server("--mem", "/ds");
-        // when
-        HttpResponse<InputStream> response = makeOptionsCall(serverURL + "/ds", headersToPass);
-        // then
-        assertNotNull(response);
-        assertEquals(response.statusCode(), 200);
-        String actualAllowedHeaders = HttpLib.responseHeader(response, HttpNames.hAccessControlAllowHeaders);
-        assertNull("No headers expected given invalid request", actualAllowedHeaders);
-    }
-
-    @Test public void test_CORS_config_success() {
-        // given
-        String nonDefaultAllowedHeader = "Content-Type, Custom-Header";
-        Map<String,String> headersToPass = Map.of("Access-Control-Request-Method", "POST",
-                                                  "Origin", "http://localhost:5173",
-                                                  "Access-Control-Request-Headers", nonDefaultAllowedHeader);
-        String expectedAllowedHeaders = "X-Requested-With,Content-Type,Accept,Origin,Last-Modified,Authorization,Custom-Header";
-        server("--mem", "--CORS=testing/Config/cors.properties","/ds");
-        // when
-        HttpResponse<InputStream> response = makeOptionsCall(serverURL + "/ds", headersToPass);
-        // then
-        assertNotNull(response);
-        assertEquals(response.statusCode(), 200);
-        String actualAllowedHeaders = HttpLib.responseHeader(response, HttpNames.hAccessControlAllowHeaders);
-        assertNotNull("Expecting valid headers", actualAllowedHeaders);
-        assertEquals(expectedAllowedHeaders, actualAllowedHeaders);
-    }
-
-    @Test public void test_CORS_noConfig() {
-        // given
-        String defaultHeader = "Content-Type";
-        Map<String,String> headersToPass = Map.of("Access-Control-Request-Method", "POST","Access-Control-Request-Headers", defaultHeader);
-        server("--mem", "--noCORS", "/ds");
-        // when
-        HttpResponse<InputStream> response = makeOptionsCall(serverURL + "/ds", headersToPass);
-        // then
-        assertNotNull(response);
-        assertEquals(response.statusCode(), 200);
-        String actualAllowedHeaders = HttpLib.responseHeader(response, HttpNames.hAccessControlAllowHeaders);
-        assertNull("No headers expected given invalid request", actualAllowedHeaders);
-    }
-
-    private HttpResponse<InputStream> makeOptionsCall(String url, Map<String,String> headers) {
-        HttpRequest.Builder builder =
-                HttpLib.requestBuilderFor(url).uri(toRequestURI(url))
-                       .method(METHOD_OPTIONS, HttpRequest.BodyPublishers.noBody());
-        for (Map.Entry<String,String> entry : headers.entrySet()){
-            builder.header(entry.getKey(), entry.getValue());
-        }
-        HttpRequest request = builder.build();
-        return execute(HttpEnv.getDftHttpClient(), request);
     }
 }

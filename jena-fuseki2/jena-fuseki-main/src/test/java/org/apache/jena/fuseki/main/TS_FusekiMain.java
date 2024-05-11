@@ -37,6 +37,7 @@ import org.junit.runners.Suite.SuiteClasses;
   , TestFusekiStdSetup.class
   , TestFusekiStdReadOnlySetup.class
   , TestConfigFile.class
+  , TestCrossOriginFilter.class
   , TestFusekiServerBuild.class
   , TestFusekiDatasetSharing.class
 
