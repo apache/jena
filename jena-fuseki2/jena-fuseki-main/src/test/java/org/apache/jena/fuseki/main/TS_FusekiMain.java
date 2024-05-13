@@ -30,6 +30,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
   // This tests modules and modifies the system state.
   , TestFusekiModules.class
+
   , TestMultipleEmbedded.class
   , TestFusekiCustomOperation.class
   , TestFusekiMainCmd.class

@@ -224,7 +224,7 @@ public class TestCrossOriginFilter {
         String unrecognisedHeader = "Content-Type, unknown-header";
         String[] headersToPass = {"Access-Control-Request-Method", "POST",
                                   "Access-Control-Request-Headers", unrecognisedHeader};
-        FusekiServer server = server("--mem", "/ds");
+        FusekiServer server = server("--port=0", "--mem", "/ds");
         executeWithServer(server, "/ds", URL->{
             // when
             HttpResponse<InputStream> response = httpOptions(URL, headersToPass);
@@ -244,7 +244,7 @@ public class TestCrossOriginFilter {
                                   "Origin", "http://localhost:5173",
                                   "Access-Control-Request-Headers", nonDefaultAllowedHeader};
         String expectedAllowedHeaders = "X-Requested-With,Content-Type,Accept,Origin,Last-Modified,Authorization,Custom-Header";
-        FusekiServer server = server("--mem", "--CORS=testing/Config/cors.properties","/ds");
+        FusekiServer server = server("--port=0", "--mem", "--CORS=testing/Config/cors.properties","/ds");
         executeWithServer(server, "/ds", URL->{
             // when
             HttpResponse<InputStream> response = httpOptions(URL, headersToPass);
@@ -263,7 +263,7 @@ public class TestCrossOriginFilter {
         String defaultHeader = "Content-Type";
         String[] headersToPass = {"Access-Control-Request-Method", "POST",
                                   "Access-Control-Request-Headers", defaultHeader};
-        FusekiServer server = server("--mem", "--noCORS", "/ds");
+        FusekiServer server = server("--port=0", "--mem", "--noCORS", "/ds");
         executeWithServer(server, "/ds", URL->{
             // when
             HttpResponse<InputStream> response = httpOptions(URL, headersToPass);
