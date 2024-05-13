@@ -205,7 +205,7 @@ public class TestCrossOriginFilter {
                                   "Origin", "localhost:12345",
                                   "Access-Control-Request-Headers", defaultHeaders};
         String expectedAllowedHeaders = "X-Requested-With,Content-Type,Accept,Origin,Last-Modified,Authorization";
-        FusekiServer server = server("--mem", "/ds");
+        FusekiServer server = server("--port=0", "--mem", "/ds");
         executeWithServer(server, "/ds", URL->{
             // when
             HttpResponse<InputStream> response = httpOptions(URL, headersToPass);
