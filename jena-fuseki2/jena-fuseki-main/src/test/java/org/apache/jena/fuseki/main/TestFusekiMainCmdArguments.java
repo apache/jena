@@ -17,26 +17,36 @@
  */
 package org.apache.jena.fuseki.main;
 
-import org.apache.jena.cmd.CmdException;
-import org.apache.jena.fuseki.main.cmds.FusekiMain;
-import org.junit.Test;
+import static java.util.Collections.emptyList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import static java.util.Collections.emptyList;
-import static org.junit.Assert.*;
+import org.apache.jena.cmd.CmdException;
+import org.apache.jena.fuseki.main.cmds.FusekiMain;
+import org.junit.After;
+import org.junit.Test;
 
 /**
  * NOTE: we will randomise the port (--port=0) on all happy paths in order to avoid conflict with existing runs.
  */
 public class TestFusekiMainCmdArguments {
 
+    private FusekiServer server = null;
+    @After public void after() {
+        if ( server != null )
+            server.stop();
+    }
+
     @Test
     public void test_happy_empty() {
         // given
         List<String> arguments = List.of("--port=0", "--empty", "/dataset");
         // when
-        FusekiServer server = buildServer(buildCmdLineArguments(arguments));
+        buildServer(buildCmdLineArguments(arguments));
         // then
         assertNotNull(server);
     }
@@ -46,7 +56,7 @@ public class TestFusekiMainCmdArguments {
         // given
         List<String> arguments = List.of("--port=0", "--localhost", "--mem", "/dataset");
         // when
-        FusekiServer server = buildServer(buildCmdLineArguments(arguments));
+        buildServer(buildCmdLineArguments(arguments));
         // then
         assertNotNull(server);
     }
@@ -338,14 +348,14 @@ public class TestFusekiMainCmdArguments {
     @Test
     public void test_happy_corsConfig() {
         // given
-        List<String> arguments = List.of("--mem", "--CORS=testing/Config/cors.properties", "--localhost", "/path");
+        List<String> arguments = List.of("--port=0", "--mem", "--CORS=testing/Config/cors.properties", "--localhost", "/path");
         // when
-        FusekiServer server = buildServer(buildCmdLineArguments(arguments));
+        buildServer(buildCmdLineArguments(arguments));
         // then
         assertNotNull(server);
     }
 
-    private static void testForCmdException(List<String> arguments, String expectedMessage) {
+    private void testForCmdException(List<String> arguments, String expectedMessage) {
         // when
         Throwable actual = null;
         try {
@@ -364,10 +374,12 @@ public class TestFusekiMainCmdArguments {
         return listArgs.toArray(new String[0]);
     }
 
-    private static FusekiServer buildServer(String... cmdline) {
-        FusekiServer server = FusekiMain.build(cmdline);
+    // Build and set the server
+    private void buildServer(String... cmdline) {
+        if ( server != null )
+            fail("Bad test - a server has aleardy been created");
+        server = FusekiMain.build(cmdline);
         server.start();
-        return server;
     }
 
 }
