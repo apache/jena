@@ -28,7 +28,6 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.graph.Node;
@@ -38,7 +37,6 @@ import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIx;
 import org.apache.jena.riot.RiotException;
-import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.riot.lang.rdfxml.RDFXMLParseException;
 import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.riot.system.FactoryRDF;
@@ -252,7 +250,10 @@ class ParserRDFXML_SAX
     /** Node holder for collection items. Holds the node for the last item added in the collection at this level. */
     private static class NodeHolder { Node node = null; }
 
-    /** rdf:parseType for objects, with a default "Lexical" case */
+    /**
+     * rdf:parseType for objects, with a default "Lexical" case - see
+     * {@link #objectParseType} for alternative, non-standard names
+     */
     private enum ObjectParseType { Literal, Collection, Resource,
         // This is a extra parseType to indicate the "no ParseType" case
         // which is a plain lexical or nested resource.
@@ -1042,15 +1043,21 @@ class ParserRDFXML_SAX
         return langStr;
     }
 
-
     private ObjectParseType objectParseType(String parseTypeStr, Position position) {
         if ( parseTypeStr == null )
             return ObjectParseType.Plain;
         try {
             String parseTypeName = parseTypeStr;
-            if ( parseTypeName.equals("literal") ) {
-                Log.warn(SysRIOT.getLogger(), "Encountered rdf:parseType='literal'. Treated as rdf:parseType='literal'");
-                parseTypeName = "Literal";
+            switch(parseTypeName) {
+                case "literal" -> {
+                    RDFXMLparseWarning("Encountered rdf:parseType='literal'. Treated as rdf:parseType='Literal'", position);
+                    parseTypeName = "Literal";
+                }
+                // CIM (Common Information Model) - see github issue 2473
+                case "Statements" -> {
+                    RDFXMLparseWarning("Encountered rdf:parseType='Statements'. Treated as rdf:parseType='Literal'", position);
+                    parseTypeName = "Literal";
+                }
             }
             return ObjectParseType.valueOf(parseTypeName);
         } catch (IllegalArgumentException ex) {

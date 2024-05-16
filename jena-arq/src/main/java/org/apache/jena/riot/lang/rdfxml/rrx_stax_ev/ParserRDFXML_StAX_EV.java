@@ -31,7 +31,6 @@ import javax.xml.stream.events.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.graph.Node;
@@ -40,7 +39,6 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIx;
 import org.apache.jena.riot.RiotException;
-import org.apache.jena.riot.SysRIOT;
 import org.apache.jena.riot.lang.rdfxml.RDFXMLParseException;
 import org.apache.jena.riot.system.ErrorHandler;
 import org.apache.jena.riot.system.ParserProfile;
@@ -200,10 +198,11 @@ class ParserRDFXML_StAX_EV {
     // whitespace characters inside elements. Skip it.
     private static final QName xmlQNameSpace = new QName(XMLConstants.XML_NS_URI, "space");
 
-    private static final String parseTypeCollection  = "Collection";
-    private static final String parseTypeLiteral     = "Literal";
-    private static final String parseTypeLiteralAlt  = "literal";
-    private static final String parseTypeResource    = "Resource";
+    private static final String parseTypeCollection    = "Collection";
+    private static final String parseTypeLiteral       = "Literal";
+    private static final String parseTypeLiteralAlt    = "literal";
+    private static final String parseTypeLiteralStmts  = "Statements";    // CIM Github issue 2473
+    private static final String parseTypeResource      = "Resource";
     // This is a dummy parseType for when there is no given rdf:parseType.
     private static final String parseTypePlain = "$$";
 
@@ -579,7 +578,7 @@ class ParserRDFXML_StAX_EV {
     }
 
     private XMLEvent propertyElementProcess(Node subject, StartElement startElt, Counter listElementCounter) {
-        Location location = startElt.getLocation();
+        final Location location = startElt.getLocation();
         Node property;
         if ( qNameMatches(rdfContainerItem, startElt.getName()) )
             property = iriDirect(rdfNS+"_"+Integer.toString(listElementCounter.value++), location);
@@ -638,9 +637,15 @@ class ParserRDFXML_StAX_EV {
         }
 
         String parseTypeName = parseType;
-        if ( parseTypeName.equals(parseTypeLiteralAlt) ) {
-            Log.warn(SysRIOT.getLogger(), "Encountered rdf:parseType='literal'. Treated as rdf:parseType='literal'");
-            parseTypeName = "Literal";
+        switch( parseTypeName) {
+            case parseTypeLiteralAlt -> {
+                RDFXMLparseWarning("Encountered rdf:parseType='literal'. Treated as rdf:parseType='Literal'", location);
+                parseTypeName = "Literal";
+            }
+            case parseTypeLiteralStmts -> {
+                RDFXMLparseWarning("Encountered rdf:parseType='Statements'. Treated as rdf:parseType='Literal'", location);
+                parseTypeName = "Literal";
+            }
         }
 
         switch(parseTypeName) {

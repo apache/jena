@@ -64,12 +64,19 @@ public class TestRRX {
         errorTest("error01.rdf");
     }
 
-    @Test public void error02() {
+    @Test public void warn_literal() {
         // Now valid. parseType="literal" -> parseType="Literal"
+        // because ARP behaved that way.
+        // Warning issued.
+        warningTest("warn01.rdf", 1);
+    }
+
+    @Test public void cim_statements01() {
+        // parseType="Statements"
         // because ARP behaved that way.
         //errorTest("error02.rdf");
         // Warning issued.
-        warningTest("error02.rdf");
+        warningTest("cim_statements01.rdf", 2);
     }
 
     @Test public void noBase01() {
@@ -98,10 +105,10 @@ public class TestRRX {
         }
     }
 
-    private void warningTest(String filename) {
+    private void warningTest(String filename, int warnings) {
         ReaderRIOTFactory factory = RDFParserRegistry.getFactory(lang);
         String fn = "testing/RIOT/rrx-files/"+filename;
-        RunTestRDFXML.runTestExpectWarning(filename, factory, label, fn);
+        RunTestRDFXML.runTestExpectWarning(filename, factory, label, warnings, fn);
     }
 
     private void errorTest(String filename) {

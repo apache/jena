@@ -328,18 +328,19 @@ public class RunTestRDFXML {
             parseFile(testSubjectFactory, actualErrorHandler, filename);
             output.printf("## Expected RiotExpection : %-4s : %s : %s", subjectLabel, testLabel, filename);
         });
-        checkErrorHandler(testLabel, actualErrorHandler, -1, 1, -1);
+        checkErrorHandler(testLabel, actualErrorHandler, -1, 1, 0);
     }
 
     /** Run a test expecting a warning.. */
     static void runTestExpectWarning(String testLabel,
                                      ReaderRIOTFactory testSubjectFactory, String subjectLabel,
+                                     int numWarnings,
                                      String filename) {
         ErrorHandlerCollector actualErrorHandler = new ErrorHandlerCollector();
         LogCtl.withLevel(SysRIOT.getLogger(), "Error", ()->
             parseFile(testSubjectFactory, actualErrorHandler, filename)
             );
-        checkErrorHandler(testLabel, actualErrorHandler, 0, 0, 1);
+        checkErrorHandler(testLabel, actualErrorHandler, numWarnings, 0, 0);
     }
 
     /**
@@ -446,7 +447,7 @@ public class RunTestRDFXML {
     /** Counts check of an error handler */
     private static void checkErrorHandler(String testLabel, ErrorHandlerCollector errorHandler, int countWarnings, int countErrors, int countFatals) {
         if ( countFatals >= 0 )
-            assertEquals("Fatal message counts different", countWarnings, errorHandler.fatals.size());
+            assertEquals("Fatal message counts different", countFatals, errorHandler.fatals.size());
         if ( countErrors >= 0 )
             assertEquals("Error message counts different", countErrors, errorHandler.errors.size());
         if ( countWarnings >= 0 )
