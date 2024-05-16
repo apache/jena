@@ -1,0 +1,12 @@
+# Extensions to RDF/XML
+
+
+CIM - uses rdf:parseType="Statements" for rdf:parseType="Literal"
+  https://github.com/apache/jena/issues/2473
+  rdfxml-cim-1.rdf
+
+Lower case "l" for parse type literal
+  A common mistake.
+    https://github.com/apache/jena/issues/2430
+    https://github.com/apache/jena/pull/2431/commits/a324fd4c1502c410fdb91c557ed2785795acbba3
+  rdfxml-literal-1.rdf
