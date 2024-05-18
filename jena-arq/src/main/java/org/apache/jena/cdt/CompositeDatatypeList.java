@@ -31,7 +31,7 @@ import org.apache.jena.sparql.expr.NodeValue;
 
 public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 {
-	public final static String uri = "http://example.org/cdt/List";
+	public final static String uri = "http://w3id.org/awslabs/neptune/SPARQL-CDTs/List";
 	public final static CompositeDatatypeList type = new CompositeDatatypeList();
 
 	protected CompositeDatatypeList() {}
