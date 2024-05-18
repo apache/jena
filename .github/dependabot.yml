@@ -6,6 +6,7 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
     groups:
       maven-patch-group:
         update-types:
@@ -15,11 +16,13 @@ updates:
     directory: "/"
     schedule: 
       interval: monthly
+      day: "tuesday"
     open-pull-requests-limit: 10
   - package-ecosystem: "npm"
     directory: "/jena-fuseki2/jena-fuseki-ui"
     schedule:
       interval: "weekly"
+      day: "wednesday"
     versioning-strategy: increase-if-necessary
     groups:
       npm-patch-group:
