@@ -34,7 +34,7 @@ import org.apache.jena.sparql.expr.NodeValue;
 
 public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTValue>>
 {
-	public final static String uri = "http://example.org/cdt/Map";
+	public final static String uri = "http://w3id.org/awslabs/neptune/SPARQL-CDTs/Map";
 	public final static CompositeDatatypeMap type = new CompositeDatatypeMap();
 
 	protected CompositeDatatypeMap() {}
