@@ -92,7 +92,7 @@
     <ver.commons-fileupload>2.0.0-M2</ver.commons-fileupload>
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
-    <ver.micrometer>1.12.5</ver.micrometer>
+    <ver.micrometer>1.13.0</ver.micrometer>
     <ver.roaringbitmap>1.0.6</ver.roaringbitmap>
 
     <!-- Testing -->
