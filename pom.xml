@@ -78,7 +78,7 @@
     <!-- Most of Jena uses other libraries for equivalent functionality. -->
     <ver.guava>33.2.0-jre</ver.guava>
 
-    <ver.gson>2.10.1</ver.gson>
+    <ver.gson>2.11.0</ver.gson>
     <ver.lucene>9.10.0</ver.lucene>
 
     <ver.commons-io>2.16.1</ver.commons-io>
@@ -415,10 +415,43 @@
         <version>${ver.commons-fileupload}</version>
       </dependency>
 
+      <!--
+          com.google.errorprone:error_prone_annotations
+          is used by gson, guava and caffeine. 
+          It can lead to dependency convergence errors
+          (the dependencies using it are all at the same depth).
+          Either explicitly depend here or choose one
+          route and exclude from the others.
+          Gson is probably the one to choose as the preferred route.
+      -->
+      <!--
+      <dependency>
+        <groupId>com.google.errorprone</groupId>
+        <artifactId>error_prone_annotations</artifactId>
+        <version>VERSION</version>
+      </dependency>
+      -->
+
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>${ver.gson}</version>
+      </dependency>
+
       <dependency>
         <groupId>com.github.ben-manes.caffeine</groupId>
         <artifactId>caffeine</artifactId>
         <version>${ver.caffeine}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.google.errorprone</groupId>
+            <artifactId>error_prone_annotations</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -426,7 +459,6 @@
         <artifactId>guava</artifactId>
         <version>${ver.guava}</version>
         <exclusions>
-          <!-- These sometimes cause a convergence error with Caffeine -->
           <exclusion>
             <groupId>org.checkerframework</groupId>
             <artifactId>checker-qual</artifactId>
@@ -444,12 +476,6 @@
         <artifactId>collection</artifactId>
         <version>${ver.dexxcollection}</version>
       </dependency>
-      
-      <dependency>
-        <groupId>com.google.code.gson</groupId>
-        <artifactId>gson</artifactId>
-        <version>${ver.gson}</version>
-      </dependency>    
       
       <!-- JSON-LD 1.1 read support -->
       <!-- Titanium JSON-LD -->
