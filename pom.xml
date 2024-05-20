@@ -78,7 +78,7 @@
     <!-- Most of Jena uses other libraries for equivalent functionality. -->
     <ver.guava>33.2.0-jre</ver.guava>
 
-    <ver.gson>2.10.1</ver.gson>
+    <ver.gson>2.11.0</ver.gson>
     <ver.lucene>9.10.0</ver.lucene>
 
     <ver.commons-io>2.16.1</ver.commons-io>
