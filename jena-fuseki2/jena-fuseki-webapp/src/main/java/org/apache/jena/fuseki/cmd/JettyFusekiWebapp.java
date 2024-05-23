@@ -31,7 +31,9 @@ import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.FusekiCoreInfo;
+import org.apache.jena.fuseki.system.FusekiCore;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
+import org.apache.jena.sys.JenaSystem;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee10.servlet.security.ConstraintMapping;
 import org.eclipse.jetty.ee10.servlet.security.ConstraintSecurityHandler;
@@ -59,7 +61,10 @@ public class JettyFusekiWebapp {
     // This class is becoming less important - it now sets up a Jetty server for in-process use
     // either for the command line in development
     // and in testing but not direct webapp deployments.
-    static { Fuseki.init(); }
+    static {
+        JenaSystem.init();
+        FusekiCore.init();
+    }
 
     public static JettyFusekiWebapp  instance    = null;
 
