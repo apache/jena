@@ -202,8 +202,6 @@ public class Fuseki {
     // HTTP response header inserted to aid tracking.
     public static String FusekiRequestIdHeader = "Fuseki-Request-Id";
 
-    private static boolean            initialized       = false;
-
     // Server start time and uptime.
     private static final long startMillis = System.currentTimeMillis();
     // Hide server locale
@@ -228,12 +226,14 @@ public class Fuseki {
         return startDateTime;
     }
 
+    private static boolean initialized = false;
     /**
      * Initialize an instance of the Fuseki server stack.
      * This is not done via Jena's initialization mechanism
      * but done explicitly to give more control.
-     * Touching this class causes this to happen
-     * (see static block at the end of this class).
+     * It is done after Jena initializes.
+     * Fuseki-main adds a Fuseki specific custom initialization
+     * round after this is run.
      */
     public synchronized static void init() {
         if ( initialized )

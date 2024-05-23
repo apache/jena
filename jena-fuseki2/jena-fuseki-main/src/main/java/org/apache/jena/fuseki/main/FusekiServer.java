@@ -113,7 +113,10 @@ import org.slf4j.Logger;
  */
 
 public class FusekiServer {
-    static { JenaSystem.init(); }
+    static {
+        JenaSystem.init();
+        Fuseki.init();
+    }
 
     /**
      * Construct a Fuseki server from command line arguments.
@@ -1370,7 +1373,6 @@ public class FusekiServer {
                 boolean hasFusekiSecurityHandler = applySecurityHandler(handler);
                 // Prepare the DataAccessPointRegistry.
                 // Put it in the servlet context.
-                // This would be the reload operation.
                 applyDatabaseSetup(handler.getServletContext(), dapRegistry, operationReg);
 
                 // Must be after the DataAccessPointRegistry is in the servlet context.
@@ -1464,8 +1466,8 @@ public class FusekiServer {
                                                DataAccessPointRegistry dapRegistry,
                                                OperationRegistry operationReg) {
             // Final wiring up of DataAccessPointRegistry
+            // See also FusekiLib.reload()
             prepareDataServices(dapRegistry, operationReg);
-
             OperationRegistry.set(servletContext, operationReg);
             DataAccessPointRegistry.set(servletContext, dapRegistry);
         }
