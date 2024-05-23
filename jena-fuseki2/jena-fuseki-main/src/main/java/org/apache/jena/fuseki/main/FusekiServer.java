@@ -65,7 +65,6 @@ import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.NotUniqueException;
 import org.apache.jena.sparql.util.graph.GraphUtils;
-import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.G;
 import org.apache.jena.web.HttpSC;
 import org.eclipse.jetty.ee10.servlet.DefaultServlet;
@@ -114,8 +113,7 @@ import org.slf4j.Logger;
 
 public class FusekiServer {
     static {
-        JenaSystem.init();
-        Fuseki.init();
+        InitFusekiMain.init();
     }
 
     /**
