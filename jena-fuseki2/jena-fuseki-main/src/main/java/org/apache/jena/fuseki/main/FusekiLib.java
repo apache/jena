@@ -70,7 +70,7 @@ public class FusekiLib {
         OperationRegistry operationRegistry = server.getOperationRegistry();
 
         try {
-            List<DataAccessPoint> newDAPs = FusekiConfig.servicesAndDatasets(configuration);
+            List<DataAccessPoint> newDAPs = FusekiConfig.servicesAndDatasets(configuration.getGraph());
             newDAPs.forEach(dap->newRegistry.register(dap));
             FusekiServer.Builder.prepareDataServices(newRegistry, operationRegistry);
             // Reload : switch DataAccessPointRegistry

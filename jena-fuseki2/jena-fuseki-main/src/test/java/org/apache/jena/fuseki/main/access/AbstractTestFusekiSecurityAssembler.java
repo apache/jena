@@ -36,6 +36,7 @@ import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiLib;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.sys.InitFusekiMain;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QuerySolution;
@@ -46,7 +47,6 @@ import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
-import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -63,7 +63,7 @@ import org.junit.Test;
  */
 
 public abstract class AbstractTestFusekiSecurityAssembler {
-    static { JenaSystem.init(); }
+    static { InitFusekiMain.init(); }
     static final String DIR = "testing/Access/";
 
     private final String assemblerFile;

@@ -22,6 +22,7 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
 import org.apache.jena.fuseki.system.FusekiLogging;
+import org.apache.jena.fuseki.system.FusekiCore;
 import org.apache.jena.sys.JenaSystem;
 
 /** Setup the environment and logging.
@@ -49,6 +50,8 @@ public class FusekiServerEnvironmentInit implements ServletContextListener {
             }
         }
         JenaSystem.init();
+        FusekiCore.init();
+
     }
 
     @Override

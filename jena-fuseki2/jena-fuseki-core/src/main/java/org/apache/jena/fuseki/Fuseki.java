@@ -26,15 +26,12 @@ import jakarta.servlet.ServletContext;
 
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.lib.Version;
+import org.apache.jena.fuseki.system.FusekiCore;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.system.stream.LocatorFTP;
 import org.apache.jena.riot.system.stream.LocatorHTTP;
 import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.sparql.util.MappingRegistry;
-import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.tdb1.TDB1;
-import org.apache.jena.tdb1.transaction.TransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,6 +99,12 @@ public class Fuseki {
 
     public static boolean   outputJettyServerHeader     = developmentMode;
     public static boolean   outputFusekiServerHeader    = developmentMode;
+
+    /**
+     * Initialize is class.
+     * See also {@link FusekiCore} for Fuseki core initialization.
+     */
+    public static void initConsts() {}
 
     /** An identifier for the HTTP Fuseki server instance */
     static public final String  serverHttpName          = NAME + " (" + VERSION + ")";
@@ -224,28 +227,6 @@ public class Fuseki {
     /** XSD DateTime for when the server started */
     public static String serverStartedAt() {
         return startDateTime;
-    }
-
-    private static boolean initialized = false;
-    /**
-     * Initialize an instance of the Fuseki server stack.
-     * This is not done via Jena's initialization mechanism
-     * but done explicitly to give more control.
-     * It is done after Jena initializes.
-     * Fuseki-main adds a Fuseki specific custom initialization
-     * round after this is run.
-     */
-    public synchronized static void init() {
-        if ( initialized )
-            return;
-        initialized = true;
-        JenaSystem.init();
-        MappingRegistry.addPrefixMapping("fuseki", FusekiSymbolIRI);
-
-        TDB1.setOptimizerWarningFlag(false);
-        // Don't use TDB1 batch commits.
-        // This can be slower, but it less memory hungry and more predictable.
-        TransactionManager.QueueBatchSize = 0;
     }
 
     /**

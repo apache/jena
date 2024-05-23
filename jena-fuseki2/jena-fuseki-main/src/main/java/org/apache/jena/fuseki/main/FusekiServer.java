@@ -28,7 +28,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServlet;
@@ -59,11 +58,12 @@ import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.G;
 import org.apache.jena.system.RDFDataException;
 import org.apache.jena.web.HttpSC;
@@ -113,8 +113,7 @@ import org.slf4j.Logger;
 
 public class FusekiServer {
     static {
-        JenaSystem.init();
-        Fuseki.init();
+        InitFusekiMain.init();
     }
 
     /**

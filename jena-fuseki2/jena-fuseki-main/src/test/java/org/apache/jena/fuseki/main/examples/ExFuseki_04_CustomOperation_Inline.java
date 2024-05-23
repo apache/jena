@@ -25,6 +25,7 @@ import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.build.FusekiExt;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
+import org.apache.jena.fuseki.main.sys.InitFusekiMain;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.ActionService;
 import org.apache.jena.fuseki.servlets.HttpAction;
@@ -32,7 +33,6 @@ import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.web.HttpSC;
 
 /**
@@ -46,8 +46,8 @@ import org.apache.jena.web.HttpSC;
 public class ExFuseki_04_CustomOperation_Inline {
 
     static {
-        JenaSystem.init();
         FusekiLogging.setLogging();
+        InitFusekiMain.init();
     }
 
     public static void main(String...args) {
