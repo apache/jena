@@ -95,8 +95,6 @@ public class FusekiConfig {
                    Operation.GSP_RW,
                    Operation.Patch);
 
-    static { Fuseki.init(); }
-
     /** Convenience operation to populate a {@link DataService} with the conventional default services. */
     public static DataService.Builder populateStdServices(DataService.Builder dataServiceBuilder, boolean allowUpdate) {
         Set<Endpoint> endpoints = new HashSet<>();
