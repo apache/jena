@@ -45,17 +45,6 @@ public class ParserForCDTLiterals
 		return result;
 	}
 
-	public static List<CDTValue> parseListLiteral( final InputStream in, final boolean recursive ) {
-		final Reader reader = FileUtils.asUTF8(in);
-		final List<CDTValue> result = parseListLiteral(reader, recursive);
-
-		try { reader.close(); } catch ( final IOException ex ) {
-			throw new CDTLiteralParseException("Closing the reader caused an exception.", ex);
-		}
-
-		return result;
-	}
-
 	public static List<CDTValue> parseListLiteral( final Reader reader, final boolean recursive ) {
 		final List<CDTValue> list;
 		try {
@@ -99,17 +88,6 @@ public class ParserForCDTLiterals
 
 		try { reader.close(); } catch ( final IOException e ) {
 			throw new CDTLiteralParseException("Closing the reader caused an exception.", e);
-		}
-
-		return result;
-	}
-
-	public static Map<CDTKey,CDTValue> parseMapLiteral( final InputStream in, final boolean recursive ) {
-		final Reader reader = FileUtils.asUTF8(in);
-		final Map<CDTKey,CDTValue> result = parseMapLiteral(reader, recursive);
-
-		try { reader.close(); } catch ( final IOException ex ) {
-			throw new CDTLiteralParseException("Closing the reader caused an exception.", ex);
 		}
 
 		return result;
