@@ -20,12 +20,11 @@ package org.apache.jena.sparql.core.mem;
 
 import static org.apache.jena.graph.Node.ANY;
 import static org.apache.jena.graph.NodeFactory.createURI;
-import static org.apache.jena.sparql.core.mem.AbstractTestQuadTable.quadQueryPatterns;
-import static org.apache.jena.sparql.core.mem.TupleSlot.GRAPH;
 
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 
@@ -34,6 +33,8 @@ public abstract class AbstractTestTripleTable extends AbstractTestTupleTable<Tri
 	private static final Node sampleNode = createURI("info:test");
 
 	private static final Triple testTriple = Triple.create(sampleNode, sampleNode, sampleNode);
+	private static final Set<Set<TupleSlot>> queryPatternSet =
+	        Lib.powerSet( Set.of( TupleSlot.SUBJECT, TupleSlot.PREDICATE, TupleSlot.OBJECT)) ;
 
 	@Override
 	protected Triple testTuple() {
@@ -51,6 +52,6 @@ public abstract class AbstractTestTripleTable extends AbstractTestTupleTable<Tri
 	}
 
 	static Stream<Set<TupleSlot>> tripleQueryPatterns() {
-		return quadQueryPatterns().filter(s -> !s.contains(GRAPH));
+	    return queryPatternSet.stream();
 	}
 }

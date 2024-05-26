@@ -62,9 +62,6 @@ public class Lang
      */
     public static Lang JSONLD ;
 
-    /** JSONLD 1.0 */
-    public static Lang JSONLD10 ;
-
     /** JSONLD 1.1 */
     public static Lang JSONLD11 ;
 
@@ -105,6 +102,9 @@ public class Lang
 
     /** The "null" language */
     public static Lang RDFNULL ;
+
+    /** Output-only language for a StreamRDF (for development) */
+    public static Lang RDFRAW ;
 
     private final String label ;                    // Primary name
     private final ContentType contentType ;         // Primary content type.

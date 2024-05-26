@@ -1,0 +1,34 @@
+<!--++ disjointWith/premises001.rdf ** generated using webont test editor. ++-->
+<!--++ Created 17 Dec 2002 21:28:02 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: premises001.rdf,v 1.6 2003-12-05 05:09:26 jeremy_carroll Exp $
+-->
+<!--
+Disjoint classes have different members.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:first="http://www.w3.org/2002/03owlt/disjointWith/premises001#"
+    xml:base="http://www.w3.org/2002/03owlt/disjointWith/premises001" >
+   <owl:Class rdf:ID="A">
+      <owl:disjointWith>
+           <owl:Class rdf:ID="B"/>
+      </owl:disjointWith>
+   </owl:Class>
+   <first:A rdf:ID="a"/>
+   <owl:Thing rdf:about="#a"/>
+   <first:B rdf:ID="b"/>
+   <owl:Thing rdf:about="#b"/>
+</rdf:RDF>

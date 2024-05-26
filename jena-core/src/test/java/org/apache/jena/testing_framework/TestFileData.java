@@ -32,7 +32,7 @@ import org.junit.Test ;
 /**
  * Class that produces RDF and TTL data, a Graph and a Model that all contain
  * the same data. This is used for various tests where files are read/written
- * 
+ *
  */
 public class TestFileData {
 
@@ -209,24 +209,24 @@ public class TestFileData {
 	}
 
 	public static Graph getGraph() {
-		
-		Graph g = Factory.createGraphMem();
 
-		g.add(new Triple(NodeFactory.createURI("http://example.com/subject"),
+		Graph g = GraphMemFactory.createGraphMem();
+
+		g.add(Triple.create(NodeFactory.createURI("http://example.com/subject"),
 				NodeFactory.createURI("http://example.com/predicate"),
 				NodeFactory.createURI("http://example.com/object")));
 
-		g.add(new Triple(NodeFactory.createBlankNode(BlankNodeId.create("a")),
+		g.add(Triple.create(NodeFactory.createBlankNode("a"),
 				NodeFactory.createURI("http://example.com/p1"), NodeFactory
-						.createBlankNode(BlankNodeId.create("b"))));
+						.createBlankNode("b")));
 
-		g.add(new Triple(NodeFactory.createBlankNode(BlankNodeId.create("b")),
+		g.add(Triple.create(NodeFactory.createBlankNode("b"),
 				NodeFactory.createURI("http://example.com/p2"), NodeFactory
-						.createLiteral("foo")));
+						.createLiteralString("foo")));
 
-		g.add(new Triple(NodeFactory.createURI("http://example.com/ns/e"),
+		g.add(Triple.create(NodeFactory.createURI("http://example.com/ns/e"),
 				NodeFactory.createURI("http://example.com/ns/p5"), NodeFactory
-						.createLiteral("verify base works")));
+						.createLiteralString("verify base works")));
 
 		return g;
 	}

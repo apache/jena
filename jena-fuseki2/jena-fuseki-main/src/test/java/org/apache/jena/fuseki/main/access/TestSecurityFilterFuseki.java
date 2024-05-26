@@ -31,8 +31,8 @@ import org.apache.jena.fuseki.access.DataAccessCtl;
 import org.apache.jena.fuseki.access.SecurityContext;
 import org.apache.jena.fuseki.access.SecurityContextView;
 import org.apache.jena.fuseki.access.SecurityRegistry;
-import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.JettySecurityLib;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.rdf.model.Model;
@@ -42,9 +42,9 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
-import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb2.DatabaseMgr;
-import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.ee10.servlet.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.UserStore;
 import org.eclipse.jetty.util.security.Credential;
 import org.eclipse.jetty.util.security.Password;
@@ -67,7 +67,7 @@ public class TestSecurityFilterFuseki {
     }
 
     private final String baseUrl;
-    private static DatasetGraph testdsg1 =  TDBFactory.createDatasetGraph();
+    private static DatasetGraph testdsg1 =  TDB1Factory.createDatasetGraph();
     private static DatasetGraph testdsg2 =  DatabaseMgr.createDatasetGraph();
     private static DatasetGraph testdsg3 =  DatasetGraphFactory.createTxnMem();
 
@@ -92,8 +92,8 @@ public class TestSecurityFilterFuseki {
         testdsg3 = DataAccessCtl.controlledDataset(testdsg3, reg);
 
         UserStore userStore = userStore();
-        ConstraintSecurityHandler sh = JettyLib.makeSecurityHandler("*", userStore);
-        JettyLib.addPathConstraint(sh, "/*");
+        ConstraintSecurityHandler sh = JettySecurityLib.makeSecurityHandler("*", userStore);
+        JettySecurityLib.addPathConstraint(sh, "/*");
 
         // If used, also check log4j2.properties.
         //FusekiLogging.setLogging();

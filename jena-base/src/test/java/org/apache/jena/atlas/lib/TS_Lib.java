@@ -28,7 +28,8 @@ import org.junit.runners.Suite ;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestAlg.class
+    TestBaseLib.class
+    , TestAlg.class
     , TestBitsLong.class
     , TestBitsInt.class
     , TestBytes.class
@@ -50,9 +51,8 @@ import org.junit.runners.Suite ;
     , TestDateTimeUtils.class
     , TestCacheSimple.class
     , TestRefCountingMap.class
+    , TestVersion.class
+    , TestPowerSet.class
 } )
 
-public class TS_Lib
-{
-
-}
+public class TS_Lib {}

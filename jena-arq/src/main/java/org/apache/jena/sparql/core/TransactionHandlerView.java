@@ -35,21 +35,41 @@ public class TransactionHandlerView extends TransactionHandlerBase
 
     protected DatasetGraph getDSG() { return dsg; }
 
+    // There may be transactions on this thread to other graphs in the dataset, or a
+    // dataset-level transaction. Test for an existing dataset transaction.
+    // Because this is "same-thread", transactions must be nested ("must" = "should have been"!).
+    //
+    // A fresh TransactionHandlerView is created for every call of getTransactionHandler()
+    // in GraphView and GraphUnionRead.
+    private int dsgTransaction = 0;
+
     @Override
     public void begin() {
-        getDSG().begin(TxnType.READ_PROMOTE);
+        if ( getDSG().isInTransaction() ) {
+            dsgTransaction++;
+        } else {
+            getDSG().begin(TxnType.READ_PROMOTE);
+        }
     }
 
     @Override
     public void abort() {
-        getDSG().abort();
-        getDSG().end();
+        if ( dsgTransaction > 0 ) {
+            dsgTransaction--;
+        } else {
+            getDSG().abort();
+            getDSG().end();
+        }
     }
 
     @Override
     public void commit() {
-        getDSG().commit();
-        getDSG().end();
+        if ( dsgTransaction > 0 ) {
+            dsgTransaction--;
+        } else {
+            getDSG().commit();
+            getDSG().end();
+        }
     }
 
     @Override

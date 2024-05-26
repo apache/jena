@@ -18,10 +18,6 @@
 
 package org.apache.jena.sparql;
 
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
-
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.compose.Polyadic ;
@@ -33,8 +29,6 @@ import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.GraphView ;
 import org.apache.jena.sparql.graph.GraphWrapper ;
-import org.apache.jena.sparql.mgt.ARQMgt ;
-import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Symbol ;
 
 public class SystemARQ
@@ -50,15 +44,15 @@ public class SystemARQ
     public static boolean ValueExtensions       = true ;
 
     /**
-     * Under strict {@literal F&O}, dateTimes and dates with no timezone have one magically applied.
+     * Under strict {@literal F&O}, dateTimes and dates that have no timezone have one magically applied.
      * This default timezone is implementation dependent and can lead to different answers
-     * to queries depending on the timezone. Normally, ARQ uses XMLSchema dateTime comparions,
+     * to queries depending on the timezone. Normally, ARQ uses XMLSchema dateTime comparisons,
      * which an yield "indeterminate", which in turn is an evaluation error.
-     * {@literal F&O} insists on true/false and so can lead to false positves and negatives.
+     * {@literal F&O} insists on true/false and so can lead to false positives and negatives.
      */
     public static boolean StrictDateTimeFO      = false ;
 
-    /** Whether support for roman numerals (datatype http://rome.example.org/Numeral).
+    /** Whether support for Roman numerals (datatype http://rome.example.org/Numeral).
      *  Mainly a test of datatype extension.
      */
     public static boolean EnableRomanNumerals   = true ;
@@ -124,17 +118,6 @@ public class SystemARQ
     public static void syncObject(Object object) {
         if ( object instanceof Sync )
             ((Sync)object).sync() ;
-    }
-
-    private static List<SystemInfo> versions = new ArrayList<>() ;
-    public static void registerSubSystem(SystemInfo systemInfo)
-    {
-        ARQMgt.register(systemInfo.getJmxPath() + ".system:type=SystemInfo", systemInfo) ;
-        versions.add(systemInfo) ;
-    }
-
-    public static Iterator<SystemInfo> registeredSubsystems() {
-        return versions.iterator() ;
     }
 
     public static Symbol allocSymbol(String shortName) {

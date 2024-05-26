@@ -71,7 +71,11 @@ public class OptimizerStd implements Rewrite
 
         // Convert paths to triple patterns if possible.
         if ( context.isTrueOrUndef(ARQ.optPathFlatten) ) {
-            op = apply("Path flattening", new TransformPathFlattern(), op) ;
+            if (context.isTrue(ARQ.optPathFlattenAlgebra)) {
+                op = apply("Path flattening (algebra)", new TransformPathFlattenAlgebra(), op);
+            } else {
+                op = apply("Path flattening", new TransformPathFlatten(), op);
+            }
             // and merge adjacent BGPs (part 1)
             if ( context.isTrueOrUndef(ARQ.optMergeBGPs) )
                 op = apply("Merge BGPs", new TransformMergeBGPs(), op) ;
@@ -134,7 +138,11 @@ public class OptimizerStd implements Rewrite
             op = transformJoinStrategy(op) ;
 
         // Do a basic reordering so that triples with more defined terms go first.
-        if ( context.isTrueOrUndef(ARQ.optReorderBGP) )
+        // 2022-11: This does not take into account values flowed into the BGP
+        // (OpSequence, Lateral joins, EXISTS) so the default is not enabled.
+        // Use "ARQ.getContext.set(ARQ.optReorderBGP, true)" to enable.
+        //if ( context.isTrueOrUndef(ARQ.optReorderBGP) )
+        if ( context.isTrue(ARQ.optReorderBGP) )
             op = transformReorder(op) ;
 
         // Place filters close to where their input variables are defined.

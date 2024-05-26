@@ -70,23 +70,40 @@ public class IRIs {
 
     /** The system base IRI as a string. */
     public static String getBaseStr() {
-        return SystemIRIx.getSystemBase().toString();
+        return SystemIRIx.getSystemBase().str();
     }
 
     /**
      * Given a candidate baseURI string, which may be a filename,
      * turn it into a IRI suitable as a base IRI.
+     * This includes encoding characters in a filename (e.g. spaces).
      */
-    public static String toBase(String baseURI) {
-        String scheme = scheme(baseURI);
+    public static String toBase(String uriForBase) {
+        if ( uriForBase == null )
+            return getBaseStr();
+        String scheme = scheme(uriForBase);
         if ( Sys.isWindows ) {
             // Assume a scheme of one letter is a Windows drive letter.
-            if ( scheme != null && scheme.length() == 1 )
+            if ( scheme != null && scheme.length() == 1 ) {
                 scheme = "file";
+                uriForBase = "file:/"+uriForBase;
+            }
         }
-        if ( scheme != null && scheme.equals("file") )
-            return IRILib.filenameToIRI(baseURI);
-        return IRIs.getSystemBase().resolve(baseURI).toString();
+        if ( scheme == null  ) {
+            // Relative name: it the base is a file: URI, encode the relative
+            // name if it does not look like it is already encoded.
+            boolean isFileBase = IRIs.getSystemBase().hasScheme("file");
+            if ( isFileBase && ! uriForBase.contains("%") )
+                uriForBase = IRILib.encodeFileURL(uriForBase);
+        } else {
+            // If the scheme of the proposed base URI is file: then assume it is a legal IRI as intended.
+            // Pragmatically, fix-up a few characters that are illegal.
+            if ( scheme.equals("file") ) {
+                uriForBase = uriForBase.replace(" ", "%20");
+                uriForBase = uriForBase.replace("\\", "/");
+            }
+        }
+        return IRIs.getSystemBase().resolve(uriForBase).toString();
     }
 
     /** Return a general purpose resolver, with the current system base as its base IRI. */
@@ -161,6 +178,8 @@ public class IRIs {
      * </pre>
      */
     public static String scheme(String str) {
+        if ( str == null )
+            return null;
         int idx = scheme(str, 0);
         if ( idx <= 0 || idx > str.length())
             return null;
@@ -170,14 +189,16 @@ public class IRIs {
     // Return the index of the ":" starting from "start"
     // so that start to the returned index is the scheme including ":"
     // Return <= 0 for no scheme.
-    // -1 Syntax error
-    // 0 did not find a colon.
+    // -1 Not a scheme - non-scheme character
+    // 0 did not find a colon or zero characters before the colon.
+    //    A scheme is at least one character.
     private static int scheme(String str, int start) {
         int p = start;
         int end = str.length();
         while (p < end) {
             char c = str.charAt(p);
             if ( c == ':' )
+                // End of scheme.
                 return p;
             if ( ! isAlpha(c) ) {
                 if ( p == start )

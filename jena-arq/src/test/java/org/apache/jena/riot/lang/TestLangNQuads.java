@@ -46,25 +46,21 @@ public class TestLangNQuads extends AbstractTestLangNTuples
     }
 
     @Test(expected = ExFatal.class)
-    public void nq_only_1() {
+    public void nq_only_1_no_tuple5() {
         parseCount("<x> <p> <s> <g> <c> .");
     }
 
     @Test(expected = ExFatal.class)
-    public void nq_only_2() {
+    public void nq_only_2_no_base() {
         parseCount("@base <http://example/> . <x> <p> <s> .");
     }
 
     @Test
     public void dataset_1() {
         // This must parse to <g>
-        DatasetGraph dsg = parseToDataset("<x> <p> <s> <g> .");
+        DatasetGraph dsg = ParserTests.parser().fromString("<x> <p> <s> <g> .").lang(Lang.NQUADS).toDatasetGraph();
         assertEquals(1, dsg.size());
         assertEquals(1, dsg.getGraph(NodeFactory.createURI("g")).size());
         assertEquals(0, dsg.getDefaultGraph().size());
-    }
-
-    private DatasetGraph parseToDataset(String string) {
-        return ParserTestBaseLib.parseDataset(Lang.NQUADS, string);
     }
 }

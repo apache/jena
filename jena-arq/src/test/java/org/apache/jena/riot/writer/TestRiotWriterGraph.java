@@ -51,6 +51,7 @@ public class TestRiotWriterGraph extends AbstractWriterTest
             , { RDFFormat.TURTLE_PRETTY }
             , { RDFFormat.TURTLE_BLOCKS }
             , { RDFFormat.TURTLE_FLAT }
+            , { RDFFormat.TURTLE_LONG }
             , { RDFFormat.RDFXML }
             , { RDFFormat.RDFXML_PRETTY }
             , { RDFFormat.RDFXML_PLAIN }
@@ -58,10 +59,6 @@ public class TestRiotWriterGraph extends AbstractWriterTest
             , { RDFFormat.JSONLD }
             , { RDFFormat.JSONLD_PRETTY }
             , { RDFFormat.JSONLD_FLAT }
-
-            , { RDFFormat.JSONLD10 }
-            , { RDFFormat.JSONLD10_PRETTY }
-            , { RDFFormat.JSONLD10_FLAT }
 
             , { RDFFormat.JSONLD11 }
             , { RDFFormat.JSONLD11_PRETTY }
@@ -73,6 +70,7 @@ public class TestRiotWriterGraph extends AbstractWriterTest
             , { RDFFormat.TRIG_PRETTY }
             , { RDFFormat.TRIG_BLOCKS }
             , { RDFFormat.TRIG_FLAT }
+            , { RDFFormat.TRIG_LONG }
             , { RDFFormat.NQUADS_UTF8}
             , { RDFFormat.NQUADS_ASCII}
             , { RDFFormat.NQUADS}
@@ -104,8 +102,7 @@ public class TestRiotWriterGraph extends AbstractWriterTest
     @Test public void writer08() { test("writer-rt-08.ttl"); }
 
     private static boolean isJsonLDJava(RDFFormat format) {
-        return Lang.JSONLD.equals(format.getLang()) ||
-               Lang.JSONLD10.equals(format.getLang());
+        return Lang.JSONLD.equals(format.getLang());
     }
 
     @Test public void writer09() {

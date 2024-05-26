@@ -271,7 +271,7 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements Secured
 
     protected void checkAdd(final int pos, final Node node)
             throws AddDeniedException, UpdateDeniedException, AuthenticationRequiredException {
-        checkCreate(new Triple(holder.getBaseItem().asNode(), RDF.li(pos).asNode(), node));
+        checkCreate(Triple.create(holder.getBaseItem().asNode(), RDF.li(pos).asNode(), node));
     }
 
     /**

@@ -71,6 +71,28 @@ Also useful:
 
 `-Drat.skip` Skips checking for license headers; useful during development.
 
+## IDE setup
+
+### Avoid multiple imports
+
+To work with the Jena source in an IDE, it is only necessary to import modules
+of interest.
+
+When importing modules, avoid including modules twice. This happens when
+including both a module and also its parent POM because the parent POM includes
+the module within its directory tree.
+
+This happens if the top level POM is included, as well as `jena-db` and
+`jena-fuseki2` as well as `jena-extras` and `jena-jdbc`.
+
+### Avoid output modules
+
+Artifacts that provide shaded jars should not normally be imported, especially
+`jena-shaded-guava`. Other shared jars included `jena-fuseki-server` and
+`jena-fuseki-fulljar`.
+
+`jena-shaded-guava` will be obtained from a maven repository or from a local run
+of mvn.
 
 ## Build Notes
 

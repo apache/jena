@@ -1,0 +1,5 @@
+<http://www.w3.org/> <http://purl.org/dc/elements/1.1/source> <http://example.org/test1/test2/> .
+<http://www.w3.org/> <http://purl.org/dc/elements/1.1/relation> <http://example.org/test1/> .
+_:jA303 <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "test2/" .
+<http://www.w3.org/> <http://purl.org/dc/elements/1.1/source> _:jA303 .
+<http://www.w3.org/> <http://purl.org/dc/elements/1.1/relation> <http://example.org/> .

@@ -1,0 +1,10 @@
+PREFIX : <http://example/>
+
+SELECT * {
+   ?s :q ?z .
+   
+   LATERAL { ?x :q ?v .
+             FILTER( ?x != ?s)
+             FILTER( ?v = ?z )
+           }
+}

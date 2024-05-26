@@ -19,5 +19,4 @@
 package org.apache.jena.cmd;
 
 public abstract class ModBase implements ArgModuleGeneral
-{
-}
+{}

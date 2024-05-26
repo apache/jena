@@ -21,6 +21,7 @@ package org.apache.jena.atlas.iterator ;
 import java.util.ArrayDeque ;
 import java.util.Deque ;
 import java.util.Iterator ;
+import java.util.function.Consumer;
 
 /**
  * An iterator where you can push items back into the iterator, to be yielded (LIFO) next time.
@@ -52,5 +53,13 @@ public class PushbackIterator<T> implements Iterator<T> {
         if ( !items.isEmpty() )
             return items.pop() ;
         return iter.next() ;
+    }
+
+    @Override
+    public void forEachRemaining(Consumer<? super T> action) {
+        while(!items.isEmpty()) {
+            action.accept(items.pop());
+        }
+        iter.forEachRemaining(action);
     }
 }

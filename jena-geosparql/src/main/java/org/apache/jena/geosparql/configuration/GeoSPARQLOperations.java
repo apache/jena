@@ -600,17 +600,19 @@ public class GeoSPARQLOperations {
         //Iterate through all statements: toNodeValue geometry literals and just add the rest.
         Model outputModel = ModelFactory.createDefaultModel();
         outputModel.setNsPrefixes(inputModel.getNsPrefixMap());
-        Iterator<Statement> statementIt = inputModel.listStatements();
-        while (statementIt.hasNext()) {
-            Statement statement = statementIt.next();
-            RDFNode object = statement.getObject();
-            if (object.isLiteral()) {
-                handleLiteral(statement, outputModel, outputSrsURI, outputDatatype);
-            } else {
-                //Not a statement of interest so store for output.
-                outputModel.add(statement);
+        ExtendedIterator<Statement> statementIt = inputModel.listStatements();
+        try {
+            while (statementIt.hasNext()) {
+                Statement statement = statementIt.next();
+                RDFNode object = statement.getObject();
+                if (object.isLiteral()) {
+                    handleLiteral(statement, outputModel, outputSrsURI, outputDatatype);
+                } else {
+                    //Not a statement of interest so store for output.
+                    outputModel.add(statement);
+                }
             }
-        }
+        } finally { statementIt.close(); }
         return outputModel;
     }
 
@@ -884,36 +886,36 @@ public class GeoSPARQLOperations {
         List<Statement> additionalStatements = new ArrayList<>();
 
         StmtIterator stmtIter = outputModel.listStatements();
+        try {
+            while (stmtIter.hasNext()) {
+                Statement stmt = stmtIter.nextStatement();
+                RDFNode object = stmt.getObject();
+                if (object.isLiteral()) {
+                    Literal literal = object.asLiteral();
+                    RDFDatatype datatype = literal.getDatatype();
+                    if (GeometryDatatype.check(datatype)) {
 
-        while (stmtIter.hasNext()) {
-            Statement stmt = stmtIter.nextStatement();
-            RDFNode object = stmt.getObject();
-            if (object.isLiteral()) {
-                Literal literal = object.asLiteral();
-                RDFDatatype datatype = literal.getDatatype();
-                if (GeometryDatatype.check(datatype)) {
+                        Property property = stmt.getPredicate();
+                        if (property.equals(Geo.HAS_SERIALIZATION_PROP) || property.equals(Geo.AS_WKT_PROP) || property.equals(Geo.AS_GML_PROP)) {
+                            //Model already contains the GeoSPARQL properties for this literal so skipping.
+                            continue;
+                        }
 
-                    Property property = stmt.getPredicate();
-                    if (property.equals(Geo.HAS_SERIALIZATION_PROP) || property.equals(Geo.AS_WKT_PROP) || property.equals(Geo.AS_GML_PROP)) {
-                        //Model already contains the GeoSPARQL properties for this literal so skipping.
-                        continue;
+                        if (outputModel.contains(property, RDFS.subPropertyOf, Geo.HAS_SERIALIZATION_PROP)) {
+                            //The property is a sub property of hasSerialization so skipping. Only RDFS inferencing needs to be applied.
+                            continue;
+                        }
+
+                        Resource feature = stmt.getSubject();
+                        Resource geometry = createGeometry(feature);
+
+                        additionalStatements.add(ResourceFactory.createStatement(feature, Geo.HAS_GEOMETRY_PROP, geometry));
+                        additionalStatements.add(ResourceFactory.createStatement(geometry, Geo.HAS_SERIALIZATION_PROP, literal));
+                        stmtIter.remove();
                     }
-
-                    if (outputModel.contains(property, RDFS.subPropertyOf, Geo.HAS_SERIALIZATION_PROP)) {
-                        //The property is a sub property of hasSerialization so skipping. Only RDFS inferencing needs to be applied.
-                        continue;
-                    }
-
-                    Resource feature = stmt.getSubject();
-                    Resource geometry = createGeometry(feature);
-
-                    additionalStatements.add(ResourceFactory.createStatement(feature, Geo.HAS_GEOMETRY_PROP, geometry));
-                    additionalStatements.add(ResourceFactory.createStatement(geometry, Geo.HAS_SERIALIZATION_PROP, literal));
-                    stmtIter.remove();
                 }
             }
-        }
-
+        } finally { stmtIter.close(); }
         outputModel.add(additionalStatements);
 
         return outputModel;

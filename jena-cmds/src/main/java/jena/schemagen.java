@@ -21,34 +21,53 @@
 package jena;
 
 
-import static org.apache.jena.atlas.logging.LogCtl.setLogging;
-
-import java.io.ByteArrayOutputStream ;
-import java.io.File ;
-import java.io.FileOutputStream ;
-import java.io.PrintStream ;
-import java.net.MalformedURLException ;
-import java.net.URL ;
-import java.text.SimpleDateFormat ;
-import java.util.* ;
-import java.util.regex.Pattern ;
-import java.util.regex.PatternSyntaxException ;
-
-import org.apache.jena.ext.xerces.util.XMLChar;
-import org.apache.jena.ontology.Individual ;
-import org.apache.jena.ontology.OntModel ;
-import org.apache.jena.ontology.OntModelSpec ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.NodeIterator;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.shared.JenaException ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.WrappedIterator ;
-import org.apache.jena.vocabulary.OWL ;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.RDFS ;
-import org.apache.jena.vocabulary.XSD ;
+import org.apache.jena.riot.RDFFormat;
+import org.apache.jena.riot.RDFWriter;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.util.XMLChar;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.WrappedIterator;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.XSD;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
+import static org.apache.jena.atlas.logging.LogCtl.setLogging;
 
 /**
  * <p>
@@ -58,7 +77,7 @@ import org.apache.jena.vocabulary.XSD ;
  * </p>
  */
 public class schemagen {
-    
+
     static { setLogging(); }
 
     // Constants
@@ -89,7 +108,6 @@ public class schemagen {
     public static final int COMMENT_LENGTH_LIMIT = 80;
 
 
-
     /** List of Java reserved keywords, see <a href="http://docs.oracle.com/javase/tutorial/java/nutsandbolts/_keywords.html">this list</a>. */
     public static final String[] JAVA_KEYWORDS = {
         "abstract",    "continue",    "for",         "new",         "switch",
@@ -101,7 +119,10 @@ public class schemagen {
         "catch",       "extends",     "int",         "short",       "try",
         "char",        "final",       "interface",   "static",      "void",
         "class",       "finally",     "long",        "strictfp",    "volatile",
-        "const",       "float",       "native",      "super",       "while"
+        "const",       "float",       "native",      "super",       "while",
+
+        // And distinguished names.
+        "var", "record"
     };
 
 
@@ -629,12 +650,7 @@ public class schemagen {
     /** Write the source code of the input model into the file itself */
     protected void writeSource() {
         if (includeSource()) {
-            // first save a copy of the source in compact form into a buffer
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            RDFWriterI rw = m_source.getWriter( "Turtle" );
-            rw.setProperty( "objectLists", Boolean.FALSE.toString() );
-            rw.write( m_source, bos, null );
-            String output = bos.toString();
+            String output = RDFWriter.source(m_source).format(RDFFormat.TURTLE_BLOCKS).asString();
 
             // now we embed each line of the source in the output
             writeln( 1, "private static final String SOURCE = " );
@@ -669,11 +685,11 @@ public class schemagen {
     private String protectQuotes( String s ) {
         return s.replaceAll( "\\\\", "\\\\\\\\" ).replaceAll( "\"", "\\\\\"" );
     }
-    
+
     /** Write owl:versionInfo string if it exists **/
     protected void writeOntologyVersionInfo() {
         String versionInfo = getOntologyElementVersionInfo();
-        
+
         if (null != versionInfo) {
             writeln( 1, "/** <p>The ontology's owl:versionInfo as a string</p> */" );
             writeln( 1, "public static final String VERSION_INFO = \"" + protectQuotes(versionInfo) + "\";" );
@@ -739,11 +755,11 @@ public class schemagen {
 
         return defaultNS;
     }
-    
+
     /** Document has an owl:Ontology or daml:Ontology element */
     protected String getOntologyElementVersionInfo() {
         String versionInfo = null;
-        
+
         Resource ontologyClass = m_source.getProfile().ONTOLOGY();
         if (null != ontologyClass) {
             StmtIterator i = m_source.getBaseModel().listStatements( null, RDF.type, ontologyClass );
@@ -752,7 +768,7 @@ public class schemagen {
                 StmtIterator j = m_source.getBaseModel().listStatements( ont, OWL.versionInfo, (RDFNode)null );
                 if (j.hasNext()) {
                     versionInfo = j.nextStatement().getObject().asLiteral().getLexicalForm();
-                    
+
                     // check for ambiguous answers
                     if (j.hasNext()) {
                         System.err.println( "Warning: ambiguous owl:versionInfo - there are more than one owl:versionInfo statements." );
@@ -764,7 +780,7 @@ public class schemagen {
                         System.err.println();
                     }
                 }
-                
+
                 // check for ambiguous answers
                 if (i.hasNext()) {
                     System.err.println( "Warning: ambiguous owl:versionInfo - there is more than one owl:Ontology element." );
@@ -777,7 +793,7 @@ public class schemagen {
                 }
             }
         }
-        
+
         return versionInfo;
     }
 
@@ -1097,7 +1113,7 @@ public class schemagen {
 
         return accepted;
     }
-    
+
     /** Write any datatypes in the vocabulary */
     protected void writeDatatypes() {
         if (m_options.hasNodatatypesOption()) {
@@ -1107,15 +1123,15 @@ public class schemagen {
         if (m_options.hasDatatypesSectionOption()) {
             writeln( 0, m_options.getDatatypesSectionOption() );
         }
-        
+
         String template = m_options.hasDatatypeTemplateOption() ?  m_options.getDatatypeTemplateOption() : DEFAULT_TEMPLATE;
-        
+
         // Cannot create a full RDFDatatype object since we don't know how to parse these custom types, but we can at least specify a Resource
         for (Iterator<? extends RDFNode> i = selectDatatypes(); i.hasNext(); ) {
             writeValue( (Resource) i.next(), template, "Resource", "createResource", "_DATATYPE" );
         }
     }
-    
+
     /** Answer an iterator over the datatypes selected for output */
     protected ExtendedIterator<? extends RDFNode> selectDatatypes() {
         List<Resource> candidates = new ArrayList<>();
@@ -1480,7 +1496,7 @@ public class schemagen {
 
             /** Section declaration for individuals section; use <code>--individualsSection &lt;...&gt;</code> on command line; use <code>sgen:individualsSection</code> in config file */
             INDIVIDUALS_SECTION,
-            
+
             /** Section declaration for datatypes section; use <code>--datatypesSection &lt;...&gt;</code> on command line; use <code>sgen:datatypesSection</code> in config file */
             DATATYPES_SECTION,
 
@@ -1492,7 +1508,7 @@ public class schemagen {
 
             /** Option to suppress individuals in vocab file; use <code>--noindividuals &lt;...&gt;</code> on command line; use <code>sgen:noindividuals</code> in config file */
             NOINDIVIDUALS,
-            
+
             /** Option to suppress datatypes in vocab file; use <code>--nodatatypes &lt;...&gt;</code> on command line; use <code>sgen:nodatatypes</code> in config file */
             NODATATYPES,
 
@@ -1507,7 +1523,7 @@ public class schemagen {
 
             /** Template for writing out individual declarations; use <code>--individualTemplate &lt;...&gt;</code> on command line; use <code>sgen:individualTemplate</code> in config file */
             INDIVIDUAL_TEMPLATE,
-            
+
             /** Template for writing out datatype declarations; use <code>--datatypeTemplate &lt;...&gt;</code> on command line; use <code>sgen:datatypeTemplate</code> in config file */
             DATATYPE_TEMPLATE,
 

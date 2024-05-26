@@ -18,9 +18,10 @@
 
 package arq;
 
+import static org.apache.jena.atlas.lib.Lib.lowercase;
+
 import java.io.PrintStream ;
 import java.util.Iterator ;
-import java.util.Locale;
 
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModEngine ;
@@ -45,13 +46,13 @@ import org.apache.jena.sparql.util.QueryUtils ;
 public class qparse extends CmdARQ
 {
     protected ModQueryIn    modQuery        = new ModQueryIn(Syntax.syntaxARQ) ;
-    protected ModQueryOut   modOutput       = new ModQueryOut() ; 
+    protected ModQueryOut   modOutput       = new ModQueryOut() ;
     protected ModEngine     modEngine       = new ModEngine() ;
     protected final ArgDecl argDeclPrint    = new ArgDecl(ArgDecl.HasValue, "print") ;
     protected final ArgDecl argDeclOpt      = new ArgDecl(ArgDecl.NoValue, "opt", "optimize") ;
     protected final ArgDecl argDeclExplain  = new ArgDecl(ArgDecl.NoValue, "explain") ;
     protected final ArgDecl argDeclFixup    = new ArgDecl(ArgDecl.NoValue, "fixup") ;
-    
+
     protected boolean printNone             = false ;
     protected boolean printQuery            = false ;
     protected boolean printOp               = false ;
@@ -59,12 +60,12 @@ public class qparse extends CmdARQ
     protected boolean printQuad             = false ;
     protected boolean printQuadOpt          = false ;
     protected boolean printPlan             = false ;
-    
+
     public static void main(String... argv)
     {
         new qparse(argv).mainRun() ;
     }
-    
+
     public qparse(String[] argv)
     {
         super(argv) ;
@@ -76,16 +77,16 @@ public class qparse extends CmdARQ
         super.add(argDeclExplain, "--explain", "Print with algebra-level optimization") ;
         super.add(argDeclOpt, "--opt", "[deprecated]") ;
         super.add(argDeclFixup, "--fixup", "Convert undeclared prefix names to URIs") ;
-        
-        // Switch off function build warnings.  
+
+        // Switch off function build warnings.
         E_Function.WarnOnUnknownFunction = false ;
     }
-    
+
     @Override
     protected void processModulesAndArgs()
     {
         super.processModulesAndArgs() ;
-        
+
         if ( contains(argDeclOpt) )
             printOpt = true ;
         if ( contains(argDeclExplain) )
@@ -98,9 +99,8 @@ public class qparse extends CmdARQ
             ARQ.set(ARQ.fixupUndefinedPrefixes, true);
         }
 
-        for ( String arg : getValues( argDeclPrint ) )
-        {
-            switch(arg.toLowerCase(Locale.ROOT)) {
+        for ( String arg : getValues( argDeclPrint ) ) {
+            switch(lowercase(arg)) {
                 case "query":
                     printQuery = true;
                     break;
@@ -113,32 +113,32 @@ public class qparse extends CmdARQ
                 case "plan":
                     printPlan = true;
                     break;
-                case "opt": 
+                case "opt":
                     printOpt = true;
                     break;
                 case "optquad": case "quadopt":
                     printQuadOpt = true;
                     break;
-                case "none": 
+                case "none":
                     printNone = true;
                     break;
                 default:
                     throw new CmdException("Not a recognized print form: " + arg + " : Choices are: query, op, quad, opt, optquad, plan" );
             }
         }
-        
+
         if ( ! printQuery && ! printOp && ! printQuad && ! printPlan && ! printOpt && ! printQuadOpt && ! printNone )
             printQuery = true ;
     }
 
     static String usage = qparse.class.getName()+" [--in syntax] [--out syntax] [--print=FORM] [\"query\"] | --query <file>" ;
-    
+
     @Override
     protected String getSummary()
     {
         return usage ;
     }
-    
+
     static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;
     //static final String divider = "" ;
     boolean needDivider = false ;
@@ -147,7 +147,7 @@ public class qparse extends CmdARQ
         if ( needDivider ) System.out.println(divider) ;
         needDivider = true ;
     }
-    
+
     @Override
     protected void exec()
     {
@@ -165,7 +165,7 @@ public class qparse extends CmdARQ
             }
             finally { LogCtl.setLevel(QueryParserBase.ParserLoggerName, "INFO") ; }
 
-            
+
             // Print the query out in some syntax
             if ( printQuery )
             { divider() ; modOutput.output(query) ; }
@@ -173,22 +173,22 @@ public class qparse extends CmdARQ
             // Print internal forms.
             if ( printOp )
             { divider() ; modOutput.outputOp(query, false) ; }
-            
+
             if ( printQuad )
             { divider() ; modOutput.outputQuad(query, false) ; }
-            
+
             if ( printOpt )
             { divider() ; modOutput.outputOp(query, true) ; }
-            
+
             if ( printQuadOpt )
             { divider() ; modOutput.outputQuad(query, true) ; }
-            
+
             if ( printPlan )
-            { 
+            {
                 divider() ;
                 // This forces internal query initialization - must be after QueryUtils.checkQuery
                 QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.createGeneral()) ;
-                QueryOutputUtils.printPlan(query, qExec) ; 
+                QueryOutputUtils.printPlan(query, qExec) ;
             }
         }
         catch (ARQInternalErrorException intEx)
@@ -212,10 +212,10 @@ public class qparse extends CmdARQ
             //System.err.println(qEx.getMessage()) ;
             throw new CmdException("Query Exeception", qEx) ;
         }
-        catch (JenaException ex) { 
+        catch (JenaException ex) {
             ex.printStackTrace() ;
-            throw ex ; } 
-        catch (CmdException ex) { throw ex ; } 
+            throw ex ; }
+        catch (CmdException ex) { throw ex ; }
         catch (Exception ex)
         {
             throw new CmdException("Exception", ex) ;
@@ -236,7 +236,7 @@ public class qparse extends CmdARQ
 //            "  --parse        Parse only - don't print\n"+
 //            "  ---planning    Turn planning on/off\n"+
 //            "  --show X       Show internal structure (X = query or plan)\n" ;
-    
+
     static void writeSyntaxes(String msg, PrintStream out)
     {
         if ( msg != null )
@@ -255,6 +255,6 @@ public class qparse extends CmdARQ
         StringBuilder r = new StringBuilder(x) ;
         for ( int i = x.length() ; i <= len ; i++ )
             r.append(" ") ;
-        return r.toString() ; 
+        return r.toString() ;
     }
 }

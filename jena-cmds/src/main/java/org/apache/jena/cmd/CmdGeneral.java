@@ -41,10 +41,10 @@ public abstract class CmdGeneral extends CmdArgModule
         argModule.registerWith(this);
     }
 
-    protected boolean isVerbose() { return modGeneral.verbose ; }
-    protected boolean isQuiet()   { return modGeneral.quiet ; }
-    protected boolean isDebug()   { return modGeneral.debug ; }
-    protected boolean help()      { return modGeneral.help ; }
+    protected boolean isVerbose() { return modGeneral.verbose; }
+    protected boolean isQuiet()   { return modGeneral.quiet; }
+    protected boolean isDebug()   { return modGeneral.debug; }
+    protected boolean help()      { return modGeneral.help; }
 
     final public void printHelp() {
         usage();
@@ -60,7 +60,7 @@ public abstract class CmdGeneral extends CmdArgModule
     private Usage usage = new Usage();
     protected String cmdName = null;
     protected abstract String getSummary();
-    public void usage() { usage(System.err) ; }
+    public void usage() { usage(System.err); }
 
     public void usage(PrintStream pStr) {
         IndentedWriter out = new IndentedWriter(pStr);
@@ -73,5 +73,5 @@ public abstract class CmdGeneral extends CmdArgModule
         getUsage().addUsage(argName, msg);
     }
 
-    public Usage getUsage() { return usage ; }
+    public Usage getUsage() { return usage; }
 }

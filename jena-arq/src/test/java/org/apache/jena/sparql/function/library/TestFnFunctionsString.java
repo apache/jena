@@ -92,7 +92,7 @@ public class TestFnFunctionsString {
 
     @Test public void exprStrNormalizeSpace0() { test("fn:normalize-space(' The    wealthy curled darlings                                         of    our    nation. ')",
             NodeValue.makeString("The wealthy curled darlings of our nation.")) ; }
-    @Test public void exprStrNormalizeSpace1() { test("fn:normalize-space('')",NodeValue.nvEmptyString) ; }
+    @Test public void exprStrNormalizeSpace1() { test("fn:normalize-space('')", NodeValue.nvEmptyString) ; }
     @Test public void exprStrNormalizeSpace2() { test("fn:normalize-space('   Aaa     ')",NodeValue.makeString("Aaa")) ; }
     @Test public void exprStrNormalizeSpace3() { test("fn:normalize-space('A a   a    a a    ')",NodeValue.makeString("A a a a a")) ; }
 

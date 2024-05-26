@@ -26,11 +26,7 @@ import org.apache.jena.query.Dataset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- *
- */
-public class GeosparqlServer extends Thread {
+public class GeosparqlServer {
 
     static { FusekiLogging.setLogging(); }
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -55,11 +51,9 @@ public class GeosparqlServer extends Thread {
                 .loopback(loopbackOnly);
         builder.add(datasetName, dataset, allowUpdate);
         this.server = builder.build();
-
     }
 
     private String checkDatasetName(String datasetName) {
-
         if (datasetName.isEmpty()) {
             LOGGER.warn("Empty dataset name. Defaulting to '/ds'.");
             return "/ds";
@@ -72,47 +66,18 @@ public class GeosparqlServer extends Thread {
         }
     }
 
-    @Override
-    public void run() {
+    public void start() {
         LOGGER.info("GeoSPARQL Server: Running - Port: {}, Dataset: {}, Loopback Only: {},  Allow Update: {}", port, datasetName, loopbackOnly, allowUpdate);
-        addShutdownHook();
         this.server.start();
-    }
-
-    private void addShutdownHook() {
-        removeShutdownHook();
-
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                server.stop();
-                LOGGER.info("GeoSPARQL Server: Shutdown");
-            }
-        };
-        Runtime.getRuntime().addShutdownHook(thread);
-        shutdownThread = thread;
-    }
-
-    private void removeShutdownHook() {
-        if (shutdownThread != null) {
-            try {
-                Runtime.getRuntime().removeShutdownHook(shutdownThread);
-            } catch (IllegalStateException ex) {
-                LOGGER.info("Shutdown in progress.");
-            } finally {
-                shutdownThread = null;
-            }
-        }
     }
 
     public void shutdown() {
         server.stop();
-        removeShutdownHook();
         LOGGER.info("GeoSPARQL Server: Shutdown");
     }
 
     public int getPort() {
-        return port;
+        return server.getPort();
     }
 
     public String getDatasetName() {
@@ -135,5 +100,4 @@ public class GeosparqlServer extends Thread {
     public String toString() {
         return "GeosparqlServer{" + "port=" + port + ", datasetName=" + datasetName + ", localServiceURL=" + localServiceURL + ", loopbackOnly=" + loopbackOnly + ", allowUpdate=" + allowUpdate + '}';
     }
-
 }

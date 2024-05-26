@@ -35,7 +35,7 @@ public class IsEmptyFF extends FunctionBase1 {
         try {
             GeometryWrapper geometry = GeometryWrapper.extract(v);
 
-            Boolean isEmpty = geometry.isEmpty();
+            boolean isEmpty = geometry.isEmpty();
             return NodeValue.makeNodeBoolean(isEmpty);
         } catch (DatatypeFormatException ex) {
             throw new ExprEvalException(ex.getMessage(), ex);

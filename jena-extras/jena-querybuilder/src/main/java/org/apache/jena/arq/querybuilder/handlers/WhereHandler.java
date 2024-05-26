@@ -17,12 +17,8 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.Converters;
@@ -37,18 +33,7 @@ import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
-import org.apache.jena.sparql.syntax.Element;
-import org.apache.jena.sparql.syntax.ElementBind;
-import org.apache.jena.sparql.syntax.ElementFilter;
-import org.apache.jena.sparql.syntax.ElementGroup;
-import org.apache.jena.sparql.syntax.ElementMinus;
-import org.apache.jena.sparql.syntax.ElementNamedGraph;
-import org.apache.jena.sparql.syntax.ElementOptional;
-import org.apache.jena.sparql.syntax.ElementPathBlock;
-import org.apache.jena.sparql.syntax.ElementSubQuery;
-import org.apache.jena.sparql.syntax.ElementTriplesBlock;
-import org.apache.jena.sparql.syntax.ElementUnion;
+import org.apache.jena.sparql.syntax.*;
 import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.vocabulary.RDF;
 
@@ -61,6 +46,11 @@ import org.apache.jena.vocabulary.RDF;
  *
  */
 public class WhereHandler implements Handler {
+    
+    private static Predicate<Node> checkPredicate = n -> n.isURI() || n.isVariable() ||n.equals(Node.ANY);
+    
+    private static Predicate<Node> checkSubject = n -> checkPredicate.test(n) || n.isBlank() || n.isNodeTriple();
+
 
     // the query to modify
     private final Query query;
@@ -86,7 +76,7 @@ public class WhereHandler implements Handler {
 
     /**
      * Get the query pattern from this where handler.
-     * 
+     *
      * @return the query pattern
      */
     public Element getQueryPattern() {
@@ -181,20 +171,11 @@ public class WhereHandler implements Handler {
      * @param t The trip to test.
      */
     private static void testTriple(TriplePath t) {
+        
         // verify Triple is valid
-        boolean validSubject = t.getSubject().isURI() || t.getSubject().isBlank() || t.getSubject().isVariable()
-                || t.getSubject().equals(Node.ANY);
-        boolean validPredicate;
-
-        if (t.isTriple()) {
-            validPredicate = t.getPredicate().isURI() || t.getPredicate().isVariable()
-                    || t.getPredicate().equals(Node.ANY);
-        } else {
-            validPredicate = t.getPath() != null;
-        }
-
-        boolean validObject = t.getObject().isURI() || t.getObject().isLiteral() || t.getObject().isBlank()
-                || t.getObject().isVariable() || t.getObject().equals(Node.ANY);
+        boolean validSubject = checkSubject.test(t.getSubject());
+        boolean validPredicate = t.isTriple() ? checkPredicate.test(t.getPredicate()) : t.getPath() != null;
+        boolean validObject = checkSubject.test(t.getObject()) || t.getObject().isLiteral();
 
         if (!validSubject || !validPredicate || !validObject) {
             StringBuilder sb = new StringBuilder();
@@ -203,11 +184,11 @@ public class WhereHandler implements Handler {
                         t.getSubject()));
             }
             if (!validPredicate) {
-                sb.append(String.format("Predicate (%s) must be a Path, URI , variable, or a wildcard. %n",
+                sb.append(String.format("Predicate (%s) must be a Path, URI, variable, or a wildcard. %n",
                         t.getPredicate()));
             }
             if (!validObject) {
-                sb.append(String.format("Object (%s) must be a URI, literal, blank, , variable, or a wildcard. %n",
+                sb.append(String.format("Object (%s) must be a URI, literal, blank, variable, or a wildcard. %n",
                         t.getObject()));
             }
             if (!validSubject || !validPredicate) {
@@ -241,12 +222,23 @@ public class WhereHandler implements Handler {
                 ElementPathBlock epb = (ElementPathBlock) e;
                 epb.addTriple(t);
             } else {
-                ElementPathBlock etb = new ElementPathBlock();
-                etb.addTriple(t);
-                eg.addElement(etb);
+                ElementPathBlock epb = new ElementPathBlock();
+                epb.addTriple(t);
+                eg.addElement(epb);
             }
 
         }
+    }
+    
+    /**
+     * Add the triple path to the where clause
+     *
+     * @param t The triple path to add.
+     * @throws IllegalArgumentException If the triple path is not a valid triple
+     * path for a where clause.
+     */
+    public void addWhere(Collection<TriplePath> t) throws IllegalArgumentException {
+        t.forEach(this::addWhere);
     }
 
     /**
@@ -268,16 +260,26 @@ public class WhereHandler implements Handler {
      * where clause.
      */
     public void addOptional(TriplePath t) throws IllegalArgumentException {
-        testTriple(t);
+        addOptional(Arrays.asList(t));
+    }
+    
+    /**
+     * Add an optional triple to the where clause
+     *
+     * @param t The triple path to add.
+     * @throws IllegalArgumentException If the triple is not a valid triple for a
+     * where clause.
+     */
+    public void addOptional(Collection<TriplePath> t) throws IllegalArgumentException {
         ElementPathBlock epb = new ElementPathBlock();
-        epb.addTriple(t);
+        t.forEach( tp -> {testTriple(tp);epb.addTriple(tp);});
         ElementOptional opt = new ElementOptional(epb);
         getClause().addElement(opt);
     }
 
     /**
      * Add the contents of a where handler as an optional statement.
-     * 
+     *
      * @param whereHandler The where handler to use as the optional statement.
      */
     public void addOptional(WhereHandler whereHandler) {
@@ -288,9 +290,8 @@ public class WhereHandler implements Handler {
      * Add an expression string as a filter.
      *
      * @param expression The expression string to add.
-     * @throws ParseException If the expression can not be parsed.
      */
-    public void addFilter(String expression) throws ParseException {
+    public void addFilter(String expression) {
         getClause().addElement(new ElementFilter(ExprUtils.parse(query, expression, true)));
     }
 
@@ -396,6 +397,20 @@ public class WhereHandler implements Handler {
         epb.addTriple(subQuery);
         getClause().addElement(new ElementNamedGraph(graph, epb));
     }
+    
+    /**
+     * Add a graph to the where clause.
+     *
+     * Short hand for graph { s, p, o }
+     *
+     * @param graph The name of the graph.
+     * @param subQuery A triple path to add to the graph.
+     */
+    public void addGraph(Node graph, Collection<TriplePath> subQuery) {
+        ElementPathBlock epb = new ElementPathBlock();
+        subQuery.forEach(epb::addTriple);
+        getClause().addElement(new ElementNamedGraph(graph, epb));
+    }
 
     /**
      * Add a binding to the where clause.
@@ -412,9 +427,8 @@ public class WhereHandler implements Handler {
      *
      * @param expression The expression to bind.
      * @param var The variable to bind it to.
-     * @throws ParseException
      */
-    public void addBind(String expression, Var var) throws ParseException {
+    public void addBind(String expression, Var var) {
         getClause().addElement(new ElementBind(var, ExprUtils.parse(query, expression, true)));
     }
 
@@ -461,19 +475,21 @@ public class WhereHandler implements Handler {
      *
      * @param objs the list of objects for the list.
      * @return the first blank node in the list.
+     * @deprecated use {code Converters.makeCollection(List.of(Object...))}.
      */
+    @Deprecated(since="5.0.0")
     public Node list(Object... objs) {
         Node retval = NodeFactory.createBlankNode();
         Node lastObject = retval;
         for (int i = 0; i < objs.length; i++) {
             Node n = Converters.makeNode(objs[i], query.getPrefixMapping());
-            addWhere(new TriplePath(new Triple(lastObject, RDF.first.asNode(), n)));
+            addWhere(new TriplePath(Triple.create(lastObject, RDF.first.asNode(), n)));
             if (i + 1 < objs.length) {
                 Node nextObject = NodeFactory.createBlankNode();
-                addWhere(new TriplePath(new Triple(lastObject, RDF.rest.asNode(), nextObject)));
+                addWhere(new TriplePath(Triple.create(lastObject, RDF.rest.asNode(), nextObject)));
                 lastObject = nextObject;
             } else {
-                addWhere(new TriplePath(new Triple(lastObject, RDF.rest.asNode(), RDF.nil.asNode())));
+                addWhere(new TriplePath(Triple.create(lastObject, RDF.rest.asNode(), RDF.nil.asNode())));
             }
 
         }

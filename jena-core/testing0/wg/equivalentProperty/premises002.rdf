@@ -1,0 +1,30 @@
+<!--++ equivalentProperty/premises002.rdf ** generated using webont test editor. ++-->
+<!--++ Created 18 Dec 2002 13:26:36 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: premises002.rdf,v 1.5 2003-12-05 05:09:30 jeremy_carroll Exp $
+-->
+<!--
+A reasoner can also deduce that <code>hasLeader</code> is a <code>subProperty</code> of <code>hasHead</code> and <code>hasHead</code> is a <code>subProperty</code> of <code>hasLeader</code>.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/equivalentProperty/premises002#"
+    xml:base="http://www.w3.org/2002/03owlt/equivalentProperty/premises002" >
+   <owl:ObjectProperty rdf:ID="hasHead">
+      <owl:equivalentProperty>
+         <owl:ObjectProperty rdf:ID="hasLeader"/>
+      </owl:equivalentProperty>
+   </owl:ObjectProperty>
+</rdf:RDF>

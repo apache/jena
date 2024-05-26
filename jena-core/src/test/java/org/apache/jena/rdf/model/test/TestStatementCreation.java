@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,8 +21,6 @@ package org.apache.jena.rdf.model.test;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.RDFS ;
 import org.junit.Assert;
 
 public class TestStatementCreation extends AbstractModelTestBase
@@ -162,22 +160,5 @@ public class TestStatementCreation extends AbstractModelTestBase
 				XSDDatatype.XSDinteger);
 		Assert.assertTrue(model.contains(R, P, L));
 		Assert.assertFalse(model.contains(R, P, "2"));
-	}
-
-	public void testNotReified()
-	{
-		Statement s1 = null;
-		Statement s2 = null;
-		s1 = model
-				.createStatement(model.createResource(), RDF.type, RDFS.Class);
-		Assert.assertFalse("Should not be reified", s1.isReified());
-		model.add(s1);
-		Assert.assertFalse("Should not be reified", s1.isReified());
-
-		s2 = model
-				.createStatement(model.createResource(), RDF.type, RDFS.Class);
-		Assert.assertFalse("Should not be reified", s2.isReified());
-		model.add(s2);
-		Assert.assertFalse("Should not be reified", s2.isReified());
 	}
 }

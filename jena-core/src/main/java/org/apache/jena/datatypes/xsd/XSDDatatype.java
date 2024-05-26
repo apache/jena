@@ -83,6 +83,10 @@ public class XSDDatatype extends BaseDatatype {
     /** Datatype representing xsd:decimal */
     public static final XSDDatatype XSDdecimal = new XSDBaseNumericType("decimal", BigDecimal.class);
 
+    /* * Datatype representing xsd:precisionDecimal https://www.w3.org/TR/xsd-precisionDecimal/ */
+    // Not a derived type of xsd:decimal.
+    //public static final XSDDatatype XSDprecisionDecimal = new XSDPRecisionDecimal("precisionDecimal", BigDecimal.class);
+
     /** Datatype representing xsd:integer */
     public static final XSDDatatype XSDinteger = new XSDBaseNumericType("integer", BigInteger.class);
 
@@ -244,8 +248,8 @@ public class XSDDatatype extends BaseDatatype {
     }
 
     /**
-     * Constructor used when loading in external user defined XSD types via 
-     * 
+     * Constructor used when loading in external user defined XSD types via
+     *
      * @param xstype the XSSimpleType definition to be wrapped
      * @param namespace the namespace for the type (used because the grammar loading doesn't seem to keep that)
      */
@@ -311,7 +315,7 @@ public class XSDDatatype extends BaseDatatype {
     // See an example "testing/xsd/daml+oil-ex-dt.xsd" and TestTypeLiterals.testUserDefined.
     // It calls into Xerces internal XM parsing, which is problematic if switching to the
     // JDK built-in XML parser in Java9 and later.
-    
+
 //    /**
 //     * Create and register a set of types specified in a user schema file.
 //     * We use the (illegal) DAML+OIL approach that the uriref of the type
@@ -617,7 +621,7 @@ public class XSDDatatype extends BaseDatatype {
         /**
          * Hidden constructor used when loading in external user defined XSD
          * types
-         * 
+         *
          * @param xstype
          *            the XSSimpleType definition to be wrapped
          * @param namespace
@@ -629,7 +633,6 @@ public class XSDDatatype extends BaseDatatype {
         }
     }
 
-    
     // Used to bootstrap the above initialization code
     public static void main(String[] args) {
         SymbolHash types = SchemaDVFactory.getInstance().getBuiltInTypes();

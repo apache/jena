@@ -18,10 +18,11 @@
 
 package org.apache.jena.riot.adapters;
 
+import static org.apache.jena.atlas.lib.Lib.lowercase;
+
 import java.io.OutputStream ;
 import java.io.Writer ;
 import java.util.HashMap ;
-import java.util.Locale ;
 import java.util.Map ;
 
 import org.apache.jena.rdf.model.Model ;
@@ -52,7 +53,10 @@ public class RDFWriterRIOT implements RDFWriterI
     private RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
 
     public RDFWriterRIOT(String jenaName) {
-        this.basename = "org.apache.jena.riot.writer." + jenaName.toLowerCase(Locale.ROOT);
+        this.basename = (jenaName==null)
+                ? "org.apache.jena.riot.writer.generic"
+                : "org.apache.jena.riot.writer." + lowercase(jenaName);
+
         this.jenaName = jenaName;
 
     }

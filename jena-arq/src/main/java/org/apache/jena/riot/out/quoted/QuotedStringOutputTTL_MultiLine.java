@@ -18,38 +18,38 @@
 
 package org.apache.jena.riot.out.quoted;
 
-import org.apache.jena.atlas.io.AWriter ;
-import org.apache.jena.atlas.lib.CharSpace ;
-import org.apache.jena.atlas.lib.EscapeStr ;
+import org.apache.jena.atlas.io.AWriter;
+import org.apache.jena.atlas.lib.CharSpace;
+import org.apache.jena.atlas.lib.EscapeStr;
 
 public class QuotedStringOutputTTL_MultiLine extends QuotedStringOutputTTL {
 
     public QuotedStringOutputTTL_MultiLine() {
-        super() ;
+        super();
     }
 
     /** Always use the given quote character */
     public QuotedStringOutputTTL_MultiLine(char quoteChar) {
-        super(quoteChar) ;
+        super(quoteChar);
     }
     
     /** Turtle is UTF-8 : ASCII is for non-standard needs */
     protected QuotedStringOutputTTL_MultiLine(char quoteChar, CharSpace charSpace) {
-        super(quoteChar, charSpace) ;
+        super(quoteChar, charSpace);
     } 
     
     /** Write a string using triple quotes. Try to avoid escapes by looking for the quote character first. */
     @Override
     public void writeStrMultiLine(AWriter w, String s) {
-        quote3(w) ;
+        quote3(w);
         EscapeStr.stringEsc(w, s, quoteChar, false, charSpace); 
-        quote3(w) ;
+        quote3(w);
     }
     
     private void quote3(AWriter w) {
-        w.print(quoteChar) ;
-        w.print(quoteChar) ;
-        w.print(quoteChar) ;
+        w.print(quoteChar);
+        w.print(quoteChar);
+        w.print(quoteChar);
     }
 }
 

@@ -109,9 +109,8 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
     }
 
     private <T> Iterator<T> isolate(Iterator<T> iterator) {
-        if ( txn.isInTransaction() && txn instanceof TransactionalSystem) {
+        if ( txn.isInTransaction() && txn instanceof TransactionalSystem txnSystem) {
             // Needs TxnId to track.
-            TransactionalSystem txnSystem = (TransactionalSystem)txn;
             TxnId txnId = txnSystem.getThreadTransaction().getTxnId();
             // Add transaction protection.
             return new IteratorTxnTracker<>(iterator, txnSystem, txnId);

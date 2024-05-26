@@ -19,8 +19,6 @@
 // Encoding in Thrift of RDF terms and other items 
 // for Graph, Datasets, Result Set and Patches
 
-// Versioning considerations?
-
 namespace java org.apache.jena.riot.thrift.wire
 
 // ==== RDF Term Definitions 
@@ -42,7 +40,7 @@ struct RDF_BNode {
 1: required string label
 }
 
-// Common abbreviations for datatypes and other URIs?
+// Common abbreviated for datatypes and other URIs?
 // union with additional values. 
 
 struct RDF_Literal {
@@ -77,7 +75,6 @@ union RDF_Term {
 7: RDF_UNDEF        undefined
 8: RDF_REPEAT       repeat
 9: RDF_Triple       tripleTerm  # RDF-star
-
 # Value forms of literals.
 10: i64             valInteger
 11: double          valDouble
@@ -122,17 +119,48 @@ struct RDF_DataTuple {
 1: list<RDF_Term> row
 }
 
-// // ==== RDF Patch
-// 
-// # Includes 
-// # Prefix declaration
-// 
-// enum RDF_Patch {
-//      ADD, 
-//      ADD_NO_OP,         // ADD recorded that had no effect
-//      DELETE, 
-//      DELETE_NO_OP       // DELETE recorded that had no effect
-// }
+// ==== RDF Patch
+
+enum PatchTxn { TX, TC, TA , Segment }
+
+struct Patch_Prefix_Add {
+1: optional RDF_Term graphNode;
+2: required string prefix;
+3: required string iriStr;
+}
+
+struct Patch_Prefix_Del {
+1: optional RDF_Term graphNode;
+2: required string prefix;
+}
+
+struct Patch_Header {
+1: required string name;
+2: required RDF_Term value;
+}
+
+struct Patch_Data_Add {
+1: required RDF_Term s;
+2: required RDF_Term p;
+3: required RDF_Term o;
+4: optional RDF_Term g;
+}
+
+struct Patch_Data_Del {
+1: required RDF_Term s;
+2: required RDF_Term p;
+3: required RDF_Term o;
+4: optional RDF_Term g;
+}
+
+union RDF_Patch_Row {
+1: Patch_Header       header;
+2: Patch_Data_Add     dataAdd;
+3: Patch_Data_Del     dataDel;
+4: Patch_Prefix_Add   prefixAdd;
+5: Patch_Prefix_Del   prefixDel;
+6: PatchTxn           txn;
+}
 
 // Local Variables:
 // tab-width: 2

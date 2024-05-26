@@ -1,0 +1,30 @@
+@prefix : <http://recursion.owl#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://recursion.owl> .
+
+<http://recursion.owl> rdf:type owl:Ontology .
+
+
+:hasTopping rdf:type owl:ObjectProperty ;
+            rdf:type owl:InverseFunctionalProperty .
+
+
+:American rdf:type owl:Class ;
+          rdfs:subClassOf [ rdf:type owl:Restriction ;
+                            owl:onProperty :hasTopping ;
+                            owl:allValuesFrom :American ;
+                          ] ,
+                          _:b0 ;
+          rdfs:label "Americana"@pt .
+
+_:b0 rdf:type owl:Restriction .
+_:b0 owl:onProperty :hasTopping .
+_:b0 owl:someValuesFrom _:b1 .
+
+_:b1 rdf:type owl:Restriction .
+_:b1 owl:onProperty :hasTopping .
+_:b1 owl:someValuesFrom _:b0 .

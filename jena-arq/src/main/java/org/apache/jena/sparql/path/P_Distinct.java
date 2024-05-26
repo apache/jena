@@ -32,10 +32,9 @@ public class P_Distinct extends P_Path1 {
 
     @Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
-        if ( !(path2 instanceof P_Distinct) )
-            return false;
-        P_Distinct other = (P_Distinct)path2;
-        return getSubPath().equalTo(other.getSubPath(), isoMap);
+        if ( path2 instanceof P_Distinct other )
+            return getSubPath().equalTo(other.getSubPath(), isoMap);
+        return false;
     }
 
     @Override

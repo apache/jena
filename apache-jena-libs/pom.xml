@@ -23,49 +23,60 @@
   <artifactId>apache-jena-libs</artifactId>
   <packaging>pom</packaging>
   <name>Apache Jena - Libraries POM</name>
-  <version>4.6.0-SNAPSHOT</version>
+  <version>5.1.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>4.6.0-SNAPSHOT</version>
-    <relativePath>..</relativePath>
+    <version>5.1.0-SNAPSHOT</version>
   </parent>
 
   <description>
     A POM artifact that references all the standard Jena Libraries with a single dependency.
   </description>
 
+  <!-- 
+       This list of dependencies is duplicated in jena-cmds.
+       Using <type>pom</type> breaks javadoc when building with Java11
+       but not when building with Java17 for Java11 bytecode.
+  -->
+
   <dependencies>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
+      <artifactId>jena-rdfpatch</artifactId>
+      <version>5.1.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
       <artifactId>jena-shacl</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shex</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-tdb</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <artifactId>jena-tdb1</artifactId>
+      <version>5.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb2</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-rdfconnection</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
     </dependency>
 
   </dependencies>

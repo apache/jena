@@ -1,0 +1,29 @@
+<!--++ InverseFunctionalProperty/conclusions002.rdf ** generated using webont test editor. ++-->
+<!--++ Created 14 May 2003 18:54:39 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: conclusions002.rdf,v 1.6 2003-12-05 05:09:25 jeremy_carroll Exp $
+-->
+<!--
+If <code>prop</code> belongs to <code>owl:InverseFunctionalProperty</code>,
+and <code>object</code> denotes a resource
+which is the object of two <code>prop</code> triples, then the <code>subject</code>s
+of these triples have the same denotation. Hence any assertion made 
+using one of them can be transferred to the other.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:eg ="http://www.example.org/"
+  xml:base="http://www.w3.org/2002/03owlt/InverseFunctionalProperty/conclusions002" >
+    <rdf:Description rdf:about="premises002#subject2" >
+      <eg:prop2>value</eg:prop2>
+    </rdf:Description>
+</rdf:RDF>

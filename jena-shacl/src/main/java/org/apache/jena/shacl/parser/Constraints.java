@@ -28,12 +28,12 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.impl.Util;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.engine.SparqlConstraints;
 import org.apache.jena.shacl.engine.constraint.*;
 import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.sys.C;
 import org.apache.jena.shacl.vocabulary.SHACL;
+import org.apache.jena.system.G;
 
 public class Constraints {
 
@@ -82,6 +82,7 @@ public class Constraints {
         dispatch.put( SHACL.class_,            (g, s, p, o) -> new ClassConstraint(o)    );
         dispatch.put( SHACL.datatype,          (g, s, p, o) -> new DatatypeConstraint(o) );
         dispatch.put( SHACL.nodeKind,          (g, s, p, o) -> new NodeKindConstraint(o) );
+
         dispatch.put( SHACL.minCount,          (g, s, p, o) -> new MinCount(intValue(o)) );
         dispatch.put( SHACL.maxCount,          (g, s, p, o) -> new MaxCount(intValue(o)) );
 
@@ -97,14 +98,14 @@ public class Constraints {
         dispatch.put( SHACL.languageIn,        (g, s, p, o) -> new StrLanguageIn(listString(g, o)) );
         dispatch.put( SHACL.uniqueLang,        (g, s, p, o) -> new UniqueLangConstraint(booleanValueStrict(o)) );
 
-        dispatch.put( SHACL.hasValue,          (g, s, p, o) -> new HasValueConstraint(o) );
-        dispatch.put( SHACL.in,                (g, s, p, o) -> new InConstraint(list(g,o)) );
-        dispatch.put( SHACL.closed,            (g, s, p, o) -> new ClosedConstraint(g,s,booleanValue(o)) );
-
         dispatch.put( SHACL.equals,            (g, s, p, o) -> new EqualsConstraint( checkObjectIRI(g, s, p, o)) );
         dispatch.put( SHACL.disjoint,          (g, s, p, o) -> new DisjointConstraint( checkObjectIRI(g, s, p, o)) );
         dispatch.put( SHACL.lessThan,          (g, s, p, o) -> new LessThanConstraint( checkObjectIRI(g, s, p, o)) );
         dispatch.put( SHACL.lessThanOrEquals,  (g, s, p, o) -> new LessThanOrEqualsConstraint( checkObjectIRI(g, s, p, o)) );
+
+        dispatch.put( SHACL.hasValue,          (g, s, p, o) -> new HasValueConstraint(o) );
+        dispatch.put( SHACL.in,                (g, s, p, o) -> new InConstraint(list(g,o)) );
+        dispatch.put( SHACL.closed,            (g, s, p, o) -> new ClosedConstraint(g,s,booleanValue(o)) );
 
         // Below
         //dispatch.put( SHACL.not,                (g, s, p, o) -> notImplemented(p) );
@@ -147,20 +148,19 @@ public class Constraints {
     /*package*/ static List<Constraint> parseConstraints(Graph shapesGraph, Node shape, Map<Node, Shape> parsed, Set<Node> traversed) {
         List<Constraint> constraints = new ArrayList<>();
         Iterator<Triple> iter = G.find(shapesGraph, shape, null, null);
-        while(iter.hasNext()) {
-            Triple t = iter.next();
+        iter.forEachRemaining(t -> {
             Node p = t.getPredicate();
             // The parser handles sh:property specially as a PropertyShape.
             if ( SHACL.property.equals(p) )
-                continue;
+                return;
             if ( SHACL.path.equals(p) )
-                continue;
+                return;
             Node s = t.getSubject();
             Node o = t.getObject();
             Constraint c = parseConstraint(shapesGraph, s, p, o, parsed, traversed);
             if ( c != null )
                 constraints.add(c);
-        }
+        });
         return constraints;
     }
 
@@ -169,7 +169,6 @@ public class Constraints {
      * Constraints require more that just the triple being inspected.
      */
     private static Constraint parseConstraint(Graph g, Node s, Node p, Node o, Map<Node, Shape> parsed, Set<Node> traversed) {
-
         // Test for single triple constraints.
         ConstraintMaker maker = dispatch.get(p);
         if ( maker != null )
@@ -183,18 +182,18 @@ public class Constraints {
 
         if ( p.equals(SHACL.or) ) {
             List<Node> elts = list(g, o);
-            List<Shape> shapes = elts.stream().map(x->ShapesParser.parseShapeStep(traversed, parsed, g, x)).collect(Collectors.toList());
+            List<Shape> shapes = shapes(g, parsed, traversed, elts);
             return new ShOr(shapes);
         }
         if ( p.equals(SHACL.and) ) {
             List<Node> elts = list(g, o);
-            List<Shape> shapes = elts.stream().map(x->ShapesParser.parseShapeStep(traversed, parsed, g, x)).collect(Collectors.toList());
+            List<Shape> shapes = shapes(g, parsed, traversed, elts);
             return new ShAnd(shapes);
         }
 
         if ( p.equals(SHACL.xone) ) {
             List<Node> elts = list(g, o);
-            List<Shape> shapes = elts.stream().map(x->ShapesParser.parseShapeStep(traversed, parsed, g, x)).collect(Collectors.toList());
+            List<Shape> shapes = shapes(g, parsed, traversed, elts);
             return new ShXone(shapes);
         }
 
@@ -244,6 +243,10 @@ public class Constraints {
         return null;
     }
 
+    private static List<Shape> shapes(Graph g, Map<Node, Shape> parsed, Set<Node> traversed, List<Node> elts) {
+        return elts.stream().map(x->ShapesParser.parseShapeStep(traversed, parsed, g, x)).collect(Collectors.toList());
+    }
+
     private static Constraint parseQualifiedValueShape(Graph g, Node s, Node p, Node o, Map<Node, Shape> parsed, Set<Node> traversed) {
         Shape sub = ShapesParser.parseShapeStep(traversed, parsed, g, o);
         // [PARSE] Syntax check needed
@@ -254,7 +257,7 @@ public class Constraints {
         Node qDisjoint = G.getZeroOrOneSP(g, s, SHACL.qualifiedValueShapesDisjoint);
         if ( vMin < 0 && vMax < 0 )
             throw new ShaclParseException("At least one of sh:qualifiedMinCount and sh:qualifiedMaxCount required");
-        return new QualifiedValueShape(sub, intValue(qMin, -1), intValue(qMax, -1), booleanValueStrict(qDisjoint)) ;
+        return new QualifiedValueShape(sub, vMin, vMax, booleanValueStrict(qDisjoint)) ;
     }
 
     interface ConstraintMaker {

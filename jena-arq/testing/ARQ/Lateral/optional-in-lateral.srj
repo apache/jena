@@ -1,0 +1,27 @@
+{ "head": {
+    "vars": [ "s" , "o" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "s": { "type": "uri" , "value": "http://example.org/s3" }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example.org/s1" } ,
+        "o": { "type": "literal" , "value": "11" }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example.org/s1" } ,
+        "o": { "type": "literal" , "value": "12" }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example.org/s2" } ,
+        "o": { "type": "literal" , "value": "21" }
+      } ,
+      { 
+        "s": { "type": "uri" , "value": "http://example.org/s2" } ,
+        "o": { "type": "literal" , "value": "22" }
+      }
+    ]
+  }
+}

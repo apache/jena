@@ -19,11 +19,10 @@
 package org.apache.jena.fuseki.main.examples;
 
 import java.io.IOException;
-import java.util.ServiceLoader;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.jena.atlas.lib.DateTimeUtils;
-import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
@@ -42,9 +41,6 @@ import org.apache.jena.web.HttpSC;
 /**
  * Example of adding a new operation to a Fuseki server with a {@link FusekiModule}.
  * <p>
- * Doing this, adding the jar to the classpath, including the {@link ServiceLoader}
- * setup, will automatically add it to the server.
- * <p>
  * See <a href="https://jena.apache.org/documentation/notes/jena-repack.html">Repacking Jena jars</a>.
  * <p>
  * See <a href="https://jena.apache.org/documentation/notes/system-initialization.html">System Initialization</a>
@@ -59,11 +55,13 @@ public class ExFuseki_04_CustomOperation_Module {
     // Example usage.
     public static void main(String...args) {
 
-        // Imitate FusekiModule service loader behaviour.
-        FusekiModules.add(new FMod_Custom());
+        FusekiModule fmodCustom = new FMod_Custom();
+
+        FusekiModules modules = FusekiModules.create(List.of(fmodCustom));
 
         FusekiServer.create().port(3230)
             .add("/ds", DatasetGraphFactory.createTxnMem())
+            .fusekiModules(modules)
             .build()
             .start();
 
@@ -75,16 +73,13 @@ public class ExFuseki_04_CustomOperation_Module {
 
         private Operation myOperation = null;
 
-        @Override
-        public String name() {
-            return "Custom Operation Example";
+        public FMod_Custom() {
+            myOperation = Operation.alloc("http://example/extra-service", "extra-service", "Test");
         }
 
         @Override
-        public void start() {
-            Fuseki.configLog.info("Add custom operation into global registry.");
-            System.err.println("**** Fuseki extension ****");
-            myOperation = Operation.alloc("http://example/extra-service", "extra-service", "Test");
+        public String name() {
+            return "Custom Operation Example";
         }
 
         @Override

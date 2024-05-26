@@ -201,6 +201,10 @@ public class FileOps {
         return iExt > iSlash ? filename.substring(iExt + 1).toLowerCase() : "" ;
     }
 
+    public static String concatPaths(String directory, String path) {
+        return Lib.concatPaths(directory, path);
+    }
+
     public static String fullPath(String filename) {
         File f = new File(filename) ;
         return f.getAbsolutePath() ;

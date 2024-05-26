@@ -1,0 +1,27 @@
+<?xml version='1.0'?>
+<!-- Licensed under the terms of https://www.apache.org/licenses/LICENSE-2.0 -->
+
+<rdf:RDF
+    xmlns:cim="http://iec.ch/TC57/2014/CIM-schema-cim16#"
+    xmlns:dm="http://iec.ch/2002/schema/CIM_difference_model#"
+    xmlns:md="http://iec.ch/TC57/61970-552/ModelDescription/1#"
+    xmlns:meta="http://iec.ch/TC57/2014/CIM-schema-cim16#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://local/" 
+    xmlns:ex="http://example/" 
+    xml:base="http://base/">
+
+  <!-- parse type "Statements" -->
+  <dm:DifferenceModel rdf:about="#_248c809d-1d7b-397c-830f-6928007ae6d9">                
+    <dm:forwardDifferences rdf:parseType="Statements">
+      <cim:A rdf:about="#_individual-A-1">
+        <cim:A-2-B rdf:resource="#_individual-B-1"/>
+      </cim:A>
+      <cim:B rdf:about="#_individual-B-1"/>
+      <cim:D rdf:about="#_individual-D-1"/>
+    </dm:forwardDifferences>
+    <dm:reverseDifferences rdf:parseType="Statements">
+    </dm:reverseDifferences>
+  </dm:DifferenceModel>
+
+</rdf:RDF>

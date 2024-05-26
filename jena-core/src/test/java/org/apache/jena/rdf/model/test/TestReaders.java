@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +25,7 @@ import java.net.UnknownHostException ;
 
 import org.apache.jena.rdf.model.RDFReaderI ;
 import org.apache.jena.rdf.model.StmtIterator ;
+import org.apache.jena.rdf.model.impl.NTripleReader;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
 import org.apache.jena.shared.JenaException ;
 import org.junit.Assert ;
@@ -35,19 +36,19 @@ public class TestReaders extends AbstractModelTestBase
     public TestReaders(final TestingModelFactory modelFactory, final String name) {
         super(modelFactory, name) ;
     }
-	
+
     public TestReaders() {
-        this(new TestPackage.PlainModelFactory(), "TestReaders") ;
+        this(new TestPackage_model.PlainModelFactory(), "TestReaders") ;
     }
 
     /**
      * Test to ensure that the reader is set.
      */
     public void testGetNTripleReader() {
-        final RDFReaderI reader = model.getReader("N-TRIPLE") ;
+        final RDFReaderI reader = new NTripleReader();
         Assert.assertNotNull(reader) ;
     }
-	
+
     public void testReadLocalNTriple() {
         model.read(getInputStream("TestReaders.nt"), "", "N-TRIPLE") ;
         Assert.assertEquals("Wrong size model", 5, model.size()) ;
@@ -61,7 +62,7 @@ public class TestReaders extends AbstractModelTestBase
 
     public void testReadRemoteNTriple() {
         try {
-            model.read("http://www.w3.org/2000/10/rdf-tests/rdfcore/" + "rdf-containers-syntax-vs-schema/test001.nt",
+            model.read("https://www.w3.org/2000/10/rdf-tests/rdfcore/" + "rdf-containers-syntax-vs-schema/test001.nt",
                        "N-TRIPLE") ;
         }
         catch (final JenaException jx) {
@@ -76,7 +77,7 @@ public class TestReaders extends AbstractModelTestBase
 
     public void testReadRemoteRDF() {
         try {
-            model.read("http://www.w3.org/2000/10/rdf-tests/rdfcore/" + "rdf-containers-syntax-vs-schema/test001.rdf") ;
+            model.read("https://www.w3.org/2000/10/rdf-tests/rdfcore/" + "rdf-containers-syntax-vs-schema/test001.rdf") ;
         }
         catch (final JenaException jx) {
             if ( (jx.getCause() instanceof NoRouteToHostException) || (jx.getCause() instanceof UnknownHostException)

@@ -26,7 +26,7 @@ import org.junit.runner.RunWith ;
 /** The test suites - these are driven by a manifest file and use external files for tests */
 
 @RunWith(RunnerRIOT.class)
-@Label("RIOT")
+@Label("RIOT Scripts")
 @Manifests({
     "testing/RIOT/Lang/manifest-all.ttl"
 })

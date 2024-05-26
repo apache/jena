@@ -38,13 +38,11 @@ import org.junit.Test;
  */
 public abstract class AbstractTestServiceDatasetAuth {
 
-    protected static int port = WebLib.choosePort();
-    private static AuthSetup auth1 = new AuthSetup("localhost", port, "user1", "pw1", null);
-    private static AuthSetup auth2 = new AuthSetup("localhost", port, "user2", "pw2", null);
-    private static AuthSetup auth3 = new AuthSetup("localhost", port, "user3", "pw3", null);
-
-    // @BeforeClass : subclass must set "server".
-    // Setup : user1 and user2 can query, user1 and user3 can update.
+    // Need the port for server and for the AuthSetup.
+    protected int port = WebLib.choosePort();
+    private AuthSetup auth1 = new AuthSetup("localhost", port, "user1", "pw1", null);
+    private AuthSetup auth2 = new AuthSetup("localhost", port, "user2", "pw2", null);
+    private AuthSetup auth3 = new AuthSetup("localhost", port, "user3", "pw3", null);
 
     @Test public void no_auth() {
         // No user -> fails login

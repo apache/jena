@@ -18,10 +18,7 @@
 
 package org.apache.jena.shex.sys;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.lib.ListUtils;
@@ -29,20 +26,29 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.shex.*;
+import org.apache.jena.shex.semact.SemanticActionPlugin;
 
 class ShexValidatorImpl implements ShexValidator{
+
+    private Map<String,SemanticActionPlugin> semanticActionPluginIndex;
+
+    ShexValidatorImpl() {}
+
+    ShexValidatorImpl(Map<String,SemanticActionPlugin> semActPluginIndex) {
+        this.semanticActionPluginIndex = semActPluginIndex;
+    }
 
     /** Return the current system-wide {@code ShexValidator}. */
     public static ShexValidator get() { return SysShex.get();}
 
     /** Validate data using a collection of shapes and a shape map */
     @Override
-    public ShexReport validate(Graph dataGraph, ShexSchema shapes, ShexMap shapeMap) {
+    public ShexReport validate(Graph dataGraph, ShexSchema shapes, ShapeMap shapeMap) {
         Objects.requireNonNull(dataGraph);
         Objects.requireNonNull(shapes);
         Objects.requireNonNull(shapeMap);
         shapes = shapes.importsClosure();
-        ValidationContext vCxt = new ValidationContext(dataGraph, shapes);
+        ValidationContext vCxt = new ValidationContext(dataGraph, shapes, semanticActionPluginIndex);
         List<ShexRecord> reports = new ArrayList<>();
         shapeMap.entries().forEach(mapEntry->{
             Collection<Node> focusNodes = focusNodes(dataGraph, mapEntry);
@@ -67,8 +73,14 @@ class ShexValidatorImpl implements ShexValidator{
         Objects.requireNonNull(dataGraph);
         ShexRecord entry = new ShexRecord(focus, shapeRef);
         shapes = shapes.importsClosure();
-        ValidationContext vCxt = new ValidationContext(dataGraph, shapes);
-        boolean isValid = validationStep(vCxt, entry, shapeRef, focus);
+        ValidationContext vCxt = new ValidationContext(dataGraph, shapes, semanticActionPluginIndex);
+
+        boolean isValid = vCxt.dispatchStartSemanticAction(shapes, vCxt);
+        if ( !isValid )
+            report(vCxt, entry, focus, ShexStatus.nonconformant, null);
+        else
+            isValid = validationStep(vCxt, entry, shapeRef, focus);
+
         return vCxt.generateReport();
     }
 
@@ -81,19 +93,19 @@ class ShexValidatorImpl implements ShexValidator{
         Objects.requireNonNull(focus);
         ShexRecord entry = new ShexRecord(focus, shape.getLabel());
         shapes = shapes.importsClosure();
-        ValidationContext vCxt = new ValidationContext(dataGraph, shapes);
+        ValidationContext vCxt = new ValidationContext(dataGraph, shapes, semanticActionPluginIndex);
         boolean isValid = validationStep(vCxt, entry, entry.shapeExprLabel, focus);
         return vCxt.generateReport();
     }
 
     @Override
-    public ShexReport validate(Graph dataGraph, ShexSchema shapes, ShexMap shapeMap, Node focus) {
+    public ShexReport validate(Graph dataGraph, ShexSchema shapes, ShapeMap shapeMap, Node focus) {
         Objects.requireNonNull(shapes);
         Objects.requireNonNull(dataGraph);
         Objects.requireNonNull(shapeMap);
         Objects.requireNonNull(focus);
         shapes = shapes.importsClosure();
-        ValidationContext vCxt = new ValidationContext(dataGraph, shapes);
+        ValidationContext vCxt = new ValidationContext(dataGraph, shapes, semanticActionPluginIndex);
         List<ShexRecord> reports = new ArrayList<>();
         shapeMap.entries().forEach(mapEntry->{
             validateOneShapeRecord(vCxt, mapEntry, focus);
@@ -155,7 +167,7 @@ class ShexValidatorImpl implements ShexValidator{
     // Worker.
     private static boolean validationStepWorker(ValidationContext vCxt, ShexRecord mapEntry, ShexShape shape, Node shapeRef, Node focus) {
         // Isolate report entries.
-        ValidationContext vCxtInner = ValidationContext.create(vCxt);
+        ValidationContext vCxtInner = vCxt.create();
         vCxtInner.startValidate(shape, focus);
         boolean isValid = shape.satisfies(vCxtInner, focus);
         vCxtInner.finishValidate(shape, focus);

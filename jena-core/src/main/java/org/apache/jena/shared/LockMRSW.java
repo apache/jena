@@ -32,31 +32,31 @@ import org.slf4j.LoggerFactory;
  * This class adds:
  * <ul>
  *   <li>The same thread that acquired a lock should release it</li>
- *   <li>Lock promotion (turning read locks into write locks) is 
+ *   <li>Lock promotion (turning read locks into write locks) is
  *   detached as an error</li>
- *  <ul>
+ *  </ul>
  */
 
-public class LockMRSW implements Lock 
+public class LockMRSW implements Lock
 {
     static Logger log = LoggerFactory.getLogger(LockMRSW.class) ;
-    
+
     // Map of threads to lock state for this lock
     Map<Thread, LockState> threadStates = new HashMap<>() ;
     // We keep this is a variable because it is tested outside of a lock.
     int threadStatesSize = threadStates.size() ;
-    
+
     ReadWriteLock mrswLock = new ReentrantReadWriteLock() ;
     // WriterPreferenceReadWriteLock mrswLock = new WriterPreferenceReadWriteLock();
-    
+
     AtomicInteger activeReadLocks = new AtomicInteger(0);
     AtomicInteger activeWriteLocks = new AtomicInteger(0);
-    
+
     public LockMRSW() {
         if ( log.isDebugEnabled() )
             log.debug("Lock : "+Thread.currentThread().getName()) ;
     }
-    
+
     /** Application controlled locking - enter a critical section.
      *  Locking is reentrant so an application can have nested critical sections.
      *  Typical code:
@@ -67,25 +67,25 @@ public class LockMRSW implements Lock
      *  } finally { leaveCriticalSection() ; }
      * </pre>
      */
-    
+
     @Override
     final public void enterCriticalSection(boolean readLockRequested)
     {
         // Don't make {enter|leave}CriticalSection synchronized - deadlock will occur.
         // The current thread will hold the model lock thread
         // and will attempt to grab the MRSW lock.
-        // But if it waits, no other thread will even get 
+        // But if it waits, no other thread will even get
         // to release the lock as it can't enter leaveCriticalSection
-        
+
         LockState state = getLockState() ;
-        
+
         // At this point we have the state object which is unique per
         // model per thread.  Thus, we can do updates to via state.???
         // because we know no other thread is active on it.
-        
+
         if ( log.isDebugEnabled() )
             log.debug(Thread.currentThread().getName()+" >> enterCS: "+report(state)) ;
-        
+
         // If we have a read lock, but no write locks, then the thread is attempting
         // a lock promotion.  We do not allow this.
         if (state.readLocks > 0 && state.writeLocks == 0 && !readLockRequested)
@@ -94,17 +94,17 @@ public class LockMRSW implements Lock
             // keeps the counters aligned.
             state.readLocks++ ;
             activeReadLocks.incrementAndGet() ;
-            
+
             if ( log.isDebugEnabled() )
                 log.debug(Thread.currentThread().getName()+" << enterCS: promotion attempt: "+report(state)) ;
-            
+
             throw new JenaException("enterCriticalSection: Write lock request while holding read lock - potential deadlock"+report(state));
         }
-        
+
         // Trying to get a read lock after a write lock - get a write lock instead.
         if ( state.writeLocks > 0 && readLockRequested )
             readLockRequested = false ;
-        
+
         try {
             if (readLockRequested)
             {
@@ -127,55 +127,55 @@ public class LockMRSW implements Lock
                 log.debug(Thread.currentThread().getName()+" << enterCS: "+report(state)) ;
         }
     }
-    
+
     /** Application controlled locking - leave a critical section.
      *  @see #enterCriticalSection
      */
-    
+
     @Override
     final public void leaveCriticalSection()
     {
-        
+
         LockState state = getLockState() ;
-        
+
         if ( log.isDebugEnabled() )
             log.debug(Thread.currentThread().getName()+" >> leaveCS: "+report(state)) ;
-        
+
         try {
             if ( state.readLocks > 0)
             {
                 state.readLocks -- ;
                 activeReadLocks.getAndDecrement() ;
-                
+
                 if ( state.readLocks == 0 )
                     mrswLock.readLock().unlock() ;
-                
+
                 state.clean() ;
                 return ;
             }
-            
+
             if ( state.writeLocks > 0)
             {
                 state.writeLocks -- ;
                 activeWriteLocks.getAndDecrement() ;
-                
+
                 if ( state.writeLocks == 0 )
                     mrswLock.writeLock().unlock() ;
-                
+
                 state.clean() ;
                 return ;
             }
-            
+
             // No lock held.
-            
+
             throw new JenaException("leaveCriticalSection: No lock held ("+Thread.currentThread().getName()+") "+report(state)) ;
-        } finally 
+        } finally
         {
             if ( log.isDebugEnabled() )
                 log.debug(Thread.currentThread().getName()+" << leaveCS: "+report(state)) ;
         }
     }
-    
+
     synchronized
     private String report(LockState state)
     {
@@ -193,9 +193,9 @@ public class LockMRSW implements Lock
         sb.append(")") ;
         return sb.toString() ;
     }
-    
+
     // Model internal functions -----------------------------
-    
+
     synchronized LockState getLockState()
     {
         Thread thisThread = Thread.currentThread() ;
@@ -206,34 +206,34 @@ public class LockMRSW implements Lock
             threadStates.put(thisThread, state) ;
             threadStatesSize = threadStates.size() ;
         }
-        return state ;              
+        return state ;
     }
-    
+
     synchronized void removeLockState(Thread thread)
     {
         threadStates.remove(thread) ;
     }
-    
+
     static class LockState
     {
         // Counters for this lock object.
         // Instances of ModelLockState are held per thread per model.
-        // These do not need to be atomic because a thread is the 
+        // These do not need to be atomic because a thread is the
         // only accessor of its own counters
-        
+
         int readLocks = 0 ;
         int writeLocks = 0 ;
         LockMRSW lock ;
         Thread thread ;
-        
+
         // Need to pass in the containing model lock
-        // because we want a lock on it. 
+        // because we want a lock on it.
         LockState(LockMRSW theLock)
         {
             lock = theLock ;
             thread = Thread.currentThread() ;
         }
-        
+
         void clean()
         {
             if (lock.activeReadLocks.get() == 0 && lock.activeWriteLocks.get() == 0)

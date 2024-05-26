@@ -18,6 +18,8 @@
 
 package org.apache.jena.util;
 
+import static org.apache.commons.lang3.StringUtils.startsWithIgnoreCase;
+
 import java.io.* ;
 import java.net.URL ;
 import java.nio.charset.Charset ;
@@ -26,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.JenaRuntime ;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.shared.JenaException ;
@@ -42,30 +45,21 @@ public class FileUtils
     static Charset utf8 = StandardCharsets.UTF_8 ;
 
     /** Create a reader that uses UTF-8 encoding */
-
     static public Reader asUTF8(InputStream in) {
-        if ( JenaRuntime.runUnder(JenaRuntime.featureNoCharset) )
-            return new InputStreamReader(in) ;
-        // Not ,utf8 -- GNUClassPath (0.20) apparently fails on passing in a charset
-        // but if passed not the decoder or the name of the charset.
-        // Reported and fixed.
         return new InputStreamReader(in, utf8.newDecoder());
     }
 
     /** Create a buffered reader that uses UTF-8 encoding */
 
-    static public BufferedReader asBufferedUTF8(InputStream in)
-    {
-        BufferedReader r = new BufferedReader(asUTF8(in)) ;
-        return r ;
+    static public BufferedReader asBufferedUTF8(InputStream in) {
+        BufferedReader r = new BufferedReader(asUTF8(in));
+        return r;
     }
 
     /** Create a writer that uses UTF-8 encoding */
 
     static public Writer asUTF8(OutputStream out) {
-        if ( JenaRuntime.runUnder(JenaRuntime.featureNoCharset) )
-            return new OutputStreamWriter(out) ;
-        return new OutputStreamWriter(out, utf8.newEncoder());
+        return new OutputStreamWriter(out, utf8);
     }
 
     /** Create a print writer that uses UTF-8 encoding */
@@ -118,9 +112,7 @@ public class FileUtils
 
     /**
      * Turn a file: URL or file name into a plain file name
-     * @deprecated Use IRILib.IRIToFilename.
      */
-    @Deprecated
     public static String toFilename(String filenameOrURI)
     {
         // Retained only because of OntModel -> FileManager -> LocatorFile.
@@ -189,7 +181,7 @@ public class FileUtils
      */
     public static boolean isFile(String name)
     {
-        String scheme = getScheme(name) ;
+        String scheme = IRIs.scheme(name) ;
 
         if ( scheme == null  )
             // No URI scheme - treat as filename
@@ -218,26 +210,6 @@ public class FileUtils
     }
 
     /**
-     * Get the URI scheme at the start of the string. This is the substring up to, and
-     * excluding, the first ":" if it conforms to the syntax requirements. Return null
-     * if it does not look like a scheme.
-     * <p>
-     * The <a href="https://tools.ietf.org/html/rfc3986#appendix-A">RFC 3986 URI
-     * grammar</a> defines {@code scheme} as:
-     *
-     * <pre>
-     * URI         = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
-     * scheme      = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
-     * ...
-     * </pre>
-     * @deprecated Use {@link IRIs#scheme}
-     */
-    @Deprecated
-    public static String getScheme(String uri) {
-        return IRIs.scheme(uri);
-    }
-
-    /**
      * Get the directory part of a filename
      * @param filename
      * @return Directory name
@@ -251,13 +223,28 @@ public class FileUtils
     /**
      Get the suffix part of a file name or a URL in file-like format.
      */
-    public static String getFilenameExt( String filename)
-    {
-        int iSlash = filename.lastIndexOf( '/' );
-        int iBack = filename.lastIndexOf( '\\' );
-        int iExt = filename.lastIndexOf( '.' );
+    public static String getFilenameExt(String filename) {
+        String pathname = pathname(filename);
+        int iSlash = pathname.lastIndexOf( '/' );
+        int iBack = pathname.lastIndexOf( '\\' );
+        int iExt = pathname.lastIndexOf( '.' );
         if (iBack > iSlash) iSlash = iBack;
-        return iExt > iSlash ? filename.substring( iExt+1 ).toLowerCase() : "";
+        return iExt > iSlash ? pathname.substring( iExt+1 ).toLowerCase() : "";
+    }
+
+    /** Prepare the filename.
+     *
+     * If the filename is a URL, and it has a query string, drop the query string.
+     * <p>
+     * Sometimes used for HTTP request to provide extra information.
+     * <a href="https://github.com/apache/jena/issues/1668">apache/jena/issues/1668</a>
+     * </p>
+     *
+     */
+    private static String pathname(String filename) {
+        if ( !startsWithIgnoreCase(filename, "http:") && !startsWithIgnoreCase(filename, "https:") )
+            return filename;
+        return StringUtils.substringBefore(filename, "?");
     }
 
     /**

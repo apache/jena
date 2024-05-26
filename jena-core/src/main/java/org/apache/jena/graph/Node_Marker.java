@@ -18,20 +18,35 @@
 
 package org.apache.jena.graph;
 
+import org.apache.jena.shared.PrefixMapping;
+
 /**
  * Marker special nodes for datastructures.
  * The application is responsible for allocating unique strings.
  */
 public class Node_Marker extends Node_Ext<String> {
 
-    public static Node xlabel(String str) { return new Node_Marker(str); }
+    public static Node marker(String str) { return new Node_Marker(str); }
 
     protected Node_Marker(String label) {
         super(label);
     }
 
     @Override
+    public int hashCode() {
+        return Node.hashExt + super.get().hashCode();
+    }
+
+    @Override
     public boolean isConcrete() {
         return false;
+    }
+
+    @Override
+    public String toString( PrefixMapping pmap ) { return toString(); }
+
+    @Override
+    public String toString() {
+        return null;
     }
 }

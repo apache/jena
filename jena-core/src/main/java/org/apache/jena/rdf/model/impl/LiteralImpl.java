@@ -18,14 +18,18 @@
 
 package org.apache.jena.rdf.model.impl;
 
-import org.apache.jena.JenaRuntime ;
 import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.enhanced.* ;
-import org.apache.jena.graph.* ;
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.enhanced.EnhNode;
+import org.apache.jena.enhanced.Implementation;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.TextDirection;
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.shared.* ;
+import org.apache.jena.shared.BadBooleanException;
+import org.apache.jena.shared.BadCharLiteralException;
+import org.apache.jena.shared.PrefixMapping;
 
 /** An implementation of Literal.
  */
@@ -83,7 +87,14 @@ public class LiteralImpl extends EnhNode implements Literal {
         { return (ModelCom) getGraph(); }
 
     @Override public String toString() {
-        return asNode().toString( PrefixMapping.Standard, false );
+        // Code has depended on toString() on a string literal being the
+        // string itself, not quoted or escaped.
+        // Jena5 is now clean but applications may also have the same assumption.
+        // Jena 2,3,4 --
+        // return asNode().getLiteral().toString( PrefixMapping.Standard, false );
+        if ( Util.isSimpleString(this) )
+            return getLexicalForm();
+        return asNode().toString(PrefixMapping.Standard);
     }
 
     /**
@@ -121,10 +132,7 @@ public class LiteralImpl extends EnhNode implements Literal {
      * For RDF 1.1, the most compatible choice is "xsd:string" or "rdf:langString".
      */
     private boolean isPlainLiteral() {
-        if ( JenaRuntime.isRDF11 )
-            return Util.isLangString(this) || Util.isSimpleString(this) ;
-        else
-            return asNode().getLiteralDatatype() == null;
+        return Util.isLangString(this) || Util.isSimpleString(this) ;
     }
 
     /**
@@ -241,9 +249,13 @@ public class LiteralImpl extends EnhNode implements Literal {
     }
 
     @Override
-    public boolean isWellFormedXML() {
-        return asNode().getLiteralIsXML();
+    public String getTextDirection() {
+        TextDirection textDir = asNode().getLiteralTextDirection();
+        if ( textDir == null )
+            return null;
+        return textDir.direction();
     }
+
 
     /**
      * Test that two literals are semantically equivalent.

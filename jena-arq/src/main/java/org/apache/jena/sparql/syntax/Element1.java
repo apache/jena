@@ -24,13 +24,11 @@ package org.apache.jena.sparql.syntax;
 public abstract class Element1 extends Element
 {
     // Not used very widely.
-    // For historicial reasons ElementOptional does not use this.
-    // It could do - it just doesn't. 
+    // For historical reasons ElementOptional does not use this.
+    // It could do - it just doesn't.
     private Element element ;
 
     protected Element1(Element element) { this.element = element ; }
-    
-    public Element getElement() { return element ; } 
-    
 
+    public Element getElement() { return element ; }
 }

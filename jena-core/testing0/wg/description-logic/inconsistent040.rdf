@@ -1,0 +1,384 @@
+<!--++ description-logic/inconsistent040.rdf ** generated using webont test editor. ++-->
+<!--++ Created 26 Sep 2003 11:45:45 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: inconsistent040.rdf,v 1.2 2003/11/19 19:26:27 jcarroll Exp $
+-->
+<!--
+This kind of pattern comes up a lot in more complex ontologies. 
+Failure to cope with this kind of pattern is one
+of the reasons that many reasoners have been unable to 
+cope with such ontologies.
+-->
+<!-- Author: Ian Horrocks -->
+<rdf:RDF xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:eg="http://example.org/factkb#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+    xml:base="http://www.w3.org/2002/03owlt/description-logic/inconsistent040"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+    <owl:Ontology rdf:about=""/>
+    <owl:Class rdf:about="http://example.org/factkb#A"/>
+    <owl:Class rdf:about="http://example.org/factkb#B"/>
+    <owl:Class rdf:about="http://example.org/factkb#A0"/>
+    <owl:Class rdf:about="http://example.org/factkb#A1"/>
+    <owl:Class rdf:about="http://example.org/factkb#A2"/>
+    <owl:Class rdf:about="http://example.org/factkb#A3"/>
+    <owl:Class rdf:about="http://example.org/factkb#A4"/>
+    <owl:Class rdf:about="http://example.org/factkb#A5"/>
+    <owl:Class rdf:about="http://example.org/factkb#A6"/>
+    <owl:Class rdf:about="http://example.org/factkb#A7"/>
+    <owl:Class rdf:about="http://example.org/factkb#A8"/>
+    <owl:Class rdf:about="http://example.org/factkb#A9"/>
+    <owl:Class rdf:about="http://example.org/factkb#B0"/>
+    <owl:Class rdf:about="http://example.org/factkb#B1"/>
+    <owl:Class rdf:about="http://example.org/factkb#B2"/>
+    <owl:Class rdf:about="http://example.org/factkb#B3"/>
+    <owl:Class rdf:about="http://example.org/factkb#B4"/>
+    <owl:Class rdf:about="http://example.org/factkb#B5"/>
+    <owl:Class rdf:about="http://example.org/factkb#B6"/>
+    <owl:Class rdf:about="http://example.org/factkb#B7"/>
+    <owl:Class rdf:about="http://example.org/factkb#B8"/>
+    <owl:Class rdf:about="http://example.org/factkb#B9"/>
+    <owl:Class rdf:about="http://example.org/factkb#C1">
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A0"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B0"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A1"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B1"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A2"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B2"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A3"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B3"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A4"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B4"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A5"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B5"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A6"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B6"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A7"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B7"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A8"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B8"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A9"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B9"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A10"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B10"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A11"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B11"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A12"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B12"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A13"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B13"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A14"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B14"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A15"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B15"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A16"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B16"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A17"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B17"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A18"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B18"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A19"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B19"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A20"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B20"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A21"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B21"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A22"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B22"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A23"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B23"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A24"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B24"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A25"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B25"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A26"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B26"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A27"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B27"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A28"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B28"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A29"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B29"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A30"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B30"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A31"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B31"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+    </owl:Class>
+    <owl:Class rdf:about="http://example.org/factkb#C2">
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A"/>
+                            <owl:Class rdf:about="http://example.org/factkb#B"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class rdf:about="http://example.org/factkb#A"/>
+                            <owl:Class>
+                                <owl:complementOf>
+                                    <owl:Class rdf:about="http://example.org/factkb#B"/>
+                                </owl:complementOf>
+                            </owl:Class>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+    </owl:Class>
+    <owl:Class rdf:about="http://example.org/factkb#C3">
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class>
+                                <owl:complementOf>
+                                    <owl:Class rdf:about="http://example.org/factkb#A"/>
+                                </owl:complementOf>
+                            </owl:Class>
+                            <owl:Class rdf:about="http://example.org/factkb#B"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class>
+                                <owl:complementOf>
+                                    <owl:Class rdf:about="http://example.org/factkb#A"/>
+                                </owl:complementOf>
+                            </owl:Class>
+                            <owl:Class>
+                                <owl:complementOf>
+                                    <owl:Class rdf:about="http://example.org/factkb#B"/>
+                                </owl:complementOf>
+                            </owl:Class>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+    </owl:Class>
+    <owl:Class rdf:about="http://example.org/factkb#C4">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://example.org/factkb#R"/>
+                <owl:someValuesFrom>
+                    <owl:Class rdf:about="http://example.org/factkb#C2"/>
+                </owl:someValuesFrom>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    <owl:Class rdf:about="http://example.org/factkb#C5">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://example.org/factkb#R"/>
+                <owl:allValuesFrom>
+                    <owl:Class rdf:about="http://example.org/factkb#C3"/>
+                </owl:allValuesFrom>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    <owl:Class rdf:about="http://example.org/factkb#A10"/>
+    <owl:Class rdf:about="http://example.org/factkb#A11"/>
+    <owl:Class rdf:about="http://example.org/factkb#A12"/>
+    <owl:Class rdf:about="http://example.org/factkb#A13"/>
+    <owl:Class rdf:about="http://example.org/factkb#A14"/>
+    <owl:Class rdf:about="http://example.org/factkb#A15"/>
+    <owl:Class rdf:about="http://example.org/factkb#A16"/>
+    <owl:Class rdf:about="http://example.org/factkb#A17"/>
+    <owl:Class rdf:about="http://example.org/factkb#A18"/>
+    <owl:Class rdf:about="http://example.org/factkb#A19"/>
+    <owl:Class rdf:about="http://example.org/factkb#A20"/>
+    <owl:Class rdf:about="http://example.org/factkb#A21"/>
+    <owl:Class rdf:about="http://example.org/factkb#A22"/>
+    <owl:Class rdf:about="http://example.org/factkb#A23"/>
+    <owl:Class rdf:about="http://example.org/factkb#A24"/>
+    <owl:Class rdf:about="http://example.org/factkb#A25"/>
+    <owl:Class rdf:about="http://example.org/factkb#A26"/>
+    <owl:Class rdf:about="http://example.org/factkb#A27"/>
+    <owl:Class rdf:about="http://example.org/factkb#A28"/>
+    <owl:Class rdf:about="http://example.org/factkb#A29"/>
+    <owl:Class rdf:about="http://example.org/factkb#A30"/>
+    <owl:Class rdf:about="http://example.org/factkb#A31"/>
+    <owl:Class rdf:about="http://example.org/factkb#B10"/>
+    <owl:Class rdf:about="http://example.org/factkb#B11"/>
+    <owl:Class rdf:about="http://example.org/factkb#B12"/>
+    <owl:Class rdf:about="http://example.org/factkb#B13"/>
+    <owl:Class rdf:about="http://example.org/factkb#B14"/>
+    <owl:Class rdf:about="http://example.org/factkb#B15"/>
+    <owl:Class rdf:about="http://example.org/factkb#B16"/>
+    <owl:Class rdf:about="http://example.org/factkb#B17"/>
+    <owl:Class rdf:about="http://example.org/factkb#B18"/>
+    <owl:Class rdf:about="http://example.org/factkb#B19"/>
+    <owl:Class rdf:about="http://example.org/factkb#B20"/>
+    <owl:Class rdf:about="http://example.org/factkb#B21"/>
+    <owl:Class rdf:about="http://example.org/factkb#B22"/>
+    <owl:Class rdf:about="http://example.org/factkb#B23"/>
+    <owl:Class rdf:about="http://example.org/factkb#B24"/>
+    <owl:Class rdf:about="http://example.org/factkb#B25"/>
+    <owl:Class rdf:about="http://example.org/factkb#B26"/>
+    <owl:Class rdf:about="http://example.org/factkb#B27"/>
+    <owl:Class rdf:about="http://example.org/factkb#B28"/>
+    <owl:Class rdf:about="http://example.org/factkb#B29"/>
+    <owl:Class rdf:about="http://example.org/factkb#B30"/>
+    <owl:Class rdf:about="http://example.org/factkb#B31"/>
+    <owl:Class rdf:about="http://example.org/factkb#TEST">
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <owl:Class rdf:about="http://example.org/factkb#C1"/>
+                    <owl:Class rdf:about="http://example.org/factkb#C4"/>
+                    <owl:Class rdf:about="http://example.org/factkb#C5"/>
+                </owl:intersectionOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+    </owl:Class>
+    <owl:ObjectProperty rdf:about="http://example.org/factkb#R"/>
+    <eg:TEST/>
+</rdf:RDF>

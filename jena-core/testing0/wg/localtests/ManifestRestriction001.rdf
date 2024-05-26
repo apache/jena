@@ -1,0 +1,30 @@
+<!--
+  Local test files use in Jena2 development
+-->
+<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+      xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
+      xmlns:rtest='http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#'
+      xmlns:otest='http://www.w3.org/2002/03owlt/testOntology#'
+      xmlns:dc='http://purl.org/dc/elements/1.0/'
+      xmlns='http://www.w3.org/2002/03owlt/localtests/ManifestRestriction001#'
+      xmlns:owl='http://www.w3.org/2002/07/owl#'
+      xml:base='http://www.w3.org/2002/03owlt/localtests/ManifestRestriction001'
+>
+<otest:PositiveEntailmentTest rdf:ID='intersection1'>
+   <rtest:status>Jena internal</rtest:status>
+   <dc:creator>Dave Reynolds</dc:creator>
+   <rtest:description rdf:parseType='Literal'>
+       Test core intersectionOf processing - 'if' direction.
+   </rtest:description>
+   <rtest:premiseDocument>
+         <rtest:RDF-XML-Document rdf:about='premisesRestriction001' >
+              <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Lite' />
+         </rtest:RDF-XML-Document>
+   </rtest:premiseDocument>
+   <rtest:conclusionDocument>
+         <rtest:RDF-XML-Document rdf:about='conclusionsRestriction001' >
+              <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Lite' />
+         </rtest:RDF-XML-Document>
+   </rtest:conclusionDocument>
+</otest:PositiveEntailmentTest >
+</rdf:RDF>

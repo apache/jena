@@ -1,0 +1,4 @@
+SELECT * {
+   ?s ?p ?o
+   LATERAL { ?s ?p ?o VALUES ?o {123 456} }
+}

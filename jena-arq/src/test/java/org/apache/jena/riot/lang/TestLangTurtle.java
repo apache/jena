@@ -33,6 +33,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExError;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
@@ -47,94 +48,95 @@ import org.junit.Test ;
 
 public class TestLangTurtle
 {
-    @Test public void blankNodes1()
-    {
-        String s = "_:a <http://example/p> 'foo' . " ;
-        StringReader r = new StringReader(s) ;
-        Model m = ModelFactory.createDefaultModel() ;
-        RDFDataMgr.read(m, r, null, RDFLanguages.TURTLE) ;
-        assertEquals(1, m.size()) ;
+    @Test
+    public void blankNodes1() {
+        String s = "_:a <http://example/p> 'foo' . ";
+        StringReader r = new StringReader(s);
+        Model m = ModelFactory.createDefaultModel();
+        RDFDataMgr.read(m, r, null, RDFLanguages.TURTLE);
+        assertEquals(1, m.size());
 
-        String x = m.listStatements().next().getSubject().getId().getLabelString() ;
-        assertNotEquals(x, "a") ;
+        String x = m.listStatements().next().getSubject().getId().getLabelString();
+        assertNotEquals(x, "a");
 
         // reset - reread - new bNode.
-        r = new StringReader(s) ;
-        RDFDataMgr.read(m, r, null, RDFLanguages.TURTLE) ;
-        assertEquals(2, m.size()) ;
+        r = new StringReader(s);
+        RDFDataMgr.read(m, r, null, RDFLanguages.TURTLE);
+        assertEquals(2, m.size());
     }
 
-    @Test public void blankNodes2()
-    {
+    @Test
+    public void blankNodes2() {
         // Duplicate.
-        String s = "_:a <http://example/p> 'foo' . _:a <http://example/p> 'foo' ." ;
-        StringReader r = new StringReader(s) ;
-        Model m = ModelFactory.createDefaultModel() ;
-        RDFDataMgr.read(m, r, null, RDFLanguages.TURTLE) ;
-        assertEquals(1, m.size()) ;
+        String s = "_:a <http://example/p> 'foo' . _:a <http://example/p> 'foo' .";
+        StringReader r = new StringReader(s);
+        Model m = ModelFactory.createDefaultModel();
+        RDFDataMgr.read(m, r, null, RDFLanguages.TURTLE);
+        assertEquals(1, m.size());
     }
 
-    @Test public void updatePrefixMapping1()
-    {
-        Model model = ModelFactory.createDefaultModel() ;
-        StringReader reader = new StringReader("@prefix x: <http://example/x>.") ;
-        RDFDataMgr.read(model, reader, null, RDFLanguages.TURTLE) ;
-        assertEquals(1, model.getNsPrefixMap().size()) ;
-        assertEquals("http://example/x", model.getNsPrefixURI("x")) ;
+    @Test
+    public void updatePrefixMapping1() {
+        Model model = ModelFactory.createDefaultModel();
+        StringReader reader = new StringReader("@prefix x: <http://example/x>.");
+        RDFDataMgr.read(model, reader, null, RDFLanguages.TURTLE);
+        assertEquals(1, model.getNsPrefixMap().size());
+        assertEquals("http://example/x", model.getNsPrefixURI("x"));
     }
 
-    @Test public void updatePrefixMapping2()
-    {
+    @Test
+    public void updatePrefixMapping2() {
         // Test that prefixes are resolved
-        Model model = ModelFactory.createDefaultModel() ;
-        StringReader reader = new StringReader("BASE <http://example/> PREFIX x: <abc>") ;
-        RDFDataMgr.read(model, reader, null, RDFLanguages.TURTLE) ;
-        assertEquals(1, model.getNsPrefixMap().size()) ;
-        assertEquals("http://example/abc", model.getNsPrefixURI("x")) ;
+        Model model = ModelFactory.createDefaultModel();
+        StringReader reader = new StringReader("BASE <http://example/> PREFIX x: <abc>");
+        RDFDataMgr.read(model, reader, null, RDFLanguages.TURTLE);
+        assertEquals(1, model.getNsPrefixMap().size());
+        assertEquals("http://example/abc", model.getNsPrefixURI("x"));
     }
 
-    @Test public void optionalDotInPrefix()
-    {
-        Model model = ModelFactory.createDefaultModel() ;
-        StringReader reader = new StringReader("@prefix x: <http://example/x>") ;
-        RDFDataMgr.read(model, reader, null, RDFLanguages.TURTLE) ;
-        assertEquals(1, model.getNsPrefixMap().size()) ;
-        assertEquals("http://example/x", model.getNsPrefixURI("x")) ;
+    @Test
+    public void optionalDotInPrefix() {
+        Model model = ModelFactory.createDefaultModel();
+        StringReader reader = new StringReader("@prefix x: <http://example/x>");
+        RDFDataMgr.read(model, reader, null, RDFLanguages.TURTLE);
+        assertEquals(1, model.getNsPrefixMap().size());
+        assertEquals("http://example/x", model.getNsPrefixURI("x"));
     }
 
-    @Test public void optionalDotInBase()
-    {
-        Model model = ModelFactory.createDefaultModel() ;
-        StringReader reader = new StringReader("@base <http://example/> <x> <p> <o> .") ;
-        RDFDataMgr.read(model, reader, null, RDFLanguages.TURTLE) ;
-        assertEquals(1, model.size()) ;
-        Resource r = model.createResource("http://example/x") ;
-        Property p = model.createProperty("http://example/p") ;
-        assertTrue(model.contains(r,p)) ;
+    @Test
+    public void optionalDotInBase() {
+        Model model = ModelFactory.createDefaultModel();
+        StringReader reader = new StringReader("@base <http://example/> <x> <p> <o> .");
+        RDFDataMgr.read(model, reader, null, RDFLanguages.TURTLE);
+        assertEquals(1, model.size());
+        Resource r = model.createResource("http://example/x");
+        Property p = model.createProperty("http://example/p");
+        assertTrue(model.contains(r, p));
     }
 
-    private static ErrorHandler errorhandler = null ;
-    @BeforeClass public static void beforeClass()
-    {
-        errorhandler = getDefaultErrorHandler() ;
-        setDefaultErrorHandler(errorHandlerNoLogging) ;
+    private static ErrorHandler errorhandler = null;
+    @BeforeClass
+    public static void beforeClass() {
+        errorhandler = getDefaultErrorHandler();
+        setDefaultErrorHandler(errorHandlerNoLogging);
     }
 
-    @AfterClass public static void afterClass()
-    {
-        setDefaultErrorHandler(errorhandler) ;
+    @AfterClass
+    public static void afterClass() {
+        setDefaultErrorHandler(errorhandler);
     }
 
     // Call parser directly.
 
-    private static Graph parse(String ...strings) {
-        return ParserTestBaseLib.parseGraph(Lang.TURTLE, strings) ;
+    private static Graph parse(String...strings) {
+        String string = String.join("\n", strings);
+        // Not picking up errorHAndler
+        return ParserTests.parser().fromString(string).lang(Lang.TTL).errorHandler(new ErrorHandlerEx()).toGraph();
     }
 
-    private static Triple parseOneTriple(String ...strings)
-    {
-        Graph graph = parse(strings) ;
-        assertEquals(1, graph.size()) ;
+    private static Triple parseOneTriple(String...strings) {
+        Graph graph = parse(strings);
+        assertEquals(1, graph.size());
         return graph.find(null, null, null).next();
     }
 

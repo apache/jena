@@ -76,7 +76,7 @@ public class MemGraphTest {
         s = NodeFactory.createURI("http://example.com/securedGraph/s");
         p = NodeFactory.createURI("http://example.com/securedGraph/p");
         o = NodeFactory.createURI("http://example.com/securedGraph/o");
-        t = new Triple(s, p, o);
+        t = Triple.create(s, p, o);
         baseGraph.add(t);
     }
 

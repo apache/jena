@@ -18,11 +18,12 @@
 
 package org.apache.jena.riot ;
 
-import org.apache.jena.query.ARQ ;
+import org.apache.jena.atlas.lib.Version;
+import org.apache.jena.riot.lang.rdfxml.RRX;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.writer.DirectiveStyle;
 import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.mgt.SystemInfo ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry;
 import org.apache.jena.sparql.util.Symbol ;
@@ -45,8 +46,7 @@ public class RIOT {
     // public static final String VERSION = NAME+"/"+ARQ.VERSION ;
     // public static final String BUILD_DATE = ARQ.BUILD_DATE ;
 
-    public static String       VERSION ;
-    public static String       BUILD_DATE ;
+    public static final String       VERSION = Version.versionForClass(RIOT.class).orElse("<development>");;
 
     /** The root package name for RIOT */
     public static final String PATH    = "org.apache.jena.riot" ;
@@ -54,9 +54,11 @@ public class RIOT {
     /** Control of multiline literals */
     public static final Symbol multilineLiterals = Symbol.create("riot.multiline_literals") ;
 
-    /** The system-wide context */
+    /** The system-wide context, shared with ARQ and other modules. */
+    private static Context systemGlobalContext = new Context();
+
     public static Context getContext() {
-        return ARQ.getContext();
+        return systemGlobalContext;
     }
 
     public static void init() {
@@ -68,12 +70,21 @@ public class RIOT {
                 return ;
             }
             initialized = true ;
+
             JenaSystem.logLifecycle("RIOT.init - start") ;
+            // Protect against unexpected initialization ordering.
+            if ( systemGlobalContext == null ) {
+                JenaSystem.logLifecycle("RIOT.init - Warning: initializing systemGlobalContext in RIOT.init") ;
+                systemGlobalContext = new Context();
+            }
+            setRIOTSettings();
+
             RDFLanguages.init() ;
             RDFParserRegistry.init() ;
             RDFWriterRegistry.init() ;
             ResultSetLang.init();
 
+            MappingRegistry.addPrefixMapping("rdfxml", RDFXML_SYMBOL_BASE) ;
             MappingRegistry.addPrefixMapping("ttl", TURTLE_SYMBOL_BASE) ;
             MappingRegistry.addPrefixMapping("trig", TURTLE_SYMBOL_BASE) ;
 
@@ -86,35 +97,51 @@ public class RIOT {
         }
     }
 
+    private static void setRIOTSettings() {
+        // RIOT has no global defaults in the context.
+    }
+
     private static boolean registered = false ;
 
     public static void register() {
         if ( registered )
             return ;
         registered = true ;
-
-        VERSION = getVersion() ;
-        BUILD_DATE = getBuildDate() ;
-
-        SystemInfo sysInfo2 = new SystemInfo(RIOT.riotIRI, RIOT.PATH, VERSION, BUILD_DATE) ;
-        SystemARQ.registerSubSystem(sysInfo2) ;
     }
 
     public static String getVersion() {
-        return ARQ.VERSION ;
-    }
-
-    public static String getBuildDate() {
-        return ARQ.BUILD_DATE ;
+        return RIOT.VERSION ;
     }
 
     // ---- Symbols
 
     private static String TURTLE_SYMBOL_BASE = "http://jena.apache.org/riot/turtle#";
+    private static String RDFXML_SYMBOL_BASE = "http://jena.apache.org/riot/rdfxml#";
 
     /**
-     * Printing style. One of "RDF11" or RDF10". Controls {@literal @prefix} vs PREFIX.
-     * Values causing SPARQL-style keyword output are "sparql","keyword" and "rdf11".
+     * Legacy access to the original legacy RDF/XML parser.
+     * The original ARP parser will be removed.
+     * Use {@link Lang} constant {@link RRX#RDFXML_ARP1} or {@link RRX#RDFXML_ARP0}
+     * to access ARP v1 (RIOT integration) or ARP v0 (the original ARP parser).
+     * @deprecated Do not use this symbol! This will be removed.
+     */
+    @Deprecated(forRemoval = true)
+    public static Symbol symRDFXML0 = SystemARQ.allocSymbol(RDFXML_SYMBOL_BASE, "rdfxml0");
+
+    /**
+     * Printing style - {@code PREFIX} or {@code @prefix}
+     *  - {@link DirectiveStyle}, one of {@code AT} or {@code KEYWORD}.
+     * <p>
+     * The context value is:
+     * <ul>
+     * <li>
+     * One of {@link DirectiveStyle#KEYWORD}, "rdf_11", "rdf11" or "sparql"
+     * to have {@code PREFIX} and {@code BASE}</li>
+     * <ll>
+     *  One of {@link DirectiveStyle#AT}," rdf_10", "rdf10" or  "at" to have {@code @prefix} and {@code @base}
+     * </li>
+     * The system default is {@link DirectiveStyle#KEYWORD}.
+     * </ul>
      */
     public static final Symbol symTurtleDirectiveStyle = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "directiveStyle");
 
@@ -126,4 +153,9 @@ public class RIOT {
      * not output BASE even when given.
      */
     public static final Symbol symTurtleOmitBase = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "omitBase");
+
+    /**
+     * Printing style. Whether to use a "wide" or "long" indentation style.
+     */
+    public static final Symbol symTurtleIndentStyle = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "indentStyle");
 }

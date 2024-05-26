@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Licensed to the Apache Software Foundation (ASF) under one or more
-   contributor license agreements.  See the NOTICE file distributed with
-   this work for additional information regarding copyright ownership.
-   The ASF licenses this file to You under the Apache License, Version 2.0
-   (the "License"); you may not use this file except in compliance with
-   the License.  You may obtain a copy of the License at
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+        http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -23,12 +24,12 @@
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>https://jena.apache.org/</url>
-  <version>4.6.0-SNAPSHOT</version>
+  <version>5.1.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>27</version>
+    <version>32</version>
   </parent>
 
   <licenses>
@@ -47,79 +48,91 @@
     <connection>scm:git:https://gitbox.apache.org/repos/asf/jena.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/jena.git</developerConnection>
     <url>https://gitbox.apache.org/repos/asf/jena.git</url>
-    <tag>HEAD</tag>
   </scm>
+  
+  <properties>
+    <!-- Build -->
+    <java.version>17</java.version>
 
-   <properties>
-     <!-- Build -->
-    <java.version>11</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.outputTimestamp>2022-05-01T13:46:56Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-03-16T16:17:59Z</project.build.outputTimestamp>
 
-    <!-- Testing -->
-    <ver.junit>4.13.2</ver.junit>  
-    <ver.mockito>4.6.1</ver.mockito>
-    <ver.awaitility>4.2.0</ver.awaitility>
-    <ver.contract.tests>0.2.0</ver.contract.tests>
-
-    <!-- Dependencies -->
-    <ver.slf4j>1.7.36</ver.slf4j>
-    <ver.log4j2>2.18.0</ver.log4j2>
-
-    <ver.lucene>8.11.1</ver.lucene>
-
-    <ver.jetty>10.0.11</ver.jetty>
-    <ver.shiro>1.9.1</ver.shiro>
-
-    <ver.protobuf>3.21.4</ver.protobuf>
-    <ver.libthrift>0.16.0</ver.libthrift>
+    <!-- Logging -->
+    <ver.slf4j>2.0.7</ver.slf4j>
+    <ver.log4j2>2.23.1</ver.log4j2>
 
     <!-- JSON-LD 1.1 -->
-    <ver.titanium-json-ld>1.3.1</ver.titanium-json-ld>
+    <ver.titanium-json-ld>1.4.0</ver.titanium-json-ld>
     <ver.jakarta.json>2.0.1</ver.jakarta.json>
 
-    <!-- JSON-LD 1.0 -->
-    <!-- jsonld-java depends on depends on Jackson core
-         and Jackson databind. databind has had a few CVEs
-         so we exclude from jsonldjava and select the version
-         ourselves.
-         When upgrading jsonld, consult jsonld-java's
-         POM for the correct dependency versions
-         and use that or later.
-    -->
-    <ver.jsonldjava>0.13.4</ver.jsonldjava>
-    <ver.jackson>2.13.3</ver.jackson>
-    <ver.httpclient>4.5.13</ver.httpclient>
-    <ver.httpcore>4.4.15</ver.httpcore>
+    <!-- These two must be in-step -->
+    <ver.jetty>12.0.9</ver.jetty>
+    <ver.jakarta-servlet>6.0.0</ver.jakarta-servlet>
 
-    <ver.shaded-guava>31.1-jre</ver.shaded-guava>
-    <ver.gson>2.9.1</ver.gson>
-    <ver.commonsio>2.11.0</ver.commonsio>
-    <ver.commonscli>1.5.0</ver.commonscli>
-    <ver.commonslang3>3.12.0</ver.commonslang3>
-    <ver.commonsrdf>0.5.0</ver.commonsrdf>
-    <ver.commonscsv>1.9.0</ver.commonscsv>
-    <ver.commons-codec>1.15</ver.commons-codec>
-    <ver.commons-compress>1.21</ver.commons-compress>
+    <ver.shiro>2.0.0</ver.shiro>
+
+    <ver.protobuf>4.26.1</ver.protobuf>
+    <ver.libthrift>0.20.0</ver.libthrift>
+
+    <ver.caffeine>3.1.8</ver.caffeine>
+    <!-- Most of Jena uses other libraries for equivalent functionality. -->
+    <ver.guava>33.2.0-jre</ver.guava>
+
+    <ver.gson>2.11.0</ver.gson>
+    <ver.lucene>9.10.0</ver.lucene>
+
+    <ver.commons-io>2.16.1</ver.commons-io>
+    <ver.commons-cli>1.7.0</ver.commons-cli>
+    <ver.commons-lang3>3.14.0</ver.commons-lang3>
+    <ver.commons-rdf>0.5.0</ver.commons-rdf>
+    <ver.commons-csv>1.11.0</ver.commons-csv>
+    <ver.commons-codec>1.17.0</ver.commons-codec>
+    <ver.commons-compress>1.26.1</ver.commons-compress>
+    <ver.commons-collections>4.4</ver.commons-collections>
+    <ver.commons-fileupload>2.0.0-M2</ver.commons-fileupload>
+
     <ver.dexxcollection>0.7</ver.dexxcollection>
-    <ver.micrometer>1.9.2</ver.micrometer>
+    <ver.micrometer>1.13.0</ver.micrometer>
+    <ver.roaringbitmap>1.0.6</ver.roaringbitmap>
+
+    <!-- Testing -->
+    <ver.junit4>4.13.2</ver.junit4>
+    <ver.junit5>5.10.2</ver.junit5>
+    <ver.junit5-platform>1.10.2</ver.junit5-platform>
+ 
+    <ver.mockito>5.12.0</ver.mockito>
+    <ver.awaitility>4.2.1</ver.awaitility>
+    <ver.contract.tests>0.2.0</ver.contract.tests>
 
     <!-- For testing, not shipped -->
-    <ver.graalvm>22.2.0</ver.graalvm>
-    <ver.jython>2.7.2</ver.jython>
+    <ver.graalvm>23.0.4</ver.graalvm>
+    <ver.org.openjdk.jmh>1.37</ver.org.openjdk.jmh>
 
-    <!--- GeoSPARQL related -->
+    <!-- GeoSPARQL related -->
+    <ver.jaxb-api>2.3.1</ver.jaxb-api>
+    <ver.jakarta-xml-bind>4.0.2</ver.jakarta-xml-bind>
     <ver.jcommander>1.82</ver.jcommander>
-    <ver.sis>1.1</ver.sis>
+    <ver.sis>1.4</ver.sis>
     <ver.jts>1.19.0</ver.jts>
 
+    <!-- Plugins -->
+    <ver.plugin.rat>0.16.1</ver.plugin.rat>
+    <ver.plugin.assembly>3.7.1</ver.plugin.assembly>
+    <ver.plugin.compiler>3.13.0</ver.plugin.compiler>
+    <ver.plugin.surefire>3.2.5</ver.plugin.surefire>
+    <ver.plugin.javadoc>3.6.3</ver.plugin.javadoc>
+    <ver.plugin.war>3.4.0</ver.plugin.war>
+    <ver.plugin.shade>3.5.3</ver.plugin.shade>
+    <ver.plugin.enforcer>3.4.1</ver.plugin.enforcer>
+    <ver.plugin.cyclonedx>2.8.0</ver.plugin.cyclonedx>
+    <ver.plugin.spdx>0.7.0</ver.plugin.spdx>
   </properties>
 
   <issueManagement>
     <system>JIRA</system>
     <url>https://issues.apache.org/jira/browse/JENA</url>
   </issueManagement>
-
+  
   <mailingLists>
     <mailingList>
       <name>Jena Users Mailing List</name>
@@ -168,18 +181,20 @@
       -->
       <id>dev</id>
       <modules>
-        <module>jena-shaded-guava</module>
         <module>jena-iri</module>
         <module>jena-base</module>
         
         <module>jena-core</module>
         <module>jena-arq</module>
+        <module>jena-ontapi</module>
         <module>jena-shacl</module>
         <module>jena-shex</module>
+        <module>jena-rdfpatch</module>
         <module>jena-rdfconnection</module>
-        <module>jena-tdb</module>
         <module>jena-db</module>
- 
+        <module>jena-tdb1</module>
+        <module>jena-tdb2</module>
+        
         <module>apache-jena-libs</module>
 
         <module>jena-text</module>
@@ -190,8 +205,11 @@
 
         <module>jena-integration-tests</module>
 
+        <module>jena-benchmarks</module>
         <!-- Binary distribution -->
         <!-- <module>apache-jena</module> -->
+
+        <module>jena-bom</module>
 
       </modules>
 
@@ -225,18 +243,20 @@
       </activation>
       <modules>
         <!-- Basic modules -->
-        <module>jena-shaded-guava</module>
         <module>jena-iri</module>
         <module>jena-base</module>
 
         <!-- Main modules -->
         <module>jena-core</module>
         <module>jena-arq</module>
+        <module>jena-ontapi</module>
         <module>jena-shacl</module>
         <module>jena-shex</module>
+        <module>jena-rdfpatch</module>
         <module>jena-rdfconnection</module>
-        <module>jena-tdb</module>
         <module>jena-db</module>
+        <module>jena-tdb1</module>
+        <module>jena-tdb2</module>
         <module>apache-jena-libs</module>
 
         <module>jena-text</module>
@@ -254,6 +274,8 @@
             test remote client APIs.
         -->
         <module>jena-integration-tests</module>
+
+        <module>jena-benchmarks</module>
         
         <!-- Binary distribution -->
         <module>apache-jena</module>
@@ -263,8 +285,7 @@
         <module>jena-extras</module>
         <module>jena-examples</module>
 
-        <!-- Slow building modules -->
-        <module>jena-jdbc</module>
+        <module>jena-bom</module>
 
       </modules>
     </profile>
@@ -273,10 +294,19 @@
 
   <dependencyManagement>
     <dependencies>
+
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${ver.junit5}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>${ver.junit}</version>
+        <version>${ver.junit4}</version>
         <scope>test</scope>
       </dependency>
 
@@ -289,7 +319,13 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>${ver.commonsio}</version>
+        <version>${ver.commons-io}</version>
+      </dependency>
+
+       <dependency>
+        <groupId>commons-cli</groupId>
+        <artifactId>commons-</artifactId>
+        <version>${ver.commons-io}</version>
       </dependency>
       
       <dependency>
@@ -306,13 +342,11 @@
       </dependency>
 
       <dependency>
-        <groupId>com.fasterxml.jackson</groupId>
-        <artifactId>jackson-bom</artifactId>
-        <version>${ver.jackson}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-rdf-api</artifactId>
+        <version>${ver.commons-rdf}</version>
       </dependency>
-      
+
       <!-- Protobuf only, not gRPC -->
       <dependency>
         <groupId>com.google.protobuf</groupId>
@@ -325,26 +359,33 @@
         <artifactId>libthrift</artifactId>
         <version>${ver.libthrift}</version>
         <exclusions>
-          <!-- Use whatever version Jena is using -->
-          <exclusion>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-          </exclusion>
           <exclusion>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
           </exclusion>
-          <!-- libthrift : 0.14.0 onwards : THRIFT-5375 -->
-          <exclusion>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-core</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-          </exclusion>
           <exclusion>
             <groupId>org.slf4j</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+
+          <!-- 
+               Jena does not use the RPC capabilities of Thrift,
+               only the binary data format.
+          -->
+          <exclusion>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.httpcomponents.core5</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>jakarta.annotation</groupId>
             <artifactId>*</artifactId>
           </exclusion>
         </exclusions>
@@ -353,156 +394,87 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-csv</artifactId>
-        <version>${ver.commonscsv}</version>
+        <version>${ver.commons-csv}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>${ver.commonslang3}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>commons-fileupload</groupId>
-        <artifactId>commons-fileupload</artifactId>
-        <version>1.4</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-          </exclusion>
-        </exclusions>
+        <version>${ver.commons-lang3}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-collections4</artifactId>
-        <version>4.4</version>
+        <version>${ver.commons-collections}</version>
       </dependency>
-      
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-fileupload2-jakarta-servlet6</artifactId>
+        <version>${ver.commons-fileupload}</version>
+      </dependency>
+
+      <!--
+          com.google.errorprone:error_prone_annotations
+          is used by gson, guava and caffeine. 
+          It can lead to dependency convergence errors
+          (the dependencies using it are all at the same depth).
+          Either explicitly depend here or choose one
+          route and exclude from the others.
+          Gson is probably the one to choose as the preferred route.
+      -->
+      <!--
+      <dependency>
+        <groupId>com.google.errorprone</groupId>
+        <artifactId>error_prone_annotations</artifactId>
+        <version>VERSION</version>
+      </dependency>
+      -->
+
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>${ver.gson}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.github.ben-manes.caffeine</groupId>
+        <artifactId>caffeine</artifactId>
+        <version>${ver.caffeine}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.google.errorprone</groupId>
+            <artifactId>error_prone_annotations</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${ver.guava}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.google.errorprone</groupId>
+            <artifactId>error_prone_annotations</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
       <!-- supports persistent data structures -->
       <dependency>
         <groupId>com.github.andrewoma.dexx</groupId>
         <artifactId>collection</artifactId>
         <version>${ver.dexxcollection}</version>
-      </dependency>
-      
-      <dependency>
-        <groupId>com.google.code.gson</groupId>
-        <artifactId>gson</artifactId>
-        <version>${ver.gson}</version>
-      </dependency>    
-      
-      <!-- jsonld-java for JSON-LD 1.0 -->
-      <dependency>
-        <groupId>com.github.jsonld-java</groupId>
-        <artifactId>jsonld-java</artifactId>
-        <version>${ver.jsonldjava}</version>
-
-        <exclusions>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>*</artifactId>
-          </exclusion>
-
-          <!-- Exclude so we use our choice of versions -->
-          <exclusion>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient-cache</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient-osgi</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore-osgi</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <!-- Control version of Apache HttpClient components -->
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient-cache</artifactId>
-        <version>${ver.httpclient}</version>
-        <exclusions>
-          <!-- Replace with slf4j adapter -->
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-          </exclusion>
-          <!-- JENA 2137: scope=provided and the enforcer plugin -->
-          <exclusion>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-        <version>${ver.httpclient}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-          </exclusion>
-          <!-- JENA 2137: scope=provided and the enforcer plugin -->
-          <exclusion>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpcore</artifactId>
-        <version>${ver.httpcore}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       
       <!-- JSON-LD 1.1 read support -->
@@ -533,6 +505,13 @@
       </dependency>
       <!-- End JSON-LD 1.1 read support -->
 
+      <!-- Ensure the properties align the jakarta.servlet-api version to that of Jetty. -->
+      <dependency>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>${ver.jakarta-servlet}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-bom</artifactId>
@@ -540,24 +519,21 @@
         <scope>import</scope>
         <type>pom</type>
       </dependency>
-      
+
       <dependency>
-        <groupId>org.apache.shiro</groupId>
-        <artifactId>shiro-core</artifactId>
-        <version>${ver.shiro}</version>
+        <groupId>org.eclipse.jetty.ee10</groupId>
+        <artifactId>jetty-ee10-bom</artifactId>
+        <version>${ver.jetty}</version>
+        <scope>import</scope>
+        <type>pom</type>
       </dependency>
 
       <dependency>
         <groupId>org.apache.shiro</groupId>
-        <artifactId>shiro-web</artifactId>
+        <artifactId>shiro-bom</artifactId>
         <version>${ver.shiro}</version>
-        <!-- JENA-2137 : Dependency convergence -->
-        <exclusions>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-          </exclusion>
-        </exclusions>
+        <scope>import</scope>
+        <type>pom</type>
       </dependency>
 
       <!-- Lucene dependencies -->
@@ -570,7 +546,7 @@
 
       <dependency>
         <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-analyzers-common</artifactId>
+        <artifactId>lucene-analysis-common</artifactId>
         <version>${ver.lucene}</version>
       </dependency>
 
@@ -620,7 +596,7 @@
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-slf4j-impl</artifactId>
+        <artifactId>log4j-slf4j2-impl</artifactId>
         <version>${ver.log4j2}</version>
         <optional>true</optional>
       </dependency>
@@ -655,9 +631,7 @@
         </exclusions>
       </dependency>
 
-      <!-- And intercept any uses of Jakarta Commons Logging 
-           e.g. Apache Common HTTP client. 
-      -->
+      <!-- Commons Logging intercept -->
 
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -672,15 +646,9 @@
       </dependency>
 
       <dependency>
-        <groupId>commons-cli</groupId>
-        <artifactId>commons-cli</artifactId>
-        <version>${ver.commonscli}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-rdf-api</artifactId>
-        <version>${ver.commonsrdf}</version>
+        <groupId>org.roaringbitmap</groupId>
+        <artifactId>RoaringBitmap</artifactId>
+        <version>${ver.roaringbitmap}</version>
       </dependency>
 
       <dependency>
@@ -699,6 +667,20 @@
         <groupId>org.python</groupId>
         <artifactId>jython-standalone</artifactId>
         <version>${ver.jython}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-core</artifactId>
+        <version>${ver.org.openjdk.jmh}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.openjdk.jmh</groupId>
+        <artifactId>jmh-generator-annprocess</artifactId>
+        <version>${ver.org.openjdk.jmh}</version>
         <scope>test</scope>
       </dependency>
 
@@ -760,9 +742,16 @@
       </dependency>
 
       <dependency>
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>${ver.jakarta-xml-bind}</version>
+      </dependency>
+      
+      <!-- Needed by jena-geosparql -->
+      <dependency>
         <groupId>javax.xml.bind</groupId>
         <artifactId>jaxb-api</artifactId>
-        <version>2.3.1</version>
+        <version>${ver.jaxb-api}</version>
       </dependency>
 
       <dependency>
@@ -802,11 +791,7 @@
         <exclusions>
           <exclusion>
             <groupId>org.apache.jena</groupId>
-            <artifactId>jena-tdb</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-tdb2</artifactId>
+            <artifactId>*</artifactId>
           </exclusion>
           <exclusion>
             <groupId>com.beust</groupId>
@@ -869,15 +854,15 @@
 
       <!-- Run the RAT Plugin -->
       <!--
-           To run from the command line:
-               mvn apache-rat:rat \
-                      -Drat.excludeSubProjects=false \
-                      -Drat.excludesFile=build-files/rat-exclusions.txt
+          To run from the command line:
+          mvn apache-rat:rat \
+          -Drat.excludeSubProjects=false \
+          -Drat.excludesFile=build-files/rat-exclusions.txt
       -->
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
-        <version>0.14</version>
+        <version>${ver.plugin.rat}</version>
         <!-- 
              Run only if maven is running from this POM,
              not when run in a sub-module with this as parent.
@@ -897,6 +882,48 @@
           <excludesFile>build-files/rat-exclusions.txt</excludesFile>
         </configuration>
       </plugin>
+
+      <!-- SBOM : CycloneDX -->
+      <plugin>
+        <groupId>org.cyclonedx</groupId>
+        <artifactId>cyclonedx-maven-plugin</artifactId>
+        <version>${ver.plugin.cyclonedx}</version>
+        <executions>
+          <execution>
+            <id>build-sbom-cyclonedx</id>
+            <phase>package</phase>
+            <goals>
+              <goal>makeAggregateBom</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <outputName>${project.artifactId}-${project.version}-bom</outputName>
+        </configuration>
+      </plugin>
+
+      <!-- SBOM : SPDX -->
+      <!-- Example : placeholder
+           <plugin>
+           <groupId>org.spdx</groupId>
+           <artifactId>spdx-maven-plugin</artifactId>
+           <version>${ver.plugin.spdx}</version>
+           <configuration>
+           <licenseDeclared>Apache-2.0</licenseDeclared>
+           <copyrightText>See NOTICE file</copyrightText>
+           </configuration>
+           <executions>
+           <execution>
+           <id>build-sbom-spdx</id>
+           <phase>package</phase>
+           <goals>
+           <goal>createSPDX</goal>
+           </goals>
+           </execution>
+           </executions>
+           </plugin>
+      -->
+
     </plugins>
 
     <!-- Plugin version list: https://maven.apache.org/plugins/index.html -->
@@ -906,34 +933,44 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.4.2</version>
+          <version>${ver.plugin.assembly}</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.10.1</version>
+          <version>${ver.plugin.compiler}</version>
           <configuration>
             <release>${java.version}</release>
+            <compilerArgument>-proc:none</compilerArgument>
           </configuration>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.2</version>
-          <!-- 
-               Bug: SUREFIRE-1588 Fixed at 3.0.0
-               https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=911925
-          -->
-          <configuration>
-            <useSystemClassLoader>false</useSystemClassLoader>
-          </configuration>
+          <version>${ver.plugin.surefire}</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
+          <configuration>
+            <archive>
+              <manifestEntries>
+                <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+              </manifestEntries>
+            </archive>
+          </configuration>
+          <!-- Some modules provide test frameworks
+               <executions>
+               <execution>
+               <goals>
+               <goal>test-jar</goal>
+               </goals>
+               </execution>
+               </executions>
+          -->
         </plugin>
 
         <plugin>
@@ -946,12 +983,12 @@
                 <goal>jar-no-fork</goal>
               </goals>
             </execution>
-            <!-- Only needed in some jars 
-                 <execution> 
-                   <id>attach-sources-test</id> 
-                   <goals> 
-                     <goal>test-jar-no-fork</goal> 
-                   </goals>
+            <!-- see jar-plugin
+                 <execution>
+                 <id>attach-sources-test</id> 
+                 <goals>
+                 <goal>test-jar-no-fork</goal> 
+                 </goals>
                  </execution>
             -->
           </executions>
@@ -960,7 +997,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.4.0</version>
+          <version>${ver.plugin.javadoc}</version>
           <executions>
             <execution>
               <id>attach-javadocs</id>
@@ -970,52 +1007,17 @@
             </execution>
           </executions>
           <configuration>
-            <!-- Java11:
-                 https://bugs.openjdk.java.net/browse/JDK-8212233
-                 JDK-8212233
-                 Fixed in 12.0.1, 11.0.3 (??)
-
-                 Explicitly define the source as Java8 when building
-                 with java8 source code for java8 output.
-                 Not good enough when compiling for Java11 output.
-
-                 https://issues.apache.org/jira/browse/MJAVADOC-555
-            -->
-
-            <!-- Fixes for Javadoc when building for Java11.
-                 (1) Fix for:
-                 Named / unnamed modules error/warning
-                 (2) Fix for:
-                 [ERROR] error: the unnamed module reads package PKG from both A and B
-
-                 Modules impacted:
-                   jena-geosparql
-                   jena-jdbc
-            -->
+            <release>${java.version}</release>
             <detectJavaApiLink>false</detectJavaApiLink>
-
-            <!-- 
-                 Some modules have source = ${java.version} where they use 
-                 Java 11 features but applying that here causes two kinds of problems.
-                 1/ apache-jena-libs:pom. This artifact as a dependency now causes
-                    an error attaching as a POM.
-                 2/ dependency errors on overlapping packages (which don't appear
-                    to overlap)
-                 3/ Mixed modules and non-module jars (may be the same as 2)
-            -->
-            <source>8</source>
-            <!-- End Java11 fixes (2021-01) -->
-
             <!-- To allow the build to keep going despite javadoc problems:
                  <failOnError>false</failOnError>
             -->
             <!-- For producible builds
                  https://maven.apache.org/guides/mini/guide-reproducible-builds.html
-                 See FAQ
             -->
             <notimestamp>true</notimestamp>
-            <quiet>true</quiet>
             <doclint>none</doclint>
+            <quiet>true</quiet>
             <version>true</version>
             <show>public</show>
             <encoding>UTF-8</encoding>
@@ -1025,12 +1027,10 @@
             <links>
               <link>https://jena.apache.org/documentation/javadoc/jena/</link>
               <link>https://jena.apache.org/documentation/javadoc/arq/</link>
-              <link>https://jena.apache.org/documentation/javadoc/tdb/</link>
+              <link>https://jena.apache.org/documentation/javadoc/tdb2/</link>
               <link>https://jena.apache.org/documentation/javadoc/text/</link>
               <link>https://jena.apache.org/documentation/javadoc/rdfconnection/</link>
               <link>https://jena.apache.org/documentation/javadoc/fuseki2/</link>
-              <link>https://jena.apache.org/documentation/javadoc/permissions/</link>
-              <link>https://jena.apache.org/documentation/javadoc/jdbc/</link>
             </links>
             <!-- Settings for @apiNote, @implSpec and @implNote -->
             <tags>
@@ -1073,19 +1073,19 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>${ver.plugin.enforcer}</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>${ver.plugin.shade}</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
-          <version>3.3.2</version>
+          <version>${ver.plugin.war}</version>
         </plugin>
 
         <!--

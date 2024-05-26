@@ -48,11 +48,10 @@ public class ShapeExprTripleExpr extends ShapeExpression {
     private TripleExpression tripleExpr;
     //semActs:[SemAct+]?
     //annotations:[Annotation+]?
-
     public static Builder newBuilder() { return new Builder(); }
 
-    private ShapeExprTripleExpr(Node label, Set<Node> extras, boolean closed, TripleExpression tripleExpr) {
-        super();
+    private ShapeExprTripleExpr(Node label, Set<Node> extras, boolean closed, TripleExpression tripleExpr, List<SemAct> semActs) {
+        super(semActs);
         this.label = label;
         if ( extras == null || extras.isEmpty() )
             this.extras = null;
@@ -133,6 +132,7 @@ public class ShapeExprTripleExpr extends ShapeExpression {
     public static class Builder {
         private Node label;
         private Set<Node> extras = null;
+        private List<SemAct> semActs;
         private Optional<Boolean> closed = null;
         //extra:[IRIREF]?
         private TripleExpression tripleExpr = null;
@@ -150,13 +150,21 @@ public class ShapeExprTripleExpr extends ShapeExpression {
             return this;
         }
 
+        public Builder semActs(List<SemAct> semActsList) {
+            if ( semActs == null )
+                semActs = new ArrayList<>();
+            if (semActsList != null)
+                this.semActs.addAll(semActsList);
+            return this;
+        }
+
         public Builder closed(boolean value) { this.closed = Optional.of(value); return this; }
 
         public Builder shapeExpr(TripleExpression tripleExpr) { this.tripleExpr = tripleExpr; return this; }
 
         public ShapeExprTripleExpr build() {
             boolean isClosed = (closed == null) ? false : closed.get();
-            return new ShapeExprTripleExpr(label, extras, isClosed, tripleExpr);
+            return new ShapeExprTripleExpr(label, extras, isClosed, tripleExpr, semActs);
         }
     }
 }

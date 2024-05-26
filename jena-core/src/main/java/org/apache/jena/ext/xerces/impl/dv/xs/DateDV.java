@@ -24,9 +24,9 @@ import org.apache.jena.ext.xerces.impl.dv.InvalidDatatypeValueException;
 import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
 
 /**
- * Validator for <date> datatype (W3C Schema datatypes)
+ * Validator for {@literal <date>} datatype (W3C Schema datatypes)
  *
- * {@literal @xerces.internal} 
+ * {@literal @xerces.internal}
  *
  * @author Elena Litani
  * @author Gopal Sharma, SUN Microsystems Inc.
@@ -66,7 +66,7 @@ public class DateDV extends DateTimeDV {
 
         //save unnormalized values
         saveUnnormalized(date);
-        
+
         if (date.utc!=0 && date.utc!='Z') {
             normalize(date);
         }
@@ -84,12 +84,12 @@ public class DateDV extends DateTimeDV {
         append(message, (char)date.utc, 0);
         return message.toString();
     }
-    
+
     @Override
     protected XMLGregorianCalendar getXMLGregorianCalendar(DateTimeData date) {
-        return datatypeFactory.newXMLGregorianCalendar(date.unNormYear, date.unNormMonth, 
-                date.unNormDay, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, 
-                DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, 
+        return datatypeFactory.newXMLGregorianCalendar(date.unNormYear, date.unNormMonth,
+                date.unNormDay, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED,
+                DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED,
                 date.hasTimeZone() ? (date.timezoneHr * 60 + date.timezoneMin) : DatatypeConstants.FIELD_UNDEFINED);
     }
 

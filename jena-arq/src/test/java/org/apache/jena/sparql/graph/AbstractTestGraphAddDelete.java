@@ -39,24 +39,25 @@ public abstract class AbstractTestGraphAddDelete
     protected static final Node s2 = NodeFactoryExtra.parseNode("<ex:s2>") ;
     protected static final Node p2 = NodeFactoryExtra.parseNode("<ex:p2>") ;
     protected static final Node o2 = NodeFactoryExtra.parseNode("<ex:o2>") ;
-    
+
     protected static final Node lit1 = NodeFactoryExtra.parseNode("'lex'") ;
     protected static final Node lit2 = NodeFactoryExtra.parseNode("'lex'@en") ;
     protected static final Node lit3 = NodeFactoryExtra.parseNode("123") ;
-    
+
     static Triple triple(Node s, Node p, Node o)
-    { return new Triple(s, p, o) ; }
-    
+    { return Triple.create(s, p, o) ; }
+
     protected abstract Graph emptyGraph() ;
     protected abstract void returnGraph(Graph g) ;
-    
+
     @Test public void graph_01()
     {
         Graph g = emptyGraph() ;
         assertEquals(0, g.size()) ;
+        assertEquals(0L, g.sizeLong()) ;
         returnGraph(g) ;
     }
-    
+
     @Test public void graph_add_01()
     {
         Graph g = emptyGraph() ;
@@ -67,7 +68,7 @@ public abstract class AbstractTestGraphAddDelete
         assertTrue(g.contains(s1,p1,o1)) ;
         returnGraph(g) ;
     }
-    
+
     @Test public void graph_add_02()
     {
         Graph g = emptyGraph() ;
@@ -81,7 +82,7 @@ public abstract class AbstractTestGraphAddDelete
         returnGraph(g) ;
 
     }
-    
+
     @Test public void graph_add_03()
     {
         Graph g = emptyGraph() ;
@@ -89,11 +90,11 @@ public abstract class AbstractTestGraphAddDelete
         Node ns1 = NodeFactoryExtra.parseNode("<ex:s>") ;
         Node np1 = NodeFactoryExtra.parseNode("<ex:p>") ;
         Node no1 = NodeFactoryExtra.parseNode("<ex:o>") ;
-        
+
         Node ns2 = NodeFactoryExtra.parseNode("<ex:s>") ;
         Node np2 = NodeFactoryExtra.parseNode("<ex:p>") ;
         Node no2 = NodeFactoryExtra.parseNode("<ex:o>") ;
-        
+
         Triple t1 = triple(ns1, np1, no1) ;
         Triple t2 = triple(ns2, np2, no2) ;
         g.add(t1) ;
@@ -123,8 +124,8 @@ public abstract class AbstractTestGraphAddDelete
         assertFalse(g.contains(s1,p1,o)) ;
         returnGraph(g) ;
 
-    }        
-        
+    }
+
     @Test public void graph_add_delete_01()
     {
         Graph g = emptyGraph() ;
@@ -135,7 +136,7 @@ public abstract class AbstractTestGraphAddDelete
         assertFalse("g contains t", g.contains(t)) ;
         returnGraph(g) ;
     }
-    
+
     @Test public void graph_add_delete_02()
     {
         Graph g = emptyGraph() ;
@@ -160,13 +161,13 @@ public abstract class AbstractTestGraphAddDelete
         assertFalse("g contains t", g.contains(t)) ;
         returnGraph(g) ;
     }
-    
+
     @Test public void graph_add_delete_04()
     {
         Graph g = emptyGraph() ;
         Triple t1 = triple(s1, p1, o1) ;
         Triple t2 = triple(s2, p2, o2) ;
-        
+
         g.add(t1) ;
         g.add(t2) ;
         g.delete(t1) ;
@@ -187,7 +188,7 @@ public abstract class AbstractTestGraphAddDelete
         assertTrue(g.contains(t1)) ;
         returnGraph(g) ;
     }
-    
+
     @Test public void graph_add_find_02()
     {
         // Tests the "unknown node" handling
@@ -201,7 +202,7 @@ public abstract class AbstractTestGraphAddDelete
     }
 
     private static Node any = Node.ANY ;
-    
+
     @Test public void remove_01()
     {
         Graph g = emptyGraph() ;
@@ -211,7 +212,7 @@ public abstract class AbstractTestGraphAddDelete
         assertEquals(0, g.size()) ;
         returnGraph(g) ;
     }
-    
+
     @Test public void remove_02()
     {
         Graph g = emptyGraph() ;
@@ -248,7 +249,7 @@ public abstract class AbstractTestGraphAddDelete
         assertEquals(0, g.size()) ;
         returnGraph(g) ;
     }
-       
+
     @Test public void count_01()
     {
         Graph g = emptyGraph() ;
@@ -258,7 +259,7 @@ public abstract class AbstractTestGraphAddDelete
         assertEquals(1, g.size()) ;
         returnGraph(g) ;
     }
-    
+
     // Tests : triples and values.
-    
+
 }

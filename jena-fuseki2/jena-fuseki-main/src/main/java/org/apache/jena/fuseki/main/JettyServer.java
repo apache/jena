@@ -18,50 +18,44 @@
 
 package org.apache.jena.fuseki.main;
 
+import static java.util.Objects.requireNonNull;
+import static org.apache.jena.fuseki.Fuseki.serverLog;
+
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.Filter;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServlet;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
-import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
+import org.apache.jena.fuseki.main.sys.JettyLib;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.OperationRegistry;
 import org.apache.jena.fuseki.servlets.ActionBase;
-import org.apache.jena.riot.web.HttpNames;
-import org.apache.jena.web.HttpSC;
-import org.eclipse.jetty.http.HttpMethod;
+import org.apache.jena.riot.WebContent;
+import org.eclipse.jetty.ee10.servlet.DefaultServlet;
+import org.eclipse.jetty.ee10.servlet.FilterHolder;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
 import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.security.SecurityHandler;
-import org.eclipse.jetty.server.HttpConnectionFactory;
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Response;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ErrorHandler;
-import org.eclipse.jetty.servlet.DefaultServlet;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.Callback;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.eclipse.jetty.xml.XmlConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
-import static org.apache.jena.fuseki.Fuseki.serverLog;
 
 /**
  * Jetty server for servlets, including being able to run Fuseki {@link ActionBase} derived servlets.
@@ -140,27 +134,56 @@ public class JettyServer {
         catch (Exception e) { throw new RuntimeException(e); }
     }
 
-    /** One line error handler */
+    /** Simple error handler - always text/plain. */
     public static class PlainErrorHandler extends ErrorHandler {
-        // c.f. FusekiErrorHandler1
         public PlainErrorHandler() {}
 
         @Override
-        public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
-            String method = request.getMethod();
+        protected boolean generateAcceptableResponse(Request request, Response response, Callback callback, String contentType, List<Charset> charsets, int code, String message, Throwable cause) throws IOException {
+            System.err.println(">> plain:generateAcceptableResponse");
+            // Force text/plain
+            // https://github.com/eclipse/jetty.project/issues/10474 (Bug in 12.0.0, 12.0.1 for applicatipon/json)
+            if ( contentType != null && contentType.equals(WebContent.contentTypeJSON) )
+                contentType = MimeTypes.Type.TEXT_PLAIN.asString();
 
-            if ( !method.equals(HttpMethod.GET.asString())
-                 && !method.equals(HttpMethod.POST.asString())
-                 && !method.equals(HttpMethod.HEAD.asString()) )
-                return;
+            try {
+                boolean b =
+                        super.generateAcceptableResponse(request, response, callback,
+                                                         //"text/plain", List.of(StandardCharsets.UTF_8),
+                                                         contentType, charsets,
+                                                         code, message, cause);
+                System.err.println("<< plain:generateAcceptableResponse: "+b);
+                return b;
 
-            response.setContentType(MimeTypes.Type.TEXT_PLAIN_UTF_8.asString());
-            response.setHeader(HttpNames.hCacheControl, "must-revalidate,no-cache,no-store");
-            response.setHeader(HttpNames.hPragma, "no-cache");
-            int code = response.getStatus();
-            String message=(response instanceof Response)?((Response)response).getReason(): HttpSC.getMessage(code);
-            response.getOutputStream().print(format("Error %d: %s\n", code, message));
+            } catch (IllegalStateException ex) {
+                System.err.println("<< plain:generateAcceptableResponse: IllegalStateException");
+                ex.printStackTrace();
+                return true;
+            }
         }
+
+        @Override
+        protected void generateResponse(Request request, Response response, int code, String message, Throwable cause, Callback callback) throws IOException {
+            generateAcceptableResponse(request, response, callback, WebContent.contentTypeTextPlain, List.of(StandardCharsets.UTF_8), code, message, cause);
+        }
+
+//        @Override
+//        protected void writeErrorPlain(Request request, PrintWriter writer, int code, String message, Throwable cause, boolean showStacks) {
+//            writer.write("HTTP ERROR ");
+//            writer.write(Integer.toString(code));
+//            writer.write(' ');
+//            writer.write(StringUtil.sanitizeXmlString(message));
+//            writer.write("\n");
+//            writer.printf("URI: %s%n", request.getHttpURI());
+//            writer.printf("STATUS: %s%n", code);
+//            writer.printf("MESSAGE: %s%n", message);
+//            while (cause != null) {
+//                writer.printf("CAUSED BY %s%n", cause);
+//                if (showStacks)
+//                    cause.printStackTrace(writer);
+//                cause = cause.getCause();
+//            }
+//        }
     }
 
     public static class JettyConfigException extends FusekiConfigException {
@@ -275,7 +298,6 @@ public class JettyServer {
          * Set the number threads used by Jetty. This uses a {@code org.eclipse.jetty.util.thread.QueuedThreadPool} provided by Jetty.
          * <p>
          * Argument order is (minThreads, maxThreads).
-         * <p>
          * <ul>
          * <li>Use (-1,-1) for Jetty "default". The Jetty 9.4 defaults are (min=8,max=200).
          * <li>If (min != -1, max is -1) then the default max is 20.
@@ -290,12 +312,6 @@ public class JettyServer {
             this.minThreads = minThreads;
             this.maxThreads = maxThreads;
             return this;
-        }
-
-        /** @deprecated Renamed as {@link #maxServerThreads} */
-        @Deprecated
-        public Builder maxServerNumThreads(int maxThreads) {
-            return maxServerThreads(maxThreads);
         }
 
         /**
@@ -377,7 +393,7 @@ public class JettyServer {
             try {
                 Fuseki.setVerbose(cxt, verbose);
                 OperationRegistry.set(cxt, OperationRegistry.createEmpty());
-                DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry(MetricsProviderRegistry.get().getMeterRegistry()));
+                DataAccessPointRegistry.set(cxt, new DataAccessPointRegistry());
             } catch (NoClassDefFoundError err) {
                 LOG.info("Fuseki classes not found");
             }
@@ -395,7 +411,6 @@ public class JettyServer {
             context.setContextPath(contextPath);
             if ( securityHandler != null )
                 context.setSecurityHandler(securityHandler);
-
             return context;
         }
 
@@ -407,7 +422,7 @@ public class JettyServer {
             if ( staticContentDir != null ) {
                 DefaultServlet staticServlet = new DefaultServlet();
                 ServletHolder staticContent = new ServletHolder(staticServlet);
-                staticContent.setInitParameter("resourceBase", staticContentDir);
+                staticContent.setInitParameter("baseResource", staticContentDir);
                 context.addServlet(staticContent, "/");
             }
         }
@@ -428,7 +443,7 @@ public class JettyServer {
     public static Server jettyServer(String jettyConfig) {
         try {
             Server server = new Server();
-            Resource configXml = Resource.newResource(jettyConfig);
+            Resource configXml = JettyLib.newResource(jettyConfig);
             XmlConfiguration configuration = new XmlConfiguration(configXml);
             configuration.configure(server);
             return server;
@@ -440,13 +455,13 @@ public class JettyServer {
 
     public static Server jettyServer(int minThreads, int maxThreads) {
         ThreadPool threadPool = null;
-        // Jetty 9.4 : the Jetty default is 200,8
+        // Jetty 9.4 and 12.0 : the Jetty default is max=200, min=8
         if ( minThreads < 0 )
             minThreads = 2;
         if ( maxThreads < 0 )
             maxThreads = 20;
         maxThreads = Math.max(minThreads, maxThreads);
-        // Args reversed:Jetty uses (max,min)
+        // Args reversed: Jetty uses (max,min)
         threadPool = new QueuedThreadPool(maxThreads, minThreads);
         Server server = new Server(threadPool);
         return server;

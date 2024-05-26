@@ -100,7 +100,7 @@ public class RowSetReaderCSV implements RowSetReader {
                 for ( int i = 0 ; i < vars.size() ; i++ ) {
                     Var v = vars.get(i);
                     String field = (i < row.size()) ? row.get(i) : "";
-                    Node n = NodeFactory.createLiteral(field);
+                    Node n = NodeFactory.createLiteralString(field);
                     builder.add(v, n);
                 }
                 count++;

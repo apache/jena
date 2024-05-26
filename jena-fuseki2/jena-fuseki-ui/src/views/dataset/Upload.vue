@@ -16,164 +16,211 @@
 -->
 
 <template>
-  <b-container fluid>
-    <b-row class="mt-4">
-      <b-col cols="12">
-        <h2>/{{ this.datasetName }}</h2>
-        <b-card no-body>
-          <b-card-header header-tag="nav">
+  <div class="container-fluid">
+    <div class="row mt-4">
+      <div class="col-12">
+        <h2>/{{ datasetName }}</h2>
+        <div class="card">
+          <nav class="card-header">
             <Menu :dataset-name="datasetName" />
-          </b-card-header>
-          <b-card-body v-if="!this.services['gsp-rw'] || this.services['gsp-rw'].length === 0">
-            <b-alert show variant="warning">No service for adding data available. The Graph Store Protocol service should be configured to allow adding data.</b-alert>
-          </b-card-body>
-          <b-card-body v-else>
+          </nav>
+          <div class="card-body" v-if="services !== null && (!services['gsp-rw'] || services['gsp-rw'].length === 0)">
+            <div class="alert alert-warning">
+              No service for adding data available. The Graph Store Protocol service should be configured to allow adding data.
+            </div>
+          </div>
+          <div class="card-body" v-else>
             <div v-show="$refs.upload && $refs.upload.dropActive" class="drop-active">
               <h3>Drop files to upload</h3>
             </div>
-            <b-row>
-              <b-col sm="12">
-                <h3>Upload files</h3>
-                <p>Load data into the default graph of the currently selected dataset, or the given named graph.
-                  You may upload any RDF format, such as Turtle, RDF/XML or TRiG.</p>
-                <b-form>
-                  <b-form-group
+            <div class="row">
+              <div class="col-sm-12">
+                <h3>Upload files {{ postActionUrl }}</h3>
+                <p>
+                  Load data into the default graph of the currently selected dataset, or the given named graph.
+                  You may upload any RDF format, such as Turtle, RDF/XML or TRiG.
+                </p>
+                <form ref="upload-form" novalidate>
+                  <div
                     id="dataset-graph-name-group"
-                    label="Dataset graph name"
-                    label-for="dataset-graph-name"
-                    label-cols="12"
-                    label-cols-sm="4"
-                    label-cols-md="4"
-                    label-cols-lg="2"
-                    label-size="sm"
+                    role="group"
+                    class="form-row form-group"
                   >
-                    <b-form-input
-                      pattern="[^\s]+"
-                      oninvalid="this.setCustomValidity('Enter a valid dataset graph name')"
-                      oninput="this.setCustomValidity('')"
-                      id="dataset-graph-name"
-                      v-model="form.datasetGraphName"
-                      type="text"
-                      placeholder="Leave blank for default graph"
-                      trim
-                    ></b-form-input>
-                  </b-form-group>
-                  <b-form-group
+                    <label
+                      for="dataset-graph-name"
+                      class="col-sm-4 col-md-4 col-lg-2 col-12 col-form-label col-form-label-sm"
+                    >Dataset graph name</label>
+                    <div class="col input-group has-validation">
+                      <input
+                        v-model="datasetGraphName"
+                        :class="graphNameClasses"
+                        id="dataset-graph-name"
+                        ref="dataset-graph-name"
+                        type="text"
+                        placeholder="Leave blank for default graph"
+                      />
+                      <div class="invalid-feedback">
+                        Invalid graph name. Please remove any spaces.
+                      </div>
+                    </div>
+                  </div>
+                  <div
                     id="dataset-files"
-                    label="Files to upload"
-                    label-for="add-files-action-dropdown"
-                    label-cols="12"
-                    label-cols-sm="4"
-                    label-cols-md="4"
-                    label-cols-lg="2"
-                    label-size="sm"
+                    role="group"
+                    class="form-row form-group"
                   >
-                    <file-upload
-                      ref="upload"
-                      v-model="upload.files"
-                      :post-action="postActionUrl"
-                      :extensions="upload.extensions"
-                      :accept="upload.accept"
-                      :multiple="upload.multiple"
-                      :directory="upload.directory"
-                      :size="upload.size || 0"
-                      :thread="upload.thread < 1 ? 1 : (upload.thread > 5 ? 5 : upload.thread)"
-                      :headers="upload.headers"
-                      :data="upload.data"
-                      :drop="upload.drop"
-                      :drop-directory="upload.dropDirectory"
-                      :add-index="upload.addIndex"
-                      class="btn btn-success"
-                    >
-                      <FontAwesomeIcon icon="plus" />
-                      <span class="ml-2">select files</span>
-                    </file-upload>
-                    <b-button
-                      v-if="!$refs.upload || !$refs.upload.active"
-                      @click.prevent="$refs.upload.active = true"
-                      variant="primary"
-                      class="ml-2 d-inline">
-                      <FontAwesomeIcon icon="upload" />
-                      <span class="ml-2">upload all</span>
-                    </b-button>
-                    <b-button
-                      v-else
-                      @click.prevent="$refs.upload.active = false"
-                      variant="primary"
-                      class="ml-2 d-inline">
-                      <FontAwesomeIcon icon="times-circle" />
-                      <span class="ml-2">stop upload</span>
-                    </b-button>
-                  </b-form-group>
-                </b-form>
-              </b-col>
-            </b-row>
-            <b-row>
-              <b-col>
-                <b-table
+                    <label
+                      class="col-sm-4 col-md-4 col-lg-2 col-12 col-form-label col-form-label-sm"
+                    >Files to upload</label>
+                    <div class="col has-validation">
+                      <!-- eslint-disable vue/v-on-event-hyphenation -->
+                      <file-upload
+                        ref="upload"
+                        :value="upload.files"
+                        @update:modelValue="upload.files = $event"
+                        :post-action="postActionUrl"
+                        :extensions="upload.extensions"
+                        :accept="upload.accept"
+                        :multiple="upload.multiple"
+                        :directory="upload.directory"
+                        :size="upload.size || 0"
+                        :thread="upload.thread < 1 ? 1 : (upload.thread > 5 ? 5 : upload.thread)"
+                        :headers="upload.headers"
+                        :data="upload.data"
+                        :drop="upload.drop"
+                        :drop-directory="upload.dropDirectory"
+                        :add-index="upload.addIndex"
+                        :class="fileUploadClasses"
+                        :custom-action="handleUploadWithErrorHandling"
+                      >
+                        <FontAwesomeIcon icon="plus" />
+                        <span class="ms-2">select files</span>
+                      </file-upload>
+                      <button
+                        v-if="!$refs.upload || !$refs.upload.active"
+                        @click.prevent="uploadAll()"
+                        type="button"
+                        class="btn btn-primary ms-2 d-inline upload-files"
+                      >
+                        <FontAwesomeIcon icon="upload" />
+                        <span class="ms-2">upload all</span>
+                      </button>
+                      <button
+                        v-else
+                        @click.prevent="$refs.upload.active = false"
+                        type="button"
+                        class="btn btn-primary ms-2 d-inline"
+                      >
+                        <FontAwesomeIcon icon="times-circle" />
+                        <span class="ms-2">stop upload</span>
+                      </button>
+                      <div class="invalid-feedback">
+                        Invalid upload files. Please select at least one file to upload.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pt-2 pb-2">
+                    <div class="progress" style="height: 1.5rem;">
+                      <div
+                        :style="`width: ${uploadSucceededPercentage}%`"
+                        :aria-valuenow="uploadSucceededPercentage"
+                        :title="`${uploadSucceededCount}/${uploadCount}`"
+                        class="progress-bar"
+                        role="progressbar"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      >
+                        {{ uploadSucceededCount }}/{{ uploadCount }}
+                      </div>
+                      <div
+                        :style="`width: ${uploadFailedPercentage}%`"
+                        :aria-valuenow="uploadFailedPercentage"
+                        :title="`${uploadFailedCount}/${uploadCount}`"
+                        class="progress-bar bg-danger"
+                        role="progressbar"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      >
+                        {{ uploadFailedCount }}/{{ uploadCount }}
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <jena-table
                   :fields="datasetTableFields"
                   :items="datasetTableItems"
-                  stacked="lg"
                   empty-text="No files selected"
                   bordered
                   fixed
                   hover
-                  show-empty
                 >
-                  <template v-slot:cell(size)="data">
+                  <template #cell(size)="data">
                     {{ readableFileSize(data.item.size) }}
                   </template>
-                  <template v-slot:cell(speed)="data">
+                  <template #cell(speed)="data">
                     {{ readableFileSize(data.item.speed) }}/s
                   </template>
-                  <template v-slot:cell(status)="data">
-                    <b-progress
-                      :variant="getFileStatus(data.item)"
-                      :value="data.item.progress"
-                      :max="100"
-                      :precision="2"
-                      show-progress></b-progress>
+                  <template #cell(status)="data">
+                    <div class="progress">
+                      <div
+                        :class="`progress-bar bg-${getFileStatus(data.item)}`"
+                        :style="`width: ${data.item.progress}%`"
+                        :aria-valuenow="`${data.item.progress}`"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        role="progressbar"
+                      >
+                        {{ data.item.progress }}
+                      </div>
+                    </div>
                     <span class="small">Triples uploaded:&nbsp;</span>
                     <span v-if="data.item.response.tripleCount" class="small">
                       {{ data.item.response.tripleCount }}
                     </span>
                     <span v-else class="small">0</span>
                   </template>
-                  <template v-slot:cell(actions)="data">
-                    <b-button
+                  <template #cell(actions)="data">
+                    <button
                       @click.prevent="data.item.success || data.item.error === 'compressing' ? false : $refs.upload.update(data.item, {active: true})"
-                      variant="outline-primary"
-                      class="mr-0 mb-2 d-block"
+                      type="button"
+                      class="btn btn-outline-primary me-0 mb-2 d-block upload-file"
                     >
                       <FontAwesomeIcon icon="upload" />
-                      <span class="ml-2">upload now</span>
-                    </b-button>
-                    <b-button
+                      <span class="ms-2">upload now</span>
+                    </button>
+                    <button
                       @click.prevent="remove(data.item)"
-                      variant="outline-primary"
-                      class="mr-0 mb-md-0 d-block d-md-inline-block"
+                      type="button"
+                      class="btn btn-outline-primary me-0 mb-md-0 d-block d-md-inline-block remove-file"
                     >
                       <FontAwesomeIcon icon="minus-circle" />
-                      <span class="ml-2">remove</span>
-                    </b-button>
+                      <span class="ms-2">remove</span>
+                    </button>
                   </template>
-                </b-table>
-              </b-col>
-            </b-row>
-          </b-card-body>
-        </b-card>
-      </b-col>
-    </b-row>
-  </b-container>
+                </jena-table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import Menu from '@/components/dataset/Menu'
+import Menu from '@/components/dataset/Menu.vue'
 import FileUpload from 'vue-upload-component'
+import JenaTable from '@/components/dataset/JenaTable.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPlus, faUpload, faTimesCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import currentDatasetMixin from '@/mixins/current-dataset'
+import currentDatasetMixinNavigationGuards from '@/mixins/current-dataset-navigation-guards'
+import { displayError } from '@/utils'
 
 library.add(faPlus, faUpload, faTimesCircle, faMinusCircle)
 
@@ -183,26 +230,34 @@ export default {
   components: {
     Menu,
     FontAwesomeIcon,
-    FileUpload
+    FileUpload,
+    JenaTable
   },
 
   mixins: [
     currentDatasetMixin
   ],
 
+  ...currentDatasetMixinNavigationGuards,
+
   data () {
     return {
-      form: {
-        datasetGraphName: null,
-        datasetFiles: null
-      },
+      datasetGraphName: null,
+      datasetFiles: null,
+      graphNameClasses: [
+        'form-control'
+      ],
+      fileUploadClasses: [
+        'btn',
+        'btn-success'
+      ],
       upload: {
         files: [],
         accept: '', // e.g. 'ttl,xml,rdf,...'
         minSize: 0,
         // size: 1024 * 1024 * 10,
         multiple: true,
-        directory: false,
+        directory: null,
         drop: true,
         dropDirectory: true,
         addIndex: false,
@@ -225,7 +280,7 @@ export default {
         //   name: ''
         // }
       },
-      datasetTableFields: [
+      datasetTableFields: Object.freeze([
         {
           key: 'name',
           label: 'name',
@@ -250,7 +305,7 @@ export default {
           key: 'actions',
           label: 'actions'
         }
-      ]
+      ])
     }
   },
 
@@ -267,20 +322,61 @@ export default {
         })
     },
     postActionUrl () {
-      if (!this.services['gsp-rw'] || this.services['gsp-rw'].length === 0) {
+      if (this.services === null || !this.services['gsp-rw'] || this.services['gsp-rw'].length === 0) {
         return ''
       }
-      const params = (this.form.datasetGraphName && this.form.datasetGraphName !== '') ? `?graph=${this.form.datasetGraphName}` : ''
+      const params = (this.datasetGraphName && this.datasetGraphName !== '') ? `?graph=${this.datasetGraphName}` : ''
       const dataEndpoint = this.services['gsp-rw']['srv.endpoints'].find(endpoint => endpoint !== '') || ''
       return this.$fusekiService.getFusekiUrl(`/${this.datasetName}/${dataEndpoint}${params}`)
+    },
+    uploadCount () {
+      if (!this.upload || !this.upload.files) {
+        return 0
+      }
+      return this.upload.files.length
+    },
+    uploadSucceededCount () {
+      if (!this.upload || !this.upload.files) {
+        return 0
+      }
+      return this.upload.files.filter(f => Boolean(f.success)).length
+    },
+    uploadFailedCount () {
+      if (!this.upload || !this.upload.files) {
+        return 0
+      }
+      return this.upload.files.filter(f => Boolean(f.error)).length
+    },
+    uploadFailedPercentage () {
+      if (this.uploadCount === 0) {
+        return 0
+      }
+      return (this.uploadFailedCount / this.uploadCount) * 100
+    },
+    uploadSucceededPercentage () {
+      if (this.uploadCount === 0) {
+        return 0
+      }
+      return (this.uploadSucceededCount / this.uploadCount) * 100
+    }
+  },
+
+  watch: {
+    datasetGraphName () {
+      this.validateGraphName()
+    },
+    upload: {
+      handler () {
+        this.validateFiles()
+      },
+      deep: true,
+      immediate: false
     }
   },
 
   methods: {
     getFileStatus (file) {
       if (file.error) {
-        // eslint-disable-next-line no-console
-        console.error(file)
         return 'danger'
       }
       if (file.success) {
@@ -311,6 +407,50 @@ export default {
         return `${(size / k).toFixed(2).replace(/\.?0*$/, '')}kb`
       } else {
         return `${size} bytes`
+      }
+    },
+    uploadAll () {
+      if (this.validateForm()) {
+        this.$refs.upload.active = true
+      }
+    },
+    validateForm () {
+      return this.validateGraphName() && this.validateFiles()
+    },
+    validateGraphName () {
+      // No spaces allowed in graph names.
+      const pattern = /^[^\s]+$/
+      const graphName = this.$refs['dataset-graph-name'].value
+      if (graphName === '' || pattern.test(graphName)) {
+        this.graphNameClasses = ['form-control is-valid']
+        return true
+      }
+      this.graphNameClasses = ['form-control is-invalid']
+      return false
+    },
+    validateFiles () {
+      if (this.upload.files !== null && this.upload.files.length > 0) {
+        this.fileUploadClasses = [
+          'btn',
+          'btn-success',
+          'is-valid'
+        ]
+        return true
+      }
+      this.fileUploadClasses = [
+        'btn',
+        'btn-success',
+        'is-invalid'
+      ]
+      return false
+    },
+    async handleUploadWithErrorHandling (file, component) {
+      try {
+        return component
+          .uploadHtml5(file)
+          .catch(error => displayError(this, error))
+      } catch (error) {
+        displayError(this, error)
       }
     }
   }

@@ -48,8 +48,8 @@ public interface SecurityContext {
 
     public static final Node allGraphs = NodeFactory.createURI("urn:jena:accessAllGraphs");
     public static final Node allNamedGraphs = NodeFactory.createURI("urn:jena:accessAllNamedGraphs");
-    public static final Node allNamedGraphsStr = NodeFactory.createLiteral("*");
-    public static final Node allGraphsStr = NodeFactory.createLiteral("**");
+    public static final Node allNamedGraphsStr = NodeFactory.createLiteralString("*");
+    public static final Node allGraphsStr = NodeFactory.createLiteralString("**");
 
     /**
      * Collection of visible graph names.
@@ -98,7 +98,7 @@ public interface SecurityContext {
      * May throw {@link UnsupportedOperationException}.
      */
     public default void filterTDB(DatasetGraph dsg, QueryExecution qExec) {
-        if ( ! org.apache.jena.tdb.sys.TDBInternal.isTDB1(dsg) || ! org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dsg) )
+        if ( ! org.apache.jena.tdb1.sys.TDBInternal.isTDB1(dsg) || ! org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dsg) )
             throw new IllegalArgumentException("Not a TDB database");
         throw new UnsupportedOperationException();
     }

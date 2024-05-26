@@ -21,6 +21,8 @@ package org.apache.jena.atlas.io;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -30,6 +32,7 @@ import java.util.zip.GZIPOutputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.compress.compressors.snappy.SnappyCompressorInputStream;
+import org.apache.commons.io.IOUtils;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.StrUtils;
@@ -87,11 +90,31 @@ public class IO
         }
         InputStream in = new FileInputStream(filename);
         String ext = getExtension(filename);
+
+        // Input is a file stream.
+        // https://commons.apache.org/proper/commons-compress/examples.html#Buffering :
+        // """
+        // The stream classes all wrap around streams provided by the calling
+        // code and they work on them directly without any additional
+        // buffering. On the other hand most of them will benefit from
+        // buffering so it is highly recommended that users wrap their stream
+        // in Buffered(In|Out)putStreams before using the Commons Compress
+        // API.
+        // """
+        // GZip and Snappy have internal buffering.
+        // BZip2 does not.
         switch ( ext ) {
-            case "":        return in;
-            case ext_gz:    return new GZIPInputStream(in);
-            case ext_bz2:   return new BZip2CompressorInputStream(in, true);
-            case ext_sz:    return new SnappyCompressorInputStream(in);
+            case "":
+                return in;
+            case ext_gz:
+                // Makes a small improvement (<5%) to use 8K.
+                return new GZIPInputStream(in, 8*1024);
+            case ext_bz2:
+                // Make a huge improvement. x10 faster.
+                in = IO.ensureBuffered(in);
+                return new BZip2CompressorInputStream(in, true);
+            case ext_sz:
+                return new SnappyCompressorInputStream(in);
         }
         return in;
     }
@@ -186,14 +209,20 @@ public class IO
         return new InputStreamReader(in, StandardCharsets.UTF_8);
     }
 
+
     /** Create a unbuffered reader that uses ASCII encoding */
     static public Reader asASCII(InputStream in) {
-        return new InputStreamReader(in, StandardCharsets.US_ASCII);
+        //return new InputStreamReader(in, StandardCharsets.US_ASCII);
+
+        CharsetDecoder dec = StandardCharsets.US_ASCII.newDecoder();
+        // Make into an error - the default is REPLACE (insert unicode U+FFFD)
+        dec.onMalformedInput(CodingErrorAction.REPORT);
+        return new InputStreamReader(in, dec);
     }
 
     /** Create an buffered reader that uses UTF-8 encoding */
     static public BufferedReader asBufferedUTF8(InputStream in) {
-        // Alway buffered - for readLine.
+        // Always buffered - for readLine.
         return new BufferedReader(asUTF8(in), BUFSIZE_IN / 2);
     }
 
@@ -416,7 +445,6 @@ public class IO
      * @param filename
      * @return String
      */
-
     public static String readWholeFileAsUTF8(String filename) {
         try ( InputStream in = new FileInputStream(filename) ) {
             return readWholeFileAsUTF8(in);
@@ -441,13 +469,35 @@ public class IO
         }
     }
 
+    /** Fully reads the next up to maxWidth + 1 characters from the stream and returns them as a string.
+     * If the extra character is read then the apprevMarker in appended to the result in its place.
+     * Closing the stream is the caller's responsibility.
+     */
+    public static String abbreviate(InputStream in, Charset charset, int maxWidth, String abbrevMarker) throws IOException {
+        return abbreviate(new InputStreamReader(in, charset), maxWidth, abbrevMarker);
+    }
+
+    /** Fully reads the next up to maxWidth + 1 characters from the reader and returns them as a string.
+     * If the extra character is read then the apprevMarker in appended to the result in its place.
+     * Closing the stream is the caller's responsibility.
+     */
+    public static String abbreviate(Reader reader, int maxWidth, String abbrevMarker) throws IOException {
+        char[] buffer = new char[maxWidth + 1];
+        int n = IOUtils.read(reader, buffer);
+        StringBuilder sb = new StringBuilder();
+        sb.append(buffer, 0, Math.min(n, maxWidth));
+        if (n > maxWidth) {
+            sb.append(abbrevMarker);
+        }
+        return sb.toString();
+    }
+
     /** Read a whole file as UTF-8
      *
      * @param r
      * @return String The whole file
      * @throws IOException
      */
-
     // Private worker as we are trying to force UTF-8.
     private static String readWholeFileAsUTF8(Reader r) throws IOException {
         final int WHOLE_FILE_BUFFER_SIZE = 32*1024;
@@ -469,7 +519,6 @@ public class IO
      * @param content String to be written
      * @throws IOException
      */
-
     public static void writeStringAsUTF8(String filename, String content) throws IOException {
         try ( OutputStream out = IO.openOutputFileEx(filename) ) {
             writeStringAsUTF8(out, content);
@@ -530,7 +579,7 @@ public class IO
      * This function does not follow symbolic links.
      */
     public static void deleteAll(Path start) {
-        // Walks down the tree and delete directories on the way backup.
+        // Walk down the tree deleting files, and delete directories on the way backup.
         try {
             Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
                 @Override
@@ -549,7 +598,7 @@ public class IO
                 }
             });
         }
-        catch (IOException ex) { IO.exception(ex); return; }
+        catch (IOException ex) { throw IOX.exception(ex); }
     }
 
     // Do nothing buffer.  Never read from this, it may be corrupt because it is shared.

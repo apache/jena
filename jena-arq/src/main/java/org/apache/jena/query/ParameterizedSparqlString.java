@@ -58,7 +58,7 @@ import org.apache.jena.update.UpdateRequest;
  * <li>Using JDBC style positional parameters</li>
  * <li>Appending values directly to the command text being built</li>
  * </ul>
- * <h4>Variable Parameters</h3>
+ * <h4>Variable Parameters</h4>
  * <p>
  * Any variable in the command may have a value injected to it, injecting a
  * value replaces all usages of that variable in the command i.e. substitutes
@@ -72,8 +72,8 @@ import org.apache.jena.update.UpdateRequest;
  * index which reflects the order in which they appear in the string. Positional
  * parameters use a zero based index.
  * </p>
- * <h4>Buffer Usage</h3>
- * </p>
+ * <h4>Buffer Usage</h4>
+ * <p>
  * Additionally you may use this purely as a {@link StringBuffer} replacement
  * for creating queries since it provides a large variety of convenience methods
  * for appending things either as-is or as nodes (which causes appropriate
@@ -477,19 +477,6 @@ public class ParameterizedSparqlString implements PrefixMapping {
     }
 
     /**
-     * Appends an IRI to the command text as a constant using appropriate
-     * formatting
-     *
-     * @param iri
-     *            IRI to append
-     * @deprecated Use {@link #appendIri(IRIx)}
-     */
-    @Deprecated
-    public void appendIri(org.apache.jena.iri.IRI iri) {
-        this.appendNode(NodeFactory.createURI(iri.toString()));
-    }
-
-    /**
      * Appends a simple literal as a constant using appropriate formatting
      *
      * @param value
@@ -777,24 +764,6 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            Positional Index
      * @param iri
      *            IRI
-     * @deprecated Use {@link #setIri(int, IRIx)}
-     */
-    @Deprecated
-    public void setIri(int index, org.apache.jena.iri.IRI iri) {
-        this.setIri(index, iri.toString());
-    }
-
-    /**
-     * Sets a positional parameter to an IRI
-     * <p>
-     * Setting a parameter to null is equivalent to calling
-     * {@link #clearParam(int)} for the given index
-     * </p>
-     *
-     * @param index
-     *            Positional Index
-     * @param iri
-     *            IRI
      */
     public void setIri(int index, IRIx iri) {
         this.setIri(index, iri.toString());
@@ -816,23 +785,6 @@ public class ParameterizedSparqlString implements PrefixMapping {
         this.setIri(var, iri.toString());
     }
 
-
-    /**
-     * Sets a variable parameter to an IRI
-     * <p>
-     * Setting a parameter to null is equivalent to calling
-     * {@link #clearParam(String)} for the given variable
-     * </p>
-     *
-     * @param var
-     *            Variable
-     * @param iri
-     *            IRI
-     */
-    @Deprecated
-    public void setIri(String var, org.apache.jena.iri.IRI iri) {
-        this.setIri(var, iri.toString());
-    }
     /**
      * Sets a positional parameter to an IRI
      * <p>
@@ -1182,7 +1134,6 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *
      * @return Iterator of variable names
      */
-    @Deprecated
     public Iterator<String> getVars() {
         return this.params.keySet().iterator();
     }

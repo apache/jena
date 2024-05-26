@@ -19,12 +19,12 @@
 package org.apache.jena.sparql.core.mem;
 
 import static java.util.EnumSet.allOf;
-import static org.apache.jena.ext.com.google.common.collect.Sets.powerSet;
 import static org.apache.jena.graph.NodeFactory.createURI;
 
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Quad;
 
@@ -32,6 +32,7 @@ public abstract class AbstractTestQuadTable extends AbstractTestTupleTable<Quad,
 
 	protected static final Node sampleNode = createURI("info:test");
 	private static final Quad q = Quad.create(sampleNode, sampleNode, sampleNode, sampleNode);
+	private static final Set<Set<TupleSlot>> queryPatterns = Lib.powerSet(allOf(TupleSlot.class));
 
 	@Override
 	protected Quad testTuple() {
@@ -44,7 +45,6 @@ public abstract class AbstractTestQuadTable extends AbstractTestTupleTable<Quad,
 	}
 
 	static Stream<Set<TupleSlot>> quadQueryPatterns() {
-		return powerSet(allOf(TupleSlot.class)).stream();
+		return queryPatterns.stream();
 	}
-
 }

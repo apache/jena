@@ -23,19 +23,19 @@ import org.apache.jena.atlas.lib.Closeable ;
 
 /** Simple abstraction of a string/character output stream */
 
-public interface AWriter extends Closeable, AutoCloseable 
+public interface AWriter extends Closeable, AutoCloseable
 {
     public void write(char ch) ;
-    public void write(char[] cbuf) ; 
+    public void write(char[] cbuf) ;
     public void write(String string) ;
 
     public void print(char ch) ;
-    public void print(char[] cbuf) ; 
+    public void print(char[] cbuf) ;
     public void print(String string) ;
     public void printf(String fmt, Object ...arg) ;
     public void println(String object) ;
     public void println() ;
-    
+
     public void flush() ;
     @Override
     public void close() ;

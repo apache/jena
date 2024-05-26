@@ -18,69 +18,66 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import java.util.List ;
+import java.util.List;
 import java.util.Objects;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.core.VarExprList ;
-import org.apache.jena.sparql.expr.ExprAggregator ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.core.VarExprList;
+import org.apache.jena.sparql.expr.ExprAggregator;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpGroup extends Op1
 {
-    private VarExprList groupVars ;
-    private List<ExprAggregator> aggregators ;
+    private VarExprList groupVars;
+    private List<ExprAggregator> aggregators;
 
     public static OpGroup create(Op subOp, VarExprList groupVars, List<ExprAggregator> aggregators) {
-        return new OpGroup(subOp, groupVars, aggregators); 
+        return new OpGroup(subOp, groupVars, aggregators);
     }
-    
-    public OpGroup(Op subOp, VarExprList groupVars, List<ExprAggregator> aggregators)
-    { 
-        super(subOp) ;
-        this.groupVars  = groupVars ;
-        this.aggregators = aggregators ;
+
+    public OpGroup(Op subOp, VarExprList groupVars, List<ExprAggregator> aggregators) {
+        super(subOp);
+        this.groupVars = groupVars;
+        this.aggregators = aggregators;
     }
-    
-    @Override
-    public String getName()                     { return Tags.tagGroupBy ; }
-    public VarExprList getGroupVars()           { return groupVars ; }
-    public List<ExprAggregator> getAggregators()  { return aggregators ; }
 
     @Override
-    public void visit(OpVisitor opVisitor)      { opVisitor.visit(this) ; }
+    public String getName()                     { return Tags.tagGroupBy; }
+    public VarExprList getGroupVars()           { return groupVars; }
+    public List<ExprAggregator> getAggregators()  { return aggregators; }
+
     @Override
-    public Op1 copy(Op subOp)                    { return new OpGroup(subOp, groupVars, aggregators) ; }
+    public void visit(OpVisitor opVisitor)      { opVisitor.visit(this); }
+    @Override
+    public Op1 copy(Op subOp)                    { return new OpGroup(subOp, groupVars, aggregators); }
 
     @Override
     public Op apply(Transform transform, Op subOp)
-    { return transform.transform(this, subOp) ; }
+    { return transform.transform(this, subOp); }
 
     @Override
-    public int hashCode()
-    { 
-        int x = getSubOp().hashCode() ;
-        if ( groupVars != null ) 
-            x ^= groupVars.hashCode() ; 
-        if ( aggregators != null ) 
-            x ^= aggregators.hashCode() ; 
-        return x ;
+    public int hashCode() {
+        int x = getSubOp().hashCode();
+        if ( groupVars != null )
+            x ^= groupVars.hashCode();
+        if ( aggregators != null )
+            x ^= aggregators.hashCode();
+        return x;
     }
 
     @Override
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
-        if ( ! (other instanceof OpGroup) ) return false ;
-        OpGroup opGroup = (OpGroup)other ;
-        if ( ! Objects.equals(groupVars, opGroup.groupVars) ) 
-            return false ;
-        if ( ! Objects.equals(aggregators, opGroup.aggregators) )
-            return false ;
-            
-        return getSubOp().equalTo(opGroup.getSubOp(), labelMap) ;
-    }
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
+        if ( !(other instanceof OpGroup) )
+            return false;
+        OpGroup opGroup = (OpGroup)other;
+        if ( !Objects.equals(groupVars, opGroup.groupVars) )
+            return false;
+        if ( !Objects.equals(aggregators, opGroup.aggregators) )
+            return false;
 
+        return getSubOp().equalTo(opGroup.getSubOp(), labelMap);
+    }
 }

@@ -20,13 +20,13 @@ package org.apache.jena.query.text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.ext.com.google.common.collect.Sets;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.vocabulary.RDFS;
@@ -60,7 +60,7 @@ public class TestDatasetConcurrencyWithConfigurableAnalyzer extends AbstractTest
         final String testName = "testConfigurableAnalyzerIsConcurrencySafe" + probe;
         String query = QUERY_PROLOG + "select ?s WHERE {?s text:query (rdfs:label 'foo" + probe + "' 10).}";
         try {
-            doTestQuery(dataset, testName, query, Sets.newHashSet(RESOURCE_BASE + "Foo" + probe), 1);
+            doTestQuery(dataset, testName, query, Set.of(RESOURCE_BASE + "Foo" + probe), 1);
         } catch (Exception e) {
             return false;
         }

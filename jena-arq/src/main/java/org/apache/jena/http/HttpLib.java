@@ -24,6 +24,7 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
@@ -45,6 +46,7 @@ import java.util.zip.InflaterInputStream;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.http.auth.AuthEnv;
@@ -56,6 +58,8 @@ import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.exec.http.Params;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.web.HttpSC;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Operations related to SPARQL HTTP requests - Query, Update and Graph Store protocols.
@@ -63,7 +67,12 @@ import org.apache.jena.web.HttpSC;
  */
 public class HttpLib {
 
+    // JDK HTTP debug:
+    // -Djdk.httpclient.HttpClient.log=errors,requests,headers,frames[:control:data:window:all..],content,ssl,trace,channel
+
     private HttpLib() {}
+
+    private static Logger LOG = LoggerFactory.getLogger(HttpLib.class.getPackageName()+".HTTP");
 
     public static BodyHandler<Void> noBody() { return BodyHandlers.discarding(); }
 
@@ -223,24 +232,29 @@ public class HttpLib {
         try {
             return IO.readWholeFileAsUTF8(input);
         } catch (RuntimeIOException e) { throw new HttpException(e); }
+        finally { IO.close(input); }
     }
 
+    /**
+     * Clear up and generate an exception - used for 4xx and 5xx.
+     * This consumes the response body.
+     */
     static HttpException exception(HttpResponse<InputStream> response, int httpStatusCode) {
-
         URI uri = response.request().uri();
-
-        //long length = HttpLib.getContentLength(response);
-        // Not critical path code. Read body regardless.
         InputStream in = response.body();
-        String msg;
+        if ( in == null )
+            return new HttpException(httpStatusCode, HttpSC.getMessage(httpStatusCode));
         try {
-            msg = IO.readWholeFileAsUTF8(in);
-            if ( msg.isBlank())
+            String msg;
+            try {
+                msg = IO.readWholeFileAsUTF8(in);
+                if ( msg.isBlank())
+                    msg = null;
+            } catch (RuntimeIOException e) {
                 msg = null;
-        } catch (RuntimeIOException e) {
-            msg = null;
-        }
-        return new HttpException(httpStatusCode, HttpSC.getMessage(httpStatusCode), msg);
+            }
+            return new HttpException(httpStatusCode, HttpSC.getMessage(httpStatusCode), msg);
+        } finally { IO.close(in); }
     }
 
     private static long getContentLength(HttpResponse<InputStream> response) {
@@ -564,7 +578,26 @@ public class HttpLib {
     }
 
     /**
-     * Execute request and return a response without authentication challenge handling.
+     * Execute request and return a {@code HttpResponse<InputStream>} response.
+     * Status codes have not been handled. The response can be passed to
+     * {@link #handleResponseInputStream(HttpResponse)} which will convert non-2xx
+     * status code to {@link HttpException HttpExceptions}.
+     *
+     * @param httpClient
+     * @param httpRequest
+     * @return HttpResponse
+     */
+    public static HttpResponse<InputStream> executeJDK(HttpClient httpClient, HttpRequest httpRequest) {
+        return execute(httpClient, httpRequest, BodyHandlers.ofInputStream());
+    }
+
+    /**
+     * Execute request and return a response without authentication challenge
+     * handling. Status codes have not been handled. This is a call to
+     * {@code HttpClient.send} converting exceptions to {@link HttpException}.
+     * request and responses are logged as "debug" to logger
+     * {@code org.apache.jena.http.HTTP}.
+     *
      * @param httpClient
      * @param httpRequest
      * @param bodyHandler
@@ -604,8 +637,8 @@ public class HttpLib {
     }
 
     // Worker
-    /*package*/ static HttpResponse<InputStream> httpPushWithResponse(HttpClient httpClient, Push style, String url,
-                                                                      Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
+    public static HttpResponse<InputStream> httpPushWithResponse(HttpClient httpClient, Push style, String url,
+                                                                 Consumer<HttpRequest.Builder> modifier, BodyPublisher body) {
         URI uri = toRequestURI(url);
         HttpRequest.Builder builder = requestBuilderFor(url);
         builder.uri(uri);
@@ -616,15 +649,12 @@ public class HttpLib {
         return response;
     }
 
-
     /** Request */
     private static void logRequest(HttpRequest httpRequest) {
-        // Uses the SystemLogger which defaults to JUL.
-        // Add org.apache.jena.logging:log4j-jpl
-        // (java11 : 11.0.9, if using log4j-jpl, logging prints the request as {0} but response OK)
-//        httpRequest.uri();
-//        httpRequest.method();
-//        httpRequest.headers();
+        if ( LOG.isDebugEnabled() ) {
+            FmtLog.debug(LOG, "> %s %s", httpRequest.method(), httpRequest.uri());
+            logHeaders(LOG, httpRequest.headers());
+        }
     }
 
     /** Async Request */
@@ -632,10 +662,17 @@ public class HttpLib {
 
         /** Response (do not touch the body!)  */
     private static void logResponse(HttpResponse<?> httpResponse) {
-//        httpResponse.uri();
-//        httpResponse.statusCode();
-//        httpResponse.headers();
+        if ( LOG.isDebugEnabled() ) {
+            FmtLog.debug(LOG, "< %d %s %s", httpResponse.statusCode(), httpResponse.request().method(), httpResponse.uri());
+            logHeaders(LOG,  httpResponse.headers());
 //        httpResponse.previousResponse();
+        }
+    }
+
+    private static void logHeaders(Logger log, HttpHeaders headers) {
+        headers.map().forEach((header, values)->{
+            values.forEach(value->FmtLog.debug(log, "  %-15s %s", header, value));
+        });
     }
 
     /**

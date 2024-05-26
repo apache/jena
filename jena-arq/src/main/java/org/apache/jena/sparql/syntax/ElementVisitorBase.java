@@ -49,6 +49,9 @@ public class ElementVisitorBase implements ElementVisitor
     public void visit(ElementOptional el)       { }
 
     @Override
+    public void visit(ElementLateral el)        { }
+
+    @Override
     public void visit(ElementGroup el)          { }
 
     @Override

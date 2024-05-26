@@ -67,7 +67,7 @@ public class ListMapAsObject extends BaseBuiltin {
         List<Node> l = Util.convertList(n2, context);
         for ( Node x : l )
         {
-            context.add( new Triple( n0, n1, x ) );
+            context.add( Triple.create( n0, n1, x ) );
         }
     }
     

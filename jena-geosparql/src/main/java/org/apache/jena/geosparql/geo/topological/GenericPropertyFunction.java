@@ -43,6 +43,7 @@ import org.apache.jena.sparql.engine.iterator.QueryIterSingleton;
 import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.pfunction.PFuncSimple;
 import org.apache.jena.sparql.util.FmtUtils;
+import org.apache.jena.system.G;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDF;
 import org.locationtech.jts.geom.Envelope;
@@ -255,11 +256,8 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
                 }
 
                 //Also test all Geometry of the Features. All, some or one Geometry may have matched.
-                ExtendedIterator<Triple> featureGeometryTriples = graph.find(feature.asNode(), Geo.HAS_GEOMETRY_NODE, null);
-                while (featureGeometryTriples.hasNext()) {
-                    Triple unboundTriple = featureGeometryTriples.next();
-                    Node geomNode = unboundTriple.getObject();
-
+                List<Node> featureGeometryTriples = G.listSP(graph, feature.asNode(), Geo.HAS_GEOMETRY_NODE);
+                for ( Node geomNode : featureGeometryTriples) {
                     //Ensure not already an asserted node.
                     if (!assertedNodes.contains(geomNode)) {
                         Binding newBind = BindingFactory.binding(binding, unboundVar, geomNode);
@@ -283,17 +281,11 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
     private List<Node> findAsserted(Graph graph, Node boundNode, boolean isSubjectBound, Node predicate) {
         List<Node> assertedNodes = new ArrayList<>();
         if (isSubjectBound) {
-            ExtendedIterator<Triple> assertedTriples = graph.find(boundNode, predicate, null);
-            while (assertedTriples.hasNext()) {
-                Node assertedNode = assertedTriples.next().getObject();
-                assertedNodes.add(assertedNode);
-            }
+            List<Node> x = G.listSP(graph, boundNode, predicate);
+            assertedNodes.addAll(x);
         } else {
-            ExtendedIterator<Triple> assertedTriples = graph.find(null, predicate, boundNode);
-            while (assertedTriples.hasNext()) {
-                Node assertedNode = assertedTriples.next().getSubject();
-                assertedNodes.add(assertedNode);
-            }
+            List<Node> x = G.listPO(graph, predicate, boundNode);
+            assertedNodes.addAll(x);
         }
         return assertedNodes;
     }

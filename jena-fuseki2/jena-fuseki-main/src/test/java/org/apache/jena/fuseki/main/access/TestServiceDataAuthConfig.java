@@ -26,22 +26,22 @@ import org.apache.jena.fuseki.server.Endpoint;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * AbstractTestServiceDatasetAuth with a programmatically built server which should be
  * the same as the {@link TestServiceDataAuthConfig configuration file version}.
  */
 public class TestServiceDataAuthConfig extends AbstractTestServiceDatasetAuth {
-    private static FusekiServer server;
+    private FusekiServer server;
 
-    @BeforeClass public static void beforeClass () {
+    @Before public void before() {
         server = build(port, null);
         server.start();
     }
 
-    @AfterClass public static void afterClass () {
+    @After public void after () {
         server.stop();
     }
 

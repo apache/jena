@@ -21,7 +21,7 @@ package org.apache.jena.assembler.assemblers;
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.JA ;
 import org.apache.jena.assembler.Mode ;
-import org.apache.jena.graph.Factory ;
+import org.apache.jena.graph.GraphMemFactory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.compose.MultiUnion ;
 import org.apache.jena.rdf.model.Model ;
@@ -45,7 +45,7 @@ public class UnionModelAssembler extends ModelAssembler implements Assembler
     private Graph getRootModel( Assembler a, Resource root, Mode mode )
         {
         Resource r = getUniqueResource( root, JA.rootModel );
-        return r == null ? Factory.empty() : a.openModel( r, mode ).getGraph();
+        return r == null ? GraphMemFactory.empty() : a.openModel( r, mode ).getGraph();
         }
 
     private void addSubModels( Assembler a, Resource root, MultiUnion union, Mode mode )

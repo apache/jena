@@ -27,7 +27,6 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.engine.ShaclPaths;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.Shape;
@@ -39,6 +38,7 @@ import org.apache.jena.shacl.vocabulary.SHACLM;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.path.Path;
+import org.apache.jena.system.G;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
@@ -185,7 +185,7 @@ public class ValidationReport {
             if ( shape.getMessages() != null && ! shape.getMessages().isEmpty() )
                 messages = shape.getMessages();
             else
-                messages = Collections.singleton(NodeFactory.createLiteral(message));
+                messages = Collections.singleton(NodeFactory.createLiteralString(message));
 
             ReportEntry e = ReportEntry.create()
                 .focusNode(focusNode)

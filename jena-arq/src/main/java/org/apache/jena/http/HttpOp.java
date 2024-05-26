@@ -22,6 +22,8 @@ import static org.apache.jena.http.HttpLib.*;
 import static org.apache.jena.http.Push.PATCH;
 import static org.apache.jena.http.Push.POST;
 import static org.apache.jena.http.Push.PUT;
+import static org.apache.jena.riot.web.HttpNames.METHOD_HEAD;
+import static org.apache.jena.riot.web.HttpNames.METHOD_OPTIONS;
 
 import java.io.InputStream;
 import java.net.Authenticator;
@@ -59,11 +61,11 @@ import org.apache.jena.web.HttpSC;
  * </p>
  * <p>
  * Also supported:
+ * </p>
  * <ul>
  * <li>GET and return a string</li>
  * <li>GET and return a JSON structure</li>
  * </ul>
- * </p>
  * @see HttpRDF
  * @see GSP
  */
@@ -78,6 +80,27 @@ public class HttpOp {
         return httpGetString(HttpEnv.getDftHttpClient(), url, null);
     }
 
+    /**
+     * Perform an HTTP and return the body as a string. Throws {@link HttpException}
+     * on all non-success HTTP status codes including 404,
+     * unlike {@link #httpGetString(String)}.
+     */
+    public static String httpGetStringEx(String url) throws HttpException {
+        return httpGetString(HttpEnv.getDftHttpClient(), url, null, false);
+    }
+
+    /**
+     * Perform an HTTP and discard the body.
+     * Only useful to use GET as a ping-like operation on a URL
+     * Throws {@link HttpException} on all non-success HTTP status codes.
+     */
+    public static void httpGetDiscard(String url) throws HttpException {
+        HttpRequest httpRequest = newGetRequest(url, setAcceptHeader("*/*"));
+        HttpClient httpClient = HttpEnv.getDftHttpClient();
+        HttpResponse<InputStream> response = execute(httpClient, httpRequest);
+        HttpLib.handleResponseNoBody(response);
+    }
+
     /** Perform an HTTP and return the body as a string, Return null for a "404 Not Found". */
     public static String httpGetString(String url, String acceptHeader) {
         return httpGetString(HttpEnv.getDftHttpClient(), url, acceptHeader);
@@ -90,12 +113,17 @@ public class HttpOp {
 
     /** Perform an HTTP and return the body as a string. Return null for a "404 Not Found". */
     public static String httpGetString(HttpClient httpClient, String url, String acceptHeader) {
+        return httpGetString(httpClient, url, acceptHeader, true);
+    }
+
+    /** Perform an HTTP and return the body as a string. Return null for a "404 Not Found". */
+    private static String httpGetString(HttpClient httpClient, String url, String acceptHeader, boolean notFoundAsNull) {
         HttpRequest request = newGetRequest(url, setAcceptHeader(acceptHeader));
         HttpResponse<InputStream> response = execute(httpClient, request);
         try {
             return handleResponseRtnString(response);
         } catch (HttpException ex) {
-            if ( ex.getStatusCode() == HttpSC.NOT_FOUND_404 )
+            if ( notFoundAsNull && ex.getStatusCode() == HttpSC.NOT_FOUND_404 )
                 return null;
             throw ex;
         }
@@ -231,7 +259,11 @@ public class HttpOp {
      * @see BodyPublishers#ofString
      */
     public static void httpPost(HttpClient httpClient, String url, String contentType, BodyPublisher body) {
-        httpPushData(httpClient, POST, url, contentType, body);
+        execHttpPost(httpClient, url, contentType, body);
+    }
+
+    private static void execHttpPost(HttpClient httpClient, String url, String contentType, BodyPublisher body) {
+        execPushData(httpClient, POST, url, contentType, body);
     }
 
     // ---- POST stream response.
@@ -280,7 +312,7 @@ public class HttpOp {
 
     /** POST - the application MUST close the InputStream.*/
     public static TypedInputStream httpPostStream(HttpClient httpClient, String url, String contentType, BodyPublisher bodyContent) {
-        return httpPostStream(httpClient, url, contentType, bodyContent);
+        return httpPostStream(httpClient, url, contentType, bodyContent, null);
     }
 
     /** POST - the application MUST close the InputStream.*/
@@ -316,7 +348,7 @@ public class HttpOp {
      * @see BodyPublishers#ofString
      */
     public static void httpPut(HttpClient httpClient, String url, String contentType, BodyPublisher body) {
-        httpPushData(httpClient, PUT, url, contentType, body);
+        execPushData(httpClient, PUT, url, contentType, body);
     }
 
     // ---- PATCH
@@ -335,11 +367,11 @@ public class HttpOp {
      * @see BodyPublishers#ofString
      */
     public static void httpPatch(HttpClient httpClient, String url, String contentType, BodyPublisher body) {
-        httpPushData(httpClient, PATCH, url, contentType, body);
+        execPushData(httpClient, PATCH, url, contentType, body);
     }
 
     /** Push data. POST, PUT, PATCH request with no response body data. */
-    private static void httpPushData(HttpClient httpClient, Push style, String url, String contentType, BodyPublisher body) {
+    private static void execPushData(HttpClient httpClient, Push style, String url, String contentType, BodyPublisher body) {
         HttpLib.httpPushData(httpClient, style, url, setContentTypeHeader(contentType), body);
     }
 
@@ -373,7 +405,7 @@ public class HttpOp {
     public static String httpOptions(HttpClient httpClient, String url) {
         // Need to access the response headers
         HttpRequest.Builder builder =
-                HttpLib.requestBuilderFor(url).uri(toRequestURI(url)).method(HttpNames.METHOD_OPTIONS, BodyPublishers.noBody());
+                HttpLib.requestBuilderFor(url).uri(toRequestURI(url)).method(METHOD_OPTIONS, BodyPublishers.noBody());
         HttpRequest request = builder.build();
         HttpResponse<InputStream> response = execute(httpClient, request);
         String allowValue = HttpLib.responseHeader(response, HttpNames.hAllow);
@@ -417,7 +449,7 @@ public class HttpOp {
      */
     public static String httpHead(HttpClient httpClient, String url, String acceptHeader) {
         HttpRequest.Builder builder =
-                HttpLib.requestBuilderFor(url).uri(toRequestURI(url)).method(HttpNames.METHOD_HEAD, BodyPublishers.noBody());
+                HttpLib.requestBuilderFor(url).uri(toRequestURI(url)).method(METHOD_HEAD, BodyPublishers.noBody());
         HttpLib.acceptHeader(builder, acceptHeader);
         HttpRequest request = builder.build();
         HttpResponse<InputStream> response = execute(httpClient, request);

@@ -5,7 +5,7 @@
   "results": {
     "bindings": [
       {
-        "V": { "datatype": "http://www.w3.org/2001/XMLSchema#decimal" , "type": "typed-literal" , "value": "5" }
+        "V": { "datatype": "http://www.w3.org/2001/XMLSchema#decimal" , "type": "typed-literal" , "value": "5.0" }
       }
     ]
   }

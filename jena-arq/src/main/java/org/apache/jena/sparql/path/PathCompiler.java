@@ -21,6 +21,9 @@ package org.apache.jena.sparql.path;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.ARQConstants ;
+import org.apache.jena.sparql.ARQException;
+import org.apache.jena.sparql.algebra.optimize.TransformPathFlattenAlgebra;
+import org.apache.jena.sparql.algebra.optimize.TransformPathFlatten;
 import org.apache.jena.sparql.core.PathBlock ;
 import org.apache.jena.sparql.core.TriplePath ;
 import org.apache.jena.sparql.core.Var;
@@ -68,9 +71,13 @@ public class PathCompiler
         }
     }
 
-    // ---- Algebra-based transformation.
-    // Does not include "|". Called by TransformPathFlattern.
-    // See TransformPathFlatternStd for union expansion.
+    /**
+     * Algebra-based transformation.
+     * <p>
+     * Does not include "|", this method is called by {@link TransformPathFlatten}. See
+     * {@link TransformPathFlattenAlgebra} for union expansion.
+     * </p>
+     */
     public PathBlock reduce(TriplePath triplePath)
     {
         PathBlock x = new PathBlock() ;
@@ -92,7 +99,7 @@ public class PathCompiler
         if ( path instanceof P_Link )
         {
             Node pred = ((P_Link)path).getNode() ;
-            Triple t = new Triple(startNode, pred, endNode) ;
+            Triple t = Triple.create(startNode, pred, endNode) ;
             x.add(new TriplePath(t)) ;
             return ;
         }
@@ -175,6 +182,9 @@ public class PathCompiler
                     p2 = PathFactory.pathZeroOrMoreN(pMod.getSubPath()) ;
                 else
                 {
+                    if ( pMod.getMin() > pMod.getMax() )
+                        throw new ARQException("Bad path: " + pMod);
+
                     long len2 = pMod.getMax()-pMod.getMin() ;
                     if ( len2 < 0 ) len2 = 0 ;
                     p2 = PathFactory.pathMod(pMod.getSubPath(),0, len2) ;

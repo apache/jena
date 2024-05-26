@@ -71,14 +71,9 @@ public class GraphZero extends GraphBase {
     @Override
     public void performDelete( Triple t ) { throw new UnsupportedOperationException("delete triple"); }
 
+    private Capabilities capabilities = null;
     @Override
     public Capabilities getCapabilities() {
-        if ( capabilities == null ) {
-            capabilities = new AllCapabilities() {
-                @Override public boolean addAllowed() { return false; }
-                @Override public boolean deleteAllowed() { return false; }
-            };
-        }
-        return capabilities;
+        return AllCapabilities.updateNotAllowed;
     }
 }

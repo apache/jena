@@ -57,6 +57,10 @@ public class Shapes implements Iterable<Shape> {
     private final Collection<Shape> rootShapes;
     // Declared shapes, not in targetShapes.
     private final Collection<Shape> declShapes;
+    // Shapes that are not declared shapes (by type), and not accessible from targets.
+    // This is placeholder.
+    // It should be disjoint with rootShapes and declShapes.
+    private final Collection<Shape> otherShapes;
     private final Targets targets;
 
     // Imports in the graph.
@@ -88,7 +92,7 @@ public class Shapes implements Iterable<Shape> {
      *
      * @deprecated Use {@link #parse(Graph)}.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static Shapes parseTargets(Graph graph) {
         Shapes shapes = parseProcess(graph, Collections.emptyList());
         return shapes;
@@ -120,6 +124,7 @@ public class Shapes implements Iterable<Shape> {
         this.shapes = x.shapesMap;
         this.rootShapes = x.rootShapes;
         this.declShapes = x.declaredShapes;
+        this.otherShapes = x.otherShapes;
         this.shapesBase = x.shapesBase;
         this.imports = x.imports;
         //x.sparqlConstraintComponents
@@ -202,7 +207,10 @@ public class Shapes implements Iterable<Shape> {
      * PropertyShape.
      */
     public Iterator<Shape> iteratorAll() {
-        // rootsShapes and declShaes are disjoint so no duplicates in the iterator.
-        return Iter.concat(rootShapes.iterator(), declShapes.iterator());
+        // rootsShapes and declShapes are disjoint so no duplicates in the iterator.
+        return
+            Iter.iter(rootShapes.iterator())
+                .append(declShapes.iterator())
+                .append(otherShapes.iterator());
     }
 }

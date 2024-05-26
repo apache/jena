@@ -23,10 +23,12 @@ import java.util.Calendar;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDateTime ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.impl.LiteralLabel ;
-import org.apache.jena.graph.impl.LiteralLabelFactory ;
-import org.apache.jena.rdf.model.impl.* ;
+import org.apache.jena.rdf.model.impl.LiteralImpl;
+import org.apache.jena.rdf.model.impl.PropertyImpl;
+import org.apache.jena.rdf.model.impl.ResourceImpl;
+import org.apache.jena.rdf.model.impl.StatementImpl;
 
 /** A Factory class for creating resources.
  *
@@ -236,12 +238,6 @@ public class ResourceFactory {
          */
         public Literal createStringLiteral( String string );
 
-        /** Use createStringLiteral */
-        @Deprecated
-        default public Literal createPlainLiteral( String string ) {
-            return createStringLiteral( string );
-        }
-
         /**
          * Answer a plain (untyped) literal with no language and the given content.
          *
@@ -319,12 +315,12 @@ public class ResourceFactory {
 
         @Override
         public Literal createStringLiteral( String string ) {
-            return new LiteralImpl(  NodeFactory.createLiteral( string, "" ), null );
+            return new LiteralImpl(  NodeFactory.createLiteralLang( string, "" ), null );
         }
 
         @Override
         public Literal createLangLiteral( String string , String lang ) {
-            return new LiteralImpl(  NodeFactory.createLiteral( string, lang ), null );
+            return new LiteralImpl(  NodeFactory.createLiteralLang( string, lang ), null );
         }
 
         @Override
@@ -335,14 +331,14 @@ public class ResourceFactory {
 
         @Override
         public Literal createTypedLiteral( Object value ) {
-            LiteralLabel ll = null;
+            Node n;
             if (value instanceof Calendar) {
                 Object valuec = new XSDDateTime( (Calendar) value);
-                ll = LiteralLabelFactory.createByValue(valuec, "", XSDDatatype.XSDdateTime);
+                n = NodeFactory.createLiteralByValue(valuec, XSDDatatype.XSDdateTime);
             } else {
-                ll =  LiteralLabelFactory.createTypedLiteral(value);
+                n = NodeFactory.createLiteralByValue(value);
             }
-            return new LiteralImpl(NodeFactory.createLiteral( ll ), null) ;
+            return new LiteralImpl(n, null) ;
         }
 
         @Override

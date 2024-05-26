@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,7 +36,6 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.XSD;
@@ -55,7 +54,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
     @Test
     public void testSelectAsterisk() {
         builder.addVar("*").addWhere("?s", "?p", "?o");
-
+        
         assertContainsRegex(SELECT + "\\*" + SPACE + WHERE + OPEN_CURLY + var("s") + SPACE + var("p") + SPACE + var("o")
                 + OPT_SPACE + CLOSE_CURLY, builder.buildString());
 
@@ -73,7 +72,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
         String query = builder.buildString();
         /*
          * PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-         * 
+         *
          * SELECT ?s WHERE { ?s
          * <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> foaf:Person .
          * OPTIONAL { ?s foaf:name ?name .} } ORDER BY ?s
@@ -126,20 +125,19 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
     @Test
     public void testNoVars() {
         builder.addWhere("?s", "?p", "?o");
-        String query = builder.buildString();
-
-        assertContainsRegex(SELECT + "\\*" + SPACE, query);
+        Query q = builder.build();
+        assertTrue( q.isQueryResultStar() );
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testList() {
-
         builder.addVar("*").addWhere(builder.list("<one>", "?two", "'three'"), "<foo>", "<bar>");
         Query query = builder.build();
 
         Node one = NodeFactory.createURI("one");
-        Node two = Var.alloc("two").asNode();
-        Node three = NodeFactory.createLiteral("three");
+        Node two = Var.alloc("two");
+        Node three = NodeFactory.createLiteralString("three");
         Node foo = NodeFactory.createURI("foo");
         Node bar = NodeFactory.createURI("bar");
 
@@ -148,13 +146,13 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
         Node secondObject = NodeFactory.createBlankNode();
         Node thirdObject = NodeFactory.createBlankNode();
 
-        epb.addTriplePath(new TriplePath(new Triple(firstObject, RDF.first.asNode(), one)));
-        epb.addTriplePath(new TriplePath(new Triple(firstObject, RDF.rest.asNode(), secondObject)));
-        epb.addTriplePath(new TriplePath(new Triple(secondObject, RDF.first.asNode(), two)));
-        epb.addTriplePath(new TriplePath(new Triple(secondObject, RDF.rest.asNode(), thirdObject)));
-        epb.addTriplePath(new TriplePath(new Triple(thirdObject, RDF.first.asNode(), three)));
-        epb.addTriplePath(new TriplePath(new Triple(thirdObject, RDF.rest.asNode(), RDF.nil.asNode())));
-        epb.addTriplePath(new TriplePath(new Triple(firstObject, foo, bar)));
+        epb.addTriplePath(new TriplePath(Triple.create(firstObject, RDF.first.asNode(), one)));
+        epb.addTriplePath(new TriplePath(Triple.create(firstObject, RDF.rest.asNode(), secondObject)));
+        epb.addTriplePath(new TriplePath(Triple.create(secondObject, RDF.first.asNode(), two)));
+        epb.addTriplePath(new TriplePath(Triple.create(secondObject, RDF.rest.asNode(), thirdObject)));
+        epb.addTriplePath(new TriplePath(Triple.create(thirdObject, RDF.first.asNode(), three)));
+        epb.addTriplePath(new TriplePath(Triple.create(thirdObject, RDF.rest.asNode(), RDF.nil.asNode())));
+        epb.addTriplePath(new TriplePath(Triple.create(firstObject, foo, bar)));
 
         WhereValidator visitor = new WhereValidator(epb);
         query.getQueryPattern().visit(visitor);
@@ -175,7 +173,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
     }
 
     @Test
-    public void testAggregatorsInSelect() throws ParseException {
+    public void testAggregatorsInSelect() {
         builder.addVar("?x").addVar("count(*)", "?c").addWhere("?x", "?p", "?o").addGroupBy("?x");
 
         Model m = ModelFactory.createDefaultModel();
@@ -218,7 +216,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
     }
 
     @Test
-    public void testAggregatorsInSubQuery() throws ParseException {
+    public void testAggregatorsInSubQuery() {
 
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource("urn:one");
@@ -250,7 +248,7 @@ public class SelectBuilderTest extends AbstractRegexpBasedTest {
     }
 
     @Test
-    public void testVarReplacementInSubQuery() throws ParseException {
+    public void testVarReplacementInSubQuery() {
 
         Model m = ModelFactory.createDefaultModel();
         Resource r = m.createResource("urn:one");

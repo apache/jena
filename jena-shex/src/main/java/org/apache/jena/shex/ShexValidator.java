@@ -20,15 +20,21 @@ package org.apache.jena.shex;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.shex.semact.SemanticActionPlugin;
 import org.apache.jena.shex.sys.SysShex;
+
+import java.util.Collection;
 
 public interface ShexValidator {
 
     /** Return the current system-wide {@code ShexValidator}. */
     public static ShexValidator get() { return SysShex.get();}
+    public static ShexValidator getNew(Collection<SemanticActionPlugin> semanticActionPlugins) {
+        return SysShex.getNew(semanticActionPlugins);
+    }
 
     /** Validate data using a collection of shapes and a shape map */
-    public ShexReport validate(Graph graph, ShexSchema shapes, ShexMap shapeMap);
+    public ShexReport validate(Graph graph, ShexSchema shapes, ShapeMap shapeMap);
 
     /** Validate a specific node (the focus), with a specific shape in a set of shapes. */
     public ShexReport validate(Graph graphData, ShexSchema shapes, Node shapeRef, Node focus);
@@ -37,5 +43,5 @@ public interface ShexValidator {
     public ShexReport validate(Graph graphData, ShexSchema shapes, ShexShape shape, Node focus);
 
     /** Validate a specific node using the shape map to determine which shapes to use. */
-    public ShexReport validate(Graph dataGraph, ShexSchema shapes, ShexMap shapeMap, Node dataNode);
+    public ShexReport validate(Graph dataGraph, ShexSchema shapes, ShapeMap shapeMap, Node dataNode);
 }

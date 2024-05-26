@@ -18,57 +18,53 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.query.SortCondition ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.query.SortCondition;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 /** Top N from a stream of items - for small N, better than ORDER BY + LIMIT N */
 public class OpTopN extends OpModifier
 {
     // See OpOrderBy.
-    private final List<SortCondition> conditions ;
-    private final int limit ;
-    public OpTopN(Op subOp, int N, List<SortCondition> conditions)
-    { 
-        super(subOp) ;
-        this.conditions = conditions ;
-        this.limit = N ;
+    private final List<SortCondition> conditions;
+    private final int limit;
+    public OpTopN(Op subOp, int N, List<SortCondition> conditions) {
+        super(subOp);
+        this.conditions = conditions;
+        this.limit = N;
     }
-    
-    public List<SortCondition> getConditions()  { return conditions ; }
-    public int getLimit()                       { return limit ; }
-    
+
+    public List<SortCondition> getConditions()  { return conditions; }
+    public int getLimit()                       { return limit; }
+
     @Override
-    public String getName()                 { return Tags.tagTopN ; }
-    
+    public String getName()                 { return Tags.tagTopN; }
+
     @Override
-    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this); }
     @Override
-    public Op1 copy(Op subOp)                { return new OpTopN(subOp, limit, conditions) ; }
+    public Op1 copy(Op subOp)                { return new OpTopN(subOp, limit, conditions); }
 
     @Override
     public Op apply(Transform transform, Op subOp)
-    { return transform.transform(this, subOp) ; }
-    
+    { return transform.transform(this, subOp); }
+
     @Override
-    public int hashCode()
-    {
-        return conditions.hashCode() ^ getSubOp().hashCode() ;
+    public int hashCode() {
+        return conditions.hashCode() ^ getSubOp().hashCode();
     }
 
     @Override
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
-        if ( ! (other instanceof OpTopN) ) return false ;
-        OpTopN opTopN = (OpTopN)other ;
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
+        if ( !(other instanceof OpTopN) )
+            return false;
+        OpTopN opTopN = (OpTopN)other;
         //
-        return getSubOp().equalTo(opTopN.getSubOp(), labelMap) ;
+        return getSubOp().equalTo(opTopN.getSubOp(), labelMap);
     }
-
-
 }

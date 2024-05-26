@@ -19,7 +19,7 @@ package org.apache.jena.ext.xerces.impl.dv.xs;
 
 import org.apache.jena.ext.xerces.impl.dv.InvalidDatatypeValueException;
 import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
-import org.apache.jena.ext.xerces.util.XMLChar;
+import org.apache.jena.ext.xerces.util.XercesXMLChar;
 
 /**
  * Represent the schema type "ID"
@@ -40,7 +40,7 @@ public class IDDV extends TypeValidator{
 
     @Override
     public Object getActualValue(String content, ValidationContext context) throws InvalidDatatypeValueException {
-        if (!XMLChar.isValidNCName(content)) {
+        if (!XercesXMLChar.isValidNCName(content)) {
             throw new InvalidDatatypeValueException("cvc-datatype-valid.1.2.1", new Object[]{content, "NCName"});
         }
         return content;

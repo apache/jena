@@ -30,7 +30,7 @@ public class IsValidPF extends GenericGeometryPropertyFunction {
 
     @Override
     protected NodeValue applyPredicate(GeometryWrapper geometryWrapper) {
-        Boolean isValid = geometryWrapper.isValid();
+        boolean isValid = geometryWrapper.isValid();
         return NodeValue.makeNodeBoolean(isValid);
     }
 

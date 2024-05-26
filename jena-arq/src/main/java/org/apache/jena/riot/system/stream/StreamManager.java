@@ -51,12 +51,12 @@ public class StreamManager {
      * {@link LocatorHTTP}, {@link LocatorFTP} and {@link LocatorClassLoader}
      */
     public static StreamManager createStd() {
-        StreamManager streamManager = new StreamManager() ;
-        streamManager.addLocator(new LocatorFile()) ;
-        streamManager.addLocator(new LocatorHTTP()) ;
-        streamManager.addLocator(new LocatorFTP()) ;
-        streamManager.addLocator(new LocatorClassLoader(streamManager.getClass().getClassLoader())) ;
-        streamManager.setLocationMapper(JenaIOEnvironment.getLocationMapper()) ;
+        StreamManager streamManager = new StreamManager()
+            .locationMapper(JenaIOEnvironment.getLocationMapper())
+            .addLocator(new LocatorFile())
+            .addLocator(new LocatorHTTP())
+            .addLocator(new LocatorFTP())
+            .addLocator(new LocatorClassLoader(StreamManager.class.getClassLoader()));
         return streamManager ;
     }
 
@@ -179,15 +179,35 @@ public class StreamManager {
         return null ;
     }
 
-    /** Set the location mapping */
-    public void setLocationMapper(LocationMapper _mapper) {
-        mapper = _mapper ;
+    /**
+     * Set the location mapping
+     * @deprecated Use {@link #locationMapper(LocationMapper)}
+     */
+    @Deprecated(forRemoval = true)
+    public void setLocationMapper(LocationMapper mapper) {
+        this.mapper = mapper ;
     }
 
-    /** Get the location mapping */
+    /**
+     * Get the location mapping
+     * @deprecated Use {@link #locationMapper()}
+     */
+    @Deprecated(forRemoval = true)
     public LocationMapper getLocationMapper() {
         return mapper ;
     }
+
+    /** Set the location mapping */
+    public StreamManager locationMapper(LocationMapper mapper) {
+        this.mapper = mapper ;
+        return this;
+    }
+
+    /** Set the location mapping */
+    public LocationMapper locationMapper() {
+        return mapper;
+    }
+
 
     /** Return an immutable list of all the handlers */
     public List<Locator> locators() {

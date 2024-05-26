@@ -20,7 +20,7 @@
 package org.apache.jena.fuseki.system;
 
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.graph.Factory;
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -35,7 +35,7 @@ public class GraphLoadUtils
     // ---- Model level
 
     public static Model readModel(String uri, int limit) {
-        Graph g = Factory.createGraphMem();
+        Graph g = GraphMemFactory.createGraphMem();
         readUtil(g, uri, limit);
         return ModelFactory.createModelForGraph(g);
     }
@@ -48,7 +48,7 @@ public class GraphLoadUtils
     // ---- Graph level
 
     public static Graph readGraph(String uri, int limit) {
-        Graph g = Factory.createGraphMem();
+        Graph g = GraphMemFactory.createGraphMem();
         readUtil(g, uri, limit);
         return g;
     }

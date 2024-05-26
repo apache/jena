@@ -18,9 +18,6 @@
 
 package org.apache.jena.dboe.trans.bplustree;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -29,12 +26,16 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 /** Run the B+Tree algorithm tests but for each combination of explicit
  * write-in-place / always copy modes.
  */
 @RunWith(Parameterized.class)
 public class TestBPTreeModes extends TestBPlusTreeNonTxn
 {
+
     @Parameters(name="Node dup={0}, Record dup={1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{

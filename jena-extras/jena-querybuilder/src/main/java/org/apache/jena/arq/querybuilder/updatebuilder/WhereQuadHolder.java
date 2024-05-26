@@ -17,9 +17,11 @@
  */
 package org.apache.jena.arq.querybuilder.updatebuilder;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.Converters;
@@ -35,17 +37,7 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
-import org.apache.jena.sparql.syntax.Element;
-import org.apache.jena.sparql.syntax.ElementBind;
-import org.apache.jena.sparql.syntax.ElementFilter;
-import org.apache.jena.sparql.syntax.ElementGroup;
-import org.apache.jena.sparql.syntax.ElementMinus;
-import org.apache.jena.sparql.syntax.ElementNamedGraph;
-import org.apache.jena.sparql.syntax.ElementOptional;
-import org.apache.jena.sparql.syntax.ElementPathBlock;
-import org.apache.jena.sparql.syntax.ElementTriplesBlock;
-import org.apache.jena.sparql.syntax.ElementUnion;
+import org.apache.jena.sparql.syntax.*;
 import org.apache.jena.sparql.util.ExprUtils;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NiceIterator;
@@ -63,6 +55,12 @@ public class WhereQuadHolder implements QuadHolder {
 
     private Element whereClause;
     private final PrefixHandler prefixHandler;
+    
+    
+    private static Predicate<Node> checkPredicate = n -> n.isURI() || n.isVariable() ||n.equals(Node.ANY);
+    
+    private static Predicate<Node> checkSubject = n -> checkPredicate.test(n) || n.isBlank() || n.isNodeTriple();
+
 
     /**
      * Constructor.
@@ -164,19 +162,9 @@ public class WhereQuadHolder implements QuadHolder {
      */
     private static void testTriple(TriplePath t) {
         // verify Triple is valid
-        boolean validSubject = t.getSubject().isURI() || t.getSubject().isBlank() || t.getSubject().isVariable()
-                || t.getSubject().equals(Node.ANY);
-        boolean validPredicate;
-
-        if (t.isTriple()) {
-            validPredicate = t.getPredicate().isURI() || t.getPredicate().isVariable()
-                    || t.getPredicate().equals(Node.ANY);
-        } else {
-            validPredicate = t.getPath() != null;
-        }
-
-        boolean validObject = t.getObject().isURI() || t.getObject().isLiteral() || t.getObject().isBlank()
-                || t.getObject().isVariable() || t.getObject().equals(Node.ANY);
+        boolean validSubject = checkSubject.test(t.getSubject());
+        boolean validPredicate = t.isTriple() ? checkPredicate.test(t.getPredicate()) : t.getPath() != null;
+        boolean validObject = checkSubject.test(t.getObject()) || t.getObject().isLiteral();
 
         if (!validSubject || !validPredicate || !validObject) {
             StringBuilder sb = new StringBuilder();
@@ -232,6 +220,17 @@ public class WhereQuadHolder implements QuadHolder {
     }
 
     /**
+     * Add a {@code TriplePath} collection to the where clause
+     *
+     * @param t The triple path to add.
+     * @throws IllegalArgumentException If the triple path is not a valid triple
+     * path for a where clause.
+     */
+    public void addWhere(Collection<TriplePath> t) throws IllegalArgumentException {
+        t.forEach(this::addWhere);
+    }
+    
+    /**
      * Add an optional triple to the where clause
      *
      * @param t The triple path to add.
@@ -242,6 +241,20 @@ public class WhereQuadHolder implements QuadHolder {
         testTriple(t);
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(t);
+        ElementOptional opt = new ElementOptional(epb);
+        getClause().addElement(opt);
+    }
+    
+    /**
+     * Add an optional TriplePath to the where clause
+     *
+     * @param t The triple path to add.
+     * @throws IllegalArgumentException If the triple is not a valid triple for a
+     * where clause.
+     */
+    public void addOptional(Collection<TriplePath> t) throws IllegalArgumentException {
+        ElementPathBlock epb = new ElementPathBlock();
+        t.forEach( tp -> {testTriple(tp);epb.addTriple(tp);});
         ElementOptional opt = new ElementOptional(epb);
         getClause().addElement(opt);
     }
@@ -259,9 +272,8 @@ public class WhereQuadHolder implements QuadHolder {
      * Add an expression string as a filter.
      *
      * @param expression The expression string to add.
-     * @throws ParseException If the expression can not be parsed.
      */
-    public void addFilter(String expression) throws ParseException {
+    public void addFilter(String expression) {
         getClause().addElement(new ElementFilter(parseExpr(expression)));
     }
 
@@ -351,9 +363,8 @@ public class WhereQuadHolder implements QuadHolder {
      *
      * @param expression The expression to bind.
      * @param var The variable to bind it to.
-     * @throws ParseException
      */
-    public void addBind(String expression, Var var) throws ParseException {
+    public void addBind(String expression, Var var) {
         getClause().addElement(new ElementBind(var, parseExpr(expression)));
     }
 
@@ -391,19 +402,21 @@ public class WhereQuadHolder implements QuadHolder {
      *
      * @param objs the list of objects for the list.
      * @return the first blank node in the list.
+     * @deprecated use {@code Converters.makeCollection(List.of(Object...))}
      */
+    @Deprecated(since="5.0.0")
     public Node list(Object... objs) {
         Node retval = NodeFactory.createBlankNode();
         Node lastObject = retval;
         for (int i = 0; i < objs.length; i++) {
             Node n = Converters.makeNode(objs[i], prefixHandler.getPrefixes());
-            addWhere(new TriplePath(new Triple(lastObject, RDF.first.asNode(), n)));
+            addWhere(new TriplePath(Triple.create(lastObject, RDF.first.asNode(), n)));
             if (i + 1 < objs.length) {
                 Node nextObject = NodeFactory.createBlankNode();
-                addWhere(new TriplePath(new Triple(lastObject, RDF.rest.asNode(), nextObject)));
+                addWhere(new TriplePath(Triple.create(lastObject, RDF.rest.asNode(), nextObject)));
                 lastObject = nextObject;
             } else {
-                addWhere(new TriplePath(new Triple(lastObject, RDF.rest.asNode(), RDF.nil.asNode())));
+                addWhere(new TriplePath(Triple.create(lastObject, RDF.rest.asNode(), RDF.nil.asNode())));
             }
 
         }

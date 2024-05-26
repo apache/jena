@@ -32,8 +32,7 @@ import org.apache.jena.rdf.model.* ;
     because it relies on various service methods; this gives the model the
     opportunity to cache various mappings for efficiency.
 */
-public class ModelListenerAdapter implements GraphListener
-    {
+public class ModelListenerAdapter implements GraphListener {
     protected ModelCom m;
     protected ModelChangedListener L;
 
@@ -43,38 +42,38 @@ public class ModelListenerAdapter implements GraphListener
     @Override
     public void notifyAddArray( Graph graph, Triple [] triples )
         { L.addedStatements( m.asStatements( triples ) ); }
-        
+
     @Override
     public void notifyDeleteArray( Graph g, Triple [] triples )
         { L.removedStatements( m.asStatements( triples ) ); }
-        
+
     @Override
     public void notifyAddTriple( Graph g, Triple t )
         { L.addedStatement( m.asStatement( t ) ); }
 
     @Override
     public void notifyAddList( Graph g, List<Triple> triples )
-        { L.addedStatements( m.asStatements( triples ) ); }  
-              
+        { L.addedStatements( m.asStatements( triples ) ); }
+
     @Override
     public void notifyAddIterator( Graph g, Iterator<Triple> it )
         { L.addedStatements( m.asStatements( it ) ); }
-        
+
     @Override
     public void notifyAddGraph( Graph g, Graph added )
         { L.addedStatements( m.asModel( added ) ); }
-        
+
     @Override
     public void notifyDeleteIterator( Graph g, Iterator<Triple> it )
         { L.removedStatements( m.asStatements( it ) ); }
-        
+
     @Override
     public void notifyDeleteTriple( Graph g, Triple t )
         { L.removedStatement( m.asStatement( t ) ); }
-        
+
     public void notifyAddIterator( Graph g, List<Triple> triples )
         { L.addedStatements( m.asStatements( triples ) ); }
-        
+
     @Override
     public void notifyDeleteList( Graph g, List<Triple> triples )
         { L.removedStatements( m.asStatements( triples ) ); }
@@ -82,20 +81,23 @@ public class ModelListenerAdapter implements GraphListener
     @Override
     public void notifyDeleteGraph( Graph g, Graph removed )
         { L.removedStatements( m.asModel( removed ) ); }
-    
+
     @Override
     public void notifyEvent( Graph g, Object event )
         { L.notifyEvent( m, event ); }
-        
+
     @Override
-    public boolean equals( Object other )
-        { 
-        return 
-            other instanceof ModelListenerAdapter 
-            && ((ModelListenerAdapter) other).sameAs( this )
-            ; 
-        }
-        
-    public boolean sameAs( ModelListenerAdapter other )
-        { return this.L.equals( other.L ) && this.m.equals( other.m ); }
+    public int hashCode() {
+        return Objects.hash(L, m);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( !(obj instanceof ModelListenerAdapter) )
+            return false;
+        ModelListenerAdapter other = (ModelListenerAdapter)obj;
+        return Objects.equals(L, other.L) && Objects.equals(m, other.m);
+    }
+}

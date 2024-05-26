@@ -25,27 +25,42 @@ import org.apache.jena.atlas.logging.Log;
  * System setup and configuration.
  * This class is not public API.
  */
-
 public class SystemIRIx {
 
     // -- Providers
-    private static IRIProvider providerJenaIRI = new IRIProviderJenaIRI();
-    //private static IRIProvider providerJDK     = new IRIProviderJDK();
-    //private static IRIProvider providerIRI3986 = new IRIProvider3986();
+    private static IRIProvider makeProviderJenaIRI() {
+        IRIProvider newProviderJenaIRI = new IRIProviderJenaIRI();
+        newProviderJenaIRI.strictMode("urn",  false);
+        newProviderJenaIRI.strictMode("http", false);
+        newProviderJenaIRI.strictMode("file", false);
+        return newProviderJenaIRI;
+    }
+    private static IRIProvider providerJenaIRI = makeProviderJenaIRI();
 
     // ** Do not use IRIProviderJDK in production. **
+    private static IRIProvider makeProviderJDK() { return new IRIProviderJDK(); }
+
+//    private static IRIProvider makeProviderIRI3986() {
+//        IRIProvider newProviderIRI3986 = new IRIProvider3986();
+//        newProviderIRI3986.strictMode("urn", true);
+//        newProviderIRI3986.strictMode("http", true);
+//        newProviderIRI3986.strictMode("file", true);
+//    }
+//    private static IRIProvider providerIRI3986 = makeProviderIRI3986();
 
     // -- System-wide provider.
 
-    private static IRIProvider provider;
-    static {
-        provider = providerJenaIRI;
-        provider.strictMode("urn",  false);
-        provider.strictMode("http", false);
-        provider.strictMode("file", false);
+    public static IRIProvider makeFreshSystemProvider() {
+        // Choice point.
+        return makeProviderJenaIRI();
     }
 
+    private static IRIProvider provider = makeFreshSystemProvider();
+
     public static void init() {}
+    public static void reset() {
+        provider = makeFreshSystemProvider();
+    }
 
     public static void setProvider(IRIProvider aProvider) {
         provider = aProvider;
@@ -108,8 +123,6 @@ public class SystemIRIx {
         if ( baseStr == null )
             return IRIx.create(fallbackBaseURI);
         try {
-            if ( !baseStr.endsWith("/") )
-                baseStr = baseStr+"/";
             IRIx base = IRIx.create(baseStr);
             if ( ! base.isReference() )
                 Log.error(IRIs.class, "System base URI is not a reference URI: must have scheme, host and path");

@@ -25,6 +25,7 @@ import org.apache.jena.atlas.lib.SetUtils ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVars ;
 import org.apache.jena.sparql.algebra.op.OpExt ;
+import org.apache.jena.sparql.algebra.op.OpLateral;
 import org.apache.jena.sparql.algebra.op.OpLeftJoin ;
 import org.apache.jena.sparql.algebra.op.OpModifier ;
 import org.apache.jena.sparql.core.Var ;
@@ -58,6 +59,8 @@ public class LeftJoinClassifier
         // Subquery with modifier.  Substitution does not apply.
         // With SELECT *, it's as if the subquery were just the pattern.
         if ( right instanceof OpModifier )
+            return false ;
+        if ( right instanceof OpLateral )
             return false ;
 
         Set<Var> leftVars = OpVars.visibleVars(left) ;

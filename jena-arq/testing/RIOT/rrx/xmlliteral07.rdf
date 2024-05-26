@@ -1,0 +1,14 @@
+<?xml version='1.0'?>
+<!-- Licensed under the terms of https://www.apache.org/licenses/LICENSE-2.0 -->
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:ex="http://example/" 
+    >
+  <rdf:Description rdf:about="http://example.org/basket">
+    <ex:xmlliteral rdf:parseType="Literal">
+      <?processing instruction?>
+    </ex:xmlliteral>
+  </rdf:Description> 
+
+</rdf:RDF>

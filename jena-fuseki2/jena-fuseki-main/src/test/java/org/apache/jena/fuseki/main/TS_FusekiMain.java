@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.main;
 
+import org.apache.jena.fuseki.main.sys.TestFusekiModules;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -29,13 +30,17 @@ import org.junit.runners.Suite.SuiteClasses;
 
   // This tests modules and modifies the system state.
   , TestFusekiModules.class
-  , TestEmbeddedFuseki.class
+
   , TestMultipleEmbedded.class
   , TestFusekiCustomOperation.class
   , TestFusekiMainCmd.class
-  , TestStdSetup.class
+  , TestFusekiMainCmdArguments.class
+  , TestFusekiStdSetup.class
+  , TestFusekiStdReadOnlySetup.class
   , TestConfigFile.class
+  , TestCrossOriginFilter.class
   , TestFusekiServerBuild.class
+  , TestFusekiDatasetSharing.class
 
   , TestFileUpload.class
   , TestAuthQuery_JDK.class
@@ -46,10 +51,12 @@ import org.junit.runners.Suite.SuiteClasses;
   , TestQuery.class
   , TestSPARQLProtocol.class
 
+  , TestPatchFuseki.class
+  , TestFusekiCustomScriptFunc.class
+
   // Test ping.
   , TestMetrics.class
   , TestFusekiShaclValidation.class
-
 })
 public class TS_FusekiMain {}
 

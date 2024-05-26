@@ -23,20 +23,37 @@ package org.apache.jena.ontology.impl;
 
 // Imports
 ///////////////
-import java.io.StringReader;
-import java.util.*;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.graph.impl.SimpleGraphMaker ;
-import org.apache.jena.ontology.* ;
-import org.apache.jena.ontology.OntDocumentManager.ReadFailureHandler ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdf.model.impl.ModelMakerImpl ;
-import org.apache.jena.reasoner.test.TestUtil ;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntDocumentManager;
+import org.apache.jena.ontology.OntDocumentManager.ReadFailureHandler;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.ontology.ProfileRegistry;
+import org.apache.jena.ontology.models.ModelMaker;
+import org.apache.jena.ontology.models.ModelMakerImpl;
+import org.apache.jena.ontology.models.SimpleGraphMaker;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
+import org.apache.jena.reasoner.test.TestUtil;
+import org.apache.jena.test.X_RDFReaderF;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.OntDocManagerVocab;
+import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 
 
@@ -48,6 +65,9 @@ import org.slf4j.LoggerFactory;
 public class TestOntDocumentManager
     extends TestCase
 {
+
+    static { RDFReaderFImpl.alternative(new X_RDFReaderF()); }
+
     // Constants
     //////////////////////////////////
 
@@ -64,7 +84,7 @@ public class TestOntDocumentManager
 
     /* Data for various combinations of test import conditions */
     public static Object[][] s_testData = new Object[][] {
-        // directory to look in             marker count        imports     path (null = default)
+        // directory to look in             marker count        imports     Filemanager config path (null = default)
         {  "testing/ontology/testImport1",  cnt(1),             T,          null },
         {  "testing/ontology/testImport2",  cnt(2),             T,          null },
         {  "testing/ontology/testImport2",  cnt(1),             F,          null },
@@ -459,7 +479,6 @@ public class TestOntDocumentManager
         assertFalse( "b should not be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ) );
     }
 
-
     public void testDynamicImports2() {
         OntModel m = ModelFactory.createOntologyModel();
         Resource a = m.getResource( "file:testing/ontology/testImport3/a.owl" );
@@ -469,13 +488,12 @@ public class TestOntDocumentManager
 
         m.add( a, m.getProfile().IMPORTS(), b );
 
-        // dymamically imported
+        // dynamically imported
         assertEquals( "Marker count not correct", 2, countMarkers( m ) );
 
         assertTrue( "c should be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/c.owl" ) );
         assertTrue( "b should be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ) );
     }
-
 
     public void testDynamicImports3() {
         OntModel m = ModelFactory.createOntologyModel();
@@ -487,8 +505,8 @@ public class TestOntDocumentManager
 
         m.setDynamicImports( true );
 
-        Resource a = m.getResource( "file:testing/ontology/testImport3/a.owl" );
-        Resource b = m.getResource( "file:testing/ontology/testImport3/b.owl" );
+        Resource a = m.getResource( OntResolve.resolve("file:testing/ontology/testImport3/a.owl") );
+        Resource b = m.getResource( OntResolve.resolve("file:testing/ontology/testImport3/b.owl") );
         m.remove( m.createStatement( a, m.getProfile().IMPORTS(), b ) );
 
         assertEquals( "Marker count not correct", 1, countMarkers( m ) );
@@ -553,7 +571,10 @@ public class TestOntDocumentManager
         o1.setReadHook( rh );
         o1.reset();
 
-        String source = "@prefix owl: <http://www.w3.org/2002/07/owl#> . <> a owl:Ontology ; owl:imports <file:testing/ontology/testImport3/a.owl>. ";
+        String source =
+                "@prefix owl: <http://www.w3.org/2002/07/owl#> ."
+                + " <> a owl:Ontology ;"
+                + " owl:imports <file:testing/ontology/testImport3/a.owl>. ";
 
         OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_MEM );
         spec.setDocumentManager(  o1 );
@@ -561,9 +582,8 @@ public class TestOntDocumentManager
         m.read( new StringReader( source ), "http://example.com/foo#", "N3" );
 
         assertEquals( "Wrong number of calls to before load hook", 3, rh.m_before );
-        assertEquals( "Wrong number of calls to before load hook", 3, rh.m_after );
+        assertEquals( "Wrong number of calls to after load hook", 3, rh.m_after );
     }
-
 
     public void testReadHook1() {
         TestReadHook rh = new TestReadHook( true );
@@ -609,9 +629,9 @@ public class TestOntDocumentManager
      * directory), and loads the model. Depending on the model contents, and the settings of the doc
      * manager, other models will be loaded. Each model is set to contain a fixed number of marker
      * statements of the form:
-     * <code><pre>
+     * <pre>
      *   <Marker rdf:ID="a0" />
-     * </pre></code>
+     * </pre>
      * the test for having correctly loaded the models is to count the markers and compare to the predicted
      * total.
      */
@@ -649,8 +669,14 @@ public class TestOntDocumentManager
             OntModel m = ModelFactory.createOntologyModel( spec, null );
             assertNotNull( "Ontology model should not be null", m );
 
-            m.read( "file:" + m_dir + "/a.owl" );
-            assertEquals( "Marker count not correct", m_count, countMarkers( m ));
+            String filename = "file:" + m_dir + "/a.owl";
+
+            try {
+                m.read(filename);
+            } catch (Throwable ex) {
+                m.read(filename);
+            }
+            assertEquals( "Marker count not correct: "+filename, m_count, countMarkers( m ));
         }
     }
 

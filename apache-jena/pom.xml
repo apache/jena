@@ -35,8 +35,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>4.6.0-SNAPSHOT</version>
-    <relativePath>..</relativePath>
+    <version>5.1.0-SNAPSHOT</version>
   </parent>
 
   <organization>
@@ -58,13 +57,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -72,13 +71,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -86,13 +85,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-rdfconnection</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-rdfconnection</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -100,13 +99,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shacl</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shacl</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -114,13 +113,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shex</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-shex</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -128,20 +127,20 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Require a logging implementation for command line tools --> 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j-impl</artifactId>
+      <artifactId>log4j-slf4j2-impl</artifactId>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-cmds</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
       <classifier>sources</classifier>
       <optional>true</optional>
     </dependency>
@@ -152,9 +151,6 @@
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <tarLongFileMode>gnu</tarLongFileMode>
-        </configuration>
         <executions>
           <execution>
             <id>create-jena-download</id>
@@ -164,54 +160,14 @@
             </goals>
             <configuration>
               <appendAssemblyId>false</appendAssemblyId>
-              <tarLongFileMode>posix</tarLongFileMode>
               <descriptors>
-                <descriptor>assembly-jena-zip.xml</descriptor>
+                <descriptor>assembly-jena-download.xml</descriptor>
               </descriptors>
-              <tarLongFileFormat>gnu</tarLongFileFormat>
             </configuration>
           </execution>
         </executions>
       </plugin>
       
-      <!-- 
-      Use the dependencies plugin to copy the dependencies into the lib/ directory which makes the scripts work in dev enivronments 
-      - -> JENA-1173
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-libs-for-scripts</id>
-            <phase>package</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-              <overWriteSnapshots>true</overWriteSnapshots>
-              <includeScope>runtime</includeScope>
-              <includeTypes>jar</includeTypes>
-              <outputDirectory>lib/</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      -->
-
-      <!-- 
-      As we copy dependencies into lib/ to make scripts work in dev environments we also need to clean up that directory
-      - -> JENA-1173
-      <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>lib/</directory>
-            </fileset>
-          </filesets>
-        </configuration>
-      </plugin>
-      -->
     </plugins>
   </build>
 

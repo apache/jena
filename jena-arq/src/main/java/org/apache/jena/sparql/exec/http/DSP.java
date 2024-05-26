@@ -21,6 +21,7 @@ package org.apache.jena.sparql.exec.http;
 import java.net.http.HttpClient;
 import java.util.Map;
 
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.HttpRDF;
 import org.apache.jena.http.Push;
@@ -95,6 +96,8 @@ public class DSP extends StoreProtocol<DSP>{
      * This operation does not parse the file.
      */
     public void POST(String file) {
+        if ( ! FileOps.exists(file) )
+            throw new IllegalArgumentException("No such file: "+file);
         String fileExtContentType = contentTypeFromFilename(file);
         HttpClient hc = requestHttpClient(serviceEndpoint, serviceEndpoint);
         uploadQuads(hc, serviceEndpoint, file, fileExtContentType, httpHeaders, Push.POST);
@@ -114,6 +117,8 @@ public class DSP extends StoreProtocol<DSP>{
      * This operation does not parse the file.
      */
     public void PUT(String file) {
+        if ( ! FileOps.exists(file) )
+            throw new IllegalArgumentException("No such file: "+file);
         String fileExtContentType = contentTypeFromFilename(file);
         HttpClient hc = requestHttpClient(serviceEndpoint, serviceEndpoint);
         uploadQuads(hc, serviceEndpoint, file, fileExtContentType, httpHeaders, Push.PUT);

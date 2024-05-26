@@ -32,12 +32,13 @@ import java.util.Map;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.GZIPInputStream;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.NotImplemented;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
@@ -133,11 +134,10 @@ public class HttpAction
      * Initialization after action creation, during lifecycle setup. This is "set
      * once" (in other words, constructor-like but delayed because the information is
      * not yet available at the point we want to create the HttpAction).
-     *
+     * <p>
      * This method sets the action dataset for service requests. Does not apply to "admin" and
      * "ctl" servlets. Setting will replace any existing {@link DataAccessPoint} and
      * {@link DataService}, as the {@link DatasetGraph} of the current HTTP Action.
-     * </p>
      * <p>
      * Once it has updated its members, the HTTP Action will change its transactional
      * state and {@link Transactional} instance according to its base dataset graph.
@@ -224,8 +224,9 @@ public class HttpAction
         return transactional;
     }
 
-    /** This is the requestURI with the context path removed.
-     *  It should be used internally for dispatch.
+    /**
+     * This is the requestURI with the context path removed.
+     * It should be used internally for dispatch.
      */
     public String getActionURI() {
         return actionURI;
@@ -304,11 +305,11 @@ public class HttpAction
     public void end() {
         dataService.finishTxn();
         if ( transactional.isInTransaction() ) {
-            Log.warn(this, "Transaction still active - no commit or abort seen (forced abort)");
+            FmtLog.warn(log, "[%d] Transaction still active - no commit or abort seen (forced abort)", this.id);
             try {
                 transactional.abort();
             } catch (RuntimeException ex) {
-                Log.warn(this, "Exception in forced abort (trying to continue)", ex);
+                FmtLog.warn(log, "[%d] Exception in forced abort (trying to continue)", this.id, ex);
             }
         }
         if ( transactional.isInTransaction() ) {
@@ -646,20 +647,12 @@ public class HttpAction
         String encoding = action.request.getHeader(HttpNames.hContentEncoding);
         if ( encoding == null )
             return input;
-        switch (encoding) {
-            case WebContent.encodingGzip :
-                return new GZIPInputStream(input, 8192);
-            case WebContent.encodingDeflate :
-                return new DeflaterInputStream(input);
-                // Not supported:
-            case "br" :
-                // From Apache Common Compress but needs extra org.brotli.dec.BrotliInputStream
-            case "compress" :
-                // Legacy - not supported
-            default :
-        }
-        // Not supported or not understood.
-        ServletOps.error(HttpSC.BAD_REQUEST_400, HttpNames.hContentEncoding+" '"+encoding+"' encoding not supported");
-        return null;
+        return switch (encoding) {
+            case WebContent.encodingGzip -> new GZIPInputStream(input, 8192);
+            case WebContent.encodingDeflate -> new DeflaterInputStream(input);
+//            case "br" :
+//            case "compress" :
+            default-> { ServletOps.error(HttpSC.BAD_REQUEST_400, HttpNames.hContentEncoding+" '"+encoding+"' encoding not supported");  yield null; }
+        };
     }
 }

@@ -41,7 +41,6 @@ public class BuiltinPersonalities {
         .add( Alt.class, AltImpl.factory )
         .add( Bag.class, BagImpl.factory )
         .add( Seq.class, SeqImpl.factory )
-        .add( ReifiedStatement.class, ReifiedStatementImpl.reifiedStatementFactory )
         .add( RDFList.class, RDFListImpl.factory )
 
         // ontology additions

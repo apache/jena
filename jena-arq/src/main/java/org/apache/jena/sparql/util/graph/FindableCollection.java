@@ -21,48 +21,48 @@ package org.apache.jena.sparql.util.graph;
 import java.util.*;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 
 public class FindableCollection implements Findable
 {
-    private Collection<Triple> triples ;
+    private Collection<Triple> triples;
 
-    public FindableCollection(Collection<Triple> triples) { this.triples = triples ; }
-    
+    public FindableCollection(Collection<Triple> triples) { this.triples = triples; }
+
     @Override
-    public Iterator<Triple> find(Node _s, Node _p, Node _o) {
-        Node s = m(_s) ;
-        Node p = m(_p) ;
-        Node o = m(_o) ;
-        return Iter.filter(triples.iterator(), (t)->matches(t, s, p, o)); 
+    public Iterator<Triple> find(Node s, Node p, Node o) {
+        Node _s = anyAsNull(s);
+        Node _p = anyAsNull(p);
+        Node _o = anyAsNull(o);
+        return Iter.filter(triples.iterator(), (t)->matches(t, _s, _p, _o));
     }
-    
-    static Node m(Node n) {
-        return n == Node.ANY ? null : n ; 
+
+    private static Node anyAsNull(Node n) {
+        // So we can match "ANY"
+        return n == Node.ANY ? null : n;
     }
-    
+
     // Does concrete t match the pattern (s,p,o)?
     /*package*/ static boolean matches(Triple t, Node s, Node p, Node o) {
         if ( s != null && ! Objects.equals(s, t.getSubject()) )
-            return false ;
+            return false;
         if ( p != null && ! Objects.equals(p, t.getPredicate()) )
-            return false ;
+            return false;
         if ( o != null && ! Objects.equals(o, t.getObject()) )
-            return false ;
-        return true ;
+            return false;
+        return true;
     }
-    
+
     @Override
-    public boolean contains(Node s, Node p, Node o)
-    {
-        if ( s == Node.ANY ) s = null ;
-        if ( p == Node.ANY ) p = null ;
-        if ( o == Node.ANY ) o = null ;
+    public boolean contains(Node s, Node p, Node o) {
+        Node _s = anyAsNull(s);
+        Node _p = anyAsNull(p);
+        Node _o = anyAsNull(o);
         for ( Triple t : triples ) {
-            if ( matches(t, s, p, o) )
+            if ( matches(t, _s, _p, _o) )
                 return true;
         }
-        return false ;
+        return false;
     }
 }

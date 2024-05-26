@@ -1,5 +1,0 @@
-BASE <http://example/>
-
-SELECT * {
-   BIND( IRI(<base>, "rel") AS ?X )
-}

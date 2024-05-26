@@ -33,14 +33,14 @@ import org.apache.jena.reasoner.rulesys.RuleContext ;
 public class Now extends BaseBuiltin {
 
     /**
-     * Return a name for this builtin, normally this will be the name of the 
+     * Return a name for this builtin, normally this will be the name of the
      * functor that will be used to invoke it.
      */
     @Override
     public String getName() {
         return "now";
     }
-    
+
     /**
      * Return the expected number of arguments for this functor or 0 if the number is flexible.
      */
@@ -51,7 +51,7 @@ public class Now extends BaseBuiltin {
 
     /**
      * This method is invoked when the builtin is called in a rule body.
-     * @param args the array of argument values for the builtin, this is an array 
+     * @param args the array of argument values for the builtin, this is an array
      * of Nodes, some of which may be Node_RuleVariables.
      * @param context an execution context giving access to other relevant data
      * @return return true if the buildin predicate is deemed to have succeeded in
@@ -61,6 +61,7 @@ public class Now extends BaseBuiltin {
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
         BindingEnvironment env = context.getEnv();
+        @SuppressWarnings("deprecation")
         Node now = NodeFactory.createLiteral( LiteralLabelFactory.createTypedLiteral(new XSDDateTime(Calendar.getInstance())) );
         return env.bind(args[0], now);
     }

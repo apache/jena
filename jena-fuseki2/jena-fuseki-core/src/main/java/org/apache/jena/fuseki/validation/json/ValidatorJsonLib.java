@@ -23,7 +23,7 @@ import static org.apache.jena.riot.WebContent.contentTypeJSON;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.servlets.ServletOps;

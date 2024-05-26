@@ -15,34 +15,33 @@
  * limitations under the License.
  */
 
-import { expect } from 'chai'
-import { createLocalVue, shallowMount } from '@vue/test-utils'
+import { describe, expect, it, beforeEach, afterEach } from 'vitest'
+import { mount } from '@vue/test-utils'
 import ServerStatus from '@/components/ServerStatus.vue'
 import ServerStatusModel from '@/model/server.status'
 import sinon from 'sinon'
-import BootstrapVue from 'bootstrap-vue'
-import Vue from 'vue'
-
-Vue.use(BootstrapVue)
-
-const localVue = createLocalVue()
 
 let count = 0
-
-localVue.prototype.$fusekiService = {
-  async getServerStatus () {
-    count += 1
-    return new ServerStatusModel(true, `OK ${count}`)
-  }
-}
 
 describe('ServerStatus', () => {
   let fakeClock
   let component
   const mountFunction = options => {
-    return shallowMount(ServerStatus, {
-      localVue,
-      ...options
+    const mountOptions = Object.assign(options || {}, {
+      shallow: true,
+      global: {
+        mocks: {
+          $fusekiService: {
+            async getServerStatus () {
+              count += 1
+              return new ServerStatusModel(true, `OK ${count}`)
+            }
+          }
+        }
+      }
+    })
+    return mount(ServerStatus, {
+      ...mountOptions
     })
   }
   beforeEach(async () => {
@@ -62,7 +61,7 @@ describe('ServerStatus', () => {
   })
   it('destroys the interval', async () => {
     expect(component.vm.interval).to.not.equal(null)
-    component.vm.$destroy()
+    component.unmount()
     expect(component.vm.interval).to.equal(null)
   })
 })

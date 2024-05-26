@@ -39,7 +39,7 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Assert ;
 import org.junit.Test ;
 
-public class TestTransformFilterPlacement { //extends AbstractTestTransform {
+public class TestTransformFilterPlacement {
 
     // ** Filter
 

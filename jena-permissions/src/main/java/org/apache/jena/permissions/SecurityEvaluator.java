@@ -45,7 +45,6 @@ import org.apache.jena.shared.AuthenticationRequiredException;
  * as the evaluate methods are called frequently. However, the underlying
  * classes do cache results within a single method check.
  * </p>
- * <p>
  * <dl>
  * <dt>Secured operations</dt>
  * <dd>The security system recognizes and secures each of the CRUD (Create,
@@ -69,7 +68,8 @@ import org.apache.jena.shared.AuthenticationRequiredException;
  * </p>
  * <ul>
  * <li>If the system does not support triple level security the system should
- * always return <code>true</code>.</li> If the system does support triple level
+ * always return <code>true</code>.</li>
+ * <li>If the system does support triple level
  * security and is unable to verify that the user can execute the CRUD action
  * against any arbitrary triple the system should return
  * <code>false</code>.</li>
@@ -82,7 +82,7 @@ import org.apache.jena.shared.AuthenticationRequiredException;
  */
 public interface SecurityEvaluator {
     /**
-     * Identifies a sepcific CRUD actions.
+     * Identifies a specific CRUD actions.
      */
     static enum Action {
         /**
@@ -113,7 +113,7 @@ public interface SecurityEvaluator {
          * <p>
          * The order of the collection is preserved
          * </p>
-         * 
+         *
          * @param actions The actions.
          * @return The set of actions.
          */
@@ -126,7 +126,7 @@ public interface SecurityEvaluator {
          * <p>
          * The order of the collection is preserved
          * </p>
-         * 
+         *
          * @param actions The collection of actions.
          * @return The set of actions.
          */
@@ -141,15 +141,11 @@ public interface SecurityEvaluator {
     /**
      * Indicates a variable in the triple.
      * <p>
-     * </p>
      * This differs from <code>ANY</code> in that the system is asking if there are
      * any prohibitions not if the user may perform. Thus queries with the VARIABLE
      * type node should return <code>true</code> where <code>ANY</code> returns
      * <code>false</code>. In general this type is used in the query to determine if
      * triple level filtering of results must be performed.
-     * <p>
-     * </p>
-     * <p>
      * <dl>
      * <dt><code>(VARIABLE, X, Y )</code></dt>
      * <dd>Asks if there are any prohibitions against the user seeing all subjects
@@ -163,8 +159,6 @@ public interface SecurityEvaluator {
      * </dl>
      * The <code>VARIABLE</code> may occur multiple times and may occur with the
      * <code>ANY</code> node.
-     * </p>
-     * 
      */
     public static final Node VARIABLE = NodeFactory.createBlankNode("urn:jena-permissions:VARIABLE");
 
@@ -173,8 +167,6 @@ public interface SecurityEvaluator {
      * <p>
      * FUTURE is used to check that a blank node may be created in as specific
      * position in a triple.
-     * </p>
-     * <p>
      * <dl>
      * <dt><code>(FUTURE, X, Y )</code></dt>
      * <dd>Asks if there the user may create a blank node that has property X and
@@ -185,7 +177,6 @@ public interface SecurityEvaluator {
      * </dl>
      * The <code>FUTURE</code> may occur multiple times and may occur with the
      * <code>ANY</code> node.
-     * </p>
      */
     public static final Node FUTURE = NodeFactory.createBlankNode("urn:jena-permissions:FUTURE");
 
@@ -226,7 +217,6 @@ public interface SecurityEvaluator {
      * <code>Create</code> actions and is asking if the user may create a blank node
      * in that position in the triple.</li>
      * </ol>
-     * </p>
      *
      * @param principal The principal that is attempting the action.
      *
@@ -265,7 +255,7 @@ public interface SecurityEvaluator {
      * <p>
      * See evaluate( Action, Node, Triple ) for discussion of evaluation strategy.
      * </p>
-     * 
+     *
      * @param actions  The actions to perform.
      * @param graphIRI The IRI of the graph to the action is being taken upon. May
      *                 be <code>ANY</code>.
@@ -356,13 +346,13 @@ public interface SecurityEvaluator {
     /**
      * Returns true if the principal is recognized as an authenticated principal by
      * the underlying authentication mechanism.
-     * 
+     *
      * This is to handle the case where an authentication mechanism returns a
      * non-null object to indicate a non-authenticated principal. (e.g. Shiro).
-     * 
+     *
      * The principal is guaranteed to have been the return value from an earlier
      * getPrincipal() call.
-     * 
+     *
      * @param principal The principal to check.
      * @return true if authenticated, false if not.
      */

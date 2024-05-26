@@ -20,18 +20,29 @@
 ///////////////
 package org.apache.jena.ontology;
 
-// Imports
-///////////////
+import org.apache.jena.assembler.Assembler;
+import org.apache.jena.assembler.AssemblerHelp;
+import org.apache.jena.assembler.JA;
+import org.apache.jena.ontology.impl.OntModelImpl;
+import org.apache.jena.ontology.models.ModelGetter;
+import org.apache.jena.ontology.models.ModelMaker;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.ReasonerFactory;
+import org.apache.jena.reasoner.rulesys.OWLFBRuleReasonerFactory;
+import org.apache.jena.reasoner.rulesys.OWLMicroReasonerFactory;
+import org.apache.jena.reasoner.rulesys.OWLMiniReasonerFactory;
+import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
+import org.apache.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.XSD;
 
-import org.apache.jena.assembler.* ;
-import org.apache.jena.ontology.impl.OntModelImpl ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.Reasoner ;
-import org.apache.jena.reasoner.ReasonerFactory ;
-import org.apache.jena.reasoner.rulesys.* ;
-import org.apache.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory ;
-import org.apache.jena.shared.JenaException ;
-import org.apache.jena.vocabulary.* ;
+import java.util.Objects;
 
 /**
  * <p>
@@ -196,11 +207,11 @@ public class OntModelSpec {
      * calling this copy constructor, making a change to the document manager in the copy specification
      * will also affect the one that the copy was made from. The correct idiom is to replace the object
      * before side-effecting it, e.g:
-     * <code><pre>
+     * <pre>
      *   OntModelSpec newSpec = new OntModelSpec( existingSpec );
      *   newSpec.setDocumentManager( new OntDocumentManager() );
      *   newSpec.getDocumentManager().setMetaDataSearchPath( "..." );
-     * </pre></code>
+     * </pre>
      * @param spec
      */
     public OntModelSpec( OntModelSpec spec ) {
@@ -208,9 +219,18 @@ public class OntModelSpec {
               spec.getReasonerFactory(), spec.getLanguage() );
     }
 
+
+    // Original .equals
     @Override
     public boolean equals( Object other )
+    // Original .equals
         { return other instanceof OntModelSpec && same( (OntModelSpec) other );}
+
+    @Override
+    public int hashCode() {
+        // Align to .original .equals.
+        return Objects.hash(getLanguage(), getReasonerFactory(), getDocumentManager(), getImportModelGetter()) ;
+    }
 
     private boolean same( OntModelSpec other )
         {

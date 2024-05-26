@@ -32,14 +32,15 @@ import org.apache.jena.system.Txn;
  * <p>The write lifecycle is:
  * <pre> begin(WRITE) ... abort() or commit() end()</pre>
  * <p>{@code end()} is optional for "write" but is preferred.
- * <p>
+ * </p>
  * <h4>Application use</h4>
  * Applications can conveniently execute the lifecycle with methods to read or write:
  * <pre>dataset.executeRead({@literal ()->} { ... sparql query ... });</pre>
  * <pre>dataset.executeWrite({@literal ()->} { ... sparql update ... });</pre>
- * Use one of <tt>calculateRead</tt> or <tt>calculateWrite</tt>
- * to return a value for the transaction block.
  * <p>
+ * Use one of {@code calculateRead} or {@code calculateWrite}
+ * to return a value for the transaction block.
+ * </p>
  * <h4>Core Functionality</h4>
  * Directly called, code might look like:
  * <pre>
@@ -136,7 +137,6 @@ public interface Transactional
      * This method returns false if a {@code READ_PROMOTE} can't be promoted - the
      * transaction is still valid and in "read" mode. Any further calls to
      * {@code promote()} will also return false.
-     * <p>
      * <p>
      * This method returns false if there is an attempt to promote a "READ" transaction.
      */

@@ -18,30 +18,8 @@
 
 package org.apache.jena.graph;
 
-import static org.apache.jena.testing_framework.GraphHelper.assertContainsAll;
-import static org.apache.jena.testing_framework.GraphHelper.assertIsomorphic;
-import static org.apache.jena.testing_framework.GraphHelper.assertOmitsAll;
-import static org.apache.jena.testing_framework.GraphHelper.graphAddTxn;
-import static org.apache.jena.testing_framework.GraphHelper.graphWith;
-import static org.apache.jena.testing_framework.GraphHelper.iteratorToSet;
-import static org.apache.jena.testing_framework.GraphHelper.memGraph;
-import static org.apache.jena.testing_framework.GraphHelper.node;
-import static org.apache.jena.testing_framework.GraphHelper.nodeSet;
-import static org.apache.jena.testing_framework.GraphHelper.triple;
-import static org.apache.jena.testing_framework.GraphHelper.tripleArray;
-import static org.apache.jena.testing_framework.GraphHelper.tripleSet;
-import static org.apache.jena.testing_framework.GraphHelper.txnBegin;
-import static org.apache.jena.testing_framework.GraphHelper.txnRun;
-import static org.apache.jena.testing_framework.GraphHelper.txnCommit;
-import static org.apache.jena.testing_framework.GraphHelper.txnRollback;
-import static org.apache.jena.testing_framework.TestUtils.assertDiffer;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.apache.jena.testing_framework.GraphHelper.*;
+import static org.junit.Assert.*;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -533,11 +511,11 @@ public class GraphContractTest<T extends Graph>
 			assertFalse(graph.contains(triple("S2 P O")));
 			assertTrue(graph.contains(Triple.ANY));
 			assertTrue(
-					graph.contains(new Triple(Node.ANY, Node.ANY, node("O"))));
+					graph.contains(Triple.create(Node.ANY, Node.ANY, node("O"))));
 			assertTrue(
-					graph.contains(new Triple(Node.ANY, node("P"), Node.ANY)));
+					graph.contains(Triple.create(Node.ANY, node("P"), Node.ANY)));
 			assertTrue(
-					graph.contains(new Triple(node("S"), Node.ANY, Node.ANY)));
+					graph.contains(Triple.create(node("S"), Node.ANY, Node.ANY)));
 		});
 
 	}
@@ -689,7 +667,7 @@ public class GraphContractTest<T extends Graph>
 		try
 		{
 			txnBegin(graph);
-			graph.delete(new Triple(node("S2"), node("P2"), Node.ANY));
+			graph.delete(Triple.create(node("S2"), node("P2"), Node.ANY));
 			txnCommit(graph);
 		} catch (DeleteDeniedException expected)
 		{
@@ -703,7 +681,7 @@ public class GraphContractTest<T extends Graph>
 					graph.contains(triple("S3 P3 O3")));
 		});
 		GL.assertHas("delete", graph,
-				new Triple(node("S2"), node("P2"), Node.ANY));
+				Triple.create(node("S2"), node("P2"), Node.ANY));
 	}
 
 	@ContractTest
@@ -806,12 +784,16 @@ public class GraphContractTest<T extends Graph>
 		Graph g = producer.newInstance();
 		if (g.getCapabilities().handlesLiteralTyping())
 		{
+            @SuppressWarnings("deprecation")
 			Node ab = NodeFactory.createLiteral(LiteralLabelFactory
 					.createTypedLiteral(Byte.valueOf((byte) 42)));
+            @SuppressWarnings("deprecation")
 			Node as = NodeFactory.createLiteral(LiteralLabelFactory
 					.createTypedLiteral(Short.valueOf((short) 42)));
+            @SuppressWarnings("deprecation")
 			Node ai = NodeFactory.createLiteral(
 					LiteralLabelFactory.createTypedLiteral(Integer.valueOf(42)));
+            @SuppressWarnings("deprecation")
 			Node al = NodeFactory.createLiteral(
 					LiteralLabelFactory.createTypedLiteral(Long.valueOf(42)));
 
@@ -854,7 +836,7 @@ public class GraphContractTest<T extends Graph>
 		if (g.getCapabilities().handlesLiteralTyping())
 		{
 			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
-			assertDiffer(chaten, chatEN);
+			assertEquals(chaten, chatEN);
 			assertTrue(chaten.sameValueAs(chatEN));
 			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
 			txnBegin(g);
@@ -871,7 +853,7 @@ public class GraphContractTest<T extends Graph>
 		if (g.getCapabilities().handlesLiteralTyping())
 		{
 			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
-			assertDiffer(chaten, chatEN);
+			assertEquals(chaten, chatEN);
 			assertTrue(chaten.sameValueAs(chatEN));
 			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
 			txnBegin(g);
@@ -893,32 +875,32 @@ public class GraphContractTest<T extends Graph>
 				triple("S2 P2 O2"), triple("S3 P3 O3") });
 		assertTrue("Missing some values", expected.containsAll(s));
 
-		s = graph.find(new Triple(node("S"), Node.ANY, Node.ANY)).toList();
+		s = graph.find(Triple.create(node("S"), Node.ANY, Node.ANY)).toList();
 		assertEquals(1, s.size());
 		assertTrue("Missing some values", s.contains(triple("S P O")));
 
-		s = graph.find(new Triple(Node.ANY, node("P"), Node.ANY)).toList();
+		s = graph.find(Triple.create(Node.ANY, node("P"), Node.ANY)).toList();
 		assertEquals(1, s.size());
 		assertTrue("Missing some values", s.contains(triple("S P O")));
 
-		s = graph.find(new Triple(Node.ANY, Node.ANY, node("O"))).toList();
+		s = graph.find(Triple.create(Node.ANY, Node.ANY, node("O"))).toList();
 		assertEquals(1, s.size());
 		assertTrue("Missing some values", s.contains(triple("S P O")));
 
-		s = graph.find(new Triple(node("S2"), node("P2"), node("O2"))).toList();
+		s = graph.find(Triple.create(node("S2"), node("P2"), node("O2"))).toList();
 		assertEquals(1, s.size());
 		assertTrue("Missing some values", s.contains(triple("S2 P2 O2")));
 
-		s = graph.find(new Triple(node("S2"), node("P3"), node("O2"))).toList();
+		s = graph.find(Triple.create(node("S2"), node("P3"), node("O2"))).toList();
 		assertEquals(0, s.size());
 
-		s = graph.find(new Triple(Node.ANY, node("P3"), node("O2"))).toList();
+		s = graph.find(Triple.create(Node.ANY, node("P3"), node("O2"))).toList();
 		assertEquals(0, s.size());
 
-		s = graph.find(new Triple(node("S3"), Node.ANY, node("O2"))).toList();
+		s = graph.find(Triple.create(node("S3"), Node.ANY, node("O2"))).toList();
 		assertEquals(0, s.size());
 
-		s = graph.find(new Triple(node("S3"), node("P2"), Node.ANY)).toList();
+		s = graph.find(Triple.create(node("S3"), node("P2"), Node.ANY)).toList();
 		assertEquals(0, s.size());
 		txnRollback(graph);
 	}
@@ -941,12 +923,16 @@ public class GraphContractTest<T extends Graph>
 		Graph g = producer.newInstance();
 		if (g.getCapabilities().handlesLiteralTyping())
 		{
-			Node ab = NodeFactory.createLiteral(LiteralLabelFactory
+			@SuppressWarnings("deprecation")
+            Node ab = NodeFactory.createLiteral(LiteralLabelFactory
 					.createTypedLiteral(Byte.valueOf((byte) 42)));
+            @SuppressWarnings("deprecation")
 			Node as = NodeFactory.createLiteral(LiteralLabelFactory
 					.createTypedLiteral(Short.valueOf((short) 42)));
+            @SuppressWarnings("deprecation")
 			Node ai = NodeFactory.createLiteral(
 					LiteralLabelFactory.createTypedLiteral(Integer.valueOf(42)));
+            @SuppressWarnings("deprecation")
 			Node al = NodeFactory.createLiteral(
 					LiteralLabelFactory.createTypedLiteral(Long.valueOf(42)));
 
@@ -974,7 +960,7 @@ public class GraphContractTest<T extends Graph>
 					String.format(
 							"Should have found 4 elements, does %s really implement literal typing",
 							g.getClass()),
-					4, iteratorToSet(g.find(new Triple(Node.ANY, P,
+					4, iteratorToSet(g.find(Triple.create(Node.ANY, P,
 							NodeCreateUtils.create("42")))).size());
 			txnRollback(g);
 		}
@@ -987,13 +973,13 @@ public class GraphContractTest<T extends Graph>
 		if (g.getCapabilities().handlesLiteralTyping())
 		{
 			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
-			assertDiffer(chaten, chatEN);
+			assertEquals(chaten, chatEN);
 			assertTrue(chaten.sameValueAs(chatEN));
 			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
 			txnBegin(g);
-			assertEquals(1, g.find(new Triple(Node.ANY, Node.ANY, chaten))
+			assertEquals(1, g.find(Triple.create(Node.ANY, Node.ANY, chaten))
 					.toList().size());
-			assertEquals(1, g.find(new Triple(Node.ANY, Node.ANY, chatEN))
+			assertEquals(1, g.find(Triple.create(Node.ANY, Node.ANY, chatEN))
 					.toList().size());
 			txnRollback(g);
 		}
@@ -1006,13 +992,13 @@ public class GraphContractTest<T extends Graph>
 		if (g.getCapabilities().handlesLiteralTyping())
 		{
 			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
-			assertDiffer(chaten, chatEN);
+			assertEquals(chaten, chatEN);
 			assertTrue(chaten.sameValueAs(chatEN));
 			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
 			txnBegin(g);
-			assertEquals(1, g.find(new Triple(Node.ANY, Node.ANY, chaten))
+			assertEquals(1, g.find(Triple.create(Node.ANY, Node.ANY, chaten))
 					.toList().size());
-			assertEquals(1, g.find(new Triple(Node.ANY, Node.ANY, chatEN))
+			assertEquals(1, g.find(Triple.create(Node.ANY, Node.ANY, chatEN))
 					.toList().size());
 			txnRollback(g);
 		}
@@ -1493,35 +1479,6 @@ public class GraphContractTest<T extends Graph>
 		Graph result = producer.newInstance();
 		result.close();
 		return result;
-	}
-
-	/**
-	 * This test exposed that the update-existing-graph functionality was broken
-	 * if the target graph already contained any statements with a subject S
-	 * appearing as subject in the source graph - no further Spo statements were
-	 * added.
-	 */
-	@ContractTest
-	public void testPartialUpdate()
-	{
-		Graph source = graphWith(producer.newInstance(), "a R b; b S e");
-		Graph dest = graphWith(producer.newInstance(), "b R d");
-		txnBegin(source);
-		try
-		{
-			GraphExtract e = new GraphExtract(TripleBoundary.stopNowhere);
-			e.extractInto(dest, node("a"), source);
-			txnCommit(source);
-		} catch (RuntimeException e)
-		{
-			txnRollback(source);
-			e.printStackTrace();
-			fail(e.getMessage());
-
-		}
-		txnBegin(source);
-		assertIsomorphic(graphWith("a R b; b S e; b R d"), dest);
-		txnRollback(source);
 	}
 
 	/**

@@ -19,7 +19,6 @@ package org.apache.jena.permissions.model.impl;
 
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.impl.ItemHolder;
 import org.apache.jena.permissions.impl.SecuredItemImpl;
 import org.apache.jena.permissions.impl.SecuredItemInvoker;
@@ -30,33 +29,26 @@ import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.model.SecuredProperty;
 import org.apache.jena.permissions.model.SecuredRDFList;
 import org.apache.jena.permissions.model.SecuredRDFNode;
-import org.apache.jena.permissions.model.SecuredReifiedStatement;
 import org.apache.jena.permissions.model.SecuredResource;
 import org.apache.jena.permissions.model.SecuredSeq;
 import org.apache.jena.permissions.model.SecuredStatement;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.RSIterator;
-import org.apache.jena.rdf.model.ReifiedStatement;
-import org.apache.jena.rdf.model.ResourceF;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.jena.shared.AddDeniedException;
 import org.apache.jena.shared.AuthenticationRequiredException;
 import org.apache.jena.shared.DeleteDeniedException;
 import org.apache.jena.shared.PropertyNotFoundException;
 import org.apache.jena.shared.ReadDeniedException;
 import org.apache.jena.shared.UpdateDeniedException;
-import org.apache.jena.util.iterator.NiceIterator;
 
 /**
  * Implementation of SecuredStatement to be used by a SecuredItemInvoker proxy.
  */
-@SuppressWarnings("deprecation")
 public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStatement {
     /**
      * get a SecuredStatement
-     * 
+     *
      * @param securedModel The secured model that provides the security context
      * @param stmt         The statement to secure.
      * @return the SecuredStatement
@@ -89,7 +81,7 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
 
     /**
      * Constructor.
-     * 
+     *
      * @param securityEvaluator The security evaluator to use.
      * @param graphIRI          the graph IRI to verify against.
      * @param holder            The item holder that will contain this
@@ -239,7 +231,7 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
             throws UpdateDeniedException, AuthenticationRequiredException {
         checkUpdate();
         final Triple base = holder.getBaseItem().asTriple();
-        final Triple newBase = new Triple(base.getSubject(), base.getPredicate(), o.asNode());
+        final Triple newBase = Triple.create(base.getSubject(), base.getPredicate(), o.asNode());
         checkUpdate(base, newBase);
         return SecuredStatementImpl.getInstance(getModel(), holder.getBaseItem().changeObject(o));
     }
@@ -268,84 +260,14 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
      *                                         required to be.
      */
     @Override
-    public SecuredStatement changeObject(final String o, final boolean wellFormed)
-            throws UpdateDeniedException, AuthenticationRequiredException {
-        checkUpdate();
-        final Triple base = holder.getBaseItem().asTriple();
-        final Triple newBase = new Triple(base.getSubject(), base.getPredicate(),
-                NodeFactory.createLiteral(o, "", wellFormed));
-        checkUpdate(base, newBase);
-        return SecuredStatementImpl.getInstance(getModel(), holder.getBaseItem().changeObject(o));
-    }
-
-    /**
-     * @sec.graph Update
-     * @sec.triple Update
-     * @throws UpdateDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
     public SecuredStatement changeObject(final String o, final String l)
             throws UpdateDeniedException, AuthenticationRequiredException {
         checkUpdate();
         final Triple base = holder.getBaseItem().asTriple();
-        final Triple newBase = new Triple(base.getSubject(), base.getPredicate(),
-                NodeFactory.createLiteral(o, l, false));
+        final Triple newBase = Triple.create(base.getSubject(), base.getPredicate(),
+                NodeFactory.createLiteralLang(o, l));
         checkUpdate(base, newBase);
         return SecuredStatementImpl.getInstance(getModel(), holder.getBaseItem().changeObject(o, l));
-    }
-
-    /**
-     * @sec.graph Update
-     * @sec.triple Update
-     * @throws UpdateDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public SecuredStatement changeObject(final String o, final String l, final boolean wellFormed)
-            throws UpdateDeniedException, AuthenticationRequiredException {
-        checkUpdate();
-        final Triple base = holder.getBaseItem().asTriple();
-        final Triple newBase = new Triple(base.getSubject(), base.getPredicate(),
-                NodeFactory.createLiteral(o, l, wellFormed));
-        checkUpdate(base, newBase);
-        return SecuredStatementImpl.getInstance(getModel(), holder.getBaseItem().changeObject(o, l, wellFormed));
-    }
-
-    /**
-     * @sec.graph Read, Update
-     * @sec.triple Create
-     * @throws ReadDeniedException
-     * @throws UpdateDeniedException
-     * @throws AddDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public SecuredReifiedStatement createReifiedStatement()
-            throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
-        checkUpdate();
-        checkCreateReified(null, holder.getBaseItem());
-        return SecuredReifiedStatementImpl.getInstance(getModel(), holder.getBaseItem().createReifiedStatement());
-    }
-
-    /**
-     * @sec.graph Read, Update
-     * @sec.triple Create
-     * @throws ReadDeniedException
-     * @throws UpdateDeniedException
-     * @throws AddDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public SecuredReifiedStatement createReifiedStatement(final String uri)
-            throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
-        checkUpdate();
-        checkCreateReified(uri, holder.getBaseItem());
-        return SecuredReifiedStatementImpl.getInstance(getModel(), holder.getBaseItem().createReifiedStatement(uri));
     }
 
     /**
@@ -520,7 +442,7 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
     }
 
     private Triple getNewTriple(final Triple t, final Object o) {
-        return new Triple(t.getSubject(), t.getPredicate(), NodeFactory.createLiteral(String.valueOf(o), "", false));
+        return Triple.create(t.getSubject(), t.getPredicate(), NodeFactory.createLiteralLang(String.valueOf(o), ""));
     }
 
     /**
@@ -596,20 +518,6 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
      *                                         required to be.
      */
     @Override
-    @Deprecated
-    public SecuredResource getResource(final ResourceF f) {
-        checkRead();
-        checkRead(holder.getBaseItem().asTriple());
-        return SecuredResourceImpl.getInstance(getModel(), holder.getBaseItem().getResource(f));
-    }
-
-    /**
-     * @sec.graph Read
-     * @throws ReadDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
     public short getShort() throws ReadDeniedException, AuthenticationRequiredException {
         checkRead();
         checkRead(holder.getBaseItem().asTriple());
@@ -660,56 +568,6 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
     }
 
     /**
-     * @sec.graph Read
-     * @sec.triple Read
-     * @throws ReadDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public boolean hasWellFormedXML() throws ReadDeniedException, AuthenticationRequiredException {
-        checkRead();
-        checkRead(holder.getBaseItem().asTriple());
-        return holder.getBaseItem().getLiteral().isWellFormedXML();
-    }
-
-    /**
-     * @sec.graph Read if {@link SecurityEvaluator#isHardReadError()} is true and
-     *            the user does not have read access then false is returned
-     * @sec.triple Read
-     * @throws ReadDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public boolean isReified() throws ReadDeniedException, AuthenticationRequiredException {
-        RSIterator iter = listReifiedStatements();
-        try {
-            return iter.hasNext();
-        } finally {
-            iter.close();
-        }
-    }
-
-    /**
-     * @sec.graph Read if {@link SecurityEvaluator#isHardReadError()} is true and
-     *            the user does not have read access then an empty iterator is
-     *            returned
-     * @sec.triple Read
-     * @throws ReadDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public RSIterator listReifiedStatements() throws ReadDeniedException, AuthenticationRequiredException {
-        if (checkSoftRead()) {
-            checkRead(holder.getBaseItem().asTriple());
-            return new SecuredRSIterator(getModel(), holder.getBaseItem().listReifiedStatements());
-        }
-        return new SecuredRSIterator(getModel(), NiceIterator.emptyIterator());
-    }
-
-    /**
      * @sec.graph Update
      * @sec.triple Delete
      * @throws UpdateDeniedException
@@ -724,40 +582,6 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
         checkDelete(holder.getBaseItem());
         holder.getBaseItem().remove();
         return holder.getSecuredItem();
-    }
-
-    /**
-     * @sec.graph Update
-     * @sec.triple Delete
-     * @throws UpdateDeniedException
-     * @throws DeleteDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public void removeReification()
-            throws UpdateDeniedException, DeleteDeniedException, AuthenticationRequiredException {
-        checkUpdate();
-        if (!canDelete(Triple.ANY)) {
-            StmtIterator iter = null;
-            final RSIterator rsIter = holder.getBaseItem().listReifiedStatements();
-            try {
-                while (rsIter.hasNext()) {
-                    final ReifiedStatement stmt = rsIter.next();
-                    iter = stmt.listProperties();
-                    while (iter.hasNext()) {
-                        final Statement s = iter.next();
-                        checkDelete(s);
-                    }
-                }
-            } finally {
-                rsIter.close();
-                if (iter != null) {
-                    iter.close();
-                }
-            }
-        }
-        holder.getBaseItem().removeReification();
     }
 
 }

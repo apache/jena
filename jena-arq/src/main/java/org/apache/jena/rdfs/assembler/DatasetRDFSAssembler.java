@@ -20,6 +20,8 @@ package org.apache.jena.rdfs.assembler;
 
 import static org.apache.jena.sparql.util.graph.GraphUtils.getAsStringValue;
 
+import java.util.Map;
+
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.graph.Graph;
@@ -29,12 +31,20 @@ import org.apache.jena.rdfs.RDFSFactory;
 import org.apache.jena.rdfs.SetupRDFS;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.assembler.DatasetAssembler;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils;
+import org.apache.jena.sparql.core.assembler.NamedDatasetAssembler;
 
-public class DatasetRDFSAssembler extends DatasetAssembler {
+public class DatasetRDFSAssembler extends NamedDatasetAssembler {
 
     public static Resource getType() {
         return VocabRDFS.tDatasetRDFS;
+    }
+
+    public DatasetRDFSAssembler() {}
+
+    @Override
+    public Map<String, DatasetGraph> pool() {
+        return sharedDatasetPool;
     }
 
     /**
@@ -45,8 +55,10 @@ public class DatasetRDFSAssembler extends DatasetAssembler {
      *      .
      *
      * &lt;#baseDS&gt; rdf:type ja:MemoryDataset ;
+     *     ja:name "TIM database"  # optional: this is need if the base database is accessed directly.
      *     ja:data "data1.trig";
      *     ## ja:data "data2.trig";
+     *
      *     .
      * </pre>
      */
@@ -65,6 +77,7 @@ public class DatasetRDFSAssembler extends DatasetAssembler {
         Graph schema = RDFDataMgr.loadGraph(schemaFile);
         SetupRDFS setup = RDFSFactory.setupRDFS(schema);
         DatasetGraph dsg = new DatasetGraphRDFS(base, setup);
+        AssemblerUtils.mergeContext(root, dsg.getContext());
         return dsg;
     }
 }

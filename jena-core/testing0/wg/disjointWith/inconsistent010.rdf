@@ -1,0 +1,41 @@
+<!--++ disjointWith/inconsistent010.rdf ** generated using webont test editor. ++-->
+<!--++ Created 1 Oct 2003 06:41:13 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: inconsistent010.rdf,v 1.2 2003/11/19 19:26:27 jcarroll Exp $
+-->
+<!--
+The <code>owl:disjointWith</code> loop is not in OWL DL.
+Classes that are disjoint with themselves are necessarily empty.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/disjointWith/inconsistent010#"
+    xml:base="http://www.w3.org/2002/03owlt/disjointWith/inconsistent010" >
+
+ <owl:Restriction rdf:nodeID="n">
+     <owl:onProperty>
+        <owl:ObjectProperty rdf:about="#p" />
+     </owl:onProperty>
+     <owl:minCardinality rdf:datatype=
+ "http://www.w3.org/2001/XMLSchema#int"
+     >1</owl:minCardinality>
+     <owl:disjointWith rdf:nodeID="n"/>
+  </owl:Restriction>
+  <owl:Thing>
+     <first:p>
+        <owl:Thing/>
+     </first:p>
+  </owl:Thing>
+
+</rdf:RDF>

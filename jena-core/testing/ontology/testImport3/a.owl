@@ -6,7 +6,7 @@
 >
 
 <owl:Ontology rdf:about="">
-    <owl:imports rdf:resource="file:testing/ontology/testImport3/b.owl" />
+    <owl:imports rdf:resource="b.owl" />
 </owl:Ontology>
 
 <mark:Marker rdf:ID="a0" />

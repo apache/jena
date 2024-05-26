@@ -1,0 +1,9 @@
+<!-- Bad URI : rdf:Description xml:base-->
+
+<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' 
+         xmlns:ex='http://example/'
+         xml:base='http://host/bad uri'>
+  <rdf:Description rdf:about="x" xml:base='http://host/bad uri'>
+    <ex:p>string</ex:p>
+  </rdf:Description>
+</rdf:RDF>

@@ -19,11 +19,9 @@
 package org.apache.jena.riot.lang;
 
 import java.util.UUID;
-import java.util.concurrent.Callable;
 
 import org.apache.commons.codec.digest.MurmurHash3;
 import org.apache.jena.atlas.lib.*;
-import org.apache.jena.ext.com.google.common.hash.Hashing;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 
@@ -46,8 +44,8 @@ import org.apache.jena.graph.NodeFactory;
 public class BlankNodeAllocatorHash implements BlankNodeAllocator {
 
     private static int          CacheSize       = 1000;
-    private byte[]              seedBytes       = null;  
-    private byte[]              counterBytes    = new byte[10]; 
+    private byte[]              seedBytes       = null;
+    private byte[]              counterBytes    = new byte[10];
     private Cache<String, Node> cache           = null;
     private long                counter         = 0;
 
@@ -60,16 +58,16 @@ public class BlankNodeAllocatorHash implements BlankNodeAllocator {
      * Gets a fresh seed value
      * <p>
      * Note that this is called almost immediately by the constructor
-     * and on this initial call you will not yet have access to any 
+     * and on this initial call you will not yet have access to any
      * implementation specific information used to select the seed.
      * </p>
      * <p>
      * Implementations <strong>must</strong> return a non-null value
      * so if you can't decide a seed prior to seeing your derived
      * implementations constructor inputs you should return a temporary
-     * fake value initially.  You can then call {@link #reset()} in your 
+     * fake value initially.  You can then call {@link #reset()} in your
      * own constructor after you've taken the necessary steps that allow
-     * you to decide how to generate your own seed. 
+     * you to decide how to generate your own seed.
      * </p>
      * @return Seed value
      */
@@ -95,8 +93,7 @@ public class BlankNodeAllocatorHash implements BlankNodeAllocator {
 
     @Override
     public Node alloc(String label) {
-        Callable<Node> getter = ()->alloc(Bytes.string2bytes(label));
-        Node n = cache.getOrFill(label, getter);
+        Node n = cache.get(label, (x)->alloc(Bytes.string2bytes(x)));
         return n;
     }
 
@@ -116,37 +113,17 @@ public class BlankNodeAllocatorHash implements BlankNodeAllocator {
         byte[] input = new byte[seedBytes.length+labelBytes.length];
         System.arraycopy(seedBytes, 0, input, 0, seedBytes.length);
         System.arraycopy(labelBytes, 0, input, seedBytes.length, labelBytes.length);
-        
-        // Apache Common Codec or Guava. 
-        // The 2 versions of the code below should produce the same hex strings.
-        //
-        // The main difference from our perspective is that the Guava version
-        // returns a byte[]. Hashes are not "large numbers" - they are bit patterns --
-        // but it does create and use internal Java objects.
-        //
+
         // We need to be careful about byte order. The long[] returned by
         // MurmurHash3 (Apache Commons) needs to be stringified as "low bytes first"
-        // which is the reverse of %d-formatting for a long which is 
+        // which is the reverse of %d-formatting for a long which is
         // "high byte first" (in a left-to-right writing system).
-        //
-        // For byte output compatibility with byte[] from Guava,
-        // need to reverse the bytes of the longs so that it prints "low to high"
-        // Java works in big-endian -- high bytes first.
-
-        String hexString;
-        if ( true ) {
-            long[] x = MurmurHash3.hash128x64(input);
-            // dev: String xs = String.format("%016x%016x", Long.reverseBytes(x[0]), Long.reverseBytes(x[1]));
-            char[] chars = new char[32];
-            longAsHexLC(x[0], chars, 0);
-            longAsHexLC(x[1], chars, 16);
-            hexString = new String(chars);
-        } else {
-            // Guava. Several objects created.
-            // Using MurmurHash3.DEFAULT_SEED (which is 104729) makes it agree with Apache Commons Codec value.
-            byte[] bytes = Hashing.murmur3_128(MurmurHash3.DEFAULT_SEED).hashBytes(input).asBytes();
-            hexString = Bytes.asHexLC(bytes);
-        }
+        long[] x = MurmurHash3.hash128x64(input);
+        // dev: String xs = String.format("%016x%016x", Long.reverseBytes(x[0]), Long.reverseBytes(x[1]));
+        char[] chars = new char[32];
+        longAsHexLC(x[0], chars, 0);
+        longAsHexLC(x[1], chars, 16);
+        String hexString = new String(chars);
         return NodeFactory.createBlankNode(hexString);
     }
 

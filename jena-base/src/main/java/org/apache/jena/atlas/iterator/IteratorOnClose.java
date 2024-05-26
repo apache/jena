@@ -20,6 +20,7 @@ package org.apache.jena.atlas.iterator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 /**
  * Add an "onClose" action to an Iterator.
@@ -55,6 +56,12 @@ public class IteratorOnClose<T> extends IteratorWrapper<T> implements IteratorCl
             close();
             throw ex;
         }
+    }
+
+    @Override
+    public void forEachRemaining(Consumer<? super T> action) {
+        super.forEachRemaining(action);
+        close();
     }
 
     @Override

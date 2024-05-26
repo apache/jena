@@ -21,7 +21,6 @@ package org.apache.jena.query.text;
 import java.util.Set ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.ext.com.google.common.collect.Sets ;
 import org.junit.Before ;
 import org.junit.Test ;
 
@@ -54,7 +53,7 @@ public class TestDatasetWithComplexPhraseQueryParser extends AbstractTestDataset
                 "    ?s text:query ( rdfs:label 'scondar~ edcation~' 10 ) .",
                 "}"
                 );
-        Set<String> expectedURIs = Sets.newHashSet(RESOURCE_BASE + testName);
+        Set<String> expectedURIs = Set.of(RESOURCE_BASE + testName);
         doTestSearch(turtle, queryString, expectedURIs);
     }
 }

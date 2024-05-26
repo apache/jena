@@ -39,7 +39,7 @@ public class TestShexShapeMapSyntax {
                 ,"{FOCUS a <http://schema.example/Some/Type>}@START ,"
                 ,"{_ <http://data.example/p3> FOCUS}@START"
                  );
-        ShexMap map = parseShapeMap(s);
+        ShapeMap map = parseShapeMap(s);
         assertNotNull(map);
         assertNotNull(map.entries());
         assertEquals(4, map.entries().size());
@@ -58,7 +58,7 @@ public class TestShexShapeMapSyntax {
                 ,"{FOCUS a <Some/Type>} @ :Shape"
                 ,"{_ :p3 FOCUS } @START . "
                 );
-        ShexMap map = parseShapeMap(s);
+        ShapeMap map = parseShapeMap(s);
         assertNotNull(map);
         assertNotNull(map.entries());
         assertEquals(4, map.entries().size());
@@ -77,9 +77,9 @@ public class TestShexShapeMapSyntax {
         parseShapeMap(s);
     }
 
-    private ShexMap parseShapeMap(String s) {
+    private ShapeMap parseShapeMap(String s) {
         InputStream input = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
-        ShexMap shapeMap = ShExC.parseShapeMap(input, null);
+        ShapeMap shapeMap = ShExC.parseShapeMap(input, null);
         return shapeMap;
     }
 }

@@ -24,20 +24,14 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
-import org.junit.Test;
-
-import org.apache.jena.graph.Factory;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.*;
 import org.apache.jena.reasoner.rulesys.FBRuleInfGraph;
 import org.apache.jena.reasoner.rulesys.FBRuleReasoner;
 import org.apache.jena.reasoner.rulesys.Rule;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.junit.Test;
 
 public class TestLPBRuleEngine extends TestCase {
 	public static TestSuite suite() {
@@ -60,8 +54,8 @@ public class TestLPBRuleEngine extends TestCase {
 
 	@Test
 	public void testTabledGoalsCacheHits() throws Exception {
-		Graph data = Factory.createGraphMem();
-		data.add(new Triple(a, ty, C1));
+		Graph data = GraphMemFactory.createGraphMem();
+		data.add(Triple.create(a, ty, C1));
 		List<Rule> rules = Rule
 				.parseRules("[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]"
 						+ "[r2:  (?t rdf:type C2) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]");
@@ -100,8 +94,8 @@ public class TestLPBRuleEngine extends TestCase {
 
 	@Test
 	public void testTabledGoalsLeak() throws Exception {
-		Graph data = Factory.createGraphMem();
-		data.add(new Triple(a, ty, C1));
+		Graph data = GraphMemFactory.createGraphMem();
+		data.add(Triple.create(a, ty, C1));
 		List<Rule> rules = Rule
 				.parseRules("[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]"
 						+ "[r2:  (?t rdf:type C2) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]");
@@ -129,10 +123,10 @@ public class TestLPBRuleEngine extends TestCase {
 		assertEquals(0, engine.activeInterpreters.size());
 
 		//the cached generator should not have any consumingCP left
-		for(Generator generator : engine.tabledGoals.asMap().values()){
-			assertEquals(0, generator.consumingCPs.size());
-		}
-
+		engine.tabledGoals.keys().forEachRemaining(tp->{
+		    Generator generator = engine.tabledGoals.getIfPresent(tp);
+		    assertEquals(0, generator.consumingCPs.size());
+		});
 	}
 
 	@Test
@@ -141,8 +135,8 @@ public class TestLPBRuleEngine extends TestCase {
 		// Set the cache size very small just for this test
 		System.setProperty("jena.rulesys.lp.max_cached_tabled_goals", "" + MAX);
 		try {
-			Graph data = Factory.createGraphMem();
-			data.add(new Triple(a, ty, C1));
+			Graph data = GraphMemFactory.createGraphMem();
+			data.add(Triple.create(a, ty, C1));
 			List<Rule> rules = Rule
 					.parseRules("[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]"
 							+ "[r2:  (?t rdf:type C2) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]");
@@ -163,7 +157,7 @@ public class TestLPBRuleEngine extends TestCase {
 				it.close();
 			}
 
-			// Let's see how many were cached - should be MAX or less (less if a GC freed weak values in the cache). 
+			// Let's see how many were cached - should be MAX or less (less if a GC freed weak values in the cache).
 			assertTrue(engine.tabledGoals.size() <= MAX);
 			// and no leaks of activeInterpreters (this will happen if we forget
 			// to call hasNext above)

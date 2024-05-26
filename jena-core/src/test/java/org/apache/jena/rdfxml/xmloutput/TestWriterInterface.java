@@ -24,8 +24,8 @@ import java.io.StringWriter ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.impl.NTripleWriter ;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.rdfxml.xmloutput.impl.Abbreviated ;
-import org.apache.jena.rdfxml.xmloutput.impl.Basic ;
+import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev ;
+import org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Basic ;
 
 public class TestWriterInterface extends ModelTestBase {
     private String lang;
@@ -54,20 +54,20 @@ public class TestWriterInterface extends ModelTestBase {
         Model m = modelWithStatements( "http://eh/spoo thingies something" );
         m.setNsPrefix( "eh", "http://eh/" );
         StringWriter sos = new StringWriter();
-        m.write( sos );
+        m.write( sos , "RDF/XML");
         assertTrue( sos.toString().contains( newline_XMLNS ) );
     }
-    
+
+    @SuppressWarnings("deprecation")
     public void testInterface() {
         Model m1 = createMemModel();
-        assertTrue( "Default writer should be Basic.",  m1.getWriter() instanceof Basic );
-        assertTrue( "RDF/XML writer should be Basic.", m1.getWriter() instanceof Basic );
-        assertTrue(
-            "RDF/XML-ABBREV writer should be Abbreviated.",
-            m1.getWriter("RDF/XML-ABBREV") instanceof Abbreviated);
-        assertTrue(
-            "N-TRIPLE writer should be NTripleWriter.",
-            m1.getWriter("N-TRIPLE") instanceof NTripleWriter);
+        // Not true when RIOT is used!
+        assertTrue( "Default writer should be Basic.",  m1.getWriter(null) instanceof RDFXML_Basic );
+        assertTrue( "RDF/XML writer should be Basic.", m1.getWriter("RDF/XML") instanceof RDFXML_Basic );
+        assertTrue("RDF/XML-ABBREV writer should be Abbreviated.",
+                   m1.getWriter("RDF/XML-ABBREV") instanceof RDFXML_Abbrev);
+        assertTrue("N-TRIPLE writer should be NTripleWriter.",
+                   m1.getWriter("N-TRIPLE") instanceof NTripleWriter);
     }
 
     public void testWriting() {

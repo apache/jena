@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,7 +34,6 @@ import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
 /**
  * Builder for SPARQL Ask Queries.
@@ -50,7 +49,7 @@ import org.apache.jena.sparql.lang.sparql_11.ParseException;
  * the created query can be set with {@link AskBuilder#setVar(Object, Object)}
  * and {@link AskBuilder#setVar(Var, Node)}. The method
  * {@link AskBuilder#clearWhereValues()} allows to clear the set values.
- * 
+ *
  * @see ConstructBuilder
  * @see DescribeBuilder
  * @see SelectBuilder
@@ -85,25 +84,13 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
     }
 
     @Override
-    public AskBuilder fromNamed(String graphName) {
+    public AskBuilder fromNamed(Object graphName) {
         getDatasetHandler().fromNamed(graphName);
         return this;
     }
 
     @Override
-    public AskBuilder fromNamed(Collection<String> graphNames) {
-        getDatasetHandler().fromNamed(graphNames);
-        return this;
-    }
-
-    @Override
-    public AskBuilder from(String graphName) {
-        getDatasetHandler().from(graphName);
-        return this;
-    }
-
-    @Override
-    public AskBuilder from(Collection<String> graphName) {
+    public AskBuilder from(Object graphName) {
         getDatasetHandler().from(graphName);
         return this;
     }
@@ -111,6 +98,12 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
     @Override
     public AskBuilder addWhere(TriplePath t) {
         getWhereHandler().addWhere(t);
+        return this;
+    }
+
+    @Override
+    public AskBuilder addWhere(Collection<TriplePath> collection) {
+        getWhereHandler().addWhere(collection);
         return this;
     }
 
@@ -128,7 +121,7 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 
     @Override
     public AskBuilder addWhere(Object s, Object p, Object o) {
-        getWhereHandler().addWhere(makeTriplePath(s, p, o));
+        getWhereHandler().addWhere(makeTriplePaths(s, p, o));
         return this;
     }
 
@@ -186,8 +179,7 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 
     @Override
     public AskBuilder addOptional(Triple t) {
-        getWhereHandler().addOptional(new TriplePath(t));
-        return this;
+        return addOptional(new TriplePath(t));
     }
 
     @Override
@@ -197,14 +189,19 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
     }
 
     @Override
-    public AskBuilder addOptional(FrontsTriple t) {
-        getWhereHandler().addOptional(new TriplePath(t.asTriple()));
+    public AskBuilder addOptional(Collection<TriplePath> collection) {
+        getWhereHandler().addOptional(collection);
         return this;
     }
 
     @Override
+    public AskBuilder addOptional(FrontsTriple t) {
+        return addOptional(new TriplePath(t.asTriple()));
+    }
+
+    @Override
     public AskBuilder addOptional(Object s, Object p, Object o) {
-        getWhereHandler().addOptional(makeTriplePath(s, p, o));
+        getWhereHandler().addOptional(makeTriplePaths(s, p, o));
         return this;
     }
 
@@ -215,7 +212,7 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
     }
 
     @Override
-    public AskBuilder addFilter(String s) throws ParseException {
+    public AskBuilder addFilter(String s) {
         getWhereHandler().addFilter(s);
         return this;
     }
@@ -241,19 +238,19 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
 
     @Override
     public AskBuilder addGraph(Object graph, FrontsTriple triple) {
-        getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple.asTriple()));
+        addGraph(graph, new TriplePath(triple.asTriple()));
         return this;
     }
 
     @Override
     public AskBuilder addGraph(Object graph, Object subject, Object predicate, Object object) {
-        getWhereHandler().addGraph(makeNode(graph), makeTriplePath(subject, predicate, object));
+        getWhereHandler().addGraph(makeNode(graph), makeTriplePaths(subject, predicate, object));
         return this;
     }
 
     @Override
     public AskBuilder addGraph(Object graph, Triple triple) {
-        getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple));
+        addGraph(graph, new TriplePath(triple));
         return this;
     }
 
@@ -264,13 +261,19 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
     }
 
     @Override
+    public AskBuilder addGraph(Object graph, Collection<TriplePath> collection) {
+        getWhereHandler().addGraph(makeNode(graph), collection);
+        return this;
+    }
+
+    @Override
     public AskBuilder addBind(Expr expression, Object var) {
         getWhereHandler().addBind(expression, Converters.makeVar(var));
         return this;
     }
 
     @Override
-    public AskBuilder addBind(String expression, Object var) throws ParseException {
+    public AskBuilder addBind(String expression, Object var) {
         getWhereHandler().addBind(expression, Converters.makeVar(var));
         return this;
     }
@@ -330,19 +333,19 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
     }
 
     @Override
-    public AskBuilder addHaving(String having) throws ParseException {
+    public AskBuilder addHaving(String having) {
         getSolutionModifierHandler().addHaving(having);
         return this;
     }
 
     @Override
-    public AskBuilder addHaving(Expr expression) throws ParseException {
+    public AskBuilder addHaving(Expr expression) {
         getSolutionModifierHandler().addHaving(expression);
         return this;
     }
 
     @Override
-    public AskBuilder addHaving(Object var) throws ParseException {
+    public AskBuilder addHaving(Object var) {
         getSolutionModifierHandler().addHaving(Converters.makeVar(var));
         return this;
     }
@@ -364,6 +367,10 @@ public class AskBuilder extends AbstractQueryBuilder<AskBuilder>
         return handlerBlock.getModifierHandler();
     }
 
+    /*
+     * @deprecated use {@code addWhere(Converters.makeCollection(List.of(Object...)))}, or simply call {@link #addWhere(Object, Object, Object)} passing the collection for one of the objects.
+     */
+    @Deprecated(since="5.0.0")
     @Override
     public Node list(Object... objs) {
         return getWhereHandler().list(objs);

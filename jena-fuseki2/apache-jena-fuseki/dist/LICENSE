@@ -206,6 +206,14 @@
 
 ## Bundled Dependencies ##
 
+Dexx Collections
+Copyright (c) 2014 Andrew O'Malley
+https://github.com/andrewoma/dexx
+MIT-Style License
+  https://github.com/andrewoma/dexx/blob/master/LICENSE.txt
+
+- - - - - - - - - - - - - - - - - - - - - - -
+
 Jakarta JSON Processing (JSON-P)
 https://eclipse-ee4j.github.io/jsonp/
 is licensed under the Eclipse Public License 2.0.

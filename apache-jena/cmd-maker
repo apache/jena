@@ -54,6 +54,7 @@ riotcmd.utf8
 riotcmd.rdfxml
 shacl.shacl
 shex.shex
+rdfpatch.rdfpatch
 tdb.tdbbackup
 tdb.tdbdump
 tdb.tdbloader

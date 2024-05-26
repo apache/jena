@@ -1,0 +1,30 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+name: Task
+description: Work on the code base
+labels: ["task"]
+body:
+  - type: textarea
+    id: task
+    attributes:
+      label: Change
+      placeholder: Describe the work to be done
+    validations:
+      required: true
+  - type: dropdown
+    id: contributor
+    attributes:
+      label: Are you interested in contributing a pull request for this task?
+      description: We welcome contributions. Let us know if you would like to get involved in contributing a pull request yourself.
+      options:
+        - 'Yes'
+        - 'No'
+        - 'Perhaps?'
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ----
+        ### Code of Conduct
+        [Apache Software Foundation Code of Conduct](https://github.com/apache/.github/blob/main/.github/CODE_OF_CONDUCT.md)

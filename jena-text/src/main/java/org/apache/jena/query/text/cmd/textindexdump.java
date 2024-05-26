@@ -19,6 +19,7 @@
 package org.apache.jena.query.text.cmd ;
 
 import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.logging.LogCtlJUL;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.query.text.* ;
@@ -29,6 +30,7 @@ import org.apache.lucene.document.Document ;
 import org.apache.lucene.index.DirectoryReader ;
 import org.apache.lucene.index.IndexReader ;
 import org.apache.lucene.index.IndexableField ;
+import org.apache.lucene.index.StoredFields;
 import org.apache.lucene.queryparser.classic.QueryParser ;
 import org.apache.lucene.search.IndexSearcher ;
 import org.apache.lucene.search.Query ;
@@ -49,6 +51,7 @@ public class textindexdump extends CmdARQ {
     protected TextIndex        textIndex    = null ;
 
     static public void main(String... argv) {
+        LogCtlJUL.routeJULtoSLF4J();
         new textindexdump(argv).mainRun() ;
     }
 
@@ -67,7 +70,7 @@ public class textindexdump extends CmdARQ {
             if ( getValues(assemblerDescDecl).size() != 1 )
                 throw new CmdException("Multiple assembler descriptions given") ;
             if ( getPositional().size() != 0 )
-                throw new CmdException("Additional assembler descriptions given") ; 
+                throw new CmdException("Additional assembler descriptions given") ;
             file = getValue(assemblerDescDecl) ;
         } else {
             if ( getNumPositional() != 1 )
@@ -75,7 +78,7 @@ public class textindexdump extends CmdARQ {
             file = getPositionalArg(0) ;
         }
         textIndex = (TextIndex)AssemblerUtils.build(file, TextVocab.textIndex) ;
-    }        
+    }
 
     @Override
     protected String getSummary() {
@@ -84,7 +87,7 @@ public class textindexdump extends CmdARQ {
 
     @Override
     protected void exec() {
-        
+
         if ( textIndex instanceof TextIndexLucene )
             dump((TextIndexLucene)textIndex) ;
         else
@@ -100,18 +103,19 @@ public class textindexdump extends CmdARQ {
             QueryParser queryParser = new QueryParser(textIndex.getDocDef().getPrimaryField(), analyzer);
             Query query = queryParser.parse("*:*");
             ScoreDoc[] sDocs = indexSearcher.search(query, 1000).scoreDocs ;
+            StoredFields sFields = indexSearcher.storedFields();
+
             for ( ScoreDoc sd : sDocs ) {
                 System.out.println("Doc: "+sd.doc) ;
-                Document doc = indexSearcher.doc(sd.doc) ;
+                Document doc = sFields.document(sd.doc);
                 // Don't forget that many fields aren't stored, just indexed.
                 for ( IndexableField f : doc ) {
                     //System.out.println("  "+f) ;
                     System.out.println("  "+f.name()+" = "+f.stringValue()) ;
                 }
-                
             }
 
         } catch (Exception ex) { throw new TextIndexException(ex) ; }
-        
+
     }
 }

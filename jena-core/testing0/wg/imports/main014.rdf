@@ -1,0 +1,32 @@
+<!--++ imports/main014.rdf ** generated using webont test editor. ++-->
+<!--++ Created 19 Nov 2003 15:59:46 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: main014.rdf,v 1.1 2003/11/19 19:26:37 jcarroll Exp $
+-->
+<!--
+When importing a file that uses an xml:base declaration,
+if you use a different URL in an <code>owl:imports</code>
+triple, that URL may be without an explicit type.
+-->
+<!-- Author: Sean Bechhofer -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/imports/imports014#"
+    xmlns:second="http://www.w3.org/2002/03owlt/imports/main014#"
+    xml:base="http://www.w3.org/2002/03owlt/imports/main014" >
+  <owl:Ontology>  
+     <owl:imports rdf:resource="imports014.rdf"/>
+  </owl:Ontology>
+
+</rdf:RDF>

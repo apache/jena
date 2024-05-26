@@ -81,7 +81,7 @@ public class localname extends PFuncSimple
             return QueryIterNullIterator.create(execCxt) ;
 
         // Subject is bound and a URI - get the localname as a Node
-        Node localname = NodeFactory.createLiteral(nodeURI.getLocalName()) ;
+        Node localname = NodeFactory.createLiteralString(nodeURI.getLocalName()) ;
 
         // Object - unbound variable or a value?
         if ( ! nodeLocalname.isVariable() )
@@ -132,7 +132,7 @@ public class localname extends PFuncSimple
     private void slot(Collection<Binding> bindings, Binding input, Node node, Var subjVar, Node nodeLocalname)
     {
         if ( ! node.isURI() ) return ;
-        Node localname = NodeFactory.createLiteral(node.getLocalName()) ;
+        Node localname = NodeFactory.createLiteralString(node.getLocalName()) ;
         if ( nodeLocalname.isVariable() )
         {
             // Object is an unbound variable.

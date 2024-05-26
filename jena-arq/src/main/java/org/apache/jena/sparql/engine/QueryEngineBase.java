@@ -33,14 +33,12 @@ import org.apache.jena.sparql.core.Substitute;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingRoot;
 import org.apache.jena.sparql.mgt.Explain;
-import org.apache.jena.sparql.mgt.QueryEngineInfo;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.DatasetUtils;
 
 /** Main part of a QueryEngine - something that takes responsibility for a complete query execution */
 public abstract class QueryEngineBase implements OpEval, Closeable
 {
-    public final static QueryEngineInfo queryEngineInfo = new QueryEngineInfo();
     // See also ExecutionContext.getDataset()
     protected final DatasetGraph originalDataset;
     protected DatasetGraph dataset = null;
@@ -163,11 +161,6 @@ public abstract class QueryEngineBase implements OpEval, Closeable
         if ( query != null )
             Explain.explain("QUERY", query, context);
         Explain.explain("ALGEBRA", op, context);
-        queryEngineInfo.incQueryCount();
-        queryEngineInfo.setLastQueryExecAt();
-        //queryEngineInfo.setLastQueryExecTime(-1);
-        queryEngineInfo.setLastQueryString((Query)context.get(ARQConstants.sysCurrentQuery));
-        queryEngineInfo.setLastOp(op);
         return eval(op, dsg, binding, context);
     }
 

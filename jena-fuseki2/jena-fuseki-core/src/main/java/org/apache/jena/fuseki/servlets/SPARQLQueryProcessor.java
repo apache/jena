@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format;
+import static org.apache.jena.atlas.lib.Lib.uppercase;
 import static org.apache.jena.fuseki.server.CounterName.QueryTimeouts;
 import static org.apache.jena.fuseki.servlets.ActionExecLib.incCounter;
 import static org.apache.jena.riot.WebContent.ctHTMLForm;
@@ -31,7 +32,7 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IndentedLineBuffer;
@@ -70,7 +71,8 @@ public abstract class SPARQLQueryProcessor extends ActionService
     @Override
     public void execOptions(HttpAction action) {
         ActionLib.doOptionsGetPost(action);
-        ServletOps.success(action);    }
+        ServletOps.success(action);
+    }
 
     // Not supported - depends on query and body.
     @Override public void execHead(HttpAction action) { super.execHead(action); }
@@ -83,15 +85,16 @@ public abstract class SPARQLQueryProcessor extends ActionService
         executeLifecycle(action);
     }
 
-    /** All the query parameters that are acceptable in a given request.
-    *  This is comprised of, by default,
-    *  <ul>
-    *  <li>SPARQL Protocol for query ({@link #stdParams()}) as mentioned in the spec.
-    *  <li>Fuseki parameters ({@link #fusekiParams()}) e.g. timeout and formatting
-    *  <li>Any custom parameter for this particular servlet ({@link #customParams()}, usually none.
-    *  </ul>
-    *  The default implementation calculates this list of parameters once (on first use).
-    */
+    /**
+     * All the query parameters that are acceptable in a given request.
+     * This is comprised of, by default,
+     * <ul>
+     * <li>SPARQL Protocol for query ({@link #stdParams()}) as mentioned in the spec.
+     * <li>Fuseki parameters ({@link #fusekiParams()}) e.g. timeout and formatting
+     * <li>Any custom parameter for this particular servlet ({@link #customParams()}, usually none.
+     * </ul>
+     * The default implementation calculates this list of parameters once (on first use).
+     */
     private volatile Set<String> acceptedParams_ = null;
     protected Collection<String> acceptedParams(HttpAction action) {
         if ( acceptedParams_ == null ) {
@@ -109,7 +112,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
      */
     @Override
     public void validate(HttpAction action) {
-        String method = action.getRequestMethod().toUpperCase(Locale.ROOT);
+        String method = uppercase(action.getRequestMethod());
 
         if ( HttpNames.METHOD_OPTIONS.equals(method) )
             return;
@@ -241,9 +244,9 @@ public abstract class SPARQLQueryProcessor extends ActionService
             if ( str.endsWith("\n") )
                 str = str.substring(0, str.length()-1);
             action.log.info(format("[%d] Query = \n%s", action.id, str));
-        }
-        else
+        } else {
             action.log.info(format("[%d] Query = %s", action.id, queryStringLog));
+        }
 
         Query query = null;
         try {

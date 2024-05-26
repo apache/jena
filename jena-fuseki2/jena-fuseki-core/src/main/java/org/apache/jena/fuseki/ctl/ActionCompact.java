@@ -20,7 +20,7 @@ package org.apache.jena.fuseki.ctl;
 
 import static java.lang.String.format;
 
-import com.github.jsonldjava.shaded.com.google.common.base.Predicate;
+import java.util.function.Predicate;
 
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.servlets.HttpAction;
@@ -69,7 +69,7 @@ public class ActionCompact extends ActionAsyncTask
 
     /** Safety condition that stops further unwrapping */
     private static Predicate<DatasetGraph> notTDB2 =
-        (dsg) -> org.apache.jena.tdb.sys.TDBInternal.isTDB1(dsg);
+        (dsg) -> org.apache.jena.tdb1.sys.TDBInternal.isTDB1(dsg);
 
     private static DatasetGraph getTDB2(DatasetGraph dsg) {
         return unwrap(dsg, x -> TDBInternal.isTDB2(x), notTDB2);
@@ -77,13 +77,13 @@ public class ActionCompact extends ActionAsyncTask
 
     private static DatasetGraph unwrap(DatasetGraph dsg, Predicate<DatasetGraph> predicate, Predicate<DatasetGraph> failPredicate) {
         for ( ;; ) {
-            if ( failPredicate.apply(dsg) )
+            if ( failPredicate.test(dsg) )
                 return null;
-            if ( predicate.apply(dsg) )
+            if ( predicate.test(dsg) )
                 return dsg;
-            if ( ! ( dsg instanceof DatasetGraphWrapper) )
+            if ( ! ( dsg instanceof DatasetGraphWrapper dsgw ) )
                 return null;
-            dsg = ((DatasetGraphWrapper)dsg).getWrapped();
+            dsg = dsgw.getWrapped();
         }
     }
 

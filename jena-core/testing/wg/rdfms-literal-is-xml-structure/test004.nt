@@ -11,4 +11,4 @@
 # $Id: test004.nt,v 1.2 2005-08-04 09:53:24 jeremy_carroll Exp $
 ##################################################################
 #
-#<http://www.example.org> <http://example.org/property> "<em>emphasis</em>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<http://www.example.org> <http://example.org/property> "<em>emphasis</em>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .

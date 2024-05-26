@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+<!-- Licensed under the terms of https://www.apache.org/licenses/LICENSE-2.0 -->
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://local/" 
+    xmlns:ex="http://example/" 
+    xml:base="http://base/">
+
+  <rdf:Description rdf:about="http://book/">
+    <ex:editor rdf:parseType="Resource">
+      <ex:name>NAME</ex:name>
+      <ex:fullName rdf:parseType="Resource">
+        <ex:givenName>FIRST</ex:givenName>
+        <ex:familyName>FAMILY</ex:familyName>
+      </ex:fullName>
+    </ex:editor>
+    <ex:isbn>1.2.3.4</ex:isbn>
+  </rdf:Description>
+
+</rdf:RDF>

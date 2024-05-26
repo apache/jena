@@ -19,7 +19,7 @@
 package org.apache.jena.irix;
 
 /**
- * Exception thrown due to relative IRIs when no permitted.
+ * Exception thrown due to relative IRIs when not permitted.
  * See {@link IRIxResolver#resolve}.
  */
 public class RelativeIRIException extends IRIException {

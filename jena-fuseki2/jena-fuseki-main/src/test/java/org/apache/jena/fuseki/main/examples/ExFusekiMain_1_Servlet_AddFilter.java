@@ -21,23 +21,22 @@ package org.apache.jena.fuseki.main.examples;
 import java.io.IOException;
 import java.security.Principal;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.auth.Auth;
-import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.JettySecurityLib;
 import org.apache.jena.fuseki.servlets.FusekiFilter;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.eclipse.jetty.ee10.servlet.FilterHolder;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHandler;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.security.UserStore;
 import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHandler;
 
 /**
  * Example of intercepting Fuseki dispatch.
@@ -48,8 +47,8 @@ public class ExFusekiMain_1_Servlet_AddFilter
         try {
             FusekiLogging.setLogging();
 
-            UserStore userStore = JettyLib.makeUserStore("u", "p");
-            SecurityHandler sh = JettyLib.makeSecurityHandler("TripleStore",  userStore, AuthScheme.BASIC);
+            UserStore userStore = JettySecurityLib.makeUserStore("u", "p");
+            SecurityHandler sh = JettySecurityLib.makeSecurityHandler("TripleStore",  userStore, AuthScheme.BASIC);
 
             FusekiServer server = FusekiServer.create()
                 .add("/ds", DatasetGraphFactory.createTxnMem())

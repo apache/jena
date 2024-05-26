@@ -1,0 +1,3 @@
+
+<http://example.org/bug74_0.rdf#one> <http://example.org/name> <http://example.org/bug74_0.rdf#sw:test> .
+<http://example.org/bug74_0.rdf#sw:test> <http://example.org/first_name> "xxx" .

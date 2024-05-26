@@ -19,24 +19,7 @@ package org.apache.jena.arq.querybuilder;
 
 import java.util.List;
 
-import org.apache.jena.sparql.syntax.Element;
-import org.apache.jena.sparql.syntax.ElementAssign;
-import org.apache.jena.sparql.syntax.ElementBind;
-import org.apache.jena.sparql.syntax.ElementData;
-import org.apache.jena.sparql.syntax.ElementDataset;
-import org.apache.jena.sparql.syntax.ElementExists;
-import org.apache.jena.sparql.syntax.ElementFilter;
-import org.apache.jena.sparql.syntax.ElementGroup;
-import org.apache.jena.sparql.syntax.ElementMinus;
-import org.apache.jena.sparql.syntax.ElementNamedGraph;
-import org.apache.jena.sparql.syntax.ElementNotExists;
-import org.apache.jena.sparql.syntax.ElementOptional;
-import org.apache.jena.sparql.syntax.ElementPathBlock;
-import org.apache.jena.sparql.syntax.ElementService;
-import org.apache.jena.sparql.syntax.ElementSubQuery;
-import org.apache.jena.sparql.syntax.ElementTriplesBlock;
-import org.apache.jena.sparql.syntax.ElementUnion;
-import org.apache.jena.sparql.syntax.ElementVisitor;
+import org.apache.jena.sparql.syntax.*;
 import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 /**
@@ -49,11 +32,11 @@ import org.apache.jena.sparql.util.NodeIsomorphismMap;
  * match is not the matcher continues to scan for the next candidate until a
  * match is found or all candidates are exhausted.
  *
- * Usage: <code> <pre>
+ * Usage: <pre>
  *  WhereValidator wv = new WhereValidator( target );
  *  query.getQueryPattern().visit( wv );
  *  assertTrue( wv.matching );
- *  </pre></code>
+ *  </pre>
  */
 public class WhereValidator implements ElementVisitor {
 
@@ -63,7 +46,7 @@ public class WhereValidator implements ElementVisitor {
 
     /**
      * Constructor.
-     * 
+     *
      * @param target The target element to locate.
      */
     public WhereValidator(Element target) {
@@ -129,6 +112,14 @@ public class WhereValidator implements ElementVisitor {
             checkList(el.getElements());
         }
         return;
+    }
+
+    @Override
+    public void visit(ElementLateral el) {
+        checkMatching(el);
+        if (!matching) {
+            el.getLateralElement().visit(this);
+        }
     }
 
     @Override

@@ -59,7 +59,7 @@ public class EnvironmentFrameWithDerivation extends EnvironmentFrame {
      * Return the final instantiated goal given the current binding state.
      */
     public Triple getResult() {
-        return new Triple(
+        return Triple.create(
                     LPInterpreter.deref(argVars[0]),
                     LPInterpreter.deref(argVars[1]), 
                     LPInterpreter.derefPossFunctor(argVars[2]));

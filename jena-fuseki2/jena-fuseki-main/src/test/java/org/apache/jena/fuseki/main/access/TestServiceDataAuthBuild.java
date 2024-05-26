@@ -19,17 +19,17 @@
 package org.apache.jena.fuseki.main.access;
 
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * AbstractTestServiceDatasetAuth with a configuration file.
  */
 public class TestServiceDataAuthBuild extends AbstractTestServiceDatasetAuth {
 
-    static FusekiServer server;
+    private FusekiServer server;
 
-    @BeforeClass public static void beforeClass () {
+    @Before public void before() {
         server = FusekiServer.create()
             //.verbose(true)
             .port(port)
@@ -38,7 +38,7 @@ public class TestServiceDataAuthBuild extends AbstractTestServiceDatasetAuth {
         server.start();
     }
 
-    @AfterClass public static void afterClass () {
+    @After public void after () {
         server.stop();
     }
 

@@ -19,12 +19,12 @@
 package org.apache.jena.rdf.model.impl;
 
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdfxml.xmlinput.ParseException ;
+import org.apache.jena.rdfxml.xmlinput1.ParseException;
 import org.apache.jena.shared.* ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * The default error handler for I/O.
+ * The default error handler for RDF/XML I/O.
  */
 public class RDFDefaultErrorHandler extends Object implements RDFErrorHandler {
 
@@ -50,7 +50,7 @@ public class RDFDefaultErrorHandler extends Object implements RDFErrorHandler {
     public void error(Exception e) {
         if (!silent)
             logger.error(ParseException.formatMessage(e));
-        // Traditional settings - RDF/XML errors are reported but parsing continues. 
+        // Traditional settings - RDF/XML errors are reported but parsing continues.
 //        throw e instanceof RuntimeException
 //            ? (RuntimeException) e
 //            : new JenaException( e );
@@ -58,8 +58,8 @@ public class RDFDefaultErrorHandler extends Object implements RDFErrorHandler {
 
     @Override
     public void fatalError(Exception e) {
-    	if (!silent)
-    	    logger.error(ParseException.formatMessage(e));
+        if (!silent)
+            logger.error(ParseException.formatMessage(e));
         throw e instanceof RuntimeException
             ? (RuntimeException) e
             : new JenaException( e );

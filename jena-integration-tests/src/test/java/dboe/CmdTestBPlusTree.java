@@ -19,7 +19,7 @@
 package dboe;
 
 import org.apache.jena.dboe.base.file.BlockAccessMem;
-import org.apache.jena.dboe.index.test.IndexTestLib;
+import org.apache.jena.dboe.index.testlib.IndexTestLib;
 import org.apache.jena.dboe.sys.SysDB;
 import org.apache.jena.dboe.sys.SystemIndex;
 import org.apache.jena.dboe.trans.bplustree.BPT;

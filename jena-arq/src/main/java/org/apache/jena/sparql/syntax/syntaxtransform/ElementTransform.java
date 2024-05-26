@@ -44,6 +44,7 @@ public interface ElementTransform
     public Element transform(ElementDataset el, Element subElt);
     public Element transform(ElementUnion el, List<Element> elements);
     public Element transform(ElementOptional el, Element opElt);
+    public Element transform(ElementLateral el, Element opElt);
     public Element transform(ElementGroup el, List<Element> members);
     public Element transform(ElementNamedGraph el, Node gn, Element subElt);
     public Element transform(ElementExists el, Element subElt);

@@ -18,7 +18,7 @@
 
 package org.apache.jena.mem;
 
-import java.util.Iterator ;
+import java.util.Spliterator;
 
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
@@ -28,7 +28,7 @@ public class HashedTripleBunch extends HashCommon<Triple> implements TripleBunch
     public HashedTripleBunch( TripleBunch b )
         {
         super( nextSize( (int) (b.size() / loadFactor) ) );
-        for (Iterator<Triple> it = b.iterator(); it.hasNext();) add( it.next() );
+        b.spliterator().forEachRemaining(this::add);
         changes = 0;
         }
 
@@ -74,7 +74,7 @@ public class HashedTripleBunch extends HashCommon<Triple> implements TripleBunch
     public void add( Triple t )
         {
         keys[findSlot( t )] = t;
-        changes += 1;
+        changes++;
         if (++size > threshold) grow();
         }
 
@@ -94,7 +94,7 @@ public class HashedTripleBunch extends HashCommon<Triple> implements TripleBunch
     @Override public void remove( Triple t )
         {
         super.remove( t );
-        changes += 1;
+        changes++;
         }
 
     @Override
@@ -104,4 +104,7 @@ public class HashedTripleBunch extends HashCommon<Triple> implements TripleBunch
     @Override
     public ExtendedIterator<Triple> iterator( final NotifyEmpty container )
         { return keyIterator( container ); }
-}
+
+    @Override public Spliterator<Triple> spliterator()
+        { return super.keySpliterator(); }
+    }

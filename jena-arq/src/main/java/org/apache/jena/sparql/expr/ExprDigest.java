@@ -71,7 +71,7 @@ public abstract class ExprDigest extends ExprFunction1
 
     @Override
     public NodeValue eval(NodeValue v) {
-        return cache.getOrFill(v, () -> calculate(v));
+        return cache.get(v, x -> calculate(x));
     }
 
     private NodeValue calculate(NodeValue v) {

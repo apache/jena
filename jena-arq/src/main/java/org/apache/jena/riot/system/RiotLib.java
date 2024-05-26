@@ -22,7 +22,6 @@ import static org.apache.jena.riot.RDFLanguages.NQUADS;
 import static org.apache.jena.riot.RDFLanguages.NTRIPLES;
 import static org.apache.jena.riot.RDFLanguages.RDFJSON;
 import static org.apache.jena.riot.RDFLanguages.sameLang;
-import static org.apache.jena.riot.writer.WriterConst.PREFIX_IRI;
 
 import java.io.OutputStream;
 import java.io.Writer;
@@ -42,8 +41,8 @@ import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.LabelToNode;
+import org.apache.jena.riot.writer.DirectiveStyle;
 import org.apache.jena.riot.writer.WriterGraphRIOTBase;
-import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
@@ -86,6 +85,16 @@ public class RiotLib {
     }
 
     /**
+     * Convert an ARQ-encoded blank node URI to a blank node, otherwise return the argument node unchanged.
+     */
+    public static Node fromIRIorBNode(Node node) {
+        if ( ! node.isURI() )
+            return node;
+        String uristr = node.getURI();
+        return createIRIorBNode(uristr);
+    }
+
+    /**
      * Implement {@code <_:....>} as a "Node IRI"
      * that is, use the given label as the BNode internal label.
      * Use with care.
@@ -101,10 +110,19 @@ public class RiotLib {
     }
 
     /**
-     * Test whether a IRI is a ARQ-encoded blank node.
+     * Test whether a IRI is an ARQ-encoded blank node.
      */
     public static boolean isBNodeIRI(String iri) {
         return iri.startsWith(bNodeLabelStart);
+    }
+
+    /**
+     * Test whether a node is an ARQ-encoded blank node IRI.
+     */
+    public static boolean isBNodeIRI(Node node) {
+        if ( ! node.isURI() )
+            return false;
+        return isBNodeIRI(node.getURI());
     }
 
     private static final String URI_PREFIX_FIXUP = "local:";
@@ -121,7 +139,7 @@ public class RiotLib {
     public static final Predicate<String> testFixupedPrefixURI = (x) -> x.startsWith(URI_PREFIX_FIXUP);
 
     /**
-     * Test whether a IRI is a ARQ-encoded blank node.
+     * Test whether a IRI is an ARQ-encoded blank node.
      */
     public static boolean isPrefixIRI(String iri) {
         return testFixupedPrefixURI.test(iri);
@@ -264,23 +282,24 @@ public class RiotLib {
      * Collect all the matching triples
      */
     public static void accTriples(Collection<Triple> acc, Graph graph, Node s, Node p, Node o) {
-        ExtendedIterator<Triple> iter = graph.find(s, p, o);
-        while (iter.hasNext())
-            acc.add(iter.next());
-        iter.close();
+        graph.find(s, p, o).forEach(acc::add);
     }
 
-    public static void writeBase(IndentedWriter out, String base, boolean newStyle) {
-        if (newStyle)
-            writeBaseNewStyle(out, base);
-        else
+    public static void writeBase(IndentedWriter out, String base) {
+        writeBase(out, base, DirectiveStyle.systemDefault);
+    }
+
+    public static void writeBase(IndentedWriter out, String base, DirectiveStyle writeStyle) {
+        if ( writeStyle == DirectiveStyle.AT )
             writeBaseOldStyle(out, base);
+        else
+            writeBaseNewStyle(out, base);
     }
 
     private static void writeBaseNewStyle(IndentedWriter out, String base) {
         if (base != null) {
             out.print("BASE ");
-            out.pad(PREFIX_IRI);
+            out.pad(7);   // Align to possible prefixes. 7 is the length of "prefix "
             out.print("<");
             out.print(base);
             out.print(">");
@@ -291,7 +310,7 @@ public class RiotLib {
     private static void writeBaseOldStyle(IndentedWriter out, String base) {
         if (base != null) {
             out.print("@base ");
-            out.pad(PREFIX_IRI);
+            out.pad(8);   // Align to possible prefixes. 8 is the length of "@prefix "
             out.print("<");
             out.print(base);
             out.print(">");
@@ -300,17 +319,21 @@ public class RiotLib {
         }
     }
 
+    public static void writePrefixes(IndentedWriter out, PrefixMap prefixMap) {
+        writePrefixes(out, prefixMap, DirectiveStyle.systemDefault);
+    }
+
     /**
      * Write prefixes
      */
-    public static void writePrefixes(IndentedWriter out, PrefixMap prefixMap, boolean newStyle) {
+    public static void writePrefixes(IndentedWriter out, PrefixMap prefixMap, DirectiveStyle writeStyle) {
         if ( prefixMap != null && !prefixMap.isEmpty() ) {
             int maxPrefixLength = prefixMap.getMapping().keySet().stream()
                     .map(String::length)
                     .max(Comparator.naturalOrder())
                     .orElse(0);
             for (Map.Entry<String, String> e : sortPrefixes(prefixMap)) {
-                writePrefix(out, e.getKey(), e.getValue(), newStyle, maxPrefixLength);
+                writePrefix(out, e.getKey(), e.getValue(), writeStyle, maxPrefixLength);
             }
         }
     }
@@ -328,15 +351,15 @@ public class RiotLib {
      * Write a prefix.
      * Write using {@code @prefix} or {@code PREFIX}.
      */
-    public static void writePrefix(IndentedWriter out, String prefix, String uri, boolean newStyle) {
-        writePrefix(out, prefix, uri, newStyle, 0);
+    public static void writePrefix(IndentedWriter out, String prefix, String uri, DirectiveStyle writeStyle) {
+        writePrefix(out, prefix, uri, writeStyle, 0);
     }
 
-    private static void writePrefix(IndentedWriter out, String prefix, String uri, boolean newStyle, int maxPrefixLenght) {
-        if (newStyle)
-            writePrefixNewStyle(out, prefix, uri, maxPrefixLenght);
+    private static void writePrefix(IndentedWriter out, String prefix, String uri, DirectiveStyle writeStyle, int maxPrefixLength) {
+        if ( writeStyle == DirectiveStyle.AT )
+            writePrefixOldStyle(out, prefix, uri, maxPrefixLength);
         else
-            writePrefixOldStyle(out, prefix, uri, maxPrefixLenght);
+            writePrefixNewStyle(out, prefix, uri, maxPrefixLength);
     }
 
     /**
@@ -346,7 +369,7 @@ public class RiotLib {
         out.print("PREFIX ");
         out.print(prefix);
         out.print(": ");
-        out.pad(9 + intent); // 9 e.q. length of "PREFIX" plus ": "
+        out.pad(9 + intent); // 9 is length of "PREFIX : "
         out.print("<");
         out.print(uri);
         out.print(">");
@@ -360,7 +383,7 @@ public class RiotLib {
         out.print("@prefix ");
         out.print(prefix);
         out.print(": ");
-        out.pad(10 + intent); // 10 e.q. length of "@prefix" plus ": "
+        out.pad(10 + intent); // 10 is length of "@prefix : "
         out.print("<");
         out.print(uri);
         out.print(">");
@@ -368,23 +391,11 @@ public class RiotLib {
         out.println();
     }
 
-    /** @deprecated Use {@link DatasetGraph#prefixes} */
-    @Deprecated
-    public static PrefixMap prefixMap(DatasetGraph dsg) {
-        return dsg.prefixes();
-    }
-
     /**
      * IndentedWriter over a java.io.Writer (better to use an IndentedWriter over an OutputStream)
      */
     public static IndentedWriter create(Writer writer) {
         return new IndentedWriterWriter(writer);
-    }
-
-    /** @deprecated Use {@link Prefixes#adapt(PrefixMapping)} */
-    @Deprecated
-    public static PrefixMap prefixMap(Graph graph) {
-        return Prefixes.adapt(graph.getPrefixMapping());
     }
 
     public static WriterGraphRIOTBase adapter(WriterDatasetRIOT writer) {

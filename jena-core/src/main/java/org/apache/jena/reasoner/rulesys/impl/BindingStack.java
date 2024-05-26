@@ -214,7 +214,7 @@ public class BindingStack implements BindingEnvironment {
         if (p.isVariable()) p = NodeFactory.createBlankNode();
         Node o = getGroundVersion(pattern.getObject());
         if (o.isVariable()) o = NodeFactory.createBlankNode();
-        return new Triple(s, p, o);
+        return Triple.create(s, p, o);
     }
     
 }

@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<RDF:RDF
+     xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:bagID="Foo" RDF:about="urn:mozilla:package:global">
+    <NS205:baseURL  xmlns:NS205="http://www.mozilla.org/rdf/chrome#">jar:resource:/chrome/toolkit.jar!/content/global/</NS205:baseURL>
+    <NS206:locType xmlns:NS206="http://www.mozilla.org/rdf/chrome#">install</NS206:locType>
+    <NS207:displayName xmlns:NS207="http://www.mozilla.org/rdf/chrome#">Toolkit</NS207:displayName>
+    <NS208:author xmlns:NS208="http://www.mozilla.org/rdf/chrome#">mozilla.org</NS208:author>
+    <NS209:name xmlns:NS209="http://www.mozilla.org/rdf/chrome#">global</NS209:name>
+  </RDF:Description>
+  <RDF:Description RDF:bagID="Foox" RDF:ID="net2phone">
+    <NS210:baseURL xmlns:NS210="http://www.mozilla.org/rdf/chrome#">jar:resource:/chrome/net2phone.jar!/content/net2phone/</NS210:baseURL>
+    <NS211:locType xmlns:NS211="http://www.mozilla.org/rdf/chrome#">install</NS211:locType>
+    <NS212:displayName xmlns:NS212="http://www.mozilla.org/rdf/chrome#">Net2Phone</NS212:displayName>
+    <NS213:author xmlns:NS213="http://www.mozilla.org/rdf/chrome#">Net2Phone</NS213:author>
+    <NS214:name xmlns:NS214="http://www.mozilla.org/rdf/chrome#">net2phone</NS214:name>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:package:editor">
+    <NS215:baseURL xmlns:NS215="http://www.mozilla.org/rdf/chrome#">jar:resource:/chrome/comm.jar!/content/editor/</NS215:baseURL>
+    <NS216:locType xmlns:NS216="http://www.mozilla.org/rdf/chrome#">install</NS216:locType>
+    <NS217:displayName xmlns:NS217="http://www.mozilla.org/rdf/chrome#">Editor</NS217:displayName>
+    <NS218:author xmlns:NS218="http://www.mozilla.org/rdf/chrome#">mozilla.org</NS218:author>
+    <NS219:name xmlns:NS219="http://www.mozilla.org/rdf/chrome#">editor</NS219:name>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:package:aim">
+    <NS220:baseURL xmlns:NS220="http://www.mozilla.org/rdf/chrome#">jar:resource:/chrome/aim.jar!/content/aim/</NS220:baseURL>
+    <NS221:locType xmlns:NS221="http://www.mozilla.org/rdf/chrome#">install</NS221:locType>
+    <NS222:displayName xmlns:NS222="http://www.mozilla.org/rdf/chrome#">AIM</NS222:displayName>
+    <NS223:author xmlns:NS223="http://www.mozilla.org/rdf/chrome#">AOL</NS223:author>
+    <NS224:name xmlns:NS224="http://www.mozilla.org/rdf/chrome#">aim</NS224:name>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:package:navigator">
+    <NS225:baseURL xmlns:NS225="http://www.mozilla.org/rdf/chrome#">jar:resource:/chrome/comm.jar!/content/navigator/</NS225:baseURL>
+    <NS226:locType xmlns:NS226="http://www.mozilla.org/rdf/chrome#">install</NS226:locType>
+    <NS227:displayName xmlns:NS227="http://www.mozilla.org/rdf/chrome#">Navigator</NS227:displayName>
+    <NS228:author xmlns:NS228="http://www.mozilla.org/rdf/chrome#">mozilla.org</NS228:author>
+    <NS229:name xmlns:NS229="http://www.mozilla.org/rdf/chrome#">navigator</NS229:name>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:package:messenger">
+    <NS230:baseURL xmlns:NS230="http://www.mozilla.org/rdf/chrome#">jar:resource:/chrome/messenger.jar!/content/messenger/</NS230:baseURL>
+    <NS231:locType xmlns:NS231="http://www.mozilla.org/rdf/chrome#">install</NS231:locType>
+    <NS232:displayName xmlns:NS232="http://www.mozilla.org/rdf/chrome#">Messenger</NS232:displayName>
+    <NS233:author xmlns:NS233="http://www.mozilla.org/rdf/chrome#">mozilla.org</NS233:author>
+    <NS234:name xmlns:NS234="http://www.mozilla.org/rdf/chrome#">messenger</NS234:name>
+  </RDF:Description>
+  <RDF:Seq RDF:ID="root">
+    <RDF:li resource="urn:mozilla:package:global"/>
+    <RDF:li>
+  <RDF:Description>
+    <NS235:baseURL xmlns:NS235="http://www.mozilla.org/rdf/chrome#">jar:resource:/chrome/comm.jar!/content/communicator/</NS235:baseURL>
+    <NS236:locType xmlns:NS236="http://www.mozilla.org/rdf/chrome#">install</NS236:locType>
+    <NS237:displayName xmlns:NS237="http://www.mozilla.org/rdf/chrome#">Communicator Shared</NS237:displayName>
+    <NS238:author xmlns:NS238="http://www.mozilla.org/rdf/chrome#">mozilla.org</NS238:author>
+    <NS239:name xmlns:NS239="http://www.mozilla.org/rdf/chrome#">communicator</NS239:name>
+  </RDF:Description>
+    </RDF:li>
+    <RDF:li resource="urn:mozilla:package:editor"/>
+    <RDF:li resource="urn:mozilla:package:navigator"/>
+    <RDF:li resource="#net2phone"/>
+    <RDF:li resource="urn:mozilla:package:messenger"/>
+    <RDF:li resource="urn:mozilla:package:aim"/>
+  </RDF:Seq>
+</RDF:RDF>

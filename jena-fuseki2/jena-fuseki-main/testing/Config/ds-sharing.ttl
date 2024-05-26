@@ -1,0 +1,98 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX :<#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+
+# Plain dataset, shared with ds2.
+:service1 rdf:type fuseki:Service ;
+    fuseki:name "ds-named" ;
+    fuseki:endpoint [ fuseki:operation fuseki:query ; ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:update ; ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp-rw ; ] ;
+    fuseki:dataset :datasetShared ;
+    .
+
+# RDFS dataset, base data with ds-named
+:service2 rdf:type fuseki:Service ;
+    fuseki:name "ds-rdfs-base-named" ;
+    fuseki:endpoint [ fuseki:operation fuseki:query ; ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:update ; ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp-rw ; ] ;
+    fuseki:dataset :datasetRDFS ;
+    .
+
+ # View dataset, base data with ds1.
+:service2a rdf:type fuseki:Service ;
+    fuseki:name "ds-view-base-named";
+    fuseki:endpoint [ fuseki:operation fuseki:query ; ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:update ; ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp-rw ; ] ;
+    fuseki:dataset :datasetRDFS ;
+    .
+
+
+# Plain dataset, not named
+:service3 rdf:type fuseki:Service ;
+    fuseki:name "ds-unnamed-1" ;
+    fuseki:endpoint [ fuseki:operation fuseki:query ; ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:update ; ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp-rw ; ] ;
+    fuseki:dataset :datasetNotNamed ;
+    .
+
+# Repeat Plain dataset, not named but Fuseki-service shared.
+:service4 rdf:type fuseki:Service ;
+    fuseki:name "ds-unnamed-2" ;
+    fuseki:endpoint [ fuseki:operation fuseki:query ; ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:update ; ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp-rw ; ] ;
+    fuseki:dataset :datasetNotNamed ;
+    .
+
+# View dataset, base not named
+:service5 rdf:type fuseki:Service ;
+    fuseki:name "ds-view-base-unnamed-1" ;
+    fuseki:endpoint [ fuseki:operation fuseki:query ; ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:update ; ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp-rw ; ] ;
+    fuseki:dataset :datasetView1 ;
+    .
+
+# View dataset, base not named
+:service6 rdf:type fuseki:Service ;
+    fuseki:name "ds-view-base-unnamed-2" ;
+    fuseki:endpoint [ fuseki:operation fuseki:query ; ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:update ; ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:gsp-rw ; ] ;
+    fuseki:dataset :datasetView2 ;
+    .
+
+# RDFS dataset, shared base dataset
+:datasetRDFS rdf:type ja:DatasetRDFS ;
+    ja:dataset :datasetShared ;
+    ja:rdfsSchema <ds-sharing-schema.ttl> ;
+    .
+
+# Shared transactional in-memory dataset.
+:datasetShared rdf:type ja:MemoryDataset ;
+    ja:name "DATABASE";
+    .
+
+# Layer of dataset
+## Avoids the fact that Fuseki service datasets with teh same resource are always changes.
+:datasetView1 rdf:type ja:ViewDataset ;
+    ja:dataset :datasetNotNamed ;
+    .
+
+# Layer of dataset
+## Avoids the fact that Fuseki service datasets with teh same resource are always changes.
+:datasetView2 rdf:type ja:ViewDataset ;
+    ja:dataset :datasetNotNamed ;
+    .
+
+
+# Transactional in-memory dataset.
+:datasetNotNamed rdf:type ja:MemoryDataset .

@@ -22,8 +22,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.rdf.model.RDFReaderI;
 import org.apache.jena.rdf.model.RDFReaderF;
+import org.apache.jena.rdf.model.RDFReaderI;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.NoReaderForLangException;
 
@@ -38,15 +38,10 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
     public static void alternative(RDFReaderF other) {
         rewiredAlternative = other ;
     }
-    
+
     /** Creates new RDFReaderFImpl */
     public RDFReaderFImpl() {}
-    
-    @Override
-    public RDFReaderI getReader()  {
-        return getReader(null);
-    }
-    
+
     @Override
     public RDFReaderI getReader(String lang) {
         // Jena model.read rule for defaulting.
@@ -67,15 +62,15 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
         }
     }
 
-    static { 
+    static {
         // static initializer - set default readers
         reset();
     }
 
     private static void reset() {
-        Class<? extends RDFReaderI> rdfxmlReader = org.apache.jena.rdfxml.xmlinput.JenaReader.class;
+        Class<? extends RDFReaderI> rdfxmlReader = org.apache.jena.rdfxml.xmlinput1.RDFXMLReader.class;
         Class<? extends RDFReaderI> ntReader = org.apache.jena.rdf.model.impl.NTripleReader.class;
-        Class<? extends RDFReaderI> turtleReader = org.apache.jena.ttl.turtle.TurtleReader.class;
+        // Turtle moved to test-only
 
         custom.put("RDF", rdfxmlReader);
         custom.put("RDF/XML", rdfxmlReader);
@@ -84,11 +79,6 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
         custom.put("N-TRIPLE", ntReader);
         custom.put("N-TRIPLES", ntReader);
         custom.put("N-Triples", ntReader);
-
-        custom.put("N3", turtleReader);
-        custom.put("TURTLE", turtleReader);
-        custom.put("Turtle", turtleReader);
-        custom.put("TTL", turtleReader);
     }
 
     private static String currentEntry(String lang) {

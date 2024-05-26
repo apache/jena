@@ -24,13 +24,14 @@ import static org.apache.jena.riot.WebContent.ctMultipartMixed;
 import static org.apache.jena.riot.WebContent.ctTextPlain;
 import static org.apache.jena.riot.WebContent.matchContentType;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
-import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.fileupload.util.Streams;
+import org.apache.commons.fileupload2.core.FileItemInput;
+import org.apache.commons.fileupload2.core.FileItemInputIterator;
+import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.riot.Lang;
@@ -72,8 +73,8 @@ public class DataUploader {
         }
 
         if ( matchContentType(ctMultipartFormData, ct) || matchContentType(ctMultipartMixed, ct) ) {
-            // multipart
-            return fileUploadMultipart(action, dest);
+            // Multipart
+            return multipartCommonsFileUpload(action, dest);
         }
 
         // Single graph or quads in body.
@@ -102,6 +103,10 @@ public class DataUploader {
         }
     }
 
+    // Previously, Jena has used HttpServletRequests.getParts.
+    // Each application server (Tomcat and Jetty) has special configuration.
+    // Use Apache Commons FileUpload as the mulipart parser as it is portable.
+
     /**
      * Process an HTTP upload of RDF files (triples or quads) with content type
      * "multipart/form-data" or "multipart/mixed".
@@ -112,20 +117,22 @@ public class DataUploader {
      * <p>
      * This function assumes it is inside a transaction.
      */
-    private static UploadDetails fileUploadMultipart(HttpAction action, StreamRDF dest) {
+    private static UploadDetails multipartCommonsFileUpload(HttpAction action, StreamRDF dest) {
         String base = ActionLib.wholeRequestURL(action.getRequest());
-        ServletFileUpload upload = new ServletFileUpload();
         StreamRDFCounting countingDest =  StreamRDFLib.count(dest);
 
+        // We only use the request body parsing capability of a ServletFileUpload.
+        JakartaServletFileUpload<?,?> upload = new JakartaServletFileUpload<>();
         try {
-            FileItemIterator iter = upload.getItemIterator(action.getRequest());
+            FileItemInputIterator iter = upload.getItemIterator(action.getRequest());
             while (iter.hasNext()) {
-                FileItemStream fileStream = iter.next();
-                if (fileStream.isFormField()) {
+                FileItemInput part = iter.next();
+
+                if (part.isFormField()) {
                     // Form field - this code only supports multipart file upload.
-                    String fieldName = fileStream.getFieldName();
-                    InputStream stream = fileStream.openStream();
-                    String value = Streams.asString(stream, "UTF-8");
+                    String fieldName = part.getFieldName();
+                    InputStream stream = part.getInputStream();
+                    String value = IO.readWholeFileAsUTF8(stream);
                     // This code is currently used to put multiple files into a single destination.
                     // Additional field/values do not make sense.
                     ServletOps.errorBadRequest(format("Only files accepted in multipart file upload (got %s=%s)", fieldName, value));
@@ -133,47 +140,13 @@ public class DataUploader {
                     return null;
                 }
 
-                InputStream input = fileStream.openStream();
-                // Content-Type:
-                String contentTypeHeader = fileStream.getContentType();
+                InputStream input = part.getInputStream();
+                String contentTypeHeader = part.getContentType();
                 ContentType ct = ContentType.create(contentTypeHeader);
+                String fieldName = part.getFieldName();         // Corresponds to ServletAPI Part.getName
+                String submittedFileName = part.getName();      // Corresponds to ServletAPI Part.getSubmittedFileName
 
-                Lang lang = null;
-                if ( ! matchContentType(ctTextPlain, ct) )
-                    lang = RDFLanguages.contentTypeToLang(ct.getContentTypeStr());
-
-                if ( lang == null ) {
-                    // Not a recognized Content-Type. Look at file extension.
-                    String name = fileStream.getName();
-                    if ( name == null || name.equals("") )
-                        ServletOps.errorBadRequest("No name for content - can't determine RDF syntax");
-                    lang = RDFLanguages.pathnameToLang(name);
-                    if (name.endsWith(".gz"))
-                        input = new GZIPInputStream(input);
-                }
-                if ( lang == null )
-                    // Desperate.
-                    lang = RDFLanguages.RDFXML;
-
-                String printfilename = fileStream.getName();
-                if ( printfilename == null  || printfilename.equals("") )
-                    printfilename = "<none>";
-
-                // count just this step
-                StreamRDFCounting countingDest2 =  StreamRDFLib.count(countingDest);
-                try {
-                    ActionLib.parse(action, countingDest2, input, lang, base);
-                    UploadDetails details1 = new UploadDetails(countingDest2.count(), countingDest2.countTriples(),countingDest2.countQuads());
-                    action.log.info(format("[%d] Filename: %s, Content-Type=%s, Charset=%s => %s : %s",
-                                           action.id, printfilename, ct.getContentTypeStr(), ct.getCharset(), lang.getName(),
-                                           details1.detailsStr()));
-                } catch (RiotParseException ex) {
-                    action.log.info(format("[%d] Filename: %s, Content-Type=%s, Charset=%s => %s : %s",
-                                           action.id, printfilename, ct.getContentTypeStr(), ct.getCharset(), lang.getName(),
-                                           ex.getMessage()));
-                    ActionLib.consumeBody(action);
-                    throw ex;
-                }
+                handlePart(action, input, base, ct, submittedFileName, countingDest);
             }
         }
         catch (ActionErrorException ex) { throw ex; }
@@ -182,5 +155,48 @@ public class DataUploader {
         UploadDetails details = new UploadDetails(countingDest.count(), countingDest.countTriples(),countingDest.countQuads());
         return details;
     }
-}
 
+    /**
+     * Process one item in a multiple part file upload.
+     * This does not depend on the choice of multi-part parser.
+     */
+    private static void handlePart(HttpAction action, InputStream input,
+                                   String base, ContentType ct, String submittedFileName,
+                                   StreamRDF dest) throws IOException {
+        Lang lang = null;
+        if ( ! matchContentType(ctTextPlain, ct) )
+            lang = RDFLanguages.contentTypeToLang(ct.getContentTypeStr());
+
+        if ( lang == null ) {
+            // Not a recognized Content-Type. Look at file extension.
+            if ( submittedFileName == null || submittedFileName.equals("") )
+                ServletOps.errorBadRequest("No name for content - can't determine RDF syntax");
+            lang = RDFLanguages.pathnameToLang(submittedFileName);
+            if (submittedFileName.endsWith(".gz"))
+                input = new GZIPInputStream(input);
+        }
+        if ( lang == null )
+            // Desperate.
+            lang = RDFLanguages.RDFXML;
+
+        String printfilename = submittedFileName;
+        if ( printfilename == null || printfilename.equals("") )
+            printfilename = "<none>";
+
+        // count just this step
+        StreamRDFCounting countingDest2 =  StreamRDFLib.count(dest);
+        try {
+            ActionLib.parse(action, countingDest2, input, lang, base);
+            UploadDetails details1 = new UploadDetails(countingDest2.count(), countingDest2.countTriples(),countingDest2.countQuads());
+            action.log.info(format("[%d] Filename: %s, Content-Type=%s, Charset=%s => %s : %s",
+                                   action.id, printfilename, ct.getContentTypeStr(), ct.getCharset(), lang.getName(),
+                                   details1.detailsStr()));
+        } catch (RiotParseException ex) {
+            action.log.info(format("[%d] Filename: %s, Content-Type=%s, Charset=%s => %s : %s",
+                                   action.id, printfilename, ct.getContentTypeStr(), ct.getCharset(), lang.getName(),
+                                   ex.getMessage()));
+            ActionLib.consumeBody(action);
+            throw ex;
+        }
+    }
+}

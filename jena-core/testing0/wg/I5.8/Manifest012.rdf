@@ -1,0 +1,46 @@
+<!--++ I5.8/Manifest012.rdf ** generated using webont test editor. ++-->
+<!--++ Created 16 May 2003 06:25:41 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: Manifest012.rdf,v 1.5 2003-12-05 05:06:34 jeremy_carroll Exp $
+-->
+<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+      xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
+      xmlns:rtest='http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#'
+      xmlns:otest='http://www.w3.org/2002/03owlt/testOntology#'
+      xmlns:dc='http://purl.org/dc/elements/1.0/'
+      xmlns='http://www.w3.org/1999/xhtml'
+      xmlns:owl='http://www.w3.org/2002/07/owl#'
+      xml:base='http://www.w3.org/2002/03owlt/I5.8/Manifest012'
+>
+<otest:ConsistencyTest rdf:ID='test'>
+   <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' />
+   <rtest:status>APPROVED</rtest:status>
+   <rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2003Nov/0000.html"/>
+   <dc:creator>Jeremy J. Carroll</dc:creator>
+   <rtest:issue rdf:resource='http://www.w3.org/2001/sw/WebOnt/webont-issues#I5.8-Datatypes' />
+   <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#DL' />
+   <otest:notSupportedDatatype rdf:resource='http://www.w3.org/2001/XMLSchema#byte'/>
+   <otest:notSupportedDatatype rdf:resource='http://www.w3.org/2001/XMLSchema#unsignedInt'/>
+   <rtest:description rdf:parseType='Literal'>
+There might be only 128 different values of <code>xsd:byte</code>
+that are also <code>xsd:unsignedInt</code>; but this does not
+follow from the <a href=
+"http://www.w3.org/TR/owl-semantics/direct#datatype_theory"
+>datatype theory</a>
+of this test. (cf. the similar <a href="#I5.8-003">inconsistency test</a>).</rtest:description>
+   <rtest:inputDocument>
+         <rtest:RDF-XML-Document rdf:about='consistent012' >
+              <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#DL' />
+         </rtest:RDF-XML-Document>
+   </rtest:inputDocument>
+</otest:ConsistencyTest >
+</rdf:RDF>

@@ -41,6 +41,13 @@ public class StandardFunctions
      * and sparql:* for all the SPARQL builtins.
      */
 
+    public static void loadOtherDefs(FunctionRegistry registry) {
+        // Only need to add functions that are not in org.apache.jena.sparql.function.library or have names that are not java-compliant
+        String afn = ARQConstants.ARQFunctionLibraryURI ;
+        add(registry, afn+"adjust-to-timezone",  AFN_AdjustToTimezone.class);
+        add(registry, afn+"system-timezone",  AFN_SystemTimezone.class);
+    }
+
     /* Implementation notes
      *   fn:format-dateTime / fn:format-time / fn:format-date
      *   This is not Java's SimpleDateFormat.
@@ -50,11 +57,11 @@ public class StandardFunctions
 
     public static void loadStdDefs(FunctionRegistry registry) {
         String xfn = ARQConstants.fnPrefix ;
+
         String math = ARQConstants.mathPrefix ;
         String sparqlfn = ARQConstants.fnSparql ;
 
         // Update documentation in xsd-support.md
-
         // See also:
         // http://www.w3.org/TR/xpath-datamodel/#types-hierarchy
         // https://www.w3.org/TR/xpath-datamodel-3/
@@ -78,6 +85,8 @@ public class StandardFunctions
 
         addCastNumeric(registry, XSDDatatype.XSDdouble) ;
         addCastNumeric(registry, XSDDatatype.XSDfloat) ;
+
+        //addCastXSD(registry, XSDDatatype.XSDprecisionDecimal);
 
         addCastXSD(registry, XSDDatatype.XSDboolean) ;
         addCastXSD(registry, XSDDatatype.XSDduration) ;
@@ -106,7 +115,6 @@ public class StandardFunctions
 
         // 3.1.1 fn:error
         add(registry, xfn+"error",         FN_Error.class) ;
-
 
 //      5.4.1 fn:concat
 //      5.4.3 fn:substring
@@ -214,6 +222,7 @@ public class StandardFunctions
         add(registry, xfn+"adjust-date-to-timezone",  FN_AdjustDateToTimezone.class) ;
 //        9.6.3 fn:adjust-time-to-timezone
         add(registry, xfn+"adjust-time-to-timezone",  FN_AdjustTimeToTimezone.class) ;
+
 //        9.8.1 fn:format-dateTime
 //        9.8.2 fn:format-date
 //        9.8.3 fn:format-time

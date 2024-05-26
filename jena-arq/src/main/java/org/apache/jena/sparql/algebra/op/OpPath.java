@@ -18,58 +18,55 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.core.TriplePath ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.Iso ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.core.TriplePath;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.Iso;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpPath extends Op0
 {
-    private TriplePath triplePath ;
+    private TriplePath triplePath;
 
 //    public OpPath(Node start, Path path, Node end)
 //    {
-//        this.subject = start ;
-//        this.path = path ;
-//        this.object = object ;
+//        this.subject = start;
+//        this.path = path;
+//        this.object = object;
 //    }
-    
-    public OpPath(TriplePath triplePath)
-    {
-        this.triplePath = triplePath ;
+
+    public OpPath(TriplePath triplePath) {
+        this.triplePath = triplePath;
     }
-    
-    public TriplePath getTriplePath()   { return triplePath ; }
+
+    public TriplePath getTriplePath()   { return triplePath; }
 
     @Override
-    public String getName()     { return Tags.tagPath ; }
+    public String getName()     { return Tags.tagPath; }
 
     @Override
     public Op apply(Transform transform)
-    { return transform.transform(this) ; }
+    { return transform.transform(this); }
 
     @Override
-    public Op0 copy()    { return new OpPath(triplePath) ; }
+    public Op0 copy()    { return new OpPath(triplePath); }
 
     @Override
-    public boolean equalTo(Op other, NodeIsomorphismMap isoMap)
-    {
-        if ( ! (other instanceof OpPath) ) return false ;
-        OpPath p = (OpPath)other ;
-        return  Iso.triplePathIso(triplePath, p.triplePath, isoMap) ;
+    public boolean equalTo(Op other, NodeIsomorphismMap isoMap) {
+        if ( !(other instanceof OpPath) )
+            return false;
+        OpPath p = (OpPath)other;
+        return Iso.triplePathIso(triplePath, p.triplePath, isoMap);
     }
 
     @Override
-    public int hashCode()
-    {
-        return triplePath.hashCode() ;
+    public int hashCode() {
+        return triplePath.hashCode();
     }
 
     @Override
     public void visit(OpVisitor opVisitor)
-    { opVisitor.visit(this) ; }
-
+    { opVisitor.visit(this); }
 }

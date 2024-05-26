@@ -162,7 +162,7 @@ final class PathEvaluator implements PathVisitor
     }
 
     // Other operations can produce duplicates and so may be executed in
-    // different ways depending on cardibnality requirements.
+    // different ways depending on cardinality requirements.
 
     protected static class FilterExclude implements Predicate<Triple>
     {

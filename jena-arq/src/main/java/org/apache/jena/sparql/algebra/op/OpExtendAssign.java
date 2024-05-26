@@ -16,40 +16,40 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.algebra.op ;
+package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.core.VarExprList ;
-import org.apache.jena.sparql.expr.Expr ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.core.VarExprList;
+import org.apache.jena.sparql.expr.Expr;
 
 public abstract class OpExtendAssign extends Op1 {
-    protected final VarExprList assignments ;
+    protected final VarExprList assignments;
 
     protected OpExtendAssign(Op subOp) {
-        super(subOp) ;
-        assignments = new VarExprList() ;
+        super(subOp);
+        assignments = new VarExprList();
     }
 
     protected OpExtendAssign(Op subOp, VarExprList exprs) {
-        super(subOp) ;
-        assignments = exprs ;
+        super(subOp);
+        assignments = exprs;
     }
 
     final
     protected void add(Var var, Expr expr) {
-        assignments.add(var, expr) ;
+        assignments.add(var, expr);
     }
 
     final
     public VarExprList getVarExprList() {
-        return assignments ;
+        return assignments;
     }
 
     @Override
     final 
     public int hashCode()
-    { return getName().hashCode() ^ assignments.hashCode() ^ getSubOp().hashCode() ; }
+    { return getName().hashCode() ^ assignments.hashCode() ^ getSubOp().hashCode(); }
 
-    public abstract OpExtendAssign copy(Op subOp, VarExprList varExprList) ;
+    public abstract OpExtendAssign copy(Op subOp, VarExprList varExprList);
 }

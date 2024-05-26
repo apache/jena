@@ -30,7 +30,6 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.shacl.lib.ShLib;
@@ -40,6 +39,7 @@ import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.path.*;
 import org.apache.jena.sparql.path.eval.PathEval;
+import org.apache.jena.system.G;
 
 public class ShaclPaths {
 //  SPARQL Property path: ex:parent
@@ -67,9 +67,9 @@ public class ShaclPaths {
 //  2.3.1.7 Zero-Or-One Paths
 
     public static Set<Node> valueNodes(Graph graph, Node node, Path path) {
-        if ( path instanceof P_Link ) {
+        if ( path instanceof P_Link plink) {
             // Fast path common case.
-            Node p = ((P_Link)path).getNode();
+            Node p = plink.getNode();
             return G.allSP(graph, node, p);
         }
         // Value nodes are a set.
@@ -77,9 +77,9 @@ public class ShaclPaths {
     }
 
     private static Iterator<Node> pathReachIter(Graph graph, Node node, Path path) {
-        if ( path instanceof P_Link ) {
+        if ( path instanceof P_Link pLink ) {
             // Fast path common case.
-            Node p = ((P_Link)path).getNode();
+            Node p = pLink.getNode();
             // Not an extended iterator.
             return G.iterSP(graph, node, p);
         }
@@ -209,8 +209,8 @@ public class ShaclPaths {
 
 
     public static Node pathNode(Path path) {
-        if ( path instanceof P_Link ) {
-            return ((P_Link)path).getNode();
+        if ( path instanceof P_Link pLink ) {
+            return pLink.getNode();
         }
         return null;
     }

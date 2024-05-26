@@ -34,12 +34,12 @@ import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.junit.QueryTestException;
 import org.apache.jena.sparql.resultset.ResultsFormat;
 import org.apache.jena.sparql.resultset.SPARQLResult;
-import org.apache.jena.sparql.vocabulary.TestManifest;
 import org.apache.jena.sparql.vocabulary.TestManifestX;
 import org.apache.jena.sparql.vocabulary.VocabTestQuery;
 import org.apache.jena.util.iterator.ClosableIterator;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.TestManifest;
 
 /**
  * Parse out details for a query evaluation test.

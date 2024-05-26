@@ -1,0 +1,21 @@
+         
+# comment at the beginning of a line
+
+                # comment in the middle of a line
+
+# comments on
+# consecutive lines       
+         
+
+
+<http://subject> <http://predicate> <http://object> .
+_:a <http://test/p1> _:b .
+
+_:b <http://test/p2> "foo" .
+
+_:c <http://test/p3> "foo\"\\\n\r\tbar" .
+
+_:d <http://test/p4> "foo
+bar" .
+
+

@@ -29,19 +29,20 @@ public interface ActionProcessor {
      * @param action   HTTP Action
      */
     public default void process(HttpAction action) {
-        switch (action.getMethod() ) {
-            case METHOD_GET:        execGet(action);      break;
-            case METHOD_POST:       execPost(action);     break;
-            case METHOD_PATCH:      execPatch(action);    break;
-            case METHOD_PUT:        execPut(action);      break;
-            case METHOD_DELETE:     execDelete(action);   break;
-            case METHOD_HEAD:       execHead(action);     break;
-            case METHOD_OPTIONS:    execOptions(action);  break;
-            case METHOD_TRACE:      execTrace(action);    break;
+        switch ( action.getMethod() ) {
+            case METHOD_GET ->       execGet(action);
+            case METHOD_POST ->      execPost(action);
+            case METHOD_PATCH ->     execPatch(action);
+            case METHOD_PUT ->       execPut(action);
+            case METHOD_DELETE ->    execDelete(action);
+            case METHOD_HEAD ->      execHead(action);
+            case METHOD_OPTIONS->    execOptions(action);
+            case METHOD_TRACE ->     execTrace(action);
+            default -> execAny(action.getMethod(), action);
         }
     }
 
-    // Override to support the operation. 
+    // Override to support the operation.
     // A common override is "executeLifecycle(action);"
     public default void execHead(HttpAction action)     { execAny(METHOD_HEAD,    action); }
     public default void execGet(HttpAction action)      { execAny(METHOD_GET,     action); }
@@ -51,7 +52,7 @@ public interface ActionProcessor {
     public default void execDelete(HttpAction action)   { execAny(METHOD_DELETE,  action); }
     public default void execOptions(HttpAction action)  { execAny(METHOD_OPTIONS, action); }
     public default void execTrace(HttpAction action)    { execAny(METHOD_TRACE,   action); }
-    
+
     // Override this for all HTTP verbs.
     public default void execAny(String methodName, HttpAction action) {
         ServletOps.errorMethodNotAllowed(methodName);

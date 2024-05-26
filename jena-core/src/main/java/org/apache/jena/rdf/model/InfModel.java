@@ -24,7 +24,7 @@ import org.apache.jena.reasoner.* ;
 
 /**
  * An extension to the normal Model interface that supports access to any
- * underlying inference capability. 
+ * underlying inference capability.
  * <p>In Jena the primary use of inference is
  * to generate additional entailments from a set of RDF data. These entailments
  * just appear as additional RDF data in the inferred model and are accessed
@@ -32,14 +32,13 @@ import org.apache.jena.reasoner.* ;
  * the class of a resource "foo" is "fooClass" then all Model API calls such
  * as listStatements and getProperty should act as if the triple:
  * <pre>
- * foo rdf:type fooClass .
- * </pre>
- * were in the data. </p>
- * 
+ * foo rdf:type fooClass .</pre>
+ * were in the data.
+ *
  * <p>A few reasoner services cannot be made directly available in this way
- * and the InfGraph extension gives access to these - specifically access to 
+ * and the InfGraph extension gives access to these - specifically access to
  * validation/consistency checking, derivation traces and find-with-posits.</p>
- * 
+ *
  * <p>Note that this interface, and especially the interface onto ValidityReports
  * and Derivations are not yet stable.</p>
  */
@@ -50,7 +49,7 @@ public interface InfModel extends Model {
      * to the Reasonder.bind call that created this InfModel).
      */
     public Model getRawModel();
-    
+
     /**
      * Return the Reasoner which is being used to answer queries to this graph.
      */
@@ -61,10 +60,10 @@ public interface InfModel extends Model {
      * into account changes. Normally changes are made through the InfModel's add and
      * remove calls are will be handled appropriately. However, in some cases changes
      * are made "behind the InfModels's back" and this forces a full reconsult of
-     * the changed data. 
+     * the changed data.
      */
     public void rebind();
-    
+
     /**
      * Perform any initial processing and caching. This call is optional. Most
      * engines either have negligable set up work or will perform an implicit
@@ -74,26 +73,26 @@ public interface InfModel extends Model {
      * this prepration is done rather than just leaving to be done at first query time.
      */
     public void prepare();
-    
+
     /**
-     * Reset any internal caches. Some systems, such as the tabled backchainer, 
+     * Reset any internal caches. Some systems, such as the tabled backchainer,
      * retain information after each query. A reset will wipe this information preventing
      * unbounded memory use at the expense of more expensive future queries. A reset
      * does not cause the raw data to be reconsulted and so is less expensive than a rebind.
      */
     public void reset();
-    
+
     /**
      * Test the consistency of the underlying data. This normally tests
      * the validity of the bound instance data against the bound
-     * schema data. 
+     * schema data.
      * <p>Logically inconsistent models will be indicated by a ValidityReport which
      * reports isValid() as false. Additional non.error problems, such as uninstantiatable classes,
      * may be reported as warnings.
      * @return a ValidityReport structure
      */
-    public ValidityReport validate();    
-    
+    public ValidityReport validate();
+
     /** Find all the statements matching a pattern.
      * <p>Return an iterator over all the statements in a model
      *  that match a pattern.  The statements selected are those
@@ -105,21 +104,21 @@ public interface InfModel extends Model {
      * The s/p/o terms may refer to resources which are temporarily defined in the "posit" model.
      * This allows one, for example, to query what resources are of type CE where CE is a
      * class expression rather than a named class - put CE in the posit arg.</p>
-     * 
+     *
      * @return an iterator over the subjects
      * @param subject   The subject sought
      * @param predicate The predicate sought
      * @param object    The value sought
-     */ 
+     */
     public StmtIterator listStatements( Resource subject, Property predicate, RDFNode object, Model posit );
-    
+
     /**
      * Switch on/off drivation logging. If this is switched on then every time an inference
      * is a made that fact is recorded and the resulting record can be access through a later
      * getDerivation call. This may consume a lot of space!
      */
     public void setDerivationLogging(boolean logOn);
-   
+
     /**
      * Return the derivation of the given statement (which should be the result of
      * some previous list operation).
@@ -128,10 +127,10 @@ public interface InfModel extends Model {
      * available for this triple.
      * @see org.apache.jena.reasoner.Derivation Derviation
      */
-    public Iterator<Derivation> getDerivation(Statement statement);    
-    
+    public Iterator<Derivation> getDerivation(Statement statement);
+
     /**
-     * Returns a derivations model. The rule reasoners typically create a 
+     * Returns a derivations model. The rule reasoners typically create a
      * graph containing those triples added to the base graph due to rule firings.
      * In some applications it can useful to be able to access those deductions
      * directly, without seeing the raw data which triggered them. In particular,
@@ -140,6 +139,6 @@ public interface InfModel extends Model {
      * @return the deductions model, if relevant for this class of inference
      * engine or null if not.
      */
-    public Model getDeductionsModel(); 
+    public Model getDeductionsModel();
 
 }

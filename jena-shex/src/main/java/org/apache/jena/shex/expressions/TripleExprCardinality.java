@@ -18,6 +18,7 @@
 
 package org.apache.jena.shex.expressions;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.jena.atlas.io.IndentedWriter;
@@ -35,8 +36,8 @@ public class TripleExprCardinality extends TripleExpression {
     private final int min;
     private final int max;
 
-    public TripleExprCardinality(TripleExpression tripleExpr, Cardinality cardinality) {
-        super();
+    public TripleExprCardinality(TripleExpression tripleExpr, Cardinality cardinality, List<SemAct> semActs) {
+        super(semActs);
         this.other = tripleExpr;
         this.cardinality = cardinality;
         this.min = (cardinality==null) ? 1 : cardinality.min;

@@ -46,9 +46,9 @@ public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping
     @Override
     public void setUp()
         {
-        gBase = Factory.createDefaultGraph();
-        g1 = Factory.createDefaultGraph();
-        g2 = Factory.createDefaultGraph();
+        gBase = GraphMemFactory.createDefaultGraph();
+        g1 = GraphMemFactory.createDefaultGraph();
+        g2 = GraphMemFactory.createDefaultGraph();
         poly = new MultiUnion( new Graph[] {gBase, g1, g2} );
         poly.setBaseGraph( gBase );
         }
@@ -56,9 +56,9 @@ public class TestPolyadicPrefixMapping extends AbstractTestPrefixMapping
     @Override
     protected PrefixMapping getMapping()
         {
-        Graph gBase = Factory.createDefaultGraph();
-        Graph g1 = Factory.createDefaultGraph();
-        Graph g2 = Factory.createDefaultGraph();
+        Graph gBase = GraphMemFactory.createDefaultGraph();
+        Graph g1 = GraphMemFactory.createDefaultGraph();
+        Graph g2 = GraphMemFactory.createDefaultGraph();
         Polyadic poly = new MultiUnion( new Graph[] {gBase, g1, g2} );
         return new PolyadicPrefixMappingImpl( poly ); 
         }        

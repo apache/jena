@@ -309,7 +309,7 @@ public class FRuleEngine implements FRuleEngineI {
                     if ( head instanceof TriplePattern )
                     {
                         TriplePattern h = (TriplePattern) head;
-                        Triple t = new Triple( h.getSubject(), h.getPredicate(), h.getObject() );
+                        Triple t = Triple.create( h.getSubject(), h.getPredicate(), h.getObject() );
                         context.addTriple( t );
                         infGraph.getDeductionsGraph().add( t );
                     }
@@ -548,7 +548,7 @@ public class FRuleEngine implements FRuleEngineI {
 //        if (p == null) p = Node.createAnon();
 //        Node o = env.getBinding(pattern.getObject());
 //        if (o == null) o = Node.createAnon();
-//        return new Triple(s, p, o);
+//        return Triple.create(s, p, o);
 //    }
     
     /**

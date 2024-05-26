@@ -1,0 +1,29 @@
+<!--
+ 
+  Test case for bug #51.
+  i.e. hp internal bugzilla #51
+  
+  path part of URI's default's to "/"
+  Insertion of / on relative URIs
+  
+  
+  
+
+  
+-->
+<rdf:RDF  
+  xml:base="http://example.org"
+  xmlns:sw="http://example.org/"
+  xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+
+	<rdf:Description rdf:ID="one">
+ 		<sw:name rdf:resource="test"/>
+ 	</rdf:Description>
+        
+        <rdf:Description rdf:about="">
+ 		<sw:name rdf:resource="test"/>
+ 	</rdf:Description>
+
+
+</rdf:RDF>
+

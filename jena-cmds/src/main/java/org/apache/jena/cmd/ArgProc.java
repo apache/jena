@@ -18,9 +18,7 @@
 
 package org.apache.jena.cmd;
 
-
-public interface ArgProc {
-
+interface ArgProc {
     void startArgs();
     void finishArgs();
     void arg(String arg, int i);

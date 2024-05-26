@@ -18,12 +18,12 @@
 
 package org.apache.jena.fuseki.main;
 
-import org.apache.jena.fuseki.jetty.JettyLib;
+import org.apache.jena.fuseki.main.sys.JettyLib;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.http.HttpScheme;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.SecuredRedirectHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 /**

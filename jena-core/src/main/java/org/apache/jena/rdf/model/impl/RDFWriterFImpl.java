@@ -50,12 +50,9 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
     public RDFWriterFImpl() {}
 
     @Override
-    public RDFWriterI getWriter() {
-        return getWriter(DEFAULTLANG);
-    }
-
-    @Override
     public RDFWriterI getWriter(String lang) {
+        if (lang==null || lang.equals(""))
+            lang = DEFAULTLANG ;
         // If RIOT ->
         if ( rewiredAlternative != null )
             return rewiredAlternative.getWriter(lang) ;
@@ -72,13 +69,13 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
         }
     }
 
-    static { 
+    static {
         reset();
     }
 
     private static void reset() {
-        Class<? extends RDFWriterI> rdfxmlWriter = org.apache.jena.rdfxml.xmloutput.impl.Basic.class;
-        Class<? extends RDFWriterI> rdfxmlAbbrevWriter = org.apache.jena.rdfxml.xmloutput.impl.Abbreviated.class;
+        Class<? extends RDFWriterI> rdfxmlWriter = org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Basic.class;
+        Class<? extends RDFWriterI> rdfxmlAbbrevWriter = org.apache.jena.rdfxml.xmloutput.impl.RDFXML_Abbrev.class;
         Class<? extends RDFWriterI> ntWriter = org.apache.jena.rdf.model.impl.NTripleWriter.class;
 
         custom.put("RDF/XML", rdfxmlWriter);

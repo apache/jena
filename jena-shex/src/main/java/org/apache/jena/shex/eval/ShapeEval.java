@@ -28,12 +28,12 @@ import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.shex.ShexException;
 import org.apache.jena.shex.ShexSchema;
 import org.apache.jena.shex.expressions.*;
 import org.apache.jena.shex.sys.ReportItem;
 import org.apache.jena.shex.sys.ValidationContext;
+import org.apache.jena.system.G;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 public class ShapeEval {
@@ -78,7 +78,6 @@ public class ShapeEval {
             if ( ! non_matchables.isEmpty() )
                 return false;
         }
-
         return true;
     }
 
@@ -87,28 +86,24 @@ public class ShapeEval {
   }
 
     private static boolean matchesExpr(ValidationContext vCxt, Set<Triple> T, Node node, TripleExpression tripleExpr, Set<Node> extras) {
-        if ( tripleExpr instanceof TripleExprEachOf ) {
-            return ShapeEvalEachOf.matchesEachOf(vCxt, T, node, (TripleExprEachOf)tripleExpr, extras);
+        if ( tripleExpr instanceof TripleExprEachOf eachOf ) {
+            return ShapeEvalEachOf.matchesEachOf(vCxt, T, node, eachOf, extras);
         }
-        else if ( tripleExpr instanceof TripleExprOneOf ) {
-            return ShapeEvalOneOf.matchesOneOf(vCxt, T, node, (TripleExprOneOf)tripleExpr, extras);
+        else if ( tripleExpr instanceof TripleExprOneOf oneOf ) {
+            return ShapeEvalOneOf.matchesOneOf(vCxt, T, node, oneOf, extras);
         }
-        else if ( tripleExpr instanceof TripleExprRef ) {
-            return matchesTripleExprRef(vCxt, T, node, (TripleExprRef)tripleExpr, extras);
+        else if ( tripleExpr instanceof TripleExprRef ref ) {
+            return matchesTripleExprRef(vCxt, T, node, ref, extras);
         }
-        else if ( tripleExpr instanceof TripleExprCardinality ) {
-            return ShapeEvalCardinality.matchesCardinality(vCxt, T, node, (TripleExprCardinality)tripleExpr, extras);
+        else if ( tripleExpr instanceof TripleExprCardinality card) {
+            return ShapeEvalCardinality.matchesCardinality(vCxt, T, node, card, extras);
         }
-        else if ( tripleExpr instanceof TripleConstraint ) {
-            return ShapeEvalTripleConstraint.matchesCardinalityTC(vCxt, T, node, (TripleConstraint)tripleExpr, extras);
-//            TripleConstraint tc = (TripleConstraint)tripleExpr;
-//            tc.matches(vCxt, data);
+        else if ( tripleExpr instanceof TripleConstraint constraint) {
+            return ShapeEvalTripleConstraint.matchesCardinalityTC(vCxt, T, node, constraint, extras);
         }
         else if ( tripleExpr instanceof TripleExprNone ) {
             return true;
         }
-
-        //return tripleExpr.matchesTE(vCxt, null) != null;
         throw new NotImplemented(tripleExpr.getClass().getSimpleName());
     }
 

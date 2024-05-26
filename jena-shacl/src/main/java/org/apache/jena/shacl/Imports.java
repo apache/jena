@@ -29,25 +29,36 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.atlas.logging.FmtLog;
+import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphUtil;
 import org.apache.jena.graph.Node;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RiotParseException;
-import org.apache.jena.riot.other.G;
-import org.apache.jena.riot.other.RDFDataException;
+import org.apache.jena.riot.system.stream.LocationMapper;
+import org.apache.jena.riot.system.stream.StreamManager;
+import org.apache.jena.shacl.sys.ShaclSystem;
 import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.system.G;
+import org.apache.jena.system.RDFDataException;
+import org.apache.jena.web.HttpSC;
+import org.slf4j.Logger;
 
 /**
  * Import processing.
  * <p>
- * Imports are triggered by a base (a single triple "? rdf:type owl:Ontology")
- * and imports (triples "base owl:Imports URI").
+ * Imports are triggered by a base (a single triple "? rdf:type owl:Ontology") and
+ * imports (triples "base owl:Imports URI").
  * <p>
  * If there are other "? owl:imports ?" triples, they are ignored.
  */
 public class Imports {
+
+    public static Logger importsLogger = ShaclSystem.shaclSystemLogger;
+
     private Imports() {}
 
     /**
@@ -69,8 +80,8 @@ public class Imports {
     }
 
     /**
-     * Process and return the owl:imports closure of a graph.
-     * The graph is included in the results.
+     * Process and return the owl:imports closure of a graph. The graph is included
+     * in the results.
      */
     public static Graph withImports(String url, Graph graph) {
         url = IRIs.resolve(url);
@@ -80,8 +91,11 @@ public class Imports {
     private static Graph withImportsWorker(String url, Graph graph) {
         // Partial check for any imports. Are there any imports triples?
         boolean hasImports = G.contains(graph, null, nodeOwlImports, null);
-        if ( ! hasImports )
+        if ( !hasImports )
             return graph;
+        if ( importsLogger.isDebugEnabled() ) {
+            importsLogger.debug("Imports");
+        }
         // Probably some work to do.
         // This is "import self", and start the "visited".
         Graph acc = GraphFactory.createDefaultGraph();
@@ -97,38 +111,72 @@ public class Imports {
     private static void processImports(Set<String> visited, Graph graph, Graph acc) {
         List<Node> imports = imports(graph);
         for ( Node imported : imports ) {
-            if ( ! imported.isURI() )
+            if ( !imported.isURI() )
                 // Ignore non-URIs.
                 continue;
             String uri = imported.getURI();
-            if ( visited.contains(uri) )
+            if ( importsLogger.isDebugEnabled() )
+                importsLogger.debug("Import: " + uri);
+
+            // FmtLog.info(Imports.class, "Import: %s", uri);
+            if ( visited.contains(uri) ) {
+                if ( importsLogger.isDebugEnabled() )
+                    importsLogger.debug("Skipped: " + uri);
                 continue;
+            }
             visited.add(uri);
             // Read into a temporary graph to isolate errors.
-            try {
-                Graph g2 = RDFDataMgr.loadGraph(uri);
-                GraphUtil.addInto(acc, g2);
-                processImports(visited, g2, acc);
-            } catch (RiotParseException ex) {
-                //FmtLog.error(Imports.class, "Parse error reading '%s': %s", uri, ex.getMessage());
-                throw ex;
-            }
+            Graph g2 = loadOneGraph(uri);
+            GraphUtil.addInto(acc, g2);
+            processImports(visited, g2, acc);
+        }
+    }
+
+    private static final LocationMapper mapSHACL = new LocationMapper();
+    static {
+        // Inclusion in this list does not imply the shapes file is parseable or actually works!
+        mapSHACL.addAltEntry("http://topbraid.org/tosh",    "http://topbraid.org/tosh.ttl");
+        mapSHACL.addAltEntry("http://datashapes.org/dash",  "http://datashapes.org/dash.ttl");
+        mapSHACL.addAltEntry("https://topbraid.org/tosh",   "https://topbraid.org/tosh.ttl");
+        mapSHACL.addAltEntry("https://datashapes.org/dash", "https://datashapes.org/dash.ttl");
+        //mapSHACL.addAltEntry("http://www.w3.org/ns/shacl",  "https://www.w3.org/ns/shacl");
+    }
+
+    public static StreamManager shaclImportsStreamManager = StreamManager.get().clone();
+    static {
+        if ( ! mapSHACL.isEmpty() )
+            shaclImportsStreamManager.locationMapper(mapSHACL.clone());
+    }
+
+    private static Graph loadOneGraph(String uriOrFile) {
+        try {
+            return RDFParser.source(uriOrFile)
+                    .streamManager(shaclImportsStreamManager)
+                    .toGraph();
+        } catch (HttpException ex) {
+            if ( ex.getStatusCode() == HttpSC.NOT_FOUND_404 )
+                FmtLog.error(importsLogger, "Not found: %s", uriOrFile);
+            else
+                FmtLog.error(importsLogger, "HTTP exception: " + ex.getMessage());
+            throw ex;
+        } catch (RiotParseException ex) {
+            FmtLog.error(importsLogger, "Parse error reading '%s': %s", uriOrFile, ex.getMessage());
+            throw ex;
         }
     }
 
     /** Return the imports for a graph */
     public static List<Node> imports(Graph graph) {
-        Pair<Node,List<Node>> pair = baseAndImports(graph);
+        Pair<Node, List<Node>> pair = baseAndImports(graph);
         return pair.getRight();
     }
 
     /**
-     * Locate the base (a single triple ? rdf:type owl:Ontology)
-     * and imports (triples "base owl:Imports URI").
-     * May return null for the base in which case all imports are returned.
-     *
+     * Locate the base (a single triple ? rdf:type owl:Ontology) and imports (triples
+     * "base owl:Imports URI"). May return null for the base in which case all
+     * imports are returned.
      */
-    public static Pair<Node,List<Node>> baseAndImports(Graph graph) {
+    public static Pair<Node, List<Node>> baseAndImports(Graph graph) {
         Node base = null;
         if ( G.containsOne(graph, null, nodeRDFType, nodeOwlOntology) ) {
             base = G.getOnePO(graph, nodeRDFType, nodeOwlOntology);
@@ -138,23 +186,24 @@ public class Imports {
     }
 
     /**
-     * Locate the base (a single triple ? rdf:type owl:Ontology).
-     * If none or more than one matching triple, then return null.
+     * Locate the base (a single triple ? rdf:type owl:Ontology). If none or more
+     * than one matching triple, then return null.
      */
     public static Node base(Graph graph) {
         // Filter for URI?
         try {
             return G.getZeroOrOnePO(graph, nodeRDFType, nodeOwlOntology);
-        } catch (RDFDataException ex) { return null; }
+        } catch (RDFDataException ex) {
+            return null;
+        }
     }
 
     /**
-     * Locate any imports (triples "base owl:Imports URI").
-     * Base may be a wildcard indicating "any owl:imports".
+     * Locate any imports (triples "base owl:Imports URI"). Base may be a wildcard
+     * indicating "any owl:imports".
      */
     public static List<Node> allImports(Node base, Graph graph) {
         List<Node> imports = iter(G.listSP(graph, base, nodeOwlImports)).filter(Node::isURI).collect(Collectors.toList());
         return imports;
     }
 }
-

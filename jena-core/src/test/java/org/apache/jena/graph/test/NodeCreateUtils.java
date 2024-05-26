@@ -21,13 +21,11 @@ package org.apache.jena.graph.test;
 import java.util.StringTokenizer;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.BlankNodeId ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.LiteralLabel ;
-import org.apache.jena.graph.impl.LiteralLabelFactory ;
-import org.apache.jena.shared.* ;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.shared.PrefixMapping;
 
 /**
     Creating nodes from string specifications.
@@ -37,7 +35,7 @@ public class NodeCreateUtils
     /**
         Returns a Node described by the string, primarily for testing purposes.
         The string represents a URI, a numeric literal, a string literal, a bnode label,
-        or a variable.        
+        or a variable.
         <ul>
         <li> 'some text' :: a string literal with that text
         <li> 'some text'someLanguage:: a string literal with that text and language
@@ -53,11 +51,11 @@ public class NodeCreateUtils
     */
     public static Node create( String x )
         { return create( PrefixMapping.Extended, x ); }
-    
+
     /**
     Returns a Node described by the string, primarily for testing purposes.
     The string represents a URI, a numeric literal, a string literal, a bnode label,
-    or a variable.        
+    or a variable.
     <ul>
     <li> 'some text' :: a string literal with that text
     <li> 'some text'someLanguage:: a string literal with that text and language
@@ -68,7 +66,7 @@ public class NodeCreateUtils
     <li> &PPP :: to be done
     <li> name:stuff :: the URI; name may be expanded using the Extended map
     </ul>
-    
+
     @param pm the PrefixMapping for translating pre:X strings
     @param x the string encoding the node to create
     @return a node with the appropriate type and label
@@ -79,20 +77,20 @@ public class NodeCreateUtils
             throw new JenaException( "Node.create does not accept an empty string as argument" );
         char first = x.charAt( 0 );
         if (first == '\'' || first == '\"')
-            return NodeFactory.createLiteral( newString( pm, first, x ) );
-        if (Character.isDigit( first )) 
+            return newStringNode( pm, first, x);
+        if (Character.isDigit( first ))
             return NodeFactory.createLiteral( x, XSDDatatype.XSDinteger );
         if (first == '_')
-            return NodeFactory.createBlankNode( BlankNodeId.create( x ) );
+            return NodeFactory.createBlankNode( x );
         if (x.equals( "??" ))
             return Node.ANY;
         if (first == '?')
             return NodeFactory.createVariable( x.substring( 1 ) );
         if (first == '&')
-            return NodeFactory.createURI( "q:" + x.substring( 1 ) );        
+            return NodeFactory.createURI( "q:" + x.substring( 1 ) );
         int colon = x.indexOf( ':' );
         String d = pm.getNsPrefixURI( "" );
-        return colon < 0 
+        return colon < 0
             ? NodeFactory.createURI( (d == null ? "eh:/" : d) + x )
             : NodeFactory.createURI( pm.expandPrefix( x ) )
             ;
@@ -114,7 +112,7 @@ public class NodeCreateUtils
         result.append( spelling.substring( start ) );
         return result.toString();
         }
-    
+
     private static char unEscape( char ch )
         {
         switch (ch)
@@ -129,17 +127,17 @@ public class NodeCreateUtils
         	}
         }
 
-    public static LiteralLabel literal( PrefixMapping pm, String spelling, String langOrType )
+    public static Node literal( PrefixMapping pm, String spelling, String langOrType )
         {
         String content = unEscape( spelling );
         int colon = langOrType.indexOf( ':' );
-        return colon < 0 
-            ? LiteralLabelFactory.create( content, langOrType, false )
-            : LiteralLabelFactory.create( content, NodeFactory.getType( pm.expandPrefix( langOrType ) ) )
+        return colon < 0
+            ? NodeFactory.createLiteralLang( content, langOrType )
+            : NodeFactory.createLiteral( content, NodeFactory.getType( pm.expandPrefix( langOrType )))
             ;
         }
 
-    public static LiteralLabel newString( PrefixMapping pm, char quote, String nodeString )
+    public static Node newStringNode( PrefixMapping pm, char quote, String nodeString )
         {
         int close = nodeString.lastIndexOf( quote );
         return literal( pm, nodeString.substring( 1, close ), nodeString.substring( close + 1 ) );
@@ -164,7 +162,7 @@ public class NodeCreateUtils
 	    details of the supported syntax. This method exists to support test code.
 	    Nodes are interpreted using the Standard prefix mapping.
 	*/
-	
+
 	public static Triple createTriple( String fact )
 	    { return createTriple( PrefixMapping.Standard, fact ); }
     }

@@ -28,10 +28,9 @@ public class tdbcompact extends CmdTDB {
 
     private boolean shouldDeleteOld = false;
 
-
-    static public void main(String... argv) {
-        CmdTDB.init() ;
-        new tdbcompact(argv).mainRun() ;
+    static public void main(String...argv) {
+        CmdTDB.init();
+        new tdbcompact(argv).mainRun();
     }
 
     protected tdbcompact(String[] argv) {
@@ -49,15 +48,15 @@ public class tdbcompact extends CmdTDB {
 
     @Override
     protected String getSummary() {
-        return getCommandName() + " : Compact a TDB2 dataset" ;
+        return getCommandName() + " : Compact a TDB2 dataset";
     }
 
     @Override
     protected void exec() {
-        DatasetGraphSwitchable dsg = getDatabaseContainer() ;
+        DatasetGraphSwitchable dsg = getDatabaseContainer();
         long start = System.currentTimeMillis();
-        DatabaseOps.compact(dsg, shouldDeleteOld) ;
+        DatabaseOps.compact(dsg, shouldDeleteOld);
         long finish = System.currentTimeMillis();
-        System.out.printf("Compacted in %.3fs\n", (finish-start)/1000.0);
+        System.out.printf("Compacted in %.3fs\n", (finish - start) / 1000.0);
     }
 }

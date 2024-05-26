@@ -41,18 +41,17 @@ public class FN_AdjustDatetimeToTimezone extends FunctionBase {
     public NodeValue exec(List<NodeValue> args)
     {
         if ( args.size() != 1 && args.size() != 2 )
-            throw new ExprEvalException("fn:adjustDateTimeToTimezone: Wrong number of arguments: "+args.size()+" : [wanted 1 or 2]") ;
+            throw new ExprEvalException("fn:adjust-dateTime-to-timezone: : Wrong number of arguments: "+args.size()+" : [wanted 1 or 2]") ;
 
         NodeValue v1 = args.get(0) ;
         if ( ARQ.isStrictMode() && !v1.isDateTime() )
-            throw new ExprEvalException("Not an xsd:dateTime : " + v1);
-        
-        if ( args.size() == 2 )
-        {
+            throw new ExprEvalException("fn:adjust-dateTime-to-timezone: Arg 1 not an xsd:dateTime : " + v1);
+
+        if ( args.size() == 2 ) {
             NodeValue v2 = args.get(1) ;
-            return XSDFuncOp.adjustDatetimeToTimezone(v1, v2) ;
+            return XSDFuncOp.adjustToTimezone(v1, v2) ;
         }
 
-        return XSDFuncOp.adjustDatetimeToTimezone(v1, null) ;
+        return XSDFuncOp.adjustToTimezone(v1, null) ;
     }
 }

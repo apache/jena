@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!--
+  Local test files use in Jena2 development
+
+  Infer domain/range from inverseof
+-->
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY eg   'urn:x-hp:eg'>
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#'>
+    <!ENTITY owl  "http://www.w3.org/2002/07/owl#" >
+]>
+
+<rdf:RDF xmlns:rdf="&rdf;" xmlns:rdfs="&rdfs;" xmlns:xsd="&xsd;" xmlns:owl="&owl;"
+         xml:base="&eg;" xmlns="&eg;#">
+
+    <owl:Class rdf:about="#A" />
+    <owl:Class rdf:about="#B" />
+
+	<owl:ObjectProperty rdf:about="#p">
+	  <rdfs:domain rdf:resource="&eg;#A" />
+	  <rdfs:range rdf:resource="&eg;#B" />
+	</owl:ObjectProperty>
+	
+	<owl:ObjectProperty rdf:about="#q">
+  	  <owl:inverseOf rdf:resource="&eg;#p"/>
+	</owl:ObjectProperty>
+
+</rdf:RDF>

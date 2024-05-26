@@ -18,46 +18,52 @@
 
 package org.apache.jena.riot.thrift;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.thrift.wire.RDF_PrefixDecl ;
-import org.apache.jena.riot.thrift.wire.RDF_Quad ;
-import org.apache.jena.riot.thrift.wire.RDF_Triple ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.atlas.lib.Cache;
+import org.apache.jena.atlas.lib.CacheFactory;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.system.FactoryRDFCaching;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.thrift.wire.RDF_PrefixDecl;
+import org.apache.jena.riot.thrift.wire.RDF_Quad;
+import org.apache.jena.riot.thrift.wire.RDF_Triple;
+import org.apache.jena.sparql.core.Quad;
 
 /** Thrift RDF (wire format) to RDF terms (Jena java objects)
- * 
+ *
  * @see StreamRDF2Thrift for the reverse process.
  */
 
 public class Thrift2StreamRDF implements VisitorStreamRowTRDF {
 
-    private final StreamRDF dest ;
-    private final PrefixMap pmap ;
+    private final StreamRDF dest;
+    private final PrefixMap pmap;
+    private final Cache<String, Node> uriCache =
+            CacheFactory.createSimpleCache(FactoryRDFCaching.DftNodeCacheSize);
 
     public Thrift2StreamRDF(PrefixMap pmap, StreamRDF stream) {
-        this.pmap = pmap ; 
-        this.dest = stream ;
+        this.pmap = pmap;
+        this.dest = stream;
     }
-    
+
     @Override
     public void visit(RDF_Triple rt) {
-        Triple t = ThriftConvert.convert(rt, pmap) ;
-        dest.triple(t) ;
+        Triple t = ThriftConvert.convert(uriCache, rt, pmap);
+        dest.triple(t);
     }
 
     @Override
     public void visit(RDF_Quad rq) {
-        Quad q = ThriftConvert.convert(rq, pmap) ;
-        dest.quad(q) ;
+        Quad q = ThriftConvert.convert(uriCache, rq, pmap);
+        dest.quad(q);
     }
-    
+
     @Override
     public void visit(RDF_PrefixDecl prefixDecl) {
-        String prefix = prefixDecl.getPrefix() ;
-        String iriStr = prefixDecl.getUri() ;
-        pmap.add(prefix, iriStr) ;
-        dest.prefix(prefix, iriStr) ;
+        String prefix = prefixDecl.getPrefix();
+        String iriStr = prefixDecl.getUri();
+        pmap.add(prefix, iriStr);
+        dest.prefix(prefix, iriStr);
     }
 }

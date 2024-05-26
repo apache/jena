@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,122 +18,35 @@
 
 package org.apache.jena.atlas.lib;
 
-import java.lang.reflect.Field ;
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.io.PrintStream;
+import java.util.Optional;
 
-import org.apache.jena.atlas.io.IndentedLineBuffer ;
-import org.apache.jena.atlas.io.IndentedWriter ;
+/** In support of version information. */
+public class Version {
 
-/** Manage version information for subsystems */
-public class Version
-{
-    private List<Class< ? >> classes = new ArrayList<>() ;
-    
-    /**
-     * Add a class to the version information
-     * @param c Class
-     */
-    public void addClass(Class< ? > c)
-    {
-        if ( ! classes.contains(c) ) 
-            classes.add(c) ;
-    }
-    
-    private static String FIELD_VERSION = "VERSION";
-    
-    private static String FIELD_BUILD_DATE = "BUILD_DATE";
-    
-    private static String[] fields = { /*"NAME",*/ FIELD_VERSION, FIELD_BUILD_DATE } ;
+    private Version() {}
 
     /**
-     * Prints version information for all registered classes to the given writer
-     * @param writer Writer to print version information to
+     * Return the version of a class.
+     * <p>
+     * This depends on the class being in a jar with a
+     * manifest that has the version field.
+     * <p>
+     * Otherwise return {@link Optional#empty()}.
      */
-    public void print(IndentedWriter writer) {
-        for ( Class<?> c : classes ) {
-            String x = Lib.classShortName( c );
-            fields( writer, x, c );
-        }
+    public static Optional<String> versionForClass(Class<?> cls) {
+        String x = cls.getPackage().getImplementationVersion();
+        return Optional.ofNullable(x);
     }
 
-    private static void fields(IndentedWriter writer, String prefix, Class< ? > cls)
-    {
-        for ( String field : fields )
-            printField( writer, prefix, field, cls );
-    }
-    
-    private static String field(String fieldName, Class<? > cls) {
-        try {
-            Field f = cls.getDeclaredField(fieldName) ;
-            Object val = f.get(null) ;
-            if ( val == null )
-                return null ;
-            return val.toString() ;
-        }
-        catch (IllegalArgumentException ex) {
-            ex.printStackTrace() ;
-        }
-        catch (IllegalAccessException ex) {
-            ex.printStackTrace() ;
-        }
-        catch (SecurityException ex) {
-            ex.printStackTrace() ;
-        }
-        catch (NoSuchFieldException ex) {
-            ex.printStackTrace() ;
-        }
-        return "<error>" ;
+    public static void printVersion(PrintStream out, String system, Optional<String> versionString) {
+        printVersion(out, system, versionString.orElse("<development>"));
     }
 
-    private static void printField(IndentedWriter out, String prefix, String fieldName, Class<? > cls) {
-        String str = field(fieldName, cls) ;
-        if ( str == null )
-            return ;
-        out.print(prefix) ;
-        out.print(": ") ;
-        out.pad(12) ;
-        out.print(fieldName) ;
-        out.print(": ") ;
-        out.print(field(fieldName, cls)) ;
-        out.println() ;
-        out.flush() ;
-    }
-    
-    /**
-     * Gets user friendly version information for all registered classes as a string
-     * @param singleLine Whether to print to a single line
-     * @return Version information
-     */
-    public String toString(boolean singleLine) {
-        try ( IndentedLineBuffer buffer = new IndentedLineBuffer(false) ) {
-            Iterator<Class<?>> iter = classes.iterator();
-            while (iter.hasNext())
-            {
-                Class<?> c = iter.next();
-                String component = Lib.classShortName(c) ;
-                String version = field(FIELD_VERSION, c);
-                String timestamp = field(FIELD_BUILD_DATE, c);
-                buffer.append("%s Version %s (Built %s)", component, version, timestamp);
-                if (iter.hasNext()) {
-                    if (!singleLine) {
-                        buffer.println();
-                    } else {
-                        buffer.print(", ");
-                    }
-                }
-            }
-
-            return buffer.asString();
-        }
-    }
-    
-    /**
-     * Gets user friendly version information for all registered classes as a string
-     */
-    @Override
-    public String toString() {
-        return this.toString(false);
+    public static void printVersion(PrintStream out, String system, String versionString) {
+        if ( system == null )
+            out.printf("Apache Jena version %s\n", versionString);
+        else
+            out.printf("Apache Jena %s version %s\n", system, versionString);
     }
 }

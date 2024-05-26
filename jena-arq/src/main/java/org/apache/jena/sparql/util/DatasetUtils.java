@@ -206,7 +206,7 @@ public class DatasetUtils
             for ( Iterator<String> iter = namedSourceList.iterator() ; iter.hasNext() ; ) {
                 String sourceURI = iter.next();
                 String absURI = baseURI(sourceURI, absBaseURI);
-                // Read to a tmp graph in case of syntax errors.
+                // Read into a tmp graph in case of syntax errors.
                 Graph gTmp = GraphFactory.createJenaDefaultGraph();
                 RDFDataMgr.read(gTmp, sourceURI, absBaseURI, null);
                 Node gn = NodeFactory.createURI(sourceURI);

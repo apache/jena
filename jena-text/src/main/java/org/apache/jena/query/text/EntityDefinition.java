@@ -16,37 +16,36 @@
  * limitations under the License.
  */
 
-package org.apache.jena.query.text ;
+package org.apache.jena.query.text;
 
-import java.util.Collection ;
-import java.util.Collections ;
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
-import org.apache.jena.ext.com.google.common.collect.ListMultimap;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.lucene.analysis.Analyzer ;
+import org.apache.commons.collections4.ListValuedMap;
+import org.apache.commons.collections4.MultiMapUtils;
+import org.apache.jena.graph.Node;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.lucene.analysis.Analyzer;
 
 /**
  * Definition of a "document"
  */
 public class EntityDefinition {
-    private final Map<Node, String>          predicateToField = new HashMap<>() ;
-    private final Map<String, Analyzer>      fieldToAnalyzer  = new HashMap<>() ;
-    private final ListMultimap<String, Node> fieldToPredicate = ArrayListMultimap.create() ;
-    private final Map<String, Boolean>       fieldToNoIndex   = new HashMap<>() ;
-    private final Collection<String>         fields           = Collections.unmodifiableCollection(fieldToPredicate.keys()) ;
+    private final Map<Node, String>             predicateToField = new HashMap<>();
+    private final Map<String, Analyzer>         fieldToAnalyzer  = new HashMap<>();
+    private final ListValuedMap<String, Node>   fieldToPredicate = MultiMapUtils.newListValuedHashMap();
+    private final Map<String, Boolean>          fieldToNoIndex   = new HashMap<>();
+    private final Collection<String>            fields           = Collections.unmodifiableCollection(fieldToPredicate.keys());
     // private final Collection<String> fields =
-    // Collections.unmodifiableCollection(fieldToPredicate.keySet()) ;
-    private final String                     entityField ;
-    private final String                     primaryField ;
-    private String                           graphField = null ;
-    private String                           langField ;
-    private String                           uidField ;
-
-    private boolean                          cacheQueries;
+    // Collections.unmodifiableCollection(fieldToPredicate.keySet());
+    private final String                        entityField;
+    private final String                        primaryField;
+    private String                              graphField = null;
+    private String                              langField;
+    private String                              uidField;
+    private boolean                             cacheQueries;
 
     /**
      * @param entityField
@@ -55,8 +54,8 @@ public class EntityDefinition {
      *            The primary/default field to search
      */
     public EntityDefinition(String entityField, String primaryField) {
-        this.entityField = entityField ;
-        this.primaryField = primaryField ;
+        this.entityField = entityField;
+        this.primaryField = primaryField;
     }
 
     /**
@@ -68,7 +67,7 @@ public class EntityDefinition {
      *            The field that stores graph URI, or null
      */
     public EntityDefinition(String entityField, String primaryField, String graphField) {
-        this(entityField, primaryField) ;
+        this(entityField, primaryField);
         setGraphField(graphField);
     }
 
@@ -81,7 +80,7 @@ public class EntityDefinition {
      *            The property associated with the primary/default field
      */
     public EntityDefinition(String entityField, String primaryField, Resource primaryPredicate) {
-        this(entityField, primaryField) ;
+        this(entityField, primaryField);
         setPrimaryPredicate(primaryPredicate);
     }
 
@@ -94,7 +93,7 @@ public class EntityDefinition {
      *            The property associated with the primary/default field
      */
     public EntityDefinition(String entityField, String primaryField, Node primaryPredicate) {
-        this(entityField, primaryField) ;
+        this(entityField, primaryField);
         setPrimaryPredicate(primaryPredicate);
     }
 
@@ -109,13 +108,13 @@ public class EntityDefinition {
      *            The property associated with the primary/default field
      */
     public EntityDefinition(String entityField, String primaryField, String graphField, Node primaryPredicate) {
-        this(entityField, primaryField) ;
+        this(entityField, primaryField);
         setGraphField(graphField);
-        setPrimaryPredicate(primaryPredicate) ;
+        setPrimaryPredicate(primaryPredicate);
     }
-    
+
     public String getEntityField() {
-        return entityField ;
+        return entityField;
     }
 
     public void setPrimaryPredicate(Resource primaryPredicate) {
@@ -123,53 +122,53 @@ public class EntityDefinition {
     }
 
     public void setPrimaryPredicate(Node primaryPredicate) {
-        set(primaryField, primaryPredicate) ;
+        set(primaryField, primaryPredicate);
     }
 
     public void set(String field, Node predicate) {
-        predicateToField.put(predicate, field) ;
+        predicateToField.put(predicate, field);
         // Add uniquely.
-        Collection<Node> c = fieldToPredicate.get(field) ;
+        Collection<Node> c = fieldToPredicate.get(field);
         if (c == null || !c.contains(predicate))
-            fieldToPredicate.put(field, predicate) ;
+            fieldToPredicate.put(field, predicate);
     }
 
     public Collection<Node> getPredicates(String field) {
-        return fieldToPredicate.get(field) ;
+        return fieldToPredicate.get(field);
     }
 
     public String getField(Node predicate) {
-        return predicateToField.get(predicate) ;
+        return predicateToField.get(predicate);
     }
-    
+
     public void setAnalyzer(String field, Analyzer analyzer) {
         fieldToAnalyzer.put(field, analyzer);
     }
-    
+
     public Analyzer getAnalyzer(String field) {
         return fieldToAnalyzer.get(field);
     }
-    
+
     public void setNoIndex(String field, boolean b) {
         fieldToNoIndex.put(field, b);
     }
-    
+
     public boolean getNoIndex(String field) {
         Boolean b = fieldToNoIndex.get(field);
         return b != null ? b : false;
     }
 
     public String getPrimaryField() {
-        return primaryField ;
+        return primaryField;
     }
 
     public Node getPrimaryPredicate() {
-        Collection<Node> c = fieldToPredicate.get(getPrimaryField()) ;
-        return getOne(c) ;
+        Collection<Node> c = fieldToPredicate.get(getPrimaryField());
+        return getOne(c);
     }
 
     public String getGraphField() {
-        return graphField ;
+        return graphField;
     }
 
     public void setGraphField(String graphField) {
@@ -193,26 +192,26 @@ public class EntityDefinition {
     }
 
     public Collection<String> fields() {
-        return fields ;
+        return fields;
     }
-    
+
     private static <T> T getOne(Collection<T> collection) {
         if ( collection.size() != 1 )
-            return null ;
-        return collection.iterator().next() ;
+            return null;
+        return collection.iterator().next();
     }
 
     public boolean areQueriesCached() {
         return cacheQueries;
     }
-    
+
     public void setCacheQueries(boolean cacheQueries) {
         this.cacheQueries = cacheQueries;
     }
-    
+
     @Override
     public String toString() {
-        return entityField+":"+predicateToField ;
-        
+        return entityField+":"+predicateToField;
+
     }
 }

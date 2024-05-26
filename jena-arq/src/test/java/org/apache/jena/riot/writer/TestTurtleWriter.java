@@ -46,8 +46,7 @@ public class TestTurtleWriter {
     static final Model baseTestData;
     static {
         baseTestData = ModelFactory.createDefaultModel();
-        RDFParser.fromString(TestTurtleWriter.basetester)
-            .lang(Lang.TTL)
+        RDFParser.fromString(TestTurtleWriter.basetester, Lang.TTL)
             .parse(baseTestData);
     }
 
@@ -76,28 +75,35 @@ public class TestTurtleWriter {
 
     // Tests from JENA-908
     @Test
-    public void bnode_cycles_01() { blankNodeLang(cycle1, RDFFormat.TURTLE) ; }
+    public void bnode_cycle1_1() { blankNodeLang(cycle1, RDFFormat.TURTLE) ; }
 
     @Test
-    public void bnode_cycles_02() { blankNodeLang(cycle1, RDFFormat.TURTLE_BLOCKS) ; }
+    public void bnode_cycle1_2() { blankNodeLang(cycle1, RDFFormat.TURTLE_BLOCKS) ; }
 
     @Test
-    public void bnode_cycles_03() { blankNodeLang(cycle1, RDFFormat.TURTLE_FLAT) ; }
+    public void bnode_cycle1_3() { blankNodeLang(cycle1, RDFFormat.TURTLE_FLAT) ; }
 
     @Test
-    public void bnode_cycles_04() { blankNodeLang(cycle1, RDFFormat.TURTLE_PRETTY) ; }
+    public void bnode_cycle1_4() { blankNodeLang(cycle1, RDFFormat.TURTLE_PRETTY) ; }
 
     @Test
-    public void bnode_cycles_05() { blankNodeLang(cycle2, RDFFormat.TURTLE) ; }
+    public void bnode_cycle1_15() { blankNodeLang(cycle1, RDFFormat.TURTLE_LONG) ; }
+
 
     @Test
-    public void bnode_cycles_06() { blankNodeLang(cycle2, RDFFormat.TURTLE_BLOCKS) ; }
+    public void bnode_cycles2_1() { blankNodeLang(cycle2, RDFFormat.TURTLE) ; }
 
     @Test
-    public void bnode_cycles_07() { blankNodeLang(cycle2, RDFFormat.TURTLE_FLAT) ; }
+    public void bnode_cycles2_2() { blankNodeLang(cycle2, RDFFormat.TURTLE_BLOCKS) ; }
 
     @Test
-    public void bnode_cycles_08() { blankNodeLang(cycle2, RDFFormat.TURTLE_PRETTY) ; }
+    public void bnode_cycles2_3() { blankNodeLang(cycle2, RDFFormat.TURTLE_FLAT) ; }
+
+    @Test
+    public void bnode_cycle2_4() { blankNodeLang(cycle2, RDFFormat.TURTLE_PRETTY) ; }
+
+    @Test
+    public void bnode_cycle2_5() { blankNodeLang(cycle2, RDFFormat.TURTLE_LONG) ; }
 
     @Test
     public void bnode_cycles() {
@@ -121,28 +127,25 @@ public class TestTurtleWriter {
         // Default base style
         String result = modelToString(baseTestData, RDFFormat.TURTLE_FLAT, null);
         int count1 = StringUtils.countMatches(result, "@base");
-        Assert.assertEquals(1, count1);
+        Assert.assertEquals(0, count1);
         int count2 = StringUtils.countMatches(result, "BASE");
-        Assert.assertEquals(0, count2);
+        Assert.assertEquals(1, count2);
     }
 
     @Test
     public void test_base_2() {
-        Context cxt = RIOT.getContext().copy();
-        cxt.set(RIOT.symTurtleDirectiveStyle, DirectiveStyle.AT);
-        String result = modelToString(baseTestData, RDFFormat.TURTLE_BLOCKS, null);
+        Context cxt = RIOT.getContext().copy().set(RIOT.symTurtleDirectiveStyle, DirectiveStyle.AT);
+        String result = modelToString(baseTestData, RDFFormat.TURTLE_BLOCKS, cxt);
         int count1 = StringUtils.countMatches(result, "@base");
         Assert.assertEquals(1, count1);
         int count2 = StringUtils.countMatches(result, "BASE");
         Assert.assertEquals(0, count2);
     }
 
-
     // BASE
     @Test
     public void test_base_3() {
-        Context cxt = RIOT.getContext().copy();
-        cxt.set(RIOT.symTurtleDirectiveStyle, DirectiveStyle.SPARQL);
+        Context cxt = RIOT.getContext().copy().set(RIOT.symTurtleDirectiveStyle, DirectiveStyle.KEYWORD);
         String result = modelToString(baseTestData, RDFFormat.TURTLE_FLAT, cxt);
         int count1 = StringUtils.countMatches(result, "BASE");
         Assert.assertEquals(1, count1);
@@ -153,7 +156,7 @@ public class TestTurtleWriter {
     @Test
     public void test_base_4() {
         Context cxt = RIOT.getContext().copy();
-        cxt.set(RIOT.symTurtleDirectiveStyle, DirectiveStyle.SPARQL);
+        cxt.set(RIOT.symTurtleDirectiveStyle, DirectiveStyle.KEYWORD);
         String result = modelToString(baseTestData, RDFFormat.TURTLE_BLOCKS, cxt);
         int count1 = StringUtils.countMatches(result, "BASE");
         Assert.assertEquals(1, count1);

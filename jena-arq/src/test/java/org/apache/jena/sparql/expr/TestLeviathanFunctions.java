@@ -21,6 +21,7 @@ package org.apache.jena.sparql.expr;
 import static org.apache.jena.sparql.expr.LibTestExpr.test ;
 import static org.apache.jena.sparql.expr.LibTestExpr.testDouble ;
 import static org.apache.jena.sparql.expr.LibTestExpr.testError ;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.junit.AfterClass;
@@ -130,7 +131,9 @@ public class TestLeviathanFunctions {
 
     @Test
     public void log_03() {
-        test("lfn:log(-1)", NodeFactoryExtra.doubleToNode(Double.NaN));
+        NodeValue actual = LibTestExpr.eval("lfn:log(-1)");
+        // Test the object, not the value.
+        assertTrue(NodeValue.nvNaN.equals(actual));
     }
 
     @Test

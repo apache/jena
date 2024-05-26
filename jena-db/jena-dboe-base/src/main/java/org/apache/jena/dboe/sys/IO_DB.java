@@ -19,25 +19,17 @@
 package org.apache.jena.dboe.sys;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 import org.apache.jena.atlas.RuntimeIOException;
-import org.apache.jena.atlas.logging.FmtLog;
-import org.apache.jena.dboe.DBOpEnvException;
 import org.apache.jena.dboe.base.file.Location;
 
 public class IO_DB {
     // Location == org.apache.jena.dboe.base.file.Location
-    
+
     /** Convert a {@link Path}  to a {@link Location}. */
     public static Location asLocation(Path path) {
         Objects.requireNonNull(path, "IOX.asLocation(null)");
@@ -54,53 +46,7 @@ public class IO_DB {
     }
 
     /** Convert a {@link Location} to a {@link File}. */
-    public static File asFile(org.apache.jena.dboe.base.file.Location loc) {
+    public static File asFile(Location loc) {
         return new File(loc.getDirectoryPath());
-    }
-
-    /** Find the files in this directory that have namebase as a prefix and
-     *  are then numbered.
-     *  <p>
-     *  Returns a sorted list from, low to high index.
-     */
-    public static List<Path> scanForDirByPattern(Path directory, String namebase, String nameSep) {
-        Pattern pattern = Pattern.compile(Pattern.quote(namebase)+
-                                          Pattern.quote(nameSep)+
-                                          "[\\d]+");
-        List<Path> paths = new ArrayList<>();
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory, namebase + "*")) {
-            for ( Path entry : stream ) {
-                if ( !pattern.matcher(entry.getFileName().toString()).matches() ) {
-                    throw new DBOpEnvException("Invalid filename for matching: "+entry.getFileName());
-                    // Alternative: Skip bad trailing parts but more likely there is a naming problem.
-                    //   LOG.warn("Invalid filename for matching: {} skipped", entry.getFileName());
-                    //   continue;
-                }
-                // Follows symbolic links.
-                if ( !Files.isDirectory(entry) )
-                    throw new DBOpEnvException("Not a directory: "+entry);
-                paths.add(entry);
-            }
-        }
-        catch (IOException ex) {
-            FmtLog.warn(IO_DB.class, "Can't inspect directory: (%s, %s)", directory, namebase);
-            throw new DBOpEnvException(ex);
-        }
-        Comparator<Path> comp = (f1, f2) -> {
-            int num1 = extractIndex(f1.getFileName().toString(), namebase, nameSep);
-            int num2 = extractIndex(f2.getFileName().toString(), namebase, nameSep);
-            return Integer.compare(num1, num2);
-        };
-        paths.sort(comp);
-        //indexes.sort(Long::compareTo);
-        return paths;
-    }
-
-    /** Given a filename in "base-NNNN" format, return the value of NNNN */
-    public static int extractIndex(String name, String namebase, String nameSep) {
-        int i = namebase.length()+nameSep.length();
-        String numStr = name.substring(i);
-        int num = Integer.parseInt(numStr);
-        return num;
     }
 }

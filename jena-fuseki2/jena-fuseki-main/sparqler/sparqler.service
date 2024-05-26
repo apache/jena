@@ -1,0 +1,39 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+#
+# This script runs sparqler under systemd.  
+#
+# Assumptions:
+#  sparqler is installed in /etc/jena/sparqler
+#  apache2.service is installed in systemd
+#  apache2 is configured to redirect specific requests to the fuseki server
+#
+# Install
+#  create a symbolic link from /lib/systemd/system/sparqler.service to /etc/jena/sparqler.service
+#  execute "sudo systemctl daemon-reload"
+#  execute "sudo systemctl enable sparqler.service"
+#  execute "sudo systemctl start sparqler.service"
+# 
+#  Fuseki will now be running and if apache2 is configured properly requests should be redirected to it.
+#
+# Update
+#  execute "sudo systemctl daemon-reload"
+#  execute "sudo systemctl restart sparqler.service
+
+[Unit]
+Description=SPARQLER server
+After=apache2.service
+Documentation=https://jena.apache.org/documentation/fuseki2/index.html
+
+[Service]
+Type=simple
+Environment=BACKGROUND=0
+WorkingDirectory=/etc/jena/sparqler
+RemainAfterExit=yes
+ExecStart=/etc/jena/sparqler/run-sparqler
+ExecStop=/usr/bin/pkill -f fuseki
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target
+

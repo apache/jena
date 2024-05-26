@@ -21,9 +21,40 @@ package org.apache.jena.sparql.expr;
 import static org.apache.jena.sparql.expr.LibTestExpr.test;
 import static org.apache.jena.sparql.expr.LibTestExpr.testSSE;
 
+import org.apache.jena.query.ARQ;
+import org.apache.jena.sys.JenaSystem;
 import org.junit.Test;
 
 public class TestExpressions4 {
+
+    static { JenaSystem.init(); }
+
+    @Test public void adjust_fn_1() {
+        strict(()->test("fn:adjust-dateTime-to-timezone(xsd:dateTime('2022-12-21T05:05:07'), '-PT10H'^^xsd:duration)",
+                          "'2022-12-21T05:05:07-10:00'^^xsd:dateTime"));
+    }
+
+    @Test(expected=ExprEvalException.class)
+    public void adjust_fn_2() {
+        strict(()->test("fn:adjust-dateTime-to-timezone(xsd:date('2022-12-21'), '-PT10H'^^xsd:duration)",
+                        "'2022-12-21-10:00'^^xsd:date"));
+    }
+
+    @Test public void adjust_fn_3() {
+        // ARQ addition
+        test("afn:adjust-to-timezone(xsd:date('2022-12-21'), '-PT10H'^^xsd:duration)", "'2022-12-21-10:00'^^xsd:date");
+    }
+
+    // Run in strict mode.
+    private static void strict(Runnable action) {
+        boolean b = ARQ.isStrictMode();
+        ARQ.setStrictMode();
+        try { action.run(); }
+        finally {
+            if ( !b )
+                ARQ.setNormalMode();
+        }
+    }
 
     // ---- op:numeric-integer-divide
     // Operator, function and fn:function, op:function forms.

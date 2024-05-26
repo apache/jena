@@ -32,14 +32,14 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Properties;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.fuseki.system.FusekiNetLib;
 
 /** Dump the HTTP request */
@@ -154,8 +154,6 @@ public class ActionDumpRequest extends HttpServlet {
                 pw.println();
                 pw.println("Cookie:        " + c[i].getName());
                 pw.println("    value:     " + c[i].getValue());
-                pw.println("    version:   " + c[i].getVersion());
-                pw.println("    comment:   " + c[i].getComment());
                 pw.println("    domain:    " + c[i].getDomain());
                 pw.println("    maxAge:    " + c[i].getMaxAge());
                 pw.println("    path:      " + c[i].getPath());
@@ -186,7 +184,7 @@ public class ActionDumpRequest extends HttpServlet {
     }
 
     static void printQueryString(PrintWriter pw, HttpServletRequest req) {
-        Multimap<String, String> map = FusekiNetLib.parseQueryString(req);
+        MultiValuedMap<String, String> map = FusekiNetLib.parseQueryString(req);
         for ( String name : map.keys() )
             for ( String value : map.get(name) )
                 pw.println("Param: "+name + " = " + value);

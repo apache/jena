@@ -28,15 +28,15 @@ import org.apache.jena.riot.system.ErrorHandlerFactory ;
 
 public class BaseTest2 {
     // Should go elsewhere?
-    
+
   private static Deque<ErrorHandler> errorHandlers = new ArrayDeque<>() ;
-   
+
    static public void setTestLogging(ErrorHandler errorhandler)
    {
        errorHandlers.push(ErrorHandlerFactory.getDefaultErrorHandler()) ;
        ErrorHandlerFactory.setDefaultErrorHandler(errorhandler) ;
    }
-   
+
    static public void setTestLogging()
    {
 //       if ( errorHandlers.size() != 0 )

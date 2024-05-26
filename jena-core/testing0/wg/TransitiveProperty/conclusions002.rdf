@@ -1,0 +1,37 @@
+<!--++ TransitiveProperty/conclusions002.rdf ** generated using webont test editor. ++-->
+<!--++ Created 22 Sep 2003 07:00:18 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: conclusions002.rdf,v 1.3 2003-12-05 05:09:33 jeremy_carroll Exp $
+-->
+<!--
+Test illustrating extensional semantics of <code>owl:TransitiveProperty</code>.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/TransitiveProperty/premises002#"
+    xmlns:second="http://www.w3.org/2002/03owlt/TransitiveProperty/conclusions002#"
+    xml:base="http://www.w3.org/2002/03owlt/TransitiveProperty/conclusions002" >
+   <owl:TransitiveProperty rdf:about="premises002#symProp"/>
+   <rdf:Description rdf:about="premises002#a">
+     <rdf:type>
+       <owl:Restriction>
+         <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+         <owl:onProperty rdf:resource="premises002#symProp"/>
+         <owl:someValuesFrom  rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+       </owl:Restriction>
+     </rdf:type>
+   </rdf:Description>
+
+</rdf:RDF>

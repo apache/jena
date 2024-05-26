@@ -30,13 +30,13 @@ import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.engine.ShaclPaths;
 import org.apache.jena.shacl.sys.C;
 import org.apache.jena.shacl.vocabulary.SHACL;
 import org.apache.jena.shacl.vocabulary.SHACLM;
 import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.system.G;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDF;
 
@@ -107,38 +107,38 @@ public class VR {
 
 
     private static String qs = StrUtils.strjoinNL
-        (PREFIXES
-            ,"CONSTRUCT {"
-            , "    ?X a sh:ValidationReport ;"
-            , "        sh:conforms ?conforms ;"
-            , "        sh:result ?R"
-            , "    ."
-            , "    ?R"
-            , "       sh:focusNode ?focusNode ;"
-            , "       sh:resultMessage ?message ;"
-            , "       sh:resultSeverity  ?severity ; "
-            , "       sh:sourceConstraint ?constraint ;"
-            , "       sh:sourceConstraintComponent ?component ;"
-            , "       sh:sourceShape ?sourceShape ;"
-            , "       sh:resultPath  ?path ;"
-            , "       sh:value ?value ;"
-            , "."
-            ,"}"
-            ," WHERE {"
-            , "    ?X a sh:ValidationReport ;"
-            , "       sh:result ?R"
-            , "    OPTIONAL { ?X sh:conforms ?conforms }"
-            , "    ?R"
-            , "       sh:focusNode ?focusNode ;"
-            , "       sh:resultSeverity  ?severity ; "
-            , "       ."
-            , "    OPTIONAL { ?R sh:resultMessage ?message }"
-            , "    OPTIONAL { ?R sh:sourceConstraintComponent ?component }"
-            , "    OPTIONAL { ?R sh:sourceConstraint ?constraint }"
-            , "    OPTIONAL { ?R sh:sourceShape ?sourceShape }"
-            , "    OPTIONAL { ?R sh:resultPath  ?path }"
-            , "    OPTIONAL { ?R sh:value ?value }"
-            ,"}");
+        (PREFIXES,
+         """
+            CONSTRUCT {
+               ?X a sh:ValidationReport ;
+                   sh:conforms ?conforms ;
+                   sh:result ?R
+               .
+               ?R sh:focusNode ?focusNode ;
+                  sh:resultMessage ?message ;
+                  sh:resultSeverity  ?severity ;
+                  sh:sourceConstraint ?constraint ;
+                  sh:sourceConstraintComponent ?component ;
+                  sh:sourceShape ?sourceShape ;
+                  sh:resultPath  ?path ;
+                  sh:value ?value ;
+                  .
+            }
+            WHERE {
+               ?X a sh:ValidationReport ;
+                  sh:result ?R
+               OPTIONAL { ?X sh:conforms ?conforms }
+               ?R sh:focusNode ?focusNode ;
+                  sh:resultSeverity  ?severity ;
+                  .
+               OPTIONAL { ?R sh:resultMessage ?message }
+               OPTIONAL { ?R sh:sourceConstraintComponent ?component }
+               OPTIONAL { ?R sh:sourceConstraint ?constraint }
+               OPTIONAL { ?R sh:sourceShape ?sourceShape }
+               OPTIONAL { ?R sh:resultPath  ?path }
+               OPTIONAL { ?R sh:value ?value }
+            }
+            """);
     private static Query query = QueryFactory.create(qs);
 
     public static Model strip(Model model) {

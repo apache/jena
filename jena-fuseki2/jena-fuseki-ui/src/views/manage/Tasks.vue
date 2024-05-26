@@ -16,18 +16,18 @@
 -->
 
 <template>
-  <b-container fluid>
-    <b-row class="mt-4">
-      <b-col cols="12">
+  <div class="container-fluid">
+    <div class="row mt-4">
+      <div class="col-12">
         <h2>Tasks</h2>
-        <b-card no-body>
-          <b-card-header header-tag="nav">
+        <div class="card">
+          <nav class="card-header">
             <Menu />
-          </b-card-header>
-          <b-card-body>
+          </nav>
+          <div class="card-body">
             <div>
-              <b-row>
-                <b-col>
+              <div class="row">
+                <div class="col">
                   <table-listing
                     :fields="fields"
                     :items="tasksReversed"
@@ -35,21 +35,20 @@
                     placeholder="Filter tasks"
                     empty-text="No tasks created"
                     empty-filtered-text="No tasks found"
-                  >
-                  </table-listing>
-                </b-col>
-              </b-row>
-           </div>
-          </b-card-body>
-        </b-card>
-      </b-col>
-    </b-row>
-  </b-container>
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import Menu from '@/components/manage/Menu'
-import TableListing from '@/components/dataset/TableListing'
+import Menu from '@/components/manage/Menu.vue'
+import TableListing from '@/components/dataset/TableListing.vue'
 
 export default {
   name: 'ManageTasks',
@@ -108,7 +107,7 @@ export default {
         .getTasks()
         .then(response => {
           vm.tasks = response.data
-          vm.isBusy = false
+          vm.isBusy = null
         })
     })
   },
@@ -121,7 +120,7 @@ export default {
         .getTasks()
         .then(response => {
           vm.tasks = response.data
-          vm.isBusy = false
+          vm.isBusy = null
         })
     }, 10000)
   },

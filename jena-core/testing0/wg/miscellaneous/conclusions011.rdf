@@ -1,0 +1,47 @@
+
+<!DOCTYPE owl [
+     <!ENTITY vin  "http://www.w3.org/2002/03owlt/miscellaneous/consistent001#" >
+     <!ENTITY food "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#" >
+     <!ENTITY owl  "http://www.w3.org/2002/07/owl#" >
+     <!ENTITY xsd  "http://www.w3.org/2001/XMLSchema#" >
+   ]>
+   
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: conclusions011.rdf,v 1.3 2003/11/19 19:26:37 jcarroll Exp $
+-->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:vin="&vin;" >
+  <rdf:Description rdf:about="&vin;ClosDeLaPoussieSancerre">
+    <vin:hasSugar rdf:resource="&vin;OffDry"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="&vin;VentanaCheninBlanc">
+    <vin:hasSugar rdf:resource="&vin;OffDry"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="&vin;RoseDAnjou">
+    <vin:hasSugar rdf:resource="&vin;OffDry"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="&vin;CorbansDryWhiteRiesling">
+    <vin:hasSugar rdf:resource="&vin;OffDry"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="&vin;hasSugar">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="&vin;OffDry">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+</rdf:RDF>

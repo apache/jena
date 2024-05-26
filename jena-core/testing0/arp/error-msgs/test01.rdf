@@ -1,0 +1,21 @@
+
+<!-- what a frightful mess this is 
+  The test is to produce a helpful error message. 
+  -->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:capability="http://example.org/"
+    xmlns:owl="http://example.org/2#"
+    xml:base="http://example.org/3" >
+  <capability:precondition> 
+   <capability:ParameterDescription rdf:ID="parID">
+    <capability:parameterName>par</capability:parameterName>
+    <capability:restrictedTo rdf:resource="#Softwaregood"/>
+    <owl:Class rdf:ID="Condition">
+      <owl:Restriction>
+       <owl:onProperty rdf:resource="#hasVendor"/>
+       <owl:hasValue rdf:resource="#HP"/>
+      </owl:Restriction>
+    </owl:Class>
+   </capability:ParameterDescription>
+  </capability:precondition>
+</rdf:RDF>

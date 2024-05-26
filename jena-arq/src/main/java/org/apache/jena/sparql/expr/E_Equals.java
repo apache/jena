@@ -37,7 +37,7 @@ public class E_Equals extends ExprFunction2
         // sameValueAs means "know to be the same value"
         // so they are not opposites
 
-        boolean b = NodeValue.sameAs(x, y) ;
+        boolean b = NodeValue.sameValueAs(x, y) ;
         return NodeValue.booleanReturn(b) ;
     }
     

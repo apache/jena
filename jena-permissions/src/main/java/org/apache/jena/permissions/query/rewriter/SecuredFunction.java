@@ -73,7 +73,7 @@ public class SecuredFunction extends ExprFunctionN {
         final Node p = idx == -1 ? t.getPredicate() : values.get(Var.alloc(variables.get(idx)));
         idx = variables.indexOf(t.getObject());
         final Node o = idx == -1 ? t.getObject() : values.get(Var.alloc(variables.get(idx)));
-        return new Triple(s, p, o);
+        return Triple.create(s, p, o);
     }
 
     @Override

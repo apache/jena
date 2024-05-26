@@ -75,7 +75,7 @@ public class SingleQuadHolderTest {
         Node s = NodeFactory.createURI("s");
         Node p = NodeFactory.createURI("p");
         Node o = NodeFactory.createURI("o");
-        Triple triple = new Triple(s, p, o);
+        Triple triple = Triple.create(s, p, o);
         Quad quad = new Quad(Quad.defaultGraphNodeGenerated, s, p, o);
         holder = new SingleQuadHolder(triple);
         List<Quad> lst = holder.getQuads().toList();
@@ -88,7 +88,7 @@ public class SingleQuadHolderTest {
         Node s = NodeFactory.createURI("s");
         Node p = NodeFactory.createVariable("p");
         Node o = NodeFactory.createURI("o");
-        Triple triple = new Triple(s, p, o);
+        Triple triple = Triple.create(s, p, o);
         Quad quad = new Quad(Quad.defaultGraphNodeGenerated, s, p, o);
         holder = new SingleQuadHolder(triple);
         List<Quad> lst = holder.getQuads().toList();

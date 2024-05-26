@@ -1,0 +1,25 @@
+<!--++ Class/conclusions003.rdf ** generated using webont test editor. ++-->
+<!--++ Created 19 Sep 2003 12:10:27 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: conclusions003.rdf,v 1.3 2003-12-05 05:09:30 jeremy_carroll Exp $
+-->
+<!--
+In OWL Full, the triple in the premises is synonymous with the triple in the conclusions.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xml:base="http://www.w3.org/2002/03owlt/Class/conclusions003" >
+   <rdfs:Class rdf:about="premises003#ex"/>
+
+</rdf:RDF>

@@ -47,11 +47,6 @@ public abstract class UpdateBinaryOp extends Update
 
     public Target getDest()     { return dest ; }
 
-    /**
-     * @deprecated use {@link #isSilent}
-     */
-    @Deprecated
-    public boolean getSilent()  { return isSilent() ; }
     public boolean isSilent()   { return silent ; }
 
     @Override

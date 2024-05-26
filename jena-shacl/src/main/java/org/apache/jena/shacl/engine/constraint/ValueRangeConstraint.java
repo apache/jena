@@ -30,7 +30,7 @@ import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprNotComparableException;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.sparql.expr.ValueSpaceClassification;
+import org.apache.jena.sparql.expr.ValueSpace;
 
 /** A constraint that tests the value of a node. */
 public abstract class ValueRangeConstraint extends ConstraintTerm {
@@ -50,7 +50,7 @@ public abstract class ValueRangeConstraint extends ConstraintTerm {
     @Override
     final public ReportItem validate(ValidationContext vCxt, Node n) {
         NodeValue nv = NodeValue.makeNode(n);
-        ValueSpaceClassification vs = NodeValue.classifyValueOp(nodeValue, nv);
+        ValueSpace vs = NodeValue.classifyValueOp(nodeValue, nv);
         try {
             int r = NodeValue.compare(nodeValue, nv);
             if ( r == Expr.CMP_INDETERMINATE )

@@ -1,0 +1,25 @@
+<!--
+ 
+  Test case for bug #74.
+  i.e. hp internal bugzilla #74
+  
+  Correct treatment of ':' in ID ...
+  
+  Note the spec is poor I am escalating this to the WG.
+  
+-->
+<rdf:RDF
+xml:base="http://example.org/bug74_0.rdf"
+xmlns:sw="http://example.org/"
+xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+
+	<rdf:Description rdf:ID="one">
+ 		<sw:name rdf:resource="#sw:test"/>
+ 	</rdf:Description>
+	<rdf:Description rdf:ID="sw:test">
+		<sw:first_name>xxx</sw:first_name>
+ 	</rdf:Description>
+
+
+</rdf:RDF>
+

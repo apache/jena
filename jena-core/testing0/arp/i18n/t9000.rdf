@@ -1,0 +1,33 @@
+
+<RDF:RDF
+    xmlns:NC="http://www.example.org/#"
+    xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xml:base="http://example.org/foo">
+
+  <RDF:Description RDF:about="&lt;b&gt;boo">
+  <!--&lt;b&gt;boo">-->
+    <NC:xx />
+    <NC:li RDF:resource="\\"/>
+    <NC:li RDF:resource="'"/>
+    <NC:li  RDF:resource='"'/>
+    <!-- the meaning of rfc2732 is unclear ...
+    <NC:li  RDF:resource='['/>
+    <NC:li  RDF:resource=']'/>
+    -->
+    <NC:li  RDF:resource='{'/>
+    <NC:li  RDF:resource='}'/>
+    <NC:li  RDF:resource='&#9;'/>
+    <NC:li  RDF:resource='&#10;&#10;'/>
+    <NC:li  RDF:resource='&#13;'/>
+    <NC:li  RDF:resource='`'/>
+    <NC:li  RDF:resource=' '/>
+    <NC:li  RDF:resource='  '/>
+    <NC:li  RDF:resource='   '/>
+    <NC:li  RDF:resource='    '/>
+    <NC:li  RDF:resource='|'/>
+    <NC:li  RDF:resource='/'/>
+    <NC:li  RDF:resource='#'/>
+ 
+  </RDF:Description>
+
+</RDF:RDF>

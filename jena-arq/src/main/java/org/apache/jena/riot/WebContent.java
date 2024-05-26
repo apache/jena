@@ -123,7 +123,7 @@ public class WebContent {
     public static final ContentType ctResultsJSON = ContentType.create(contentTypeResultsJSON);
 
     public static final String contentTypeJSON = "application/json";
-    public static final ContentType ctJSON = ContentType.create(contentTypeJSON);
+    public static final ContentType ctJSON     = ContentType.create(contentTypeJSON);
 
     // Unofficial
     public static final String      contentTypeResultsProtobuf   = "application/sparql-results+protobuf" ;
@@ -134,22 +134,34 @@ public class WebContent {
     public static final ContentType ctResultsThrift              = ContentType.create(contentTypeResultsThrift) ;
 
     public static final String contentTypeSPARQLQuery = "application/sparql-query";
-    public static final ContentType ctSPARQLQuery = ContentType.create(contentTypeSPARQLQuery);
+    public static final ContentType ctSPARQLQuery     = ContentType.create(contentTypeSPARQLQuery);
 
     public static final String contentTypeSPARQLUpdate = "application/sparql-update";
-    public static final ContentType ctSPARQLUpdate = ContentType.create(contentTypeSPARQLUpdate);
+    public static final ContentType ctSPARQLUpdate     = ContentType.create(contentTypeSPARQLUpdate);
 
     public static final String contentTypeHTMLForm = "application/x-www-form-urlencoded";
-    public static final ContentType ctHTMLForm = ContentType.create(contentTypeHTMLForm);
+    public static final ContentType ctHTMLForm     = ContentType.create(contentTypeHTMLForm);
+
+    public static final String contentTypeHTML = "text/html";
+    public static final ContentType ctTextHTML = ContentType.create(contentTypeHTML);
 
     public static final String contentTypeTextCSV = "text/csv";
-    public static final ContentType ctTextCSV = ContentType.create(contentTypeTextCSV);
+    public static final ContentType ctTextCSV     = ContentType.create(contentTypeTextCSV);
 
     public static final String contentTypeTextTSV = "text/tab-separated-values";
-    public static final ContentType ctTextTSV = ContentType.create(contentTypeTextTSV);
+    public static final ContentType ctTextTSV     = ContentType.create(contentTypeTextTSV);
 
+    // Unofficial
     public static final String contentTypeSSE = "text/sse";
-    public static final ContentType ctSSE = ContentType.create(contentTypeSSE);
+    public static final ContentType ctSSE     = ContentType.create(contentTypeSSE);
+
+    // Unofficial
+    public static final String contentTypePatch = "application/rdf-patch";
+    public static final ContentType ctPatch     = ContentType.create(contentTypePatch);
+
+    // Unofficial
+    public static final String contentTypePatchThrift = "application/rdf-patch+thrift";
+    public static final ContentType ctPatchThrift     = ContentType.create(contentTypePatchThrift);
 
     public static final String charsetUTF8 = "utf-8";
     public static final String charsetASCII = "ascii";
@@ -251,7 +263,8 @@ public class WebContent {
      * </p>
      * <p>
      * The decision is <blockquote> <i>Content type</i> (but not text/plain)
-     * {@literal >} <i>hint</i> {@literal >} <i>file extension</i>. </blockquote> We
+     * {@literal >} <i>hint</i> {@literal >} <i>file extension</i>. </blockquote>
+     * <p>We
      * make content type (via content negotiation) strongest because a server may
      * return something unexpected because that is all it can do. We are assuming
      * servers don't lie. The "hint" is really a hint just for file extension

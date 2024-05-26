@@ -26,11 +26,12 @@ import org.apache.jena.graph.impl.SimpleTransactionHandler ;
 import org.apache.jena.graph.impl.WrappedGraph ;
 import org.apache.jena.shared.AddDeniedException ;
 import org.apache.jena.shared.DeleteDeniedException ;
+import org.apache.jena.shared.PrefixMapping;
 
 public class GraphReadOnly extends WrappedGraph
 {
     public GraphReadOnly(Graph graph) { super(graph) ; }
-    
+
     @Override
     public void add(Triple t) throws AddDeniedException
     { throw new AddDeniedException("read-only graph") ; }
@@ -42,22 +43,27 @@ public class GraphReadOnly extends WrappedGraph
     @Override
     public void delete(Triple t) throws DeleteDeniedException
     { throw new DeleteDeniedException("read-only graph") ; }
-    
+
     @Override
     public void performDelete(Triple t) throws DeleteDeniedException
     { throw new DeleteDeniedException("read-only graph") ; }
-    
+
     @Override
-    public void remove(Node s, Node p, Node o) 
+    public void remove(Node s, Node p, Node o)
     { throw new DeleteDeniedException("read-only graph") ; }
-    
+
     @Override
-    public void clear() 
+    public void clear()
     { throw new DeleteDeniedException("read-only graph") ; }
 
     @Override
     public TransactionHandler getTransactionHandler() {
-        // AKA "no".  
+        // AKA "no".
         return new SimpleTransactionHandler() ;
+    }
+
+    @Override
+    public PrefixMapping getPrefixMapping() {
+        return new PrefixMappingReadOnly(getWrapped().getPrefixMapping());
     }
 }

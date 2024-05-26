@@ -18,22 +18,23 @@
 
 package org.apache.jena.atlas.lib.cache;
 
-import org.apache.jena.ext.com.google.common.cache.CacheStats ;
+import com.github.benmanes.caffeine.cache.stats.CacheStats;
 
-/** Simplified version of Guava's CacheStats (and abstracting away from Guava cache implementation) */
+/**
+ * Cache statistics.
+ * Simplified version of Caffein/Guava CacheStats.
+ * */
 public class CacheInfo {
     public final long requests;
     public final long hits;
     public final long misses;
     public final double hitRate;
-    public final int cacheSize;
 
-    public CacheInfo(int cacheSize, CacheStats stats) {
-        this(cacheSize, stats.requestCount(), stats.hitCount(), stats.missCount(), stats.hitRate() ) ;
+    public CacheInfo(CacheStats stats) {
+        this(stats.requestCount(), stats.hitCount(), stats.missCount(), stats.hitRate() ) ;
     }
 
-    public CacheInfo(int cacheSize, long requests, long hits, long misses, double hitRate) {
-        this.cacheSize = cacheSize ;
+    public CacheInfo(long requests, long hits, long misses, double hitRate) {
         this.requests = requests ;
         this.hits = hits ;
         this.misses = misses ;
@@ -42,7 +43,7 @@ public class CacheInfo {
 
     @Override
     public String toString() {
-        return String.format("size=%,d  count=%,d  hits=%,d  misses=%,d  rate=%.1f",
-                             cacheSize, requests, hits, misses, hitRate) ;
+        return String.format("count=%,d  hits=%,d  misses=%,d  rate=%.1f",
+                             requests, hits, misses, hitRate) ;
     }
 }

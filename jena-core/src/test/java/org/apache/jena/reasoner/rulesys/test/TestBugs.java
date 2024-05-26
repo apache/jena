@@ -18,30 +18,69 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import java.io.StringReader ;
-import java.util.* ;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.impl.LiteralLabelFactory;
+import org.apache.jena.ontology.CardinalityRestriction;
+import org.apache.jena.ontology.ConversionException;
+import org.apache.jena.ontology.EnumeratedClass;
+import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.IntersectionClass;
+import org.apache.jena.ontology.ObjectProperty;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntDocumentManager;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.ontology.OntProperty;
+import org.apache.jena.ontology.OntResource;
+import org.apache.jena.ontology.UnionClass;
+import org.apache.jena.rdf.listeners.StatementListener;
+import org.apache.jena.rdf.model.Bag;
+import org.apache.jena.rdf.model.InfModel;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFList;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.ResIterator;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.ReasonerException;
+import org.apache.jena.reasoner.ReasonerRegistry;
+import org.apache.jena.reasoner.ValidityReport;
+import org.apache.jena.reasoner.rulesys.BindingEnvironment;
+import org.apache.jena.reasoner.rulesys.BuiltinRegistry;
+import org.apache.jena.reasoner.rulesys.FBRuleReasoner;
+import org.apache.jena.reasoner.rulesys.GenericRuleReasoner;
+import org.apache.jena.reasoner.rulesys.GenericRuleReasonerFactory;
+import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
+import org.apache.jena.reasoner.rulesys.Rule;
+import org.apache.jena.reasoner.rulesys.RuleContext;
+import org.apache.jena.reasoner.rulesys.builtins.BaseBuiltin;
+import org.apache.jena.reasoner.test.TestUtil;
+import org.apache.jena.util.FileManager;
+import org.apache.jena.util.PrintUtil;
+import org.apache.jena.util.iterator.ClosableIterator;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.ReasonerVocabulary;
 
-import junit.framework.TestCase ;
-import junit.framework.TestSuite ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.graph.impl.LiteralLabelFactory ;
-import org.apache.jena.ontology.* ;
-import org.apache.jena.rdf.listeners.StatementListener ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.* ;
-import org.apache.jena.reasoner.rulesys.* ;
-import org.apache.jena.reasoner.rulesys.builtins.BaseBuiltin ;
-import org.apache.jena.reasoner.test.TestUtil ;
-import org.apache.jena.util.FileManager ;
-import org.apache.jena.util.PrintUtil ;
-import org.apache.jena.util.iterator.ClosableIterator ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.vocabulary.OWL ;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.RDFS ;
-import org.apache.jena.vocabulary.ReasonerVocabulary ;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -821,9 +860,10 @@ public class TestBugs extends TestCase {
         public boolean bodyCall(Node[] args, int length, RuleContext context) {
             checkArgs(length, context);
             BindingEnvironment env = context.getEnv();
-            Triple t = new Triple( NodeFactory.createBlankNode(), 
-                                   NodeFactory.createURI("http://jena.hpl.hp.com/example#"), 
+            Triple t = Triple.create( NodeFactory.createBlankNode(),
+                                   NodeFactory.createURI("http://jena.hpl.hp.com/example#"),
                                    NodeFactory.createBlankNode());
+            @SuppressWarnings("deprecation")
             Node l = NodeFactory.createLiteral( LiteralLabelFactory.createTypedLiteral(t) );
             return env.bind(args[0], l);
         }
@@ -873,7 +913,7 @@ public class TestBugs extends TestCase {
 //            System.out.println(" - " + i.next());
 //        }
 //    }
-    
+
     /**
      * Potential problem in handling of maxCardinality(0) assertions in the
      * presence of disjointness.
@@ -882,8 +922,8 @@ public class TestBugs extends TestCase {
         doTestmaxCard2(OntModelSpec.OWL_MEM_MINI_RULE_INF);
         doTestmaxCard2(OntModelSpec.OWL_MEM_RULE_INF);
     }
-    
-    
+
+
     private void doTestmaxCard2(OntModelSpec spec) {
         String NS = "http://jena.hpl.hp.com/eg#";
         Model base = FileManager.getInternal().loadModelInternal("testing/reasoners/bugs/terrorism.owl");

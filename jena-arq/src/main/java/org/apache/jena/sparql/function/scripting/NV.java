@@ -124,7 +124,7 @@ public class NV implements RDFJS {
                         return NodeValue.makeInteger(x);
                     // If is a very large integer (larger than long)?
                     if ( d == Math.floor(d) && Double.isFinite(d) ) {
-                        BigInteger big = new BigInteger(Double.toString(x));
+                        BigInteger big = new BigDecimal(d).toBigInteger();
                         return NodeValue.makeInteger(big);
                     }
                     if ( false ) {

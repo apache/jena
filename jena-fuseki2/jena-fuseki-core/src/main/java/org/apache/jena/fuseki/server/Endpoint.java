@@ -96,7 +96,7 @@ public class Endpoint implements Counters {
     }
 
     public boolean isUnnamed() {
-        return endpointName == null || endpointName.string ==null || endpointName.string.isEmpty();
+        return endpointName == null || endpointName.string == null || endpointName.string.isEmpty();
     }
 
     public String getName() {

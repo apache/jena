@@ -27,9 +27,7 @@
  * <li><em>Endpoint</em> :: Instance of an operation, toether with its counters.</li>
  * <li><em>DataAccessPointRegistry</em> :: Per server registry of DataAccessPoint</li>
  * </ul>
- * <p>
- * <li><b>Servlets</b>
- * <p>
+ * <b>Servlets</b>
  * <ul>
  * <li><em>FusekiFilter</em> :: Routes requests to Fuseki (handles the dynamic nature dataset naming) by calling ServiceRouter.</li>
  * <li><em>ServiceRouterServlet</em> :: Routes requests to the appropriate service (i.e. implementing servlet).</li>
@@ -38,7 +36,6 @@
  * It implements {@code execCommonWorker} as a lifecycle =&gt; {@code executeAction} =&gt; {@code executeLifecycle} =&gt; {@code validate - perform}
  * <li><em>ServiceRouter</em> :: Routing of request to the cocrete servlet implementations.
  * </ul>
- * <p>
  * <pre>
  * ServiceDispatchServlet &lt; ActionService &lt; ActionBase
  * Services               &lt; ActionService &lt; ActionBase
@@ -48,13 +45,11 @@
  * <p>
  * <b>Registries</b>
  * <p>Located in {@code FusekiRegistries}.
- * <p>
  * <ul>
  * <li><em>ContentTypeToOperation</em>:: Map&lt;content-type, Operation&gt;</li>
  * <li><em>ContentTypeToOperation</em>:: Map&lt;String, Operation&gt;</li>
  * <li><em>Dispatch</em> :: {@literal Map<Operation, ActionService>}</li>
  * </ul>
- * <p>
  */
 
 package org.apache.jena.fuseki;

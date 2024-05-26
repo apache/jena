@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,9 +19,9 @@ package org.apache.jena.permissions.model;
 
 import java.net.URL;
 import java.security.Principal;
+import java.util.Objects;
 import java.util.Set;
 
-import org.apache.http.auth.BasicUserPrincipal;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.Factory;
@@ -213,7 +213,7 @@ public class SecuredModelDetailTest {
         private RDFNode msgType = ResourceFactory.createResource("http://example.com/msg");
 
         /**
-         * 
+         *
          * @param model The graph we are going to evaluate against.
          */
         public DetailEvaluator(Model model) {
@@ -282,15 +282,46 @@ public class SecuredModelDetailTest {
             return evaluate(from) && evaluate(to);
         }
 
+        private static class SimplePrinciple implements Principal {
+
+            private String userName;
+
+            SimplePrinciple(String userName) {
+                this.userName = userName;
+            }
+
+            @Override
+            public String getName() {
+                return userName;
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hash(userName);
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                if ( this == obj )
+                    return true;
+                if ( obj == null )
+                    return false;
+                if ( getClass() != obj.getClass() )
+                    return false;
+                SimplePrinciple other = (SimplePrinciple)obj;
+                return Objects.equals(userName, other.userName);
+            }
+        }
+
         public void setPrincipal(String userName) {
             if (userName == null) {
                 principal = null;
             }
-            principal = new BasicUserPrincipal(userName);
+            principal = new SimplePrinciple(userName);
         }
 
         @Override
-        public Principal getPrincipal() {
+        public Object getPrincipal() {
             return principal;
         }
 

@@ -26,6 +26,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +41,7 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.http.HttpEnv;
@@ -58,16 +60,13 @@ import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.web.HttpSC;
 
 /**
  * A {@link QueryExec} implementation where queries are executed against a remote
  * service over HTTP.
  */
 public class QueryExecHTTP implements QueryExec {
-
-    /** @deprecated Use {@link #newBuilder} */
-    @Deprecated
-    public static QueryExecHTTPBuilder create() { return newBuilder() ; }
 
     public static QueryExecHTTPBuilder newBuilder() { return QueryExecHTTPBuilder.create(); }
 
@@ -148,6 +147,11 @@ public class QueryExecHTTP implements QueryExec {
         this.httpClient = HttpLib.dft(httpClient, HttpEnv.getDftHttpClient());
     }
 
+    /** Getter for the appProvidedAcceptHeader. Only used for testing. */
+    public String getAppProvidedAcceptHeader() {
+        return appProvidedAcceptHeader;
+    }
+
     /** The Content-Type response header received (null before the remote operation is attempted). */
     public String getHttpResponseContentType() {
         return httpResponseContentType;
@@ -165,7 +169,8 @@ public class QueryExecHTTP implements QueryExec {
         // Use the explicitly given header or the default selectAcceptheader
         String thisAcceptHeader = dft(appProvidedAcceptHeader, selectAcceptheader);
 
-        HttpResponse<InputStream> response = performQuery(thisAcceptHeader);
+        HttpRequest request = effectiveHttpRequest(thisAcceptHeader);
+        HttpResponse<InputStream> response = executeQuery(request);
         InputStream in = HttpLib.getInputStream(response);
         // Don't assume the endpoint actually gives back the content type we asked for
         String actualContentType = responseHeader(response, HttpNames.hContentType);
@@ -190,10 +195,15 @@ public class QueryExecHTTP implements QueryExec {
 
         // Map to lang, with pragmatic alternatives.
         Lang lang = WebContent.contentTypeToLangResultSet(actualContentType);
-        if ( lang == null )
-            throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not recognized for SELECT queries");
-        if ( !ResultSetReaderRegistry.isRegistered(lang) )
-            throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not supported for SELECT queries");
+        boolean unknownLang = lang == null;
+        boolean unsupportedFormat = !unknownLang && !ResultSetReaderRegistry.isRegistered(lang);
+        if ( unknownLang || unsupportedFormat ) {
+            String errorTerm = unknownLang ? "recognized" : "supported";
+            String errorMsg = String.format("Endpoint returned Content-Type: %s which is not %s for SELECT queries",
+                    actualContentType, errorTerm);
+            raiseException(errorMsg, request, response, in);
+        }
+
         // This returns a streaming result set for some formats.
         // Do not close the InputStream at this point.
         ResultSet result = ResultSetMgr.read(in, lang);
@@ -205,7 +215,8 @@ public class QueryExecHTTP implements QueryExec {
         checkNotClosed();
         check(QueryType.ASK);
         String thisAcceptHeader = dft(appProvidedAcceptHeader, askAcceptHeader);
-        HttpResponse<InputStream> response = performQuery(thisAcceptHeader);
+        HttpRequest request = effectiveHttpRequest(thisAcceptHeader);
+        HttpResponse<InputStream> response = executeQuery(request);
         InputStream in = HttpLib.getInputStream(response);
 
         String actualContentType = responseHeader(response, HttpNames.hContentType);
@@ -227,14 +238,17 @@ public class QueryExecHTTP implements QueryExec {
             else if ( actualContentType.equals(WebContent.contentTypeJSON))
                 lang = ResultSetLang.RS_JSON;
         }
-        if ( lang == null )
-            throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not supported for ASK queries");
+        if (lang == null) {
+            raiseException("Endpoint returned Content-Type: " + actualContentType + " which is not supported for ASK queries", request, response, in);
+        }
         boolean result = ResultSetMgr.readBoolean(in, lang);
         finish(in);
         return result;
     }
 
     private String removeCharset(String contentType) {
+        if ( contentType == null )
+            return contentType;
         int idx = contentType.indexOf(';');
         if ( idx < 0 )
             return contentType;
@@ -313,7 +327,7 @@ public class QueryExecHTTP implements QueryExec {
         return dataset;
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     private Iterator<Triple> execTriples(String acceptHeader) {
         Pair<InputStream, Lang> p = execRdfWorker(acceptHeader, WebContent.contentTypeRDFXML);
         InputStream input = p.getLeft();
@@ -324,7 +338,7 @@ public class QueryExecHTTP implements QueryExec {
         return Iter.onCloseIO(iter, input);
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     private Iterator<Quad> execQuads() {
         checkNotClosed();
         Pair<InputStream, Lang> p = execRdfWorker(datasetAcceptHeader, WebContent.contentTypeNQuads);
@@ -340,7 +354,8 @@ public class QueryExecHTTP implements QueryExec {
     private Pair<InputStream, Lang> execRdfWorker(String contentType, String ifNoContentType) {
         checkNotClosed();
         String thisAcceptHeader = dft(appProvidedAcceptHeader, contentType);
-        HttpResponse<InputStream> response = performQuery(thisAcceptHeader);
+        HttpRequest request = effectiveHttpRequest(thisAcceptHeader);
+        HttpResponse<InputStream> response = executeQuery(request);
         InputStream in = HttpLib.getInputStream(response);
 
         // Don't assume the endpoint actually gives back the content type we asked for
@@ -354,10 +369,11 @@ public class QueryExecHTTP implements QueryExec {
             actualContentType = ifNoContentType;
 
         Lang lang = RDFLanguages.contentTypeToLang(actualContentType);
-        if ( ! RDFLanguages.isQuads(lang) && ! RDFLanguages.isTriples(lang) )
-            throw new QueryException("Endpoint returned Content Type: "
+        if ( ! RDFLanguages.isQuads(lang) && ! RDFLanguages.isTriples(lang) ) {
+            raiseException("Endpoint returned Content Type: "
                     + actualContentType
-                    + " which is not a valid RDF syntax");
+                    + " which is not a valid RDF syntax", request, response, in);
+        }
         return Pair.create(in, lang);
     }
 
@@ -366,7 +382,8 @@ public class QueryExecHTTP implements QueryExec {
         checkNotClosed();
         check(QueryType.CONSTRUCT_JSON);
         String thisAcceptHeader = dft(appProvidedAcceptHeader, WebContent.contentTypeJSON);
-        HttpResponse<InputStream> response = performQuery(thisAcceptHeader);
+        HttpRequest request = effectiveHttpRequest(thisAcceptHeader);
+        HttpResponse<InputStream> response = executeQuery(request);
         InputStream in = HttpLib.getInputStream(response);
         try {
             return JSON.parseAny(in).getAsArray();
@@ -441,13 +458,42 @@ public class QueryExecHTTP implements QueryExec {
         return (duration < 0) ? duration : timeUnit.toMillis(duration);
     }
 
+    private void raiseException(String errorMsg, HttpRequest request, HttpResponse<?> response, InputStream in) {
+        int bodySummaryLength = 1024;
+        int statusCode = response.statusCode();
+        String statusCodeMsg = HttpSC.getMessage(statusCode);
+
+        // Determine the charset for extracting an excerpt of the body
+        String actualContentType = responseHeader(response, HttpNames.hContentType);
+        MediaType ct = MediaType.create(actualContentType);
+        String charsetName = ct == null ? null : ct.getCharset();
+        Charset charset = null;
+        try {
+            charset = charsetName == null ? null : Charset.forName(charsetName);
+        } catch (Throwable e) {
+            // Silently ignore
+        }
+        if (charset == null) {
+            charset = StandardCharsets.UTF_8;
+        }
+
+        String bodyStr;
+        try {
+            bodyStr = in == null ? "(no data supplied)" : IO.abbreviate(in, charset, bodySummaryLength, "...");
+        } catch (Throwable e) {
+            // No need to rethrow because we are already about to throw
+            bodyStr = "(failed to retrieve HTTP body due to: " + e.getMessage() + ")";
+        }
+
+        throw new QueryException(String.format(
+                "%s.\nStatus code %d %s, Method %s, Request Headers: %s\nBody (extracted with charset %s): %s",
+                errorMsg, statusCode, statusCodeMsg, request.method(), request.headers().map(), charset.name(), bodyStr));
+    }
+
     /**
-     * Make a query over HTTP.
-     * The response is returned after status code processing so the caller can assume the
-     * query execution was successful and return 200.
-     * Use {@link HttpLib#getInputStream} to access the body.
+     * Build the effective HTTP request ready for use with {@link #executeQuery(HttpRequest)}.
      */
-    private HttpResponse<InputStream> performQuery(String reqAcceptHeader) {
+    private HttpRequest effectiveHttpRequest(String reqAcceptHeader) {
         if (closed)
             throw new ARQException("HTTP execution already closed");
 
@@ -467,8 +513,7 @@ public class QueryExecHTTP implements QueryExec {
         HttpLib.modifyByService(service, context, thisParams, httpHeaders);
 
         HttpRequest request = makeRequest(thisParams, reqAcceptHeader);
-
-        return executeQuery(request);
+        return request;
     }
 
     private HttpRequest makeRequest(Params thisParams, String reqAcceptHeader) {
@@ -491,6 +536,12 @@ public class QueryExecHTTP implements QueryExec {
         return requestBuilder.build();
     }
 
+    /**
+     * Execute an HttpRequest.
+     * The response is returned after status code processing so the caller can assume the
+     * query execution was successful and return 200.
+     * Use {@link HttpLib#getInputStream} to access the body.
+     */
     private HttpResponse<InputStream> executeQuery(HttpRequest request) {
         logQuery(queryString, request);
         try {

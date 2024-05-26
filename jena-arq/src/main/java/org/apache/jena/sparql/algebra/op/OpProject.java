@@ -18,53 +18,51 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpProject extends OpModifier
 {
-    private List<Var> vars = new ArrayList<>() ;
+    private List<Var> vars = new ArrayList<>();
 
-    public OpProject(Op subOp, List<Var> vars)
-    {
-        super(subOp) ;
-        this.vars = vars ;
+    public OpProject(Op subOp, List<Var> vars) {
+        super(subOp);
+        this.vars = vars;
     }
-    
-    public List<Var> getVars() { return vars ; }
-    
+
+    public List<Var> getVars() { return vars; }
+
     @Override
-    public String getName() { return Tags.tagProject ; }
+    public String getName() { return Tags.tagProject; }
     @Override
-    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this); }
     @Override
-    public Op1 copy(Op subOp)                { return new OpProject(subOp, vars) ; }
+    public Op1 copy(Op subOp)                { return new OpProject(subOp, vars); }
 
     @Override
     public Op apply(Transform transform, Op subOp)
-    { return transform.transform(this, subOp) ; }
+    { return transform.transform(this, subOp); }
 
     @Override
-    public int hashCode()
-    {
-        return vars.hashCode() ^ getSubOp().hashCode() ;
+    public int hashCode() {
+        return vars.hashCode() ^ getSubOp().hashCode();
     }
 
     @Override
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
-        if ( ! (other instanceof OpProject) ) return false ;
-        OpProject opProject = (OpProject)other ;
-        if ( ! Objects.equals(vars, opProject.vars ) )
-            return false ;
-        return getSubOp().equalTo(opProject.getSubOp(), labelMap) ;
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
+        if ( !(other instanceof OpProject) )
+            return false;
+        OpProject opProject = (OpProject)other;
+        if ( !Objects.equals(vars, opProject.vars) )
+            return false;
+        return getSubOp().equalTo(opProject.getSubOp(), labelMap);
     }
 }

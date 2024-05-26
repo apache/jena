@@ -47,7 +47,7 @@ public final class TriplePath
         if ( path instanceof P_Link )
         {
             this.predicate = ((P_Link)path).getNode() ;
-            triple = new Triple(subject, this.predicate , o) ;
+            triple = Triple.create(subject, this.predicate , o) ;
         } else
             this.predicate = null ;
         this.path = path ;
@@ -93,7 +93,7 @@ public final class TriplePath
             return triple ;
         
         if ( path instanceof P_Link )
-            triple = new Triple(subject, ((P_Link)path).getNode(), object) ;
+            triple = Triple.create(subject, ((P_Link)path).getNode(), object) ;
         return triple ;
     }
 

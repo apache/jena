@@ -18,6 +18,7 @@
 
 package org.apache.jena.query.text;
 
+import org.apache.jena.atlas.logging.LogCtlJUL;
 import org.apache.jena.sys.JenaSubsystemLifecycle ;
 
 public class InitJenaText implements JenaSubsystemLifecycle {
@@ -29,6 +30,7 @@ public class InitJenaText implements JenaSubsystemLifecycle {
     
     @Override
     public void start() {
+        LogCtlJUL.routeJULtoSLF4J();
         TextQuery.init() ;
     }
 

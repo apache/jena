@@ -1,0 +1,33 @@
+#!/bin/bash
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+if [ "$#" != 1 ]
+then
+    echo "Usage: $(basename $0) FILE" 2>&1
+    exit 1
+fi
+
+
+# Find the namespace
+PKG=../src/main/java/org/apache/jena/rdfpatch/binary/thrift
+rm -f "$PKG"/*.java
+
+## Avoid needing a dependency javax.annotations
+## generated_annotations=[undated|suppress]:
+##                      undated: suppress the date at @Generated annotations
+##  
+thrift -r -out ../src/main/java -gen 'java:generated_annotations=suppress' "$@"
+
+# Also fixup for missing @Overrides.
+for f in "$PKG"/*.java
+do
+    perl -i -p -e 's/\@SuppressWarnings.*/\@SuppressWarnings("all")/' $f
+done
+
+##Transaction.java
+F="$PKG/Transaction.java"
+if [ -e "$F" ]
+then
+    sed -e 's/public int getValue/@Override public int getValue/' < $F > F 
+    mv F $F
+fi

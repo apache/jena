@@ -29,7 +29,8 @@ import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.Tags;
 
 /**
- * IRI(base, expr). Two arguemnt SPARQl extension. The function URI(expr) is the same, but under a different name as a
+ * IRI(base, expr). Two argument SPARQL extension.
+ * The function URI(base, expr) is the same, but under a different name as a
  * subclass.
  * <p>
  * As an ARQ extension, {@code IRI(base, relative)} resolves the relative

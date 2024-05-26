@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.engine.binding;
 
 import java.util.Iterator;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 import org.apache.jena.graph.Node;
@@ -55,6 +56,9 @@ public interface Binding
 
     /** Iterate over all variables of this binding. */
     public Iterator<Var> vars();
+
+    /** Iterate over all variables of this binding. */
+    public Set<Var> varsMentioned();
 
     /** Operate on each entry. */
     public void forEach(BiConsumer<Var, Node> action);

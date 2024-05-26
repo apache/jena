@@ -30,14 +30,12 @@ import javax.xml.transform.stream.StreamSource;
 public class BuildViolationCodes {
     public static void main(String[] args) throws TransformerException, TransformerFactoryConfigurationError {
         System.out.println();
-        Transformer xsl =
-        TransformerFactory.newInstance().newTransformer(
-                new StreamSource(new File("src/main/xml/org/apache/jena/iri/impl/viol2java.xsl"))
-                );
+        Transformer xsl = TransformerFactory.newInstance()
+                .newTransformer(
+                    new StreamSource(new File("src/main/xml/org/apache/jena/iri/impl/viol2java.xsl")));
         xsl.transform(
                 new StreamSource(new File("src/main/xml/org/apache/jena/iri/impl/violations.xml")),
                 new StreamResult(new File("src/main/java/org/apache/jena/iri/ViolationCodes.java"))
-                        
         );
         System.out.println("Finished BuildViolationCodes");
     }

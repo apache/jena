@@ -23,9 +23,6 @@ import { BUS } from '@/events'
 const DATASET_SIZE_QUERY_1 = 'select (count(*) as ?count) {?s ?p ?o}'
 const DATASET_SIZE_QUERY_2 = 'select ?g (count(*) as ?count) {graph ?g {?s ?p ?o}} group by ?g'
 
-const DATASET_COUNT_GRAPH_QUERY_1 = 'select (count(*) as ?count) {?s ?p ?o}'
-const DATASET_COUNT_GRAPH_QUERY_2 = 'select ?g (count(*) as ?count) {graph ?g {?s ?p ?o}} group by ?g'
-
 class FusekiService {
   /**
    * @param {Location} location
@@ -68,7 +65,7 @@ class FusekiService {
       await axios.get(this.getFusekiUrl('/$/ping'))
       // connection reset?
       if (this.isOffline) {
-        BUS.$emit('connection:reset')
+        BUS.emit('connection:reset')
       }
       this.isOffline = false
       return new ServerStatus(true, `Last ping returned OK in ${this._duration(startTime)}ms`)
@@ -165,12 +162,12 @@ class FusekiService {
       axios
         .get(this.getFusekiUrl(`/${datasetName}/${endpoint}`), {
           params: {
-            query: DATASET_COUNT_GRAPH_QUERY_1
+            query: DATASET_SIZE_QUERY_1
           }
         }),
       axios.get(this.getFusekiUrl(`/${datasetName}/${endpoint}`), {
         params: {
-          query: DATASET_COUNT_GRAPH_QUERY_2
+          query: DATASET_SIZE_QUERY_2
         }
       })
     ])
@@ -184,9 +181,31 @@ class FusekiService {
     return results
   }
 
-  async fetchGraph (datasetName, graphName) {
+  /**
+   * Get the data endpoint out of a list of server endpoints.
+   *
+   * For now we are simply returning the first non-empty, but that
+   * may change at some point.
+   *
+   * @private
+   * @param {string[]} serverEndpoints - list of server endpoints in the dataset (can be an empty list).
+   */
+  getDataEndpoint(serverEndpoints) {
+    return serverEndpoints.find(endpoint => endpoint !== '') || ''
+  }
+
+  /**
+   * Fetch a graph.
+   * @param {string} datasetName - Jena dataset name.
+   * @param {string[]} serverEndpoints - list of server endpoints in the dataset (can be an empty list).
+   * @param {string} graphName - name of the graph being accessed.
+   * @return {Promise<AxiosResponse<any>>}
+   */
+  async fetchGraph (datasetName, serverEndpoints, graphName) {
+    const dataEndpoint = this.getDataEndpoint(serverEndpoints)
+    const urlPart = `${datasetName}/${dataEndpoint}`
     return await axios
-      .get(this.getFusekiUrl(`/${datasetName}`), {
+      .get(this.getFusekiUrl(urlPart), {
         params: {
           graph: graphName
         },
@@ -196,9 +215,19 @@ class FusekiService {
       })
   }
 
-  async saveGraph (datasetName, graphName, code) {
+  /**
+   * Save a graph.
+   * @param {string} datasetName - Jena dataset name.
+   * @param {string[]} serverEndpoints - list of server endpoints in the dataset (can be an empty list).
+   * @param {string} graphName - name of the graph being accessed.
+   * @param {string} code - graph content.
+   * @return {Promise<AxiosResponse<any>>}
+   */
+  async saveGraph (datasetName, serverEndpoints, graphName, code) {
+    const dataEndpoint = this.getDataEndpoint(serverEndpoints)
+    const urlPart = `${datasetName}/${dataEndpoint}`
     return await axios
-      .put(this.getFusekiUrl(`/${datasetName}`), code, {
+      .put(this.getFusekiUrl(urlPart), code, {
         params: {
           graph: graphName
         },

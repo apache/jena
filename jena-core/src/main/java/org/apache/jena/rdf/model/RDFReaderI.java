@@ -24,8 +24,16 @@ import java.io.InputStream;
 /**
  * An <code>RDFReader</code> reads a serialized representation of RDF,
  * e.g. RDF/XML or N-Triples and adds the statements to a model.
+ * <blockquote><i>Legacy</i></blockquote>
+ * <p>
+ * Reading RDF is usually done via:
+ * <ul>
+ * <li>RDFDataMgr</li>
+ * <li>RDFParser</li>
+ * <li>Model.read</li>
+ * </ul>
+ * All of these will use the newer RIOT parsers, not implementations of this interface.
  */
-
 public interface RDFReaderI {
 
 	/**
@@ -79,7 +87,7 @@ public interface RDFReaderI {
  * <dt>N-TRIPLE</dt>
  * <dd>No properties.</dd>
  * <dt>RDF/XML</dt><dt>RDF/XML-ABBREV</dt>
- * <dd>See {@link org.apache.jena.rdfxml.xmlinput.JenaReader#setProperty(String,Object)}
+ * <dd>See {@link org.apache.jena.rdfxml.xmlinput1.RDFXMLReader#setProperty(String,Object)}
  * </dl>
 	 * @param propName the name of the property
 	 * @param propValue the value of the property

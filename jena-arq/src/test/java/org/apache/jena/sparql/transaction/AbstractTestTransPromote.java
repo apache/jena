@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.transaction ;
 
 import static org.junit.Assert.* ;
-import static org.junit.Assert.fail ;
 
 import java.util.concurrent.* ;
 import java.util.concurrent.atomic.AtomicInteger ;

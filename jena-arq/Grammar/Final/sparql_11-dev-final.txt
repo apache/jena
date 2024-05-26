@@ -1,0 +1,469 @@
+
+DOCUMENT START
+TOKENS
+<DEFAULT> SKIP : {
+" "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+
+<DEFAULT> SPECIAL : {
+<SINGLE_LINE_COMMENT: "#" (~["\n","\r"])* ("\n" | "\r" | "\r\n")?>
+}
+
+<DEFAULT> TOKEN : {
+<#WS: " " | "\t" | "\n" | "\r" | "\f">
+| <#WSC: <WS> | <SINGLE_LINE_COMMENT>>
+| <BOM: "\ufeff">
+}
+
+<DEFAULT> TOKEN : {
+<IRIref: "<" (~[">","<","\"","{","}","^","\\","|","`","\u0000"-" "] | <UCHAR>)* ">">
+| <PNAME_NS: (<PN_PREFIX>)? ":">
+| <PNAME_LN: <PNAME_NS> <PN_LOCAL>>
+| <BLANK_NODE_LABEL: "_:" (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS> | ".")* <PN_CHARS>)?>
+| <VAR1: "?" <VARNAME>>
+| <VAR2: "$" <VARNAME>>
+| <LANGTAG: <AT> (<A2Z>)+ ("-" (<A2ZN>)+)*>
+| <#A2Z: ["a"-"z","A"-"Z"]>
+| <#A2ZN: ["a"-"z","A"-"Z","0"-"9"]>
+}
+
+<DEFAULT> TOKEN : {
+<KW_A: "a">
+}
+
+<DEFAULT> TOKEN [IGNORE_CASE] : {
+<BASE: "base">
+| <PREFIX: "prefix">
+| <SELECT: "select">
+| <DISTINCT: "distinct">
+| <REDUCED: "reduced">
+| <DESCRIBE: "describe">
+| <CONSTRUCT: "construct">
+| <ASK: "ask">
+| <LIMIT: "limit">
+| <OFFSET: "offset">
+| <ORDER: "order">
+| <BY: "by">
+| <VALUES: "values">
+| <UNDEF: "undef">
+| <ASC: "asc">
+| <DESC: "desc">
+| <NAMED: "named">
+| <FROM: "from">
+| <WHERE: "where">
+| <AND: "and">
+| <GRAPH: "graph">
+| <OPTIONAL: "optional">
+| <UNION: "union">
+| <MINUS_P: "minus">
+| <BIND: "bind">
+| <SERVICE: "service">
+| <EXISTS: "exists">
+| <NOT: "not">
+| <AS: "as">
+| <GROUP: "group">
+| <HAVING: "having">
+| <SEPARATOR: "separator">
+| <AGG: "agg">
+| <COUNT: "count">
+| <MIN: "min">
+| <MAX: "max">
+| <SUM: "sum">
+| <AVG: "avg">
+| <STDEV: "stdev">
+| <STDEV_SAMP: "stdev_samp">
+| <STDEV_POP: "stdev_pop">
+| <VARIANCE: "variance">
+| <VAR_SAMP: "var_samp">
+| <VAR_POP: "var_pop">
+| <SAMPLE: "sample">
+| <GROUP_CONCAT: "group_concat">
+| <FILTER: "filter">
+| <BOUND: "bound">
+| <COALESCE: "coalesce">
+| <IN: "in">
+| <IF: "if">
+| <BNODE: "bnode">
+| <IRI: "iri">
+| <URI: "uri">
+| <STR: "str">
+| <STRLANG: "strlang">
+| <STRDT: "strdt">
+| <DTYPE: "datatype">
+| <LANG: "lang">
+| <LANGMATCHES: "langmatches">
+| <IS_URI: "isURI">
+| <IS_IRI: "isIRI">
+| <IS_BLANK: "isBlank">
+| <IS_LITERAL: "isLiteral">
+| <IS_NUMERIC: "isNumeric">
+| <REGEX: "regex">
+| <SAME_TERM: "sameTerm">
+| <RAND: "RAND">
+| <ABS: "ABS">
+| <CEIL: "CEIL">
+| <FLOOR: "FLOOR">
+| <ROUND: "ROUND">
+| <CONCAT: "CONCAT">
+| <SUBSTR: "SUBSTR">
+| <STRLEN: "STRLEN">
+| <REPLACE: "REPLACE">
+| <UCASE: "UCASE">
+| <LCASE: "LCASE">
+| <ENCODE_FOR_URI: "ENCODE_FOR_URI">
+| <CONTAINS: "CONTAINS">
+| <STRSTARTS: "STRSTARTS">
+| <STRENDS: "STRENDS">
+| <STRBEFORE: "STRBEFORE">
+| <STRAFTER: "STRAFTER">
+| <YEAR: "YEAR">
+| <MONTH: "MONTH">
+| <DAY: "DAY">
+| <HOURS: "HOURS">
+| <MINUTES: "MINUTES">
+| <SECONDS: "SECONDS">
+| <TIMEZONE: "TIMEZONE">
+| <TZ: "TZ">
+| <NOW: "NOW">
+| <UUID: "UUID">
+| <STRUUID: "STRUUID">
+| <MD5: "MD5">
+| <SHA1: "SHA1">
+| <SHA224: "SHA224">
+| <SHA256: "SHA256">
+| <SHA384: "SHA384">
+| <SHA512: "SHA512">
+| <TRUE: "true">
+| <FALSE: "false">
+}
+
+<DEFAULT> TOKEN [IGNORE_CASE] : {
+<DATA: "data">
+| <INSERT: "insert">
+| <DELETE: "delete">
+| <INSERT_DATA: <INSERT> (<WSC>)* <DATA>>
+| <DELETE_DATA: <DELETE> (<WSC>)* <DATA>>
+| <DELETE_WHERE: <DELETE> (<WSC>)* <WHERE>>
+| <LOAD: "load">
+| <CLEAR: "clear">
+| <CREATE: "create">
+| <ADD: "add">
+| <MOVE: "move">
+| <COPY: "copy">
+| <META: "meta">
+| <SILENT: "silent">
+| <DROP: "drop">
+| <INTO: "into">
+| <TO: "to">
+| <DFT: "default">
+| <ALL: "all">
+| <WITH: "with">
+| <USING: "using">
+}
+
+<DEFAULT> TOKEN : {
+<#DIGITS: (["0"-"9"])+>
+| <INTEGER: <DIGITS>>
+| <DECIMAL: (<DIGITS>)? "." <DIGITS>>
+| <DOUBLE: (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT> | "." (["0"-"9"])+ <EXPONENT> | (["0"-"9"])+ <EXPONENT>>
+| <INTEGER_POSITIVE: <PLUS> <INTEGER>>
+| <DECIMAL_POSITIVE: <PLUS> <DECIMAL>>
+| <DOUBLE_POSITIVE: <PLUS> <DOUBLE>>
+| <INTEGER_NEGATIVE: <MINUS> <INTEGER>>
+| <DECIMAL_NEGATIVE: <MINUS> <DECIMAL>>
+| <DOUBLE_NEGATIVE: <MINUS> <DOUBLE>>
+| <#EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+>
+| <#QUOTE_3D: "\"\"\"">
+| <#QUOTE_3S: "\'\'\'">
+| <ECHAR: "\\" ("t" | "b" | "n" | "r" | "f" | "\\" | "\"" | "\'")>
+| <#UCHAR: <UCHAR8>>
+| <#UCHAR4: "\\" "u" <HEX> <HEX> <HEX> <HEX>>
+| <#UCHAR8: "\\" "U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX>>
+| <STRING_LITERAL1: "\'" (~["\'","\\","\n","\r"] | <ECHAR> | <UCHAR>)* "\'">
+| <STRING_LITERAL2: "\"" (~["\"","\\","\n","\r"] | <ECHAR> | <UCHAR>)* "\"">
+| <STRING_LITERAL_LONG1: <QUOTE_3S> (("\'" | "\'\'")? (~["\'","\\"] | <ECHAR> | <UCHAR>))* <QUOTE_3S>>
+| <STRING_LITERAL_LONG2: <QUOTE_3D> (("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> | <UCHAR>))* <QUOTE_3D>>
+}
+
+<DEFAULT> TOKEN : {
+<LPAREN: "(">
+| <RPAREN: ")">
+| <NIL: <LPAREN> (<WSC>)* <RPAREN>>
+| <LBRACE: "{">
+| <RBRACE: "}">
+| <LBRACKET: "[">
+| <RBRACKET: "]">
+| <ANON: <LBRACKET> (<WSC>)* <RBRACKET>>
+| <SEMICOLON: ";">
+| <COMMA: ",">
+| <DOT: ".">
+| <EQ: "=">
+| <NE: "!=">
+| <GT: ">">
+| <LT: "<">
+| <LE: "<=">
+| <GE: ">=">
+| <BANG: "!">
+| <TILDE: "~">
+| <COLON: ":">
+| <SC_OR: "||">
+| <SC_AND: "&&">
+| <PLUS: "+">
+| <MINUS: "-">
+| <STAR: "*">
+| <SLASH: "/">
+| <DATATYPE: "^^">
+| <AT: "@">
+| <VBAR: "|">
+| <CARAT: "^">
+| <FPATH: "->">
+| <RPATH: "<-">
+| <QMARK: "?">
+}
+
+<DEFAULT> TOKEN : {
+<#PN_CHARS_BASE: ["A"-"Z"] | ["a"-"z"] | ["\u00c0"-"\u00d6"] | ["\u00d8"-"\u00f6"] | ["\u00f8"-"\u02ff"] | ["\u0370"-"\u037d"] | ["\u037f"-"\u1fff"] | ["\u200c"-"\u200d"] | ["\u2070"-"\u218f"] | ["\u2c00"-"\u2fef"] | ["\u3001"-"\ud7ff"] | ["\uf900"-"\ufffd"]>
+| <#PN_CHARS_U: <PN_CHARS_BASE> | "_">
+| <#PN_CHARS: <PN_CHARS_U> | "-" | ["0"-"9"] | "\u00b7" | ["\u0300"-"\u036f"] | ["\u203f"-"\u2040"]>
+| <#PN_PREFIX: <PN_CHARS_BASE> ((<PN_CHARS> | ".")* <PN_CHARS>)?>
+| <#PN_LOCAL: (<PN_CHARS_U> | ":" | ["0"-"9"] | <PLX>) ((<PN_CHARS> | "." | ":" | <PLX>)* (<PN_CHARS> | ":" | <PLX>))?>
+| <#VARNAME: (<PN_CHARS_U> | ["0"-"9"]) (<PN_CHARS_U> | ["0"-"9"] | "\u00b7" | ["\u0300"-"\u036f"] | ["\u203f"-"\u2040"])*>
+| <#PN_LOCAL_ESC: "\\" ("_" | "~" | "." | "-" | "!" | "$" | "&" | "\'" | "(" | ")" | "*" | "+" | "," | ";" | "=" | "/" | "?" | "#" | "@" | "%")>
+| <#PLX: <PERCENT> | <PN_LOCAL_ESC>>
+| <#HEX: ["0"-"9"] | ["A"-"F"] | ["a"-"f"]>
+| <#PERCENT: "%" <HEX> <HEX>>
+}
+
+<DEFAULT> TOKEN : {
+<#UNKNOWN: (~[" ","\t","\n","\r","\f"])+>
+}
+
+NON-TERMINALS
+	QueryUnit	:=	ByteOrderMark Query <EOF>
+	Query	:=	Prologue ( SelectQuery | ConstructQuery | DescribeQuery | AskQuery ) ValuesClause
+	UpdateUnit	:=	ByteOrderMark Update <EOF>
+	ByteOrderMark	:=	( <BOM> )?
+	Prologue	:=	( BaseDecl | PrefixDecl )*
+	BaseDecl	:=	<BASE> IRIREF
+	PrefixDecl	:=	<PREFIX> <PNAME_NS> IRIREF
+	SelectQuery	:=	SelectClause ( DatasetClause )* WhereClause SolutionModifier
+	SubSelect	:=	SelectClause WhereClause SolutionModifier ValuesClause
+	SelectClause	:=	<SELECT> ( <DISTINCT> | <REDUCED> )? ( ( Var | ( <LPAREN> Expression <AS> Var <RPAREN> ) )+ | <STAR> )
+	ConstructQuery	:=	<CONSTRUCT> ( ConstructTemplate ( DatasetClause )* WhereClause SolutionModifier | ( DatasetClause )* <WHERE> <LBRACE> ( TriplesTemplate )? <RBRACE> SolutionModifier )
+	DescribeQuery	:=	<DESCRIBE> ( ( VarOrIri )+ | <STAR> ) ( DatasetClause )* ( WhereClause )? SolutionModifier
+	AskQuery	:=	<ASK> ( DatasetClause )* WhereClause SolutionModifier
+	DatasetClause	:=	<FROM> ( DefaultGraphClause | NamedGraphClause )
+	DefaultGraphClause	:=	SourceSelector
+	NamedGraphClause	:=	<NAMED> SourceSelector
+	SourceSelector	:=	iri
+	WhereClause	:=	( <WHERE> )? GroupGraphPattern
+	SolutionModifier	:=	( GroupClause )? ( HavingClause )? ( OrderClause )? ( LimitOffsetClauses )?
+	GroupClause	:=	<GROUP> <BY> ( GroupCondition )+
+	GroupCondition	:=	( BuiltInCall | FunctionCall | <LPAREN> Expression ( <AS> Var )? <RPAREN> | Var )
+	HavingClause	:=	<HAVING> ( HavingCondition )+
+	HavingCondition	:=	Constraint
+	OrderClause	:=	<ORDER> <BY> ( OrderCondition )+
+	OrderCondition	:=	( ( ( <ASC> | <DESC> ) BrackettedExpression ) | ( Constraint | Var ) )
+	LimitOffsetClauses	:=	( LimitClause ( OffsetClause )? | OffsetClause ( LimitClause )? )
+	LimitClause	:=	<LIMIT> <INTEGER>
+	OffsetClause	:=	<OFFSET> <INTEGER>
+	ValuesClause	:=	( <VALUES> DataBlock )?
+	Update	:=	Prologue ( Update1 ( <SEMICOLON> Update )? )?
+	Update1	:=	( Load | Clear | Drop | Add | Move | Copy | Create | DeleteWhere | Modify | InsertData | DeleteData )
+	Load	:=	<LOAD> ( <SILENT> )? iri ( <INTO> GraphRef )?
+	Clear	:=	<CLEAR> ( <SILENT> )? GraphRefAll
+	Drop	:=	<DROP> ( <SILENT> )? GraphRefAll
+	Create	:=	<CREATE> ( <SILENT> )? GraphRef
+	Add	:=	<ADD> ( <SILENT> )? GraphOrDefault <TO> GraphOrDefault
+	Move	:=	<MOVE> ( <SILENT> )? GraphOrDefault <TO> GraphOrDefault
+	Copy	:=	<COPY> ( <SILENT> )? GraphOrDefault <TO> GraphOrDefault
+	InsertData	:=	<INSERT_DATA> QuadData
+	DeleteData	:=	<DELETE_DATA> QuadData
+	DeleteWhere	:=	<DELETE_WHERE> QuadPattern
+	Modify	:=	( <WITH> iri )? ( DeleteClause ( InsertClause )? | InsertClause ) ( UsingClause )* <WHERE> GroupGraphPattern
+	DeleteClause	:=	<DELETE> QuadPattern
+	InsertClause	:=	<INSERT> QuadPattern
+	UsingClause	:=	<USING> ( iri | <NAMED> iri )
+	GraphOrDefault	:=	( <DFT> | ( <GRAPH> )? iri )
+	GraphRef	:=	<GRAPH> iri
+	GraphRefAll	:=	( GraphRef | <DFT> | <NAMED> | <ALL> )
+	QuadPattern	:=	<LBRACE> Quads <RBRACE>
+	QuadData	:=	<LBRACE> Quads <RBRACE>
+	Quads	:=	( TriplesTemplate )? ( QuadsNotTriples ( <DOT> )? ( TriplesTemplate )? )*
+	QuadsNotTriples	:=	<GRAPH> VarOrIri <LBRACE> ( TriplesTemplate )? <RBRACE>
+	TriplesTemplate	:=	TriplesSameSubject ( <DOT> ( TriplesTemplate )? )?
+	GroupGraphPattern	:=	<LBRACE> ( SubSelect | GroupGraphPatternSub ) <RBRACE>
+	GroupGraphPatternSub	:=	( TriplesBlock )? ( GraphPatternNotTriples ( <DOT> )? ( TriplesBlock )? )*
+	TriplesBlock	:=	TriplesSameSubjectPath ( <DOT> ( TriplesBlock )? )?
+	GraphPatternNotTriples	:=	( GroupOrUnionGraphPattern | OptionalGraphPattern | MinusGraphPattern | GraphGraphPattern | ServiceGraphPattern | Filter | Bind | InlineData )
+	OptionalGraphPattern	:=	<OPTIONAL> GroupGraphPattern
+	GraphGraphPattern	:=	<GRAPH> VarOrIri GroupGraphPattern
+	ServiceGraphPattern	:=	<SERVICE> ( <SILENT> )? VarOrIri GroupGraphPattern
+	Bind	:=	<BIND> <LPAREN> Expression <AS> Var <RPAREN>
+	InlineData	:=	<VALUES> DataBlock
+	DataBlock	:=	( InlineDataOneVar | InlineDataFull )
+	InlineDataOneVar	:=	Var <LBRACE> ( DataBlockValue )* <RBRACE>
+	InlineDataFull	:=	( <NIL> | <LPAREN> ( Var )* <RPAREN> ) <LBRACE> ( <LPAREN> ( DataBlockValue )* <RPAREN> | <NIL> )* <RBRACE>
+	DataBlockValue	:=	iri
+		|	RDFLiteral
+		|	NumericLiteral
+		|	BooleanLiteral
+		|	<UNDEF>
+	MinusGraphPattern	:=	<MINUS_P> GroupGraphPattern
+	GroupOrUnionGraphPattern	:=	GroupGraphPattern ( <UNION> GroupGraphPattern )*
+	Filter	:=	<FILTER> Constraint
+	Constraint	:=	( BrackettedExpression | BuiltInCall | FunctionCall )
+	FunctionCall	:=	iri ArgList
+	ArgList	:=	( <NIL> | <LPAREN> ( <DISTINCT> )? Expression ( <COMMA> Expression )* <RPAREN> )
+	ExpressionList	:=	( <NIL> | <LPAREN> Expression ( <COMMA> Expression )* <RPAREN> )
+	ConstructTemplate	:=	<LBRACE> ( ConstructTriples )? <RBRACE>
+	ConstructTriples	:=	TriplesSameSubject ( <DOT> ( ConstructTriples )? )?
+	TriplesSameSubject	:=	VarOrTerm PropertyListNotEmpty
+		|	TriplesNode PropertyList
+	PropertyList	:=	( PropertyListNotEmpty )?
+	PropertyListNotEmpty	:=	Verb ObjectList ( <SEMICOLON> ( Verb ObjectList )? )*
+	Verb	:=	( VarOrIri | <KW_A> )
+	ObjectList	:=	Object ( <COMMA> Object )*
+	Object	:=	GraphNode
+	TriplesSameSubjectPath	:=	VarOrTerm PropertyListPathNotEmpty
+		|	TriplesNodePath PropertyListPath
+	PropertyListPath	:=	( PropertyListPathNotEmpty )?
+	PropertyListPathNotEmpty	:=	( VerbPath | VerbSimple ) ObjectListPath ( <SEMICOLON> ( ( VerbPath | VerbSimple ) ObjectListPath )? )*
+	VerbPath	:=	Path
+	VerbSimple	:=	Var
+	ObjectListPath	:=	ObjectPath ( <COMMA> ObjectPath )*
+	ObjectPath	:=	GraphNodePath
+	Path	:=	PathAlternative
+	PathAlternative	:=	PathSequence ( <VBAR> PathSequence )*
+	PathSequence	:=	PathEltOrInverse ( <SLASH> PathEltOrInverse )*
+	PathElt	:=	PathPrimary ( PathMod )?
+	PathEltOrInverse	:=	( PathElt | <CARAT> PathElt )
+	PathMod	:=	( <QMARK> | <STAR> | <PLUS> )
+	PathPrimary	:=	( iri | <KW_A> | <BANG> PathNegatedPropertySet | <LPAREN> Path <RPAREN> )
+	PathNegatedPropertySet	:=	( PathOneInPropertySet | <LPAREN> ( PathOneInPropertySet ( <VBAR> PathOneInPropertySet )* )? <RPAREN> )
+	PathOneInPropertySet	:=	( iri | <KW_A> | <CARAT> ( iri | <KW_A> ) )
+	Integer	:=	<INTEGER>
+	TriplesNode	:=	Collection
+		|	BlankNodePropertyList
+	BlankNodePropertyList	:=	<LBRACKET> PropertyListNotEmpty <RBRACKET>
+	TriplesNodePath	:=	CollectionPath
+		|	BlankNodePropertyListPath
+	BlankNodePropertyListPath	:=	<LBRACKET> PropertyListPathNotEmpty <RBRACKET>
+	Collection	:=	<LPAREN> ( GraphNode )+ <RPAREN>
+	CollectionPath	:=	<LPAREN> ( GraphNodePath )+ <RPAREN>
+	GraphNode	:=	VarOrTerm
+		|	TriplesNode
+	GraphNodePath	:=	VarOrTerm
+		|	TriplesNodePath
+	VarOrTerm	:=	( Var | GraphTerm )
+	VarOrIri	:=	( Var | iri )
+	VarOrBlankNodeOrIri	:=	( Var | BlankNode | iri )
+	Var	:=	( <VAR1> | <VAR2> )
+	GraphTerm	:=	iri
+		|	RDFLiteral
+		|	NumericLiteral
+		|	BooleanLiteral
+		|	BlankNode
+		|	<NIL>
+	Expression	:=	ConditionalOrExpression
+	ConditionalOrExpression	:=	ConditionalAndExpression ( <SC_OR> ConditionalAndExpression )*
+	ConditionalAndExpression	:=	ValueLogical ( <SC_AND> ValueLogical )*
+	ValueLogical	:=	RelationalExpression
+	RelationalExpression	:=	NumericExpression ( <EQ> NumericExpression | <NE> NumericExpression | <LT> NumericExpression | <GT> NumericExpression | <LE> NumericExpression | <GE> NumericExpression | <IN> ExpressionList | <NOT> <IN> ExpressionList )?
+	NumericExpression	:=	AdditiveExpression
+	AdditiveExpression	:=	MultiplicativeExpression ( <PLUS> MultiplicativeExpression | <MINUS> MultiplicativeExpression | ( NumericLiteralPositive | NumericLiteralNegative ) ( ( <STAR> UnaryExpression ) | ( <SLASH> UnaryExpression ) )* )*
+	MultiplicativeExpression	:=	UnaryExpression ( <STAR> UnaryExpression | <SLASH> UnaryExpression )*
+	UnaryExpression	:=	<BANG> PrimaryExpression
+		|	<PLUS> PrimaryExpression
+		|	<MINUS> PrimaryExpression
+		|	PrimaryExpression
+	PrimaryExpression	:=	( BrackettedExpression | BuiltInCall | iriOrFunction | RDFLiteral | NumericLiteral | BooleanLiteral | Var )
+	BrackettedExpression	:=	<LPAREN> Expression <RPAREN>
+	BuiltInCall	:=	Aggregate
+		|	<STR> <LPAREN> Expression <RPAREN>
+		|	<LANG> <LPAREN> Expression <RPAREN>
+		|	<LANGMATCHES> <LPAREN> Expression <COMMA> Expression <RPAREN>
+		|	<DTYPE> <LPAREN> Expression <RPAREN>
+		|	<BOUND> <LPAREN> Var <RPAREN>
+		|	<IRI> <LPAREN> Expression <RPAREN>
+		|	<URI> <LPAREN> Expression <RPAREN>
+		|	<BNODE> ( <LPAREN> Expression <RPAREN> | <NIL> )
+		|	<RAND> <NIL>
+		|	<ABS> <LPAREN> Expression <RPAREN>
+		|	<CEIL> <LPAREN> Expression <RPAREN>
+		|	<FLOOR> <LPAREN> Expression <RPAREN>
+		|	<ROUND> <LPAREN> Expression <RPAREN>
+		|	<CONCAT> ExpressionList
+		|	SubstringExpression
+		|	<STRLEN> <LPAREN> Expression <RPAREN>
+		|	StrReplaceExpression
+		|	<UCASE> <LPAREN> Expression <RPAREN>
+		|	<LCASE> <LPAREN> Expression <RPAREN>
+		|	<ENCODE_FOR_URI> <LPAREN> Expression <RPAREN>
+		|	<CONTAINS> <LPAREN> Expression <COMMA> Expression <RPAREN>
+		|	<STRSTARTS> <LPAREN> Expression <COMMA> Expression <RPAREN>
+		|	<STRENDS> <LPAREN> Expression <COMMA> Expression <RPAREN>
+		|	<STRBEFORE> <LPAREN> Expression <COMMA> Expression <RPAREN>
+		|	<STRAFTER> <LPAREN> Expression <COMMA> Expression <RPAREN>
+		|	<YEAR> <LPAREN> Expression <RPAREN>
+		|	<MONTH> <LPAREN> Expression <RPAREN>
+		|	<DAY> <LPAREN> Expression <RPAREN>
+		|	<HOURS> <LPAREN> Expression <RPAREN>
+		|	<MINUTES> <LPAREN> Expression <RPAREN>
+		|	<SECONDS> <LPAREN> Expression <RPAREN>
+		|	<TIMEZONE> <LPAREN> Expression <RPAREN>
+		|	<TZ> <LPAREN> Expression <RPAREN>
+		|	<NOW> <NIL>
+		|	<UUID> <NIL>
+		|	<STRUUID> <NIL>
+		|	<MD5> <LPAREN> Expression <RPAREN>
+		|	<SHA1> <LPAREN> Expression <RPAREN>
+		|	<SHA256> <LPAREN> Expression <RPAREN>
+		|	<SHA384> <LPAREN> Expression <RPAREN>
+		|	<SHA512> <LPAREN> Expression <RPAREN>
+		|	<COALESCE> ExpressionList
+		|	<IF> <LPAREN> Expression <COMMA> Expression <COMMA> Expression <RPAREN>
+		|	<STRLANG> <LPAREN> Expression <COMMA> Expression <RPAREN>
+		|	<STRDT> <LPAREN> Expression <COMMA> Expression <RPAREN>
+		|	<SAME_TERM> <LPAREN> Expression <COMMA> Expression <RPAREN>
+		|	<IS_IRI> <LPAREN> Expression <RPAREN>
+		|	<IS_URI> <LPAREN> Expression <RPAREN>
+		|	<IS_BLANK> <LPAREN> Expression <RPAREN>
+		|	<IS_LITERAL> <LPAREN> Expression <RPAREN>
+		|	<IS_NUMERIC> <LPAREN> Expression <RPAREN>
+		|	RegexExpression
+		|	ExistsFunc
+		|	NotExistsFunc
+	RegexExpression	:=	<REGEX> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
+	SubstringExpression	:=	<SUBSTR> <LPAREN> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
+	StrReplaceExpression	:=	<REPLACE> <LPAREN> Expression <COMMA> Expression <COMMA> Expression ( <COMMA> Expression )? <RPAREN>
+	ExistsFunc	:=	<EXISTS> GroupGraphPattern
+	NotExistsFunc	:=	<NOT> <EXISTS> GroupGraphPattern
+	Aggregate	:=	( <COUNT> <LPAREN> ( <DISTINCT> )? ( <STAR> | Expression ) <RPAREN> | <SUM> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <MIN> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <MAX> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <AVG> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <SAMPLE> <LPAREN> ( <DISTINCT> )? Expression <RPAREN> | <GROUP_CONCAT> <LPAREN> ( <DISTINCT> )? Expression ( <SEMICOLON> <SEPARATOR> <EQ> String )? <RPAREN> )
+	iriOrFunction	:=	iri ( ArgList )?
+	RDFLiteral	:=	String ( ( <LANGTAG> ) | ( <DATATYPE> iri ) )?
+	NumericLiteral	:=	( NumericLiteralUnsigned | NumericLiteralPositive | NumericLiteralNegative )
+	NumericLiteralUnsigned	:=	<INTEGER>
+		|	<DECIMAL>
+		|	<DOUBLE>
+	NumericLiteralPositive	:=	<INTEGER_POSITIVE>
+		|	<DECIMAL_POSITIVE>
+		|	<DOUBLE_POSITIVE>
+	NumericLiteralNegative	:=	<INTEGER_NEGATIVE>
+		|	<DECIMAL_NEGATIVE>
+		|	<DOUBLE_NEGATIVE>
+	BooleanLiteral	:=	<TRUE>
+		|	<FALSE>
+	String	:=	( <STRING_LITERAL1> | <STRING_LITERAL2> | <STRING_LITERAL_LONG1> | <STRING_LITERAL_LONG2> )
+	iri	:=	IRIREF
+		|	PrefixedName
+	PrefixedName	:=	( <PNAME_LN> | <PNAME_NS> )
+	BlankNode	:=	<BLANK_NODE_LABEL>
+		|	<ANON>
+	IRIREF	:=	<IRIref>
+
+DOCUMENT END

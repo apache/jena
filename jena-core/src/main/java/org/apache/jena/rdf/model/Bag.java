@@ -41,7 +41,8 @@ public interface Bag extends Container {
      * <p>The predicate of the statement <CODE>s</CODE> identifies the
      * ordinal of the value to be removed.  Once removed, the values in the
      * container with a higher ordinal value are renumbered.  The renumbering
-     * algorithm is implementation dependent.<p>
+     * algorithm is implementation dependent.
+     * </p>
      * @param s The statement to be removed from the model.
      * @return this container to enable cascading calls.
      */

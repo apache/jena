@@ -146,9 +146,9 @@ public interface Individual
      * Answer true if this individual is a member of the class denoted by the
      * given ontology class resource.  Not limited to only direct class relationships,
      * so this is equivalent to:
-     * <code><pre>
+     * <pre>
      * hasOntClass( ontClass, false );
-     * </pre></code>
+     * </pre>
      * </p>
      *
      * @param ontClass Denotes a class to which this individual may belong
@@ -182,8 +182,4 @@ public interface Individual
      * the set of classes to which this individual belongs
      */
     public void removeOntClass( Resource ontClass );
-
-
-
-
 }

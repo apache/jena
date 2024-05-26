@@ -18,29 +18,19 @@
 
 package org.apache.jena.dboe.trans.bplustree;
 
-import static org.apache.jena.dboe.trans.bplustree.BlockTracker.Action.Alloc;
-import static org.apache.jena.dboe.trans.bplustree.BlockTracker.Action.BeginRead;
-import static org.apache.jena.dboe.trans.bplustree.BlockTracker.Action.BeginUpdate;
-import static org.apache.jena.dboe.trans.bplustree.BlockTracker.Action.EndRead;
-import static org.apache.jena.dboe.trans.bplustree.BlockTracker.Action.EndUpdate;
-import static org.apache.jena.dboe.trans.bplustree.BlockTracker.Action.Free;
-import static org.apache.jena.dboe.trans.bplustree.BlockTracker.Action.GetRead;
-import static org.apache.jena.dboe.trans.bplustree.BlockTracker.Action.GetWrite;
-import static org.apache.jena.dboe.trans.bplustree.BlockTracker.Action.Promote;
-import static org.apache.jena.dboe.trans.bplustree.BlockTracker.Action.Release;
-import static org.apache.jena.dboe.trans.bplustree.BlockTracker.Action.Write;
+import static org.apache.jena.dboe.trans.bplustree.BlockTracker.Action.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.MultiSet;
+import org.apache.commons.collections4.multiset.HashMultiSet;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.dboe.DBOpEnvException;
 import org.apache.jena.dboe.base.block.Block;
 import org.apache.jena.dboe.base.block.BlockException;
 import org.apache.jena.dboe.base.block.BlockMgr;
 import org.apache.jena.dboe.base.block.BlockMgrTracker;
-import org.apache.jena.ext.com.google.common.collect.HashMultiset;
-import org.apache.jena.ext.com.google.common.collect.Multiset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,8 +61,8 @@ public class BlockTracker implements BlockMgr {
     // ---- State for tracking
     // Track and count block references and releases
     // No - the page is dirty.
-    protected final Multiset<Long>           activeWriteBlocks = HashMultiset.create();
-    protected final Multiset<Long>           activeReadBlocks  = HashMultiset.create();
+    protected final MultiSet<Long>           activeWriteBlocks = new HashMultiSet<>();
+    protected final MultiSet<Long>           activeReadBlocks  = new HashMultiSet<>();
     // Track the operations
     protected final List<Pair<Action, Long>> actions           = new ArrayList<>();
     // ---- State for tracking
@@ -241,8 +231,8 @@ public class BlockTracker implements BlockMgr {
                 error(Free, id + " is not a write block");
 
             activeWriteBlocks.remove(id);
-            if ( activeWriteBlocks.count(id) != 0 )
-                warn(Free, id + " has "+activeWriteBlocks.count(id)+" outstanding write registrations");
+            if ( activeWriteBlocks.getCount(id) != 0 )
+                warn(Free, id + " has "+activeWriteBlocks.getCount(id)+" outstanding write registrations");
         }
         blockMgr.free(block);
     }
@@ -358,7 +348,7 @@ public class BlockTracker implements BlockMgr {
             error(action, "Called outside update and read");
     }
 
-    private void checkEmpty(String string, Multiset<Long> blocks) {
+    private void checkEmpty(String string, MultiSet<Long> blocks) {
         if ( !blocks.isEmpty() ) {
             error(string);
             for ( Long id : blocks )

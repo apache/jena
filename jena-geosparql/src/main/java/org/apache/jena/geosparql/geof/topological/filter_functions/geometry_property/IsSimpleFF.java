@@ -35,7 +35,7 @@ public class IsSimpleFF extends FunctionBase1 {
         try {
             GeometryWrapper geometry = GeometryWrapper.extract(v);
 
-            Boolean isSimple = geometry.isSimple();
+            boolean isSimple = geometry.isSimple();
             return NodeValue.makeNodeBoolean(isSimple);
         } catch (DatatypeFormatException ex) {
             throw new ExprEvalException(ex.getMessage(), ex);

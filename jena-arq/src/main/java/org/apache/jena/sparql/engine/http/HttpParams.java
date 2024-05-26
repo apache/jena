@@ -18,35 +18,37 @@
 
 package org.apache.jena.sparql.engine.http;
 
+import org.apache.jena.riot.web.HttpNames;
+
 /** Constants related to SPARQL over HTTP */
 
 public class HttpParams
 {
     /** Parameter for the SPARQL query string */
-    public static final String pQuery               = "query" ;
-    
+    public static final String pQuery               = HttpNames.paramQuery;
+
     /** Parameter for the SPARQL update string */
-    public static final String pUpdate              = "update" ;
-    
+    public static final String pUpdate              = HttpNames.paramUpdate;
+
 //    /** Parameter for a URI pointing to a SPARQL query in a document */
 //    public static final String pQueryUri       = "query-uri" ;
-    
+
     /** Parameter for a URI identifying the default graph (or one of the graphs) for SPARQL queries */
-    public static final String pDefaultGraph        = "default-graph-uri" ;
-    
+    public static final String pDefaultGraph        = HttpNames.paramDefaultGraphURI;
+
     /** Parameter for a URI identifying the named graph (or one of the graphs) for SPARQL queries */
-    public static final String pNamedGraph          = "named-graph-uri" ;
-    
+    public static final String pNamedGraph          = HttpNames.paramNamedGraphURI;
+
     /** Parameter for a URI identifying the default graph (or one of the graphs) for SPARQL updates */
-    public static final String pUsingGraph          = "using-graph-uri" ;
-    
+    public static final String pUsingGraph          = HttpNames.paramUsingGraphURI ;
+
     /** Parameter for a URI identifying the named graph (or one of the graphs) for SPARQL updates */
-    public static final String pUsingNamedGraph     = "using-named-graph-uri" ;
-    
+    public static final String pUsingNamedGraph     = HttpNames.paramUsingNamedGraphURI ;
+
     // ----------------- Non-SPARQL parameters
 
-    public static final String pStylesheet      = "stylesheet" ;
+    public static final String pStylesheet      = HttpNames.paramStyleSheet;
 
     /** Parameter for query language URI */
-    public static final String pQueryLang      = "lang" ;
+    public static final String pQueryLang      = HttpNames.paramLang ;
 }

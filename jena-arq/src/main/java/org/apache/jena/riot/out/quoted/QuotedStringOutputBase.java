@@ -18,35 +18,35 @@
 
 package org.apache.jena.riot.out.quoted;
 
-import org.apache.jena.atlas.io.AWriter ;
-import org.apache.jena.atlas.lib.CharSpace ;
-import org.apache.jena.atlas.lib.EscapeStr ;
+import org.apache.jena.atlas.io.AWriter;
+import org.apache.jena.atlas.lib.CharSpace;
+import org.apache.jena.atlas.lib.EscapeStr;
 
 /** Quoted string output - single line, settable quote character and char space. */
 public class QuotedStringOutputBase implements QuotedStringOutput {
-    protected final CharSpace charSpace ;
+    protected final CharSpace charSpace;
     protected final char quoteChar;
     
     protected QuotedStringOutputBase(char quoteChar, CharSpace charSpace) {
-        this.charSpace = charSpace ;
-        this.quoteChar = quoteChar ;
+        this.charSpace = charSpace;
+        this.quoteChar = quoteChar;
     } 
 
     @Override
-    public char getQuoteChar() { return quoteChar ; } 
+    public char getQuoteChar() { return quoteChar; } 
     
     @Override
     public void writeStr(AWriter writer, String str) {
         // Only " strings in N-Triples/N-Quads
         writer.print(getQuoteChar());
-        EscapeStr.stringEsc(writer, str, getQuoteChar(), true, charSpace) ;
+        EscapeStr.stringEsc(writer, str, getQuoteChar(), true, charSpace);
         writer.print(getQuoteChar());
     }
 
     @Override
     public void writeStrMultiLine(AWriter writer, String str) {
         // No multiline strings in N-Triples/N-Quads.
-        writeStr(writer, str) ;
+        writeStr(writer, str);
     }
 }
 

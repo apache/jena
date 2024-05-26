@@ -31,8 +31,8 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.ExprVars ;
 
 /**
- * Optimization that changes queries that uses <tt>OFFSET/LIMIT</tt> and <tt>ORDER BY</tt>
- * to execute using <tt>Top N</tt>: i.e. while executing, keep only the top N items seen.
+ * Optimization that changes queries that uses {@code OFFSET/LIMIT} and {@code ORDER BY}
+ * to execute using {@code Top N}: i.e. while executing, keep only the top N items seen.
  * This avoids full sort of the whole results, saving space and time.
  */
 public class TransformTopN extends TransformCopy {

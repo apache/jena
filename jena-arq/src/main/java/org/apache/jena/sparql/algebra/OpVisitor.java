@@ -49,6 +49,7 @@ public interface OpVisitor
     public void visit(OpUnion opUnion) ;
     public void visit(OpDiff opDiff) ;
     public void visit(OpMinus opMinus) ;
+    public void visit(OpLateral opLateral) ;
     public void visit(OpConditional opCondition) ;
 
     // OpN

@@ -19,6 +19,7 @@
 package org.apache.jena.mem;
 
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -129,10 +130,23 @@ public abstract class GraphTripleStoreBase implements TripleStore
      @Override
     public boolean contains( Triple t )
          { return subjects.containsBySameValueAs( t ); }
-     
-     public boolean containsByEquality( Triple t )
-         { return subjects.contains( t ); }
-     
+
+     @Override
+    public boolean containsMatch(Triple t)
+         {
+         Node pm = t.getPredicate();
+         Node om = t.getObject();
+         Node sm = t.getSubject();
+         if (sm.isConcrete())
+             return subjects.containsMatch( sm, pm, om );
+         else if (om.isConcrete())
+             return objects.containsMatch( om, sm, pm );
+         else if (pm.isConcrete())
+             return predicates.containsMatch( pm, om, sm );
+         else
+             return !this.isEmpty();
+         }
+
      /** 
          Answer an ExtendedIterator returning all the triples from this store that
          match the pattern <code>m = (S, P, O)</code>.
@@ -166,4 +180,40 @@ public abstract class GraphTripleStoreBase implements TripleStore
          else
              return new StoreTripleIterator( parent, subjects.iterateAll(), subjects, predicates, objects );
          }
+
+     /**
+         Answer a Stream returning all the triples from this store that
+         match the pattern <code>m = (S, P, O)</code>.
+
+         <p>Because the node-to-triples maps index on each of subject, predicate,
+         and (non-literal) object, concrete S/P/O patterns can immediately select
+         an appropriate map. Because the match for literals must be by sameValueAs,
+         not equality, the optimisation is not applied for literals. [This is probably a
+         Bad Thing for strings.]
+
+         <p>Practice suggests doing the predicate test <i>last</i>, because there are
+         "usually" many more statements than predicates, so the predicate doesn't
+         cut down the search space very much. By "practice suggests" I mean that
+         when the order went, accidentally, from S/O/P to S/P/O, performance on
+         (ANY, P, O) searches on largish models with few predicates declined
+         dramatically - specifically on the not-galen.owl ontology.
+     */
+        @Override
+    public Stream<Triple> stream(Node sm, Node pm, Node om)
+        {
+        if (null == sm) sm = Node.ANY;
+        if (null == pm) pm = Node.ANY;
+        if (null == om) om = Node.ANY;
+
+        if (sm.isConcrete())
+            return subjects.stream( sm, pm, om );
+        else if (om.isConcrete())
+            return objects.stream( om, sm, pm );
+        else if (pm.isConcrete())
+            return predicates.stream( pm, om, sm );
+        else
+            return subjects.streamAll();
+        }
     }
+
+

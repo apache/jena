@@ -82,25 +82,24 @@ public class CmdxIngestData extends AbstractCmdxLoad {
 
         super.processModulesAndArgs();
 
-
         Location tmp = Location.create(tmpdir);
 
-        dataFileTriples  = super.getValue(argTriplesOut) ;
+        dataFileTriples = super.getValue(argTriplesOut);
         if ( dataFileTriples == null )
-            dataFileTriples = tmp.getPath("triples", "tmp") ;
+            dataFileTriples = tmp.getPath("triples", "tmp");
 
-        dataFileQuads    = super.getValue(argQuadsOut) ;
+        dataFileQuads = super.getValue(argQuadsOut);
         if ( dataFileQuads == null )
-            dataFileQuads = tmp.getPath("quads", "tmp") ;
+            dataFileQuads = tmp.getPath("quads", "tmp");
 
         if ( Objects.equals(dataFileTriples, dataFileQuads) )
-            cmdError("Triples and Quads work files are the same") ;
+            cmdError("Triples and Quads work files are the same");
 
 //        if ( super.contains(argNoStats) )
 //            collectStats = false ;
 
         if ( filenames.isEmpty() )
-            filenames = Arrays.asList("-") ;
+            filenames = Arrays.asList("-");
 
         // ---- Checking.
         for ( String filename : filenames ) {

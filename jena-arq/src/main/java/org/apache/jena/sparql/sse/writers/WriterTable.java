@@ -32,11 +32,11 @@ import org.apache.jena.sparql.sse.Tags;
 public class WriterTable
 {
     public static void output(IndentedWriter out, Table table, SerializationContext sCxt) {
-        WriterLib.start(out, Tags.tagTable, WriterLib.NoNL);
+        SSEWriteLib.start(out, Tags.tagTable, SSEWriteLib.NoNL);
         WriterNode.outputVars(out, table.getVars(), sCxt);
         out.println();
         outputPlain(out, table, sCxt);
-        WriterLib.finish(out, Tags.tagTable);
+        SSEWriteLib.finish(out, Tags.tagTable);
     }
 
     public static void outputPlain(IndentedWriter out, Table table, SerializationContext sCxt) {
@@ -50,17 +50,17 @@ public class WriterTable
     }
 
     public static void output(IndentedWriter out, Binding binding, SerializationContext sCxt) {
-        WriterLib.start(out, Tags.tagRow, WriterLib.NoSP);
+        SSEWriteLib.start(out, Tags.tagRow, SSEWriteLib.NoSP);
         for ( Iterator<Var> iter = binding.vars() ; iter.hasNext() ; ) {
             Var v = iter.next();
             Node n = binding.get(v);
             out.print(" ");
-            WriterLib.start2(out);
+            SSEWriteLib.start2(out);
             WriterNode.output(out, v, sCxt);
             out.print(" ");
             WriterNode.output(out, n, sCxt);
-            WriterLib.finish2(out);
+            SSEWriteLib.finish2(out);
         }
-        WriterLib.finish(out, Tags.tagRow);
+        SSEWriteLib.finish(out, Tags.tagRow);
     }
 }

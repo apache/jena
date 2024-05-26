@@ -36,10 +36,10 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.graph.GNode ;
 import org.apache.jena.sparql.util.graph.GraphList ;
+import org.apache.jena.system.G;
 import org.apache.jena.vocabulary.RDF ;
 import org.junit.Test ;
 
@@ -184,7 +184,7 @@ public class TestList
     }
 // --------
     
-    private static GNode gnode(Node n)  { return new GNode(Factory.createDefaultGraph(), n) ; }
+    private static GNode gnode(Node n)  { return new GNode(GraphMemFactory.createDefaultGraph(), n) ; }
     
     private static GNode parse(String str)
     { 
@@ -219,7 +219,7 @@ public class TestList
     private static Node s2 = NodeFactory.createURI("http://example/s2") ;
     private static Node s3 = NodeFactory.createURI("http://example/s3") ;
     
-    private static Graph graph = Factory.createDefaultGraph() ;
+    private static Graph graph = GraphMemFactory.createDefaultGraph() ;
     static { RDFDataMgr.read(graph, new StringReader(data), null, Lang.TTL); }
     
     

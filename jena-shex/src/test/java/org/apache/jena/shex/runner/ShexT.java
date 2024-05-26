@@ -55,10 +55,17 @@ Also class:
 
     public static final String NS = BASE_URI + "#";
 
+    // Classes
     public final static Resource cValidationTest        = ResourceFactory.createResource(NS + "ValidationTest");
     public final static Resource cValidationFailure     = ResourceFactory.createResource(NS + "ValidationFailure");
     public final static Resource cRepresentationTest    = ResourceFactory.createResource(NS + "RepresentationTest");
 
+    // Traits
+    public final static Resource tSemanticAction    = ResourceFactory.createResource(NS + "SemanticAction");
+    public final static Resource tExternalSemanticAction    = ResourceFactory.createResource(NS + "ExternalSemanticAction");
+    public final static Resource tOrderedSemanticActions = ResourceFactory.createResource(NS + "OrderedSemanticActions");
+
+    // Properties
     public final static Property shape = ResourceFactory.createProperty(NS + "shape");
     public final static Property data = ResourceFactory.createProperty(NS + "data");
     public final static Property schema = ResourceFactory.createProperty(NS + "schema");
@@ -73,5 +80,13 @@ Also class:
     public final static Property sx_shex = ResourceFactory.createProperty(NS_SX + "shex");
     public final static Property sx_json = ResourceFactory.createProperty(NS_SX + "json");
     public final static Property sx_ttl  = ResourceFactory.createProperty(NS_SX + "ttl");
+
+
+    /** <p>Structure describing invocation of the Test semantic action</p> */
+    public static final Property extensionResults = ResourceFactory.createProperty( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#extensionResults" );
+    /** <p>The extension name of a semantic action</p> */
+    public static final Property extension = ResourceFactory.createProperty( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#extension" );
+    /** <p>The text output of the Test semantic action</p> */
+    public static final Property prints = ResourceFactory.createProperty( "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#prints" );
 
 }

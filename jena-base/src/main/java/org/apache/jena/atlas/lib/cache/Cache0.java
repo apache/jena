@@ -16,35 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.lib.cache ;
+package org.apache.jena.atlas.lib.cache;
 
-import java.util.Iterator ;
-import java.util.concurrent.Callable ;
-import java.util.function.BiConsumer;
+import java.util.Iterator;
+import java.util.function.Function;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.Cache ;
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.lib.Cache;
 
 /** A cache that keeps nothing */
 public final class Cache0<K, V> implements Cache<K, V> {
     @Override
     public boolean containsKey(K key) {
-        return false ;
+        return false;
     }
 
     @Override
     public V getIfPresent(K key) {
-        return null ;
+        return null;
     }
 
     @Override
-    public V getOrFill(K key, Callable<V> callable) {
-        try {
-            return callable.call() ;
-        }
-        catch (Exception e) {
-            return null;
-        }
+    public V get(K key, Function<K, V> function) {
+        return function.apply(key);
     }
 
     @Override
@@ -55,12 +49,12 @@ public final class Cache0<K, V> implements Cache<K, V> {
 
     @Override
     public Iterator<K> keys() {
-        return Iter.nullIterator() ;
+        return Iter.nullIterator();
     }
 
     @Override
     public boolean isEmpty() {
-        return true ;
+        return true;
     }
 
     @Override
@@ -68,10 +62,6 @@ public final class Cache0<K, V> implements Cache<K, V> {
 
     @Override
     public long size() {
-        return 0 ;
+        return 0;
     }
-
-    @Override
-    public void setDropHandler(BiConsumer<K, V> dropHandler) {}
-
 }

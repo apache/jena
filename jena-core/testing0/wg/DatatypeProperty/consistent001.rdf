@@ -1,0 +1,38 @@
+<!--++ DatatypeProperty/consistent001.rdf ** generated using webont test editor. ++-->
+<!--++ Created 6 May 2003 10:21:21 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: consistent001.rdf,v 1.5 2003-12-05 05:09:33 jeremy_carroll Exp $
+-->
+<!--
+DatatypeProperty's may be used to related typed literals to typed literals, in OWL Full.
+-->
+<!-- Author: Jim Hendler -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/DatatypeProperty/consistent001#"
+    xml:base="http://www.w3.org/2002/03owlt/DatatypeProperty/consistent001" >
+  <owl:DatatypeProperty rdf:ID="convertedAbsoluteValue">
+    <rdfs:domain rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    <rdfs:range rdf:resource=
+        "http://www.w3.org/2001/XMLSchema#nonNegativeInteger" />
+  </owl:DatatypeProperty>
+  <rdf:Description>
+     <owl:sameAs rdf:datatype=
+      "http://www.w3.org/2001/XMLSchema#integer"
+     >-3</owl:sameAs>
+     <first:convertedAbsoluteValue rdf:datatype=
+     "http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+     >3</first:convertedAbsoluteValue>
+  </rdf:Description>
+</rdf:RDF>

@@ -31,13 +31,9 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.shared.AddDeniedException;
-import org.apache.jena.shared.AuthenticationRequiredException;
-import org.apache.jena.shared.DeleteDeniedException;
-import org.apache.jena.shared.ReadDeniedException;
-import org.apache.jena.shared.UpdateDeniedException;
+import org.apache.jena.shared.*;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.util.NodeUtils;
+import org.apache.jena.sparql.util.NodeCmp;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NullIterator;
 import org.apache.jena.vocabulary.RDF;
@@ -85,7 +81,7 @@ public abstract class SecuredItemImpl implements SecuredItem {
             if (Node.ANY.equals(n2)) {
                 return Expr.CMP_GREATER;
             }
-            return NodeUtils.compareRDFTerms(n1, n2);
+            return NodeCmp.compareRDFTerms(n1, n2);
         }
 
         private int compare(Triple t1, Triple t2) {
@@ -112,7 +108,7 @@ public abstract class SecuredItemImpl implements SecuredItem {
         public int compareTo(final CacheKey other) {
             int retval = this.action.compareTo(other.action);
             if (retval == Expr.CMP_EQUAL) {
-                retval = NodeUtils.compareRDFTerms(this.mNode, other.mNode);
+                retval = NodeCmp.compareRDFTerms(this.mNode, other.mNode);
             }
             if (retval == Expr.CMP_EQUAL) {
                 retval = compare(this.to, other.to);
@@ -170,7 +166,7 @@ public abstract class SecuredItemImpl implements SecuredItem {
     private static Triple convert(final Triple jenaTriple) {
         if (jenaTriple.getSubject().isVariable() || jenaTriple.getPredicate().isVariable()
                 || jenaTriple.getObject().isVariable()) {
-            return new Triple(SecuredItemImpl.convert(jenaTriple.getSubject()),
+            return Triple.create(SecuredItemImpl.convert(jenaTriple.getSubject()),
                     SecuredItemImpl.convert(jenaTriple.getPredicate()),
                     SecuredItemImpl.convert(jenaTriple.getObject()));
         }
@@ -486,9 +482,9 @@ public abstract class SecuredItemImpl implements SecuredItem {
         checkUpdate();
         Triple t = front.asTriple();
         final Node n = uri == null ? SecurityEvaluator.FUTURE : NodeFactory.createURI(uri);
-        checkCreate(new Triple(n, RDF.subject.asNode(), t.getSubject()));
-        checkCreate(new Triple(n, RDF.predicate.asNode(), t.getPredicate()));
-        checkCreate(new Triple(n, RDF.object.asNode(), t.getObject()));
+        checkCreate(Triple.create(n, RDF.subject.asNode(), t.getSubject()));
+        checkCreate(Triple.create(n, RDF.predicate.asNode(), t.getPredicate()));
+        checkCreate(Triple.create(n, RDF.object.asNode(), t.getObject()));
     }
 
 //	/**

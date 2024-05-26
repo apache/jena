@@ -22,8 +22,8 @@ public class ModGeneral extends ModBase
 {
     private Runnable helpFunction = null;
     public ModGeneral(Runnable helpFunction) { this.helpFunction = helpFunction ; }
-    
-    // Could be turned into a module but these are convenient as inherited flags 
+
+    // Could be turned into a module but these are convenient as inherited flags
     private final ArgDecl argDeclHelp        = new ArgDecl(false, "help", "h");
     private final ArgDecl argDeclVerbose     = new ArgDecl(false, "v", "verbose");
     private final ArgDecl argDeclQuiet       = new ArgDecl(false, "q", "quiet");
@@ -33,9 +33,9 @@ public class ModGeneral extends ModBase
     protected boolean quiet = false;
     public boolean debug = false;
     protected boolean help = false;
+
     @Override
-    public void registerWith(CmdGeneral cmdLine)
-    {
+    public void registerWith(CmdGeneral cmdLine) {
         cmdLine.getUsage().startCategory("General");
         cmdLine.add(argDeclVerbose, "-v   --verbose", "Verbose");
         cmdLine.add(argDeclQuiet, "-q   --quiet", "Run with minimal output");
@@ -44,10 +44,9 @@ public class ModGeneral extends ModBase
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
-    {
+    public void processArgs(CmdArgModule cmdLine) {
         verbose = cmdLine.contains(argDeclVerbose) || cmdLine.contains(argDeclDebug);
-        quiet   = cmdLine.contains(argDeclQuiet);
+        quiet = cmdLine.contains(argDeclQuiet);
         help = cmdLine.contains(argDeclHelp);
         if ( help )
             helpFunction.run();

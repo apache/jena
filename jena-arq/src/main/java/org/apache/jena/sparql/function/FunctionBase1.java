@@ -27,31 +27,24 @@ import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.expr.NodeValue ;
 
-/** Support for a function of one argument. */
+/** Support for functions with one argument. */
+public abstract class FunctionBase1 extends FunctionBase {
 
-public abstract class FunctionBase1 extends FunctionBase
-{
     @Override
-    public void checkBuild(String uri, ExprList args)
-    { 
+    public void checkBuild(String uri, ExprList args) {
         if ( args.size() != 1 )
-            throw new QueryBuildException("Function '"+Lib.className(this)+"' takes one argument") ;
+            throw new QueryBuildException("Function '" + Lib.className(this) + "' takes one argument");
     }
 
     @Override
-    public final NodeValue exec(List<NodeValue> args)
-    {
+    public final NodeValue exec(List<NodeValue> args) {
         if ( args == null )
-            // The contract on the function interface is that this should not happen.
-            throw new ARQInternalErrorException("FunctionBase1: Null args list") ;
-        
+            throw new ARQInternalErrorException("FunctionBase1: Null args list");
         if ( args.size() != 1 )
-            throw new ExprEvalException("FunctionBase1: Wrong number of arguments: Wanted 1, got "+args.size()) ;
-        
-        NodeValue v1 = args.get(0) ;
-        
-        return exec(v1) ;
+            throw new ExprEvalException("FunctionBase1: Wrong number of arguments: Wanted 1, got " + args.size());
+        NodeValue v1 = args.get(0);
+        return exec(v1);
     }
-    
-    public abstract NodeValue exec(NodeValue v) ;
+
+    public abstract NodeValue exec(NodeValue v);
 }

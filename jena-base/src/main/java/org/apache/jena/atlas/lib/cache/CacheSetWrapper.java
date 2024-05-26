@@ -18,8 +18,6 @@
 
 package org.apache.jena.atlas.lib.cache ;
 
-import java.util.function.Consumer;
-
 import org.apache.jena.atlas.lib.CacheSet ;
 
 public class CacheSetWrapper<T> implements CacheSet<T> {
@@ -57,10 +55,5 @@ public class CacheSetWrapper<T> implements CacheSet<T> {
     @Override
     public long size() {
         return cache.size() ;
-    }
-
-    @Override
-    public void setDropHandler(Consumer<T> dropHandler) {
-        cache.setDropHandler(dropHandler) ;
     }
 }

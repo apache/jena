@@ -21,7 +21,6 @@ package org.apache.jena.query.text;
 import java.util.Set ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.ext.com.google.common.collect.Sets ;
 import org.junit.Before ;
 import org.junit.Test ;
 
@@ -37,8 +36,8 @@ public class TestDatasetWithConfigurableAnalyzer extends TestDatasetWithLowerCas
             "text:tokenizer text:KeywordTokenizer ;",
             "text:filters (text:ASCIIFoldingFilter text:LowerCaseFilter)"
         ));
-    }    
-    
+    }
+
     @Test
     public void testConfigurableAnalyzerIsCaseAndAccentInsensitive() {
         final String testName = "testConfigurableAnalyzerIsCaseAndAccentInsensitive";
@@ -58,7 +57,7 @@ public class TestDatasetWithConfigurableAnalyzer extends TestDatasetWithLowerCas
                 "    ?s text:query ( rdfs:label '\"Déja Vü\"' 10 ) .",
                 "}"
                 );
-        Set<String> expectedURIs = Sets.newHashSet(RESOURCE_BASE + testName);
+        Set<String> expectedURIs = Set.of(RESOURCE_BASE + testName);
         doTestSearch(turtle, queryString, expectedURIs);
     }
 }

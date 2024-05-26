@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:eg="http://example.org/">
+  <rdf:Description eg:prop="a" rdf:nodeID="x">
+    <eg:prop rdf:parseType="Resource">
+       <eg:x rdf:nodeID="x"/>
+       <eg:y rdf:nodeID="y"/>
+       <eg:z>
+         <eg:p />
+            

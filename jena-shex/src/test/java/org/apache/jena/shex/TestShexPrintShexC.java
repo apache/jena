@@ -20,11 +20,11 @@ package org.apache.jena.shex;
 
 import org.apache.jena.arq.junit.runners.Directories;
 import org.apache.jena.arq.junit.runners.Label;
-import org.apache.jena.shex.runner.RunnerShexSyntax;
+import org.apache.jena.shex.runner.RunnerPrintShex;
 import org.junit.runner.RunWith;
 
-@RunWith(RunnerShexSyntax.class)
-@Label("Shex Syntax")
+@RunWith(RunnerPrintShex.class)
+@Label("Print ShexC")
 @Directories({
     "src/test/files/spec/syntax"
 })

@@ -14,8 +14,7 @@
 ## 	mf:include <pre-binding-006.ttl> ;
 	mf:include <pre-binding-007.ttl> ;
     
-    # $shapesGraph not supported.
-## 	mf:include <shapesGraph-001.ttl> ;
+ 	mf:include <shapesGraph-001.ttl> ;
 
     # MINUS
 ## 	mf:include <unsupported-sparql-001.ttl> ;

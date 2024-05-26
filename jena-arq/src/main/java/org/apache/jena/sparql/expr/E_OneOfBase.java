@@ -73,7 +73,7 @@ public abstract class E_OneOfBase extends ExprFunctionN
         {
             try {
                 NodeValue maybe = inExpr.eval(binding, env) ;
-                if ( NodeValue.sameAs(nv, maybe) )
+                if ( NodeValue.sameValueAs(nv, maybe) )
                     return true ;
             } catch (ExprEvalException ex)
             {

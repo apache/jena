@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream ;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.ext.com.google.common.collect.Iterators;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
@@ -70,7 +69,7 @@ public class TemplateLib {
 
     /** Substitute into triple patterns */
     public static Iterator<Triple> calcTriples(final List<Triple> triples, Iterator<Binding> bindings) {
-        return Iterators.concat(Iter.map(bindings, new Function<Binding, Iterator<Triple>>() {
+        Function<Binding, Iterator<Triple>> mapper = new Function<>() {
             Map<Node, Node> bNodeMap = new HashMap<>();
 
             @Override
@@ -90,12 +89,13 @@ public class TemplateLib {
                 }
                 return tripleList.iterator();
             }
-        }));
+        };
+        return Iter.flatMap(bindings, mapper);
     }
 
     /** Substitute into quad patterns */
     public static Iterator<Quad> calcQuads(final List<Quad> quads, Iterator<Binding> bindings) {
-        return Iterators.concat(Iter.map(bindings, new Function<Binding, Iterator<Quad>>() {
+        Function<Binding, Iterator<Quad>> mapper = new Function<>() {
             Map<Node, Node> bNodeMap = new HashMap<>();
 
             @Override
@@ -114,7 +114,8 @@ public class TemplateLib {
                 }
                 return quadList.iterator();
             }
-        }));
+        };
+        return Iter.flatMap(bindings, mapper);
     }
 
     /** Substitute into a quad, with rewriting of bNodes */
@@ -171,7 +172,7 @@ public class TemplateLib {
 
         Triple t = triple;
         if ( s1 != s || p1 != p || o1 != o )
-            t = new Triple(s1, p1, o1);
+            t = Triple.create(s1, p1, o1);
 
         Triple t2 = Substitute.substitute(t, b);
         return t2;

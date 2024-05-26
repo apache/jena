@@ -1,0 +1,37 @@
+<!--++ I5.2/consistent010.rdf ** generated using webont test editor. ++-->
+<!--++ Created 7 May 2003 12:34:29 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: consistent010.rdf,v 1.5 2003-12-05 05:09:32 jeremy_carroll Exp $
+-->
+<!--
+The informal semantics for RDF container vocabulary,
+indicated by the comment, are not respected by
+the formal machinery of OWL.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xml:base="http://www.w3.org/2002/03owlt/I5.2/consistent010" >
+  <owl:Class rdf:about=
+ "http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag" >
+    <rdfs:comment>The class of unordered containers.</rdfs:comment>
+  </owl:Class>
+  <owl:ObjectProperty rdf:about=
+ "http://www.w3.org/1999/02/22-rdf-syntax-ns#_1" />
+  <rdf:Bag>
+    <rdf:_1>
+       <owl:Thing />
+    </rdf:_1>
+  </rdf:Bag>
+</rdf:RDF>

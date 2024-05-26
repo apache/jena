@@ -48,7 +48,9 @@ public class TestExpressions2
     // Different value spaces => different.
     @Test public void gregorian_eq_05()         { eval("'1999-01'^^xsd:gYearMonth != '2001Z'^^xsd:gYear", true) ; }
 
-    @Test public void gregorian_eq_06()         { eval("'--01'^^xsd:gMonth != '--01-25'^^xsd:gMonthDay", true) ; }
+    @Test (expected=ExprEvalException.class)
+    public void gregorian_eq_06()               { eval("'--01'^^xsd:gMonth != '--01-25'^^xsd:gMonthDay", true) ; }
+
     @Test public void gregorian_eq_07()         { eval("'---25'^^xsd:gDay = '---25'^^xsd:gDay", true) ; }
     @Test public void gregorian_eq_08()         { eval("'1999-01'^^xsd:gYearMonth != '2001Z'^^xsd:gYear", true) ; }
     @Test public void gregorian_eq_09()         { eval("'1999-01'^^xsd:gYearMonth != '2001Z'^^xsd:gYear", true) ; }
@@ -235,14 +237,12 @@ public class TestExpressions2
 
     // ---- Workers
 
-    /*package*/ static void eval(String string)
-    {
+    /*package*/ static void eval(String string) {
         eval(string, true) ;
     }
 
     // It's easier to write tests that simply are expected to return true/false
-    /*package*/ static void eval(String string, boolean result)
-    {
+    /*package*/ static void eval(String string, boolean result) {
         Expr expr = ExprUtils.parse(string) ;
         NodeValue nv = expr.eval(null, LibTestExpr.createTest()) ;
         boolean b = XSDFuncOp.booleanEffectiveValue(nv) ;

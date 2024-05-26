@@ -20,6 +20,7 @@ package org.apache.jena.sparql.resultset;
 
 import java.util.ArrayList ;
 import java.util.List ;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.iterator.PeekIterator ;
 import org.apache.jena.query.QuerySolution ;
@@ -145,6 +146,15 @@ public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
 
     @Override
     public QuerySolution next() { return nextSolution() ; }
+
+    @Override
+    public void forEachRemaining(Consumer<? super QuerySolution> action) {
+        iterator.forEachRemaining(binding -> {
+            rowNumber++;
+            action.accept(new ResultBinding(model, binding));
+        });
+
+    }
 
     @Override
     public void close() {}

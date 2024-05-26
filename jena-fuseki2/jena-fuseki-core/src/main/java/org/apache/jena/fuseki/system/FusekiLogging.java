@@ -26,7 +26,8 @@ import java.net.URL;
 import java.nio.file.Path;
 
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.logging.LogCtlLog4j2;
 import org.apache.jena.fuseki.Fuseki;
 
@@ -47,14 +48,11 @@ public class FusekiLogging
     // setLogging is pointless (it's already set).
 
     // Set logging.
-    // 1/ Use system property log4j.configurationFile if defined.
+    // 1/ Use system property log4j2.configurationFile if defined.
     // 2/ Use file:log4j2.properties if exists
     // 3/ Use log4j2.properties on the classpath.
     // 4/ Use org/apache/jena/fuseki/log4j2.properties on the classpath.
     // 5/ Use built in string
-    //
-    // If a webapp running as a .war file in webapp container (e.g. Tomcat)
-    // logging is initialized in FusekiServerEnvironmentInit using a <contaxt-param>.
 
     /**
      * Places for the log4j properties file at (3).
@@ -65,9 +63,23 @@ public class FusekiLogging
         "log4j2.properties"
     };
 
-    private static final boolean LogLogging =
-            System.getenv("FUSEKI_LOGLOGGING") != null ||
-            System.getProperty("fuseki.loglogging") != null;
+    public static String envLogLoggingProperty = "FUSEKI_LOGLOGGING";
+    public static String logLoggingProperty = "fuseki.logLogging";
+    private static String logLoggingPropertyAlt = "fuseki.loglogging";
+
+    // This is also set every call of seLogging.
+    // That picks up any in-code settings of the logging properties.
+    private static boolean logLogging = getLogLogging();
+
+    private static final boolean getLogLogging() {
+        String x = System.getProperty(logLoggingPropertyAlt);
+        if ( x != null ) {
+            logLogging("Old system property used '%s'", logLoggingPropertyAlt);
+            return x.equalsIgnoreCase("true");
+        }
+        x = Lib.getenv("FUSEKI_LOGLOGGING", logLoggingProperty);
+        return x != null && x.equalsIgnoreCase("true");
+    }
 
     private static boolean loggingInitialized   = false;
 
@@ -89,7 +101,9 @@ public class FusekiLogging
         setLogging(null);
     }
 
-    public static final String log4j2_configurationFile = "log4j.configurationFile";
+    public static final String log4j2_configurationFile = LogCtl.log4j2ConfigFileProperty;
+    private static final String log4j2_configurationFileLegacy = LogCtl.log4j2ConfigFilePropertyLegacy;
+    // Only used by the webapp.
     public static final String log4j2_web_configuration = "log4jConfiguration";
 
     public static synchronized boolean hasInitialized() {
@@ -102,25 +116,26 @@ public class FusekiLogging
      * @param extraDir
      */
     public static synchronized void setLogging(Path extraDir) {
+
         // Cope with repeated calls so code can call this to ensure
-        // logging setup has happened.
         if ( loggingInitialized )
             return;
         loggingInitialized = true;
 
+        logLogging = getLogLogging();
         logLogging("Set logging");
 
         // Is there a log4j setup provided?
-        if ( checkSystemProperties("log4j2.configurationFile") ||
-             checkSystemProperties("log4j.configurationFile") ||    // Log4j2 legacy name
+        if ( checkSystemProperties(log4j2_configurationFile) ||
+             checkSystemProperties(log4j2_configurationFileLegacy) ||
              System.getenv("LOG4J_CONFIGURATION_FILE") != null )
         {
-            logLogging("External log4j2 setup");
+            logLogging("External log4j2 setup ");
             return ;
         }
 
         logLogging("Setup");
-        // Look for a log4j.properties file in the current working directory
+        // Look for a log4j2.properties file in the current working directory
         // and a place (e.g. FUSEKI_BASE in the webapp/full server) for easy customization.
         String fn1 = "log4j2.properties";
         String fn2 = null;
@@ -144,6 +159,10 @@ public class FusekiLogging
 //            }
 
             if ( url != null ) {
+                try ( InputStream inputStream = url.openStream() ) {
+                    String x = IO.readWholeFileAsUTF8(inputStream);
+                } catch (IOException ex) { IO.exception(ex); }
+
                 try ( InputStream inputStream = url.openStream() ) {
                     loadConfiguration(inputStream, resourceName);
                 } catch (IOException ex) { IO.exception(ex); }
@@ -199,7 +218,7 @@ public class FusekiLogging
     }
 
     private static void logLogging(String fmt, Object ... args) {
-        if ( LogLogging ) {
+        if ( logLogging ) {
             System.err.print("Fuseki Logging: ");
             System.err.printf(fmt, args);
             System.err.println();
@@ -209,73 +228,72 @@ public class FusekiLogging
     private static String log4j2setupFallback() {
         // The logging file for Fuseki in Tomcat webapp is in "log4j2.properties" in the webapp root directory.
         // This is used by command line Fuseki (full and main)
-        // @formatter:off
-        return StrUtils.strjoinNL
-            ("## Plain output to stdout"
-            , "status = error"
-            , "name = FusekiLogging"
-//            , ""
-//            , "filters = threshold"
-//            , "filter.threshold.type = ThresholdFilter"
-//            , "filter.threshold.level = ALL"
-//            , ""
-            , "appender.console.type = Console"
-            , "appender.console.name = OUT"
-            , "appender.console.target = SYSTEM_OUT"
-            , "appender.console.layout.type = PatternLayout"
-            , "appender.console.layout.pattern = [%d{yyyy-MM-dd HH:mm:ss}] %-10c{1} %-5p %m%n"
-            , ""
-            , "rootLogger.level                  = INFO"
-            , "rootLogger.appenderRef.stdout.ref = OUT"
-            , ""
-            , "logger.jena.name  = org.apache.jena"
-            , "logger.jena.level = INFO"
-            , ""
-            , "logger.arq-exec.name  = org.apache.jena.arq.exec"
-            , "logger.arq-exec.level = INFO"
-            , ""
-            , "logger.riot.name  = org.apache.jena.riot"
-            , "logger.riot.level = INFO"
-            , ""
-            , "logger.fuseki.name  = org.apache.jena.fuseki"
-            , "logger.fuseki.level = INFO"
-            , ""
-            , "logger.fuseki-fuseki.name  = org.apache.jena.fuseki.Fuseki"
-            , "logger.fuseki-fuseki.level = INFO"
-            ,""
-            , "logger.fuseki-server.name  = org.apache.jena.fuseki.Server"
-            , "logger.fuseki-server.level = INFO"
-            ,""
-            , "logger.fuseki-config.name  = org.apache.jena.fuseki.Config"
-            , "logger.fuseki-config.level = INFO"
-            ,""
-            , "logger.fuseki-admin.name  = org.apache.jena.fuseki.Admin"
-            , "logger.fuseki-admin.level = INFO"
-            ,""
-            , "logger.jetty.name  = org.eclipse.jetty"
-            , "logger.jetty.level = WARN"
-            , ""
-            , "logger.apache-http.name   = org.apache.http"
-            , "logger.apache-http.level  = WARN"
-            , "logger.shiro.name = org.apache.shiro"
-            , "logger.shiro.level = WARN"
-            , ""
-            , "# Hide bug in Shiro 1.5.0"
-            , "logger.shiro-realm.name = org.apache.shiro.realm.text.IniRealm"
-            , "logger.shiro-realm.level = ERROR"
-            , ""
-            , "# This goes out in NCSA format"
-            , "appender.plain.type = Console"
-            , "appender.plain.name = PLAIN"
-            , "appender.plain.layout.type = PatternLayout"
-            , "appender.plain.layout.pattern = %m%n"
-            , ""
-            , "logger.fuseki-request.name                   = org.apache.jena.fuseki.Request"
-            , "logger.fuseki-request.additivity             = false"
-            , "logger.fuseki-request.level                  = OFF"
-            , "logger.fuseki-request.appenderRef.plain.ref  = PLAIN"
-                );
-        // @formatter:on
+
+//      filters = threshold
+//      filter.threshold.type = ThresholdFilter
+//      filter.threshold.level = ALL
+
+        return """
+                ## Plain output to stdout
+                status = error
+                name = FusekiLogging
+                appender.console.type = Console
+                appender.console.name = OUT
+                appender.console.target = SYSTEM_OUT
+                appender.console.layout.type = PatternLayout
+                appender.console.layout.pattern = [%d{yyyy-MM-dd HH:mm:ss}] %-10c{1} %-5p %m%n
+
+                rootLogger.level                  = WARN
+                rootLogger.appenderRef.stdout.ref = OUT
+
+                logger.jena.name  = org.apache.jena
+                logger.jena.level = INFO
+
+                logger.arq-exec.name  = org.apache.jena.arq.exec
+                logger.arq-exec.level = INFO
+
+                logger.riot.name  = org.apache.jena.riot
+                logger.riot.level = INFO
+
+                logger.fuseki.name  = org.apache.jena.fuseki
+                logger.fuseki.level = INFO
+
+                logger.fuseki-fuseki.name  = org.apache.jena.fuseki.Fuseki
+                logger.fuseki-fuseki.level = INFO
+
+                logger.fuseki-server.name  = org.apache.jena.fuseki.Server
+                logger.fuseki-server.level = INFO
+
+                logger.fuseki-config.name  = org.apache.jena.fuseki.Config
+                logger.fuseki-config.level = INFO
+
+                logger.fuseki-admin.name  = org.apache.jena.fuseki.Admin
+                logger.fuseki-admin.level = INFO
+
+                logger.jetty.name  = org.eclipse.jetty
+                logger.jetty.level = WARN
+
+                logger.apache-http.name   = org.apache.http
+                logger.apache-http.level  = WARN
+                logger.shiro.name = org.apache.shiro
+                logger.shiro.level = WARN
+
+                # Hide bug in Shiro 1.5.0
+                logger.shiro-realm.name = org.apache.shiro.realm.text.IniRealm
+                logger.shiro-realm.level = ERROR
+
+                # This goes out in NCSA format
+                appender.plain.type = Console
+                appender.plain.name = PLAIN
+                appender.plain.layout.type = PatternLayout
+                appender.plain.layout.pattern = %m%n
+
+                logger.fuseki-request.name                   = org.apache.jena.fuseki.Request
+                logger.fuseki-request.additivity             = false
+                logger.fuseki-request.level                  = OFF
+                logger.fuseki-request.appenderRef.plain.ref  = PLAIN
+                    );
+                    """;
     }
 
     public static void resetLogging(String configString) {

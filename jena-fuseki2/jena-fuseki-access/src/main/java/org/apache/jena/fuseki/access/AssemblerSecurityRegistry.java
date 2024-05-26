@@ -24,13 +24,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.MultiMapUtils;
+import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.Mode;
 import org.apache.jena.assembler.assemblers.AssemblerBase;
 import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
-import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.RDFNode;
@@ -63,7 +63,7 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
         StmtIterator sIter = root.listProperties(VocabSecurity.pEntry);
         if ( ! sIter.hasNext() )
             throw new AssemblerException(root, "No access entries");
-        Multimap<String, Node> map = ArrayListMultimap.create();
+        MultiValuedMap<String, Node> map = MultiMapUtils.newListValuedHashMap();
 
         sIter.forEachRemaining(s->{
             RDFNode n = s.getObject();
@@ -91,7 +91,7 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
     }
 
     /** Format:: access:entry ("user1" <http://host/graphname1>  <http://host/graphname2> ); */
-    private void parseList(Multimap<String, Node> map, Resource root, GNode entry) {
+    private void parseList(MultiValuedMap<String, Node> map, Resource root, GNode entry) {
         List<Node> members = GraphList.members(entry);
         // string, then URIs.
         if ( members.isEmpty() )
@@ -105,7 +105,7 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
     }
 
     /** Format:: access:entry [ :user "user2"; :graphs (<http://host/graphname3> ) ] */
-    private void parseStruct(Multimap<String, Node> map, Resource root, Resource r) {
+    private void parseStruct(MultiValuedMap<String, Node> map, Resource root, Resource r) {
         if ( ! GraphUtils.exactlyOneProperty(r, VocabSecurity.pUser) )
             throw new AssemblerException(root, "Expected exactly one access:user property for "+r);
         if ( ! GraphUtils.exactlyOneProperty(r, VocabSecurity.pGraphs) )
@@ -139,12 +139,12 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
     // Unfinished.
     private final static boolean SKIP_ALLGRAPH = true;
 
-    private void accessEntries(Resource root, Multimap<String, Node> map, String user, List<Node> _graphs) {
+    private void accessEntries(Resource root, MultiValuedMap<String, Node> map, String user, List<Node> _graphs) {
         // Convert string names for graphs to URIs.
         Set<Node> graphs = _graphs.stream().map(n->graphLabel(n, root)).collect(Collectors.toSet());
 
         if ( graphs.contains(SecurityContext.allGraphs) ) {
-            map.removeAll(user);
+            map.remove(user);
             map.put(user, SecurityContext.allGraphs);
             return;
         }
@@ -154,7 +154,7 @@ public class AssemblerSecurityRegistry extends AssemblerBase {
             if ( dft )
                 // Put in "*" instead.
                 x = SecurityContext.allGraphs;
-            map.removeAll(user);
+            map.remove(user);
             map.put(user, x);
             return;
         }

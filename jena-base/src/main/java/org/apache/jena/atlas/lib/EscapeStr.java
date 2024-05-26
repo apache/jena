@@ -27,11 +27,22 @@ import org.apache.jena.atlas.io.StringWriterI ;
 public class EscapeStr
 {
     /*
-     * Escape characters in a string according to Turtle rules.
+     * Escape characters in a string according to Turtle rules
+     * for a single line string, using double quotes as the string delimiters
+     * Delimiters are not included in the result.
      */
     public static String stringEsc(String s) {
+        return stringEsc(s, Chars.CH_QUOTE2);
+    }
+
+    /*
+     * Escape characters in a string according to Turtle rules,
+     * where {@code quoteChar} is the delimiter.
+     * Delimiters are not included in the result.
+     */
+    public static String stringEsc(String s, char quoteChar) {
         AWriter w = new StringWriterI() ;
-        stringEsc(w, s, Chars.CH_QUOTE2, true, CharSpace.UTF8) ;
+        stringEsc(w, s, quoteChar, true, CharSpace.UTF8) ;
         return w.toString() ;
     }
 

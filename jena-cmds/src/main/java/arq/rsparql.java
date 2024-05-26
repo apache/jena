@@ -33,7 +33,7 @@ import org.apache.jena.sparql.util.QueryExecUtils ;
 
 public class rsparql extends CmdARQ
 {
-    protected ModQueryIn    modQuery =      new ModQueryIn(Syntax.syntaxSPARQL_11) ;
+    protected ModQueryIn    modQuery =      new ModQueryIn(Syntax.syntaxARQ) ;
     protected ModRemote     modRemote =     new ModRemote() ;
     protected ModResultsOut modResults =    new ModResultsOut() ;
 
@@ -76,6 +76,6 @@ public class rsparql extends CmdARQ
 
     @Override
     protected String getSummary() {
-        return null;
+        return "rsparql --service URL [--results FORMAT] [--query FILENAME | QueyString ]";
     }
 }

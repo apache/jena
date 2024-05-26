@@ -164,9 +164,8 @@ public class MediaType {
     public boolean equals(Object object) {
         if ( this == object )
             return true;
-        if ( !(object instanceof MediaType) )
+        if ( !(object instanceof MediaType mt) )
             return false;
-        MediaType mt = (MediaType)object;
         return Objects.equals(type, mt.type) && Objects.equals(subType, mt.subType) && Objects.equals(params, mt.params);
     }
 

@@ -24,22 +24,44 @@ package org.apache.jena.ontology.impl;
 
 // Imports
 ///////////////
-import java.util.* ;
 
-import org.apache.jena.enhanced.EnhGraph ;
-import org.apache.jena.enhanced.EnhNode ;
-import org.apache.jena.enhanced.Implementation ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.ontology.* ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.InfGraph ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.UniqueFilter ;
-import org.apache.jena.util.iterator.WrappedIterator ;
-import org.apache.jena.vocabulary.OWL ;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.RDFS ;
-import org.apache.jena.vocabulary.ReasonerVocabulary ;
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.enhanced.EnhNode;
+import org.apache.jena.enhanced.Implementation;
+import org.apache.jena.graph.Node;
+import org.apache.jena.ontology.ComplementClass;
+import org.apache.jena.ontology.ConversionException;
+import org.apache.jena.ontology.EnumeratedClass;
+import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.IntersectionClass;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntProperty;
+import org.apache.jena.ontology.Profile;
+import org.apache.jena.ontology.ProfileException;
+import org.apache.jena.ontology.Restriction;
+import org.apache.jena.ontology.UnionClass;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFList;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.UniqueFilter;
+import org.apache.jena.util.iterator.WrappedIterator;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.ReasonerVocabulary;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -328,11 +350,11 @@ public class OntClassImpl
      * distinguishing extra parameter for this method is the flag <code>direct</code>
      * that allows some selectivity over the classes that appear in the iterator.
      * Consider the following scenario:
-     * <code><pre>
+     * <code>
      *   :B rdfs:subClassOf :A.
      *   :C rdfs:subClassOf :A.
      *   :D rdfs:subClassof :C.
-     * </pre></code>
+     * </pre>
      * (so A has two sub-classes, B and C, and C has sub-class D).  In a raw model, with
      * no inference support, listing the sub-classes of A will answer B and C.  In an
      * inferencing model, <code>rdfs:subClassOf</code> is known to be transitive, so
@@ -342,9 +364,9 @@ public class OntClassImpl
      * to the given root.  Thus, the direct sub-classes of A are B and C only, and not D -
      * even in an inferencing graph.  Note that this is not the same as the entailments
      * from the raw graph. Suppose we add to this example:
-     * <code><pre>
+     * <code>
      *   :D rdfs:subClassof :A.
-     * </pre></code>
+     * </pre>
      * Now, in the raw graph, A has sub-class C.  But the direct sub-classes of A remain
      * B and C, since there is a longer path A-C-D that means that D is not a direct sub-class
      * of A.  The assertion in the raw graph that A has sub-class D is essentially redundant,
@@ -999,6 +1021,7 @@ public class OntClassImpl
                 }
                 else if (!canProveSuperClass( domain )) {
                     // there is a class in the domain of p that is not a super-class of this class
+                    i.close();
                     return false;
                 }
             }

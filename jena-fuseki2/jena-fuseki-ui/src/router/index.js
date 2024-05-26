@@ -15,12 +15,9 @@
  * limitations under the License.
 */
 
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home'
-import NotFound from '@/views/NotFound'
-
-Vue.use(VueRouter)
+import * as VueRouter from 'vue-router'
+import Home from '../views/Home.vue'
+import NotFound from '@/views/NotFound.vue'
 
 const routes = [
   {
@@ -29,60 +26,67 @@ const routes = [
     component: Home
   },
   {
+    path: '/dataset/:datasetName/query',
+    name: 'DatasetQuery',
+    component: () => import('../views/dataset/Query.vue'),
+    props: true
+  },
+  {
     // JENA-2295: we expand the pattern of this path with an `*` to allow for the YASGUI
     //            query parameter, e.g. /#/dataset/abc/query?query=SELECT...
     path: '/dataset/:datasetName/query*',
-    name: 'DatasetQuery',
-    component: () => import(/* webpackChunkName: "datasetQuery" */ '../views/dataset/Query'),
+    name: 'DatasetQueryParameters',
+    component: () => import('../views/dataset/Query.vue'),
     props: true
   },
   {
     path: '/dataset/:datasetName/upload',
     name: 'DatasetUpload',
-    component: () => import(/* webpackChunkName: "datasetUpload" */ '../views/dataset/Upload'),
+    component: () => import('../views/dataset/Upload.vue'),
     props: true
   },
   {
     path: '/dataset/:datasetName/edit',
     name: 'DatasetEdit',
-    component: () => import(/* webpackChunkName: "datasetEdit" */ '../views/dataset/Edit'),
+    component: () => import('../views/dataset/Edit.vue'),
     props: true
   },
   {
     path: '/dataset/:datasetName/info',
     name: 'DatasetInfo',
-    component: () => import(/* webpackChunkName: "datasetInfo" */ '../views/dataset/Info'),
+    component: () => import('../views/dataset/Info.vue'),
     props: true
   },
   {
     path: '/manage',
     name: 'ManageDatasets',
-    component: () => import(/* webpackChunkName: "manageDatasets" */ '../views/manage/ExistingDatasets')
+    component: () => import('../views/manage/ExistingDatasets.vue')
   },
   {
     path: '/manage/new',
     name: 'NewDataset',
-    component: () => import(/* webpackChunkName: "newDataset" */ '../views/manage/NewDataset')
+    component: () => import('../views/manage/NewDataset.vue')
   },
   {
     path: '/manage/tasks',
     name: 'Tasks',
-    component: () => import(/* webpackChunkName: "tasks" */ '../views/manage/Tasks')
+    component: () => import('../views/manage/Tasks.vue')
   },
   {
     path: '/documentation',
     name: 'Help',
-    component: () => import(/* webpackChunkName: "documentation" */ '../views/Help')
+    component: () => import('../views/Help.vue')
   },
   {
-    path: '*',
+    path: '/:pathMatch(.*)*',
     name: 'Not Found',
     component: NotFound
   }
 ]
 
-const router = new VueRouter({
-  routes
+const router = VueRouter.createRouter({
+  routes,
+  history: VueRouter.createWebHashHistory()
 })
 
 export default router

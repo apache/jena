@@ -40,11 +40,11 @@ import java.util.stream.Collectors;
  *                         HandlerBasedValidationListener
  *                                         .builder()
  *                                         .forEventType(FocusNodeValidationStartedEvent.class)
- *                                         .addSimpleHandler(e -> {
+ *                                         .addSimpleHandler(e -&gt; {
  *                                              // ...
  *                                         })
  *                                         .forEventType(ConstraintEvaluatedEvent.class)
- *                                         .addSimpleHandler(e -> {
+ *                                         .addSimpleHandler(e -&gt; {
  *                                             // will be called for any subclass of ConstraintEvaluatedEvent
  *                                         })
  *                                         .build();

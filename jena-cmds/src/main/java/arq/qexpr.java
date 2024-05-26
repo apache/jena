@@ -64,9 +64,9 @@ public class qexpr
             if ( ex.getCause() != null )
                 ex.getCause().printStackTrace(System.err) ;
         }
-        
+
     }
-    
+
     public static void execAndReturn(String... argv)
     {
         try {
@@ -80,21 +80,21 @@ public class qexpr
                 ex.getCause().printStackTrace(System.err) ;
         }
     }
-        
+
     public static void main2(String... argv)
     {
-        
+
         CmdLineArgs cl = new CmdLineArgs(argv) ;
-        
+
         ArgDecl helpDecl = new ArgDecl(ArgDecl.NoValue, "h", "help") ;
         cl.add(helpDecl) ;
-        
+
         ArgDecl verboseDecl = new ArgDecl(ArgDecl.NoValue, "v", "verbose") ;
         cl.add(verboseDecl) ;
-        
+
         ArgDecl versionDecl = new ArgDecl(ArgDecl.NoValue, "ver", "version", "V") ;
         cl.add(versionDecl) ;
-        
+
         ArgDecl quietDecl = new ArgDecl(ArgDecl.NoValue, "q", "quiet") ;
         cl.add(quietDecl) ;
 
@@ -103,7 +103,7 @@ public class qexpr
 
         ArgDecl strictDecl =  new ArgDecl(ArgDecl.NoValue, "strict") ;
         cl.add(strictDecl) ;
-        
+
         ArgDecl printDecl =  new ArgDecl(ArgDecl.HasValue, "print") ;
         cl.add(printDecl) ;
 
@@ -121,23 +121,23 @@ public class qexpr
             usage() ;
             throw new TerminationException(0) ;
         }
-        
+
         if ( cl.contains(versionDecl) )
         {
             System.out.println("ARQ Version: "+ARQ.VERSION+" (Jena: "+Jena.VERSION+")") ;
             throw new TerminationException(0) ;
         }
- 
+
         // ==== General things
         boolean verbose = cl.contains(verboseDecl) ;
         boolean quiet = cl.contains(quietDecl) ;
 
         if ( cl.contains(strictDecl) )
             ARQ.setStrictMode() ;
-        
+
         boolean actionCopySubstitute = cl.contains(reduceDecl) ;
         boolean actionPrintPrefix = false ;
-        boolean actionPrintSPARQL = false ; 
+        boolean actionPrintSPARQL = false ;
         boolean actionPrint = cl.contains(printDecl) ;
 
         for ( String v : cl.getValues( printDecl ) )
@@ -158,12 +158,12 @@ public class qexpr
         }
 
         // ==== Do it
-        
+
         for ( int i = 0 ; i < cl.getNumPositional() ; i++ )
         {
             String exprStr = cl.getPositionalArg(i) ;
             exprStr = cl.indirect(exprStr) ;
-            
+
             try {
                 PrefixMapping pmap = PrefixMapping.Factory.create()  ;
                 pmap.setNsPrefixes(ARQConstants.getGlobalPrefixMap()) ;
@@ -174,7 +174,7 @@ public class qexpr
                 if ( actionPrint )
                 {
                     IndentedWriter iOut =  IndentedWriter.stdout;
-                    
+
                     if ( actionPrintSPARQL ) {
                         ExprUtils.fmtSPARQL(iOut, expr);
                         iOut.ensureStartOfLine();
@@ -200,7 +200,7 @@ public class qexpr
                     {
                         // Default action
                         ARQ.getContext().set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime()) ;
-                        FunctionEnv env = new ExecutionContext(ARQ.getContext(), null, null, null) ; 
+                        FunctionEnv env = new ExecutionContext(ARQ.getContext(), null, null, null) ;
                         NodeValue r = expr.eval(null, env) ;
                         //System.out.println(r.asQuotedString()) ;
                         Node n = r.asNode() ;
@@ -209,6 +209,8 @@ public class qexpr
                     }
                 } catch (ExprEvalException ex)
                 {
+                    ex.printStackTrace();
+
                     System.out.println("Exception: "+ex.getMessage()) ;
                     throw new TerminationException(2) ;
                 }
@@ -219,9 +221,9 @@ public class qexpr
             }
         }
     }
-    
+
     static void usage() { usage(System.out) ; }
-    
+
     static void usage(java.io.PrintStream out)
     {
         out.println("Usage: [--print=[prefix|expr]] expression") ;

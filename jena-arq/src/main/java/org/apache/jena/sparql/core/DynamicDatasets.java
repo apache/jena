@@ -21,16 +21,17 @@ package org.apache.jena.sparql.core;
 import static org.apache.jena.sparql.util.NodeUtils.convertToSetNodes;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.compose.Union;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.DatasetFactory ;
-import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.graph.GraphOps ;
-import org.apache.jena.sparql.graph.GraphUnionRead ;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.graph.GraphOps;
+import org.apache.jena.sparql.graph.GraphUnionRead;
 
 public class DynamicDatasets
 {
@@ -39,13 +40,12 @@ public class DynamicDatasets
      * base dataset. Returns the original Dataset if the dataset description is null or
      * empty.
      */
-    public static Dataset dynamicDataset(DatasetDescription description, Dataset ds, boolean defaultUnionGraph)
-    {
-        DatasetGraph dsg = ds.asDatasetGraph() ;
-        DatasetGraph dsg2 = dynamicDataset(description, dsg, defaultUnionGraph) ;
+    public static Dataset dynamicDataset(DatasetDescription description, Dataset ds, boolean defaultUnionGraph) {
+        DatasetGraph dsg = ds.asDatasetGraph();
+        DatasetGraph dsg2 = dynamicDataset(description, dsg, defaultUnionGraph);
         if ( dsg == dsg2 )
-            return ds ;
-        return DatasetFactory.wrap(dsg2) ;
+            return ds;
+        return DatasetFactory.wrap(dsg2);
     }
 
     /**
@@ -53,25 +53,23 @@ public class DynamicDatasets
      * base dataset. Returns the original DatasetGraph if the dataset description is null
      * or empty.
      */
-    public static DatasetGraph dynamicDataset(DatasetDescription description, DatasetGraph dsg, boolean defaultUnionGraph)
-    {
+    public static DatasetGraph dynamicDataset(DatasetDescription description, DatasetGraph dsg, boolean defaultUnionGraph) {
         if ( description == null )
             return dsg ;
-    	//An empty description means leave the dataset as-is
-    	if (description.isEmpty() )
-    		return dsg;
+        // An empty description means leave the dataset as-is
+        if (description.isEmpty() )
+            return dsg;
 
-        Set<Node> defaultGraphs = convertToSetNodes(description.getDefaultGraphURIs()) ;
-        Set<Node> namedGraphs = convertToSetNodes(description.getNamedGraphURIs()) ;
-        return dynamicDataset(defaultGraphs, namedGraphs, dsg, defaultUnionGraph) ;
+        Set<Node> defaultGraphs = convertToSetNodes(description.getDefaultGraphURIs());
+        Set<Node> namedGraphs = convertToSetNodes(description.getNamedGraphURIs());
+        return dynamicDataset(defaultGraphs, namedGraphs, dsg, defaultUnionGraph);
     }
 
     /**
      * Form a {@link DatasetGraph} that is the dynamic dataset from the collections of
      * graphs from the dataset that go to make up the default graph and named graphs.
      */
-    public static DatasetGraph dynamicDataset(Collection<Node> defaultGraphs, Collection<Node> namedGraphs, DatasetGraph dsg, boolean defaultUnionGraph)
-   {
+    public static DatasetGraph dynamicDataset(Collection<Node> defaultGraphs, Collection<Node> namedGraphs, DatasetGraph dsg, boolean defaultUnionGraph) {
         Graph dft;
         if ( defaultUnionGraph || defaultGraphs.contains(Quad.unionGraph) ) {
             if ( defaultGraphs.contains(Quad.defaultGraphIRI) )
@@ -85,38 +83,60 @@ public class DynamicDatasets
         DatasetGraph dsg2 = new DatasetGraphMapLink(dft);
 
         // The named graphs.
-        for ( Node gn : namedGraphs )
-        {
+        for ( Node gn : namedGraphs ) {
             if ( Quad.isUnionGraph(gn) ) {
                 // Special case - don't put an explicitly named union graph into the name
                 // graphs because union is an operation over all named graphs ... which
                 // includes itself.
-                // In practical terms, it can lead to stackoveflow in execution.
+                // In practical terms, it can lead to stack overflow in execution.
                 continue;
             }
-            Graph g = GraphOps.getGraph(dsg, gn) ;
+            Graph g = GraphOps.getGraph(dsg, gn);
             if ( g != null )
-                dsg2.addGraph(gn, g) ;
+                dsg2.addGraph(gn, g);
         }
 
         if ( dsg.getContext() != null )
-            dsg2.getContext().putAll(dsg.getContext()) ;
+            dsg2.getContext().putAll(dsg.getContext());
 
         dsg2 = new DynamicDatasetGraph(dsg2, dsg);
 
         // Record what we've done.
         // c.f. "ARQConstants.sysDatasetDescription" which is used to pass in a DatasetDescription
-        dsg2.getContext().set(ARQConstants.symDatasetDefaultGraphs, defaultGraphs) ;
-        dsg2.getContext().set(ARQConstants.symDatasetNamedGraphs,   namedGraphs) ;
-        return dsg2 ;
+        dsg2.getContext().set(ARQConstants.symDatasetDefaultGraphs, defaultGraphs);
+        dsg2.getContext().set(ARQConstants.symDatasetNamedGraphs,   namedGraphs);
+        return dsg2;
     }
 
     public static class DynamicDatasetGraph extends DatasetGraphReadOnly implements DatasetGraphWrapperView {
-        private final DatasetGraph projected;
+        private final DatasetGraph original;
 
-        public DynamicDatasetGraph(DatasetGraph viewDSG, DatasetGraph baseDSG) {
-            super(viewDSG, baseDSG.getContext().copy());
-            this.projected = baseDSG;
+        public DynamicDatasetGraph(DatasetGraph viewDSG, DatasetGraph originalDSG) {
+            super(viewDSG, originalDSG.getContext().copy());
+            this.original = Objects.requireNonNull(originalDSG);
+        }
+
+        /** Returns the original dataset graph this DynamicDatasetGraph is based on. Never null. */
+        public DatasetGraph getOriginal() {
+            return original;
+        }
+
+        /**
+         * Returns the collection of default graphs this DynamicDatasetGraph is based on.
+         *
+         * @implNote This method returns the context's value for {@link ARQConstants#symDatasetDefaultGraphs}.
+         */
+        public Collection<Node> getOriginalDefaultGraphs() {
+            return getContext().get(ARQConstants.symDatasetDefaultGraphs);
+        }
+
+        /**
+         * Returns the collection of named graphs this DynamicDatasetGraph is based on.
+         *
+         * @implNote This method returns the context's value for {@link ARQConstants#symDatasetNamedGraphs}.
+         */
+        public Collection<Node> getOriginalNamedGraphs() {
+            return getContext().get(ARQConstants.symDatasetNamedGraphs);
         }
     }
 }

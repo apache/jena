@@ -36,13 +36,13 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapStd;
 import org.apache.jena.shared.Lock;
 import org.apache.jena.shared.LockMRPlusSW;
 import org.apache.jena.sparql.JenaTransactionException;
 import org.apache.jena.sparql.core.*;
+import org.apache.jena.system.G;
 import org.apache.jena.system.Txn;
 import org.slf4j.Logger;
 
@@ -328,14 +328,6 @@ public class DatasetGraphInMemory extends DatasetGraphTriplesQuads implements Tr
 
     private Iterator<Quad> triplesFinder(final Node s, final Node p, final Node o) {
         return G.triples2quadsDftGraph(defaultGraph().find(s, p, o).iterator());
-    }
-
-    @Override
-    public void setDefaultGraph(final Graph g) {
-        mutate(graph -> {
-            defaultGraph().clear();
-            graph.find().forEachRemaining(defaultGraph()::add);
-        }, g);
     }
 
     @Override

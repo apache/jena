@@ -17,7 +17,7 @@
  */
 package org.apache.jena.permissions.graph.impl;
 
-import org.apache.jena.ext.com.google.common.collect.Iterators;
+import org.apache.commons.collections4.IteratorUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.TransactionHandler;
@@ -52,7 +52,7 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
 
     /**
      * Constructor
-     * 
+     *
      * @param securityEvaluator The security evaluator to use
      * @param graphIRI          The IRI for the graph
      * @param holder            The item holder that will contain this SecuredGraph.
@@ -114,7 +114,7 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
     @Override
     public boolean contains(final Node s, final Node p, final Node o)
             throws ReadDeniedException, AuthenticationRequiredException {
-        return contains(new Triple(s, p, o));
+        return contains(Triple.create(s, p, o));
     }
 
     /**
@@ -162,10 +162,10 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
 
     /**
      * @sec.graph Read
-     * 
+     *
      *            if {@link SecurityEvaluator#isHardReadError()} is true then this
      *            method returns false.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -184,11 +184,11 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
     /**
      * @sec.graph Read
      * @sec.triple Read, otherwise filtered from iterator.
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then an empty iterator will be
      *             returned.
-     * 
+     *
      * @throws ReadDeniedException             on read not allowed
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -202,11 +202,11 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
     /**
      * @sec.graph Read
      * @sec.triple Read, otherwise filtered from iterator.
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then an empty iterator will be
      *             returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -220,10 +220,10 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
     /**
      * @sec.graph Read
      * @sec.triple Read, otherwise filtered from iterator.
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true then an
      *             empty iterator will be returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -268,10 +268,10 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
 
     /**
      * @sec.graph Read
-     * 
+     *
      *            If {@link SecurityEvaluator#isHardReadError()} is false then this
      *            method will return 0.
-     * 
+     *
      * @throws ReadDeniedException             if graph can not be read.
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -283,10 +283,10 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
 
     /**
      * @sec.graph Read
-     * 
+     *
      *            If {@link SecurityEvaluator#isHardReadError()} is false then this
      *            method will return false unless {@code g} is empty.
-     * 
+     *
      * @throws ReadDeniedException             if graph can not be read.
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -297,7 +297,7 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
             if (g.size() != holder.getBaseItem().size()) {
                 return false;
             }
-            final Triple t = new Triple(Node.ANY, Node.ANY, Node.ANY);
+            final Triple t = Triple.create(Node.ANY, Node.ANY, Node.ANY);
             if (!canRead(t)) {
                 final ExtendedIterator<Triple> iter = g.find(t);
                 while (iter.hasNext()) {
@@ -323,7 +323,7 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
     public void remove(Node s, Node p, Node o)
             throws UpdateDeniedException, DeleteDeniedException, AuthenticationRequiredException {
         checkUpdate();
-        Triple t = new Triple(s, p, o);
+        Triple t = Triple.create(s, p, o);
         if (t.isConcrete()) {
             checkDelete(t);
         } else {
@@ -337,10 +337,10 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
 
     /**
      * @sec.graph Read
-     * 
+     *
      *            If {@link SecurityEvaluator#isHardReadError()} is false then this
      *            method will return 0.
-     * 
+     *
      * @throws ReadDeniedException             if graph can not be read.
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -351,9 +351,8 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
             if (canRead(Triple.ANY)) {
                 return holder.getBaseItem().size();
             }
-            return Iterators.size(find(Triple.ANY));
+            return IteratorUtils.size(find(Triple.ANY));
         }
         return 0;
     }
-
 }

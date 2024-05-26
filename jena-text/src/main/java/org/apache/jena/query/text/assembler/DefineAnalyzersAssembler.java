@@ -66,41 +66,41 @@ public class DefineAnalyzersAssembler {
                 throw new TextIndexException(p + " list not a String : " + first);
             }
 
-            String tag = first.toString();
+            String tag = first.asLiteral().getLexicalForm();
             tags.add(tag);
-            
+
             Statement restStmt = current.getProperty(RDF.rest);
             if (restStmt == null) {
                 throw new TextIndexException(p + " list not terminated by rdf:nil");
             }
-            
+
             RDFNode rest = restStmt.getObject();
             if (! rest.isResource()) {
                 throw new TextIndexException(p + " list rest node is not a resource : " + rest);
             }
-            
+
             current = (Resource) rest;
         }
-       
+
         return tags;
     }
-   
+
     public static boolean open(Assembler a, Resource list) {
         Resource current = list;
         boolean isMultilingualSupport = false;
-        
+
         while (current != null && ! current.equals(RDF.nil)){
             Statement firstStmt = current.getProperty(RDF.first);
             if (firstStmt == null) {
                 throw new TextIndexException("parameter list not well formed: " + current);
             }
-            
+
             RDFNode first = firstStmt.getObject();
             if (! first.isResource()) {
                 throw new TextIndexException("parameter specification must be an anon resource : " + first);
             }
 
-            // process the current list element to add an analyzer 
+            // process the current list element to add an analyzer
             Resource adding = (Resource) first;
             if (adding.hasProperty(TextVocab.pAnalyzer)) {
                 Statement analyzerStmt = adding.getProperty(TextVocab.pAnalyzer);
@@ -108,21 +108,21 @@ public class DefineAnalyzersAssembler {
                 if (!analyzerNode.isResource()) {
                     throw new TextIndexException("addAnalyzers text:analyzer must be an analyzer spec resource: " + analyzerNode);
                 }
-                
+
                 // calls GenericAnalyzerAssembler
                 Analyzer analyzer = (Analyzer) a.open((Resource) analyzerNode);
-                
+
                 if (adding.hasProperty(TextVocab.pDefAnalyzer)) {
                     Statement defStmt = adding.getProperty(TextVocab.pDefAnalyzer);
                     Resource id = defStmt.getResource();
-                    
+
                     if (id.getURI() != null) {
                         Util.defineAnalyzer(id, analyzer);
                     } else {
                         throw new TextIndexException("addAnalyzers text:defineAnalyzer property must be a uri resource: " + adding);
                     }
                 }
-                
+
                 if (adding.hasProperty(TextVocab.pAddLang)) {
                     Statement langStmt = adding.getProperty(TextVocab.pAddLang);
                     String langCode = langStmt.getString();
@@ -165,7 +165,7 @@ public class DefineAnalyzersAssembler {
             if (! rest.isResource()) {
                 throw new TextIndexException("parameter list node is not a resource : " + rest);
             }
-            
+
             current = (Resource) rest;
         }
         Util.finishCaching();

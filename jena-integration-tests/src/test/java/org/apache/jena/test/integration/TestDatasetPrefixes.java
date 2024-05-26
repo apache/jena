@@ -38,8 +38,8 @@ import org.apache.jena.sparql.core.DatasetGraphMap;
 import org.apache.jena.sparql.core.DatasetGraphMapLink;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb.TDBFactory;
-import org.apache.jena.tdb.transaction.TDBTransactionException;
+import org.apache.jena.tdb1.TDB1Factory;
+import org.apache.jena.tdb1.transaction.TDBTransactionException;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.junit.Assume;
 import org.junit.FixMethodOrder;
@@ -63,7 +63,7 @@ public class TestDatasetPrefixes {
     @Parameters(name = "{index}: {0}")
     public static Collection<Object[]> data(){
         Creator<DatasetGraph> c1 = ()->DatasetGraphFactory.createTxnMem();
-        Creator<DatasetGraph> c2 = ()->TDBFactory.createDatasetGraph();
+        Creator<DatasetGraph> c2 = ()->TDB1Factory.createDatasetGraph();
         Creator<DatasetGraph> c3 = ()->DatabaseMgr.createDatasetGraph();
         Creator<DatasetGraph> c4 = ()->new DatasetGraphMap();     //DatasetGraphFactory.create();
         Creator<DatasetGraph> c5 = ()->new DatasetGraphMapLink(GraphFactory.createDefaultGraph()); //DatasetGraphFactory.createGeneral();

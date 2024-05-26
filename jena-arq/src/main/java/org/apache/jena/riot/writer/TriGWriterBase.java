@@ -16,18 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.writer ;
+package org.apache.jena.riot.writer;
 
-import java.io.OutputStream ;
-import java.io.Writer ;
+import java.io.OutputStream;
+import java.io.Writer;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.irix.IRIs;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.RiotLib ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.RiotLib;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.util.Context;
 
 /** TriG writer base class - ways to invoke a TriG writer */
 public abstract class TriGWriterBase extends WriterDatasetRIOTBase {

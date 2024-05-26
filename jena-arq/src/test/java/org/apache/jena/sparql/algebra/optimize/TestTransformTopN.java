@@ -16,13 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.algebra.optimize ;
+package org.apache.jena.sparql.algebra.optimize;
 
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.junit.Test ;
+import static org.apache.jena.sparql.algebra.optimize.TransformTests.testOp;
 
-public class TestTransformTopN  extends AbstractTestTransform {
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.sparql.algebra.Transform;
+import org.junit.Test;
+
+public class TestTransformTopN {
     public TestTransformTopN() {}
 
     @Test public void topN_01() {
@@ -35,10 +37,10 @@ public class TestTransformTopN  extends AbstractTestTransform {
             ("(top (5 ?z)"
              ,"  (bgp (triple ?s ?p ?z)))"
                 );
-        test(input, output) ;
+        test(input, output);
     }
     @Test public void topN_02() {
-        String input = 
+        String input =
             StrUtils.strjoinNL
             ("(slice _ 5"
              ,"  (project (?z)"
@@ -50,7 +52,7 @@ public class TestTransformTopN  extends AbstractTestTransform {
             ,"  (top (5 ?z)"
             ,"    (bgp (triple ?s ?p ?z)) ))"
                 );
-        test(input, output) ;
+        test(input, output);
     }
 
     @Test public void topN_03() {
@@ -65,11 +67,11 @@ public class TestTransformTopN  extends AbstractTestTransform {
             ,"  (top (5 ?z ?s)"
             ,"    (bgp (triple ?s ?p ?z)) ))"
                 );
-        test(input, output) ;
+        test(input, output);
     }
-    
+
     @Test public void topN_04() {
-        String input = 
+        String input =
             StrUtils.strjoinNL
             ("(slice _ 5"
              ,"  (project (?s ?z)"
@@ -84,11 +86,11 @@ public class TestTransformTopN  extends AbstractTestTransform {
             ,"    (bgp (triple ?s ?p ?z))))"
 
                 );
-        test(input, output) ;
+        test(input, output);
     }
-    
+
     @Test public void topN_05() {
-        String input = 
+        String input =
             StrUtils.strjoinNL
             ("(slice _ 5"
              ," (project (?z)"
@@ -102,12 +104,12 @@ public class TestTransformTopN  extends AbstractTestTransform {
             ,"    (bgp (triple ?s ?p ?z)) ))"
                 );
 
-        // Order being wider than project blocks the optimization.  
-        test(input, output) ;
+        // Order being wider than project blocks the optimization.
+        test(input, output);
     }
-    
+
     @Test public void topN_06() {
-        String input = 
+        String input =
             StrUtils.strjoinNL
             ("(slice _ 5"
              ,"  (project (?s ?p)"
@@ -120,11 +122,11 @@ public class TestTransformTopN  extends AbstractTestTransform {
             ,"    (bgp (triple ?s ?p ?z)) ))"
                 );
 
-        test(input, output) ;
+        test(input, output);
     }
-    
+
     @Test public void topN_07() {
-        String input = 
+        String input =
             StrUtils.strjoinNL
             ("(slice _ 5"
             ,"  (project (?s ?p ?z)"
@@ -136,13 +138,13 @@ public class TestTransformTopN  extends AbstractTestTransform {
             ,"  (top (5 ?z ?s)"
             ,"   (bgp (triple ?s ?p ?z)) ))"
                 );
-        test(input, output) ;
+        test(input, output);
     }
-    
+
     // ---- The same but with distinct
-    
+
     @Test public void topN_11() {
-        String input = 
+        String input =
             StrUtils.strjoinNL
             ("(slice _ 5"
              ,"  (distinct"
@@ -156,11 +158,11 @@ public class TestTransformTopN  extends AbstractTestTransform {
              ,"    (bgp (triple ?s ?p ?z)) ))"
 
                 );
-        test(input, output) ;
+        test(input, output);
     }
 
     @Test public void topN_12() {
-        String input = 
+        String input =
             StrUtils.strjoinNL
             ("(slice _ 5"
              ,"  (distinct"
@@ -175,11 +177,11 @@ public class TestTransformTopN  extends AbstractTestTransform {
              ,"    (project (?s ?z)"
              ,"      (bgp (triple ?s ?p ?z)) )))"
                 );
-        test(input, output) ;
+        test(input, output);
     }
-    
+
     @Test public void topN_13() {
-        String input = 
+        String input =
             StrUtils.strjoinNL
             ("(slice _ 5"
              ,"  (distinct"
@@ -194,11 +196,11 @@ public class TestTransformTopN  extends AbstractTestTransform {
              ,"    (project (?z)"
              ,"      (bgp (triple ?s ?p ?z)) )))"
                 );
-        test(input, output) ;
+        test(input, output);
     }
-    
+
     @Test public void topN_14() {
-        String input = 
+        String input =
             StrUtils.strjoinNL
             ("(slice _ 5"
              ,"  (distinct"
@@ -214,11 +216,11 @@ public class TestTransformTopN  extends AbstractTestTransform {
              ,"      (bgp (triple ?s ?p ?z)) )))"
 
                 );
-        test(input, output) ;
+        test(input, output);
     }
-    
+
     @Test public void topN_15() {
-        String input = 
+        String input =
             StrUtils.strjoinNL
             ("(slice _ 5"
              ,"  (distinct"
@@ -227,13 +229,13 @@ public class TestTransformTopN  extends AbstractTestTransform {
              ,"        (bgp (triple ?s ?p ?z)) ))))"
 
                 );
-        // Order being wider than project blocks the optimization.  
-        String output = input ;
-        test(input, output) ;
+        // Order being wider than project blocks the optimization.
+        String output = input;
+        test(input, output);
     }
-    
+
     @Test public void topN_16() {
-        String input = 
+        String input =
             StrUtils.strjoinNL
             ("(slice _ 5"
              ,"  (distinct"
@@ -241,13 +243,13 @@ public class TestTransformTopN  extends AbstractTestTransform {
              ,"      (order (?z ?s)"
              ,"        (bgp (triple ?s ?p ?z)) ))))"
                 );
-        // The mismatch of project and order blocks the optimization.  
-        String output = input ;
-        test(input, output) ;
+        // The mismatch of project and order blocks the optimization.
+        String output = input;
+        test(input, output);
     }
-    
+
     @Test public void topN_17() {
-        String input = 
+        String input =
             StrUtils.strjoinNL
             ("(slice _ 5"
              ,"  (distinct"
@@ -261,11 +263,11 @@ public class TestTransformTopN  extends AbstractTestTransform {
              ,"    (project (?s ?p ?z)"
              ,"      (bgp (triple ?s ?p ?z)) )))"
                 );
-        test(input, output) ;
+        test(input, output);
     }
-    
+
     // ---- From query to transfomed algebra.
-    
+
     @Test public void topN_query_01() {
         String output = StrUtils.strjoinNL
             ("    (project (?s)"
@@ -274,17 +276,17 @@ public class TestTransformTopN  extends AbstractTestTransform {
             );
         testQuery("SELECT ?s { ?s ?p ?o } ORDER BY ?p ?o", output);
     }
-    
+
     @Test public void topN_query_02() {
         String output = StrUtils.strjoinNL
             ("  (slice 1 _"
             ,"  (project (?s)"
             ,"    (top (6 ?p ?o)"
             ,"      (bgp (triple ?s ?p ?o)))))"
-            ) ;
+            );
         testQuery("SELECT ?s { ?s ?p ?o } ORDER BY ?p ?o OFFSET 1 LIMIT 5", output);
     }
-    
+
     @Test public void topN_query_03() {
         String output = StrUtils.strjoinNL
             ("(slice 1 _"
@@ -305,15 +307,15 @@ public class TestTransformTopN  extends AbstractTestTransform {
     }
 
     private void test(String input, String output) {
-        Transform transform = new TransformTopN() ;
-        testOp(input, transform, output) ;
+        Transform transform = new TransformTopN();
+        testOp(input, transform, output);
     }
 
-    // ---- From query to transfomed algebra.
-    
+    // ---- From query to transformed algebra.
+
     private void testQuery(String input, String output) {
-        Transform transform = new TransformTopN() ;
-        testQuery(input, transform, output) ;
+        Transform transform = new TransformTopN();
+        TransformTests.testQuery(input, transform, output);
     }
 }
 

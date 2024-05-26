@@ -20,6 +20,7 @@ package org.apache.jena.atlas.iterator;
 
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
+import java.util.function.Consumer;
 
 /** Class to delay the initialization of an iterator until first call of an Iterator operation. */
 
@@ -58,6 +59,13 @@ public abstract class IteratorDelayedInitialization<T> implements IteratorClosea
         init() ;
         try { return iterator.next() ; }
         catch (NoSuchElementException ex) { close() ; throw(ex) ; }
+    }
+
+    @Override
+    public void forEachRemaining(Consumer<? super T> action) {
+        init() ;
+        iterator.forEachRemaining(action);
+        close();
     }
 
     @Override

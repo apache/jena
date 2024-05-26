@@ -60,7 +60,8 @@ public class JenaSystem {
 
     public JenaSystem() { }
 
-    /** Development support - flag to enable output during
+    /**
+     * Development support - flag to enable output during
      * initialization. Output to {@code System.err}, not a logger
      * to avoid the risk of recursive initialization.
      */

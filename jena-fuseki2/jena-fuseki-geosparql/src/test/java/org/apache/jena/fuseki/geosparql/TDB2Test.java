@@ -19,12 +19,13 @@ package org.apache.jena.fuseki.geosparql;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.beust.jcommander.JCommander;
-import com.github.jsonldjava.shaded.com.google.common.io.Files;
 
 import org.apache.jena.fuseki.geosparql.cli.ArgsConfig;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
@@ -48,10 +49,9 @@ public class TDB2Test {
     }
 
     @BeforeClass
-    public static void setUpClass() throws DatasetException, SpatialIndexException {
-
-        File tempTDBDir = Files.createTempDir();
-        String[] args = {"-rf", "geosparql_test.rdf>xml", "-i", "-t", tempTDBDir.getAbsolutePath(), "-t2"};
+    public static void setUpClass() throws DatasetException, SpatialIndexException, IOException {
+        Path tempTDBDir = Files.createTempDirectory("geospoarql");
+        String[] args = {"-rf", "geosparql_test.rdf>xml", "-i", "-t", tempTDBDir.toAbsolutePath().toString(), "-t2", "--port", "4047"};
 
         ArgsConfig argsConfig = new ArgsConfig();
         JCommander.newBuilder()
@@ -69,7 +69,9 @@ public class TDB2Test {
 
     @AfterClass
     public static void tearDownClass() {
-        SERVER.shutdown();
+        try {
+            SERVER.shutdown();
+        } catch (Throwable th) {}
     }
 
     @Before
@@ -93,32 +95,35 @@ public class TDB2Test {
                 + "WHERE{\n"
                 + "    <http://example.org/Geometry#PolygonH> geo:sfContains ?obj .\n"
                 + "}ORDER by ?obj";
-        List<Resource> result = new ArrayList<>();
-        try (QueryExecution qe = QueryExecution.service(SERVER.getLocalServiceURL()).query(query).build()) {
-            ResultSet rs = qe.execSelect();
+        Runnable r = () -> {
+            List<Resource> result = new ArrayList<>();
+            try (QueryExecution qe = QueryExecution.service(SERVER.getLocalServiceURL()).query(query).build()) {
+                ResultSet rs = qe.execSelect();
 
-            while (rs.hasNext()) {
-                QuerySolution qs = rs.nextSolution();
-                Resource obj = qs.getResource("obj");
-                result.add(obj);
+                while (rs.hasNext()) {
+                    QuerySolution qs = rs.nextSolution();
+                    Resource obj = qs.getResource("obj");
+                    result.add(obj);
+                }
+
+                //ResultSetFormatter.outputAsTSV(rs);
             }
 
-            //ResultSetFormatter.outputAsTSV(rs);
-        }
+            List<Resource> expResult = new ArrayList<>();
+            expResult.add(ResourceFactory.createResource("http://example.org/Feature#A"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Feature#D"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Feature#H"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Feature#K"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Geometry#LineStringD"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PointA"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PolygonH"));
+            expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PolygonK"));
 
-        List<Resource> expResult = new ArrayList<>();
-        expResult.add(ResourceFactory.createResource("http://example.org/Feature#A"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Feature#D"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Feature#H"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Feature#K"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Geometry#LineStringD"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PointA"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PolygonH"));
-        expResult.add(ResourceFactory.createResource("http://example.org/Geometry#PolygonK"));
-
-        //System.out.println("Exp: " + expResult);
-        //System.out.println("Res: " + result);
-        assertEquals(expResult, result);
+            //System.out.println("Exp: " + expResult);
+            //System.out.println("Res: " + result);
+            assertEquals(expResult, result);
+        };
+        Helper.run(r);
     }
 
 }

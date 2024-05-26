@@ -26,11 +26,9 @@ import java.util.concurrent.TimeUnit;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingLib;
-import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.QueryExecDatasetBuilder;
 import org.apache.jena.sparql.exec.QueryExecutionCompat;
 import org.apache.jena.sparql.util.Context;
@@ -69,14 +67,6 @@ public class QueryExecutionDatasetBuilder implements QueryExecutionBuilder {
         return this;
     }
 
-    /** @deprecated Use {@link QueryExec#dataset} */
-    @Deprecated
-    public QueryExecutionDatasetBuilder dataset(DatasetGraph dsg) {
-        this.dataset = DatasetFactory.wrap(dsg);
-        builder.dataset(dsg);
-        return this;
-    }
-
     public QueryExecutionDatasetBuilder dataset(Dataset dataset) {
         this.dataset = dataset;
         builder.dataset(dataset.asDatasetGraph());
@@ -107,7 +97,9 @@ public class QueryExecutionDatasetBuilder implements QueryExecutionBuilder {
         return this;
     }
 
-    /** Prefer {@link #substitution(Binding)} which substitutes variables for values in the the query before execution. */
+    /** @deprecated Prefer {@link #substitution(Binding)} which substitutes variables for values in the the query before execution. */
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("all")
     public QueryExecutionDatasetBuilder initialBinding(Binding binding) {
         builder.initialBinding(binding);
         return this;

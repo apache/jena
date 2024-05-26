@@ -21,7 +21,6 @@ package org.apache.jena.shacl.validation;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.shacl.Shapes;
@@ -74,14 +73,12 @@ public class ValidationProc {
      * processing is thus idempotent.
      */
 
-    private static IndentedWriter out  = IndentedWriter.stdout;
-
     public static ValidationReport plainValidation(Shapes shapes, Graph data) {
-        int x = out.getAbsoluteIndent();
+        ValidationContext vCxt = ValidationContext.create(shapes, data);
+        int x = vCxt.out().getAbsoluteIndent();
         try {
-            ValidationContext vCxt = ValidationContext.create(shapes, data);
             return plainValidation(vCxt, shapes, data);
-        } finally { out.setAbsoluteIndent(x); }
+        } finally { vCxt.out().setAbsoluteIndent(x); }
     }
 
     private static ValidationReport plainValidation(ValidationContext vCxt, Shapes shapes, Graph data) {
@@ -90,7 +87,7 @@ public class ValidationProc {
         try {
             targetShapes.forEach(shape->plainValidation(vCxt, shape, data));
             if (vCxt.isVerbose())
-                out.ensureStartOfLine();
+                vCxt.out().ensureStartOfLine();
             return vCxt.generateReport();
         } finally {
             vCxt.notifyValidationListener(() -> new TargetShapesValidationFinishedEvent(vCxt, targetShapes));
@@ -104,11 +101,11 @@ public class ValidationProc {
     // ---- Single node.
 
     public static ValidationReport plainValidationNode(Shapes shapes, Graph data, Node node) {
-        int x = out.getAbsoluteIndent();
+        ValidationContext vCxt = ValidationContext.create(shapes, data);
+        int x = vCxt.out().getAbsoluteIndent();
         try {
-            ValidationContext vCxt = ValidationContext.create(shapes, data);
             return plainValidationNode(vCxt, shapes, node, data);
-        } finally { out.setAbsoluteIndent(x); }
+        } finally { vCxt.out().setAbsoluteIndent(x); }
     }
 
     private static ValidationReport plainValidationNode(ValidationContext vCxt, Shapes shapes, Node node, Graph data) {
@@ -119,7 +116,7 @@ public class ValidationProc {
                             plainValidationNode(vCxt, data, node, shape)
             );
             if (vCxt.isVerbose())
-                out.ensureStartOfLine();
+                vCxt.out().ensureStartOfLine();
             return vCxt.generateReport();
         } finally {
             vCxt.notifyValidationListener(() -> new TargetShapesValidationFinishedEvent(vCxt, targetShapes));
@@ -150,19 +147,17 @@ public class ValidationProc {
         vCxt.notifyValidationListener(() -> new FocusNodesDeterminedEvent(vCxt, shape, focusNodes));
 
         if ( vCxt.isVerbose() ) {
-            out.println(shape.toString());
-            out.printf("N: FocusNodes(%d): %s\n", focusNodes.size(), focusNodes);
-            out.incIndent();
+            vCxt.out().println(shape.toString());
+            vCxt.out().printf("N: FocusNodes(%d): %s\n", focusNodes.size(), focusNodes);
         }
+        vCxt.out().incIndent();
 
         for ( Node focusNode : focusNodes ) {
             if ( vCxt.isVerbose() )
-                out.println("F: "+focusNode);
+                vCxt.out().println("F: "+focusNode);
             VLib.validateShape(vCxt, data, shape, focusNode);
         }
-        if ( vCxt.isVerbose() ) {
-            out.decIndent();
-        }
+        vCxt.out().decIndent();
         vCxt.notifyValidationListener(() -> new ShapeValidationFinishedEvent(vCxt, shape));
     }
 

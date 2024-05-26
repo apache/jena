@@ -47,13 +47,13 @@ public class ModelQuadHolderTest {
         Resource s = ResourceFactory.createResource("s");
         Property p = ResourceFactory.createProperty("p");
         Resource o = ResourceFactory.createResource("o");
-        tLst.add(new Triple(s.asNode(), p.asNode(), o.asNode()));
+        tLst.add(Triple.create(s.asNode(), p.asNode(), o.asNode()));
         model.add(s, p, o);
 
         Resource s2 = ResourceFactory.createResource("s2");
         Property p2 = ResourceFactory.createProperty("p2");
         Resource o2 = ResourceFactory.createResource("o2");
-        tLst.add(new Triple(s2.asNode(), p2.asNode(), o2.asNode()));
+        tLst.add(Triple.create(s2.asNode(), p2.asNode(), o2.asNode()));
         model.add(s2, p2, o2);
 
         holder = new ModelQuadHolder(model);
@@ -76,13 +76,13 @@ public class ModelQuadHolderTest {
         Resource s = ResourceFactory.createResource("s");
         Property p = ResourceFactory.createProperty("p");
         Resource o = ResourceFactory.createResource("o");
-        tLst.add(new Triple(s.asNode(), p.asNode(), o.asNode()));
+        tLst.add(Triple.create(s.asNode(), p.asNode(), o.asNode()));
         model.add(s, p, o);
 
         Resource s2 = ResourceFactory.createResource("s2");
         Property p2 = ResourceFactory.createProperty("p2");
         Resource o2 = ResourceFactory.createResource("o2");
-        tLst.add(new Triple(s2.asNode(), p2.asNode(), o2.asNode()));
+        tLst.add(Triple.create(s2.asNode(), p2.asNode(), o2.asNode()));
         model.add(s2, p2, o2);
 
         holder = new ModelQuadHolder(g, model);

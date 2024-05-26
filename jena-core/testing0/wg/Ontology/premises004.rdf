@@ -1,0 +1,40 @@
+<!--++ Ontology/premises004.rdf ** generated using webont test editor. ++-->
+<!--++ Created 22 Sep 2003 07:25:49 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: premises004.rdf,v 1.3 2003-12-05 05:09:31 jeremy_carroll Exp $
+-->
+<!--
+This is a variation of <a href="#equivalentClass-001">equivalentClass-001</a>,
+showing the use of two <code>owl:Ontology</code> triples in the premises.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/Ontology/premises004#"
+    xml:base="http://www.w3.org/2002/03owlt/Ontology/premises004" >
+   <owl:Ontology rdf:about="" />
+   <owl:Ontology rdf:about="http://www.example.org/" />
+
+   <owl:Class rdf:ID="Car">
+     <owl:equivalentClass>
+       <owl:Class rdf:ID="Automobile"/>
+     </owl:equivalentClass>
+  </owl:Class>
+  <first:Car rdf:ID="car">
+     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
+  </first:Car>
+  <first:Automobile rdf:ID="auto">
+     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
+  </first:Automobile>
+</rdf:RDF>

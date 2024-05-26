@@ -25,7 +25,9 @@ import org.apache.jena.shex.sys.ValidationContext;
 
 public class ShapeExprExternal extends ShapeExpression {
 
-    public ShapeExprExternal() { }
+    public ShapeExprExternal() {
+        super();
+    }
 
     @Override
     public boolean satisfies(ValidationContext vCxt, Node data) {

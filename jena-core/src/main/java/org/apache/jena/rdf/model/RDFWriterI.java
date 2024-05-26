@@ -20,6 +20,15 @@ package org.apache.jena.rdf.model;
 import java.io.Writer;
 import java.io.OutputStream;
 /** RDFWriterI is an interface to RDF serializers.
+ * <blockquote><i>Legacy</i></blockquote>
+ * <p>
+ * Writing RDF is usually done via:
+ * <ul>
+ * <li>RDFDataMgr</li>
+ * <li>RDFWriterr</li>
+ * <li>Model.write</li>
+ * </ul>
+ * All of these will use the newer RIOT writers, not implementations of this interface.
  *
  * <p>An <code>RDFWriter</code> is a class which serializes an RDF model
  * to some RDF serialization language.</p>
@@ -44,7 +53,7 @@ public interface RDFWriterI {
 	 */
 	public void write(Model model, Writer out, String base);
 
-	/** Serialize Model <code>model</code> to OutputStream <code>out</out>.
+	/** Serialize Model <code>model</code> to OutputStream <code>out</code>.
 	 * The implementation chooses  the character encoding, utf-8 is preferred.
 	 *
 	 *

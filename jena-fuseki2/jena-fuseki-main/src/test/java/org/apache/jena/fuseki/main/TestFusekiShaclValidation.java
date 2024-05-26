@@ -21,7 +21,6 @@ package org.apache.jena.fuseki.main;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.http.HttpRDF;
 import org.apache.jena.rdfconnection.RDFConnection;
@@ -39,14 +38,12 @@ public class TestFusekiShaclValidation {
 
     @BeforeClass
     public static void beforeClass() {
-        int port = WebLib.choosePort();
-
         FusekiServer server = FusekiServer.create()
-            .port(port)
+            .port(0)
             .parseConfigFile(DIR+"config-validation.ttl")
             .build();
         server.start();
-        serverURL = "http://localhost:"+port;
+        serverURL = "http://localhost:"+server.getPort();
     }
 
     @AfterClass

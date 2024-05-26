@@ -22,18 +22,19 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {
-      TestGSP.class
+@Suite.SuiteClasses(
+    { TestGSP.class
     , TestDSP.class
     , TestModelStore.class
     , TestQueryExecHTTP.class
     , TestQueryExecCleanServer.class
     , TestUpdateExecHTTP.class
+    , TestServiceOnOff.class
     , TestServiceFunctions.class
     , TestService.class
     , TestService2.class
     , TestServiceAuth.class
     , TestSetupHTTP.class
-})
+    })
 
 public class TS_SparqlExecHttp { }

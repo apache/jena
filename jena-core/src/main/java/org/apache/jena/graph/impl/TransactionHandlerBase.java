@@ -25,20 +25,33 @@ import org.apache.jena.shared.JenaException ;
 
 /**
  * A base for transaction handlers; provide implementations of execute* operations
- * using the fundamental begin-commit-abort. 
- * (This class predates java8 default methods.) 
+ * using the fundamental begin-commit-abort.
+ * (This class predates java8 default methods.)
  */
 public abstract class TransactionHandlerBase implements TransactionHandler {
     public TransactionHandlerBase() {
         super() ;
     }
 
-    /* Abort but don't let problems with the transaction system itself cause loss of the exception */ 
+    /** Run and convert to JenaException for consistent behaviour. */
+    private void exec(Runnable runnable) {
+        try { runnable.run(); }
+        catch (JenaException e) { abort(e) ; throw e ; }
+        catch (Throwable e)     { abort(e) ; throw new JenaException(e) ; }
+    }
+
+    private <X> X execCalc(Supplier<X> action) {
+        try { return action.get(); }
+        catch (JenaException e) { abort(e) ; throw e ; }
+        catch (Throwable e)     { abort(e) ; throw new JenaException(e) ; }
+    }
+
+    /* Abort but don't let problems with the transaction system itself cause loss of the exception */
     private void abort(Throwable e) {
         try { abort() ; }
         catch (Throwable th) { e.addSuppressed(th); }
     }
-    
+
     /**
      * Execute the runnable <code>action</code> within a transaction. If it completes normally,
      * commit the transaction, otherwise abort the transaction.
@@ -46,14 +59,24 @@ public abstract class TransactionHandlerBase implements TransactionHandler {
     @Override
     public void execute( Runnable action ) {
         begin() ;
-        try {
+        exec(() -> {
             action.run();
-            commit() ;
-        }
-        catch (JenaException e) { abort(e) ; throw e ; }
-        catch (Throwable e)     { abort(e) ; throw new JenaException(e) ; }
+            commit();
+        });
     }
-    
+
+    /**
+     * Execute inside a transaction if transactions supported - execute anyway if transactions not supported.
+     */
+    @Override
+    public void executeAlways( Runnable action ) {
+        if ( ! transactionsSupported() ) {
+            exec(() -> action.run());
+            return;
+        }
+        execute(action);
+    }
+
     /**
      * Execute the supplier <code>action</code> within a transaction. If it completes normally,
      * commit the transaction and return the result, otherwise abort the transaction.
@@ -61,13 +84,22 @@ public abstract class TransactionHandlerBase implements TransactionHandler {
     @Override
     public <T> T calculate( Supplier<T> action ) {
         begin() ;
-        try {
+        return execCalc(() -> {
             T result = action.get() ;
             commit() ;
             return result ;
+        });
+    }
+
+    /**
+     * Calculate inside a transaction if transactions supported - calculate anyway if transactions not supported.
+     */
+    @Override
+    public <T> T calculateAlways( Supplier<T> action ) {
+        if ( ! transactionsSupported() ) {
+            return execCalc(() -> action.get());
         }
-        catch (JenaException e) { abort(e) ; throw e ; }
-        catch (Throwable e)     { abort(e) ; throw new JenaException(e) ; }
+        return calculate(action);
     }
 }
 

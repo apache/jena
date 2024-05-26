@@ -592,9 +592,9 @@ public final class BPTreeNode extends BPTreePage
         // y.release(); y release management done by caller.
         this.write();
         if ( BPT.CheckingNode ) {
+            internalCheckNodeDeep();
             if ( Record.keyNE(splitKey, y.maxRecord()) )
                 BPT.error("Split key %s but max subtree %s", splitKey, y.maxRecord());
-            internalCheckNodeDeep();
         }
     }
 

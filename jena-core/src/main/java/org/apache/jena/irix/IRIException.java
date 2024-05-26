@@ -29,7 +29,7 @@ import org.apache.jena.shared.JenaException;
  *     <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>.
  * <li>URI scheme specific errors.
  * <li>Not acceptable for usage intended (in RDF a URI must be absolute and conform to schema-specific rules for an absolute URI).
- * <ul>
+ * </ul>
  */
 public class IRIException extends JenaException {
     public IRIException(String msg) { super(msg); }

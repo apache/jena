@@ -7,7 +7,7 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
-.mvn/
+.flattened-pom.xml
 
 # Eclipse
 .classpath

@@ -18,27 +18,27 @@
 
 package org.apache.jena.query.text;
 
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.query.*;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.text.assembler.TextAssembler;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestDatasetWithTextIndexBase {
-    
+
     private static final String SPEC_BASE = "http://example.org/spec#";
     private static final String SPEC_ROOT_LOCAL = "lucene_text_dataset";
     private static final String SPEC_ROOT_URI = SPEC_BASE + SPEC_ROOT_LOCAL;
@@ -92,7 +92,7 @@ public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestData
                     "         ) ."
                     );
     }
-    
+
     @Before
     public void before() {
         Reader reader = new StringReader(SPEC);
@@ -102,12 +102,12 @@ public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestData
         Resource root = specModel.getResource(SPEC_ROOT_URI);
         dataset = (Dataset) Assembler.general.open(root);
     }
-    
+
     @After
     public void after() {
         dataset.close();
     }
-    
+
     @Test
     public void testNoResultsOnFirstCreateIndex(){
         String turtle = "";
@@ -140,8 +140,7 @@ public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestData
                 "    ?s text:query ( rdfs:label 'gift' 'lang:en' 10 ) .",
                 "}"
         );
-        Set<String> expectedURIs = new HashSet<>() ;
-        expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/testEnglishLocalizedResource")) ;
+        Set<String> expectedURIs = Set.of("http://example.org/data/resource/testEnglishLocalizedResource") ;
         doTestSearch(turtle, queryString, expectedURIs);
     }
 
@@ -164,8 +163,7 @@ public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestData
                 "    ?s text:query ( rdfs:label 'gift' 'lang:de' 10 ) .",
                 "}"
         );
-        Set<String> expectedURIs = new HashSet<>() ;
-        expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/testGermanLocalizedResource")) ;
+        Set<String> expectedURIs = Set.of("http://example.org/data/resource/testGermanLocalizedResource");
         doTestSearch(turtle, queryString, expectedURIs);
     }
 
@@ -184,8 +182,7 @@ public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestData
                 "    ?s text:query ( rdfs:label 'engineering' 'lang:en' 10 ) .",
                 "}"
         );
-        Set<String> expectedURIs = new HashSet<>() ;
-        expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/testEnglishStemming")) ;
+        Set<String> expectedURIs = Set.of("http://example.org/data/resource/testEnglishStemming");
         doTestSearch(turtle, queryString, expectedURIs);
     }
 
@@ -207,8 +204,7 @@ public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestData
                 "    ?s text:query ( rdfs:label 'text' 'lang:none' 10 ) .",
                 "}"
         );
-        Set<String> expectedURIs = new HashSet<>() ;
-        expectedURIs.addAll( Arrays.asList("http://example.org/data/resource/testUnlocalizedResource")) ;
+        Set<String> expectedURIs = Set.of("http://example.org/data/resource/testUnlocalizedResource");
         doTestSearch(turtle, queryString, expectedURIs);
     }
 
@@ -225,9 +221,7 @@ public class TestDatasetWithLuceneMultilingualTextIndex extends AbstractTestData
                 "    { ?s text:query ( skos:prefLabel 'Kartoffelpüree' 'lang:de' ) }" ,
                 "}"
         );
-        Set<String> expectedURIs = new HashSet<>() ;
-        expectedURIs.addAll(Arrays.asList("http://example.com/dishes#fries",
-                                          "http://example.com/dishes#mashed")) ;
+        Set<String> expectedURIs = Set.of("http://example.com/dishes#fries","http://example.com/dishes#mashed") ;
 
         dataset.begin(ReadWrite.WRITE);
         Model model = dataset.getDefaultModel();

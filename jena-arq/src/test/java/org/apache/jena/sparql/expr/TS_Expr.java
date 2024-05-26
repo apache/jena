@@ -41,6 +41,8 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestLeviathanFunctions.class
     , TestNodeValueOps.class
     , TestOrdering.class
+    , TestComparison.class
+    , TestSortOrdering.class
     , TestRegex.class
     , TestXSDFuncOp.class
     , TestExprLib.class

@@ -78,7 +78,7 @@ public class TestSafeModel  extends TestCase {
         assertTrue(safeGraph instanceof SafeGraph);
         
         Graph rawGraph = ((SafeGraph)safeGraph).getRawGraph();
-        Triple deduction = new Triple(l.asNode(), q.asNode(), r.asNode());
+        Triple deduction = Triple.create(l.asNode(), q.asNode(), r.asNode());
         TestUtil.assertIteratorValues(this, 
                 rawGraph.find(Node.ANY, Node.ANY, Node.ANY), 
                 new Triple[]{deduction});

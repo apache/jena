@@ -51,6 +51,7 @@ import java.nio.ByteBuffer;
 * {@link #commitPrepare} and {@link #commitEnd} are not called.
 *<p><br/>
 * Lifecycle of a write transaction:
+* <ul>
 * <li>{@link #begin}
 * <li>{@link #commitPrepare}
 * <li>{@link #commit} or {@link #abort}
@@ -142,7 +143,7 @@ public interface TransactionalComponent
     /** Abort a transaction (undo the effect of a transaction) */
     public void abort(Transaction transaction);
 
-    /** 
+    /**
      * Finalization - the coordinator will not mention the transaction again.
      */
     public void complete(Transaction transaction);

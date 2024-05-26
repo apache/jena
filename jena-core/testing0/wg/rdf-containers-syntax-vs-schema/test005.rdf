@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: test005.rdf,v 1.2 2005-08-04 09:53:16 jeremy_carroll Exp $
+
+  As per the decision in 
+
+    http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2001Nov/0651.html
+
+  This test has been obsoleted and replaced by test error002.rdf
+-->

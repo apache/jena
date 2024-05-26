@@ -37,55 +37,49 @@ public abstract class AbstractTestPrefixMap {
     protected abstract PrefixMap getPrefixMap();
 
     @Test
-    public void prefixMap_basic_01()
-    {
+    public void prefixMap_basic_01() {
         PrefixMap pmap = getPrefixMap();
-        assertTrue(pmap.isEmpty()) ;
-        assertEquals(0, pmap.size()) ;
-        assertTrue(pmap.getMapping().isEmpty()) ;
-        assertTrue(pmap.getMappingCopy().isEmpty()) ;
+        assertTrue(pmap.isEmpty());
+        assertEquals(0, pmap.size());
+        assertTrue(pmap.getMapping().isEmpty());
+        assertTrue(pmap.getMappingCopy().isEmpty());
     }
 
     @Test
-    public void prefixMap_basic_02()
-    {
+    public void prefixMap_basic_02() {
         PrefixMap pmap = getPrefixMap();
-        pmap.add("", "http://example/") ;
-        assertFalse(pmap.isEmpty()) ;
-        assertEquals(1, pmap.size()) ;
-        assertTrue(pmap.containsPrefix("")) ;
-        assertTrue(pmap.getMapping().containsKey("")) ;
-        assertTrue(pmap.getMappingCopy().containsKey("")) ;
+        pmap.add("", "http://example/");
+        assertFalse(pmap.isEmpty());
+        assertEquals(1, pmap.size());
+        assertTrue(pmap.containsPrefix(""));
+        assertTrue(pmap.getMapping().containsKey(""));
+        assertTrue(pmap.getMappingCopy().containsKey(""));
     }
 
     @Test
-    public void prefixMap_basic_03()
-    {
+    public void prefixMap_basic_03() {
         PrefixMap pmap = getPrefixMap();
-        pmap.add("", "http://example/") ;
-        pmap.add("org", "http://example.org/") ;
-        assertTrue(pmap.containsPrefix("")) ;
-        assertTrue(pmap.containsPrefix("org")) ;
-        assertFalse(pmap.isEmpty()) ;
-        assertEquals(2, pmap.size()) ;
+        pmap.add("", "http://example/");
+        pmap.add("org", "http://example.org/");
+        assertTrue(pmap.containsPrefix(""));
+        assertTrue(pmap.containsPrefix("org"));
+        assertFalse(pmap.isEmpty());
+        assertEquals(2, pmap.size());
     }
 
     @Test
-    public void prefixMap_basic_04()
-    {
+    public void prefixMap_basic_04() {
         PrefixMap pmap1 = getPrefixMap();
-        pmap1.add("", "http://example/") ;
-        pmap1.add("org", "http://example.org/") ;
+        pmap1.add("", "http://example/");
+        pmap1.add("org", "http://example.org/");
         PrefixMap pmap2 = getPrefixMap();
-        pmap2.putAll(pmap1) ;
+        pmap2.putAll(pmap1);
 
-        assertTrue(pmap2.containsPrefix("")) ;
-        assertTrue(pmap2.containsPrefix("org")) ;
-        assertFalse(pmap2.isEmpty()) ;
-        assertEquals(2, pmap2.size()) ;
+        assertTrue(pmap2.containsPrefix(""));
+        assertTrue(pmap2.containsPrefix("org"));
+        assertFalse(pmap2.isEmpty());
+        assertEquals(2, pmap2.size());
     }
-
-
 
     /**
      * Simple expand test
@@ -322,11 +316,9 @@ public abstract class AbstractTestPrefixMap {
         String iriStr2 = nsIRI+p.getRight();
         assertEquals(iriStr, iriStr2);
 
-        // Agree with abbreviate? (due to multiple choices, this isn't guaranteed).
+        // Does "abbrev" agree with "abbreviate"? There are multiple choices in the way the URI is abbreviated
         String x1 = pm.abbreviate(iriStr);
         String abbrevString = ns+":"+ln;
-        assertEquals(x1, abbrevString);
-
         for ( String possible : expected ) {
             if ( possible.equals(abbrevString) ) {
                 assertTrue(iriStr.startsWith(nsIRI));

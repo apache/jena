@@ -21,8 +21,8 @@ package org.apache.jena.fuseki.validation.html;
 import java.io.IOException;
 import java.util.function.Consumer;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.fuseki.Fuseki;
@@ -69,18 +69,10 @@ public class ValidatorHtmlLib {
         for ( int i = 0; i < str.length(); i++ ) {
             char ch = str.charAt(i);
             switch (ch) {
-                case '<' :
-                    sBuff.append("&lt;");
-                    break;
-                case '>' :
-                    sBuff.append("&gt;");
-                    break;
-                case '&' :
-                    sBuff.append("&amp;");
-                    break;
-                default :
-                    sBuff.append(ch);
-                    break;
+                case '<' -> sBuff.append("&lt;");
+                case '>' -> sBuff.append("&gt;");
+                case '&' -> sBuff.append("&amp;");
+                default ->  sBuff.append(ch);
             }
         }
         return sBuff.toString();

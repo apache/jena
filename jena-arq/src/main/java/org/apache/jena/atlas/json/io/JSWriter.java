@@ -20,7 +20,6 @@ package org.apache.jena.atlas.json.io ;
 
 import static org.apache.jena.atlas.lib.Chars.CH_QUOTE1 ;
 import static org.apache.jena.atlas.lib.Chars.CH_QUOTE2 ;
-import static org.apache.jena.atlas.lib.Chars.CH_ZERO ;
 
 import java.io.OutputStream ;
 import java.math.BigDecimal ;
@@ -29,8 +28,6 @@ import java.util.Deque ;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.jena.atlas.io.IndentedLineBuffer ;
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.BitsInt ;
-import org.apache.jena.atlas.lib.Chars ;
 
 /**
  * A low level streaming JSON writer - assumes correct sequence of calls (e.g.
@@ -66,7 +63,7 @@ public class JSWriter {
     public static final String ObjectSep     = " ," ;
     public static final String ObjectPairSep = " : " ;
 
-    // Remember whether we are in the first element of a compound 
+    // Remember whether we are in the first element of a compound
     // (object or array).
     Deque<AtomicBoolean> stack = new ArrayDeque<>() ;
 
@@ -119,7 +116,7 @@ public class JSWriter {
         value(val) ;
         return this;
     }
-    
+
     public JSWriter pair(String key, Number val) {
         key(key) ;
         value(val) ;
@@ -133,7 +130,6 @@ public class JSWriter {
     }
 
     public JSWriter finishArray() {
-        // out.decIndent() ;
         out.print(ArrayFinish) ; // Leave on same line.
         finishCompound() ;
         return this;
@@ -181,11 +177,9 @@ public class JSWriter {
     }
 
     /*
-     * Output a JSON string with escaping. 
-     * \" \\ \/ \b \f \n \r \t control
-     * characters (def?) \ u four-hex-digits 
+     * Output a JSON string with escaping.
      */
-    public static void outputQuotedString(IndentedWriter out, String string) {
+    /*package*/ static void outputQuotedString(IndentedWriter out, String string) {
         outputQuotedString(out, string, false) ;
     }
 
@@ -194,7 +188,7 @@ public class JSWriter {
      * strings) which, for member names, is legal javascript but not legal JSON.
      * The Jena JSON parser accepts them.
      */
-    public static void outputQuotedString(IndentedWriter out, String string, boolean allowBareWords) {
+    /*package*/  static void outputQuotedString(IndentedWriter out, String string, boolean allowBareWords) {
         char quoteChar = CH_QUOTE2 ;
         int len = string.length() ;
 
@@ -222,70 +216,10 @@ public class JSWriter {
         if ( allowBareWords )
             quoteChar = CH_QUOTE1 ;
 
+        // Quoted string.
         out.print(quoteChar) ;
-        for (int i = 0; i < len; i++) {
-            char ch = string.charAt(i) ;
-            if ( ch == quoteChar ) {
-                esc(out, quoteChar) ;
-                continue ;
-            }
-
-            switch (ch) {
-            // Done in default. Only \" is legal JSON.
-            // case '"': esc(out, '"') ; break ;
-            // case '\'': esc(out, '\'') ; break ;
-                case '\\' :
-                    esc(out, '\\') ;
-                    break ;
-                case '/' :
-                    // Avoid </ which confuses if it's in HTML (this is from
-                    // json.org)
-                    if ( i > 0 && string.charAt(i - 1) == '<' )
-                        esc(out, '/') ;
-                    else
-                        out.print(ch) ;
-                    break ;
-                case '\b' :
-                    esc(out, 'b') ;
-                    break ;
-                case '\f' :
-                    esc(out, 'f') ;
-                    break ;
-                case '\n' :
-                    esc(out, 'n') ;
-                    break ;
-                case '\r' :
-                    esc(out, 'r') ;
-                    break ;
-                case '\t' :
-                    esc(out, 't') ;
-                    break ;
-                default :
-
-                    if ( ch == quoteChar ) {
-                        esc(out, '"') ;
-                        break ;
-                    }
-
-                    // Character.isISOControl(ch) ; //00-1F, 7F-9F
-                    // This is more than Character.isISOControl
-
-                    if ( ch < ' ' || (ch >= '\u007F' && ch <= '\u009F') || (ch >= '\u2000' && ch < '\u2100') ) {
-                        out.print("\\u") ;
-                        int x = ch ;
-                        x = oneHex(out, x, 3) ;
-                        x = oneHex(out, x, 2) ;
-                        x = oneHex(out, x, 1) ;
-                        x = oneHex(out, x, 0) ;
-                        break ;
-                    }
-
-                    out.print(ch) ;
-                    break ;
-            }
-        }
-        if ( quoteChar != CH_ZERO )
-            out.print(quoteChar) ;
+        JsonIO.escape(string, out, quoteChar);
+        out.print(quoteChar) ;
     }
 
     private void startCompound() {
@@ -320,19 +254,10 @@ public class JSWriter {
         out.print(number.toString()) ;
     }
 
-    // Caution - assumes "Number" outputs legal JSON format 
+    // Caution - assumes "Number" outputs legal JSON format
     private void value(Number number) {
         out.print(number.toString()) ;
     }
-    
-    // void valueString(String image) {}
-    // void valueInteger(String image) {}
-    // void valueDouble(String image) {}
-    // void valueBoolean(boolean b) {}
-    // void valueNull() {}
-    // void valueDecimal(String image) {}
-
-    // Library-ize.
 
     private static boolean isA2Z(int ch) {
         return range(ch, 'a', 'z') || range(ch, 'A', 'Z') ;
@@ -356,17 +281,5 @@ public class JSWriter {
 
     private static boolean range(int ch, char a, char b) {
         return (ch >= a && ch <= b) ;
-    }
-
-    private static void esc(IndentedWriter out, char ch) {
-        out.print('\\') ;
-        out.print(ch) ;
-    }
-
-    private static int oneHex(IndentedWriter out, int x, int i) {
-        int y = BitsInt.unpack(x, 4 * i, 4 * i + 4) ;
-        char charHex = Chars.hexDigitsUC[y] ;
-        out.print(charHex) ;
-        return BitsInt.clear(x, 4 * i, 4 * i + 4) ;
     }
 }

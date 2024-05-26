@@ -31,7 +31,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.graph.Triple ;
 import org.junit.Test ;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings("removal")
 public class TestRiotReader {
     @Test
     public void testCreateIteratorTriples_01() {

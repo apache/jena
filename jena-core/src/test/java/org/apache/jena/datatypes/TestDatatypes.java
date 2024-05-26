@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull ;
 import static org.junit.Assert.assertTrue ;
 
 import java.math.BigDecimal ;
+import java.util.UUID;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
@@ -177,9 +178,33 @@ public class TestDatatypes {
         testValueToLex(Float.NEGATIVE_INFINITY, XSDDatatype.XSDfloat) ;
     }
 
+    @Test public void passAsString_UUID() {
+        testLiteralIsCorrectType(UUID.randomUUID(), XSDDatatype.XSDstring) ;
+    }
+
+    @Test public void passAsString_Integer() {
+        testLiteralIsCorrectType(5, XSDDatatype.XSDstring) ;
+    }
+
+    @Test public void passAsString_Float() {
+        testLiteralIsCorrectType(9.99f, XSDDatatype.XSDstring) ;
+    }
+    @Test public void passAsInteger_String() {
+        testLiteralIsCorrectType("5", XSDDatatype.XSDint) ;
+    }
+
+    @Test public void passAsFloat_String() {
+        testLiteralIsCorrectType("5.55", XSDDatatype.XSDfloat) ;
+    }
+
     private void testValueToLex(Object value, XSDDatatype datatype) {
         Node node = NodeFactory.createLiteralByValue(value, datatype) ;
         assertTrue("Not valid lexical form "+value+" -> "+node, datatype.isValid(node.getLiteralLexicalForm())) ;
+    }
+
+    private void testLiteralIsCorrectType(Object value, XSDDatatype datatype) {
+        Node node = NodeFactory.createLiteralByValue(value, datatype) ;
+        assertEquals("If passing object of type " + value.getClass().getSimpleName() + " as " + datatype.toString() + " it needs to be treated as " + datatype.getJavaClass().getSimpleName(), node.getLiteralValue().getClass(), datatype.getJavaClass());
     }
 
     private void valid(XSDDatatype xsddatatype, String string) {

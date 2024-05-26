@@ -21,7 +21,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.test.MetaTestGraph;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
-import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb1.TDB1Factory;
 
 public class SecuredTDBGraphContractTests extends MetaTestGraph {
 
@@ -40,7 +40,7 @@ public class SecuredTDBGraphContractTests extends MetaTestGraph {
     @Override
     public Graph getGraph() {
         return org.apache.jena.permissions.Factory.getInstance(eval, getName(),
-                TDBFactory.createDatasetGraph().getDefaultGraph());
+                TDB1Factory.createDatasetGraph().getDefaultGraph());
     }
 
 }

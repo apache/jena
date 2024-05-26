@@ -20,7 +20,6 @@ package org.apache.jena.arq;
 
 import org.apache.jena.atlas.TC_Atlas_ARQ;
 import org.apache.jena.atlas.legacy.BaseTest2;
-import org.apache.jena.common.TC_Common;
 import org.apache.jena.external.Scripts_LangSuiteCG;
 import org.apache.jena.external.Scripts_RDFStar;
 import org.apache.jena.external.Scripts_SPARQL11;
@@ -34,6 +33,7 @@ import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.TS_System;
+import org.apache.jena.system.buffering.TS_Buffering;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -46,11 +46,11 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TC_Atlas_ARQ.class,
-    TC_Common.class,
 
     TC_Riot.class,
 
     TS_System.class,
+    TS_Buffering.class,
 
     TS_InfRdfs.class,
     TS_HttpAuth.class,

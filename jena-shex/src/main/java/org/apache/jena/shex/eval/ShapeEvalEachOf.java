@@ -20,16 +20,15 @@ package org.apache.jena.shex.eval;
 
 import java.util.*;
 
+import org.apache.commons.collections4.ListValuedMap;
+import org.apache.commons.collections4.MultiMapUtils;
 import org.apache.jena.atlas.lib.InternalErrorException;
-import org.apache.jena.ext.com.google.common.collect.ArrayListMultimap;
-import org.apache.jena.ext.com.google.common.collect.ListMultimap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.shex.expressions.TripleExpression;
 import org.apache.jena.shex.expressions.TripleExprEachOf;
+import org.apache.jena.shex.expressions.TripleExpression;
 import org.apache.jena.shex.sys.ValidationContext;
 
-public
 /*package*/ class ShapeEvalEachOf {
     // Sufficiently large and complex so separated from ShapeEval.
 
@@ -52,7 +51,7 @@ public
         // Unused: List<Set<Node>> exprIdxToPredicates = new ArrayList<>();
 
         // We use indexing for expressions because a triple expression may occur twice in the list.
-        ListMultimap<Node, Integer> predicateToTripleExprs = ArrayListMultimap.create();
+        ListValuedMap<Node, Integer> predicateToTripleExprs = MultiMapUtils.newListValuedHashMap();
         List<TripleExpression> tripleExprs = eachOf.expressions();
 
         int N = tripleExprs.size();
@@ -96,8 +95,9 @@ public
                     break;
                 }
             }
-            // This partition works.
-            if ( success )
+
+            // If this partition satisfies the nested expressions, test SemActs.
+            if ( success && eachOf.testSemanticActions(vCxt, matchables) )
                 return true;
         }
         return false;
@@ -109,8 +109,7 @@ public
 
     private static List<List<Set<Triple>>> partition(Collection<Triple> triples,
                                                      List<TripleExpression> tripleExprs,
-                                                     //List<Set<Node>> exprIdxToPredicates,
-                                                     ListMultimap<Node, Integer> predicateToTripleExprs) {
+                                                     ListValuedMap<Node, Integer> predicateToTripleExprs) {
         // Any unallocateables?
         // Can each triple be placed somewhere?
         for ( Triple t : triples ) {
@@ -122,11 +121,8 @@ public
 //        if ( triples.stream().noneMatch(t->predicateToTripleExprs.containsKey(t.getPredicate())) )
 //            return null;
 
-
         // Start. One empty partition
         List<Set<Triple>> emptyPartial = emptyPartition(tripleExprs);
-
-
         List<List<Set<Triple>>> partials = new ArrayList<>();
         partials.add(emptyPartial);
 
@@ -148,7 +144,7 @@ public
 
     private static List<List<Set<Triple>>> partition(Triple t, List<Set<Triple>> partial, List<TripleExpression> tripleExprs,
                                                      //List<Set<Node>> exprIdxToPredicates,
-                                                     ListMultimap<Node, Integer> predicateToTripleExprs) {
+                                                     ListValuedMap<Node, Integer> predicateToTripleExprs) {
         Node p = t.getPredicate();
         // Places triple t can go.
         List<Integer> places = predicateToTripleExprs.get(p);
@@ -178,5 +174,4 @@ public
         }
         return partition;
     }
-
 }

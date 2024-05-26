@@ -18,80 +18,100 @@
 
 package org.apache.jena.atlas.io;
 
-import java.io.BufferedWriter ;
-import java.io.IOException ;
-import java.io.Writer ;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.Writer;
 
-import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Closeable;
 
 /** A Writer, without the checked exceptions. */
 
 public class Writer2 extends AWriterBase implements AWriter, Closeable
 {
-    protected final Writer writer ;
+    protected final Writer writer;
 
-    public static Writer2 wrap(Writer writer)
-    {
+    public static Writer2 wrapNoBuffer(Writer writer) {
+        return new Writer2(writer);
+    }
+
+    public static Writer2 wrap(Writer writer) {
         if ( writer instanceof BufferedWriter )
-            return new Writer2(writer) ;
+            return new Writer2(writer);
         if ( writer instanceof BufferingWriter )
-            return new Writer2(writer) ;
-        
-        writer = new BufferingWriter(writer) ;
-        return new Writer2(writer) ;
-    }
-    
-    protected Writer2(Writer writer) { this.writer = writer ; }
+            return new Writer2(writer);
 
-    @Override
-    public void print(char ch)
-    { 
-        try { writer.write(ch) ; } catch (IOException ex) { IO.exception(ex) ; }
+        writer = new BufferingWriter(writer);
+        return new Writer2(writer);
+    }
+
+    protected Writer2(Writer writer) {
+        this.writer = writer;
     }
 
     @Override
-    public void print(String string)
-    { 
-        try { writer.write(string) ; } catch (IOException ex) { IO.exception(ex) ; }
+    public void print(char ch) {
+        try {
+            writer.write(ch);
+        } catch (IOException ex) {
+            IO.exception(ex);
+        }
     }
 
     @Override
-    public void print(char[] cbuf)
-    {
-        try { writer.write(cbuf) ; } catch (IOException ex) { IO.exception(ex) ; }
+    public void print(String string) {
+        try {
+            writer.write(string);
+        } catch (IOException ex) {
+            IO.exception(ex);
+        }
     }
 
     @Override
-    public void flush()
-    {
-        try { writer.flush() ; } catch (IOException ex) { IO.exception(ex) ; }
+    public void print(char[] cbuf) {
+        try {
+            writer.write(cbuf);
+        } catch (IOException ex) {
+            IO.exception(ex);
+        }
     }
 
     @Override
-    public void close()
-    {
-        try { writer.close() ; } catch (IOException ex) { IO.exception(ex) ; }
+    public void flush() {
+        try {
+            writer.flush();
+        } catch (IOException ex) {
+            IO.exception(ex);
+        }
     }
 
     @Override
-    public void printf(String fmt, Object... args)
-    {
-        print(String.format(fmt, args)) ;
+    public void close() {
+        try {
+            writer.close();
+        } catch (IOException ex) {
+            IO.exception(ex);
+        }
     }
 
     @Override
-    public void println(String obj)
-    {
-        print(obj) ; print("\n") ;
+    public void printf(String fmt, Object...args) {
+        print(String.format(fmt, args));
     }
 
     @Override
-    public void println()
-    {
-        print("\n") ;
+    public void println(String obj) {
+        print(obj);
+        print("\n");
     }
-    
+
     @Override
-    public String toString() { return writer.toString() ; }
+    public void println() {
+        print("\n");
+    }
+
+    @Override
+    public String toString() {
+        return writer.toString();
+    }
 }
 

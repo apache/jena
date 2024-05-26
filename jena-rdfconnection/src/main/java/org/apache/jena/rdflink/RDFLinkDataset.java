@@ -18,8 +18,8 @@
 
 package org.apache.jena.rdflink;
 
-import static org.apache.jena.riot.other.G.clear;
-import static org.apache.jena.riot.other.G.copyGraphSrcToDst;
+import static org.apache.jena.system.G.clear;
+import static org.apache.jena.system.G.copyGraphSrcToDst;
 
 import java.util.Objects;
 

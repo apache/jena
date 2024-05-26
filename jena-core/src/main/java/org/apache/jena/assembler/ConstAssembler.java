@@ -24,10 +24,10 @@ import org.apache.jena.assembler.assemblers.* ;
    Assembler initialization - so it works when inside class initialization processes.
    Assembler is an interface and constants are statics (implicitly or explicitly final)
    which makes controlling order tricky.
-  
-   Solution: initialization code (ie. inside jenaSystem.init) must use teh methods here, 
+
+   Solution: initialization code (ie. inside jenaSystem.init) must use teh methods here,
    and not Assembler.constant.
-   
+
    Use ConstAssembler.general(), not Assembler.general.
 */
 public class ConstAssembler
@@ -38,7 +38,7 @@ public class ConstAssembler
 			defaultModel = new DefaultModelAssembler();
 		return defaultModel ;
 	}
-    
+
     private static Assembler memoryModel = null ;
 	public static Assembler memoryModel() {
 		if ( memoryModel == null )
@@ -73,7 +73,7 @@ public class ConstAssembler
 			content = new ContentAssembler();
 		return content ;
 	}
-    
+
     private static Assembler prefixMapping = null ;
 	public static Assembler prefixMapping() {
 		if ( prefixMapping == null )
@@ -94,33 +94,12 @@ public class ConstAssembler
 			ontModelSpec = new OntModelSpecAssembler();
 		return ontModelSpec ;
 	}
-    
+
     private static Assembler ruleSet = null ;
 	public static Assembler ruleSet() {
 		if ( ruleSet == null )
 			ruleSet = new RuleSetAssembler();
 		return ruleSet ;
-	}
-    
-    private static Assembler modelSource = null ;
-	public static Assembler modelSource() {
-		if ( modelSource == null )
-			modelSource = new ModelSourceAssembler();
-		return modelSource ;
-	}
-    
-    private static Assembler locationMapper = null ;
-	public static Assembler locationMapper() {
-		if ( locationMapper == null )
-			locationMapper = new LocationMapperAssembler();
-		return locationMapper ;
-	}
-
-    private static Assembler fileManager = null ;
-	public static Assembler fileManager() {
-		if ( fileManager == null )
-			fileManager = new FileManagerAssembler();
-		return fileManager ;
 	}
 
     private static Assembler documentManager = null ;
@@ -129,7 +108,7 @@ public class ConstAssembler
 			documentManager = new DocumentManagerAssembler();
 		return documentManager ;
 	}
-    
+
     private static AssemblerGroup general = null ;
     public  static AssemblerGroup general() {
         if ( general == null ) {
@@ -138,7 +117,6 @@ public class ConstAssembler
                 .implementWith( JA.MemoryModel, memoryModel() )
                 .implementWith( JA.InfModel, infModel() )
                 .implementWith( JA.ReasonerFactory, reasonerFactory() )
-                .implementWith( JA.ModelSource, modelSource() )
                 .implementWith( JA.Content, content() )
                 .implementWith( JA.ContentItem, content() )
                 .implementWith( JA.UnionModel, unionModel() )
@@ -147,11 +125,9 @@ public class ConstAssembler
                 .implementWith( JA.OntModel, ontModel() )
                 .implementWith( JA.OntModelSpec, ontModelSpec() )
                 .implementWith( JA.RuleSet, ruleSet() )
-                .implementWith( JA.LocationMapper, locationMapper() )
-                .implementWith( JA.FileManager, fileManager() )
                 .implementWith( JA.DocumentManager, documentManager() )
                 ;
         }
-        return general ;  
+        return general ;
     }
 }

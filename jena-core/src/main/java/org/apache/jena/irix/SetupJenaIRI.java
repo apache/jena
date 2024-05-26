@@ -27,10 +27,6 @@ import org.apache.jena.iri.impl.PatternCompiler;
 /** Setup of jena-iri package IRI Factory for parsing and for checking. */
 public class SetupJenaIRI {
 
-    // Currently, the same.
-    // The difference is the treatment in IRIProviderJenaIRI and ParserProfileStd.internalMakeIRI
-    // both of which can be scheme and component sensitive.
-
     private static final IRIFactory iriFactoryInst = setupIRIFactory();
     private static final IRIFactory iriCheckerInst = setupCheckerIRIFactory();
 
@@ -43,21 +39,12 @@ public class SetupJenaIRI {
         return iriFactoryInst;
     }
 
-    public static IRIFactory iriFactory_RDFXML() {
-        // Used in ReaderRiotRDFXML
-        return iriFactory();
-    }
-
     /**
      * An IRIFactory with more detailed warnings.
      */
     public static IRIFactory iriCheckerFactory() {
         return iriCheckerInst;
     }
-
-    // Currently the same factory.
-    // The difference is the treatment in IRIProviderJenaIRI and ParserProfileStd.internalMakeIRI
-    // both of which can be scheme and component sensitive.
 
     /*package*/ static final IRIFactory setupIRIFactory() {
         return setupCheckerIRIFactory();
@@ -110,7 +97,6 @@ public class SetupJenaIRI {
 
         // == Path
         setErrorWarning(iriCheckerFactory, ViolationCodes.NON_INITIAL_DOT_SEGMENT, false, false);
-
 
         // == Character related.
         //setErrorWarning(iriFactoryInst, ViolationCodes.NOT_NFC,  false, false);

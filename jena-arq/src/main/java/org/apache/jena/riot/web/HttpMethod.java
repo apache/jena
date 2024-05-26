@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.web;
 
-import java.util.Locale;
+import static org.apache.jena.atlas.lib.Lib.uppercase;
 
 public enum HttpMethod {
     // METHOD_ only for transition/rename.
@@ -43,7 +43,7 @@ public enum HttpMethod {
 
     public static HttpMethod fromString(String name) {
         try {
-            return HttpMethod.valueOf(name.toUpperCase(Locale.ROOT));
+            return HttpMethod.valueOf(uppercase(name));
         } catch (IllegalArgumentException ex) {
             return null;
         }

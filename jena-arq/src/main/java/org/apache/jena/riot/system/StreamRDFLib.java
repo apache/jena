@@ -47,6 +47,12 @@ public class StreamRDFLib
     public static StreamRDF print(OutputStream out)         { return new PrintingStreamRDF(out); }
 
     /**
+     * Create a {@link StreamRDF} that prints to an {@link AWriter}.
+     * This is debug output.
+     */
+    public static StreamRDF print(AWriter out)              { return new PrintingStreamRDF(out); }
+
+    /**
      * Create a {@link StreamRDF} that outputs to an {@link OutputStream}. It is important
      * to call {@link StreamRDF#start} and {@link StreamRDF#finish} because the output is
      * buffered.
@@ -209,7 +215,7 @@ public class StreamRDFLib
 
         @Override
         public void prefix(String prefix, String uri) {
-            try { // Some graphs applies XML rules to prefixes.
+            try { // Some graphs apply XML rules to prefixes.
                 graph.getPrefixMapping().setNsPrefix(prefix, uri);
             } catch (JenaException ex) {}
         }

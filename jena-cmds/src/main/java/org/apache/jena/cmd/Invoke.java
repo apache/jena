@@ -20,10 +20,12 @@ package org.apache.jena.cmd;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-/** Helper code to invoke a main method buy reflection
- *  This means command can be invoked from this module even
- *  if their implementation resides in a module later
- *  in the build sequence.
+
+/**
+ * Helper code to invoke a main method by reflection.
+ * <p>
+ * This means the command can be invoked from this module even if the implementation
+ * resides in a module not on the classpath at build time.
  */
 public class Invoke {
     public static void invokeCmd(String className, String[] args) {

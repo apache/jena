@@ -27,10 +27,28 @@ import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log;
 
 /**
- * Implementation of {@link SubsystemRegistry} for use in the simple but common case
- * of running Jena as a collection of jars on the classpath.
+ * Implementation of {@link SubsystemRegistry} that uses {@link ServiceLoader} to find sub-systems.
  * <p>
- * Uses {@link ServiceLoader} to find sub-systems.
+ * In unnamed modules, the {@link ServiceLoader} used to use {@code META-INF/service/interface-name.}
+ * <p>
+ * With modules, the application {@code module-info.java} contains:
+ * <pre>
+ * module com.example.app {
+ *     requires java.sql;
+ *      uses java.sql.Driver;
+ * }
+ * </pre>
+ * and the provider {@code module-info.java} contains:
+ * <pre>
+ * module com.example.jdbc {
+ *     requires java.sql;
+ *     provides java.sql.Driver
+ *         with com.example.jdbc.MyDriver;
+ * }
+ * </pre>
+ * <p>
+ * With classpath, not module path and automatic modules, the application (here, Jena initialization)
+ * need not do anything, and the automatic modules implicitly provide an interface.
  */
 public class SubsystemRegistryServiceLoader<T extends SubsystemLifecycle> implements SubsystemRegistry<T> {
 

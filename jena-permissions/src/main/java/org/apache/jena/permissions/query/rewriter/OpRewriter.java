@@ -226,6 +226,15 @@ public class OpRewriter implements OpVisitor {
         }
     }
 
+    @Override
+    public void visit(OpLateral opLateral) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Starting visiting OpLateral");
+        }
+        final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
+        addOp(OpLateral.create(rewriteOp2(opLateral, rewriter), rewriter.getResult()));
+    }
+
     /**
      * Rewrite left and right
      */

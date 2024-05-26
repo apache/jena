@@ -111,7 +111,7 @@ public class TriplePattern implements ClauseEntry {
      * Return the triple pattern as a triple 
      */
     public Triple asTriple() {
-        return new Triple(subject,predicate, object);
+        return Triple.create(subject,predicate, object);
     }
     
     /**

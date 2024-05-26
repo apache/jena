@@ -22,9 +22,7 @@ import static org.apache.jena.riot.resultset.ResultSetLang.*;
 
 import java.io.InputStream ;
 import java.io.Reader ;
-import java.util.HashMap ;
-import java.util.Map ;
-import java.util.Objects ;
+import java.util.*;
 
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.riot.Lang ;
@@ -77,6 +75,11 @@ public class ResultSetReaderRegistry {
         register(RS_Thrift,   factory) ;
         register(RS_Protobuf, factory) ;
     }
+    
+    /** Return registered result set languages. */
+    public static Set<Lang> registered() {
+        return Collections.unmodifiableSet(registry.keySet());
+    }
 
     private static class ResultSetReaderAdapter implements ResultSetReader {
 
@@ -109,5 +112,6 @@ public class ResultSetReaderRegistry {
         public SPARQLResult readAny(InputStream in, Context context) {
             QueryExecResult result = reader().readAny(in, context);
             return SPARQLResult.adapt(result);
-        }};
+        }
+    }
 }

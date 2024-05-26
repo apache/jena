@@ -1,0 +1,31 @@
+<!--++ I5.8/conclusions009.rdf ** generated using webont test editor. ++-->
+<!--++ Created 7 May 2003 12:04:27 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: conclusions009.rdf,v 1.5 2003-12-05 05:06:34 jeremy_carroll Exp $
+-->
+<!--
+0 is the only <code>xsd:nonNegativeInteger</code> which is
+also an <code>xsd:nonPositiveInteger</code>. 0 is an
+<code>xsd:short</code>.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xml:base="http://www.w3.org/2002/03owlt/I5.8/conclusions009" >
+  <owl:DatatypeProperty rdf:about="premises009#p">
+    <rdfs:range rdf:resource=
+  "http://www.w3.org/2001/XMLSchema#short" />
+  </owl:DatatypeProperty>
+
+</rdf:RDF>

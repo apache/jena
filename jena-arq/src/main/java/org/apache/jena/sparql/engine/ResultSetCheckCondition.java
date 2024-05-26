@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.engine;
 
 import java.util.List ;
+import java.util.function.Consumer;
 
 import org.apache.jena.query.QueryExecution ;
 import org.apache.jena.query.QuerySolution ;
@@ -29,7 +30,9 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 
 /** ResultSet wrapper that check whether some condition is true
  * (e.g. the QueryExecution has not been closed).
+ * @deprecated To be removed.
  */
+@Deprecated(forRemoval = true)
 public class ResultSetCheckCondition implements ResultSet
 {
     interface Condition { boolean check() ; }
@@ -40,7 +43,7 @@ public class ResultSetCheckCondition implements ResultSet
         this(other, checkQExec(qExec) ) ;
     }
 
-    public  ResultSetCheckCondition(ResultSet other, Condition condition) {
+    public ResultSetCheckCondition(ResultSet other, Condition condition) {
         this.other = other ;
         this.condition = condition ;
     }
@@ -77,6 +80,16 @@ public class ResultSetCheckCondition implements ResultSet
     public void close() {
         check() ;
         other.close();
+    }
+
+    /**
+     * Attention: The check is only done once before the first consumer accept call.
+     * @param action The action to be performed for each element
+     */
+    @Override
+    public void forEachRemaining(Consumer<? super QuerySolution> action) {
+        check() ;
+        other.forEachRemaining(action);
     }
 
     @Override

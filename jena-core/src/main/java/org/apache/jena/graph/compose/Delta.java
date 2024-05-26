@@ -20,7 +20,6 @@ package org.apache.jena.graph.compose ;
 
 import org.apache.jena.graph.Capabilities ;
 import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.impl.GraphPlain ;
 import org.apache.jena.graph.impl.SimpleEventManager ;
@@ -101,7 +100,7 @@ public class Delta extends CompositionBase implements Graph
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(Triple t)
     {
-        ExtendedIterator<Triple> iterator = base.find(t).filterDrop(ifIn(GraphUtil.findAll(deletions))).andThen(additions.find(t)) ;
+        ExtendedIterator<Triple> iterator = base.find(t).filterDrop(deletions::contains).andThen(additions.find(t)) ;
         return SimpleEventManager.notifyingRemove( this, iterator ) ;
     }
 

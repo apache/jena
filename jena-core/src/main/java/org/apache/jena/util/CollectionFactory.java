@@ -24,38 +24,38 @@ import java.util.*;
     CollectionFactory - a central place for allocating sets and maps, mostly so that
     it's easy to plug in new implementations (eg trove).
 */
-public class CollectionFactory 
+public class CollectionFactory
     {
     /**
          Answer a new Map which uses hashing for lookup.
     */
-    public static <K,V> Map<K,V> createHashedMap() 
+    public static <K,V> Map<K,V> createHashedMap()
         { return new HashMap<>(); }
-    
+
     /**
          Answer a new Map which uses hashing for lookup and has initial size
          <code>size</code>.
     */
-    public static <K,V> Map<K,V> createHashedMap( int size ) 
+    public static <K,V> Map<K,V> createHashedMap( int size )
         { return new HashMap<>( size ); }
-    
+
     /**
          Answer a new Map which uses hashing for lookup and is initialised to be
          a copy of <code>toCopy</code>.
     */
-    public static <K,V> Map<K,V> createHashedMap( Map<K,V> toCopy ) 
+    public static <K,V> Map<K,V> createHashedMap( Map<K,V> toCopy )
         { return new HashMap<>( toCopy ); }
-    
+
     /**
          Answer a new Set which uses haashing for lookup.
     */
-    public static <T> Set<T> createHashedSet() 
+    public static <T> Set<T> createHashedSet()
         { return new HashSet<>(); }
-    
+
     /**
          Answer a new Set which uses hashing for lookup and is initialised as a copy
          of <code>toCopy</code>.
     */
-    public static <T> Set<T> createHashedSet( Collection<T> toCopy ) 
+    public static <T> Set<T> createHashedSet( Collection<T> toCopy )
         { return new HashSet<>( toCopy ); }
     }

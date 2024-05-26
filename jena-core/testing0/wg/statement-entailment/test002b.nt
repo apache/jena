@@ -1,0 +1,5 @@
+_:r <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+_:r <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://example.org/subj> .
+_:r <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://example.org/prop> .
+_:r <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://example.org/obj> .
+

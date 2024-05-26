@@ -27,7 +27,7 @@ import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.Quad ;
 
 /**
- * Base class for StreamRDF implementations which store received <T>
+ * Base class for StreamRDF implementations which store received {@code <T>}
  * objects in a {@link java.util.Collection}.
  *
  * The resulting collection can be retrieved via the {@link #getCollected()}

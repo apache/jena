@@ -29,7 +29,8 @@ import org.apache.jena.dboe.transaction.txn.TransactionalComponentLifecycle;
 import org.apache.jena.dboe.transaction.txn.TxnId;
 import org.apache.jena.query.ReadWrite;
 
-/** Manage a single binary (not too large) object.
+/**
+ * Manage a single binary (not too large) object.
  * It is written and read from a file in one action,
  * so changes completely replace the original contents.
  * The whole object is written to the journal during prepare.

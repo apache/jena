@@ -1,4 +1,4 @@
-<!--
+fUnwise<!--
    Licensed to the Apache Software Foundation (ASF) under one or more
    contributor license agreements.  See the NOTICE file distributed with
    this work for additional information regarding copyright ownership.
@@ -582,8 +582,10 @@ In addition, octet 0 (0 hex) should NEVER be used, in either unencoded or %-enco
             
 	    <description>
 		    The character matches no grammar rules of URIs/IRIs.
+        <!--
 		    These characters are permitted in RDF URI References,
 		    XML system identifiers, and XML Schema anyURIs.
+        -->
 	    </description>
             
             <comment>Whitespace is dealt with separately.</comment>
@@ -870,8 +872,10 @@ characters or permanently undefined Unicode characters: [#x7F-#x84], [#x86-#x9F]
 	    <description>
 A single whitespace character.
 These match no grammar rules of URIs/IRIs.
+        <!--
 		    These characters are permitted in RDF URI References,
 		    XML system identifiers, and XML Schema anyURIs.
+        -->
 	    </description>
 
 	    <see>IRIFactory#allowUnwiseCharacters</see>

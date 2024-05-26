@@ -95,7 +95,6 @@ public interface ExtendedIterator<T> extends ClosableIterator<T>
      */
     public Set<T> toSet();
 
-
     /**
         Answer with an {@link Optional}.
         This operation assumes that the {@code ExtendedIterator} does not return null for {@code next()}.

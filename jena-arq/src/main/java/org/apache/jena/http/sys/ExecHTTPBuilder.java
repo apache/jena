@@ -109,7 +109,7 @@ public abstract class ExecHTTPBuilder<X, Y> {
     }
 
     /** Set the query */
-    private void setQuery(Query query, String queryStr) {
+    protected void setQuery(Query query, String queryStr) {
         this.query = query;
         this.queryString = queryStr;
     }
@@ -299,7 +299,7 @@ public abstract class ExecHTTPBuilder<X, Y> {
     }
 
     /**
-     * Set a timeout to the overall overall operation.
+     * Set a timeout of the overall operation.
      * Time-to-connect can be set with a custom {@link HttpClient} - see {@link java.net.http.HttpClient.Builder#connectTimeout(java.time.Duration)}.
      */
     public Y timeout(long timeout, TimeUnit timeoutUnit) {

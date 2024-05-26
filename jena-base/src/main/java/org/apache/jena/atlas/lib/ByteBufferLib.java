@@ -29,10 +29,12 @@ public class ByteBufferLib {
 
     private ByteBufferLib() {}
 
+    /** Fill the byte buffer from position to limit with a byte value */
     public static void fill(ByteBuffer bb, byte v) {
         fill(bb, bb.position(), bb.limit(), v) ;
     }
 
+    /** Fill the section of the byte buffer from start (inc) to finish (exc) to limit with a byte value */
     public static void fill(ByteBuffer bb, int start, int finish, byte v) {
         for ( int i = start ; i < finish ; i++ )
             bb.put(i, v) ;
@@ -75,6 +77,7 @@ public class ByteBufferLib {
         out.println() ;
     }
 
+    /** Test whether two byte buffers have the same byte content */
     public static boolean sameValue(ByteBuffer bb1, ByteBuffer bb2) {
         if ( bb1.capacity() != bb2.capacity() )
             return false ;
@@ -85,11 +88,8 @@ public class ByteBufferLib {
         return true ;
     }
 
-    /**
-     * Copy of a ByteBuffer - the contents are copied (unlike
-     * ByteBuffer.duplicate)
-     */
-    final public static ByteBuffer duplicate(ByteBuffer bb) {
+    /** Copy of a ByteBuffer - the contents are copied (unlike {@link ByteBuffer#duplicate}) */
+    final public static ByteBuffer copyOf(ByteBuffer bb) {
         ByteBuffer bb2 = ByteBuffer.allocate(bb.limit() - bb.position()) ;
         int x = bb.position() ;
         bb2.put(bb) ;
@@ -112,8 +112,63 @@ public class ByteBufferLib {
             b[j++] = bb.get(i++) ;
     }
 
-    // For non-array versions : beware of overlaps.
+    // --------
+
+    /**
+     * Copy to section bytes from src to dst within the same {@link ByteBuffer}.
+     */
     final public static void bbcopy(ByteBuffer bb, int src, int dst, int length, int slotLen) {
+        if ( src == dst )
+            return ;
+
+        if ( allowArray && bb.hasArray() ) {
+            acopyArray(bb, src, dst, length, slotLen) ;
+            return ;
+        }
+
+        bbcopyBulk(bb, src, dst, length, slotLen) ;
+    }
+
+    final private static void acopyArray(ByteBuffer bb, int src, int dst, int length, int slotLen) {
+        byte[] b = bb.array() ;
+
+        int offset = bb.arrayOffset() ;
+
+        int bSrc = src * slotLen ;
+        int bDst = dst * slotLen ;
+        int bLen = length * slotLen ;
+
+        arraycopy(b, offset + bSrc, b, offset + bDst, bLen) ;
+    }
+
+    /**
+     * Bulk copy, using an intermediate byte[].
+     */
+    private final static void bbcopyBulk(ByteBuffer bb, int src, int dst, int length, int slotLen) {
+        // 2023-03 - this was shown to be faster than the old way that did
+        // not create an object but can't use bulk operations.
+        int bDst = dst * slotLen ;
+        int bSrc = src * slotLen ;
+        int bLen = length * slotLen ;
+
+        byte[] srcBytes = new byte[bLen];
+
+        int pos = bb.position();
+        bb.position(bSrc);
+        bb.get(srcBytes, 0, bLen);
+
+        bb.position(bDst);
+        bb.put(srcBytes, 0, bLen);
+        bb.position(pos);
+    }
+
+    // --------
+    // For the record ...
+
+    /**
+     * Bulk copy, without using an intermediate byte[].
+     */
+    private final static void bbcopyOLD(ByteBuffer bb, int src, int dst, int length, int slotLen) {
         if ( src == dst )
             return ;
 
@@ -146,7 +201,13 @@ public class ByteBufferLib {
             bb.put(bDst + i, bb.get(bSrc + i)) ;
     }
 
+    // --------
+
+    /** Copy a section of bytes from one {@link ByteBuffer} to a different {@link ByteBuffer} */
     public final static void bbcopy(ByteBuffer bb1, int src, ByteBuffer bb2, int dst, int length, int slotLen) {
+        if ( bb1 == bb2 )
+            throw new IllegalArgumentException("ByteBuffers are the same object");
+
         // Assume bb1 and bb2 are different and do not overlap.
         if ( allowArray && bb1.hasArray() && bb2.hasArray() ) {
             acopyArray(bb1, src, bb2, dst, length, slotLen) ;
@@ -158,35 +219,18 @@ public class ByteBufferLib {
         int bDst = dst * slotLen ;
         int bLen = length * slotLen ;
 
-        for ( int i = 0 ; i < bLen ; i++ )
-            bb2.put(bDst + i, bb1.get(bSrc + i)) ;
-    }
+        // Use bulk get/put to speed up data copy
+        byte[] srcBytes = new byte[bLen];
 
-    final public static void bbfill(ByteBuffer bb, int fromIdx, int toIdx, byte fillValue, int slotLen) {
-        if ( allowArray && bb.hasArray() ) {
-            afillArray(bb, fromIdx, toIdx, fillValue, slotLen) ;
-            return ;
-        }
+        int pos1 = bb1.position();
+        bb1.position(bSrc);
+        bb1.get(srcBytes, 0, bLen);
+        bb1.position(pos1);
 
-        int bStart = fromIdx * slotLen ;
-        int bFinish = toIdx * slotLen ;
-
-        for ( int i = bStart ; i < bFinish ; i++ )
-            bb.put(i, fillValue) ;
-    }
-
-    // To ArrayOps?
-
-    final private static void acopyArray(ByteBuffer bb, int src, int dst, int length, int slotLen) {
-        byte[] b = bb.array() ;
-
-        int offset = bb.arrayOffset() ;
-
-        int bSrc = src * slotLen ;
-        int bDst = dst * slotLen ;
-        int bLen = length * slotLen ;
-
-        arraycopy(b, offset + bSrc, b, offset + bDst, bLen) ;
+        int pos2 = bb2.position();
+        bb2.position(bDst);
+        bb2.put(srcBytes, 0, bLen);
+        bb2.position(pos2);
     }
 
     final private static void acopyArray(ByteBuffer bb1, int src, ByteBuffer bb2, int dst, int length, int slotLen) {
@@ -200,6 +244,19 @@ public class ByteBufferLib {
         int bLen = length * slotLen ;
 
         arraycopy(b1, offset1 + bSrc, b2, offset2 + bDst, bLen) ;
+    }
+
+    final public static void bbfill(ByteBuffer bb, int fromIdx, int toIdx, byte fillValue, int slotLen) {
+        if ( allowArray && bb.hasArray() ) {
+            afillArray(bb, fromIdx, toIdx, fillValue, slotLen) ;
+            return ;
+        }
+
+        int bStart = fromIdx * slotLen ;
+        int bFinish = toIdx * slotLen ;
+
+        for ( int i = bStart ; i < bFinish ; i++ )
+            bb.put(i, fillValue) ;
     }
 
     final private static void afillArray(ByteBuffer bb, int fromIdx, int toIdx, byte fillValue, int slotLen) {

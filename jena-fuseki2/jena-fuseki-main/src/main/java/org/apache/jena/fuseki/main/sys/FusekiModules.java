@@ -18,55 +18,57 @@
 
 package org.apache.jena.fuseki.main.sys;
 
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
-import org.apache.jena.base.module.Subsystem;
-
-/** Registry of modules */
+/**
+ * List of {@linkplain FusekiModule Fuseki modules}.
+ * This is the immutable group of modules for a server.
+ * <p>
+ * @see FusekiAutoModules
+ */
 public class FusekiModules {
 
-    // Modules added programmatically
-    private static Set<FusekiModule> registry = null;
+    /** A Fuseki module with no members. */
+    public static final FusekiModules empty() { return FusekiModules.create(); }
 
-    private static Subsystem<FusekiModule> subsystem = null;
-
-    public static void load() {
-        if ( registry == null )
-            reload();
+    /** Create a collection of Fuseki modules */
+    public static FusekiModules create(FusekiModule ... modules) {
+        return new FusekiModules(modules);
     }
 
-    public static void reload() {
-        registry = ConcurrentHashMap.newKeySet();
-        subsystem = new Subsystem<FusekiModule>(FusekiModule.class);
-        subsystem.initialize();
-        subsystem.forEach(registry::add);
+    /** Create a collection of Fuseki modules */
+    public static FusekiModules create(List<FusekiModule> modules) {
+        return new FusekiModules(modules);
     }
 
-    /** Add a code module */
-    public static void add(FusekiModule module) {
-        load();
-        module.start();
-        registry.add(module);
+    private final List<FusekiModule> modules;
+
+    private FusekiModules(FusekiModule ... modules) {
+        this.modules = List.of(Objects.requireNonNull(modules));
     }
 
-    /** Remove a code module */
-    public static void remove(FusekiModule module) {
-        registry.remove(module);
-        module.stop();
+    private FusekiModules(List<FusekiModule> modules) {
+        this.modules = List.copyOf(Objects.requireNonNull(modules));
+    }
+
+    /**
+     * Return an immutable list of modules.
+     */
+    public List<FusekiModule> asList() {
+        return List.copyOf(modules);
+    }
+
+    /**
+     * Apply an action to each module, in order, one at a time.
+     */
+    public void forEach(Consumer<FusekiModule> action) {
+        modules.forEach(action);
     }
 
     /** Test whether a code module is registered. */
-    public static boolean contains(FusekiModule module) {
-        return registry.contains(module);
-    }
-
-    /*package*/ static void forEachModule(Consumer<FusekiModule> action) {
-        if ( registry == null )
-            load();
-        if ( registry == null || registry.isEmpty() )
-            return ;
-        registry.forEach(action);
+    public boolean contains(FusekiModule module) {
+        return modules.contains(module);
     }
 }

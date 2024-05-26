@@ -34,10 +34,10 @@ public class AssemblerException extends JenaException
     {
     protected final Resource root;
     protected List<Frame> doing = new ArrayList<>();
-    
+
     public AssemblerException( Resource root, String string, Throwable t )
-        { 
-        super( string, t ); 
+        {
+        super( string, t );
         this.root = root;
         }
 
@@ -52,13 +52,13 @@ public class AssemblerException extends JenaException
     */
     public Resource getRoot()
         { return root; }
-    
+
     /**
-        XXX 
+        XXX
     */
     public AssemblerException pushDoing( AssemblerGroup.Frame frame )
         { doing.add( frame ); return this; }
-    
+
     /**
          Answer a "nice" representation of <code>r</code>, suitable for appearance
          within an exception message.
@@ -66,16 +66,16 @@ public class AssemblerException extends JenaException
     protected static String nice( Resource r )
         {
         String rString = r.asNode().toString( r.getModel() );
-        return r.isAnon() ? rString + getLabels( r ) : rString; 
+        return r.isAnon() ? rString + getLabels( r ) : rString;
         }
-    
+
     private static String getLabels( Resource r )
         {
         Model m = r.getModel();
         String labels = "", prefix = "labels: ";
         for (StmtIterator it = r.listProperties( RDFS.label ); it.hasNext();)
             {
-            String label = it.nextStatement().getObject().asNode().toString( m, true );
+            String label = it.nextStatement().getObject().asNode().toString( m );
             labels += prefix + label;
             prefix = ", ";
             }
@@ -100,15 +100,15 @@ public class AssemblerException extends JenaException
 
     public List<Frame> getDoing()
         { return doing; }
-    
+
     @Override
     public String toString()
-        { 
+        {
         String parent = super.toString();
         String frame = frameStrings();
-        return frame.equals(  ""  ) ? parent : parent + "\n  doing:\n" + frame; 
+        return frame.equals(  ""  ) ? parent : parent + "\n  doing:\n" + frame;
         }
-    
+
     protected String frameStrings()
         {
         StringBuilder result = new StringBuilder();

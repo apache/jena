@@ -78,43 +78,43 @@ public class TestPath
         pmap.setNsPrefix("", "http://example/") ;
 
         // A linear path in the graph
-        graph1.add(new Triple(n1, p, n2)) ;
-        graph1.add(new Triple(n2, p, n3)) ;
-        graph1.add(new Triple(n3, p, n4)) ;
+        graph1.add(Triple.create(n1, p, n2)) ;
+        graph1.add(Triple.create(n2, p, n3)) ;
+        graph1.add(Triple.create(n3, p, n4)) ;
 
         // A DAG
-        graph2.add(new Triple(n1, p, n2)) ;
-        graph2.add(new Triple(n1, p, n3)) ;
-        graph2.add(new Triple(n2, q, n4)) ;
-        graph2.add(new Triple(n3, q, n4)) ;
+        graph2.add(Triple.create(n1, p, n2)) ;
+        graph2.add(Triple.create(n1, p, n3)) ;
+        graph2.add(Triple.create(n2, q, n4)) ;
+        graph2.add(Triple.create(n3, q, n4)) ;
 
         // A DAG, one property
-        graph3.add(new Triple(n1, p, n2)) ;
-        graph3.add(new Triple(n1, p, n3)) ;
-        graph3.add(new Triple(n2, p, n4)) ;
-        graph3.add(new Triple(n3, p, n4)) ;
+        graph3.add(Triple.create(n1, p, n2)) ;
+        graph3.add(Triple.create(n1, p, n3)) ;
+        graph3.add(Triple.create(n2, p, n4)) ;
+        graph3.add(Triple.create(n3, p, n4)) ;
 
         // Linear path with spurs
-        graph4.add(new Triple(n1, p, n2)) ;
-        graph4.add(new Triple(n2, p, n3)) ;
-        graph4.add(new Triple(n3, p, n4)) ;
-        graph4.add(new Triple(n2, q, n5)) ;
-        graph4.add(new Triple(n4, q, n6)) ;
+        graph4.add(Triple.create(n1, p, n2)) ;
+        graph4.add(Triple.create(n2, p, n3)) ;
+        graph4.add(Triple.create(n3, p, n4)) ;
+        graph4.add(Triple.create(n2, q, n5)) ;
+        graph4.add(Triple.create(n4, q, n6)) ;
 
         // Tree, fan out at top.
-        graph5.add(new Triple(n1, p, n2)) ;
-        graph5.add(new Triple(n1, p, n3)) ;
-        graph5.add(new Triple(n2, q, n4)) ;
-        graph5.add(new Triple(n3, q, n5)) ;
+        graph5.add(Triple.create(n1, p, n2)) ;
+        graph5.add(Triple.create(n1, p, n3)) ;
+        graph5.add(Triple.create(n2, q, n4)) ;
+        graph5.add(Triple.create(n3, q, n5)) ;
 
         // Loop
-        graph6.add(new Triple(n1, p, n2)) ;
-        graph6.add(new Triple(n2, p, n1)) ;
+        graph6.add(Triple.create(n1, p, n2)) ;
+        graph6.add(Triple.create(n2, p, n1)) ;
 
         // Loop + tail
-        graph7.add(new Triple(n1, p, n2)) ;
-        graph7.add(new Triple(n2, p, n1)) ;
-        graph7.add(new Triple(n2, p, n3)) ;
+        graph7.add(Triple.create(n1, p, n2)) ;
+        graph7.add(Triple.create(n2, p, n1)) ;
+        graph7.add(Triple.create(n2, p, n3)) ;
     }
 
     // ----
@@ -244,10 +244,10 @@ public class TestPath
     @Test public void path_31()   { test(graph2, n1,   ":p*",       n1,n2,n3) ; }
 
 //    // A DAG, one property
-//    graph3.add(new Triple(n1, p, n2)) ;
-//    graph3.add(new Triple(n1, p, n3)) ;
-//    graph3.add(new Triple(n2, p, n4)) ;
-//    graph3.add(new Triple(n3, p, n4)) ;
+//    graph3.add(Triple.create(n1, p, n2)) ;
+//    graph3.add(Triple.create(n1, p, n3)) ;
+//    graph3.add(Triple.create(n2, p, n4)) ;
+//    graph3.add(Triple.create(n3, p, n4)) ;
 
 
     @Test public void path_32()   { test(graph3, n1,   ":p{*}",     n1,n2,n3,n4,n4) ; }

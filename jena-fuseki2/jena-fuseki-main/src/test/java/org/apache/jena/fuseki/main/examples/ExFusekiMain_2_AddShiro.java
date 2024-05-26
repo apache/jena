@@ -23,19 +23,18 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
-import javax.servlet.DispatcherType;
-
+import jakarta.servlet.DispatcherType;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.servlet.ShiroFilter;
+import org.eclipse.jetty.ee10.servlet.FilterHolder;
+import org.eclipse.jetty.ee10.servlet.FilterMapping;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHandler;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.SessionIdManager;
-import org.eclipse.jetty.server.session.DefaultSessionIdManager;
-import org.eclipse.jetty.server.session.SessionHandler;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.FilterMapping;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.session.DefaultSessionIdManager;
+import org.eclipse.jetty.session.SessionHandler;
+import org.eclipse.jetty.session.SessionIdManager;
 
 public class ExFusekiMain_2_AddShiro {
     // From Barry Nouwt : https://lists.apache.org/thread.html/r1e3fa952ff9f4a9108e16f07f1edf78c67e08c9b081497c627e3b833%40%3Cusers.jena.apache.org%3E
@@ -74,8 +73,8 @@ public class ExFusekiMain_2_AddShiro {
         servletHandler.setFilterMappings(mappings3);
 
         // Specify the Session ID Manager
-        SessionIdManager idmanager = new DefaultSessionIdManager(jettyServer);
-        jettyServer.setSessionIdManager(idmanager);
+        SessionIdManager idManager = new DefaultSessionIdManager(jettyServer);
+        jettyServer.addBean(idManager, true);
 
         // Specify the session handler
         SessionHandler sessionsHandler = new SessionHandler();

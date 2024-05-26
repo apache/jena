@@ -120,9 +120,8 @@ public class UniqueLangConstraint implements Constraint {
             return true;
         if ( obj == null )
             return false;
-        if ( !(obj instanceof UniqueLangConstraint) )
+        if ( !(obj instanceof UniqueLangConstraint other) )
             return false;
-        UniqueLangConstraint other = (UniqueLangConstraint)obj;
         return Objects.equals(flag, other.flag);
     }
 }

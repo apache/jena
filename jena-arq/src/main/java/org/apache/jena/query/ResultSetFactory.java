@@ -18,10 +18,12 @@
 
 package org.apache.jena.query;
 
+import java.io.IOException;
 import java.io.InputStream ;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
@@ -30,22 +32,20 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.ReadAnything;
 import org.apache.jena.riot.ResultSetMgr ;
 import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.riot.resultset.ResultSetOnClose;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.ResultSetStream ;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.resultset.* ;
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.sparql.sse.builders.BuilderTable ;
 
 /** ResultSetFactory - make result sets from places other than a query. */
 
 public class ResultSetFactory {
     // See also ResultSetMgr - which post-dates this code.
     // Ideally, read operations here should call ResultSetMgr.
-    // The exception is XML from a string and the arcachic RDF to ResultSet forms.
+    // The exception is XML from a string and the archaic RDF to ResultSet forms.
 
     /**
      * Load a result set from file or URL into a result set (memory backed).
@@ -53,7 +53,6 @@ public class ResultSetFactory {
      * @param filenameOrURI
      * @return ResultSet
      */
-
     public static ResultSet load(String filenameOrURI) {
         return load(filenameOrURI, null);
     }
@@ -65,12 +64,21 @@ public class ResultSetFactory {
      * @param format
      * @return ResultSet
      */
-
     public static ResultSet load(String filenameOrURI, ResultsFormat format) {
         if (format == null)
             format = ResultsFormat.guessSyntax(filenameOrURI);
+        // Result sets are iterators.
+        // The input stream isn't finished with when the result set is created.
+        // Close input stream when the result set is finished with
+        // (exhausted or closed).
         InputStream in = IO.openFile(filenameOrURI) ;
-        return load(in, format) ;
+        ResultSet rs = load(in, format) ;
+        Runnable onClose = ()-> {
+            try { in.close(); }
+            catch (IOException ex) { throw IOX.exception(ex); }
+        };
+        ResultSet rs2 = new ResultSetOnClose(rs, onClose);
+        return rs;
     }
 
     /**
@@ -80,7 +88,6 @@ public class ResultSetFactory {
      * @param format
      * @return ResultSet
      */
-
     public static ResultSet load(InputStream input, ResultsFormat format) {
         if (format == null) {
             Log.warn(ResultSet.class, "Null format - defaulting to XML");
@@ -123,7 +130,6 @@ public class ResultSetFactory {
 
         Log.warn(ResultSet.class, "Unknown result set syntax: " + format);
         return null;
-
     }
 
     /**
@@ -132,7 +138,6 @@ public class ResultSetFactory {
      * @param filenameOrURI
      * @return Model
      */
-
     public static Model loadAsModel(String filenameOrURI) {
         return loadAsModel(null, filenameOrURI, null);
     }
@@ -156,7 +161,6 @@ public class ResultSetFactory {
      * @param format
      * @return Model
      */
-
     public static Model loadAsModel(String filenameOrURI, ResultsFormat format) {
         return loadAsModel(null, filenameOrURI, format);
     }
@@ -171,8 +175,9 @@ public class ResultSetFactory {
      * @param filenameOrURI
      * @param format
      * @return Model
+     * @deprecated This function will become be internal.
      */
-
+    @Deprecated
     public static Model loadAsModel(Model model, String filenameOrURI, ResultsFormat format) {
         if (model == null)
             model = GraphFactory.makeDefaultModel();
@@ -242,37 +247,6 @@ public class ResultSetFactory {
     }
 
     /**
-     * Read from an input stream which is the format of the SPARQL result set
-     * format in TSV.
-     *
-     * @param in
-     *            InputStream
-     * @return ResultSet
-     */
-    public static ResultSet fromTSV(InputStream in) {
-        return ResultSetMgr.read(in, ResultSetLang.RS_TSV);
-    }
-
-    /**
-     * Read from an input stream which is the format of the SPARQL result set
-     * format in SSE.
-     *
-     * @param in
-     *            InputStream
-     * @return ResultSet
-     */
-    public static ResultSet fromSSE(InputStream in) {
-        Item item = SSE.parse(in);
-        Log.warn(ResultSet.class, "Reading SSE result set not full implemented");
-        // See SPARQLResult. Have a level of ResultSetFactory that does
-        // "get SPARQLResult".
-        // Or just boolean/result set because those are both srx. etc.
-
-        BuilderTable.build(item);
-        return null;
-    }
-
-    /**
      * Turns an RDF model, with properties and classes from the result set
      * vocabulary, into a SPARQL result set. The result set formed is a copy in
      * memory.
@@ -280,7 +254,7 @@ public class ResultSetFactory {
      * @param model
      * @return ResultSet
      */
-    static public ResultSet makeResults(Model model) {
+    public static ResultSet makeResults(Model model) {
         return new RDFInput(model);
     }
 
@@ -292,7 +266,7 @@ public class ResultSetFactory {
      * @param model
      * @return ResultSetRewindable
      */
-    static public ResultSetRewindable makeRewindable(Model model) {
+    public static ResultSetRewindable makeRewindable(Model model) {
         return new RDFInput(model);
     }
 
@@ -304,7 +278,7 @@ public class ResultSetFactory {
      * @param resultSet
      * @return ResultSetRewindable
      */
-    static public ResultSetRewindable makeRewindable(ResultSet resultSet) {
+    public static ResultSetRewindable makeRewindable(ResultSet resultSet) {
         if ( resultSet instanceof ResultSetRewindable ) {
             ResultSetRewindable rsw = (ResultSetRewindable)resultSet;
             rsw.reset();
@@ -320,10 +294,9 @@ public class ResultSetFactory {
      * @param rowSet
      * @return ResultSetRewindable
      */
-    static public ResultSetRewindable makeRewindable(RowSet rowSet) {
+    public static ResultSetRewindable makeRewindable(RowSet rowSet) {
         return makeRewindable(ResultSet.adapt(rowSet));
     }
-
 
     /**
      * Turns an existing result set into one with peeking capabilities
@@ -334,7 +307,7 @@ public class ResultSetFactory {
      * result set directly as this may cause results to be missed or put the
      * returned peekable result set into an invalid state.
      * </p>
-     * </p> Note that rewindable results may typically also be peekable so may
+     * <p> Note that rewindable results may typically also be peekable so may
      * be more broadly applicable if you can afford the cost of loading all the
      * results into memory. </p>
      *
@@ -342,7 +315,7 @@ public class ResultSetFactory {
      *            Result set to wrap
      * @return Peekable results
      */
-    static public ResultSetPeekable makePeekable(ResultSet resultSet) {
+    public static ResultSetPeekable makePeekable(ResultSet resultSet) {
         return new ResultSetPeeking(resultSet);
     }
 
@@ -372,7 +345,7 @@ public class ResultSetFactory {
      * @param results
      * @return ResultSet
      */
-    static public ResultSetRewindable copyResults(ResultSet results) {
+    public static ResultSetRewindable copyResults(ResultSet results) {
         return new ResultSetMem(results);
     }
 
@@ -384,7 +357,7 @@ public class ResultSetFactory {
      *            List of variables, by name, for the result set
      * @return ResultSet
      */
-    static public ResultSet create(QueryIterator queryIterator, List<String> vars) {
+    public static ResultSet create(QueryIterator queryIterator, List<String> vars) {
         return ResultSetStream.create(Var.varList(vars), queryIterator);
     }
 }

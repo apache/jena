@@ -74,7 +74,9 @@ public class TestFunctions
     @Test public void exprSprintf_21() { test_exprSprintf_tz_exact("2005-10-14T12:09:43+00:00") ; }
     // Timezone +11:00 can be a day behind
     @Test public void exprSprintf_22() { test_exprSprintf_tz_exact("2005-10-14T10:09:43+11:00") ; }
+
     private static void test_exprSprintf_tz_exact(String nodeStr) {
+        // JVM default timezone.
         String exprStr = "afn:sprintf('%1$tm %1$te,%1$tY', "+NodeValue.makeDateTime(nodeStr).toString()+")" ;
         Expr expr = ExprUtils.parse(exprStr) ;
         NodeValue r = expr.eval(null, LibTestExpr.createTest()) ;
@@ -89,7 +91,7 @@ public class TestFunctions
         } catch (ParseException e) {
             assertFalse("Cannot parse the input date string. Message:"+e.getMessage(),false);
         }
-        // print the date based on the current timeZone.
+        // print the date based on the JVM timezone.
         SimpleDateFormat stdFormatOut = new SimpleDateFormat("MM dd,yyyy");
         stdFormatOut.setTimeZone(TimeZone.getDefault());
         String outDate = stdFormatOut.format(dtDate);
@@ -242,7 +244,7 @@ public class TestFunctions
     @Test public void exprNotOneOf_06()  { test("57 not in (1,2,3)",                TRUE) ; }
 
 
-    static Node xyz_en = NodeFactory.createLiteral("xyz", "en") ;
+    static Node xyz_en = NodeFactory.createLiteralLang("xyz", "en") ;
     static NodeValue nv_xyz_en = NodeValue.makeNode(xyz_en) ;
 
     static Node xyz_xsd_string = NodeFactory.createLiteral("xyz", XSDDatatype.XSDstring) ;

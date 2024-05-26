@@ -29,6 +29,7 @@ import org.apache.jena.rdflink.RDFLinkFactory;
 import org.apache.jena.rdflink.RDFLinkHTTP;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
+import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.system.Txn ;
 import org.apache.jena.web.HttpSC.Code;
@@ -103,10 +104,24 @@ public class TestRDFLinkHTTP extends AbstractTestRDFLink {
             String level = LogCtl.getLevel(Fuseki.actionLog);
             try {
                 LogCtl.setLevel(Fuseki.actionLog, "ERROR");
-                FusekiTestLib.expectQueryFail(()->link.query("FOOBAR").select(), Code.BAD_REQUEST);
+                Runnable action = ()-> {
+                    try( QueryExec qExec = link.query("FOOBAR") ) {
+                        qExec.select();
+                    }};
+                FusekiTestLib.expectQueryFail(action, Code.BAD_REQUEST);
+                LogCtl.setLevel(Fuseki.actionLog, "ERROR");
+                FusekiTestLib.expectQueryFail(action, Code.BAD_REQUEST);
             } finally {
                 LogCtl.setLevel(Fuseki.actionLog, level);
             }
+        }
+    }
+
+    @Test(expected = QueryParseException.class)
+    public void non_standard_syntax_3() {
+        RDFLink link = link(true);
+        try (link) {
+            link.query("custom");
         }
     }
 }

@@ -18,11 +18,11 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.Op;
 
 public abstract class OpDistinctReduced extends OpModifier
 {
     public OpDistinctReduced(Op subOp) {
-        super(subOp) ;
+        super(subOp);
     }
 }

@@ -18,9 +18,11 @@
 <template>
   <div>
     <span>server status</span>
-    <svg id="status-icon" class="ml-2" v-b-tooltip.hover :title="serverStatusText">
-      <circle cx="1em" cy="1em" r="1em" stroke="transparent" stroke-width="0" fill="transparent" :class="isUp" />
-    </svg>
+    <a class="d-inline-block" href="#" data-bs-toggle="tooltip" :title="serverStatusText">
+      <svg id="status-icon" class="ms-2">
+        <circle cx="1em" cy="1em" r="1em" stroke="transparent" stroke-width="0" fill="transparent" :class="isUp" />
+      </svg>
+    </a>
   </div>
 </template>
 
@@ -66,7 +68,7 @@ export default {
     }, 5000)
   },
 
-  beforeDestroy () {
+  beforeUnmount () {
     clearInterval(this.interval)
     this.interval = null
   }

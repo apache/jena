@@ -45,7 +45,7 @@ public class IteratorCollection
     public static <T> Set<T> iteratorToSet( Iterator<? extends T> i )
         {
         Set<T> result = CollectionFactory.createHashedSet();
-        try { while (i.hasNext()) result.add( i.next() ); }
+        try { i.forEachRemaining(result::add); }
         finally { NiceIterator.close( i ); }
         return result;
         }
@@ -54,13 +54,13 @@ public class IteratorCollection
         Answer the elements of the given iterator as a list, in the order that they
         arrived from the iterator. The iterator is consumed by this operation:
         even if an exception is thrown, the iterator will be closed.
-    	@param it the iterator to convert
-    	@return a list of the elements of <code>it</code>, in order
+     @param it the iterator to convert
+     @return a list of the elements of <code>it</code>, in order
      */
     public static <T> List<T> iteratorToList( Iterator<? extends T> it )
         {
         List<T> result = new ArrayList<>();
-        try { while (it.hasNext()) result.add( it.next() ); }
+        try { it.forEachRemaining(result::add); }
         finally { NiceIterator.close( it ); }
         return result;
         }

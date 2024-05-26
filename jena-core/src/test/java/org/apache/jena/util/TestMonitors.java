@@ -53,18 +53,18 @@ public class TestMonitors extends TestCase {
     String NS = "http://jena.hpl.hp.com/test#";
     Node a = NodeCreateUtils.create(NS + "a");
     Node p = NodeCreateUtils.create(NS + "p");
-    Triple t1 = new Triple(a, p, NodeCreateUtils.create(NS + "v1"));
-    Triple t2 = new Triple(a, p, NodeCreateUtils.create(NS + "v2"));
-    Triple t3 = new Triple(a, p, NodeCreateUtils.create(NS + "v3"));
-    Triple t4 = new Triple(a, p, NodeCreateUtils.create(NS + "v4"));
-    Triple t5 = new Triple(a, p, NodeCreateUtils.create(NS + "v5"));
-    Triple t6 = new Triple(a, p, NodeCreateUtils.create(NS + "v6"));
+    Triple t1 = Triple.create(a, p, NodeCreateUtils.create(NS + "v1"));
+    Triple t2 = Triple.create(a, p, NodeCreateUtils.create(NS + "v2"));
+    Triple t3 = Triple.create(a, p, NodeCreateUtils.create(NS + "v3"));
+    Triple t4 = Triple.create(a, p, NodeCreateUtils.create(NS + "v4"));
+    Triple t5 = Triple.create(a, p, NodeCreateUtils.create(NS + "v5"));
+    Triple t6 = Triple.create(a, p, NodeCreateUtils.create(NS + "v6"));
     
     /**
      * Basic graph level test, no monitoring
      */
     public void testBasics() {
-        Graph base = Factory.createGraphMem();
+        Graph base = GraphMemFactory.createGraphMem();
         MonitorGraph monitor = new MonitorGraph(base);
         
         // base data
@@ -97,7 +97,7 @@ public class TestMonitors extends TestCase {
      * Monitoring test.
      */
     public void testListener() {
-        Graph base = Factory.createGraphMem();
+        Graph base = GraphMemFactory.createGraphMem();
         MonitorGraph monitor = new MonitorGraph(base);
         RecordingListener listener = new RecordingListener();
         monitor.getEventManager().register(listener);

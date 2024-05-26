@@ -29,7 +29,7 @@ import org.apache.jena.util.iterator.* ;
 public class RandomOrderGraph extends WrappedGraph {
 
 	public static Graph createDefaultGraph() {
-		return new RandomOrderGraph(Factory.createDefaultGraph());
+		return new RandomOrderGraph(GraphMemFactory.createDefaultGraph());
 	}
 
 	public static Model createDefaultModel() {
@@ -61,38 +61,4 @@ public class RandomOrderGraph extends WrappedGraph {
     public ExtendedIterator<Triple> find(Node s, Node p, Node o) {
         return new RandomOrderIterator<>(bufsz, super.find(s, p, o));
     }
-
-	@Override
-	public Capabilities getCapabilities() {
-		return new MyCapabilities( super.getCapabilities() );
-	}
-
-	private class MyCapabilities implements Capabilities {
-		private Capabilities parentCapabilities;
-
-		public MyCapabilities( Capabilities parentCapabilities )
-		{
-			this.parentCapabilities = parentCapabilities;
-		}
-
-		@Override
-        public boolean sizeAccurate() {
-			return parentCapabilities.sizeAccurate();
-		}
-
-		@Override
-        public boolean addAllowed() {
-			return parentCapabilities.addAllowed();
-		}
-
-        @Override
-        public boolean deleteAllowed() {
-            return parentCapabilities.deleteAllowed();
-        }
-
-		@Override
-        public boolean handlesLiteralTyping() {
-			return parentCapabilities.handlesLiteralTyping();
-		}
-	}
 }

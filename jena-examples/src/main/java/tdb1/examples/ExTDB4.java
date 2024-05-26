@@ -25,7 +25,7 @@ import org.apache.jena.query.QueryExecutionFactory ;
 import org.apache.jena.query.QueryFactory ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFormatter ;
-import org.apache.jena.tdb.TDBFactory ;
+import org.apache.jena.tdb1.TDB1Factory;
 
 /** Example of creating a TDB-backed model.
  *  The preferred way is to create a dataset then get the mode required from the dataset.
@@ -43,7 +43,7 @@ public class ExTDB4
     {
         // Direct way: Make a TDB-back Jena model in the named directory.
         String directory = "MyDatabases/DB1" ;
-        Dataset dataset = TDBFactory.createDataset(directory) ;
+        Dataset dataset = TDB1Factory.createDataset(directory) ;
         
         // Potentially expensive query.
         String sparqlQueryString = "SELECT (count(*) AS ?count) { ?s ?p ?o }" ;

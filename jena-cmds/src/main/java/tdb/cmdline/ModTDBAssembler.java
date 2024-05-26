@@ -23,27 +23,26 @@ import java.io.File;
 import org.apache.jena.cmd.CmdArgModule;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdGeneral;
-import org.apache.jena.tdb.base.file.Location ;
-
+import org.apache.jena.tdb1.base.file.Location;
 import arq.cmdline.ModAssembler;
 
 /**  Extends ModAssembler to include --tdb.
  *   Defaulting to "tdb.ttl" is done in ModTDBDataset because it interacts
  *   with --location
- */  
+ */
 public class ModTDBAssembler extends ModAssembler
 {
     private ModLocation modLocation     =  new ModLocation() ;
 
     public static final String defaultAssemblerFile = "tdb.ttl" ;
     protected boolean useDefaultAssemblerFile = false ;
-    
+
     public ModTDBAssembler()
-    { 
+    {
         super() ;
         ModAssembler.assemblerDescDecl.addName("tdb") ;
     }
-    
+
     @Override
     public void processArgs(CmdArgModule cmdLine)
     {
@@ -52,18 +51,18 @@ public class ModTDBAssembler extends ModAssembler
         modLocation.processArgs(cmdLine) ;
         super.processArgs(cmdLine) ;
         if ( super.getAssemblerFile() != null ) count++ ;
-        if ( modLocation.getLocation() != null ) count++ ;    
-        
+        if ( modLocation.getLocation() != null ) count++ ;
+
         if ( count == 0 )
         {
             useDefaultAssemblerFile = true ;
             // throw new CmdException("No assembler file and no location") ;
         }
-            
+
         if ( count > 1 )
-            throw new CmdException("Only one of an assembler file and a location") ;
+            throw new CmdException("Only one of an assembler file and a location");
     }
-   
+
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {
@@ -72,9 +71,9 @@ public class ModTDBAssembler extends ModAssembler
         //cmdLine.getUsage().startCategory("Dataset") ;
         cmdLine.getUsage().addUsage("--tdb=", "Assembler description file") ;
     }
- 
+
     public Location getLocation() { return modLocation.getLocation() ; }
-    
+
     @Override
     public String getAssemblerFile()
     {
@@ -82,7 +81,7 @@ public class ModTDBAssembler extends ModAssembler
         {
             File f = new File(defaultAssemblerFile) ;
             if ( f.exists() )
-                return defaultAssemblerFile ; 
+                return defaultAssemblerFile ;
         }
         return super.getAssemblerFile() ;
     }

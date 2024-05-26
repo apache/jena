@@ -21,36 +21,38 @@ package org.apache.jena.fuseki.cmd;
 import static java.lang.String.format;
 import static org.apache.jena.fuseki.Fuseki.serverLog;
 
-import javax.servlet.ServletContext;
+import java.nio.file.Path;
 
+import jakarta.servlet.ServletContext;
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.FusekiException;
-import org.apache.jena.fuseki.jetty.FusekiErrorHandler;
-import org.apache.jena.fuseki.jetty.JettyServerConfig;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
-import org.apache.jena.fuseki.server.FusekiInfo;
+import org.apache.jena.fuseki.server.FusekiCoreInfo;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.security.ConstraintMapping;
+import org.eclipse.jetty.ee10.servlet.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.ee10.webapp.WebAppContext;
 import org.eclipse.jetty.security.*;
+import org.eclipse.jetty.security.Constraint.Authorization;
 import org.eclipse.jetty.security.authentication.BasicAuthenticator;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.util.security.Constraint;
-import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.util.resource.ResourceFactory;
 import org.eclipse.jetty.xml.XmlConfiguration;
 
 /** Standalone full server, not run as a WAR file.
- * Used in testing and development.
  *
  * SPARQLServer is the Jena server instance which wraps/utilizes
  * {@link org.eclipse.jetty.server.Server}. This class provides
  * immediate access to the {@link org.eclipse.jetty.server.Server#start()} and
  * {@link org.eclipse.jetty.server.Server#stop()} commands as well as obtaining
  * instances of the server and server configuration. Finally we can obtain
- * instances of {@link org.apache.jena.fuseki.jetty.JettyServerConfig}.
+ * instances of {@link org.apache.jena.fuseki.cmd.JettyServerConfig}.
  */
 public class JettyFusekiWebapp {
     // Jetty specific.
@@ -72,20 +74,18 @@ public class JettyFusekiWebapp {
     private Server              server         = null;
     private ServletContext      servletContext = null;
 
-    // webapp setup - standard maven layout
-    public static       String contextpath     = "/";
-    // Standalone jar
-    public static final String resourceBase1   = "webapp";
-    // Development
-    public static final String resourceBase2   = "target/webapp";
+    // Location of webapp static resources.
+    // -- Standalone jar
+    public static final String baseResource1   = "webapp";
+    // -- Development
+    public static final String baseResource2   = "target/webapp";
 
     /**
-     * Default setup which requires a {@link org.apache.jena.fuseki.jetty.JettyServerConfig}
+     * Default setup which requires a {@link org.apache.jena.fuseki.cmd.JettyServerConfig}
      * object as input.  We use this config to pass in the command line arguments for dataset,
      * name etc.
      * @param config
      */
-
     public static void initializeServer(JettyServerConfig config) {
         instance = new JettyFusekiWebapp(config);
     }
@@ -108,7 +108,7 @@ public class JettyFusekiWebapp {
      */
     public void start() {
 
-        FusekiInfo.server(serverLog);
+        FusekiCoreInfo.logCode(serverLog);
         // This does not get anything usefully for Jetty as we use it.
         // String jettyVersion = org.eclipse.jetty.server.Server.getVersion();
         // serverLog.info(format("Jetty %s",jettyVersion));
@@ -156,37 +156,43 @@ public class JettyFusekiWebapp {
     public static WebAppContext createWebApp(String contextPath) {
         FusekiEnv.setEnvironment();
         WebAppContext webapp = new WebAppContext();
-        webapp.getServletContext().getContextHandler().setMaxFormContentSize(20 * 1000 * 1000);
+        webapp.getContext().getServletContextHandler().setMaxFormContentSize(20 * 1000 * 1000);
 
         // Hunt for the webapp for the standalone jar (or development system).
         // Note that Path FUSEKI_HOME is not initialized until the webapp starts
         // so it is not available here.
 
-        String resourceBase3 = null;
-        String resourceBase4 = null;
+        String baseResource3 = null;
+        String baseResource4 = null;
         if ( FusekiEnv.FUSEKI_HOME != null ) {
             String HOME = FusekiEnv.FUSEKI_HOME.toString();
-            resourceBase3 = HOME+"/"+resourceBase1;
-            resourceBase4 = HOME+"/"+resourceBase2;
+            baseResource3 = HOME+"/"+baseResource1;
+            baseResource4 = HOME+"/"+baseResource2;
         }
 
-        String resourceBase = tryResourceBase(resourceBase1, null);
-        resourceBase = tryResourceBase(resourceBase2, resourceBase);
-        resourceBase = tryResourceBase(resourceBase3, resourceBase);
-        resourceBase = tryResourceBase(resourceBase4, resourceBase);
+        // The location in the webapp, not the URL names.
+        String baseResource = tryBaseResource(baseResource1, null);
+        baseResource = tryBaseResource(baseResource2, baseResource);
+        baseResource = tryBaseResource(baseResource3, baseResource);
+        baseResource = tryBaseResource(baseResource4, baseResource);
 
-        if ( resourceBase == null ) {
-            if ( resourceBase3 == null )
-                Fuseki.serverLog.error("Can't find resourceBase (tried "+resourceBase1+" and "+resourceBase2+")");
+        if ( baseResource == null ) {
+            if ( baseResource3 == null )
+                Fuseki.serverLog.error("Can't find baseResource (tried "+baseResource1+" and "+baseResource2+")");
             else
-                Fuseki.serverLog.error("Can't find resourceBase (tried "+resourceBase1+", "+resourceBase2+", "+resourceBase3+" and "+resourceBase4+")");
+                Fuseki.serverLog.error("Can't find baseResource (tried "+baseResource1+", "+baseResource2+", "+baseResource3+" and "+baseResource4+")");
             Fuseki.serverLog.error("Failed to start");
             throw new FusekiException("Failed to start");
         }
 
-        webapp.setDescriptor(resourceBase+"/WEB-INF/web.xml");
-        webapp.setResourceBase(resourceBase);
+        String web_xml = baseResource+"/WEB-INF/web.xml";
+        if ( ! FileOps.exists(web_xml) )
+            Fuseki.serverLog.warn("Can't find WEB-INF/web.xml in "+baseResource);
+        webapp.setDescriptor(web_xml);
         webapp.setContextPath(contextPath);
+        // Avoid BaseResource aliasing warnings.
+        Path absBaseResource = Path.of(baseResource).toAbsolutePath();
+        webapp.getContext().getServletContextHandler().setBaseResourceAsPath(absBaseResource);
 
         //-- Jetty setup for the ServletContext logger.
         // The name of the Jetty-allocated slf4j/log4j logger is
@@ -211,7 +217,7 @@ public class JettyFusekiWebapp {
         return DataAccessPointRegistry.get(servletContext);
     }
 
-    private static String tryResourceBase(String maybeResourceBase, String currentResourceBase) {
+    private static String tryBaseResource(String maybeResourceBase, String currentResourceBase) {
         if ( currentResourceBase != null )
             return currentResourceBase;
         if ( maybeResourceBase != null && FileOps.exists(maybeResourceBase) )
@@ -243,49 +249,65 @@ public class JettyFusekiWebapp {
             security(webapp, serverConfig.authConfigFile);
     }
 
-    // This is now provided by Shiro.
+    // This is normally provided by Shiro.
     private static void security(ServletContextHandler context, String authfile) {
-        Constraint constraint = new Constraint();
-        constraint.setName(Constraint.__BASIC_AUTH);
-        constraint.setRoles(new String[]{"fuseki"});
-        constraint.setAuthenticate(true);
-
-        ConstraintMapping mapping = new ConstraintMapping();
-        mapping.setConstraint(constraint);
-        mapping.setPathSpec("/*");
-
-        IdentityService identService = new DefaultIdentityService();
+        UserStore userStore = makeUserStore(authfile);
 
         ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
-        securityHandler.addConstraintMapping(mapping);
+        IdentityService identService = new DefaultIdentityService();
         securityHandler.setIdentityService(identService);
 
-        HashLoginService loginService = new HashLoginService("Fuseki Authentication", authfile);
+        // ---- HashLoginService
+        HashLoginService loginService = new HashLoginService("Fuseki Authentication");
+        loginService.setUserStore(userStore);
         loginService.setIdentityService(identService);
-
         securityHandler.setLoginService(loginService);
-        securityHandler.setAuthenticator(new BasicAuthenticator());
+
+        Authenticator authenticator = new BasicAuthenticator();
+        securityHandler.setAuthenticator(authenticator);
+        securityHandler.setRealmName("Fuseki");
+
+        ConstraintMapping mapping = new ConstraintMapping();
+        Constraint.Builder constraintBuilder = new Constraint.Builder();
+        constraintBuilder.authorization(Authorization.ANY_USER);
+
+        String authName = securityHandler.getAuthenticator().getAuthenticationType();
+        constraintBuilder.name(authName);
+
+        Constraint constraint = constraintBuilder.build();
+        mapping.setConstraint(constraint);
+        mapping.setPathSpec("/*");
+        securityHandler.addConstraintMapping(mapping);
 
         context.setSecurityHandler(securityHandler);
-
         serverLog.debug("Basic Auth Configuration = " + authfile);
     }
 
-    private void configServer(String jettyConfig) {
-        try {
-            serverLog.info("Jetty server config file = " + jettyConfig);
-            server = new Server();
-            Resource configXml = Resource.newResource(jettyConfig);
-            XmlConfiguration configuration = new XmlConfiguration(configXml);
-            configuration.configure(server);
-            serverConnector = (ServerConnector)server.getConnectors()[0];
-        } catch (Exception ex) {
-            serverLog.error("SPARQLServer: Failed to configure server: " + ex.getMessage(), ex);
-            throw new FusekiException("Failed to configure a server using configuration file '" + jettyConfig + "'");
-        }
+    /**
+     * Make a {@link UserStore} from a password file.
+     * {@link PropertyUserStore} for details.
+     */
+    private static UserStore makeUserStore(String passwordFile) {
+        if ( ! FileOps.exists(passwordFile) )
+            throw new FusekiConfigException("No such file: "+passwordFile);
+        PropertyUserStore propertyUserStore = new PropertyUserStore();
+        Resource pwResource = newResource(passwordFile);
+        propertyUserStore.setConfig(pwResource);
+        propertyUserStore.setReloadInterval(5); // Need directory access
+        try { propertyUserStore.start(); }
+        catch (Exception ex) { throw new RuntimeException("UserStore", ex); }
+        return propertyUserStore;
+    }
+
+    /** Create a resource for a filename */
+    private static Resource newResource(String filename) {
+        return ResourceFactory.root().newResource(filename);
     }
 
     private void defaultServerConfig(int port, boolean loopback) {
+        // At least 3.
+//        ThreadPool threadPool = new QueuedThreadPool(4);
+//        server = new Server(threadPool);
         server = new Server();
         HttpConnectionFactory f1 = new HttpConnectionFactory();
         // Some people do try very large operations ... really, should use POST.
@@ -305,5 +327,19 @@ public class JettyFusekiWebapp {
         if ( loopback )
             connector.setHost("localhost");
         serverConnector = connector;
+    }
+
+    private void configServer(String jettyConfig) {
+        try {
+            serverLog.info("Jetty server config file = " + jettyConfig);
+            server = new Server();
+            Resource configXml = ResourceFactory.root().newResource(jettyConfig);
+            XmlConfiguration configuration = new XmlConfiguration(configXml);
+            configuration.configure(server);
+            serverConnector = (ServerConnector)server.getConnectors()[0];
+        } catch (Exception ex) {
+            serverLog.error("SPARQLServer: Failed to configure server: " + ex.getMessage(), ex);
+            throw new FusekiException("Failed to configure a server using configuration file '" + jettyConfig + "'");
+        }
     }
 }

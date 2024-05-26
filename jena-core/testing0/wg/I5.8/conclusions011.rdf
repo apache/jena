@@ -1,0 +1,29 @@
+<!--++ I5.8/conclusions011.rdf ** generated using webont test editor. ++-->
+<!--++ Created 5 May 2003 13:14:03 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: conclusions011.rdf,v 1.5 2003-12-05 05:06:34 jeremy_carroll Exp $
+-->
+<!--
+The empty graph entails that <code>xsd:integer</code> and <code>xsd:string</code>
+are a <code>rdfs:Datatype</code>
+-->
+<!-- Author: Jos De Roo -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    
+
+    xml:base="http://www.w3.org/2002/03owlt/I5.8/conclusions011" >
+
+  <rdfs:Datatype rdf:about="http://www.w3.org/2001/XMLSchema#integer"/>
+  <rdfs:Datatype rdf:about="http://www.w3.org/2001/XMLSchema#string"/>
+</rdf:RDF>

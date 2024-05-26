@@ -1,0 +1,6 @@
+http://example.org#|:http://example.org#Person,age|int,http://example2.org/ont#shoeSize|integer,firstname|string,lastname|string,vehicle|:http://example.org#Vehicle,location|:Location,vehicle|:other:Vehicle,income|double,drivingLicence|boolean,start|time,period|duration,appointment|datetime,birthday|date,position|wkt|5,positionAccuracy|other:accuracy|5,^hasOwner|:House,hasFriend,hasPet|17
+PersonA,21,8,Bob,Bloggs,VehicleA,LocationA,,12000.01,,11:00:12,PT130S,2001-10-26T21:32:52+02:00,2001-10-26,POINT(10 10),5.1,HouseA,PersonB,http://example.org#PetB
+PersonB,22,9,Bill,Bloggs,VehicleB,LocationB,,,TRUE,,,,,,,,,
+PersonC,23,10,Peter,Bloggs,VehicleC,LocationC,,,,,,,,,,,,
+PersonD,24,11,Sarah,,http://example2.org/ont#VehicleD,http://example2.org/ont#LocationD,,,,,,,,,,,,
+PersonE,25,12,,,VehicleE,LocationE,VehicleF,,,,,,,,,,,

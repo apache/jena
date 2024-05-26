@@ -85,16 +85,16 @@ public class AngleFFTest {
      */
     @Test
     public void testExec_query() {
-
-
         Dataset dataset = SpatialIndexTestData.createTestDataset();
-
-        String query = "PREFIX spatialF: <http://jena.apache.org/function/spatial#>\n"
-                + "\n"
-                + "SELECT ?rads\n"
-                + "WHERE{\n"
-                + "    BIND( spatialF:angle(25, 45, 75, 100) AS ?rads) \n"
-                + "}ORDER by ?rads";
+        String query = String.join("\n"
+                                  ,"PREFIX spatialF: <http://jena.apache.org/function/spatial#>"
+                                  , ""
+                                  , "SELECT ?rads"
+                                  , "WHERE{"
+                                  , "    BIND( spatialF:angle(25, 45, 75, 100) AS ?rads)"
+                                  , "}"
+                                  ,"ORDER by ?rads"
+                                  );
 
         List<Literal> results = new ArrayList<>();
         try (QueryExecution qe = QueryExecutionFactory.create(query, dataset)) {
@@ -107,9 +107,6 @@ public class AngleFFTest {
         }
 
         List<Literal> expResults = Arrays.asList(ResourceFactory.createTypedLiteral("0.7378150601204649e0", XSDDatatype.XSDdouble));
-
-        //
-        //
         assertEquals(expResults, results);
     }
 

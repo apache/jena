@@ -23,18 +23,12 @@
     <parent>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
-      <relativePath>../</relativePath>
+      <version>5.1.0-SNAPSHOT</version>
     </parent>
     
-    <!-- @@ TODO @@
-         Should we have a separate shader module?
-    -->
-
     <description>GeoSPARQL with Fuseki</description>
 
     <properties>
-      <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
       <automatic.module.name>org.apache.jena.fuseki.geosparql</automatic.module.name>
     </properties>
 
@@ -43,31 +37,27 @@
       <dependency>
         <groupId>org.apache.jena</groupId>
         <artifactId>jena-geosparql</artifactId>
-        <version>4.6.0-SNAPSHOT</version>
+        <version>5.1.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.jena</groupId>
         <artifactId>jena-fuseki-main</artifactId>
-        <version>4.6.0-SNAPSHOT</version>
+        <version>5.1.0-SNAPSHOT</version>
       </dependency>
 
       <dependency>
-        <groupId>io.github.galbiston</groupId>
-        <artifactId>rdf-tables</artifactId>
-      </dependency>
-
-      <dependency>
-        <!-- rdf-tables:1.0.4
+		<groupId>com.opencsv</groupId>
+	    <artifactId>opencsv</artifactId>
+		<version>5.9</version>
+	        <!-- rdf-tables:1.0.4
                -> com.opencsv:opencsv:jar:3.9 
                  -> commons-beanutils:commons-beanutils:19.3
              CVE-2019-10086 https://nvd.nist.gov/vuln/detail/CVE-2019-10086 
              commons-beanutils:commons-beanutils:jar:1.9.3
              Needs to be 1.9.4.
              We exclude it from rdf-tables and directly depend on it here.
-        -->
-        <groupId>commons-beanutils</groupId>
-        <artifactId>commons-beanutils</artifactId>
+    	    -->
         <exclusions>
           <!-- Use jcl-over-slf4j -->
           <exclusion>
@@ -99,7 +89,7 @@
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-slf4j-impl</artifactId>
+        <artifactId>log4j-slf4j2-impl</artifactId>
       </dependency>
 
       <!-- Put in to ensure the dependency isn't optional. -->
@@ -114,8 +104,8 @@
       </dependency>
 
       <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
+        <groupId>org.junit.vintage</groupId>
+        <artifactId>junit-vintage-engine</artifactId>
         <scope>test</scope>
       </dependency>
 
@@ -127,65 +117,7 @@
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <includes>
-              <!--
-                  The test collections TC_General, TC_Riot, TC_Atlas
-                  are development support that collect the relevant
-                  tests for partial testing during development.
-              -->
-              <include>**/TS_*.java</include>
-              <include>**/TC_Scripted.java</include>
-              <include>**/TC_DAWG.java</include>
-            </includes>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-
-          <executions>
-            <execution>
-              <id>attach-sources</id>
-              <!-- <phase>package</phase> package is the default -->
-              <goals>
-                <goal>jar-no-fork</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>attach-sources-test</id>
-              <goals>
-                <goal>test-jar-no-fork</goal>
-              </goals>
-            </execution>
-          </executions>
-
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <configuration>
-            <archive>
-              <manifestEntries>
-                <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
-              </manifestEntries>
-            </archive>
-          </configuration>
-          <executions>
-            <execution>
-              <goals>
-                <goal>test-jar</goal>
-              </goals>
-            </execution>
-          </executions>
         </plugin>
 
         <plugin>
@@ -193,13 +125,8 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <configuration>
             <source>8</source>
-            <version>true</version>
-            <show>public</show>
-            <quiet>true</quiet>
-            <encoding>UTF-8</encoding>
-            <windowtitle>Apache Jena GeoSPARQL</windowtitle>
-            <doctitle>Apache Jena GeoSPARQL ${project.version}</doctitle>
-            <bottom>Licenced under the Apache License, Version 2.0</bottom>
+            <detectJavaApiLink>false</detectJavaApiLink>
+            <doclint>none</doclint>
           </configuration>
         </plugin>
 

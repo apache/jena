@@ -97,7 +97,7 @@ public class GraphMem_CS {
 			}
 		};
 		Graph g = graphWith(graphProducer.newInstance(), "x p y");
-		g.add(new Triple(special, special, special));
+		g.add(Triple.create(special, special, special));
 		exhaust(g.find(special, Node.ANY, Node.ANY));
 		exhaust(g.find(Node.ANY, special, Node.ANY));
 		exhaust(g.find(Node.ANY, Node.ANY, special));

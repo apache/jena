@@ -18,23 +18,24 @@
 
 package org.apache.jena.sparql.core;
 
-import java.util.HashMap ;
-import java.util.Iterator ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.jena.atlas.iterator.IteratorConcat ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.query.ReadWrite ;
+import org.apache.jena.atlas.iterator.IteratorConcat;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.Prefixes;
-import org.apache.jena.sparql.ARQException ;
-import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
+import org.apache.jena.sparql.ARQException;
+import org.apache.jena.sparql.core.DatasetGraphFactory.GraphMaker;
 import org.apache.jena.sparql.graph.GraphOps;
+import org.apache.jena.sparql.graph.GraphWrapper;
+import org.apache.jena.system.G;
 
 /** Implementation of a {@code DatasetGraph} as an extensible set of graphs.
  *  Subclasses need to manage any implicit graph creation.
@@ -47,32 +48,43 @@ import org.apache.jena.sparql.graph.GraphOps;
  */
 public class DatasetGraphMap extends DatasetGraphTriplesQuads
 {
-    private final GraphMaker graphMaker ;
-    private final Map<Node, Graph> graphs = new HashMap<>() ;
-    private final Graph defaultGraph ;
-    private final PrefixMap prefixes ;
+    private final GraphMaker graphMaker;
+    private final Map<Node, Graph> graphs = new HashMap<>();
+    private final Graph defaultGraph;
+    private final PrefixMap prefixes;
 
     /** DatasetGraphMap defaulting to storage in memory. */
     public DatasetGraphMap() {
-        this(DatasetGraphFactory.graphMakerNamedGraphMem) ;
+        this(null, DatasetGraphFactory.graphMakerMem);
     }
 
-    /**  DatasetGraphMap with a specific policy for graph creation.
-     *   This allows control over the storage.
-     */
-    public DatasetGraphMap(GraphMaker graphMaker) {
-        this(graphMaker.create(null), graphMaker) ;
+    public DatasetGraphMap(Graph defaultGraph) {
+        this(defaultGraph, DatasetGraphFactory.graphMakerMem);
     }
 
-    private DatasetGraphMap(Graph defaultGraph, GraphMaker graphMaker) {
-        this.defaultGraph = defaultGraph ;
-        this.graphMaker = graphMaker ;
-        // Preserves legacy behaviour of "getDefaultGraph" having prefixes.
+    private DatasetGraphMap(Graph baseDefaultGraph, GraphMaker baseGraphMaker) {
+        this.graphMaker = namedGraphMaker(baseGraphMaker);
+        if ( baseDefaultGraph == null )
+            this.defaultGraph = this.graphMaker.create(null);
+        else if ( baseDefaultGraph instanceof NamedGraph )
+            this.defaultGraph = baseDefaultGraph;
+        else
+            this.defaultGraph =  graphMaker.create(null);
         this.prefixes = Prefixes.adapt(defaultGraph);
     }
 
+    /* Ensure a GraphMaker returns {@link NamedGraph}. */
+    private static GraphMaker namedGraphMaker(GraphMaker baseMaker) {
+        return (name) -> {
+            Graph g = baseMaker.create(name);
+            if ( g instanceof NamedGraph )
+                return g;
+            return new NamedGraphWrapper(name, g);
+        };
+    }
+
     // ----
-    private final Transactional txn                     = TransactionalLock.createMRSW() ;
+    private final Transactional txn                     = TransactionalLock.createMRSW();
     private final Transactional txn()                   { return txn; }
     @Override public void begin()                       { txn().begin(); }
     @Override public void begin(TxnType txnType)        { txn().begin(txnType); }
@@ -112,49 +124,49 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
 
     @Override
     protected void addToDftGraph(Node s, Node p, Node o) {
-        getDefaultGraph().add(Triple.create(s, p, o)) ;
+        getDefaultGraph().add(Triple.create(s, p, o));
     }
 
     @Override
     protected void addToNamedGraph(Node g, Node s, Node p, Node o) {
-        getGraph(g).add(Triple.create(s, p, o)) ;
+        getGraph(g).add(Triple.create(s, p, o));
     }
 
     @Override
     protected void deleteFromDftGraph(Node s, Node p, Node o) {
-        getDefaultGraph().delete(Triple.create(s, p, o)) ;
+        getDefaultGraph().delete(Triple.create(s, p, o));
     }
 
     @Override
     protected void deleteFromNamedGraph(Node g, Node s, Node p, Node o) {
-        getGraph(g).delete(Triple.create(s, p, o)) ;
+        getGraph(g).delete(Triple.create(s, p, o));
     }
 
     @Override
     protected Iterator<Quad> findInDftGraph(Node s, Node p, Node o) {
-        Iterator<Triple> iter = getDefaultGraph().find(s, p, o) ;
-        return G.triples2quadsDftGraph(iter)  ;
+        Iterator<Triple> iter = getDefaultGraph().find(s, p, o);
+        return G.triples2quadsDftGraph(iter) ;
     }
 
     @Override
     protected Iterator<Quad> findInSpecificNamedGraph(Node g, Node s, Node p, Node o) {
-        Iterator<Triple> iter = getGraph(g).find(s, p, o) ;
-        return G.triples2quads(g, iter) ;
+        Iterator<Triple> iter = getGraph(g).find(s, p, o);
+        return G.triples2quads(g, iter);
     }
 
     @Override
     protected Iterator<Quad> findInAnyNamedGraphs(Node s, Node p, Node o) {
-        Iterator<Node> gnames = listGraphNodes() ;
-        IteratorConcat<Quad> iter = new IteratorConcat<>() ;
+        Iterator<Node> gnames = listGraphNodes();
+        IteratorConcat<Quad> iter = new IteratorConcat<>();
 
         // Named graphs
-        for ( ; gnames.hasNext() ; ) {
+        for (; gnames.hasNext(); ) {
             Node gn = gnames.next();
-            Iterator<Quad> qIter = findInSpecificNamedGraph(gn, s, p, o) ;
+            Iterator<Quad> qIter = findInSpecificNamedGraph(gn, s, p, o);
             if ( qIter != null )
-                iter.add(qIter) ;
+                iter.add(qIter);
         }
-        return iter ;
+        return iter;
     }
 
     @Override
@@ -165,9 +177,9 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
     @Override
     public Graph getGraph(Node graphNode) {
         if ( Quad.isUnionGraph(graphNode) )
-            return GraphOps.unionGraph(this) ;
+            return GraphOps.unionGraph(this);
         if ( Quad.isDefaultGraph(graphNode))
-            return getDefaultGraph() ;
+            return getDefaultGraph();
         // Not a special case.
         Graph g = graphs.get(graphNode);
         if ( g == null ) {
@@ -189,14 +201,40 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
      * Sub classes can reimplement this.
      */
     protected Graph getGraphCreate(Node graphNode) {
-        Graph g = graphMaker.create(graphNode) ;
+        Graph g = graphMaker.create(graphNode);
         if ( g == null )
-            throw new ARQException("Can't make new graphs") ;
-        return g ;
+            throw new ARQException("Can't make new graphs");
+        return g;
     }
 
     @Override
     public long size() {
         return graphs.size();
     }
+
+    /**
+     * Add a name to a graph.
+     *
+     * @see GraphView
+     */
+    private static class NamedGraphWrapper extends GraphWrapper implements NamedGraph {
+
+        private final Node graphName;
+
+        public NamedGraphWrapper(Node graphName, Graph graph) {
+            super(graph);
+            this.graphName = graphName;
+        }
+
+        @Override
+        public Node getGraphName() {
+            return graphName;
+        }
+
+        @Override
+        public String toString() {
+            return "NamedGraphWrapper("+graphName+")";
+        }
+    }
+
 }

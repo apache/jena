@@ -16,7 +16,7 @@
 <OntologySpec>
 	<!-- local version of the OWL language ontology (in OWL) -->
 	<publicURI rdf:resource="http://example.org/foo/bar/b.owl" />
-	<altURL    rdf:resource="file:testing/ontology/testImport5/b.owl" />
+	<altURL    rdf:resource="b.owl" />
 	<language  rdf:resource="http://www.w3.org/2002/07/owl" />
 </OntologySpec>
 

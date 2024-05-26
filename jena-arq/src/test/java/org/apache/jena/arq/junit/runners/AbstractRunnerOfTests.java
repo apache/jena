@@ -41,8 +41,8 @@ import org.junit.runners.model.InitializationError;
  * each test defined in the manifest. It follow included manifests Annotations
  * supported:
  * <ul>
- * <li><tt>@Label("Some name")</tt></li>
- * <li><tt>@Manifests({"manifest1","manifest2",...})</tt></li>
+ * <li>{@code @Label("Some name")}</li>
+ * <li>{@code @Manifests({"manifest1","manifest2",...})}</li>
  * </ul>
  * This class sorts out the annotations, including providing before/after class, then
  * creates a hierarchy of tests to run.
@@ -166,10 +166,10 @@ public abstract class AbstractRunnerOfTests extends ParentRunner<Runner> {
         });
     }
 
-    // Keep Eclipse happy.
     public static String fixupName(String string) {
-        string = string.replace('(', '[');
-        string = string.replace(')', ']');
+        // Eclipse used to parse test names and () were special. 
+//        string = string.replace('(', '[');
+//        string = string.replace(')', ']');
         return string;
     }
 

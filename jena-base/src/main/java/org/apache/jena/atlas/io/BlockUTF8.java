@@ -58,7 +58,6 @@ public class BlockUTF8
      * 31   U+7FFFFFFF                        1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
      */
 
-
     /**
      * Convert the bytes in the ByteBuffer to characters in the CharBuffer. The
      * CharBuffer must be large enough.
@@ -137,6 +136,7 @@ public class BlockUTF8
                 // Looking like 4 byte character.
                 // 11110zzz => 4 bytes.
                 int ch = readMultiBytes(bb, x & 0x08, 4);
+
                 char chars[] = Character.toChars(ch);
                 cb.put(chars);
                 idx += 4;
@@ -192,9 +192,11 @@ public class BlockUTF8
                 bb.put((byte)x3);
                 continue;
             }
-            // if ( Character.isDefined(ch) )
-            //     throw new AtlasException("not a character");
-            // if ( true ) throw new InternalErrorException("Valid code point for Java but not encodable");
+
+            // End of Java.
+            // A Java char is 16 bit, unsigned, so it is between 0 and 0xFFFF.
+            // Unicode is defined for 0 to 0x10FFFF
+            // For reference the full 32 bits encodings are:
 
             if ( ch <= 0x1FFFFF ) {
                 // 21 bits : 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx

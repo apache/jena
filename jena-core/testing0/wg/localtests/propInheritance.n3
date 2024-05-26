@@ -1,0 +1,15 @@
+# Testing domain/range inheritance down subproperty chains
+@prefix : <http://jean.hpl.hp.com/eg#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+
+:A a owl:Class .
+:B a owl:Class .
+
+:p a rdf:Property;
+   rdfs:domain :A ; rdfs:range :B .
+   
+:q rdfs:subPropertyOf :p .
+   
+   

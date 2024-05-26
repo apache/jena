@@ -1,0 +1,26 @@
+<!--++ imports/main004.rdf ** generated using webont test editor. ++-->
+<!--++ Created 10 Jan 2003 08:09:01 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: main004.rdf,v 1.6 2003-12-05 05:09:27 jeremy_carroll Exp $
+-->
+<!--
+Importing OWL Full documents may change the level of OWL Lite or OWL DL documents.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xml:base="http://www.w3.org/2002/03owlt/imports/main004" >
+    <owl:Ontology rdf:about="">
+      <owl:imports rdf:resource="imports004" />
+    </owl:Ontology>
+</rdf:RDF>

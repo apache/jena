@@ -44,11 +44,11 @@ public class OpRewriterTest {
     @Before
     public void setup() {
         triples = new Triple[] {
-                new Triple(NodeFactory.createVariable("foo"), RDF.type.asNode(),
+                Triple.create(NodeFactory.createVariable("foo"), RDF.type.asNode(),
                         NodeFactory.createURI("http://example.com/class")),
-                new Triple(NodeFactory.createVariable("foo"), NodeFactory.createBlankNode(),
+                Triple.create(NodeFactory.createVariable("foo"), NodeFactory.createBlankNode(),
                         NodeFactory.createVariable("bar")),
-                new Triple(NodeFactory.createVariable("bar"), NodeFactory.createBlankNode(),
+                Triple.create(NodeFactory.createVariable("bar"), NodeFactory.createBlankNode(),
                         NodeFactory.createVariable("baz")), };
     }
 
@@ -90,11 +90,11 @@ public class OpRewriterTest {
         SecurityEvaluator securityEvaluator = new MockSecurityEvaluator(true, true, false, true, true, true, true);
         rewriter = new OpRewriter(securityEvaluator, "http://example.com/dummy");
         Triple[] triples = {
-                new Triple(NodeFactory.createVariable("foo"), RDF.type.asNode(),
+                Triple.create(NodeFactory.createVariable("foo"), RDF.type.asNode(),
                         NodeFactory.createURI("http://example.com/class")),
-                new Triple(NodeFactory.createVariable("foo"), NodeFactory.createBlankNode(),
+                Triple.create(NodeFactory.createVariable("foo"), NodeFactory.createBlankNode(),
                         NodeFactory.createVariable("bar")),
-                new Triple(NodeFactory.createVariable("bar"), NodeFactory.createBlankNode(),
+                Triple.create(NodeFactory.createVariable("bar"), NodeFactory.createBlankNode(),
                         NodeFactory.createVariable("baz")), };
         try {
             rewriter.visit(new OpBGP(BasicPattern.wrap(Arrays.asList(triples))));

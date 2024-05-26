@@ -27,9 +27,10 @@ import java.util.Map.Entry ;
 import java.util.regex.Pattern ;
 
 import org.apache.jena.JenaRuntime ;
-import org.apache.jena.ext.xerces.util.XMLChar;
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIFactory ;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIProviderJenaIRI.IRIxJena;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.RDFDefaultErrorHandler ;
 import org.apache.jena.rdf.model.impl.ResourceImpl ;
@@ -38,19 +39,20 @@ import org.apache.jena.rdfxml.xmloutput.RDFXMLWriterI ;
 import org.apache.jena.shared.* ;
 import org.apache.jena.util.CharEncoding ;
 import org.apache.jena.util.FileUtils ;
+import org.apache.jena.util.XMLChar;
 import org.apache.jena.vocabulary.* ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-/** 
+/**
  * This is not part of the public API.
  * Base class for XML serializers.
  * All methods with side-effects should be synchronized in this class and its
  * subclasses. (i. e. XMLWriters assume that the world is not changing around
  * them while they are writing).
- * 
+ *
  * Functionality:
- * 
+ *
  * <ul>
  * <li>setProperty etc
  * <li>namespace prefixes
@@ -62,19 +64,19 @@ import org.slf4j.LoggerFactory ;
  * </ul>
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
-    
-    private static final String newline = 
+
+    private static final String newline =
         JenaRuntime.getSystemProperty( "line.separator" );
     static private final String DEFAULT_NS_ENTITY_NAME = "this";
     static private final String DEFAULT_NS_ENTITY_NAME_ALT = "here";
     private String defaultNSEntityName = "UNSET" ;
-    
+
     public BaseXMLWriter() {
         setupMaps();
     }
-    
+
 	private static Logger xlogger = LoggerFactory.getLogger( BaseXMLWriter.class );
-    
+
     protected static SimpleLogger logger = new SimpleLogger() {
       	@Override
         public void warn(String s) {
@@ -85,73 +87,66 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
       		xlogger.warn(s,e);
       	}
   };
-  
+
   public static SimpleLogger setLogger(SimpleLogger lg) {
   	SimpleLogger old = logger;
   	logger= lg;
   	return old;
   }
-  
+
     abstract protected void unblockAll();
-    
+
     abstract protected void blockRule(Resource r);
 
     abstract protected void writeBody
         ( Model mdl, PrintWriter pw, String baseUri, boolean inclXMLBase );
 
-	static private Set<String> badRDF = new HashSet<>();
-    
+	static private Set<String> badRDF = Set.of("RDF",
+	                                           "Description",
+	                                           "li",
+	                                           "about",
+	                                           "aboutEach",
+	                                           "aboutEachPrefix",
+	                                           "ID",
+	                                           "nodeID",
+	                                           "parseType",
+	                                           "datatype",
+	                                           "bagID",
+	                                           "resource");
+
     /**
         Counter used for allocating Jena transient namespace declarations.
     */
 	private int jenaPrefixCount;
-    
+
 	static String RDFNS = RDF.getURI();
-    
-    
-	static private Pattern jenaNamespace;
-    
-	static {
-	    jenaNamespace =
-				Pattern.compile("j\\.([1-9][0-9]*|cook\\.up)");
-		
-		badRDF.add("RDF");
-		badRDF.add("Description");
-		badRDF.add("li");
-		badRDF.add("about");
-		badRDF.add("aboutEach");
-		badRDF.add("aboutEachPrefix");
-		badRDF.add("ID");
-		badRDF.add("nodeID");
-		badRDF.add("parseType");
-		badRDF.add("datatype");
-		badRDF.add("bagID");
-		badRDF.add("resource");
-	}
+
+
+	static private final Pattern jenaNamespace = Pattern.compile("j\\.([1-9][0-9]*|cook\\.up)");
 
 	String xmlBase = null;
 
-    private IRI baseURI;
-        
+    private IRIx baseURI;
+
 	boolean longId = false;
-    
+
     private boolean demandGoodURIs = true;
-    
+
 	int tabSize = 2;
-    
+
 	int width = 60;
 
 	HashMap<AnonId, String> anonMap = new HashMap<>();
-    
+
 	int anonCount = 0;
-    
+
 	static private RDFDefaultErrorHandler defaultErrorHandler =
 		new RDFDefaultErrorHandler();
-        
+
 	RDFErrorHandler errorHandler = defaultErrorHandler;
 
 	Boolean showXmlDeclaration = null;
-    
+
     protected Boolean showDoctypeDeclaration = Boolean.FALSE;
 
 	/*
@@ -198,15 +193,15 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         declarations; false means only "required" ones will be noted. Hook for configuration.
     */
     private boolean writingAllModelPrefixNamespaces = true;
-        
+
     private Relation<String> nameSpaces = new Relation<>();
-    
+
     private Map<String, String> ns;
-    
+
     private PrefixMapping modelPrefixMapping;
-        
+
 	private Set<String> namespacesNeeded;
-    
+
 	void addNameSpace(String uri) {
 		namespacesNeeded.add(uri);
 	}
@@ -214,42 +209,36 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     boolean isDefaultNamespace( String uri ) {
         return "".equals( ns.get( uri ) );
     }
-        
+
     private void addNameSpaces( Model model )  {
         NsIterator nsIter = model.listNameSpaces();
         while (nsIter.hasNext()) this.addNameSpace( nsIter.nextNs() );
     }
-    
-    private void primeNamespace( Model model )
-    {
+
+    private void primeNamespace(Model model) {
         Map<String, String> m = model.getNsPrefixMap();
-        for ( Entry<String, String> e : m.entrySet() )
-        {
+        for ( Entry<String, String> e : m.entrySet() ) {
             String value = e.getValue();
-            String already = this.getPrefixFor( value );
-            if ( already == null )
-            {
-                this.setNsPrefix( model.getNsURIPrefix( value ), value );
-                if ( writingAllModelPrefixNamespaces )
-                {
-                    this.addNameSpace( value );
+            String already = this.getPrefixFor(value);
+            if ( already == null ) {
+                this.setNsPrefix(model.getNsURIPrefix(value), value);
+                if ( writingAllModelPrefixNamespaces ) {
+                    this.addNameSpace(value);
                 }
             }
         }
-        
-        if ( usesPrefix(model, "") )
-        {
-            // Doing "" prefix.  Ensure it is a non-clashing, non-empty entity name.
-            String entityForEmptyPrefix = DEFAULT_NS_ENTITY_NAME ;
-            if ( usesPrefix(model, entityForEmptyPrefix) ) 
-                entityForEmptyPrefix = DEFAULT_NS_ENTITY_NAME_ALT ;
-            int i = 0 ;
-            while ( usesPrefix(model,entityForEmptyPrefix) )
-            {
-                entityForEmptyPrefix = DEFAULT_NS_ENTITY_NAME_ALT+"."+i ;
-                i++ ;
+
+        if ( usesPrefix(model, "") ) {
+            // Doing "" prefix. Ensure it is a non-clashing, non-empty entity name.
+            String entityForEmptyPrefix = DEFAULT_NS_ENTITY_NAME;
+            if ( usesPrefix(model, entityForEmptyPrefix) )
+                entityForEmptyPrefix = DEFAULT_NS_ENTITY_NAME_ALT;
+            int i = 0;
+            while (usesPrefix(model, entityForEmptyPrefix)) {
+                entityForEmptyPrefix = DEFAULT_NS_ENTITY_NAME_ALT + "." + i;
+                i++;
             }
-            defaultNSEntityName = entityForEmptyPrefix ;
+            defaultNSEntityName = entityForEmptyPrefix;
         }
     }
 
@@ -262,7 +251,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         nameSpaces.set11(VCARD.getURI(), "vcard");
         nameSpaces.set11("http://www.w3.org/2002/07/owl#", "owl");
     }
-                
+
 	void workOutNamespaces() {
 		if (ns == null) {
     		ns = new HashMap<>();
@@ -285,56 +274,49 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     }
 
     private void setFromGivenNamespaces( Map<String, String> ns, Set<String> prefixesUsed ) {
-        for ( String uri : namespacesNeeded )
-        {
-            if ( ns.containsKey( uri ) )
-            {
+        for ( String uri : namespacesNeeded ) {
+            if ( ns.containsKey(uri) ) {
                 continue;
             }
             String val = null;
-            Set<String> s = nameSpaces.forward( uri );
-            if ( s != null )
-            {
+            Set<String> s = nameSpaces.forward(uri);
+            if ( s != null ) {
                 Iterator<String> it2 = s.iterator();
-                if ( it2.hasNext() )
-                {
+                if ( it2.hasNext() ) {
                     val = it2.next();
                 }
-                if ( prefixesUsed.contains( val ) )
-                {
+                if ( prefixesUsed.contains(val) ) {
                     val = null;
                 }
             }
-            if ( val == null )
-            {
-                // just in case the prefix has already been used, look for a free one.
-                // (the usual source of such prefixes is reading in a model we wrote out earlier)
-                do
-                {
-                    val = "j." + ( jenaPrefixCount++ );
-                }
-                while ( prefixesUsed.contains( val ) );
+            if ( val == null ) {
+                // just in case the prefix has already been used, look for a free
+                // one.
+                // (the usual source of such prefixes is reading in a model we wrote
+                // out earlier)
+                do {
+                    val = "j." + (jenaPrefixCount++);
+                } while (prefixesUsed.contains(val));
             }
-            ns.put( uri, val );
-            prefixesUsed.add( val );
+            ns.put(uri, val);
+            prefixesUsed.add(val);
         }
-	}
+    }
 
 	final synchronized public void setNsPrefix(String prefix, String ns) {
         if (checkLegalPrefix(prefix)) {
             nameSpaces.set11(ns, prefix);
         }
     }
-    
-    final public String getPrefixFor( String uri )
-        {
+
+    final public String getPrefixFor( String uri ) {
             // xml and xmlns namespaces are pre-bound
             if ("http://www.w3.org/XML/1998/namespace".equals(uri)) return "xml";
             if ("http://www.w3.org/2000/xmlns/".equals(uri)) return "xmlns";
         Set<String> s = nameSpaces.backward( uri );
         if (s != null && s.size() == 1) return s.iterator().next();
-        return null; 
-        }
+        return null;
+    }
 
 	String xmlnsDecl() {
 		workOutNamespaces();
@@ -356,47 +338,46 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	static final private int END = 3;
 	static final private int ATTR = 4;
 	static final private int FASTATTR = 5;
-    
+
 	String rdfEl(String local) {
 		return tag(RDFNS, local, FAST, true);
 	}
-    
+
 	String startElementTag(String uri, String local) {
 		return tag(uri, local, START, false);
 	}
-    
+
 	protected String startElementTag(String uriref) {
 		return splitTag(uriref, START);
 	}
-    
+
 	String attributeTag(String uriref) {
 		return splitTag(uriref, ATTR);
 	}
-    
+
 	String attributeTag(String uri, String local) {
 		return tag(uri, local, ATTR, false);
 	}
-    
+
 	String rdfAt(String local) {
 		return tag(RDFNS, local, FASTATTR, true);
 	}
-    
+
 	String endElementTag(String uri, String local) {
 		return tag(uri, local, END, false);
 	}
-    
+
 	protected String endElementTag(String uriref) {
 		return splitTag(uriref, END);
 	}
-    
+
 	String splitTag(String uriref, int type) {
-		int split = Util.splitNamespaceXML( uriref );
+		int split = SplitRDFXML.splitXML10( uriref );
 		if (split == uriref.length()) throw new InvalidPropertyURIException( uriref );
 		return tag( uriref.substring( 0, split ), uriref.substring( split ), type, true );
     }
-    
-	String tag( String namespace, String local, int type, boolean localIsQname)  {
-		String prefix = ns.get( namespace );
+
+	String tag( String namespace, String local, int type, boolean localIsQname) {
 		if (type != FAST && type != FASTATTR) {
 			if ((!localIsQname) && !XMLChar.isValidNCName(local))
 				return splitTag(namespace + local, type);
@@ -409,14 +390,12 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 				}
 			}
 		}
+        String prefix = ns.get( namespace );
 		boolean cookUp = false;
 		if (prefix == null) {
             checkURI( namespace );
-			logger.warn(
-				"Internal error: unexpected QName URI: <"
-					+ namespace
-					+ ">.  Fixing up with j.cook.up code.",
-				new BrokenException( "unexpected QName URI " + namespace ));
+            logger.warn("Internal error: unexpected QName URI: <" + namespace + ">.  Fixing up.",
+        				new BrokenException( "unexpected QName URI " + namespace ));
 			cookUp = true;
 		} else if (prefix.length() == 0) {
 			if (type == ATTR || type == FASTATTR)
@@ -427,9 +406,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		if (cookUp) return cookUpAttribution( type, namespace, local );
 		return prefix + ":" + local;
 	}
-    
-    private String cookUpAttribution( int type, String namespace, String local )
-        {
+
+    private String cookUpAttribution( int type, String namespace, String local ) {
         String prefix = "j.cook.up";
         switch (type) {
             case FASTATTR :
@@ -443,8 +421,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             case FAST :
               //  logger.error("Unreachable code - reached.");
                 throw new BrokenException( "cookup reached final FAST" );
-            }
         }
+    }
 
 	/** Write out an XML serialization of a model.
 	 * @param model the model to be serialized
@@ -453,120 +431,102 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 */
 	@Override
     final public void write(Model model, OutputStream out, String base)
-		 { write( model, FileUtils.asUTF8(out), base ); }
+	{ write( model, FileUtils.asUTF8(out), base ); }
 
-	/** Serialize Model <code>model</code> to Writer <code>out</out>.
+	/** Serialize Model <code>model</code> to Writer <code>out</code>.
      * @param model The model to be written.
 	 * @param out The Writer to which the serialization should be sent.
 	 * @param base the base URI for relative URI calculations.  <code>null</code> means use only absolute URI's.
 	 */
-	@Override
-    synchronized public void write(Model model, Writer out, String base)
-		 {        
-		setupNamespaces( model );
-		PrintWriter pw = out instanceof PrintWriter ? (PrintWriter) out : new PrintWriter( out );
-		if (!Boolean.FALSE.equals(showXmlDeclaration)) writeXMLDeclaration( out, pw );
-		writeXMLBody( model, pw, base );
-		pw.flush();
-	}
+    @Override
+    synchronized public void write(Model model, Writer out, String base) {
+        setupNamespaces(model);
+        PrintWriter pw = out instanceof PrintWriter ? (PrintWriter)out : new PrintWriter(out);
+        if ( !Boolean.FALSE.equals(showXmlDeclaration) )
+            writeXMLDeclaration(out, pw);
+        writeXMLBody(model, pw, base);
+        pw.flush();
+    }
 
     /**
      	@param baseModel
      	@param model
     */
-    private void setupNamespaces( Model model )
-        {
+    private void setupNamespaces(Model model) {
         this.namespacesNeeded = new HashSet<>();
         this.ns = null;
         this.modelPrefixMapping = model;
-        primeNamespace( model );
-        addNameSpace( RDF.getURI() );
+        primeNamespace(model);
+        addNameSpace(RDF.getURI());
         addNameSpaces(model);
         jenaPrefixCount = 0;
-        }
-    
-    @SuppressWarnings("deprecation")
-    // Testing.
-    // Agrees with ARPOptions.defaultIriFactory.
-    static IRIFactory factory = IRIFactory.jenaImplementation();
+    }
 
-   
 	private void writeXMLBody( Model model, PrintWriter pw, String base ) {
-        if (showDoctypeDeclaration.booleanValue()) generateDoctypeDeclaration( model, pw );
-//		try {
-        // errors?
-			if (xmlBase == null) {
-				baseURI = (base == null || base.length() == 0) ? null : factory.create(base);
-				writeBody(model, pw, base, false);
-			} else {
-				baseURI = xmlBase.length() == 0 ? null : factory.create(xmlBase);
-				writeBody(model, pw, xmlBase, true);
-			}
-//		} catch (MalformedURIException e) {
-//			throw new BadURIException( e.getMessage(), e);
-//		}
+        if (showDoctypeDeclaration.booleanValue())
+            generateDoctypeDeclaration( model, pw );
+
+        if (xmlBase == null) {
+            baseURI = (base == null || base.length() == 0) ? null : IRIx.create(base);
+            writeBody(model, pw, base, false);
+        } else {
+            baseURI = xmlBase.length() == 0 ? null : IRIx.create(xmlBase);
+            writeBody(model, pw, xmlBase, true);
+        }
 	}
 
 	protected static final Pattern predefinedEntityNames = Pattern.compile( "amp|lt|gt|apos|quot" );
-    
+
     public boolean isPredefinedEntityName( String name )
-        { return predefinedEntityNames.matcher( name ).matches(); }
-                
+    { return predefinedEntityNames.matcher( name ).matches(); }
+
     private String attributeQuoteChar ="\"";
-    
-    protected String attributeQuoted( String s ) 
-        { return attributeQuoteChar + s + attributeQuoteChar; }
-    
-    protected String substitutedAttribute( String s ) 
-        {
+
+    protected String attributeQuoted( String s )
+    { return attributeQuoteChar + s + attributeQuoteChar; }
+
+    protected String substitutedAttribute( String s ) {
         String substituted = Util.substituteStandardEntities( s );
-        if (!showDoctypeDeclaration.booleanValue()) 
+        if (!showDoctypeDeclaration.booleanValue())
             return attributeQuoted( substituted );
-        else
-            {
-            int split = Util.splitNamespaceXML( substituted );
+        else {
+            int split = SplitRDFXML.splitXML10( substituted );
             String namespace = substituted.substring(  0, split );
             String prefix = modelPrefixMapping.getNsURIPrefix( namespace );
             return prefix == null || isPredefinedEntityName( prefix )
                 ? attributeQuoted( substituted )
                 : attributeQuoted( "&" + strForPrefix(prefix) + ";" + substituted.substring( split ) )
                 ;
-            }
         }
-    
-    private void generateDoctypeDeclaration( Model model, PrintWriter pw )
-        {
+    }
+
+    private void generateDoctypeDeclaration( Model model, PrintWriter pw ) {
         String rdfns = RDF.getURI();
-		String rdfRDF = model.qnameFor( rdfns + "RDF" );
+        String rdfRDF = model.qnameFor( rdfns + "RDF" );
         if ( rdfRDF == null ) {
-        	model.setNsPrefix("rdf",rdfns);
-        	rdfRDF = "rdf:RDF";
+            model.setNsPrefix("rdf",rdfns);
+            rdfRDF = "rdf:RDF";
         }
         Map<String, String> prefixes = model.getNsPrefixMap();
         pw.print( "<!DOCTYPE " + rdfRDF +" [" );
-            for ( String prefix : prefixes.keySet() )
-            {
-                if ( isPredefinedEntityName( prefix ) )
-                {
-                    continue;
-                }
-                pw.print(
-                    newline + "  <!ENTITY " + strForPrefix( prefix ) + " '" + Util.substituteEntitiesInEntityValue(
-                        prefixes.get( prefix ) ) + "'>" );
-            }
-        pw.print( "]>" + newline );
+        for ( String prefix : prefixes.keySet() ) {
+            if ( isPredefinedEntityName( prefix ) )
+                continue;
+            pw.print(newline
+                     + "  <!ENTITY " + strForPrefix( prefix ) + " '" + Util.substituteEntitiesInEntityValue(prefixes.get( prefix ) )
+                     + "'>" );
         }
-
-	private String strForPrefix(String prefix)
-    {
-        if ( prefix.length() == 0 )
-            return defaultNSEntityName ;
-        return prefix ;
+        pw.print( "]>" + newline );
     }
-	
-	private static boolean usesPrefix(Model model, String prefix)
-	{
-	    return model.getNsPrefixURI(prefix) != null ;
+
+    private String strForPrefix(String prefix) {
+        if ( prefix.length() == 0 )
+            return defaultNSEntityName;
+        return prefix;
+    }
+
+    private static boolean usesPrefix(Model model, String prefix) {
+        return model.getNsPrefixURI(prefix) != null;
     }
 
     private void writeXMLDeclaration(Writer out, PrintWriter pw) {
@@ -575,13 +535,13 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			String javaEnc = ((OutputStreamWriter) out).getEncoding();
 			if (!(javaEnc.equals("UTF8") || javaEnc.equals("UTF-16"))) {
 			    CharEncoding encodingInfo = CharEncoding.create(javaEnc);
-		        
+
 				String ianaEnc = encodingInfo.name();
 				decl = "<?xml version="+attributeQuoted("1.0")+" encoding=" + attributeQuoted(ianaEnc) + "?>";
 				if (!encodingInfo.isIANA())
 			     logger.warn(encodingInfo.warningMessage()+"\n"+
 				            "   It is better to use a FileOutputStream, in place of a FileWriter.");
-				       
+
 			}
 		}
 		if (decl == null && showXmlDeclaration != null)
@@ -607,7 +567,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	}
 
 	static private final char ESCAPE = 'X';
-    
+
 	static private String escapedId(String id) {
 		StringBuffer result = new StringBuffer();
 		for (int i = 0; i < id.length(); i++) {
@@ -623,7 +583,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	}
 
     static final char [] hexchar = "0123456789abcdef".toCharArray();
-                
+
 	static private void escape( StringBuffer sb, char ch) {
 		sb.append( ESCAPE );
 		int charcode = ch;
@@ -633,11 +593,11 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		} while (charcode != 0);
 		sb.append( ESCAPE );
 	}
-    
+
     /**
         Set the writer property propName to the value obtained from propValue. Return an
         Object representation of the original value.
-         
+
      	@see org.apache.jena.rdf.model.RDFWriterI#setProperty(java.lang.String, java.lang.Object)
      */
 	@Override
@@ -680,12 +640,12 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			return null;
 		}
 	}
-    
+
 	private String setAttributeQuoteChar(Object propValue) {
 		String oldValue = attributeQuoteChar;
 		if ( "\"".equals(propValue) || "'".equals(propValue) )
 		  attributeQuoteChar = (String)propValue;
-		else 
+		else
 		  logger.warn("attributeQutpeChar must be either \"\\\"\" or \', not \""+propValue+"\"" );
 		return oldValue;
 	}
@@ -717,30 +677,27 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		}
 		return result;
 	}
-    
-    private String setShowDoctypeDeclaration( Object propValue )
-        {
+
+    private String setShowDoctypeDeclaration(Object propValue) {
         String oldValue = showDoctypeDeclaration.toString();
         showDoctypeDeclaration = getBooleanValue( propValue, Boolean.FALSE );
         return oldValue;
         }
 
-    private String setShowXmlDeclaration( Object propValue ) 
-        {
+    private String setShowXmlDeclaration( Object propValue ) {
         String oldValue = showXmlDeclaration == null ? null : showXmlDeclaration.toString();
         showXmlDeclaration = getBooleanValue( propValue, null );
         return oldValue;
-        }
+    }
 
     /**
         Answer the boolean value corresponding to o, which must either be a Boolean,
         or a String parsable as a Boolean.
     */
-    static private boolean getBoolean( Object o ) 
+    static private boolean getBoolean( Object o )
         { return getBooleanValue( o, Boolean.FALSE ).booleanValue(); }
-    
-    private static Boolean getBooleanValue( Object propValue, Boolean theDefault )
-        {
+
+    private static Boolean getBooleanValue( Object propValue, Boolean theDefault ) {
         if (propValue == null)
             return theDefault;
         else if (propValue instanceof Boolean)
@@ -749,23 +706,22 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             return stringToBoolean( (String) propValue, theDefault );
         else
             throw new JenaException( "cannot treat as boolean: " + propValue );
-        }
+    }
 
-	private static Boolean stringToBoolean( String b, Boolean theDefault )
-        {
+	private static Boolean stringToBoolean( String b, Boolean theDefault ) {
         if (b.equals( "default" )) return theDefault;
         if (b.equalsIgnoreCase( "true" )) return Boolean.TRUE;
         if (b.equalsIgnoreCase( "false" )) return Boolean.FALSE;
         throw new BadBooleanException( b );
-        }
-    
+	}
+
 	Resource[] setTypes( Resource x[] ) {
 		logger.warn( "prettyTypes is not a property on the Basic RDF/XML writer." );
 		return null;
 	}
-    
+
 	private Resource blockedRules[] = new Resource[]{RDFSyntax.propertyAttr};
-    
+
 	Resource[] setBlockRules(Object o) {
 		Resource rslt[] = blockedRules;
 		unblockAll();
@@ -788,6 +744,29 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         }
 		return rslt;
 	}
+
+	// Copy from jena-iri IRIRelativize for isolation from IRIx provider usge.
+	private class IRIRelativize {
+	    /** Allow same document references (e.g. "" or "#frag").*/
+	    static final public int SAMEDOCUMENT = 1;
+
+	    /** Allow network relative references (e.g. "//example.org/a/b/c"). */
+	    static final public int NETWORK = 2;
+
+	    /** Allow absolute relative references (e.g. "/a/b/c"). */
+	    static final public int ABSOLUTE = 4;
+
+	    /** Allow child relative references (e.g. "b/c"). */
+	    static final public int CHILD = 8;
+
+	    /** Allow parent relative references (e.g. "../b/c"). */
+
+	    static final public int PARENT = 16;
+
+	    /** Allow grandparent relative references (e.g. "../../b/c"). */
+	    static final public int GRANDPARENT = 32;
+	}
+
 	/*
 	private boolean sameDocument = true;
 	private boolean network = false;
@@ -796,26 +775,62 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	private boolean parent = true;
 	private boolean grandparent = false;
 	*/
-	private int relativeFlags =
-		IRI.SAMEDOCUMENT | IRI.ABSOLUTE | IRI.CHILD | IRI.PARENT;
+	//private int relativeFlags = 0;
+	private int dftRelativeFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.ABSOLUTE | IRIRelativize.CHILD | IRIRelativize.PARENT;
+	private int relativeFlags = dftRelativeFlags;
 
     /**
-        Answer the form of the URI after relativisation according to the relativeFlags set
+        Answer the form of the URI after relativiation according to the relativeFlags set
         by properties. If the flags are 0 or the base URI is null, answer the original URI.
         Throw an exception if the URI is "bad" and we demandGoodURIs.
     */
-    protected String relativize( String uri ) { 
+    protected String relativize( String uri ) {
         return relativeFlags != 0 && baseURI != null
             ? relativize( baseURI, uri )
             : checkURI( uri );
     }
-    
+
     /**
         Answer the relative form of the URI against the base, according to the relativeFlags.
     */
-    private String relativize( IRI base, String uri )  {
-        // errors?
-        return base.relativize( uri, relativeFlags).toString();
+    private String relativize( IRIx base, String uri )  {
+        if ( relativeFlags == 0 )
+            return uri;
+        // If jena-iri
+        if ( base instanceof IRIxJena ) {
+            org.apache.jena.iri.IRI baseImpl = ((IRIxJena)base).getImpl();
+            return baseImpl.relativize(uri, relativeFlags).toString();
+        }
+        try {
+            if ( relativeFlags != dftRelativeFlags ) {
+                // Use jena-iri for relativization. Backwards compatibility.
+                org.apache.jena.iri.IRI baseImpl = org.apache.jena.iri.IRIFactory.iriImplementation().create(base.str());
+                return baseImpl.relativize(uri, relativeFlags).toString();
+            }
+//            if ( relativeFlags == 1 ) {
+//                IRI3986 iri1 = IRI3986.create(base.str());
+//                IRI3986 iri2 = IRI3986.create(uri);
+//                IRI3986 x = AlgIRI2.relativeSameDocument(iri1, iri2);
+//                return x!=null ? x.str() : uri;
+//            }
+//            if ( relativeFlags == 4 ) {
+//                IRI3986 iri1 = IRI3986.create(base.str());
+//                IRI3986 iri2 = IRI3986.create(uri);
+//                IRI3986 x = AlgIRI2.relativeResource(iri1, iri2);
+//                return x!=null ? x.str() : uri;
+//            }
+//            if ( relativeFlags == 8 ) {
+//                IRI3986 iri1 = IRI3986.create(base.str());
+//                IRI3986 iri2 = IRI3986.create(uri);
+//                IRI3986 x = AlgIRI2.relativePath(iri1, iri2);
+//                return x!=null ? x.str() : uri;
+//            }
+
+            IRIx x = base.relativize( IRIx.create(uri) );
+            return x != null ? x.str() : uri ;
+        } catch (IRIException ex) {
+            return uri;
+        }
     }
 
     /**
@@ -824,18 +839,12 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         appear to be a convenient URI.checkGood() kind of method, alas.
      */
     private String checkURI( String uri ) {
-        if (demandGoodURIs) {
-            IRI iri = factory.create( uri );
-            
-            if (iri.hasViolation(false) ) 
-            throw new BadURIException( "Only well-formed absolute URIrefs can be included in RDF/XML output: "
-                     + (iri.violations(false).next()).getShortMessage()); 
-        }
-             
-            
+        if (demandGoodURIs)
+            // Valid or exception.
+            IRIs.checkEx(uri);
         return uri;
     }
-    
+
     /**
         Answer true iff prefix is a "legal" prefix to use, ie, is empty [for the default namespace]
         or an NCName that does not start with "xml" and does not match the reserved-to-Jena
@@ -857,17 +866,17 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 
     static private String flags2str(int f) {
 	StringBuffer oldValue = new StringBuffer(64);
-	if ( (f&IRI.SAMEDOCUMENT)!=0 )
+	if ( (f&IRIRelativize.SAMEDOCUMENT)!=0 )
 	   oldValue.append( "same-document, " );
-	if ( (f&IRI.NETWORK)!=0 )
+	if ( (f&IRIRelativize.NETWORK)!=0 )
 	   oldValue.append( "network, ");
-	if ( (f&IRI.ABSOLUTE)!=0 )
+	if ( (f&IRIRelativize.ABSOLUTE)!=0 )
 	   oldValue.append("absolute, ");
-	if ( (f&IRI.CHILD)!=0 )
+	if ( (f&IRIRelativize.CHILD)!=0 )
 	   oldValue.append("relative, ");
-	if ((f&IRI.PARENT)!=0)
+	if ((f&IRIRelativize.PARENT)!=0)
 	   oldValue.append("parent, ");
-	if ((f&IRI.GRANDPARENT)!=0)
+	if ((f&IRIRelativize.GRANDPARENT)!=0)
 	   oldValue.append("grandparent, ");
 	if (oldValue.length() > 0)
 	   oldValue.setLength(oldValue.length()-2);
@@ -880,24 +889,24 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	while ( tkn.hasMoreElements() ) {
 	    String flag = tkn.nextToken();
 	    if ( flag.equals("same-document") )
-	       rslt |= IRI.SAMEDOCUMENT;
+	       rslt |= IRIRelativize.SAMEDOCUMENT;
 	    else if ( flag.equals("network") )
-	       rslt |= IRI.NETWORK;
+	       rslt |= IRIRelativize.NETWORK;
 	    else if ( flag.equals("absolute") )
-	       rslt |= IRI.ABSOLUTE;
+	       rslt |= IRIRelativize.ABSOLUTE;
 	    else if ( flag.equals("relative") )
-	       rslt |= IRI.CHILD;
+	       rslt |= IRIRelativize.CHILD;
 	    else if ( flag.equals("parent") )
-	       rslt |= IRI.PARENT;
+	       rslt |= IRIRelativize.PARENT;
 	    else if ( flag.equals("grandparent") )
-	       rslt |= IRI.GRANDPARENT;
+	       rslt |= IRIRelativize.GRANDPARENT;
 	    else
-	
+
 	    logger.warn(
 	        "Incorrect property value for relativeURIs: " + flag
 	        );
 	}
 	return rslt;
 	}
-    
+
 }

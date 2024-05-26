@@ -18,9 +18,12 @@
 package org.apache.jena.geosparql.configuration;
 
 import java.io.File;
+
 import org.apache.jena.geosparql.geof.topological.RelateFF;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
 import org.apache.jena.geosparql.implementation.function_registration.*;
+import org.apache.jena.geosparql.implementation.index.GeometryLiteralIndex;
+import org.apache.jena.geosparql.implementation.index.GeometryTransformIndex;
 import org.apache.jena.geosparql.implementation.index.IndexConfiguration;
 import org.apache.jena.geosparql.implementation.index.IndexConfiguration.IndexOption;
 import org.apache.jena.geosparql.implementation.index.QueryRewriteIndex;
@@ -31,6 +34,7 @@ import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.sparql.function.FunctionRegistry;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry;
+import org.apache.jena.sys.JenaSystem;
 
 /**
  *
@@ -38,11 +42,15 @@ import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry;
  */
 public class GeoSPARQLConfig {
 
+    static { JenaSystem.init(); }
+
     /**
      * GeoSPARQL schema
      */
-    private static Boolean IS_FUNCTIONS_REGISTERED = false;
-    private static Boolean IS_QUERY_REWRITE_ENABLED = true;
+    // Must be boolean, not Boolean, because then IS_FUNCTIONS_REGISTERED is
+    // defined and not null.
+    private static boolean IS_FUNCTIONS_REGISTERED = false;
+    private static boolean IS_QUERY_REWRITE_ENABLED = true;
 
     /**
      * Precision of calculations. Inaccuracies exist in these calculations and a
@@ -90,38 +98,6 @@ public class GeoSPARQLConfig {
      * Initialise all GeoSPARQL property and filter functions with memory
      * indexing.
      * <br>Use this for in-memory indexing GeoSPARQL setup and to control the
-     * index sizes. Expiry is defaulted to 5,000 milliseconds.
-     * <br>This does not affect the use of Spatial Indexes for Datasets.
-     *
-     * @param geometryLiteralIndex
-     * @param geometryTransformIndex
-     * @param queryRewriteIndex
-     */
-    public static final void setupMemoryIndexSize(Integer geometryLiteralIndex, Integer geometryTransformIndex, Integer queryRewriteIndex) {
-        setup(IndexOption.MEMORY, true);
-        IndexConfiguration.setIndexMaxSize(geometryLiteralIndex, geometryTransformIndex, queryRewriteIndex);
-    }
-
-    /**
-     * Initialise all GeoSPARQL property and filter functions with memory
-     * indexing.
-     * <br>Use this for in-memory indexing GeoSPARQL setup and to control the
-     * index expiry rate (milliseconds). Size is defaulted to unlimited.
-     * <br>This does not affect the use of Spatial Indexes for Datasets.
-     *
-     * @param geometryLiteralIndex
-     * @param geometryTransformIndex
-     * @param queryRewriteIndex
-     */
-    public static final void setupMemoryIndexExpiry(Long geometryLiteralIndex, Long geometryTransformIndex, Long queryRewriteIndex) {
-        setup(IndexOption.MEMORY, true);
-        IndexConfiguration.setIndexExpiry(geometryLiteralIndex, geometryTransformIndex, queryRewriteIndex);
-    }
-
-    /**
-     * Initialise all GeoSPARQL property and filter functions with memory
-     * indexing.
-     * <br>Use this for in-memory indexing GeoSPARQL setup and to control the
      * index sizes (default: unlimited) and expiry rate (default: 5,000
      * milliseconds).
      * <br>This does not affect the use of Spatial Indexes for Datasets.
@@ -136,8 +112,10 @@ public class GeoSPARQLConfig {
      */
     public static final void setupMemoryIndex(Integer geometryLiteralIndex, Integer geometryTransformIndex, Integer queryRewriteIndex, Long geometryLiteralIndexExpiry, Long geometryTransformIndexExpiry, Long queryRewriteIndexExpiry, Boolean isQueryRewriteEnabled) {
         setup(IndexOption.MEMORY, isQueryRewriteEnabled);
-        IndexConfiguration.setIndexMaxSize(geometryLiteralIndex, geometryTransformIndex, queryRewriteIndex);
-        IndexConfiguration.setIndexExpiry(geometryLiteralIndexExpiry, geometryTransformIndexExpiry, queryRewriteIndexExpiry);
+        GeometryLiteralIndex.reset(geometryLiteralIndex, geometryLiteralIndexExpiry);
+        GeometryTransformIndex.reset(geometryTransformIndex, geometryTransformIndexExpiry);
+        QueryRewriteIndex.setMaxSize(queryRewriteIndex);
+        QueryRewriteIndex.setExpiry(queryRewriteIndexExpiry);
     }
 
     /**
@@ -189,7 +167,7 @@ public class GeoSPARQLConfig {
     }
 
     public static final void loadFunctions() {
-        //Only register functions once.
+        //Only register functions once in system initialization.
         if (!IS_FUNCTIONS_REGISTERED) {
             // loading is actually idempotent.
             IS_FUNCTIONS_REGISTERED = true;

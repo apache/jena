@@ -18,6 +18,7 @@
 
 package org.apache.jena.graph.impl;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.* ;
 import org.apache.jena.shared.AddDeniedException ;
 import org.apache.jena.shared.ClosedException ;
@@ -50,7 +51,7 @@ public abstract class GraphBase implements GraphWithPerform
     protected boolean closed = false;
 
     /**
-         Initialise this graph as one with reification style Minimal.
+         Initialise this graph.
     */
     public GraphBase()  {}
 
@@ -126,22 +127,10 @@ public abstract class GraphBase implements GraphWithPerform
     public TransactionHandler getTransactionHandler()
         { return new SimpleTransactionHandler(); }
 
-    /**
-         Answer the capabilities of this graph; the default is an AllCapabilities object
-         (the same one each time, not that it matters - Capabilities should be
-         immutable).
-    */
     @Override
-    public Capabilities getCapabilities()
-        {
-        if (capabilities == null) capabilities = new AllCapabilities();
-        return capabilities;
-        }
-
-    /**
-         The allocated Capabilities object, or null if unallocated.
-    */
-    protected Capabilities capabilities = null;
+    public Capabilities getCapabilities() {
+        return AllCapabilities.updateAllowed;
+    }
 
     /**
         Answer the PrefixMapping object for this graph, the same one each time.
@@ -307,24 +296,22 @@ public abstract class GraphBase implements GraphWithPerform
 		ExtendedIterator<Triple> it = GraphUtil.findAll( this );
         try
             {
-            int tripleCount = 0;
-            while (it.hasNext()) { it.next(); tripleCount += 1; }
-            return tripleCount;
+            return (int) Iter.count(it);
             }
         finally
             { it.close(); }
         }
 
     /**
-     	Answer true iff this graph contains no triples (hidden reification quads do
-        not count). The default implementation is <code>size() == 0</code>, which is
-        fine if <code>size</code> is reasonable efficient. Subclasses may override
-        if necessary. This method may become final and defined in terms of other
-        methods.
+        Answer true iff this graph contains no triples.
+        @implNote The default implementation relies on {@link #contains(Triple)}
+         with {@link Triple#ANY} as the argument. Subclasses may override if necessary.
     */
     @Override
     public boolean isEmpty()
-        { return size() == 0; }
+        {
+            return !contains( Triple.ANY );
+        }
 
     /**
          Answer true iff this graph is isomorphic to <code>g</code> according to

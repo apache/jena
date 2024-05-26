@@ -1,0 +1,4 @@
+<http://example.org/#q:name> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://example.org/#q:name> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> "" .
+<http://example.org/#q:name> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://example.org/prop> .
+<http://example.org/#q:name> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> _:jA140 .

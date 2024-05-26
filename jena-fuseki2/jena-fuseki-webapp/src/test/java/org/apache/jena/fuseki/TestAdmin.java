@@ -254,38 +254,38 @@ public class TestAdmin extends AbstractFusekiWebappTest {
         HttpTest.expect404( ()-> httpDelete(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+name) );
     }
 
-    // ---- Active/Offline.
-
-    @Test public void state_1() {
-        // Add one
-        addTestDataset();
-        try {
-            checkExists(dsTest);
-
-            httpPost(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+dsTest+"?state=offline");
-
-            checkExistsNotActive(dsTest);
-
-            httpPost(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+dsTest+"?state=active");
-
-            checkExists(dsTest);
-        } finally {
-            deleteDataset(dsTest);
-        }
-    }
-
-    @Test public void state_2() {
-        addTestDataset();
-        httpPost(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+dsTest+"?state=offline");
-        deleteDataset(dsTest);
-        checkNotThere(dsTest);
-    }
-
-    @Test public void state_3() {
-        addTestDataset();
-        HttpTest.expect404(()->httpPost(ServerCtl.urlRoot()+"$/"+opDatasets+"/DoesNotExist?state=offline"));
-        deleteDataset(dsTest);
-    }
+//    // ---- Active/Offline.
+//
+//    @Test public void state_1() {
+//        // Add one
+//        addTestDataset();
+//        try {
+//            checkExists(dsTest);
+//
+//            httpPost(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+dsTest+"?state=offline");
+//
+//            checkExistsNotActive(dsTest);
+//
+//            httpPost(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+dsTest+"?state=active");
+//
+//            checkExists(dsTest);
+//        } finally {
+//            deleteDataset(dsTest);
+//        }
+//    }
+//
+//    @Test public void state_2() {
+//        addTestDataset();
+//        httpPost(ServerCtl.urlRoot()+"$/"+opDatasets+"/"+dsTest+"?state=offline");
+//        deleteDataset(dsTest);
+//        checkNotThere(dsTest);
+//    }
+//
+//    @Test public void state_3() {
+//        addTestDataset();
+//        HttpTest.expect404(()->httpPost(ServerCtl.urlRoot()+"$/"+opDatasets+"/DoesNotExist?state=offline"));
+//        deleteDataset(dsTest);
+//    }
 
     // ---- Backup
 

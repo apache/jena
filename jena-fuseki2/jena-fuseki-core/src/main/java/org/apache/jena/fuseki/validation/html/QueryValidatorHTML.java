@@ -27,9 +27,9 @@ import static org.apache.jena.fuseki.validation.html.ValidatorHtmlLib.startFixed
 
 import java.io.IOException;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
@@ -46,7 +46,6 @@ public class QueryValidatorHTML {
     static final String paramFormat      = "outputFormat";
     static final String paramQuery       = "query";
     static final String paramSyntax      = "languageSyntax";
-    // static final String paramSyntaxExtended = "extendedSyntax";
 
     public static void executeHTML(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         try {
@@ -186,7 +185,7 @@ public class QueryValidatorHTML {
     }
 
     private static void outputAlgebraOpt(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException {
-        outStream.println("<p>Alebgra, with general triple optimizations:</p>");
+        outStream.println("<p>Algebra, with general triple optimizations:</p>");
         final Op op = Algebra.optimize(Algebra.compile(query));
         outputQueryOp(outStream, query, op, lineNumbers);
     }
@@ -198,7 +197,7 @@ public class QueryValidatorHTML {
     }
 
     private static void outputAlgebraOptQuads(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException {
-        outStream.println("<p>Alebgra, with general quads optimizations:</p>");
+        outStream.println("<p>Algebra, with general quads optimizations:</p>");
         final Op op = Algebra.optimize(Algebra.toQuadForm(Algebra.compile(query)));
         outputQueryOp(outStream, query, op, lineNumbers);
     }

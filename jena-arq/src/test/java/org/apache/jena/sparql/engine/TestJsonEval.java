@@ -30,8 +30,8 @@ import org.junit.Test;
 public class TestJsonEval {
 
     @Test public void json_eval_01() {
-        test("JSON { 'x' : ?x } WHERE { VALUES ?x { 'X' } }",
-             "[ { 'x' : 'X' } ]");
+        test("JSON { 'x' : ?var1 , 'y' : ?var2 } WHERE { VALUES (?var1 ?var2) { ('X' 'Y') } }",
+             "[ { 'x' : 'X' , 'y' : 'Y' } ]");
     }
 
     @Test public void json_eval_02() {

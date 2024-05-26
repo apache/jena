@@ -293,7 +293,7 @@
 
     ## MEDIAN
 
-          [  mf:name    "Median - 1 - median(?v)" ;
+      [  mf:name    "Median - 1 - median(?v)" ;
          rdf:type   mfx:TestQuery ;
          mf:action
             [ qt:query  <median-01.arq> ;
@@ -302,13 +302,11 @@
       ]
 
     ##MODE
-              [  mf:name    "Mode - 1 - mode(?v)" ;
+      [  mf:name    "Mode - 1 - mode(?v)" ;
          rdf:type   mfx:TestQuery ;
          mf:action
             [ qt:query  <mode-01.arq> ;
               qt:data   <data-2.ttl> ] ;
         mf:result  <mode-01.srj>
       ]
-
-      
     ).

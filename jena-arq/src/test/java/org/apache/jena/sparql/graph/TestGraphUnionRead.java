@@ -19,6 +19,9 @@
 package org.apache.jena.sparql.graph;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +32,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.sse.Item;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.sse.builders.BuilderGraph;
@@ -46,7 +50,7 @@ public class TestGraphUnionRead
       "   (triple <http://example/s> <http://example/p> 'g1')",
       "   (triple <http://example/s> <http://example/p> <http://example/o>)",
       " )",
-      " (graph <http://example/g2>", 
+      " (graph <http://example/g2>",
       "   (triple <http://example/s> <http://example/p> 'g2')",
       "   (triple <http://example/s> <http://example/p> <http://example/o>)",
       " )",
@@ -63,7 +67,7 @@ public class TestGraphUnionRead
     private static Node gn2 = SSE.parseNode("<http://example/g2>");
     private static Node gn3 = SSE.parseNode("<http://example/g3>");
     private static Node gn9 = SSE.parseNode("<http://example/g9>");
-    
+
     @Test
     public void gr_union_01() {
         List<Node> gnodes = list(gn1, gn2);
@@ -85,7 +89,7 @@ public class TestGraphUnionRead
     public void gr_union_03() {
         List<Node> gnodes = list(gn1, gn2, gn9);
         Graph g = new GraphUnionRead(dsg, gnodes);
-        Node o = NodeFactory.createLiteral("g2");
+        Node o = NodeFactory.createLiteralString("g2");
         long x = Iter.count(g.find(null, null, o));
         assertEquals(1, x);
     }
@@ -120,9 +124,47 @@ public class TestGraphUnionRead
         Graph g = new GraphUnionRead(dsg, gnodes);
         long x1 = Iter.count(g.find(null, null, null));
         assertEquals(2, x1);
-        Node o = NodeFactory.createLiteral("g2");
+        Node o = NodeFactory.createLiteralString("g2");
         long x2 = Iter.count(g.find(null, null, o));
         assertEquals(1, x2);
+    }
+
+    @Test
+    public void gr_union_prefixes() {
+        Graph graph = setupPrefixGraph("ex", "http://example/");
+
+        DatasetGraph dsg = DatasetGraphFactory.createGeneral();
+        dsg.addGraph(gn1, graph);
+
+        GraphUnionRead gUnionRead = new GraphUnionRead(dsg, List.of(gn1));
+        assertNotNull(gUnionRead.getPrefixMapping().getNsPrefixURI("ex"));
+    }
+
+    @Test
+    public void gr_union_prefixes_bad_PrefixMapping() {
+        // Not valid.
+        Graph graph = setupPrefixGraph("-", "http://example/");
+
+        // Test : Must be createGeneral
+        DatasetGraph dsg = DatasetGraphFactory.createGeneral();
+        dsg.addGraph(gn1, graph);
+
+        // Builds a PrefixMapping when created.
+        GraphUnionRead gUnionRead = new GraphUnionRead(dsg, List.of(gn1));
+        // .. but skips the unacceptable prefix.
+        assertTrue(gUnionRead.getPrefixMapping().hasNoMappings());
+    }
+
+    private static Graph setupPrefixGraph(String prefix, String uriStr) {
+        // Must be createTxnMem
+        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
+        dsg.prefixes().add(prefix, uriStr);
+        Graph graph = dsg.getDefaultGraph();
+        // Check it has the prefix.
+        assertFalse(graph.getPrefixMapping().hasNoMappings());
+        assertTrue(graph.getPrefixMapping().getNsPrefixURI(prefix) != null);
+        assertTrue(graph.getPrefixMapping().getNsPrefixMap().containsKey(prefix));
+        return graph;
     }
 
     static List<Node> list(Node...x) {

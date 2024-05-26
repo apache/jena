@@ -18,7 +18,6 @@
 
 package arq.examples.riot;
 
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,12 +29,17 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.SysRIOT;
-import org.apache.jena.sparql.util.Context;
+import org.apache.jena.riot.lang.rdfxml.RRX;
 
-/** Set properties of the RDF/XML parser (ARP) */
+/**
+ * Set properties of the RDF/XML parser (ARP)
+ * Note the use of language {@link RRX#RDFXML_ARP1}.
+ * <b>This example only applies to the legacy ARP parser</b>
+ * Applications should use {@code RDFParser...lang(LANG./RDFXML)...}.
+ */
 public class ExRIOT_RDFXML_ReaderProperties {
     static { LogCtl.setLogging(); }
-    
+
     public static void main(String[] args) {
         // Inline illustrative data.
         String data = StrUtils.strjoinNL
@@ -48,23 +52,24 @@ public class ExRIOT_RDFXML_ReaderProperties {
             );
         System.out.println(data);
         System.out.println();
+        @SuppressWarnings("removal")
+        Lang legacyARP1 = RRX.RDFXML_ARP1;
         // Properties to be set.
-        // This is a map propertyName->value 
+        // See
+        //   https://jena.apache.org/documentation/io/rdfxml-io.html
+        //   https://jena.apache.org/documentation/io/rdfxml-input.html
+        // This is a map propertyName->value
         Map<String, Object> properties = new HashMap<>();
-        // See class ARPErrorNumbers for the possible ARP properies.
+        // See class ARPErrorNumbers for the possible ARP properties.
         properties.put("WARN_BAD_NAME", "EM_IGNORE");
-        
-        // Put a properties object into the Context.
-        Context cxt = new Context();
-        cxt.set(SysRIOT.sysRdfReaderProperties, properties);
-        
+
         Model model = ModelFactory.createDefaultModel();
         // Build and run a parser
-        RDFParser.create()
-            .lang(Lang.RDFXML)
-            .source(new StringReader(data))
-            .context(cxt)
+        RDFParser.fromString(data, legacyARP1)
+            .set(SysRIOT.sysRdfReaderProperties, properties)
+            .base("http://example/base/")
             .parse(model);
+        System.out.println();
         System.out.println("== Parsed data output in Turtle");
         RDFDataMgr.write(System.out,  model, Lang.TURTLE);
     }

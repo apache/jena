@@ -18,21 +18,30 @@
 
 package org.apache.jena.sparql.graph;
 
+import java.util.List;
+import java.util.function.Consumer;
+
 import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.mem.DatasetGraphInMemory;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.WrappedIterator;
 
 /**
- * In-memory, transactional graph.
+ * In-memory, thread-safe, transactional graph.
  *
  * @implNote
  * The implementation uses the default graph of {@link DatasetGraphInMemory}.
  * The graph transaction handler continues to work.
- * This class adds the {@link Transactional} to the graph itself.
+ * This class adds the {@link Transactional} to the graph itself
+ * and provides {@link ExtendedIterator ExtendedIterators} that provide
+ * read access to the data if used outside a transaction.
  */
 public class GraphTxn extends GraphWrapper implements Transactional {
 
@@ -97,5 +106,84 @@ public class GraphTxn extends GraphWrapper implements Transactional {
     @Override
     public boolean isInTransaction() {
         return getT().isInTransaction();
+    }
+
+    private static class IteratorTxn<T> extends WrappedIterator<T> {
+
+        private final GraphTxn graph;
+        private final boolean needIterTxn;
+        private boolean isClosed = false;
+
+        IteratorTxn(GraphTxn graph, ExtendedIterator<T> base) {
+            super(base, true);  // removeDenied.
+            this.graph = graph;
+            needIterTxn = ! graph.getT().isInTransaction();
+            if ( needIterTxn )
+                graph.begin(TxnType.READ);
+        }
+
+        // Ensure that GraphTxn is called, not bypassed by WrappedIterator.forEach/forEachRemaining.
+        @Override
+        public void forEachRemaining(Consumer<? super T> action) {
+            try {
+                while (hasNext())
+                    action.accept(next());
+            } finally { close(); }
+        }
+
+        @Override
+        public void forEach(Consumer<T> action) {
+            try {
+                while (hasNext())
+                    action.accept(next());
+            } finally { close(); }
+        }
+
+        @Override
+        public boolean hasNext() {
+            boolean b = super.hasNext();
+            if ( ! b )
+                close();
+            return b;
+        }
+
+        @Override
+        public void close() {
+            if ( isClosed)
+                return ;
+            isClosed = true;
+            if ( needIterTxn ) {
+                graph.commit();
+                graph.end();
+            }
+        }
+    }
+
+    /**
+     * Whether to read the base graph completely at the point that "find" is called
+     * or to have an iterator over results. Both setting should work in normal situations
+     * Using a {@link IteratorTxn}, which is an {@link ExtendedIterator},
+     * starts a read transaction and that assumes the extended iterator is closed.
+     */
+    private static boolean ISOLATE = false;
+
+    @Override
+    public ExtendedIterator<Triple> find(Triple triple) {
+        if ( ISOLATE )
+            return isolate(get().find(triple));
+        return new IteratorTxn<Triple>(this, get().find(triple));
+    }
+
+    @Override
+    public ExtendedIterator<Triple> find(Node s, Node p, Node o) {
+        if ( ISOLATE )
+            return isolate(get().find(s, p, o));
+        return new IteratorTxn<Triple>(this, get().find(s, p, o));
+    }
+
+    /** Isolate by materializing the iterator. */
+    private ExtendedIterator<Triple> isolate(ExtendedIterator<Triple> iter) {
+        List<Triple> list = iter.toList();
+        return WrappedIterator.create(list.iterator());
     }
 }

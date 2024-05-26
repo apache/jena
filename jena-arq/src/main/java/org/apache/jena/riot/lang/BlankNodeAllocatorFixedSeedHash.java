@@ -24,7 +24,7 @@ import java.util.UUID;
 /**
  * A variant of {@link BlankNodeAllocatorHash} where a fixed seed is used so
  * repeated runs produce identical allocations
- * 
+ *
  */
 public class BlankNodeAllocatorFixedSeedHash extends BlankNodeAllocatorHash {
 
@@ -51,7 +51,7 @@ public class BlankNodeAllocatorFixedSeedHash extends BlankNodeAllocatorHash {
     @Override
     protected UUID freshSeed() {
         // NB - The parent constructor calls reset() so we have to provide a
-        // fake value here temorarily which we then replace with the user
+        // fake value here temporarily which we then replace with the user
         // specified seed by calling reset() again in our own constructor
         return this.seed == null ? UUID.randomUUID() : this.seed;
     }

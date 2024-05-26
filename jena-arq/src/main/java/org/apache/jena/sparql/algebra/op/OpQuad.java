@@ -18,29 +18,29 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.core.BasicPattern ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.core.QuadPattern ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.Iso ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.QuadPattern;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.Iso;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 /** Algebra operation for a single quad.
  * @see OpTriple
  */
 public class OpQuad extends Op0
 {
-    private final Quad quad ;
-    private OpQuadPattern opQuadPattern = null ;
+    private final Quad quad;
+    private OpQuadPattern opQuadPattern = null;
 
     public OpQuad(Quad quad) {
         this.quad = quad;
     }
 
-    public final Quad getQuad() { return quad ; }
+    public final Quad getQuad() { return quad; }
 
     public OpQuadPattern asQuadPattern() {
         if ( opQuadPattern == null ) {
@@ -53,7 +53,7 @@ public class OpQuad extends Op0
 
     @Override
     public Op apply(Transform transform)
-    { return transform.transform(this) ; }
+    { return transform.transform(this); }
 
     @Override
     public Op0 copy() {
@@ -75,7 +75,7 @@ public class OpQuad extends Op0
 
     @Override
     public void visit(OpVisitor opVisitor)
-    { opVisitor.visit(this) ; }
+    { opVisitor.visit(this); }
 
     @Override
     public String getName() {

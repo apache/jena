@@ -19,9 +19,9 @@
 package org.apache.jena.http.auth;
 
 import static org.apache.jena.atlas.lib.Chars.CH_RSLASH;
+import static org.apache.jena.atlas.lib.Lib.lowercase;
 
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.IntPredicate;
 
@@ -34,7 +34,7 @@ import org.apache.jena.riot.system.RiotChars;
  * <li>This parser is scheme-specific. e.g. digest credentials can not be token68.
  * <li>This parser does not check auth-params names.
  * <li>The auth-params map has lower case keys.
- * <ul>
+ * </ul>
  * Covers:
  * <ul>
  * <li><a href="https://www.rfc-editor.org/rfc/rfc7617.html">RFC 7617</a> - was
@@ -46,9 +46,10 @@ import org.apache.jena.riot.system.RiotChars;
  * <li><a href="https://www.rfc-editor.org/rfc/rfc6750.html">RFC 6750</a> - Bearer
  * authentication
  * <li>"Unknown"
- * <ul>
+ * </ul>
  */
 public class AuthHeader {
+    // Update for RFC 9112
     /* RFC 7235 header:
      *    WWW-Authenticate:
      *    Authorization:
@@ -413,7 +414,7 @@ public class AuthHeader {
                 String value = tokenOrQuotedString();
                 if ( value == null )
                     return null;
-                String lcKey = key.toLowerCase(Locale.ROOT);
+                String lcKey = lowercase(key);
                 map.put(lcKey, value);
                 skipWhitespaceComma();
             }

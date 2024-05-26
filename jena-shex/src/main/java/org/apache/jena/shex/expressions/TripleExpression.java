@@ -18,7 +18,13 @@
 
 package org.apache.jena.shex.expressions;
 
-public abstract class TripleExpression implements ShexPrintable {
+import org.apache.jena.graph.Triple;
+import org.apache.jena.shex.sys.ValidationContext;
+
+import java.util.List;
+import java.util.Set;
+
+public abstract class   TripleExpression implements ShexPrintable {
 
     // tripleExpr = EachOf | OneOf | TripleConstraint | tripleExprRef
 
@@ -26,8 +32,25 @@ public abstract class TripleExpression implements ShexPrintable {
 
     // [shex] annotations
     // [shex] semanticActions
+    private List<SemAct> semActs;
 
-    protected TripleExpression() {}
+    protected TripleExpression(List<SemAct> semActs) {
+        this.semActs = semActs;
+    }
+
+    public List<SemAct> getSemActs() {
+        return semActs;
+    }
+
+    public void setSemActs(List<SemAct> semActs) { // needed for ShExC parser's late binding of SemActs to EachOf
+        this.semActs = semActs;
+    }
+
+    public boolean testSemanticActions(ValidationContext v, Set<Triple> matchables) {
+        if (this.semActs == null)
+            return true;
+        return v.dispatchTripleExprSemanticAction(this, matchables);
+    }
 
     public abstract void visit(TripleExprVisitor visitor);
 

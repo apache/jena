@@ -4,7 +4,10 @@ echo "Grammar to X.html, fragments file to Y.html"
 ##jj2html 'sparql_11.txt' 'tokens.txt' > X11.html
 ##grammarExtracts < X11.html > Y11.html
 
-jj2html 'arq.txt' 'tokens.txt' > X.html
-grammarExtracts < X.html > Y.html
+jj2html 'sparql_12.txt' 'tokens.txt' > X12.html
+grammarExtracts < X12.html > Y12.html
+
+## jj2html 'arq_12.txt' 'tokens.txt' > X.html
+## grammarExtracts < X.html > Y.html
 
 echo "Check X and Y for IRI_REF because \" became '"

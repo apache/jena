@@ -16,37 +16,45 @@
 -->
 
 <template>
-  <b-navbar toggleable="sm" variant="light" type="light" class="col-12">
-    <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-    <b-collapse id="nav-collapse" is-nav>
-      <b-navbar-brand>
-        <router-link to="/">
-          <img alt="Apache Jena logo" width="52px" src="../assets/logo.svg"> Apache Jena Fuseki
-        </router-link>
-      </b-navbar-brand>
-      <b-navbar-nav>
-        <b-nav-item to="/" exact-active-class="active">
-          <FontAwesomeIcon icon="database" /> datasets
-        </b-nav-item>
-        <b-nav-item to="/manage" active-class="active">
-          <FontAwesomeIcon icon="cogs" /> manage
-        </b-nav-item>
-        <b-nav-item to="/documentation" active-class="active">
-          <FontAwesomeIcon icon="info-circle" /> help
-        </b-nav-item>
-      </b-navbar-nav>
-      <b-navbar-nav class="ml-auto">
-        <ServerStatus />
-      </b-navbar-nav>
-    </b-collapse>
-  </b-navbar>
+  <nav class="navbar navbar-expand-md bg-light">
+    <div class="container-fluid mx-2 mx-md-0">
+      <router-link to="/" class="navbar-brand">
+        <img alt="Apache Jena logo" src="../assets/logo.svg" style="width: 52px;"> Apache Jena Fuseki
+      </router-link>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <router-link to="/" class="nav-link" exact-active-class="active">
+              <FontAwesomeIcon icon="database" /> datasets
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/manage" class="nav-link" exact-active-class="active">
+              <FontAwesomeIcon icon="cogs" /> manage
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/documentation" class="nav-link" exact-active-class="active">
+              <FontAwesomeIcon icon="info-circle" /> help
+            </router-link>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <ServerStatus />
+        </ul>
+      </div>
+    </div>
+  </nav>
 </template>
 
 <script>
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faDatabase, faCogs, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import ServerStatus from '@/components/ServerStatus'
+import ServerStatus from '@/components/ServerStatus.vue'
 
 library.add(faDatabase, faCogs, faInfoCircle)
 

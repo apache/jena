@@ -25,18 +25,21 @@ import java.util.HashMap;
 import java.util.List ;
 import java.util.Map;
 
+import org.apache.commons.collections4.MultiMapUtils;
+import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.Mode ;
 import org.apache.jena.assembler.assemblers.AssemblerBase ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.ext.com.google.common.collect.HashMultimap;
-import org.apache.jena.ext.com.google.common.collect.Multimap;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.* ;
 import org.apache.jena.query.text.EntityDefinition ;
 import org.apache.jena.query.text.TextIndexException ;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.lucene.analysis.Analyzer;
 
@@ -97,7 +100,7 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
         String defaultField = qsol1.contains("dftField") ? qsol1.getLiteral("dftField").getLexicalForm() : null ;
         String uniqueIdField = qsol1.contains("uidField") ? qsol1.getLiteral("uidField").getLexicalForm() : null;
 
-        Multimap<String, Node> mapDefs = HashMultimap.create() ; 
+        MultiValuedMap<String, Node> mapDefs = MultiMapUtils.newListValuedHashMap();
         Map<String, Analyzer> analyzerDefs = new HashMap<>();
         Map<String, Boolean> noIndexDefs = new HashMap<>();
 
@@ -179,7 +182,7 @@ public class EntityDefinitionAssembler extends AssemblerBase implements Assemble
         docDef.setLangField(langField);
         docDef.setUidField(uniqueIdField);
         for ( String f : mapDefs.keys() ) {
-            for ( Node p : mapDefs.get(f)) 
+            for ( Node p : mapDefs.get(f))
                 docDef.set(f, p) ;
         }
         for (String f : noIndexDefs.keySet()) {

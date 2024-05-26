@@ -19,9 +19,8 @@
 package shex;
 
 import java.util.Arrays;
+import java.util.Optional;
 
-import org.apache.jena.Jena;
-import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.Version;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.sys.JenaSystem;
@@ -30,13 +29,6 @@ public class shex {
     static {
         LogCtl.setLogging();
         JenaSystem.init();
-    }
-
-    private static void version() {
-        Version version = new Version();
-        version.addClass(Jena.class) ;
-        version.print(IndentedWriter.stdout);
-        System.exit(0) ;
     }
 
     public static void main(String...args) {
@@ -59,9 +51,11 @@ public class shex {
                 return;
             case "version":
             case "--version":
-            case "-version":
-                version();
+            case "-version": {
+                Optional<String> ver = Version.versionForClass(shex.class);
+                Version.printVersion(System.err, "ShEx",  ver);
                 System.exit(0);
+            }
         }
 
         // Map to full name.

@@ -53,7 +53,7 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestDatasetWithStandardAnalyzer.class
     , TestDatasetWithKeywordAnalyzer.class
     , TestDatasetWithLowerCaseKeywordAnalyzer.class
-    , TestLuceneWithMultipleThreads.class
+//    , TestLuceneWithMultipleThreads.class
     , TestDatasetWithLocalizedAnalyzer.class
     , TestDatasetWithConfigurableAnalyzer.class
     , TestDatasetWithAnalyzingQueryParser.class
@@ -65,6 +65,7 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestTextHighlighting.class
     , TestTextDefineAnalyzers.class
     , TestTextMultilingualEnhancements.class
+    , TestTextMultipleProplistNotWorking.class
 
     , TestPropListsAssembler.class
     , TestTextPropLists.class

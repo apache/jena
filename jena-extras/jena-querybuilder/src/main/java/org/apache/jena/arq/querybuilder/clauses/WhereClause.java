@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,35 +31,43 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
 /**
  * Interface that defines the WhereClause as per
  * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rWhereClause
- * 
+ *
  * @param <T> The Builder type that the clause is part of.
  */
 public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 
     /**
      * Adds a triple to the where clause.
-     * 
-     * @param t The triple path to add
+     *
+     * @param t The triple to add
      * @return This Builder for chaining.
      */
     public T addWhere(Triple t);
 
     /**
      * Adds a triple path to the where clause.
-     * 
+     *
      * @param t The triple path to add
      * @return This Builder for chaining.
      */
     public T addWhere(TriplePath t);
+    
+    /**
+     * Adds a collections of triple paths to the where clause.
+     *
+     * @param collection The collection of triple paths to add
+     * @return This Builder for chaining.
+     */
+    public T addWhere(Collection<TriplePath> collection);
+
 
     /**
      * Adds a triple to the where clause.
-     * 
+     *
      * @param t The triple to add
      * @return This Builder for chaining.
      */
@@ -67,10 +75,10 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 
     /**
      * Adds a triple or triple path to the where clause.
-     * 
+     *
      * See {@link AbstractQueryBuilder#makeTriplePath} for conversion of the param
      * values.
-     * 
+     *
      * @param s The subject.
      * @param p The predicate.
      * @param o The object.
@@ -80,7 +88,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 
     /**
      * Adds the elements from the whereClause to this where Clause.
-     * 
+     *
      * @param whereClause The whereClause to add to this statement.
      * @return This Builder for chaining.
      */
@@ -88,18 +96,18 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 
     /**
      * Add a variable or variable and values to the value statement.
-     * 
+     *
      * The first var (or first item in a collection) is converted to a variable
      * using the makeVar strategy. A variable may be added multiple times, doing so
      * will append values to the list of variable values. The order in which
      * variables are added to the values table is preserved.
-     * 
+     *
      * Adding a collection as the var will use the first object in the collection as
      * the var and the remaining objects as values.
-     * 
+     *
      * Values are created using makeNode() strategy except that null values are
      * converted to UNDEF.
-     * 
+     *
      * @param var The variable or collection to add.
      * @return The builder for chaining.
      * @see AbstractQueryBuilder#makeNode(Object)
@@ -109,15 +117,15 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 
     /**
      * Add a variable and values to the value statement.
-     * 
+     *
      * The var is converted to a variable using the makeVar strategy. A variable may
      * be added multiple times, doing so will append values to the list of variable
      * values. The order in which variables are added to the values table is
      * preserved.
-     * 
+     *
      * Values are created using makeNode() strategy except that null values are
      * converted to UNDEF.
-     * 
+     *
      * @param var The variable to add.
      * @param values The values for the variable
      * @return The builder for chaining.
@@ -128,19 +136,19 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 
     /**
      * Add a data table to the value statement.
-     * 
+     *
      * Each key in the map is used converted into a variable using the makeVar
      * strategy. The order in which variables are added to the values table is
      * preserved.
-     * 
+     *
      * Variables are added in the iteration order for the map. It may be advisable
      * to use a LinkedHashMap to preserver the insert order.
-     * 
+     *
      * @see java.util.LinkedHashMap
-     * 
+     *
      * Each item in the value collection is converted into a node using makeNode()
      * strategy except that null values are converted to UNDEF.
-     * 
+     *
      * If there are already values in the value statement the data table is adds as
      * follows:
      * <ul>
@@ -153,7 +161,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
      * the map additional UNDEF entries are appended to them to account for new rows
      * that are added.</li>
      * </ul>
-     * 
+     *
      * @param dataTable The data table to add.
      * @return The builder for chaining.
      * @see AbstractQueryBuilder#makeNode(Object)
@@ -168,7 +176,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
      * variable in the table. Values objects are converted to nodes using the
      * makeNode strategy. Variables will always be in the order added to the values
      * table.
-     * 
+     *
      * @param values the collection of values to add.
      * @return The builder for chaining.
      * @see AbstractQueryBuilder#makeNode(Object)
@@ -182,7 +190,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
      * each variable in the table. Values objects are converted to nodes using the
      * makeNode strategy. Variables will always be in the order added to the values
      * table.
-     * 
+     *
      * @param values the collection of values to add.
      * @return The builder for chaining.
      * @see AbstractQueryBuilder#makeNode(Object)
@@ -192,7 +200,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
     /**
      * Get an unmodifiable list of vars from the where clause values in the order
      * that they appear in the values table.
-     * 
+     *
      * @return an unmodifiable list of vars.
      */
     public List<Var> getWhereValuesVars();
@@ -200,9 +208,9 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
     /**
      * Get an unmodifiable map of vars from the where clause values and their
      * values.
-     * 
+     *
      * Null values are considered as UNDEF values.
-     * 
+     *
      * @return an unmodifiable map of vars and their values.
      */
     public Map<Var, List<Node>> getWhereValuesMap();
@@ -215,7 +223,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 
     /**
      * Adds an optional triple to the where clause.
-     * 
+     *
      * @param t The triple to add
      * @return This Builder for chaining.
      */
@@ -223,15 +231,23 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 
     /**
      * Adds an optional triple path to the where clause.
-     * 
+     *
      * @param t The triple path to add
      * @return This Builder for chaining.
      */
     public T addOptional(TriplePath t);
+    
+    /**
+     * Adds a collection of triple paths as the optional clauses.
+     *
+     * @param collection The collection of triple paths to add
+     * @return This Builder for chaining.
+     */
+    public T addOptional(Collection<TriplePath> collection);
 
     /**
      * Adds an optional triple as to the where clause.
-     * 
+     *
      * @param t The triple to add
      * @return This Builder for chaining.
      */
@@ -239,10 +255,10 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 
     /**
      * Adds an optional triple or triple path to the where clause.
-     * 
+     *
      * See {@link AbstractQueryBuilder#makeTriplePath} for conversion of the param
      * values.
-     * 
+     *
      * @param s The subject.
      * @param p The predicate.
      * @param o The object.
@@ -252,7 +268,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 
     /**
      * Adds an optional group pattern to the where clause.
-     * 
+     *
      * @param t The select builder to add as an optional pattern
      * @return This Builder for chaining.
      */
@@ -260,31 +276,30 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 
     /**
      * Adds a filter to the where clause
-     * 
+     *
      * @param expression the expression to evaluate for the filter.
-     * @return @return This Builder for chaining.
-     * @throws ParseException If the expression can not be parsed.
+     * @return This Builder for chaining.
      */
-    public T addFilter(String expression) throws ParseException;
+    public T addFilter(String expression);
 
     /**
      * Adds a filter to the where clause
-     * 
+     *
      * Use ExprFactory or NodeValue static or the AbstractQueryBuilder.makeExpr
      * methods to create the expression.
-     * 
+     *
      * @see ExprFactory
      * @see org.apache.jena.sparql.expr.NodeValue
      * @see AbstractQueryBuilder#makeExpr(String)
-     * 
+     *
      * @param expression the expression to evaluate for the filter.
-     * @return @return This Builder for chaining.
+     * @return This Builder for chaining.
      */
     public T addFilter(Expr expression);
 
     /**
      * Add a sub query.
-     * 
+     *
      * @param subQuery The subquery as defined by a SelectBuilder.
      * @return This builder for chaining.
      */
@@ -292,7 +307,7 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
 
     /**
      * Add a union.
-     * 
+     *
      * @param union The union as defined by a SelectBuilder.
      * @return This builder for chaining.
      */
@@ -301,9 +316,9 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
     /**
      * Add a graph statement to the query as per
      * http://www.w3.org/TR/2013/REC-sparql11 -query-20130321/#rGraphGraphPattern.
-     * 
+     *
      * See {@link AbstractQueryBuilder#makeNode} for conversion of the graph param.
-     * 
+     *
      * @param graph The iri or variable identifying the graph.
      * @param subQuery The graph to add.
      * @return This builder for chaining.
@@ -313,9 +328,9 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
     /**
      * Add a graph statement to the query as per
      * http://www.w3.org/TR/2013/REC-sparql11 -query-20130321/#rGraphGraphPattern.
-     * 
+     *
      * See {@link AbstractQueryBuilder#makeNode} for conversion of the graph param.
-     * 
+     *
      * @param graph The iri or variable identifying the graph.
      * @param triple a single s, p, o triple for the query.
      * @return This builder for chaining.
@@ -325,9 +340,9 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
     /**
      * Add a graph statement to the query as per
      * http://www.w3.org/TR/2013/REC-sparql11 -query-20130321/#rGraphGraphPattern.
-     * 
+     *
      * See {@link AbstractQueryBuilder#makeNode} for conversion of the graph param.
-     * 
+     *
      * @param graph The iri or variable identifying the graph.
      * @param subject The subject for the graph query
      * @param predicate The predicate for the graph query.
@@ -339,9 +354,9 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
     /**
      * Add a graph statement to the query as per
      * http://www.w3.org/TR/2013/REC-sparql11 -query-20130321/#rGraphGraphPattern.
-     * 
+     *
      * See {@link AbstractQueryBuilder#makeNode} for conversion of the graph param.
-     * 
+     *
      * @param graph The iri or variable identifying the graph.
      * @param triple a single triple for the query.
      * @return This builder for chaining.
@@ -351,19 +366,28 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
     /**
      * Add a graph statement to the query as per
      * http://www.w3.org/TR/2013/REC-sparql11 -query-20130321/#rGraphGraphPattern.
-     * 
+     *
      * See {@link AbstractQueryBuilder#makeNode} for conversion of the graph param.
-     * 
+     *
      * @param graph The iri or variable identifying the graph.
      * @param triplePath a single triple path for the query.
      * @return This builder for chaining.
      */
     public T addGraph(Object graph, TriplePath triplePath);
+    
+    /**
+     * Adds a collection of triple paths as the optional clauses.
+     *
+     * @param graph The iri or variable identifying the graph.
+     * @param collection The collection of triple paths to add
+     * @return This Builder for chaining.
+     */
+    public T addGraph(Object graph, Collection<TriplePath> collection);
 
     /**
      * Add a bind statement to the query *
      * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rGraphGraphPattern.
-     * 
+     *
      * @param expression The expression to bind to the var.
      * @param var The variable to bind to.
      * @return This builder for chaining.
@@ -373,26 +397,25 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
     /**
      * Add a bind statement to the query
      * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rGraphGraphPattern.
-     * 
+     *
      * @param expression The expression to bind to the var.
      * @param var The variable to bind to.
      * @return This builder for chaining.
-     * @throws ParseException
      */
-    public T addBind(String expression, Object var) throws ParseException;
+    public T addBind(String expression, Object var);
 
     /**
      * Get the Where handler for this clause.
-     * 
+     *
      * @return The WhereHandler used by this clause.
      */
     public WhereHandler getWhereHandler();
 
     /**
      * Create a list node from a list of objects as per RDF Collections.
-     * 
+     *
      * http://www.w3.org/TR/2013/REC-sparql11-query-20130321/#collections
-     * 
+     *
      * See {@link AbstractQueryBuilder#makeNode} for conversion of the param values.
      * <p>
      * usage:
@@ -401,18 +424,19 @@ public interface WhereClause<T extends AbstractQueryBuilder<T>> {
      * <li>addWhere( list( param1, param2, param3, ... ), p, o )</li>
      * <li>addOptional( list( param1, param2, param3, ... ), p, o )</li>
      * </ul>
-     * </p>
-     * 
+     *
      * @param objs the list of objects for the list.
      * @return the first blank node in the list.
+     * @deprecated use {@code addWhere(Converters.makeCollection(List.of(Object...)))}, or simply call {@link #addWhere(Object, Object, Object)} passing the collection for one of the objects.
      */
+    @Deprecated(since="5.0.0")
     public Node list(Object... objs);
 
     /**
      * Add a minus clause to the query.
-     * 
+     *
      * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rMinusGraphPattern
-     * 
+     *
      * @param t The select builder to add as a minus pattern
      * @return this builder for chaining
      */

@@ -33,6 +33,7 @@ import com.apicatalog.rdf.io.nquad.NQuadsWriter;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.system.JenaTitanium;
+import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.sse.SSE;
@@ -73,18 +74,18 @@ public class TestJenaTitanium {
     @Test public void convertDataset() throws IOException, RdfWriterException {
         String dsStr = StrUtils.strjoinNL
                 ("(dataset"
-                , "(_ :s :p :o)"
-                , "(_ :s :p 123)"
-                , "(_ :s :p 123.5)"
-                , "(_ :s :p 1e10)"
-                , "(_ :s :p '2021-08-10'^^xsd:date)"
-                , "(_ :s :p 'foo')"
-                , "(:g1 :s :p :o)"
-                , "(:g1 _:x :p :o)"
-                , "(:g2 _:x :p 123)"
-                , "(:g2 _:x :p 'abc'@en)"
-                , "(_:x _:x :p _:x)"
-                //, "(_ <<:s :q :z>> :p <<:s :q :z>>)"
+                , "  (_ :s :p :o)"
+                , "  (_ :s :p 123)"
+                , "  (_ :s :p 123.5)"
+                , "  (_ :s :p 1e10)"
+                , "  (_ :s :p '2021-08-10'^^xsd:date)"
+                , "  (_ :s :p 'foo')"
+                , "  (:g1 :s :p :o)"
+                , "  (:g1 _:x :p :o)"
+                , "  (:g2 _:x :p 123)"
+                , "  (:g2 _:x :p 'abc'@en)"
+                , "  (_:x _:x :p _:x)"
+                //, "  (_ <<:s :q :z>> :p <<:s :q :z>>)"
                 ,")"
                 );
         DatasetGraph dsg1 = SSE.parseDatasetGraph(dsStr);
@@ -102,7 +103,7 @@ public class TestJenaTitanium {
             assertTrue(s.contains("@en"));
         }
 
-        DatasetGraph dsg2 = JenaTitanium.convert(rdfDataset);
+        DatasetGraph dsg2 = JenaTitanium.convert(rdfDataset, RiotLib.dftProfile());
         assertTrue(IsoMatcher.isomorphic(dsg1, dsg2));
     }
 }

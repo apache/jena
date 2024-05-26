@@ -19,6 +19,7 @@
 package org.apache.jena.irix;
 
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
 /**
  * Support for RFC3986 IRIs.
@@ -59,7 +60,7 @@ public abstract class IRIx {
      * It returns a IRIx holder and does no checking whatsoever.
      * Whether the IRI "works" is down to care by the application.
      */
-    static public IRIx createAny(String iri) throws IRIException {
+    static public IRIx createAny(String iri) {
         Objects.requireNonNull(iri);
         return IRIProviderAny.stringProvider().create(iri);
     }
@@ -83,13 +84,16 @@ public abstract class IRIx {
      * <p>
      * Note that a URI can be both "not absolute" and "not relative", e.g. {@code http://example/path#fragment}.
      * <p>
+     * Beware that <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-3.1">RFC 2396 section 3.1</a> has a
+     * different definition, where the scheme is required but a fragment may be present.
+     * <p>
      * See {@linkplain #isReference()} for testing whether a URI is suitable for use in RDF.
      */
     public abstract boolean isAbsolute();
 
     /**
      * A <a href="https://tools.ietf.org/html/rfc3986#section-4.2"><em>relative
-     * URI</em></a> one without a scheme, and maybe without some of the other parts.
+     * URI</em></a> is one without a scheme, and maybe without some of the other parts.
      * <p>
      * Often it is just the path part.
      * <p>
@@ -107,12 +111,22 @@ public abstract class IRIx {
     public abstract boolean hasScheme(String scheme);
 
     /**
+     * Return the IRI scheme, if known.
+     * <p>
+     * Returns null for "no scheme" (relative IRI).
+     */
+    public abstract String scheme();
+
+    /**
      * An <em>RDF Reference</em> is an URI which has scheme.
      * If it is hierarchical, it should have a non-empty host authority.
      * It may have a query component and may have a fragment component.
      * This not a term in
      * <a href="https://tools.ietf.org/html/rfc3986">RFC 3986</a>
      * and it is not the same as "absolute URI".
+     * This is a change from
+     * <a href="https://tools.ietf.org/html/rfc2396">RFC 2396</a>
+     * where an absolute URI means "has scheme".
      * <p>
      * In RDF data it is a
      * <a href="https://www.w3.org/TR/rdf11-concepts/#section-IRIs">useful concept</a>.
@@ -182,6 +196,18 @@ public abstract class IRIx {
      * If no relative IRI can be found, return null.
      */
     public abstract IRIx relativize(IRIx other);
+
+    /**
+     * Does this IRIx have any warnings and errors that are
+     * not syntax errors, for example, from URI scheme checks.
+     */
+    public abstract boolean hasViolations();
+
+    /**
+     * Handle violations by sending a boolean, indicating whether this is an error (true) or
+     * a warning (false), and string message to a handler.
+     */
+    public abstract void handleViolations(BiConsumer<Boolean, String> violation);
 
     /**
      * Return the URI as string. This has a stronger contract than "toString".

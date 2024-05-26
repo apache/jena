@@ -26,7 +26,7 @@ import org.apache.jena.shex.expressions.TripleExpression;
 import org.apache.jena.shex.expressions.TripleExprOneOf;
 import org.apache.jena.shex.sys.ValidationContext;
 
-public class ShapeEvalOneOf {
+/*package*/ class ShapeEvalOneOf {
 
     static boolean matchesOneOf(ValidationContext vCxt, Set<Triple> matchables, Node node, TripleExprOneOf oneOf, Set<Node> extras) {
         //XOR semantics

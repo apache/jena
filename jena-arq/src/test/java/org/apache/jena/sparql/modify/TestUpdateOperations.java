@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,39 +18,39 @@
 
 package org.apache.jena.sparql.modify;
 
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.system.ErrorHandler;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.core.DatasetGraphWrapper;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.update.UpdateAction;
+import org.apache.jena.update.UpdateException;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateRequest;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+
 import static org.apache.jena.atlas.lib.StrUtils.strjoinNL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong ;
-
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.Triple;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.RDFNode ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.riot.system.ErrorHandler;
-import org.apache.jena.riot.system.ErrorHandlerFactory;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.DatasetGraphFactory ;
-import org.apache.jena.sparql.core.DatasetGraphWrapper ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.update.UpdateAction;
-import org.apache.jena.update.UpdateException;
-import org.apache.jena.update.UpdateFactory;
-import org.apache.jena.update.UpdateRequest;
-import org.apache.jena.vocabulary.OWL ;
-import org.apache.jena.vocabulary.RDF ;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test ;
 
 // Most of the testing of SPARQL Update is scripts and uses the SPARQL-WG test suite.
 // Here are a few additional tests
@@ -242,7 +242,7 @@ public class TestUpdateOperations
         List<Triple> triples = m.getGraph().find(null,null,null).toList();
 
         Node s = NodeFactory.createURI("http://www.example.org/s");
-        Triple expected = new Triple(s, s, s);
+        Triple expected = Triple.create(s, s, s);
         assertTrue(triples.contains(expected));
         assertEquals(1, triples.size());
     }
@@ -263,8 +263,8 @@ public class TestUpdateOperations
         Node s1 = NodeFactory.createURI("http://www.example.org/base1/s");
         Node s2 = NodeFactory.createURI("http://www.example.org/base2/s");
         assertNotEquals("Bad test: different triples are equals", s1, s2);
-        Triple expected1 = new Triple(s1, s1, s1);
-        Triple expected2 = new Triple(s2, s2, s2);
+        Triple expected1 = Triple.create(s1, s1, s1);
+        Triple expected2 = Triple.create(s2, s2, s2);
         assertTrue(triples.contains(expected1));
         assertTrue(triples.contains(expected2));
         assertEquals(2, triples.size());
@@ -278,7 +278,7 @@ public class TestUpdateOperations
         UpdateAction.execute(req, m);
         List<Triple> triples = m.getGraph().find(null,null,null).toList();
         Node x = NodeFactory.createURI(expectedURI);
-        Triple expected = new Triple(x, x, x);
+        Triple expected = Triple.create(x, x, x);
         assertTrue(triples.contains(expected));
         assertEquals(1, triples.size());
     }

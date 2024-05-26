@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
 import org.apache.jena.atlas.lib.StreamOps;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.shex.expressions.ShapeExpression;
 import org.apache.jena.shex.expressions.TripleConstraint;
 import org.apache.jena.shex.sys.ReportItem;
 import org.apache.jena.shex.sys.ValidationContext;
+import org.apache.jena.system.G;
 
-public class ShapeEvalTripleConstraint {
+/*package*/ class ShapeEvalTripleConstraint {
 
     /** Triple Constraint, with cardinality */
     static boolean matchesCardinalityTC(ValidationContext vCxt, Set<Triple> matchables, Node node,
@@ -72,6 +72,11 @@ public class ShapeEvalTripleConstraint {
             vCxt.reportEntry(new ReportItem("Cardinality violation (max="+max+"): "+N, null));
             return false;
         }
+
+        boolean b = tripleConstraint.testSemanticActions(vCxt, matchables);
+        if ( ! b )
+            return false;
+
         return true;
     }
 }

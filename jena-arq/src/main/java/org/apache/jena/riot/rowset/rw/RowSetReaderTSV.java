@@ -24,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import org.apache.jena.atlas.io.IO;
@@ -197,6 +198,22 @@ public class RowSetReaderTSV implements RowSetReader {
            Binding row = currentBinding;
            currentBinding = null;
            return row;
+       }
+
+       @Override
+       public void forEachRemaining(Consumer<? super Binding> action) {
+           if ( finished )
+               return;
+           if ( null != currentBinding ) {
+               action.accept(currentBinding);
+               currentBinding = null;
+           }
+           Binding row;
+           while (null != (row = parseNextBinding())) {
+               action.accept(row);
+           }
+           IO.close(reader);
+           finished = true;
        }
 
        private Binding parseNextBinding() {

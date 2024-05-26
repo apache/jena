@@ -21,7 +21,7 @@ package org.apache.jena.reasoner.rulesys;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.jena.graph.Factory ;
+import org.apache.jena.graph.GraphMemFactory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -408,7 +408,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
                 return dg;
             }
         }
-        Graph dg = Factory.createGraphMem( ); 
+        Graph dg = GraphMemFactory.createGraphMem( ); 
         safeDeductions = new SafeGraph( dg );
         return dg;
     }

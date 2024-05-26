@@ -42,14 +42,19 @@ public class ModLangParse extends ModBase
     private ArgDecl argStopWarn = new ArgDecl(ArgDecl.NoValue, "stopOnWarning", "stoponwarning", "stop-warnings");
 
     private ArgDecl argBase     = new ArgDecl(ArgDecl.HasValue, "base");
+    private ArgDecl argNoBase   = new ArgDecl(ArgDecl.NoValue, "noBase", "nobase");
 
     private ArgDecl argRDFS     = new ArgDecl(ArgDecl.HasValue, "rdfs");
 
     private ArgDecl argSyntax   = new ArgDecl(ArgDecl.HasValue, "syntax");
+    private ArgDecl argMerge    = new ArgDecl(ArgDecl.NoValue, "merge", "union");
 
     private String rdfsVocabFilename    = null;
     private Model  rdfsVocab            = null;
     private String baseIRI              = null;
+    // Parse withour a base - this retains relative URIs but use with care.
+    // Best effort : there is no end-to-end guarantess.
+    private boolean noBase              = false;
     private boolean explicitCheck       = false;
     private boolean explicitNoCheck     = false;
 
@@ -60,6 +65,8 @@ public class ModLangParse extends ModBase
     private boolean strict              = false;
     private boolean validate            = false;
     private boolean outputCount         = false;
+    private boolean quadsToTriples    = false;
+
     private Lang lang                   = null;
 
     @Override
@@ -68,12 +75,13 @@ public class ModLangParse extends ModBase
         cmdLine.add(argSink,    "--sink",           "Parse but throw away output");
         cmdLine.add(argSyntax,  "--syntax=NAME",    "Set syntax (otherwise syntax guessed from file extension)");
         cmdLine.add(argBase,    "--base=URI",       "Set the base URI (does not apply to N-triples and N-Quads)");
+        cmdLine.add(argNoBase,  "--nobase",         "Pass through relative URIs (best effort)");
         cmdLine.add(argCheck,   "--check",          "Additional checking of RDF terms");
         cmdLine.add(argStrict,  "--strict",         "Run with in strict mode");
         cmdLine.add(argValidate,"--validate",       "Same as --sink --check --strict");
         cmdLine.add(argCount,   "--count",          "Count triples/quads parsed, not output them");
+        cmdLine.add(argMerge,   "--merge",          "Convert quads to triples");
         cmdLine.add(argRDFS,    "--rdfs=file",      "Apply some RDFS inference using the vocabulary in the file");
-
         cmdLine.add(argNoCheck, "--nocheck",        "Turn off checking of RDF terms");
 
 //        cmdLine.add(argStop,    "--stop",           "Stop parsing on encountering a bad RDF term");
@@ -110,11 +118,15 @@ public class ModLangParse extends ModBase
             baseIRI = cmdLine.getValue(argBase);
             try {
                 IRIx iri = IRIs.reference(baseIRI);
-                if ( !iri.isAbsolute() )
-                    throw new CmdException("Base IRI not suitable for use as a base for RDF: " + baseIRI);
             } catch (IRIException ex) {
                 throw new CmdException("Bad base IRI: " + baseIRI);
             }
+        }
+
+        if ( cmdLine.contains(argNoBase) ) {
+            if ( cmdLine.contains(argBase) )
+                throw new CmdException("Both --base and --noBase");
+            noBase = true;
         }
 
         if ( cmdLine.contains(argStop) )
@@ -130,6 +142,8 @@ public class ModLangParse extends ModBase
             bitbucket = true;
             outputCount = true;
         }
+
+        quadsToTriples = cmdLine.contains(argMerge);
 
         if ( cmdLine.contains(argRDFS) ) {
             try {
@@ -163,6 +177,10 @@ public class ModLangParse extends ModBase
         return outputCount;
     }
 
+    public boolean mergeQuads() {
+        return quadsToTriples;
+    }
+
     public boolean stopOnBadTerm() {
         return stopOnError;
     }
@@ -177,6 +195,10 @@ public class ModLangParse extends ModBase
 
     public String getBaseIRI() {
         return baseIRI;
+    }
+
+    public boolean hasNoBase() {
+        return noBase;
     }
 
     public Model getRDFSVocab() {

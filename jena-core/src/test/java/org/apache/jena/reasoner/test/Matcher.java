@@ -162,7 +162,7 @@ public class Matcher
         Node s = t.getSubject() ;
         Node p = t.getPredicate() ;
         Node o = t.getObject() ;
-        return new Triple(remap(bnodeMapping,s,alloc), remap(bnodeMapping,p,alloc), remap(bnodeMapping,o,alloc) ) ;
+        return Triple.create(remap(bnodeMapping,s,alloc), remap(bnodeMapping,p,alloc), remap(bnodeMapping,o,alloc) ) ;
     }
 
     private static Node remap(Map<Node, Node> mapping, Node n, Allocator alloc)

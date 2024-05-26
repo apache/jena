@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## ---- Additional tests
+## ---- ARQ tests
 
 N=0
 

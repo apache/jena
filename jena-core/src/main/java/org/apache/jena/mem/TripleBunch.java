@@ -21,6 +21,8 @@ package org.apache.jena.mem;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
+import java.util.Spliterator;
+
 /**
     A bunch of triples - a stripped-down set with specialized methods. A
     bunch is expected to store triples that share some useful property 
@@ -72,5 +74,10 @@ public interface TripleBunch
         <code>container</code> is invoked.
     */
     public abstract ExtendedIterator<Triple> iterator( HashCommon.NotifyEmpty container );
+
+    /**
+        Answer a spliterator over all the triples in this bunch.
+    */
+    public abstract Spliterator<Triple> spliterator();
     
     }

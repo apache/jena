@@ -26,7 +26,6 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.iri.IRI ;
 import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.sparql.expr.ExprEvalException ;
 import org.apache.jena.sparql.expr.NodeValue ;
@@ -40,11 +39,6 @@ import org.apache.jena.util.iterator.WrappedIterator ;
  */
 public class NodeUtils
 {
-    /** IRI to Node */
-    public static Node asNode(IRI iri) {
-        return NodeFactory.createURI(iri.toString()) ;
-    }
-
     /** IRI string to Node */
     public static Node asNode(String iri) {
         return NodeFactory.createURI(iri) ;
@@ -119,14 +113,6 @@ public class NodeUtils
         return nodes;
     }
 
-    /**
-     * @deprecated Use {@link NodeCmp#compareRDFTerms(Node, Node)}
-     */
-    @Deprecated
-    public static int compareRDFTerms(Node node1, Node node2) {
-        return NodeCmp.compareRDFTerms(node1, node2);
-    }
-
     // --- Equality tests.
 
     /** Both null or same node : {@code Node.equals} */
@@ -146,7 +132,7 @@ public class NodeUtils
         // 2 literals.
         NodeValue nv1 = NodeValue.makeNode(n1);
         NodeValue nv2 = NodeValue.makeNode(n2);
-        try { return NodeValue.sameAs(nv1, nv2); }
+        try { return NodeValue.sameValueAs(nv1, nv2); }
         catch(ExprEvalException ex)
         {
             // Incomparable as values - must be different for our purposes.
@@ -188,8 +174,10 @@ public class NodeUtils
 
     /**
      * A Node is a simple string if:
+     * <ul>
      * <li>(RDF 1.0) No datatype and no language tag
      * <li>(RDF 1.1) xsd:string
+     * </ul>
      */
     public static boolean isSimpleString(Node n) { return Util.isSimpleString(n) ; }
 

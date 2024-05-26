@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@
  */
 package org.apache.jena.arq.querybuilder;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,6 @@ import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
 /**
  * Builder for SPARQL Describe Queries.
@@ -53,7 +53,7 @@ import org.apache.jena.sparql.lang.sparql_11.ParseException;
  * {@link DescribeBuilder#setVar(Object, Object)} and
  * {@link DescribeBuilder#setVar(Var, Node)}. The method
  * {@link DescribeBuilder#clearWhereValues()} allows to clear the set values.
- * 
+ *
  * @see AskBuilder
  * @see ConstructBuilder
  * @see SelectBuilder
@@ -88,7 +88,7 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
     }
 
     @Override
-    public DescribeBuilder addVar(String expr, Object var) throws ParseException {
+    public DescribeBuilder addVar(String expr, Object var) {
         getSelectHandler().addVar(expr, Converters.makeVar(var));
         return this;
     }
@@ -153,19 +153,19 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
     }
 
     @Override
-    public DescribeBuilder addHaving(String expression) throws ParseException {
+    public DescribeBuilder addHaving(String expression) {
         getSolutionModifierHandler().addHaving(expression);
         return this;
     }
 
     @Override
-    public DescribeBuilder addHaving(Expr expression) throws ParseException {
+    public DescribeBuilder addHaving(Expr expression) {
         getSolutionModifierHandler().addHaving(expression);
         return this;
     }
 
     @Override
-    public DescribeBuilder addHaving(Object var) throws ParseException {
+    public DescribeBuilder addHaving(Object var) {
         getSolutionModifierHandler().addHaving(Converters.makeVar(var));
         return this;
     }
@@ -198,6 +198,13 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
         getWhereHandler().addWhere(t);
         return this;
     }
+    
+
+    @Override
+    public DescribeBuilder addWhere(Collection<TriplePath> collection) {
+        getWhereHandler().addWhere(collection);
+        return this;
+    }
 
     @Override
     public DescribeBuilder addWhere(FrontsTriple t) {
@@ -207,7 +214,7 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
 
     @Override
     public DescribeBuilder addWhere(Object s, Object p, Object o) {
-        getWhereHandler().addWhere(makeTriplePath(s, p, o));
+        getWhereHandler().addWhere(makeTriplePaths(s, p, o));
         return this;
     }
 
@@ -259,25 +266,29 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
 
     @Override
     public DescribeBuilder addOptional(Triple t) {
-        getWhereHandler().addOptional(new TriplePath(t));
-        return this;
+        return addOptional(new TriplePath(t));
     }
 
     @Override
     public DescribeBuilder addOptional(TriplePath t) {
-        getWhereHandler().addOptional(t);
+        getWhereHandler().addOptional(Arrays.asList(t));
         return this;
     }
 
     @Override
     public DescribeBuilder addOptional(FrontsTriple t) {
-        getWhereHandler().addOptional(new TriplePath(t.asTriple()));
+        return addOptional(new TriplePath(t.asTriple()));
+    }
+
+    @Override
+    public DescribeBuilder addOptional(Collection<TriplePath> collection) {
+        getWhereHandler().addOptional(collection);
         return this;
     }
 
     @Override
     public DescribeBuilder addOptional(Object s, Object p, Object o) {
-        getWhereHandler().addOptional(makeTriplePath(s, p, o));
+        getWhereHandler().addOptional(makeTriplePaths(s, p, o));
         return this;
     }
 
@@ -288,7 +299,7 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
     }
 
     @Override
-    public DescribeBuilder addFilter(String expression) throws ParseException {
+    public DescribeBuilder addFilter(String expression) {
         getWhereHandler().addFilter(expression);
         return this;
     }
@@ -320,25 +331,30 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
 
     @Override
     public DescribeBuilder addGraph(Object graph, FrontsTriple triple) {
-        getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple.asTriple()));
+        addGraph(graph, new TriplePath(triple.asTriple()));
         return this;
     }
 
     @Override
     public DescribeBuilder addGraph(Object graph, Object subject, Object predicate, Object object) {
-        getWhereHandler().addGraph(makeNode(graph), makeTriplePath(subject, predicate, object));
+        getWhereHandler().addGraph(makeNode(graph), makeTriplePaths(subject, predicate, object));
         return this;
     }
 
     @Override
     public DescribeBuilder addGraph(Object graph, Triple triple) {
-        getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple));
-        return this;
+        return addGraph(graph, new TriplePath(triple));
     }
 
     @Override
     public DescribeBuilder addGraph(Object graph, TriplePath triplePath) {
-        getWhereHandler().addGraph(makeNode(graph), triplePath);
+        getWhereHandler().addGraph(makeNode(graph), Arrays.asList(triplePath));
+        return this;
+    }
+    
+    @Override
+    public DescribeBuilder addGraph(Object graph, Collection<TriplePath> collection) {
+        getWhereHandler().addGraph(makeNode(graph), collection);
         return this;
     }
 
@@ -349,11 +365,15 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
     }
 
     @Override
-    public DescribeBuilder addBind(String expression, Object var) throws ParseException {
+    public DescribeBuilder addBind(String expression, Object var) {
         getWhereHandler().addBind(expression, Converters.makeVar(var));
         return this;
     }
 
+    /*
+     * @deprecated use {@code addWhere(Converters.makeCollection(List.of(Object...)))}, or simply call {@link #addWhere(Object, Object, Object)} passing the collection for one of the objects.
+     */
+    @Deprecated(since="5.0.0")
     @Override
     public Node list(Object... objs) {
         return getWhereHandler().list(objs);
@@ -366,25 +386,13 @@ public class DescribeBuilder extends AbstractQueryBuilder<DescribeBuilder> imple
     }
 
     @Override
-    public DescribeBuilder fromNamed(String graphName) {
+    public DescribeBuilder fromNamed(Object graphName) {
         getDatasetHandler().fromNamed(graphName);
         return this;
     }
 
     @Override
-    public DescribeBuilder fromNamed(Collection<String> graphNames) {
-        getDatasetHandler().fromNamed(graphNames);
-        return this;
-    }
-
-    @Override
-    public DescribeBuilder from(String graphName) {
-        getDatasetHandler().from(graphName);
-        return this;
-    }
-
-    @Override
-    public DescribeBuilder from(Collection<String> graphName) {
+    public DescribeBuilder from(Object graphName) {
         getDatasetHandler().from(graphName);
         return this;
     }

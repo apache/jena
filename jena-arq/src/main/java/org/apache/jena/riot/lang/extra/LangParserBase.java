@@ -130,7 +130,7 @@ public class LangParserBase {
         return n ;
     }
 
-    protected Node createTripleTerm(Node s, Node p, Node o, int line, int column) {
+    protected Node createQuotedTriple(Node s, Node p, Node o, int line, int column) {
         return profile.createTripleNode(s, p, o, line, column);
     }
 

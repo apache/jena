@@ -26,11 +26,12 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     // IRIx tests with matrix of providers.
-    TestIRIx.class,
+    TestIRIxSyntax.class,
+    TestIRIxOps.class,
     TestRFC3986.class,
     TestResolve.class,
     TestNormalize.class,
-    TestRelative.class,
+    TestRelative.class
 } )
 
 public class TS_IRIx {

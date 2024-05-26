@@ -1,5 +1,4 @@
----
-title: Fuseki: Configuration file examples.
+Fuseki: Configuration file examples.
 ---
 
 This directory includes some examples - they will need to be adapted to

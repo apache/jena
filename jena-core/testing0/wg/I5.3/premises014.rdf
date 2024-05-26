@@ -1,0 +1,32 @@
+<!--++ I5.3/premises014.rdf ** generated using webont test editor. ++-->
+<!--++ Created 23 Jul 2003 12:20:42 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: premises014.rdf,v 1.5 2003-12-05 05:09:30 jeremy_carroll Exp $
+-->
+<!--
+This entailment does not hold under the RDF Semantics, 
+but does under the RDFS Compatible Semantics for OWL.
+-->
+<!-- Author: Herman ter Horst -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xml:base="http://www.w3.org/2002/03owlt/I5.3/premises014" >
+
+  <rdfs:Class rdf:about="http://example.org/x" />
+ 
+  <rdf:Description rdf:about=
+         "http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+    <rdfs:domain rdf:resource="http://example.org/y"/>
+  </rdf:Description>
+
+</rdf:RDF>

@@ -72,9 +72,9 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     public static <T> Stream<T> asStream(Iterator<T> iterator, boolean parallel) {
         int characteristics = Spliterator.IMMUTABLE;
-        Stream<T> stream = StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, characteristics), parallel);
-        stream.onClose(()->close(iterator));
-        return stream;
+        Stream<T> stream1 = StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, characteristics), parallel);
+        Stream<T> stream2 = stream1.onClose(()->close(iterator));
+        return stream2;
     }
 
     // ---- Special iterators.
@@ -100,7 +100,7 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     @SafeVarargs
     public static <T> Iter<T> of(T ...items) {
-        return Iter.iter(Arrays.asList(items).iterator());
+        return Iter.iter(List.of(items).iterator());
     }
 
     public static<T> Iter<T> ofNullable(T t) {
@@ -218,10 +218,7 @@ public class Iter<T> implements IteratorCloseable<T> {
     /** See {@link Stream#collect(Supplier, BiConsumer, BiConsumer)}, except without the {@code BiConsumer<R, R> combiner} */
     public static <T,R> R collect(Iterator<T> iter, Supplier<R> supplier, BiConsumer<R, ? super T> accumulator) {
         R result = supplier.get();
-        while(iter.hasNext()) {
-            T elt = iter.next();
-            accumulator.accept(result, elt);
-        }
+        iter.forEachRemaining(elt -> accumulator.accept(result, elt));
         return result;
     }
 
@@ -235,10 +232,7 @@ public class Iter<T> implements IteratorCloseable<T> {
      * @see #map(Iterator, Function)
      */
     public static <T> void apply(Iterator<? extends T> stream, Consumer<T> action) {
-        for (; stream.hasNext();) {
-            T item = stream.next();
-            action.accept(item);
-        }
+        stream.forEachRemaining(action);
     }
 
     // ---- Filter
@@ -291,6 +285,22 @@ public class Iter<T> implements IteratorCloseable<T> {
             }
             closeIterator();
             throw new NoSuchElementException("filter.next");
+        }
+
+        @Override
+        public void forEachRemaining(Consumer<? super T> action) {
+            if ( finished )
+                return;
+            if ( slotOccupied ) {
+                action.accept(slot);
+            }
+            T t;
+            while (stream.hasNext()) {
+                t = stream.next();
+                if ( filter.test(t) )
+                    action.accept(t);
+            }
+            slotOccupied = false;
         }
 
         private void closeIterator() {
@@ -418,6 +428,11 @@ public class Iter<T> implements IteratorCloseable<T> {
         }
 
         @Override
+        public void forEachRemaining(Consumer<? super R> action) {
+            stream.forEachRemaining(item->action.accept(converter.apply(item)));
+        }
+
+        @Override
         public void close() {
             Iter.close(stream);
         }
@@ -458,6 +473,14 @@ public class Iter<T> implements IteratorCloseable<T> {
             T t = stream.next();
             action.accept(t);
             return t;
+        }
+
+        @Override
+        public void forEachRemaining(Consumer<? super T> action) {
+            stream.forEachRemaining(item->{
+                this.action.accept(item);
+                action.accept(item);
+            });
         }
 
         @Override
@@ -651,17 +674,14 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     /** Count the iterator (this is destructive on the iterator) */
     public static <T> long count(Iterator<T> iterator) {
-        long x = 0;
-        while (iterator.hasNext()) {
-            iterator.next();
-            x++;
-        }
-        return x;
+        ActionCount<T> action = new ActionCount<>();
+        iterator.forEachRemaining(action);
+        return action.getCount();
     }
 
     /** Consume the iterator */
     public static <T> void consume(Iterator<T> iterator) {
-        count(iterator);
+        iterator.forEachRemaining(x->{}); // Do nothing.
     }
 
     /** Create a string from an iterator, using the separator. Note: this consumes the iterator. */
@@ -676,8 +696,8 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     /** Close iterator if marked with {@link Closeable}. */
     public static <T> void close(Iterator<T> iter) {
-        if ( iter instanceof Closeable )
-            ((Closeable)iter).close();
+        if ( iter instanceof Closeable cIter )
+            cIter.close();
     }
 
     /**
@@ -748,15 +768,12 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     /** Print an iterator (destructive) */
     public static <T> void print(PrintStream out, Iterator<T> stream) {
-        apply(stream, out::println);
+        stream.forEachRemaining(out::println);
     }
 
     /** Send the elements of the iterator to a sink - consumes the iterator */
     public static <T> void sendToSink(Iterator<T> iter, Sink<T> sink) {
-        while ( iter.hasNext() ) {
-            T thing = iter.next();
-            sink.send(thing);
-        }
+        iter.forEachRemaining(sink::send);
         sink.close();
     }
 
@@ -773,8 +790,8 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     public static <T> Iter<T> iter(Iterator<T> iterator) {
         Objects.requireNonNull(iterator);
-        if ( iterator instanceof Iter<? > )
-            return (Iter<T>)iterator;
+        if ( iterator instanceof Iter<T> iter )
+            return iter;
         return new Iter<>(iterator);
     }
 
@@ -868,6 +885,24 @@ public class Iter<T> implements IteratorCloseable<T> {
         return -1;
     }
 
+    /** reverse iterator for a list */
+    public static <T> Iterator<T> reverseIterate(List<T> list) {
+        ListIterator<T> iter = list.listIterator(list.size());
+        return new Iterator<>() {
+            @Override public boolean hasNext() { return iter.hasPrevious(); }
+            @Override public T next() { return iter.previous(); }
+        };
+    }
+
+    /** reverse for each on a list. */
+    public static <T> void reverseIterate(List<T> list, Consumer<? super T> action) {
+        ListIterator<T> iter = list.listIterator(list.size());
+        while(iter.hasPrevious()) {
+            T t = iter.previous();
+            action.accept(t);
+        }
+    }
+
     // ------------------------------------------------------
     // The class.
 
@@ -884,6 +919,11 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     /** Apply the Consumer to each element of the iterator */
     public void forEach(Consumer<T> action) {
+        iterator.forEachRemaining(action);
+    }
+
+    @Override
+    public void forEachRemaining(Consumer<? super T> action) {
         iterator.forEachRemaining(action);
     }
 
@@ -1009,12 +1049,12 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     /** Apply an action to every element of an iterator */
     public void apply(Consumer<T> action) {
-        apply(iterator, action);
+        iterator.forEachRemaining(action);
     }
 
     /** Join on an {@code Iterator}..
      * If there are going to be many iterators, it is better to create an {@link IteratorConcat}
-     * and <tt>.add</tt> each iterator.  The overheads are much lower.
+     * and {@code .add} each iterator.  The overheads are much lower.
      */
     public Iter<T> append(Iterator<T> iter) {
         return iter(IteratorCons.create(iterator, iter));
@@ -1074,12 +1114,10 @@ public class Iter<T> implements IteratorCloseable<T> {
         return Iter.iter(skip(null, N));
     }
 
-
-
     /** Count the iterator (this is destructive on the iterator) */
     public long count() {
         ActionCount<T> action = new ActionCount<>();
-        apply(action);
+        this.forEachRemaining(action);
         return action.getCount();
     }
 

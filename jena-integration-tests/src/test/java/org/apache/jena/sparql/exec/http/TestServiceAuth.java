@@ -54,6 +54,11 @@ import org.junit.Test;
 
 /** Test Service implementation code -- Service.exec */
 public class TestServiceAuth {
+    // ---- Enable service
+    @BeforeClass public static void enableAllowServiceExecution() { CtlService.enableAllowServiceExecution(); }
+    @AfterClass public static void resetAllowServiceExecution() { CtlService.resetAllowServiceExecution(); }
+    public static Context minimalContext() { return CtlService.minimalContext(); }
+    // ----
 
     private static String SERVICE;
     private static final String USER = "user13";
@@ -75,13 +80,8 @@ public class TestServiceAuth {
 
     private static DatasetGraph empty = DatasetGraphZero.create();
 
-    private static Context minimalContext() {
-        Context context = new Context();
-        minimalContext(context);
-        return context;
-    }
-
     private static void minimalContext(Context context) {
+        context.set(Service.httpServiceAllowed, true);
         ServiceExecutorRegistry registry = ARQ.getContext().get(ARQConstants.registryServiceExecutors);
         context.put(ARQConstants.registryServiceExecutors, registry);
     }
@@ -111,7 +111,7 @@ public class TestServiceAuth {
     @Test(expected=QueryExceptionHTTP.class)
     public void service_auth_none() {
         OpService op = TestService.makeOp(env);
-        QueryIterator qIter = Service.exec(op, new Context());
+        QueryIterator qIter = Service.exec(op, minimalContext());
     }
 
     @Test
@@ -120,7 +120,7 @@ public class TestServiceAuth {
         String authorityURL = "http://"+USER+":"+PASSWORD+"@localhost:"+env.server.getPort()+env.dsName();
         Node serviceNode = NodeFactory.createURI(authorityURL);
         OpService op = TestService.makeOp(env, serviceNode);
-        QueryIterator qIter = Service.exec(op, new Context());
+        QueryIterator qIter = Service.exec(op, minimalContext());
     }
 
     @Test

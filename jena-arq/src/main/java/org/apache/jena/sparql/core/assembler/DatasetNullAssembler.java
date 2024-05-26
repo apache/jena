@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.core.assembler;
 
+import java.util.Map;
+
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.rdf.model.Resource;
@@ -32,7 +34,8 @@ import org.apache.jena.sparql.core.DatasetGraphZero;
  * @see DatasetGraphZero
  */
 
-public class DatasetNullAssembler extends DatasetAssembler {
+public class DatasetNullAssembler extends NamedDatasetAssembler {
+
     private final Resource tDataset;
 
     public DatasetNullAssembler(Resource tDataset) {
@@ -50,5 +53,10 @@ public class DatasetNullAssembler extends DatasetAssembler {
             throw new InternalErrorException();
         AssemblerUtils.mergeContext(root, dsg.getContext());
         return dsg;
+    }
+
+    @Override
+    public Map<String, DatasetGraph> pool() {
+        return sharedDatasetPool;
     }
 }

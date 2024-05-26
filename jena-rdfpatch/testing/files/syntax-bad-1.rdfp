@@ -1,0 +1,5 @@
+# Text patch.
+H id <uuid:bbe2edae-325e-11ec-abcc-a70bbba0dfb1>.
+TX .
+A <http://example/s> <http://example/p> "\uFFFD" <http://example/g> .
+TC .

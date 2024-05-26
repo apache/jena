@@ -54,7 +54,7 @@ import org.apache.jena.update.UpdateRequest;
  * </ul>
  * @deprecated Use {@link RDFConnection#connect(Dataset)}.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class RDFConnectionLocal implements RDFConnection {
     private ThreadLocal<Boolean> transactionActive = ThreadLocal.withInitial(()->false);
 

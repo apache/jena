@@ -18,17 +18,18 @@
 
 package org.apache.jena.riot.out;
 
+import org.apache.jena.riot.out.quoted.TestQuotedURIInternal;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
-
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestQuotedStringOutput.class
+    TestOutputQuotedString.class
+    , TestOutputQuotedURI.class
+    , TestQuotedURIInternal.class
     , TestNodeFmt.class
     , TestNodeFmtLib.class
 })
 
 public class TS_Out
 {}
-

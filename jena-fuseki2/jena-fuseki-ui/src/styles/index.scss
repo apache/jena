@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-@import 'node_modules/bootstrap-vue/node_modules/bootstrap/scss/bootstrap.scss';
-@import 'node_modules/bootstrap-vue/src/index.scss';
+@import 'node_modules/bootstrap/dist/css/bootstrap.min';
+@import 'node_modules/bootstrap/scss/bootstrap.scss';
 @import 'upload.scss';
 
 #app {
@@ -31,6 +31,11 @@
       }
     }
   }
+  .badge {
+    &[href="#"] {
+      cursor: pointer;
+    }
+  }
   #status-icon {
     width: 2em;
     height: 2em;
@@ -40,6 +45,36 @@
       }
       &.failure {
         fill: $danger;
+      }
+    }
+  }
+  // tables, some inherited from Bootstrap Vue, to complement Bootstrap CSS.
+  table.jena-table {
+    &[aria-busy=true] {
+      opacity: 0.55;
+    }
+    &.table-fixed {
+      table-layout: fixed;
+    }
+    thead {
+      tr {
+        [aria-sort] {
+          cursor: pointer;
+          background-image: none;
+          background-repeat: no-repeat;
+          background-size: 0.65em 1em;
+          background-position: right calc(0.75rem / 2) center;
+          padding-right: calc(0.75rem + 0.65em);
+        }
+        [aria-sort="none"] {
+          background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27101%27 height=%27101%27 view-box=%270 0 101 101%27 preserveAspectRatio=%27none%27%3e%3cpath fill=%27black%27 opacity=%27.3%27 d=%27M51 1l25 23 24 22H1l25-22zM51 101l25-23 24-22H1l25 22z%27/%3e%3c/svg%3e");
+        }
+        [aria-sort="ascending"] {
+          background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27101%27 height=%27101%27 view-box=%270 0 101 101%27 preserveAspectRatio=%27none%27%3e%3cpath fill=%27black%27 d=%27M51 1l25 23 24 22H1l25-22z%27/%3e%3cpath fill=%27black%27 opacity=%27.3%27 d=%27M51 101l25-23 24-22H1l25 22z%27/%3e%3c/svg%3e");
+        }
+        [aria-sort="descending"] {
+          background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27101%27 height=%27101%27 view-box=%270 0 101 101%27 preserveAspectRatio=%27none%27%3e%3cpath fill=%27black%27 opacity=%27.3%27 d=%27M51 1l25 23 24 22H1l25-22z%27/%3e%3cpath fill=%27black%27 d=%27M51 101l25-23 24-22H1l25 22z%27/%3e%3c/svg%3e");
+        }
       }
     }
   }

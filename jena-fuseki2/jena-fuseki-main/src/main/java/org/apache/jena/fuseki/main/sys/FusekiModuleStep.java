@@ -20,48 +20,51 @@ package org.apache.jena.fuseki.main.sys;
 
 import java.util.Set;
 
+import org.apache.jena.atlas.logging.FmtLog;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.rdf.model.Model;
 
 /** Call points for FusekiModule extensions */
 public class FusekiModuleStep {
+
     /**
      * Call at the start of "build" step.
      * The builder has been set according to the configuration.
      * The "configModel" parameter is set if a configuration file was used else it is null.
      */
-    public static void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) {
-        FusekiModules.forEachModule(module -> module.prepare(serverBuilder, datasetNames, configModel));
+    public static void prepare(FusekiModules modules, FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) {
+        modules.forEach(module -> module.prepare(serverBuilder, datasetNames, configModel));
     }
 
     /**
      * The DataAccessPointRegistry that will be used to build the server.
      *
      */
-    public static void configured(FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
-        FusekiModules.forEachModule(module -> module.configured(serverBuilder, dapRegistry, configModel));
+    public static void configured(FusekiModules modules, FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
+        modules.forEach(module -> module.configured(serverBuilder, dapRegistry, configModel));
     }
 
     /**
      * The outcome of the "build" step.
      */
     public static void server(FusekiServer server) {
-        FusekiModules.forEachModule(module -> module.server(server));
+        server.getModules().forEach(module -> module.server(server));
     }
 
     /**
      * Called just before {@code server.start()} called.
      */
     public static void serverBeforeStarting(FusekiServer server) {
-        FusekiModules.forEachModule(module -> module.serverBeforeStarting(server));
+        server.getModules().forEach(module -> module.serverBeforeStarting(server));
     }
 
     /**
      * Called just after {@code server.start()} called.
      */
     public static void serverAfterStarting(FusekiServer server) {
-        FusekiModules.forEachModule(module -> module.serverAfterStarting(server));
+        server.getModules().forEach(module -> module.serverAfterStarting(server));
     }
 
     /**
@@ -70,6 +73,23 @@ public class FusekiModuleStep {
      * simply exits the JVM or is killed externally.
      */
     public static void serverStopped(FusekiServer server) {
-        FusekiModules.forEachModule(module -> module.serverStopped(server));
+        server.getModules().forEach(module -> module.serverStopped(server));
+    }
+
+    /**
+     * Sever reload.
+     * Return true if reload happened, else false.
+     * @see FusekiBuildCycle#serverConfirmReload
+     * @see FusekiBuildCycle#serverReload
+     */
+    public static boolean serverReload(FusekiServer server) {
+        for ( FusekiModule fmod : server.getModules().asList() ) {
+            if ( ! fmod.serverConfirmReload(server) ) {
+                FmtLog.warn(Fuseki.configLog, "Can not reload : module %s", fmod.name());
+                return false;
+            }
+        }
+        server.getModules().forEach(module -> module.serverReload(server));
+        return true;
     }
 }

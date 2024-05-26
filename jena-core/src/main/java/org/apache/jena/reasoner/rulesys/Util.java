@@ -18,14 +18,20 @@
 
 package org.apache.jena.reasoner.rulesys;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.datatypes.xsd.XSDDateTime ;
-import org.apache.jena.graph.* ;
-import org.apache.jena.graph.impl.* ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.reasoner.Finder ;
 import org.apache.jena.reasoner.IllegalParameterException ;
@@ -117,13 +123,13 @@ public class Util {
         if ( num1 instanceof BigDecimal && num2 instanceof BigDecimal ) {
             BigDecimal dec1 = (BigDecimal)num1;
             BigDecimal dec2 = (BigDecimal)num2;
-            return dec1.compareTo(dec2); 
+            return dec1.compareTo(dec2);
         }
         // Both BigInteger
         if ( num1 instanceof BigInteger && num2 instanceof BigInteger ) {
             BigInteger int1 = (BigInteger)num1;
             BigInteger int2 = (BigInteger)num2;
-            return int1.compareTo(int2); 
+            return int1.compareTo(int2);
         }
 
         // Mixed. Includes comparing BigInteger and BigDecimal and comparing
@@ -132,7 +138,7 @@ public class Util {
         BigDecimal dec2 = convertToBigDecimal(num2);
         return dec1.compareTo(dec2);
     }
-    
+
     private static BigDecimal convertToBigDecimal(Number num) {
         if ( num instanceof BigDecimal )
             return (BigDecimal)num ;
@@ -261,25 +267,25 @@ public class Util {
      * Construct a new integer valued node
      */
     public static Node makeIntNode(int value) {
-        return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral( value ));
+        return NodeFactory.createLiteral(Integer.toString(value), XSDDatatype.XSDint);
     }
 
     /**
      * Construct a new long valued node
      */
     public static Node makeLongNode(long value) {
-        if (value > Integer.MAX_VALUE) {
-            return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral( value ));
-        } else {
-            return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral( (int) value ));
-        }
+        Node n = (value > Integer.MAX_VALUE || value < Integer.MIN_VALUE )
+            ? NodeFactory.createLiteral( Long.toString(value), XSDDatatype.XSDlong )
+            : makeIntNode( (int) value );
+        return n;
     }
 
     /**
      * Construct a new double valued node
      */
     public static Node makeDoubleNode(double value) {
-        return NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral( value ));
+        Node n = NodeFactory.createLiteralByValue(value);
+        return n;
     }
 
     /**
@@ -296,8 +302,8 @@ public class Util {
     private static Node doMakeList(Node[] nodes, int next, Graph graph) {
         if (next < nodes.length) {
             Node listNode = NodeFactory.createBlankNode();
-            graph.add(new Triple(listNode, RDF.Nodes.first, nodes[next]));
-            graph.add(new Triple(listNode, RDF.Nodes.rest, doMakeList(nodes, next+1, graph)));
+            graph.add(Triple.create(listNode, RDF.Nodes.first, nodes[next]));
+            graph.add(Triple.create(listNode, RDF.Nodes.rest, doMakeList(nodes, next+1, graph)));
             return listNode;
         } else {
             return RDF.Nodes.nil;

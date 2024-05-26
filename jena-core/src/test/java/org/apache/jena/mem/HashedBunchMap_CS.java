@@ -24,7 +24,7 @@ import org.xenei.junit.contract.ContractSuite;
 import org.xenei.junit.contract.IProducer;
 
 @RunWith(ContractSuite.class)
-@ContractImpl(WrappedHashMap.class)
+@ContractImpl(HashedBunchMap.class)
 public class HashedBunchMap_CS {
 
 	protected IProducer<HashedBunchMap> mapProducer = new IProducer<HashedBunchMap>() {

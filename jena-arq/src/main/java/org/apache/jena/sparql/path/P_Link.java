@@ -39,10 +39,9 @@ public class P_Link extends P_Path0 {
 
     @Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap) {
-        if ( !(path2 instanceof P_Link) )
-            return false;
-        P_Link other = (P_Link)path2;
-        return Iso.nodeIso(node, other.node, isoMap);
+        if ( path2 instanceof P_Link other )
+            return Iso.nodeIso(node, other.node, isoMap);
+        return false;
     }
 
     @Override

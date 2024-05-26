@@ -93,8 +93,7 @@ public class TableN extends TableBase {
 
     @Override
     public void closeTable() {
-        rows = null ;
-        // Don't clear the vars in case code later asks for the variables.
+        // Don't release rows - the same TableN object may be used in multiple places.
     }
 
     @Override

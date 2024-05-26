@@ -1,0 +1,6 @@
+<http://www.w3.org/> <http://purl.org/dc/elements/1.1/source> <http://ww^w/test1/test2/> .
+<http://www.w3.org/> <http://purl.org/dc/elements/1.1/relation> <http://ww^w/test1/> .
+_:jA319 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <ht^tp://www.w3.org/test2/> .
+<http://www.w3.org/> <http://purl.org/dc/elements/1.1/relation> <ht^tp://www.w3.org/demo.mp3> .
+<http://www.w3.org/> <http://purl.org/dc/elements/1.1/title> "World Wide Web Consortium"^^<http://ww^w/test1/bar> .
+<http://www.w3.org/> <http://purl.org/dc/elements/1.1/title> "World Wide Web Consortium"^^<ht^tp://www.w3.org/bar> .

@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY eg   'urn:x-hp:eg/'>
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#'>
+    <!ENTITY owl  "http://www.w3.org/2002/07/owl#" >
+]>
+
+<rdf:RDF xmlns:rdf="&rdf;" xmlns:rdfs="&rdfs;" xmlns:xsd="&xsd;" xmlns:owl="&owl;"
+         xml:base="urn:x-hp:eg/" xmlns="&eg;">
+
+  <owl:Class rdf:about="&eg;Computer">
+      <rdfs:subClassOf>
+          <rdf:Description>
+             <owl:intersectionOf rdf:parseType="Collection">
+                <owl:Restriction>
+                   <owl:onProperty rdf:resource="&eg;hasMotherBoard"/>
+                   <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+                </owl:Restriction>
+              </owl:intersectionOf>
+           </rdf:Description>
+       </rdfs:subClassOf>
+  </owl:Class>
+  
+  <owl:Class rdf:about="&eg;MotherBoard" />
+  
+  <owl:Class rdf:about="&eg;GraphicsCard" />
+  
+  <owl:Class rdf:about="&eg;Bundle" />
+
+  <owl:Class rdf:about="&eg;GameBundle">
+      <rdfs:subClassOf rdf:resource="&eg;Bundle" />
+  </owl:Class>
+  
+  <owl:GraphicsCard rdf:about="&eg;budgetGraphics" />
+  <owl:GraphicsCard rdf:about="&eg;gamingGraphics" />
+  <owl:GraphicsCard rdf:about="&eg;DTPGraphics" />
+  
+  <owl:ObjectProperty rdf:about="&eg;hasComponent">
+      <rdf:type rdf:resource="&owl;TransitiveProperty" />
+  </owl:ObjectProperty>
+  
+  <owl:ObjectProperty rdf:about="&eg;hasGraphics">
+      <rdfs:range rdf:resource="&eg;GraphicsCard" />
+      <rdfs:subPropertyOf rdf:resource="&eg;hasComponent" />
+  </owl:ObjectProperty>
+  
+  <owl:ObjectProperty rdf:about="&eg;hasMotherBoard">
+      <rdfs:range rdf:resource="&eg;MotherBoard" />
+      <rdfs:domain rdf:resource="&eg;Computer" />
+      <rdfs:subPropertyOf rdf:resource="&eg;hasComponent" />
+  </owl:ObjectProperty>
+  
+  <owl:ObjectProperty rdf:about="&eg;hasBundle">
+      <rdfs:domain rdf:resource="&eg;Computer" />
+  </owl:ObjectProperty>
+   
+  <owl:Class rdf:about="&eg;GamingComputer">
+      <owl:equivalentClass>
+          <rdf:Description>
+             <owl:intersectionOf rdf:parseType="Collection">
+                <owl:Restriction>
+                   <owl:onProperty rdf:resource="&eg;hasComponent" />
+                   <owl:hasValue rdf:resource="&eg;gamingGraphics" />
+                </owl:Restriction>
+                <owl:Restriction>
+                   <owl:onProperty rdf:resource="&eg;hasBundle" />
+                   <owl:someValuesFrom rdf:resource="&eg;GameBundle" />
+                </owl:Restriction>
+                <owl:Class rdf:about="&eg;Computer" />
+              </owl:intersectionOf>
+           </rdf:Description>
+       </owl:equivalentClass>
+  </owl:Class>
+  
+  <Computer rdf:about="&eg;whiteBoxZX">
+    <hasMotherBoard rdf:resource="&eg;nForce" />
+    <hasBundle>
+        <GameBundle rdf:about="&eg;actionPack" />
+    </hasBundle>
+  </Computer>
+  
+  <Computer rdf:about="&eg;whiteBoxZX">
+    <hasMotherBoard>
+       <rdf:Description rdf:about="&eg;unknownMB" >
+         <hasGraphics rdf:resource="&eg;gamingGraphics" />
+       </rdf:Description>
+    </hasMotherBoard>
+  </Computer>
+
+</rdf:RDF>

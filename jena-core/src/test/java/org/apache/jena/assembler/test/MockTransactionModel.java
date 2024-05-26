@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.apache.jena.assembler.* ;
 import org.apache.jena.assembler.assemblers.ModelAssembler ;
-import org.apache.jena.graph.Factory ;
+import org.apache.jena.graph.GraphMemFactory ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.ModelCom ;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
@@ -53,7 +53,7 @@ final class MockTransactionModel extends ModelAssembler
     @Override
     protected Model openEmptyModel( Assembler a, Resource root, Mode irrelevant )
         {
-        return new ModelCom( Factory.createDefaultGraph() ) 
+        return new ModelCom( GraphMemFactory.createDefaultGraph() ) 
             {
             @Override
             public Model begin()

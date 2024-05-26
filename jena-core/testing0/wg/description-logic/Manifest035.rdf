@@ -1,0 +1,41 @@
+<!--++ description-logic/Manifest035.rdf ** generated using webont test editor. ++-->
+<!--++ Created 24 Jul 2003 12:21:46 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: Manifest035.rdf,v 1.6 2003-12-05 05:06:37 jeremy_carroll Exp $
+-->
+<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+      xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
+      xmlns:rtest='http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#'
+      xmlns:otest='http://www.w3.org/2002/03owlt/testOntology#'
+      xmlns:dc='http://purl.org/dc/elements/1.0/'
+      xmlns='http://www.w3.org/1999/xhtml'
+      xmlns:owl='http://www.w3.org/2002/07/owl#'
+      xml:base='http://www.w3.org/2002/03owlt/description-logic/Manifest035'
+>
+<otest:InconsistencyTest rdf:ID='test'>
+   <rtest:status>APPROVED</rtest:status> <rtest:approval rdf:resource="http://www.w3.org/2003/09/11-webont-irc"/>
+   <dc:creator>Sean Bechhofer</dc:creator>
+   <otest:issuette rdf:resource='http://www.w3.org/TR/owl-test/#dl-000-satisfiability' />
+   <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#DL' />
+   <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' />
+   <rtest:description rdf:parseType='Literal'>
+A test for the interaction of one-of and inverse using the idea of a spy point.
+Everything is related to the spy via the property p and we know that the spy 
+has at most two invP successors, thus limiting the cardinality of the domain 
+to being at most 2.</rtest:description>
+   <rtest:inputDocument>
+         <rtest:RDF-XML-Document rdf:about='inconsistent035' >
+              <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#DL' />
+         </rtest:RDF-XML-Document>
+   </rtest:inputDocument>
+</otest:InconsistencyTest >
+</rdf:RDF>

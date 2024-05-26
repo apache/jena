@@ -18,46 +18,72 @@
 
 package org.apache.jena.cmd;
 
-import org.apache.jena.atlas.io.IndentedWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.jena.Jena;
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.lib.Version;
+
+/**
+ * Version information.
+ * <p>
+ * The version is the manifest entry in the jar file for a
+ * class. It is not available if the class comes from a development tree where the
+ * class file is from "target" (maven).
+ */
 public class ModVersion extends ModBase
 {
     protected final ArgDecl versionDecl = new ArgDecl(ArgDecl.NoValue, "version");
     protected boolean version = false;
     protected boolean printAndExit = false;
-    private Version versionMgr = new Version();
-    public ModVersion(boolean printAndExit)
-    {
+
+    // (system name, version string)
+    private List<Pair<String, Optional<String>>> descriptions = new ArrayList<>();
+
+    public ModVersion(boolean printAndExit) {
         this.printAndExit = printAndExit;
     }
-    
-    public void addClass(Class<?> c) { versionMgr.addClass(c) ; }
-    
+
+    /** Add a class for the version number */
+    public void addClass(Class<? > c) {
+        addClass(c.getSimpleName(), c);
+    }
+
+    /** Add a label and a class for the version number */
+    public void addClass(String name, Class<? > cls) {
+        Pair<String, Optional<String>> desc = Pair.create(name, Version.versionForClass(cls));
+        descriptions.add(desc);
+    }
+
     @Override
-    public void registerWith(CmdGeneral cmdLine)
-    {
+    public void registerWith(CmdGeneral cmdLine) {
         cmdLine.add(versionDecl, "--version", "Version information");
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
-    {
+    public void processArgs(CmdArgModule cmdLine) {
         if ( cmdLine.contains(versionDecl) )
             version = true;
-        // The --version flag causes us to print and exit. 
+        // The --version flag causes us to print and exit.
         if ( version && printAndExit )
             printVersionAndExit();
     }
 
-    public boolean getVersionFlag() { return version ; }
-    
-    public void printVersion()
-    {
-        versionMgr.print(IndentedWriter.stdout);
-    }  
-     
-    public void printVersionAndExit()
-    {
+    public boolean getVersionFlag() {
+        return version;
+    }
+
+    public void printVersion() {
+        if ( descriptions.isEmpty() ) {
+            Version.printVersion(System.out, null, Version.versionForClass(Jena.class));
+            return;
+        }
+        descriptions.forEach(p->Version.printVersion(System.out, p.getLeft(), p.getRight()));
+    }
+
+    public void printVersionAndExit() {
         printVersion();
         System.exit(0);
     }

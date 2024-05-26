@@ -32,16 +32,11 @@ import org.junit.Test;
 public class TestRDFWriter {
     private static Graph graph = SSE.parseGraph("(graph (:s :p :o))");
 
-    @Test public void rdfwriter_1() {
+    @Test public void rdfwriter_create() {
         RDFWriter.source(graph).build();
     }
 
-    @Test(expected=RiotException.class)
-    public void rdfwriter_2() {
-        RDFWriter.create().build();
-    }
-
-    @Test public void rdfwriter_3() {
+    @Test public void rdfwriter_string_output_1() {
         String s =
             RDFWriter.create()
                 .source(graph)
@@ -50,8 +45,24 @@ public class TestRDFWriter {
         assertTrue(s.contains("example/s"));
     }
 
+    @Test public void rdfwriter_string_output_2() {
+        String s =
+            RDFWriter.create()
+                .source(graph)
+                .lang(Lang.NT)
+                .toString();
+        assertTrue(s.contains("example/s"));
+    }
+
+
     @Test(expected=RiotException.class)
-    public void rdfwriter_4() {
+    public void rdfwriter_no_source() {
+        // No source
+        RDFWriter.create().build();
+    }
+
+    @Test(expected=RiotException.class)
+    public void rdfwriter_no_syntax() {
         String s =
             RDFWriter.create()
                 // No syntax
@@ -59,7 +70,7 @@ public class TestRDFWriter {
                 .asString();
     }
 
-    @Test public void rdfwriter_5() {
+    @Test public void rdfwriter_output_1() {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         RDFWriter.create()
             .source(graph)
@@ -70,7 +81,7 @@ public class TestRDFWriter {
     }
 
     @SuppressWarnings("deprecation")
-    @Test public void rdfwriter_6() {
+    @Test public void rdfwriter_output_2() {
         Writer w = new CharArrayWriter();
         RDFWriter.create()
             .source(graph)

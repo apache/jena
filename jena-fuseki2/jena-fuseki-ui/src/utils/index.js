@@ -16,10 +16,9 @@
  */
 
 export function displayError (vm, error) {
-  console.error(error)
-  vm.$bvToast.toast(`${error}`, {
-    title: 'Error',
-    noAutoHide: true,
-    appendToast: false
-  })
+  vm.$toast.error(error)
+}
+
+export function displayNotification (vm, message) {
+  vm.$toast.notification(message)
 }

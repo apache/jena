@@ -36,9 +36,9 @@ import org.apache.jena.shared.JenaException ;
  * general classes in the Jena ontology API. <strong>Warning</strong> these
  * utilities are <strong>experimental</strong>. Extensive testing has not yet
  * occurred (see {@code org.apache.jena.ontology.impl.TestOntTools} in the
- * test area for basic unit tests), 
- * and in particular performance testing has not been carried out yet. 
- * Users are advised to exercise caution before relying on these utilities in 
+ * test area for basic unit tests),
+ * and in particular performance testing has not been carried out yet.
+ * Users are advised to exercise caution before relying on these utilities in
  * production code. Please send any comments or suggestions to the
  * <a href="http://tech.groups.yahoo.com/group/jena-dev">Jena support email list</a>.
  * </p>
@@ -541,7 +541,7 @@ public class OntTools
      * A path is an application of {@link java.util.List} containing only {@link Statement}
      * objects, and in which for all adjacent elements <code>S<sub>i-1</sub></code>
      * and  <code>S<sub>i</sub></code>, where <code>i &gt; 0</code>, it is true that:
-     * <code><pre>S<sub>i-1</sub>.getObject().equals( S<sub>i</sub>.getSubject() )</pre></code>
+     * <pre>S<sub>i-1</sub>.getObject().equals( S<sub>i</sub>.getSubject() )</pre>
      */
     public static class Path extends ArrayList<Statement>
     {

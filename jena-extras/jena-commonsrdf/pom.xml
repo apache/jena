@@ -24,9 +24,8 @@
 
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena</artifactId>
-    <version>4.6.0-SNAPSHOT</version>
-    <relativePath>../..</relativePath>
+    <artifactId>jena-extras</artifactId>
+    <version>5.1.0-SNAPSHOT</version>
   </parent>
 
   <name>Apache Jena - CommonsRDF for Jena</name>
@@ -43,7 +42,7 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -54,7 +53,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-rdf-api</artifactId>
-      <version>${ver.commonsrdf}</version>
+      <version>${ver.commons-rdf}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -63,19 +62,19 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-rdf-simple</artifactId>
-      <version>${ver.commonsrdf}</version>
+      <version>${ver.commons-rdf}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
       <scope>test</scope>
     </dependency>
 
      <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j-impl</artifactId>
+      <artifactId>log4j-slf4j2-impl</artifactId>
       <scope>test</scope>
     </dependency>
 

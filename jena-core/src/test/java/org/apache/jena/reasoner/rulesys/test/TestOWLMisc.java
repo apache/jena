@@ -18,30 +18,35 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import java.io.StringReader ;
-import java.util.Iterator ;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.ontology.DatatypeProperty;
+import org.apache.jena.ontology.OntDocumentManager;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.rdf.model.InfModel;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.ReasonerRegistry;
+import org.apache.jena.reasoner.ValidityReport;
+import org.apache.jena.reasoner.rulesys.FBRuleInfGraph;
+import org.apache.jena.util.FileManager;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 
-import junit.framework.TestCase ;
-import junit.framework.TestSuite ;
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.ontology.DatatypeProperty ;
-import org.apache.jena.ontology.OntDocumentManager ;
-import org.apache.jena.ontology.OntModel ;
-import org.apache.jena.ontology.OntModelSpec ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.reasoner.Reasoner ;
-import org.apache.jena.reasoner.ReasonerRegistry ;
-import org.apache.jena.reasoner.ValidityReport ;
-import org.apache.jena.reasoner.rulesys.FBRuleInfGraph ;
-import org.apache.jena.util.FileManager ;
-import org.apache.jena.vocabulary.OWL ;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.RDFS ;
+import java.io.StringReader;
+import java.util.Iterator;
 
 /**
- * Misc. tests of the OWL rule engine configurations which 
+ * Misc. tests of the OWL rule engine configurations which
  * have arisen from bug reports or user questions.
  */
 public class TestOWLMisc extends TestCase  {
@@ -90,21 +95,21 @@ public class TestOWLMisc extends TestCase  {
         assertTrue( inf.contains(l4, OWL.differentFrom, l2) );
         assertTrue( inf.contains(l4, OWL.differentFrom, l3) );
     }
-    
+
     private void doTestDatatypeRangeValidation(RDFDatatype over12Type, OntModelSpec spec) {
         String NS = "http://jena.hpl.hp.com/example#";
         OntModel ont = ModelFactory.createOntologyModel(spec);
         Resource over12 = ont.createResource( over12Type.getURI() );
         DatatypeProperty hasValue = ont.createDatatypeProperty(NS + "hasValue");
         hasValue.addRange( over12 );
-        
+
         ont.createResource(NS + "a").addProperty(hasValue, "15", over12Type);
         ont.createResource(NS + "b").addProperty(hasValue, "16", XSDDatatype.XSDinteger);
         ont.createResource(NS + "c").addProperty(hasValue, "10", XSDDatatype.XSDinteger);
-        
+
         ValidityReport validity = ont.validate();
-        assertTrue (! validity.isValid()); 
-        
+        assertTrue (! validity.isValid());
+
         // Check culprit reporting
         ValidityReport.Report report = (validity.getReports().next());
         Triple culprit = (Triple)report.getExtension();
@@ -143,7 +148,7 @@ public class TestOWLMisc extends TestCase  {
         Model base = ModelFactory.createDefaultModel();
         base.read("file:testing/reasoners/bugs/equivalentClassTest.owl");
         InfModel test = ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), base);
-        String NAMESPACE = "urn:foo#";
+        String NAMESPACE = "urn:foo:abc#";
         Resource A = test.getResource(NAMESPACE + "A");
         Resource B = test.getResource(NAMESPACE + "B");
         assertTrue("hasValue equiv deduction", test.contains(A, OWL.equivalentClass, B));
@@ -217,14 +222,14 @@ public class TestOWLMisc extends TestCase  {
         Model base = ModelFactory.createDefaultModel();
         base.read("file:testing/reasoners/bugs/cardFPTest.owl");
         InfModel test = ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), base);
-        String NAMESPACE = "urn:foo#";
+        String NAMESPACE = "urn:foo:abc#";
         Resource aDocument = test.getResource(NAMESPACE + "aDocument");
         Resource documentType = test.getResource(NAMESPACE + "Document");
         assertTrue("Cardinality-based classification", test.contains(aDocument, RDF.type, documentType));
     }
 
     public static final String NS = "http://jena.hpl.hp.com/example#";
-    
+
     /**
      * Create a model from an N3 string with OWL and EG namespaces defined
      */
@@ -241,5 +246,5 @@ public class TestOWLMisc extends TestCase  {
         result.read(new StringReader(fullSource), "", "N3");
         return result;
     }
-    
+
 }

@@ -18,136 +18,212 @@
 
 package org.apache.jena.datatypes.xsd.impl;
 
-import java.io.IOException ;
-import java.io.StringReader ;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Objects;
 
-import org.apache.jena.datatypes.BaseDatatype ;
-import org.apache.jena.datatypes.DatatypeFormatException ;
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.rdfxml.xmlinput.ALiteral ;
-import org.apache.jena.rdfxml.xmlinput.ARP ;
-import org.apache.jena.rdfxml.xmlinput.AResource ;
-import org.apache.jena.rdfxml.xmlinput.StatementHandler ;
-import org.apache.jena.shared.BrokenException ;
-import org.xml.sax.ErrorHandler ;
-import org.xml.sax.SAXException ;
-import org.xml.sax.SAXParseException ;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.datatypes.BaseDatatype;
+import org.apache.jena.datatypes.DatatypeFormatException;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.graph.impl.LiteralLabel;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.util.JenaXMLInput;
+import org.apache.jena.util.JenaXMLOutput;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
- * Builtin data type to represent XMLLiteral (i.e. items created
- * by use of <code>rdf:parsetype='literal'</code>.
+ * <a href="https://www.w3.org/TR/rdf-concepts/#section-XMLLiteral">rdf:XMLLiteral</a>.
+ * <p>
+ * This implementation has RDF 1.1/RDF1.2 semantics.
+ * <p>
+ * Valid XML is legal. The value space is an XML document fragment.
  */
 public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
+
+    public static String XMLLiteralTypeURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral";
     /** Singleton instance */
-    // Include the string for the RDF namespace, not use RDF.getURI(), to avoid an initializer circularity
-    public static final RDFDatatype theXMLLiteralType = new XMLLiteralType("http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral");
-    
+    // Include the string for the RDF namespace, do not use RDF.getURI(), to avoid the risk of an initializer circularity.
+    public static final RDFDatatype theXMLLiteralType = new XMLLiteralType(XMLLiteralTypeURI);
+
+    private static final String  xmlWrapperTagName  = "xml-literal-fragment";
+    private static final String  xmlWrapperTagStart = "<"+xmlWrapperTagName+">";
+    private static final String  xmlWrapperTagEnd   = "</"+xmlWrapperTagName+">";
+
     /**
-     * Private constructor.
+     * Test where an {@link RDFDatatype} is that for {@code rdf:XMLLiteral}.
      */
+    public static boolean isXMLLiteral(RDFDatatype rdfDatatype) {
+        Objects.requireNonNull(rdfDatatype);
+        return XMLLiteralTypeURI.equals(rdfDatatype.getURI());
+    }
+
     private XMLLiteralType(String uri) {
         super(uri);
     }
-    
+
     /**
-     * Convert a serialize a value of this datatype out
-     * to lexical form.
+     * Compares two instances of values of the given datatype.
      */
+    @Override
+    public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
+        try {
+            if ( ! value1.getDatatype().getURI().equals(XMLLiteralTypeURI) )
+                return false;
+            if ( ! value2.getDatatype().getURI().equals(XMLLiteralTypeURI) )
+                return false;
+            DocumentFragment f1 = (DocumentFragment)value1.getValue();
+            DocumentFragment f2 = (DocumentFragment)value2.getValue();
+            return f1.isEqualNode(f2);
+        } catch (Exception ex) {
+            throw new DatatypeFormatException();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object parse(String lexicalForm) {
+        try {
+            return xmlLiteralValue(lexicalForm);
+        } catch (Exception ex) {
+            throw new DatatypeFormatException();
+        }
+    }
+
+    /**
+     * Parse a lexical form for an rdf:XMLLiteral to produce the literal value.
+     * The value is an XML {@link DocumentFragment}.
+     */
+    public static DocumentFragment xmlLiteralValue(String string) {
+        DocumentBuilder builder = newDocumentBuilder();
+        builder.isNamespaceAware();
+        ErrorHandlerCounting eh = new ErrorHandlerCounting();
+        builder.setErrorHandler(eh);
+
+        // Wrap in an outer start-finish to make it into a XML document
+        String xmlString = xmlWrapperTagStart+string+xmlWrapperTagEnd;
+
+        // Parse document.
+        InputSource source = new InputSource(new StringReader(xmlString));
+        final Document doc;
+        try {
+            doc = builder.parse(source);
+            if ( eh.errorHappened() )
+                return null;
+            doc.normalizeDocument();
+        } catch (IOException ex) {
+            throw new java.io.UncheckedIOException(ex);
+        } catch (SAXException ex) {
+            throw Lib.runtimeException(ex);
+        }
+        // Unwrap the outer start-finish element.
+        NodeList nodeList0 = doc.getChildNodes();
+        if ( nodeList0.getLength() != 1 )
+            throw new JenaException("XML parser did not produce exactly one child node");
+        // The DocumentFragment as a NodeList.
+        NodeList nodeList = nodeList0.item(0).getChildNodes();
+
+        // The value of an rdf:XMLLIteral is a org.w3c.dom.DocumentFragment object.
+        // Build the DocumentFragment -- NB "appendChild" removes from the doc DOM
+        // if the node comes form the parsed document, which is it in our situation.
+        //  Hence the "item(0)" removes the nodes in order.
+        DocumentFragment docFrag = doc.createDocumentFragment();
+        while(nodeList.getLength() > 0) {
+            Node n = nodeList.item(0);
+            docFrag.appendChild(n);   // Destructive - removes from doc, changes nodeList
+        }
+        return docFrag;
+    }
+
+    /** {@inheritDoc} */
     @Override
     public String unparse(Object value) {
-        return value.toString();
+        // "unparse" value to string.
+        if ( value instanceof DocumentFragment docFrag )
+            return xmlDocumentFragmentToString(docFrag);
+        throw new IllegalArgumentException("Value is not a ocumentFragment");
     }
-    
-    /**
-     * Parse a lexical form of this datatype to a value
-     * @throws DatatypeFormatException if the lexical form is not legal
-     */
-    @Override
-    public Object parse(String lexicalForm) throws DatatypeFormatException {
-        if ( !isValid(lexicalForm))
-          throw new DatatypeFormatException("Bad rdf:XMLLiteral");
-        return lexicalForm;
-    }
-    
-    /**
-     * Test whether the given string is a legal lexical form
-     * of this datatype.
-     */
-    @Override
-    public boolean isValid(final String lexicalForm) {
-        /*
-         * To check the lexical form we construct
-         * a dummy RDF/XML document and parse it with
-         * ARP. ARP performs an exclusive canonicalization,
-         * the dummy document has exactly one triple.
-         * If the lexicalForm is valid then the resulting
-         * literal found by ARP is unchanged.
-         * All other scenarios are either impossible
-         * or occur because the lexical form is invalid.
-         */
-        final boolean status[] = new boolean[]{false,false,false};
-        // status[0] true on error or other reason to know that this is not well-formed
-        // status[1] true once first triple found
-        // status[2] the result (good if status[1] and not status[0]).
-        
-        ARP arp = new ARP();
-        
-        arp.getHandlers().setErrorHandler(new ErrorHandler(){
-        	@Override
-            public void fatalError(SAXParseException e){
-        		status[0] = true;
-        	}
-			@Override
-            public void error(SAXParseException e){
-				status[0] = true;
-			}
-			@Override
-            public void warning(SAXParseException e){
-				status[0] = true;
-			}
-        });
-        arp.getHandlers().setStatementHandler(new StatementHandler(){
-        @Override
-        public void statement(AResource a, AResource b, ALiteral l){
-        	/* this method is invoked exactly once
-        	 * while parsing the dummy document.
-        	 * The l argument is in exclusive canonical XML and
-        	 * corresponds to where the lexical form has been 
-        	 * in the dummy document. The lexical form is valid
-        	 * iff it is unchanged.
-        	 */
-        	if (status[1] || !l.isWellFormedXML()) {
-				status[0] = true;
-			}
-			//throw new BrokenException("plain literal in XMLLiteral code.");
-            status[1] = true;
-            status[2] = l.toString().equals(lexicalForm);
-        }
-		@Override
-        public void statement(AResource a, AResource b, AResource l){
-	      status[0] = true;
-	      //throw new BrokenException("resource valued RDF/XML in XMLLiteral code.");
-	    }
-        });
-        try {
-        
-        arp.load(new StringReader(
-        "<rdf:RDF  xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>\n"
-        +"<rdf:Description><rdf:value rdf:parseType='Literal'>"
-        +lexicalForm+"</rdf:value>\n"
-        +"</rdf:Description></rdf:RDF>"
-        ));
-        
-        }
-        catch (IOException ioe){
-           throw new BrokenException(ioe);	
-        }
-        catch (SAXException s){
-        	return false;
-        }
-        
-        
-        return (!status[0])&&status[1]&&status[2];
-    }    
 
+    /**
+     * Turn an org.w3c.dom.DocumentFragment into a string.
+     */
+    public static String xmlDocumentFragmentToString(DocumentFragment fragment) {
+        StringWriter sw = new StringWriter();
+        Source source = new DOMSource(fragment);
+        try {
+            Transformer transformer = JenaXMLOutput.xmlTransformer();
+            // Essential for a DocumentFragment
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            //transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            StreamResult output = new StreamResult(sw);
+            transformer.transform(source, output);
+        } catch (TransformerException ex) {
+            Log.error(XMLLiteralType.class, "Failed to convert an org.w3c.dom.Node to a string", ex);
+            // Fall through
+        }
+        return sw.toString();
+    }
+
+    private static DocumentBuilder newDocumentBuilder() {
+        try {
+            return docBuilderFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException ex) {
+            throw Lib.runtimeException(ex);
+        }
+    }
+
+    private static DocumentBuilderFactory docBuilderFactory = createDocumentBuilderFactory();
+    private static DocumentBuilderFactory createDocumentBuilderFactory() {
+        try {
+            return JenaXMLInput.newDocumentBuilderFactory();
+        } catch (ParserConfigurationException ex) {
+            Log.error(XMLLiteralType.class, "Failed to build a javax.xml.parsers.DocumentBuilderFactory", ex);
+            return null;
+        }
+    }
+
+    private static class ErrorHandlerCounting implements ErrorHandler {
+        int warning = 0;
+        int errors = 0;
+        int fatalErrors = 0;
+
+        boolean errorHappened() {
+            return errors > 0 || fatalErrors > 0;
+        }
+
+        @Override
+        public void warning(SAXParseException exception) {
+            warning++;
+        }
+
+        @Override
+        public void error(SAXParseException exception) {
+            errors++;
+        }
+
+        @Override
+        public void fatalError(SAXParseException exception) throws SAXException {
+            fatalErrors++;
+            throw exception;
+        }
+    }
 }

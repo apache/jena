@@ -1,0 +1,18 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX :        <#>
+PREFIX patch:   <http://jena.apache.org/rdf-patch#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+
+<#dataset> rdf:type      patch:LoggedDataset ;
+    patch:log       "target/filelog/log.rdfp" ;
+    patch:logPolicy "INDEX";
+    ja:dataset <#dataset2> ;
+    .
+    
+<#dataset2> rdf:type ja:MemoryDataset .
+
+ 

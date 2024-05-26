@@ -17,6 +17,7 @@
 
 <>  rdf:type mf:Manifest ;
     rdfs:label "Turtle tests" ;
+    mf:assumedTestBase <https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/> ;
     mf:entries
     (
 

@@ -19,6 +19,7 @@
 package org.apache.jena.atlas.iterator;
 
 import java.util.Iterator;
+import java.util.function.Consumer;
 
 public class IteratorWrapper<T> implements IteratorCloseable<T> {
     protected final Iterator<T> iterator;
@@ -44,6 +45,11 @@ public class IteratorWrapper<T> implements IteratorCloseable<T> {
     @Override
     public void remove() {
         get().remove();
+    }
+
+    @Override
+    public void forEachRemaining(Consumer<? super T> action) {
+        get().forEachRemaining(action);
     }
 
     @Override

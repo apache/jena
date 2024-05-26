@@ -18,17 +18,17 @@
 
 package org.apache.jena.graph;
 
-import org.apache.jena.graph.impl.LiteralLabel ;
+import org.apache.jena.datatypes.RDFDatatype;
 
 /**
     The NodeVisitor interface is used by Node::visitWith so that an application
-    can have type-dispatch on the class of a Node. 	
+    can have type-dispatch on the class of a Node.
 */
 public interface NodeVisitor
     {
     Object visitAny( Node_ANY it );
-    Object visitBlank( Node_Blank it, BlankNodeId id );
-    Object visitLiteral( Node_Literal it, LiteralLabel lit );
+    Object visitBlank( Node_Blank it, String id );
+    Object visitLiteral( Node_Literal it, String lex, String lang, RDFDatatype dtype);
     Object visitURI( Node_URI it, String uri );
     Object visitVariable( Node_Variable it, String name );
     Object visitTriple( Node_Triple it, Triple triple);

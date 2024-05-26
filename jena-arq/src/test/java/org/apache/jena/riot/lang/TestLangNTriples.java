@@ -66,21 +66,23 @@ public class TestLangNTriples extends AbstractTestLangNTuples
 
     @Test
     public void nt_model_1() {
-        Model m1 = parseToModel("<x> <p> \"abc-\\u00E9\". ");
+        String input = "<x> <p> \"abc-\\u00E9\". ";
+        Model m1 = ParserTests.parser().fromString(input).lang(Lang.NTRIPLES).toModel();
         assertEquals(1, m1.size());
-        Model m2 = parseToModel("<x> <p> \"abc-\\u00E9\". ");
+        Model m2 = ParserTests.parser().fromString(input).lang(Lang.NTRIPLES).toModel();
         assertTrue(m1.isIsomorphicWith(m2));
+
         Graph g1 = SSE.parseGraph("(graph (triple <x> <p> \"abc-é\"))");
         assertTrue(g1.isIsomorphicWith(m1.getGraph()));
     }
 
     @Test(expected = ExFatal.class)
-    public void nt_only_1() {
+    public void nt_only_no_quads() {
         parseCount("<x> <p> <s> <g> .");
     }
 
     @Test(expected = ExFatal.class)
-    public void nt_only_2() {
+    public void nt_only_no_base() {
         parseCount("BASE <http://example/>  <x> <p> <s> .");
     }
 
@@ -89,20 +91,8 @@ public class TestLangNTriples extends AbstractTestLangNTuples
         parseCount("<x> <p> \"é\" .");
     }
 
-    @Override
-    protected long parseCount(String... strings) {
-        return ParserTestBaseLib.parseCount(Lang.NTRIPLES, strings) ;
-    }
-
     @Test(expected = ExFatal.class)
-    public void nt_only_5b() {
+    public void nt_ascii() {
         parseCount(CharSpace.ASCII, "<scheme:x> <scheme:p> <scheme:é> .");
-    }
-
-    protected Model parseToModel(String string) {
-        StringReader r = new StringReader(string);
-        Model model = ModelFactory.createDefaultModel();
-        RDFDataMgr.read(model, r, null, RDFLanguages.NTRIPLES);
-        return model;
     }
 }

@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.jena.graph.Factory;
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
@@ -410,7 +410,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     protected synchronized InfGraph getPreload() {
         // We only support this in HYBRID mode
         if (cachePreload && preload == null && mode == HYBRID) {
-            preload = new FBRuleInfGraph( this, rules, null, Factory.createDefaultGraph() );
+            preload = new FBRuleInfGraph( this, rules, null, GraphMemFactory.createDefaultGraph() );
             if (enableTGCCaching) ((FBRuleInfGraph)preload).setUseTGCCache();
             preload.prepare();
         }

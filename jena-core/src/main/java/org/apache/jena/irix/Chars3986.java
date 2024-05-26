@@ -200,7 +200,7 @@ public class Chars3986 {
     }
 
     /**
-     * <tt>HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"</tt>
+     * {@code HEXDIG =  DIGIT / "A" / "B" / "C" / "D" / "E" / "F"}
      * but also lower case (non-normalized form). See RFC 3986 sec 6.2.2.1
      */
     public static boolean isHexDigit(char ch) {

@@ -18,7 +18,7 @@
 
 package org.apache.jena.rdf.model.test;
 
-import org.apache.jena.graph.Factory ;
+import org.apache.jena.graph.GraphMemFactory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.ModelCom ;
@@ -93,7 +93,7 @@ public class TestContains extends AbstractModelTestBase
 
 	public void testModelComContainsSPcallsContainsSPO()
 	{
-		final Graph g = Factory.createDefaultGraph();
+		final Graph g = GraphMemFactory.createDefaultGraph();
 		final boolean[] wasCalled = { false };
 		// FIXME change to dynamic proxy
 		final Model m = new ModelCom(g) {

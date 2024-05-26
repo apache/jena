@@ -23,23 +23,66 @@ package org.apache.jena.ontology.impl;
 
 // Imports
 ///////////////
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.enhanced.* ;
-import org.apache.jena.graph.* ;
-import org.apache.jena.ontology.* ;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.rdf.model.impl.* ;
-import org.apache.jena.reasoner.* ;
-import org.apache.jena.shared.* ;
-import org.apache.jena.util.ResourceUtils ;
-import org.apache.jena.util.iterator.* ;
-import org.apache.jena.vocabulary.* ;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.enhanced.EnhGraph;
+import org.apache.jena.enhanced.EnhNode;
+import org.apache.jena.enhanced.Implementation;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.ontology.AllDifferent;
+import org.apache.jena.ontology.AnnotationProperty;
+import org.apache.jena.ontology.ConversionException;
+import org.apache.jena.ontology.DataRange;
+import org.apache.jena.ontology.DatatypeProperty;
+import org.apache.jena.ontology.Individual;
+import org.apache.jena.ontology.ObjectProperty;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntProperty;
+import org.apache.jena.ontology.OntResource;
+import org.apache.jena.ontology.Ontology;
+import org.apache.jena.ontology.OntologyException;
+import org.apache.jena.ontology.Profile;
+import org.apache.jena.ontology.ProfileException;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.NodeIterator;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFList;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.impl.NodeIteratorImpl;
+import org.apache.jena.rdf.model.impl.RDFListImpl;
+import org.apache.jena.rdf.model.impl.ResourceImpl;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.reasoner.ReasonerRegistry;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.shared.PropertyNotFoundException;
+import org.apache.jena.util.ResourceUtils;
+import org.apache.jena.util.iterator.ClosableIterator;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.UniqueFilter;
+import org.apache.jena.util.iterator.WrappedIterator;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.ReasonerVocabulary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 
 /**
@@ -154,7 +197,7 @@ public class OntResourceImpl
      */
     @Override
     public boolean isOntLanguageTerm() {
-        if (!isAnon()) {
+        if ( isURIResource() ) {
             for ( String KNOWN_LANGUAGE : KNOWN_LANGUAGES )
             {
                 if ( getURI().startsWith( KNOWN_LANGUAGE ) )
@@ -871,9 +914,9 @@ public class OntResourceImpl
      * <p>
      * Answer true if this resource is a member of the class denoted by the
      * given class resource.  Includes all available types, so is equivalent to
-     * <code><pre>
+     * <pre>
      * hasRDF( ontClass, false );
-     * </pre></code>
+     * </pre>
      * </p>
      *
      * @param ontClass Denotes a class to which this value may belong

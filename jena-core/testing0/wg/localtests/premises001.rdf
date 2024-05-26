@@ -1,0 +1,38 @@
+<!--
+  Local test files use in Jena2 development
+
+  Test core intersectionOf processing - 'if' direction.
+-->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xml:base="http://www.w3.org/2002/03owlt/equivalentClass/premises001" >
+    <owl:Class rdf:ID="d" />
+    <owl:Class rdf:ID="c2" />
+    <owl:Class rdf:ID="c1">
+             <owl:intersectionOf rdf:parseType="Collection">
+                <owl:Restriction>
+                   <owl:onProperty rdf:resource="#p"/>
+                   <owl:someValuesFrom rdf:resource="#d" />
+                </owl:Restriction>
+		    <rdf:Description rdf:about="http://www.w3.org/2002/03owlt/equivalentClass/premises001#c2" />
+              </owl:intersectionOf>
+    </owl:Class>
+    <owl:Class rdf:ID="c3">
+      <owl:equivalentClass>
+                <owl:Restriction>
+                   <owl:onProperty rdf:resource="#p"/>
+                   <owl:someValuesFrom rdf:resource="#d" />
+                </owl:Restriction>
+      </owl:equivalentClass>
+     </owl:Class>
+     <owl:ObjectProperty rdf:ID="p"/>
+     <owl:Thing rdf:ID="i">
+        <rdf:type rdf:resource="#c1" />
+     </owl:Thing>
+     <owl:Thing rdf:ID="j">
+        <rdf:type rdf:resource="#c2" />
+        <rdf:type rdf:resource="#c3" />
+     </owl:Thing>
+</rdf:RDF>

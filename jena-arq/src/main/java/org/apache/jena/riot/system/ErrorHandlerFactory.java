@@ -65,14 +65,6 @@ public class ErrorHandlerFactory
     /** Ignores warnings, throws exceptions for errors */
     public static ErrorHandler errorHandlerSimple()                 { return new ErrorHandlerSimple() ; }
 
-    /** Logs warnings and errors while tracking the counts of each and optionally throwing exceptions when errors and/or warnings are encounted */
-    public static ErrorHandlerTracking errorHandlerTracking(Logger log, boolean failOnError, boolean failOnWarning)
-    { return new ErrorHandlerTracking(log, failOnError, failOnWarning); }
-
-    /** @deprecated Use {#errorHandlerExceptionOnError} */
-    @Deprecated
-    public static ErrorHandler errorHandlerDetailed()               { return new ErrorHandlerRiotParseErrors() ; }
-
     /**
      * An error handler that throws a {@link RiotParseException}, hence it
      * exposes the details of errors.
@@ -282,67 +274,13 @@ public class ErrorHandlerFactory
             other.fatal(message, line, col);
         }
 
-        public long getFatalCount() { return this.fatalCount; }
-        public long getErrorCount() { return this.errorCount; }
-        public long getWarningCount() { return this.warningCount; }
-    }
+        public long getFatalCount()     { return this.fatalCount; }
+        public long getErrorCount()     { return this.errorCount; }
+        public long getWarningCount()   { return this.warningCount; }
 
-
-    /** An error handler that logs message for errors and warnings and throw exceptions on either */
-    public static class ErrorHandlerTracking extends ErrorLogger implements ErrorHandler {
-        private final boolean failOnError, failOnWarning;
-        private long errorCount, warningCount;
-
-        public ErrorHandlerTracking(Logger log, boolean failOnError, boolean failOnWarning) {
-            super(log) ;
-            this.failOnError = failOnError;
-            this.failOnWarning = failOnWarning;
-        }
-
-        /** report a warning  */
-        @Override
-        public void warning(String message, long line, long col) {
-            logWarning(message, line, col) ;
-            this.warningCount++;
-            if (this.failOnWarning)
-                throw new RiotException(fmtMessage(message, line, col)) ;
-        }
-
-        /** report an error */
-        @Override
-        public void error(String message, long line, long col) {
-            logError(message, line, col) ;
-            this.errorCount++;
-            if (this.failOnError)
-                throw new RiotException(fmtMessage(message, line, col)) ;
-        }
-
-        @Override
-        public void fatal(String message, long line, long col) {
-            logFatal(message, line, col) ;
-            this.errorCount++;
-            throw new RiotException(fmtMessage(message, line, col)) ;
-        }
-
-        public long getErrorCount() {
-            return this.errorCount;
-        }
-
-        public long getWarningCount() {
-            return this.warningCount;
-        }
-
-        public boolean hadErrors() {
-            return this.errorCount > 0;
-        }
-
-        public boolean hadWarnings() {
-            return this.warningCount > 0;
-        }
-
-        public boolean hadIssues() {
-            return hadErrors() || hadWarnings();
-        }
+        public boolean hadErrors()      { return this.errorCount > 0; }
+        public boolean hadWarnings()    { return this.warningCount > 0; }
+        public boolean hadIssues()      { return hadErrors() || hadWarnings(); }
     }
 
     /** An error handler that logs messages for errors and warnings and attempts to carry on */

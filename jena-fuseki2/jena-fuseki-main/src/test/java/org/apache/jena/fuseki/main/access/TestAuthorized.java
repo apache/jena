@@ -23,6 +23,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.build.FusekiConfig;
@@ -53,8 +55,28 @@ public class TestAuthorized {
         assertTrue(auth.isAllowed("user1"));
     }
 
+    @Test public void auth_anyLoggedIn_3() {
+        AuthPolicy auth = Auth.policyAllowSpecific("!");
+        assertFalse(auth.isAllowed(null));
+        assertFalse(auth.isAllowed("user1"));
+    }
+
+    @Test public void auth_anyLoggedIn_4() {
+        String level = LogCtl.getLevel(Fuseki.configLog);
+        try {
+            LogCtl.set(Fuseki.configLog, "Error");
+            // "!" with anything else causes a warning.
+            AuthPolicy auth = Auth.policyAllowSpecific("!", "user2");
+            assertFalse(auth.isAllowed(null));
+            assertFalse(auth.isAllowed("user1"));
+            assertFalse(auth.isAllowed("user2"));
+        } finally {
+            LogCtl.set(Fuseki.configLog, level);
+        }
+    }
+
     @Test public void auth_noOne() {
-        AuthPolicy auth = Auth.DENY;
+        AuthPolicy auth = Auth.DENY_ALL;
         assertFalse(auth.isAllowed(null));
         assertFalse(auth.isAllowed("user1"));
     }

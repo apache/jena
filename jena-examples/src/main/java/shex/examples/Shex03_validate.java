@@ -28,7 +28,7 @@ import org.apache.jena.shex.*;
 import org.apache.jena.shex.sys.ShexLib;
 import org.apache.jena.vocabulary.RDF;
 
-/** Validate based on building a shap map in the code. */
+/** Validate based on building a shape map in the code. */
 public class Shex03_validate {
     static { LogCtl.setLogging(); }
 
@@ -47,12 +47,12 @@ public class Shex03_validate {
         Triple instancesOfFoo = Triple.create(Shex.FOCUS, RDF.type.asNode(), myClass);
         Node shape1 = NodeFactory.createURI("http://example/shapes#shape1");
 
-        ShexMap shapeMap = ShexMap.newBuilder()
+        ShapeMap shapeMap = ShapeMap.newBuilder()
                 .add(instancesOfFoo, shape1)
                 .build();
 
         // Equivalent helper for map with one ShapeMap entry
-        ShexMap shapeMapAlt = ShexMap.record(instancesOfFoo, shape1);
+        ShapeMap shapeMapAlt = ShapeMap.record(instancesOfFoo, shape1);
 
         // Validate
         System.out.println();

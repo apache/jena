@@ -1,5 +1,5 @@
 Apache Jena
-Copyright 2011-2022 The Apache Software Foundation
+Copyright 2011-2024 The Apache Software Foundation
 
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
@@ -39,7 +39,7 @@ Copyright (c) 2004-2008 QOS.
 Dexx Collections
 Copyright (c) 2014 Andrew O'Malley
 https://github.com/andrewoma/dexx
-BSD-Style License
+MIT-Style License
   https://github.com/andrewoma/dexx/blob/master/LICENSE.txt
   
 and includes the following NOTICE

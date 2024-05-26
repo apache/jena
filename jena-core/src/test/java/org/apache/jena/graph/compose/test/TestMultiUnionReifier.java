@@ -18,7 +18,7 @@
 
 package org.apache.jena.graph.compose.test;
 
-import org.apache.jena.graph.Factory ;
+import org.apache.jena.graph.GraphMemFactory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.GraphUtil ;
 import org.apache.jena.graph.Triple ;
@@ -55,7 +55,7 @@ public class TestMultiUnionReifier extends ModelTestBase
     
     private Graph graph( String facts )
         {
-        Graph result = Factory.createDefaultGraph( );
+        Graph result = GraphMemFactory.createDefaultGraph( );
         String [] factArray = facts.split( ";" );
             for ( String aFactArray : factArray )
             {

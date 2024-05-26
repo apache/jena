@@ -1,0 +1,44 @@
+<!--++ oneOf/consistent001.rdf ** generated using webont test editor. ++-->
+<!--++ Created 26 Sep 2002 12:58:23 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: consistent001.rdf,v 1.6 2003-12-05 05:09:27 jeremy_carroll Exp $
+-->
+<!--
+<code>oneOf</code> <em>does not</em> indicate that the named
+individuals are distinct. Thus a consistent interpretation
+of this file is when all the individual names denote the
+same individual.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/oneOf/consistent001#"
+    xml:base="http://www.w3.org/2002/03owlt/oneOf/consistent001" >
+   <owl:Class>
+      <owl:oneOf rdf:parseType="Collection">
+         <rdf:Description rdf:ID="amy"/>
+         <rdf:Description rdf:ID="bob"/>
+         <rdf:Description rdf:ID="caroline"/>
+      </owl:oneOf>
+      <owl:equivalentClass>
+           <owl:Class>
+             <owl:oneOf rdf:parseType="Collection">
+               <rdf:Description rdf:ID="yolanda"/>
+               <rdf:Description rdf:ID="zebedee"/>
+             </owl:oneOf>
+           </owl:Class>
+      </owl:equivalentClass>
+   </owl:Class>
+
+</rdf:RDF>

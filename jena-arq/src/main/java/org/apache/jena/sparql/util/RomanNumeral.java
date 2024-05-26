@@ -22,6 +22,8 @@ import java.util.Locale ;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
 
+import org.apache.jena.atlas.lib.Lib;
+
 /**
  * References:
  * <ul>
@@ -72,7 +74,7 @@ public class RomanNumeral
 
     // It is easier working right to left!
     public static int r2i(String lex) {
-        lex = lex.toUpperCase(Locale.ROOT) ;
+        lex = Lib.uppercase(lex) ;
 
         // This is overly permissive.
         // 1 - allows multiple reducing values

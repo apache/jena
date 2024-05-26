@@ -18,19 +18,19 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import static org.apache.jena.atlas.lib.Lib.lowercase;
+
 import java.io.IOException;
-import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames;
 
 class ResponseOps {
     // Helpers
     public static void put(Map<String, String> map, String key, String value) {
-        map.put(key.toLowerCase(Locale.ROOT), value);
+        map.put(lowercase(key), value);
     }
 
     public static boolean isEOFexception(IOException ioEx) {
@@ -64,7 +64,7 @@ class ResponseOps {
         if ( str == null )
             return null;
         // Force keys to lower case. See put() above.
-        String key = str.toLowerCase(Locale.ROOT);
+        String key = lowercase(str);
         String str2 = map.get(key);
         if ( str2 == null )
             return str;

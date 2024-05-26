@@ -43,7 +43,7 @@ public abstract class AbstractTestDistinctReduced {
 
     private static List<Binding> build(List<String> items) {
         return items.stream().sequential()
-                .map((s)-> BindingFactory.binding(var_a, NodeFactory.createLiteral(s)))
+                .map((s)-> BindingFactory.binding(var_a, NodeFactory.createLiteralString(s)))
                 .collect(Collectors.toList());
     }
 

@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.graph;
 
-import org.apache.jena.graph.Factory;
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.impl.GraphPlain;
 import org.apache.jena.rdf.model.Model;
@@ -32,17 +32,40 @@ public class GraphFactory {
         JenaSystem.init();
     }
 
+    private static boolean defaultSameTerm = true;
+    static {
+        // Initial setting.
+        String x = System.getProperty("jena:graphSameTerm");
+        if ( x != null && x.equalsIgnoreCase("true") )
+            defaultSameTerm = true;
+    }
+
     /**
-     * Create a graph that is a Jena memory graph
+     * Set the default mode for in-memory graphs : same term (true) or same value
+     * (false).
+     * <p>
+     * This is initially set with system property "jena:graphSameTerm"
+     * with the system default is same value (Jena4).
+     * <p>
+     * This affects {@link #createDefaultGraph}.
+     */
+    public static void setDftGraphSameTerm(boolean value) {
+        defaultSameTerm = value;
+    }
+
+    /**
+     * Create a graph that is a Jena memory graph.
+     * The created graph is <strong>not thread safe</strong>.
+     * Inappropriate use of graph iterators and streams may cause {@code ConcurrentModificationException}.
      *
      * @see #createDefaultGraph
      */
     public static Graph createGraphMem() {
-        return Factory.createGraphMem();
+        return GraphMemFactory.createGraphMem();
     }
 
     /**
-     * Create an in-memory, transactional graph.
+     * Create an in-memory, thread-safe, transactional graph.
      * <p>
      * This fully supports transactions, including abort to roll-back changes. It
      * provides "autocommit" if operations are performed outside a transaction. The
@@ -62,7 +85,7 @@ public class GraphFactory {
 
     /** Create a graph - always the Jena default graph type */
     public static Graph createJenaDefaultGraph() {
-        return Factory.createDefaultGraph();
+        return GraphMemFactory.createDefaultGraph();
     }
 
     /** Graph that uses same-term for find() and contains(). */

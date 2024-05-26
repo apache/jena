@@ -25,8 +25,8 @@ import java.time.Duration;
 
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.auth.Auth;
-import org.apache.jena.fuseki.jetty.JettyLib;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.JettySecurityLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.system.Txn;
@@ -55,17 +55,15 @@ import org.eclipse.jetty.security.UserStore;
 public class EnvTest {
 
 /* Cut&Paste
-    private static EnvTest env;
-    @BeforeClass public static void beforeClass() {
-        //FusekiLogging.setLogging(); -- development only
+  For MS Windows
+
+    private EnvTest env;
+
+    @Before public void before() {
         env = EnvTest.create("/ds");
     }
 
-    @Before public void before() {
-        env.clear();
-    }
-
-    @AfterClass public static void afterClass() {
+    @After public void after() {
         EnvTest.stop(env);
     }
 */
@@ -123,14 +121,13 @@ public class EnvTest {
             .addServlet(data, holder)
             .add(dsName, dsg);
         if ( user != null ) {
-            UserStore userStore = JettyLib.makeUserStore(user, password);
-            SecurityHandler sh = JettyLib.makeSecurityHandler("TripleStore",  userStore, AuthScheme.BASIC);
+            UserStore userStore = JettySecurityLib.makeUserStore(user, password);
+            SecurityHandler sh = JettySecurityLib.makeSecurityHandler("TripleStore",  userStore, AuthScheme.BASIC);
             builder.securityHandler(sh)
                    .serverAuthPolicy(Auth.policyAllowSpecific(user));
         }
 
-        FusekiServer server = builder.build();
-        server.start();
+        FusekiServer server = builder.start();
         return server;
     }
 

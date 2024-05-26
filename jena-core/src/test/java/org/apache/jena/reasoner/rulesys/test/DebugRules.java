@@ -21,7 +21,7 @@ package org.apache.jena.reasoner.rulesys.test;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.graph.Factory ;
+import org.apache.jena.graph.GraphMemFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.reasoner.rulesys.BasicForwardRuleReasoner ;
@@ -50,7 +50,7 @@ public class DebugRules {
     public void run() {
         
         BasicForwardRuleReasoner reasoner = new BasicForwardRuleReasoner(ruleset);
-        InfGraph result = reasoner.bind(Factory.createGraphMem());
+        InfGraph result = reasoner.bind(GraphMemFactory.createGraphMem());
         System.out.println("Final graph state");
         for (Iterator<Triple> i = result.find(null, null, null); i.hasNext(); ) {
             System.out.println(PrintUtil.print(i.next()));

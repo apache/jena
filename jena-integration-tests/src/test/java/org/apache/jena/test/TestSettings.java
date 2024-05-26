@@ -36,7 +36,7 @@ public class TestSettings {
 
     @Test
     public void setting_RDFstar_fastpath_tdb1() {
-        assertTrue(org.apache.jena.tdb.solver.SolverRX.DATAPATH);
+        assertTrue(org.apache.jena.tdb1.solver.SolverRX.DATAPATH);
     }
 
     @Test

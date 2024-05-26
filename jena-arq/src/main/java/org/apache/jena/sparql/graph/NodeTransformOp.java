@@ -42,10 +42,10 @@ import org.apache.jena.sparql.path.Path ;
  *
  * @see NodeTransformExpr
  */
-class NodeTransformOp extends TransformCopy
-{
+class NodeTransformOp extends TransformCopy {
+
     // This finds everywhere that nodes can lurk in an algebra expression:
-    //   BGPs, paths, triples, quads
+    //   BGPs, paths, triples, quads, service
     //   GRAPH, GRAPH{} (DatasetNames)
     //   OrderBy, GroupBy
     //   Extend, Assign
@@ -53,9 +53,9 @@ class NodeTransformOp extends TransformCopy
     //   Project
 
     private final NodeTransform transform ;
-    NodeTransformOp(NodeTransform transform)
-    {
-        this.transform = transform ;
+
+    NodeTransformOp(NodeTransform transform) {
+        this.transform = transform;
     }
 
     @Override
@@ -92,7 +92,7 @@ class NodeTransformOp extends TransformCopy
         if ( path != null )
             tp2 = new TriplePath(s1, path, o1);
         else {
-            Triple t = new Triple(s1, tp.getPredicate(), o1);
+            Triple t = Triple.create(s1, tp.getPredicate(), o1);
             tp2 = new TriplePath(t);
         }
         return new OpPath(tp2);
@@ -175,5 +175,18 @@ class NodeTransformOp extends TransformCopy
         if ( groupVars2 == groupVars )
             return super.transform(opGroup, subOp);
         return OpGroup.create(subOp, groupVars2, opGroup.getAggregators());
+    }
+
+    @Override
+    public Op transform(OpService opService, Op subOp) {
+        boolean silent = opService.getSilent();
+        Node svcNode = opService.getService();
+        Node svcNode2 = transform.apply(svcNode);
+        if ( svcNode2 == svcNode )
+            return super.transform(opService, subOp);
+        // Drop the recorded ElementService as it may be wrong now.
+        // opService.getServiceElement();
+        Op newOp = new OpService(svcNode2, subOp, silent);
+        return newOp;
     }
 }

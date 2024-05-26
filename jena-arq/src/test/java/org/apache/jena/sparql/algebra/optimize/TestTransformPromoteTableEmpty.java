@@ -20,10 +20,10 @@ package org.apache.jena.sparql.algebra.optimize;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.OpLib;
 import org.apache.jena.sparql.algebra.Transform ;
 import org.apache.jena.sparql.algebra.Transformer ;
 import org.apache.jena.sparql.algebra.op.OpExtend ;
-import org.apache.jena.sparql.algebra.op.OpTable ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger ;
@@ -54,7 +54,7 @@ public class TestTransformPromoteTableEmpty {
     @Test
     public void promote_table_empty_assignment_03() {
         // Force algebra to have separate extends by using extendDirect()
-        Op input = OpTable.empty();
+        Op input = OpLib.empty();
         input = OpExtend.create(input, new VarExprList(Var.alloc("x"), new NodeValueInteger(1)));
         input = OpExtend.create(input, new VarExprList(Var.alloc("y"), new NodeValueInteger(2)));
 

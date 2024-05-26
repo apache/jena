@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.apache.jena.graph.Factory;
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphUtil;
 import org.apache.jena.graph.Node;
@@ -172,7 +172,7 @@ public class GraphHelper extends TestUtils {
 
 	/**
 	 * Like graphAdd but does it within a transaction if supported
-	 * 
+	 *
 	 * @param g
 	 *            The graph to add to
 	 * @param s
@@ -190,7 +190,7 @@ public class GraphHelper extends TestUtils {
 
 	/**
 	 * Used to create a graph with values.
-	 * 
+	 *
 	 * @param g
 	 *            The newly created graph
 	 * @param s
@@ -205,7 +205,7 @@ public class GraphHelper extends TestUtils {
 	 * Answer a new memory-based graph with Extended prefixes.
 	 */
 	public static Graph memGraph() {
-		Graph result = Factory.createGraphMem();
+		Graph result = GraphMemFactory.createGraphMem();
 		result.getPrefixMapping().setNsPrefixes(PrefixMapping.Extended);
 		return result;
 	}
@@ -310,7 +310,7 @@ public class GraphHelper extends TestUtils {
 	 * <code>n.toString(PrefixMapping.Extended,true)</code>.
 	 */
 	protected static String nice(Node n) {
-		return n.toString(PrefixMapping.Extended, true);
+		return n.toString(PrefixMapping.Extended);
 	}
 
 	/**
@@ -445,7 +445,7 @@ public class GraphHelper extends TestUtils {
 	 * constructor is used; this allows non-static inner classes to be used for
 	 * <code>graphClass</code>, with <code>wrap</code> being the outer class
 	 * instance. If no suitable constructor exists, a JenaException is thrown.
-	 * 
+	 *
 	 * @param wrap
 	 *            the outer class instance if graphClass is an inner class
 	 * @param graphClass
@@ -474,7 +474,7 @@ public class GraphHelper extends TestUtils {
 
 	/**
 	 * Begin a transaction on the graph if transactions are supported.
-	 * 
+	 *
 	 * @param g
 	 */
 	public static void txnBegin(Graph g) {
@@ -485,7 +485,7 @@ public class GraphHelper extends TestUtils {
 
 	/**
 	 * Commit the transaction on the graph if transactions are supported.
-	 * 
+	 *
 	 * @param g
 	 */
 	public static void txnCommit(Graph g) {
@@ -493,19 +493,15 @@ public class GraphHelper extends TestUtils {
 			g.getTransactionHandler().commit();
 		}
 	}
-	
+
 	public static void txnRun( Graph g, Runnable r ) {
-		if (g.getTransactionHandler().transactionsSupported()) {
-			g.getTransactionHandler().execute( r );
-		} else {
-			r.run();
-		}
+	    g.getTransactionHandler().executeAlways(r);
 	}
 
 	/**
 	 * Rollback (abort) the transaction on the graph if transactions are
 	 * supported.
-	 * 
+	 *
 	 * @param g
 	 */
 	public static void txnRollback(Graph g) {

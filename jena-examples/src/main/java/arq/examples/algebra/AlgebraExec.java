@@ -55,7 +55,7 @@ public class AlgebraExec
         Var var_z = Var.alloc("z") ;
         
         // ---- Build expression
-        bp.add(new Triple(var_x, NodeFactory.createURI(BASE+"p"), var_z)) ;
+        bp.add(Triple.create(var_x, NodeFactory.createURI(BASE+"p"), var_z)) ;
         Op op = new OpBGP(bp) ;
         //Expr expr = ExprUtils.parse("?z < 2 ") ;
         Expr expr = new E_LessThan(new ExprVar(var_z), NodeValue.makeNodeInteger(2)) ;

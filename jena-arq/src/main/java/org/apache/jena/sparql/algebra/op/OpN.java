@@ -18,59 +18,57 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public abstract class OpN extends OpBase
-{ 
-    private List<Op> elements = new ArrayList<>() ;
-    
-    protected OpN()         { elements = new ArrayList<>() ; }
-    protected OpN(List<Op> x)   { elements = x ; }
-    
+{
+    private List<Op> elements = new ArrayList<>();
+
+    protected OpN()         { elements = new ArrayList<>(); }
+    protected OpN(List<Op> x)   { elements = x; }
+
     /** Accumulate an op in the OpN.
      *  This exists to help building OpN in the first place.
      *  Once built, an OpN, like any Op should be treated as immutable
      *  with no calls change the sub ops contents.
      *  No calls to .add.
      */
-    public void add(Op op) { elements.add(op) ; }
-    public Op get(int idx) { return elements.get(idx) ; }
-    
-    public abstract Op apply(Transform transform, List<Op> elts) ;
-    public abstract OpN copy(List<Op> elts) ;
+    public void add(Op op) { elements.add(op); }
+    public Op get(int idx) { return elements.get(idx); }
+
+    public abstract Op apply(Transform transform, List<Op> elts);
+    public abstract OpN copy(List<Op> elts);
 
     // Tests the sub-elements for equalTo.
-    protected boolean equalsSubOps(OpN op, NodeIsomorphismMap labelMap)
-    {
-        if (elements.size() != op.elements.size() )
-            return false ;
-        
-        Iterator<Op> iter1 = elements.listIterator() ;
-        Iterator<Op> iter2 = op.elements.listIterator() ;
-        
-        for ( ; iter1.hasNext() ; )
-        {
+    protected boolean equalsSubOps(OpN op, NodeIsomorphismMap labelMap) {
+        if ( elements.size() != op.elements.size() )
+            return false;
+
+        Iterator<Op> iter1 = elements.listIterator();
+        Iterator<Op> iter2 = op.elements.listIterator();
+
+        for ( ; iter1.hasNext() ; ) {
             Op op1 = iter1.next();
             Op op2 = iter2.next();
-            if ( ! op1.equalTo(op2, labelMap) )
-                return false ;
+            if ( !op1.equalTo(op2, labelMap) )
+                return false;
         }
-        return true ;
+        return true;
     }
 
-    public int size()                   { return elements.size() ; } 
+    public int size()                   { return elements.size(); }
 
-    
+
     @Override
-    public int hashCode()               { return elements.hashCode() ; } 
+    public int hashCode()               { return elements.hashCode(); }
 
-    public List<Op> getElements()           { return elements ; }
+    public List<Op> getElements()           { return elements; }
 
-    public Iterator<Op> iterator()          { return elements.iterator() ; }
+    public Iterator<Op> iterator()          { return elements.iterator(); }
 }

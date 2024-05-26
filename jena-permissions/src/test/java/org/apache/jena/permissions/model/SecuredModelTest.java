@@ -17,19 +17,9 @@
  */
 package org.apache.jena.permissions.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.CharArrayWriter;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,34 +30,12 @@ import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.permissions.EqualityTester;
-import org.apache.jena.permissions.Factory;
-import org.apache.jena.permissions.MockSecurityEvaluator;
-import org.apache.jena.permissions.SecurityEvaluator;
+import org.apache.jena.permissions.*;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
-import org.apache.jena.permissions.SecurityEvaluatorParameters;
 import org.apache.jena.permissions.graph.SecuredGraph;
 import org.apache.jena.permissions.graph.SecuredPrefixMappingTest;
-import org.apache.jena.rdf.model.Alt;
-import org.apache.jena.rdf.model.Bag;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.ReifiedStatement;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Selector;
-import org.apache.jena.rdf.model.Seq;
-import org.apache.jena.rdf.model.SimpleSelector;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.jena.shared.AccessDeniedException;
-import org.apache.jena.shared.AddDeniedException;
-import org.apache.jena.shared.PrefixMapping;
-import org.apache.jena.shared.PropertyNotFoundException;
-import org.apache.jena.shared.ReadDeniedException;
-import org.apache.jena.shared.UpdateDeniedException;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.shared.*;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Assert;
 import org.junit.Before;
@@ -92,7 +60,7 @@ public class SecuredModelTest {
 
     /**
      * create an unsecured securedModel.
-     * 
+     *
      * @return
      */
     protected Model createModel() {
@@ -154,12 +122,10 @@ public class SecuredModelTest {
         __testAdd(() -> securedModel.add(baseModel));
         __testAdd(() -> securedModel.add(s, p, o));
         __testAdd(() -> securedModel.add(s, p, "foo"));
-        __testAdd(() -> securedModel.add(s, p, "foo", false));
         __testAdd(() -> securedModel.add(s, p, "foo", XSDDatatype.XSDstring));
         __testAdd(() -> securedModel.add(s, p, "foo", "en"));
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void testAddLiteral() throws Exception {
         __testAdd(() -> securedModel.addLiteral(s, p, true));
@@ -168,7 +134,6 @@ public class SecuredModelTest {
         __testAdd(() -> securedModel.addLiteral(s, p, 2.0f));
         __testAdd(() -> securedModel.addLiteral(s, p, 5));
         __testAdd(() -> securedModel.addLiteral(s, p, 5L));
-        __testAdd(() -> securedModel.addLiteral(s, p, new ArrayList<String>()));
         __testAdd(() -> securedModel.addLiteral(s, p, baseModel.createLiteral("Literal")));
     }
 
@@ -192,7 +157,7 @@ public class SecuredModelTest {
 
     @Test
     public void testAsStatement_Exists() {
-        Triple t = new Triple(s.asNode(), p.asNode(), o.asNode());
+        Triple t = Triple.create(s.asNode(), p.asNode(), o.asNode());
         try {
             Statement stmt = securedModel.asStatement(t);
             assertEquals(securedModel, stmt.getModel());
@@ -216,7 +181,7 @@ public class SecuredModelTest {
     @Test
     public void testAsStatement_NotExists() {
         // check a triple that does not exist -- must have update to add it.
-        Triple t = new Triple(s.asNode(), p2.asNode(), o.asNode());
+        Triple t = Triple.create(s.asNode(), p2.asNode(), o.asNode());
         try {
             Statement stmt = securedModel.asStatement(t);
             assertEquals(securedModel, stmt.getModel());
@@ -470,7 +435,7 @@ public class SecuredModelTest {
     @Test
     public void testCreateLiteral() throws Exception {
         securedModel.createLiteral("foo");
-        securedModel.createLiteral("foo", false);
+        securedModel.createLiteral("foo", "");
     }
 
     @Test
@@ -640,7 +605,7 @@ public class SecuredModelTest {
     @Test
     public void testGetAlt_Existing() throws Exception {
         Resource r = baseModel.createAlt("http://example.com/securedModel/alt");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
 
         try {
             Alt alt = securedModel.getAlt(r);
@@ -676,7 +641,7 @@ public class SecuredModelTest {
     public void testGetAlt_ResourceNotExisting() throws Exception {
 
         Resource r = ResourceFactory.createResource("http://example.com/securedModel/alt");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Alt.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Alt.asNode());
         try {
             Alt alt = securedModel.getAlt(r);
             assertEquals(securedModel, alt.getModel());
@@ -696,7 +661,7 @@ public class SecuredModelTest {
     public void testGetAlt_StringNotExisting() throws Exception {
 
         Resource r = ResourceFactory.createResource("http://example.com/securedModel/alt");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Alt.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Alt.asNode());
         try {
             Alt alt = securedModel.getAlt("http://example.com/securedModel/alt");
             assertEquals(securedModel, alt.getModel());
@@ -713,66 +678,9 @@ public class SecuredModelTest {
     }
 
     @Test
-    public void testGetAnyReifiedStmt_none() {
-        // first with create.
-        try {
-            Resource r = securedModel.getAnyReifiedStatement(baseModel.listStatements().next());
-            Assert.assertNotNull(r);
-            if (!securityEvaluator.evaluate(Action.Update)) {
-                Assert.fail("Should have thrown UpdateDeniedException Exception");
-            }
-            if (!securityEvaluator.evaluate(Action.Create)) {
-                Assert.fail("Should have thrown AddDeniedException Exception");
-            }
-        } catch (final UpdateDeniedException e) {
-            if (securityEvaluator.evaluate(Action.Update)) {
-                Assert.fail(String.format("Should not have thrown UpdateDeniedException Exception: %s - %s", e,
-                        e.getTriple()));
-            }
-        } catch (final AddDeniedException e) {
-            if (securityEvaluator.evaluate(Action.Create)) {
-                Assert.fail(String.format("Should not have thrown AddDeniedException Exception: %s - %s", e,
-                        e.getTriple()));
-            }
-        }
-    }
-
-    @Test
-    public void testGetAnyReifiedStmt_one() {
-        final Statement st = baseModel.listStatements().next();
-        ReifiedStatement s = baseModel.createReifiedStatement(st);
-        // there is a reified statement so only read is required.
-
-        try {
-            Resource r = securedModel.getAnyReifiedStatement(st);
-
-            if (securityEvaluator.evaluate(Action.Read)) {
-                Assert.assertEquals(s.getURI(), r.getURI());
-            }
-            if (!securityEvaluator.evaluate(Action.Update) && !securityEvaluator.evaluate(Action.Read)) {
-                Assert.fail("Should have thrown UpdateDeniedException Exception");
-            }
-            if (!securityEvaluator.evaluate(Action.Create) && !securityEvaluator.evaluate(Action.Read)) {
-                Assert.fail("Should have thrown AddDeniedException Exception");
-            }
-        } catch (final UpdateDeniedException e) {
-            if (securityEvaluator.evaluate(Action.Update)) {
-                Assert.fail(String.format("Should not have thrown UpdateDeniedException Exception: %s - %s", e,
-                        e.getTriple()));
-            }
-        } catch (final AddDeniedException e) {
-            if (securityEvaluator.evaluate(Action.Create)) {
-                Assert.fail(String.format("Should not have thrown AddDeniedException Exception: %s - %s", e,
-                        e.getTriple()));
-            }
-
-        }
-    }
-
-    @Test
     public void testGetBag_Existing() {
         final Resource r = baseModel.createBag("http://example.com/securedModel/bag");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
 
         try {
             Bag bag = securedModel.getBag(r);
@@ -807,7 +715,7 @@ public class SecuredModelTest {
     public void testGetBag_ResourceNotExisting() throws Exception {
 
         Resource r = ResourceFactory.createResource("http://example.com/securedModel/bag");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
         try {
             Bag bag = securedModel.getBag(r);
             assertEquals(securedModel, bag.getModel());
@@ -827,7 +735,7 @@ public class SecuredModelTest {
     public void testGetBag_StringNotExisting() throws Exception {
 
         Resource r = ResourceFactory.createResource("http://example.com/securedModel/bag");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
         try {
             Bag bag = securedModel.getBag("http://example.com/securedModel/bag");
             assertEquals(securedModel, bag.getModel());
@@ -1010,9 +918,10 @@ public class SecuredModelTest {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testGetReader() {
-        securedModel.getReader();
+        securedModel.getReader(null);
         securedModel.getReader("TURTLE");
     }
 
@@ -1024,7 +933,7 @@ public class SecuredModelTest {
     @Test
     public void testGetSeq_Existing() {
         final Resource r = baseModel.createSeq("http://example.com/securedModel/seq");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Bag.asNode());
 
         try {
             Seq seq = securedModel.getSeq(r);
@@ -1059,7 +968,7 @@ public class SecuredModelTest {
     public void testGetSeq_ResourceNotExisting() throws Exception {
 
         Resource r = ResourceFactory.createResource("http://example.com/securedModel/seq");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Seq.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Seq.asNode());
         try {
             Seq seq = securedModel.getSeq(r);
             assertEquals(securedModel, seq.getModel());
@@ -1079,7 +988,7 @@ public class SecuredModelTest {
     public void testGetSeq_StringNotExisting() throws Exception {
 
         Resource r = ResourceFactory.createResource("http://example.com/securedModel/seq");
-        Triple t = new Triple(r.asNode(), RDF.type.asNode(), RDF.Seq.asNode());
+        Triple t = Triple.create(r.asNode(), RDF.type.asNode(), RDF.Seq.asNode());
         try {
             Seq seq = securedModel.getSeq("http://example.com/securedModel/seq");
             assertEquals(securedModel, seq.getModel());
@@ -1095,9 +1004,10 @@ public class SecuredModelTest {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testGetWriter() {
-        securedModel.getWriter();
+        securedModel.getWriter(null);
         securedModel.getWriter("TURTLE");
     }
 
@@ -1237,42 +1147,6 @@ public class SecuredModelTest {
         }
     }
 
-    @Test
-    public void testIsReified() {
-        Statement stmt = baseModel.listStatements().next();
-        try {
-            boolean actual = securedModel.isReified(stmt);
-            assertFalse(actual);
-            if (!shouldRead()) {
-                Assert.fail("Should have thrown ReadDeniedException Exception");
-            }
-        } catch (final ReadDeniedException e) {
-            if (shouldRead()) {
-                Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
-                        e.getTriple()));
-            }
-        }
-
-        baseModel.createReifiedStatement(stmt);
-        try {
-            boolean actual = securedModel.isReified(stmt);
-            if (securityEvaluator.evaluate(Action.Read)) {
-                assertTrue(actual);
-            } else {
-                assertFalse(actual);
-            }
-            if (!shouldRead()) {
-                Assert.fail("Should have thrown ReadDeniedException Exception");
-            }
-        } catch (final ReadDeniedException e) {
-            if (shouldRead()) {
-                Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
-                        e.getTriple()));
-            }
-        }
-
-    }
-
     private void __testListLiteralStatements(Supplier<StmtIterator> supplier) {
         try {
             StmtIterator iter = supplier.get();
@@ -1336,28 +1210,6 @@ public class SecuredModelTest {
     }
 
     @Test
-    public void testQuery() throws Exception {
-        final Selector s = new SimpleSelector();
-        try {
-            Model model = securedModel.query(s);
-            if (securityEvaluator.evaluate(Action.Read)) {
-                Assert.assertTrue(model.isIsomorphicWith(baseModel));
-            } else {
-                Assert.assertTrue(model.isEmpty());
-            }
-
-            if (!shouldRead()) {
-                Assert.fail("Should have thrown ReadDeniedException Exception");
-            }
-        } catch (final ReadDeniedException e) {
-            if (shouldRead()) {
-                Assert.fail(String.format("Should not have thrown ReadDeniedException Exception: %s - %s", e,
-                        e.getTriple()));
-            }
-        }
-    }
-
-    @Test
     public void testRDFNodeInModel() {
         // test uri
         final RDFNode rdfNode = ResourceFactory.createResource("http://exmple.com/testInModel");
@@ -1369,10 +1221,14 @@ public class SecuredModelTest {
     public void testReadEmpty() throws Exception {
         final Set<Action> createAndUpdate = SecurityEvaluator.Util.asSet(new Action[] { Action.Update, Action.Create });
 
-        final String XML_INPUT = "<rdf:RDF" + "   xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' "
-                + "   xmlns:rt='http://example.com/readTest#' " + "   xmlns:j.0='http://example.com/readTest#3' > "
+        final String XML_INPUT =
+                "<rdf:RDF"
+                + "   xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' "
+                + "   xmlns:rt='http://example.com/readTest#' "
+                + "   xmlns:j.0='http://example.com/readTest#3' > "
                 + "  <rdf:Description rdf:about='http://example.com/readTest#1'> "
-                + "    <rdf:type rdf:resource='http://example.com/readTest#3'/>" + "  </rdf:Description>"
+                + "    <rdf:type rdf:resource='http://example.com/readTest#3'/>"
+                + "  </rdf:Description>"
                 + "</rdf:RDF>";
         final String TTL_INPUT = "@prefix rt: <http://example.com/readTest#> . rt:1 a rt:3 .";
         final String base = "http://example.com/test";
@@ -1606,26 +1462,6 @@ public class SecuredModelTest {
     }
 
     @Test
-    public void testRemoveAllReifications() {
-        final Set<Action> DU = SecurityEvaluator.Util.asSet(new Action[] { Action.Delete, Action.Update });
-
-        final List<Statement> stmt = baseModel.listStatements().toList();
-        baseModel.createReifiedStatement(stmt.get(0));
-
-        try {
-            securedModel.removeAllReifications(stmt.get(0));
-            if (!securityEvaluator.evaluate(DU)) {
-                Assert.fail("Should have thrown AccessDeniedException Exception");
-            }
-        } catch (final AccessDeniedException e) {
-            if (securityEvaluator.evaluate(DU)) {
-                Assert.fail(String.format("Should not have thrown AccessDeniedException Exception: %s - %s", e,
-                        e.getTriple()));
-            }
-        }
-    }
-
-    @Test
     public void testGetRequiredProperty() {
 
         try {
@@ -1787,7 +1623,7 @@ public class SecuredModelTest {
 
     @Test
     public void testWrite_writer() throws Exception {
-        __testWrite(() -> securedModel.write(new CharArrayWriter()));
+        __testWrite(() -> securedModel.write(new CharArrayWriter(), "RDF/XML"));
     }
 
     @Test

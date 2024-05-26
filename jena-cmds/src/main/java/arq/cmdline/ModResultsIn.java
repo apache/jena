@@ -33,7 +33,7 @@ public class ModResultsIn extends ModBase
     private ResultsFormat inputFormat = ResultsFormat.FMT_TEXT ;
     private String resultsFilename = null ;
     private ResultSet resultSet = null ;
-    
+
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {
@@ -43,7 +43,7 @@ public class ModResultsIn extends ModBase
                     "Input file") ;
         cmdLine.add(resultsInputFmtDecl,
                     "--in",
-                    "Results format (XML, JSON; RDF serialization)") ;  
+                    "Results format (XML, JSON; RDF serialization)") ;
     }
 
     @Override
@@ -52,20 +52,20 @@ public class ModResultsIn extends ModBase
         // Input file.
         if ( cmdline.contains(fileDecl) )
             resultsFilename = cmdline.getValue(fileDecl) ;
-        
+
         if ( cmdline.getNumPositional() == 0 && resultsFilename == null )
             cmdline.cmdError("No results file") ;
 
         if ( cmdline.getNumPositional() > 1 )
             cmdline.cmdError("Only one result set file allowed") ;
-            
+
         if ( cmdline.getNumPositional() == 1 && resultsFilename != null )
             cmdline.cmdError("Either result set file or --file - not both") ;
 
         if ( resultsFilename == null )
             // One positional argument.
             resultsFilename = cmdline.getPositionalArg(0) ;
-        
+
         // Guess format
         if ( resultsFilename != null )
             inputFormat = ResultsFormat.guessSyntax(resultsFilename) ;
@@ -79,16 +79,16 @@ public class ModResultsIn extends ModBase
                 cmdline.cmdError("Unrecognized output format: "+rFmt) ;
         }
     }
-    
+
     public void checkCommandLine(CmdArgModule cmdLine)
     {}
-    
-    
+
+
     public ResultSet getResultSet()
     {
         if ( resultSet != null )
             return resultSet ;
-        
+
         if ( resultsFilename == null )
         {
             System.err.println("No result file name" ) ;
@@ -97,7 +97,7 @@ public class ModResultsIn extends ModBase
 
         try
         {
-            if ( resultsFilename.equals("-") )
+            if ( resultsFilename.equals("--") )
                 return ResultSetFactory.load(System.in, inputFormat) ;
             ResultSet rs = ResultSetFactory.load(resultsFilename, inputFormat) ;
             if ( rs == null )
@@ -127,7 +127,5 @@ public class ModResultsIn extends ModBase
         }
     }
 
-    
     public ResultsFormat getInputFormat() { return inputFormat ; }
-
 }

@@ -24,7 +24,7 @@ import static org.apache.jena.fuseki.servlets.GraphTarget.determineTargetGSP;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.servlet.ServletOutputStream;
+import jakarta.servlet.ServletOutputStream;
 
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.graph.Graph;

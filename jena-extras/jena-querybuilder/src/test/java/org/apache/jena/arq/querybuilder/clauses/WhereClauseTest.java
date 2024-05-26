@@ -22,11 +22,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import org.apache.jena.arq.TestAbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.AbstractQueryBuilder;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.WhereBuilder;
@@ -35,7 +33,6 @@ import org.apache.jena.graph.FrontsTriple;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
@@ -48,21 +45,11 @@ import org.apache.jena.sparql.expr.E_Random;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprVar;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.sparql.path.P_Link;
 import org.apache.jena.sparql.path.P_Seq;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.path.PathParser;
-import org.apache.jena.sparql.syntax.ElementBind;
-import org.apache.jena.sparql.syntax.ElementData;
-import org.apache.jena.sparql.syntax.ElementFilter;
-import org.apache.jena.sparql.syntax.ElementMinus;
-import org.apache.jena.sparql.syntax.ElementNamedGraph;
-import org.apache.jena.sparql.syntax.ElementOptional;
-import org.apache.jena.sparql.syntax.ElementPathBlock;
-import org.apache.jena.sparql.syntax.ElementSubQuery;
-import org.apache.jena.sparql.syntax.ElementTriplesBlock;
-import org.apache.jena.sparql.syntax.ElementUnion;
+import org.apache.jena.sparql.syntax.*;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.After;
 import org.xenei.junit.contract.Contract;
@@ -72,7 +59,7 @@ import org.xenei.junit.contract.IProducer;
 @Contract(WhereClause.class)
 public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTest {
 
-    // the producer we will user
+    // the producer we will use
     private IProducer<T> producer;
 
     @Contract.Inject
@@ -91,14 +78,110 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
     }
 
     @ContractTest
-    public void testAddWhereStrings() {
+    public void testAddWhere3Objects() {
         WhereClause<?> whereClause = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = whereClause.addWhere("<one>", "<two>", "three");
 
         ElementPathBlock epb = new ElementPathBlock();
-        Triple t = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
-                NodeFactory.createLiteral("three"));
+        Triple t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+                NodeFactory.createLiteralString("three"));
         epb.addTriple(t);
+
+        WhereValidator visitor = new WhereValidator(epb);
+        builder.build().getQueryPattern().visit(visitor);
+        assertTrue(visitor.matching);
+    }
+    
+
+    @ContractTest
+    public void testAddWhereAbstractQueryBuilder() {
+        WhereClause<?> whereClause = getProducer().newInstance();
+        TriplePath tp = new TriplePath(Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
+
+        TestAbstractQueryBuilder abstractQueryBuilder = new TestAbstractQueryBuilder();
+        abstractQueryBuilder.getHandlerBlock().getWhereHandler().addWhere(tp);
+        AbstractQueryBuilder<?> builder = whereClause.addWhere(abstractQueryBuilder);
+        
+        ElementPathBlock epb = new ElementPathBlock();
+        epb.addTriplePath(tp);
+        WhereValidator visitor = new WhereValidator(epb);
+        builder.build().getQueryPattern().visit(visitor);
+        assertTrue(visitor.matching);
+    }
+    
+    @ContractTest
+    public void testAddWhereTriplePath() {
+        WhereClause<?> whereClause = getProducer().newInstance();
+        PrefixMapping pmap = new PrefixMappingImpl();
+        pmap.setNsPrefix("ts", "urn:test:");
+        Path path = PathParser.parse("ts:two/ts:dos", pmap);
+        TriplePath first = new TriplePath(NodeFactory.createURI("one"), path, NodeFactory.createURI("three"));
+        
+        AbstractQueryBuilder<?> builder = whereClause
+                .addWhere(first);
+
+        ElementPathBlock epb = new ElementPathBlock();
+        epb.addTriplePath(first);
+
+        WhereValidator visitor = new WhereValidator(epb);
+        builder.build().getQueryPattern().visit(visitor);
+        assertTrue(visitor.matching);
+    }
+    
+
+    @ContractTest
+    public void testAddWhereTriple() {
+        WhereClause<?> whereClause = getProducer().newInstance();
+        Triple triple = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three"));
+
+        AbstractQueryBuilder<?> builder = whereClause
+                .addWhere(triple);
+
+        ElementPathBlock epb = new ElementPathBlock();
+        epb.addTriple(triple);
+
+        WhereValidator visitor = new WhereValidator(epb);
+        builder.build().getQueryPattern().visit(visitor);
+        assertTrue(visitor.matching);
+    }
+
+    @ContractTest
+    public void testAddWhereFrontsTriple() {
+        WhereClause<?> whereClause = getProducer().newInstance();
+        Triple triple = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three"));
+        FrontsTriple front = new FrontsTriple() {
+
+            @Override
+            public Triple asTriple() {
+                return triple;
+            }};
+        
+        AbstractQueryBuilder<?> builder = whereClause
+                .addWhere(front);
+
+        ElementPathBlock epb = new ElementPathBlock();
+        epb.addTriple(triple);
+
+        WhereValidator visitor = new WhereValidator(epb);
+        builder.build().getQueryPattern().visit(visitor);
+        assertTrue(visitor.matching);
+    }
+
+    @ContractTest
+    public void testAddWhereTriplePathCollection() {
+        WhereClause<?> whereClause = getProducer().newInstance();
+        PrefixMapping pmap = new PrefixMappingImpl();
+        pmap.setNsPrefix("ts", "urn:test:");
+        Path path = PathParser.parse("ts:two/ts:dos", pmap);
+        TriplePath first = new TriplePath(NodeFactory.createURI("one"), path, NodeFactory.createURI("three"));
+        TriplePath second = new TriplePath(NodeFactory.createURI("for"), path, NodeFactory.createURI("six"));
+
+        AbstractQueryBuilder<?> builder = whereClause
+                .addWhere(List.of(first, second));
+
+        ElementPathBlock epb = new ElementPathBlock();
+        epb.addTriplePath(first);
+        epb.addTriplePath(second);
 
         WhereValidator visitor = new WhereValidator(epb);
         builder.build().getQueryPattern().visit(visitor);
@@ -107,14 +190,14 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
     @ContractTest
     public void testAddWhereWhereClause() {
-        WhereBuilder whereBuilder = new WhereBuilder().addWhere(new TriplePath(new Triple(NodeFactory.createURI("one"),
+        WhereBuilder whereBuilder = new WhereBuilder().addWhere(new TriplePath(Triple.create(NodeFactory.createURI("one"),
                 NodeFactory.createURI("two"), NodeFactory.createURI("three"))));
 
         WhereClause<?> whereClause = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = whereClause.addWhere(whereBuilder);
 
         ElementPathBlock epb = new ElementPathBlock();
-        Triple t = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        Triple t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createURI("three"));
         epb.addTriple(t);
 
@@ -130,8 +213,8 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         ElementPathBlock epb = new ElementPathBlock();
         ElementOptional optional = new ElementOptional(epb);
-        Triple t = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
-                NodeFactory.createLiteral("three"));
+        Triple t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+                NodeFactory.createLiteralString("three"));
         epb.addTriple(t);
 
         WhereValidator visitor = new WhereValidator(optional);
@@ -148,7 +231,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         Path path = new P_Seq(new P_Link(NodeFactory.createURI("two")), new P_Link(NodeFactory.createURI("dos")));
         ElementPathBlock epb = new ElementPathBlock();
         ElementOptional optional = new ElementOptional(epb);
-        TriplePath tp = new TriplePath(NodeFactory.createURI("one"), path, NodeFactory.createLiteral("three"));
+        TriplePath tp = new TriplePath(NodeFactory.createURI("one"), path, NodeFactory.createLiteralString("three"));
         epb.addTriplePath(tp);
 
         WhereValidator visitor = new WhereValidator(optional);
@@ -164,7 +247,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         ElementPathBlock epb = new ElementPathBlock();
         ElementOptional optional = new ElementOptional(epb);
-        Triple t = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        Triple t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createURI("three"));
         epb.addTriple(t);
 
@@ -181,7 +264,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         ElementPathBlock epb = new ElementPathBlock();
         ElementOptional optional = new ElementOptional(epb);
-        Triple t = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        Triple t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createURI("three"));
         epb.addTriple(t);
 
@@ -210,6 +293,28 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
     }
 
     @ContractTest
+    public void testAddOptionalTriplePathCollection() {
+        WhereClause<?> whereClause = getProducer().newInstance();
+        PrefixMapping pmap = new PrefixMappingImpl();
+        pmap.setNsPrefix("ts", "urn:test:");
+        Path path = PathParser.parse("ts:two/ts:dos", pmap);
+        TriplePath first = new TriplePath(NodeFactory.createURI("one"), path, NodeFactory.createURI("three"));
+        TriplePath second = new TriplePath(NodeFactory.createURI("for"), path, NodeFactory.createURI("six"));
+
+        AbstractQueryBuilder<?> builder = whereClause
+                .addOptional(List.of(first, second));
+
+        ElementPathBlock epb = new ElementPathBlock();
+        ElementOptional optional = new ElementOptional(epb);
+        epb.addTriplePath(first);
+        epb.addTriplePath(second);
+
+        WhereValidator visitor = new WhereValidator(optional);
+        builder.build().getQueryPattern().visit(visitor);
+        assertTrue(visitor.matching);
+    }
+    
+    @ContractTest
     public void testAddOptionalObjectsWithPath() {
         WhereClause<?> whereClause = getProducer().newInstance();
         PrefixMapping pmap = new PrefixMappingImpl();
@@ -236,20 +341,20 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         Node q = NodeFactory.createURI("urn:q");
         Node v = NodeFactory.createURI("urn:v");
         Var x = Var.alloc("x");
-        Node n123 = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(123));
+        Node n123 = NodeFactory.createLiteralByValue(123);
 
         SelectBuilder pattern = new SelectBuilder();
-        pattern.addWhere(new Triple(s, q, n123));
-        pattern.addWhere(new Triple(s, v, x));
+        pattern.addWhere(Triple.create(s, q, n123));
+        pattern.addWhere(Triple.create(s, v, x));
 
         WhereClause<?> whereClause = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = whereClause.addOptional(pattern);
 
         ElementPathBlock epb = new ElementPathBlock();
         ElementOptional optional = new ElementOptional(epb);
-        TriplePath tp = new TriplePath(new Triple(s, q, n123));
+        TriplePath tp = new TriplePath(Triple.create(s, q, n123));
         epb.addTriplePath(tp);
-        tp = new TriplePath(new Triple(s, v, x));
+        tp = new TriplePath(Triple.create(s, v, x));
         epb.addTriplePath(tp);
 
         WhereValidator visitor = new WhereValidator(optional);
@@ -265,20 +370,20 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         Node q = NodeFactory.createURI("urn:q");
         Node v = NodeFactory.createURI("urn:v");
         Var x = Var.alloc("x");
-        Node n123 = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(123));
+        Node n123 = NodeFactory.createLiteralByValue(123);
 
         SelectBuilder pattern = new SelectBuilder();
-        pattern.addWhere(new Triple(s, q, n123));
-        pattern.addWhere(new Triple(s, v, x));
+        pattern.addWhere(Triple.create(s, q, n123));
+        pattern.addWhere(Triple.create(s, v, x));
 
         WhereClause<?> whereClause = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = whereClause.addOptional(pattern);
 
         ElementPathBlock epb = new ElementPathBlock();
         ElementOptional optional = new ElementOptional(epb);
-        TriplePath tp = new TriplePath(new Triple(Var.alloc(s), q, n123));
+        TriplePath tp = new TriplePath(Triple.create(Var.alloc(s), q, n123));
         epb.addTriplePath(tp);
-        tp = new TriplePath(new Triple(Var.alloc(s), v, x));
+        tp = new TriplePath(Triple.create(Var.alloc(s), v, x));
         epb.addTriplePath(tp);
 
         WhereValidator visitor = new WhereValidator(optional);
@@ -288,7 +393,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
     }
 
     @ContractTest
-    public void testAddFilter() throws ParseException {
+    public void testAddFilter() {
         WhereClause<?> whereClause = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = whereClause.addFilter("?one<10");
 
@@ -314,7 +419,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         q2.addProjectVars(Arrays.asList(Var.alloc("x")));
         ElementPathBlock epb = new ElementPathBlock();
         q2.setQueryPattern(epb);
-        epb.addTriplePath(new TriplePath(new Triple(NodeFactory.createURI("urn:uri:one"),
+        epb.addTriplePath(new TriplePath(Triple.create(NodeFactory.createURI("urn:uri:one"),
                 NodeFactory.createURI("urn:uri:two"), NodeFactory.createURI("urn:uri:three"))));
         ElementSubQuery esq = new ElementSubQuery(q2);
 
@@ -344,8 +449,8 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         subQuery.setQuerySelectType();
         subQuery.addProjectVars(Arrays.asList("x"));
         subQuery.setQueryPattern(epb);
-        Triple t = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
-                NodeFactory.createLiteral("three"));
+        Triple t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+                NodeFactory.createLiteralString("three"));
         epb.addTriple(t);
 
         WhereValidator visitor = new WhereValidator(union);
@@ -365,9 +470,9 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         Node four = NodeFactory.createURI("four");
 
         WhereClause<?> whereClause = getProducer().newInstance();
-        AbstractQueryBuilder<?> builder = whereClause.addWhere(new Triple(one, two, v));
+        AbstractQueryBuilder<?> builder = whereClause.addWhere(Triple.create(one, two, v));
 
-        TriplePath tp = new TriplePath(new Triple(one, two, v));
+        TriplePath tp = new TriplePath(Triple.create(one, two, v));
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(tp);
         WhereValidator visitor = new WhereValidator(epb);
@@ -376,7 +481,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         builder.setVar(v, three);
 
-        tp = new TriplePath(new Triple(one, two, three));
+        tp = new TriplePath(Triple.create(one, two, three));
         epb = new ElementPathBlock();
         epb.addTriple(tp);
         visitor = new WhereValidator(epb);
@@ -385,7 +490,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         builder.setVar(v, four);
 
-        tp = new TriplePath(new Triple(one, two, four));
+        tp = new TriplePath(Triple.create(one, two, four));
         epb = new ElementPathBlock();
         epb.addTriple(tp);
         visitor = new WhereValidator(epb);
@@ -394,7 +499,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         builder.setVar(v, null);
 
-        tp = new TriplePath(new Triple(one, two, v));
+        tp = new TriplePath(Triple.create(one, two, v));
         epb = new ElementPathBlock();
         epb.addTriple(tp);
         visitor = new WhereValidator(epb);
@@ -411,9 +516,9 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         Node four = NodeFactory.createURI("four");
 
         WhereClause<?> whereClause = getProducer().newInstance();
-        AbstractQueryBuilder<?> builder = whereClause.addWhere(new Triple(one, two, v));
+        AbstractQueryBuilder<?> builder = whereClause.addWhere(Triple.create(one, two, v));
 
-        TriplePath tp = new TriplePath(new Triple(one, two, Var.alloc(v)));
+        TriplePath tp = new TriplePath(Triple.create(one, two, Var.alloc(v)));
         ElementPathBlock epb = new ElementPathBlock();
         epb.addTriple(tp);
         WhereValidator visitor = new WhereValidator(epb);
@@ -422,7 +527,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         builder.setVar(v, three);
 
-        tp = new TriplePath(new Triple(one, two, three));
+        tp = new TriplePath(Triple.create(one, two, three));
         epb = new ElementPathBlock();
         epb.addTriple(tp);
         visitor = new WhereValidator(epb);
@@ -431,7 +536,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         builder.setVar(v, four);
 
-        tp = new TriplePath(new Triple(one, two, four));
+        tp = new TriplePath(Triple.create(one, two, four));
         epb = new ElementPathBlock();
         epb.addTriple(tp);
         visitor = new WhereValidator(epb);
@@ -440,7 +545,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         builder.setVar(v, null);
 
-        tp = new TriplePath(new Triple(one, two, Var.alloc("v")));
+        tp = new TriplePath(Triple.create(one, two, Var.alloc("v")));
         epb = new ElementPathBlock();
         epb.addTriple(tp);
         visitor = new WhereValidator(epb);
@@ -450,7 +555,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
     }
 
     @ContractTest
-    public void testSetVarsInFilter() throws ParseException {
+    public void testSetVarsInFilter() {
         WhereClause<?> whereClause = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = whereClause.addFilter("?one < ?v");
 
@@ -463,7 +568,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         builder.build().getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
 
-        Node literal = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10));
+        Node literal = NodeFactory.createLiteralByValue(10);
         builder.setVar(Var.alloc("v"), literal);
 
         NodeValueInteger lit = new NodeValueInteger(10);
@@ -479,7 +584,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         Var v = Var.alloc("v");
         WhereClause<?> whereClause = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = whereClause
-                .addOptional(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
+                .addOptional(Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), v));
 
         ElementPathBlock epb = new ElementPathBlock();
         ElementOptional optional = new ElementOptional(epb);
@@ -494,7 +599,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         epb = new ElementPathBlock();
         optional = new ElementOptional(epb);
-        Triple t = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        Triple t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createURI("three"));
         epb.addTriple(t);
 
@@ -511,11 +616,11 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         Node three = NodeFactory.createURI("three");
 
         WhereClause<?> whereClause = getProducer().newInstance();
-        AbstractQueryBuilder<?> builder = whereClause.addOptional(new Triple(one, two, v));
+        AbstractQueryBuilder<?> builder = whereClause.addOptional(Triple.create(one, two, v));
 
         ElementPathBlock epb = new ElementPathBlock();
         ElementOptional optional = new ElementOptional(epb);
-        TriplePath tp = new TriplePath(new Triple(one, two, Var.alloc(v)));
+        TriplePath tp = new TriplePath(Triple.create(one, two, Var.alloc(v)));
         epb.addTriplePath(tp);
 
         WhereValidator visitor = new WhereValidator(optional);
@@ -525,7 +630,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         builder.setVar(v, three);
         epb = new ElementPathBlock();
         optional = new ElementOptional(epb);
-        tp = new TriplePath(new Triple(one, two, three));
+        tp = new TriplePath(Triple.create(one, two, three));
         epb.addTriplePath(tp);
 
         visitor = new WhereValidator(optional);
@@ -548,7 +653,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         ElementSubQuery esq = new ElementSubQuery(subQuery);
         ElementPathBlock epb = new ElementPathBlock();
         subQuery.setQueryPattern(epb);
-        Triple t = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+        Triple t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
                 NodeFactory.createVariable("v"));
         epb.addTriple(t);
 
@@ -565,7 +670,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         esq = new ElementSubQuery(subQuery);
         epb = new ElementPathBlock();
         subQuery.setQueryPattern(epb);
-        t = new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three"));
+        t = Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three"));
         epb.addTriple(t);
 
         visitor = new WhereValidator(esq);
@@ -632,11 +737,11 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         ElementUnion union = new ElementUnion();
         ElementPathBlock epb = new ElementPathBlock();
-        Triple t = new Triple(one, two, v.asNode());
+        Triple t = Triple.create(one, two, v);
         epb.addTriple(t);
         union.addElement(epb);
         ElementPathBlock epb2 = new ElementPathBlock();
-        t = new Triple(uno, dos, tres);
+        t = Triple.create(uno, dos, tres);
         epb2.addTriple(t);
         union.addElement(epb2);
         WhereValidator visitor = new WhereValidator(union);
@@ -648,11 +753,11 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         union = new ElementUnion();
         epb = new ElementPathBlock();
-        t = new Triple(one, two, three);
+        t = Triple.create(one, two, three);
         epb.addTriple(t);
         union.addElement(epb);
         epb2 = new ElementPathBlock();
-        t = new Triple(uno, dos, tres);
+        t = Triple.create(uno, dos, tres);
         epb2.addTriple(t);
         union.addElement(epb2);
         visitor = new WhereValidator(union);
@@ -680,11 +785,11 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         ElementUnion union = new ElementUnion();
         ElementPathBlock epb = new ElementPathBlock();
-        Triple t = new Triple(one, two, Var.alloc(v));
+        Triple t = Triple.create(one, two, Var.alloc(v));
         epb.addTriple(t);
         union.addElement(epb);
         ElementPathBlock epb2 = new ElementPathBlock();
-        t = new Triple(uno, dos, tres);
+        t = Triple.create(uno, dos, tres);
         epb2.addTriple(t);
         union.addElement(epb2);
         WhereValidator visitor = new WhereValidator(union);
@@ -696,11 +801,11 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         union = new ElementUnion();
         epb = new ElementPathBlock();
-        t = new Triple(one, two, three);
+        t = Triple.create(one, two, three);
         epb.addTriple(t);
         union.addElement(epb);
         epb2 = new ElementPathBlock();
-        t = new Triple(uno, dos, tres);
+        t = Triple.create(uno, dos, tres);
         epb2.addTriple(t);
         union.addElement(epb2);
         visitor = new WhereValidator(union);
@@ -710,7 +815,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
     }
 
     @ContractTest
-    public void testBindStringVar() throws ParseException {
+    public void testBindStringVar() {
         Var v = Var.alloc("foo");
         WhereClause<?> whereClause = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = whereClause.addBind("rand()", v);
@@ -732,7 +837,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
     }
 
     @ContractTest
-    public void testBindStringVar_Node_Variable() throws ParseException {
+    public void testBindStringVar_Node_Variable() {
         Node v = NodeFactory.createVariable("foo");
         WhereClause<?> whereClause = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = whereClause.addBind("rand()", v);
@@ -793,6 +898,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
     }
 
+    @SuppressWarnings("deprecation")
     @ContractTest
     public void testList() {
         WhereClause<?> whereClause = getProducer().newInstance();
@@ -803,7 +909,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         Node one = NodeFactory.createURI("one");
         Var two = Var.alloc("two");
-        Node three = NodeFactory.createLiteral("three");
+        Node three = NodeFactory.createLiteralString("three");
         Node foo = NodeFactory.createURI("foo");
         Node bar = NodeFactory.createURI("bar");
 
@@ -812,13 +918,13 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         Node secondObject = NodeFactory.createBlankNode();
         Node thirdObject = NodeFactory.createBlankNode();
 
-        epb.addTriplePath(new TriplePath(new Triple(firstObject, RDF.first.asNode(), one)));
-        epb.addTriplePath(new TriplePath(new Triple(firstObject, RDF.rest.asNode(), secondObject)));
-        epb.addTriplePath(new TriplePath(new Triple(secondObject, RDF.first.asNode(), two)));
-        epb.addTriplePath(new TriplePath(new Triple(secondObject, RDF.rest.asNode(), thirdObject)));
-        epb.addTriplePath(new TriplePath(new Triple(thirdObject, RDF.first.asNode(), three)));
-        epb.addTriplePath(new TriplePath(new Triple(thirdObject, RDF.rest.asNode(), RDF.nil.asNode())));
-        epb.addTriplePath(new TriplePath(new Triple(firstObject, foo, bar)));
+        epb.addTriplePath(new TriplePath(Triple.create(firstObject, RDF.first.asNode(), one)));
+        epb.addTriplePath(new TriplePath(Triple.create(firstObject, RDF.rest.asNode(), secondObject)));
+        epb.addTriplePath(new TriplePath(Triple.create(secondObject, RDF.first.asNode(), two)));
+        epb.addTriplePath(new TriplePath(Triple.create(secondObject, RDF.rest.asNode(), thirdObject)));
+        epb.addTriplePath(new TriplePath(Triple.create(thirdObject, RDF.first.asNode(), three)));
+        epb.addTriplePath(new TriplePath(Triple.create(thirdObject, RDF.rest.asNode(), RDF.nil.asNode())));
+        epb.addTriplePath(new TriplePath(Triple.create(firstObject, foo, bar)));
 
         WhereValidator visitor = new WhereValidator(epb);
         query.getQueryPattern().visit(visitor);
@@ -837,15 +943,33 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         ElementPathBlock epb = new ElementPathBlock();
         ElementMinus minus = new ElementMinus(epb);
-        epb.addTriplePath(new TriplePath(new Triple(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
-                NodeFactory.createLiteral("three"))));
+        epb.addTriplePath(new TriplePath(Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"),
+                NodeFactory.createLiteralString("three"))));
         WhereValidator visitor = new WhereValidator(minus);
         query.getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
     }
 
     @ContractTest
-    public void testAddGraph_frontsTriple() {
+    public void testAddGraphAbstractQueryBuilder() {
+        WhereClause<?> whereClause = getProducer().newInstance();
+        TriplePath tp = new TriplePath(Triple.create(NodeFactory.createURI("one"), NodeFactory.createURI("two"), NodeFactory.createURI("three")));
+
+        TestAbstractQueryBuilder abstractQueryBuilder = new TestAbstractQueryBuilder();
+        abstractQueryBuilder.getHandlerBlock().getWhereHandler().addWhere(tp);
+        AbstractQueryBuilder<?> builder = whereClause.addGraph( "<g>", abstractQueryBuilder);
+        
+        ElementPathBlock epb = new ElementPathBlock();
+        ElementNamedGraph eng = new ElementNamedGraph(NodeFactory.createURI("g"), epb);
+        
+        epb.addTriplePath(tp);
+        WhereValidator visitor = new WhereValidator(eng);
+        builder.build().getQueryPattern().visit(visitor);
+        assertTrue(visitor.matching);
+    }
+    
+    @ContractTest
+    public void testAddGraphFrontsTriple() {
         final Node s = NodeFactory.createURI("s");
         final Node p = NodeFactory.createURI("p");
         final Node o = NodeFactory.createURI("o");
@@ -854,7 +978,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
             @Override
             public Triple asTriple() {
-                return new Triple(s, p, o);
+                return Triple.create(s, p, o);
             }
         };
 
@@ -864,7 +988,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         ElementPathBlock epb = new ElementPathBlock();
         ElementNamedGraph eng = new ElementNamedGraph(NodeFactory.createURI("g"), epb);
-        epb.addTriplePath(new TriplePath(new Triple(s, p, o)));
+        epb.addTriplePath(new TriplePath(Triple.create(s, p, o)));
 
         WhereValidator visitor = new WhereValidator(eng);
         query.getQueryPattern().visit(visitor);
@@ -882,7 +1006,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         ElementPathBlock epb = new ElementPathBlock();
         ElementNamedGraph eng = new ElementNamedGraph(NodeFactory.createURI("g"), epb);
-        epb.addTriplePath(new TriplePath(new Triple(s, p, o)));
+        epb.addTriplePath(new TriplePath(Triple.create(s, p, o)));
 
         WhereValidator visitor = new WhereValidator(eng);
         query.getQueryPattern().visit(visitor);
@@ -890,18 +1014,18 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
     }
 
     @ContractTest
-    public void testAddGraph_triple() {
+    public void testAddGraphTriple() {
         final Node s = NodeFactory.createURI("s");
         final Node p = NodeFactory.createURI("p");
         final Node o = NodeFactory.createURI("o");
 
         WhereClause<?> whereClause = getProducer().newInstance();
-        AbstractQueryBuilder<?> builder = whereClause.addGraph("<g>", new Triple(s, p, o));
+        AbstractQueryBuilder<?> builder = whereClause.addGraph("<g>", Triple.create(s, p, o));
         Query query = builder.build();
 
         ElementPathBlock epb = new ElementPathBlock();
         ElementNamedGraph eng = new ElementNamedGraph(NodeFactory.createURI("g"), epb);
-        epb.addTriplePath(new TriplePath(new Triple(s, p, o)));
+        epb.addTriplePath(new TriplePath(Triple.create(s, p, o)));
 
         WhereValidator visitor = new WhereValidator(eng);
         query.getQueryPattern().visit(visitor);
@@ -909,11 +1033,11 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
     }
 
     @ContractTest
-    public void testAddGraph_triplePath() {
+    public void testAddGraphTriplePath() {
         final Node s = NodeFactory.createURI("s");
         final Node p = NodeFactory.createURI("p");
         final Node o = NodeFactory.createURI("o");
-        TriplePath tp = new TriplePath(new Triple(s, p, o));
+        TriplePath tp = new TriplePath(Triple.create(s, p, o));
 
         WhereClause<?> whereClause = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = whereClause.addGraph("<g>", tp);
@@ -921,10 +1045,32 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
         ElementPathBlock epb = new ElementPathBlock();
         ElementNamedGraph eng = new ElementNamedGraph(NodeFactory.createURI("g"), epb);
-        epb.addTriplePath(new TriplePath(new Triple(s, p, o)));
+        epb.addTriplePath(new TriplePath(Triple.create(s, p, o)));
 
         WhereValidator visitor = new WhereValidator(eng);
         query.getQueryPattern().visit(visitor);
+        assertTrue(visitor.matching);
+    }
+    
+    @ContractTest
+    public void testAddGraphTriplePathCollection() {
+        WhereClause<?> whereClause = getProducer().newInstance();
+        PrefixMapping pmap = new PrefixMappingImpl();
+        pmap.setNsPrefix("ts", "urn:test:");
+        Path path = PathParser.parse("ts:two/ts:dos", pmap);
+        TriplePath first = new TriplePath(NodeFactory.createURI("one"), path, NodeFactory.createURI("three"));
+        TriplePath second = new TriplePath(NodeFactory.createURI("for"), path, NodeFactory.createURI("six"));
+
+        AbstractQueryBuilder<?> builder = whereClause
+                .addGraph("<g>", List.of(first, second));
+
+        ElementPathBlock epb = new ElementPathBlock();
+        ElementNamedGraph eng = new ElementNamedGraph(NodeFactory.createURI("g"), epb);
+        epb.addTriplePath(first);
+        epb.addTriplePath(second);
+
+        WhereValidator visitor = new WhereValidator(eng);
+        builder.build().getQueryPattern().visit(visitor);
         assertTrue(visitor.matching);
     }
 
@@ -965,10 +1111,11 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
     @ContractTest
     public void testAddWhereValueVars() {
         final Var v = Var.alloc("v");
-        Map<Object, List<?>> map = new HashMap<Object, List<?>>();
+        Map<Object, List<?>> map = new LinkedHashMap<Object, List<?>>();
 
+        // Order matters for the test
+        map.put(Var.alloc("x"), Arrays.asList("three", "four"));
         map.put(Var.alloc("v"), Arrays.asList("<one>", "<two>"));
-        map.put("?x", Arrays.asList("three", "four"));
 
         WhereClause<?> whereClause = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = whereClause.addWhereValueVars(map);
@@ -988,20 +1135,21 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
 
     private static void setupBindings(ElementData edat, Var x, Var v) {
         Binding binding1 = BindingFactory.binding(v, NodeFactory.createURI("one"), x,
-                NodeFactory.createLiteral("three"));
+                NodeFactory.createLiteralString("three"));
         edat.add(binding1);
         Binding binding2 = BindingFactory.binding(v, NodeFactory.createURI("two"), x,
-                NodeFactory.createLiteral("four"));
+                NodeFactory.createLiteralString("four"));
         edat.add(binding2);
     }
 
     @ContractTest
     public void testAddWhereValueVars_InSubQuery() {
         final Var v = Var.alloc("v");
-        Map<Object, List<?>> map = new HashMap<Object, List<?>>();
+        Map<Object, List<?>> map = new LinkedHashMap<Object, List<?>>();
 
-        map.put(Var.alloc("v"), Arrays.asList("<one>", "<two>"));
+        // Order matters for the test
         map.put("?x", Arrays.asList("three", "four"));
+        map.put(Var.alloc("v"), Arrays.asList("<one>", "<two>"));
 
         WhereClause<?> whereClause = getProducer().newInstance();
         WhereClause<?> whereClause2 = getProducer().newInstance();
@@ -1025,10 +1173,11 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
     @ContractTest
     public void testAddWhereValueVars_Node_Variable() {
 
-        Map<Object, List<?>> map = new HashMap<Object, List<?>>();
+        Map<Object, List<?>> map = new LinkedHashMap<Object, List<?>>();
 
-        map.put(NodeFactory.createVariable("v"), Arrays.asList("<one>", "<two>"));
+        // Order matters for the test
         map.put("?x", Arrays.asList("three", "four"));
+        map.put(NodeFactory.createVariable("v"), Arrays.asList("<one>", "<two>"));
 
         WhereClause<?> whereClause = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = whereClause.addWhereValueVars(map);
@@ -1142,7 +1291,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
     @ContractTest
     public void testSetVarsInWhereValues() {
         Var v = Var.alloc("v");
-        Node value = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10));
+        Node value = NodeFactory.createLiteralByValue(10);
         Map<Var, Node> values = new HashMap<>();
         values.put(v, value);
 
@@ -1170,7 +1319,7 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
     @ContractTest
     public void testSetVarsInWhereValues_NodeVariable() {
         Node v = NodeFactory.createVariable("v");
-        Node value = NodeFactory.createLiteral(LiteralLabelFactory.createTypedLiteral(10));
+        Node value = NodeFactory.createLiteralByValue(10);
 
         WhereClause<?> whereClause = getProducer().newInstance();
         AbstractQueryBuilder<?> builder = whereClause.addWhereValueVar("?x", "<one>", "?v");
@@ -1214,12 +1363,12 @@ public class WhereClauseTest<T extends WhereClause<?>> extends AbstractClauseTes
         assertEquals(2, map.keySet().size());
         List<Node> nodes = map.get(Var.alloc("x"));
         assertEquals(2, nodes.size());
-        assertEquals(NodeFactory.createLiteral("foo"), nodes.get(0));
-        assertEquals(NodeFactory.createLiteral("fu"), nodes.get(1));
+        assertEquals(NodeFactory.createLiteralString("foo"), nodes.get(0));
+        assertEquals(NodeFactory.createLiteralString("fu"), nodes.get(1));
 
         nodes = map.get(Var.alloc("y"));
         assertEquals(2, nodes.size());
-        assertEquals(NodeFactory.createLiteral("bar"), nodes.get(0));
+        assertEquals(NodeFactory.createLiteralString("bar"), nodes.get(0));
         assertNull(nodes.get(1));
 
         whereClause.clearWhereValues();

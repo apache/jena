@@ -18,19 +18,18 @@
 
 package org.apache.jena.riot.writer;
 
-import java.io.OutputStream ;
-import java.io.Writer ;
+import java.io.OutputStream;
+import java.io.Writer;
 
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.riot.WriterGraphRIOT ;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.riot.WriterGraphRIOT;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.sparql.util.Context;
 
-public abstract class WriterGraphRIOTBase implements WriterGraphRIOT
-{
+public abstract class WriterGraphRIOTBase implements WriterGraphRIOT {
     @Override
-    public abstract void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) ;
-    
+    public abstract void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context);
+
     @Override
-    public abstract void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) ;
+    public abstract void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context);
 }

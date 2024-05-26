@@ -34,26 +34,27 @@ import org.apache.jena.sparql.util.MappingRegistry;
 
 /**
  * Assembler for a secured model.
- * 
+ *
  * <p>
- * The assembler file should include the following <code><pre>
+ * The assembler file should include the following
+    * <pre>
  * &lt;&gt; ja:loadClass    "org.apache.jena.permission.SecuredAssembler" .
  *
  * sec:Model rdfs:subClassOf ja:NamedModel .
  *
  * sec:evaluator rdfs:domain sec:Model ;
  *               rdfs:range sec:Evaluator .
- * </pre></code>
+ * </pre>
  *
  * The model definition should include something like.
  *
- * <code><pre>
+ * <pre>
  * my:secModel a sec:Model ;
  *    sec:baseModel my:baseModel ;
  *    ja:modelName "http://example.com/securedModel" ;
  *    sec:evaluatorFactory "org.apache.jena.permission.MockSecurityEvaluator" ;
  *    .
- * </pre></code>
+ * </pre>
  *
  * Terms used in above example:
  *
@@ -70,7 +71,7 @@ import org.apache.jena.sparql.util.MappingRegistry;
  *
  * <dt>my:baseModel</dt>
  * <dd>a ja:Model (or subclass) defined elsewhere in the assembler file</dd>
- * 
+ *
  * <dt>ja:modelName</dt>
  * <dd>The name of the graph as it will be addressed in the permission
  * environment (see ja:NamedModel examples from Jena)</dd>
@@ -83,7 +84,7 @@ import org.apache.jena.sparql.util.MappingRegistry;
  *
  * or if using an evaluator assembler
  *
- * <code><pre>
+ * <pre>
  * my:secModel a sec:Model ;
  *    sec:baseModel my:baseModel ;
  *    ja:modelName "http://example.com/securedModel" ;
@@ -94,8 +95,7 @@ import org.apache.jena.sparql.util.MappingRegistry;
  *    ex:arg1 "argument 1 for my evaluator constructor" ;
  *    ex:arg2 "argument 2 for my evaluator constructor" ;
  *    .
- *
- * </pre></code>
+ * </pre>
  *
  * Terms used in above example:
  *
@@ -104,7 +104,7 @@ import org.apache.jena.sparql.util.MappingRegistry;
  * <dd>The secured model as referenced in the assembler file.</dd>
  *
  * <dt>sec:Model</dt>
- * <dd>Identifes my:secModel as a secured model</dd>
+ * <dd>Identifies my:secModel as a secured model</dd>
  *
  * <dt>sec:baseModel</dt>
  * <dd>Identifies my:baseModel as the base model we are applying permissions
@@ -112,22 +112,19 @@ import org.apache.jena.sparql.util.MappingRegistry;
  *
  * <dt>my:baseModel</dt>
  * <dd>a ja:Model (or subclass) defined elsewhere in the assembler file</dd>
- * 
+ *
  * <dt>ja:modelName</dt>
  * <dd>The name of the graph as it will be addressed in the permission
  * environment (see ja:NamedModel examples from Jena)</dd>
  *
  * <dt>sec:evaluatorImpl</dt>
  * <dd>Identifies ex:myEvaluator as a SecurityEvaluator defined elsewhere in the
- * assembler file. It must subclass as a sec:Evaluator.</dd></dd>
+ * assembler file. It must subclass as a sec:Evaluator.</dd>
  *
  * <dt>ex:arg1 and ex:arg2</dt>
  * <dd>Arguments as defined by the user defined security evaluator
  * assembler.</dd>
  * </dl>
- *
- * </p>
- *
  */
 public class SecuredAssembler extends ModelAssembler implements AssemblerConstants {
     private static boolean initialized;

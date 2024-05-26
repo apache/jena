@@ -41,7 +41,7 @@ public class ResourceUtils {
      * The size of the temporary list that hold triples to be added or deleted in bulk.
      */
     private static final int WINDOW_SIZE = 1000 ;
-    
+
     /**
      * <p>
      * Answer the maximal lower elements of the given collection, given the partial
@@ -118,7 +118,7 @@ public class ResourceUtils {
      * iff <code>R&nbsp;p&nbsp;ref</code> is true <em>and</em> <code>ref&nbsp;p&nbsp;R</code> is true.
      * </p>
      * <p>The equivalent resources are removed from list <code>l</code>
-     * </em>in place</em>, the return value is the list of <em>removed</em> resources.</p>
+     * <em>in place</em>, the return value is the list of <em>removed</em> resources.</p>
      * @param l A list of resources from which the resources equivalent to ref will be removed
      * @param p An equivalence predicate
      * @param ref A reference resource
@@ -185,9 +185,9 @@ public class ResourceUtils {
      * predicate position of statements are not renamed. Intermediate store
      * for the triples mentioning <code>old</code> is required.
      * </p>
-     * 
+     *
      * <p><b>Note</b>This implementation is a general and simple approach, and
-     * in given applications it may be possible to do this operation more efficiently. 
+     * in given applications it may be possible to do this operation more efficiently.
      * </p>
      * @param old An existing resource in a given model
      * @param uri A new URI for resource old, or <code>null</code> to rename old to a bNode
@@ -209,11 +209,11 @@ public class ResourceUtils {
         Graph rawGraph = graph instanceof InfGraph ? ((InfGraph) graph).getRawGraph() : graph ;
         Resource newRes = model.createResource(uri) ;
         Node newResAsNode = newRes.asNode() ;
-       	
-        
+
+
         boolean changeOccured = false ;
         List<Triple> triples = new ArrayList<>(WINDOW_SIZE) ;
-        
+
         // An optimization to prevent concatenating the two find() operations together every time through the outer loop
         boolean onFirstIterator = true;
 
@@ -239,19 +239,19 @@ public class ResourceUtils {
                 }
 
                 it.close() ;
-                
+
                 // Iterate over the triples collection twice (this may be more efficient than interleaving deletes and adds)
                 for ( Triple t : triples )
                 {
                     rawGraph.delete(t) ;
                 }
-                
+
                 for ( Triple t : triples )
                 {
                     Node oldS = t.getSubject(), oldO = t.getObject() ;
                     Node newS = oldS.equals(resAsNode) ? newResAsNode : oldS ;
                     Node newO = oldO.equals(resAsNode) ? newResAsNode : oldO ;
-                    
+
                     rawGraph.add(Triple.create(newS, t.getPredicate(), newO));
                 }
                 triples.clear();
@@ -269,7 +269,7 @@ public class ResourceUtils {
         {
             it.close() ;
         }
-       	
+
         // If we were underneath an InfGraph, and at least one triple changed, then we have to rebind.
         if ( rawGraph != graph && changeOccured )
         {

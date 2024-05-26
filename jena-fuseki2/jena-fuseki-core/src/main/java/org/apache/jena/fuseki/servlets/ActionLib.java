@@ -28,9 +28,9 @@ import java.nio.charset.CharacterCodingException;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
@@ -46,10 +46,7 @@ import org.apache.jena.fuseki.system.ConNeg;
 import org.apache.jena.fuseki.system.FusekiNetLib;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.*;
-import org.apache.jena.riot.system.ErrorHandler;
-import org.apache.jena.riot.system.ErrorHandlerFactory;
-import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.system.StreamRDFLib;
+import org.apache.jena.riot.system.*;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -273,10 +270,10 @@ public class ActionLib {
         Lang lang;
 
         if ( ct == null || ct.getContentTypeStr().isEmpty() ) {
-            // head "Content-type:", no value.
-            lang = RDFLanguages.TURTLE;
+            // "Content-type:" header - absent or no value. Guess!
+            lang = defaultLang;
         } else if ( ct.equals(WebContent.ctHTMLForm)) {
-            ServletOps.errorBadRequest("HTML Form data sent to SHACL valdiation server");
+            ServletOps.errorBadRequest("HTML Form data sent to SHACL validation server");
             return null;
         } else {
             lang = RDFLanguages.contentTypeToLang(ct.getContentTypeStr());
@@ -320,10 +317,19 @@ public class ActionLib {
         writeResponse(action, (out, fmt) -> RDFDataMgr.write(out, graph, fmt), format, contentType);
     }
 
-    /** Return the preferred {@link RDFFormat} for a given {@link Lang}. */
+    /**
+     * Return the preferred {@link RDFFormat} for a given {@link Lang}.
+    *
+     */
     public static RDFFormat getNetworkFormatForLang(Lang lang) {
         Objects.requireNonNull(lang);
-        return ( lang == Lang.RDFXML ) ? RDFFormat.RDFXML_PLAIN : RDFWriterRegistry.defaultSerialization(lang);
+        if ( lang == Lang.RDFXML )
+            return RDFFormat.RDFXML_PLAIN;
+        // Could prefer streaming over non-streaming but historically, output has been "pretty" for e.g. turtle
+//        RDFFormat fmt = StreamRDFWriter.defaultSerialization(lang);
+//        if ( fmt != null )
+//            return fmt;
+        return RDFWriterRegistry.defaultSerialization(lang);
     }
 
     /**
@@ -381,7 +387,8 @@ public class ActionLib {
         return values[0];
     }
 
-    /** Get the content type of an action or return the default.
+    /**
+     * Get the content type of an action.
      * @param  action
      * @return ContentType
      */

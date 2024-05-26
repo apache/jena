@@ -22,10 +22,10 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.function.Function;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.Fuseki;
@@ -58,7 +58,8 @@ import org.slf4j.Logger;
  * <li>getting the token from the HTTP request (e.g. from a different HTTP field)</li>
  * <li>handling the challenge case (no authentication provided)</li>
  * <li>handling the case of authentication provided, but it is not "bearer" and bearer is required</li>
- * <p>
+ * </ul>
+ *
  * A more flexible approach for mixing authentication methods is to setup Fuseki with
  * multiple {@code AuthBearerFilter} filters installed in a Fuseki server, with
  * different path specs.
@@ -100,7 +101,7 @@ public class AuthBearerFilter implements Filter {
     }
 
     @Override
-    public void init(FilterConfig filterConfig) {}
+    public void init(FilterConfig filterConfig) throws ServletException {}
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
@@ -216,7 +217,7 @@ public class AuthBearerFilter implements Filter {
 
     /**
      * Create a AuthHeader
-     * Usually, this reads the "Authenticate" and parses it (RFC 7230)
+     * Usually, this reads the "Authenticate" and parses it (RFC 7230, RFC 9112)
      * ... although AWS Cognito is different.
      * The header to access is controlled by {@link #getHttpAuthField(HttpServletRequest)}
      * and the value of the header is passed as {@code authHeaderValue}.

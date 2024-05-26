@@ -54,7 +54,7 @@ public abstract class AssemblerBase implements Assembler
         if (statements.size() == 1) return statements.get(0);
         throw new NotUniqueException( root, property );
         }
-    
+
     protected static RDFNode getUnique( Resource root, Property property )
         {
         List<RDFNode> nodes = root.listProperties( property ) .mapWith( s -> s.getObject() ).toList();
@@ -72,7 +72,7 @@ public abstract class AssemblerBase implements Assembler
     @Override
     public Model openModel( Resource root, Mode mode )
         { return (Model) open( this, root, mode ); }
-    
+
     @Override
     public Model openModel( Resource root )
         { return openModel( root, Mode.DEFAULT ); }
@@ -83,20 +83,20 @@ public abstract class AssemblerBase implements Assembler
         if (R == null) throw new PropertyRequiredException( root, p );
         return R;
         }
-    
+
     protected Literal getRequiredLiteral( Resource root, Property p )
         {
         Literal L = getUniqueLiteral( root, p );
         if (L == null) throw new PropertyRequiredException( root, p );
         return L;
         }
-    
+
     protected static Resource getResource( Statement s )
         { return AssemblerHelp.getResource( s ); }
 
     protected static String getString( Statement s )
         { return AssemblerHelp.getString( s ); }
-    
+
     protected static String getUniqueString( Resource root, Property property )
         {
         Statement s = getUniqueStatement( root, property );
@@ -105,12 +105,12 @@ public abstract class AssemblerBase implements Assembler
 
     protected static Class<?> loadClass( Resource root, String className )
         {
-        try 
+        try
             { return Class.forName( className ); }
-        catch (ClassNotFoundException e) 
+        catch (ClassNotFoundException e)
             { throw new CannotLoadClassException( root, className, e ); }
         }
-    
+
     /**
         Answer the string described by the value of the unique optional
         <code>classProperty</code> property of <code>root</code>,

@@ -52,8 +52,8 @@ public abstract class GraphFilter<X> implements Predicate<Tuple<X>> {
     public static Symbol getContextKey(DatasetGraph dsg) {
         dsg = DatasetGraphAccessControl.removeWrapper(dsg);
 
-        if ( org.apache.jena.tdb.sys.TDBInternal.isTDB1(dsg) )
-            return org.apache.jena.tdb.sys.SystemTDB.symTupleFilter;
+        if ( org.apache.jena.tdb1.sys.TDBInternal.isTDB1(dsg) )
+            return org.apache.jena.tdb1.sys.SystemTDB.symTupleFilter;
         if ( org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dsg) )
             return org.apache.jena.tdb2.sys.SystemTDB.symTupleFilter;
         throw new IllegalArgumentException("Not a TDB database");

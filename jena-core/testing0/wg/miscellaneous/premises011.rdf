@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<rdf:RDF
+  xml:base  = "http://www.w3.org/2002/03owlt/miscellaneous/premises011"
+  xmlns:owl = "http://www.w3.org/2002/07/owl#"
+  xmlns:rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://www.w3.org/2002/03owlt/miscellaneous/consistent001"/>
+    <owl:imports rdf:resource="http://www.w3.org/2002/03owlt/miscellaneous/consistent002"/>
+  </owl:Ontology>
+ 
+</rdf:RDF>

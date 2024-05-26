@@ -176,7 +176,7 @@ public class BuilderGraph {
         Node s = BuilderNode.buildNode(list.get(0));
         Node p = BuilderNode.buildNode(list.get(1));
         Node o = BuilderNode.buildNode(list.get(2));
-        return new Triple(s, p, o);
+        return Triple.create(s, p, o);
     }
 
     public static Quad buildQuad(ItemList list) {

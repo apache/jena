@@ -21,135 +21,124 @@ package org.apache.jena.rdfxml.xmloutput;
 import java.io.IOException;
 
 /**
-    The tests testReaderAndWriter includes for the language 
-    "RDF/XML-ABBREV". Extracted from TestXMLFeatures as part 
+    The tests testReaderAndWriter includes for the language
+    "RDF/XML-ABBREV". Extracted from TestXMLFeatures as part
     of a clarification exercise intended to extend the testing to
     allow for the entity-including option.
-*/
+ */
 public class TestXMLAbbrev extends XMLOutputTestBase
-    {
+{
     public TestXMLAbbrev( String name )
-        { super( name, "RDF/XML-ABBREV" ); }
-    
-    public void testNoPropAttr() throws IOException 
-        {
-        check
-            (
-            TestXMLFeatures.file1,
-            null,
-            "prop1=",
-            Change.blockRules( "propertyAttr" )
-            );
-        }    
-    
-    public void testNoRdfCollection() throws IOException 
-        {
-        check
-            (
-            "testing/abbreviated/collection.rdf",
-            null,
-            "[\"']Collection[\"']",
-            Change.blockRules( "parseTypeCollectionPropertyElt" )
-            );
-        }
-    
-    public void testNoLi() throws IOException 
-        {
-        check
-            (
-            "testing/abbreviated/container.rdf",
-            null,
-            "rdf:li",
-            Change.blockRules( "section-List-Expand" )
-            );
-        }
-    
-    public void testNoID() throws IOException 
-        {
-        check
-            (
-            "testing/abbreviated/container.rdf",
-            "rdf:ID",
-            Change.blockRules( "idAttr" ),
-            "http://example.org/foo"
-            );
-        }
+    { super( name, "RDF/XML-ABBREV" ); }
 
-    public void testNoID2() throws IOException 
-        {
-        check
-            (
-            "testing/abbreviated/container.rdf",
-            "rdf:ID",
-            Change.blockRules( "idAttr" ),
-            "http://example.org/foo#"
-            );
-        }
+    public void testNoPropAttr() throws IOException
+    {
+        check(TestXMLFeatures.file1,
+              null,
+              "prop1=",
+              Change.blockRules( "propertyAttr" )
+                );
+    }
 
-    public void testNoResource() throws IOException 
-        {
-        check
-            (
-            "testing/abbreviated/container.rdf",
-            "['\"]Resource[\"']",
-            Change.blockRules( "parseTypeResourcePropertyElt" ),
-            "http://example.org/foo#"
-            );
-        }
-    
-    public void testPropAttrs() throws IOException 
-        {
-        check
-            (
-            "testing/abbreviated/namespaces.rdf",
-            ":prop0 *=",
-            null,
-            Change.blockRules( ""  )
-            );
-        }
-    
-    public void testNoPropAttrs() throws IOException 
-        {
-        check
-            (
-            "testing/abbreviated/namespaces.rdf",
-            null,
-            ":prop0 *=",
-            Change.none() 
-            );
-        }
+    public void testNoRdfCollection() throws IOException
+    {
+        check("testing/abbreviated/collection.rdf",
+              null,
+              "[\"']Collection[\"']",
+              Change.blockRules( "parseTypeCollectionPropertyElt" )
+                );
+    }
 
-    public void testNoReification() throws IOException 
-        {
-         // System.err.println("WARNING: reification output tests suppressed.");
-         String filename = "testing/abbreviated/reification.rdf";
-         String base = "http://example.org/foo";
-         /* * Heisenbug, reification prettiness sometimes fails. * /
+    public void testNoLi() throws IOException
+    {
+        check("testing/abbreviated/container.rdf",
+              null,
+              "rdf:li",
+              Change.blockRules( "section-List-Expand" )
+                );
+    }
+
+    public void testNoID() throws IOException
+    {
+        check("testing/abbreviated/container.rdf",
+              "rdf:ID",
+              Change.blockRules( "idAttr" ),
+              "http://example.org/foo"
+                );
+    }
+
+    public void testNoID2() throws IOException
+    {
+        check("testing/abbreviated/container.rdf",
+              "rdf:ID",
+              Change.blockRules( "idAttr" ),
+              "http://example.org/foo#"
+                );
+    }
+
+    public void testNoID3() throws IOException {
+        // Minimal version of testNoID2
+        check("testing/abbreviated/rdf-id.rdf",
+              "rdf:ID",
+              Change.blockRules("idAttr"),
+              "http://example.org/foo#"
+                );
+    }
+
+    public void testNoResource() throws IOException
+    {
+        check("testing/abbreviated/container.rdf",
+              "['\"]Resource[\"']",
+              Change.blockRules( "parseTypeResourcePropertyElt" ),
+              "http://example.org/foo#"
+                );
+    }
+
+    public void testPropAttrs() throws IOException
+    {
+        check("testing/abbreviated/namespaces.rdf",
+              ":prop0 *=",
+              null,
+              Change.blockRules( ""  )
+                );
+    }
+
+    public void testNoPropAttrs() throws IOException
+    {
+        check("testing/abbreviated/namespaces.rdf",
+              null,
+              ":prop0 *=",
+              Change.none()
+                );
+    }
+
+    public void testNoReification() throws IOException
+    {
+        // System.err.println("WARNING: reification output tests suppressed.");
+        String filename = "testing/abbreviated/reification.rdf";
+        String base = "http://example.org/foo";
+        /* * Heisenbug, reification prettiness sometimes fails. * /
          check(filename,null,null,"rdf:subject",false,new Change(){
                     public void code(RDFWriter w){}
                 },base);
         /* */
-        check  
-            (
-            filename, 
-            null, 
-            "rdf:subject",
-            null,  
-            false,
-            Change.blockRules( "section-Reification" ), 
-            base
-            );
-        }
-
-
-    public void testNoCookUp() throws IOException 
-        {
-        check
-            (
-            "testing/abbreviated/cookup.rdf",
-            null,
-            "j.cook.up",
-            Change.blockRules( "" )
-            );
-        }
+        check(filename,
+              null,
+              "rdf:subject",
+              null,
+              false,
+              Change.blockRules( "section-Reification" ),
+              base
+                );
     }
+
+
+    public void testNoCookUp() throws IOException
+    {
+        check("testing/abbreviated/cookup.rdf",
+              null,
+              "j.cook.up",
+              Change.blockRules( "" )
+                );
+    }
+}

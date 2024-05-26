@@ -1,0 +1,31 @@
+<!--++ AnnotationProperty/consistent004.rdf ** generated using webont test editor. ++-->
+<!--++ Created 19 Nov 2003 16:09:48 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: consistent004.rdf,v 1.1 2003/11/19 19:26:21 jcarroll Exp $
+-->
+<!--
+AnnotationProperty's in OWL Lite and OWL DL, may not have range constraints.
+
+-->
+<!-- Author: Sean Bechhofer -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xml:base=
+"http://www.w3.org/2002/03owlt/AnnotationProperty/consistent004" >
+
+   <owl:AnnotationProperty rdf:ID="ap">
+     <rdfs:range rdf:resource=
+  "http://www.w3.org/2001/XMLSchema#string"/>
+   </owl:AnnotationProperty>
+</rdf:RDF>

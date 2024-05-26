@@ -24,7 +24,9 @@ import org.apache.jena.atlas.io.IO;
 /** Implementation of {@link BinaryDataFile} in memory for testing
  * and development use. Raw performance is not an objective.
  *
+ * <ul>
  * <li>This implementation is thread-safe.
+ * </ul>
  */
 public class BinaryDataFileMem implements BinaryDataFile {
 

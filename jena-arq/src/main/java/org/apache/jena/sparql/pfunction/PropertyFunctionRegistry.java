@@ -24,10 +24,13 @@ import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappedLoader ;
+import org.apache.jena.sys.JenaSystem;
 
 
 public class PropertyFunctionRegistry
 {
+    static { JenaSystem.init(); }
+
     private static PropertyFunctionRegistry globalRegistry = null;
 
     private Map<String, PropertyFunctionFactory> registry = new HashMap<>();

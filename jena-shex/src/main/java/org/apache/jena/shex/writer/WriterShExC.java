@@ -18,9 +18,10 @@
 
 package org.apache.jena.shex.writer;
 
+import static org.apache.jena.atlas.lib.Lib.uppercase;
+
 import java.io.OutputStream;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Consumer;
 
 import org.apache.jena.atlas.io.AWriter;
@@ -29,6 +30,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.riot.out.NodeFormatterTTL;
 import org.apache.jena.riot.system.RiotLib;
+import org.apache.jena.riot.writer.DirectiveStyle;
 import org.apache.jena.shex.ShexSchema;
 import org.apache.jena.shex.ShexShape;
 import org.apache.jena.shex.expressions.*;
@@ -53,7 +55,7 @@ public class WriterShExC {
             hasHeader = true;
         }
         if ( schema.getPrefixMap() != null && ! schema.getPrefixMap().isEmpty() ) {
-            RiotLib.writePrefixes(out, schema.getPrefixMap(), true);
+            RiotLib.writePrefixes(out, schema.getPrefixMap(), DirectiveStyle.KEYWORD);
             hasHeader = true;
         }
         if ( schema.getImports() != null && ! schema.getImports().isEmpty() ) {
@@ -355,7 +357,7 @@ public class WriterShExC {
         @Override
         public void visit(StrLengthConstraint constraint) {
             //stringLength       ::=      "LENGTH" | "MINLENGTH" | "MAXLENGTH"
-            out.print(constraint.getLengthType().label().toUpperCase(Locale.ROOT));
+            out.print(uppercase(constraint.getLengthType().label()));
             out.print(" ");
             out.print(Integer.toString(constraint.getLength()));
         }
@@ -367,7 +369,7 @@ public class WriterShExC {
 
         @Override
         public void visit(NodeKindConstraint constraint) {
-            out.print(constraint.getNodeKind().label().toUpperCase(Locale.ROOT));
+            out.print(uppercase(constraint.getNodeKind().label()));
         }
 
         // [30]        numericFacet       ::=      numericRange numericLiteral | numericLength INTEGER
@@ -375,7 +377,7 @@ public class WriterShExC {
         @Override
         public void visit(NumLengthConstraint constraint) {
             // [32]        numericLength      ::=      "TOTALDIGITS" | "FRACTIONDIGITS"
-            out.print(constraint.getLengthType().label().toUpperCase(Locale.ROOT));
+            out.print(uppercase(constraint.getLengthType().label()));
             out.print(" ");
             out.print(Integer.toString(constraint.getLength()));
         }
@@ -383,7 +385,7 @@ public class WriterShExC {
         @Override
         public void visit(NumRangeConstraint constraint) {
             // [31]        numericRange       ::=      "MININCLUSIVE" | "MINEXCLUSIVE" | "MAXINCLUSIVE" | "MAXEXCLUSIVE"
-            out.print(constraint.getRangeKind().label().toUpperCase(Locale.ROOT));
+            out.print(uppercase(constraint.getRangeKind().label()));
             out.print(" ");
             printNode(constraint.getValue());
         }

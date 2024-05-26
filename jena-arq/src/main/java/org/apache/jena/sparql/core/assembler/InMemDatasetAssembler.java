@@ -27,6 +27,8 @@ import static org.apache.jena.sparql.util.graph.GraphUtils.getAsStringValue;
 import static org.apache.jena.sparql.util.graph.GraphUtils.multiValueAsString;
 import static org.apache.jena.sparql.util.graph.GraphUtils.multiValueResource;
 
+import java.util.Map;
+
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -39,21 +41,28 @@ import org.apache.jena.vocabulary.RDF;
 
 /**
  * An {@link Assembler} that creates in-memory {@link Dataset}s.
+ * <p>
+ * Dataset can be shared by using {@code ja:name}.
  */
-public class InMemDatasetAssembler extends DatasetAssembler {
+public class InMemDatasetAssembler extends NamedDatasetAssembler {
+
+    public InMemDatasetAssembler() {}
+
+    @Override
+    public Map<String, DatasetGraph> pool() {
+        return sharedDatasetPool;
+    }
 
     public static Resource getType() {
         return DatasetAssemblerVocab.tMemoryDataset ;
     }
 
-
     @Override
     public DatasetGraph createDataset(Assembler a, Resource root) {
-        // Old name : bypass.
+        // Old name
         if ( ! root.hasProperty( RDF.type, DatasetAssemblerVocab.tDatasetTxnMem ) )
             checkType(root, DatasetAssemblerVocab.tMemoryDataset);
         final DatasetGraph dataset = DatasetGraphFactory.createTxnMem();
-        mergeContext(root, dataset.getContext());
 
         Txn.executeWrite(dataset, ()->{
             // Load data into the default graph
@@ -73,6 +82,7 @@ public class InMemDatasetAssembler extends DatasetAssembler {
                 }
             });
         });
+        mergeContext(root, dataset.getContext());
         return dataset;
     }
 }

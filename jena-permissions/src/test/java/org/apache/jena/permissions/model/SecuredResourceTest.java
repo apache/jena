@@ -327,7 +327,7 @@ public class SecuredResourceTest extends SecuredRDFNodeTest {
                 Assert.fail("Should have thrown ReadDeniedException Exception");
             }
             if (securityEvaluator.evaluate(Action.Read)) {
-                assertEquals(new Triple(getBaseRDFNode().asNode(), SecuredRDFNodeTest.p.asNode(),
+                assertEquals(Triple.create(getBaseRDFNode().asNode(), SecuredRDFNodeTest.p.asNode(),
                         SecuredRDFNodeTest.o.asNode()), actual.asTriple());
             } else {
                 assertNull(actual);

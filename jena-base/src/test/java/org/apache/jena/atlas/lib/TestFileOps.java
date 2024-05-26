@@ -25,54 +25,67 @@ import org.junit.Test ;
 
 public class TestFileOps
 {
-    /*
-     * t("") ;
-        t("/a/b/c") ;
-        t("/aa/bb/cc.ext") ;
-        t("cc.ext") ;
-        t("/cc.ext") ;
-        t("/") ;
-        t("xyz") ;
-        t("xyz/") ;
-     */
-
-    static void test(String fn, String path, String basename, String ext)
+    static void testParts(String fn, String path, String basename, String ext)
     {
         Tuple<String> t = FileOps.splitDirBaseExt(fn) ;
         assertEquals(path, t.get(0)) ;
         assertEquals(basename, t.get(1)) ;
         assertEquals(ext, t.get(2)) ;
-        
-        if ( basename != null ) 
+
+        if ( basename != null )
             assertEquals(basename, FileOps.basename(fn)) ;
-        if ( ext != null ) 
+        if ( ext != null )
             assertEquals(ext, FileOps.extension(fn)) ;
     }
-    
-    @Test public void split01() 
-    { test("/aa/bb/cc.ext", "/aa/bb", "cc", "ext") ; }
 
-    @Test public void split02() 
-    { test("/a/b/c", "/a/b", "c", null) ; }
-    
-    @Test public void split03() 
-    { test("cc.ext", null, "cc", "ext") ; }
-    
-    @Test public void split04() 
-    { test("/cc.ext", "", "cc", "ext") ; }
-    
-    @Test public void split05() 
-    { test("/", "", "", null) ; }
-    
-    @Test public void split06() 
-    { test("", null, "", null) ; }
-    
-    @Test public void split07() 
-    { test("xyz", null, "xyz", null) ; }
-    
-    @Test public void split08() 
-    { test("/xyz", "", "xyz", null) ; }
-    
-    @Test public void split09() 
-    { test("xyz/", "xyz", "", null) ; }
+    static void testConcat(String dir, String fn, String expected) {
+        String result = FileOps.concatPaths(dir, fn);
+        assertEquals(expected, result);
+    }
+
+
+    @Test public void split01()
+    { testParts("/aa/bb/cc.ext", "/aa/bb", "cc", "ext") ; }
+
+    @Test public void split02()
+    { testParts("/a/b/c", "/a/b", "c", null) ; }
+
+    @Test public void split03()
+    { testParts("cc.ext", null, "cc", "ext") ; }
+
+    @Test public void split04()
+    { testParts("/cc.ext", "", "cc", "ext") ; }
+
+    @Test public void split05()
+    { testParts("/", "", "", null) ; }
+
+    @Test public void split06()
+    { testParts("", null, "", null) ; }
+
+    @Test public void split07()
+    { testParts("xyz", null, "xyz", null) ; }
+
+    @Test public void split08()
+    { testParts("/xyz", "", "xyz", null) ; }
+
+    @Test public void split09()
+    { testParts("xyz/", "xyz", "", null) ; }
+
+    @Test public void concat01()
+    { testConcat("xyz", "abc", "xyz/abc"); }
+
+    @Test public void concat02()
+    { testConcat("xyz/", "abc", "xyz/abc"); }
+
+    @Test public void concat03()
+    { testConcat("xyz", "/abc", "/abc"); }
+
+    @Test public void concat04()
+    { testConcat("/xyz/", "abc", "/xyz/abc"); }
+
+    @Test public void concat05()
+    { testConcat("/", "abc", "/abc"); }
+
+    @Test public void concat06()
+    { testConcat("/xyz", "", "/xyz"); }
 }

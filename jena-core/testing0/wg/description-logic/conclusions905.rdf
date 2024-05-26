@@ -1,0 +1,31 @@
+<!--++ description-logic/conclusions905.rdf ** generated using webont test editor. ++-->
+<!--++ Created 5 May 2003 06:14:29 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: conclusions905.rdf,v 1.5 2003-12-05 05:06:39 jeremy_carroll Exp $
+-->
+<!--
+This test shows a relationship between integer multiplication
+and OWL Full.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xml:base="http://www.w3.org/2002/03owlt/description-logic/conclusions905" >
+
+    <rdf:Description rdf:about="premises905#N-times-M">
+      <owl:sameAs 
+          rdf:datatype=
+"http://www.w3.org/2001/XMLSchema#int">345</owl:sameAs>
+     </rdf:Description>
+
+</rdf:RDF>

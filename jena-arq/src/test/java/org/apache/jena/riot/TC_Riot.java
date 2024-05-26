@@ -50,7 +50,7 @@ import org.junit.runners.Suite ;
     , TS_RDFProtobuf.class
     , TS_RDFThrift.class
     , TS_RowSetRIOT.class
-    // And scripted tests.
+    // Scripted tests in ARQTestSuite.
 })
 
 public class TC_Riot

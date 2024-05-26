@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@
  */
 package org.apache.jena.arq.querybuilder;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,6 @@ import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.sparql_11.ParseException;
 
 /**
  * Builder for SPARQL Select Queries.
@@ -54,7 +54,7 @@ import org.apache.jena.sparql.lang.sparql_11.ParseException;
  * {@link SelectBuilder#setVar(Object, Object)} and
  * {@link SelectBuilder#setVar(Var, Node)}. The method
  * {@link SelectBuilder#clearWhereValues()} allows to clear the set values.
- * 
+ *
  * @see AskBuilder
  * @see ConstructBuilder
  * @see DescribeBuilder
@@ -90,9 +90,9 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 
     /**
      * Sets the distinct flag.
-     * 
+     *
      * Setting the select distinct will unset reduced if it was set.
-     * 
+     *
      * @param state if true results will be distinct.
      * @return This builder for chaining.
      */
@@ -103,9 +103,9 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 
     /**
      * Sets the reduced flag.
-     * 
+     *
      * Setting the select reduced will unset distinct if it was set.
-     * 
+     *
      * @param state if true results will be reduced.
      * @return This builder for chaining.
      */
@@ -121,7 +121,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
     }
 
     @Override
-    public SelectBuilder addVar(String expression, Object var) throws ParseException {
+    public SelectBuilder addVar(String expression, Object var) {
         getSelectHandler().addVar(expression, Converters.makeVar(var));
         return this;
     }
@@ -138,25 +138,13 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
     }
 
     @Override
-    public SelectBuilder fromNamed(String graphName) {
+    public SelectBuilder fromNamed(Object graphName) {
         getDatasetHandler().fromNamed(graphName);
         return this;
     }
 
     @Override
-    public SelectBuilder fromNamed(Collection<String> graphNames) {
-        getDatasetHandler().fromNamed(graphNames);
-        return this;
-    }
-
-    @Override
-    public SelectBuilder from(String graphName) {
-        getDatasetHandler().from(graphName);
-        return this;
-    }
-
-    @Override
-    public SelectBuilder from(Collection<String> graphName) {
+    public SelectBuilder from(Object graphName) {
         getDatasetHandler().from(graphName);
         return this;
     }
@@ -221,19 +209,19 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
     }
 
     @Override
-    public SelectBuilder addHaving(String having) throws ParseException {
+    public SelectBuilder addHaving(String having) {
         getSolutionModifierHandler().addHaving(having);
         return this;
     }
 
     @Override
-    public SelectBuilder addHaving(Expr expression) throws ParseException {
+    public SelectBuilder addHaving(Expr expression) {
         getSolutionModifierHandler().addHaving(expression);
         return this;
     }
 
     @Override
-    public SelectBuilder addHaving(Object var) throws ParseException {
+    public SelectBuilder addHaving(Object var) {
         getSolutionModifierHandler().addHaving(Converters.makeVar(var));
         return this;
     }
@@ -254,7 +242,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
      * Converts a node to a string. If the node is a literal return the literal
      * value. If the node is a URI return the URI enclosed with &lt; and &gt; If the
      * node is a variable return the name preceded by '?'
-     * 
+     *
      * @param node The node to convert.
      * @return A string representation of the node.
      */
@@ -283,7 +271,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
      * <li>If the node is a variable return the name preceded by '?'</li>
      * </ul>
      * otherwise return the toString() method of the object.
-     * 
+     *
      * @param o the Object to convert.
      * @return The string representation of the object.
      */
@@ -304,6 +292,14 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
     }
 
     @Override
+    public SelectBuilder addWhere(Collection<TriplePath> collection) {
+        getWhereHandler().addWhere(collection);
+        return this;
+    }
+    
+    
+
+    @Override
     public SelectBuilder addWhere(Triple t) {
         getWhereHandler().addWhere(new TriplePath(t));
         return this;
@@ -317,7 +313,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 
     @Override
     public SelectBuilder addWhere(Object s, Object p, Object o) {
-        getWhereHandler().addWhere(makeTriplePath(s, p, o));
+        getWhereHandler().addWhere(makeTriplePaths(s, p, o));
         return this;
     }
 
@@ -369,25 +365,29 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 
     @Override
     public SelectBuilder addOptional(TriplePath t) {
-        getWhereHandler().addOptional(t);
+        getWhereHandler().addOptional(Arrays.asList(t));
         return this;
     }
 
     @Override
     public SelectBuilder addOptional(Triple t) {
-        getWhereHandler().addOptional(new TriplePath(t));
-        return this;
+        return addOptional(new TriplePath(t));
     }
 
     @Override
     public SelectBuilder addOptional(FrontsTriple t) {
-        getWhereHandler().addOptional(new TriplePath(t.asTriple()));
+        return addOptional(new TriplePath(t.asTriple()));
+    }
+
+    @Override
+    public SelectBuilder addOptional(Collection<TriplePath> collection) {
+        getWhereHandler().addOptional(collection);
         return this;
     }
 
     @Override
     public SelectBuilder addOptional(Object s, Object p, Object o) {
-        getWhereHandler().addOptional(makeTriplePath(s, p, o));
+        getWhereHandler().addOptional(makeTriplePaths(s, p, o));
         return this;
     }
 
@@ -404,7 +404,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
     }
 
     @Override
-    public SelectBuilder addFilter(String s) throws ParseException {
+    public SelectBuilder addFilter(String s) {
         getWhereHandler().addFilter(s);
         return this;
     }
@@ -430,28 +430,32 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
 
     @Override
     public SelectBuilder addGraph(Object graph, FrontsTriple triple) {
-        getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple.asTriple()));
-        return this;
+        return addGraph(graph, new TriplePath(triple.asTriple()));
     }
 
     @Override
     public SelectBuilder addGraph(Object graph, Object subject, Object predicate, Object object) {
-        getWhereHandler().addGraph(makeNode(graph), makeTriplePath(subject, predicate, object));
+        getWhereHandler().addGraph(makeNode(graph), makeTriplePaths(subject, predicate, object));
         return this;
     }
 
     @Override
     public SelectBuilder addGraph(Object graph, Triple triple) {
-        getWhereHandler().addGraph(makeNode(graph), new TriplePath(triple));
-        return this;
+        return addGraph(graph, new TriplePath(triple));
     }
 
     @Override
     public SelectBuilder addGraph(Object graph, TriplePath triplePath) {
-        getWhereHandler().addGraph(makeNode(graph), triplePath);
+        getWhereHandler().addGraph(makeNode(graph), Arrays.asList(triplePath));
         return this;
     }
 
+    @Override
+    public SelectBuilder addGraph(Object graph, Collection<TriplePath> collection) {
+        getWhereHandler().addGraph(makeNode(graph), collection);
+        return this;
+    }
+    
     @Override
     public SelectBuilder addBind(Expr expression, Object var) {
         getWhereHandler().addBind(expression, Converters.makeVar(var));
@@ -459,7 +463,7 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
     }
 
     @Override
-    public SelectBuilder addBind(String expression, Object var) throws ParseException {
+    public SelectBuilder addBind(String expression, Object var) {
         getWhereHandler().addBind(expression, Converters.makeVar(var));
         return this;
     }
@@ -469,7 +473,10 @@ public class SelectBuilder extends AbstractQueryBuilder<SelectBuilder> implement
         return handlerBlock.getSelectHandler();
     }
 
-    @Override
+    /*
+     * @deprecated use {@code addWhere(Converters.makeCollection(List.of(Object...)))}, or simply call {@link #addWhere(Object, Object, Object)} passing the collection for one of the objects.
+     */
+    @Deprecated(since="5.0.0")    @Override
     public Node list(Object... objs) {
         return getWhereHandler().list(objs);
     }

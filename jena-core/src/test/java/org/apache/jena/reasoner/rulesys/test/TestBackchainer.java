@@ -18,22 +18,30 @@
 
 package org.apache.jena.reasoner.rulesys.test;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphMemFactory;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.reasoner.InfGraph;
+import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.reasoner.TriplePattern;
+import org.apache.jena.reasoner.rulesys.Functor;
+import org.apache.jena.reasoner.rulesys.LPBackwardRuleReasoner;
+import org.apache.jena.reasoner.rulesys.Node_RuleVariable;
+import org.apache.jena.reasoner.rulesys.Rule;
+import org.apache.jena.reasoner.rulesys.Util;
+import org.apache.jena.reasoner.rulesys.impl.BindingVector;
+import org.apache.jena.reasoner.test.TestUtil;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 
-import junit.framework.TestCase ;
-import junit.framework.TestSuite ;
-import org.apache.jena.graph.* ;
-import org.apache.jena.reasoner.InfGraph ;
-import org.apache.jena.reasoner.Reasoner ;
-import org.apache.jena.reasoner.TriplePattern ;
-import org.apache.jena.reasoner.rulesys.* ;
-import org.apache.jena.reasoner.rulesys.impl.BindingVector ;
-import org.apache.jena.reasoner.test.TestUtil ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.vocabulary.OWL ;
-import org.apache.jena.vocabulary.RDF ;
-import org.apache.jena.vocabulary.RDFS ;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Test harness for the backward chainer. 
@@ -73,9 +81,9 @@ public class TestBackchainer extends TestCase {
                             "[ -> (a p b) ]";
                             
     Triple[] dataElts = new Triple[] {
-                            new Triple(p, sP, q),
-                            new Triple(q, sP, r),
-                            new Triple(a,  p, b) 
+                            Triple.create(p, sP, q),
+                            Triple.create(q, sP, r),
+                            Triple.create(a,  p, b) 
                             };
      
     /**
@@ -230,13 +238,13 @@ public class TestBackchainer extends TestCase {
      * the raw data successfully.
      */
     public void testListData() {
-        Graph data = Factory.createGraphMem();
+        Graph data = GraphMemFactory.createGraphMem();
         for ( Triple dataElt : dataElts )
         {
             data.add( dataElt );
         }
-        Graph schema = Factory.createGraphMem();
-        schema.add(new Triple(c, p, c));
+        Graph schema = GraphMemFactory.createGraphMem();
+        schema.add(Triple.create(c, p, c));
         
         // Case of schema and data but no rule axioms
         Reasoner reasoner =  createReasoner(new ArrayList<Rule>());
@@ -244,10 +252,10 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, null, null), 
             new Object[] {
-                new Triple(p, sP, q),
-                new Triple(q, sP, r),
-                new Triple(a,  p, b), 
-                new Triple(c, p, c)});
+                Triple.create(p, sP, q),
+                Triple.create(q, sP, r),
+                Triple.create(a,  p, b), 
+                Triple.create(c, p, c)});
                 
         // Case of data and rule axioms but no schema
         List<Rule> rules = Rule.parseRules("-> (d p d).");
@@ -256,21 +264,21 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, null, null), 
             new Object[] {
-                new Triple(p, sP, q),
-                new Triple(q, sP, r),
-                new Triple(a,  p, b), 
-                new Triple(d, p, d)});
+                Triple.create(p, sP, q),
+                Triple.create(q, sP, r),
+                Triple.create(a,  p, b), 
+                Triple.create(d, p, d)});
                 
         // Case of data and rule axioms and schema
         infgraph = reasoner.bindSchema(schema).bind(data);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, null, null), 
             new Object[] {
-                new Triple(p, sP, q),
-                new Triple(q, sP, r),
-                new Triple(a,  p, b), 
-                new Triple(c, p, c),
-                new Triple(d, p, d)});
+                Triple.create(p, sP, q),
+                Triple.create(q, sP, r),
+                Triple.create(a,  p, b), 
+                Triple.create(c, p, c),
+                Triple.create(d, p, d)});
                 
     }
    
@@ -279,17 +287,17 @@ public class TestBackchainer extends TestCase {
      */
     public void testBaseRules1() {    
         List<Rule> rules = Rule.parseRules("[r1: (?a r ?c) <- (?a p ?b),(?b p ?c)]");        
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, p, b));
-        data.add(new Triple(b, p, c));
-        data.add(new Triple(b, p, d));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(a, p, b));
+        data.add(Triple.create(b, p, c));
+        data.add(Triple.create(b, p, d));
         Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, r, null), 
             new Object[] {
-                new Triple(a, r, c),
-                new Triple(a, r, d)
+                Triple.create(a, r, c),
+                Triple.create(a, r, d)
             } );
     }
    
@@ -302,19 +310,19 @@ public class TestBackchainer extends TestCase {
                 "[r2: (?a r ?b) <- (?a q ?b)]" +
                 "[r3: (?a r ?b) <- (?a s ?c), (?c s ?b)]"
         );        
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, p, b));
-        data.add(new Triple(b, q, c));
-        data.add(new Triple(a, s, b));
-        data.add(new Triple(b, s, d));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(a, p, b));
+        data.add(Triple.create(b, q, c));
+        data.add(Triple.create(a, s, b));
+        data.add(Triple.create(b, s, d));
         Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, r, null), 
             new Object[] {
-                new Triple(a, r, b),
-                new Triple(b, r, c),
-                new Triple(a, r, d)
+                Triple.create(a, r, b),
+                Triple.create(b, r, c),
+                Triple.create(a, r, d)
             } );
     }
    
@@ -328,19 +336,19 @@ public class TestBackchainer extends TestCase {
                 "[r3: (?a r ?b) <- (?a t ?c), (?c t ?b)]" +
                 "[r4: (?a t ?b) <- (?a s ?b)]"
         );        
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, p, b));
-        data.add(new Triple(b, q, c));
-        data.add(new Triple(a, s, b));
-        data.add(new Triple(b, s, d));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(a, p, b));
+        data.add(Triple.create(b, q, c));
+        data.add(Triple.create(a, s, b));
+        data.add(Triple.create(b, s, d));
         Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, r, null), 
             new Object[] {
-                new Triple(a, r, b),
-                new Triple(b, r, c),
-                new Triple(a, r, d)
+                Triple.create(a, r, b),
+                Triple.create(b, r, c),
+                Triple.create(a, r, d)
             } );
     }
     
@@ -350,22 +358,22 @@ public class TestBackchainer extends TestCase {
     public void testBaseRules3() {    
         List<Rule> rules = Rule.parseRules("[rule: (?a rdfs:subPropertyOf ?c) <- (?a rdfs:subPropertyOf ?b),(?b rdfs:subPropertyOf ?c)]");        
         Reasoner reasoner =  createReasoner(rules);
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(p, sP, q) );
-        data.add(new Triple(q, sP, r) );
-        data.add(new Triple(p, sP, s) );
-        data.add(new Triple(s, sP, t) );
-        data.add(new Triple(a,  p, b) );
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(p, sP, q) );
+        data.add(Triple.create(q, sP, r) );
+        data.add(Triple.create(p, sP, s) );
+        data.add(Triple.create(s, sP, t) );
+        data.add(Triple.create(a,  p, b) );
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, RDFS.subPropertyOf.asNode(), null), 
             new Object[] {
-                new Triple(p, sP, q),
-                new Triple(q, sP, r),
-                new Triple(p, sP, s),
-                new Triple(s, sP, t),
-                new Triple(p, sP, t),
-                new Triple(p, sP, r)
+                Triple.create(p, sP, q),
+                Triple.create(q, sP, r),
+                Triple.create(p, sP, s),
+                Triple.create(s, sP, t),
+                Triple.create(p, sP, t),
+                Triple.create(p, sP, r)
             } );
     }
     
@@ -375,24 +383,24 @@ public class TestBackchainer extends TestCase {
     public void testBaseRules3b() {    
         List<Rule> rules = Rule.parseRules("[rule: (?a rdfs:subPropertyOf ?c) <- (?a rdfs:subPropertyOf ?b),(?b rdfs:subPropertyOf ?c)]");        
         Reasoner reasoner =  createReasoner(rules);
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(p, sP, q) );
-        data.add(new Triple(q, sP, r) );
-        data.add(new Triple(r, sP, t) );
-        data.add(new Triple(q, sP, s) );
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(p, sP, q) );
+        data.add(Triple.create(q, sP, r) );
+        data.add(Triple.create(r, sP, t) );
+        data.add(Triple.create(q, sP, s) );
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, RDFS.subPropertyOf.asNode(), null), 
             new Object[] {
-                new Triple(p, sP, q),
-                new Triple(q, sP, r),
-                new Triple(r, sP, t),
-                new Triple(q, sP, s),
-                new Triple(p, sP, s),
-                new Triple(p, sP, r),
-                new Triple(p, sP, t),
-                new Triple(q, sP, t),
-                new Triple(p, sP, r)
+                Triple.create(p, sP, q),
+                Triple.create(q, sP, r),
+                Triple.create(r, sP, t),
+                Triple.create(q, sP, s),
+                Triple.create(p, sP, s),
+                Triple.create(p, sP, r),
+                Triple.create(p, sP, t),
+                Triple.create(q, sP, t),
+                Triple.create(p, sP, r)
             } );
     }
 
@@ -400,11 +408,11 @@ public class TestBackchainer extends TestCase {
      * Test basic rule operations - simple AND/OR with tabling.
      */
     public void testBaseRules4() {    
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, r, b));
-        data.add(new Triple(b, r, c));
-        data.add(new Triple(b, r, b));
-        data.add(new Triple(b, r, d));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(a, r, b));
+        data.add(Triple.create(b, r, c));
+        data.add(Triple.create(b, r, b));
+        data.add(Triple.create(b, r, d));
         List<Rule> rules = Rule.parseRules(
                         "[r1: (?x p ?y) <- (?x r ?y)]" +
                         "[r2: (?x p ?z) <- (?x p ?y), (?y r ?z)]" 
@@ -414,9 +422,9 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, p, null), 
             new Object[] {
-                new Triple(a, p, b),
-                new Triple(a, p, d),
-                new Triple(a, p, c)
+                Triple.create(a, p, b),
+                Triple.create(a, p, d),
+                Triple.create(a, p, c)
             } );
     }
 
@@ -424,11 +432,11 @@ public class TestBackchainer extends TestCase {
      * Test basic rule operations - simple AND/OR with tabling.
      */
     public void testBaseRulesXSB1() {    
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(p, c, q));
-        data.add(new Triple(q, c, r));
-        data.add(new Triple(p, d, q));
-        data.add(new Triple(q, d, r));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(p, c, q));
+        data.add(Triple.create(q, c, r));
+        data.add(Triple.create(p, d, q));
+        data.add(Triple.create(q, d, r));
         List<Rule> rules = Rule.parseRules(
             "[r1: (?x a ?y) <- (?x c ?y)]" +
             "[r2: (?x a ?y) <- (?x b ?z), (?z c ?y)]" +
@@ -440,8 +448,8 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
             infgraph.find(p, a, null), 
             new Object[] {
-                new Triple(p, a, q),
-                new Triple(p, a, r)
+                Triple.create(p, a, q),
+                Triple.create(p, a, r)
             } );
     }
     
@@ -449,9 +457,9 @@ public class TestBackchainer extends TestCase {
      * Test basic functor usage.
      */
     public void testFunctors1() {
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, p, b));
-        data.add(new Triple(a, q, c));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(a, p, b));
+        data.add(Triple.create(a, q, c));
         List<Rule> rules = Rule.parseRules(
             "[r1: (?x r f(?y,?z)) <- (?x p ?y), (?x q ?z)]" +
             "[r2: (?x s ?y) <- (?x r f(?y, ?z))]"
@@ -461,7 +469,7 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, s, null), 
             new Object[] {
-                new Triple(a, s, b)
+                Triple.create(a, s, b)
             } );
     }
     
@@ -469,10 +477,10 @@ public class TestBackchainer extends TestCase {
      * Test basic functor usage.
      */
     public void testFunctors2() {
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, p, b));
-        data.add(new Triple(a, q, c));
-        data.add(new Triple(a, t, d));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(a, p, b));
+        data.add(Triple.create(a, q, c));
+        data.add(Triple.create(a, t, d));
         List<Rule> rules = Rule.parseRules(
             "[r1: (?x r f(?y,?z)) <- (?x p ?y), (?x q ?z)]" +
             "[r2: (?x s ?y) <- (?x r f(?y, ?z))]" +
@@ -484,8 +492,8 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, s, null), 
             new Object[] {
-                new Triple(a, s, b),
-                new Triple(a, s, d)
+                Triple.create(a, s, b),
+                Triple.create(a, s, d)
             } );
     }
     
@@ -493,9 +501,9 @@ public class TestBackchainer extends TestCase {
      * Test basic functor usage.
      */
     public void testFunctors3() {
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, s, b));
-        data.add(new Triple(a, t, c));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(a, s, b));
+        data.add(Triple.create(a, t, c));
         List<Rule> rules = Rule.parseRules(
             "[r1: (a q f(?x,?y)) <- (a s ?x), (a t ?y)]" +
             "[r2: (a p ?x) <- (a q ?x)]" +
@@ -506,7 +514,7 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, r, null), 
             new Object[] {
-                new Triple(a, r, c)
+                Triple.create(a, r, c)
             } );
     }
 
@@ -514,7 +522,7 @@ public class TestBackchainer extends TestCase {
      * Test basic builtin usage.
      */
     public void testBuiltin1() {
-        Graph data = Factory.createGraphMem();
+        Graph data = GraphMemFactory.createGraphMem();
         List<Rule> rules = Rule.parseRules(
             "[a1: -> (a p 2) ]" +
             "[a2: -> (a q 3) ]" +
@@ -525,7 +533,7 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, r, null), 
             new Object[] {
-                new Triple(a, r, Util.makeIntNode(5))
+                Triple.create(a, r, Util.makeIntNode(5))
             } );
     }
    
@@ -533,9 +541,9 @@ public class TestBackchainer extends TestCase {
      * Test basic builtin usage.
      */
     public void testBuiltin2() {
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, p, b));
-        data.add(new Triple(a, q, c));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(a, p, b));
+        data.add(Triple.create(a, q, c));
         List<Rule> rules = Rule.parseRules(
             "[r1: (?x r ?y ) <- bound(?x), (?x p ?y) ]" +
             "[r2: (?x r ?y) <- unbound(?x), (?x q ?y)]"
@@ -545,12 +553,12 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, r, null), 
             new Object[] {
-                new Triple(a, r, b)
+                Triple.create(a, r, b)
             } );
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, r, null), 
             new Object[] {
-                new Triple(a, r, c)
+                Triple.create(a, r, c)
             } );
     }
    
@@ -558,7 +566,7 @@ public class TestBackchainer extends TestCase {
      * Test basic builtin usage.
      */
     public void testBuiltin3() {
-        Graph data = Factory.createGraphMem();
+        Graph data = GraphMemFactory.createGraphMem();
         List<Rule> rules = Rule.parseRules(
             "[r1: (a p b ) <- unbound(?x) ]"
         );
@@ -567,7 +575,7 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, null, null), 
             new Object[] {
-                new Triple(a, p, b)
+                Triple.create(a, p, b)
             } );
     }
   
@@ -575,8 +583,8 @@ public class TestBackchainer extends TestCase {
      * Test basic ground head patterns.
      */
     public void testGroundHead() {
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, r, b));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(a, r, b));
         List<Rule> rules = Rule.parseRules(
             "[r1: (a p b ) <- (a r b) ]"
         );
@@ -585,8 +593,8 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, null, null), 
             new Object[] {
-                new Triple(a, p, b),
-                new Triple(a, r, b)
+                Triple.create(a, p, b),
+                Triple.create(a, r, b)
             } );
     }
   
@@ -595,8 +603,8 @@ public class TestBackchainer extends TestCase {
 //     */
 //    public void testMutliHead() {
 //        Graph data = new GraphMem();
-//        data.add(new Triple(a, p, b));
-//        data.add(new Triple(b, r, c));
+//        data.add(Triple.create(a, p, b));
+//        data.add(Triple.create(b, r, c));
 //        List<Rule> rules = Rule.parseRules(
 //            "[r1: (?x s ?z), (?z s ?x) <- (?x p ?y) (?y r ?z) ]"
 //        );
@@ -605,8 +613,8 @@ public class TestBackchainer extends TestCase {
 //        TestUtil.assertIteratorValues(this, 
 //            infgraph.find(null, s, null), 
 //            new Object[] {
-//                new Triple(a, s, c),
-//                new Triple(c, s, a)
+//                Triple.create(a, s, c),
+//                Triple.create(c, s, a)
 //            } );
 //    }
 
@@ -615,26 +623,26 @@ public class TestBackchainer extends TestCase {
      */
     public void testRebind() {
         List<Rule> rules = Rule.parseRules("[r1: (?a r ?c) <- (?a p ?b),(?b p ?c)]");        
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, p, b));
-        data.add(new Triple(b, p, c));
-        data.add(new Triple(b, p, d));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(a, p, b));
+        data.add(Triple.create(b, p, c));
+        data.add(Triple.create(b, p, d));
         Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, r, null), 
             new Object[] {
-                new Triple(a, r, c),
-                new Triple(a, r, d)
+                Triple.create(a, r, c),
+                Triple.create(a, r, d)
             } );
-        Graph ndata = Factory.createGraphMem();
-        ndata.add(new Triple(a, p, d));
-        ndata.add(new Triple(d, p, b));
+        Graph ndata = GraphMemFactory.createGraphMem();
+        ndata.add(Triple.create(a, p, d));
+        ndata.add(Triple.create(d, p, b));
         infgraph.rebind(ndata);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, r, null), 
             new Object[] {
-                new Triple(a, r, b)
+                Triple.create(a, r, b)
             } );
 
     }
@@ -643,12 +651,12 @@ public class TestBackchainer extends TestCase {
      * Test troublesome rdfs rules
      */
     public void testRDFSProblemsb() {    
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(C1, sC, C2));
-        data.add(new Triple(C2, sC, C3));
-        data.add(new Triple(C1, ty, RDFS.Class.asNode()));
-        data.add(new Triple(C2, ty, RDFS.Class.asNode()));
-        data.add(new Triple(C3, ty, RDFS.Class.asNode()));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(C1, sC, C2));
+        data.add(Triple.create(C2, sC, C3));
+        data.add(Triple.create(C1, ty, RDFS.Class.asNode()));
+        data.add(Triple.create(C2, ty, RDFS.Class.asNode()));
+        data.add(Triple.create(C3, ty, RDFS.Class.asNode()));
         List<Rule> rules = Rule.parseRules(
         "[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)]" + 
         "[rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]"
@@ -658,12 +666,12 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, sC, null), 
             new Object[] {
-                new Triple(C1, sC, C2),
-                new Triple(C1, sC, C3),
-                new Triple(C1, sC, C1),
-                new Triple(C2, sC, C3),
-                new Triple(C2, sC, C2),
-                new Triple(C3, sC, C3),
+                Triple.create(C1, sC, C2),
+                Triple.create(C1, sC, C3),
+                Triple.create(C1, sC, C1),
+                Triple.create(C2, sC, C3),
+                Triple.create(C2, sC, C2),
+                Triple.create(C3, sC, C3),
             } );
     }
 
@@ -671,12 +679,12 @@ public class TestBackchainer extends TestCase {
      * Test troublesome rdfs rules
      */
     public void testRDFSProblems() {    
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(p, sP, q));
-        data.add(new Triple(q, sP, r));
-        data.add(new Triple(C1, sC, C2));
-        data.add(new Triple(C2, sC, C3));
-        data.add(new Triple(a, ty, C1));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(p, sP, q));
+        data.add(Triple.create(q, sP, r));
+        data.add(Triple.create(C1, sC, C2));
+        data.add(Triple.create(C2, sC, C3));
+        data.add(Triple.create(a, ty, C1));
         List<Rule> rules = Rule.parseRules(
         "[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)]" + 
         "[rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)]" +
@@ -689,9 +697,9 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, ty, null), 
             new Object[] {
-                new Triple(a, ty, C1),
-                new Triple(a, ty, C2),
-                new Triple(a, ty, C3)
+                Triple.create(a, ty, C1),
+                Triple.create(a, ty, C2),
+                Triple.create(a, ty, C3)
             } );
         TestUtil.assertIteratorValues(this, 
             infgraph.find(C1, sC, a), 
@@ -703,8 +711,8 @@ public class TestBackchainer extends TestCase {
      * Test complex rule head unification
      */
     public void testHeadUnify() {    
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(c, q, d));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(c, q, d));
         List<Rule> rules = Rule.parseRules(
             "[r1: (c r ?x) <- (?x p f(?x b))]" +
             "[r2: (?y p f(a ?y)) <- (c q ?y)]"
@@ -714,7 +722,7 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
               infgraph.find(c, r, null), new Object[] { } );
               
-        data.add(new Triple(c, q, a));
+        data.add(Triple.create(c, q, a));
         rules = Rule.parseRules(
         "[r1: (c r ?x) <- (?x p f(?x a))]" +
         "[r2: (?y p f(a ?y)) <- (c q ?y)]"
@@ -724,15 +732,15 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
               infgraph.find(c, r, null), 
               new Object[] {
-                  new Triple(c, r, a)
+                  Triple.create(c, r, a)
               } );
             
-        data = Factory.createGraphMem();
-        data.add(new Triple(a, q, a));
-        data.add(new Triple(a, q, b));
-        data.add(new Triple(a, q, c));
-        data.add(new Triple(b, q, d));
-        data.add(new Triple(b, q, b));
+        data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(a, q, a));
+        data.add(Triple.create(a, q, b));
+        data.add(Triple.create(a, q, c));
+        data.add(Triple.create(b, q, d));
+        data.add(Triple.create(b, q, b));
         rules = Rule.parseRules(
           "[r1: (c r ?x) <- (?x p ?x)]" +
           "[r2: (?x p ?y) <- (a q ?x), (b q ?y)]"
@@ -742,7 +750,7 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
               infgraph.find(c, r, null), 
               new Object[] {
-                  new Triple(c, r, b)
+                  Triple.create(c, r, b)
               } );
               
         rules = Rule.parseRules(
@@ -754,7 +762,7 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
               infgraph.find(c, r, null), 
               new Object[] {
-                  new Triple(c, r, a)
+                  Triple.create(c, r, a)
               } );
     }
 
@@ -762,12 +770,12 @@ public class TestBackchainer extends TestCase {
      * Test restriction example
      */
     public void testRestriction1() {    
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, ty, r));
-        data.add(new Triple(a, p, b));
-        data.add(new Triple(r, sC, C1));
-        data.add(new Triple(C1, OWL.onProperty.asNode(), p));
-        data.add(new Triple(C1, OWL.allValuesFrom.asNode(), c));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(a, ty, r));
+        data.add(Triple.create(a, p, b));
+        data.add(Triple.create(r, sC, C1));
+        data.add(Triple.create(C1, OWL.onProperty.asNode(), p));
+        data.add(Triple.create(C1, OWL.allValuesFrom.asNode(), c));
         List<Rule> rules = Rule.parseRules(
     "[rdfs9:  (?x rdfs:subClassOf ?y) (?a rdf:type ?x) -> (?a rdf:type ?y)]" +
     "[restriction2: (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D) -> (?C owl:equivalentClass all(?P, ?D))]" +
@@ -778,7 +786,7 @@ public class TestBackchainer extends TestCase {
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(b, ty, c), new Object[] {
-                  new Triple(b, ty, c)
+                  Triple.create(b, ty, c)
               } );
     }
     
@@ -789,13 +797,13 @@ public class TestBackchainer extends TestCase {
      * is a problem. 
      */
     public void testRestriction2() {    
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, ty, OWL.Thing.asNode()));
-        data.add(new Triple(p, ty, OWL.FunctionalProperty.asNode()));
-        data.add(new Triple(c, OWL.equivalentClass.asNode(), C1));
-        data.add(new Triple(C1, ty, OWL.Restriction.asNode()));
-        data.add(new Triple(C1, OWL.onProperty.asNode(), p));
-        data.add(new Triple(C1, OWL.maxCardinality.asNode(), Util.makeIntNode(1)));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(a, ty, OWL.Thing.asNode()));
+        data.add(Triple.create(p, ty, OWL.FunctionalProperty.asNode()));
+        data.add(Triple.create(c, OWL.equivalentClass.asNode(), C1));
+        data.add(Triple.create(C1, ty, OWL.Restriction.asNode()));
+        data.add(Triple.create(C1, OWL.onProperty.asNode(), p));
+        data.add(Triple.create(C1, OWL.maxCardinality.asNode(), Util.makeIntNode(1)));
         List<Rule> rules = Rule.parseRules(
         // these ones are required for the inference.
         "[rdfs9:  bound(?y)   (?x rdfs:subClassOf ?y) (?a rdf:type ?x) -> (?a rdf:type ?y)]" + 
@@ -821,11 +829,11 @@ public class TestBackchainer extends TestCase {
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(a, ty, C1), new Object[] {
-                  new Triple(a, ty, C1)
+                  Triple.create(a, ty, C1)
               } );
         TestUtil.assertIteratorValues(this, 
               infgraph.find(a, ty, c), new Object[] {
-                  new Triple(a, ty, c)
+                  Triple.create(a, ty, c)
               } );
     }
 
@@ -833,12 +841,12 @@ public class TestBackchainer extends TestCase {
      * Test restriction example
      */
     public void testRestriction3() {    
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(a, ty, r));
-        data.add(new Triple(r, sC, C1));
-        data.add(new Triple(C1, ty, OWL.Restriction.asNode()));
-        data.add(new Triple(C1, OWL.onProperty.asNode(), p));
-        data.add(new Triple(C1, OWL.allValuesFrom.asNode(), c));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(a, ty, r));
+        data.add(Triple.create(r, sC, C1));
+        data.add(Triple.create(C1, ty, OWL.Restriction.asNode()));
+        data.add(Triple.create(C1, OWL.onProperty.asNode(), p));
+        data.add(Triple.create(C1, OWL.allValuesFrom.asNode(), c));
         List<Rule> rules = Rule.parseRules(
         "[-> (rdfs:subClassOf rdfs:range rdfs:Class)]" +
 //        "[-> (owl:Class rdfs:subClassOf rdfs:Class)]" +
@@ -860,13 +868,13 @@ public class TestBackchainer extends TestCase {
      * Test close and halt operation.
      */
     public void testClose() {    
-        Graph data = Factory.createGraphMem();
-        data.add(new Triple(p, sP, q));
-        data.add(new Triple(q, sP, r));
-        data.add(new Triple(C1, sC, C2));
-        data.add(new Triple(C2, sC, C3));
-        data.add(new Triple(a, ty, C1));
-        data.add(new Triple(ty, RDFS.range.asNode(), RDFS.Class.asNode()));
+        Graph data = GraphMemFactory.createGraphMem();
+        data.add(Triple.create(p, sP, q));
+        data.add(Triple.create(q, sP, r));
+        data.add(Triple.create(C1, sC, C2));
+        data.add(Triple.create(C2, sC, C3));
+        data.add(Triple.create(a, ty, C1));
+        data.add(Triple.create(ty, RDFS.range.asNode(), RDFS.Class.asNode()));
         List<Rule> rules = Rule.parseRules(
         "[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)]" + 
         "[rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)]" +
@@ -886,9 +894,9 @@ public class TestBackchainer extends TestCase {
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, ty, null), 
             new Object[] {
-                new Triple(a, ty, C1),
-                new Triple(a, ty, C2),
-                new Triple(a, ty, C3)
+                Triple.create(a, ty, C1),
+                Triple.create(a, ty, C2),
+                Triple.create(a, ty, C3)
             } );
     }
 
@@ -896,18 +904,18 @@ public class TestBackchainer extends TestCase {
      * Test problematic rdfs case
      */
     public void testBug1() {
-        Graph data = Factory.createGraphMem();
+        Graph data = GraphMemFactory.createGraphMem();
         Node p = NodeFactory.createURI("http://www.hpl.hp.com/semweb/2003/eg#p");
         Node r = NodeFactory.createURI("http://www.hpl.hp.com/semweb/2003/eg#r");
         Node C1 = NodeFactory.createURI("http://www.hpl.hp.com/semweb/2003/eg#C1");
-        data.add(new Triple(a, p, b));
+        data.add(Triple.create(a, p, b));
         List<Rule> rules = Rule.parseRules(Util.loadRuleParserFromResourceFile("testing/reasoners/bugs/rdfs-error1.brules"));
         Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(b, ty, C1), 
             new Object[] {
-                new Triple(b, ty, C1)
+                Triple.create(b, ty, C1)
             } );
         
     }

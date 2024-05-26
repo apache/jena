@@ -40,15 +40,15 @@ import org.junit.BeforeClass ;
 import org.junit.Test ;
 
 public class TestCustomAggregates {
-    
+
     public static final String aggIRI = "http://example.test/agg" ;
     public static final String aggIRI2 = "http://example.test/aggUnRegistered" ;
-    
+
     static AccumulatorFactory myAccumulatorFactory = new AccumulatorFactory() {
         @Override
         public Accumulator createAccumulator(AggCustom agg, boolean distinct) { return new MyAccumulator(agg, distinct) ; }
     } ;
-    
+
     static class MyAccumulator implements Accumulator {
         int count = 0 ;
         private AggCustom agg ;
@@ -73,24 +73,24 @@ public class TestCustomAggregates {
         }}
 
 
-    @BeforeClass public static void setup() { 
+    @BeforeClass public static void setup() {
         AggregateRegistry.register(aggIRI, myAccumulatorFactory, NodeConst.nodeMinusOne);
     }
 
-    @AfterClass public static void clearup() { 
+    @AfterClass public static void clearup() {
         AggregateRegistry.unregister(aggIRI);
     }
 
     @Test public void customAgg_1() {
         assertTrue(AggregateRegistry.isRegistered(aggIRI)) ;
     }
-    
+
     @Test public void customAgg_2() {
         assertFalse(AggregateRegistry.isRegistered(aggIRI2)) ;
     }
-    
+
     @Test public void customAgg_10() {
-        String qs = "SELECT (AGG <"+aggIRI+">(?o) AS ?x) {?s ?p ?o } GROUP BY ?s" ;
+        String qs = "SELECT (AGG <"+aggIRI+">(?o) AS ?x) { ?s ?p ?o } GROUP BY ?s" ;
         Query q = QueryFactory.create(qs, Syntax.syntaxARQ) ;
         String qs2 = q.serialize(Syntax.syntaxARQ) ;
         Query q2 = QueryFactory.create(qs2, Syntax.syntaxARQ) ;
@@ -98,18 +98,17 @@ public class TestCustomAggregates {
     }
 
     @Test public void customAgg_11() {
-        String qs = "SELECT (<"+aggIRI+">(?o) AS ?x) {?s ?p ?o } GROUP BY ?s" ;
+        String qs = "SELECT (<"+aggIRI+">(?o) AS ?x) { ?s ?p ?o } GROUP BY ?s" ;
         Query q = QueryFactory.create(qs) ;
         String qs2 = q.serialize() ;
         Query q2 = QueryFactory.create(qs2) ;
         assertEquals(q, q2) ;
     }
 
-
     @Test public void customAgg_12() {
         LogCtl.setError(AggregatorFactory.class);
         try {
-            String qs = "SELECT (AGG <"+aggIRI2+">(?o) AS ?x) {?s ?p ?o } GROUP BY ?s" ;
+            String qs = "SELECT (AGG <"+aggIRI2+">(?o) AS ?x) { ?s ?p ?o } GROUP BY ?s" ;
             Query q = QueryFactory.create(qs, Syntax.syntaxARQ) ;
             String qs2 = q.serialize(Syntax.syntaxARQ) ;
             Query q2 = QueryFactory.create(qs2, Syntax.syntaxARQ) ;
@@ -122,7 +121,7 @@ public class TestCustomAggregates {
     @Test public void customAgg_20() {
         Graph g = SSE.parseGraph("(graph (:s :p :o) (:s :p 1))") ;
         Model m = ModelFactory.createModelForGraph(g) ;
-        String qs = "SELECT (<"+aggIRI+">(?o) AS ?x) {?s ?p ?o } GROUP BY ?s" ;
+        String qs = "SELECT (<"+aggIRI+">(?o) AS ?x) { ?s ?p ?o } GROUP BY ?s" ;
         Query q = QueryFactory.create(qs, Syntax.syntaxARQ) ;
         try (QueryExecution qExec = QueryExecutionFactory.create(q, m) ) {
             ResultSet rs = qExec.execSelect() ;
@@ -147,22 +146,22 @@ public class TestCustomAggregates {
             assertEquals(-1, v) ;
         }
     }
-    
+
     @Test public void customAgg_22() {
         // GROUP BY, no match +. no rows.
         Graph g = SSE.parseGraph("(graph (:s :p :o) (:s :p 1))") ;
         Model m = ModelFactory.createModelForGraph(g) ;
         String qs = "SELECT (<"+aggIRI+">(?o) AS ?x) {?s ?p ?o FILTER (false) } GROUP BY ?s" ;
-        
+
         Query q = QueryFactory.create(qs, Syntax.syntaxARQ) ;
         try (QueryExecution qExec = QueryExecutionFactory.create(q, m) ) {
             ResultSet rs = qExec.execSelect() ;
             assertFalse(rs.hasNext());
         }
     }
-    
+
     @Test public void customAgg_23() {
-        String qs = "SELECT (<"+aggIRI+">(?o) AS ?x) {?s ?p ?o }" ;
+        String qs = "SELECT (<"+aggIRI+">(?o) AS ?x) { ?s ?p ?o }" ;
         Query q = QueryFactory.create(qs, Syntax.syntaxARQ) ;
         Op op = Algebra.compile(q) ;
         String x = StrUtils.strjoinNL
@@ -172,8 +171,7 @@ public class TestCustomAggregates {
             ,"         (bgp (triple ?s ?p ?o)))))"
              ) ;
         Op op2 = SSE.parseOp(x) ;
-        assertEquals(op2, op); 
+        assertEquals(op2, op);
     }
-
 }
 

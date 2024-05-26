@@ -40,8 +40,8 @@ import org.apache.jena.sparql.expr.ExprTransform;
 
 public class NodeTransformLib {
     /**
-     * Do a node{@literal ->}node conversion of an Op - return original BGP for "no
-     * change"
+     * Do a node{@literal ->}node conversion of an Op - return
+     * original BGP for "no change"
      */
     public static Op transform(NodeTransform nodeTransform, Op op) {
         Transform opTransform = new NodeTransformOp(nodeTransform);
@@ -50,8 +50,8 @@ public class NodeTransformLib {
     }
 
     /**
-     * Do a node{@literal ->}node conversion of a BGP - return original BGP for "no
-     * change"
+     * Do a node{@literal ->}node conversion of a BGP - return
+     * original BGP for "no change".
      */
     public static BasicPattern transform(NodeTransform nodeTransform, BasicPattern pattern) {
         BasicPattern bgp2 = new BasicPattern();
@@ -68,8 +68,8 @@ public class NodeTransformLib {
     }
 
     /**
-     * Do a node{@literal ->}node conversion of a QuadPattern - return original
-     * QuadPattern for "no change"
+     * Do a node{@literal ->}node conversion of a QuadPattern - return
+     * original QuadPattern for "no change"
      */
     public static QuadPattern transform(NodeTransform nodeTransform, QuadPattern pattern) {
         QuadPattern qp2 = new QuadPattern();
@@ -113,7 +113,7 @@ public class NodeTransformLib {
 
         if ( !change )
             return triple;
-        return new Triple(s, p, o);
+        return Triple.create(s, p, o);
     }
 
     /**

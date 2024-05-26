@@ -17,11 +17,7 @@
  */
 package org.apache.jena.arq.querybuilder.updatebuilder;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Quad;
@@ -35,26 +31,26 @@ import org.apache.jena.util.iterator.WrappedIterator;
  */
 public class QuadCollectionHolder implements QuadHolder {
 
-    private final Set<Quad> collection;
+    private final List<Quad> collection;
     private Map<Var, Node> values;
 
     /**
      * Constructor.
-     * 
+     *
      * @param quads the collection of quads.
      */
     public QuadCollectionHolder(final Collection<Quad> quads) {
-        this.collection = new HashSet<Quad>();
+        this.collection = new ArrayList<Quad>();
         this.collection.addAll(quads);
     }
 
     /**
      * Constructor.
-     * 
+     *
      * @param quads the collection of quads.
      */
     public QuadCollectionHolder(final Iterator<Quad> quads) {
-        this.collection = new HashSet<Quad>();
+        this.collection = new ArrayList<Quad>();
         quads.forEachRemaining(collection::add);
     }
 

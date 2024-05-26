@@ -35,6 +35,7 @@ import org.apache.jena.query.text.TextIndex ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.core.assembler.DatasetAssembler;
 import org.apache.jena.sparql.util.ClsLoader ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
@@ -88,9 +89,9 @@ public class TextDatasetAssembler extends DatasetAssembler implements Assembler
                 return null ;
             }
         }
-
         // "true" -> closeIndexOnDSGClose
         Dataset dst = TextDatasetFactory.create(ds, textIndex, true, textDocProducer) ;
+        AssemblerUtils.mergeContext(root, dst.getContext());
         return dst ;
     }
 

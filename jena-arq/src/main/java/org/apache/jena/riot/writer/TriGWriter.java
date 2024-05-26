@@ -22,84 +22,84 @@ import static org.apache.jena.riot.writer.WriterConst.*;
 
 import java.util.Set;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.util.Context;
 
 /** TriG pretty writer */
 public class TriGWriter extends TriGWriterBase
 {
     @Override
     protected void output(IndentedWriter iOut, DatasetGraph dsg, PrefixMap prefixMap, String baseURI, Context context) {
-        TriGWriter$ w = new TriGWriter$(iOut, prefixMap, baseURI, context) ;
-        w.write(dsg) ;
+        TriGWriter$ w = new TriGWriter$(iOut, prefixMap, baseURI, context);
+        w.write(dsg);
     }
 
     private static class TriGWriter$ extends TurtleShell
     {
         TriGWriter$(IndentedWriter out, PrefixMap prefixMap, String baseURI, Context context) {
-            super(out, prefixMap, baseURI, context) ;
+            super(out, prefixMap, baseURI, context);
         }
 
         private void write(DatasetGraph dsg) {
-            writeBase(baseURI) ;
-            writePrefixes(prefixMap) ;
+            writeBase(baseURI);
+            writePrefixes(prefixMap);
             if ( !prefixMap.isEmpty() && !dsg.isEmpty() )
-                out.println() ;
+                out.println();
 
             Set<Node> graphNames = Iter.toSet(dsg.listGraphNodes());
 
-            boolean anyGraphOutput = writeGraphTriG(dsg, null, graphNames) ;
+            boolean anyGraphOutput = writeGraphTriG(dsg, null, graphNames);
 
             for ( Node gn : graphNames ) {
                 if ( anyGraphOutput )
-                    out.println() ;
-                anyGraphOutput |= writeGraphTriG(dsg, gn, graphNames) ;
+                    out.println();
+                anyGraphOutput |= writeGraphTriG(dsg, gn, graphNames);
             }
         }
 
         /** Return true if anything written */
         private boolean writeGraphTriG(DatasetGraph dsg, Node name, Set<Node> graphNames) {
-            boolean dftGraph = ( name == null || name == Quad.defaultGraphNodeGenerated  ) ;
+            boolean dftGraph = ( name == null || name == Quad.defaultGraphNodeGenerated  );
 
             if ( dftGraph && dsg.getDefaultGraph().isEmpty() )
-                return false ;
+                return false;
 
             if ( dftGraph && ! GDFT_BRACE ) {
                 // Non-empty default graph, no braces.
                 // No indenting.
-                writeGraphTTL(dsg, name, graphNames) ;
-                return true ;
+                writeGraphTTL(dsg, name, graphNames);
+                return true;
             }
 
             // The graph will go in braces, whether non-empty default graph or a named graph.
-            boolean NL_START =  ( dftGraph ? NL_GDFT_START : NL_GNMD_START ) ;
-            boolean NL_END =    ( dftGraph ? NL_GDFT_END : NL_GNMD_END ) ;
-            int INDENT_GRAPH =  ( dftGraph ? INDENT_GDFT : INDENT_GNMD ) ;
+            boolean NL_START =  ( dftGraph ? NL_GDFT_START : NL_GNMD_START );
+            boolean NL_END =    ( dftGraph ? NL_GDFT_END : NL_GNMD_END );
+            int INDENT_GRAPH =  ( dftGraph ? INDENT_GDFT : INDENT_GNMD );
 
             if ( !dftGraph ) {
-                writeNode(name) ;
-                out.print(" ") ;
+                writeNode(name);
+                out.print(" ");
             }
 
-            out.print("{") ;
+            out.print("{");
             if ( NL_START )
-                out.println() ;
+                out.println();
             else
-                out.print(" ") ;
+                out.print(" ");
 
-            out.incIndent(INDENT_GRAPH) ;
-            writeGraphTTL(dsg, name, graphNames) ;
-            out.decIndent(INDENT_GRAPH) ;
+            out.incIndent(INDENT_GRAPH);
+            writeGraphTTL(dsg, name, graphNames);
+            out.decIndent(INDENT_GRAPH);
 
             if ( NL_END )
-                out.ensureStartOfLine() ;
-            out.println("}") ;
-            return true ;
+                out.ensureStartOfLine();
+            out.println("}");
+            return true;
         }
     }
 }

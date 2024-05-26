@@ -19,6 +19,9 @@
 package org.apache.jena.mem;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.apache.jena.graph.* ;
 import org.apache.jena.graph.Triple.Field ;
@@ -60,7 +63,7 @@ public abstract class NodeToTriplesMapBase
     */
     public abstract boolean remove( Triple t );
 
-    public abstract Iterator<Triple> iterator( Object o, HashCommon.NotifyEmpty container );
+    public abstract ExtendedIterator<Triple> iterator( Object o, HashCommon.NotifyEmpty container );
 
     /**
          Answer true iff this NTM contains the concrete triple <code>t</code>.
@@ -100,22 +103,22 @@ public abstract class NodeToTriplesMapBase
         Answer an iterator over all the triples that are indexed by the item <code>y</code>.
         Note that <code>y</code> need not be a Node (because of indexing values).
     */
-    public abstract Iterator<Triple> iteratorForIndexed( Object y );
+    public abstract ExtendedIterator<Triple> iteratorForIndexed( Object y );
     
     /**
         Answer an iterator over all the triples in this NTM.
     */
     public ExtendedIterator<Triple> iterateAll()
         {
-        final Iterator<Object> nodes = domain();
         return new NiceIterator<Triple>() 
             {
+            private final Iterator<TripleBunch> bunchIterator = bunchMap.iterator();
             private Iterator<Triple> current = NullIterator.instance();
             private NotifyMe emptier = new NotifyMe();
             
             @Override public Triple next()
                 {
-                if (hasNext() == false) noElements( "NodeToTriples iterator" );
+                if (!hasNext()) noElements( "NodeToTriples iterator" );
                 return current.next();
                 }
 
@@ -123,7 +126,7 @@ public abstract class NodeToTriplesMapBase
                 {
                 @Override
                 public void emptied()
-                    { nodes.remove(); }
+                    { bunchIterator.remove(); }
                 }
             
             @Override public boolean hasNext()
@@ -131,14 +134,56 @@ public abstract class NodeToTriplesMapBase
                 while (true)
                     {
                     if (current.hasNext()) return true;
-                    if (nodes.hasNext() == false) return false;
-                    Object next = nodes.next();
-                    current = NodeToTriplesMapBase.this.iterator( next, emptier );
+                    if (!bunchIterator.hasNext()) return false;
+                    current = bunchIterator.next().iterator( emptier );
                     }
                 }
 
-            @Override public void remove()
+            @Override public void forEachRemaining(Consumer<? super Triple> action)
+                {
+                if (current != null) current.forEachRemaining(action);
+                bunchIterator.forEachRemaining(next ->
+                    {
+                    current = next.iterator();
+                    current.forEachRemaining(action);
+                    });
+                }
+
+                @Override public void remove()
                 { current.remove(); }
             };
         }
+
+
+        public Stream<Triple> streamAll()
+            {
+            return StreamSupport.stream(bunchMap.spliterator(), false)
+                    .flatMap(bunch -> StreamSupport.stream(bunch.spliterator(), false));
+            }
+
+        public Stream<Triple> stream( Node index, Node n2, Node n3 )
+            {
+            Object indexValue = index.getIndexingValue();
+            TripleBunch s = bunchMap.get( indexValue );
+            if (s == null) return Stream.empty();
+            var filter = FieldFilter.filterOn(f2, n2, f3, n3);
+            return filter.hasFilter()
+                    ? StreamSupport.stream(s.spliterator(), false).filter(filter.getFilter())
+                    : StreamSupport.stream(s.spliterator(), false);
+            }
+
+        public boolean containsMatch( Node index, Node n2, Node n3 )
+            {
+            TripleBunch s = bunchMap.get( index.getIndexingValue() );
+            if (s == null)
+                return false;
+            var filter = FieldFilter.filterOn(f2, n2, f3, n3);
+            if (!filter.hasFilter())
+                return true;
+            var spliterator = s.spliterator();
+            final boolean[] found = {false};
+            Consumer<Triple> tester = triple -> found[0] = filter.getFilter().test(triple);
+            while (!found[0] && spliterator.tryAdvance(tester));
+            return found[0];
+            }
     }

@@ -38,6 +38,7 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.compose.MultiUnion ;
 import org.apache.jena.ontology.* ;
+import org.apache.jena.ontology.models.ModelMaker;
 import org.apache.jena.rdf.listeners.StatementListener ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.IteratorFactory ;
@@ -47,7 +48,10 @@ import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.reasoner.Reasoner ;
 import org.apache.jena.reasoner.ValidityReport ;
 import org.apache.jena.shared.ConfigException ;
-import org.apache.jena.util.iterator.* ;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.NullIterator;
+import org.apache.jena.util.iterator.UniqueFilter;
+import org.apache.jena.util.iterator.WrappedIterator;
 import org.apache.jena.vocabulary.RDF ;
 import org.apache.jena.vocabulary.RDFS ;
 import org.apache.jena.vocabulary.ReasonerVocabulary ;
@@ -583,7 +587,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public ExtendedIterator<UnionClass> listUnionClasses() {
         checkProfileEntry( getProfile().UNION_OF(), "UNION_OF" );
-        return findByDefiningPropertyAs( getProfile().UNION_OF(), UnionClass.class ) 
+        return findByDefiningPropertyAs( getProfile().UNION_OF(), UnionClass.class )
         		.filterKeep( new UniqueFilter<UnionClass>());
     }
 
@@ -706,7 +710,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     public ExtendedIterator<DataRange> listDataRanges() {
         checkProfileEntry( getProfile().DATARANGE(), "DATARANGE" );
         return findByTypeAs( getProfile().DATARANGE(), DataRange.class )
-        		.filterKeep( new UniqueFilter<DataRange>());        
+        		.filterKeep( new UniqueFilter<DataRange>());
     }
 
 
@@ -1894,10 +1898,10 @@ public class OntModelImpl extends ModelCom implements OntModel
      * which resource to create is the same as as the argument to the {@link RDFNode#as as()}
      * method: the Java class object of the desired abstraction.  For example, to create an
      * ontology class via this mechanism, use:
-     * <code><pre>
+     * <code>
      *     OntClass c = (OntClass) myModel.createOntResource( OntClass.class, null,
      *                                                        "http://example.org/ex#Parrot" );
-     * </pre></code>
+     * </pre>
      * </p>
      *
      * @param javaClass The Java class object that represents the ontology abstraction to create
@@ -1978,9 +1982,9 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     @Override
     public boolean hasLoadedImport( String uri ) {
+        uri = OntResolve.resolve(uri);
         return m_imported.contains( uri );
     }
-
 
     /**
      * <p>
@@ -1992,6 +1996,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     @Override
     public void addLoadedImport( String uri ) {
+        uri = OntResolve.resolve(uri);
         m_imported.add( uri );
     }
 
@@ -2006,6 +2011,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     @Override
     public void removeLoadedImport( String uri ) {
+        uri = OntResolve.resolve(uri);
         m_imported.remove( uri );
     }
 
@@ -2085,15 +2091,6 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public ModelMaker getImportModelMaker() {
         return m_spec.getImportModelMaker();
-    }
-
-    /**
-         @deprecated use getImportModelMaker instead.
-    */
-    @Override
-    @Deprecated
-    public ModelMaker getModelMaker() {
-        return getImportModelMaker();
     }
 
     /**
@@ -2252,33 +2249,11 @@ public class OntModelImpl extends ModelCom implements OntModel
 
 
     /**
-     * <p>Answer an iterator over the ontologies that this ontology imports,
-     * each of which will have been wrapped as an ontology model using the same
-     * {@link OntModelSpec} as this model.  If this model has no imports,
-     * the iterator will be non-null but will not have any values.</p>
-     * @return An iterator, each value of which will be an <code>OntModel</code>
-     * representing an imported ontology.
-     * @deprecated This method has been re-named to <code>listSubModels</code>,
-     * but note that to obtain the same behaviour as <code>listImportedModels</code>
-     * from Jena 2.4 and earlier, callers should invoke {@link #listSubModels(boolean)}
-     * with parameter <code>true</code>.
-     * @see #listSubModels()
-     * @see #listSubModels(boolean)
-     */
-    @Override
-    @Deprecated
-    public ExtendedIterator<OntModel> listImportedModels() {
-        return listSubModels( true );
-    }
-
-
-    /**
      * <p>Answer an iterator over the ontology models that are sub-models of
      * this model. Sub-models are used, for example, to represent composite
      * documents such as the imports of a model. So if ontology A imports
      * ontologies B and C, each of B and C will be available as one of
-     * the sub-models of the model containing A. This method replaces the
-     * older {@link #listImportedModels}. Note that to fully replicate
+     * the sub-models of the model containing A. Note that to fully replicate
      * the behaviour of <code>listImportedModels</code>, the
      * <code>withImports</code> flag must be set to true. Each model
      * returned by this method will have been wrapped as an ontology model using the same
@@ -2299,7 +2274,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     public ExtendedIterator<OntModel> listSubModels( final boolean withImports ) {
         ExtendedIterator<Graph> i = WrappedIterator.create( getSubGraphs().iterator() );
 
-        return i.mapWith( 
+        return i.mapWith(
                     o -> {
                         Model base = ModelFactory.createModelForGraph( o );
                         OntModel om = new OntModelImpl( m_spec, base, withImports );
@@ -2319,8 +2294,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * of the <code>withImports</code> flag. This zero-argument form
      * of <code>listSubModels</code> sets <code>withImports</code> to
      * false, so the returned models will not themselves contain imports.
-     * This behaviour differs from the zero-argument method
-     * {@link #listImportedModels()} in Jena 2.4 an earlier.</p>
+     * </p>
      * @return An iterator, each value of which will be an <code>OntModel</code>
      * representing a sub-model of this ontology.
      * @see #listSubModels(boolean)
@@ -2357,6 +2331,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     @Override
     public OntModel getImportedModel( String uri ) {
+        uri = OntResolve.resolve(uri);
         if (listImportedOntologyURIs( true ).contains( uri )) {
             Model mi = getDocumentManager().getModel( uri );
 
@@ -2611,13 +2586,13 @@ public class OntModelImpl extends ModelCom implements OntModel
     // output operations - delegate to base model
 
     @Override
-    public Model write( Writer writer )                             { return getBaseModel().write( writer ); }
+    public Model write( Writer writer )                             { return getBaseModel().write( writer, "RDF/XML" ); }
     @Override
     public Model write( Writer writer, String lang )                { return getBaseModel().write( writer, lang ); }
     @Override
     public Model write( Writer writer, String lang, String base )   { return getBaseModel().write( writer, lang, base ); }
     @Override
-    public Model write( OutputStream out )                          { return getBaseModel().write( out ); }
+    public Model write( OutputStream out )                          { return getBaseModel().write( out , "RDF/XML"); }
     @Override
     public Model write( OutputStream out, String lang )             { return getBaseModel().write( out, lang ); }
     @Override

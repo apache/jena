@@ -18,53 +18,48 @@
 
 package org.apache.jena.atlas.junit;
 
-import java.io.PrintStream ;
+import java.io.PrintStream;
 
-import org.junit.internal.TextListener ;
-import org.junit.runner.Description ;
-import org.junit.runner.notification.Failure ;
+import org.junit.internal.TextListener;
+import org.junit.runner.Description;
+import org.junit.runner.notification.Failure;
 
 /** JUnit4 test listener that prints blocks of '.', 'E' , 'F' or 'I' */
-public class TextListenerDots extends TextListener
-{
-    private PrintStream out ;
-    int count = 0 ;
+public class TextListenerDots extends TextListener {
+    private PrintStream out;
+    int count = 0;
 
-    public TextListenerDots(PrintStream writer)
-    {
-        super(writer) ;
-        this.out = writer ;
+    public TextListenerDots(PrintStream writer) {
+        super(writer);
+        this.out = writer;
     }
 
     @Override
-    public void testRunStarted(Description description)
-    {
-        //count = 0 ;
+    public void testRunStarted(Description description) {
+        count = 0;
     }
 
     @Override
     public void testStarted(Description description) {
-        newline() ;
+        newline();
         out.append('.');
     }
 
-    private void newline()
-    {
-        if ( count != 0 && count%50 == 0 )
+    private void newline() {
+        if ( count != 0 && count % 50 == 0 )
             out.println();
-        count++ ;
+        count++;
     }
 
     @Override
     public void testFailure(Failure failure) {
-        newline() ;
+        newline();
         out.append('E');
     }
 
     @Override
     public void testIgnored(Description description) {
-        newline() ;
+        newline();
         out.append('I');
     }
-
 }

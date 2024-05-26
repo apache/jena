@@ -21,31 +21,26 @@ package org.apache.jena.graph.impl;
 import org.apache.jena.graph.Capabilities ;
 
 /**
-    A default implementation of capabilities, in which everything is allowed,
-    size is accurate, and graphs may be completely empty.
  */
+public class AllCapabilities {
 
-public class AllCapabilities implements Capabilities {
+    public static Capabilities updateAllowed = create(true, true, true, false);
 
-    public AllCapabilities() {}
+    public static Capabilities updateNotAllowed = create(true, false, false, false);
 
-    @Override
-    public boolean sizeAccurate() {
-        return true;
-    }
+    public static Capabilities updateAllowedWithValues = create(true, true, true, true);
 
-    @Override
-    public boolean addAllowed() {
-        return true;
-    }
+    public static Capabilities create(boolean sizeAccurate,
+                                      boolean addAllowed,
+                                      boolean deleteAllowed,
+                                      boolean handlesLiteralTyping
+                                      ) {
+        return new Capabilities() {
+            @Override public boolean sizeAccurate()     { return sizeAccurate; }
+            @Override public boolean addAllowed()       { return addAllowed; }
+            @Override public boolean deleteAllowed()    { return deleteAllowed; }
+            @Override public boolean handlesLiteralTyping() { return handlesLiteralTyping; }
+        };
 
-    @Override
-    public boolean deleteAllowed() {
-        return true;
-    }
-
-    @Override
-    public boolean handlesLiteralTyping() {
-        return true;
     }
 }

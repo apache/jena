@@ -1,0 +1,18 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# xsd:string and xsd:integer are incompatible using intensional
+# datatype semantics. The following is inconsistent with a
+# rdfs+d(xsd:integer, xsd:string) interpretation:
+#
+# $Id: test002.nt,v 1.1 2005-08-04 09:53:26 jeremy_carroll Exp $
+#
+#####################################################################
+<http://www.w3.org/2001/XMLSchema#integer> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2001/XMLSchema#string> .

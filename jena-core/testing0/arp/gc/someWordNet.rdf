@@ -1,0 +1,1289 @@
+<!DOCTYPE owl [
+ <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+ <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+ <!ENTITY owl 'http://www.w3.org/2002/07/owl#'>
+ <!ENTITY xsd 'http://www.w3.org/2001/XMLSchema#'>
+ <!ENTITY dc 'http://purl.org/dc/elements/1.1#'>
+ <!ENTITY stem 'http://www.unine.ch/knowler/stem#'>
+ <!ENTITY corpus 'http://www.unine.ch/knowler/corpus#'>
+ <!ENTITY wn 'http://www.unine.ch/knowler/wordnet#'>
+]>
+
+<rdf:RDF
+   xmlns        ="&wn;"
+   xmlns:wn     ="&wn;"
+   xmlns:stem   ="&stem;"
+   xmlns:corpus ="&corpus;"
+
+   xmlns:rdf    ="&rdf;"
+   xmlns:rdfs   ="&rdfs;"
+   xmlns:owl    ="&owl;"
+   xmlns:dc     ="&dc;"
+   xmlns:xsd    ="&xsd;"
+>
+
+<!-- 
+
+  Class and property definitions for WordNet ontology in OWL format
+  
+  Package: WordNet.OWL
+  Date: 28-08-2003
+  version: 1.2
+  Author: Claudia Ciorascu ( claudia.ciorascu@unine.ch )
+
+-->
+
+
+<owl:Ontology rdf:about="&wn;wordnet">
+  <owl:versionInfo>v 1.2 2003/08/28 claudia.ciorascu@unine.ch</owl:versionInfo>
+  <rdfs:comment>based on WordNet 1.7.1 lexical database</rdfs:comment>
+  <rdfs:label>WordNet Ontology</rdfs:label>
+</owl:Ontology>
+
+
+
+<owl:Class rdf:about="&wn;WordObject">
+  <rdfs:comment>an word will be an instance of WordObject</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:about="&wn;LexicalConcept">
+  <rdfs:comment>WordNet synset</rdfs:comment>
+</owl:Class>
+
+<owl:Class rdf:about="&wn;Nouns_and_Verbs">
+  <rdfs:subClassOf rdf:resource="&wn;LexicalConcept"/>
+</owl:Class>
+
+<owl:Class rdf:about="&wn;Nouns_and_Adjectives">
+  <rdfs:subClassOf rdf:resource="&wn;LexicalConcept"/>
+</owl:Class>
+
+<owl:Class rdf:about="&wn;Noun">
+  <rdfs:subClassOf rdf:resource="&wn;Nouns_and_Verbs"/>
+  <rdfs:subClassOf rdf:resource="&wn;Nouns_and_Adjectives"/>
+  <owl:disjointWith rdf:resource="&wn;Verb" />
+  <owl:disjointWith rdf:resource="&wn;Adjective" />
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="&wn;hyponymOf" />
+      <owl:allValuesFrom rdf:resource="&wn;Noun" />
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="&wn;attributeRel" />
+      <owl:allValuesFrom rdf:resource="&wn;Adjective" />
+    </owl:Restriction>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="&wn;Verb">
+  <rdfs:subClassOf rdf:resource="&wn;Nouns_and_Verbs"/>
+  <owl:disjointWith rdf:resource="&wn;Adjective" />
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="&wn;hyponymOf" />
+      <owl:allValuesFrom rdf:resource="&wn;Verb" />
+    </owl:Restriction>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="&wn;Adverb">
+  <rdfs:subClassOf rdf:resource="&wn;LexicalConcept"/>
+  <owl:disjointWith rdf:resource="&wn;Nouns_and_Verbs" />
+  <owl:disjointWith rdf:resource="&wn;Nouns_and_Adjectives" />
+</owl:Class>
+
+<owl:Class rdf:about="&wn;Adjective">
+  <rdfs:subClassOf rdf:resource="&wn;Nouns_and_Adjectives"/>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="&wn;attributeRel" />
+      <owl:allValuesFrom rdf:resource="&wn;Noun" />
+    </owl:Restriction>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="&wn;AdjectiveSatellite">
+  <rdfs:subClassOf rdf:resource="&wn;Adjective"/>
+</owl:Class>
+
+
+
+
+<owl:DatatypeProperty rdf:about="&wn;glossaryEntry">
+  <rdfs:domain rdf:resource="&wn;LexicalConcept" />
+  <rdfs:range rdf:resource="&rdfs;Literal" />
+  <rdfs:comment>the gloss for a syn set</rdfs:comment>
+</owl:DatatypeProperty>
+
+<owl:ObjectProperty rdf:about="&wn;wordForm">
+  <rdfs:domain rdf:resource="&wn;LexicalConcept" />
+  <rdfs:range rdf:resource="&wn;WordObject" />
+</owl:ObjectProperty>
+
+
+
+<owl:TransitiveProperty rdf:about="&wn;hyponymOf">
+  <rdfs:domain rdf:resource="&wn;Nouns_and_Verbs"/>
+  <rdfs:range rdf:resource="&wn;Nouns_and_Verbs"/>
+  <owl:inverseOf rdf:resource="&wn;hypernymOf"/>
+  <rdfs:comment>The hyponymOf relation specifies that the subject is a hyponym of the object. This relation holds for nouns and verbs.</rdfs:comment>
+</owl:TransitiveProperty>
+
+<owl:TransitiveProperty rdf:about="&wn;hypernymOf">
+  <rdfs:domain rdf:resource="&wn;LexicalConcept"/>
+  <rdfs:range rdf:resource="&wn;LexicalConcept"/>
+  <owl:inverseOf rdf:resource="&wn;hyponymOf"/>
+  <rdfs:comment>The hyponymOf relation specifies that the subject is a hypernym of the object. This relation holds for nouns and verbs.</rdfs:comment>
+</owl:TransitiveProperty>
+
+
+<owl:TransitiveProperty rdf:about="&wn;entailsTo">
+  <rdfs:domain rdf:resource="&wn;Verb"/>
+  <rdfs:range rdf:resource="&wn;Verb"/>
+  <rdfs:comment>The entailsTo relation specifies that the object is an entailment of the subject.</rdfs:comment>
+</owl:TransitiveProperty>
+
+<owl:SymmetricProperty rdf:about="&wn;similarTo">
+  <rdfs:domain rdf:resource="&wn;Adjective"/>
+  <rdfs:range rdf:resource="&wn;Adjective"/>
+  <rdfs:comment>The similarTo relation specifies that the object is similar in meaning to the subject.</rdfs:comment>
+</owl:SymmetricProperty>
+
+
+
+<owl:ObjectProperty rdf:about="&wn;mMeronym">
+  <rdfs:domain rdf:resource="&wn;Noun"/>
+  <rdfs:range rdf:resource="&wn;Noun"/>
+  <owl:inverseOf rdf:resource="&wn;mHolonym" />
+  <rdfs:comment>The mMeronym relation specifies that the object is a member meronym of the subject.</rdfs:comment>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="&wn;mHolonym">
+  <rdfs:domain rdf:resource="&wn;Noun"/>
+  <rdfs:range rdf:resource="&wn;Noun"/>
+  <owl:inverseOf rdf:resource="&wn;mMeronym" />
+  <rdfs:comment>The mHolonym relation specifies that the object is a member holonym of the subject</rdfs:comment>
+</owl:ObjectProperty>
+
+
+<owl:ObjectProperty rdf:about="&wn;sMeronym">
+  <rdfs:domain rdf:resource="&wn;Noun"/>
+  <rdfs:range rdf:resource="&wn;Noun"/>
+  <owl:inverseOf rdf:resource="&wn;sHolonym" />
+  <rdfs:comment>The sMeronym relation specifies that the object is a substance meronym of the subject</rdfs:comment>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="&wn;sHolonym">
+  <rdfs:domain rdf:resource="&wn;Noun"/>
+  <rdfs:range rdf:resource="&wn;Noun"/>
+  <owl:inverseOf rdf:resource="&wn;sMeronym" />
+  <rdfs:comment>The sHolonym relation specifies that the object is a substance holonym of the subject</rdfs:comment>
+</owl:ObjectProperty>
+
+
+<owl:ObjectProperty rdf:about="&wn;pMeronym">
+  <rdfs:domain rdf:resource="&wn;Noun"/>
+  <rdfs:range rdf:resource="&wn;Noun"/>
+  <owl:inverseOf rdf:resource="&wn;pHolonym" />
+  <rdfs:comment>The pMeronym relation specifies that the object is a part meronym of the subject</rdfs:comment>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="&wn;pHolonym">
+  <rdfs:domain rdf:resource="&wn;Noun"/>
+  <rdfs:range rdf:resource="&wn;Noun"/>
+  <owl:inverseOf rdf:resource="&wn;pMeronym" />
+  <rdfs:comment>The pHolonym relation specifies that the object is a part holonym of the subject</rdfs:comment>
+</owl:ObjectProperty>
+
+
+<owl:ObjectProperty rdf:about="&wn;causedBy">
+  <rdfs:domain rdf:resource="&wn;Verb"/>
+  <rdfs:range rdf:resource="&wn;Verb"/>
+  <rdfs:comment>The causedBy relation specifies that the objet is a cause of the subject</rdfs:comment>
+</owl:ObjectProperty>
+
+<owl:SymmetricProperty rdf:about="&wn;attributeRel">
+  <rdfs:domain rdf:resource="&wn;Nouns_and_Adjectives"/>
+  <rdfs:range rdf:resource="&wn;Nouns_and_Adjectives"/>
+  <rdfs:comment>The attributeRel relation defines the attribute relation between noun and adjective in which the adjective is a value of the noun.</rdfs:comment>
+</owl:SymmetricProperty>
+
+
+<owl:ObjectProperty rdf:about="&wn;groupWith">
+  <rdfs:domain rdf:resource="&wn;Verb"/>
+  <rdfs:range rdf:resource="&wn;Verb"/>
+  <rdfs:comment>The groupWith relation specifies verb synsets that are similar in meaning and should be grouped together</rdfs:comment>
+</owl:ObjectProperty>
+
+
+
+<owl:SymmetricProperty rdf:about="&wn;antonymOf">
+  <rdfs:domain rdf:resource="&wn;WordObject"/>
+  <rdfs:range rdf:resource="&wn;WordObject"/>
+  <rdfs:comment>The antonymOf relation specifies that the subject is antonym of the object</rdfs:comment>
+</owl:SymmetricProperty>
+
+<owl:ObjectProperty rdf:about="&wn;seeAlso">
+  <rdfs:domain rdf:resource="&wn;WordObject"/>
+  <rdfs:range rdf:resource="&wn;WordObject"/>
+  <rdfs:comment>The seeAlso relation specifies that additional information about the subject can be obtained by seeing the object</rdfs:comment>
+</owl:ObjectProperty>
+
+
+<owl:ObjectProperty rdf:about="&wn;participleOf">
+  <rdfs:domain rdf:resource="&wn;WordObject"/>
+  <rdfs:range rdf:resource="&wn;WordObject"/>
+  <rdfs:comment>The participleOf relation specifies that the subject (adjective) is a participle of the object (verb)</rdfs:comment>
+</owl:ObjectProperty>
+
+
+<owl:ObjectProperty rdf:about="&wn;pertainsTo">
+  <rdfs:domain rdf:resource="&wn;WordObject"/>
+  <rdfs:range rdf:resource="&wn;WordObject"/>
+  <rdfs:comment>The pertainsTo relation specifies two different relations based on the parts of speech involved. If the first word is in an adjective synset, that word pertains to either the noun or adjective second word. If the first word is in an adverb synset, that word is derived from the adjective second word</rdfs:comment>
+</owl:ObjectProperty>
+
+<wn:Adjective rdf:about="&wn;300001742" />
+<wn:Adjective rdf:about="&wn;300002064" />
+<wn:Adjective rdf:about="&wn;300002289" />
+<wn:Adjective rdf:about="&wn;300002495" />
+<wn:Adjective rdf:about="&wn;300002689" />
+<wn:Adjective rdf:about="&wn;300002858" />
+<wn:Adjective rdf:about="&wn;300003059" />
+<wn:Adjective rdf:about="&wn;300003696" />
+<wn:Adjective rdf:about="&wn;300004483" />
+<wn:Adjective rdf:about="&wn;300005145" />
+<wn:Adjective rdf:about="&wn;300005517" />
+<wn:Adjective rdf:about="&wn;300007068" />
+<wn:Adjective rdf:about="&wn;300007610" />
+<wn:Adjective rdf:about="&wn;300008580" />
+<wn:Adjective rdf:about="&wn;300008919" />
+<wn:Adjective rdf:about="&wn;300009254" />
+<wn:Adjective rdf:about="&wn;300009393" />
+<wn:Adjective rdf:about="&wn;300009672" />
+<wn:Adjective rdf:about="&wn;300009955" />
+<wn:Adjective rdf:about="&wn;300010725" />
+<wn:Adjective rdf:about="&wn;300012315" />
+<wn:Adjective rdf:about="&wn;300013231" />
+<wn:Adjective rdf:about="&wn;300014027" />
+<wn:Adjective rdf:about="&wn;300016543" />
+<wn:Adjective rdf:about="&wn;300017041" />
+<wn:Adjective rdf:about="&wn;300017842" />
+<wn:Adjective rdf:about="&wn;300017936" />
+<wn:Adjective rdf:about="&wn;300018287" />
+<wn:Adjective rdf:about="&wn;300018492" />
+<wn:Adjective rdf:about="&wn;300019326" />
+<wn:Adjective rdf:about="&wn;300019947" />
+<wn:Adjective rdf:about="&wn;300020147" />
+<wn:Adjective rdf:about="&wn;300020548" />
+<wn:Adjective rdf:about="&wn;300021386" />
+<wn:Adjective rdf:about="&wn;300022657" />
+<wn:Adjective rdf:about="&wn;300023219" />
+<wn:Adjective rdf:about="&wn;300023582" />
+<wn:Adjective rdf:about="&wn;300025026" />
+<wn:Adjective rdf:about="&wn;300025867" />
+<wn:Adjective rdf:about="&wn;300026284" />
+<wn:Adjective rdf:about="&wn;300026757" />
+<wn:Adjective rdf:about="&wn;300027175" />
+<wn:Adjective rdf:about="&wn;300027767" />
+<wn:Adjective rdf:about="&wn;300027951" />
+<wn:Adjective rdf:about="&wn;300028263" />
+<wn:Adjective rdf:about="&wn;300028417" />
+<wn:Adjective rdf:about="&wn;300030128" />
+<wn:Adjective rdf:about="&wn;300030891" />
+<wn:Adjective rdf:about="&wn;300032774" />
+<wn:Adjective rdf:about="&wn;300032915" />
+<wn:Adjective rdf:about="&wn;300033055" />
+<wn:Adjective rdf:about="&wn;300033195" />
+<wn:Adjective rdf:about="&wn;300034714" />
+<wn:Adjective rdf:about="&wn;300035534" />
+<wn:Adjective rdf:about="&wn;300036265" />
+<wn:Adjective rdf:about="&wn;300036873" />
+<wn:Adjective rdf:about="&wn;300037874" />
+<wn:Adjective rdf:about="&wn;300038972" />
+<wn:Adjective rdf:about="&wn;300039229" />
+<wn:Adjective rdf:about="&wn;300039954" />
+<wn:Adjective rdf:about="&wn;300040553" />
+<wn:Adjective rdf:about="&wn;300041067" />
+<wn:Adjective rdf:about="&wn;300041309" />
+<wn:Adjective rdf:about="&wn;300042182" />
+<wn:Adjective rdf:about="&wn;300042718" />
+<wn:Adjective rdf:about="&wn;300042984" />
+<wn:Adjective rdf:about="&wn;300043304" />
+<wn:Adjective rdf:about="&wn;300043517" />
+<wn:Adjective rdf:about="&wn;300043702" />
+<wn:Adjective rdf:about="&wn;300043777" />
+<wn:Adjective rdf:about="&wn;300043854" />
+<wn:Adjective rdf:about="&wn;300044135" />
+<wn:Adjective rdf:about="&wn;300044384" />
+<wn:Adjective rdf:about="&wn;300044542" />
+<wn:Adjective rdf:about="&wn;300044687" />
+<wn:Adjective rdf:about="&wn;300045528" />
+<wn:Adjective rdf:about="&wn;300045863" />
+<wn:Adjective rdf:about="&wn;300046218" />
+<wn:Adjective rdf:about="&wn;300046753" />
+<wn:Adjective rdf:about="&wn;300047133" />
+<wn:Adjective rdf:about="&wn;300047228" />
+<wn:Adjective rdf:about="&wn;300047720" />
+<wn:Adjective rdf:about="&wn;300048076" />
+<wn:Adjective rdf:about="&wn;300050329" />
+<wn:Adjective rdf:about="&wn;300050738" />
+<wn:Adjective rdf:about="&wn;300051382" />
+<wn:Adjective rdf:about="&wn;300051602" />
+<wn:Adjective rdf:about="&wn;300051752" />
+<wn:Adjective rdf:about="&wn;300051927" />
+<wn:Adjective rdf:about="&wn;300052510" />
+<wn:Adjective rdf:about="&wn;300053014" />
+<wn:Adjective rdf:about="&wn;300053319" />
+<wn:Adjective rdf:about="&wn;300053417" />
+<wn:Adjective rdf:about="&wn;300054012" />
+<wn:Adjective rdf:about="&wn;300054927" />
+<wn:Adjective rdf:about="&wn;300056338" />
+<wn:Adjective rdf:about="&wn;300056742" />
+<wn:Adjective rdf:about="&wn;300056891" />
+<wn:Adjective rdf:about="&wn;300057043" />
+<wn:Adjective rdf:about="&wn;300057166" />
+<wn:Adjective rdf:about="&wn;300057262" />
+<wn:Adjective rdf:about="&wn;300062881" />
+<wn:Adjective rdf:about="&wn;300063420" />
+<wn:Adjective rdf:about="&wn;300063539" />
+<wn:Adjective rdf:about="&wn;300063695" />
+<wn:Adjective rdf:about="&wn;300065551" />
+<wn:Adjective rdf:about="&wn;300066633" />
+<wn:Adjective rdf:about="&wn;300066901" />
+<wn:Adjective rdf:about="&wn;300067328" />
+<wn:Adjective rdf:about="&wn;300068377" />
+<wn:Adjective rdf:about="&wn;300068672" />
+<wn:Adjective rdf:about="&wn;300069555" />
+<wn:Adjective rdf:about="&wn;300069852" />
+<wn:Adjective rdf:about="&wn;300070834" />
+<wn:Adjective rdf:about="&wn;300070997" />
+<wn:Adjective rdf:about="&wn;300071319" />
+<wn:Adjective rdf:about="&wn;300071630" />
+<wn:Adjective rdf:about="&wn;300072070" />
+<wn:Adjective rdf:about="&wn;300072209" />
+<wn:Adjective rdf:about="&wn;300072401" />
+<wn:Adjective rdf:about="&wn;300072505" />
+<wn:Adjective rdf:about="&wn;300073484" />
+<wn:Adjective rdf:about="&wn;300074077" />
+<wn:Adjective rdf:about="&wn;300074913" />
+<wn:Adjective rdf:about="&wn;300075951" />
+<wn:Adjective rdf:about="&wn;300077186" />
+<wn:Adjective rdf:about="&wn;300077928" />
+<wn:Adjective rdf:about="&wn;300078602" />
+<wn:Adjective rdf:about="&wn;300079022" />
+<wn:Adjective rdf:about="&wn;300079393" />
+<wn:Adjective rdf:about="&wn;300079706" />
+<wn:Adjective rdf:about="&wn;300080375" />
+<wn:Adjective rdf:about="&wn;300080904" />
+<wn:Adjective rdf:about="&wn;300081306" />
+<wn:Adjective rdf:about="&wn;300085210" />
+<wn:Adjective rdf:about="&wn;300085762" />
+<wn:Adjective rdf:about="&wn;300088219" />
+<wn:Adjective rdf:about="&wn;300088527" />
+<wn:Adjective rdf:about="&wn;300090530" />
+<wn:Adjective rdf:about="&wn;300090919" />
+<wn:Adjective rdf:about="&wn;300092507" />
+<wn:Adjective rdf:about="&wn;300092914" />
+<wn:Adjective rdf:about="&wn;300093189" />
+<wn:Adjective rdf:about="&wn;300094535" />
+<wn:Adjective rdf:about="&wn;300094734" />
+<wn:Adjective rdf:about="&wn;300094938" />
+<wn:Adjective rdf:about="&wn;300095128" />
+<wn:Adjective rdf:about="&wn;300096695" />
+<wn:Adjective rdf:about="&wn;300096925" />
+<wn:Adjective rdf:about="&wn;300097149" />
+<wn:Adjective rdf:about="&wn;300097465" />
+<wn:Adjective rdf:about="&wn;300097879" />
+<wn:Adjective rdf:about="&wn;300098396" />
+<wn:Adjective rdf:about="&wn;300099294" />
+<wn:Adjective rdf:about="&wn;300102404" />
+<wn:Adjective rdf:about="&wn;300102611" />
+<wn:Adjective rdf:about="&wn;300102808" />
+<wn:Adjective rdf:about="&wn;300102982" />
+<wn:Adjective rdf:about="&wn;300103175" />
+<wn:Adjective rdf:about="&wn;300104156" />
+<wn:Adjective rdf:about="&wn;300105099" />
+<wn:Adjective rdf:about="&wn;300105599" />
+<wn:Adjective rdf:about="&wn;300105778" />
+<wn:Adjective rdf:about="&wn;300105899" />
+<wn:Adjective rdf:about="&wn;300106056" />
+<wn:Adjective rdf:about="&wn;300106193" />
+<wn:Adjective rdf:about="&wn;300106610" />
+<wn:Adjective rdf:about="&wn;300108036" />
+<wn:Adjective rdf:about="&wn;300108355" />
+<wn:Adjective rdf:about="&wn;300109278" />
+<wn:Adjective rdf:about="&wn;300109625" />
+<wn:Adjective rdf:about="&wn;300110281" />
+<wn:Adjective rdf:about="&wn;300111366" />
+<wn:Adjective rdf:about="&wn;300112265" />
+<wn:Adjective rdf:about="&wn;300112978" />
+<wn:Adjective rdf:about="&wn;300113553" />
+<wn:Adjective rdf:about="&wn;300113874" />
+<wn:Adjective rdf:about="&wn;300114120" />
+<wn:Adjective rdf:about="&wn;300114282" />
+<wn:Adjective rdf:about="&wn;300114434" />
+<wn:Adjective rdf:about="&wn;300114542" />
+<wn:Adjective rdf:about="&wn;300114661" />
+<wn:Adjective rdf:about="&wn;300114782" />
+<wn:Adjective rdf:about="&wn;300114904" />
+<wn:Adjective rdf:about="&wn;300115033" />
+<wn:Adjective rdf:about="&wn;300115177" />
+<wn:Adjective rdf:about="&wn;300115356" />
+<wn:Adjective rdf:about="&wn;300115623" />
+<wn:Adjective rdf:about="&wn;300115866" />
+<wn:Adjective rdf:about="&wn;300116065" />
+<wn:Adjective rdf:about="&wn;300116212" />
+<wn:Adjective rdf:about="&wn;300116443" />
+<wn:Adjective rdf:about="&wn;300116674" />
+<wn:Adjective rdf:about="&wn;300117110" />
+<wn:Adjective rdf:about="&wn;300117641" />
+<wn:Adjective rdf:about="&wn;300117966" />
+<wn:Adjective rdf:about="&wn;300118281" />
+<wn:Adjective rdf:about="&wn;300118493" />
+<wn:Adjective rdf:about="&wn;300118724" />
+<wn:Adjective rdf:about="&wn;300118892" />
+<wn:Adjective rdf:about="&wn;300119010" />
+<wn:Adjective rdf:about="&wn;300121379" />
+<wn:Adjective rdf:about="&wn;300121445" />
+<wn:Adjective rdf:about="&wn;300121968" />
+<wn:Adjective rdf:about="&wn;300122247" />
+<wn:Adjective rdf:about="&wn;300122580" />
+<wn:Adjective rdf:about="&wn;300122874" />
+<wn:Adjective rdf:about="&wn;300123028" />
+<wn:Adjective rdf:about="&wn;300123348" />
+<wn:Adjective rdf:about="&wn;300124064" />
+<wn:Adjective rdf:about="&wn;300124501" />
+<wn:Adjective rdf:about="&wn;300124758" />
+<wn:Adjective rdf:about="&wn;300124878" />
+<wn:Adjective rdf:about="&wn;300125032" />
+<wn:Adjective rdf:about="&wn;300125190" />
+<wn:Adjective rdf:about="&wn;300125606" />
+<wn:Adjective rdf:about="&wn;300126008" />
+<wn:Adjective rdf:about="&wn;300126105" />
+<wn:Adjective rdf:about="&wn;300126303" />
+<wn:Adjective rdf:about="&wn;300126735" />
+<wn:Adjective rdf:about="&wn;300127502" />
+<wn:Adjective rdf:about="&wn;300127644" />
+<wn:Adjective rdf:about="&wn;300127908" />
+<wn:Adjective rdf:about="&wn;300128743" />
+<wn:Adjective rdf:about="&wn;300128867" />
+<wn:Adjective rdf:about="&wn;300129250" />
+<wn:Adjective rdf:about="&wn;300130737" />
+<wn:Adjective rdf:about="&wn;300132069" />
+<wn:Adjective rdf:about="&wn;300132174" />
+<wn:Adjective rdf:about="&wn;300132484" />
+<wn:Adjective rdf:about="&wn;300132631" />
+<wn:Adjective rdf:about="&wn;300132705" />
+<wn:Adjective rdf:about="&wn;300132865" />
+<wn:Adjective rdf:about="&wn;300133056" />
+<wn:Adjective rdf:about="&wn;300133188" />
+<wn:Adjective rdf:about="&wn;300133305" />
+<wn:Adjective rdf:about="&wn;300133454" />
+<wn:Adjective rdf:about="&wn;300133593" />
+<wn:Adjective rdf:about="&wn;300133727" />
+<wn:Adjective rdf:about="&wn;300133857" />
+<wn:Adjective rdf:about="&wn;300133988" />
+<wn:Adjective rdf:about="&wn;300134287" />
+<wn:Adjective rdf:about="&wn;300134590" />
+<wn:Adjective rdf:about="&wn;300135261" />
+<wn:Adjective rdf:about="&wn;300135936" />
+<wn:Adjective rdf:about="&wn;300136158" />
+<wn:Adjective rdf:about="&wn;300136568" />
+<wn:Adjective rdf:about="&wn;300136748" />
+<wn:Adjective rdf:about="&wn;300136942" />
+<wn:Adjective rdf:about="&wn;300137018" />
+<wn:Adjective rdf:about="&wn;300137100" />
+<wn:Adjective rdf:about="&wn;300137434" />
+<wn:Adjective rdf:about="&wn;300137725" />
+<wn:Adjective rdf:about="&wn;300138012" />
+<wn:Adjective rdf:about="&wn;300138276" />
+<wn:Adjective rdf:about="&wn;300139361" />
+<wn:Adjective rdf:about="&wn;300139974" />
+<wn:Adjective rdf:about="&wn;300141249" />
+<wn:Adjective rdf:about="&wn;300141343" />
+<wn:Adjective rdf:about="&wn;300141666" />
+<wn:Adjective rdf:about="&wn;300141873" />
+<wn:Adjective rdf:about="&wn;300142250" />
+<wn:Adjective rdf:about="&wn;300142522" />
+<wn:Adjective rdf:about="&wn;300142736" />
+<wn:Adjective rdf:about="&wn;300142954" />
+<wn:Adjective rdf:about="&wn;300143480" />
+<wn:Adjective rdf:about="&wn;300143825" />
+<wn:Adjective rdf:about="&wn;300144011" />
+<wn:Adjective rdf:about="&wn;300144116" />
+<wn:Adjective rdf:about="&wn;300145038" />
+<wn:Adjective rdf:about="&wn;300145330" />
+<wn:Adjective rdf:about="&wn;300145459" />
+<wn:Adjective rdf:about="&wn;300145552" />
+<wn:Adjective rdf:about="&wn;300145730" />
+<wn:Adjective rdf:about="&wn;300145849" />
+<wn:Adjective rdf:about="&wn;300146340" />
+<wn:Adjective rdf:about="&wn;300146957" />
+<wn:Adjective rdf:about="&wn;300147921" />
+<wn:Adjective rdf:about="&wn;300148051" />
+<wn:Adjective rdf:about="&wn;300148842" />
+<wn:Adjective rdf:about="&wn;300149036" />
+<wn:Adjective rdf:about="&wn;300149501" />
+<wn:Adjective rdf:about="&wn;300149598" />
+<wn:Adjective rdf:about="&wn;300150012" />
+<wn:Adjective rdf:about="&wn;300150218" />
+<wn:Adjective rdf:about="&wn;300152582" />
+<wn:Adjective rdf:about="&wn;300153149" />
+<wn:Adjective rdf:about="&wn;300154191" />
+<wn:Adjective rdf:about="&wn;300156380" />
+<wn:Adjective rdf:about="&wn;300157025" />
+<wn:Adjective rdf:about="&wn;300157301" />
+<wn:Adjective rdf:about="&wn;300157534" />
+<wn:Adjective rdf:about="&wn;300157771" />
+<wn:Adjective rdf:about="&wn;300158765" />
+<wn:Adjective rdf:about="&wn;300159793" />
+<wn:Adjective rdf:about="&wn;300160412" />
+<wn:Adjective rdf:about="&wn;300160933" />
+<wn:Adjective rdf:about="&wn;300161222" />
+<wn:Adjective rdf:about="&wn;300161298" />
+<wn:Adjective rdf:about="&wn;300161813" />
+<wn:Adjective rdf:about="&wn;300162107" />
+<wn:Adjective rdf:about="&wn;300162759" />
+<wn:Adjective rdf:about="&wn;300162858" />
+<wn:Adjective rdf:about="&wn;300163086" />
+<wn:Adjective rdf:about="&wn;300163317" />
+<wn:Adjective rdf:about="&wn;300163510" />
+<wn:Adjective rdf:about="&wn;300163763" />
+<wn:Adjective rdf:about="&wn;300163907" />
+<wn:Adjective rdf:about="&wn;300164395" />
+<wn:Adjective rdf:about="&wn;300164482" />
+<wn:Adjective rdf:about="&wn;300164637" />
+<wn:Adjective rdf:about="&wn;300165163" />
+<wn:Adjective rdf:about="&wn;300165436" />
+<wn:Adjective rdf:about="&wn;300166022" />
+<wn:Adjective rdf:about="&wn;300166646" />
+<wn:Adjective rdf:about="&wn;300167957" />
+<wn:Adjective rdf:about="&wn;300169023" />
+<wn:Adjective rdf:about="&wn;300171638" />
+<wn:Adjective rdf:about="&wn;300172357" />
+<wn:Adjective rdf:about="&wn;300172579" />
+<wn:Adjective rdf:about="&wn;300172718" />
+<wn:Adjective rdf:about="&wn;300173350" />
+<wn:Adjective rdf:about="&wn;300173896" />
+<wn:Adjective rdf:about="&wn;300174851" />
+<wn:Adjective rdf:about="&wn;300174961" />
+<wn:Adjective rdf:about="&wn;300175374" />
+<wn:Adjective rdf:about="&wn;300175586" />
+<wn:Adjective rdf:about="&wn;300176064" />
+<wn:Adjective rdf:about="&wn;300176134" />
+<wn:Adjective rdf:about="&wn;300176583" />
+<wn:Adjective rdf:about="&wn;300177678" />
+<wn:Adjective rdf:about="&wn;300177869" />
+<wn:Adjective rdf:about="&wn;300178037" />
+<wn:Adjective rdf:about="&wn;300178234" />
+<wn:Adjective rdf:about="&wn;300178955" />
+<wn:Adjective rdf:about="&wn;300179290" />
+<wn:Adjective rdf:about="&wn;300179908" />
+<wn:Adjective rdf:about="&wn;300180465" />
+<wn:Adjective rdf:about="&wn;300181376" />
+<wn:Adjective rdf:about="&wn;300181815" />
+<wn:Adjective rdf:about="&wn;300182043" />
+<wn:Adjective rdf:about="&wn;300182191" />
+<wn:Adjective rdf:about="&wn;300182328" />
+<wn:Adjective rdf:about="&wn;300182487" />
+<wn:Adjective rdf:about="&wn;300182887" />
+<wn:Adjective rdf:about="&wn;300183082" />
+<wn:Adjective rdf:about="&wn;300183244" />
+<wn:Adjective rdf:about="&wn;300183394" />
+<wn:Adjective rdf:about="&wn;300183610" />
+<wn:Adjective rdf:about="&wn;300183713" />
+<wn:Adjective rdf:about="&wn;300184768" />
+<wn:Adjective rdf:about="&wn;300184978" />
+<wn:Adjective rdf:about="&wn;300187549" />
+<wn:Adjective rdf:about="&wn;300188208" />
+<wn:Adjective rdf:about="&wn;300189303" />
+<wn:Adjective rdf:about="&wn;300191185" />
+<wn:Adjective rdf:about="&wn;300191502" />
+<wn:Adjective rdf:about="&wn;300191594" />
+<wn:Adjective rdf:about="&wn;300192859" />
+<wn:Adjective rdf:about="&wn;300193890" />
+<wn:Adjective rdf:about="&wn;300194121" />
+<wn:Adjective rdf:about="&wn;300194290" />
+<wn:Adjective rdf:about="&wn;300194404" />
+<wn:Adjective rdf:about="&wn;300194531" />
+<wn:Adjective rdf:about="&wn;300197802" />
+<wn:Adjective rdf:about="&wn;300198027" />
+<wn:Adjective rdf:about="&wn;300198154" />
+<wn:Adjective rdf:about="&wn;300198281" />
+<wn:Adjective rdf:about="&wn;300198798" />
+<wn:Adjective rdf:about="&wn;300198927" />
+<wn:Adjective rdf:about="&wn;300199426" />
+<wn:Adjective rdf:about="&wn;300200279" />
+<wn:Adjective rdf:about="&wn;300200854" />
+<wn:Adjective rdf:about="&wn;300201755" />
+<wn:Adjective rdf:about="&wn;300202660" />
+<wn:Adjective rdf:about="&wn;300202884" />
+<wn:Adjective rdf:about="&wn;300204753" />
+<wn:Adjective rdf:about="&wn;300205282" />
+<wn:Adjective rdf:about="&wn;300205703" />
+<wn:Adjective rdf:about="&wn;300205845" />
+<wn:Adjective rdf:about="&wn;300206240" />
+<wn:Adjective rdf:about="&wn;300207448" />
+<wn:Adjective rdf:about="&wn;300207572" />
+<wn:Adjective rdf:about="&wn;300207650" />
+<wn:Adjective rdf:about="&wn;300207762" />
+<wn:Adjective rdf:about="&wn;300207848" />
+<wn:Adjective rdf:about="&wn;300208631" />
+<wn:Adjective rdf:about="&wn;300208711" />
+<wn:Adjective rdf:about="&wn;300209123" />
+<wn:Adjective rdf:about="&wn;300209214" />
+<wn:Adjective rdf:about="&wn;300209312" />
+<wn:Adjective rdf:about="&wn;300209391" />
+<wn:Adjective rdf:about="&wn;300209546" />
+<wn:Adjective rdf:about="&wn;300209624" />
+<wn:Adjective rdf:about="&wn;300210265" />
+<wn:Adjective rdf:about="&wn;300210389" />
+<wn:Adjective rdf:about="&wn;300210806" />
+<wn:Adjective rdf:about="&wn;300210876" />
+<wn:Adjective rdf:about="&wn;300211413" />
+<wn:Adjective rdf:about="&wn;300211649" />
+<wn:Adjective rdf:about="&wn;300211739" />
+<wn:Adjective rdf:about="&wn;300211814" />
+<wn:Adjective rdf:about="&wn;300213087" />
+<wn:Adjective rdf:about="&wn;300215747" />
+<wn:Adjective rdf:about="&wn;300216053" />
+<wn:Adjective rdf:about="&wn;300216167" />
+<wn:Adjective rdf:about="&wn;300216433" />
+<wn:Adjective rdf:about="&wn;300216737" />
+<wn:Adjective rdf:about="&wn;300219699" />
+<wn:Adjective rdf:about="&wn;300221080" />
+<wn:Adjective rdf:about="&wn;300221291" />
+<wn:Adjective rdf:about="&wn;300221387" />
+<wn:Adjective rdf:about="&wn;300221537" />
+<wn:Adjective rdf:about="&wn;300221638" />
+<wn:Adjective rdf:about="&wn;300221993" />
+<wn:Adjective rdf:about="&wn;300222112" />
+<wn:Adjective rdf:about="&wn;300222422" />
+<wn:Adjective rdf:about="&wn;300222897" />
+<wn:Adjective rdf:about="&wn;300223420" />
+<wn:Adjective rdf:about="&wn;300224354" />
+<wn:Adjective rdf:about="&wn;300225108" />
+<wn:Adjective rdf:about="&wn;300225191" />
+<wn:Adjective rdf:about="&wn;300225953" />
+<wn:Adjective rdf:about="&wn;300226751" />
+<wn:Adjective rdf:about="&wn;300229188" />
+<wn:Adjective rdf:about="&wn;300230227" />
+<wn:Adjective rdf:about="&wn;300231106" />
+<wn:Adjective rdf:about="&wn;300231578" />
+<wn:Adjective rdf:about="&wn;300231866" />
+<wn:Adjective rdf:about="&wn;300232014" />
+<wn:Adjective rdf:about="&wn;300232733" />
+<wn:Adjective rdf:about="&wn;300232845" />
+<wn:Adjective rdf:about="&wn;300232935" />
+<wn:Adjective rdf:about="&wn;300233024" />
+<wn:Adjective rdf:about="&wn;300233130" />
+<wn:Adjective rdf:about="&wn;300233239" />
+<wn:Adjective rdf:about="&wn;300233904" />
+<wn:Adjective rdf:about="&wn;300234671" />
+<wn:Adjective rdf:about="&wn;300235818" />
+<wn:Adjective rdf:about="&wn;300236156" />
+<wn:Adjective rdf:about="&wn;300236239" />
+<wn:Adjective rdf:about="&wn;300236306" />
+<wn:Adjective rdf:about="&wn;300236730" />
+<wn:Adjective rdf:about="&wn;300236999" />
+<wn:Adjective rdf:about="&wn;300238183" />
+<wn:Adjective rdf:about="&wn;300238303" />
+<wn:Adjective rdf:about="&wn;300238391" />
+<wn:Adjective rdf:about="&wn;300238793" />
+<wn:Adjective rdf:about="&wn;300239206" />
+<wn:Adjective rdf:about="&wn;300239334" />
+<wn:Adjective rdf:about="&wn;300239458" />
+<wn:Adjective rdf:about="&wn;300239591" />
+<wn:Adjective rdf:about="&wn;300239699" />
+<wn:Adjective rdf:about="&wn;300239817" />
+<wn:Adjective rdf:about="&wn;300240979" />
+<wn:Adjective rdf:about="&wn;300241369" />
+<wn:Adjective rdf:about="&wn;300242230" />
+<wn:Adjective rdf:about="&wn;300243492" />
+<wn:Adjective rdf:about="&wn;300244674" />
+<wn:Adjective rdf:about="&wn;300245397" />
+<wn:Adjective rdf:about="&wn;300247871" />
+<wn:Adjective rdf:about="&wn;300248285" />
+<wn:Adjective rdf:about="&wn;300250254" />
+<wn:Adjective rdf:about="&wn;300251360" />
+<wn:Adjective rdf:about="&wn;300252603" />
+<wn:Adjective rdf:about="&wn;300252967" />
+<wn:Adjective rdf:about="&wn;300253066" />
+<wn:Adjective rdf:about="&wn;300253197" />
+<wn:Adjective rdf:about="&wn;300253434" />
+<wn:Adjective rdf:about="&wn;300253508" />
+<wn:Adjective rdf:about="&wn;300254943" />
+<wn:Adjective rdf:about="&wn;300255126" />
+<wn:Adjective rdf:about="&wn;300255934" />
+<wn:Adjective rdf:about="&wn;300256357" />
+<wn:Adjective rdf:about="&wn;300257525" />
+<wn:Adjective rdf:about="&wn;300257598" />
+<wn:Adjective rdf:about="&wn;300257702" />
+<wn:Adjective rdf:about="&wn;300257818" />
+<wn:Adjective rdf:about="&wn;300258653" />
+<wn:Adjective rdf:about="&wn;300259450" />
+<wn:Adjective rdf:about="&wn;300260169" />
+<wn:Adjective rdf:about="&wn;300260556" />
+<wn:Adjective rdf:about="&wn;300260819" />
+<wn:Adjective rdf:about="&wn;300262634" />
+<wn:Adjective rdf:about="&wn;300264279" />
+<wn:Adjective rdf:about="&wn;300264719" />
+<wn:Adjective rdf:about="&wn;300264873" />
+<wn:Adjective rdf:about="&wn;300265084" />
+<wn:Adjective rdf:about="&wn;300265180" />
+<wn:Adjective rdf:about="&wn;300266263" />
+<wn:Adjective rdf:about="&wn;300267184" />
+<wn:Adjective rdf:about="&wn;300267801" />
+<wn:Adjective rdf:about="&wn;300268073" />
+<wn:Adjective rdf:about="&wn;300268209" />
+<wn:Adjective rdf:about="&wn;300268304" />
+<wn:Adjective rdf:about="&wn;300271161" />
+<wn:Adjective rdf:about="&wn;300274300" />
+<wn:Adjective rdf:about="&wn;300274922" />
+<wn:Adjective rdf:about="&wn;300275289" />
+<wn:Adjective rdf:about="&wn;300275606" />
+<wn:Adjective rdf:about="&wn;300275868" />
+<wn:Adjective rdf:about="&wn;300275975" />
+<wn:Adjective rdf:about="&wn;300276110" />
+<wn:Adjective rdf:about="&wn;300276226" />
+<wn:Adjective rdf:about="&wn;300276359" />
+<wn:Adjective rdf:about="&wn;300281049" />
+<wn:Adjective rdf:about="&wn;300281620" />
+<wn:Adjective rdf:about="&wn;300281957" />
+<wn:Adjective rdf:about="&wn;300282157" />
+<wn:Adjective rdf:about="&wn;300283184" />
+<wn:Adjective rdf:about="&wn;300283640" />
+<wn:Adjective rdf:about="&wn;300284560" />
+<wn:Adjective rdf:about="&wn;300285488" />
+<wn:Adjective rdf:about="&wn;300285612" />
+<wn:Adjective rdf:about="&wn;300286018" />
+<wn:Adjective rdf:about="&wn;300288224" />
+<wn:Adjective rdf:about="&wn;300288587" />
+<wn:Adjective rdf:about="&wn;300288773" />
+<wn:Adjective rdf:about="&wn;300288938" />
+<wn:Adjective rdf:about="&wn;300289851" />
+<wn:Adjective rdf:about="&wn;300290399" />
+<wn:Adjective rdf:about="&wn;300290575" />
+<wn:Adjective rdf:about="&wn;300290740" />
+<wn:Adjective rdf:about="&wn;300290890" />
+<wn:Adjective rdf:about="&wn;300291035" />
+<wn:Adjective rdf:about="&wn;300291296" />
+<wn:Adjective rdf:about="&wn;300291361" />
+<wn:Adjective rdf:about="&wn;300292601" />
+<wn:Adjective rdf:about="&wn;300294237" />
+<wn:Adjective rdf:about="&wn;300294886" />
+<wn:Adjective rdf:about="&wn;300295157" />
+<wn:Adjective rdf:about="&wn;300295629" />
+<wn:Adjective rdf:about="&wn;300295935" />
+<wn:Adjective rdf:about="&wn;300296519" />
+<wn:Adjective rdf:about="&wn;300297137" />
+<wn:Adjective rdf:about="&wn;300298967" />
+<wn:Adjective rdf:about="&wn;300299380" />
+<wn:Adjective rdf:about="&wn;300300188" />
+<wn:Adjective rdf:about="&wn;300301036" />
+<wn:Adjective rdf:about="&wn;300301795" />
+<wn:Adjective rdf:about="&wn;300303590" />
+<wn:Adjective rdf:about="&wn;300303691" />
+<wn:Adjective rdf:about="&wn;300303773" />
+<wn:Adjective rdf:about="&wn;300304793" />
+<wn:Adjective rdf:about="&wn;300305298" />
+<wn:Adjective rdf:about="&wn;300305453" />
+<wn:Adjective rdf:about="&wn;300305602" />
+<wn:Adjective rdf:about="&wn;300305840" />
+<wn:Adjective rdf:about="&wn;300306268" />
+<wn:Adjective rdf:about="&wn;300308951" />
+<wn:Adjective rdf:about="&wn;300310713" />
+<wn:Adjective rdf:about="&wn;300311311" />
+<wn:Adjective rdf:about="&wn;300312027" />
+<wn:Adjective rdf:about="&wn;300312282" />
+<wn:Adjective rdf:about="&wn;300312636" />
+<wn:Adjective rdf:about="&wn;300312762" />
+<wn:Adjective rdf:about="&wn;300312859" />
+<wn:Adjective rdf:about="&wn;300312970" />
+<wn:Adjective rdf:about="&wn;300313067" />
+<wn:Adjective rdf:about="&wn;300313270" />
+<wn:Adjective rdf:about="&wn;300313365" />
+<wn:Adjective rdf:about="&wn;300313601" />
+<wn:Adjective rdf:about="&wn;300313896" />
+<wn:Adjective rdf:about="&wn;300314687" />
+<wn:Adjective rdf:about="&wn;300314752" />
+<wn:Adjective rdf:about="&wn;300314930" />
+<wn:Adjective rdf:about="&wn;300315103" />
+<wn:Adjective rdf:about="&wn;300315292" />
+<wn:Adjective rdf:about="&wn;300315451" />
+<wn:Adjective rdf:about="&wn;300315698" />
+<wn:Adjective rdf:about="&wn;300316018" />
+<wn:Adjective rdf:about="&wn;300316290" />
+<wn:Adjective rdf:about="&wn;300317016" />
+<wn:Adjective rdf:about="&wn;300317254" />
+<wn:Adjective rdf:about="&wn;300317384" />
+<wn:Adjective rdf:about="&wn;300317498" />
+<wn:Adjective rdf:about="&wn;300319890" />
+<wn:Adjective rdf:about="&wn;300319974" />
+<wn:Adjective rdf:about="&wn;300321069" />
+<wn:Adjective rdf:about="&wn;300321591" />
+<wn:Adjective rdf:about="&wn;300322556" />
+<wn:Adjective rdf:about="&wn;300322956" />
+<wn:Adjective rdf:about="&wn;300323390" />
+<wn:Adjective rdf:about="&wn;300323518" />
+<wn:Adjective rdf:about="&wn;300323745" />
+<wn:Adjective rdf:about="&wn;300323881" />
+<wn:Adjective rdf:about="&wn;300324130" />
+<wn:Adjective rdf:about="&wn;300324238" />
+<wn:Adjective rdf:about="&wn;300324462" />
+<wn:Adjective rdf:about="&wn;300324704" />
+<wn:Adjective rdf:about="&wn;300326169" />
+<wn:Adjective rdf:about="&wn;300327012" />
+<wn:Adjective rdf:about="&wn;300327496" />
+<wn:Adjective rdf:about="&wn;300327968" />
+<wn:Adjective rdf:about="&wn;300328562" />
+<wn:Adjective rdf:about="&wn;300329253" />
+<wn:Adjective rdf:about="&wn;300329587" />
+<wn:Adjective rdf:about="&wn;300330027" />
+<wn:Adjective rdf:about="&wn;300330738" />
+<wn:Adjective rdf:about="&wn;300331364" />
+<wn:Adjective rdf:about="&wn;300331919" />
+<wn:Adjective rdf:about="&wn;300332875" />
+<wn:Adjective rdf:about="&wn;300333005" />
+<wn:Adjective rdf:about="&wn;300333253" />
+<wn:Adjective rdf:about="&wn;300334269" />
+<wn:Adjective rdf:about="&wn;300334630" />
+<wn:Adjective rdf:about="&wn;300335796" />
+<wn:Adjective rdf:about="&wn;300336561" />
+<wn:Adjective rdf:about="&wn;300337006" />
+<wn:Adjective rdf:about="&wn;300337119" />
+<wn:Adjective rdf:about="&wn;300337768" />
+<wn:Adjective rdf:about="&wn;300337897" />
+<wn:Adjective rdf:about="&wn;300338038" />
+<wn:Adjective rdf:about="&wn;300338139" />
+<wn:Adjective rdf:about="&wn;300340709" />
+<wn:Adjective rdf:about="&wn;300341754" />
+<wn:Adjective rdf:about="&wn;300342291" />
+<wn:Adjective rdf:about="&wn;300342765" />
+<wn:Adjective rdf:about="&wn;300342939" />
+<wn:Adjective rdf:about="&wn;300343413" />
+<wn:Adjective rdf:about="&wn;300343692" />
+<wn:Adjective rdf:about="&wn;300343929" />
+<wn:Adjective rdf:about="&wn;300344986" />
+<wn:Adjective rdf:about="&wn;300345283" />
+<wn:Adjective rdf:about="&wn;300345572" />
+<wn:Adjective rdf:about="&wn;300345875" />
+<wn:Adjective rdf:about="&wn;300346835" />
+<wn:Adjective rdf:about="&wn;300347701" />
+<wn:Adjective rdf:about="&wn;300347941" />
+<wn:Adjective rdf:about="&wn;300348025" />
+<wn:Adjective rdf:about="&wn;300348832" />
+<wn:Adjective rdf:about="&wn;300349333" />
+<wn:Adjective rdf:about="&wn;300349578" />
+<wn:Adjective rdf:about="&wn;300349706" />
+<wn:Adjective rdf:about="&wn;300349943" />
+<wn:Adjective rdf:about="&wn;300350167" />
+<wn:Adjective rdf:about="&wn;300351495" />
+<wn:Adjective rdf:about="&wn;300351788" />
+<wn:Adjective rdf:about="&wn;300352458" />
+<wn:Adjective rdf:about="&wn;300352811" />
+<wn:Adjective rdf:about="&wn;300353214" />
+<wn:Adjective rdf:about="&wn;300353517" />
+<wn:Adjective rdf:about="&wn;300353711" />
+<wn:Adjective rdf:about="&wn;300353782" />
+<wn:Adjective rdf:about="&wn;300354191" />
+<wn:Adjective rdf:about="&wn;300354272" />
+<wn:Adjective rdf:about="&wn;300354913" />
+<wn:Adjective rdf:about="&wn;300355709" />
+<wn:Adjective rdf:about="&wn;300357588" />
+<wn:Adjective rdf:about="&wn;300358749" />
+<wn:Adjective rdf:about="&wn;300358889" />
+<wn:Adjective rdf:about="&wn;300358997" />
+<wn:Adjective rdf:about="&wn;300359116" />
+<wn:Adjective rdf:about="&wn;300359205" />
+<wn:Adjective rdf:about="&wn;300359364" />
+<wn:Adjective rdf:about="&wn;300359533" />
+<wn:Adjective rdf:about="&wn;300359704" />
+<wn:Adjective rdf:about="&wn;300359869" />
+<wn:Adjective rdf:about="&wn;300368981" />
+<wn:Adjective rdf:about="&wn;300371795" />
+<wn:Adjective rdf:about="&wn;300372083" />
+<wn:Adjective rdf:about="&wn;300372463" />
+<wn:Adjective rdf:about="&wn;300372753" />
+<wn:Adjective rdf:about="&wn;300373018" />
+<wn:Adjective rdf:about="&wn;300373312" />
+<wn:Adjective rdf:about="&wn;300373491" />
+<wn:Adjective rdf:about="&wn;300377457" />
+<wn:Adjective rdf:about="&wn;300377811" />
+<wn:Adjective rdf:about="&wn;300377980" />
+<wn:Adjective rdf:about="&wn;300378138" />
+<wn:Adjective rdf:about="&wn;300378609" />
+<wn:Adjective rdf:about="&wn;300378691" />
+<wn:Adjective rdf:about="&wn;300379163" />
+<wn:Adjective rdf:about="&wn;300379423" />
+<wn:Adjective rdf:about="&wn;300380824" />
+<wn:Adjective rdf:about="&wn;300383288" />
+<wn:Adjective rdf:about="&wn;300384291" />
+<wn:Adjective rdf:about="&wn;300384902" />
+<wn:Adjective rdf:about="&wn;300385628" />
+<wn:Adjective rdf:about="&wn;300385920" />
+<wn:Adjective rdf:about="&wn;300386048" />
+<wn:Adjective rdf:about="&wn;300386226" />
+<wn:Adjective rdf:about="&wn;300386597" />
+<wn:Adjective rdf:about="&wn;300387139" />
+<wn:Adjective rdf:about="&wn;300387539" />
+<wn:Adjective rdf:about="&wn;300387944" />
+<wn:Adjective rdf:about="&wn;300388661" />
+<wn:Adjective rdf:about="&wn;300389546" />
+<wn:Adjective rdf:about="&wn;300390146" />
+<wn:Adjective rdf:about="&wn;300390678" />
+<wn:Adjective rdf:about="&wn;300390971" />
+<wn:Adjective rdf:about="&wn;300391197" />
+<wn:Adjective rdf:about="&wn;300392365" />
+<wn:Adjective rdf:about="&wn;300392715" />
+<wn:Adjective rdf:about="&wn;300392982" />
+<wn:Adjective rdf:about="&wn;300393325" />
+<wn:Adjective rdf:about="&wn;300395278" />
+<wn:Adjective rdf:about="&wn;300399198" />
+<wn:Adjective rdf:about="&wn;300399576" />
+<wn:Adjective rdf:about="&wn;300401174" />
+<wn:Adjective rdf:about="&wn;300401417" />
+<wn:Adjective rdf:about="&wn;300401725" />
+<wn:Adjective rdf:about="&wn;300402055" />
+<wn:Adjective rdf:about="&wn;300402131" />
+<wn:Adjective rdf:about="&wn;300402403" />
+<wn:Adjective rdf:about="&wn;300403029" />
+<wn:Adjective rdf:about="&wn;300404606" />
+<wn:Adjective rdf:about="&wn;300405980" />
+<wn:Adjective rdf:about="&wn;300407454" />
+<wn:Adjective rdf:about="&wn;300408617" />
+<wn:Adjective rdf:about="&wn;300408763" />
+<wn:Adjective rdf:about="&wn;300408920" />
+<wn:Adjective rdf:about="&wn;300409363" />
+<wn:Adjective rdf:about="&wn;300411420" />
+<wn:Adjective rdf:about="&wn;300411697" />
+<wn:Adjective rdf:about="&wn;300411993" />
+<wn:Adjective rdf:about="&wn;300412298" />
+<wn:Adjective rdf:about="&wn;300412777" />
+<wn:Adjective rdf:about="&wn;300413561" />
+<wn:Adjective rdf:about="&wn;300415305" />
+<wn:Adjective rdf:about="&wn;300415563" />
+<wn:Adjective rdf:about="&wn;300415867" />
+<wn:Adjective rdf:about="&wn;300418007" />
+<wn:Adjective rdf:about="&wn;300419579" />
+<wn:Adjective rdf:about="&wn;300420901" />
+<wn:Adjective rdf:about="&wn;300424737" />
+<wn:Adjective rdf:about="&wn;300425702" />
+<wn:Adjective rdf:about="&wn;300427505" />
+<wn:Adjective rdf:about="&wn;300427746" />
+<wn:Adjective rdf:about="&wn;300427825" />
+<wn:Adjective rdf:about="&wn;300432062" />
+<wn:Adjective rdf:about="&wn;300434532" />
+<wn:Adjective rdf:about="&wn;300434682" />
+<wn:Adjective rdf:about="&wn;300434881" />
+<wn:Adjective rdf:about="&wn;300435596" />
+<wn:Adjective rdf:about="&wn;300436760" />
+<wn:Adjective rdf:about="&wn;300437996" />
+<wn:Adjective rdf:about="&wn;300438407" />
+<wn:Adjective rdf:about="&wn;300438584" />
+<wn:Adjective rdf:about="&wn;300438688" />
+<wn:Adjective rdf:about="&wn;300439246" />
+<wn:Adjective rdf:about="&wn;300439913" />
+<wn:Adjective rdf:about="&wn;300440541" />
+<wn:Adjective rdf:about="&wn;300440753" />
+<wn:Adjective rdf:about="&wn;300440901" />
+<wn:Adjective rdf:about="&wn;300440993" />
+<wn:Adjective rdf:about="&wn;300441836" />
+<wn:Adjective rdf:about="&wn;300442935" />
+<wn:Adjective rdf:about="&wn;300443637" />
+<wn:Adjective rdf:about="&wn;300444456" />
+<wn:Adjective rdf:about="&wn;300444598" />
+<wn:Adjective rdf:about="&wn;300444704" />
+<wn:Adjective rdf:about="&wn;300444786" />
+<wn:Adjective rdf:about="&wn;300444874" />
+<wn:Adjective rdf:about="&wn;300445462" />
+<wn:Adjective rdf:about="&wn;300445553" />
+<wn:Adjective rdf:about="&wn;300445673" />
+<wn:Adjective rdf:about="&wn;300445832" />
+<wn:Adjective rdf:about="&wn;300446280" />
+<wn:Adjective rdf:about="&wn;300446462" />
+<wn:Adjective rdf:about="&wn;300447239" />
+<wn:Adjective rdf:about="&wn;300447816" />
+<wn:Adjective rdf:about="&wn;300448387" />
+<wn:Adjective rdf:about="&wn;300448504" />
+<wn:Adjective rdf:about="&wn;300449242" />
+<wn:Adjective rdf:about="&wn;300449489" />
+<wn:Adjective rdf:about="&wn;300449879" />
+<wn:Adjective rdf:about="&wn;300450186" />
+<wn:Adjective rdf:about="&wn;300451242" />
+<wn:Adjective rdf:about="&wn;300452334" />
+<wn:Adjective rdf:about="&wn;300453040" />
+<wn:Adjective rdf:about="&wn;300454359" />
+<wn:Adjective rdf:about="&wn;300455058" />
+<wn:Adjective rdf:about="&wn;300455456" />
+<wn:Adjective rdf:about="&wn;300456059" />
+<wn:Adjective rdf:about="&wn;300456157" />
+<wn:Adjective rdf:about="&wn;300457694" />
+<wn:Adjective rdf:about="&wn;300458245" />
+<wn:Adjective rdf:about="&wn;300458453" />
+<wn:Adjective rdf:about="&wn;300458632" />
+<wn:Adjective rdf:about="&wn;300458793" />
+<wn:Adjective rdf:about="&wn;300459043" />
+<wn:Adjective rdf:about="&wn;300460832" />
+<wn:Adjective rdf:about="&wn;300462055" />
+<wn:Adjective rdf:about="&wn;300462797" />
+<wn:Adjective rdf:about="&wn;300464457" />
+<wn:Adjective rdf:about="&wn;300465474" />
+<wn:Adjective rdf:about="&wn;300465599" />
+<wn:Adjective rdf:about="&wn;300465796" />
+<wn:Adjective rdf:about="&wn;300466114" />
+<wn:Adjective rdf:about="&wn;300466363" />
+<wn:Adjective rdf:about="&wn;300466445" />
+<wn:Adjective rdf:about="&wn;300467164" />
+<wn:Adjective rdf:about="&wn;300468976" />
+<wn:Adjective rdf:about="&wn;300474416" />
+<wn:Adjective rdf:about="&wn;300475994" />
+<wn:Adjective rdf:about="&wn;300477116" />
+<wn:Adjective rdf:about="&wn;300477747" />
+<wn:Adjective rdf:about="&wn;300478339" />
+<wn:Adjective rdf:about="&wn;300480028" />
+<wn:Adjective rdf:about="&wn;300480950" />
+<wn:Adjective rdf:about="&wn;300481325" />
+<wn:Adjective rdf:about="&wn;300481961" />
+<wn:Adjective rdf:about="&wn;300482718" />
+<wn:Adjective rdf:about="&wn;300482878" />
+<wn:Adjective rdf:about="&wn;300483042" />
+<wn:Adjective rdf:about="&wn;300483322" />
+<wn:Adjective rdf:about="&wn;300483603" />
+<wn:Adjective rdf:about="&wn;300484725" />
+<wn:Adjective rdf:about="&wn;300485901" />
+<wn:Adjective rdf:about="&wn;300486803" />
+<wn:Adjective rdf:about="&wn;300487383" />
+<wn:Adjective rdf:about="&wn;300488044" />
+<wn:Adjective rdf:about="&wn;300488405" />
+<wn:Adjective rdf:about="&wn;300488690" />
+<wn:Adjective rdf:about="&wn;300488832" />
+<wn:Adjective rdf:about="&wn;300490387" />
+<wn:Adjective rdf:about="&wn;300492405" />
+<wn:Adjective rdf:about="&wn;300492524" />
+<wn:Adjective rdf:about="&wn;300492653" />
+<wn:Adjective rdf:about="&wn;300493187" />
+<wn:Adjective rdf:about="&wn;300493682" />
+<wn:Adjective rdf:about="&wn;300494516" />
+<wn:Adjective rdf:about="&wn;300494649" />
+<wn:Adjective rdf:about="&wn;300498169" />
+<wn:Adjective rdf:about="&wn;300499406" />
+<wn:Adjective rdf:about="&wn;300499587" />
+<wn:Adjective rdf:about="&wn;300499796" />
+<wn:Adjective rdf:about="&wn;300502592" />
+<wn:Adjective rdf:about="&wn;300502783" />
+<wn:Adjective rdf:about="&wn;300504551" />
+<wn:Adjective rdf:about="&wn;300506082" />
+<wn:Adjective rdf:about="&wn;300506860" />
+<wn:Adjective rdf:about="&wn;300508190" />
+<wn:Adjective rdf:about="&wn;300509784" />
+<wn:Adjective rdf:about="&wn;300510804" />
+<wn:Adjective rdf:about="&wn;300512878" />
+<wn:Adjective rdf:about="&wn;300516513" />
+<wn:Adjective rdf:about="&wn;300516742" />
+<wn:Adjective rdf:about="&wn;300517109" />
+<wn:Adjective rdf:about="&wn;300518485" />
+<wn:Adjective rdf:about="&wn;300520044" />
+<wn:Adjective rdf:about="&wn;300521945" />
+<wn:Adjective rdf:about="&wn;300523402" />
+<wn:Adjective rdf:about="&wn;300523960" />
+<wn:Adjective rdf:about="&wn;300524656" />
+<wn:Adjective rdf:about="&wn;300525018" />
+<wn:Adjective rdf:about="&wn;300525165" />
+<wn:Adjective rdf:about="&wn;300525459" />
+<wn:Adjective rdf:about="&wn;300525926" />
+<wn:Adjective rdf:about="&wn;300526844" />
+<wn:Adjective rdf:about="&wn;300527303" />
+<wn:Adjective rdf:about="&wn;300527732" />
+<wn:Adjective rdf:about="&wn;300527858" />
+<wn:Adjective rdf:about="&wn;300527976" />
+<wn:Adjective rdf:about="&wn;300528101" />
+<wn:Adjective rdf:about="&wn;300528667" />
+<wn:Adjective rdf:about="&wn;300529364" />
+<wn:Adjective rdf:about="&wn;300529588" />
+<wn:Adjective rdf:about="&wn;300529799" />
+<wn:Adjective rdf:about="&wn;300530037" />
+<wn:Adjective rdf:about="&wn;300530245" />
+<wn:Adjective rdf:about="&wn;300531432" />
+<wn:Adjective rdf:about="&wn;300532145" />
+<wn:Adjective rdf:about="&wn;300532228" />
+<wn:Adjective rdf:about="&wn;300532402" />
+<wn:Adjective rdf:about="&wn;300532561" />
+<wn:Adjective rdf:about="&wn;300532737" />
+<wn:Adjective rdf:about="&wn;300533120" />
+<wn:Adjective rdf:about="&wn;300533244" />
+<wn:Adjective rdf:about="&wn;300534378" />
+<wn:Adjective rdf:about="&wn;300534656" />
+<wn:Adjective rdf:about="&wn;300535419" />
+<wn:Adjective rdf:about="&wn;300535552" />
+<wn:Adjective rdf:about="&wn;300536202" />
+<wn:Adjective rdf:about="&wn;300536712" />
+<wn:Adjective rdf:about="&wn;300537089" />
+<wn:Adjective rdf:about="&wn;300537171" />
+<wn:Adjective rdf:about="&wn;300537448" />
+<wn:Adjective rdf:about="&wn;300538465" />
+<wn:Adjective rdf:about="&wn;300538957" />
+<wn:Adjective rdf:about="&wn;300540651" />
+<wn:Adjective rdf:about="&wn;300540803" />
+<wn:Adjective rdf:about="&wn;300540929" />
+<wn:Adjective rdf:about="&wn;300543036" />
+<wn:Adjective rdf:about="&wn;300544506" />
+<wn:Adjective rdf:about="&wn;300545045" />
+<wn:Adjective rdf:about="&wn;300545950" />
+<wn:Adjective rdf:about="&wn;300547034" />
+<wn:Adjective rdf:about="&wn;300548544" />
+<wn:Adjective rdf:about="&wn;300549089" />
+<wn:Adjective rdf:about="&wn;300549433" />
+<wn:Adjective rdf:about="&wn;300549609" />
+<wn:Adjective rdf:about="&wn;300549723" />
+<wn:Adjective rdf:about="&wn;300550513" />
+<wn:Adjective rdf:about="&wn;300551779" />
+<wn:Adjective rdf:about="&wn;300552962" />
+<wn:Adjective rdf:about="&wn;300553915" />
+<wn:Adjective rdf:about="&wn;300556417" />
+<wn:Adjective rdf:about="&wn;300556792" />
+<wn:Adjective rdf:about="&wn;300557108" />
+<wn:Adjective rdf:about="&wn;300557258" />
+<wn:Adjective rdf:about="&wn;300557820" />
+<wn:Adjective rdf:about="&wn;300558183" />
+<wn:Adjective rdf:about="&wn;300558880" />
+<wn:Adjective rdf:about="&wn;300559620" />
+<wn:Adjective rdf:about="&wn;300560788" />
+<wn:Adjective rdf:about="&wn;300563084" />
+<wn:Adjective rdf:about="&wn;300563555" />
+<wn:Adjective rdf:about="&wn;300564041" />
+<wn:Adjective rdf:about="&wn;300565243" />
+<wn:Adjective rdf:about="&wn;300565888" />
+<wn:Adjective rdf:about="&wn;300566374" />
+<wn:Adjective rdf:about="&wn;300567221" />
+<wn:Adjective rdf:about="&wn;300567321" />
+<wn:Adjective rdf:about="&wn;300567536" />
+<wn:Adjective rdf:about="&wn;300568936" />
+<wn:Adjective rdf:about="&wn;300569933" />
+<wn:Adjective rdf:about="&wn;300572116" />
+<wn:Adjective rdf:about="&wn;300572752" />
+<wn:Adjective rdf:about="&wn;300572886" />
+<wn:Adjective rdf:about="&wn;300573022" />
+<wn:Adjective rdf:about="&wn;300573467" />
+<wn:Adjective rdf:about="&wn;300573964" />
+<wn:Adjective rdf:about="&wn;300575811" />
+<wn:Adjective rdf:about="&wn;300577656" />
+<wn:Adjective rdf:about="&wn;300578421" />
+<wn:Adjective rdf:about="&wn;300578903" />
+<wn:Adjective rdf:about="&wn;300579593" />
+<wn:Adjective rdf:about="&wn;300579811" />
+<wn:Adjective rdf:about="&wn;300580270" />
+<wn:Adjective rdf:about="&wn;300580640" />
+<wn:Adjective rdf:about="&wn;300581702" />
+<wn:Adjective rdf:about="&wn;300582449" />
+<wn:Adjective rdf:about="&wn;300583190" />
+<wn:Adjective rdf:about="&wn;300584381" />
+<wn:Adjective rdf:about="&wn;300584599" />
+<wn:Adjective rdf:about="&wn;300584879" />
+<wn:Adjective rdf:about="&wn;300585164" />
+<wn:Adjective rdf:about="&wn;300585299" />
+<wn:Adjective rdf:about="&wn;300586230" />
+<wn:Adjective rdf:about="&wn;300586406" />
+<wn:Adjective rdf:about="&wn;300586896" />
+<wn:Adjective rdf:about="&wn;300587240" />
+<wn:Adjective rdf:about="&wn;300588322" />
+<wn:Adjective rdf:about="&wn;300588632" />
+<wn:Adjective rdf:about="&wn;300589217" />
+<wn:Adjective rdf:about="&wn;300589471" />
+<wn:Adjective rdf:about="&wn;300592314" />
+<wn:Adjective rdf:about="&wn;300592851" />
+<wn:Adjective rdf:about="&wn;300593589" />
+<wn:Adjective rdf:about="&wn;300593986" />
+<wn:Adjective rdf:about="&wn;300595766" />
+<wn:Adjective rdf:about="&wn;300596505" />
+<wn:Adjective rdf:about="&wn;300596696" />
+<wn:Adjective rdf:about="&wn;300596855" />
+<wn:Adjective rdf:about="&wn;300597165" />
+<wn:Adjective rdf:about="&wn;300597432" />
+<wn:Adjective rdf:about="&wn;300597557" />
+<wn:Adjective rdf:about="&wn;300598876" />
+<wn:Adjective rdf:about="&wn;300599224" />
+<wn:Adjective rdf:about="&wn;300599533" />
+<wn:Adjective rdf:about="&wn;300600334" />
+<wn:Adjective rdf:about="&wn;300600913" />
+<wn:Adjective rdf:about="&wn;300601298" />
+<wn:Adjective rdf:about="&wn;300601641" />
+<wn:Adjective rdf:about="&wn;300602027" />
+<wn:Adjective rdf:about="&wn;300602303" />
+<wn:Adjective rdf:about="&wn;300602492" />
+<wn:Adjective rdf:about="&wn;300603243" />
+<wn:Adjective rdf:about="&wn;300603796" />
+<wn:Adjective rdf:about="&wn;300604686" />
+<wn:Adjective rdf:about="&wn;300605574" />
+<wn:Adjective rdf:about="&wn;300605906" />
+<wn:Adjective rdf:about="&wn;300606172" />
+<wn:Adjective rdf:about="&wn;300606726" />
+<wn:Adjective rdf:about="&wn;300606952" />
+<wn:Adjective rdf:about="&wn;300607492" />
+<wn:Adjective rdf:about="&wn;300608066" />
+<wn:Adjective rdf:about="&wn;300608985" />
+<wn:Adjective rdf:about="&wn;300610134" />
+<wn:Adjective rdf:about="&wn;300610324" />
+<wn:Adjective rdf:about="&wn;300610612" />
+<wn:Adjective rdf:about="&wn;300610860" />
+<wn:Adjective rdf:about="&wn;300611232" />
+<wn:Adjective rdf:about="&wn;300611661" />
+<wn:Adjective rdf:about="&wn;300612248" />
+<wn:Adjective rdf:about="&wn;300612653" />
+<wn:Adjective rdf:about="&wn;300613456" />
+<wn:Adjective rdf:about="&wn;300613848" />
+<wn:Adjective rdf:about="&wn;300615165" />
+<wn:Adjective rdf:about="&wn;302498940" />
+<wn:Adjective rdf:about="&wn;302499958" />
+<wn:Adjective rdf:about="&wn;302500319" />
+<wn:Adjective rdf:about="&wn;302500816" />
+<wn:Adjective rdf:about="&wn;302501319" />
+<wn:Adjective rdf:about="&wn;302501416" />
+<wn:Adjective rdf:about="&wn;302505475" />
+<wn:Adjective rdf:about="&wn;302505796" />
+<wn:Adjective rdf:about="&wn;302508852" />
+<wn:Adjective rdf:about="&wn;302509523" />
+<wn:Adjective rdf:about="&wn;302510004" />
+<wn:Adjective rdf:about="&wn;302510235" />
+<wn:Adjective rdf:about="&wn;302510541" />
+<wn:Adjective rdf:about="&wn;302510970" />
+<wn:Adjective rdf:about="&wn;302511314" />
+<wn:Adjective rdf:about="&wn;302511552" />
+<wn:Adjective rdf:about="&wn;302511763" />
+<wn:Adjective rdf:about="&wn;302511877" />
+<wn:Adjective rdf:about="&wn;302511996" />
+<wn:Adjective rdf:about="&wn;302512091" />
+<wn:Adjective rdf:about="&wn;302512186" />
+<wn:Adjective rdf:about="&wn;302512363" />
+<wn:Adjective rdf:about="&wn;302512555" />
+<wn:Adjective rdf:about="&wn;302512839" />
+<wn:Adjective rdf:about="&wn;302512973" />
+<wn:Adjective rdf:about="&wn;302513061" />
+<wn:Adjective rdf:about="&wn;302513153" />
+<wn:Adjective rdf:about="&wn;302513251" />
+<wn:Adjective rdf:about="&wn;302513335" />
+<wn:Adjective rdf:about="&wn;302513438" />
+<wn:Adjective rdf:about="&wn;302513547" />
+<wn:Adjective rdf:about="&wn;302513666" />
+<wn:Adjective rdf:about="&wn;302513798" />
+<wn:Adjective rdf:about="&wn;302514041" />
+<wn:Adjective rdf:about="&wn;302514250" />
+<wn:Adjective rdf:about="&wn;302514389" />
+<wn:Adjective rdf:about="&wn;302514529" />
+<wn:Adjective rdf:about="&wn;302514846" />
+<wn:Adjective rdf:about="&wn;302515260" />
+<wn:Adjective rdf:about="&wn;302515440" />
+<wn:Adjective rdf:about="&wn;302515630" />
+<wn:Adjective rdf:about="&wn;302515730" />
+<wn:Adjective rdf:about="&wn;302515812" />
+<wn:Adjective rdf:about="&wn;302515932" />
+<wn:Adjective rdf:about="&wn;302516071" />
+<wn:Adjective rdf:about="&wn;302516224" />
+<wn:Adjective rdf:about="&wn;302516394" />
+<wn:Adjective rdf:about="&wn;302516536" />
+<wn:Adjective rdf:about="&wn;302516832" />
+<wn:Adjective rdf:about="&wn;302516956" />
+</rdf:RDF>

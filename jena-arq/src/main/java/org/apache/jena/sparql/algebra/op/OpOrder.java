@@ -18,55 +18,52 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.query.SortCondition ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.query.SortCondition;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class OpOrder extends OpModifier
 {
-    private List<SortCondition> conditions ;
+    private List<SortCondition> conditions;
     public OpOrder(Op subOp, List<SortCondition> conditions)
-    { 
-        super(subOp) ;
-        this.conditions = conditions ;
+    {
+        super(subOp);
+        this.conditions = conditions;
     }
-    
-    public List<SortCondition> getConditions() { return conditions ; }
-    
+
+    public List<SortCondition> getConditions() { return conditions; }
+
     @Override
-    public String getName()                 { return Tags.tagOrderBy ; }
+    public String getName()                 { return Tags.tagOrderBy; }
     @Override
-    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
+    public void visit(OpVisitor opVisitor)  { opVisitor.visit(this); }
     @Override
-    public Op1 copy(Op subOp)                { return new OpOrder(subOp, conditions) ; }
+    public Op1 copy(Op subOp)                { return new OpOrder(subOp, conditions); }
 
     @Override
     public Op apply(Transform transform, Op subOp)
-    { return transform.transform(this, subOp) ; }
-    
+    { return transform.transform(this, subOp); }
+
     @Override
-    public int hashCode()
-    {
-        return conditions.hashCode() ^ getSubOp().hashCode() ;
+    public int hashCode() {
+        return conditions.hashCode() ^ getSubOp().hashCode();
     }
 
     @Override
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
-        if ( ! (other instanceof OpOrder) ) return false ;
-        OpOrder opOrder = (OpOrder)other ;
-        
-        if ( ! opOrder.getConditions().equals(this.getConditions()) )
-            return false ;
-        
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
+        if ( !(other instanceof OpOrder) )
+            return false;
+        OpOrder opOrder = (OpOrder)other;
+
+        if ( !opOrder.getConditions().equals(this.getConditions()) )
+            return false;
+
         //
-        return getSubOp().equalTo(opOrder.getSubOp(), labelMap) ;
+        return getSubOp().equalTo(opOrder.getSubOp(), labelMap);
     }
-
-
 }

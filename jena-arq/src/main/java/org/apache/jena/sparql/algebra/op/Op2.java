@@ -18,38 +18,38 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 /** Super class for operators that combine two sub-operators */
 
 public abstract class Op2 extends OpBase
 {
-    private Op left ;
-    private Op right ;
+    private Op left;
+    private Op right;
 
     public Op2(Op left, Op right)
     {
-        this.left = left ; this.right = right ;
+        this.left = left; this.right = right;
     }
     
-    public Op getLeft() { return left ; }
-    public Op getRight() { return right ; }
+    public Op getLeft() { return left; }
+    public Op getRight() { return right; }
 
-    public abstract Op apply(Transform transform, Op left, Op right) ;
-    public abstract Op2 copy(Op left, Op right) ;
+    public abstract Op apply(Transform transform, Op left, Op right);
+    public abstract Op2 copy(Op left, Op right);
 
     @Override
     public int hashCode()
     {
-        return left.hashCode()<<1 ^ right.hashCode() ^ getName().hashCode() ;
+        return left.hashCode()<<1 ^ right.hashCode() ^ getName().hashCode();
     }
     
     // equalsTo worker
     protected final boolean sameArgumentsAs(Op2 op2, NodeIsomorphismMap labelMap)
     {
         return left.equalTo(op2.left, labelMap) && 
-               right.equalTo(op2.right, labelMap) ;
+               right.equalTo(op2.right, labelMap);
     }
 }

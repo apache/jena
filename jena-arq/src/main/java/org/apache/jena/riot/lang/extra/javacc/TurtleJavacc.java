@@ -246,7 +246,7 @@ emitTriple(token.beginLine, token.beginColumn, s, p, o) ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case L_ANN:{
       jj_consume_token(L_ANN);
-Node x = createTripleTerm(s, p, o, token.beginLine, token.beginColumn);
+Node x = createQuotedTriple(s, p, o, token.beginLine, token.beginColumn);
       PredicateObjectList(x);
       jj_consume_token(R_ANN);
       break;
@@ -299,7 +299,7 @@ s = createURI(iri, token.beginLine, token.beginColumn) ;
       break;
       }
     case LT2:{
-      s = EmbTriple();
+      s = QuotedTriple();
       break;
       }
     default:
@@ -354,7 +354,7 @@ o = createURI(iri, token.beginLine, token.beginColumn) ;
       break;
       }
     case LT2:{
-      o = EmbTriple();
+      o = QuotedTriple();
       break;
       }
     default:
@@ -366,7 +366,7 @@ o = createURI(iri, token.beginLine, token.beginColumn) ;
     throw new Error("Missing return statement in function");
 }
 
-  final public Node EmbSubject() throws ParseException {Node o ; String iri;
+  final public Node QuotedTripleSubject() throws ParseException {Node o ; String iri;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -381,7 +381,7 @@ o = createURI(iri, token.beginLine, token.beginColumn) ;
       break;
       }
     case LT2:{
-      o = EmbTriple();
+      o = QuotedTriple();
       break;
       }
     default:
@@ -393,7 +393,7 @@ o = createURI(iri, token.beginLine, token.beginColumn) ;
     throw new Error("Missing return statement in function");
 }
 
-  final public Node EmbObject() throws ParseException {Node o ; String iri;
+  final public Node QuotedTripleObject() throws ParseException {Node o ; String iri;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -420,7 +420,7 @@ o = createURI(iri, token.beginLine, token.beginColumn) ;
       break;
       }
     case LT2:{
-      o = EmbTriple();
+      o = QuotedTriple();
       break;
       }
     default:
@@ -433,14 +433,13 @@ o = createURI(iri, token.beginLine, token.beginColumn) ;
 }
 
 // The syntax for RDF-star <<>>
-  final public Node EmbTriple() throws ParseException {Node s , p , o ; Token t ;
+  final public Node QuotedTriple() throws ParseException {Node s , p , o ; Token t ;
     t = jj_consume_token(LT2);
-int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
-    s = EmbSubject();
+    s = QuotedTripleSubject();
     p = Verb();
-    o = EmbObject();
+    o = QuotedTripleObject();
     jj_consume_token(GT2);
-Node n = createTripleTerm(s, p, o, beginLine, beginColumn);
+Node n = createQuotedTriple(s, p, o, t.beginLine, t.beginColumn);
     {if ("" != null) return n;}
     throw new Error("Missing return statement in function");
 }

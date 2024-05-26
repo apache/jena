@@ -27,10 +27,11 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.impl.LiteralLabel;
-import org.apache.jena.graph.impl.LiteralLabelFactory;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Before;
@@ -94,8 +95,8 @@ public class AbstractQueryBuilderTest {
 
         n = builder.makeNode(Integer.valueOf(5));
         assertTrue(n.isLiteral());
-        LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(Integer.valueOf(5));
-        assertEquals(NodeFactory.createLiteral(ll), n);
+        assertEquals(XSDDatatype.XSDint, n.getLiteralDatatype());
+        assertEquals("5", n.getLiteralLexicalForm());
 
         n = builder.makeNode(NodeFactory.createVariable("foo"));
         assertTrue(n.isVariable());
@@ -128,9 +129,49 @@ public class AbstractQueryBuilderTest {
         assertTrue(result.contains(n2));
         assertTrue(result.contains(NodeFactory.createURI("http://example.com/type")));
         assertTrue(result.contains(NodeFactory.createURI("one")));
-        LiteralLabel ll = LiteralLabelFactory.createTypedLiteral(Integer.valueOf(5));
-        assertTrue(result.contains(NodeFactory.createLiteral(ll)));
 
+        Node n = NodeFactory.createLiteral("5", XSDDatatype.XSDint);
+        assertTrue(result.contains(n));
+
+    }
+    
+    private void assertTripleMatch(Triple expected, Triple actual) {
+        if (!expected.matches(actual)) {
+            fail("expected: "+expected+" actual: "+actual);
+        }
+    }
+    
+    private void assertTripleMatch(Triple expected, TriplePath actual) {
+        assertTripleMatch(expected, actual.asTriple());
+    }
+    
+    @Test
+    public void testMakeTriplePaths() {
+        List<Object> list = new ArrayList<Object>();
+        list.add(RDF.type);
+        builder.addPrefix("demo", "http://example.com/");
+        list.add("demo:type");
+        list.add("<one>");
+        list.add(Integer.valueOf(5));
+        
+        Triple[] expected = {
+            Triple.create(Node.ANY, RDF.first.asNode(), RDF.type.asNode()),
+            Triple.create(Node.ANY, RDF.rest.asNode(), Node.ANY),
+            Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createURI("http://example.com/type")),
+            Triple.create(Node.ANY, RDF.rest.asNode(), Node.ANY),
+            Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createURI("one")), 
+            Triple.create(Node.ANY, RDF.rest.asNode(), Node.ANY), 
+            Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createLiteral("5", XSDDatatype.XSDint)),
+            Triple.create(Node.ANY, RDF.rest.asNode(), RDF.nil.asNode()),
+            Triple.create(Var.alloc("s"), Var.alloc("p"), Node.ANY),
+        };
+
+        List<TriplePath> result = builder.makeTriplePaths("?s", "?p", list);
+
+        assertEquals(expected.length, result.size());
+        for (int i=0;i<expected.length;i++) {
+            assertTripleMatch( expected[i], result.get(i));
+        }
     }
 
 }

@@ -17,17 +17,18 @@
 
 <template>
   <div id="app">
-    <b-container fluid>
-      <b-row>
+    <div class="container-fluid">
+      <div class="row">
         <Menu />
-      </b-row>
-      <router-view/>
-    </b-container>
+      </div>
+      <router-view />
+    </div>
+    <Toast />
   </div>
 </template>
 
 <script>
-import Menu from '@/components/Menu'
+import Menu from '@/components/Menu.vue'
 
 export default {
   name: 'App',

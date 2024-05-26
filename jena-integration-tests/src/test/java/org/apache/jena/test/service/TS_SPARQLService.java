@@ -24,7 +24,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestServiceExec.class,
-    TestServiceSetup.class,
     TestCustomServiceExecutor.class
 })
 public class TS_SPARQLService {}

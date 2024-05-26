@@ -34,8 +34,8 @@ public abstract class QueryIterRepeatApply extends QueryIter1 {
     private QueryIterator currentStage;
     private volatile boolean cancelRequested = false;
 
-    public QueryIterRepeatApply(QueryIterator input, ExecutionContext context) {
-        super(input, context);
+    public QueryIterRepeatApply(QueryIterator input, ExecutionContext execCxt) {
+        super(input, execCxt);
         this.currentStage = null;
 
         if ( input == null ) {

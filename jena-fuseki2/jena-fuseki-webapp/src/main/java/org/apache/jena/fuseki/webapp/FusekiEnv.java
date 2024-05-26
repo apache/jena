@@ -18,7 +18,10 @@
 
 package org.apache.jena.fuseki.webapp;
 
+import static org.apache.jena.atlas.lib.Lib.getenv;
+
 import java.nio.file.Path;
+
 import org.apache.commons.lang3.SystemUtils;
 
 /**
@@ -53,7 +56,7 @@ public class FusekiEnv {
         If at server initialization, the MODE is UNSET, then assume WAR setup.
         A WAR file does not have the opportunity to set the mode.
         <p>
-        TEST:  (better to set FUSEKI_HOME, FUSEKI_BASE from the test environment</li>
+        TEST:  (better to set FUSEKI_HOME, FUSEKI_BASE from the test environment
     */
     public enum INIT {
         // Default values of FUSEKI_HOME, and FUSEKI_BASE.
@@ -146,14 +149,6 @@ public class FusekiEnv {
     private static void logInitError(String fmt, Object ... args) {
         System.err.printf(fmt, args);
         System.err.println();
-    }
-
-    /** Get environment variable value (maybe in system properties) */
-    public static String getenv(String name) {
-        String x = System.getenv(name);
-        if ( x == null )
-            x = System.getProperty(name);
-        return x;
     }
 }
 

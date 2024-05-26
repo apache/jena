@@ -38,7 +38,7 @@ public class TestCmdExt {
     @Before
     public void beforeTest() {
         stderr = System.err;
-        System.setErr(new PrintStream(NullOutputStream.NULL_OUTPUT_STREAM));
+        System.setErr(new PrintStream(NullOutputStream.INSTANCE));
     }
 
     @After

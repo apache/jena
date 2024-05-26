@@ -1,0 +1,17 @@
+<!--
+  Failing (not RDF document) Test case for bug #68.
+  i.e. hp internal bugzilla #68
+  
+ rdf:parseType="literal" is misspelt.
+  
+  WARN_UNKNOWN_PARSETYPE 
+  (even in strict mode)
+  
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+
+  <rdf:Bag >
+    <rdf:value rdf:parseType="literal"> <foo/> </rdf:value>
+  </rdf:Bag>
+   
+</rdf:RDF>

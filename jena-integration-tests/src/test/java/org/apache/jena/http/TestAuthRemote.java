@@ -41,9 +41,8 @@ import org.apache.jena.sparql.exec.http.UpdateExecHTTP;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.test.conn.EnvTest;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -53,17 +52,13 @@ public class TestAuthRemote {
     private static String user = "user";
     private static String password = "password";
 
-    private static EnvTest env;
-    @BeforeClass public static void beforeClass() {
+    private EnvTest env;
+    @Before public void beforeClass() {
         //FusekiLogging.setLogging();
         env = EnvTest.createAuth("/ds", DatasetGraphFactory.createTxnMem(), user, password);
     }
 
-    @Before public void before() {
-        env.clear();
-    }
-
-    @AfterClass public static void afterClass() {
+    @After public void after() {
         EnvTest.stop(env);
     }
 
@@ -171,10 +166,9 @@ public class TestAuthRemote {
         assertNotNull(graph);
     }
 
-    @SuppressWarnings("deprecation")
     @Test
-    public void auth_gsp_good_auth_2() {
-        DatasetGraph dsg = GSP.service(env.datasetURL()).httpClient(env.httpClientAuthGood()).dataset().getDataset();
+    public void auth_dsp_good_auth_2() {
+        DatasetGraph dsg = DSP.service(env.datasetURL()).httpClient(env.httpClientAuthGood()).GET();
         assertNotNull(dsg);
     }
 
@@ -192,12 +186,11 @@ public class TestAuthRemote {
         );
     }
 
-    @SuppressWarnings("deprecation")
     @Test
-    public void auth_gsp_bad_auth_2() {
+    public void auth_dsp_bad_auth_2() {
         // 401 because we didn't authenticate.
         expect401(()->
-            GSP.service(env.datasetURL()).httpClient(env.httpClientAuthBad()).dataset().getDataset()
+            DSP.service(env.datasetURL()).httpClient(env.httpClientAuthBad()).GET()
         );
     }
 

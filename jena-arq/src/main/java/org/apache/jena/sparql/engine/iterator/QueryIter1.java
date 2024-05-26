@@ -28,52 +28,49 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
  * This class supports a QueryIter that takes one QueryIterator as input. */
 public abstract class QueryIter1 extends QueryIter
 {
-    private QueryIterator input ; 
-    
-    public QueryIter1(QueryIterator input, ExecutionContext execCxt)
-    { 
-        super(execCxt) ;
-        this.input = input ;
+    private QueryIterator input;
+
+    public QueryIter1(QueryIterator input, ExecutionContext execCxt) {
+        super(execCxt);
+        this.input = input;
     }
-    
+
     protected QueryIterator getInput() { return input ; }
-    
+
     @Override
-    protected final
-    void closeIterator()
-    {
-        closeSubIterator() ;
-        performClose(input) ;
-        input = null ;
+    protected final void closeIterator() {
+        closeSubIterator();
+        performClose(input);
+        input = null;
     }
-    
+
     @Override
-    protected final
-    void requestCancel()
-    {
-        requestSubCancel() ;
-        performRequestCancel(input) ;
+    protected final void requestCancel() {
+        requestSubCancel();
+        performRequestCancel(input);
     }
-    
+
     /** Cancellation of the query execution is happening */
-    protected abstract void requestSubCancel() ;
-    
-    /** Pass on the close method - no need to close the QueryIterator passed to the QueryIter1 constructor */
-    protected abstract void closeSubIterator() ;
-    
+    protected abstract void requestSubCancel();
+
+    /**
+     * Pass on the close method - no need to close the QueryIterator passed to the
+     * QueryIter1 constructor
+     */
+    protected abstract void closeSubIterator();
+
     // Do better
     @Override
-    public void output(IndentedWriter out, SerializationContext sCxt)
-    {
+    public void output(IndentedWriter out, SerializationContext sCxt) {
         // Linear form.
         if ( getInput() != null )
             // Closed
-            getInput().output(out, sCxt) ;
+            getInput().output(out, sCxt);
         else
             out.println("Closed");
-        out.ensureStartOfLine() ;
-        details(out, sCxt) ;
-        out.ensureStartOfLine() ;
+        out.ensureStartOfLine();
+        details(out, sCxt);
+        out.ensureStartOfLine();
 
 //        details(out, sCxt) ;
 //        out.ensureStartOfLine() ;
@@ -83,9 +80,7 @@ public abstract class QueryIter1 extends QueryIter
 //        out.ensureStartOfLine() ;
     }
 
-    protected void details(IndentedWriter out, SerializationContext sCxt)
-    {
-        out.println(Lib.className(this)) ;
+    protected void details(IndentedWriter out, SerializationContext sCxt) {
+        out.println(Lib.className(this));
     }
-
 }

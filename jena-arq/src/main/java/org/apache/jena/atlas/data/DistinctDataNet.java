@@ -88,7 +88,7 @@ public class DistinctDataNet<E> extends DistinctDataBag<E> {
     /**
      * Returns an iterator to all additional items that are distinct but were not
      * reported to be so at the time {@link #netAdd(Object)} was invoked.
-     * <p/>
+     * <p>
      * If you do not exhaust the iterator, you should call
      * {@link org.apache.jena.atlas.iterator.Iter#close(Iterator)} to be sure any
      * open file handles are closed.

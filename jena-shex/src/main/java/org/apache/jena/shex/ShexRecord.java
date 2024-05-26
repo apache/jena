@@ -24,7 +24,7 @@ import org.apache.jena.shex.sys.ShexLib;
 import org.apache.jena.shex.sys.SysShex;
 
 /**
- * {@code ShexShapeRecord} is an entry in a {@linkplain ShexMap} used for both targeting shapes and reporting violations.
+ * {@code ShexShapeRecord} is an entry in a {@linkplain ShapeMap} used for both targeting shapes and reporting violations.
  */
 public class ShexRecord {
 //  node: an RDF node, or a triple pattern which is used to select RDF nodes.

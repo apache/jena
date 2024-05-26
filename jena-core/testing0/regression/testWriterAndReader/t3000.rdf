@@ -1,0 +1,318 @@
+<!-- $Revision: 1.1 $ of $Date: 2005-09-23 05:33:11 $ -->
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+  xmlns:xsd ="http://www.w3.org/2000/10/XMLSchema#"
+  xmlns:dex ="http://www.daml.org/2001/03/daml+oil-ex#"
+  xmlns:exd ="http://www.daml.org/2001/03/daml+oil-ex-dt#"
+  xmlns     ="http://www.daml.org/2001/03/daml+oil-ex#"
+>
+
+<daml:Ontology rdf:about="">
+  <daml:versionInfo>$Id: t3000.rdf,v 1.1 2005-09-23 05:33:11 jeremy_carroll Exp $</daml:versionInfo>
+  <rdfs:comment>
+    An example ontology, with data types taken from XML Schema
+  </rdfs:comment>
+  <daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil"/>
+</daml:Ontology>
+
+<daml:Class rdf:ID="Animal">
+  <rdfs:label>Animal</rdfs:label>
+  <rdfs:comment>
+    This class of animals is illustrative of a number of ontological idioms.
+  </rdfs:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="Male">
+  <rdfs:subClassOf rdf:resource="#Animal"/>
+</daml:Class>
+
+<daml:Class rdf:ID="Female">
+  <rdfs:subClassOf rdf:resource="#Animal"/>
+  <daml:disjointWith rdf:resource="#Male"/>
+</daml:Class>
+
+<daml:Class rdf:ID="Man">
+  <rdfs:subClassOf rdf:resource="#Person"/>
+  <rdfs:subClassOf rdf:resource="#Male"/>
+</daml:Class>
+
+<daml:Class rdf:ID="Woman">
+  <rdfs:subClassOf rdf:resource="#Person"/>
+  <rdfs:subClassOf rdf:resource="#Female"/>
+</daml:Class>
+
+<daml:ObjectProperty rdf:ID="hasParent">
+  <rdfs:domain rdf:resource="#Animal"/>
+  <rdfs:range rdf:resource="#Animal"/>
+</daml:ObjectProperty>
+
+<daml:ObjectProperty rdf:ID="hasFather">
+  <rdfs:subPropertyOf rdf:resource="#hasParent"/>
+  <rdfs:range rdf:resource="#Male"/>
+</daml:ObjectProperty>
+
+<daml:DatatypeProperty rdf:ID="shoesize">
+  <rdfs:comment>
+    shoesize is a DatatypeProperty whose range is xsd:decimal.
+    shoesize is also a UniqueProperty (can only have one shoesize)
+  </rdfs:comment>
+  <rdf:type rdf:resource="http://www.daml.org/2001/03/daml+oil#UniqueProperty"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2000/10/XMLSchema#decimal"/>
+</daml:DatatypeProperty>
+
+<daml:DatatypeProperty rdf:ID="age">
+  <rdfs:comment>
+    age is a DatatypeProperty whose range is xsd:decimal.
+    age is also a UniqueProperty (can only have one age)
+  </rdfs:comment>
+  <rdf:type rdf:resource="http://www.daml.org/2001/03/daml+oil#UniqueProperty"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2000/10/XMLSchema#nonNegativeInteger"/>
+</daml:DatatypeProperty>
+
+<daml:Class rdf:ID="Person" rdf:bagID="TestBag1" >
+  <rdfs:subClassOf rdf:resource="#Animal"/>
+  <rdfs:subClassOf>
+    <daml:Restriction>
+      <daml:onProperty rdf:resource="#hasParent"/>
+      <daml:toClass rdf:resource="#Person"/>
+    </daml:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <daml:Restriction daml:cardinality="1">
+      <daml:onProperty rdf:resource="#hasFather"/>
+    </daml:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <daml:Restriction  rdf:bagID="TestBag2">
+      <daml:onProperty rdf:resource="#shoesize"/>
+      <daml:minCardinality>1</daml:minCardinality>
+    </daml:Restriction>
+  </rdfs:subClassOf>
+</daml:Class>
+
+<daml:Class rdf:about="#Animal">
+  <rdfs:comment>
+    Animals have exactly two parents, ie:
+    If x is an animal, then it has exactly 2 parents 
+    (but it is NOT the case that anything that has 2 parents is an animal).
+  </rdfs:comment>
+  <rdfs:subClassOf>
+    <daml:Restriction daml:cardinality="2">
+      <daml:onProperty rdf:resource="#hasParent"/>
+    </daml:Restriction>
+  </rdfs:subClassOf>
+</daml:Class>
+
+<daml:Class rdf:about="#Person">
+  <rdfs:subClassOf>
+    <daml:Restriction daml:maxCardinality="1">
+      <daml:onProperty rdf:resource="#hasSpouse"/>
+    </daml:Restriction>
+  </rdfs:subClassOf>
+</daml:Class>
+
+<daml:Class rdf:about="#Person">
+  <rdfs:subClassOf>
+    <daml:Restriction daml:maxCardinalityQ="1">
+      <daml:onProperty rdf:resource="#hasOccupation"/>
+      <daml:hasClassQ rdf:resource="#FullTimeOccupation"/>
+    </daml:Restriction>
+  </rdfs:subClassOf>
+</daml:Class>
+
+<daml:UniqueProperty rdf:ID="hasMother">
+  <rdfs:subPropertyOf rdf:resource="#hasParent"/>
+  <rdfs:range rdf:resource="#Female"/>
+</daml:UniqueProperty>
+
+<daml:ObjectProperty rdf:ID="hasChild">
+  <daml:inverseOf rdf:resource="#hasParent"/>
+</daml:ObjectProperty>
+
+<daml:TransitiveProperty rdf:ID="hasAncestor">
+  <rdfs:label>hasAncestor</rdfs:label>
+</daml:TransitiveProperty>
+
+<daml:TransitiveProperty rdf:ID="descendant"/>
+
+<daml:ObjectProperty rdf:ID="hasMom">
+  <daml:samePropertyAs rdf:resource="#hasMother"/>
+</daml:ObjectProperty>
+
+<daml:Class rdf:ID="Car">
+  <rdfs:comment>no car is a person</rdfs:comment>
+  <rdfs:subClassOf>
+    <daml:Class>
+      <daml:complementOf rdf:resource="#Person"/>
+    </daml:Class>
+  </rdfs:subClassOf>
+</daml:Class>
+
+<!-- @@CAVEAT: daml:collection is an extension of RDF 1.0 syntax;
+     don't expect existing tools to support it. 
+     See http://www.daml.org/2001/03/reference.html#collection for details.
+-->
+
+<daml:Class rdf:about="#Person">
+  <rdfs:comment>every person is a man or a woman</rdfs:comment>
+  <daml:disjointUnionOf rdf:parseType="daml:collection">
+    <daml:Class rdf:about="#Man"/>
+    <daml:Class rdf:about="#Woman"/>
+  </daml:disjointUnionOf>
+</daml:Class>
+
+<daml:Class rdf:ID="TallMan">
+  <daml:intersectionOf rdf:parseType="daml:collection">
+    <daml:Class rdf:about="#TallThing"/>
+    <daml:Class rdf:about="#Man"/>
+  </daml:intersectionOf>
+</daml:Class>
+
+<daml:Class rdf:ID="MarriedPerson">
+  <daml:intersectionOf rdf:parseType="daml:collection">
+    <daml:Class rdf:about="#Person"/>
+    <daml:Restriction daml:cardinality="1">
+      <daml:onProperty rdf:resource="#hasSpouse"/>
+    </daml:Restriction>
+  </daml:intersectionOf>
+</daml:Class>
+
+<daml:Class rdf:ID="HumanBeing">
+  <daml:sameClassAs rdf:resource="#Person"/>
+</daml:Class>
+
+<daml:Class rdf:ID="Adult">
+  <daml:intersectionOf rdf:parseType="daml:collection">
+    <daml:Class rdf:about="#Person"/>
+    <daml:Restriction>
+      <daml:onProperty rdf:resource="#age"/>
+      <daml:hasClass rdf:resource="http://www.daml.org/2001/03/daml+oil-ex-dt#over17"/>
+    </daml:Restriction>
+  </daml:intersectionOf>
+</daml:Class>
+
+<daml:Class rdf:ID="Senior">
+  <daml:intersectionOf rdf:parseType="daml:collection">
+    <daml:Class rdf:about="#Person"/>
+    <daml:Restriction>
+      <daml:onProperty rdf:resource="#age"/>
+      <daml:hasClass rdf:resource="http://www.daml.org/2001/03/daml+oil-ex-dt#over59"/>
+    </daml:Restriction>
+  </daml:intersectionOf>
+</daml:Class>
+
+<Person rdf:ID="Adam">
+  <rdfs:label>Adam</rdfs:label>
+  <rdfs:comment>Adam is a person.</rdfs:comment>
+  <age><xsd:integer rdf:value="13"/></age>
+  <shoesize><xsd:decimal rdf:value="9.5"/></shoesize>
+</Person>
+
+<daml:ObjectProperty rdf:ID="hasHeight">
+  <rdfs:range rdf:resource="#Height"/>
+</daml:ObjectProperty>
+
+<daml:Class rdf:ID="Height">
+  <daml:oneOf rdf:parseType="daml:collection">
+    <Height rdf:ID="short"/>
+    <Height rdf:ID="medium"/>
+    <Height rdf:ID="tall"/>
+  </daml:oneOf>
+</daml:Class>
+
+<!-- TallThing is EXACTLY the class of things whose hasHeight is tall -->
+
+<daml:Class rdf:ID="TallThing">
+  <daml:sameClassAs>
+    <daml:Restriction>
+      <daml:onProperty rdf:resource="#hasHeight"/>
+      <daml:hasValue rdf:resource="#tall"/>
+    </daml:Restriction>
+  </daml:sameClassAs>
+</daml:Class>
+
+<daml:DatatypeProperty rdf:ID="shirtsize">
+  <rdfs:comment>
+    shirtsize is a DatatypeProperty whose range is clothingsize.
+  </rdfs:comment>
+  <rdf:type rdf:resource="http://www.daml.org/2001/03/daml+oil#UniqueProperty"/>
+  <rdfs:range rdf:resource="http://www.daml.org/2001/03/daml+oil-ex-dt#clothingsize"/>
+</daml:DatatypeProperty>
+
+<rdfs:Class rdf:ID="BigFoot">
+  <rdfs:comment>
+  BigFoots (BigFeet?) are exactly those persons whose shosize is over12.
+  </rdfs:comment>
+  <daml:intersectionOf rdf:parseType="daml:collection">
+    <rdfs:Class rdf:about="#Person"/>
+    <daml:Restriction>
+      <daml:onProperty rdf:resource="#shoesize"/>
+      <daml:hasClass rdf:resource="http://www.daml.org/2001/03/daml+oil-ex-dt#over12"/>
+    </daml:Restriction>
+  </daml:intersectionOf>
+</rdfs:Class>
+
+<Person rdf:ID="Ian">
+  <rdfs:comment>
+  Ian is an instance of Person. Ian has shoesize 14 and age 37. From
+  the range restrictions we know that these are of type xsd:decimal
+  and xsd:nonNegativeInteger respectively. Ian also has shirtsize 12,
+  the type of which is the union type clothingsize; the discriminating
+  type "string" has been specified, so the value is to be taken as the
+  string "12" rather than the integer 12.  We may be able to infer
+  that Ian is an instance of BigFoot (because 14 is a valid value for
+  xsd:over12).
+  </rdfs:comment>
+  <shoesize>14</shoesize>
+  <age>37</age>
+  <shirtsize><xsd:string rdf:value="12"/></shirtsize>
+</Person>
+
+<Person rdf:ID="Peter">
+  <rdfs:comment>
+  Peter is an instance of Person. Peter has shoesize 9.5 and age 46. From the
+  range restrictions we know that these are of type xsd:decimal and 
+  xsd:nonNegativeInteger respectively. Peter also has shirtsize 15, the type 
+  of which is the union type clothingsize; no discriminating type
+  has been specified, so the value may be either a string or an integer.
+  </rdfs:comment>
+  <shoesize>9.5</shoesize>
+  <age>46</age>
+  <shirtsize>15</shirtsize>
+</Person>
+
+<daml:DatatypeProperty rdf:ID="associatedData">
+  <rdfs:comment>
+  associatedData is a DatatypeProperty without a range restriction.
+  </rdfs:comment>
+</daml:DatatypeProperty>
+
+<daml:Class rdf:about="#Person">
+  <rdfs:comment>
+  Persons have at most 1 item of associatedData
+  </rdfs:comment>
+   <rdfs:subClassOf>
+      <daml:Restriction>
+        <daml:onProperty rdf:resource="#associatedData"/>
+        <daml:maxCardinality>1</daml:maxCardinality>
+      </daml:Restriction>
+   </rdfs:subClassOf>
+</daml:Class>
+
+<Person rdf:ID="Santa">
+  <rdfs:comment>
+  Santa is an instance of Person. Santa has two pieces of
+  associatedData, one of which is the real number 3.14159 and the
+  other of which is the string "3.14159". We may be able to infer a
+  logical inconsistency (because Persons can have at most 1 item of
+  associatedData, and a value cannot be both a string and a real
+  number).
+  </rdfs:comment>
+  <associatedData><xsd:real rdf:value="3.14159"/></associatedData>
+  <associatedData><xsd:string rdf:value="3.14159"/></associatedData>
+</Person>
+
+</rdf:RDF>

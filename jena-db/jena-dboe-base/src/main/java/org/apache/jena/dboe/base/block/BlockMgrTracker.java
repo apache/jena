@@ -18,25 +18,15 @@
 
 package org.apache.jena.dboe.base.block;
 
-import static org.apache.jena.dboe.base.block.BlockMgrTracker.Action.Alloc;
-import static org.apache.jena.dboe.base.block.BlockMgrTracker.Action.BeginRead;
-import static org.apache.jena.dboe.base.block.BlockMgrTracker.Action.BeginUpdate;
-import static org.apache.jena.dboe.base.block.BlockMgrTracker.Action.EndRead;
-import static org.apache.jena.dboe.base.block.BlockMgrTracker.Action.EndUpdate;
-import static org.apache.jena.dboe.base.block.BlockMgrTracker.Action.Free;
-import static org.apache.jena.dboe.base.block.BlockMgrTracker.Action.GetRead;
-import static org.apache.jena.dboe.base.block.BlockMgrTracker.Action.GetWrite;
-import static org.apache.jena.dboe.base.block.BlockMgrTracker.Action.Promote;
-import static org.apache.jena.dboe.base.block.BlockMgrTracker.Action.Release;
-import static org.apache.jena.dboe.base.block.BlockMgrTracker.Action.Write;
+import static org.apache.jena.dboe.base.block.BlockMgrTracker.Action.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.MultiSet;
+import org.apache.commons.collections4.multiset.HashMultiSet;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.dboe.DBOpEnvException;
-import org.apache.jena.ext.com.google.common.collect.HashMultiset;
-import org.apache.jena.ext.com.google.common.collect.Multiset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,8 +45,8 @@ public class BlockMgrTracker /* extends BlockMgrWrapper */ implements BlockMgr {
     // Track and count block references and releases
     // No - the page is dirty.
 
-    protected final Multiset<Long>           activeReadBlocks  = HashMultiset.create();
-    protected final Multiset<Long>           activeWriteBlocks = HashMultiset.create();
+    protected final MultiSet<Long>           activeReadBlocks  = new HashMultiSet<>();
+    protected final MultiSet<Long>           activeWriteBlocks = new HashMultiSet<>();
     // Track the operations
     protected final List<Pair<Action, Long>> actions           = new ArrayList<>();
     // ---- State for tracking
@@ -94,12 +84,6 @@ public class BlockMgrTracker /* extends BlockMgrWrapper */ implements BlockMgr {
     private BlockMgrTracker(String label, BlockMgr blockMgr) {
         this(loggerDefault, label, blockMgr);
     }
-
-    //
-    // public BlockMgrTracker(Class<?> cls, String label, BlockMgr blockMgr)
-    // {
-    // this(LoggerFactory.getLogger(cls), label, blockMgr);
-    // }
 
     private BlockMgrTracker(Logger logger, String label, BlockMgr blockMgr) {
         this.blockMgr = blockMgr;
@@ -345,7 +329,7 @@ public class BlockMgrTracker /* extends BlockMgrWrapper */ implements BlockMgr {
             error(action, "Called outside update and read");
     }
 
-    private void checkEmpty(String string, Multiset<Long> blocks) {
+    private void checkEmpty(String string, MultiSet<Long> blocks) {
         if ( !blocks.isEmpty() ) {
             error(string);
             for ( Long id : blocks )

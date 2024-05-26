@@ -134,6 +134,11 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
     }
 
     @Override
+    public default void visit(OpLateral opLateral) {
+        visit2(opLateral);
+    }
+
+    @Override
     public default void visit(OpConditional opCond) {
         visit2(opCond);
     }

@@ -64,7 +64,6 @@ public class IRIValidatorJSON {
 
             IRI iri = iriFactory.create(iriStr);
 
-
             List<String> errors = new ArrayList<>();
             List<String> warnings = new ArrayList<>();
 

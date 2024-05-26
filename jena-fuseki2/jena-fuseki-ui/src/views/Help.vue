@@ -16,9 +16,9 @@
 -->
 
 <template>
-  <b-container fluid>
-    <b-row class="mt-4">
-      <b-col>
+  <div class="container-fluid">
+    <div class="row mt-4">
+      <div class="col">
         <h1>Fuseki Documentation</h1>
         <p><a href="https://jena.apache.org/documentation/fuseki2/">Apache Jena Fuseki</a></p>
         <h2>Standards</h2>
@@ -28,9 +28,9 @@
           <li><a href="http://www.w3.org/TR/sparql11-protocol/">SPARQL 1.1 Protocol</a></li>
           <li><a href="http://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL 1.1 Graph Store HTTP Protocol</a></li>
         </ul>
-      </b-col>
-    </b-row>
-  </b-container>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

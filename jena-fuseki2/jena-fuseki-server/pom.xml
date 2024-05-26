@@ -25,12 +25,15 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
-    <version>4.6.0-SNAPSHOT</version>
-    <relativePath>../</relativePath>
+    <version>5.1.0-SNAPSHOT</version>
   </parent> 
 
   <packaging>jar</packaging>
   <description>Fuseki server - combined jar with built-in webserver.</description>
+
+  <properties>
+    <automatic.module.name>org.apache.jena.fuseki.server</automatic.module.name>
+  </properties>
 
   <dependencies>
 
@@ -43,13 +46,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-text</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-fuseki-access</artifactId>
-      <version>4.6.0-SNAPSHOT</version>
+      <version>5.1.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -60,7 +63,7 @@
     
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-slf4j-impl</artifactId>
+      <artifactId>log4j-slf4j2-impl</artifactId>
     </dependency>
 
     <dependency>

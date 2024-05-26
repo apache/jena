@@ -37,7 +37,7 @@ public class TestNormalization
     @Test public void normalize_int_09()        { normalize("+00", "0") ; }
     @Test public void normalize_int_10()        { normalize("-0", "0") ; }
     @Test public void normalize_int_11()        { normalize("-000", "0") ; }
-    
+
     // Subtypes of integer
     @Test public void normalize_int_20()        { normalize("'-000'^^xsd:int", "'0'^^xsd:int") ; }
     @Test public void normalize_int_21()        { normalize("'0'^^xsd:int", "'0'^^xsd:int") ; }
@@ -45,7 +45,7 @@ public class TestNormalization
     @Test public void normalize_int_23()        { normalize("'0100'^^xsd:unsignedInt", "'100'^^xsd:unsignedInt") ; }
     @Test public void normalize_int_24()        { normalize("'-100'^^xsd:nonPositiveInteger", "'-100'^^xsd:nonPositiveInteger") ; }
     @Test public void normalize_int_25()        { normalize("'+100'^^xsd:positiveInteger", "'100'^^xsd:positiveInteger") ; }
-    
+
     @Test public void normalize_decimal_01()    { normalize("0.0", "0.0") ; }
     @Test public void normalize_decimal_02()    { normalize("'0'^^xsd:decimal", "0.0") ; }
     @Test public void normalize_decimal_03()    { normalize("1.0", "1.0") ; }
@@ -63,7 +63,7 @@ public class TestNormalization
     @Test public void normalize_decimal_13()    { normalize("-1.000100", "-1.0001") ; }
     @Test public void normalize_decimal_14()    { normalize("'-1'^^xsd:decimal", "-1.0") ; }
     @Test public void normalize_decimal_15()    { normalize("'0'^^xsd:decimal", "0.0") ; }
-    
+
     // Check - what about exponent normalization?
     @Test public void normalize_double_01()     { normalize("1e0", "1.0E0") ; }
     @Test public void normalize_double_02()     { normalize("0e0", "0.0E0") ; }
@@ -79,24 +79,23 @@ public class TestNormalization
     @Test public void normalize_double_15()     { normalize("-12345.6789e+9", "-1.23456789E13") ; }
     @Test public void normalize_double_16()     { normalize("+12345.6789e-9", "1.23456789E-5") ; }
     @Test public void normalize_double_17()     { normalize("-12345.6789e-9", "-1.23456789E-5") ; }
-    
+
     @Test public void normalize_datetime_01()   { normalizeDT("1984-01-01T07:07:07",    "1984-01-01T07:07:07") ; }
     @Test public void normalize_datetime_02()   { normalizeDT("1984-01-01T07:07:07.0",  "1984-01-01T07:07:07") ; }
     @Test public void normalize_datetime_03()   { normalizeDT("1984-01-01T07:07:07.00", "1984-01-01T07:07:07") ; }
     @Test public void normalize_datetime_04()   { normalizeDT("1984-01-01T07:07:07.01", "1984-01-01T07:07:07.01") ; }
     @Test public void normalize_datetime_05()   { normalizeDT("1984-01-01T07:07:07.010","1984-01-01T07:07:07.01") ; }
-    
+
     @Test public void normalize_boolean_01()    { normalize("'true'^^xsd:boolean",  "'true'^^xsd:boolean") ; }
     @Test public void normalize_boolean_02()    { normalize("'false'^^xsd:boolean", "'false'^^xsd:boolean") ; }
     @Test public void normalize_boolean_03()    { normalize("'1'^^xsd:boolean",     "'true'^^xsd:boolean") ; }
     @Test public void normalize_boolean_04()    { normalize("'0'^^xsd:boolean",     "'false'^^xsd:boolean") ; }
-    
+
     @Test public void normalize_lang_01()       { normalizeLang("''", "''") ; }
     @Test public void normalize_lang_02()       { normalizeLang("'abc'", "'abc'") ; }
     @Test public void normalize_lang_03()       { normalizeLang("'abc'@EN", "'abc'@en") ; }
-    @Test public void normalize_lang_04()       { normalizeLang("'abc'@EN-UK", "'abc'@en-UK") ; }
-    @Test public void normalize_lang_05()       { normalizeLang("'abc'@EN", "'abc'@EN", false) ; }
-    @Test public void normalize_lang_06()       { normalizeLang("'abc'@EN-UK", "'abc'@en-uk", false) ; }
+    @Test public void normalize_lang_04()       { normalizeLang("'abc'@EN-GB", "'abc'@en-GB") ; }
+    @Test public void normalize_lang_05()       { normalizeLang("'abc'@EN-LATN-GB", "'abc'@en-Latn-GB") ; }
 
     private static void normalize(String input, String expected) {
         Node n1 = NodeFactoryExtra.parseNode(input);
@@ -111,7 +110,7 @@ public class TestNormalization
 
     private static void normalizeLang(String input, String expected)
     { normalizeLang(input, expected, true) ; }
-    
+
     private static void normalizeLang(String input, String expected, boolean correct) {
         Node n1 = NodeFactoryExtra.parseNode(input);
         Node n2 = CanonicalizeLiteral.get().apply(n1);
@@ -124,7 +123,7 @@ public class TestNormalization
             assertNotEquals("Invalid canonicalization (node)", n3, n2);
         }
     }
-    
+
     private static void normalizeDT(String input, String expected) {
         normalize("'" + input + "'^^xsd:dateTime", "'" + expected + "'^^xsd:dateTime");
     }

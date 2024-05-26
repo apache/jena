@@ -20,7 +20,7 @@ package org.apache.jena.fuseki.access;
 
 import java.util.function.Function;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.servlets.HttpAction;
@@ -49,8 +49,8 @@ class DataAccessLib {
 
     /** Get the {@link AuthorizationService} for an action/query/dataset */
     static AuthorizationService getAuthorizationService(HttpAction action, DatasetGraph dsg) {
-        if ( dsg instanceof DatasetGraphAccessControl )
-            return ((DatasetGraphAccessControl)dsg).getAuthService();
+        if ( dsg instanceof DatasetGraphAccessControl dsgAcc )
+            return dsgAcc.getAuthService();
         return dsg.getContext().get(DataAccessCtl.symAuthorizationService);
     }
 

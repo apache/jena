@@ -32,23 +32,18 @@ public class PlatformInfo {
         long freeMem = Runtime.getRuntime().freeMemory();
         long usedMem = totalMem - freeMem;
         Function<Long, String> f = PlatformInfo::strNum2;
-
         System.out.printf("max=%s  total=%s  used=%s  free=%s\n", f.apply(maxMem), f.apply(totalMem), f.apply(usedMem), f.apply(freeMem));
     }
 
-    /** Essential information about the runtime environment. */
-    public static void logDetails(Logger log) {
-        logDetails(log, "  ");
+    /** System details section */
+    public static void logDetailsSystem(Logger log) {
+        log.info("System");
+        logDetailsSystemPlain(log);
     }
 
-    /**
-     * Essential information about the runtime environment
-     * @param log
-     * @param prefix String to add at the start of the log message.
-     */
-    public static void logDetails(Logger log, String prefix) {
-        if ( prefix == null )
-            prefix = "";
+    /** System details, no section header */
+    public static void logDetailsSystemPlain(Logger log) {
+        String prefix = "  ";
         long maxMem = Runtime.getRuntime().maxMemory();
         long totalMem = Runtime.getRuntime().totalMemory();
         long freeMem = Runtime.getRuntime().freeMemory();
@@ -64,12 +59,10 @@ public class PlatformInfo {
             FmtLog.info(log, "%sPID:    %s", prefix, pid);
     }
 
-    public static void logDetailsVerbose(Logger log) {
-        logDetailsVerbose(log, "  ");
-    }
-
-    public static void logDetailsVerbose(Logger log, String prefix) {
-        logDetails(log);
+    /** JVM details section. */
+    public static void logDetailsJVM(Logger log) {
+        String prefix = "  ";
+        log.info("Java");
         logOne(log, prefix, "java.vendor");
         logOne(log, prefix, "java.home");
         logOne(log, prefix, "java.runtime.version");
@@ -79,38 +72,21 @@ public class PlatformInfo {
         logOne(log, prefix, "user.timezone");
         logOne(log, prefix, "user.country");
         logOne(log, prefix, "user.dir");
-        //logOne(log, "file.encoding");
+        //logOne(log, prefix, "file.encoding");
     }
 
     private static void logOne(Logger log, String prefix, String property) {
+        if ( prefix == null )
+            prefix = "";
         FmtLog.info(log, "%s%-20s = %s", prefix, property, System.getProperty(property));
     }
 
-//    /** Create a human-friendly string for a number based on Kilo/Mega/Giga/Tera (powers of 2) */
-//    public static String strNumMixed(long x) {
-//        // https://en.wikipedia.org/wiki/Kibibyte
-//        if ( x < 1024 )
-//            return Long.toString(x);
-//        if ( x < 1024*1024 )
-//            return String.format("%.1fK", x/1024.0);
-//        if ( x < 1024*1024*1024 )
-//            return String.format("%.1fM", x/(1024.0*1024));
-//        if ( x < 1024L*1024*1024*1024 )
-//            return String.format("%.1fG", x/(1024.0*1024*1024));
-//        return String.format("%.1fT", x/(1024.0*1024*1024*1024));
-//    }
-
     private static long getProcessId() {
-        // Java9
-        //long pid = ProcessHandle.current().getPid();
-        try {
-            String x = java.lang.management.ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
-            return Long.parseLong(x);
-        } catch (NumberFormatException ex) { return -1; }
+        return ProcessHandle.current().pid();
     }
 
     /** Create a human-friendly string for a number based on Kilo/Mega/Giga/Tera (powers of 10) */
-    public static String strNum10(long x) {
+    private static String strNum10(long x) {
         if ( x < 1_000 )
             return Long.toString(x);
         if ( x < 1_000_000 )
@@ -123,7 +99,7 @@ public class PlatformInfo {
     }
 
     /** Create a human-friendly string for a number based on Kibi/Mebi/Gibi/Tebi (powers of 2) */
-    public static String strNum2(long x) {
+    private static String strNum2(long x) {
         // https://en.wikipedia.org/wiki/Kibibyte
         if ( x < 1024 )
             return Long.toString(x);

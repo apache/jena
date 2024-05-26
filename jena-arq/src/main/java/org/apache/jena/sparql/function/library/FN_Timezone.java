@@ -18,18 +18,8 @@
 
 package org.apache.jena.sparql.function.library;
 
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
-import org.apache.jena.sparql.function.FunctionBase0;
-
 /**
  * fn:implicit-timezone
  */
-public class FN_Timezone extends FunctionBase0
-{
-    @Override
-    public NodeValue exec() {
-        return XSDFuncOp.localTimezone(); 
-    }
-}
-
+// Old name in ARQ.
+public class FN_Timezone extends FN_ImplicitTimezone {}

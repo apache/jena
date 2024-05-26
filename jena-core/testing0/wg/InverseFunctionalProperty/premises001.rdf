@@ -1,0 +1,33 @@
+<!--++ InverseFunctionalProperty/premises001.rdf ** generated using webont test editor. ++-->
+<!--++ Created 14 May 2003 18:55:47 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: premises001.rdf,v 1.6 2003-12-05 05:09:25 jeremy_carroll Exp $
+-->
+<!--
+If <code>prop</code> belongs to <code>owl:InverseFunctionalProperty</code>,
+and <code>object</code> denotes a resource
+which is the object of two <code>prop</code> triples, then the <code>subject</code>s
+of these triples have the same denotation.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xmlns:first="http://www.w3.org/2002/03owlt/InverseFunctionalProperty/premises001#" 
+  xml:base="http://www.w3.org/2002/03owlt/InverseFunctionalProperty/premises001" >
+    <owl:InverseFunctionalProperty rdf:ID="prop"/>
+    <rdf:Description rdf:ID="subject1">
+      <first:prop rdf:resource="#object" />
+    </rdf:Description>
+    <rdf:Description rdf:ID="subject2">
+      <first:prop rdf:resource="#object" />
+    </rdf:Description>
+</rdf:RDF>

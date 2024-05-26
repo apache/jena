@@ -22,6 +22,7 @@ import org.apache.jena.shacl.compact.TS_Compact;
 import org.apache.jena.shacl.tests.TestImports;
 import org.apache.jena.shacl.tests.TestValidationReport;
 import org.apache.jena.shacl.tests.ValidationListenerTests;
+import org.apache.jena.shacl.tests.jena_shacl.JenaShaclTestsByCode;
 import org.apache.jena.shacl.tests.jena_shacl.TS_JenaShacl;
 import org.apache.jena.shacl.tests.std.TS_StdSHACL;
 import org.junit.runner.RunWith;
@@ -35,6 +36,7 @@ import org.junit.runners.Suite;
     , TS_Compact.class
     , TestImports.class
     , ValidationListenerTests.class
+    , JenaShaclTestsByCode.class
 } )
 
 public class TC_SHACL { }

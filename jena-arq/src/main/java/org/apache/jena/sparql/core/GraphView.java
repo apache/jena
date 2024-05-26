@@ -23,8 +23,8 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.graph.*;
+import org.apache.jena.graph.impl.AllCapabilities;
 import org.apache.jena.graph.impl.GraphBase ;
-import org.apache.jena.riot.other.G;
 import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.shared.AddDeniedException;
 import org.apache.jena.shared.DeleteDeniedException;
@@ -32,6 +32,7 @@ import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.graph.GraphUnionRead ;
+import org.apache.jena.system.G;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 
@@ -60,7 +61,6 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
     private final DatasetGraph dsg ;
     // null for default graph.
     private final Node graphName ;
-    private final TransactionHandlerView transactionHandler;
 
     // Factory style.
     public static GraphView createDefaultGraph(DatasetGraph dsg)
@@ -75,7 +75,6 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
     protected GraphView(DatasetGraph dsg, Node gn) {
         this.dsg = dsg ;
         this.graphName = gn ;
-        this.transactionHandler = new TransactionHandlerView(dsg);
     }
 
     /**
@@ -196,32 +195,9 @@ public class GraphView extends GraphBase implements NamedGraph, Sync
         return new TransactionHandlerView(dsg);
     }
 
+    private Capabilities capabilities = null;
     @Override
     public Capabilities getCapabilities() {
-        if (capabilities == null)
-            capabilities = new GraphViewCapabilities();
-        return capabilities;
-    }
-
-    protected static class GraphViewCapabilities implements Capabilities {
-        @Override
-        public boolean sizeAccurate() {
-            return true;
-        }
-
-        @Override
-        public boolean addAllowed() {
-            return true;
-        }
-
-        @Override
-        public boolean deleteAllowed() {
-            return true;
-        }
-
-        @Override
-        public boolean handlesLiteralTyping() {
-            return false;
-        }
+        return AllCapabilities.updateAllowed;
     }
 }

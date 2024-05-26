@@ -18,95 +18,90 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 /** General procedure in algebra evaluation (a stored procedure facility)
- *  Syntax (ARQ extension): CALL <iri>(?x, ?y+3)
- *  
+ *  Syntax (ARQ extension): {@code CALL <iri>(?x, ?y+3)}.
+ *
  *  See also the similar algebra form for property functions.  The difference is in argument handling.
  *  A property function has a URI and two argument lists, one for subject, one for objects.
  *  A procedure is a URI and a list of arguments.
  */
 public class OpProcedure extends Op1
 {
-    private Node procId ;
-    private ExprList args = null ;
+    private Node procId;
+    private ExprList args = null;
 
-    public OpProcedure(Node procId, ExprList args, Op op)
-    {
-        super(op) ;   
-        this.args = args ;
-        this.procId = procId ;
+    public OpProcedure(Node procId, ExprList args, Op op) {
+        super(op);
+        this.args = args;
+        this.procId = procId;
     }
-    
-    public OpProcedure(String iri, ExprList args, Op op)
-    {
-        this(NodeFactory.createURI(iri), args, op) ;
-    }
-    
-    @Override
-    public String getName()
-    {
-        return Tags.tagProc ;
+
+    public OpProcedure(String iri, ExprList args, Op op) {
+        this(NodeFactory.createURI(iri), args, op);
     }
 
     @Override
-    public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
-    {
-        if (other == this) return true;
-        if ( ! (other instanceof OpProcedure) ) return false ;
-        OpProcedure proc = (OpProcedure)other ;
-        
-        if ( ! procId.equals(proc.procId) ) return false ;
-        if ( ! args.equals(proc.args) ) return false ;
-        
-        return getSubOp().equalTo(proc.getSubOp(), labelMap) ;
+    public String getName() {
+        return Tags.tagProc;
     }
 
     @Override
-    public int hashCode()
-    {
-        int x = procId.hashCode() ;
-        x ^= args.hashCode() ;
-        x ^= getSubOp().hashCode() ;
-        return x ;
+    public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
+        if ( other == this )
+            return true;
+        if ( !(other instanceof OpProcedure) )
+            return false;
+        OpProcedure proc = (OpProcedure)other;
+
+        if ( !procId.equals(proc.procId) )
+            return false;
+        if ( !args.equals(proc.args) )
+            return false;
+
+        return getSubOp().equalTo(proc.getSubOp(), labelMap);
     }
 
     @Override
-    public void visit(OpVisitor opVisitor)
-    { opVisitor.visit(this) ; }
-
-    @Override
-    public Op apply(Transform transform, Op subOp)
-    {
-        return transform.transform(this, subOp) ;
+    public int hashCode() {
+        int x = procId.hashCode();
+        x ^= args.hashCode();
+        x ^= getSubOp().hashCode();
+        return x;
     }
 
     @Override
-    public Op1 copy(Op subOp)
-    {
-        return new OpProcedure(procId, args, subOp) ;
+    public void visit(OpVisitor opVisitor) {
+        opVisitor.visit(this);
     }
 
-    public Node getProcId()
-    {
-        return procId ;
+    @Override
+    public Op apply(Transform transform, Op subOp) {
+        return transform.transform(this, subOp);
     }
 
-    public String getURI()
-    {
-        return procId.getURI() ;
+    @Override
+    public Op1 copy(Op subOp) {
+        return new OpProcedure(procId, args, subOp);
     }
-    
-    public ExprList getArgs()
-    {
-        return args ;
+
+    public Node getProcId() {
+        return procId;
+    }
+
+    public String getURI() {
+        return procId.getURI();
+    }
+
+    public ExprList getArgs() {
+        return args;
     }
 }

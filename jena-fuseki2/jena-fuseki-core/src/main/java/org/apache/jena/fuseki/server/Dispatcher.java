@@ -26,10 +26,11 @@ import static org.apache.jena.fuseki.server.Operation.Query;
 import static org.apache.jena.fuseki.server.Operation.Update;
 import static org.apache.jena.fuseki.servlets.ActionExecLib.allocHttpAction;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.servlets.*;
@@ -42,13 +43,55 @@ import org.slf4j.Logger;
 /**
  * Dispatch on registered datasets. This is the entry point into Fuseki for dataset
  * operations.
- *
- * Administration operations, and directly registered servlets and static content are
- * called through the usual web server process.
- *
- * HTTP Request URLs, after servlet context removed, take the form {@code /dataset} or {@code /dataset/service}.
- * The most general URL is {@code /context/dataset/service}.
- * The {@link DataAccessPointRegistry} maps {@code /dataset} to a {@link DataAccessPoint}.
+ * <p>
+ * Administration operations, and directly registered servlets and static content,
+ * are called through the usual web server process.
+ * <p>
+ * HTTP Request URLs, after servlet context removed, take the form {@code /dataset}
+ * or {@code /dataset/service}. The most general URL is
+ * {@code /context/dataset/service}. The {@link DataAccessPointRegistry} maps
+ * {@code /dataset} to a {@link DataAccessPoint} which is a name and a
+ * {@linkplain DataService}.
+ * <p>
+ * The dispatch process is:
+ * </p>
+ * <p>
+ * 1. {@linkplain Dispatcher#dispatch} calls
+ * {@linkplain Dispatcher#locateDataAccessPoint} to get the
+ * {@linkplain DataAccessPoint} and calls {@linkplain Dispatcher#process}.
+ * </p>
+ * <p>
+ * 2. {@linkplain Dispatcher#process} create the {@linkplain HttpAction} then calls
+ * {@linkplain Dispatcher#dispatchAction} which calls through to
+ * {@linkplain Dispatcher#chooseProcessor}.
+ * </p>
+ * <p>
+ * 3. {@linkplain Dispatcher#chooseProcessor} does some checking and calls
+ * {@linkplain Dispatcher#chooseEndpoint}.
+ * </p>
+ * <p>
+ * 4. {@linkplain Dispatcher#chooseEndpoint} looks at request, and determines the
+ * {@linkplain EndpointSet}.
+ * </p>
+ * <p>
+ * 5. If there isn't an {@linkplain EndpointSet}, the dispatch process returns.
+ * </p>
+ * <p>
+ * 6. If there is exactly one entry, this is the outcome.
+ * </p>
+ * <p>
+ * 7. If there are multiple choices , {@linkplain Dispatcher#chooseOperation} looks
+ * at request and decides which {@linkplain Operation} is being requested based on
+ * SPARQL operations signatures and Content-Type.
+ * </p>
+ * <p>
+ * 8.There is a default for dispatches with multiple choices that can't be separated
+ * by SPARQL signature. These have no registered Content-type and no query string.
+ * </p>
+ * <p>
+ * A choice by dispatch does not necessarily mean an operation is valid and will be
+ * executed. It may fail authentication or not have a registered handler.
+ * </p>
  */
 public class Dispatcher {
 
@@ -56,30 +99,52 @@ public class Dispatcher {
     private static final boolean LogDispatch = false;
     private static Logger        LOG         = Fuseki.serverLog;
 
+    // Development support
+    private static final boolean DEBUG       = false;
+
     /**
      * Handle an HTTP request if it is sent to a registered dataset.
-     *
+     * <p>
      * Fuseki uses dynamic dispatch, the set of registered datasets can change while
      * the server is running, so dispatch is driven off Fuseki system registries.
-     *
+     * <p>
      * If the request URL matches a registered dataset, process the request, and send
      * the response.
-     *
+     * <p>
      * This function is called by {@link FusekiFilter#doFilter}.
-     *
+     * <p>
      * Returns {@code true} if the request has been handled, including an error response sent,
      * and returns false (no error or response sent) if the request has not been handled.
-     *
+     * <p>
      * This function does not throw exceptions.
+     * <p>
+     * The dispatch process is:
+     * <ul>
+     * <li>Decide the data, based on the request URI ({@link #locateDataAccessPoint(HttpServletRequest, DataAccessPointRegistry)}
+     * <li>Allocate HttpAction ({@link #process}, {@link #dispatchAction}).
+     * <li>Decide service endpoint name ({@link #chooseProcessor})
+     * <li>Decide operation {@link #chooseEndpoint}
+     *   <ul>
+     *   <li>Request parameters - query string (fixed for SPARQL query and SPARQL update) ({@link #chooseOperation})
+     *   <li>Content type  ({@link #chooseOperation})
+     *   <li>Default - quads operation
+     *   </ul>
+     * <li>Allow authentication for the dispatch choice.
+     * </ul>
+     *
      */
     public static boolean dispatch(HttpServletRequest request, HttpServletResponse response) {
         DataAccessPointRegistry registry = DataAccessPointRegistry.get(request.getServletContext());
+        // Use the name to choose a DataAccessPoint.
+        // A DataAccessPoint is a pair of dataset name and DataService.
+        // The DataService may have multiple endpoints.
         DataAccessPoint dap = locateDataAccessPoint(request, registry);
         if ( dap == null ) {
             if ( LogDispatch )
                 LOG.debug("No dispatch for '"+request.getRequestURI()+"'");
             return false;
         }
+        // The execution code is in ActionExecLib.execAction
         return process(dap, request, response);
     }
 
@@ -91,7 +156,7 @@ public class Dispatcher {
      * <p>
      * The second form looks like dataset="path" and service="dataset"
      * We don't know the service until we find the DataAccessPoint.
-     * For /dataset/sparql or /dataset, there is not problem. The latter is too short to be a named service.
+     * For /dataset/sparql or /dataset, there is not a problem. The latter is too short to be a named service.
      * <p>
      * This function chooses the DataAccessPoint.
      * There may not be an endpoint and operation to handle the request.
@@ -110,7 +175,16 @@ public class Dispatcher {
         return dap;
     }
 
+    /**
+     * Identity the Fuseki service for the request
+     */
     /*package:testing*/ static DataAccessPoint locateDataAccessPoint(String uri, DataAccessPointRegistry registry) {
+        // Cases:
+        // /dataset
+        // /dataset/endpoint
+        // /path/.../dataset/
+        // /path/.../dataset/endpoint
+
         // Direct match.
         if ( registry.isRegistered(uri) )
             // Cases: /, /dataset and /path/dataset where /path is not the servlet context path.
@@ -161,6 +235,8 @@ public class Dispatcher {
      * {@link HttpAction}, including access control at the dataset and service levels.
      */
     private static boolean dispatchAction(HttpAction action) {
+        // Pass as a Supplier so that chooseProcessor is inside
+        // the error handling and after the start of the request.
         return ActionExecLib.execAction(action, ()->chooseProcessor(action));
     }
 
@@ -171,18 +247,23 @@ public class Dispatcher {
      *
      * Returning null indicates an HTTP error response, and the HTTP response has been done.
      *
-     * Process
+     * Process:
+     * <ul>
      * <li> mapRequestToEndpointName -> endpoint name
      * <li> chooseEndpoint(action, dataService, endpointName) -> Endpoint.
      * <li> Endpoint to Operation (endpoint carries Operation).
      * <li> target(action, operation) -> ActionProcess.
+     * </ul>
      *
      * @return ActionProcessor or null if the request URI can not be dealt with.
      */
     private static ActionProcessor chooseProcessor(HttpAction action) {
-        // "return null" indicates that processing failed to find a ActionProcessor
+        // "return null" indicates that processing failed to find an ActionProcessor
         DataAccessPoint dataAccessPoint = action.getDataAccessPoint();
         DataService dataService = action.getDataService();
+
+        if ( DEBUG )
+            FmtLog.info(LOG, "Dispatch: "+ dataAccessPoint.getName());
 
         if ( !dataService.isAcceptingRequests() ) {
             ServletOps.error(HttpSC.SERVICE_UNAVAILABLE_503, "Dataset not currently active");
@@ -191,41 +272,34 @@ public class Dispatcher {
 
         // ---- Determine Endpoint.
         String endpointName = mapRequestToEndpointName(action, dataAccessPoint);
+        if ( DEBUG )
+            FmtLog.info(LOG, "Dispatch: endpointName: "+ endpointName);
+
         // Main step of choosing the endpoint for the dispatch of the request.
         // An endpoint is a (name, operation).
         // There may be multiple operations for an endpointName of this data service.
 
         Endpoint endpoint = chooseEndpoint(action, dataService, endpointName);
-        if ( endpoint == null )
+        if ( endpoint == null ) {
+            if ( DEBUG )
+                FmtLog.info(LOG, "Dispatch: no endpoint");
             // Includes named service, no such endpoint.
             // Allows for resources under /dataset/
             // The request will pass on down the filter/servlet chain.
             return null;
+        }
 
         Operation operation = endpoint.getOperation();
         if ( operation == null ) {
             ServletOps.errorNotFound("No operation: "+action.getActionURI());
             return null;
         }
+        if ( DEBUG )
+            FmtLog.info(LOG, "Dispatch: endpoint operation: "+ operation);
 
         action.setEndpoint(endpoint);
 
-        // ---- Authorization
-        // -- Server-level authorization.
-        // Checking was carried out by servlet filter AuthFilter.
-        // Need to check Data service and endpoint authorization policies.
-        String user = action.getUser();
-
-        // -- Data service level authorization
-        if ( dataService.authPolicy() != null ) {
-            if ( ! dataService.authPolicy().isAllowed(user) )
-                ServletOps.errorForbidden();
-        }
-
-        // -- Endpoint level authorization
-        // Make sure all contribute authentication.
-        Auth.allow(user, action.getEndpoint().getAuthPolicy(), ServletOps::errorForbidden);
-        // ---- Authorization checking.
+        applyAuthentication(action.getUser(), dataService, endpoint);
 
         // ---- Handler.
         // Decide the code to execute the request.
@@ -264,25 +338,22 @@ public class Dispatcher {
         }
 
         // If there is one endpoint, dispatch there directly.
-        Endpoint ep = epSet.getExactlyOne();
-        if ( ep != null )
+        Endpoint ep1 = epSet.getExactlyOne();
+        if ( ep1 != null )
             // Single dispatch, may not be valid.
-            return ep;
-        // No single direct dispatch. Multiple choices (different operation, same endpoint name)
-        // Work out which operation we are looking for.
-        Operation operation = chooseOperation(action);
-        ep = epSet.get(operation);
-        if ( ep == null ) {
-            if ( GSP_R.equals(operation) )
-                // If asking for GSP_R, and GSP_RW available, pass that back.
-                ep = epSet.get(GSP_RW); // [GSP Promote]
-            else if ( GSP_RW.equals(operation) ) {
-                // If asking for GSP_RW, only GSP_R available -> 405.
-                if ( epSet.contains(GSP_R) )
-                    ServletOps.errorMethodNotAllowed(action.getMethod());
-            }
-        }
+            return ep1;
 
+        // No single direct dispatch. Multiple choices (different operation, same endpoint name)
+        // Work out which operation we are looking for based on SPARQL characteristics.
+        Operation operation = chooseOperation(action, epSet);
+
+        // Special case for GSP_R/GSP_RW
+        if ( operation != null )
+            // May cause 405.
+            operation = mapGSP(action, operation, epSet);
+        if ( operation == null )
+            ServletOps.errorBadRequest("No operation for request: "+action.getActionURI());
+        Endpoint ep = epSet.get(operation);
         // There are multiple endpoints; if none are suitable, then 400.
         if ( ep == null )
             ServletOps.errorBadRequest("No operation for request: "+action.getActionURI());
@@ -290,20 +361,60 @@ public class Dispatcher {
     }
 
     /**
-     * Identify the operation being requested.
-     * It is analysing the HTTP request using global configuration.
-     * The decision is based on
+     * Special case : GSP.
+     * <p>
+     * It is special because the two forms, GSP_R and GSP_RW overlap. GSP_RW can
+     * service GSP_R methods (GET and HEAD). It is also special because there is a
+     * different sattus code for attempting to write to GSP_R.
+     * <p>
+     * If this EndpointSet does not have exactly right operation:
+     * <ul>
+     * <li>If request is GSP_R, then if the EndpointSet has GSP_RW use that,
+     *     else no operation.
+     * <li>If request is GSP_RW, and the method is OPTIONS, redirect to
+     *     GSP_R if available.
+     * <li>If request is GSP_RW, and it is POST, PUT, DELETE, when only
+     *     GSP_R is available, reject 405 "method not allowed".
+     * </ul>
+     */
+    private static Operation mapGSP(HttpAction action, Operation operation, EndpointSet epSet) {
+        // Get the endpoint
+        Endpoint ep = epSet.get(operation);
+        if ( ep == null ) {
+            if ( GSP_R.equals(operation) ) {
+                // If asking for GSP_R, and GSP_RW is available, use GSP_RW.
+                if ( epSet.contains(GSP_RW) )
+                    return GSP_RW;
+            } else if ( GSP_RW.equals(operation) ) {
+                // If asking for GSP_RW, but only GSP_R is available ...
+                // ... if OPTIONS, use GSP_R.
+                if ( action.getMethod().equals(HttpNames.METHOD_OPTIONS) && epSet.contains(GSP_R) )
+                        return GSP_R;
+                // ... else 405
+                if ( epSet.contains(GSP_R) )
+                    ServletOps.errorMethodNotAllowed(action.getMethod());
+            }
+        }
+        return operation;
+    }
+
+    /**
+     * Identify the operation being requested. It is analysing the HTTP request using
+     * global configuration. The decision is based on
      * <ul>
      * <li>HTTP query string parameters (URL query string or HTML form)</li>
      * <li>Registered Content-Type header</li>
      * <li>Otherwise it is a plain REST (quads)</li>
      * </ul>
-     * The HTTP Method is not considered.
+     * The configured endpoints is not considered.
+     * This affects GSP. For read methods return GSP_R, and for changes return GSP_RW.
+     * The dispatcher will map GSP_R to GSP_RW when only GSP_RW is available.
      * <p>
      * The operation is not guaranteed to be supported on every {@link DataService}
      * nor that access control will allow it to be performed.
      */
-    private static Operation chooseOperation(HttpAction action) {
+    private static Operation chooseOperation(HttpAction action, EndpointSet epSet) {
+        // which is a DispatchFunction.
         HttpServletRequest request = action.getRequest();
 
         // ---- Dispatch based on HttpParams : Query, Update, GSP.
@@ -364,8 +475,34 @@ public class Dispatcher {
         }
 
         // ---- No registered content type, no query parameters.
-        // Plain HTTP operation on the dataset handled as quads or rejected.
-        return quadsOperation(action, request);
+        // Plain HTTP operation on the dataset.
+        DispatchFunction selectOperation = action.getDataService().getDefaultOperationChooser();
+        if ( selectOperation == null )
+            // Default is a quads operation.
+            selectOperation = Dispatcher::selectPlainOperation;
+        return selectOperation.selectOperation(action, epSet);
+    }
+
+    /**
+     * This is a system default {@link DispatchFunction}.
+     */
+    public static Operation selectPlainOperation(HttpAction action, EndpointSet epSet) {
+        return gspOperation(action, action.getRequest());
+    }
+
+    /**
+     * Having chosen the data service and the endpoint, check the user request is permitted.
+     * {@link AuthFilter} has already checked the server-level authorization.
+     */
+    private static void applyAuthentication(String user, DataService dataService, Endpoint endpoint) {
+        // -- Server-level authorization.
+        // AuthFilter.
+
+        // -- Data service level authorization
+        Auth.allow(user, dataService.authPolicy(), ServletOps::errorForbidden);
+
+        // -- Endpoint level authorization
+        Auth.allow(user, endpoint.getAuthPolicy(), ServletOps::errorForbidden);
     }
 
     /**
@@ -374,27 +511,13 @@ public class Dispatcher {
      * Assumes, and does not check, that the action is a GSP action.
      */
     private static Operation gspOperation(HttpAction action, HttpServletRequest request) {
-        // Check enabled.
-        if ( isReadMethod(request) )
-            return GSP_R;
-        else
-            return GSP_RW;
+        return isReadMethod(request) ? GSP_R : GSP_RW;
     }
 
     /**
-     * Determine the {@link Operation} for a Quads operation. (GSP, except on the
-     * whole dataset).
-     * <p>
-     * Assumes, and does not check, that the action is a Quads action.
+     * Return whether request method is a "read" (GET or HEAD) or "write", modifying
+     * (POST, PUT, DELETE, PATCH)
      */
-    private static Operation quadsOperation(HttpAction action, HttpServletRequest request) {
-        // Check enabled. Extends GSP.
-        if ( isReadMethod(request) )
-            return GSP_R;
-        else
-            return GSP_RW;
-    }
-
     private static boolean isReadMethod(HttpServletRequest request) {
         String method = request.getMethod();
         // REST dataset.

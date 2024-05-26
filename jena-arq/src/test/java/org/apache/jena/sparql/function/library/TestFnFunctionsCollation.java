@@ -50,7 +50,7 @@ public class TestFnFunctionsCollation {
         nodeValues.sort((NodeValue o1, NodeValue o2) -> NodeValue.compare(o1, o2));
         List<String> result = new LinkedList<>();
         for ( NodeValue nv : nodeValues ) {
-            String s = nv.getNode().getLiteralLexicalForm();
+            String s = nv.asNode().getLiteralLexicalForm();
             result.add(s);
         }
         assertArrayEquals(ordered, result.toArray(new String[0]));

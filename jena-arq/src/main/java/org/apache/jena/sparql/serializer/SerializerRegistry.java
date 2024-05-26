@@ -81,15 +81,15 @@ public class SerializerRegistry {
 
             @Override
             public boolean accept(Syntax syntax) {
-                // Since ARQ syntax is a super set of SPARQL 1.1 both SPARQL 1.0
-                // and SPARQL 1.1 can be serialized by the same serializer
+                // Since ARQ syntax is a super set of SPARQL only need one serializer
                 return Syntax.syntaxARQ.equals(syntax) || Syntax.syntaxSPARQL_10.equals(syntax)
-                        || Syntax.syntaxSPARQL_11.equals(syntax);
+                        || Syntax.syntaxSPARQL_11.equals(syntax) || Syntax.syntaxSPARQL_12.equals(syntax);
             }
         };
         reg.addQuerySerializer(Syntax.syntaxARQ, arqQuerySerializerFactory);
         reg.addQuerySerializer(Syntax.syntaxSPARQL_10, arqQuerySerializerFactory);
         reg.addQuerySerializer(Syntax.syntaxSPARQL_11, arqQuerySerializerFactory);
+        reg.addQuerySerializer(Syntax.syntaxSPARQL_12, arqQuerySerializerFactory);
 
         UpdateSerializerFactory arqUpdateSerializerFactory = new UpdateSerializerFactory() {
 
@@ -104,15 +104,14 @@ public class SerializerRegistry {
 
             @Override
             public boolean accept(Syntax syntax) {
-                // Since ARQ syntax is a super set of SPARQL 1.1 both SPARQL 1.0
-                // and SPARQL 1.1 can be serialized by the same serializer
                 return Syntax.syntaxARQ.equals(syntax) || Syntax.syntaxSPARQL_10.equals(syntax)
-                        || Syntax.syntaxSPARQL_11.equals(syntax);
+                        || Syntax.syntaxSPARQL_11.equals(syntax) || Syntax.syntaxSPARQL_12.equals(syntax);
             }
         };
         reg.addUpdateSerializer(Syntax.syntaxARQ, arqUpdateSerializerFactory);
         reg.addUpdateSerializer(Syntax.syntaxSPARQL_10, arqUpdateSerializerFactory);
         reg.addUpdateSerializer(Syntax.syntaxSPARQL_11, arqUpdateSerializerFactory);
+        reg.addUpdateSerializer(Syntax.syntaxSPARQL_12, arqUpdateSerializerFactory);
 
         registry = reg;
     }

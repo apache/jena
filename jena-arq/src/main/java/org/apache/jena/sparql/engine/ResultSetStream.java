@@ -21,6 +21,7 @@ package org.apache.jena.sparql.engine;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.query.QuerySolution;
@@ -55,13 +56,6 @@ public class ResultSetStream implements ResultSet
     public static ResultSet create(List<Var> resultVars, Iterator<Binding> iter) {
         return ResultSet.adapt(RowSetStream.create(resultVars, iter));
     }
-
-    /** @deprecated Use {@link #create} */
-    @Deprecated
-    public ResultSetStream(List<String> resultVars, Model m, Iterator<Binding> iter) {
-        this(57, resultVars, m, iter);
-    }
-
 
     protected ResultSetStream(int dummy, List<String> resultVars, Model m, Iterator<Binding> iter) {
         this.queryExecutionIter = iter;
@@ -124,6 +118,17 @@ public class ResultSetStream implements ResultSet
 
     @Override
     public QuerySolution next() { return nextSolution(); }
+
+    @Override
+    public void forEachRemaining(Consumer<? super QuerySolution> action) {
+        if ( queryExecutionIter == null )
+            return;
+        queryExecutionIter.forEachRemaining(binding -> {
+            rowNumber++;
+            action.accept(new ResultBinding(model, binding));
+        });
+        close();
+    }
 
     /** Return the "row number" - a count of the number of possibilities returned so far.
      *  Remains valid (as the total number of possibilities) after the iterator ends.

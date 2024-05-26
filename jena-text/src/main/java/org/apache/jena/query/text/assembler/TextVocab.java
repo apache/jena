@@ -20,7 +20,7 @@ package org.apache.jena.query.text.assembler;
 
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.tdb.assembler.Vocab ;
+import org.apache.jena.system.Vocab ;
 
 public class TextVocab
 {
@@ -83,7 +83,7 @@ public class TextVocab
      *
      * @deprecated Do not use. To be removed.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static final Resource standardFilter = Vocab.resource(NS, "StandardFilter");
 
     public static final Resource lowerCaseFilter    = Vocab.resource(NS, "LowerCaseFilter");

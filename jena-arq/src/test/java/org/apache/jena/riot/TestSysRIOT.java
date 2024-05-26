@@ -18,13 +18,12 @@
 
 package org.apache.jena.riot;
 
-import java.util.Locale;
+import static org.apache.jena.atlas.lib.Lib.lowercase;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.base.Sys;
 import org.junit.Assert;
 import org.junit.Test;
-import org.python.google.common.base.Predicate;
 
 public class TestSysRIOT {
     @Test
@@ -42,7 +41,7 @@ public class TestSysRIOT {
     public void chooseBaseIRI_3() {
         if ( Sys.isWindows ) {
             if ( IO.exists("c:/") )
-                testChooseBaseIRI("c:", s->s.toLowerCase(Locale.ROOT).startsWith("file:///c:/"));
+                testChooseBaseIRI_windows("c:/", "file:///c:/");
         } else
             testChooseBaseIRI("x:", "x:");
     }
@@ -51,23 +50,29 @@ public class TestSysRIOT {
     public void chooseBaseIRI_4() {
         if ( Sys.isWindows ) {
             if ( IO.exists("c:/") )
-                testChooseBaseIRI("c:", s->s.toLowerCase(Locale.ROOT).startsWith("file:///c:/"));
+                testChooseBaseIRI_windows("c:", "file:///c:");
         } else
             testChooseBaseIRI("x:/", "x:/");
     }
 
     @Test
     public void chooseBaseIRI_10() {
-        testChooseBaseIRI("foo", s->s.startsWith("file:///"));
+        String x = SysRIOT.chooseBaseIRI(null, "foo");
+        Assert.assertTrue(x.startsWith("file:///"));
     }
 
     private void testChooseBaseIRI(String input, String expected) {
         String x = SysRIOT.chooseBaseIRI(null, input);
         Assert.assertEquals(expected, x);
     }
-    
-    private void testChooseBaseIRI(String input, Predicate<String> test) {
+
+    private void testChooseBaseIRI_windows(String input, String prefix) {
         String x = SysRIOT.chooseBaseIRI(null, input);
-        Assert.assertTrue(test.apply(x));
+        String x1 = lowercase(x);
+        boolean b = x1.startsWith(prefix);
+        if ( ! b )
+            System.out.printf("Input: %s => (prefix(%s)  A:%s)=\n", input, prefix, x1);
+        // drive letters can be uppercase.
+        Assert.assertTrue(x1.startsWith(prefix));
     }
 }

@@ -22,7 +22,10 @@ import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.sse.SSE;
 import org.junit.Test;
 
+import java.math.BigInteger;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TestNV {
 
@@ -58,7 +61,15 @@ public class TestNV {
         assertEquals(nv.getLabel(), nv.getValue());
         assertEquals("BlankNode", nv.getTermType());
     }
-    
+
+    @Test public void nv_14() {
+        String largeInteger = "1" + "0".repeat(22);
+        NodeValue nodeValue = NV.toNodeValue(new BigInteger(largeInteger).doubleValue());
+        NV nv = new NV(nodeValue);
+        assertEquals(largeInteger, nv.getValue());
+        assertTrue("is a number", nv.isNumber());
+    }
+
     private void test(String str) {
         NodeValue nv = nv(str);
         Object x = NV.fromNodeValue(nv);

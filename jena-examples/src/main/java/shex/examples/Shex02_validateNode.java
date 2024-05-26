@@ -32,7 +32,7 @@ public class Shex02_validateNode {
 
     public static void main(String ...args) {
         String SHAPES = "examples/schema.shex";
-        String SHAPES_MAP = "examples/shape-map.shexmap";
+        String SHAPES_MAP = "examples/shape-map.smap";
         String DATA = "examples/data.ttl";
 
         System.out.println("Read data");
@@ -43,7 +43,7 @@ public class Shex02_validateNode {
 
         // Shapes map.
         System.out.println("Read shapes map");
-        ShexMap shapeMap = Shex.readShapeMap(SHAPES_MAP);
+        ShapeMap shapeMap = Shex.readShapeMap(SHAPES_MAP);
 
         Node data1 = NodeFactory.createURI("http://example/x");
         Node data2 = NodeFactory.createURI("http://example/s");

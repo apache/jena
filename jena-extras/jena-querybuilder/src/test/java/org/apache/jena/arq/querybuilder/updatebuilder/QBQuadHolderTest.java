@@ -44,13 +44,13 @@ public class QBQuadHolderTest {
         Node s = NodeFactory.createURI("s");
         Node p = NodeFactory.createURI("p");
         Node o = NodeFactory.createURI("o");
-        tLst.add(new Triple(s, p, o));
+        tLst.add(Triple.create(s, p, o));
         builder.addWhere(s, p, o);
 
         Node s2 = NodeFactory.createURI("s2");
         Node p2 = NodeFactory.createURI("p2");
         Node o2 = NodeFactory.createURI("o2");
-        tLst.add(new Triple(s2, p2, o2));
+        tLst.add(Triple.create(s2, p2, o2));
         builder.addWhere(s2, p2, o2);
 
         holder = new QBQuadHolder(builder);
@@ -74,8 +74,8 @@ public class QBQuadHolderTest {
         Node s2 = NodeFactory.createURI("s2");
         Node p2 = NodeFactory.createURI("p2");
         Node o2 = NodeFactory.createURI("o2");
-        tLst.add(new Triple(s, p2, o));
-        tLst.add(new Triple(s2, p2, o2));
+        tLst.add(Triple.create(s, p2, o));
+        tLst.add(Triple.create(s2, p2, o2));
         builder.addWhere(s2, p, o2);
 
         holder = new QBQuadHolder(builder);
@@ -100,13 +100,13 @@ public class QBQuadHolderTest {
         Node s = NodeFactory.createURI("s");
         Node p = NodeFactory.createURI("p");
         Node o = NodeFactory.createURI("o");
-        tLst.add(new Triple(s, p, o));
+        tLst.add(Triple.create(s, p, o));
         builder.addGraph(g, s, p, o);
 
         Node s2 = NodeFactory.createURI("s2");
         Node p2 = NodeFactory.createURI("p2");
         Node o2 = NodeFactory.createURI("o2");
-        tLst.add(new Triple(s2, p2, o2));
+        tLst.add(Triple.create(s2, p2, o2));
 
         builder.addGraph(g, s2, p2, o2);
 
@@ -133,8 +133,8 @@ public class QBQuadHolderTest {
         Node s2 = NodeFactory.createURI("s2");
         Node p2 = NodeFactory.createURI("p2");
         Node o2 = NodeFactory.createURI("o2");
-        tLst.add(new Triple(s, p2, o));
-        tLst.add(new Triple(s2, p2, o2));
+        tLst.add(Triple.create(s, p2, o));
+        tLst.add(Triple.create(s2, p2, o2));
 
         builder.addGraph(g, s2, p, o2);
 
@@ -158,14 +158,14 @@ public class QBQuadHolderTest {
         Node s = NodeFactory.createURI("s");
         Node p = NodeFactory.createURI("p");
         Node o = NodeFactory.createURI("o");
-        tLst.add(new Triple(s, p, o));
+        tLst.add(Triple.create(s, p, o));
         builder.addWhere(s, p, o);
 
         Node g = NodeFactory.createURI("g");
         Node s2 = NodeFactory.createURI("s2");
         Node p2 = NodeFactory.createURI("p2");
         Node o2 = NodeFactory.createURI("o2");
-        tLst.add(new Triple(s2, p2, o2));
+        tLst.add(Triple.create(s2, p2, o2));
 
         builder.addGraph(g, s2, p2, o2);
 
@@ -191,8 +191,8 @@ public class QBQuadHolderTest {
         Node s2 = NodeFactory.createURI("s2");
         Node p2 = NodeFactory.createURI("p2");
         Node o2 = NodeFactory.createURI("o2");
-        tLst.add(new Triple(s, p2, o));
-        tLst.add(new Triple(s2, p2, o2));
+        tLst.add(Triple.create(s, p2, o));
+        tLst.add(Triple.create(s2, p2, o2));
 
         builder.addGraph(g, s2, p, o2);
 

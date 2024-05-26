@@ -18,55 +18,50 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.sparql.engine.ExecutionContext ;
-import org.apache.jena.sparql.engine.QueryIterator ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.expr.ExprException ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.util.ExprUtils ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.expr.ExprException;
+import org.apache.jena.sparql.serializer.SerializationContext;
+import org.apache.jena.sparql.util.ExprUtils;
 
-/** 
- *  Filter a stream of bindings by a constraint. */
+/**
+ * Filter a stream of bindings by a constraint.
+ */
 
-public class QueryIterFilterExpr extends QueryIterProcessBinding
-{
-    private final Expr expr ;
-    
-    public QueryIterFilterExpr(QueryIterator input, Expr expr, ExecutionContext context)
-    {
-        super(input, context) ;
-        this.expr = expr ;
+public class QueryIterFilterExpr extends QueryIterProcessBinding {
+    private final Expr expr;
+
+    public QueryIterFilterExpr(QueryIterator input, Expr expr, ExecutionContext context) {
+        super(input, context);
+        this.expr = expr;
     }
-    
+
     @Override
-    public Binding accept(Binding binding)
-    {
+    public Binding accept(Binding binding) {
         try {
+            // ExprNode.isSatisfied converts exceptions to ExprEvalException
             if ( expr.isSatisfied(binding, super.getExecContext()) )
-                return binding ;
-            return null ;
-        } catch (ExprException ex)
-        { // Some evaluation exception
-            Log.warn(this, "Expression Exception in "+expr, ex) ;
-            return null ;
-        }
-        catch (Exception ex)
-        {
-            Log.warn(this, "General exception in "+expr, ex) ;
-            return null ;
+                return binding;
+            return null;
+        } catch (ExprException ex) {
+            // Some evaluation exception: should not happen.
+            Log.warn(this, "Expression Exception in " + expr, ex);
+            return null;
+        } catch (Exception ex) {
+            Log.warn(this, "General exception in " + expr, ex);
+            return null;
         }
     }
 
     @Override
-    protected void details(IndentedWriter out, SerializationContext cxt)
-    { 
-        out.print(Lib.className(this)) ;
-        out.print(" ") ;
-        ExprUtils.fmtSPARQL(out, expr, cxt) ;
+    protected void details(IndentedWriter out, SerializationContext cxt) {
+        out.print(Lib.className(this));
+        out.print(" ");
+        ExprUtils.fmtSPARQL(out, expr, cxt);
     }
-       
 }

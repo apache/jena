@@ -19,6 +19,7 @@
 package org.apache.jena.util.iterator;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
     A MapFilterIterator takes a MapFilter and an [Extended]Iterator and returns a new 
@@ -90,5 +91,21 @@ public class MapFilterIterator<T,X> extends NiceIterator<X> implements ExtendedI
             return r;
         }
         throw new NoSuchElementException();
+    }
+
+    @Override
+    synchronized public void forEachRemaining(Consumer<? super X> action) {
+        if(dead)
+            return;
+        if(current != null) {
+            action.accept(current);
+            current = null;
+        }
+        underlying.forEachRemaining( x -> {
+            X y = f.accept(x);
+            if(y != null)
+                action.accept(y);
+        });
+        dead = true;
     }
 }

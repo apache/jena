@@ -20,14 +20,14 @@ package tdb.xloader;
 
 import org.apache.jena.atlas.logging.LogCtl ;
 import org.apache.jena.sys.JenaSystem ;
-import org.apache.jena.tdb.store.xloader.ProcIndexBuild;
+import org.apache.jena.tdb1.store.xloader.ProcIndexBuild;
 
 public class CmdIndexBuild {
     static {
         LogCtl.setLogging();
         JenaSystem.init();
     }
-    
+
     public static void main(String... argv) {
         // DATA IN S/P/O columns but sorted by index order.
 
@@ -38,15 +38,15 @@ public class CmdIndexBuild {
 
         String locationStr = argv[0];
         String indexName = argv[1];
-        
+
 //        if ( ! Arrays.asList(Names.tripleIndexes).contains(indexName) &&
 //            ! Arrays.asList(Names.quadIndexes).contains(indexName) )
 //        {
 //            System.err.println("Index name not recognized: "+indexName) ;
 //            System.exit(1) ;
 //        }
-            
-        String dataFile = argv[2] ;
+
+        String dataFile = argv[2];
         ProcIndexBuild.exec(locationStr, indexName, dataFile);
     }
 }

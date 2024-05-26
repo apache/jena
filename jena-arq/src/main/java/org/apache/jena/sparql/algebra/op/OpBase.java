@@ -18,63 +18,63 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.serializer.SerializationContext ;
-import org.apache.jena.sparql.sse.writers.WriterOp ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
-import org.apache.jena.sparql.util.PrintSerializableBase ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.serializer.SerializationContext;
+import org.apache.jena.sparql.sse.writers.WriterOp;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
+import org.apache.jena.sparql.util.PrintSerializableBase;
 
 public abstract class OpBase extends PrintSerializableBase implements Op
 {
     @Override
-    public abstract int hashCode() ;
+    public abstract int hashCode();
     @Override
-    public abstract boolean equalTo(Op other, NodeIsomorphismMap labelMap) ;
+    public abstract boolean equalTo(Op other, NodeIsomorphismMap labelMap);
 
     @Override
     final public boolean equals(Object other)
     { 
         if ( other == null ) return false;
-        if ( this == other ) return true ;
+        if ( this == other ) return true;
 
         if ( ! ( other instanceof Op ) )
-            return false ;
-        return equalTo((Op)other, null) ;
+            return false;
+        return equalTo((Op)other, null);
     }
 
     @Override
     public void output(IndentedWriter out)
     {
-        output(out, null) ;
+        output(out, null);
     }
 
     @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
-        int line = out.getRow() ;
-        WriterOp.output(out, this, sCxt) ;
+        int line = out.getRow();
+        WriterOp.output(out, this, sCxt);
         if ( line != out.getRow() )
-            out.ensureStartOfLine() ;
+            out.ensureStartOfLine();
     }
 
     // Constants used in hashing to stop an element and it's sub-element
     // (if just one) having the same hash.  That isn't usually any problem but
     // it's easy to avoid so we do.
     
-    static final int HashBasicGraphPattern      = 0xB1 ;
-//    static final int HashGroup                = 0xB2 ;
-//    static final int HashUnion                = 0xB3 ;
-//    static final int HashLeftJoin             = 0xB4 ;
-    static final int HashDistinct               = 0xB5 ;
-    static final int HashReduced                = 0xB5 ;
-    static final int HashToList                 = 0xB6 ;
-    static final int HashNull                   = 0xB7 ;
-    static final int HashSequence               = 0xB8 ;
-    static final int HashLabel                  = 0xB9 ;
-    static final int HashTriple                 = 0xBA ;
-    static final int HashQuad                   = 0xBB ;
-    static final int HashQuadBlock              = 0xBC ;
+    static final int HashBasicGraphPattern      = 0xB1;
+//    static final int HashGroup                = 0xB2;
+//    static final int HashUnion                = 0xB3;
+//    static final int HashLeftJoin             = 0xB4;
+    static final int HashDistinct               = 0xB5;
+    static final int HashReduced                = 0xB5;
+    static final int HashToList                 = 0xB6;
+    static final int HashNull                   = 0xB7;
+    static final int HashSequence               = 0xB8;
+    static final int HashLabel                  = 0xB9;
+    static final int HashTriple                 = 0xBA;
+    static final int HashQuad                   = 0xBB;
+    static final int HashQuadBlock              = 0xBC;
 
 
 }

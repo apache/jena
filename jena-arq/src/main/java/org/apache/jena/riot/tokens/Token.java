@@ -402,9 +402,9 @@ public final class Token
                 return NodeFactory.createLiteral(lexToken.getImage(), dt);
             }
             case LITERAL_LANG :
-                return NodeFactory.createLiteral(tokenImage, tokenImage2);
+                return NodeFactory.createLiteralLang(tokenImage, tokenImage2);
             case STRING :
-                return NodeFactory.createLiteral(tokenImage);
+                return NodeFactory.createLiteralString(tokenImage);
             case VAR :
                 return Var.alloc(tokenImage);
             case KEYWORD :
@@ -432,9 +432,8 @@ public final class Token
 
     @Override
     public boolean equals(Object other) {
-        if ( !(other instanceof Token) )
+        if ( !(other instanceof Token t) )
             return false;
-        Token t = (Token)other;
         return Objects.equals(tokenType, t.tokenType) && Objects.equals(tokenImage, t.tokenImage)
                && Objects.equals(tokenImage2, t.tokenImage2) && Objects.equals(cntrlCode, t.cntrlCode);
     }

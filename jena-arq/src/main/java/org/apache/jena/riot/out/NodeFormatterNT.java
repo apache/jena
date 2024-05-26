@@ -18,26 +18,26 @@
 
 package org.apache.jena.riot.out;
 
-import org.apache.jena.atlas.io.AWriter ;
-import org.apache.jena.atlas.lib.CharSpace ;
-import org.apache.jena.atlas.lib.EscapeStr ;
-import org.apache.jena.riot.out.quoted.QuotedStringOutput ;
-import org.apache.jena.riot.out.quoted.QuotedStringOutputNT ;
-import org.apache.jena.riot.out.quoted.QuotedURI ;
+import org.apache.jena.atlas.io.AWriter;
+import org.apache.jena.atlas.lib.CharSpace;
+import org.apache.jena.atlas.lib.EscapeStr;
+import org.apache.jena.riot.out.quoted.QuotedStringOutput;
+import org.apache.jena.riot.out.quoted.QuotedStringOutputNT;
+import org.apache.jena.riot.out.quoted.QuotedURI;
 
 public class NodeFormatterNT extends NodeFormatterBase
 {
     // Formatting for NTriples
     // Turtles extends this class to intercept forms it can do better.
 
-    private final QuotedStringOutput quotedStringProc ;
-    private final QuotedURI quotedUriProc ;
+    private final QuotedStringOutput quotedStringProc;
+    private final QuotedURI quotedUriProc;
 
-    public NodeFormatterNT() { this(CharSpace.UTF8) ; }
+    public NodeFormatterNT() { this(CharSpace.UTF8); }
 
     public NodeFormatterNT(CharSpace charSpace) {
         quotedStringProc = new QuotedStringOutputNT(charSpace);
-        quotedUriProc = new QuotedURI(charSpace) ;
+        quotedUriProc = new QuotedURI(charSpace);
     }
 
     @Override

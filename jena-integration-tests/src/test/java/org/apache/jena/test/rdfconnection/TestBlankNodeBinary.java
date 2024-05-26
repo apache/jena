@@ -56,14 +56,14 @@ public class TestBlankNodeBinary {
     @Test public void binaryThrift() {
         Triple t = Triple.create(n(":s"), n(":p"), NodeFactory.createBlankNode("ABCD"));
         Node obj = t.getObject(); 
-        Graph graph = Factory.createDefaultGraph();
+        Graph graph = GraphMemFactory.createDefaultGraph();
         graph.add(t);
         
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         RDFDataMgr.write(bout, graph, Lang.RDFTHRIFT);
         
         ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray());
-        Graph graph1 = Factory.createDefaultGraph();
+        Graph graph1 = GraphMemFactory.createDefaultGraph();
         RDFDataMgr.read(graph1, bin, Lang.RDFTHRIFT);
         
         Node obj1 = graph1.find().next().getObject();

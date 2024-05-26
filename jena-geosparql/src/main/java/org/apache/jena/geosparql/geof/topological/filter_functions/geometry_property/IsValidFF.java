@@ -36,7 +36,7 @@ public class IsValidFF extends FunctionBase1 {
         try {
             GeometryWrapper geometry = GeometryWrapper.extract(v);
 
-            Boolean isValid = geometry.isValid();
+            boolean isValid = geometry.isValid();
             return NodeValue.makeNodeBoolean(isValid);
         } catch (DatatypeFormatException ex) {
             throw new ExprEvalException(ex.getMessage(), ex);

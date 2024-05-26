@@ -45,6 +45,6 @@ public class uppercase extends PFuncAssignToObject
         if ( ! node.isLiteral() )
             return null ;
         String str = node.getLiteralLexicalForm().toUpperCase() ;
-        return NodeFactory.createLiteral(str) ;
+        return NodeFactory.createLiteralString(str) ;
     }
 }

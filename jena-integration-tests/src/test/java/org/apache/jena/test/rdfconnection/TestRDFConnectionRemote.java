@@ -24,6 +24,7 @@ import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiServer ;
 import org.apache.jena.fuseki.main.FusekiTestLib;
+import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
@@ -123,7 +124,11 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
             String level = LogCtl.getLevel(Fuseki.actionLog);
             try {
                 LogCtl.setLevel(Fuseki.actionLog, "ERROR");
-                FusekiTestLib.expectQueryFail(()->conn.query("FOOBAR").execSelect(), Code.BAD_REQUEST);
+                Runnable action = ()-> {
+                    try( QueryExecution qExec = conn.query("FOOBAR") ) {
+                        qExec.execSelect();
+                    }};
+                FusekiTestLib.expectQueryFail(action, Code.BAD_REQUEST);
             } finally {
                 LogCtl.setLevel(Fuseki.actionLog, level);
             }

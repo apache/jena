@@ -19,14 +19,15 @@
 package org.apache.jena.atlas.lib.cache;
 
 import java.util.concurrent.Callable ;
+import java.util.function.Function;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.lib.Cache ;
 
-/** Support operations for Cache functions */ 
+/** Support operations for Cache functions */
 class CacheOps {
-    
-    /** Implementation of getOrFill based on Cache.get and Cache.put */ 
+
+    /** Implementation of getOrFill based on Cache.get and Cache.put */
     public static <K,V> V getOrFill(Cache<K,V> cache, K key, Callable<V> callable) {
         V value = cache.getIfPresent(key) ;
         if ( value == null ) {
@@ -41,10 +42,34 @@ class CacheOps {
         return value ;
     }
 
-    /** Thread safe implementation of getOrFill based on Cache.get and Cache.put */ 
+    /** Implementation of getOrFill based on Cache.get and Cache.put */
+    public static <K,V> V getOrFill(Cache<K,V> cache, K key, Function<K,V> function) {
+        V value = cache.getIfPresent(key) ;
+        if ( value == null ) {
+            try { value = function.apply(key) ; }
+            catch (RuntimeException ex) { throw ex; }
+            catch (Exception e) {
+                throw new AtlasException("Exception on cache fill", e) ;
+            }
+            if ( value != null )
+                cache.put(key, value) ;
+        }
+        return value ;
+    }
+
+
+    /** Thread safe implementation of getOrFill based on Cache.get and Cache.put */
     public static <K,V> V getOrFillSync(Cache<K,V> cache, K key, Callable<V> callable) {
         synchronized(cache) {
             return getOrFill(cache, key, callable) ;
         }
     }
+
+    /** Thread safe implementation of getOrFill based on Cache.get and Cache.put */
+    public static <K,V> V getOrFillSync(Cache<K,V> cache, K key, Function<K,V> function) {
+        synchronized(cache) {
+            return getOrFill(cache, key, function) ;
+        }
+    }
+
 }

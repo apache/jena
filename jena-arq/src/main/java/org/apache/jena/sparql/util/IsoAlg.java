@@ -115,9 +115,10 @@ public class IsoAlg {
     /**
      * Blank node isomorphism test.
      * Are the two collections of tuples of nodes isomorphic?
-     * In addition, when as two nodes considered "equal" (whether by
-     * {@link NodeUtils#sameValue} (SPARQL valuet testing), {@link NodeUtils#sameNode} (Node.equals),
-     * {@link NodeUtils#sameRdfTerm} (Node.equals, with lang tag insensitive testing).
+     * Two nodes considered "equal" by an equality test such as
+     * {@link NodeUtils#sameValue} (SPARQL value testing),
+     * {@link NodeUtils#sameNode} (Node.equals),
+     * or {@link NodeUtils#sameRdfTerm} (Node.equals, with lang tag insensitive testing).
      */
     public static boolean isIsomorphic(Collection<Tuple<Node>> x1, Collection<Tuple<Node>> x2, EqualityTest nodeTest) {
         return isIsomorphic(x1, x2, Iso.mappableBlankNodes, nodeTest);
@@ -126,9 +127,10 @@ public class IsoAlg {
     /**
      * Isomorphism test based on a class of mappable elements (e.g. blank nodes {@linkplain Iso#mappableBlankNodes},
      * or blank nodes and variables {@linkplain Iso#mappableBlankNodesVariables}).
-     * In addition, when are two nodes considered "equal" (whether by
-     * {@link NodeUtils#sameValue} (SPARQL value testing), {@link NodeUtils#sameNode} (Node.equals),
-     * {@link NodeUtils#sameRdfTerm} (Node.equals, with lang tag insensitive testing).
+     * Two nodes considered "equal" by an equality test such as
+     * {@link NodeUtils#sameValue} (SPARQL value testing),
+     * {@link NodeUtils#sameNode} (Node.equals),
+     * or {@link NodeUtils#sameRdfTerm} (Node.equals, with lang tag insensitive testing).
      */
     public static boolean isIsomorphic(Collection<Tuple<Node>> x1, Collection<Tuple<Node>> x2, Iso.Mappable mappable, EqualityTest nodeTest) {
         return matcher(x1, x2, Mapping.rootMapping, mappable, nodeTest);
@@ -137,9 +139,10 @@ public class IsoAlg {
     /**
      * Isomorphism test based on a class of mappable elements (e.g. blank nodes {@linkplain Iso#mappableBlankNodes},
      * or blank nodes and variables {@linkplain Iso#mappableBlankNodesVariables}).
-     * In addition, when are two nodes considered "equal" (whether by
-     * {@link NodeUtils#sameValue} (SPARQL value testing), {@link NodeUtils#sameNode} (Node.equals),
-     * {@link NodeUtils#sameRdfTerm} (Node.equals, with lang tag insensitive testing).
+     * Two nodes considered "equal" by an equality test such as
+     * {@link NodeUtils#sameValue} (SPARQL value testing),
+     * {@link NodeUtils#sameNode} (Node.equals),
+     * or {@link NodeUtils#sameRdfTerm} (Node.equals, with lang tag insensitive testing).
      */
     public static Mapping isIsomorphic(Tuple<Node> tuple1, Tuple<Node> tuple2, Mapping mapping, Mappable mappable, EqualityTest nodeTest) {
         return gen(tuple1, tuple2, mapping, mappable, nodeTest);
@@ -152,8 +155,8 @@ public class IsoAlg {
         out.setFlushOnNewline(true);
     }
 
-    private static boolean matcher(Collection<Tuple<Node>> tuples1, Collection<Tuple<Node>> tuples2, Mapping mapping, Iso.Mappable mappable,
-                                   EqualityTest nodeTest) {
+    private static boolean matcher(Collection<Tuple<Node>> tuples1, Collection<Tuple<Node>> tuples2, Mapping mapping,
+                                   Iso.Mappable mappable, EqualityTest nodeTest) {
         if ( DEBUG ) {
             out.println("match: ");
             out.println("  1: " + tuples1);

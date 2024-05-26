@@ -65,15 +65,19 @@ public class AssemblerUtils
         registerDataset(tDatasetSink,     new DatasetNullAssembler(tDatasetSink));
         registerDataset(tMemoryDataset,   new InMemDatasetAssembler());
         registerDataset(tDatasetTxnMem,   new InMemDatasetAssembler());
+        registerDataset(tDatasetView,     new ViewDatasetAssembler());
 
         registerModel(tViewGraph,          new ViewGraphAssembler());
     }
 
     private static Model modelExtras = ModelFactory.createDefaultModel() ;
 
+    // Legacy. Supports assemblers using a general "rdf:type ja:dataset"
+    private static Resource datasetAssemblerType = DatasetAssemblerVocab.tDataset ;
+
     /** Register an assembler that creates a dataset */
     static public void registerDataset(Resource r, Assembler a) {
-        register(ConstAssembler.general(), r, a, DatasetAssembler.getType()) ;
+       register(ConstAssembler.general(), r, a, datasetAssemblerType) ;
     }
 
     /** Register an assembler that creates a dataset */
@@ -177,7 +181,7 @@ public class AssemblerUtils
         String qs = "PREFIX ja: <"+JA.getURI()+">\nSELECT * { ?x ja:context [ ja:cxtName ?name ; ja:cxtValue ?value ] }" ;
         QuerySolutionMap qsm = new QuerySolutionMap() ;
         qsm.add("x", r) ;
-        QueryExecution qExec = QueryExecutionFactory.create(qs, r.getModel(), qsm) ;
+        QueryExecution qExec = QueryExecution.model(r.getModel()).query(qs).substitution(qsm).build();
         ResultSet rs = qExec.execSelect() ;
         while ( rs.hasNext() )
         {

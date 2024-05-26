@@ -16,29 +16,26 @@
 -->
 
 <template>
-  <b-nav card-header tabs>
-    <b-nav-item
-      :to="`/manage`"
-      exact-active-class="active"
-    >
-      <FontAwesomeIcon icon="database" />
-      <span class="ml-1">existing datasets</span>
-    </b-nav-item>
-    <b-nav-item
-      :to="`/manage/new`"
-      exact-active-class="active"
-    >
-      <FontAwesomeIcon icon="plus-circle" />
-      <span class="ml-1">new dataset</span>
-    </b-nav-item>
-    <b-nav-item
-      :to="`/manage/tasks`"
-      exact-active-class="active"
-    >
-      <FontAwesomeIcon icon="tasks" />
-      <span class="ml-1">tasks</span>
-    </b-nav-item>
-  </b-nav>
+  <ul class="nav nav-tabs card-header-tabs">
+    <li class="nav-item">
+      <router-link :to="`/manage`" class="nav-link" exact-active-class="active">
+        <FontAwesomeIcon icon="database" />
+        <span class="ms-1">existing datasets</span>
+      </router-link>
+    </li>
+    <li class="nav-item">
+      <router-link :to="`/manage/new`" class="nav-link" exact-active-class="active">
+        <FontAwesomeIcon icon="plus-circle" />
+        <span class="ms-1">new dataset</span>
+      </router-link>
+    </li>
+    <li class="nav-item">
+      <router-link :to="`/manage/tasks`" class="nav-link" exact-active-class="active">
+        <FontAwesomeIcon icon="tasks" />
+        <span class="ms-1">tasks</span>
+      </router-link>
+    </li>
+  </ul>
 </template>
 
 <script>

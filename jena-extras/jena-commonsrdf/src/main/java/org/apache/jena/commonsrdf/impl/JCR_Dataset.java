@@ -18,7 +18,6 @@
 
 package org.apache.jena.commonsrdf.impl;
 
-import static org.apache.jena.commonsrdf.JenaCommonsRDF.fromJena;
 import static org.apache.jena.commonsrdf.JenaCommonsRDF.*;
 
 import java.util.Iterator;

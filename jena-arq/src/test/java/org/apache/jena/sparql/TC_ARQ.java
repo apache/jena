@@ -27,9 +27,11 @@ import org.apache.jena.sparql.core.TS_Core ;
 import org.apache.jena.sparql.core.assembler.TS_Assembler ;
 import org.apache.jena.sparql.core.mem.TS_DatasetTxnMem ;
 import org.apache.jena.sparql.engine.TS_Engine ;
+import org.apache.jena.sparql.engine.binding.TS_EngineBinding ;
 import org.apache.jena.sparql.engine.index.TS_Minus;
 import org.apache.jena.sparql.engine.iterator.TS_QueryIterators;
 import org.apache.jena.sparql.engine.join.TS_Join ;
+import org.apache.jena.sparql.exec.TS_ExecSPARQL;
 import org.apache.jena.sparql.expr.E_Function ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.TS_Expr ;
@@ -72,7 +74,7 @@ import org.junit.runners.Suite ;
     , TS_FunctionScripting.class
     , TS_PFunction.class
 
-    , TS_ResultSet.class
+    , TS_EngineBinding.class
     , TS_Engine.class
     , TS_Negation.class
     , TS_Solver.class
@@ -84,15 +86,17 @@ import org.junit.runners.Suite ;
     , TS_ResultSet.class
     , TS_Syntax.class
     , TS_API.class
+    , TS_ExecSPARQL.class
     , TS_Core.class
     , TS_Assembler.class
     , TS_DatasetTxnMem.class
     , TS_Path.class
-    , TS_Query.class
     , TS_Update.class
     , TS_Transaction.class
     , TS_SparqlLib.class
 
+    // Outside org.apache.jena.sparql
+    , TS_Query.class
     , TS_RDF_Star.class
     // And scripted tests.
 })

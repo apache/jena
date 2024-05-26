@@ -18,22 +18,28 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.apache.jena.fuseki.main.TestEmbeddedFuseki.dataset;
-import static org.apache.jena.fuseki.main.TestEmbeddedFuseki.query;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.exec.http.QueryExecHTTP;
 import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
 import org.junit.Test;
 
 public class TestMultipleEmbedded {
+
+    static { JenaSystem.init(); }
 
     static Quad q1 = SSE.parseQuad("(_ :s :p 1)");
     static Quad q2 = SSE.parseQuad("(_ :s :p 2)");
@@ -146,6 +152,16 @@ public class TestMultipleEmbedded {
 
         server1.stop();
         server2.stop();
+    }
+
+    /*package*/ static DatasetGraph dataset() {
+        return DatasetGraphFactory.createTxnMem();
+    }
+
+    /*package*/ static void query(String URL, String query, Consumer<QueryExec> body) {
+        try (QueryExec qExec = QueryExecHTTP.newBuilder().endpoint(URL).queryString(query).build() ) {
+            body.accept(qExec);
+        }
     }
 }
 

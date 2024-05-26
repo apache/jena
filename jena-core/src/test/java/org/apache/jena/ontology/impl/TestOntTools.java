@@ -23,20 +23,20 @@ package org.apache.jena.ontology.impl;
 
 // Imports
 ///////////////
-import java.util.List ;
+
+import junit.framework.TestCase;
+import org.apache.jena.ontology.OntClass;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.ontology.OntTools;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.vocabulary.OWL;
+
+import java.util.List;
 import java.util.function.Predicate;
-
-import junit.framework.TestCase ;
-
-import org.apache.jena.ontology.OntClass ;
-import org.apache.jena.ontology.OntModel ;
-import org.apache.jena.ontology.OntModelSpec ;
-import org.apache.jena.ontology.OntTools ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.Property ;
-import org.apache.jena.rdf.model.ResourceFactory ;
-import org.apache.jena.rdf.model.Statement ;
-import org.apache.jena.vocabulary.OWL ;
 
 
 /**

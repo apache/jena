@@ -1,0 +1,51 @@
+<!--++ maxCardinality/inconsistent001.rdf ** generated using webont test editor. ++-->
+<!--++ Created 17 Dec 2002 14:33:42 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: inconsistent001.rdf,v 1.6 2003-12-05 05:09:33 jeremy_carroll Exp $
+-->
+<!--
+A property with maximum cardinality of two cannot take
+three distinct values on some subject node.
+-->
+<!-- Author: Jos De Roo -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/maxCardinality/inconsistent001#"
+    xml:base="http://www.w3.org/2002/03owlt/maxCardinality/inconsistent001" >
+
+    <rdf:Description rdf:about="inconsistent001#sb1">
+        <rdf:type rdf:parseType="Resource">
+            <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+            <owl:maxCardinality
+              rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+             >2</owl:maxCardinality>
+            <owl:onProperty rdf:resource="inconsistent001#prop"/>
+        </rdf:type>
+        <first:prop rdf:resource="inconsistent001#ob1"/>
+        <first:prop rdf:resource="inconsistent001#ob2"/>
+        <first:prop rdf:resource="inconsistent001#ob3"/>
+    </rdf:Description>
+
+    <rdf:Description rdf:about="inconsistent001#ob1">
+        <owl:differentFrom rdf:resource="inconsistent001#ob2"/>
+        <owl:differentFrom rdf:resource="inconsistent001#ob3"/>
+    </rdf:Description>
+
+    <rdf:Description rdf:about="inconsistent001#ob2">
+        <owl:differentFrom rdf:resource="inconsistent001#ob3"/>
+    </rdf:Description>
+
+    <owl:ObjectProperty rdf:about="inconsistent001#prop"/>
+
+</rdf:RDF>

@@ -196,7 +196,7 @@ public class LPInterpreter {
             if (traceOn) logger.info("RETURN: " + topTMFrame.lastMatch);
             return topTMFrame.lastMatch;
         } else {
-            Triple t = new Triple(deref(pVars[0]), deref(pVars[1]), derefPossFunctor(pVars[2]));
+            Triple t = Triple.create(deref(pVars[0]), deref(pVars[1]), derefPossFunctor(pVars[2]));
             if (traceOn) logger.info("RETURN: " + t);
             return t;
         }
@@ -765,7 +765,7 @@ public class LPInterpreter {
      */
     public static Triple deref(TriplePattern t) {
         if (t == null) return null;
-        return new Triple(deref(t.getSubject()), deref(t.getPredicate()), deref(t.getObject()));
+        return Triple.create(deref(t.getSubject()), deref(t.getPredicate()), deref(t.getObject()));
     }
     
     /**

@@ -1,0 +1,2 @@
+_:A47c5fcX3aXee4c518739X3aXX2dX700f <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag> .
+_:A47c5fcX3aXee4c518739X3aXX2dX700f <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> " <foo></foo> "^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .

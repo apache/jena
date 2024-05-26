@@ -20,12 +20,15 @@ package org.apache.jena.geosparql.implementation;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.sys.JenaSystem;
 
 /**
  * Convenience methods to produce WKT Literals.
  *
  */
 public class WKTLiteralFactory {
+
+    static { JenaSystem.init(); }
 
     /**
      * WKT point.

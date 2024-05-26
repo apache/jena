@@ -1,0 +1,2 @@
+_:jA81 <http://example.org/property1> "bar" .
+<http://example.org/resource/> <http://example.org/property2> "blah" .

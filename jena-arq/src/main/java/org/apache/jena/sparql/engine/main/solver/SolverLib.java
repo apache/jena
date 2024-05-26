@@ -98,7 +98,7 @@ public class SolverLib {
 
     /**
      * Convert a pattern node into ANY, or leave as a constant term. Any Embedded
-     * triple term with a variable, that is <tt>{@literal <<?var>>}</tt> becomes an
+     * triple term with a variable, that is {@code {@literal <<?var>>}} becomes an
      * ANY.
      */
     public static Node nodeTopLevel(Node node) {

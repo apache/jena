@@ -35,16 +35,6 @@ public class ParserProfileWrapper implements ParserProfile
     }
 
     @Override
-    public FactoryRDF getFactorRDF() {
-        return get().getFactorRDF();
-    }
-
-    @Override
-    public ErrorHandler getErrorHandler() {
-        return get().getErrorHandler();
-    }
-
-    @Override
     public boolean isStrictMode() {
         return get().isStrictMode();
     }
@@ -123,7 +113,22 @@ public class ParserProfileWrapper implements ParserProfile
     }
 
     @Override
+    public String getBaseURI() {
+        return get().getBaseURI();
+    }
+
+    @Override
     public PrefixMap getPrefixMap() {
         return get().getPrefixMap();
+    }
+
+    @Override
+    public ErrorHandler getErrorHandler() {
+        return get().getErrorHandler();
+    }
+
+    @Override
+    public FactoryRDF getFactorRDF() {
+        return get().getFactorRDF();
     }
 }

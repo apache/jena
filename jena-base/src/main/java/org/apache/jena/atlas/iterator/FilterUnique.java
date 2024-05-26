@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public class FilterUnique<T> implements Predicate<T> {
-    private Set<T> seen = new HashSet<>();
+    private final Set<T> seen = new HashSet<>();
 
     @Override
     public boolean test(T item) {

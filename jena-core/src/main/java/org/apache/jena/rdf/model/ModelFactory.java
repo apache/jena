@@ -22,17 +22,18 @@ import java.util.Set ;
 
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.AssemblerHelp ;
-import org.apache.jena.graph.Factory ;
+import org.apache.jena.graph.GraphMemFactory ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.compose.Union ;
-import org.apache.jena.graph.impl.SimpleGraphMaker ;
 import org.apache.jena.ontology.OntModel ;
 import org.apache.jena.ontology.OntModelSpec ;
 import org.apache.jena.ontology.ProfileRegistry ;
 import org.apache.jena.ontology.impl.OntModelImpl ;
+import org.apache.jena.ontology.models.ModelMaker;
+import org.apache.jena.ontology.models.ModelMakerImpl;
+import org.apache.jena.ontology.models.SimpleGraphMaker;
 import org.apache.jena.rdf.model.impl.InfModelImpl ;
 import org.apache.jena.rdf.model.impl.ModelCom ;
-import org.apache.jena.rdf.model.impl.ModelMakerImpl ;
 import org.apache.jena.reasoner.InfGraph ;
 import org.apache.jena.reasoner.Reasoner ;
 import org.apache.jena.reasoner.ReasonerRegistry ;
@@ -88,7 +89,7 @@ public class ModelFactory extends ModelFactoryBase
         Answer a fresh Model with the default specification.
     */
     public static Model createDefaultModel()
-        { return new ModelCom( Factory.createGraphMem( ) ); }
+        { return new ModelCom( GraphMemFactory.createGraphMem( ) ); }
 
     /**
         Answer a model that encapsulates the given graph. Existing prefixes are

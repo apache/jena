@@ -21,6 +21,7 @@ package org.apache.jena.irix;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 /**
@@ -80,10 +81,15 @@ public class IRIProviderJDK implements IRIProvider {
 
         @Override
         public boolean hasScheme(String scheme) {
-            String iriScheme = javaURI.getScheme();
+            String iriScheme = scheme();
             if ( iriScheme == null )
                 return false;
-            return iriScheme.startsWith(scheme);
+            return iriScheme.equalsIgnoreCase(scheme);
+        }
+
+        @Override
+        public String scheme() {
+            return javaURI.getScheme();
         }
 
         @Override
@@ -123,6 +129,14 @@ public class IRIProviderJDK implements IRIProvider {
 
         @Override
         public URI getImpl() { return javaURI; }
+
+        @Override
+        public boolean hasViolations() {
+            return false;
+        }
+
+        @Override
+        public void handleViolations(BiConsumer<Boolean, String> handler) {}
 
         @Override
         public int hashCode() {

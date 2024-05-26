@@ -31,6 +31,6 @@ public class TestFactory extends GraphTestBase
         
     public void testFactory()
         {
-        Factory.createDefaultGraph();
+        GraphMemFactory.createDefaultGraph();
         }        
     }

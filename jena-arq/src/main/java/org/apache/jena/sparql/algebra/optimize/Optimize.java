@@ -33,7 +33,7 @@ import org.apache.jena.sparql.util.Context ;
  *  or on a per-context basis:
  *  <pre>
  *    Optimize.RewriterFactory f = (cxt)-&gt;new MyOptimizer(cxt) ;
- *    context.set(ARQConstants.sysOptimizerFactory, f) ;<pre>
+ *    context.set(ARQConstants.sysOptimizerFactory, f) ;</pre>
  */
 public class Optimize
 {

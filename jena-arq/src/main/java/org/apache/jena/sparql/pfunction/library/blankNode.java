@@ -40,7 +40,7 @@ public class blankNode extends PFuncSimple
         if ( ! subject.isBlank() )
             return IterLib.noResults(execCxt) ;
         String str = subject.getBlankNodeLabel() ;
-        Node obj = NodeFactory.createLiteral(str) ;
+        Node obj = NodeFactory.createLiteralString(str) ;
         if ( Var.isVar(object) )
             return IterLib.oneResult(binding, Var.alloc(object), obj, execCxt) ;
         

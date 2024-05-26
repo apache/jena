@@ -18,91 +18,140 @@
 
 package org.apache.jena.graph;
 
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.graph.impl.* ;
-import org.apache.jena.shared.* ;
+import java.util.Objects;
+
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.graph.impl.LiteralLabel;
+import org.apache.jena.graph.impl.LiteralLabelFactory;
+import org.apache.jena.shared.PrefixMapping;
 
 /**
     An RDF node holding a literal value. Literals may have datatypes.
 */
-public class Node_Literal extends Node_Concrete
+public class Node_Literal extends Node
 {
+    private final LiteralLabel label;
+
     /* package */ Node_Literal( LiteralLabel label )
-        { super( label ); }
+    { this.label = Objects.requireNonNull(label); }
+
+    /* package */ Node_Literal(String string) {
+        Objects.requireNonNull(string, "Argument to NodeFactory.createLiteral is null");
+        this.label = LiteralLabelFactory.createString(string);
+    }
+
+    /* package */ Node_Literal(String string, String lang) {
+        Objects.requireNonNull(string, "null lexical form for literal");
+        Objects.requireNonNull(lang, "null language");
+        this.label = LiteralLabelFactory.createLang(string, lang);
+    }
+
+    /*package*/ Node_Literal(String lex, String lang, TextDirection textDir) {
+        Objects.requireNonNull(lex, "null lexical form for literal");
+        Objects.requireNonNull(lang, "null language");
+        Objects.requireNonNull(textDir, "null text direction");
+        this.label = LiteralLabelFactory.createDirLang(lex, lang, textDir);
+    }
+
+    /* package */ Node_Literal(String lex, RDFDatatype dtype) {
+        Objects.requireNonNull(lex, "null lexical form for literal");
+        Objects.requireNonNull(dtype, "null datatype");
+        this.label = LiteralLabelFactory.create(lex, dtype);
+    }
+
+    @Override
+    public boolean isConcrete()
+    { return true; }
 
     @Override
     public LiteralLabel getLiteral()
-        { return (LiteralLabel) label; }
-    
+    { return label; }
+
     @Override
     public final Object getLiteralValue()
-        { return getLiteral().getValue(); }
-    
+    { return getLiteral().getValue(); }
+
     @Override
     public final String getLiteralLexicalForm()
-        { return getLiteral().getLexicalForm(); }
-    
+    { return getLiteral().getLexicalForm(); }
+
     @Override
     public final String getLiteralLanguage()
-        { return getLiteral().language(); }
-    
+    { return getLiteral().language(); }
+
+    @Override
+    public final TextDirection getLiteralTextDirection()
+    { return getLiteral().initialTextDirection(); }
+
+
     @Override
     public final String getLiteralDatatypeURI()
-        { return getLiteral().getDatatypeURI(); }
-    
+    { return getLiteral().getDatatypeURI(); }
+
     @Override
     public final RDFDatatype getLiteralDatatype()
-        { return getLiteral().getDatatype(); }
-    
+    { return getLiteral().getDatatype(); }
+
     @Override
-    public final boolean getLiteralIsXML()
-        { return getLiteral().isXML(); }
-    
-    @Override
-    public String toString( PrefixMapping pm, boolean quoting )
-        { return ((LiteralLabel) label).toString( quoting ); }
-        
-    @Override
-    public boolean isLiteral() 
-        { return true; }    
-        
+    public boolean isLiteral()
+    { return true; }
+
     /**
-        Literal nodes defer their indexing value to the component literal.
-        @see org.apache.jena.graph.Node#getIndexingValue()
-    */
+     * Indexing object for literals.
+     * Literal nodes defer their indexing value to the component literal.
+     *
+     * @see org.apache.jena.graph.Node#getIndexingValue()
+     */
     @Override
     public Object getIndexingValue()
-        { return getLiteral().getIndexingValue(); }
-    
+    { return getLiteral().getIndexingValue(); }
+
     @Override
-    public Object visitWith( NodeVisitor v )
-        { return v.visitLiteral( this, getLiteral() ); }
-        
+    public Object visitWith(NodeVisitor v)
+    { return v.visitLiteral(this, getLiteralLexicalForm(), getLiteralLanguage(), getLiteralDatatype()); }
+
     @Override
-    public boolean equals( Object other )
-        {
-        if ( this == other ) return true ;
-        return other instanceof Node_Literal && label.equals( ((Node_Literal) other).label );
-        }
-        
+    public int hashCode()
+    { return label.hashCode(); }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        Node_Literal other = (Node_Literal)obj;
+        return label.equals(other.label);
+    }
+
     /**
-     * Test that two nodes are semantically equivalent.
-     * In some cases this may be the same as equals, in others
+     * Test that two nodes are equivalent as values.
+     * In some cases this may be the same as "same term", in others
      * equals is stricter. For example, two xsd:int literals with
-     * the same value but different language tag are semantically
-     * equivalent but distinguished by the java equality function
-     * in order to support round tripping.
+     * the same value if they are "01" and "1".
      * <p>Default implementation is to use equals, subclasses should
      * override this.</p>
      */
     @Override
     public boolean sameValueAs(Object o) {
-        return o instanceof Node_Literal 
-              && ((LiteralLabel)label).sameValueAs( ((Node_Literal) o).getLiteral() );
+        return o instanceof Node_Literal
+              && label.sameValueAs( ((Node_Literal) o).getLiteral() );
     }
-    
+
     @Override
-    public boolean matches( Node x )
-        { return sameValueAs( x ); }
-    
+    public boolean matches(Node x) {
+        return sameValueAs(x);
+    }
+
+    @Override
+    public String toString(PrefixMapping pm) {
+        return label.toString(pm, true);
+    }
+
+    @Override
+    public String toString() {
+        return label.toString(PrefixMapping.Standard, true);
+    }
 }

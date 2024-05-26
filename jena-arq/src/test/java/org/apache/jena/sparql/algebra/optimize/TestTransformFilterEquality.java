@@ -18,7 +18,9 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import org.apache.jena.JenaRuntime ;
+import static org.apache.jena.sparql.algebra.optimize.TransformTests.check;
+import static org.apache.jena.sparql.algebra.optimize.TransformTests.testOp;
+
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.Transform ;
@@ -28,42 +30,28 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
 /** Tests of transforms related to filters */
-public class TestTransformFilterEquality extends AbstractTestTransform
+public class TestTransformFilterEquality
 {
-    private Transform t_equality    = new TransformFilterEquality() ;
+    private Transform t_equality = new TransformFilterEquality() ;
 
-    @Test public void equality01()  {
+    @Test public void equality01() {
         testOp("(filter (= ?x <x>) (bgp ( ?s ?p ?x)) )",
                t_equality,
               "(assign ((?x <x>)) (bgp ( ?s ?p <x>)) )") ;
     }
 
     @Test public void equality02() {
-        if ( JenaRuntime.isRDF11 ) {
-            // Safe on strings (RDF 1.1)
-            testOp("(filter (= ?x 'x') (bgp ( ?s ?p ?x)) )",
-                   t_equality,
-                  "(assign ((?x 'x')) (bgp ( ?s ?p 'x')) )") ;
-        } else {
-            // Not safe on strings (RDF 1.0)
-            testOp("(filter (= ?x 'x') (bgp ( ?s ?p ?x)) )",
-                   t_equality,
-                   (String[])null) ;
-        }
+        // Safe on strings (RDF 1.1)
+        testOp("(filter (= ?x 'x') (bgp ( ?s ?p ?x)) )",
+               t_equality,
+               "(assign ((?x 'x')) (bgp ( ?s ?p 'x')) )") ;
     }
 
     @Test public void equality02a() {
-        if ( JenaRuntime.isRDF11 ) {
-            // Safe on strings (RDF 1.1)
-            testOp("(filter (= ?x 'x'^^xsd:string) (bgp ( ?s ?p ?x)) )",
-                   t_equality,
-                  "(assign ((?x 'x')) (bgp ( ?s ?p 'x')) )") ;
-        } else {
-            // Not safe on strings (RDF 1.0)
-            testOp("(filter (= ?x 'x'^^xsd:string) (bgp ( ?s ?p ?x)) )",
-                   t_equality,
-                   (String[])null) ;
-        }
+        // Safe on strings (RDF 1.1)
+        testOp("(filter (= ?x 'x'^^xsd:string) (bgp ( ?s ?p ?x)) )",
+               t_equality,
+               "(assign ((?x 'x')) (bgp ( ?s ?p 'x')) )") ;
     }
 
     @Test public void equality03() {
@@ -73,7 +61,7 @@ public class TestTransformFilterEquality extends AbstractTestTransform
                (String[])null) ;
     }
 
-//    // JENA-1184 workaround - this optimization is current not active. 
+//    // JENA-1184 workaround - this optimization is current not active.
 //    @Test public void equality04() {
 //        // Eliminate unused
 //        testOp("(filter (= ?UNUSED <x>) (bgp ( ?s ?p ?x)) )",
@@ -82,7 +70,7 @@ public class TestTransformFilterEquality extends AbstractTestTransform
 //    }
 
     @Test public void equality05() {
-        // Can't optimize if filter does not cover vars in LHS 
+        // Can't optimize if filter does not cover vars in LHS
         testOp("(filter (= ?x2 <x>) (conditional (bgp ( ?s1 ?p1 ?x1))  (bgp ( ?s2 ?p2 ?x2))))",
                t_equality,
                "(filter (= ?x2 <x>) (conditional (bgp ( ?s1 ?p1 ?x1))  (bgp ( ?s2 ?p2 ?x2))))") ;
@@ -108,7 +96,7 @@ public class TestTransformFilterEquality extends AbstractTestTransform
     }
 
     @Test public void equality09() {
-        // Can't optimize if filter does not cover vars in LHS 
+        // Can't optimize if filter does not cover vars in LHS
         testOp("(filter (= ?x2 <x>) (leftjoin (bgp ( ?s1 ?p1 ?x1))  (bgp ( ?s2 ?p2 ?x2))))",
                t_equality,
                "(filter (= ?x2 <x>) (leftjoin (bgp ( ?s1 ?p1 ?x1))  (bgp ( ?s2 ?p2 ?x2))))") ;
@@ -146,12 +134,12 @@ public class TestTransformFilterEquality extends AbstractTestTransform
 
     @Test public void equality15() {
         // assign-push-in optimization.
-        testOp("(filter (= ?x1 <x>) (leftjoin (leftjoin (table unit) (bgp ( ?s ?p ?x1)) ) (bgp ( ?s ?p ?x1)) ))", 
+        testOp("(filter (= ?x1 <x>) (leftjoin (leftjoin (table unit) (bgp ( ?s ?p ?x1)) ) (bgp ( ?s ?p ?x1)) ))",
                t_equality,
-               "(filter (= ?x1 <x>)", 
+               "(filter (= ?x1 <x>)",
                "   (leftjoin",
                "     (leftjoin",
-               "       (table unit)", 
+               "       (table unit)",
                "       (assign ((?x1 <x>)) (bgp (triple ?s ?p <x>)))",
                "     )",
                "     (assign ((?x1 <x>)) (bgp (triple ?s ?p <x>)))",
@@ -193,19 +181,19 @@ public class TestTransformFilterEquality extends AbstractTestTransform
                t_equality,
                (String[])null);
     }
-    
+
     // JENA -1202
     @Test public void equality_expression_1() {
 
         // Need to fold to a string or URI to trigger equality.
-        Op op = SSE.parseOp("(filter (= ?o (+ 'a' 'b')) (bgp (?x <http://p2> ?o)))") ; 
+        Op op = SSE.parseOp("(filter (= ?o (+ 'a' 'b')) (bgp (?x <http://p2> ?o)))") ;
         // Fold constants.
         Op op1 = Transformer.transform(new TransformCopy(), new ExprTransformConstantFold(), op);
         // Then apply filter-equality.
         check(op1, t_equality, "(assign ((?o 'ab')) (bgp (?x <http://p2> 'ab')) )") ;
     }
 
-    
+
     @Test public void equality_path_1() {
         testOp("(filter (= ?x <http://constant1/>) (path ?x (path+ :p) ?y))",
                t_equality,

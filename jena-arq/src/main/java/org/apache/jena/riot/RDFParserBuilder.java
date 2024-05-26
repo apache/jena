@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.jena.atlas.lib.IRILib;
-import org.apache.jena.graph.BlankNodeId;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.irix.IRIs;
@@ -229,7 +228,7 @@ public class RDFParserBuilder {
 
     /**
      * Set the hint {@link Lang}. This is the RDF syntax used when there is no way to
-     * deduce the syntax (e.g. read from a InputStream, no recognized file extension, no
+     * deduce the syntax (e.g. read from a InputStream, not recognized file extension, no
      * recognized HTTP Content-Type provided).
      *
      * @param lang
@@ -265,12 +264,6 @@ public class RDFParserBuilder {
         return this;
     }
 
-    /** @deprecated Use {@link #acceptHeader} */
-    @Deprecated
-    public RDFParserBuilder httpAccept(String acceptHeader) {
-        return acceptHeader(acceptHeader);
-    }
-
     /**
      * Set an HTTP header. Any previous setting is lost.
      * <p>
@@ -293,10 +286,12 @@ public class RDFParserBuilder {
     /** Set the base URI for parsing.  The default is to have no base URI. */
     public RDFParserBuilder base(String base) { this.baseURI = base ; return this; }
 
-    /** Choose whether to resolve URIs.<br/>
-     *  This does not affect all languages: N-Triples and N-Quads never resolve URIs.<br/>
-     *  Relative URIs are bad data.<br/>
-     *  Only set this to false for debugging and development purposes.
+    /**
+     * Choose whether to resolve URIs or throw an error.
+     * <p>
+     * This does not affect all languages: N-Triples and N-Quads never resolve URIs.<br/>
+     * If this is flag false, relative URIs cause parse errors.<br/>
+     * Only set this to false for debugging and development purposes.
      */
     public RDFParserBuilder resolveURIs(boolean flag) { this.resolveURIs = flag ; return this; }
 
@@ -320,30 +315,6 @@ public class RDFParserBuilder {
      */
     public RDFParserBuilder prefixes(PrefixMap prefixMap) {
         this.prefixMap = prefixMap == null ? null : PrefixMapFactory.create(prefixMap);
-        return this;
-    }
-
-    /**
-     * Convert the lexical form of literals to a canonical form.
-     * @deprecated Use {@link #canonicalValues} and one of {@link #langTagCanonical} and {@link #langTagLowerCase}
-     * <p>
-     * This operation is equivalent to
-     * <pre>
-     *   this.canonicalValues(flag);
-     *    if ( flag )
-     *        this.langTagCanonical();
-     *    else
-     *        this.langTagAsGiven();
-     *    return this;
-     * </pre>
-     */
-    @Deprecated
-    public RDFParserBuilder canonicalLiterals(boolean flag) {
-        this.canonicalValues(flag);
-        if ( flag )
-            this.langTagCanonical();
-        else
-            this.langTagAsGiven();
         return this;
     }
 
@@ -396,9 +367,11 @@ public class RDFParserBuilder {
      * is maintained for either lower case or RFC canonicalization styles.
      * <p>
      * This option can slow parsing down.
-     * <p>
+     *
      * @see #langTagCanonical
+     * @deprecated In Jena5, language tags are always converted to RFC 5646 case format.
      */
+    @Deprecated
     public RDFParserBuilder langTagLowerCase() {
         return langTagForm(LangTagForm.LOWER_CASE);
     }
@@ -415,9 +388,11 @@ public class RDFParserBuilder {
      * lower case or RFC canonicalization.
      * <p>
      * This option can slow parsing down.
-     * <p>
+     * </p>
      * @see #langTagLowerCase
+     * @deprecated In Jena5, language tags are always converted to RFC 5646 case format.
      */
+    @Deprecated
     public RDFParserBuilder langTagCanonical() {
         return langTagForm(LangTagForm.CANONICAL);
     }
@@ -427,13 +402,17 @@ public class RDFParserBuilder {
      * This is the default behaviour of parsing.
      * @see #langTagLowerCase
      * @see #langTagCanonical
+     * @deprecated In Jena5, language tags are always converted to RFC 5646 case format.
      */
+    @Deprecated
     public RDFParserBuilder langTagAsGiven() {
         return langTagForm(LangTagForm.NONE);
     }
 
     private RDFParserBuilder langTagForm(LangTagForm form) {
-        this.langTagForm = form;
+        // Ignore!
+        // language tags are always converted to RFC 5646 case format.
+        //this.langTagForm = form;
         return this;
     }
 
@@ -473,7 +452,7 @@ public class RDFParserBuilder {
      * reuse.
      * <br/>
      * The {@code FactoryRDF} also determines how blank node labels in RDF syntax are
-     * mapped to {@link BlankNodeId}. Use
+     * mapped to blank node objects.
      * <pre>
      *    new Factory(myLabelToNode)
      * </pre>

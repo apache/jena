@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.logging.FmtLog;
@@ -33,9 +33,12 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.system.ActionCategory;
 import org.apache.jena.query.QueryCancelledException;
+import org.apache.jena.query.QueryDeniedException;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.shared.OperationDeniedException;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
+import org.apache.jena.sparql.expr.ExprException;
+import org.apache.jena.sparql.function.scripting.ScriptDenyException;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
 
@@ -130,6 +133,9 @@ public class ActionExecLib {
             //    protocol -- SPARQL_Query.setAnyTimeouts
             String message = "Query timed out";
             ServletOps.responseSendError(response, HttpSC.SERVICE_UNAVAILABLE_503, message);
+        } catch (QueryDeniedException ex) {
+            // Typically a configuration setting blocks the query.
+            ServletOps.responseSendError(response, HttpSC.UNPROCESSABLE_ENTITY_422, ex.getMessage());
         } catch (OperationDeniedException ex) {
             if ( ex.getMessage() == null )
                 FmtLog.info(action.log, "[%d] OperationDeniedException", action.id);
@@ -164,8 +170,13 @@ public class ActionExecLib {
                 ServletOps.responseSendError(response, sc);
             else
                 ServletOps.responseSendError(response, sc, ex.getMessage());
+        } catch (ScriptDenyException ex) {
+            ServletOps.responseSendError(response, HttpSC.BAD_REQUEST_400, ex.getMessage());
         } catch (RuntimeIOException ex) {
             FmtLog.warn(action.log, /*ex,*/ "[%d] Runtime IO Exception (client left?) RC = %d : %s", action.id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage());
+            ServletOps.responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage());
+        } catch (ExprException ex) {
+            FmtLog.warn(action.log, "[%d] RC = %d : %s", action.id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage());
             ServletOps.responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage());
         } catch (Throwable ex) {
             // This should not happen.

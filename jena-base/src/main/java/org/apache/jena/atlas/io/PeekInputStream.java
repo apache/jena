@@ -28,42 +28,42 @@ import java.io.InputStream;
 
 import org.apache.jena.atlas.AtlasException;
 
-/** 
+/**
  * Parsing-centric input stream.
  * @see PeekReader
- */ 
+ */
 
 public final class PeekInputStream extends InputStream
 {
     private final InputStreamBuffered source;
-    
-    private static final int PUSHBACK_SIZE = 10; 
+
+    private static final int PUSHBACK_SIZE = 10;
     static final byte BYTE0 = (byte)0;
-    
+
     private byte[] pushbackBytes;
     private int idxPushback;                   // Index into pushbackBytes: points to next pushBack. -1 => none.
-    
+
     private int currByte = UNSET;              // Next byte to return when reading forwards.
     private long posn;
-    
+
     public static final int INIT_LINE = 1;
     public static final int INIT_COL = 1;
-    
+
     private long colNum;
     private long lineNum;
-    
+
     // ---- static construction methods.
-    
+
     public static PeekInputStream make(InputStream inputStream) {
         return make(inputStream, InputStreamBuffered.DFT_BUFSIZE);
     }
 
     public static PeekInputStream make(InputStream inputStream, int bufferSize) {
-        if ( inputStream instanceof PeekInputStream )
-            return (PeekInputStream)inputStream;
+        if ( inputStream instanceof PeekInputStream peekInputStream )
+            return peekInputStream;
 
-        if ( inputStream instanceof InputStreamBuffered )
-            return new PeekInputStream((InputStreamBuffered)inputStream);
+        if ( inputStream instanceof InputStreamBuffered bufferedInputStream )
+            return new PeekInputStream(bufferedInputStream);
         InputStreamBuffered in = new InputStreamBuffered(inputStream, bufferSize);
         return new PeekInputStream(in);
     }
@@ -74,23 +74,23 @@ public final class PeekInputStream extends InputStream
             return make(in);
         } catch (FileNotFoundException ex){ throw new AtlasException("File not found: "+filename); }
     }
-    
+
     private PeekInputStream(InputStreamBuffered input) {
         this.source = input;
-        this.pushbackBytes = new byte[PUSHBACK_SIZE]; 
+        this.pushbackBytes = new byte[PUSHBACK_SIZE];
         this.idxPushback = -1;
-        
+
         this.colNum = INIT_COL;
         this.lineNum = INIT_LINE;
         this.posn = 0;
-        
+
         // We start at byte "-1", i.e. just before the file starts.
-        // Advance always so that the peek byte is valid (is byte 0) 
+        // Advance always so that the peek byte is valid (is byte 0)
         // Returns the byte before the file starts (i.e. UNSET).
     }
 
     public final InputStreamBuffered getInput()   { return source; }
-    
+
     public long getLineNum()            { return lineNum; }
 
     public long getColNum()             { return colNum; }
@@ -112,12 +112,12 @@ public final class PeekInputStream extends InputStream
     private final void setCurrByte(int b) {
         currByte = b;
     }
-    
+
     public final int readByte()               { return nextByte(); }
-    
-    /** push back a byte : does not alter underlying position, line or column counts*/  
+
+    /** push back a byte : does not alter underlying position, line or column counts*/
     public final void pushbackByte(int b)    { unreadByte(b); }
-    
+
     @Override
     public final void close() throws IOException {
         source.close();
@@ -149,12 +149,12 @@ public final class PeekInputStream extends InputStream
     // ----------------
     // The methods below are the only ones to manipulate the byte buffers.
     // Other methods may read the state of variables.
-    
+
     private final void unreadByte(int b)
     {
         // The push back buffer is in the order where [0] is the oldest.
-        // Does not alter the line number, column number or position count. 
-        
+        // Does not alter the line number, column number or position count.
+
         if ( idxPushback >= pushbackBytes.length ) {
             // Enlarge pushback buffer.
             byte[] pushbackBytes2 = new byte[pushbackBytes.length * 2];
@@ -168,7 +168,7 @@ public final class PeekInputStream extends InputStream
         idxPushback++;
         pushbackBytes[idxPushback] = (byte)b;
     }
-    
+
     private final void init() {
         advanceAndSet();
         if ( currByte == UNSET )

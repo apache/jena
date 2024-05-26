@@ -68,6 +68,8 @@ public class RDFWriterRegistry
                 return new TurtleWriterBlocks() ;
             if ( Objects.equals(RDFFormat.TURTLE_FLAT, serialization) )
                 return new TurtleWriterFlat() ;
+            if ( Objects.equals(RDFFormat.TURTLE_LONG, serialization) )
+                return new TurtleWriterLong() ;
 
             if ( Objects.equals(RDFFormat.NTRIPLES_UTF8, serialization) )
                 return new NTriplesWriter() ;
@@ -97,6 +99,8 @@ public class RDFWriterRegistry
                 return new TriGWriterBlocks() ;
             if ( Objects.equals(RDFFormat.TRIG_FLAT, serialization) )
                 return new TriGWriterFlat() ;
+            if ( Objects.equals(RDFFormat.TRIG_LONG, serialization) )
+                return new TriGWriterLong() ;
             if ( Objects.equals(RDFFormat.NQUADS_UTF8, serialization) )
                 return new NQuadsWriter() ;
             if ( Objects.equals(RDFFormat.NQUADS_ASCII, serialization) )
@@ -115,8 +119,6 @@ public class RDFWriterRegistry
         WriterDatasetRIOTFactory wdsfactory = createWriterDatasetFactory();
 
         // Safer here than as statics due to class initialization ordering effects.
-        WriterDatasetRIOTFactory wdsJsonldFactory10 = syntaxForm -> new JsonLD10Writer(syntaxForm);
-        WriterGraphRIOTFactory wgJsonldFactory10    = syntaxForm -> RiotLib.adapter(new JsonLD10Writer(syntaxForm));
         WriterDatasetRIOTFactory wdsJsonldFactory11 = syntaxForm -> new JsonLD11Writer(syntaxForm);
         WriterGraphRIOTFactory wgJsonldFactory11    = syntaxForm -> RiotLib.adapter(new JsonLD11Writer(syntaxForm));
         WriterGraphRIOTFactory wgProtoFactory       = syntaxForm -> new WriterGraphProtobuf(syntaxForm);
@@ -128,7 +130,7 @@ public class RDFWriterRegistry
 
         // ==== System defaults for JSON-LD writing.
         // ** Coordinate with RDFFormat definitions of JSONLD RDFFormats:
-        //    JSONLD_PRETTY, JSONLD_PLAIN, JSONLD,JSONLD_FLAT
+        //    JSONLD_PRETTY, JSONLD_PLAIN, JSONLD, JSONLD_FLAT
 
         WriterGraphRIOTFactory jsonldWriterGraphDefault      = wgJsonldFactory11;
         WriterDatasetRIOTFactory jsonldWriterDatasetDefault  = wdsJsonldFactory11;
@@ -142,7 +144,6 @@ public class RDFWriterRegistry
         register(Lang.RDFXML,      RDFFormat.RDFXML) ;
 
         register(Lang.JSONLD,      RDFFormat.JSONLD) ;
-        register(Lang.JSONLD10,    RDFFormat.JSONLD10) ;
         register(Lang.JSONLD11,    RDFFormat.JSONLD11) ;
         register(Lang.RDFJSON,     RDFFormat.RDFJSON) ;
 
@@ -159,28 +160,10 @@ public class RDFWriterRegistry
         register(RDFFormat.TURTLE_PRETTY,  wgfactory) ;
         register(RDFFormat.TURTLE_BLOCKS,  wgfactory) ;
         register(RDFFormat.TURTLE_FLAT,    wgfactory) ;
+        register(RDFFormat.TURTLE_LONG,    wgfactory) ;
 
         register(RDFFormat.NTRIPLES,       wgfactory) ;
         register(RDFFormat.NTRIPLES_ASCII, wgfactory) ;
-
-        // JSON-LD 1.0
-        register(RDFFormat.JSONLD10_COMPACT_PRETTY,     wgJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_FLATTEN_PRETTY,     wgJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_EXPAND_PRETTY,      wgJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_FRAME_PRETTY,       wgJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_COMPACT_FLAT,       wgJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_FLATTEN_FLAT,       wgJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_EXPAND_FLAT,        wgJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_FRAME_FLAT,         wgJsonldFactory10) ;
-
-        register(RDFFormat.JSONLD10_COMPACT_PRETTY,     wdsJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_FLATTEN_PRETTY,     wdsJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_EXPAND_PRETTY,      wdsJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_FRAME_PRETTY,       wdsJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_COMPACT_FLAT,       wdsJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_FLATTEN_FLAT,       wdsJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_EXPAND_FLAT,        wdsJsonldFactory10) ;
-        register(RDFFormat.JSONLD10_FRAME_FLAT,         wdsJsonldFactory10) ;
 
         // JSON-LD 1.1
         register(RDFFormat.JSONLD11,                    wgJsonldFactory11) ;
@@ -213,6 +196,7 @@ public class RDFWriterRegistry
         register(RDFFormat.TRIG_PRETTY,    wgfactory) ;
         register(RDFFormat.TRIG_BLOCKS,    wgfactory) ;
         register(RDFFormat.TRIG_FLAT,      wgfactory) ;
+        register(RDFFormat.TRIG_LONG,      wgfactory) ;
 
         register(RDFFormat.NQUADS,         wgfactory) ;
         register(RDFFormat.NQUADS_ASCII,   wgfactory) ;
@@ -301,20 +285,25 @@ public class RDFWriterRegistry
 
     /** All registered graph formats */
     public static Collection<RDFFormat> registeredGraphFormats() {
-        return Collections.unmodifiableSet(registryGraph.keySet()) ;
+        return Set.copyOf(registryGraph.keySet()) ;
     }
 
     /** All registered dataset formats */
     public static Collection<RDFFormat> registeredDatasetFormats() {
-        return Collections.unmodifiableSet(registryDataset.keySet()) ;
+        return Set.copyOf(registryDataset.keySet()) ;
     }
 
     /** All registered formats */
-    public static Collection<RDFFormat> registered() {
+    public static Collection<RDFFormat> registeredFormats() {
         Set<RDFFormat> x = new HashSet<>() ;
         x.addAll(registryGraph.keySet()) ;
         x.addAll(registryDataset.keySet()) ;
-        return Collections.unmodifiableSet(x) ;
+        return Set.copyOf(x) ;
+    }
+
+    /** All registered languages */
+    public static Collection<Lang> registeredLangs() {
+        return Set.copyOf(langToFormat.keySet());
     }
 
     /** Get the graph writer factory associated with the language */

@@ -57,27 +57,27 @@ import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.Context;
 
 /**
- * An {@link RDFParser} is a process that will generate triples; {@link RDFParserBuilder}
- * provides the means to setup the parser.
+ * An {@link RDFParser} is a process that will generate triples and quads;
+ * {@link RDFParserBuilder} provides the means to create parsers.
  * <p>
  * An {@link RDFParser} has a predefined source; the target for output is given when the
- * "parse" method is called. It can be used multiple times in which case the same source
+ * "parse" step is called. It can be used multiple times in which case the same source
  * is reread. The destination can vary. The application is responsible for concurrency of
  * the destination of the parse operation.
+ * <p>
+ * Parser output is sent to a {@link StreamRDF}.
  *
- * The process is
- *
+ * The general process is
  * <pre>
  *    StreamRDF destination = ...
  *    RDFParser parser = RDFParser.create().source("filename.ttl").build();
  *    parser.parse(destination);
  * </pre>
- * or using abbreviated forms:
+ * There are various convenience forms to perform common tasks such as
+ * to parse a file and create a {@link Model}:
  * <pre>
- * RDFParser.source("filename.ttl").parse(destination);
+ *    Model model = RDFParser.source("filename.ttl").toModel();
  * </pre>
- * The {@code destination} {@link StreamRDF} and can be given as a
- * {@link Graph} or {@link DatasetGraph} as well.
  *
  * @see ReaderRIOT The interface to the syntax parsing process for each RDF syntax.
  */
@@ -150,21 +150,36 @@ public class RDFParser {
      * @param uriOrFile
      * @return RDFParserBuilder
      */
-
     public static RDFParserBuilder source(String uriOrFile) {
         return RDFParserBuilder.create().source(uriOrFile);
     }
 
     /**
-     * Create an {@link RDFParserBuilder} and set content to parse to be the
-     * given string. The syntax must be set with {@code .lang(...)}.
+     * Create an {@link RDFParserBuilder} and set content to be parsed to the
+     * string. The syntax must be set with {@code .lang(...)}.
      * <p>
      * Shortcut for {@code RDFParser.create.fromString(string)}.
+     *
      * @param string
      * @return RDFParserBuilder
+     * @deprecated Use {@link #fromString(String, Lang)}
      */
+    @Deprecated
     public static RDFParserBuilder fromString(String string) {
         return RDFParserBuilder.create().fromString(string);
+    }
+
+    /**
+     * Create an {@link RDFParserBuilder} and set content to be parsed
+     * together with the RDF syntax language.
+     * <p>
+     * Shortcut for {@code RDFParser.create.fromString(string).lang(lang)}.
+     * @param string
+     * @param lang
+     * @return RDFParserBuilder
+     */
+    public static RDFParserBuilder fromString(String string, Lang lang) {
+        return RDFParserBuilder.create().fromString(string).lang(lang);
     }
 
     /**
@@ -310,19 +325,27 @@ public class RDFParser {
 
     /**
      * Parse the source in to a fresh {@link Dataset} and return the dataset.
+     * <p>
+     * It may be preferable to instead call {@link #parse(Dataset)} supplying your desired {@link Dataset}
+     * implementation instead depending on how you intend to further process the parsed data.
+     * </p>
      */
     public Dataset toDataset() {
         Dataset dataset = DatasetFactory.createTxnMem();
-        parse(dataset);
+        dataset.executeWrite(() -> parse(dataset));
         return dataset;
     }
 
     /**
      * Parse the source in to a fresh {@link DatasetGraph} and return the DatasetGraph.
+     * <p>
+     * It may be preferable to instead call {@link #parse(DatasetGraph)} supplying your desired {@link DatasetGraph}
+     * implementation instead depending on how you intend to further process the parsed data.
+     * </p>
      */
     public DatasetGraph toDatasetGraph() {
         DatasetGraph dataset = DatasetGraphFactory.createTxnMem();
-        parse(StreamRDFLib.dataset(dataset));
+        dataset.executeWrite(() -> parse(StreamRDFLib.dataset(dataset)));
         return dataset;
     }
 
@@ -364,25 +387,38 @@ public class RDFParser {
     private void parseURI(StreamRDF destination) {
         // Source by uri or path.
         try (TypedInputStream input = openTypedInputStream(uri, path)) {
-            ReaderRIOT reader;
+            ReaderRIOT readerRiot;
             ContentType ct;
             if ( forceLang != null ) {
                 ReaderRIOTFactory r = RDFParserRegistry.getFactory(forceLang);
                 if ( r == null )
                     throw new RiotException("No parser registered for language: " + forceLang);
                 ct = forceLang.getContentType();
-                reader = createReader(r, forceLang);
+                readerRiot = createReader(r, forceLang);
             } else {
                 // No forced language.
-                // Conneg and hint, ignoring text/plain.
-                ct = WebContent.determineCT(input.getContentType(), hintLang, baseURI);
+                // Determine the syntax based on
+                //   Content-type, ignoring text/plain
+                //   hintLanguage
+                //   Any pathname extension from file or URI.
+                //
+                // Prefer the uri being read for more information, or oath, and the base if all else fails.
+
+                String target;
+                if ( uri != null )
+                    target = uri;
+                else if ( path != null )
+                    target = path.toString();
+                else
+                    target = baseURI;
+                ct = WebContent.determineCT(input.getContentType(), hintLang, target);
                 if ( ct == null )
                     throw new RiotException("Failed to determine the content type: (URI=" + baseURI + " : stream=" + input.getContentType()+")");
-                reader = createReader(ct);
-                if ( reader == null )
+                readerRiot = createReader(ct);
+                if ( readerRiot == null )
                     throw new RiotException("No parser registered for content type: " + ct.getContentTypeStr());
             }
-            read(reader, input, null, baseURI, context, ct, destination);
+            read(readerRiot, input, null, baseURI, context, ct, destination);
         }
     }
 
@@ -406,7 +442,7 @@ public class RDFParser {
         read(readerRiot, inputStream, jr, baseURI, context, ct, destination);
     }
 
-    /** Call the reader, from either an InputStream or a Reader */
+    /** Call the RIOT reader, from either an InputStream or a Reader */
     private static void read(ReaderRIOT readerRiot, InputStream inputStream, Reader javaReader,
                              String baseUri, Context context,
                              ContentType ct, StreamRDF destination) {
@@ -423,7 +459,6 @@ public class RDFParser {
         throw new InternalErrorException("Both inputStream and javaReader are null");
     }
 
-    @SuppressWarnings("resource")
     private TypedInputStream openTypedInputStream(String urlStr, Path path) {
         // If path, use that.
         if ( path != null ) {

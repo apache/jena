@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Description: language tag is lower case in this file.
+
+  Related issue:  
+
+   http://www.w3.org/2001/sw/RDFCore/20030123-issues/#tex-01
+
+  Author: Jeremy Carroll
+
+  $Id: test001.rdf,v 1.1 2005-08-04 09:53:23 jeremy_carroll Exp $
+
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/">
+
+
+  <rdf:Description>
+    <eg:prop xml:lang="en-us">a</eg:prop>
+  </rdf:Description>
+
+</rdf:RDF>
+

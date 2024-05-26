@@ -32,14 +32,13 @@ import org.apache.jena.sparql.util.Context;
 public class QueryEngineRegistry
 {
     List<QueryEngineFactory> factories = new ArrayList<>();
-    static { init(); }
 
     // Singleton
-    static QueryEngineRegistry registry = null;
+    private static QueryEngineRegistry registry;
+    static { init(); }
+
     static public QueryEngineRegistry get()
     {
-        if ( registry == null )
-            init();
         return registry;
     }
 
@@ -86,7 +85,7 @@ public class QueryEngineRegistry
 
     public QueryEngineRegistry() { }
 
-    private static synchronized void init()
+    private static void init()
     {
         registry = new QueryEngineRegistry();
         registry.add(QueryEngineMain.getFactory());

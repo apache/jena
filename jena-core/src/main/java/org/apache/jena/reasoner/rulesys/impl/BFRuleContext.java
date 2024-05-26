@@ -66,7 +66,7 @@ public class BFRuleContext implements RuleContext {
         env = new BindingStack();
         stack = new ArrayList<>();
         pending = new ArrayList<>();
-        pendingCache = Factory.createGraphMem();
+        pendingCache = GraphMemFactory.createGraphMem();
     }
     
     /**

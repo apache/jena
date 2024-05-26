@@ -106,11 +106,11 @@ public class GraphEventManagerTest {
     @Before
     public void setup() {
         tripleArray = new Triple[] {
-                new Triple(NodeFactory.createURI("http://example.com/1"), NodeFactory.createURI("http://example.com/v"),
+                Triple.create(NodeFactory.createURI("http://example.com/1"), NodeFactory.createURI("http://example.com/v"),
                         NodeFactory.createBlankNode()),
-                new Triple(NodeFactory.createURI("http://example.com/2"), NodeFactory.createURI("http://example.com/v"),
+                Triple.create(NodeFactory.createURI("http://example.com/2"), NodeFactory.createURI("http://example.com/v"),
                         NodeFactory.createBlankNode()),
-                new Triple(NodeFactory.createURI("http://example.com/3"), NodeFactory.createURI("http://example.com/v"),
+                Triple.create(NodeFactory.createURI("http://example.com/3"), NodeFactory.createURI("http://example.com/v"),
                         NodeFactory.createBlankNode()) };
 
     }

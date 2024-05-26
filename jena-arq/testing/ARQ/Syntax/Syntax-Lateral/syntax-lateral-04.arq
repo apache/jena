@@ -1,0 +1,4 @@
+SELECT * { 
+  ?s ?p ?o 
+  LATERAL { OPTIONAL { ?s ?q ?x } }
+}

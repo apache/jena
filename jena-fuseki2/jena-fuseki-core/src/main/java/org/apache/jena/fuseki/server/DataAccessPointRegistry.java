@@ -21,14 +21,14 @@ package org.apache.jena.fuseki.server;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import org.apache.jena.atlas.lib.Registry;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
-import org.apache.jena.fuseki.metrics.FusekiRequestsMetrics;
+import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 
 /**
  * Registry of (dataset name, {@link DataAccessPoint}).
@@ -39,30 +39,20 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
     private final MeterRegistry meterRegistry;
 
     public DataAccessPointRegistry() {
-        this.meterRegistry = null;
-    }
-
-    public DataAccessPointRegistry(MeterRegistry meterRegistry) {
-        this.meterRegistry = meterRegistry;
+        this.meterRegistry = MetricsProviderRegistry.get().getMeterRegistry();
     }
 
     public DataAccessPointRegistry(DataAccessPointRegistry other) {
-        other.forEach((name, accessPoint)->register(name, accessPoint));
+        other.forEach((_name, accessPoint)->register(accessPoint));
         this.meterRegistry = other.meterRegistry;
     }
 
     // Preferred way to register. Other method for legacy.
     public void register(DataAccessPoint accessPt) {
-        register(accessPt.getName(), accessPt);
-    }
-
-    private void register(String name, DataAccessPoint accessPt) {
+        String name = accessPt.getName();
         if ( isRegistered(name) )
             throw new FusekiException("Already registered: "+name);
         super.put(name, accessPt);
-        if (meterRegistry != null) {
-            new FusekiRequestsMetrics( accessPt ).bindTo( meterRegistry );
-        }
     }
 
     /**
@@ -79,16 +69,6 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
         // Make a copy for safety.
         forEach((_name, accessPoint) -> accessPoints.add(accessPoint));
         return accessPoints;
-    }
-
-    /**
-     *  @deprecated Use {@link #register(DataAccessPoint)}.
-     * This method ignores the accessPointName argument.
-     */
-    @Override
-    @Deprecated
-    public void put(String accessPointName, DataAccessPoint dap) {
-        register(dap);
     }
 
     @Override

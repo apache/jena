@@ -19,31 +19,22 @@
 package org.apache.jena.rdf.model;
 
 /** An RDFWriter factory interface.
- *
- * <p>The factory will create an appropriate writer for the particular
- *   serialization language being read.  Predefined languages:</p>
+ * <blockquote><i>Legacy</i></blockquote>
+ * <p>
+ * Writing RDF is usually done via:
  * <ul>
- * <li>RDF/XML - default</li>
- * <li>RDF/XML-ABBREV</li>
- * <li>N-TRIPLE</li>
+ * <li>RDFDataMgr</li>
+ * <li>RDFWriter</li>
+ * <li>Model.write</li>
  * </ul>
- *<p>System wide defaults for classes to use as readers for these languages
- *are defined.
- *</p>
- *<p><b>NOTE:</b> All settings are global in nature</p>
+ * All of these will use the newer RIOT writers, not implementations of this interface.
  */
 
 public interface RDFWriterF {
 
-/** return an RDFWriter instance for the default serialization language.
- * @return an RDFWriter instance for the default serialization language.
- */
-    public RDFWriterI getWriter();
-
-/** an RDFWriter instance for the specified serialization language.
- * @param lang the serialization language - <code>null</code> selects the
- *             default
- * @return the RDFWriter instance
- */
+    /** an RDFWriter instance for the specified serialization language.
+     * @param lang the serialization language - <code>null</code> selects the default (RDF/XML)
+     * @return the RDFWriter instance
+     */
     public RDFWriterI getWriter(String lang);
 }

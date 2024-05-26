@@ -25,12 +25,11 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Set;
-import java.util.UUID;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.fuseki.main.FusekiServer;
@@ -55,13 +54,15 @@ public class ExFusekiMain_3_FusekiModule {
         //
         // The file is typically put into the jar by having
         //   src/main/resources/META-INF/services/org.apache.jena.fuseki.main.sys.FusekiModule
-        FusekiModule module = new FMod_ProvidePATCH();
-        FusekiModules.add(module);
 
+        // For this example, we add the module directly.
+        FusekiModule module = new FMod_ProvidePATCH();
+        FusekiModules fusekiModules = FusekiModules.create(module);
         // Create server.
         FusekiServer server =
             FusekiServer.create()
                 .port(0)
+                .fusekiModules(fusekiModules)
                 .build()
                 .start();
         int port = server.getPort();
@@ -77,10 +78,11 @@ public class ExFusekiMain_3_FusekiModule {
 
     static class FMod_ProvidePATCH implements FusekiModule {
 
-        private String modName = UUID.randomUUID().toString();
+        public FMod_ProvidePATCH() {}
+
         @Override
         public String name() {
-            return modName;
+            return "ProvidePATCH";
         }
 
         @Override public void prepare(FusekiServer.Builder builder, Set<String> datasetNames, Model configModel) {

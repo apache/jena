@@ -203,7 +203,7 @@ public class FusekiWebapp
 
     public static void copyFileFromResource(String fn, Path dstFile) {
         try {
-            // Get from the file from area "org/apache/jena/fuseki/server"  (our package)
+            // Get from the file from area "org/apache/jena/fuseki/webapp"  (our package)
             URL url = FusekiWebapp.class.getResource(fn);
             if ( url == null )
                 throw new FusekiConfigException("Failed to find resource '"+fn+"'");
@@ -219,12 +219,9 @@ public class FusekiWebapp
     public static void initializeDataAccessPoints(DataAccessPointRegistry registry, FusekiArgs initialSetup, String configDir) {
         List<DataAccessPoint> configFileDBs = initServerConfiguration(initialSetup);
         List<DataAccessPoint> directoryDBs =  FusekiConfig.readConfigurationDirectory(configDir);
-        List<DataAccessPoint> systemDBs =     FusekiConfig.readSystemDatabase(SystemState.getDataset());
-
         List<DataAccessPoint> datapoints = new ArrayList<>();
         datapoints.addAll(configFileDBs);
         datapoints.addAll(directoryDBs);
-        datapoints.addAll(systemDBs);
 
         datapoints.forEach(registry::register);
     }
@@ -312,7 +309,7 @@ public class FusekiWebapp
 
         String str = TemplateFunctions.templateFile(templateFile, params, Lang.TTL);
         Lang lang = RDFLanguages.filenameToLang(templateFile, Lang.TTL);
-        Model model = RDFParser.fromString(str).base(datasetPath).lang(lang).toModel();
+        Model model = RDFParser.fromString(str, lang).base(datasetPath).toModel();
 
         List<DataAccessPoint> defns = FusekiConfig.servicesAndDatasets(model);
         if ( defns.size() != 1 ) {

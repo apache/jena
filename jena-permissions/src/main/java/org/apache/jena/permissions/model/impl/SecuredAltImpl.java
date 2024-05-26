@@ -476,7 +476,7 @@ public class SecuredAltImpl extends SecuredContainerImpl implements SecuredAlt {
             if (iter.hasNext()) {
                 final Statement stmt = iter.next();
                 final Triple t = stmt.asTriple();
-                final Triple t2 = new Triple(t.getSubject(), t.getPredicate(), o.asNode());
+                final Triple t2 = Triple.create(t.getSubject(), t.getPredicate(), o.asNode());
                 checkUpdate(t, t2);
                 stmt.changeObject(o);
                 return holder.getSecuredItem();

@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
@@ -72,6 +72,7 @@ public class ServletOps {
      * Use Content-Length so the connection is preserved.
      */
     static void writeMessagePlainText(HttpServletResponse response, String message) {
+        ServletOps.setNoCache(response);
         if ( message == null )
             return;
         if ( ! message.endsWith("\n") )
@@ -79,7 +80,6 @@ public class ServletOps {
         response.setContentLength(message.length());
         response.setContentType(WebContent.contentTypeTextPlain);
         response.setCharacterEncoding(WebContent.charsetUTF8);
-        ServletOps.setNoCache(response);
         try(ServletOutputStream out = response.getOutputStream()){
             out.print(message);
         }
@@ -270,8 +270,8 @@ public class ServletOps {
     public static void errorOccurred(String message, Throwable ex) {
         if ( message == null )
             System.err.println();
-        if ( ex instanceof ActionErrorException )
-            throw (ActionErrorException)ex;
+        if ( ex instanceof ActionErrorException actionErr )
+            throw actionErr;
         throw new ActionErrorException(HttpSC.INTERNAL_SERVER_ERROR_500, message, ex);
     }
 
@@ -288,8 +288,13 @@ public class ServletOps {
     }
 
     public static void setNoCache(HttpServletResponse response) {
+        try {
         response.setHeader(HttpNames.hCacheControl, "must-revalidate,no-cache,no-store");
         response.setHeader(HttpNames.hPragma, "no-cache");
+        } catch (UnsupportedOperationException ex) {
+            // Jetty exception when the response has already been committed
+            // and so the headers can't be set. Ignore.
+        }
     }
 
     /** response to a upload operation of some kind. */

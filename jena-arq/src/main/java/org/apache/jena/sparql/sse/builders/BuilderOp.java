@@ -25,6 +25,7 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpLib;
 import org.apache.jena.sparql.algebra.Table;
 import org.apache.jena.sparql.algebra.op.*;
 import org.apache.jena.sparql.core.*;
@@ -82,6 +83,7 @@ public class BuilderOp
         addBuild(Tags.tagMinus,         buildMinus);
         addBuild(Tags.tagUnion,         buildUnion);
         addBuild(Tags.tagDatasetNames,  buildDatasetNames);
+        addBuild(Tags.tagLateral,       buildLateral);
         addBuild(Tags.tagConditional,   buildConditional);
 
         addBuild(Tags.tagToList,        buildToList);
@@ -358,11 +360,19 @@ public class BuilderOp
 		return new OpDatasetNames(n);
     };
 
+    final protected Build buildLateral = (ItemList list) -> {
+        BuilderLib.checkLength(3, 4, list, "lateral");
+        Op left = build(list, 1);
+        Op right = build(list, 2);
+        Op op = OpLateral.create(left, right);
+        return op;
+    };
+
     final protected Build buildConditional = (ItemList list) -> {
 		BuilderLib.checkLength(2, 3, list, "condition");
 		Op left = build(list, 1);
 		// No second argument means unit.
-		Op right = OpTable.unit();
+		Op right = OpLib.unit();
 		if ( list.size() != 2 )
 			right  = build(list, 2);
 		Op op = new OpConditional(left, right);
@@ -564,7 +574,7 @@ public class BuilderOp
 		VarExprList x = BuilderExpr.buildNamedExprOrExprList(list.get(1));
 		Op sub;
 		if ( list.size() == 2 )
-			sub = OpTable.unit();
+			sub = OpLib.unit();
 		else
 			sub = build(list, 2);
 		return OpAssign.create(sub, x);
@@ -575,7 +585,7 @@ public class BuilderOp
 		VarExprList x = BuilderExpr.buildNamedExprOrExprList(list.get(1));
 		Op sub;
 		if ( list.size() == 2 )
-			sub = OpTable.unit();
+			sub = OpLib.unit();
 		else
 			sub = build(list, 2);
 		return OpExtend.create(sub, x);

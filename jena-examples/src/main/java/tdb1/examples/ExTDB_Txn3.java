@@ -21,7 +21,7 @@ package tdb1.examples;
 import org.apache.jena.query.*;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb1.TDB1Factory;
 
 /** Illustration of working at the DatasetGraph level.
  *  Normally, applications work with {@link Dataset}.
@@ -32,7 +32,7 @@ public class ExTDB_Txn3
 {
     public static void main(String... argv)
     {
-        DatasetGraph dsg = TDBFactory.createDatasetGraph();
+        DatasetGraph dsg = TDB1Factory.createDatasetGraph();
 
         // Start a transaction. It starts in "read" mode and promotes to "write" mode if necessary. 
         Txn.execute(dsg, ()->{

@@ -20,11 +20,13 @@ package org.apache.jena.sparql.engine.iterator;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 
 /**
@@ -66,6 +68,15 @@ public abstract class QueryIter extends QueryIteratorBase
 
     public static QueryIterator map(QueryIterator qIter, Map<Var, Var> varMapping) {
         return new QueryIteratorMapped(qIter, varMapping);
+    }
+
+    /** flatmap.
+     * The mapper may return null to signal "no iterator for this binding"
+     */
+    public static QueryIter flatMap(QueryIterator input, Function<Binding, QueryIterator> mapper, ExecutionContext execCxt) {
+        return new QueryIterRepeatApply(input, execCxt) {
+            @Override protected QueryIterator nextStage(Binding binding) { return mapper.apply(binding); }
+        };
     }
 
     @Override

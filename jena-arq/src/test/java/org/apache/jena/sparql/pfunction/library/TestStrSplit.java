@@ -136,7 +136,7 @@ public class TestStrSplit {
 	private void assertAllX(String... literalValues) {
 		List<Node> expectedNodes = new ArrayList<>();
 		for (String value: literalValues) {
-			expectedNodes.add(NodeFactory.createLiteral(value));
+			expectedNodes.add(NodeFactory.createLiteralString(value));
 		}
 		ResultSet rs = qe.execSelect();
 		List<Node> actualNodes = new ArrayList<>();

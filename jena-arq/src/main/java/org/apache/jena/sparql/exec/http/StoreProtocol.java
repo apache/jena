@@ -281,7 +281,7 @@ public abstract class StoreProtocol<X extends StoreProtocol<X>> {
         return RDFWriterRegistry.defaultSerialization(lang);
     }
 
-    /** Choose the Content-Type header for sending a file, fallin gback to the StoreProtocol setting. */
+    /** Choose the Content-Type header for sending a file, falling back to the StoreProtocol setting. */
     protected String contentTypeFromFilename(String filename) {
         ContentType ct = RDFLanguages.guessContentType(filename);
         if ( ct != null )

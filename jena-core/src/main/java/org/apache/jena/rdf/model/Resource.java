@@ -29,12 +29,12 @@ import org.apache.jena.shared.PropertyNotFoundException ;
     a range of methods, such as <code>getProperty()</code> and
     <code>addProperty()</code> which will access or modify that model.  This
     enables the programmer to write code in a compact and easy style.
-    
+
 <p>
-    Resources created by ResourceFactory will not refer to any model, and will 
+    Resources created by ResourceFactory will not refer to any model, and will
     not permit operations which require a model. Such resources are useful
     as general constants.
- 
+
   <p>This interface provides methods supporting typed literals.  This means
      that methods are provided which will translate a built in type, or an
      object to an RDF Literal.  This translation is done by invoking the
@@ -63,7 +63,7 @@ public interface Resource extends RDFNode {
      * @return A unique id for an anonymous resource.
      */
     public AnonId getId();
-    
+
     /**
         Override RDFNode.inModel() to produce a statically-typed Resource
         in the given Model.
@@ -81,22 +81,22 @@ public interface Resource extends RDFNode {
      * @return The URI of the resource, or null if it's a bnode or statement.
      */
     public String getURI();
-    
+
     /**
      * Return the statement of this resource, or null if it is not an RDF-star triple term.
-     * This is not a resource for a reified statement.   
+     * This is not a resource for a reified statement.
      * @return The statement of this resource,or null if it is not an RDF-star triple term.
      */
     public Statement getStmtTerm();
 
-    /** Returns the namespace associated with this resource if it is a URI, else return null. 
-     * <p> 
-     * The namespace is suitable for use with localname in in RDF/XML.
+    /** Returns the namespace associated with this resource if it is a URI, else return null.
+     * <p>
+     * The namespace is suitable for use with localname in RDF/XML.
      * XML does not allow QNames to start with a digit and this method
      * reflects that restriction in the values for namespace and localname.
      * <p>
      * See functions in {@code SplitIRI} for other split algorithms.
-     *  
+     *
      * @return The namespace for this resource or null.
      */
     public String getNameSpace();
@@ -187,7 +187,7 @@ public interface Resource extends RDFNode {
      * @return An iterator over the statements.
      */
     public StmtIterator listProperties( Property p );
-    
+
     /** Return an iterator over all the properties of this resource with a specific language.
     *
     * <p>The model associated with this resource is searched and an iterator is
@@ -214,7 +214,7 @@ public interface Resource extends RDFNode {
         <code>this.getModel().createTypedLiteral(o)</code>.
     */
     public Resource addLiteral( Property p, boolean o );
-    
+
     /**
         Add the property <code>p</code> with the typed-literal value <code>o</code>
         to this resource, <i>ie</i> add (this, p, typed(o)) to this's model. Answer
@@ -222,7 +222,7 @@ public interface Resource extends RDFNode {
         <code>this.getModel().createTypedLiteral(o)</code>.
     */
     public Resource addLiteral( Property p, long o );
-    
+
     /**
         Add the property <code>p</code> with the typed-literal value <code>o</code>
         to this resource, <i>ie</i> add (this, p, typed(o)) to this's model. Answer
@@ -256,13 +256,13 @@ public interface Resource extends RDFNode {
     public Resource addLiteral( Property p, Object o );
 
     /**
-        Add the property <code>p</code> with the pre-constructed Literal value 
-        <code>o</code> to this resource, <i>ie</i> add (this, p, o) to this's 
+        Add the property <code>p</code> with the pre-constructed Literal value
+        <code>o</code> to this resource, <i>ie</i> add (this, p, o) to this's
         model. Answer this resource. <b>NOTE</b> thjat this is distinct from the
         other addLiteral methods in that the Literal is not turned into a Literal.
-    */    
+    */
     public Resource addLiteral( Property p, Literal o );
-    
+
     /** Add a property to this resource.
      *
      * <p>A statement with this resource as the subject, p as the predicate and o
@@ -318,7 +318,7 @@ public interface Resource extends RDFNode {
         a typed literal with the appropriate RDF type.
     */
     public boolean hasLiteral( Property p, boolean o );
-    
+
     /**
         Answer true iff this resource has the value <code>o</code> for
         property <code>p</code>. <code>o</code> is interpreted as
@@ -332,14 +332,14 @@ public interface Resource extends RDFNode {
         a typed literal with the appropriate RDF type.
     */
     public boolean hasLiteral( Property p, char o );
-    
+
     /**
         Answer true iff this resource has the value <code>o</code> for
         property <code>p</code>. <code>o</code> is interpreted as
         a typed literal with the appropriate RDF type.
     */
     public boolean hasLiteral( Property p, double o );
-    
+
     /**
         Answer true iff this resource has the value <code>o</code> for
         property <code>p</code>. <code>o</code> is interpreted as

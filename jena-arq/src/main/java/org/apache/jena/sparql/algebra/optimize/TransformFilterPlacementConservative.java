@@ -32,6 +32,7 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.algebra.OpLib;
 import org.apache.jena.sparql.algebra.OpVars ;
 import org.apache.jena.sparql.algebra.TransformCopy ;
 import org.apache.jena.sparql.algebra.op.* ;
@@ -253,7 +254,7 @@ public class TransformFilterPlacementConservative extends TransformCopy {
             Set<Var> exprVars = expr.getVarsMentioned();
             if (patternVarsScope.containsAll(exprVars)) {
                 if (op == null)
-                    op = OpTable.unit();
+                    op = OpLib.unit();
                 op = OpFilter.filter(expr, op);
                 iter.remove();
             }
@@ -269,7 +270,7 @@ public class TransformFilterPlacementConservative extends TransformCopy {
         for (Iterator<Expr> iter = exprs.iterator(); iter.hasNext();) {
             Expr expr = iter.next();
             if (op == null)
-                op = OpTable.unit();
+                op = OpLib.unit();
             op = OpFilter.filter(expr, op);
             iter.remove();
         }

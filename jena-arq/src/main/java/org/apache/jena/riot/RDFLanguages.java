@@ -18,12 +18,15 @@
 
 package org.apache.jena.riot;
 
+import static org.apache.jena.atlas.lib.Lib.lowercase;
 import static org.apache.jena.riot.WebContent.*;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.MediaType;
 import org.apache.jena.util.FileUtils;
@@ -56,11 +59,15 @@ public class RDFLanguages
      *
      * OWL2 does not mention it.
      *
-     * ".owx" is the OWL direct XML syntax. */
+     * ".owx" is the OWL direct XML syntax.
+     */
 
     /** <a href="http://www.w3.org/TR/rdf-syntax-grammar/">RDF/XML</a> */
     public static final Lang RDFXML     = LangBuilder.create(strLangRDFXML, contentTypeRDFXML)
-                                                     .addAltNames("RDFXML", "RDF/XML-ABBREV", "RDFXML-ABBREV")
+                                                     .addAltNames("RDFXML")
+                                                     // Legacy!
+                                                     .addAltNames("RDF/XML-ABBREV", "RDFXML-ABBREV")
+                                                     .addAltNames("rdfxml")
                                                      .addFileExtensions("rdf", "owl", "xml")
                                                      .build();
 
@@ -106,17 +113,6 @@ public class RDFLanguages
     public static final Lang JSONLD11   = LangBuilder.create(strLangJSONLD11, "x/ld-json-11")
                                                      .addAltNames("JSONLD11")
                                                      .addFileExtensions("jsonld11")
-                                                     .build();
-
-    /*
-     * Override for JSON-LD 1.0 - requires an explicit language name
-     * {@code RDFParser.forceLang(Lang.JSONLD10)...}
-     * or use of the file extensions {@code .jsonld10}
-     */
-    public static final String strLangJSONLD10     = "JSON-LD-10";
-    public static final Lang JSONLD10   = LangBuilder.create(strLangJSONLD10, "x/ld-json-10")
-                                                     .addAltNames("JSONLD10")
-                                                     .addFileExtensions("jsonld10")
                                                      .build();
 
     /** <a href="http://www.w3.org/TR/rdf-json/">RDF/JSON</a>.  This is not <a href="http://www.w3.org/TR/json-ld/">JSON-LD</a>. */
@@ -171,6 +167,13 @@ public class RDFLanguages
                                                      .addAltNames("NULL", "null")
                                                      .build();
 
+    /** Output-only language for a StreamRDF (for development) */
+    public static final Lang RDFRAW     = LangBuilder.create("rdf/raw", "rdf/raw")
+                                                     .addAltContentTypes("application/rdf+raw")
+                                                     .addAltNames("raw", "dev")
+                                                     .addFileExtensions("jena")
+                                                     .build();
+
     /** <a href="https://w3c.github.io/shacl/shacl-compact-syntax/">SHACL Compact Syntax</a> (2020-07-01) */
     public static final Lang SHACLC     = LangBuilder.create("SHACLC", "text/shaclc")
                                                      .addAltNames("shaclc")
@@ -207,7 +210,6 @@ public class RDFLanguages
         Lang.TURTLE     = RDFLanguages.TURTLE;
         Lang.TTL        = RDFLanguages.TTL;
         Lang.JSONLD     = RDFLanguages.JSONLD;
-        Lang.JSONLD10   = RDFLanguages.JSONLD10;
         Lang.JSONLD11   = RDFLanguages.JSONLD11;
         Lang.RDFJSON    = RDFLanguages.RDFJSON;
         Lang.NQUADS     = RDFLanguages.NQUADS;
@@ -217,6 +219,7 @@ public class RDFLanguages
         Lang.RDFTHRIFT  = RDFLanguages.RDFTHRIFT;
         Lang.TRIX       = RDFLanguages.TRIX;
         Lang.RDFNULL    = RDFLanguages.RDFNULL;
+        Lang.RDFRAW     = RDFLanguages.RDFRAW;
         Lang.SHACLC     = RDFLanguages.SHACLC;
 
         // Used for result sets, not RDF syntaxes.
@@ -238,7 +241,6 @@ public class RDFLanguages
         register(N3);
         register(NTRIPLES);
         register(JSONLD);
-        register(JSONLD10);
         register(JSONLD11);
         register(RDFJSON);
         register(TRIG);
@@ -247,18 +249,8 @@ public class RDFLanguages
         register(RDFTHRIFT);
         register(TRIX);
         register(RDFNULL);
+        register(RDFRAW);
         register(SHACLC);
-
-        // Check for JSON-LD engine.
-        String clsName = "com.github.jsonldjava.core.JsonLdProcessor";
-        try {
-            Class.forName(clsName);
-        } catch (ClassNotFoundException ex) {
-            Log.warn(RDFLanguages.class, "java-jsonld classes not on the classpath - JSON-LD input-output not available.");
-            Log.warn(RDFLanguages.class, "Minimum jarfiles are jsonld-java, jackson-core, jackson-annotations");
-            Log.warn(RDFLanguages.class, "If using a Jena distribution, put all jars in the lib/ directory on the classpath");
-            return;
-        }
     }
 
     /**
@@ -474,7 +466,7 @@ public class RDFLanguages
         return lang;
     }
 
-    private static String canonicalKey(String x) { return x.toLowerCase(Locale.ROOT); }
+    private static String canonicalKey(String x) { return lowercase(x); }
 
     public static ContentType guessContentType(String resourceName) {
         if ( resourceName == null )

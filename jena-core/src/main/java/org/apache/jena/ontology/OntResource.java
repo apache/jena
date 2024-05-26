@@ -550,9 +550,9 @@ public interface OntResource
      * <p>
      * Answer true if this resource is a member of the class denoted by the
      * given class resource.  Includes all available types, so is equivalent to
-     * <code><pre>
+     * <pre>
      * hasRDF( ontClass, false );
-     * </pre></code>
+     * </pre>
      * </p>
      *
      * @param ontClass Denotes a class to which this value may belong

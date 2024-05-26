@@ -1,0 +1,23 @@
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: nonconclusions004.rdf,v 1.5 2003-12-05 05:09:25 jeremy_carroll Exp $
+-->
+<!--
+ If the domain of prop is a singleton set then while
+ it is necessarily inverse functional, (i.e. every member of its 
+ range is the value of a single item) it is not necessarily an 
+ owl:InverseFunctionalProperty.
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xml:base="http://www.w3.org/2002/03owlt/InverseFunctionalProperty/nonconclusions004" >
+    <owl:InverseFunctionalProperty rdf:about="premises004#prop"/>
+</rdf:RDF>

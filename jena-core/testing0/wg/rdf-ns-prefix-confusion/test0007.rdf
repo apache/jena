@@ -1,0 +1,39 @@
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: test0007.rdf,v 1.2 2005-08-04 09:53:17 jeremy_carroll Exp $
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/">
+
+ <!-- 
+  Test case for
+  Issue http://www.w3.org/2000/03/rdf-tracking/#rdf-ns-prefix-confusion
+
+  List of RDF attributes that are required to have an rdf: prefix
+    about aboutEach 
+    ID bagID type resource parseType 
+
+  Dave Beckett - http://purl.org/net/dajobe/
+
+ -->
+
+  <!-- Test rdf:aboutEach attribute - expect 3 triples -->
+
+  <!-- 6.3 description, part 2; 6.5 idAboutAttr; 6.8 aboutEachAttr, part 1  -->
+  <rdf:Description rdf:aboutEach="#container">
+    <eg:property>bar</eg:property>
+  </rdf:Description>
+   
+  <rdf:Bag rdf:ID="container">
+    <rdf:li rdf:resource="http://example.org/resource/" />
+  </rdf:Bag>
+
+</rdf:RDF>

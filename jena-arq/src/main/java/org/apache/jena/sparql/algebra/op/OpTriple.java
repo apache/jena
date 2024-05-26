@@ -18,14 +18,14 @@
 
 package org.apache.jena.sparql.algebra.op;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitor ;
-import org.apache.jena.sparql.algebra.Transform ;
-import org.apache.jena.sparql.core.BasicPattern ;
-import org.apache.jena.sparql.sse.Tags ;
-import org.apache.jena.sparql.util.Iso ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitor;
+import org.apache.jena.sparql.algebra.Transform;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.sse.Tags;
+import org.apache.jena.sparql.util.Iso;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 /** Algebra operation for a single triple.  Not normally used - triples are
  * contained in basic graph patterns (which is the unit of extension in SPARQL,
@@ -36,14 +36,14 @@ import org.apache.jena.sparql.util.NodeIsomorphismMap ;
  */
 public class OpTriple extends Op0
 {
-    private final Triple triple ;
-    private OpBGP opBGP = null ;
+    private final Triple triple;
+    private OpBGP opBGP = null;
 
     public OpTriple(Triple triple) {
         this.triple = triple;
     }
 
-    public final Triple getTriple() { return triple ; }
+    public final Triple getTriple() { return triple; }
 
     public final OpBGP asBGP() {
         if ( opBGP == null ) {
@@ -56,7 +56,7 @@ public class OpTriple extends Op0
 
     @Override
     public Op apply(Transform transform)
-    { return transform.transform(this) ; }
+    { return transform.transform(this); }
 
     @Override
     public Op0 copy() {
@@ -78,7 +78,7 @@ public class OpTriple extends Op0
 
     @Override
     public void visit(OpVisitor opVisitor)
-    { opVisitor.visit(this) ; }
+    { opVisitor.visit(this); }
 
     @Override
     public String getName() {

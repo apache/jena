@@ -79,8 +79,10 @@ public class NodeFunctions {
      * Check for string operations with primary first arg and second arg
      * (e.g. CONTAINS).  The arguments are not used in the same way and the check
      * operation is not symmetric.
+     * <ul>
      * <li> "abc"@en is compatible with "abc"
      * <li> "abc" is NOT compatible with "abc"@en
+     * </ul>
      */
     public static void checkTwoArgumentStringLiterals(String label, NodeValue arg1, NodeValue arg2) {
 
@@ -434,8 +436,10 @@ public class NodeFunctions {
     private static String resolveCheckIRI(String baseIRI, String iriStr) {
         try {
             IRIx iri = IRIx.create(iriStr);
+            if ( ! iri.isRelative() )
+                    return iriStr;
             IRIx base = ( baseIRI != null ) ? IRIx.create(baseIRI) : IRIs.getSystemBase();
-            if ( base.isRelative() )
+            if ( base.isRelative() /*&& iri.isRelative()*/ )
                 throw new ExprEvalException("Relative IRI for base: " + iriStr) ;
             IRIx result = base.resolve(iri);
             if ( ! result.isReference() )
@@ -503,8 +507,8 @@ public class NodeFunctions {
     public static Duration duration(int seconds) {
         if ( seconds == 0 )
             return XSDFuncOp.zeroDuration;
-        Duration dur = NodeValue.xmlDatatypeFactory.newDuration(1000*seconds);
-        // Neaten the duration. Not all the fields ar zero.
+        Duration dur = NodeValue.xmlDatatypeFactory.newDuration(1000L*seconds);
+        // Neaten the duration. Not all the fields are zero.
         dur = NodeValue.xmlDatatypeFactory.newDuration(dur.getSign()>=0,
                                                        field(dur, DatatypeConstants.YEARS),
                                                        field(dur, DatatypeConstants.MONTHS),

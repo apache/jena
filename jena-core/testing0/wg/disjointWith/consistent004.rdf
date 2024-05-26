@@ -1,0 +1,61 @@
+<!--++ disjointWith/consistent004.rdf ** generated using webont test editor. ++-->
+<!--++ Created 25 Jul 2003 19:41:46 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: consistent004.rdf,v 1.5 2003-12-05 05:09:26 jeremy_carroll Exp $
+-->
+<!--
+This example has owl:disjointWith edges in the graph which cannot be generated
+by the mapping rules for DisjointClasses. Consider the lack of owl:disjointWith edge
+between nodes C and D.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xml:base="http://www.w3.org/2002/03owlt/disjointWith/consistent004" >
+    <owl:Class rdf:nodeID="A">
+      <owl:intersectionOf rdf:parseType="Collection">
+        <owl:Class rdf:ID="A"/>
+      </owl:intersectionOf>
+      <owl:disjointWith rdf:nodeID="B"/>
+      <owl:disjointWith rdf:nodeID="D"/>
+      <owl:disjointWith rdf:nodeID="E"/>
+    </owl:Class>
+    <owl:Class rdf:nodeID="B">
+      <owl:intersectionOf rdf:parseType="Collection">
+        <owl:Class rdf:ID="B"/>
+      </owl:intersectionOf>
+      <owl:disjointWith rdf:nodeID="A"/>
+      <owl:disjointWith rdf:nodeID="C"/>
+      <owl:disjointWith rdf:nodeID="E"/>
+    </owl:Class>
+    <owl:Class rdf:nodeID="C">
+      <owl:intersectionOf rdf:parseType="Collection">
+        <owl:Class rdf:ID="C"/>
+      </owl:intersectionOf>
+      <owl:disjointWith rdf:nodeID="A"/>
+      <owl:disjointWith rdf:nodeID="E"/>
+    </owl:Class>
+    <owl:Class rdf:nodeID="D">
+      <owl:intersectionOf rdf:parseType="Collection">
+        <owl:Class rdf:ID="D"/>
+      </owl:intersectionOf>
+      <owl:disjointWith rdf:nodeID="B"/>
+      <owl:disjointWith rdf:nodeID="E"/>
+    </owl:Class>
+    <owl:Class rdf:nodeID="E">
+      <owl:intersectionOf rdf:parseType="Collection">
+        <owl:Class rdf:ID="E"/>
+      </owl:intersectionOf>
+    </owl:Class>
+
+</rdf:RDF>

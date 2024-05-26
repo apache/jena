@@ -30,7 +30,7 @@ public class TestGraphUtil {
     private static Graph graph2 = make(2);
 
     private static Graph make(int N) {
-        Graph graph = Factory.createGraphMem();
+        Graph graph = GraphMemFactory.createGraphMem();
         for ( int i = 0 ; i < N ; i++ ) {
             Triple t = GraphTestBase.triple("a P 'x"+i+"'");
             graph.add(t);

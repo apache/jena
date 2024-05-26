@@ -100,10 +100,10 @@ public class AbstractRewriter<T> {
      * @param t The triple path to rewrite.
      * @return the triple path after rewriting.
      */
-    protected final TriplePath rewrite(TriplePath t) {
+    public TriplePath rewrite(TriplePath t) {
         if (t.getPath() == null) {
             return new TriplePath(
-                    new Triple(changeNode(t.getSubject()), changeNode(t.getPredicate()), changeNode(t.getObject())));
+                    Triple.create(changeNode(t.getSubject()), changeNode(t.getPredicate()), changeNode(t.getObject())));
         }
         PathRewriter transform = new PathRewriter(values);
         t.getPath().visit(transform);
@@ -116,8 +116,8 @@ public class AbstractRewriter<T> {
      * @param t The triple to rewrite.
      * @return The rewritten triple.
      */
-    protected final Triple rewrite(Triple t) {
-        return new Triple(changeNode(t.getSubject()), changeNode(t.getPredicate()), changeNode(t.getObject()));
+    public final Triple rewrite(Triple t) {
+        return Triple.create(changeNode(t.getSubject()), changeNode(t.getPredicate()), changeNode(t.getObject()));
     }
 
     /**
@@ -127,7 +127,7 @@ public class AbstractRewriter<T> {
      * @param n The node to rewrite.
      * @return the rewritten node.
      */
-    protected final Node changeNode(Node n) {
+    protected Node changeNode(Node n) {
         if (n == null) {
             return n;
         }

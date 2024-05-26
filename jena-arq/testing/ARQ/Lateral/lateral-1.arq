@@ -1,0 +1,6 @@
+PREFIX : <http://example/>
+
+SELECT ?s ?label {
+  ?s :p ?o
+  LATERAL {  SELECT * { ?s :label ?label } LIMIT 2 }
+}

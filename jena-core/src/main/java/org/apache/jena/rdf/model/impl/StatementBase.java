@@ -51,17 +51,17 @@ public abstract class StatementBase
 	 * LiteralRequiredException.
 	 */
 	public abstract Literal getLiteral();
-	
+
 	public abstract Resource getResource();
-	
+
 	public abstract Resource getSubject();
-	
+
 	public abstract Property getPredicate();
-	
+
 	public abstract RDFNode getObject();
 
-	protected StatementImpl stringReplace(String s, String lang, boolean wellFormed) {
-	    return replace(new LiteralImpl(NodeFactory.createLiteral(s, lang, wellFormed), model));
+	protected StatementImpl stringReplace(String s, String lang) {
+	    return replace(new LiteralImpl(NodeFactory.createLiteralLang(s, lang), model));
 	}
 
 	/**
@@ -71,11 +71,11 @@ public abstract class StatementBase
 	 * disappear.
 	 */
 	protected StatementImpl stringReplace( String s )
-		{ return stringReplace( s, "", false ); }
+		{ return stringReplace( s, ""); }
 
 	public Statement changeLiteralObject( boolean o )
 		{ return changeObject( model.createTypedLiteral( o ) ); }
-	
+
     public Statement changeLiteralObject( long o )
         { return changeObject( model.createTypedLiteral( o ) ); }
 
@@ -84,24 +84,18 @@ public abstract class StatementBase
 
     public Statement changeLiteralObject( double o )
         { return changeObject( model.createTypedLiteral( o ) ); }
-    
+
 	public Statement changeLiteralObject( float o )
 		{ return changeObject( model.createTypedLiteral( o ) ); }
-	
+
     public Statement changeLiteralObject( int o )
         { return changeObject( model.createTypedLiteral( o ) ); }
 
 	public Statement changeObject( String o )
 		{ return stringReplace( String.valueOf( o ) ); }
 
-	public Statement changeObject( String o, boolean wellFormed )
-		{ return stringReplace( String.valueOf( o ), "", wellFormed ); }
-
 	public Statement changeObject( String o, String l )
-		{ return stringReplace( String.valueOf( o ), l, false ); }
-
-	public Statement changeObject( String o, String l, boolean wellFormed )
-		{ return stringReplace( String.valueOf( o ), l, wellFormed ); }
+		{ return stringReplace( String.valueOf( o ), l ); }
 
 	public Statement changeObject( RDFNode o )
 		{ return replace( o ); }
@@ -147,31 +141,25 @@ public abstract class StatementBase
 	public String getLanguage()
 		{ return getLiteral().getLanguage(); }
 
-	public boolean getWellFormed()
-		{ return hasWellFormedXML(); }
-    
-    public boolean hasWellFormedXML()
-        { return getLiteral().isWellFormedXML(); }
-
 	/**
-	 	Answer a string describing this Statement in a vaguely pretty way, with the 
+	 	Answer a string describing this Statement in a vaguely pretty way, with the
 	 	representations of the subject, predicate, and object in that order.
 	*/
 	@Override
     public String toString()
 		{
 		return
-		    "[" 
+		    "["
 		    + getSubject().toString()
-		    + ", " + getPredicate().toString() 
+		    + ", " + getPredicate().toString()
 		    + ", " + objectString( getObject() )
 		    + "]";
 		}
 
 	/**
-	 	Answer a string describing <code>object</code>, quoting it if it is a literal.
+	 	Answer a string describing <code>object</code>
 	*/
-	protected String objectString( RDFNode object )
-		{ return object.asNode().toString( null, true ); }
-
-	}
+    protected String objectString(RDFNode object) {
+        return object.toString();
+    }
+}

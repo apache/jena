@@ -37,7 +37,11 @@ import org.apache.jena.rdfconnection.RDFConnection;
 import org.junit.After;
 import org.junit.Test;
 
-/** Test features */
+/**
+ * Test Fuseki Main command line.
+ *
+ * @see TestCrossOriginFilter for CORS
+ */
 public class TestFusekiMainCmd {
 
     private static final String DATABASES="target/Databases";

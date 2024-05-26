@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,11 +17,14 @@
  */
 package org.apache.jena.arq.querybuilder.handlers;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
+import org.apache.jena.graph.FrontsNode;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Node_Literal;
+import org.apache.jena.graph.Node_URI;
 import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.Var;
 
@@ -36,7 +39,7 @@ public class DatasetHandler implements Handler {
 
     /**
      * Constructor.
-     * 
+     *
      * @param query The query the handler will manage.
      */
     public DatasetHandler(Query query) {
@@ -45,7 +48,7 @@ public class DatasetHandler implements Handler {
 
     /**
      * Add all the dataset information from the handler argument.
-     * 
+     *
      * @param datasetHandler The handler to copy from.
      */
     public void addAll(DatasetHandler datasetHandler) {
@@ -54,55 +57,77 @@ public class DatasetHandler implements Handler {
     }
 
     /**
-     * Add a graph name to the from named list.
-     * 
-     * @param graphName The graph name to add.
+     * Converts an object into a graph name.
+     * @param graphName the object that represents the graph name.
+     * @return the string that is the graph name.
      */
-    public void fromNamed(String graphName) {
-        query.addNamedGraphURI(graphName);
-    }
-
-    /**
-     * Add the graph names to the from named list.
-     * 
-     * The names are ordered in as defined in the collection.
-     * 
-     * @param graphNames The from names to add.
-     */
-    public void fromNamed(Collection<String> graphNames) {
-        for (String uri : graphNames) {
-            query.addNamedGraphURI(uri);
+    String asGraphName(Object graphName) {
+        // package private for testing access
+        if (graphName instanceof String) {
+            return (String) graphName;
         }
+        if (graphName instanceof FrontsNode) {
+            return asGraphName(((FrontsNode)graphName).asNode());
+        }
+        if (graphName instanceof Node_URI) {
+            return ((Node_URI)graphName).getURI();
+        }
+        if (graphName instanceof Node_Literal) {
+            return asGraphName(((Node_Literal)graphName).getLiteralValue());
+        }
+
+        return graphName.toString();
     }
 
     /**
-     * Add the graph names to the from list.
-     * 
+     * Add one or more named graphs to the query.
+     * if {@code graphName} is a {@code collection} or an array each element in the
+     * @code collection} or array is converted to a string and the result added to the
+     * query.
+     *
      * @param graphName the name to add.
+     * @see #asGraphName(Object)
      */
-    public void from(String graphName) {
-        query.addGraphURI(graphName);
+    public void fromNamed(Object graphName) {
+        processGraphName(query::addNamedGraphURI, graphName);
     }
 
     /**
-     * Add the graph names to the named list.
-     * 
-     * The names are ordered in as defined in the collection.
-     * 
-     * @param graphNames The names to add.
+     * Converts performs a single level of unwrapping an Iterable before calling
+     * the {@code process} method with the graph name converted to a string.
+     * @param process the process that accepts the string graph name.
+     * @param graphName the Object that represents one or more graph names.
+     * @see #asGraphName(Object)
      */
-    public void from(Collection<String> graphNames) {
-        for (String uri : graphNames) {
-            query.addGraphURI(uri);
+    private void processGraphName(Consumer<String> process, Object graphName) {
+        if (graphName instanceof Iterable) {
+            for (Object o : (Iterable<?>)graphName) {
+                process.accept(asGraphName(o));
+            }
+        } else {
+            process.accept(asGraphName(graphName));
         }
+    }
+
+    /**
+     * Add one or more graph names to the query.
+     * if {@code graphName} is a {@code collection} or an array each element in the
+     * @code collection} or array is converted to a string and the result added to the
+     * query.
+     *
+     * @param graphName the name to add.
+     * @see #asGraphName(Object)
+     */
+    public void from(Object graphName) {
+        processGraphName(query::addGraphURI, graphName);
     }
 
     /**
      * Set the variables for field names that contain lists of strings.
-     * 
+     *
      * Strings that start with "?" are assumed to be variable names and will be
      * replaced with matching node.toString() values.
-     * 
+     *
      * @param values The values to set.
      * @param fieldName The field name in Query that contain a list of strings.
      */
@@ -117,10 +142,20 @@ public class DatasetHandler implements Handler {
             if (s.startsWith("?")) {
                 Var v = Var.alloc(s.substring(1));
                 n = values.get(v);
-                lst.set(i, n == null ? s : n.toString());
+                // Need a raw string for URIs and literals.
+                // Protect against choice of toString.
+                String x = s ;
+                if ( n != null ) {
+                    if ( n.isURI() )
+                        x = n.getURI();
+                    else if ( n.isLiteral() )
+                        x = n.getLiteralLexicalForm() ;
+                    else
+                        x = n.toString();
+                }
+                lst.set(i, x);
             }
         }
-
     }
 
     @Override

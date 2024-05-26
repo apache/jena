@@ -18,26 +18,26 @@
 
 package org.apache.jena.atlas.lib;
 
-import java.util.Collection ;
-import java.util.Map ;
-import java.util.concurrent.ConcurrentHashMap ;
-import java.util.function.BiConsumer ;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
 
 public class Registry<K,T>
 {
-    protected Map<K, T> registry = new ConcurrentHashMap<>() ;
-    
+    protected Map<K, T> registry = new ConcurrentHashMap<>();
+
     public Registry() {}
-    
-    public void put(K key, T value)     { registry.put(key, value) ; }
-    public T get(K key)                 { return registry.get(key) ; }
-    public boolean isRegistered(K key)  { return registry.containsKey(key) ; }
-    public void remove(K key)           { registry.remove(key) ; } 
-    public Collection<K> keys()         { return registry.keySet() ; }
-    public int size()                   { return registry.size() ; }
-    public boolean isEmpty()            { return registry.isEmpty() ; }
-    public void clear()                 { registry.clear() ; }
+
+    public void put(K key, T value)     { registry.put(key, value); }
+    public T get(K key)                 { return registry.get(key); }
+    public boolean isRegistered(K key)  { return registry.containsKey(key); }
+    public void remove(K key)           { registry.remove(key); }
+    public Collection<K> keys()         { return registry.keySet(); }
+    public int size()                   { return registry.size(); }
+    public boolean isEmpty()            { return registry.isEmpty(); }
+    public void clear()                 { registry.clear(); }
     public void forEach(BiConsumer<K, T> action) {
-        registry.forEach(action); 
+        registry.forEach(action);
     }
 }

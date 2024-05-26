@@ -56,10 +56,10 @@ import org.junit.Test;
 */
 public class TestSortedDataBagCancellation {
 
-    static final Binding b1 = BindingFactory.binding(Var.alloc("v1"), NodeFactory.createLiteral("alpha"));
-    static final Binding b2 = BindingFactory.binding(Var.alloc("v2"), NodeFactory.createLiteral("beta"));
-    static final Binding b3 = BindingFactory.binding(Var.alloc("v3"), NodeFactory.createLiteral("gamma"));
-    static final Binding b4 = BindingFactory.binding(Var.alloc("v4"), NodeFactory.createLiteral("delta"));
+    static final Binding b1 = BindingFactory.binding(Var.alloc("v1"), NodeFactory.createLiteralString("alpha"));
+    static final Binding b2 = BindingFactory.binding(Var.alloc("v2"), NodeFactory.createLiteralString("beta"));
+    static final Binding b3 = BindingFactory.binding(Var.alloc("v3"), NodeFactory.createLiteralString("gamma"));
+    static final Binding b4 = BindingFactory.binding(Var.alloc("v4"), NodeFactory.createLiteralString("delta"));
 
     final Context params = new Context();
 

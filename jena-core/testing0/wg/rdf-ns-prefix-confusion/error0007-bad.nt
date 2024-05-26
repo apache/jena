@@ -1,0 +1,3 @@
+_:jA76 <http://example.org/property> "bar" .
+<http://example.org/#container> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag> .
+<http://example.org/#container> <http://www.w3.org/1999/02/22-rdf-syntax-ns#_1> <http://example.org/resource/> .

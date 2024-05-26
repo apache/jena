@@ -82,7 +82,7 @@ public class GraphValidation {
      */
     public static ValidationReport update(Shapes shapes, Graph data, Runnable update) throws ShaclValidationException {
         return
-            data.getTransactionHandler().calculate(()->{
+            data.getTransactionHandler().calculateAlways(()->{
                 update.run();
                 ValidationReport report = ShaclValidator.get().validate(shapes, data);
                 if ( report.conforms() )

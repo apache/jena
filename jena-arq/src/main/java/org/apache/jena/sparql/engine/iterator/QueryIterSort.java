@@ -39,20 +39,19 @@ import org.apache.jena.sparql.system.SerializationFactoryFinder;
 /**
  * Sort a query iterator. The sort will happen in-memory unless the size of the
  * iterator exceeds a configurable threshold. In that case, a disk sort is used.
- * 
+ *
  * @see SortedDataBag
  */
 
 public class QueryIterSort extends QueryIterPlainWrapper {
     private final QueryIterator embeddedIterator;
-    final SortedDataBag<Binding> db;
+    /*package*/ final SortedDataBag<Binding> db;
 
     public QueryIterSort(QueryIterator qIter, List<SortCondition> conditions, ExecutionContext context) {
         this(qIter, new BindingComparator(conditions, context), context);
     }
 
-    public QueryIterSort(final QueryIterator qIter, final Comparator<Binding> comparator,
-            final ExecutionContext context) {
+    public QueryIterSort(QueryIterator qIter, Comparator<Binding> comparator, ExecutionContext context) {
         super(null, context);
         this.embeddedIterator = qIter;
         ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(context.getContext());

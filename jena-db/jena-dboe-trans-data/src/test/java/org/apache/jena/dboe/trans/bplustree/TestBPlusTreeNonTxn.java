@@ -18,7 +18,7 @@
 
 package org.apache.jena.dboe.trans.bplustree;
 
-import static org.apache.jena.dboe.index.test.IndexTestLib.add;
+import static org.apache.jena.dboe.index.testlib.IndexTestLib.add;
 import static org.apache.jena.dboe.test.RecordLib.intToRecord;
 
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.List;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.dboe.base.block.BlockMgr;
 import org.apache.jena.dboe.base.record.Record;
-import org.apache.jena.dboe.index.test.AbstractTestRangeIndex;
+import org.apache.jena.dboe.index.testlib.AbstractTestRangeIndex;
 import org.apache.jena.dboe.sys.SystemIndex;
 import org.apache.jena.dboe.test.RecordLib;
 import org.junit.AfterClass;

@@ -1,0 +1,34 @@
+# Test ?currentShape and ?shapesGraph
+BASE            <http://jena.apache.org/test/shape>
+PREFIX :        <http://example/>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sh:      <http://www.w3.org/ns/shacl#>
+## PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+
+<#prefixes>
+  sh:declare [ sh:prefix "ex";     sh:namespace "http://example/" ] ;
+  .
+
+<#PropertyValueShape>
+  rdf:type sh:NodeShape ;
+
+  sh:targetNode :testDataSubject1 ;
+  sh:targetNode :testDataSubject2 ;
+  sh:targetNode :testDataSubject3 ;
+  sh:targetNode :testDataSubject4 ;
+
+  sh:labelTemplate "Test for absence of a property-value pair, using SPARQL" ;
+  sh:prefixes <#prefixes> ;
+  # Target must not have this pair.
+  :propertyValue ( :p1 1 ) ;
+  sh:sparql [ 
+      sh:message "Property-value pair ({?path} {?value}) found" ;
+      sh:prefixes <#prefixes> ;
+      sh:select """
+		SELECT ?this (?property AS ?path) ?value {
+            GRAPH ?shapesGraph { ?currentShape ex:propertyValue ( ?property ?value ) }
+ 			?this ?property ?value .
+ 		}
+""" ;
+    ] ;
+.

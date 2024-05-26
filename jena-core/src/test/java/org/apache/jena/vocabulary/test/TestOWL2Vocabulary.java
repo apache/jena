@@ -18,10 +18,10 @@
 
 package org.apache.jena.vocabulary.test;
 
-import org.apache.jena.rdf.model.Property ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.vocabulary.OWL ;
-import org.apache.jena.vocabulary.OWL2 ;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.OWL2;
 
 /**
     Tests for spellings of OWL2 terms and their relationship with OWL[1]

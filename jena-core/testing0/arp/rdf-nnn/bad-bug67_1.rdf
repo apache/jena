@@ -1,0 +1,15 @@
+<!--
+  Failing (not RDF document) Test case for bug #67.
+  i.e. hp internal bugzilla #67
+  
+  Various incorrect rdf:_NNN attributes.
+  result in a warning/error message.
+  
+  WARN_BAD_XML * 2  (these get double reported).
+  
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+
+  <rdf:Bag rdf:-1="a" />
+   
+</rdf:RDF>

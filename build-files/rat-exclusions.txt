@@ -15,8 +15,10 @@
 
 ## Maven
 **/target/**/*
+**/.mvn/**/*
 
 ## Misc
+archive.md
 **/README*
 **/ABOUT
 **/DEPENDENCIES
@@ -74,6 +76,7 @@
 **/src/test/files/**/*
 **/src/test/resources/**/*
 **/testing/**/*
+jena-core/testing0/**
 
 ## Databases
 **/DB/**/*

@@ -20,6 +20,11 @@ package org.apache.jena.fuseki.auth;
 
 public class Users {
     /**
+     * Reserved user role name: Name of the user role for that has no access.
+     */
+    public static String UserDenyAll = "!";
+
+    /**
      * Reserved user role name: Name of the user role for any authenticated user of the system.
      * In the servlet API, this equates to {@code getRemoteUser() != null}.
      */

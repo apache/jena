@@ -69,7 +69,7 @@ public class Regex extends BaseBuiltin {
             BindingEnvironment env = context.getEnv();
             for (int i = 0; i < Math.min(length-2, m.groupCount()); i++) {
                 String gm = m.group(i+1);
-                Node match =  (gm != null) ? NodeFactory.createLiteral( gm ) : NodeFactory.createLiteral("");
+                Node match =  (gm != null) ? NodeFactory.createLiteralString( gm ) : NodeFactory.createLiteralString("");
                 if ( !env.bind(args[i+2], match) ) return false;
             }
         }

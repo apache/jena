@@ -24,7 +24,7 @@ import org.apache.jena.sparql.algebra.op.* ;
 
 /**
  * Special purpose base class for a single transformation.
- *  
+ *
  * When writing {@link Transform}s to be applied to a tree,
  * extend {@link TransformCopy}, not this class.
  */
@@ -75,6 +75,8 @@ public class TransformSingle implements Transform
     public Op transform(OpMinus opMinus, Op left, Op right)         { return opMinus ; }
     @Override
     public Op transform(OpUnion opUnion, Op left, Op right)         { return opUnion ; }
+    @Override
+    public Op transform(OpLateral opCopLateral, Op left, Op right)  { return opCopLateral ; }
     @Override
     public Op transform(OpConditional opCond, Op left, Op right)    { return opCond ; }
 

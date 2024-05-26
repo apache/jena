@@ -1,0 +1,28 @@
+<!--++ imports/conclusions010.rdf ** generated using webont test editor. ++-->
+<!--++ Created 6 May 2003 09:16:34 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: conclusions010.rdf,v 1.5 2003-12-05 05:09:27 jeremy_carroll Exp $
+-->
+<!--
+This test specifies the domain and range for owl:imports.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xml:base="http://www.w3.org/2002/03owlt/imports/conclusions010" >
+   <rdf:Property rdf:about="http://www.w3.org/2002/07/owl#imports">
+      <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+      <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+   </rdf:Property>
+
+</rdf:RDF>
