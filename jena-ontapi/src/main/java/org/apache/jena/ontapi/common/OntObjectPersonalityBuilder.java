@@ -40,8 +40,6 @@ import java.util.stream.Collectors;
 /**
  * An {@link OntPersonality} builder.
  * This must be the only place to create various {@code OntPersonality} objects.
- * <p>
- * Created by @szz on 17.01.2019.
  */
 @SuppressWarnings("WeakerAccess")
 public class OntObjectPersonalityBuilder {
@@ -129,6 +127,7 @@ public class OntObjectPersonalityBuilder {
      * @param factory {@link EnhNodeFactory} the factory to produce the instances of the {@code type}
      * @return this builder
      */
+    @SuppressWarnings("javadoc")
     public OntObjectPersonalityBuilder add(Class<? extends OntObject> type, EnhNodeFactory factory) {
         return add(type, config -> factory);
     }
@@ -149,6 +148,7 @@ public class OntObjectPersonalityBuilder {
      * @param factory {@code Function}, providing {@link EnhNodeFactory} by the {@link OntConfig}
      * @return this builder
      */
+    @SuppressWarnings("javadoc")
     public OntObjectPersonalityBuilder add(Class<? extends OntObject> type, Function<OntConfig, EnhNodeFactory> factory) {
         extFactories.put(type, factory);
         return this;

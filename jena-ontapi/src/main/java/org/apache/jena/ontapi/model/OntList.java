@@ -61,12 +61,13 @@ import java.util.stream.Stream;
  * @param <E> the type of {@link RDFNode rdf-node}s in this list
  * @see RDFNodeList
  */
+@SuppressWarnings("javadoc")
 public interface OntList<E extends RDFNode> extends RDFNodeList<E>, OntResource {
 
     /**
      * Adds the given value to the end of the list.
      *
-     * @param e {@link E} rdf-node
+     * @param e {@code E} rdf-node
      * @return this list instance
      * @see #add(RDFNode)
      */
@@ -75,7 +76,7 @@ public interface OntList<E extends RDFNode> extends RDFNodeList<E>, OntResource 
     /**
      * Removes the last element from this list.
      * No-op in case of nil-list.
-     * Note: the removed element can be of any type, not necessarily of the type {@link E}.
+     * Note: the removed element can be of any type, not necessarily of the type {@code E}.
      *
      * @return this list instance
      * @see #remove()
@@ -87,7 +88,7 @@ public interface OntList<E extends RDFNode> extends RDFNodeList<E>, OntResource 
      * As a rule, this operation is faster than {@link #addLast(RDFNode)},
      * since it does not require iteration to the end of the list.
      *
-     * @param e {@link E} rdf-node
+     * @param e {@code E} rdf-node
      * @return this list instance
      */
     OntList<E> addFirst(E e);
@@ -95,7 +96,7 @@ public interface OntList<E extends RDFNode> extends RDFNodeList<E>, OntResource 
     /**
      * Removes and the first element from this list.
      * No-op in case of empty list.
-     * Note: the last element can be of any type, not necessarily of type {@link E}.
+     * Note: the last element can be of any type, not necessarily of type {@code E}.
      * As a rule, this operation is faster than {@link #removeLast()} ,
      * since the last one requires iteration to the end of the list.
      *
@@ -164,7 +165,7 @@ public interface OntList<E extends RDFNode> extends RDFNodeList<E>, OntResource 
      * Adds the given value to the end of the list.
      * This is a synonym for the {@code this.addLast(e)}.
      *
-     * @param e {@link E} rdf-node
+     * @param e {@code E} rdf-node
      * @return this list instance
      * @see #addLast(RDFNode)
      */
@@ -187,7 +188,7 @@ public interface OntList<E extends RDFNode> extends RDFNodeList<E>, OntResource 
      * Appends all the elements in the specified collection to the end of this list,
      * in the order that they are returned by the specified collection's iterator.
      *
-     * @param c Collection of {@link E}-elements
+     * @param c Collection of {@code E}-elements
      * @return this list instance
      */
     default OntList<E> addAll(Collection<? extends E> c) {

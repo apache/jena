@@ -248,6 +248,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
      * @return {@link OntList} of {@link OntRelationalProperty}s
      * @see #addHasKey(Collection, Collection)
      */
+    @SuppressWarnings("javadoc")
     OntList<OntRelationalProperty> createHasKey(Collection<OntObjectProperty> objectProperties,
                                                 Collection<OntDataProperty> dataProperties);
 
@@ -476,7 +477,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
      * @return {@link OntStatement} to allow the subsequent annotations addition
      * @see #addHasKeyStatement(OntRelationalProperty...)
      * @see #addHasKey(OntRelationalProperty...)
-     * @see <a href='https://www.w3.org/TR/owl2-mapping-to-rdf/#Translation_of_Annotations'>2.3.1 Axioms that Generate a Main Triple</a>
+     * @see <a href="https://www.w3.org/TR/owl2-mapping-to-rdf/#Translation_of_Annotations">2.3.1 Axioms that Generate a Main Triple</a>
      */
     default OntStatement addHasKeyStatement(Collection<OntObjectProperty> objectProperties,
                                             Collection<OntDataProperty> dataProperties) {
@@ -882,7 +883,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
      * An OWL Class {@link OntEntity Entity}, a named class expression.
      * This is an analogue of {@link org.apache.jena.ontology.OntClass}, but for OWL2.
      *
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Classes'>5.1 Classes</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Classes">5.1 Classes</a>
      */
     interface Named extends OntEntity, OntClass {
 
@@ -908,6 +909,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
          * @see #addDisjointUnionOfStatement(OntClass...)
          * @see #removeDisjointUnion(Resource)
          */
+        @SuppressWarnings("javadoc")
         OntList<OntClass> createDisjointUnion(Collection<OntClass> classes);
 
         /**
@@ -962,7 +964,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
          * @param classes a collection of {@link OntClass class expression}s without {@code null}s
          * @return {@link OntStatement} to allow the subsequent annotations addition
          * @see #createDisjointUnion(Collection)
-         * @see <a href='https://www.w3.org/TR/owl2-mapping-to-rdf/#Translation_of_Annotations'>2.3.1 Axioms that Generate a Main Triple</a>
+         * @see <a href="https://www.w3.org/TR/owl2-mapping-to-rdf/#Translation_of_Annotations">2.3.1 Axioms that Generate a Main Triple</a>
          * @see #createDisjointUnion(Collection)
          * @see #addDisjointUnion(Collection)
          * @see #addDisjointUnionOfStatement(Collection)
@@ -1233,7 +1235,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
          * Note that the returned values are not necessarily the same as {@link OntList#members()} output:
          * some profiles (e.g., OWL2 QL) impose some restrictions.
          *
-         * @return a {@code Stream} of {@link O}s
+         * @return a {@code Stream} of {@code O}s
          */
         default Stream<O> components() {
             return getList().members();

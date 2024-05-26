@@ -151,7 +151,7 @@ public interface UnionGraph extends Graph {
         /**
          * Lists all encapsulated listeners for the given type.
          *
-         * @param type {@link L}
+         * @param type {@code L}
          * @return Stream of {@link GraphListener}s
          * @param <L> {@code Class}-type of {@link GraphListener}
          */

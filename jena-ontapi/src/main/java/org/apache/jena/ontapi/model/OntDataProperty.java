@@ -35,7 +35,7 @@ import java.util.stream.Stream;
  * (as distinct from object property expression valued {@link OntObjectProperty properties}).
  * In OWL2, a Data Property cannot be anonymous.
  *
- * @see <a href='https://www.w3.org/TR/owl2-syntax/#Data_Properties'>5.4 Data Properties</a>
+ * @see <a href="https://www.w3.org/TR/owl2-syntax/#Data_Properties">5.4 Data Properties</a>
  */
 public interface OntDataProperty extends OntRelationalProperty, OntNamedProperty<OntDataProperty>, HasDisjoint<OntDataProperty> {
 

@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 /**
  * A standard personality mode to manage punnings.
  *
- * @see <a href='https://www.w3.org/TR/owl2-new-features/#F12:_Punning'>2.4.1 F12: Punning</a>
+ * @see <a href="https://www.w3.org/TR/owl2-new-features/#F12:_Punning">2.4.1 F12: Punning</a>
  */
 public enum PunningsMode {
     /**

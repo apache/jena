@@ -68,13 +68,13 @@ public interface OntNegativeAssertion<P extends OntRelationalProperty, V extends
     V getTarget();
 
     /**
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Negative_Object_Property_Assertions'>9.6.5 Negative Object Property Assertions</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Negative_Object_Property_Assertions">9.6.5 Negative Object Property Assertions</a>
      */
     interface WithObjectProperty extends OntNegativeAssertion<OntObjectProperty, OntIndividual> {
     }
 
     /**
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Negative_Data_Property_Assertions'>9.6.7 Negative Data Property Assertions</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Negative_Data_Property_Assertions">9.6.7 Negative Data Property Assertions</a>
      */
     interface WithDataProperty extends OntNegativeAssertion<OntDataProperty, Literal> {
     }

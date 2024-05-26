@@ -92,10 +92,10 @@ public final class HierarchySupport {
      * For the given object returns a {@code Set} of objects the same type,
      * that are its children which is determined by the operation {@code listChildren}.
      *
-     * @param root         {@link X}
-     * @param listChildren a {@code Function} that returns {@code Iterator} for an object of type {@link X}
+     * @param root         {@code X}
+     * @param listChildren a {@code Function} that returns {@code Iterator} for an object of type {@code X}
      * @param <X>          any subtype of {@link Resource}
-     * @return {@code Set} of {@link X}, {@code root} is not included
+     * @return {@code Set} of {@code X}, {@code root} is not included
      */
     static <X extends Resource> Stream<X> allTreeNodes(X root, Function<X, Stream<X>> listChildren) {
         return Iterators.fromSet(() -> {
@@ -131,8 +131,8 @@ public final class HierarchySupport {
     /**
      * For the given object recursively collects all children determined by the operation {@code listChildren}.
      *
-     * @param root        {@link X}
-     * @param getChildren a {@code Function} that returns {@code Set} explicit children of an object of type {@link X}
+     * @param root        {@code X}
+     * @param getChildren a {@code Function} that returns {@code Set} explicit children of an object of type {@code X}
      * @param res         {@code Set} to store result
      * @param <X>         any subtype of {@link Resource}
      */

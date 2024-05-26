@@ -399,7 +399,7 @@ public class OntStatementImpl extends StatementImpl implements OntStatement {
     /**
      * Returns the {@code rdf:type} of the attached annotation objects.
      *
-     * @return {@link OWL2#Axiom {@code owl:Axiom}} or {@link OWL2#Annotation {@code owl:Annotation}}
+     * @return {@link OWL2#Axiom} for {@code owl:Axiom} or {@link OWL2#Annotation} for {@code owl:Annotation}
      */
     protected Resource getAnnotationResourceType() {
         return getAnnotationRootType(subject);

@@ -180,6 +180,7 @@ public interface OntRelationalProperty extends OntProperty {
      *
      * @return a {@code Stream} whose values are the restrictions from the local model that reference this property.
      */
+    @SuppressWarnings("unchecked")
     default Stream<OntClass.Restriction> referringRestrictions() {
         //noinspection unchecked
         return Stream.concat(

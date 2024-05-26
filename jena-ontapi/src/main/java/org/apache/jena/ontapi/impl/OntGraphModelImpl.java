@@ -116,7 +116,7 @@ import java.util.stream.Stream;
  *
  * @see UnionGraph
  */
-@SuppressWarnings({"WeakerAccess", "SameParameterValue", "unused"})
+@SuppressWarnings({"WeakerAccess", "SameParameterValue"})
 public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph, InfModel {
 
     // the model's types mapper
@@ -195,7 +195,7 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
     /**
      * Filters {@code OntIndividual}s from the specified {@code ExtendedIterator}.
      *
-     * @param model      {@link M}, not {@code null}
+     * @param model      {@code M}, not {@code null}
      * @param reserved   a {@code Set} of forbidden URIs,
      *                   that cannot be treated as {@link OntClass Ontology Class}es, not {@code null}
      * @param assertions {@link ExtendedIterator} of {@link Triple}s
@@ -288,7 +288,7 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
      * @param it       {@code ExtendedIterator} obtained from the {@code graph}
      * @param withSize if {@code true} attempts to include graph size as an estimated size of a future {@code Stream}
      * @param <X>      type of stream items
-     * @return {@code Stream} of {@link X}s
+     * @return {@code Stream} of {@code X}s
      */
     private static <X> Stream<X> asStream(Graph graph,
                                           ExtendedIterator<X> it,
@@ -854,7 +854,7 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
      * @param list      {@link RDFList}, not {@code null}
      * @param subject   {@link OntObject}, not {@code null}
      * @param predicate {@link Property}, not {@code null}
-     * @param type      a {@code Class}-type for list element {@link E}, not {@code null}
+     * @param type      a {@code Class}-type for list element {@code E}, not {@code null}
      * @param <E>       any {@link RDFNode}
      * @return {@code OntList}
      */
@@ -873,7 +873,7 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
      * @param predicate       {@link Property}, not {@code null}
      * @param checkRecursions boolean, if {@code true} more careful and expensive checking for list content is performed
      * @param listType        an uri-{@link Resource}, used as an archaic RDF-type, usually this parameter should be {@code null}
-     * @param elementType     a {@code Class}-type for list element {@link E}, not {@code null}
+     * @param elementType     a {@code Class}-type for list element {@code E}, not {@code null}
      * @param <E>             any {@link RDFNode}
      * @return {@code OntList}
      */
@@ -894,8 +894,8 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
      *
      * @param subject   {@link OntObject}, not {@code null}
      * @param predicate {@link Property}, not {@code null}
-     * @param type      a {@code Class}-type for element {@link E}, not {@code null}
-     * @param elements  and {@code Iterator} of {@link E}-elements (the order is preserved), not {@code null}
+     * @param type      a {@code Class}-type for element {@code E}, not {@code null}
+     * @param elements  and {@code Iterator} of {@code E}-elements (the order is preserved), not {@code null}
      * @param <E>       any {@link RDFNode}
      * @return {@code OntList}
      */
@@ -912,8 +912,8 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
      * @param subject     {@link OntObject}, not {@code null}
      * @param predicate   {@link Property}, not {@code null}
      * @param listType    an uri-{@link Resource}, used as an archaic RDF-type, usually this parameter should be {@code null}
-     * @param elementType a {@code Class}-type for element {@link E}, not {@code null}
-     * @param elements    and {@code Iterator} of {@link E}-elements (the order is preserved), not {@code null}
+     * @param elementType a {@code Class}-type for element {@code E}, not {@code null}
+     * @param elements    and {@code Iterator} of {@code E}-elements (the order is preserved), not {@code null}
      * @param <E>         any {@link RDFNode}
      * @return {@code OntList}
      */
@@ -1215,13 +1215,13 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
     }
 
     /**
-     * Creates an object of type {@link X} if it is possible;
+     * Creates an object of type {@code X} if it is possible;
      * otherwise throws {@link OntJenaException.Unsupported} exception.
      *
-     * @param creator {@link Function} to create {@link X}
-     * @param type    of {@link X}
+     * @param creator {@link Function} to create {@code X}
+     * @param type    of {@code X}
      * @param <X>     {@link OntObject}
-     * @return {@link X}
+     * @return {@code X}
      * @throws OntJenaException.Unsupported if no possible to create an object
      */
     protected <X extends OntObject> X checkCreate(Function<OntGraphModelImpl, X> creator, Class<X> type) {

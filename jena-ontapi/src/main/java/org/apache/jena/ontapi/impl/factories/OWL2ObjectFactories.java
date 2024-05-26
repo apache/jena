@@ -314,7 +314,7 @@ public final class OWL2ObjectFactories {
             OntClasses.RESTRICTION_FINDER,
             EnhNodeFilter.ANON.and(new OntClasses.HasSelfFilter())
     );
-    // see <a href='https://www.w3.org/TR/owl2-quick-reference/#Class_Expressions'>Restrictions Using n-ary Data Range</a>
+    // see <a href="https://www.w3.org/TR/owl2-quick-reference/#Class_Expressions">Restrictions Using n-ary Data Range</a>
     public static final EnhNodeFactory NARY_DATA_ALL_VALUES_FROM_CLASS = OntClasses.createNaryRestrictionFactory(
             OntClassImpl.NaryDataAllValuesFromImpl.class,
             OWL2.allValuesFrom

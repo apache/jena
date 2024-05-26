@@ -33,8 +33,8 @@ import java.util.stream.Stream;
  * A base abstraction for Ontology Data Range Expressions (both named and anonymous).
  *
  * @see Named - a named data range (i.e. OWL Datatype)
- * @see <a href='https://www.w3.org/TR/owl2-quick-reference/#Data_Ranges'>2.4 Data Ranges</a>
- * @see <a href='https://www.w3.org/TR/owl2-syntax/#Data_Ranges'>7 Data Ranges</a>
+ * @see <a href="https://www.w3.org/TR/owl2-quick-reference/#Data_Ranges">2.4 Data Ranges</a>
+ * @see <a href="https://www.w3.org/TR/owl2-syntax/#Data_Ranges">7 Data Ranges</a>
  */
 public interface OntDataRange extends OntObject, AsNamed<OntDataRange.Named> {
 
@@ -56,35 +56,35 @@ public interface OntDataRange extends OntObject, AsNamed<OntDataRange.Named> {
     }
 
     /**
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Complement_of_Data_Ranges'>7.3 Complement of Data Ranges</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Complement_of_Data_Ranges">7.3 Complement of Data Ranges</a>
      * @see OntModel#createDataComplementOf(OntDataRange)
      */
     interface ComplementOf extends OntDataRange, SetValue<OntDataRange, ComplementOf>, HasValue<OntDataRange> {
     }
 
     /**
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Intersection_of_Data_Ranges'>7.1 Intersection of Data Ranges</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Intersection_of_Data_Ranges">7.1 Intersection of Data Ranges</a>
      * @see OntModel#createDataIntersectionOf(Collection)
      */
     interface IntersectionOf extends Combination<OntDataRange>, SetComponents<OntDataRange, IntersectionOf> {
     }
 
     /**
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Union_of_Data_Ranges'>7.2 Union of Data Ranges</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Union_of_Data_Ranges">7.2 Union of Data Ranges</a>
      * @see OntModel#createDataUnionOf(Collection)
      */
     interface UnionOf extends Combination<OntDataRange>, SetComponents<OntDataRange, UnionOf> {
     }
 
     /**
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Enumeration_of_Literals'>7.4 Enumeration of Literals</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Enumeration_of_Literals">7.4 Enumeration of Literals</a>
      * @see OntModel#createDataOneOf(Collection)
      */
     interface OneOf extends Combination<Literal>, SetComponents<Literal, OneOf> {
     }
 
     /**
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Datatype_Restrictions'>7.5 Datatype Restrictions</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Datatype_Restrictions">7.5 Datatype Restrictions</a>
      * @see OntFacetRestriction
      * @see OntModel#createFacetRestriction(Class, Literal)
      * @see OntModel#createDataRestriction(Named, Collection)
@@ -126,7 +126,7 @@ public interface OntDataRange extends OntObject, AsNamed<OntDataRange.Named> {
      * Interface encapsulating an Ontology Datatype, {@link OntEntity OWL Entity},
      * a named {@link OntDataRange data range} expression.
      *
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Datatypes'>5.2 Datatypes</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Datatypes">5.2 Datatypes</a>
      */
     interface Named extends OntEntity, OntDataRange {
 

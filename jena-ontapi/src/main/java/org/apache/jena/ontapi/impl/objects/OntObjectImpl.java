@@ -164,7 +164,7 @@ public class OntObjectImpl extends ResourceImpl implements OntObject {
      * @param node {@link RDFNode}, not {@code null}
      * @param view a {@code Class}-type of the desired RDF view (interface)
      * @param <X>  any subtype of {@link RDFNode}
-     * @return an instance of the type {@link X} or {@code null}
+     * @return an instance of the type {@code X} or {@code null}
      * @see OntGraphModelImpl#getNodeAs(Node, Class)
      */
     public static <X extends RDFNode> X getNodeAs(RDFNode node, Class<X> view) {
@@ -261,6 +261,7 @@ public class OntObjectImpl extends ResourceImpl implements OntObject {
      * that an {@code OntObject} can be also a {@code Literal}
      * (but in only single case when it is {@link OntSWRL.DArg}).
      */
+    @SuppressWarnings("javadoc")
     @Override
     public <X extends RDFNode> X getAs(Class<X> type) {
         return getNodeAs(this, type);
@@ -603,7 +604,7 @@ public class OntObjectImpl extends ResourceImpl implements OntObject {
      * @param predicate {@link Property}
      * @param type      subclass of {@link RDFNode}
      * @param <T>       any subtype of {@link RDFNode}
-     * @return Optional around {@link T}
+     * @return Optional around {@code T}
      */
     public <T extends RDFNode> Optional<T> object(Property predicate, Class<T> type) {
         return Iterators.findFirst(listObjects(predicate, type));
@@ -615,7 +616,7 @@ public class OntObjectImpl extends ResourceImpl implements OntObject {
      * @param predicate {@link Property} predicate, can be null
      * @param type      Interface to find and cast, not null
      * @param <O>       any subtype of {@link RDFNode}
-     * @return Stream of {@link RDFNode node}s of the {@link O} type
+     * @return Stream of {@link RDFNode node}s of the {@code O} type
      */
     @Override
     public <O extends RDFNode> Stream<O> objects(Property predicate, Class<O> type) {
@@ -628,7 +629,7 @@ public class OntObjectImpl extends ResourceImpl implements OntObject {
      * @param predicate {@link Property}, can be {@code null}
      * @param type      class-type of interface to find and cast, not {@code null}
      * @param <O>       subtype of {@link RDFNode rdf-node}
-     * @return {@link ExtendedIterator} of {@link RDFNode node}s of the type {@link O}
+     * @return {@link ExtendedIterator} of {@link RDFNode node}s of the type {@code O}
      * @see #object(Property, Class)
      * @see #listSubjects(Property, Class)
      */
@@ -645,7 +646,7 @@ public class OntObjectImpl extends ResourceImpl implements OntObject {
      * @param predicate {@link Property}, can be {@code null}
      * @param type      class-type of interface to find and cast, not {@code null}
      * @param <S>       subtype of {@link RDFNode rdf-node}
-     * @return {@link ExtendedIterator} of {@link RDFNode node}s of the type {@link S}
+     * @return {@link ExtendedIterator} of {@link RDFNode node}s of the type {@code S}
      * @see #listObjects(Property, Class)
      */
     public <S extends RDFNode> ExtendedIterator<S> listSubjects(Property predicate, Class<S> type) {

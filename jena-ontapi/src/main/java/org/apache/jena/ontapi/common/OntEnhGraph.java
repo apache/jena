@@ -39,7 +39,6 @@ import org.apache.jena.rdf.model.RDFNode;
  * More about this see in the description for
  * the method {@link OntObjectPersonalityBuilder#add(Class, EnhNodeFactory)}.
  */
-@SuppressWarnings("unused")
 public interface OntEnhGraph {
 
     /**
@@ -155,7 +154,7 @@ public interface OntEnhGraph {
     }
 
     /**
-     * @param type {@link X}
+     * @param type {@code X}
      * @param <X>  any {@link OntObject} type
      * @throws OntJenaException.Unsupported if the {@code type} is not supported by the configuration
      */
