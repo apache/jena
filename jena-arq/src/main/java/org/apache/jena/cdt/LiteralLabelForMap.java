@@ -32,6 +32,10 @@ public class LiteralLabelForMap extends LiteralLabelForCDTs<Map<CDTKey,CDTValue>
 		super(lexicalForm);
 	}
 
+	public LiteralLabelForMap( final String lexicalForm, final boolean checkedAndIdentifiedAsIllformed ) {
+		super(lexicalForm, checkedAndIdentifiedAsIllformed );
+	}
+
 	/**
 	 * Use this constructor only if you have made sure that the given lexical
 	 * form parses indeed into the given value form, which implicitly also

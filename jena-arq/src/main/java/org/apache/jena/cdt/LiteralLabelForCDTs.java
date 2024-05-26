@@ -48,6 +48,14 @@ public abstract class LiteralLabelForCDTs<T> implements LiteralLabel
 		this.hash = lexicalForm.hashCode();
 	}
 
+	public LiteralLabelForCDTs( final String lexicalForm, final boolean checkedAndIdentifiedAsIllformed ) {
+		this.valueForm = null;
+		this.lexicalForm = lexicalForm;
+
+		this.lexicalFormTested = true;
+		this.hash = lexicalForm.hashCode();
+	}
+
 	/**
 	 * Use this constructor only if you have made sure that the given lexical
 	 * form parses indeed into the given value form, which implicitly also

@@ -196,6 +196,11 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 	 * applies the list-less-than semantics.
 	 */
 	public static int compare( final LiteralLabel value1, final LiteralLabel value2, final boolean sortOrderingCompare ) throws ExprNotComparableException {
+		// Verify first that both literals are well-formed. If at least one of
+		// them is not well-formed, then their relative order is undefined.
+		if ( ! value1.isWellFormed() || ! value2.isWellFormed() )
+			throw new ExprNotComparableException("Can't compare "+value1+" and "+value2);
+
 		final List<CDTValue> list1;
 		final List<CDTValue> list2;
 		try {
