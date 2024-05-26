@@ -41,7 +41,7 @@ interface CreateClasses {
      * @param property {@link OntObjectProperty object property expression}, not {@code null}
      * @param ce       {@link OntClass class expression}, not {@code null}
      * @return {@link OntClass.ObjectSomeValuesFrom}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Existential_Quantification'>8.2.1 Existential Quantification</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Existential_Quantification">8.2.1 Existential Quantification</a>
      */
     OntClass.ObjectSomeValuesFrom createObjectSomeValuesFrom(OntObjectProperty property, OntClass ce);
 
@@ -57,7 +57,7 @@ interface CreateClasses {
      * @param property {@link OntDataProperty data property}, not {@code null}
      * @param dr       {@link OntDataRange data range}, not {@code null}
      * @return {@link OntClass.DataSomeValuesFrom}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Existential_Quantification_2'>8.4.1 Existential Quantification</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Existential_Quantification_2">8.4.1 Existential Quantification</a>
      */
     OntClass.DataSomeValuesFrom createDataSomeValuesFrom(OntDataProperty property, OntDataRange dr);
 
@@ -73,7 +73,7 @@ interface CreateClasses {
      * @param property {@link OntObjectProperty object property expression}, not {@code null}
      * @param ce       {@link OntClass class expression}, not {@code null}
      * @return {@link OntClass.ObjectAllValuesFrom}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Universal_Quantification'>8.2.2 Universal Quantification</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Universal_Quantification">8.2.2 Universal Quantification</a>
      */
     OntClass.ObjectAllValuesFrom createObjectAllValuesFrom(OntObjectProperty property, OntClass ce);
 
@@ -89,7 +89,7 @@ interface CreateClasses {
      * @param property {@link OntDataProperty data property}, not {@code null}
      * @param dr       {@link OntDataRange data range}, not {@code null}
      * @return {@link OntClass.DataAllValuesFrom}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Universal_Quantification_2'>8.4.2 Universal Quantification</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Universal_Quantification_2">8.4.2 Universal Quantification</a>
      */
     OntClass.DataAllValuesFrom createDataAllValuesFrom(OntDataProperty property, OntDataRange dr);
 
@@ -105,7 +105,7 @@ interface CreateClasses {
      * @param property   {@link OntObjectProperty object property expression}, not {@code null}
      * @param individual {@link OntIndividual}, not {@code null}
      * @return {@link OntClass.ObjectHasValue}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Individual_Value_Restriction'>8.2.3 Individual Value Restriction</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Individual_Value_Restriction">8.2.3 Individual Value Restriction</a>
      */
     OntClass.ObjectHasValue createObjectHasValue(OntObjectProperty property, OntIndividual individual);
 
@@ -121,7 +121,7 @@ interface CreateClasses {
      * @param property {@link OntDataProperty data property}, not {@code null}
      * @param literal  {@link Literal}, not {@code null}
      * @return {@link OntClass.DataHasValue}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Literal_Value_Restriction'>8.4.3 Literal Value Restriction</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Literal_Value_Restriction">8.4.3 Literal Value Restriction</a>
      */
     OntClass.DataHasValue createDataHasValue(OntDataProperty property, Literal literal);
 
@@ -146,7 +146,7 @@ interface CreateClasses {
      * @param cardinality {@code int}, non-negative number
      * @param ce          {@link OntClass class expression} or {@code null}
      * @return {@link OntClass.ObjectMinCardinality}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Minimum_Cardinality'>8.3.1 Minimum Cardinality</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Minimum_Cardinality">8.3.1 Minimum Cardinality</a>
      */
     OntClass.ObjectMinCardinality createObjectMinCardinality(OntObjectProperty property, int cardinality, OntClass ce);
 
@@ -170,7 +170,7 @@ interface CreateClasses {
      * @param cardinality {@code int}, non-negative number
      * @param dr          {@link OntDataRange data range} or {@code null}
      * @return {@link OntClass.DataMinCardinality}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Minimum_Cardinality_2'>8.5.1 Minimum Cardinality</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Minimum_Cardinality_2">8.5.1 Minimum Cardinality</a>
      */
     OntClass.DataMinCardinality createDataMinCardinality(OntDataProperty property, int cardinality, OntDataRange dr);
 
@@ -195,7 +195,7 @@ interface CreateClasses {
      * @param cardinality  {@code int}, non-negative number
      * @param ce           {@link OntClass class expression} or {@code null}
      * @return {@link OntClass.ObjectMaxCardinality}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Maximum_Cardinality'>8.3.2 Maximum Cardinality</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Maximum_Cardinality">8.3.2 Maximum Cardinality</a>
      */
     OntClass.ObjectMaxCardinality createObjectMaxCardinality(OntObjectProperty property, int cardinality, OntClass ce);
 
@@ -219,7 +219,7 @@ interface CreateClasses {
      * @param cardinality {@code int}, non-negative number
      * @param dr          {@link OntDataRange data range} or {@code null}
      * @return {@link OntClass.DataMaxCardinality}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Maximum_Cardinality_2'>8.5.2 Maximum Cardinality</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Maximum_Cardinality_2">8.5.2 Maximum Cardinality</a>
      */
     OntClass.DataMaxCardinality createDataMaxCardinality(OntDataProperty property, int cardinality, OntDataRange dr);
 
@@ -244,7 +244,7 @@ interface CreateClasses {
      * @param cardinality  {@code int}, non-negative number
      * @param ce           {@link OntClass class expression} or {@code null}
      * @return {@link OntClass.ObjectCardinality}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Exact_Cardinality'>8.3.3 Exact Cardinality</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Exact_Cardinality">8.3.3 Exact Cardinality</a>
      */
     OntClass.ObjectCardinality createObjectCardinality(OntObjectProperty property, int cardinality, OntClass ce);
 
@@ -268,7 +268,7 @@ interface CreateClasses {
      * @param cardinality {@code int}, non-negative number
      * @param dr          {@link OntDataRange data range} or {@code null}
      * @return {@link OntClass.DataCardinality}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Exact_Cardinality_2'>8.5.3 Exact Cardinality</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Exact_Cardinality_2">8.5.3 Exact Cardinality</a>
      */
     OntClass.DataCardinality createDataCardinality(OntDataProperty property, int cardinality, OntDataRange dr);
 
@@ -283,7 +283,7 @@ interface CreateClasses {
      *
      * @param property {@link OntObjectProperty object property expression}, not {@code null}
      * @return {@link OntClass.HasSelf}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Self-Restriction'>8.2.4 Self-Restriction</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Self-Restriction">8.2.4 Self-Restriction</a>
      */
     OntClass.HasSelf createHasSelf(OntObjectProperty property);
 
@@ -297,7 +297,7 @@ interface CreateClasses {
      *
      * @param classes {@code Collection} of {@link OntClass class expression}s without {@code null}s
      * @return {@link OntClass.UnionOf}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Union_of_Class_Expressions'>8.1.2 Union of Class Expressions</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Union_of_Class_Expressions">8.1.2 Union of Class Expressions</a>
      */
     OntClass.UnionOf createObjectUnionOf(Collection<OntClass> classes);
 
@@ -311,7 +311,7 @@ interface CreateClasses {
      *
      * @param classes {@code Collection} of {@link OntClass class expression}s without {@code null}s
      * @return {@link OntClass.IntersectionOf}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Intersection_of_Class_Expressions'>8.1.1 Intersection of Class Expressions</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Intersection_of_Class_Expressions">8.1.1 Intersection of Class Expressions</a>
      */
     OntClass.IntersectionOf createObjectIntersectionOf(Collection<OntClass> classes);
 
@@ -325,7 +325,7 @@ interface CreateClasses {
      *
      * @param individuals {@code Collection} of {@link OntIndividual individual}s without {@code null}s
      * @return {@link OntClass.OneOf}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Enumeration_of_Individuals'>8.1.4 Enumeration of Individuals</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Enumeration_of_Individuals">8.1.4 Enumeration of Individuals</a>
      */
     OntClass.OneOf createObjectOneOf(Collection<OntIndividual> individuals);
 
@@ -339,7 +339,7 @@ interface CreateClasses {
      *
      * @param ce {@link OntClass class expression} or {@code null}
      * @return {@link OntClass.ComplementOf}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Complement_of_Class_Expressions'>8.1.3 Complement of Class Expressions</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Complement_of_Class_Expressions">8.1.3 Complement of Class Expressions</a>
      */
     OntClass.ComplementOf createObjectComplementOf(OntClass ce);
 
@@ -358,7 +358,7 @@ interface CreateClasses {
      * @return {@link OntClass.NaryDataAllValuesFrom}
      * @see OntDataRange#arity()
      * @see #createDataAllValuesFrom(OntDataProperty, OntDataRange)
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Universal_Quantification_2'>8.4.2 Universal Quantification</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Universal_Quantification_2">8.4.2 Universal Quantification</a>
      */
     OntClass.NaryDataAllValuesFrom createDataAllValuesFrom(Collection<OntDataProperty> properties, OntDataRange dr);
 
@@ -377,7 +377,7 @@ interface CreateClasses {
      * @return {@link OntClass.NaryDataAllValuesFrom}
      * @see OntDataRange#arity()
      * @see #createDataSomeValuesFrom(OntDataProperty, OntDataRange)
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Existential_Quantification_2'>8.4.1 Existential Quantification</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Existential_Quantification_2">8.4.1 Existential Quantification</a>
      */
     OntClass.NaryDataSomeValuesFrom createDataSomeValuesFrom(Collection<OntDataProperty> properties, OntDataRange dr);
 

@@ -41,7 +41,7 @@ interface HasValue<V extends RDFNode> {
      * (the filler is expected to be either {@link OWL2#Thing owl:Thing}
      * for object restriction or {@link org.apache.jena.vocabulary.RDFS#Literal} for data restriction).
      *
-     * @return {@link V}, not {@code null}
+     * @return {@code V}, not {@code null}
      * @see SetValue#setValue(RDFNode)
      */
     V getValue();

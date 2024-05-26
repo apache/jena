@@ -29,7 +29,7 @@ import java.util.stream.Stream;
  * In OWL2 there are four such property expressions:
  * Data Property, Object Property (OWL Entity and InverseOf) and Annotation Property.
  *
- * @see <a href='https://www.w3.org/TR/owl2-quick-reference/'>2.2 Properties</a>
+ * @see <a href="https://www.w3.org/TR/owl2-quick-reference/">2.2 Properties</a>
  * @see OntObjectProperty
  * @see OntAnnotationProperty
  * @see OntDataProperty

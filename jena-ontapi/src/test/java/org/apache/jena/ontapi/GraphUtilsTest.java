@@ -50,7 +50,6 @@ import java.util.stream.Stream;
 
 /**
  * To test {@link Graphs} utility class.
- * Created by @szz on 11.06.2019.
  */
 @SuppressWarnings("deprecation")
 public class GraphUtilsTest {

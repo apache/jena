@@ -35,7 +35,7 @@ interface SetProperties<P extends OntRelationalProperty, R extends OntClass.Nary
     /**
      * Sets the given property as the only member of the []-list.
      *
-     * @param property {@link P}, not {@code null}
+     * @param property {@code P}, not {@code null}
      * @return <b>this</b> instance to allow cascading calls
      * @see HasProperties#getProperty()
      */

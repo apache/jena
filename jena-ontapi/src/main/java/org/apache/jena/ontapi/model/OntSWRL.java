@@ -29,7 +29,7 @@ import java.util.stream.Stream;
  * A base for SWRL addition.
  *
  * @see SWRL
- * @see <a href='https://www.w3.org/Submission/SWRL'>specification</a>
+ * @see <a href="https://www.w3.org/Submission/SWRL">specification</a>
  */
 public interface OntSWRL extends OntObject {
 

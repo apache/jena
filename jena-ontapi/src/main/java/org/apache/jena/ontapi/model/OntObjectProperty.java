@@ -99,12 +99,13 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      *
      * @param properties {@link Collection} (preferably {@link List}) of {@link OntObjectProperty object property expression}s
      * @return {@link OntList} of {@link OntObjectProperty}s
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#a_SubObjectPropertyOfChain'>9.2.1 Object Subproperties</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#a_SubObjectPropertyOfChain">9.2.1 Object Subproperties</a>
      * @see #addPropertyChainAxiomStatement(Collection)
      * @see #addPropertyChain(Collection)
      * @see #propertyChains()
      * @see #findPropertyChain(RDFNode)
      */
+    @SuppressWarnings("javadoc")
     OntList<OntObjectProperty> createPropertyChain(Collection<OntObjectProperty> properties);
 
     /**
@@ -258,7 +259,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * @param source {@link OntIndividual}
      * @return {@code Stream} of {@link OntNegativeAssertion.WithObjectProperty}s
      * @see OntDataProperty#negativeAssertions(OntIndividual)
-     * @see OntIndividual#negativeAssertions(OntNamedProperty)
+     * @see OntIndividual#negativeAssertions(OntRelationalProperty)
      */
     default Stream<OntNegativeAssertion.WithObjectProperty> negativeAssertions(OntIndividual source) {
         return negativeAssertions().filter(a -> a.getSource().equals(source));
@@ -328,7 +329,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * to provide the ability to add annotations subsequently
      * @see #createPropertyChain(Collection)
      * @see #addPropertyChainAxiomStatement(OntObjectProperty...)
-     * @see <a href='https://www.w3.org/TR/owl2-mapping-to-rdf/#Translation_of_Annotations'>2.3.1 Axioms that Generate a Main Triple</a>
+     * @see <a href="https://www.w3.org/TR/owl2-mapping-to-rdf/#Translation_of_Annotations">2.3.1 Axioms that Generate a Main Triple</a>
      */
     default OntStatement addPropertyChainAxiomStatement(Collection<OntObjectProperty> properties) {
         return createPropertyChain(properties).getMainStatement();
@@ -811,7 +812,7 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
      * It is a URI-{@link Resource Resource} and an extension to the standard jena {@link Property}.
      * Also, It is an {@link OntEntity OWL Entity} and {@link OntRelationalProperty real ontology property}.
      *
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Object_Properties'>5.3 Object Properties</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Object_Properties">5.3 Object Properties</a>
      */
     interface Named extends OntObjectProperty, OntNamedProperty<Named> {
 

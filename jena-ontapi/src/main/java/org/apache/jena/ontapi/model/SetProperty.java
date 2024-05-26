@@ -35,7 +35,7 @@ interface SetProperty<P extends OntRelationalProperty, R extends OntClass.Restri
      * (as an object with predicate {@link OWL2#onProperty owl:onProperty}
      * if it is Unary Restriction).
      *
-     * @param property {@link P}, not {@code null}
+     * @param property {@code P}, not {@code null}
      * @return <b>this</b> instance to allow cascading calls
      */
     R setProperty(P property);

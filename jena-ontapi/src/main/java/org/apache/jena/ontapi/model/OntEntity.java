@@ -98,6 +98,7 @@ public interface OntEntity extends OntObject {
      * @see OWL2
      * @see OntPersonality.Builtins
      */
+    @SuppressWarnings("javadoc")
     boolean isBuiltIn();
 
 }

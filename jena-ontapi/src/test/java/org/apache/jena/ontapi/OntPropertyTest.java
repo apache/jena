@@ -48,6 +48,7 @@ import java.util.stream.Collectors;
  * {@link OntRelationalProperty},
  * {@link OntAnnotationProperty}.
  */
+@SuppressWarnings("javadoc")
 public class OntPropertyTest {
 
     @Test

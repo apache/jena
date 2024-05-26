@@ -36,13 +36,13 @@ import java.util.stream.Stream;
 public interface RDFNodeList<E extends RDFNode> extends Resource {
 
     /**
-     * Lists all elements of the type {@link E} from this list.
+     * Lists all elements of the type {@code E} from this list.
      * Note: a real RDF-list may contain nodes with an incompatible type,
      * in this case they will not be included in the result {@code Stream}.
      * To get all {@link RDFNode RDF Node}s use the standard list representation:
      * the expression {@code Iter.asStream(this.as(RDFList.class).iterator())} will return a {@code Stream} of nodes.
      *
-     * @return {@code Stream} of {@link E}-elements
+     * @return {@code Stream} of {@code E}-elements
      * @see #as(Class)
      * @see Iterators#asStream(java.util.Iterator)
      */
@@ -51,9 +51,9 @@ public interface RDFNodeList<E extends RDFNode> extends Resource {
     /**
      * Answers {@code true} if the []-list contains the specified {@code element}.
      * More formally, returns {@code true} if and only if
-     * this RDF-list contains at least one element {@code e} of the type {@link E} such that {@code element.equals(e)}.
+     * this RDF-list contains at least one element {@code e} of the type {@code E} such that {@code element.equals(e)}.
      *
-     * @param element {@link E}, not {@code null}
+     * @param element {@code E}, not {@code null}
      * @return boolean
      */
     default boolean contains(E element) {
@@ -64,9 +64,9 @@ public interface RDFNodeList<E extends RDFNode> extends Resource {
     }
 
     /**
-     * Answers the first element of the type {@link E}.
+     * Answers the first element of the type {@code E}.
      *
-     * @return {@code Optional} around the {@link E}-item
+     * @return {@code Optional} around the {@code E}-item
      */
     default Optional<E> first() {
         try (Stream<E> members = members()) {
@@ -75,9 +75,9 @@ public interface RDFNodeList<E extends RDFNode> extends Resource {
     }
 
     /**
-     * Answers the last element of the type {@link E}.
+     * Answers the last element of the type {@code E}.
      *
-     * @return {@code Optional} around the {@link E}-item
+     * @return {@code Optional} around the {@code E}-item
      */
     default Optional<E> last() {
         return members().reduce((f, s) -> s);
@@ -96,7 +96,7 @@ public interface RDFNodeList<E extends RDFNode> extends Resource {
 
     /**
      * Answers {@code true} if it is a nil []-list.
-     * Please note: a non-nil list may also not contain elements of the type {@link E}
+     * Please note: a non-nil list may also not contain elements of the type {@code E}
      * and, therefore, be {@link #isEmpty()} empty.
      *
      * @return boolean
@@ -107,7 +107,7 @@ public interface RDFNodeList<E extends RDFNode> extends Resource {
     }
 
     /**
-     * Answers {@code true} if this list contains no elements of the type {@link E}.
+     * Answers {@code true} if this list contains no elements of the type {@code E}.
      * A {@link #isNil() nil}-list is always empty, but the reverse is not true.
      *
      * @return boolean

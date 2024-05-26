@@ -424,10 +424,10 @@ public abstract class OntListImpl<E extends RDFNode> extends ResourceImpl implem
     }
 
     /**
-     * Lists all elements of type {@link E} from this list.
+     * Lists all elements of type {@code E} from this list.
      * Note: the list may contain nodes with incompatible type, in this case they will be skipped.
      *
-     * @return {@link ExtendedIterator} of {@link E}-elements
+     * @return {@link ExtendedIterator} of {@code E}-elements
      */
     public ExtendedIterator<E> listMembers() {
         Iterator<List<Triple>> it = createRDFListIterator();
@@ -505,10 +505,10 @@ public abstract class OntListImpl<E extends RDFNode> extends ResourceImpl implem
     public abstract boolean isValid(RDFNode n);
 
     /**
-     * Makes an {@link E}-resource from the given {@link RDFNode RDF-Node}.
+     * Makes an {@code E}-resource from the given {@link RDFNode RDF-Node}.
      *
      * @param n {@link RDFNode}
-     * @return {@link RDFNode} of type {@link E}
+     * @return {@link RDFNode} of type {@code E}
      */
     public abstract E cast(RDFNode n);
 

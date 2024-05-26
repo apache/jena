@@ -58,7 +58,7 @@ public class OntJenaException extends JenaException {
      *
      * @param message error description
      * @param <X>     any
-     * @return {@link X}
+     * @return X
      */
     public static <X> X TODO(String message) {
         throw new RuntimeException(message);
@@ -68,7 +68,7 @@ public class OntJenaException extends JenaException {
      * @param object any
      * @param <X>    any
      * @return the specified {@code object}
-     * @throws IllegalStateException if {@link X} is {@code null}
+     * @throws IllegalStateException if {@code X} is {@code null}
      * @see java.util.Objects#requireNonNull(Object)
      */
     public static <X> X checkNotNull(X object) {
@@ -83,7 +83,7 @@ public class OntJenaException extends JenaException {
      * @param message error description
      * @param <X>     any
      * @return the specified {@code object}
-     * @throws IllegalStateException if {@link X} is {@code null}
+     * @throws IllegalStateException if {@code X} is {@code null}
      * @see java.util.Objects#requireNonNull(Object)
      */
     public static <X> X checkNotNull(X object, String message) {

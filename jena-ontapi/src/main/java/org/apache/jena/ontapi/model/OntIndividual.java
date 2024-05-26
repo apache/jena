@@ -182,10 +182,10 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
     /**
      * Lists all negative property assertions for this individual and the given property.
      *
-     * @param property {@link OntNamedProperty} or {@code null}
+     * @param property {@link OntRelationalProperty} or {@code null}
      * @return {@code Stream} of {@link OntNegativeAssertion negative property assertion}s
      */
-    default Stream<OntNegativeAssertion> negativeAssertions(OntNamedProperty property) {
+    default Stream<OntNegativeAssertion> negativeAssertions(OntRelationalProperty property) {
         Stream<OntNegativeAssertion> res = negativeAssertions();
         if (property == null) {
             return res;
@@ -225,7 +225,7 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
      * @return {@link OntStatement} to allow subsequent annotations adding
      * @see #addSameIndividual(OntIndividual)
      * @see #removeSameIndividual(Resource)
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Individual_Equality'>9.6.1 Individual Equality</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Individual_Equality">9.6.1 Individual Equality</a>
      */
     default OntStatement addSameAsStatement(OntIndividual other) {
         return addStatement(OWL2.sameAs, other);
@@ -253,7 +253,7 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
      * @see #addDifferentFromStatement(OntIndividual)
      * @see #removeDifferentIndividual(Resource)
      * @see OntDisjoint.Individuals
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Individual_Inequality'>9.6.2 Individual Inequality</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Individual_Inequality">9.6.2 Individual Inequality</a>
      */
     default OntIndividual addDifferentIndividual(OntIndividual other) {
         addDifferentFromStatement(other);
@@ -402,7 +402,7 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
      *                 can be {@code null} to remove all assertions for the predicate {@code property}
      * @return <b>this</b> instance to allow cascading calls
      */
-    default OntIndividual removeNegativeAssertion(OntNamedProperty property, RDFNode value) {
+    default OntIndividual removeNegativeAssertion(OntRelationalProperty property, RDFNode value) {
         negativeAssertions(property)
                 .filter(x -> value == null || value.equals(x.getTarget()))
                 .toList()
@@ -495,7 +495,7 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
     /**
      * An interface for <b>Named</b> Individual which is an {@link OWL2 Entity OntEntity}.
      *
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Named_Individuals'>5.6.1 Named Individuals</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Named_Individuals">5.6.1 Named Individuals</a>
      */
     interface Named extends OntIndividual, OntEntity {
 
@@ -530,7 +530,7 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
      * (where {@code PN} is a {@link OntObjectProperty.Named named object property}, and {@code _:ai} are individuals)</li>
      * </ul>
      *
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Anonymous_Individuals'>5.6.2 Anonymous Individuals</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Anonymous_Individuals">5.6.2 Anonymous Individuals</a>
      */
     interface Anonymous extends OntIndividual {
 

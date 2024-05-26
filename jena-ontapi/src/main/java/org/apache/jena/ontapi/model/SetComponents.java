@@ -37,7 +37,7 @@ interface SetComponents<V extends RDFNode, R extends OntObject> extends WithOntL
     /**
      * Replaces the existing []-list content with the specified one, that is given in the form of vararg array.
      *
-     * @param values an {@code Array} of the type {@link V}
+     * @param values an {@code Array} of the type {@code V}
      * @return <b>this</b> instance to allow cascading calls
      */
     @SuppressWarnings("unchecked")
@@ -49,7 +49,7 @@ interface SetComponents<V extends RDFNode, R extends OntObject> extends WithOntL
      * Replaces the existing []-list content with the specified one, that is given in the form of {@link Collection}.
      * Nulls and self-references are not allowed.
      *
-     * @param components a {@code Collection} of the type {@link V}
+     * @param components a {@code Collection} of the type {@code V}
      * @return <b>this</b> instance to allow cascading calls
      * @throws OntJenaException in case of wrong input
      */

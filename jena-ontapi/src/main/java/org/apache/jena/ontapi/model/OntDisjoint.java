@@ -45,14 +45,14 @@ public interface OntDisjoint<O extends OntObject> extends OntObject, HasRDFNodeL
     }
 
     /**
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Disjoint_Classes'>9.1.3 Disjoint Classes</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Disjoint_Classes">9.1.3 Disjoint Classes</a>
      * @see OntModel#createDisjointClasses(Collection)
      */
     interface Classes extends OntDisjoint<OntClass>, SetComponents<OntClass, Classes> {
     }
 
     /**
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Individual_Inequality'>9.6.2 Individual Inequality</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Individual_Inequality">9.6.2 Individual Inequality</a>
      * @see OntModel#createDifferentIndividuals(Collection)
      */
     interface Individuals extends OntDisjoint<OntIndividual>, SetComponents<OntIndividual, Individuals> {
@@ -84,14 +84,14 @@ public interface OntDisjoint<O extends OntObject> extends OntObject, HasRDFNodeL
     }
 
     /**
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Disjoint_Object_Properties'>9.2.3 Disjoint Object Properties</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Disjoint_Object_Properties">9.2.3 Disjoint Object Properties</a>
      * @see OntModel#createDisjointObjectProperties(Collection)
      */
     interface ObjectProperties extends Properties<OntObjectProperty>, SetComponents<OntObjectProperty, ObjectProperties> {
     }
 
     /**
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Disjoint_Data_Properties'>9.3.3 Disjoint Data Properties</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Disjoint_Data_Properties">9.3.3 Disjoint Data Properties</a>
      * @see OntModel#createDisjointDataProperties(Collection)
      */
     interface DataProperties extends Properties<OntDataProperty>, SetComponents<OntDataProperty, DataProperties> {

@@ -42,7 +42,7 @@ interface SetValue<V extends RDFNode, R extends OntObject> {
      * (the null-filler is considered as {@link OWL2#Thing owl:Thing}
      * for an object restriction and as {@link org.apache.jena.vocabulary.RDFS#Literal} for a data restriction).
      *
-     * @param value {@link V}, possible {@code null} in case of Cardinality Restriction
+     * @param value {@code V}, possible {@code null} in case of Cardinality Restriction
      * @return <b>this</b> instance to allow cascading calls
      * @see HasValue#getValue()
      */

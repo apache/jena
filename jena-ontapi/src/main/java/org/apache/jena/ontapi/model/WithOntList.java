@@ -29,9 +29,9 @@ import org.apache.jena.rdf.model.RDFNode;
  */
 interface WithOntList<E extends RDFNode> extends HasRDFNodeList<E> {
     /**
-     * Gets a modifiable []-list with items of the type {@link E}.
+     * Gets a modifiable []-list with items of the type {@code E}.
      *
-     * @return {@link OntList Ontology []-list} with items of the type {@link E}
+     * @return {@link OntList Ontology []-list} with items of the type {@code E}
      */
     @Override
     OntList<E> getList();

@@ -30,7 +30,7 @@ import org.apache.jena.rdf.model.RDFNode;
 interface HasRDFNodeList<E extends RDFNode> {
 
     /**
-     * Gets an unmodifiable []-list with items of the type {@link E}
+     * Gets an unmodifiable []-list with items of the type {@code E}
      *
      * @return {@link RDFNodeList}
      */

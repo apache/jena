@@ -65,7 +65,7 @@ import java.util.stream.Stream;
  * @see GraphUtil
  * @see GraphUtils
  */
-@SuppressWarnings({"WeakerAccess", "unused"})
+@SuppressWarnings({"WeakerAccess"})
 public class Graphs {
 
     static {
@@ -543,7 +543,7 @@ public class Graphs {
      * @param graph {@link Graph}
      * @return {@code Optional} with {@link Node} blank or URI,
      * or {@code Optional#empty} if the ontology Node cannot be uniquely defined or absent in the {@code graph}
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Ontology_Documents'>3.2 Ontology Documents</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Ontology_Documents">3.2 Ontology Documents</a>
      */
     public static Optional<Node> findOntologyNameNode(Graph graph) {
         return findOntologyNameNode(graph, false);
@@ -557,7 +557,7 @@ public class Graphs {
      * @param allowMultipleOntologyHeaders {@code boolean}, see {@link #ontologyNode(Graph, boolean)} for explanation
      * @return {@code Optional} with {@link Node} blank or URI,
      * or {@code Optional#empty} if the ontology Node cannot be uniquely defined or absent in the {@code graph}
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Ontology_Documents'>3.2 Ontology Documents</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Ontology_Documents">3.2 Ontology Documents</a>
      */
     public static Optional<Node> findOntologyNameNode(Graph graph, boolean allowMultipleOntologyHeaders) {
         if (graph.isClosed()) {

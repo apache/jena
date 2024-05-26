@@ -26,8 +26,6 @@ import java.util.Collection;
 
 /**
  * A technical interface to generate SWRL Objects (Variable, Atoms, Imp).
- * <p>
- * Created by @szz on 14.05.2019.
  */
 interface CreateSWRL {
 

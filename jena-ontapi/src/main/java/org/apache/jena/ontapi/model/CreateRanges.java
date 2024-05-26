@@ -25,7 +25,6 @@ import java.util.Collection;
 
 /**
  * A technical interface to generate {@link OntDataRange Data Range Expression}s.
- * Created by @szz on 14.05.2019.
  */
 interface CreateRanges {
 
@@ -39,7 +38,7 @@ interface CreateRanges {
      *
      * @param values {@code Collection} of {@link Literal literal}s, without {@code null}s
      * @return {@link OntDataRange.OneOf}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Enumeration_of_Literals'>7.4 Enumeration of Literals</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Enumeration_of_Literals">7.4 Enumeration of Literals</a>
      */
     OntDataRange.OneOf createDataOneOf(Collection<Literal> values);
 
@@ -56,7 +55,7 @@ interface CreateRanges {
      * @param other  {@link OntDataRange.Named}, not {@code null}
      * @param values {@code Collection} of {@link OntFacetRestriction facet restriction}s, without {@code null}s
      * @return {@link OntDataRange.Restriction}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Datatype_Restrictions'>7.5 Datatype Restrictions</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Datatype_Restrictions">7.5 Datatype Restrictions</a>
      * @see OntFacetRestriction
      * @see OntModel#createFacetRestriction(Class, Literal)
      */
@@ -72,7 +71,7 @@ interface CreateRanges {
      *
      * @param other {@link OntDataRange}, not {@code null}
      * @return {@link OntDataRange.ComplementOf}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Complement_of_Data_Ranges'>7.3 Complement of Data Ranges</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Complement_of_Data_Ranges">7.3 Complement of Data Ranges</a>
      */
     OntDataRange.ComplementOf createDataComplementOf(OntDataRange other);
 
@@ -86,7 +85,7 @@ interface CreateRanges {
      *
      * @param values {@code Collection} of {@link OntDataRange data range}s, without {@code null}s
      * @return {@link OntDataRange.UnionOf}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Union_of_Data_Ranges'>7.2 Union of Data Ranges</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Union_of_Data_Ranges">7.2 Union of Data Ranges</a>
      */
     OntDataRange.UnionOf createDataUnionOf(Collection<OntDataRange> values);
 
@@ -100,7 +99,7 @@ interface CreateRanges {
      *
      * @param values {@code Collection} of {@link OntDataRange data range}s, without {@code null}s
      * @return {@link OntDataRange.IntersectionOf}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Intersection_of_Data_Ranges'>7.1 Intersection of Data Ranges</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Intersection_of_Data_Ranges">7.1 Intersection of Data Ranges</a>
      */
     OntDataRange.IntersectionOf createDataIntersectionOf(Collection<OntDataRange> values);
 
