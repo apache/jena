@@ -28,6 +28,7 @@ import org.apache.jena.ontapi.common.OntPersonality;
 import org.apache.jena.ontapi.impl.OntGraphModelImpl;
 import org.apache.jena.ontapi.impl.UnionGraphImpl;
 import org.apache.jena.ontapi.impl.repositories.OntUnionGraphRepository;
+import org.apache.jena.ontapi.impl.repositories.PersistentGraphRepository;
 import org.apache.jena.ontapi.model.OntID;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.utils.Graphs;
@@ -162,17 +163,17 @@ public class OntModelFactory {
     /**
      * Creates an Ontology Model according to the specified specification.
      *
-     * @param data {@link Graph} (base graph)
-     * @param spec {@link OntSpecification}
+     * @param graph {@link Graph} (base graph)
+     * @param spec  {@link OntSpecification}
      * @return {@link OntModel}
      */
-    public static OntModel createModel(Graph data, OntSpecification spec) {
-        Objects.requireNonNull(data);
+    public static OntModel createModel(Graph graph, OntSpecification spec) {
+        Objects.requireNonNull(graph);
         ReasonerFactory reasonerFactory = Objects.requireNonNull(spec).getReasonerFactory();
         if (reasonerFactory == null) {
-            return new OntGraphModelImpl(Graphs.makeOntUnionFrom(data, OntModelFactory::createUnionGraph), spec.getPersonality());
+            return new OntGraphModelImpl(Graphs.makeOntUnionFrom(graph, OntModelFactory::createUnionGraph), spec.getPersonality());
         }
-        return createModel(data, spec.getPersonality(), reasonerFactory.create(null));
+        return createModel(graph, spec.getPersonality(), reasonerFactory.create(null));
     }
 
     /**
@@ -198,34 +199,36 @@ public class OntModelFactory {
     }
 
     /**
-     * Creates an Ontology Model associated with {@link OntSpecification#OWL2_DL_MEM_BUILTIN_INF} spec.
+     * Creates Ontology Model associated with {@link OntSpecification#OWL2_DL_MEM_BUILTIN_INF} spec.
      * The {@code repository} manages all the dependencies.
      * See {@link #createModel(Graph, OntSpecification, GraphRepository)}.
      *
-     * @param uri        String, subject of {@code uri rdf:type owl:Ontology} statement.
+     * @param uri        String, subject of {@code uri rdf:type owl:Ontology} statement,
+     *                   can be {@code null} for anonymous ontology
      * @param repository {@link GraphRepository}
      * @return {@link OntModel}
      */
     public static OntModel createModel(String uri, GraphRepository repository) {
-        Objects.requireNonNull(uri);
         return createModel(
-                createDefaultModel().createResource(uri, OWL2.Ontology).getModel().getGraph(),
+                createOntGraph(uri != null ? NodeFactory.createURI(uri) : NodeFactory.createBlankNode(), repository),
                 OntSpecification.OWL2_DL_MEM_BUILTIN_INF,
                 repository
         ).setNsPrefixes(STANDARD);
     }
 
     /**
-     * Creates an Ontology Model according to the specified specification.
+     * Creates an anonymous Ontology Model according to the specified specification.
      * The {@code repository} manages all the dependencies.
-     * See {@link #createModel(Graph, OntSpecification, GraphRepository)}.
+     * Note that if {@code repository} is {@link PersistentGraphRepository},
+     * encapsulated {@link GraphMaker} will be used to create graphs.
+     * See also {@link #createModel(Graph, OntSpecification, GraphRepository)}.
      *
      * @param spec       {@link OntSpecification}
      * @param repository {@link GraphRepository}
      * @return {@link OntModel}
      */
     public static OntModel createModel(OntSpecification spec, GraphRepository repository) {
-        return createModel(createDefaultGraph(), spec, repository).setNsPrefixes(STANDARD);
+        return createModel(null, spec, repository).setNsPrefixes(STANDARD);
     }
 
     /**
@@ -253,22 +256,30 @@ public class OntModelFactory {
      * it returns a new instance of {@link OntModel} wrapping the existing {@link UnionGraph}
      * if it is present in the {@code repository}.
      *
-     * @param graph      {@link Graph}
+     * @param graph      {@link Graph} or {@code null} to create anonymous Graph automatically;
+     *                   the instance (new or provided) will be wrapped as
+     *                   {@link UnionGraph} (if it is not already {@link UnionGraph})
      * @param spec       {@link OntSpecification}
-     * @param repository {@link GraphRepository}
+     * @param repository {@link GraphRepository}; will contain {@link UnionGraph}s
      * @return {@link OntModel}
+     * @see org.apache.jena.ontapi.impl.repositories.DocumentGraphRepository DocumentGraphRepository
+     * @see PersistentGraphRepository
      */
-    public static OntModel createModel(Graph graph, OntSpecification spec, GraphRepository repository) {
+    public static OntModel createModel(Graph graph,
+                                       OntSpecification spec,
+                                       GraphRepository repository) {
         Objects.requireNonNull(spec);
         Objects.requireNonNull(repository);
-        Objects.requireNonNull(graph);
         if (Graphs.dataGraphs(graph).anyMatch(it -> it instanceof InfGraph)) {
             throw new IllegalArgumentException("InfGraph in the hierarchy detected");
+        }
+        if (graph == null) {
+            graph = createOntGraph(NodeFactory.createBlankNode(), repository);
         }
         OntUnionGraphRepository ontUnionGraphRepository = new OntUnionGraphRepository(
                 repository,
                 OntModelFactory::createUnionGraph,
-                OntModelFactory::createDefaultGraph,
+                n -> createOntGraph(n, repository),
                 /*ignoreUnresolvedImports*/ true);
         UnionGraph union;
         if (graph instanceof UnionGraph) {
@@ -301,7 +312,8 @@ public class OntModelFactory {
      *
      * @param uri        ontology name:
      *                   object from the statement {@code <ont> owl:versionIri <name>} or
-     *                   subject from the statement {@code <name> rdf:type owl:Ontology}
+     *                   subject from the statement {@code <name> rdf:type owl:Ontology};
+     *                   not {@code null}
      * @param spec       {@link OntSpecification}
      * @param repository {@link GraphRepository}
      * @return {@link OntModel} or {@code null} if there is no such ontology
@@ -330,7 +342,7 @@ public class OntModelFactory {
         OntUnionGraphRepository ontUnionGraphRepository = new OntUnionGraphRepository(
                 repository,
                 OntModelFactory::createUnionGraph,
-                OntModelFactory::createDefaultGraph,
+                n -> createOntGraph(n, repository),
                 /*ignoreUnresolvedImports*/ true);
         if (!ontUnionGraphRepository.contains(name)) {
             return null;
@@ -342,7 +354,26 @@ public class OntModelFactory {
         }
         InfGraph inf = reasonerFactory.create(null).bind(union);
         return new OntGraphModelImpl(inf, spec.getPersonality());
+    }
 
+    /**
+     * Creates ontology graph.
+     *
+     * @param name       {@link Node}, not {@code null} - ontology header.
+     * @param repository {@link GraphRepository}, not {@code null}
+     * @return {@link Graph}
+     */
+    public static Graph createOntGraph(Node name, GraphRepository repository) {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(repository);
+        Graph res;
+        if (repository instanceof PersistentGraphRepository) {
+            res = ((PersistentGraphRepository) repository).getGraphMaker().createGraph(name.toString());
+        } else {
+            res = createDefaultGraph();
+        }
+        res.add(name, RDF.type.asNode(), OWL2.Ontology.asNode());
+        return res;
     }
 
 }
