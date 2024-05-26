@@ -63,6 +63,9 @@ public class CDTLiteralFunctionUtils
 	 * thrown by {@link CompositeDatatypeList#getValue(LiteralLabel)}.
 	 */
 	public static final List<CDTValue> getList( final Node n ) throws ExprEvalException {
+		if ( ! n.getLiteral().isWellFormed() )
+			throw new ExprEvalException("Not a well-formed cdt:Map literal: " + n);
+
 		try {
 			return CompositeDatatypeList.getValue( n.getLiteral() );
 		}
@@ -80,6 +83,9 @@ public class CDTLiteralFunctionUtils
 	 * thrown by {@link CompositeDatatypeMap#getValue(LiteralLabel)}.
 	 */
 	public static final Map<CDTKey,CDTValue> getMap( final Node n ) throws ExprEvalException {
+		if ( ! n.getLiteral().isWellFormed() )
+			throw new ExprEvalException("Not a well-formed cdt:Map literal: " + n);
+
 		try {
 			return CompositeDatatypeMap.getValue( n.getLiteral() );
 		}
