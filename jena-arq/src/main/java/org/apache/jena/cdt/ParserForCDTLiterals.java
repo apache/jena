@@ -18,7 +18,6 @@
 
 package org.apache.jena.cdt;
 
-import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -28,15 +27,19 @@ import java.util.Map;
 import org.apache.jena.cdt.parser.CDTLiteralParser;
 import org.apache.jena.cdt.parser.ParseException;
 import org.apache.jena.graph.Node;
+import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.ttl.turtle.parser.TokenMgrError;
-import org.apache.jena.util.FileUtils;
 
 public class ParserForCDTLiterals
 {
 	public static List<CDTValue> parseListLiteral( final String lex, final boolean recursive ) {
+		return parseListLiteral( RiotLib.dftProfile(), lex, recursive );
+	}
+
+	public static List<CDTValue> parseListLiteral( final ParserProfile pp, final String lex, final boolean recursive ) {
 		final Reader reader = new StringReader(lex);
-		final List<CDTValue> result = parseListLiteral(reader, recursive);
+		final List<CDTValue> result = parseListLiteral(pp, reader, recursive);
 
 		try { reader.close(); } catch ( final IOException e ) {
 			throw new CDTLiteralParseException("Closing the reader caused an exception.", e);
@@ -46,10 +49,15 @@ public class ParserForCDTLiterals
 	}
 
 	public static List<CDTValue> parseListLiteral( final Reader reader, final boolean recursive ) {
+		return parseListLiteral( RiotLib.dftProfile(), reader, recursive );
+	}
+
+	public static List<CDTValue> parseListLiteral( final ParserProfile pp, final Reader reader, final boolean recursive ) {
+		final CDTLiteralParser parser = new CDTLiteralParser(reader);
+		parser.setProfile(pp);
+
 		final List<CDTValue> list;
 		try {
-			final CDTLiteralParser parser = new CDTLiteralParser(reader);
-			parser.setProfile( RiotLib.dftProfile() );
 			list = parser.List();
 		}
 		catch ( final ParseException | TokenMgrError ex ) {
@@ -68,11 +76,11 @@ public class ParserForCDTLiterals
 				if ( v.isNode() ) {
 					final Node vn = v.asNode();
 					if ( CompositeDatatypeList.isListLiteral(vn) && !(vn.getLiteral() instanceof LiteralLabelForList) ) {
-						final List<CDTValue> subList = parseListLiteral(vn.getLiteralLexicalForm(), recursive);
+						final List<CDTValue> subList = parseListLiteral(pp, vn.getLiteralLexicalForm(), recursive);
 						list.set( i, CDTFactory.createValue(subList) );
 					}
 					else if ( CompositeDatatypeMap.isMapLiteral(vn) && !(vn.getLiteral() instanceof LiteralLabelForMap) ) {
-						final Map<CDTKey,CDTValue> subMap = parseMapLiteral(vn.getLiteralLexicalForm(), recursive);
+						final Map<CDTKey,CDTValue> subMap = parseMapLiteral(pp, vn.getLiteralLexicalForm(), recursive);
 						list.set( i, CDTFactory.createValue(subMap) );
 					}
 				}
@@ -83,8 +91,12 @@ public class ParserForCDTLiterals
 	}
 
 	public static Map<CDTKey,CDTValue> parseMapLiteral( final String lex, final boolean recursive ) {
+		return parseMapLiteral( RiotLib.dftProfile(), lex, recursive );
+	}
+
+	public static Map<CDTKey,CDTValue> parseMapLiteral( final ParserProfile pp, final String lex, final boolean recursive ) {
 		final Reader reader = new StringReader(lex);
-		final Map<CDTKey,CDTValue> result = parseMapLiteral(reader, recursive);
+		final Map<CDTKey,CDTValue> result = parseMapLiteral(pp, reader, recursive);
 
 		try { reader.close(); } catch ( final IOException e ) {
 			throw new CDTLiteralParseException("Closing the reader caused an exception.", e);
@@ -94,10 +106,15 @@ public class ParserForCDTLiterals
 	}
 
 	public static Map<CDTKey,CDTValue> parseMapLiteral( final Reader reader, final boolean recursive ) {
+		return parseMapLiteral( RiotLib.dftProfile(), reader, recursive );
+	}
+
+	public static Map<CDTKey,CDTValue> parseMapLiteral( final ParserProfile pp, final Reader reader, final boolean recursive ) {
+		final CDTLiteralParser parser = new CDTLiteralParser(reader);
+		parser.setProfile(pp);
+
 		final Map<CDTKey,CDTValue> map;
 		try {
-			final CDTLiteralParser parser = new CDTLiteralParser(reader);
-			parser.setProfile( RiotLib.dftProfile() );
 			map = parser.Map();
 		}
 		catch ( final ParseException | TokenMgrError ex ) {
@@ -116,11 +133,11 @@ public class ParserForCDTLiterals
 				if ( v.isNode() ) {
 					final Node vn = v.asNode();
 					if ( CompositeDatatypeList.isListLiteral(vn) && !(vn.getLiteral() instanceof LiteralLabelForList) ) {
-						final List<CDTValue> subList = parseListLiteral(vn.getLiteralLexicalForm(), recursive);
+						final List<CDTValue> subList = parseListLiteral(pp, vn.getLiteralLexicalForm(), recursive);
 						map.put( key, CDTFactory.createValue(subList) );
 					}
 					else if ( CompositeDatatypeMap.isMapLiteral(vn) && !(vn.getLiteral() instanceof LiteralLabelForMap) ) {
-						final Map<CDTKey,CDTValue> subMap = parseMapLiteral(vn.getLiteralLexicalForm(), recursive);
+						final Map<CDTKey,CDTValue> subMap = parseMapLiteral(pp, vn.getLiteralLexicalForm(), recursive);
 						map.put( key, CDTFactory.createValue(subMap) );
 					}
 				}
