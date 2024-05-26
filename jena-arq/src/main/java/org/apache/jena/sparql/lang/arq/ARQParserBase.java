@@ -22,7 +22,17 @@ import java.util.Map;
 import org.apache.jena.atlas.json.io.JSONHandler ;
 import org.apache.jena.atlas.json.io.JSONHandlerBase ;
 import org.apache.jena.atlas.lib.NotImplemented ;
+import org.apache.jena.cdt.CompositeDatatypeList;
+import org.apache.jena.cdt.CompositeDatatypeMap;
+import org.apache.jena.cdt.LiteralLabelForList;
+import org.apache.jena.cdt.LiteralLabelForMap;
+import org.apache.jena.datatypes.DatatypeFormatException;
+import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.impl.LiteralLabel;
+import org.apache.jena.riot.system.ParserProfile;
+import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.lang.SPARQLParserBase ;
@@ -88,5 +98,54 @@ class ARQParserBase extends SPARQLParserBase
           elg.addElement(el);
         }
         return elg;
+    }
+
+    // CDT literals
+    protected ParserProfile parserProfileForCDTs = null;
+
+    @Override
+    protected Node createLiteral(String lexicalForm, String langTag, String datatypeURI) {
+        // CDT literals need to be handled in a special way because their
+        // lexical forms may contain blank node identifiers, and the same
+        // blank node identifier in different CDT literals within the same
+        // query must be mapped to the same blank node. To this end, we are
+        // reusing the same ParserProfile for parsing all the CDT literals.
+        final RDFDatatype cdtDatatype;
+        if ( CompositeDatatypeList.uri.equals(datatypeURI) )
+            cdtDatatype = CompositeDatatypeList.type;
+        else if ( CompositeDatatypeMap.uri.equals(datatypeURI) )
+            cdtDatatype = CompositeDatatypeMap.type;
+        else
+            cdtDatatype = null;
+
+        if ( cdtDatatype != null ) {
+            ensureParserProfileForCDTs();
+            try {
+                return parserProfileForCDTs.createTypedLiteral(lexicalForm, cdtDatatype, 0L, 0L);
+            }
+            catch ( DatatypeFormatException ex ) {
+                return createIllformedLiteral(lexicalForm, cdtDatatype);
+            }
+        }
+
+        return super.createLiteral(lexicalForm, langTag, datatypeURI);
+    }
+
+    protected void ensureParserProfileForCDTs() {
+        if ( parserProfileForCDTs == null ) {
+            parserProfileForCDTs = RiotLib.dftProfile();
+        }
+    }
+
+    protected Node createIllformedLiteral(String lexicalForm, RDFDatatype cdtDatatype) {
+        final LiteralLabel lit;
+        if ( CompositeDatatypeList.type.equals(cdtDatatype) )
+            lit = new LiteralLabelForList(lexicalForm, true);
+        else if ( CompositeDatatypeMap.type.equals(cdtDatatype) )
+            lit = new LiteralLabelForMap(lexicalForm, true);
+        else
+            throw new IllegalArgumentException( cdtDatatype.toString() );
+
+        return NodeFactory.createLiteral(lit);
     }
 }
