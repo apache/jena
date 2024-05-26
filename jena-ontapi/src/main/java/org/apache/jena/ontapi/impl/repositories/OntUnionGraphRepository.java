@@ -37,7 +37,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -46,12 +45,12 @@ import java.util.stream.Collectors;
 public class OntUnionGraphRepository {
     private final GraphRepository repository;
     private final Function<Graph, UnionGraph> unionGraphFactory;
-    private final Supplier<Graph> baseGraphFactory;
+    private final Function<Node, Graph> baseGraphFactory;
     private final boolean ignoreUnresolvedImports;
 
     public OntUnionGraphRepository(GraphRepository repository,
                                    Function<Graph, UnionGraph> unionGraphFactory,
-                                   Supplier<Graph> baseGraphFactory,
+                                   Function<Node, Graph> baseGraphFactory,
                                    boolean ignoreUnresolvedImports) {
         this.repository = repository;
         this.unionGraphFactory = unionGraphFactory;
@@ -283,18 +282,18 @@ public class OntUnionGraphRepository {
         }
     }
 
-    private Graph newGraph(Node name) {
-        Graph res = baseGraphFactory.get();
-        res.add(name, RDF.type.asNode(), OWL2.Ontology.asNode());
-        return res;
-    }
-
     private Graph repositoryGerOrNull(String name) {
         try {
             return repository.get(name);
         } catch (Exception ex) {
             return null;
         }
+    }
+
+    private Graph newGraph(Node name) {
+        Graph res = baseGraphFactory.apply(name);
+        res.add(name, RDF.type.asNode(), OWL2.Ontology.asNode());
+        return res;
     }
 
     protected void attachListener(UnionGraph res) {
