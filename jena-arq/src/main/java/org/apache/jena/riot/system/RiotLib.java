@@ -206,7 +206,7 @@ public class RiotLib {
      * Create a {@link ParserProfile} with default settings, and a specific error handler.
      */
     public static ParserProfile createParserProfile(FactoryRDF factory, ErrorHandler errorHandler, boolean checking) {
-        return new ParserProfileStd(factory,
+        return new CDTAwareParserProfile(factory,
                                     errorHandler,
                                     IRIxResolver.create(IRIs.getSystemBase()).build(),
                                     PrefixMapFactory.create(),
@@ -220,7 +220,7 @@ public class RiotLib {
      */
     public static ParserProfile createParserProfile(FactoryRDF factory, ErrorHandler errorHandler,
                                                     IRIxResolver resolver, boolean checking) {
-        return new ParserProfileStd(factory,
+        return new CDTAwareParserProfile(factory,
                 errorHandler,
                 resolver,
                 PrefixMapFactory.create(),

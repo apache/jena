@@ -19,22 +19,30 @@
 package org.apache.jena.cdt;
 
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.riot.lang.extra.LangParserBase;
 
 public class CDTLiteralParserBase extends LangParserBase
 {
 	@Override
+	protected Node createBNode( final String label, final int line, final int column ) {
+		// We need to cut away the leading '_:' of the given blank node label.
+		// This is necessary because the Turtle parser does the same. If we
+		// would not do it here for the blank node labels obtained from the
+		// lexical forms of CDT literals, then the label-to-bnode mapping of
+		// the shared parser state fails to map the same blank node identifiers
+		// inside and outside of CDT literals to the same blank node.
+		final String lbl = label.startsWith("_:") ? label.substring(2) : label;
+		return super.createBNode(lbl, line, column);
+	}
+
+	@Override
 	protected Node createLiteral( final String lex, final String langTag, final String datatypeURI, final int line, final int column ) {
 		if ( CompositeDatatypeList.uri.equals(datatypeURI) ) {
-			final LiteralLabel lit = new LiteralLabelForList(lex);
-			return NodeFactory.createLiteral(lit);
+			return profile.createTypedLiteral(lex, CompositeDatatypeList.type, 0L, 0L);
 		}
 
 		if ( CompositeDatatypeMap.uri.equals(datatypeURI) ) {
-			final LiteralLabel lit = new LiteralLabelForMap(lex);
-			return NodeFactory.createLiteral(lit);
+			return profile.createTypedLiteral(lex, CompositeDatatypeMap.type, 0L, 0L);
 		}
 
 		return super.createLiteral(lex, langTag, datatypeURI, line, column);
