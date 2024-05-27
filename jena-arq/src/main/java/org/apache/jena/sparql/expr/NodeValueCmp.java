@@ -382,7 +382,6 @@ public class NodeValueCmp {
                 }
                 catch( final ExprNotComparableException e ) {
                     raise(e) ;
-                    throw new ARQInternalErrorException("NodeValue.raise returned") ;
                 }
             }
 
