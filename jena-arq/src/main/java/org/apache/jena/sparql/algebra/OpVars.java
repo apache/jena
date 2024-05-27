@@ -313,17 +313,9 @@ public class OpVars
 
         @Override
         public void visit(OpUnfold opUnfold) {
-            acc.add( opUnfold.getVar1() ) ;
+            acc.add( opUnfold.getVar1() );
             if ( opUnfold.getVar2() != null ) {
-                acc.add( opUnfold.getVar2() ) ;
-            }
-        }
-
-        @Override
-        public void visit(OpUnfold opUnfold) {
-            acc.add( opUnfold.getVar1() ) ;
-            if ( opUnfold.getVar2() != null ) {
-                acc.add( opUnfold.getVar2() ) ;
+                acc.add( opUnfold.getVar2() );
             }
         }
 
@@ -448,17 +440,9 @@ public class OpVars
 
         @Override
         public void visit(OpUnfold opUnfold) {
-        	unknownAcc.add( opUnfold.getVar1() ) ;
+            unknownAcc.add( opUnfold.getVar1() );
             if ( opUnfold.getVar2() != null ) {
-            	unknownAcc.add( opUnfold.getVar2() ) ;
-            }
-        }
-
-        @Override
-        public void visit(OpUnfold opUnfold) {
-        	unknownAcc.add( opUnfold.getVar1() ) ;
-            if ( opUnfold.getVar2() != null ) {
-            	unknownAcc.add( opUnfold.getVar2() ) ;
+                unknownAcc.add( opUnfold.getVar2() );
             }
         }
 

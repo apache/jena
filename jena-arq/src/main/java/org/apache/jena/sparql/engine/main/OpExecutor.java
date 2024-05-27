@@ -451,15 +451,9 @@ public class OpExecutor {
     }
 
     protected QueryIterator execute(OpUnfold opUnfold, QueryIterator input) {
-        QueryIterator qIter = exec(opUnfold.getSubOp(), input) ;
-        qIter = new QueryIterUnfold(qIter, opUnfold.getExpr(), opUnfold.getVar1(), opUnfold.getVar2(), execCxt) ;
-        return qIter ;
-    }
-
-    protected QueryIterator execute(OpUnfold opUnfold, QueryIterator input) {
-        QueryIterator qIter = exec(opUnfold.getSubOp(), input) ;
-        qIter = new QueryIterUnfold(qIter, opUnfold.getExpr(), opUnfold.getVar1(), opUnfold.getVar2(), execCxt) ;
-        return qIter ;
+        QueryIterator qIter = exec(opUnfold.getSubOp(), input);
+        qIter = new QueryIterUnfold(qIter, opUnfold.getExpr(), opUnfold.getVar1(), opUnfold.getVar2(), execCxt);
+        return qIter;
     }
 
     public static QueryIterator createRootQueryIterator(ExecutionContext execCxt) {
