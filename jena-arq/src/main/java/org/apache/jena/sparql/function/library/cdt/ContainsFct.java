@@ -40,7 +40,7 @@ public class ContainsFct extends FunctionBase2
 		for ( final CDTValue v : list ) {
 			if ( v.isNode() ) {
 				final NodeValue vv = NodeValue.makeNode( v.asNode() );
-				if ( NodeValue.sameAs(vv, nv) ) {
+				if ( NodeValue.sameValueAs(vv, nv) ) {
 					return true;
 				}
 			}

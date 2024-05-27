@@ -24,13 +24,10 @@ import org.apache.jena.atlas.json.io.JSONHandlerBase ;
 import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.cdt.CompositeDatatypeList;
 import org.apache.jena.cdt.CompositeDatatypeMap;
-import org.apache.jena.cdt.LiteralLabelForList;
-import org.apache.jena.cdt.LiteralLabelForMap;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.core.BasicPattern;
@@ -138,14 +135,10 @@ class ARQParserBase extends SPARQLParserBase
     }
 
     protected Node createIllformedLiteral(String lexicalForm, RDFDatatype cdtDatatype) {
-        final LiteralLabel lit;
-        if ( CompositeDatatypeList.type.equals(cdtDatatype) )
-            lit = new LiteralLabelForList(lexicalForm, true);
-        else if ( CompositeDatatypeMap.type.equals(cdtDatatype) )
-            lit = new LiteralLabelForMap(lexicalForm, true);
-        else
-            throw new IllegalArgumentException( cdtDatatype.toString() );
-
-        return NodeFactory.createLiteral(lit);
+        // Attention: This implementation is inefficient because, internally,
+        // the following function checks whether the given lexical form is
+        // well formed but, in the current case, we already know that it is
+        // not well formed.
+        return NodeFactory.createLiteral(lexicalForm, cdtDatatype);
     }
 }

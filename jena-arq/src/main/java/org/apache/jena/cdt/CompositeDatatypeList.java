@@ -59,16 +59,6 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 
 	@Override
 	public boolean isValidLiteral( final LiteralLabel lit ) {
-		// LiteralLabelForList objects are supposed to be used for this
-		// datatype and the implementation of LiteralLabelForList makes
-		// sure that these are valid.
-		if ( lit instanceof LiteralLabelForList ) {
-			return lit.isWellFormed();
-		}
-
-		// However, the given LiteralLabel may come from somewhere else,
-		// in which case we have to check its validity as follows.
-
 		final String dtURI = lit.getDatatypeURI();
 		if ( dtURI == null || ! dtURI.equals(uri) ) {
 			return false;
@@ -86,10 +76,7 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 	@Override
 	public boolean isValid( final String lexicalForm ) {
 		try {
-			// 'recursive' must be false here because the validity check
-			// is only for the literal with the given lexical form and not
-			// for any possible CDT literals inside it
-			ParserForCDTLiterals.parseListLiteral(lexicalForm, false);
+			ParserForCDTLiterals.parseListLiteral(lexicalForm);
 			return true;
 		}
 		catch ( final Exception ex ) {
@@ -99,9 +86,8 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 
 	@Override
 	public List<CDTValue> parse( final String lexicalForm ) throws DatatypeFormatException {
-		final boolean recursive = false;
 		try {
-			return ParserForCDTLiterals.parseListLiteral(lexicalForm, recursive);
+			return ParserForCDTLiterals.parseListLiteral(lexicalForm);
 		}
 		catch ( final Exception ex ) {
 			throw new DatatypeFormatException(lexicalForm, type, ex);
@@ -146,7 +132,7 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 
 	@Override
 	public int getHashCode( final LiteralLabel lit ) {
-		return lit.getDefaultHashcode();
+		return lit.hashCode();
 	}
 
 	@Override
@@ -347,7 +333,7 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 				boolean sameValueTestResult = false;
 				boolean sameValueTestFailed = false;
 				try {
-					sameValueTestResult = NodeValue.sameAs(nv1, nv2);
+					sameValueTestResult = NodeValue.sameValueAs(nv1, nv2);
 				}
 				catch ( final Exception e ) {
 					sameValueTestFailed = true;
@@ -427,10 +413,6 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 	 * Assumes that the datatype of the given literal is cdt:List.
 	 */
 	public static List<CDTValue> getValue( final LiteralLabel lit ) throws DatatypeFormatException {
-		if ( lit instanceof LiteralLabelForList ) {
-			return ( (LiteralLabelForList) lit ).getValue();
-		}
-
 		final Object value = lit.getValue();
 		if ( value == null || ! (value instanceof List<?>) ) {
 			throw new IllegalArgumentException( lit.toString() + " - " + value );

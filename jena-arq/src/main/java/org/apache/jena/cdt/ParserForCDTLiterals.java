@@ -26,20 +26,19 @@ import java.util.Map;
 
 import org.apache.jena.cdt.parser.CDTLiteralParser;
 import org.apache.jena.cdt.parser.ParseException;
-import org.apache.jena.graph.Node;
+import org.apache.jena.cdt.parser.TokenMgrError;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.RiotLib;
-import org.apache.jena.ttl.turtle.parser.TokenMgrError;
 
 public class ParserForCDTLiterals
 {
-	public static List<CDTValue> parseListLiteral( final String lex, final boolean recursive ) {
-		return parseListLiteral( RiotLib.dftProfile(), lex, recursive );
+	public static List<CDTValue> parseListLiteral( final String lex ) {
+		return parseListLiteral( RiotLib.dftProfile(), lex );
 	}
 
-	public static List<CDTValue> parseListLiteral( final ParserProfile pp, final String lex, final boolean recursive ) {
+	public static List<CDTValue> parseListLiteral( final ParserProfile pp, final String lex ) {
 		final Reader reader = new StringReader(lex);
-		final List<CDTValue> result = parseListLiteral(pp, reader, recursive);
+		final List<CDTValue> result = parseListLiteral(pp, reader);
 
 		try { reader.close(); } catch ( final IOException e ) {
 			throw new CDTLiteralParseException("Closing the reader caused an exception.", e);
@@ -48,11 +47,11 @@ public class ParserForCDTLiterals
 		return result;
 	}
 
-	public static List<CDTValue> parseListLiteral( final Reader reader, final boolean recursive ) {
-		return parseListLiteral( RiotLib.dftProfile(), reader, recursive );
+	public static List<CDTValue> parseListLiteral( final Reader reader ) {
+		return parseListLiteral( RiotLib.dftProfile(), reader );
 	}
 
-	public static List<CDTValue> parseListLiteral( final ParserProfile pp, final Reader reader, final boolean recursive ) {
+	public static List<CDTValue> parseListLiteral( final ParserProfile pp, final Reader reader ) {
 		final CDTLiteralParser parser = new CDTLiteralParser(reader);
 		parser.setProfile(pp);
 
@@ -70,33 +69,16 @@ public class ParserForCDTLiterals
 			throw new CDTLiteralParseException( th.getMessage(), th );
 		}
 
-		if ( recursive && ! list.isEmpty() ) {
-			for ( int i = 0; i < list.size(); i++ ) {
-				final CDTValue v = list.get(i);
-				if ( v.isNode() ) {
-					final Node vn = v.asNode();
-					if ( CompositeDatatypeList.isListLiteral(vn) && !(vn.getLiteral() instanceof LiteralLabelForList) ) {
-						final List<CDTValue> subList = parseListLiteral(pp, vn.getLiteralLexicalForm(), recursive);
-						list.set( i, CDTFactory.createValue(subList) );
-					}
-					else if ( CompositeDatatypeMap.isMapLiteral(vn) && !(vn.getLiteral() instanceof LiteralLabelForMap) ) {
-						final Map<CDTKey,CDTValue> subMap = parseMapLiteral(pp, vn.getLiteralLexicalForm(), recursive);
-						list.set( i, CDTFactory.createValue(subMap) );
-					}
-				}
-			}
-		}
-
 		return list;
 	}
 
-	public static Map<CDTKey,CDTValue> parseMapLiteral( final String lex, final boolean recursive ) {
-		return parseMapLiteral( RiotLib.dftProfile(), lex, recursive );
+	public static Map<CDTKey,CDTValue> parseMapLiteral( final String lex ) {
+		return parseMapLiteral( RiotLib.dftProfile(), lex );
 	}
 
-	public static Map<CDTKey,CDTValue> parseMapLiteral( final ParserProfile pp, final String lex, final boolean recursive ) {
+	public static Map<CDTKey,CDTValue> parseMapLiteral( final ParserProfile pp, final String lex ) {
 		final Reader reader = new StringReader(lex);
-		final Map<CDTKey,CDTValue> result = parseMapLiteral(pp, reader, recursive);
+		final Map<CDTKey,CDTValue> result = parseMapLiteral(pp, reader);
 
 		try { reader.close(); } catch ( final IOException e ) {
 			throw new CDTLiteralParseException("Closing the reader caused an exception.", e);
@@ -105,11 +87,11 @@ public class ParserForCDTLiterals
 		return result;
 	}
 
-	public static Map<CDTKey,CDTValue> parseMapLiteral( final Reader reader, final boolean recursive ) {
-		return parseMapLiteral( RiotLib.dftProfile(), reader, recursive );
+	public static Map<CDTKey,CDTValue> parseMapLiteral( final Reader reader ) {
+		return parseMapLiteral( RiotLib.dftProfile(), reader );
 	}
 
-	public static Map<CDTKey,CDTValue> parseMapLiteral( final ParserProfile pp, final Reader reader, final boolean recursive ) {
+	public static Map<CDTKey,CDTValue> parseMapLiteral( final ParserProfile pp, final Reader reader ) {
 		final CDTLiteralParser parser = new CDTLiteralParser(reader);
 		parser.setProfile(pp);
 
@@ -125,23 +107,6 @@ public class ParserForCDTLiterals
 		}
 		catch ( final Throwable th ) {
 			throw new CDTLiteralParseException( th.getMessage(), th );
-		}
-
-		if ( recursive && ! map.isEmpty() ) {
-			for ( final CDTKey key : map.keySet() ) {
-				final CDTValue v = map.get(key);
-				if ( v.isNode() ) {
-					final Node vn = v.asNode();
-					if ( CompositeDatatypeList.isListLiteral(vn) && !(vn.getLiteral() instanceof LiteralLabelForList) ) {
-						final List<CDTValue> subList = parseListLiteral(pp, vn.getLiteralLexicalForm(), recursive);
-						map.put( key, CDTFactory.createValue(subList) );
-					}
-					else if ( CompositeDatatypeMap.isMapLiteral(vn) && !(vn.getLiteral() instanceof LiteralLabelForMap) ) {
-						final Map<CDTKey,CDTValue> subMap = parseMapLiteral(pp, vn.getLiteralLexicalForm(), recursive);
-						map.put( key, CDTFactory.createValue(subMap) );
-					}
-				}
-			}
 		}
 
 		return map;
