@@ -28,8 +28,11 @@ import java.util.Objects;
 import javax.xml.datatype.Duration;
 
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.cdt.CompositeDatatypeList;
+import org.apache.jena.cdt.CompositeDatatypeMap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
@@ -144,6 +147,17 @@ public class NodeValueCmp {
                     raise(new ExprEvalException("Incompatible: " + nv1 + " and " + nv2));
                 // Not same node.
                 return false;
+
+            case VSPACE_CDT_LIST : {
+                final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
+                final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
+                return CompositeDatatypeList.type.isEqual(lit1, lit2) ;
+            }
+            case VSPACE_CDT_MAP : {
+                final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
+                final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
+                return CompositeDatatypeMap.type.isEqual(lit1, lit2) ;
+            }
         }
 
         throw new ARQInternalErrorException("sameValueAs failure " + nv1 + " and " + nv2);
@@ -347,6 +361,30 @@ public class NodeValueCmp {
                 if ( x != CMP_INDETERMINATE )
                     return x;
                 raise(new ExprNotComparableException("Can't compare valiables as values "+nv1+" and "+nv2)) ;
+            }
+
+            case VSPACE_CDT_LIST : {
+                final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
+                final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
+                try {
+                    return CompositeDatatypeList.compare(lit1, lit2, sortOrderingCompare) ;
+                }
+                catch( final ExprNotComparableException e ) {
+                    raise(e) ;
+                    throw new ARQInternalErrorException("NodeValue.raise returned") ;
+                }
+            }
+
+            case VSPACE_CDT_MAP : {
+                final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
+                final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
+                try {
+                    return CompositeDatatypeMap.compare(lit1, lit2, sortOrderingCompare) ;
+                }
+                catch( final ExprNotComparableException e ) {
+                    raise(e) ;
+                    throw new ARQInternalErrorException("NodeValue.raise returned") ;
+                }
             }
 
             case VSPACE_UNKNOWN : {
