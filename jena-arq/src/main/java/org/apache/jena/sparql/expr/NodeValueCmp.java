@@ -371,7 +371,6 @@ public class NodeValueCmp {
                 }
                 catch( final ExprNotComparableException e ) {
                     raise(e) ;
-                    throw new ARQInternalErrorException("NodeValue.raise returned") ;
                 }
             }
 
@@ -463,6 +462,18 @@ public class NodeValueCmp {
             if ( vs2 != ValueSpace.VSPACE_UNKNOWN )
                 return CMP_GREATER;
             return NodeCmp$compareRDFTerms(nv1, nv2);
+        }
+
+        if ( vs1 == ValueSpace.VSPACE_CDT_LIST && vs2 == ValueSpace.VSPACE_CDT_LIST ) {
+            LiteralLabel l1 = nv1.asNode().getLiteral();
+            LiteralLabel l2 = nv2.asNode().getLiteral();
+            return CompositeDatatypeList.compare(l1, l2, true);
+        }
+
+        if ( vs1 == ValueSpace.VSPACE_CDT_MAP && vs2 == ValueSpace.VSPACE_CDT_MAP ) {
+            LiteralLabel l1 = nv1.asNode().getLiteral();
+            LiteralLabel l2 = nv2.asNode().getLiteral();
+            return CompositeDatatypeMap.compare(l1, l2, true);
         }
 
         // XXX G and Date cases.
