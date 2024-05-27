@@ -25,8 +25,6 @@ import org.apache.jena.cdt.CDTKey;
 import org.apache.jena.cdt.CDTValue;
 import org.apache.jena.cdt.CompositeDatatypeList;
 import org.apache.jena.cdt.CompositeDatatypeMap;
-import org.apache.jena.cdt.LiteralLabelForList;
-import org.apache.jena.cdt.LiteralLabelForMap;
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -125,8 +123,7 @@ public class CDTLiteralFunctionUtils
 	 * given list.
 	 */
 	public static final Node createNode( final List<CDTValue> list ) {
-		final LiteralLabel lit = new LiteralLabelForList(list);
-		return NodeFactory.createLiteral(lit);
+		return NodeFactory.createLiteralByValue(list, CompositeDatatypeList.type);
 	}
 
 	/**
@@ -134,8 +131,7 @@ public class CDTLiteralFunctionUtils
 	 * given map.
 	 */
 	public static final Node createNode( final Map<CDTKey,CDTValue> map ) {
-		final LiteralLabel lit = new LiteralLabelForMap(map);
-		return NodeFactory.createLiteral(lit);
+		return NodeFactory.createLiteralByValue(map, CompositeDatatypeMap.type);
 	}
 
 	/**

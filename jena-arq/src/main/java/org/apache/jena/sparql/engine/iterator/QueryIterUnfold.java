@@ -19,7 +19,6 @@
 package org.apache.jena.sparql.engine.iterator;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -28,8 +27,6 @@ import org.apache.jena.cdt.CDTKey;
 import org.apache.jena.cdt.CDTValue;
 import org.apache.jena.cdt.CompositeDatatypeList;
 import org.apache.jena.cdt.CompositeDatatypeMap;
-import org.apache.jena.cdt.LiteralLabelForList;
-import org.apache.jena.cdt.LiteralLabelForMap;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -158,27 +155,12 @@ public class QueryIterUnfold extends QueryIterRepeatApply
             }
 
             if ( nextElmt.isNode() ) {
-                final Node n = nextElmt.asNode();
-
-                final Node value;
-                if ( CompositeDatatypeList.isListLiteral(n) && !(n.getLiteral() instanceof LiteralLabelForList) ) {
-                    final List<CDTValue> l = CompositeDatatypeList.getValue( n.getLiteral() );
-                    final LiteralLabel lit = new LiteralLabelForList(l);
-                    value = NodeFactory.createLiteral(lit);
-                }
-                else if ( CompositeDatatypeMap.isMapLiteral(n) && !(n.getLiteral() instanceof LiteralLabelForMap) ) {
-                    final Map<CDTKey,CDTValue> m = CompositeDatatypeMap.getValue( n.getLiteral() );
-                    final LiteralLabel lit = new LiteralLabelForMap(m);
-                    value = NodeFactory.createLiteral(lit);
-                }
-                else {
-                    value = n;
-                }
+                final Node elmtNode = nextElmt.asNode();
 
                 if ( var2 != null )
-                    return BindingFactory.binding(inputBinding, var1, value, var2, indexNode);
+                    return BindingFactory.binding(inputBinding, var1, elmtNode, var2, indexNode);
                 else
-                    return BindingFactory.binding(inputBinding, var1, value);
+                    return BindingFactory.binding(inputBinding, var1, elmtNode);
             }
 
             throw new UnsupportedOperationException( "unexpected list element: " + nextElmt.getClass().getName() );
@@ -214,23 +196,7 @@ public class QueryIterUnfold extends QueryIterRepeatApply
             }
 
             if ( value.isNode() ) {
-            	final Node n = value.asNode();
-
-                final Node valueNode;
-                if ( CompositeDatatypeList.isListLiteral(n) && !(n.getLiteral() instanceof LiteralLabelForList) ) {
-                    final List<CDTValue> l = CompositeDatatypeList.getValue( n.getLiteral() );
-                    final LiteralLabel lit = new LiteralLabelForList(l);
-                    valueNode = NodeFactory.createLiteral(lit);
-                }
-                else if ( CompositeDatatypeMap.isMapLiteral(n) && !(n.getLiteral() instanceof LiteralLabelForMap) ) {
-                    final Map<CDTKey,CDTValue> m = CompositeDatatypeMap.getValue( n.getLiteral() );
-                    final LiteralLabel lit = new LiteralLabelForMap(m);
-                    valueNode = NodeFactory.createLiteral(lit);
-                }
-                else {
-                    valueNode = n;
-                }
-
+                final Node valueNode = value.asNode();
                 return BindingFactory.binding(inputBinding, var1, keyNode, var2, valueNode);
             }
 

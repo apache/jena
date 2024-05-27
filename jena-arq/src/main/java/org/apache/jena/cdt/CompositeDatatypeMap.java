@@ -65,16 +65,6 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 
 	@Override
 	public boolean isValidLiteral( final LiteralLabel lit ) {
-		// LiteralLabelForMap objects are supposed to be used for this
-		// datatype and the implementation of LiteralLabelForMap makes
-		// sure that these are valid.
-		if ( lit instanceof LiteralLabelForMap ) {
-			return lit.isWellFormed();
-		}
-
-		// However, the given LiteralLabel may come from somewhere else,
-		// in which case we have to check its validity as follows.
-
 		final String dtURI = lit.getDatatypeURI();
 		if ( dtURI == null || ! dtURI.equals(uri) ) {
 			return false;
@@ -92,10 +82,7 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 	@Override
 	public boolean isValid( final String lexicalForm ) {
 		try {
-			// 'recursive ' must be false here because the validity check
-			// is only for the literal with the given lexical form and not
-			// for any possible CDT literals inside it
-			ParserForCDTLiterals.parseMapLiteral(lexicalForm, false);
+			ParserForCDTLiterals.parseMapLiteral(lexicalForm);
 			return true;
 		}
 		catch ( final Exception ex ) {
@@ -105,9 +92,8 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 
 	@Override
 	public Map<CDTKey,CDTValue> parse( final String lexicalForm ) throws DatatypeFormatException {
-		final boolean recursive = false;
 		try {
-			return ParserForCDTLiterals.parseMapLiteral(lexicalForm, recursive);
+			return ParserForCDTLiterals.parseMapLiteral(lexicalForm);
 		}
 		catch ( final Exception ex ) {
 			throw new DatatypeFormatException(lexicalForm, type, ex);
@@ -156,7 +142,7 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 
 	@Override
 	public int getHashCode( final LiteralLabel lit ) {
-		return lit.getDefaultHashcode();
+		return lit.hashCode();
 	}
 
 	@Override
@@ -288,7 +274,7 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 				boolean sameValueTestResult = false;
 				boolean sameValueTestFailed = false;
 				try {
-					sameValueTestResult = NodeValue.sameAs(nv1, nv2);
+					sameValueTestResult = NodeValue.sameValueAs(nv1, nv2);
 				}
 				catch ( final Exception e ) {
 					sameValueTestFailed = true;
@@ -368,10 +354,6 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 	 * Assumes that the datatype of the given literal is cdt:Map.
 	 */
 	public static Map<CDTKey,CDTValue> getValue( final LiteralLabel lit ) throws DatatypeFormatException {
-		if ( lit instanceof LiteralLabelForMap ) {
-			return ( (LiteralLabelForMap) lit ).getValue();
-		}
-
 		final Object value = lit.getValue();
 		if ( value == null || ! (value instanceof Map<?,?>) ) {
 			throw new IllegalArgumentException( lit.toString() + " - " + value );

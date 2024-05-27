@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.impl.LiteralLabel;
 
 public class CDTFactory
 {
@@ -41,14 +40,12 @@ public class CDTFactory
 	}
 
 	public static CDTValue createValue( final List<CDTValue> l ) {
-		final LiteralLabel lit = new LiteralLabelForList(l);
-		final Node n = NodeFactory.createLiteral(lit);
+		final Node n = NodeFactory.createLiteralByValue(l, CompositeDatatypeList.type);
 		return createValue(n);
 	}
 
 	public static CDTValue createValue( final Map<CDTKey,CDTValue> m ) {
-		final LiteralLabel lit = new LiteralLabelForMap(m);
-		final Node n = NodeFactory.createLiteral(lit);
+		final Node n = NodeFactory.createLiteralByValue(m, CompositeDatatypeMap.type);
 		return createValue(n);
 	}
 
