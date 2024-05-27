@@ -389,6 +389,18 @@ public class VarFinder
         }
 
         @Override
+        public void visit(OpUnfold opUnfold) {
+            opUnfold.getSubOp().visit(this);
+
+            defines.add( opUnfold.getVar1() );
+
+            if ( opUnfold.getVar2() != null )
+                defines.add( opUnfold.getVar2() );
+
+            ExprVars.nonOpVarsMentioned( assignMentions, opUnfold.getExpr());
+        }
+
+        @Override
         public void visit(OpProject opProject) {
             List<Var> vars = opProject.getVars();
             VarUsageVisitor subUsage = VarUsageVisitor.apply(opProject.getSubOp());

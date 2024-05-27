@@ -949,6 +949,12 @@ public abstract class NodeValue extends ExprNode
             if ( dtURI.equals(CompositeDatatypeMap.uri) )   return VSPACE_CDT_MAP ;
         }
 
+        if ( nv.isLiteral() ) {
+            final String dtURI = nv.getDatatypeURI() ;
+            if ( dtURI.equals(CompositeDatatypeList.uri) )  return VSPACE_CDT_LIST ;
+            if ( dtURI.equals(CompositeDatatypeMap.uri) )   return VSPACE_CDT_MAP ;
+        }
+
         if ( NodeUtils.hasLang(nv.asNode()) )
             return VSPACE_LANG ;
         return VSPACE_UNKNOWN ;

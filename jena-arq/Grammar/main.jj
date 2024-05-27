@@ -924,11 +924,11 @@ Element GraphPatternNotTriples() : { Element el = null ; }
  |
    el = Assignment()
  |
+   el = Unfold()
+ |
    el = ExistsElt()
  |
    el = NotExistsElt()
- |
-   el = Unfold()
 #endif
  )
  { return el ; }
@@ -1061,6 +1061,18 @@ Element Assignment() : { Var v ; Expr expr ; }
     { return new ElementAssign(v, expr) ; }
 }
 
+Element Unfold() : {  Var v1 ; Var v2 = null ; Expr expr ; }
+{
+  <UNFOLD>
+  <LPAREN>
+  expr = Expression()
+  <AS>
+  v1 = Var()
+  (<COMMA> v2 = Var() { ; } )?
+  <RPAREN>
+  { return new ElementUnfold(expr, v1, v2) ; }
+}
+
 Element ExistsElt() : { Element el ; }
 {
     <EXISTS>
@@ -1073,18 +1085,6 @@ Element NotExistsElt() : { Element el ; }
     <NOT> <EXISTS>
     el = GroupGraphPattern()
     { return new ElementNotExists(el) ; }
-}
-
-Element Unfold() : {  Var v1 ; Var v2 = null ; Expr expr ; }
-{
-  <UNFOLD>
-  <LPAREN>
-  expr = Expression()
-  <AS>
-  v1 = Var()
-  (<COMMA> v2 = Var() { ; } )?
-  <RPAREN>
-  { return new ElementUnfold(expr, v1, v2) ; }
 }
 #endif
 
@@ -2555,7 +2555,6 @@ TOKEN [IGNORE_CASE] :
 #ifdef ARQ
 |  < LET:         "LET" >
 |  < LATERAL:     "LATERAL" >
-
 |  < UNFOLD:      "unfold" >
 #endif
 
