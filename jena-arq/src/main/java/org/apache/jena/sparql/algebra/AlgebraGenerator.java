@@ -324,14 +324,8 @@ public class AlgebraGenerator
         if ( elt instanceof ElementNotExists elt2 )
             return compileElementNotExists(current, elt2);
 
-        if ( elt instanceof ElementUnfold ) {
-        	ElementUnfold unfold = (ElementUnfold)elt;
-            return new OpUnfold(current, unfold.getExpr(), unfold.getVar1(), unfold.getVar2());
-        }
-
-        if ( elt instanceof ElementUnfold ) {
-        	ElementUnfold unfold = (ElementUnfold)elt;
-            return new OpUnfold(current, unfold.getExpr(), unfold.getVar1(), unfold.getVar2());
+        if ( elt instanceof ElementUnfold eltUnfold ) {
+            return new OpUnfold(current, eltUnfold.getExpr(), eltUnfold.getVar1(), eltUnfold.getVar2());
         }
 
         // Filters were collected together by prepareGroup
