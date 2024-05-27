@@ -32,8 +32,6 @@ import javax.xml.datatype.XMLGregorianCalendar ;
 
 import org.apache.jena.atlas.lib.DateTimeUtils ;
 import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.cdt.CompositeDatatypeList ;
-import org.apache.jena.cdt.CompositeDatatypeMap ;
 import org.apache.jena.datatypes.DatatypeFormatException ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.TypeMapper ;
