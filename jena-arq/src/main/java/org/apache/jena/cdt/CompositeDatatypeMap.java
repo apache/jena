@@ -171,7 +171,12 @@ public class CompositeDatatypeMap extends CompositeDatatypeBase<Map<CDTKey,CDTVa
 				final Node n2 = v2.asNode();
 
 				if ( n1.isBlank() || n2.isBlank() ) {
-					throw new ExprEvalException("blank nodes in maps cannot be compared");
+					// If at least one of the two elements is a blank node,
+					// throw an error unless both elements are *the same*
+					// blank node.
+					if ( ! n1.equals(n2) ) {
+						throw new ExprEvalException("blank nodes in maps cannot be compared");
+					}
 				}
 
 				if ( ! n1.sameValueAs(n2) ) return false;

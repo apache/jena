@@ -218,13 +218,16 @@ public class NodeValueCmp {
         if ( nv2 == null )
             return CMP_GREATER;
 
-        if ( nv1.hasNode() && nv2.hasNode() ) {
+        ValueSpace compType = classifyValueOp(nv1, nv2) ;
+
+        if ( nv1.hasNode()
+             && nv2.hasNode()
+             && compType != ValueSpace.VSPACE_CDT_LIST
+             && compType != ValueSpace.VSPACE_CDT_MAP ) {
             // Fast path - same RDF term => CMP_EQUAL
             if ( nv1.getNode().equals(nv2.getNode()) )
                 return CMP_EQUAL;
         }
-
-        ValueSpace compType = classifyValueOp(nv1, nv2) ;
 
         // Special case - date/dateTime comparison is affected by timezones and may be
         // indeterminate based on the value of the dateTime/date.
