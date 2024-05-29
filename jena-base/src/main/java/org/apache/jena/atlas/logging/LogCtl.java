@@ -38,10 +38,11 @@ import org.slf4j.Logger;
  * This needs access to log4j2 binaries including log4j-core, which is encapsulated in LogCtlLog4j2.
  */
 public class LogCtl {
-    private static final boolean hasLog4j2 = hasClass("org.apache.logging.slf4j.Log4jLoggerFactory");
-    private static final boolean hasLog4j1 = hasClass("org.slf4j.impl.Log4jLoggerFactory");
-    private static final boolean hasJUL    = hasClass("org.slf4j.impl.JDK14LoggerFactory");
+    private static final boolean hasLog4j2   = hasClass("org.apache.logging.slf4j.Log4jLoggerFactory");
+    private static final boolean hasLog4j1   = hasClass("org.slf4j.impl.Log4jLoggerFactory");
     // JUL always present but needs slf4j adapter.
+    private static final boolean hasJUL      = hasClass("org.slf4j.impl.JDK14LoggerFactory");
+    private static final boolean hasLogback  = hasClass("ch.qos.logback.core.LogbackException");
     // Put per-logging system code in separate classes to avoid needing them on the classpath.
 
     private static boolean hasClass(String className) {
@@ -83,67 +84,34 @@ public class LogCtl {
         String s2 = getLevelLog4j2(logger);
         if ( s2 != null )
             return s2;
-        // Always present.
         String s3 = getLevelJUL(logger);
         if ( s3 != null )
             return s3;
         return null;
     }
 
-    static private String getLevelJUL(String logger) {
-        java.util.logging.Level level = java.util.logging.Logger.getLogger(logger).getLevel();
-        if ( level == null )
-            return null;
-        if ( level == java.util.logging.Level.SEVERE )
-            return "ERROR";
-        return level.getName();
-    }
-
     static private String getLevelLog4j2(String logger) {
         if ( !hasLog4j2 )
             return null;
-        org.apache.logging.log4j.Level level = org.apache.logging.log4j.LogManager.getLogger(logger).getLevel();
-        if ( level != null )
-            return level.toString();
-        return null;
+        return LogCtlLog4j2.getLoggerlevel(logger);
+    }
+
+    static private String getLevelJUL(String logger) {
+        if ( ! hasJUL )
+            return null;
+        return LogCtlJUL.getLevelJUL(logger);
     }
 
     private static void setLevelJUL(String logger, String levelName) {
-        java.util.logging.Level level = java.util.logging.Level.ALL;
-        if ( levelName == null )
-            level = null;
-        else if ( levelName.equalsIgnoreCase("info") )
-            level = java.util.logging.Level.INFO;
-        else if ( levelName.equalsIgnoreCase("debug") )
-            level = java.util.logging.Level.FINE;
-        else if ( levelName.equalsIgnoreCase("warn") || levelName.equalsIgnoreCase("warning") )
-            level = java.util.logging.Level.WARNING;
-        else if ( levelName.equalsIgnoreCase("error") || levelName.equalsIgnoreCase("severe") )
-            level = java.util.logging.Level.SEVERE;
-        else if ( levelName.equalsIgnoreCase("OFF") )
-            level = java.util.logging.Level.OFF;
-        java.util.logging.Logger.getLogger(logger).setLevel(level);
+        if ( ! hasJUL )
+            return ;
+        LogCtlJUL.setLevelJUL(logger, levelName);
     }
 
     private static void setLevelLog4j2(String logger, String levelName) {
         if ( !hasLog4j2 )
             return;
-        org.apache.logging.log4j.Level level = org.apache.logging.log4j.Level.ALL;
-        if ( levelName == null )
-            level = null;
-        else if ( levelName.equalsIgnoreCase("info") )
-            level = org.apache.logging.log4j.Level.INFO;
-        else if ( levelName.equalsIgnoreCase("debug") )
-            level = org.apache.logging.log4j.Level.DEBUG;
-        else if ( levelName.equalsIgnoreCase("warn") || levelName.equalsIgnoreCase("warning") )
-            level = org.apache.logging.log4j.Level.WARN;
-        else if ( levelName.equalsIgnoreCase("error") || levelName.equalsIgnoreCase("severe") )
-            level = org.apache.logging.log4j.Level.ERROR;
-        else if ( levelName.equalsIgnoreCase("fatal") )
-            level = org.apache.logging.log4j.Level.FATAL;
-        else if ( levelName.equalsIgnoreCase("OFF") )
-            level = org.apache.logging.log4j.Level.OFF;
-        LogCtlLog4j2.setLoggerlevel(logger, level);
+        LogCtlLog4j2.setLoggerlevel(logger, levelName);
     }
 
     /**

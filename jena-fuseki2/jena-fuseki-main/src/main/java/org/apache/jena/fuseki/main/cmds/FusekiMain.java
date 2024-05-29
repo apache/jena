@@ -40,8 +40,9 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiMainInfo;
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.fuseki.main.sys.FusekiAutoModules;
+import org.apache.jena.fuseki.main.sys.FusekiModules;
+import org.apache.jena.fuseki.main.sys.InitFusekiMain;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.FusekiCoreInfo;
@@ -163,6 +164,7 @@ public class FusekiMain extends CmdARQ {
 
     static void run(String... argv) {
         JenaSystem.init();
+        InitFusekiMain.init();
         new FusekiMain(argv).mainRun();
     }
 

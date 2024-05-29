@@ -54,9 +54,11 @@ import org.junit.runners.Suite.SuiteClasses;
   , TestPatchFuseki.class
   , TestFusekiCustomScriptFunc.class
 
-  // Test ping.
   , TestMetrics.class
   , TestFusekiShaclValidation.class
+
+  , TestFusekiMainAdmin.class
+
 })
 public class TS_FusekiMain {}
 

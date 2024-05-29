@@ -278,6 +278,7 @@ public class HttpAction
             transactional.begin(txnType);
         activeDSG = dsg;
         if ( dataService != null )
+            // Paired with finishTxn in end()
             dataService.startTxn(txnType);
     }
 
@@ -332,7 +333,8 @@ public class HttpAction
     }
 
     public void commit() {
-        dataService.finishTxn();
+        // Signalling the end of transaction is done in end().
+        //dataService.finishTxn();
         transactional.commit();
         end();
     }
@@ -462,6 +464,8 @@ public class HttpAction
 
     // ---- Request - response abstraction.
 
+    /** @deprecated Use {@link #getRequestMethod}. */
+    @Deprecated(since="5.1.0", forRemoval=true)
     public String getMethod()                           { return request.getMethod(); }
 
     public HttpServletRequest getRequest()              { return request; }
