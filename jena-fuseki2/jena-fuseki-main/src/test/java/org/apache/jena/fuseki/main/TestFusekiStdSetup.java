@@ -112,11 +112,6 @@ public class TestFusekiStdSetup {
     }
 
     @Test
-    public void stdSetup_endpoint_8() {
-        HttpTest.expect404( () -> exec(URL, "/nonsense", conn -> conn.putDataset(dataset)) );
-    }
-
-    @Test
     public void stdSetup_dataset_1() {
         exec(URL, conn -> conn.queryAsk("ASK{}"));
     }
@@ -164,6 +159,10 @@ public class TestFusekiStdSetup {
 
     @Test public void stdSetup_endpoint_bad_5() {
         HttpTest.expect404( () -> exec(URL+"2", "", (RDFConnection conn)->conn.queryAsk("ASK{}")) );
+    }
+
+    @Test public void stdSetup_endpoint_bad_6() {
+        HttpTest.expect404( () -> exec(URL, "/nonsense", conn -> conn.putDataset(dataset)) );
     }
 
     private static void exec(String url, Consumer<RDFConnection> action) {
