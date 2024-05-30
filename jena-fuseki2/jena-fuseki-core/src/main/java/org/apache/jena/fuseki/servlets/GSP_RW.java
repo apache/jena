@@ -105,7 +105,7 @@ public class GSP_RW extends GSP_R {
         }
         catch (ActionErrorException ex) { throw ex; }
         catch (Exception ex) { action.abortSilent(); }
-        finally { action.end(); }
+        finally { action.endWrite(); }
         ServletOps.successNoContent(action);
     }
 
@@ -215,7 +215,7 @@ public class GSP_RW extends GSP_R {
             ServletOps.errorOccurred(ex.getMessage());
             return null;
         } finally {
-            action.end();
+            action.endWrite();
         }
     }
 
@@ -261,6 +261,6 @@ public class GSP_RW extends GSP_R {
             action.abortSilent();
             ServletOps.errorOccurred(ex.getMessage());
             return null;
-        } finally { action.end(); }
+        } finally { action.endWrite(); }
     }
 }

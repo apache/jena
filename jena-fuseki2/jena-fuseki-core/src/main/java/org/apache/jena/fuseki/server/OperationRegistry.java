@@ -26,7 +26,6 @@ import jakarta.servlet.ServletContext;
 
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.fuseki.patch.PatchApplyService;
 import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.riot.WebContent;
 
@@ -47,7 +46,7 @@ public class OperationRegistry {
     private static final ActionService uploadServlet   = new UploadRDF();
     private static final ActionService gspServlet_R    = new GSP_R();
     private static final ActionService gspServlet_RW   = new GSP_RW();
-    private static final ActionService rdfPatch        = new PatchApplyService();
+    private static final ActionService rdfPatch        = new PatchApply();
     private static final ActionService noOperation     = new NoOpActionService();
     private static final ActionService shaclValidation = new SHACL_Validation();
 

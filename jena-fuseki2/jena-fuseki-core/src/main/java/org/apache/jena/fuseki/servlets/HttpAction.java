@@ -147,7 +147,6 @@ public class HttpAction
      * @param dService {@link DataService}
      * @see Transactional
      */
-
     public void setRequest(DataAccessPoint dataAccessPoint, DataService dService) {
         if ( this.dataAccessPoint != null )
             throw new FusekiException("Redefinition of DataAccessPoint in the request action");
@@ -219,7 +218,6 @@ public class HttpAction
     /**
      * Return the "Transactional" for this HttpAction.
      */
-
     public Transactional getTransactional() {
         return transactional;
     }
@@ -232,7 +230,8 @@ public class HttpAction
         return actionURI;
     }
 
-    /** Get the context path.
+    /**
+     * Get the context path.
      */
     public String getContextPath() {
         return contextPath;
@@ -252,7 +251,8 @@ public class HttpAction
         return dataAccessPointRegistry;
     }
 
-    /** Set the endpoint and endpoint name that this is an action for.
+    /**
+     * Set the endpoint and endpoint name that this is an action for.
      * @param endpoint {@link Endpoint}
      */
     public void setEndpoint(Endpoint endpoint) {
@@ -273,63 +273,206 @@ public class HttpAction
         return isTransactional;
     }
 
+    public final void startRequest() {
+        if ( dataAccessPoint != null )
+            dataAccessPoint.startRequest(this);
+    }
+
+    public final void finishRequest() {
+        // Should be handled where necessary in the request handling.
+//      if ( inputStream != null ) {
+//          ActionLib.consumeBody(this);
+//      }
+//      if ( outputStream != null ) {
+//          IO.flush(outputStream);
+//          IO.close(outputStream);
+//      }
+        if ( dataAccessPoint != null )
+            dataAccessPoint.finishRequest(this);
+        if ( isInActionTxn )
+            FmtLog.error(log, "[%d] Action transaction not finished", this.id);
+    }
+
+    /**
+     * Begin a transaction of any {@link TxnType} - this should be paired with an {@link #end()}
+     *
+     * <pre>
+     *   httpAction.begin();
+     *   try {
+     *      work
+     *      possible promote to write
+     *      commit or abort (if write)
+     *      response
+     *   } finally { httpAction.end(); }
+     * </pre>
+     *
+     * Prefer one of {@link #beginRead()} or {@link #beginWrite()} if the action is
+     * known to be a a read or write at the start or call {@link #begin()}
+     * if the transaction may promote.
+     *
+     *
+     */
     public void begin(TxnType txnType) {
+        enterActionTxn();
         if ( transactional != null )
             transactional.begin(txnType);
         activeDSG = dsg;
         if ( dataService != null )
             dataService.startTxn(txnType);
+        startActionTxn();
     }
 
+    private /*public*/ void endInternal() {
+        // Commit or abort may have called end() already.
+        // Possibly multiple endWrite, endRead (not ideal, but not breaking)
+        if ( actionTxEndCalled )
+            return;
+        actionTxEndCalled = true;
+        finishActionTxn();
+        if ( dataService != null )
+            dataService.finishTxn();
+        if ( transactional.isInTransaction() ) {
+            switch(transactional.transactionMode() ) {
+                case READ -> {}
+                case WRITE -> {
+                    // Write transactions must have explicitly called commit or abort.
+                    FmtLog.warn(log, "[%d] Transaction still active - no commit or abort seen (forced abort)", this.id);
+                    try {
+                        transactional.abort();
+                    } catch (RuntimeException ex) {
+                        FmtLog.warn(log, "[%d] Exception in forced abort (trying to continue)", this.id, ex);
+                    }
+                }
+            }
+            try { transactional.end(); }
+            catch (RuntimeException ex) {}
+        }
+        leaveActionTxn();
+    }
+
+    /**
+     * Begin a transaction - this should be paired with an {@link #end()}
+     * <pre>
+     *   httpAction.begin();
+     *   try {
+     *      work
+     *      possible promote to write
+     *      commit or abort (if write)
+     *      response
+     *   } finally { httpAction.end(); }
+     *   </pre>
+     */
     public void begin() {
         begin(READ_PROMOTE);
     }
 
+    /**
+     *  Begin a write operation - this should be paired with an {@link #endWrite()}
+     * <pre>
+     *   httpAction.beginWrite();
+     *   try {
+     *      work
+     *      commit or abort
+     *      response
+     *   } finally { httpAction.endWrite(); }
+     *   </pre>
+     */
     public void beginWrite() {
         begin(WRITE);
     }
 
+    /**
+     *  Begin a read operation - this should be paired with an {@link #endRead()}
+     * <pre>
+     *   httpAction.beginRead();
+     *   try {
+     *      work
+     *      response
+     *   } finally { httpAction.endRead(); }
+     *   </pre>
+     */
     public void beginRead() {
         begin(READ);
     }
 
+    /**
+     * End a read transaction - paired with {@link #beginRead}.
+     */
     public void endRead() {
-        if ( dataService != null )
-            dataService.finishTxn();
-        if ( transactional != null ) {
-            try { transactional.commit(); } catch (RuntimeException ex) {}
-            try { transactional.end(); } catch (RuntimeException ex) {}
-        }
+        endInternal();
     }
 
+    /**
+     * End a write transaction - paired with {@link #beginWrite}.
+     */
+    public void endWrite() {
+        endInternal();
+    }
+
+    /**
+     * End a write transaction - paired with {@link #begin()} or {@link #begin(TxnType)}.
+     */
     public void end() {
-        dataService.finishTxn();
-        if ( transactional.isInTransaction() ) {
-            FmtLog.warn(log, "[%d] Transaction still active - no commit or abort seen (forced abort)", this.id);
-            try {
-                transactional.abort();
-            } catch (RuntimeException ex) {
-                FmtLog.warn(log, "[%d] Exception in forced abort (trying to continue)", this.id, ex);
-            }
-        }
-        if ( transactional.isInTransaction() ) {
-            try { transactional.end(); }
-            catch (RuntimeException ex) {}
-        }
-        endOfAction();
+        endInternal();
     }
 
-    private void endOfAction() {
-        activeDSG = null;
-        // Should be handled where necessary in the request handling.
-//        if ( inputStream != null ) {
-//            ActionLib.consumeBody(this);
-//        }
-//        if ( outputStream != null ) {
-//            IO.flush(outputStream);
-//            IO.close(outputStream);
-//        }
+    // An action begin-end is on the same thread. No concurrency issues for this flag.
+    private boolean isInActionTxn = false;
+    private int actionTxnCount = 0;
+    /** Used to detect two calls to {@link #endAny} */
+    private boolean actionTxEndCalled = false;
+
+    // begin :: enter then start
+    // end  ::  finish then leave
+
+    /**
+     * Called on entry to {@link #begin(TxnType)}; paired with {@link #leaveActionTxn}.
+     * {@code transaction.isInTransaction()} is false.
+     */
+    private void enterActionTxn() {
+        if ( isInActionTxn ) {
+            FmtLog.warn(log, "[%d] Already in an action", this.id);
+            ServletOps.errorOccurred("Internal error: bad action handling");
+        }
+        if ( actionTxnCount != 0 )
+            FmtLog.error(log, "[%d] Enter: actionTxnCount = %d", this.id, actionTxnCount);
     }
+
+    /**
+     * Called on exit from {@link #end()}; paired with {@link #enterActionTxn}.
+     * {@code transaction.isInTransaction()} is false.
+     */
+    private void leaveActionTxn() {
+        if ( actionTxnCount != 0 )
+            FmtLog.error(log, "[%d] Leave: actionTxnCount = %d", this.id, actionTxnCount);
+        if ( isInActionTxn )
+            FmtLog.error(log, "[%d] Action transaction not end'ed.", this.id);
+    }
+
+    /**
+     * Called on leaving {@link #begin(TxnType)}; paired with {@link #leaveActionTxn}.
+     * {@code transaction.isInTransaction()} is true.
+     */
+    private void startActionTxn() {
+        isInActionTxn = true;
+        actionTxnCount++;
+        actionTxEndCalled = false;
+    }
+
+    /**
+     * Called on exit from {@link #end()}; paired with {@link #startActionTxn}.
+     * {@code transaction.isInTransaction()} is false.
+     */
+    private void finishActionTxn() {
+        if ( ! isInActionTxn )
+            // Double end?
+            FmtLog.warn(log, "[%d] end called - Not in an action", this.id);
+        activeDSG = null;
+        isInActionTxn = false;
+        actionTxnCount--;
+    }
+
+    // ----
 
     public void commit() {
         dataService.finishTxn();
@@ -356,16 +499,6 @@ public class HttpAction
             Log.warn(this, "Exception during abort (operation attempts to continue): "+ex.getMessage());
         }
         end();
-    }
-
-    public final void startRequest() {
-        if ( dataAccessPoint != null )
-            dataAccessPoint.startRequest(this);
-    }
-
-    public final void finishRequest() {
-        if ( dataAccessPoint != null )
-            dataAccessPoint.finishRequest(this);
     }
 
     /** If inside the transaction for the action, return the active {@link DatasetGraph},
@@ -400,7 +533,8 @@ public class HttpAction
 //        this.datasetName = datasetName;
 //    }
 
-    /** Reduce to a size that can be kept around for sometime.
+    /**
+     * Reduce to a size that can be kept around for sometime.
      */
     public void minimize() {
         this.request = null;
@@ -525,7 +659,8 @@ public class HttpAction
         return inputStream;
     }
 
-    /** Get the request input stream, bypassing any compression.
+    /**
+     * Get the request input stream, bypassing any compression.
      * The state of the input stream is unknown.
      * Only useful for skipping a body on a connection.
      * @throws IOException
