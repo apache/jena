@@ -263,7 +263,7 @@ public class DatasetGraphChanges extends DatasetGraphWrapper {
     public void commit() {
         // Assume local commit will work - so signal first.
         // If the monitor.txnCommit fails, the commit should not happen
-        if ( isWriteMode() ) {
+        if ( isInWriteMode() ) {
             try {
                 changesMonitor.txnCommit();
             } catch (Exception ex) {
@@ -279,12 +279,12 @@ public class DatasetGraphChanges extends DatasetGraphWrapper {
     @Override
     public void abort() {
         // Assume abort will work - signal first.
-        if ( isWriteMode() )
+        if ( isInWriteMode() )
             changesMonitor.txnAbort();
         super.abort();
     }
 
-    private boolean isWriteMode() {
+    private boolean isInWriteMode() {
         return super.transactionMode() == ReadWrite.WRITE;
     }
 

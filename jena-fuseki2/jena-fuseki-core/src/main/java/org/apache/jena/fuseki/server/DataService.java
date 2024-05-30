@@ -239,15 +239,15 @@ public class DataService {
         totalTxn.getAndIncrement();
     }
 
+    public void finishTxn() {
+        activeTxn.decrementAndGet();
+    }
+
     private void check(DataServiceStatus status) {
         if ( state != status ) {
             String msg = format("DataService %s: Expected=%s, Actual=%s", label(), status, state);
             throw new FusekiException(msg);
         }
-    }
-
-    public void finishTxn() {
-        activeTxn.decrementAndGet();
     }
 
     /** Shutdown and never use again. */

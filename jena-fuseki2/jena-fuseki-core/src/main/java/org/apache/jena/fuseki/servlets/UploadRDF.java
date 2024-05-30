@@ -138,7 +138,7 @@ public class UploadRDF extends ActionREST {
             action.abortSilent();
             ServletOps.errorOccurred(ex.getMessage());
         } finally {
-            action.end();
+            action.endWrite();
         }
         return details;
     }
@@ -192,7 +192,7 @@ public class UploadRDF extends ActionREST {
             action.abortSilent();
             ServletOps.errorOccurred(ex.getMessage());
         } finally {
-            action.end();
+            action.endWrite();
         }
         return details;
     }

@@ -258,7 +258,7 @@ public class SPARQL_Update extends ActionService
                 abortSilent(action);
                 ServletOps.errorOccurred(ex.getMessage(), ex);
             }
-        } finally { action.end(); }
+        } finally { action.endWrite(); }
     }
 
     /* [It is an error to supply the using-graph-uri or using-named-graph-uri parameters

@@ -190,7 +190,8 @@ public interface Transactional
     /** Finish the transaction - if a write transaction and commit() has not been called, then abort */
     public void end() ;
 
-    /** Return the current mode of the transaction - "read" or "write".
+    /**
+     * Return the current mode of the transaction - "read" or "write".
      * If the caller is not in a transaction, this method returns null.
      */
     public ReadWrite transactionMode();
