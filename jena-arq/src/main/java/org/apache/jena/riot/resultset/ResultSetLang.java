@@ -18,6 +18,9 @@
 
 package org.apache.jena.riot.resultset;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.LangBuilder;
 import org.apache.jena.riot.RDFLanguages;
@@ -25,7 +28,10 @@ import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.rowset.RowSetReaderRegistry;
 import org.apache.jena.riot.rowset.RowSetWriterRegistry;
 
+/** {@link Lang} related to SPARQL result sets. */
 public class ResultSetLang {
+
+    private ResultSetLang() {}
 
     /** SPARQL results in XML syntax */
     public static final Lang RS_XML = LangBuilder.create("SPARQL-Results-XML", WebContent.contentTypeResultsXML)
@@ -59,22 +65,40 @@ public class ResultSetLang {
     public static final Lang RS_None = LangBuilder.create("SPARQL-Results-None", "application/sparql-results+none").build();
 
     private static boolean initialized = false;
+
+    /** System initialization function */
     public static void init() {
         if ( initialized )
             return;
         initialized = true;
-        RDFLanguages.register(RS_XML);
-        RDFLanguages.register(RS_JSON);
-        RDFLanguages.register(RS_CSV);
-        RDFLanguages.register(RS_TSV);
-        RDFLanguages.register(RS_Thrift);
+        registerResultSetLang(RS_XML);
+        registerResultSetLang(RS_JSON);
+        registerResultSetLang(RS_CSV);
+        registerResultSetLang(RS_TSV);
+        registerResultSetLang(RS_Thrift);
+        registerResultSetLang(RS_Protobuf);
         // Not output-only text.
-        RDFLanguages.register(RS_None);
+        registerResultSetLang(RS_None);
 
         RowSetReaderRegistry.init();
         RowSetWriterRegistry.init();
 
         ResultSetReaderRegistry.init();
         ResultSetWriterRegistry.init();
+        registered = Set.copyOf(registered);
+    }
+
+    /**
+     * Is a lang a registered {@link ResultSetLang}?
+     * @param lang
+     */
+    public static boolean isRegistered(Lang lang) {
+        return registered.contains(lang);
+    }
+
+    private static Set<Lang> registered = new HashSet<>();
+    private static void registerResultSetLang(Lang rsLang)  {
+        registered.add(rsLang);
+        RDFLanguages.register(rsLang);
     }
 }
