@@ -94,7 +94,7 @@ public class FusekiMain extends CmdARQ {
     private static ArgDecl  argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip");
     // Set the servlet context path (the initial path for URLs.) for any datasets.
     // A context of "/path" and a dataset name of "/ds", service "sparql" is accessed as "/path/ds/sparql"
-    private static ArgDecl  argPathBase     = new ArgDecl(ArgDecl.HasValue, "pathBase", "contextPath", "pathbase", "contextpath");
+    private static ArgDecl  argContextPath  = new ArgDecl(ArgDecl.HasValue, "pathBase", "contextPath", "pathbase", "contextpath");
     // Static files. URLs are affected by argPathBase
     private static ArgDecl  argBase         = new ArgDecl(ArgDecl.HasValue, "base", "files");
 
@@ -212,8 +212,8 @@ public class FusekiMain extends CmdARQ {
             "Enable GZip compression (HTTP Accept-Encoding) if request header set");
         add(argBase, "--base=DIR",
             "Directory for static content");
-        add(argPathBase, "--pathBase=DIR",
-            "Context path for datasets");
+        add(argContextPath, "--contextPath=PATH",
+            "Context path for the server");
         add(argSparqler, "--sparqler=DIR",
             "Run with SPARQLer services Directory for static content");
         add(argValidators, "--validators",
@@ -449,13 +449,11 @@ public class FusekiMain extends CmdARQ {
 
         // -- Server setup.
 
-        if ( contains(argPathBase) ) {
-            // Static files.
-            String servletContextPath = getValue(argPathBase);
-
-            if ( ! servletContextPath.equals("/") && servletContextPath.endsWith("/") )
-                throw new CmdException("Path base must not end with \"/\": '"+servletContextPath+"'");
-            serverConfig.servletContextPath = servletContextPath;
+        if ( contains(argContextPath) ) {
+            String contextPath = getValue(argContextPath);
+            contextPath = sanitizeContextPath(contextPath);
+            if ( contextPath != null )
+                serverConfig.servletContextPath = contextPath;
         }
 
         if ( contains(argBase) ) {
@@ -549,6 +547,20 @@ public class FusekiMain extends CmdARQ {
         } catch (NumberFormatException ex) {
             throw new CmdException(argPort.getKeyName() + " : bad port number: '" + portStr+"'");
         }
+    }
+
+    private static String sanitizeContextPath(String contextPath) {
+        if ( contextPath.isEmpty() )
+            return null;
+        if ( contextPath.equals("/") )
+            return null;
+        if ( contextPath.endsWith("/") ) {
+            throw new CmdException("Path base must not end with \"/\": '"+contextPath+"'");
+            //contextPath = StringUtils.chop(contextPath);
+        }
+        if ( ! contextPath.startsWith("/") )
+            contextPath = "/"+contextPath;
+        return contextPath;
     }
 
     @Override
