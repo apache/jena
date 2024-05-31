@@ -94,7 +94,7 @@ public class FusekiMain extends CmdARQ {
     private static ArgDecl  argGZip         = new ArgDecl(ArgDecl.HasValue, "gzip");
     // Set the servlet context path (the initial path for URLs.) for any datasets.
     // A context of "/path" and a dataset name of "/ds", service "sparql" is accessed as "/path/ds/sparql"
-    private static ArgDecl  argPathBase     = new ArgDecl(ArgDecl.HasValue, "pathBase", "contextPath");
+    private static ArgDecl  argPathBase     = new ArgDecl(ArgDecl.HasValue, "pathBase", "contextPath", "pathbase", "contextpath");
     // Static files. URLs are affected by argPathBase
     private static ArgDecl  argBase         = new ArgDecl(ArgDecl.HasValue, "base", "files");
 
