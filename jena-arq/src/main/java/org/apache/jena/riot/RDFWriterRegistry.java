@@ -279,9 +279,10 @@ public class RDFWriterRegistry
     }
 
     /** Is the RDFFormat registered for use? */
-    public static boolean contains(RDFFormat format)
-    { return langToFormat.containsKey(format.getLang()) && (registryGraph.containsKey(format) || registryDataset.containsKey(format)); }
-
+    public static boolean contains(RDFFormat format) {
+        return langToFormat.containsKey(format.getLang()) &&
+                (registryGraph.containsKey(format) || registryDataset.containsKey(format));
+    }
 
     /** All registered graph formats */
     public static Collection<RDFFormat> registeredGraphFormats() {
