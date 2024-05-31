@@ -42,7 +42,7 @@ public class TestFusekiMainCmdArguments {
     }
 
     @Test
-    public void test_happy_empty() {
+    public void test_empty() {
         // given
         List<String> arguments = List.of("--port=0", "--empty", "/dataset");
         // when
@@ -52,13 +52,55 @@ public class TestFusekiMainCmdArguments {
     }
 
     @Test
-    public void test_happy_localhost() {
+    public void test_localhost() {
         // given
         List<String> arguments = List.of("--port=0", "--localhost", "--mem", "/dataset");
         // when
         buildServer(buildCmdLineArguments(arguments));
         // then
         assertNotNull(server);
+    }
+
+    @Test
+    public void test_contextpath_1() {
+        // given
+        List<String> arguments = List.of("--mem", "--contextpath=/ABC", "/path");
+        String expectedMessage = "port : bad port number: 'ERROR'";
+        // when
+        buildServer(buildCmdLineArguments(arguments));
+        // then
+        assertNotNull(server);
+    }
+
+    @Test
+    public void test_contextpath_2() {
+        // given
+        List<String> arguments = List.of("--mem", "--contextpath=ABC", "/path");
+        String expectedMessage = "port : bad port number: 'ERROR'";
+        // when
+        buildServer(buildCmdLineArguments(arguments));
+        // then
+        assertNotNull(server);
+    }
+
+    @Test
+    public void test_contextpath_3() {
+        // given
+        List<String> arguments = List.of("--mem", "--contextpath=/", "/path");
+        String expectedMessage = "port : bad port number: 'ERROR'";
+        // when
+        buildServer(buildCmdLineArguments(arguments));
+        // then
+        assertNotNull(server);
+    }
+
+    @Test
+    public void test_error_contextpath() {
+        // given
+        List<String> arguments = List.of("--mem", "--contextpath=ABC/", "/path");
+        String expectedMessage = "Path base must not end with \"/\": 'ABC/'";
+        // when, then
+        testForCmdException(arguments, expectedMessage);
     }
 
     @Test
