@@ -86,7 +86,7 @@ public class FusekiCmd {
         private static ArgDecl argFusekiConfig  = new ArgDecl(ArgDecl.HasValue, "config", "conf");
         private static ArgDecl argJettyConfig   = new ArgDecl(ArgDecl.HasValue, "jetty-config", "jetty");
         private static ArgDecl argGZip          = new ArgDecl(ArgDecl.HasValue, "gzip");
-        private static ArgDecl argContextPath   = new ArgDecl(ArgDecl.HasValue, "pathBase", "contextPath");
+        private static ArgDecl argContextPath   = new ArgDecl(ArgDecl.HasValue, "pathBase", "contextPath", "pathbase", "contextpath");
 
         // Deprecated.  Use shiro.
         private static ArgDecl argBasicAuth     = new ArgDecl(ArgDecl.HasValue, "basic-auth");
