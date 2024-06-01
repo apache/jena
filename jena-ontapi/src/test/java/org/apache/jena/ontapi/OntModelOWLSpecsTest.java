@@ -55,6 +55,7 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -1294,11 +1295,11 @@ public class OntModelOWLSpecsTest {
                 data.createFacetRestriction(OntFacetRestriction.MaxExclusive.class, data.createTypedLiteral(42)),
                 data.createFacetRestriction(OntFacetRestriction.Pattern.class, data.createTypedLiteral("42"))
         );
-        OntDataRange d4 = data.createDataUnionOf(d1, d2);
-        OntDataRange d5 = data.createDataComplementOf(d2);
+        data.createDataUnionOf(d1, d2);
+        data.createDataComplementOf(d2);
 
-        OntDataRange d6 = data.createDataIntersectionOf(d1, d2);
-        OntDataRange d7 = data.createDataIntersectionOf(d2, d3);
+        data.createDataIntersectionOf(d1, d2);
+        data.createDataIntersectionOf(d2, d3);
 
 
         OntModel m = OntModelFactory.createModel(data.getGraph(), spec.inst);
@@ -1324,6 +1325,43 @@ public class OntModelOWLSpecsTest {
         }
         Assertions.assertEquals(expectedNamedDataRanges, m.ontObjects(OntDataRange.Named.class).count());
         Assertions.assertEquals(expectedNamedDataRanges + 2, m.ontObjects(OntDataRange.class).count());
+    }
+
+    @Test
+    public void testBuiltins() {
+        OntModel m = OntModelFactory.createModel(OntSpecification.OWL2_DL_MEM);
+
+        Assertions.assertNotNull(m.getRDFSLabel());
+        Assertions.assertNotNull(m.getRDFSComment());
+        Assertions.assertNotNull(m.getRDFSSeeAlso());
+        Assertions.assertNotNull(m.getRDFSIsDefinedBy());
+        Assertions.assertNotNull(m.getOWLDeprecated());
+        Assertions.assertNotNull(m.getOWLVersionInfo());
+        Assertions.assertNotNull(m.getOWLPriorVersion());
+        Assertions.assertNotNull(m.getOWLBackwardCompatibleWith());
+        Assertions.assertNotNull(m.getOWLIncompatibleWith());
+        Assertions.assertNotNull(m.getOWLThing());
+        Assertions.assertNotNull(m.getOWLNothing());
+        Assertions.assertNotNull(m.getOWLTopDataProperty());
+        Assertions.assertNotNull(m.getOWLTopObjectProperty());
+        Assertions.assertNotNull(m.getOWLBottomDataProperty());
+        Assertions.assertNotNull(m.getOWLBottomObjectProperty());
+
+        Assertions.assertTrue(m.getRDFSLabel().isBuiltIn());
+        Assertions.assertTrue(m.getRDFSComment().isBuiltIn());
+        Assertions.assertTrue(m.getRDFSSeeAlso().isBuiltIn());
+        Assertions.assertTrue(m.getRDFSIsDefinedBy().isBuiltIn());
+        Assertions.assertTrue(m.getOWLDeprecated().isBuiltIn());
+        Assertions.assertTrue(m.getOWLVersionInfo().isBuiltIn());
+        Assertions.assertTrue(m.getOWLPriorVersion().isBuiltIn());
+        Assertions.assertTrue(m.getOWLBackwardCompatibleWith().isBuiltIn());
+        Assertions.assertTrue(m.getOWLIncompatibleWith().isBuiltIn());
+        Assertions.assertTrue(m.getOWLThing().isBuiltIn());
+        Assertions.assertTrue(m.getOWLNothing().isBuiltIn());
+        Assertions.assertTrue(m.getOWLTopDataProperty().isBuiltIn());
+        Assertions.assertTrue(m.getOWLTopObjectProperty().isBuiltIn());
+        Assertions.assertTrue(m.getOWLBottomDataProperty().isBuiltIn());
+        Assertions.assertTrue(m.getOWLBottomObjectProperty().isBuiltIn());
     }
 }
 

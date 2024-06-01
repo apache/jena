@@ -601,6 +601,22 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
     }
 
     /**
+     * Removes a subclass relationship for the given resource including all possible annotations.
+     * No-op in case no match found.
+     * Removes all {@link RDFS#subClassOf rdfs:subClassOf} statements with all their annotations
+     * in case {@code null} is specified.
+     *
+     * @param other {@link Resource} or {@code null} to remove all {@code rdfs:subClassOf} statements
+     * @return <b>this</b> instance to allow cascading calls
+     * @see #addSubClassOfStatement(OntClass)
+     * @see #addSubClass(OntClass)
+     */
+    default OntClass removeSubClass(Resource other) {
+        getModel().statements(other, RDFS.subClassOf, this).toList().forEach(s -> getModel().remove(s.clearAnnotations()));
+        return this;
+    }
+
+    /**
      * Removes the specified disjoint class resource.
      * No-op in case no match found.
      * Removes all {@link OWL2#disjointWith owl:disjointWith} statements with all their annotations

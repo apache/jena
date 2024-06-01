@@ -1535,6 +1535,30 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
     }
 
     @Override
+    public OntModel writeAll(Writer writer, String lang, String base) {
+        super.write(writer, lang, base);
+        return this;
+    }
+
+    @Override
+    public OntModel writeAll(Writer writer, String lang) {
+        super.write(writer, lang);
+        return this;
+    }
+
+    @Override
+    public OntModel writeAll(OutputStream out, String lang, String base) {
+        super.write(out, lang, base);
+        return this;
+    }
+
+    @Override
+    public OntModel writeAll(OutputStream out, String lang) {
+        super.write(out, lang);
+        return this;
+    }
+
+    @Override
     public OntAnnotationProperty getRDFSComment() {
         return findNodeAs(RDFS.Nodes.comment, OntAnnotationProperty.class);
     }

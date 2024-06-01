@@ -444,12 +444,24 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
     /**
      * Adds the given property as super property returning this property itself.
      *
-     * @param property {@link OntDataProperty}, not {@code null}
+     * @param property {@link OntObjectProperty}, not {@code null}
      * @return <b>this</b> instance to allow cascading calls
      * @see OntProperty#removeSuperProperty(Resource)
      */
     default OntObjectProperty addSuperProperty(OntObjectProperty property) {
         addSubPropertyOfStatement(property);
+        return this;
+    }
+
+    /**
+     * Adds the given property as sub property returning this property itself.
+     *
+     * @param property {@link OntObjectProperty}, not {@code null}
+     * @return <b>this</b> instance to allow cascading calls
+     * @see #removeSubProperty(Resource)
+     */
+    default OntObjectProperty addSubProperty(OntObjectProperty property) {
+        property.addSubPropertyOfStatement(this);
         return this;
     }
 
@@ -556,6 +568,15 @@ public interface OntObjectProperty extends OntRelationalProperty, AsNamed<OntObj
     @Override
     default OntObjectProperty removeSuperProperty(Resource property) {
         remove(RDFS.subPropertyOf, property);
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    default OntObjectProperty removeSubProperty(Resource property) {
+        getModel().statements(property, RDFS.subPropertyOf, this).toList().forEach(s -> getModel().remove(s.clearAnnotations()));
         return this;
     }
 
