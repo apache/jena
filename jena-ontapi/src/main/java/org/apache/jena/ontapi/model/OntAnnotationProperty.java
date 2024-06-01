@@ -149,11 +149,32 @@ public interface OntAnnotationProperty extends OntProperty, OntNamedProperty<Ont
     }
 
     /**
+     * Adds the given property as sub property returning this property itself.
+     *
+     * @param property {@link OntAnnotationProperty}, not {@code null}
+     * @return <b>this</b> instance to allow cascading calls
+     * @see #removeSubProperty(Resource)
+     */
+    default OntAnnotationProperty addSubProperty(OntAnnotationProperty property) {
+        property.addSubPropertyOfStatement(this);
+        return this;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     default OntAnnotationProperty removeSuperProperty(Resource property) {
         remove(RDFS.subPropertyOf, property);
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    default OntAnnotationProperty removeSubProperty(Resource property) {
+        getModel().statements(property, RDFS.subPropertyOf, this).toList().forEach(s -> getModel().remove(s.clearAnnotations()));
         return this;
     }
 

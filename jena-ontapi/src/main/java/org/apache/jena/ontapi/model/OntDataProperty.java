@@ -208,6 +208,18 @@ public interface OntDataProperty extends OntRelationalProperty, OntNamedProperty
     }
 
     /**
+     * Adds the given property as sub property returning this property itself.
+     *
+     * @param property {@link OntDataProperty}, not {@code null}
+     * @return <b>this</b> instance to allow cascading calls
+     * @see #removeSubProperty(Resource)
+     */
+    default OntDataProperty addSubProperty(OntDataProperty property) {
+        property.addSubPropertyOfStatement(this);
+        return this;
+    }
+
+    /**
      * Adds a statement with the {@link RDFS#range} as predicate
      * and the specified {@link OntDataRange data range} as an object.
      *
@@ -265,6 +277,15 @@ public interface OntDataProperty extends OntRelationalProperty, OntNamedProperty
     @Override
     default OntDataProperty removeSuperProperty(Resource property) {
         remove(RDFS.subPropertyOf, property);
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    default OntDataProperty removeSubProperty(Resource property) {
+        getModel().statements(property, RDFS.subPropertyOf, this).toList().forEach(s -> getModel().remove(s.clearAnnotations()));
         return this;
     }
 

@@ -273,4 +273,30 @@ public class OntModelRDFSSpecTest {
 
         Assertions.assertEquals(6, m.size());
     }
+
+    @Test
+    public void testBuiltins() {
+        OntModel m = OntModelFactory.createModel(OntSpecification.RDFS_MEM);
+
+        Assertions.assertNotNull(m.getRDFSLabel());
+        Assertions.assertNotNull(m.getRDFSComment());
+        Assertions.assertNotNull(m.getRDFSSeeAlso());
+        Assertions.assertNotNull(m.getRDFSIsDefinedBy());
+        Assertions.assertNull(m.getOWLDeprecated());
+        Assertions.assertNull(m.getOWLVersionInfo());
+        Assertions.assertNull(m.getOWLPriorVersion());
+        Assertions.assertNull(m.getOWLBackwardCompatibleWith());
+        Assertions.assertNull(m.getOWLIncompatibleWith());
+        Assertions.assertNull(m.getOWLThing());
+        Assertions.assertNull(m.getOWLNothing());
+        Assertions.assertNull(m.getOWLTopDataProperty());
+        Assertions.assertNull(m.getOWLTopObjectProperty());
+        Assertions.assertNull(m.getOWLBottomDataProperty());
+        Assertions.assertNull(m.getOWLBottomObjectProperty());
+
+        Assertions.assertTrue(m.getRDFSLabel().isBuiltIn());
+        Assertions.assertTrue(m.getRDFSComment().isBuiltIn());
+        Assertions.assertTrue(m.getRDFSSeeAlso().isBuiltIn());
+        Assertions.assertTrue(m.getRDFSIsDefinedBy().isBuiltIn());
+    }
 }

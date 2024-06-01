@@ -252,13 +252,29 @@ public interface OntProperty extends OntObject {
      * Removes the specified super property (predicate is {@link RDFS#subPropertyOf rdfs:subPropertyOf}),
      * including the corresponding statement's annotations.
      * No-op in case no such super-property is found.
-     * Removes all triples with predicate {@code rdfs:subPropertyOf} if {@code null} is specified.
+     * If {@code null} is specified,
+     * the method removes all triples with predicate {@code rdfs:subPropertyOf} and this property as a subject.
      *
      * @param property {@link Resource} or {@code null} to remove all direct super properties
      * @return <b>this</b> instance to allow cascading calls
      */
     default OntProperty removeSuperProperty(Resource property) {
         remove(RDFS.subPropertyOf, property);
+        return this;
+    }
+
+    /**
+     * Removes the specified sub property (predicate is {@link RDFS#subPropertyOf rdfs:subPropertyOf}),
+     * including the corresponding statement's annotations.
+     * No-op in case no such super-property is found.
+     * If {@code null} is specified,
+     * the method removes all triples with predicate {@code rdfs:subPropertyOf} and this property as an object.
+     *
+     * @param property {@link Resource} or {@code null} to remove all direct super properties
+     * @return <b>this</b> instance to allow cascading calls
+     */
+    default OntProperty removeSubProperty(Resource property) {
+        getModel().statements(property, RDFS.subPropertyOf, this).toList().forEach(s -> getModel().remove(s.clearAnnotations()));
         return this;
     }
 }

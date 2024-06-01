@@ -684,6 +684,26 @@ public interface OntModel extends Model,
         return getAnnotationProperty(RDFS.isDefinedBy);
     }
 
+    default OntAnnotationProperty getOWLDeprecated() {
+        return getAnnotationProperty(OWL2.deprecated);
+    }
+
+    default OntAnnotationProperty getOWLVersionInfo() {
+        return getAnnotationProperty(OWL2.versionInfo);
+    }
+
+    default OntAnnotationProperty getOWLPriorVersion() {
+        return getAnnotationProperty(OWL2.priorVersion);
+    }
+
+    default OntAnnotationProperty getOWLBackwardCompatibleWith() {
+        return getAnnotationProperty(OWL2.backwardCompatibleWith);
+    }
+
+    default OntAnnotationProperty getOWLIncompatibleWith() {
+        return getAnnotationProperty(OWL2.incompatibleWith);
+    }
+
     default OntClass.Named getOWLThing() {
         return getOntClass(OWL2.Thing);
     }
