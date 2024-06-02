@@ -46,6 +46,7 @@
     <properties>
         <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
         <automatic.module.name>org.apache.jena.benchmarks.jmh</automatic.module.name>
+        <benchmark.skip>true</benchmark.skip>
         <scope>test</scope>
     </properties>
 
@@ -128,7 +129,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skipTests>true</skipTests>
+                    <skipTests>${benchmark.skip}</skipTests>
                     <includes>
                         <!-- no includes yet -->
                     </includes>
