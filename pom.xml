@@ -69,14 +69,14 @@
     <ver.jetty>12.0.9</ver.jetty>
     <ver.jakarta-servlet>6.0.0</ver.jakarta-servlet>
 
-    <ver.shiro>2.0.0</ver.shiro>
+    <ver.shiro>2.0.1</ver.shiro>
 
     <ver.protobuf>4.27.0</ver.protobuf>
     <ver.libthrift>0.20.0</ver.libthrift>
 
     <ver.caffeine>3.1.8</ver.caffeine>
     <!-- Most of Jena uses other libraries for equivalent functionality. -->
-    <ver.guava>33.2.0-jre</ver.guava>
+    <ver.guava>33.2.1-jre</ver.guava>
 
     <ver.gson>2.11.0</ver.gson>
     <ver.lucene>9.10.0</ver.lucene>
