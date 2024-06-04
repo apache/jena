@@ -91,7 +91,6 @@ public class QueryIterUnfold extends QueryIterRepeatApply
         return new QueryIterUnfoldWorkerForMaps(inputBinding, itMapEntries);
     }
 
-v
     protected abstract class QueryIterUnfoldWorkerBase<T> extends QueryIteratorBase {
         protected final Binding inputBinding;
         protected final Iterator<T> itElmts;
