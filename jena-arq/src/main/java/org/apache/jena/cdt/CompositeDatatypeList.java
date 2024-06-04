@@ -136,72 +136,6 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 	}
 
 	@Override
-	public boolean isValid( final String lexicalForm ) {
-		try {
-			// 'recursive' must be false here because the validity check
-			// is only for the literal with the given lexical form and not
-			// for any possible CDT literals inside it
-			ParserForCDTLiterals.parseListLiteral(lexicalForm, false);
-			return true;
-		}
-		catch ( final Exception ex ) {
-			return false;
-		}
-	}
-
-	@Override
-	public List<CDTValue> parse( final String lexicalForm ) throws DatatypeFormatException {
-		final boolean recursive = false;
-		try {
-			return ParserForCDTLiterals.parseListLiteral(lexicalForm, recursive);
-		}
-		catch ( final Exception ex ) {
-			throw new DatatypeFormatException(lexicalForm, type, ex);
-		}
-	}
-
-	@Override
-	public String unparse( final Object value ) {
-		if ( !(value instanceof List<?>) ) {
-			throw new IllegalArgumentException();
-		}
-
-		@SuppressWarnings("unchecked")
-		final List<CDTValue> list = (List<CDTValue>) value;
-
-		return unparseValue(list);
-	}
-
-	@Override
-	public String unparseValue( final List<CDTValue> list ) {
-		final StringBuilder sb = new StringBuilder();
-		sb.append("[");
-		if ( ! list.isEmpty() ) {
-			final Iterator<CDTValue> it = list.iterator();
-			final CDTValue firstElmt = it.next();
-			final String firstElmtAsString = unparseListElement(firstElmt);
-			sb.append(firstElmtAsString);
-			while ( it.hasNext() ) {
-				final CDTValue nextElmt = it.next();
-				final String nextElmtAsString = unparseListElement(nextElmt);
-				sb.append(", ");
-				sb.append(nextElmtAsString);
-			}
-		}
-		sb.append("]");
-		return sb.toString();
-	}
-
-	protected String unparseListElement( final CDTValue elmt ) {
-		return elmt.asLexicalForm();
-	}
-
-	@Override
-	public int getHashCode( final LiteralLabel lit ) {
-		return lit.getDefaultHashcode();
-	}
-
-	@Override
 	public boolean isEqual( final LiteralLabel value1, final LiteralLabel value2 ) {
 		if ( ! isListLiteral(value1) || ! isListLiteral(value2) ) {
 			return false;
@@ -235,18 +169,6 @@ public class CompositeDatatypeList extends CompositeDatatypeBase<List<CDTValue>>
 					if ( ! n1.equals(n2) ) {
 						throw new ExprEvalException("blank nodes in lists cannot be compared");
 					}
-				}
-
-				if ( ! n1.sameValueAs(n2) ) {
-					return false;
-				}
-			}
-			else {
-				final Node n1 = v1.asNode();
-				final Node n2 = v2.asNode();
-
-				if ( n1.isBlank() || n2.isBlank() ) {
-					throw new ExprEvalException("blank nodes in lists cannot be compared");
 				}
 
 				if ( ! n1.sameValueAs(n2) ) {

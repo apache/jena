@@ -87,20 +87,6 @@ public abstract class CDTValue
 			throw new ExprEvalException("nulls cannot be compared");
 		}
 
-		if ( v2.isNode() ) {
-			final NodeValue nv1 = NodeValue.makeNode(n1);
-			final NodeValue nv2 = NodeValue.makeNode( v2.asNode() );
-			return NodeValue.sameAs(nv1, nv2);
-		}
-
-		return false;
-	}
-
-	public boolean sameAs( final Object other ) throws ExprEvalException {
-		if ( isNull() ) {
-			throw new ExprEvalException("nulls cannot be compared");
-		}
-
 		if ( other instanceof CDTValue ) {
 			final CDTValue otherValue = (CDTValue) other;
 

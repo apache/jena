@@ -1844,6 +1844,7 @@ TOKEN [IGNORE_CASE] :
 | < SUBJECT: "SUBJECT" >
 | < PREDICATE: "PREDICATE" >
 | < OBJECT: "OBJECT" >
+| < UNFOLD: "unfold" >
 | < EXISTS: "exists" >
 | < NOT: "not" >
 | < AS: "as" >

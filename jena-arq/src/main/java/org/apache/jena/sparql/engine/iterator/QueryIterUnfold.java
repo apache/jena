@@ -91,16 +91,7 @@ public class QueryIterUnfold extends QueryIterRepeatApply
         return new QueryIterUnfoldWorkerForMaps(inputBinding, itMapEntries);
     }
 
-    public static Iterator<Map.Entry<Node,Node>> parseMap( final String mapAsValue, final PrefixMap pmap ) {
-        final Iterator<Map.Entry<String,String>> itMapElmts = extractMapElements(mapAsValue);
-        return new Iterator<>() {
-            @Override
-            public boolean hasNext() {
-                return itMapElmts.hasNext();
-            }
-        }
-    }
-
+v
     protected abstract class QueryIterUnfoldWorkerBase<T> extends QueryIteratorBase {
         protected final Binding inputBinding;
         protected final Iterator<T> itElmts;

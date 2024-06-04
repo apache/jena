@@ -2748,14 +2748,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case LET:
       el = Assignment();
       break;
+    case UNFOLD:
+      el = Unfold();
+      break;
     case EXISTS:
       el = ExistsElt();
       break;
     case NOT:
       el = NotExistsElt();
-      break;
-    case UNFOLD:
-      el = Unfold();
       break;
     default:
       jj_la1[82] = jj_gen;
@@ -3051,23 +3051,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Element ExistsElt() throws ParseException {
-                        Element el ;
-    jj_consume_token(EXISTS);
-    el = GroupGraphPattern();
-      {if (true) return new ElementExists(el) ;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Element NotExistsElt() throws ParseException {
-                           Element el ;
-    jj_consume_token(NOT);
-    jj_consume_token(EXISTS);
-    el = GroupGraphPattern();
-      {if (true) return new ElementNotExists(el) ;}
-    throw new Error("Missing return statement in function");
-  }
-
   final public Element Unfold() throws ParseException {
                      Var v1 ; Var v2 = null ; Expr expr ;
     jj_consume_token(UNFOLD);
@@ -3087,6 +3070,23 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     }
     jj_consume_token(RPAREN);
     {if (true) return new ElementUnfold(expr, v1, v2) ;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Element ExistsElt() throws ParseException {
+                        Element el ;
+    jj_consume_token(EXISTS);
+    el = GroupGraphPattern();
+      {if (true) return new ElementExists(el) ;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Element NotExistsElt() throws ParseException {
+                           Element el ;
+    jj_consume_token(NOT);
+    jj_consume_token(EXISTS);
+    el = GroupGraphPattern();
+      {if (true) return new ElementNotExists(el) ;}
     throw new Error("Missing return statement in function");
   }
 
