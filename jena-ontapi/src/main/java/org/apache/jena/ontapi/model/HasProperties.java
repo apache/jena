@@ -22,7 +22,7 @@ import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.vocabulary.OWL2;
 
 /**
- * A technical interface to access {@link P} properties from a []-list
+ * A technical interface to access {@code P} properties from a []-list
  * on predicate {@link OWL2#onProperties owl:onProperties}.
  *
  * @param <P> - any subtype of {@link OntRelationalProperty} in general case,
@@ -35,7 +35,7 @@ interface HasProperties<P extends OntRelationalProperty> extends HasRDFNodeList<
      * Gets the first property from {@code owl:onProperties} []-list.
      * Currently, in OWL2, a []-list from n-ary Restrictions may contain one and only one (data) property.
      *
-     * @return {@link P}
+     * @return {@code P}
      * @see OntDataRange#arity()
      */
     @Override

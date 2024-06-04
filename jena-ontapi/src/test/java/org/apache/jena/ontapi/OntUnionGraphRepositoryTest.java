@@ -231,7 +231,7 @@ public class OntUnionGraphRepositoryTest {
 
         GraphRepository repository = GraphRepository.createGraphDocumentRepositoryMem();
 
-        OntModel inRepo = OntModelFactory.createModel(a.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_INF, repository);
+        OntModelFactory.createModel(a.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_INF, repository);
 
         Assertions.assertEquals(5, repository.count());
         Assertions.assertEquals(
@@ -261,7 +261,7 @@ public class OntUnionGraphRepositoryTest {
 
         GraphRepository repository = GraphRepository.createGraphDocumentRepositoryMem();
 
-        OntModel inRepo = OntModelFactory.createModel(c.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_INF, repository);
+        OntModelFactory.createModel(c.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_INF, repository);
 
         Assertions.assertEquals(5, repository.count());
         Assertions.assertEquals(
@@ -596,6 +596,82 @@ public class OntUnionGraphRepositoryTest {
 
         Assertions.assertNull(OntModelFactory.getModelOrNull(NodeFactory.createURI("A"), OntSpecification.OWL2_DL_MEM, repository));
         Assertions.assertNotNull(OntModelFactory.getModelOrNull(NodeFactory.createURI("B"), OntSpecification.OWL2_DL_MEM_RDFS_INF, repository));
+    }
+
+    @Test
+    public void testCreatePersistentModel1() {
+        var maker = new TestMemGraphMaker();
+        var graph = maker.createGraph("x");
+        var repo = GraphRepository.createPersistentGraphRepository(maker);
+        var model = OntModelFactory.createModel(graph,
+                OntSpecification.OWL2_DL_MEM,
+                repo
+        );
+
+        model.getID().addImport("b");
+        model.setID("a");
+
+        Assertions.assertEquals(Set.of("a", "b"), repo.ids().collect(Collectors.toSet()));
+        Assertions.assertEquals(
+                Stream.concat(Stream.of(model), model.imports())
+                        .map(ModelGraphInterface::getGraph)
+                        .collect(Collectors.toSet()),
+                repo.graphs().collect(Collectors.toSet()));
+
+        Assertions.assertEquals(
+                Stream.concat(Stream.of(model), model.imports())
+                        .map(OntModel::getBaseGraph)
+                        .collect(Collectors.toSet()),
+                maker.graphs().collect(Collectors.toSet()));
+
+        Assertions.assertEquals(Set.of("x", "b"), maker.names().collect(Collectors.toSet()));
+    }
+
+    @Test
+    public void testCreatePersistentModel2() {
+        var repo = GraphRepository.createPersistentGraphRepository(new TestMemGraphMaker());
+
+        var model1 = OntModelFactory.createModel(null,
+                OntSpecification.OWL2_DL_MEM,
+                repo
+        ).setID("a").getModel();
+
+        var model2 = OntModelFactory.createModel(null,
+                OntSpecification.OWL2_DL_MEM,
+                repo
+        ).setID("b").addImport("a").getModel();
+
+        Assertions.assertEquals(Set.of("a", "b"), repo.ids().collect(Collectors.toSet()));
+        Assertions.assertEquals(
+                Stream.of(model1, model2)
+                        .map(ModelGraphInterface::getGraph)
+                        .collect(Collectors.toSet()),
+                repo.graphs().collect(Collectors.toSet()));
+    }
+
+    @Test
+    public void testCreatePersistentModel3() {
+        var maker = new TestMemGraphMaker();
+
+        var repo1 = GraphRepository.createPersistentGraphRepository(maker);
+        var model1 = OntModelFactory.createModel("a", repo1);
+
+        var repo2 = GraphRepository.createPersistentGraphRepository(maker);
+        var model2 = OntModelFactory.createModel("b", repo2).getID().addImport("a").getModel();
+
+        Assertions.assertEquals(Set.of("a", "b"), repo2.ids().collect(Collectors.toSet()));
+        Assertions.assertEquals(
+                Stream.of(model1, model2)
+                        .map(OntModel::getBaseGraph)
+                        .collect(Collectors.toSet()),
+                maker.graphs().collect(Collectors.toSet()));
+
+        var model3 = OntModelFactory.getModelOrNull("b", OntSpecification.OWL2_DL_MEM, repo2);
+        Assertions.assertEquals(
+                Stream.concat(Stream.of(model3), model3.imports())
+                        .map(ModelGraphInterface::getGraph)
+                        .collect(Collectors.toSet()),
+                repo2.graphs().collect(Collectors.toSet()));
     }
 
 }

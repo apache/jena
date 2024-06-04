@@ -69,10 +69,10 @@ import java.util.stream.Stream;
  * If implementation does not provide inference support, the method will throw an exception.
  *
  * @see org.apache.jena.ontology.OntModel
- * @see <a href='https://www.w3.org/TR/owl2-mapping-to-rdf'>OWL2 RDF mapping</a>
- * @see <a href='https://www.w3.org/TR/owl2-quick-reference/'>A Quick Guide</a>
- * @see <a href='https://www.w3.org/TR/owl2-syntax/'>OWL 2 Web Ontology Language Structural Specification and Functional-Style Syntax (Second Edition)</a>
- * @see <a href='https://www.w3.org/Submission/SWRL/'>SWRL: A Semantic Web Rule Language Combining OWL and RuleML</a>
+ * @see <a href="https://www.w3.org/TR/owl2-mapping-to-rdf">OWL2 RDF mapping</a>
+ * @see <a href="https://www.w3.org/TR/owl2-quick-reference/">A Quick Guide</a>
+ * @see <a href="https://www.w3.org/TR/owl2-syntax/">OWL 2 Web Ontology Language Structural Specification and Functional-Style Syntax (Second Edition)</a>
+ * @see <a href="https://www.w3.org/Submission/SWRL/">SWRL: A Semantic Web Rule Language Combining OWL and RuleML</a>
  */
 public interface OntModel extends Model,
         MutableModel<OntModel>, PrefixedModel<OntModel>, IOModel<OntModel>,
@@ -188,7 +188,7 @@ public interface OntModel extends Model,
      *
      * @param type {@link Class} the concrete type of {@link OntObject}, not {@code null}
      * @param <O>  any ont-object subtype
-     * @return {@code Stream} of {@link OntObject}s of the type {@link O}
+     * @return {@code Stream} of {@link OntObject}s of the type {@code O}
      * @see #ontEntities()
      */
     <O extends OntObject> Stream<O> ontObjects(Class<? extends O> type);
@@ -244,6 +244,7 @@ public interface OntModel extends Model,
      * @return {@link OntEntity} or {@code null}
      * @see #fetchOntEntity(Class, String)
      */
+    @SuppressWarnings("javadoc")
     <E extends OntEntity> E getOntEntity(Class<E> type, String uri);
 
     /**
@@ -549,7 +550,7 @@ public interface OntModel extends Model,
      * @param type a class-type of entity
      * @param uri  String uri, not {@code null}
      * @param <E>  any subtype of {@link OntEntity}
-     * @return {@link E}
+     * @return {@code E}
      */
     default <E extends OntEntity> E fetchOntEntity(Class<E> type, String uri) {
         E res = getOntEntity(type, uri);
@@ -655,7 +656,7 @@ public interface OntModel extends Model,
      * @param type {@code Class}, not {@code null}
      * @param uri  {@link Resource}, must be URI, not {@code null}
      * @param <E>  any {@link OntEntity} subtype, not {@code null}
-     * @return a {@link E} instance
+     * @return a {@code E} instance
      */
     default <E extends OntEntity> E getOntEntity(Class<E> type, Resource uri) {
         return getOntEntity(type, uri.getURI());
@@ -681,6 +682,26 @@ public interface OntModel extends Model,
 
     default OntAnnotationProperty getRDFSIsDefinedBy() {
         return getAnnotationProperty(RDFS.isDefinedBy);
+    }
+
+    default OntAnnotationProperty getOWLDeprecated() {
+        return getAnnotationProperty(OWL2.deprecated);
+    }
+
+    default OntAnnotationProperty getOWLVersionInfo() {
+        return getAnnotationProperty(OWL2.versionInfo);
+    }
+
+    default OntAnnotationProperty getOWLPriorVersion() {
+        return getAnnotationProperty(OWL2.priorVersion);
+    }
+
+    default OntAnnotationProperty getOWLBackwardCompatibleWith() {
+        return getAnnotationProperty(OWL2.backwardCompatibleWith);
+    }
+
+    default OntAnnotationProperty getOWLIncompatibleWith() {
+        return getAnnotationProperty(OWL2.incompatibleWith);
     }
 
     default OntClass.Named getOWLThing() {

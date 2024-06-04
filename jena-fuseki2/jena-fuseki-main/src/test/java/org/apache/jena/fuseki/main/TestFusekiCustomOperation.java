@@ -182,7 +182,7 @@ public class TestFusekiCustomOperation {
         // .build();
     }
 
-    // Bad test: no MIME type must match.
+    // Bad test: MIME type must match.
     @Test
     public void cfg_bad_ct_not_enabled_here_1() {
         FusekiServer server = FusekiServer.create().port(port)

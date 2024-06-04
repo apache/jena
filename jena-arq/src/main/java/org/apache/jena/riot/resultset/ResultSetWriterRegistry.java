@@ -22,7 +22,6 @@ import static org.apache.jena.riot.resultset.ResultSetLang.*;
 
 import java.io.OutputStream;
 import java.io.Writer;
-import java.util.Collection;
 import java.util.Map ;
 import java.util.Objects ;
 import java.util.Set;
@@ -60,10 +59,10 @@ public class ResultSetWriterRegistry {
     }
 
     /** All registered languages */
-    public static Collection<Lang> registered() {
+    public static Set<Lang> registered() {
         return Set.copyOf(registry.keySet());
     }
-    
+
     private static boolean initialized = false ;
     public static void init() {
         if ( initialized )

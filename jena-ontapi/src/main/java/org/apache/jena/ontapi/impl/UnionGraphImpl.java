@@ -115,9 +115,10 @@ public class UnionGraphImpl extends CompositionBase implements UnionGraph {
      * Creates a graph for the given {@code base}.
      *
      * @param base         {@link Graph}, not {@code null}
-     * @param eventManager {@link EventManager} or {@code null} to use default fresh event manager
+     * @param eventManager {@link UnionGraph.EventManager} or {@code null} to use default fresh event manager
      * @param distinct     if {@code true} a distinct graph is created
      */
+    @SuppressWarnings("javadoc")
     public UnionGraphImpl(Graph base, EventManager eventManager, boolean distinct) {
         this(base, new SubGraphs(), eventManager, distinct);
     }

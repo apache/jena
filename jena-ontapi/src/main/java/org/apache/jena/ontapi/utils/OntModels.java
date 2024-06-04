@@ -59,17 +59,15 @@ import java.util.stream.Stream;
  * {@link OntEntity Ontology Entity},
  * {@link RDFNodeList Node List},
  * {@link OntStatement Ontology Statement}.
- * <p>
- * Created by @szz on 11.06.2019.
  */
 public class OntModels {
 
     /**
      * Determines the actual ontology object type.
      *
-     * @param object instance of {@link O}
+     * @param object instance of {@code O}
      * @param <O>    any subtype of {@link OntObject}
-     * @return {@link Class}-type of {@link O}
+     * @return {@link Class}-type of {@code O}
      */
     @SuppressWarnings("unchecked")
     public static <O extends OntObject> Class<O> getOntType(O object) {
@@ -91,6 +89,7 @@ public class OntModels {
      * @return {@link OntIndividual.Anonymous}
      * @throws OntJenaException if the node cannot be present as anonymous individual
      */
+    @SuppressWarnings("javadoc")
     public static OntIndividual.Anonymous asAnonymousIndividual(RDFNode inModel) {
         return OntIndividualImpl.createAnonymousIndividual(inModel);
     }
@@ -119,7 +118,7 @@ public class OntModels {
      * @param model {@link OntModel}
      * @param type  {@link Class}-type
      * @param <O>   subclass of {@link OntObject}
-     * @return {@link ExtendedIterator} of ontology objects of the type {@link O} that are local to the base graph
+     * @return {@link ExtendedIterator} of ontology objects of the type {@code O} that are local to the base graph
      * @see OntModel#ontObjects(Class)
      */
     public static <O extends OntObject> ExtendedIterator<O> listLocalObjects(OntModel model, Class<? extends O> type) {
@@ -150,7 +149,7 @@ public class OntModels {
      *
      * @param list {@link RDFNodeList}
      * @param <R>  {@link RDFNode}, a type of list members
-     * @return {@link ExtendedIterator} of {@link R}
+     * @return {@link ExtendedIterator} of {@code R}
      */
     public static <R extends RDFNode> ExtendedIterator<R> listMembers(RDFNodeList<R> list) {
         if (list instanceof OntListImpl) {

@@ -108,7 +108,7 @@ public class OntPersonalities {
     /**
      * For RDFS Ontologies, limited functionality.
      *
-     * @see <a href='https://www.w3.org/TR/rdf12-schema/'>RDF 1.2 Schema</a>
+     * @see <a href="https://www.w3.org/TR/rdf12-schema/">RDF 1.2 Schema</a>
      */
     private static final OntObjectPersonalityBuilder RDFS_OBJECT_FACTORIES = templatePersonalityBuilder()
             .setName("RDFS")
@@ -520,7 +520,7 @@ public class OntPersonalities {
     /**
      * For OWL1.1 Lite Ontologies, limited functionality.
      *
-     * @see <a href="https://www.w3.org/TR/2004/REC-owl-features-20040210/#s3>Language Description of OWL Lite</a>
+     * @see <a href="https://www.w3.org/TR/2004/REC-owl-features-20040210/#s3">Language Description of OWL Lite</a>
      */
     private static final OntObjectPersonalityBuilder OWL1_LITE_OBJECT_FACTORIES = templatePersonalityBuilder()
             .setName("OWL1-LITE")

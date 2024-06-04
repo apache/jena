@@ -37,7 +37,7 @@ public interface ResourceVocabulary<T extends Resource> {
     /**
      * Returns a {@code Set} of {@link Node Jena Graph Node}s for the given {@code Class}-type.
      *
-     * @param type {@link Class}, any subtype of {@link T}
+     * @param type {@link Class}, any subtype of {@code T}
      * @return Set of {@link Node node}s (immutable!), can be empty (if no mapping or type is not supported)
      */
     Set<Node> get(Class<? extends T> type) throws OntJenaException;
@@ -45,7 +45,7 @@ public interface ResourceVocabulary<T extends Resource> {
     /**
      * Answers {@code true} if the given type is supported by the vocabulary.
      *
-     * @param type {@link Class}, any subtype of {@link T}
+     * @param type {@link Class}, any subtype of {@code T}
      * @return boolean
      */
     boolean supports(Class<? extends T> type);

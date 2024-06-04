@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  * A default implementation of {@link OntPersonality}.
  * Mappings from [interface] Class objects of RDFNode to {@link Implementation} factories.
  */
-@SuppressWarnings({"WeakerAccess", "unused"})
+@SuppressWarnings("WeakerAccess")
 public class OntPersonalityImpl extends Personality<RDFNode> implements OntPersonality {
     private final String name;
     private final OntConfig config;

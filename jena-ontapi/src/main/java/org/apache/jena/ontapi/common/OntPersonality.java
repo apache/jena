@@ -61,10 +61,7 @@ import java.util.stream.Stream;
  * <p>
  * Instances of this class must be unmodifiable and
  * the {@link OntObjectPersonalityBuilder builder} should be used to create instances with different settings.
- * <p>
- * Created by @szz on 15.01.2019.
  */
-@SuppressWarnings("unused")
 public interface OntPersonality {
 
     /**
@@ -168,7 +165,7 @@ public interface OntPersonality {
      *
      * @param type {@code Class}-type of {@link OntObject}
      * @param <T>  any subtype of {@link OntObject}
-     * @return Stream of all types where each element extends {@link T} inclusive
+     * @return Stream of all types where each element extends {@code T} inclusive
      */
     @SuppressWarnings("unchecked")
     default <T extends OntObject> Stream<Class<? extends T>> types(Class<T> type) {
@@ -195,7 +192,7 @@ public interface OntPersonality {
      * <p>
      * Each node obtained from this class must be IRI (i.e. {@code node.isURI() = true}).
      *
-     * @see <a href='https://www.w3.org/TR/owl2-new-features/#F12:_Punning'>Punnings</a>
+     * @see <a href="https://www.w3.org/TR/owl2-new-features/#F12:_Punning">Punnings</a>
      * @see OntEntity#types()
      */
     interface Punnings extends ResourceVocabulary<OntObject> {

@@ -28,7 +28,7 @@ import org.junit.runners.Suite ;
     TestResultSetIO.class
     , TestResultSetWriterCSV.class
     , TestResultSetWriterTSV.class
+    , TestResultSetLang.class
 })
 
 public class TS_ResultSetRIOT { }
-

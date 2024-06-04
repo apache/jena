@@ -30,7 +30,6 @@ import org.apache.jena.rdf.model.ResourceFactory;
  * @see <a href="https://www.w3.org/Submission/SWRL/#8">8. Built-Ins</a>
  * @see SWRL
  */
-@SuppressWarnings("unused")
 public class SWRLB {
     public final static String URI = "http://www.w3.org/2003/11/swrlb";
     public final static String NS = URI + "#";

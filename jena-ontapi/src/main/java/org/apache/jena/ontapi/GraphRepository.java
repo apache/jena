@@ -18,9 +18,10 @@
 
 package org.apache.jena.ontapi;
 
-import org.apache.jena.ontapi.impl.repositories.DocumentGraphRepository;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphMemFactory;
+import org.apache.jena.ontapi.impl.repositories.DocumentGraphRepository;
+import org.apache.jena.ontapi.impl.repositories.PersistentGraphRepository;
 import org.apache.jena.ontapi.model.OntID;
 
 import java.util.Objects;
@@ -40,6 +41,8 @@ public interface GraphRepository {
      * A factory method to creates {@link GraphRepository} instance
      * that loads graphs on demand from the location to memory.
      * The location is specified by the method {@link DocumentGraphRepository#addMapping(String, String)}.
+     * If there is no mapping specified,
+     * graph id (see {@link GraphRepository#get(String)}) will be used as a source URL or file path.
      *
      * @return {@link DocumentGraphRepository}
      */
@@ -51,6 +54,8 @@ public interface GraphRepository {
      * A factory method to creates {@link GraphRepository} instance
      * that loads graphs on demand from the location.
      * The location is specified by the method {@link DocumentGraphRepository#addMapping(String, String)}.
+     * If there is no mapping specified,
+     * graph id (see {@link GraphRepository#get(String)}) will be used as a source URL or file path.
      *
      * @param factory {@link Supplier} to produce new {@link Graph}, {@code null} for default
      * @return {@link DocumentGraphRepository}
@@ -60,9 +65,18 @@ public interface GraphRepository {
     }
 
     /**
+     * A factory method for creating persistent {@link GraphRepository}; persistence is ensured by the {@code maker}.
+     * @param maker {@link GraphMaker} a factory to create/fetch/remove {@link Graph}s
+     * @return {@link PersistentGraphRepository}
+     */
+    static PersistentGraphRepository createPersistentGraphRepository(GraphMaker maker) {
+        return new PersistentGraphRepository(Objects.requireNonNull(maker));
+    }
+
+    /**
      * Gets Graph by ID.
      *
-     * @param id {@code String} Graph's identifier
+     * @param id {@code String} Graph's identifier, usually it is ontology ID or source URL or file path
      * @return {@link Graph}
      */
     Graph get(String id);

@@ -49,7 +49,7 @@ import org.slf4j.Logger;
 /**
  * Handles the fuseki command, used to start a Fuseki Webapp server.
  */
-public class FusekiCmd {
+public class FusekiWebappCmd {
     // This allows us to set logging before calling FusekiCmdInner
     // FusekiCmdInner inherits from CmdMain which statically sets logging.
     // By java classloading, super class statics run before the
@@ -86,7 +86,7 @@ public class FusekiCmd {
         private static ArgDecl argFusekiConfig  = new ArgDecl(ArgDecl.HasValue, "config", "conf");
         private static ArgDecl argJettyConfig   = new ArgDecl(ArgDecl.HasValue, "jetty-config", "jetty");
         private static ArgDecl argGZip          = new ArgDecl(ArgDecl.HasValue, "gzip");
-        private static ArgDecl argContextPath   = new ArgDecl(ArgDecl.HasValue, "pathBase", "contextPath");
+        private static ArgDecl argContextPath   = new ArgDecl(ArgDecl.HasValue, "pathBase", "contextPath", "pathbase", "contextpath");
 
         // Deprecated.  Use shiro.
         private static ArgDecl argBasicAuth     = new ArgDecl(ArgDecl.HasValue, "basic-auth");
@@ -318,15 +318,6 @@ public class FusekiCmd {
                 cmdLine.datasetDescription = cmdLine.datasetDescription+ " (with RDFS)";
             }
 
-            // This is has proven confusing because it is like --conf.
-//            // Otherwise
-//            if ( contains(argAssemblerDecl) ) {
-//                cmdLine.datasetDescription = "Assembler: "+ modDataset.getAssemblerFile();
-//                // Need to add service details.
-//                Dataset ds = modDataset.createDataset();
-//                //cmdLineDataset.dsg = ds.asDatasetGraph();
-//            }
-
             if ( cmdlineConfigPresent ) {
                 cmdLine.datasetPath = getPositionalArg(0);
                 if ( cmdLine.datasetPath.length() > 0 && !cmdLine.datasetPath.startsWith("/") )
@@ -351,7 +342,10 @@ public class FusekiCmd {
             }
 
             if ( contains(argContextPath) ) {
-                jettyServerConfig.contextPath = getValue(argContextPath);
+                String contextPath = getValue(argContextPath);
+                contextPath = sanitizeContextPath(contextPath);
+                if ( contextPath != null )
+                    jettyServerConfig.contextPath = contextPath;
             }
 
             if ( contains(argJettyConfig) ) {
@@ -365,6 +359,20 @@ public class FusekiCmd {
                     throw new CmdException(argGZip.getNames().get(0) + ": Not understood: " + getValue(argGZip));
                 jettyServerConfig.enableCompression = super.hasValueOfTrue(argGZip);
             }
+        }
+
+        private static String sanitizeContextPath(String contextPath) {
+            if ( contextPath.isEmpty() )
+                return null;
+            if ( contextPath.equals("/") )
+                return null;
+            if ( contextPath.endsWith("/") ) {
+                throw new CmdException("Path base must not end with \"/\": '"+contextPath+"'");
+                //contextPath = StringUtils.chop(contextPath);
+            }
+            if ( ! contextPath.startsWith("/") )
+                contextPath = "/"+contextPath;
+            return contextPath;
         }
 
         @Override

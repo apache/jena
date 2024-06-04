@@ -15,7 +15,7 @@
  *  information regarding copyright ownership.
  */
 
-package org.apache.jena.fuseki.patch;
+package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format;
 import static org.apache.jena.fuseki.servlets.ActionExecLib.incCounter;
@@ -25,7 +25,6 @@ import java.io.InputStream;
 
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.fuseki.server.CounterName;
-import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.rdfpatch.PatchException;
 import org.apache.jena.rdfpatch.RDFChanges;
 import org.apache.jena.rdfpatch.changes.*;
@@ -37,7 +36,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.web.HttpSC;
 
 /** A Fuseki service to receive and apply a patch. */
-public class PatchApplyService extends ActionREST {
+public class PatchApply extends ActionREST {
     static CounterName counterPatches     = CounterName.register("RDFpatch-apply", "rdf-patch.apply.requests");
     static CounterName counterPatchesGood = CounterName.register("RDFpatch-apply", "rdf-patch.apply.good");
     static CounterName counterPatchesBad  = CounterName.register("RDFpatch-apply", "rdf-patch.apply.bad");
@@ -46,7 +45,7 @@ public class PatchApplyService extends ActionREST {
     private ContentType ctPatchText   = WebContent.ctPatch;
     private ContentType ctPatchBinary = WebContent.ctPatchThrift;
 
-    public PatchApplyService() {
+    public PatchApply() {
         // Counters: the standard ActionREST counters per operation are enough.
     }
 
@@ -111,7 +110,10 @@ public class PatchApplyService extends ActionREST {
         catch (Exception ex) {
             action.abort();
             throw ex;
-        } finally { action.end(); }
+        }
+        finally {
+            action.endWrite();
+        }
         ServletOps.success(action);
     }
 

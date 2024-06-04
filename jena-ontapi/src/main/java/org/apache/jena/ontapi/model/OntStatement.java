@@ -40,7 +40,7 @@ import java.util.stream.Stream;
  *
  * @see OntAnnotation
  * @see Statement
- * @see <a href='https://www.w3.org/TR/owl2-mapping-to-rdf/#Translation_of_Annotations'>2.2 Translation of Annotations</a>
+ * @see <a href="https://www.w3.org/TR/owl2-mapping-to-rdf/#Translation_of_Annotations">2.2 Translation of Annotations</a>
  */
 public interface OntStatement extends Statement {
 

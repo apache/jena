@@ -16,23 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.ontapi.model;
-
-import org.apache.jena.rdf.model.RDFNode;
+package org.apache.jena.fuseki.cmd;
 
 /**
- * A technical interface to provide {@link OntList Ontology []-list} instance.
- *
- * @param <E> any {@link RDFNode} - a type for list's item
- * @see HasRDFNodeList
- * @see SetComponents
+ * @deprecated Use {@link FusekiWebappCmd}.
  */
-interface WithOntList<E extends RDFNode> extends HasRDFNodeList<E> {
-    /**
-     * Gets a modifiable []-list with items of the type {@code E}.
-     *
-     * @return {@link OntList Ontology []-list} with items of the type {@code E}
-     */
-    @Override
-    OntList<E> getList();
+@Deprecated(since="5.1.0", forRemoval = true)
+public class FusekiMain {
+    static public void main(String... argv) {
+        FusekiWebappCmd.main(argv);
+    }
 }

@@ -59,9 +59,9 @@ public class Iterators {
      * Creates a new sequential {@code Stream} from the given {@code ExtendedIterator}.
      * Takes care about degenerate cases empty and single-element iterator.
      *
-     * @param iterator {@link ExtendedIterator} of {@link X}-elements
+     * @param iterator {@link ExtendedIterator} of {@code X}-elements
      * @param <X>      anything
-     * @return a {@code Stream} of {@link X}
+     * @return a {@code Stream} of {@code X}
      * @see #asStream(Iterator)
      */
     public static <X> Stream<X> asStream(ExtendedIterator<? extends X> iterator) {
@@ -152,7 +152,7 @@ public class Iterators {
      * Creates a {@code Stream} for a future {@code Set}, which is produced by the factory-parameter {@code getAsSet}.
      * The produced {@code Set} must not change and must not contain {@code null}.
      *
-     * @param getAsSet {@code Supplier} that produces a {@code Set} of {@link X}
+     * @param getAsSet {@code Supplier} that produces a {@code Set} of {@code X}
      * @param <X>      the type of items
      * @return <b>distinct</b> sequential {@code Stream}
      * @see Iterators#create(Supplier)
@@ -168,12 +168,12 @@ public class Iterators {
      * by applying the provided mapping function ({@code map}) to each element.
      * A functional equivalent of {@link Stream#flatMap(Function)}, but for {@link ExtendedIterator}s.
      *
-     * @param base   {@link ExtendedIterator} with elements of type {@link F}
-     * @param mapper {@link Function} map-function with Object of type of {@link F} (or any super type) as an input,
-     *               and an {@link Iterator} of type {@link T} (or any extended type) as an output
+     * @param base   {@link ExtendedIterator} with elements of type {@code F}
+     * @param mapper {@link Function} map-function with Object of type of {@code F} (or any super type) as an input,
+     *               and an {@link Iterator} of type {@code T} (or any extended type) as an output
      * @param <F>    the element type of the base iterator (from)
      * @param <T>    the element type of the new iterator (to)
-     * @return new {@link ExtendedIterator} of type {@link F}
+     * @return new {@link ExtendedIterator} of type {@code F}
      */
     @SuppressWarnings("unchecked")
     public static <T, F> ExtendedIterator<T> flatMap(ExtendedIterator<F> base,
@@ -207,7 +207,7 @@ public class Iterators {
      *
      * @param iterators Array of iterators
      * @param <X>       the type of iterator elements
-     * @return all input elements as a single {@link ExtendedIterator} of type {@link X}
+     * @return all input elements as a single {@link ExtendedIterator} of type {@code X}
      * @see Iterators#concat(ExtendedIterator, ExtendedIterator)
      */
     @SafeVarargs
@@ -224,7 +224,7 @@ public class Iterators {
      * that match the given predicate.
      * A functional equivalent of {@link Stream#filter(Predicate)}, but for {@link ExtendedIterator}s.
      *
-     * @param iterator  {@link ExtendedIterator} with elements of type {@link X}
+     * @param iterator  {@link ExtendedIterator} with elements of type {@code X}
      * @param predicate {@link Predicate} to apply to elements of the iterator
      * @param <X>       the element type of the input and output iterators
      * @return a new iterator
@@ -240,10 +240,10 @@ public class Iterators {
      * on each element as elements are consumed from the resulting iterator.
      * A functional equivalent of {@link Stream#peek(Consumer)}, but for {@link ExtendedIterator}s.
      *
-     * @param base   {@link ExtendedIterator} with elements of type {@link X}
+     * @param base   {@link ExtendedIterator} with elements of type {@code X}
      * @param action {@link Consumer} action
      * @param <X>    the element type of the input and output iterators
-     * @return new {@link ExtendedIterator} of type {@link X}
+     * @return new {@link ExtendedIterator} of type {@code X}
      */
     public static <X> ExtendedIterator<X> peek(ExtendedIterator<X> base, Consumer<? super X> action) {
         return base.mapWith(x -> {
@@ -258,9 +258,9 @@ public class Iterators {
      * A functional equivalent of {@link Stream#distinct()}, but for {@link ExtendedIterator}s.
      * Warning: the result is temporary stored in memory!
      *
-     * @param base {@link ExtendedIterator} with elements of type {@link X}
+     * @param base {@link ExtendedIterator} with elements of type {@code X}
      * @param <X>  the element type of the input and output iterators
-     * @return new {@link ExtendedIterator} of type {@link X} without duplicates
+     * @return new {@link ExtendedIterator} of type {@code X} without duplicates
      */
     public static <X> ExtendedIterator<X> distinct(ExtendedIterator<X> base) {
         return base.filterKeep(new FilterUnique<>());
@@ -270,7 +270,7 @@ public class Iterators {
      * Returns whether any elements of the given iterator match the provided predicate.
      * A functional equivalent of {@link Stream#anyMatch(Predicate)}, but for {@link Iterator}s.
      *
-     * @param iterator  {@link Iterator} with elements of type {@link X}
+     * @param iterator  {@link Iterator} with elements of type {@code X}
      * @param predicate {@link Predicate} to apply to elements of the iterator
      * @param <X>       the element type of the iterator
      * @return {@code true} if any elements of the stream match the provided predicate, otherwise {@code false}
@@ -293,7 +293,7 @@ public class Iterators {
      * Returns whether all elements of the given iterator match the provided predicate.
      * A functional equivalent of {@link Stream#allMatch(Predicate)}, but for {@link Iterator}s.
      *
-     * @param iterator  {@link Iterator} with elements of type {@link X}
+     * @param iterator  {@link Iterator} with elements of type {@code X}
      * @param predicate {@link Predicate} to apply to elements of the iterator
      * @param <X>       the element type of the iterator
      * @return {@code true} if either all elements of the iterator match the provided predicate
@@ -317,7 +317,7 @@ public class Iterators {
      * Returns whether no elements of the given iterator match the provided predicate.
      * A functional equivalent of {@link Stream#noneMatch(Predicate)}, but for {@link Iterator}s.
      *
-     * @param iterator  {@link Iterator} with elements of type {@link X}
+     * @param iterator  {@link Iterator} with elements of type {@code X}
      * @param predicate {@link Predicate} to apply to elements of the iterator
      * @param <X>       the element type of the iterator
      * @return {@code true} if either no elements of the iterator match the provided predicate
@@ -337,7 +337,7 @@ public class Iterators {
      *
      * @param iterator {@link Iterator}, not {@code null}
      * @param <X>      the element type of the iterator
-     * @return {@link Optional} of {@link X}
+     * @return {@link Optional} of {@code X}
      * @throws NullPointerException if the element selected is {@code null}
      */
     public static <X> Optional<X> findFirst(Iterator<X> iterator) {
@@ -427,7 +427,7 @@ public class Iterators {
      * On finish iteration, the iterator will be closed.
      *
      * @param iterator {@link Iterator}, not {@code null}
-     * @param action   {@link Consumer} accepting {@link X}
+     * @param action   {@link Consumer} accepting {@code X}
      * @param <X>      any
      */
     public static <X> void forEach(Iterator<X> iterator, Consumer<X> action) {
@@ -447,9 +447,9 @@ public class Iterators {
      *
      * @param <X>    the element type of the iterator, not {@code null}
      * @param <C>    the {@code Collection} type, not {@code null}
-     * @param source the {@code Iterator} with elements of type {@link X}
-     * @param target the collection of type {@link C}
-     * @return {@link C}, the same instance as specified
+     * @param source the {@code Iterator} with elements of type {@code X}
+     * @param target the collection of type {@code C}
+     * @return {@code C}, the same instance as specified
      */
     public static <X, C extends Collection<X>> C addAll(Iterator<? extends X> source, C target) {
         if (source instanceof NullIterator) {
@@ -491,7 +491,7 @@ public class Iterators {
     }
 
     /**
-     * Returns a {@code Map} (of the type of {@link M})
+     * Returns a {@code Map} (of the type of {@code M})
      * whose keys and values are the result of applying the provided mapping functions to the input elements.
      * A functional equivalent of {@code stream.collect(Collectors.toMap(...))}, but for plain {@link Iterator}s.
      * This method makes no guarantees about synchronization or atomicity properties of it.
@@ -540,7 +540,7 @@ public class Iterators {
     /**
      * Creates a new {@link ExtendedIterator Extended Iterator}} containing the specified elements.
      *
-     * @param members Array of elements of the type {@link X}
+     * @param members Array of elements of the type {@code X}
      * @param <X>     the element type of the new iterator
      * @return a fresh {@link ExtendedIterator} instance
      */
@@ -562,7 +562,7 @@ public class Iterators {
     /**
      * Creates a new {@link ExtendedIterator Extended Iterator}} containing a single specified element.
      *
-     * @param item - an object of type {@link X}
+     * @param item - an object of type {@code X}
      * @param <X>  the element type of the new iterator
      * @return a fresh {@link ExtendedIterator} instance
      */
@@ -573,7 +573,7 @@ public class Iterators {
     /**
      * Creates a new {@link ExtendedIterator Extended Iterator}} over all elements of the specified collection.
      *
-     * @param members {@code Collection} of elements of the type {@link X}
+     * @param members {@code Collection} of elements of the type {@code X}
      * @param <X>     the element type of the new iterator
      * @return a fresh {@link ExtendedIterator} instance
      */

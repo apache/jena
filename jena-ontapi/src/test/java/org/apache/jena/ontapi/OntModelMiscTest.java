@@ -24,12 +24,15 @@ import org.apache.jena.ontapi.impl.GraphListenerBase;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.OWL2;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,4 +71,32 @@ public class OntModelMiscTest {
         UnionGraph ug = (UnionGraph) m.getGraph();
         Assertions.assertEquals(0L, ug.superGraphs().count());
     }
+
+    @Test
+    public void testWriteAll() {
+        OntModel a = OntModelFactory.createModel();
+        a.createOntClass("A");
+        OntModel b = OntModelFactory.createModel().setID("http://ont#B").getModel();
+        b.createOntClass("B");
+        a.addImport(b);
+
+        ByteArrayOutputStream res1 = new ByteArrayOutputStream();
+        a.writeAll(res1, "ttl");
+        Model c = ModelFactory.createDefaultModel();
+        c.read(new ByteArrayInputStream(res1.toByteArray()), "http://ex1#", "ttl");
+
+        Assertions.assertEquals(5, c.size());
+        Assertions.assertTrue(c.contains(c.createResource("http://ex1/A"), RDF.type, OWL2.Class));
+        Assertions.assertTrue(c.contains(c.createResource("http://ex1/B"), RDF.type, OWL2.Class));
+
+        ByteArrayOutputStream res2 = new ByteArrayOutputStream();
+        a.writeAll(res2, "ttl", "http://ex2#");
+        Model d = ModelFactory.createDefaultModel();
+        d.read(new ByteArrayInputStream(res2.toByteArray()), "http://ex1#", "ttl");
+
+        Assertions.assertEquals(5, d.size());
+        Assertions.assertTrue(d.contains(d.createResource("http://ex2/A"), RDF.type, OWL2.Class));
+        Assertions.assertTrue(d.contains(d.createResource("http://ex2/B"), RDF.type, OWL2.Class));
+    }
+
 }

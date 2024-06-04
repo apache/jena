@@ -48,6 +48,7 @@ import java.util.stream.Collectors;
  * {@link OntRelationalProperty},
  * {@link OntAnnotationProperty}.
  */
+@SuppressWarnings("javadoc")
 public class OntPropertyTest {
 
     @Test
@@ -109,36 +110,6 @@ public class OntPropertyTest {
         Assertions.assertEquals(0, ac.subProperties(true).count());
         Assertions.assertEquals(3, ac.superProperties(false).count());
         Assertions.assertEquals(3, m.getRDFSComment().subProperties(false).count());
-    }
-
-    @Test
-    public void testAnnotationPropertyDomainsAndRanges() {
-        OntModel m = OntModelFactory.createModel().setNsPrefixes(OntModelFactory.STANDARD);
-        OntAnnotationProperty p = m.createAnnotationProperty("A");
-        Assertions.assertNotNull(p.addRangeStatement(m.getRDFSComment()));
-        Assertions.assertNotNull(p.addDomainStatement(m.getRDFSComment()));
-        Assertions.assertSame(p, p.addDomain(m.getOWLThing()).addRange(m.getOWLNothing()).addDomain(m.getRDFSLabel()));
-        Assertions.assertEquals(2, p.ranges().count());
-        Assertions.assertEquals(3, p.domains().count());
-
-        Assertions.assertSame(p, p.removeDomain(m.getOWLThing()).removeRange(m.getRDFSComment()));
-        Assertions.assertEquals(1, p.ranges().count());
-        Assertions.assertEquals(2, p.domains().count());
-    }
-
-    @Test
-    public void testAnnotationSuperProperties() {
-        OntModel m = OntModelFactory.createModel().setNsPrefixes(OntModelFactory.STANDARD);
-        OntAnnotationProperty p = m.createAnnotationProperty("A");
-        Assertions.assertNotNull(p.addSubPropertyOfStatement(m.getRDFSComment()));
-        Assertions.assertSame(p, p.addSuperProperty(m.getRDFSLabel())
-                .addSuperProperty(m.getAnnotationProperty(RDFS.seeAlso)));
-        Assertions.assertEquals(3, p.superProperties().count());
-
-        Assertions.assertSame(p, p.removeSuperProperty(m.getOWLThing()).removeSuperProperty(m.getRDFSComment()));
-        Assertions.assertEquals(2, p.superProperties().count());
-        p.removeSuperProperty(null);
-        Assertions.assertEquals(0, p.superProperties().count());
     }
 
     @Test

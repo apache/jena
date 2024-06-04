@@ -93,7 +93,7 @@ public interface OntVocabulary {
      *
      * @param uri a URI-{@link Resource}, not {@code null}
      * @param <X> either {@link Resource} or {@link Property}
-     * @return a {@code Set} of {@link X}s, not {@code null} but possibly empty
+     * @return a {@code Set} of {@code X}s, not {@code null} but possibly empty
      */
     @SuppressWarnings("unchecked")
     default <X extends Resource> Set<X> get(Resource uri) {

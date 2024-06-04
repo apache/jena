@@ -21,10 +21,12 @@ package org.apache.jena.ontapi;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.model.OntObjectProperty;
+import org.apache.jena.vocabulary.RDFS;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -63,6 +65,25 @@ public class OntObjectPropertyTest {
         Assertions.assertEquals(2, p1.superProperties().count());
         p1.removeSuperProperty(null);
         Assertions.assertEquals(0, p1.superProperties().count());
+    }
+
+    @Test
+    public void testObjectSubProperties() {
+        OntModel m = OntModelFactory.createModel();
+
+        OntObjectProperty p1 = m.createObjectProperty("p1");
+        OntObjectProperty p2 = m.createObjectProperty("p2");
+        Assertions.assertSame(p1, p1.addSubProperty(p2));
+        Assertions.assertEquals(List.of(p2), p1.subProperties().toList());
+        Assertions.assertEquals(List.of(), p1.superProperties().toList());
+        m.statements(p2, RDFS.subPropertyOf, p1).toList().get(0).addAnnotation(m.getRDFSComment(), "xxx");
+        Assertions.assertEquals(8, m.size());
+
+        Assertions.assertSame(p1, p1.removeSubProperty(p2));
+        Assertions.assertEquals(List.of(), p1.subProperties().toList());
+        Assertions.assertEquals(List.of(), p1.superProperties().toList());
+
+        Assertions.assertEquals(2, m.size());
     }
 
     @Test

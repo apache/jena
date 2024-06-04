@@ -25,15 +25,35 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.cmd.CmdException;
+import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
+import org.apache.jena.fuseki.system.FusekiLogging;
+import org.apache.jena.riot.SysRIOT;
 import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * NOTE: we will randomise the port (--port=0) on all happy paths in order to avoid conflict with existing runs.
  */
 public class TestFusekiMainCmdArguments {
+
+    private static String level = null;
+
+    @BeforeClass public static void beforeClass() {
+        // This is not reset by each running server.
+        FusekiLogging.setLogging();
+        level = LogCtl.getLevel(Fuseki.serverLog);
+        LogCtl.setLevel(Fuseki.serverLog, "WARN");
+    }
+
+    @AfterClass public static void afterClass() {
+        if ( level != null )
+            LogCtl.setLevel(Fuseki.serverLog, level);
+    }
 
     private FusekiServer server = null;
     @After public void after() {
@@ -42,7 +62,7 @@ public class TestFusekiMainCmdArguments {
     }
 
     @Test
-    public void test_happy_empty() {
+    public void test_empty() {
         // given
         List<String> arguments = List.of("--port=0", "--empty", "/dataset");
         // when
@@ -52,13 +72,55 @@ public class TestFusekiMainCmdArguments {
     }
 
     @Test
-    public void test_happy_localhost() {
+    public void test_localhost() {
         // given
         List<String> arguments = List.of("--port=0", "--localhost", "--mem", "/dataset");
         // when
         buildServer(buildCmdLineArguments(arguments));
         // then
         assertNotNull(server);
+    }
+
+    @Test
+    public void test_contextpath_1() {
+        // given
+        List<String> arguments = List.of("--mem", "--contextpath=/ABC", "/path");
+        String expectedMessage = "port : bad port number: 'ERROR'";
+        // when
+        buildServer(buildCmdLineArguments(arguments));
+        // then
+        assertNotNull(server);
+    }
+
+    @Test
+    public void test_contextpath_2() {
+        // given
+        List<String> arguments = List.of("--mem", "--contextpath=ABC", "/path");
+        String expectedMessage = "port : bad port number: 'ERROR'";
+        // when
+        buildServer(buildCmdLineArguments(arguments));
+        // then
+        assertNotNull(server);
+    }
+
+    @Test
+    public void test_contextpath_3() {
+        // given
+        List<String> arguments = List.of("--mem", "--contextpath=/", "/path");
+        String expectedMessage = "port : bad port number: 'ERROR'";
+        // when
+        buildServer(buildCmdLineArguments(arguments));
+        // then
+        assertNotNull(server);
+    }
+
+    @Test
+    public void test_error_contextpath() {
+        // given
+        List<String> arguments = List.of("--mem", "--contextpath=ABC/", "/path");
+        String expectedMessage = "Path base must not end with \"/\": 'ABC/'";
+        // when, then
+        testForCmdException(arguments, expectedMessage);
     }
 
     @Test
@@ -225,7 +287,6 @@ public class TestFusekiMainCmdArguments {
         testForCmdException(arguments, expectedMessage);
     }
 
-
     @Test
     public void test_error_argConfigFile_MissingFile() {
         // given
@@ -251,7 +312,9 @@ public class TestFusekiMainCmdArguments {
         List<String> arguments = List.of("--file=testing/Config/invalid.ttl", "/dataset");
         String expectedMessage = "Failed to load file: testing/Config/invalid.ttl";
         // when, then
-        testForCmdException(arguments, expectedMessage);
+        LogCtl.withLevel(SysRIOT.getLogger(), "fatal",
+                         ()-> testForCmdException(arguments, expectedMessage)
+                         );
     }
 
     @Test

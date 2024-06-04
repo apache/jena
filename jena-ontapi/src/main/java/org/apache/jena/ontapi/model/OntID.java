@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  * from the main {@link UnionGraph Union Graph}.
  * Similar, calling the method {@link #addImport(String)} simply adds the corresponding triple to the base graph.
  *
- * @see <a href='https://www.w3.org/TR/owl-syntax/#Ontology_IRI_and_Version_IRI'>3.1 Ontology IRI and Version IRI</a>
+ * @see <a href="https://www.w3.org/TR/owl-syntax/#Ontology_IRI_and_Version_IRI">3.1 Ontology IRI and Version IRI</a>
  */
 public interface OntID extends OntObject {
 
@@ -99,7 +99,7 @@ public interface OntID extends OntObject {
      * According to the specification, a version IRI is primary.
      *
      * @return String or {@code null}
-     * @see <a href='https://www.w3.org/TR/owl2-syntax/#Ontology_Documents'>3.2 Ontology Documents</a>
+     * @see <a href="https://www.w3.org/TR/owl2-syntax/#Ontology_Documents">3.2 Ontology Documents</a>
      */
     default String getImportsIRI() {
         String res = getVersionIRI();

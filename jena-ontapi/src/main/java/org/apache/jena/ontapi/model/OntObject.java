@@ -169,7 +169,7 @@ public interface OntObject extends OntResource {
      * @param predicate {@link Property} predicate, can be {@code null} for wildcard searching
      * @param type      Interface to find and cast
      * @param <O>       a class-type of rdf-node
-     * @return {@code Stream} of {@link RDFNode RDF Node}s of the type {@link O}
+     * @return {@code Stream} of {@link RDFNode RDF Node}s of the type {@code O}
      */
     <O extends RDFNode> Stream<O> objects(Property predicate, Class<O> type);
 

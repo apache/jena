@@ -25,7 +25,6 @@ import java.util.Collection;
 
 /**
  * A technical interface to generate {@link OntDisjoint Disjoint Resource}s.
- * Created by @szz on 14.05.2019.
  */
 interface CreateDisjoint {
 
@@ -39,7 +38,7 @@ interface CreateDisjoint {
      *
      * @param classes {@code Collection} of {@link OntClass Class Expression}s without {@code null}-elements
      * @return {@link OntDisjoint.Classes}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Disjoint_Classes'>9.1.3 Disjoint Classes</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Disjoint_Classes">9.1.3 Disjoint Classes</a>
      */
     OntDisjoint.Classes createDisjointClasses(Collection<OntClass> classes);
 
@@ -55,7 +54,7 @@ interface CreateDisjoint {
      *
      * @param individuals {@code Collection} of {@link OntIndividual Individual}s without {@code null}-elements
      * @return {@link OntDisjoint.Individuals}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Individual_Inequality'>9.6.2 Individual Inequality </a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Individual_Inequality">9.6.2 Individual Inequality </a>
      */
     OntDisjoint.Individuals createDifferentIndividuals(Collection<OntIndividual> individuals);
 
@@ -69,7 +68,7 @@ interface CreateDisjoint {
      *
      * @param properties {@code Collection} of {@link OntObjectProperty object property expression}s without {@code null}-elements
      * @return {@link OntDisjoint.ObjectProperties}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Disjoint_Object_Properties'>9.2.3 Disjoint Object Properties</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Disjoint_Object_Properties">9.2.3 Disjoint Object Properties</a>
      */
     OntDisjoint.ObjectProperties createDisjointObjectProperties(Collection<OntObjectProperty> properties);
 
@@ -83,7 +82,7 @@ interface CreateDisjoint {
      *
      * @param properties {@code Collection} of {@link OntDataProperty data properties} without {@code null}-elements
      * @return {@link OntDisjoint.DataProperties}
-     * @see <a href='https://www.w3.org/TR/owl-syntax/#Disjoint_Data_Properties'>9.3.3 Disjoint Data Properties</a>
+     * @see <a href="https://www.w3.org/TR/owl-syntax/#Disjoint_Data_Properties">9.3.3 Disjoint Data Properties</a>
      */
     OntDisjoint.DataProperties createDisjointDataProperties(Collection<OntDataProperty> properties);
 

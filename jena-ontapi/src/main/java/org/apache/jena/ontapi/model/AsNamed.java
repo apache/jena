@@ -30,7 +30,7 @@ interface AsNamed<E extends OntEntity> {
      * Represents this OWL expression as a named OWL entity if it is possible, otherwise throws an exception.
      * Effectively equivalent to the expression {@code this.as(Named.class)}.
      *
-     * @return {@link E}, never {@code null}
+     * @return {@code E}, never {@code null}
      * @throws org.apache.jena.enhanced.UnsupportedPolymorphismException if the expression is not named OWL entity
      * @see org.apache.jena.rdf.model.RDFNode#as(Class)
      */
