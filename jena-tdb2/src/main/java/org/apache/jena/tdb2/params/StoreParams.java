@@ -56,6 +56,7 @@ public class StoreParams implements IndexParams, BlockParams, StoreParamsDynamic
     /*package*/ final Item<Integer>            prefixNode2NodeIdCacheSize;
     /*package*/ final Item<Integer>            prefixNodeId2NodeCacheSize;
     /*package*/ final Item<Integer>            prefixNodeMissCacheSize;
+    /*package*/ final Item<Double>             nodeCacheInitialCapacityFactor;
 
     /*
      * These are items affect database layout and
@@ -112,6 +113,8 @@ public class StoreParams implements IndexParams, BlockParams, StoreParamsDynamic
                             Item<Integer> prefixNode2NodeIdCacheSize, Item<Integer> prefixNodeId2NodeCacheSize,
                             Item<Integer> prefixNodeMissCacheSize,
 
+                            Item<Double> nodeCacheInitialCapacityFactor,
+
                             Item<String> nodeTableBaseName,
                             Item<String> primaryIndexTriples, Item<String[]> tripleIndexes,
                             Item<String> primaryIndexQuads, Item<String[]> quadIndexes,
@@ -131,6 +134,8 @@ public class StoreParams implements IndexParams, BlockParams, StoreParamsDynamic
         this.prefixNode2NodeIdCacheSize   = prefixNode2NodeIdCacheSize;
         this.prefixNodeId2NodeCacheSize   = prefixNodeId2NodeCacheSize;
         this.prefixNodeMissCacheSize      = prefixNodeMissCacheSize;
+
+        this.nodeCacheInitialCapacityFactor = nodeCacheInitialCapacityFactor;
 
         this.nodeTableBaseName      = nodeTableBaseName;
 
@@ -269,6 +274,16 @@ public class StoreParams implements IndexParams, BlockParams, StoreParamsDynamic
         return NodeMissCacheSize.isSet;
     }
 
+    @Override
+    public Double getNodeCacheInitialCapacityFactor() {
+        return nodeCacheInitialCapacityFactor.value;
+    }
+
+    @Override
+    public boolean isSetNodeCacheInitialCapacityFactor() {
+        return nodeCacheInitialCapacityFactor.isSet;
+    }
+
     public String getNodeTableBaseName() {
         return nodeTableBaseName.value;
     }
@@ -324,6 +339,7 @@ public class StoreParams implements IndexParams, BlockParams, StoreParamsDynamic
         fmt(buff, "Node2NodeIdCacheSize", getNode2NodeIdCacheSize(), Node2NodeIdCacheSize.isSet);
         fmt(buff, "NodeId2NodeCacheSize", getNodeId2NodeCacheSize(), NodeId2NodeCacheSize.isSet);
         fmt(buff, "NodeMissCacheSize", getNodeMissCacheSize(), NodeMissCacheSize.isSet);
+        fmt(buff, "nodeCacheInitialCapacityFactor", getNodeCacheInitialCapacityFactor(), nodeCacheInitialCapacityFactor.isSet);
 
         fmt(buff, "nodeTableBaseName", getNodeTableBaseName(), nodeTableBaseName.isSet);
         fmt(buff, "primaryIndexTriples", getPrimaryIndexTriples(), primaryIndexTriples.isSet);
@@ -359,6 +375,13 @@ public class StoreParams implements IndexParams, BlockParams, StoreParamsDynamic
         buff.append(String.format("%-20s   %s%s\n", name, dftStr, value));
     }
 
+    private void fmt(StringBuilder buff, String name, double value, boolean isSet) {
+        String dftStr = "";
+        if ( ! isSet )
+            dftStr = "dft:";
+        buff.append(String.format("%-20s   %s%s\n", name, dftStr, value));
+    }
+
     /** Equality but ignore "isSet" */
     public static boolean sameValues(StoreParams params1, StoreParams params2) {
         if ( params1 == null && params2 == null )
@@ -380,6 +403,8 @@ public class StoreParams implements IndexParams, BlockParams, StoreParamsDynamic
         if ( !sameValues(params1.NodeId2NodeCacheSize, params2.NodeId2NodeCacheSize) )
             return false;
         if ( !sameValues(params1.NodeMissCacheSize, params2.NodeMissCacheSize) )
+            return false;
+        if ( !sameValues(params1.nodeCacheInitialCapacityFactor, params2.nodeCacheInitialCapacityFactor) )
             return false;
         if ( !sameValues(params1.nodeTableBaseName, params2.nodeTableBaseName) )
             return false;
@@ -411,6 +436,7 @@ public class StoreParams implements IndexParams, BlockParams, StoreParamsDynamic
         result = prime * result + ((Node2NodeIdCacheSize == null) ? 0 : Node2NodeIdCacheSize.hashCode());
         result = prime * result + ((NodeId2NodeCacheSize == null) ? 0 : NodeId2NodeCacheSize.hashCode());
         result = prime * result + ((NodeMissCacheSize == null) ? 0 : NodeMissCacheSize.hashCode());
+        result = prime * result + ((nodeCacheInitialCapacityFactor == null) ? 0 : nodeCacheInitialCapacityFactor.hashCode());
         result = prime * result + ((blockReadCacheSize == null) ? 0 : blockReadCacheSize.hashCode());
         result = prime * result + ((blockSize == null) ? 0 : blockSize.hashCode());
         result = prime * result + ((blockWriteCacheSize == null) ? 0 : blockWriteCacheSize.hashCode());
@@ -449,6 +475,11 @@ public class StoreParams implements IndexParams, BlockParams, StoreParamsDynamic
             if ( other.NodeMissCacheSize != null )
                 return false;
         } else if ( !NodeMissCacheSize.equals(other.NodeMissCacheSize) )
+            return false;
+        if ( nodeCacheInitialCapacityFactor == null ) {
+            if ( other.nodeCacheInitialCapacityFactor != null )
+                return false;
+        } else if ( !nodeCacheInitialCapacityFactor.equals(other.nodeCacheInitialCapacityFactor) )
             return false;
         if ( blockReadCacheSize == null ) {
             if ( other.blockReadCacheSize != null )

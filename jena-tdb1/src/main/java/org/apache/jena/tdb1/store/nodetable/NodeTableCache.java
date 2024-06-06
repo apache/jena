@@ -54,21 +54,24 @@ public class NodeTableCache implements NodeTable
         int idToNodeCacheSize = params.getNodeId2NodeCacheSize() ;
         if ( nodeToIdCacheSize <= 0 && idToNodeCacheSize <= 0 )
             return nodeTable ;
-        return new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, params.getNodeMissCacheSize()) ;
+        return new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, params.getNodeMissCacheSize(),
+                params.getNodeCacheInitialCapacityFactor()) ;
     }
 
-    public static NodeTable create(NodeTable nodeTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize) {
+    public static NodeTable create(NodeTable nodeTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize,
+                                   double nodeCacheInitialCapacityFactor) {
         if ( nodeToIdCacheSize <= 0 && idToNodeCacheSize <= 0 )
             return nodeTable ;
-        return new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, nodeMissesCacheSize) ;
+        return new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, nodeMissesCacheSize, nodeCacheInitialCapacityFactor) ;
     }
 
-    private NodeTableCache(NodeTable baseTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize) {
+    private NodeTableCache(NodeTable baseTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize,
+                           double nodeCacheInitialCapacityFactor) {
         this.baseTable = baseTable ;
         if ( nodeToIdCacheSize > 0 )
-            node2id_Cache = CacheFactory.createCache(nodeToIdCacheSize) ;
+            node2id_Cache = CacheFactory.createCache(nodeToIdCacheSize, nodeCacheInitialCapacityFactor) ;
         if ( idToNodeCacheSize > 0 )
-            id2node_Cache = CacheFactory.createCache(idToNodeCacheSize) ;
+            id2node_Cache = CacheFactory.createCache(idToNodeCacheSize, nodeCacheInitialCapacityFactor) ;
         if ( nodeMissesCacheSize > 0 )
             notPresent = CacheFactory.createCacheSet(nodeMissesCacheSize) ;
     }

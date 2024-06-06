@@ -45,6 +45,18 @@ public class CacheFactory {
         return new CacheCaffeine<>(maxSize, dropHandler) ;
     }
 
+    public static <Key, Value> Cache<Key, Value> createCache(int maxSize, double initialCapacityFactor) {
+        return new CacheCaffeine<>(maxSize, null, initialCapacityFactor) ;
+    }
+
+    /**
+     * Create a cache which has space for up to a certain number of objects and with a configurable initial capacity.
+     */
+    public static <Key, Value> Cache<Key, Value> createCache(int maxSize, BiConsumer<Key, Value> dropHandler,
+                                                             double initialCapacityFactor) {
+        return new CacheCaffeine<>(maxSize, dropHandler, initialCapacityFactor) ;
+    }
+
     /** Wrap an existing Caffeine cache */
     public static <Key, Value> Cache<Key, Value> wrap(com.github.benmanes.caffeine.cache.Cache<Key,Value> caffeine) {
         // Use a configured and built Caffeine cache with this API.

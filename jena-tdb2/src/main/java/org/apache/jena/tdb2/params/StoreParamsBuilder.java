@@ -83,6 +83,8 @@ public class StoreParamsBuilder {
 
     private Item<Integer>            prefixNodeMissCacheSize     = new Item<>(StoreParamsConst.NodeMissCacheSize, false);
 
+    private Item<Double>             nodeCacheInitialCapacityFactor = new Item<>(StoreParamsConst.NodeCacheInitialCapacityFactor, false);
+
     /** Database layout - ignored after a database is created */
 
     private Item<Integer>            blockSize             = new Item<>(StoreParamsConst.blockSize, false);
@@ -150,6 +152,9 @@ public class StoreParamsBuilder {
         if ( additionalParams.isSetNodeMissCacheSize() )
             b.nodeMissCacheSize(additionalParams.getNodeMissCacheSize());
 
+        if ( additionalParams.isSetNodeCacheInitialCapacityFactor() )
+            b.nodeCacheInitialCapacityFactor(additionalParams.getNodeCacheInitialCapacityFactor());
+
         return b.build();
     }
 
@@ -171,6 +176,8 @@ public class StoreParamsBuilder {
         this.prefixNodeId2NodeCacheSize   = other.prefixNodeId2NodeCacheSize;
         this.prefixNodeMissCacheSize      = other.prefixNodeMissCacheSize;
 
+        this.nodeCacheInitialCapacityFactor = other.nodeCacheInitialCapacityFactor;
+
         this.nodeTableBaseName      = other.nodeTableBaseName;
 
         this.primaryIndexTriples    = other.primaryIndexTriples;
@@ -189,6 +196,7 @@ public class StoreParamsBuilder {
                  label, fileMode, blockSize, blockReadCacheSize, blockWriteCacheSize,
                  Node2NodeIdCacheSize, NodeId2NodeCacheSize, NodeMissCacheSize,
                  prefixNode2NodeIdCacheSize, prefixNodeId2NodeCacheSize, prefixNodeMissCacheSize,
+                 nodeCacheInitialCapacityFactor,
                  nodeTableBaseName,
                  primaryIndexTriples, tripleIndexes,
                  primaryIndexQuads, quadIndexes,
@@ -292,6 +300,15 @@ public class StoreParamsBuilder {
 
     public StoreParamsBuilder prefixNodeMissCacheSize(int prefixNodeMissCacheSize) {
         this.prefixNodeMissCacheSize = new Item<>(prefixNodeMissCacheSize, true);
+        return this;
+    }
+
+    public double getNodeCacheInitialCapacityFactor() {
+        return nodeCacheInitialCapacityFactor.value;
+    }
+
+    public StoreParamsBuilder nodeCacheInitialCapacityFactor(double nodeCacheInitialCapacityFactor) {
+        this.nodeCacheInitialCapacityFactor = new Item<>(nodeCacheInitialCapacityFactor, true);
         return this;
     }
 

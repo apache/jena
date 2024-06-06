@@ -297,7 +297,9 @@ public class TDB2StorageBuilder {
         int nodeToIdCacheSize   = isData ? params.getNode2NodeIdCacheSize() : params.getPrefixNode2NodeIdCacheSize();
         int idToNodeCacheSize   = isData ? params.getNodeId2NodeCacheSize() : params.getPrefixNodeId2NodeCacheSize();
         int missCacheSize       = isData ? params.getNodeMissCacheSize()    : params.getPrefixNodeMissCacheSize();
-        nodeTable = NodeTableCache.create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, missCacheSize);
+        double nodeCacheInitialCapacityFactor = params.getNodeCacheInitialCapacityFactor();
+        nodeTable = NodeTableCache.create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, missCacheSize,
+                nodeCacheInitialCapacityFactor);
         return nodeTable;
     }
 

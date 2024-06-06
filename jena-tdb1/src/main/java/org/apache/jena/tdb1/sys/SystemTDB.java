@@ -22,6 +22,7 @@ import java.io.FileNotFoundException ;
 import java.io.IOException ;
 import java.nio.ByteOrder ;
 import java.util.Properties ;
+import java.util.function.Function;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.PropertyUtils ;
@@ -174,6 +175,9 @@ public class SystemTDB
     /** Size of Node lookup miss cache. */
     public static final int NodeMissCacheSize       = 100 ;
 
+    /** Initial capacity factor for node caches. */
+    public static final double NodeCacheInitialCapacityFactor = doubleValue("NodeCacheInitialCapacityFactor", 0.25);
+
     /** Size of the delayed-write block cache (32 bit systems only) (per file) */
     public static final int BlockWriteCacheSize     = intValue("BlockWriteCacheSize", 2*1000) ;
 
@@ -281,6 +285,16 @@ public class SystemTDB
 
     private static int intValue(String name, int defaultValue)
     {
+        return value(name, defaultValue, Integer::parseInt);
+    }
+
+    private static double doubleValue(String name, double defaultValue)
+    {
+        return value(name, defaultValue, Double::parseDouble);
+    }
+
+    private static <T> T value(String name, T defaultValue, Function<String, T> parse)
+    {
         if ( name == null ) return defaultValue ;
         if ( name.length() == 0 ) throw new TDB1Exception("Empty string for value name") ;
 
@@ -291,7 +305,7 @@ public class SystemTDB
         if ( x == null )
             return defaultValue ;
         TDB1.logInfo.info("Set: "+name+" = "+x) ;
-        int v = Integer.parseInt(x) ;
+        T v = parse.apply(x) ;
         return v ;
     }
 
