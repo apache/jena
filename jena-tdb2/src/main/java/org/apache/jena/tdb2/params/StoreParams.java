@@ -251,27 +251,27 @@ public class StoreParams implements IndexParams, BlockParams, StoreParamsDynamic
 
     @Override
     public boolean isSetPrefixNodeId2NodeCacheSize() {
-        return NodeId2NodeCacheSize.isSet;
+        return prefixNodeId2NodeCacheSize.isSet;
     }
 
     @Override
     public boolean isSetPrefixNode2NodeIdCacheSize() {
-        return Node2NodeIdCacheSize.isSet;
+        return prefixNode2NodeIdCacheSize.isSet;
     }
 
     @Override
     public Integer getPrefixNodeId2NodeCacheSize() {
-        return NodeId2NodeCacheSize.value;
+        return prefixNodeId2NodeCacheSize.value;
     }
 
     @Override
     public Integer getPrefixNodeMissCacheSize() {
-        return NodeMissCacheSize.value;
+        return prefixNodeMissCacheSize.value;
     }
 
     @Override
     public boolean isSetPrefixNodeMissCacheSize() {
-        return NodeMissCacheSize.isSet;
+        return prefixNodeMissCacheSize.isSet;
     }
 
     @Override
@@ -339,6 +339,9 @@ public class StoreParams implements IndexParams, BlockParams, StoreParamsDynamic
         fmt(buff, "Node2NodeIdCacheSize", getNode2NodeIdCacheSize(), Node2NodeIdCacheSize.isSet);
         fmt(buff, "NodeId2NodeCacheSize", getNodeId2NodeCacheSize(), NodeId2NodeCacheSize.isSet);
         fmt(buff, "NodeMissCacheSize", getNodeMissCacheSize(), NodeMissCacheSize.isSet);
+        fmt(buff, "prefixNode2NodeIdCacheSize", getPrefixNode2NodeIdCacheSize(), prefixNode2NodeIdCacheSize.isSet);
+        fmt(buff, "prefixNodeId2NodeCacheSize", getPrefixNodeId2NodeCacheSize(), prefixNodeId2NodeCacheSize.isSet);
+        fmt(buff, "prefixNodeMissCacheSize", getPrefixNodeMissCacheSize(), prefixNodeMissCacheSize.isSet);
         fmt(buff, "nodeCacheInitialCapacityFactor", getNodeCacheInitialCapacityFactor(), nodeCacheInitialCapacityFactor.isSet);
 
         fmt(buff, "nodeTableBaseName", getNodeTableBaseName(), nodeTableBaseName.isSet);
@@ -404,6 +407,12 @@ public class StoreParams implements IndexParams, BlockParams, StoreParamsDynamic
             return false;
         if ( !sameValues(params1.NodeMissCacheSize, params2.NodeMissCacheSize) )
             return false;
+        if ( !sameValues(params1.prefixNode2NodeIdCacheSize, params2.prefixNode2NodeIdCacheSize) )
+            return false;
+        if ( !sameValues(params1.prefixNodeId2NodeCacheSize, params2.prefixNodeId2NodeCacheSize) )
+            return false;
+        if ( !sameValues(params1.prefixNodeMissCacheSize, params2.prefixNodeMissCacheSize) )
+            return false;
         if ( !sameValues(params1.nodeCacheInitialCapacityFactor, params2.nodeCacheInitialCapacityFactor) )
             return false;
         if ( !sameValues(params1.nodeTableBaseName, params2.nodeTableBaseName) )
@@ -436,6 +445,9 @@ public class StoreParams implements IndexParams, BlockParams, StoreParamsDynamic
         result = prime * result + ((Node2NodeIdCacheSize == null) ? 0 : Node2NodeIdCacheSize.hashCode());
         result = prime * result + ((NodeId2NodeCacheSize == null) ? 0 : NodeId2NodeCacheSize.hashCode());
         result = prime * result + ((NodeMissCacheSize == null) ? 0 : NodeMissCacheSize.hashCode());
+        result = prime * result + ((prefixNode2NodeIdCacheSize == null) ? 0 : prefixNode2NodeIdCacheSize.hashCode());
+        result = prime * result + ((prefixNodeId2NodeCacheSize == null) ? 0 : prefixNodeId2NodeCacheSize.hashCode());
+        result = prime * result + ((prefixNodeMissCacheSize == null) ? 0 : prefixNodeMissCacheSize.hashCode());
         result = prime * result + ((nodeCacheInitialCapacityFactor == null) ? 0 : nodeCacheInitialCapacityFactor.hashCode());
         result = prime * result + ((blockReadCacheSize == null) ? 0 : blockReadCacheSize.hashCode());
         result = prime * result + ((blockSize == null) ? 0 : blockSize.hashCode());
@@ -475,6 +487,21 @@ public class StoreParams implements IndexParams, BlockParams, StoreParamsDynamic
             if ( other.NodeMissCacheSize != null )
                 return false;
         } else if ( !NodeMissCacheSize.equals(other.NodeMissCacheSize) )
+            return false;
+        if ( prefixNode2NodeIdCacheSize == null ) {
+            if ( other.prefixNode2NodeIdCacheSize != null )
+                return false;
+        } else if ( !prefixNode2NodeIdCacheSize.equals(other.prefixNode2NodeIdCacheSize) )
+            return false;
+        if ( prefixNodeId2NodeCacheSize == null ) {
+            if ( other.prefixNodeId2NodeCacheSize != null )
+                return false;
+        } else if ( !prefixNodeId2NodeCacheSize.equals(other.prefixNodeId2NodeCacheSize) )
+            return false;
+        if ( prefixNodeMissCacheSize == null ) {
+            if ( other.prefixNodeMissCacheSize != null )
+                return false;
+        } else if ( !prefixNodeMissCacheSize.equals(other.prefixNodeMissCacheSize) )
             return false;
         if ( nodeCacheInitialCapacityFactor == null ) {
             if ( other.nodeCacheInitialCapacityFactor != null )
