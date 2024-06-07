@@ -789,8 +789,10 @@ public class Test_schemagen
 
             if (sjc != null && jcRun != null) {
                 // build the args list for javac
-                String[] args = new String[] {"-classpath", getClassPath( tmpDir ), "-d", tmpDir.getPath(), srcFile.getPath()};
-
+                String[] args = new String[] {"-classpath", getClassPath( tmpDir ),
+                                              "-d", tmpDir.getPath(), srcFile.getPath(),
+                                              // Otherwise the build has warnings (Java21)
+                                              "-proc:none" };
                 int success = (Integer) jcRun.invoke( sjc, null, null, null, args );
                 assertEquals( "Errors reported from compilation of schemagen output", 0, success );
             }
