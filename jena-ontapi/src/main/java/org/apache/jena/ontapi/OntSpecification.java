@@ -145,7 +145,7 @@ public class OntSpecification {
      *
      * @see org.apache.jena.ontology.OntModelSpec#OWL_DL_MEM_RDFS_INF
      */
-    public static final OntSpecification OWL2_DL_MEM_BUILTIN_INF = new OntSpecification(
+    public static final OntSpecification OWL2_DL_MEM_BUILTIN_RDFS_INF = new OntSpecification(
             OntPersonalities.OWL2_ONT_PERSONALITY()
                     .setBuiltins(OntPersonalities.OWL2_FULL_BUILTINS)
                     .setReserved(OntPersonalities.OWL2_RESERVED)

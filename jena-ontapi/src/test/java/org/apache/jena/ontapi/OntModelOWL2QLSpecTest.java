@@ -218,7 +218,7 @@ public class OntModelOWL2QLSpecTest {
         OntObjectProperty op = m.createObjectProperty("p");
         OntDataProperty dp = m.createDataProperty("d");
 
-        OntClass c0 = m.createOntClass("c");
+        OntClass c0 = m.createOntClass("c0");
         OntClass c1 = m.createDataSomeValuesFrom(dp, m.getDatatype(XSD.xstring.getURI()));
         OntClass c2 = m.createObjectSomeValuesFrom(op, c0);
         OntClass c3 = m.createObjectSomeValuesFrom(op, m.getOWLThing());
@@ -226,6 +226,7 @@ public class OntModelOWL2QLSpecTest {
         OntClass c5 = m.createObjectComplementOf(c1);
 
         c0.addProperty(RDFS.subClassOf, c4);
+        c4.addProperty(RDFS.subClassOf, c1);
         c4.addProperty(RDFS.subClassOf, c5);
         c3.addProperty(RDFS.subClassOf, c0);
         c2.addProperty(RDFS.subClassOf, c0);
@@ -233,7 +234,7 @@ public class OntModelOWL2QLSpecTest {
         Assertions.assertEquals(List.of(c3), c0.subClasses().collect(Collectors.toList()));
         Assertions.assertEquals(List.of(c4), c0.superClasses().collect(Collectors.toList()));
         Assertions.assertEquals(List.of(c0), c4.subClasses().collect(Collectors.toList()));
-        Assertions.assertEquals(List.of(c5), c4.superClasses().collect(Collectors.toList()));
+        Assertions.assertEquals(List.of(), c4.superClasses().collect(Collectors.toList()));
         Assertions.assertEquals(List.of(), c5.subClasses().collect(Collectors.toList()));
 
         Assertions.assertThrows(OntJenaException.Unsupported.class, () -> c0.addSubClass(c2));

@@ -142,6 +142,11 @@ public class OntSimpleClassImpl extends OntObjectImpl implements OntClass {
     }
 
     @Override
+    public boolean hasSuperClass(OntClass clazz, boolean direct) {
+        return OntClassImpl.hasSuperClass(this, clazz, direct);
+    }
+
+    @Override
     public OntClass addDisjointClass(OntClass other) {
         OntClassImpl.addDisjoint(getModel(), this, other);
         return this;

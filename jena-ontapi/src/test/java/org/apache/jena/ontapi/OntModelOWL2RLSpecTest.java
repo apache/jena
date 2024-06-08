@@ -108,7 +108,7 @@ public class OntModelOWL2RLSpecTest {
         c1.addProperty(RDFS.subClassOf, c3);
 
         Assertions.assertEquals(0, c1.superClasses().count());
-        Assertions.assertEquals(List.of(c1), c3.subClasses().collect(Collectors.toList()));
+        Assertions.assertEquals(List.of(), c3.subClasses().collect(Collectors.toList()));
 
         c3.addProperty(RDFS.subClassOf, c2);
         Assertions.assertEquals(List.of(c2), c3.superClasses().collect(Collectors.toList()));

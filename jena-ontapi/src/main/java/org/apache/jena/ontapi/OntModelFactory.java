@@ -133,7 +133,7 @@ public class OntModelFactory {
      * @return {@link OntModel}
      */
     public static OntModel createModel(Graph graph) {
-        return createModel(graph, OntSpecification.OWL2_DL_MEM_BUILTIN_INF).setNsPrefixes(STANDARD);
+        return createModel(graph, OntSpecification.OWL2_DL_MEM_BUILTIN_RDFS_INF).setNsPrefixes(STANDARD);
     }
 
     /**
@@ -199,7 +199,7 @@ public class OntModelFactory {
     }
 
     /**
-     * Creates Ontology Model associated with {@link OntSpecification#OWL2_DL_MEM_BUILTIN_INF} spec.
+     * Creates Ontology Model associated with {@link OntSpecification#OWL2_DL_MEM_BUILTIN_RDFS_INF} spec.
      * The {@code repository} manages all the dependencies.
      * See {@link #createModel(Graph, OntSpecification, GraphRepository)}.
      *
@@ -211,7 +211,7 @@ public class OntModelFactory {
     public static OntModel createModel(String uri, GraphRepository repository) {
         return createModel(
                 createOntGraph(uri != null ? NodeFactory.createURI(uri) : NodeFactory.createBlankNode(), repository),
-                OntSpecification.OWL2_DL_MEM_BUILTIN_INF,
+                OntSpecification.OWL2_DL_MEM_BUILTIN_RDFS_INF,
                 repository
         ).setNsPrefixes(STANDARD);
     }

@@ -190,6 +190,34 @@ public interface OntProperty extends OntObject {
     }
 
     /**
+     * Answers {@code true}
+     * if the given property is a sub-property of this property.
+     * See {@link #subProperties(boolean)} for a full explanation of the direct parameter.
+     *
+     * @param property a {@link OntProperty} to test
+     * @param direct {@code boolean}; If true, only search the properties
+     *               that are directly adjacent to this property in the class hierarchy
+     * @return {@code boolean}
+     */
+    default boolean hasSubProperty(OntProperty property, boolean direct) {
+        return property.hasSuperProperty(this, direct);
+    }
+
+    /**
+     * Answers {@code true}
+     * if the given property is a super-property of this property.
+     * See {@link #superProperties(boolean)} for a full explanation of the direct parameter.
+     *
+     * @param property a {@link OntProperty} to test
+     * @param direct {@code boolean}; If true, only search the properties
+     *               that are directly adjacent to this property in the class hierarchy
+     * @return {@code boolean}
+     */
+    default boolean hasSuperProperty(OntProperty property, boolean direct) {
+        return equals(property) || superProperties(direct).anyMatch(property::equals);
+    }
+
+    /**
      * Adds the given property as super property returning a new statement to annotate.
      * The triple pattern is {@code $this rdfs:subPropertyOf $property}).
      *

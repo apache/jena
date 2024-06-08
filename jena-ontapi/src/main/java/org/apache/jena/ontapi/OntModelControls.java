@@ -52,7 +52,7 @@ public enum OntModelControls {
      * are to be inferred by the naked model itself using builtin algorithms.
      * Should not be used in conjunction with Reasoner.
      *
-     * @see OntSpecification#OWL2_DL_MEM_BUILTIN_INF
+     * @see OntSpecification#OWL2_DL_MEM_BUILTIN_RDFS_INF
      */
     USE_BUILTIN_HIERARCHY_SUPPORT,
     /**

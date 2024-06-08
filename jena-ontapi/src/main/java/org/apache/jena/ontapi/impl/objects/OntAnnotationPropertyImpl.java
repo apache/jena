@@ -22,6 +22,7 @@ import org.apache.jena.enhanced.EnhGraph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.ontapi.model.OntAnnotationProperty;
 import org.apache.jena.ontapi.model.OntClass;
+import org.apache.jena.ontapi.model.OntProperty;
 import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
@@ -81,6 +82,12 @@ public class OntAnnotationPropertyImpl extends OntPropertyImpl implements OntAnn
     @Override
     public Stream<OntClass> declaringClasses(boolean direct) {
         return declaringClasses(this, direct);
+    }
+
+    @Override
+    public boolean hasSuperProperty(OntProperty property, boolean direct) {
+        return property.canAs(OntAnnotationProperty.class) &&
+                OntPropertyImpl.hasSuperProperty(this, property.as(OntAnnotationProperty.class), OntAnnotationProperty.class, direct);
     }
 
     @Override

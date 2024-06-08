@@ -57,8 +57,13 @@ public final class HierarchySupport {
             Function<X, Stream<X>> listChildren,
             boolean direct,
             boolean useBuiltinHierarchySupport) {
-        // TODO: optimize
-        return treeNodes(root, listChildren, direct, useBuiltinHierarchySupport).anyMatch(test::equals);
+        if (direct) {
+            return hasDirectNode(root, test, useBuiltinHierarchySupport, listChildren);
+        }
+        if (useBuiltinHierarchySupport) {
+            return hasIndirectNode(root, test, listChildren);
+        }
+        return !root.equals(test) && listChildren.apply(root).anyMatch(test::equals);
     }
 
     /**
@@ -83,29 +88,54 @@ public final class HierarchySupport {
             return directNodesAsStream(root, useBuiltinHierarchySupport, listChildren);
         }
         if (useBuiltinHierarchySupport) {
-            return allTreeNodes(root, listChildren);
+            return indirectNodesAsStream(root, listChildren);
         }
         return listChildren.apply(root).filter(x -> !root.equals(x));
     }
 
     /**
      * For the given object returns a {@code Set} of objects the same type,
-     * that are its children which is determined by the operation {@code listChildren}.
+     * that are its (direct or indirect) children which is determined by the operation {@code listChildren}.
      *
      * @param root         {@code X}
      * @param listChildren a {@code Function} that returns {@code Iterator} for an object of type {@code X}
      * @param <X>          any subtype of {@link Resource}
      * @return {@code Set} of {@code X}, {@code root} is not included
      */
-    static <X extends Resource> Stream<X> allTreeNodes(X root, Function<X, Stream<X>> listChildren) {
+    static <X extends Resource> Stream<X> indirectNodesAsStream(X root, Function<X, Stream<X>> listChildren) {
         return Iterators.fromSet(() -> {
             Set<X> res = new HashSet<>();
-            Map<X, Set<X>> childrenNodesCache = new HashMap<>();
-            Function<X, Set<X>> getChildren = it -> getChildren(it, listChildren, childrenNodesCache);
+            Function<X, Set<X>> getChildren = it -> listChildren.apply(it).collect(Collectors.toSet());
             collectIndirect(root, getChildren, res);
             res.remove(root);
             return res;
         });
+    }
+
+    static <X extends Resource> boolean hasIndirectNode(X root, X test, Function<X, Stream<X>> listChildren) {
+        if (root.equals(test)) {
+            return false;
+        }
+        Set<X> seen = new HashSet<>();
+        Deque<X> queue = new ArrayDeque<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            X next = queue.removeFirst();
+            if (!seen.add(next)) {
+                continue;
+            }
+            try (Stream<X> children = listChildren.apply(next)) {
+                Iterator<X> it = children.iterator();
+                while (it.hasNext()) {
+                    X child = it.next();
+                    if (child.equals(test)) {
+                        return true;
+                    }
+                    queue.add(child);
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -158,12 +188,21 @@ public final class HierarchySupport {
         );
     }
 
+    public static <X extends Resource> boolean hasDirectNode(X object,
+                                                             X test,
+                                                             boolean useBuiltinHierarchySupport,
+                                                             Function<X, Stream<X>> listChildren) {
+        return useBuiltinHierarchySupport ?
+                hasDirectNodeWithBuiltinInf(object, test, listChildren) :
+                hasDirectNodeStandard(object, test, listChildren);
+    }
+
     public static <X extends Resource> Set<X> directNodesAsSetStandard(X root,
                                                                        Function<X, Stream<X>> listChildren) {
         Map<X, Set<X>> childrenNodesCache = new HashMap<>();
         Function<X, Set<X>> getChildren = it -> getChildren(it, listChildren, childrenNodesCache);
         return getChildren.apply(root).stream()
-                .filter(x -> !equivalent(x, root, getChildren) && !hasAnotherPath(x, root, getChildren))
+                .filter(it -> !equivalent(it, root, getChildren) && !hasAnotherPath(it, root, getChildren))
                 .collect(Collectors.toSet());
     }
 
@@ -176,6 +215,24 @@ public final class HierarchySupport {
                 .collect(Collectors.toSet());
     }
 
+    public static <X extends Resource> boolean hasDirectNodeStandard(X root,
+                                                                     X test,
+                                                                     Function<X, Stream<X>> listChildren) {
+        Map<X, Set<X>> childrenNodesCache = new HashMap<>();
+        Function<X, Set<X>> getChildren = it -> getChildren(it, listChildren, childrenNodesCache);
+        return getChildren.apply(root).stream()
+                .anyMatch(it -> test.equals(it) && !equivalent(it, root, getChildren) && !hasAnotherPath(it, root, getChildren));
+    }
+
+    public static <X extends Resource> boolean hasDirectNodeWithBuiltinInf(X root,
+                                                                           X test,
+                                                                           Function<X, Stream<X>> listChildren) {
+        Map<X, Node<X>> tree = collectTree(root, listChildren);
+        Node<X> theRoot = tree.get(root);
+        return theRoot.childrenWithEquivalents().anyMatch(it -> hasDirectNode(theRoot, it, test));
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private static <X extends Resource> boolean hasAnotherPath(X given,
                                                                X root,
                                                                Function<X, Set<X>> getChildren) {
@@ -192,19 +249,34 @@ public final class HierarchySupport {
         return getChildren.apply(right).contains(left) && getChildren.apply(left).contains(right);
     }
 
-    private static <X extends Resource> Stream<X> collectDirect(Node<X> rootNode, Node<X> it) {
-        Set<X> equivalents = it.equivalents();
+    private static <X extends Resource> Stream<X> collectDirect(Node<X> rootNode, Node<X> current) {
+        Set<X> equivalents = current.equivalents();
         if (!equivalents.contains(rootNode.node)) {
             Set<X> siblings = new HashSet<>(equivalents);
-            siblings.remove(it.node);
-            if (it.hasMoreThanOnePathTo(rootNode, siblings)) {
+            siblings.remove(current.node);
+            if (current.hasMoreThanOnePathTo(rootNode, siblings)) {
                 return Stream.empty();
             } else {
-                equivalents.add(it.node);
+                equivalents.add(current.node);
                 return equivalents.stream();
             }
         } else {
             return Stream.empty();
+        }
+    }
+
+    private static <X extends Resource> boolean hasDirectNode(Node<X> rootNode, Node<X> current, X test) {
+        Set<X> equivalents = current.equivalents();
+        if (!equivalents.contains(rootNode.node)) {
+            Set<X> siblings = new HashSet<>(equivalents);
+            siblings.remove(current.node);
+            if (current.hasMoreThanOnePathTo(rootNode, siblings)) {
+                return false;
+            } else {
+                return current.node.equals(test) || equivalents.contains(test);
+            }
+        } else {
+            return false;
         }
     }
 

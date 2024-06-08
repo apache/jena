@@ -1575,4 +1575,324 @@ public class OntClassSubClassesTest {
         Assertions.assertEquals(Set.of("C", "Nothing"), indirectB, "wrong indirect nodes for B");
         Assertions.assertEquals(Set.of("B", "Nothing"), indirectC, "wrong indirect nodes for C");
     }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_DL_MEM",
+            "OWL2_MEM",
+            "OWL2_EL_MEM",
+            "OWL2_QL_MEM",
+            "OWL2_RL_MEM",
+            "OWL1_DL_MEM",
+            "OWL1_MEM",
+            "OWL1_LITE_MEM",
+            "RDFS_MEM",
+    })
+    public void testHasSubClasses1a(TestSpec spec) {
+        //      A
+        //     / \
+        //    B   C
+        //   / \ / \
+        //  D   E   F
+        OntModel m = createClassesABCDEF(OntModelFactory.createModel(spec.inst));
+
+        OntClass A = m.getOntClass(NS + "A");
+        OntClass B = m.getOntClass(NS + "B");
+        OntClass C = m.getOntClass(NS + "C");
+        OntClass D = m.getOntClass(NS + "D");
+        OntClass E = m.getOntClass(NS + "E");
+        OntClass F = m.getOntClass(NS + "F");
+
+        Assertions.assertTrue(A.hasSubClass(A, false));
+        Assertions.assertTrue(A.hasSubClass(B, false));
+        Assertions.assertTrue(A.hasSubClass(C, false));
+        Assertions.assertFalse(A.hasSubClass(D, false));
+        Assertions.assertFalse(A.hasSubClass(E, false));
+        Assertions.assertFalse(A.hasSubClass(F, false));
+        Assertions.assertFalse(B.hasSubClass(A, false));
+        Assertions.assertTrue(B.hasSubClass(B, false));
+        Assertions.assertFalse(B.hasSubClass(C, false));
+        Assertions.assertTrue(B.hasSubClass(D, false));
+        Assertions.assertTrue(B.hasSubClass(E, false));
+        Assertions.assertFalse(B.hasSubClass(F, false));
+        Assertions.assertFalse(C.hasSubClass(A, false));
+        Assertions.assertFalse(C.hasSubClass(B, false));
+        Assertions.assertTrue(C.hasSubClass(C, false));
+        Assertions.assertFalse(C.hasSubClass(D, false));
+        Assertions.assertTrue(C.hasSubClass(E, false));
+        Assertions.assertTrue(C.hasSubClass(F, false));
+        Assertions.assertFalse(D.hasSubClass(A, false));
+        Assertions.assertFalse(D.hasSubClass(B, false));
+        Assertions.assertFalse(D.hasSubClass(C, false));
+        Assertions.assertTrue(D.hasSubClass(D, false));
+        Assertions.assertFalse(D.hasSubClass(E, false));
+        Assertions.assertFalse(D.hasSubClass(F, false));
+        Assertions.assertFalse(E.hasSubClass(A, false));
+        Assertions.assertFalse(E.hasSubClass(B, false));
+        Assertions.assertFalse(E.hasSubClass(C, false));
+        Assertions.assertFalse(E.hasSubClass(D, false));
+        Assertions.assertTrue(E.hasSubClass(E, false));
+        Assertions.assertFalse(E.hasSubClass(F, false));
+        Assertions.assertFalse(F.hasSubClass(A, false));
+        Assertions.assertFalse(F.hasSubClass(B, false));
+        Assertions.assertFalse(F.hasSubClass(C, false));
+        Assertions.assertFalse(F.hasSubClass(D, false));
+        Assertions.assertFalse(F.hasSubClass(E, false));
+        Assertions.assertTrue(F.hasSubClass(F, false));
+
+        Assertions.assertTrue(A.hasSubClass(A, true));
+        Assertions.assertTrue(A.hasSubClass(B, true));
+        Assertions.assertTrue(A.hasSubClass(C, true));
+        Assertions.assertFalse(A.hasSubClass(D, true));
+        Assertions.assertFalse(A.hasSubClass(E, true));
+        Assertions.assertFalse(A.hasSubClass(F, true));
+        Assertions.assertFalse(B.hasSubClass(A, true));
+        Assertions.assertTrue(B.hasSubClass(B, true));
+        Assertions.assertFalse(B.hasSubClass(C, true));
+        Assertions.assertTrue(B.hasSubClass(D, true));
+        Assertions.assertTrue(B.hasSubClass(E, true));
+        Assertions.assertFalse(B.hasSubClass(F, true));
+        Assertions.assertFalse(C.hasSubClass(A, true));
+        Assertions.assertFalse(C.hasSubClass(B, true));
+        Assertions.assertTrue(C.hasSubClass(C, true));
+        Assertions.assertFalse(C.hasSubClass(D, true));
+        Assertions.assertTrue(C.hasSubClass(E, true));
+        Assertions.assertTrue(C.hasSubClass(F, true));
+        Assertions.assertFalse(D.hasSubClass(A, true));
+        Assertions.assertFalse(D.hasSubClass(B, true));
+        Assertions.assertFalse(D.hasSubClass(C, true));
+        Assertions.assertTrue(D.hasSubClass(D, true));
+        Assertions.assertFalse(D.hasSubClass(E, true));
+        Assertions.assertFalse(D.hasSubClass(F, true));
+        Assertions.assertFalse(E.hasSubClass(A, true));
+        Assertions.assertFalse(E.hasSubClass(B, true));
+        Assertions.assertFalse(E.hasSubClass(C, true));
+        Assertions.assertFalse(E.hasSubClass(D, true));
+        Assertions.assertTrue(E.hasSubClass(E, true));
+        Assertions.assertFalse(E.hasSubClass(F, true));
+        Assertions.assertFalse(F.hasSubClass(A, true));
+        Assertions.assertFalse(F.hasSubClass(B, true));
+        Assertions.assertFalse(F.hasSubClass(C, true));
+        Assertions.assertFalse(F.hasSubClass(D, true));
+        Assertions.assertFalse(F.hasSubClass(E, true));
+        Assertions.assertTrue(F.hasSubClass(F, true));
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_DL_MEM_RDFS_BUILTIN_INF",
+            "OWL2_DL_MEM_RDFS_INF",
+            "OWL2_DL_MEM_RULES_INF",
+            "OWL2_MEM_RDFS_INF",
+            "OWL2_MEM_RULES_INF",
+            "OWL2_MEM_MINI_RULES_INF",
+            "OWL2_MEM_MICRO_RULES_INF",
+            "OWL2_EL_MEM_RDFS_INF",
+            "OWL2_EL_MEM_RULES_INF",
+            "OWL2_QL_MEM_RDFS_INF",
+            "OWL2_QL_MEM_RULES_INF",
+            "OWL2_RL_MEM_RDFS_INF",
+            "OWL2_RL_MEM_RULES_INF",
+            "OWL1_DL_MEM_RDFS_INF",
+            "OWL1_DL_MEM_RULES_INF",
+            "OWL1_MEM_RDFS_INF",
+            "OWL1_MEM_RULES_INF",
+            "OWL1_MEM_MINI_RULES_INF",
+            "OWL1_MEM_MICRO_RULES_INF",
+            "OWL1_LITE_MEM_RDFS_INF",
+            "OWL1_LITE_MEM_RULES_INF",
+            "RDFS_MEM_RDFS_INF",
+    })
+    public void testHasSubClasses1b(TestSpec spec) {
+        //      A
+        //     / \
+        //    B   C
+        //   / \ / \
+        //  D   E   F
+        OntModel m = createClassesABCDEF(OntModelFactory.createModel(spec.inst));
+
+        OntClass A = m.getOntClass(NS + "A");
+        OntClass B = m.getOntClass(NS + "B");
+        OntClass C = m.getOntClass(NS + "C");
+        OntClass D = m.getOntClass(NS + "D");
+        OntClass E = m.getOntClass(NS + "E");
+        OntClass F = m.getOntClass(NS + "F");
+
+        Assertions.assertTrue(A.hasSubClass(A, false));
+        Assertions.assertTrue(A.hasSubClass(B, false));
+        Assertions.assertTrue(A.hasSubClass(C, false));
+        Assertions.assertTrue(A.hasSubClass(D, false));
+        Assertions.assertTrue(A.hasSubClass(E, false));
+        Assertions.assertTrue(A.hasSubClass(F, false));
+        Assertions.assertFalse(B.hasSubClass(A, false));
+        Assertions.assertTrue(B.hasSubClass(B, false));
+        Assertions.assertFalse(B.hasSubClass(C, false));
+        Assertions.assertTrue(B.hasSubClass(D, false));
+        Assertions.assertTrue(B.hasSubClass(E, false));
+        Assertions.assertFalse(B.hasSubClass(F, false));
+        Assertions.assertFalse(C.hasSubClass(A, false));
+        Assertions.assertFalse(C.hasSubClass(B, false));
+        Assertions.assertTrue(C.hasSubClass(C, false));
+        Assertions.assertFalse(C.hasSubClass(D, false));
+        Assertions.assertTrue(C.hasSubClass(E, false));
+        Assertions.assertTrue(C.hasSubClass(F, false));
+        Assertions.assertFalse(D.hasSubClass(A, false));
+        Assertions.assertFalse(D.hasSubClass(B, false));
+        Assertions.assertFalse(D.hasSubClass(C, false));
+        Assertions.assertTrue(D.hasSubClass(D, false));
+        Assertions.assertFalse(D.hasSubClass(E, false));
+        Assertions.assertFalse(D.hasSubClass(F, false));
+        Assertions.assertFalse(E.hasSubClass(A, false));
+        Assertions.assertFalse(E.hasSubClass(B, false));
+        Assertions.assertFalse(E.hasSubClass(C, false));
+        Assertions.assertFalse(E.hasSubClass(D, false));
+        Assertions.assertTrue(E.hasSubClass(E, false));
+        Assertions.assertFalse(E.hasSubClass(F, false));
+        Assertions.assertFalse(F.hasSubClass(A, false));
+        Assertions.assertFalse(F.hasSubClass(B, false));
+        Assertions.assertFalse(F.hasSubClass(C, false));
+        Assertions.assertFalse(F.hasSubClass(D, false));
+        Assertions.assertFalse(F.hasSubClass(E, false));
+        Assertions.assertTrue(F.hasSubClass(F, false));
+
+        Assertions.assertTrue(A.hasSubClass(A, true));
+        Assertions.assertTrue(A.hasSubClass(B, true));
+        Assertions.assertTrue(A.hasSubClass(C, true));
+        Assertions.assertFalse(A.hasSubClass(D, true));
+        Assertions.assertFalse(A.hasSubClass(E, true));
+        Assertions.assertFalse(A.hasSubClass(F, true));
+        Assertions.assertFalse(B.hasSubClass(A, true));
+        Assertions.assertTrue(B.hasSubClass(B, true));
+        Assertions.assertFalse(B.hasSubClass(C, true));
+        Assertions.assertTrue(B.hasSubClass(D, true));
+        Assertions.assertTrue(B.hasSubClass(E, true));
+        Assertions.assertFalse(B.hasSubClass(F, true));
+        Assertions.assertFalse(C.hasSubClass(A, true));
+        Assertions.assertFalse(C.hasSubClass(B, true));
+        Assertions.assertTrue(C.hasSubClass(C, true));
+        Assertions.assertFalse(C.hasSubClass(D, true));
+        Assertions.assertTrue(C.hasSubClass(E, true));
+        Assertions.assertTrue(C.hasSubClass(F, true));
+        Assertions.assertFalse(D.hasSubClass(A, true));
+        Assertions.assertFalse(D.hasSubClass(B, true));
+        Assertions.assertFalse(D.hasSubClass(C, true));
+        Assertions.assertTrue(D.hasSubClass(D, true));
+        Assertions.assertFalse(D.hasSubClass(E, true));
+        Assertions.assertFalse(D.hasSubClass(F, true));
+        Assertions.assertFalse(E.hasSubClass(A, true));
+        Assertions.assertFalse(E.hasSubClass(B, true));
+        Assertions.assertFalse(E.hasSubClass(C, true));
+        Assertions.assertFalse(E.hasSubClass(D, true));
+        Assertions.assertTrue(E.hasSubClass(E, true));
+        Assertions.assertFalse(E.hasSubClass(F, true));
+        Assertions.assertFalse(F.hasSubClass(A, true));
+        Assertions.assertFalse(F.hasSubClass(B, true));
+        Assertions.assertFalse(F.hasSubClass(C, true));
+        Assertions.assertFalse(F.hasSubClass(D, true));
+        Assertions.assertFalse(F.hasSubClass(E, true));
+        Assertions.assertTrue(F.hasSubClass(F, true));
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_DL_MEM_TRANS_INF",
+            "OWL2_MEM_TRANS_INF",
+            "OWL2_EL_MEM_TRANS_INF",
+            "OWL2_QL_MEM_TRANS_INF",
+            "OWL2_RL_MEM_TRANS_INF",
+            "OWL1_DL_MEM_TRANS_INF",
+            "OWL1_MEM_TRANS_INF",
+            "OWL1_LITE_MEM_TRANS_INF",
+            "RDFS_MEM_TRANS_INF",
+    })
+    public void testHasSubClasses1c(TestSpec spec) {
+        //      A
+        //     / \
+        //    B   C
+        //   / \ / \
+        //  D   E   F
+        OntModel m = createClassesABCDEF(OntModelFactory.createModel(spec.inst));
+
+        OntClass A = m.getOntClass(NS + "A");
+        OntClass B = m.getOntClass(NS + "B");
+        OntClass C = m.getOntClass(NS + "C");
+        OntClass D = m.getOntClass(NS + "D");
+        OntClass E = m.getOntClass(NS + "E");
+        OntClass F = m.getOntClass(NS + "F");
+
+        Assertions.assertTrue(A.hasSubClass(A, false));
+        Assertions.assertTrue(A.hasSubClass(B, false));
+        Assertions.assertTrue(A.hasSubClass(C, false));
+        Assertions.assertTrue(A.hasSubClass(D, false));
+        Assertions.assertTrue(A.hasSubClass(E, false));
+        Assertions.assertTrue(A.hasSubClass(F, false));
+        Assertions.assertFalse(B.hasSubClass(A, false));
+        Assertions.assertTrue(B.hasSubClass(B, false));
+        Assertions.assertFalse(B.hasSubClass(C, false));
+        Assertions.assertTrue(B.hasSubClass(D, false));
+        Assertions.assertTrue(B.hasSubClass(E, false));
+        Assertions.assertFalse(B.hasSubClass(F, false));
+        Assertions.assertFalse(C.hasSubClass(A, false));
+        Assertions.assertFalse(C.hasSubClass(B, false));
+        Assertions.assertTrue(C.hasSubClass(C, false));
+        Assertions.assertFalse(C.hasSubClass(D, false));
+        Assertions.assertTrue(C.hasSubClass(E, false));
+        Assertions.assertTrue(C.hasSubClass(F, false));
+        Assertions.assertFalse(D.hasSubClass(A, false));
+        Assertions.assertFalse(D.hasSubClass(B, false));
+        Assertions.assertFalse(D.hasSubClass(C, false));
+        Assertions.assertTrue(D.hasSubClass(D, false));
+        Assertions.assertFalse(D.hasSubClass(E, false));
+        Assertions.assertFalse(D.hasSubClass(F, false));
+        Assertions.assertFalse(E.hasSubClass(A, false));
+        Assertions.assertFalse(E.hasSubClass(B, false));
+        Assertions.assertFalse(E.hasSubClass(C, false));
+        Assertions.assertFalse(E.hasSubClass(D, false));
+        Assertions.assertTrue(E.hasSubClass(E, false));
+        Assertions.assertFalse(E.hasSubClass(F, false));
+        Assertions.assertFalse(F.hasSubClass(A, false));
+        Assertions.assertFalse(F.hasSubClass(B, false));
+        Assertions.assertFalse(F.hasSubClass(C, false));
+        Assertions.assertFalse(F.hasSubClass(D, false));
+        Assertions.assertFalse(F.hasSubClass(E, false));
+        Assertions.assertTrue(F.hasSubClass(F, false));
+
+        Assertions.assertTrue(A.hasSubClass(A, true));
+        Assertions.assertTrue(A.hasSubClass(B, true));
+        Assertions.assertTrue(A.hasSubClass(C, true));
+        Assertions.assertFalse(A.hasSubClass(D, true));
+        Assertions.assertFalse(A.hasSubClass(E, true));
+        Assertions.assertFalse(A.hasSubClass(F, true));
+        Assertions.assertFalse(B.hasSubClass(A, true));
+        Assertions.assertTrue(B.hasSubClass(B, true));
+        Assertions.assertFalse(B.hasSubClass(C, true));
+        Assertions.assertTrue(B.hasSubClass(D, true));
+        Assertions.assertTrue(B.hasSubClass(E, true));
+        Assertions.assertFalse(B.hasSubClass(F, true));
+        Assertions.assertFalse(C.hasSubClass(A, true));
+        Assertions.assertFalse(C.hasSubClass(B, true));
+        Assertions.assertTrue(C.hasSubClass(C, true));
+        Assertions.assertFalse(C.hasSubClass(D, true));
+        Assertions.assertTrue(C.hasSubClass(E, true));
+        Assertions.assertTrue(C.hasSubClass(F, true));
+        Assertions.assertFalse(D.hasSubClass(A, true));
+        Assertions.assertFalse(D.hasSubClass(B, true));
+        Assertions.assertFalse(D.hasSubClass(C, true));
+        Assertions.assertTrue(D.hasSubClass(D, true));
+        Assertions.assertFalse(D.hasSubClass(E, true));
+        Assertions.assertFalse(D.hasSubClass(F, true));
+        Assertions.assertFalse(E.hasSubClass(A, true));
+        Assertions.assertFalse(E.hasSubClass(B, true));
+        Assertions.assertFalse(E.hasSubClass(C, true));
+        Assertions.assertFalse(E.hasSubClass(D, true));
+        Assertions.assertTrue(E.hasSubClass(E, true));
+        Assertions.assertFalse(E.hasSubClass(F, true));
+        Assertions.assertFalse(F.hasSubClass(A, true));
+        Assertions.assertFalse(F.hasSubClass(B, true));
+        Assertions.assertFalse(F.hasSubClass(C, true));
+        Assertions.assertFalse(F.hasSubClass(D, true));
+        Assertions.assertFalse(F.hasSubClass(E, true));
+        Assertions.assertTrue(F.hasSubClass(F, true));
+    }
+
 }

@@ -377,6 +377,9 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
      * @return {@link Optional} wrapping {@link OntClass}
      */
     default Optional<OntClass> subClass() {
+        if (asSuperClass() == null) {
+            return Optional.empty();
+        }
         try (Stream<OntClass> classes = getModel()
                 .statements(null, RDFS.subClassOf, this)
                 .map(OntStatement::getSubject)
@@ -409,6 +412,9 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
      * @return {@link Optional} wrapping {@link OntClass}
      */
     default Optional<OntClass> superClass() {
+        if (asSubClass() == null) {
+            return Optional.empty();
+        }
         try (Stream<OntClass> classes = this.statements(RDFS.subClassOf)
                 .map(OntStatement::getSubject)
                 .filter(it -> it.canAs(OntClass.class))
@@ -416,6 +422,35 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
                 .filter(Objects::nonNull)) {
             return classes.findFirst();
         }
+    }
+
+    /**
+     * Answers {@code true}
+     * if the given class is a subclass of this class.
+     * See {@link #subClasses(boolean)} for a full explanation of the direct parameter.
+     *
+     * @param clazz  a {@link OntClass} to test
+     * @param direct {@code boolean}; If true, only search the classes
+     *               that are directly adjacent to this class in the class hierarchy
+     * @return {@code boolean}
+     */
+    default boolean hasSubClass(OntClass clazz, boolean direct) {
+        return clazz.hasSuperClass(this, direct);
+    }
+
+    /**
+     * Answers {@code true}
+     * if the given class is a superclass of this class.
+     * See {@link #superClasses(boolean)} for a full explanation of the direct parameter
+     *
+     * @param clazz  a {@link OntClass} to test
+     * @param direct {@code boolean}; If true, only search the classes
+     *               that are directly adjacent to this class in the class hierarchy.
+     * @return {@code boolean}
+     */
+    default boolean hasSuperClass(OntClass clazz, boolean direct) {
+        return equals(clazz) ||
+                (asSubClass() != null && clazz.asSuperClass() != null && superClasses(direct).anyMatch(clazz::equals));
     }
 
     /**
@@ -693,9 +728,11 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
     }
 
     /**
-     * Returns this class if the specification allows it to be in subclass position, otherwise returns {@code null}.
+     * Returns the subclass-view of this class
+     * if the specification allows this class to be in subclass position, otherwise returns {@code null}.
      * Some profiles (e.g., OWL2 QL, OWL2 RL)
      * distinguish constructions with respect to their position in the axiom statements.
+     * Note that the returned class may differ in behavior from this class.
      *
      * @return {@link OntClass} or {@code null}
      */
@@ -704,9 +741,11 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
     }
 
     /**
-     * Returns this class if the specification allows it to be in superclass position, otherwise returns {@code null}.
+     * Returns the superclass-view of this class
+     * if the specification allows this class to be in superclass position, otherwise returns {@code null}.
      * Some profiles (e.g., OWL2 QL, OWL2 RL)
      * distinguish constructions with respect to their position in the axiom statements.
+     * Note that the returned class may differ in behavior from this class.
      *
      * @return {@link OntClass} or {@code null}
      */
@@ -715,9 +754,11 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
     }
 
     /**
-     * Returns this class if the specification allows it to make class assertions, otherwise returns {@code null}.
+     * Returns the assertion-view of this class
+     * if the specification allows this class to make class assertions, otherwise returns {@code null}.
      * Some profiles (e.g., OWL2 QL, OWL2 RL)
      * distinguish constructions with respect to their position in the axiom statements.
+     * Note that the returned class may differ in behavior from this class.
      *
      * @return {@link OntClass} or {@code null}
      */
@@ -726,10 +767,12 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
     }
 
     /**
-     * Returns this class if the specification allows it to be in equivalent
-     * ({@code owl:equivalentClass}) position, otherwise returns {@code null}.
+     * Returns the equivalent-class-view of this class
+     * if the specification allows this class to be in equivalent
+     * position ({@code owl:equivalentClass}), otherwise returns {@code null}.
      * Some profiles (e.g., OWL2 QL, OWL2 RL)
      * distinguish constructions with respect to their position in the axiom statements.
+     * Note that the returned class may differ in behavior from this class.
      *
      * @return {@link OntClass} or {@code null}
      */
@@ -738,8 +781,9 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
     }
 
     /**
-     * Returns this class if the specification allows it to be in disjoint
-     * ({@code owl:disjointWith}, {@code owl:AllDisjointClasses}) position, otherwise returns {@code null}.
+     * Returns the disjoint-class-view of this class
+     * if the specification allows this to be in disjoint position
+     * ({@code owl:disjointWith}, {@code owl:AllDisjointClasses}), otherwise returns {@code null}.
      * Some profiles (e.g., OWL2 QL, OWL2 RL)
      * distinguish constructions with respect to their position in the axiom statements.
      *
