@@ -28,13 +28,15 @@ import org.junit.jupiter.params.provider.EnumSource;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.apache.jena.ontapi.TestModelFactory.NS;
+
 public class OntClassSuperClassesTest {
     private static Set<String> superClasses(OntModel m, String name, boolean direct) {
-        return m.getOntClass(TestModelFactory.NS + name).superClasses(direct).map(Resource::getLocalName).collect(Collectors.toSet());
+        return m.getOntClass(NS + name).superClasses(direct).map(Resource::getLocalName).collect(Collectors.toSet());
     }
 
     private static Set<String> superClasses(OntModel m, String name) {
-        return m.getOntClass(TestModelFactory.NS + name).superClasses().map(Resource::getLocalName).collect(Collectors.toSet());
+        return m.getOntClass(NS + name).superClasses().map(Resource::getLocalName).collect(Collectors.toSet());
     }
 
     @ParameterizedTest
@@ -51,7 +53,7 @@ public class OntClassSuperClassesTest {
     })
     public void testSuperClassNE(TestSpec spec) {
         OntModel m = OntModelFactory.createModel(spec.inst);
-        OntClass a = m.createOntClass(TestModelFactory.NS + "A");
+        OntClass a = m.createOntClass(NS + "A");
         Assertions.assertTrue(a.superClass().isEmpty());
     }
 
@@ -452,7 +454,7 @@ public class OntClassSuperClassesTest {
     })
     public void testListSuperClasses7a(TestSpec spec) {
         OntModel m = OntModelFactory.createModel(spec.inst);
-        OntClass A = m.createOntClass(TestModelFactory.NS + "A");
+        OntClass A = m.createOntClass(NS + "A");
         A.addSuperClass(A);
 
         Assertions.assertTrue(A.superClasses(true).findFirst().isEmpty());
@@ -657,5 +659,195 @@ public class OntClassSuperClassesTest {
         Assertions.assertEquals(Set.of("Resource"), indirectD);
         Assertions.assertEquals(Set.of("D", "F", "Resource"), indirectE);
         Assertions.assertEquals(Set.of("D", "Resource"), indirectF);
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_DL_MEM",
+            "OWL2_MEM",
+            "OWL2_EL_MEM",
+            "OWL2_QL_MEM",
+            "OWL2_RL_MEM",
+            "OWL1_DL_MEM",
+            "OWL1_MEM",
+            "OWL1_LITE_MEM",
+            "RDFS_MEM",
+    })
+    public void testHasSuperClass1a(TestSpec spec) {
+        //     D
+        //    | \
+        // B  |  C
+        //  \ | /
+        //    A
+        OntModel m = TestModelFactory.createClassesDBCA(OntModelFactory.createModel(spec.inst));
+        OntClass A = m.createOntClass(NS + "A");
+        OntClass B = m.createOntClass(NS + "B");
+        OntClass C = m.createOntClass(NS + "C");
+        OntClass D = m.createOntClass(NS + "D");
+
+        Assertions.assertTrue(A.hasSuperClass(A, false));
+        Assertions.assertTrue(A.hasSuperClass(B, false));
+        Assertions.assertTrue(A.hasSuperClass(C, false));
+        Assertions.assertTrue(A.hasSuperClass(D, false));
+        Assertions.assertFalse(B.hasSuperClass(A, false));
+        Assertions.assertTrue(B.hasSuperClass(B, false));
+        Assertions.assertFalse(B.hasSuperClass(C, false));
+        Assertions.assertFalse(B.hasSuperClass(D, false));
+        Assertions.assertFalse(C.hasSuperClass(A, false));
+        Assertions.assertFalse(C.hasSuperClass(B, false));
+        Assertions.assertTrue(C.hasSuperClass(C, false));
+        Assertions.assertTrue(C.hasSuperClass(D, false));
+        Assertions.assertFalse(D.hasSuperClass(A, false));
+        Assertions.assertFalse(D.hasSuperClass(B, false));
+        Assertions.assertFalse(D.hasSuperClass(C, false));
+        Assertions.assertTrue(D.hasSuperClass(D, false));
+
+        Assertions.assertTrue(A.hasSuperClass(A, true));
+        Assertions.assertTrue(A.hasSuperClass(B, true));
+        Assertions.assertTrue(A.hasSuperClass(C, true));
+        Assertions.assertFalse(A.hasSuperClass(D, true));
+        Assertions.assertFalse(B.hasSuperClass(A, true));
+        Assertions.assertTrue(B.hasSuperClass(B, true));
+        Assertions.assertFalse(B.hasSuperClass(C, true));
+        Assertions.assertFalse(B.hasSuperClass(D, true));
+        Assertions.assertFalse(C.hasSuperClass(A, true));
+        Assertions.assertFalse(C.hasSuperClass(B, true));
+        Assertions.assertTrue(C.hasSuperClass(C, true));
+        Assertions.assertTrue(C.hasSuperClass(D, true));
+        Assertions.assertFalse(D.hasSuperClass(A, true));
+        Assertions.assertFalse(D.hasSuperClass(B, true));
+        Assertions.assertFalse(D.hasSuperClass(C, true));
+        Assertions.assertTrue(D.hasSuperClass(D, true));
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_DL_MEM_RDFS_BUILTIN_INF",
+            "OWL2_DL_MEM_RDFS_INF",
+            "OWL2_DL_MEM_RULES_INF",
+            "OWL2_MEM_RDFS_INF",
+            "OWL2_MEM_RULES_INF",
+            "OWL2_MEM_MINI_RULES_INF",
+            "OWL2_MEM_MICRO_RULES_INF",
+            "OWL2_EL_MEM_RDFS_INF",
+            "OWL2_EL_MEM_RULES_INF",
+            "OWL2_QL_MEM_RDFS_INF",
+            "OWL2_QL_MEM_RULES_INF",
+            "OWL2_RL_MEM_RDFS_INF",
+            "OWL2_RL_MEM_RULES_INF",
+            "OWL1_DL_MEM_RDFS_INF",
+            "OWL1_DL_MEM_RULES_INF",
+            "OWL1_MEM_RDFS_INF",
+            "OWL1_MEM_RULES_INF",
+            "OWL1_MEM_MINI_RULES_INF",
+            "OWL1_MEM_MICRO_RULES_INF",
+            "OWL1_LITE_MEM_RDFS_INF",
+            "OWL1_LITE_MEM_RULES_INF",
+            "RDFS_MEM_RDFS_INF",
+    })
+    public void testHasSuperClass1b(TestSpec spec) {
+        //     D
+        //    | \
+        // B  |  C
+        //  \ | /
+        //    A
+        OntModel m = TestModelFactory.createClassesDBCA(OntModelFactory.createModel(spec.inst));
+        OntClass A = m.createOntClass(NS + "A");
+        OntClass B = m.createOntClass(NS + "B");
+        OntClass C = m.createOntClass(NS + "C");
+        OntClass D = m.createOntClass(NS + "D");
+
+        Assertions.assertTrue(A.hasSuperClass(A, false));
+        Assertions.assertTrue(A.hasSuperClass(B, false));
+        Assertions.assertTrue(A.hasSuperClass(C, false));
+        Assertions.assertTrue(A.hasSuperClass(D, false));
+        Assertions.assertFalse(B.hasSuperClass(A, false));
+        Assertions.assertTrue(B.hasSuperClass(B, false));
+        Assertions.assertFalse(B.hasSuperClass(C, false));
+        Assertions.assertFalse(B.hasSuperClass(D, false));
+        Assertions.assertFalse(C.hasSuperClass(A, false));
+        Assertions.assertFalse(C.hasSuperClass(B, false));
+        Assertions.assertTrue(C.hasSuperClass(C, false));
+        Assertions.assertTrue(C.hasSuperClass(D, false));
+        Assertions.assertFalse(D.hasSuperClass(A, false));
+        Assertions.assertFalse(D.hasSuperClass(B, false));
+        Assertions.assertFalse(D.hasSuperClass(C, false));
+        Assertions.assertTrue(D.hasSuperClass(D, false));
+
+        Assertions.assertTrue(A.hasSuperClass(A, true));
+        Assertions.assertTrue(A.hasSuperClass(B, true));
+        Assertions.assertTrue(A.hasSuperClass(C, true));
+        Assertions.assertFalse(A.hasSuperClass(D, true));
+        Assertions.assertFalse(B.hasSuperClass(A, true));
+        Assertions.assertTrue(B.hasSuperClass(B, true));
+        Assertions.assertFalse(B.hasSuperClass(C, true));
+        Assertions.assertFalse(B.hasSuperClass(D, true));
+        Assertions.assertFalse(C.hasSuperClass(A, true));
+        Assertions.assertFalse(C.hasSuperClass(B, true));
+        Assertions.assertTrue(C.hasSuperClass(C, true));
+        Assertions.assertTrue(C.hasSuperClass(D, true));
+        Assertions.assertFalse(D.hasSuperClass(A, true));
+        Assertions.assertFalse(D.hasSuperClass(B, true));
+        Assertions.assertFalse(D.hasSuperClass(C, true));
+        Assertions.assertTrue(D.hasSuperClass(D, true));
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_DL_MEM_TRANS_INF",
+            "OWL2_MEM_TRANS_INF",
+            "OWL2_EL_MEM_TRANS_INF",
+            "OWL2_QL_MEM_TRANS_INF",
+            "OWL2_RL_MEM_TRANS_INF",
+            "OWL1_DL_MEM_TRANS_INF",
+            "OWL1_MEM_TRANS_INF",
+            "OWL1_LITE_MEM_TRANS_INF",
+            "RDFS_MEM_TRANS_INF",
+    })
+    public void testHasSuperClass1c(TestSpec spec) {
+        //     D
+        //    | \
+        // B  |  C
+        //  \ | /
+        //    A
+        OntModel m = TestModelFactory.createClassesDBCA(OntModelFactory.createModel(spec.inst));
+        OntClass A = m.createOntClass(NS + "A");
+        OntClass B = m.createOntClass(NS + "B");
+        OntClass C = m.createOntClass(NS + "C");
+        OntClass D = m.createOntClass(NS + "D");
+
+        Assertions.assertTrue(A.hasSuperClass(A, false));
+        Assertions.assertTrue(A.hasSuperClass(B, false));
+        Assertions.assertTrue(A.hasSuperClass(C, false));
+        Assertions.assertTrue(A.hasSuperClass(D, false));
+        Assertions.assertFalse(B.hasSuperClass(A, false));
+        Assertions.assertTrue(B.hasSuperClass(B, false));
+        Assertions.assertFalse(B.hasSuperClass(C, false));
+        Assertions.assertFalse(B.hasSuperClass(D, false));
+        Assertions.assertFalse(C.hasSuperClass(A, false));
+        Assertions.assertFalse(C.hasSuperClass(B, false));
+        Assertions.assertTrue(C.hasSuperClass(C, false));
+        Assertions.assertTrue(C.hasSuperClass(D, false));
+        Assertions.assertFalse(D.hasSuperClass(A, false));
+        Assertions.assertFalse(D.hasSuperClass(B, false));
+        Assertions.assertFalse(D.hasSuperClass(C, false));
+        Assertions.assertTrue(D.hasSuperClass(D, false));
+
+        Assertions.assertTrue(A.hasSuperClass(A, true));
+        Assertions.assertTrue(A.hasSuperClass(B, true));
+        Assertions.assertTrue(A.hasSuperClass(C, true));
+        Assertions.assertFalse(A.hasSuperClass(D, true));
+        Assertions.assertFalse(B.hasSuperClass(A, true));
+        Assertions.assertTrue(B.hasSuperClass(B, true));
+        Assertions.assertFalse(B.hasSuperClass(C, true));
+        Assertions.assertFalse(B.hasSuperClass(D, true));
+        Assertions.assertFalse(C.hasSuperClass(A, true));
+        Assertions.assertFalse(C.hasSuperClass(B, true));
+        Assertions.assertTrue(C.hasSuperClass(C, true));
+        Assertions.assertTrue(C.hasSuperClass(D, true));
+        Assertions.assertFalse(D.hasSuperClass(A, true));
+        Assertions.assertFalse(D.hasSuperClass(B, true));
+        Assertions.assertFalse(D.hasSuperClass(C, true));
+        Assertions.assertTrue(D.hasSuperClass(D, true));
     }
 }

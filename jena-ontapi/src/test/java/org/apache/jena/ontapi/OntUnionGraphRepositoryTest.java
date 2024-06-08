@@ -231,7 +231,7 @@ public class OntUnionGraphRepositoryTest {
 
         GraphRepository repository = GraphRepository.createGraphDocumentRepositoryMem();
 
-        OntModelFactory.createModel(a.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_INF, repository);
+        OntModelFactory.createModel(a.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_RDFS_INF, repository);
 
         Assertions.assertEquals(5, repository.count());
         Assertions.assertEquals(
@@ -261,7 +261,7 @@ public class OntUnionGraphRepositoryTest {
 
         GraphRepository repository = GraphRepository.createGraphDocumentRepositoryMem();
 
-        OntModelFactory.createModel(c.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_INF, repository);
+        OntModelFactory.createModel(c.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_RDFS_INF, repository);
 
         Assertions.assertEquals(5, repository.count());
         Assertions.assertEquals(
@@ -297,14 +297,14 @@ public class OntUnionGraphRepositoryTest {
     @Test
     public void testAddImportModel1() {
         GraphRepository repository = GraphRepository.createGraphDocumentRepositoryMem();
-        OntModel a = OntModelFactory.createModel(OntSpecification.OWL2_DL_MEM_BUILTIN_INF, repository).setID("A").getModel();
+        OntModel a = OntModelFactory.createModel(OntSpecification.OWL2_DL_MEM_BUILTIN_RDFS_INF, repository).setID("A").getModel();
 
         Assertions.assertEquals(List.of("A"), repository.ids().collect(Collectors.toList()));
         Assertions.assertEquals(List.of(a.getGraph()), repository.graphs().collect(Collectors.toList()));
 
         a.createOntClass("FromA");
 
-        OntModel b = OntModelFactory.createModel(OntSpecification.OWL2_DL_MEM_BUILTIN_INF, repository);
+        OntModel b = OntModelFactory.createModel(OntSpecification.OWL2_DL_MEM_BUILTIN_RDFS_INF, repository);
         b.createOntClass("FromB");
 
         b.addImport(a);
@@ -340,7 +340,7 @@ public class OntUnionGraphRepositoryTest {
         GraphRepository repository = GraphRepository.createGraphDocumentRepositoryMem();
         Model data = ModelFactory.createDefaultModel();
         data.createResource("A", OWL2.Ontology);
-        OntModel a = OntModelFactory.createModel(data.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_INF, repository);
+        OntModel a = OntModelFactory.createModel(data.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_RDFS_INF, repository);
 
         Assertions.assertEquals(List.of("A"), repository.ids().collect(Collectors.toList()));
         Assertions.assertEquals(List.of(a.getGraph()), repository.graphs().collect(Collectors.toList()));
@@ -381,7 +381,7 @@ public class OntUnionGraphRepositoryTest {
         GraphRepository repository = GraphRepository.createGraphDocumentRepositoryMem();
         Model data = ModelFactory.createDefaultModel();
         data.createResource("A", OWL2.Ontology);
-        OntModel a = OntModelFactory.createModel(data.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_INF, repository);
+        OntModel a = OntModelFactory.createModel(data.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_RDFS_INF, repository);
 
         Assertions.assertEquals(List.of("A"), repository.ids().collect(Collectors.toList()));
         Assertions.assertEquals(List.of(a.getGraph()), repository.graphs().collect(Collectors.toList()));
@@ -406,7 +406,7 @@ public class OntUnionGraphRepositoryTest {
     @Test
     public void testAddImportStatement() {
         GraphRepository repository = GraphRepository.createGraphDocumentRepositoryMem();
-        OntModel a = OntModelFactory.createModel(OntSpecification.OWL2_DL_MEM_BUILTIN_INF, repository);
+        OntModel a = OntModelFactory.createModel(OntSpecification.OWL2_DL_MEM_BUILTIN_RDFS_INF, repository);
         UnionGraph ag = (UnionGraph) a.getGraph();
 
         Model b = OntModelFactory.createDefaultModel();
@@ -482,7 +482,7 @@ public class OntUnionGraphRepositoryTest {
         a.addImport(b);
 
         GraphRepository repository = GraphRepository.createGraphDocumentRepositoryMem();
-        OntModel A = OntModelFactory.createModel(a.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_INF, repository);
+        OntModel A = OntModelFactory.createModel(a.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_RDFS_INF, repository);
         Assertions.assertEquals(3, A.size());
         Assertions.assertEquals(List.of("A", "B"), repository.ids().sorted().collect(Collectors.toList()));
 
@@ -585,7 +585,7 @@ public class OntUnionGraphRepositoryTest {
         OntModel b = OntModelFactory.createModel().setID("B").getModel();
 
         GraphRepository repository = GraphRepository.createGraphDocumentRepositoryMem();
-        OntModel A = OntModelFactory.createModel(a.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_INF, repository);
+        OntModel A = OntModelFactory.createModel(a.getGraph(), OntSpecification.OWL2_DL_MEM_BUILTIN_RDFS_INF, repository);
         A.addImport(b);
         Assertions.assertEquals(List.of("A", "B"), repository.ids().sorted().collect(Collectors.toList()));
         Assertions.assertNotNull(OntModelFactory.getModelOrNull(NodeFactory.createURI("A"), OntSpecification.OWL2_DL_MEM_TRANS_INF, repository));

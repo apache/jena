@@ -79,6 +79,11 @@ public class OntSimplePropertyImpl extends OntPropertyImpl implements OntPropert
     }
 
     @Override
+    public boolean hasSuperProperty(OntProperty property, boolean direct) {
+        return OntPropertyImpl.hasSuperProperty(this, property, OntProperty.class, direct);
+    }
+
+    @Override
     public Resource inModel(Model m) {
         return getModel() == m ? this : m.getRDFNode(asNode()).asResource();
     }

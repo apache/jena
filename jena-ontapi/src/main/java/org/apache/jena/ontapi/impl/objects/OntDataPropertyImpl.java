@@ -26,6 +26,7 @@ import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntDataProperty;
 import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.model.OntNegativeAssertion;
+import org.apache.jena.ontapi.model.OntProperty;
 import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
@@ -67,13 +68,19 @@ public class OntDataPropertyImpl extends OntPropertyImpl implements OntDataPrope
     }
 
     @Override
+    public boolean hasSuperProperty(OntProperty property, boolean direct) {
+        return property.canAs(OntDataProperty.class) &&
+                OntPropertyImpl.hasSuperProperty(this, property.as(OntDataProperty.class), OntDataProperty.class, direct);
+    }
+
+    @Override
     public Stream<OntDataProperty> disjointProperties() {
         return OntPropertyImpl.disjointProperties(getModel(), OntDataProperty.class, this);
     }
 
     @Override
     public OntStatement addPropertyDisjointWithStatement(OntDataProperty other) {
-        return OntPropertyImpl.addDisjointWith(getModel(), OntDataProperty.class, this, other);
+        return OntPropertyImpl.addDisjointWith(getModel(), this, other);
     }
 
     @Override
@@ -89,7 +96,7 @@ public class OntDataPropertyImpl extends OntPropertyImpl implements OntDataPrope
 
     @Override
     public OntStatement addEquivalentPropertyStatement(OntDataProperty other) {
-        return OntPropertyImpl.addEquivalentProperty(getModel(), OntDataProperty.class, this, other);
+        return OntPropertyImpl.addEquivalentProperty(getModel(), this, other);
     }
 
     @Override

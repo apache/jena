@@ -42,8 +42,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.apache.jena.ontapi.TestModelFactory.NS;
+
 public class OntModelIndividualsTest {
-    private static final String NS = "http://ex.com/testing/ontology#";
 
     @ParameterizedTest
     @EnumSource(names = {

@@ -38,6 +38,8 @@ import org.junit.jupiter.params.provider.EnumSource;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.apache.jena.ontapi.TestModelFactory.NS;
+
 /**
  * Properties' generic test:
  * {@link OntNamedProperty},
@@ -55,7 +57,7 @@ public class OntPropertyTest {
     public void testCreateProperties() {
         String ns = "http://test.com/graph/7#";
 
-        OntModel m = OntModelFactory.createModel().setNsPrefixes(OntModelFactory.STANDARD).setNsPrefix("test", ns);
+        OntModel m = OntModelFactory.createModel().setNsPrefix("test", ns);
         OntAnnotationProperty a1 = m.createAnnotationProperty(ns + "a-p-1");
         OntAnnotationProperty a2 = m.createAnnotationProperty(ns + "a-p-2");
         m.createObjectProperty(ns + "o-p-1");
@@ -76,7 +78,7 @@ public class OntPropertyTest {
 
     @Test
     public void testListPropertyHierarchy() {
-        OntModel m = OntModelFactory.createModel(OntSpecification.OWL2_DL_MEM_BUILTIN_INF).setNsPrefixes(OntModelFactory.STANDARD);
+        OntModel m = OntModelFactory.createModel(OntSpecification.OWL2_DL_MEM_BUILTIN_RDFS_INF);
         OntDataProperty da = m.createDataProperty("dA");
         OntDataProperty db = m.createDataProperty("dB");
 
@@ -98,7 +100,6 @@ public class OntPropertyTest {
         ab.addSuperProperty(ac).addSuperProperty(m.getRDFSComment());
         ac.addSuperProperty(aa);
 
-
         Assertions.assertEquals(1, da.superProperties(true).count());
         Assertions.assertEquals(2, da.superProperties(false).count());
 
@@ -114,7 +115,7 @@ public class OntPropertyTest {
 
     @Test
     public void testIndirectDomains() {
-        OntModel m = OntModelFactory.createModel().setNsPrefixes(OntModelFactory.STANDARD).setNsPrefix("", "http://ex.com#");
+        OntModel m = OntModelFactory.createModel().setNsPrefix("", "http://ex.com#");
         OntObjectProperty hasDog = m.createObjectProperty(m.expandPrefix(":hasDog"));
         OntDataProperty hasName = m.createDataProperty(m.expandPrefix(":hasName"));
         OntClass animal = m.createOntClass(m.expandPrefix(":Animal"));
@@ -131,7 +132,7 @@ public class OntPropertyTest {
 
     @Test
     public void testReferringRestrictions() {
-        OntModel m = OntModelFactory.createModel().setNsPrefixes(OntModelFactory.STANDARD);
+        OntModel m = OntModelFactory.createModel();
 
         OntObjectProperty p1 = m.createObjectProperty(":p1");
         OntObjectProperty p2 = m.createObjectProperty(":p2");
@@ -247,7 +248,7 @@ public class OntPropertyTest {
             "OWL1_MEM_TRANS_INF",
     })
     public void testListDeclaringClasses2b(TestSpec spec) {
-        OntModel m = OntModelFactory.createModel(spec.inst).setNsPrefixes(OntModelFactory.STANDARD);
+        OntModel m = OntModelFactory.createModel(spec.inst);
 
         OntClass c1 = m.createOntClass(":C1");
         OntClass c2 = m.createOntClass(":C2");
@@ -321,7 +322,7 @@ public class OntPropertyTest {
             "RDFS_MEM_TRANS_INF",
     })
     public void testListDeclaringClasses3a(TestSpec spec) {
-        OntModel m = OntModelFactory.createModel(spec.inst).setNsPrefixes(OntModelFactory.STANDARD);
+        OntModel m = OntModelFactory.createModel(spec.inst);
 
         Resource c1 = m.createOntClass(":C1");
         Resource c2 = m.createOntClass(":C2");
@@ -386,5 +387,213 @@ public class OntPropertyTest {
 
         Assertions.assertEquals(Set.of(c3, c4, c5, c6), p10.declaringClasses(true).collect(Collectors.toSet()));
         Assertions.assertEquals(Set.of(c1, c2, c3, c4, c5, c6), p10.declaringClasses(false).collect(Collectors.toSet()));
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_DL_MEM",
+            "OWL2_MEM",
+            "OWL2_EL_MEM",
+            "OWL2_QL_MEM",
+            "OWL2_RL_MEM",
+            "OWL1_DL_MEM",
+            "OWL1_MEM",
+            "OWL1_LITE_MEM",
+    })
+    public void testHasSubProperty1a(TestSpec spec) {
+        OntModel m = OntModelFactory.createModel(spec.inst);
+
+        OntObjectProperty p1 = m.createObjectProperty(NS + "p1");
+        OntProperty p2 = m.createObjectProperty(NS + "p2");
+        OntProperty p3 = m.createObjectProperty(NS + "p3");
+        OntDataProperty p4 = m.createDataProperty(NS + "p4");
+
+        p1.addProperty(RDFS.subPropertyOf, p2);
+        p2.addProperty(RDFS.subPropertyOf, p3);
+        p3.addProperty(RDFS.subPropertyOf, p4);
+
+        Assertions.assertTrue(p1.hasSubProperty(p1, false));
+        Assertions.assertFalse(p1.hasSubProperty(p2, false));
+        Assertions.assertFalse(p1.hasSubProperty(p3, false));
+        Assertions.assertFalse(p1.hasSubProperty(p4, false));
+        Assertions.assertTrue(p2.hasSubProperty(p1, false));
+        Assertions.assertTrue(p2.hasSubProperty(p2, false));
+        Assertions.assertFalse(p2.hasSubProperty(p3, false));
+        Assertions.assertFalse(p2.hasSubProperty(p4, false));
+        Assertions.assertFalse(p3.hasSubProperty(p1, false));
+        Assertions.assertTrue(p3.hasSubProperty(p2, false));
+        Assertions.assertTrue(p3.hasSubProperty(p3, false));
+        Assertions.assertFalse(p3.hasSubProperty(p4, false));
+        Assertions.assertFalse(p4.hasSubProperty(p1, false));
+        Assertions.assertFalse(p4.hasSubProperty(p2, false));
+        Assertions.assertFalse(p4.hasSubProperty(p3, false));
+        Assertions.assertTrue(p4.hasSubProperty(p4, false));
+
+        Assertions.assertTrue(p1.hasSubProperty(p1, true));
+        Assertions.assertFalse(p1.hasSubProperty(p2, true));
+        Assertions.assertFalse(p1.hasSubProperty(p3, true));
+        Assertions.assertFalse(p1.hasSubProperty(p4, true));
+        Assertions.assertTrue(p2.hasSubProperty(p1, true));
+        Assertions.assertTrue(p2.hasSubProperty(p2, true));
+        Assertions.assertFalse(p2.hasSubProperty(p3, true));
+        Assertions.assertFalse(p2.hasSubProperty(p4, true));
+        Assertions.assertFalse(p3.hasSubProperty(p1, true));
+        Assertions.assertTrue(p3.hasSubProperty(p2, true));
+        Assertions.assertTrue(p3.hasSubProperty(p3, true));
+        Assertions.assertFalse(p3.hasSubProperty(p4, true));
+        Assertions.assertFalse(p4.hasSubProperty(p1, true));
+        Assertions.assertFalse(p4.hasSubProperty(p2, true));
+        Assertions.assertFalse(p4.hasSubProperty(p3, true));
+        Assertions.assertTrue(p4.hasSubProperty(p4, true));
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_DL_MEM_RDFS_BUILTIN_INF",
+            "OWL2_DL_MEM_RDFS_INF",
+            "OWL2_DL_MEM_TRANS_INF",
+            "OWL2_DL_MEM_RULES_INF",
+            "OWL2_MEM_RDFS_INF",
+            "OWL2_MEM_TRANS_INF",
+            "OWL2_MEM_RULES_INF",
+            "OWL2_MEM_MINI_RULES_INF",
+            "OWL2_MEM_MICRO_RULES_INF",
+            "OWL2_EL_MEM_RDFS_INF",
+            "OWL2_EL_MEM_TRANS_INF",
+            "OWL2_EL_MEM_RULES_INF",
+            "OWL2_QL_MEM_RDFS_INF",
+            "OWL2_QL_MEM_TRANS_INF",
+            "OWL2_QL_MEM_RULES_INF",
+            "OWL2_RL_MEM_RDFS_INF",
+            "OWL2_RL_MEM_TRANS_INF",
+            "OWL2_RL_MEM_RULES_INF",
+            "OWL1_DL_MEM_RDFS_INF",
+            "OWL1_DL_MEM_TRANS_INF",
+            "OWL1_DL_MEM_RULES_INF",
+            "OWL1_MEM_RDFS_INF",
+            "OWL1_MEM_TRANS_INF",
+            "OWL1_MEM_RULES_INF",
+            "OWL1_MEM_MINI_RULES_INF",
+            "OWL1_MEM_MICRO_RULES_INF",
+            "OWL1_LITE_MEM_RDFS_INF",
+            "OWL1_LITE_MEM_TRANS_INF",
+            "OWL1_LITE_MEM_RULES_INF",
+    })
+    public void testHasSubProperty1b(TestSpec spec) {
+        OntModel m = OntModelFactory.createModel(spec.inst);
+
+        OntObjectProperty p1 = m.createObjectProperty(NS + "p1");
+        OntProperty p2 = m.createObjectProperty(NS + "p2");
+        OntProperty p3 = m.createObjectProperty(NS + "p3");
+        OntDataProperty p4 = m.createDataProperty(NS + "p4");
+
+        p1.addProperty(RDFS.subPropertyOf, p2);
+        p2.addProperty(RDFS.subPropertyOf, p3);
+        p3.addProperty(RDFS.subPropertyOf, p4);
+
+        Assertions.assertTrue(p1.hasSubProperty(p1, false));
+        Assertions.assertFalse(p1.hasSubProperty(p2, false));
+        Assertions.assertFalse(p1.hasSubProperty(p3, false));
+        Assertions.assertFalse(p1.hasSubProperty(p4, false));
+        Assertions.assertTrue(p2.hasSubProperty(p1, false));
+        Assertions.assertTrue(p2.hasSubProperty(p2, false));
+        Assertions.assertFalse(p2.hasSubProperty(p3, false));
+        Assertions.assertFalse(p2.hasSubProperty(p4, false));
+        Assertions.assertTrue(p3.hasSubProperty(p1, false));
+        Assertions.assertTrue(p3.hasSubProperty(p2, false));
+        Assertions.assertTrue(p3.hasSubProperty(p3, false));
+        Assertions.assertFalse(p3.hasSubProperty(p4, false));
+        Assertions.assertFalse(p4.hasSubProperty(p1, false));
+        Assertions.assertFalse(p4.hasSubProperty(p2, false));
+        Assertions.assertFalse(p4.hasSubProperty(p3, false));
+        Assertions.assertTrue(p4.hasSubProperty(p4, false));
+
+        Assertions.assertTrue(p1.hasSubProperty(p1, true));
+        Assertions.assertFalse(p1.hasSubProperty(p2, true));
+        Assertions.assertFalse(p1.hasSubProperty(p3, true));
+        Assertions.assertFalse(p1.hasSubProperty(p4, true));
+        Assertions.assertTrue(p2.hasSubProperty(p1, true));
+        Assertions.assertTrue(p2.hasSubProperty(p2, true));
+        Assertions.assertFalse(p2.hasSubProperty(p3, true));
+        Assertions.assertFalse(p2.hasSubProperty(p4, true));
+        Assertions.assertFalse(p3.hasSubProperty(p1, true));
+        Assertions.assertTrue(p3.hasSubProperty(p2, true));
+        Assertions.assertTrue(p3.hasSubProperty(p3, true));
+        Assertions.assertFalse(p3.hasSubProperty(p4, true));
+        Assertions.assertFalse(p4.hasSubProperty(p1, true));
+        Assertions.assertFalse(p4.hasSubProperty(p2, true));
+        Assertions.assertFalse(p4.hasSubProperty(p3, true));
+        Assertions.assertTrue(p4.hasSubProperty(p4, true));
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "RDFS_MEM",
+    })
+    public void testHasSuperProperty1a(TestSpec spec) {
+        OntModel m = OntModelFactory.createModel(spec.inst);
+
+        OntProperty p1 = m.createRDFProperty(NS + "p1");
+        OntProperty p2 = m.createRDFProperty(NS + "p2");
+        OntProperty p3 = m.createRDFProperty(NS + "p3");
+
+        p1.addProperty(RDFS.subPropertyOf, p2);
+        p2.addProperty(RDFS.subPropertyOf, p3);
+
+        Assertions.assertTrue(p1.hasSuperProperty(p1, false));
+        Assertions.assertTrue(p1.hasSuperProperty(p2, false));
+        Assertions.assertFalse(p1.hasSuperProperty(p3, false));
+        Assertions.assertFalse(p2.hasSuperProperty(p1, false));
+        Assertions.assertTrue(p2.hasSuperProperty(p2, false));
+        Assertions.assertTrue(p2.hasSuperProperty(p3, false));
+        Assertions.assertFalse(p3.hasSuperProperty(p1, false));
+        Assertions.assertFalse(p3.hasSuperProperty(p2, false));
+        Assertions.assertTrue(p3.hasSuperProperty(p3, false));
+
+        Assertions.assertTrue(p1.hasSuperProperty(p1, true));
+        Assertions.assertTrue(p1.hasSuperProperty(p2, true));
+        Assertions.assertFalse(p1.hasSuperProperty(p3, true));
+        Assertions.assertFalse(p2.hasSuperProperty(p1, true));
+        Assertions.assertTrue(p2.hasSuperProperty(p2, true));
+        Assertions.assertTrue(p2.hasSuperProperty(p3, true));
+        Assertions.assertFalse(p3.hasSuperProperty(p1, true));
+        Assertions.assertFalse(p3.hasSuperProperty(p2, true));
+        Assertions.assertTrue(p3.hasSuperProperty(p3, true));
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "RDFS_MEM_RDFS_INF",
+            "RDFS_MEM_TRANS_INF",
+    })
+    public void testHasSuperProperty1b(TestSpec spec) {
+        OntModel m = OntModelFactory.createModel(spec.inst);
+
+        OntProperty p1 = m.createRDFProperty(NS + "p1");
+        OntProperty p2 = m.createRDFProperty(NS + "p2");
+        OntProperty p3 = m.createRDFProperty(NS + "p3");
+
+        p1.addProperty(RDFS.subPropertyOf, p2);
+        p2.addProperty(RDFS.subPropertyOf, p3);
+
+        Assertions.assertTrue(p1.hasSuperProperty(p1, false));
+        Assertions.assertTrue(p1.hasSuperProperty(p2, false));
+        Assertions.assertTrue(p1.hasSuperProperty(p3, false));
+        Assertions.assertFalse(p2.hasSuperProperty(p1, false));
+        Assertions.assertTrue(p2.hasSuperProperty(p2, false));
+        Assertions.assertTrue(p2.hasSuperProperty(p3, false));
+        Assertions.assertFalse(p3.hasSuperProperty(p1, false));
+        Assertions.assertFalse(p3.hasSuperProperty(p2, false));
+        Assertions.assertTrue(p3.hasSuperProperty(p3, false));
+
+        Assertions.assertTrue(p1.hasSuperProperty(p1, true));
+        Assertions.assertTrue(p1.hasSuperProperty(p2, true));
+        Assertions.assertFalse(p1.hasSuperProperty(p3, true));
+        Assertions.assertFalse(p2.hasSuperProperty(p1, true));
+        Assertions.assertTrue(p2.hasSuperProperty(p2, true));
+        Assertions.assertTrue(p2.hasSuperProperty(p3, true));
+        Assertions.assertFalse(p3.hasSuperProperty(p1, true));
+        Assertions.assertFalse(p3.hasSuperProperty(p2, true));
+        Assertions.assertTrue(p3.hasSuperProperty(p3, true));
     }
 }

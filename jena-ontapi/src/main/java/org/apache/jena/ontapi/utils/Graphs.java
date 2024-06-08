@@ -444,7 +444,6 @@ public class Graphs {
         if (id == null) {
             return false;
         }
-        Set<UnionGraph> res = new LinkedHashSet<>();
         Map<Node, UnionGraph> queue = new LinkedHashMap<>();
         queue.put(id, graph);
         Set<Node> seen = new HashSet<>();
@@ -596,8 +595,8 @@ public class Graphs {
      * Note: it works with any graph, not necessarily with the base.
      * A valid composite ontology graph a lot of ontological nodes are expected.
      * If {@code allowMultipleOntologyHeaders = true}, the most suitable ontology header will be chosen:
-     * if there are both uri and blank ontological nodes together in the graph, then it prefers uri;
-     * if there are several ontological nodes of the same kind, he chooses the most cumbersome one.
+     * if there are both uri and blank ontological nodes together in the graph, then the method prefers uri;
+     * if there are several ontological nodes of the same kind, it chooses the most cumbersome one.
      *
      * @param graph                        {@link Graph}
      * @param allowMultipleOntologyHeaders {@code boolean}

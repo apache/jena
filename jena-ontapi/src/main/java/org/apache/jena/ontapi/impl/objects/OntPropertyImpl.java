@@ -94,6 +94,26 @@ public abstract class OntPropertyImpl extends OntObjectImpl implements OntProper
         );
     }
 
+    public static <X extends OntProperty> boolean hasSuperProperty(X property, X candidateSuper, Class<X> type, boolean direct) {
+        if (property.equals(candidateSuper)) {
+            // every property is a sub-property of itself
+            return true;
+        }
+        if (direct) {
+            Property reasonerProperty = reasonerProperty(property.getModel(), RDFS.subPropertyOf);
+            if (reasonerProperty != null) {
+                return property.getModel().contains(property, reasonerProperty, candidateSuper);
+            }
+        }
+        return HierarchySupport.contains(
+                property,
+                candidateSuper,
+                it -> explicitSuperProperties(it, RDFS.subPropertyOf, type),
+                direct,
+                OntGraphModelImpl.configValue(property.getModel(), OntModelControls.USE_BUILTIN_HIERARCHY_SUPPORT)
+        );
+    }
+
     public static <X extends OntRelationalProperty> Stream<X> disjointProperties(OntGraphModelImpl m, Class<X> type, X property) {
         if (!OntGraphModelImpl.configValue(m, OntModelControls.USE_OWL2_PROPERTY_DISJOINT_WITH_FEATURE)) {
             return Stream.empty();
@@ -101,7 +121,7 @@ public abstract class OntPropertyImpl extends OntObjectImpl implements OntProper
         return property.objects(OWL2.propertyDisjointWith, type);
     }
 
-    public static <X extends OntRelationalProperty> OntStatement addDisjointWith(OntGraphModelImpl m, Class<X> type, X property, X other) {
+    public static <X extends OntRelationalProperty> OntStatement addDisjointWith(OntGraphModelImpl m, X property, X other) {
         OntGraphModelImpl.checkFeature(m, OntModelControls.USE_OWL2_PROPERTY_DISJOINT_WITH_FEATURE, "owl:propertyDisjointWith");
         return property.addStatement(OWL2.propertyDisjointWith, other);
     }
@@ -118,7 +138,7 @@ public abstract class OntPropertyImpl extends OntObjectImpl implements OntProper
         return property.objects(OWL2.equivalentProperty, type);
     }
 
-    public static <X extends OntRelationalProperty> OntStatement addEquivalentProperty(OntGraphModelImpl m, Class<X> type, X property, X other) {
+    public static <X extends OntRelationalProperty> OntStatement addEquivalentProperty(OntGraphModelImpl m, X property, X other) {
         OntGraphModelImpl.checkFeature(m, OntModelControls.USE_OWL_PROPERTY_EQUIVALENT_FEATURE, "owl:equivalentProperty");
         return property.addStatement(OWL2.equivalentProperty, other);
     }

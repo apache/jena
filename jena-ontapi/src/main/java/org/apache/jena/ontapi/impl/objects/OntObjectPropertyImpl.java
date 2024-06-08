@@ -30,6 +30,7 @@ import org.apache.jena.ontapi.model.OntList;
 import org.apache.jena.ontapi.model.OntNegativeAssertion;
 import org.apache.jena.ontapi.model.OntObject;
 import org.apache.jena.ontapi.model.OntObjectProperty;
+import org.apache.jena.ontapi.model.OntProperty;
 import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.ontapi.utils.Iterators;
 import org.apache.jena.rdf.model.Model;
@@ -72,6 +73,12 @@ public abstract class OntObjectPropertyImpl extends OntPropertyImpl implements O
     }
 
     @Override
+    public boolean hasSuperProperty(OntProperty property, boolean direct) {
+        return property.canAs(OntObjectProperty.class) &&
+                OntPropertyImpl.hasSuperProperty(this, property.as(OntObjectProperty.class), OntObjectProperty.class, direct);
+    }
+
+    @Override
     public OntNegativeAssertion.WithObjectProperty addNegativeAssertion(OntIndividual source, OntIndividual target) {
         return OntNegativePropertyAssertionImpl.create(getModel(), source, this, target);
     }
@@ -104,7 +111,7 @@ public abstract class OntObjectPropertyImpl extends OntPropertyImpl implements O
 
     @Override
     public OntStatement addPropertyDisjointWithStatement(OntObjectProperty other) {
-        return addDisjointWith(getModel(), OntObjectProperty.class, this, other);
+        return addDisjointWith(getModel(), this, other);
     }
 
     @Override
@@ -120,7 +127,7 @@ public abstract class OntObjectPropertyImpl extends OntPropertyImpl implements O
 
     @Override
     public OntStatement addEquivalentPropertyStatement(OntObjectProperty other) {
-        return addEquivalentProperty(getModel(), OntObjectProperty.class, this, other);
+        return addEquivalentProperty(getModel(), this, other);
     }
 
     @Override

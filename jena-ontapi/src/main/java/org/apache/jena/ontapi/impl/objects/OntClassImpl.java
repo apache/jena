@@ -435,6 +435,9 @@ public abstract class OntClassImpl extends OntObjectImpl implements OntClass {
     }
 
     public static Stream<OntClass> subClasses(OntClass clazz, boolean direct) {
+        if (clazz.asSuperClass() == null) {
+            return Stream.empty();
+        }
         if (direct) {
             Property reasonerProperty = reasonerProperty(clazz.getModel(), RDFS.subClassOf);
             if (reasonerProperty != null) {
@@ -450,6 +453,9 @@ public abstract class OntClassImpl extends OntObjectImpl implements OntClass {
     }
 
     public static Stream<OntClass> superClasses(OntClass clazz, boolean direct) {
+        if (clazz.asSubClass() == null) {
+            return Stream.empty();
+        }
         if (direct) {
             Property reasonerProperty = reasonerProperty(clazz.getModel(), RDFS.subClassOf);
             if (reasonerProperty != null) {
@@ -458,6 +464,29 @@ public abstract class OntClassImpl extends OntObjectImpl implements OntClass {
         }
         return HierarchySupport.treeNodes(
                 clazz,
+                it -> explicitSuperClasses(RDFS.subClassOf, it),
+                direct,
+                OntGraphModelImpl.configValue(clazz.getModel(), OntModelControls.USE_BUILTIN_HIERARCHY_SUPPORT)
+        );
+    }
+
+    public static boolean hasSuperClass(OntClass clazz, OntClass candidateSuper, boolean direct) {
+        if (clazz.equals(candidateSuper)) {
+            // every class is a subclass of itself
+            return true;
+        }
+        if (clazz.asSubClass() == null || candidateSuper.asSuperClass() == null) {
+            return false;
+        }
+        if (direct) {
+            Property reasonerProperty = reasonerProperty(clazz.getModel(), RDFS.subClassOf);
+            if (reasonerProperty != null) {
+                return clazz.getModel().contains(clazz, reasonerProperty, candidateSuper);
+            }
+        }
+        return HierarchySupport.contains(
+                clazz,
+                candidateSuper,
                 it -> explicitSuperClasses(RDFS.subClassOf, it),
                 direct,
                 OntGraphModelImpl.configValue(clazz.getModel(), OntModelControls.USE_BUILTIN_HIERARCHY_SUPPORT)
@@ -546,6 +575,11 @@ public abstract class OntClassImpl extends OntObjectImpl implements OntClass {
     @Override
     public Stream<OntClass> equivalentClasses() {
         return equivalentClasses(getModel(), this);
+    }
+
+    @Override
+    public boolean hasSuperClass(OntClass clazz, boolean direct) {
+        return OntClassImpl.hasSuperClass(this, clazz, direct);
     }
 
     @Override
