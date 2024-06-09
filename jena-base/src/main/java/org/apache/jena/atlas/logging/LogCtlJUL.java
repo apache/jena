@@ -69,7 +69,13 @@ public class LogCtlJUL {
 
     static void readJavaLoggingConfiguration(InputStream details) throws Exception {
         System.setProperty(JUL_PROPERTY, "set");
-        java.util.logging.LogManager.getLogManager().readConfiguration(details);
+        java.util.logging.LogManager logManager = java.util.logging.LogManager.getLogManager();
+        // Calling .reset, stops the ConsoleHandler closing System.err.
+        // readConfiguration (or updateConfiguration) will shutdown cleanly and ConsoleHandler.close is called.
+        // That calls System.err.close()
+        // See ConsoleHandlerStream in this package, a variant that does not close the PrintStream.
+        logManager.reset();
+        logManager.readConfiguration(details);
     }
 
     private static boolean setJavaLoggingClasspath(String resourceName) {
