@@ -296,7 +296,7 @@ export default {
             showQueryButton: true,
             resizeable: true,
             requestConfig: {
-              acceptHeaderGraph : this.contentTypeGraph,
+              acceptHeaderGraph: this.contentTypeGraph,
               endpoint: this.$fusekiService.getFusekiUrl(this.currentDatasetUrl)
             },
             createShareableLink: curriedCreateShareableLink
