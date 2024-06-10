@@ -18,10 +18,14 @@
 
 package org.apache.jena.fuseki.main;
 
+import org.apache.jena.fuseki.main.prefixes.ActionPrefixesTests;
 import org.apache.jena.fuseki.main.sys.TestFusekiModules;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+//import org.apache.jena.fuseki.main.prefixes;
+//import org.apache.jena.fuseki.servlets.prefixes;
+
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -53,6 +57,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
   , TestPatchFuseki.class
   , TestFusekiCustomScriptFunc.class
+
+  , ActionPrefixesTests.class
 
   // Test ping.
   , TestMetrics.class
