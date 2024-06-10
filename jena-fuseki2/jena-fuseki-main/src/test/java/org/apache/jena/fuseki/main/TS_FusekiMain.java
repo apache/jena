@@ -18,13 +18,13 @@
 
 package org.apache.jena.fuseki.main;
 
+import org.apache.jena.fuseki.main.prefixes.*;
 import org.apache.jena.fuseki.main.sys.TestFusekiModules;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@SuiteClasses({
+@Suite
+@SelectClasses({
 
   TestPlainServer.class
 
@@ -54,7 +54,11 @@ import org.junit.runners.Suite.SuiteClasses;
   , TestPatchFuseki.class
   , TestFusekiCustomScriptFunc.class
 
-  // Test ping.
+  , TestPrefixesService.class
+  , TestPrefixesServicePlain.class
+  , TestPrefixesServiceRDF.class
+  , TestPrefixesServicePrefixesMap.class
+
   , TestMetrics.class
   , TestFusekiShaclValidation.class
 })
