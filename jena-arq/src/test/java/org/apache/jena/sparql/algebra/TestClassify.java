@@ -179,10 +179,10 @@ public class TestClassify
         TestClassify.classifyJ(x1, false);
     }
 
-    /** Can linearize because rhs binds ?x*/
+    /** Could linearize because rhs binds ?x, however, tables on both sides prefers hash join */
     @Test public void testClassify_Join_70b() {
         String x1 = "{ VALUES ?x { UNDEF } VALUES ?x { 0 } }";
-        TestClassify.classifyJ(x1, true);
+        TestClassify.classifyJ(x1, false);
     }
 
     /** Can't linearize because rhs does not bind ?x */
@@ -203,9 +203,33 @@ public class TestClassify
         TestClassify.classifyJ(x1, false);
     }
 
-    /** Can linearize because rhs binds ?x*/
+    /** Could linearize because rhs binds ?x, however, unit tables (beneath BIND) on both sides prefers hash join */
     @Test public void testClassify_Join_82() {
         String x1 = "{ BIND('x' AS ?x) { BIND('y' AS ?x) FILTER(?x < 1) } }";
+        TestClassify.classifyJ(x1, false);
+    }
+
+    /** Can linearize because rhs binds ?z */
+    @Test public void testClassify_Join_90a() {
+        String x1 = "{ ?x ?y ?z VALUES ?z { 0 } }";
+        TestClassify.classifyJ(x1, true);
+    }
+
+    /** Can linearize because rhs binds ?z (bgps must bind mentioned variables) */
+    @Test public void testClassify_Join_90b() {
+        String x1 = "{ VALUES ?z { 0 } ?x ?y ?z }";
+        TestClassify.classifyJ(x1, true);
+    }
+
+    /** Can't linearize because rhs does not bind ?z */
+    @Test public void testClassify_Join_91a() {
+        String x1 = "{ ?x ?y ?z  VALUES ?z { UNDEF } }";
+        TestClassify.classifyJ(x1, false);
+    }
+
+    /** Can linearize because rhs binds ?z */
+    @Test public void testClassify_Join_91b() {
+        String x1 = "{ VALUES ?z { UNDEF } ?x ?y ?z }";
         TestClassify.classifyJ(x1, true);
     }
 
