@@ -19,15 +19,10 @@
 package org.apache.jena.fuseki.servlets;
 
 import org.apache.jena.atlas.logging.FmtLog;
-import org.apache.jena.fuseki.servlets.ActionLib;
-import org.apache.jena.fuseki.servlets.HttpAction;
-import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames;
 
-import org.apache.jena.fuseki.servlets.prefixes.ActionPrefixesBase;
 import org.apache.jena.fuseki.servlets.prefixes.PrefixUtils;
-import org.apache.jena.fuseki.servlets.prefixes.JsonObject;
 
 import java.io.IOException;
 

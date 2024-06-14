@@ -18,10 +18,18 @@
 
 package org.apache.jena.fuseki.main.prefixes;
 
-import org.apache.jena.fuseki.servlets.prefixes.PrefixesRDF;
+import org.apache.jena.fuseki.servlets.prefixes.PrefixesAccess;
+import org.apache.jena.fuseki.servlets.prefixes.PrefixesMap;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 
-public class PrefixServiceRDFTests extends AbstractPrefixParamTests {
-    public PrefixServiceRDFTests() {
-        super(new PrefixesRDF());
+public class TestPrefixesServicePrefixesMap extends TestAbstractPrefixParam {
+    public TestPrefixesServicePrefixesMap() {
+        super(make());
+    }
+
+    private static PrefixesAccess make() {
+        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
+        return new PrefixesMap(dsg.prefixes(), dsg);
     }
 }

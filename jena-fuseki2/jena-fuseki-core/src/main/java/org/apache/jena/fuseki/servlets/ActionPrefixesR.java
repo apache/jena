@@ -20,9 +20,6 @@ package org.apache.jena.fuseki.servlets;
 
 import com.google.gson.JsonArray;
 import org.apache.jena.atlas.logging.FmtLog;
-import org.apache.jena.fuseki.servlets.ActionLib;
-import org.apache.jena.fuseki.servlets.HttpAction;
-import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames;
 

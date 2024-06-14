@@ -34,7 +34,7 @@ import org.apache.jena.tdb2.DatabaseMgr;
  * The prefix-URI mappings are represented in blank nodes of type Prefix, with prefixName and prefixURI attributes.
  * The prefixName and prefixURI of the same node are a distinct prefix-URI mapping.
  *
- * PREFIX prefixes: <http://telicent.io/prefixes#>
+ * PREFIX prefixes: <http://jena.apache.org/prefixes#>
  * PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
  * PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
  *
@@ -58,7 +58,7 @@ public class PrefixesRDF implements PrefixesAccess {
         try {
 
             String update1 = """
-                   PREFIX prefixes: <http://telicent.io/prefixes#>
+                   PREFIX prefixes: <http://jena.apache.org/prefixes#>
                    PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                    PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
                    
@@ -70,7 +70,7 @@ public class PrefixesRDF implements PrefixesAccess {
             UpdateExec.dataset(dataset).update(update1).execute();
 
             String update2 = """
-                    PREFIX prefixes: <http://telicent.io/prefixes#>
+                    PREFIX prefixes: <http://jena.apache.org/prefixes#>
                     PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                     PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
                     
@@ -96,8 +96,7 @@ public class PrefixesRDF implements PrefixesAccess {
     @Override
     public Optional<String> fetchURI(String prefix) {
 
-        //String query = "PREFIX prefixes: <http://telicent.io/prefixes#> SELECT ?X WHERE { ?X  prefixes:prefixName \"" + prefix + "\" }";
-        String query = "PREFIX prefixes: <http://telicent.io/prefixes#> " +
+        String query = "PREFIX prefixes: <http://jena.apache.org/prefixes#> " +
                 "SELECT ?prefixURI WHERE { " +
                 "?X prefixes:prefixName \"" + prefix + "\" . " +
                 "?X prefixes:prefixURI ?prefixURI " +
@@ -125,7 +124,7 @@ public class PrefixesRDF implements PrefixesAccess {
     public void updatePrefix(String prefix, String uri) {
 
         String query =
-                "PREFIX prefixes: <http://telicent.io/prefixes#>\n" +
+                "PREFIX prefixes: <http://jena.apache.org/prefixes#>\n" +
                 "PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>\n" +
                 "ASK WHERE {  ?X prefixes:prefixName  \"" + prefix + "\" ; \n" +
                 "                prefixes:prefixURI   ?prefixURI . }";
@@ -139,7 +138,7 @@ public class PrefixesRDF implements PrefixesAccess {
             String update;
             if (result.get())
                 update =
-                        "PREFIX prefixes: <http://telicent.io/prefixes#>\n" +
+                        "PREFIX prefixes: <http://jena.apache.org/prefixes#>\n" +
                         "PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>\n" +
                         "DELETE { ?X  prefixes:prefixURI ?oldURI }\n" +
                         "INSERT { ?X  prefixes:prefixURI \"" + uri + "\"^^xsd:anyURI }\n" +
@@ -149,7 +148,7 @@ public class PrefixesRDF implements PrefixesAccess {
                         "}\n";
             else
                 update =
-                        "PREFIX prefixes: <http://telicent.io/prefixes#>\n" +
+                        "PREFIX prefixes: <http://jena.apache.org/prefixes#>\n" +
                         "PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>\n" +
                         "PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
                         "INSERT DATA {\n" +
@@ -166,7 +165,7 @@ public class PrefixesRDF implements PrefixesAccess {
 
     @Override
     public void removePrefix(String prefixToRemove) {
-        String update = "PREFIX prefixes: <http://telicent.io/prefixes#>\n" +
+        String update = "PREFIX prefixes: <http://jena.apache.org/prefixes#>\n" +
                         "DELETE WHERE {?X  prefixes:prefixName \"" + prefixToRemove + "\" }\n" +
                         "\n";
         UpdateExec.dataset(dataset).update(update).execute();
@@ -174,7 +173,7 @@ public class PrefixesRDF implements PrefixesAccess {
 
     @Override
     public Map<String, String> getAll() {
-        String query = "PREFIX prefixes: <http://telicent.io/prefixes#>\n" +
+        String query = "PREFIX prefixes: <http://jena.apache.org/prefixes#>\n" +
                        "SELECT ?prefixName ?prefixURI WHERE { " +
                        "?X prefixes:prefixName ?prefixName ." +
                        "?X prefixes:prefixURI ?prefixURI " +
@@ -197,7 +196,7 @@ public class PrefixesRDF implements PrefixesAccess {
 
     @Override
     public List<String> fetchPrefix(String uri) {
-        String query = "PREFIX prefixes: <http://telicent.io/prefixes#>\n" +
+        String query = "PREFIX prefixes: <http://jena.apache.org/prefixes#>\n" +
                        "PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>\n" +
                        "SELECT ?prefixName WHERE { " +
                        "    ?X prefixes:prefixURI \"" + uri + "\"^^xsd:anyURI . \n" +

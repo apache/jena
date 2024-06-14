@@ -21,8 +21,8 @@ package org.apache.jena.fuseki.main.prefixes;
 import org.apache.jena.fuseki.servlets.prefixes.PrefixesPlain;
 
 public class
-PrefixServicePlainTests extends AbstractPrefixParamTests {
-    public PrefixServicePlainTests() {
+TestPrefixesServicePlain extends TestAbstractPrefixParam {
+    public TestPrefixesServicePlain() {
         super(new PrefixesPlain());
     }
 }

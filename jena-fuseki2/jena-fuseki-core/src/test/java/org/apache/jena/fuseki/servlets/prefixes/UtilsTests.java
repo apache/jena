@@ -18,7 +18,6 @@
 
 package org.apache.jena.fuseki.servlets.prefixes;
 
-//import org.apache.jena.fuseki.servlets.prefixes.PrefixUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;

@@ -35,11 +35,11 @@ import static org.apache.jena.http.HttpOp.httpPostForm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public abstract class AbstractPrefixParamTests {
+public abstract class TestAbstractPrefixParam {
 
     private final PrefixesAccess prefixes;
 
-    public AbstractPrefixParamTests(PrefixesAccess storage) {
+    public TestAbstractPrefixParam(PrefixesAccess storage) {
         this.prefixes = storage;
     }
 

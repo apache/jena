@@ -38,7 +38,7 @@ import static org.apache.jena.http.HttpOp.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ActionPrefixesTests {
+public class TestPrefixesService {
 
     private FusekiServer server = null;
     private String serviceURL = null;
