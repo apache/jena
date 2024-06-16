@@ -100,6 +100,9 @@ public interface OntIndividual extends OntObject, AsNamed<OntIndividual.Named>, 
      */
     default boolean hasOntClass(OntClass clazz, boolean direct) {
         Objects.requireNonNull(clazz);
+        if (!clazz.canAsAssertionClass()) {
+            return false;
+        }
         try (Stream<OntClass> classes = classes(direct)) {
             return classes.anyMatch(clazz::equals);
         }

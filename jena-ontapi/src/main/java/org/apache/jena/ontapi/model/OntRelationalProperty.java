@@ -203,7 +203,7 @@ public interface OntRelationalProperty extends OntProperty {
      */
     @Override
     default Stream<OntClass> domains() {
-        return objects(RDFS.domain, OntClass.class).map(OntClass::asSuperClass).filter(Objects::nonNull);
+        return objects(RDFS.domain, OntClass.class).filter(OntClass::canAsSuperClass).map(OntClass::asSuperClass);
     }
 
     /**

@@ -186,22 +186,54 @@ public class OntSimpleClassImpl extends OntObjectImpl implements OntClass {
 
         @Override
         public OntClass asSubClass() {
-            return OWL2.Thing.equals(this) ? null : this;
+            if (OWL2.Thing.equals(this)) {
+                throw new OntJenaException.Unsupported("Specification does not allow this class to be a subclass");
+            }
+            return this;
+        }
+
+        @Override
+        public boolean canAsSubClass() {
+            return !OWL2.Thing.equals(this);
         }
 
         @Override
         public OntClass asSuperClass() {
-            return OWL2.Thing.equals(this) ? null : this;
+            if (OWL2.Thing.equals(this)) {
+                throw new OntJenaException.Unsupported("Specification does not allow this class to be a superclass");
+            }
+            return this;
+        }
+
+        @Override
+        public boolean canAsSuperClass() {
+            return !OWL2.Thing.equals(this);
         }
 
         @Override
         public OntClass asEquivalentClass() {
-            return OWL2.Thing.equals(this) ? null : this;
+            if (OWL2.Thing.equals(this)) {
+                throw new OntJenaException.Unsupported("Specification does not allow this class to be an equivalent class");
+            }
+            return this;
+        }
+
+        @Override
+        public boolean canAsEquivalentClass() {
+            return !OWL2.Thing.equals(this);
         }
 
         @Override
         public OntClass asDisjointClass() {
-            return OWL2.Thing.equals(this) ? null : this;
+            if (OWL2.Thing.equals(this)) {
+                throw new OntJenaException.Unsupported("Specification does not allow this class to be a disjoint class");
+            }
+            return this;
+        }
+
+        @Override
+        public boolean canAsDisjointClass() {
+            return !OWL2.Thing.equals(this);
         }
     }
 

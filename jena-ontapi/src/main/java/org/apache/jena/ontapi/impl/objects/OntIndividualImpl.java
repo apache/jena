@@ -38,7 +38,6 @@ import org.apache.jena.vocabulary.OWL2;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -151,7 +150,10 @@ public abstract class OntIndividualImpl extends OntObjectImpl implements OntIndi
         if (direct) {
             Property reasonerProperty = reasonerProperty(individual.getModel(), RDF.type);
             if (reasonerProperty != null) {
-                return individual.objects(reasonerProperty, OntClass.class).map(OntClass::asAssertionClass).filter(Objects::nonNull);
+                return individual
+                        .objects(reasonerProperty, OntClass.class)
+                        .filter(OntClass::canAsAssertionClass)
+                        .map(OntClass::asAssertionClass);
             }
         }
         AtomicBoolean isIndividual = new AtomicBoolean(true);
@@ -160,13 +162,18 @@ public abstract class OntIndividualImpl extends OntObjectImpl implements OntIndi
                 direct,
                 OntGraphModelImpl.configValue(individual.getModel(), OntModelControls.USE_BUILTIN_HIERARCHY_SUPPORT)
         );
-        return (Stream<OntClass>) res;
+
+        return ((Stream<OntClass>) res)
+                .filter(OntClass::canAsAssertionClass).map(OntClass::asAssertionClass);
     }
 
     static Stream<OntClass> listClassesFor(OntObject resource, AtomicBoolean isFirstLevel) {
         if (isFirstLevel.get()) {
             isFirstLevel.set(false);
-            return resource.objects(RDF.type, OntClass.class).map(OntClass::asAssertionClass).filter(Objects::nonNull);
+            return resource
+                    .objects(RDF.type, OntClass.class)
+                    .filter(OntClass::canAsAssertionClass)
+                    .map(OntClass::asAssertionClass);
         }
         return OntClassImpl.explicitSuperClasses(RDFS.subClassOf, resource);
     }
