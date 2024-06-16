@@ -18,7 +18,6 @@
 
 package org.apache.jena.ontapi;
 
-import org.apache.jena.ontapi.common.EnhNodeFactory;
 import org.apache.jena.shared.JenaException;
 
 /**
@@ -134,10 +133,8 @@ public class OntJenaException extends JenaException {
 
     /**
      * Exception that is thrown when an ontology resource is converted to another facet,
-     * using {@link org.apache.jena.rdf.model.RDFNode#as as()},
+     * usually using {@link org.apache.jena.rdf.model.RDFNode#as as()},
      * and the requested conversion is not possible.
-     * This is an analogue of {@link org.apache.jena.ontology.ConversionException},
-     * and it is used mostly by {@link EnhNodeFactory}.
      */
     public static class Conversion extends OntJenaException {
         public Conversion(String message, Throwable cause) {

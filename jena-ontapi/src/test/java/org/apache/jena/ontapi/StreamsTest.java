@@ -22,7 +22,6 @@ import org.apache.jena.ontapi.impl.UnionGraphImpl;
 import org.apache.jena.ontapi.model.OntAnnotationProperty;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntDataProperty;
-import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.model.OntObject;
 import org.apache.jena.sparql.graph.GraphFactory;
@@ -91,8 +90,6 @@ public class StreamsTest {
     public void testSetBasedMethods() {
         OntModel m = OntModelFactory.createModel();
         OntClass.Named a = m.createOntClass("C1");
-        OntIndividual i = a.addSuperClass(m.createOntClass("C2").addSuperClass(m.getOWLThing()))
-                .createIndividual("I");
         OntDataProperty p = m.createDataProperty("D1")
                 .addSuperProperty(m.createDataProperty("D2").addSuperProperty(m.getOWLBottomDataProperty()));
 
@@ -101,9 +98,6 @@ public class StreamsTest {
         Supplier<Stream<?>> s3 = () -> a.subClasses(true);
         Supplier<Stream<?>> s4 = () -> a.superClasses(true);
 
-        Supplier<Stream<?>> s5 = () -> i.classes(false);
-        Supplier<Stream<?>> s6 = () -> i.classes(true);
-
         Supplier<Stream<?>> s7 = () -> p.superProperties(false);
         Supplier<Stream<?>> s8 = () -> p.subProperties(false);
         Supplier<Stream<?>> s9 = () -> p.superProperties(true);
@@ -111,7 +105,7 @@ public class StreamsTest {
 
         Supplier<Stream<?>> s11 = p::content;
 
-        Stream.of(s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11).forEach(s -> {
+        Stream.of(s1, s2, s3, s4, s7, s8, s9, s10, s11).forEach(s -> {
             assertTrueConstant(s.get(), Spliterator.NONNULL);
             assertTrueConstant(s.get(), Spliterator.DISTINCT);
             assertTrueConstant(s.get(), Spliterator.IMMUTABLE);

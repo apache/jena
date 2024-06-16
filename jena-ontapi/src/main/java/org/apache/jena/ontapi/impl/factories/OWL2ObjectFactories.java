@@ -176,8 +176,8 @@ public final class OWL2ObjectFactories {
                     OntClass.class,
                     OntClassImpl.ComplementOfImpl::new,
                     config);
-    public static final Function<OntConfig, EnhNodeFactory> QL_COMPLEMENT_OF_CLASS = OntClasses::createOWL2RLQLComplementOfFactory;
-    public static final Function<OntConfig, EnhNodeFactory> RL_COMPLEMENT_OF_CLASS = OntClasses::createOWL2RLQLComplementOfFactory;
+    public static final Function<OntConfig, EnhNodeFactory> QL_COMPLEMENT_OF_CLASS = OntClasses::createOWL2QLComplementOfFactory;
+    public static final Function<OntConfig, EnhNodeFactory> RL_COMPLEMENT_OF_CLASS = OntClasses::createOWL2RLComplementOfFactory;
 
     public static final Function<OntConfig, EnhNodeFactory> OBJECT_SOME_VALUES_FROM_CLASS =
             config -> OntClasses.createComponentRestrictionFactory(

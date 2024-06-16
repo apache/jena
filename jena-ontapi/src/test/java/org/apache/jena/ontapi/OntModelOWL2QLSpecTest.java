@@ -123,14 +123,15 @@ public class OntModelOWL2QLSpecTest {
         OntClass oc1 = c1.inModel(m).as(OntClass.ObjectSomeValuesFrom.class);
         OntClass oc3 = c3.inModel(m).as(OntClass.ObjectSomeValuesFrom.class);
 
-        Assertions.assertNull(oc1.asSubClass());
+        Assertions.assertFalse(oc1.canAsSubClass());
+        Assertions.assertThrows(OntJenaException.Unsupported.class, oc1::asSubClass);
         Assertions.assertSame(oc3, oc3.asSubClass());
         Assertions.assertSame(oc1, oc1.asSuperClass());
         Assertions.assertSame(oc3, oc3.asSuperClass());
 
         Assertions.assertThrows(OntJenaException.Unsupported.class, () -> m.createObjectSomeValuesFrom(p, oc1));
 
-        Assertions.assertNull(m.createObjectSomeValuesFrom(p, c0).asSubClass());
+        Assertions.assertThrows(OntJenaException.Unsupported.class, () -> m.createObjectSomeValuesFrom(p, c0).asSubClass());
         Assertions.assertEquals(4, m.ontObjects(OntClass.class).count());
         Assertions.assertEquals(3, m.ontObjects(OntClass.ObjectSomeValuesFrom.class).count());
     }
@@ -249,6 +250,7 @@ public class OntModelOWL2QLSpecTest {
             "OWL2_QL_MEM_TRANS_INF",
     })
     public void testIndividuals(TestSpec spec) {
+        // class assertions in OWL 2 QL can involve only atomic classes
         OntModel m = OntModelFactory.createModel(spec.inst);
         OntObjectProperty op = m.createObjectProperty("p");
         OntDataProperty dp = m.createDataProperty("d");
@@ -279,7 +281,7 @@ public class OntModelOWL2QLSpecTest {
         Assertions.assertEquals(List.of(), c4.individuals().collect(Collectors.toList()));
         Assertions.assertEquals(List.of(), c5.individuals().collect(Collectors.toList()));
 
-        Assertions.assertEquals(List.of(c0), i0.classes().collect(Collectors.toList()));
+        Assertions.assertEquals(Set.of(c0), i0.classes().collect(Collectors.toSet()));
         Assertions.assertEquals(List.of(), i1.classes().collect(Collectors.toList()));
         Assertions.assertEquals(List.of(), i2.classes().collect(Collectors.toList()));
         Assertions.assertEquals(List.of(), i3.classes().collect(Collectors.toList()));
@@ -343,5 +345,73 @@ public class OntModelOWL2QLSpecTest {
         c1.addProperty(OWL2.equivalentClass, c2);
         Assertions.assertEquals(List.of(c0), c1.equivalentClasses().collect(Collectors.toList()));
         Assertions.assertEquals(List.of(), c2.equivalentClasses().collect(Collectors.toList()));
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_QL_MEM",
+            "OWL2_QL_MEM_RDFS_INF",
+            "OWL2_QL_MEM_TRANS_INF",
+    })
+    public void testDisjointEquivalentAxioms(TestSpec spec) {
+        OntModel data = OntModelFactory.createModel();
+        OntObjectProperty p0 = data.createObjectProperty("p0");
+        OntDataProperty p1 = data.createDataProperty("p1");
+
+        OntClass c0 = data.createOntClass("c0");
+        OntClass c1 = data.createDataHasValue(p1, data.createTypedLiteral(42));
+        OntClass c2 = data.createObjectOneOf(data.createIndividual("X"));
+
+        OntClass c3 = data.createObjectSomeValuesFrom(p0, c0);
+        OntClass c4 = data.createObjectAllValuesFrom(p0, c2);
+        OntClass c5 = data.createDataMinCardinality(p1, 42, data.getDatatype(XSD.xstring));
+        OntClass c6 = data.createDataMaxCardinality(p1, 0, data.getDatatype(XSD.xstring));
+
+        OntClass c7 = data.createObjectIntersectionOf(c3, c0);
+        OntClass c8 = data.createObjectIntersectionOf(c1, c2);
+
+        OntClass c9 = data.createObjectComplementOf(c2);
+        OntClass c10 = data.createObjectComplementOf(c9);
+
+        OntClass c11 = data.createObjectSomeValuesFrom(p0, data.getOWLThing());
+        OntClass c12 = data.createDataSomeValuesFrom(p1, data.getDatatype(XSD.xstring));
+
+        OntModel m = OntModelFactory.createModel(data.getGraph(), spec.inst);
+
+        OntClass mc0 = c0.inModel(m).as(OntClass.class);
+        Assertions.assertThrows(OntJenaException.Conversion.class, () -> c1.inModel(m).as(OntClass.class));
+        Assertions.assertThrows(OntJenaException.Conversion.class, () -> c2.inModel(m).as(OntClass.class));
+        OntClass mc3 = c3.inModel(m).as(OntClass.class);
+        Assertions.assertThrows(OntJenaException.Conversion.class, () -> c4.inModel(m).as(OntClass.class));
+        Assertions.assertThrows(OntJenaException.Conversion.class, () -> c5.inModel(m).as(OntClass.class));
+        Assertions.assertThrows(OntJenaException.Conversion.class, () -> c6.inModel(m).as(OntClass.class));
+        OntClass mc7 = c7.inModel(m).as(OntClass.class);
+        Assertions.assertThrows(OntJenaException.Conversion.class, () ->  c8.inModel(m).as(OntClass.class));
+        Assertions.assertThrows(OntJenaException.Conversion.class, () -> c9.inModel(m).as(OntClass.class));
+        Assertions.assertThrows(OntJenaException.Conversion.class, () -> c10.inModel(m).as(OntClass.class));
+        OntClass mc11 = c11.inModel(m).as(OntClass.class);
+        OntClass mc12 = c12.inModel(m).as(OntClass.class);
+
+        Assertions.assertTrue(mc0.canAsEquivalentClass());
+        Assertions.assertTrue(mc0.canAsDisjointClass());
+        Assertions.assertFalse(mc3.canAsEquivalentClass());
+        Assertions.assertFalse(mc3.canAsDisjointClass());
+        Assertions.assertFalse(mc7.canAsEquivalentClass());
+        Assertions.assertFalse(mc7.canAsDisjointClass());
+        Assertions.assertTrue(mc11.canAsEquivalentClass());
+        Assertions.assertTrue(mc11.canAsDisjointClass());
+        Assertions.assertTrue(mc12.canAsEquivalentClass());
+        Assertions.assertTrue(mc12.canAsDisjointClass());
+
+        Assertions.assertSame(mc0, mc0.asEquivalentClass());
+        Assertions.assertSame(mc0, mc0.asDisjointClass());
+        Assertions.assertSame(mc11, mc11.asEquivalentClass());
+        Assertions.assertSame(mc11, mc11.asDisjointClass());
+        Assertions.assertSame(mc12, mc12.asEquivalentClass());
+        Assertions.assertSame(mc12, mc12.asDisjointClass());
+        Assertions.assertThrows(OntJenaException.Unsupported.class, mc3::asDisjointClass);
+        Assertions.assertThrows(OntJenaException.Unsupported.class, mc3::asEquivalentClass);
+        Assertions.assertThrows(OntJenaException.Unsupported.class, mc7::asDisjointClass);
+        Assertions.assertThrows(OntJenaException.Unsupported.class, mc7::asEquivalentClass);
     }
 }

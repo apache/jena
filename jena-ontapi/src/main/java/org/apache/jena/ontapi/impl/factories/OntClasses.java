@@ -265,7 +265,7 @@ final class OntClasses {
                             if (clazz == null) {
                                 continue;
                             }
-                            if (OWL2.Thing.equals(clazz) || clazz.asSubClass() != null) {
+                            if (OWL2.Thing.equals(clazz) || clazz.canAsSubClass()) {
                                 return true;
                             }
                         }
@@ -289,7 +289,7 @@ final class OntClasses {
                         while (res.hasNext()) {
                             Node node = res.next().getObject();
                             OntClass clazz = OntEnhGraph.asPersonalityModel(g).safeFindNodeAs(node, OntClass.class);
-                            if (clazz != null && clazz.asSuperClass() != null) {
+                            if (clazz != null && clazz.canAsSuperClass()) {
                                 return true;
                             }
                         }
@@ -320,7 +320,7 @@ final class OntClasses {
                                             .mapWith(it ->
                                                     OntEnhGraph.asPersonalityModel(g).safeFindNodeAs(it.asNode(), OntClass.class)
                                             )
-                                            .filterKeep(it -> it != null && it.asSuperClass() != null), 2)) {
+                                            .filterKeep(it -> it != null && it.canAsSuperClass()), 2)) {
                                 return true;
                             }
                         }
@@ -357,13 +357,13 @@ final class OntClasses {
                                     if (clazz == null) {
                                         continue;
                                     }
-                                    if (clazz.asSubClass() != null) {
+                                    if (clazz.canAsSubClass()) {
                                         numSub++;
                                     }
-                                    if (clazz.asSuperClass() != null) {
+                                    if (clazz.canAsSuperClass()) {
                                         numSup++;
                                     }
-                                    if (clazz.asEquivalentClass() != null) {
+                                    if (clazz.canAsEquivalentClass()) {
                                         numEqv++;
                                     }
                                     if (numSub > 1 || numSup > 1 || numEqv > 1) {
@@ -382,9 +382,18 @@ final class OntClasses {
         return OntEnhNodeFactories.createCommon(maker, CLASS_FINDER, filter);
     }
 
-    public static EnhNodeFactory createOWL2RLQLComplementOfFactory(OntConfig config) {
-        EnhNodeProducer maker = new EnhNodeProducer.WithType(OntClassImpl.RLQLComplementOfImpl.class, OWL2.Class,
-                OntClassImpl.RLQLComplementOfImpl::new);
+    public static EnhNodeFactory createOWL2RLComplementOfFactory(OntConfig config) {
+        return createOWL2RLQLComplementOfFactory(config, OntClassImpl.RLComplementOfImpl.class, OntClassImpl.RLComplementOfImpl::new);
+    }
+
+    public static EnhNodeFactory createOWL2QLComplementOfFactory(OntConfig config) {
+        return createOWL2RLQLComplementOfFactory(config, OntClassImpl.QLComplementOfImpl.class, OntClassImpl.QLComplementOfImpl::new);
+    }
+
+    private static EnhNodeFactory createOWL2RLQLComplementOfFactory(OntConfig config,
+                                                                    Class<? extends OntClassImpl> implType,
+                                                                    BiFunction<Node, EnhGraph, EnhNode> producer) {
+        EnhNodeProducer maker = new EnhNodeProducer.WithType(implType, OWL2.Class, producer);
         EnhNodeFilter primary = config.getBoolean(OntModelControls.ALLOW_NAMED_CLASS_EXPRESSIONS) ? EnhNodeFilter.TRUE : EnhNodeFilter.ANON;
         EnhNodeFilter filter = primary.and(new EnhNodeFilter.HasType(OWL2.Class))
                 .and((n, g) -> {
@@ -396,7 +405,7 @@ final class OntClasses {
                             if (clazz == null) {
                                 return false;
                             }
-                            if (clazz.asSubClass() != null) {
+                            if (clazz.canAsSubClass()) {
                                 return true;
                             }
                         }
@@ -427,7 +436,7 @@ final class OntClasses {
                                             .mapWith(it ->
                                                     OntEnhGraph.asPersonalityModel(g).safeFindNodeAs(it.asNode(), OntClass.class)
                                             )
-                                            .filterKeep(it -> it != null && it.asSubClass() != null), 2)) {
+                                            .filterKeep(it -> it != null && it.canAsSubClass()), 2)) {
                                 return true;
                             }
                         }
@@ -454,12 +463,10 @@ final class OntClasses {
                                 continue;
                             }
                             if (Iterators.anyMatch(
-                                    g.asGraph().find(n, OWL2.onClass.asNode(), Node.ANY)
-                                            .mapWith(it ->
-                                                    OntEnhGraph.asPersonalityModel(g)
-                                                            .safeFindNodeAs(it.getObject(), OntClass.class)
-                                                            .asSubClass()
-                                            ), Objects::nonNull)) {
+                                    g.asGraph().find(n, OWL2.onClass.asNode(), Node.ANY),
+                                    it -> OntEnhGraph.asPersonalityModel(g)
+                                            .safeFindNodeAs(it.getObject(), OntClass.class)
+                                            .canAsSubClass())) {
                                 return true;
                             }
                         }
@@ -648,7 +655,6 @@ final class OntClasses {
         private static final Node ONE_OF = OWL2.oneOf.asNode();
         private static final Node COMPLEMENT_OF = OWL2.complementOf.asNode();
         private static final Node TRUE = NodeFactory.createLiteralByValue(Boolean.TRUE, XSDDatatype.XSDboolean);
-        private static final Node SUB_CLASS_OF = RDFS.subClassOf.asNode();
         private static final String NON_NEGATIVE_INTEGER_URI = XSD.nonNegativeInteger.getURI();
 
 
@@ -719,14 +725,6 @@ final class OntClasses {
         private static boolean isList(Node n, EnhGraph eg, Node p) {
             return Iterators.findFirst(listObjects(n, eg, p)
                     .filterKeep(x -> LIST_FACTORY.canWrap(x.getObject(), eg))).isPresent();
-        }
-
-        @SuppressWarnings("SameParameterValue")
-        private static RDFList getList(Node n, EnhGraph eg, Node p) {
-            return Iterators.findFirst(listObjects(n, eg, p)
-                            .filterKeep(it -> LIST_FACTORY.canWrap(it.getObject(), eg))
-                            .mapWith(triple -> new RDFListImpl(triple.getObject(), eg)))
-                    .orElse(null);
         }
 
         @SuppressWarnings("SameParameterValue")
