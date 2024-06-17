@@ -67,7 +67,7 @@
 
     <!-- These two must be in-step -->
     <ver.jetty>12.0.10</ver.jetty>
-    <ver.jakarta-servlet>6.0.0</ver.jakarta-servlet>
+    <ver.jakarta-servlet>6.1.0</ver.jakarta-servlet>
 
     <ver.shiro>2.0.1</ver.shiro>
 
