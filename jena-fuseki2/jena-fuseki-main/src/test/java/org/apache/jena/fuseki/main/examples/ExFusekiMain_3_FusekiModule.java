@@ -26,7 +26,6 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.Set;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,6 +40,10 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.web.HttpSC;
 
+/**
+ * Example of adding a servlet that provides doPatch.
+ * The implementation only prints out details to show it has been called.
+ */
 public class ExFusekiMain_3_FusekiModule {
 
     public static void main(String...a) throws Exception {
@@ -87,16 +90,18 @@ public class ExFusekiMain_3_FusekiModule {
 
         @Override public void prepare(FusekiServer.Builder builder, Set<String> datasetNames, Model configModel) {
             System.out.println("Module adds servlet");
+            // Servlet API 6.1 adds "doPatch"
             HttpServlet servlet = new HttpServlet() {
-                @Override public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-                    if ( req.getMethod().equalsIgnoreCase("PATCH") ) {
-                        doPatch(req, res);
-                        return ;
-                    }
-                    super.service(req, res);
-                }
-
-                private void doPatch(HttpServletRequest req, HttpServletResponse res) throws IOException {
+                // Servlet API 6.0 and earlier did not provide doPatch.
+//                @Override public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+//                    if ( req.getMethod().equalsIgnoreCase("PATCH") ) {
+//                        doPatch(req, res);
+//                        return ;
+//                    }
+//                    super.service(req, res);
+//                }
+                @Override
+                protected void doPatch(HttpServletRequest req, HttpServletResponse res) throws IOException {
                     String x = IO.readWholeFileAsUTF8(req.getInputStream());
                     System.out.println("HTTP PATCH: "+x);
                     res.setStatus(HttpSC.OK_200);

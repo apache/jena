@@ -51,7 +51,8 @@ public class StringHolderServlet extends HttpServlet {
         super.service(req, resp);
     }
 
-    private void doPatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    @Override
+    protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String x = IO.readWholeFileAsUTF8(req.getInputStream());
         content.setOpaque(content.get() + x);
         resp.setStatus(HttpSC.OK_200);
