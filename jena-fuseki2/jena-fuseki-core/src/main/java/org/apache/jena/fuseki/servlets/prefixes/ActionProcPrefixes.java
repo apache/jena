@@ -50,14 +50,14 @@ public class ActionProcPrefixes extends BaseActionREST {
         Iterator<String> paramNames = action.getRequestParameterNames().asIterator();
         while(paramNames.hasNext()) {
             String check = paramNames.next();
-            if(!check.equals("prefix") && !check.equals("uri") && !check.equals("removeprefix")) {
+            if(!check.equals(PrefixUtils.PREFIX) && !check.equals(PrefixUtils.URI) && !check.equals(PrefixUtils.REMOVEPREFIX)) {
                 ServletOps.errorBadRequest("Unrecognized parameter");
                 return;
             }
         }
         // check if the combination of parameters is legal
-        String prefix = action.getRequestParameter("prefix");
-        String uri = action.getRequestParameter("uri");
+        String prefix = action.getRequestParameter(PrefixUtils.PREFIX);
+        String uri = action.getRequestParameter(PrefixUtils.URI);
         if(prefix != null && uri != null) {
             ServletOps.errorBadRequest("Provide only one of the prefix or uri parameters!");
             return;
@@ -65,9 +65,9 @@ public class ActionProcPrefixes extends BaseActionREST {
     }
 
     public void validatePost (HttpAction action) {
-        String prefix = action.getRequestParameter("prefix");
-        String uri = action.getRequestParameter("uri");
-        String prefixToRemove = action.getRequestParameter("removeprefix");
+        String prefix = action.getRequestParameter(PrefixUtils.PREFIX);
+        String uri = action.getRequestParameter(PrefixUtils.URI);
+        String prefixToRemove = action.getRequestParameter(PrefixUtils.REMOVEPREFIX);
 
         if (prefix.isEmpty() && uri.isEmpty() && prefixToRemove.isEmpty()) {
             ServletOps.errorBadRequest("Empty operation - unsuccessful!");
@@ -97,8 +97,8 @@ public class ActionProcPrefixes extends BaseActionREST {
 
         try {
             // Not null (valid request)
-            String prefix = action.getRequestParameter("prefix");
-            String uri = action.getRequestParameter("uri");
+            String prefix = action.getRequestParameter(PrefixUtils.PREFIX);
+            String uri = action.getRequestParameter(PrefixUtils.URI);
 
             if (prefix == null && uri == null) {
                 //getAll
@@ -107,8 +107,8 @@ public class ActionProcPrefixes extends BaseActionREST {
                 allPairs.entrySet().stream()
                         .forEach(entry -> {
                             com.google.gson.JsonObject jsonObject = new com.google.gson.JsonObject();
-                            jsonObject.addProperty("prefix", entry.getKey());
-                            jsonObject.addProperty("uri", entry.getValue());
+                            jsonObject.addProperty(PrefixUtils.PREFIX, entry.getKey());
+                            jsonObject.addProperty(PrefixUtils.URI, entry.getValue());
                             allJsonPairs.add(jsonObject);
                             FmtLog.info(action.log, "[%d] - %s", action.id, new JsonObject(entry.getKey(), entry.getValue()));
                         });
@@ -162,8 +162,8 @@ public class ActionProcPrefixes extends BaseActionREST {
                     JsonArray prefixJsonArray = new JsonArray();
                     for (String p : prefixList) {
                         com.google.gson.JsonObject jsonObject2 = new com.google.gson.JsonObject();
-                        jsonObject2.addProperty("prefix", p);
-                        jsonObject2.addProperty("uri", uri);
+                        jsonObject2.addProperty(PrefixUtils.PREFIX, p);
+                        jsonObject2.addProperty(PrefixUtils.URI, uri);
                         prefixJsonArray.add(jsonObject2);
                         FmtLog.info(action.log, "[%d] - %s", action.id, new JsonObject(p, uri));
                     }
@@ -196,11 +196,11 @@ public class ActionProcPrefixes extends BaseActionREST {
 
         transactional.begin(TxnType.WRITE);
         try {
-            String prefix = action.getRequestParameter("prefix");
-            String uri = action.getRequestParameter("uri");
+            String prefix = action.getRequestParameter(PrefixUtils.PREFIX);
+            String uri = action.getRequestParameter(PrefixUtils.URI);
 
             if(prefix.isEmpty()) {
-                String prefixToRemove = action.getRequestParameter("removeprefix");
+                String prefixToRemove = action.getRequestParameter(PrefixUtils.REMOVEPREFIX);
                 storage.removePrefix(prefixToRemove);
                 FmtLog.info(action.log, "[%d] Remove %s:", action.id, prefix);
             }

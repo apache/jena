@@ -39,7 +39,7 @@ public class ActionPrefixesRW extends ActionPrefixesR {
 
     public void validateDelete(HttpAction action) {
         validate(action);
-        String prefixToRemove = action.getRequestParameter("removeprefix");
+        String prefixToRemove = action.getRequestParameter(PrefixUtils.REMOVEPREFIX);
         if (prefixToRemove == null || prefixToRemove.isEmpty() || !PrefixUtils.prefixIsValid(prefixToRemove)) {
             ServletOps.errorBadRequest("Remove operation unsuccessful!");
             return;
@@ -52,7 +52,7 @@ public class ActionPrefixesRW extends ActionPrefixesR {
         action.beginWrite();
 
         try {
-            String prefixToRemove = action.getRequestParameter("removeprefix");
+            String prefixToRemove = action.getRequestParameter(PrefixUtils.REMOVEPREFIX);
             prefixes(action).removePrefix(prefixToRemove);
             FmtLog.info(action.log, "[%d] Remove %s:", action.id, prefixToRemove);
 
@@ -79,9 +79,9 @@ public class ActionPrefixesRW extends ActionPrefixesR {
 
     public void validatePost(HttpAction action) {
         validate(action);
-        String prefix = action.getRequestParameter("prefix");
-        String uri = action.getRequestParameter("uri");
-        String prefixToRemove = action.getRequestParameter("removeprefix");
+        String prefix = action.getRequestParameter(PrefixUtils.PREFIX);
+        String uri = action.getRequestParameter(PrefixUtils.URI);
+        String prefixToRemove = action.getRequestParameter(PrefixUtils.REMOVEPREFIX);
 
         if (prefix.isEmpty() && uri.isEmpty() && prefixToRemove.isEmpty()) {
             ServletOps.errorBadRequest("Empty operation - unsuccessful!");
@@ -107,11 +107,11 @@ public class ActionPrefixesRW extends ActionPrefixesR {
         action.beginWrite();
 
         try {
-            String prefix = action.getRequestParameter("prefix");
-            String uri = action.getRequestParameter("uri");
+            String prefix = action.getRequestParameter(PrefixUtils.PREFIX);
+            String uri = action.getRequestParameter(PrefixUtils.URI);
 
             if(prefix.isEmpty()) {
-                String prefixToRemove = action.getRequestParameter("removeprefix");
+                String prefixToRemove = action.getRequestParameter(PrefixUtils.REMOVEPREFIX);
                 prefixes(action).removePrefix(prefixToRemove);
                 FmtLog.info(action.log, "[%d] Remove %s:", action.id, prefix);
             }

@@ -39,7 +39,7 @@ public class ActionPrefixesBase extends BaseActionREST {
         Iterator<String> paramNames = action.getRequestParameterNames().asIterator();
         while(paramNames.hasNext()) {
             String check = paramNames.next();
-            if(!check.equals("prefix") && !check.equals("uri") && !check.equals("removeprefix")) {
+            if(!check.equals(PrefixUtils.PREFIX) && !check.equals(PrefixUtils.URI) && !check.equals(PrefixUtils.REMOVEPREFIX)) {
                 ServletOps.errorBadRequest("Unrecognized parameter");
                 return;
             }

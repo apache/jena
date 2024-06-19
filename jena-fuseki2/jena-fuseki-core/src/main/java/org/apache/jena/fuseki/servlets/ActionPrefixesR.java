@@ -48,8 +48,8 @@ public class ActionPrefixesR extends ActionPrefixesBase {
     public void validateGet(HttpAction action) {
         validate(action);
         // check if the combination of parameters is legal
-        String prefix = action.getRequestParameter("prefix");
-        String uri = action.getRequestParameter("uri");
+        String prefix = action.getRequestParameter(PrefixUtils.PREFIX);
+        String uri = action.getRequestParameter(PrefixUtils.URI);
         if(prefix != null && uri != null) {
             ServletOps.errorBadRequest("Provide only one of the prefix or uri parameters!");
             return;
@@ -64,8 +64,8 @@ public class ActionPrefixesR extends ActionPrefixesBase {
         action.beginRead();
         try {
             // Not null (valid request)
-            String prefix = action.getRequestParameter("prefix");
-            String uri = action.getRequestParameter("uri");
+            String prefix = action.getRequestParameter(PrefixUtils.PREFIX);
+            String uri = action.getRequestParameter(PrefixUtils.URI);
 
             if (prefix == null && uri == null) {
                 //getAll
@@ -74,8 +74,8 @@ public class ActionPrefixesR extends ActionPrefixesBase {
                 allPairs.entrySet().stream()
                         .forEach(entry -> {
                             com.google.gson.JsonObject jsonObject = new com.google.gson.JsonObject();
-                            jsonObject.addProperty("prefix", entry.getKey());
-                            jsonObject.addProperty("uri", entry.getValue());
+                            jsonObject.addProperty(PrefixUtils.PREFIX, entry.getKey());
+                            jsonObject.addProperty(PrefixUtils.URI, entry.getValue());
                             allJsonPairs.add(jsonObject);
                             FmtLog.info(action.log, "[%d] - %s", action.id, new JsonObject(entry.getKey(), entry.getValue()));
                         });
@@ -128,8 +128,8 @@ public class ActionPrefixesR extends ActionPrefixesBase {
                     JsonArray prefixJsonArray = new JsonArray();
                     for (String p : prefixList) {
                         com.google.gson.JsonObject jsonObject2 = new com.google.gson.JsonObject();
-                        jsonObject2.addProperty("prefix", p);
-                        jsonObject2.addProperty("uri", uri);
+                        jsonObject2.addProperty(PrefixUtils.PREFIX, p);
+                        jsonObject2.addProperty(PrefixUtils.URI, uri);
                         prefixJsonArray.add(jsonObject2);
                         FmtLog.info(action.log, "[%d] - %s", action.id, new JsonObject(p, uri));
                     }

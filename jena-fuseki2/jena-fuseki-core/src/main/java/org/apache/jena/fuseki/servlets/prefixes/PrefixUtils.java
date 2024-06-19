@@ -24,6 +24,9 @@ import java.util.regex.Pattern;
 
 public class PrefixUtils {
     public static final String PREFIX = "prefix" ;
+    public static final String URI = "uri" ;
+    public static final String REMOVEPREFIX = "removeprefix" ;
+
     private PrefixUtils() {}
     private static final Pattern regex = Pattern.compile("\\p{Alpha}([\\w.-]*\\w)?");
 
