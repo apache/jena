@@ -55,6 +55,24 @@ public class TestStoreParams {
         assertEqualsStoreParams(params,params2);
     }
 
+    @Test public void store_params_05() {
+        Double initialCapacityFactor = Double.valueOf(0.125);
+        StoreParams params = StoreParams.builder(label()).nodeCacheInitialCapacityFactor(initialCapacityFactor).build();
+        StoreParams params2 = roundTrip(params);
+        assertEqualsStoreParams(params, params2);
+        assertEquals(params.getNodeCacheInitialCapacityFactor(), initialCapacityFactor);
+        assertEquals(params2.getNodeCacheInitialCapacityFactor(), initialCapacityFactor);
+    }
+
+    @Test public void store_params_06() {
+        Double initialCapacityFactor = Double.valueOf(0.33333);
+        String xs = "{ \"tdb.node_cache_initial_capacity_factor\": " + initialCapacityFactor + " }";
+        JsonObject x = JSON.parse(xs);
+        StoreParams paramsExpected = StoreParams.builder(label()).nodeCacheInitialCapacityFactor(initialCapacityFactor).build();
+        StoreParams paramsActual = StoreParamsCodec.decode(x);
+        assertEqualsStoreParams(paramsExpected,paramsActual);
+    }
+
     // ----
 
     @Test public void store_params_10() {

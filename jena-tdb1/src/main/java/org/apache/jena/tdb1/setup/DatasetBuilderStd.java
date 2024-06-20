@@ -351,7 +351,8 @@ public class DatasetBuilderStd {
         nodeTable = NodeTableCache.create(nodeTable,
                                           params.getNode2NodeIdCacheSize(),
                                           params.getNodeId2NodeCacheSize(),
-                                          params.getNodeMissCacheSize());
+                                          params.getNodeMissCacheSize(),
+                                          params.getNodeCacheInitialCapacityFactor());
         nodeTable = NodeTableInline.create(nodeTable);
         return nodeTable;
     }

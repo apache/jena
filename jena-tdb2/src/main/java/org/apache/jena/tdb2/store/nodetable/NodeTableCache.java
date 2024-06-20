@@ -77,28 +77,32 @@ public class NodeTableCache implements NodeTable, TransactionListener {
         int nodeToIdCacheSize   = isData ? params.getNode2NodeIdCacheSize() : params.getPrefixNode2NodeIdCacheSize();
         int idToNodeCacheSize   = isData ? params.getNodeId2NodeCacheSize() : params.getPrefixNodeId2NodeCacheSize();
         int missCacheSize       = isData ? params.getNodeMissCacheSize()    : params.getPrefixNodeMissCacheSize();
-        return create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, missCacheSize);
+        return create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, missCacheSize,
+                params.getNodeCacheInitialCapacityFactor());
     }
 
     /** Build a node table cache. */
-    public static NodeTable create(NodeTable nodeTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize) {
+    public static NodeTable create(NodeTable nodeTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize,
+                                   double nodeCacheInitialCapacityFactor) {
         if ( nodeToIdCacheSize <= 0 && idToNodeCacheSize <= 0 )
             return nodeTable;
-        return new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, nodeMissesCacheSize);
+        return new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, nodeMissesCacheSize, nodeCacheInitialCapacityFactor);
     }
 
-    private NodeTableCache(NodeTable baseTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize) {
+    private NodeTableCache(NodeTable baseTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize,
+                           double nodeCacheInitialCapacityFactor) {
         this.baseTable = baseTable;
         if ( nodeToIdCacheSize > 0 )
-            node2id_Cache = createCache("nodeToId", nodeToIdCacheSize, 1000);
+            node2id_Cache = createCache("nodeToId", nodeToIdCacheSize, nodeCacheInitialCapacityFactor, 1000);
         if ( idToNodeCacheSize > 0 )
-            id2node_Cache = createCache("idToNode", idToNodeCacheSize, 1000);
+            id2node_Cache = createCache("idToNode", idToNodeCacheSize, nodeCacheInitialCapacityFactor, 1000);
         if ( nodeMissesCacheSize > 0 )
-            notPresent = CacheFactory.createCache(nodeMissesCacheSize);
+            notPresent = CacheFactory.createCache(nodeMissesCacheSize, nodeCacheInitialCapacityFactor);
     }
 
-    private static <Key, Value> ThreadBufferingCache<Key, Value> createCache(String label, int mainCachesize, int bufferSize) {
-        Cache<Key, Value> cache = CacheFactory.createCache(mainCachesize);
+    private static <Key, Value> ThreadBufferingCache<Key, Value> createCache(String label, int mainCachesize,
+                                                                             double initialCapacityFactor, int bufferSize) {
+        Cache<Key, Value> cache = CacheFactory.createCache(mainCachesize, initialCapacityFactor);
         return new ThreadBufferingCache<>(label, cache, bufferSize);
     }
 
