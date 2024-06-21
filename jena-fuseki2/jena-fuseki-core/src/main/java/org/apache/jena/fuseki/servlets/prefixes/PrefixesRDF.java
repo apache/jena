@@ -29,6 +29,8 @@ import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.tdb2.DatabaseMgr;
+import org.apache.jena.query.ParameterizedSparqlString;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 
 /**
  * The prefix-URI mappings are represented in blank nodes of type Prefix, with prefixName and prefixURI attributes.
@@ -58,11 +60,18 @@ public class PrefixesRDF implements PrefixesAccess {
     @Override
     public Optional<String> fetchURI(String prefix) {
 
-        String query = "PREFIX prefixes: <http://jena.apache.org/prefixes#> " +
-                "SELECT ?prefixURI WHERE { " +
-                "?X prefixes:prefixName \"" + prefix + "\" . " +
-                "?X prefixes:prefixURI ?prefixURI " +
-                "}";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(
+                """
+                PREFIX prefixes: <http://jena.apache.org/prefixes#>
+                SELECT ?prefixURI WHERE {
+                    ?X prefixes:prefixName ?prefixName .
+                    ?X prefixes:prefixURI ?prefixURI
+                }
+                """
+        );
+        pss.setLiteral("prefixName", prefix);
+        String query = pss.toString();
+
 
         try (QueryExec qExec = QueryExec.dataset(dataset).query(query).build()) {
 
@@ -85,11 +94,17 @@ public class PrefixesRDF implements PrefixesAccess {
     @Override
     public void updatePrefix(String prefix, String uri) {
 
-        String query =
-                "PREFIX prefixes: <http://jena.apache.org/prefixes#>\n" +
-                "PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>\n" +
-                "ASK WHERE {  ?X prefixes:prefixName  \"" + prefix + "\" ; \n" +
-                "                prefixes:prefixURI   ?prefixURI . }";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(
+                """
+                PREFIX prefixes: <http://jena.apache.org/prefixes#>
+                PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
+                ASK WHERE {  ?X prefixes:prefixName  ?prefixName ; 
+                                prefixes:prefixURI   ?prefixURI . 
+                }
+                """);
+        pss.setLiteral("prefixName", prefix);
+        String query = pss.toString();
+
         try (QueryExec qExec = QueryExec.dataset(dataset).query(query).build()) {
 
             AtomicBoolean result = new AtomicBoolean(false);
@@ -98,26 +113,39 @@ public class PrefixesRDF implements PrefixesAccess {
             });
 
             String update;
-            if (result.get())
-                update =
-                        "PREFIX prefixes: <http://jena.apache.org/prefixes#>\n" +
-                        "PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>\n" +
-                        "DELETE { ?X  prefixes:prefixURI ?oldURI }\n" +
-                        "INSERT { ?X  prefixes:prefixURI \"" + uri + "\"^^xsd:anyURI }\n" +
-                        "WHERE {\n" +
-                        "  ?X prefixes:prefixName  \"" + prefix + "\" ;\n" +
-                        "     prefixes:prefixURI   ?oldURI \n" +
-                        "}\n";
-            else
-                update =
-                        "PREFIX prefixes: <http://jena.apache.org/prefixes#>\n" +
-                        "PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>\n" +
-                        "PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-                        "INSERT DATA {\n" +
-                        "[] rdf:type prefixes:Prefix ;\n" +
-                        "   prefixes:prefixName  \"" + prefix + "\" ;\n" +
-                        "   prefixes:prefixURI   \"" + uri + "\"^^xsd:anyURI \n" +
-                        "}";
+            ParameterizedSparqlString pssUpdate;
+            if (result.get()) {
+                pssUpdate = new ParameterizedSparqlString(
+                        """
+                                PREFIX prefixes: <http://jena.apache.org/prefixes#>
+                                PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
+                                DELETE { ?X prefixes:prefixURI ?oldURI }
+                                INSERT { ?X prefixes:prefixURI ?newURI }
+                                WHERE {
+                                    ?X prefixes:prefixName ?prefixName ;
+                                        prefixes:prefixURI ?oldURI
+                                }
+                        """);
+                pssUpdate.setLiteral("prefixName", prefix);
+                pssUpdate.setLiteral("newURI", uri, XSDDatatype.XSDanyURI);
+                update = pssUpdate.toString();
+            }
+            else {
+                pssUpdate = new ParameterizedSparqlString(
+                        """
+                                PREFIX prefixes: <http://jena.apache.org/prefixes#>
+                                PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
+                                PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                                INSERT DATA {
+                                    [] rdf:type prefixes:Prefix ;
+                                        prefixes:prefixName ?prefixName ;
+                                        prefixes:prefixURI ?newURI
+                                }
+                         """);
+                pssUpdate.setLiteral("prefixName", prefix);
+                pssUpdate.setLiteral("newURI", uri, XSDDatatype.XSDanyURI);
+                update = pssUpdate.toString();
+            }
             UpdateExec.dataset(dataset).update(update).execute();
         }
         catch (RuntimeException e) {
@@ -127,19 +155,27 @@ public class PrefixesRDF implements PrefixesAccess {
 
     @Override
     public void removePrefix(String prefixToRemove) {
-        String update = "PREFIX prefixes: <http://jena.apache.org/prefixes#>\n" +
-                        "DELETE WHERE {?X  prefixes:prefixName \"" + prefixToRemove + "\" }\n" +
-                        "\n";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(
+                """
+                PREFIX prefixes: <http://jena.apache.org/prefixes#>
+                DELETE WHERE { ?X prefixes:prefixName ?prefixName }
+                """
+        );
+        pss.setLiteral("prefixName", prefixToRemove);
+        String update = pss.toString();
         UpdateExec.dataset(dataset).update(update).execute();
     }
 
     @Override
     public Map<String, String> getAll() {
-        String query = "PREFIX prefixes: <http://jena.apache.org/prefixes#>\n" +
-                       "SELECT ?prefixName ?prefixURI WHERE { " +
-                       "?X prefixes:prefixName ?prefixName ." +
-                       "?X prefixes:prefixURI ?prefixURI " +
-                       "}";
+        String query =
+                """
+                PREFIX prefixes: <http://jena.apache.org/prefixes#>
+                SELECT ?prefixName ?prefixURI WHERE {
+                    ?X prefixes:prefixName ?prefixName .
+                    ?X prefixes:prefixURI ?prefixURI
+                }
+                """;
 
         try (QueryExec qExec = QueryExec.dataset(dataset).query(query).build()) {
 
@@ -158,12 +194,18 @@ public class PrefixesRDF implements PrefixesAccess {
 
     @Override
     public List<String> fetchPrefix(String uri) {
-        String query = "PREFIX prefixes: <http://jena.apache.org/prefixes#>\n" +
-                       "PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>\n" +
-                       "SELECT ?prefixName WHERE { " +
-                       "    ?X prefixes:prefixURI \"" + uri + "\"^^xsd:anyURI . \n" +
-                       "    ?X prefixes:prefixName ?prefixName \n" +
-                       "}";
+        ParameterizedSparqlString pss = new ParameterizedSparqlString(
+                """
+                PREFIX prefixes: <http://jena.apache.org/prefixes#>
+                PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
+                SELECT ?prefixName WHERE { 
+                    ?X prefixes:prefixURI ?uriName .
+                    ?X prefixes:prefixName ?prefixName
+                }
+                """);
+        pss.setLiteral("uriName", uri, XSDDatatype.XSDanyURI);
+        String query = pss.toString();
+
         try (QueryExec qExec = QueryExec.dataset(dataset).query(query).build()) {
 
             RowSet rowSet = qExec.select();
