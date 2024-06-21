@@ -52,44 +52,6 @@ import org.apache.jena.tdb2.DatabaseMgr;
 public class PrefixesRDF implements PrefixesAccess {
 
     DatasetGraph dataset = DatabaseMgr.createDatasetGraph();
-    public void setDataset() {
-
-        dataset.begin(ReadWrite.WRITE) ;
-        try {
-
-            String update1 = """
-                   PREFIX prefixes: <http://jena.apache.org/prefixes#>
-                   PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                   PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
-                   
-                   INSERT DATA {
-                         [] rdf:type prefixes:Prefix ;
-                            prefixes:prefixName  "prefix1" ;
-                            prefixes:prefixURI   "http://www.localhost.org/uri1#"^^xsd:anyURI
-                   }""";
-            UpdateExec.dataset(dataset).update(update1).execute();
-
-            String update2 = """
-                    PREFIX prefixes: <http://jena.apache.org/prefixes#>
-                    PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                    PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
-                    
-                    INSERT DATA {
-                          [] rdf:type prefixes:Prefix ;
-                             prefixes:prefixName  "prefix2" ;
-                             prefixes:prefixURI   "http://www.localhost.org/uri2#"^^xsd:anyURI
-                    }""";
-            UpdateExec.dataset(dataset).update(update2).execute();
-
-            dataset.commit();
-        } catch (Throwable th) {
-            dataset.abort();
-            throw(th);
-        } finally {
-            dataset.end() ;
-        }
-
-    }
 
     public Transactional transactional() { return dataset; }
 

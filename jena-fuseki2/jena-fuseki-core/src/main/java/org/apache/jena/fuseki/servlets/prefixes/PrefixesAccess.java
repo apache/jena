@@ -37,6 +37,6 @@ public interface PrefixesAccess {
 
     Map<String, String> getAll();
 
-    /** Fetches the prefixes assigned o the provided URI. There can be multiple in the JsonArray.**/
+    /** Fetches the prefixes assigned to the provided URI. There can be multiple in the List.**/
     List<String> fetchPrefix(String uri);
 }

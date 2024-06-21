@@ -39,12 +39,8 @@ public class PrefixesService {
     private static final ActionService procPrefixRW;
 
     static {
-        operationPrefixesR = Operation.alloc("http://telicent.io/fuseki/operation/prefixes-r",
-                                        "prefixes-r",
-                                    "Read prefixes");
-        operationPrefixesRW = Operation.alloc("http://telicent.io/fuseki/operation/prefixes-rw",
-                                        "prefixes-ws",
-                                    "Read-write prefixes");
+        operationPrefixesR = Operation.PREFIXES_R;
+        operationPrefixesRW = Operation.PREFIXES_RW;
 
         procPrefixR = new ActionPrefixesR();
         procPrefixRW = new ActionPrefixesRW();
