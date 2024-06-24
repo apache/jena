@@ -164,15 +164,15 @@ public class QueryParserBase
     }
 
     protected Node createLiteralInteger(String lexicalForm) {
-        return NodeFactory.createLiteral(lexicalForm, XSDDatatype.XSDinteger);
+        return NodeFactory.createLiteralDT(lexicalForm, XSDDatatype.XSDinteger);
     }
 
     protected Node createLiteralDouble(String lexicalForm) {
-        return NodeFactory.createLiteral(lexicalForm, XSDDatatype.XSDdouble);
+        return NodeFactory.createLiteralDT(lexicalForm, XSDDatatype.XSDdouble);
     }
 
     protected Node createLiteralDecimal(String lexicalForm) {
-        return NodeFactory.createLiteral(lexicalForm, XSDDatatype.XSDdecimal);
+        return NodeFactory.createLiteralDT(lexicalForm, XSDDatatype.XSDdecimal);
     }
 
     protected Node stripSign(Node node) {
@@ -213,7 +213,7 @@ public class QueryParserBase
         // Can't have type and lang tag in parsing.
         if ( datatypeURI != null ) {
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatypeURI);
-            n = NodeFactory.createLiteral(lexicalForm, dType);
+            n = NodeFactory.createLiteralDT(lexicalForm, dType);
         } else if ( langTag != null && !langTag.isEmpty() )
             n = NodeFactory.createLiteralLang(lexicalForm, langTag);
         else

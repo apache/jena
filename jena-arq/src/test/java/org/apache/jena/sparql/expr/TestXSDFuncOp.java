@@ -28,6 +28,7 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.expr.nodevalue.*;
 import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.sparql.util.XSDNumUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -97,7 +98,7 @@ public class TestXSDFuncOp {
     }
 
     private static void lex_decimal_value(BigDecimal decimal, String expected) {
-        String lex = XSDFuncOp.canonicalDecimalStr(decimal);
+        String lex = XSDNumUtils.stringFormatARQ(decimal);
         assertEquals(expected, lex);
     }
 
@@ -109,7 +110,7 @@ public class TestXSDFuncOp {
 
     private static void lex_decimal_canonical(String input, String expected) {
         BigDecimal decimal = new BigDecimal(input);
-        String lex = XSDFuncOp.canonicalDecimalStr(decimal);
+        String lex = XSDNumUtils.stringFormatARQ(decimal);
         assertEquals(expected, lex);
     }
 

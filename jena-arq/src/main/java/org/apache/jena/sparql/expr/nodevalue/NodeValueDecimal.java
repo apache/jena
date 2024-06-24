@@ -18,52 +18,53 @@
 
 package org.apache.jena.sparql.expr.nodevalue;
 
-import java.math.BigDecimal ;
+import java.math.BigDecimal;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.util.XSDNumUtils;
 
 public class NodeValueDecimal extends NodeValue
 {
-    BigDecimal decimal ;
-    
-    public NodeValueDecimal(BigDecimal d)         { decimal = d ; }
-    public NodeValueDecimal(BigDecimal d, Node n) { super(n) ; decimal = d ; }
+    BigDecimal decimal;
+
+    public NodeValueDecimal(BigDecimal d)         { decimal = d; }
+    public NodeValueDecimal(BigDecimal d, Node n) { super(n); decimal = d; }
 
     @Override
-    public boolean isNumber() { return true ; }
+    public boolean isNumber() { return true; }
     @Override
-    public boolean isDecimal() { return true ; }
+    public boolean isDecimal() { return true; }
     @Override
-    public boolean isFloat()  { return true ; }
+    public boolean isFloat()  { return true; }
     @Override
-    public boolean isDouble() { return true ; }
-    
+    public boolean isDouble() { return true; }
+
     @Override
-    public BigDecimal getDecimal()  { return decimal ; }
+    public BigDecimal getDecimal()  { return decimal; }
     @Override
-    public float getFloat()    { return decimal.floatValue() ; }
+    public float getFloat()    { return decimal.floatValue(); }
     @Override
-    public double getDouble()  { return decimal.doubleValue() ; }
+    public double getDouble()  { return decimal.doubleValue(); }
 
     @Override
     protected Node makeNode() {
-        return NodeFactory.createLiteral(XSDFuncOp.canonicalDecimalStr(decimal), XSDDatatype.XSDdecimal) ;
+        return NodeFactory.createLiteralDT(XSDNumUtils.stringFormatARQ(decimal), XSDDatatype.XSDdecimal);
     }
 
     @Override
-    public String asString() { return toString() ; }
+    public String asString() { return toString(); }
 
     @Override
-    public String toString()
-    { 
+    public String toString() {
         // Preserve lexical form.
-        if ( getNode() != null ) return super.asString() ;
-        return XSDFuncOp.canonicalDecimalStr(decimal);
+        if ( getNode() != null )
+            return super.asString();
+        return XSDNumUtils.stringFormatARQ(decimal);
     }
 
     @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
+    public void visit(NodeValueVisitor visitor) { visitor.visit(this); }
 }

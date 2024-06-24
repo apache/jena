@@ -60,8 +60,8 @@ public class TestRuleUtil {
     }
     
     private void compare(String lex1, XSDDatatype dt1, String lex2, XSDDatatype dt2, int outcome) {
-        Node n1 = NodeFactory.createLiteral(lex1, dt1);
-        Node n2 = NodeFactory.createLiteral(lex2, dt2);
+        Node n1 = NodeFactory.createLiteralDT(lex1, dt1);
+        Node n2 = NodeFactory.createLiteralDT(lex2, dt2);
         int z = Util.compareNumbers(n1, n2);
         assertEquals(outcome, z);
     }

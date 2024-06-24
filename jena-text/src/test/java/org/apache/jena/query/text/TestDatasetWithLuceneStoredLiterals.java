@@ -273,7 +273,7 @@ public class TestDatasetWithLuceneStoredLiterals extends AbstractTestDatasetWith
         Map<String,Literal> literals = doTestSearchWithLiterals(turtle, queryString, expectedURIs);
         Literal value = literals.get( RESOURCE_BASE + testName );
         assertNotNull(value);
-        assertEquals(NodeFactory.createLiteral("true", XSDDatatype.XSDboolean), value.asNode());
+        assertEquals(NodeFactory.createLiteralDT("true", XSDDatatype.XSDboolean), value.asNode());
     }
 
     @Test

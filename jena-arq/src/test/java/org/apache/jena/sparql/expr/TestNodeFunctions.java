@@ -55,7 +55,7 @@ public class TestNodeFunctions {
 
     @Test public void testSameTerm4() {
         Node n1 = NodeFactory.createLiteralString("xyz");
-        Node n2 = NodeFactory.createLiteral("xyz", XSDDatatype.XSDstring);
+        Node n2 = NodeFactory.createLiteralDT("xyz", XSDDatatype.XSDstring);
         assertTrue(NodeFunctions.sameTerm(n1, n2));
     }
 
@@ -94,8 +94,8 @@ public class TestNodeFunctions {
     @Test(expected=ExprEvalException.class)
     public void testRDFtermEquals4() {
         // Unextended - not known to be same.
-        Node n1 = NodeFactory.createLiteral("123", XSDDatatype.XSDinteger);
-        Node n2 = NodeFactory.createLiteral("456", XSDDatatype.XSDinteger);
+        Node n1 = NodeFactory.createLiteralDT("123", XSDDatatype.XSDinteger);
+        Node n2 = NodeFactory.createLiteralDT("456", XSDDatatype.XSDinteger);
         assertTrue(NodeFunctions.rdfTermEquals(n1, n2));
     }
 

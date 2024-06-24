@@ -20,10 +20,10 @@ package org.apache.jena.riot.process.normalize;
 
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
-import java.text.DecimalFormat ;
-import java.text.DecimalFormatSymbols ;
-import java.text.NumberFormat ;
-import java.util.Locale ;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import javax.xml.datatype.XMLGregorianCalendar ;
 
@@ -33,6 +33,7 @@ import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.graph.NodeConst ;
 import org.apache.jena.sparql.util.DateTimeStruct ;
+import org.apache.jena.sparql.util.XSDNumUtils;
 
 /** Operations to convert the given Node to a normalized form */
 class NormalizeValue
@@ -40,15 +41,14 @@ class NormalizeValue
     /** Handler that makes no changes and returns the input node */
     private static DatatypeHandler identity = (Node node, String lexicalForm, RDFDatatype datatype) -> node ;
 
-    // What about whitespace for
-    //   hexBinary, base64Binary.
-
     // See Normalizevalue2 for "faster" versions (less parsing overhead).
 
     static DatatypeHandler dtBoolean = (Node node, String lexicalForm, RDFDatatype datatype) -> {
-        if ( lexicalForm.equals("1") ) return NodeConst.nodeTrue ;
-        if ( lexicalForm.equals("0") ) return NodeConst.nodeFalse ;
-        return node ;
+        return switch(lexicalForm) {
+            case "1" -> NodeConst.nodeTrue ;
+            case "0" -> NodeConst.nodeFalse ;
+            default ->  node;
+        };
     } ;
 
     static DatatypeHandler dtAnyDateTime = (Node node, String lexicalForm, RDFDatatype datatype) -> {
@@ -73,7 +73,7 @@ class NormalizeValue
             String lex2 = xcal.toXMLFormat() ;
             if ( lex2.equals(lexicalForm) )
                 return node ;
-            return NodeFactory.createLiteral(lex2, datatype) ;
+            return NodeFactory.createLiteralDT(lex2, datatype) ;
         }
         // The only variablity for a valid date/dateTime/g* type is:
         //   Second part can have fractional seconds '.' s+ (if present) represents the fractional seconds;
@@ -98,7 +98,7 @@ class NormalizeValue
         // Can't happen.  We munged dts.second.
 //            if ( lex2.equals(lexicalForm) )
 //                return node ;
-        return NodeFactory.createLiteral(lex2, datatype) ;
+        return NodeFactory.createLiteralDT(lex2, datatype) ;
     } ;
 
     static DatatypeHandler dtDateTime = dtAnyDateTime ;
@@ -128,10 +128,14 @@ class NormalizeValue
 
         if ( lex2.equals(lexicalForm) )
             return node ;
-        return NodeFactory.createLiteral(lex2, datatype) ;
+        return NodeFactory.createLiteralDT(lex2, datatype) ;
     } ;
 
-    static DatatypeHandler dtDecimal = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+    static DatatypeHandler dtDecimalTTL = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+
+
+
+
         BigDecimal bd = new BigDecimal(lexicalForm).stripTrailingZeros() ;
         String lex2 = bd.toPlainString() ;
 
@@ -139,69 +143,97 @@ class NormalizeValue
         // but in Turtle the ".0" is need for short print form.
 
         // Ensure there is a "."
-        //if ( bd.scale() <= 0 )
         if ( lex2.indexOf('.') == -1 )
             // Must contain .0
             lex2 = lex2+".0" ;
         if ( lex2.equals(lexicalForm) )
             return node ;
-        return NodeFactory.createLiteral(lex2, datatype) ;
-
+        return NodeFactory.createLiteralDT(lex2, datatype) ;
     } ;
 
-    static private DecimalFormatSymbols decimalNumberSymbols = new DecimalFormatSymbols(Locale.ROOT) ;
-    static private NumberFormat fmtFloatingPoint = new DecimalFormat("0.0#################E0", decimalNumberSymbols) ;
+    static DatatypeHandler dtDoubleTTL = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+        double d = XSDNumUtils.xsdParseDouble(lexicalForm) ;
+        String lex2 = XSDNumUtils.stringForm(d);
+        if ( lex2.equals(lexicalForm) )
+            return node ;
+        return NodeFactory.createLiteralDT(lex2, datatype) ;
+    } ;
 
-    /* http://www.w3.org/TR/xmlschema-2/#double-canonical-representation */
+    static DatatypeHandler dtFloatTTL = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+        float f = XSDNumUtils.xsdParseFloat(lexicalForm) ;
+        String lex2 = XSDNumUtils.stringForm(f);
+        if ( lex2.equals(lexicalForm) )
+            return node ;
+        return NodeFactory.createLiteralDT(lex2, datatype) ;
+    } ;
+
+    // --- XSD, more closely.
     /*
-     * The canonical representation for double is defined by prohibiting certain
-     * options from the Lexical representation (§3.2.5.1). Specifically, the
-     * exponent must be indicated by "E". Leading zeroes and the preceding
-     * optional "+" sign are prohibited in the exponent. If the exponent is
-     * zero, it must be indicated by "E0". For the mantissa, the preceding
-     * optional "+" sign is prohibited and the decimal point is required.
-     * Leading and trailing zeroes are prohibited subject to the following:
-     * number representations must be normalized such that there is a single
-     * digit which is non-zero to the left of the decimal point and at least a
-     * single digit to the right of the decimal point unless the value being
-     * represented is zero. The canonical representation for zero is 0.0E0.
+     * Format floats and double by using {@link DecimalFormat}.
+     * This can move the decimal point and change the exponent value.
+     * All numbers are "n.nnnExxx".
+     * For "smaller" floats and double, Java formatting as used by
+     * {@link XSDNumUtils#stringForm(double)} or {@link XSDNumUtils#stringForm(float)}
+     * leaves the number in "common" form, with the mantissa (significand) having the decimal point
+     * in the place for an exponent of zero if possible.
      */
+    static private DecimalFormatSymbols decimalNumberSymbols = new DecimalFormatSymbols(Locale.ROOT) ;
+    static private NumberFormat fmtFloat = new DecimalFormat("0.0#####E0", decimalNumberSymbols) ;
+    static private NumberFormat fmtDouble = new DecimalFormat("0.0#################E0", decimalNumberSymbols) ;
 
-    static DatatypeHandler dtDouble = (Node node, String lexicalForm, RDFDatatype datatype) -> {
-        double d = Double.parseDouble(lexicalForm) ;
-        String lex2 = fmtFloatingPoint.format(d) ;
+    /*package*/static DatatypeHandler dtDoubleXSD = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+        double d = XSDNumUtils.xsdParseDouble(lexicalForm);
+        String lex2;
+        if ( Double.isInfinite(d) ) {
+            lex2 = d < 0 ? "-INF" : "INF";
+        } else {
+            lex2 = fmtDouble.format(d) ;
+        }
         if ( lex2.equals(lexicalForm) )
             return node ;
-        return NodeFactory.createLiteral(lex2, datatype) ;
+        return NodeFactory.createLiteralDT(lex2, datatype) ;
     } ;
 
-    static DatatypeHandler dtFloat = (Node node, String lexicalForm, RDFDatatype datatype) -> {
-        float f = Float.parseFloat(lexicalForm) ;
-        String lex2 = fmtFloatingPoint.format(f) ;
+    /*package*/static DatatypeHandler dtFloatXSD = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+        float f = XSDNumUtils.xsdParseFloat(lexicalForm);
+        String lex2;
+        if ( Float.isInfinite(f) ) {
+            lex2 = f < 0 ? "-INF" : "INF";
+        } else {
+            lex2 = fmtFloat.format(f) ;
+        }
         if ( lex2.equals(lexicalForm) )
             return node ;
-        return NodeFactory.createLiteral(lex2, datatype) ;
+        return NodeFactory.createLiteralDT(lex2, datatype) ;
     } ;
 
-    /** Convert xsd:string to simple literal */
-    static DatatypeHandler dtXSDString = (Node node, String lexicalForm, RDFDatatype datatype) -> NodeFactory.createLiteralString(lexicalForm) ;
-
-    /** Convert simple literal to xsd:string */
-    static DatatypeHandler dtSimpleLiteral = (Node node, String lexicalForm, RDFDatatype datatype) -> NodeFactory.createLiteral(lexicalForm, datatype) ;
-
-    /** rdf:langString */
-    static DatatypeHandler dtLangString = identity ;
-
-    static DatatypeHandler dtPlainLiteral = (Node node, String lexicalForm, RDFDatatype datatype) -> {
-        int idx = lexicalForm.lastIndexOf('@') ;
-        if ( idx == -1 )
-            // Bad rdf:PlainLiteral
+    /*package*/static DatatypeHandler dtDecimalXSD = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+        BigDecimal decimal = XSDNumUtils.xsdParseDecimal(lexicalForm);
+        String lex2 = XSDNumUtils.canonicalDecimalStrNoIntegerDot(decimal);
+        if ( lex2.equals(lexicalForm) )
             return node ;
-
-        String lex = lexicalForm.substring(0, idx) ;
-        if ( idx == lexicalForm.length()-1 )
-            return NodeFactory.createLiteralString(lex) ;
-        String lang = lexicalForm.substring(idx+1) ;
-        return NodeFactory.createLiteralLang(lex, lang) ;
+        return NodeFactory.createLiteralDT(lex2, datatype) ;
     } ;
+
+    /** XSD 1.0 - always has a decimal point.
+    /*package*/static DatatypeHandler dtDecimalXSD10 = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+        BigDecimal decimal = XSDNumUtils.xsdParseDecimal(lexicalForm);
+        String lex2 = XSDNumUtils.canonicalDecimalStrWithDot(decimal);
+        if ( lex2.equals(lexicalForm) )
+            return node ;
+        return NodeFactory.createLiteralDT(lex2, datatype) ;
+    } ;
+
+//    private static DatatypeHandler dtPlainLiteral = (Node node, String lexicalForm, RDFDatatype datatype) -> {
+//        int idx = lexicalForm.lastIndexOf('@') ;
+//        if ( idx == -1 )
+//            // Bad rdf:PlainLiteral
+//            return node ;
+//
+//        String lex = lexicalForm.substring(0, idx) ;
+//        if ( idx == lexicalForm.length()-1 )
+//            return NodeFactory.createLiteralString(lex) ;
+//        String lang = lexicalForm.substring(idx+1) ;
+//        return NodeFactory.createLiteralLang(lex, lang) ;
+//    } ;
 }

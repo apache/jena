@@ -115,7 +115,7 @@ public class ShexReport {
             entries.add(e);
         }
 
-        /** Create a new report line item from an exists (shex map) entry and add it to the reports */
+        /** Create a new report line item from an existing (shex map) entry and add it to the reports */
         public void shexReport(ShexRecord entry, Node focusNode, ShexStatus result, String reason) {
             ShexRecord ssa = new ShexRecord(entry, focusNode, result, reason);
             shexReport(ssa);

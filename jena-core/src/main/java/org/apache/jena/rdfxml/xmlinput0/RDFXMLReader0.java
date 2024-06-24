@@ -131,7 +131,7 @@ public class RDFXMLReader0 implements RDFReaderI, ARPErrorNumbers {
         }
 
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
-        return NodeFactory.createLiteral(lit.toString(), dt);
+        return NodeFactory.createLiteralDT(lit.toString(), dt);
 
     }
 

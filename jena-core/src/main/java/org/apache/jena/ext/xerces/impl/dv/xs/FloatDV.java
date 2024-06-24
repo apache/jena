@@ -74,6 +74,10 @@ public class FloatDV extends TypeValidator {
             else if ( s.equals("INF") ) {
                 value = Float.POSITIVE_INFINITY;
             }
+            // XSD Schema datatypes 1.1 (not 1.0)
+            else if ( s.equals("+INF") ) {
+                value = Float.POSITIVE_INFINITY;
+            }
             else if ( s.equals("-INF") ) {
                 value = Float.NEGATIVE_INFINITY;
             }

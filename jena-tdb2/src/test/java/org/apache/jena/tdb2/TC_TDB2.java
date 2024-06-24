@@ -30,6 +30,7 @@ import org.apache.jena.tdb2.solver.TS_SolverTDB;
 import org.apache.jena.tdb2.store.TS_Store;
 import org.apache.jena.tdb2.store.nodetable.TS_NodeTable;
 import org.apache.jena.tdb2.store.tupletable.TS_TupleTable;
+import org.apache.jena.tdb2.store.value.TS_NodeValues;
 import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.TS_Sys;
 import org.junit.AfterClass;
@@ -49,6 +50,7 @@ import org.junit.runners.Suite;
     , TS_TupleTable.class
     , TS_TDBSetup.class
     , TS_Store.class
+    , TS_NodeValues.class
     , TS_SolverTDB.class
     , TS_GraphTDB2.class
     , TS_TDB2Factory.class

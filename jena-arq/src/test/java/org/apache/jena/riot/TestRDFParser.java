@@ -241,21 +241,25 @@ public class TestRDFParser {
 
     @Test
     public void canonical_value_4() {
-        testNormalization("+123.00e0", "1.23E2", builder().canonicalValues(true));
+        testNormalization("+123.00e0", "123.0e0", builder().canonicalValues(true));
     }
 
-    // Old tests that applied to Java4. Delete in the future.
-//    @Test public void canonical_langTag_1() {
-//        testNormalization("'abc'@En-gB", "'abc'@En-gB", builder().langTagAsGiven());
-//    }
-//
-//    @Test public void canonical_langTag_2() {
-//        testNormalization("'abc'@En-gB", "'abc'@en-gb", builder().langTagLowerCase());
-//    }
-//
-//    @Test public void canonical_langTag_3() {
-//        testNormalization("'abc'@En-gB", "'abc'@en-GB", builder().langTagCanonical());
-//    }
+    @Test
+    public void canonical_value_5() {
+        testNormalization("'+INF'^^xsd:double", "'INF'^^xsd:double", builder().canonicalValues(true));
+    }
+
+    // Check no conversion
+
+    @Test
+    public void canonical_value_no_conversion_01() {
+        testNormalization("+123.00e0", "+123.00e0", builder().canonicalValues(false));
+    }
+
+    @Test
+    public void canonical_value_no_conversion_02() {
+        testNormalization("'+INF'^^xsd:double", "'+INF'^^xsd:double", builder().canonicalValues(false));
+    }
 
     @Test
     public void parser_fragment() {
@@ -272,12 +276,18 @@ public class TestRDFParser {
         assertTrue(g2.isIsomorphicWith(g));
     }
 
-    private static String PREFIX = "PREFIX : <http://example/>\n ";
+    private static String PREFIX = """
+            PREFIX :        <http://example/>
+            PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+            """;
+
     private static Node s = SSE.parseNode(":s");
     private static Node p = SSE.parseNode(":p");
 
     private void testNormalization(String input, String output, RDFParserBuilder builder) {
-        Graph graph = GraphFactory.createGraphMem();
+        Graph graph = GraphFactory.createPlainGraph();
         String x = PREFIX + ":s :p " + input;
         builder.source(new StringReader(x)).parse(graph);
         assertEquals(1, graph.size());

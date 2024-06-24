@@ -114,7 +114,6 @@
         <configuration>
           <windowtitle>Apache Jena ShEx</windowtitle>
           <doctitle>Apache Jena - ShEx ${project.version}</doctitle>
-          <includePackageNames>org.apache.jena.shex</includePackageNames>
         </configuration>
       </plugin>
 

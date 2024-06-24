@@ -33,17 +33,17 @@ import org.apache.jena.atlas.lib.BitsLong;
  * <pre>
  * bit  63    : sign bit
  * bits 52-62 : exponent, 11 bits, the power of 2, bias -1023.
- * bits 0-51  : mantissa (significand) 52 bits (the leading one is not stored).
+ * bits 0-51  : mantissa (significand) 53 bits of precision (the leading one is not stored).
  *
  * Exponents are 11 bits, with values -1022 to +1023 held as 1 to 2046 (11 bits, bias -1023)
  * Exponents 0x000 and 0x7ff have a special meaning:
  *    0x000 is signed zero.
  *    0x7FF is +/- infinity when the mantissa is zero
- *    0x7FF is NaN if the the mantissa is not zero
+ *    0x7FF is NaN if the mantissa is not zero
  * The canonical NaN is 0x7FF8000000000000L, i.e. mantissa 0x8000...
- * The different NaN values.
  * </pre>
  *
+ * There are different NaN values - signalling and quiet.
  * The different NaN bit patterns are not distinguishable in Java
  * by floating point operations, only by {@link Double#doubleToRawLongBits}.
  *
@@ -61,7 +61,7 @@ import org.apache.jena.atlas.lib.BitsLong;
  * <i>Double62</i>
  * bit  61    : sign bit
  * bits 52-60 : exponent, 9 bits, the power of 2, bias -255
- * bits 0-51  : mantissa (significand) 52 bits (the leading one is not stored).
+ * bits 0-51  : mantissa (significand) 53 bits of precision (the leading one is not stored).
  *
  * Exponents are 9 bits, with values -254 to 255, held as 1 to 512 (9 bits, bias -255)
  * Exponents 0x000 and 0x1ff have a special meaning:

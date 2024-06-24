@@ -151,7 +151,7 @@ public class TestSSE_Forms
 
     @Test public void testTypedLit_r1()
     {
-        Node node = NodeFactory.createLiteral("3", XSDDatatype.XSDinteger) ;
+        Node node = NodeFactory.createLiteralDT("3", XSDDatatype.XSDinteger) ;
         testItem("'3'^^xsd:integer", Item.createNode(node)) ;
     }
 

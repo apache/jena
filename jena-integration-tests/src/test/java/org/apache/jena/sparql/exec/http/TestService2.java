@@ -101,7 +101,7 @@ public class TestService2 {
     }
 
     private void serviceSendMode(String sendMode) {
-        Node expected = NodeFactory.createLiteral("28181", XSDDatatype.XSDinteger);
+        Node expected = NodeFactory.createLiteralDT("28181", XSDDatatype.XSDinteger);
         String queryString = "SELECT * { SERVICE <"+SERVICE+"> { VALUES ?x { 28181 } } }";
 
         Context cxt = minimalContext();
@@ -128,7 +128,7 @@ public class TestService2 {
     }
 
     private void serviceSendMode_runTest(Context cxt) {
-        Node expected = NodeFactory.createLiteral("28181", XSDDatatype.XSDinteger);
+        Node expected = NodeFactory.createLiteralDT("28181", XSDDatatype.XSDinteger);
         String queryString = "SELECT * { SERVICE <"+SERVICE+"> { VALUES ?x { 28181 } } }";
         RowSet rs = QueryExec.dataset(localDataset()).query(queryString).select().materialize();
         assertTrue(rs.hasNext());

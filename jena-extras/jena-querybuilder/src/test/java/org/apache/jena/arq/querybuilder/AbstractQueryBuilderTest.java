@@ -130,21 +130,21 @@ public class AbstractQueryBuilderTest {
         assertTrue(result.contains(NodeFactory.createURI("http://example.com/type")));
         assertTrue(result.contains(NodeFactory.createURI("one")));
 
-        Node n = NodeFactory.createLiteral("5", XSDDatatype.XSDint);
+        Node n = NodeFactory.createLiteralDT("5", XSDDatatype.XSDint);
         assertTrue(result.contains(n));
 
     }
-    
+
     private void assertTripleMatch(Triple expected, Triple actual) {
         if (!expected.matches(actual)) {
             fail("expected: "+expected+" actual: "+actual);
         }
     }
-    
+
     private void assertTripleMatch(Triple expected, TriplePath actual) {
         assertTripleMatch(expected, actual.asTriple());
     }
-    
+
     @Test
     public void testMakeTriplePaths() {
         List<Object> list = new ArrayList<Object>();
@@ -153,15 +153,15 @@ public class AbstractQueryBuilderTest {
         list.add("demo:type");
         list.add("<one>");
         list.add(Integer.valueOf(5));
-        
+
         Triple[] expected = {
             Triple.create(Node.ANY, RDF.first.asNode(), RDF.type.asNode()),
             Triple.create(Node.ANY, RDF.rest.asNode(), Node.ANY),
             Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createURI("http://example.com/type")),
             Triple.create(Node.ANY, RDF.rest.asNode(), Node.ANY),
-            Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createURI("one")), 
-            Triple.create(Node.ANY, RDF.rest.asNode(), Node.ANY), 
-            Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createLiteral("5", XSDDatatype.XSDint)),
+            Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createURI("one")),
+            Triple.create(Node.ANY, RDF.rest.asNode(), Node.ANY),
+            Triple.create(Node.ANY, RDF.first.asNode(), NodeFactory.createLiteralDT("5", XSDDatatype.XSDint)),
             Triple.create(Node.ANY, RDF.rest.asNode(), RDF.nil.asNode()),
             Triple.create(Var.alloc("s"), Var.alloc("p"), Node.ANY),
         };

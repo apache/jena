@@ -117,7 +117,7 @@ public class TestLiteralImpl extends AbstractModelTestBase
     public void testCannotAsNonNumber()
     {
         try {
-            Node node = NodeFactory.createLiteral("1984", XSDDatatype.XSDgYear);
+            Node node = NodeFactory.createLiteralDT("1984", XSDDatatype.XSDgYear);
             RDFNode rdfNode = model.asRDFNode(node);
             Literal literal = rdfNode.asLiteral();
             // XSDDateTime is not a Number, so getInt will fail, instead of returning 1984

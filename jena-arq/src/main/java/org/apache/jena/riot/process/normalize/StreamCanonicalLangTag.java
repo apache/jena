@@ -64,11 +64,11 @@ public class StreamCanonicalLangTag extends StreamRDFApplyObject {
         return obj2;
     }
 
-    public static String langTagCanonical(Locale.Builder locBuild, String str) {
+    static String langTagCanonical(Locale.Builder locBuild, String str) {
         return LangTags.basicFormat(str);
     }
 
-    public static String langTagLC(Locale.Builder locBuild, String str) {
+    static String langTagLC(Locale.Builder locBuild, String str) {
         return lowercase(str);
     }
 }

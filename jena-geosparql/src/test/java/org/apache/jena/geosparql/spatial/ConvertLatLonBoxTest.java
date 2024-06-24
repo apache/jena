@@ -110,7 +110,7 @@ public class ConvertLatLonBoxTest {
         Node n2 = NodeValue.makeFloat(1.0f).asNode();
         Node n3 = NodeValue.makeFloat(10.0f).asNode();
         Node n4 = NodeValue.makeFloat(11.0f).asNode();
-        Node expResult = NodeFactory.createLiteral("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((0 1, 10 1, 10 11, 0 11, 0 1))", WKTDatatype.INSTANCE);
+        Node expResult = NodeFactory.createLiteralDT("<http://www.opengis.net/def/crs/EPSG/0/4326> POLYGON((0 1, 10 1, 10 11, 0 11, 0 1))", WKTDatatype.INSTANCE);
         Node result = ConvertLatLonBox.toNode(n1, n2, n3, n4);
         assertEquals(expResult, result);
     }
@@ -129,5 +129,5 @@ public class ConvertLatLonBoxTest {
         NodeValue result = ConvertLatLonBox.toNodeValue(v1, v2, v3, v4);
         assertEquals(expResult, result);
     }
-    
+
 }

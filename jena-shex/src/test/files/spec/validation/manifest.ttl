@@ -127,7 +127,11 @@
         <#float-INF_pass>
         <#float-nINF_pass>
         <#float-empty_fail>
-        <#float-pINF_fail>
+
+        ## XSD 1.1 allows +INF
+        ## <#float-pINF_fail>
+        <#float-pINF_pass>
+
         <#double-n1_pass>
         <#double-0_pass>
         <#double-1_pass>
@@ -140,7 +144,11 @@
         <#double-INF_pass>
         <#double-nINF_pass>
         <#double-empty_fail>
-        <#double-pINF_fail>
+
+        ## XSD 1.1 allows +INF 
+        ## <#double-pINF_fail>
+        <#double-pINF_pass>
+
         <#nonPositiveInteger-n1_pass>
         <#nonPositiveInteger-0_pass>
         <#nonPositiveInteger-p0_pass>
@@ -2338,11 +2346,24 @@
     ] ;
     .
 
-<#float-pINF_fail> a sht:ValidationFailure ;
-    mf:name "float-pINF_fail" ;
+## XSD 1.1 allows +INF (XSD 1.0 did not)
+## <#float-pINF_fail> a sht:ValidationFailure ;
+##     mf:name "float-pINF_fail" ;
+##     sht:trait sht:ValidLexicalForm ;
+##     rdfs:comment "<S> { <p> xsd:float} / { <s> <p> '+INF'^^xsd:float }" ;
+##     mf:status mf:Approved ;
+##     mf:action [
+##       sht:schema <../schemas/datatypes.shex> ;
+##       sht:shape <http://a.example/S-float> ;
+##       sht:data <datatypes-data.ttl> ;
+##       sht:focus <http://a.example/float-pINF>
+##     ] ;
+##     .
+<#float-pINF_pass> a sht:ValidationTest ;
+    mf:name "float-pINF_pass" ;
     sht:trait sht:ValidLexicalForm ;
     rdfs:comment "<S> { <p> xsd:float} / { <s> <p> '+INF'^^xsd:float }" ;
-    mf:status mf:Approved ;
+##    mf:status mf:Approved ;
     mf:action [
       sht:schema <../schemas/datatypes.shex> ;
       sht:shape <http://a.example/S-float> ;
@@ -2509,12 +2530,24 @@
       sht:focus <http://a.example/double-empty>
     ] ;
     .
-
-<#double-pINF_fail> a sht:ValidationFailure ;
-    mf:name "double-pINF_fail" ;
+## XSD 1.1 allows +INF (XSD 1.0 did not)
+## <#double-pINF_fail> a sht:ValidationFailure ;
+##     mf:name "double-pINF_fail" ;
+##     sht:trait sht:ValidLexicalForm ;
+##     rdfs:comment "<S> { <p> xsd:double} / { <s> <p> '+INF'^^xsd:double }" ;
+##     mf:status mf:Approved ;
+##     mf:action [
+##       sht:schema <../schemas/datatypes.shex> ;
+##       sht:shape <http://a.example/S-double> ;
+##       sht:data <datatypes-data.ttl> ;
+##       sht:focus <http://a.example/double-pINF>
+##     ] ;
+##     .
+<#double-pINF_pass> a sht:ValidationTest ;
+    mf:name "double-pINF_pass" ;
     sht:trait sht:ValidLexicalForm ;
     rdfs:comment "<S> { <p> xsd:double} / { <s> <p> '+INF'^^xsd:double }" ;
-    mf:status mf:Approved ;
+##    mf:status mf:Approved ;
     mf:action [
       sht:schema <../schemas/datatypes.shex> ;
       sht:shape <http://a.example/S-double> ;

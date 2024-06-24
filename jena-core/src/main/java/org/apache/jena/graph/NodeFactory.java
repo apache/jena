@@ -166,7 +166,7 @@ public class NodeFactory {
      * datatype cases.
      * It calls {@link #createLiteralString(String)},
      * {@link #createLiteralDirLang(String, String, String)} or
-     * {@link #createLiteral(String, RDFDatatype)}
+     * {@link #createLiteralDT(String, RDFDatatype)}
      * as appropriate.
      *
      * @param lex the lexical form of the literal
@@ -185,7 +185,7 @@ public class NodeFactory {
      * datatype cases.
      * It calls {@link #createLiteralString(String)},
      * {@link #createLiteralDirLang(String, String, String)} or
-     * {@link #createLiteral(String, RDFDatatype)}
+     * {@link #createLiteralDT(String, RDFDatatype)}
      * as appropriate.
      *
      * @param lex the lexical form of the literal
@@ -206,7 +206,7 @@ public class NodeFactory {
      * datatype cases.
      * It calls {@link #createLiteralString(String)},
      * {@link #createLiteralDirLang(String, String, String)} or
-     * {@link #createLiteral(String, RDFDatatype)}
+     * {@link #createLiteralDT(String, RDFDatatype)}
      * as appropriate.
      *
      * @param lex the lexical form of the literal
@@ -240,7 +240,7 @@ public class NodeFactory {
             throw new JenaException("Datatype is rdf:langString but no language given");
         if ( dtype.equals(RDFDirLangString.rdfDirLangString) && noTextDir(textDir) )
             throw new JenaException("Datatype is rdf:dirLangString but no initial text direction given");
-        Node n = createLiteral(lex, dtype);
+        Node n = createLiteralDT(lex, dtype);
         return n;
     }
 
@@ -266,6 +266,12 @@ public class NodeFactory {
         return textDir;
     }
 
+    /** @deprecated Use {@link #createLiteralDT(String, RDFDatatype)} */
+    @Deprecated
+    public static Node createLiteral(String lex, RDFDatatype dtype) {
+        return createLiteralDT(lex, dtype);
+    }
+
     /**
      * Build a typed literal node from its lexical form.
      *
@@ -274,7 +280,7 @@ public class NodeFactory {
      * @param dtype
      *            the type of the literal
      */
-    public static Node createLiteral(String lex, RDFDatatype dtype) {
+    public static Node createLiteralDT(String lex, RDFDatatype dtype) {
         Objects.requireNonNull(lex, "null lexical form for literal");
         if ( dtype == null )
             dtype = XSDDatatype.XSDstring;

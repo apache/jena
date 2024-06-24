@@ -267,7 +267,7 @@ public class Util {
      * Construct a new integer valued node
      */
     public static Node makeIntNode(int value) {
-        return NodeFactory.createLiteral(Integer.toString(value), XSDDatatype.XSDint);
+        return NodeFactory.createLiteralDT(Integer.toString(value), XSDDatatype.XSDint);
     }
 
     /**
@@ -275,7 +275,7 @@ public class Util {
      */
     public static Node makeLongNode(long value) {
         Node n = (value > Integer.MAX_VALUE || value < Integer.MIN_VALUE )
-            ? NodeFactory.createLiteral( Long.toString(value), XSDDatatype.XSDlong )
+            ? NodeFactory.createLiteralDT( Long.toString(value), XSDDatatype.XSDlong )
             : makeIntNode( (int) value );
         return n;
     }

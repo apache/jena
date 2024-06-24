@@ -933,45 +933,45 @@ public abstract class AbstractGraphMem2Test {
         sut.add(Triple.create(
                 NodeFactory.createURI("x"),
                 NodeFactory.createURI("R"),
-                NodeFactory.createLiteral("0.1", XSDDouble.XSDdouble)));
+                NodeFactory.createLiteralDT("0.1", XSDDouble.XSDdouble)));
         assertTrue(sut.contains(Triple.create(
                 NodeFactory.createURI("x"),
                 NodeFactory.createURI("R"),
-                NodeFactory.createLiteral("0.1", XSDDouble.XSDdouble))));
+                NodeFactory.createLiteralDT("0.1", XSDDouble.XSDdouble))));
         assertFalse(sut.contains(Triple.create(
                 NodeFactory.createURI("x"),
                 NodeFactory.createURI("R"),
-                NodeFactory.createLiteral("0.10", XSDDouble.XSDdouble))));
+                NodeFactory.createLiteralDT("0.10", XSDDouble.XSDdouble))));
         assertFalse(sut.contains(Triple.create(
                 NodeFactory.createURI("x"),
                 NodeFactory.createURI("R"),
-                NodeFactory.createLiteral("0.11", XSDDouble.XSDdouble))));
+                NodeFactory.createLiteralDT("0.11", XSDDouble.XSDdouble))));
     }
 
     @Test
     public void testContainsValueSubject() {
         var containedTriple = Triple.create(
-                NodeFactory.createLiteral("0.1", XSDDouble.XSDdouble),
+                NodeFactory.createLiteralDT("0.1", XSDDouble.XSDdouble),
                 NodeFactory.createURI("x"),
                 NodeFactory.createURI("R"));
         sut.add(containedTriple);
 
         var match = Triple.create(
-                NodeFactory.createLiteral("0.1", XSDDouble.XSDdouble),
+                NodeFactory.createLiteralDT("0.1", XSDDouble.XSDdouble),
                 NodeFactory.createURI("x"),
                 NodeFactory.createURI("R"));
         assertTrue(sut.contains(match));
         assertEquals(containedTriple, sut.find(match).next());
 
         match = Triple.create(
-                NodeFactory.createLiteral("0.10", XSDDouble.XSDdouble),
+                NodeFactory.createLiteralDT("0.10", XSDDouble.XSDdouble),
                 NodeFactory.createURI("x"),
                 NodeFactory.createURI("R"));
         assertFalse(sut.contains(match));
         assertFalse(sut.find(match).hasNext());
 
         match = Triple.create(
-                NodeFactory.createLiteral("0.11", XSDDouble.XSDdouble),
+                NodeFactory.createLiteralDT("0.11", XSDDouble.XSDdouble),
                 NodeFactory.createURI("x"),
                 NodeFactory.createURI("R"));
         assertFalse(sut.contains(match));
@@ -982,19 +982,19 @@ public abstract class AbstractGraphMem2Test {
     public void testContainsValuePredicate() {
         sut.add(Triple.create(
                 NodeFactory.createURI("x"),
-                NodeFactory.createLiteral("0.1", XSDDouble.XSDdouble),
+                NodeFactory.createLiteralDT("0.1", XSDDouble.XSDdouble),
                 NodeFactory.createURI("R")));
         assertTrue(sut.contains(Triple.create(
                 NodeFactory.createURI("x"),
-                NodeFactory.createLiteral("0.1", XSDDouble.XSDdouble),
+                NodeFactory.createLiteralDT("0.1", XSDDouble.XSDdouble),
                 NodeFactory.createURI("R"))));
         assertFalse(sut.contains(Triple.create(
                 NodeFactory.createURI("x"),
-                NodeFactory.createLiteral("0.10", XSDDouble.XSDdouble),
+                NodeFactory.createLiteralDT("0.10", XSDDouble.XSDdouble),
                 NodeFactory.createURI("R"))));
         assertFalse(sut.contains(Triple.create(
                 NodeFactory.createURI("x"),
-                NodeFactory.createLiteral("0.11", XSDDouble.XSDdouble),
+                NodeFactory.createLiteralDT("0.11", XSDDouble.XSDdouble),
                 NodeFactory.createURI("R"))));
     }
 

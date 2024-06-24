@@ -27,6 +27,7 @@ import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
 
+/** Functions on language tag strings */
 public class LangTags {
 
     /**

@@ -31,12 +31,12 @@ public class TestSSE_Basic
 {
     // Tests not requiring URI resolution or prefix name handling.
 
-    static Node int1 = org.apache.jena.graph.NodeFactory.createLiteral("1", XSDDatatype.XSDinteger);
-    static Node int2 = org.apache.jena.graph.NodeFactory.createLiteral("2", XSDDatatype.XSDinteger);
-    static Node int3 = org.apache.jena.graph.NodeFactory.createLiteral("3", XSDDatatype.XSDinteger);
+    static Node int1 = org.apache.jena.graph.NodeFactory.createLiteralDT("1", XSDDatatype.XSDinteger);
+    static Node int2 = org.apache.jena.graph.NodeFactory.createLiteralDT("2", XSDDatatype.XSDinteger);
+    static Node int3 = org.apache.jena.graph.NodeFactory.createLiteralDT("3", XSDDatatype.XSDinteger);
     static Node strLangEN = org.apache.jena.graph.NodeFactory.createLiteralLang("xyz", "en");
 
-    static Node typeLit1 = NodeFactory.createLiteral("123", NodeFactory.getType("http://example/type"));
+    static Node typeLit1 = NodeFactory.createLiteralDT("123", NodeFactory.getType("http://example/type"));
 
     static Item int1i = Item.createNode(int1);
     static Item int2i = Item.createNode(int2);

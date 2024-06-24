@@ -57,7 +57,7 @@ public class FactoryRDFStd implements FactoryRDF {
 
     @Override
     public Node createTypedLiteral(String lexical, RDFDatatype datatype) {
-        return NodeFactory.createLiteral(lexical, datatype) ;
+        return NodeFactory.createLiteralDT(lexical, datatype) ;
     }
 
     @Override
