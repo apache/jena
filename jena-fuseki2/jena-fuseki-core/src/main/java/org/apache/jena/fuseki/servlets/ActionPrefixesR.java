@@ -56,6 +56,43 @@ public class ActionPrefixesR extends ActionPrefixesBase {
         }
     }
 
+    enum ResponseTypes {
+        GET_ALL,
+        FETCH_URI,
+        FETCH_PREFIX,
+        BAD_REQUEST
+    }
+
+    protected ResponseTypes chooseResponseType (String prefix, String uri) {
+        if (prefix == null && uri == null)
+            return ResponseTypes.GET_ALL;
+        else if (prefix != null && uri == null) {
+            if (prefix.isEmpty()) {
+                ServletOps.errorBadRequest("Empty prefix!");
+                return ResponseTypes.BAD_REQUEST;
+            }
+            else if (!PrefixUtils.prefixIsValid(prefix)) {
+                ServletOps.errorBadRequest("Prefix contains illegal characters!");
+                return ResponseTypes.BAD_REQUEST;
+            }
+            else
+                return ResponseTypes.FETCH_URI;
+        }
+        else if (prefix == null && uri != null) {
+            if (uri.isEmpty()) {
+                ServletOps.errorBadRequest("Empty URI!");
+                return ResponseTypes.BAD_REQUEST;
+            }
+            else if (!PrefixUtils.uriIsValid(uri)) {
+                ServletOps.errorBadRequest("URI contains illegal characters!");
+                return ResponseTypes.BAD_REQUEST;
+            }
+            else
+                return ResponseTypes.FETCH_PREFIX;
+        }
+        return ResponseTypes.BAD_REQUEST;
+    }
+
     @Override
     protected void doGet(HttpAction action) {
         ActionLib.setCommonHeaders(action);
@@ -67,37 +104,26 @@ public class ActionPrefixesR extends ActionPrefixesBase {
             String prefix = action.getRequestParameter(PrefixUtils.PREFIX);
             String uri = action.getRequestParameter(PrefixUtils.URI);
 
-            if (prefix == null && uri == null) {
-                //getAll
-                Map<String, String> allPairs = prefixes(action).getAll();
-                JsonArray allJsonPairs = new JsonArray();
-                allPairs.entrySet().stream()
-                        .forEach(entry -> {
-                            com.google.gson.JsonObject jsonObject = new com.google.gson.JsonObject();
-                            jsonObject.addProperty(PrefixUtils.PREFIX, entry.getKey());
-                            jsonObject.addProperty(PrefixUtils.URI, entry.getValue());
-                            allJsonPairs.add(jsonObject);
-                            FmtLog.info(action.log, "[%d] - %s", action.id, new JsonObject(entry.getKey(), entry.getValue()));
-                        });
-                action.setResponseContentType(WebContent.contentTypeJSON);
-                action.getResponseOutputStream().print(String.valueOf(allJsonPairs));
+            switch(chooseResponseType(prefix, uri)) {
+                case GET_ALL -> {
+                    Map<String, String> allPairs = prefixes(action).getAll();
+                    JsonArray allJsonPairs = new JsonArray();
+                    allPairs.entrySet().stream()
+                            .forEach(entry -> {
+                                com.google.gson.JsonObject jsonObject = new com.google.gson.JsonObject();
+                                jsonObject.addProperty(PrefixUtils.PREFIX, entry.getKey());
+                                jsonObject.addProperty(PrefixUtils.URI, entry.getValue());
+                                allJsonPairs.add(jsonObject);
+                                FmtLog.info(action.log, "[%d] - %s", action.id, new JsonObject(entry.getKey(), entry.getValue()));
+                            });
+                    action.setResponseContentType(WebContent.contentTypeJSON);
+                    action.getResponseOutputStream().print(String.valueOf(allJsonPairs));
 
-                ServletOps.success(action);
-                action.endRead();
-                return;
-            }
-            if (prefix != null && uri == null) {
-
-                if (prefix.isEmpty()) {
-                    ServletOps.errorBadRequest("Empty prefix!");
+                    ServletOps.success(action);
+                    action.endRead();
                     return;
                 }
-                else if (!PrefixUtils.prefixIsValid(prefix)) {
-                    ServletOps.errorBadRequest("Prefix contains illegal characters!");
-                    return;
-                }
-                else {
-                    //fetchURI
+                case FETCH_URI -> {
                     Optional<String> x = prefixes(action).fetchURI(prefix);
                     String namespace = x.orElse(NO_PREFIX_NS);
 
@@ -112,18 +138,7 @@ public class ActionPrefixesR extends ActionPrefixesBase {
                     ServletOps.success(action);
                     return;
                 }
-            }
-            if (prefix == null && uri != null) {
-                if (uri.isEmpty()) {
-                    ServletOps.errorBadRequest("Empty URI!");
-                    return;
-                }
-                else if (!PrefixUtils.uriIsValid(uri)) {
-                    ServletOps.errorBadRequest("URI contains illegal characters!");
-                    return;
-                }
-                else {
-                    //fetchPrefix
+                case FETCH_PREFIX -> {
                     List<String> prefixList =prefixes(action).fetchPrefix(uri);
                     JsonArray prefixJsonArray = new JsonArray();
                     for (String p : prefixList) {
@@ -140,6 +155,10 @@ public class ActionPrefixesR extends ActionPrefixesBase {
                     action.commit();
                     ServletOps.success(action);
                     action.endRead();
+                    return;
+                }
+                default ->  {
+                    ServletOps.errorBadRequest("Bad request");
                     return;
                 }
             }
