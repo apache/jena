@@ -169,7 +169,7 @@ public class NodeFactoryExtra {
      * @return An xsd:integer
      */
     public static Node intToNode(int integer) {
-        return NodeFactory.createLiteral(Integer.toString(integer), XSDDatatype.XSDinteger) ;
+        return NodeFactory.createLiteralDT(Integer.toString(integer), XSDDatatype.XSDinteger) ;
     }
 
     /**
@@ -179,7 +179,7 @@ public class NodeFactoryExtra {
      * @return An xsd:integer
      */
     public static Node intToNode(long integer) {
-        return NodeFactory.createLiteral(Long.toString(integer), XSDDatatype.XSDinteger) ;
+        return NodeFactory.createLiteralDT(Long.toString(integer), XSDDatatype.XSDinteger) ;
     }
 
     /**
@@ -189,7 +189,7 @@ public class NodeFactoryExtra {
      * @return An xsd:float
      */
     public static Node floatToNode(float value) {
-        return NodeFactory.createLiteral(Float.toString(value), XSDDatatype.XSDfloat) ;
+        return NodeFactory.createLiteralDT(Float.toString(value), XSDDatatype.XSDfloat) ;
     }
 
     /**
@@ -199,37 +199,37 @@ public class NodeFactoryExtra {
      * @return An double
      */
     public static Node doubleToNode(double value) {
-        return NodeFactory.createLiteral(Double.toString(value), XSDDatatype.XSDdouble) ;
+        return NodeFactory.createLiteralDT(Double.toString(value), XSDDatatype.XSDdouble) ;
     }
 
     /** Calendar to xsd:dateTime Node */
     public static Node dateTimeToNode(Calendar c) {
         String lex = DateTimeUtils.calendarToXSDDateTimeString(c) ;
-        return NodeFactory.createLiteral(lex, XSDDatatype.XSDdateTime) ;
+        return NodeFactory.createLiteralDT(lex, XSDDatatype.XSDdateTime) ;
     }
 
     /** Calendar to xsd:date Node */
     public static Node dateToNode(Calendar c) {
         String lex = DateTimeUtils.calendarToXSDDateString(c) ;
-        return NodeFactory.createLiteral(lex, XSDDatatype.XSDdate) ;
+        return NodeFactory.createLiteralDT(lex, XSDDatatype.XSDdate) ;
     }
 
     /** Calendar to xsd:time Node */
     public static Node timeToNode(Calendar c) {
         String lex = DateTimeUtils.calendarToXSDTimeString(c) ;
-        return NodeFactory.createLiteral(lex, XSDDatatype.XSDtime) ;
+        return NodeFactory.createLiteralDT(lex, XSDDatatype.XSDtime) ;
     }
 
     /** Now, as xsd:dateTime Node */
     public static Node nowAsDateTime() {
         String lex = DateTimeUtils.nowAsXSDDateTimeString() ;
-        return NodeFactory.createLiteral(lex, XSDDatatype.XSDdateTime) ;
+        return NodeFactory.createLiteralDT(lex, XSDDatatype.XSDdateTime) ;
     }
 
     /** Today, as xsd:date Node */
     public static Node todayAsDate() {
         String lex = DateTimeUtils.todayAsXSDDateString() ;
-        return NodeFactory.createLiteral(lex, XSDDatatype.XSDdate) ;
+        return NodeFactory.createLiteralDT(lex, XSDDatatype.XSDdate) ;
     }
 
 }

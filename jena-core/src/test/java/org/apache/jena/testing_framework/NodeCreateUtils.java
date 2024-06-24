@@ -144,7 +144,7 @@ public class NodeCreateUtils {
 		} else {
 		    String dtURI = pm.expandPrefix(langOrType);
 		    RDFDatatype dt = NodeFactory.getType(dtURI);
-		    return NodeFactory.createLiteral(content, dt);
+		    return NodeFactory.createLiteralDT(content, dt);
 		}
 	}
 

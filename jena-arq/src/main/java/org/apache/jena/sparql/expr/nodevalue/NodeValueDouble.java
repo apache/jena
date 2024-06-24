@@ -20,49 +20,49 @@ package org.apache.jena.sparql.expr.nodevalue;
 
 //import java.math.BigDecimal;
 
-import java.math.BigDecimal ;
+import java.math.BigDecimal;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.util.Utils ;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.util.XSDNumUtils;
 
 
 public class NodeValueDouble extends NodeValue
 {
-    double value = Double.NaN ;
-    
-    public NodeValueDouble(double d)         { super() ; value = d ; }
-    public NodeValueDouble(double d, Node n) { super(n) ; value = d ; } 
+    double value = Double.NaN;
+
+    public NodeValueDouble(double d)         { super(); value = d; }
+    public NodeValueDouble(double d, Node n) { super(n); value = d; }
 
     @Override
-    public boolean isNumber() { return true ; }
+    public boolean isNumber() { return true; }
     @Override
-    public boolean isDouble() { return true ; }
+    public boolean isDouble() { return true; }
 
     // Does not provide getFloat
     @Override
-    public double getDouble()  { return value ; }
+    public double getDouble()  { return value; }
 
     @Override
-    public BigDecimal getDecimal()  { return BigDecimal.valueOf(value) ; }
+    public BigDecimal getDecimal()  { return BigDecimal.valueOf(value); }
 
     @Override
     protected Node makeNode()
-    { return NodeFactory.createLiteral(Utils.stringForm(value), XSDDatatype.XSDdouble) ; }
-    
+    { return NodeFactory.createLiteralDT(XSDNumUtils.stringForm(value), XSDDatatype.XSDdouble); }
+
     @Override
-    public String asString() { return toString() ; }
-    
+    public String asString() { return toString(); }
+
     @Override
-    public String toString()
-    { 
+    public String toString() {
         // Preserve lexical form
-        if ( getNode() != null ) return super.asString() ;
-        return Utils.stringForm(value) ;
+        if ( getNode() != null )
+            return super.asString();
+        return XSDNumUtils.stringForm(value);
     }
-    
+
     @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
+    public void visit(NodeValueVisitor visitor) { visitor.visit(this); }
 }

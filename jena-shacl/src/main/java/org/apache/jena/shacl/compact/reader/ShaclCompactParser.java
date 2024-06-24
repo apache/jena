@@ -326,9 +326,9 @@ public class ShaclCompactParser extends LangParserBase {
         int min = integer(minStr, 0);
         int max = integer(maxStr, -1);
         if ( min > 0 )
-            triple(currentTripleAcc(), currentPropertyShape(), SHACL.minCount, NodeFactory.createLiteral(minStr, XSDDatatype.XSDinteger));
+            triple(currentTripleAcc(), currentPropertyShape(), SHACL.minCount, NodeFactory.createLiteralDT(minStr, XSDDatatype.XSDinteger));
         if ( max > 0 )
-            triple(currentTripleAcc(), currentPropertyShape(), SHACL.maxCount, NodeFactory.createLiteral(maxStr, XSDDatatype.XSDinteger));
+            triple(currentTripleAcc(), currentPropertyShape(), SHACL.maxCount, NodeFactory.createLiteralDT(maxStr, XSDDatatype.XSDinteger));
     }
 
     // propertyOr: If there is more than one propertyNot, then produce an RDF list

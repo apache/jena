@@ -38,7 +38,7 @@ public class StreamCanonicalLiterals extends StreamRDFApplyObject {
     private static Node canonical(Node n) {
         if ( ! n.isLiteral() )
             return n;
-        Node obj2 = CanonicalizeLiteral.canonicalValue(n);
+        Node obj2 = NormalizeRDFTerms.normalizeValue(n);
         return obj2;
     }
 }

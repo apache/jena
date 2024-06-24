@@ -107,6 +107,8 @@ public class XSDDouble extends XSDDatatype {
         {
             case "INF":
                 return Double.POSITIVE_INFINITY;
+            case "+INF":
+                return Double.POSITIVE_INFINITY;
             case "-INF":
                 return Double.NEGATIVE_INFINITY;
             case "NaN":

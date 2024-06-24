@@ -193,11 +193,11 @@ public class ConvertLatLonTest {
 
         Node n1 = NodeValue.makeFloat(10.0f).asNode();
         Node n2 = NodeValue.makeFloat(20.0f).asNode();
-        Node expResult = NodeFactory.createLiteral("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10 20)", WKTDatatype.INSTANCE);
+        Node expResult = NodeFactory.createLiteralDT("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10 20)", WKTDatatype.INSTANCE);
         Node result = ConvertLatLon.toNode(n1, n2);
         assertEquals(expResult, result);
     }
-    
+
     /**
      * Test of toNode method, of class ConvertLatLonFF.
      */
@@ -206,11 +206,11 @@ public class ConvertLatLonTest {
 
         Node n1 = NodeValue.makeString("10.0").asNode();
         Node n2 = NodeValue.makeString("20").asNode();
-        Node expResult = NodeFactory.createLiteral("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10 20)", WKTDatatype.INSTANCE);
+        Node expResult = NodeFactory.createLiteralDT("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10 20)", WKTDatatype.INSTANCE);
         Node result = ConvertLatLon.toNode(n1, n2);
         assertEquals(expResult, result);
     }
-    
+
     /**
      * Test of toNode method, of class ConvertLatLonFF.
      */
@@ -219,11 +219,11 @@ public class ConvertLatLonTest {
 
         Node n1 = NodeValue.makeString("val").asNode();
         Node n2 = NodeValue.makeString("20.0").asNode();
-        Node expResult = NodeFactory.createLiteral("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10 20)", WKTDatatype.INSTANCE);
+        Node expResult = NodeFactory.createLiteralDT("<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(10 20)", WKTDatatype.INSTANCE);
         Node result = ConvertLatLon.toNode(n1, n2);
         assertEquals(expResult, result);
     }
-    
+
     /**
      * Test of toGeometryWrapper method, of class ConvertLatLonFF.
      */
@@ -236,7 +236,7 @@ public class ConvertLatLonTest {
         GeometryWrapper result = ConvertLatLon.toGeometryWrapper(n1, n2);
         assertEquals(expResult, result);
     }
-    
+
     /**
      * Test of toGeometryWrapper method, of class ConvertLatLonFF.
      */
@@ -249,37 +249,37 @@ public class ConvertLatLonTest {
         GeometryWrapper result = ConvertLatLon.toGeometryWrapper(n1, n2);
         assertEquals(expResult, result);
     }
-    
+
     /**
      * Test of extractDouble method, of class ConvertLatLonFF.
      */
     @Test
     public void testExtractDouble() {
-        
-        NodeValue nv = NodeValue.makeDouble(10.0);        
+
+        NodeValue nv = NodeValue.makeDouble(10.0);
         double result = extractDouble(nv);
         assertEquals(10.0, result, 0);
     }
-    
+
     /**
      * Test of extractDouble method, of class ConvertLatLonFF.
      */
     @Test
     public void testExtractDouble_String() {
-        
-        NodeValue nv = NodeValue.makeString("10.0");        
+
+        NodeValue nv = NodeValue.makeString("10.0");
         double result = extractDouble(nv);
         assertEquals(10.0, result, 0);
     }
-    
+
     /**
      * Test of extractDouble method, of class ConvertLatLonFF.
      */
     @Test(expected = DatatypeFormatException.class)
     public void testExtractDouble_Malformed() {
-        
-        NodeValue nv = NodeValue.makeString("val");        
+
+        NodeValue nv = NodeValue.makeString("val");
         extractDouble(nv);
     }
-    
+
 }

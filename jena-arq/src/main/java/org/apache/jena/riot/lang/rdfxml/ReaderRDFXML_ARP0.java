@@ -224,7 +224,7 @@ public class ReaderRDFXML_ARP0 implements ReaderRIOT
             }
 
             RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);
-            return NodeFactory.createLiteral(lit.toString(), dt);
+            return NodeFactory.createLiteralDT(lit.toString(), dt);
         }
 
         private Node convert(AResource r) {

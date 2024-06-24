@@ -781,7 +781,7 @@ public class TestNodeValue
         assertTrue ( ebvDouble(Double.POSITIVE_INFINITY) );
         assertTrue ( ebvDouble(Double.NEGATIVE_INFINITY) );
 
-        Node x = NodeFactory.createLiteral("NaN", XSDDatatype.XSDdouble);
+        Node x = NodeFactory.createLiteralDT("NaN", XSDDatatype.XSDdouble);
         NodeValue v = NodeValue.makeNode(x);
         assertFalse(XSDFuncOp.booleanEffectiveValue(v));
     }
@@ -805,7 +805,7 @@ public class TestNodeValue
         assertTrue ( ebvFloat(Float.POSITIVE_INFINITY) );
         assertTrue ( ebvFloat(Float.NEGATIVE_INFINITY) );
 
-        Node x = NodeFactory.createLiteral("NaN", XSDDatatype.XSDfloat);
+        Node x = NodeFactory.createLiteralDT("NaN", XSDDatatype.XSDfloat);
         NodeValue v = NodeValue.makeNode(x);
         assertFalse(XSDFuncOp.booleanEffectiveValue(v));
     }

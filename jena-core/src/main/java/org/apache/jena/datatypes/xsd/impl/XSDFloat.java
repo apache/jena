@@ -30,17 +30,17 @@ import org.apache.jena.shared.impl.JenaParameters ;
  */
 public class XSDFloat extends XSDDatatype {
     /**
-      * Constructor. 
-      * @param typeName the name of the XSD type to be instantiated, this is 
+      * Constructor.
+      * @param typeName the name of the XSD type to be instantiated, this is
       * used to lookup a type definition from the Xerces schema factory.
       */
      public XSDFloat(String typeName) {
          super(typeName);
      }
-    
+
      /**
-      * Constructor. 
-      * @param typeName the name of the XSD type to be instantiated, this is 
+      * Constructor.
+      * @param typeName the name of the XSD type to be instantiated, this is
       * used to lookup a type definition from the Xerces schema factory.
       * @param javaClass the java class for which this xsd type is to be
       * treated as the cannonical representation
@@ -49,7 +49,7 @@ public class XSDFloat extends XSDDatatype {
          super(typeName, javaClass);
      }
 
-    
+
 //     /**
 //      * Test whether the given LiteralLabel is a valid instance
 //      * of this datatype. This takes into account typing information
@@ -60,7 +60,7 @@ public class XSDFloat extends XSDDatatype {
 //     public boolean isValidLiteral(LiteralLabel lit) {
 //         return equals(lit.getDatatype());
 //     }
-     
+
      /**
       * Test whether the given object is a legal value form
       * of this datatype. Brute force implementation.
@@ -69,21 +69,21 @@ public class XSDFloat extends XSDDatatype {
     public boolean isValidValue(Object valueForm) {
          return (valueForm instanceof Float);
      }
-   
+
      /**
       * Parse a lexical form of this datatype to a value
       * @throws DatatypeFormatException if the lexical form is not legal
       */
      @Override
     public Object parse(String lexicalForm) throws DatatypeFormatException {
-         checkWhitespace(lexicalForm);        
+         checkWhitespace(lexicalForm);
          return super.parse(lexicalForm);
      }
 
      @Override
      public String unparse(Object value) {
          if ( value instanceof Float ) {
-             // Java has "Infinity" and -"Infinity" but XSD has "INF" and "-INF"
+             // Java has "Infinity" and "-Infinity" but XSD has "INF" and "-INF"
              Float f = (Float) value ;
              if ( Float.isInfinite(f) ) {
                  if ( f < 0 )
@@ -94,7 +94,7 @@ public class XSDFloat extends XSDDatatype {
          }
          return super.unparse(value) ;
      }
-     
+
     /**
      * Parse a validated lexical form. Subclasses which use the default
      * parse implementation and are not converted by the explicit convertValidatedData
@@ -106,6 +106,8 @@ public class XSDFloat extends XSDDatatype {
         {
             case "INF":
                 return Float.POSITIVE_INFINITY;
+            case "+INF":
+                return Float.POSITIVE_INFINITY;
             case "-INF":
                 return Float.NEGATIVE_INFINITY;
             case "NaN":
@@ -114,7 +116,7 @@ public class XSDFloat extends XSDDatatype {
                 return Float.valueOf( lex );
         }
     }
-     
+
     /**
      * Check for whitespace violations.
      * Turned off by default.
@@ -126,10 +128,10 @@ public class XSDFloat extends XSDDatatype {
             }
         }
     }
-        
+
      /**
       * Compares two instances of values of the given datatype.
-      * This ignores lang tags and just uses the java.lang.Number 
+      * This ignores lang tags and just uses the java.lang.Number
       * equality.
       */
      @Override

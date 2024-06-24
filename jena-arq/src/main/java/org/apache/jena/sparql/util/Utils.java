@@ -20,42 +20,34 @@ package org.apache.jena.sparql.util ;
 
 import java.math.BigDecimal ;
 
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
-
-/** Miscellaneous operations - not query specific */
-
+/**
+ * Miscellaneous operations - not query specific
+ * @deprecated Use XSDNumUtils
+ */
+@Deprecated(forRemoval = true)
 public class Utils {
 
-    static public String stringForm(BigDecimal decimal) {
-        return XSDFuncOp.canonicalDecimalStr(decimal);
+    /**
+     * @deprecated Use {@link XSDNumUtils#stringForm(BigDecimal)}
+     */
+    @Deprecated(forRemoval = true)
+    public static String stringForm(BigDecimal decimal) {
+        return XSDNumUtils.stringForm(decimal);
     }
 
-    static public String stringForm(double d) {
-        if ( Double.isInfinite(d) ) {
-            if ( d < 0 )
-                return "-INF" ;
-            return "INF" ;
-        }
-
-        if ( Double.isNaN(d) )
-            return "NaN" ;
-
-        // Otherwise, SPARQL form always has "e0"
-        String x = Double.toString(d) ;
-        if ( (x.indexOf('e') != -1) || (x.indexOf('E') != -1) )
-            return x ;
-        // Renormalize?
-        return x + "e0" ;
+    /**
+     * @deprecated Use {@link XSDNumUtils#stringForm(double)}
+     */
+    @Deprecated(forRemoval = true)
+    public static String stringForm(double d) {
+        return XSDNumUtils.stringForm(d);
     }
 
-    static public String stringForm(float f) {
-        if ( Float.isInfinite(f) ) {
-            if ( f < 0 )
-                return "-INF" ;
-            return "INF" ;
-        }
-
-        // No SPARQL short form.
-        return Float.toString(f) ;
+    /**
+     * @deprecated Use {@link XSDNumUtils#stringForm(float)}
+     */
+    @Deprecated(forRemoval = true)
+    public static String stringForm(float f) {
+        return XSDNumUtils.stringForm(f);
     }
 }

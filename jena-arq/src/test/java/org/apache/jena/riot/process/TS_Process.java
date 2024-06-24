@@ -23,10 +23,9 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestNormalization.class
+    TestNormalization.class,
+    TestNormalizationTTL.class,
+    TestNormalizationXSD.class
 })
-
 public class TS_Process
-{
-}
-
+{}

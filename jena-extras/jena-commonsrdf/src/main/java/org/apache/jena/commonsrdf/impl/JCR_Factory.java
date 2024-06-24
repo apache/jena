@@ -40,7 +40,7 @@ public class JCR_Factory {
     }
 
     public static Literal createLiteralDT(String lexStr, String datatypeIRI) {
-        return new JCR_Literal(NodeFactory.createLiteral(lexStr, NodeFactory.getType(datatypeIRI)));
+        return new JCR_Literal(NodeFactory.createLiteralDT(lexStr, NodeFactory.getType(datatypeIRI)));
     }
 
     public static Literal createLiteralLang(String lexStr, String langTag) {

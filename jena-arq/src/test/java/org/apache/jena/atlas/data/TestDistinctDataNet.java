@@ -271,7 +271,7 @@ public class TestDistinctDataNet
         builder.add(vars[5], NodeFactory.createURI(randomURI()));
         builder.add(vars[6], NodeFactory.createURI(randomURI()));
         builder.add(vars[7], NodeFactory.createLiteralString(randomString(5)));
-        builder.add(vars[8], NodeFactory.createLiteral("" + random.nextInt(), XSDDatatype.XSDinteger));
+        builder.add(vars[8], NodeFactory.createLiteralDT("" + random.nextInt(), XSDDatatype.XSDinteger));
         builder.add(vars[9], NodeFactory.createBlankNode());
         return builder.build();
     }

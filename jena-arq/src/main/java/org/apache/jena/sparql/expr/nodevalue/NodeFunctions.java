@@ -486,7 +486,7 @@ public class NodeFunctions {
         Node dt = v2.asNode() ;
         // Check?
 
-        Node n = NodeFactory.createLiteral(lex, NodeFactory.getType(dt.getURI())) ;
+        Node n = NodeFactory.createLiteralDT(lex, NodeFactory.getType(dt.getURI())) ;
         return NodeValue.makeNode(n) ;
     }
 

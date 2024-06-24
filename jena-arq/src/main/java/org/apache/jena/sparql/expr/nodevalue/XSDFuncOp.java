@@ -54,6 +54,7 @@ import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.expr.*;
 import org.apache.jena.sparql.util.DateTimeStruct ;
+import org.apache.jena.sparql.util.XSDNumUtils;
 /**
  * Implementation of XQuery/XPath functions and operators.
  * http://www.w3.org/TR/xpath-functions/
@@ -256,73 +257,28 @@ public class XSDFuncOp
     /**
      * Decimal format, cast-to-string.
      * <p>
-     * Decimal canonical form where integer values have no ".0" (as in XSD 1.1).
+     * Decimal canonical form where integer values has no ".0" (as in XSD 1.1).
      * <p>
-     * In XSD 2, canonical integer-valued decimal has a trailing ".0".
-     * In F&amp;O v 3.1, xs:string cast of a decimal which integer valued, does not have the trailing ".0".
+     * In XSD 1.0, canonical integer-valued decimal has a trailing ".0".
+     * In XSD 1.1 and F&amp;O v 3.1, xs:string cast of a decimal which is integer valued, does
+     * not have the trailing ".0".
+     * @deprecated Use {@link XSDNumUtils#stringFormatXSD11} instead
      */
+    @Deprecated(forRemoval = true)
     public static String canonicalDecimalStrNoIntegerDot(BigDecimal bd) {
-        if ( bd.signum() == 0 )
-            return "0";
-        if ( bd.scale() <= 0 )
-            // No decimal part.
-            return bd.toPlainString();
-        return bd.stripTrailingZeros().toPlainString();
+        return XSDNumUtils.stringFormatXSD11(bd);
     }
 
     /**
-     * Canonical decimal according to XML Schema Datatype 2.
+     * Canonical decimal according to XML Schema Datatype 2 v1.0.
      * Integer-valued decimals have a trailing ".0".
      * (In XML Schema Datatype 1.1 they did not have a ".0".)
      * <p>
-     * Java BigDecimal.toPlainString does not produce XSD 2 compatible lexical forms for integer values.
+     * @deprecated Use {@link XSDNumUtils#stringFormatXSD10(BigDecimal)} instead
      */
+    @Deprecated(forRemoval = true)
     public static String canonicalDecimalStr(BigDecimal decimal) {
-        if ( decimal.signum() == 0 )
-            return "0.0";
-        if ( decimal.scale() <= 0 )
-            // No decimal part.
-            return decimal.toPlainString()+".0";
-        String str = decimal.stripTrailingZeros().toPlainString();
-        // Maybe the decimal part was only zero.
-        int dotIdx = str.indexOf('.') ;
-        if ( dotIdx < 0 )
-            // No DOT.
-            str = str + ".0";
-        return str;
-    }
-
-    /** Original code, with changes of JENA-1717 / Jena 3.13.0 - 2019-05 */
-    private static String canonicalDecimalStr_X(BigDecimal d) {
-        String x = d.toPlainString() ;
-
-        // The part after the "."
-        int dotIdx = x.indexOf('.') ;
-        if ( dotIdx < 0 )
-            // No DOT.
-            return x+".0";
-
-        // Has a DOT.
-        int i = x.length() - 1 ;
-        // dotIdx+1 to leave at least ".0"
-        while ((i > dotIdx + 1) && x.charAt(i) == '0')
-            i-- ;
-        if ( i < x.length() - 1 )
-            // And trailing zeros.
-            x = x.substring(0, i + 1) ;
-        // Avoid replaceAll as it is expensive.
-        // Leading zeros.
-        int j = 0;
-        for ( ; j < x.length() ; j++ ) {
-            if ( x.charAt(j) != '0')
-                break;
-        }
-        // At least one zero before dot.
-        if ( j == dotIdx )
-            j--;
-        if ( j > 0 )
-            x = x.substring(j, x.length());
-        return x;
+        return XSDNumUtils.stringFormatXSD10(decimal);
     }
 
     public static NodeValue max(NodeValue nv1, NodeValue nv2) {
@@ -1552,15 +1508,15 @@ public class XSDFuncOp
         if ( "".equals(dts.timezone) )
             return null ;
         if ( "Z".equals(dts.timezone) ) {
-            Node n = NodeFactory.createLiteral("PT0S", NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
+            Node n = NodeFactory.createLiteralDT("PT0S", NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
             return NodeValue.makeNode(n) ;
         }
         if ( "+00:00".equals(dts.timezone) ) {
-            Node n = NodeFactory.createLiteral("PT0S", NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
+            Node n = NodeFactory.createLiteralDT("PT0S", NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
             return NodeValue.makeNode(n) ;
         }
         if ( "-00:00".equals(dts.timezone) ) {
-            Node n = NodeFactory.createLiteral("-PT0S", NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
+            Node n = NodeFactory.createLiteralDT("-PT0S", NodeFactory.getType(XSDDatatype.XSD + "#dayTimeDuration")) ;
             return NodeValue.makeNode(n) ;
         }
 

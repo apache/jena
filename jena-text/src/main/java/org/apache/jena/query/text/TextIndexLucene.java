@@ -557,7 +557,7 @@ public class TextIndexLucene implements TextIndex {
                     if (doclang.startsWith(DATATYPE_PREFIX)) {
                         String datatype = doclang.substring(DATATYPE_PREFIX.length());
                         TypeMapper tmap = TypeMapper.getInstance();
-                        literal = NodeFactory.createLiteral(lexical, tmap.getSafeTypeByName(datatype));
+                        literal = NodeFactory.createLiteralDT(lexical, tmap.getSafeTypeByName(datatype));
                     } else {
                         literal = NodeFactory.createLiteralLang(lexical, doclang);
                     }

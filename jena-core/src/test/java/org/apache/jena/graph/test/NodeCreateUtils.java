@@ -79,7 +79,7 @@ public class NodeCreateUtils
         if (first == '\'' || first == '\"')
             return newStringNode( pm, first, x);
         if (Character.isDigit( first ))
-            return NodeFactory.createLiteral( x, XSDDatatype.XSDinteger );
+            return NodeFactory.createLiteralDT( x, XSDDatatype.XSDinteger );
         if (first == '_')
             return NodeFactory.createBlankNode( x );
         if (x.equals( "??" ))
@@ -133,7 +133,7 @@ public class NodeCreateUtils
         int colon = langOrType.indexOf( ':' );
         return colon < 0
             ? NodeFactory.createLiteralLang( content, langOrType )
-            : NodeFactory.createLiteral( content, NodeFactory.getType( pm.expandPrefix( langOrType )))
+            : NodeFactory.createLiteralDT( content, NodeFactory.getType( pm.expandPrefix( langOrType )))
             ;
         }
 

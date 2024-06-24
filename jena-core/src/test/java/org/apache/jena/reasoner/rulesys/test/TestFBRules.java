@@ -651,7 +651,7 @@ public class TestFBRules extends TestCase {
         data.add(Triple.create(n2, p, Functor.makeFunctorNode("f", new Node[] {
                                         a, Util.makeIntNode(0)  })));
         data.add(Triple.create(n3, p, Functor.makeFunctorNode("f", new Node[] {
-               a, NodeFactory.createLiteral( "0", XSDDatatype.XSDnonNegativeInteger ) } )));
+               a, NodeFactory.createLiteralDT( "0", XSDDatatype.XSDnonNegativeInteger ) } )));
         InfGraph infgraph = createInfGraph(rules, data);
 
         TestUtil.assertIteratorValues(this, infgraph.find(null, s, null),
@@ -728,9 +728,9 @@ public class TestFBRules extends TestCase {
         // XSD timeDate point comparisons
         data = GraphMemFactory.createGraphMem();
         XSDDatatype dt = new XSDDatatype("dateTime");
-        data.add(Triple.create(n1, q, NodeFactory.createLiteral("2000-03-04T20:00:00Z", XSDDatatype.XSDdateTime)));
-        data.add(Triple.create(n2, q, NodeFactory.createLiteral("2001-03-04T20:00:00Z", XSDDatatype.XSDdateTime)));
-        data.add(Triple.create(n3, q, NodeFactory.createLiteral("2002-03-04T20:00:00Z", XSDDatatype.XSDdateTime)));
+        data.add(Triple.create(n1, q, NodeFactory.createLiteralDT("2000-03-04T20:00:00Z", XSDDatatype.XSDdateTime)));
+        data.add(Triple.create(n2, q, NodeFactory.createLiteralDT("2001-03-04T20:00:00Z", XSDDatatype.XSDdateTime)));
+        data.add(Triple.create(n3, q, NodeFactory.createLiteralDT("2002-03-04T20:00:00Z", XSDDatatype.XSDdateTime)));
         infgraph = createInfGraph(rules, data);
 
         TestUtil.assertIteratorValues(this, infgraph.find(n1, null, n2),
@@ -837,9 +837,9 @@ public class TestFBRules extends TestCase {
         data = GraphMemFactory.createGraphMem();
         data.add(Triple.create(n1, p, Util.makeIntNode(3)) );
         data.add(Triple.create(n2, p, NodeFactory.createLiteralString("foo")) );
-        data.add(Triple.create(n3, p, NodeFactory.createLiteral("foo", XSDDatatype.XSDstring)) );
+        data.add(Triple.create(n3, p, NodeFactory.createLiteralDT("foo", XSDDatatype.XSDstring)) );
         data.add(Triple.create(n4, p, n4));
-        data.add(Triple.create(n5, p, NodeFactory.createLiteral("-1", XSDDatatype.XSDnonNegativeInteger)) );
+        data.add(Triple.create(n5, p, NodeFactory.createLiteralDT("-1", XSDDatatype.XSDnonNegativeInteger)) );
         infgraph = createInfGraph(rules, data);
 
         TestUtil.assertIteratorValues(this, infgraph.find(null, s, null),

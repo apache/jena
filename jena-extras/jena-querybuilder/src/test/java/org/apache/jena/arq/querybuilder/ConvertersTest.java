@@ -71,7 +71,7 @@ public class ConvertersTest {
         Node n = Converters.makeLiteral(5);
         assertEquals("5", n.getLiteralLexicalForm());
         assertEquals(Integer.valueOf(5), n.getLiteralValue());
-        Node n2 = NodeFactory.createLiteral("5", XSDDatatype.XSDint);
+        Node n2 = NodeFactory.createLiteralDT("5", XSDDatatype.XSDint);
         assertEquals(n2, n);
 
         n = Converters.makeLiteral("Hello");
@@ -83,7 +83,7 @@ public class ConvertersTest {
         n = Converters.makeLiteral(url);
         assertEquals("http://example.com", n.getLiteralLexicalForm());
         assertEquals(url, n.getLiteralValue());
-        Node n3 = NodeFactory.createLiteral("http://example.com", XSDDatatype.XSDanyURI);
+        Node n3 = NodeFactory.createLiteralDT("http://example.com", XSDDatatype.XSDanyURI);
         assertEquals(n3, n);
 
         UUID uuid = UUID.randomUUID();
@@ -176,7 +176,7 @@ public class ConvertersTest {
         assertEquals("text", n.getLiteralLexicalForm());
         assertEquals("en", n.getLiteralLanguage());
 
-        Node tripleNode = NodeFactory.createTripleNode(NodeFactory.createURI("a"), 
+        Node tripleNode = NodeFactory.createTripleNode(NodeFactory.createURI("a"),
                 NodeFactory.createURI("b"), NodeFactory.createURI("c"));
         n = Converters.makeNode(tripleNode, pMap);
         assertEquals(tripleNode, n);

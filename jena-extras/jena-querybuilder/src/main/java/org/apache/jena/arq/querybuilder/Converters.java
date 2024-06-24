@@ -69,7 +69,7 @@ public class Converters {
      */
     private static boolean isCollection(Object o) {
         Predicate<String> isLiteralCollection = (s) -> s.charAt(0) == '(' && s.charAt(s.length()-1) == ')';
-        return o != null && (o instanceof Collection || 
+        return o != null && (o instanceof Collection ||
                (o instanceof String && isLiteralCollection.test(((String) o).trim())));
     }
 
@@ -152,7 +152,7 @@ public class Converters {
         } else {
             dt.parse(value);
         }
-        return NodeFactory.createLiteral(value, dt);
+        return NodeFactory.createLiteralDT(value, dt);
     }
 
     /**
@@ -385,7 +385,7 @@ public class Converters {
 
     /**
      * Creates a collection of {@code TriplePath}s from the {@code s, p, o}. If
-     * {@code s}, {@code p}, or {@code o} is a collection or a String representation of a 
+     * {@code s}, {@code p}, or {@code o} is a collection or a String representation of a
      * collection like {@code "(a, b, c)"} the
      * {@code makeCollectionTriplePaths()} conversions are applied. If {@code s} and/or
      * {@code o} is not a collection the {@code makeNode()} conversions are applied.
@@ -393,7 +393,7 @@ public class Converters {
      * applied.
      * <p><em>Note: Path objects are not supported in RDF collections.  A custom Datatype would need
      * to be registered to place them in collections</em></p>
-     * 
+     *
      * @param s the object for the subject.
      * @param p the object for the predicate.
      * @param o the object for the object.
@@ -411,17 +411,17 @@ public class Converters {
 
     /**
      * Creates a collection of {@code Triple}s from the {@code s, p, o}. If
-     * {@code s}, {@code p}, or {@code o} is a collection or a String representation of a 
+     * {@code s}, {@code p}, or {@code o} is a collection or a String representation of a
      * collection like {@code "(a, b, c)"} the
      * {@code makeCollectionTriples()} conversions are applied. If {@code s}, {@code p}, or
      * {@code o} is not a collection the {@code makeNode()} conversions are applied.
      * This differs from
      * {@link #makeTriplePaths(Object, Object, Object, PrefixMapping)} in that the
      * {@code p} may not be a path.
-     * 
+     *
      * <p><em>Note: Path objects are not supported in RDF collections.  A custom Datatype would need
      * to be registered to place them in collections</em></p>
-     *  
+     *
      * @param s the object for the subject.
      * @param p the object for the predicate.
      * @param o the object for the object.
@@ -438,8 +438,8 @@ public class Converters {
     }
 
     /**
-     * Creates an RDF collection from a collection object. The collection object may be either 
-     * a Java collection or an ARQParser collection literal like {@code "(a, b, c)"}. 
+     * Creates an RDF collection from a collection object. The collection object may be either
+     * a Java collection or an ARQParser collection literal like {@code "(a, b, c)"}.
      * @param collector the TripleCollector to add the triples to.
      * @param collection the collection of objects or string representation of collection to convert.
      * @param prefixMapping the prefix mapping to use.
@@ -497,7 +497,7 @@ public class Converters {
      * {@code Triple} is the RDF Collection node.</li>
      * </ul>
      * </p>
-     * 
+     *
      * @param collection the collections of objects for the list.
      * @return A list of {@code Triple} objects.
      * @see #makeNode(Object, PrefixMapping)
@@ -529,7 +529,7 @@ public class Converters {
      * first {@code TriplePath} is the RDF Collection node.</li>
      * </ul>
      * </p>
-     * 
+     *
      * @param n the collections of objects for the list.
      * @return A list of {@code TriplePath} objects.
      * @see #makeNode(Object, PrefixMapping)
@@ -553,7 +553,7 @@ public class Converters {
 
         /**
          * Rewrite the variable nodes in the triples from {@code mark} to the end.
-         * This is required because the parser that converts from literal {@code "(a, b, c)"} 
+         * This is required because the parser that converts from literal {@code "(a, b, c)"}
          * to the RDF list will number the variables from 0.
          * @param mark the position to start the rewrite from.
          */
@@ -687,7 +687,7 @@ public class Converters {
 
         /**
          * Rewrite a triple path.
-         * 
+         *
          * @param t The triple path to rewrite.
          * @return the triple path after rewriting.
          */

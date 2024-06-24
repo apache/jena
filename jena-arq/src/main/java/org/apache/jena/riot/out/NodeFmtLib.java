@@ -53,7 +53,7 @@ public class NodeFmtLib
 
     // Turtle formatter, no prefix map or base. Does literal abbreviations.
     private static final NodeFormatter ttlFormatter = new NodeFormatterTTL();
-    // N-triples formatter, no prefix map or base. Does literal abbreviations.
+    // N-triples formatter, no prefix map or base. Does not do literal abbreviations.
     private static final NodeFormatter ntFormatter = new NodeFormatterNT();
     private static final String nullStr = "<null>";
 
@@ -62,8 +62,8 @@ public class NodeFmtLib
     static {
         PrefixMapping pm = ARQConstants.getGlobalPrefixMap();
         Map<String, String> map = pm.getNsPrefixMap();
-        for ( Map.Entry<String, String> e : map.entrySet() )
-            dftPrefixMap.add(e.getKey(), e.getValue() );
+        for ( Map.Entry<String, String> e : map.entrySet())
+            dftPrefixMap.add(e.getKey(), e.getValue());
     }
 
     /** Format a triple, using Turtle literal abbreviations. */

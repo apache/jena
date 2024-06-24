@@ -19,11 +19,8 @@
 package org.apache.jena.tdb2.store;
 
 import org.apache.jena.dboe.base.block.FileMode;
-import org.apache.jena.tdb2.store.value.TestDoubleNode62;
-import org.apache.jena.tdb2.store.value.TestFloatNode;
-import org.apache.jena.tdb2.store.value.TestNodeIdInline;
-import org.apache.jena.tdb2.sys.SystemTDB;
 import org.apache.jena.tdb2.sys.LibTestOps;
+import org.apache.jena.tdb2.sys.SystemTDB;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -32,9 +29,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestNodeId.class
-    , TestNodeIdInline.class
-    , TestDoubleNode62.class
-    , TestFloatNode.class
     , TestTripleTable.class
     , TestStorageDatasetGraphTests.class
     , TestGraphTDB.class

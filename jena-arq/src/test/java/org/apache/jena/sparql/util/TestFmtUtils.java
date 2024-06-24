@@ -107,25 +107,25 @@ public class TestFmtUtils
 
     @Test
     public void integerLiteral() {
-        Node_Literal nl = (Node_Literal)NodeFactory.createLiteral("2", new XSDDatatype("int")) ;
+        Node_Literal nl = (Node_Literal)NodeFactory.createLiteralDT("2", new XSDDatatype("int")) ;
         assertEquals("\"2\"^^<http://www.w3.org/2001/XMLSchema#int>", FmtUtils.stringForLiteral(nl, getContext())) ;
     }
 
     @Test
     public void doubleLiteral() {
-        Node_Literal nl = (Node_Literal)NodeFactory.createLiteral("2.1e2", new XSDDatatype("double")) ;
+        Node_Literal nl = (Node_Literal)NodeFactory.createLiteralDT("2.1e2", new XSDDatatype("double")) ;
         assertEquals("2.1e2", FmtUtils.stringForLiteral(nl, getContext())) ;
     }
 
     @Test
     public void decimalLiteral() {
-        Node_Literal nl = (Node_Literal)NodeFactory.createLiteral("2.4", new XSDDatatype("decimal")) ;
+        Node_Literal nl = (Node_Literal)NodeFactory.createLiteralDT("2.4", new XSDDatatype("decimal")) ;
         assertEquals("2.4", FmtUtils.stringForLiteral(nl, getContext())) ;
     }
 
     @Test
     public void booleanLiteral() {
-        Node_Literal nl = (Node_Literal)NodeFactory.createLiteral("false", new XSDDatatype("boolean")) ;
+        Node_Literal nl = (Node_Literal)NodeFactory.createLiteralDT("false", new XSDDatatype("boolean")) ;
         assertEquals("false", FmtUtils.stringForLiteral(nl, getContext())) ;
     }
 

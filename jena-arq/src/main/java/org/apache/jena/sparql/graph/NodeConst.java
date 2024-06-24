@@ -31,7 +31,7 @@ import org.apache.jena.vocabulary.RDFS;
 /** Some node constants */
 public class NodeConst {
     private static Node literal(String lex, RDFDatatype dt) {
-        return NodeFactory.createLiteral(lex, dt);
+        return NodeFactory.createLiteralDT(lex, dt);
     }
 
     private static Node uri(String uriStr) {

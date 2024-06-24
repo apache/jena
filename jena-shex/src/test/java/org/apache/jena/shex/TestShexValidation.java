@@ -33,7 +33,7 @@ import org.junit.runner.RunWith;
     "src/test/files/spec/validation/manifest.ttl"
 })
 
-// Syntax are file files in:
+// Syntax are files in:
 // TestShexSyntax:    "src/test/files/spec/syntax"
 // TestShexBadSyntax: "src/test/files/spec/negativeSyntax"
 

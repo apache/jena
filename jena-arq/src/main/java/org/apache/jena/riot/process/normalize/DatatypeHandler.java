@@ -22,7 +22,6 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.Node ;
 
 @FunctionalInterface
-interface DatatypeHandler
-{
-    Node handle(Node node, String lexicalForm, RDFDatatype datatype);
+interface DatatypeHandler {
+    public Node handle(Node node, String lexicalForm, RDFDatatype datatype);
 }

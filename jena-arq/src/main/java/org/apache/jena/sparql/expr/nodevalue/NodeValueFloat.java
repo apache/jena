@@ -18,47 +18,46 @@
 
 package org.apache.jena.sparql.expr.nodevalue;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.util.Utils ;
-
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.util.XSDNumUtils;
 
 public class NodeValueFloat extends NodeValue
 {
-    float value = Float.NaN ;
-    
-    public NodeValueFloat(float f)         { super() ; value = f ; }
-    public NodeValueFloat(float f, Node n) { super(n) ; value = f ; } 
+    float value = Float.NaN;
+
+    public NodeValueFloat(float f)         { super(); value = f; }
+    public NodeValueFloat(float f, Node n) { super(n); value = f; }
 
     @Override
-    public boolean isNumber() { return true ; }
+    public boolean isNumber() { return true; }
     @Override
-    public boolean isFloat() { return true ; }
+    public boolean isFloat() { return true; }
     @Override
-    public boolean isDouble() { return true ; }
-    
+    public boolean isDouble() { return true; }
+
     @Override
-    public float getFloat()  { return value ; }
+    public float getFloat()  { return value; }
     @Override
-    public double getDouble()  { return value ; }
+    public double getDouble()  { return value; }
 
     @Override
     protected Node makeNode()
-    { return NodeFactory.createLiteral(Utils.stringForm(value), XSDDatatype.XSDfloat) ; }
-    
+    { return NodeFactory.createLiteralDT(XSDNumUtils.stringForm(value), XSDDatatype.XSDfloat); }
+
     @Override
-    public String asString() { return toString() ; }
-    
+    public String asString() { return toString(); }
+
     @Override
-    public String toString()
-    { 
+    public String toString() {
         // Preserve lexical form
-        if ( getNode() != null ) return super.asString() ;
-        return Float.toString(value) ;
+        if ( getNode() != null )
+            return super.asString();
+        return Float.toString(value);
     }
-    
+
     @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
+    public void visit(NodeValueVisitor visitor) { visitor.visit(this); }
 }

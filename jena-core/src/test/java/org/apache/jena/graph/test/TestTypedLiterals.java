@@ -441,8 +441,8 @@ public class TestTypedLiterals extends TestCase {
         RDFDatatype dt = XSDDatatype.XSDdecimal;
         Node ns = NodeFactory.createURI("x") ;
         Node np = NodeFactory.createURI("p") ;
-        Node nx1 = NodeFactory.createLiteral("0.50", dt) ;
-        Node nx2 = NodeFactory.createLiteral("0.500", dt) ;
+        Node nx1 = NodeFactory.createLiteralDT("0.50", dt) ;
+        Node nx2 = NodeFactory.createLiteralDT("0.500", dt) ;
         graph.add(ns, np, nx1) ;
         assertTrue( graph.find(Node.ANY, Node.ANY, nx2).hasNext() );
         assertTrue( graph.find(ns, np, nx2).hasNext() );
@@ -966,8 +966,8 @@ public class TestTypedLiterals extends TestCase {
 
     /** Test that XSD anyURI is not sameValueAs XSD string (Xerces returns a string as the value for both) */
     public void testXSDanyURI() {
-        Node node1 = NodeFactory.createLiteral("http://example/", XSDDatatype.XSDanyURI) ;
-        Node node2 = NodeFactory.createLiteral("http://example/", XSDDatatype.XSDstring) ;
+        Node node1 = NodeFactory.createLiteralDT("http://example/", XSDDatatype.XSDanyURI) ;
+        Node node2 = NodeFactory.createLiteralDT("http://example/", XSDDatatype.XSDstring) ;
         assertFalse(node1.sameValueAs(node2)) ;
     }
 
@@ -976,7 +976,7 @@ public class TestTypedLiterals extends TestCase {
      */
     public void testDateTimeBug3() {
         final String testLex = "-0001-02-03T04:05:06";
-        Node n = NodeFactory.createLiteral(testLex, XSDDatatype.XSDdateTime);
+        Node n = NodeFactory.createLiteralDT(testLex, XSDDatatype.XSDdateTime);
         assertEquals("Got wrong XSDDateTime representation!", testLex, n.getLiteralValue().toString());
     }
 

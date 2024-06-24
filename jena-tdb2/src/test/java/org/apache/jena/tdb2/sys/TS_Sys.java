@@ -29,6 +29,8 @@ import org.junit.runners.Suite;
     , TestDatabaseConnection.class
     , TestSys.class
     , TestTransactionalSystemControl.class
+    , TestNormalizationTDB2.class
+    , TestNormalizedTermsTDB2.class
 })
 
 public class TS_Sys

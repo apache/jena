@@ -181,14 +181,14 @@ public class ProtobufConvert
                         case DATATYPE : {
                             String dtString = lit.getDatatype();
                             RDFDatatype dt = NodeFactory.getType(dtString) ;
-                            return NodeFactory.createLiteral(lex, dt) ;
+                            return NodeFactory.createLiteralDT(lex, dt) ;
                         }
                         case DTPREFIX : {
                             String x = expand(lit.getDtPrefix(), pmap);
                             if ( x == null )
                                 throw new RiotProtobufException("Failed to expand datatype prefix name: "+lit.getDtPrefix()) ;
                             RDFDatatype dt = NodeFactory.getType(x) ;
-                            return NodeFactory.createLiteral(lex, dt) ;
+                            return NodeFactory.createLiteralDT(lex, dt) ;
                         }
                         case LITERALKIND_NOT_SET :
                             throw new RiotProtobufException("Literal kind not set.");
@@ -218,13 +218,13 @@ public class ProtobufConvert
                 long x = term.getValInteger() ;
                 String lex = Long.toString(x, 10) ;
                 RDFDatatype dt = XSDDatatype.XSDinteger ;
-                return NodeFactory.createLiteral(lex, dt) ;
+                return NodeFactory.createLiteralDT(lex, dt) ;
             }
             case VALDOUBLE : {
                 double x = term.getValDouble() ;
                 String lex = Double.toString(x) ;
                 RDFDatatype dt = XSDDatatype.XSDdouble ;
-                return NodeFactory.createLiteral(lex, dt) ;
+                return NodeFactory.createLiteralDT(lex, dt) ;
             }
             case VALDECIMAL : {
                 long value = term.getValDecimal().getValue() ;
@@ -232,7 +232,7 @@ public class ProtobufConvert
                 BigDecimal d =  BigDecimal.valueOf(value, scale) ;
                 String lex = d.toPlainString() ;
                 RDFDatatype dt = XSDDatatype.XSDdecimal ;
-                return NodeFactory.createLiteral(lex, dt) ;
+                return NodeFactory.createLiteralDT(lex, dt) ;
             }
             case TERM_NOT_SET :
                 throw new RiotProtobufException("RDF_Term not set") ;

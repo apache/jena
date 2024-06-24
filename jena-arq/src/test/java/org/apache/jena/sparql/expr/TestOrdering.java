@@ -124,7 +124,7 @@ public class TestOrdering {
     @Test
     public void test_xsd_string1() {
         NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteralString("abc"));
-        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteral("abc", XSDDatatype.XSDstring));
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralDT("abc", XSDDatatype.XSDstring));
         int x = NodeValue.compare(nv1, nv2);
         assertTrue(Expr.CMP_EQUAL == x);
     }
@@ -132,14 +132,14 @@ public class TestOrdering {
     @Test
     public void test_xsd_string2() {
         NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteralString("xyz"));
-        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteral("abc", XSDDatatype.XSDstring));
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralDT("abc", XSDDatatype.XSDstring));
         int x = NodeValue.compare(nv1, nv2);
         assertTrue(Expr.CMP_GREATER == x);
     }
 
     @Test
     public void test_xsd_string3() {
-        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteral("xyz", XSDDatatype.XSDstring));
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteralDT("xyz", XSDDatatype.XSDstring));
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralString("abc"));
         int x = NodeValue.compare(nv1, nv2);
         assertTrue(Expr.CMP_GREATER == x);
@@ -148,14 +148,14 @@ public class TestOrdering {
     @Test
     public void test_xsd_string4() {
         NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteralString("abc"));
-        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteral("xyz", XSDDatatype.XSDstring));
+        NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralDT("xyz", XSDDatatype.XSDstring));
         int x = NodeValue.compare(nv1, nv2);
         assertTrue(Expr.CMP_LESS == x);
     }
 
     @Test
     public void test_xsd_string5() {
-        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteral("abc", XSDDatatype.XSDstring));
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteralDT("abc", XSDDatatype.XSDstring));
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralString("xyz"));
         int x = NodeValue.compare(nv1, nv2);
         assertTrue(Expr.CMP_LESS == x);
@@ -237,7 +237,7 @@ public class TestOrdering {
 
     @Test
     public void test_lang8() {
-        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteral("abc", XSDDatatype.XSDstring));
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteralDT("abc", XSDDatatype.XSDstring));
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("xyz", "en"));
 
         int x = NodeValue.compareAlways(nv1, nv2);
@@ -248,7 +248,7 @@ public class TestOrdering {
 
     @Test
     public void test_lang9() {
-        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteral("xyz", XSDDatatype.XSDstring));
+        NodeValue nv1 = NodeValue.makeNode(NodeFactory.createLiteralDT("xyz", XSDDatatype.XSDstring));
         NodeValue nv2 = NodeValue.makeNode(NodeFactory.createLiteralLang("abc", "en"));
         // xsd:string (RDF 1.1) is a simple string and before @en.
         int x = NodeValue.compareAlways(nv1, nv2);

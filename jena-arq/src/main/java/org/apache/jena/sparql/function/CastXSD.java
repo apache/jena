@@ -40,6 +40,7 @@ import org.apache.jena.sparql.expr.ExprEvalTypeException;
 import org.apache.jena.sparql.expr.ExprException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.util.XSDNumUtils;
 
 /**
  * Code for all casting between XSD datatypes.
@@ -296,7 +297,7 @@ public class CastXSD {
         // https://www.w3.org/TR/xpath-functions/#casting-to-string
         if ( isDecimal(nv) ) {
             BigDecimal bd = nv.getDecimal();
-            String str = XSDFuncOp.canonicalDecimalStrNoIntegerDot(bd);
+            String str = XSDNumUtils.canonicalDecimalStrNoIntegerDot(bd);
             return NodeValue.makeString(str);
         }
 
@@ -326,7 +327,7 @@ public class CastXSD {
             if ( inSmallAboluteRange(dValue)) {
                 // Convert to decimal
                 BigDecimal bd = BigDecimal.valueOf(dValue);
-                return NodeValue.makeString(XSDFuncOp.canonicalDecimalStrNoIntegerDot(bd));
+                return NodeValue.makeString(XSDNumUtils.canonicalDecimalStrNoIntegerDot(bd));
             }
             // Canonical lexical.
             return castByLex(nv, castType);

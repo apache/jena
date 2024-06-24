@@ -67,11 +67,11 @@ public class NodeValueOps
             String lex = d3.toString();
             Node n;
             if ( isDTDur )
-                n = NodeFactory.createLiteral(lex, XSDDatatype.XSDdayTimeDuration);
+                n = NodeFactory.createLiteralDT(lex, XSDDatatype.XSDdayTimeDuration);
             else if ( isYMDur )
-                n = NodeFactory.createLiteral(lex, XSDDatatype.XSDyearMonthDuration);
+                n = NodeFactory.createLiteralDT(lex, XSDDatatype.XSDyearMonthDuration);
             else
-                n = NodeFactory.createLiteral(lex, XSDDatatype.XSDduration);
+                n = NodeFactory.createLiteralDT(lex, XSDDatatype.XSDduration);
             return NodeValue.makeNodeDuration(d3, n);
         }
 
@@ -116,11 +116,11 @@ public class NodeValueOps
             String lex = d3.toString();
             Node n;
             if ( isDTDur )
-                n = NodeFactory.createLiteral(lex, XSDDatatype.XSDdayTimeDuration);
+                n = NodeFactory.createLiteralDT(lex, XSDDatatype.XSDdayTimeDuration);
             else if ( isYMDur )
-                n = NodeFactory.createLiteral(lex, XSDDatatype.XSDyearMonthDuration);
+                n = NodeFactory.createLiteralDT(lex, XSDDatatype.XSDyearMonthDuration);
             else
-                n = org.apache.jena.graph.NodeFactory.createLiteral(lex, XSDDatatype.XSDduration);
+                n = org.apache.jena.graph.NodeFactory.createLiteralDT(lex, XSDDatatype.XSDduration);
             return NodeValue.makeNodeDuration(d3, n);
         }
 
@@ -177,7 +177,7 @@ public class NodeValueOps
                 throw new ExprEvalTypeException("Operator '*': only dayTime duration.  Got: " + nv1);
             BigDecimal dec = nv2.getDecimal();
             Duration r = dur.multiply(dec);
-            Node n = NodeFactory.createLiteral(r.toString(), XSDDatatype.XSDduration);
+            Node n = NodeFactory.createLiteralDT(r.toString(), XSDDatatype.XSDduration);
             return NodeValue.makeNodeDuration(r, n);
         }
         throw new ExprEvalTypeException("Operator '*' : Undefined multiply: " + nv1 + " and " + nv2);
@@ -203,7 +203,7 @@ public class NodeValueOps
             Duration r = dur.multiply(dec1);
             // Should normalize but not Duration.normalizeWith for a general duration.
             // DT or YM specific normalization could be done. e.g. days can go over 31.
-            Node n = NodeFactory.createLiteral(r.toString(), XSDDatatype.XSDduration);
+            Node n = NodeFactory.createLiteralDT(r.toString(), XSDDatatype.XSDduration);
             return NodeValue.makeNodeDuration(r, n);
         }
 

@@ -33,20 +33,9 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueBoolean;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueDateTime;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueDecimal;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueDouble;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueDuration;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueFloat;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueLang;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueNode;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueSortKey;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueString;
-import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
+import org.apache.jena.sparql.expr.nodevalue.*;
 import org.apache.jena.sparql.graph.NodeConst;
-import org.apache.jena.sparql.util.Utils;
+import org.apache.jena.sparql.util.XSDNumUtils;
 import org.junit.Test;
 
 public class NodeValueRewriterTest {
@@ -82,7 +71,7 @@ public class NodeValueRewriterTest {
 
     @Test
     public void visitNodeValueDecimalNodeTest() {
-        Node n = NodeFactory.createLiteral(XSDFuncOp.canonicalDecimalStr(new BigDecimal(3.14)), XSDDatatype.XSDdecimal);
+        Node n = NodeFactory.createLiteralDT(XSDNumUtils.stringFormatARQ(new BigDecimal(3.14)), XSDDatatype.XSDdecimal);
         NodeValue nv = new NodeValueDecimal(new BigDecimal(3.14), n);
         nv.visit(rewriter);
         NodeValue result = rewriter.getResult();
@@ -101,7 +90,7 @@ public class NodeValueRewriterTest {
 
     @Test
     public void visitNodeValueDoubleNodeTest() {
-        Node n = NodeFactory.createLiteral(Utils.stringForm(3.14), XSDDatatype.XSDdouble);
+        Node n = NodeFactory.createLiteralDT(XSDNumUtils.stringForm(3.14), XSDDatatype.XSDdouble);
         NodeValue nv = new NodeValueDouble(3.14, n);
         nv.visit(rewriter);
         NodeValue result = rewriter.getResult();
@@ -120,7 +109,7 @@ public class NodeValueRewriterTest {
 
     @Test
     public void visitNodeValueFloatNodeTest() {
-        Node n = NodeFactory.createLiteral(Utils.stringForm(3.14F), XSDDatatype.XSDfloat);
+        Node n = NodeFactory.createLiteralDT(XSDNumUtils.stringForm(3.14F), XSDDatatype.XSDfloat);
         NodeValue nv = new NodeValueFloat(3.14F, n);
         nv.visit(rewriter);
         NodeValue result = rewriter.getResult();
@@ -139,7 +128,7 @@ public class NodeValueRewriterTest {
 
     @Test
     public void visitNodeValueIntegerNodeTest() {
-        Node n = NodeFactory.createLiteral(BigInteger.ONE.toString(), XSDDatatype.XSDinteger);
+        Node n = NodeFactory.createLiteralDT(BigInteger.ONE.toString(), XSDDatatype.XSDinteger);
         NodeValue nv = new NodeValueInteger(BigInteger.ONE, n);
         nv.visit(rewriter);
         NodeValue result = rewriter.getResult();
@@ -219,7 +208,7 @@ public class NodeValueRewriterTest {
     @Test
     public void visitNodeValueDurationNodeTest() throws DatatypeConfigurationException {
         Duration dur = DatatypeFactory.newInstance().newDuration(true, 1, 2, 3, 4, 5, 6);
-        Node n = NodeFactory.createLiteral(dur.toString(), XSDDatatype.XSDduration);
+        Node n = NodeFactory.createLiteralDT(dur.toString(), XSDDatatype.XSDduration);
         NodeValue nv = new NodeValueDuration(dur, n);
         nv.visit(rewriter);
         NodeValue result = rewriter.getResult();
