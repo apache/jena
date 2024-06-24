@@ -18,8 +18,17 @@
 
 package org.apache.jena.rdfpatch;
 
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.rdfpatch.changes.RDFChangesCollector;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class TestPatchIO_Binary extends AbstractTestPatchIO {
 
@@ -31,5 +40,29 @@ public class TestPatchIO_Binary extends AbstractTestPatchIO {
     @Override
     protected RDFPatch read(InputStream in) {
         return RDFPatchOps.readBinary(in);
+    }
+
+    @Test(expected = PatchException.class)
+    public void junk_01() {
+        byte[] junkData = "junk".getBytes(StandardCharsets.UTF_8);
+        read(new ByteArrayInputStream(junkData));
+    }
+
+    @Test(expected = PatchException.class)
+    public void junk_02() {
+        byte[] junkData = "aaaa".getBytes(StandardCharsets.UTF_8);
+        read(new ByteArrayInputStream(junkData));
+    }
+
+    @Test(expected = PatchException.class)
+    public void junk_03() {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        RDFChangesCollector collector = new RDFChangesCollector();
+        collector.add(NodeFactory.createURI("http://g"), NodeFactory.createURI("http://s"),
+                      NodeFactory.createURI("http://p"), NodeFactory.createURI("http://o"));
+        write(output, collector.getRDFPatch());
+        // Intentionally truncating a valid binary patch
+        byte[] junkData = Arrays.copyOfRange(output.toByteArray(), 0, output.size() - 10);
+        read(new ByteArrayInputStream(junkData));
     }
 }
