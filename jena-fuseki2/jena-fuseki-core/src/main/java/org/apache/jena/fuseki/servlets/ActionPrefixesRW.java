@@ -33,13 +33,13 @@ public class ActionPrefixesRW extends ActionPrefixesR {
     @Override
     protected void doOptions(HttpAction action) {
         ActionLib.setCommonHeadersForOptions(action);
-        action.setResponseHeader(HttpNames.hAllow, "GET,OPTIONS,POST");
+        action.setResponseHeader(HttpNames.hAllow, "GET,OPTIONS,POST,DELETE");
         ServletOps.success(action);
     }
 
     public void validateDelete(HttpAction action) {
         validate(action);
-        String prefixToRemove = action.getRequestParameter(PrefixUtils.REMOVEPREFIX);
+        String prefixToRemove = action.getRequestParameter(PrefixUtils.PREFIX);
         if (prefixToRemove == null || prefixToRemove.isEmpty() || !PrefixUtils.prefixIsValid(prefixToRemove)) {
             ServletOps.errorBadRequest("Remove operation unsuccessful!");
             return;
@@ -52,7 +52,7 @@ public class ActionPrefixesRW extends ActionPrefixesR {
         action.beginWrite();
 
         try {
-            String prefixToRemove = action.getRequestParameter(PrefixUtils.REMOVEPREFIX);
+            String prefixToRemove = action.getRequestParameter(PrefixUtils.PREFIX);
             prefixes(action).removePrefix(prefixToRemove);
             FmtLog.info(action.log, "[%d] Remove %s:", action.id, prefixToRemove);
 
@@ -81,23 +81,14 @@ public class ActionPrefixesRW extends ActionPrefixesR {
         validate(action);
         String prefix = action.getRequestParameter(PrefixUtils.PREFIX);
         String uri = action.getRequestParameter(PrefixUtils.URI);
-        String prefixToRemove = action.getRequestParameter(PrefixUtils.REMOVEPREFIX);
 
-        if (prefix.isEmpty() && uri.isEmpty() && prefixToRemove.isEmpty()) {
+        if (prefix.isEmpty() || uri.isEmpty()) {
             ServletOps.errorBadRequest("Empty operation - unsuccessful!");
             return;
         }
-        if (prefixToRemove.isEmpty()) {
-            if (prefix.isEmpty() || uri.isEmpty() || !PrefixUtils.prefixIsValid(prefix) || !PrefixUtils.uriIsValid(uri)) {
-                ServletOps.errorBadRequest("Update operation unsuccessful!");
-                return;
-            }
-        }
-        if (prefix.isEmpty() && uri.isEmpty()) {
-            if (!PrefixUtils.prefixIsValid(prefixToRemove)) {
-                ServletOps.errorBadRequest("Remove operation unsuccessful!");
-                return;
-            }
+        else if (!PrefixUtils.prefixIsValid(prefix) || !PrefixUtils.uriIsValid(uri)) {
+            ServletOps.errorBadRequest("Empty operation - unsuccessful!");
+            return;
         }
     }
 
@@ -110,15 +101,9 @@ public class ActionPrefixesRW extends ActionPrefixesR {
             String prefix = action.getRequestParameter(PrefixUtils.PREFIX);
             String uri = action.getRequestParameter(PrefixUtils.URI);
 
-            if(prefix.isEmpty()) {
-                String prefixToRemove = action.getRequestParameter(PrefixUtils.REMOVEPREFIX);
-                prefixes(action).removePrefix(prefixToRemove);
-                FmtLog.info(action.log, "[%d] Remove %s:", action.id, prefix);
-            }
-            else {
-                prefixes(action).updatePrefix(prefix, uri);
-                FmtLog.info(action.log, "[%d] Set %s: <%s>", action.id, prefix, uri);
-            }
+            prefixes(action).updatePrefix(prefix, uri);
+            FmtLog.info(action.log, "[%d] Set %s: <%s>", action.id, prefix, uri);
+
             action.commit();
 
             // Indicate success

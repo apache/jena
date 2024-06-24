@@ -122,7 +122,7 @@ public class TestPrefixesService {
     public void updateURINewLegal0() {
         // valid new prefix, valid new uri, implies return uri3
         String url = String.format(serviceUpdateURL, server.getHttpPort());
-        execPost(url, "prefix3", "http://www.localhost.org/uri3", null);
+        execPost(url, "prefix3", "http://www.localhost.org/uri3");
         String x = exec(url, "?prefix=prefix3");
         assertEquals("http://www.localhost.org/uri3", x, "Expected http://www.localhost.org/uri3 got " + x);
     }
@@ -131,7 +131,7 @@ public class TestPrefixesService {
     public void updateURINewLegal1() {
         // valid new prefix, existing uri, implies return uri3
         String url = String.format(serviceUpdateURL, server.getHttpPort());
-        execPost(url, "prefix4", "http://www.localhost.org/uri3", null);
+        execPost(url, "prefix4", "http://www.localhost.org/uri3");
         String x = exec(url, "?prefix=prefix4");
         assertEquals("http://www.localhost.org/uri3", x, "Expected http://www.localhost.org/uri3 got " + x);
     }
@@ -140,7 +140,7 @@ public class TestPrefixesService {
     public void updateURINewLegal2() {
         // existing prefix, valid new uri, implies return uri7
         String url = String.format(serviceUpdateURL, server.getHttpPort());
-        execPost(url, "prefix1", "http://www.localhost.org/uri7", null);
+        execPost(url, "prefix1", "http://www.localhost.org/uri7");
         String x = exec(url, "?prefix=prefix1");
         assertEquals("http://www.localhost.org/uri7", x, "Expected http://www.localhost.org/uri7 got " + x);
     }
@@ -149,7 +149,7 @@ public class TestPrefixesService {
     public void updateURINewLegal3() {
         // existing prefix, existing uri, implies return uri2
         String url = String.format(serviceUpdateURL, server.getHttpPort());
-        execPost(url, "prefix2", "http://www.localhost.org/uri2", null);
+        execPost(url, "prefix2", "http://www.localhost.org/uri2");
         String x = exec(url, "?prefix=prefix2");
         assertEquals("http://www.localhost.org/uri2", x, "Expected http://www.localhost.org/uri2 got " + x);
     }
@@ -159,7 +159,7 @@ public class TestPrefixesService {
         HttpException ex = assertThrows(HttpException.class, ()->{
             //valid new prefix, invalid uri, 400 bad request exception expected
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, "prefix4", "-.-", null);
+            execPost(url, "prefix4", "-.-");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -169,7 +169,7 @@ public class TestPrefixesService {
         HttpException ex = assertThrows(HttpException.class, ()->{
             //valid new prefix, empty uri, 400 bad request exception expected
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, "prefix4", "", "");
+            execPost(url, "prefix4", "");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -179,7 +179,7 @@ public class TestPrefixesService {
         HttpException ex = assertThrows(HttpException.class, ()->{
             // valid new prefix, null uri (bad argument), 400 bad request exception expected
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, "prefix4", null, "");
+            execPost(url, "prefix4", null);
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -189,7 +189,7 @@ public class TestPrefixesService {
         HttpException ex = assertThrows(HttpException.class, ()->{
             // existing prefix, invalid uri, 400 bad request exception expected
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, "prefix1", "http:abc", "");
+            execPost(url, "prefix1", "http:abc");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -199,7 +199,7 @@ public class TestPrefixesService {
         HttpException ex = assertThrows(HttpException.class, ()->{
             // existing prefix, empty uri, 400 bad request exception expected
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, "prefix1", "", "");
+            execPost(url, "prefix1", "");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -209,7 +209,7 @@ public class TestPrefixesService {
         HttpException ex = assertThrows(HttpException.class, ()->{
             // existing prefix null uri (bad argument), 400 bad request exception expected
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, "prefix1", null, "");
+            execPost(url, "prefix1", null);
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -219,7 +219,7 @@ public class TestPrefixesService {
         HttpException ex = assertThrows(HttpException.class, ()->{
             // invalid prefix, valid new uri, 400 bad request exception expected
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, "prefix..-", "http://www.localhost.org/uri7", "");
+            execPost(url, "prefix..-", "http://www.localhost.org/uri7");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -229,7 +229,7 @@ public class TestPrefixesService {
         HttpException ex = assertThrows(HttpException.class, ()->{
             // invalid prefix, existing uri, 400 bad request exception expected
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, "-refix..1", "http://www.localhost.org/uri1", "");
+            execPost(url, "-refix..1", "http://www.localhost.org/uri1");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -239,7 +239,7 @@ public class TestPrefixesService {
         HttpException ex = assertThrows(HttpException.class, ()->{
             // invalid prefix, invalid uri, 400 bad request exception expected
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, "-", "http://", "");
+            execPost(url, "-", "http://");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -249,7 +249,7 @@ public class TestPrefixesService {
         HttpException ex = assertThrows(HttpException.class, ()->{
             // invalid prefix, empty uri, 400 bad request exception expected
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, "p/p", "", "");
+            execPost(url, "p/p", "");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -259,7 +259,7 @@ public class TestPrefixesService {
         HttpException ex = assertThrows(HttpException.class, ()->{
             // invalid prefix, null uri (bad argument), 400 bad request exception expected
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, "prefix..-", null, "");
+            execPost(url, "prefix..-", null);
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -269,7 +269,7 @@ public class TestPrefixesService {
         HttpException ex = assertThrows(HttpException.class, ()->{
             // invalid prefix, valid new uri, 400 bad request exception expected
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, "", "http://www.localhost.org/uri5", "");
+            execPost(url, "", "http://www.localhost.org/uri5");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -279,7 +279,7 @@ public class TestPrefixesService {
         String url = String.format(serviceUpdateURL, server.getHttpPort());
         // empty prefix, existing uri, 400 bad request exception expected
         HttpException ex = assertThrows(HttpException.class, ()->{
-            execPost(url, "", "http://www.localhost.org/uri1", "");
+            execPost(url, "", "http://www.localhost.org/uri1");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -289,7 +289,7 @@ public class TestPrefixesService {
         String url = String.format(serviceUpdateURL, server.getHttpPort());
         // empty prefix, invalid uri, 400 bad request exception expected
         HttpException ex = assertThrows(HttpException.class, ()->{
-            execPost(url, "", "http:abcur..i1", "");
+            execPost(url, "", "http:abcur..i1");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -299,7 +299,7 @@ public class TestPrefixesService {
         String url = String.format(serviceUpdateURL, server.getHttpPort());
         // empty prefix, empty uri, 400 bad request exception expected
         HttpException ex = assertThrows(HttpException.class, ()->{
-            execPost(url, "", "", "");
+            execPost(url, "", "");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -309,7 +309,7 @@ public class TestPrefixesService {
         String url = String.format(serviceUpdateURL, server.getHttpPort());
         // empty prefix, null uri (bad argument), 400 bad request exception expected
         HttpException ex = assertThrows(HttpException.class, ()->{
-            execPost(url, "", null, "");
+            execPost(url, "", null);
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -319,7 +319,7 @@ public class TestPrefixesService {
         HttpException ex = assertThrows(HttpException.class, ()->{
             // null prefix (bad argument), valid new uri, 400 bad request exception expected
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, null, "http://www.localhost.org/uri6", "");
+            execPost(url, null, "http://www.localhost.org/uri6");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -329,7 +329,7 @@ public class TestPrefixesService {
         HttpException ex = assertThrows(HttpException.class, ()->{
             // null prefix (bad argument), existing uri, 400 bad request exception expected
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, null, "http://www.localhost.org/uri1", null);
+            execPost(url, null, "http://www.localhost.org/uri1");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -339,7 +339,7 @@ public class TestPrefixesService {
         HttpException ex = assertThrows(HttpException.class, ()->{
             // null prefix (bad argument), invalid uri, 400 bad request exception expected
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, null, "...", null);
+            execPost(url, null, "...");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -349,7 +349,7 @@ public class TestPrefixesService {
         HttpException ex = assertThrows(HttpException.class, ()->{
             // null prefix (bad argument), empty uri, 400 bad request exception expected
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, null, "", "");
+            execPost(url, null, "");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -359,49 +359,9 @@ public class TestPrefixesService {
         HttpException ex = assertThrows(HttpException.class, ()->{
             // null prefix (bad argument), null uri (bad argument), 400 bad request exception expected
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, null, null, null);
+            execPost(url, null, null);
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
-    }
-
-
-// REMOVE URI tests
-// ---------------------------------------------------------------------------------------------
-    @Test
-    public void removeURI0() {
-        // request legal, prefix exists, implies return null
-        String url = String.format(serviceUpdateURL, server.getHttpPort());
-        execPost(url, null, null, "prefix1");
-        String x = exec(url, "?prefix=prefix1");
-        assertEquals("", x, "Expected null got " + x);
-    }
-
-    @Test
-    public void removeURI1() {
-        // request legal, prefix doesn't exist implies return null
-        String url = String.format(serviceUpdateURL, server.getHttpPort());
-        execPost(url, null, null, "prefix16");
-        String x = exec(url, "?prefix=prefix16");
-        assertEquals("", x, "Expected null got " + x);
-    }
-
-    @Test
-    public void removeURI2() {
-        // request illegal, prefix invalid, 400 bad request exception expected
-        HttpException ex = assertThrows(HttpException.class, ()->{
-            String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execPost(url, null, null, "prefix16-");
-        });
-        assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
-    }
-
-    @Test
-    public void removeURI3() {
-        // request legal, prefix exists implies return null
-        String url = String.format(serviceUpdateURL, server.getHttpPort());
-        execPost(url, null, null, "prefix2");
-        String x = exec(url, "?prefix=prefix2");
-        assertEquals("", x, "Expected null got " + x);
     }
 
 // GET ALL tests
@@ -412,9 +372,9 @@ public class TestPrefixesService {
         // request legal, returns multiple prefix-uri pairs
         String url = String.format(serviceURL, server.getHttpPort());
         String postURL = String.format(serviceUpdateURL, server.getHttpPort());
-        execPost(postURL, "test", "http://www.localhost.org/uritest", null);
-        execPost(postURL, "test2", "http://www.localhost.org/uritest2", null);
-        execPost(postURL, "test3", "http://www.localhost.org/uritest3", null);
+        execPost(postURL, "test", "http://www.localhost.org/uritest");
+        execPost(postURL, "test2", "http://www.localhost.org/uritest2");
+        execPost(postURL, "test3", "http://www.localhost.org/uritest3");
         String x = exec(url, "");
 
         // convert to set
@@ -451,7 +411,7 @@ public class TestPrefixesService {
         // request legal, uri exists in the database with a single prefix assigned
         String url = String.format(serviceURL, server.getHttpPort());
         String postURL = String.format(serviceUpdateURL, server.getHttpPort());
-        execPost(postURL, "test", "http://www.localhost.org/uritest", null);
+        execPost(postURL, "test", "http://www.localhost.org/uritest");
         String x = exec(url, "?uri=http://www.localhost.org/uritest");
         assertEquals("[{\"prefix\":\"test\",\"uri\":\"http://www.localhost.org/uritest\"}]", x, "Expected prefix");
     }
@@ -461,8 +421,8 @@ public class TestPrefixesService {
         // request legal, uri exists in the database with multiple prefixes assigned
         String url = String.format(serviceURL, server.getHttpPort());
         String postURL = String.format(serviceUpdateURL, server.getHttpPort());
-        execPost(postURL, "test", "http://www.localhost.org/uritest", null);
-        execPost(postURL, "testDuplicate", "http://www.localhost.org/uritest", null);
+        execPost(postURL, "test", "http://www.localhost.org/uritest");
+        execPost(postURL, "testDuplicate", "http://www.localhost.org/uritest");
         String x = exec(url, "?uri=http://www.localhost.org/uritest");
 
         // convert to set
@@ -504,9 +464,9 @@ public class TestPrefixesService {
     public void fetchPrefixEmpty() {
         // request illegal, uri is empty
         HttpException ex = assertThrows(HttpException.class, ()-> {
-                    String url = String.format(serviceURL, server.getHttpPort());
-                    String x = exec(url, "?uri=");
-                });
+            String url = String.format(serviceURL, server.getHttpPort());
+            String x = exec(url, "?uri=");
+        });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
 
@@ -520,22 +480,22 @@ public class TestPrefixesService {
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
 
-// REMOVE HTTP DELETE tests
+    // REMOVE HTTP DELETE tests
 // ---------------------------------------------------------------------------------------------
-@Test
-public void deleteURI0() {
-    // request legal, prefix exists, implies return null
-    String url = String.format(serviceUpdateURL, server.getHttpPort());
-    execDelete(url, "?removeprefix=prefix1");
-    String x = exec(url, "?prefix=prefix1");
-    assertEquals("", x, "Expected null got " + x);
-}
+    @Test
+    public void deleteURI0() {
+        // request legal, prefix exists, implies return null
+        String url = String.format(serviceUpdateURL, server.getHttpPort());
+        execDelete(url, "?prefix=prefix1");
+        String x = exec(url, "?prefix=prefix1");
+        assertEquals("", x, "Expected null got " + x);
+    }
 
     @Test
     public void deleteURI1() {
         // request legal, prefix doesn't exist implies return null
         String url = String.format(serviceUpdateURL, server.getHttpPort());
-        execDelete(url, "?removeprefix=prefix16");
+        execDelete(url, "?prefix=prefix16");
         String x = exec(url, "?prefix=prefix16");
         assertEquals("", x, "Expected null got " + x);
     }
@@ -545,7 +505,7 @@ public void deleteURI0() {
         // request illegal, prefix invalid, 400 bad request exception expected
         HttpException ex = assertThrows(HttpException.class, ()->{
             String url = String.format(serviceUpdateURL, server.getHttpPort());
-            execDelete(url, "?removeprefix=prefix16-");
+            execDelete(url, "?prefix=prefix16-");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }
@@ -554,7 +514,7 @@ public void deleteURI0() {
     public void deleteURI3() {
         // request legal, prefix exists implies return null
         String url = String.format(serviceUpdateURL, server.getHttpPort());
-        execDelete(url, "?removeprefix=prefix2");
+        execDelete(url, "?prefix=prefix2");
         String x = exec(url, "?prefix=prefix2");
         assertEquals("", x, "Expected null got " + x);
     }
@@ -567,11 +527,10 @@ public void deleteURI0() {
         return httpGetString(urlExec);
     }
 
-    private static void execPost(String url, String prefix, String uri, String prefixToRemove) {
+    private static void execPost(String url, String prefix, String uri) {
         Params params = Params.create()
                 .add("prefix", prefix)
-                .add("uri", uri)
-                .add("removeprefix", prefixToRemove);
+                .add("uri", uri);
         httpPostForm(url, params);
     }
 
