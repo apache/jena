@@ -23,9 +23,9 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.junit.Test ;
 
-/** Tests for inner/equi joins */ 
+/** Tests for inner/equi joins */
 public abstract class AbstractTestInnerJoin extends AbstractTestJoin {
-    
+
     @Override
     protected void executeTest(JoinKey joinKey, Table left, Table right, ExprList conditions, Table expectedResults) {
         if ( conditions != null )
@@ -35,12 +35,12 @@ public abstract class AbstractTestInnerJoin extends AbstractTestJoin {
         executeTestJoin("1", joinKey, left, right, null, expectedResults) ;
         executeTestJoin("2", joinKey, right, left, null, expectedResults) ;
     }
-    
+
     @Test public void join_basic_1()    { testJoin("a", table0(), table0(), table0()) ; }
     @Test public void join_basic_2()    { testJoin("a", table1(), table0(), table0()) ; }
     @Test public void join_basic_3()    { testJoin("a", tableD1(), table1(), tableD1()) ; }
     @Test public void join_basic_4()    { testJoin("z", tableD1(), table1(), tableD1()) ; }
-    
+
     @Test public void join_basic_5() { testJoin("a", table0(), table1(), table0()) ; }
     @Test public void join_basic_6() { testJoin("a", table1(), table0(), table0()) ; }
 
@@ -71,16 +71,41 @@ public abstract class AbstractTestInnerJoin extends AbstractTestJoin {
     @Test public void join_skew_01() { testJoin("x", tableS1(), tableS2(), tableS1J2()) ; }
     @Test public void join_skew_02() { testJoin("w", tableS1(), tableS2(), tableS1J2()) ; }
     @Test public void join_skew_03() { testJoin(null, tableS1(), tableS2(), tableS1J2()) ; }
-    //@Test
-    // Multiple variable join keys on skew data don't work. 
-    public void join_skew_04() { 
+
+    // Skew tests where the order of the two bindings in tableS1 is swapped.
+    @Test public void join_skew_01b() { testJoin("x", tableS1b(), tableS2(), tableS1J2()) ; }
+    @Test public void join_skew_02b() { testJoin("w", tableS1b(), tableS2(), tableS1J2()) ; }
+    @Test public void join_skew_03b() { testJoin(null, tableS1b(), tableS2(), tableS1J2()) ; }
+
+
+    @Test
+    public void join_skew_04() {
         JoinKey joinKey = new JoinKey.Builder()
             .add(Var.alloc("x"))
             .add(Var.alloc("w"))
             .build() ;
-        testJoinWithKey(joinKey, tableS1(), tableS2(), tableS1J2()) ; 
+        testJoinWithKey(joinKey, tableS1(), tableS2(), tableS1J2()) ;
     }
-    
+
+    @Test
+    public void join_skew_05() {
+        Table in = parseTableInt("""
+            (table
+              (row (?x undef) (?y 0))
+              (row (?x     0) (?y 0))
+            )""");
+
+        Table expected = parseTableInt("""
+            (table
+              (row (?x undef) (?y 0))
+              (row (?x     0) (?y 0))
+              (row (?x     0) (?y 0))
+              (row (?x     0) (?y 0))
+            )""");
+
+        testJoin(null, in, in, expected) ;
+    }
+
     // Disjoint tables.
     @Test public void join_disjoint_01() { testJoin("a", tableD2(), tableD8(), tableD8x2()) ; }
     @Test public void join_disjoint_02() { testJoin("z", tableD2(), tableD8(), tableD8x2()) ; }
