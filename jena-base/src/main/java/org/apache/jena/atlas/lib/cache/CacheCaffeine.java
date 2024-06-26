@@ -44,12 +44,18 @@ final public class CacheCaffeine<K,V> implements Cache<K, V>
     }
 
     public CacheCaffeine(int size, BiConsumer<K, V> dropHandler) {
+        this(size, dropHandler, -1);
+    }
+
+    public CacheCaffeine(int size, BiConsumer<K, V> dropHandler, double initialCapacityFactor) {
         @SuppressWarnings("unchecked")
         Caffeine<K,V> builder = (Caffeine<K,V>)Caffeine.newBuilder()
-            .maximumSize(size)
-            .initialCapacity(size/4)
-            // Eviction immediately using the caller thread.
-            .executor(c->c.run());
+            .maximumSize(size);
+        if (initialCapacityFactor >= 0.0 && initialCapacityFactor <= 1.0) {
+            builder.initialCapacity((int) Math.round(size * initialCapacityFactor));
+        }
+        // Eviction immediately using the caller thread.
+        builder.executor(c->c.run());
 
         if ( dropHandler != null ) {
             RemovalListener<K,V> drop = (key, value, cause)-> {

@@ -67,4 +67,12 @@ public interface StoreParamsDynamic {
     /** Node cache for recording known misses */
     public Integer getPrefixNodeMissCacheSize();
     public boolean isSetPrefixNodeMissCacheSize();
+
+    /**
+     * Initial capacity factor for node caches:
+     *   - if >= 0.0: initial capacity is set to the (maximum) size of the cache multiplied by the factor
+     *   - if < 0.0:  no initial capacity is set on the cache, i.e. its internal default is used
+     */
+    public Double getNodeCacheInitialCapacityFactor();
+    public boolean isSetNodeCacheInitialCapacityFactor();
 }

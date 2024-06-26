@@ -51,6 +51,9 @@ public class StoreParamsConst {
     public static final String   fNodeMissCacheSize    = "node_miss_cache_size" ;
     public static final int      NodeMissCacheSize     = SystemTDB.NodeMissCacheSize ;
     
+    public static final String  fNodeCacheInitialCapacityFactor = "node_cache_initial_capacity_factor";
+    public static final double  NodeCacheInitialCapacityFactor  = SystemTDB.NodeCacheInitialCapacityFactor;
+
     /** Database layout - ignored after a database is created */
     public static final String   fBlockSize            = "block_size" ;
     public static final int      blockSize             = SystemTDB.BlockSize ;

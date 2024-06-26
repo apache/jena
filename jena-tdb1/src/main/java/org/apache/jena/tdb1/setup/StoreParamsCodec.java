@@ -84,24 +84,25 @@ public class StoreParamsCodec {
         JsonBuilder builder = new JsonBuilder() ;
         builder.startObject("StoreParams") ;    // "StoreParams" is an internal alignment marker - not in the JSON.
 
-        encode(builder, key(fFileMode),                 params.getFileMode().name()) ;
-        encode(builder, key(fBlockSize),                params.getBlockSize()) ;
-        encode(builder, key(fBlockReadCacheSize),       params.getBlockReadCacheSize()) ;
-        encode(builder, key(fBlockWriteCacheSize),      params.getBlockWriteCacheSize()) ;
-        encode(builder, key(fNode2NodeIdCacheSize),     params.getNode2NodeIdCacheSize()) ;
-        encode(builder, key(fNodeId2NodeCacheSize),     params.getNodeId2NodeCacheSize()) ;
-        encode(builder, key(fNodeMissCacheSize),        params.getNodeMissCacheSize()) ;
-        encode(builder, key(fIndexNode2Id),             params.getIndexNode2Id()) ;
-        encode(builder, key(fIndexId2Node),             params.getIndexId2Node()) ;
-        encode(builder, key(fPrimaryIndexTriples),      params.getPrimaryIndexTriples()) ;
-        encode(builder, key(fTripleIndexes),            params.getTripleIndexes()) ;
-        encode(builder, key(fPrimaryIndexQuads),        params.getPrimaryIndexQuads()) ;
-        encode(builder, key(fQuadIndexes),              params.getQuadIndexes()) ;
-        encode(builder, key(fPrimaryIndexPrefix),       params.getPrimaryIndexPrefix()) ;
-        encode(builder, key(fPrefixIndexes),            params.getPrefixIndexes()) ;
-        encode(builder, key(fIndexPrefix),              params.getIndexPrefix()) ;
-        encode(builder, key(fPrefixNode2Id),            params.getPrefixNode2Id()) ;
-        encode(builder, key(fPrefixId2Node),            params.getPrefixId2Node()) ;
+        encode(builder, key(fFileMode),                       params.getFileMode().name()) ;
+        encode(builder, key(fBlockSize),                      params.getBlockSize()) ;
+        encode(builder, key(fBlockReadCacheSize),             params.getBlockReadCacheSize()) ;
+        encode(builder, key(fBlockWriteCacheSize),            params.getBlockWriteCacheSize()) ;
+        encode(builder, key(fNode2NodeIdCacheSize),           params.getNode2NodeIdCacheSize()) ;
+        encode(builder, key(fNodeId2NodeCacheSize),           params.getNodeId2NodeCacheSize()) ;
+        encode(builder, key(fNodeMissCacheSize),              params.getNodeMissCacheSize()) ;
+        encode(builder, key(fNodeCacheInitialCapacityFactor), params.getNodeCacheInitialCapacityFactor());
+        encode(builder, key(fIndexNode2Id),                   params.getIndexNode2Id()) ;
+        encode(builder, key(fIndexId2Node),                   params.getIndexId2Node()) ;
+        encode(builder, key(fPrimaryIndexTriples),            params.getPrimaryIndexTriples()) ;
+        encode(builder, key(fTripleIndexes),                  params.getTripleIndexes()) ;
+        encode(builder, key(fPrimaryIndexQuads),              params.getPrimaryIndexQuads()) ;
+        encode(builder, key(fQuadIndexes),                    params.getQuadIndexes()) ;
+        encode(builder, key(fPrimaryIndexPrefix),             params.getPrimaryIndexPrefix()) ;
+        encode(builder, key(fPrefixIndexes),                  params.getPrefixIndexes()) ;
+        encode(builder, key(fIndexPrefix),                    params.getIndexPrefix()) ;
+        encode(builder, key(fPrefixNode2Id),                  params.getPrefixNode2Id()) ;
+        encode(builder, key(fPrefixId2Node),                  params.getPrefixId2Node()) ;
 
         builder.finishObject("StoreParams") ;
         return (JsonObject)builder.build() ;
@@ -127,24 +128,25 @@ public class StoreParamsCodec {
         for ( String key : json.keys() ) {
             String short_key = unkey(key) ;
             switch(short_key) {
-                case fFileMode :               builder.fileMode(FileMode.valueOf(getString(json, key))) ;   break ;
-                case fBlockSize:               builder.blockSize(getInt(json, key)) ;                       break ;
-                case fBlockReadCacheSize:      builder.blockReadCacheSize(getInt(json, key)) ;              break ;
-                case fBlockWriteCacheSize:     builder.blockWriteCacheSize(getInt(json, key)) ;             break ;
-                case fNode2NodeIdCacheSize:    builder.node2NodeIdCacheSize(getInt(json, key)) ;            break ;
-                case fNodeId2NodeCacheSize:    builder.nodeId2NodeCacheSize(getInt(json, key)) ;            break ;
-                case fNodeMissCacheSize:       builder.nodeMissCacheSize(getInt(json, key)) ;               break ;
-                case fIndexNode2Id:            builder.indexNode2Id(getString(json, key)) ;                 break ;
-                case fIndexId2Node:            builder.indexId2Node(getString(json, key)) ;                 break ;
-                case fPrimaryIndexTriples:     builder.primaryIndexTriples(getString(json, key)) ;          break ;
-                case fTripleIndexes:           builder.tripleIndexes(getStringArray(json, key)) ;           break ;
-                case fPrimaryIndexQuads:       builder.primaryIndexQuads(getString(json, key)) ;            break ;
-                case fQuadIndexes:             builder.quadIndexes(getStringArray(json, key)) ;             break ;
-                case fPrimaryIndexPrefix:      builder.primaryIndexPrefix(getString(json, key)) ;           break ;
-                case fPrefixIndexes:           builder.prefixIndexes(getStringArray(json, key)) ;           break ;
-                case fIndexPrefix:             builder.indexPrefix(getString(json, key)) ;                  break ;
-                case fPrefixNode2Id:           builder.prefixNode2Id(getString(json, key)) ;                break ;
-                case fPrefixId2Node:           builder.prefixId2Node(getString(json, key)) ;                break ;
+                case fFileMode :                      builder.fileMode(FileMode.valueOf(getString(json, key))) ;    break ;
+                case fBlockSize:                      builder.blockSize(getInt(json, key)) ;                        break ;
+                case fBlockReadCacheSize:             builder.blockReadCacheSize(getInt(json, key)) ;               break ;
+                case fBlockWriteCacheSize:            builder.blockWriteCacheSize(getInt(json, key)) ;              break ;
+                case fNode2NodeIdCacheSize:           builder.node2NodeIdCacheSize(getInt(json, key)) ;             break ;
+                case fNodeId2NodeCacheSize:           builder.nodeId2NodeCacheSize(getInt(json, key)) ;             break ;
+                case fNodeMissCacheSize:              builder.nodeMissCacheSize(getInt(json, key)) ;                break ;
+                case fNodeCacheInitialCapacityFactor: builder.nodeCacheInitialCapacityFactor(getDouble(json, key)); break ;
+                case fIndexNode2Id:                   builder.indexNode2Id(getString(json, key)) ;                  break ;
+                case fIndexId2Node:                   builder.indexId2Node(getString(json, key)) ;                  break ;
+                case fPrimaryIndexTriples:            builder.primaryIndexTriples(getString(json, key)) ;           break ;
+                case fTripleIndexes:                  builder.tripleIndexes(getStringArray(json, key)) ;            break ;
+                case fPrimaryIndexQuads:              builder.primaryIndexQuads(getString(json, key)) ;             break ;
+                case fQuadIndexes:                    builder.quadIndexes(getStringArray(json, key)) ;              break ;
+                case fPrimaryIndexPrefix:             builder.primaryIndexPrefix(getString(json, key)) ;            break ;
+                case fPrefixIndexes:                  builder.prefixIndexes(getStringArray(json, key)) ;            break ;
+                case fIndexPrefix:                    builder.indexPrefix(getString(json, key)) ;                   break ;
+                case fPrefixNode2Id:                  builder.prefixNode2Id(getString(json, key)) ;                 break ;
+                case fPrefixId2Node:                  builder.prefixId2Node(getString(json, key)) ;                 break ;
                 default:
                     throw new TDB1Exception("StoreParams key not recognized: "+key) ;
             }
@@ -168,6 +170,13 @@ public class StoreParamsCodec {
         return x ;
     }
 
+    private static Double getDouble(JsonObject json, String key) {
+        if ( ! json.hasKey(key) )
+            throw new TDB1Exception("StoreParamsCodec.getDouble: no such key: "+key);
+        Double x = json.get(key).getAsNumber().value().doubleValue();
+        return x;
+    }
+
     private static String[] getStringArray(JsonObject json, String key) {
         if ( ! json.hasKey(key) )
             throw new TDB1Exception("StoreParamsCodec.getStringArray: no such key: "+key) ;
@@ -181,6 +190,10 @@ public class StoreParamsCodec {
 
     // Encode helper.
     private static void encode(JsonBuilder builder, String name, Object value) {
+        if ( value instanceof Double number ) {
+            builder.key(name).value(number);
+            return;
+        }
         if ( value instanceof Number number ) {
             long x = number.longValue() ;
             builder.key(name).value(x) ;
