@@ -19,11 +19,11 @@
 package org.apache.jena.fuseki.servlets.prefixes;
 
 
-import org.apache.jena.sparql.core.Transactional;
-import org.apache.jena.sparql.core.TransactionalLock;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.jena.sparql.core.Transactional;
+import org.apache.jena.sparql.core.TransactionalLock;
 
 
 public class PrefixesPlain implements PrefixesAccess {
@@ -37,8 +37,8 @@ public class PrefixesPlain implements PrefixesAccess {
         this.transactional = TransactionalLock.createMRSW();
     }
 
+    @Override
     public Transactional transactional() { return transactional; }
-
 
     @Override
     public Optional<String> fetchURI(String prefix) {

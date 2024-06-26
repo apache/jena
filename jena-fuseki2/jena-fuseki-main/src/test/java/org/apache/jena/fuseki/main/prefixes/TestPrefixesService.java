@@ -18,10 +18,19 @@
 
 package org.apache.jena.fuseki.main.prefixes;
 
+import static org.apache.jena.http.HttpOp.httpDelete;
+import static org.apache.jena.http.HttpOp.httpGetString;
+import static org.apache.jena.http.HttpOp.httpPostForm;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.servlets.PrefixesService;
@@ -30,13 +39,6 @@ import org.apache.jena.web.HttpSC;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.apache.jena.http.HttpOp.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TestPrefixesService {
 
@@ -50,7 +52,7 @@ public class TestPrefixesService {
         String DATASET = "dataset";
         server = FusekiServer.create()
                 .port(0)
-                .parseConfigFile("src/test/files/config-prefixes-test.ttl")
+                .parseConfigFile("src/test/java/org/apache/jena/fuseki/main/files/config-prefixes-test.ttl")
                 .start();
 
         int port = server.getHttpPort();
@@ -384,13 +386,9 @@ public class TestPrefixesService {
         set.add("{\"prefix\":\"test3\",\"uri\":\"http://www.localhost.org/uritest3\"}");
 
         Set<String> resultSet = new HashSet<>();
-        try {
-            JsonArray jsonArray = JsonParser.parseString(x).getAsJsonArray();
-            for (JsonElement element : jsonArray) {
-                resultSet.add(element.getAsJsonObject().toString());
-            }
-        } catch (JsonSyntaxException e) {
-            System.out.println(e.getMessage());
+        JsonArray jsonArray = JsonParser.parseString(x).getAsJsonArray();
+        for (JsonElement element : jsonArray) {
+            resultSet.add(element.getAsJsonObject().toString());
         }
         assertEquals(set, resultSet, "Expected prefix");
     }
@@ -431,13 +429,9 @@ public class TestPrefixesService {
         set.add("{\"prefix\":\"testDuplicate\",\"uri\":\"http://www.localhost.org/uritest\"}");
 
         Set<String> resultSet = new HashSet<>();
-        try {
-            JsonArray jsonArray = JsonParser.parseString(x).getAsJsonArray();
-            for (JsonElement element : jsonArray) {
-                resultSet.add(element.getAsJsonObject().toString());
-            }
-        } catch (JsonSyntaxException e) {
-            System.out.println(e.getMessage());
+        JsonArray jsonArray = JsonParser.parseString(x).getAsJsonArray();
+        for (JsonElement element : jsonArray) {
+            resultSet.add(element.getAsJsonObject().toString());
         }
         assertEquals(set, resultSet, "Expected prefix");
     }

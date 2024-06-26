@@ -422,14 +422,10 @@ public abstract class TestAbstractPrefixParam {
         set.add("{\"prefix\":\"test3\",\"uri\":\"http://www.localhost.org/uritest3\"}");
 
         Set<String> resultSet = new HashSet<>();
-        try {
             JsonArray jsonArray = JsonParser.parseString(x).getAsJsonArray();
             for (JsonElement element : jsonArray) {
                 resultSet.add(element.getAsJsonObject().toString());
             }
-        } catch (JsonSyntaxException e) {
-            System.out.println(e.getMessage());
-        }
         assertEquals(set, resultSet, "Expected prefix");
     }
 
@@ -467,13 +463,9 @@ public abstract class TestAbstractPrefixParam {
         set.add("{\"prefix\":\"testDuplicate\",\"uri\":\"http://www.localhost.org/uritest\"}");
 
         Set<String> resultSet = new HashSet<>();
-        try {
-            JsonArray jsonArray = JsonParser.parseString(x).getAsJsonArray();
-            for (JsonElement element : jsonArray) {
-                resultSet.add(element.getAsJsonObject().toString());
-            }
-        } catch (JsonSyntaxException e) {
-            System.out.println(e.getMessage());
+        JsonArray jsonArray = JsonParser.parseString(x).getAsJsonArray();
+        for (JsonElement element : jsonArray) {
+            resultSet.add(element.getAsJsonObject().toString());
         }
         assertEquals(set, resultSet, "Expected prefix");
     }

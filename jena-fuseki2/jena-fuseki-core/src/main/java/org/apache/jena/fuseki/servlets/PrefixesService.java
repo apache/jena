@@ -20,7 +20,6 @@ package org.apache.jena.fuseki.servlets;
 
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.server.OperationRegistry;
-import org.apache.jena.fuseki.servlets.ActionService;
 
 /** The PrefixesService class registers the PrefixesR and PrefixesRW operations
  * and actions for the Prefixes Service. The service allows for prefix management

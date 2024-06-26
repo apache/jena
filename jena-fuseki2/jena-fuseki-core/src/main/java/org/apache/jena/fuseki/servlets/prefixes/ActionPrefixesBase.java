@@ -1,5 +1,4 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
  * regarding copyright ownership.  The ASF licenses this file
@@ -27,7 +26,7 @@ import java.util.Iterator;
 
 public class ActionPrefixesBase extends BaseActionREST {
 
-    /** Create a {@link PrefixesAccess for this {@link HttpAction}. */
+    /** Create a {@link PrefixesAccess} for this {@link HttpAction}. */
     protected static PrefixesAccess prefixes(HttpAction action) {
         DatasetGraph dsg = action.getDataset();
         PrefixesMap pMap = new PrefixesMap(dsg.prefixes(), dsg);

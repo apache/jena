@@ -18,13 +18,13 @@
 
 package org.apache.jena.fuseki.servlets.prefixes;
 
-import org.apache.jena.riot.system.PrefixMap;
-import org.apache.jena.sparql.core.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.sparql.core.Transactional;
 
 public class PrefixesMap implements PrefixesAccess {
     private final PrefixMap prefixMap;
@@ -35,6 +35,7 @@ public class PrefixesMap implements PrefixesAccess {
         this.prefixMap = prefixMap;
     }
 
+    @Override
     public Transactional transactional() {
         return transactional;
     }

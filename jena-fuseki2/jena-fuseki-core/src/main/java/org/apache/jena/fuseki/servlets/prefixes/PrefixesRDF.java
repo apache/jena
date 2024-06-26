@@ -18,19 +18,21 @@
 
 package org.apache.jena.fuseki.servlets.prefixes;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.jena.query.*;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.query.ParameterizedSparqlString;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.tdb2.DatabaseMgr;
-import org.apache.jena.query.ParameterizedSparqlString;
-import org.apache.jena.datatypes.xsd.XSDDatatype;
 
 /**
  * The prefix-URI mappings are represented in blank nodes of type Prefix, with prefixName and prefixURI attributes.
@@ -55,6 +57,7 @@ public class PrefixesRDF implements PrefixesAccess {
 
     DatasetGraph dataset = DatabaseMgr.createDatasetGraph();
 
+    @Override
     public Transactional transactional() { return dataset; }
 
     @Override
@@ -98,8 +101,8 @@ public class PrefixesRDF implements PrefixesAccess {
                 """
                 PREFIX prefixes: <http://jena.apache.org/prefixes#>
                 PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
-                ASK WHERE {  ?X prefixes:prefixName  ?prefixName ; 
-                                prefixes:prefixURI   ?prefixURI . 
+                ASK WHERE {  ?X prefixes:prefixName  ?prefixName ;
+                                prefixes:prefixURI   ?prefixURI .
                 }
                 """);
         pss.setLiteral("prefixName", prefix);
@@ -198,7 +201,7 @@ public class PrefixesRDF implements PrefixesAccess {
                 """
                 PREFIX prefixes: <http://jena.apache.org/prefixes#>
                 PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
-                SELECT ?prefixName WHERE { 
+                SELECT ?prefixName WHERE {
                     ?X prefixes:prefixURI ?uriName .
                     ?X prefixes:prefixName ?prefixName
                 }
