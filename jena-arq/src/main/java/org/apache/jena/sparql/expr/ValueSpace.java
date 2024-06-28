@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.expr;
 
+import org.apache.jena.cdt.CompositeDatatypeList;
+import org.apache.jena.cdt.CompositeDatatypeMap;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.util.NodeUtils;
 
@@ -94,6 +96,9 @@ public enum ValueSpace {
 //    VSPACE_G_MONTHDAY(220),
 //    VSPACE_G_MONTH(230),
 //    VSPACE_G_DAY(240),
+
+    VSPACE_CDT_LIST(300),
+    VSPACE_CDT_MAP(301),
 
     VSPACE_SORTKEY(900),
     VSPACE_QUOTED_TRIPLE(999),      // RDF-star : Last recognized value space.
@@ -187,6 +192,12 @@ public enum ValueSpace {
 //        if ( nv.isYearMonthDuration() ) return VSPACE_DURATION_YEARMONTH;
 
         if ( nv.isSortKey() )       return VSPACE_SORTKEY ;
+
+        if ( nv.isLiteral() ) {
+            final String dtURI = nv.getDatatypeURI() ;
+            if ( CompositeDatatypeList.uri.equals(dtURI) )  return VSPACE_CDT_LIST ;
+            if ( CompositeDatatypeMap.uri.equals(dtURI) )   return VSPACE_CDT_MAP ;
+        }
 
         //if ( nv.isLiteral() )       return VSPACE_UNKNOWN ;
 

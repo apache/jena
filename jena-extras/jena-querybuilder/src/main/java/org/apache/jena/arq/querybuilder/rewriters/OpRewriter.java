@@ -204,6 +204,12 @@ class OpRewriter extends AbstractRewriter<Op> implements OpVisitor {
     }
 
     @Override
+    public void visit(OpUnfold opUnfold) {
+        opUnfold.getSubOp().visit(this);
+        push( new OpUnfold(pop(), opUnfold.getExpr(), opUnfold.getVar1(), opUnfold.getVar2()) );
+    }
+
+    @Override
     public void visit(OpJoin opJoin) {
         opJoin.getRight().visit(this);
         opJoin.getLeft().visit(this);

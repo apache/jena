@@ -102,6 +102,13 @@ public class ElementTransformCopyBase implements ElementTransform {
     }
 
     @Override
+    public Element transform(ElementUnfold el, Expr expr, Var v1, Var v2) {
+        if ( !alwaysCopy && el.getVar1() == v1 && el.getVar2() == v2 && el.getExpr() == expr )
+            return el ;
+        return new ElementUnfold(expr, v1, v2) ;
+    }
+
+    @Override
     public Element transform(ElementData el) {
          if( alwaysCopy ) {
              ElementData copy = new ElementData();

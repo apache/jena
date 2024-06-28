@@ -92,6 +92,12 @@ class QuadIteratorBuilder implements ElementVisitor {
     }
 
     @Override
+    public void visit(ElementUnfold el) {
+        throw new QueryParseException("unfold not permitted in data quad", -1, -1);
+
+    }
+
+    @Override
     public void visit(ElementData el) {
         throw new QueryParseException("element data not permitted in data quad", -1, -1);
     }

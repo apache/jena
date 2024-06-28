@@ -22,6 +22,9 @@ import java.net.http.HttpClient;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.atlas.lib.Version;
+import org.apache.jena.cdt.CompositeDatatypeList;
+import org.apache.jena.cdt.CompositeDatatypeMap;
+import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.http.sys.HttpRequestModifier;
 import org.apache.jena.http.sys.RegistryRequestModifier;
 import org.apache.jena.riot.RIOT;
@@ -663,6 +666,10 @@ public class ARQ
             ServiceExecutorRegistry.init();
             AggregateRegistry.init();
             PropertyFunctionRegistry.init();
+
+            // Register the datatypes for the CDT literals
+            TypeMapper.getInstance().registerDatatype(CompositeDatatypeList.type) ;
+            TypeMapper.getInstance().registerDatatype(CompositeDatatypeMap.type) ;
 
             JenaSystem.logLifecycle("ARQ.init - finish");
         }
