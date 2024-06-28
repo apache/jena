@@ -18,8 +18,10 @@
 
 package org.apache.jena.sparql.engine.main ;
 
+import java.util.Iterator;
 import java.util.Set ;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.SetUtils ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVisitor ;
@@ -62,6 +64,12 @@ public class JoinClassifier
 
         // Lateral is different.
         if ( right instanceof OpLateral )   return false ;
+
+        // Do not linearize when effectively joining tables - i.e. force hash joins between tables.
+        Basis leftBasis = getBasis(left);
+        Basis rightBasis = getBasis(right);
+        if ( leftBasis == Basis.TABLE && rightBasis == Basis.TABLE )
+            return false ;
 
         // Assume something will not commute these later on.
         return check(left, right) ;
@@ -234,5 +242,86 @@ public class JoinClassifier
         if ( !(op instanceof OpModifier) )
             return false ;
         return op instanceof OpDistinct || op instanceof OpReduced || op instanceof OpProject || op instanceof OpList ;
+    }
+
+    /** Enumeration of the primitive op types in the SPARQL algebra. */
+    private enum Basis {
+        PATTERN,
+        TABLE,
+        PFUNCTION
+    }
+
+    /**
+     * This method checks whether the given op is based on {@link OpTable} or {@link OpPropFunc}.
+     * If neither is the case then the result is {@link Basis#PATTERN}.
+     * <p>
+     * This method is called for each side of a join from {@link #isLinear(Op, Op)}.
+     * If that side of the join is a property function then {@link Basis#PFUNCTION} is returned.
+     *
+     * <p>
+     * The special handling of property functions is due to that
+     * OpJoin(TABLE, PFUNCTION) needs to be linearized to OpSequence(TABLE, PFUNCTION).
+     *
+     * <p>
+     * This method resolves OpExt to its effective op.
+     */
+    private static Basis getBasis(Op op) {
+        Basis result;
+        if (op instanceof OpTable) {
+            result = Basis.TABLE;
+        } else if (op instanceof OpPropFunc) {
+            result = Basis.PFUNCTION;
+        } else if (op instanceof OpExt) {
+            Op effectiveOp = ((OpExt)op).effectiveOp();
+            result = effectiveOp == null
+                    ? Basis.PATTERN // Assume pattern
+                    : getBasis(effectiveOp);
+        } else if (op instanceof Op1) {
+            result = getBasis(((Op1)op).getSubOp());
+        } else {
+            Iterator<Op> it = getSubOps(op);
+            if (!it.hasNext()) { // Op0 that is not a table (e.g. OpPath, OpQuad, OpTriple, ...)
+                result = Basis.PATTERN;
+            } else { // Op2, OpN
+                result = Basis.TABLE; // Start with table; if any argument evaluates to pattern then change to pattern.
+                while (it.hasNext()) {
+                    Op subOp = it.next();
+                    Basis contrib = getBasis(subOp);
+
+                    // Treat property functions in sub operations with more than one argument as tables
+                    if (contrib == Basis.PFUNCTION) {
+                        contrib = Basis.TABLE;
+                    }
+
+                    if (contrib != Basis.TABLE) {
+                        result = Basis.PATTERN;
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /***
+     * Return an iterator over the given op's immediate sub ops.
+     * An empty iterator is returned for Op0 and OpExt.
+     */
+    // XXX This method could go to OpLib or the Op interface directly
+    private static Iterator<Op> getSubOps(Op op) {
+        if (op instanceof Op1)
+            return Iter.singleton(((Op1)op).getSubOp());
+
+        if (op instanceof Op2) {
+            Op2 x = (Op2)op;
+            return Iter.of(x.getLeft(), x.getRight());
+        }
+
+        if (op instanceof OpN) {
+            return ((OpN)op).iterator();
+        }
+
+        // Op0 and OpExt are treated as having no sub ops
+        return Iter.empty();
     }
 }
