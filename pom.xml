@@ -71,7 +71,7 @@
 
     <ver.shiro>2.0.1</ver.shiro>
 
-    <ver.protobuf>4.27.1</ver.protobuf>
+    <ver.protobuf>4.27.2</ver.protobuf>
     <ver.libthrift>0.20.0</ver.libthrift>
 
     <ver.caffeine>3.1.8</ver.caffeine>
@@ -79,7 +79,7 @@
     <ver.guava>33.2.1-jre</ver.guava>
 
     <ver.gson>2.11.0</ver.gson>
-    <ver.lucene>9.11.0</ver.lucene>
+    <ver.lucene>9.11.1</ver.lucene>
 
     <ver.commons-io>2.16.1</ver.commons-io>
     <ver.commons-cli>1.7.0</ver.commons-cli>
@@ -97,7 +97,7 @@
 
     <!-- Testing -->
     <ver.junit4>4.13.2</ver.junit4>
-    <ver.junit5>5.10.2</ver.junit5>
+    <ver.junit5>5.10.3</ver.junit5>
     <ver.junit5-platform>1.10.2</ver.junit5-platform>
  
     <ver.mockito>5.12.0</ver.mockito>
