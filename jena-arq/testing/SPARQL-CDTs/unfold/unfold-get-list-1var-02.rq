@@ -1,0 +1,7 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+ASK {
+	BIND( "[_:b, _:b]"^^cdt:List AS ?list )
+	UNFOLD( ?list AS ?elmt )
+	FILTER( SAMETERM(?elmt, cdt:get(?list,1)) )
+}

@@ -1,0 +1,13 @@
+{ "head": {
+    "vars": [ "elmt" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "elmt": { "type": "uri" , "value": "http://example/1" }
+      },
+      {
+      }
+    ]
+  }
+}

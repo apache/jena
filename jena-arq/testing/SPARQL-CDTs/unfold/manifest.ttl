@@ -1,0 +1,483 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <manifest#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix sparql:  <http://www.w3.org/ns/sparql#> .
+@prefix cdt:     <http://w3id.org/awslabs/neptune/SPARQL-CDTs/> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "SPARQL UNFOLD operator" ;
+    mf:entries
+    (
+		:unfold-list-1var-01
+		:unfold-list-1var-02
+		:unfold-list-1var-03
+		:unfold-list-1var-04
+		:unfold-list-1var-05
+		:unfold-list-1var-06
+		:unfold-list-1var-07
+		:unfold-list-1var-08
+		:unfold-list-1var-09
+		:unfold-list-1var-10
+
+		:unfold-get-list-1var-01
+		:unfold-get-list-1var-02
+		:unfold-get-list-1var-03
+		:unfold-get-list-1var-04
+
+		:unfold-list-2vars-01
+		:unfold-list-2vars-02
+		:unfold-list-2vars-03
+		:unfold-list-2vars-04
+		:unfold-list-2vars-05
+		:unfold-list-2vars-06
+		:unfold-list-2vars-07
+		:unfold-list-2vars-08
+		:unfold-list-2vars-09
+		:unfold-list-2vars-10
+
+		:unfold-get-list-2vars-01
+		:unfold-get-list-2vars-02
+		:unfold-get-list-2vars-03
+		:unfold-get-list-2vars-04
+		:unfold-get-list-2vars-05
+		:unfold-get-list-2vars-06
+
+		:unfold-map-1var-01
+		:unfold-map-1var-02
+		:unfold-map-1var-03
+		:unfold-map-1var-04
+
+		:unfold-map-2vars-01
+		:unfold-map-2vars-02
+		:unfold-map-2vars-03
+		:unfold-map-2vars-04
+		:unfold-map-2vars-05
+		:unfold-map-2vars-06
+		:unfold-map-2vars-07
+		:unfold-map-2vars-08
+    ) .
+
+:unfold-list-1var-01  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-1var-01" ;
+    rdfs:comment    "two list elements" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-1var-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-1var-01.srj> .
+
+:unfold-list-1var-02  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-1var-02" ;
+    rdfs:comment    "three list elements, including a duplicate" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-1var-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-1var-02.srj> .
+
+:unfold-list-1var-03  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-1var-03" ;
+    rdfs:comment    "two list elements, mixed datatypes" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-1var-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-1var-03.srj> .
+
+:unfold-list-1var-04  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-1var-04" ;
+    rdfs:comment    "two list elements, IRIs" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-1var-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-1var-04.srj> .
+
+:unfold-list-1var-05  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-1var-05" ;
+    rdfs:comment    "two list elements, IRI and literal" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-1var-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-1var-05.srj> .
+
+:unfold-list-1var-06  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-1var-06" ;
+    rdfs:comment    "two list elements, IRI and blank node" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-1var-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-1var-06.srj> .
+
+:unfold-list-1var-07  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-1var-07" ;
+    rdfs:comment    "three list elements, IRI and two distinct blank nodes" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-1var-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-1var-07.srj> .
+
+:unfold-list-1var-08  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-1var-08" ;
+    rdfs:comment    "three list elements, IRI and the same blank node twice" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-1var-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-1var-08.srj> .
+
+:unfold-list-1var-09  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-1var-09" ;
+    rdfs:comment    "two list elements, IRI and null value" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-1var-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-1var-09.srj> .
+
+:unfold-list-1var-10  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-1var-10" ;
+    rdfs:comment    "three list elements, IRI and two null values" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-1var-10.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-1var-10.srj> .
+
+
+
+:unfold-get-list-1var-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "unfold-get-list-1var-01" ;
+    rdfs:comment    "list literal with one blank node" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-get-list-1var-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> .
+
+:unfold-get-list-1var-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "unfold-get-list-1var-02" ;
+    rdfs:comment    "list literal with the same blank node twice" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-get-list-1var-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> .
+
+:unfold-get-list-1var-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "unfold-get-list-1var-03" ;
+    rdfs:comment    "construct list with one blank node" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-get-list-1var-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> .
+
+:unfold-get-list-1var-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "unfold-get-list-1var-04" ;
+    rdfs:comment    "construct list with the same blank node twice" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-get-list-1var-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> .
+
+
+
+:unfold-list-2vars-01  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-2vars-01" ;
+    rdfs:comment    "two list elements" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-2vars-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-2vars-01.srj> .
+
+:unfold-list-2vars-02  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-2vars-02" ;
+    rdfs:comment    "three list elements, including a duplicate" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-2vars-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-2vars-02.srj> .
+
+:unfold-list-2vars-03  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-2vars-03" ;
+    rdfs:comment    "two list elements, mixed datatypes" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-2vars-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-2vars-03.srj> .
+
+:unfold-list-2vars-04  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-2vars-04" ;
+    rdfs:comment    "two list elements, IRIs" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-2vars-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-2vars-04.srj> .
+
+:unfold-list-2vars-05  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-2vars-05" ;
+    rdfs:comment    "two list elements, IRI and literal" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-2vars-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-2vars-05.srj> .
+
+:unfold-list-2vars-06  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-2vars-06" ;
+    rdfs:comment    "two list elements, IRI and blank node" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-2vars-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-2vars-06.srj> .
+
+:unfold-list-2vars-07  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-2vars-07" ;
+    rdfs:comment    "three list elements, IRI and two distinct blank nodes" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-2vars-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-2vars-07.srj> .
+
+:unfold-list-2vars-08  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-2vars-08" ;
+    rdfs:comment    "three list elements, IRI and the same blank node twice" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-2vars-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-2vars-08.srj> .
+
+:unfold-list-2vars-09  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-2vars-09" ;
+    rdfs:comment    "two list elements, IRI and null value" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-2vars-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-2vars-09.srj> .
+
+:unfold-list-2vars-10  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-list-2vars-10" ;
+    rdfs:comment    "three list elements, IRI and two null values" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-list-2vars-10.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-list-2vars-10.srj> .
+
+
+
+:unfold-get-list-2vars-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "unfold-get-list-2vars-01" ;
+    rdfs:comment    "list literal with one blank node" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-get-list-2vars-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> .
+
+:unfold-get-list-2vars-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "unfold-get-list-2vars-02" ;
+    rdfs:comment    "list literal with the same blank node twice" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-get-list-2vars-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> .
+
+:unfold-get-list-2vars-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "unfold-get-list-2vars-03" ;
+    rdfs:comment    "construct list with one blank node" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-get-list-2vars-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> .
+
+:unfold-get-list-2vars-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "unfold-get-list-2vars-04" ;
+    rdfs:comment    "construct list with the same blank node twice" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-get-list-2vars-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> .
+
+:unfold-get-list-2vars-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "unfold-get-list-2vars-05" ;
+    rdfs:comment    "list literal with the two blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-get-list-2vars-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> .
+
+:unfold-get-list-2vars-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "unfold-get-list-2vars-06" ;
+    rdfs:comment    "construct list with the two blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-get-list-2vars-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> .
+
+
+
+:unfold-map-1var-01  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-map-1var-01" ;
+    rdfs:comment    "two entries, integer keys" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-map-1var-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-map-1var-01.srj> .
+
+:unfold-map-1var-02  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-map-1var-02" ;
+    rdfs:comment    "two entries, mixed literal keys" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-map-1var-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-map-1var-02.srj> .
+
+:unfold-map-1var-03  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-map-1var-03" ;
+    rdfs:comment    "two entries, IRI keys" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-map-1var-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-map-1var-03.srj> .
+
+:unfold-map-1var-04  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-map-1var-04" ;
+    rdfs:comment    "two entries, IRI and literal key" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-map-1var-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-map-1var-04.srj> .
+
+
+
+:unfold-map-2vars-01  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-map-2vars-01" ;
+    rdfs:comment    "two entries, different values" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-map-2vars-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-map-2vars-01.srj> .
+
+:unfold-map-2vars-02  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-map-2vars-02" ;
+    rdfs:comment    "two entries, same values" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-map-2vars-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-map-2vars-02.srj> .
+
+:unfold-map-2vars-03  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-map-2vars-03" ;
+    rdfs:comment    "two entries, mixed types" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-map-2vars-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-map-2vars-03.srj> .
+
+:unfold-map-2vars-04  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-map-2vars-04" ;
+    rdfs:comment    "two entries, IRI keys" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-map-2vars-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-map-2vars-04.srj> .
+
+:unfold-map-2vars-05  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-map-2vars-05" ;
+    rdfs:comment    "two entries, IRI values" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-map-2vars-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-map-2vars-05.srj> .
+
+:unfold-map-2vars-06  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-map-2vars-06" ;
+    rdfs:comment    "two entries, distinct blank nodes as values" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-map-2vars-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-map-2vars-06.srj> .
+
+:unfold-map-2vars-07  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-map-2vars-07" ;
+    rdfs:comment    "two entries, same blank node as values" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-map-2vars-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-map-2vars-07.srj> .
+
+:unfold-map-2vars-08  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "unfold-map-2vars-08" ;
+    rdfs:comment    "two entries, one with a null value as value" ;
+    mf:feature      cdt:unfold ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:query  <unfold-map-2vars-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <unfold-map-2vars-08.srj> .
+
+

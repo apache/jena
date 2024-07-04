@@ -1,0 +1,10 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	BIND( "{'2'^^<http://www.w3.org/2001/XMLSchema#integer> : 41}"^^cdt:Map AS ?map1 )
+	BIND( "{'1'^^<http://www.w3.org/2001/XMLSchema#string>  : 41}"^^cdt:Map AS ?map2 )
+	BIND( (?map1 <= ?map2 ) AS ?result )
+	FILTER( BOUND(?result) )
+	FILTER( ?result = true )
+}

@@ -1,0 +1,6 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+SELECT ?elmt ?idx WHERE {
+	BIND( "[<http://example/1>, 1]"^^cdt:List AS ?list )
+	UNFOLD( ?list AS ?elmt, ?idx )
+}

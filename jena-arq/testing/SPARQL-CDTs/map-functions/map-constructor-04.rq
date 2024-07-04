@@ -1,0 +1,7 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	BIND( cdt:Map(1,"one", '01'^^xsd:integer, "also one") AS ?map )
+	FILTER( ?map = "{1:'one', '01'^^<http://www.w3.org/2001/XMLSchema#integer>: 'also one'}"^^cdt:Map )
+}

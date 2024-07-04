@@ -1,0 +1,18 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+ASK {
+	{
+		SELECT (FOLD(?v ORDER BY ASC(?sort)) AS ?list)
+		WHERE {
+			VALUES (?sort ?v) {
+				(1 1)
+				(3 3)
+				(2 UNDEF)
+			}
+		}
+	}
+	FILTER(cdt:get(?list, 1) = 1)
+	FILTER(cdt:get(?list, 3) = 3)
+	BIND(cdt:get(?list, 2) AS ?null)
+	FILTER(!BOUND(?null))
+}

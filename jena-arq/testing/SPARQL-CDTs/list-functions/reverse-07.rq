@@ -1,0 +1,9 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+# list with null
+ASK {
+	BIND("[null]"^^cdt:List AS ?list)
+	BIND(cdt:reverse(?list) AS ?result)
+	BIND(cdt:List(?unbound) AS ?expected)
+	FILTER(SAMETERM(?result, ?expected))
+}

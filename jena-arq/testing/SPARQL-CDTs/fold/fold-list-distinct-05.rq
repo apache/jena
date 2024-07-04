@@ -1,0 +1,21 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+ASK {
+	{
+		SELECT (FOLD(DISTINCT ?v) AS ?list)
+		WHERE {
+			VALUES ?v { 1 UNDEF UNDEF }
+		}
+	}
+
+	FILTER( cdt:size(?list) = 2 )
+
+	BIND( cdt:get(?list, 1) AS ?e1 )
+	BIND( cdt:get(?list, 2) AS ?e2 )
+
+	FILTER(
+	    ( ?e1 = 1 && ! BOUND(?e2) )
+	    ||
+	    ( ?e2 = 1 && ! BOUND(?e1) )
+	)
+}

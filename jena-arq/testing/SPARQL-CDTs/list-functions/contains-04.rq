@@ -1,0 +1,8 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+# contains IRIs
+ASK {
+	BIND("[<http://example.org/test>,1]"^^cdt:List AS ?list)
+
+	FILTER(cdt:contains(?list, <http://example.org/test>))
+}

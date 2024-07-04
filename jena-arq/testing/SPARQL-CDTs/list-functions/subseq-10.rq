@@ -1,0 +1,8 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+# 2 args overrun
+ASK {
+	BIND("[1,2,3]"^^cdt:List AS ?list)
+	BIND(cdt:subseq(?list, 4, 1) AS ?result)
+	FILTER(!BOUND(?result))
+}

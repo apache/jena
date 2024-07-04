@@ -1,0 +1,19 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+ASK {
+	{
+		SELECT (FOLD(?k, ?v) AS ?map)
+		WHERE {
+			{
+				BIND( BNODE() AS ?k )
+				BIND( 1 AS ?v )
+			}
+			UNION
+			{
+				BIND( 42 AS ?k )
+				BIND( 2 AS ?v )
+			}
+		}
+	}
+	FILTER(?map = "{42:2}"^^cdt:Map)
+}

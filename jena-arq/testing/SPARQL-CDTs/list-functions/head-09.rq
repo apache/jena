@@ -1,0 +1,7 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+# list with mixed types including nested list
+ASK {
+	BIND("[[1], 2]"^^cdt:List AS ?list)
+	FILTER(cdt:head(?list) = "[1]"^^cdt:List)
+}

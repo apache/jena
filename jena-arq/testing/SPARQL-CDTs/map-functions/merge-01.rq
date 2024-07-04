@@ -1,0 +1,10 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	BIND( "{}"^^cdt:Map AS ?map1 )
+	BIND( "{}"^^cdt:Map AS ?map2 )
+	BIND( cdt:merge(?map1, ?map2) AS ?merged )
+
+	FILTER( ?merged = "{}"^^cdt:Map )
+}

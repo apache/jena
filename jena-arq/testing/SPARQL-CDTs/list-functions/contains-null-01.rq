@@ -1,0 +1,9 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+# empty lists
+ASK {
+	BIND("[1,null,2]"^^cdt:List AS ?list)
+	FILTER(cdt:contains(?list, 1.0))
+	FILTER(cdt:contains(?list, 2.0))
+}

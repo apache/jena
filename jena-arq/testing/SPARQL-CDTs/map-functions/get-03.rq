@@ -1,0 +1,12 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	BIND( "{ 1: _:b, 2: _:b }"^^cdt:Map AS ?map )
+	BIND( cdt:get(?map, 1) AS ?v1 )
+	BIND( cdt:get(?map, 2) AS ?v2 )
+
+	FILTER( isBLANK(?v1) )
+	FILTER( isBLANK(?v2) )
+	FILTER( SAMETERM(?v1, ?v2) )
+}
