@@ -21,12 +21,12 @@ package org.apache.jena.riot.rowset;
 import java.io.InputStream;
 import java.io.Reader;
 
+import org.apache.jena.riot.Lang;
 import org.apache.jena.sparql.exec.QueryExecResult;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.util.Context;
 
 public interface RowSetReader {
-
     /**
      * Read from an {@code InputStream} and produce a {@link RowSet}.
      * Note that return row set may stream and so the input stream may be read
@@ -66,5 +66,10 @@ public interface RowSetReader {
      */
     public default RowSet read(Reader in, Context context) {
         throw new UnsupportedOperationException("RowSetReader.read - input from a Java Reader not supported.  Use an InputStream.");
+    }
+
+    /** Convenience operation - create a {@link RowSetReader} for {@link Lang} or return null. */
+    public static RowSetReader createReader(Lang lang) {
+        return RowSetReaderRegistry.createReader(lang);
     }
 }

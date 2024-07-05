@@ -55,6 +55,7 @@ public class TestPackage_graph extends TestSuite {
         addTestSuite( TestGraphBaseToString.class );
         addTest( new JUnit4TestAdapter(TestNodeExtras.class) );
         addTest( new JUnit4TestAdapter(TestRDFStringLiterals.class) );
+        addTest( new JUnit4TestAdapter(TestNodeEdgeCases.class) );
 
         // Has to be in a different package.
         addTest( new JUnit4TestAdapter(TestGraphUtil.class) );

@@ -35,6 +35,15 @@ public class RowSetReaderRegistry {
         return registry.get(lang);
     }
 
+    /** Create a {@link RowSetReader} for {@link Lang} or return null. */
+    public static RowSetReader createReader(Lang lang) {
+        Objects.requireNonNull(lang);
+        RowSetReaderFactory factory = getFactory(lang);
+        if ( factory == null )
+            return null;
+        return factory.create(lang);
+    }
+
     /** Register a {@link RowSetReaderFactory} for a {@link Lang} */
     public static void register(Lang lang, RowSetReaderFactory factory) {
         Objects.requireNonNull(lang);
