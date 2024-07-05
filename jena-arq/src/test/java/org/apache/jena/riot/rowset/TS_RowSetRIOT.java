@@ -18,15 +18,17 @@
 
 package org.apache.jena.riot.rowset;
 
+import org.apache.jena.riot.rowset.rw.TestRowSetReader;
 import org.apache.jena.riot.rowset.rw.TestRowSetWriterCSV;
 import org.apache.jena.riot.rowset.rw.TestRowSetWriterTSV;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TestRowSetWriterCSV.class,
-    TestRowSetWriterTSV.class
+    TestRowSetWriterTSV.class,
+    TestRowSetReader.class
 })
 
 public class TS_RowSetRIOT { }
