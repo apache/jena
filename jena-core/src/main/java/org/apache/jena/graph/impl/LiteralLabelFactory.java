@@ -109,6 +109,21 @@ public class LiteralLabelFactory
     }
 
     /**
+     * Create a typed literal for which both the lexical form and the value
+     * form are already available. Use with care!
+     *
+     * @param lex the lexical form of the literal (assumed to be well-formed
+     *            for the given datatype)
+     * @param value the value of the literal (assumed to be the value obtained
+     *              when applying the lexical-to-value mapping of the the given
+     *              datatype to the given lexical form)
+     * @param dtype the datatype of the literal
+     */
+    public static LiteralLabel createIncludingValue(String lex, Object value, RDFDatatype dtype) {
+        return new LiteralLabel(lex, value, dtype);
+    }
+
+    /**
      * Build a typed literal label from its value form using
      * whatever datatype is currently registered as the default
      * representation for this java class. No language tag is supplied.

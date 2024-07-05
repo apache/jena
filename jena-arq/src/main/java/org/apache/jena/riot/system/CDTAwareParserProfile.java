@@ -30,6 +30,8 @@ import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.impl.LiteralLabel;
+import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.sparql.util.Context;
 
@@ -55,6 +57,14 @@ public class CDTAwareParserProfile extends ParserProfileStd {
 
 	@Override
 	public Node createTypedLiteral( final String lex, final RDFDatatype datatype, final long line, final long col ) {
+		// cdt:List and cdt:Map literals need to be treated in a special way
+		// because we need to construct their value by parsing them using this
+		// same parser profile; this is necessary to make sure that blank node
+		// identifiers inside the lexical forms of multiple of these literals
+		// within the same file are all mapped to the same blank node, and so
+		// are all blank node identifers that occur directly in the file (i.e.,
+		// ourside of CDT literals).
+
 		if ( datatype.equals(CompositeDatatypeList.type) ) {
 			return createListLiteral(lex);
 		}
@@ -72,6 +82,7 @@ public class CDTAwareParserProfile extends ParserProfileStd {
 		// a checkLiteral check because that would parse the lexical form of the
 		// literal already once before doing the other parse to obtain the value.
 
+		// parse the given lexical form using this same parser profile
 		final List<CDTValue> value;
 		try {
 			value = ParserForCDTLiterals.parseListLiteral(this, lex);
@@ -80,7 +91,21 @@ public class CDTAwareParserProfile extends ParserProfileStd {
 			throw new DatatypeFormatException(lex, CompositeDatatypeList.type, ex);
 		}
 
-		return NodeFactory.createLiteralByValue(value, CompositeDatatypeList.type);
+		// At this point we have both the lexical form (which, after the
+		// parsing, we now know is well formed) and the corresponding value
+		// of the literal. We create a LiteralLabel with both of them, for
+		// the following reasons.
+		// If we were to create the LiteralLabel with the lexical form only,
+		// then the LiteralLabel implementation would parse that lexical form
+		// again, which gives us an unnecessary performance penalty (in
+		// particular for huge lists).
+		// If we were to create the LiteralLabel with the value only, then the
+		// LiteralLabel implementation would reproduce the lexical form, which
+		// may not be identical to the lexical form with which we have created
+		// the value here. The issue with that is that a SAMETERM comparison
+		// would incorrectly return false.
+		final LiteralLabel ll = LiteralLabelFactory.createIncludingValue(lex, value, CompositeDatatypeList.type);
+		return NodeFactory.createLiteral(ll);
 	}
 
 	protected Node createMapLiteral( final String lex ) {
@@ -89,6 +114,7 @@ public class CDTAwareParserProfile extends ParserProfileStd {
 		// a checkLiteral check because that would parse the lexical form of the
 		// literal already once before doing the other parse to obtain the value.
 
+		// parse the given lexical form using this same parser profile
 		final Map<CDTKey,CDTValue> value;
 		try {
 			value = ParserForCDTLiterals.parseMapLiteral(this, lex);
@@ -97,7 +123,10 @@ public class CDTAwareParserProfile extends ParserProfileStd {
 			throw new DatatypeFormatException(lex, CompositeDatatypeMap.type, ex);
 		}
 
-		return NodeFactory.createLiteralByValue(value, CompositeDatatypeMap.type);
+		// We create a LiteralLabel with both the lexical form and the value,
+		// for the same reasons as described above in createListLiteral().
+		final LiteralLabel ll = LiteralLabelFactory.createIncludingValue(lex, value, CompositeDatatypeMap.type);
+		return NodeFactory.createLiteral(ll);
 	}
 
 }
