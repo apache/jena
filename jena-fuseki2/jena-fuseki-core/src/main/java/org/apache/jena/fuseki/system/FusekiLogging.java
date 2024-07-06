@@ -56,11 +56,15 @@ public class FusekiLogging
 
     /**
      * Places for the log4j properties file at (3).
-     * This is not the standard, fixed classpath names used by log4j.
+     * This is different to the standard, fixed classpath names used by log4j,
+     * (log4j2.properties, log4j2.yaml, log4j2.json, log4j2.xml and "-test" variants),
+     * some of which requite extra dependencies
+     *
      * log4j2.properties, log4j2.yaml, log4j2.json, log4j2.xml
      */
     private static final String[] resourcesForLog4jProperties = {
-        "log4j2.properties"
+        "log4j2-test.properties","log4j2.properties",
+        "log4j2-test.xml", "log4j2.xml"
     };
 
     public static String envLogLoggingProperty = "FUSEKI_LOGLOGGING";
