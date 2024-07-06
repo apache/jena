@@ -21,16 +21,16 @@ package org.apache.jena.tdb1.setup;
 import org.apache.jena.tdb1.base.block.FileMode;
 
 /** Store parameters that can be adjusted after a store has been created,
- *  and given different values when the JVM attaches to a store area. 
- *  (They are still fixed for any given database once created in a JVM.) 
+ *  and given different values when the JVM attaches to a store area.
+ *  (They are still fixed for any given database once created in a JVM.)
  */
 
 public interface StoreParamsDynamic {
-    
-    /** Store-wide file access mode */ 
+
+    /** Store-wide file access mode */
     public FileMode getFileMode() ;
     public boolean isSetFileMode() ;
-    
+
     /** Block read cache (note: mapped files do not have a block cache) */
     public Integer getBlockReadCacheSize() ;
     public boolean isSetBlockReadCacheSize() ;
@@ -38,11 +38,11 @@ public interface StoreParamsDynamic {
     /** Block write cache (note: mapped files do not have a block cache) */
     public Integer getBlockWriteCacheSize() ;
     public boolean isSetBlockWriteCacheSize() ;
-    
+
     /** Node cache for Node{@literal ->}NodeId. */
     public Integer getNode2NodeIdCacheSize() ;
     public boolean isSetNode2NodeIdCacheSize() ;
-    
+
     /** Node cache for NodeId{@literal ->}Node. Important for SPARQL results. */
     public Integer getNodeId2NodeCacheSize() ;
     public boolean isSetNodeId2NodeCacheSize() ;
@@ -53,8 +53,10 @@ public interface StoreParamsDynamic {
 
     /**
      * Initial capacity factor for node caches:
-     *   - if >= 0.0: initial capacity is set to the (maximum) size of the cache multiplied by the factor
-     *   - if < 0.0:  no initial capacity is set on the cache, i.e. its internal default is used
+     * <ul>
+     * <li>if &gt;= 0.0: initial capacity is set to the (maximum) size of the cache multiplied by the factor</li>
+     * <li>if &lt; 0.0:  no initial capacity is set on the cache, i.e. its internal default is used</li>
+     * </ul>
      */
     public Double getNodeCacheInitialCapacityFactor();
     public boolean isSetNodeCacheInitialCapacityFactor();

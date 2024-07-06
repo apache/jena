@@ -70,8 +70,10 @@ public interface StoreParamsDynamic {
 
     /**
      * Initial capacity factor for node caches:
-     *   - if >= 0.0: initial capacity is set to the (maximum) size of the cache multiplied by the factor
-     *   - if < 0.0:  no initial capacity is set on the cache, i.e. its internal default is used
+     * <ul>
+     * <li>if &gt;= 0.0: initial capacity is set to the (maximum) size of the cache multiplied by the factor</li>
+     * <li>if &lt; 0.0:  no initial capacity is set on the cache, i.e. its internal default is used</li>
+     * </ul>
      */
     public Double getNodeCacheInitialCapacityFactor();
     public boolean isSetNodeCacheInitialCapacityFactor();
