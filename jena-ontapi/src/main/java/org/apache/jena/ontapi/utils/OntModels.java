@@ -18,6 +18,7 @@
 
 package org.apache.jena.ontapi.utils;
 
+import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.common.OntConfig;
 import org.apache.jena.ontapi.common.OntEnhGraph;
@@ -39,7 +40,6 @@ import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.model.OntSWRL;
 import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.ontapi.model.RDFNodeList;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
@@ -48,7 +48,9 @@ import org.apache.jena.reasoner.Reasoner;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -371,5 +373,46 @@ public class OntModels {
      */
     public static OntConfig config(OntModel m) {
         return (m instanceof OntEnhGraph) ? ((OntEnhGraph) m).getOntPersonality().getConfig() : null;
+    }
+
+    /**
+     * Answer a stream of the named hierarchy roots of a given OntModel.
+     * This will be similar to the results of {@code OntModel.hierarchyRoot()},
+     * with the added constraint that every member of the returned stream will be a named class,
+     * not an anonymous class expression.
+     * The named root classes are calculated from the root classes
+     * by recursively replacing every anonymous class with its direct subclasses.
+     * Thus, it can be seen
+     * that the values in the stream consist of the shallowest fringe of named classes in the hierarchy.
+     *
+     * @param m {@link OntModel}
+     * @return a {@code Stream} of {@link OntClass.Named}
+     * @see OntModel#hierarchyRoots()
+     */
+    public static Stream<OntClass.Named> namedHierarchyRoots(OntModel m) {
+        Set<OntClass> named = new HashSet<>();
+        Set<OntClass> anonymous = new HashSet<>();
+        collectNamedHierarchyRoots(m.getOWLThing(), m.hierarchyRoots(), named, anonymous);
+        while (!anonymous.isEmpty()) {
+            OntClass anon = anonymous.iterator().next();
+            anonymous.remove(anon);
+            collectNamedHierarchyRoots(m.getOWLThing(), anon.subClasses(true), named, anonymous);
+        }
+        return named.stream().map(OntClass::asNamed);
+    }
+
+    private static void collectNamedHierarchyRoots(OntClass thing,
+                                                   Stream<OntClass> classes,
+                                                   Collection<OntClass> named,
+                                                   Collection<OntClass> anonymous) {
+        classes.forEach(clazz -> {
+            if (named.contains(clazz) || anonymous.contains(clazz)) {
+                return;
+            }
+            if (clazz.superClasses(false)
+                    .allMatch(it -> it.isAnon() || it.equals(clazz) || it.equals(thing))) {
+                (clazz.isAnon() ? anonymous : named).add(clazz);
+            }
+        });
     }
 }
