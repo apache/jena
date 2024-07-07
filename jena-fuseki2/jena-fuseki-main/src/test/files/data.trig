@@ -1,0 +1,6 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX prefix1:   <http://example/ns#>
+PREFIX prefix2:   <http://example/namespace/>
+
+prefix1:s prefix2:p "abc" .

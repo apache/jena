@@ -18,19 +18,24 @@
 
 package org.apache.jena.fuseki.servlets;
 
-import com.google.gson.JsonArray;
-import org.apache.jena.atlas.logging.FmtLog;
-import org.apache.jena.riot.WebContent;
-import org.apache.jena.riot.web.HttpNames;
-
-import org.apache.jena.fuseki.servlets.prefixes.ActionPrefixesBase;
-import org.apache.jena.fuseki.servlets.prefixes.PrefixUtils;
-import org.apache.jena.fuseki.servlets.prefixes.JsonObject;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import org.apache.jena.atlas.logging.FmtLog;
+import org.apache.jena.atlas.web.AcceptList;
+import org.apache.jena.atlas.web.MediaType;
+import org.apache.jena.fuseki.servlets.prefixes.ActionPrefixesBase;
+import org.apache.jena.fuseki.servlets.prefixes.PrefixUtils;
+import org.apache.jena.fuseki.servlets.prefixes.PrefixesAccess;
+import org.apache.jena.fuseki.system.ConNeg;
+import org.apache.jena.riot.WebContent;
+import org.apache.jena.riot.web.HttpNames;
+import org.apache.jena.web.HttpSC;
 
 public class ActionPrefixesR extends ActionPrefixesBase {
 
@@ -39,21 +44,15 @@ public class ActionPrefixesR extends ActionPrefixesBase {
     public ActionPrefixesR() {}
 
     @Override
+    protected PrefixesAccess prefixes(HttpAction action) {
+        return ActionPrefixesBase.prefixesFromAction(action);
+    }
+
+    @Override
     protected void doOptions(HttpAction action) {
         ActionLib.setCommonHeadersForOptions(action);
         action.setResponseHeader(HttpNames.hAllow, "GET,OPTIONS");
         ServletOps.success(action);
-    }
-
-    public void validateGet(HttpAction action) {
-        validate(action);
-        // check if the combination of parameters is legal
-        String prefix = action.getRequestParameter(PrefixUtils.PREFIX);
-        String uri = action.getRequestParameter(PrefixUtils.URI);
-        if(prefix != null && uri != null) {
-            ServletOps.errorBadRequest("Provide only one of the prefix or uri parameters!");
-            return;
-        }
     }
 
     enum ResponseTypes {
@@ -94,82 +93,128 @@ public class ActionPrefixesR extends ActionPrefixesBase {
     }
 
     @Override
+    protected void validatePrefixesGET(HttpAction action) {
+        // Only need to check for presence of expected parameters.
+        // Values have been checked.
+        String prefix = action.getRequestParameter(PrefixUtils.PREFIX);
+        String uri = action.getRequestParameter(PrefixUtils.URI);
+        if ( prefix != null && uri != null ) {
+            ServletOps.errorBadRequest("Provide only no paremetrs, or one of the prefix or uri!");
+            return;
+        }
+    }
+
+    @Override
     protected void doGet(HttpAction action) {
         ActionLib.setCommonHeaders(action);
-        validateGet(action);
-
         action.beginRead();
         try {
-            // Not null (valid request)
             String prefix = action.getRequestParameter(PrefixUtils.PREFIX);
             String uri = action.getRequestParameter(PrefixUtils.URI);
+            PrefixesAccess prefixes = prefixes(action);
 
             switch(chooseResponseType(prefix, uri)) {
-                case GET_ALL -> {
-                    Map<String, String> allPairs = prefixes(action).getAll();
-                    JsonArray allJsonPairs = new JsonArray();
-                    allPairs.entrySet().stream()
-                            .forEach(entry -> {
-                                com.google.gson.JsonObject jsonObject = new com.google.gson.JsonObject();
-                                jsonObject.addProperty(PrefixUtils.PREFIX, entry.getKey());
-                                jsonObject.addProperty(PrefixUtils.URI, entry.getValue());
-                                allJsonPairs.add(jsonObject);
-                                FmtLog.info(action.log, "[%d] - %s", action.id, new JsonObject(entry.getKey(), entry.getValue()));
-                            });
-                    action.setResponseContentType(WebContent.contentTypeJSON);
-                    action.getResponseOutputStream().print(String.valueOf(allJsonPairs));
-
-                    ServletOps.success(action);
-                    action.endRead();
-                    return;
-                }
-                case FETCH_URI -> {
-                    Optional<String> x = prefixes(action).fetchURI(prefix);
-                    String namespace = x.orElse(NO_PREFIX_NS);
-
-                    JsonObject jsonObject = new JsonObject(prefix, namespace);
-
-                    // Build the response.
-                    action.setResponseContentType(WebContent.contentTypeJSON);
-                    action.getResponseOutputStream().print(namespace);
-                    // Indicate success
-                    FmtLog.info(action.log, "[%d] %s -> %s", action.id, prefix, jsonObject.toString());
-                    action.commit();
-                    ServletOps.success(action);
-                    return;
-                }
-                case FETCH_PREFIX -> {
-                    List<String> prefixList =prefixes(action).fetchPrefix(uri);
-                    JsonArray prefixJsonArray = new JsonArray();
-                    for (String p : prefixList) {
-                        com.google.gson.JsonObject jsonObject2 = new com.google.gson.JsonObject();
-                        jsonObject2.addProperty(PrefixUtils.PREFIX, p);
-                        jsonObject2.addProperty(PrefixUtils.URI, uri);
-                        prefixJsonArray.add(jsonObject2);
-                        FmtLog.info(action.log, "[%d] - %s", action.id, new JsonObject(p, uri));
-                    }
-                    // Build the response.
-                    action.setResponseContentType(WebContent.contentTypeJSON);
-                    action.getResponseOutputStream().print(String.valueOf(prefixJsonArray));
-                    // Indicate success
-                    action.commit();
-                    ServletOps.success(action);
-                    action.endRead();
-                    return;
-                }
+                case GET_ALL -> execGetAll(action, prefixes);
+                case FETCH_URI -> execFetchURIByPrefix(action, prefixes, prefix);
+                case FETCH_PREFIX -> execFetchPrefixForURI(action, prefixes, uri);
                 default ->  {
                     ServletOps.errorBadRequest("Bad request");
                     return;
                 }
             }
-        } catch (RuntimeException | IOException ex) {
-            try { action.abort(); }
-            catch (Throwable th ) {
-                FmtLog.warn(action.log, th, "[%d] GET prefix = %s", action.id);
-            }
+        } catch (ActionErrorException ex) {
+            // pass through
+        } catch (RuntimeException ex) {
+            action.abortSilent();
             ServletOps.errorOccurred(ex);
         } finally {
             action.endRead();
         }
+    }
+
+    private void execGetAll(HttpAction action, PrefixesAccess prefixes) {
+        Map<String, String> allPairs = prefixes.getAll();
+        JsonArray allJsonPairs = new JsonArray();
+        allPairs.entrySet().stream().forEach(entry -> {
+            JsonObject jsonObject = jsonObject(entry.getKey(), entry.getValue());
+            allJsonPairs.add(jsonObject);
+            FmtLog.debug(action.log, "[%d] Entry: %s: <%s>", action.id, entry.getKey(), entry.getValue());
+        });
+        FmtLog.info(action.log, "[%d] - Get all prefix mappings", action.id);
+        ServletOps.success(action);
+        try {
+            action.setResponseContentType(WebContent.contentTypeJSON);
+            action.getResponseOutputStream().print(String.valueOf(allJsonPairs));
+            ServletOps.success(action);
+        } catch (IOException ex) {
+            FmtLog.warn(action.log, "[%d] Get all prefixes: Failed to send response: %s", action.id, ex.getMessage());
+            ServletOps.errorOccurred(ex);
+        }
+    }
+
+    private static JsonObject jsonObject(String prefix, String uri) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty(PrefixUtils.PREFIX, prefix);
+        jsonObject.addProperty(PrefixUtils.URI, uri);
+        return jsonObject;
+    }
+
+    private static AcceptList acceptGET = AcceptList.create(WebContent.contentTypeTextPlain, WebContent.contentTypeJSON);
+    private static MediaType dftMediaType = MediaType.create(WebContent.contentTypeJSON);
+
+    private void execFetchURIByPrefix(HttpAction action, PrefixesAccess prefixes, String prefix) {
+        Optional<String> x = prefixes.fetchURI(prefix);
+        String namespace = x.orElse(NO_PREFIX_NS);
+
+        try {
+            MediaType mt = ConNeg.chooseContentType(action.getRequest(), acceptGET, dftMediaType);
+            String ctString = mt.getContentTypeStr();
+            switch (ctString) {
+                case WebContent.contentTypeTextPlain -> responseText(action, prefix, namespace);
+                case WebContent.contentTypeJSON -> responseJSON(action, prefix, namespace);
+                default ->
+                    ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415);
+            }
+            FmtLog.info(action.log, "[%d] %s -> %s", action.id, prefix, namespace);
+            ServletOps.success(action);
+        } catch (IOException ex) {
+            FmtLog.warn(action.log, "[%d] Fetch URI by prefix: Failed to send response: %s", action.id, ex.getMessage());
+            ServletOps.errorOccurred(ex);
+        }
+        FmtLog.info(action.log, "[%d] %s -> %s", action.id, prefix, namespace);
+        action.commit();
+        ServletOps.success(action);
+    }
+
+    private static void responseJSON(HttpAction action, String prefix, String uri)  throws IOException {
+        action.setResponseContentType(WebContent.contentTypeJSON);
+        JsonObject jObj = jsonObject(prefix, uri);
+        action.getResponseOutputStream().print(String.valueOf(jObj));
+    }
+
+    private static void responseText(HttpAction action, String prefix, String uri) throws IOException {
+        action.setResponseContentType(WebContent.contentTypeTextPlain);
+        action.getResponseOutputStream().print(uri);
+    }
+
+    private void execFetchPrefixForURI(HttpAction action, PrefixesAccess prefixes, String uri) {
+        List<String> prefixList = prefixes.fetchPrefix(uri);
+        JsonArray prefixJsonArray = new JsonArray();
+        for (String p : prefixList) {
+            JsonObject jsonObject2 = jsonObject(p, uri);
+            prefixJsonArray.add(jsonObject2);
+        }
+        FmtLog.info(action.log, "[%d] PrefixForURI: %s: %s", action.id, String.valueOf(prefixJsonArray));
+
+        try {
+            action.setResponseContentType(WebContent.contentTypeJSON);
+            action.getResponseOutputStream().print(String.valueOf(prefixJsonArray));
+        } catch (IOException ex) {
+            FmtLog.warn(action.log, "[%d] Fetch prefixes for URI: Failed to send response: %s", action.id, ex.getMessage());
+            ServletOps.errorOccurred(ex);
+        }
+        action.commit();
+        ServletOps.success(action);
+        action.endRead();
     }
 }

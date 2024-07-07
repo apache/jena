@@ -47,17 +47,13 @@ import org.junit.platform.suite.api.Suite;
   , TestAuthUpdate_JDK.class
   , TestHttpOperations.class
   , TestHttpOptions.class
-
   , TestQuery.class
   , TestSPARQLProtocol.class
 
   , TestPatchFuseki.class
   , TestFusekiCustomScriptFunc.class
 
-  , TestPrefixesService.class
-  , TestPrefixesServicePlain.class
-  , TestPrefixesServiceRDF.class
-  , TestPrefixesServicePrefixesMap.class
+  , PrefixesServiceTests.class
 
   , TestMetrics.class
   , TestFusekiShaclValidation.class

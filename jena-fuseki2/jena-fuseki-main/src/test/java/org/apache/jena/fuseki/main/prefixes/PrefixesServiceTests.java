@@ -16,6 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.servlets.prefixes;
+package org.apache.jena.fuseki.main.prefixes;
 
-public record JsonObject(String prefix, String namespace) {}
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
+@Suite
+@SelectClasses({
+      TestPrefixesActions.class
+    , TestPrefixesServicePlain.class
+    , TestPrefixesServiceRDF.class
+    , TestPrefixesServicePrefixesMap.class
+    , TestPrefixesActionResponse.class
+
+})
+public class PrefixesServiceTests {}

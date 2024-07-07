@@ -88,8 +88,8 @@ public class Operation {
 
     public static final Operation NoOp     = alloc(FusekiVocab.opNoOp.asNode(),    "no-op",   "No Op");
 
-    public static final Operation PREFIXES_R     = alloc(FusekiVocab.opPREFIXES_R.asNode(),    "prefixes-r",   "Read prefixes");
-    public static final Operation PREFIXES_RW     = alloc(FusekiVocab.opPREFIXES_RW.asNode(),    "prefixes-ws",   "Read-write prefixes");
+    public static final Operation PREFIXES_R   = alloc(FusekiVocab.opPREFIXES_R.asNode(),   "prefixes-r",   "Read prefixes");
+    public static final Operation PREFIXES_RW  = alloc(FusekiVocab.opPREFIXES_RW.asNode(),  "prefixes-rw",  "Read-write prefixes");
 
 
     static {

@@ -25,7 +25,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.sparql.core.TransactionalLock;
 
-
+/**
+ * {@link PrefixesAccess} implementation using an in-memory
+ * {@code ConcurrentHashMap}.
+ */
 public class PrefixesPlain implements PrefixesAccess {
     private final TransactionalLock transactional;
     private Map<String, String> pairs = new ConcurrentHashMap<>();

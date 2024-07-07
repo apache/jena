@@ -18,31 +18,36 @@
 
 package org.apache.jena.fuseki.servlets.prefixes;
 
-import org.apache.jena.irix.IRIx;
-
+import java.util.Set;
 import java.util.regex.Pattern;
+
+import org.apache.jena.irix.IRIx;
 
 public class PrefixUtils {
     public static final String PREFIX = "prefix" ;
     public static final String URI = "uri" ;
-    public static final String REMOVEPREFIX = "removeprefix" ;
+    public static final Set<String> PARAMS = Set.of(PREFIX, URI);
 
     private PrefixUtils() {}
     private static final Pattern regex = Pattern.compile("\\p{Alpha}([\\w.-]*\\w)?");
 
+    public static boolean isPrefixesParam(String param) {
+        return PARAMS.contains(param);
+    }
+
     public static boolean prefixIsValid(String prefix) {
+        if ( prefix.isEmpty() )
+            return true;
         return regex.matcher(prefix).matches();
     }
 
     public static boolean uriIsValid(String uri) {
-        boolean valid;
         try {
             IRIx iri = IRIx.create(uri);
-            valid = iri.isReference();
+            return iri.isReference();
         }
         catch (Exception ex) {
-            valid = false;
+            return false;
         }
-        return valid;
     }
 }

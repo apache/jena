@@ -20,7 +20,8 @@ package org.apache.jena.fuseki.main.prefixes;
 
 import org.apache.jena.fuseki.servlets.prefixes.PrefixesRDF;
 
-public class TestPrefixesServiceRDF extends TestAbstractPrefixParam {
+/** Test the {@link PrefixesRDF} implementation. */
+public class TestPrefixesServiceRDF extends AbstractTestPrefixesImpl {
     public TestPrefixesServiceRDF() {
         super(new PrefixesRDF());
     }

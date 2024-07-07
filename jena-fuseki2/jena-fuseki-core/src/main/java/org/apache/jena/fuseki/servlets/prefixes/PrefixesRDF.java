@@ -35,9 +35,13 @@ import org.apache.jena.sparql.exec.UpdateExec;
 import org.apache.jena.tdb2.DatabaseMgr;
 
 /**
- * The prefix-URI mappings are represented in blank nodes of type Prefix, with prefixName and prefixURI attributes.
- * The prefixName and prefixURI of the same node are a distinct prefix-URI mapping.
+ * {@link PrefixesAccess} implementation using a dedicated {@link DatasetGraph} the
+ * record the prefixes in an RDF format.
+ * <p>
+ * The prefix-URI mappings are represented in blank nodes of type Prefix, with
+ * prefixName and prefixURI attributes.
  *
+ * <pre>
  * PREFIX prefixes: <http://jena.apache.org/prefixes#>
  * PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
  * PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
@@ -51,6 +55,7 @@ import org.apache.jena.tdb2.DatabaseMgr;
  *   prefixes:prefixName   "ns" ;
  *   prefixes:prefixURI    "http://example/namespace#"^^xsd:anyURI
  * ]
+ * </pre>
  */
 
 public class PrefixesRDF implements PrefixesAccess {
@@ -62,7 +67,6 @@ public class PrefixesRDF implements PrefixesAccess {
 
     @Override
     public Optional<String> fetchURI(String prefix) {
-
         ParameterizedSparqlString pss = new ParameterizedSparqlString(
                 """
                 PREFIX prefixes: <http://jena.apache.org/prefixes#>
@@ -74,24 +78,21 @@ public class PrefixesRDF implements PrefixesAccess {
         );
         pss.setLiteral("prefixName", prefix);
         String query = pss.toString();
-
-
-        try (QueryExec qExec = QueryExec.dataset(dataset).query(query).build()) {
-
-            RowSet rowSet = qExec.select();
-            List<String> x = new ArrayList<String>();
-
-            rowSet.forEachRemaining(row -> {
-                String prefixNameLiteral = row.get("prefixURI").getLiteralLexicalForm();
-                if (prefixNameLiteral != null) {
-                    x.add(prefixNameLiteral);
-                }
-            });
-            if (x.isEmpty())
-                return Optional.empty();
-            //originally x.getFirst()
-            return Optional.ofNullable(x.get(0));
-        }
+        return dataset.calculateRead(() -> {
+            try (QueryExec qExec = QueryExec.dataset(dataset).query(query).build()) {
+                List<String> x = new ArrayList<String>();
+                RowSet rowSet = qExec.select();
+                rowSet.forEachRemaining(row -> {
+                    String prefixNameLiteral = row.get("prefixURI").getLiteralLexicalForm();
+                    if ( prefixNameLiteral != null ) {
+                        x.add(prefixNameLiteral);
+                    }
+                });
+                if (x.isEmpty())
+                    return Optional.empty();
+                return Optional.ofNullable(x.get(0));
+            }
+        });
     }
 
     @Override
@@ -108,12 +109,11 @@ public class PrefixesRDF implements PrefixesAccess {
         pss.setLiteral("prefixName", prefix);
         String query = pss.toString();
 
-        try (QueryExec qExec = QueryExec.dataset(dataset).query(query).build()) {
-
+        dataset.executeWrite(()->{
             AtomicBoolean result = new AtomicBoolean(false);
-            dataset.executeRead(()->{
+            try (QueryExec qExec = QueryExec.dataset(dataset).query(query).build()) {
                 result.set(qExec.ask());
-            });
+            }
 
             String update;
             ParameterizedSparqlString pssUpdate;
@@ -136,24 +136,21 @@ public class PrefixesRDF implements PrefixesAccess {
             else {
                 pssUpdate = new ParameterizedSparqlString(
                         """
-                                PREFIX prefixes: <http://jena.apache.org/prefixes#>
-                                PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
-                                PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                                INSERT DATA {
-                                    [] rdf:type prefixes:Prefix ;
-                                        prefixes:prefixName ?prefixName ;
-                                        prefixes:prefixURI ?newURI
-                                }
-                         """);
+                               PREFIX prefixes: <http://jena.apache.org/prefixes#>
+                               PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
+                               PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                               INSERT DATA {
+                                   [] rdf:type prefixes:Prefix ;
+                                       prefixes:prefixName ?prefixName ;
+                                       prefixes:prefixURI ?newURI
+                               }
+                        """);
                 pssUpdate.setLiteral("prefixName", prefix);
                 pssUpdate.setLiteral("newURI", uri, XSDDatatype.XSDanyURI);
                 update = pssUpdate.toString();
             }
             UpdateExec.dataset(dataset).update(update).execute();
-        }
-        catch (RuntimeException e) {
-            throw new RuntimeException(e);
-        }
+        });
     }
 
     @Override
@@ -166,7 +163,9 @@ public class PrefixesRDF implements PrefixesAccess {
         );
         pss.setLiteral("prefixName", prefixToRemove);
         String update = pss.toString();
-        UpdateExec.dataset(dataset).update(update).execute();
+        dataset.executeWrite(()->{
+            UpdateExec.dataset(dataset).update(update).execute();
+        });
     }
 
     @Override
@@ -179,20 +178,19 @@ public class PrefixesRDF implements PrefixesAccess {
                     ?X prefixes:prefixURI ?prefixURI
                 }
                 """;
-
-        try (QueryExec qExec = QueryExec.dataset(dataset).query(query).build()) {
-
-            RowSet rowSet = qExec.select();
+        return dataset.calculateRead(()->{
             Map<String, String> allPairs = new ConcurrentHashMap<>();
-            rowSet.forEachRemaining(row -> {
-                String prefixNameLiteral = row.get("prefixName").getLiteralLexicalForm();
-                String prefixURILiteral = row.get("prefixURI").getLiteralLexicalForm();
-                if (prefixNameLiteral != null && prefixURILiteral != null) {
-                    allPairs.put(prefixNameLiteral, prefixURILiteral);
-                }
-            });
-            return allPairs;
-        }
+            try (QueryExec qExec = QueryExec.dataset(dataset).query(query).build()) {
+                RowSet rowSet = qExec.select();
+                rowSet.forEachRemaining(row -> {
+                    String prefixNameLiteral = row.get("prefixName").getLiteralLexicalForm();
+                    String prefixURILiteral = row.get("prefixURI").getLiteralLexicalForm();
+                    if (prefixNameLiteral != null && prefixURILiteral != null)
+                        allPairs.put(prefixNameLiteral, prefixURILiteral);
+                });
+                return allPairs;
+            }
+        });
     }
 
     @Override
@@ -208,20 +206,20 @@ public class PrefixesRDF implements PrefixesAccess {
                 """);
         pss.setLiteral("uriName", uri, XSDDatatype.XSDanyURI);
         String query = pss.toString();
+        return dataset.calculateRead(()->{
+            try (QueryExec qExec = QueryExec.dataset(dataset).query(query).build()) {
 
-        try (QueryExec qExec = QueryExec.dataset(dataset).query(query).build()) {
+                RowSet rowSet = qExec.select();
+                List<String> prefixes = new ArrayList<String>();
 
-            RowSet rowSet = qExec.select();
-            List<String> prefixes = new ArrayList<String>();
+                rowSet.forEachRemaining(row -> {
+                    String prefixNameLiteral = row.get("prefixName").getLiteralLexicalForm();
+                    if (prefixNameLiteral != null) {
+                        prefixes.add(prefixNameLiteral);
+                    }
+                });
 
-            rowSet.forEachRemaining(row -> {
-                String prefixNameLiteral = row.get("prefixName").getLiteralLexicalForm();
-                if (prefixNameLiteral != null) {
-                    prefixes.add(prefixNameLiteral);
-                }
-            });
-
-            return prefixes;
-        }
+                return prefixes;
+            }});
     }
 }

@@ -23,7 +23,8 @@ import org.apache.jena.fuseki.servlets.prefixes.PrefixesMap;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 
-public class TestPrefixesServicePrefixesMap extends TestAbstractPrefixParam {
+/** Test the {@link PrefixesMap} implementation. */
+public class TestPrefixesServicePrefixesMap extends AbstractTestPrefixesImpl {
     public TestPrefixesServicePrefixesMap() {
         super(make());
     }

@@ -309,8 +309,6 @@ public class HttpAction
      * Prefer one of {@link #beginRead()} or {@link #beginWrite()} if the action is
      * known to be a a read or write at the start or call {@link #begin()}
      * if the transaction may promote.
-     *
-     *
      */
     public void begin(TxnType txnType) {
         enterActionTxn();
@@ -331,7 +329,7 @@ public class HttpAction
         finishActionTxn();
         if ( dataService != null )
             dataService.finishTxn();
-        if ( transactional.isInTransaction() ) {
+        if ( transactional != null && transactional.isInTransaction() ) {
             switch(transactional.transactionMode() ) {
                 case READ -> {}
                 case WRITE -> {
@@ -475,23 +473,27 @@ public class HttpAction
     // ----
 
     public void commit() {
-        dataService.finishTxn();
-        transactional.commit();
+        if ( transactional != null )
+            transactional.commit();
         end();
     }
 
     /** Abort: ignore exceptions (for clearup code) */
     public void abortSilent() {
-        try { transactional.abort(); }
-        catch (Exception ex) {}
-        finally {
+        try {
+            if ( transactional != null )
+                transactional.abort();
+        } catch (Exception ex) {
+        } finally {
             try { end(); } catch (Exception ex) {}
         }
     }
 
     public void abort() {
-        try { transactional.abort(); }
-        catch (Exception ex) {
+        try {
+            if ( transactional != null )
+                transactional.abort();
+        } catch (Exception ex) {
             // Some datasets claim to be transactional but
             // don't provide a real abort. We tried to avoid
             // them earlier but even if they sneak through,

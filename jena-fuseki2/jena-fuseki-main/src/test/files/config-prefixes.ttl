@@ -1,0 +1,22 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX :          <#>
+PREFIX fuseki:    <http://jena.apache.org/fuseki#>
+PREFIX rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ja:        <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX tdb2:      <http://jena.apache.org/2016/tdb#>
+
+:service rdf:type fuseki:Service ;
+    fuseki:name "dataset" ;
+    fuseki:endpoint [ fuseki:operation fuseki:query ; ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:update ; ] ;
+    
+    fuseki:endpoint [ fuseki:operation fuseki:prefixes-r ;  fuseki:name "prefixes" ] ;
+    fuseki:endpoint [ fuseki:operation fuseki:prefixes-rw ; fuseki:name "prefixes-rw" ] ;
+    fuseki:dataset :dataset ;
+    .
+
+# Transactional in-memory dataset.
+:dataset rdf:type ja:MemoryDataset ;
+    ja:data <file:data.trig>;
+    .

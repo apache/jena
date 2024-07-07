@@ -26,6 +26,12 @@ import java.util.Optional;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.sparql.core.Transactional;
 
+/**
+ * {@link PrefixesAccess} implementation using a {@link PrefixMap}.
+ * This is the implementation used by {@link ActionPrefixesBase}
+ * which forms the way the prefixes operation is added to a Fuseki
+ * service.
+ */
 public class PrefixesMap implements PrefixesAccess {
     private final PrefixMap prefixMap;
     private final Transactional transactional;

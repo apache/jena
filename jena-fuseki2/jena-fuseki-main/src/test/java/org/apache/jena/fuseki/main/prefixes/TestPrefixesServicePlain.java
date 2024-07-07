@@ -20,8 +20,8 @@ package org.apache.jena.fuseki.main.prefixes;
 
 import org.apache.jena.fuseki.servlets.prefixes.PrefixesPlain;
 
-public class
-TestPrefixesServicePlain extends TestAbstractPrefixParam {
+/** Test the {@link PrefixesPlain} implementation. */
+public class TestPrefixesServicePlain extends AbstractTestPrefixesImpl {
     public TestPrefixesServicePlain() {
         super(new PrefixesPlain());
     }

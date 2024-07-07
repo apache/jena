@@ -18,13 +18,11 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.logging.FmtLog;
-import org.apache.jena.riot.WebContent;
-import org.apache.jena.riot.web.HttpNames;
-
 import org.apache.jena.fuseki.servlets.prefixes.PrefixUtils;
-
-import java.io.IOException;
+import org.apache.jena.fuseki.servlets.prefixes.PrefixesAccess;
+import org.apache.jena.riot.web.HttpNames;
 
 public class ActionPrefixesRW extends ActionPrefixesR {
 
@@ -37,55 +35,47 @@ public class ActionPrefixesRW extends ActionPrefixesR {
         ServletOps.success(action);
     }
 
-    public void validateDelete(HttpAction action) {
-        validate(action);
+    @Override
+    protected void validatePrefixesDELETE(HttpAction action) {
         String prefixToRemove = action.getRequestParameter(PrefixUtils.PREFIX);
-        if (prefixToRemove == null || prefixToRemove.isEmpty() || !PrefixUtils.prefixIsValid(prefixToRemove)) {
+        if (prefixToRemove == null || prefixToRemove.isEmpty() || !PrefixUtils.prefixIsValid(prefixToRemove))
             ServletOps.errorBadRequest("Remove operation unsuccessful!");
-            return;
-        }
     }
 
     @Override
     protected void doDelete(HttpAction action) {
-        validateDelete(action);
+        ActionLib.setCommonHeaders(action);
         action.beginWrite();
-
         try {
             String prefixToRemove = action.getRequestParameter(PrefixUtils.PREFIX);
-            prefixes(action).removePrefix(prefixToRemove);
+            PrefixesAccess prefixes = prefixes(action);
+
+            prefixes.removePrefix(prefixToRemove);
             FmtLog.info(action.log, "[%d] Remove %s:", action.id, prefixToRemove);
-
             action.commit();
-
-            // Indicate success
             ServletOps.success(action);
-
-            // Build the response.
-            action.setResponseContentType(WebContent.contentTypeJSON);
-            action.getResponseOutputStream().print("");
-
-        } catch (RuntimeException | IOException ex) {
-            try { action.abort(); }
-            catch (Throwable th ) {
-                FmtLog.warn(action.log, th, "[%d] POST prefix = %s", action.id);
-            }
+        } catch (RuntimeException ex) {
+            action.abortSilent();
             ServletOps.errorOccurred(ex);
         } finally {
             action.end();
         }
     }
 
-
-    public void validatePost(HttpAction action) {
-        validate(action);
+    @Override
+    protected void validatePrefixesPOST(HttpAction action) {
         String prefix = action.getRequestParameter(PrefixUtils.PREFIX);
         String uri = action.getRequestParameter(PrefixUtils.URI);
 
-        if (prefix.isEmpty() || uri.isEmpty()) {
-            ServletOps.errorBadRequest("Empty operation - unsuccessful!");
+        if (prefix.isEmpty() ) {
+            ServletOps.errorBadRequest("Missing prefix parameter");
             return;
         }
+        if ( StringUtils.isEmpty(uri) ) {
+            ServletOps.errorBadRequest("Missing URI parameter");
+            return;
+        }
+
         else if (!PrefixUtils.prefixIsValid(prefix) || !PrefixUtils.uriIsValid(uri)) {
             ServletOps.errorBadRequest("Empty operation - unsuccessful!");
             return;
@@ -94,31 +84,22 @@ public class ActionPrefixesRW extends ActionPrefixesR {
 
     @Override
     protected void doPost(HttpAction action) {
-        validatePost(action);
+        ActionLib.setCommonHeaders(action);
         action.beginWrite();
-
         try {
-            String prefix = action.getRequestParameter(PrefixUtils.PREFIX);
-            String uri = action.getRequestParameter(PrefixUtils.URI);
+            try {
+                String prefix = action.getRequestParameter(PrefixUtils.PREFIX);
+                String uri = action.getRequestParameter(PrefixUtils.URI);
+                PrefixesAccess prefixes = prefixes(action);
 
-            prefixes(action).updatePrefix(prefix, uri);
-            FmtLog.info(action.log, "[%d] Set %s: <%s>", action.id, prefix, uri);
-
-            action.commit();
-
-            // Indicate success
-            ServletOps.success(action);
-
-            // Build the response.
-            action.setResponseContentType(WebContent.contentTypeJSON);
-            action.getResponseOutputStream().print("");
-
-        } catch (RuntimeException | IOException ex) {
-            try { action.abort(); }
-            catch (Throwable th ) {
-                FmtLog.warn(action.log, th, "[%d] POST prefix = %s", action.id);
+                prefixes.updatePrefix(prefix, uri);
+                FmtLog.info(action.log, "[%d] Set %s: <%s>", action.id, prefix, uri);
+                action.commit();
+                ServletOps.success(action);
+            } catch (RuntimeException ex) {
+                action.abortSilent();
+                ServletOps.errorOccurred(ex);
             }
-            ServletOps.errorOccurred(ex);
         } finally {
             action.end();
         }
