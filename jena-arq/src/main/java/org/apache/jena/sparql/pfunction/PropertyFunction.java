@@ -23,35 +23,35 @@ import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 
 /* Abstraction: QueryStage = PlanElement has a single "build"
- * but it's never worng - this two step process here allows for checking 
+ * but it's never wrong - this two step process here allows for checking
  */
 
 /* Can have:
  * One arg or list for both subject and object
- * (?x) is not the same as ?x 
+ * (?x) is not the same as ?x
  */
 
 public interface PropertyFunction
 {
     /** Called during query plan construction immediately after the
      * construction of the property function instance.
-     * @param argSubject   The parsed argument(s) in the subject position 
+     * @param argSubject   The parsed argument(s) in the subject position
      * @param predicate    The extension URI (as a Node).
-     * @param argObject    The parsed argument(s) in the object position 
+     * @param argObject    The parsed argument(s) in the object position
      * @param execCxt      Execution context
-     */ 
+     */
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) ;
 
 
-    /** Create an iterator of bindings for the given inputs 
+    /** Create an iterator of bindings for the given inputs
      * @param input       QueryIterator from the previous stage
-     * @param argSubject  The parsed argument(s) in the subject position 
+     * @param argSubject  The parsed argument(s) in the subject position
      * @param predicate    The extension URI (as a Node).
-     * @param argObject   The parsed argument(s) in the object position 
+     * @param argObject   The parsed argument(s) in the object position
      * @param execCxt     The execution context
      * @return            QueryIterator
      */
-    public QueryIterator exec(QueryIterator input, 
+    public QueryIterator exec(QueryIterator input,
                               PropFuncArg argSubject, Node predicate, PropFuncArg argObject,
                               ExecutionContext execCxt) ;
 }

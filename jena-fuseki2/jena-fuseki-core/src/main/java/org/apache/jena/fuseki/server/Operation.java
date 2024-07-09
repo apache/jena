@@ -87,6 +87,11 @@ public class Operation {
     public static final Operation Patch    = alloc(FusekiVocab.opPatch.asNode(),   "patch",   "RDF Patch");
 
     public static final Operation NoOp     = alloc(FusekiVocab.opNoOp.asNode(),    "no-op",   "No Op");
+
+    public static final Operation PREFIXES_R   = alloc(FusekiVocab.opPREFIXES_R.asNode(),   "prefixes-r",   "Read prefixes");
+    public static final Operation PREFIXES_RW  = alloc(FusekiVocab.opPREFIXES_RW.asNode(),  "prefixes-rw",  "Read-write prefixes");
+
+
     static {
         // Not everyone will remember "_" vs "-" so ...
         altName(FusekiVocab.opNoOp_alt,   FusekiVocab.opNoOp);

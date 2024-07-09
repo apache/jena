@@ -89,6 +89,9 @@ public class FusekiVocab
     public static final Resource opShacl       = resource("shacl");
     public static final Resource opPatch       = resource("patch");
 
+    public static final Resource opPREFIXES_R       = resource("prefixes-r");
+    public static final Resource opPREFIXES_RW      = resource("prefixes-rw");
+
     // Internal
     private static final String stateNameActive     = DataServiceStatus.ACTIVE.name;
     private static final String stateNameOffline    = DataServiceStatus.OFFLINE.name;

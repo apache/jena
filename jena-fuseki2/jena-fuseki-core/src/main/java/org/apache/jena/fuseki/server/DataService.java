@@ -233,12 +233,14 @@ public class DataService {
     /** Cumulative counter of transactions */
     public AtomicLong   totalTxn            = new AtomicLong(0);
 
+    /** Note the start of a transaction */
     public void startTxn(TxnType mode) {
         check(DataServiceStatus.ACTIVE);
         activeTxn.getAndIncrement();
         totalTxn.getAndIncrement();
     }
 
+    /** Note the finish of a transaction */
     public void finishTxn() {
         activeTxn.decrementAndGet();
     }
