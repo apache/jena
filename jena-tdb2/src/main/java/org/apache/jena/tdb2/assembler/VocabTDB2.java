@@ -70,19 +70,15 @@ public class VocabTDB2
 
     static { init(); }
 
-    static public synchronized void init()
-    {
+    static public synchronized void init() {
         if ( initialized )
             return;
         registerWith(Assembler.general);
         initialized = true;
     }
 
-    static void registerWith(AssemblerGroup g)
-    {
-        // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
-        // Domain and range for properties.
-        // Separated and use ja:imports
+    static void registerWith(AssemblerGroup g) {
+        // Wire in the assemblers.
         AssemblerUtils.registerDataset(tDatasetTDB, new DatasetAssemblerTDB2());
         AssemblerUtils.registerDataset(tDatasetTDB_alt, new DatasetAssemblerTDB2());
         AssemblerUtils.register(ConstAssembler.general(), tGraphTDB, new TDB2GraphAssembler(), JA.Model);
