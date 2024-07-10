@@ -386,7 +386,7 @@ public class OntModels {
      * that the values in the stream consist of the shallowest fringe of named classes in the hierarchy.
      *
      * @param m {@link OntModel}
-     * @return a {@code Stream} of {@link OntClass.Named}
+     * @return a {@code Stream} of {@link org.apache.jena.ontapi.model.OntClass.Named}
      * @see OntModel#hierarchyRoots()
      */
     public static Stream<OntClass.Named> namedHierarchyRoots(OntModel m) {
