@@ -22,7 +22,7 @@ package org.apache.jena.fuseki.cmd;
  * @deprecated Use {@link FusekiWebappCmd}.
  */
 @Deprecated(since="5.1.0", forRemoval = true)
-public class FusekiMain {
+public class FusekiCmd {
     static public void main(String... argv) {
         FusekiWebappCmd.main(argv);
     }
