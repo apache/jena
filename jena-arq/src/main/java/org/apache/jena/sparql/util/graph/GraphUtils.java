@@ -18,14 +18,21 @@
 
 package org.apache.jena.sparql.util.graph;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.*;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.QuerySolutionMap;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.PropertyNotFoundException;
 import org.apache.jena.sparql.util.NotUniqueException;
@@ -40,8 +47,6 @@ import org.apache.jena.vocabulary.RDF;
 
 public class GraphUtils {
 
-    // Only used by DatasetDescriptionAssembler
-    // (and DatasetDescriptionAssembler itself is unused)
     /**
      * Get all the literals for a resource-property.
      */
@@ -57,8 +62,9 @@ public class GraphUtils {
         return values;
     }
 
-    /** Get a list of the URIs (as strings) and strings
-     *  @see #getAsStringValue
+    /**
+     * Get a list of the URIs (as strings) and strings
+     * @see #getAsStringValue
      */
     public static List<String> multiValueAsString(Resource r, Property p) {
         List<RDFNode> nodes = multiValue(r, p);
@@ -68,8 +74,31 @@ public class GraphUtils {
             if ( n.isLiteral() ) {
                 values.add(((Literal)n).getString());
             }
-            if ( n.isURIResource() ) {
+            else if ( n.isURIResource() ) {
                 values.add(((Resource)n).getURI());
+            }
+        }
+        return values;
+    }
+
+    /**
+     * Get a list of the string and URIs treating each as a filenames,
+     * that is strings and file: URIs converted to filenames.
+     * @see #getAsFilename
+     */
+    public static List<String> multiValueAsFilename(Resource r, Property p) {
+        List<RDFNode> nodes = multiValue(r, p);
+        List<String> values = new ArrayList<>();
+
+        for ( RDFNode n : nodes ) {
+            if ( n.isLiteral() ) {
+                values.add(((Literal)n).getString());
+            }
+            else if ( n.isURIResource() ) {
+                Resource x = n.asResource();
+                String fn = asFilename(x);
+                if ( fn != null )
+                    values.add(fn);
             }
         }
         return values;
@@ -161,11 +190,47 @@ public class GraphUtils {
         RDFNode obj = getAsRDFNode(r, p);
         if ( obj == null )
             return null;
-        if ( obj.isResource() )
+        if ( obj.isURIResource() )
             return obj.asResource().getURI();
         if ( obj.isLiteral() )
             return obj.asLiteral().getString();
         throw new UnsupportedOperationException("Not a URI or a string");
+    }
+
+    /**
+     * Get a string for a filename,
+     * either a string (filename as-=is) or a "file:" URI, translated to a filename.
+     * Otherwise throw an exception.
+     */
+    public static String getAsFilename(Resource r, Property p) {
+        RDFNode obj = getAsRDFNode(r, p);
+        if ( obj == null )
+            return null;
+        if ( obj.isURIResource() ) {
+            Resource x = obj.asResource();
+            String fn = asFilename(x);
+            if ( fn == null )
+                throw new UnsupportedOperationException("Not a file: URI");
+            return fn;
+        }
+        if ( obj.isLiteral() )
+            return obj.asLiteral().getString();
+        throw new UnsupportedOperationException("Not a file: URI or a string");
+    }
+
+    /**
+     * Return a filename from a file: URI.
+     * If it is not a file: URI, return null.
+     */
+    private static String asFilename(Resource r) {
+        String uri = r.getURI();
+        if ( uri == null )
+            return null;
+        String scheme = IRIs.scheme(uri);
+        if ( ! scheme.equalsIgnoreCase("file") )
+            return null;
+        String fn = IRILib.IRIToFilename(uri);
+        return fn;
     }
 
     public static RDFNode getAsRDFNode(Resource r, Property p) {
@@ -225,7 +290,6 @@ public class GraphUtils {
         try(QueryExecution qExec = QueryExecution.model(model).query(q).initialBinding(qsm).build() ) {
             return ListUtils.toList(
                     QueryExecUtils.getAll(qExec, "root").stream().map(r->(Resource)r));
-
         }
     }
 

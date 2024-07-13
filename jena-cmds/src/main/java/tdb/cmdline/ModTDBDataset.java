@@ -34,7 +34,7 @@ import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import org.apache.jena.tdb1.TDB1Factory;
-import org.apache.jena.tdb1.assembler.VocabTDB;
+import org.apache.jena.tdb1.assembler.VocabTDB1;
 import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;
 
@@ -73,7 +73,7 @@ public class ModTDBDataset extends ModDataset {
             Dataset thing = null;
             // Two variants: plain dataset with a TDB graph or a TDB dataset.
             try {
-                thing = (Dataset)AssemblerUtils.build(modAssembler.getAssemblerFile(), VocabTDB.tDatasetTDB);
+                thing = (Dataset)AssemblerUtils.build(modAssembler.getAssemblerFile(), VocabTDB1.tDatasetTDB);
                 if ( thing != null && !(thing.asDatasetGraph() instanceof DatasetGraphTransaction) )
                     Log.warn(this, "Unexpected: Not a TDB dataset for type DatasetTDB");
 
