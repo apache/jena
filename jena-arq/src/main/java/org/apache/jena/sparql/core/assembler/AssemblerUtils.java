@@ -22,6 +22,8 @@ import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.ConstAssembler ;
 import org.apache.jena.assembler.JA ;
 import org.apache.jena.assembler.assemblers.AssemblerGroup ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.* ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
@@ -30,12 +32,14 @@ import org.apache.jena.rdf.model.ResourceFactory ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.ARQException ;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.MappingRegistry ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.sparql.util.TypeNotUniqueException ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
 import org.apache.jena.sys.JenaSystem ;
+import org.apache.jena.system.Txn;
 import org.apache.jena.vocabulary.RDFS ;
 import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.*;
 
@@ -166,6 +170,36 @@ public class AssemblerUtils
         mergeContext(r, context);
         return context;
     }
+
+    /**
+     * Process {@code ja:data}.
+     * <p>
+     * The object value refers to a file, either by string name or a {@code file:}
+     * URI. If it is a string, a relative filename will be relative to the JVM
+     * current directory. If it is a {@code file:} URI, a relative filename will be
+     * relative to the assembler file and it's base URI.
+     */
+    public static void loadData(DatasetGraph dataset, Resource root) {
+      Txn.executeWrite(dataset, ()->{
+          // Load data into the default graph
+          // This also loads quads into the dataset.
+          GraphUtils.multiValueAsFilename(root, JA.data)
+              .forEach(filename -> RDFDataMgr.read(dataset, filename));
+
+          // load data into named graphs
+          GraphUtils.multiValueResource(root, DatasetAssemblerVocab.pNamedGraph).forEach(namedGraphResource -> {
+              final String graphName = GraphUtils.getAsStringValue(namedGraphResource, DatasetAssemblerVocab.pGraphName);
+              if (namedGraphResource.hasProperty(JA.data)) {
+                  GraphUtils.multiValueAsFilename(namedGraphResource, JA.data)
+                      .forEach(filename -> {
+                          Node gn = NodeFactory.createURI(graphName);
+                          RDFDataMgr.read(dataset.getGraph(gn), filename);
+                      });
+              }
+          });
+      });
+    }
+
 
     /** Look for and merge in context declarations.
      * e.g.
