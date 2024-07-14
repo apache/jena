@@ -41,12 +41,19 @@ import org.apache.jena.sparql.util.NodeCmp;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDF;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Deque;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -232,5 +239,77 @@ public class StdModels {
         if (s != null) return false;
         if (p != null) return false;
         return o == null;
+    }
+
+    /**
+     * Answers the shortest path from the {@code start} resource to the {@code end} RDF node,
+     * such that every step on the path is accepted by the given filter.
+     * A path is a {@link List} of RDF {@link Statement}s.
+     * The subject of the first statement in the list is {@code start},
+     * and the object of the last statement in the list is {@code end}.
+     * <p>
+     * The {@code onPath} argument is a {@link Predicate}, which accepts a statement and returns
+     * {@code true} if the statement should be considered to be on the path.
+     * To search for an unconstrained path, pass {@code ()->true} or {@code null} as an argument.
+     * If there is more than one path of minimal length from {@code start} to {@code end},
+     * this method returns an arbitrary one.
+     * The algorithm is blind breadth-first search, with loop detection.
+     *
+     * @param m      the model in which we are seeking a path, not {@code null}
+     * @param start  the starting resource, not {@code null}
+     * @param end    the end, or goal, node, not {@code null}
+     * @param onPath a filter which determines whether a given statement can be considered part of the path
+     * @return a path, consisting of a list of statements whose first subject is {@code start},
+     * and whose last object is {@code end}, empty if no such path exists
+     */
+    public static List<Statement> findShortestPath(Model m, Resource start, RDFNode end, Predicate<Statement> onPath) {
+        Objects.requireNonNull(m);
+        Objects.requireNonNull(start);
+        Objects.requireNonNull(end);
+        if (onPath == null) {
+            onPath = s -> true;
+        }
+        Deque<List<Statement>> bfs = new ArrayDeque<>();
+        Set<RDFNode> seen = new HashSet<>();
+
+        // initialize the paths
+        for (Iterator<Statement> i = m.listStatements(start, null, (RDFNode) null).filterKeep(onPath); i.hasNext(); ) {
+            List<Statement> statements = new ArrayList<>();
+            statements.add(i.next());
+            bfs.add(statements);
+        }
+
+        // search
+        List<Statement> solution = new ArrayList<>();
+        while (solution.isEmpty() && !bfs.isEmpty()) {
+            List<Statement> candidate = bfs.removeFirst();
+
+            RDFNode terminalNode = candidate.isEmpty() ? null : candidate.get(candidate.size() - 1).getObject();
+            if (terminalNode == null) {
+                continue;
+            }
+            if (end.equals(terminalNode)) {
+                solution = candidate;
+                continue;
+            }
+            if (!terminalNode.isResource()) {
+                continue;
+            }
+            Resource terminalResource = terminalNode.asResource();
+            seen.add(terminalResource);
+
+            // breadth-first expansion
+            for (Iterator<Statement> i = terminalResource.listProperties().filterKeep(onPath); i.hasNext(); ) {
+                Statement link = i.next();
+
+                // no looping allowed, so we skip this link if it takes us to a node we've seen
+                if (!seen.contains(link.getObject())) {
+                    List<Statement> statements = new ArrayList<>(candidate);
+                    statements.add(link);
+                    bfs.add(statements);
+                }
+            }
+        }
+        return solution;
     }
 }
