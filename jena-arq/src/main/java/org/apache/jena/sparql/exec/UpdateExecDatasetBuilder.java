@@ -77,6 +77,12 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
         return this;
     }
 
+    /** Hint has no effect on update execs over datasets. */
+    @Override
+    public UpdateExecBuilder parseCheck(boolean parseCheck) {
+        return this;
+    }
+
     public UpdateExecDatasetBuilder dataset(DatasetGraph dsg) {
         this.dataset = dsg;
         return this;

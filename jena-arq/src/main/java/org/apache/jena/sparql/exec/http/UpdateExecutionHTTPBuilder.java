@@ -47,8 +47,8 @@ public class UpdateExecutionHTTPBuilder
     }
 
     @Override
-    protected UpdateExecutionHTTP buildX(HttpClient hClient, UpdateRequest updateActual, Context cxt) {
-        UpdateExecHTTP uExec = new UpdateExecHTTP(serviceURL, updateActual, updateString, hClient, params,
+    protected UpdateExecutionHTTP buildX(HttpClient hClient, UpdateRequest updateActual, String updateStringActual, Context cxt) {
+        UpdateExecHTTP uExec = new UpdateExecHTTP(serviceURL, updateActual, updateStringActual, hClient, params,
                                                   copyArray(usingGraphURIs),
                                                   copyArray(usingNamedGraphURIs),
                                                   new HashMap<>(httpHeaders),

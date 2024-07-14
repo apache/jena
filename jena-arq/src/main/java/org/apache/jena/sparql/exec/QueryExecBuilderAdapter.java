@@ -107,6 +107,12 @@ public class QueryExecBuilderAdapter
     }
 
     @Override
+    public QueryExecBuilder parseCheck(boolean parseCheck) {
+        builder = builder.parseCheck(parseCheck);
+        return this;
+    }
+
+    @Override
     public QueryExecBuilder set(Symbol symbol, Object value) {
         builder = builder.set(symbol, value);
         return this;

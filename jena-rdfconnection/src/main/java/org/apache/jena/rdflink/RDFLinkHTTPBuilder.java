@@ -91,6 +91,7 @@ public class RDFLinkHTTPBuilder {
         parseCheckUpdates   = base.parseCheckUpdates;
 
         querySendMode       = base.querySendMode;
+        updateSendMode      = base.updateSendMode;
     }
 
     /** URL of the remote SPARQL endpoint.

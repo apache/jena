@@ -29,14 +29,18 @@ import org.apache.jena.update.UpdateRequest;
 
 public interface UpdateExecBuilder {
 
-    /** Set the update. */
+    /** Append the updates in an {@link UpdateRequest} to the {@link UpdateRequest} being built. */
     public UpdateExecBuilder update(UpdateRequest request);
 
-    /** Set the update. */
+    /** Add the {@link Update} to the {@link UpdateRequest} being built. */
     public UpdateExecBuilder update(Update update);
 
-    /** Set the update. */
+    /** Add the string to the {@link UpdateRequest} being built.
+     *  Implementations may support the {@link #parseCheck(boolean)} hint to control whether or not to parse the given strings. */
     public UpdateExecBuilder update(String updateString);
+
+    /** Hint whether to immediately parse strings passed to {@link #update(String)}. */
+    public UpdateExecBuilder parseCheck(boolean parseCheck);
 
     /** Set a context entry. */
     public UpdateExecBuilder set(Symbol symbol, Object value);

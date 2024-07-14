@@ -77,6 +77,12 @@ public class UpdateExecBuilderAdapter
     }
 
     @Override
+    public UpdateExecBuilder parseCheck(boolean parseCheck) {
+        builder = builder.parseCheck(parseCheck);
+        return this;
+    }
+
+    @Override
     public UpdateExecBuilder set(Symbol symbol, Object value) {
         builder = builder.set(symbol, value);
         return this;

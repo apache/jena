@@ -81,6 +81,12 @@ public class QueryExecutionBuilderAdapter implements QueryExecutionBuilder {
     }
 
     @Override
+    public QueryExecutionBuilderAdapter parseCheck(boolean parseCheck) {
+        builder.parseCheck(parseCheck);
+        return this;
+    }
+
+    @Override
     public QueryExecutionBuilderAdapter set(Symbol symbol, Object value) {
         builder.set(symbol, value);
         return this;
