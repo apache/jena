@@ -57,10 +57,10 @@ public final class InStreamUTF8 extends Reader implements CharStream
      * http://www.ietf.org/rfc/rfc3629.txt
      *
      * Unicode                                  Byte1       Byte2       Byte3       Byte4
-     * U+0000–U+007F    0 to 127                0xxxxxxx
-     * U+0080–U+07FF    128 to 2,047            110yyyxx    10xxxxxx
-     * U+0800–U+FFFF    2,048 to 65,535         1110yyyy    10yyyyxx    10xxxxxx
-     * U+10000–U+10FFFF 65,536 to 1,114,111     11110zzz    10zzyyyy    10yyyyxx    10xxxxxx
+     * U+0000-U+007F    0 to 127                0xxxxxxx
+     * U+0080-U+07FF    128 to 2,047            110yyyxx    10xxxxxx
+     * U+0800-U+FFFF    2,048 to 65,535         1110yyyy    10yyyyxx    10xxxxxx
+     * U+10000-U+10FFFF 65,536 to 1,114,111     11110zzz    10zzyyyy    10yyyyxx    10xxxxxx
      *
      * Restricted cases (RFC 3629)
      * 11110101-11110111    F5-F7   245-247     start of 4-byte sequence for codepoint above 10FFFF
