@@ -16,6 +16,9 @@
 ## Maven
 **/target/**/*
 **/.mvn/**/*
+## Jenkins pipeline container.
+## The maven repo is in the checkout project root.
+.m2/**
 
 ## Misc
 archive.md
