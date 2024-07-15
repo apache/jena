@@ -20,8 +20,8 @@ package org.apache.jena.tdb1.assembler;
 
 import static org.apache.jena.sparql.util.graph.GraphUtils.exactlyOneProperty ;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getAsStringValue ;
-import static org.apache.jena.tdb1.assembler.VocabTDB.pDescription;
-import static org.apache.jena.tdb1.assembler.VocabTDB.pFile;
+import static org.apache.jena.tdb1.assembler.VocabTDB1.pDescription;
+import static org.apache.jena.tdb1.assembler.VocabTDB1.pFile;
 
 import java.util.Locale ;
 

@@ -18,10 +18,8 @@
 
 package org.apache.jena.tdb1.assembler;
 
-public class AssemblerTDB
-{
-    public static void init()
-    {
-        VocabTDB.init();
-    }
+/** @deprecated Use {@link VocabTDB1} */
+@Deprecated(forRemoval = true)
+public class VocabTDB extends VocabTDB1 {
+
 }

@@ -26,7 +26,7 @@ import org.apache.jena.query.DatasetFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.sys.JenaSystem ;
-import org.apache.jena.tdb1.assembler.VocabTDB;
+import org.apache.jena.tdb1.assembler.VocabTDB1;
 import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.setup.StoreParams;
 import org.apache.jena.tdb1.store.DatasetGraphTDB;
@@ -44,7 +44,7 @@ public class TDB1Factory
 
     /** Read the file and assembler a dataset */
     public static Dataset assembleDataset(String assemblerFile) {
-        return (Dataset)AssemblerUtils.build(assemblerFile, VocabTDB.tDatasetTDB);
+        return (Dataset)AssemblerUtils.build(assemblerFile, VocabTDB1.tDatasetTDB);
     }
 
     /** Create or connect to a TDB-backed dataset */

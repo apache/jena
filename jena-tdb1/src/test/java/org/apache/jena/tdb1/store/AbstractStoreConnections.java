@@ -44,17 +44,17 @@ import org.junit.Test ;
 public abstract class AbstractStoreConnections
 {
     // Subclass to give direct and mapped versions.
-    
+
     // Per-test unique-ish.
     static int count = 0 ;
     long x = System.currentTimeMillis()+(count++) ;
-    
+
     Quad q  = SSE.parseQuad("(<g> <s> <p> '000-"+x+"') ") ;
     Quad q1 = SSE.parseQuad("(<g> <s> <p> '111-"+x+"')") ;
     Quad q2 = SSE.parseQuad("(<g> <s> <p> '222-"+x+"')") ;
     Quad q3 = SSE.parseQuad("(<g> <s> <p> '333-"+x+"')") ;
     Quad q4 = SSE.parseQuad("(<g> <s> <p> '444-"+x+"')") ;
-    
+
     String DIR = null ;
 
     @Before public void before()
@@ -63,7 +63,7 @@ public abstract class AbstractStoreConnections
         DIR = ConfigTest.getCleanDir() ;
     }
 
-    @After public void after() {} 
+    @After public void after() {}
 
     protected StoreConnection getStoreConnection() {
         return StoreConnection.make(DIR) ;
@@ -180,6 +180,7 @@ public abstract class AbstractStoreConnections
         dsgTxn2.end() ;
     }
 
+    @SuppressWarnings("removal")
     @Test
     public void store_7() {
         // No transaction, plain update, then transaction.
@@ -237,6 +238,6 @@ public abstract class AbstractStoreConnections
         assertEquals(nonTxnData ? 2 : 1, m.size()) ;
         ds.end() ;
     }
-    
+
 }
 

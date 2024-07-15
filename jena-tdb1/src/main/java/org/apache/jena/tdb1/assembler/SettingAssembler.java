@@ -20,9 +20,9 @@ package org.apache.jena.tdb1.assembler;
 
 import static org.apache.jena.sparql.util.graph.GraphUtils.getAsStringValue ;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getResourceValue ;
-import static org.apache.jena.tdb1.assembler.VocabTDB.pName;
-import static org.apache.jena.tdb1.assembler.VocabTDB.pSetting;
-import static org.apache.jena.tdb1.assembler.VocabTDB.pValue;
+import static org.apache.jena.tdb1.assembler.VocabTDB1.pName;
+import static org.apache.jena.tdb1.assembler.VocabTDB1.pSetting;
+import static org.apache.jena.tdb1.assembler.VocabTDB1.pValue;
 
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.Mode ;
