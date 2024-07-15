@@ -40,6 +40,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.http.HttpLib;
 import org.apache.jena.riot.web.HttpNames;
@@ -205,7 +206,10 @@ public class TestCrossOriginFilter {
                                   "Origin", "localhost:12345",
                                   "Access-Control-Request-Headers", defaultHeaders};
         String expectedAllowedHeaders = "X-Requested-With,Content-Type,Accept,Origin,Last-Modified,Authorization";
-        FusekiServer server = server("--mem", "/ds");
+        int port = WebLib.choosePort();
+        FusekiServer server = server("--port="+port, "--mem", "/ds");
+        assertEquals(port, server.getHttpPort());
+
         executeWithServer(server, "/ds", URL->{
             // when
             HttpResponse<InputStream> response = httpOptions(URL, headersToPass);

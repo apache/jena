@@ -26,6 +26,7 @@ import static org.junit.Assert.fail;
 import java.util.List;
 
 import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
@@ -83,20 +84,20 @@ public class TestFusekiMainCmdArguments {
 
     @Test
     public void test_contextpath_1() {
+        int port = WebLib.choosePort();
         // given
-        List<String> arguments = List.of("--mem", "--contextpath=/ABC", "/path");
-        String expectedMessage = "port : bad port number: 'ERROR'";
+        List<String> arguments = List.of("--port="+port, "--mem", "--contextpath=/ABC", "/path");
         // when
         buildServer(buildCmdLineArguments(arguments));
         // then
         assertNotNull(server);
+        assertEquals(port, server.getHttpPort());
     }
 
     @Test
     public void test_contextpath_2() {
         // given
-        List<String> arguments = List.of("--mem", "--contextpath=ABC", "/path");
-        String expectedMessage = "port : bad port number: 'ERROR'";
+        List<String> arguments = List.of("--port=0", "--mem", "--contextpath=ABC", "/path");
         // when
         buildServer(buildCmdLineArguments(arguments));
         // then
@@ -106,8 +107,7 @@ public class TestFusekiMainCmdArguments {
     @Test
     public void test_contextpath_3() {
         // given
-        List<String> arguments = List.of("--mem", "--contextpath=/", "/path");
-        String expectedMessage = "port : bad port number: 'ERROR'";
+        List<String> arguments = List.of("--port=0", "--mem", "--contextpath=/", "/path");
         // when
         buildServer(buildCmdLineArguments(arguments));
         // then
@@ -444,5 +444,4 @@ public class TestFusekiMainCmdArguments {
         server = FusekiMain.build(cmdline);
         server.start();
     }
-
 }
