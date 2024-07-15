@@ -8,6 +8,7 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .flattened-pom.xml
+.m2/
 
 # Eclipse
 .classpath
