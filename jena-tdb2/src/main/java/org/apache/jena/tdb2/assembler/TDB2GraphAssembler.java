@@ -18,9 +18,9 @@
 
 package org.apache.jena.tdb2.assembler;
 
+import static org.apache.jena.sparql.util.graph.GraphUtils.getAsFilename;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getAsStringValue;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getResourceValue;
-import static org.apache.jena.sparql.util.graph.GraphUtils.getStringValue;
 import static org.apache.jena.tdb2.assembler.VocabTDB2.*;
 
 import org.apache.jena.assembler.Assembler;
@@ -59,7 +59,7 @@ public class TDB2GraphAssembler extends AssemblerBase implements Assembler
         //    tdb:graphName <http://example/name>;
 
         // Location or dataset reference.
-        String locationDir = getStringValue(root, pLocation);
+        String locationDir = getAsFilename(root, pLocation);
         Resource dataset = getResourceValue(root, pDataset);
 
         if ( locationDir != null && dataset != null )
