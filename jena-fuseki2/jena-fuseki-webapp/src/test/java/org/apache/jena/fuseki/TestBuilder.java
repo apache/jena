@@ -27,42 +27,39 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.tdb1.assembler.VocabTDB;
+import org.apache.jena.tdb1.assembler.VocabTDB1;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
 
 public class TestBuilder {
-	
-	private static final Model dsModel;
-	private static final Resource dsDesc1;
-	private static final Resource dsDesc2;
-	private DatasetDescriptionMap registry = new DatasetDescriptionMap();
-	
-	@Test
-	public void testVerifySameDatasetObjectForSameDescription() {
-		
-		Dataset ds1 = FusekiConfig.getDataset(dsDesc1, registry);
-		Dataset ds2 = FusekiConfig.getDataset(dsDesc1, registry);
-		assertEquals(ds1, ds2);
-	}
-	
-	@Test
-	public void testVerifyDifferentDatasetObjectsForDifferentDescriptions() {
-		
-		Dataset ds1 = FusekiConfig.getDataset(dsDesc1, registry);
-		Dataset ds2 = FusekiConfig.getDataset(dsDesc2, registry);
-		assertNotEquals(ds1, ds2);		
-	}
-	
-	static {
-		dsModel = ModelFactory.createDefaultModel();
-		dsDesc1 = dsModel.createResource()
-		         .addProperty(RDF.type, VocabTDB.tDatasetTDB)
-		         .addProperty(VocabTDB.pLocation, "--mem--")
-		;
-		dsDesc2 = dsModel.createResource()
-		         .addProperty(RDF.type, VocabTDB.tDatasetTDB)
-		         .addProperty(VocabTDB.pLocation, "--mem--")
-		;
-	}
+
+    private static final Model dsModel;
+    private static final Resource dsDesc1;
+    private static final Resource dsDesc2;
+    private DatasetDescriptionMap registry = new DatasetDescriptionMap();
+
+    static {
+        dsModel = ModelFactory.createDefaultModel();
+        dsDesc1 = dsModel.createResource()
+                .addProperty(RDF.type, VocabTDB1.tDatasetTDB)
+                .addProperty(VocabTDB1.pLocation, "--mem--");
+        dsDesc2 = dsModel.createResource()
+                .addProperty(RDF.type, VocabTDB1.tDatasetTDB)
+                .addProperty(VocabTDB1.pLocation, "--mem--");
+    }
+    @Test
+    public void testVerifySameDatasetObjectForSameDescription() {
+
+        Dataset ds1 = FusekiConfig.getDataset(dsDesc1, registry);
+        Dataset ds2 = FusekiConfig.getDataset(dsDesc1, registry);
+        assertEquals(ds1, ds2);
+    }
+
+    @Test
+    public void testVerifyDifferentDatasetObjectsForDifferentDescriptions() {
+
+        Dataset ds1 = FusekiConfig.getDataset(dsDesc1, registry);
+        Dataset ds2 = FusekiConfig.getDataset(dsDesc2, registry);
+        assertNotEquals(ds1, ds2);
+    }
 }

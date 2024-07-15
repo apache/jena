@@ -24,7 +24,7 @@ import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.system.Vocab;
 import org.apache.jena.tdb1.TDB1;
 
-public class VocabTDB
+public class VocabTDB1
 {
     private static final String NS = TDB1.namespace ;
 
