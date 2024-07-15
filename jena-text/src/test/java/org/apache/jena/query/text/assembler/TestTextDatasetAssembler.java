@@ -28,7 +28,7 @@ import org.apache.jena.query.text.* ;
 import org.apache.jena.query.text.changes.TextQuadAction;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.tdb1.assembler.AssemblerTDB;
+import org.apache.jena.tdb1.assembler.VocabTDB1;
 import org.apache.jena.tdb1.sys.TDBInternal;
 import org.apache.jena.vocabulary.RDF ;
 import org.junit.After;
@@ -49,11 +49,13 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
     private static final Resource customTextDocProducerSpec;
 
     @BeforeClass public static void clearBefore() {
-        TDBInternal.reset();
+        org.apache.jena.tdb1.sys.TDBInternal.reset();
+        org.apache.jena.tdb2.sys.TDBInternal.reset();
     }
 
     @After public void clearAfter() {
-        TDBInternal.reset();
+        org.apache.jena.tdb1.sys.TDBInternal.reset();
+        org.apache.jena.tdb2.sys.TDBInternal.reset();
     }
 
     @Test
@@ -83,8 +85,6 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
 
     static {
         JenaSystem.init();
-        TextAssembler.init();
-        AssemblerTDB.init();
         spec1 =
             model.createResource(TESTBASE + "spec1")
                  .addProperty(RDF.type, TextVocab.textDataset)
