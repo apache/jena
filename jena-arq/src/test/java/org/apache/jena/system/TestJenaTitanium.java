@@ -20,6 +20,7 @@ package org.apache.jena.system;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -31,11 +32,13 @@ import com.apicatalog.rdf.io.error.RdfWriterException;
 import com.apicatalog.rdf.io.nquad.NQuadsWriter;
 
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.system.JenaTitanium;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.IsoMatcher;
 import org.junit.Test;
@@ -105,5 +108,29 @@ public class TestJenaTitanium {
 
         DatasetGraph dsg2 = JenaTitanium.convert(rdfDataset, RiotLib.dftProfile());
         assertTrue(IsoMatcher.isomorphic(dsg1, dsg2));
+    }
+
+    @Test public void convertDatasetWithNullGraph() throws IOException, RdfWriterException {
+        // .createTxnMem() returns an implementation that does not allow tripleInQuad
+        DatasetGraph dsg1 = DatasetGraphFactory.create();
+
+        // Add a triple in quad -- the graph term is set to null.
+        // The S, P, O terms can be whatever else.
+        // See: https://github.com/apache/jena/issues/2578
+        dsg1.add(Quad.create(
+                Quad.tripleInQuad,
+                NodeFactory.createBlankNode(),
+                NodeFactory.createBlankNode(),
+                NodeFactory.createBlankNode()
+        ));
+
+        RdfDataset rdfDataset = JenaTitanium.convert(dsg1);
+
+        // Try converting it back – it should not output any nulls.
+        DatasetGraph dsg2 = JenaTitanium.convert(rdfDataset, RiotLib.dftProfile());
+        dsg2.find().forEachRemaining(q->{
+            assertNotNull(q.getGraph());
+            assertTrue(q.isDefaultGraph());
+        });
     }
 }
