@@ -51,7 +51,7 @@ public class JenaTitanium {
             RdfResource predicate = resource(provider, labelMapping, quad.getPredicate());
             RdfValue object = nodeToValue(provider, labelMapping, quad.getObject());
 
-            if ( quad.isDefaultGraph() ) {
+            if ( quad.isTriple() || quad.isDefaultGraph() ) {
                 RdfTriple t = provider.createTriple(subject, predicate, object);
                 rdfDataset.add(t);
             }
