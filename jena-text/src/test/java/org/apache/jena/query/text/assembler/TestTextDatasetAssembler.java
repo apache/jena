@@ -18,21 +18,20 @@
 
 package org.apache.jena.query.text.assembler;
 
-import static org.junit.Assert.assertTrue ;
+import static org.junit.Assert.assertTrue;
 
-import org.apache.jena.assembler.Assembler ;
+import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.exceptions.AssemblerException;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.query.text.* ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.text.*;
 import org.apache.jena.query.text.changes.TextQuadAction;
-import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.vocabulary.RDF;
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.Test ;
-
+import org.junit.Test;
 
 /**
  * Test the text dataset assembler.
@@ -75,9 +74,9 @@ public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
 
     @Test
     public void testCustomTextDocProducer() {
-        Dataset dataset = (Dataset)Assembler.general.open(customTextDocProducerSpec) ;
-        DatasetGraphText dsgText = (DatasetGraphText)dataset.asDatasetGraph() ;
-        assertTrue(dsgText.getMonitor() instanceof CustomTextDocProducer) ;
+        Dataset dataset = (Dataset)Assembler.general.open(customTextDocProducerSpec);
+        DatasetGraphText dsgText = (DatasetGraphText)dataset.asDatasetGraph();
+        assertTrue(dsgText.getMonitor() instanceof CustomTextDocProducer);
         dataset.close();
     }
 
