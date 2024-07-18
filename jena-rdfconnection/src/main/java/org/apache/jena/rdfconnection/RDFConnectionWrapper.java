@@ -50,6 +50,11 @@ public class RDFConnectionWrapper implements RDFConnection {
     }
 
     @Override
+    public QueryExecution query(String queryString) {
+        return get().query(queryString);
+    }
+
+    @Override
     public QueryExecutionBuilder newQuery() {
         return get().newQuery();
     }

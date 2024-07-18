@@ -34,6 +34,9 @@ public interface UpdateExecutionBuilder {
     /** Parse and update operations to the {@link UpdateRequest} being built. */
     public UpdateExecutionBuilder update(String updateRequestString);
 
+    /** Hint whether to immediately parse update strings passed to {@link #update(String)}. */
+    public UpdateExecutionBuilder parseCheck(boolean parseCheck);
+
     public UpdateExecutionBuilder set(Symbol symbol, Object value);
 
     public UpdateExecutionBuilder set(Symbol symbol, boolean value);

@@ -66,6 +66,12 @@ public class UpdateExecutionDatasetBuilder implements UpdateExecutionBuilder {
         return this;
     }
 
+    @Override
+    public UpdateExecutionBuilder parseCheck(boolean parseCheck) {
+        builder.parseCheck(parseCheck);
+        return this;
+    }
+
     public UpdateExecutionDatasetBuilder dataset(Dataset dataset) {
         builder.dataset(dataset.asDatasetGraph());
         return this;

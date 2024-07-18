@@ -300,7 +300,7 @@ public class RDFLinkHTTP implements RDFLink {
 
         /** This method is far only called from RDFLinkHTTP. It validates the query string if parseCheckQueries is enabled.  */
         protected QueryExecHTTPBuilder queryStringValidated(String queryString, Syntax syntax, QueryType fallbackQueryType) {
-            Query parsedQuery = RDFLinkHTTP.this.parseCheckQueries
+            Query parsedQuery = parseCheck
                     ? QueryFactory.create(queryString, syntax)
                     : null;
 
@@ -373,7 +373,7 @@ public class RDFLinkHTTP implements RDFLink {
     private QueryExecHTTPBuilderOverRDFLinkHTTP createQExecBuilder() {
         checkQuery();
         QueryExecHTTPBuilderOverRDFLinkHTTP builder = new QueryExecHTTPBuilderOverRDFLinkHTTP();
-        builder.endpoint(svcQuery).httpClient(httpClient).sendMode(querySendMode);
+        builder.endpoint(svcQuery).httpClient(httpClient).sendMode(querySendMode).parseCheck(parseCheckQueries);
         return builder;
     }
 
@@ -400,7 +400,7 @@ public class RDFLinkHTTP implements RDFLink {
     /** Create a builder, configured with the link setup. */
     private UpdateExecHTTPBuilder createUExecBuilder() {
         return UpdateExecHTTPBuilder.create().endpoint(svcUpdate).httpClient(httpClient)
-                .sendMode(updateSendMode);
+                .sendMode(updateSendMode).parseCheck(parseCheckUpdates);
     }
 
     @Override

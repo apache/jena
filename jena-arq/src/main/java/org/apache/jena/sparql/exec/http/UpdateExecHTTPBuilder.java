@@ -40,8 +40,8 @@ public class UpdateExecHTTPBuilder extends ExecUpdateHTTPBuilder<UpdateExecHTTP,
     }
 
     @Override
-    protected UpdateExecHTTP buildX(HttpClient hClient, UpdateRequest updateActual, Context cxt) {
-        return new UpdateExecHTTP(serviceURL, updateActual, updateString, hClient, params,
+    protected UpdateExecHTTP buildX(HttpClient hClient, UpdateRequest updateActual, String updateStringActual, Context cxt) {
+        return new UpdateExecHTTP(serviceURL, updateActual, updateStringActual, hClient, params,
                                   copyArray(usingGraphURIs),
                                   copyArray(usingNamedGraphURIs),
                                   new HashMap<>(httpHeaders),

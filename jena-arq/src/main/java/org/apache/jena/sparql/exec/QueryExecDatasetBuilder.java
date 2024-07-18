@@ -91,6 +91,12 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
         return this;
     }
 
+    /** The parse-check flag has no effect for query execs over datasets. */
+    @Override
+    public QueryExecDatasetBuilder parseCheck(boolean parseCheck) {
+        return this;
+    }
+
     @Override
     public QueryExecDatasetBuilder query(String queryString, Syntax syntax) {
         this.queryString = queryString;

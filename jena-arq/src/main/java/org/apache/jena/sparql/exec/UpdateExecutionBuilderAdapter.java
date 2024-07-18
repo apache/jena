@@ -67,6 +67,12 @@ public class UpdateExecutionBuilderAdapter implements UpdateExecutionBuilder {
     }
 
     @Override
+    public UpdateExecutionBuilder parseCheck(boolean parseCheck) {
+        builder.parseCheck(parseCheck);
+        return this;
+    }
+
+    @Override
     public UpdateExecutionBuilder set(Symbol symbol, Object value) {
         builder.set(symbol, value);
         return this;

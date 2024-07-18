@@ -42,6 +42,9 @@ public interface QueryExecBuilder extends QueryExecMod {
     /** Set the query. */
     public QueryExecBuilder query(String queryString, Syntax syntax);
 
+    /** Hint whether to immediately parse query strings passed to {@link #query(String)} */
+    public QueryExecBuilder parseCheck(boolean parseCheck);
+
     /** Set a context entry. */
     public QueryExecBuilder set(Symbol symbol, Object value);
 

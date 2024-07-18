@@ -67,6 +67,12 @@ public class QueryExecutionDatasetBuilder implements QueryExecutionBuilder {
         return this;
     }
 
+    @Override
+    public QueryExecutionBuilder parseCheck(boolean parseCheck) {
+        builder.parseCheck(parseCheck);
+        return this;
+    }
+
     public QueryExecutionDatasetBuilder dataset(Dataset dataset) {
         this.dataset = dataset;
         builder.dataset(dataset.asDatasetGraph());

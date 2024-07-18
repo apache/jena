@@ -42,6 +42,9 @@ public interface QueryExecutionBuilder {
 
     public QueryExecutionBuilder query(String queryString, Syntax syntax);
 
+    /** Hint whether to immediately parse query strings passed to {@link #query(String)} */
+    public QueryExecutionBuilder parseCheck(boolean parseCheck);
+
     public QueryExecutionBuilder set(Symbol symbol, Object value);
 
     public QueryExecutionBuilder set(Symbol symbol, boolean value);

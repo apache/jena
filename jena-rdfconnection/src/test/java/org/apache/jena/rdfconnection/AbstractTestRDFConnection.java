@@ -390,16 +390,16 @@ public abstract class AbstractTestRDFConnection {
     }
 
     @Test public void update_03() {
-    	UpdateRequest update = new UpdateRequest();
-    	update.add("INSERT DATA { <urn:ex:s> <urn:ex:p> <urn:ex:o>}");
+        UpdateRequest update = new UpdateRequest();
+        update.add("INSERT DATA { <urn:ex:s> <urn:ex:p> <urn:ex:o>}");
         try ( RDFConnection conn = connection() ) {
             conn.update(update);
         }
     }
 
     @Test public void update_04() {
-    	UpdateRequest update = new UpdateRequest();
-    	update.add("INSERT DATA { <urn:ex:s> <urn:ex:p> <urn:ex:o>}");
+        UpdateRequest update = new UpdateRequest();
+        update.add("INSERT DATA { <urn:ex:s> <urn:ex:p> <urn:ex:o>}");
         try ( RDFConnection conn = connection() ) {
             Txn.executeWrite(conn, ()->conn.update(update));
         }
@@ -455,6 +455,38 @@ public abstract class AbstractTestRDFConnection {
             conn.begin(ReadWrite.WRITE);
             // Should have conn.commit();
             conn.end();
+        }
+    }
+
+    /** Non-standard query syntax on local connection is expected to fail (regardless of syntax checking hint) */
+    @Test(expected = QueryParseException.class)
+    public void non_standard_syntax_query_local_1a() {
+        try ( RDFConnection conn = RDFConnection.connect(DatasetFactory.empty()) ) {
+            try (QueryExecution qe = conn.newQuery().parseCheck(false).query("FOOBAR").build()) { }
+        }
+    }
+
+    /** Non-standard query syntax on local connection is expected to fail (regardless of syntax checking hint) */
+    @Test(expected = QueryParseException.class)
+    public void non_standard_syntax_query_local_1b() {
+        try ( RDFConnection conn = RDFConnection.connect(DatasetFactory.empty()) ) {
+            try (QueryExecution qe = conn.newQuery().parseCheck(true).query("FOOBAR").build()) { }
+        }
+    }
+
+    /** Non-standard update syntax on local connection is expected to fail (regardless of syntax checking hint) */
+    @Test(expected = QueryParseException.class)
+    public void non_standard_syntax_update_local_1a() {
+        try ( RDFConnection conn = RDFConnection.connect(DatasetFactory.empty()) ) {
+            conn.newUpdate().parseCheck(false).update("FOOBAR").build();
+        }
+    }
+
+    /** Non-standard update syntax on local connection is expected to fail (regardless of syntax checking hint) */
+    @Test(expected = QueryParseException.class)
+    public void non_standard_syntax_update_local_1b() {
+        try ( RDFConnection conn = RDFConnection.connect(DatasetFactory.empty()) ) {
+            conn.newUpdate().parseCheck(true).update("FOOBAR").build();
         }
     }
 }

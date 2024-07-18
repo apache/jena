@@ -102,6 +102,11 @@ public class RDFLinkModular implements RDFLink {
     }
 
     @Override
+    public QueryExec query(String queryString) {
+        return queryConnection().query(queryString);
+    }
+
+    @Override
     public QueryExecBuilder newQuery() {
         return queryConnection().newQuery();
     }
