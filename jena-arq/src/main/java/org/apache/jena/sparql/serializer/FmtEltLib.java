@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.serializer;
 
 import static org.apache.jena.graph.Node.ANY;
+import static org.apache.jena.system.G.nullAsAny;
 
 import java.util.*;
 
@@ -27,22 +28,22 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.vocabulary.RDF;
 
-/** Place to move some of the code from FormatterElement */ 
+/** Place to move some of the code from FormatterElement */
 class FmtEltLib {
-    
+
     /*package*/ static Node rdfFirst = RDF.Nodes.first;
     /*package*/ static Node rdfRest  = RDF.Nodes.rest;
     /*package*/ static Node rdfNil   = RDF.Nodes.nil;
 
-    // Cautious list finder.  
+    // Cautious list finder.
     //  The list must be like the parser creates them:
     //   Adjacent triples, in first, rest order.
 
     // It does support embedded lists.
     // It does not support bnode structures i.e. [:prop :obj]
-    
+
     // Ths code simply finds lists - it does not perform checks as to their suitablity to print in ()-form.
-    
+
     /*package*/ static TriplesListBlock createTriplesListBlock(BasicPattern bgp) {
         TriplesListBlock tlb = new TriplesListBlock();
         List<Triple> triples = bgp.getList();
@@ -63,17 +64,13 @@ class FmtEltLib {
                     // skip to (? rdf:rest rdf:nil) (if any).
                     for ( idx = idx + 1 ; idx < triples.size() ; idx++ ) {
                         Triple t2 = triples.get(idx);
-                        if ( matches(t2, ANY, rdfRest, rdfNil) ) 
+                        if ( matches(t2, ANY, rdfRest, rdfNil) )
                             break;
                     }
                 }
             }
         }
         return tlb;
-    }
-    
-    private static Node nullAsAny(Node n) {
-        return n == null ? ANY : n ; 
     }
 
     /*package*/ static boolean matches(Triple t, Node s, Node p, Node o) {
@@ -118,25 +115,25 @@ class FmtEltLib {
         TriplesListBlock thisList = new TriplesListBlock();
         List<Node> elts = new ArrayList<>();
         thisList.listElementsMap.put(consCell, elts);
-        
+
         for ( ;; ) {
             if ( idx + 1 >= triples.size() )
                 // Last triple - can't be an rdf:first, rdf:rest pair.
                 return null;
             Triple t1 = triples.get(idx);
             consCell = t1.getSubject();
-            
+
             Triple t2 = triples.get(idx + 1);
-            
+
             // -- Checks on t1
-            // t1 : (consCell rdf:first element) 
+            // t1 : (consCell rdf:first element)
             if ( ! matches(t1, consCell, rdfFirst, ANY) )
                 return null;
-            
-            // ---- Possible compound value. 
+
+            // ---- Possible compound value.
             // Second triple is rdf:rest, or rdf:first for a list in a list.
-            // or arbitrary triples for [:p :q] in a list.  
-            // We don't handle the latter case because programatic can make this anything.  
+            // or arbitrary triples for [:p :q] in a list.
+            // We don't handle the latter case because programatic can make this anything.
 
             final boolean ListsInLists = true ;
             if ( ListsInLists ) {
@@ -145,13 +142,13 @@ class FmtEltLib {
                     int numProcessed = collectList(t2.getSubject(), idx + 1, triples, thisList); // -1
                     if ( numProcessed < 0 )
                         return null;
-                    // Not "-1" - this loop does not have autoincrement.  
+                    // Not "-1" - this loop does not have autoincrement.
                     idx = idx + numProcessed ;
                     // idx: Posn of the rdf:nil. Probe to see if t2 is an "rdf:rest" to consider.
                     t2 = triples.get(idx + 1);
                 }
             }
-            
+
             // -- Checks on t2
             // t2 : (consCell rdf:rest element)
             if ( ! matches(t2, consCell, rdfRest, ANY) )
@@ -159,20 +156,19 @@ class FmtEltLib {
             // -- Check consCell - no other triples or one if a subject list.
             int outCount = count(triples, consCell, ANY, ANY) ;
             if ( outCount != 2 ) {
-                // Head cell also be a subject list. in which case the first cell of the list can have a count of 3. 
-                if ( outCount == 3 && ! elts.isEmpty() ) 
+                // Head cell also be a subject list. in which case the first cell of the list can have a count of 3.
+                if ( outCount == 3 && ! elts.isEmpty() )
                     return null;
             }
-                
-            
+
+
             int inCount = count(triples, ANY, ANY, consCell) ;
             if ( inCount != 1 ) {
                 // Head cell can also be zero : subject or free standing list head.
-                if ( outCount == 0 && ! elts.isEmpty() ) 
+                if ( outCount == 0 && ! elts.isEmpty() )
                     return null;
             }
-                
-            
+
             Node elt = t1.getObject();
             thisList.triplesInLists.add(t1);
             thisList.triplesInLists.add(t2);
@@ -183,7 +179,7 @@ class FmtEltLib {
             idx += 2;
         }
     }
-    
+
     /*package*/ static int count(List<Triple> triples, Node s, Node p, Node o) {
         int count = 0 ;
         for ( Triple t : triples ) {

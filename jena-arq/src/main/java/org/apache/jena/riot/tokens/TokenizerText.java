@@ -1308,8 +1308,9 @@ public final class TokenizerText implements Tokenizer
         }
     }
 
-    private final
-    int readUnicode4Escape() { return readHexSequence(4); }
+    private final int readUnicode4Escape() {
+        return readHexSequence(4);
+    }
 
     private final int readUnicode8Escape() {
         int ch8 = readHexSequence(8);
