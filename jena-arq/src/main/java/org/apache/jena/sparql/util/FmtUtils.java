@@ -477,27 +477,56 @@ public class FmtUtils {
 
         for ( int idx = 0 ; idx < localname.length() ; idx++ ) {
             char ch = localname.charAt(idx);
-            if ( !validPNameChar(ch) )
-                return false;
+            if ( idx == 0 ) {
+                if ( !validFirstPNameChar(ch) )
+                    return false;
+            } else if ( idx == localname.length() - 1 ) {
+                if ( !validEndPNameChar(ch) )
+                    return false;
+            } else {
+                if ( !validMidPNameChar(ch) )
+                    return false;
+            }
         }
-
-        // Test start and end - at least one character in the name.
-
-        if ( localname.endsWith(".") )
-            return false;
-        if ( localname.startsWith(".") )
-            return false;
-
         return true;
     }
 
+    // first char as per options in first bracketed production in 169: https://www.w3.org/TR/sparql11-query/#rPN_LOCAL
+    private static boolean validFirstPNameChar(char ch) {
+        return validPNameCharU(ch) || ( ch >= '0' && ch <= '9' ) || ( ch == '%' ) ;
+    }
+
+    // neither first char nor last in middle repeated production in 169: https://www.w3.org/TR/sparql11-query/#rPN_LOCAL
+    private static boolean validMidPNameChar(char ch) {
+        return validPNameChar(ch) || ( ch == '.' ) || ( ch == ':' ) || ( ch == '%' ) ;
+    }
+
+    // last char, but not first, in last production in 169: https://www.w3.org/TR/sparql11-query/#rPN_LOCAL
+    private static boolean validEndPNameChar(char ch) {
+        return validPNameChar(ch) || ( ch == ':' ) || ( ch == '%' ) ;
+    }
+
+    // production 164: https://www.w3.org/TR/sparql11-query/#rPN_CHARS_BASE
+    private static boolean validPNameCharBase(char ch) {
+        return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= '\u00C0' && ch <= '\u00D6') ||
+                (ch >= '\u00D8' && ch <= '\u00F6') || (ch >= '\u00F8' && ch <= '\u02FF') ||
+                (ch >= '\u0370' && ch <= '\u037D') || (ch >= '\u037F' && ch <= '\u1FFF') ||
+                (ch >= '\u200C' && ch <= '\u200D') || (ch >= '\u2070' && ch <= '\u218F') ||
+                (ch >= '\u2C00' && ch <= '\u2FEF') || (ch >= '\u3001' && ch <= '\uD7FF') ||
+                (ch >= '\uF900' && ch <= '\uFDCF') || (ch >= '\uFDF0' && ch <= '\uFFFD');
+        // 32bit unicode chars are 2 Java chars ( ch >= '\u10000' && ch <= '\uEFFFF' )
+    }
+
+    // production 165: https://www.w3.org/TR/sparql11-query/#rPN_CHARS_U
+    private static boolean validPNameCharU(char ch) {
+        return validPNameCharBase(ch) || ( ch == '_' ) ;
+    }
+
+    // production 167: https://www.w3.org/TR/sparql11-query/#rPN_CHARS
     private static boolean validPNameChar(char ch) {
-        if ( Character.isLetterOrDigit(ch) ) return true ;
-        if ( ch == '.' )    return true ;
-        if ( ch == ':' )    return true ;
-        if ( ch == '-' )    return true ;
-        if ( ch == '_' )    return true ;
-        return false ;
+        return validPNameCharU(ch) ||
+                ( ch == '-' ) || ( ch >= '0' && ch <= '9' ) || ( ch == '\u00B7' ) ||
+                ( ch >= '\u0300' && ch <= '\u036F' ) || ( ch >= '\u203F' && ch <= '\u2040' ) ;
     }
 
     static boolean applyUnicodeEscapes = false ;
