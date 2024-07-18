@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.core;
 
+import static org.apache.jena.system.G.nullAsAny;
+
 import java.util.* ;
 
 import org.apache.jena.graph.Graph ;
@@ -113,12 +115,6 @@ public class DatasetGraphSimpleMem extends DatasetGraphTriplesQuads implements T
                 results.add(q);
         return results.iterator();
     }
-
-    /** Convert null to Node.ANY */
-    public static Node nullAsAny(Node x) { return nullAsDft(x, Node.ANY) ; }
-
-    /** Convert null to some default Node */
-    public static Node nullAsDft(Node x, Node dft) { return x==null ? dft : x ; }
 
     private boolean matches(Triple t, Node s, Node p, Node o) {
         s = nullAsAny(s);
