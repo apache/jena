@@ -159,7 +159,7 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
 
     @Override
     public void add(Quad quad) {
-        if ( Quad.isDefaultGraph(quad.getGraph()) )
+        if ( quad.getGraph() == Quad.tripleInQuad || Quad.isDefaultGraph(quad.getGraph()) )
             storage.add(quad.getSubject(), quad.getPredicate(), quad.getObject());
         else
             storage.add(quad);
@@ -167,7 +167,7 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
 
     @Override
     public void delete(Quad quad) {
-        if ( Quad.isDefaultGraph(quad.getGraph()) )
+        if ( quad.getGraph() == Quad.tripleInQuad || Quad.isDefaultGraph(quad.getGraph()) )
             storage.delete(quad.getSubject(), quad.getPredicate(), quad.getObject());
         else
             storage.delete(quad);
@@ -177,7 +177,7 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
     public void add(Node g, Node s, Node p, Node o) {
         if ( Quad.isUnionGraph(g))
             throw new AddDeniedException("Can't add to the union graph");
-        if ( g == null || Quad.isDefaultGraph(g) )
+        if ( g == Quad.tripleInQuad || Quad.isDefaultGraph(g) )
             storage.add(s,p,o);
         else
             storage.add(g,s,p,o);
@@ -187,7 +187,7 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
     public void delete(Node g, Node s, Node p, Node o) {
         if ( Quad.isUnionGraph(g))
             throw new DeleteDeniedException("Can't remove from the union graph");
-        if ( g == null || Quad.isDefaultGraph(g) )
+        if ( g == Quad.tripleInQuad || Quad.isDefaultGraph(g) )
             storage.delete(s,p,o);
         else
             storage.delete(g,s,p,o);
@@ -209,7 +209,7 @@ public class DatasetGraphStorage extends DatasetGraphBaseFind implements Databas
     public long size() {
         // Slow!
         return stream()
-                .map(Quad::getGraph).filter(gn->!Quad.isDefaultGraph(gn)).distinct().count();
+                .map(Quad::getGraph).filter(gn->gn != null && !Quad.isDefaultGraph(gn)).distinct().count();
     }
 
     @Override

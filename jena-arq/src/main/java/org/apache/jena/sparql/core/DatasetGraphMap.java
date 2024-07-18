@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import org.apache.jena.atlas.iterator.IteratorConcat;
 import org.apache.jena.graph.Graph;
@@ -174,11 +175,16 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
         return defaultGraph;
     }
 
+    private static boolean isDefaultGraph(Node graphNode) {
+        // Include null (Quad.tripleInQuad)
+        return Objects.equals(graphNode, Quad.tripleInQuad) || Quad.isDefaultGraph(graphNode);
+    }
+
     @Override
     public Graph getGraph(Node graphNode) {
         if ( Quad.isUnionGraph(graphNode) )
             return GraphOps.unionGraph(this);
-        if ( Quad.isDefaultGraph(graphNode))
+        if ( isDefaultGraph(graphNode) )
             return getDefaultGraph();
         // Not a special case.
         Graph g = graphs.get(graphNode);
@@ -196,9 +202,10 @@ public class DatasetGraphMap extends DatasetGraphTriplesQuads
         graphs.clear();
     }
 
-    /** Called from getGraph when a nonexistent graph is asked for.
+    /**
+     * Called from getGraph when a nonexistent named graph is asked for.
      * Return null for "nothing created as a graph".
-     * Sub classes can reimplement this.
+     * Sub classes can re-implement this.
      */
     protected Graph getGraphCreate(Node graphNode) {
         Graph g = graphMaker.create(graphNode);

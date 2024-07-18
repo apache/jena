@@ -64,7 +64,8 @@ public class TriGWriter extends TriGWriterBase
 
         /** Return true if anything written */
         private boolean writeGraphTriG(DatasetGraph dsg, Node name, Set<Node> graphNames) {
-            boolean dftGraph = ( name == null || name == Quad.defaultGraphNodeGenerated  );
+            //boolean dftGraph = ( name == Quad.tripleInQuad || Quad.isDefaultGraph(name) );
+            boolean dftGraph = ( name == Quad.tripleInQuad || Quad.isDefaultGraph(name) );
 
             if ( dftGraph && dsg.getDefaultGraph().isEmpty() )
                 return false;
