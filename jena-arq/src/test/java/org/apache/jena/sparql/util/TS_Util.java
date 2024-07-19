@@ -28,7 +28,8 @@ import org.junit.runners.Suite.SuiteClasses ;
     TestList.class ,
     TestFmtUtils.class,
     TestContextUtils.class,
-    TestIsoMatcher.class
+    TestIsoMatcher.class,
+    TestGraphUtils.class
 })
 public class TS_Util
 { }
