@@ -27,14 +27,14 @@ PREFIX access:  <http://jena.apache.org/access#>
 
 [] rdf:type fuseki:Server ;
    fuseki:services (
-     <#service_tdb2>
-     <#service_plain>
+     <#service_acl>
+     <#service_no_acl>
    ) .
 
-<#service_tdb2> rdf:type fuseki:Service ;
+<#service_acl> rdf:type fuseki:Service ;
     rdfs:label                      "Access controlled dataset" ;
     fuseki:allowedUsers             "user1", "user3";
-    fuseki:name                     "database1" ;
+    fuseki:name                     "database_acl" ;
     fuseki:serviceQuery             "query" ;
     fuseki:serviceQuery             "sparql" ;
     fuseki:serviceReadGraphStore    "get" ;
@@ -43,9 +43,9 @@ PREFIX access:  <http://jena.apache.org/access#>
 
 <#dataset1> rdf:type  ja:MemoryDataset .
 
-<#service_plain> rdf:type fuseki:Service ;
+<#service_no_acl> rdf:type fuseki:Service ;
     rdfs:label                   "Uncontrolled dataset";
-    fuseki:name                  "database2";
+    fuseki:name                  "database_no_acl";
     fuseki:serviceQuery          "query";
     fuseki:serviceQuery          "sparql";
     fuseki:serviceReadGraphStore "get" ;

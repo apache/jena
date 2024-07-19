@@ -28,10 +28,13 @@ import org.junit.runners.Suite;
     , TestHttpRDF.class
     , TestAsyncHttpRDF.class
     , TestAuthRemote.class
+
     , TestAuthBasicRemote.class
     , TestAuthDigestRemote.class
+
     , TestAuthBearerRemote.class
     , TestAuthBearerServer.class
+    , TestAuthBearerSimple.class
 })
 
 public class TS_JenaHttp { }

@@ -18,8 +18,10 @@
 
 package org.apache.jena.http;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import static org.apache.jena.http.auth.AuthLib.base64dec;
+import static org.apache.jena.http.auth.AuthLib.base64enc;
+import static org.junit.Assert.fail;
+
 import java.util.Objects;
 
 import com.google.gson.Gson;
@@ -31,33 +33,41 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.http.auth.AuthEnv;
 import org.apache.jena.http.auth.AuthRequestModifier;
 import org.apache.jena.riot.web.HttpNames;
+import org.apache.jena.sparql.exec.http.QueryExecHTTP;
 import org.slf4j.Logger;
 
 public class AuthBearerTestLib {
 
+    enum Expect { SUCCESS, REJECT }
+
     private static Logger log = Fuseki.serverLog;
 
+    static void addAuthModifierBearerToken(String endpoint, String token) {
+        String headerValue = HttpLib.bearerAuthHeader(token);
+        AuthRequestModifier requestModifier = builder->builder.setHeader(HttpNames.hAuthorization, headerValue);
+        AuthEnv.get().registerAuthModifier(endpoint, requestModifier);
+    }
+
     /**
-     * Extract the "sub" field from an encoded JWT, or return null.
+     * Extract the "sub" field from an encoded bearerToken, or return null.
      * This method does not verify the token.
      */
-    public static String subjectFromEncodedJWT(String token) {
+    static String subjectFromEncodedJWT(String token) {
         try {
             String[] parts = token.split("\\.");
             if ( parts.length != 3 ) {
-                log.warn("Bad token: '"+token+"'");
+                log.error("Bad token: '"+token+"'");
                 return null;
             }
-            byte[] jsonBytes = Base64.getDecoder().decode(parts[1]);
-            String jsonStr = new String(jsonBytes, StandardCharsets.UTF_8);
+            String jsonStr = base64dec(parts[1]);
             JsonObject obj = new Gson().fromJson(jsonStr, JsonObject.class);
             JsonElement field = obj.get("sub");
             if ( field == null ) {
-                log.warn("Bad token: no \"sub\" '"+jsonStr+"'");
+                log.error("Bad token: no \"sub\" '"+jsonStr+"'");
                 return null;
             }
             if ( ! field.isJsonPrimitive() ) {
-                log.warn("Bad token: \"sub\" is not a string'"+jsonStr+"'");
+                log.error("Bad token: \"sub\" is not a string'"+jsonStr+"'");
             }
             String subject = field.getAsString();
             return subject;
@@ -69,23 +79,51 @@ public class AuthBearerTestLib {
     }
 
     /** Test token */
-    public static String generateTestToken(String user) {
+    static String generateTestJWT(String user) {
         Objects.requireNonNull(user);
-        String header = "{\"alg\":\"HS256\",\"typ\":\"JWT\"}".trim();
+        String header = "{\"alg\":\"HS256\",\"typ\":\"bearerToken\"}".trim();
         String body = "{ \"iss\": \"SELF\", \"exp\": \"never\", \"sub\": \"SUBJECT\" }".replace("SUBJECT", user);
-        String token = enc64(header)+"."+enc64(body)+"."+enc64("HASH");
+        String token = base64enc(header)+"."+base64enc(body)+"."+base64enc("HASH");
         return token;
     }
 
-    private static String enc64(String x) {
-        byte[] bytes = x.getBytes(StandardCharsets.UTF_8);
-        // URL encoding, no padding, no chunking line breaks.
-        String s = Base64.getEncoder().encodeToString(bytes);
-        return s;
+    static void attempt(String URL, String bearerToken, Expect expected) {
+        if ( bearerToken != null )
+            AuthEnv.get().setBearerToken(URL, bearerToken);
+        try {
+            attempt(URL, expected);
+        } finally {
+            if ( bearerToken != null )
+                AuthEnv.get().setBearerToken(URL, null);
+        }
     }
 
-    public static void addAuthModifierBearerToken(String endpoint, String token) {
-        AuthRequestModifier requestModifier = builder->builder.setHeader(HttpNames.hAuthorization, "Bearer "+token);
-        AuthEnv.get().registerAuthModifier(endpoint, requestModifier);
+    static void attemptBasic(String URL, String username, String password, Expect expected) {
+        try {
+            String basicAuth = "Basic "+base64enc(username+":"+password);
+
+            boolean b = QueryExecHTTP.service(URL)
+                    .httpHeader(HttpNames.hAuthorization, basicAuth)
+                    .query("ASK{}")
+                    .ask();
+            if ( expected == Expect.REJECT )
+                fail("Expected the operation to be rejected");
+        } catch (RuntimeException ex) {
+            if ( expected == Expect.SUCCESS )
+                fail("Expected the operation to succeed");
+        }
+    }
+
+    static void attempt(String URL, Expect expected) {
+        try {
+            boolean b = QueryExecHTTP.service(URL)
+                    .query("ASK{}")
+                    .ask();
+            if ( expected == Expect.REJECT )
+                fail("Expected the operation to be rejected");
+        } catch (RuntimeException ex) {
+            if ( expected == Expect.SUCCESS )
+                fail("Expected the operation to succeed: "+ex.getMessage());
+        }
     }
 }

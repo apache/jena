@@ -194,6 +194,11 @@ public class AuthHeader {
     /** The rest of the line for "unknown" */
     public String getUnknown() { return unknown; }
 
+    @Override
+    public String toString() {
+        return "AuthScheme: "+authScheme.toString();
+    }
+
     private static class Builder {
 
         // The original header value.

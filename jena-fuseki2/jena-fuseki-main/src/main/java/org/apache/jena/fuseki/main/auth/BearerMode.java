@@ -16,28 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.main.access;
+package org.apache.jena.fuseki.main.auth;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestAuthorized.class
-    , TestSimpleBearer.class
-
-    , TestSecurityFilterFuseki.class
-    , TestFusekiSecurityAssemblerSeparate.class
-    , TestFusekiSecurityAssemblerShared.class
-
-    , TestSecurityConfig.class
-    , TestSecurityBuilderSetup.class
-
-    , TestPasswdOnly.class
-    , TestServiceDataAuthConfig.class
-    , TestServiceDataAuthBuild.class
-
-})
-
-public class TS_SecurityFuseki {}
-
+/**
+ * Variations for processing Bearer Authentication.
+ * <ul>
+ * <li>
+ *  REQUIRED -- requests must have a bearer token. There must be a
+ *  {@code Authorization: Bearer ...} header
+ * </li>
+ * <li>OPTIONAL -- requests may have a bearer token. Otherwise the request passes
+ *     through and may be handled with another authentication mechanism. e.g. password.
+ * <li>
+ *   NONE -- requests must not have a {@code Authorization:} header.
+ * </li>
+ * </ul>
+ */
+public enum BearerMode { REQUIRED, OPTIONAL, NONE }

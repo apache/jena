@@ -67,15 +67,20 @@ public class TestAuthBearerRemote {
         server = server("/ds", DatasetGraphFactory.createTxnMem());
     }
 
+    @After
+    public void afterTest() {
+        AuthEnv.get().clearAuthEnv();
+    }
+
     // Client-side challenge callback.
     private void setBearerAuthProvider(String username) {
-        BiFunction<String, AuthChallenge, String> testTokenSupplier = (uri, authHeader) -> AuthBearerTestLib.generateTestToken(username);
+        BiFunction<String, AuthChallenge, String> testTokenSupplier = (uri, authHeader) -> AuthBearerTestLib.generateTestJWT(username);
         AuthEnv.get().setBearerTokenProvider(testTokenSupplier);
     }
 
     // Client-side provide token ahead of time.
     private void addBearerAuthToken(String requestTarget, String username) {
-        String token = AuthBearerTestLib.generateTestToken(username);
+        String token = AuthBearerTestLib.generateTestJWT(username);
         AuthEnv.get().setBearerToken(requestTarget, token);
     }
 
@@ -115,13 +120,6 @@ public class TestAuthBearerRemote {
             Log.warn(TestAuthBearerRemote.class, "Exception in test suite shutdown", th);
         }
     }
-
-    @After public void afterTest() {
-        // Clear bearer auth.
-        AuthEnv.get().setBearerTokenProvider(null);
-        AuthEnv.get().clearActiveAuthentication();
-    }
-
 
     // ---- QueryExecHTTP
 
