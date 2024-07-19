@@ -115,6 +115,7 @@ public class AuthEnv {
     public void clearAuthEnv() {
         passwordRegistry.clearAll();
         authModifiers.clear();
+        tokenSupplier = null;
     }
 
     /**

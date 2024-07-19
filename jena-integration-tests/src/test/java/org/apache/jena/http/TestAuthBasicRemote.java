@@ -67,6 +67,11 @@ public class TestAuthBasicRemote extends AbstractTestAuthRemote {
         server = server("/ds", DatasetGraphFactory.createTxnMem(), user, password);
     }
 
+    @After
+    public void afterTest() {
+        AuthEnv.get().clearAuthEnv();
+    }
+
     private static FusekiServer server(String dsName, DatasetGraph dsg, String user, String password) {
         Objects.requireNonNull(user);
         Objects.requireNonNull(password);
