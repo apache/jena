@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.ListUtils;
+import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -34,6 +35,7 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QuerySolutionMap;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.PropertyNotFoundException;
 import org.apache.jena.sparql.util.NotUniqueException;
 import org.apache.jena.sparql.util.PropertyRequiredException;
@@ -182,6 +184,17 @@ public class GraphUtils {
         RDFNode obj = getAsRDFNode(r, p);
         if ( obj == null )
             return null;
+        return obj.asLiteral().getString();
+    }
+
+    /** Get the string (lexical form) of a literal with a check that the datatype is as expected. */
+    public static String getStringValue(Resource r, Property p, RDFDatatype datatype) {
+        RDFNode obj = getAsRDFNode(r, p);
+        if ( obj == null )
+            return null;
+        Literal literal = obj.asLiteral();
+        if ( ! datatype.equals(literal.getDatatype()))
+            throw new JenaException("Datatype not as expected");
         return obj.asLiteral().getString();
     }
 
