@@ -45,13 +45,16 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.impl.ModelCom;
 import org.apache.jena.reasoner.Reasoner;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -376,7 +379,7 @@ public class OntModels {
     }
 
     /**
-     * Answer a stream of the named hierarchy roots of a given OntModel.
+     * Answers a stream of the named hierarchy roots of a given OntModel.
      * This will be similar to the results of {@code OntModel.hierarchyRoot()},
      * with the added constraint that every member of the returned stream will be a named class,
      * not an anonymous class expression.
@@ -414,5 +417,238 @@ public class OntModels {
                 (clazz.isAnon() ? anonymous : named).add(clazz);
             }
         });
+    }
+
+    /**
+     * Answers the lowest common ancestor of two classes.
+     * This is the class that is farthest from the root concept
+     * (defaulting to {@code owl:Thing} which is a superclass of both {@code u} and {@code v}).
+     * The algorithm is based on
+     * <a href="http://en.wikipedia.org/wiki/Tarjan's_off-line_least_common_ancestors_algorithm">Tarjan's off-line LCA</a>.
+     * The current implementation expects that the given model:
+     * </p>
+     * <ul>
+     * <li>is transitively closed over the {@code subClassOf} relation</li>
+     * <li>can cheaply determine <em>direct sub-class</em> relations</li>
+     * </ul>
+     * <p>Both of these conditions are true of the built-in Jena OWL reasoners,
+     * such as {@link org.apache.jena.ontapi.OntSpecification#OWL2_FULL_MEM_MICRO_RULES_INF},
+     * and external DL reasoners such as Pellet.</p>
+     *
+     * @param u {@link OntClass}
+     * @param v {@link OntClass}
+     * @return the LCA of {@code u} and {@code v}
+     * @throws JenaException if the language profile of the given model does not define a top concept {@code owl:Thing}
+     */
+    public static OntClass getLCA(OntClass u, OntClass v) {
+        OntClass root = OntJenaException.notNull(u.getModel().getOWLThing());
+        return getLCA(root, u, v);
+    }
+
+    /**
+     * Answers the lowest common ancestor of two classes, assuming that the given
+     * class is the root concept to start searching from.
+     * See {@link #getLCA(OntClass, OntClass)} for details.
+     *
+     * @param root {@link OntClass}, the root concept, which will be the starting point for the algorithm
+     * @param u    {@link OntClass}, an ontology class
+     * @param v    {@link OntClass}, an ontology class
+     * @return the LCA of {@code u} and {@code v}
+     */
+    public static OntClass getLCA(OntClass root, OntClass u, OntClass v) {
+        // check some common cases first
+        if (u.equals(root) || v.equals(root)) {
+            return root;
+        }
+
+        if (u.hasSubClass(v, false)) {
+            return u;
+        }
+
+        if (v.hasSubClass(u, false)) {
+            return v;
+        }
+
+        // not a common case, so apply Tarjan's LCA algorithm
+        LCAIndex index = new LCAIndex();
+        lca(root, u, v, index);
+        return (OntClass) index.getLCA(u, v);
+    }
+
+    /**
+     * Computes the LCA disjoint set at {@code cls},
+     * noting that we are searching for the LCA of {@code uCls} and {@code vCls}.
+     *
+     * @param cls   The class we are testing (this is 'u' in the Wiki article)
+     * @param uCls  One of the two classes we are searching for the LCA of.
+     *              We have simplified the set P of pairs to the unity set {uCls, vCls}
+     * @param vCls  One of the two classes we are searching for the LCA of.
+     *              We have simplified the set P of pairs to the unity set {uCls, vCls}
+     * @param index A data structure mapping resources to disjoint sets
+     *              (since we can't side effect Jena resources),
+     *              and which is used to record the LCA pairs
+     */
+    private static DisjointSet lca(OntClass cls, OntClass uCls, OntClass vCls, LCAIndex index) {
+        DisjointSet clsSet = index.getSet(cls);
+        if (clsSet.black) {
+            // already visited
+            return clsSet;
+        }
+
+        // not visited yet
+        clsSet.ancestor = clsSet;
+
+        // for each child of cls
+        try (Stream<OntClass> subclasses = cls.subClasses(true)) {
+            subclasses.forEach(child -> {
+                if (child.equals(cls) || child.equals(cls.getModel().getOWLNothing())) {
+                    // we ignore the reflexive case and bottom
+                    return;
+                }
+
+                // compute the LCA of the subtree
+                DisjointSet v = lca(child, uCls, vCls, index);
+
+                // union the two disjoint sets together
+                clsSet.union(v);
+
+                // propagate the distinguished member
+                clsSet.find().ancestor = clsSet;
+            });
+        }
+
+        // this node is done
+        clsSet.black = true;
+
+        // are we inspecting one of the elements we're interested in?
+        if (cls.equals(uCls)) {
+            checkSolution(uCls, vCls, index);
+        } else if (cls.equals(vCls)) {
+            checkSolution(vCls, uCls, index);
+        }
+
+        return clsSet;
+    }
+
+    /**
+     * Checks to see if we have found a solution to the problem.
+     * Here, since we've assumed that P is the unity set.
+     */
+    private static void checkSolution(OntClass uCls, OntClass vCls, LCAIndex index) {
+        DisjointSet vSet = index.getSet(vCls);
+        DisjointSet uSet = index.getSet(uCls);
+
+        if (vSet != null && vSet.black && !vSet.used && uSet != null && uSet.black && !uSet.used) {
+            vSet.used = true;
+            uSet.used = true;
+            OntClass lca = (OntClass) vSet.find().ancestor.node;
+            index.setLCA(uCls, vCls, lca);
+        }
+    }
+
+    /**
+     * A simple representation of disjoint sets.
+     */
+    private static class DisjointSet {
+        /**
+         * The resource this set represents
+         */
+        private final Resource node;
+
+        /**
+         * The parent set in a union
+         */
+        private DisjointSet parent;
+
+        /**
+         * Heuristic used to build balanced unions
+         */
+        private int rank;
+
+        /**
+         * The link to the distinguished member set
+         */
+        private DisjointSet ancestor;
+
+        /**
+         * Set to true when the node has been processed
+         */
+        private boolean black = false;
+
+        /**
+         * Set to true when we've inspected a black set, since the result is only
+         * correct just after both of the sets for u and v have been marked black
+         */
+        private boolean used = false;
+
+        DisjointSet(Resource node) {
+            this.node = node;
+            rank = 0;
+            parent = this;
+        }
+
+        /**
+         * The find operation collapses the pointer to the root parent, which is
+         * one of Tarjan's standard optimisations.
+         *
+         * @return The representative of the union containing this set
+         */
+        DisjointSet find() {
+            DisjointSet root;
+            if (parent == this) {
+                // the representative of the set
+                root = this;
+            } else {
+                // otherwise, seek the representative of my parent and save it
+                root = parent.find();
+                this.parent = root;
+            }
+            return root;
+        }
+
+        /**
+         * The union of two sets
+         */
+        void union(DisjointSet y) {
+            DisjointSet xRoot = find();
+            DisjointSet yRoot = y.find();
+
+            if (xRoot.rank > yRoot.rank) {
+                yRoot.parent = xRoot;
+            } else if (yRoot.rank > xRoot.rank) {
+                xRoot.parent = yRoot;
+            } else if (xRoot != yRoot) {
+                yRoot.parent = xRoot;
+                xRoot.rank++;
+            }
+        }
+    }
+
+    /**
+     * Simple data structure mapping RDF nodes to disjoint sets, and
+     * pairs of resources to their LCA.
+     */
+    private static class LCAIndex {
+        private final Map<Resource, DisjointSet> setIndex = new HashMap<>();
+        private final Map<Resource, Map<Resource, Resource>> lcaIndex = new HashMap<>();
+
+        Resource getLCA(Resource u, Resource v) {
+            Map<Resource, Resource> map = lcaIndex.get(u);
+            Resource lca = map == null ? null : map.get(v);
+            if (lca == null) {
+                map = lcaIndex.get(v);
+                lca = (map == null) ? null : map.get(u);
+            }
+            return lca;
+        }
+
+        void setLCA(Resource u, Resource v, Resource lca) {
+            Map<Resource, Resource> uMap = lcaIndex.computeIfAbsent(u, k -> new HashMap<>());
+            uMap.put(v, lca);
+        }
+
+        DisjointSet getSet(Resource r) {
+            return setIndex.computeIfAbsent(r, DisjointSet::new);
+        }
     }
 }

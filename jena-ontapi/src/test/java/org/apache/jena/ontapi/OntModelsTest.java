@@ -25,6 +25,7 @@ import org.apache.jena.ontapi.utils.OntModels;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.OWL2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -475,4 +476,272 @@ public class OntModelsTest {
         Assertions.assertEquals(2, actual.size());
         Assertions.assertEquals(expected, new HashSet<>(actual));
     }
+
+    @Test
+    public void testIndexLCA0() {
+        OntModel m = TestModelFactory.createClassesABCDEFGThing(
+                OntModelFactory.createModel(OntSpecification.OWL2_FULL_MEM_MICRO_RULES_INF)
+        );
+        OntClass A = m.getOntClass(TestModelFactory.NS + "A");
+        OntClass B = m.getOntClass(TestModelFactory.NS + "B");
+        OntClass C = m.getOntClass(TestModelFactory.NS + "C");
+        A.addSubClass(B);
+        A.addSubClass(C);
+
+        Assertions.assertEquals(A, OntModels.getLCA(B, C));
+    }
+
+    @Test
+    public void testIndexLCA1() {
+        OntModel m = TestModelFactory.createClassesABCDEFGThing(
+                OntModelFactory.createModel(OntSpecification.OWL2_FULL_MEM_MICRO_RULES_INF)
+        );
+        OntClass A = m.getOntClass(TestModelFactory.NS + "A");
+        OntClass B = m.getOntClass(TestModelFactory.NS + "B");
+        OntClass C = m.getOntClass(TestModelFactory.NS + "C");
+        A.addSubClass(B);
+        A.addSubClass(C);
+
+        Assertions.assertEquals(A, OntModels.getLCA(C, B));
+    }
+
+    @Test
+    public void testIndexLCA2() {
+        OntModel m = TestModelFactory.createClassesABCDEFGThing(
+                OntModelFactory.createModel(OntSpecification.OWL2_FULL_MEM_MICRO_RULES_INF)
+        );
+        OntClass A = m.getOntClass(TestModelFactory.NS + "A");
+        OntClass B = m.getOntClass(TestModelFactory.NS + "B");
+        OntClass C = m.getOntClass(TestModelFactory.NS + "C");
+        A.addSubClass(B);
+        A.addSubClass(C);
+
+        Assertions.assertEquals(A, OntModels.getLCA(A, C));
+    }
+
+    @Test
+    public void testIndexLCA3() {
+        OntModel m = TestModelFactory.createClassesABCDEFGThing(
+                OntModelFactory.createModel(OntSpecification.OWL2_FULL_MEM_MICRO_RULES_INF)
+        );
+        OntClass A = m.getOntClass(TestModelFactory.NS + "A");
+        OntClass B = m.getOntClass(TestModelFactory.NS + "B");
+        OntClass C = m.getOntClass(TestModelFactory.NS + "C");
+        A.addSubClass(B);
+        A.addSubClass(C);
+
+        Assertions.assertEquals(A, OntModels.getLCA(B, A));
+    }
+
+    @Test
+    public void testIndexLCA4() {
+        OntModel m = TestModelFactory.createClassesABCDEFGThing(
+                OntModelFactory.createModel(OntSpecification.OWL2_FULL_MEM_MICRO_RULES_INF)
+        );
+        OntClass A = m.getOntClass(TestModelFactory.NS + "A");
+        OntClass B = m.getOntClass(TestModelFactory.NS + "B");
+        OntClass C = m.getOntClass(TestModelFactory.NS + "C");
+        OntClass D = m.getOntClass(TestModelFactory.NS + "D");
+        A.addSubClass(B);
+        A.addSubClass(C);
+        B.addSubClass(D);
+
+        Assertions.assertEquals(A, OntModels.getLCA(D, C));
+    }
+
+    @Test
+    public void testIndexLCA5() {
+        OntModel m = TestModelFactory.createClassesABCDEFGThing(
+                OntModelFactory.createModel(OntSpecification.OWL2_FULL_MEM_MICRO_RULES_INF)
+        );
+        OntClass A = m.getOntClass(TestModelFactory.NS + "A");
+        OntClass B = m.getOntClass(TestModelFactory.NS + "B");
+        OntClass C = m.getOntClass(TestModelFactory.NS + "C");
+        OntClass D = m.getOntClass(TestModelFactory.NS + "D");
+        A.addSubClass(B);
+        A.addSubClass(C);
+        B.addSubClass(D);
+
+        Assertions.assertEquals(A, OntModels.getLCA(C, D));
+    }
+
+    @Test
+    public void testIndexLCA6() {
+        OntModel m = TestModelFactory.createClassesABCDEFGThing(
+                OntModelFactory.createModel(OntSpecification.OWL2_FULL_MEM_MICRO_RULES_INF)
+        );
+        OntClass A = m.getOntClass(TestModelFactory.NS + "A");
+        OntClass B = m.getOntClass(TestModelFactory.NS + "B");
+        OntClass C = m.getOntClass(TestModelFactory.NS + "C");
+        OntClass D = m.getOntClass(TestModelFactory.NS + "D");
+        OntClass E = m.getOntClass(TestModelFactory.NS + "E");
+
+        A.addSubClass(B);
+        A.addSubClass(C);
+        B.addSubClass(D);
+        C.addSubClass(E);
+
+        Assertions.assertEquals(A, OntModels.getLCA(D, E));
+    }
+
+    @Test
+    public void testIndexLCA7() {
+        OntModel m = TestModelFactory.createClassesABCDEFGThing(
+                OntModelFactory.createModel(OntSpecification.OWL2_FULL_MEM_MICRO_RULES_INF)
+        );
+        OntClass A = m.getOntClass(TestModelFactory.NS + "A");
+        OntClass B = m.getOntClass(TestModelFactory.NS + "B");
+        OntClass C = m.getOntClass(TestModelFactory.NS + "C");
+        OntClass D = m.getOntClass(TestModelFactory.NS + "D");
+        OntClass E = m.getOntClass(TestModelFactory.NS + "E");
+
+        A.addSubClass(B);
+        A.addSubClass(C);
+        B.addSubClass(D);
+        C.addSubClass(E);
+
+        Assertions.assertEquals(A, OntModels.getLCA(E, D));
+    }
+
+    @Test
+    public void testIndexLCA8() {
+        OntModel m = TestModelFactory.createClassesABCDEFGThing(
+                OntModelFactory.createModel(OntSpecification.OWL2_FULL_MEM_MICRO_RULES_INF)
+        );
+        OntClass A = m.getOntClass(TestModelFactory.NS + "A");
+        OntClass B = m.getOntClass(TestModelFactory.NS + "B");
+        OntClass C = m.getOntClass(TestModelFactory.NS + "C");
+        OntClass D = m.getOntClass(TestModelFactory.NS + "D");
+        OntClass E = m.getOntClass(TestModelFactory.NS + "E");
+
+        A.addSubClass(B);
+        A.addSubClass(C);
+        B.addSubClass(D);
+        D.addSubClass(E);
+
+        Assertions.assertEquals(A, OntModels.getLCA(C, E));
+    }
+
+    @Test
+    public void testIndexLCA9() {
+        OntModel m = TestModelFactory.createClassesABCDEFGThing(
+                OntModelFactory.createModel(OntSpecification.OWL2_FULL_MEM_MICRO_RULES_INF)
+        );
+        OntClass A = m.getOntClass(TestModelFactory.NS + "A");
+        OntClass B = m.getOntClass(TestModelFactory.NS + "B");
+        OntClass C = m.getOntClass(TestModelFactory.NS + "C");
+        OntClass D = m.getOntClass(TestModelFactory.NS + "D");
+        OntClass E = m.getOntClass(TestModelFactory.NS + "E");
+
+        A.addSubClass(B);
+        A.addSubClass(C);
+        B.addSubClass(D);
+        D.addSubClass(E);
+
+        Assertions.assertEquals(A, OntModels.getLCA(B, C));
+    }
+
+    @Test
+    public void testIndexLCA10() {
+        OntModel m = TestModelFactory.createClassesABCDEFGThing(
+                OntModelFactory.createModel(OntSpecification.OWL2_FULL_MEM_MICRO_RULES_INF)
+        );
+        OntClass A = m.getOntClass(TestModelFactory.NS + "A");
+        OntClass B = m.getOntClass(TestModelFactory.NS + "B");
+        OntClass C = m.getOntClass(TestModelFactory.NS + "C");
+        OntClass D = m.getOntClass(TestModelFactory.NS + "D");
+        OntClass E = m.getOntClass(TestModelFactory.NS + "E");
+        OntClass F = m.getOntClass(TestModelFactory.NS + "F");
+
+        A.addSubClass(B);
+        A.addSubClass(C);
+        A.addSubClass(D);
+        C.addSubClass(E);
+        D.addSubClass(F);
+
+        Assertions.assertEquals(A, OntModels.getLCA(B, E));
+    }
+
+    @Test
+    public void testIndexLCA11() {
+        OntModel m = TestModelFactory.createClassesABCDEFGThing(
+                OntModelFactory.createModel(OntSpecification.OWL2_FULL_MEM_MICRO_RULES_INF)
+        );
+        OntClass A = m.getOntClass(TestModelFactory.NS + "A");
+        OntClass B = m.getOntClass(TestModelFactory.NS + "B");
+        OntClass C = m.getOntClass(TestModelFactory.NS + "C");
+        OntClass D = m.getOntClass(TestModelFactory.NS + "D");
+        OntClass E = m.getOntClass(TestModelFactory.NS + "E");
+        OntClass F = m.getOntClass(TestModelFactory.NS + "F");
+
+        A.addSubClass(B);
+        A.addSubClass(C);
+        A.addSubClass(D);
+        C.addSubClass(E);
+        D.addSubClass(F);
+
+        Assertions.assertEquals(A, OntModels.getLCA(B, F));
+    }
+
+    @Test
+    public void testIndexLCA12() {
+        OntModel m = TestModelFactory.createClassesABCDEFGThing(
+                OntModelFactory.createModel(OntSpecification.OWL2_FULL_MEM_MICRO_RULES_INF)
+        );
+        OntClass A = m.getOntClass(TestModelFactory.NS + "A");
+        OntClass B = m.getOntClass(TestModelFactory.NS + "B");
+        OntClass C = m.getOntClass(TestModelFactory.NS + "C");
+        OntClass D = m.getOntClass(TestModelFactory.NS + "D");
+        OntClass E = m.getOntClass(TestModelFactory.NS + "E");
+        OntClass F = m.getOntClass(TestModelFactory.NS + "F");
+
+        A.addSubClass(B);
+        A.addSubClass(C);
+        A.addSubClass(D);
+        D.addSubClass(E);
+        D.addSubClass(F);
+
+        Assertions.assertEquals(D, OntModels.getLCA(F, E));
+    }
+
+    @Test
+    public void testIndexLCA13() {
+        OntModel m = TestModelFactory.createClassesABCDEFGThing(
+                OntModelFactory.createModel(OntSpecification.OWL2_FULL_MEM_MICRO_RULES_INF)
+        );
+        OntClass A = m.getOntClass(TestModelFactory.NS + "A");
+        OntClass B = m.getOntClass(TestModelFactory.NS + "B");
+        OntClass C = m.getOntClass(TestModelFactory.NS + "C");
+        OntClass D = m.getOntClass(TestModelFactory.NS + "D");
+        OntClass E = m.getOntClass(TestModelFactory.NS + "E");
+        OntClass F = m.getOntClass(TestModelFactory.NS + "F");
+
+        A.addSubClass(B);
+        A.addSubClass(C);
+        A.addSubClass(D);
+        C.addSubClass(E);
+        D.addSubClass(E);
+        D.addSubClass(F);
+
+        Assertions.assertEquals(D, OntModels.getLCA(F, E));
+    }
+
+    @Test
+    public void testIndexLCA14() {
+        OntModel m = TestModelFactory.createClassesABCDEFGThing(
+                OntModelFactory.createModel(OntSpecification.OWL2_FULL_MEM_MICRO_RULES_INF)
+        );
+        OntClass A = m.getOntClass(TestModelFactory.NS + "A");
+        OntClass B = m.getOntClass(TestModelFactory.NS + "B");
+        OntClass C = m.getOntClass(TestModelFactory.NS + "C");
+        OntClass E = m.getOntClass(TestModelFactory.NS + "E");
+
+        A.addSubClass(B);
+        A.addSubClass(C);
+
+        Assertions.assertEquals(OWL2.Thing, OntModels.getLCA(B, E));
+        Assertions.assertEquals(OWL2.Thing, OntModels.getLCA(C, E));
+        Assertions.assertEquals(OWL2.Thing, OntModels.getLCA(A, E));
+    }
+
 }
