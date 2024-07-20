@@ -18,14 +18,15 @@
 
 package org.apache.jena.ontapi;
 
+import org.apache.jena.graph.Graph;
 import org.apache.jena.ontapi.impl.UnionGraphImpl;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.testutils.RDFIOTestUtils;
-import org.apache.jena.graph.Graph;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.reasoner.InfGraph;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.vocabulary.OWL;
 
 class TestModelFactory {
     static final String NS = "http://example.com/test#";
@@ -364,6 +365,18 @@ class TestModelFactory {
         intersectionOf_A_E.addSuperClass(A);
         intersectionOf_A_E.addSuperClass(B);
 
+        return m;
+    }
+
+    static OntModel createClassesABCDEFGThing(OntModel m) {
+        m.createResource(NS + "A", OWL.Class);
+        m.createResource(NS + "B", OWL.Class);
+        m.createResource(NS + "C", OWL.Class);
+        m.createResource(NS + "D", OWL.Class);
+        m.createResource(NS + "E", OWL.Class);
+        m.createResource(NS + "F", OWL.Class);
+        m.createResource(NS + "G", OWL.Class);
+        m.createResource(OWL.Thing.getURI(), OWL.Class);
         return m;
     }
 }
