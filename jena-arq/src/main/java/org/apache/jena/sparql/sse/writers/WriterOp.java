@@ -110,11 +110,11 @@ public class WriterOp
         op.visit(v);
     }
 
-    public static class OpWriterWorker implements OpVisitor {
+    private static class OpWriterWorker implements OpVisitor {
         private IndentedWriter       out;
         private SerializationContext sContext;
 
-        public OpWriterWorker(IndentedWriter out, SerializationContext sCxt) {
+        private OpWriterWorker(IndentedWriter out, SerializationContext sCxt) {
             this.sContext = sCxt;
             this.out = out;
         }

@@ -19,7 +19,7 @@
 package org.apache.jena.sparql.service.enhancer.impl.util;
 
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.atlas.io.PrintUtils;
+import org.apache.jena.atlas.io.Printable;
 import org.apache.jena.atlas.iterator.IteratorSlotted;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.shared.PrefixMapping;
@@ -53,20 +53,20 @@ public abstract class QueryIterSlottedBase
 
     @Override
     public String toString(PrefixMapping pmap)
-    { return QueryOutputUtils.toString(this, pmap) ; }
+    { return QueryOutputUtils.toString(this, pmap); }
 
     // final stops it being overridden and missing the output() route.
     @Override
     public final String toString()
-    { return PrintUtils.toString(this) ; }
+    { return Printable.toString(this); }
 
     /** Normally overridden for better information */
     @Override
     public void output(IndentedWriter out)
     {
-        out.print(Plan.startMarker) ;
-        out.print(Lib.className(this)) ;
-        out.print(Plan.finishMarker) ;
+        out.print(Plan.startMarker);
+        out.print(Lib.className(this));
+        out.print(Plan.finishMarker);
     }
 
     @Override
@@ -81,6 +81,6 @@ public abstract class QueryIterSlottedBase
 //	        out.incIndent();
 //	        // iterator.output(out, sCxt);
 //	        out.decIndent();
-//	        // out.println(Utils.className(this)+"/"+Utils.className(iterator)) ;
+//	        // out.println(Utils.className(this)+"/"+Utils.className(iterator));
     }
 }

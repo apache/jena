@@ -41,7 +41,7 @@ import java.util.Map;
 /**
  * A collection of small utilities for pretty printing nodes, triples
  * and associated things. The core functionality here is a static
- * prefix map which is preloaded with known prefixes.
+ * prefix map which is pre-loaded with known prefixes.
  */
 public class PrintUtil {
 

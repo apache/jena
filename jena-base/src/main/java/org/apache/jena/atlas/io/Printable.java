@@ -21,4 +21,12 @@ package org.apache.jena.atlas.io;
 public interface Printable
 {
     public void output(IndentedWriter out) ;
+
+    /** Provide the functionality for toString() */
+    public static String toString(Printable f) {
+        try (IndentedLineBuffer buff = new IndentedLineBuffer()) {
+            f.output(buff);
+            return buff.toString();
+        }
+    }
 }
