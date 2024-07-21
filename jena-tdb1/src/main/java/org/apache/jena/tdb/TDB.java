@@ -35,12 +35,13 @@ import org.slf4j.LoggerFactory ;
  * @deprecated Use {@link org.apache.jena.tdb1.TDB1}
  */
 @Deprecated(forRemoval = true)
+@SuppressWarnings("all")
 public class TDB {
 
     private TDB() {}
 
     // Initialization statics must be first in the class to avoid
-    // problems with recursive initialization.  Specifcally,
+    // problems with recursive initialization.  Specifically,
     // initLock being null because elsewhere started the initialization
     // and is calling into the TDB class.
     // The best order is:
@@ -114,21 +115,25 @@ public class TDB {
     }
 
     /** Sync a TDB-backed Model. Do nothing if not TDB-backed. */
+    @SuppressWarnings({"deprecated", "removal"})
     public static void sync(Model model) {
         TDB1.sync(model);
     }
 
     /** Sync a TDB-backed Graph. Do nothing if not TDB-backed. */
+    @SuppressWarnings({"deprecated", "removal"})
     public static void sync(Graph graph) {
         TDB1.sync(graph);
     }
 
     /** Sync a TDB-backed Dataset. Do nothing if not TDB-backed. */
+    @SuppressWarnings({"deprecated", "removal"})
     public static void sync(Dataset dataset) {
         TDB1.sync(dataset);
     }
 
     /** Sync a TDB-backed DatasetGraph. Do nothing if not TDB-backed. */
+    @SuppressWarnings({"deprecated", "removal"})
     public static void sync(DatasetGraph dataset) {
         TDB1.sync(dataset);
     }
