@@ -28,8 +28,6 @@ import org.apache.jena.query.text.* ;
 import org.apache.jena.query.text.changes.TextQuadAction;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.tdb1.assembler.VocabTDB1;
-import org.apache.jena.tdb1.sys.TDBInternal;
 import org.apache.jena.vocabulary.RDF ;
 import org.junit.After;
 import org.junit.BeforeClass;
