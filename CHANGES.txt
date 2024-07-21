@@ -1,3 +1,64 @@
+==== Apache Jena 5.1.0
+Released: 2024-07-18
+Issues: https://s.apache.org/jena-5.1.0-issues
+Announcement:
+https://lists.apache.org/thread/hx8zljq8hn5p1ddb2qf66f1jwo6kfs0q
+
+The major item for the 5.1.0 release is the new artifact jena-ontapi:
+
+It has API support for working with OWL2 as well as other ontologies. It 
+is the long-term replacement for org.apache.jena.ontology.
+
+   https://github.com/apache/jena/issues/2160
+
+This is a contribution from @sszuev
+
+== Contributions
+
+@karolina-telicent
+   Prefixes Service
+     New endpoint for Fuseki to give read and read-write access to the
+     prefixes of a dataset enabling lookup and modification over HTTP.
+   https://github.com/apache/jena/issues/2543
+
+Micrometer - Prometheus upgrade
+   See 
+https://github.com/micrometer-metrics/micrometer/wiki/1.13-Migration-Guide
+   https://github.com/apache/jena/pull/2480
+
+Value space of rdf:XMLLiteral changed to be RDF 1.1/1.2 value semantics.
+   Issue https://github.com/apache/jena/issues/2430
+   The value space in RDF 1.0 was different.
+
+@TelicentPaul - Paul Gallagher
+Migrating Base 64 operations from Apache Commons Codec to Util package.
+   https://github.com/apache/jena/pull/2409
+
+@thomasjtaylor Thomas J. Taylor
+     Fix for NodeValueFloat
+     https://github.com/apache/jena/pull/2374
+
+@Aklakan Claus Stadler
+"Incorrect JoinClassifier results with unbound values."
+   https://github.com/apache/jena/issues/2412
+
+@Aklakan Claus Stadler
+   "QueryExec: abort before exec is ignored."
+   https://github.com/apache/jena/issues/2394
+
+@osi peter royal
+   Track rule engine instances
+   https://github.com/apache/jena/issues/2382
+   https://github.com/apache/jena/pull/2432
+
+Normalization/Canonicalization of values
+   Including RDFParserBuilder.canonicalValues
+     This has been reworked to provide a consistent framework
+     and also guarantee the same behavior between parsing
+     and TDB2 handling of values.
+   https://github.com/apache/jena/issues/2557
+
+
 ==== Apache Jena 5.0.0
 Released: 2024-03-20
 Issues: https://s.apache.org/jena-5.0.0-issues
@@ -126,6 +187,7 @@ Fuseki: Uses the Jakarta namespace for servlets and Fuseki has been upgraded to 
 Apache Tomcat10 or later, is required for running the WAR file.
 Tomcat 9 or earlier will not work.
 
+
 ==== Apache Jena 4.10.0
 Released: 2023-11-01
 Issues: https://s.apache.org/jena-4.10.0-issues
@@ -160,7 +222,7 @@ All issues: https://s.apache.org/jena-4.10.0-issues
 There is a CHANGES.txt in the root of the repository
 with the history of announcement messages.
 
-==== Contributions:
+== Contributions:
 
 Shawn Smith
 "Race condition with QueryEngineRegistry and
@@ -188,7 +250,7 @@ GH-1374: add copyWithRegisties Context helper method
 All issues in this release:
      https://s.apache.org/jena-4.10.0-issues
 
-==== Key upgrades
+== Key upgrades
 
 org.apache.lucene : 9.5.0 -> 9.7.0
 org.apache.commons:commons-lang3: 3.12.0 -> 3.13.0
@@ -234,7 +296,7 @@ keeping with the policy of supporting two java versions.
 Jena 4.9.0 is built for a minimum of Java11.
 It has been tested on Java17 and Java21 EA.
 
-==== Items in this release
+== Items in this release
 
 Arne Berdhardt
 https://github.com/apache/jena/issues/1912
