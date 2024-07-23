@@ -31,10 +31,11 @@ import org.apache.jena.sparql.core.DatasetGraphWrapper;
 import org.apache.jena.sparql.util.Context;
 
 /**
- * DatasetGraph wrapper controls entry and exit of transactions.
+ * A {@link DatasetGraph} wrapper that controls entry and exit of transactions.
+ * It provides two controls:
  * <ul>
- * <li>Exclusive access (no transactions active)
- * <li>Read only database - No possible writers (write and promote-able transactions)
+ * <li>Exclusive access - no transactions active (used by TDB2 compact)
+ * <li>Read-only database - No possible writers (that is, transaction types write and the promote forms transactions)
  * </ul>
  */
 
@@ -46,13 +47,22 @@ public class DatasetGraphTxnCtl extends DatasetGraphWrapper implements Transacti
     // Do not confuse with read/write transactions. We need a "one exclusive, or many
     // other" lock which happens to be called {@code ReadWriteLock}.
 
-    // All transactions need "read" state X through out their lifetime.
-    // The "write" state Y is used for exclusive mode.
+    /**
+     * All transactions need "read" state X through out their lifetime. "read" here
+     * does not refer to the transaction's mode The "write" state Y is used for
+     * exclusive mode.
+     *
+     * Use {@link #beginMultiMode}/{@link #endMultiMode} (normal
+     * operation), {@link #beingSingleMode}/{@link #endSingleMode} (exclusive mode)
+     **/
     private ReadWriteLock exclusivitylock = new ReentrantReadWriteLock();
 
-    // Lock to guarantee only readers are present.
-    // Writers and promote transaction need to take a lock on entry.
-    // This is not reentrant.
+    /**
+     * Lock to guarantee only readers are present. Writers and promote transaction
+     * need to take a lock on entry.
+     * Use {@link #startReadOnlyDatabase()}/{@link #finishReadOnlyDatabase()}.
+     * "multi-mode" will also be taken.
+     */
     private ReadWriteLock writeableDatabase = new ReentrantReadWriteLock();
 
     // Better Lock naming?
@@ -156,9 +166,11 @@ public class DatasetGraphTxnCtl extends DatasetGraphWrapper implements Transacti
 
     @Override
     public void end() {
+        // Read values before calling the super object which will change the values.
         TxnType txnType = transactionType();
+        boolean inTxn = isInTransaction();
         super.end();
-        if ( isInTransaction() )
+        if ( inTxn )
             exitTransaction(txnType);
     }
 
@@ -328,7 +340,7 @@ public class DatasetGraphTxnCtl extends DatasetGraphWrapper implements Transacti
     // An MRSW lock has two modes: multiple XOR a single thread.
     //   Hide names like "read" and "write" in favour of "multi" and "single"
 
-    private final boolean beginMultiMode(ReadWriteLock lock, boolean canBlock) {
+    private static boolean beginMultiMode(ReadWriteLock lock, boolean canBlock) {
         if ( !canBlock )
             return lock.readLock().tryLock();
         lock.readLock().lock();
