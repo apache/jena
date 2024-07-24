@@ -10,7 +10,7 @@
     "dev": "vite",
     "serve": "vite preview",
     "build": "vite build",
-    "test:unit": "vitest run --environment jsdom",
+    "test:unit": "vitest run --pool=threads --environment jsdom",
     "test:e2e": "run-script-os",
     "test:e2e:nix": "cross-env FUSEKI_PORT=\"${FUSEKI_PORT:=3030}\" PORT=\"${PORT:=8080}\" concurrently  --names 'SERVER,CLIENT,TESTS' --prefix-colors 'yellow,blue,green' --success 'first' --kill-others \"yarn run serve:fuseki\" \"yarn wait-on http://localhost:${FUSEKI_PORT}/$/ping && yarn run dev\" \"yarn wait-on http-get://localhost:${PORT}/index.html && cypress run $@\"",
     "test:e2e:win32" : "SET /a (FUSEKI_PORT=FUSEKI_PORT ^ 3030) & SET /a (PORT=PORT ^ 8080) & cross-env concurrently --names 'SERVER,CLIENT,TESTS' --prefix-colors 'yellow,blue,green' --success 'first' --kill-others \"yarn run serve:fuseki\" \"yarn wait-on http://localhost:${FUSEKI_PORT}/$/ping && yarn run dev\" \"yarn wait-on http-get://localhost:${PORT}/index.html && cypress run $@\"",
