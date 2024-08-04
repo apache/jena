@@ -30,7 +30,8 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 
 /**
- * This class provides the general machinery for iterators. */
+ * This class provides the machinery for trackable iterators.
+ */
 public abstract class QueryIter extends QueryIteratorBase
 {
     // Volatile just to make it safe to concurrent updates

@@ -21,18 +21,24 @@ package org.apache.jena.base.module;
 /** Lifecycle interface for modules and subsystems. */
 public interface SubsystemLifecycle {
 
-    /** start - a module should be ready to operate when this returns. */
+    /**
+     * start - a module should be ready to operate when this returns.
+     */
     public void start();
 
-    /** stop - a module should have performed any shutdown operations by the time this returns.
-     * Caution: code must be prepared to operate without assuming this called.
-     * Abrupt termination of the JVM is always possible.
+    /**
+     * stop - a module should have performed any shutdown operations by the time this
+     * returns. Caution: code must be prepared to operate without assuming this
+     * called. Abrupt termination of the JVM is always possible.
      */
     public void stop();
 
-    /** Provide a marker as to the level to order initialization, 10,20,30,...
-     * See {@link Subsystem} for details.
+    /**
+     * Provide a marker as to the level to order initialization, 10,20,30,... See
+     * {@link Subsystem} for details.
      */
-    default public int level() { return 9999; }
+    default public int level() {
+        return 9999;
+    }
 }
 
