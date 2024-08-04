@@ -25,7 +25,6 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.serializer.SerializationContext;
 
 /** Wrap a QueryIterator so it can have some/all of it's methods intercepted. */
-
 public class QueryIteratorWrapper extends QueryIteratorBase {
     protected QueryIterator iterator;
 

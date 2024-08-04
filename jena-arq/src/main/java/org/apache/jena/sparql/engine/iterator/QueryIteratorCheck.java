@@ -28,7 +28,6 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 
 /** Query iterator that checks everything was closed correctly */
-
 public class QueryIteratorCheck extends QueryIteratorWrapper
 {
     private ExecutionContext execCxt ;

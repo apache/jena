@@ -57,7 +57,7 @@ public interface Binding
     /** Iterate over all variables of this binding. */
     public Iterator<Var> vars();
 
-    /** Iterate over all variables of this binding. */
+    /** Collect all variables of this binding. */
     public Set<Var> varsMentioned();
 
     /** Operate on each entry. */

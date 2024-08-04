@@ -35,8 +35,8 @@ import org.apache.jena.sparql.util.PrintSerializableBase;
  * <ul>
  * <li>autoclose when the iterator runs out</li>
  * <li>async cancellation</li>
- * <li>final {@link #hasNext()} and {@link #next()} to check for abort.
-       Implementation provide {@link #hasNextBinding()}, {@link #moveToNextBinding()}</li>
+ * <li>final {@link #hasNext()} and {@link #next()} to check for cancellation.
+       Subclasses provide two operations: {@link #hasNextBinding()}, {@link #moveToNextBinding()}</li>
  * </ul>
  */
 
@@ -55,13 +55,14 @@ public abstract class QueryIteratorBase
     private volatile boolean cancelOnce = false;
     private Object cancelLock = new Object();
 
-    public QueryIteratorBase() {
+    /** QueryIteratorBase with no cancellation facility */
+    protected QueryIteratorBase() {
         // No async cancellation.
         this(null);
     }
 
     /** Argument : shared flag for cancellation. */
-    public QueryIteratorBase(AtomicBoolean cancelSignal) {
+    protected QueryIteratorBase(AtomicBoolean cancelSignal) {
         if ( cancelSignal == null )
             // Allows for direct cancel (not timeout).
             cancelSignal = new AtomicBoolean(false);
@@ -76,12 +77,15 @@ public abstract class QueryIteratorBase
 
     // -------- The contract with the subclasses
 
-    /** Implement this, not hasNext() */
+    /**
+     * Implement this, not hasNext()
+     */
     protected abstract boolean hasNextBinding();
 
-    /** Implement this, not next() or nextBinding()
-        Returning null is turned into NoSuchElementException
-        Does not need to call hasNext (can presume it is true) */
+    /**
+     * Implement this, not next() or nextBinding() Returning null is turned into
+     * NoSuchElementException Does not need to call hasNext (can presume it is true)
+     */
     protected abstract Binding moveToNextBinding();
 
     /** Close the iterator. */

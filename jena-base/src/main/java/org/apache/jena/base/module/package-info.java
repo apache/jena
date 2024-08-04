@@ -27,4 +27,3 @@
  */
 
 package org.apache.jena.base.module;
-
