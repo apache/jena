@@ -419,11 +419,22 @@
       <!--
           com.google.errorprone:error_prone_annotations
           is used by gson, guava and caffeine. 
-          It can lead to dependency convergence errors
-          (the dependencies using it are all at the same depth).
+          It can lead to dependency convergence errors.
+
+          The dependencies using it are all at the same depth.
           Either explicitly depend here or choose one
-          route and exclude from the others.
+          route and exclude from the others or exclude
+          systematically. If the dependency plugin is being used,
+	  it will likely report errors because it is stricter than 
+	  the maven resolution rule.
+
           Gson is probably the one to choose as the preferred route.
+          https://github.com/google/gson/issues/2681#issuecomment-2125845040
+          
+          If using runtime checking tools, checkerframework may be needed
+          https://checkerframework.org/manual/#faq-runtime-retention
+
+          The downside of including them is that they bringing in IDE autocomplete names.
       -->
       <!--
       <dependency>
@@ -437,6 +448,14 @@
         <groupId>com.google.code.gson</groupId>
         <artifactId>gson</artifactId>
         <version>${ver.gson}</version>
+        <!--
+        <exclusions>
+          <exclusion>
+            <groupId>com.google.errorprone</groupId>
+            <artifactId>error_prone_annotations</artifactId>
+          </exclusion>
+        </exclusions>
+        -->
       </dependency>
 
       <dependency>
