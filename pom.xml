@@ -67,12 +67,12 @@
     <ver.jakarta.json>2.0.1</ver.jakarta.json>
 
     <!-- These two must be in-step -->
-    <ver.jetty>12.0.11</ver.jetty>
+    <ver.jetty>12.0.12</ver.jetty>
     <ver.jakarta-servlet>6.1.0</ver.jakarta-servlet>
 
     <ver.shiro>2.0.1</ver.shiro>
 
-    <ver.protobuf>4.27.2</ver.protobuf>
+    <ver.protobuf>4.27.3</ver.protobuf>
     <ver.libthrift>0.20.0</ver.libthrift>
 
     <ver.caffeine>3.1.8</ver.caffeine>
@@ -125,7 +125,7 @@
     <ver.plugin.war>3.4.0</ver.plugin.war>
     <ver.plugin.shade>3.6.0</ver.plugin.shade>
     <ver.plugin.enforcer>3.5.0</ver.plugin.enforcer>
-    <ver.plugin.cyclonedx>2.8.0</ver.plugin.cyclonedx>
+    <ver.plugin.cyclonedx>2.8.1</ver.plugin.cyclonedx>
     <ver.plugin.spdx>0.7.0</ver.plugin.spdx>
   </properties>
 
