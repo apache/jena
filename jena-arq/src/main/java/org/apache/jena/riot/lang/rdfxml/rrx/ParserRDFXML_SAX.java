@@ -966,8 +966,8 @@ class ParserRDFXML_SAX
         String qName = attributes.getQName(index);
 
         if ( namespace == null || namespace.isEmpty() ) {
-            if ( outputWarnings ){
-                //In SAX, xmlns: is qname, but namespace and local name are "".
+            if ( outputWarnings ) {
+                // In SAX, xmlns: is a qname, but namespace and local name are "".
                 if ( ! localName.isEmpty() )    // Skip XML namespace declarations.
                     RDFXMLparseWarning("XML attribute '"+qName+"' used for RDF property attribute - ignored", position);
             }
