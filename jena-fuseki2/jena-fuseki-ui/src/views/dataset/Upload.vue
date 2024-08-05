@@ -60,7 +60,7 @@
                         placeholder="Leave blank for default graph"
                       />
                       <div class="invalid-feedback">
-                        Invalid graph name. Please remove any spaces.
+                        Invalid graph name. Please remove any spaces and encoded values.
                       </div>
                     </div>
                   </div>
@@ -418,15 +418,38 @@ export default {
       return this.validateGraphName() && this.validateFiles()
     },
     validateGraphName () {
-      // No spaces allowed in graph names.
-      const pattern = /^[^\s]+$/
       const graphName = this.$refs['dataset-graph-name'].value
-      if (graphName === '' || pattern.test(graphName)) {
+      // An empty graph name is OK.
+      if (graphName === '') {
         this.graphNameClasses = ['form-control is-valid']
         return true
       }
-      this.graphNameClasses = ['form-control is-invalid']
-      return false
+      // No spaces allowed in graph names.
+      const pattern = /^\S+$/
+      if (!pattern.test(graphName)) {
+        this.graphNameClasses = ['form-control is-invalid']
+        return false
+      }
+      // Only valid URIs allowed.
+      try {
+        new URL(graphName)
+      } catch {
+        this.graphNameClasses = ['form-control is-invalid']
+        return false
+      }
+      // Encoded components are not allowed.
+      try {
+        if (decodeURI(graphName) !== decodeURIComponent(graphName)) {
+          this.graphNameClasses = ['form-control is-invalid']
+          return false
+        }
+      } catch {
+        this.graphNameClasses = ['form-control is-invalid']
+        return false
+      }
+      // If it reached this part, then it's a valid graph name.
+      this.graphNameClasses = ['form-control is-valid']
+      return true
     },
     validateFiles () {
       if (this.upload.files !== null && this.upload.files.length > 0) {
