@@ -495,7 +495,7 @@ class ParserRDFXML_SAX
         // Gathering characters for an object lexical form, then encountering a start element
         // which is a resource. This is the only case of lookahead in the RDF/XML grammar.
         switch (parserMode) {
-            case ObjectLex:
+            case ObjectLex -> {
                 // While processing ObjectLex, we found a startElement.
                 // The "ObjectLex" decision needs updating. This is a  ParserMode.NodeElement.
                 // This is not parseType=Resource.
@@ -506,15 +506,16 @@ class ParserRDFXML_SAX
                 // Leave in parserMode=ObjectLex
                 pushParserFrame(ParserMode.NodeElement);
                 processBaseAndLang(attributes, position);
-                break;
-            default:
+            }
+            default -> {
                 // For everything else.
                 pushParserFrame();
                 processBaseAndLang(attributes, position);
+            }
         }
 
         switch (parserMode) {
-            case TOP:
+            case TOP -> {
                 // Document element: Either a one element fragment or rdf:RDF
                 // rdf:RDF => nodeElementList
                 // nodeElementList = ws* (nodeElement ws* )* or nodeElement
@@ -526,28 +527,24 @@ class ParserRDFXML_SAX
                 }
                 // The top element can be a single nodeElement.
                 startNodeElement(namespaceURI, localName, qName, attributes, position);
-                break;
-            case NodeElement:
+            }
+            case NodeElement ->
                 startNodeElement(namespaceURI, localName, qName, attributes, position);
-                break;
-            case PropertyElement:
+            case PropertyElement ->
                 startPropertyElement(namespaceURI, localName, qName, attributes, position);
-                break;
-            case ObjectLex:
+            case ObjectLex -> {
                 // Finish ObjectLex. Generate the triple.
                 Node innerSubject = attributesToSubjectNode(attributes, position);
                 currentEmitter.emit(currentSubject, currentProperty, innerSubject, position);
                 // This is an rdf:Description or a typed node element.
                 startNodeElementWithSubject(innerSubject, namespaceURI, localName, qName, attributes, position);
-                break;
-            case ObjectParseTypeLiteral:
+            }
+            case ObjectParseTypeLiteral ->
                 // Handled on entry.
                 throw RDFXMLparseError("Unexpected parserMode " + parserMode, position);
-            case ObjectParseTypeCollection:
+            case ObjectParseTypeCollection ->
                 startCollectionItem(namespaceURI, localName, qName, attributes, position);
-                break;
-            default:
-                break;
+            default -> {}
         }
         incElementDepth();
     }
@@ -583,28 +580,23 @@ class ParserRDFXML_SAX
         }
 
         switch (parserMode) {
-            case NodeElement:
-                endNodeElement(position);
-                break;
-            case PropertyElement:
+            case NodeElement ->
+                    endNodeElement(position);
+            case PropertyElement -> {
                 if ( isEndNodeElement() )
                     // Possible next property but it's a node element so no property
                     // and it's end of node, with two "end property" tags seen in a row.
                     endNodeElement(position);
                 else
                     endPropertyElement(position);
-                // How to tell this is end of the properties?
-                break;
-            case ObjectLex:
+            }
+            case ObjectLex ->
                 endObjectLexical(position);
-                break;
-            case ObjectParseTypeLiteral:
+            case ObjectParseTypeLiteral ->
                 endObjectXMLLiteral(position);
-                break;
-            case ObjectParseTypeCollection:
+            case ObjectParseTypeCollection ->
                 endCollectionItem(position);
-                break;
-            default:
+            default ->
                 throw RDFXMLparseError("Inconsistent parserMode:" + parserMode, position);
         }
 
@@ -772,12 +764,12 @@ class ParserRDFXML_SAX
         ObjectParseType objectParseType = objectParseType(parseTypeStr, position);
 
         switch (objectParseType) {
-            case Plain:
+            case Plain -> {
                 parserMode(ParserMode.ObjectLex);
                 accCharacters.setLength(0);
                 // This may turn into a resource object if a startTag is encountered next.
-                break;
-            case Resource:
+            }
+            case Resource -> {
                 // Change of subject to a blank node subject.
                 Node nested = blankNode(position);
                 if ( ReaderRDFXML_SAX.TRACE )
@@ -796,14 +788,14 @@ class ParserRDFXML_SAX
                 // ... expect a property element start or an end element.
                 parserMode(ParserMode.PropertyElement);
                 // There is nothing else special to do other than the implicit pop.
-                break;
-            case Literal:
+            }
+            case Literal -> {
                 startXMLLiteral(position);
-                break;
-            case Collection:
+            }
+            case Collection -> {
                 parserMode(ParserMode.ObjectParseTypeCollection);
                 collectionNode = new NodeHolder();
-                break;
+            }
         }
     }
 
@@ -1137,27 +1129,26 @@ class ParserRDFXML_SAX
         }
 
         switch (parserMode) {
-            case ObjectLex:
+            case ObjectLex -> {
                 accCharacters.append(ch, start, length);
                 return;
-            case ObjectParseTypeLiteral:
+            }
+            case ObjectParseTypeLiteral -> {
                 // Dealt with above.
                 return;
+            }
             // Allow whitespace only
-            case ObjectParserTypeResource:
-            case NodeElement:
-            case PropertyElement:
-            case ObjectParseTypeCollection:
+            case ObjectParserTypeResource, NodeElement, PropertyElement, ObjectParseTypeCollection -> {
                 if ( !isWhitespace(ch, start, length) )
                     throw RDFXMLparseError("Non-whitespace text content between element tags: "
                                                              + nonWhitespaceForMsg(ch, start, length), position());
-                break;
-            case TOP:
+            }
+            case TOP -> {
                 if ( !isWhitespace(ch, start, length) ) {
                     throw RDFXMLparseError("Non-whitespace text content outside element tags: "
                                                              + nonWhitespaceForMsg(ch, start, length), position());
                 }
-                break;
+            }
         }
     }
 
