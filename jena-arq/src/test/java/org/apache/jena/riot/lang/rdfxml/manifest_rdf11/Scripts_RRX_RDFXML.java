@@ -24,6 +24,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * Run all the parsers on the rdf-test CG RDF/XML manifest files (RDF 1.1).
+ * Files in "testing/RIOT/rdf11-xml/".
  */
 @RunWith(Suite.class)
 @SuiteClasses( {
@@ -32,7 +33,7 @@ import org.junit.runners.Suite.SuiteClasses;
     TestManifest_RDF11_ARP1.class,
     TestManifest_RDF11_RRX_SAX.class,
     TestManifest_RDF11_RRX_StAXsr.class,
-    TestManifest_RDF_RRX_StAXev.class
+    TestManifest_RDF11_RRX_StAXev.class
 })
 
 public class Scripts_RRX_RDFXML {}

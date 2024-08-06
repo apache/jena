@@ -38,5 +38,4 @@ public class SysRRX {
         xmlInputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
         return xmlInputFactory;
     }
-
 }
