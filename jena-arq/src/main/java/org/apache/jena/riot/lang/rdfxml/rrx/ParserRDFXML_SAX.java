@@ -28,6 +28,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.EscapeStr;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.graph.Node;
@@ -235,13 +236,18 @@ class ParserRDFXML_SAX
         ObjectLex,
 
         // The node implied by rdf:parseType=Resource
-        ObjectParserTypeResource,
+        ObjectParseTypeResource,
 
         // The object is rdf:parseType=Literal. Collecting characters of a RDF XML Literal
         ObjectParseTypeLiteral,
 
         // The object is rdf:parseType=Collection (RDF List)
-        ObjectParseTypeCollection
+        ObjectParseTypeCollection,
+
+        // The object is a nested element.
+        // Unlike NodeElement, there is only one ObjectNode inside one property.
+        // ObjectLex becomes ObjectNode if a startElement is found.
+        ObjectNode
     }
 
     /** Integer holder for rdf:li */
@@ -314,7 +320,7 @@ class ParserRDFXML_SAX
         // If this frame is ParserMode.ObjectResource , then it is an implicit frame
         // inserted for the implied node. Pop the stack again to balance the push of
         // the implicit node element.
-        if ( parserMode == ParserMode.ObjectParserTypeResource ) {
+        if ( parserMode == ParserMode.ObjectParseTypeResource ) {
             popParserFrame();
             decIndent();
         }
@@ -485,6 +491,7 @@ class ParserRDFXML_SAX
             }
             trace.printf(") mode = %s\n", parserMode);
         }
+
         incIndent();
         Position position = position();
 
@@ -497,15 +504,19 @@ class ParserRDFXML_SAX
         switch (parserMode) {
             case ObjectLex -> {
                 // While processing ObjectLex, we found a startElement.
-                // The "ObjectLex" decision needs updating. This is a  ParserMode.NodeElement.
+                // The "ObjectLex" decision needs updating. This is a ParserMode.NodeElement.
                 // This is not parseType=Resource.
                 if ( !isWhitespace(accCharacters) )
                     throw RDFXMLparseError("XML content before nested element", position);
                 accCharacters.setLength(0);
-                // Declare that the containing frame is expecting a node element mode.
-                // Leave in parserMode=ObjectLex
-                pushParserFrame(ParserMode.NodeElement);
+                // Declare that the containing frame is expecting a node element as the object.
+                // There can be only one object.
+                pushParserFrame(ParserMode.ObjectNode);
                 processBaseAndLang(attributes, position);
+            }
+            case ObjectNode -> {
+                // Already in ObjectNode so a second statrtElement is an error.
+                throw RDFXMLparseError("Start tag after inner node element (only one node element permitted): got "+qName, position);
             }
             default -> {
                 // For everything else.
@@ -528,7 +539,7 @@ class ParserRDFXML_SAX
                 // The top element can be a single nodeElement.
                 startNodeElement(namespaceURI, localName, qName, attributes, position);
             }
-            case NodeElement ->
+            case NodeElement, ObjectNode ->
                 startNodeElement(namespaceURI, localName, qName, attributes, position);
             case PropertyElement ->
                 startPropertyElement(namespaceURI, localName, qName, attributes, position);
@@ -574,30 +585,33 @@ class ParserRDFXML_SAX
                 return;
             }
             endXMLLiteral(position);
-            if ( ReaderRDFXML_SAX.TRACE )
-                trace.printf("**** End XML Literal[%s]: elementDepth=%d / xmlLiteralStartDepth=%s\n", qName, elementDepth, xmlLiteralStartDepth);
             // Keep going to finish the end tag.
         }
 
         switch (parserMode) {
-            case NodeElement ->
-                    endNodeElement(position);
+            case NodeElement, ObjectNode ->
+                endNodeElement(position);
             case PropertyElement -> {
                 if ( isEndNodeElement() )
                     // Possible next property but it's a node element so no property
-                    // and it's end of node, with two "end property" tags seen in a row.
+                    // and it is end of node, with two "end property" tags seen in a row.
+                    // This occurs for
+                    //   <rdf:Description> and no properties *maybe some attribute properties.
+                    //   <Class></Class>
                     endNodeElement(position);
                 else
                     endPropertyElement(position);
             }
-            case ObjectLex ->
+            case ObjectLex -> {
                 endObjectLexical(position);
-            case ObjectParseTypeLiteral ->
+            }
+            case ObjectParseTypeLiteral -> {
                 endObjectXMLLiteral(position);
-            case ObjectParseTypeCollection ->
+            }
+            case ObjectParseTypeCollection -> {
                 endCollectionItem(position);
-            default ->
-                throw RDFXMLparseError("Inconsistent parserMode:" + parserMode, position);
+            }
+            default -> throw RDFXMLparseError("Inconsistent parserMode:" + parserMode, position);
         }
 
         popParserFrame();
@@ -783,7 +797,7 @@ class ParserRDFXML_SAX
                 // Push a frame here as an implicit node frame because the subject is changing.
                 // The companion "end frame" is handled in "popParserFrame" which
                 // checks for parserMode=ImplicitNode
-                parserMode(ParserMode.ObjectParserTypeResource);
+                parserMode(ParserMode.ObjectParseTypeResource);
                 pushParserFrame();
                 // ... expect a property element start or an end element.
                 parserMode(ParserMode.PropertyElement);
@@ -808,12 +822,12 @@ class ParserRDFXML_SAX
         return currentProperty == null;
     }
 
-    //    private String xmlBaseStr(Attributes attributes, Position position) {
-    //        String baseStr = attributes.getValue(xmlNS, xmlBaseLN);
-    //        if ( baseStr == null )
-    //            return null;
-    //        return IRIs.resolve(currentBase, baseStr);
-    //    }
+//    private String xmlBaseStr(Attributes attributes, Position position) {
+//        String baseStr = attributes.getValue(xmlNS, xmlBaseLN);
+//        if ( baseStr == null )
+//            return null;
+//        return IRIs.resolve(currentBase, baseStr);
+//    }
 
         // Start element encountered when expecting a ObjectCollection
         private void startCollectionItem(String namespaceURI, String localName, String qName, Attributes attributes, Position position) {
@@ -958,8 +972,9 @@ class ParserRDFXML_SAX
         String qName = attributes.getQName(index);
 
         if ( namespace == null || namespace.isEmpty() ) {
-            if ( outputWarnings ) {
-                // In SAX, xmlns: is a qname, but namespace and local name are "".
+            // In SAX, xmlns: is qname, but namespace and local name are "".
+            //RDFXMLparseError("XML attribute '"+qName+"' used for RDF property attribute (no namespace)", position);
+            if ( outputWarnings ){
                 if ( ! localName.isEmpty() )    // Skip XML namespace declarations.
                     RDFXMLparseWarning("XML attribute '"+qName+"' used for RDF property attribute - ignored", position);
             }
@@ -1040,6 +1055,7 @@ class ParserRDFXML_SAX
             return ObjectParseType.Plain;
         try {
             String parseTypeName = parseTypeStr;
+            // Extensions - some names that appear in the wild
             switch(parseTypeName) {
                 case "literal" -> {
                     RDFXMLparseWarning("Encountered rdf:parseType='literal'. Treated as rdf:parseType='Literal'", position);
@@ -1138,29 +1154,42 @@ class ParserRDFXML_SAX
                 return;
             }
             // Allow whitespace only
-            case ObjectParserTypeResource, NodeElement, PropertyElement, ObjectParseTypeCollection -> {
-                if ( !isWhitespace(ch, start, length) )
-                    throw RDFXMLparseError("Non-whitespace text content between element tags: "
-                                                             + nonWhitespaceForMsg(ch, start, length), position());
+            case NodeElement, PropertyElement, ObjectParseTypeResource, ObjectParseTypeCollection, ObjectNode -> {
+                if ( !isWhitespace(ch, start, length) ) {
+                    String text = nonWhitespaceMsg(ch, start, length);
+                    throw RDFXMLparseError("Non-whitespace text content between element tags: '"+text+"'", position());
+                }
             }
             case TOP -> {
                 if ( !isWhitespace(ch, start, length) ) {
-                    throw RDFXMLparseError("Non-whitespace text content outside element tags: "
-                                                             + nonWhitespaceForMsg(ch, start, length), position());
+                    String text = nonWhitespaceMsg(ch, start, length);
+                    throw RDFXMLparseError("Non-whitespace text content outside element tags: '"+text+"'", position());
                 }
             }
         }
     }
 
     /** The string for the first non-whitespace index. */
-    private static String nonWhitespaceForMsg(char[] ch, int start, int length) {
+    private static String nonWhitespaceMsg(char[] ch, int start, int length) {
+        final int MaxLen = 10; // Short - this is for error messages
+        // Find the start of non-whitespace.
+        // Slice, truncate if necessary.
+        // Make safe.
         for ( int i = start ; i < start + length ; i++ ) {
             if ( !Character.isWhitespace(ch[i]) ) {
-                int len = Math.min(20, start - i);
-                return new String(ch, i, len);
+                // Slight overshoot
+                int remaindingLength = length - (i-start);
+                int len = Math.min(MaxLen, remaindingLength);
+                String x = new String(ch, i, len);
+                if ( remaindingLength > MaxLen )
+                    x = x+"...";
+                // Escape characters, especially newlines and backspaces.
+                x = EscapeStr.stringEsc(x);
+                x = x.stripTrailing();
+                return x;
             }
         }
-        throw new RDFXMLParseException("Failed to find any non-whitespace characters");
+        throw new RDFXMLParseException("Internal error: Failed to find any non-whitespace characters");
     }
 
     @Override
