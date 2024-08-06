@@ -428,12 +428,16 @@ class Unparser {
      * propName '>'
      */
     private boolean wPropertyEltLiteral(WType wt, Property prop, Statement statement, RDFNode rdfNode) {
+        // Is the rule blocked?
         if (prettyWriter.sParseTypeLiteralPropertyElt)
             return false;
         if ( ! (rdfNode instanceof Literal lit) )
             return false;
-
         if (! XMLLiteralType.isXMLLiteral(lit.getDatatype()) )
+            return false;
+        // Must be a legal XML fragment.
+        // It must be valid XML and also self-contained XML content (e.g. includes namespaces - they are not inherited from the model).
+        if ( ! lit.asNode().getLiteral().isWellFormed() )
             return false;
 
         // print out.
