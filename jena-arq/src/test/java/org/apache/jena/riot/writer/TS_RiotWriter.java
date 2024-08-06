@@ -24,14 +24,15 @@ import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
 @SuiteClasses(
-{ 
+{
     TestWriterRegistration.class
     , TestRiotWriterGraph.class
     , TestRiotWriterDataset.class
     , TestRDFJSON.class
     , TestTurtleWriter.class
     , TestTriXWriter.class
-    , TestRDFXML_WriterProperties.class
+    , TestWriterRDFXML.class
+    , TestWriterRDFXML_Properties.class
 })
 
 public class TS_RiotWriter

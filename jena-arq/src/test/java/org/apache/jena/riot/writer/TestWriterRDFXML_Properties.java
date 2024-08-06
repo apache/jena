@@ -31,7 +31,7 @@ import org.junit.Assert ;
 import org.junit.Test ;
 
 /** Tests of the RDF/XML writers used via RIOT */
-public class TestRDFXML_WriterProperties {
+public class TestWriterRDFXML_Properties {
 
     static Model model = ModelFactory.createDefaultModel() ;
     static {
