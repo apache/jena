@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.engine.join;
 
+import java.util.Iterator;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -25,7 +27,7 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 /** Internal operations in support of join algorithms. */
 class JoinLib {
 
-    /** Control stats output / development use */ 
+    /** Control stats output / development use */
     static final boolean JOIN_EXPLAIN = false;
 
     // No hash key marker.
@@ -41,11 +43,16 @@ class JoinLib {
         return h;
     }
 
-    public static Object hash(JoinKey joinKey, Binding row) {
+    public static Object hash(Iterable<Var> joinKey, Binding row) {
+        return hash(joinKey.iterator(), row);
+    }
+
+    public static Object hash(Iterator<Var> vars, Binding row) {
           long x = 31 ;
-          boolean seenJoinKeyVar = false ; 
+          boolean seenJoinKeyVar = false ;
           // Neutral to order in the set.
-          for ( Var v : joinKey ) {
+          while (vars.hasNext()) {
+              Var v = vars.next();
               Node value = row.get(v) ;
               long h = nullHashCode ;
               if ( value != null ) {
@@ -54,7 +61,7 @@ class JoinLib {
               } else {
                   // In join key, not in row.
               }
-                  
+
               x = x ^ h ;
           }
           if ( ! seenJoinKeyVar )

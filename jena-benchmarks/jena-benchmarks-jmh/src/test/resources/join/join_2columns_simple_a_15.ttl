@@ -1,0 +1,28 @@
+PREFIX : <http://www.example.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+:join_2columns_simple_a_15
+  rdfs:label "join_2columns_simple_a_15" ;
+  :expectedResultSetSize 50625 ;
+  :queryString
+"""
+SELECT * {
+  { SELECT  ?X ?Y {
+    VALUES ?X_i { 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 }
+    VALUES ?X_j { 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 }
+    BIND((?X_i + (15 * ?X_j)) AS ?X)
+    VALUES ?Y_i { 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 }
+    VALUES ?Y_j { 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 }
+    BIND((?Y_i + (15 * ?Y_j)) AS ?Y)
+  } }
+  { SELECT  ?X ?Y {
+    VALUES ?X_i { 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 }
+    VALUES ?X_j { 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 }
+    BIND((?X_i + (15 * ?X_j)) AS ?X)
+    VALUES ?Y_i { 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 }
+    VALUES ?Y_j { 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 }
+    BIND((?Y_i + (15 * ?Y_j)) AS ?Y)
+  } }
+}
+""" ;
+.
