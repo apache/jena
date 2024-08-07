@@ -1,0 +1,14 @@
+{ "head": {
+    "vars": [ "elmt" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "elmt": { "type": "uri" , "value": "http://example/1" }
+      },
+      { 
+        "elmt": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "1" }
+      }
+    ]
+  }
+}

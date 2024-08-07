@@ -1,0 +1,17 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	BIND( BNODE() AS ?bnode )
+	BIND( cdt:Map(1,2, 3,?bnode) AS ?map )
+
+	FILTER( BOUND(?map) )    # check that there was no error
+	FILTER( cdt:size(?map) = 2 )
+
+	FILTER( cdt:get(?map,1) = 2 )
+
+	FILTER( cdt:containsKey(?map,3) )
+	BIND( cdt:get(?map,3) AS ?v2 )
+	FILTER( isBlank(?v2) )
+	FILTER( SAMETERM(?v2, ?bnode) )
+}

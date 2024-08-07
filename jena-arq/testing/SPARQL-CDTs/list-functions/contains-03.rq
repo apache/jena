@@ -1,0 +1,22 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+# contains equality
+ASK {
+	BIND("[1,'a','b'@en,2.0]"^^cdt:List AS ?list)
+
+	# numeric forms
+	FILTER(cdt:contains(?list, 1))
+	FILTER(cdt:contains(?list, "+1"^^xsd:integer))
+	FILTER(cdt:contains(?list, "01"^^xsd:integer))
+	FILTER(cdt:contains(?list, 1.0))
+	FILTER(cdt:contains(?list, 1.0))
+	FILTER(cdt:contains(?list, 1e0))
+	FILTER(cdt:contains(?list, 2))
+	FILTER(cdt:contains(?list, 2.0))
+	FILTER(cdt:contains(?list, 2e0))
+	
+	# string forms
+	FILTER(cdt:contains(?list, 'a'))
+	FILTER(cdt:contains(?list, 'b'@en))
+	FILTER(!cdt:contains(?list, 'b'))
+}

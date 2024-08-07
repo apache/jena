@@ -1,0 +1,11 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+# list with mixed defined and undefined types
+ASK {
+	BIND("[_:b]"^^cdt:List AS ?list)
+	BIND(cdt:head(?list) AS ?head)
+	BIND(cdt:head(?list) AS ?headAgain)
+	FILTER(isBLANK(?head))
+	FILTER(isBLANK(?headAgain))
+	FILTER(SAMETERM(?head, ?headAgain))
+}

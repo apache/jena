@@ -1,0 +1,8 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+ASK {
+	BIND( "{ 1 }"^^cdt:Map AS ?mapIn )  # a cdt:Map literal that is not well-formed
+	BIND( cdt:put(?mapIn, 1, "one") AS ?mapOut )
+
+	FILTER( ! BOUND(?mapOut) )
+}

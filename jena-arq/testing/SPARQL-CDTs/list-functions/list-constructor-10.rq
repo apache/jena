@@ -1,0 +1,8 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+
+# list with nested list with one integer
+ASK {
+	BIND(cdt:List(cdt:List(1)) AS ?list)
+	FILTER(?list = "[[1]]"^^cdt:List)
+}

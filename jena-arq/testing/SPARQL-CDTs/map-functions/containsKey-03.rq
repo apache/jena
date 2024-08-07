@@ -1,0 +1,11 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+# 2-entry map
+ASK {
+	BIND("{1: 'one', 2: 'two'}"^^cdt:Map AS ?map)
+	FILTER(cdt:containsKey(?map, 1))
+	FILTER(cdt:containsKey(?map, 2))
+
+	FILTER(!cdt:containsKey(?map, 'one'))
+	FILTER(!cdt:containsKey(?map, 'two'))
+}

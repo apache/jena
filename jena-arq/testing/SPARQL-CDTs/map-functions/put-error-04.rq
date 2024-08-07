@@ -1,0 +1,8 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+ASK {
+	BIND( "{}"^^cdt:Map AS ?mapIn )
+	BIND( cdt:put(?mapIn, ?unbound, "one") AS ?mapOut ) # unbound map key
+
+	FILTER( ! BOUND(?mapOut) )
+}

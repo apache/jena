@@ -1,0 +1,8 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+
+# list with two mixed types
+ASK {
+	BIND(cdt:List("a", 1) AS ?list)
+	FILTER(?list = "['a', 1]"^^cdt:List)
+}

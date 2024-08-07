@@ -1,0 +1,13 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX ex:     <http://example.org/>
+
+ASK {
+	BIND( "{ '1': _:b, '2': 42 }"^^cdt:Map AS ?map )
+	ex:s ex:p ?bn .
+
+	BIND( cdt:get(?map,'1') AS ?e1 )
+
+	FILTER( isBLANK(?e1) )
+	FILTER( isBLANK(?bn) )
+	FILTER( ?e1 != ?bn )
+}

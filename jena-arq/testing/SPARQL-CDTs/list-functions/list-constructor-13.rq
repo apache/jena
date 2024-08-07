@@ -1,0 +1,9 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+
+# rdf literal syntax
+ASK {
+	BIND(cdt:List() AS ?list)
+	BIND("[]"^^cdt:List AS ?expected)
+	FILTER(?list = ?expected)
+}

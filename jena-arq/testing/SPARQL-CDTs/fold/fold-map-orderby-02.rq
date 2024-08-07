@@ -1,0 +1,16 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+ASK {
+	{
+		SELECT (FOLD(?k, ?v ORDER BY DESC(?sort)) AS ?map)
+		WHERE {
+			VALUES (?k ?v ?sort) {
+				(1 100  "irrelevant")
+				(2 201  1)
+				(2 203  3)
+				(2 202  2)
+			}
+		}
+	}
+	FILTER( ?map = "{1:100, 2:201}"^^cdt:Map )
+}

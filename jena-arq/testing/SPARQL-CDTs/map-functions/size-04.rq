@@ -1,0 +1,7 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+# 2-entry map, mixed types
+ASK {
+	BIND("{1: 'one', 'hello'@en: 2.5}"^^cdt:Map AS ?map)
+	FILTER(cdt:size(?map) = 2)
+}

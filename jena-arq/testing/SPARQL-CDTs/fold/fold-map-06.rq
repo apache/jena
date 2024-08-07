@@ -1,0 +1,15 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+ASK {
+	{
+		SELECT (FOLD(?k, ?v) AS ?map)
+		WHERE {
+			VALUES (?k ?v) {
+				(1 100)
+				(2 201)
+				(2 202)
+			}
+		}
+	}
+	FILTER( (?map = "{1:100, 2:201}"^^cdt:Map) || (?map = "{1:100, 2:202}"^^cdt:Map) )
+}

@@ -1,0 +1,16 @@
+{ "head": {
+    "vars": [ "k", "v" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "k": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "1" },
+        "v": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "3" }
+      },
+      { 
+        "k": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "2" },
+        "v": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "4" }
+      }
+    ]
+  }
+}

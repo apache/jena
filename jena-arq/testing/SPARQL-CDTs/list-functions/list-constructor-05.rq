@@ -1,0 +1,8 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+
+# list with two strings
+ASK {
+	BIND(cdt:List("a", "b") AS ?list)
+	FILTER(?list = "['a', 'b']"^^cdt:List)
+}

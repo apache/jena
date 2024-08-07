@@ -1,0 +1,11 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+ASK {
+	BIND( "{1:'one',2:'two'}"^^cdt:Map AS ?mapIn )
+	BIND( cdt:remove(?mapIn, BNODE()) AS ?mapOut )  # special case because a bnode is not a map key
+
+	FILTER( BOUND(?mapOut) )    # check that there was no error
+	FILTER( SAMETERM(?mapIn,?mapOut) )    # by definition of this special case,
+	                                      # the input term must be returned
+	                                      # (input and output must be the same term)
+}

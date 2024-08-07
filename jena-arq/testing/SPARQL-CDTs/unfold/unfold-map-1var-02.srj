@@ -1,0 +1,14 @@
+{ "head": {
+    "vars": [ "k" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "k": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "1" }
+      },
+      { 
+        "k": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#boolean" , "value": "true" }
+      }
+    ]
+  }
+}

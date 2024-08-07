@@ -1,0 +1,22 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	{
+		SELECT (FOLD(DISTINCT ?v) AS ?list)
+		WHERE {
+			VALUES ?v { "1"^^xsd:integer "01"^^xsd:integer "1"^^xsd:integer "01"^^xsd:integer }
+		}
+	}
+
+	FILTER( cdt:size(?list) = 2 )
+
+	BIND( cdt:get(?list, 1) AS ?e1 )
+	BIND( cdt:get(?list, 2) AS ?e2 )
+
+	FILTER(
+	    ( SAMETERM(?e1,"1"^^xsd:integer) && SAMETERM(?e2,"01"^^xsd:integer) )
+	    ||
+	    ( SAMETERM(?e2,"1"^^xsd:integer) && SAMETERM(?e1,"01"^^xsd:integer) )
+	)
+}

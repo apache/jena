@@ -1,0 +1,14 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	BIND( "{1: null}"^^cdt:Map AS ?map1 )
+	BIND( "{1: 'one'}"^^cdt:Map AS ?map2 )
+	BIND( cdt:merge(?map1, ?map2) AS ?merged )
+
+	FILTER( cdt:size(?merged) = 1 )
+
+	FILTER( cdt:containsKey(?merged,1) )
+	BIND( cdt:get(?merged,1) AS ?x )
+	FILTER( ! BOUND(?x) )
+}

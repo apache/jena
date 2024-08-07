@@ -28,8 +28,11 @@ import java.util.Objects;
 import javax.xml.datatype.Duration;
 
 import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.cdt.CompositeDatatypeList;
+import org.apache.jena.cdt.CompositeDatatypeMap;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
@@ -144,6 +147,17 @@ public class NodeValueCmp {
                     raise(new ExprEvalException("Incompatible: " + nv1 + " and " + nv2));
                 // Not same node.
                 return false;
+
+            case VSPACE_CDT_LIST : {
+                final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
+                final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
+                return CompositeDatatypeList.type.isEqual(lit1, lit2) ;
+            }
+            case VSPACE_CDT_MAP : {
+                final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
+                final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
+                return CompositeDatatypeMap.type.isEqual(lit1, lit2) ;
+            }
         }
 
         throw new ARQInternalErrorException("sameValueAs failure " + nv1 + " and " + nv2);
@@ -204,13 +218,16 @@ public class NodeValueCmp {
         if ( nv2 == null )
             return CMP_GREATER;
 
-        if ( nv1.hasNode() && nv2.hasNode() ) {
+        ValueSpace compType = classifyValueOp(nv1, nv2) ;
+
+        if ( nv1.hasNode()
+             && nv2.hasNode()
+             && compType != ValueSpace.VSPACE_CDT_LIST
+             && compType != ValueSpace.VSPACE_CDT_MAP ) {
             // Fast path - same RDF term => CMP_EQUAL
             if ( nv1.getNode().equals(nv2.getNode()) )
                 return CMP_EQUAL;
         }
-
-        ValueSpace compType = classifyValueOp(nv1, nv2) ;
 
         // Special case - date/dateTime comparison is affected by timezones and may be
         // indeterminate based on the value of the dateTime/date.
@@ -349,6 +366,28 @@ public class NodeValueCmp {
                 raise(new ExprNotComparableException("Can't compare valiables as values "+nv1+" and "+nv2)) ;
             }
 
+            case VSPACE_CDT_LIST : {
+                final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
+                final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
+                try {
+                    return CompositeDatatypeList.compare(lit1, lit2, sortOrderingCompare) ;
+                }
+                catch( final ExprNotComparableException e ) {
+                    raise(e) ;
+                }
+            }
+
+            case VSPACE_CDT_MAP : {
+                final LiteralLabel lit1 = nv1.asNode().getLiteral() ;
+                final LiteralLabel lit2 = nv2.asNode().getLiteral() ;
+                try {
+                    return CompositeDatatypeMap.compare(lit1, lit2, sortOrderingCompare) ;
+                }
+                catch( final ExprNotComparableException e ) {
+                    raise(e) ;
+                }
+            }
+
             case VSPACE_UNKNOWN : {
                 // One or two unknown value spaces.
                 Node node1 = nv1.asNode() ;
@@ -425,6 +464,18 @@ public class NodeValueCmp {
             if ( vs2 != ValueSpace.VSPACE_UNKNOWN )
                 return CMP_GREATER;
             return NodeCmp$compareRDFTerms(nv1, nv2);
+        }
+
+        if ( vs1 == ValueSpace.VSPACE_CDT_LIST && vs2 == ValueSpace.VSPACE_CDT_LIST ) {
+            LiteralLabel l1 = nv1.asNode().getLiteral();
+            LiteralLabel l2 = nv2.asNode().getLiteral();
+            return CompositeDatatypeList.compare(l1, l2, true);
+        }
+
+        if ( vs1 == ValueSpace.VSPACE_CDT_MAP && vs2 == ValueSpace.VSPACE_CDT_MAP ) {
+            LiteralLabel l1 = nv1.asNode().getLiteral();
+            LiteralLabel l2 = nv2.asNode().getLiteral();
+            return CompositeDatatypeMap.compare(l1, l2, true);
         }
 
         // XXX G and Date cases.

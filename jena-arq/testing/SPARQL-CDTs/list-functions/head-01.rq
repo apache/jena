@@ -1,0 +1,8 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+# empty list
+ASK {
+	BIND("[]"^^cdt:List AS ?list)
+	BIND(cdt:head(?list) AS ?head)
+	FILTER(!BOUND(?head))
+}

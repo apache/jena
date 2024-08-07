@@ -1,0 +1,749 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <manifest#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix sparql:  <http://www.w3.org/ns/sparql#> .
+@prefix cdt:     <http://w3id.org/awslabs/neptune/SPARQL-CDTs/> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Handling of blank nodes in CDT literals" ;
+    mf:entries
+    (
+		:bnodes-turtle-01
+		:bnodes-turtle-02
+		:bnodes-turtle-03
+		:bnodes-turtle-04
+		:bnodes-turtle-05
+		:bnodes-turtle-06
+		:bnodes-turtle-07
+		:bnodes-turtle-08
+		:bnodes-turtle-09
+		:bnodes-turtle-10
+		:bnodes-turtle-11
+		:bnodes-turtle-12
+		:bnodes-turtle-13
+		:bnodes-turtle-14
+		:bnodes-turtle-15
+		:bnodes-turtle-16
+		:bnodes-turtle-17
+		:bnodes-turtle-18
+		:bnodes-turtle-19
+
+		:bnodes-turtle-21
+		:bnodes-turtle-22
+		:bnodes-turtle-23
+		:bnodes-turtle-24
+		:bnodes-turtle-25
+		:bnodes-turtle-26
+		:bnodes-turtle-27
+		:bnodes-turtle-28
+		:bnodes-turtle-29
+		:bnodes-turtle-30
+		:bnodes-turtle-31
+		:bnodes-turtle-32
+
+		:bnodes-turtle-41
+		:bnodes-turtle-42
+		:bnodes-turtle-43
+		:bnodes-turtle-44
+		:bnodes-turtle-45
+		:bnodes-turtle-46
+		:bnodes-turtle-47
+		:bnodes-turtle-48
+		:bnodes-turtle-49
+		:bnodes-turtle-50
+		:bnodes-turtle-51
+		:bnodes-turtle-52
+
+		:bnodes-sparql-01
+		:bnodes-sparql-02
+		:bnodes-sparql-03
+		:bnodes-sparql-04
+		:bnodes-sparql-05
+		:bnodes-sparql-06
+		:bnodes-sparql-07
+		:bnodes-sparql-08
+		:bnodes-sparql-09
+
+		:bnodes-sparql-11
+		:bnodes-sparql-12
+		:bnodes-sparql-13
+		:bnodes-sparql-14
+		:bnodes-sparql-15
+		:bnodes-sparql-16
+		:bnodes-sparql-17
+		:bnodes-sparql-18
+
+		:bnodes-sparql-21
+		:bnodes-sparql-22
+		:bnodes-sparql-23
+		:bnodes-sparql-24
+		:bnodes-sparql-25
+		:bnodes-sparql-26
+		:bnodes-sparql-27
+		:bnodes-sparql-28
+
+		:bnodes-turtle-sparql-01
+		:bnodes-turtle-sparql-02
+		:bnodes-turtle-sparql-03
+		:bnodes-turtle-sparql-04
+    ) .
+
+:bnodes-turtle-01  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-01" ;
+    rdfs:comment    "same blank node identifier twice within a cdt:List literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-01.ttl> ;
+           qt:query  <bnodes-turtle-01.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-02  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-02" ;
+    rdfs:comment    "same blank node identifier twice within a cdt:Map literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-02.ttl> ;
+           qt:query  <bnodes-turtle-02.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-03  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-03" ;
+    rdfs:comment    "different blank node identifiers within a cdt:List literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-03.ttl> ;
+           qt:query  <bnodes-turtle-03.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-04  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-04" ;
+    rdfs:comment    "different blank node identifiers within a cdt:Map literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-04.ttl> ;
+           qt:query  <bnodes-turtle-04.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-05  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-05" ;
+    rdfs:comment    "same blank node identifier both within a cdt:List literal and outside of the literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-05.ttl> ;
+           qt:query  <bnodes-turtle-05.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-06  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-06" ;
+    rdfs:comment    "same blank node identifier both within a cdt:Map literal and outside of the literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-06.ttl> ;
+           qt:query  <bnodes-turtle-06.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-07  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-07" ;
+    rdfs:comment    "different blank node identifiers within a cdt:List literal and outside of the literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-07.ttl> ;
+           qt:query  <bnodes-turtle-07.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-08  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-08" ;
+    rdfs:comment    "different blank node identifiers within a cdt:Map literal and outside of the literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-08.ttl> ;
+           qt:query  <bnodes-turtle-08.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-09  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-09" ;
+    rdfs:comment    "same blank node identifier within two different cdt:List literals" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-09.ttl> ;
+           qt:query  <bnodes-turtle-09.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-10  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-10" ;
+    rdfs:comment    "same blank node identifier within two different cdt:Map literals" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-10.ttl> ;
+           qt:query  <bnodes-turtle-10.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-11  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-11" ;
+    rdfs:comment    "different blank node identifiers within two different cdt:List literals" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-11.ttl> ;
+           qt:query  <bnodes-turtle-11.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-12  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-12" ;
+    rdfs:comment    "different blank node identifiers within two different cdt:Map literals" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-12.ttl> ;
+           qt:query  <bnodes-turtle-12.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-13  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-13" ;
+    rdfs:comment    "same blank node identifier both within a cdt:List literal and a cdt:Map literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-13.ttl> ;
+           qt:query  <bnodes-turtle-13.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-14  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-14" ;
+    rdfs:comment    "different blank node identifiers within a cdt:List literal and a cdt:Map literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-14.ttl> ;
+           qt:query  <bnodes-turtle-14.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-15  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-15" ;
+    rdfs:comment    "same blank node identifier within cdt:List literals in two different files" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-15a.ttl> ,
+                     <bnodes-turtle-15b.ttl> ;
+           qt:query  <bnodes-turtle-15.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-16  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-16" ;
+    rdfs:comment    "same blank node identifier within cdt:Map literals in two different files" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-16a.ttl> ,
+                     <bnodes-turtle-16b.ttl> ;
+           qt:query  <bnodes-turtle-16.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-17  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-17" ;
+    rdfs:comment    "same blank node identifier within a cdt:List literal in one file and outside of literals in another file" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-17a.ttl> ,
+                     <bnodes-turtle-17b.ttl> ;
+           qt:query  <bnodes-turtle-17.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-18  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-18" ;
+    rdfs:comment    "same blank node identifier within a cdt:Map literal in one file and outside of literals in another file" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-18a.ttl> ,
+                     <bnodes-turtle-18b.ttl> ;
+           qt:query  <bnodes-turtle-18.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-19  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-19" ;
+    rdfs:comment    "same blank node identifier within a cdt:List literal in one file and within a cdt:Map literal in another file" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-19a.ttl> ,
+                     <bnodes-turtle-19b.ttl> ;
+           qt:query  <bnodes-turtle-19.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-21  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-21" ;
+    rdfs:comment    "same blank node identifier twice within a *nested* cdt:List literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-21.ttl> ;
+           qt:query  <bnodes-turtle-21.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-22  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-22" ;
+    rdfs:comment    "same blank node identifier twice within a *nested* cdt:Map literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-22.ttl> ;
+           qt:query  <bnodes-turtle-22.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-23  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-23" ;
+    rdfs:comment    "different blank node identifiers within a *nested* cdt:List literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-23.ttl> ;
+           qt:query  <bnodes-turtle-23.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-24  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-24" ;
+    rdfs:comment    "different blank node identifiers within a *nested* cdt:Map literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-24.ttl> ;
+           qt:query  <bnodes-turtle-24.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-25  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-25" ;
+    rdfs:comment    "same blank node identifier both within a *nested* cdt:List literal and outside of the literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-25.ttl> ;
+           qt:query  <bnodes-turtle-25.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-26  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-26" ;
+    rdfs:comment    "same blank node identifier both within a *nested* cdt:Map literal and outside of the literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-26.ttl> ;
+           qt:query  <bnodes-turtle-26.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-27  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-27" ;
+    rdfs:comment    "different blank node identifiers within a *nested* cdt:List literal and outside of the literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-27.ttl> ;
+           qt:query  <bnodes-turtle-27.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-28  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-28" ;
+    rdfs:comment    "different blank node identifiers within a *nested* cdt:Map literal and outside of the literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-28.ttl> ;
+           qt:query  <bnodes-turtle-28.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-29  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-29" ;
+    rdfs:comment    "same blank node identifier within two different cdt:List literals, where one of them is nested" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-29.ttl> ;
+           qt:query  <bnodes-turtle-29.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-30  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-30" ;
+    rdfs:comment    "same blank node identifier within two different cdt:Map literals, where one of them is nested" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-30.ttl> ;
+           qt:query  <bnodes-turtle-30.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-31  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-31" ;
+    rdfs:comment    "different blank node identifiers within two different cdt:List literals, where one of them is nested" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-31.ttl> ;
+           qt:query  <bnodes-turtle-31.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-32  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-32" ;
+    rdfs:comment    "different blank node identifiers within two different cdt:Map literals, where one of them is nested" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-32.ttl> ;
+           qt:query  <bnodes-turtle-32.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-41  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-41" ;
+    rdfs:comment    "same blank node identifier twice within a *nested* cdt:List literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-41.ttl> ;
+           qt:query  <bnodes-turtle-21.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-42  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-42" ;
+    rdfs:comment    "same blank node identifier twice within a *nested* cdt:Map literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-42.ttl> ;
+           qt:query  <bnodes-turtle-22.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-43  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-43" ;
+    rdfs:comment    "different blank node identifiers within a *nested* cdt:List literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-43.ttl> ;
+           qt:query  <bnodes-turtle-23.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-44  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-44" ;
+    rdfs:comment    "different blank node identifiers within a *nested* cdt:Map literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-44.ttl> ;
+           qt:query  <bnodes-turtle-24.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-45  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-45" ;
+    rdfs:comment    "same blank node identifier both within a *nested* cdt:List literal and outside of the literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-45.ttl> ;
+           qt:query  <bnodes-turtle-25.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-46  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-46" ;
+    rdfs:comment    "same blank node identifier both within a *nested* cdt:Map literal and outside of the literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-46.ttl> ;
+           qt:query  <bnodes-turtle-26.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-47  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-47" ;
+    rdfs:comment    "different blank node identifiers within a *nested* cdt:List literal and outside of the literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-47.ttl> ;
+           qt:query  <bnodes-turtle-27.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-48  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-48" ;
+    rdfs:comment    "different blank node identifiers within a *nested* cdt:Map literal and outside of the literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-48.ttl> ;
+           qt:query  <bnodes-turtle-28.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-49  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-49" ;
+    rdfs:comment    "same blank node identifier within two different cdt:List literals, where one of them is nested" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-49.ttl> ;
+           qt:query  <bnodes-turtle-29.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-50  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-50" ;
+    rdfs:comment    "same blank node identifier within two different cdt:Map literals, where one of them is nested" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-50.ttl> ;
+           qt:query  <bnodes-turtle-30.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-51  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-51" ;
+    rdfs:comment    "different blank node identifiers within two different cdt:List literals, where one of them is nested" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-51.ttl> ;
+           qt:query  <bnodes-turtle-31.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-52  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-52" ;
+    rdfs:comment    "different blank node identifiers within two different cdt:Map literals, where one of them is nested" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-52.ttl> ;
+           qt:query  <bnodes-turtle-32.rq> ] ;
+    mf:result  <true.srx> .
+
+
+
+:bnodes-sparql-01  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-01" ;
+    rdfs:comment    "same blank node identifier twice within a cdt:List literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-01.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-02  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-02" ;
+    rdfs:comment    "same blank node identifier twice within a cdt:Map literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-02.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-03  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-03" ;
+    rdfs:comment    "two different blank node identifiers within a cdt:List literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-03.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-04  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-04" ;
+    rdfs:comment    "two different blank node identifiers within a cdt:Map literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-04.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-05  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-05" ;
+    rdfs:comment    "same blank node identifier within two different cdt:List literals" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-05.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-06  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-06" ;
+    rdfs:comment    "same blank node identifier within two different cdt:Map literals" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-06.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-07  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-07" ;
+    rdfs:comment    "different blank node identifiers within two different cdt:List literals" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-07.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-08  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-08" ;
+    rdfs:comment    "different blank node identifiers within two different cdt:Map literals" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-08.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-09  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-09" ;
+    rdfs:comment    "same blank node identifier, once within a cdt:List literal and once within a cdt:Map literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-09.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-11  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-11" ;
+    rdfs:comment    "same blank node identifier twice within a *nested* cdt:List literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-11.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-12  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-12" ;
+    rdfs:comment    "same blank node identifier twice within a *nested* cdt:Map literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-12.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-13  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-13" ;
+    rdfs:comment    "two different blank node identifiers within a *nested* cdt:List literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-13.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-14  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-14" ;
+    rdfs:comment    "two different blank node identifiers within a *nested* cdt:Map literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-14.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-15  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-15" ;
+    rdfs:comment    "same blank node identifier within two different cdt:List literals, where one of them is a nested one" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-15.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-16  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-16" ;
+    rdfs:comment    "same blank node identifier within two different cdt:Map literals, where one of them is a nested one" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-16.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-17  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-17" ;
+    rdfs:comment    "different blank node identifiers within two different cdt:List literals, where one of them is a nested one" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-17.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-18  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-18" ;
+    rdfs:comment    "different blank node identifiers within two different cdt:Map literals, where one of them is a nested one" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-18.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-21  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-21" ;
+    rdfs:comment    "same blank node identifier twice within a *nested* cdt:List literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-21.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-22  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-22" ;
+    rdfs:comment    "same blank node identifier twice within a *nested* cdt:Map literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-22.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-23  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-23" ;
+    rdfs:comment    "two different blank node identifiers within a *nested* cdt:List literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-23.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-24  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-24" ;
+    rdfs:comment    "two different blank node identifiers within a *nested* cdt:Map literal" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-24.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-25  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-25" ;
+    rdfs:comment    "same blank node identifier within two different cdt:List literals, where one of them is a nested one" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-25.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-26  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-26" ;
+    rdfs:comment    "same blank node identifier within two different cdt:Map literals, where one of them is a nested one" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-26.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-27  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-27" ;
+    rdfs:comment    "different blank node identifiers within two different cdt:List literals, where one of them is a nested one" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-27.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-sparql-28  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-sparql-28" ;
+    rdfs:comment    "different blank node identifiers within two different cdt:Map literals, where one of them is a nested one" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <empty.ttl> ;
+           qt:query  <bnodes-sparql-28.rq> ] ;
+    mf:result  <true.srx> .
+
+
+
+:bnodes-turtle-sparql-01  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-sparql-01" ;
+    rdfs:comment    "same blank node identifier both within a cdt:List literal in a Turtle file and within a cdt:List literal in the SPARQL query" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-sparql-01.ttl> ;
+           qt:query  <bnodes-turtle-sparql-01.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-sparql-02  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-sparql-02" ;
+    rdfs:comment    "same blank node identifier both within a cdt:Map literal in a Turtle file and within a cdt:Map literal in the SPARQL query" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-sparql-02.ttl> ;
+           qt:query  <bnodes-turtle-sparql-02.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-sparql-03  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-sparql-03" ;
+    rdfs:comment    "same blank node identifier both within a cdt:List literal in the SPARQL query and outside of literals in a Turtle file" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-sparql-03.ttl> ;
+           qt:query  <bnodes-turtle-sparql-03.rq> ] ;
+    mf:result  <true.srx> .
+
+:bnodes-turtle-sparql-04  rdf:type  mf:QueryEvaluationTest ;
+    mf:name         "bnodes-turtle-sparql-04" ;
+    rdfs:comment    "same blank node identifier both within a cdt:Map literal in the SPARQL query and outside of literals in a Turtle file" ;
+    dawgt:approval  dawgt:Proposed ;
+    mf:action
+         [ qt:data   <bnodes-turtle-sparql-04.ttl> ;
+           qt:query  <bnodes-turtle-sparql-04.rq> ] ;
+    mf:result  <true.srx> .

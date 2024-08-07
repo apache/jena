@@ -1,0 +1,22 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+ASK {
+	{
+		SELECT (FOLD(DISTINCT ?v ORDER BY ASC(?sort)) AS ?list)
+		WHERE {
+			VALUES (?sort ?v ?other) {
+				(1 1 "same")
+				(1 1 "same")
+
+				(3 3 "same")
+				(3 3 "same")
+				(3 3 "different")
+
+				(2 2 "different a")
+				(2 2 "different b")
+			}
+		}
+	}
+
+	FILTER(?list = "[1,2,3]"^^cdt:List)
+}

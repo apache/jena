@@ -1,0 +1,7 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+# 2-entry map, including null value
+ASK {
+	BIND("{1: 'one', 2: null}"^^cdt:Map AS ?map)
+	FILTER(cdt:size(?map) = 2)
+}

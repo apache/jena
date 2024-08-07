@@ -1,0 +1,8 @@
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX ex:     <http://example.org/>
+
+ex:s ex:p1 "[_:b, 42]"^^cdt:List .
+ex:s ex:p2 "[ [_:b], 43]"^^cdt:List .

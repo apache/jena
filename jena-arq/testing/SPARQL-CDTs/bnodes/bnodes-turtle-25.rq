@@ -1,0 +1,13 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX ex:     <http://example.org/>
+
+ASK {
+	?s ex:p ?list .
+
+	BIND( cdt:get(?list,1) AS ?innerlist )
+	BIND( cdt:get(?innerlist,1) AS ?e1 )
+
+	FILTER( isBLANK(?s) )
+	FILTER( isBLANK(?e1) )
+	FILTER( ?s = ?e1 )
+}

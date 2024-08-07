@@ -1,0 +1,8 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+# list with one integer
+ASK {
+	BIND("{1:'one',2:'two',4:'four'}"^^cdt:Map AS ?map)
+	BIND(cdt:get(?map, 3) AS ?null)
+	FILTER(!BOUND(?null))
+}

@@ -1,0 +1,11 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+# contains blank nodes
+ASK {
+	BIND("[_:b,null,'_:b']"^^cdt:List AS ?list)
+	BIND( BNODE() AS ?b )
+	BIND( cdt:contains(?list, ?b) AS ?result )
+
+	FILTER( BOUND(?result) )
+	FILTER( ?result = false )
+}

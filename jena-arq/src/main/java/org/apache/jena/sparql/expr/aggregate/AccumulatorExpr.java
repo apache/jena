@@ -35,7 +35,7 @@ public abstract class AccumulatorExpr implements Accumulator
     private long accCount = 0 ;
     protected long errorCount = 0 ; 
     private final Expr expr ;
-    private final boolean makeDistinct;
+    protected final boolean makeDistinct;
     
     protected AccumulatorExpr(Expr expr, boolean makeDistinct) {
         this.expr = expr;

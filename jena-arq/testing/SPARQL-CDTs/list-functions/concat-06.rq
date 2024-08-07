@@ -1,0 +1,10 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+
+# concat different lists
+ASK {
+	BIND("[1, 2]"^^cdt:List AS ?lhs)
+	BIND("[3, 4]"^^cdt:List AS ?rhs)
+	BIND(cdt:concat(?lhs, ?rhs) AS ?result)
+	FILTER(?result = "[1,2,3,4]"^^cdt:List)
+}

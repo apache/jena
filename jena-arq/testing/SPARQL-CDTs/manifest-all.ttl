@@ -1,0 +1,16 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<> a mf:Manifest ;
+    rdfs:label "SPARQL Composite Datatype tests" ;
+    mf:include (
+        <unfold/manifest.ttl>
+        <fold/manifest.ttl>
+        <list-functions/manifest.ttl>
+        <map-functions/manifest.ttl>
+        <orderby/manifest.ttl>
+        <bnodes/manifest.ttl>
+    ) ;
+.

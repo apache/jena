@@ -1,0 +1,16 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	{
+		SELECT * WHERE {
+			VALUES (?id ?map) {
+				(1  "{   1:null,  2:41}"^^cdt:Map)
+				(2  "{  1:'hello', 2:42}"^^cdt:Map)
+				(3  "{ 1:null,  2:43}"^^cdt:Map)
+			}
+		}
+		ORDER BY DESC(?map) LIMIT 1   # attention, DESC here to check that the non-null element ordered highest
+	}
+	FILTER (?id = 2)
+}

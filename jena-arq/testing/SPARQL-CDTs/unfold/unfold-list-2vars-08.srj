@@ -1,0 +1,20 @@
+{ "head": {
+    "vars": [ "elmt", "idx" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "elmt": { "type": "uri" , "value": "http://example/1" },
+        "idx": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "1" }
+      },
+      { 
+        "elmt": { "type": "bnode" , "value": "b0" },
+        "idx": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "2" }
+      },
+      { 
+        "elmt": { "type": "bnode" , "value": "b0" },
+        "idx": { "type": "literal" , "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "value": "3" }
+      }
+    ]
+  }
+}

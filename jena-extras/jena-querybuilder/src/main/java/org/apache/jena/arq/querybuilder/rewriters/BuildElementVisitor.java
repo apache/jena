@@ -69,6 +69,12 @@ public class BuildElementVisitor implements ElementVisitor {
     }
 
     @Override
+    public void visit(ElementUnfold el) {
+        // no change
+        result = el;
+    }
+
+    @Override
     public void visit(ElementData el) {
         // no change
         result = el;

@@ -1,0 +1,7 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	BIND( cdt:Map(1,2, BNODE(), 4, 5,6) AS ?map )
+	FILTER( ?map = "{1:2, 5:6}"^^cdt:Map )  # a blank node is not a valid map key
+}
