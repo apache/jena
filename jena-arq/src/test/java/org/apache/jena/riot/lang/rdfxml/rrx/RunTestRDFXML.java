@@ -95,7 +95,9 @@ public class RunTestRDFXML {
 
         // For a better order ...
         List<String> testfiles = List.of(
-                 "xml.rdf", "xml10.rdf", "xml11.rdf",
+                 "xml.rdf",
+                 "xml10.rdf",
+                 "xml11.rdf",
 
                  "basic01.rdf",
                  "basic02.rdf",
