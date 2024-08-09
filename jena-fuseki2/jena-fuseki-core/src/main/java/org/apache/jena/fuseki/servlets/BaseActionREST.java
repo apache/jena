@@ -46,6 +46,6 @@ public class BaseActionREST extends ActionREST {
     public void validate(HttpAction action) { }
 
     private void notSupported(HttpAction action) {
-        ServletOps.errorMethodNotAllowed(action.getMethod()+" "+action.getDatasetName());
+        ServletOps.errorMethodNotAllowed(action.getRequestMethod()+" "+action.getDatasetName());
     }
 }
