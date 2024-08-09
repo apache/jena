@@ -1,0 +1,17 @@
+<?xml version='1.0'?>
+<!-- Licensed under the terms of https://www.apache.org/licenses/LICENSE-2.0 -->
+
+<rdf:RDF 
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:ex="http://example/">
+  <rdf:Description rdf:about="http://example/s">
+    <ex:property1>
+      <rdf:Description rdf:about="http://example/o1">
+        <ex:property2>NESTED1</ex:property2>
+        <ex:property3>NESTED2</ex:property3>
+        <!-- white space -->
+
+      </rdf:Description>
+    </ex:property1>
+  </rdf:Description>
+</rdf:RDF>

@@ -44,6 +44,6 @@ public abstract class AbstractTestRDFXML_RRX {
     }
 
     @Test public void test() {
-        RunTestRDFXML.runTest(testLabel, factory, implName, filename);
+        RunTestRDFXML.runTestCompareARP(testLabel, factory, implName, filename);
     }
 }

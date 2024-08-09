@@ -24,7 +24,9 @@ import org.junit.Test;
 
 /**
  * The ARP test suite run on a local legacy copy of the RDF 1.0 WG test suite
- * (updated for RDF 1.1). Tests marked pending.
+ * (updated for RDF 1.1).
+ *
+ * Tests marked pending.
  */
 public class TestARP1_W3C_Pending {
     @Test

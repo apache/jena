@@ -1,5 +1,13 @@
-# Extensions to RDF/XML
+## Files for specific tests of RRX.
 
+This directory contained files used for specific tests of RRX to suppliment the
+basic positive tests (in 
+
+- errors and extensions.
+
+See TestRRX.java
+
+# Extensions to RDF/XML
 
 CIM - uses rdf:parseType="Statements" for rdf:parseType="Literal"
   https://github.com/apache/jena/issues/2473

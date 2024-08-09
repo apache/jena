@@ -35,6 +35,7 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.EscapeStr;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.graph.Node;
@@ -485,6 +486,7 @@ class ParserRDFXML_StAX_SR {
         if ( namespace == null || namespace.isEmpty() ) {
             // SAX passes xmlns as attributes with namespace and local name of "". The qname is "xmlns:"/"xmlns"
             // StAX, does not pass namespaces.
+            //RDFXMLparseError("XML attribute '"+qName.getLocalPart()+"' used for RDF property attribute (no namespace)", event);
             if ( outputWarnings )
                 RDFXMLparseWarning("XML attribute '"+qName.getLocalPart()+"' used for RDF property attribute - ignored");
             return false;
@@ -666,7 +668,7 @@ class ParserRDFXML_StAX_SR {
             }
             if ( lookingAt(event, START_ELEMENT) ) {
                 if ( ! isWhitespace(accCharacters) ) {
-                    String msg = nonWhitespaceForMsg(accCharacters.toString());
+                    String msg = nonWhitespaceMsg(accCharacters.toString());
                     throw RDFXMLparseError("Content before node element. '"+msg+"'");
                 }
                 event = processNestedNodeElement(event, subject, property, emitter);
@@ -1163,8 +1165,10 @@ class ParserRDFXML_StAX_SR {
                     }
                     case CHARACTERS, CDATA -> {
                         String chars = xmlSource.getText();
-                        if ( ! isWhitespace(chars) )
-                            throw RDFXMLparseError("Read "+nonWhitespaceForMsg(chars)+" when expecting a start or end element.");
+                        if ( ! isWhitespace(chars) ) {
+                            String text = nonWhitespaceMsg(chars);
+                            throw RDFXMLparseError("Expecting a start or end element. Got characters '"+text+"'");
+                        }
                         // Skip
                         break;
                     }
@@ -1472,7 +1476,7 @@ class ParserRDFXML_StAX_SR {
     private void noContentAllowed(XMLEvent event) {
         if ( event.isCharacters() ) {
             String content = event.asCharacters().getData();
-            content = nonWhitespaceForMsg(content);
+            content = nonWhitespaceMsg(content);
             throw RDFXMLparseError("Expected XML start tag or end tag. Found text content (possible striping error): \""+content+"\"");
         }
     }
@@ -1622,11 +1626,22 @@ class ParserRDFXML_StAX_SR {
     }
 
     /** The string for the first non-whitespace index. */
-    private static String nonWhitespaceForMsg(String string) {
-        for ( int i = 0 ; i < string.length() ; i++ ) {
+    private static String nonWhitespaceMsg(String string) {
+        final int MaxLen = 10; // Short - this is for error messages
+        // Find the start of non-whitespace.
+        // Slice, truncate if necessary.
+        // Make safe.
+        int length = string.length();
+        for ( int i = 0 ; i < length ; i++ ) {
             if ( !Character.isWhitespace(string.charAt(i)) ) {
-                int index = Math.min(20, string.length()-i);
-                return string.substring(index);
+                int len = Math.min(MaxLen, length - i);
+                String x = string.substring(i, i+len);
+                if ( length > MaxLen )
+                    x = x+"...";
+                // Escape characters, especially newlines and backspaces.
+                x = EscapeStr.stringEsc(x);
+                x = x.stripTrailing();
+                return x;
             }
         }
         throw new RDFXMLParseException("Failed to find any non-whitespace characters");

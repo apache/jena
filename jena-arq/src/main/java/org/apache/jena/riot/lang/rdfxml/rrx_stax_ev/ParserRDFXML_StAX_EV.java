@@ -31,6 +31,7 @@ import javax.xml.stream.events.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.EscapeStr;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.graph.Node;
@@ -509,6 +510,8 @@ class ParserRDFXML_StAX_EV {
         if ( namespace == null || namespace.isEmpty() ) {
             // SAX passes xmlns as attributes with namespace and local name of "". The qname is "xmlns:"/"xmlns"
             // StAX, does not pass namespaces.
+
+            //RDFXMLparseError("XML attribute '"+localName+"' used for RDF property attribute (no namespace)", event);
             if ( outputWarnings )
                 RDFXMLparseWarning("XML attribute '"+localName+"' used for RDF property attribute - ignored", event);
             return false;
@@ -692,10 +695,9 @@ class ParserRDFXML_StAX_EV {
                 event = nextEventAny();
             }
             if ( event.isStartElement() ) {
-                // DRY!
                 // Striped - inner node element.
                 if ( ! isWhitespace(sBuff) ) {
-                    String msg = nonWhitespaceForMsg(sBuff.toString());
+                    String msg = nonWhitespaceMsg(sBuff.toString());
                     throw RDFXMLparseError("Content before node element. '"+msg+"'", event);
                 }
                 event = processNestedNodeElement(event, subject, property, emitter);
@@ -1196,8 +1198,11 @@ class ParserRDFXML_StAX_EV {
                     }
                     case CHARACTERS, CDATA -> {
                         Characters chars = ev.asCharacters();
-                        if ( ! isWhitespace(ev) )
-                            throw RDFXMLparseError("Read "+str(ev)+" when expecting a start or end element.", ev);
+                        if ( ! isWhitespace(ev) ) {
+                            String str = ev.asCharacters().getData();
+                            String text = nonWhitespaceMsg(str);
+                            throw RDFXMLparseError("Expecting a start or end element. Got characters '"+text+"'", ev);
+                        }
                     }
                     case COMMENT, DTD -> { } // Skip
                     //case SPACE ->
@@ -1488,7 +1493,7 @@ class ParserRDFXML_StAX_EV {
     private void noContentAllowed(XMLEvent event) {
         if ( event.isCharacters() ) {
             String content = event.asCharacters().getData();
-            content = nonWhitespaceForMsg(content);
+            content = nonWhitespaceMsg(content);
             throw RDFXMLparseError("Expected XML start tag or end tag. Found text content (possible striping error): \""+content+"\"", event);
         }
     }
@@ -1628,12 +1633,23 @@ class ParserRDFXML_StAX_EV {
         };
     }
 
-    /** The string for the first non-whitespace index. */
-    private static String nonWhitespaceForMsg(String string) {
-        for ( int i = 0 ; i < string.length() ; i++ ) {
+    /** The string for the first non-whitespace */
+    private static String nonWhitespaceMsg(String string) {
+        final int MaxLen = 10; // Short - this is for error messages
+        // Find the start of non-whitespace.
+        // Slice, truncate if necessary.
+        // Make safe.
+        int length = string.length();
+        for ( int i = 0 ; i < length ; i++ ) {
             if ( !Character.isWhitespace(string.charAt(i)) ) {
-                int index = Math.min(20, string.length()-i);
-                return string.substring(index);
+                int len = Math.min(MaxLen, length - i);
+                String x = string.substring(i, i+len);
+                if ( length > MaxLen )
+                    x = x+"...";
+                // Escape characters, especially newlines and backspaces.
+                x = EscapeStr.stringEsc(x);
+                x = x.stripTrailing();
+                return x;
             }
         }
         throw new RDFXMLParseException("Failed to find any non-whitespace characters");

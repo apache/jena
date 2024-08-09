@@ -39,10 +39,20 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-/** Cases where the RRX parsers differ from ARP */
+/**
+ * Additional tests for RRX:
+ * <ul>
+ * <li>errors and warnings not in the W3C manifest files</li>
+ * <li>additional reports</li>
+ * <li>extensions toRDF/XML</li>
+ * </ul>
+ */
 
 @RunWith(Parameterized.class)
 public class TestRRX {
+
+    private static String DIR = "testing/RIOT/rrx-files/";
+
     @Parameters(name = "{index}: {0} {1}")
     public static Iterable<Object[]> data() {
         List<Object[]> x = new ArrayList<>();
@@ -60,17 +70,38 @@ public class TestRRX {
         this.lang = lang;
     }
 
-    @Test public void error01() {
-        errorTest("error01.rdf");
+    // Test2 for more than one object in RDF/XML striping.
+    @Test public void error_multiple_objects_lex_node() {
+        errorTest("multiple_objects_lex_node.rdf");
     }
 
-    @Test public void warn_literal() {
+    @Test public void error_multiple_objects_node_lex() {
+        errorTest("multiple_objects_node_lex.rdf");
+    }
+
+    @Test public void error_multiple_objects_node_node() {
+        errorTest("multiple_objects_node_node.rdf");
+    }
+
+    // Check that the "one object" parse state does not impact deeper structures.
+    @Test public void nested_object() {
+        goodTest("nested_object.rdf");
+    }
+
+    // rdf:parserType=
+    @Test public void error_parseType_unknown() {
+        // This is only a warning in ARP.
+        errorTest("parseType-unknown.rdf", false);
+    }
+
+    @Test public void warn_parseType_extension_1() {
         // Now valid. parseType="literal" -> parseType="Literal"
         // because ARP behaved that way.
         // Warning issued.
         warningTest("warn01.rdf", 1);
     }
 
+    // CIM
     @Test public void cim_statements01() {
         // parseType="Statements"
         // because ARP behaved that way.
@@ -79,6 +110,7 @@ public class TestRRX {
         warningTest("cim_statements01.rdf", 2);
     }
 
+    // misc
     @Test public void noBase01() {
         // Call with no base; no base needed.
         noBase("file-no-base.rdf");
@@ -92,7 +124,7 @@ public class TestRRX {
 
     private void noBase(String filename) {
         ReaderRIOTFactory factory = RDFParserRegistry.getFactory(lang);
-        String fn = "testing/RIOT/rrx-files/"+filename;
+        String fn = DIR+filename;
         ErrorHandlerCollector errorHandler = new ErrorHandlerCollector();
         ParserProfile parserProfile = RiotLib.createParserProfile(RiotLib.factoryRDF(), errorHandler, true);
         ReaderRIOT reader = factory.create(lang, parserProfile);
@@ -105,16 +137,29 @@ public class TestRRX {
         }
     }
 
+    private void goodTest(String filename) {
+        ReaderRIOTFactory factory = RDFParserRegistry.getFactory(lang);
+        String fn = DIR+filename;
+        RunTestRDFXML.runTestPlain(filename, factory, label, fn);
+        RunTestRDFXML.runTestCompareARP(fn, factory, label, fn);
+    }
+
     private void warningTest(String filename, int warnings) {
         ReaderRIOTFactory factory = RDFParserRegistry.getFactory(lang);
-        String fn = "testing/RIOT/rrx-files/"+filename;
+        String fn = DIR+filename;
         RunTestRDFXML.runTestExpectWarning(filename, factory, label, warnings, fn);
+        RunTestRDFXML.runTestCompareARP(fn, factory, label, fn);
     }
 
     private void errorTest(String filename) {
-        ReaderRIOTFactory factory = RDFParserRegistry.getFactory(lang);
-        String fn = "testing/RIOT/rrx-files/"+filename;
-        RunTestRDFXML.runTestExpectFailure(filename, factory, label, fn);
+        errorTest(filename, true);
     }
 
+    private void errorTest(String filename, boolean compare) {
+        ReaderRIOTFactory factory = RDFParserRegistry.getFactory(lang);
+        String fn = DIR+filename;
+        RunTestRDFXML.runTestExpectFailure(filename, factory, label, fn);
+        if ( compare )
+            RunTestRDFXML.runTestCompareARP(fn, factory, label, fn);
+    }
 }

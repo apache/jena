@@ -32,5 +32,8 @@ import org.junit.runners.Suite.SuiteClasses;
 /**
  * The ARP (final) tests from jena-core, so related to RDF 1.0 test suite,
  * then converted to run as RIOT tests.
+ *
+ * The files used are in " * Files in "testing/RIOT/rdf11-xml/"
+ * which have been updated for RDF 1.1 if necessary.
  */
 public class TS_ConvertedARP1 {}
