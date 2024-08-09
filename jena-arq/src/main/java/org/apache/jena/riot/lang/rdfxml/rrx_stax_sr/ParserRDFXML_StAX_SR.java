@@ -1269,8 +1269,11 @@ class ParserRDFXML_StAX_SR {
         boolean hasFrame = (xmlBase != null || xmlLang != null);
         if ( hasFrame ) {
             pushFrame(currentBase, currentLang);
-            if ( xmlBase != null )
-                currentBase = currentBase.resolve(xmlBase);
+            if ( xmlBase != null ) {
+                currentBase = (currentBase != null)
+                        ? currentBase.resolve(xmlBase)
+                        : IRIx.create(xmlBase);
+            }
             if ( xmlLang != null )
                 currentLang = xmlLang;
         }
