@@ -98,7 +98,19 @@ public class TestRRX {
         // Now valid. parseType="literal" -> parseType="Literal"
         // because ARP behaved that way.
         // Warning issued.
-        warningTest("warn01.rdf", 1);
+        warningTest("parseType-warn.rdf", 1);
+    }
+
+    // misc
+    @Test public void no_base_not_requiredBase01() {
+        // Call with no base; no base needed.
+        noBase("file-no-base.rdf");
+    }
+
+    @Test(expected=RiotException.class)
+    public void noBase_but_needed() {
+        // Call with no base; a base is needed => exception.
+        noBase("file-external-base.rdf");
     }
 
     // CIM
@@ -110,18 +122,11 @@ public class TestRRX {
         warningTest("cim_statements01.rdf", 2);
     }
 
-    // misc
-    @Test public void noBase01() {
-        // Call with no base; no base needed.
-        noBase("file-no-base.rdf");
+    @Test public void rdfResourceBad() {
+        errorTest("rdf-resource-node.rdf");
     }
 
-    @Test(expected=RiotException.class)
-    public void noBase02() {
-        // Call with no base; a base is needed => exception.
-        noBase("file-external-base.rdf");
-    }
-
+    /** Parse with no base set by the parser */
     private void noBase(String filename) {
         ReaderRIOTFactory factory = RDFParserRegistry.getFactory(lang);
         String fn = DIR+filename;
@@ -131,7 +136,7 @@ public class TestRRX {
         Graph graph = GraphFactory.createDefaultGraph();
         StreamRDF dest = StreamRDFLib.graph(graph);
         try ( InputStream in = IO.openFile(fn) ) {
-            reader.read(in, null, WebContent.ctRDFXML, dest, RIOT.getContext().copy());
+            reader.read(in, null/* No base*/, WebContent.ctRDFXML, dest, RIOT.getContext().copy());
         } catch (IOException ex) {
             throw IOX.exception(ex);
         }
@@ -151,6 +156,8 @@ public class TestRRX {
         RunTestRDFXML.runTestCompareARP(fn, factory, label, fn);
     }
 
+    // Run test, expecting an error.
+    // This is checked by error handler.
     private void errorTest(String filename) {
         errorTest(filename, true);
     }

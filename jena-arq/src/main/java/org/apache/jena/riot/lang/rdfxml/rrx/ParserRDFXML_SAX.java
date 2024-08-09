@@ -665,7 +665,12 @@ class ParserRDFXML_SAX
      * ++ nodeElementURIs anyURI - ( coreSyntaxTerms | rdf:li | oldTerms ) */
 
     private void startNodeElement(String namespaceURI, String localName, String qName, Attributes attributes, Position position) {
-        // Top level object - maybe inside rdf:RDF
+        // Subject - maybe inside rdf:RDF
+
+        String rdfResourceStr = attributes.getValue(rdfNS, rdfResource);
+        if ( rdfResourceStr != null )
+            throw RDFXMLparseError("rdf:resource not allowed as attribute here: "+qName, position);
+
         Node thisSubject = attributesToSubjectNode(attributes, position);
         startNodeElementWithSubject(thisSubject, namespaceURI, localName, qName, attributes, position);
     }

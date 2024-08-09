@@ -399,6 +399,12 @@ class ParserRDFXML_StAX_SR {
         if ( ! allowedNodeElementURIs(qName) )
             throw RDFXMLparseError("Not allowed as a node element tag: '"+str(qName)+"'");
 
+
+        // rdf:resource not allowed on a node element
+        String rdfResourceStr = attribute(rdfResource);
+        if ( rdfResourceStr != null )
+            throw RDFXMLparseError("rdf:resource not allowed as attribute here: "+str(qName));
+
         incIndent();
         boolean hasFrame = startElement();
         if ( subject == null )
