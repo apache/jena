@@ -1293,7 +1293,11 @@ class ParserRDFXML_StAX_EV {
      */
     private boolean startElement(StartElement startElt) {
         processNamespaces(startElt);
+        boolean hasFrame = processBaseAndLang(startElt);
+        return hasFrame;
+    }
 
+    private boolean processBaseAndLang(StartElement startElt) {
         String xmlBase = attribute(startElt, xmlQNameBase);
         String xmlLang = attribute(startElt, xmlQNameLang);
         if ( ReaderRDFXML_StAX_EV.TRACE ) {
@@ -1305,8 +1309,11 @@ class ParserRDFXML_StAX_EV {
         boolean hasFrame = (xmlBase != null || xmlLang != null);
         if ( hasFrame ) {
             pushFrame(currentBase, currentLang);
-            if ( xmlBase != null )
-                currentBase = currentBase.resolve(xmlBase);
+            if ( xmlBase != null ) {
+                currentBase = (currentBase != null)
+                        ? currentBase.resolve(xmlBase)
+                        : IRIx.create(xmlBase);
+            }
             if ( xmlLang != null )
                 currentLang = xmlLang;
         }
