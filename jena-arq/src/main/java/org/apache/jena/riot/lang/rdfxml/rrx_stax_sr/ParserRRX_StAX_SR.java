@@ -29,8 +29,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.events.Attribute;
-import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang3.StringUtils;
@@ -55,7 +53,7 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDF.Nodes;
 
 /* StAX - stream reader */
-class ParserRDFXML_StAX_SR {
+class ParserRRX_StAX_SR {
     private static boolean EVENTS = false;
     private final IndentedWriter trace;
 
@@ -148,7 +146,7 @@ class ParserRDFXML_StAX_SR {
     /** Integer holder for rdf:li */
     private static class Counter { int value = 1; }
 
-    ParserRDFXML_StAX_SR(XMLStreamReader reader, String xmlBase, ParserProfile parserProfile, StreamRDF destination, Context context) {
+    ParserRRX_StAX_SR(XMLStreamReader reader, String xmlBase, ParserProfile parserProfile, StreamRDF destination, Context context) {
         // Debug
         IndentedWriter out = IndentedWriter.stdout.clone();
         out.setFlushOnNewline(true);
@@ -430,7 +428,7 @@ class ParserRDFXML_StAX_SR {
                     RDFXMLparseWarning(str(qName)+" is not a recognized RDF term for a type");
             }
 
-            Node object = qNameToURI(qName, location);
+            Node object = qNameToIRI(qName, location);
             emit(subject, NodeConst.nodeRDFType, object, location);
         }
 
@@ -464,7 +462,7 @@ class ParserRDFXML_StAX_SR {
                 emit(subject, RDF.Nodes.type, type, location);
                 continue;
             }
-            Node property = qNameToURI(qName, location);
+            Node property = qNameToIRI(qName, location);
             String lexicalForm =  xmlSource.getAttributeValue(i);
             Node object = literal(lexicalForm, currentLang, location);
             emit(subject, property, object, location);
@@ -490,8 +488,8 @@ class ParserRDFXML_StAX_SR {
     private boolean checkPropertyAttribute(QName qName, boolean outputWarnings) {
         String namespace = qName.getNamespaceURI();
         if ( namespace == null || namespace.isEmpty() ) {
-            // SAX passes xmlns as attributes with namespace and local name of "". The qname is "xmlns:"/"xmlns"
-            // StAX, does not pass namespaces.
+            // Note about XML: The empty string namespace does not apply to XML attributes,
+            // only XML elements. ":attr" is not legal XML.
             //RDFXMLparseError("XML attribute '"+qName.getLocalPart()+"' used for RDF property attribute (no namespace)", event);
             if ( outputWarnings )
                 RDFXMLparseWarning("XML attribute '"+qName.getLocalPart()+"' used for RDF property attribute - ignored");
@@ -566,7 +564,7 @@ class ParserRDFXML_StAX_SR {
         if ( qNameMatches(rdfContainerItem, qName) )
             property = iriDirect(rdfNS+"_"+Integer.toString(listElementCounter.value++), location());
         else
-            property = qNameToURI(qName, location);
+            property = qNameToIRI(qName, location);
 
         Node reify = reifyStatement(location);
         Emitter emitter = (reify==null) ? this::emit : (s,p,o,loc)->emitReify(reify, s, p, o, loc);
@@ -1022,7 +1020,7 @@ class ParserRDFXML_StAX_SR {
         // subject property INNER
         emitter.emit(subject, property, subjectInner, location());
 
-        // Process as a node element, having decied the subject.
+        // Process as a node element, having decided the subject.
         nodeElement(subjectInner);
 
         // End property tag.
@@ -1078,13 +1076,6 @@ class ParserRDFXML_StAX_SR {
         return blankNode(location);
     }
 
-    private String attribute(StartElement startElt, QName attrName) {
-        Attribute attr = startElt.getAttributeByName(attrName);
-        if ( attr == null )
-            return null;
-        return attr.getValue();
-    }
-
     // ---- Nodes
 
     private void setBase(String uriStr, Location location) {
@@ -1092,13 +1083,17 @@ class ParserRDFXML_StAX_SR {
         parserProfile.setBaseIRI(n.getURI());
     }
 
-    private Node qNameToURI(QName qName, Location location) {
-        String uriStr = strQNameToURI(qName);
+    /** This is the RDF rule for creating an IRI from a QName. */
+    private Node qNameToIRI(QName qName, Location location) {
+        if ( StringUtils.isBlank(qName.getNamespaceURI()) )
+            RDFXMLparseWarning("Unqualified typed nodes are not allowed: <"+qName.getLocalPart()+">", location);
+
+        String uriStr = strQNameToIRI(qName);
         return iriDirect(uriStr, location);
     }
 
-    /** RDF rule */
-    private String strQNameToURI(QName qName) {
+    /** This is the RDF rule for creating an IRI from a QName. */
+    private String strQNameToIRI(QName qName) {
         return qName.getNamespaceURI()+qName.getLocalPart();
     }
 
@@ -1264,8 +1259,9 @@ class ParserRDFXML_StAX_SR {
     }
 
     private boolean processBaseAndLang() {
-        String xmlBase = attribute(xmlQNameBase);
-        String xmlLang = attribute(xmlQNameLang);
+        IRIx xmlBase = xmlBase();
+        String xmlLang = xmlLang();
+
         if ( ReaderRDFXML_StAX_SR.TRACE ) {
             if ( xmlBase != null )
                 trace.printf("+ BASE <%s>\n", xmlBase);
@@ -1275,11 +1271,8 @@ class ParserRDFXML_StAX_SR {
         boolean hasFrame = (xmlBase != null || xmlLang != null);
         if ( hasFrame ) {
             pushFrame(currentBase, currentLang);
-            if ( xmlBase != null ) {
-                currentBase = (currentBase != null)
-                        ? currentBase.resolve(xmlBase)
-                        : IRIx.create(xmlBase);
-            }
+            if ( xmlBase != null )
+                currentBase = xmlBase;
             if ( xmlLang != null )
                 currentLang = xmlLang;
         }
@@ -1351,6 +1344,27 @@ class ParserRDFXML_StAX_SR {
         destination.prefix(prefix, iriStr);
     }
 
+    /**
+     * Generate a new base IRIx.
+     * If this is relative, issue a warning.
+     * It is an error to use it and the error is generated
+     * sin {@link #resolveIRIx}.
+     */
+    private IRIx xmlBase() {
+        String baseStr = attribute(xmlQNameBase);
+        if ( baseStr == null )
+            return null;
+        Location location = location();
+        IRIx irix = resolveIRIxAny(baseStr, location);
+        if ( irix.isRelative() )
+            RDFXMLparseWarning("Relative URI for base: <"+baseStr+">", location);
+        return irix;
+    }
+
+    private String xmlLang() {
+        return attribute(xmlQNameLang);
+    }
+
     // ---- RDF Terms (Nodes)
 
     private Node iriFromID(String idStr, Location location) {
@@ -1371,13 +1385,15 @@ class ParserRDFXML_StAX_SR {
         return parserProfile.createURI(uriStr, line, col);
     }
 
-    /** Create a URI. The IRI is resolved by this operation. */
+    /**
+     * Create a URI. The IRI is resolved by this operation.
+     */
     private Node iriResolve(String uriStr, Location location) {
         Objects.requireNonNull(uriStr);
         Objects.requireNonNull(location);
+        String resolved = resolveIRI(uriStr, location);
         int line = location.getLineNumber();
         int col = location.getColumnNumber();
-        String resolved = resolveIRI(uriStr, location);
         return parserProfile.createURI(resolved, line, col);
     }
 
@@ -1392,11 +1408,20 @@ class ParserRDFXML_StAX_SR {
     private IRIx resolveIRIx(String uriStr, Location location) {
         // This does not use the parser profile because the base stacks and unstacks in RDF/XML.
         try {
-            if ( currentBase != null )
-                return currentBase.resolve(uriStr);
-            IRIx iri = IRIx.create(uriStr);
+            IRIx iri = resolveIRIxAny(uriStr, location);
             if ( iri.isRelative() )
-                throw RDFXMLparseError("Base URI is null, but there are relative URIs to resolve" , location);
+                throw RDFXMLparseError("Relative URI encountered: <"+iri.str()+">" , location);
+            return iri;
+        } catch (IRIException ex) {
+            throw RDFXMLparseError(ex.getMessage(), location);
+        }
+    }
+
+    private IRIx resolveIRIxAny(String uriStr, Location location) {
+        try {
+            IRIx iri = ( currentBase != null )
+                    ? currentBase.resolve(uriStr)
+                    : IRIx.create(uriStr);
             return iri;
         } catch (IRIException ex) {
             throw RDFXMLparseError(ex.getMessage(), location);

@@ -185,7 +185,6 @@ public abstract class IRIx {
      */
     public abstract IRIx normalize();
 
-
     /**
      * Return (if possible), an IRI that is relative to the base argument.
      * If this IRI is a relative path, this is returned unchanged.
