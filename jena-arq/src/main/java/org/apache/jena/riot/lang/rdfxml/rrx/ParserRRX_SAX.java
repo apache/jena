@@ -696,7 +696,7 @@ class ParserRRX_SAX
                 if ( isNotRecognizedRDFtype(namespaceURI, localName) )
                     RDFXMLparseWarning(qName+" is not a recognized RDF term for a type", position);
             }
-            Node object = qNameToIRI(namespaceURI, localName, position);
+            Node object = qNameToIRI(namespaceURI, localName, position, "typed node element");
             emit(currentSubject, RDF.Nodes.type, object, position);
         }
 
@@ -724,8 +724,10 @@ class ParserRRX_SAX
             int i =  containerPropertyCounter.value++;
             String p = rdfNS+"_"+i;
             currentProperty = iri(p, position);
-        } else
-            currentProperty = qNameToIRI(namespaceURI, localName, position);
+        } else {
+            // The empty string namespace does not apply to XML attributes.
+            currentProperty = qNameToIRI(namespaceURI, localName, position, "property element");
+        }
 
         if ( ReaderRDFXML_SAX.TRACE )
             trace.printf("Property = %s\n", str(currentProperty));
@@ -1026,7 +1028,7 @@ class ParserRRX_SAX
                 return;
             }
         }
-        Node property = qNameToIRI(namespaceURI, localName, position);
+        Node property = qNameToIRI(namespaceURI, localName, position, "property attribute");
         String lex = value;
         Node object = literal(lex, currentLang, position);
         emit(subject, property, object, position);
@@ -1269,10 +1271,9 @@ class ParserRRX_SAX
 
     // ---- Creating terms.
 
-    private Node qNameToIRI(String namespaceURI, String localName, Position position) {
-        if ( StringUtils.isBlank(namespaceURI) ) {
-            RDFXMLparseWarning("Unqualified typed nodes are not allowed: <"+localName+">", position);
-        }
+    private Node qNameToIRI(String namespaceURI, String localName, Position position, String usage) {
+        if ( StringUtils.isBlank(namespaceURI) )
+            throw RDFXMLparseError("Unqualified "+usage+" not allowed: <"+localName+">", position);
         String uriStr = qNameToIRI(namespaceURI, localName);
         return iri(uriStr, position);
     }
