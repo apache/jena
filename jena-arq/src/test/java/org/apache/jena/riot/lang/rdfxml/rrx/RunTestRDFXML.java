@@ -71,6 +71,8 @@ public class RunTestRDFXML {
         }
     }
 
+    private static String ParserBase = "http://external/base#";
+
     /**
      * Manifest-like in that the test files are run in a specific order.
      * The local files cover all the features of RDF/XML parsing
@@ -463,7 +465,7 @@ public class RunTestRDFXML {
         Graph graph = GraphFactory.createDefaultGraph();
         StreamRDF dest = StreamRDFLib.graph(graph);
         try ( InputStream in = IO.openFile(filename) ) {
-            reader.read(in, "http://external/base", WebContent.ctRDFXML, dest, RIOT.getContext().copy());
+            reader.read(in, ParserBase, WebContent.ctRDFXML, dest, RIOT.getContext().copy());
         } catch (IOException ex) {
             throw IOX.exception(ex);
         }

@@ -25,15 +25,10 @@ import java.util.List;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IOX;
-import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.rdfxml.RRX;
 import org.apache.jena.riot.lang.rdfxml.rrx.RunTestRDFXML.ErrorHandlerCollector;
-import org.apache.jena.riot.system.ParserProfile;
-import org.apache.jena.riot.system.RiotLib;
-import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.system.StreamRDFLib;
-import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.riot.system.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -72,15 +67,15 @@ public class TestRRX {
 
     // Test2 for more than one object in RDF/XML striping.
     @Test public void error_multiple_objects_lex_node() {
-        errorTest("multiple_objects_lex_node.rdf");
+        checkForError("multiple_objects_lex_node.rdf");
     }
 
     @Test public void error_multiple_objects_node_lex() {
-        errorTest("multiple_objects_node_lex.rdf");
+        checkForError("multiple_objects_node_lex.rdf");
     }
 
     @Test public void error_multiple_objects_node_node() {
-        errorTest("multiple_objects_node_node.rdf");
+        checkForError("multiple_objects_node_node.rdf");
     }
 
     // Check that the "one object" parse state does not impact deeper structures.
@@ -91,7 +86,7 @@ public class TestRRX {
     // rdf:parserType=
     @Test public void error_parseType_unknown() {
         // This is only a warning in ARP.
-        errorTest("parseType-unknown.rdf", false);
+        checkForError("parseType-unknown.rdf", false);
     }
 
     @Test public void warn_parseType_extension_1() {
@@ -102,28 +97,39 @@ public class TestRRX {
     }
 
     // misc
-    @Test public void no_base_not_requiredBase01() {
+    @Test public void base_not_needed() {
         // Call with no base; no base needed.
-        noBase("file-no-base.rdf");
+        noBase("base-none.rdf");
     }
 
     @Test(expected=RiotException.class)
-    public void noBase_but_needed() {
+    public void bare_needed() {
         // Call with no base; a base is needed => exception.
-        noBase("file-external-base.rdf");
+        noBase("base-external-needed.rdf");
+    }
+
+    @Test(expected=RiotException.class)
+    public void base_inner_1() {
+        // Call with no base; xml:base is relative in the data.
+        noBase("base-inner.rdf");
+    }
+
+    public void base_inner_2() {
+        // Called external base
+        goodTest("base-inner.rdf");
     }
 
     // CIM
     @Test public void cim_statements01() {
         // parseType="Statements"
-        // because ARP behaved that way.
-        //errorTest("error02.rdf");
+        // This is an extension to support CIM XML data.
+        // ARP behaved this way.
         // Warning issued.
         warningTest("cim_statements01.rdf", 2);
     }
 
     @Test public void rdfResourceBad() {
-        errorTest("rdf-resource-node.rdf");
+        checkForError("rdf-resource-node.rdf");
     }
 
     /** Parse with no base set by the parser */
@@ -133,10 +139,13 @@ public class TestRRX {
         ErrorHandlerCollector errorHandler = new ErrorHandlerCollector();
         ParserProfile parserProfile = RiotLib.createParserProfile(RiotLib.factoryRDF(), errorHandler, true);
         ReaderRIOT reader = factory.create(lang, parserProfile);
-        Graph graph = GraphFactory.createDefaultGraph();
-        StreamRDF dest = StreamRDFLib.graph(graph);
+        StreamRDF dest = false
+                ? StreamRDFWriter.getWriterStream(System.out, RDFFormat.TURTLE_FLAT)
+                : StreamRDFWriter.getWriterStream(System.out, RDFFormat.RDFNULL);
         try ( InputStream in = IO.openFile(fn) ) {
             reader.read(in, null/* No base*/, WebContent.ctRDFXML, dest, RIOT.getContext().copy());
+        } catch (RiotException ex) {
+            throw ex;
         } catch (IOException ex) {
             throw IOX.exception(ex);
         }
@@ -156,13 +165,18 @@ public class TestRRX {
         RunTestRDFXML.runTestCompareARP(fn, factory, label, fn);
     }
 
-    // Run test, expecting an error.
-    // This is checked by error handler.
-    private void errorTest(String filename) {
-        errorTest(filename, true);
+    /**
+     * Run test, expecting an error.
+     */
+    private void checkForError(String filename) {
+        checkForError(filename, true);
     }
 
-    private void errorTest(String filename, boolean compare) {
+    /**
+     * Run test, expecting an error. If the second argument is true, also Compare to
+     * make sure it is the same as ARP.
+     */
+    private void checkForError(String filename, boolean compare) {
         ReaderRIOTFactory factory = RDFParserRegistry.getFactory(lang);
         String fn = DIR+filename;
         RunTestRDFXML.runTestExpectFailure(filename, factory, label, fn);
