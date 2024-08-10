@@ -428,7 +428,7 @@ class ParserRRX_StAX_SR {
                     RDFXMLparseWarning(str(qName)+" is not a recognized RDF term for a type");
             }
 
-            Node object = qNameToIRI(qName, location);
+            Node object = qNameToIRI(qName, location, "type node element");
             emit(subject, NodeConst.nodeRDFType, object, location);
         }
 
@@ -462,7 +462,7 @@ class ParserRRX_StAX_SR {
                 emit(subject, RDF.Nodes.type, type, location);
                 continue;
             }
-            Node property = qNameToIRI(qName, location);
+            Node property = qNameToIRI(qName, location, "property attribute");
             String lexicalForm =  xmlSource.getAttributeValue(i);
             Node object = literal(lexicalForm, currentLang, location);
             emit(subject, property, object, location);
@@ -486,15 +486,13 @@ class ParserRRX_StAX_SR {
      * @param qName
      */
     private boolean checkPropertyAttribute(QName qName, boolean outputWarnings) {
-        String namespace = qName.getNamespaceURI();
-        if ( namespace == null || namespace.isEmpty() ) {
-            // Note about XML: The empty string namespace does not apply to XML attributes,
-            // only XML elements. ":attr" is not legal XML.
-            //RDFXMLparseError("XML attribute '"+qName.getLocalPart()+"' used for RDF property attribute (no namespace)", event);
+        if ( StringUtils.isBlank(qName.getNamespaceURI()) ) {
+            //RDFXMLparseError("XML attribute '"+localName+"' used for RDF property attribute (no namespace)", event);
             if ( outputWarnings )
                 RDFXMLparseWarning("XML attribute '"+qName.getLocalPart()+"' used for RDF property attribute - ignored");
             return false;
         }
+
         if ( isSyntaxAttribute(qName) )
             return false;
 
@@ -564,7 +562,7 @@ class ParserRRX_StAX_SR {
         if ( qNameMatches(rdfContainerItem, qName) )
             property = iriDirect(rdfNS+"_"+Integer.toString(listElementCounter.value++), location());
         else
-            property = qNameToIRI(qName, location);
+            property = qNameToIRI(qName, location, "property element");
 
         Node reify = reifyStatement(location);
         Emitter emitter = (reify==null) ? this::emit : (s,p,o,loc)->emitReify(reify, s, p, o, loc);
@@ -1084,10 +1082,9 @@ class ParserRRX_StAX_SR {
     }
 
     /** This is the RDF rule for creating an IRI from a QName. */
-    private Node qNameToIRI(QName qName, Location location) {
+    private Node qNameToIRI(QName qName, Location location, String usage) {
         if ( StringUtils.isBlank(qName.getNamespaceURI()) )
-            RDFXMLparseWarning("Unqualified typed nodes are not allowed: <"+qName.getLocalPart()+">", location);
-
+            throw RDFXMLparseError("Unqualified "+usage+" not allowed: <"+qName.getLocalPart()+">", location);
         String uriStr = strQNameToIRI(qName);
         return iriDirect(uriStr, location);
     }

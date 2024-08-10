@@ -1,0 +1,14 @@
+<?xml version='1.0'?>
+<!-- Licensed under the terms of https://www.apache.org/licenses/LICENSE-2.0 -->
+
+<!-- Out of place rdf:resource -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://local/" 
+    xmlns:ex="http://example/" >
+
+  <!-- rdf:ID on rdf:Description -->
+  <rdf:Description rdf:about="http://example/s" rdf:ID="foo">
+    <ex:property>text</ex:property>
+  </rdf:Description>
+</rdf:RDF>

@@ -329,7 +329,7 @@ public class RunTestRDFXML {
         ErrorHandlerCollector actualErrorHandler = new ErrorHandlerCollector();
         assertThrows(RiotException.class, ()->{
             parseFile(testSubjectFactory, actualErrorHandler, filename);
-            output.printf("## Expected RiotExpection : %-4s : %s : %s", subjectLabel, testLabel, filename);
+            //output.printf("## Expected RiotExpection : %-4s : %s : %s\n", subjectLabel, testLabel, filename);
         });
         checkErrorHandler(testLabel, actualErrorHandler, -1, 1, 0);
     }

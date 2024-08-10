@@ -20,15 +20,22 @@ package org.apache.jena.riot.lang.rdfxml.rrx;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.SetUtils;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.rdfxml.RRX;
 import org.apache.jena.riot.lang.rdfxml.rrx.RunTestRDFXML.ErrorHandlerCollector;
 import org.apache.jena.riot.system.*;
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -65,17 +72,41 @@ public class TestRRX {
         this.lang = lang;
     }
 
-    // Test2 for more than one object in RDF/XML striping.
+    // XXX Track files!
+
+    private static Set<String> processedFiles = new HashSet<>();
+    private void trackFilename(String filename) {
+        processedFiles.add(filename);
+    }
+
+    /** Check all files in the were touched */
+
+    @AfterClass public static void checkFiles() {
+        // This can break when running single tests.
+        Set<String> fsFiles = localTestFiles();
+        if ( fsFiles.size() !=  processedFiles.size()) {
+            System.out.flush();
+            System.err.flush();
+            Set<String> missed = SetUtils.difference(fsFiles, processedFiles);
+            System.err.println("Missed files: ");
+            missed.forEach(x->System.err.printf("  %s\n",x));
+            System.out.flush();
+            System.err.flush();
+            //Assert.fail();
+        }
+    }
+
+    // Test for more than one object in RDF/XML striping.
     @Test public void error_multiple_objects_lex_node() {
-        checkForError("multiple_objects_lex_node.rdf");
+        checkForErrorCompare("multiple_objects_lex_node.rdf");
     }
 
     @Test public void error_multiple_objects_node_lex() {
-        checkForError("multiple_objects_node_lex.rdf");
+        checkForErrorCompare("multiple_objects_node_lex.rdf");
     }
 
     @Test public void error_multiple_objects_node_node() {
-        checkForError("multiple_objects_node_node.rdf");
+        checkForErrorCompare("multiple_objects_node_node.rdf");
     }
 
     // Check that the "one object" parse state does not impact deeper structures.
@@ -128,12 +159,26 @@ public class TestRRX {
         warningTest("cim_statements01.rdf", 2);
     }
 
-    @Test public void rdfResourceBad() {
-        checkForError("rdf-resource-node.rdf");
+    @Test public void element_node_rdf_resource_bad() {
+        checkForErrorCompare("bad-rdf-resource-node.rdf");
+    }
+
+    @Test public void element_node_rdf_id_bad() {
+        checkForErrorCompare("bad-rdf-id-node.rdf");
+    }
+
+    @Test public void bad_unqualified_property() {
+        checkForError("bad-unqualified-property.rdf", false);
+    }
+
+    @Test public void bad_unqualified_class() {
+        checkForError("bad-unqualified-class.rdf", false);
     }
 
     /** Parse with no base set by the parser */
     private void noBase(String filename) {
+        trackFilename(filename);
+
         ReaderRIOTFactory factory = RDFParserRegistry.getFactory(lang);
         String fn = DIR+filename;
         ErrorHandlerCollector errorHandler = new ErrorHandlerCollector();
@@ -152,6 +197,7 @@ public class TestRRX {
     }
 
     private void goodTest(String filename) {
+        trackFilename(filename);
         ReaderRIOTFactory factory = RDFParserRegistry.getFactory(lang);
         String fn = DIR+filename;
         RunTestRDFXML.runTestPlain(filename, factory, label, fn);
@@ -159,6 +205,7 @@ public class TestRRX {
     }
 
     private void warningTest(String filename, int warnings) {
+        trackFilename(filename);
         ReaderRIOTFactory factory = RDFParserRegistry.getFactory(lang);
         String fn = DIR+filename;
         RunTestRDFXML.runTestExpectWarning(filename, factory, label, warnings, fn);
@@ -167,20 +214,47 @@ public class TestRRX {
 
     /**
      * Run test, expecting an error.
+     * Compare to running ARP.
      */
-    private void checkForError(String filename) {
+    private void checkForErrorCompare(String filename) {
         checkForError(filename, true);
     }
+
+    /**
+     * Run test, expecting an error.
+     * Dop not compare to running ARP.
+     */
+    private void checkForErroNoCompare(String filename) {
+        checkForError(filename, false);
+    }
+
 
     /**
      * Run test, expecting an error. If the second argument is true, also Compare to
      * make sure it is the same as ARP.
      */
     private void checkForError(String filename, boolean compare) {
+        trackFilename(filename);
         ReaderRIOTFactory factory = RDFParserRegistry.getFactory(lang);
         String fn = DIR+filename;
         RunTestRDFXML.runTestExpectFailure(filename, factory, label, fn);
         if ( compare )
             RunTestRDFXML.runTestCompareARP(fn, factory, label, fn);
+    }
+
+    static Set<String> localTestFiles() {
+        Path LOCAL_DIR = Path.of(DIR);
+        Set<String> found;
+        try {
+            found = Files
+                    .list(LOCAL_DIR)
+                    // Directory relative name.
+                    .map(path->path.getFileName().toString())
+                    .filter(fn->fn.endsWith(".rdf"))
+                    .collect(Collectors.toSet());
+        } catch (IOException e) {
+            throw IOX.exception(e);
+        }
+        return found;
     }
 }
