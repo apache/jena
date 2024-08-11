@@ -18,17 +18,20 @@
 
 package org.apache.jena.ontapi;
 
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.ontapi.impl.UnionGraphImpl;
 import org.apache.jena.ontapi.impl.repositories.DocumentGraphRepository;
 import org.apache.jena.ontapi.testutils.MiscUtils;
 import org.apache.jena.ontapi.utils.Graphs;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.GraphMemFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DocumentGraphRepositoryTest {
 
@@ -39,23 +42,35 @@ public class DocumentGraphRepositoryTest {
                                 () -> new UnionGraphImpl(GraphMemFactory.createDefaultGraph())
                         )
                         .addMapping("http://www.w3.org/2002/07/owl#", "builtins-owl.rdf")
-                        .addMapping("X", "builtins-rdfs.rdf");
+                        .addMapping("http://www.w3.org/2002/07/owl#", "builtins-owl.rdf")
+                        .addMapping("X", "builtins-rdfs.rdf")
+                        .addMapping("Y", "builtins-rdfs.rdf");
 
         Graph g1 = repository.get("http://www.w3.org/2002/07/owl#");
         Assertions.assertEquals(159, g1.size());
         Assertions.assertInstanceOf(UnionGraph.class, g1);
         Assertions.assertFalse(((UnionGraph) g1).hasSubGraph());
+        Graph g2 = repository.get("builtins-owl.rdf");
+        Assertions.assertSame(g1, g2);
+        Assertions.assertEquals(List.of(g1), repository.graphs().toList());
 
-        Graph g2 = repository.get("X");
-        Assertions.assertEquals(163, g2.size());
-        Assertions.assertInstanceOf(UnionGraph.class, g2);
-        Assertions.assertFalse(((UnionGraph) g2).hasSubGraph());
+        Graph g3 = repository.get("X");
+        Assertions.assertEquals(163, g3.size());
+        Assertions.assertInstanceOf(UnionGraph.class, g3);
+        Assertions.assertFalse(((UnionGraph) g3).hasSubGraph());
+        Graph g4 = repository.get("builtins-rdfs.rdf");
+        Assertions.assertSame(g3, g4);
+        Assertions.assertEquals(Set.of(g1, g3), repository.graphs().collect(Collectors.toSet()));
 
-        Assertions.assertEquals(2, repository.ids().count());
+        Assertions.assertEquals(
+                List.of("X", "Y", "builtins-owl.rdf", "builtins-rdfs.rdf", "http://www.w3.org/2002/07/owl#"),
+                repository.ids().sorted().toList());
+        Assertions.assertEquals(5, repository.count());
 
-        Assertions.assertSame(g2, repository.remove("X"));
+        Assertions.assertSame(g3, repository.remove("X"));
 
-        Assertions.assertEquals(1, repository.ids().count());
+        Assertions.assertEquals(List.of("builtins-owl.rdf", "http://www.w3.org/2002/07/owl#"), repository.ids().sorted().toList());
+        Assertions.assertEquals(2, repository.count());
 
         repository.clear();
 
