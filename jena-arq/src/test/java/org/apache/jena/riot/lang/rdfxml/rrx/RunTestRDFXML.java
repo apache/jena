@@ -372,8 +372,8 @@ public class RunTestRDFXML {
                 checkErrorHandler(testLabel, expectedErrorHandler, errorHandlerTest);
             return;
         } catch(RiotException ex) {
-            output.println("## "+testLabel);
-            ex.printStackTrace();
+//            output.println("## "+testLabel);
+//            ex.printStackTrace();
             fail("Unexpected parse error: "+ex.getMessage());
         }
     }
@@ -407,7 +407,7 @@ public class RunTestRDFXML {
         ErrorHandlerCollector actualErrorHandler = new ErrorHandlerCollector();
         assertThrows(RiotException.class, ()->{
             parseFile(testSubjectFactory, actualErrorHandler, filename);
-            output.printf("## Expected RiotExpection : %-4s : %s : %s", subjectLabel, testLabel, filename);
+            output.printf("## Expected RiotExpection : %-4s : %s : %s\n", subjectLabel, testLabel, filename);
         });
 
         if ( expectedErrorHandler != null )
