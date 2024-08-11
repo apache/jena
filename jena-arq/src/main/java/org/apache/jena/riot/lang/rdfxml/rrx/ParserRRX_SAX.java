@@ -108,6 +108,7 @@ class ParserRRX_SAX
     private static Set<String> $coreSyntaxTerms =
             Set.of(rdfRDF, rdfID, rdfAbout, rdfParseType, rdfResource, rdfNodeID, rdfDatatype);
 
+    // Not used.
     // 6.2.3 Production syntaxTerms
     // coreSyntaxTerms | rdf:Description | rdf:li
     private static Set<String> $syntaxTerms =
@@ -118,9 +119,16 @@ class ParserRRX_SAX
     // rdf:aboutEach | rdf:aboutEachPrefix | rdf:bagID
     private static Set<String> $oldTerms = Set.of(rdfAboutEach, rdfAboutEachPrefix, rdfBagID);
 
-    private static Set<String> disallowedPropertyAttributeTerms =
-            Set.of(rdfRDF, rdfID, rdfAbout, rdfParseType, rdfResource, rdfNodeID, rdfDatatype,
-                   rdfDescription, rdfContainerItem, "aboutEach", "aboutEachPrefix", "bagID");
+    // 6.1.4 Attribute Event
+    // The (old form) qualified named allowed where property attributes expected.
+    // Parses "MAY" warn about their use
+    private static Set<String> $allowedUnqualified = Set.of(rdfAbout, rdfID, rdfResource, rdfParseType, rdfType);
+
+    private boolean coreSyntaxTerm(String namespace, String localName) {
+        if ( ! rdfNS.equals(namespace) )
+            return false;
+        return $coreSyntaxTerms.contains(localName);
+    }
 
     // 6.2.5 Production nodeElementURIs
     // anyURI - ( coreSyntaxTerms | rdf:li | oldTerms )
@@ -166,11 +174,20 @@ class ParserRRX_SAX
         return true;
     }
 
+    private static boolean allowedUnqualifiedTerm(String localName) {
+        return $allowedUnqualified.contains(localName);
+    }
+
+    /** The attributes that guide the RDF/XML parser. */
+    //  Production: CodeSyntaxterms
+    //      rdf:RDF | rdf:ID | rdf:about | rdf:parseType | rdf:resource | rdf:nodeID | rdf:datatype
+
     /** The attributes that guide the RDF/XML parser. */
     private static Set<String> $rdfSyntaxAttributes =
             Set.of(rdfRDF, rdfAbout, rdfNodeID, rdfID, rdfParseType, rdfDatatype, rdfResource);
-    private boolean isSyntaxAttribute(String namespace, String localName) {
-        if ( ! rdfNS.equals(namespace) )
+
+    private static boolean isSyntaxAttribute(String namespace, String localName) {
+        if ( ! isXMLNamespace(namespace) )
             return false;
         return $rdfSyntaxAttributes.contains(localName);
     }
@@ -248,6 +265,13 @@ class ParserRRX_SAX
         // Unlike NodeElement, there is only one ObjectNode inside one property.
         // ObjectLex becomes ObjectNode if a startElement is found.
         ObjectNode
+    }
+
+    /** Mark the usage of a QName */
+    private enum QNameUsage {
+        TypedNodeElement("typed node element"), PropertyElement("property element");
+        final String msg;
+        private QNameUsage(String msg) { this.msg = msg; }
     }
 
     /** Integer holder for rdf:li */
@@ -424,8 +448,6 @@ class ParserRRX_SAX
         this.parserMode = parserMode;
     }
 
-// // Forming objects.
-// private ParseType parseType = null;
     ParserRRX_SAX(String xmlBase, ParserProfile parserProfile, StreamRDF destination, Context context) {
         // Debug
         if ( ReaderRDFXML_SAX.TRACE ) {
@@ -696,12 +718,12 @@ class ParserRRX_SAX
                 if ( isNotRecognizedRDFtype(namespaceURI, localName) )
                     RDFXMLparseWarning(qName+" is not a recognized RDF term for a type", position);
             }
-            Node object = qNameToIRI(namespaceURI, localName, position, "typed node element");
+            Node object = qNameToIRI(namespaceURI, localName, QNameUsage.TypedNodeElement, position);
             emit(currentSubject, RDF.Nodes.type, object, position);
         }
 
-        if ( hasPropertyAttributes(attributes, position) )
-            processPropertyAttributes(currentSubject, attributes, position);
+        processPropertyAttributes(currentSubject, qName, attributes, false, position);
+
         parserMode(ParserMode.PropertyElement);
     }
 
@@ -726,7 +748,7 @@ class ParserRRX_SAX
             currentProperty = iri(p, position);
         } else {
             // The empty string namespace does not apply to XML attributes.
-            currentProperty = qNameToIRI(namespaceURI, localName, position, "property element");
+            currentProperty = qNameToIRI(namespaceURI, localName, QNameUsage.PropertyElement, position);
         }
 
         if ( ReaderRDFXML_SAX.TRACE )
@@ -763,14 +785,9 @@ class ParserRRX_SAX
         if ( objBlankNodeLabel != null )
             resourceObj = blankNode(objBlankNodeLabel, position);
 
-        if ( hasPropertyAttributes(attributes, position) ) {
-            if ( parseTypeStr != null  ) {
-                // rdf:parseType found.
-                throw RDFXMLparseError("The attribute rdf:parseType is not permitted with property attributes on a property element: "+qName, position);
-            }
+        Node innerSubject = processPropertyAttributes(resourceObj, qName, attributes, true, position);
+        if (resourceObj == null && innerSubject != null ) {
             // AND must be empty tag
-            Node innerSubject = (resourceObj==null) ? blankNode(position) : resourceObj;
-            processPropertyAttributes(innerSubject, attributes, position);
             currentEmitter.emit(currentSubject, currentProperty, innerSubject, position);
             return;
         }
@@ -828,34 +845,27 @@ class ParserRRX_SAX
         return currentProperty == null;
     }
 
-//    private String xmlBaseStr(Attributes attributes, Position position) {
-//        String baseStr = attributes.getValue(xmlNS, xmlBaseLN);
-//        if ( baseStr == null )
-//            return null;
-//        return IRIs.resolve(currentBase, baseStr);
-//    }
+    // Start element encountered when expecting a ObjectCollection
+    private void startCollectionItem(String namespaceURI, String localName, String qName, Attributes attributes, Position position) {
+        // Finish last list cell, start new one.
+        if ( ReaderRDFXML_SAX.TRACE )
+            trace.println("Generate list cell");
+        // Preceding cell in list.
+        Node previousCollectionNode = collectionNode.node;
+        Node thisCollectionNode = blankNode(position);
+        // New cell in list.
+        // Either link up to the origin or fixup previous cell.
+        if ( previousCollectionNode == null )
+            currentEmitter.emit(currentSubject, currentProperty, thisCollectionNode, position);
+        else
+            emit(previousCollectionNode, Nodes.rest, thisCollectionNode, position);
+        collectionNode.node = thisCollectionNode;
 
-        // Start element encountered when expecting a ObjectCollection
-        private void startCollectionItem(String namespaceURI, String localName, String qName, Attributes attributes, Position position) {
-            // Finish last list cell, start new one.
-            if ( ReaderRDFXML_SAX.TRACE )
-                trace.println("Generate list cell");
-            // Preceding cell in list.
-            Node previousCollectionNode = collectionNode.node;
-            Node thisCollectionNode = blankNode(position);
-            // New cell in list.
-            // Either link up to the origin or fixup previous cell.
-            if ( previousCollectionNode == null )
-                currentEmitter.emit(currentSubject, currentProperty, thisCollectionNode, position);
-            else
-                emit(previousCollectionNode, Nodes.rest, thisCollectionNode, position);
-            collectionNode.node = thisCollectionNode;
-
-            // Start the item.
-            Node itemSubject = attributesToSubjectNode(attributes, position);
-            emit(thisCollectionNode, RDF.Nodes.first, itemSubject, position);
-            startNodeElementWithSubject(itemSubject, namespaceURI, localName, qName, attributes, position);
-        }
+        // Start the item.
+        Node itemSubject = attributesToSubjectNode(attributes, position);
+        emit(thisCollectionNode, RDF.Nodes.first, itemSubject, position);
+        startNodeElementWithSubject(itemSubject, namespaceURI, localName, qName, attributes, position);
+    }
 
     private void endCollectionItem(Position position) {
         if ( ReaderRDFXML_SAX.TRACE )
@@ -952,86 +962,122 @@ class ParserRRX_SAX
             currentLang = xmlLang;
     }
 
-    // Property attributes.
-    // The checking is done by the call to hasPropertyAttributes.
-    private void processPropertyAttributes(Node subject, Attributes attributes, Position position) {
-        for ( int i = 0 ; i < attributes.getLength() ; i++ ) {
-            boolean isPropertyAttribute = checkPropertyAttribute(attributes, i, false, position);
-            if ( ! isPropertyAttribute )
-                continue;
-            propertyAttribute(subject, attributes, i, position);
+    // Process property attributes - return null for nothing to do.
+    private Node processPropertyAttributes(Node resourceObj, String qName, Attributes attributes, boolean isPropertyElement, Position position) {
+        // Subject may not yet be decided.
+        List<Integer> indexes = gatherPropertyAttributes(attributes, position);
+        if ( indexes.isEmpty() )
+            return null;
+        if ( isPropertyElement ) {
+            String parseTypeStr = attributes.getValue(rdfNS, rdfParseType);
+            if ( parseTypeStr != null ) {
+                  // rdf:parseType found.
+                  throw RDFXMLparseError("The attribute rdf:parseType is not permitted with property attributes on a property element: "+qName, position);
+            }
+        }
+
+        Node innerSubject = (resourceObj==null) ? blankNode(position) : resourceObj;
+        outputPropertyAttributes(innerSubject, indexes, attributes, position);
+        return innerSubject;
+    }
+
+    private List<Integer> gatherPropertyAttributes(Attributes attributes, Position position) {
+        if ( attributes.getLength() == 0 )
+            return List.of();
+        // Indexes
+        List<Integer> attributeIdx = new ArrayList<>(attributes.getLength());
+        for ( int idx = 0 ; idx < attributes.getLength() ; idx++ ) {
+            boolean isPropertyAttribute = checkPropertyAttribute(attributes, idx, position);
+            if ( isPropertyAttribute )
+                attributeIdx.add(idx);
+        }
+        return attributeIdx;
+    }
+
+    private void outputPropertyAttributes(Node subject, List<Integer> indexes, Attributes attributes, Position position) {
+        for ( int index : indexes ) {
+            String namespaceURI = attributes.getURI(index);
+            String localName = attributes.getLocalName(index);
+            String value = attributes.getValue(index);
+
+            if ( rdfNS.equals(namespaceURI) ) {
+                if ( rdfType.equals(localName) ) {
+                    Node type = iriResolve(value, position);
+                    emit(subject, Nodes.type, type, position);
+                    return;
+                }
+            }
+            Node property = attributeToIRI(namespaceURI, localName, position);
+            String lex = value;
+            Node object = literal(lex, currentLang, position);
+            emit(subject, property, object, position);
         }
     }
 
-    // Early abort! But also used to avoid creating a Node for
-    // processPropertyAttributes which has no work to do.
-    private boolean hasPropertyAttributes(Attributes attributes, Position position) {
-        for ( int i = 0 ; i < attributes.getLength() ; i++ ) {
-            boolean isPropertyAttribute = checkPropertyAttribute(attributes, i, true, position);
-            if ( ! isPropertyAttribute )
-                continue;
-            return true;
-        }
-        return false;
-    }
-
-    /** Return true if this is a property attribute. */
-    private boolean checkPropertyAttribute(Attributes attributes, int index, boolean outputWarnings, Position position) {
+    // 6.1.2 Element Event - attributes
+    /** Return true if this is an acceptable property attribute. */
+    private boolean checkPropertyAttribute(Attributes attributes, int index, Position position) {
         String namespaceURI = attributes.getURI(index);
         String localName = attributes.getLocalName(index);
         String qName = attributes.getQName(index);
 
-        if ( StringUtils.isBlank(namespaceURI) ) {
-            // Note about XML: The empty string namespace does not apply to XML attributes,
-            // only XML elements. ":attr" is not legal XML.
-            //RDFXMLparseError("XML attribute '"+qName+"' used for RDF property attribute (no namespace)", position);
-
-            if ( outputWarnings ){
-                if ( ! localName.isEmpty() )    // Skip XML namespace declarations.
-                    RDFXMLparseWarning("XML attribute '"+qName+"' used for RDF property attribute - ignored", position);
-            }
-            return false;
-        }
         if ( isSyntaxAttribute(namespaceURI, localName) )
             return false;
 
-        if ( ! allowedPropertyAttributeURIs(namespaceURI, localName) )
-            throw RDFXMLparseError("Not allowed as a property attribute: '"+attributes.getQName(index)+"'", position);
+        // The default namespace (i.e. prefix "") does not apply to attributes.
 
-        if ( outputWarnings && isNotRecognizedRDFproperty(namespaceURI, localName) )
+        // 6.1.2 Element Event - attributes
+
+        if ( coreSyntaxTerm(namespaceURI, localName) )
+            return false;
+
+        if ( ! allowedPropertyAttributeURIs(namespaceURI, localName) )
+            throw RDFXMLparseError("Not allowed as a property attribute '"+attributes.getQName(index)+"'", position);
+
+        if ( isNotRecognizedRDFproperty(namespaceURI, localName) )
             RDFXMLparseWarning(qName+" is not a recognized RDF term for a property attribute", position);
 
+        // xml:lang, xml:base, xml:space (if these get here).
         if ( isXMLQName(namespaceURI, localName) )
             return false;
 
+        // 6.1.2 Element Event
+        // "All remaining reserved XML Names (see Name in XML 1.0) are now removed from the set."
         if ( isXMLNamespace(namespaceURI) ) {
             // Unrecognized qnames in the XMLnamespace are a warning and are ignored.
-            RDFXMLparseWarning("Unrecognized XML attribute: '"+attributes.getQName(index)+"'", position);
+            RDFXMLparseWarning("Unrecognized XML attribute '"+qName+"' - ignored", position);
             return false;
         }
 
-        if ( isXMLNamespaceQName(qName) )
+        if ( isXMLNamespaceQName(qName) ) {
+            // xmlns
             return false;
+        }
+
+        if ( StringUtils.isBlank(namespaceURI) ) {
+            boolean valid = checkPropertyAttributeUnqualifiedTerm(localName, position);
+            return valid;
+        }
         return true;
     }
 
-    /** Output for a property attribute (already checked) */
-    private void propertyAttribute(Node subject, Attributes attributes, int index, Position position) {
-        String namespaceURI = attributes.getURI(index);
-        String localName = attributes.getLocalName(index);
-        String value = attributes.getValue(index);
-
-        if ( rdfNS.equals(namespaceURI) ) {
-            if ( rdfType.equals(localName) ) {
-                Node type = iriResolve(value, position);
-                emit(subject, Nodes.type, type, position);
-                return;
+    private boolean checkPropertyAttributeUnqualifiedTerm(String localName, Position position) {
+        if ( allowedUnqualifiedTerm(localName) )
+            return true;
+        if ( localName.length() >= 3 ) {
+            String chars3 = localName.substring(0, 3);
+            if ( chars3.equalsIgnoreCase("xml") ) {
+                // 6.1.2 Element Event
+                // "all attribute information items with [prefix] property having no value and which
+                // have [local name] beginning with xml (case independent comparison)"
+                // Test: unrecognised-xml-attributes/test002.rdf
+                RDFXMLparseWarning("Unrecognized XML non-namespaced attribute '"+localName+"' - ignored", position);
+                return false;
             }
         }
-        Node property = qNameToIRI(namespaceURI, localName, position, "property attribute");
-        String lex = value;
-        Node object = literal(lex, currentLang, position);
-        emit(subject, property, object, position);
+        // 6.1.4 Attribute Event
+        // "Other non-namespaced ·local-name· accessor values are forbidden."
+        throw RDFXMLparseError("Non-namespaced attribute not allowed as a property attribute: '"+localName+"'", position);
     }
 
     /**
@@ -1094,13 +1140,6 @@ class ParserRRX_SAX
         Node reify = iriFromID(reifyId, position);
         return (s, p, o, loc) -> emitReify(reify, s, p, o, loc);
     }
-
-//    private String xmlBaseStr(Attributes attributes, Position position) {
-//        String baseStr = attributes.getValue(xmlNS, xmlBaseLN);
-//        if ( baseStr == null )
-//            return null;
-//        return IRIs.resolve(currentBase, baseStr);
-//    }
 
     private Node generateLiteral(Position position) {
         String lex = accCharacters.toString();
@@ -1271,17 +1310,31 @@ class ParserRRX_SAX
 
     // ---- Creating terms.
 
-    private Node qNameToIRI(String namespaceURI, String localName, Position position, String usage) {
+    private Node qNameToIRI(String namespaceURI, String localName, QNameUsage usage, Position position) {
         if ( StringUtils.isBlank(namespaceURI) )
-            throw RDFXMLparseError("Unqualified "+usage+" not allowed: <"+localName+">", position);
-        String uriStr = qNameToIRI(namespaceURI, localName);
+            // Default namespace, "" not defined.
+            throw RDFXMLparseError("Unqualified "+usage.msg+" not allowed: <"+localName+">", position);
+        String uriStr = strQNameToIRI(namespaceURI, localName);
         return iri(uriStr, position);
     }
 
     /** This is the RDF rule for creating an IRI from a QName. */
-    private String qNameToIRI(String namespaceURI, String localName) {
+    private String strQNameToIRI(String namespaceURI, String localName) {
         String iriStr = namespaceURI + localName;
         return iriStr;
+    }
+
+    private Node attributeToIRI(String namespaceURI, String localName, Position position) {
+        String ns = namespaceURI;
+        if ( StringUtils.isBlank(namespaceURI) ) {
+            if ( allowedUnqualifiedTerm(localName) )
+                ns = rdfNS;
+            else
+                // else rejected in checkPropertyAttribute
+                throw RDFXMLparseError("Unqualified property attribute not allowed: '"+localName+"'", position);
+        }
+        String uriStr = strQNameToIRI(namespaceURI, localName);
+        return iri(uriStr, position);
     }
 
     private Node iri(String uriStr, Position position) {
@@ -1341,17 +1394,6 @@ class ParserRRX_SAX
         // Checking
         return parserProfile.createURI(iriStr, line, col);
     }
-
-//    private Node iriDirect(String uriStr, Position position) {
-//        Objects.requireNonNull(uriStr);
-//        // No checking.
-//        return createURIdirect(uriStr, position);
-//    }
-//
-//    /** Always done without checking. */
-//    private Node createURIdirect(String uriStr, Position position) {
-//        return factory.createURI(uriStr);
-//    }
 
     private Node blankNode(Position position) {
         Objects.requireNonNull(position);

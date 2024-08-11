@@ -72,8 +72,6 @@ public class TestRRX {
         this.lang = lang;
     }
 
-    // XXX Track files!
-
     private static Set<String> processedFiles = new HashSet<>();
     private void trackFilename(String filename) {
         processedFiles.add(filename);
@@ -169,6 +167,26 @@ public class TestRRX {
 
     @Test public void bad_unqualified_property() {
         checkForError("bad-unqualified-property.rdf", false);
+    }
+
+    @Test public void bad_unqualified_attribute1() {
+        checkForError("bad-unqualified-attribute1.rdf", false);
+    }
+
+    @Test public void bad_unqualified_attribute2() {
+        checkForError("bad-unqualified-attribute2.rdf", false);
+    }
+
+    @Test public void bad_unqualified_attribute3() {
+        checkForError("bad-unqualified-attribute3.rdf", false);
+    }
+
+    @Test public void bad_unqualified_attribute4() {
+        warningTest("bad-unqualified-attribute4.rdf", 1);
+    }
+
+    @Test public void bad_unqualified_attribute5() {
+        warningTest("bad-unqualified-attribute5.rdf", 1);
     }
 
     @Test public void bad_unqualified_class() {

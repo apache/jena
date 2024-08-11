@@ -4,6 +4,6 @@
 <rdf:RDF 
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns="http://example/">
-  <!-- qnames do not apply to attributes unless ex:attr -->
-  <rdf:Description name="NAME"/>
+  <!-- RDF/XML calls out plain attributes startin "xml" : warning -->
+  <rdf:Description XmLname="NAME"/>
 </rdf:RDF>
