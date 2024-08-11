@@ -21,7 +21,6 @@ package org.apache.jena.ontapi.model;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.OntJenaException;
-import org.apache.jena.ontapi.common.OntPersonality;
 import org.apache.jena.ontapi.utils.Graphs;
 import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Literal;
@@ -44,9 +43,8 @@ import java.util.stream.Stream;
 /**
  * An enhanced view of a {@link Model Jena Model} about which is known
  * to contain <b>OWL</b> or <b>RDFS</b> ontology data.
- * The view supports OWL2 DL specification,
- * and is an analogue of {@link org.apache.jena.ontology.OntModel Apache Jena OntModel},
- * which only covers the OWL1 syntax.
+ * The view supports OWL2 DL specification and all its dialects, including OWL1.
+ * The model also has a component-level support of Semantic Web Rule Language (SWRL).
  * <p>
  * In addition to the standard {@link Resource Jena Resource}s and {@link Statement Jena Statement}s
  * this model provides access to different ontological components in the form of {@link OntObject Object}s
@@ -54,21 +52,15 @@ import java.util.stream.Stream;
  * Some of the {@link OntObject}s can be constructed using another kind of resource -
  * {@link OntList}, which is an extended analogue of the standard {@link RDFList Jena RDFList}.
  * <p>
- * The model also has a component-level support of Semantic Web Rule Language (SWRL).
- * <p>
  * In additional to native Jena {@link org.apache.jena.util.iterator.ExtendedIterator Extended Iterator}s,
  * this model also provides access to RDF in the form of {@link Stream}s, that obey the same rules:
  * both {@code Stream} and {@code ExtendedIterator} must be closed explicitly
  * if they are no longer needed but not yet exhausted, see {@link org.apache.jena.util.iterator.ClosableIterator}.
  * <p>
- * Impl note: this model does not support {@link org.apache.jena.ontology.Profile Jena Profile}s mechanism,
- * and model configuration is delegated directly to the extended {@link OntPersonality Personality}.
- * <p>
  * The interface does not extend {@link InfModel},
  * but the inference model can be accessed via {@link OntModel#asInferenceModel()}.
  * If implementation does not provide inference support, the method will throw an exception.
  *
- * @see org.apache.jena.ontology.OntModel
  * @see <a href="https://www.w3.org/TR/owl2-mapping-to-rdf">OWL2 RDF mapping</a>
  * @see <a href="https://www.w3.org/TR/owl2-quick-reference/">A Quick Guide</a>
  * @see <a href="https://www.w3.org/TR/owl2-syntax/">OWL 2 Web Ontology Language Structural Specification and Functional-Style Syntax (Second Edition)</a>
@@ -235,12 +227,12 @@ public interface OntModel extends Model,
      * This method can also be used to wrap builtin entities, which, in fact, do not belong to the RDF graph,
      * but can be considered as belonged to the OWL model.
      * An IRI for such a built-in entity must be in
-     * the {@link OntPersonality.Builtins Builtins Vocabulary},
+     * the {@link org.apache.jena.ontapi.common.OntPersonality.Builtins Builtins Vocabulary},
      * otherwise the method returns {@code null}.
      *
-     * @param type {@link Class}, the type of {@link OntEntity}, not {@code null}.
-     * @param uri String, not {@code null}.
-     * @param <E>  type of ont-entity
+     * @param type {@link Class}, the type of {@link OntEntity}, not {@code null}
+     * @param uri String, not {@code null}
+     * @param <E>  type of OntEntity
      * @return {@link OntEntity} or {@code null}
      * @see #fetchOntEntity(Class, String)
      */
@@ -591,7 +583,6 @@ public interface OntModel extends Model,
      * }.
      * If you need all named properties, use {@code this.ontEntities(OntNamedProperty.class)}
      * <p>
-     * This is analogous of {@link org.apache.jena.ontology.OntModel#listAllOntProperties()}.
      * Note that this method does not care about punnings: it will return property
      * even if it has both {@code owl:ObjectProperty} and {@code owl:DatatypeProperty} declarations
      * and such punning is prohibited in the model settings.
