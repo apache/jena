@@ -75,7 +75,7 @@ public enum OntModelControls {
     USE_OWL1_DISTINCT_MEMBERS_PREDICATE_FEATURE,
     /**
      * If this key is set to {@code true}, all class expressions are allowed to be named (can have URI).
-     * This option is for compatibility with {@link org.apache.jena.ontology.OntModel}.
+     * This option is for compatibility with legacy {@code org.apache.jena.ontology.OntModel}.
      * In OWL2, complex class expression should be anonymous.
      */
     ALLOW_NAMED_CLASS_EXPRESSIONS,
@@ -86,7 +86,7 @@ public enum OntModelControls {
      * Casting such a construction to a particular class type
      * (e.g. {@code generic.as(OntClass.OneOf.class)}) will result in an exception,
      * but as a class expression, it can a type of the individual, can be a domain for property, etc.
-     * This option is for compatibility with {@link org.apache.jena.ontology.OntModel}.
+     * This option is for compatibility with legacy {@code org.apache.jena.ontology.OntModel}.
      */
     ALLOW_GENERIC_CLASS_EXPRESSIONS,
     /**
@@ -103,14 +103,14 @@ public enum OntModelControls {
     USE_SIMPLIFIED_TYPE_CHECKING_WHILE_LIST_INDIVIDUALS,
     /**
      * If {@code true},
-     * named class testing is compatible with the legacy {@link org.apache.jena.ontology.OntModel Jena OntModel},
+     * named class testing is compatible with the legacy {@code org.apache.jena.ontology.OntModel},
      * otherwise, a strict check against the specification for the class declaration is performed
      * ({@code owl:Class} for OWL &amp; {@code rdfs:Class} for RDFS types are required).
      * Note that this only applies to
      * {@link org.apache.jena.enhanced.EnhNode#canAs EnhNode#canAs} and {@link org.apache.jena.enhanced.EnhNode#as EnhNode#as} methods;
      * iteration (e.g., methods {@code OntModel.ontObjects(OntClass.class)})
      * still does not take into account classes with incorrect or missing declarations.
-     * For legacy Jena's casting rules see {@link org.apache.jena.ontology.Profile} impls.
+     * For legacy Jena's casting rules see {@code org.apache.jena.ontology.Profile} impls.
      */
     USE_LEGACY_COMPATIBLE_NAMED_CLASS_FACTORY,
     /**

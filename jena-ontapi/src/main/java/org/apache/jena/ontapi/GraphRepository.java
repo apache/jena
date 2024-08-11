@@ -32,8 +32,6 @@ import java.util.stream.Stream;
  * Graph repository.
  * Each {@link Graph} is associated with ID.
  * For OWL Ontology Graphs, Graph ID can be {@link OntID#getImportsIRI()}.
- *
- * @see org.apache.jena.ontology.OntDocumentManager
  */
 public interface GraphRepository {
 

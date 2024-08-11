@@ -47,9 +47,7 @@ import org.apache.jena.vocabulary.XSD;
 import java.util.Objects;
 
 /**
- * A factory to produce {@link OntModel OWL2 model}s, {@link Model Common model}s and {@link Graph graph}s.
- * Currently, OWL2 models support only direct semantic with no additional entailment reasoning.
- * This corresponds to {@link org.apache.jena.ontology.OntModelSpec#OWL_MEM OWL_MEM spec} for {@link org.apache.jena.ontology.OntModel Jena OWL model}.
+ * A factory to produce {@link OntModel Ontolofy model}s.
  */
 public class OntModelFactory {
 

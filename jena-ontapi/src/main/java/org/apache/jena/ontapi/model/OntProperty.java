@@ -148,9 +148,6 @@ public interface OntProperty extends OntObject {
      * This simulates a frame-like view of properties and classes;
      * for more details see the
      * <a href="https://jena.apache.org/documentation/notes/rdf-frames.html">Apache Jena: Presenting RDF as frames</a>
-     * <p>
-     * The behavior of this method must be identical to the behavior of the Jena method
-     * {@link org.apache.jena.ontology.OntProperty#listDeclaringClasses(boolean)}.
      *
      * @param direct {@code boolean} if {@code true}, use only <em>direct</em> associations between classes and properties
      * @return a {@code Stream} of the classes having this property as one of their declared properties

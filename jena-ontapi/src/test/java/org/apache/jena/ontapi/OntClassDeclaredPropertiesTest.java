@@ -500,10 +500,6 @@ public class OntClassDeclaredPropertiesTest {
         );
         OntClass A = m.getOntClass(NS + "A");
 
-        // Legacy Jena OWL (org.apache.jena.ontology.OntModel) no need to add explicit rdf:Property declarations,
-        // since Jena OWL for RDFS spec allow casting everything to everything.
-        // This OWL model follows more strict rules,
-        // so it is needed to add corresponding declarations to object properties to be able to get them as OntProperty
         OntProperty pA = m.createResource(NS + "pA", RDF.Property).as(OntProperty.class);
         OntProperty pB = m.createResource(NS + "pB", RDF.Property).as(OntProperty.class);
 
