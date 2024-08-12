@@ -1514,6 +1514,7 @@ public interface OntModel
      * @param writer A writer to which the XML will be written
      * @return this model
      */
+    @SuppressWarnings("deprecation")
     @Override
     public Model write( Writer writer ) ;
 

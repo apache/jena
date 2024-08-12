@@ -83,11 +83,13 @@ public class JCR_Graph implements Graph, JenaGraph {
         return graph.size();
     }
 
+    @Deprecated
     @Override
     public Stream<? extends Triple> getTriples() {
         return getTriples(null, null, null);
     }
 
+    @Deprecated
     @Override
     public Stream<? extends Triple> getTriples(BlankNodeOrIRI subject, IRI predicate, RDFTerm object) {
         Iterator<org.apache.jena.graph.Triple> iter = graph.find(toJenaAny(subject),toJenaAny(predicate),toJenaAny(object));

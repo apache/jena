@@ -69,7 +69,7 @@ import org.slf4j.LoggerFactory ;
  * @see LocationMapper
  * @see FileUtils
  */
-
+@SuppressWarnings("deprecation")
 public class FileManagerImpl implements FileManager
 {
     // The case of the FileManager used first.
@@ -124,7 +124,6 @@ public class FileManagerImpl implements FileManager
     public FileManager clone() { return clone(this) ; }
 
     // Isolate to help avoid copy errors.
-    @SuppressWarnings("deprecation")
     private static FileManager clone(FileManagerImpl filemanager) {
         FileManagerImpl newFm = new FileManagerImpl() ;
         newFm.fmHandlers.addAll(filemanager.fmHandlers) ;

@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,12 +22,12 @@ import java.util.Vector;
 
 /**
  * This class represents a node in parse tree.
- * 
+ *
  * {@literal @xerces.internal}
  *
  * @version $Id: Token.java 831926 2009-11-02 15:38:53Z knoaman $
  */
-@SuppressWarnings("all")
+@SuppressWarnings({"unchecked", "rawtypes"})
 class Token implements java.io.Serializable {
 
     private static final long serialVersionUID = 8484976002585487481L;
@@ -582,6 +582,7 @@ class Token implements java.io.Serializable {
     }
 
     // ------------------------------------------------------
+
     private final static Hashtable categories = new Hashtable();
     private final static Hashtable categories2 = new Hashtable();
     private static final String[] categoryNames = {
@@ -592,7 +593,7 @@ class Token implements java.io.Serializable {
         "L", "M", "N", "Z", "C", "P", "S",      // 31-37
     };
 
-    // Schema Rec. {Datatypes} - Punctuation 
+    // Schema Rec. {Datatypes} - Punctuation
     static final int CHAR_INIT_QUOTE  = 29;     // Pi - initial quote
     static final int CHAR_FINAL_QUOTE = 30;     // Pf - final quote
     static final int CHAR_LETTER = 31;
@@ -602,8 +603,8 @@ class Token implements java.io.Serializable {
     static final int CHAR_OTHER = 35;
     static final int CHAR_PUNCTUATION = 36;
     static final int CHAR_SYMBOL = 37;
-    
-    //blockNames in UNICODE 3.1 that supported by XML Schema REC             
+
+    //blockNames in UNICODE 3.1 that supported by XML Schema REC
     private static final String[] blockNames = {
         /*0000..007F;*/ "Basic Latin",
         /*0080..00FF;*/ "Latin-1 Supplement",
@@ -617,7 +618,7 @@ class Token implements java.io.Serializable {
         /*0530..058F;*/ "Armenian",
         /*0590..05FF;*/ "Hebrew",
         /*0600..06FF;*/ "Arabic",
-        /*0700..074F;*/ "Syriac",  
+        /*0700..074F;*/ "Syriac",
         /*0780..07BF;*/ "Thaana",
         /*0900..097F;*/ "Devanagari",
         /*0980..09FF;*/ "Bengali",
@@ -632,7 +633,7 @@ class Token implements java.io.Serializable {
         /*0E00..0E7F;*/ "Thai",
         /*0E80..0EFF;*/ "Lao",
         /*0F00..0FFF;*/ "Tibetan",
-        /*1000..109F;*/ "Myanmar", 
+        /*1000..109F;*/ "Myanmar",
         /*10A0..10FF;*/ "Georgian",
         /*1100..11FF;*/ "Hangul Jamo",
         /*1200..137F;*/ "Ethiopic",
@@ -705,8 +706,8 @@ class Token implements java.io.Serializable {
     //ADD THOSE MANUALLY
     //F0000..FFFFD; "Private Use",
     //100000..10FFFD; "Private Use"
-    //FFF0..FFFD; "Specials", 
-    static final String blockRanges = 
+    //FFF0..FFFD; "Specials",
+    static final String blockRanges =
        "\u0000\u007F\u0080\u00FF\u0100\u017F\u0180\u024F\u0250\u02AF\u02B0\u02FF\u0300\u036F"
         +"\u0370\u03FF\u0400\u04FF\u0530\u058F\u0590\u05FF\u0600\u06FF\u0700\u074F\u0780\u07BF"
         +"\u0900\u097F\u0980\u09FF\u0A00\u0A7F\u0A80\u0AFF\u0B00\u0B7F\u0B80\u0BFF\u0C00\u0C7F\u0C80\u0CFF"
@@ -741,7 +742,7 @@ class Token implements java.io.Serializable {
                 int type;
                 for (int i = 0;  i < 0x10000;  i ++) {
                     type = Character.getType((char)i);
-                    if (type == Character.START_PUNCTUATION || 
+                    if (type == Character.START_PUNCTUATION ||
                         type == Character.END_PUNCTUATION) {
                         //build table of Pi values
                         if (i == 0x00AB || i == 0x2018 || i == 0x201B || i == 0x201C ||
@@ -1073,7 +1074,7 @@ class Token implements java.io.Serializable {
     static class StringToken extends Token implements java.io.Serializable {
 
         private static final long serialVersionUID = -4614366944218504172L;
-        
+
         String string;
         final int refNumber;
 
@@ -1091,7 +1092,7 @@ class Token implements java.io.Serializable {
         String getString() {                    // for STRING
             return this.string;
         }
-        
+
         @Override
         public String toString(int options) {
             if (this.type == BACKREFERENCE)
@@ -1107,10 +1108,10 @@ class Token implements java.io.Serializable {
     static class ConcatToken extends Token implements java.io.Serializable {
 
         private static final long serialVersionUID = 8717321425541346381L;
-        
+
         final Token child;
         final Token child2;
-        
+
         ConcatToken(Token t1, Token t2) {
             super(Token.CONCAT);
             this.child = t1;
@@ -1145,7 +1146,7 @@ class Token implements java.io.Serializable {
     static class CharToken extends Token implements java.io.Serializable {
 
         private static final long serialVersionUID = -4394272816279496989L;
-        
+
         final int chardata;
 
         CharToken(int type, int ch) {
@@ -1187,7 +1188,7 @@ class Token implements java.io.Serializable {
               case ANCHOR:
                 if (this == Token.token_linebeginning || this == Token.token_lineend)
                     ret = ""+(char)this.chardata;
-                else 
+                else
                     ret = "\\"+(char)this.chardata;
                 break;
 
@@ -1212,7 +1213,7 @@ class Token implements java.io.Serializable {
     static class ClosureToken extends Token implements java.io.Serializable {
 
         private static final long serialVersionUID = 1308971930673997452L;
-        
+
         int min;
         int max;
         final Token child;
@@ -1288,7 +1289,7 @@ class Token implements java.io.Serializable {
     static class ParenToken extends Token implements java.io.Serializable {
 
         private static final long serialVersionUID = -5938014719827987704L;
-        
+
         final Token child;
         final int parennumber;
 
@@ -1350,7 +1351,7 @@ class Token implements java.io.Serializable {
     static class ConditionToken extends Token implements java.io.Serializable {
 
         private static final long serialVersionUID = 4353765277910594411L;
-        
+
         final int refNumber;
         final Token condition;
         final Token yes;
@@ -1399,7 +1400,7 @@ class Token implements java.io.Serializable {
     static class ModifierToken extends Token implements java.io.Serializable {
 
         private static final long serialVersionUID = -9114536559696480356L;
-        
+
         final Token child;
         final int add;
         final int mask;
@@ -1445,7 +1446,7 @@ class Token implements java.io.Serializable {
     static class UnionToken extends Token implements java.io.Serializable {
 
         private static final long serialVersionUID = -2568843945989489861L;
-        
+
         Vector children;
 
         UnionToken(int type) {
@@ -1477,7 +1478,7 @@ class Token implements java.io.Serializable {
                 this.children.addElement(tok);
                 return;
             }
-            
+
             //System.err.println("Merge '"+previous+"' and '"+tok+"'.");
 
             StringBuffer buffer;

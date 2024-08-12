@@ -488,7 +488,7 @@ import org.apache.jena.ext.xerces.util.IntStack;
  * @author TAMURA Kent &lt;kent@trl.ibm.co.jp&gt;
  * @version $Id: RegularExpression.java 961928 2010-07-08 20:43:46Z knoaman $
  */
-@SuppressWarnings("all")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class RegularExpression implements java.io.Serializable {
 
     private static final long serialVersionUID = 6242499334195006401L;
