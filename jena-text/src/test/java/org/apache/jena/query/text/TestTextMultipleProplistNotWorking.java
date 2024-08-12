@@ -27,7 +27,6 @@ import java.io.StringReader;
 import java.util.*;
 
 import org.apache.jena.assembler.Assembler;
-import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.*;
 import org.apache.jena.query.text.assembler.TextAssembler;
 import org.apache.jena.rdf.model.Literal;
@@ -41,116 +40,111 @@ import org.junit.Test;
 // GH-2094
 public class TestTextMultipleProplistNotWorking extends AbstractTestDatasetWithTextIndexBase {
 
-    private static final String RES_BASE = "http://example.org/resource#";
-    private static final String SPEC_BASE = "http://example.org/spec#";
-    private static final String SPEC_ROOT_LOCAL = "lucene_text_dataset";
-    private static final String SPEC_ROOT_URI = SPEC_BASE + SPEC_ROOT_LOCAL;
+    private static final String SPEC_ROOT_URI = "http://example.org/spec#lucene_text_dataset";
     private static final String SPEC;
 
-    protected static final String TURTLE_PROLOG2 =
-            StrUtils.strjoinNL("@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .",
-            "@prefix mt: <http://id.example.test/vocab/#> .",
-            "@prefix mx: <http://id.example.test/mx/#> ."
+    protected static final String TURTLE_PROLOG2 = """
+            @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+            @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+            @prefix mt: <http://id.example.test/vocab/#> .
+            @prefix mx: <http://id.example.test/mx/#> .
+            """;
 
-            );
-    protected static final String QUERY_PROLOG2 =
-            StrUtils.strjoinNL(
-                    "prefix res:  <" + RES_BASE + "> ",
-                    "prefix spec: <" + SPEC_BASE + "> ",
-                    "prefix mt: <http://id.example.test/vocab/#>",
-                    "prefix text: <http://jena.apache.org/text#> ",
-                    "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> ",
-                    "prefix skos: <http://www.w3.org/2004/02/skos/core#> "
-                    );
+    protected static final String QUERY_PROLOG2 = """
+                    prefix res:  <http://example.org/resource#>
+                    prefix spec: <http://example.org/spec#>
+                    prefix mt: <http://id.example.test/vocab/#>
+                    prefix text: <http://jena.apache.org/text#>
+                    prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                    prefix skos: <http://www.w3.org/2004/02/skos/core#>
+                    """;
     static {
-        SPEC = StrUtils.strjoinNL(
-                "@prefix :        <http://example.org/spec#> .",
-                "@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .",
-                "@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .",
-                "@prefix tdb2:    <http://jena.apache.org/2016/tdb#> .",
-                "@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .",
-                "@prefix text:    <http://jena.apache.org/text#> .",
-                "@prefix fuseki:  <http://jena.apache.org/fuseki#> .",
-                "@prefix mt:      <http://id.example.test/vocab/#> .",
-                "@prefix mx:      <http://id.example.test/mx/#> .",
+        SPEC = """
+                @prefix :        <http://example.org/spec#> .
+                @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+                @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+                @prefix tdb2:    <http://jena.apache.org/2016/tdb#> .
+                @prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+                @prefix text:    <http://jena.apache.org/text#> .
+                @prefix fuseki:  <http://jena.apache.org/fuseki#> .
+                @prefix mt:      <http://id.example.test/vocab/#> .
+                @prefix mx:      <http://id.example.test/mx/#> .
 
-                "[] ja:loadClass       \"org.apache.jena.query.text.TextQuery\" .",
-                "text:TextDataset      rdfs:subClassOf   ja:RDFDataset .",
-                "text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .",
+                [] ja:loadClass       "org.apache.jena.query.text.TextQuery" .
+                text:TextDataset      rdfs:subClassOf   ja:RDFDataset .
+                text:TextIndexLucene  rdfs:subClassOf   text:TextIndex .
 
-                ":lucene_text_dataset",
-                "    a text:TextDataset ;",
-                "    text:dataset   <#dataset> ;",
-                "    text:index     <#indexLucene> ;",
-                "    .",
+                :lucene_text_dataset
+                    a text:TextDataset ;
+                    text:dataset   <#dataset> ;
+                    text:index     <#indexLucene> ;
+                    .
 
-                "# A TDB dataset used for RDF storage",
-                "<#dataset> ",
-                "    a tdb2:DatasetTDB2 ;",
-                "    tdb2:location  \"--mem--\" ;",
-                "    .",
+                # A TDB dataset used for RDF storage
+                <#dataset>
+                    a tdb2:DatasetTDB2 ;
+                    tdb2:location  "--mem--" ;
+                    .
 
-                "# Text index description",
+                # Text index description
 
-                "<#indexLucene> ",
-                "    a text:TextIndexLucene ;",
-                "    text:storeValues true ;",
-                "    text:directory \"mem\" ;",
-                "    text:defineAnalyzers (",
-                "      [ text:addLang \"en-01\" ;",
-                "        text:searchFor ( \"en-01\" \"en-02\" ) ;",
-                "        text:analyzer [ a text:StandardAnalyzer ]",
-                "      ]",
-                "     ",
-                "      [ text:addLang \"en-02\" ;",
-                "        text:searchFor ( \"en-01\" \"en-02\" ) ;",
-                "        text:analyzer [ a text:StandardAnalyzer ]",
-                "      ] ) ;",
-                "    text:entityMap <#entMap> ;",
-                "        text:propLists (",
-                "        [ text:propListProp mt:defQuery ;",
-                "          text:props ( ",
-                "             rdfs:label",
-                "             mt:altLabel",
-                "             mt:alt_label",
-                "             mx:alt_label",
-                "             ) ;",
-                "        ]",
-                "        [ text:propListProp mt:includeNotes ;",
-                "          text:props (",
-                "               rdfs:label",
-                "               mt:altLabel",
-                "               mt:alt_label",
-                "               mx:alt_label           ",
-                "               mt:note",
-                "             ) ;",
-                "        ]",
-                "    ) ;",
-                "     .",
+                <#indexLucene>
+                    a text:TextIndexLucene ;
+                    text:storeValues true ;
+                    text:directory "mem" ;
+                    text:multilingualSupport true ;
+                    text:defineAnalyzers (
+                      [ text:addLang "en-01" ;
+                        text:searchFor ( "en-01" "en-02" ) ;
+                        text:analyzer [ a text:StandardAnalyzer ]
+                      ]
 
-                "<#entMap> ",
-                "    a text:EntityMap ;",
-                "    text:defaultField     \"comment\" ;",
-                "    text:entityField      \"uri\" ;",
-                "    text:uidField         \"uid\" ;",
-                "    text:langField        \"lang\" ;",
-                "    text:graphField       \"graph\" ;",
-                "    text:map (",
-                "[ text:field \"comment\" ; text:predicate rdfs:comment ]",
-                "         [ text:field \"ftext\" ; text:predicate rdfs:label ]",
-                "         [ text:field \"ftext\" ; text:predicate mt:altLabel ]",
-                "         [ text:field \"ftext\" ; text:predicate mt:alt_label ]",
-                "         [ text:field \"ftext\" ; text:predicate mx:alt_label ]",
-                "         [ text:field \"note\" ; text:predicate mt:note ]",
-                "         ) ."
+                      [ text:addLang "en-02" ;
+                        text:searchFor ( "en-01" "en-02" ) ;
+                        text:analyzer [ a text:StandardAnalyzer ]
+                      ] ) ;
+                    text:entityMap <#entMap> ;
+                        text:propLists (
+                        [ text:propListProp mt:defQuery ;
+                          text:props (
+                             rdfs:label
+                             mt:altLabel
+                             mt:alt_label
+                             mx:alt_label
+                             ) ;
+                        ]
+                        [ text:propListProp mt:includeNotes ;
+                          text:props (
+                               rdfs:label
+                               mt:altLabel
+                               mt:alt_label
+                               mx:alt_label
+                               mt:note
+                             ) ;
+                        ]
+                    ) ;
+                     .
 
-                );
+                <#entMap>
+                    a text:EntityMap ;
+                    text:defaultField     "comment" ;
+                    text:entityField      "uri" ;
+                    text:uidField         "uid" ;
+                    text:langField        "lang" ;
+                    text:graphField       "graph" ;
+                    text:map (
+                [ text:field "comment" ; text:predicate rdfs:comment ]
+                         [ text:field "ftext" ; text:predicate rdfs:label ]
+                         [ text:field "ftext" ; text:predicate mt:altLabel ]
+                         [ text:field "ftext" ; text:predicate mt:alt_label ]
+                         [ text:field "ftext" ; text:predicate mx:alt_label ]
+                         [ text:field "note" ; text:predicate mt:note ]
+                         ) .
+                """;
     }
 
     @Before
     public void before() {
-
-
         Reader reader = new StringReader(SPEC);
         Model specModel = ModelFactory.createDefaultModel();
         specModel.read(reader, "", "TURTLE");
@@ -203,43 +197,41 @@ public class TestTextMultipleProplistNotWorking extends AbstractTestDatasetWithT
 
     @Test
     public void test01TextPropNotWorkingInSomeCases() {
-        final String turtleA = StrUtils.strjoinNL(
-                TURTLE_PROLOG2,
-                "<http://id.example.test/1>",
-                "  rdfs:label\"beer\"@en ;",
-                "  mt:altLabel\"pint\"@en ;",
-                "  mx:alt_label\"pivečko\"@cs ;",
-                "  mt:note\"Booze is a pleasure\"@en,\"Chlast je slast\"@cs .",
+        final String turtleA = TURTLE_PROLOG2 +"""
+                <http://id.example.test/1>
+                  rdfs:label "beer"@en ;
+                  mt:altLabel "pint"@en ;
+                  mx:alt_label "pivečko"@cs ;
+                  mt:note "Booze is a pleasure"@en,"C hlast je slast"@cs .
 
-                "<http://id.example.test/2>",
-                "  mt:alt_label\"ale\"@en,\"burgundy\"@en ;",
-                "  rdfs:label\"wine \"@en ;",
-                "  mt:altLabel\"champagne\"@en ;",
-                "  mx:alt_label\"víno\"@cs ;",
-                "  mt:note\"Red or white\"@en,\"Červené či bílé\"@cs .",
+                <http://id.example.test/2>
+                  mt:alt_label "ale"@en,"burgundy"@en ;
+                  rdfs:label "wine "@en ;
+                  mt:altLabel "champagne"@en ;
+                  mx:alt_label "víno"@cs ;
+                  mt:note "Red or white"@en, "Červené či bílé"@cs .
 
-                "<http://id.example.test/3>",
-                "  mt:alt_label\"Scotch\"@en ;",
-                "  rdfs:comment\"Johnnie Walker red label \"@en ."
+                <http://id.example.test/3>
+                  mt:alt_label"Scotch"@en ;
+                  rdfs:comment"Johnnie Walker red label "@en .
+                """;
 
-                );
         putTurtleInModel(turtleA, null) ;
-        String queryString = StrUtils.strjoinNL(
-                QUERY_PROLOG2,
-                "SELECT ?s ?lit",
-                "WHERE {",
-                "  (?s ?sc ?lit) text:query ( mt:includeNotes 'red booze' ) . ",
-                "}"
-                );
-        String queryStringMtNote = StrUtils.strjoinNL(
-                QUERY_PROLOG2,
-                "SELECT ?s ?lit",
-                "WHERE {",
-                "  (?s ?sc ?lit)  text:query ( mt:note \"red booze\" ) . ",
-                "}"
-        );
+        String queryString = QUERY_PROLOG2+"""
+                SELECT ?s ?lit
+                WHERE {
+                  (?s ?sc ?lit) text:query ( mt:includeNotes 'red booze' ) .
+                }
+                """;
+        String queryStringMtNote = QUERY_PROLOG2 + """
+                SELECT ?s ?lit
+                WHERE {
+                  (?s ?sc ?lit)  text:query ( mt:note "red booze" ) .
+                }
+                """;
+
         Set<String> expectedURIs = new HashSet<>() ;
-        expectedURIs.addAll( Arrays.asList("http://id.example.test/1","http://id.example.test/2")) ;
+        expectedURIs.addAll( Arrays.asList("http://id.example.test/1", "http://id.example.test/2")) ;
 
         Map<String, Literal> literals = doTestSearchWithLiterals(queryString, expectedURIs) ;
 
@@ -261,43 +253,41 @@ public class TestTextMultipleProplistNotWorking extends AbstractTestDatasetWithT
 
     @Test
     public void test02TextPropNotWorkingInSomeCases() {
-        final String turtleA = StrUtils.strjoinNL(
-                TURTLE_PROLOG2,
-                "<http://id.example.test/1>",
-                "  rdfs:label\"beer\"@en-01 ;",
-                "  mt:altLabel\"pint\"@en-01 ;",
-                "  mx:alt_label\"pivečko\"@cs ;",
-                "  mt:note\"Booze is a pleasure\"@en-01,\"Chlast je slast\"@cs .",
+        final String turtleA = TURTLE_PROLOG2+"""
+                <http://id.example.test/1>
+                  rdfs:label "beer"@en-01 ;
+                  mt:altLabel "pint"@en-01 ;
+                  mx:alt_label "pivečko"@cs ;
+                  mt:note "Booze is a pleasure"@en-01, "Chlast je slast"@cs .
 
-                "<http://id.example.test/2>",
-                "  mt:alt_label\"ale\"@en-01 , \"burgundy\"@en-01 ;",
-                "  rdfs:label\"wine \"@en-01 ;",
-                "  mt:altLabel\"champagne\"@en-01 ;",
-                "  mx:alt_label\"víno\"@cs ;",
-                "  mt:note\"Red or white\"@en-01,\"Červené či bílé\"@cs .",
+                <http://id.example.test/2>
+                  mt:alt_label "ale"@en-01 , "burgundy"@en-01 ;
+                  rdfs:label "wine"@en-01 ;
+                  mt:altLabel "champagne"@en-01 ;
+                  mx:alt_label "víno"@cs ;
+                  mt:note  "Red or white"@en-01, "Červené či bílé"@cs .
 
-                "<http://id.example.test/3>",
-                "  mt:alt_label\"Scotch\"@en-01 ;",
-                "  rdfs:comment\"Johnnie Walker red label \"@en-01 ."
+                <http://id.example.test/3>
+                  mt:alt_label "Scotch"@en-01 ;
+                  rdfs:comment "Johnnie Walker red label "@en-01 .
+               """;
 
-        );
         putTurtleInModel(turtleA, null) ;
-        String queryString = StrUtils.strjoinNL(
-                QUERY_PROLOG2,
-                "SELECT ?s ?lit",
-                "WHERE {",
-                "  (?s ?sc ?lit) text:query ( mt:includeNotes \"red booze\"@en-02 ) . ",
-                "}"
-        );
-        String queryStringMtNote = StrUtils.strjoinNL(
-                QUERY_PROLOG2,
-                "SELECT ?s ?lit",
-                "WHERE {",
-                "  (?s ?sc ?lit)  text:query ( mt:note \"red booze\"@en-02 ) . ",
-                "}"
-        );
+        String queryString = QUERY_PROLOG2+"""
+                SELECT ?s ?lit
+                WHERE {
+                  (?s ?sc ?lit) text:query ( mt:includeNotes "red booze"@en-02 ) .
+                }
+                """;
+        String queryStringMtNote = QUERY_PROLOG2+"""
+                SELECT ?s ?lit
+                WHERE {
+                  (?s ?sc ?lit)  text:query ( mt:note "red booze"@en-02 ) .
+                }
+                """;
+
         Set<String> expectedURIs = new HashSet<>() ;
-        expectedURIs.addAll( Arrays.asList("http://id.example.test/1","http://id.example.test/2")) ;
+        expectedURIs.addAll( Arrays.asList("http://id.example.test/1", "http://id.example.test/2")) ;
 
         Map<String, Literal> literals = doTestSearchWithLiterals(queryString, expectedURIs) ;
 
