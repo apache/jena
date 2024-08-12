@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,13 +22,13 @@ import java.util.Locale;
 
 /**
  * A regular expression parser for the XML Schema.
- * 
+ *
  * {@literal @xerces.internal}
  *
  * @author TAMURA Kent &lt;kent@trl.ibm.co.jp&gt;
  * @version $Id: ParserForXMLSchema.java 831926 2009-11-02 15:38:53Z knoaman $
  */
-@SuppressWarnings("all")
+@SuppressWarnings({"unchecked", "rawtypes"})
 class ParserForXMLSchema extends RegexParser {
 
     public ParserForXMLSchema() {
@@ -217,7 +217,7 @@ class ParserForXMLSchema extends RegexParser {
         int type;
         boolean firstloop = true;
         while ((type = this.read()) != T_EOF) { // Don't use 'cotinue' for this loop.
-        	
+
         	wasDecoded = false;
             // single-range | from-to-range | subtraction
             if (type == T_CHAR && this.chardata == ']' && !firstloop) {
@@ -243,7 +243,7 @@ class ParserForXMLSchema extends RegexParser {
                     c = this.processCIinCharacterClass(tok, c);
                     if (c < 0)  end = true;
                     break;
-                    
+
                   case 'p':
                   case 'P':
                     int pstart = this.offset;
@@ -252,7 +252,7 @@ class ParserForXMLSchema extends RegexParser {
                     tok.mergeRanges(tok2);
                     end = true;
                     break;
-                   
+
                  case '-':
                  	c = this.decodeEscaped();
                  	wasDecoded = true;
@@ -305,7 +305,7 @@ class ParserForXMLSchema extends RegexParser {
                     else if (type == T_XMLSCHEMA_CC_SUBTRACTION) {
                         throw this.ex("parser.cc.8", this.offset-1);
                     } else {
-                    	
+
                         int rangeend = this.chardata;
                         if (type == T_CHAR) {
                             if (rangeend == '[')  throw this.ex("parser.cc.6", this.offset-1);
@@ -344,7 +344,7 @@ class ParserForXMLSchema extends RegexParser {
     protected RangeToken parseSetOperations() throws ParseException {
         throw this.ex("parser.process.1", this.offset);
     }
- 
+
     @Override
     Token getTokenForShorthand(int ch) {
         switch (ch) {

@@ -239,6 +239,7 @@ public class TransitiveReasoner implements Reasoner {
      * Return the Jena Graph Capabilties that the inference graphs generated
      * by this reasoner are expected to conform to.
      */
+    @Deprecated
     @Override
     public Capabilities getGraphCapabilities() {
         return BaseInfGraph.reasonerInfCapabilities;
