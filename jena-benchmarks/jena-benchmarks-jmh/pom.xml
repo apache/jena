@@ -118,6 +118,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>${java.version}</release>
+                    <compilerArgs>
+                      <arg>-proc:full</arg>
+                    </compilerArgs>
+                </configuration>
             </plugin>
 
             <plugin>

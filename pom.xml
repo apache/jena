@@ -179,8 +179,14 @@
           It builds the modules shipped in apache-jena binaries
           but does not build these binaries.
           This profile does not build javadoc.
+          This profile does not check license headers.
       -->
       <id>dev</id>
+
+      <properties>
+        <rat.skip>true</rat.skip>
+      </properties>
+
       <modules>
         <module>jena-iri</module>
         <module>jena-base</module>
