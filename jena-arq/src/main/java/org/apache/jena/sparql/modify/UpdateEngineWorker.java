@@ -39,12 +39,12 @@ import org.apache.jena.graph.GraphUtil;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.riot.*;
+import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.core.*;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingRoot;
-import org.apache.jena.sparql.exec.QueryExec;
-import org.apache.jena.sparql.exec.QueryExecDatasetBuilder;
+import org.apache.jena.sparql.exec.*;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.graph.GraphOps;
 import org.apache.jena.sparql.modify.request.*;
@@ -373,7 +373,12 @@ public class UpdateEngineWorker implements UpdateVisitor
             if ( false ) {
                 List<Binding> x = Iter.toList(bindings);
                 System.out.printf("====>> Bindings (%d)\n", x.size());
-                Iter.print(System.out, x.iterator());
+                //Iter.print(System.out, x.iterator());
+                // More readable.
+                List<Var> vars = Var.varList(query.getResultVars());
+                RowSet rs = RowSetStream.create(vars, x.iterator());
+                PrefixMap pmap = datasetGraph.prefixes();
+                RowSetOps.out(System.out, rs, datasetGraph.prefixes());
                 System.out.println("====<<");
                 bindings = Iter.iter(x);
             }
