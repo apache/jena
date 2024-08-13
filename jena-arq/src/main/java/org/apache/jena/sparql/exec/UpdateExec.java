@@ -18,7 +18,9 @@
 
 package org.apache.jena.sparql.exec;
 
+import org.apache.jena.graph.Graph;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.exec.http.UpdateExecHTTP;
 import org.apache.jena.update.UpdateProcessor;
 
@@ -27,6 +29,15 @@ public interface UpdateExec extends UpdateProcessor
     /** Create a {@link UpdateExecBuilder} for a dataset. */
     public static UpdateExecBuilder dataset(DatasetGraph dataset) {
         return UpdateExecDatasetBuilder.create().dataset(dataset);
+    }
+
+    /**
+     * Create a {@link UpdateExecBuilder} for a graph.
+     * The update must not involved named graphs.
+     */
+    public static UpdateExecBuilder dataset(Graph graph) {
+        DatasetGraph dsg = DatasetGraphFactory.wrap(graph);
+        return UpdateExecDatasetBuilder.create().dataset(dsg);
     }
 
     /** Create a {@link UpdateExecBuilder} for a remote endpoint. */

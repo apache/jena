@@ -124,7 +124,6 @@ public class CompactWriter {
         }
     }
 
-
     private static NodeFormatter formatterPrefixMap(PrefixMapping prefixMapping) {
         PrefixMap pmap = prefixMapWithStd(prefixMapping);
         NodeFormatter nodeFmt = new NodeFormatterTTL(null, pmap);
