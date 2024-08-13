@@ -19,6 +19,8 @@
 package org.apache.jena.update;
 
 import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.exec.http.UpdateExecutionHTTP;
 import org.apache.jena.sparql.exec.http.UpdateExecutionHTTPBuilder;
 
@@ -29,10 +31,23 @@ public interface UpdateExecution extends UpdateProcessor
         return UpdateExecutionDatasetBuilder.create();
     }
 
+    /** Create a {@link UpdateExecutionBuilder} for a dataset. */
     public static UpdateExecutionDatasetBuilder dataset(Dataset dataset) {
         return create().dataset(dataset);
     }
 
+    /**
+     * Create a {@link UpdateExecutionBuilder} for a model.
+     * The update must not involved named graphs.
+     */
+    public static UpdateExecutionDatasetBuilder model(Model model) {
+        Dataset ds = DatasetFactory.wrap(model);
+        return create().dataset(ds);
+    }
+
+    /**
+     * Create a {@link UpdateExecutionBuilder} for a remote service.
+     */
     public static UpdateExecutionHTTPBuilder service(String serviceURL) {
         return UpdateExecutionHTTP.service(serviceURL);
     }
