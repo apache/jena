@@ -41,7 +41,7 @@
                       type="button"
                       class="btn btn-primary"
                     >
-                      list current graphs
+                      count triples in current graphs
                     </button>
                   </div>
                   <ul class="list-group">
@@ -49,7 +49,7 @@
                       class="list-group-item"
                       v-if="!loadingGraphs"
                     >
-                      <span v-if="graphs.length === 0">Click to list current graphs</span>
+                      <span v-if="graphs.length === 0">Click to count current graphs</span>
                       <table-listing
                         :fields="fields"
                         :items="items"
@@ -215,13 +215,14 @@ export default {
     code (newVal) {
       this.codeChanged(newVal)
     },
-    services (newVal) {
+    async services (newVal) {
       if (newVal && newVal['gsp-rw'] && Object.keys(newVal['gsp-rw']).length > 0) {
         const element = this.$refs['graph-editor']
         this.codemirrorEditor = CodeMirror.fromTextArea(element, this.cmOptions)
         this.codemirrorEditor.on('change', cm => {
           this.content = cm.getValue()
         })
+        await this.listCurrentGraphs(false)
       }
     }
   },
@@ -237,13 +238,19 @@ export default {
       this.content = newVal
       this.codemirrorEditor.scrollTo(scrollInfo.left, scrollInfo.top)
     },
-    listCurrentGraphs: async function () {
+    listCurrentGraphs: async function (count=true) {
       this.loadingGraphs = true
       this.loadingGraph = true
       this.code = ''
       this.selectedGraph = ''
       try {
-        this.graphs = await this.$fusekiService.countGraphsTriples(this.datasetName, this.services.query['srv.endpoints'][0])
+        const endpoint = this.services.query['srv.endpoints'][0]
+        if (count) {
+          this.graphs = await this.$fusekiService.countGraphsTriples(this.datasetName, endpoint)
+        } else {
+          const graphs = await this.$fusekiService.listGraphs(this.datasetName, endpoint)
+          this.graphs = Object.fromEntries(graphs.map(name => [name, ""]))
+        }
       } catch (error) {
         displayError(this, error)
       } finally {

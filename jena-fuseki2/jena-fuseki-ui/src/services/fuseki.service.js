@@ -22,6 +22,7 @@ import { BUS } from '@/events'
 
 const DATASET_SIZE_QUERY_1 = 'select (count(*) as ?count) {?s ?p ?o}'
 const DATASET_SIZE_QUERY_2 = 'select ?g (count(*) as ?count) {graph ?g {?s ?p ?o}} group by ?g'
+const DATASET_GRAPHS = 'select ?g {graph ?g {}}'
 
 class FusekiService {
   /**
@@ -155,6 +156,15 @@ class FusekiService {
 
   async getTasks () {
     return axios.get(this.getFusekiUrl('/$/tasks'))
+  }
+
+  async listGraphs (datasetName, endpoint) {
+    const result = await axios.get(this.getFusekiUrl(`/${datasetName}/${endpoint}`), {
+      params: {
+        query: DATASET_GRAPHS
+      }
+    })
+    return ["default", ...result.data.results.bindings.map(binding => binding.g.value)]
   }
 
   async countGraphsTriples (datasetName, endpoint) {
