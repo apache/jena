@@ -210,7 +210,7 @@ public class EvaluatorSimple implements Evaluator {
     @Override
     public Table project(Table table, List<Var> projectVars) {
         QueryIterator qIter = table.iterator(getExecContext());
-        qIter = new QueryIterProject(qIter, projectVars, getExecContext());
+        qIter = QueryIterProject.create(qIter, projectVars, getExecContext());
         return new TableN(qIter);
     }
 

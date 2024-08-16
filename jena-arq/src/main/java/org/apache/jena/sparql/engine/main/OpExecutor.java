@@ -391,7 +391,7 @@ public class OpExecutor {
 
         if ( input instanceof QueryIterRoot ) {
             QueryIterator qIter = exec(opProject.getSubOp(), input);
-            qIter = new QueryIterProject(qIter, opProject.getVars(), execCxt);
+            qIter = QueryIterProject.create(qIter, opProject.getVars(), execCxt);
             return qIter;
         }
         // Nested projected : need to ensure the input is seen.
