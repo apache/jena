@@ -41,7 +41,7 @@ public class TableUnit extends TableBase
     @Override
     public Iterator<Binding> rows() {
         Binding binding = BindingFactory.empty() ;
-        return Iter.singleton(binding) ;
+        return Iter.singletonIterator(binding) ;
     }
 
     @Override

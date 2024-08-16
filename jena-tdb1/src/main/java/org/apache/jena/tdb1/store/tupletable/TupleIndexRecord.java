@@ -133,9 +133,9 @@ public class TupleIndexRecord extends TupleIndexBase
         // Is it a simple existence test?
         if ( numSlots == pattern.len() ) {
             if ( index.contains(minRec) )
-                return new SingletonIterator<>(pattern);
+                return Iter.singletonIterator(pattern);
             else
-                return new NullIterator<>();
+                return Iter.nullIterator();
         }
 
         Iterator<Record> iter = null;

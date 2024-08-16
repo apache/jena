@@ -79,7 +79,13 @@ public class Iter<T> implements IteratorCloseable<T> {
 
     // ---- Special iterators.
 
+    /** @deprecated Sue {@link #singletonIterator} */
+    @Deprecated
     public static <T> Iterator<T> singleton(T item) {
+        return singletonIterator(item);
+    }
+
+    public static <T> Iterator<T> singletonIterator(T item) {
         // There is a singleton iterator in Collections but it is not public.
         return new SingletonIterator<>(item);
     }
@@ -95,7 +101,7 @@ public class Iter<T> implements IteratorCloseable<T> {
     }
 
     public static <T> Iter<T> of(T item) {
-        return Iter.iter(new SingletonIterator<>(item));
+        return Iter.iter(singletonIterator(item));
     }
 
     @SafeVarargs
@@ -796,11 +802,11 @@ public class Iter<T> implements IteratorCloseable<T> {
     }
 
     public static <T> Iter<T> singletonIter(T item) {
-        return iter(new SingletonIterator<>(item));
+        return iter(singletonIterator(item));
     }
 
     public static <T> Iter<T> nullIter() {
-        return iter(new NullIterator<T>());
+        return iter(nullIterator());
     }
 
     /**

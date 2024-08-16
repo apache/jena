@@ -45,7 +45,7 @@ public class Table1 extends TableBase {
     @Override
     public Iterator<Binding> rows() {
         Binding b = BindingFactory.binding(var, value) ;
-        return Iter.singleton(b) ;
+        return Iter.singletonIterator(b) ;
     }
 
     @Override

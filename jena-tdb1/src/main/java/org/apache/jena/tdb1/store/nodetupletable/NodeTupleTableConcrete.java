@@ -23,7 +23,6 @@ import static java.lang.String.format ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.NullIterator ;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.atlas.lib.tuple.TupleFactory ;
 import org.apache.jena.graph.Node ;
@@ -127,7 +126,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
         try {
             startRead() ;
             Iterator<Tuple<NodeId>> iter1 = findAsNodeIds(nodes) ; // **public call
-            if (iter1 == null) return new NullIterator<>() ;
+            if (iter1 == null) return Iter.nullIterator(); ;
             Iterator<Tuple<Node>> iter2 = TupleLib.convertToNodes(nodeTable, iter1) ;
             // iteratorControl() not needed due to public call above.
             return iter2 ;

@@ -20,7 +20,8 @@ package org.apache.jena.tdb1.store;
 
 
 import java.util.Iterator ;
-import org.apache.jena.atlas.iterator.NullIterator ;
+
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -44,26 +45,26 @@ public class TripleTable extends TableBase
         super(3, indexes, nodeTable, policy) ;
         //table = new NodeTupleTableConcrete(3, indexes, nodeTable, policy) ;
     }
-    
-    public boolean add( Triple triple ) 
-    { 
+
+    public boolean add( Triple triple )
+    {
         return add(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
 
-    public boolean add(Node s, Node p, Node o) 
-    { 
+    public boolean add(Node s, Node p, Node o)
+    {
         return table.addRow(s, p, o) ;
     }
-    
+
     /** Delete a triple  - return true if it was deleted, false if it didn't exist */
-    public boolean delete( Triple triple ) 
-    { 
+    public boolean delete( Triple triple )
+    {
         return delete(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
-    
+
     /** Delete a triple  - return true if it was deleted, false if it didn't exist */
-    public boolean delete(Node s, Node p, Node o) 
-    { 
+    public boolean delete(Node s, Node p, Node o)
+    {
         return table.deleteRow(s, p, o) ;
     }
 
@@ -72,11 +73,11 @@ public class TripleTable extends TableBase
     {
         Iterator<Tuple<NodeId>> iter = table.findAsNodeIds(s, p, o) ;
         if ( iter == null )
-            return new NullIterator<>() ;
+            return Iter.nullIterator();
         Iterator<Triple> iter2 = TupleLib.convertToTriples(table.getNodeTable(), iter) ;
         return iter2 ;
     }
-    
+
     /** Clear - does not clear the associated node tuple table */
     public void clearTriples()
     { table.clear() ; }

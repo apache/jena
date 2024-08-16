@@ -26,8 +26,6 @@ import java.util.Iterator;
 import java.util.function.Predicate;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.iterator.NullIterator;
-import org.apache.jena.atlas.iterator.SingletonIterator;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.atlas.lib.tuple.TupleFactory;
 import org.apache.jena.atlas.lib.tuple.TupleMap;
@@ -179,9 +177,9 @@ public class TupleIndexRecord extends TupleIndexBase
         // Is it a simple existence test?
         if ( numSlots == pattern.len() ) {
             if ( index.contains(minRec) )
-                return new SingletonIterator<>(pattern);
+                return Iter.singletonIterator(pattern);
             else
-                return new NullIterator<>();
+                return Iter.nullIterator();
         }
 
         // ---- Retrieval.

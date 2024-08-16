@@ -132,7 +132,7 @@ public class GraphList
         GNode gn = new GNode(graph, s);
         if ( ! isAny(o) ) {
             if ( contains(gn, o) )
-                return Iter.singleton(Triple.create(s, ListPFunction.nListMember, o));
+                return Iter.singletonIterator(Triple.create(s, ListPFunction.nListMember, o));
             else
                 return Iter.nullIterator();
         }

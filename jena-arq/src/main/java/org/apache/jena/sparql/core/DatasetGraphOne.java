@@ -21,7 +21,6 @@ package org.apache.jena.sparql.core;
 import java.util.Iterator;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.iterator.NullIterator;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -139,7 +138,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
 
     @Override
     public Iterator<Node> listGraphNodes() {
-        return new NullIterator<>();
+        return Iter.nullIterator();
     }
 
     @Override
@@ -226,7 +225,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind {
         if ( isWildcard(g) || isDefaultGraph(g) )
             return G.triples2quadsDftGraph(graph.find(s, p, o));
         else
-            return new NullIterator<>();
+            return Iter.nullIterator();
     }
 
     @Override

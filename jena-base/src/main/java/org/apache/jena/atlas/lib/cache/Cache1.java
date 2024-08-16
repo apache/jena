@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import org.apache.jena.atlas.iterator.SingletonIterator;
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Cache;
 
 /** A one-slot cache. */
@@ -82,7 +82,7 @@ public class Cache1<K, V> implements Cache<K, V> {
 
     @Override
     public Iterator<K> keys() {
-        return new SingletonIterator<>(cacheKey);
+        return Iter.singletonIterator(cacheKey);
     }
 
     @Override

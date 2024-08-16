@@ -22,7 +22,6 @@ import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.iterator.SingletonIterator ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -46,30 +45,30 @@ public class QueryIterGraph extends QueryIterRepeatApply
 {
     /*
      * A note on the strange case of GRAPH ?g { ... ?g ... }
-     * 
+     *
      * The inner pattern is solved, then the outer ?g=... is added. This happens
      * because the outer ?g is added by QueryIterAssignVarValue which tests a
      * variable is the same as the binding and drops the binding if not. (which
      * is a specialised form of join.
      */
     protected OpGraph opGraph ;
-    
+
     public QueryIterGraph(QueryIterator input, OpGraph opGraph, ExecutionContext context)
     {
         super(input, context) ;
         this.opGraph = opGraph ;
     }
-    
+
     @Override
     protected QueryIterator nextStage(Binding outerBinding) {
         DatasetGraph ds = getExecContext().getDataset() ;
         // Is this closed?
         Iterator<Node> graphNameNodes = makeSources(ds, outerBinding, opGraph.getNode());
-        
+
 //        List<Node> x = Iter.toList(graphNameNodes) ;
 //        graphNameNodes = x.iterator() ;
 //        System.out.println(x) ;
-        
+
         QueryIterator current = new QueryIterGraphInner(outerBinding, graphNameNodes, opGraph, getExecContext()) ;
         return current ;
     }
@@ -82,17 +81,17 @@ public class QueryIterGraph extends QueryIterRepeatApply
 
     protected static Iterator<Node> makeSources(DatasetGraph data, Binding b, Node graphVar) {
         Node n2 = resolve(b, graphVar) ;
-        if ( n2 != null && n2.isLiteral() ) 
+        if ( n2 != null && n2.isLiteral() )
             // Literal possible after resolving
             return Iter.nullIterator() ;
-        
+
         // n2 is a URI or null.
         if ( n2 == null )
             // Do all submodels.
             return data.listGraphNodes() ;
-        return new SingletonIterator<>(n2) ;
+        return Iter.singletonIterator(n2) ;
     }
-    
+
 
     protected static class QueryIterGraphInner extends QueryIterSub
     {
@@ -146,15 +145,15 @@ public class QueryIterGraph extends QueryIterRepeatApply
             }
             return null;
         }
-        
+
         // Build iterator or return null for if there can't be any results.
         private QueryIterator buildIterator(Node gn) {
             QueryIterator qIter = buildIterator(parentBinding, gn, opSubstituted, getExecContext()) ;
             if ( qIter == null )
-                // Known to be nothing (e.g. graph does not exist). 
+                // Known to be nothing (e.g. graph does not exist).
                 // try again.
                 return null ;
-            
+
             if ( Var.isVar(opGraph.getNode()) ) {
                 // This is the join of the graph node variable to the sub-pattern solution.
                 // Do after the subpattern so that the variable is not visible to the
@@ -164,14 +163,14 @@ public class QueryIterGraph extends QueryIterRepeatApply
             }
             return qIter ;
         }
-        
+
         // Create the iterator for a cycle of one node - or return null if there can't be any results.
         protected static QueryIterator buildIterator(Binding binding, Node graphNode, Op opExec, ExecutionContext outerCxt) {
             if ( !graphNode.isURI() && !graphNode.isBlank() )
                 // e.g. variable bound to a literal or blank node.
                 throw new ARQInternalErrorException("QueryIterGraphInner.buildIterator: Not a URI or blank node: "+graphNode) ;
-            
-            // We can't just use DatasetGraph.getGraph because it may 
+
+            // We can't just use DatasetGraph.getGraph because it may
             // "auto-create" graphs. Use the containsGraph function.
             boolean syntheticGraph = ( Quad.isDefaultGraph(graphNode) || Quad.isUnionGraph(graphNode) ) ;
             if ( ! syntheticGraph && ! outerCxt.getDataset().containsGraph(graphNode) )
@@ -182,7 +181,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
             if ( g == null )
                 return null ;
                 //throw new ARQInternalErrorException(".containsGraph was true but .getGraph is null") ;
-            
+
             ExecutionContext cxt2 = new ExecutionContext(outerCxt, g) ;
             QueryIterator subInput = QueryIterSingleton.create(binding, cxt2) ;
             return QC.execute(opExec, subInput, cxt2) ;
