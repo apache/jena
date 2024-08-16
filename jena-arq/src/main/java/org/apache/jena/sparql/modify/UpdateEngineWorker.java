@@ -533,7 +533,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         // ... but that's going to happen again :-(
         if ( query == null ) {
             Binding binding = (null != inputBinding) ? inputBinding : BindingRoot.create();
-            return Iter.singleton(binding);
+            return Iter.singletonIterator(binding);
         }
 
         // Not QueryExecDataset.dataset(...) because of initialBinding.

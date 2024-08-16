@@ -48,7 +48,7 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
         }
         // If there's only a single distinct prefix then just return a singleton
         if (Arrays.compare(minRecord.getKey(), 0, keyPrefixLength, maxRecord.getKey(), 0, keyPrefixLength) == 0) {
-            return Iter.singleton(minRecord);
+            return Iter.singletonIterator(minRecord);
         }
         // Otherwise need the full iterator
         return new BPTreeDistinctKeyPrefixIterator(node, keyPrefixLength, minRecord, maxRecord);
@@ -131,7 +131,7 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
             Record subtreeMin = n.minRecord();
             Record subtreeMax = n.maxRecord();
             if (haveSamePrefix(subtreeMin, subtreeMax)) {
-                return Iter.singleton(subtreeMin);
+                return Iter.singletonIterator(subtreeMin);
             }
             r = loadStack(n);
         } else {
@@ -156,7 +156,7 @@ class BPTreeDistinctKeyPrefixIterator implements Iterator<Record> {
             Record lowRecord = records.getLowRecord();
             if (haveSamePrefix(lowRecord, records.getHighRecord())) {
                 // If the low and high keys for this page have the same prefix then just return a singleton iterator
-                iter = Iter.singleton(lowRecord);
+                iter = Iter.singletonIterator(lowRecord);
             } else {
                 // Otherwise need to scan the whole page
                 iter = records.getRecordBuffer().iterator();

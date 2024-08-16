@@ -310,7 +310,7 @@ public class JoinClassifier
     // XXX This method could go to OpLib or the Op interface directly
     private static Iterator<Op> getSubOps(Op op) {
         if (op instanceof Op1)
-            return Iter.singleton(((Op1)op).getSubOp());
+            return Iter.singletonIterator(((Op1)op).getSubOp());
 
         if (op instanceof Op2) {
             Op2 x = (Op2)op;

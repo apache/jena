@@ -26,7 +26,13 @@ import java.util.function.Consumer;
 /**
  *  Null Iterator - also guaranteed shareable and immutable
  */
+@Deprecated
 public class NullIterator<T> implements Iterator<T> {
+
+    public static <X> NullIterator<X> create(){ return new NullIterator<>(); }
+
+    private NullIterator() {}
+
     @Override
     public boolean hasNext() {
         return false;
@@ -41,4 +47,8 @@ public class NullIterator<T> implements Iterator<T> {
     public void forEachRemaining(Consumer<? super T> action) {
         Objects.requireNonNull(action);
     }
+
+    @Override
+    public void remove()
+    { throw new UnsupportedOperationException("NullIterator.remove") ;}
 }

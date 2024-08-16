@@ -25,11 +25,9 @@ public class SingletonIterator<T> implements Iterator<T>
 {
     private T thing = null ;
     private boolean yielded = false ;
-    
-    public static <T> SingletonIterator<T> create(T thing) { return new SingletonIterator<>(thing) ; }
-    
+
     public SingletonIterator(T thing) { this.thing = thing ; }
-    
+
     @Override
     public boolean hasNext()
     {
@@ -47,5 +45,5 @@ public class SingletonIterator<T> implements Iterator<T>
 
     @Override
     public void remove()
-    { throw new NoSuchElementException("SingletonIterator.remove") ;}
+    { throw new UnsupportedOperationException("SingletonIterator.remove") ;}
 }
