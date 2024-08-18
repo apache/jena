@@ -33,6 +33,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.out.NodeFmtLib;
+import org.apache.jena.riot.system.RiotChars;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -476,7 +477,7 @@ public class FmtUtils {
             return true;
 
         for ( int idx = 0 ; idx < localname.length() ; idx++ ) {
-            char ch = localname.charAt(idx);
+            int ch = localname.codePointAt(idx);
             if ( idx == 0 ) {
                 if ( !validFirstPNameChar(ch) )
                     return false;
@@ -492,41 +493,18 @@ public class FmtUtils {
     }
 
     // first char as per options in first bracketed production in 169: https://www.w3.org/TR/sparql11-query/#rPN_LOCAL
-    private static boolean validFirstPNameChar(char ch) {
-        return validPNameCharU(ch) || ( ch >= '0' && ch <= '9' ) || ( ch == '%' ) ;
+    private static boolean validFirstPNameChar(int ch) {
+        return RiotChars.isPNChars_U_N(ch) || ( ch == '%' ) ;
     }
 
     // neither first char nor last in middle repeated production in 169: https://www.w3.org/TR/sparql11-query/#rPN_LOCAL
-    private static boolean validMidPNameChar(char ch) {
-        return validPNameChar(ch) || ( ch == '.' ) || ( ch == ':' ) || ( ch == '%' ) ;
+    private static boolean validMidPNameChar(int ch) {
+        return RiotChars.isPNChars(ch) || ( ch == '.' ) || ( ch == ':' ) || ( ch == '%' ) ;
     }
 
     // last char, but not first, in last production in 169: https://www.w3.org/TR/sparql11-query/#rPN_LOCAL
-    private static boolean validEndPNameChar(char ch) {
-        return validPNameChar(ch) || ( ch == ':' ) || ( ch == '%' ) ;
-    }
-
-    // production 164: https://www.w3.org/TR/sparql11-query/#rPN_CHARS_BASE
-    private static boolean validPNameCharBase(char ch) {
-        return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= '\u00C0' && ch <= '\u00D6') ||
-                (ch >= '\u00D8' && ch <= '\u00F6') || (ch >= '\u00F8' && ch <= '\u02FF') ||
-                (ch >= '\u0370' && ch <= '\u037D') || (ch >= '\u037F' && ch <= '\u1FFF') ||
-                (ch >= '\u200C' && ch <= '\u200D') || (ch >= '\u2070' && ch <= '\u218F') ||
-                (ch >= '\u2C00' && ch <= '\u2FEF') || (ch >= '\u3001' && ch <= '\uD7FF') ||
-                (ch >= '\uF900' && ch <= '\uFDCF') || (ch >= '\uFDF0' && ch <= '\uFFFD');
-        // 32bit unicode chars are 2 Java chars ( ch >= '\u10000' && ch <= '\uEFFFF' )
-    }
-
-    // production 165: https://www.w3.org/TR/sparql11-query/#rPN_CHARS_U
-    private static boolean validPNameCharU(char ch) {
-        return validPNameCharBase(ch) || ( ch == '_' ) ;
-    }
-
-    // production 167: https://www.w3.org/TR/sparql11-query/#rPN_CHARS
-    private static boolean validPNameChar(char ch) {
-        return validPNameCharU(ch) ||
-                ( ch == '-' ) || ( ch >= '0' && ch <= '9' ) || ( ch == '\u00B7' ) ||
-                ( ch >= '\u0300' && ch <= '\u036F' ) || ( ch >= '\u203F' && ch <= '\u2040' ) ;
+    private static boolean validEndPNameChar(int ch) {
+        return RiotChars.isPNChars(ch) || ( ch == ':' ) || ( ch == '%' ) ;
     }
 
     static boolean applyUnicodeEscapes = false ;
