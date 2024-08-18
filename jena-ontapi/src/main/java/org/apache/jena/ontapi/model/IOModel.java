@@ -72,6 +72,7 @@ interface IOModel<R extends Model> extends Model {
      * @param writer the output writer
      * @return this model
      */
+    @Deprecated
     @Override
     R write(Writer writer);
 

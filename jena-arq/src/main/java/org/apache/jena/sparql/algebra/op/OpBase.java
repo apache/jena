@@ -29,29 +29,29 @@ public abstract class OpBase extends PrintSerializableBase implements Op
 {
     @Override
     public abstract int hashCode();
+
     @Override
     public abstract boolean equalTo(Op other, NodeIsomorphismMap labelMap);
 
     @Override
-    final public boolean equals(Object other)
-    { 
-        if ( other == null ) return false;
-        if ( this == other ) return true;
+    final public boolean equals(Object other) {
+        if ( other == null )
+            return false;
+        if ( this == other )
+            return true;
 
-        if ( ! ( other instanceof Op ) )
+        if ( !(other instanceof Op) )
             return false;
         return equalTo((Op)other, null);
     }
 
     @Override
-    public void output(IndentedWriter out)
-    {
+    public void output(IndentedWriter out) {
         output(out, null);
     }
 
     @Override
-    public void output(IndentedWriter out, SerializationContext sCxt)
-    {
+    public void output(IndentedWriter out, SerializationContext sCxt) {
         int line = out.getRow();
         WriterOp.output(out, this, sCxt);
         if ( line != out.getRow() )
@@ -61,7 +61,7 @@ public abstract class OpBase extends PrintSerializableBase implements Op
     // Constants used in hashing to stop an element and it's sub-element
     // (if just one) having the same hash.  That isn't usually any problem but
     // it's easy to avoid so we do.
-    
+
     static final int HashBasicGraphPattern      = 0xB1;
 //    static final int HashGroup                = 0xB2;
 //    static final int HashUnion                = 0xB3;
@@ -75,6 +75,4 @@ public abstract class OpBase extends PrintSerializableBase implements Op
     static final int HashTriple                 = 0xBA;
     static final int HashQuad                   = 0xBB;
     static final int HashQuadBlock              = 0xBC;
-
-
 }

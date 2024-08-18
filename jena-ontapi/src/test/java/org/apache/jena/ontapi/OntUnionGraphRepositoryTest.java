@@ -66,7 +66,7 @@ public class OntUnionGraphRepositoryTest {
         Assertions.assertEquals(List.of(uFood), uWine.subGraphs().collect(Collectors.toList()));
         Assertions.assertEquals(List.of(uWine), uFood.subGraphs().collect(Collectors.toList()));
 
-        Assertions.assertEquals(2, repository.count());
+        Assertions.assertEquals(4, repository.count());
         Assertions.assertEquals(Set.of(uWine, uFood), repository.graphs().collect(Collectors.toSet()));
     }
 

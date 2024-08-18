@@ -26,8 +26,6 @@ import java.util.stream.Stream;
 
 /**
  * A common super-type for all the abstractions in this ontology representation package.
- * This is an analogue of the {@link org.apache.jena.ontology.OntResource Jena OntResource} interface,
- * but for {@link OntModel OWL2 Ontology RDF Graph Model}.
  */
 interface OntResource extends Resource {
 

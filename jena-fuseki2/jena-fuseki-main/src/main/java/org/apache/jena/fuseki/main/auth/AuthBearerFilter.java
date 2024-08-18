@@ -26,8 +26,6 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
-
-import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.http.auth.AuthHeader;
@@ -66,38 +64,37 @@ import org.slf4j.Logger;
  */
 public class AuthBearerFilter implements Filter {
     private static Logger log = Fuseki.serverLog;
-    private final Function<String, String> verifiedUser;
-    private final boolean requireBearer;
-
-    public enum BearerMode { REQUIRED, OPTIONAL/*, NONE*/ }
+    private final Function<String, String> getPrincipalFromToken;
+    private final BearerMode bearerMode;
 
     /**
-     * Create a servlet filter that verifies a JWT as bearer authentication. Only
-     * requests with a verifiable bearer authorization header are accepted. If there
+     * Create a servlet filter that handles bearer authentication. Only
+     * requests with a bearer authorization header are accepted. If there
      * is no "Authentication" header, or it does not specify "Bearer", respond with a
-     * 401 challenge asking for a bearer token (customisable behaviour via {@link #sendResponseNoAuthPresent(HttpServletResponse)}).
+     * 401 challenge asking for a bearer token (customisable behaviour via
+     * {@link #sendResponseNoAuthPresent(HttpServletResponse)}).
      * <p>
      * This is equivalent to calling the 2-argument constructor with
      * "{@code requireBearer=true}".
      */
-    public AuthBearerFilter(Function<String, String> verifiedUser) {
-        this(verifiedUser, BearerMode.REQUIRED);
+    public AuthBearerFilter(Function<String, String> getPrincipalFromToken) {
+        this(getPrincipalFromToken, BearerMode.REQUIRED);
     }
 
     /**
-     * Create a servlet filter that verifies a JWT as bearer authentication.
+     * Create a servlet filter that handled bearer authentication.
      *
-     * @param verifiedUser Function to take the encoded bearer token and return the
+     * @param getPrincipalFromToken Function to take the encoded bearer token and return the
      *     user name of a verified user.
      * @param bearerMode Whether bearer required or not.
      *     If set OPTIONAL, no auth, Basic and Digest requests will pass through.
      *     If set REQUIRED, Bearer must be present, and no auth causes a challenge.
      */
-    public AuthBearerFilter(Function<String, String> verifiedUser, BearerMode bearerMode) {
+    public AuthBearerFilter(Function<String, String> getPrincipalFromToken, BearerMode bearerMode) {
         Objects.requireNonNull(bearerMode);
-        Objects.requireNonNull(verifiedUser);
-        this.verifiedUser = verifiedUser;
-        this.requireBearer = (bearerMode == BearerMode.REQUIRED);
+        Objects.requireNonNull(getPrincipalFromToken);
+        this.getPrincipalFromToken = getPrincipalFromToken;
+        this.bearerMode = bearerMode;
     }
 
     @Override
@@ -110,61 +107,76 @@ public class AuthBearerFilter implements Filter {
             HttpServletRequest request = (HttpServletRequest)servletRequest;
             HttpServletResponse response = (HttpServletResponse)servletResponse;
 
-            // Authorization
+            // Authorization or other header.
             String auth = getHttpAuthField(request);
 
-            // If auth required.
-            if ( auth == null && requireBearer ) {
-                sendResponseNoAuthPresent(response);
-                return;
-            }
-
-            if ( auth == null && ! requireBearer ) {
-                // No auth - not mandatory.
-                // Simply continue.
-                chain.doFilter(request, response);
-                return;
-            }
-
-            // ---- Authenticate present.
-
-            // The request to pass along the filter chain.
-            // Test for Auth but not bearer.
-            AuthHeader authHeader = getAuthToken(request, auth);
-            if ( requireBearer ) {
-                // Not the required bearer authenticate scheme.
-                if ( ! AuthScheme.BEARER.equals(authHeader.getAuthScheme())) {
-                    sendResponseBearerRequired(response);
-                    return;
+            if ( auth == null ) {
+                // No Authorization header.
+                switch(bearerMode) {
+                    // Not acceptable.
+                    case REQUIRED -> {
+                        sendResponseNoAuthPresent(response);
+                        return;
+                    }
+                    // Acceptable but not handled here.
+                    case OPTIONAL, NONE -> {
+                        // No authorization header.
+                        // Simply continue.
+                        chain.doFilter(request, response);
+                        return;
+                    }
                 }
             }
-            // Not required and not bearer auth.
-            switch(authHeader.getAuthScheme()) {
-                case BEARER :
-                    break;
-                case UNKNOWN :
-                case BASIC :
-                case DIGEST :
-                default :
-                    chain.doFilter(request, response);
-                    return;
-            }
-            // Bearer auth.
-            String bearerToken = authHeader.getBearerToken();
 
+            // ---- "Authorization:" header present.
+            AuthHeader authHeader = getAuthToken(request, auth);
+
+            // Test for Authorization: Bearer ..."
+            if ( ! authHeader.isBearerAuth() ) {
+                // Not "Authorization: Bearer ..."
+                switch(bearerMode) {
+                    case REQUIRED -> {
+                        sendResponseAuthBearerRequired(response);
+                        return;
+                    }
+                    case OPTIONAL, NONE -> {
+                          // Some other Authorization - pass on and hope something else can handle it.
+                          chain.doFilter(request, response);
+                          return;
+                      }
+                }
+            }
+
+            // Authorization: Bearer ..."
+            if ( bearerMode == BearerMode.NONE ) {
+                // Must not have "Authorization: Bearer ..."
+                sendResponseAuthBearerDenied(response);
+                return;
+            }
+
+            // ---- "Authorization:" header present and it is "Bearer ..."
+            String bearerToken = authHeader.getBearerToken();
+            // The bearerToken has not been decoded. It is the b64token of RFC 6750.
             if ( bearerToken == null ) {
+                // Consistency check.
                 log.warn("Not a legal bearer token: "+authHeader.getAuthArgs());
                 response.sendError(HttpSC.BAD_REQUEST_400);
                 return;
             }
-            if ( verifiedUser == null ) {
+
+            validateAuthToken(request, bearerToken);
+
+            // Request good!
+
+            if ( getPrincipalFromToken == null ) {
                 // No function to verify the token and extract the user.
+                // Bad configuration. We must reject it.
                 response.sendError(HttpSC.BAD_REQUEST_400);
                 return;
             }
 
-            // Extract user from the (still encoded) token.
-            String user = verifiedUser.apply(bearerToken);
+            // Extract user from the b64token.
+            String user = getPrincipalFromToken.apply(bearerToken);
             if ( user == null ) {
                 response.sendError(HttpSC.FORBIDDEN_403);
                 return;
@@ -173,8 +185,8 @@ public class AuthBearerFilter implements Filter {
             chain.doFilter(chainRequest, servletResponse);
 
         } catch (Throwable ex) {
-            log.info("Filter: unexpected exception: "+ex.getMessage(),ex);
-            ServletOps.error(500);
+            log.warn("Filter: unexpected exception: "+ex.getMessage(),ex);
+            ServletOps.error(HttpSC.INTERNAL_SERVER_ERROR_500);
             return;
         }
     }
@@ -187,43 +199,56 @@ public class AuthBearerFilter implements Filter {
      * Usually "Authenticate" ... although AWS Cognito is different.
      */
     protected String getHttpAuthField(HttpServletRequest request) {
-
         return request.getHeader(HttpNames.hAuthorization);
     }
 
     /**
-     * Send the response when the authentication information is missing.
+     * Get an {@link AuthHeader} for the request.
+     * This method parses the header value (RFC 7230, RFC 9112)
+     * Usually, this is the the "Authorization" header
+     * ... although AWS Cognito is different.
+     */
+    protected AuthHeader getAuthToken(HttpServletRequest request, String authHeaderValue) {
+        return AuthHeader.parseAuth(authHeaderValue);
+    }
+
+    /**
+     * Validate a bearer authentication token.
+     * <p>
+     * The token argument is the string found in the "Authorization" header (RFC 6750).
+     * Validation can require interaction with external systems.
+     */
+    protected void validateAuthToken(HttpServletRequest request, String b64token) {}
+
+    /**
+     * Send a response when the Authorization header is not present.
      * Either 401 (Challenge, expecting the client to send the information)
      * or 403 (no challenge step).
      */
     protected void sendResponseNoAuthPresent(HttpServletResponse response) throws IOException {
-        response.setHeader(HttpNames.hWWWAuthenticate, "Bearer");   // No realm, no scope.
+        response.setHeader(HttpNames.hWWWAuthenticate, "Bearer");
         response.sendError(HttpSC.UNAUTHORIZED_401);
     }
 
     /**
-     * Send the response when the authentication required is "Bearer"
-     * and it was something else ("Basic", "Digest").
+     * Send a response when the Authorization header is present but the auth-schems is not "Bearer"
+     * (it's "Basic", "Digest" or junk).
      * Either 401 (Challenge, expecting the client to send the right information)
      * or 403 (no challenge, reject now).
      * <p>
      * Note: 403 is safer to avoid repeated attempts with the same non-bearer authentication
      * when bearer authentication is being used for machine-to-machine services.
      */
-    protected void sendResponseBearerRequired(HttpServletResponse response) throws IOException {
-        //sendResponseChallenge(response);
+    protected void sendResponseAuthBearerRequired(HttpServletResponse response) throws IOException {
         response.sendError(HttpSC.FORBIDDEN_403);
     }
 
     /**
-     * Create a AuthHeader
-     * Usually, this reads the "Authenticate" and parses it (RFC 7230, RFC 9112)
-     * ... although AWS Cognito is different.
-     * The header to access is controlled by {@link #getHttpAuthField(HttpServletRequest)}
-     * and the value of the header is passed as {@code authHeaderValue}.
+     * Send a response when the Authorization header is present, it is "Bearer",
+     * but bearer mode is explicitly not allowed.
      */
-    protected AuthHeader getAuthToken(HttpServletRequest request, String authHeaderValue) {
-        return AuthHeader.parseAuth(authHeaderValue);
+    protected void sendResponseAuthBearerDenied(HttpServletResponse response) throws IOException {
+        response.sendError(HttpSC.BAD_REQUEST_400);
     }
 
     /** Wrapper to add the value for "getUserPrincipal"/"getRemoteUser". */

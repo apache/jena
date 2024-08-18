@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,12 +24,12 @@ import java.util.Vector;
 
 /**
  * A Regular Expression Parser.
- * 
+ *
  * {@literal @xerces.internal}
  *
  * @version $Id: RegexParser.java 1033661 2010-11-10 19:31:44Z knoaman $
  */
-@SuppressWarnings("all")
+@SuppressWarnings({"unchecked", "rawtypes"})
 class RegexParser {
     static final int T_CHAR = 0;
     static final int T_EOF = 1;
@@ -97,7 +97,7 @@ class RegexParser {
             else {
                 this.resources = ResourceBundle.getBundle("org.apache.jena.ext.xerces.impl.xpath.regex.message");
             }
-        } 
+        }
         catch (MissingResourceException mre) {
             throw new RuntimeException("Installation Problem???  Couldn't load messages: "
                                        + mre.getMessage());
@@ -224,7 +224,7 @@ class RegexParser {
                   ret = T_CARET;
               }
               break;
-          case '$': 
+          case '$':
               if (this.isSet(RegularExpression.XMLSCHEMA_MODE)) {
                   ret = T_CHAR;
               }
@@ -279,7 +279,7 @@ class RegexParser {
                 throw ex("parser.next.2", this.offset-2);
             }
             break;
-            
+
           case '\\':
             ret = T_BACKSOLIDUS;
             if (this.offset >= this.regexlen)
@@ -300,7 +300,7 @@ class RegexParser {
      *            | atom (('*' | '+' | '?' | minmax ) '?'? )?)
      *            | '(?=' regex ')'  | '(?!' regex ')'  | '(?&lt;=' regex ')'  | '(?&lt;!' regex ')'
      * atom ::= char | '.' | range | '(' regex ')' | '(?:' regex ')' | '\' [0-9]
-     *          | '\w' | '\W' | '\d' | '\D' | '\s' | '\S' | category-block 
+     *          | '\w' | '\W' | '\d' | '\D' | '\s' | '\S' | category-block
      */
     Token parseRegex() throws ParseException {
         Token tok = this.parseTerm();
@@ -466,7 +466,7 @@ class RegexParser {
         if ('1' <= ch && ch <= '9') {
             refno = ch-'0';
             int finalRefno = refno;
-            
+
             if (this.parennumber <= refno)
                 throw ex("parser.parse.2", this.offset);
 
@@ -640,7 +640,7 @@ class RegexParser {
      * min ::= [0-9]+
      * max ::= [0-9]+
      */
-    Token parseFactor() throws ParseException {        
+    Token parseFactor() throws ParseException {
         int ch = this.read();
         Token tok;
         switch (ch) {
@@ -699,7 +699,7 @@ class RegexParser {
                    if (off >= this.regexlen) {
                        throw ex("parser.quantifier.3", this.offset);
                    }
-                   else if ((ch = this.regex.charAt(off++)) >= '0' && ch <= '9') {                       
+                   else if ((ch = this.regex.charAt(off++)) >= '0' && ch <= '9') {
 
                         max = ch -'0';       // {min,max}
                         while (off < this.regexlen
@@ -714,7 +714,7 @@ class RegexParser {
                             throw ex("parser.quantifier.4", this.offset);
                    }
                    else { // assume {min,}
-                        max = -1;           
+                        max = -1;
                     }
                 }
 
@@ -905,7 +905,7 @@ class RegexParser {
                     c = this.processCIinCharacterClass(tok, c);
                     if (c < 0)  end = true;
                     break;
-                    
+
                   case 'p':
                   case 'P':
                     int pstart = this.offset;
@@ -1008,7 +1008,7 @@ class RegexParser {
         if (this.read() == T_EOF) {
             throw this.ex("parser.cc.2", this.offset);
         }
-        
+
         if (!useNrange && nrange) {
             base.subtractRanges(tok);
             tok = base;
@@ -1193,11 +1193,11 @@ class RegexParser {
         if (ch < 'a')  return -1;
         return ch-'a'+10;
     }
-    
+
     static protected final void addCaseInsensitiveChar(RangeToken tok, int c) {
         final int[] caseMap = CaseInsensitiveMap.get(c);
         tok.addRange(c, c);
-        
+
         if (caseMap != null) {
             for (int i=0; i<caseMap.length; i+=2) {
                 tok.addRange(caseMap[i], caseMap[i]);
@@ -1205,7 +1205,7 @@ class RegexParser {
         }
 
     }
-    
+
     static protected final void addCaseInsensitiveCharRange(RangeToken tok, int start, int end) {
         int[] caseMap;
         int r1, r2;

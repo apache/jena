@@ -62,6 +62,7 @@ public class RDFSForwardRuleReasoner extends GenericRuleReasoner {
      * Return the Jena Graph Capabilities that the inference graphs generated
      * by this reasoner are expected to conform to.
      */
+    @Deprecated
     @Override
     public Capabilities getGraphCapabilities() {
         return BaseInfGraph.reasonerInfCapabilities;

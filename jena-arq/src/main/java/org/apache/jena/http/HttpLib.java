@@ -103,16 +103,32 @@ public class HttpLib {
         return "Basic " + Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
     }
 
+    public static String BEARER = "Bearer";
+    public static String BEARER_PREFIX = BEARER+" ";
+
     /**
      * Calculate bearer auth header value.
      * The token supplied is expected to already be in base 64.
      * Use with header "Authorization" (constant {@link HttpNames#hAuthorization}).
      */
-    public static String bearerAuth(String tokenBase64) {
+    public static String bearerAuthHeader(String tokenBase64) {
         Objects.requireNonNull(tokenBase64);
         if ( tokenBase64.indexOf(' ') >= 0 )
             throw new IllegalArgumentException("Base64 token contains a space");
-        return "Bearer " + tokenBase64;
+        return BEARER_PREFIX + tokenBase64;
+    }
+
+    /**
+     * Extract the token, without decoding,
+     * The token supplied is expected to already be in base 64.
+     * Use with header "Authorization" (constant {@link HttpNames#hAuthorization}).
+     */
+    public static String bearerAuthTokenFromHeader(String authHeaderString) {
+        Objects.requireNonNull(authHeaderString);
+        if ( ! authHeaderString.startsWith(BEARER_PREFIX) ) {
+            throw new IllegalArgumentException("Auth headerString does not start 'Bearer ...'");
+        }
+        return authHeaderString.substring("Bearer ".length()).trim();
     }
 
     /**

@@ -19,7 +19,7 @@
 package org.apache.jena.sparql.util;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.io.PrintUtils ;
+import org.apache.jena.atlas.io.Printable;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.engine.Plan ;
@@ -33,14 +33,13 @@ public abstract class PrintSerializableBase implements PrintSerializable
     // final stops it being overridden and missing the output() route.
     @Override
     public final String toString()
-    { return PrintUtils.toString(this) ; }
-    
-    /** Normally overridden for better information */ 
+    { return Printable.toString(this) ; }
+
+    /** Normally overridden for better information */
     @Override
-    public void output(IndentedWriter out)
-    {
-        out.print(Plan.startMarker) ;
-        out.print(Lib.className(this)) ;
-        out.print(Plan.finishMarker) ;
+    public void output(IndentedWriter out) {
+        out.print(Plan.startMarker);
+        out.print(Lib.className(this));
+        out.print(Plan.finishMarker);
     }
 }

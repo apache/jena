@@ -78,7 +78,7 @@ public class ReaderRDFXML_StAX_SR implements ReaderRIOT
     }
 
      private void parse(XMLStreamReader xmlStreamReader, String xmlBase, ContentType ct, StreamRDF destination, Context context) {
-        ParserRDFXML_StAX_SR parser = new ParserRDFXML_StAX_SR(xmlStreamReader, xmlBase, parserProfile, destination, context);
+        ParserRRX_StAX_SR parser = new ParserRRX_StAX_SR(xmlStreamReader, xmlBase, parserProfile, destination, context);
         destination.start();
         try {
             parser.parse();

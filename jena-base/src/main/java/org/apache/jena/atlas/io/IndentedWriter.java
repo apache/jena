@@ -50,13 +50,23 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
 
     protected static final int INDENT = 2;
 
-    // Configuration.
+    // Size of one level of index
     protected int unitIndent = INDENT;
+    // The character used for indent unless padString is set.
     private char padChar = ' ';
+
+    // If set, a string used for the indent, instead of the padChar.
+    // Multiples of this string are used for indent.
+    // unitIndent and padChar are ignored
     private String padString = null;
+
+    // String at the beginning of each line, before the line number and before the indentation.
     private String linePrefix = null;
+
     protected boolean lineNumbers = false;
     protected boolean flatMode = false;
+    // Either flush on each newline or leave it to the Writer to buffer.
+    // The latter is more efficient at scale but requires a flush at the end.
     private boolean flushOnNewline = false;
 
     // Internal state.
@@ -165,6 +175,8 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
             printOneChar(ch);
     }
 
+    // Last character output in printOneChar.
+    // Used to work with \r\n
     private char lastChar = '\0';
 
     // Worker

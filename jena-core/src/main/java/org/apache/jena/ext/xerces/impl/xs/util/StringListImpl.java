@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,20 +26,20 @@ import org.apache.jena.ext.xerces.xs.StringList;
 /**
  * Contains a list of Strings.
  *
- * {@literal @xerces.internal} 
+ * {@literal @xerces.internal}
  *
  * @author Sandy Gao, IBM
  *
  * @version $Id: StringListImpl.java 776326 2009-05-19 14:27:24Z mrglavas $
  */
-@SuppressWarnings("all")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public final class StringListImpl extends AbstractList implements StringList {
 
     /**
      * An immutable empty list.
      */
     public static final StringListImpl EMPTY_LIST = new StringListImpl(new String[0], 0);
-    
+
     // The array to hold all data
     private final String[] fArray;
     // Number of elements in this list
@@ -50,14 +50,14 @@ public final class StringListImpl extends AbstractList implements StringList {
     private final Vector fVector;
 
     public StringListImpl(Vector v) {
-        fVector = v;        
+        fVector = v;
         fLength = (v == null) ? 0 : v.size();
         fArray = null;
     }
 
     /**
      * Construct an XSObjectList implementation
-     * 
+     *
      * @param array     the data array
      * @param length    the number of elements
      */
@@ -77,12 +77,12 @@ public final class StringListImpl extends AbstractList implements StringList {
     }
 
     /**
-     *  Checks if the <code>GenericString</code> <code>item</code> is a member 
-     * of this list. 
-     * @param item  <code>GenericString</code> whose presence in this list is 
-     *   to be tested. 
-     * @return  True if this list contains the <code>GenericString</code> 
-     *   <code>item</code>. 
+     *  Checks if the <code>GenericString</code> <code>item</code> is a member
+     * of this list.
+     * @param item  <code>GenericString</code> whose presence in this list is
+     *   to be tested.
+     * @return  True if this list contains the <code>GenericString</code>
+     *   <code>item</code>.
      */
     @Override
     public boolean contains(String item) {
@@ -114,7 +114,7 @@ public final class StringListImpl extends AbstractList implements StringList {
         }
         return fArray[index];
     }
-    
+
     /*
      * List methods
      */
@@ -134,7 +134,7 @@ public final class StringListImpl extends AbstractList implements StringList {
     public int size() {
         return getLength();
     }
-    
+
     @Override
     public Object[] toArray() {
         if (fVector != null) {
@@ -144,7 +144,7 @@ public final class StringListImpl extends AbstractList implements StringList {
         toArray0(a);
         return a;
     }
-    
+
     @Override
     public Object[] toArray(Object[] a) {
         if (fVector != null) {
@@ -161,7 +161,7 @@ public final class StringListImpl extends AbstractList implements StringList {
         }
         return a;
     }
-    
+
     private void toArray0(Object[] a) {
         if (fLength > 0) {
             System.arraycopy(fArray, 0, a, 0, fLength);

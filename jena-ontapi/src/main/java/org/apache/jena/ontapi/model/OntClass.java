@@ -20,7 +20,6 @@ package org.apache.jena.ontapi.model;
 
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
@@ -40,7 +39,7 @@ import java.util.stream.Stream;
 /**
  * A base abstraction for any Class Expressions (both named and anonymous).
  *
- * @see Named - an OWL Class
+ * @see Named an OWL Class
  * @see <a href="https://www.w3.org/TR/owl2-quick-reference/#Class_Expressions">2.1 Class Expressions</a>
  * @see <a href="https://www.w3.org/TR/owl2-syntax/#Class_Expressions">8 Class Expressions</a>
  */
@@ -89,7 +88,6 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
      * @return <b>distinct</b> {@code Stream} of sub {@link OntClass class expression}s
      * @see #subClasses()
      * @see #superClasses(boolean)
-     * @see org.apache.jena.ontology.OntClass#listSubClasses(boolean)
      */
     Stream<OntClass> subClasses(boolean direct);
 
@@ -134,7 +132,6 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
      * @return <b>distinct</b> {@code Stream} of super {@link OntClass class expression}s
      * @see #superClasses()
      * @see #subClasses(boolean)
-     * @see org.apache.jena.ontology.OntClass#listSuperClasses(boolean)
      */
     Stream<OntClass> superClasses(boolean direct);
 
@@ -159,15 +156,11 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
      * This method may therefore return complete results only in models that have an attached reasoner.
      * For built-in properties the method returns always {@code false}.
      * If there are no domains for the property, then it is considered as global and is attached to root classes.
-     * <p>
-     * The behavior of this method must be identical to the behavior of the Jena method
-     * {@link org.apache.jena.ontology.OntClass#hasDeclaredProperty(Property, boolean)}.
      *
      * @param property {@link OntProperty}, not {@code null}
      * @param direct   {@code boolean}: if {@code true} analyses only the directly adjacent domains in the subclass relation,
      *                 otherwise takes into account the class hierarchy
      * @return {@code boolean}, {@code true} if the property is associated with this class by its domain, otherwise {@code false}
-     * @see org.apache.jena.ontology.OntClass#hasDeclaredProperty(Property, boolean)
      */
     boolean hasDeclaredProperty(OntProperty property, boolean direct);
 
@@ -179,9 +172,6 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
      * The properties in the frame-like view of the class are determined by comparing
      * the domain of properties in this class's {@link OntModel} with the class itself.
      * See: <a href="https://jena.apache.org/documentation/notes/rdf-frames.html">Apache Jena: Presenting RDF as frames</a> for more details.
-     * <p>
-     * The behavior of this method must be identical to the behavior of the Jena method
-     * {@link org.apache.jena.ontology.OntClass#listDeclaredProperties(boolean)}}.
      *
      * @param direct {@code boolean}: if {@code true} analyses only the directly adjacent domains in the subclass relation,
      *               otherwise takes into account the class hierarchy
@@ -196,9 +186,6 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
      * or (ii) it has no declared superclasses.
      * <p>
      * {@code owl:Nothing} cannot be root.
-     * <p>
-     * The behavior of this method must be identical to the behavior of the Jena method
-     * {@link org.apache.jena.ontology.OntClass#isHierarchyRoot()}.
      *
      * @return {@code true} if this class is the root of the class hierarchy in the model it is attached to
      */
@@ -1012,8 +999,7 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
     }
 
     /**
-     * An OWL Class {@link OntEntity Entity}, a named class expression.
-     * This is an analogue of {@link org.apache.jena.ontology.OntClass}, but for OWL2.
+     * An Ontology Class {@link OntEntity Entity}, a named class expression.
      *
      * @see <a href="https://www.w3.org/TR/owl2-syntax/#Classes">5.1 Classes</a>
      */

@@ -26,10 +26,10 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    // Local file and rdf11-xml - detailed checking.
+    // Local tests, extensions and error reports.
     TS_RRX.class,
 
-    // Manifest-driven rdf11-xml - all parsers
+    // Manifest-driven RDF 1.1 rdf-xml test suite - all parsers
     Scripts_RRX_RDFXML.class,
 
     // jena-core legacy test (RDF 1.0)
@@ -43,7 +43,7 @@ import org.junit.runners.Suite;
  * converted to run as RIOT tests.
  * <p>
  * {@linkplain TS_RRX} runs local RRX tests by comparing the different RRX parsers
- * to ARP1. tese test check for the same number of warnig as well.
+ * to ARP1. These test check for the same number of warning as well.
  * The {@code TestRDFXML_RRX_*} are running on extra local files. The
  * TestRDFXML_W3C_* are running on the RDF 1.0 test suite that ARP1 has used.
  * <p>

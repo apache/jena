@@ -32,17 +32,15 @@ import java.util.stream.Stream;
  * Graph repository.
  * Each {@link Graph} is associated with ID.
  * For OWL Ontology Graphs, Graph ID can be {@link OntID#getImportsIRI()}.
- *
- * @see org.apache.jena.ontology.OntDocumentManager
  */
 public interface GraphRepository {
 
     /**
-     * A factory method to creates {@link GraphRepository} instance
-     * that loads graphs on demand from the location to memory.
+     * A factory method to create {@link GraphRepository} instance
+     * that loads graphs on demand from the given location.
      * The location is specified by the method {@link DocumentGraphRepository#addMapping(String, String)}.
      * If there is no mapping specified,
-     * graph id (see {@link GraphRepository#get(String)}) will be used as a source URL or file path.
+     * graph id will be used as a source.
      *
      * @return {@link DocumentGraphRepository}
      */
@@ -52,12 +50,12 @@ public interface GraphRepository {
 
     /**
      * A factory method to creates {@link GraphRepository} instance
-     * that loads graphs on demand from the location.
+     * that loads graphs on demand from the given location.
      * The location is specified by the method {@link DocumentGraphRepository#addMapping(String, String)}.
      * If there is no mapping specified,
-     * graph id (see {@link GraphRepository#get(String)}) will be used as a source URL or file path.
+     * graph id will be used as a source URL or file path.
      *
-     * @param factory {@link Supplier} to produce new {@link Graph}, {@code null} for default
+     * @param factory {@link Supplier} to produce new {@link Graph}, not {@code null}
      * @return {@link DocumentGraphRepository}
      */
     static DocumentGraphRepository createGraphDocumentRepository(Supplier<Graph> factory) {
@@ -100,7 +98,7 @@ public interface GraphRepository {
      * Removes graph.
      *
      * @param id {@code String} Graph's identifier
-     * @return {@link Graph}
+     * @return {@link Graph} associated with the id, or null if there was no graph for the given id
      */
     Graph remove(String id);
 

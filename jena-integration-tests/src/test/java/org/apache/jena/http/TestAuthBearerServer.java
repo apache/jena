@@ -18,13 +18,15 @@
 
 package org.apache.jena.http;
 
-import static org.junit.Assert.fail;
+import static org.apache.jena.http.AuthBearerTestLib.attempt;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.auth.AuthBearerFilter;
+import org.apache.jena.fuseki.main.auth.BearerMode;
 import org.apache.jena.http.auth.AuthEnv;
-import org.apache.jena.sparql.exec.http.QueryExecHTTP;
+import org.junit.After;
 import org.junit.Test;
 
 /**
@@ -32,97 +34,127 @@ import org.junit.Test;
  */
 public class TestAuthBearerServer {
 
-    @Test public void modeBearerAlways() {
-        FusekiServer server = FusekiServer.create()
+    private static String databaseACL = "database_acl";
+    private static String databasePlain = "database_no_acl";
+    private static FusekiServer server(AuthBearerFilter authBearerFilter) {
+        return FusekiServer.create()
                 .port(0)
                 .auth(AuthScheme.BEARER)
                 .parseConfigFile("src/test/files/Fuseki/config-bearer.ttl")
-                // Default is AuthBearerFilter.BearerMode.REQUIRED
-                .addFilter("/*", new AuthBearerFilter(AuthBearerTestLib::subjectFromEncodedJWT))
+                .addFilter("/*", authBearerFilter)
                 .start();
+    }
+
+    @After
+    public void afterTest() {
+        AuthEnv.get().clearAuthEnv();
+    }
+
+    @Test public void testTokens() {
+        String jwt = AuthBearerTestLib.generateTestJWT("user1");
+        String u = AuthBearerTestLib.subjectFromEncodedJWT(jwt);
+        assertEquals("user1",u);
+    }
+
+    @Test public void modeBearerDefault() {
+        FusekiServer server = server(new AuthBearerFilter(AuthBearerTestLib::subjectFromEncodedJWT));
+        testModeBearerRequired(server);
+    }
+
+    @Test public void modeBearerRequired() {
+        FusekiServer server = server(new AuthBearerFilter(AuthBearerTestLib::subjectFromEncodedJWT, BearerMode.REQUIRED));
+        testModeBearerRequired(server);
+    }
+
+    private static void testModeBearerRequired(FusekiServer server) {
         String baseURL = "http://localhost:"+server.getHttpPort()+"/";
 
         try {
-            String JWT_user1 = AuthBearerTestLib.generateTestToken("user1");
-            String JWT_user2 = AuthBearerTestLib.generateTestToken("noSuchUser");
-            String URL1 = baseURL+"database1";
-            String URL2 = baseURL+"database2";
+            String JWT_user1 = AuthBearerTestLib.generateTestJWT("user1");
+            String JWT_user2 = AuthBearerTestLib.generateTestJWT("noSuchUser");
+            String URL1 = baseURL+databaseACL;
+            String URL2 = baseURL+databasePlain;
 
-            // 401
+            // Global setting
             AuthEnv.get().setBearerTokenProvider( (uri, challenge)-> uri.equals(URL1) ? JWT_user1 : null);
-            //System.out.println("database1, with user1 token (yes/401)");
-            attempt(URL1, null, true);
+
+            attempt(URL1, null, AuthBearerTestLib.Expect.SUCCESS);
             AuthEnv.get().setBearerTokenProvider( null );
 
             AuthEnv.get().clearAuthEnv();
 
-            //System.out.println("database1, with user1 token (yes)");
-            attempt(URL1, JWT_user1, true);
-            //System.out.println("database1, with user2 token (no)");
-            attempt(URL1, JWT_user2, false);
-            //System.out.println("database1, without token (no)");
-            attempt(URL1, null, false);
+            attempt(URL1, JWT_user1, AuthBearerTestLib.Expect.SUCCESS);
 
-            //System.out.println("database2, with user1 token (yes)");
-            attempt(URL2, JWT_user1, true);
-            //System.out.println("database2, with no token (no)");
-            // fails - bearer required.
-            attempt(URL2, null, false);
+            // User not authorized for this database
+            attempt(URL1, JWT_user2, AuthBearerTestLib.Expect.REJECT);
+
+            attempt(URL1, null,      AuthBearerTestLib.Expect.REJECT);
+
+            // User not authorized for this database by basic auth
+            AuthBearerTestLib.attemptBasic(URL1, "users1", "pw1", AuthBearerTestLib.Expect.REJECT);
+
+            attempt(URL2, JWT_user1, AuthBearerTestLib.Expect.SUCCESS);
+
+            // Fails - bearer required.
+            attempt(URL2, null, AuthBearerTestLib.Expect.REJECT);
+
+            AuthBearerTestLib.attemptBasic(URL2, "users1", "pw1", AuthBearerTestLib.Expect.REJECT);
+
         } finally { server.stop(); }
     }
 
-    @Test public void modePossibleBearerTesting() {
-        FusekiServer server = FusekiServer.create()
-                .port(0)
-                .auth(AuthScheme.BEARER)
-                .parseConfigFile("src/test/files/Fuseki/config-bearer.ttl")
-                .addFilter("/*", new AuthBearerFilter(AuthBearerTestLib::subjectFromEncodedJWT, AuthBearerFilter.BearerMode.OPTIONAL))
-                .start();
+    @Test public void modeBearerOptional() {
+        FusekiServer server = server(new AuthBearerFilter(AuthBearerTestLib::subjectFromEncodedJWT, BearerMode.OPTIONAL));
+
         try {
             String baseURL = "http://localhost:"+server.getHttpPort()+"/";
-            String JWT_user1 = AuthBearerTestLib.generateTestToken("user1");
-            String JWT_user2 = AuthBearerTestLib.generateTestToken("noSuchUser");
+            String JWT_user1 = AuthBearerTestLib.generateTestJWT("user1");
+            String JWT_user2 = AuthBearerTestLib.generateTestJWT("noSuchUser");
 
-            String URL1 = baseURL+"database1";
-            String URL2 = baseURL+"database2";
+            String URL1 = baseURL+databaseACL;
+            String URL2 = baseURL+databasePlain;
 
-            //System.out.println("database1, with user1 token (yes)");
-            attempt(URL1, JWT_user1, true);
-            //System.out.println("database1, with user2 token (no)");
-            attempt(URL1, JWT_user2, false);
-            //System.out.println("database1, without token (no)");
-            attempt(URL1, null, false);
+            attempt(URL1, JWT_user1, AuthBearerTestLib.Expect.SUCCESS);
 
-            //System.out.println("database2, with user1 token (yes)");
-            attempt(URL2, JWT_user1, true);
-            //System.out.println("database2, without token (yes)");
-            attempt(URL2, null, true);
+            attempt(URL1, JWT_user2, AuthBearerTestLib.Expect.REJECT);
+
+            attempt(URL1, null,      AuthBearerTestLib.Expect.REJECT);
+
+            AuthBearerTestLib.attemptBasic(URL1, "users1", "pw1", AuthBearerTestLib.Expect.REJECT);
+
+            attempt(URL2, JWT_user1, AuthBearerTestLib.Expect.SUCCESS);
+
+            attempt(URL2, null,      AuthBearerTestLib.Expect.SUCCESS);
+
+            // Optional bearer auth - pass through to the non-ACL setup.
+            AuthBearerTestLib.attemptBasic(URL2, "users1", "pw1", AuthBearerTestLib.Expect.SUCCESS);
 
         } finally { server.stop(); }
     }
 
-    private static void attempt(String URL, String JWT, boolean expectedToSucceed) {
-        if ( JWT != null )
-            AuthEnv.get().setBearerToken(URL, JWT);
+    @Test public void modeBearerNone() {
+        FusekiServer server = server(new AuthBearerFilter(AuthBearerTestLib::subjectFromEncodedJWT, BearerMode.NONE));
 
         try {
-            attempt(URL, expectedToSucceed);
-        } finally {
-            if ( JWT != null )
-                AuthEnv.get().setBearerToken(URL, null);
-        }
-    }
+            String baseURL = "http://localhost:"+server.getHttpPort()+"/";
+            String JWT_user1 = AuthBearerTestLib.generateTestJWT("user1");
+            String URL1 = baseURL+databaseACL;
+            String URL2 = baseURL+databasePlain;
 
-    private static void attempt(String URL, boolean expectedToSucceed) {
-        try {
-            boolean b = QueryExecHTTP.service(URL)
-                    .query("ASK{}")
-                    .ask();
-            if ( ! expectedToSucceed )
-                fail("Expected the operation to be rejected");
-        } catch (RuntimeException ex) {
-            if ( expectedToSucceed )
-                fail("Expected the operation to succeed");
-        }
+            // No bearer allowed.
+            attempt(URL1, JWT_user1, AuthBearerTestLib.Expect.REJECT);
+
+            // No auth setup for basic.
+            AuthBearerTestLib.attemptBasic(URL1, "users1", "pw1", AuthBearerTestLib.Expect.REJECT);
+
+            // No bearer allowed.
+            attempt(URL2, JWT_user1, AuthBearerTestLib.Expect.REJECT);
+
+            // No setting
+            attempt(URL2, null, AuthBearerTestLib.Expect.SUCCESS);
+
+            AuthBearerTestLib.attemptBasic(URL2, "users1", "pw1", AuthBearerTestLib.Expect.SUCCESS);
+
+        } finally { server.stop(); }
     }
 }

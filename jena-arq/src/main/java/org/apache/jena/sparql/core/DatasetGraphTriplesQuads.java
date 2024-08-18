@@ -43,7 +43,7 @@ public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
     final public void add(Node g, Node s, Node p, Node o) {
         if ( Quad.isUnionGraph(g))
             throw new AddDeniedException("Can't add to the union graph");
-        if ( Quad.isDefaultGraph(g) )
+        if ( g == null || Quad.isDefaultGraph(g) )
             addToDftGraph(s, p, o) ;
         else
             addToNamedGraph(g, s, p, o) ;
@@ -53,7 +53,7 @@ public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
     final public void delete(Node g, Node s, Node p, Node o) {
         if ( Quad.isUnionGraph(g))
             throw new DeleteDeniedException("Can't remove from the union graph");
-        if ( Quad.isDefaultGraph(g) )
+        if ( g == null || Quad.isDefaultGraph(g) )
             deleteFromDftGraph(s, p, o) ;
         else
             deleteFromNamedGraph(g, s, p, o) ;

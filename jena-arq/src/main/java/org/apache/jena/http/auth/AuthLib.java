@@ -26,8 +26,11 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandler;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 
+import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.http.HttpLib;
@@ -197,5 +200,25 @@ public class AuthLib {
     /** Get the {@link PasswordAuthentication} from an {@link Authenticator} */
     public static PasswordAuthentication getPasswordAuthentication(Authenticator authenticator) {
         return authenticator.requestPasswordAuthenticationInstance(null, null, -1, null, null, null, null, null);
+    }
+
+    // base 64 encoding suitable for the Authorization header.
+
+    /** Encode in base64. */
+    public static String base64enc(String x) {
+        byte[] bytes = x.getBytes(StandardCharsets.UTF_8);
+        // Basic encoding, no chunking with line breaks.
+        String s = Base64.getEncoder().encodeToString(bytes);
+        return s;
+    }
+
+    /** Decode from base64. Return null if the decoding failed. */
+    public static String base64dec(String x) {
+        try {
+            byte[] bytes = Base64.getDecoder().decode(x);
+            return Bytes.bytes2string(bytes);
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
     }
 }

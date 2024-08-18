@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.ARQ;
@@ -123,7 +124,7 @@ public class ExecutionContext implements FunctionEnv
 
     public Iterator<QueryIterator> listAllIterators() {
         if ( allIterators == null )
-            return null;
+            return Iter.nullIterator();
         return allIterators.iterator();
     }
 

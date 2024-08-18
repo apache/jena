@@ -18,14 +18,12 @@
 
 package org.apache.jena.atlas.io;
 
-
-public class PrintUtils
-{
-    // ---- Printable
-    public static String toString(Printable f)
-    { 
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        f.output(buff) ;
-        return buff.toString() ;
+/**
+ *  @deprecated Use {@link Printable#toString}
+ */
+@Deprecated(forRemoval = true)
+public class PrintUtils {
+    public static String toString(Printable object) {
+        return Printable.toString(object);
     }
 }

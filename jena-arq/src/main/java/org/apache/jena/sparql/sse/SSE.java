@@ -763,5 +763,4 @@ public class SSE {
             return new SerializationContext(pmap);
         return new SerializationContext();
     }
-
 }

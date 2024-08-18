@@ -37,7 +37,6 @@ import java.util.stream.Stream;
  * Note that this repository does not permit modification of underlying storage ({@code source}).
  * Removing graph from the {@code source} is not reflected by this repository,
  * so it will still contain reference to the graph, even the graph is no longer available via {@link GraphMaker}.
- * This repository does not permit modification of underlying storage ({@code source}).
  */
 public class PersistentGraphRepository implements GraphRepository {
     protected final GraphMaker source;
@@ -78,12 +77,12 @@ public class PersistentGraphRepository implements GraphRepository {
             if (Graphs.dataGraphs(graph).anyMatch(it -> !graphs.contains(it))) {
                 throw new IllegalArgumentException(
                         "Operation 'put' is not supported for the given UnionGraph (id = " + id + "):" +
-                                "it contains subgraphs that do not managed by the underlying storage");
+                                "it contains subgraphs that are not managed by the underlying storage");
             }
         } else if (!graphs.contains(graph)) {
             throw new IllegalArgumentException(
                     "Operation 'put' is not supported for the given Graph (id = " + id + "):" +
-                            "it does not managed by the underlying storage");
+                            "it is not managed by the underlying storage");
         }
         var prev = this.graphs.entrySet().stream()
                 .filter(it -> graph.equals(it.getValue()))

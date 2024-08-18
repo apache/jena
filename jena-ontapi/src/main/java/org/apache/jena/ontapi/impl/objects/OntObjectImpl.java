@@ -189,7 +189,6 @@ public class OntObjectImpl extends ResourceImpl implements OntObject {
     /**
      * Returns {@code true} if the given object is from reserved vocabulary
      * (e.g. {@code rdf:rest} is reserved in system settings).
-     * This is the equivalent of {@link org.apache.jena.ontology.OntResource#isOntLanguageTerm()}, but more accurate.
      *
      * @param object {@link OntObject}
      * @return boolean

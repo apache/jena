@@ -24,16 +24,19 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestAuthorized.class
+    , TestSimpleBearer.class
+
     , TestSecurityFilterFuseki.class
     , TestFusekiSecurityAssemblerSeparate.class
     , TestFusekiSecurityAssemblerShared.class
 
     , TestSecurityConfig.class
     , TestSecurityBuilderSetup.class
-    
+
     , TestPasswdOnly.class
     , TestServiceDataAuthConfig.class
     , TestServiceDataAuthBuild.class
+
 })
 
 public class TS_SecurityFuseki {}

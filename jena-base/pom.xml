@@ -162,6 +162,7 @@
         <configuration>
           <windowtitle>Apache Jena Base</windowtitle>
           <doctitle>Apache Jena Base ${project.version}</doctitle>
+          <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
 

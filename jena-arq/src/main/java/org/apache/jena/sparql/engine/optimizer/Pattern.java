@@ -18,46 +18,40 @@
 
 package org.apache.jena.sparql.engine.optimizer;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.atlas.io.PrintUtils ;
-import org.apache.jena.atlas.io.Printable ;
-import org.apache.jena.sparql.sse.Item ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.io.Printable;
+import org.apache.jena.sparql.sse.Item;
 
-public class Pattern implements Printable
-{
-    Item subjItem ;
-    Item predItem ;
-    Item objItem ;
-    double weight ; 
-    
-    public Pattern(double w, Item subj, Item pred, Item obj)
-    {
-        weight = w ;
-        subjItem = subj ;
-        predItem = pred ;
-        objItem = obj ;
-    }        
-    
-    @Override
-    public String toString()
-    {
-        //return "("+subjItem+" "+predItem+" "+objItem+") ==> "+weight ;
-        return PrintUtils.toString(this) ;
+public class Pattern implements Printable {
+    Item subjItem;
+    Item predItem;
+    Item objItem;
+    double weight;
+
+    public Pattern(double w, Item subj, Item pred, Item obj) {
+        weight = w;
+        subjItem = subj;
+        predItem = pred;
+        objItem = obj;
     }
-    
+
     @Override
-    public void output(IndentedWriter out)
-    {
-        out.print("(") ;
-        out.print("(") ;
-        out.print(subjItem.toString()) ;
-        out.print(" ") ;
-        out.print(predItem.toString()) ;
-        out.print(" ") ;
-        out.print(objItem.toString()) ;
-        out.print(")") ;
-        out.print(" ") ;
-        out.print(Double.toString(weight)) ;
-        out.print(")") ;
+    public String toString() {
+        return Printable.toString(this);
+    }
+
+    @Override
+    public void output(IndentedWriter out) {
+        out.print("(");
+        out.print("(");
+        out.print(subjItem.toString());
+        out.print(" ");
+        out.print(predItem.toString());
+        out.print(" ");
+        out.print(objItem.toString());
+        out.print(")");
+        out.print(" ");
+        out.print(Double.toString(weight));
+        out.print(")");
     }
 }

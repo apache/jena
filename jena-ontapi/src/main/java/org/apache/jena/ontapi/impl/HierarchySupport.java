@@ -68,8 +68,6 @@ public final class HierarchySupport {
 
     /**
      * Lists tree nodes for the given root using {@code listChildren} function, which provides child nodes.
-     * This is an analogy of
-     * {@code org.apache.jena.ontology.impl.OntResourceImpl#listDirectPropertyValues(Property, String, Class, Property, boolean, boolean)}
      *
      * @param root                       the root of tree
      * @param listChildren               a {@link Function} that provides {@code Stream} of child nodes for the given parent node

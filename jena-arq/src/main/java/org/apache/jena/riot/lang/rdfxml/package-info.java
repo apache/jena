@@ -22,16 +22,19 @@
  * that is the RIOT reader interface implementation and a {@code RDFXMLParser-???}
  * class which is the parser engine.
  * <ul>
- * <li>SAX based {@linkplain org.apache.jena.riot.lang.rdfxml.rrx.ParserRDFXML_SAX ParserRDFXML_SAX}. This is the default parser for Jena5 onwards for
+ * <li>SAX based {@linkplain org.apache.jena.riot.lang.rdfxml.rrx.ParserRRX_SAX ParserRRX_SAX}. This is the default parser for Jena5 onwards for
  * RDF/XML in RIOT, i.e it is the registration for {@linkplain org.apache.jena.riot.Lang#RDFXML Lang.RDFXML} and it is the fastest.
  * <li>A StAX-based parser using {@link javax.xml.stream.XMLStreamReader XMLStreamReader}.
  * <li>A StAX-based parser using {@link javax.xml.stream.XMLEventReader XMLEventReader}.
  * </ul>
- * In addition Jena (in jena-core) has the original ARP parser in package {@code org.apach.jena-rdfxml.rdfxml0} referred to as "ARP0".
- * This was the RDF/XML parser up to Jena 4.6.1. ARP1 uses package jena-iri directly to handle IRIs.
+ * In addition, Jena (in jena-core) has the original ARP parser.
+ * <p>
+ * "ARP0" in package {@code org.apach.jena-rdfxml.rdfxml0}
+ * This was the RDF/XML parser up to Jena 4.6.1. It handled IRIs directly using jena-iri.
  * <p>
  * "ARP1" is in package {@code org.apach.jena-rdfxml.rdfxml1} is derived from ARP0.
  * It uses the {@link org.apache.jena.irix.IRIx IRIx} abstraction to handle IRIs.
+ * It has error reporting aligned with RIOT.
  * <br/>
  * </p>
  * <table border=1 style="border-width: 2px ; border-style: solid; border-collapse: collapse">

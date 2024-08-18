@@ -161,6 +161,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
         return this;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public RDFReaderI getReader(String lang)  {
         return readerFactory.getReader(lang);
@@ -215,11 +216,13 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     /**
      * Get the model's writer after priming it with the model's namespace prefixes.
      */
+    @SuppressWarnings("deprecation")
     @Override
     public RDFWriterI getWriter(String lang) {
         return writerFactory.getWriter(lang);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public Model write(Writer writer) {
         getWriter(null).write(this, writer, "");

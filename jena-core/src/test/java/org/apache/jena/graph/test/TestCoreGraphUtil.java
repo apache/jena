@@ -23,28 +23,28 @@ import org.apache.jena.graph.* ;
 import org.apache.jena.graph.impl.* ;
 import org.apache.jena.util.iterator.* ;
 
-public class TestGraphUtils extends GraphTestBase
+public class TestCoreGraphUtil extends GraphTestBase
     {
-    public TestGraphUtils(String name)
+    public TestCoreGraphUtil(String name)
         { super(name); }
 
     public static TestSuite suite()
-        { return new TestSuite( TestGraphUtils.class ); }
-        
-    private static class Bool 
+        { return new TestSuite( TestCoreGraphUtil.class ); }
+
+    private static class Bool
         {
         boolean value;
         Bool( boolean value ) { this.value = value; }
         }
-        
+
     public void testFindAll()
         {
         final Bool foundAll = new Bool( false );
-        Graph mock = new GraphBase() 
+        Graph mock = new GraphBase()
             {
             @Override public ExtendedIterator<Triple> graphBaseFind( Triple t )
-                { 
-                assertEquals( Node.ANY, t.getSubject() ); 
+                {
+                assertEquals( Node.ANY, t.getSubject() );
                 assertEquals( Node.ANY, t.getPredicate() );
                 assertEquals( Node.ANY, t.getObject() );
                 foundAll.value = true;
