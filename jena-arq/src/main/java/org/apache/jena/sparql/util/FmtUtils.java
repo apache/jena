@@ -33,6 +33,7 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.riot.out.NodeFmtLib;
+import org.apache.jena.riot.system.RiotChars;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.ARQInternalErrorException ;
@@ -476,28 +477,34 @@ public class FmtUtils {
             return true;
 
         for ( int idx = 0 ; idx < localname.length() ; idx++ ) {
-            char ch = localname.charAt(idx);
-            if ( !validPNameChar(ch) )
-                return false;
+            int ch = localname.codePointAt(idx);
+            if ( idx == 0 ) {
+                if ( !validFirstPNameChar(ch) )
+                    return false;
+            } else if ( idx == localname.length() - 1 ) {
+                if ( !validEndPNameChar(ch) )
+                    return false;
+            } else {
+                if ( !validMidPNameChar(ch) )
+                    return false;
+            }
         }
-
-        // Test start and end - at least one character in the name.
-
-        if ( localname.endsWith(".") )
-            return false;
-        if ( localname.startsWith(".") )
-            return false;
-
         return true;
     }
 
-    private static boolean validPNameChar(char ch) {
-        if ( Character.isLetterOrDigit(ch) ) return true ;
-        if ( ch == '.' )    return true ;
-        if ( ch == ':' )    return true ;
-        if ( ch == '-' )    return true ;
-        if ( ch == '_' )    return true ;
-        return false ;
+    // first char as per options in first bracketed production in 169: https://www.w3.org/TR/sparql11-query/#rPN_LOCAL
+    private static boolean validFirstPNameChar(int ch) {
+        return RiotChars.isPNChars_U_N(ch) || ( ch == '%' ) ;
+    }
+
+    // neither first char nor last in middle repeated production in 169: https://www.w3.org/TR/sparql11-query/#rPN_LOCAL
+    private static boolean validMidPNameChar(int ch) {
+        return RiotChars.isPNChars(ch) || ( ch == '.' ) || ( ch == ':' ) || ( ch == '%' ) ;
+    }
+
+    // last char, but not first, in last production in 169: https://www.w3.org/TR/sparql11-query/#rPN_LOCAL
+    private static boolean validEndPNameChar(int ch) {
+        return RiotChars.isPNChars(ch) || ( ch == ':' ) || ( ch == '%' ) ;
     }
 
     static boolean applyUnicodeEscapes = false ;

@@ -118,6 +118,9 @@ public class TestSerialization
     @Test public void test_PName_Bad_7()
     { fmtURI_Prefix("http://example/x.", "<http://example/x.>", pmap1) ; }
 
+    @Test public void test_PName_Bad_8()
+    { fmtURI_Prefix("http://default/-x", "<http://default/-x>", pmap1) ; }
+
     // Dots
     @Test public void test_Dots_1() // Internal DOT
     { fmtURI_Prefix("http://example/x#a.b", "ex:a.b", pmap1) ; }
