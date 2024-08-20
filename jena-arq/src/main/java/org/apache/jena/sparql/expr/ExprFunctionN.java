@@ -18,106 +18,97 @@
 
 package org.apache.jena.sparql.expr;
 
-import java.util.ArrayList ;
-import java.util.List ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.function.FunctionEnv ;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.graph.NodeTransform;
 
 /** A function which takes N arguments (N may be variable e.g. regex) */
- 
+
 public abstract class ExprFunctionN extends ExprFunction
 {
-    protected ExprList args = null ;
-    
-    protected ExprFunctionN(String fName, Expr... args)
-    {
-        this(fName, argList(args)) ;
-    }
-    
-    protected ExprFunctionN(String fName, ExprList args)
-    {
-        super(fName) ;
-        this.args = args ;
+    protected ExprList args = null;
+
+    protected ExprFunctionN(String fName, Expr...args) {
+        this(fName, argList(args));
     }
 
-    private static ExprList argList(Expr[] args)
-    {
-        ExprList exprList = new ExprList() ;
+    protected ExprFunctionN(String fName, ExprList args) {
+        super(fName);
+        this.args = args;
+    }
+
+    private static ExprList argList(Expr[] args) {
+        ExprList exprList = new ExprList();
         for ( Expr e : args )
             if ( e != null )
-                exprList.add(e) ;
-        return exprList ;
+                exprList.add(e);
+        return exprList;
     }
 
     @Override
-    public Expr getArg(int i)
-    {
-        i = i-1 ;
+    public Expr getArg(int i) {
+        i = i-1;
         if ( i >= args.size() )
-            return null ;
-        return args.get(i) ;
+            return null;
+        return args.get(i);
     }
 
     @Override
-    public int numArgs() { return args.size() ; }
-    
-    @Override
-    public List<Expr> getArgs() { return args.getList() ; }
+    public int numArgs() { return args.size(); }
 
     @Override
-    public Expr copySubstitute(Binding binding)
-    {
-        ExprList newArgs = new ExprList() ;
-        for ( int i = 1 ; i <= numArgs() ; i++ )
+    public List<Expr> getArgs() { return args.getList(); }
+
+    @Override
+    public Expr copySubstitute(Binding binding) {
+        ExprList newArgs = new ExprList();
+        for ( int i = 1; i <= numArgs(); i++ )
         {
-            Expr e = getArg(i) ;
-            e = e.copySubstitute(binding) ;
-            newArgs.add(e) ;
+            Expr e = getArg(i);
+            e = e.copySubstitute(binding);
+            newArgs.add(e);
         }
         return copy(newArgs);
     }
 
     @Override
-    public Expr applyNodeTransform(NodeTransform transform)
-    {
-        ExprList newArgs = new ExprList() ;
-        for ( int i = 1 ; i <= numArgs() ; i++ )
-        {
-            Expr e = getArg(i) ;
-            e = e.applyNodeTransform(transform) ;
-            newArgs.add(e) ;
+    public Expr applyNodeTransform(NodeTransform transform) {
+        ExprList newArgs = new ExprList();
+        for ( int i = 1 ; i <= numArgs() ; i++ ) {
+            Expr e = getArg(i);
+            e = e.applyNodeTransform(transform);
+            newArgs.add(e);
         }
-        return copy(newArgs) ;
+        return copy(newArgs);
     }
-    
+
     /** Special form evaluation (example, don't eval the arguments first) */
-    protected NodeValue evalSpecial(Binding binding, FunctionEnv env) { return null ; }
+    protected NodeValue evalSpecial(Binding binding, FunctionEnv env) { return null; }
 
     @Override
-    final public NodeValue eval(Binding binding, FunctionEnv env)
-    {
-        NodeValue s = evalSpecial(binding, env) ;
+    final public NodeValue eval(Binding binding, FunctionEnv env) {
+        NodeValue s = evalSpecial(binding, env);
         if ( s != null )
-            return s ;
-        
-        List<NodeValue> argsEval = new ArrayList<>() ;
-        for ( int i = 1 ; i <= numArgs() ; i++ )
-        {
-            NodeValue x = eval(binding, env, getArg(i)) ;
-            argsEval.add(x) ;
+            return s;
+
+        List<NodeValue> argsEval = new ArrayList<>();
+        for ( int i = 1 ; i <= numArgs() ; i++ ) {
+            NodeValue x = eval(binding, env, getArg(i));
+            argsEval.add(x);
         }
-        return eval(argsEval, env) ;
+        return eval(argsEval, env);
     }
-    
-    public NodeValue eval(List<NodeValue> args, FunctionEnv env) { return eval(args) ; }
 
-    public abstract NodeValue eval(List<NodeValue> args) ;
+    public NodeValue eval(List<NodeValue> args, FunctionEnv env) { return eval(args); }
 
-    public abstract Expr copy(ExprList newArgs) ;
-    
+    public abstract NodeValue eval(List<NodeValue> args);
+
+    public abstract Expr copy(ExprList newArgs);
+
     @Override
-    public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
-    public Expr apply(ExprTransform transform, ExprList exprList) { return transform.transform(this, exprList) ; }
+    public void visit(ExprVisitor visitor) { visitor.visit(this); }
+    public Expr apply(ExprTransform transform, ExprList exprList) { return transform.transform(this, exprList); }
 
 }

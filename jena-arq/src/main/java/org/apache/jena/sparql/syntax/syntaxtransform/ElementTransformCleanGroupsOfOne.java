@@ -18,9 +18,9 @@
 
 package org.apache.jena.sparql.syntax.syntaxtransform;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.sparql.syntax.* ;
+import org.apache.jena.sparql.syntax.*;
 
 /**
  * Clean a SPARQL and ARQ syntax. This applies after using OpAsQuery.
@@ -40,8 +40,8 @@ public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
     @Override
     public Element transform(ElementGroup eltGroup, List<Element> elts) {
         if ( elts.size() != 1 )
-            return super.transform(eltGroup, elts) ;
-        Element elt = elts.get(0) ;
+            return super.transform(eltGroup, elts);
+        Element elt = elts.get(0);
         if ( ( elt instanceof ElementTriplesBlock ) ||
              ( elt instanceof ElementPathBlock ) ||
              ( elt instanceof ElementFilter ) ||
@@ -50,8 +50,8 @@ public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
              ( elt instanceof ElementMinus ) ||
              ( elt instanceof ElementOptional )
            )
-            return super.transform(eltGroup, elts) ;    // No transformation.
-        return elt ;
+            return super.transform(eltGroup, elts);    // No transformation.
+        return elt;
     }
 
     // The ElementGroup transformation can be too strong.
@@ -60,17 +60,17 @@ public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
     // a different query syntax tree).
     @Override
     public Element transform(ElementUnion eltUnion, List<Element> elts) {
-        ElementUnion el2 = new ElementUnion() ;
-        for ( int i = 0 ; i < elts.size() ; i++ ) {
-            Element el = elts.get(i) ;
+        ElementUnion el2 = new ElementUnion();
+        for ( int i = 0; i < elts.size(); i++ ) {
+            Element el = elts.get(i);
             if ( ! ( el instanceof ElementGroup ) ) {
-                ElementGroup elg = new ElementGroup() ;
+                ElementGroup elg = new ElementGroup();
                 elg.addElement(el);
-                el = elg ;
+                el = elg;
             }
             el2.addElement(el);
         }
-        return el2 ;
+        return el2;
     }
 
     // Special case: If Optional, and the original had a {{}} protected filter, keep {{}}
@@ -80,55 +80,55 @@ public class ElementTransformCleanGroupsOfOne extends ElementTransformCopyBase {
         // RHS of optional is always an ElementGroup in a normal syntax tree.
         if ( ! ( transformedElt instanceof ElementGroup ) ) {
             // DRY
-            ElementGroup protectedElt = new ElementGroup() ;
+            ElementGroup protectedElt = new ElementGroup();
             protectedElt.addElement(transformedElt);
-            transformedElt = protectedElt ;
+            transformedElt = protectedElt;
         }
 
         // Step 1 : does the original eltOptional has a {{}} RHS?
-        Element x = eltOptional.getOptionalElement() ;
+        Element x = eltOptional.getOptionalElement();
 
         if ( ! ( x instanceof ElementGroup ) )
             // No. But it is not possible in written query syntax to have a nongroup as the RHS.
-            return super.transform(eltOptional, transformedElt) ;
+            return super.transform(eltOptional, transformedElt);
         // So far - {}-RHS.
-        ElementGroup eGroup = (ElementGroup)x ;
+        ElementGroup eGroup = (ElementGroup)x;
 
         // Is it {{}}?
-        //ElementGroup inner = getGroupInGroup(x) ;
+        //ElementGroup inner = getGroupInGroup(x);
         if ( eGroup.size() != 1 )
-            return super.transform(eltOptional, transformedElt) ;
-        Element inner = eGroup.get(0) ;
+            return super.transform(eltOptional, transformedElt);
+        Element inner = eGroup.get(0);
         if ( ! ( inner instanceof ElementGroup ) )
-            return super.transform(eltOptional, transformedElt) ;
+            return super.transform(eltOptional, transformedElt);
         // Yes - {{}}
-        ElementGroup innerGroup = (ElementGroup)inner ;
+        ElementGroup innerGroup = (ElementGroup)inner;
         // Unbundle multiple levels.
-        innerGroup = unwrap(innerGroup) ;
-        boolean mustProtect = containsFilter(innerGroup) ;
+        innerGroup = unwrap(innerGroup);
+        boolean mustProtect = containsFilter(innerGroup);
 
         if ( mustProtect ) {
             // No need to check for {{}} in elt1 as the transform(ElementGroup) will have processed it.
-            ElementGroup protectedElt = new ElementGroup() ;
+            ElementGroup protectedElt = new ElementGroup();
             protectedElt.addElement(transformedElt);
-            return new ElementOptional(protectedElt) ;
+            return new ElementOptional(protectedElt);
         }
         // No need to protect - process as usual.
-        return super.transform(eltOptional, transformedElt) ;
+        return super.transform(eltOptional, transformedElt);
     }
 
     private boolean containsFilter(ElementGroup eltGroup) {
-        return eltGroup.getElements().stream().anyMatch(el2 ->( el2 instanceof ElementFilter ) ) ;
+        return eltGroup.getElements().stream().anyMatch(el2 ->( el2 instanceof ElementFilter ) );
     }
 
     // Removed layers of groups of one.  Return inner most group.
     private ElementGroup unwrap(ElementGroup eltGroup) {
         if ( eltGroup.size() != 1 )
-            return eltGroup ;
-        Element el = eltGroup.get(0) ;
+            return eltGroup;
+        Element el = eltGroup.get(0);
         if ( ! ( el instanceof ElementGroup ) )
-            return eltGroup ;
-        ElementGroup eltGroup2 = (ElementGroup)el ;
-        return unwrap(eltGroup2) ;
+            return eltGroup;
+        ElementGroup eltGroup2 = (ElementGroup)el;
+        return unwrap(eltGroup2);
     }
 }

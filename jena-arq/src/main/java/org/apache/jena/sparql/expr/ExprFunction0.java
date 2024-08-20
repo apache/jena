@@ -18,56 +18,52 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.graph.NodeTransform;
 
 /** An expression that is constant (does not depend on evaluating a sub expression). */
 
 public abstract class ExprFunction0 extends ExprFunction
 {
-    protected ExprFunction0(String fName) { this(fName, null) ; }
-    
-    protected ExprFunction0(String fName, String opSign)
-    {
-        super(fName, opSign) ;
+    protected ExprFunction0(String fName) { this(fName, null); }
+
+    protected ExprFunction0(String fName, String opSign) {
+        super(fName, opSign);
     }
 
     @Override
-    public Expr getArg(int i)       { return null ; }
-    
-    @Override
-    public int hashCode()           { return getFunctionSymbol().hashCode() ; }
+    public Expr getArg(int i)       { return null; }
 
     @Override
-    public int numArgs()            { return 0 ; }
-    
+    public int hashCode()           { return getFunctionSymbol().hashCode(); }
+
+    @Override
+    public int numArgs()            { return 0; }
+
     // ---- Evaluation
-    
+
     @Override
-    final public NodeValue eval(Binding binding, FunctionEnv env)
-    {
-        return eval(env) ;
+    final public NodeValue eval(Binding binding, FunctionEnv env) {
+        return eval(env);
     }
-   
-    public abstract NodeValue eval(FunctionEnv env)  ;
-    
+
+    public abstract NodeValue eval(FunctionEnv env) ;
+
     @Override
-    final public Expr applyNodeTransform(NodeTransform transform)
-    {
-        // Nothing to transform. 
-        return copy() ;
+    final public Expr applyNodeTransform(NodeTransform transform) {
+        // Nothing to transform.
+        return copy();
     }
-    
-    public abstract Expr copy() ;
-    
+
+    public abstract Expr copy();
+
     @Override
-    final public Expr copySubstitute(Binding binding)
-    {
-        return copy() ;
+    final public Expr copySubstitute(Binding binding) {
+        return copy();
     }
-    
+
     @Override
-    public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
-    public Expr apply(ExprTransform transform) { return transform.transform(this) ; }
+    public void visit(ExprVisitor visitor) { visitor.visit(this); }
+    public Expr apply(ExprTransform transform) { return transform.transform(this); }
 }

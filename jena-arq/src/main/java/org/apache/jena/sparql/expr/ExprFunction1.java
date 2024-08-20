@@ -18,81 +18,75 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.graph.NodeTransform;
 
 /** A function that has a single argument */
 
 public abstract class ExprFunction1 extends ExprFunction
 {
-    protected final Expr expr ;
+    protected final Expr expr;
 
-    protected ExprFunction1(Expr expr, String fName) { this(expr, fName, null) ; }
+    protected ExprFunction1(Expr expr, String fName) { this(expr, fName, null); }
 
-    protected ExprFunction1(Expr expr, String fName, String opSign)
-    {
-        super(fName, opSign) ;
-        this.expr = expr ;
+    protected ExprFunction1(Expr expr, String fName, String opSign) {
+        super(fName, opSign);
+        this.expr = expr;
     }
 
-    public Expr getArg() { return expr ; }
+    public Expr getArg() { return expr; }
 
     @Override
-    public Expr getArg(int i)
-    {
+    public Expr getArg(int i) {
         if ( i == 1 )
-            return expr ;
-        return null ;
+            return expr;
+        return null;
     }
 
     @Override
-    public int hashCode()
-    {
-        return getFunctionSymbol().hashCode() ^ Lib.hashCodeObject(expr) ;
+    public int hashCode() {
+        return getFunctionSymbol().hashCode() ^ Lib.hashCodeObject(expr);
     }
 
     @Override
-    public int numArgs() { return 1 ; }
+    public int numArgs() { return 1; }
 
     // ---- Evaluation
 
     @Override
-    final public NodeValue eval(Binding binding, FunctionEnv env)
-    {
-        NodeValue s = evalSpecial(binding, env) ;
+    final public NodeValue eval(Binding binding, FunctionEnv env) {
+        NodeValue s = evalSpecial(binding, env);
         if ( s != null )
-            return s ;
+            return s;
 
-        NodeValue x = eval(binding, env, expr) ;
-        return eval(x, env) ;
+        NodeValue x = eval(binding, env, expr);
+        return eval(x, env);
     }
 
     // Ideally, we would only have the FunctionEnv form but that break compatibility.
-    public NodeValue eval(NodeValue v, FunctionEnv env) { return eval(v) ; }
-    public abstract NodeValue eval(NodeValue nv) ;
+    public NodeValue eval(NodeValue v, FunctionEnv env) { return eval(v); }
+    public abstract NodeValue eval(NodeValue nv);
 
     // Allow special cases.
-    protected NodeValue evalSpecial(Binding binding, FunctionEnv env) { return null ; }
+    protected NodeValue evalSpecial(Binding binding, FunctionEnv env) { return null; }
 
     @Override
-    final public Expr copySubstitute(Binding binding)
-    {
-        Expr e = (expr == null ? null : expr.copySubstitute(binding)) ;
-        return copy(e) ;
+    final public Expr copySubstitute(Binding binding) {
+        Expr e = (expr == null ? null : expr.copySubstitute(binding));
+        return copy(e);
     }
 
     @Override
-    final public Expr applyNodeTransform(NodeTransform transform)
-    {
-        Expr e = (expr == null ? null : expr.applyNodeTransform(transform)) ;
-        return copy(e) ;
+    final public Expr applyNodeTransform(NodeTransform transform) {
+        Expr e = (expr == null ? null : expr.applyNodeTransform(transform));
+        return copy(e);
     }
 
-    public abstract Expr copy(Expr expr) ;
+    public abstract Expr copy(Expr expr);
 
     @Override
-    public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
-    public Expr apply(ExprTransform transform, Expr sub) { return transform.transform(this, sub) ; }
+    public void visit(ExprVisitor visitor) { visitor.visit(this); }
+    public Expr apply(ExprTransform transform, Expr sub) { return transform.transform(this, sub); }
 }

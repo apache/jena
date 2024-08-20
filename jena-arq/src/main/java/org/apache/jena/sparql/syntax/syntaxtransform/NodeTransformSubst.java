@@ -16,27 +16,27 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.syntax.syntaxtransform ;
+package org.apache.jena.sparql.syntax.syntaxtransform;
 
-import java.util.Map ;
+import java.util.Map;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.graph.NodeTransform ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.graph.NodeTransform;
 
 /** A {@link NodeTransform} substituting variables for {@link Node}s. */
 public class NodeTransformSubst implements NodeTransform {
-    private final Map<Var, ? extends Node> map ;
+    private final Map<Var, ? extends Node> map;
 
     public NodeTransformSubst(Map<Var, ? extends Node> map) {
-        this.map = map ;
+        this.map = map;
     }
 
     @Override
     public Node apply(Node node) {
-        Node n = map.get(node) ;
+        Node n = map.get(node);
         if ( n == null )
-            return node ;
-        return n ;
+            return node;
+        return n;
     }
 }

@@ -40,8 +40,8 @@ public class ExprTransformNodeElement extends ExprTransformCopy {
     public ExprTransformNodeElement(NodeTransform nodeTransform, ElementTransform eltrans) {
         this(nodeTransform, eltrans, null, null) ;
     }
-    
-    public ExprTransformNodeElement(NodeTransform nodeTransform, ElementTransform eltrans, 
+
+    public ExprTransformNodeElement(NodeTransform nodeTransform, ElementTransform eltrans,
                                     ElementVisitor beforeVisitor, ElementVisitor afterVisitor) {
         this.nodeTransform = nodeTransform ;
         this.elementTransform = eltrans ;
