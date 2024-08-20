@@ -96,6 +96,27 @@ public class TestSyntaxTransform
                 "s", "<urn:ex:z>");
     }
 
+    // GH-2650
+    @Test public void subst_query_31() {
+        testQuery("PREFIX : <http://example/> SELECT (SUM(?a + ?b) AS ?c) WHERE { ?s :p ?a }",
+                  "PREFIX : <http://example/> SELECT (SUM(123 + ?b) AS ?c) WHERE { ?s :p 123 }",
+                  "a", "123");
+    }
+
+    // GH-2650
+    @Test public void subst_query_32() {
+        testQuery("PREFIX : <http://example/> SELECT (SUM(?a + ?b) AS ?c) WHERE { }",
+                  "PREFIX : <http://example/> SELECT (SUM(123 + ?b) AS ?c) WHERE { }",
+                  "a", "123");
+    }
+
+    // GH-2650
+    @Test public void subst_query_33() {
+        testQuery("SELECT * WHERE { ?s ?p ?o { SELECT (count(?a) as ?C) WHERE {} } }",
+                  "SELECT * WHERE { ?s ?p ?o { SELECT (count(123) as ?C) WHERE {} } }",
+                  "a", "123");
+    }
+
     // Same except use the Model API.
     @Test public void subst_query_model_2() {
         testQueryModel("SELECT * { ?s ?p ?o } ORDER BY ?s",

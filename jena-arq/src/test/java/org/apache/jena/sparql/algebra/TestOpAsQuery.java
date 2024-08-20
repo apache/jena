@@ -344,28 +344,26 @@ public class TestOpAsQuery {
 
     @Test
     public void testAggregatesInSubQuery3() {
-        //Actual test case from JENA-445 bug report
-        String queryString =
-                "PREFIX dcterms: <http://purl.org/dc/terms/> \n" +
-                "PREFIX dbpedia: <http://dbpedia.org/resource/> \n" +
+        String queryString = """
+                PREFIX dcterms: <http://purl.org/dc/terms/>
+                PREFIX dbpedia: <http://dbpedia.org/resource/>
 
-                "SELECT ?num_of_holidays ?celebrate_Chinese_New_Year WHERE { \n" +
-                "{" +
-                "SELECT ?country_cat (COUNT(?holiday) as ?num_of_holidays) \n" +
-                "WHERE {" +
-                "?country_cat <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Public_holidays_by_country>. \n" +
-                "?holiday dcterms:subject ?country_cat \n" +
-                "}GROUP by ?country_cat \n" +
-                "} \n" +
-                "{ \n" +
-                "SELECT ?country_cat (COUNT(?holiday) as ?celebrate_Chinese_New_Year) \n" +
-                "WHERE { \n" +
-                "?country_cat <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Public_holidays_by_country>. \n" +
-                "?holiday dcterms:subject ?country_cat \n" +
-                "FILTER(?holiday=\"http://dbpedia.org/resource/Lunar_New_Year\'s_Day\") \n" +
-                "}GROUP by ?country_cat \n" +
-                "} \n" +
-                "}\n";
+                SELECT ?num_of_holidays ?celebrate_Chinese_New_Year WHERE {
+                  {
+                    SELECT ?country_cat (COUNT(?holiday) as ?num_of_holidays) WHERE {
+                        ?country_cat <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Public_holidays_by_country>.
+                        ?holiday dcterms:subject ?country_cat
+                    } GROUP by ?country_cat
+                  }
+                  {
+                    SELECT ?country_cat (COUNT(?holiday) as ?celebrate_Chinese_New_Year) WHERE {
+                        ?country_cat <http://www.w3.org/2004/02/skos/core#broader> <http://dbpedia.org/resource/Category:Public_holidays_by_country>.
+                        ?holiday dcterms:subject ?country_cat
+                        FILTER(?holiday="http://dbpedia.org/resource/Lunar_New_Year's_Day")
+                    } GROUP by ?country_cat
+                  }
+                }
+                """;
         test_roundTripQuery(queryString);
     }
 

@@ -36,10 +36,7 @@ import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.core.*;
-import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.expr.ExprTransform;
-import org.apache.jena.sparql.expr.ExprTransformer;
-import org.apache.jena.sparql.expr.ExprVar;
+import org.apache.jena.sparql.expr.*;
 import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.modify.request.QuadAcc;
 import org.apache.jena.sparql.syntax.*;
@@ -82,6 +79,7 @@ public class QueryTransformOps {
             // Reset internal to only what now can be seen.
             q2.resetResultVars();
         }
+        setAggregators(q2, query, exprTransform);
         return q2;
     }
 
@@ -108,6 +106,12 @@ public class QueryTransformOps {
             }
             ElementData elData2 = (ElementData)rawElData2;
             q2.setValuesDataBlock(elData2.getVars(), elData2.getRows());
+        }
+    }
+
+    private static void setAggregators(Query newQuery, Query query, ExprTransform exprTransform) {
+        for (ExprAggregator aggregator : query.getAggregators()) {
+            newQuery.getAggregators().add((ExprAggregator) exprTransform.transform(aggregator));
         }
     }
 
@@ -300,9 +304,6 @@ public class QueryTransformOps {
                 for (String x : desc.getNamedGraphURIs())
                     newQuery.addNamedGraphURI(x);
             }
-
-            // Aggregators.
-            newQuery.getAggregators().addAll(query.getAggregators());
         }
 
         @Override
