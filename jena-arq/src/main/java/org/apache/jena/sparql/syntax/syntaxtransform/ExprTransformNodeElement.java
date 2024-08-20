@@ -16,72 +16,77 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.syntax.syntaxtransform ;
+package org.apache.jena.sparql.syntax.syntaxtransform;
 
-import org.apache.jena.atlas.lib.InternalErrorException ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.expr.* ;
-import org.apache.jena.sparql.graph.NodeTransform ;
-import org.apache.jena.sparql.syntax.Element ;
-import org.apache.jena.sparql.syntax.ElementVisitor ;
+import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.expr.*;
+import org.apache.jena.sparql.graph.NodeTransform;
+import org.apache.jena.sparql.syntax.Element;
+import org.apache.jena.sparql.syntax.ElementVisitor;
 
 /**
  * Special version of ExprTransform for applying a node transform on syntax
  * (Elements) only
  */
 public class ExprTransformNodeElement extends ExprTransformCopy {
-    private final NodeTransform    nodeTransform ;
-    private final ElementTransform elementTransform ;
+    private final NodeTransform    nodeTransform;
+    private final ElementTransform elementTransform;
     private final ElementVisitor beforeVisitor;
     private final ElementVisitor afterVisitor;
 
     public ExprTransformNodeElement(NodeTransform nodeTransform, ElementTransform eltrans) {
-        this(nodeTransform, eltrans, null, null) ;
+        this(nodeTransform, eltrans, null, null);
     }
 
     public ExprTransformNodeElement(NodeTransform nodeTransform, ElementTransform eltrans,
                                     ElementVisitor beforeVisitor, ElementVisitor afterVisitor) {
-        this.nodeTransform = nodeTransform ;
-        this.elementTransform = eltrans ;
-        this.beforeVisitor = beforeVisitor ;
-        this.afterVisitor = afterVisitor ;
+        this.nodeTransform = nodeTransform;
+        this.elementTransform = eltrans;
+        this.beforeVisitor = beforeVisitor;
+        this.afterVisitor = afterVisitor;
     }
 
     @Override
     public Expr transform(ExprVar nv) {
-        Node n = nodeTransform.apply(nv.getAsNode()) ;
+        Node n = nodeTransform.apply(nv.getAsNode());
         if ( n == nv.getAsNode() )
-            return nv ;
+            return nv;
         if ( n instanceof Var ) {
-            Var v = Var.alloc(n) ;
-            return new ExprVar(v) ;
+            Var v = Var.alloc(n);
+            return new ExprVar(v);
         }
-        return NodeValue.makeNode(n) ;
+        return NodeValue.makeNode(n);
     }
 
     @Override
     public Expr transform(NodeValue nv) {
-        Node n = nodeTransform.apply(nv.asNode()) ;
+        Node n = nodeTransform.apply(nv.asNode());
         if ( n == nv.asNode() )
-            return nv ;
-        return NodeValue.makeNode(n) ;
+            return nv;
+        return NodeValue.makeNode(n);
     }
 
     @Override
     public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg) {
         // Syntax phased only - ignore args and opArg
-        Element elt = funcOp.getElement() ;
-        Element elt1 = ElementTransformer.transform(elt, elementTransform, this, beforeVisitor, afterVisitor) ;
+        Element elt = funcOp.getElement();
+        Element elt1 = ElementTransformer.transform(elt, elementTransform, this, beforeVisitor, afterVisitor);
         if ( elt == elt1 )
-            return funcOp ;
+            return funcOp;
         else {
             if ( funcOp instanceof E_Exists )
-                return new E_Exists(elt1) ;
+                return new E_Exists(elt1);
             if ( funcOp instanceof E_NotExists )
-                return new E_NotExists(elt1) ;
-            throw new InternalErrorException("Unknown ExprFunctionOp: " + funcOp.getFunctionSymbol()) ;
+                return new E_NotExists(elt1);
+            throw new InternalErrorException("Unknown ExprFunctionOp: " + funcOp.getFunctionSymbol());
         }
+    }
+
+    @Override
+    public Expr transform(ExprAggregator eAgg) {
+        return eAgg.applyNodeTransform(nodeTransform);
     }
 }
