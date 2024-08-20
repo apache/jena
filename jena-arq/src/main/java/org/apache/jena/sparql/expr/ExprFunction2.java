@@ -25,39 +25,39 @@ import org.apache.jena.sparql.graph.NodeTransform;
 
 
 /** A function of two arguments */
- 
+
 public abstract class ExprFunction2 extends ExprFunction
 {
     protected final Expr expr1 ;
     protected final Expr expr2 ;
 
     protected ExprFunction2(Expr expr1, Expr expr2, String fName) { this(expr1, expr2, fName, null) ; }
-    
+
     protected ExprFunction2(Expr expr1, Expr expr2, String fName, String opSign)
     {
         super(fName, opSign) ;
         this.expr1 = expr1 ;
         this.expr2 = expr2 ;
     }
-    
+
     public Expr getArg1() { return expr1 ; }
     public Expr getArg2() { return expr2 ; }
-    
+
     @Override
     public Expr getArg(int i)
     {
         if ( i == 1 )
-            return expr1 ; 
+            return expr1 ;
         if ( i == 2 )
-            return expr2 ; 
+            return expr2 ;
         return null ;
     }
-    
+
     @Override
     public int numArgs() { return 2 ; }
-    
+
     // ---- Evaluation
-    
+
     @Override
     public int hashCode()
     {
@@ -72,18 +72,18 @@ public abstract class ExprFunction2 extends ExprFunction
         NodeValue s = evalSpecial(binding, env) ;
         if ( s != null )
             return s ;
-        
+
         NodeValue x = eval(binding, env, expr1) ;
         NodeValue y = eval(binding, env, expr2) ;
         return eval(x, y, env) ;
     }
-    
+
     /** Special form evaluation (example, don't eval the arguments first) */
-    protected NodeValue evalSpecial(Binding binding, FunctionEnv env) { return null ; } 
-    
+    protected NodeValue evalSpecial(Binding binding, FunctionEnv env) { return null ; }
+
     public NodeValue eval(NodeValue x, NodeValue y, FunctionEnv env) { return eval(x,y) ; }
 
-    public abstract NodeValue eval(NodeValue x, NodeValue y) ; 
+    public abstract NodeValue eval(NodeValue x, NodeValue y) ;
 
     @Override
     final public Expr copySubstitute(Binding binding)
@@ -92,7 +92,6 @@ public abstract class ExprFunction2 extends ExprFunction
         Expr e2 = (expr2 == null ? null : expr2.copySubstitute(binding)) ;
         return copy(e1, e2) ;
     }
-    
 
     @Override
     final public Expr applyNodeTransform(NodeTransform transform)
@@ -102,11 +101,12 @@ public abstract class ExprFunction2 extends ExprFunction
         return copy(e1, e2) ;
     }
 
-
     public abstract Expr copy(Expr arg1, Expr arg2) ;
 
     @Override
     public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
-    public Expr apply(ExprTransform transform, Expr arg1, Expr arg2) { return transform.transform(this, arg1, arg2) ; }
 
+    public Expr apply(ExprTransform transform, Expr arg1, Expr arg2) {
+        return transform.transform(this, arg1, arg2);
+    }
 }

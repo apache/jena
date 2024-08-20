@@ -18,10 +18,10 @@
 
 package org.apache.jena.sparql.syntax.syntaxtransform;
 
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.expr.* ;
-import org.apache.jena.sparql.syntax.Element ;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.expr.*;
+import org.apache.jena.sparql.syntax.Element;
 
 /**
  * A copying transform that applies an ElementTransform syntax pattern of
@@ -29,7 +29,7 @@ import org.apache.jena.sparql.syntax.Element ;
  * */
 public class ExprTransformApplyElementTransform extends ExprTransformCopy
 {
-    private final ElementTransform transform ;
+    private final ElementTransform transform;
 
     public ExprTransformApplyElementTransform(ElementTransform transform) {
         this(transform, false);
@@ -37,21 +37,21 @@ public class ExprTransformApplyElementTransform extends ExprTransformCopy
 
     public ExprTransformApplyElementTransform(ElementTransform transform, boolean alwaysDuplicate) {
         super(alwaysDuplicate);
-        this.transform = transform ;
+        this.transform = transform;
     }
 
     @Override
     public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg)
     {
-        Element el2 = ElementTransformer.transform(funcOp.getElement(), transform) ;
+        Element el2 = ElementTransformer.transform(funcOp.getElement(), transform);
 
         if ( el2 == funcOp.getElement() )
-            return super.transform(funcOp, args, opArg) ;
+            return super.transform(funcOp, args, opArg);
         if ( funcOp instanceof E_Exists )
-            return new E_Exists(el2) ;
+            return new E_Exists(el2);
         if ( funcOp instanceof E_NotExists )
-            return new E_NotExists(el2) ;
-        throw new ARQInternalErrorException("Unrecognized ExprFunctionOp: \n"+funcOp) ;
+            return new E_NotExists(el2);
+        throw new ARQInternalErrorException("Unrecognized ExprFunctionOp: \n"+funcOp);
     }
 }
 

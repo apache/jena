@@ -28,9 +28,9 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryVisitor;
 import org.apache.jena.query.SortCondition;
-import org.apache.jena.rdf.model.Literal ;
-import org.apache.jena.rdf.model.RDFNode ;
-import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
@@ -274,7 +274,7 @@ public class QueryTransformOps {
         if (e2 == null || e2 == ev )
             return node;
         if ( ! e2.isConstant() )
-            return node ;
+            return node;
         return e2.getConstant().getNode();
     }
 
@@ -307,7 +307,7 @@ public class QueryTransformOps {
 
         @Override
         public void visitPrologue(Prologue prologue) {
-            // newQuery.setBaseURI(prologue.getResolver()) ;
+            // newQuery.setBaseURI(prologue.getResolver());
             PrefixMapping pmap = new PrefixMappingImpl().setNsPrefixes(prologue.getPrefixMapping());
             newQuery.setPrefixMapping(pmap);
         }
