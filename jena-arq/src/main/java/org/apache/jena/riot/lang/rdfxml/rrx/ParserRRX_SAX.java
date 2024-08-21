@@ -93,7 +93,7 @@ class ParserRRX_SAX
     private static final String rdfAboutEachPrefix = "aboutEachPrefix";
     private static final String rdfBagID = "bagID";
 
-    private static final RDFDatatype rdfXmlLiteralDT = XMLLiteralType.theXMLLiteralType;
+    private static final RDFDatatype rdfXmlLiteralDT = XMLLiteralType.rdfXMLLiteral;
 
     // LN = Local name.
     private static final String xmlBaseLN = "base";

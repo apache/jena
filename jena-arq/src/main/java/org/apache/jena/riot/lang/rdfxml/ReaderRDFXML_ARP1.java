@@ -235,7 +235,7 @@ public class ReaderRDFXML_ARP1 implements ReaderRIOT
                 return parserProfile.createLangLiteral(lit.toString(), lit.getLang(), -1, -1);
 
             if (lit.isWellFormedXML()) {
-                return parserProfile.createTypedLiteral(lit.toString(), XMLLiteralType.theXMLLiteralType, -1, -1);
+                return parserProfile.createTypedLiteral(lit.toString(), XMLLiteralType.rdfXMLLiteral, -1, -1);
             }
 
             RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtURI);

@@ -781,7 +781,7 @@ class ParserRRX_StAX_SR {
 
     private int parseTypeLiteral(Node subject, Node property, Emitter emitter, Location location) {
         String text = xmlLiteralAccumulateText();
-        Node object = literalDatatype(text, XMLLiteralType.theXMLLiteralType, location);
+        Node object = literalDatatype(text, XMLLiteralType.rdfXMLLiteral, location);
         emitter.emit(subject, property, object, location);
         return END_ELEMENT;
     }

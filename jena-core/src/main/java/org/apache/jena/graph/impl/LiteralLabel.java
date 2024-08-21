@@ -341,7 +341,7 @@ final public class LiteralLabel {
      * Therefore getValueHashCode is the same as hashCode();
      */
     private boolean indexingValueIsSelf() {
-        return dtype == XMLLiteralType.theXMLLiteralType ||
+        return dtype == XMLLiteralType.rdfXMLLiteral ||
                dtype == RDFjson.rdfJSON ||
                dtype == RDFhtml.rdfHTML ;
     }
