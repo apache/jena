@@ -62,8 +62,6 @@ public class QueryValidatorHTML {
             }
 
             final String queryString = httpRequest.getParameter(paramQuery).replaceAll("(\r|\n| )*$", "");
-// queryString = queryString.replace("\r\n", "\n");
-// queryString.replaceAll("(\r|\n| )*$", "");
 
             String querySyntax = httpRequest.getParameter(paramSyntax);
             if ( querySyntax == null || querySyntax.equals("") )
