@@ -247,8 +247,14 @@ public class Iter<T> implements IteratorCloseable<T> {
         return new IterFiltered<T>(stream, filter);
     }
 
-    public static <T> Iterator<T> notFilter(final Iterator<? extends T> stream, final Predicate<T> filter) {
+    public static <T> Iterator<T> filterDrop(final Iterator<? extends T> stream, final Predicate<T> filter) {
         return filter(stream, filter.negate());
+    }
+
+    /** @deprecated Use {@link #filterDrop} */
+    @Deprecated
+    public static <T> Iterator<T> notFilter(final Iterator<? extends T> stream, final Predicate<T> filter) {
+        return filterDrop(stream, filter);
     }
 
     // Filter-related
