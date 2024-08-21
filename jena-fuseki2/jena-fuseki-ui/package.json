@@ -67,7 +67,7 @@
     "vite": "^5.0.12",
     "vite-plugin-istanbul": "^6.0.2",
     "vitest": "^2.0.4",
-    "wait-on": "^7.0.1"
+    "wait-on": "^8.0.0"
   },
   "overrides": {
     "terser": "^5.14.2",
