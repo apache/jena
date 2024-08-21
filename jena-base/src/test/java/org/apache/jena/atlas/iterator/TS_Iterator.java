@@ -24,8 +24,8 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestIter.class
-    , TestIteratorPeek.class
-    , TestIteratorPushback.class
+    , TestPeekIterator.class
+    , TestPushbackIterator.class
     , TestIteratorWithHistory.class
     , TestIteratorWithBuffer.class
     , TestIteratorSlotted.class
