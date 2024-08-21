@@ -814,7 +814,7 @@ class ParserRRX_StAX_EV {
         //NamespaceContext nsCxt = startElt.getNamespaceContext();
 
         String text = xmlLiteralAccumulateText(startElt);
-        Node object = literalDatatype(text, XMLLiteralType.theXMLLiteralType, startElt.getLocation());
+        Node object = literalDatatype(text, XMLLiteralType.rdfXMLLiteral, startElt.getLocation());
         emitter.emit(subject, property, object, startElt.getLocation());
         // Skip trailer then end property tag.
         XMLEvent event = peekEvent();

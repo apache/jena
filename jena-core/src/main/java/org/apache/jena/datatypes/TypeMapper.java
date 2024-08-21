@@ -69,7 +69,7 @@ public class TypeMapper {
         theTypeMap.registerDatatype(RDFLangString.rdfLangString) ;
         theTypeMap.registerDatatype(RDFDirLangString.rdfDirLangString) ;
         theTypeMap.registerDatatype(RDFjson.rdfJSON);
-        theTypeMap.registerDatatype(XMLLiteralType.theXMLLiteralType);
+        theTypeMap.registerDatatype(XMLLiteralType.rdfXMLLiteral);
         theTypeMap.registerDatatype(RDFhtml.rdfHTML);
         XSDDatatype.loadXSDSimpleTypes(theTypeMap);
 

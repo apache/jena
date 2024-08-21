@@ -414,8 +414,8 @@ public abstract class AbstractTestGraph extends GraphTestBase
     {
         Graph g = getGraph();
         graphAdd( g, "S P O" );
-        assertDiffer( new HashSet<Triple>(), g.find( Node.ANY, Node.ANY, Node.ANY ).toSet() );
-        assertDiffer( new HashSet<Triple>(), g.find( Triple.ANY ).toSet() );
+        assertDiffer( Set.of(), g.find( Node.ANY, Node.ANY, Node.ANY ).toSet() );
+        assertDiffer( Set.of(), g.find( Triple.ANY ).toSet() );
     }
 
     protected boolean canBeEmpty( Graph g )

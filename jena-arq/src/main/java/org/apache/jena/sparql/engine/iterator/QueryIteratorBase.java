@@ -78,13 +78,15 @@ public abstract class QueryIteratorBase
     // -------- The contract with the subclasses
 
     /**
-     * Implement this, not hasNext()
+     * Implement this, not hasNext().
+     * Do not throw {@link NoSuchElementException}.
      */
     protected abstract boolean hasNextBinding();
 
     /**
-     * Implement this, not next() or nextBinding() Returning null is turned into
-     * NoSuchElementException Does not need to call hasNext (can presume it is true)
+     * Implement this, not next() or nextBinding().
+     * Returning null is turned into
+     * NoSuchElementException. Does not need to call hasNextBinding.
      */
     protected abstract Binding moveToNextBinding();
 

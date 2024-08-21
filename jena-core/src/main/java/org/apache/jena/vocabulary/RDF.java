@@ -125,7 +125,7 @@ public class RDF {
     public static final RDFDatatype dtRDFHTML       = RDFhtml.rdfHTML;
     public static final RDFDatatype dtLangString    = RDFLangString.rdfLangString;
     public static final RDFDatatype dtDirLangString = RDFDirLangString.rdfDirLangString;
-    public static final RDFDatatype dtXMLLiteral    = XMLLiteralType.theXMLLiteralType;
+    public static final RDFDatatype dtXMLLiteral    = XMLLiteralType.rdfXMLLiteral;
 
     // Added to the RDF namespace December 2019
     // https://lists.w3.org/Archives/Public/semantic-web/2019Dec/0027.html
@@ -179,7 +179,7 @@ public class RDF {
         public static RDFDatatype dtRDFHTML()       { return RDFhtml.rdfHTML; }
         public static RDFDatatype dtLangString()    { return RDFLangString.rdfLangString; }
         public static RDFDatatype dtDirLangString() { return RDFDirLangString.rdfDirLangString; }
-        public static RDFDatatype dtXMLLiteral()    { return XMLLiteralType.theXMLLiteralType; }
+        public static RDFDatatype dtXMLLiteral()    { return XMLLiteralType.rdfXMLLiteral; }
         public static RDFDatatype dtRDFJSON()       { return RDFjson.rdfJSON; }
     }
 

@@ -60,8 +60,8 @@ public class TestRDFXMLiteral {
     // ----
 
     private static void test(String lex1, String lex2, boolean javaEquals, boolean sameTerm, boolean sameValue) {
-        Node n1 = NodeFactory.createLiteralDT(lex1, XMLLiteralType.theXMLLiteralType);
-        Node n2 = NodeFactory.createLiteralDT(lex2, XMLLiteralType.theXMLLiteralType);
+        Node n1 = NodeFactory.createLiteralDT(lex1, XMLLiteralType.rdfXMLLiteral);
+        Node n2 = NodeFactory.createLiteralDT(lex2, XMLLiteralType.rdfXMLLiteral);
         assertEquals(javaEquals, n1.equals(n2));
         assertEquals(sameTerm, n1.sameTermAs(n2));
         assertEquals(sameValue, n1.sameValueAs(n2));

@@ -43,7 +43,7 @@ import org.apache.jena.sparql.util.Context;
  * @see StreamWriterTriX
  */
 public class WriterTriX implements WriterDatasetRIOT, WriterGraphRIOT {
-    private static String rdfXMLLiteral = XMLLiteralType.theXMLLiteralType.getURI();
+    private static String rdfXMLLiteral = XMLLiteralType.rdfXMLLiteral.getURI();
 
     // Common pattern.
     @Override

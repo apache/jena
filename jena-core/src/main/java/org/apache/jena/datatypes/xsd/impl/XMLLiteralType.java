@@ -42,6 +42,7 @@ import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.util.JenaXMLInput;
 import org.apache.jena.util.JenaXMLOutput;
+import org.apache.jena.vocabulary.RDF;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Node;
@@ -61,8 +62,17 @@ import org.xml.sax.SAXParseException;
 public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
 
     public static String XMLLiteralTypeURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral";
-    /** Singleton instance */
-    // Include the string for the RDF namespace, do not use RDF.getURI(), to avoid the risk of an initializer circularity.
+    /**
+     * Singleton instance of the rdf:XMLLIteral datatype.
+     * Prefer {@link RDF#dtXMLLiteral} in applications.
+     */
+    public static final RDFDatatype rdfXMLLiteral = new XMLLiteralType(XMLLiteralTypeURI);
+
+    /**
+     * Singleton instance (legacy name)
+     * @deprecated Prefer the constant {@link #rdfXMLLiteral} or {@link RDF#dtXMLLiteral}
+     */
+    @Deprecated
     public static final RDFDatatype theXMLLiteralType = new XMLLiteralType(XMLLiteralTypeURI);
 
     private static final String  xmlWrapperTagName  = "xml-literal-fragment";
