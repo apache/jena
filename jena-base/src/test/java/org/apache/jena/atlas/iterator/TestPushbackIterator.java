@@ -26,7 +26,7 @@ import java.util.List ;
 
 import org.junit.Test ;
 
-public class TestIteratorPushback
+public class TestPushbackIterator
 {
 
     static List<String> data = new ArrayList<>() ;

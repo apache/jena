@@ -20,9 +20,11 @@ package org.apache.jena.atlas.iterator;
 
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
-import java.util.Queue ;
+import java.util.Optional;
 
-/** PeekIterator - it is one slot ahead from the wrapped iterator */
+/**
+ * PeekIterator - it is one slot ahead reading from the wrapped iterator.
+ */
 public class PeekIterator<T> implements Iterator<T>
 {
     private final Iterator<T> iter ;
@@ -62,13 +64,24 @@ public class PeekIterator<T> implements Iterator<T>
 
     /**
      * Peek the next element or return null
-     *
-     * @see Queue#peek
+     * This code predates {@link Optional}.
+     * See "{@link #slotIsValid}" to check if a null is
+     * end-of-iterator or a valid return element.
      */
     public T peek() {
         if ( finished )
             return null;
         return slot;
+    }
+
+    /**
+     * Return whether the peek'ed element exists of not.
+     * When the underlying iterator may yield null as a valid value of "next",
+     * use this to determine the status of the "peek()".
+     * This code predates {@link Optional}.
+     */
+    public boolean slotIsValid() {
+        return ! finished;
     }
 
     /** Peek the next element or throw NoSuchElementException */
