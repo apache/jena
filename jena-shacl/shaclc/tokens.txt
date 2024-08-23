@@ -1,0 +1,93 @@
+// Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+//Tokens in BNF
+// [] means will be inlined.
+// The presense of a token in the file does not mean it is actually used.
+
+[<BASE>]          ::= 'BASE'
+[<IMPORTS>]       ::= 'IMPORTS'
+[<PREFIX>]        ::= 'PREFIX'
+[<SHAPE_CLASS>]   ::= 'shapeClass'
+[<SHAPE>]         ::= 'shape'
+[<TRUE>]          ::= 'true'
+[<FALSE>]         ::= 'false'
+
+[<BOM>]           ::= '\uFEFF'
+<HEX>             ::= [0-9] | [A-F] | [a-f]
+
+[<PLUS>]          ::= '+'
+[<MINUS>]         ::= '-'
+[<VBAR>]          ::= '|'
+[<AT>]            ::= '@'
+[<CARAT>]         ::= '^'
+[<DOT>]           ::= '.'
+[<BANG>]          ::= '!'
+[<QMARK>]         ::= '?'
+[<SLASH>]         ::= '/'
+[<STAR>]          ::= '*'
+[<EQUALS>]        ::= '='
+[<LPAREN>]        ::= '('
+[<RPAREN>]        ::= ')'
+[<LBRACE>]        ::= '{'
+[<RBRACE>]        ::= '}'
+[<LBRACKET>]      ::= '['
+[<RBRACKET>]      ::= ']'
+
+## <IRIref>          ::= '<"
+##                   (~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`","\u0000"-"\u0020"]| <UCHAR>
+##                   )*
+##                  ">'
+
+[<IRIref>]        ::= '<' ([^<>"{}|^`\]-[#x00-#x20])* '>'
+
+<PNAME_NS>        ::= (<PN_PREFIX>)? ":'
+<PNAME_LN>        ::= <PNAME_NS> <PN_LOCAL>
+<ATPNAME_NS>      ::= '@"<PNAME_NS>
+<ATPNAME_LN>      ::= '@"<PNAME_LN>
+<QUOTE_3D>        ::= '"""'
+<QUOTE_3S>        ::= "'''"
+
+<ECHAR>             ::= '\' [tbnrf"']
+
+<UCHAR>             ::= <UCHAR4> | <UCHAR8>
+<UCHAR4>            ::= '\u' <HEX> <HEX> <HEX> <HEX>
+<UCHAR8>            ::= '\U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX>
+
+<STRING_LITERAL1>   ::= "'" ( ([^#x27#x5C#xA#xD]) | <ECHAR> )* "'"
+<STRING_LITERAL2>   ::= '"' ( ([^#x22#x5C#xA#xD]) | <ECHAR> )* '"'
+
+<STRING_LITERAL_LONG1> ::= "'''" ( ( "'" | "''" )? ( [^'\] | <ECHAR> ) )* "'''"
+<STRING_LITERAL_LONG2> ::= '"""' ( ( '"' | '""' )? ( [^"\] | <ECHAR> ) )* '"""'
+
+// <DIGITS>         ::= ['0'-'9'])+[0-9]+
+<INTEGER>           ::= (<PLUS>|<MINUS>)? [0-9]+
+<DECIMAL>           ::= (<PLUS>|<MINUS>)? ( [0-9]* '.' [0-9]+ )
+<DOUBLE>            ::= (<PLUS>|<MINUS>)? [0-9]+ '.' [0-9]* <EXPONENT> | '.' ([0-9])+ <EXPONENT> | ([0-9])+ <EXPONENT>
+
+<EXPONENT>          ::= [eE] [+-]? [0-9]+
+<LANGTAG>           ::= '@' [a-zA-Z]+ ('-' [a-zA-Z0-9]+)*
+// <A2Z>            ::= ["a"-"z","A"-"Z"]
+// <A2ZN>           ::= ["a"-"z","A"-"Z","0"-"9"]
+
+<PN_CHARS_BASE>     ::= [A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+
+<PN_CHARS_U>        ::= <PN_CHARS_BASE> | '_'
+
+<VARNAME>           ::=  ( <PN_CHARS_U>  | [0-9] ) ( <PN_CHARS_U> | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040] )*
+
+<PN_CHARS>          ::=  <PN_CHARS_U> | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+
+<PN_PREFIX>         ::= <PN_CHARS_BASE> ((<PN_CHARS>|'.')* <PN_CHARS>)?
+
+<PN_LOCAL>          ::= (<PN_CHARS_U> | ':' | [0-9] | <PLX> ) ((<PN_CHARS> | '.' | ':' | <PLX>)* (<PN_CHARS> | ':' | <PLX>) )?
+
+<PLX>               ::= <PERCENT> | <PN_LOCAL_ESC>
+
+
+<VARNAME>        ::= ( <PN_CHARS_U> | ["0"-"9"] )
+                     ( <PN_CHARS_U> | ["0"-"9"] | "\u00B7" |["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] )*
+<PN_LOCAL_ESC>    ::= '\' ( '_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%' )
+
+<PLX>            ::= <PERCENT> | <PN_LOCAL_ESC>
+
+<PERCENT>        ::= '%' <HEX> <HEX>

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/perl
 ## Licensed to the Apache Software Foundation (ASF) under one
 ## or more contributor license agreements.  See the NOTICE file
 ## distributed with this work for additional information
@@ -15,32 +15,35 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-DIR=../src/main/java/org/apache/jena/shacl/compact/reader/parser
-FILE="shaclc.jj"
-CLASS=ShaclCompactParserJJ
+# Grammar HTML to a form of an HTML page suitable for cut&paste as fragments.
 
-(cd "$DIR" ; rm -f *.java )
+$DOC = 1 ;
 
-javacc -OUTPUT_DIRECTORY=$DIR  -JDK_VERSION=1.8 "${FILE}"
+if ( $DOC )
+{
+    print <<'EOF'
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+  <title>SHACL-C Grammar</title>
+  <link rel="stylesheet" type="text/css" href="https://www.w3.org/StyleSheets/TR/base.css" />
+  <link rel="stylesheet" type="text/css" href="https://www.w3.org/2001/sw/DataAccess/rq23/local.css" />
+  </head>
+<body>
+EOF
+}
 
-RC=$?
-[ "$RC" = 0 ] || exit $RC
+while(<>)
+{
+    s/\<a id="([^=\"]*)" name="([^=\"]*)"\>/<a href="#$1">/ ;
+    print ;
+}
 
-echo "---- Fixing Java warnings in TokenMgrError"
-F="$DIR/TokenMgrError.java"
-if [ -e "$F" ]
-then
-    sed -e 's/public class TokenMgrError/\n@SuppressWarnings("all")\npublic class TokenMgrError/' < $F > F 
-    mv F $F
-fi
-    
-echo "---- Fixing Java warnings in ${CLASS} ..."
-F="$DIR/${CLASS}.java"
-sed -e 's/@SuppressWarnings("serial")//' \
-    < $F > F
-mv F $F
-
-echo "---- Producing text form"
-jjdoc -TEXT=true -OUTPUT_FILE=${FILE%%.jj}.txt "${FILE}"
-
-echo "---- Done"
+if ( $DOC )
+{
+    print <<'EOF'
+</body>
+</html>
+EOF
+}

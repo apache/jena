@@ -31,21 +31,21 @@ public interface ShaclCompactParserJJConstants {
   /** RegularExpression Id. */
   int SINGLE_LINE_COMMENT = 52;
   /** RegularExpression Id. */
-  int BOM = 53;
+  int BASE = 53;
   /** RegularExpression Id. */
-  int BASE = 54;
+  int IMPORTS = 54;
   /** RegularExpression Id. */
-  int IMPORTS = 55;
+  int PREFIX = 55;
   /** RegularExpression Id. */
-  int PREFIX = 56;
+  int SHAPE_CLASS = 56;
   /** RegularExpression Id. */
-  int SHAPE_CLASS = 57;
+  int SHAPE = 57;
   /** RegularExpression Id. */
-  int SHAPE = 58;
+  int TRUE = 58;
   /** RegularExpression Id. */
-  int TRUE = 59;
+  int FALSE = 59;
   /** RegularExpression Id. */
-  int FALSE = 60;
+  int BOM = 60;
   /** RegularExpression Id. */
   int HEX = 61;
   /** RegularExpression Id. */
@@ -209,7 +209,6 @@ public interface ShaclCompactParserJJConstants {
     "\"\\r\"",
     "\"\\f\"",
     "<SINGLE_LINE_COMMENT>",
-    "\"\\ufeff\"",
     "\"BASE\"",
     "\"IMPORTS\"",
     "\"PREFIX\"",
@@ -217,6 +216,7 @@ public interface ShaclCompactParserJJConstants {
     "\"shape\"",
     "\"true\"",
     "\"false\"",
+    "\"\\ufeff\"",
     "<HEX>",
     "\"+\"",
     "\"-\"",
