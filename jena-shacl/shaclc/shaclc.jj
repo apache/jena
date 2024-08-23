@@ -505,10 +505,6 @@ SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
 SPECIAL_TOKEN :
 { <SINGLE_LINE_COMMENT: "#" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? > }
 
-TOKEN: { 
-  <BOM:    "\uFEFF">
-}
-
 TOKEN [IGNORE_CASE] :
 {
   // Keywords
@@ -524,7 +520,8 @@ TOKEN [IGNORE_CASE] :
 
 TOKEN:
 {
-  <#HEX             : ["0"-"9"] | ["A"-"F"] | ["a"-"f"] >
+  <BOM              : "\uFEFF">
+| <#HEX             : ["0"-"9"] | ["A"-"F"] | ["a"-"f"] >
 | <PLUS             : "+" >
 | <MINUS            : "-" >
 | <VBAR             : "|" >

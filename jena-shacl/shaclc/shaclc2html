@@ -1,0 +1,12 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+echo "Grammar to X.html"
+echo "Fragments file to Y.html"
+
+(
+    echo "        <!-- GRAMMAR -->"
+    jj2html 'shaclc.txt' 'tokens.txt'
+    echo "        <!-- GRAMMAR -->"
+) > X.html
+
+grammarExtracts < X.html > Y.html

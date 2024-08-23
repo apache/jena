@@ -17,3 +17,17 @@ and cleans up the output files to remove or surpress Java warnings.
 
 The generated javacc java is checked into git so you don't need to install
 javacc to build this module unless you want to change the parser.
+
+== To produce BNF HTML
+
+Run the parser generator - shaclc-parser
+
+Produce the tokens.txt file.
+
+The script 'jj2tokens' will do bulk translation but the output needs fixup and
+replacing some rules with better format.
+
+Run shaclc2html
+
+This produces X.html, the HTML table between HTML comments for GRAMMAR and
+Y.html a displayable HTML file with styling.
