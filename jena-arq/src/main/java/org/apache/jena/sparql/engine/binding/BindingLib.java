@@ -54,8 +54,20 @@ public class BindingLib {
 
     /** Merge two bindings, assuming they are compatible. */
     public static Binding merge(Binding bind1, Binding bind2) {
-        // Create binding from LHS
-        BindingBuilder builder = Binding.builder(bind1);
+        BindingBuilder builder = Binding.builder();
+        Binding merge = merge(builder, bind1, bind2);
+        return merge;
+    }
+
+    /**
+     * Merge two bindings, assuming they are compatible.
+     *
+     * The {@link BindingBuilder} is reused and
+     * left in an indeterminate state.
+     */
+    public static Binding merge(BindingBuilder builder, Binding bind1, Binding bind2) {
+        builder.reset();
+        builder.addAll(bind1);
         Iterator<Var> vIter = bind2.vars();
         // Add any variables from the RHS
         for ( ; vIter.hasNext() ; ) {
