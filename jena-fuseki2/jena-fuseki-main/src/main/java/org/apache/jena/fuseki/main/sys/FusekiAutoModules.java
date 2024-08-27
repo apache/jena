@@ -107,7 +107,7 @@ public class FusekiAutoModules {
         altFusekiModules = fusekiModules;
     }
 
-    // Single auto module controller.
+    // Single auto-module controller.
     private static FusekiServiceLoaderModules autoModules = null;
 
     private static FusekiServiceLoaderModules getServiceLoaderModules() {
@@ -202,13 +202,13 @@ public class FusekiAutoModules {
                 }
             };
 
-            // Create auto module object, skip loads in error, sort automodules into level a order.
+            // Create auto-module object, skip loads in error, sort auto-modules into level order.
             List<FusekiAutoModule> autoMods = serviceLoader.stream()
                     .map(mapper)
                     .filter(Objects::nonNull)
                     .sorted((x,y)-> Integer.compare(x.level(), y.level()))
                     .collect(Collectors.toList());
-            // Start, and convert to FusekeiModules (generics issue)
+            // Start, and convert to FusekiModules (generics issue)
             List<FusekiModule> fmods = autoMods.stream().map(afmod->{
                 afmod.start();
                 return afmod;
