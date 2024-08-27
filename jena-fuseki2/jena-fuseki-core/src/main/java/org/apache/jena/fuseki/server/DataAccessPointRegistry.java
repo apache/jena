@@ -23,12 +23,10 @@ import java.util.List;
 
 import jakarta.servlet.ServletContext;
 
-import io.micrometer.core.instrument.MeterRegistry;
 import org.apache.jena.atlas.lib.Registry;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
-import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
 
 /**
  * Registry of (dataset name, {@link DataAccessPoint}).
@@ -36,15 +34,10 @@ import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
  */
 public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
 {
-    private final MeterRegistry meterRegistry;
-
-    public DataAccessPointRegistry() {
-        this.meterRegistry = MetricsProviderRegistry.get().getMeterRegistry();
-    }
+    public DataAccessPointRegistry() {}
 
     public DataAccessPointRegistry(DataAccessPointRegistry other) {
         other.forEach((_name, accessPoint)->register(accessPoint));
-        this.meterRegistry = other.meterRegistry;
     }
 
     // Preferred way to register. Other method for legacy.
@@ -60,7 +53,7 @@ public class DataAccessPointRegistry extends Registry<String, DataAccessPoint>
      * generated from the registry contents and not still connected to the registry.
      * Registry changes will not interfere with iteration over the list.
      * {@link DataAccessPoint DataAccessPoints} can not be registered twice under
-     * differerent names (the same dataset can be via different
+     * different names (the same dataset can be via different
      * {@link DataAccessPoint DataAccessPoints} so the list has no duplicates.
      * There is no defined order to the list.
      */

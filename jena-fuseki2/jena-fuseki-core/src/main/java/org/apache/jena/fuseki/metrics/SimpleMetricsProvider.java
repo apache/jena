@@ -26,6 +26,8 @@ public class SimpleMetricsProvider implements MetricsProvider {
 
     private MeterRegistry meterRegistry = new SimpleMeterRegistry();
 
+    public SimpleMetricsProvider() {}
+
     @Override
     public MeterRegistry getMeterRegistry() {
         return meterRegistry;
