@@ -43,26 +43,26 @@ class ARQParserBase extends SPARQLParserBase
 {
     // JSON
     JSONHandler handler = new JSONHandlerBase() ;
-    
+
     public void setHandler(JSONHandler handler)
-    { 
+    {
         if ( handler == null )
             this.handler = new JSONHandlerBase() ;
         else
             this.handler = handler ;
     }
-    
+
     // All the signals from the parsing process.
     protected void jsonStartParse(long currLine, long currCol)                 { handler.startParse(currLine, currCol) ; }
     protected void jsonFinishParse(long currLine, long currCol)                { handler.finishParse(currLine, currCol) ; }
-    
+
     protected void jsonStartObject(long currLine, long currCol)                { handler.startObject(currLine, currCol) ; }
     protected void jsonFinishObject(long currLine, long currCol)               { handler.finishObject(currLine, currCol) ; }
 
     protected void jsonStartPair(long currLine, long currCol)                  { handler.startPair(currLine, currCol) ; }
     protected void jsonKeyPair(long currLine, long currCol)                    { handler.keyPair(currLine, currCol) ; }
     protected void jsonFinishPair(long currLine, long currCol)                 { handler.finishPair(currLine, currCol) ; }
-    
+
     protected void jsonStartArray(long currLine, long currCol)                 { handler.startArray(currLine, currCol) ; }
     protected void jsonElement(long currLine, long currCol)                    { handler.element(currLine, currCol) ; }
     protected void jsonFinishArray(long currLine, long currCol)                { handler.finishArray(currLine, currCol) ; }
@@ -73,14 +73,14 @@ class ARQParserBase extends SPARQLParserBase
         image = image.substring(1,image.length()-1) ;
         handler.valueString(image, currLine, currCol) ;
     }
-        
+
     protected void jsonValueKeyString(String image, long currLine, long currCol) { handler.valueString(image, currLine, currCol) ; }
     protected void jsonValueInteger(String image, long currLine, long currCol)   { handler.valueInteger(image, currLine, currCol) ; }
     protected void jsonValueDecimal(String image, long currLine, long currCol)   { handler.valueDecimal(image, currLine, currCol) ; }
     protected void jsonValueDouble(String image, long currLine, long currCol)    { handler.valueDouble(image, currLine, currCol) ; }
     protected void jsonValueBoolean(boolean b, long currLine, long currCol)      { handler.valueBoolean(b, currLine, currCol) ; }
     protected void jsonValueNull(long currLine, long currCol)                    { handler.valueNull(currLine, currCol) ; }
-    
+
     protected void jsonValueVar(String image, long currLine, long currCol)       { throw new NotImplemented("yet") ; }
     protected ElementGroup createQueryPattern(Template t){
         ElementGroup elg = new ElementGroup();
@@ -139,6 +139,8 @@ class ARQParserBase extends SPARQLParserBase
         // the following function checks whether the given lexical form is
         // well formed but, in the current case, we already know that it is
         // not well formed.
-        return NodeFactory.createLiteral(lexicalForm, cdtDatatype);
+        @SuppressWarnings("deprecation")
+        Node n = NodeFactory.createLiteral(lexicalForm, cdtDatatype);
+        return n;
     }
 }

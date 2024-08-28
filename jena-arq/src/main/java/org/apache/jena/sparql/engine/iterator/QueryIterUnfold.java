@@ -43,16 +43,16 @@ import org.apache.jena.sparql.serializer.SerializationContext;
 
 public class QueryIterUnfold extends QueryIterRepeatApply
 {
-    protected final Expr expr ;
-    protected final Var var1 ;
-    protected final Var var2 ;
+    protected final Expr expr;
+    protected final Var var1;
+    protected final Var var2;
 
     public QueryIterUnfold(QueryIterator qIter, Expr expr, Var var1, Var var2, ExecutionContext execCxt) {
-        super(qIter, execCxt) ;
+        super(qIter, execCxt);
 
-        this.expr = expr ;
-        this.var1 = var1 ;
-        this.var2 = var2 ;
+        this.expr = expr;
+        this.var1 = var1;
+        this.var2 = var2;
     }
 
     @Override
@@ -65,7 +65,6 @@ public class QueryIterUnfold extends QueryIterRepeatApply
             // If the expression failed to evaluate, we create no
             // no assignment (exactly as in the case of BIND, see
             // the 'accept' method in 'QueryIterAssign')
-
             return QueryIterSingleton.create( inputBinding, getExecContext() );
         }
 
@@ -140,7 +139,7 @@ public class QueryIterUnfold extends QueryIterRepeatApply
             final Node indexNode;
             if ( var2 != null ) {
                 final String indexStr = Integer.toString(nextIndex);
-                indexNode = NodeFactory.createLiteral(indexStr, XSDDatatype.XSDinteger);
+                indexNode = NodeFactory.createLiteralDT(indexStr, XSDDatatype.XSDinteger);
             }
             else {
                 indexNode = null;
@@ -273,7 +272,6 @@ public class QueryIterUnfold extends QueryIterRepeatApply
         }
     }
 
-
     protected static class ListElementExtractor extends ElementExtractorBase<String> {
         public ListElementExtractor( final String listAsString ) {
             super(listAsString);
@@ -299,7 +297,6 @@ public class QueryIterUnfold extends QueryIterRepeatApply
             return nextElmt;
         }
     }
-
 
     protected static class MapElementExtractor extends ElementExtractorBase<Map.Entry<String,String>> {
         public MapElementExtractor( final String mapAsString ) {
@@ -342,5 +339,4 @@ public class QueryIterUnfold extends QueryIterRepeatApply
                 cursor++;
         }
     }
-
 }

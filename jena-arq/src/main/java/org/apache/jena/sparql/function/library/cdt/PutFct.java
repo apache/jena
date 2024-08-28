@@ -38,75 +38,75 @@ import org.apache.jena.sparql.function.FunctionEnv;
 
 public class PutFct extends FunctionBase
 {
-	@Override
-	public void checkBuild( final String uri, final ExprList args ) {
-		if ( args.size() < 2 || args.size() > 3 )
-			throw new QueryBuildException("Function '"+Lib.className(this)+"' takes two or three arguments");
-	}
+    @Override
+    public void checkBuild( final String uri, final ExprList args ) {
+        if ( args.size() < 2 || args.size() > 3 )
+            throw new QueryBuildException("Function '"+Lib.className(this)+"' takes two or three arguments");
+    }
 
-	@Override
-	public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env) {
-		if ( args.size() < 2 || args.size() > 3 )
-			throw new ExprException("wrong number of arguments (" + args.size() + "), must be 2 or 3");
+    @Override
+    public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env) {
+        if ( args.size() < 2 || args.size() > 3 )
+            throw new ExprException("wrong number of arguments (" + args.size() + "), must be 2 or 3");
 
-		// check the second argument first because that's less expensive
-		final NodeValue nv2 = args.get(1).eval(binding, env);
-		final Node n2 = nv2.asNode();
-		if ( ! n2.isURI() && ! n2.isLiteral() )
-			throw new ExprEvalException("Not a valid map key: " + nv2);
+        // check the second argument first because that's less expensive
+        final NodeValue nv2 = args.get(1).eval(binding, env);
+        final Node n2 = nv2.asNode();
+        if ( ! n2.isURI() && ! n2.isLiteral() )
+            throw new ExprEvalException("Not a valid map key: " + nv2);
 
-		// now check the first argument
-		final NodeValue nv1 = args.get(0).eval(binding, env);
-		final Map<CDTKey,CDTValue> map = CDTLiteralFunctionUtils.checkAndGetMap(nv1);
+        // now check the first argument
+        final NodeValue nv1 = args.get(0).eval(binding, env);
+        final Map<CDTKey,CDTValue> map = CDTLiteralFunctionUtils.checkAndGetMap(nv1);
 
-		final CDTKey key = CDTFactory.createKey(n2);
+        final CDTKey key = CDTFactory.createKey(n2);
 
-		// produce a map value from the third argument (if any)
-		final CDTValue newValue;
-		if ( args.size() == 2 ) {
-			newValue = CDTFactory.getNullValue();
-		}
-		else {  // in this case, we have that args.size() == 3
-			NodeValue nv3 = null;
-			try {
-				nv3 = args.get(2).eval(binding, env);
-			}
-			catch ( final ExprException ex ) {
-				// nothing to do here
-			}
+        // produce a map value from the third argument (if any)
+        final CDTValue newValue;
+        if ( args.size() == 2 ) {
+            newValue = CDTFactory.getNullValue();
+        }
+        else {  // in this case, we have that args.size() == 3
+            NodeValue nv3 = null;
+            try {
+                nv3 = args.get(2).eval(binding, env);
+            }
+            catch ( final ExprException ex ) {
+                // nothing to do here
+            }
 
-			if ( nv3 != null ) {
-				newValue = CDTFactory.createValue( nv3.asNode() );
-			}
-			else {
-				newValue = CDTFactory.getNullValue();
-			}
-		}
+            if ( nv3 != null ) {
+                newValue = CDTFactory.createValue( nv3.asNode() );
+            }
+            else {
+                newValue = CDTFactory.getNullValue();
+            }
+        }
 
-		// check if the given map already contains the exact same map entry
-		// if so, simply return the given cdt:Map literal
-		final CDTValue oldValue = map.get(key);
-		if ( oldValue != null ) {
-			if ( oldValue.isNull() && newValue.isNull() )
-				return nv1;
+        // check if the given map already contains the exact same map entry
+        // if so, simply return the given cdt:Map literal
+        final CDTValue oldValue = map.get(key);
+        if ( oldValue != null ) {
+            if ( oldValue.isNull() && newValue.isNull() )
+                return nv1;
 
-			if ( ! oldValue.isNull() && ! newValue.isNull() ) {
-				final Node on = oldValue.asNode();
-				final Node nn = newValue.asNode();
-				if ( on.equals(nn) )
-					return nv1;
-			}
-		}
+            if ( ! oldValue.isNull() && ! newValue.isNull() ) {
+                final Node on = oldValue.asNode();
+                final Node nn = newValue.asNode();
+                if ( on.equals(nn) )
+                    return nv1;
+            }
+        }
 
-		final Map<CDTKey,CDTValue> newMap = new HashMap<>(map);
-		newMap.put(key, newValue);
+        final Map<CDTKey,CDTValue> newMap = new HashMap<>(map);
+        newMap.put(key, newValue);
 
-		return CDTLiteralFunctionUtils.createNodeValue(newMap);
-	}
+        return CDTLiteralFunctionUtils.createNodeValue(newMap);
+    }
 
-	@Override
-	public NodeValue exec( final List<NodeValue> args ) {
-		throw new IllegalStateException("should never end up here");
-	}
+    @Override
+    public NodeValue exec( final List<NodeValue> args ) {
+        throw new IllegalStateException("should never end up here");
+    }
 
 }

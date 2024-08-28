@@ -1,0 +1,11 @@
+== Grammar for CDTs Literals
+
+The script cdt-literals runs JavaCC and generates the java parser.
+
+    cdt-literals cdt_literals.jj
+
+The script also processes the Java files to insert "@SuppressWarnings".
+
+The java files are party of the git repository so that Jena can be compiled and
+built from source without needing javacc setup.
+

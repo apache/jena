@@ -39,64 +39,64 @@ import org.apache.jena.sparql.function.FunctionEnv;
 
 public class MapFct extends FunctionBase
 {
-	@Override
-	public void checkBuild( final String uri, final ExprList args ) {
-		if ( args.size() % 2 == 1 )
-			throw new QueryBuildException("Function '"+Lib.className(this)+"' takes an even number of arguments");
-	}
+    @Override
+    public void checkBuild( final String uri, final ExprList args ) {
+        if ( args.size() % 2 == 1 )
+            throw new QueryBuildException("Function '"+Lib.className(this)+"' takes an even number of arguments");
+    }
 
-	@Override
-	public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env) {
-		if ( args.size() % 2 == 1 )
-			throw new ExprException("Function '"+Lib.className(this)+"' takes an even number of arguments");
+    @Override
+    public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env) {
+        if ( args.size() % 2 == 1 )
+            throw new ExprException("Function '"+Lib.className(this)+"' takes an even number of arguments");
 
-		final Map<CDTKey,CDTValue> map = new HashMap<>();
+        final Map<CDTKey,CDTValue> map = new HashMap<>();
 
-		final Iterator<Expr> it = args.iterator();
-		while ( it.hasNext() ) {
-			final Expr exprKey = it.next();
-			final Expr exprValue = it.next();
+        final Iterator<Expr> it = args.iterator();
+        while ( it.hasNext() ) {
+            final Expr exprKey = it.next();
+            final Expr exprValue = it.next();
 
-			final CDTKey key = getKey(exprKey, binding, env);
-			if ( key != null ) {
-				final CDTValue value = getValue(exprValue, binding, env);
-				map.put(key, value);
-			}
-		}
+            final CDTKey key = getKey(exprKey, binding, env);
+            if ( key != null ) {
+                final CDTValue value = getValue(exprValue, binding, env);
+                map.put(key, value);
+            }
+        }
 
-		return CDTLiteralFunctionUtils.createNodeValue(map);
-	}
+        return CDTLiteralFunctionUtils.createNodeValue(map);
+    }
 
-	protected CDTKey getKey( final Expr e, final Binding binding, final FunctionEnv env ) {
-		final NodeValue nv;
-		try {
-			nv = e.eval(binding, env);
-		} catch ( final ExprException ex ) {
-			return null;
-		}
+    protected CDTKey getKey( final Expr e, final Binding binding, final FunctionEnv env ) {
+        final NodeValue nv;
+        try {
+            nv = e.eval(binding, env);
+        } catch ( final ExprException ex ) {
+            return null;
+        }
 
-		final Node n = nv.asNode();
-		if ( ! n.isURI() && ! n.isLiteral() )
-			return null;
+        final Node n = nv.asNode();
+        if ( ! n.isURI() && ! n.isLiteral() )
+            return null;
 
-		return CDTFactory.createKey(n);
-	}
+        return CDTFactory.createKey(n);
+    }
 
-	protected CDTValue getValue( final Expr e, final Binding binding, final FunctionEnv env ) {
-		final NodeValue nv;
-		try {
-			nv = e.eval(binding, env);
-		} catch ( final ExprException ex ) {
-			return CDTFactory.getNullValue();
-		}
+    protected CDTValue getValue( final Expr e, final Binding binding, final FunctionEnv env ) {
+        final NodeValue nv;
+        try {
+            nv = e.eval(binding, env);
+        } catch ( final ExprException ex ) {
+            return CDTFactory.getNullValue();
+        }
 
-		return CDTFactory.createValue( nv.asNode() );
-	}
+        return CDTFactory.createValue( nv.asNode() );
+    }
 
 
-	@Override
-	public NodeValue exec( final List<NodeValue> args ) {
-		throw new IllegalStateException("should never end up here");
-	}
+    @Override
+    public NodeValue exec( final List<NodeValue> args ) {
+        throw new IllegalStateException("should never end up here");
+    }
 
 }

@@ -26,21 +26,21 @@ import org.apache.jena.sparql.expr.NodeValue;
 
 public class HeadFct extends FunctionBase1List
 {
-	@Override
-	protected NodeValue _exec( final List<CDTValue> list, final NodeValue nvList ) {
-		if ( list.size() == 0 )
-			throw new ExprEvalException("Empty list");
+    @Override
+    protected NodeValue _exec( final List<CDTValue> list, final NodeValue nvList ) {
+        if ( list.size() == 0 )
+            throw new ExprEvalException("Empty list");
 
-		final CDTValue value = list.get(0);
-		if ( value.isNull() ) {
-			throw new ExprEvalException("accessing null value from list" );
-		}
-		else if ( value.isNode() ) {
-			return NodeValue.makeNode( value.asNode() );
-		}
-		else {
-			throw new ExprEvalException("Unexpected type of CDTValue: " + value.getClass().getName() );
-		}
-	}
+        final CDTValue value = list.get(0);
+        if ( value.isNull() ) {
+            throw new ExprEvalException("accessing null value from list" );
+        }
+        else if ( value.isNode() ) {
+            return NodeValue.makeNode( value.asNode() );
+        }
+        else {
+            throw new ExprEvalException("Unexpected type of CDTValue: " + value.getClass().getName() );
+        }
+    }
 
 }

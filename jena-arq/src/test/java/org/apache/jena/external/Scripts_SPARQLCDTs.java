@@ -21,6 +21,9 @@ package org.apache.jena.external;
 import org.apache.jena.arq.junit.manifest.Manifests;
 import org.apache.jena.arq.junit.runners.Label;
 import org.apache.jena.arq.junit.runners.RunnerSPARQL;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 @RunWith(RunnerSPARQL.class)
@@ -29,4 +32,19 @@ import org.junit.runner.RunWith;
     "testing/SPARQL-CDTs/manifest-all.ttl"
 })
 
-public class Scripts_SPARQLCDTs {}
+public class Scripts_SPARQLCDTs {
+    // Expected warnings off.
+    private static boolean bVerboseWarnings;
+    private static boolean bWarnOnUnknownFunction;
+
+    @BeforeClass public static void beforeClass() {
+        // Suppress warnings about bad format NodeValues (expected in tests)
+        bVerboseWarnings = NodeValue.VerboseWarnings;
+        NodeValue.VerboseWarnings = false;
+    }
+
+    @AfterClass public static void afterClass() {
+        NodeValue.VerboseWarnings = bVerboseWarnings;
+    }
+
+}

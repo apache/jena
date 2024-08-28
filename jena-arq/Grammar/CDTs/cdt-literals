@@ -56,10 +56,10 @@ sed -e 's/@SuppressWarnings("serial")//' \
     < $F > F
 mv F $F
 
-echo "---- Create HTML form ----"
-../jj2html ${FILE%%.jj}.txt '../tokens.txt' > ${FILE%%.jj}-1.html
-../grammarExtracts < ${FILE%%.jj}-1.html > ${FILE%%.jj}-2.html
-
-echo "Check X and Y for IRI_REF because \" became '"
+## echo "---- Create HTML form ----"
+## ../jj2html ${FILE%%.jj}.txt '../tokens.txt' > ${FILE%%.jj}-1.html
+## ../grammarExtracts < ${FILE%%.jj}-1.html > ${FILE%%.jj}-2.html
+## 
+## echo "Check X and Y for IRI_REF because \" became '"
 
 echo "---- Done"

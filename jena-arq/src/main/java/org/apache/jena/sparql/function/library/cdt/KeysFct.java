@@ -30,17 +30,17 @@ import org.apache.jena.sparql.function.FunctionBase1;
 
 public class KeysFct extends FunctionBase1
 {
-	@Override
-	public NodeValue exec( final NodeValue nv ) {
-		final Map<CDTKey,CDTValue> map = CDTLiteralFunctionUtils.checkAndGetMap(nv);
+    @Override
+    public NodeValue exec( final NodeValue nv ) {
+        final Map<CDTKey,CDTValue> map = CDTLiteralFunctionUtils.checkAndGetMap(nv);
 
-		final List<CDTValue> list = new ArrayList<>( map.size() );
-		for ( final CDTKey key : map.keySet() ) {
-			final CDTValue value = CDTFactory.createValue( key.asNode() );
-			list.add(value);
-		}
+        final List<CDTValue> list = new ArrayList<>( map.size() );
+        for ( final CDTKey key : map.keySet() ) {
+            final CDTValue value = CDTFactory.createValue( key.asNode() );
+            list.add(value);
+        }
 
-		return CDTLiteralFunctionUtils.createNodeValue(list);
-	}
+        return CDTLiteralFunctionUtils.createNodeValue(list);
+    }
 
 }
