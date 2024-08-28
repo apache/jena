@@ -1,0 +1,6 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+SELECT ?k ?v WHERE {
+	BIND( "{1: _:x, 2: _:y}"^^cdt:Map AS ?map )
+	UNFOLD( ?map AS ?k, ?v )
+}

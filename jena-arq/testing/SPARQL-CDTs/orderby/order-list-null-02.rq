@@ -1,0 +1,16 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	{
+		SELECT * WHERE {
+			VALUES (?id ?list) {
+				(1  "[   null ,  1]"^^cdt:List)
+				(2  "[ 'hello',  2]"^^cdt:List)
+				(3  "[null    ,  3]"^^cdt:List)
+			}
+		}
+		ORDER BY DESC(?list) LIMIT 1   # attention, DESC here to check that the non-null element ordered highest
+	}
+	FILTER (?id = 2)
+}

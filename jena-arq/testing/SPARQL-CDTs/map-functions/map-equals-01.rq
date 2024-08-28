@@ -1,0 +1,6 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	FILTER("{    }"^^cdt:Map = "{}"^^cdt:Map)
+}

@@ -1,0 +1,3226 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <manifest#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix sparql:  <http://www.w3.org/ns/sparql#> .
+@prefix cdt:     <http://w3id.org/awslabs/neptune/SPARQL-CDTs/> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Functions for cdt:List Literals" ;
+    mf:entries
+    (
+		:list-constructor-01
+		:list-constructor-02
+		:list-constructor-03
+		:list-constructor-04
+		:list-constructor-05
+		:list-constructor-06
+		:list-constructor-09
+		:list-constructor-10
+		:list-constructor-11
+		:list-constructor-12
+		:list-constructor-13
+		:list-constructor-14
+		:list-constructor-15
+		:list-constructor-16
+
+		:concat-01
+		:concat-02
+		:concat-03
+		:concat-04
+		:concat-05
+		:concat-06
+		:concat-07
+		:concat-08
+		:concat-09
+		:concat-10
+
+		:contains-01
+		:contains-02
+		:contains-03
+		:contains-04
+		:contains-05
+		:contains-06
+		:contains-07
+		:contains-08
+		:contains-09
+		:contains-10
+
+		:get-01
+		:get-02
+		:get-03
+		:get-04
+		:get-05
+		:get-06
+		:get-07
+		:get-08
+		:get-09
+		:get-10
+		:get-11
+		:get-12
+		:get-13
+
+		:head-01
+		:head-02
+		:head-03
+		:head-04
+		:head-05
+		:head-06
+		:head-07
+		:head-08
+		:head-09
+		:head-10
+		:head-11
+		:head-12
+
+		:tail-01
+		:tail-02
+		:tail-03
+		:tail-04
+		:tail-05
+		:tail-06
+		:tail-07
+		:tail-08
+		:tail-09
+		:tail-10
+
+		:reverse-01
+		:reverse-02
+		:reverse-03
+		:reverse-04
+		:reverse-05
+		:reverse-06
+		:reverse-07
+		:reverse-08
+		:reverse-09
+		:reverse-10
+
+		:size-01
+		:size-02
+		:size-03
+		:size-04
+		:size-05
+		:size-06
+		:size-07
+		:size-08
+		:size-09
+		:size-10
+		:size-11
+		:size-12
+
+		:subseq-01
+		:subseq-02
+		:subseq-03
+		:subseq-04
+		:subseq-05
+		:subseq-06
+		:subseq-07
+		:subseq-08
+		:subseq-09
+		:subseq-10
+		:subseq-11
+		:subseq-12
+		:subseq-13
+    	
+		# Null-values
+		
+		:list-constructor-null-01
+		:list-constructor-null-02
+		:concat-null-01
+		:contains-null-01
+		:get-null-01
+		:get-null-02
+		:head-null-01
+		:head-null-02
+
+		# Errors
+		:get-error-01 # non-list argument
+		:get-error-02 # invalid index (greater than size)
+		:get-error-03 # invalid index (zero)
+		:get-error-04 # invalid index (negative)
+		:get-error-05 # (non-integer) string index
+		:get-error-06 # (non-integer) decimal index
+		:subseq-error-01 # non-list argument
+		:subseq-error-02 # non-integer index
+		:concat-error-01 # non-list argument
+		:concat-error-02 # non-list argument
+		:contains-error-01 # non-list argument
+		:head-error-01 # non-list argument
+		:tail-error-01 # non-list argument
+		:reverse-error-01 # non-list argument
+		:size-error-01 # non-list argument
+
+		# Equality Tests for Lists
+		:list-equals-01 # empty list
+		:list-equals-02 # single-element
+		:list-equals-03 # multiple-element
+		:list-equals-04 # multiple-element, value-space comparison
+		:list-equals-05 # same IRI
+		:list-equals-06 # blank nodes
+		:list-equals-07 # blank nodes
+		:list-equals-08 # blank nodes
+		:list-equals-09 # blank nodes
+		:list-equals-null-01
+		:list-equals-null-02
+
+		# Comparison Tests for Lists
+		:list-less-than-01
+		:list-less-than-02
+		:list-less-than-03
+		:list-less-than-04
+		:list-less-than-05
+		:list-less-than-06
+		:list-less-than-07
+		:list-less-than-08
+		:list-less-than-09
+		:list-less-than-10
+		:list-less-than-11
+		:list-less-than-12
+		:list-less-than-13
+		:list-less-than-14
+		:list-less-than-15
+		:list-less-than-16
+		:list-less-than-19
+		:list-less-than-20
+		:list-less-than-21
+		:list-less-than-22
+		:list-less-than-23
+		:list-less-than-24
+		:list-less-than-25
+		:list-less-than-26
+		:list-less-than-27
+		:list-less-than-28
+		:list-less-than-29
+		:list-less-than-31
+		:list-less-than-null-01
+		:list-less-than-null-02
+		:list-less-than-null-03
+		:list-less-than-null-04
+		:list-less-than-null-05
+		:list-less-than-null-06
+		:list-less-than-error-03
+		:list-less-than-error-04
+		:list-less-equal-01
+		:list-less-equal-02
+		:list-less-equal-03
+		:list-less-equal-04
+		:list-less-equal-05
+		:list-less-equal-06
+		:list-less-equal-07
+		:list-less-equal-08
+		:list-less-equal-09
+		:list-less-equal-10
+		:list-less-equal-11
+		:list-less-equal-12
+		:list-less-equal-13
+		:list-less-equal-14
+		:list-less-equal-15
+		:list-less-equal-16
+		:list-less-equal-19
+		:list-less-equal-20
+		:list-less-equal-21
+		:list-less-equal-22
+		:list-less-equal-23
+		:list-less-equal-24
+		:list-less-equal-25
+		:list-less-equal-26
+		:list-less-equal-27
+		:list-less-equal-28
+		:list-less-equal-29
+		:list-less-equal-31
+		:list-less-equal-null-01
+		:list-less-equal-null-02
+		:list-less-equal-null-03
+		:list-less-equal-null-04
+		:list-less-equal-null-05
+		:list-less-equal-null-06
+		:list-less-equal-error-03
+		:list-less-equal-error-04
+		:list-greater-than-01
+		:list-greater-than-02
+		:list-greater-than-03
+		:list-greater-than-04
+		:list-greater-than-05
+		:list-greater-than-06
+		:list-greater-than-07
+		:list-greater-than-08
+		:list-greater-than-09
+		:list-greater-than-10
+		:list-greater-than-11
+		:list-greater-than-12
+		:list-greater-than-13
+		:list-greater-than-14
+		:list-greater-than-15
+		:list-greater-than-16
+		:list-greater-than-19
+		:list-greater-than-20
+		:list-greater-than-21
+		:list-greater-than-22
+		:list-greater-than-23
+		:list-greater-than-24
+		:list-greater-than-25
+		:list-greater-than-26
+		:list-greater-than-27
+		:list-greater-than-28
+		:list-greater-than-29
+		:list-greater-than-31
+		:list-greater-than-null-01
+		:list-greater-than-null-02
+		:list-greater-than-null-03
+		:list-greater-than-null-04
+		:list-greater-than-null-05
+		:list-greater-than-null-06
+		:list-greater-than-error-03
+		:list-greater-than-error-04
+		:list-greater-equal-01
+		:list-greater-equal-02
+		:list-greater-equal-03
+		:list-greater-equal-04
+		:list-greater-equal-05
+		:list-greater-equal-06
+		:list-greater-equal-07
+		:list-greater-equal-08
+		:list-greater-equal-09
+		:list-greater-equal-10
+		:list-greater-equal-11
+		:list-greater-equal-12
+		:list-greater-equal-13
+		:list-greater-equal-14
+		:list-greater-equal-15
+		:list-greater-equal-16
+		:list-greater-equal-19
+		:list-greater-equal-20
+		:list-greater-equal-21
+		:list-greater-equal-22
+		:list-greater-equal-23
+		:list-greater-equal-24
+		:list-greater-equal-25
+		:list-greater-equal-26
+		:list-greater-equal-27
+		:list-greater-equal-28
+		:list-greater-equal-29
+		:list-greater-equal-31
+		:list-greater-equal-null-01
+		:list-greater-equal-null-02
+		:list-greater-equal-null-03
+		:list-greater-equal-null-04
+		:list-greater-equal-null-05
+		:list-greater-equal-null-06
+		:list-greater-equal-error-03
+		:list-greater-equal-error-04
+
+		# sameTerm Tests for Lists
+		:sameterm-01 # empty list
+		:sameterm-02 # single-element
+		:sameterm-03 # multiple-element
+		:sameterm-04 # multiple-element, different lexical-space, same value-space elements (!sameTerm)
+		:sameterm-null-01 # list with null (allowed since the test is on the list lexical, not the elements)
+    ) .
+
+:list-constructor-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-constructor-01" ;
+    rdfs:comment    "construct an empty list" ;
+    mf:feature cdt:list-constructor ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-constructor-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-constructor-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-constructor-02" ;
+    rdfs:comment    "construct a list with a single integer element" ;
+    mf:feature cdt:list-constructor ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-constructor-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-constructor-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-constructor-03" ;
+    rdfs:comment    "construct a list with two integer elements" ;
+    mf:feature cdt:list-constructor ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-constructor-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-constructor-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-constructor-04" ;
+    rdfs:comment    "construct a list with a single string element" ;
+    mf:feature cdt:list-constructor ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-constructor-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-constructor-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-constructor-05" ;
+    rdfs:comment    "construct a list with two string elements" ;
+    mf:feature cdt:list-constructor ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-constructor-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-constructor-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-constructor-06" ;
+    rdfs:comment    "construct a list with two elements of differing type" ;
+    mf:feature cdt:list-constructor ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-constructor-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-constructor-09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-constructor-09" ;
+    rdfs:comment    "construct a list with a nested, empty list element" ;
+    mf:feature cdt:list-constructor ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-constructor-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-constructor-10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-constructor-10" ;
+    rdfs:comment    "construct a list with a nested list with a single integer element" ;
+    mf:feature cdt:list-constructor ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-constructor-10.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-constructor-11 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-constructor-11" ;
+    rdfs:comment    "construct a list with two elements of different type, one being a nested list" ;
+    mf:feature cdt:list-constructor ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-constructor-11.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-constructor-12 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-constructor-12" ;
+    rdfs:comment    "construct a list with two elements of different type, one being a null element produced by unbound variable error" ;
+    mf:feature cdt:list-constructor ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-constructor-12.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-constructor-13 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-constructor-13" ;
+    rdfs:comment    "construct two equal lists, one by list constructor and the other by literal syntax" ;
+    mf:feature cdt:list-constructor ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-constructor-13.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-constructor-14 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-constructor-14" ;
+    rdfs:comment    "construct a list using STRDT" ;
+    mf:feature cdt:list-constructor ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-constructor-14.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-constructor-15 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-constructor-15" ;
+    rdfs:comment    "construct a list with two integer elements that are the results of evaluating sub-expression including operators" ;
+    mf:feature cdt:list-constructor ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-constructor-15.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-constructor-16 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-constructor-16" ;
+    rdfs:comment    "construct a list with a blank node and check that the identity of the blank node is preserved" ;
+    mf:feature cdt:list-constructor ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-constructor-16.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:concat-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "concat-01" ;
+    mf:feature cdt:concat ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <concat-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:concat-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "concat-02" ;
+    mf:feature cdt:concat ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <concat-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:concat-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "concat-03" ;
+    mf:feature cdt:concat ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <concat-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:concat-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "concat-04" ;
+    mf:feature cdt:concat ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <concat-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:concat-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "concat-05" ;
+    mf:feature cdt:concat ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <concat-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:concat-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "concat-06" ;
+    mf:feature cdt:concat ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <concat-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:concat-07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "concat-07" ;
+    mf:feature cdt:concat ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <concat-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:concat-08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "concat-08" ;
+    mf:feature cdt:concat ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <concat-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:concat-09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "concat-09" ;
+    mf:feature cdt:concat ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <concat-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:concat-10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "concat-10" ;
+    mf:feature cdt:concat ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <concat-10.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:contains-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "contains-01" ;
+    mf:feature cdt:contains ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <contains-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:contains-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "contains-02" ;
+    mf:feature cdt:contains ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <contains-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:contains-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "contains-03" ;
+    mf:feature cdt:contains ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <contains-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:contains-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "contains-04" ;
+    mf:feature cdt:contains ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <contains-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:contains-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "contains-05" ;
+    mf:feature cdt:contains ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <contains-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:contains-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "contains-06" ;
+    mf:feature cdt:contains ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <contains-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:contains-07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "contains-07" ;
+    mf:feature cdt:contains ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <contains-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:contains-08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "contains-08" ;
+    mf:feature cdt:contains ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <contains-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:contains-09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "contains-09" ;
+    mf:feature cdt:contains ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <contains-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:contains-10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "contains-10" ;
+    mf:feature cdt:contains ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <contains-10.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-01" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-02" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-03" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-04" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-05" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-06" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-07" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-08" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-09" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-10" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-10.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-11 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-11" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-11.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-12 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-12" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-12.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-13 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-13" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-13.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:head-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "head-01" ;
+    mf:feature cdt:head ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <head-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:head-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "head-02" ;
+    mf:feature cdt:head ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <head-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:head-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "head-03" ;
+    mf:feature cdt:head ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <head-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:head-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "head-04" ;
+    mf:feature cdt:head ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <head-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:head-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "head-05" ;
+    mf:feature cdt:head ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <head-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:head-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "head-06" ;
+    mf:feature cdt:head ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <head-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:head-07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "head-07" ;
+    mf:feature cdt:head ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <head-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:head-08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "head-08" ;
+    mf:feature cdt:head ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <head-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:head-09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "head-09" ;
+    mf:feature cdt:head ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <head-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:head-10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "head-10" ;
+    mf:feature cdt:head ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <head-10.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:head-11 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "head-11" ;
+    mf:feature cdt:head ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <head-11.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:head-12 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "head-12" ;
+    mf:feature cdt:head ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <head-12.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:tail-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "tail-01" ;
+    mf:feature cdt:tail ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <tail-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:tail-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "tail-02" ;
+    mf:feature cdt:tail ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <tail-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:tail-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "tail-03" ;
+    mf:feature cdt:tail ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <tail-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:tail-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "tail-04" ;
+    mf:feature cdt:tail ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <tail-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:tail-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "tail-05" ;
+    mf:feature cdt:tail ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <tail-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:tail-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "tail-06" ;
+    mf:feature cdt:tail ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <tail-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:tail-07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "tail-07" ;
+    mf:feature cdt:tail ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <tail-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:tail-08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "tail-08" ;
+    mf:feature cdt:tail ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <tail-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:tail-09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "tail-09" ;
+    mf:feature cdt:tail ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <tail-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:tail-10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "tail-10" ;
+    mf:feature cdt:tail ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <tail-10.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:reverse-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "reverse-01" ;
+    mf:feature cdt:reverse ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <reverse-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:reverse-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "reverse-02" ;
+    mf:feature cdt:reverse ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <reverse-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:reverse-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "reverse-03" ;
+    mf:feature cdt:reverse ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <reverse-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:reverse-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "reverse-04" ;
+    mf:feature cdt:reverse ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <reverse-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:reverse-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "reverse-05" ;
+    mf:feature cdt:reverse ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <reverse-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:reverse-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "reverse-06" ;
+    mf:feature cdt:reverse ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <reverse-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:reverse-07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "reverse-07" ;
+    mf:feature cdt:reverse ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <reverse-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:reverse-08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "reverse-08" ;
+    mf:feature cdt:reverse ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <reverse-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:reverse-09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "reverse-09" ;
+    mf:feature cdt:reverse ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <reverse-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:reverse-10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "reverse-10" ;
+    mf:feature cdt:reverse ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <reverse-10.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:size-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "size-01" ;
+    mf:feature cdt:size ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <size-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:size-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "size-02" ;
+    mf:feature cdt:size ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <size-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:size-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "size-03" ;
+    mf:feature cdt:size ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <size-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:size-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "size-04" ;
+    mf:feature cdt:size ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <size-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:size-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "size-05" ;
+    mf:feature cdt:size ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <size-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:size-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "size-06" ;
+    mf:feature cdt:size ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <size-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:size-07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "size-07" ;
+    mf:feature cdt:size ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <size-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:size-08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "size-08" ;
+    mf:feature cdt:size ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <size-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:size-09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "size-09" ;
+    mf:feature cdt:size ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <size-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:size-10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "size-10" ;
+    mf:feature cdt:size ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <size-10.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:size-11 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "size-11" ;
+    mf:feature cdt:size ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <size-11.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:size-12 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "size-12" ;
+    mf:feature cdt:size ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <size-12.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:subseq-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "subseq-01" ;
+    mf:feature cdt:subseq ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <subseq-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:subseq-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "subseq-02" ;
+    mf:feature cdt:subseq ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <subseq-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:subseq-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "subseq-03" ;
+    mf:feature cdt:subseq ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <subseq-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:subseq-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "subseq-04" ;
+    mf:feature cdt:subseq ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <subseq-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:subseq-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "subseq-05" ;
+    mf:feature cdt:subseq ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <subseq-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:subseq-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "subseq-06" ;
+    mf:feature cdt:subseq ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <subseq-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:subseq-07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "subseq-07" ;
+    mf:feature cdt:subseq ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <subseq-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:subseq-08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "subseq-08" ;
+    mf:feature cdt:subseq ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <subseq-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:subseq-09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "subseq-09" ;
+    mf:feature cdt:subseq ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <subseq-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:subseq-10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "subseq-10" ;
+    mf:feature cdt:subseq ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <subseq-10.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:subseq-11 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "subseq-11" ;
+    mf:feature cdt:subseq ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <subseq-11.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:subseq-12 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "subseq-12" ;
+    mf:feature cdt:subseq ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <subseq-12.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:subseq-13 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "subseq-13" ;
+    mf:feature cdt:subseq ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <subseq-13.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-constructor-null-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-constructor-null-01" ;
+    rdfs:comment    "list constructor on null argument" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-constructor-null-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-constructor-null-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-constructor-null-02" ;
+    rdfs:comment    "construct a list one null element produced by expression evaluation error" ;
+    mf:feature cdt:list-constructor ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-constructor-null-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:concat-null-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "concat-null-01" ;
+    rdfs:comment    "concat with null" ;
+    mf:feature cdt:concat ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <concat-null-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:contains-null-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "contains-null-01" ;
+    rdfs:comment    "contains over list containing null" ;
+    mf:feature cdt:contains ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <contains-null-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-null-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-null-01" ;
+    rdfs:comment    "get returning null" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-null-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-null-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-null-02" ;
+    rdfs:comment    "get on empty list" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-null-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:head-null-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "head-null-01" ;
+    rdfs:comment    "head returning null" ;
+    mf:feature cdt:head ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <head-null-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:head-null-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "head-null-02" ;
+    rdfs:comment    "head on empty list" ;
+    mf:feature cdt:head ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <head-null-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-error-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-error-01" ;
+    rdfs:comment    "get on invalid index" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-error-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-error-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-error-02" ;
+    rdfs:comment    "get with non-integer index" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-error-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-error-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-error-03" ;
+    rdfs:comment    "get with non-list argument" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-error-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-error-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-error-04" ;
+    rdfs:comment    "get with non-list argument" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-error-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-error-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-error-05" ;
+    rdfs:comment    "get with non-list argument" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-error-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:get-error-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "get-error-06" ;
+    rdfs:comment    "get with non-list argument" ;
+    mf:feature cdt:get ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <get-error-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:subseq-error-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "subseq-error-01" ;
+    rdfs:comment    "subseq with non-list argument" ;
+    mf:feature cdt:subseq ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <subseq-error-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:subseq-error-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "subseq-error-02" ;
+    rdfs:comment    "subseq with non-integer index" ;
+    mf:feature cdt:subseq ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <subseq-error-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:concat-error-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "concat-error-01" ;
+    rdfs:comment    "concat with non-list argument" ;
+    mf:feature cdt:concat ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <concat-error-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:concat-error-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "concat-error-02" ;
+    rdfs:comment    "concat with non-list argument" ;
+    mf:feature cdt:concat ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <concat-error-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:contains-error-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "contains-error-01" ;
+    rdfs:comment    "contains with non-list argument" ;
+    mf:feature cdt:contains ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <contains-error-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:head-error-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "head-error-01" ;
+    rdfs:comment    "head with non-list argument" ;
+    mf:feature cdt:head ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <head-error-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:tail-error-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "tail-error-01" ;
+    rdfs:comment    "tail with non-list argument" ;
+    mf:feature cdt:tail ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <tail-error-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:reverse-error-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "reverse-error-01" ;
+    rdfs:comment    "reverse with non-list argument" ;
+    mf:feature cdt:reverse ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <reverse-error-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:size-error-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "size-error-01" ;
+    rdfs:comment    "size with non-list argument" ;
+    mf:feature cdt:size ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <size-error-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-equals-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-equals-01" ;
+    rdfs:comment    "equals test on empty list" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-equals-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-equals-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-equals-02" ;
+    rdfs:comment    "equals test on single-element" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-equals-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-equals-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-equals-03" ;
+    rdfs:comment    "equals test on multiple-element" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-equals-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-equals-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-equals-04" ;
+    rdfs:comment    "equals test on multiple-element, value-space comparison" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-equals-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-equals-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-equals-05" ;
+    rdfs:comment    "equals test on lists with same IRI" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-equals-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-equals-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-equals-06" ;
+    rdfs:comment    "equals test on lists with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-equals-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-equals-07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-equals-07" ;
+    rdfs:comment    "equals test on lists with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-equals-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-equals-08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-equals-08" ;
+    rdfs:comment    "equals test on lists with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-equals-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-equals-09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-equals-09" ;
+    rdfs:comment    "equals test on lists with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-equals-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-equals-null-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-equals-null-01" ;
+    rdfs:comment    "equality of pairs of null within lists" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-equals-null-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-equals-null-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-equals-null-02" ;
+    rdfs:comment    "null is not equal to any RDF term" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-equals-null-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-01" ;
+    rdfs:comment    "less-than test on two empty lists" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-02" ;
+    rdfs:comment    "less-than test with one empty list" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-03" ;
+    rdfs:comment    "less-than test with one empty list" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-04" ;
+    rdfs:comment    "less-than test with equal lists" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-05" ;
+    rdfs:comment    "less-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-06" ;
+    rdfs:comment    "less-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-07" ;
+    rdfs:comment    "less-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-08" ;
+    rdfs:comment    "less-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-09" ;
+    rdfs:comment    "less-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-10" ;
+    rdfs:comment    "less-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-10.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-11 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-11" ;
+    rdfs:comment    "less-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-11.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-12 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-12" ;
+    rdfs:comment    "less-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-12.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-13 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-13" ;
+    rdfs:comment    "less-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-13.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-14 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-14" ;
+    rdfs:comment    "less-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-14.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-15 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-15" ;
+    rdfs:comment    "less-than test with booleans" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-15.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-16 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-16" ;
+    rdfs:comment    "less-than test with booleans" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-16.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-19 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-19" ;
+    rdfs:comment    "less-than test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-19.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-20 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-20" ;
+    rdfs:comment    "less-than test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-20.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-21 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-21" ;
+    rdfs:comment    "less-than test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-21.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-22 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-22" ;
+    rdfs:comment    "less-than test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-22.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-23 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-23" ;
+    rdfs:comment    "less-than test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-23.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-24 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-24" ;
+    rdfs:comment    "less-than test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-24.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-25 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-25" ;
+    rdfs:comment    "less-than test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-25.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-26 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-26" ;
+    rdfs:comment    "less-than test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-26.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-27 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-27" ;
+    rdfs:comment    "less-than test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-27.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-28 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-28" ;
+    rdfs:comment    "less-than test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-28.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-29 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-29" ;
+    rdfs:comment    "less-than test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-29.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-31 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-31" ;
+    rdfs:comment    "less-than test with IRIs" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-31.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-null-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-null-01" ;
+    rdfs:comment    "less-than test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-null-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-null-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-null-02" ;
+    rdfs:comment    "less-than test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-null-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-null-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-null-03" ;
+    rdfs:comment    "less-than test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-null-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-null-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-null-04" ;
+    rdfs:comment    "less-than test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-null-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-null-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-null-05" ;
+    rdfs:comment    "less-than test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-null-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-null-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-null-06" ;
+    rdfs:comment    "less-than test with null and blank node" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-null-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-error-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-error-03" ;
+    rdfs:comment    "less-than test with ill-formed literal" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-error-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-than-error-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-than-error-04" ;
+    rdfs:comment    "less-than test with ill-formed literal" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-than-error-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-01" ;
+    rdfs:comment    "less-equal test on two empty lists" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-02" ;
+    rdfs:comment    "less-equal test with one empty list" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-03" ;
+    rdfs:comment    "less-equal test with one empty list" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-04" ;
+    rdfs:comment    "less-equal test with equal lists" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-05" ;
+    rdfs:comment    "less-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-06" ;
+    rdfs:comment    "less-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-07" ;
+    rdfs:comment    "less-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-08" ;
+    rdfs:comment    "less-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-09" ;
+    rdfs:comment    "less-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-10" ;
+    rdfs:comment    "less-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-10.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-11 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-11" ;
+    rdfs:comment    "less-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-11.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-12 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-12" ;
+    rdfs:comment    "less-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-12.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-13 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-13" ;
+    rdfs:comment    "less-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-13.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-14 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-14" ;
+    rdfs:comment    "less-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-14.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-15 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-15" ;
+    rdfs:comment    "less-equal test with booleans" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-15.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-16 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-16" ;
+    rdfs:comment    "less-equal test with booleans" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-16.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-19 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-19" ;
+    rdfs:comment    "less-equal test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-19.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-20 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-20" ;
+    rdfs:comment    "less-equal test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-20.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-21 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-21" ;
+    rdfs:comment    "less-equal test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-21.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-22 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-22" ;
+    rdfs:comment    "less-equal test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-22.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-23 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-23" ;
+    rdfs:comment    "less-equal test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-23.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-24 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-24" ;
+    rdfs:comment    "less-equal test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-24.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-25 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-25" ;
+    rdfs:comment    "less-equal test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-25.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-26 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-26" ;
+    rdfs:comment    "less-equal test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-26.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-27 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-27" ;
+    rdfs:comment    "less-equal test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-27.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-28 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-28" ;
+    rdfs:comment    "less-equal test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-28.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-29 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-29" ;
+    rdfs:comment    "less-equal test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-29.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-31 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-31" ;
+    rdfs:comment    "less-equal test with IRIs" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-31.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-null-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-null-01" ;
+    rdfs:comment    "less-equal test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-null-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-null-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-null-02" ;
+    rdfs:comment    "less-equal test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-null-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-null-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-null-03" ;
+    rdfs:comment    "less-equal test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-null-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-null-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-null-04" ;
+    rdfs:comment    "less-equal test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-null-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-null-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-null-05" ;
+    rdfs:comment    "less-equal test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-null-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-null-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-null-06" ;
+    rdfs:comment    "less-equal test with null and blank node" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-null-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-error-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-error-03" ;
+    rdfs:comment    "less-equal test with ill-formed literal" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-error-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-less-equal-error-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-less-equal-error-04" ;
+    rdfs:comment    "less-equal test with ill-formed literal" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-less-equal-error-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-01" ;
+    rdfs:comment    "greater-than test on two empty lists" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-02" ;
+    rdfs:comment    "greater-than test with one empty list" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-03" ;
+    rdfs:comment    "greater-than test with one empty list" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-04" ;
+    rdfs:comment    "greater-than test with equal lists" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-05" ;
+    rdfs:comment    "greater-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-06" ;
+    rdfs:comment    "greater-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-07" ;
+    rdfs:comment    "greater-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-08" ;
+    rdfs:comment    "greater-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-09" ;
+    rdfs:comment    "greater-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-10" ;
+    rdfs:comment    "greater-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-10.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-11 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-11" ;
+    rdfs:comment    "greater-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-11.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-12 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-12" ;
+    rdfs:comment    "greater-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-12.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-13 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-13" ;
+    rdfs:comment    "greater-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-13.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-14 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-14" ;
+    rdfs:comment    "greater-than test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-14.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-15 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-15" ;
+    rdfs:comment    "greater-than test with booleans" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-15.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-16 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-16" ;
+    rdfs:comment    "greater-than test with booleans" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-16.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-19 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-19" ;
+    rdfs:comment    "greater-than test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-19.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-20 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-20" ;
+    rdfs:comment    "greater-than test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-20.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-21 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-21" ;
+    rdfs:comment    "greater-than test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-21.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-22 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-22" ;
+    rdfs:comment    "greater-than test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-22.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-23 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-23" ;
+    rdfs:comment    "greater-than test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-23.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-24 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-24" ;
+    rdfs:comment    "greater-than test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-24.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-25 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-25" ;
+    rdfs:comment    "greater-than test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-25.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-26 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-26" ;
+    rdfs:comment    "greater-than test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-26.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-27 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-27" ;
+    rdfs:comment    "greater-than test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-27.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-28 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-28" ;
+    rdfs:comment    "greater-than test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-28.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-29 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-29" ;
+    rdfs:comment    "greater-than test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-29.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-31 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-31" ;
+    rdfs:comment    "greater-than test with IRIs" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-31.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-null-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-null-01" ;
+    rdfs:comment    "greater-than test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-null-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-null-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-null-02" ;
+    rdfs:comment    "greater-than test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-null-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-null-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-null-03" ;
+    rdfs:comment    "greater-than test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-null-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-null-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-null-04" ;
+    rdfs:comment    "greater-than test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-null-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-null-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-null-05" ;
+    rdfs:comment    "greater-than test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-null-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-null-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-null-06" ;
+    rdfs:comment    "greater-than test with null and blank node" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-null-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-error-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-error-03" ;
+    rdfs:comment    "greater-than test with ill-formed literal" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-error-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-than-error-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-than-error-04" ;
+    rdfs:comment    "greater-than test with ill-formed literal" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-than-error-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-01" ;
+    rdfs:comment    "greater-equal test on two empty lists" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-02" ;
+    rdfs:comment    "greater-equal test with one empty list" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-03" ;
+    rdfs:comment    "greater-equal test with one empty list" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-04" ;
+    rdfs:comment    "greater-equal test with equal lists" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-05" ;
+    rdfs:comment    "greater-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-06" ;
+    rdfs:comment    "greater-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-07" ;
+    rdfs:comment    "greater-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-08" ;
+    rdfs:comment    "greater-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-09" ;
+    rdfs:comment    "greater-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-10" ;
+    rdfs:comment    "greater-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-10.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-11 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-11" ;
+    rdfs:comment    "greater-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-11.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-12 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-12" ;
+    rdfs:comment    "greater-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-12.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-13 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-13" ;
+    rdfs:comment    "greater-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-13.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-14 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-14" ;
+    rdfs:comment    "greater-equal test with integers" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-14.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-15 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-15" ;
+    rdfs:comment    "greater-equal test with booleans" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-15.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-16 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-16" ;
+    rdfs:comment    "greater-equal test with booleans" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-16.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-19 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-19" ;
+    rdfs:comment    "greater-equal test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-19.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-20 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-20" ;
+    rdfs:comment    "greater-equal test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-20.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-21 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-21" ;
+    rdfs:comment    "greater-equal test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-21.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-22 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-22" ;
+    rdfs:comment    "greater-equal test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-22.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-23 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-23" ;
+    rdfs:comment    "greater-equal test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-23.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-24 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-24" ;
+    rdfs:comment    "greater-equal test with mixed types" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-24.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-25 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-25" ;
+    rdfs:comment    "greater-equal test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-25.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-26 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-26" ;
+    rdfs:comment    "greater-equal test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-26.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-27 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-27" ;
+    rdfs:comment    "greater-equal test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-27.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-28 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-28" ;
+    rdfs:comment    "greater-equal test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-28.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-29 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-29" ;
+    rdfs:comment    "greater-equal test with blank nodes" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-29.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-31 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-31" ;
+    rdfs:comment    "greater-equal test with IRIs" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-31.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-null-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-null-01" ;
+    rdfs:comment    "greater-equal test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-null-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-null-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-null-02" ;
+    rdfs:comment    "greater-equal test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-null-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-null-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-null-03" ;
+    rdfs:comment    "greater-equal test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-null-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-null-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-null-04" ;
+    rdfs:comment    "greater-equal test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-null-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-null-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-null-05" ;
+    rdfs:comment    "greater-equal test with nulls" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-null-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-null-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-null-06" ;
+    rdfs:comment    "greater-equal test with null and blank node" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-null-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-error-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-error-03" ;
+    rdfs:comment    "greater-equal test with ill-formed literal" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-error-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:list-greater-equal-error-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "list-greater-equal-error-04" ;
+    rdfs:comment    "greater-equal test with ill-formed literal" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <list-greater-equal-error-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:sameterm-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sameterm-01" ;
+    rdfs:comment    "sameterm test on empty list" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <sameterm-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:sameterm-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sameterm-02" ;
+    rdfs:comment    "sameterm test on single-element" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <sameterm-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:sameterm-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sameterm-03" ;
+    rdfs:comment    "sameterm test on multiple-element" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <sameterm-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:sameterm-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sameterm-04" ;
+    rdfs:comment    "sameterm test on multiple-element, lexical-space comparison" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <sameterm-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:sameterm-null-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sameterm-null-01" ;
+    rdfs:comment    "sameterm test on list with null (allowed since the test is on the list lexical, not the elements)" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <sameterm-null-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.

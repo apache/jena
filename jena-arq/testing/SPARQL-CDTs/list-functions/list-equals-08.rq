@@ -1,0 +1,9 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	BIND( BNODE() AS ?x )
+	BIND( BNODE() AS ?y )
+	BIND( ( cdt:List(?x) = cdt:List(?y) ) AS ?result )
+	FILTER( ! BOUND(?result) )
+}

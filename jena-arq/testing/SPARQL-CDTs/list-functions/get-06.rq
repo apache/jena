@@ -1,0 +1,11 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+# list with nested empty list
+ASK {
+	BIND("[[]]"^^cdt:List AS ?list)
+	BIND((cdt:get(?list, 1)) AS ?l0)
+	BIND((cdt:get(?l0, 1)) AS ?l1)
+	FILTER(BOUND(?l0))
+	FILTER(!BOUND(?l1))
+	FILTER(?l0 = "[]"^^cdt:List)
+}

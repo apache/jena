@@ -178,6 +178,28 @@ final public class LiteralLabel {
     }
 
     /**
+     * Create a typed literal for which both the lexical form and the value
+     * form are already available. This constructor does not attempt any
+     * validation of the given lexical form, nor any check that the given
+     * lexical form does indeed represent the given value. Use with care!
+     *
+     * @param lex the lexical form of the literal (assumed to be well-formed
+     *            for the given datatype)
+     * @param value the value of the literal (assumed to be the value obtained
+     *              when applying the lexical-to-value mapping of the the given
+     *              datatype to the given lexical form)
+     * @param dtype the datatype of the literal
+     */
+    /*package*/ LiteralLabel(String lex, Object value, RDFDatatype dtype) throws DatatypeFormatException {
+        this.dtype = Objects.requireNonNull(dtype);
+        this.lexicalForm = Objects.requireNonNull(lex);
+        this.value = Objects.requireNonNull(value);
+        this.lang = "";
+        this.wellformed = true;
+        hash = calcHashCode();
+    }
+
+    /**
      * Internal function to set the object value from the lexical form.
      * Requires datatype to be set. Return true if it succeeded else false.
      * @throws DatatypeFormatException if the value is ill-formed and

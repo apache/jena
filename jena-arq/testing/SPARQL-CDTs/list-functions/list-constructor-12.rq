@@ -1,0 +1,12 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+# list with mixed defined and undefined types
+ASK {
+	BIND(cdt:List(?unbound, <http://example.org/>) AS ?list)
+	
+	# We use a REGEX here because we can't directly test equality of lists containing null
+	# we could use SAMETERM, but that would likely depend on the lexical form produced by
+	# the system for lists, and not necessarily tell us that the expected terms were actuall
+	# in the resulting list.
+	FILTER(REGEX(STR(?list), "\\[\\s*null\\s*,\\s*<http://example[.]org/>\\s*\\]"))
+}

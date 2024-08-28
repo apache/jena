@@ -1,0 +1,15 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	{
+		SELECT * WHERE {
+			VALUES (?id ?list) {
+				(1  "['01'^^<http://www.w3.org/2001/XMLSchema#integer>]"^^cdt:List)
+				(2  "['001'^^<http://www.w3.org/2001/XMLSchema#integer>]"^^cdt:List)
+			}
+		}
+		ORDER BY ?list LIMIT 1
+	}
+	FILTER ( (?id = 1) || (?id = 2) )
+}

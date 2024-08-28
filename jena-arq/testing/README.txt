@@ -23,3 +23,6 @@ extensions.
 * supports expression without AS in SELECT clause
 
 
+SPARQL-CDTs/      Test copied (on July 4, 2024) from
+                  https://github.com/awslabs/SPARQL-CDTs/tree/main/tests
+

@@ -37,6 +37,9 @@ public class ElementVisitorBase implements ElementVisitor
     public void visit(ElementBind el)           { }
 
     @Override
+    public void visit(ElementUnfold el)         { }
+
+    @Override
     public void visit(ElementData el)           { }
 
     @Override

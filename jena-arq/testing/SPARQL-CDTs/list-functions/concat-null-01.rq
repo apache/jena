@@ -1,0 +1,14 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+ASK {
+	BIND("[null]"^^cdt:List AS ?list)
+	BIND(cdt:concat(?list, ?list) AS ?result)
+
+	FILTER(cdt:size(?result) = 2)
+
+	BIND(cdt:get(?result,1) AS ?elm1)
+	FILTER(!BOUND(?elm1))
+
+	BIND(cdt:get(?result,2) AS ?elm2)
+	FILTER(!BOUND(?elm2))
+}

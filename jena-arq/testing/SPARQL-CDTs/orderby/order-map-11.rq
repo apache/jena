@@ -1,0 +1,15 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	{
+		SELECT * WHERE {
+			VALUES (?id ?map) {
+				(1  "{ 1: <http://example.org/2> }"^^cdt:Map)
+				(2  "{ 1: <http://example.org/1> }"^^cdt:Map)
+			}
+		}
+		ORDER BY ?map LIMIT 1
+	}
+	FILTER (?id = 2)
+}

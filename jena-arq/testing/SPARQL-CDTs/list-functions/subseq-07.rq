@@ -1,0 +1,7 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+# special case: idx = size+1 and no length given
+ASK {
+	BIND("[1,2,3]"^^cdt:List AS ?list)
+	FILTER(cdt:subseq(?list, 4) = "[]"^^cdt:List)
+}

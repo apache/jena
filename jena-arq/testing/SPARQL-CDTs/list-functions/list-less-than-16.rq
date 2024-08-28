@@ -1,0 +1,8 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	BIND( ( "[false]"^^cdt:List < "[true]"^^cdt:List ) AS ?result )
+	FILTER( BOUND(?result) )
+	FILTER( ?result = true )
+}

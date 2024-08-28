@@ -312,6 +312,14 @@ public class OpVars
         }
 
         @Override
+        public void visit(OpUnfold opUnfold) {
+            acc.add( opUnfold.getVar1() );
+            if ( opUnfold.getVar2() != null ) {
+                acc.add( opUnfold.getVar2() );
+            }
+        }
+
+        @Override
         public void visit(OpPropFunc opPropFunc) {
             PropFuncArg.addVars(acc, opPropFunc.getSubjectArgs());
             PropFuncArg.addVars(acc, opPropFunc.getObjectArgs());
@@ -431,6 +439,14 @@ public class OpVars
         }
 
         @Override
+        public void visit(OpUnfold opUnfold) {
+            unknownAcc.add( opUnfold.getVar1() );
+            if ( opUnfold.getVar2() != null ) {
+                unknownAcc.add( opUnfold.getVar2() );
+            }
+        }
+
+        @Override
         public void visit(OpPropFunc opPropFunc) {
             addvars(subjAcc, opPropFunc.getSubjectArgs());
             addvars(objAcc, opPropFunc.getObjectArgs());
@@ -494,6 +510,11 @@ public class OpVars
         @Override
         public void visit(OpAssign opAssign) {
             visitExtendAssign(opAssign);
+        }
+
+        @Override
+        public void visit(OpUnfold opUnfold) {
+            ExprVars.varsMentioned( acc, opUnfold.getExpr() );
         }
 
         // The expression side of (extend) and (assign)

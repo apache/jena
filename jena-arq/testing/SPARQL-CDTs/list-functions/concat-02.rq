@@ -1,0 +1,10 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+
+# concat identity (lhs)
+ASK {
+	BIND("[]"^^cdt:List AS ?empty)
+	BIND("[1]"^^cdt:List AS ?one)
+	BIND(cdt:concat(?empty, ?one) AS ?result)
+	FILTER(?result = ?one)
+}

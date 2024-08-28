@@ -1,0 +1,9 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+# list with one integer
+ASK {
+	BIND("{'hello'@en:'there'@en,1:'one',2:'two'}"^^cdt:Map AS ?map)
+	FILTER(cdt:get(?map, 1) = "one")
+	FILTER(cdt:get(?map, 2) = "two")
+	FILTER(cdt:get(?map, 'hello'@en) = "there"@en)
+}

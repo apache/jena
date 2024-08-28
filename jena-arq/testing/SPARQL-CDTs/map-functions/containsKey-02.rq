@@ -1,0 +1,9 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+# 1-entry map
+ASK {
+	BIND("{1: 'one'}"^^cdt:Map AS ?map)
+	FILTER(cdt:containsKey(?map, 1))
+	FILTER(!cdt:containsKey(?map, "01"^^xsd:integer))
+}

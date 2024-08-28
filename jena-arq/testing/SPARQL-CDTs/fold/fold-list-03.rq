@@ -1,0 +1,15 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+ASK {
+	{
+		SELECT (FOLD(?v) AS ?list)
+		WHERE {
+			VALUES ?v { 1 2 }
+		}
+	}
+	FILTER(
+	    (cdt:get(?list, 1) = 1 && cdt:get(?list, 2) = 2)
+	    ||
+	    (cdt:get(?list, 1) = 2 && cdt:get(?list, 2) = 1)
+	)
+}

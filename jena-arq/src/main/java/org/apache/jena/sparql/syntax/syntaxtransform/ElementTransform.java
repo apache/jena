@@ -38,6 +38,7 @@ public interface ElementTransform
     public Element transform(ElementFilter el, Expr expr2);
     public Element transform(ElementAssign el, Var v, Expr expr2);
     public Element transform(ElementBind el, Var v, Expr expr2);
+    public Element transform(ElementUnfold el, Expr expr, Var v1, Var v2);
     public Triple  transform(Triple triple);
     public Quad    transform(Quad quad);
     public Element transform(ElementData el);

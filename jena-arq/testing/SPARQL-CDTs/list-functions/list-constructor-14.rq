@@ -1,0 +1,8 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+
+# STRDT constructor
+ASK {
+	BIND(STRDT("[1]", cdt:List) AS ?list)
+	FILTER(?list = "[  1  ]"^^cdt:List)
+}

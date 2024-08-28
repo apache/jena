@@ -1,0 +1,15 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	{
+		SELECT * WHERE {
+			VALUES (?id ?map) {
+				(1  "{1: 42}"^^cdt:Map)
+				(2  "{ 2: 42}"^^cdt:Map)  # the space is on purpose, to make sure the comparison is not done in terms of the lexical forms
+			}
+		}
+		ORDER BY ?map LIMIT 1
+	}
+	FILTER (?id = 1)
+}
