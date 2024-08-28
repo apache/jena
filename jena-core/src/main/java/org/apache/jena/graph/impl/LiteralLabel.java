@@ -286,9 +286,11 @@ final public class LiteralLabel {
         if ( quoting )
             b.append('"');
 
-        if ( lang != null && !lang.equals("") )
+        if ( lang != null && !lang.equals("") ) {
             b.append("@").append(lang);
-        else if ( ! dtype.equals(XSDDatatype.XSDstring) ) {
+            if ( textDir != null )
+                b.append("--").append(textDir);
+        } else if ( ! dtype.equals(XSDDatatype.XSDstring) ) {
                 String dtStr = (pmap != null)
                         ? PrefixMapping.Standard.shortForm(dtype.getURI())
                         : dtype.getURI();
