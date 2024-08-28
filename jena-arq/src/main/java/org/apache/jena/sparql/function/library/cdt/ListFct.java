@@ -33,33 +33,33 @@ import org.apache.jena.sparql.function.FunctionEnv;
 
 public class ListFct extends FunctionBase
 {
-	@Override
-	public void checkBuild( final String uri, final ExprList args ) {
-		// nothing to do here
-	}
+    @Override
+    public void checkBuild( final String uri, final ExprList args ) {
+        // nothing to do here
+    }
 
-	@Override
-	public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env) {
-		final List<CDTValue> list = new ArrayList<>( args.size() );
+    @Override
+    public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env) {
+        final List<CDTValue> list = new ArrayList<>( args.size() );
 
-		for ( final Expr e : args ) {
-			CDTValue v;
-			try {
-				final NodeValue nv = e.eval(binding, env);
-				v = CDTFactory.createValue( nv.asNode() );
-			} catch ( final ExprException ex ) {
-				v = CDTFactory.getNullValue();
-			}
+        for ( final Expr e : args ) {
+            CDTValue v;
+            try {
+                final NodeValue nv = e.eval(binding, env);
+                v = CDTFactory.createValue( nv.asNode() );
+            } catch ( final ExprException ex ) {
+                v = CDTFactory.getNullValue();
+            }
 
-			list.add(v);
-		}
+            list.add(v);
+        }
 
-		return CDTLiteralFunctionUtils.createNodeValue(list);
-	}
+        return CDTLiteralFunctionUtils.createNodeValue(list);
+    }
 
-	@Override
-	public NodeValue exec( final List<NodeValue> args ) {
-		throw new IllegalStateException("should never end up here");
-	}
+    @Override
+    public NodeValue exec( final List<NodeValue> args ) {
+        throw new IllegalStateException("should never end up here");
+    }
 
 }

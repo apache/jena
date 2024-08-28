@@ -480,6 +480,7 @@ void OrderCondition() :
           getQuery().addOrderBy(v, direction) ; }
 }
 
+#ifdef ARQ
 SortCondition OrderConditionForAggregationFunction() :
 { int direction = 0 ; Expr expr = null ; Node v = null ; }
 {
@@ -500,6 +501,7 @@ SortCondition OrderConditionForAggregationFunction() :
       else
           return new SortCondition(v, direction) ; }
 }
+#endif
 
 void LimitOffsetClauses() : { }
 {
@@ -924,8 +926,6 @@ Element GraphPatternNotTriples() : { Element el = null ; }
  |
    el = Assignment()
  |
-   el = Unfold()
- |
    el = ExistsElt()
  |
    el = NotExistsElt()
@@ -1061,18 +1061,6 @@ Element Assignment() : { Var v ; Expr expr ; }
   expr = Expression()
   <RPAREN>
     { return new ElementAssign(v, expr) ; }
-}
-
-Element Unfold() : {  Var v1 ; Var v2 = null ; Expr expr ; }
-{
-  <UNFOLD>
-  <LPAREN>
-  expr = Expression()
-  <AS>
-  v1 = Var()
-  (<COMMA> v2 = Var() { ; } )?
-  <RPAREN>
-  { return new ElementUnfold(expr, v1, v2) ; }
 }
 
 Element ExistsElt() : { Element el ; }

@@ -37,14 +37,11 @@ public class ParserForCDTLiterals
 	}
 
 	public static List<CDTValue> parseListLiteral( final ParserProfile pp, final String lex ) {
-		final Reader reader = new StringReader(lex);
-		final List<CDTValue> result = parseListLiteral(pp, reader);
-
-		try { reader.close(); } catch ( final IOException e ) {
+		try ( Reader reader = new StringReader(lex) ) {
+		    return parseListLiteral(pp, reader);
+		} catch ( final IOException e ) {
 			throw new CDTLiteralParseException("Closing the reader caused an exception.", e);
 		}
-
-		return result;
 	}
 
 	public static List<CDTValue> parseListLiteral( final Reader reader ) {
@@ -77,14 +74,11 @@ public class ParserForCDTLiterals
 	}
 
 	public static Map<CDTKey,CDTValue> parseMapLiteral( final ParserProfile pp, final String lex ) {
-		final Reader reader = new StringReader(lex);
-		final Map<CDTKey,CDTValue> result = parseMapLiteral(pp, reader);
-
-		try { reader.close(); } catch ( final IOException e ) {
+	    try ( Reader reader = new StringReader(lex) ) {
+	        return parseMapLiteral(pp, reader);
+	    } catch ( final IOException e ) {
 			throw new CDTLiteralParseException("Closing the reader caused an exception.", e);
 		}
-
-		return result;
 	}
 
 	public static Map<CDTKey,CDTValue> parseMapLiteral( final Reader reader ) {

@@ -26,11 +26,11 @@ import org.apache.jena.sparql.function.FunctionBase1;
 
 public abstract class FunctionBase1List extends FunctionBase1
 {
-	@Override
-	public NodeValue exec( final NodeValue nv ) {
-		final List<CDTValue> list = CDTLiteralFunctionUtils.checkAndGetList(nv);
-		return _exec(list, nv);
-	}
+    @Override
+    public NodeValue exec( final NodeValue nv ) {
+        final List<CDTValue> list = CDTLiteralFunctionUtils.checkAndGetList(nv);
+        return _exec(list, nv);
+    }
 
-	protected abstract NodeValue _exec( List<CDTValue> list, NodeValue nvList );
+    protected abstract NodeValue _exec( List<CDTValue> list, NodeValue nvList );
 }
