@@ -1047,11 +1047,12 @@ public class G {
         // Both nodes with language tags : compare languages case insensitively.
         String lex1 = match.getLiteralLexicalForm();
         String lex2 = data.getLiteralLexicalForm();
+        if ( ! lex1.equals(lex2) )
+            return false;
         String lang1 = match.getLiteralLanguage();
         String lang2 = data.getLiteralLanguage();
-        return lex1.equals(lex2) && lang1.equalsIgnoreCase(lang2);
+        return lang1.equalsIgnoreCase(lang2);
     }
-
 
     /** Contains, and language tags compare case-insentively */
     public static boolean containsByLang(Graph g, Node s, Node p, Node o) {
