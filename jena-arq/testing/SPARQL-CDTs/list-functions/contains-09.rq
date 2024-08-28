@@ -1,0 +1,12 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+# nested lists
+ASK {
+	BIND("[1,{2:3}]"^^cdt:List AS ?list)
+	BIND("{2:3}"^^cdt:Map AS ?map)
+
+	FILTER(cdt:contains(?list, 1))
+	FILTER(!cdt:contains(?list, 2))
+	FILTER(!cdt:contains(?list, 3))
+	FILTER(cdt:contains(?list, ?map))
+}

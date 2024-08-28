@@ -1,0 +1,8 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	BIND( ( "{1:42}"^^cdt:Map > "{2:43, 1:42}"^^cdt:Map ) AS ?result )
+	FILTER( BOUND(?result) )
+	FILTER( ?result = false )
+}

@@ -1,0 +1,11 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+ASK {
+	{
+		SELECT (FOLD(?v ORDER BY ?sort) AS ?list)
+		WHERE {
+			VALUES (?sort ?v) { (1 1) (3 2) (2 3) }
+		}
+	}
+	FILTER(?list = "[1,3,2]"^^cdt:List)
+}

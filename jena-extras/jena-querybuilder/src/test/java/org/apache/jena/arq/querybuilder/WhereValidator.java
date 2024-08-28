@@ -91,6 +91,12 @@ public class WhereValidator implements ElementVisitor {
     }
 
     @Override
+    public void visit(ElementUnfold el) {
+        checkMatching(el);
+        return;
+    }
+
+    @Override
     public void visit(ElementData el) {
         checkMatching(el);
         return;

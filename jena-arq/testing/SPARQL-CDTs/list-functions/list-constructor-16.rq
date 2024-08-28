@@ -1,0 +1,12 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+ASK {
+	BIND( BNODE() AS ?b )
+	BIND( cdt:List(?b) AS ?list )
+
+	FILTER( BOUND(?list) )    # check that there was no error
+
+	BIND( cdt:get(?list,1) AS ?e1 )
+	FILTER( isBlank(?e1) )
+	FILTER( SAMETERM(?e1, ?b) )
+}

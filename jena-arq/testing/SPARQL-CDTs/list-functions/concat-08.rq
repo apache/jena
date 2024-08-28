@@ -1,0 +1,8 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+
+# nullary concat
+ASK {
+	BIND(cdt:concat() AS ?result)
+	FILTER(?result = "[]"^^cdt:List)
+}

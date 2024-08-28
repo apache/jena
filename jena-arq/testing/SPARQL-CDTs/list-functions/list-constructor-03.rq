@@ -1,0 +1,8 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+
+# list with two integers
+ASK {
+	BIND(cdt:List(1, 2) AS ?list)
+	FILTER(?list = "[1, 2]"^^cdt:List)
+}

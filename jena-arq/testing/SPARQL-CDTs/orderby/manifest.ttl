@@ -1,0 +1,291 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <manifest#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix sparql:  <http://www.w3.org/ns/sparql#> .
+@prefix cdt:     <http://w3id.org/awslabs/neptune/SPARQL-CDTs/> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "ORDER BY for cdt:List and cdt:Map literals" ;
+    mf:entries
+    (
+		:order-list-03
+		:order-list-04
+		:order-list-05
+		:order-list-06
+		:order-list-07
+		:order-list-08
+		:order-list-09
+		:order-list-10
+
+		:order-list-null-01
+		:order-list-null-02
+
+		:order-map-03
+		:order-map-03
+		:order-map-04
+		:order-map-05
+		:order-map-06
+		:order-map-07
+		:order-map-08
+		:order-map-09
+		:order-map-10
+		:order-map-11
+		:order-map-12
+		:order-map-13
+		:order-map-14
+		:order-map-15
+		:order-map-16
+		:order-map-17
+
+		:order-map-null-01
+		:order-map-null-02
+    ) .
+
+:order-list-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-list-03" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-list-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-list-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-list-04" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-list-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-list-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-list-05" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-list-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-list-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-list-06" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-list-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-list-07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-list-07" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-list-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-list-08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-list-08" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-list-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-list-09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-list-09" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-list-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-list-10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-list-10" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-list-10.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+
+:order-list-null-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-list-null-01" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-list-null-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-list-null-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-list-null-02" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-list-null-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+
+:order-map-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-map-03" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-map-03.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-map-04 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-map-04" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-map-04.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-map-05 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-map-05" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-map-05.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-map-06 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-map-06" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-map-06.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-map-07 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-map-07" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-map-07.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-map-08 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-map-08" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-map-08.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-map-09 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-map-09" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-map-09.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-map-10 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-map-10" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-map-10.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-map-11 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-map-11" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-map-11.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-map-12 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-map-12" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-map-12.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-map-13 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-map-13" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-map-13.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-map-14 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-map-14" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-map-14.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-map-15 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-map-15" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-map-15.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-map-16 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-map-16" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-map-16.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-map-17 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-map-17" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-map-17.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+
+:order-map-null-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-map-null-01" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-map-null-01.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.
+
+:order-map-null-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "order-map-null-02" ;
+    dawgt:approval dawgt:Proposed ;
+    mf:action
+         [ qt:query  <order-map-null-02.rq> ;
+           qt:data   <empty.ttl> ] ;
+    mf:result  <true.srx> ;
+	.

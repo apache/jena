@@ -1,0 +1,9 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+
+# concat duplicate 2-element
+ASK {
+	BIND("[1, 2]"^^cdt:List AS ?list)
+	BIND(cdt:concat(?list, ?list) AS ?result)
+	FILTER(?result = "[1,2,1,2]"^^cdt:List)
+}

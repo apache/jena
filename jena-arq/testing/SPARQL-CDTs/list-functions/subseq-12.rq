@@ -1,0 +1,8 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+# subseq underrun 0-2
+ASK {
+	BIND("[1,2,3,4,5,6,7,8,9,10]"^^cdt:List AS ?list)
+	BIND(cdt:subseq(?list, 0, 2) AS ?result)
+	FILTER(!BOUND(?result))
+}

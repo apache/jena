@@ -1,0 +1,10 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+	BIND( "{1:'one', '02'^^<http://www.w3.org/2001/XMLSchema#integer>:'two'}"^^cdt:Map AS ?mapIn )
+	BIND( cdt:remove(?mapIn, '2'^^xsd:integer) AS ?mapOut )
+
+	FILTER( BOUND(?mapOut) )    # check that there was no error
+	FILTER( ?mapOut = ?mapIn )
+}

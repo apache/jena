@@ -1,0 +1,7 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+# list with two strings
+ASK {
+	BIND("['a', 'b']"^^cdt:List AS ?list)
+	FILTER(cdt:size(?list) = 2)
+}

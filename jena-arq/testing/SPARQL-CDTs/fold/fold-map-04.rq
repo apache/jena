@@ -1,0 +1,15 @@
+PREFIX cdt:    <http://w3id.org/awslabs/neptune/SPARQL-CDTs/>
+
+ASK {
+	{
+		SELECT (FOLD(?k, ?v) AS ?map)
+		WHERE {
+			VALUES (?k ?v) {
+				(UNDEF "two")
+				(1 "one")
+				("hello"@en "there"@en)
+			}
+		}
+	}
+	FILTER(?map = "{\"hello\"@en:'there'@en,1:'one'}"^^cdt:Map)
+}

@@ -81,6 +81,9 @@ public class ARQConstants
     public static final String javaClassURIScheme = "java:" ;
 
     /** The ARQ function library URI space */
+    public static final String CDTFunctionLibraryURI = "http://w3id.org/awslabs/neptune/SPARQL-CDTs/" ;
+
+    /** The ARQ function library URI space */
     public static final String ARQFunctionLibraryURI = "http://jena.apache.org/ARQ/function#" ;
 
     /** The ARQ aggregate function library URI space */
