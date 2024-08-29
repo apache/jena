@@ -21,9 +21,12 @@ package org.apache.jena.ontapi;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntDataProperty;
 import org.apache.jena.ontapi.model.OntDataRange;
+import org.apache.jena.ontapi.model.OntDisjoint;
+import org.apache.jena.ontapi.model.OntList;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.model.OntObject;
 import org.apache.jena.ontapi.model.OntObjectProperty;
+import org.apache.jena.ontapi.model.OntRelationalProperty;
 import org.apache.jena.ontapi.testutils.RDFIOTestUtils;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
@@ -557,5 +560,77 @@ public class OntModelOWL2RLSpecTest {
         Assertions.assertNull(m.getOWLBottomObjectProperty());
         Assertions.assertNull(m.getOWLTopObjectProperty());
         Assertions.assertNull(m.getOWLTopDataProperty());
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_RL_MEM",
+            "OWL2_RL_MEM_RDFS_INF",
+            "OWL2_RL_MEM_TRANS_INF",
+    })
+    public void testOntDisjointClasses(TestSpec spec) {
+        OntModel data = OntModelFactory.createModel();
+        data.createDisjointClasses(
+                data.createOntClass("A"), data.createObjectComplementOf(data.createOntClass("B"))
+        );
+        data.createDisjointClasses(
+                data.createOntClass("C")
+        );
+        data.createDisjointClasses(
+                data.createDataAllValuesFrom(data.createDataProperty("p1"), data.getDatatype(XSD.xstring)), // super
+                data.createOntClass("D"),
+                data.createObjectSomeValuesFrom(data.createObjectProperty("p2"), data.createOntClass("E")),
+                data.createObjectComplementOf(data.createOntClass("F")) // super
+        );
+
+        OntModel m = OntModelFactory.createModel(data.getGraph(), spec.inst);
+
+        List<OntDisjoint.Classes> disjoints1 = m.ontObjects(OntDisjoint.Classes.class).toList();
+        Assertions.assertEquals(1, disjoints1.size());
+        List<OntClass> members = disjoints1.get(0).members().toList();
+        Assertions.assertEquals(2, members.size());
+        Assertions.assertTrue(members.stream().anyMatch(it -> it.canAs(OntClass.Named.class)));
+        Assertions.assertTrue(members.stream().anyMatch(it -> it.canAs(OntClass.ObjectSomeValuesFrom.class)));
+
+        Assertions.assertThrows(OntJenaException.Unsupported.class, () ->
+                m.createDisjointClasses(
+                        m.createDataAllValuesFrom(m.createDataProperty("p1"), m.getDatatype(XSD.xstring)), // super
+                        m.createOntClass("D"),
+                        m.createObjectComplementOf(m.createOntClass("F")) // super
+                )
+        );
+        Assertions.assertThrows(OntJenaException.Unsupported.class, () ->
+                m.createDisjointClasses(m.createOntClass("G"))
+        );
+        m.createDisjointClasses(m.createOntClass("G"), m.createOntClass("H"));
+        List<OntDisjoint.Classes> disjoints2 = m.ontObjects(OntDisjoint.Classes.class).toList();
+        Assertions.assertEquals(2, disjoints2.size());
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_RL_MEM",
+            "OWL2_RL_MEM_RDFS_INF",
+            "OWL2_RL_MEM_TRANS_INF",
+    })
+    public void testHasKey(TestSpec spec) {
+        OntModel data = OntModelFactory.createModel();
+        OntClass c11 = data.createOntClass("A").addHasKey(data.createObjectProperty("p1"));
+        OntClass c12 = data.createObjectMaxCardinality(data.createObjectProperty("p2"), 1, data.createOntClass("B"));
+
+        OntModel m = OntModelFactory.createModel(data.getGraph(), spec.inst);
+        OntClass c21 = c11.inModel(m).as(OntClass.class);
+        OntClass c22 = c12.inModel(m).as(OntClass.class);
+        List<OntList<OntRelationalProperty>> hasKey1 = c21.hasKeys().toList();
+        Assertions.assertEquals(1, hasKey1.size());
+        List<OntList<OntRelationalProperty>> hasKey2 = c22.hasKeys().toList();
+        Assertions.assertEquals(0, hasKey2.size());
+
+        Assertions.assertThrows(OntJenaException.Unsupported.class, () ->
+                c22.createHasKey(List.of(m.createObjectProperty("p1")), List.of())
+        );
+        c21.createHasKey(List.of(m.createObjectProperty("p3")), List.of(m.createDataProperty("p4")));
+        List<OntList<OntRelationalProperty>> hasKey3 = c21.hasKeys().toList();
+        Assertions.assertEquals(2, hasKey3.size());
     }
 }

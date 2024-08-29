@@ -32,6 +32,7 @@ import org.apache.jena.ontapi.common.OntConfig;
 import org.apache.jena.ontapi.common.OntEnhGraph;
 import org.apache.jena.ontapi.common.OntEnhNodeFactories;
 import org.apache.jena.ontapi.impl.objects.OntDisjointImpl;
+import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.utils.Iterators;
 import org.apache.jena.rdf.model.Property;
@@ -82,6 +83,39 @@ final class OntDisjoints {
         return OntEnhNodeFactories.createCommon(maker, finder, filter
                 .and(getHasPredicatesFilter(predicates))
                 .and(getHasMembersOfFilter(view, allowEmptyList, predicates)));
+    }
+
+    public static EnhNodeFactory createQLRLOntDisjointFactory() {
+        EnhNodeProducer maker = new EnhNodeProducer.WithType(
+                OntDisjointImpl.QLRLClassesImpl.class,
+                OWL2.AllDisjointClasses,
+                OntDisjointImpl.QLRLClassesImpl::new
+        );
+        EnhNodeFinder finder = new EnhNodeFinder.ByType(OWL2.AllDisjointClasses);
+        EnhNodeFilter filter = EnhNodeFilter.ANON.and(new EnhNodeFilter.HasType(OWL2.AllDisjointClasses)).and((n, g) -> {
+            ExtendedIterator<Triple> res = g.asGraph().find(n, OWL2.members.asNode(), Node.ANY);
+            try {
+                while (res.hasNext()) {
+                    Node listNode = res.next().getObject();
+                    if (!STDObjectFactories.RDF_LIST.canWrap(listNode, g)) {
+                        return false;
+                    }
+                    RDFList list = (RDFList) STDObjectFactories.RDF_LIST.wrap(listNode, g);
+                    if (Iterators.hasAtLeast(
+                            list.iterator()
+                                    .mapWith(it ->
+                                            OntEnhGraph.asPersonalityModel(g).findNodeAs(it.asNode(), OntClass.class)
+                                    )
+                                    .filterKeep(it -> it != null && it.canAsDisjointClass()), 2)) {
+                        return true;
+                    }
+                }
+            } finally {
+                res.close();
+            }
+            return false;
+        });
+        return OntEnhNodeFactories.createCommon(maker, finder, filter);
     }
 
     private static EnhNodeFilter getHasPredicatesFilter(Property... predicates) {

@@ -414,4 +414,19 @@ public class OntModelOWL2QLSpecTest {
         Assertions.assertThrows(OntJenaException.Unsupported.class, mc7::asDisjointClass);
         Assertions.assertThrows(OntJenaException.Unsupported.class, mc7::asEquivalentClass);
     }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_QL_MEM",
+            "OWL2_QL_MEM_RDFS_INF",
+            "OWL2_QL_MEM_TRANS_INF",
+    })
+    public void testHasKey(TestSpec spec) {
+        OntModel m = OntModelFactory.createModel(spec.inst);
+        OntClass a = m.createOntClass("a");
+        OntDataProperty p1 = m.createDataProperty("p1");
+        OntDataProperty p2 = m.createDataProperty("p2");
+        Assertions.assertThrows(OntJenaException.Unsupported.class, () -> a.addHasKey(p1, p2));
+        Assertions.assertThrows(OntJenaException.Unsupported.class, () -> a.removeHasKey(m.createList()));
+    }
 }

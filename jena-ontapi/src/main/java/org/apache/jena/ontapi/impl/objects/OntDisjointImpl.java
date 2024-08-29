@@ -156,6 +156,35 @@ public abstract class OntDisjointImpl<O extends OntObject> extends OntObjectImpl
         }
     }
 
+    /**
+     * {@code DisjointClasses := 'DisjointClasses' '(' axiomAnnotations subClassExpression subClassExpression { subClassExpression } ')'}
+     */
+    public static class QLRLClassesImpl extends OntDisjointImpl<OntClass> implements Classes {
+        public QLRLClassesImpl(Node n, EnhGraph m) {
+            super(n, m);
+        }
+
+        @Override
+        public Class<? extends OntObject> objectType() {
+            return Classes.class;
+        }
+
+        @Override
+        protected Class<OntClass> getComponentType() {
+            return OntClass.class;
+        }
+
+        @Override
+        protected Resource getResourceType() {
+            return OWL2.AllDisjointClasses;
+        }
+
+        @Override
+        public Stream<OntClass> members() {
+            return getList().members().filter(OntClass::canAsDisjointClass).map(OntClass::asDisjointClass);
+        }
+    }
+
     public static class IndividualsImpl extends OntDisjointImpl<OntIndividual> implements Individuals {
         private final boolean useMembers;
         private final boolean useDistinctMembers;

@@ -966,7 +966,8 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
     @Override
     public OntDisjoint.Classes createDisjointClasses(Collection<OntClass> classes) {
         checkType(OntDisjoint.Classes.class);
-        return OntDisjointImpl.createDisjointClasses(this, classes.stream());
+        checkType(OntClass.IntersectionOf.class);
+        return checkCreate(model -> OntDisjointImpl.createDisjointClasses(this, classes.stream()), OntDisjoint.Classes.class);
     }
 
     @Override

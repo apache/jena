@@ -795,6 +795,8 @@ public final class OWL2ObjectFactories {
             true,
             OWL2.members
     );
+    public static final EnhNodeFactory QL_CLASSES_DISJOINT = OntDisjoints.createQLRLOntDisjointFactory();
+    public static final EnhNodeFactory RL_CLASSES_DISJOINT = OntDisjoints.createQLRLOntDisjointFactory();
     public static final Function<OntConfig, EnhNodeFactory> DIFFERENT_INDIVIDUALS_DISJOINT =
             OntDisjoints::createDifferentIndividualsFactory;
     public static final EnhNodeFactory OBJECT_PROPERTIES_DISJOINT = OntDisjoints.createFactory(

@@ -198,12 +198,18 @@ public abstract class OntClassImpl extends OntObjectImpl implements OntClass {
                                                               OntClass clazz,
                                                               Stream<? extends OntRelationalProperty> collection) {
         OntGraphModelImpl.checkFeature(m, OntModelControls.USE_OWL2_CLASS_HAS_KEY_FEATURE, "owl:hasKey");
+        OntJenaException.checkSupported(clazz.canAsSubClass(),
+                "Class " + OntEnhNodeFactories.viewAsString(clazz.getClass()) + " cannot have keys. " +
+                        "Profile: " + m.getOntPersonality().getName());
         return m.createOntList(clazz, OWL2.hasKey, OntRelationalProperty.class,
                 collection.distinct().map(OntRelationalProperty.class::cast).iterator());
     }
 
     public static Stream<OntList<OntRelationalProperty>> listHasKeys(OntGraphModelImpl m, OntClass clazz) {
         if (!OntGraphModelImpl.configValue(m, OntModelControls.USE_OWL2_CLASS_HAS_KEY_FEATURE)) {
+            return Stream.empty();
+        }
+        if (!clazz.canAsSubClass()) {
             return Stream.empty();
         }
         return OntListImpl.stream(m, clazz, OWL2.hasKey, OntRelationalProperty.class);
@@ -213,7 +219,12 @@ public abstract class OntClassImpl extends OntObjectImpl implements OntClass {
                                     OntClass clazz,
                                     RDFNode rdfList) throws OntJenaException.IllegalArgument {
         OntGraphModelImpl.checkFeature(m, OntModelControls.USE_OWL2_CLASS_HAS_KEY_FEATURE, "owl:hasKey");
-        m.deleteOntList(clazz, OWL2.hasKey, clazz.findHasKey(rdfList).orElse(null));
+        if (rdfList == null) {
+            clazz.hasKeys().toList().forEach(it -> m.deleteOntList(clazz, OWL2.hasKey, it));
+        } else {
+            m.deleteOntList(clazz, OWL2.hasKey, clazz.findHasKey(rdfList)
+                    .orElseThrow(() -> new OntJenaException.IllegalArgument("can't find list " + rdfList)));
+        }
     }
 
     public static Stream<OntClass> disjointClasses(OntGraphModelImpl m, OntClass clazz) {

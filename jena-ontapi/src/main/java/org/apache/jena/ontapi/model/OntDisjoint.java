@@ -36,7 +36,8 @@ public interface OntDisjoint<O extends OntObject> extends OntObject, HasRDFNodeL
 
     /**
      * Lists all pair-wise disjoint members holding by this {@link OntDisjoint Ontology Disjoint} resource.
-     * In general, this method is equivalent to the expression {@code this.getList().members()}.
+     * Note that the returned values are not necessarily the same as {@link OntList#members()} output:
+     * some profiles (e.g., OWL2 QL) impose some restrictions.
      *
      * @return Stream (<b>not distinct</b>) of {@link OntObject}s
      */

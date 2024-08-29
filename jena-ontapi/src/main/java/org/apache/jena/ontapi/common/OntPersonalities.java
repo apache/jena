@@ -371,7 +371,7 @@ public class OntPersonalities {
             .add(OntDataRange.class, OWL2ObjectFactories.QL_ANY_DATARANGE)
 
             // disjoint anonymous collections:
-            .add(OntDisjoint.Classes.class, OWL2ObjectFactories.CLASSES_DISJOINT)
+            .add(OntDisjoint.Classes.class, OWL2ObjectFactories.QL_CLASSES_DISJOINT)
             .add(OntDisjoint.Individuals.class, OWL2ObjectFactories.DIFFERENT_INDIVIDUALS_DISJOINT)
             .add(OntDisjoint.ObjectProperties.class, OWL2ObjectFactories.OBJECT_PROPERTIES_DISJOINT)
             .add(OntDisjoint.DataProperties.class, OWL2ObjectFactories.DATA_PROPERTIES_DISJOINT)
@@ -446,7 +446,7 @@ public class OntPersonalities {
             .add(OntNegativeAssertion.class, OWL2ObjectFactories.ANY_NEGATIVE_PROPERTY_ASSERTION)
 
             // disjoint anonymous collections:
-            .add(OntDisjoint.Classes.class, OWL2ObjectFactories.CLASSES_DISJOINT)
+            .add(OntDisjoint.Classes.class, OWL2ObjectFactories.RL_CLASSES_DISJOINT)
             .add(OntDisjoint.Individuals.class, OWL2ObjectFactories.DIFFERENT_INDIVIDUALS_DISJOINT)
             .add(OntDisjoint.ObjectProperties.class, OWL2ObjectFactories.OBJECT_PROPERTIES_DISJOINT)
             .add(OntDisjoint.DataProperties.class, OWL2ObjectFactories.DATA_PROPERTIES_DISJOINT)
