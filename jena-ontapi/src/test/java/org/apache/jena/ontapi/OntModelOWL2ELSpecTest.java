@@ -212,9 +212,9 @@ public class OntModelOWL2ELSpecTest {
         Resource c0 = m.createResource("C", OWL2.Class);
         Resource i1 = m.createResource("i1", c0);
         Resource i2 = m.createResource("i2", c0);
-        Resource c1 = m.createResource().addProperty(RDF.type, OWL2.Class).addProperty(OWL2.oneOf, m.createList());
-        Resource c2 = m.createResource().addProperty(RDF.type, OWL2.Class).addProperty(OWL2.oneOf, m.createList(i1));
-        Resource c3 = m.createResource().addProperty(RDF.type, OWL2.Class).addProperty(OWL2.oneOf, m.createList(i1, i2));
+        m.createResource().addProperty(RDF.type, OWL2.Class).addProperty(OWL2.oneOf, m.createList());
+        m.createResource().addProperty(RDF.type, OWL2.Class).addProperty(OWL2.oneOf, m.createList(i1));
+        m.createResource().addProperty(RDF.type, OWL2.Class).addProperty(OWL2.oneOf, m.createList(i1, i2));
 
         OntModel om = OntModelFactory.createModel(m.getGraph(), spec.inst);
         OntIndividual oi1 = Objects.requireNonNull(om.getIndividual("i1"));
@@ -237,9 +237,9 @@ public class OntModelOWL2ELSpecTest {
         Model m = ModelFactory.createDefaultModel();
         Literal v1 = m.createTypedLiteral(42);
         Literal v2 = m.createTypedLiteral("42");
-        Resource c1 = m.createResource().addProperty(RDF.type, RDFS.Datatype).addProperty(OWL2.oneOf, m.createList());
-        Resource c2 = m.createResource().addProperty(RDF.type, RDFS.Datatype).addProperty(OWL2.oneOf, m.createList(v1));
-        Resource c3 = m.createResource().addProperty(RDF.type, RDFS.Datatype).addProperty(OWL2.oneOf, m.createList(v1, v2));
+        m.createResource().addProperty(RDF.type, RDFS.Datatype).addProperty(OWL2.oneOf, m.createList());
+        m.createResource().addProperty(RDF.type, RDFS.Datatype).addProperty(OWL2.oneOf, m.createList(v1));
+        m.createResource().addProperty(RDF.type, RDFS.Datatype).addProperty(OWL2.oneOf, m.createList(v1, v2));
 
         OntModel om = OntModelFactory.createModel(m.getGraph(), spec.inst);
         OntDataRange.OneOf oc2 = om.ontObjects(OntDataRange.OneOf.class).findFirst().orElseThrow(AssertionError::new);
@@ -283,5 +283,22 @@ public class OntModelOWL2ELSpecTest {
                         () -> it.inModel(m).as(OntEntity.class),
                         "wrong result for " + it)
                 );
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_EL_MEM",
+            "OWL2_EL_MEM_RDFS_INF",
+            "OWL2_EL_MEM_TRANS_INF",
+    })
+    public void testHasKey(TestSpec spec) {
+        OntModel m = OntModelFactory.createModel(spec.inst);
+        OntClass a = m.createOntClass("a");
+        OntDataProperty p1 = m.createDataProperty("p1");
+        OntDataProperty p2 = m.createDataProperty("p2");
+        a.addHasKey(p1, p2);
+        Assertions.assertEquals(1L, a.hasKeys().count());
+        a.removeHasKey(null);
+        Assertions.assertEquals(0L, a.hasKeys().count());
     }
 }

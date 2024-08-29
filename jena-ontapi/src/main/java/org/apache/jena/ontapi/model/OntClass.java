@@ -258,9 +258,9 @@ public interface OntClass extends OntObject, AsNamed<OntClass.Named>, HasDisjoin
     /**
      * Deletes the given {@code HasKey} list including its annotations.
      *
-     * @param list {@link Resource} can be {@link OntList} or {@link RDFList}
+     * @param list {@link Resource} can be {@link OntList} or {@link RDFList};
+     *             if {@code null} the method will remove all hasKey's
      * @return <b>this</b> instance to allow cascading calls
-     * @throws OntJenaException if the list is not found
      */
     OntClass removeHasKey(Resource list);
 
