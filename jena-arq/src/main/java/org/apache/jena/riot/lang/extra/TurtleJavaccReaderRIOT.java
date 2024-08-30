@@ -35,10 +35,12 @@ import org.apache.jena.sparql.util.Context;
 
 /**
  * Turtle parser, written using JavaCC.
+ * <p>
  * This is not used normally.
- * It is slower than the RIOT {@link LangTurtle}.
- * It may not be up-to-date but at least in the codebase means it should be java-compatible.
- * It exists so that there is a JavaCC grammar that can be used as a basis for other languages.
+ * <p>
+ * It is slower than the RIOT {@link LangTurtle} and has not been optimized for
+ * speed. Tokenizing is the bottleneck. It exists so that there is a JavaCC grammar
+ * that can be used as a basis for other languages.
  */
 public class TurtleJavaccReaderRIOT implements ReaderRIOT {
     private final ParserProfile profile;
