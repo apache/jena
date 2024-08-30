@@ -538,19 +538,28 @@ class ParserRRX_StAX_EV {
 
         // If there is a blank node label, the element must be empty,
         // Check NCName if blank node created
-        String objBlanklNodeLabel = attribute(startElt, rdfNodeID);
+        String objBlankNodeLabel = attribute(startElt, rdfNodeID);
         String rdfResourceStr = attribute(startElt, rdfResource);
         String datatype = attribute(startElt, rdfDatatype);
         String parseType = objectParseType(startElt);
 
         // Checking
-        if ( rdfResourceStr != null && objBlanklNodeLabel != null )
+        if ( datatype != null ) {
+            if ( parseType != null && parseType != parseTypePlain )
+                throw RDFXMLparseError("rdf:datatype can not be used with rdf:parseType.", startElt);
+            if ( rdfResourceStr != null )
+                throw RDFXMLparseError("rdf:datatype can not be used with rdf:resource.", startElt);
+            if ( objBlankNodeLabel != null )
+                throw RDFXMLparseError("rdf:datatype can not be used with rdf:NodeId.", startElt);
+        }
+
+        if ( rdfResourceStr != null && objBlankNodeLabel != null )
             throw RDFXMLparseError("Can't have both rdf:nodeId and rdf:resource on a property element", startElt);
 
         if ( rdfResourceStr != null && parseType != parseTypePlain )
             throw RDFXMLparseError("Both rdf:resource and rdf:ParseType on a property element. Only one allowed", startElt);
 
-        if ( objBlanklNodeLabel != null && parseType != parseTypePlain )
+        if ( objBlankNodeLabel != null && parseType != parseTypePlain )
             throw RDFXMLparseError("Both rdf:NodeId and rdf:ParseType on a property element. Only one allowed", startElt);
 
         Node resourceObj = null;
@@ -558,8 +567,8 @@ class ParserRRX_StAX_EV {
         if ( rdfResourceStr != null )
             resourceObj = iriResolve(rdfResourceStr, location);
 
-        if ( objBlanklNodeLabel != null )
-            resourceObj = blankNode(objBlanklNodeLabel, location);
+        if ( objBlankNodeLabel != null )
+            resourceObj = blankNode(objBlankNodeLabel, location);
 
         Node innerSubject = processPropertyAttributes(resourceObj, startElt, true, location);
         if ( resourceObj == null && innerSubject != null ) {
