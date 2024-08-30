@@ -765,10 +765,18 @@ class ParserRRX_SAX
         String rdfResourceStr = attributes.getValue(rdfNS, rdfResource);
         // Checked if the blank node is created.
         String objBlankNodeLabel = attributes.getValue(rdfNS, rdfNodeID);
-
         String parseTypeStr = attributes.getValue(rdfNS, rdfParseType);
-
         Node resourceObj = null;
+
+        // Better error messages.
+        if ( dt != null ) {
+            if ( parseTypeStr != null )
+                throw RDFXMLparseError("rdf:datatype can not be used with rdf:parseType.", position);
+            if ( rdfResourceStr != null )
+                throw RDFXMLparseError("rdf:datatype can not be used with rdf:resource.", position);
+            if ( objBlankNodeLabel != null )
+                throw RDFXMLparseError("rdf:datatype can not be used with rdf:NodeId.", position);
+        }
 
         if ( rdfResourceStr != null && objBlankNodeLabel != null )
             throw RDFXMLparseError("Both rdf:resource and rdf:NodeId on a property element. Only one allowed", position);

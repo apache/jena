@@ -193,6 +193,18 @@ public class TestRRX {
         checkForError("bad-unqualified-class.rdf", false);
     }
 
+    @Test public void bad_property_object_1() {
+        checkForError("bad-object-type-1.rdf", false);
+    }
+
+    @Test public void bad_property_object_2() {
+        checkForError("bad-object-type-2.rdf", false);
+    }
+
+    @Test public void bad_property_object_3() {
+        checkForError("bad-object-type-3.rdf", false);
+    }
+
     /** Parse with no base set by the parser */
     private void noBase(String filename) {
         trackFilename(filename);
