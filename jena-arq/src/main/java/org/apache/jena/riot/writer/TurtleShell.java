@@ -77,7 +77,7 @@ public abstract class TurtleShell {
     }
 
     static public NodeFormatter createNodeFormatter(PrefixMap pmap, String baseURI, Context context) {
-        if ( context != null && context.isTrue(RIOT.multilineLiterals) )
+        if ( context != null && context.isTrue(RIOT.symTurtleMultilineLiterals) )
             return new NodeFormatterTTL_MultiLine(baseURI, pmap, NodeToLabel.createScopeByDocument());
         else
             return new NodeFormatterTTL(baseURI, pmap, NodeToLabel.createScopeByDocument());
