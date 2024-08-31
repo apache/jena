@@ -52,12 +52,12 @@ public class BindingUtils {
 
     /** Return a new binding with all non-null-valued and non-excluded variables projected */
     public static Binding project(Binding binding, Iterator<Var> vars, Var exclusion) {
-        return project(binding, Iter.notFilter(vars, v -> Objects.equals(v, exclusion)));
+        return project(binding, Iter.filterDrop(vars, v -> Objects.equals(v, exclusion)));
     }
 
     /** Return a new binding with all non-null-valued and non-excluded variables projected */
     public static Binding project(Binding binding, Iterator<Var> vars, Set<Var> exclusions) {
-        return project(binding, Iter.notFilter(vars, exclusions::contains));
+        return project(binding, Iter.filterDrop(vars, exclusions::contains));
     }
 
     public static <C extends Collection<Var>> C addAll(C acc, Binding binding) {
