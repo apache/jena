@@ -51,9 +51,6 @@ public class RIOT {
     /** The root package name for RIOT */
     public static final String PATH    = "org.apache.jena.riot" ;
 
-    /** Control of multiline literals */
-    public static final Symbol multilineLiterals = Symbol.create("riot.multiline_literals") ;
-
     /** The system-wide context, shared with ARQ and other modules. */
     private static Context systemGlobalContext = new Context();
 
@@ -158,4 +155,16 @@ public class RIOT {
      * Printing style. Whether to use a "wide" or "long" indentation style.
      */
     public static final Symbol symTurtleIndentStyle = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "indentStyle");
+
+    /**
+     * Print literals with newlines in multiple line form, using triple quotes.
+     */
+    public static final Symbol symTurtleMultilineLiterals = SystemARQ.allocSymbol(TURTLE_SYMBOL_BASE, "multiline_literals") ;
+
+    /**
+     * Control of multiline literals.
+     * @deprecated Use {@link #symTurtleMultilineLiterals}.
+     */
+    @Deprecated(forRemoval = true)
+    public static final Symbol multilineLiterals = symTurtleMultilineLiterals;
 }
