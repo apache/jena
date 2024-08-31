@@ -77,17 +77,20 @@ public class JenaSystem {
     }
 
     public static void init() {
+        // Once jena is initialized, all calls are an immediate return.
         if ( initialized )
             return ;
+        // Overlapping attempts to perform initialization will block on the synchronized.
         synchronized(JenaSystem.class) {
             if ( initialized )
                 return ;
-            initialized = true;
             setup();
             if ( DEBUG_INIT )
                 singleton.debug(DEBUG_INIT);
             singleton.initialize();
             singleton.debug(false);
+            // Last so overlapping initialization waits on the synchronized
+            initialized = true;
         }
     }
 
