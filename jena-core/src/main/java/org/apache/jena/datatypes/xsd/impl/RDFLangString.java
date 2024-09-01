@@ -18,26 +18,42 @@
 
 package org.apache.jena.datatypes.xsd.impl;
 
+import java.util.Objects;
+
 import org.apache.jena.datatypes.BaseDatatype ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.impl.LiteralLabel ;
+import org.apache.jena.vocabulary.RDF;
 
-/** rdf:langString.
- * This covers the unusual case of "foo"^^rdf:langString
- * When there is a language tag, there is a lexical form but it is in two parts lex@lang
+/**
+ * {@code rdf:dirLangString} - a literal with language and initial text direction.
+ * <p>
+ * This covers the unusual case of {@code "foo"^^rdf:langString}.
+ * When there is a language tag, there is a lexical form but it is in two parts lex@lang.
  * This is not rdf:plainLiteral!
  */
 
 public class RDFLangString extends BaseDatatype implements RDFDatatype {
-    /** Singleton instance */
-    // Include the string for the RDF namespace, not use RDF.getURI(), to avoid an initializer circularity
-    public static final RDFDatatype rdfLangString = new RDFLangString("http://www.w3.org/1999/02/22-rdf-syntax-ns#langString");
+
+    public static final String rdfLangStringURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString";
 
     /**
-     * Private constructor.
+     * Singleton instance
+     * <p>
+     * Prefer {@link RDF#dtLangString} in applications.
      */
-    private RDFLangString(String uri) {
-        super(uri);
+    public static final RDFDatatype rdfLangString = new RDFLangString();
+
+    /**
+     * Test where an {@link RDFDatatype} is that for {@code rdf:langString}.
+     */
+    public static boolean isRDFLangString(RDFDatatype rdfDatatype) {
+        Objects.requireNonNull(rdfDatatype);
+        return rdfLangStringURI.equals(rdfDatatype.getURI());
+    }
+
+    private RDFLangString() {
+        super(rdfLangStringURI);
     }
 
     /**
@@ -48,9 +64,7 @@ public class RDFLangString extends BaseDatatype implements RDFDatatype {
         return isEqualByTerm(value1, value2) ;
     }
 
-    // This covers the unusual case of "foo"^^"rdf:langString"
-    // When there is a language tag, there is a lexcial form but it is in two parts lex@lang
-    // This is not rdf:plainLiteral!
+    /** This covers the unusual case of "foo"^^rdf:langString. */
     @Override
     public Object parse(String lexicalForm) { return lexicalForm ; }
 

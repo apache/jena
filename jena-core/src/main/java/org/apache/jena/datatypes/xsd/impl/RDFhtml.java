@@ -18,37 +18,54 @@
 
 package org.apache.jena.datatypes.xsd.impl;
 
+import java.util.Objects;
+
 import org.apache.jena.datatypes.BaseDatatype ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.impl.LiteralLabel ;
+import org.apache.jena.vocabulary.RDF;
 
-/** rdf:html.
- * This only implements syntactic equality, not value equality (parsed HTML5, DOM normalized)    
+/**
+ * <a href="https://www.w3.org/TR/rdf-concepts/#section-html">rdf:HTML</a>.
+ * <p>
+ * This only implements syntactic equality, not value equality (parsed HTML5, DOM normalized)
  */
-
 public class RDFhtml extends BaseDatatype implements RDFDatatype {
-    /** Singleton instance */
-    // Include the string for the RDF namespace, not use RDF.getURI(), to avoid an initializer circularity
-    public static final RDFDatatype rdfHTML = new RDFhtml("http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML");
-    
+
+    public static String RDFhtmlURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML";
+
     /**
-     * Private constructor.
+     * Singleton instance
+     * <p>
+     * Prefer {@link RDF#dtRDFHTML} in applications.
      */
-    private RDFhtml(String uri) {
-        super(uri);
+    public static final RDFDatatype rdfHTML = new RDFhtml();
+
+    /**
+     * Test where an {@link RDFDatatype} is that for {@code rdf:HTML}.
+     */
+    public static boolean isXMLLiteral(RDFDatatype rdfDatatype) {
+        Objects.requireNonNull(rdfDatatype);
+        return RDFhtmlURI.equals(rdfDatatype.getURI());
+    }
+
+    private RDFhtml() {
+        // Include the string for the RDF namespace.
+        // Do not use RDF.dtRDFHTML.getURI() to avoid an initializer circularity
+        super(RDFhtmlURI);
     }
 
     /**
-     * Compares two instances of values of the given datatype. 
+     * Compares two instances of values of the given datatype.
      */
     @Override
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
         return isEqualByTerm(value1, value2) ;
     }
-    
+
     @Override
     public Object parse(String lexicalForm) { return lexicalForm ; }
-    
+
     @Override
     public String unparse(Object value) { return value.toString(); }
 }
