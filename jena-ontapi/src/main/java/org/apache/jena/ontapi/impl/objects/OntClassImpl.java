@@ -175,7 +175,7 @@ public abstract class OntClassImpl extends OntObjectImpl implements OntClass {
     }
 
     public static OntIndividual.Anonymous createAnonymousIndividual(OntGraphModelImpl model, OntClass source) {
-        OntGraphModelImpl.checkFeature(model, OntModelControls.ALLOW_ANONYMOUS_INDIVIDUALS, "anonymous-individuals");
+        model.checkType(OntIndividual.Anonymous.class);
         OntJenaException.checkSupported(source.canAsAssertionClass(),
                 "Class " + OntEnhNodeFactories.viewAsString(source.getClass()) + " cannot have individuals. " +
                         "Profile: " + model.getOntPersonality().getName());

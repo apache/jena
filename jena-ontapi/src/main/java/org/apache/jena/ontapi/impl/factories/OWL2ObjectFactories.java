@@ -131,7 +131,8 @@ public final class OWL2ObjectFactories {
                     DATATYPE_PROPERTY,
                     EL_OBJECT_PROPERTY.apply(config)
             );
-    public static final Function<OntConfig, EnhNodeFactory> ANY_PROPERTY = OntProperties::createFactory;
+    public static final Function<OntConfig, EnhNodeFactory> ANY_PROPERTY = config -> OntProperties.createFactory(config, true);
+    public static final Function<OntConfig, EnhNodeFactory> EL_ANY_PROPERTY = config -> OntProperties.createFactory(config, false);
 
     // Class Expressions
     public static final Function<OntConfig, EnhNodeFactory> UNION_OF_CLASS =

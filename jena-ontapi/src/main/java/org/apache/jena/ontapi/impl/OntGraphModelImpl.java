@@ -368,7 +368,7 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
     @Override
     public OntIndividual createIndividual(String uri, OntClass type) {
         if (uri == null) {
-            checkFeature(this, OntModelControls.ALLOW_ANONYMOUS_INDIVIDUALS, "anonymous-individuals");
+            checkType(OntIndividual.Anonymous.class);
         }
         return OntModel.super.createIndividual(uri, type);
     }

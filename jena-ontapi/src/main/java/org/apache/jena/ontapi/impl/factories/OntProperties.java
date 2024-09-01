@@ -51,7 +51,7 @@ final class OntProperties {
     private static final EnhNodeFactory NAMED_OBJECT_PROPERTY_FACTORY_REFERENCE = WrappedEnhNodeFactory.of(OntObjectProperty.Named.class);
     private static final EnhNodeFactory ANONYMOUS_OBJECT_PROPERTY_FACTORY_REFERENCE = WrappedEnhNodeFactory.of(OntObjectProperty.Inverse.class);
 
-    public static Factory createFactory(OntConfig config) {
+    public static Factory createFactory(OntConfig config, boolean withInverseObjectProperty) {
         List<Node> objectPropertyTypes = new ArrayList<>();
         List<Node> allPropertyTypes = new ArrayList<>();
         objectPropertyTypes.add(OWL2.ObjectProperty.asNode());
@@ -81,7 +81,7 @@ final class OntProperties {
         return new Factory(
                 allPropertyTypes.stream().toList(),
                 objectPropertyTypes.stream().toList(),
-                config.getBoolean(OntModelControls.USE_OWL_INVERSE_OBJECT_PROPERTY_FEATURE)
+                withInverseObjectProperty
         );
     }
 

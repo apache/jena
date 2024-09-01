@@ -99,7 +99,7 @@ public class OWL1ObjectFactories {
             NAMED_OBJECT_PROPERTY.apply(config),
             DATATYPE_PROPERTY
     );
-    public static final Function<OntConfig, EnhNodeFactory> ANY_PROPERTY = OntProperties::createFactory;
+    public static final Function<OntConfig, EnhNodeFactory> ANY_PROPERTY = config -> OntProperties.createFactory(config, false);
 
     // Class Expressions (Boolean Connectives and Enumeration of Individuals):
     public static final Function<OntConfig, EnhNodeFactory> UNION_OF_CLASS =

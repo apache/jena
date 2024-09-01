@@ -90,11 +90,6 @@ public enum OntModelControls {
      */
     ALLOW_GENERIC_CLASS_EXPRESSIONS,
     /**
-     * Controls anonymous individuals.
-     * Some specifications (e.g., OWL2 EL) do not allow anonymous individuals.
-     */
-    ALLOW_ANONYMOUS_INDIVIDUALS,
-    /**
      * Used while {@link OntModel#individuals()}.
      * If {@code true}, the class type is checked only by declaration
      * ({@code owl:Class} &amp; {@code owl:Restriction} for OWL profile, {@code rdfs:Class} for RDFS profile).
@@ -122,7 +117,7 @@ public enum OntModelControls {
     /**
      * Controls {@link OWL2#hasKey owl:hasKey} functionality.
      * If disabled,
-     * {@link OntClass#hasKeys() OntClass#hasKeys()} will return empty {@code Stream},
+     * {@link OntClass#hasKeys() OntClass#hasKeys()} will return an empty {@code Stream},
      * modification operations, such as
      * {@link OntClass#addHasKey(OntRelationalProperty...) OntClass#addHasKey(OntRelationalProperty...)},
      * will throw {@link OntJenaException.Unsupported OntJenaException.Unsupported} exception.
@@ -132,7 +127,7 @@ public enum OntModelControls {
      * Controls {@link OWL2#disjointUnionOf owl:disjointUnionOf} functionality.
      * If disabled,
      * {@link OntClass.Named#disjointUnions() OntClass.Named#disjointUnions()}
-     * will return empty {@code Stream}, modification operations, such as
+     * will return an empty {@code Stream}, modification operations, such as
      * {@link OntClass.Named#addDisjointUnion(OntClass...) OntClass.Named#addDisjointUnion(OntClass...)},
      * will throw {@link OntJenaException.Unsupported OntJenaException.Unsupported} exception.
      */
@@ -142,7 +137,7 @@ public enum OntModelControls {
      * Controls {@link OWL2#disjointWith owl:disjointWith} functionality.
      * If disabled,
      * {@link OntClass#disjoints() OntClass#disjoints()}
-     * will return empty {@code Stream}, modification operations, such as
+     * will return an empty {@code Stream}, modification operations, such as
      * {@link OntClass#addDisjointClass(OntClass) OntClass#addDisjointClass(OntClass)},
      * will throw {@link OntJenaException.Unsupported OntJenaException.Unsupported} exception.
      */
@@ -151,7 +146,7 @@ public enum OntModelControls {
      * Controls {@link OWL2#equivalentClass owl:equivalentClass} functionality.
      * If disabled,
      * {@link OntClass#equivalentClasses() OntClass#equivalentClasses()}
-     * will return empty {@code Stream}, modification operations, such as
+     * will return an empty {@code Stream}, modification operations, such as
      * {@link OntClass#addEquivalentClass(OntClass) OntClass#addEquivalentClass(OntClass)},
      * will throw {@link OntJenaException.Unsupported OntJenaException.Unsupported} exception.
      */
@@ -160,7 +155,7 @@ public enum OntModelControls {
      * Controls {@link OWL2#propertyDisjointWith owl:propertyDisjointWith} functionality.
      * If disabled,
      * {@link OntRelationalProperty#disjointProperties() OntRelationalProperty#disjointProperties()}
-     * will return empty {@code Stream}, modification operations, such as
+     * will return an empty {@code Stream}, modification operations, such as
      * {@link OntObjectProperty#addDisjointProperty(OntObjectProperty) OntObjectProperty#addDisjointProperty(OntObjectProperty)},
      * will throw {@link OntJenaException.Unsupported OntJenaException.Unsupported} exception.
      */
@@ -169,7 +164,7 @@ public enum OntModelControls {
      * Controls {@link OWL2#equivalentProperty owl:equivalentProperty} functionality.
      * If disabled,
      * {@link OntRelationalProperty#equivalentProperties() OntRelationalProperty#equivalentProperties()}
-     * will return empty {@code Stream}, modification operations, such as
+     * will return an empty {@code Stream}, modification operations, such as
      * {@link OntObjectProperty#addEquivalentProperty(OntObjectProperty) OntObjectProperty#addEquivalentProperty(OntObjectProperty)},
      * will throw {@link OntJenaException.Unsupported OntJenaException.Unsupported} exception.
      */
@@ -247,19 +242,14 @@ public enum OntModelControls {
      */
     USE_OWL_PROPERTY_IRREFLEXIVE_FEATURE,
     /**
-     * Controls {@link OWL2#inverseOf owl:inverseOf} functionality.
+     * Controls {@link OWL2#inverseOf owl:inverseOf} functionality (InverseObjectProperty axiom).
      * If disabled,
      * {@link OntObjectProperty#inverseProperties() OntObjectProperty#inverseProperties()}
-     * will return {@code false}, modification operations, such as
+     * will return an empty {@code Stream}, modification operations, such as
      * {@link OntObjectProperty#addInverseProperty(OntObjectProperty) OntObjectProperty#addInverseProperty(OntObjectProperty)},
      * will throw {@link OntJenaException.Unsupported OntJenaException.Unsupported} exception.
      */
-    USE_OWL_PROPERTY_INVERSE_OF_FEATURE,
-    /**
-     * If this key is set to {@code true}, an anonymous inverse object property type is enabled (OWL2 feature).
-     * That is {@code _:x owl:inverseOf PN}, where {@code _:x} is a b-node and {@code PN} is a named object property.
-     */
-    USE_OWL_INVERSE_OBJECT_PROPERTY_FEATURE,
+    USE_OWL_INVERSE_OBJECT_PROPERTIES_FEATURE,
     /**
      * Controls {@link OWL2#propertyChainAxiom owl:propertyChainAxiom} functionality.
      * If disabled,

@@ -136,10 +136,13 @@ public class OntModelOWL2ELSpecTest {
         Assertions.assertFalse(p1.isFunctional());
 
         Assertions.assertThrows(OntJenaException.Unsupported.class, () -> p1.setAsymmetric(true));
-        p1.addInverseProperty(p2);
-        if (spec == TestSpec.OWL2_EL_MEM_RDFS_INF) {
-            Assertions.assertEquals(17, m.properties().count());
+        if (spec.isOWL2EL()) {
+            Assertions.assertThrows(OntJenaException.Unsupported.class, () -> p1.addInverseProperty(p2));
+            if (spec == TestSpec.OWL2_EL_MEM_RDFS_INF) {
+                Assertions.assertEquals(17, m.properties().count());
+            }
         } else {
+            p1.addInverseProperty(p2);
             Assertions.assertEquals(3, m.properties().count());
         }
     }

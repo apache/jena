@@ -264,7 +264,7 @@ public abstract class OntObjectPropertyImpl extends OntPropertyImpl implements O
 
     @Override
     public Stream<OntObjectProperty> inverseProperties() {
-        if (!OntGraphModelImpl.configValue(getModel(), OntModelControls.USE_OWL_PROPERTY_INVERSE_OF_FEATURE)) {
+        if (!OntGraphModelImpl.configValue(getModel(), OntModelControls.USE_OWL_INVERSE_OBJECT_PROPERTIES_FEATURE)) {
             return Stream.empty();
         }
         return objects(OWL2.inverseOf, OntObjectProperty.class);
@@ -272,16 +272,13 @@ public abstract class OntObjectPropertyImpl extends OntPropertyImpl implements O
 
     @Override
     public OntStatement addInverseOfStatement(OntObjectProperty other) {
-        OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_INVERSE_OF_FEATURE, "owl:inverseOf");
-        if (this.isURIResource() && other.isAnon()) {
-            OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_INVERSE_OBJECT_PROPERTY_FEATURE, "owl:inverseOf");
-        }
+        OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_INVERSE_OBJECT_PROPERTIES_FEATURE, "owl:inverseOf");
         return addStatement(OWL2.inverseOf, other);
     }
 
     @Override
     public OntObjectProperty removeInverseProperty(Resource other) {
-        OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_INVERSE_OF_FEATURE, "owl:inverseOf");
+        OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_INVERSE_OBJECT_PROPERTIES_FEATURE, "owl:inverseOf");
         remove(OWL2.inverseOf, other);
         return this;
     }
@@ -300,8 +297,6 @@ public abstract class OntObjectPropertyImpl extends OntPropertyImpl implements O
 
         @Override
         public Inverse createInverse() {
-            OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_PROPERTY_INVERSE_OF_FEATURE, "owl:inverseOf");
-            OntGraphModelImpl.checkFeature(getModel(), OntModelControls.USE_OWL_INVERSE_OBJECT_PROPERTY_FEATURE, "owl:inverseOf");
             OntGraphModelImpl m = getModel();
             m.checkType(OntObjectProperty.Inverse.class);
             List<Node> nodes = m.localStatements(null, OWL2.inverseOf, this)
