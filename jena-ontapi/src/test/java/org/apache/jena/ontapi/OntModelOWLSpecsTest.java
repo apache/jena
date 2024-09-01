@@ -100,7 +100,7 @@ public class OntModelOWLSpecsTest {
     }
 
     @SuppressWarnings("rawtypes")
-    static void simplePropertiesValidation(OntModel ont) {
+    static void simplePropertiesValidation(OntModel ont, TestSpec spec) {
         Model jena = ModelFactory.createModelForGraph(ont.getGraph());
         Set<Resource> annotationProperties = jena.listStatements(null, RDF.type, OWL2.AnnotationProperty)
                 .mapWith(Statement::getSubject).toSet();
@@ -126,7 +126,13 @@ public class OntModelOWLSpecsTest {
         Set<Resource> expectedDOs = MiscUtils.toFlatSet(datatypeProperties, namedObjectProperties, inverseObjectProperties);
         Assertions.assertEquals(expectedDOs.size(), actualDOs.size());
 
-        Assertions.assertEquals(inverseStatements.size(), ont.objectProperties()
+        long inverseStatementsCount;
+        if (spec.isOWL2EL()) {
+            inverseStatementsCount = 0;
+        } else {
+            inverseStatementsCount = inverseStatements.size();
+        }
+        Assertions.assertEquals(inverseStatementsCount, ont.objectProperties()
                 .flatMap(OntObjectProperty::inverseProperties).count());
     }
 
@@ -252,8 +258,12 @@ public class OntModelOWLSpecsTest {
             "OWL1_LITE_MEM",
     })
     public void testPizzaLoadProperties(TestSpec spec) {
-        simplePropertiesValidation(OntModelFactory.createModel(
-                RDFIOTestUtils.loadResourceAsModel("/pizza.ttl", Lang.TURTLE).getGraph(), spec.inst));
+        simplePropertiesValidation(
+                OntModelFactory.createModel(
+                        RDFIOTestUtils.loadResourceAsModel("/pizza.ttl", Lang.TURTLE).getGraph(), spec.inst
+                ),
+                spec
+        );
     }
 
     @ParameterizedTest
@@ -272,8 +282,12 @@ public class OntModelOWLSpecsTest {
             "OWL1_LITE_MEM",
     })
     public void testFamilyLoadProperties(TestSpec spec) {
-        simplePropertiesValidation(OntModelFactory.createModel(
-                RDFIOTestUtils.loadResourceAsModel("/family.ttl", Lang.TURTLE).getGraph(), spec.inst));
+        simplePropertiesValidation(
+                OntModelFactory.createModel(
+                        RDFIOTestUtils.loadResourceAsModel("/family.ttl", Lang.TURTLE).getGraph(), spec.inst
+                ),
+                spec
+        );
     }
 
     @ParameterizedTest
@@ -404,15 +418,22 @@ public class OntModelOWLSpecsTest {
         try (InputStream in = OntModelOWLSpecsTest.class.getResourceAsStream("/koala.owl")) {
             m.read(in, null, Lang.RDFXML.getName());
         }
-        simplePropertiesValidation(m);
+        simplePropertiesValidation(m, spec);
         OntObjectProperty p1 = m.objectProperties().findFirst().orElseThrow(AssertionError::new);
         Assertions.assertFalse(p1.inverseProperty().isPresent());
-        OntObjectProperty p2 = m.createResource().addProperty(OWL2.inverseOf, p1).as(OntObjectProperty.class);
-        Assertions.assertTrue(p2.inverseProperty().isPresent());
-        Assertions.assertEquals(1, p2.inverseProperties().count());
-        Assertions.assertEquals(p1.asProperty(), p2.asProperty());
-        Assertions.assertEquals(p1, p2.inverseProperty().orElseThrow(AssertionError::new));
-        Assertions.assertEquals(1, m.ontObjects(OntObjectProperty.Inverse.class).count());
+        if (spec.isOWL2EL()) {
+            Assertions.assertThrows(OntJenaException.Unsupported.class, () ->
+                    m.createResource().addProperty(OWL2.inverseOf, p1).as(OntObjectProperty.class)
+            );
+            Assertions.assertEquals(0, m.ontObjects(OntObjectProperty.Inverse.class).count());
+        } else {
+            OntObjectProperty p2 = m.createResource().addProperty(OWL2.inverseOf, p1).as(OntObjectProperty.class);
+            Assertions.assertTrue(p2.inverseProperty().isPresent());
+            Assertions.assertEquals(1, p2.inverseProperties().count());
+            Assertions.assertEquals(p1.asProperty(), p2.asProperty());
+            Assertions.assertEquals(p1, p2.inverseProperty().orElseThrow(AssertionError::new));
+            Assertions.assertEquals(1, m.ontObjects(OntObjectProperty.Inverse.class).count());
+        }
     }
 
     @ParameterizedTest

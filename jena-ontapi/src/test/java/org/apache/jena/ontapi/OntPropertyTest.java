@@ -70,7 +70,7 @@ public class OntPropertyTest {
         m.createDataProperty(ns + "d-p-2").addAnnotation(a2, m.createLiteral("data-property"));
 
 
-        OntModelOWLSpecsTest.simplePropertiesValidation(m);
+        OntModelOWLSpecsTest.simplePropertiesValidation(m, TestSpec.OWL1_DL_MEM);
         Assertions.assertEquals(9, m.ontObjects(OntNamedProperty.class).count());
         Assertions.assertEquals(11, m.ontObjects(OntProperty.class).count());
         Assertions.assertEquals(9, m.ontObjects(OntRelationalProperty.class).count());
