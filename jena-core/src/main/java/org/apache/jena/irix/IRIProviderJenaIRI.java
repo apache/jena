@@ -30,7 +30,7 @@ import org.apache.jena.iri.*;
  */
 public class IRIProviderJenaIRI implements IRIProvider {
 
-    // Notes:
+    // Notes about jena-iri
     // jena-iri:IRI.create is silent.
     // jena-iri:IRI.construct throws errors.
     // jena-iri:IRI.resolve is the same as create
@@ -359,7 +359,7 @@ public class IRIProviderJenaIRI implements IRIProvider {
     private static String UNRESERVED = "-0-9a-z._~";
     // Or use \p{IsAlphabetic}
     private static String UCSCHAR = "\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF";
-            /*
+            /* Beyond 16 bits:
             / %x10000-1FFFD / %x20000-2FFFD / %x30000-3FFFD
             / %x40000-4FFFD / %x50000-5FFFD / %x60000-6FFFD
             / %x70000-7FFFD / %x80000-8FFFD / %x90000-9FFFD
@@ -376,12 +376,15 @@ public class IRIProviderJenaIRI implements IRIProvider {
     private static String PCHARS1 = UNRESERVED+SUB_DELIMS+":"+"@";
     private static String PCHAR = "(?:(?:["+PCHARS1+"]|"+PCT+"))";
 
-    private static String URN_COMP_X = "/\\?";
-    private static String URN_RQ_COMP_CHAR = PCHAR+URN_COMP_X;
-    private static String URN_R_COMP = "(?:\\?\\+["+URN_RQ_COMP_CHAR+"]+)?";
-    private static String URN_Q_COMP = "(?:\\?=["+URN_RQ_COMP_CHAR+"]+)?";
-    private static String URN_F_COMP = "(?:#["+PCHAR+"]*)?";
-    private static String URN_UUID_REGEXP = "^urn:uuid:"+UUID_BASE+URN_R_COMP+URN_Q_COMP+URN_F_COMP+"$";
+    // Elements of components.
+    private static String URN_COMPONENT_X = "/\\?";     // "/" and "?"
+    private static String URN_RQ_COMPONENT_CHAR = PCHAR+URN_COMPONENT_X;
+    // Optional components
+    private static String URN_R_COMPONENT = "(?:\\?\\+["+URN_RQ_COMPONENT_CHAR+"]+)?";
+    private static String URN_Q_COMPONENT = "(?:\\?=["+URN_RQ_COMPONENT_CHAR+"]+)?";
+    private static String URN_F_COMPONENT = "(?:#["+PCHAR+"]*)?";
+    // scheme , NID, uuid, optional URN_R_COMPONENT, optional URN_Q_COMPONENT, optional F_COMPONENT
+    private static String URN_UUID_REGEXP = "^urn:uuid:"+UUID_BASE+URN_R_COMPONENT+URN_Q_COMPONENT+URN_F_COMPONENT+"$";
 
     private static Pattern URN_UUID_PATTERN = Pattern.compile(URN_UUID_REGEXP, Pattern.CASE_INSENSITIVE);
 
