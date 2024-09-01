@@ -58,43 +58,20 @@ public class RDF {
         return ResourceFactory.createProperty(uri, local);
     }
 
-    public static Property li(int i) {
-        return property("_" + i);
-    }
-
     public static final Resource    Alt             = resource("Alt");
     public static final Resource    Bag             = resource("Bag");
     public static final Resource    Property        = resource("Property");
     public static final Resource    Seq             = resource("Seq");
+    public static Property li(int i) {
+        return property("_" + i);
+    }
+
     public static final Resource    Statement       = resource("Statement");
     public static final Resource    List            = resource("List");
     public static final Resource    nil             = resource("nil");
 
-    // RDF 1.1 - the datatypes of language strings
-    public static final Resource    langString      = resource("langString");
-
-    // RDF 1.1 - rdf:HTML
-    public static final Resource    HTML            = resource("HTML");
-
-    // rdf:XMLLiteral
-    public static final Resource    xmlLiteral      = resource("XMLLiteral");
-
-    // rdf:dirLangString
-    public static final Resource    dirLangString   = resource("dirLangString");
-
-    // rdf:JSON
-    public static final Resource    JSON            = resource("JSON");
-
     // rdfs:comment "A class representing a compound literal."
     public static final Resource CompoundLiteral    = resource("CompoundLiteral");
-    /**
-     * This property is used explicitly in facet restrictions.
-     * Also, it can be used as a literal type
-     * (e.g., {@code 'test'^^rdf:PlainLiteral}) in old ontologies based on RDF-1.0
-     *
-     * @see <a href="https://www.w3.org/TR/rdf-plain-literal">rdf:PlainLiteral: A Datatype for RDF Plain Literals (Second Edition)</a>
-     */
-    public final static Resource    PlainLiteral    = resource("PlainLiteral");
 
     public static final Property    first           = property("first");
     public static final Property    rest            = property("rest");
@@ -103,6 +80,26 @@ public class RDF {
     public static final Property    object          = property("object");
     public static final Property    type            = property("type");
     public static final Property    value           = property("value");
+    // RDF 1.1 - the datatypes of language strings
+    public static final Resource    langString      = resource("langString");
+    // RDF 1.2 - the datatypes of language strings with text direction
+    public static final Resource    dirLangString   = resource("dirLangString");
+    // rdf:XMLLiteral
+    public static final Resource    xmlLiteral      = resource("XMLLiteral");
+    // RDF 1.2 - rdf:JSON
+    public static final Resource    JSON            = resource("JSON");
+    // RDF 1.1 - rdf:HTML
+    public static final Resource    HTML            = resource("HTML");
+
+    /**
+     * This property is used explicitly in facet restrictions.
+     * Also, it can be used as a literal type
+     * (e.g., {@code 'test'^^rdf:PlainLiteral}) in old ontologies based on RDF-1.0
+     *
+     * @see <a href="https://www.w3.org/TR/rdf-plain-literal">rdf:PlainLiteral: A Datatype for RDF Plain Literals (Second Edition)</a>
+     */
+    public static final Resource    PlainLiteral    = resource("PlainLiteral");
+
     /**
      * This property is used in facet restrictions.
      * The facet {@code rdf:langRange} can be used to refer to a subset of strings containing the language tag.
@@ -122,29 +119,18 @@ public class RDF {
     // The constant "rtl" (right to left)
     public static final String dirRTL               = TextDirection.RTL.direction();
 
-    public static final RDFDatatype dtRDFHTML       = RDFhtml.rdfHTML;
     public static final RDFDatatype dtLangString    = RDFLangString.rdfLangString;
     public static final RDFDatatype dtDirLangString = RDFDirLangString.rdfDirLangString;
     public static final RDFDatatype dtXMLLiteral    = XMLLiteralType.rdfXMLLiteral;
-
     // Added to the RDF namespace December 2019
     // https://lists.w3.org/Archives/Public/semantic-web/2019Dec/0027.html
-
     // rdfs:comment "The datatype of RDF literals storing JSON content."
     public static final RDFDatatype dtRDFJSON       = RDFjson.rdfJSON;
+    public static final RDFDatatype dtRDFHTML       = RDFhtml.rdfHTML;
 
-    /** RDF constants are used during Jena initialization.
-     * <p>
-     * If that initialization is triggered by touching the RDF class,
-     * then the constants are null.
-     * <p>
-     * So for these cases, call this helper class: Init.function()
-     */
-    @Deprecated
-    public static class Init {
-
-        // JENA-1294
-        // Version that calculates the constant when called.
+    @Deprecated(forRemoval = true)
+    private static class Init {
+        // This should not be needed anymore.
         public static Resource Alt()                { return resource( "Alt" ); }
         public static Resource Bag()                { return resource( "Bag" ); }
         // Java8 bug : https://bugzilla.redhat.com/show_bug.cgi?id=1423421
@@ -176,17 +162,17 @@ public class RDF {
         public static Property language()           { return property( "language" ); }
         public static Property direction()          { return property( "direction" ); }
 
-        public static RDFDatatype dtRDFHTML()       { return RDFhtml.rdfHTML; }
         public static RDFDatatype dtLangString()    { return RDFLangString.rdfLangString; }
         public static RDFDatatype dtDirLangString() { return RDFDirLangString.rdfDirLangString; }
         public static RDFDatatype dtXMLLiteral()    { return XMLLiteralType.rdfXMLLiteral; }
         public static RDFDatatype dtRDFJSON()       { return RDFjson.rdfJSON; }
+        public static RDFDatatype dtRDFHTML()       { return RDFhtml.rdfHTML; }
     }
 
     /**
-        The same items of vocabulary, but at the Node level, parked inside a
-        nested class so that there's a simple way to refer to them.
-    */
+     * The main items of RDF vocabulary, but at the Node level, parked inside a nested
+     * class so that there's a simple way to refer to them.
+     */
     @SuppressWarnings("hiding")
     public static final class Nodes
     {
@@ -194,9 +180,11 @@ public class RDF {
         public static final Node Bag            = RDF.Bag.asNode();
         public static final Node Property       = RDF.Property.asNode();
         public static final Node Seq            = RDF.Seq.asNode();
+        public static Node li(int i)            { return RDF.li(i).asNode(); }
         public static final Node Statement      = RDF.Statement.asNode();
         public static final Node List           = RDF.List.asNode();
         public static final Node nil            = RDF.nil.asNode();
+        public static final Node CompoundLiteral = RDF.CompoundLiteral.asNode();
         public static final Node first          = RDF.first.asNode();
         public static final Node rest           = RDF.rest.asNode();
         public static final Node subject        = RDF.subject.asNode();
@@ -206,15 +194,14 @@ public class RDF {
         public static final Node value          = RDF.value.asNode();
         public static final Node langString     = RDF.langString.asNode();
         public static final Node dirLangString  = RDF.dirLangString.asNode();
-        public static final Node HTML           = RDF.HTML.asNode();
         public static final Node xmlLiteral     = RDF.xmlLiteral.asNode();
+        public static final Node HTML           = RDF.HTML.asNode();
         // Added to the RDF namespace December 2019
         // https://lists.w3.org/Archives/Public/semantic-web/2019Dec/0027.html
         public static final Node JSON           = RDF.JSON.asNode();
-        public static final Node CompoundLiteral = RDF.CompoundLiteral.asNode();
+        public static final Node langRange      = RDF.langRange.asNode();
         public static final Node language       = RDF.language.asNode();
         public static final Node direction      = RDF.direction.asNode();
         public static final Node PlainLiteral   = RDF.PlainLiteral.asNode();
-        public static final Node langRange      = RDF.langRange.asNode();
     }
 }
