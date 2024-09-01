@@ -18,27 +18,40 @@
 
 package org.apache.jena.datatypes.xsd.impl;
 
+import java.util.Objects;
+
 import org.apache.jena.datatypes.BaseDatatype ;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.graph.impl.LiteralLabel ;
+import org.apache.jena.vocabulary.RDF;
 
 /**
- * rdf:dirLangString (literal with language and initial text direction)
- * This covers the unusual case of "foo"^^rdf:langString or "foo"^^rdf:dirLangString.
- * When there is a language tag, there is a lexical form but it is in two parts lex@lang or lex@lang--ltr
+ * {@code rdf:dirLangString} - a literal with language and initial text direction.
+ * <p>
+ * This covers the unusual case of {@code "foo"^^rdf:dirLangString}.
  */
 
 public class RDFDirLangString extends BaseDatatype implements RDFDatatype {
 
-    /** Singleton instance */
-    // Include the string for the RDF namespace, do not use RDF.getURI() to avoid an initializer circularity.
-    public static final RDFDatatype rdfDirLangString = new RDFDirLangString("http://www.w3.org/1999/02/22-rdf-syntax-ns#dirLangString");
+    public static final String rdfDirLangStringURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#dirLangString";
 
     /**
-     * Private constructor.
+     * Singleton instance
+     * <p>
+     * Prefer {@link RDF#dtDirLangString} in applications.
      */
-    private RDFDirLangString(String uri) {
-        super(uri);
+    public static final RDFDatatype rdfDirLangString = new RDFDirLangString();
+
+    /**
+     * Test where an {@link RDFDatatype} is that for {@code rdf:dirLangString}.
+     */
+    public static boolean isRDFDirLangString(RDFDatatype rdfDatatype) {
+        Objects.requireNonNull(rdfDatatype);
+        return rdfDirLangStringURI.equals(rdfDatatype.getURI());
+    }
+
+    private RDFDirLangString() {
+        super(rdfDirLangStringURI);
     }
 
     /**
@@ -49,7 +62,7 @@ public class RDFDirLangString extends BaseDatatype implements RDFDatatype {
         return isEqualByTerm(value1, value2) ;
     }
 
-    // This covers the unusual case of "foo"^^"rdf:langString" or "foo"^^rdf:dirLangString.
+    /** This covers the unusual case of "foo"^^rdf:dirLangString. */
     @Override
     public Object parse(String lexicalForm) { return lexicalForm ; }
 
