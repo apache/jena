@@ -72,7 +72,7 @@
 
     <ver.shiro>2.0.1</ver.shiro>
 
-    <ver.protobuf>4.27.3</ver.protobuf>
+    <ver.protobuf>4.28.0</ver.protobuf>
     <ver.libthrift>0.20.0</ver.libthrift>
 
     <ver.caffeine>3.1.8</ver.caffeine>
