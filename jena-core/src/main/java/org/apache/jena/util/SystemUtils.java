@@ -18,35 +18,37 @@
 
 package org.apache.jena.util;
 
-import org.apache.jena.shared.JenaException ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.shared.JenaException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/** 
- * Note: this has been copied here from ARQ.
- */
-public class SystemUtils
-{
-    private static Logger log = LoggerFactory.getLogger ( SystemUtils.class.getName() ) ;
-    
-    static public ClassLoader chooseClassLoader()
-    {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader() ;
-    
+public class SystemUtils {
+    private static Logger log = LoggerFactory.getLogger(SystemUtils.class.getName());
+
+    static public ClassLoader chooseClassLoader() {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
         if ( classLoader != null )
-            log.trace ( "Using thread classloader" ) ;
-        
-        if ( classLoader == null )
-        {
-            classLoader = ClassLoader.getSystemClassLoader() ;
-            if ( classLoader != null )
-                log.trace ( "Using system classloader" ) ;
-        }
-        
-        if ( classLoader == null )
-            throw new JenaException ( "Failed to find a classloader" ) ;
+            log.trace("Using thread classloader");
 
-        return classLoader ;
+        if ( classLoader == null ) {
+            classLoader = ClassLoader.getSystemClassLoader();
+            if ( classLoader != null )
+                log.trace("Using system classloader");
+        }
+
+        if ( classLoader == null )
+            throw new JenaException("Failed to find a classloader");
+
+        return classLoader;
     }
-    
+
+    public static String getSystemProperty(String propName) {
+        return getSystemProperty(propName, null);
+    }
+
+    public static String getSystemProperty(final String propName, String defaultValue) {
+        return System.getProperty(propName, defaultValue);
+    }
+
 }

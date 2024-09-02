@@ -21,7 +21,6 @@ package org.apache.jena.reasoner.rulesys.impl;
 import java.util.*;
 import java.util.function.Function;
 
-import org.apache.jena.JenaRuntime;
 import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.graph.Node;
@@ -30,6 +29,7 @@ import org.apache.jena.reasoner.ReasonerException;
 import org.apache.jena.reasoner.TriplePattern;
 import org.apache.jena.reasoner.rulesys.BackwardRuleInfGraphI;
 import org.apache.jena.reasoner.rulesys.Rule;
+import org.apache.jena.util.SystemUtils;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
 import org.slf4j.Logger;
@@ -63,7 +63,7 @@ public class LPBRuleEngine {
     protected Collection<LPInterpreter> activeInterpreters = new HashSet<>();
 
     protected final int MAX_CACHED_TABLED_GOALS = Integer.parseInt(
-    		JenaRuntime.getSystemProperty("jena.rulesys.lp.max_cached_tabled_goals", "524288"));
+    		SystemUtils.getSystemProperty("jena.rulesys.lp.max_cached_tabled_goals", "524288"));
 
     /** Table mapping tabled goals to generators for those goals.
      *  This is here so that partial goal state can be shared across multiple queries.

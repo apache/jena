@@ -20,7 +20,6 @@ package org.apache.jena.riot.system.stream;
 
 import java.util.StringTokenizer ;
 
-import org.apache.jena.JenaRuntime ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.riot.Lang;
@@ -28,6 +27,7 @@ import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.adapters.AdapterFileManager ;
 import org.apache.jena.shared.JenaException ;
+import org.apache.jena.util.SystemUtils;
 import org.apache.jena.vocabulary.LocationMappingVocab ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -66,9 +66,9 @@ public class JenaIOEnvironment
 
     static private String getGlobalConfigPath() {
         if ( s_globalMapperPath == null )
-            s_globalMapperPath = JenaRuntime.getSystemProperty(GlobalMapperSystemProperty1, null);
+            s_globalMapperPath = SystemUtils.getSystemProperty(GlobalMapperSystemProperty1, null);
         if ( s_globalMapperPath == null )
-            s_globalMapperPath = JenaRuntime.getSystemProperty(GlobalMapperSystemProperty2, null);
+            s_globalMapperPath = SystemUtils.getSystemProperty(GlobalMapperSystemProperty2, null);
         if ( s_globalMapperPath == null )
             s_globalMapperPath = DEFAULT_PATH;
         return s_globalMapperPath;

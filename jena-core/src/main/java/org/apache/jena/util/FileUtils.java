@@ -29,7 +29,6 @@ import java.nio.file.Path;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.jena.JenaRuntime ;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.shared.JenaException ;
 import org.apache.jena.shared.WrappedIOException ;
@@ -282,7 +281,7 @@ public class FileUtils
     }
 
     public static String getTempDirectory()
-    { return JenaRuntime.getSystemProperty( "java.io.tmpdir" ); }
+    { return SystemUtils.getSystemProperty( "java.io.tmpdir" ); }
 
     private static int counter = 0;
 
