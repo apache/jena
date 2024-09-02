@@ -193,13 +193,13 @@ public class StorageTDB implements StorageRDF {
 
 //    private void requireTxn() {
 //        if ( ! txnSystem.isInTransaction() )
-//            throw new TransactionException("Not on a transaction");
+//            throw new TransactionException("Not in a transaction");
 //    }
 
     private void ensureWriteTxn() {
         Transaction txn = txnSystem.getThreadTransaction();
         if ( txn == null )
-            throw new TransactionException("Not on a write transaction");
+            throw new TransactionException("Not in a write transaction");
         txn.ensureWriteTxn();
     }
 }
