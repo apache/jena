@@ -286,8 +286,18 @@ public class IRILib
      */
     public static String encodeUriQueryFrag(String string) {
         String encStr = StrUtils.encodeHex(string,'%', charsQueryFrag) ;
-        return encStr ;
+        // Space is special.
+        String encStr1 = encStr.replace("%20",  "+");
+        return encStr1 ;
     }
+
+    public static String decodeUriQueryFrag(String string) {
+        // Space is special. Reverse order compared to encodeUriQueryFrag
+        String decStr0 = string.replace("+",  " ");
+        String decStr = StrUtils.decodeHex(decStr0,'%') ;
+        return decStr ;
+    }
+
 
     /** Encode using the rules for a file: URL.
      *  Does not encode non-ASCII characters

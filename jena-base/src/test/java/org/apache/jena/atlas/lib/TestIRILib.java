@@ -41,10 +41,10 @@ public class TestIRILib {
         assertEquals(testString, decoded);
     }
 
-    private void encodeDecodeQueryFrag(String testString, String expected) {
+    private void encodeDecodeQueryFrag(String testString, String expectedEncoded) {
         String encoded = IRILib.encodeUriQueryFrag(testString);
-        assertEquals(expected, encoded);
-        String decoded = IRILib.decodeHex(encoded);
+        assertEquals(expectedEncoded, encoded);
+        String decoded = IRILib.decodeUriQueryFrag(encoded);
         assertEquals(testString, decoded);
     }
 
@@ -60,6 +60,11 @@ public class TestIRILib {
     @Test
     public void codec_queryFrag_02() {
         encodeDecodeQueryFrag("http://example/graph?name=value#zzzz", "http://example/graph?name%3Dvalue%23zzzz");
+    }
+
+    @Test
+    public void codec_queryFrag_03() {
+        encodeDecodeQueryFrag("ab cd", "ab+cd");
     }
 }
 
