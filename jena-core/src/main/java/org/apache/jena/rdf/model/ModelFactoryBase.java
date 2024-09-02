@@ -18,8 +18,8 @@
 
 package org.apache.jena.rdf.model;
 
-import org.apache.jena.JenaRuntime ;
 import org.apache.jena.shared.* ;
+import org.apache.jena.util.SystemUtils;
 
 /**
     Helper functions for ModelFactory - in here to keep from obtruding on the
@@ -37,7 +37,7 @@ public class ModelFactoryBase
     
     protected static String gp( String name, String ifAbsent )
         { 
-        String answer = JenaRuntime.getSystemProperty( "jena." + name ); 
+        String answer = SystemUtils.getSystemProperty( "jena." + name ); 
         return answer == null ? ifAbsent : answer;
         }
 
