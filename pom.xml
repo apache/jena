@@ -114,7 +114,7 @@
     <ver.jakarta-xml-bind>4.0.2</ver.jakarta-xml-bind>
     <ver.jcommander>1.82</ver.jcommander>
     <ver.sis>1.4</ver.sis>
-    <ver.jts>1.19.0</ver.jts>
+    <ver.jts>1.20.0</ver.jts>
 
     <!-- Plugins -->
     <ver.plugin.rat>0.16.1</ver.plugin.rat>
