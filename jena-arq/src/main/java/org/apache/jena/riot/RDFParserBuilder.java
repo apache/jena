@@ -42,6 +42,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.ContextAccumulator;
 import org.apache.jena.sparql.util.Symbol;
+import org.apache.jena.sys.JenaSystem;
 
 /**
  * An {@link RDFParser} is a process that will generate triples;
@@ -67,6 +68,8 @@ import org.apache.jena.sparql.util.Symbol;
  * </pre>
  */
 public class RDFParserBuilder {
+    static { JenaSystem.init(); }
+
     // The various sources
     // Reusable parser
     private String uri = null;
