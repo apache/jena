@@ -27,8 +27,11 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.ContextAccumulator;
 import org.apache.jena.sparql.util.Symbol;
+import org.apache.jena.sys.JenaSystem;
 
 public class RDFWriterBuilder {
+    static { JenaSystem.init(); }
+
     private DatasetGraph dataset = null;
     private Graph        graph   = null;
     private Lang         lang    = null;
