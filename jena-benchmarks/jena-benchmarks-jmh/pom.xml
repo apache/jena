@@ -47,7 +47,6 @@
         <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
         <automatic.module.name>org.apache.jena.benchmarks.jmh</automatic.module.name>
         <benchmark.skip>true</benchmark.skip>
-        <scope>test</scope>
     </properties>
 
     <dependencies>
