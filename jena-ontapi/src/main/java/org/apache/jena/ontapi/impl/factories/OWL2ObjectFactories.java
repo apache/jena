@@ -27,7 +27,6 @@ import org.apache.jena.ontapi.common.OntPersonality;
 import org.apache.jena.ontapi.impl.objects.OntAnnotationImpl;
 import org.apache.jena.ontapi.impl.objects.OntClassImpl;
 import org.apache.jena.ontapi.impl.objects.OntDataRangeImpl;
-import org.apache.jena.ontapi.impl.objects.OntDisjointImpl;
 import org.apache.jena.ontapi.impl.objects.OntFacetRestrictionImpl;
 import org.apache.jena.ontapi.impl.objects.OntIDImpl;
 import org.apache.jena.ontapi.impl.objects.OntIndividualImpl;
@@ -35,13 +34,11 @@ import org.apache.jena.ontapi.impl.objects.OntNegativePropertyAssertionImpl;
 import org.apache.jena.ontapi.impl.objects.OntObjectImpl;
 import org.apache.jena.ontapi.impl.objects.OntSimpleClassImpl;
 import org.apache.jena.ontapi.model.OntClass;
-import org.apache.jena.ontapi.model.OntDataProperty;
 import org.apache.jena.ontapi.model.OntDataRange;
 import org.apache.jena.ontapi.model.OntDisjoint;
 import org.apache.jena.ontapi.model.OntFacetRestriction;
 import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.model.OntNegativeAssertion;
-import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.vocabulary.OWL2;
 import org.apache.jena.vocabulary.RDF;
@@ -788,34 +785,18 @@ public final class OWL2ObjectFactories {
             OntFacetRestriction.LangRange.class
     );
 
-    public static final EnhNodeFactory CLASSES_DISJOINT = OntDisjoints.createFactory(
-            OntDisjointImpl.ClassesImpl.class,
-            OntDisjointImpl.ClassesImpl::new,
-            OWL2.AllDisjointClasses,
-            OntClass.class,
-            true,
-            OWL2.members
-    );
-    public static final EnhNodeFactory QL_CLASSES_DISJOINT = OntDisjoints.createQLRLOntDisjointFactory();
-    public static final EnhNodeFactory RL_CLASSES_DISJOINT = OntDisjoints.createQLRLOntDisjointFactory();
+    public static final EnhNodeFactory CLASSES_DISJOINT = OntDisjoints.createDisjointClassesFactory(0);
+    public static final EnhNodeFactory EL_CLASSES_DISJOINT = OntDisjoints.createDisjointClassesFactory(2);
+    public static final EnhNodeFactory QL_RL_CLASSES_DISJOINT = OntDisjoints.createQLRLDisjointClassesFactory();
     public static final Function<OntConfig, EnhNodeFactory> DIFFERENT_INDIVIDUALS_DISJOINT =
-            OntDisjoints::createDifferentIndividualsFactory;
-    public static final EnhNodeFactory OBJECT_PROPERTIES_DISJOINT = OntDisjoints.createFactory(
-            OntDisjointImpl.ObjectPropertiesImpl.class,
-            OntDisjointImpl.ObjectPropertiesImpl::new,
-            OWL2.AllDisjointProperties,
-            OntObjectProperty.class,
-            false,
-            OWL2.members
-    );
-    public static final EnhNodeFactory DATA_PROPERTIES_DISJOINT = OntDisjoints.createFactory(
-            OntDisjointImpl.DataPropertiesImpl.class,
-            OntDisjointImpl.DataPropertiesImpl::new,
-            OWL2.AllDisjointProperties,
-            OntDataProperty.class,
-            false,
-            OWL2.members
-    );
+            OntDisjoints::createDLFullDifferentIndividualsFactory;
+    public static final EnhNodeFactory EL_QL_RL_DIFFERENT_INDIVIDUALS_DISJOINT =
+            OntDisjoints.createELQLRLDifferentIndividualsFactory();
+    public static final EnhNodeFactory OBJECT_PROPERTIES_DISJOINT = OntDisjoints.createDisjointObjectPropertiesFactory(0);
+    public static final EnhNodeFactory QL_RL_OBJECT_PROPERTIES_DISJOINT = OntDisjoints.createDisjointObjectPropertiesFactory(2);
+    public static final EnhNodeFactory DATA_PROPERTIES_DISJOINT = OntDisjoints.createDisjointDataPropertiesFactory(0);
+    public static final EnhNodeFactory QL_RL_DATA_PROPERTIES_DISJOINT = OntDisjoints.createDisjointDataPropertiesFactory(2);
+
     public static final EnhNodeFactory ANY_PROPERTIES_DISJOINT = OntEnhNodeFactories.createFrom(
             OntDisjoints.PROPERTIES_FINDER,
             OntDisjoint.ObjectProperties.class,

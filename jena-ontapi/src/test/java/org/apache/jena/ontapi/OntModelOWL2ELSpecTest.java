@@ -22,6 +22,7 @@ import org.apache.jena.ontapi.model.OntAnnotationProperty;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntDataProperty;
 import org.apache.jena.ontapi.model.OntDataRange;
+import org.apache.jena.ontapi.model.OntDisjoint;
 import org.apache.jena.ontapi.model.OntEntity;
 import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.model.OntModel;
@@ -48,6 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -303,5 +305,69 @@ public class OntModelOWL2ELSpecTest {
         Assertions.assertEquals(1L, a.hasKeys().count());
         a.removeHasKey(null);
         Assertions.assertEquals(0L, a.hasKeys().count());
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_EL_MEM",
+            "OWL2_EL_MEM_RDFS_INF",
+            "OWL2_EL_MEM_TRANS_INF",
+    })
+    public void testDifferentIndividuals(TestSpec spec) {
+        OntModel data = OntModelFactory.createModel();
+        data.createDifferentIndividuals(data.createIndividual("a"));
+        data.createDifferentIndividuals();
+        data.createDifferentIndividuals(data.createIndividual("b"), data.createIndividual("c"));
+
+        OntModel m = OntModelFactory.createModel(data.getGraph(), spec.inst);
+
+        List<OntDisjoint.Individuals> res1 = m.ontObjects(OntDisjoint.Individuals.class).toList();
+        Assertions.assertEquals(1, res1.size());
+        Assertions.assertEquals(
+                Set.of("b", "c"),
+                res1.get(0).members().map(Resource::getURI).collect(Collectors.toSet())
+        );
+
+        Assertions.assertThrows(
+                OntJenaException.Unsupported.class,
+                () -> m.createDifferentIndividuals(m.createIndividual("d"))
+        );
+
+        m.createDifferentIndividuals(m.createIndividual("e"), m.createIndividual("f"), m.createIndividual("g"));
+
+        List<OntDisjoint.Individuals> res2 = m.ontObjects(OntDisjoint.Individuals.class).toList();
+        Assertions.assertEquals(2, res2.size());
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_EL_MEM",
+            "OWL2_EL_MEM_RDFS_INF",
+            "OWL2_EL_MEM_TRANS_INF",
+    })
+    public void testDisjointClasses(TestSpec spec) {
+        OntModel data = OntModelFactory.createModel();
+        data.createDisjointClasses(data.createOntClass("a"));
+        data.createDisjointClasses();
+        data.createDisjointClasses(data.createOntClass("b"), data.createOntClass("c"));
+
+        OntModel m = OntModelFactory.createModel(data.getGraph(), spec.inst);
+
+        List<OntDisjoint.Classes> res1 = m.ontObjects(OntDisjoint.Classes.class).toList();
+        Assertions.assertEquals(1, res1.size());
+        Assertions.assertEquals(
+                Set.of("b", "c"),
+                res1.get(0).members().map(Resource::getURI).collect(Collectors.toSet())
+        );
+
+        Assertions.assertThrows(
+                OntJenaException.Unsupported.class,
+                () -> m.createDisjointClasses(m.createOntClass("d"))
+        );
+
+        m.createDisjointClasses(m.createOntClass("e"), m.createOntClass("f"), m.createOntClass("g"));
+
+        List<OntDisjoint.Classes> res2 = m.ontObjects(OntDisjoint.Classes.class).toList();
+        Assertions.assertEquals(2, res2.size());
     }
 }

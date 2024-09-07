@@ -29,6 +29,7 @@ import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.model.OntRelationalProperty;
 import org.apache.jena.ontapi.testutils.RDFIOTestUtils;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.OWL2;
@@ -632,5 +633,39 @@ public class OntModelOWL2RLSpecTest {
         c21.createHasKey(List.of(m.createObjectProperty("p3")), List.of(m.createDataProperty("p4")));
         List<OntList<OntRelationalProperty>> hasKey3 = c21.hasKeys().toList();
         Assertions.assertEquals(2, hasKey3.size());
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_RL_MEM",
+            "OWL2_RL_MEM_RDFS_INF",
+            "OWL2_RL_MEM_TRANS_INF",
+    })
+    public void testDisjointObjectProperties(TestSpec spec) {
+        OntModel data = OntModelFactory.createModel();
+        data.createDisjointObjectProperties(data.createObjectProperty("a"));
+        data.createDisjointObjectProperties();
+        data.createDisjointObjectProperties(data.createObjectProperty("b"), data.createObjectProperty("c"));
+
+        OntModel m = OntModelFactory.createModel(data.getGraph(), spec.inst);
+
+        List<OntDisjoint.ObjectProperties> res1 = m.ontObjects(OntDisjoint.ObjectProperties.class).toList();
+        Assertions.assertEquals(1, res1.size());
+        Assertions.assertEquals(
+                Set.of("b", "c"),
+                res1.get(0).members().map(Resource::getURI).collect(Collectors.toSet())
+        );
+
+        Assertions.assertThrows(
+                OntJenaException.Unsupported.class,
+                () -> m.createDisjointObjectProperties(m.createObjectProperty("d"))
+        );
+
+        m.createDisjointObjectProperties(
+                m.createObjectProperty("e"), m.createObjectProperty("f"), m.createObjectProperty("g")
+        );
+
+        List<OntDisjoint.ObjectProperties> res2 = m.ontObjects(OntDisjoint.ObjectProperties.class).toList();
+        Assertions.assertEquals(2, res2.size());
     }
 }
