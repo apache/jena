@@ -369,7 +369,7 @@ public class OWL1ObjectFactories {
     );
 
     public static final Function<OntConfig, EnhNodeFactory> DIFFERENT_INDIVIDUALS_DISJOINT =
-            OntDisjoints::createDifferentIndividualsFactory;
+            OntDisjoints::createDLFullDifferentIndividualsFactory;
     public static final Function<OntConfig, EnhNodeFactory> ANY_DISJOINT = DIFFERENT_INDIVIDUALS_DISJOINT;
 
     private static boolean isNamedIndividual(Node n, EnhGraph eg) {

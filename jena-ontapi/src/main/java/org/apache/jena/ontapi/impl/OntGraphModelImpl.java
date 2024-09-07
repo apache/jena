@@ -967,25 +967,33 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
     public OntDisjoint.Classes createDisjointClasses(Collection<OntClass> classes) {
         checkType(OntDisjoint.Classes.class);
         checkType(OntClass.IntersectionOf.class);
-        return checkCreate(model -> OntDisjointImpl.createDisjointClasses(this, classes.stream()), OntDisjoint.Classes.class);
+        return checkCreate(model ->
+                OntDisjointImpl.createDisjointClasses(model, classes.stream()), OntDisjoint.Classes.class
+        );
     }
 
     @Override
     public OntDisjoint.Individuals createDifferentIndividuals(Collection<OntIndividual> individuals) {
         checkType(OntDisjoint.Individuals.class);
-        return OntDisjointImpl.createDifferentIndividuals(this, individuals.stream());
+        return checkCreate(model ->
+                OntDisjointImpl.createDifferentIndividuals(model, individuals.stream()), OntDisjoint.Individuals.class
+        );
     }
 
     @Override
     public OntDisjoint.ObjectProperties createDisjointObjectProperties(Collection<OntObjectProperty> properties) {
         checkType(OntDisjoint.ObjectProperties.class);
-        return OntDisjointImpl.createDisjointObjectProperties(this, properties.stream());
+        return checkCreate(model ->
+                OntDisjointImpl.createDisjointObjectProperties(model, properties.stream()), OntDisjoint.ObjectProperties.class
+        );
     }
 
     @Override
     public OntDisjoint.DataProperties createDisjointDataProperties(Collection<OntDataProperty> properties) {
         checkType(OntDisjoint.DataProperties.class);
-        return OntDisjointImpl.createDisjointDataProperties(this, properties.stream());
+        return checkCreate(model ->
+                OntDisjointImpl.createDisjointDataProperties(model, properties.stream()), OntDisjoint.DataProperties.class
+        );
     }
 
     @Override

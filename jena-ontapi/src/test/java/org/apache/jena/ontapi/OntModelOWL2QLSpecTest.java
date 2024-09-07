@@ -20,12 +20,14 @@ package org.apache.jena.ontapi;
 
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntDataProperty;
+import org.apache.jena.ontapi.model.OntDisjoint;
 import org.apache.jena.ontapi.model.OntIndividual;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.model.OntObject;
 import org.apache.jena.ontapi.model.OntObjectProperty;
 import org.apache.jena.ontapi.testutils.RDFIOTestUtils;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.OWL2;
@@ -303,7 +305,7 @@ public class OntModelOWL2QLSpecTest {
             "OWL2_QL_MEM_TRANS_INF",
             "OWL2_QL_MEM_RULES_INF",
     })
-    public void testDisjoints(TestSpec spec) {
+    public void testDisjointClasses(TestSpec spec) {
         OntModel m = OntModelFactory.createModel(spec.inst);
         OntObjectProperty op = m.createObjectProperty("p");
         OntDataProperty dp = m.createDataProperty("d");
@@ -428,5 +430,37 @@ public class OntModelOWL2QLSpecTest {
         OntDataProperty p2 = m.createDataProperty("p2");
         Assertions.assertThrows(OntJenaException.Unsupported.class, () -> a.addHasKey(p1, p2));
         Assertions.assertThrows(OntJenaException.Unsupported.class, () -> a.removeHasKey(m.createList()));
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_QL_MEM",
+            "OWL2_QL_MEM_RDFS_INF",
+            "OWL2_QL_MEM_TRANS_INF",
+    })
+    public void testDisjointDataProperties(TestSpec spec) {
+        OntModel data = OntModelFactory.createModel();
+        data.createDisjointDataProperties(data.createDataProperty("a"));
+        data.createDisjointDataProperties();
+        data.createDisjointDataProperties(data.createDataProperty("b"), data.createDataProperty("c"));
+
+        OntModel m = OntModelFactory.createModel(data.getGraph(), spec.inst);
+
+        List<OntDisjoint.DataProperties> res1 = m.ontObjects(OntDisjoint.DataProperties.class).toList();
+        Assertions.assertEquals(1, res1.size());
+        Assertions.assertEquals(
+                Set.of("b", "c"),
+                res1.get(0).members().map(Resource::getURI).collect(Collectors.toSet())
+        );
+
+        Assertions.assertThrows(
+                OntJenaException.Unsupported.class,
+                () -> m.createDisjointDataProperties(m.createDataProperty("d"))
+        );
+
+        m.createDisjointDataProperties(m.createDataProperty("e"), m.createDataProperty("f"), m.createDataProperty("g"));
+
+        List<OntDisjoint.DataProperties> res2 = m.ontObjects(OntDisjoint.DataProperties.class).toList();
+        Assertions.assertEquals(2, res2.size());
     }
 }
