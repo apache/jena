@@ -127,6 +127,13 @@
     <ver.plugin.enforcer>3.5.0</ver.plugin.enforcer>
     <ver.plugin.cyclonedx>2.8.1</ver.plugin.cyclonedx>
     <ver.plugin.spdx>0.7.0</ver.plugin.spdx>
+
+    <!--
+         See jena-benchmarks/jena-benchmarks-jmh/pom.xml 
+         Overidden by command line "-Dbenchmark.skip=false"
+    -->
+    <benchmark.skip>true</benchmark.skip>
+
   </properties>
 
   <issueManagement>
