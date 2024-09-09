@@ -98,12 +98,13 @@ public class GraphMemFactory
     }
 
     /**
-     * This function will track the preferred general purpose graph.
-     * It will switch from "same value" to "same term"
+     * This function will track the preferred general purpose graph for the Model API.
      */
-    @SuppressWarnings("deprecation")
-    public static Graph createGraphMem()
-    { return new org.apache.jena.mem.GraphMem(); }
+    public static Graph createGraphMem() {
+        @SuppressWarnings("deprecation")
+        Graph g = new org.apache.jena.mem.GraphMem();
+        return g;
+    }
 
     /**
      * Answer a memory-based graph with "same value" semantics
@@ -111,9 +112,11 @@ public class GraphMemFactory
      * Jena5 changed to "same term" semantics.
      * This method will continue to provide a "same value" graph.
      */
-    @SuppressWarnings("deprecation")
-    public static Graph createDefaultGraphSameValue()
-    { return new org.apache.jena.mem.GraphMem(); }
+    public static Graph createDefaultGraphSameValue() {
+        @SuppressWarnings("deprecation")
+        Graph g = new org.apache.jena.mem.GraphMem();
+        return g;
+    }
 
     /**
      * Answer a memory-based graph with "same term" semantics

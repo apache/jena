@@ -62,8 +62,9 @@ public class ModelFactory extends ModelFactoryBase
         roots in a description, and <code>assemblerModelFrom(Resource)</code>
         for assembling a model from its single description.
     */
-    public static Model assembleModelFrom( Model singleRoot )
-        { return assembleModelFrom( AssemblerHelp.singleModelRoot( singleRoot ) ); }
+    public static Model assembleModelFrom(Model singleRoot) {
+        return assembleModelFrom(AssemblerHelp.singleModelRoot(singleRoot));
+    }
 
     /**
         Answer a Set of resources present in <code>m</code> that are
@@ -73,8 +74,9 @@ public class ModelFactory extends ModelFactoryBase
         their <code>getModel()</code> - they may be members of an
         extended constructed model.
     */
-    public static Set<Resource> findAssemblerRoots( Model m )
-        { return AssemblerHelp.findAssemblerRoots( m ); }
+    public static Set<Resource> findAssemblerRoots(Model m) {
+        return AssemblerHelp.findAssemblerRoots(m);
+    }
 
     /**
         Answer a Model as described the Assembler specification rooted
@@ -82,14 +84,35 @@ public class ModelFactory extends ModelFactoryBase
         must be of rdf:type <code>ja:Object</code>, where <code>ja</code>
         is the prefix of Jena Assembler objects.
     */
-    public static Model assembleModelFrom( Resource root )
-        { return Assembler.general.openModel( root ); }
+    public static Model assembleModelFrom(Resource root) {
+        return Assembler.general.openModel(root);
+    }
 
     /**
-        Answer a fresh Model with the default specification.
-    */
-    public static Model createDefaultModel()
-        { return new ModelCom( GraphMemFactory.createGraphMem( ) ); }
+     * Answer a fresh Model for use with the Model API.
+     * <p>
+     * This model is "same value" for Model API compatibility.
+     *
+     * @see #createModelSameTerm() for a same-term equality Model.
+     */
+    public static Model createDefaultModel() {
+        return createModelForGraph(GraphMemFactory.createDefaultGraphSameValue());
+    }
+
+    /**
+     * Answer a fresh Model with "same term" semantics.
+     */
+    public static Model createModelSameTerm() {
+        return createModelForGraph(GraphMemFactory.createDefaultGraphSameTerm());
+    }
+
+    /**
+     * Answer a fresh Model with "same value" semantics.
+     */
+    public static Model createModelSameValue() {
+        return createModelForGraph(GraphMemFactory.createDefaultGraphSameValue());
+    }
+
 
     /**
         Answer a model that encapsulates the given graph. Existing prefixes are
@@ -143,7 +166,7 @@ public class ModelFactory extends ModelFactoryBase
      * Build an inferred model by attaching the given RDF model to the given reasoner.
      *
      * @param reasoner the reasoner to use to process the data
-     * @param model the Model containing both instance data and schema assertions to be inferenced over, 
+     * @param model the Model containing both instance data and schema assertions to be inferenced over,
      * any statements added to the InfModel will be added to this underlying data model.
      */
     public static InfModel createInfModel( Reasoner reasoner, Model model ) {
@@ -201,7 +224,6 @@ public class ModelFactory extends ModelFactoryBase
         return createOntologyModel( ProfileRegistry.OWL_LANG );
     }
 
-
     /**
      * <p>
      * Answer a new ontology model which will process in-memory models of
@@ -217,7 +239,6 @@ public class ModelFactory extends ModelFactoryBase
     public static OntModel createOntologyModel( String languageURI ) {
         return createOntologyModel( OntModelSpec.getDefaultSpec( languageURI ), null );
     }
-
 
     /**
      * <p>
@@ -242,7 +263,6 @@ public class ModelFactory extends ModelFactoryBase
         return createOntologyModel( _spec, base );
     }
 
-
     /**
      * <p>
      * Answer a new ontology model, constructed according to the given ontology model specification,
@@ -263,9 +283,9 @@ public class ModelFactory extends ModelFactoryBase
      * Answer a new ontology model constructed according to the specification, which includes
      * a ModelMaker which will create the necessary base model.
     */
-    public static OntModel createOntologyModel( OntModelSpec spec )
-        { return new OntModelImpl( spec ); }
-
+    public static OntModel createOntologyModel(OntModelSpec spec) {
+        return new OntModelImpl(spec);
+    }
 
     /**
          Answer a new model that is the dynamic union of two other models. By
@@ -278,7 +298,7 @@ public class ModelFactory extends ModelFactoryBase
      <p>
         <code>createUnion</code> only creates two-element unions.
     */
-    public static Model createUnion(Model m1, Model m2)
-        { return createModelForGraph( new Union( m1.getGraph(), m2.getGraph() ) );   }
-
+    public static Model createUnion(Model m1, Model m2) {
+        return createModelForGraph(new Union(m1.getGraph(), m2.getGraph()));
     }
+}
