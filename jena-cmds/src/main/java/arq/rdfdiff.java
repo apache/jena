@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.io.FileInputStream;
 
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.sparql.util.Closure;
 
@@ -93,8 +94,9 @@ public class rdfdiff extends java.lang.Object {
 
         //System.out.println(in1 + " " + in2 + " " + lang1 + " " + lang2 + " " + base1 + " " + base2);
         try {
-            Model m1 = ModelFactory.createDefaultModel();
-            Model m2 = ModelFactory.createDefaultModel();
+            // Term-equality.
+            Model m1 = ModelFactory.createModelForGraph(GraphMemFactory.createDefaultGraphSameTerm());
+            Model m2 = ModelFactory.createModelForGraph(GraphMemFactory.createDefaultGraphSameTerm());
 
             read(m1, in1, lang1, base1);
             read(m2, in2, lang2, base2);
