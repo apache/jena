@@ -22,74 +22,110 @@ import org.apache.jena.atlas.web.AcceptList;
 import org.apache.jena.atlas.web.MediaType;
 import static org.apache.jena.riot.WebContent.*;
 
+/**
+ * Content negotiation setup.
+ */
 public class DEF
 {
-    public static final MediaType acceptRDFXML        = MediaType.create(contentTypeRDFXML);
-    public static final MediaType acceptNQuads        = MediaType.create(contentTypeNQuads);
-    public static final MediaType acceptRSXML         = MediaType.create(contentTypeResultsXML);
-    public static final MediaType acceptJSON          = MediaType.create(contentTypeJSON);
-    public static final MediaType acceptTurtle        = MediaType.create(contentTypeTurtle);
+    // @formatter:off
 
-    public static final AcceptList jsonOffer          = AcceptList.create(contentTypeJSON);
+    // ---- Server configuration default media type
 
-    public static final AcceptList constructOffer     = AcceptList.create(contentTypeTurtle,
-                                                                          contentTypeTurtleAlt1,
-                                                                          contentTypeNTriples,
-                                                                          contentTypeNTriplesAlt,
-                                                                          contentTypeRDFXML,
-                                                                          contentTypeTriX,
-                                                                          contentTypeTriXxml,
-                                                                          contentTypeJSONLD,
-                                                                          contentTypeRDFJSON,
-                                                                          contentTypeRDFThrift,
+    public static MediaType acceptRDFXML        = acceptRDFXMLDefault();
+    public static MediaType acceptNQuads        = acceptNQuadsDefault();
+    public static MediaType acceptResultSetXML  = acceptResultSetXMLDefault();
+    public static MediaType acceptJSON          = acceptJSONDefault();
+    public static MediaType acceptTurtle        = acceptTurtleDefault();
 
-                                                                          contentTypeTriG,
-                                                                          contentTypeTriGAlt1,
-                                                                          contentTypeNQuads,
-                                                                          contentTypeNQuadsAlt1
-                                                                          );
+    // ---- Server configuration offers for content negotiation
 
-    public static final AcceptList rdfOffer           = AcceptList.create(contentTypeTurtle,
-                                                                          contentTypeTurtleAlt1,
-                                                                          contentTypeNTriples,
-                                                                          contentTypeNTriplesAlt,
-                                                                          contentTypeRDFXML,
-                                                                          contentTypeTriX,
-                                                                          contentTypeTriXxml,
-                                                                          contentTypeJSONLD,
-                                                                          contentTypeRDFJSON,
-                                                                          contentTypeRDFThrift
-                                                                          );
+    public static AcceptList jsonOffer          = jsonOfferDefault();
 
-    public static final AcceptList quadsOffer         = AcceptList.create(contentTypeTriG,
-                                                                          contentTypeTriGAlt1,
-                                                                          contentTypeJSONLD,
-                                                                          contentTypeNQuads,
-                                                                          contentTypeNQuadsAlt1,
-                                                                          contentTypeTriX,
-                                                                          contentTypeTriXxml
-                                                                          );
+    public static AcceptList constructOffer     = constructOfferDefault();
+
+    public static AcceptList rdfOffer           = rdfOfferDefault();
+
+    public static AcceptList quadsOffer         = quadsOfferDefault();
+
+    // Offer for SELECT
+    public static AcceptList rsOfferTable       = rsOfferTableDefault();
+
+    // Offer for ASK
+    public static AcceptList rsOfferBoolean     = rsOfferBooleanDefault();
+
+
+    // ---- Default configuration settings or when content negotiation does not provide a media type.
+
+    public static final MediaType acceptRDFXMLDefault()       { return MediaType.create(contentTypeRDFXML); }
+    public static final MediaType acceptNQuadsDefault()       { return MediaType.create(contentTypeNQuads); }
+    public static final MediaType acceptResultSetXMLDefault() { return MediaType.create(contentTypeResultsXML); }
+    public static final MediaType acceptJSONDefault()         { return MediaType.create(contentTypeJSON); }
+    public static final MediaType acceptTurtleDefault()       { return MediaType.create(contentTypeTurtle); }
+
+    // ---- Default offers for content negotiation.
+
+    public static final AcceptList jsonOfferDefault()         { return AcceptList.create(contentTypeJSON); }
+
+    public static final AcceptList constructOfferDefault()    { return AcceptList.create(contentTypeTurtle,
+                                                                                         contentTypeTurtleAlt1,
+                                                                                         contentTypeNTriples,
+                                                                                         contentTypeNTriplesAlt,
+                                                                                         contentTypeRDFXML,
+                                                                                         contentTypeTriX,
+                                                                                         contentTypeTriXxml,
+                                                                                         contentTypeJSONLD,
+                                                                                         contentTypeRDFJSON,
+                                                                                         contentTypeRDFThrift,
+
+                                                                                         contentTypeTriG,
+                                                                                         contentTypeTriGAlt1,
+                                                                                         contentTypeNQuads,
+                                                                                         contentTypeNQuadsAlt1
+                                                                                        ); }
+
+    public static final AcceptList rdfOfferDefault()          { return AcceptList.create(contentTypeTurtle,
+                                                                                         contentTypeTurtleAlt1,
+                                                                                         contentTypeNTriples,
+                                                                                         contentTypeNTriplesAlt,
+                                                                                         contentTypeRDFXML,
+                                                                                         contentTypeTriX,
+                                                                                         contentTypeTriXxml,
+                                                                                         contentTypeJSONLD,
+                                                                                         contentTypeRDFJSON,
+                                                                                         contentTypeRDFThrift
+                                                                                        ); }
+
+    public static final AcceptList quadsOfferDefault()        { return AcceptList.create(contentTypeTriG,
+                                                                                         contentTypeTriGAlt1,
+                                                                                         contentTypeJSONLD,
+                                                                                         contentTypeNQuads,
+                                                                                         contentTypeNQuadsAlt1,
+                                                                                         contentTypeTriX,
+                                                                                         contentTypeTriXxml
+                                                                                        ); }
 
     // Offer for SELECT
     // This include application/xml and application/json.
-    public static final AcceptList rsOfferTable       = AcceptList.create(contentTypeResultsJSON,
-                                                                          contentTypeJSON,
-                                                                          contentTypeTextCSV,
-                                                                          contentTypeTextTSV,
-                                                                          contentTypeResultsXML,
-                                                                          contentTypeXML,
-                                                                          contentTypeResultsThrift,
-                                                                          contentTypeTextPlain
-                                                                          );
+    public static final AcceptList rsOfferTableDefault()      { return AcceptList.create(contentTypeResultsJSON,
+                                                                                         contentTypeJSON,
+                                                                                         contentTypeTextCSV,
+                                                                                         contentTypeTextTSV,
+                                                                                         contentTypeResultsXML,
+                                                                                         contentTypeXML,
+                                                                                         contentTypeResultsThrift,
+                                                                                         contentTypeTextPlain
+                                                                                        ); }
 
     // Offer for ASK
     // This includes application/xml and application/json and excludes application/sparql-results+thrift
-    public static final AcceptList rsOfferBoolean      = AcceptList.create(contentTypeResultsJSON,
-                                                                           contentTypeJSON,
-                                                                           contentTypeTextCSV,
-                                                                           contentTypeTextTSV,
-                                                                           contentTypeResultsXML,
-                                                                           contentTypeXML,
-                                                                           contentTypeTextPlain
-                                                                           );
+    public static final AcceptList rsOfferBooleanDefault()    { return AcceptList.create(contentTypeResultsJSON,
+                                                                                         contentTypeJSON,
+                                                                                         contentTypeTextCSV,
+                                                                                         contentTypeTextTSV,
+                                                                                         contentTypeResultsXML,
+                                                                                         contentTypeXML,
+                                                                                         contentTypeTextPlain
+                                                                                        ); }
+
+    // @formatter:on
 }
