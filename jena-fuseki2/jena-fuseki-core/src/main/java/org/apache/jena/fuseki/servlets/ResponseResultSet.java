@@ -105,7 +105,7 @@ public class ResponseResultSet
 
         String mimeType = null;
         // -- Conneg
-        MediaType i = ConNeg.chooseContentType(request, contentTypeOffer, DEF.acceptRSXML);
+        MediaType i = ConNeg.chooseContentType(request, contentTypeOffer, DEF.acceptResultSetXML);
         if ( i != null )
             mimeType = i.getContentTypeStr();
 
