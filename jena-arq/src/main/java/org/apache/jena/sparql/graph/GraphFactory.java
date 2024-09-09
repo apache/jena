@@ -61,7 +61,7 @@ public class GraphFactory {
      * @see #createDefaultGraph
      */
     public static Graph createGraphMem() {
-        return GraphMemFactory.createGraphMem();
+        return GraphMemFactory.createDefaultGraphSameTerm();
     }
 
     /**
@@ -76,14 +76,18 @@ public class GraphFactory {
         return new GraphTxn();
     }
 
-    /** Create a graph - ARQ-wide default type */
+    /**
+     * Create a graph - ARQ-wide default type.
+     *
+     * In Jena5, this is "same-term"
+     */
     public static Graph createDefaultGraph() {
         // Normal usage is SystemARQ.UsePlainGraph = false and use
         // createJenaDefaultGraph
         return SystemARQ.UsePlainGraph ? createPlainGraph() : createJenaDefaultGraph();
     }
 
-    /** Create a graph - always the Jena default graph type */
+    /** Create a graph - the Jena default graph for ARQ and RIOT */
     public static Graph createJenaDefaultGraph() {
         return GraphMemFactory.createDefaultGraph();
     }

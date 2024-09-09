@@ -35,7 +35,7 @@ public class GraphLoadUtils
     // ---- Model level
 
     public static Model readModel(String uri, int limit) {
-        Graph g = GraphMemFactory.createGraphMem();
+        Graph g = GraphMemFactory.createDefaultGraphSameTerm();
         readUtil(g, uri, limit);
         return ModelFactory.createModelForGraph(g);
     }
@@ -48,7 +48,7 @@ public class GraphLoadUtils
     // ---- Graph level
 
     public static Graph readGraph(String uri, int limit) {
-        Graph g = GraphMemFactory.createGraphMem();
+        Graph g = GraphMemFactory.createDefaultGraphSameTerm();
         readUtil(g, uri, limit);
         return g;
     }
