@@ -28,19 +28,19 @@ import org.apache.jena.util.iterator.ClosableIterator ;
  * The RuleContext is used to supply context information to the builtin operations.
  */
 public class RETERuleContext implements RuleContext {
-    
+
     /** The binding environment which represents the state of the current rule execution. */
     protected BindingEnvironment env;
-    
+
     /** The rule current being executed. */
     protected Rule rule;
-    
+
     /** The enclosing inference graph. */
     protected ForwardRuleInfGraphI graph;
-    
+
     /** The RETE engine associated with the inference graph */
     protected RETEEngine engine;
-    
+
     /**
      * Constructor.
      * @param graph the inference graph which owns this context.
@@ -49,7 +49,7 @@ public class RETERuleContext implements RuleContext {
         this.graph = graph;
         this.engine = engine;
     }
-    
+
     /**
      * Returns the current variable binding environment for the current rule.
      * @return BindingEnvironment
@@ -67,7 +67,7 @@ public class RETERuleContext implements RuleContext {
     public InfGraph getGraph() {
         return graph;
     }
-    
+
     /**
      * Returns the RETE engine associated with this context.
      */
@@ -100,7 +100,7 @@ public class RETERuleContext implements RuleContext {
     public void setEnv(BindingEnvironment env) {
         this.env = env;
     }
-    
+
     /**
      * Return true if the triple is already in either the graph or the stack.
      * I.e. it has already been deduced.
@@ -110,7 +110,7 @@ public class RETERuleContext implements RuleContext {
         // Can't use stackCache.contains because that does not do semantic equality
         return contains(t.getSubject(), t.getPredicate(), t.getObject());
     }
-    
+
     /**
      * Return true if the triple pattern is already in either the graph or the stack.
      * I.e. it has already been deduced.
@@ -122,7 +122,7 @@ public class RETERuleContext implements RuleContext {
         it.close();
         return result;
     }
-    
+
     /**
      * In some formulations the context includes deductions that are not yet
      * visible to the underlying graph but need to be checked for.
@@ -133,13 +133,13 @@ public class RETERuleContext implements RuleContext {
         //return graph.find(s, p, o).andThen(pendingCache.find(s, p, o));
         return graph.findDataMatches(s, p, o);
     }
-    
+
     /**
      * Assert a new triple in the deduction graph, bypassing any processing machinery.
      */
     @Override
     public void silentAdd(Triple t) {
-        ((SilentAddI)graph).silentAdd(t);
+        graph.silentAdd(t);
     }
 
     /**
@@ -163,7 +163,7 @@ public class RETERuleContext implements RuleContext {
      * Check whether the rule should fire in this context.
      */
     public boolean shouldFire(boolean allowUnsafe) {
-        // Check any non-pattern clauses 
+        // Check any non-pattern clauses
         for (int i = 0; i < rule.bodyLength(); i++) {
             Object clause = rule.getBodyElement(i);
             if (clause instanceof Functor) {
@@ -184,13 +184,13 @@ public class RETERuleContext implements RuleContext {
         }
         return true;
     }
-    
+
     /**
      * Check if a rule from the conflict set is still OK to fire.
      * Just checks the non-monotonic guards such as noValue.
      */
     public boolean shouldStillFire() {
-        // Check any non-pattern clauses 
+        // Check any non-pattern clauses
         for (int i = 0; i < rule.bodyLength(); i++) {
             Object clause = rule.getBodyElement(i);
             if (clause instanceof Functor) {
@@ -204,5 +204,5 @@ public class RETERuleContext implements RuleContext {
         }
         return true;
     }
-    
+
 }

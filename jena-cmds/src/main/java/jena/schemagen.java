@@ -1038,7 +1038,7 @@ public class schemagen {
         String template = m_options.hasIndividualTemplateOption() ?  m_options.getIndividualTemplateOption() : DEFAULT_INDIVIDUAL_TEMPLATE;
 
         for (Iterator<? extends RDFNode> i = selectIndividuals(); i.hasNext(); ) {
-            Individual ind = ((Resource) i.next()).as( Individual.class );
+            Individual ind = i.next().as( Individual.class );
 
             // do we have a local class resource
             Resource cls = ind.getOntClass();
