@@ -1533,7 +1533,7 @@ public class OntResourceImpl
         }
         else {
             // create a new list to hold the only value we know so far
-            addProperty( p, ((OntModel) getModel()).createList( new RDFNode[] {value} ) );
+            addProperty( p, getModel().createList( new RDFNode[] {value} ) );
         }
     }
 

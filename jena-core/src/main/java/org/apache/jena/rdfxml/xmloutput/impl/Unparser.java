@@ -1496,7 +1496,7 @@ class Unparser {
 
         if (!(n instanceof Resource))
             return -1;
-        if (((Resource) n).isAnon())
+        if ( n.isAnon() )
             return -1;
         // Only allow resources with namespace and fragment ID
         String uri = ((Resource) n).getURI();

@@ -26,20 +26,20 @@ import org.apache.jena.util.iterator.ClosableIterator ;
 
 /**
  * Implementation of RuleContext for use in the backward chaining
- * interpreter. The RuleContext allows builtin predicates to 
+ * interpreter. The RuleContext allows builtin predicates to
  * interpret variable bindings to access the static triple data.
  */
 public class BBRuleContext implements RuleContext {
-    
+
     /** The binding environment which represents the state of the current rule execution. */
     protected BindingEnvironment env;
-    
+
     /** The rule current being executed. */
     protected Rule rule;
-    
+
     /** The enclosing inference graph. */
     protected BackwardRuleInfGraphI graph;
-    
+
     /**
      * Construct an empty context. It can't be used until
      * the rule and environment have been set.
@@ -90,7 +90,7 @@ public class BBRuleContext implements RuleContext {
     public void setEnv(BindingEnvironment env) {
         this.env = env;
     }
-    
+
     /**
      * @see org.apache.jena.reasoner.rulesys.RuleContext#getGraph()
      */
@@ -114,13 +114,13 @@ public class BBRuleContext implements RuleContext {
     public void setRule(Rule rule) {
         this.rule = rule;
     }
-    
+
     /**
      * Assert a new triple in the deduction graph, bypassing any processing machinery.
      */
     @Override
     public void silentAdd(Triple t) {
-        ((SilentAddI)graph).silentAdd(t);
+        graph.silentAdd(t);
     }
 
     /**
@@ -129,7 +129,7 @@ public class BBRuleContext implements RuleContext {
      */
     @Override
     public void add(Triple t) {
-        ((SilentAddI)graph).silentAdd(t);
+        graph.silentAdd(t);
     }
 
     /**
@@ -142,12 +142,12 @@ public class BBRuleContext implements RuleContext {
 
     /**
      * Retrieve or create a bNode representing an inferred property value.
-     * This is currently only available on backward contexts and not part of the 
+     * This is currently only available on backward contexts and not part of the
      * normal RuleContext interface.
      * @param instance the base instance node to which the property applies
      * @param prop the property node whose value is being inferred
      * @param pclass the (optional, can be null) class for the inferred value.
-     * @return the bNode representing the property value 
+     * @return the bNode representing the property value
      */
     public Node getTemp(Node instance, Node prop, Node pclass) {
         return graph.getTemp(instance, prop, pclass);

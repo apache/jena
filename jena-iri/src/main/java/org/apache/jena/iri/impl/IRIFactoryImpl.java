@@ -32,7 +32,7 @@ import org.apache.jena.iri.IRIComponents ;
 import org.apache.jena.iri.ViolationCodes ;
 
 
-public class IRIFactoryImpl 
+public class IRIFactoryImpl
   extends AbsIRIFactoryImpl
   implements ViolationCodes, Force, IRIComponents {
 
@@ -41,7 +41,7 @@ public static final int UNKNOWN_SYNTAX = -4;
     /*
     static final long conformanceMasks[] = {
             // RFC3986
-              (1l<<ILLEGAL_CHAR) 
+              (1l<<ILLEGAL_CHAR)
               |(1l<<ILLEGAL_PERCENT_ENCODING)
               |(1l<<EMPTY_SCHEME)
               |(1l<<IP_V4_HAS_FOUR_COMPONENTS)
@@ -56,7 +56,7 @@ public static final int UNKNOWN_SYNTAX = -4;
               |(1l<<ARBITRARY_CHAR)
               ,
             // RFC3987
-              (1l<<ILLEGAL_CHAR) 
+              (1l<<ILLEGAL_CHAR)
               |(1l<<ILLEGAL_PERCENT_ENCODING)
               |(1l<<EMPTY_SCHEME)
               |(1l<<IP_V4_HAS_FOUR_COMPONENTS)
@@ -70,7 +70,7 @@ public static final int UNKNOWN_SYNTAX = -4;
               |(1l<<ARBITRARY_CHAR)
               ,
             // RDF
-              (1l<<ILLEGAL_CHAR) 
+              (1l<<ILLEGAL_CHAR)
               |(1l<<ILLEGAL_PERCENT_ENCODING)
               |(1l<<EMPTY_SCHEME)
               |(1l<<IP_V4_HAS_FOUR_COMPONENTS)
@@ -80,7 +80,7 @@ public static final int UNKNOWN_SYNTAX = -4;
               |(1l<<RELATIVE_URI)
               ,
             // XLink
-              (1l<<ILLEGAL_CHAR) 
+              (1l<<ILLEGAL_CHAR)
               |(1l<<ILLEGAL_PERCENT_ENCODING)
               |(1l<<EMPTY_SCHEME)
               |(1l<<IP_V4_HAS_FOUR_COMPONENTS)
@@ -90,7 +90,7 @@ public static final int UNKNOWN_SYNTAX = -4;
               |(1l<<NON_XML_CHARACTER)
               ,
             // XMLSchema
-              (1l<<ILLEGAL_CHAR) 
+              (1l<<ILLEGAL_CHAR)
               |(1l<<ILLEGAL_PERCENT_ENCODING)
               |(1l<<EMPTY_SCHEME)
               |(1l<<IP_V4_HAS_FOUR_COMPONENTS)
@@ -105,7 +105,7 @@ public static final int UNKNOWN_SYNTAX = -4;
               0
               ,
             // Should
-              (1l<<LOWERCASE_PREFERRED) 
+              (1l<<LOWERCASE_PREFERRED)
               |(1l<<PORT_SHOULD_NOT_BE_EMPTY)
               |(1l<<PORT_SHOULD_NOT_START_IN_ZERO)
     //          |(1l<<SCHEME_NAMES_SHOULD_BE_LOWER_CASE)
@@ -116,10 +116,10 @@ public static final int UNKNOWN_SYNTAX = -4;
             // Minting
       /* consider HAS_PASSWORD vs LOWER_CASE_PREFERRED
        * The former should be an error unless switched
-       * off (but it can be, unlike a MUST), whereas the 
+       * off (but it can be, unlike a MUST), whereas the
        * latter should be a warning by default.
        * /
-              (1l<<LOWERCASE_PREFERRED) 
+              (1l<<LOWERCASE_PREFERRED)
               |(1l<<PORT_SHOULD_NOT_BE_EMPTY)
               |(1l<<PORT_SHOULD_NOT_START_IN_ZERO)
     //          |(1l<<SCHEME_NAMES_SHOULD_BE_LOWER_CASE)
@@ -134,7 +134,7 @@ public static final int UNKNOWN_SYNTAX = -4;
         */
     protected long errors;
     protected long warnings;
-    
+
     protected Set<Specification> specs = new HashSet<>();
 
     public IRIFactoryImpl() {
@@ -143,7 +143,7 @@ public static final int UNKNOWN_SYNTAX = -4;
     public IRIFactoryImpl(IRIFactoryImpl template) {
         if (backwardCompatibleRelativeRefs.size()==Integer.MAX_VALUE)
     	   backwardCompatibleRelativeRefs = template.backwardCompatibleRelativeRefs;
-        else 
+        else
         	backwardCompatibleRelativeRefs = new HashSet<>(backwardCompatibleRelativeRefs);
         encoding = template.encoding;
         errors = template.errors;
@@ -179,7 +179,7 @@ public static final int UNKNOWN_SYNTAX = -4;
     }
 */
     private final long getMask(boolean includeWarnings) {
-        
+
         return includeWarnings?(errors|warnings):errors;
     }
 
@@ -187,20 +187,19 @@ public static final int UNKNOWN_SYNTAX = -4;
     protected IRIFactoryImpl getFactory() {
         return this;
     }
-    
+
     @Override
     public IRI create(IRI i) {
-        if (i instanceof AbsIRIImpl && 
-                ((AbsIRIImpl)i).getFactory()==this)
+        if (i instanceof AbsIRIImpl && i.getFactory()==this)
             return i;
-        return 
+        return
             create(i.toString());
     }
 
     boolean getSameSchemaRelativeReferences(String scheme) {
         return backwardCompatibleRelativeRefs.contains(scheme.toLowerCase());
     }
-    
+
     private String encoding = "utf-8";
     String getEncoding() {
         return encoding;
@@ -210,8 +209,8 @@ public static final int UNKNOWN_SYNTAX = -4;
         "".getBytes(enc);
         encoding = enc;
     }
-    
-   
+
+
     boolean asErrors[] = new boolean[]{
             true,
             true,
@@ -219,7 +218,7 @@ public static final int UNKNOWN_SYNTAX = -4;
             true,
             true,
             true,
-            
+
     };
     boolean asWarnings[] = new boolean[]{
       false,
@@ -229,16 +228,16 @@ public static final int UNKNOWN_SYNTAX = -4;
       false,
       false
     };
-    
+
     protected void setViolation(int ix, boolean e, boolean w){
         if (e && w)
             throw new IllegalArgumentException("xxxViolation(true,true) is not permitted.");
         initializing();
         asErrors[ix]=e;
         asWarnings[ix]=w;
-        
+
     }
-    
+
     protected boolean getAsWarnings(int ix) {
         return asWarnings[ix];
     }
@@ -255,9 +254,9 @@ private Set<String> backwardCompatibleRelativeRefs = new HashSet<>();
     protected void initializing() {
         if (!initializing)
             throw new IllegalStateException("Cannot reinitialize IRIFactory after first use.");
-        
+
     }
-    
+
     @Override
     public IRI create(String s) {
         initializing = false;
@@ -287,7 +286,7 @@ private Set<String> backwardCompatibleRelativeRefs = new HashSet<>();
                 return true;
             }
         };
-        else 
+        else
             backwardCompatibleRelativeRefs.add(scheme.toLowerCase());
     }
 
@@ -306,11 +305,11 @@ private Set<String> backwardCompatibleRelativeRefs = new HashSet<>();
         prohibited |= spec.getProhibited();
         required |= spec.getRequired();
         warnings &= ~errors;
-        
+
     }
 
     public SchemeSpecificPart getScheme(String scheme, Parser parser) {
-        
+
         scheme = scheme.toLowerCase();
         SchemeSpecificPart p = schemes.get(scheme);
         if (p!=null) {
@@ -349,7 +348,7 @@ private Set<String> backwardCompatibleRelativeRefs = new HashSet<>();
           schemes.put(scheme,p);
         return p;
     }
-    
+
     private NoScheme unregisteredScheme=null;
     private NoScheme nonIETFScheme=null;
 
@@ -381,7 +380,7 @@ private Set<String> backwardCompatibleRelativeRefs = new HashSet<>();
                     zwarnings |= spec.getErrors(i);
                 }
             }
-            
+
         }
         @Override void usedBy(Parser parser) {
             if (!inited) {
@@ -392,7 +391,7 @@ private Set<String> backwardCompatibleRelativeRefs = new HashSet<>();
                 zrequired = scheme.getRequired() | required;
                 zprohibited = scheme.getProhibited() | prohibited;
             }
-            
+
         }
         @Override
         public long getMask(boolean includeWarnings) {
@@ -418,10 +417,10 @@ private Set<String> backwardCompatibleRelativeRefs = new HashSet<>();
         public boolean withScheme() {
             return true;
         }
-        
+
     }
     private class NoScheme extends SchemeSpecificPart {
-        
+
         NoScheme() {
             this(-1);
         }
@@ -453,9 +452,9 @@ private Set<String> backwardCompatibleRelativeRefs = new HashSet<>();
         public boolean withScheme() {
             return false;
         }
-        
+
     }
-    
+
     final private NoScheme noScheme = new NoScheme();
     private int required = 0;
     private int prohibited = 0;
@@ -469,7 +468,7 @@ private Set<String> backwardCompatibleRelativeRefs = new HashSet<>();
     }
 
     final private Map<String, SchemeSpecificPart> schemes = new HashMap<>();
-    
+
     public void useSchemeSpecificRules(String scheme, boolean asErr)
     {
         if (scheme.equals("*"))

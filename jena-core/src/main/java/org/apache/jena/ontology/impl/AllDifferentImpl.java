@@ -148,7 +148,7 @@ public class AllDifferentImpl
      */
     @Override
     public ExtendedIterator<? extends OntResource> listDistinctMembers() {
-        return getDistinctMembers().mapWith( o -> ((Resource) o).as( OntResource.class ));
+        return getDistinctMembers().mapWith( o -> o.as( OntResource.class ));
     }
 
     /**

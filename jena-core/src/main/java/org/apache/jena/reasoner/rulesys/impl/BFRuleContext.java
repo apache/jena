@@ -36,16 +36,16 @@ import org.slf4j.LoggerFactory;
 public class BFRuleContext implements RuleContext {
     /** The binding environment which represents the state of the current rule execution. */
     protected BindingStack env;
-    
+
     /** The rule current being executed. */
     protected Rule rule;
-    
+
     /** The enclosing inference graph. */
     protected ForwardRuleInfGraphI graph;
-    
+
     /** A stack of triples which have been added to the graph but haven't yet been processed. */
     protected List<Triple> stack;
-    
+
     /** A temporary list of Triples which will be added to the stack and triples at the end of a rule scan */
     protected List<Triple> pending;
 
@@ -54,9 +54,9 @@ public class BFRuleContext implements RuleContext {
 
     /** A searchable index into the pending triples */
     protected Graph pendingCache;
-    
+
     protected static Logger logger = LoggerFactory.getLogger(BFRuleContext.class);
-    
+
     /**
      * Constructor.
      * @param graph the inference graph which owns this context.
@@ -68,7 +68,7 @@ public class BFRuleContext implements RuleContext {
         pending = new ArrayList<>();
         pendingCache = GraphMemFactory.createGraphMem();
     }
-    
+
     /**
      * Returns the current variable binding environment for the current rule.
      * @return BindingEnvironment
@@ -77,7 +77,7 @@ public class BFRuleContext implements RuleContext {
     public BindingEnvironment getEnv() {
         return env;
     }
-    
+
     /**
      * Variant of the generic getEnv interface specific to the basic
      * forward rule system.
@@ -128,7 +128,7 @@ public class BFRuleContext implements RuleContext {
         }
         stack.add(t);
     }
-    
+
     /**
      * Add a triple to a temporary "pending" store, ready to be added to added to the
      * deductions graph and the processing stack later.
@@ -147,7 +147,7 @@ public class BFRuleContext implements RuleContext {
         pending.add(t);
         //pendingCache.add(t);
     }
-            
+
     /**
      * Take all the pending triples and add them to both the given graph and
      * to the processing stack.
@@ -168,7 +168,7 @@ public class BFRuleContext implements RuleContext {
         }
         deletesPending.clear();
     }
-    
+
     /**
      * Return true if the triple is already in either the graph or the stack.
      * I.e. it has already been deduced.
@@ -178,7 +178,7 @@ public class BFRuleContext implements RuleContext {
         // Can't use stackCache.contains because that does not do semantic equality
         return contains(t.getSubject(), t.getPredicate(), t.getObject());
     }
-    
+
     /**
      * Return true if the triple pattern is already in either the graph or the stack.
      * I.e. it has already been deduced.
@@ -191,7 +191,7 @@ public class BFRuleContext implements RuleContext {
         it.close();
         return result;
     }
-    
+
     /**
      * In some formulations the context includes deductions that are not yet
      * visible to the underlying graph but need to be checked for.
@@ -202,7 +202,7 @@ public class BFRuleContext implements RuleContext {
         //return graph.find(s, p, o).andThen(pendingCache.find(s, p, o));
         return graph.findDataMatches(s, p, o);
     }
-    
+
     /**
      * Return the next triple to be added to the graph, removing it from
      * the stack.
@@ -214,9 +214,9 @@ public class BFRuleContext implements RuleContext {
             return t;
         } else {
             return null;
-        } 
+        }
     }
-    
+
     /**
      * Reset the binding environment back to empty.
      * @param newSize the number of variables needed for processing the new rule
@@ -224,13 +224,13 @@ public class BFRuleContext implements RuleContext {
     public void resetEnv(int newSize) {
         env.reset(newSize);
     }
-    
+
     /**
      * Assert a new triple in the deduction graph, bypassing any processing machinery.
      */
     @Override
     public void silentAdd(Triple t) {
-        ((SilentAddI)graph).silentAdd(t);
+        graph.silentAdd(t);
     }
 
     /**
