@@ -248,12 +248,7 @@
     chalk "^2.4.2"
     js-tokens "^4.0.0"
 
-"@babel/parser@^7.22.15", "@babel/parser@^7.23.3", "@babel/parser@^7.23.9", "@babel/parser@^7.24.0", "@babel/parser@^7.24.4", "@babel/parser@^7.24.7":
-  version "7.24.7"
-  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.24.7.tgz#9a5226f92f0c5c8ead550b750f5608e766c8ce85"
-  integrity sha512-9uUYRm6OqQrCqQdG1iCBwBPZgN8ciDBro2nIOFaiRz1/BCxaI7CNvQbDHvsArAC7Tw9Hda/B3U+6ui9u4HWXPw==
-
-"@babel/parser@^7.25.3":
+"@babel/parser@^7.22.15", "@babel/parser@^7.23.3", "@babel/parser@^7.23.9", "@babel/parser@^7.24.0", "@babel/parser@^7.24.4", "@babel/parser@^7.25.3":
   version "7.25.6"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.25.6.tgz#85660c5ef388cbbf6e3d2a694ee97a38f18afe2f"
   integrity sha512-trGdfBdbD0l1ZPmcJ83eNxB9rbEax4ALFTF7fN386TMYbeCQbyme5cOEXQhbGXKebwGaB/J52w1mrklMcbgy6Q==
@@ -1045,11 +1040,11 @@
     tinyrainbow "^1.2.0"
 
 "@vue/compat@^3.3.6":
-  version "3.4.38"
-  resolved "https://registry.yarnpkg.com/@vue/compat/-/compat-3.4.38.tgz#7ee8cbcdecc1f0351cfc632012502ba0c1b3982e"
-  integrity sha512-CdX4/3I8hkodU6rG6r8uTi112gsKYVrZcTTEpmG7wP3G1n/lpHKbvl3wBzTc6ClTIqRyHABrYnFyTofiSommQA==
+  version "3.5.4"
+  resolved "https://registry.yarnpkg.com/@vue/compat/-/compat-3.5.4.tgz#b15f410d24e2785a6faf9d98633b54fcfc326edd"
+  integrity sha512-3qo4KPZsPWjSA9UmhAi+3/hbL//4PatZcpue7hDYAkbJkfscmzPhadLplAjIe5TBlGR0y89xoCJF2g5+kcbqzQ==
   dependencies:
-    "@babel/parser" "^7.24.7"
+    "@babel/parser" "^7.25.3"
     estree-walker "^2.0.2"
     source-map-js "^1.2.0"
 
