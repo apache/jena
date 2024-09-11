@@ -45,7 +45,7 @@
     "@vue/compiler-sfc": "^3.3.6",
     "@vue/eslint-config-standard": "^8.0.1",
     "@vue/test-utils": "^2.4.1",
-    "concurrently": "^8.2.2",
+    "concurrently": "^9.0.0",
     "cross-env": "^7.0.3",
     "cypress": "^13.3.2",
     "cypress-vite": "^1.4.2",
