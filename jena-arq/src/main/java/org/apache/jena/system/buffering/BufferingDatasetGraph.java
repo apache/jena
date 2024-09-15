@@ -368,7 +368,6 @@ public class BufferingDatasetGraph extends DatasetGraphTriplesQuads implements D
 
     @Override
     public PrefixMap prefixes() {
-        // XXX Needs to share access state?
         return prefixes;
     }
 
