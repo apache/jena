@@ -72,7 +72,7 @@
 
     <ver.shiro>2.0.1</ver.shiro>
 
-    <ver.protobuf>4.28.0</ver.protobuf>
+    <ver.protobuf>4.28.1</ver.protobuf>
     <ver.libthrift>0.20.0</ver.libthrift>
 
     <ver.caffeine>3.1.8</ver.caffeine>
@@ -93,7 +93,7 @@
     <ver.commons-fileupload>2.0.0-M2</ver.commons-fileupload>
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
-    <ver.micrometer>1.13.3</ver.micrometer>
+    <ver.micrometer>1.13.4</ver.micrometer>
     <ver.roaringbitmap>1.2.1</ver.roaringbitmap>
 
     <!-- Testing -->
