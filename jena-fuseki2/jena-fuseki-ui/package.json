@@ -63,7 +63,7 @@
     "nodemon": "^3.0.1",
     "run-script-os": "^1.1.6",
     "sass": "^1.69.4",
-    "sinon": "^18.0.0",
+    "sinon": "^19.0.2",
     "vite": "^5.0.12",
     "vite-plugin-istanbul": "^6.0.2",
     "vitest": "^2.0.4",
