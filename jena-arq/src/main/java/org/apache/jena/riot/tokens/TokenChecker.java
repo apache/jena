@@ -27,7 +27,7 @@ public interface TokenChecker
     public void checkURI(String uriStr);
     public void checkNumber(String lexical, String datatypeURI);
     public void checkVariable(String tokenImage);
-    public void checkDirective(int cntrlCode);
+    public void checkDirective(String directive);
     public void checkKeyword(String lexical);
     public void checkPrefixedName(String prefixName, String localName);
     public void checkControl(int code);

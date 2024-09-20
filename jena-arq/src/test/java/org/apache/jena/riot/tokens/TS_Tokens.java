@@ -23,7 +23,7 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-      TestTokenizer.class
+      TestTokenizerText.class
     , TestTokenForNode.class
 })
 

@@ -35,37 +35,35 @@ import org.apache.jena.sparql.ARQInternalErrorException;
 
 /**
  * Tokenizer for the Turtle family of syntaxes.
- * Supports addition tokens.
+ * Supports additional tokens.
  */
 public final class TokenizerText implements Tokenizer
 {
-    // Drop through to final general symbol/keyword reader, including <=, !=
-    // Care with <=
-    // Policy driven for CURIES?
-
-    private static final int CTRL_CHAR = CH_STAR;
-
     // The code has the call points for checking tokens but it is generally better to
     // do the check later in the parsing process. In case a need arises, the code
     // remains, all compiled away by "if ( false )" (javac does not generate any
     // bytecodes and even if it it did, JIT will remove dead branches).
     private static final boolean Checking = false;
+    // Optional checker.
+    private final TokenChecker checker = null;
 
+    // Workspace for building token images.
+    // Reusing a StringBuilder is faster than allocating a fresh one each time.
     private final StringBuilder stringBuilder = new StringBuilder(200);
+
+    // Character source
     private final PeekReader reader;
     // Whether whitespace between tokens includes newlines (in various forms).
     private final boolean singleLineMode;
     // Indicator. The PeekReader should throw java.nio.charset.MalformedInputException
     private final boolean isASCII;
-    private final TokenChecker checker = null;
     // The code assumes that errors throw exception and so stop parsing.
     private final ErrorHandler errorHandler;
 
     private Token token = null;
     private boolean finished = false;
 
-
-    public static TokenizeTextBuilder create() { return new TokenizeTextBuilder(); }
+    public static TokenizerTextBuilder create() { return new TokenizerTextBuilder(); }
 
     public static Tokenizer fromString(String string) { return create().fromString(string).build(); }
 
@@ -133,22 +131,6 @@ public final class TokenizerText implements Tokenizer
         return token;
     }
 
-//    private TokenChecker getChecker() {
-//        return checker;
-//    }
-//
-//    private void setChecker(TokenChecker checker) {
-//        this.checker = checker;
-//    }
-//
-//    private ErrorHandler getErrorHandler() {
-//        return errorHandler;
-//    }
-//
-//    private void setErrorHandler(ErrorHandler handler) {
-//        this.errorHandler = handler;
-//    }
-
     @Override
     public void close() {
         IO.close(reader);
@@ -191,26 +173,33 @@ public final class TokenizerText implements Tokenizer
 
         int ch = reader.peekChar();
 
-        // ---- IRI, unless it's <<.
+        // ---- IRI, unless it's << or <<(
         // [spc] check is for LT.
         if ( ch == CH_LT ) {
             // Look ahead on char
             reader.readChar();
-            int chPeek = reader.peekChar();
-            if ( chPeek != '<' ) {
+            int chPeek2 = reader.peekChar();
+            if ( chPeek2 != '<' ) {
+                // '<' not '<<'
                 token.setImage(readIRI());
                 token.setType(TokenType.IRI);
                 if ( Checking )
                     checkURI(token.getImage());
                 return token;
             }
-            if ( chPeek == '<' ) {
-                reader.readChar();
+            reader.readChar();
+            // '<<' so far - maybe '<<('
+            int chPeek3 = reader.peekChar();
+            if ( chPeek3 != '(' ) {
                 token.setType(TokenType.LT2);
                 //token.setImage("<<");
                 return token;
             }
-            fatal("Internal error - parsed '%c' after '<'", chPeek);
+            // It is <<(
+            reader.readChar();
+            token.setType(TokenType.L_TRIPLE);
+            //token.setImage("<<(");
+            return token;
         }
 
         // ---- Literal
@@ -318,7 +307,7 @@ public final class TokenizerText implements Tokenizer
             token.setType(TokenType.DIRECTIVE);
             token.setImage(readWord(false));
             if ( Checking )
-                checkDirective(token.cntrlCode);
+                checkDirective(token.getImage());
             return token;
         }
 
@@ -337,18 +326,23 @@ public final class TokenizerText implements Tokenizer
 
         switch(ch)
         {
-            // DOT can start a decimal.  Check for digit.
+            // DOT can start a decimal.
             case CH_DOT:
                 reader.readChar();
                 ch = reader.peekChar();
                 if ( range(ch, '0', '9') ) {
-                    // Not a DOT after all.
+                    // DOT DIGIT - it's a number.
+                    // Reload the DOT.
                     reader.pushbackChar(CH_DOT);
-                    readNumber();
-                    if ( Checking )
-                        checkNumber(token.getImage(), token.getImage2());
-                    return token;
+                    boolean charactersConsumed = readNumber(CH_ZERO, false);
+                    if ( charactersConsumed ) {
+                        if ( Checking )
+                            checkNumber(token.getImage(), token.getImage2());
+                        return token;
+                    }
+                    // else it's DOT - drop through.
                 }
+                // It's DOT.
                 token.setType(TokenType.DOT);
                 return token;
 
@@ -384,7 +378,31 @@ public final class TokenizerText implements Tokenizer
             case CH_RBRACE:     reader.readChar(); token.setType(TokenType.RBRACE);    /*token.setImage(CH_RBRACE);*/ return token;
 
             case CH_LPAREN:     reader.readChar(); token.setType(TokenType.LPAREN);    /*token.setImage(CH_LPAREN);*/ return token;
-            case CH_RPAREN:     reader.readChar(); token.setType(TokenType.RPAREN);    /*token.setImage(CH_RPAREN);*/ return token;
+
+            // Can be ')' or ')>>'
+            case CH_RPAREN: {
+                // The ')'
+                reader.readChar();
+                int peek2 = reader.peekChar();
+                if ( peek2 != '>') {
+                    // Includes EOF.
+                    token.setType(TokenType.RPAREN);
+                    return token;
+                }
+                reader.readChar();
+                int peek3 = reader.peekChar();
+                if ( peek3 != '>') {
+                    reader.pushbackChar(peek2);
+                    token.setType(TokenType.RPAREN);
+                    return token;
+                }
+                // It is ')>>'
+                reader.readChar();
+                token.setType(TokenType.R_TRIPLE);
+                /*token.setImage(")>>");*/
+                return token;
+            }
+
             case CH_LBRACKET:   reader.readChar(); token.setType(TokenType.LBRACKET);  /*token.setImage(CH_LBRACKET);*/ return token;
             case CH_RBRACKET:   reader.readChar(); token.setType(TokenType.RBRACKET);  /*token.setImage(CH_RBRACKET);*/ return token;
             case CH_EQUALS:     reader.readChar(); token.setType(TokenType.EQUALS);    /*token.setImage(CH_EQUALS);*/ return token;
@@ -414,10 +432,11 @@ public final class TokenizerText implements Tokenizer
             case CH_STAR:       reader.readChar(); token.setType(TokenType.STAR);      /*token.setImage(CH_STAR);*/ return token;
             case CH_EMARK:      reader.readChar(); token.setType(TokenType.EMARK);     /*token.setImage(CH_EMARK);*/ return token;
 
-            // VAR overrides
-            //case CH_QMARK:      reader.readChar(); token.setType(TokenType.QMARK);      /*token.setImage(CH_EMARK);*/ return token;
+            case CH_TILDE:      reader.readChar(); token.setType(TokenType.TILDE);     /*token.setImage(CH_TILDE);*/ return token;
 
-            // XXX Multi-character symbols
+            // VAR overrides
+            //case CH_QMARK:      reader.readChar(); token.setType(TokenType.QMARK);   /*token.setImage(CH_EMARK);*/ return token;
+
             // Two character tokens && || GE >= , LE <=
             //TokenType.LE
             //TokenType.GE
@@ -426,7 +445,7 @@ public final class TokenizerText implements Tokenizer
         }
 
         // ---- Numbers.
-        // A plain "+" and "-", not followed by a digit, are symbols.
+        // A plain "+" and "-", not followed by an unsigned number are symbols.
 
         /*
         [16]    integer         ::=     ('-' | '+') ? [0-9]+
@@ -439,37 +458,42 @@ public final class TokenizerText implements Tokenizer
 
         */
 
-        // TODO extract readNumberNoSign
-
-        int signCh = 0;
-
         if ( ch == CH_PLUS || ch == CH_MINUS ) {
             reader.readChar();
             int ch2 = reader.peekChar();
-
-            if ( !range(ch2, '0', '9') ) {
-                // ch was end of symbol.
-                // reader.readChar();
+            if ( !range(ch2, '0', '9') && ch2 != CH_DOT ) {
+                // Not a number.
                 if ( ch == CH_PLUS )
                     token.setType(TokenType.PLUS);
                 else
                     token.setType(TokenType.MINUS);
                 return token;
             }
-
-            // Already got a + or - ...
-            // readNumberNoSign
-            // Because next, old code processes signs.
-            reader.pushbackChar(ch);
-            signCh = ch;
-            // Drop to next "if"
+            // ch2 not consumed.
+            boolean charactersConsumed = readNumber(ch, false);
+            if ( ! charactersConsumed ) {
+                if ( ch == CH_PLUS )
+                    token.setType(TokenType.PLUS);
+                else
+                    token.setType(TokenType.MINUS);
+            }
+            return token;
         }
 
-        if ( ch == CH_PLUS || ch == CH_MINUS || range(ch, '0', '9') ) {
-            // readNumberNoSign
-            readNumber();
-            if ( Checking )
-                checkNumber(token.getImage(), token.getImage2());
+        if ( range(ch, '0', '9')  ) {
+            reader.readChar();
+            if ( ch == '0' ) {
+                // Is it "hex" -- 0x/0X ?
+                boolean isHex = readPossibleHex();
+                if ( isHex )
+                    return token;
+            }
+            // Not hex.
+            boolean charactersConsumed = readNumber(ch, true);
+            if ( ! charactersConsumed ) {
+                // Impossible.
+                throw new InternalError("Seen digit but no number produced");
+            }
             return token;
         }
 
@@ -976,90 +1000,117 @@ public final class TokenizerText implements Tokenizer
     }
 
     /*
+     * Number, no sign.
      * [146]  INTEGER  ::=  [0-9]+
      * [147]  DECIMAL  ::=  [0-9]* '.' [0-9]+
      * [148]  DOUBLE  ::=  [0-9]+ '.' [0-9]* EXPONENT | '.' ([0-9])+ EXPONENT | ([0-9])+ EXPONENT
-     * []     hex             ::=     0x0123456789ABCDEFG
      */
-    private void readNumber() {
-        // One entry, definitely a number.
-        // Beware of '.' as a (non) decimal.
-        /*
-        maybeSign()
-        digits()
-        if dot ==> decimal, digits
-        if e   ==> double, maybeSign, digits
-        else
-            check not "." for decimal.
-        */
+    /**
+     * Read a number.
+     * <p>
+     * On entry, {@code initialChar} is a seen and consumer character or {code CH_ZERO} (char 0x0000).
+     * <p>
+     * It parses {@code [0-9]* '.' [0-9]*}, then checks the outcome is not a single DOT, then adds an exponent.
+     * If the number/significand is exactly '.', set the token to be DOT.
+     * Note special code in sign processing for this.
+     * <p>
+     * HEX has already been handled.
+     *
+     * @returns true if the function consumed any characters.
+     */
+    private boolean readNumber(int initialChar, boolean isDigit) {
+        // initial character is a +/- sign or 0.
         boolean isDouble = false;
-        boolean isDecimal = false;
+        boolean hasDecimalPoint = false;
+        boolean hasDigitsBeforeDot = false;
+        boolean hasDigitsAfterDot = false;
+        // DP = Decimal Point.
+        int numDigitsBeforeDP = 0;
+        int numDigitsAfterDP = 0;
+
         stringBuilder.setLength(0);
-
-        /*
-        readPossibleSign(stringBuilder);
-        readDigits may be hex
-        readDot
-        readDigits
-        readExponent.
-        */
-
-        int x = 0; // Digits before a dot.
-        int ch = reader.peekChar();
-        if ( ch == '0' ) {
-            x++;
-            reader.readChar();
-            insertCodepointDirect(stringBuilder, ch);
-            ch = reader.peekChar();
-            if ( ch == 'x' || ch == 'X' ) {
-                reader.readChar();
-                insertCodepointDirect(stringBuilder, ch);
-                readHex(reader, stringBuilder);
-                token.setImage(stringBuilder.toString());
-                token.setType(TokenType.HEX);
-                return;
+        if ( initialChar != CH_ZERO ) { // char U+0000
+            if ( initialChar == CH_PLUS || initialChar == CH_MINUS )
+                insertCodepointDirect(stringBuilder, initialChar);
+            else if ( isDigit ) {
+                insertCodepointDirect(stringBuilder, initialChar);
+                numDigitsBeforeDP = 1;
             }
-        } else if ( ch == '-' || ch == '+' ) {
-            readPossibleSign(stringBuilder);
         }
 
-        x += readDigits(stringBuilder);
-//        if ( x == 0 ) {}
+        int ch = reader.peekChar();
+        numDigitsBeforeDP += readDigits(stringBuilder);
+        if ( numDigitsBeforeDP > 0 )
+            hasDigitsBeforeDot = true;
+
+        // DOT or integer.
         ch = reader.peekChar();
         if ( ch == CH_DOT ) {
             reader.readChar();
             stringBuilder.append(CH_DOT);
-            isDecimal = true; // Includes things that will be doubles.
-            readDigits(stringBuilder);
+            hasDecimalPoint = true;
+            numDigitsAfterDP += readDigits(stringBuilder);
+            if ( numDigitsAfterDP > 0 )
+                hasDigitsAfterDot = true;
         }
 
-        if ( x == 0 && !isDecimal )
+        if ( numDigitsBeforeDP == 0 && !hasDecimalPoint )
             // Possible a tokenizer error - should not have entered readNumber
             // in the first place.
             fatal("Unrecognized as number");
 
-        if ( exponent(stringBuilder) ) {
-            isDouble = true;
-            isDecimal = false;
+        if ( ! hasDigitsBeforeDot & ! hasDigitsAfterDot ) {
+            // The number/significand/mantissa is exactly '.'
+            // Don't do anything - there might be a preceeding sign.
+            if ( hasDecimalPoint )
+                reader.pushbackChar(CH_DOT);
+            return false;
         }
 
-        // Final part - "decimal" 123. is an integer 123 and a DOT.
-        if ( isDecimal ) {
-            int len = stringBuilder.length();
-            if ( stringBuilder.charAt(len - 1) == CH_DOT ) {
-                stringBuilder.setLength(len - 1);
+        if ( exponent(stringBuilder) ) {
+            isDouble = true;
+        } else {
+            // Final part - "decimal" 123. is an integer 123 and a DOT.
+            if ( hasDecimalPoint && ! hasDigitsAfterDot ) {
+                int N = stringBuilder.length();
+                stringBuilder.deleteCharAt(N-1);    // A DOT
+                // Reject the DOT which will be picked up next time.
                 reader.pushbackChar(CH_DOT);
-                isDecimal = false;
+                hasDecimalPoint = false;
+//                int len = stringBuilder.length();
+//                if ( stringBuilder.charAt(len - 1) == CH_DOT ) {
+//                    stringBuilder.setLength(len - 1);
+//                    reader.pushbackChar(CH_DOT);
+//                    hasDecimalPoint = false;
+//                }
             }
         }
 
         token.setImage(stringBuilder.toString());
         if ( isDouble )
             token.setType(TokenType.DOUBLE);
-        else if ( isDecimal )
+        else if ( hasDecimalPoint )
             token.setType(TokenType.DECIMAL);
         else
             token.setType(TokenType.INTEGER);
+        return true;
+    }
+
+    // On entry, have seen and consumed a digit '0'
+    private boolean readPossibleHex() {
+        int ch2 = reader.peekChar();
+        if ( ch2 != 'x' && ch2 != 'X' )
+            return false;
+        // It's HEX
+        reader.readChar();
+        stringBuilder.setLength(0);
+        insertCodepointDirect(stringBuilder, '0');
+        insertCodepointDirect(stringBuilder, ch2);
+        // Error if no hex digits.
+        readHex(reader, stringBuilder);
+        token.setImage(stringBuilder.toString());
+        token.setType(TokenType.HEX);
+        return true;
     }
 
     private void readHex(PeekReader reader, StringBuilder sb) {
@@ -1141,11 +1192,23 @@ public final class TokenizerText implements Tokenizer
         a2z(stringBuilder);
         if ( stringBuilder.length() == 0 )
             fatal("Bad language tag");
+
+        boolean seenTextDirection = false;
+
         for (;;) {
             int ch = reader.peekChar();
             if ( ch == '-' ) {
+                if ( seenTextDirection )
+                   fatal("Bad language tag with text direction");
                 reader.readChar();
                 insertCodepointDirect(stringBuilder, ch);
+                int ch2 = reader.peekChar();
+                if ( ch2 == '-' ) {
+                    reader.readChar();
+                    // Initial text direction
+                    insertCodepointDirect(stringBuilder, ch2);
+                    seenTextDirection = true;
+                }
                 int x = stringBuilder.length();
                 a2zN(stringBuilder);
                 if ( stringBuilder.length() == x )
@@ -1244,9 +1307,9 @@ public final class TokenizerText implements Tokenizer
             checker.checkVariable(tokenImage);
     }
 
-    private void checkDirective(int cntrlCode) {
+    private void checkDirective(String directive) {
         if ( checker != null )
-            checker.checkDirective(cntrlCode);
+            checker.checkDirective(directive);
     }
 
     private void checkKeyword(String tokenImage) {

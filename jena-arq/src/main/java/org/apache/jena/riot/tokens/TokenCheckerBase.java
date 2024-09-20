@@ -31,7 +31,7 @@ public class TokenCheckerBase implements TokenChecker
     {}
 
     @Override
-    public void checkDirective(int cntrlCode)
+    public void checkDirective(String directive)
     {}
 
     @Override
