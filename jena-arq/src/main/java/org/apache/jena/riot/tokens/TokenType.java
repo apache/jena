@@ -35,17 +35,20 @@ public enum TokenType {
     DOT, COMMA, SEMICOLON, COLON, DIRECTIVE,
     // LT, GT, LE, GE are only visible if IRI processing is not enabled.
     LT, GT, LE, GE, LOGICAL_AND, LOGICAL_OR,    // && and ||
-    LT2, GT2,                                   // << and >>
 
-    // RDF-star annotation syntax {|...|}
+    // << and >> : Used in RDF 1.2
+    LT2, GT2,
+    // RDF 1.2 star triple terms <<( ... )>>
+    L_TRIPLE, R_TRIPLE,
+    // RDF 1.2 annotation syntax {|...|}
     L_ANN, R_ANN,
 
     VBAR, AMPERSAND,
     LBRACE, RBRACE,         // {}
     LPAREN, RPAREN,         // ()
     LBRACKET, RBRACKET,     // []
-    // = == + - * / \ ! ?
-    EQUALS, EQUIVALENT, PLUS, MINUS, STAR, SLASH, RSLASH, EMARK, QMARK,
+    // = == + - * / \ ! ? ~
+    EQUALS, EQUIVALENT, PLUS, MINUS, STAR, SLASH, RSLASH, EMARK, QMARK, TILDE,
     // Whitespace, any comment, (one line comment, multiline comment)
     NL, WS, COMMENT, COMMENT1, COMMENT2, EOF;
 }

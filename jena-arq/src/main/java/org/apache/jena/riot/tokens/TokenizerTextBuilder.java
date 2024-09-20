@@ -29,7 +29,7 @@ import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.slf4j.Logger;
 
 /** Builder for TokenizerText */
-public class TokenizeTextBuilder {
+public class TokenizerTextBuilder {
 
     // One of these.
     private PeekReader   peekReader      = null;
@@ -41,7 +41,7 @@ public class TokenizeTextBuilder {
     private boolean      utf8            = true;
     private ErrorHandler errorHandler    = null;
 
-    TokenizeTextBuilder() {}
+    TokenizerTextBuilder() {}
 
     private void clearInput() {
         this.peekReader = null;
@@ -50,41 +50,41 @@ public class TokenizeTextBuilder {
         this.string = null;
     }
 
-    public TokenizeTextBuilder source(InputStream input) {
+    public TokenizerTextBuilder source(InputStream input) {
         clearInput();
         this.input = input;
         return this;
     }
 
-    public TokenizeTextBuilder source(Reader reader) {
+    public TokenizerTextBuilder source(Reader reader) {
         clearInput();
         this.reader = reader;
         return this;
     }
 
-    public TokenizeTextBuilder source(PeekReader peekReader) {
+    public TokenizerTextBuilder source(PeekReader peekReader) {
         clearInput();
         this.peekReader = peekReader;
         return this;
     }
 
-    public TokenizeTextBuilder fromString(String string) {
+    public TokenizerTextBuilder fromString(String string) {
         clearInput();
         this.string = string;
         return this;
     }
 
-    public TokenizeTextBuilder lineMode(boolean lineMode) {
+    public TokenizerTextBuilder lineMode(boolean lineMode) {
         this.singleLineMode = lineMode;
         return this;
     }
 
-    public TokenizeTextBuilder asciiOnly(boolean asciiOnly) {
+    public TokenizerTextBuilder asciiOnly(boolean asciiOnly) {
         this.utf8 = !asciiOnly;
         return this;
     }
 
-    public TokenizeTextBuilder errorHandler(ErrorHandler errorHandler) {
+    public TokenizerTextBuilder errorHandler(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
         return this;
     }

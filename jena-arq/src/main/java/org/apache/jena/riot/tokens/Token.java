@@ -18,7 +18,6 @@
 
 package org.apache.jena.riot.tokens;
 
-import static org.apache.jena.atlas.lib.Chars.*;
 import static org.apache.jena.atlas.lib.Lib.hashCodeObject;
 import static org.apache.jena.riot.tokens.TokenType.*;
 
@@ -56,7 +55,6 @@ public final class Token
     private Token subToken2 = null;            // A related token (used for datatype literals and language tags)
     private StringType stringType = null;
 
-    public int cntrlCode = 0;
     private long column;
     private long line;
 
@@ -70,7 +68,6 @@ public final class Token
     //public final String getImage1()  { return tokenImage1; }
 
     public final String getImage2()         { return tokenImage2; }
-    public final int getCntrlCode()         { return cntrlCode; }
     public final Token getSubToken1()       { return subToken1; }
     public final Token getSubToken2()       { return subToken2; }
     public final StringType getStringType() { return stringType; }
@@ -90,8 +87,6 @@ public final class Token
     public final Token setImage(char tokenImage)        { this.tokenImage = String.valueOf(tokenImage); return this; }
 
     public final Token setImage2(String tokenImage2)    { this.tokenImage2 = tokenImage2; return this; }
-
-    public final Token setCntrlCode(int cntrlCode)      { this.cntrlCode = cntrlCode; return this; }
 
     public final Token setSubToken1(Token subToken)     { this.subToken1 = subToken; return this; }
     public final Token setSubToken2(Token subToken)     { this.subToken2 = subToken; return this; }
@@ -157,7 +152,6 @@ public final class Token
         this(token.tokenType,
              token.tokenImage, token.tokenImage2,
              token.subToken1, token.subToken2);
-        this.cntrlCode      = token.cntrlCode;
         this.line           = token.line;
         this.column         = token.column;
     }
@@ -221,43 +215,34 @@ public final class Token
         else
             sb.append(getType().toString());
 
-        if ( getImage() != null )
-        {
+        if ( getImage() != null ) {
             sb.append(":");
             sb.append(delim1);
             sb.append(getImage());
             sb.append(delim1);
         }
 
-        if ( getImage2() != null )
-        {
+        if ( getImage2() != null ) {
             sb.append(":");
             sb.append(delim2);
             sb.append(getImage2());
             sb.append(delim2);
         }
 
-        if ( getSubToken1() != null )
-        {
+        if ( getSubToken1() != null ) {
             sb.append(";");
             sb.append(delim2);
             sb.append(getSubToken1().toString());
             sb.append(delim2);
         }
 
-        if ( getSubToken2() != null )
-        {
+        if ( getSubToken2() != null ) {
             sb.append(";");
             sb.append(delim2);
             sb.append(getSubToken2().toString());
             sb.append(delim2);
         }
 
-        if ( getCntrlCode() != 0 )
-        {
-            sb.append(":");
-            sb.append(getCntrlCode());
-        }
         sb.append("]");
         return sb.toString();
     }
@@ -427,7 +412,7 @@ public final class Token
 
     @Override
     public int hashCode() {
-        return hashCodeObject(tokenType) ^ hashCodeObject(tokenImage) ^ hashCodeObject(tokenImage2) ^ hashCodeObject(cntrlCode);
+        return hashCodeObject(tokenType) ^ hashCodeObject(tokenImage) ^ hashCodeObject(tokenImage2);
     }
 
     @Override
@@ -435,32 +420,7 @@ public final class Token
         if ( !(other instanceof Token t) )
             return false;
         return Objects.equals(tokenType, t.tokenType) && Objects.equals(tokenImage, t.tokenImage)
-               && Objects.equals(tokenImage2, t.tokenImage2) && Objects.equals(cntrlCode, t.cntrlCode);
-    }
-
-    public static Token tokenForChar(char character) {
-        switch (character) {
-            case CH_DOT :
-                return new Token(TokenType.DOT);
-            case CH_SEMICOLON :
-                return new Token(TokenType.SEMICOLON);
-            case CH_COMMA :
-                return new Token(TokenType.COMMA);
-            case CH_LBRACE :
-                return new Token(TokenType.LBRACE);
-            case CH_RBRACE :
-                return new Token(TokenType.RBRACE);
-            case CH_LPAREN :
-                return new Token(TokenType.LPAREN);
-            case CH_RPAREN :
-                return new Token(TokenType.RPAREN);
-            case CH_LBRACKET :
-                return new Token(TokenType.LBRACKET);
-            case CH_RBRACKET :
-                return new Token(TokenType.RBRACKET);
-            default :
-                throw new RuntimeException("Token error: unrecognized character: " + character);
-        }
+               && Objects.equals(tokenImage2, t.tokenImage2);
     }
 
     public static Token tokenForInteger(long value) {
