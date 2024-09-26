@@ -124,7 +124,7 @@ public class TestIRIxSyntax extends AbstractTestIRIx {
     @Test public void file_06() { parse("file:///c:/~user/file"); }
 
     // Parse, only collect violations from scheme-specific rules.
-    private void parse(String string) {
-        IRIx iri = IRIx.create(string);
+    private void parse(String iriStr) {
+        test_create(iriStr);
     }
 }

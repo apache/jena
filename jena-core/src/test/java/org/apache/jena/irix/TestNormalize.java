@@ -112,7 +112,7 @@ public class TestNormalize extends AbstractTestIRIx {
         assumeFalse("jena-iri does not implement normalization", SystemIRIx.getProvider() instanceof IRIProviderJenaIRI );
 //        if ( SystemIRIx.getProvider() instanceof IRIProviderJenaIRI )
 //            return;
-        IRIx iri = IRIx.create(input);
+        IRIx iri = test_create(input);
         IRIx iri2 = iri.normalize();
         String s = iri2.toString();
         assertEquals(expected, s);

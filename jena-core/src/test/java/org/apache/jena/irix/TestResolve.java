@@ -203,8 +203,8 @@ public class TestResolve extends AbstractTestIRIx {
     }
 
     private void testResolve(String base, String rel, String expected) {
-        IRIx baseIRI = IRIx.create(base);
-        IRIx relIRI = IRIx.create(rel);
+        IRIx baseIRI = test_create(base);
+        IRIx relIRI = test_create(rel);
         IRIx iri2 = baseIRI.resolve(relIRI);
         String s1 = iri2.str();
         assertEquals(expected, s1);
