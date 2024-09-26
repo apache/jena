@@ -65,8 +65,8 @@ public class TestRelative extends AbstractTestIRIx {
     public void relative_11() { testRelative("http://example/ns#", "http://example/ns#x", "#x") ; }
 
     private void testRelative(String baseStr, String pathStr, String expected) {
-        IRIx base = IRIx.create(baseStr);
-        IRIx path = IRIx.create(pathStr);
+        IRIx base = test_create(baseStr);
+        IRIx path = test_create(pathStr);
         IRIx rel = base.relativize(path);
         String result = (rel==null)?null:rel.str();
         assertEquals(expected, result);

@@ -152,8 +152,8 @@ public class TestRFC3986 extends AbstractTestIRIx {
 
     @Test public void equality_01() {
         String s = "https://jena.apache.org/";
-        IRIx iri1 = IRIx.create(s);
-        IRIx iri2 = IRIx.create(s);
+        IRIx iri1 = test_create(s);
+        IRIx iri2 = test_create(s);
         assertEquals(iri1, iri2);
         assertEquals(iri1.hashCode(), iri2.hashCode());
     }
@@ -216,7 +216,7 @@ public class TestRFC3986 extends AbstractTestIRIx {
      */
     // XXX Not ASCII in the NSS part, or components.
     private static boolean I_URN = true;
-    private static void parse_internation_urn(String string) {
+    private void parse_internation_urn(String string) {
         if ( I_URN )
             good(string);
         else
@@ -249,7 +249,7 @@ public class TestRFC3986 extends AbstractTestIRIx {
 
     // Allow r-component, q-component and f-component
     private static final boolean UUID_8141 = true;
-    private static void parse_uuid_8141(String string) {
+    private void parse_uuid_8141(String string) {
         if ( UUID_8141 )
             good(string);
         else
@@ -356,8 +356,8 @@ public class TestRFC3986 extends AbstractTestIRIx {
     @Test public void parse_urn_uuid_bad_13() { badSpecific("urn:uuid:" + testUUID + "?=αβγ"); }
     @Test public void parse_urn_uuid_bad_14() { badSpecific("urn:uuid:" + testUUID + "?+αβγ"); }
 
-    private static void good(String string) {
-        IRIx iri = IRIx.create(string);
+    private void good(String string) {
+        IRIx iri = test_create(string);
         assertNotNull(iri);
         if ( true ) {
             // Run against checking mode.
@@ -373,22 +373,20 @@ public class TestRFC3986 extends AbstractTestIRIx {
     }
 
     // Where jena-iri odes not get the right answer.
-    private static void goodNoIRICheck(String string) {
-        IRIx iri = IRIx.create(string);
+    private void goodNoIRICheck(String string) {
+        IRIx iri = test_create(string);
         java.net.URI javaURI = java.net.URI.create(string);
     }
 
     // Expect an IRIParseException
-    private static void bad(String string) {
+    private void bad(String string) {
         try {
-            IRIs.checkEx(string);
-            IRIs.reference(string);
-            //RFC3986.check(string);
-            fail("Did not fail: "+string);
+            IRIx iri = test_create(string);
+            if ( ! iri.isReference())
+                fail("Did not fail: "+string);
         } catch (IRIException ex) {}
     }
-
-    private static void badSpecific(String string) {
+    private void badSpecific(String string) {
         bad(string);
     }
 }

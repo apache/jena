@@ -123,8 +123,8 @@ public class TestIRIxOps extends AbstractTestIRIx {
     @Test public void misc_01()     { reference("wm:/abc", true); }
 
     private void relative(String baseUriStr, String otherStr, String expected) {
-        IRIx base = IRIx.create(baseUriStr);
-        IRIx relInput = IRIx.create(otherStr);
+        IRIx base = test_create(baseUriStr);
+        IRIx relInput = test_create(otherStr);
         IRIx relativized = base.relativize(relInput);
         String result = (relativized==null) ? null : relativized.str();
         assertEquals("Base=<"+baseUriStr+"> IRI=<"+otherStr+">", expected, result);
@@ -137,24 +137,19 @@ public class TestIRIxOps extends AbstractTestIRIx {
 
     // Create - is it suitable for an RDF reference?
     private void test_abs_rel(String uriStr, boolean isAbsolute, boolean isRelative) {
-        IRIx iri = IRIx.create(uriStr);
+        IRIx iri = test_create(uriStr);
         assertEquals("Absolute test: IRI = "+uriStr, isAbsolute, iri.isAbsolute());
         assertEquals("Relative test: IRI = "+uriStr, isRelative, iri.isRelative());
     }
 
     // Create - is it suitable for an RDF reference?
     private void reference(String uriStr) {
-        IRIx iri = IRIx.create(uriStr);
+        IRIx iri = test_create(uriStr);
         assertTrue("IRI = "+uriStr, iri.isReference());
     }
 
     private void reference(String uriStr, boolean expected) {
-        IRIx iri = IRIx.create(uriStr);
+        IRIx iri = test_create(uriStr);
         assertEquals("IRI = "+uriStr, expected, iri.isReference());
-    }
-
-    // Parse, only collect violations from scheme-specific rules.
-    private void parse(String string) {
-        IRIx iri = IRIx.create(string);
     }
 }
