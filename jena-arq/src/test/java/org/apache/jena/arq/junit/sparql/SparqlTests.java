@@ -36,8 +36,9 @@ public class SparqlTests {
 
     // test suite default setting.
 
+    // Command "rdftests" sets this and does not rely on the default.
     // See also "rdftests --arq"
-    public static Syntax defaultForSyntaxTests = Syntax.syntaxSPARQL_11;
+    public static Syntax defaultForSyntaxTests = Syntax.syntaxSPARQL_12;
 
     /** Create a SPARQL test (syntax or valuation) test - or return null for "unrecognized" */
     public static Runnable makeSPARQLTest(ManifestEntry entry) {
@@ -49,14 +50,14 @@ public class SparqlTests {
         Syntax querySyntax = defaultForSyntaxTests;
 
         // Syntax to use for tests where the file extension .rq/.ru applies.
-        // For SPARQL*/RDF*, use ARQ syntax so we can run the RDF-star community tests.
         Syntax querySyntax11 = querySyntax;
         Syntax updateSyntax11 = querySyntax;
 
         if ( querySyntax != null ) {
             if ( ! querySyntax.equals(Syntax.syntaxARQ) &&
                  ! querySyntax.equals(Syntax.syntaxSPARQL_10) &&
-                 ! querySyntax.equals(Syntax.syntaxSPARQL_11) )
+                 ! querySyntax.equals(Syntax.syntaxSPARQL_11) &&
+                 ! querySyntax.equals(Syntax.syntaxSPARQL_12) )
                 throw new QueryTestException("Unknown syntax: "+querySyntax);
         }
 
