@@ -153,7 +153,7 @@ public class rdftests extends CmdGeneral
         if ( arqAsNormal )
             SparqlTests.defaultForSyntaxTests = Syntax.syntaxARQ;
         else
-            SparqlTests.defaultForSyntaxTests = Syntax.syntaxSPARQL_11;
+            SparqlTests.defaultForSyntaxTests = Syntax.syntaxSPARQL_12;
 
         for ( String fn : getPositional() ) {
             System.out.println("Run: "+fn);
