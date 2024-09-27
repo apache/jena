@@ -23,8 +23,6 @@ import java.util.function.Predicate;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 
@@ -41,12 +39,6 @@ public class SecurityContextAllowNamedGraphs implements SecurityContext {
 
     @Override
     public boolean visableDefaultGraph() { return true; }
-
-    @Override
-    public QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
-
-        return QueryExecutionFactory.create(query, dsg);
-    }
 
     /**
      * Quad filter to reflect the security policy of this {@link SecurityContextAllowNamedGraphs}. It is
