@@ -112,7 +112,6 @@ public class ParserProfileStd implements ParserProfile {
             errorHandler.error("Relative IRI: " + uriStr, line, col);
             return IRIx.createAny(uriStr);
         } catch (IRIException ex) {
-            // Same code as Checker.iriViolations
             String msg = ex.getMessage();
             Checker.iriViolationMessage(uriStr, true, msg, line, col, errorHandler);
             return IRIx.createAny(uriStr);
@@ -120,18 +119,34 @@ public class ParserProfileStd implements ParserProfile {
     }
 
     private void doChecking(IRIx irix, String uriStr, long line, long col) {
-        // Should become ...
-//        irix.handleViolations((isError, message)->{
-//            if ( isError )
-//                errorHandler.error(message, line, col);
-//        });
+        // This exists only to give the exact handling of Jena 5.1.0
+        // IRIProviderJenaIRI defines irix.hasViolations() as "jenaIRI.hasViolation(false/*no warnings*/)"
+        // CheckerJenaIRI handles jena-iri warnings.
+        if ( irix instanceof IRIProviderJenaIRI.IRIxJena ) {
+            CheckerJenaIRI.checkIRI(uriStr, errorHandler, line, col);
+            return;
+        }
 
-        IRI iri;
-        if ( irix instanceof IRIProviderJenaIRI.IRIxJena )
-            iri = (IRI)irix.getImpl();
-        else
-            iri = iriCache.get(uriStr, x -> SetupJenaIRI.iriCheckerFactory().create(x));
-        Checker.iriViolations(iri, errorHandler, false, true, line, col);
+        if ( irix.isRelative() ) {
+            // Relative IRIs.
+            Checker.iriViolationMessage(irix.str(), true, "Relative IRI: " + irix.str(), line, col, errorHandler);
+            // And other warnings.
+        }
+
+        if ( ! irix.hasViolations() )
+            return;
+
+        irix.handleViolations((isError, message)->{
+            Checker.iriViolationMessage(uriStr, isError, message, line, col, errorHandler);
+        });
+
+        // Jena up to 5.2.0 behaviour: Always jena-iri messages
+//        IRI iri;
+//        if ( irix instanceof IRIProviderJenaIRI.IRIxJena )
+//            iri = (IRI)irix.getImpl();
+//        else
+//            iri = iriCache.get(uriStr, x -> SetupJenaIRI.iriCheckerFactory().create(x));
+//        Checker.iriViolations(iri, errorHandler, false, true, line, col);
     }
 
     /**

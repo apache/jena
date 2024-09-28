@@ -29,7 +29,7 @@ import java.util.function.BiConsumer;
 public class IRIProviderAny  implements IRIProvider {
 
     /** The IRIProvider builder does not create this kind of IRIProvider! */
-    public static IRIProviderAny stringProvider() {return new IRIProviderAny(); }
+    public static IRIProviderAny stringProvider() { return new IRIProviderAny(); }
 
     public IRIProviderAny() {}
 
