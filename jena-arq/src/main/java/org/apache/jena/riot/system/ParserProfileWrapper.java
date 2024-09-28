@@ -22,6 +22,7 @@ import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.irix.IRIx;
 import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.sparql.core.Quad;
 
@@ -60,6 +61,11 @@ public class ParserProfileWrapper implements ParserProfile
     @Override
     public Node createURI(String uriStr, long line, long col) {
         return get().createURI(uriStr, line, col);
+    }
+
+    @Override
+    public Node createURI(IRIx iriX, long line, long col) {
+        return get().createURI(iriX, line, col);
     }
 
     @Override

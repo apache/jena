@@ -200,6 +200,11 @@ public class ParserProfileStd implements ParserProfile {
     }
 
     @Override
+    public Node createURI(IRIx iriX, long line, long col) {
+        return factory.createURI(iriX.str());
+    }
+
+    @Override
     public Node createTypedLiteral(String lexical, RDFDatatype datatype, long line, long col) {
         if ( checking )
             Checker.checkLiteral(lexical, datatype, errorHandler, line, col);
