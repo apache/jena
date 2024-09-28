@@ -92,25 +92,25 @@ public class TestRFC3986 extends AbstractTestIRIx {
     // ---- bad
 
     // Leading ':'
-    @Test public void bad_scheme_1() { bad(":segment"); }
+    @Test public void bad_uri_scheme_1() { bad(":segment"); }
 
     // Bad scheme
-    @Test public void bad_scheme_2() { bad("://host/xyz"); }
+    @Test public void bad_uri_scheme_2() { bad("://host/xyz"); }
 
     // Bad scheme
-    @Test public void bad_scheme_3() { bad("1://host/xyz"); }
+    @Test public void bad_uri_scheme_3() { bad("1://host/xyz"); }
 
     // Bad scheme
-    @Test public void bad_scheme_4() { bad("a~b://host/xyz"); }
+    @Test public void bad_uri_scheme_4() { bad("a~b://host/xyz"); }
 
     // Bad scheme
-    @Test public void bad_scheme_5() { bad("aβ://host/xyz"); }
+    @Test public void bad_uri_scheme_5() { bad("aβ://host/xyz"); }
 
     // Bad scheme
-    @Test public void bad_scheme_6() { bad("_:xyz"); }
+    @Test public void bad_uri_scheme_6() { bad("_:xyz"); }
 
     // Bad scheme
-    @Test public void bad_scheme_7() { bad("a_b:xyz"); }
+    @Test public void bad_uri_scheme_7() { bad("a_b:xyz"); }
 
     // Space!
     @Test public void bad_chars_1() { bad("http://abcdef:80/xyz /abc"); }
