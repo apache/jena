@@ -72,10 +72,19 @@ public class TestReadXML {
         assertEquals("XMLInputFactory.SUPPORT_DTD",
                      Boolean.FALSE, xf.getProperty(XMLInputFactory.SUPPORT_DTD));
 
-        // Java19. Setting ACCESS_EXTERNAL_DTD to "" now returns "" whereas it was returning null.
-        Object obj = xf.getProperty(XMLConstants.ACCESS_EXTERNAL_DTD);
-        boolean noAccessExternalDTD = ( (obj == null) || ((obj instanceof String) && ((String)obj).isEmpty()) );
-        assertTrue("XMLConstants.ACCESS_EXTERNAL_DTD", noAccessExternalDTD);
+
+        String name = xf.getClass().getName();
+        boolean isWoodstox = name.startsWith("com.ctc.wstx.stax.");
+        boolean isAalto = name.startsWith("com.fasterxml.aalto.");
+        if(!isWoodstox && !isAalto) {
+            // Not supported by Woodstox or Aalto. IS_SUPPORTING_EXTERNAL_ENTITIES = false is enough.
+            // Disable external DTDs (files and HTTP) - errors unless SUPPORT_DTD is false.
+
+            // Java19. Setting ACCESS_EXTERNAL_DTD to "" now returns "" whereas it was returning null.
+            Object obj = xf.getProperty(XMLConstants.ACCESS_EXTERNAL_DTD);
+            boolean noAccessExternalDTD = ( (obj == null) || ((obj instanceof String) && ((String)obj).isEmpty()) );
+            assertTrue("XMLConstants.ACCESS_EXTERNAL_DTD", noAccessExternalDTD);
+        }
 
         assertEquals("javax.xml.stream.isSupportingExternalEntities",
                      Boolean.FALSE,xf.getProperty("javax.xml.stream.isSupportingExternalEntities"));

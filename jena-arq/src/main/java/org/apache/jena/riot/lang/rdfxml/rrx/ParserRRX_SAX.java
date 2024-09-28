@@ -29,6 +29,8 @@ import javax.xml.namespace.QName;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.Cache;
+import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.atlas.lib.EscapeStr;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
@@ -61,6 +63,7 @@ class ParserRRX_SAX
             LexicalHandler,
             DeclHandler,
             EntityResolver2 {
+    private static int IRI_CACHE_SIZE = 8192;
     private static boolean VERBOSE = false;
     // Addition tracing for SAX events we don't care about.
     private static boolean EVENTS = false;
@@ -299,8 +302,8 @@ class ParserRRX_SAX
                                Counter containerPropertyCounter,
                                NodeHolder collectionNode,
                                Emitter emitter,
-                               ParserMode parserMode
-                               ) {}
+                               ParserMode parserMode,
+                               Cache<String, IRIx> iriCache) {}
 
     private Deque<ParserFrame> parserStack = new ArrayDeque<>();
 
@@ -320,7 +323,8 @@ class ParserRRX_SAX
                                             containerPropertyCounter,
                                             collectionNode,
                                             currentEmitter,
-                                            frameParserMode);
+                                            frameParserMode,
+                                            currentIriCache);
         parserStack.push(frame);
     }
 
@@ -331,8 +335,10 @@ class ParserRRX_SAX
             trace.printf("Pop frame: S: %s -> %s : P: %s -> %s\n", str(currentSubject), frame.subject,
                          str(currentProperty), frame.property);
         }
-
-        this.currentBase = frame.base;
+        if(isDifferentFromCurrentBase(frame.base)) {
+            this.currentBase = frame.base;
+            this.currentIriCache = frame.iriCache;
+        }
         this.currentLang = frame.lang;
         this.currentSubject = frame.subject;
         this.currentProperty = frame.property;
@@ -382,6 +388,32 @@ class ParserRRX_SAX
     private final String initialXmlBase;
     private final String initialXmlLang;
     private final StreamRDF destination;
+    private Cache<String, IRIx> iriCacheForBaseNull = null;
+    private Cache<String, IRIx> currentIriCache = null;
+    private final Map<IRIx, Cache<String, IRIx>> mapBaseIriToCache = new HashMap<>();
+
+    private void updateCurrentIriCacheForCurrentBase() {
+        if(currentBase != null) {
+            currentIriCache = mapBaseIriToCache
+                    .computeIfAbsent(currentBase,
+                            b -> CacheFactory.createSimpleCache(IRI_CACHE_SIZE)
+                    );
+        } else {
+            if(iriCacheForBaseNull == null) {
+                iriCacheForBaseNull = CacheFactory.createSimpleCache(IRI_CACHE_SIZE);
+            }
+            currentIriCache = iriCacheForBaseNull;
+        }
+    }
+
+    private boolean isDifferentFromCurrentBase(IRIx base) {
+        if(currentBase != null) {
+            return !currentBase.equals(base);
+        } else if(base == null) {
+            return false;
+        }
+        return true;
+    }
 
     // Tracking for ID on nodes (not reification usage)
     // We limit the number of local fragment IDs tracked because map only grows.
@@ -476,6 +508,7 @@ class ParserRRX_SAX
         } else {
             this.currentBase = null;
         }
+        updateCurrentIriCacheForCurrentBase();
         this.currentLang = "";
         this.destination = destination;
     }
@@ -655,7 +688,11 @@ class ParserRRX_SAX
         String xmlBaseURI = attributes.getValue(xmlNS, xmlBaseLN);
         if ( xmlBaseURI != null ) {
             emitBase(xmlBaseURI, position);
-            currentBase = resolveIRIx(xmlBaseURI, position);
+            var newBase = resolveIRIx(xmlBaseURI, position);
+            if(!newBase.equals(currentBase)) {
+                currentBase = newBase;
+                updateCurrentIriCacheForCurrentBase();
+            }
         }
 
         for ( int i = 0 ; i < attributes.getLength() ; i++ ) {
@@ -962,8 +999,9 @@ class ParserRRX_SAX
             if ( xmlLang != null )
                 trace.printf("+ LANG @%s\n", xmlLang);
         }
-        if ( xmlBase != null ) {
+        if ( xmlBase != null && !xmlBase.equals(currentBase)) {
             currentBase = xmlBase;// resolve.
+            updateCurrentIriCacheForCurrentBase();
         }
 
         if ( xmlLang != null )
@@ -1364,11 +1402,9 @@ class ParserRRX_SAX
     private Node iriResolve(String uriStr, Position position) {
         Objects.requireNonNull(uriStr);
         Objects.requireNonNull(position);
-        if ( uriStr.startsWith("_:") )
-            // <_:label> syntax. Handled by the FactoryRDF via the parser profile.
-            return createURI(uriStr, position);
-        String resolved =  resolveIRIx(uriStr, position).str();
-        return createURI(resolved, position);
+        return uriStr.startsWith("_:")
+                ?  createURI(uriStr, position) // <_:label> syntax. Handled by the FactoryRDF via the parser profile.
+                :  createURI(resolveIRIx(uriStr, position), position);
     }
 
     private IRIx resolveIRIx(String uriStr, Position position) {
@@ -1386,10 +1422,13 @@ class ParserRRX_SAX
     /** String to IRIx, no opinion */
     private IRIx resolveIRIxAny(String uriStr, Position position) {
         try {
-            IRIx iri = ( currentBase != null )
-                    ? currentBase.resolve(uriStr)
-                    : IRIx.create(uriStr);
-            return iri;
+            return currentIriCache.get(uriStr, uri -> {
+                if( currentBase != null ) {
+                    return currentBase.resolve(uri);
+                } else {
+                    return IRIx.create(uriStr);
+                }
+            });
         } catch (IRIException ex) {
             throw RDFXMLparseError(ex.getMessage(), position);
         }
@@ -1401,6 +1440,13 @@ class ParserRRX_SAX
         int col = position.column();
         // Checking
         return parserProfile.createURI(iriStr, line, col);
+    }
+
+    private Node createURI(IRIx iriX, Position position) {
+        int line = position.line();
+        int col = position.column();
+        // Checking
+        return parserProfile.createURI(iriX, line, col);
     }
 
     private Node blankNode(Position position) {

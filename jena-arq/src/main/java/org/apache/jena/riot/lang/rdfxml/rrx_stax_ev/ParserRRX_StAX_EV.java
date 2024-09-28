@@ -31,6 +31,8 @@ import javax.xml.stream.events.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.Cache;
+import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.atlas.lib.EscapeStr;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
@@ -51,44 +53,70 @@ import org.apache.jena.vocabulary.RDF;
 
 /** StAX events */
 class ParserRRX_StAX_EV {
+    private static int IRI_CACHE_SIZE = 8192;
     private static boolean EVENTS = false;
     private final IndentedWriter trace;
 
     private final XMLEventReader xmlEventReader;
+
+    private Cache<String, IRIx> iriCacheForBaseNull = null;
+    private Cache<String, IRIx> currentIriCache = null;
+    private final Map<IRIx, Cache<String, IRIx>> mapBaseIriToCache = new HashMap<>();
     // Stacks.
 
     // Constants
-    private static final String XML_PREFIX = "xml";
     private static final String rdfNS = RDF.uri;
     private static final String xmlNS = "http://www.w3.org/XML/1998/namespace";
-    private static final String ID = "ID";
-    private static final String NODE_ID = "nodeID";
-    private static final String ABOUT = "about";
-    private int blankNodeCounter  = 0 ;
     private boolean hasRDF = false;
 
     private final ParserProfile parserProfile;
     private final ErrorHandler errorHandler;
-    private final Context context;
-    private final String initialXmlBase;
-    private final String initialXmlLang;
     private final StreamRDF destination;
 
-    private record BaseLang(IRIx base, String lang) {}
+    private void updateCurrentIriCacheForCurrentBase() {
+        if(currentBase != null) {
+            currentIriCache = mapBaseIriToCache
+                    .computeIfAbsent(currentBase,
+                            b -> CacheFactory.createSimpleCache(IRI_CACHE_SIZE)
+                    );
+        } else {
+            if(iriCacheForBaseNull == null) {
+                iriCacheForBaseNull = CacheFactory.createSimpleCache(IRI_CACHE_SIZE);
+            }
+            currentIriCache = iriCacheForBaseNull;
+        }
+    }
+
+    private boolean isDifferentFromCurrentBase(IRIx base) {
+        if(currentBase != null) {
+            return !currentBase.equals(base);
+        } else if(base == null) {
+            return false;
+        }
+        return true;
+    }
+
+    private record BaseLang(IRIx base, String lang, Cache<String, IRIx> iriCache) {}
     private Deque<BaseLang> stack = new ArrayDeque<>();
     // Just these operations:
 
     private void pushFrame(IRIx base, String lang) {
-        BaseLang frame = new BaseLang(currentBase, currentLang);
+        BaseLang frame = new BaseLang(currentBase, currentLang, currentIriCache);
         stack.push(frame);
-        currentBase = base;
         currentLang = lang;
+        if(isDifferentFromCurrentBase(base)) {
+            currentBase = base;
+            updateCurrentIriCacheForCurrentBase();
+        }
     }
 
     private void popFrame() {
         BaseLang frame = stack.pop();
-        currentBase = frame.base;
         currentLang = frame.lang;
+        if(isDifferentFromCurrentBase(frame.base)) {
+            currentBase = frame.base;
+            currentIriCache = frame.iriCache;
+        }
     }
 
     /** Mark the usage of a QName */
@@ -165,16 +193,14 @@ class ParserRRX_StAX_EV {
 
         this.xmlEventReader = reader;
         this.parserProfile = parserProfile;
-        this.context = context;
         this.errorHandler = parserProfile.getErrorHandler();
-        this.initialXmlBase = xmlBase;
-        this.initialXmlLang = "";
         if ( xmlBase != null ) {
             this.currentBase = IRIx.create(xmlBase);
-            //parserProfile.setBaseIRI(currentBase.str());
+            parserProfile.setBaseIRI(currentBase.str());
         } else {
             this.currentBase = null;
         }
+        updateCurrentIriCacheForCurrentBase();
         this.currentLang = "";
         this.destination = destination;
     }
@@ -185,10 +211,6 @@ class ParserRRX_StAX_EV {
     private static final QName rdfNodeID = new QName(rdfNS, "nodeID");
     private static final QName rdfAbout = new QName(rdfNS, "about");
     private static final QName rdfType = new QName(rdfNS, "type");
-
-    private static final QName rdfSeq = new QName(rdfNS, "Seq");
-    private static final QName rdfBag = new QName(rdfNS, "Bag");
-    private static final QName rdfAlt = new QName(rdfNS, "Alt");
 
     private static final QName rdfContainerItem = new QName(rdfNS, "li");
     private static final QName rdfDatatype = new QName(rdfNS, "datatype");
@@ -985,8 +1007,9 @@ class ParserRRX_StAX_EV {
         }
 
         // Not seen this prefix or it was a different value.
-        if ( ! namespaces.containsKey(prefix) ||
-                ( namespaceURI != null && ! namespaces.get(prefix).equals(namespaceURI)) ) {
+        if ( namespaceURI != "" &&  // this first condition is needed for woodstox and allto to work
+                (! namespaces.containsKey(prefix) ||
+                 ( namespaceURI != null && ! namespaces.get(prefix).equals(namespaceURI)) )) {
             // Define in current XML subtree.
             outputNS.put(prefix, namespaceURI);
             namespaces.put(prefix, namespaceURI);
@@ -1169,12 +1192,6 @@ class ParserRRX_StAX_EV {
     }
 
     // ---- Nodes
-
-    private void setBase(String uriStr, Location location) {
-        // Resolves
-        Node n = iriResolve(uriStr, location);
-        parserProfile.setBaseIRI(n.getURI());
-    }
 
     private Node qNameToIRI(QName qName, QNameUsage usage, Location location) {
         if ( StringUtils.isBlank(qName.getNamespaceURI()) )
@@ -1375,11 +1392,8 @@ class ParserRRX_StAX_EV {
         }
         boolean hasFrame = (xmlBase != null || xmlLang != null);
         if ( hasFrame ) {
-            pushFrame(currentBase, currentLang);
-            if ( xmlBase != null )
-                currentBase = xmlBase;
-            if ( xmlLang != null )
-                currentLang = xmlLang;
+            pushFrame(xmlBase != null ? xmlBase : currentBase,
+                    xmlLang != null ? xmlLang : currentLang);
         }
         return hasFrame;
     }
@@ -1475,18 +1489,11 @@ class ParserRRX_StAX_EV {
     private Node iriResolve(String uriStr, Location location) {
         Objects.requireNonNull(uriStr);
         Objects.requireNonNull(location);
-        int line = location.getLineNumber();
-        int col = location.getColumnNumber();
-        String resolved = resolveIRI(uriStr, location);
-        return parserProfile.createURI(resolved, line, col);
-    }
-
-    /** Resolve an IRI. */
-    private String resolveIRI(String uriStr, Location location) {
-        if ( uriStr.startsWith("_:") )
-            // <_:label> syntax. Handled by the FactoryRDF via the parser profile.
-            return uriStr;
-        return resolveIRIx(uriStr, location).str();
+        final int line = location.getLineNumber();
+        final int col = location.getColumnNumber();
+        return uriStr.startsWith("_:")
+                ?  parserProfile.createURI(uriStr, line, col) // <_:label> syntax. Handled by the FactoryRDF via the parser profile.
+                :  parserProfile.createURI(resolveIRIx(uriStr, location), line, col);
     }
 
     private IRIx resolveIRIx(String uriStr, Location location) {
@@ -1503,10 +1510,13 @@ class ParserRRX_StAX_EV {
 
     private IRIx resolveIRIxNoWarning(String uriStr, Location location) {
         try {
-            IRIx iri = ( currentBase != null )
-                    ? currentBase.resolve(uriStr)
-                    : IRIx.create(uriStr);
-            return iri;
+            return currentIriCache.get(uriStr, uri -> {
+                if( currentBase != null ) {
+                    return currentBase.resolve(uri);
+                } else {
+                    return IRIx.create(uriStr);
+                }
+            });
         } catch (IRIException ex) {
             throw RDFXMLparseError(ex.getMessage(), location);
         }
@@ -1527,13 +1537,6 @@ class ParserRRX_StAX_EV {
         int col = location.getColumnNumber();
         return parserProfile.createBlankNode(null, label, line, col);
     }
-
-//    private Node literal(String lex, String datatype, String lang, Location location) {
-//        int line = location.getLineNumber();
-//        int col = location.getColumnNumber();
-//        return parserProfile.createL
-//    }
-    // literal(lex, datatype, lang)
 
     private Node literal(String lexical, Location location) {
         Objects.requireNonNull(lexical);

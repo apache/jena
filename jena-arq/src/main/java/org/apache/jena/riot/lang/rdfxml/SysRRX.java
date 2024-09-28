@@ -29,8 +29,21 @@ import org.apache.jena.util.JenaXMLInput;
  */
 public class SysRRX {
 
+    /**
+     * Creates and initializes a javax.xml.stream.XMLInputFactory#newInstance().
+     * @return XMLInputFactory
+     */
     public static XMLInputFactory createXMLInputFactory() {
-        XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+        return initAndConfigure(XMLInputFactory.newInstance());
+    }
+
+    /**
+     * Configures the parser to be safe and sets necessary properties.
+     * This method should be called when a factory other than
+     * javax.xml.stream.XMLInputFactory#newInstance() is used.
+     * @param xmlInputFactory
+     */
+    public static <E extends XMLInputFactory> E initAndConfigure(final E xmlInputFactory) {
         JenaXMLInput.initXMLInputFactory(xmlInputFactory);
         // Additional features. Enable character entity support.
         xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);
