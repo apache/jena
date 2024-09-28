@@ -49,6 +49,7 @@
   <modules>
     <module>jena-benchmarks-jmh</module>
     <module>jena-benchmarks-shadedJena480</module>
+    <module>jena-benchmarks-shadedJena510</module>
   </modules>
 
 </project>

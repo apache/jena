@@ -18,9 +18,9 @@
 
 package org.apache.jena.atlas.lib ;
 
-import java.util.function.BiConsumer;
+import org.apache.jena.atlas.lib.cache.*;
 
-import org.apache.jena.atlas.lib.cache.* ;
+import java.util.function.BiConsumer;
 
 public class CacheFactory {
     /**
@@ -80,7 +80,7 @@ public class CacheFactory {
      * This cache is not thread-safe.
      */
     public static <Key, Value> Cache<Key, Value> createSimpleCache(int size) {
-        return new CacheSimple<>(size, null) ;
+        return new CacheSimple<>(size) ;
     }
 
     /** One slot cache */
