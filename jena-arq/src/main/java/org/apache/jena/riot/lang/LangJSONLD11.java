@@ -81,11 +81,15 @@ public class LangJSONLD11 implements ReaderRIOT {
     }
 
     private void handleJsonLdError(JsonLdError ex) {
-        if (ex.getCause() instanceof jakarta.json.stream.JsonParsingException exp) {
+        Throwable cause = ex.getCause();
+
+        if (cause instanceof jakarta.json.stream.JsonParsingException exp) {
             JsonLocation loc = exp.getLocation();
             errorHandler.error(ex.getMessage(), loc.getLineNumber(), loc.getColumnNumber());
-        } else {
-            errorHandler.error(ex.getMessage(), -1, -1);
+        } else if ( cause instanceof JsonLdError ex2) {
+            // Avoid seemingly circular causes.
+            if ( ex != ex2 )
+                errorHandler.error(ex2.getMessage(), -1, -1);
         }
         throw new RiotException(ex);
     }
