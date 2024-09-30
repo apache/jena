@@ -60,7 +60,7 @@
 
     <!-- Logging -->
     <ver.slf4j>2.0.16</ver.slf4j>
-    <ver.log4j2>2.24.0</ver.log4j2>
+    <ver.log4j2>2.24.1</ver.log4j2>
 
     <!-- JSON-LD 1.1 -->
     <ver.titanium-json-ld>1.4.1</ver.titanium-json-ld>
@@ -77,7 +77,7 @@
 
     <ver.caffeine>3.1.8</ver.caffeine>
     <!-- Most of Jena uses other libraries for equivalent functionality. -->
-    <ver.guava>33.3.0-jre</ver.guava>
+    <ver.guava>33.3.1-jre</ver.guava>
 
     <ver.gson>2.11.0</ver.gson>
     <ver.lucene>9.11.1</ver.lucene>
@@ -98,7 +98,7 @@
 
     <!-- Testing -->
     <ver.junit4>4.13.2</ver.junit4>
-    <ver.junit5>5.11.0</ver.junit5>
+    <ver.junit5>5.11.1</ver.junit5>
     <ver.junit5-platform>1.10.2</ver.junit5-platform>
  
     <ver.mockito>5.13.0</ver.mockito>
@@ -125,7 +125,7 @@
     <ver.plugin.war>3.4.0</ver.plugin.war>
     <ver.plugin.shade>3.6.0</ver.plugin.shade>
     <ver.plugin.enforcer>3.5.0</ver.plugin.enforcer>
-    <ver.plugin.cyclonedx>2.8.1</ver.plugin.cyclonedx>
+    <ver.plugin.cyclonedx>2.8.2</ver.plugin.cyclonedx>
     <ver.plugin.spdx>0.7.0</ver.plugin.spdx>
 
     <!--
