@@ -18,40 +18,32 @@
 
 package org.apache.jena.atlas.io;
 
-import java.io.IOException ;
-import java.io.Reader ;
+import java.io.IOException;
+import java.io.Reader;
 
 /** A PeekReaderSource that does no buffering - just wraps a reader. */
-public final class CharStreamBasic extends CharStreamReader
-{
-    private Reader reader ;
+public final class CharStreamBasic extends CharStreamReader {
+    private Reader reader;
 
-    CharStreamBasic(Reader reader)
-    {
-        this.reader = reader ;
+    CharStreamBasic(Reader reader) {
+        this.reader = reader;
     }
-    
+
     @Override
-    public int advance()
-    {
-        try
-        {
-            return reader.read() ;
-        } catch (IOException ex)
-        {
+    public int advance() {
+        try {
+            return reader.read();
+        } catch (IOException ex) {
             ex.printStackTrace();
-            return -1 ;
+            return -1;
         }
     }
 
     @Override
-    public void closeStream()
-    {
-        try
-        {
-            reader.close() ;
-        } catch (IOException ex)
-        {
+    public void closeStream() {
+        try {
+            reader.close();
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
     }

@@ -278,6 +278,9 @@ public class IO
         return out;
     }
 
+    /** An {@link OutputStream} that discards all bytes. */
+    static public OutputStream sink()                       { return OutputStream.nullOutputStream(); }
+
     /** Wrap in a general writer interface */
     static public AWriter wrap(Writer w)                    { return Writer2.wrap(w); }
 
