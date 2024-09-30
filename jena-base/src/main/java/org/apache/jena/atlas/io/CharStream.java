@@ -19,13 +19,14 @@
 package org.apache.jena.atlas.io;
 
 
-/** A simplified reader interface without IOExceptions. 
- * And it's an interface, not an abstract class 
+/**
+ * A simplified reader interface without IOExceptions.
+ * It's an interface, not an abstract class
  */
 public interface CharStream
 {
     public int advance() ;
-    
+
     /** Close the stream - different name from java.io.Reader.close */
-    public void closeStream() ;     
+    public void closeStream() ;
 }

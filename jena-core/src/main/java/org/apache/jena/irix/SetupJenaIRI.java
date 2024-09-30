@@ -64,7 +64,7 @@ public class SetupJenaIRI {
         // Allow relative references for file: URLs.
         iriCheckerFactory.setSameSchemeRelativeReferences("file");
 
-        // See also Checker.iriViolations and IRProviderJenaIRI where this is restricted to the scheme component.
+        // See also IRIProviderJenaIRI where this is restricted to the scheme component.
         setErrorWarning(iriCheckerFactory, ViolationCodes.LOWERCASE_PREFERRED, false, true);
         // Jena3 compatibility (false, false) for this one.
         setErrorWarning(iriCheckerFactory, ViolationCodes.PERCENT_ENCODING_SHOULD_BE_UPPERCASE, false, false);
