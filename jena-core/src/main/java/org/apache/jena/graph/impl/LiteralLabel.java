@@ -51,31 +51,32 @@ final public class LiteralLabel {
     private String lexicalForm;
 
     /**
-     * The language tag. The empty string is not valid; {@code ""} is used to ensure this field is set.
+     * The language tag. The empty string is not a valid language tag;
+     * {@code ""} is used to ensure this field is set.
      */
-    private String lang;
+    private final String lang;
 
     /**
      * The initial text direction of a language literal.
      * Datatype rdf:dirLangSring.
      */
-    private TextDirection textDir;
+    private final TextDirection textDir;
 
     /**
-     * The type of the literal. A null type indicates a classic "plain" literal.
-     * The type of a literal is fixed when it is created.
+     * The type of the literal.
      */
     private RDFDatatype dtype;
 
     /**
-     * The value form of the literal. It will be null only if the value
+     * The value form of the literal. It will be null if the value
      * has not been parsed or if it is an illegal value.
      */
     private Object value;
 
     private enum ValueMode { EAGER , LAZY }
     // LAZY does not completely pass the test suite - the point where bad literals
-    // cause exceptions has changed.
+    // cause exceptions changes
+    //
     // Whether this is the fact the tests are over sensitive or there is going to be
     // unexpected behaviour needs investigation.
     private static ValueMode valueMode = ValueMode.EAGER;
@@ -99,10 +100,10 @@ final public class LiteralLabel {
      * The validity of the lexical form as a value is not checked.
      *
      * @param lex the lexical form of the literal
-     * @param dtype the type of the literal
+     * @param datatype the type of the literal
      */
-    LiteralLabel(String lex, RDFDatatype dtype) {
-        this(lex, "", null, dtype);
+    LiteralLabel(String lex, RDFDatatype datatype) {
+        this(lex, "", null, datatype);
     }
 
     /**
@@ -112,20 +113,20 @@ final public class LiteralLabel {
      * @param lex       the lexical form of the literal
      * @param lang      the optional language tag, only relevant for rdf:langString and rdf:dirLangString
      * @param dirLang   only relevant for rdf:langString and rdf:dirLangString
-     * @param dtype     the type of the literal
+     * @param datatype     the type of the literal
      */
-    /*package*/ LiteralLabel(String lex, String lang, TextDirection textDir, RDFDatatype dtype) {
+    /*package*/ LiteralLabel(String lex, String lang, TextDirection textDir, RDFDatatype datatype) {
         this.lexicalForm = lex;
-        this.dtype = Objects.requireNonNull(dtype);
+        this.dtype = Objects.requireNonNull(datatype);
         this.lang = lang;
         this.textDir = textDir;
-        hash = calcHashCode();
+        this.hash = calcHashCode();
         if ( valueMode == ValueMode.EAGER ) {
-            this.wellformed = setValue(lex, dtype);
-            dtype = normalize(value, dtype);
+            this.wellformed = setValue(lex, this.dtype);
+            this.dtype = normalize(value, this.dtype);
         } else
             // Lazy value calculation.
-            value = null;
+            this.value = null;
     }
 
     /** Calculate the indexing form for a language tag */
@@ -149,31 +150,32 @@ final public class LiteralLabel {
      * align with (see {@link #LiteralLabel(String, RDFDatatype)}).
      *
      * @param value the value of the literal
-     * @param dtype the type of the literal
+     * @param datatype the type of the literal
      */
-    /*package*/ LiteralLabel(Object value, RDFDatatype dtype) throws DatatypeFormatException {
-        this.dtype = dtype;
+    /*package*/ LiteralLabel(Object value, RDFDatatype datatype) throws DatatypeFormatException {
+        this.dtype = datatype;
         this.lang = "";
+        this.textDir = null;
         if (value instanceof String) {
             // Treat as "lex ^^ datatype"
             String lex = (String)value;
             this.lexicalForm = lex;
-            this.wellformed = setValue(lex, dtype);
-            dtype = normalize(value, dtype);
+            this.wellformed = setValue(lex, datatype);
+            this.dtype = normalize(value, datatype);
             hash = calcHashCode();
             return;
         }
         // No lexical form yet.
-        this.value = (dtype == null) ? value : dtype.cannonicalise( value );
+        this.value = (datatype == null) ? value : datatype.cannonicalise( value );
         // This can change the datatype
-        this.dtype = normalize(value, dtype);
+        this.dtype = normalize(value, datatype);
         this.wellformed = this.dtype.isValidValue( value );
 
         // Eager
         if (JenaParameters.enableEagerLiteralValidation && !wellformed)
-            throw new DatatypeFormatException(value.toString(),  dtype, "in literal creation");
+            throw new DatatypeFormatException(value.toString(),  datatype, "in literal creation");
 
-        this.lexicalForm = (dtype == null ? value.toString() : dtype.unparse(value));
+        this.lexicalForm = (datatype == null ? value.toString() : datatype.unparse(value));
         hash = calcHashCode();
     }
 
@@ -195,6 +197,7 @@ final public class LiteralLabel {
         this.lexicalForm = Objects.requireNonNull(lex);
         this.value = Objects.requireNonNull(value);
         this.lang = "";
+        this.textDir = null;
         this.wellformed = true;
         hash = calcHashCode();
     }
