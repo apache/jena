@@ -188,7 +188,7 @@ public class FusekiServer {
      * <p>
      * If http and https are in-use, this is the HTTPS port.
      * <p>
-     * If there multiple ports of the same schema, return any one port in use.
+     * If there are multiple ports of the same schema, return any one port in use.
      * <p>
      * See also {@link #getHttpPort} or Use {@link #getHttpsPort}.
      */

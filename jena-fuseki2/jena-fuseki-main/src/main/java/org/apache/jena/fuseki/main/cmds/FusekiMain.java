@@ -128,7 +128,7 @@ public class FusekiMain extends CmdARQ {
     // private static ModLocation modLocation = new ModLocation();
     private static ModDatasetAssembler modDataset      = new ModDatasetAssembler();
 
-    private final ServerConfig serverConfig  = new ServerConfig();
+    protected final ServerConfig serverConfig  = new ServerConfig();
     // Default
     private boolean useTDB2 = true;
 
@@ -142,7 +142,7 @@ public class FusekiMain extends CmdARQ {
 
     /**
      * Create a {@link org.apache.jena.fuseki.main.FusekiServer.Builder} which has
-     * been setup according to the command line arguments.
+     * been set up according to the command line arguments.
      * The builder can be further modified.
      */
     public static FusekiServer.Builder builder(String... args) {
@@ -152,7 +152,7 @@ public class FusekiMain extends CmdARQ {
         inner.process();
         // Apply command line/serverConfig to a builder.
         FusekiServer.Builder builder = inner.builder();
-        applyServerArgs(builder, inner.serverConfig);
+        inner.applyServerArgs(builder, inner.serverConfig);
         return builder;
     }
 
@@ -597,7 +597,7 @@ public class FusekiMain extends CmdARQ {
     }
 
     /**
-     * Take a {@link ServerConfig} and make a {@Link FusekiServer}.
+     * Take a {@link ServerConfig} and make a {@link FusekiServer}.
      * The server has not been started.
      */
     private FusekiServer makeServer(ServerConfig serverConfig) {
@@ -611,16 +611,13 @@ public class FusekiMain extends CmdARQ {
     }
 
     /**
-     * Process {@link ServerConfig} and build a server.
-     * The server has not been started.
+     * Apply {@link ServerConfig} to a {@link FusekiServer.Builder}.
+     * <p>
+     * Commands extended from this class can override this method if they are populating {@link ServerConfig#extra} from
+     * extra arguments and need to propagate that configuration onto the Server Builder somehow.
+     * </p>
      */
-    private static FusekiServer buildServer(FusekiServer.Builder builder, ServerConfig serverConfig) {
-        applyServerArgs(builder, serverConfig);
-        return builder.build();
-    }
-
-    /** Apply {@link ServerConfig} to a {@link FusekiServer.Builder}. */
-    private static void applyServerArgs(FusekiServer.Builder builder, ServerConfig serverConfig) {
+    protected void applyServerArgs(FusekiServer.Builder builder, ServerConfig serverConfig) {
         if ( serverConfig.jettyConfigFile != null )
             builder.jettyServerConfig(serverConfig.jettyConfigFile);
         builder.port(serverConfig.port);
