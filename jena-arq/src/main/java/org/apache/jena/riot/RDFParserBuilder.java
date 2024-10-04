@@ -29,7 +29,6 @@ import java.util.Optional;
 
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.http.HttpEnv;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.query.Dataset;
@@ -278,13 +277,16 @@ public class RDFParserBuilder {
         return this;
     }
 
-//    /** Set the HttpClient to use.
-//     *  This will override any HTTP header settings set for this builder.
-//     */
-//    public RDFParserBuilder httpClient(HttpClient httpClient) {
-//        this.httpClient = httpClient;
-//        return this;
-//    }
+    /**
+     * Set an HTTP client. Any previous setting is lost.
+     * <p>
+     * Consider setting up an {@link HttpClient} if more complicated
+     * setting to an HTTP request is required.
+     */
+    public RDFParserBuilder httpClient(HttpClient httpClient) {
+        this.httpClient = httpClient;
+        return this;
+    }
 
     /** Set the base URI for parsing.  The default is to have no base URI. */
     public RDFParserBuilder base(String base) { this.baseURI = base ; return this; }
@@ -647,8 +649,6 @@ public class RDFParserBuilder {
             throw new RiotException("No source specified");
         Context context = contextAcc.context();
 
-        // Setup the HTTP client.
-        HttpClient clientJDK = ( httpClient != null ) ? httpClient : HttpEnv.getDftHttpClient();
         FactoryRDF factory$ = buildFactoryRDF();
         ErrorHandler errorHandler$ = errorHandler;
         if ( errorHandler$ == null )
@@ -676,7 +676,7 @@ public class RDFParserBuilder {
         // Can't build the profile here as it is Lang/conneg dependent.
         return new RDFParser(uri, path, stringToParse, inputStream, javaReader, sMgr,
                              appAcceptHeader, httpHeaders,
-                             clientJDK,
+                             httpClient,
                              hintLang, forceLang,
                              parserBaseURI, strict, checking,
                              canonicalValues, langTagForm,
