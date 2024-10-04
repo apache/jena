@@ -39,6 +39,7 @@ import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.HttpLib;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIxResolver;
@@ -95,7 +96,7 @@ public class RDFParser {
     // Accept choice by the application
     private final String              appAcceptHeader;
     private final Map<String, String> httpHeaders;
-    private final HttpClient          httpClient;
+    private final HttpClient          httpClient; // The httpClient might be provided by the RDFParserBuilder, but it might also be null
     private final Lang                hintLang;
     private final Lang                forceLang;
     private final String              baseURI;
@@ -484,7 +485,9 @@ public class RDFParser {
                     httpHeaders.forEach(b::header);
                 b.setHeader(HttpNames.hAccept, acceptHeader);
             });
-            HttpResponse<InputStream> response = HttpLib.execute(httpClient, request);
+            // Setup of the HTTP client, if not provided by RDFParserBuilder
+            final var httpClientToUse = ( httpClient != null ) ? httpClient : HttpEnv.getDftHttpClient();
+            HttpResponse<InputStream> response = HttpLib.execute(httpClientToUse, request);
             in = HttpLib.handleResponseTypedInputStream(response);
         } else {
             // Already mapped.
