@@ -418,6 +418,14 @@ public class TestFusekiMainCmdArguments {
         assertNotNull(server);
     }
 
+    @Test
+    public void test_unrecognised_argument() {
+        // given
+        List<String> arguments = List.of("--port=0", "--mem", "--no-such-argument");
+        // when and then
+        testForCmdException(arguments, "Unknown argument: no-such-argument");
+    }
+
     private void testForCmdException(List<String> arguments, String expectedMessage) {
         // when
         Throwable actual = null;
@@ -440,7 +448,7 @@ public class TestFusekiMainCmdArguments {
     // Build and set the server
     private void buildServer(String... cmdline) {
         if ( server != null )
-            fail("Bad test - a server has aleardy been created");
+            fail("Bad test - a server has already been created");
         server = FusekiMain.build(cmdline);
         server.start();
     }
