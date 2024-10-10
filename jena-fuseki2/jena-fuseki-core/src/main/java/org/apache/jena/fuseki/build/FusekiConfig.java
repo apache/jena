@@ -94,8 +94,6 @@ public class FusekiConfig {
                    Operation.GSP_RW,
                    Operation.Patch);
 
-    static { Fuseki.init(); }
-
     /** Convenience operation to populate a {@link DataService} with the conventional default services. */
     public static DataService.Builder populateStdServices(DataService.Builder dataServiceBuilder, boolean allowUpdate) {
         Set<Endpoint> endpoints = new HashSet<>();
@@ -285,7 +283,7 @@ public class FusekiConfig {
         NamedDatasetAssembler.sharedDatasetPool.clear();
         // ---- Services
         // Server to services.
-        ResultSet rs = BuildLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", model, "s", server);
+        ResultSet rs = BuildLib.query("SELECT ?service { ?s fu:services [ list:member ?service ] }", model, "s", server);
         List<DataAccessPoint> accessPoints = new ArrayList<>();
 
         // If none, look for services by type.
