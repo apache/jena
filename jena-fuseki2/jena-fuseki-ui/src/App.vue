@@ -29,11 +29,13 @@
 
 <script>
 import Menu from '@/components/Menu.vue'
+import Toast from '@/components/Toast.vue'
 
 export default {
   name: 'App',
   components: {
-    Menu
+    Menu,
+    Toast
   }
 }
 </script>
