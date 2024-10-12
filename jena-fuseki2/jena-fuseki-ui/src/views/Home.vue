@@ -124,13 +124,7 @@ export default {
     /**
      * Fuseki backend response.
      *
-     * @type {null|{
-     *   built: string,
-     *   datasets: [],
-     *   startDateTime: string,
-     *   uptime: number,
-     *   version: string
-     * }}
+     * @return {string}
      */
     headerString () {
       if (!this.serverData) {
