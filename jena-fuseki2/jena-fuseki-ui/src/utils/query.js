@@ -22,7 +22,7 @@
  * instantiate a complete component or view.
  */
 
-import queryString from 'query-string'
+import qs from 'qs'
 
 /**
  * Create a shareable link using the value of the SPARQL query in the
@@ -49,6 +49,6 @@ export function createShareableLink (query, path) {
     path +
     '?' +
     // Same as YASGUI does, good idea to avoid security problems...
-    queryString.stringify({ query })
+    qs.stringify({ query })
   )
 }
