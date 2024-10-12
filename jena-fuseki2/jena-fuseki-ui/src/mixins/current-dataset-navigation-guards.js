@@ -31,7 +31,7 @@ export default {
   },
   async beforeRouteUpdate (from, to, next) {
     // eslint-disable-next-line no-unused-vars
-    next(async vm => {
+    next(async _ => {
       await this.loadCurrentDataset()
     })
   },
