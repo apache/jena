@@ -16,6 +16,7 @@
  */
 
 import axios from 'axios'
+// eslint-disable-next-line no-unused-vars
 import qs from 'qs'
 import ServerStatus from '@/model/server.status'
 import { BUS } from '@/events'
@@ -33,7 +34,7 @@ class FusekiService {
   }
 
   /**
-   * Gets the Fuseki URL, only the pathname onward. The protocol, server, port, etc,
+   * Gets the Fuseki URL, only the pathname onward. The protocol, server, port, etc.,
    * are left to the browser/JS engine & Vue to choose. Previously we were passing
    * strings such as `/#/ping$`. But this did not work when the application was
    * deployed on a Tomcat server, for example, where the base URL could be something
@@ -142,11 +143,11 @@ class FusekiService {
       })
     } catch (error) {
       if (error.response) {
-        if (error.response.status !== 200) {
-          if (error.response.status === 409) {
+        if (error.response.statusCode !== 200) {
+          if (error.response.statusCode === 409) {
             throw new Error(`failed to create dataset "${datasetName}", reason: there is another dataset with the same name`)
           }
-          throw new Error(`failed to create dataset "${datasetName}" with type ${datasetType}, reason: HTTP status: "${error.response.status}", message: ${error.response.statusText}`)
+          throw new Error(`failed to create dataset "${datasetName}" with type ${datasetType}, reason: HTTP status: "${error.response.statusCode}", message: ${error.response.statusText}`)
         }
       }
       throw error
@@ -184,7 +185,7 @@ class FusekiService {
   /**
    * Get the data endpoint out of a list of server endpoints.
    *
-   * For now we are simply returning the first non-empty, but that
+   * For now, we are simply returning the first non-empty, but that
    * may change at some point.
    *
    * @private

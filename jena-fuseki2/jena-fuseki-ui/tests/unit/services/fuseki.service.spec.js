@@ -182,7 +182,7 @@ describe('FusekiService', () => {
     const error = new Error('jena')
     error.response = {
       // not supposed to happen... but...
-      status: 200
+      statusCode: 200
     }
     stub.resolves(Promise.reject(error))
     try {
@@ -198,7 +198,7 @@ describe('FusekiService', () => {
     const stub = sinon.stub(axios, 'post')
     const error = new Error('jena')
     error.response = {
-      status: 409
+      statusCode: 409
     }
     stub.resolves(Promise.reject(error))
     try {
@@ -214,7 +214,7 @@ describe('FusekiService', () => {
     const stub = sinon.stub(axios, 'post')
     const error = new Error('jena')
     error.response = {
-      status: 501,
+      statusCode: 501,
       statusText: 'test'
     }
     stub.resolves(Promise.reject(error))
