@@ -70,6 +70,8 @@ public class SparqlTests {
             return new QuerySyntaxTest(entry, querySyntax, true);
         if ( testType.equals(TestManifest_11.PositiveSyntaxTest11) )
             return new QuerySyntaxTest(entry, querySyntax11, true);
+//        if ( testType.equals(TestManifest_12.PositiveSyntaxTest12) )
+//            return new QuerySyntaxTest(entry, querySyntax12, true);
         if ( testType.equals(TestManifestX.PositiveSyntaxTestARQ) )
             return new QuerySyntaxTest(entry, Syntax.syntaxARQ, true);
 

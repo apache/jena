@@ -291,7 +291,7 @@ public class RowSetWriterXML implements RowSetWriter {
                 printBlankNode(node);
                 return;
             }
-            if ( node.isNodeTriple() ) {
+            if ( node.isTripleTerm() ) {
                 printTripleTerm(node);
                 return;
             }

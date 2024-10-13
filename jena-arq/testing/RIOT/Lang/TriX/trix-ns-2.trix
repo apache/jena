@@ -1,25 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Trix with namespaces -->
 <trix:trix xmlns:trix="http://www.w3.org/2004/03/trix/trix-1/"
-           xmlns:ex="http://example.org/"
-           xmlns="http://example/">
+      xmlns:ex="http://example.org/"
+      xmlns:ns="http://example/ns#"
+      xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
   <trix:graph>
     <trix:triple>
-      <trix:qname>:s</trix:qname>
+      <trix:uri>http://example/s</trix:uri>
       <trix:qname>ex:p</trix:qname>
       <trix:typedLiteral datatype="http://www.w3.org/2001/XMLSchema#integer">123</trix:typedLiteral>
     </trix:triple>
     <trix:triple>
+      <trix:uri>http://example/s</trix:uri>
+      <trix:qname>ex:tripleTerm</trix:qname>
       <trix:triple>
-        <trix:qname>:s</trix:qname>
+        <trix:uri>http://example/s</trix:uri>
         <trix:qname>ex:p</trix:qname>
         <trix:qname>ex:o</trix:qname>
       </trix:triple>
-      <trix:qname>ex:embedded</trix:qname>
+    </trix:triple>
+    <trix:triple>
+      <trix:uri>http://example/s</trix:uri>
+      <trix:qname>ex:tripleTermNested</trix:qname>
       <trix:triple>
-        <trix:qname>:s</trix:qname>
+        <trix:uri>http://example/s</trix:uri>
         <trix:qname>ex:p</trix:qname>
-        <trix:qname>ex:o</trix:qname>
+        <trix:triple>
+          <trix:uri>http://example/s</trix:uri>
+          <trix:qname>ex:p</trix:qname>
+          <trix:qname>ex:o</trix:qname>
+        </trix:triple>
       </trix:triple>
     </trix:triple>
   </trix:graph>

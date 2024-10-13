@@ -47,19 +47,19 @@ public class SolverLib {
      * Test whether a triple has an triple term as one of its components.
      */
     public static boolean tripleHasNodeTriple(Triple triple) {
-        return triple.getSubject().isNodeTriple()
+        return triple.getSubject().isTripleTerm()
                /*|| triple.getPredicate().isNodeTriple()*/
-               || triple.getObject().isNodeTriple();
+               || triple.getObject().isTripleTerm();
     }
 
     /**
      * Test whether a quad has an triple term as one of its components.
      */
     public static boolean quadHasNodeTriple(Quad quad) {
-        return quad.getSubject().isNodeTriple()
+        return quad.getSubject().isTripleTerm()
                // || triple.getPredicate().isNodeTriple()
                // || quad.getGraph().isNodeTriple()
-               || quad.getObject().isNodeTriple();
+               || quad.getObject().isTripleTerm();
     }
 
     /**
@@ -84,7 +84,7 @@ public class SolverLib {
     }
 
     private static boolean isTripleTermWithVars(Node node) {
-        if ( ! node.isNodeTriple() )
+        if ( ! node.isTripleTerm() )
             return false;
         if ( node.getTriple().isConcrete() )
             return false;
@@ -105,7 +105,7 @@ public class SolverLib {
         // Public so TDB code can use it.
         if ( Var.isVar(node) )
             return Node.ANY;
-        if ( node.isNodeTriple() ) { //|| node.isNodeGraph() )
+        if ( node.isTripleTerm() ) { //|| node.isNodeGraph() )
             if ( ! node.getTriple().isConcrete() )
                 // Nested variables.
                 return Node.ANY;

@@ -21,16 +21,17 @@ package org.apache.jena.sparql.util;
 import java.util.*;
 
 import org.apache.jena.atlas.lib.SetUtils;
-import org.apache.jena.datatypes.RDFDatatype ;
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.TextDirection;
 import org.apache.jena.rdf.model.impl.Util;
-import org.apache.jena.sparql.expr.ExprEvalException ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
-import org.apache.jena.util.iterator.WrappedIterator ;
+import org.apache.jena.sparql.expr.ExprEvalException;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.WrappedIterator;
 
 /**
  *  Node utilities.
@@ -40,19 +41,32 @@ public class NodeUtils
 {
     /** IRI string to Node */
     public static Node asNode(String iri) {
-        return NodeFactory.createURI(iri) ;
+        return NodeFactory.createURI(iri);
     }
 
-    /** Return true if the node is a literal and has a language tag */
+    /**
+     * Return true if the node is a literal and has a language tag.
+     * It may be a rdf:langString or rdf:dirLangString.
+     */
     public static boolean hasLang(Node node) {
         if ( !node.isLiteral() )
-            return false ;
-        String x = node.getLiteralLanguage() ;
+            return false;
+        String x = node.getLiteralLanguage();
         if ( x == null )
-            return false ;
+            return false;
         if ( x.equals("") )
-            return false ;
-        return true ;
+            return false;
+        return true;
+    }
+
+    /** Return true if the node is a literal and has an initial text direction */
+    public static boolean hasLangDir(Node node) {
+        if ( !node.isLiteral() )
+            return false;
+        TextDirection textDir = node.getLiteralTextDirection();
+        if ( textDir == null )
+            return false;
+        return true;
     }
 
     /** Get lexical form of anything that looks like a string literal.
@@ -61,18 +75,18 @@ public class NodeUtils
      */
     public static String stringLiteral(Node literal) {
         if ( !literal.isLiteral() )
-            return null ;
-        RDFDatatype dType = literal.getLiteralDatatype() ;
-        String langTag = literal.getLiteralLanguage() ;
+            return null;
+        RDFDatatype dType = literal.getLiteralDatatype();
+        String langTag = literal.getLiteralLanguage();
 
         // Language?
         if ( langTag != null && !langTag.equals("") )
-            return literal.getLiteralLexicalForm() ;
+            return literal.getLiteralLexicalForm();
 
         if ( dType == null || dType.equals(XSDDatatype.XSDstring) )
-            return literal.getLiteralLexicalForm() ;
+            return literal.getLiteralLexicalForm();
 
-        return null ;
+        return null;
     }
 
     public static Node nullToAny(Node n) {
@@ -81,9 +95,9 @@ public class NodeUtils
 
     /** Convert IRI Nodes to strings.  Skip other kinds of Node */
     public static Iterator<String> nodesToURIs(Iterator<Node> iter) {
-        ExtendedIterator<Node> eIter = WrappedIterator.create(iter) ;
+        ExtendedIterator<Node> eIter = WrappedIterator.create(iter);
         Iterator<String> conv = eIter.filterKeep(Node::isURI).mapWith(Node::getURI);
-        return conv ;
+        return conv;
     }
 
     /** Convert a collection of strings to a set of {@link Node Nodes}. */
@@ -139,25 +153,25 @@ public class NodeUtils
 
     static Set<RDFDatatype> numericDatatypes = new HashSet<>();
     static {
-        numericDatatypes.add(XSDDatatype.XSDdecimal) ;
-        numericDatatypes.add(XSDDatatype.XSDinteger) ;
+        numericDatatypes.add(XSDDatatype.XSDdecimal);
+        numericDatatypes.add(XSDDatatype.XSDinteger);
 
-        numericDatatypes.add(XSDDatatype.XSDlong) ;
-        numericDatatypes.add(XSDDatatype.XSDint) ;
-        numericDatatypes.add(XSDDatatype.XSDshort) ;
-        numericDatatypes.add(XSDDatatype.XSDbyte) ;
+        numericDatatypes.add(XSDDatatype.XSDlong);
+        numericDatatypes.add(XSDDatatype.XSDint);
+        numericDatatypes.add(XSDDatatype.XSDshort);
+        numericDatatypes.add(XSDDatatype.XSDbyte);
 
-        numericDatatypes.add(XSDDatatype.XSDnonPositiveInteger) ;
-        numericDatatypes.add(XSDDatatype.XSDnegativeInteger) ;
+        numericDatatypes.add(XSDDatatype.XSDnonPositiveInteger);
+        numericDatatypes.add(XSDDatatype.XSDnegativeInteger);
 
-        numericDatatypes.add(XSDDatatype.XSDnonNegativeInteger) ;
-        numericDatatypes.add(XSDDatatype.XSDpositiveInteger) ;
-        numericDatatypes.add(XSDDatatype.XSDunsignedLong) ;
-        numericDatatypes.add(XSDDatatype.XSDunsignedInt) ;
-        numericDatatypes.add(XSDDatatype.XSDunsignedShort) ;
+        numericDatatypes.add(XSDDatatype.XSDnonNegativeInteger);
+        numericDatatypes.add(XSDDatatype.XSDpositiveInteger);
+        numericDatatypes.add(XSDDatatype.XSDunsignedLong);
+        numericDatatypes.add(XSDDatatype.XSDunsignedInt);
+        numericDatatypes.add(XSDDatatype.XSDunsignedShort);
 
-        numericDatatypes.add(XSDDatatype.XSDdouble) ;
-        numericDatatypes.add(XSDDatatype.XSDfloat) ;
+        numericDatatypes.add(XSDDatatype.XSDdouble);
+        numericDatatypes.add(XSDDatatype.XSDfloat);
     }
 
     /**
@@ -176,12 +190,19 @@ public class NodeUtils
      * <li>(RDF 1.1) xsd:string
      * </ul>
      */
-    public static boolean isSimpleString(Node n) { return Util.isSimpleString(n) ; }
+    public static boolean isSimpleString(Node n) { return Util.isSimpleString(n); }
 
     /**
      * A Node is a language string if it has a language tag.
      * (RDF 1.0 and RDF 1.1)
      */
-    public static boolean isLangString(Node n) { return Util.isLangString(n) ; }
+    public static boolean isLangString(Node n) { return Util.isLangString(n); }
+
+    /**
+     * A Node is a language string if it has a language tag.
+     * (RDF 1.0 and RDF 1.1)
+     */
+    public static boolean isLangDirString(Node n) { return Util.isLangDirString(n); }
+
 
 }

@@ -40,7 +40,7 @@ public class TestModelUtil extends TestSuite {
         Node n = NodeFactory.createLiteralString("abc");
         assertTrue(Util.isSimpleString(n));
         assertFalse(Util.isLangString(n));
-        assertFalse(Util.isDirLangString(n));
+        assertFalse(Util.isLangDirString(n));
         assertFalse(Util.hasLang(n));
         assertFalse(Util.hasDirection(n));
     }
@@ -49,7 +49,7 @@ public class TestModelUtil extends TestSuite {
         Node n = NodeFactory.createLiteralLang("abc", "");
         assertTrue(Util.isSimpleString(n));
         assertFalse(Util.isLangString(n));
-        assertFalse(Util.isDirLangString(n));
+        assertFalse(Util.isLangDirString(n));
         assertFalse(Util.hasLang(n));
         assertFalse(Util.hasDirection(n));
     }
@@ -58,7 +58,7 @@ public class TestModelUtil extends TestSuite {
         Node n = NodeFactory.createLiteralDirLang("abc", "", (String)null);
         assertTrue(Util.isSimpleString(n));
         assertFalse(Util.isLangString(n));
-        assertFalse(Util.isDirLangString(n));
+        assertFalse(Util.isLangDirString(n));
         assertFalse(Util.hasLang(n));
         assertFalse(Util.hasDirection(n));
     }
@@ -69,7 +69,7 @@ public class TestModelUtil extends TestSuite {
         Node n = NodeFactory.createLiteralLang("abc", "en-GB");
         assertFalse(Util.isSimpleString(n));
         assertTrue(Util.isLangString(n));
-        assertFalse(Util.isDirLangString(n));
+        assertFalse(Util.isLangDirString(n));
         assertTrue(Util.hasLang(n));
         assertFalse(Util.hasDirection(n));
     }
@@ -78,7 +78,7 @@ public class TestModelUtil extends TestSuite {
         Node n =  NodeFactory.createLiteralDirLang("abc", "en-GB", (String)null);
         assertFalse(Util.isSimpleString(n));
         assertTrue(Util.isLangString(n));
-        assertFalse(Util.isDirLangString(n));
+        assertFalse(Util.isLangDirString(n));
         assertTrue(Util.hasLang(n));
         assertFalse(Util.hasDirection(n));
     }
@@ -89,7 +89,7 @@ public class TestModelUtil extends TestSuite {
         Node n =  NodeFactory.createLiteralDirLang("abc", "en-GB", "ltr");
         assertFalse(Util.isSimpleString(n));
         assertFalse(Util.isLangString(n));
-        assertTrue(Util.isDirLangString(n));
+        assertTrue(Util.isLangDirString(n));
         assertTrue(Util.hasLang(n));
         assertTrue(Util.hasDirection(n));
     }

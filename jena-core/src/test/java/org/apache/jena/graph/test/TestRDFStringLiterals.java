@@ -115,9 +115,40 @@ public class TestRDFStringLiterals {
         test(n, "abc", "en", RTL, RDF.dtDirLangString, "abc@en");
     }
 
-    @Test public void dirLangString02() {
+    @Test(expected = JenaException.class)
+    public void dirLangString02() {
         Node n = NodeFactory.createLiteralDirLang("abc", "en", "LTR");
-        test(n, "abc", "en", LTR, RDF.dtDirLangString, "abc@en");
+    }
+
+    @Test(expected = JenaException.class)
+    public void dirLangString03() {
+        Node n = NodeFactory.createLiteralDirLang("abc", "en", "unk");
+    }
+
+    @Test public void dirLangString04() {
+        Node n = NodeFactory.createLiteralDirLang("abc", "en", "");
+        test(n, "abc", "en", null, RDF.dtLangString, "abc@en");
+    }
+
+    @Test(expected = JenaException.class)
+    public void dirLangString05() {
+        Node n = NodeFactory.createLiteralDirLang("abc", "en", "x");
+    }
+
+    // -- Via createLiteralLang splitting lang tags on "--"
+    @Test public void dirLangString10() {
+        Node n = NodeFactory.createLiteralLang("abc", "en--rtl");
+        test(n, "abc", "en", RTL, RDF.dtDirLangString, "abc@en");
+    }
+
+    @Test(expected = JenaException.class)
+    public void dirLangString11() {
+        Node n = NodeFactory.createLiteralLang("abc", "en--LTR");
+    }
+
+    @Test(expected = JenaException.class)
+    public void dirLangString12() {
+        Node n = NodeFactory.createLiteralLang("abc", "en--");
     }
 
     // Errors

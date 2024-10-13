@@ -242,7 +242,7 @@ public class RowSetWriterJSON implements RowSetWriter {
         }
 
         private void writeValue(IndentedWriter out, Node value, boolean multiLine) {
-            if ( multiLine || value.isNodeTriple() )
+            if ( multiLine || value.isTripleTerm() )
                 println(out, "{");
             else
                 print(out, "{ ");
@@ -257,13 +257,13 @@ public class RowSetWriterJSON implements RowSetWriter {
                 writeValueURI(out, value, multiLine);
             else if ( value.isBlank() )
                 writeValueBlankNode(out, value, multiLine);
-            else if ( value.isNodeTriple() )
+            else if ( value.isTripleTerm() )
                 writeValueNodeTriple(out, value, multiLine);
             else if ( value.isNodeGraph() )
                 writeValueNodeGraph(out, value, multiLine);
             else
                 Log.warn(RowSetWriterJSON.class, "Unknown RDFNode type in result set: " + value.getClass());
-            if ( multiLine || value.isNodeTriple()) // OR triple
+            if ( multiLine || value.isTripleTerm()) // OR triple
                 println(out) ;
             else
                 print(out, " ");

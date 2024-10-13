@@ -419,7 +419,7 @@ public class RowSetJSONStreaming<E> extends IteratorSlotted<Binding> implements 
             Node p = parseOneTerm(jp, labelMap, onUnknownRdfTermType);
             Node o = parseOneTerm(jo, labelMap, onUnknownRdfTermType);
 
-            result = NodeFactory.createTripleNode(s, p, o);
+            result = NodeFactory.createTripleTerm(s, p, o);
             break;
         default:
             if (onUnknownRdfTermType != null) {
