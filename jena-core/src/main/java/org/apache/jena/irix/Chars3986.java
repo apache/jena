@@ -44,7 +44,7 @@ public class Chars3986 {
 
     /** RFC3987 ipchar */
     public static boolean isIPChar(char ch, String str, int posn) {
-        return isPChar(ch, str, posn) || isUcsChar(ch);
+        return isPChar(ch, str, posn) || ch_isUcsChar(ch);
     }
 
     /**
@@ -69,7 +69,7 @@ public class Chars3986 {
 
     /** RFC3987: International alphabetic. */
     public static boolean isIAlpha(char ch) {
-        return isAlpha(ch) || isUcsChar(ch);
+        return isAlpha(ch) || ch_isUcsChar(ch);
     }
 
     // RFC 3987
@@ -83,7 +83,13 @@ public class Chars3986 {
     // Surrogates are "hi-lo" : DC000-DFFF and D800-DFFF
     // We assume the java string is valid and surrogates are correctly in high-low pairs.
 
+    /** @deprecated Prefer {@link #int_isUcsChar(int)} */
+    @Deprecated(forRemoval = true)
     public static boolean isUcsChar(char ch) {
+        return ch_isUcsChar(ch);
+    }
+
+    private static boolean ch_isUcsChar(char ch) {
             return range(ch, 0xA0, 0xD7FF)  || range(ch, 0xF900, 0xFDCF)  || range(ch, 0xFDF0, 0xFFEF)
                     // Allow surrogates.
                     || Character.isSurrogate(ch);

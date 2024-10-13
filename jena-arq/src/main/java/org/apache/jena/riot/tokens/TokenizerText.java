@@ -573,35 +573,9 @@ public final class TokenizerText implements Tokenizer
                 default:
                     if ( ch <= 0x19 )
                         warning("Illegal character in IRI (control char 0x%02X): <%s[0x%02X]...>", ch, stringBuilder.toString(), ch);
-
             }
-            // JENA-1924: jena-iri does not catch this.
-            if ( ! VeryVeryLaxIRI && ch >= 0xA0 && ! isUcsChar(ch) )
-                warning("Illegal character in IRI (Not a ucschar: 0x%04X): <%s[U+%04X]...>", ch, stringBuilder.toString(), ch);
             insertCodepoint(stringBuilder, ch);
         }
-    }
-
-    private static boolean isUcsChar(int ch) {
-        // RFC 3987
-        // ucschar    = %xA0-D7FF / %xF900-FDCF / %xFDF0-FFEF
-        //            / %x10000-1FFFD / %x20000-2FFFD / %x30000-3FFFD
-        //            / %x40000-4FFFD / %x50000-5FFFD / %x60000-6FFFD
-        //            / %x70000-7FFFD / %x80000-8FFFD / %x90000-9FFFD
-        //            / %xA0000-AFFFD / %xB0000-BFFFD / %xC0000-CFFFD
-        //            / %xD0000-DFFFD / %xE1000-EFFFD
-        boolean b = range(ch, 0xA0, 0xD7FF)  || range(ch, 0xF900, 0xFDCF)  || range(ch, 0xFDF0, 0xFFEF);
-        if ( b )
-            return true;
-        if ( ch < 0x1000 )
-            return false;
-        // 32 bit checks.
-        return
-            range(ch, 0x10000, 0x1FFFD) || range(ch, 0x20000, 0x2FFFD) || range(ch, 0x30000, 0x3FFFD) ||
-            range(ch, 0x40000, 0x4FFFD) || range(ch, 0x50000, 0x5FFFD) || range(ch, 0x60000, 0x6FFFD) ||
-            range(ch, 0x70000, 0x7FFFD) || range(ch, 0x80000, 0x8FFFD) || range(ch, 0x90000, 0x9FFFD) ||
-            range(ch, 0xA0000, 0xAFFFD) || range(ch, 0xB0000, 0xBFFFD) || range(ch, 0xC0000, 0xCFFFD) ||
-            range(ch, 0xD0000, 0xDFFFD) || range(ch, 0xE1000, 0xEFFFD);
     }
 
     // Read a unicode escape : does not allow \\ bypass
