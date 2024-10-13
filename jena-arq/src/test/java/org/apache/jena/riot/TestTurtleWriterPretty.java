@@ -42,9 +42,9 @@ public class TestTurtleWriterPretty {
         x.add(new Object[]{"Turtle/Long", RDFFormat.TURTLE_LONG});
         x.add(new Object[]{"Trig/Pretty", RDFFormat.TRIG_PRETTY});
         x.add(new Object[]{"Trig/Long", RDFFormat.TRIG_LONG});
-        return x ; 
+        return x ;
     }
-    
+
     private static String DIR = "testing/RIOT/Writer/";
 
     private static String BASE = "http://BASE/";
@@ -60,7 +60,7 @@ public class TestTurtleWriterPretty {
         else
             this.filename = DIR+"rdfwriter-01.ttl";
     }
-    
+
     // read file, with external base URI
     private static Graph data(String fn, String baseURI) {
         Graph g1 = GraphFactory.createDefaultGraph();
@@ -72,13 +72,16 @@ public class TestTurtleWriterPretty {
     }
 
     // Stream writer (BLOCKS and FLAT) don't print a base URI unless explicitly given one in the data.
-   
+
     @Test public void writer_parse_base_2() {
-        assumeTrue(format.getVariant().equals(RDFFormat.PRETTY));
-        
+        RDFFormatVariant fmtVariant = format.getVariant();
+        boolean isPretty = ( fmtVariant == RDFFormat.PRETTY || fmtVariant == RDFFormat.LONG ) ;
+
+        assumeTrue(isPretty);
+
         Graph g = data(filename, BASE);
 
-        String written = 
+        String written =
             RDFWriter.create()
                 .base(BASE)
                 .source(g)
