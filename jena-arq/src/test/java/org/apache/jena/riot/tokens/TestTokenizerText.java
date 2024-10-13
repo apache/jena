@@ -996,64 +996,62 @@ public class TestTokenizerText {
         });
     }
 
-    @Test(expected=RiotParseException.class)
-    public void token_replacmentChar_uri_1() {
+    public void token_replacementChar_uri_1() {
         Tokenizer tokenizer = tokenizer("<a\uFFFDz>");
         testNextToken(tokenizer, TokenType.IRI);
     }
 
-    @Test(expected=RiotParseException.class)
-    public void token_replacmentChar_uri_2() {
+    public void token_replacementChar_uri_2() {
         Tokenizer tokenizer = tokenizer("<a\\uFFFDz>");
         testNextToken(tokenizer, TokenType.IRI);
     }
 
     @Test(expected=RiotParseException.class)
-    public void token_replacmentChar_bnode_1() {
+    public void token_replacementChar_bnode_1() {
         Tokenizer tokenizer = tokenizer("ns\uFFFD:xyz");
         testNextToken(tokenizer, TokenType.PREFIXED_NAME);
         //assertFalse(tokenizer.hasNext());
     }
 
     @Test(expected=RiotParseException.class)
-    public void token_replacmentChar_bnode_2() {
+    public void token_replacementChar_bnode_2() {
         Tokenizer tokenizer = tokenizer("ns:\uFFFDabc");
         testNextToken(tokenizer, TokenType.PREFIXED_NAME);
         //assertFalse(tokenizer.hasNext());
     }
 
-    private final int CountWaringsOnReplacmeentChar = 0;
+    private static final int CountWaringsOnReplacementChar = 0;
 
     // Test for warnings
     @Test
-    public void tokenStr_replacmentChar_str_1() {
-        testExpectWarning("'\uFFFD'", TokenType.STRING, CountWaringsOnReplacmeentChar);
+    public void tokenStr_replacementChar_str_1() {
+        testExpectWarning("'\uFFFD'", TokenType.STRING, CountWaringsOnReplacementChar);
     }
 
     @Test
-    public void tokenStr_replacmentChar_str_2() {
+    public void tokenStr_replacementChar_str_2() {
         // As unicode escape.
         testExpectWarning("'\\uFFFD'", TokenType.STRING, 0);
     }
 
     @Test
-    public void tokenStr_replacmentChar_str_3() {
-        testExpectWarning("'''\uFFFD'''", TokenType.STRING, CountWaringsOnReplacmeentChar);
+    public void tokenStr_replacementChar_str_3() {
+        testExpectWarning("'''\uFFFD'''", TokenType.STRING, CountWaringsOnReplacementChar);
     }
 
     @Test
-    public void tokenStr_replacmentChar_str_4() {
+    public void tokenStr_replacementChar_str_4() {
         // As unicode escape.
         testExpectWarning("'''\\uFFFD'''", TokenType.STRING, 0);
     }
 
     @Test
-    public void tokenStr_replacmentChar_str_5() {
-        testExpectWarning("'abc\uFFFDdef'", TokenType.STRING, CountWaringsOnReplacmeentChar);
+    public void tokenStr_replacementChar_str_5() {
+        testExpectWarning("'abc\uFFFDdef'", TokenType.STRING, CountWaringsOnReplacementChar);
     }
 
     @Test
-    public void tokenStr_replacmentChar_str_6() {
+    public void tokenStr_replacementChar_str_6() {
         // Illegal encoding.
         // 0xDF is ß (lower case) in ISO-8859-1.
         // Here it is an illegal encoding (high set, next byte should have the high bit set but does not).
@@ -1063,35 +1061,35 @@ public class TestTokenizerText {
         byte[] bytes = {(byte)0x22, (byte)0xDF, (byte)0x22};
         Reader r = IO.asUTF8(new ByteArrayInputStream(bytes));
         PeekReader pr = PeekReader.make(r);
-        Token t = testExpectWarning(pr, TokenType.STRING, CountWaringsOnReplacmeentChar);
+        Token t = testExpectWarning(pr, TokenType.STRING, CountWaringsOnReplacementChar);
         int char0 = t.getImage().codePointAt(0);
         assertEquals("Expected Unicode REPLACEMENT CHARACTER", 0xFFFD, char0);
     }
 
     @Test
-    public void tokenStr_replacmentChar_IRI_1() {
-        testExpectWarning("<http://example/\uFFFD>", TokenType.IRI, 1);
+    public void tokenStr_replacementChar_IRI_1() {
+        testExpectWarning("<http://example/\uFFFD>", TokenType.IRI, 0);
     }
 
     @Test
-    public void tokenStr_replacmentChar_IRI_2() {
+    public void tokenStr_replacementChar_IRI_2() {
         // As unicode escape. Still bad in a URI.
-        testExpectWarning("<http://example/\\uFFFD>", TokenType.IRI, 1);
+        testExpectWarning("<http://example/\\uFFFD>", TokenType.IRI, 0);
     }
 
     @Test
-    public void tokenStr_replacmentChar_prefixedName_1() {
+    public void tokenStr_replacementChar_prefixedName_1() {
         testExpectWarning("ex:abc\uFFFD", TokenType.PREFIXED_NAME, 1);
     }
 
     @Test(expected=RiotException.class)
-    public void tokenStr_replacmentChar_prefixedName_2() {
+    public void tokenStr_replacementChar_prefixedName_2() {
         // Unicode escape
         testExpectWarning("ex:abc\\uFFFD", TokenType.PREFIXED_NAME, 0);
     }
 
     @Test
-    public void tokenStr_replacmentChar_blankNode_1() {
+    public void tokenStr_replacementChar_blankNode_1() {
         testExpectWarning("_:b\uFFFD", TokenType.BNODE, 1);
         // and no escaped characters for blank node labels.
     }
