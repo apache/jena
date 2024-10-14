@@ -31,6 +31,7 @@
   <properties>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
     <automatic.module.name>org.apache.jena.fuseki.core</automatic.module.name>
+    <argLine></argLine>
   </properties>
 
   <dependencies>
@@ -165,10 +166,19 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
           <includes>
             <include>**/TS_*.java</include>
           </includes>
         </configuration>
+      </plugin>
+      <plugin>
+        <!-- Set groupId:artifactId:type:[classifier] -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution><goals><goal>properties</goal></goals></execution>
+        </executions>
       </plugin>
 
       <plugin>

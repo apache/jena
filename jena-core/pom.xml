@@ -130,15 +130,25 @@
         <artifactId>maven-resources-plugin</artifactId>
       </plugin>
 
+      <!-- Contract tests use mockito -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <argLine>-javaagent:${org.mockito:mockito-core:jar}</argLine>
           <includes>
             <include>org/apache/jena/test/TestPackage_core.java</include>
             <include>**/*_CS.java</include>
           </includes>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <!-- Set resolved artifact properties -->
+        <executions>
+          <execution><goals><goal>properties</goal></goals></execution>
+        </executions>
       </plugin>
 
       <plugin>
