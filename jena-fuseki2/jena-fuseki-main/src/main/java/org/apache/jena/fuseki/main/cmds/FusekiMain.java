@@ -20,6 +20,7 @@ package org.apache.jena.fuseki.main.cmds;
 
 import static arq.cmdline.ModAssembler.assemblerDescDecl;
 
+import java.io.File;
 import java.net.BindException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,6 +30,7 @@ import java.util.List;
 import arq.cmdline.CmdARQ;
 import arq.cmdline.ModDatasetAssembler;
 import org.apache.jena.assembler.exceptions.AssemblerException;
+import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.AuthScheme;
@@ -40,16 +42,19 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiMainInfo;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.sys.FusekiCliCustomiser;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.fuseki.main.sys.FusekiAutoModules;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.FusekiCoreInfo;
 import org.apache.jena.fuseki.servlets.SPARQL_QueryGeneral;
+import org.apache.jena.fuseki.system.spot.TDBOps;
 import org.apache.jena.fuseki.validation.DataValidator;
 import org.apache.jena.fuseki.validation.IRIValidator;
 import org.apache.jena.fuseki.validation.QueryValidator;
 import org.apache.jena.fuseki.validation.UpdateValidator;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdfs.RDFSFactory;
@@ -57,10 +62,13 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RiotException;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
+import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb1.transaction.TransactionManager;
+import org.apache.jena.tdb2.DatabaseMgr;
 import org.slf4j.Logger;
 
 public class FusekiMain extends CmdARQ {
@@ -123,14 +131,54 @@ public class FusekiMain extends CmdARQ {
     private static ArgDecl  argValidators   = new ArgDecl(ArgDecl.NoValue,  "validators");
 
     private static List<ArgModuleGeneral> additionalArgs = new ArrayList<>();
+
+    /**
+     * Registers a custom arguments module
+     * <p>
+     * This approach is useful when your custom arguments affect global server/runtime setup and don't need to directly
+     * impact Fuseki Server building.  If you need to impact server building then use
+     * {@link #addCustomiser(FusekiCliCustomiser)} instead
+     * </p>
+     * @param argModule Arguments module
+     * @deprecated Register a {@link org.apache.jena.fuseki.main.sys.FusekiCliCustomiser} via
+     * {@link #addCustomiser(FusekiCliCustomiser)} instead.
+     */
+    @Deprecated
     public static void addArgModule(ArgModuleGeneral argModule) { additionalArgs.add(argModule); }
+
+    private static final List<FusekiCliCustomiser> CUSTOMISERS = new ArrayList<>();
+    /**
+     * Registers a CLI customiser
+     * <p>
+     * A CLI customiser can add one/more custom arguments into the Fuseki Server CLI arguments and then can apply those
+     * to the Fuseki server being built during the processing of {@link #processModulesAndArgs()}.  This allows for
+     * custom arguments that directly affect how the Fuseki server is built to be created.
+     * </p>
+     * @param customiser CLI customiser
+     */
+    public static void addCustomiser(FusekiCliCustomiser customiser) {
+        if (customiser != null) {
+            CUSTOMISERS.add(customiser);
+        }
+    }
+
+    /**
+     * Resets any previously registered CLI customisers
+     */
+    public static void resetCustomisers() {
+        CUSTOMISERS.clear();
+    }
 
     // private static ModLocation modLocation = new ModLocation();
     private static ModDatasetAssembler modDataset      = new ModDatasetAssembler();
 
-    private final ServerConfig serverConfig  = new ServerConfig();
+    private final FusekiServer.Builder builder;
     // Default
     private boolean useTDB2 = true;
+
+    // Instance variables used only to track non-builder related aspects of CLI setup for later logging
+    private boolean empty = false;
+    private String datasetDescription = null, datasetPath = null;
 
     // -- Programmatic ways to create a server
 
@@ -148,12 +196,10 @@ public class FusekiMain extends CmdARQ {
     public static FusekiServer.Builder builder(String... args) {
         // Parses command line, sets arguments.
         FusekiMain inner = new FusekiMain(args);
-        // Process command line args according to the argument specified.
+        // Process command line args according to the argument specified, this populates
+        // the private instance builder directly
         inner.process();
-        // Apply command line/serverConfig to a builder.
-        FusekiServer.Builder builder = inner.builder();
-        applyServerArgs(builder, inner.serverConfig);
-        return builder;
+        return inner.builder;
     }
 
     /**
@@ -168,8 +214,18 @@ public class FusekiMain extends CmdARQ {
 
     // --
 
-    protected FusekiMain(String... argv) {
+    protected FusekiMain(FusekiServer.Builder builder, String... argv) {
         super(argv);
+
+        this.builder = builder != null ? builder : FusekiServer.create();
+
+        for (FusekiCliCustomiser customiser : CUSTOMISERS) {
+            customiser.customiseCli(this);
+        }
+    }
+
+    protected FusekiMain(String... argv) {
+        this(null, argv);
 
         if ( false )
             // Consider ...
@@ -258,9 +314,16 @@ public class FusekiMain extends CmdARQ {
     protected void processModulesAndArgs() {
         Logger log = Fuseki.serverLog;
 
-        serverConfig.verboseLogging = super.isVerbose();
+        builder.verbose(super.isVerbose());
+
+        // Process any CLI customisers up front
+        for (FusekiCliCustomiser customiser : CUSTOMISERS) {
+            customiser.processCliArgs(this, builder);
+        }
 
         boolean allowEmpty = contains(argEmpty) || contains(argSparqler);
+        boolean allowUpdate = false;
+        DatasetGraph dsg = null;
 
         // ---- Checking consistency
         int numDefinitions = 0;
@@ -299,32 +362,38 @@ public class FusekiMain extends CmdARQ {
             if ( getPositional().size() > 1 )
                 throw new CmdException("Multiple dataset path names given");
             if ( getPositional().size() != 0 )
-                serverConfig.datasetPath = DataAccessPoint.canonical(getPositionalArg(0));
+                this.datasetPath = DataAccessPoint.canonical(getPositionalArg(0));
         }
 
-        serverConfig.datasetDescription = "<unset>";
+        this.datasetDescription = "<unset>";
 
         // ---- check: Invalid: --update + --conf
         if ( contains(argUpdate) && contains(argConfig) )
             throw new CmdException("--update and a configuration file does not make sense (control using the configuration file only)");
-        boolean allowUpdate = contains(argUpdate);
-        serverConfig.allowUpdate = allowUpdate;
+        allowUpdate = contains(argUpdate);
 
         boolean hasJettyConfigFile = contains(argJettyConfig);
+        if (hasJettyConfigFile) {
+            String jettyConfigFile = getValue(argJettyConfig);
+            if ( !FileOps.exists(jettyConfigFile)) {
+                throw new CmdException("Jetty config file not found: " + jettyConfigFile);
+            }
+            builder.jettyServerConfig(jettyConfigFile);
+        }
 
         // ---- Port
-        serverConfig.port = defaultPort;
+        builder.port(defaultPort);
 
         if ( contains(argPort) ) {
             if ( hasJettyConfigFile )
                 throw new CmdException("Cannot specify the port and also provide a Jetty configuration file");
-            serverConfig.port = portNumber(argPort);
+            builder.port(portNumber(argPort));
         }
 
         if ( contains(argLocalhost) ) {
             if ( hasJettyConfigFile )
                 throw new CmdException("Cannot specify 'localhost' and also provide a Jetty configuration file");
-            serverConfig.loopback = true;
+            builder.loopback(true);
         }
 
         // ---- Dataset
@@ -337,8 +406,8 @@ public class FusekiMain extends CmdARQ {
             useTDB2 = true;
 
         if ( allowEmpty ) {
-            serverConfig.empty = true;
-            serverConfig.datasetDescription = "No dataset";
+            this.empty = true;
+            this.datasetDescription = "No dataset";
         }
 
         // Fuseki config file
@@ -352,26 +421,26 @@ public class FusekiMain extends CmdARQ {
                 throw new CmdException("File not found: "+file);
             if ( Files.isDirectory(path) )
                 throw new CmdException("Is a directory: "+file);
-            serverConfig.datasetDescription = "Configuration: "+path.toAbsolutePath();
-            serverConfig.serverConfig = getValue(argConfig);
+            this.datasetDescription = "Configuration: "+path.toAbsolutePath();
+            builder.parseConfigFile(getValue(argConfig));
         }
 
         // Ways to set up a dataset.
         if ( contains(argMem) ) {
-            serverConfig.datasetDescription = "in-memory";
+            this.datasetDescription = "in-memory";
             // Only one setup should be called by the test above but to be safe
             // and in case of future changes, clear the configuration.
-            serverConfig.dsg = DatasetGraphFactory.createTxnMem();
+            dsg = DatasetGraphFactory.createTxnMem();
             // Always allow, else you can't do very much!
-            serverConfig.allowUpdate = true;
+            allowUpdate = true;
         }
 
         if ( contains(argFile) ) {
             List<String> filenames = getValues(argFile);
-            serverConfig.datasetDescription = "in-memory, with files loaded";
+            this.datasetDescription = "in-memory, with files loaded";
             // Update is not enabled by default for --file
-            serverConfig.allowUpdate = contains(argUpdate);
-            serverConfig.dsg = DatasetGraphFactory.createTxnMem();
+            allowUpdate = contains(argUpdate);
+            dsg = DatasetGraphFactory.createTxnMem();
 
             for(String filename : filenames ) {
                 String pathname = filename;
@@ -384,10 +453,11 @@ public class FusekiMain extends CmdARQ {
                 Lang language = RDFLanguages.filenameToLang(filename);
                 if ( language == null )
                     throw new CmdException("Cannot guess language for file: " + filename);
-                Txn.executeWrite(serverConfig.dsg,  ()-> {
+                DatasetGraph finalDsg = dsg;
+                Txn.executeWrite(dsg, ()-> {
                     try {
                         log.info("Dataset: in-memory: load file: " + filename);
-                        RDFDataMgr.read(serverConfig.dsg, filename);
+                        RDFDataMgr.read(finalDsg, filename);
                     } catch (RiotException ex) {
                         throw new CmdException("Failed to load file: " + filename);
                     }
@@ -396,28 +466,47 @@ public class FusekiMain extends CmdARQ {
         }
 
         if ( contains(argMemTDB) ) {
-            DSGSetup.setupMemTDB(useTDB2, serverConfig);
+            String tag = useTDB2 ? "TDB2" : "TDB1";
+            this.datasetDescription = tag+" dataset in-memory";
+            dsg = useTDB2
+                               ? DatabaseMgr.createDatasetGraph()
+                               : TDB1Factory.createDatasetGraph();
+            allowUpdate = true;
         }
 
         if ( contains(argTDB) ) {
             String directory = getValue(argTDB);
-            DSGSetup.setupTDB(directory, useTDB2, serverConfig);
+            validateDirectory(directory);
+            if ( IO.isEmptyDirectory(directory) ) {
+                if ( useTDB2 ) {
+                    dsg = setupTDB2(directory);
+                }
+                else {
+                    dsg = setupTDB1(directory);
+                }
+            } else if ( TDBOps.isTDB1(directory) ) {
+                dsg = setupTDB1(directory);
+            } else if ( TDBOps.isTDB2(directory) ) {
+                dsg = setupTDB2(directory);
+            } else {
+                throw new CmdException("Directory not a database: " + directory);
+            }
         }
 
         if ( contains(assemblerDescDecl) ) {
-            serverConfig.datasetDescription = "Assembler: "+ getValue(assemblerDescDecl);
+            this.datasetDescription = "Assembler: "+ getValue(assemblerDescDecl);
             // Need to add service details.
             Dataset ds = modDataset.createDataset();
-            serverConfig.dsg = ds.asDatasetGraph();
+            dsg = ds.asDatasetGraph();
         }
 
         if ( contains(argRDFS) ) {
             String rdfsVocab = getValue(argRDFS);
             if ( !FileOps.exists(rdfsVocab) )
                 throw new CmdException("No such file for RDFS: "+rdfsVocab);
-            serverConfig.rdfsGraph = RDFDataMgr.loadGraph(rdfsVocab);
-            serverConfig.datasetDescription = serverConfig.datasetDescription+ " (with RDFS)";
-            serverConfig.dsg = RDFSFactory.datasetRDFS(serverConfig.dsg, serverConfig.rdfsGraph);
+            Graph rdfsGraph = RDFDataMgr.loadGraph(rdfsVocab);
+            this.datasetDescription = this.datasetDescription + " (with RDFS)";
+            dsg = RDFSFactory.datasetRDFS(dsg, rdfsGraph);
         }
 
         // ---- Misc features.
@@ -430,21 +519,23 @@ public class FusekiMain extends CmdARQ {
             String filebase = getValue(argSparqler);
             if ( ! FileOps.exists(filebase) )
                 throw new CmdException("File area not found: "+filebase);
-            serverConfig.contentDirectory = filebase;
-            serverConfig.addGeneral = "/sparql";
-            serverConfig.empty = true;
-            serverConfig.validators = true;
+            builder.staticFileBase(filebase).addServlet("/sparql", new SPARQL_QueryGeneral());
         }
 
         if ( contains(argGeneralQuerySvc) ) {
             String z = getValue(argGeneralQuerySvc);
             if ( ! z.startsWith("/") )
                 z = "/"+z;
-            serverConfig.addGeneral = z;
+            // Add SPARQL_QueryGeneral as a general servlet, not reached by the service router.
+            builder.addServlet(z, new SPARQL_QueryGeneral());
         }
 
-        if ( contains(argValidators) ) {
-            serverConfig.validators = true;
+        if ( contains(argValidators) || contains(argSparqler) ) {
+            // Validators.
+            builder.addServlet("/$/validate/query",  new QueryValidator());
+            builder.addServlet("/$/validate/update", new UpdateValidator());
+            builder.addServlet("/$/validate/iri",    new IRIValidator());
+            builder.addServlet("/$/validate/data",   new DataValidator());
         }
 
         // -- Server setup.
@@ -453,7 +544,7 @@ public class FusekiMain extends CmdARQ {
             String contextPath = getValue(argContextPath);
             contextPath = sanitizeContextPath(contextPath);
             if ( contextPath != null )
-                serverConfig.servletContextPath = contextPath;
+                builder.contextPath(contextPath);
         }
 
         if ( contains(argBase) ) {
@@ -461,19 +552,18 @@ public class FusekiMain extends CmdARQ {
             String filebase = getValue(argBase);
             if ( ! FileOps.exists(filebase) ) {
                 throw new CmdException("File area not found: "+filebase);
-                //FmtLog.warn(Fuseki.configLog, "File area not found: "+filebase);
             }
-            serverConfig.contentDirectory = filebase;
+            builder.staticFileBase(filebase);
         }
 
         if ( contains(argPasswdFile) ) {
             if ( hasJettyConfigFile )
                 throw new CmdException("Can't specify a password file and also provide a Jetty configuration file");
-            serverConfig.passwdFile = getValue(argPasswdFile);
+            builder.passwordFile(getValue(argPasswdFile));
         }
 
         if ( contains(argRealm) )
-            serverConfig.realm =  getValue(argRealm);
+            builder.realm(getValue(argRealm));
 
         if ( contains(argHttpsPort) && ! contains(argHttps) )
             throw new CmdException("https port given but not certificate details via --"+argHttps.getKeyName());
@@ -481,60 +571,61 @@ public class FusekiMain extends CmdARQ {
         if ( contains(argHttps) ) {
             if ( hasJettyConfigFile )
                 throw new CmdException("Can't specify \"https\" and also provide a Jetty configuration file");
-            serverConfig.httpsPort = defaultHttpsPort;
-            if (  contains(argHttpsPort) )
-                serverConfig.httpsPort = portNumber(argHttpsPort);
-            String httpsSetup = getValue(argHttps);
-            // The details go in a separate file that can be secured.
-            serverConfig.httpsKeysDetails = httpsSetup;
+            builder.https(contains(argHttpsPort) ? portNumber(argHttpsPort) : defaultHttpsPort, getValue(argHttps));
         }
 
         if ( contains(argAuth) ) {
             if ( hasJettyConfigFile )
                 throw new CmdException("Can't specify authentication and also provide a Jetty configuration file");
             String schemeStr = getValue(argAuth);
-            serverConfig.authScheme = AuthScheme.scheme(schemeStr);
-        }
-
-        // Jetty server : this will be the server configuration regardless of other settings.
-        if ( contains(argJettyConfig) ) {
-            String jettyConfigFile = getValue(argJettyConfig);
-            if ( ! FileOps.exists(jettyConfigFile) )
-                throw new CmdException("Jetty config file not found: "+jettyConfigFile);
-            serverConfig.jettyConfigFile = jettyConfigFile;
+            builder.auth(AuthScheme.scheme(schemeStr));
         }
 
         boolean withModules = hasValueOfTrue(argEnableModules);
         if ( withModules ) {
             // Use the discovered ones.
             FusekiAutoModules.enable(true);
-            // Allows for external setting of serverConfig.fusekiModules
-            if ( serverConfig.fusekiModules == null ) {
-                FusekiAutoModules.setup();
-                serverConfig.fusekiModules = FusekiAutoModules.load();
-            }
+            builder.fusekiModules(FusekiAutoModules.load());
         } else {
             // Disabled module discovery.
             FusekiAutoModules.enable(false);
-            // Allows for external setting of serverConfig.fusekiModules
-            if ( serverConfig.fusekiModules == null ) {
-                serverConfig.fusekiModules = FusekiModules.empty();
-            }
+            builder.fusekiModules(FusekiModules.empty());
         }
 
         if ( contains(argCORS) ) {
             String corsConfigFile = getValue(argCORS);
-            if ( ! FileOps.exists(corsConfigFile) )
-                throw new CmdException("CORS config file not found: "+corsConfigFile);
-            serverConfig.corsConfigFile = corsConfigFile;
-        } else if (contains(argNoCORS)) {
-            serverConfig.withCORS = ! contains(argNoCORS);
+            if (!FileOps.exists(corsConfigFile))
+                throw new CmdException("CORS config file not found: " + corsConfigFile);
+            builder.enableCors(true, corsConfigFile);
+        } else {
+            builder.enableCors(!contains(argNoCORS));
         }
 
-        serverConfig.withPing = contains(argWithPing);
-        serverConfig.withStats = contains(argWithStats);
-        serverConfig.withMetrics = contains(argWithMetrics);
-        serverConfig.withCompact = contains(argWithCompact);
+        builder.enablePing(contains(argWithPing))
+               .enableStats(contains(argWithStats))
+               .enableMetrics(contains(argWithMetrics))
+               .enableCompact(contains(argWithCompact));
+
+        if ( ! this.empty ) {
+            // Config file was already applied earlier
+            if ( !contains(argConfig) )
+                // One dataset.
+                builder.add(this.datasetPath, dsg, allowUpdate);
+        }
+    }
+
+    private DatasetGraph setupTDB2(String directory) {
+        DatasetGraph dsg;
+        this.datasetDescription = "TDB2 dataset: location=" + directory;
+        dsg = DatabaseMgr.connectDatasetGraph(directory);
+        return dsg;
+    }
+
+    private DatasetGraph setupTDB1(String directory) {
+        DatasetGraph dsg;
+        this.datasetDescription = "TDB1 dataset: location="+ directory;
+        dsg = TDB1Factory.createDatasetGraph(directory);
+        return dsg;
     }
 
     private int portNumber(ArgDecl arg) {
@@ -542,8 +633,7 @@ public class FusekiMain extends CmdARQ {
         if ( portStr.isEmpty() )
             return -1;
         try {
-            int port = Integer.parseInt(portStr);
-            return port;
+            return Integer.parseInt(portStr);
         } catch (NumberFormatException ex) {
             throw new CmdException(argPort.getKeyName() + " : bad port number: '" + portStr+"'");
         }
@@ -563,19 +653,31 @@ public class FusekiMain extends CmdARQ {
         return contextPath;
     }
 
+    private static void validateDirectory(String directory) {
+        File dir = Path.of(directory).toFile();
+        if ( ! dir.exists() )
+            throw new CmdException("Directory does not exist: " + directory);
+        if ( ! dir.isDirectory() )
+            throw new CmdException("Not a directory: " + directory);
+        if ( ! dir.canRead() )
+            throw new CmdException("Directory not readable: "+directory) ;
+        if ( ! dir.canWrite() )
+            throw new CmdException("Directory not writeable: "+directory) ;
+    }
+
     @Override
     protected void exec() {
         try {
             Logger log = Fuseki.serverLog;
             FusekiMainInfo.logServerCode(log);
-            FusekiServer server = makeServer(serverConfig);
+            FusekiServer server = this.builder.build();
             infoCmd(server, log);
             try {
                 server.start();
             } catch (FusekiException ex) {
                 if ( ex.getCause() instanceof BindException ) {
-                    if ( serverConfig.jettyConfigFile == null )
-                        Fuseki.serverLog.error("Failed to start server: "+ex.getCause().getMessage()+ ": port="+serverConfig.port);
+                    if ( !contains(argJettyConfig) )
+                        Fuseki.serverLog.error("Failed to start server: "+ex.getCause().getMessage()+ ": port="+portNumber(argPort));
                     else
                         Fuseki.serverLog.error("Failed to start server: "+ex.getCause().getMessage()+ ": port in use");
                     System.exit(1);
@@ -597,92 +699,11 @@ public class FusekiMain extends CmdARQ {
     }
 
     /**
-     * Take a {@link ServerConfig} and make a {@Link FusekiServer}.
-     * The server has not been started.
+     * Returns the internal builder that gets populated by {@link #processModulesAndArgs()}
+     * @return Builder
      */
-    private FusekiServer makeServer(ServerConfig serverConfig) {
-        FusekiServer.Builder builder = builder();
-        applyServerArgs(builder, serverConfig);
-        return builder.build();
-    }
-
     protected FusekiServer.Builder builder() {
         return FusekiServer.create();
-    }
-
-    /**
-     * Process {@link ServerConfig} and build a server.
-     * The server has not been started.
-     */
-    private static FusekiServer buildServer(FusekiServer.Builder builder, ServerConfig serverConfig) {
-        applyServerArgs(builder, serverConfig);
-        return builder.build();
-    }
-
-    /** Apply {@link ServerConfig} to a {@link FusekiServer.Builder}. */
-    private static void applyServerArgs(FusekiServer.Builder builder, ServerConfig serverConfig) {
-        if ( serverConfig.jettyConfigFile != null )
-            builder.jettyServerConfig(serverConfig.jettyConfigFile);
-        builder.port(serverConfig.port);
-        builder.loopback(serverConfig.loopback);
-        builder.verbose(serverConfig.verboseLogging);
-
-        if ( serverConfig.addGeneral != null )
-            // Add SPARQL_QueryGeneral as a general servlet, not reached by the service router.
-            builder.addServlet(serverConfig.addGeneral,  new SPARQL_QueryGeneral());
-
-        if ( serverConfig.validators ) {
-            // Validators.
-            builder.addServlet("/$/validate/query",  new QueryValidator());
-            builder.addServlet("/$/validate/update", new UpdateValidator());
-            builder.addServlet("/$/validate/iri",    new IRIValidator());
-            builder.addServlet("/$/validate/data",   new DataValidator());
-        }
-
-        if ( ! serverConfig.empty ) {
-            if ( serverConfig.serverConfig != null )
-                // Config file.
-                builder.parseConfigFile(serverConfig.serverConfig);
-            else
-                // One dataset.
-                builder.add(serverConfig.datasetPath, serverConfig.dsg, serverConfig.allowUpdate);
-        }
-
-        if ( serverConfig.fusekiModules != null )
-            builder.fusekiModules(serverConfig.fusekiModules);
-
-        if ( serverConfig.servletContextPath != null )
-            builder.contextPath(serverConfig.servletContextPath);
-
-        if ( serverConfig.contentDirectory != null )
-            builder.staticFileBase(serverConfig.contentDirectory);
-
-        if ( serverConfig.passwdFile != null )
-            builder.passwordFile(serverConfig.passwdFile);
-
-        if ( serverConfig.realm != null )
-            builder.realm(serverConfig.realm);
-
-        if ( serverConfig.httpsKeysDetails != null)
-            builder.https(serverConfig.httpsPort, serverConfig.httpsKeysDetails);
-
-        if ( serverConfig.authScheme != null )
-            builder.auth(serverConfig.authScheme);
-
-        if ( serverConfig.withCORS )
-            builder.enableCors(true, serverConfig.corsConfigFile);
-
-        if ( serverConfig.withPing )
-            builder.enablePing(true);
-
-        if ( serverConfig.withStats )
-            builder.enableStats(true);
-
-        if ( serverConfig.withMetrics )
-            builder.enableMetrics(true);
-
-        if ( serverConfig.withCompact )
-            builder.enableCompact(true);
     }
 
     /** Information from the command line setup */
@@ -690,29 +711,24 @@ public class FusekiMain extends CmdARQ {
         if ( super.isQuiet() )
             return;
 
-        if ( serverConfig.empty ) {
+        if ( this.empty ) {
             FmtLog.info(log, "No SPARQL datasets services");
         } else {
-            if ( serverConfig.datasetPath == null && serverConfig.serverConfig == null )
+            if ( this.datasetPath == null && !contains(argConfig) )
                 log.error("No dataset path nor server configuration file");
         }
 
         DataAccessPointRegistry dapRegistry = DataAccessPointRegistry.get(server.getServletContext());
-        if ( serverConfig.datasetPath != null ) {
+        if ( this.datasetPath != null ) {
             if ( dapRegistry.size() != 1 )
                 log.error("Expected only one dataset in the DataAccessPointRegistry");
         }
 
         // Log details on startup.
-        String datasetPath = serverConfig.datasetPath;
-        String datasetDescription = serverConfig.datasetDescription;
-        String serverConfigFile = serverConfig.serverConfig;
-        String staticFiles = serverConfig.contentDirectory;
-        boolean verbose = serverConfig.verboseLogging;
-
         if ( ! super.isQuiet() )
-            FusekiCoreInfo.logServerCmdSetup(log, verbose, dapRegistry,
-                                             datasetPath, datasetDescription, serverConfigFile, staticFiles);
+            FusekiCoreInfo.logServerCmdSetup(log, super.isVerbose(), dapRegistry,
+                                             this.datasetPath, this.datasetDescription, getValue(argConfig),
+                                             builder.staticFileBase());
     }
 
     @Override

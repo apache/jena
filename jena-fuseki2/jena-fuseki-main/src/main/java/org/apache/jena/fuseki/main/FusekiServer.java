@@ -840,7 +840,7 @@ public class FusekiServer {
         public Builder jettyServerConfig(String filename) {
             requireNonNull(filename, "filename");
             if ( ! FileOps.exists(filename) )
-                throw new FusekiConfigException("File no found: "+filename);
+                throw new FusekiConfigException("File not found: "+filename);
             this.jettyServerConfig = filename;
             return this;
         }

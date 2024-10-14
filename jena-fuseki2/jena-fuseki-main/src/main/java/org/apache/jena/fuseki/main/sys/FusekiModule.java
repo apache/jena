@@ -21,6 +21,7 @@ package org.apache.jena.fuseki.main.sys;
 import java.util.Set;
 
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.rdf.model.Model;
@@ -56,7 +57,7 @@ import org.apache.jena.rdf.model.Model;
  *     Modules must not rely on a call to {@code serverStopped} happening.</li>
  * </ul>
  */
-public interface FusekiModule extends FusekiBuildCycle, FusekiStartStop, FusekiActionCycle {
+public interface FusekiModule extends FusekiCliCustomiser, FusekiBuildCycle, FusekiStartStop, FusekiActionCycle {
     // Gather all interface method together.
     // Inherited javadoc.
 
