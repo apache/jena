@@ -30,6 +30,7 @@
 
   <properties>
     <automatic.module.name>org.apache.jena.querybuilder</automatic.module.name>
+    <argLine></argLine>
   </properties>
 
   <dependencies>
@@ -87,6 +88,31 @@
           <doctitle>Apache Jena - Query Builder ${project.version}</doctitle>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
+        </configuration>
+      </plugin>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <!--
+              sets a property for the artifact file
+              groupId:artifactId:type:[classifier]
+              Used with mockito.
+              Also - define a default value for argLine in <properties>
+          -->
+          <executions>
+            <execution>
+              <goals>
+                <goal>properties</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
 
     </plugins>
   </build>
