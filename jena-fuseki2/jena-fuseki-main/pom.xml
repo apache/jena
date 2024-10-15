@@ -136,16 +136,16 @@
     <!-- Testing for custom functions only -->
     <dependency>
       <groupId>org.graalvm.js</groupId>
-      <artifactId>js</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.graalvm.js</groupId>
       <artifactId>js-scriptengine</artifactId>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.graalvm.js</groupId>
+      <artifactId>js-community</artifactId>
+      <scope>test</scope>
+      <type>pom</type>
+    </dependency>
+    
   </dependencies>
 
   <build>
