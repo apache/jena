@@ -35,6 +35,7 @@ import org.junit.platform.suite.api.Suite;
   , TestFusekiCustomOperation.class
   , TestFusekiMainCmd.class
   , TestFusekiMainCmdArguments.class
+  , TestFusekiMainCmdCustomArguments.class
   , TestFusekiStdSetup.class
   , TestFusekiStdReadOnlySetup.class
   , TestConfigFile.class

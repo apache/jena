@@ -23,12 +23,15 @@ import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.sparql.core.DatasetGraph;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Setup details (command line, config file) from command line processing.
  * This is built by {@link FusekiMain#exec}.
  * This is processed by {@link FusekiMain#buildServer}.
  */
-class ServerConfig {
+public class ServerConfig {
     /** Server port. This is the http port when both http and https are active. */
     public int port                     = -1;
     /** Loopback */
@@ -81,4 +84,9 @@ class ServerConfig {
     public AuthScheme authScheme        = null;
     public String passwdFile            = null;
     public String realm                 = null;
+
+    /**
+     * Any extra configuration
+     */
+    public Map<String, Object> extra    = new HashMap<>();
 }
