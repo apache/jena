@@ -106,7 +106,7 @@
     <ver.contract.tests>0.2.0</ver.contract.tests>
 
     <!-- For testing, not shipped -->
-    <ver.graalvm>23.0.5</ver.graalvm>
+    <ver.graalvm>24.1.1</ver.graalvm>
     <ver.org.openjdk.jmh>1.37</ver.org.openjdk.jmh>
 
     <!-- GeoSPARQL related -->
@@ -686,14 +686,17 @@
 
       <dependency>
         <groupId>org.graalvm.js</groupId>
-        <artifactId>js</artifactId>
+        <artifactId>js-scriptengine</artifactId>
         <version>${ver.graalvm}</version>
+        <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>org.graalvm.js</groupId>
-        <artifactId>js-scriptengine</artifactId>
+        <artifactId>js-community</artifactId>
         <version>${ver.graalvm}</version>
+        <type>pom</type>
+        <scope>test</scope>
       </dependency>
 
       <dependency>
