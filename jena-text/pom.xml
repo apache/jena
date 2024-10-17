@@ -27,8 +27,20 @@
     <artifactId>jena</artifactId>
     <version>5.3.0-SNAPSHOT</version>
   </parent>
-
+  <profiles>
+   <!-- apache lucene emits warnings for native access and for the vector module for java version >= 21 -->
+   <profile><id>enable-native-and-incubator-vector</id>
+   <activation>
+     <jdk>[21,22,23]</jdk>
+   </activation>
+     <properties>
+       <jena.text.test.argLine>--enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector</jena.text.test.argLine>
+     </properties>
+   </profile>
+ </profiles>
   <properties>
+    <jena.text.test.argLine></jena.text.test.argLine>
+    <argLine></argLine>
     <automatic.module.name>org.apache.jena.text</automatic.module.name>
   </properties>
 
@@ -122,6 +134,7 @@
           <includes>
             <include>**/TS_*.java</include>
           </includes>
+          <argLine>@{argLine} ${jena.text.test.argLine}</argLine>
         </configuration>
       </plugin>
 
