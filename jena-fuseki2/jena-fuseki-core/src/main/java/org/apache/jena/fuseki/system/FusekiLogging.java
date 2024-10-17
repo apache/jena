@@ -34,7 +34,7 @@ import org.apache.jena.fuseki.Fuseki;
 /**
  * FusekiLogging.
  * <p>
- * This applies to Fuseki run from the command line and embedded.
+ * This applies to Fuseki run from the command line, as a combined jar and as an embedded server.
  * <p>
  * This does not apply to Fuseki running in Tomcat where it uses the
  * servlet 3.0 mechanism described in
@@ -49,10 +49,9 @@ public class FusekiLogging
 
     // Set logging.
     // 1/ Use system property log4j2.configurationFile if defined.
-    // 2/ Use file:log4j2.properties if exists
+    // 2/ Use file:log4j2.properties if exists [Jena extension]
     // 3/ Use log4j2.properties on the classpath.
-    // 4/ Use org/apache/jena/fuseki/log4j2.properties on the classpath.
-    // 5/ Use built in string
+    // 4/ Use built in string
 
     /**
      * Places for the log4j properties file at (3).
