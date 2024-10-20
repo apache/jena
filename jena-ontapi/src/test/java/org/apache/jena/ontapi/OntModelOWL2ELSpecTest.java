@@ -316,7 +316,9 @@ public class OntModelOWL2ELSpecTest {
     public void testDifferentIndividuals(TestSpec spec) {
         OntModel data = OntModelFactory.createModel();
         data.createDifferentIndividuals(data.createIndividual("a"));
-        data.createDifferentIndividuals();
+        data.createResource()
+                .addProperty(RDF.type, OWL2.AllDifferent)
+                .addProperty(OWL2.members, data.createList());
         data.createDifferentIndividuals(data.createIndividual("b"), data.createIndividual("c"));
 
         OntModel m = OntModelFactory.createModel(data.getGraph(), spec.inst);
@@ -348,7 +350,9 @@ public class OntModelOWL2ELSpecTest {
     public void testDisjointClasses(TestSpec spec) {
         OntModel data = OntModelFactory.createModel();
         data.createDisjointClasses(data.createOntClass("a"));
-        data.createDisjointClasses();
+        data.createResource()
+                .addProperty(RDF.type, OWL2.AllDisjointClasses)
+                .addProperty(OWL2.members, data.createList());
         data.createDisjointClasses(data.createOntClass("b"), data.createOntClass("c"));
 
         OntModel m = OntModelFactory.createModel(data.getGraph(), spec.inst);

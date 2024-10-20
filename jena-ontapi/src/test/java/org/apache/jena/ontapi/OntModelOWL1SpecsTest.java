@@ -189,21 +189,24 @@ public class OntModelOWL1SpecsTest {
         OntModel m = OntModelFactory.createModel(spec.inst);
         OntIndividual i1 = m.getOWLThing().createIndividual("A");
         OntIndividual i2 = m.getOWLThing().createIndividual("B");
+        OntClass c1 = m.createOntClass("C");
+        OntDataProperty p1 = m.createDataProperty("p1");
+        OntObjectProperty p2 = m.createObjectProperty("p2");
         OntDisjoint.Individuals d = m.createDifferentIndividuals(i1, i2);
         Assertions.assertEquals(
                 List.of("A", "B"),
                 d.members().map(Resource::getURI).sorted().collect(Collectors.toList())
         );
 
-        Assertions.assertEquals(8, m.statements().count());
+        Assertions.assertEquals(11, m.statements().count());
         Assertions.assertEquals(1, m.ontObjects(OntDisjoint.Individuals.class).count());
         Assertions.assertEquals(1, m.ontObjects(OntDisjoint.class).count());
 
-        Assertions.assertThrows(OntJenaException.Unsupported.class, m::createDisjointClasses);
-        Assertions.assertThrows(OntJenaException.Unsupported.class, m::createDisjointDataProperties);
-        Assertions.assertThrows(OntJenaException.Unsupported.class, m::createDisjointObjectProperties);
+        Assertions.assertThrows(OntJenaException.Unsupported.class, () -> m.createDisjointClasses(c1));
+        Assertions.assertThrows(OntJenaException.Unsupported.class, () -> m.createDisjointDataProperties(p1));
+        Assertions.assertThrows(OntJenaException.Unsupported.class, () -> m.createDisjointObjectProperties(p2));
 
-        Assertions.assertEquals(8, m.statements().count());
+        Assertions.assertEquals(11, m.statements().count());
         Assertions.assertEquals(1, m.ontObjects(OntDisjoint.Individuals.class).count());
         Assertions.assertEquals(1, m.ontObjects(OntDisjoint.class).count());
     }
@@ -244,6 +247,7 @@ public class OntModelOWL1SpecsTest {
     @ParameterizedTest
     @EnumSource(names = {
             "OWL1_MEM",
+            "OWL1_DL_MEM",
             "OWL1_LITE_MEM",
     })
     public void testDisabledFeaturesOWL1(TestSpec spec) {
@@ -259,7 +263,7 @@ public class OntModelOWL1SpecsTest {
                 );
         d.createDataProperty("dp1").addEquivalentProperty(d.createDataProperty("dp2"));
 
-        OntModel m = OntModelFactory.createModel(d.getGraph(), OntSpecification.OWL1_DL_MEM);
+        OntModel m = OntModelFactory.createModel(d.getGraph(), spec.inst);
         OntClass.Named x = m.getOntClass("X");
         OntClass.Named q = m.createOntClass("Q");
         OntDataProperty dp1 = m.createDataProperty("dp1");

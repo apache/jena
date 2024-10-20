@@ -785,16 +785,16 @@ public final class OWL2ObjectFactories {
             OntFacetRestriction.LangRange.class
     );
 
-    public static final EnhNodeFactory CLASSES_DISJOINT = OntDisjoints.createDisjointClassesFactory(0);
+    public static final EnhNodeFactory CLASSES_DISJOINT = OntDisjoints.createDisjointClassesFactory(1);
     public static final EnhNodeFactory EL_CLASSES_DISJOINT = OntDisjoints.createDisjointClassesFactory(2);
     public static final EnhNodeFactory QL_RL_CLASSES_DISJOINT = OntDisjoints.createQLRLDisjointClassesFactory();
     public static final Function<OntConfig, EnhNodeFactory> DIFFERENT_INDIVIDUALS_DISJOINT =
             OntDisjoints::createDLFullDifferentIndividualsFactory;
     public static final EnhNodeFactory EL_QL_RL_DIFFERENT_INDIVIDUALS_DISJOINT =
             OntDisjoints.createELQLRLDifferentIndividualsFactory();
-    public static final EnhNodeFactory OBJECT_PROPERTIES_DISJOINT = OntDisjoints.createDisjointObjectPropertiesFactory(0);
+    public static final EnhNodeFactory OBJECT_PROPERTIES_DISJOINT = OntDisjoints.createDisjointObjectPropertiesFactory(1);
     public static final EnhNodeFactory QL_RL_OBJECT_PROPERTIES_DISJOINT = OntDisjoints.createDisjointObjectPropertiesFactory(2);
-    public static final EnhNodeFactory DATA_PROPERTIES_DISJOINT = OntDisjoints.createDisjointDataPropertiesFactory(0);
+    public static final EnhNodeFactory DATA_PROPERTIES_DISJOINT = OntDisjoints.createDisjointDataPropertiesFactory(1);
     public static final EnhNodeFactory QL_RL_DATA_PROPERTIES_DISJOINT = OntDisjoints.createDisjointDataPropertiesFactory(2);
 
     public static final EnhNodeFactory ANY_PROPERTIES_DISJOINT = OntEnhNodeFactories.createFrom(
