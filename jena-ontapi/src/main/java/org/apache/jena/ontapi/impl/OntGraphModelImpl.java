@@ -965,8 +965,10 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
 
     @Override
     public OntDisjoint.Classes createDisjointClasses(Collection<OntClass> classes) {
+        if (classes.isEmpty()) {
+            throw new IllegalArgumentException("Empty list is specified");
+        }
         checkType(OntDisjoint.Classes.class);
-        checkType(OntClass.IntersectionOf.class);
         return checkCreate(model ->
                 OntDisjointImpl.createDisjointClasses(model, classes.stream()), OntDisjoint.Classes.class
         );
@@ -974,6 +976,9 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
 
     @Override
     public OntDisjoint.Individuals createDifferentIndividuals(Collection<OntIndividual> individuals) {
+        if (individuals.isEmpty()) {
+            throw new IllegalArgumentException("Empty list is specified");
+        }
         checkType(OntDisjoint.Individuals.class);
         return checkCreate(model ->
                 OntDisjointImpl.createDifferentIndividuals(model, individuals.stream()), OntDisjoint.Individuals.class
@@ -982,6 +987,9 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
 
     @Override
     public OntDisjoint.ObjectProperties createDisjointObjectProperties(Collection<OntObjectProperty> properties) {
+        if (properties.isEmpty()) {
+            throw new IllegalArgumentException("Empty list is specified");
+        }
         checkType(OntDisjoint.ObjectProperties.class);
         return checkCreate(model ->
                 OntDisjointImpl.createDisjointObjectProperties(model, properties.stream()), OntDisjoint.ObjectProperties.class
@@ -990,6 +998,9 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
 
     @Override
     public OntDisjoint.DataProperties createDisjointDataProperties(Collection<OntDataProperty> properties) {
+        if (properties.isEmpty()) {
+            throw new IllegalArgumentException("Empty list is specified");
+        }
         checkType(OntDisjoint.DataProperties.class);
         return checkCreate(model ->
                 OntDisjointImpl.createDisjointDataProperties(model, properties.stream()), OntDisjoint.DataProperties.class

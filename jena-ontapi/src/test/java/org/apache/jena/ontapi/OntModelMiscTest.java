@@ -22,10 +22,14 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.ontapi.impl.GraphListenerBase;
 import org.apache.jena.ontapi.model.OntClass;
+import org.apache.jena.ontapi.model.OntDisjoint;
 import org.apache.jena.ontapi.model.OntModel;
+import org.apache.jena.ontapi.utils.OntModels;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.OWL2;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.jupiter.api.Assertions;
@@ -99,4 +103,55 @@ public class OntModelMiscTest {
         Assertions.assertTrue(d.contains(d.createResource("http://ex2/B"), RDF.type, OWL2.Class));
     }
 
+    @Test
+    public void testOntDisjointProperties() {
+        var m = ModelFactory.createDefaultModel().setNsPrefixes(PrefixMapping.Standard);
+        var p1 = m.createResource("p1", OWL.DatatypeProperty);
+        var p2 = m.createResource("p2", OWL.DatatypeProperty);
+        var d = m.createResource().addProperty(RDF.type, OWL.AllDisjointProperties);
+        var list = m.createList(p1, p2);
+        d.addProperty(OWL.members, list);
+
+        var ont = OntModelFactory.createModel(m.getGraph());
+        var actual1 = ont.ontObjects(OntDisjoint.DataProperties.class).toList();
+        Assertions.assertEquals(1, actual1.size());
+
+        var actual2 = ont.ontObjects(OntDisjoint.ObjectProperties.class).toList();
+        Assertions.assertEquals(0, actual2.size());
+
+        var actual3 = ont.ontObjects(OntDisjoint.class).toList();
+        Assertions.assertEquals(1, actual3.size());
+        Assertions.assertEquals(OntDisjoint.DataProperties.class, OntModels.getOntType(actual3.get(0)));
+
+        Assertions.assertThrows(IllegalArgumentException.class, ont::createDisjointObjectProperties);
+        Assertions.assertThrows(IllegalArgumentException.class, ont::createDisjointDataProperties);
+    }
+
+    @Test
+    public void testOntDisjointClasses() {
+        var m = ModelFactory.createDefaultModel().setNsPrefixes(PrefixMapping.Standard);
+        var d = m.createResource().addProperty(RDF.type, OWL.AllDisjointClasses);
+        var list = m.createList();
+        d.addProperty(OWL.members, list);
+
+        var ont = OntModelFactory.createModel(m.getGraph());
+        var actual1 = ont.ontObjects(OntDisjoint.Classes.class).toList();
+        Assertions.assertEquals(0, actual1.size());
+
+        Assertions.assertThrows(IllegalArgumentException.class, ont::createDisjointClasses);
+    }
+
+    @Test
+    public void testOntDisjointIndividuals() {
+        var m = ModelFactory.createDefaultModel().setNsPrefixes(PrefixMapping.Standard);
+        var d = m.createResource().addProperty(RDF.type, OWL.AllDifferent);
+        var list = m.createList();
+        d.addProperty(OWL.members, list);
+
+        var ont = OntModelFactory.createModel(m.getGraph());
+        var actual1 = ont.ontObjects(OntDisjoint.Individuals.class).toList();
+        Assertions.assertEquals(0, actual1.size());
+
+        Assertions.assertThrows(IllegalArgumentException.class, ont::createDifferentIndividuals);
+    }
 }

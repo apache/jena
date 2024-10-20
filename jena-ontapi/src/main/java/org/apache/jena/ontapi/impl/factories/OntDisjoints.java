@@ -68,7 +68,7 @@ final class OntDisjoints {
                 OWL2.AllDifferent,
                 OntIndividual.class,
                 it -> true,
-                0,
+                1,
                 predicates
         );
     }
