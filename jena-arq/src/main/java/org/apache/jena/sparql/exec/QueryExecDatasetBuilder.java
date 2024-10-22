@@ -158,7 +158,7 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
     }
 
     /** Use {@link #substitution(Binding)} */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public QueryExecDatasetBuilder initialBinding(Binding binding) {
         this.initialBinding = binding;
         return this;
