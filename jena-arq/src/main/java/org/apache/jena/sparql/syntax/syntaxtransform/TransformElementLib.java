@@ -39,7 +39,7 @@ public class TransformElementLib {
         Expr e = exprTransform.transform(expr);
         if ( e instanceof ExprVar )
             return ((ExprVar)e).asVar();
-        throw new InternalErrorException("Managed to turn a variable " + v + " into " + e);
+        throw new InternalErrorException("Managed to turn an assigned variable " + v + " into " + e);
     }
 
     public static Node apply(Node n, ExprTransform exprTransform) {
