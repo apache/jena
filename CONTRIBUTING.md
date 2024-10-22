@@ -4,10 +4,9 @@ Apache Jena : Contributing
 The project welcomes contributions, large and small, from anyone.
 
 The mailing list for project-wide discussions is dev@jena.apache.org and all
-development work happens in public, using that list.
+development work happens in public, using GitHub isues and that mailing list.
 
-The processes described here are guidelines, rather than absolute
-requirements.
+The processes described here are guidelines, rather than fixed requirements.
 
 
 ## Contributions
@@ -15,8 +14,7 @@ requirements.
 Contributions can be made by:
 
 * Github pull requests (preferred)
-* JIRA and patches
-* Other
+* Emailing a patch file to the developers list
 
 Contributions should include:
 
@@ -29,14 +27,10 @@ Documentation is kept and published via a git repository:
 
 ## Workflow
 
-### JIRA and Github issues
+### Github issues
 
-The project uses a JIRA and also githb issues to track work.  Please create one
-of a JIRA issue or a github issue so that we can track a contribution.
-
-JIRA:
-
-    https://issues.apache.org/jira/browse/JENA
+The project uses github issues to track work.  Please create 
+a github issue so that we can track a contribution.
 
 Github issue:
 
@@ -44,8 +38,8 @@ Github issue:
 
 ### Github
 
-It is useful to create a JIRA then use the JIRA number (e.g. JENA-9999 or GH-9999)
-in the Pull Request title. This activates the automated mirroring of
+It is useful to create a Gihhub issue use the issue number (e.g. GH-9999)
+in the pull request title. This activates the automated mirroring of
 discussions onto the project developers mailing list.
 
 To make a contribution:
@@ -55,10 +49,6 @@ To make a contribution:
 * Make your changes. Include the Apache source header at the top of each file.
 * Generate a pull request via github. Further changes to your branch will automatically
   show up in the pull request
-
-The project development mailing list is automatically notified of new pull
-requests and JIRA is also automatically updated if the JIRA id is in the pull request
-title.
 
 ### Discussion and Merging
 
