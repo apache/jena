@@ -21,13 +21,14 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
+        java_version: ['17', '21']
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up JDK 17
+    - name: Set up JDK ${{ matrix.java_version }}
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: ${{ matrix.java_version }}
     - name: Build with Maven
       run: mvn -B --file pom.xml -Dmaven.javadoc.skip=true install
