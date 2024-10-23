@@ -644,7 +644,9 @@ public class OntModelOWL2RLSpecTest {
     public void testDisjointObjectProperties(TestSpec spec) {
         OntModel data = OntModelFactory.createModel();
         data.createDisjointObjectProperties(data.createObjectProperty("a"));
-        data.createDisjointObjectProperties();
+        data.createResource()
+                .addProperty(RDF.type, OWL2.AllDisjointProperties)
+                .addProperty(OWL2.members, data.createList());
         data.createDisjointObjectProperties(data.createObjectProperty("b"), data.createObjectProperty("c"));
 
         OntModel m = OntModelFactory.createModel(data.getGraph(), spec.inst);
