@@ -66,7 +66,8 @@ public class JenaSystem {
      * to avoid the risk of recursive initialization.
      */
     public static boolean DEBUG_INIT = false ;
-    private static volatile boolean initialized = false ;
+    private static volatile boolean IS_INITIALIZING = false;
+    private static volatile long ID_OF_INIT_THREAD = -1;
 
     /** Output a debugging message if DEBUG_INIT is set */
     public static void logLifecycle(String fmt, Object ...args) {
@@ -76,22 +77,34 @@ public class JenaSystem {
         System.err.println() ;
     }
 
+    /**
+     * Initialization-on-demand holder idiom
+     * @see <a href="http://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom">Initialization-on-demand holder idiom</a>
+     *
+     */
+    private static class LazyHolder {
+        static final boolean initialized = initialize();
+    }
+
     public static void init() {
-        // Once jena is initialized, all calls are an immediate return.
-        if ( initialized )
-            return ;
-        // Overlapping attempts to perform initialization will block on the synchronized.
-        synchronized(JenaSystem.class) {
-            if ( initialized )
-                return ;
-            setup();
-            if ( DEBUG_INIT )
-                singleton.debug(DEBUG_INIT);
-            singleton.initialize();
-            singleton.debug(false);
-            // Last so overlapping initialization waits on the synchronized
-            initialized = true;
+        if(IS_INITIALIZING && ID_OF_INIT_THREAD != Thread.currentThread().getId()) {
+            throw new ExceptionInInitializerError("Jena is already is being initialized by another thread. Please ensure that JenaSystem.init() is called before working with multiple threads.");
         }
+
+        // Access the initialized flag to trigger class loading
+        boolean init = LazyHolder.initialized;
+    }
+
+    private static boolean initialize() {
+        IS_INITIALIZING = true;
+        ID_OF_INIT_THREAD = Thread.currentThread().getId();
+        setup();
+        if ( DEBUG_INIT )
+            singleton.debug(DEBUG_INIT);
+        singleton.initialize();
+        singleton.debug(false);
+        IS_INITIALIZING = false;
+        return true;
     }
 
     public static void shutdown() { singleton.shutdown(); }
