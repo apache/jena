@@ -78,21 +78,33 @@ public class JenaSystem {
 
     public static void init() {
         // Once jena is initialized, all calls are an immediate return.
-        if ( initialized )
-            return ;
-        // Overlapping attempts to perform initialization will block on the synchronized.
-        synchronized(JenaSystem.class) {
-            if ( initialized )
-                return ;
+        if(initialized) {
+            return;
+        }
+
+        // Access the initialized flag to trigger class loading
+        initialized = LazyHolder.IS_INITIALIZED;
+    }
+
+    /**
+     * Initialization-on-demand holder idiom
+     * @see <a href="http://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom">Initialization-on-demand holder idiom</a>
+     *
+     */
+    private static class LazyHolder {
+        public static final boolean IS_INITIALIZED = initialize();
+
+        private static boolean initialize() {
+            initialized = true; // Set early to avoid blocking on static initialization.
             setup();
             if ( DEBUG_INIT )
                 singleton.debug(DEBUG_INIT);
             singleton.initialize();
             singleton.debug(false);
-            // Last so overlapping initialization waits on the synchronized
-            initialized = true;
+            return true;
         }
     }
+
 
     public static void shutdown() { singleton.shutdown(); }
 
