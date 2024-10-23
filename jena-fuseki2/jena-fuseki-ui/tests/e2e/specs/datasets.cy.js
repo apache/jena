@@ -145,7 +145,7 @@ describe('datasets', () => {
         .click({ force: true })
       cy.wait('@getGraph')
       cy
-        .get('.CodeMirror-code')
+        .get('.cm-content')
         .should('contain.text', 'Harry Potter and the Goblet of Fire')
     })
     it('Visits datasets page', () => {
