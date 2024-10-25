@@ -182,9 +182,9 @@ public class OntModelIndividualsTest {
                 "/list-syntax-categories-test-comps.rdf", Lang.RDFXML);
         Assertions.assertEquals(
                 List.of(
-                        "urn:x-hp:eg/DTPGraphics",
-                        "urn:x-hp:eg/budgetGraphics",
-                        "urn:x-hp:eg/gamingGraphics"),
+                        "urn:test:eg:DTPGraphics",
+                        "urn:test:eg:budgetGraphics",
+                        "urn:test:eg:gamingGraphics"),
                 m.individuals().distinct().map(Resource::getURI).sorted().collect(Collectors.toList()));
     }
 
@@ -200,9 +200,9 @@ public class OntModelIndividualsTest {
                         null,
                         null,
                         null,
-                        "urn:x-hp:eg/DTPGraphics",
-                        "urn:x-hp:eg/budgetGraphics",
-                        "urn:x-hp:eg/gamingGraphics"
+                        "urn:test:eg:DTPGraphics",
+                        "urn:test:eg:budgetGraphics",
+                        "urn:test:eg:gamingGraphics"
                 ),
                 m.individuals()
                         .map(Resource::getURI)
@@ -232,19 +232,19 @@ public class OntModelIndividualsTest {
         Assertions.assertEquals(
                 Arrays.asList(
                         null, null, null,
-                        "urn:x-hp:eg/Bundle",
-                        "urn:x-hp:eg/Computer",
-                        "urn:x-hp:eg/DTPGraphics",
-                        "urn:x-hp:eg/GameBundle",
-                        "urn:x-hp:eg/GamingComputer",
-                        "urn:x-hp:eg/GraphicsCard",
-                        "urn:x-hp:eg/MotherBoard",
-                        "urn:x-hp:eg/budgetGraphics",
-                        "urn:x-hp:eg/gamingGraphics",
-                        "urn:x-hp:eg/hasBundle",
-                        "urn:x-hp:eg/hasComponent",
-                        "urn:x-hp:eg/hasGraphics",
-                        "urn:x-hp:eg/hasMotherBoard"
+                        "urn:test:eg:Bundle",
+                        "urn:test:eg:Computer",
+                        "urn:test:eg:DTPGraphics",
+                        "urn:test:eg:GameBundle",
+                        "urn:test:eg:GamingComputer",
+                        "urn:test:eg:GraphicsCard",
+                        "urn:test:eg:MotherBoard",
+                        "urn:test:eg:budgetGraphics",
+                        "urn:test:eg:gamingGraphics",
+                        "urn:test:eg:hasBundle",
+                        "urn:test:eg:hasComponent",
+                        "urn:test:eg:hasGraphics",
+                        "urn:test:eg:hasMotherBoard"
                 ),
                 m.individuals()
                         .map(Resource::getURI)

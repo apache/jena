@@ -394,22 +394,24 @@ public class TestsARP extends TestCase implements RDFErrorHandler, ARPErrorNumbe
 //                   + "]", m.isIsomorphicWith(m1));
 //        checkExpected();
 //    }
+//
 
-    public void testRelativeBaseParamError() throws IOException {
-        Model m = createMemModel();
-        RDFReaderI rdr = baseTestReader();
-        try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-difference-between-ID-and-about/test1.rdf")) {
-            rdr.setErrorHandler(this);
-            expected = new int[] { WARN_RELATIVE_URI, WARN_RELATIVE_URI,  ERR_RESOLVING_AGAINST_RELATIVE_BASE, };
-            rdr.setProperty("ERR_RESOLVING_AGAINST_RELATIVE_BASE","EM_WARNING");
-            rdr.read(m, fin, "foo/");
-        }
-        Model m1 = createMemModel();
-        m1.createResource("foo/#foo").addProperty(RDF.value, "abc");
-        assertTrue("Relative base URI should produce relative URIs in model (when error suppressed).["
-                + m.toString() + "]", m.isIsomorphicWith(m1));
-        checkExpected();
-    }
+//	// Only old jena-iri behaved this way and it is an error unless ARP setProperty is called.
+//    public void testRelativeBaseParamError() throws IOException {
+//        Model m = createMemModel();
+//        RDFReaderI rdr = baseTestReader();
+//        try (FileInputStream fin = new FileInputStream("testing/wg/rdfms-difference-between-ID-and-about/test1.rdf")) {
+//            rdr.setErrorHandler(this);
+//            expected = new int[] { WARN_RELATIVE_URI, WARN_RELATIVE_URI, ERR_RESOLVING_AGAINST_RELATIVE_BASE, };
+//            rdr.setProperty("ERR_RESOLVING_AGAINST_RELATIVE_BASE","EM_WARNING");
+//            rdr.read(m, fin, "foo/");
+//        }
+//        Model m1 = createMemModel();
+//        m1.createResource("foo/#foo").addProperty(RDF.value, "abc");
+//        assertTrue("Relative base URI should produce relative URIs in model (when error suppressed).["
+//                + m.toString() + "]", m.isIsomorphicWith(m1));
+//        checkExpected();
+//    }
 
     public void testRelativeBaseParamOK() throws IOException {
         Model m = createMemModel();

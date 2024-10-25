@@ -44,7 +44,7 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.test.ModelTestBase;
-import org.apache.jena.reasoner.rulesys.test.TestBugs;
+import org.apache.jena.reasoner.rulesys.test.TestRuleSystemBugs;
 import org.apache.jena.reasoner.test.TestUtil;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
@@ -1122,7 +1122,7 @@ public class TestOntModel
 
 
     /** Getting the deductions model of an OntModel
-     * see also {@link TestBugs#testOntModelGetDeductions()}
+     * see also {@link TestRuleSystemBugs#testOntModelGetDeductions()}
      * <p>ijd: Feb 6th, 2008 - this test has been disabled for
      * the time being, since it is not correct as written. However,
      * I'm not removing or changing it just yet, since it is showing up

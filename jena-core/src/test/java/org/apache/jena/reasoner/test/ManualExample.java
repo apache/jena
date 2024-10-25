@@ -37,8 +37,8 @@ public class ManualExample {
 
     /** Illustrate different ways of finding a reasoner */
     public void test1() {
-        String NS = "urn:x-hp-jena:eg/";
-        
+        String NS = "urn:example:";
+
         // Build a trivial example data set
         Model rdfsExample = ModelFactory.createDefaultModel();
         Property p = rdfsExample.createProperty(NS, "p");
@@ -46,7 +46,7 @@ public class ManualExample {
         rdfsExample.add(p, RDFS.subPropertyOf, q);
         rdfsExample.createResource(NS+"a")
                    .addProperty(p, "foo");
-        
+
         // Create an RDFS inference model the easy way
 //        InfModel inf = ModelFactory.createRDFSModel(rdfsExample);
         // Create an RDFS inference model the hard way
@@ -55,14 +55,14 @@ public class ManualExample {
                           .addProperty(ReasonerVocabulary.PROPsetRDFSLevel, "simple");
         Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(config);
         // Set the parameter the easier way
-//        reasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel, 
+//        reasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel,
 //                              ReasonerVocabulary.RDFS_SIMPLE);
         InfModel inf = ModelFactory.createInfModel(reasoner, rdfsExample);
         Resource a = inf.getResource(NS+"a");
         Statement s = a.getProperty(q);
         System.out.println("Statement: " + s);
     }
-    
+
     /** illustrate validation */
     public void test2(String fname) {
         System.out.println("Testing " + fname);
@@ -80,7 +80,7 @@ public class ManualExample {
             }
         }
     }
-    
+
     /** illustrate generic rules and derivation tracing */
     public void test3() {
         // Test data
@@ -94,16 +94,16 @@ public class ManualExample {
         A.addProperty(p, B);
         B.addProperty(p, C);
         C.addProperty(p, D);
-        
+
         // Rule example
         String rules = "[rule1: (?a eg:p ?b) (?b eg:p ?c) -> (?a eg:p ?c)]";
         Reasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
         reasoner.setDerivationLogging(true);
         InfModel inf = ModelFactory.createInfModel(reasoner, rawData);
-        
+
         PrintWriter out = new PrintWriter(System.out);
         for (StmtIterator i = inf.listStatements(A, p, D); i.hasNext(); ) {
-            Statement s = i.nextStatement(); 
+            Statement s = i.nextStatement();
             System.out.println("Statement is " + s);
             for (Iterator<Derivation> id = inf.getDerivation(s); id.hasNext(); ) {
                 Derivation deriv = id.next();
@@ -112,7 +112,7 @@ public class ManualExample {
         }
         out.flush();
     }
-    
+
     /** Another generic rules illustration */
     public void test4() {
         // Test data
@@ -130,9 +130,9 @@ public class ManualExample {
         B.addProperty(q, C);
         r.addProperty(first, p);
         r.addProperty(second, q);
-        
+
         // Rule example for
-        String rules = 
+        String rules =
             "[r1: (?c eg:concatFirst ?p), (?c eg:concatSecond ?q) -> " +            "     [r1b: (?x ?c ?y) <- (?x ?p ?z) (?z ?q ?y)] ]";        Reasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
 //        reasoner.setParameter(ReasonerVocabulary.PROPtraceOn, Boolean.TRUE);
         InfModel inf = ModelFactory.createInfModel(reasoner, rawData);
@@ -143,7 +143,7 @@ public class ManualExample {
             System.out.println(" - " + list.next());
         }
     }
-    
+
     public static void main(String[] args) {
         try {
 //            new ManualExample().test1();

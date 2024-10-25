@@ -21,6 +21,7 @@ package org.apache.jena.test;
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
 import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
+import org.apache.jena.sys.JenaSystem;
 
 /**
  * Jena core test suite.
@@ -28,7 +29,7 @@ import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
 public class TestPackage_core extends TestCase {
 
     static public TestSuite suite() {
-        //JenaSystem.init();
+        JenaSystem.init();
         // Reads Turtle (old parser, not up-to-date but we need something for testing.)
         RDFReaderFImpl.alternative(new X_RDFReaderF());
 
@@ -36,7 +37,7 @@ public class TestPackage_core extends TestCase {
         ts.setName("Jena") ;
 
         addTest(ts,  "System setup", TestSystemSetup.suite());
-        addTest(ts,  "IRI", org.apache.jena.irix.TS_IRIx.suite());
+        addTest(ts,  "IRIx", org.apache.jena.irix.TS_IRIx.suite());
         addTest(ts,  "Enhanced", org.apache.jena.enhanced.test.TestPackage_enh.suite());
         addTest(ts,  "Datatypes", org.apache.jena.datatypes.TestPackage_dt.suite()) ;
         addTest(ts,  "Graph", org.apache.jena.graph.test.TestPackage_graph.suite());

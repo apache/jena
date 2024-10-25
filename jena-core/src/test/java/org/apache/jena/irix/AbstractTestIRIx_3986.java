@@ -27,31 +27,45 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runners.Parameterized.Parameters;
 
+import org.apache.jena.iri3986.provider.IRIProvider3986;
+import org.apache.jena.iri3986.provider.JenaSeveritySettings;
+import org.apache.jena.rfc3986.Violations;
+
 /**
  * Test suite driver for IRIx.
  * The test execution environment is set to be "strict".
  * Tests can change this; it is reset after each test.
  */
-public class AbstractTestIRIx {
+public class AbstractTestIRIx_3986 {
 
     @Parameters(name = "{index}: {0}")
     public static Iterable<Object[]> data() {
-        SystemIRIx.init();
         List<Object[]> data = new ArrayList<>();
-        //data.add(new Object[]{"IRI3986", new IRIProvider3986()});
+        data.add(new Object[]{"IRI3986", new IRIProvider3986()});
         data.add(new Object[]{"JenaIRI", new IRIProviderJenaIRI()});
+
         // Does not pass the test suite.
         //data.add(new Object[]{"JDK.URI", new IRIProviderJDK()});
+        // Wire up IRIProvider3986 error/warning controls.
+        Violations.setSystemSeverityMap(JenaSeveritySettings.jenaSystemSettings());
         return data;
     }
 
-    protected static IRIProvider getProvider() {
-        return SystemIRIx.getProvider();
+    protected IRIProvider getProvider() {
+        return provider;
     }
 
     protected void notStrict(String scheme, Runnable action) {
+        strictMode(scheme, false, action);
+    }
+
+    protected void strict(String scheme, Runnable action) {
+        strictMode(scheme, true, action);
+    }
+
+    protected void strictMode(String scheme, boolean strictMode, Runnable action) {
         boolean b = provider.isStrictMode(scheme);
-        provider.strictMode(scheme, false);
+        provider.strictMode(scheme, strictMode);
         try { action.run(); }
         finally { provider.strictMode(scheme, b); }
     }
@@ -66,7 +80,7 @@ public class AbstractTestIRIx {
     private static boolean StrictDID;
 
     @BeforeClass static public void beforeClass_StoreSystemProvider() {
-        systemProvider = getProvider();
+        systemProvider = SystemIRIx.getProvider();
         StrictHTTP = systemProvider.isStrictMode("http");
         StrictURN  = systemProvider.isStrictMode("urn");
         StrictFILE = systemProvider.isStrictMode("file");
@@ -98,7 +112,7 @@ public class AbstractTestIRIx {
         systemProvider.strictMode("did",  StrictDID);
     }
 
-    protected AbstractTestIRIx(String name, IRIProvider provider) {
+    protected AbstractTestIRIx_3986(String name, IRIProvider provider) {
         this.provider = provider;
     }
 

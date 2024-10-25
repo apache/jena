@@ -18,15 +18,20 @@
 
 package org.apache.jena.ontapi;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.ontapi.common.OntPersonalities;
 import org.apache.jena.ontapi.model.OntDataProperty;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.testutils.RDFIOTestUtils;
-import org.apache.jena.rdf.model.InfModel;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.reasoner.Derivation;
 import org.apache.jena.reasoner.Reasoner;
 import org.apache.jena.reasoner.ReasonerRegistry;
@@ -35,15 +40,8 @@ import org.apache.jena.reasoner.rulesys.GenericRuleReasoner;
 import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import org.apache.jena.reasoner.rulesys.Rule;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.util.PrintUtil;
 import org.apache.jena.vocabulary.ReasonerVocabulary;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * The acceptance reasoner tests.
@@ -56,7 +54,7 @@ public class JenaReasonerTest {
      */
     @Test
     public void testFinding() {
-        String NS = "urn:example/";
+        String NS = "urn:example:";
 
         // Build a trivial example data set
         OntModel example = OntModelFactory.createModel();
@@ -119,7 +117,7 @@ public class JenaReasonerTest {
     @Test
     public void testDerivation() {
         // Test data
-        String egNS = "urn:x-hp:eg/";
+        String egNS = PrintUtil.egNS;
         Model rawData = OntModelFactory.createDefaultModel();
         Property p = rawData.createProperty(egNS, "p");
         Resource A = rawData.createResource(egNS + "A");
@@ -163,7 +161,7 @@ public class JenaReasonerTest {
     @Test
     public void testGenericRules() {
         // Test data
-        String egNS = "urn:x-hp:eg/";
+        String egNS = PrintUtil.egNS;
         Model rawData = OntModelFactory.createDefaultModel();
         Property first = rawData.createProperty(egNS, "concatFirst");
         Property second = rawData.createProperty(egNS, "concatSecond");

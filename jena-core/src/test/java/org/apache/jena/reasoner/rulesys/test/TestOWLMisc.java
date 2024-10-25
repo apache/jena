@@ -122,10 +122,10 @@ public class TestOWLMisc extends TestCase  {
      */
     public void testOWLPropertyAxioms() {
         Model data = ModelFactory.createDefaultModel();
-        Resource fp = data.createResource("urn:x-hp:eg/fp");
-        Resource ifp = data.createResource("urn:x-hp:eg/ifp");
-        Resource tp = data.createResource("urn:x-hp:eg/tp");
-        Resource sp = data.createResource("urn:x-hp:eg/sp");
+        Resource fp = data.createResource("urn:example:test/fp");
+        Resource ifp = data.createResource("urn:example:test/ifp");
+        Resource tp = data.createResource("urn:example:test/tp");
+        Resource sp = data.createResource("urn:example:test/sp");
         data.add(fp, RDF.type, OWL.FunctionalProperty);
         data.add(ifp, RDF.type, OWL.InverseFunctionalProperty);
         data.add(tp, RDF.type, OWL.TransitiveProperty);

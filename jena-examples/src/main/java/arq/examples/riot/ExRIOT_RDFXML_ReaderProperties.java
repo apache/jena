@@ -35,7 +35,7 @@ import org.apache.jena.riot.lang.rdfxml.RRX;
  * Set properties of the RDF/XML parser (ARP)
  * Note the use of language {@link RRX#RDFXML_ARP1}.
  * <b>This example only applies to the legacy ARP parser</b>
- * Applications should use {@code RDFParser...lang(LANG./RDFXML)...}.
+ * Applications should use {@code RDFParser...lang(LANG.RDFXML)...}.
  */
 public class ExRIOT_RDFXML_ReaderProperties {
     static { LogCtl.setLogging(); }

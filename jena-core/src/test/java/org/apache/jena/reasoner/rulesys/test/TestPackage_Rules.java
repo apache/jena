@@ -64,7 +64,7 @@ public class TestPackage_Rules extends TestSuite {
         addTest( "TestSetRules", TestSetRules.suite() );
         addTest( "TestLPBRuleEngineLeak", TestLPBRuleEngineLeak.suite() );
         addTest( "OWLRuleUnitTests", OWLUnitTest.suite() );
-        addTest( "TestBugs", TestBugs.suite() );
+        addTest( "TestBugs", TestRuleSystemBugs.suite() );
         addTest( "TestOWLMisc", TestOWLMisc.suite() );
         addTest( "FRuleEngineIFactoryTest", FRuleEngineIFactoryTest.suite() );
         addTest( "TestLPBRuleCloseBug", TestLPBRuleCloseBug.suite() );

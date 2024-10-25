@@ -86,12 +86,12 @@ import java.util.Set;
 /**
  * Unit tests for reported bugs in the rule system.
  */
-public class TestBugs extends TestCase {
+public class TestRuleSystemBugs extends TestCase {
 
     /**
      * Boilerplate for junit
      */
-    public TestBugs( String name ) {
+    public TestRuleSystemBugs( String name ) {
         super( name );
     }
 
@@ -100,7 +100,7 @@ public class TestBugs extends TestCase {
      * This is its own test suite
      */
     public static TestSuite suite() {
-        return new TestSuite( TestBugs.class );
+        return new TestSuite( TestRuleSystemBugs.class );
 //        TestSuite suite = new TestSuite();
 //        suite.addTest(new TestBugs( "testLayeredValidation" ));
 //        return suite;
@@ -189,8 +189,8 @@ public class TestBugs extends TestCase {
         "    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"" +
         "    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"" +
         "    xmlns:daml=\"http://www.daml.org/2001/03/daml+oil#\"" +
-        "    xmlns=\"urn:x-hp-jena:test#\"" +
-        "    xml:base=\"urn:x-hp-jena:test\">" +
+        "    xmlns=\"urn:example:test#\"" +
+        "    xml:base=\"urn:example:test\">" +
         " " +
         "    <daml:Ontology rdf:about=\"\">" +
         "        <daml:imports rdf:resource=\"http://www.daml.org/2001/03/daml+oil\"/>" +
@@ -310,14 +310,13 @@ public class TestBugs extends TestCase {
      */
     public void testGenericDeleteBug() {
         Model data = ModelFactory.createDefaultModel();
-        String NS = "urn:x-hp:eg/";
+        String NS = "urn:example:test:";
         Property p = data.createProperty(NS, "p");
         Resource x = data.createResource(NS + "x");
         Resource y = data.createResource(NS + "y");
         Statement sy = data.createStatement(y, p, "foo");
         data.add(sy);
         data.add(x, p, "foo");
-//        String rule = "[(?x eg:p ?m) -> (?x eg:same ?x)]";
         String rule = "[(?x eg:p ?m) (?y eg:p ?m) -> (?x eg:same ?y) (?y eg:same ?x)]";
         GenericRuleReasoner reasoner = (GenericRuleReasoner) GenericRuleReasonerFactory.theInstance().create(null);
         reasoner.setMode(GenericRuleReasoner.FORWARD_RETE);

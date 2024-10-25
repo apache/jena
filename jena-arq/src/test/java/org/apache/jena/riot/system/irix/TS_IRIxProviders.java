@@ -16,7 +16,22 @@
  * limitations under the License.
  */
 
-package org.apache.jena.irix;
+package org.apache.jena.riot.system.irix;
 
-@Deprecated(forRemoval = true)
-public class Chars3986 extends org.apache.jena.rfc3986.Chars3986 {}
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
+@Suite
+@SelectClasses({
+
+//import org.junit.runner.RunWith;
+//import org.junit.runners.Suite;
+//import org.junit.runners.Suite.SuiteClasses;
+//@RunWith(Suite.class)
+//@SuiteClasses({
+
+    TestIRIxRIOT_iri3986.class,
+    TestIRIxRIOT_JenaIRI.class
+})
+
+public class TS_IRIxProviders {}

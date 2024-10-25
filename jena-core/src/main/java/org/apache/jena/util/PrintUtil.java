@@ -48,7 +48,8 @@ public class PrintUtil {
     protected static PrefixMapping prefixMapping = PrefixMapping.Factory.create();
 
     /** Default built in eg namespace used in testing */
-    public static final String egNS = "urn:x-hp:eg/";
+    // Do not put a slash in this.
+    public static final String egNS = "urn:example:test:";
 
     static {
         init();

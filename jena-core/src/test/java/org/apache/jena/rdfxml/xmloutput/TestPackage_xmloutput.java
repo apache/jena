@@ -18,15 +18,8 @@ t * Licensed to the Apache Software Foundation (ASF) under one
 
 package org.apache.jena.rdfxml.xmloutput;
 
-// Imports
-///////////////
-import java.io.StringWriter;
-
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.irix.IRIException;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
 import org.apache.jena.test.X_RDFReaderF;
 
@@ -43,43 +36,16 @@ public class TestPackage_xmloutput extends TestCase{
 
         RDFReaderFImpl.alternative(new X_RDFReaderF());
 
-        // JENA-1537
-        // Character encoding checks removed due to lack of support in JDK XML parser APIs.
-        //suite.addTest( TestMacEncodings.suite() );
-
-        // add all the tests defined in this class to the suite
         suite.addTestSuite( PrettyWriterTest.class );
         suite.addTest(new TestWriterInterface("testInterface", null));
         suite.addTest( TestWriterAndReader.suiteXML() );
         suite.addTest( TestWriterAndReader.suiteXML_ABBREV() );
         suite.addTest( TestWriterAndReader.suiteN_TRIPLE() );
-        suite.addTestSuite( TestURIExceptions.class );
+        suite.addTestSuite( TestWriterURIExceptions.class );
         suite.addTestSuite( TestEntityOutput.class );
         suite.addTestSuite( TestLiteralEncoding.class );
         suite.addTestSuite( TestWriterFeatures.class ) ;
+        suite.addTestSuite( TestWriterURIExceptions.class ) ;
         return suite;
     }
-
-    /**
-         Added as a place to put the test(s) which ensure that thrown URI exceptions
-         carry the bad URI with them.
-    */
-    public static class TestURIExceptions extends TestCase
-        {
-        public TestURIExceptions( String name )
-            { super( name ); }
-
-            public void testBadURIExceptionContainsBadURIInMessage() {
-                String badURI = "http:";
-                Model m = ModelFactory.createDefaultModel();
-                m.add(m.createResource(badURI), m.createProperty("eg:BC"), m.createResource("eg:CD"));
-                try {
-                    m.write(new StringWriter(), "RDF/XML");
-                    fail("should detect bad URI " + badURI);
-                } catch (IRIException e) {
-                    assertTrue("message must contain failing URI", e.getMessage().indexOf(badURI) > 0);
-                }
-            }
-        }
-
 }
