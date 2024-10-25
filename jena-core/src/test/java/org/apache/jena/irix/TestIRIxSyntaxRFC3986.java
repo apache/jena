@@ -19,20 +19,21 @@
 package org.apache.jena.irix;
 
 import static org.apache.jena.atlas.lib.Lib.uppercase;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 /**
- * Basic tests of RFC 3986 syntax.
+ * Basic tests of RFC 3986 syntax. Scheme-rules are not checked.
  *
- * {@link TestRFC3986} contained tests with more scheme errors and warnings. It also compares to jena-iri.
+ * {@link TestIRIxJenaSystem} contains tests with more scheme errors and warnings. It also compares to jena-iri.
  */
 @RunWith(Parameterized.class)
-public class TestIRIxSyntax extends AbstractTestIRIx {
+public class TestIRIxSyntaxRFC3986 extends AbstractTestIRIx_3986 {
 
-    public TestIRIxSyntax(String name, IRIProvider provider) {
+    public TestIRIxSyntaxRFC3986(String name, IRIProvider provider) {
         super(name, provider);
     }
 
@@ -124,7 +125,9 @@ public class TestIRIxSyntax extends AbstractTestIRIx {
     @Test public void file_06() { parse("file:///c:/~user/file"); }
 
     // Parse, only collect violations from scheme-specific rules.
-    private void parse(String iriStr) {
-        test_create(iriStr);
+    private void parse(String string) {
+       IRIx iri = test_create(string);
+       assertNotNull(iri);
+       // May have URI scheme sviolations
     }
 }

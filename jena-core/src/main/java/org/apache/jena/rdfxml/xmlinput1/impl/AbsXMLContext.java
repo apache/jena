@@ -113,10 +113,12 @@ public abstract class AbsXMLContext implements ARPErrorNumbers {
         }
 
         rslt.handleViolations((isError, msg) ->{
-            try {
-                forErrors.warning(taintMe, WARN_MALFORMED_URI, "Bad URI: " + msg);
-            } catch (SAXParseException ex) {
-                throw new JenaException("SAXParseException: "+ex.getMessage());
+            if ( isError ) {
+                try {
+                    forErrors.warning(taintMe, WARN_MALFORMED_URI, "Bad URI: " + msg);
+                } catch (SAXParseException ex) {
+                    throw new JenaException("SAXParseException: "+ex.getMessage());
+                }
             }
         });
 

@@ -18,17 +18,21 @@
 
 package org.apache.jena.riot.system;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
-/**
- * Test suite for RIOT system
- *
- */
-@RunWith(Suite.class)
-@SuiteClasses({
-    TestChecker.class
+
+// 2024-10 Using Junit5 can confuse Eclipse testing.
+// Test classes get missed
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+@Suite
+@SelectClasses({
+
+//import org.junit.runner.RunWith;
+//import org.junit.runners.Suite;
+//import org.junit.runners.Suite.SuiteClasses;
+//@RunWith(Suite.class)
+//@SuiteClasses({
+      TestChecker.class
     , TestStreamRDF.class
     , TestFactoryRDF.class
     , TestFactoryRDFCaching.class
@@ -45,10 +49,13 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestFormatRegistration.class
     , TestJsonLDReadWrite.class         // Some simple testing of the jsonld-java engine.
     , TestSerializable.class
-    , TestIRIxRIOT.class
+
     , TestRiotLib.class
     , TestAsyncParser.class
 })
 
+/**
+ * Test suite for RIOT system
+ */
 public class TS_RiotSystem
 {}

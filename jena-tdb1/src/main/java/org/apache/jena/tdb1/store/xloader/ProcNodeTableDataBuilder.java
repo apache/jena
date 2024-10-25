@@ -26,8 +26,6 @@ import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.lib.Timer;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.irix.IRIProvider;
-import org.apache.jena.irix.SystemIRIx;
 import org.apache.jena.riot.system.AsyncParser;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
@@ -58,8 +56,6 @@ public class ProcNodeTableDataBuilder {
                             List<String> datafiles, boolean collectStats) {
         // Possible parser speed up. This has no effect if parsing in parallel
         // because the parser isn't the slowest step in loading at scale.
-        IRIProvider provider = SystemIRIx.getProvider();
-        //SystemIRIx.setProvider(new IRIProviderAny());
 
         // This formats the location correctly.
         // But we're not really interested in it all.
@@ -78,7 +74,6 @@ public class ProcNodeTableDataBuilder {
         build(dsg, monitor, outputTriples, outputQuads,datafiles);
 
         TDBInternal.expel(dsg);
-        SystemIRIx.setProvider(provider);
     }
 
     private static void build(DatasetGraph dsg, ProgressMonitor monitor,

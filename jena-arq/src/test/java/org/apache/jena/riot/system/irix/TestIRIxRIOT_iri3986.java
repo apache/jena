@@ -16,7 +16,32 @@
  * limitations under the License.
  */
 
-package org.apache.jena.irix;
+package org.apache.jena.riot.system.irix;
 
-@Deprecated(forRemoval = true)
-public class Chars3986 extends org.apache.jena.rfc3986.Chars3986 {}
+import org.junit.BeforeClass;
+
+import org.apache.jena.iri3986.provider.IRIProvider3986;
+import org.apache.jena.iri3986.provider.JenaSeveritySettings;
+import org.apache.jena.irix.IRIProvider;
+import org.apache.jena.rfc3986.Violations;
+
+/** Test IRIx in parser usage. */
+public class TestIRIxRIOT_iri3986 extends AbstractTestIRIxRIOT_system {
+
+    protected TestIRIxRIOT_iri3986() {
+        super("IRI3986");
+    }
+
+    private static final IRIProvider testProvider = new IRIProvider3986();
+
+
+
+    @Override
+    protected IRIProvider getProviderForTest() {
+        return testProvider;
+    }
+
+    @BeforeClass public static void beforeClass() {
+        Violations.setSystemSeverityMap(JenaSeveritySettings.jenaSystemSettings());
+    }
+}

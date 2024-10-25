@@ -167,7 +167,7 @@ import java.util.regex.Pattern;
             if ( x == N )
                 return true;
             if ( x == start ) {
-                handler.accept(Issue.urn_bad_components, "Query string not start with an r- or q- component");
+                handler.accept(Issue.urn_bad_components, "Query string does not start with an r- or q- component");
                 return false;
             }
         }

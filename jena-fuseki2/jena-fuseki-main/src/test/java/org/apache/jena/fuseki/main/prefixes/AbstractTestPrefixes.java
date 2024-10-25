@@ -169,7 +169,7 @@ public abstract class AbstractTestPrefixes {
     public void updateExistingPrefixInvalidURI() {
         HttpException ex = assertThrows(HttpException.class, ()->{
             // existing prefix, invalid uri, 400 bad request exception expected
-            execPost(testWriteURL(), "prefix1", "http:abc");
+            execPost(testWriteURL(), "prefix1", "http:bad uri");
         });
         assertEquals(HttpSC.BAD_REQUEST_400, ex.getStatusCode());
     }

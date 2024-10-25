@@ -135,10 +135,6 @@ public class TestBasics extends TestCase  {
         execTest("(?a rdf:type max(?a,1)) -> (?a rdf:type 'foo').",
                  "[ (?a rdf:type 'max(?a \\'1\\'^^http://www.w3.org/2001/XMLSchema#int)'^^"+uri+") -> (?a rdf:type 'foo') ]");
         TypeMapper.getInstance().unregisterDatatype(dt);
-
-        //junit.framework.AssertionFailedError: expected:
-        // <[ (?a rdf:type 'max(?a \'1\'^^http://www.w3.org/2001/XMLSchema#int)'^^urn:x-hp-jena:Functor) -> (?a rdf:type 'foo') ]>
-        // <[ (?a rdf:type 'max(?a \'1\'^^http://www.w3.org/2001/XMLSchema#int)'^^urn:x-hp-jena:Functor) -> (?a rdf:type 'foo') ]>
     }
 
     public void testParser04() {

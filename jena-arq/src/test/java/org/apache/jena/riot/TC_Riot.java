@@ -18,6 +18,9 @@
 
 package org.apache.jena.riot;
 
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+
 import org.apache.jena.riot.adapters.TS_RIOTAdapters ;
 import org.apache.jena.riot.lang.TS_Lang ;
 import org.apache.jena.riot.out.TS_Out ;
@@ -27,12 +30,11 @@ import org.apache.jena.riot.resultset.TS_ResultSetRIOT ;
 import org.apache.jena.riot.rowset.TS_RowSetRIOT;
 import org.apache.jena.riot.stream.TS_IO2 ;
 import org.apache.jena.riot.system.TS_RiotSystem ;
+import org.apache.jena.riot.system.irix.TS_IRIxProviders;
 import org.apache.jena.riot.thrift.TS_RDFThrift ;
 import org.apache.jena.riot.tokens.TS_Tokens ;
 import org.apache.jena.riot.web.TS_RiotWeb ;
 import org.apache.jena.riot.writer.TS_RiotWriter ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
@@ -45,12 +47,13 @@ import org.junit.runners.Suite ;
     , TS_Process.class
     , TS_RiotWriter.class
     , TS_RiotSystem.class
+    , TS_IRIxProviders.class
     , TS_RiotWeb.class
     , TS_ResultSetRIOT.class
     , TS_RDFProtobuf.class
     , TS_RDFThrift.class
     , TS_RowSetRIOT.class
-    // Scripted parser tests in ARQTestSuite.
+    //Scripted parser tests in ARQTestSuite.
 })
 
 public class TC_Riot

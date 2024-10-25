@@ -23,23 +23,24 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import org.apache.jena.iri.IRI;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.junit.runners.Parameterized;
 
+import org.apache.jena.iri.IRI;
+
 /**
  * Test of parsing and schema violations.
+ * <p>s
  * This is the test suite that compares result with jena-iri.
- * See also {@link TestIRIxSyntax} for other IRIx parsing operations.
- * See also {@link TestIRIxOps} for IRIx operations.
+ * See also {@link TestIRIxSyntaxRFC3986} for RDF 3986 syntax only parsing.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(Parameterized.class)
-public class TestRFC3986 extends AbstractTestIRIx {
-    public TestRFC3986(String name, IRIProvider provider) {
+public class TestIRIxJenaSystem extends AbstractTestIRIx_3986 {
+    public TestIRIxJenaSystem(String name, IRIProvider provider) {
         super(name, provider);
     }
 
@@ -92,25 +93,25 @@ public class TestRFC3986 extends AbstractTestIRIx {
     // ---- bad
 
     // Leading ':'
-    @Test public void bad_uri_scheme_1() { bad(":segment"); }
+    @Test public void bad_scheme_1() { bad(":segment"); }
 
     // Bad scheme
-    @Test public void bad_uri_scheme_2() { bad("://host/xyz"); }
+    @Test public void bad_scheme_2() { bad("://host/xyz"); }
 
     // Bad scheme
-    @Test public void bad_uri_scheme_3() { bad("1://host/xyz"); }
+    @Test public void bad_scheme_3() { bad("1://host/xyz"); }
 
     // Bad scheme
-    @Test public void bad_uri_scheme_4() { bad("a~b://host/xyz"); }
+    @Test public void bad_scheme_4() { bad("a~b://host/xyz"); }
 
     // Bad scheme
-    @Test public void bad_uri_scheme_5() { bad("aβ://host/xyz"); }
+    @Test public void bad_scheme_5() { bad("aβ://host/xyz"); }
 
     // Bad scheme
-    @Test public void bad_uri_scheme_6() { bad("_:xyz"); }
+    @Test public void bad_scheme_6() { bad("_:xyz"); }
 
     // Bad scheme
-    @Test public void bad_uri_scheme_7() { bad("a_b:xyz"); }
+    @Test public void bad_scheme_7() { bad("a_b:xyz"); }
 
     // Space!
     @Test public void bad_chars_1() { bad("http://abcdef:80/xyz /abc"); }
@@ -191,7 +192,7 @@ public class TestRFC3986 extends AbstractTestIRIx {
 
     @Test public void parse_urn_01() { good("urn:nid:nss"); }
 
-    @Test public void parse_urn_02() { good("urn:x-local:abc/def"); }
+    @Test public void parse_urn_02() { good("urn:ns:abc/def"); }
 
     // @formatter:off
     // namestring    = assigned-name
@@ -201,27 +202,15 @@ public class TestRFC3986 extends AbstractTestIRIx {
     //                 [ "?=" q-component ]
     // @formatter:on
 
-    @Test public void parse_urn_03()        { good("urn:x-local:abc/def?+more"); }
+    @Test public void parse_urn_03()        { good("urn:ns:abc/def?+more"); }
 
-    @Test public void parse_urn_04()        { good("urn:x-local:abc/def?=123"); }
+    @Test public void parse_urn_04()        { good("urn:ns:abc/def?=123"); }
 
-    @Test public void parse_urn_05()        { good("urn:x-local:abc/def?+resolve?=123#frag"); }
+    @Test public void parse_urn_05()        { good("urn:ns:abc/def?+resolve?=123#frag"); }
 
     @Test public void parse_urn_06()        { good("urn:abc0:def#frag"); }
     //  urn:2char:1char
     // urn:NID:NSS where NID is at least 2 alphas, and at most 32 long
-
-    /**
-     * Allow UCSCHARs in the NSS, and the RFC 8141 components.
-     */
-    // XXX Not ASCII in the NSS part, or components.
-    private static boolean I_URN = true;
-    private void parse_internation_urn(String string) {
-        if ( I_URN )
-            good(string);
-        else
-            badSpecific(string);
-    }
 
     @Test public void parse_urn_bad_01() { badSpecific("urn:"); }
 
@@ -236,6 +225,17 @@ public class TestRFC3986 extends AbstractTestIRIx {
     @Test public void parse_urn_bad_05() { badSpecific("urn:local:abc/def?query=foo"); }
 
     // URNs are defined in RFC 8141 referring to RFC 3986 (URI - ASCII)
+    /**
+     * Allow UCSCHARs in the NSS, and the RFC 8141 components.
+     */
+    private static boolean I_URN = true;
+    private void parse_internation_urn(String string) {
+        if ( I_URN )
+            good(string);
+        else
+            badSpecific(string);
+    }
+
     @Test public void parse_intn_urn_01()    { parse_internation_urn("urn:NID:αβγ"); }
     @Test public void parse_intn_urn_02()    { parse_internation_urn("urn:nid:nss#αβγ"); }
     @Test public void parse_intn_urn_03()    { parse_internation_urn("urn:nid:nss?=αβγ"); }
@@ -386,6 +386,7 @@ public class TestRFC3986 extends AbstractTestIRIx {
                 fail("Did not fail: "+string);
         } catch (IRIException ex) {}
     }
+
     private void badSpecific(String string) {
         bad(string);
     }

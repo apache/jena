@@ -42,4 +42,10 @@
 <urn:ex:s039> <urn:ex:p> <g?y/../x>.
 <urn:ex:s040> <urn:ex:p> <g#s/./x>.
 <urn:ex:s041> <urn:ex:p> <g#s/../x>.
-<urn:ex:s042> <urn:ex:p> <http:g>.
+
+## Two answers:
+## RDF 3986 section 5.2.2
+## Strict resolving: <http:g>
+## Non-strict resolving: <http://a/bb/ccc/g>
+
+## <urn:ex:s042> <urn:ex:p> <http:g>.

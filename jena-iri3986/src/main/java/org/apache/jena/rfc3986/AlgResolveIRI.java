@@ -34,19 +34,24 @@ public class AlgResolveIRI {
         return transformReferencesNonStrict(reference, base);
     }
 
-    /** 5.2.2.  Transform References
+    /**
+     * 5.2.2.  Transform References
      * <p>
      * <a href="https://datatracker.ietf.org/doc/html/rfc3986#section-5.2.2">RFC 3986 section 5.2.2</a>.
-     * <p>
-     * "A non-strict parser" - this resolves (hosts and) paths if the reference and the base have the same scheme.
      */
     private static IRI3986 transformReferencesStrict(IRI reference, IRI base) {
-        boolean sameScheme = Objects.equals(reference.scheme(), base.scheme());
         if ( reference.hasScheme() )
             return RFC3986.create(reference);
         return transformReferencesNonStrict(reference, base);
     }
 
+    /**
+     * 5.2.2.  Transform References
+     * <p>
+     * <a href="https://datatracker.ietf.org/doc/html/rfc3986#section-5.2.2">RFC 3986 section 5.2.2</a>.
+     * <p>
+     * "A non-strict parser" - this resolves (hosts and) paths if the reference and the base have the same scheme.
+     */
     private static IRI3986 transformReferencesNonStrict(IRI reference, IRI base) {
         // Note the argument order is reverse from "resolve(base, relative)" to be more like RFC 3986.
         String t_scheme = null;
@@ -195,8 +200,6 @@ public class AlgResolveIRI {
                 trailingSlash = true;
             else if ( path.charAt(path.length()-1) == '/' )
                 trailingSlash = true;
-//            else if ( path.equals("..") )
-//                trailingSlash = true;
         }
 
         for ( int j = 0 ; j < N ; j++ ) {
@@ -257,7 +260,7 @@ public class AlgResolveIRI {
             return null;
         if ( ! Objects.equals(iri.authority(), base.authority()) )
             return null;
-        // Authority covers host and port checks.
+        // Authority covers host and port
 //        if ( ! Objects.equals(base.getHost(), this.getHost()) )
 //            return null;
 //        if ( ! Objects.equals(base.getPort(), this.getPort()) )

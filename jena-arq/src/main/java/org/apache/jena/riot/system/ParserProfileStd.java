@@ -119,14 +119,6 @@ public class ParserProfileStd implements ParserProfile {
     }
 
     private void doChecking(IRIx irix, String uriStr, long line, long col) {
-        // This exists only to give the exact handling of Jena 5.1.0
-        // IRIProviderJenaIRI defines irix.hasViolations() as "jenaIRI.hasViolation(false/*no warnings*/)"
-        // CheckerJenaIRI handles jena-iri warnings.
-        if ( irix instanceof IRIProviderJenaIRI.IRIxJena ) {
-            CheckerJenaIRI.checkIRI(uriStr, errorHandler, line, col);
-            return;
-        }
-
         if ( irix.isRelative() ) {
             // Relative IRIs.
             Checker.iriViolationMessage(irix.str(), true, "Relative IRI: " + irix.str(), line, col, errorHandler);

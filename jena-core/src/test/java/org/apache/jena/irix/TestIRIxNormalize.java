@@ -19,16 +19,15 @@
 package org.apache.jena.irix;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeFalse;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class TestNormalize extends AbstractTestIRIx {
+public class TestIRIxNormalize extends AbstractTestIRIx_3986 {
 
-    public TestNormalize(String name, IRIProvider provider) {
+    public TestIRIxNormalize(String name, IRIProvider provider) {
         super(name, provider);
     }
 
@@ -109,9 +108,11 @@ public class TestNormalize extends AbstractTestIRIx {
 
     private void testNormalize(String input, String expected) {
         // jena-iri does not implement normalization.
-        assumeFalse("jena-iri does not implement normalization", SystemIRIx.getProvider() instanceof IRIProviderJenaIRI );
-//        if ( SystemIRIx.getProvider() instanceof IRIProviderJenaIRI )
-//            return;
+        if (getProvider() instanceof IRIProviderJenaIRI )
+            // jena-iri does not implement normalization.
+            return;
+        // assumefalse is unreliable in mixed JUnit3 overall runner
+        //assumeFalse("jena-iri does not implement normalization", (getProvider() instanceof IRIProviderJenaIRI) );
         IRIx iri = test_create(input);
         IRIx iri2 = iri.normalize();
         String s = iri2.toString();

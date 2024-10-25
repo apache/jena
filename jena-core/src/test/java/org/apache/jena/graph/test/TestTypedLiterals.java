@@ -74,8 +74,8 @@ public class TestTypedLiterals extends TestCase {
      * Test the base functioning of unknown datatypes
      */
     public void testUnknown() {
-        String typeURI = "urn:x-hp-dt:unknown";
-        String typeURI2 = "urn:x-hp-dt:unknown2";
+        String typeURI =  "urn:jena-dt:unknown";
+        String typeURI2 = "urn:jena-dt:unknown2";
 
         boolean originalFlag = JenaParameters.enableSilentAcceptanceOfUnknownDatatypes;
         JenaParameters.enableSilentAcceptanceOfUnknownDatatypes = true;
@@ -1275,7 +1275,7 @@ public class TestTypedLiterals extends TestCase {
  * defined below.
  */
 class RationalType extends BaseDatatype {
-    public static final String theTypeURI = "urn:x-hp-dt:rational";
+    public static final String theTypeURI = "urn:example:dt-rational";
     public static final RDFDatatype theRationalType = new RationalType();
 
     /** private constructor - single global instance */

@@ -20,8 +20,8 @@ package org.apache.jena.fuseki.server;
 
 import java.util.function.Function;
 
-import org.apache.jena.irix.Chars3986;
 import org.apache.jena.irix.IRIs;
+import org.apache.jena.rfc3986.Chars3986;
 import org.apache.jena.irix.IRIException;
 
 import static org.apache.jena.fuseki.server.Validators.ValidationPolicy.*;

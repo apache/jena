@@ -162,17 +162,15 @@ public class TestLangTurtle
     public void errorBadURI_1()         { parse("<http://example/a b> <http://example/p> 123 .") ; }
 
     @Test(expected=ExWarning.class)
+    // Passes tokenization but fails IRI parsing.
     public void errorBadURI_2()         { parse("<http://example/a%XAb> <http://example/p> 123 .") ; }
-
-    @Test
-    public void errorBadURI_3()         { parse("<http://example/a%Aab> <http://example/p> 123 .") ; }
 
     // Bad URIs
     @Test (expected=ExError.class)
-    public void errorBadURI_4()         { parse("@prefix ex:  <bad iri> .  ex:s ex:p 123 ") ; }
+    public void errorBadURI_3()         { parse("@prefix ex:  <bad iri> .  ex:s ex:p 123 ") ; }
 
     @Test (expected=ExError.class)
-    public void errorBadURI_5()         { parse("<x> <p> 'number'^^<bad uri> ") ; }
+    public void errorBadURI_4()         { parse("<x> <p> 'number'^^<bad uri> ") ; }
 
     // Structural errors.
     @Test (expected=ExFatal.class)

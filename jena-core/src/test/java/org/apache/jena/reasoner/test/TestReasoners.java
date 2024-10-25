@@ -454,10 +454,10 @@ public class TestReasoners extends TestCase {
      */
     public void testModelFactoryRDFS() {
         Model data = ModelFactory.createDefaultModel();
-        Property p = data.createProperty("urn:x-hp:ex/p");
-        Resource a = data.createResource("urn:x-hp:ex/a");
-        Resource b = data.createResource("urn:x-hp:ex/b");
-        Resource C = data.createResource("urn:x-hp:ex/c");
+        Property p = data.createProperty("urn:example:p");
+        Resource a = data.createResource("urn:example:a");
+        Resource b = data.createResource("urn:example:b");
+        Resource C = data.createResource("urn:example:c");
         data.add(p, RDFS.range, C)
             .add(a, p, b);
         Model result = ModelFactory.createRDFSModel(data);

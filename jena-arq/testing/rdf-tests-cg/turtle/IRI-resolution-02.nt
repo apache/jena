@@ -40,4 +40,3 @@
 <urn:ex:s081> <urn:ex:p> <http://a/bb/ccc/d/g?y/../x>.
 <urn:ex:s082> <urn:ex:p> <http://a/bb/ccc/d/g#s/./x>.
 <urn:ex:s083> <urn:ex:p> <http://a/bb/ccc/d/g#s/../x>.
-<urn:ex:s084> <urn:ex:p> <http:g>.

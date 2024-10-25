@@ -96,7 +96,7 @@ public abstract class CmdLangParse extends CmdGeneral {
         // checking.
 
         // True if any input is quads
-        // False is unknow (stdin, no --syntax)
+        // False is unknown (stdin, no --syntax)
         // Check will also be done during parsing.
         boolean someQuadsInput = false;
 
