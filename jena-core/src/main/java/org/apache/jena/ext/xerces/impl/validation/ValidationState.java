@@ -28,6 +28,8 @@ import org.apache.jena.ext.xerces.xni.NamespaceContext;
 /**
  * Implementation of the ValidationContext interface. Used to establish an
  * environment for simple type validation.
+ * <p>
+ * This class is not thread-safe.
  *
  * {@literal @xerces.internal}
  *
@@ -50,9 +52,10 @@ public class ValidationState implements ValidationContext {
     private SymbolTable fSymbolTable            = null;
     private Locale fLocale                      = null;
 
-    //REVISIT: Should replace with a lighter structure.
-    private final HashMap fIdTable    = new HashMap();
-    private final HashMap fIdRefTable = new HashMap();
+    // REVISIT: Should replace with a lighter structure.
+    // These tables are initialized only on demand to avoid unneeded allocations.
+    private HashMap fIdTable    = null;
+    private HashMap fIdRefTable = null;
     private final static Object fNullValue = new Object();
 
     //
@@ -91,11 +94,12 @@ public class ValidationState implements ValidationContext {
      * otherwise return the first IDREF value without a matching ID value.
      */
     public String checkIDRefID () {
+        if (fIdRefTable == null) return null;
         Iterator iter = fIdRefTable.keySet().iterator();
         String key;
         while (iter.hasNext()) {
             key = (String) iter.next();
-            if (!fIdTable.containsKey(key)) {
+            if (fIdTable == null || !fIdTable.containsKey(key)) {
                   return key;
             }
         }
@@ -106,8 +110,8 @@ public class ValidationState implements ValidationContext {
         fExtraChecking = true;
         fFacetChecking = true;
         fNamespaces = true;
-        fIdTable.clear();
-        fIdRefTable.clear();
+        fIdTable = null;
+        fIdRefTable = null;
         fEntityState = null;
         fNamespaceContext = null;
         fSymbolTable = null;
@@ -120,8 +124,8 @@ public class ValidationState implements ValidationContext {
      * the two tables.
      */
     public void resetIDTables() {
-        fIdTable.clear();
-        fIdRefTable.clear();
+        fIdTable = null;
+        fIdRefTable = null;
     }
 
     //
@@ -169,16 +173,25 @@ public class ValidationState implements ValidationContext {
     // id
     @Override
     public boolean isIdDeclared(String name) {
+        if (fIdTable == null) {
+            return false;
+        }
         return fIdTable.containsKey(name);
     }
     @Override
     public void addId(String name) {
+        if (fIdTable == null) {
+            fIdTable = new HashMap();
+        }
         fIdTable.put(name, fNullValue);
     }
 
     // idref
     @Override
     public void addIdRef(String name) {
+        if (fIdRefTable == null) {
+            fIdRefTable = new HashMap();
+        }
         fIdRefTable.put(name, fNullValue);
     }
     // get symbols
