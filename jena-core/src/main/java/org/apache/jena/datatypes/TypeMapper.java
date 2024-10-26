@@ -126,18 +126,16 @@ public class TypeMapper {
             // Plain literal
             return null;
         }
-        RDFDatatype dtype = uriToDT.get(uri);
-        if (dtype == null) {
+        return uriToDT.computeIfAbsent(uri, u -> {
             // Unknown datatype
             if (JenaParameters.enableSilentAcceptanceOfUnknownDatatypes) {
-                dtype = new BaseDatatype(uri);
-                registerDatatype(dtype);
+                // No need to update classToDT because BaseDatatype.getJavaClass is always null
+                return new BaseDatatype(u);
             } else {
                 throw new DatatypeFormatException(
                     "Attempted to created typed literal using an unknown datatype - " + uri);
             }
-        }
-        return dtype;
+        });
     }
 
     /**
@@ -183,6 +181,9 @@ public class TypeMapper {
 
     /**
      * Register a new datatype
+     * This will overwrite any existing registration for this datatype IRI.
+     * Comparisons of literals with different datatype instances will fail, so be careful
+     * if you are using this outside of initialization code.
      */
     public void registerDatatype(final RDFDatatype type) {
         uriToDT.put(type.getURI(), type);
@@ -194,6 +195,10 @@ public class TypeMapper {
 
     /**
      * Remove a datatype registration.
+     * <p>
+     * WARNING: This method may cause unexpected behavior if the datatype is still in use.
+     * If you unregister a datatype that is still used somewhere on the heap, literal comparisons with
+     * that datatype will fail.
      */
     public void unregisterDatatype(final RDFDatatype type) {
         uriToDT.remove(type.getURI());
