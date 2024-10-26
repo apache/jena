@@ -19,6 +19,7 @@
 package org.apache.jena.irix;
 
 import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.iri3986.provider.IRIProvider3986;
 import org.apache.jena.iri3986.provider.InitIRI3986;
@@ -30,47 +31,68 @@ import org.apache.jena.shared.JenaException;
  */
 public class SystemIRIx {
 
-    // -- Providers
-    private static IRIProvider makeProviderJenaIRI() {
-        IRIProvider newProviderJenaIRI = new IRIProviderJenaIRI();
-        newProviderJenaIRI.strictMode("urn",  false);
-        newProviderJenaIRI.strictMode("http", false);
-        newProviderJenaIRI.strictMode("file", false);
-        return newProviderJenaIRI;
-    }
-
-    private static IRIProvider makeProviderIRI3986() {
-        InitIRI3986.init();
-        IRIProvider3986 providerIRI3986 = new IRIProvider3986();
-        return providerIRI3986;
-    }
-
-    // ** Do not use IRIProviderJDK in production. **
-    private static IRIProvider makeProviderJDK() { return new IRIProviderJDK(); }
-
     // -- System provider choice
-
-    private enum ProviderImpl { JENA_IRI, IRI3986 }
-
-    //private static final ProviderImpl providerImpl = ProviderImpl.JENA_IRI;
-    private static final ProviderImpl providerImpl = ProviderImpl.IRI3986;
-
-    public static IRIProvider makeFreshSystemProvider() {
-        // ** This is the implementation choice point. **
-        return switch(providerImpl) {
-            case IRI3986 -> makeProviderIRI3986();
-            case JENA_IRI -> makeProviderJenaIRI();
-            default ->
-                throw new JenaException("Unknown IRIx Provider");
-        };
-    }
+    private enum ProviderImpl { IRI0, IRI3986 }
+    // Jena 5.x : default is the legacy jena-iri
+    private static final ProviderImpl providerImpl = ProviderImpl.IRI0;
+    //private static final ProviderImpl providerImpl = ProviderImpl.IRI3986;
+    // --
 
     // -- System-wide provider.
 
     private static IRIProvider provider = makeFreshSystemProvider();
 
-    // -- Initialization (called from InitjenaCore)
+    private static final String envVariableProvider = "JENA_IRIPROVIDER";
+    private static final String sysPropertyProvider = "jena.iriprovider";
 
+    public static IRIProvider makeFreshSystemProvider() {
+        ProviderImpl sysProviderImpl = getProviderImpl();
+
+        // ** This is the implementation choice point. **
+        return switch(sysProviderImpl) {
+            case IRI3986 -> makeProviderIRI3986();
+            case IRI0    -> makeProviderJenaIRI();
+            default ->
+                throw new JenaException("Unknown IRIx Provider");
+        };
+    }
+
+    /**
+     * Determine the system-wide IRIx provider (IRI implementation).
+     * <p>
+     * This can be controlled with environment variable {@code JENA_IRIPROVIDER} or
+     * Java system property {@code jena.iriprovider}.
+     * <p>
+     * The value is a string: {@code "IRI3986"} for the new (2024) implementation
+     * or {@code "IRI0"} for the legacy implementation.
+     * <p>
+     * Application do not normally need to choose and they use the system default.
+     */
+    private static ProviderImpl getProviderImpl() {
+        ProviderImpl sysProviderImpl = providerImpl;
+
+        String p = Lib.getenv(sysPropertyProvider, envVariableProvider);
+        if ( p != null ) {
+            String pNorm = Lib.uppercase(p);
+            ProviderImpl impl = switch(pNorm) {
+                case "IRI3986" -> ProviderImpl.IRI3986;
+                case "IRI0" ->  ProviderImpl.IRI0;
+                default -> null;
+            };
+            if ( impl != null ) {
+                sysProviderImpl = impl;
+                Log.info(SystemIRIx.class, "IRI Provider: "+impl);
+            } else {
+                Log.error(SystemIRIx.class, "IRI Provider not recognized: "+pNorm);
+                System.exit(1);
+            }
+        }
+        return sysProviderImpl;
+    }
+
+    // -- System-wide provider.
+
+    // -- Initialization (called from InitJenaCore)
     public static void init() {}
 
     public static void reset() {
@@ -157,4 +179,23 @@ public class SystemIRIx {
     private static void setSystemBase(IRIx iri) {
         systemBase = iri;
     }
+
+    // -- Providers
+
+    private static IRIProvider makeProviderJenaIRI() {
+        IRIProvider newProviderJenaIRI = new IRIProviderJenaIRI();
+        newProviderJenaIRI.strictMode("urn",  false);
+        newProviderJenaIRI.strictMode("http", false);
+        newProviderJenaIRI.strictMode("file", false);
+        return newProviderJenaIRI;
+    }
+
+    private static IRIProvider makeProviderIRI3986() {
+        InitIRI3986.init();
+        IRIProvider3986 providerIRI3986 = new IRIProvider3986();
+        return providerIRI3986;
+    }
+
+    // ** Do not use IRIProviderJDK in production. **
+    private static IRIProvider makeProviderJDK() { return new IRIProviderJDK(); }
 }
