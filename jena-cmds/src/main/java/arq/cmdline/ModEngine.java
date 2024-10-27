@@ -32,7 +32,7 @@ public class ModEngine extends ModBase
     // Special case of a "ModEnvironment"
     // Alters the ARQ environment but provides nothing at execution time.
     // Combine with ModSymbol?
-    
+
     protected final ArgDecl engineDecl = new ArgDecl(ArgDecl.HasValue, "engine") ;
     protected final ArgDecl unEngineDecl = new ArgDecl(ArgDecl.HasValue,
                                                        "unengine",
@@ -40,66 +40,52 @@ public class ModEngine extends ModBase
                                                        "removeEngine",
                                                        "removeengine"
                                                        ) ;
-    
+
     private boolean timing = false ;
-    
+
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Query Engine") ;
-        cmdLine.add(engineDecl, "--engine=EngineName", "Register another engine factory[ref]") ; 
+        cmdLine.add(engineDecl, "--engine=EngineName", "Register another engine factory[ref]") ;
         cmdLine.add(unEngineDecl, "--unengine=EngineName", "Unregister an engine factory") ;
     }
-    
+
     public void checkCommandLine(CmdGeneral cmdLine)
     {}
 
     @Override
     public void processArgs(CmdArgModule cmdLine)
     {
-       
+
         List<String> engineDecls = cmdLine.getValues(engineDecl) ;
-        
+
 //        if ( x.size() > 0 )
 //            QueryEngineRegistry.get().factories().clear() ;
 
-        for ( String engineName : engineDecls )
-        {
-			switch (engineName.toLowerCase()) {
-				case "reference":
-				case "ref":
-					QueryEngineRef.register();
-					continue;
-				case "refquad":
-					QueryEngineRefQuad.register();
-					continue;
-				case "main":
-					QueryEngineMain.register();
-					continue;
-				case "quad":
-					QueryEngineMainQuad.register();
-					continue;
-				}
-			throw new CmdException("Engine name not recognized: " + engineName);
-		}
+        for ( String engineName : engineDecls ) {
+            switch (engineName.toLowerCase()) {
+                case "reference", "ref" -> QueryEngineRef.register();
+                case "refquad" -> QueryEngineRefQuad.register();
+                case "main" -> QueryEngineMain.register();
+                case "quad" -> QueryEngineMainQuad.register();
+                default -> {
+                    throw new CmdException("Engine name not recognized: " + engineName);
+                }
+            }
+        }
 
         List<String> unEngineDecls = cmdLine.getValues(unEngineDecl) ;
-        for (String engineName : unEngineDecls)
-        {
-	        	switch (engineName.toLowerCase()) {
-				case "reference":
-				case "ref":
-					QueryEngineRef.register();
-					continue;
-				case "refquad":
-					QueryEngineRefQuad.register();
-					continue;
-				case "main":
-					QueryEngineMain.register();
-					QueryEngineMainQuad.register();
-					continue;      
-	        }
-        		throw new CmdException("Engine name not recognized: "+engineName) ;
+        for ( String engineName : unEngineDecls ) {
+            switch (engineName.toLowerCase()) {
+                case "reference", "ref" -> QueryEngineRef.unregister();
+                case "refquad" -> QueryEngineRefQuad.unregister();
+                case "main" -> QueryEngineMain.unregister();
+                case "quad" -> QueryEngineMainQuad.unregister();
+                default -> {
+                    throw new CmdException("Engine name not recognized: " + engineName);
+                }
+            }
         }
     }
 }
