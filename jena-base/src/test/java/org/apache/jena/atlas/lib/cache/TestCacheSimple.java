@@ -32,7 +32,7 @@ public class TestCacheSimple {
 
     /**
      * Simple test to ensure that {@link CacheSimple} evidences
-     * the fixed-size behavior we desire.
+     * the fixed-size behaviour we desire.
      */
     @Test
     public void testFixedSize() {
@@ -209,6 +209,24 @@ public class TestCacheSimple {
     }
 
     @Test
+    public void testRemoveSameHash() {
+        CompoundKey key1 = new CompoundKey(1, 1);
+        CompoundKey key2 = new CompoundKey(1, 2);
+        String value1 = "v1";
+        String value2 = "v2";
+
+        Cache<CompoundKey, String> cache = new CacheSimple<>(10);
+
+        cache.put(key1, value1);
+        // Delete - different key
+        cache.put(key2, null);
+        String s = cache.getIfPresent(key1);
+
+        assertEquals(1, cache.size());
+        assertEquals(value1, s);
+    }
+
+    @Test
     public void testGet() {
         Cache<String, String> cache = new CacheSimple<>(10);
         assertEquals(0, cache.size());
@@ -325,7 +343,7 @@ public class TestCacheSimple {
         assertEquals(16, cache.getAllocatedSize());
     }
 
-    // Compound key for tests. 
+    // Compound key for tests.
     private static final class CompoundKey {
         private final int a;
         private final int b;
