@@ -115,19 +115,14 @@ public class CacheSimple<K, V> implements Cache<K, V> {
         }
     }
 
-
     @Override
     public void put(K key, V thing) {
         Objects.requireNonNull(key);
-        final int idx = calcIndex(key);
-        if(thing == null) { //null value causes removal of entry
-            if (keys[idx] != null) {
-                keys[idx] = null;
-                values[idx] = null;
-                currentSize--;
-            }
+        if (thing == null) {
+            remove(key);
             return;
         }
+        final int idx = calcIndex(key);
         if(!thing.equals(values[idx])) {
             values[idx] = thing;
         }
