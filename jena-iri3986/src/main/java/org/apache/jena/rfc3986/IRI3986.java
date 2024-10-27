@@ -88,14 +88,14 @@ import java.util.regex.Pattern;
  *
  * <pre>
  *     IRI3986 base = ...
- *     RFC3986 iri = RFC3986.create(string);
+ *     IRI3986 iri = RFC3986.create(string);
  *     IRI3986 iri2 = iri.resolve(base);
  * </pre>
  *
  * Normalize:
  *
  * <pre>
- *     RFC3986 base = ...
+ *     IRI3986 base = ...
  *     IRI3986 iri = RFC3986.create(string);
  *     IRI3986 iri2 = iri.normalize();
  * </pre>
