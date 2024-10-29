@@ -247,4 +247,31 @@ public class BaseDatatype implements RDFDatatype {
               + (getJavaClass() == null ? "" : " -> " + getJavaClass())
               + "]";
     }
+
+    /**
+     * Same URI, same datatype.
+     * <p />
+     * See <a href="https://www.w3.org/TR/rdf11-concepts/#section-Graph-Literal">RDF 1.1 Concepts and Abstract Syntax - 3.3 Literals</a>
+     * and <a href="https://www.w3.org/TR/rdf11-concepts/#section-Datatypes">RDF 1.1 Concepts and Abstract Syntax - 5. Datatypes</a>
+     * @param other
+     * @return true if the URIs are the same
+     */
+    @Override
+    public final boolean equals(Object other) {
+        if (this == other) return true;
+        if (other instanceof RDFDatatype that) {
+            return Objects.equals(this.getURI(), that.getURI());
+        }
+        return false;
+    }
+
+    /**
+     * The hash code of a datatype is the hash code of its URI.
+     * @see #equals(Object)
+     * @return the hash code of the URI
+     */
+    @Override
+    public final int hashCode() {
+        return Objects.hashCode(this.getURI());
+    }
 }

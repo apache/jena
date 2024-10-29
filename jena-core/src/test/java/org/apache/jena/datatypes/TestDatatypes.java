@@ -20,6 +20,7 @@ package org.apache.jena.datatypes;
 
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertFalse ;
+import static org.junit.Assert.assertNotEquals ;
 import static org.junit.Assert.assertNotNull ;
 import static org.junit.Assert.assertTrue ;
 
@@ -27,6 +28,7 @@ import java.math.BigDecimal ;
 import java.util.UUID;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.datatypes.xsd.impl.XSDDouble ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.rdf.model.Resource ;
@@ -195,6 +197,71 @@ public class TestDatatypes {
 
     @Test public void passAsFloat_String() {
         testLiteralIsCorrectType("5.55", XSDDatatype.XSDfloat) ;
+    }
+
+    @Test public void baseDataTypeEquality() {
+        var rdfDataType1 = new BaseDatatype("urn:x-hp-dt:unknown");
+        assertEquals(rdfDataType1, rdfDataType1);
+
+        var rdfDataType2 = new BaseDatatype("urn:x-hp-dt:unknown");
+        assertEquals(rdfDataType1, rdfDataType2);
+        assertEquals(rdfDataType2, rdfDataType1);
+
+        assertEquals(rdfDataType1.hashCode(), rdfDataType2.hashCode());
+    }
+
+    @Test public void baseDataTypeEmptyEquality() {
+        var rdfDataType1 = new BaseDatatype("");
+        assertEquals(rdfDataType1, rdfDataType1);
+
+        var rdfDataType2 = new BaseDatatype("");
+        assertEquals(rdfDataType1, rdfDataType2);
+        assertEquals(rdfDataType2, rdfDataType1);
+
+        assertEquals(rdfDataType1.hashCode(), rdfDataType2.hashCode());
+    }
+
+    @Test public void baseDataTypeNullEquality() {
+        var rdfDataType1 = new BaseDatatype(null);
+        assertEquals(rdfDataType1, rdfDataType1);
+
+        var rdfDataType2 = new BaseDatatype(null);
+        assertEquals(rdfDataType1, rdfDataType2);
+        assertEquals(rdfDataType2, rdfDataType1);
+
+        assertEquals(rdfDataType1.hashCode(), rdfDataType2.hashCode());
+    }
+
+    @Test public void xsdDoubleEquality() {
+        var rdfDataType1 = new XSDDouble("double", Double.class);
+        assertEquals(rdfDataType1, rdfDataType1);
+
+        var rdfDataType2 = XSDDatatype.XSDdouble;
+        assertEquals(rdfDataType1, rdfDataType2);
+        assertEquals(rdfDataType2, rdfDataType1);
+
+        assertEquals(rdfDataType1.hashCode(), rdfDataType2.hashCode());
+    }
+
+    @Test public void baseDataTypeNotEquals() {
+        var rdfDataType1 = new BaseDatatype("urn:x-hp-dt:unknownA");
+        var rdfDataType2 = new BaseDatatype("urn:x-hp-dt:unknownB");
+
+        assertNotEquals(rdfDataType1, rdfDataType2);
+        assertNotEquals(rdfDataType2, rdfDataType1);
+    }
+
+    @Test public void baseDataTypeNullNotEquals() {
+        var rdfDataType1 = new BaseDatatype("urn:x-hp-dt:unknownA");
+        var rdfDataType2 = new BaseDatatype(null);
+
+        assertNotEquals(rdfDataType1, rdfDataType2);
+        assertNotEquals(rdfDataType2, rdfDataType1);
+    }
+
+    @Test public void hashCodeEqualsUriHashCode() {
+        var rdfDataType = new BaseDatatype("urn:x-hp-dt:unknown");
+        assertEquals(rdfDataType.getURI().hashCode(), rdfDataType.hashCode());
     }
 
     private void testValueToLex(Object value, XSDDatatype datatype) {
