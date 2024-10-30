@@ -101,14 +101,12 @@ public class TestBlockUTF8
     @Test public void binary_10() { testBinary(binaryBytes2, CharBuffer.wrap(binaryStr3)); }
     @Test public void binary_11() { testBinary(binaryBytes3, CharBuffer.wrap(binaryStr3)); }
 
-
-    static void testIn(String x)
-    {
+    static void testIn(String x) {
         testIn(x, allocByteBufferArray, allocCharBufferArray);
         testIn(x, allocByteBufferDirect, allocCharBufferDirect);
     }
-    static void testIn(String x, Alloc<ByteBuffer> allocBB, Alloc<CharBuffer> allocCB)
-    {
+
+    static void testIn(String x, Alloc<ByteBuffer> allocBB, Alloc<CharBuffer> allocCB) {
         // Test as binary.
         testInOutBinary(x);
 
@@ -118,7 +116,7 @@ public class TestBlockUTF8
         // To bytes.stringAsBytes
         int N = x.length();
         CharBuffer cb = CharBuffer.wrap(x.toCharArray());
-        ByteBuffer bb = allocBB.allocate(4*N);
+        ByteBuffer bb = allocBB.allocate(4 * N);
         BlockUTF8.fromChars(cb, bb);
         bb.flip();
 
@@ -131,12 +129,12 @@ public class TestBlockUTF8
         assertEquals(x, str);
     }
 
-    // Testing, but not against what Java would do (it replaces bad chars, we want binary).
-    static void testInOutBinary(String x)
-    {
+    // Testing, but not against what Java would do (it replaces bad chars, we want
+    // binary).
+    static void testInOutBinary(String x) {
         int N = x.length();
         CharBuffer cb = CharBuffer.wrap(x.toCharArray());
-        ByteBuffer bb = ByteBuffer.allocate(4*N);
+        ByteBuffer bb = ByteBuffer.allocate(4 * N);
         BlockUTF8.fromChars(cb, bb);
         bb.flip();
         CharBuffer cb2 = CharBuffer.allocate(N);
@@ -147,14 +145,13 @@ public class TestBlockUTF8
 
         // And re-code as bytes.
         CharBuffer cb3 = CharBuffer.wrap(x.toCharArray());
-        ByteBuffer bb3 = ByteBuffer.allocate(4*N);
+        ByteBuffer bb3 = ByteBuffer.allocate(4 * N);
         BlockUTF8.fromChars(cb3, bb3);
         bb3.flip();
         assertArrayEquals(bb.array(), bb3.array());
     }
 
-    static void testOut(String x)
-    {
+    static void testOut(String x) {
         testOut(x, allocByteBufferArray, allocCharBufferArray);
         testOut(x, allocByteBufferDirect, allocCharBufferDirect);
     }
@@ -173,82 +170,84 @@ public class TestBlockUTF8
           @Override public CharBuffer allocate(int len) { return ByteBuffer.allocateDirect(2*len).asCharBuffer(); }
     };
 
-    static void testOut(String x, Alloc<ByteBuffer> allocBB, Alloc<CharBuffer> allocCB)
-    {
-        testBinary(stringAsBytes(x));
+      static void testOut(String x, Alloc<ByteBuffer> allocBB, Alloc<CharBuffer> allocCB) {
+          testBinary(stringAsBytes(x));
 
-        int N = x.length();
-        // First - get bytes the Java way.
-        ByteBuffer bytes = ByteBuffer.wrap(stringAsBytes(x));
-        CharBuffer cb = allocCB.allocate(N);
+          int N = x.length();
+          // First - get bytes the Java way.
+          ByteBuffer bytes = ByteBuffer.wrap(stringAsBytes(x));
+          CharBuffer cb = allocCB.allocate(N);
 
-        BlockUTF8.toChars(bytes, cb);
-        cb.flip();
-        bytes.flip();
+          BlockUTF8.toChars(bytes, cb);
+          cb.flip();
+          bytes.flip();
 
-        ByteBuffer bytes2 = allocBB.allocate(bytes.capacity());
-        BlockUTF8.fromChars(cb, bytes2);
-        bytes2.flip();
-        assertTrue("Chars", sameBytes(bytes, bytes2));
-    }
+          ByteBuffer bytes2 = allocBB.allocate(bytes.capacity());
+          BlockUTF8.fromChars(cb, bytes2);
+          bytes2.flip();
+          assertTrue("Chars", sameBytes(bytes, bytes2));
+      }
 
-    static void testBinary(byte[] binary, CharBuffer chars)
-    {
-        int N = binary.length;
-        ByteBuffer bytes = ByteBuffer.wrap(binary);
-        CharBuffer cb = CharBuffer.allocate(N);
-        BlockUTF8.toChars(bytes, cb);
-        cb.flip();
-        assertTrue("Binary", sameChars(chars, cb));
-    }
+      static void testBinary(byte[] binary, CharBuffer chars) {
+          int N = binary.length;
+          ByteBuffer bytes = ByteBuffer.wrap(binary);
+          CharBuffer cb = CharBuffer.allocate(N);
+          BlockUTF8.toChars(bytes, cb);
+          cb.flip();
+          assertTrue("Binary", sameChars(chars, cb));
+      }
 
-    static void testBinary(byte[] binary)
-    {
-        testBinary(binary, binary);
-    }
+      static void testBinary(byte[] binary) {
+          testBinary(binary, binary);
+      }
 
-    static void testBinary(byte[] binary, byte[] expected)
-    {
-        int N = binary.length;
-        ByteBuffer bytes = ByteBuffer.wrap(binary);
-        CharBuffer cb = CharBuffer.allocate(N);
-        BlockUTF8.toChars(bytes, cb);
-        cb.flip();
-        bytes.position(0);
-        ByteBuffer bytes2 = ByteBuffer.allocate(2*N);  // Null bytes get expanded.
-        BlockUTF8.fromChars(cb, bytes2);
-        bytes2.flip();
-        sameBytes(bytes, bytes2);
-        assertTrue("Binary", sameBytes(ByteBuffer.wrap(expected), bytes2));
-    }
+      static void testBinary(byte[] binary, byte[] expected) {
+          int N = binary.length;
+          ByteBuffer bytes = ByteBuffer.wrap(binary);
+          CharBuffer cb = CharBuffer.allocate(N);
+          BlockUTF8.toChars(bytes, cb);
+          cb.flip();
+          bytes.position(0);
+          ByteBuffer bytes2 = ByteBuffer.allocate(2 * N);  // Null bytes get
+                                                           // expanded.
+          BlockUTF8.fromChars(cb, bytes2);
+          bytes2.flip();
+          sameBytes(bytes, bytes2);
+          assertTrue("Binary", sameBytes(ByteBuffer.wrap(expected), bytes2));
+      }
 
-    // Does not move position.
-    static boolean sameBytes(ByteBuffer bb1, ByteBuffer bb2)
-    {
-        if ( bb1.remaining() != bb2.remaining() ) return false;
+      // Does not move position.
+      static boolean sameBytes(ByteBuffer bb1, ByteBuffer bb2) {
+          if ( bb1.remaining() != bb2.remaining() )
+              return false;
 
-        for ( int i = 0; i < bb1.remaining(); i++ )
-            if ( bb1.get(i+bb1.position()) != bb2.get(i+bb2.position()) ) return false;
-        return true;
-    }
-    // Does not move position.
-    static boolean sameChars(CharBuffer cb1, CharBuffer cb2)
-    {
-        if ( cb1.remaining() != cb2.remaining() ) return false;
+          for ( int i = 0 ; i < bb1.remaining() ; i++ )
+              if ( bb1.get(i + bb1.position()) != bb2.get(i + bb2.position()) )
+                  return false;
+          return true;
+      }
 
-        for ( int i = 0; i < cb1.remaining(); i++ )
-            if ( cb1.get(i+cb1.position()) != cb2.get(i+cb2.position()) ) return false;
-        return true;
-    }
-    static byte[] stringAsBytes(String x)
-    {
-        try {
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            try(Writer out = new OutputStreamWriter(bout, utf8)) {
-                out.write(x);
-            }
-            byte[] bytes = bout.toByteArray();
-            return bytes;
-        } catch (IOException ex) { throw new RuntimeException(ex); }
-    }
-}
+      // Does not move position.
+      static boolean sameChars(CharBuffer cb1, CharBuffer cb2) {
+          if ( cb1.remaining() != cb2.remaining() )
+              return false;
+
+          for ( int i = 0 ; i < cb1.remaining() ; i++ )
+              if ( cb1.get(i + cb1.position()) != cb2.get(i + cb2.position()) )
+                  return false;
+          return true;
+      }
+
+      static byte[] stringAsBytes(String x) {
+          try {
+              ByteArrayOutputStream bout = new ByteArrayOutputStream();
+              try (Writer out = new OutputStreamWriter(bout, utf8)) {
+                  out.write(x);
+              }
+              byte[] bytes = bout.toByteArray();
+              return bytes;
+          } catch (IOException ex) {
+              throw new RuntimeException(ex);
+          }
+      }
+  }
