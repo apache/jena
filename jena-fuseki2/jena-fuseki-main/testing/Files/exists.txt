@@ -1,0 +1,2 @@
+This file is used by the plain server static resource tests.
+CONTENT

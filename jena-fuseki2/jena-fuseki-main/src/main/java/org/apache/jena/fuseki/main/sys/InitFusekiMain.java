@@ -20,6 +20,7 @@ package org.apache.jena.fuseki.main.sys;
 
 import org.apache.jena.cmd.Cmds;
 import org.apache.jena.fuseki.main.cmds.FusekiMainCmd;
+import org.apache.jena.fuseki.system.FusekiCore;
 import org.apache.jena.sys.JenaSubsystemLifecycle;
 import org.apache.jena.sys.JenaSystem;
 
@@ -28,7 +29,7 @@ import org.apache.jena.sys.JenaSystem;
  * Level 101 - called during Jena system initialization
  * and after Jena itself has initialized.
  */
-public class InitFuseki implements JenaSubsystemLifecycle {
+public class InitFusekiMain implements JenaSubsystemLifecycle {
 
     private static volatile boolean initialized = false;
 
@@ -49,13 +50,18 @@ public class InitFuseki implements JenaSubsystemLifecycle {
         if ( initialized ) {
             return;
         }
-        synchronized (InitFuseki.class) {
+
+        synchronized (InitFusekiMain.class) {
             if ( initialized ) {
                 JenaSystem.logLifecycle("Fuseki.init - skip");
                 return;
             }
             initialized = true;
             JenaSystem.logLifecycle("Fuseki.init - start");
+
+            // Ensure core constants are initialized first.
+            FusekiCore.init();
+
             // Leave until known to be needed FusekiServer build with no specific FusekikModules given.
             // FusekiModulesCtl.setup();
             try {

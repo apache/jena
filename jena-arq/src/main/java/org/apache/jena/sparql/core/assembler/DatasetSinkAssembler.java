@@ -21,25 +21,25 @@ package org.apache.jena.sparql.core.assembler;
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphWrapper;
+import org.apache.jena.sparql.core.DatasetGraphSink;
+import org.apache.jena.sparql.core.DatasetGraphZero;
 
 /**
- * An assembler that layers on top of another dataset given by {@code ja:dataset}.
- * <p>
- * It enables adding extra context settings.
- * <p>
- * It can be used as a super class, where the subclass overrides {@link #createBaseDataset}.
+ * An assembler that creates datasets that do nothing, either a sink or an always empty one.
+
+ * @see DatasetGraphSink
+ * @see DatasetGraphZero
  */
-public class ViewDatasetAssembler extends NamedDatasetAssembler  {
 
-    public static Resource getType() { return DatasetAssemblerVocab.tDatasetView; }
+public class DatasetSinkAssembler extends NamedDatasetAssembler {
 
-    public ViewDatasetAssembler() {}
+    public static Resource getType() { return DatasetAssemblerVocab.tDatasetSink; }
+
+    public DatasetSinkAssembler() {}
 
     @Override
     public DatasetGraph createDataset(Assembler a, Resource root) {
-        DatasetGraph sub = createBaseDataset(root, DatasetAssemblerVocab.pDataset);
-        DatasetGraph dsg = new DatasetGraphWrapper(sub);
+        DatasetGraph dsg = DatasetGraphSink.create();
         AssemblerUtils.mergeContext(root, dsg.getContext());
         return dsg;
     }
