@@ -28,7 +28,7 @@ import java.nio.CharBuffer;
  * This code is just the UTF-8 encoding rules - it does not check for legality
  * of the Unicode data.  The standard codecs do, so do not round-trip with binary
  * compatibility. (Example: a single element of a surrogate pair will
- * be encoded/decoded without lost.)
+ * be encoded/decoded without lose.)
  *
  * The usual Charset encoders/decoders can be expensive to start up - they are also
  * not thread safe. Sometimes we want to convert 10's of chars and UTF-8 can be
