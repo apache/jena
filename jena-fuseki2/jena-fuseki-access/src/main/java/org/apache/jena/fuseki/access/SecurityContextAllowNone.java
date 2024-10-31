@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Predicate;
 
+import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
@@ -44,8 +45,8 @@ public class SecurityContextAllowNone implements SecurityContext {
     public boolean visableDefaultGraph() { return false; }
 
     @Override
-    public QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
-        return QueryExecutionFactory.create(query, DatasetGraphSink.create());
+    public QueryExecution createQueryExecution(HttpAction action, Query query, DatasetGraph dsg) {
+        return SecurityContext.super.createQueryExecution(action, query, DatasetGraphSink.create());
     }
 
     @Override
