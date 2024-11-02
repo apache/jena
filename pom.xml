@@ -196,6 +196,7 @@
 
       <modules>
         <module>jena-iri</module>
+        <module>jena-iri3986</module>
         <module>jena-base</module>
         
         <module>jena-core</module>
@@ -258,6 +259,7 @@
       <modules>
         <!-- Basic modules -->
         <module>jena-iri</module>
+        <module>jena-iri3986</module>
         <module>jena-base</module>
 
         <!-- Main modules -->
