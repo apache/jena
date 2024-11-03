@@ -38,7 +38,7 @@ public class IRIValidatorJSON {
     static final String paramIRI           = "iri";
 
     // Output is an object  { "iris" : [ ] }
-    // { "iri": "" , "error": [], "warnings": [] }
+    // with array entries   { "iri": "" , "error": [], "warnings": [] }
     static final String jIRIs    = "iris";
     static final String jIRI     = "iri";
 
@@ -47,8 +47,10 @@ public class IRIValidatorJSON {
         obj.startObject();
 
         String args[] = getArgs(action, paramIRI);
-        if ( args.length == 0 )
+        if ( args == null || args.length == 0 ) {
             ServletOps.errorBadRequest("No IRIs supplied");
+            return null;
+        }
 
         obj.key(jIRIs);
         obj.startArray();
