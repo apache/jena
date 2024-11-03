@@ -24,7 +24,7 @@ public class InitPrometheus implements JenaSubsystemLifecycle {
 
     @Override
     public void start() {
-        MetricsProviderRegistry.put(new PrometheusMetricsProvider(), level());
+        MetricsProviderRegistry.set(new PrometheusMetricsProvider());
     }
 
     @Override

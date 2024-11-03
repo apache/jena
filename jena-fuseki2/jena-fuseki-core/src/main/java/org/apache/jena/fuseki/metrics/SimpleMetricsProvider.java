@@ -44,6 +44,7 @@ public class SimpleMetricsProvider implements MetricsProvider {
         HttpServletResponse response = action.getResponse();
         StringBuilder sbuff = new StringBuilder(1000);
 
+        // Text-based dump format. Unstable.
         try {
             meterRegistry.forEachMeter(meter->{
                 Id id = meter.getId();
