@@ -17,10 +17,15 @@
  */
 package org.apache.jena.fuseki.metrics;
 
+import io.micrometer.core.instrument.Meter.Id;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.riot.WebContent;
+import org.apache.jena.web.HttpSC;
 
 public class SimpleMetricsProvider implements MetricsProvider {
 
@@ -35,7 +40,40 @@ public class SimpleMetricsProvider implements MetricsProvider {
 
     @Override
     public void scrape(HttpAction action) {
-        ServletOps.errorNotImplemented("SimpleMeterRegistry isn't scrapeable");
+
+        HttpServletResponse response = action.getResponse();
+        StringBuilder sbuff = new StringBuilder(1000);
+
+        try {
+            meterRegistry.forEachMeter(meter->{
+                Id id = meter.getId();
+                output(sbuff, "Meter %s", id);
+                output(sbuff, "  Name     %s", id.getName());
+                output(sbuff, "  BaseUnit %s",id.getBaseUnit());
+                id.getTags().forEach(tag->{
+                    output(sbuff, "    Tag %s %s", tag.getKey(), tag.getValue());
+                });
+
+                meter.measure().forEach(measurement->{
+                    output(sbuff, "    Measure %s %s", measurement.getStatistic(), measurement.getValue());
+                });
+            });
+
+            String txt = sbuff.toString();
+            action.setResponseContentType(WebContent.contentTypeTextPlain);
+            try ( ServletOutputStream x = action.getResponseOutputStream() ) {
+                x.print(txt);
+            }
+        } catch (Throwable th) {
+            ServletOps.error(HttpSC.INTERNAL_SERVER_ERROR_500);
+        }
+    }
+
+    private void output(StringBuilder sbuff, String fmt, Object...args) {
+        String str = fmt.formatted(args);
+        sbuff.append(str);
+        if ( ! str.endsWith("\n") )
+            sbuff.append("\n");
     }
 
 }
