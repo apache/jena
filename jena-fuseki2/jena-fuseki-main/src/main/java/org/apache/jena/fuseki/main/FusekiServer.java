@@ -1372,10 +1372,8 @@ public class FusekiServer {
         }
 
         private void bindPrometheus(DataAccessPointRegistry dapRegistry) {
-            if ( withMetrics ) {
-                // Connect to Prometheus metrics.
-                MetricsProviderRegistry.bindPrometheus(dapRegistry);
-            }
+            if ( withMetrics )
+                MetricsProviderRegistry.dataAccessPointMetrics(dapRegistry);
         }
 
         /**

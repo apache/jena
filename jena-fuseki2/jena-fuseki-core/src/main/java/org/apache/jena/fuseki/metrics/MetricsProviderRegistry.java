@@ -30,6 +30,8 @@ public class MetricsProviderRegistry {
         return metricsProvider;
     }
 
+    /** @deprecated Use {@link #set(MetricsProvider)} */
+    @Deprecated(forRemoval = true)
     public static void put(MetricsProvider metricsProvider, int priority) {
         if (priority < MetricsProviderRegistry.priority) {
             MetricsProviderRegistry.priority = priority;
@@ -37,8 +39,21 @@ public class MetricsProviderRegistry {
         }
     }
 
-    /** Bind each data access point in a DataAccessPointRegistry to Prometheus. */
+    public static void set(MetricsProvider metricsProvider) {
+        MetricsProviderRegistry.priority = Integer.MAX_VALUE;
+        MetricsProviderRegistry.metricsProvider = metricsProvider;
+    }
+
+    /*
+     * @deprecated Use {@link #dataAccessPointMetrics}.
+     */
+    @Deprecated(forRemoval = true)
     public static void bindPrometheus(DataAccessPointRegistry dapRegistry) {
+        dataAccessPointMetrics(dapRegistry);
+    }
+
+    /** Bind each data access point in a DataAccessPointRegistry to the system Micrometer {@link MeterRegistry}. */
+    public static void dataAccessPointMetrics(DataAccessPointRegistry dapRegistry) {
         try {
             MeterRegistry meterRegistry = MetricsProviderRegistry.get().getMeterRegistry();
             if (meterRegistry != null) {

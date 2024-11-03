@@ -18,24 +18,17 @@
 package org.apache.jena.fuseki.metrics.prometheus;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
-import io.micrometer.core.instrument.binder.system.DiskSpaceMetrics;
-import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
-import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
-import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
-import io.micrometer.core.instrument.binder.system.FileDescriptorMetrics;
-import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
-import io.micrometer.core.instrument.binder.system.UptimeMetrics;
 import io.micrometer.prometheusmetrics.PrometheusConfig;
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
-import java.io.File;
 import jakarta.servlet.ServletOutputStream;
+import org.apache.jena.fuseki.metrics.FusekiMetrics;
 import org.apache.jena.fuseki.metrics.MetricsProvider;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.riot.WebContent;
 
 /**
+ * Prometheus setup.
  */
 public class PrometheusMetricsProvider implements MetricsProvider {
 
@@ -44,20 +37,7 @@ public class PrometheusMetricsProvider implements MetricsProvider {
     public PrometheusMetricsProvider() {
         meterRegistry = new PrometheusMeterRegistry( PrometheusConfig.DEFAULT );
         meterRegistry.config().commonTags( "application", "fuseki" );
-
-        new FileDescriptorMetrics().bindTo( meterRegistry );
-        new ProcessorMetrics().bindTo( meterRegistry );
-        new ClassLoaderMetrics().bindTo( meterRegistry );
-        new UptimeMetrics().bindTo( meterRegistry );
-        for (File root : File.listRoots()) {
-            new DiskSpaceMetrics(root).bindTo( meterRegistry );
-        }
-        // Has a warning about resource closing.
-        @SuppressWarnings("resource")
-        JvmGcMetrics x = new JvmGcMetrics();
-        x.bindTo( meterRegistry );
-        new JvmMemoryMetrics().bindTo( meterRegistry );
-        new JvmThreadMetrics().bindTo( meterRegistry );
+        FusekiMetrics.registerMetrics(meterRegistry);
     }
 
     @Override
@@ -77,5 +57,4 @@ public class PrometheusMetricsProvider implements MetricsProvider {
             ServletOps.errorOccurred( t );
         }
     }
-
 }

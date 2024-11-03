@@ -102,7 +102,7 @@ public class FusekiServerListener implements ServletContextListener {
                 //Fuseki.configLog.info("Register: "+dap.getName());
             });
 
-            MetricsProviderRegistry.bindPrometheus(dataAccessPointRegistry);
+            MetricsProviderRegistry.dataAccessPointMetrics(dataAccessPointRegistry);
 
         } catch (Throwable th) {
             Fuseki.serverLog.error("Exception in initialization: {}", th.getMessage());
