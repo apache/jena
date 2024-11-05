@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.atlas.data.BagFactory;
 import org.apache.jena.atlas.data.DataBag;
@@ -45,6 +46,8 @@ import org.apache.jena.sparql.core.*;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingRoot;
 import org.apache.jena.sparql.exec.*;
+import org.apache.jena.sparql.engine.Timeouts;
+import org.apache.jena.sparql.engine.Timeouts.Timeout;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.graph.GraphOps;
 import org.apache.jena.sparql.modify.request.*;
@@ -64,10 +67,42 @@ public class UpdateEngineWorker implements UpdateVisitor
     protected final Binding inputBinding;       // Used for UpdateModify only: substitution is better.
     protected final Context context;
 
+    protected final Timeout timeout;
+
+    /** Used to compute the remaining overall time that may be spent in query execution. */
+    protected long startTimeMillis = -1;
+
+    /** The currently executing query exec. */
+    protected final AtomicBoolean cancelSignal;
+    protected volatile QueryExec activeQExec = null;
+
     public UpdateEngineWorker(DatasetGraph datasetGraph, Binding inputBinding, Context context) {
         this.datasetGraph = datasetGraph;
         this.inputBinding = inputBinding;
         this.context = context;
+        this.timeout = Timeouts.extractUpdateTimeout(context);
+        this.cancelSignal = Context.getOrSetCancelSignal(context);
+    }
+
+    public void abort() {
+        if (cancelSignal.compareAndSet(false, true)) {
+            synchronized (this) {
+                // If the change of the cancel signal happened here then abort the activeQExec.
+                if (activeQExec != null) {
+                    activeQExec.abort();
+                }
+            }
+        }
+    }
+
+    private synchronized void setQExec(QueryExec qExec) {
+        synchronized (this) {
+            this.activeQExec = qExec;
+            // Cancel the qExec immediately if the cancel signal is true.
+            if (cancelSignal.get()) {
+                activeQExec.abort();
+            }
+        }
     }
 
     @Override
@@ -528,7 +563,7 @@ public class UpdateEngineWorker implements UpdateVisitor
     }
 
     @SuppressWarnings("all")
-    protected static Iterator<Binding> evalBindings(Query query, DatasetGraph dsg, Binding inputBinding, Context context) {
+    protected Iterator<Binding> evalBindings(Query query, DatasetGraph dsg, Binding inputBinding, Context context) {
         // The UpdateProcessorBase already copied the context and made it safe
         // ... but that's going to happen again :-(
         if ( query == null ) {
@@ -536,8 +571,10 @@ public class UpdateEngineWorker implements UpdateVisitor
             return Iter.singletonIterator(binding);
         }
 
+        updateRemainingQueryTimeout(context);
+
         // Not QueryExecDataset.dataset(...) because of initialBinding.
-        QueryExecDatasetBuilder builder = QueryExecDatasetBuilder.create().dataset(dsg).query(query);
+        QueryExecDatasetBuilder builder = QueryExecDatasetBuilder.create().dataset(dsg).query(query).context(context);
         if ( inputBinding != null ) {
             // Must use initialBinding - it puts the input in the results, unlike substitution.
             builder.initialBinding(inputBinding);
@@ -545,7 +582,32 @@ public class UpdateEngineWorker implements UpdateVisitor
             // builder.substitution(inputBinding);
         }
         QueryExec qExec = builder.build();
+        setQExec(qExec);
         return qExec.select();
+    }
+
+    private void updateRemainingQueryTimeout(Context context) {
+        Timeout finalTimeout = null;
+        if (timeout.hasOverallTimeout()) {
+            long remainingOverallTimeoutMillis = -1;
+            if (startTimeMillis < 0) {
+                startTimeMillis = System.currentTimeMillis();
+                remainingOverallTimeoutMillis = timeout.overallTimeoutMillis();
+            } else {
+                long currentTimeMillis = System.currentTimeMillis();
+                long elapsedMillis = currentTimeMillis - startTimeMillis;
+                remainingOverallTimeoutMillis -= elapsedMillis;
+                if (remainingOverallTimeoutMillis < 0) {
+                    remainingOverallTimeoutMillis = 0;
+                }
+            }
+            finalTimeout = new Timeout(timeout.initialTimeoutMillis(), remainingOverallTimeoutMillis);
+        } else if(timeout.hasInitialTimeout()) {
+            finalTimeout = new Timeout(timeout.initialTimeoutMillis(), -1);
+        }
+
+        // Override any prior queryTimeout symbol with a fresh value computed from the configured updateTimeout.
+        Timeouts.setQueryTimeout(context, finalTimeout);
     }
 
     /**

@@ -28,6 +28,8 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdfconnection.AbstractTestRDFConnection;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
@@ -228,11 +230,27 @@ public class TestRDFConnectionRemote extends AbstractTestRDFConnection {
     /** Standard update syntax with substitution should work. */
     @Test
     public void standard_syntax_update_remote_1a() {
+        RDFNode FALSE = ResourceFactory.createTypedLiteral(false);
         try ( RDFConnection conn = RDFConnectionRemote.service(server.datasetURL("/ds")).parseCheckSPARQL(false).build() ) {
             conn.newUpdate()
-                .update("INSERT DATA { <a> <b> <c> }")
-                .update("INSERT DATA { <x> <y> <z> }")
-                .substitution("foo", RDF.type).build();
+                .update("INSERT { <a> <b> <c> } WHERE { FILTER(?foo) }")
+                .update("INSERT { <x> <y> <z> } WHERE { FILTER(?foo) }")
+                .substitution("foo", FALSE)
+                .build()
+                .execute();
+        }
+    }
+
+    /** Standard update syntax with substitution should work when comments are involved. */
+    @Test
+    public void standard_syntax_update_remote_2b() {
+        try ( RDFConnection conn = RDFConnectionRemote.service(server.datasetURL("/ds")).parseCheckSPARQL(false).build() ) {
+            conn.newUpdate()
+                .update("# <update1>\n INSERT { <a> <urn:b> <c> } WHERE { FILTER(false) } # </update1>")
+                .update("# <update2>\n INSERT { <d> <urn:e> <f> } WHERE { FILTER(false) } # </update2>")
+                .update("# <update3>\n INSERT { <g> <urn:h> <i> } WHERE { FILTER(false) } # </update3>")
+                .build()
+                .execute();
         }
     }
 

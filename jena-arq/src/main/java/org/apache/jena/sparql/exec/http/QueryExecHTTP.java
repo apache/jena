@@ -114,7 +114,7 @@ public class QueryExecHTTP implements QueryExec {
     private String httpResponseContentType = null;
     // Releasing HTTP input streams is important. We remember this for SELECT result
     // set streaming, and will close it when the execution is closed
-    private InputStream retainedConnection = null;
+    private volatile InputStream retainedConnection = null;
 
     private HttpClient httpClient = HttpEnv.getDftHttpClient();
     private Map<String, String> httpHeaders;

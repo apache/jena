@@ -20,6 +20,7 @@ package org.apache.jena.http.sys;
 
 import java.net.http.HttpClient;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.jena.graph.Node;
@@ -31,6 +32,7 @@ import org.apache.jena.sparql.exec.http.Params;
 import org.apache.jena.sparql.exec.http.UpdateSendMode;
 import org.apache.jena.sparql.syntax.syntaxtransform.UpdateTransformOps;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.ContextAccumulator;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.update.Update;
@@ -56,8 +58,9 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
 
     /** Accumulator for update elements. Can build an overall string or UpdateRequest from the elements. */
     private class UpdateEltAcc implements Iterable<UpdateElt> {
-        /** Delimiter for joining multiple SPARQL update strings into a single one. */
-        public static final String DELIMITER = ";\n";
+        /** Delimiter for joining multiple SPARQL update strings into a single one.
+          * The delimiter takes into account that the last line of a statement may be a single-line-comment. */
+        public static final String DELIMITER = "\n;\n";
 
         private List<UpdateElt> updateOperations = new ArrayList<>();
         private List<UpdateElt> updateOperationsView = Collections.unmodifiableList(updateOperations);
@@ -76,6 +79,7 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
             add(new UpdateElt(update));
         }
 
+        /** Add a string by parsing it. */
         public void add(String updateRequestString) {
             UpdateRequest updateRequest = UpdateFactory.create(updateRequestString);
             add(updateRequest);
@@ -146,9 +150,11 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
     protected UpdateSendMode sendMode = UpdateSendMode.systemDefault;
     protected List<String> usingGraphURIs = null;
     protected List<String> usingNamedGraphURIs = null;
-    protected Context context = null;
+    private ContextAccumulator contextAcc = ContextAccumulator.newBuilder(()->ARQ.getContext());
     // Uses query rewrite to replace variables by values.
     protected Map<Var, Node> substitutionMap     = new HashMap<>();
+    protected long timeout = -1;
+    protected TimeUnit timeoutUnit = null;
 
     protected ExecUpdateHTTPBuilder() {}
 
@@ -213,6 +219,12 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
         return thisBuilder();
     }
 
+    public Y timeout(long timeout, TimeUnit timeoutUnit) {
+        this.timeout = timeout;
+        this.timeoutUnit = timeoutUnit;
+        return thisBuilder();
+    }
+
     public Y httpClient(HttpClient httpClient) {
         this.httpClient = Objects.requireNonNull(httpClient);
         return thisBuilder();
@@ -274,26 +286,18 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
     public Y context(Context context) {
         if ( context == null )
             return thisBuilder();
-        ensureContext();
-        this.context.setAll(context);
+        this.contextAcc.context(context);
         return thisBuilder();
     }
 
     public Y set(Symbol symbol, Object value) {
-        ensureContext();
-        this.context.set(symbol, value);
+        this.contextAcc.set(symbol, value);
         return thisBuilder();
     }
 
     public Y set(Symbol symbol, boolean value) {
-        ensureContext();
-        this.context.set(symbol, value);
+        this.contextAcc.set(symbol, value);
         return thisBuilder();
-    }
-
-    private void ensureContext() {
-        if ( context == null )
-            context = Context.create();
     }
 
     public X build() {
@@ -322,7 +326,7 @@ public abstract class ExecUpdateHTTPBuilder<X, Y> {
         // If the UpdateRequest object wasn't built until now then build the string instead.
         String updateStringActual = updateActual == null ? updateEltAcc.buildString() : null;
 
-        Context cxt = (context!=null) ? context : ARQ.getContext().copy();
+        Context cxt = contextAcc.context();
         return buildX(hClient, updateActual, updateStringActual, cxt);
     }
 

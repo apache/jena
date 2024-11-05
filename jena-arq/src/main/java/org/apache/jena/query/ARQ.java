@@ -198,6 +198,17 @@ public class ARQ
      */
     public static final Symbol queryTimeout = SystemARQ.allocSymbol("queryTimeout");
 
+    /**
+     * Set timeout.  The value of this symbol gives the value of the timeout in milliseconds
+     * <ul>
+     * <li>A Number; the long value is used</li>
+     * <li>A string, e.g. "1000", parsed as a number</li>
+     * <li>A string, as two numbers separated by a comma, e.g. "500,10000" parsed as two numbers</li>
+     * </ul>
+     * @see org.apache.jena.update.UpdateExecutionBuilder#timeout(long, TimeUnit)
+     */
+    public static final Symbol updateTimeout = SystemARQ.allocSymbol("updateTimeout");
+
     // This can't be a context constant because NodeValues don't look in the context.
 //    /**
 //     * Context symbol controlling Roman Numerals in Filters.

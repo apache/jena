@@ -24,10 +24,8 @@ import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.ARQ;
-import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.engine.main.OpExecutor;
 import org.apache.jena.sparql.engine.main.OpExecutorFactory;
@@ -78,18 +76,7 @@ public class ExecutionContext implements FunctionEnv
     }
 
     public ExecutionContext(Context params, Graph activeGraph, DatasetGraph dataset, OpExecutorFactory factory) {
-        this(params, activeGraph, dataset, factory, cancellationSignal(params));
-    }
-
-    private static AtomicBoolean cancellationSignal(Context cxt) {
-        if ( cxt == null )
-            return null;
-        try {
-            return cxt.get(ARQConstants.symCancelQuery);
-        } catch (ClassCastException ex) {
-            Log.error(ExecutionContext.class, "Class cast exception: Expected AtomicBoolean for cancel control: "+ex.getMessage());
-            return null;
-        }
+        this(params, activeGraph, dataset, factory, Context.getCancelSignal(params));
     }
 
     private ExecutionContext(Context params, Graph activeGraph, DatasetGraph dataset, OpExecutorFactory factory, AtomicBoolean cancelSignal) {

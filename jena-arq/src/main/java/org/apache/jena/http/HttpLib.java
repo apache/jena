@@ -244,7 +244,21 @@ public class HttpLib {
      * @return String
      */
     public static String handleResponseRtnString(HttpResponse<InputStream> response) {
+        return handleResponseRtnString(response, null);
+    }
+
+    /**
+     * Handle the HTTP response and read the body to produce a string if a 200.
+     * Otherwise, throw an {@link HttpException}.
+     * @param response
+     * @param callback A callback that receives the opened input stream.
+     * @return String
+     */
+    public static String handleResponseRtnString(HttpResponse<InputStream> response, Consumer<InputStream> callback) {
         InputStream input = handleResponseInputStream(response);
+        if (callback != null) {
+            callback.accept(input);
+        }
         try {
             return IO.readWholeFileAsUTF8(input);
         } catch (RuntimeIOException e) { throw new HttpException(e); }

@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.exec;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -100,6 +102,12 @@ public class UpdateExecutionBuilderAdapter implements UpdateExecutionBuilder {
     @Override
     public UpdateExecutionBuilder substitution(String varName, RDFNode value) {
         builder.substitution(varName, value.asNode());
+        return this;
+    }
+
+    @Override
+    public UpdateExecutionBuilder timeout(long value, TimeUnit timeUnit) {
+        builder.timeout(value, timeUnit);
         return this;
     }
 

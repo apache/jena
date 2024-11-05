@@ -23,7 +23,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.query.QueryCancelledException;
-import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
@@ -49,7 +48,7 @@ public abstract class QueryIterProcessBinding extends QueryIter1 {
         nextBinding = null ;
         AtomicBoolean signal;
         try {
-            signal = context.getContext().get(ARQConstants.symCancelQuery);
+            signal = context.getCancelSignal();
         } catch(Exception ex) {
             signal = null;
         }

@@ -38,7 +38,7 @@ import org.apache.jena.sparql.util.Context ;
  * See {@link UpdateEngineNonStreaming} for a subclass that accumulates updates, including  during
  * parsing then executes the operation.
  */
-public class UpdateEngineMain extends UpdateEngineBase 
+public class UpdateEngineMain extends UpdateEngineBase
 {
     /**
      * Creates a new Update Engine
@@ -53,12 +53,12 @@ public class UpdateEngineMain extends UpdateEngineBase
 
     @Override
     public void startRequest() {}
-    
+
     @Override
     public void finishRequest() {}
-    
+
     private UpdateSink updateSink = null ;
-    
+
     /*
      * Returns the {@link UpdateSink}. In this implementation, this is done by with
      * an {@link UpdateVisitor} which will visit each update operation and send the
@@ -71,11 +71,11 @@ public class UpdateEngineMain extends UpdateEngineBase
     {
         if ( updateSink == null )
             updateSink = new UpdateVisitorSink(this.prepareWorker(),
-                                               sink(q->datasetGraph.add(q)), 
+                                               sink(q->datasetGraph.add(q)),
                                                sink(q->datasetGraph.delete(q)));
         return updateSink ;
     }
-    
+
     /**
      * Creates the {@link UpdateVisitor} which will do the work of applying the updates
      * @return The update visitor to be used to apply the updates
@@ -84,18 +84,18 @@ public class UpdateEngineMain extends UpdateEngineBase
         return new UpdateEngineWorker(datasetGraph, inputBinding, context) ;
     }
 
-    /** Direct a sink to a Consumer. */ 
+    /** Direct a sink to a Consumer. */
     private <X> Sink<X> sink(Consumer<X> action) {
         return new Sink<X>() {
             @Override
             public void send(X item) { action.accept(item); }
 
-            @Override public void close() {} 
+            @Override public void close() {}
 
             @Override public void flush() {}
-        }; 
+        };
     }
-    
+
     private static UpdateEngineFactory factory = new UpdateEngineFactory()
     {
         @Override

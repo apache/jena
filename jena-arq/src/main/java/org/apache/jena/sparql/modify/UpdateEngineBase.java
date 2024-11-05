@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.modify;
 
-import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.binding.Binding ;
@@ -39,18 +38,16 @@ public abstract class UpdateEngineBase implements UpdateEngine
         this.inputBinding = inputBinding ;
         this.context = setupContext(context, datasetGraph) ;
     }
-    
-    private static Context setupContext(Context context, DatasetGraph dataset)
-    {
-        // To many copies?
-        if ( context == null )      // Copy of global context to protect against change.
-            context = ARQ.getContext() ;
-        context = context.copy() ;
 
-        if ( dataset.getContext() != null )
-            context.putAll(dataset.getContext()) ;
-        
-        context.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime()) ;
-        return context ; 
+    private Context setupContext(Context cxt, DatasetGraph dataset)
+    {
+        // The following setup is effectively the same as in QueryEngineBase
+        Context result = cxt;
+
+        if ( result == null )
+            result = Context.setupContextForDataset(cxt, dataset);
+
+        result.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime()) ;
+        return result ;
     }
 }

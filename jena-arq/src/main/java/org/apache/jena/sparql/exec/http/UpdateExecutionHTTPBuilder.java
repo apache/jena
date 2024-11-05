@@ -52,7 +52,8 @@ public class UpdateExecutionHTTPBuilder
                                                   copyArray(usingGraphURIs),
                                                   copyArray(usingNamedGraphURIs),
                                                   new HashMap<>(httpHeaders),
-                                                  sendMode, cxt);
+                                                  sendMode, cxt,
+                                                  timeout, timeoutUnit);
         return new UpdateExecutionHTTP(uExec);
     }
 

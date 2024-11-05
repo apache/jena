@@ -29,7 +29,10 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.HttpLib;
 import org.apache.jena.riot.WebContent;
@@ -59,13 +62,19 @@ public class UpdateExecHTTP implements UpdateExec {
     private final Params params;
     private final List<String> usingGraphURIs;
     private final List<String> usingNamedGraphURIs;
+    private final long timeout;
+    private final TimeUnit timeoutUnit;
+
+    private AtomicBoolean cancelSignal = new AtomicBoolean(false);
+    private volatile InputStream retainedConnection = null;
 
     /*package*/ UpdateExecHTTP(String serviceURL, UpdateRequest update, String updateString,
                                HttpClient httpClient, Params params,
                                List<String> usingGraphURIs,
                                List<String> usingNamedGraphURIs,
                                Map<String, String> httpHeaders, UpdateSendMode sendMode,
-                               Context context) {
+                               Context context,
+                               long timeout, TimeUnit timeoutUnit) {
         this.context = context;
         this.service = serviceURL;
         //this.update = update;
@@ -77,17 +86,14 @@ public class UpdateExecHTTP implements UpdateExec {
         this.usingNamedGraphURIs = usingNamedGraphURIs;
         this.httpHeaders = httpHeaders;
         this.sendMode = sendMode;
+        this.timeout = timeout;
+        this.timeoutUnit = timeoutUnit;
     }
 
-//    @Override
-//    public Context getContext() {
-//        return null;
-//    }
-//
-//    @Override
-//    public DatasetGraph getDatasetGraph() {
-//        return null;
-//    }
+    @Override
+    public Context getContext() {
+        return context;
+    }
 
     @Override
     public void execute() {
@@ -130,13 +136,40 @@ public class UpdateExecHTTP implements UpdateExec {
     }
 
     private String executeUpdate(String requestURL, BodyPublisher body, String contentType) {
-        HttpRequest.Builder builder = HttpLib.requestBuilder(requestURL, httpHeaders, -1L, null);
+        HttpRequest.Builder builder = HttpLib.requestBuilder(requestURL, httpHeaders, timeout, timeoutUnit);
         builder = contentTypeHeader(builder, contentType);
         HttpRequest request = builder.POST(body).build();
         logUpdate(updateString, request);
         HttpResponse<InputStream> response = HttpLib.execute(httpClient, request);
-        return handleResponseRtnString(response);
+        return HttpLib.handleResponseRtnString(response, this::setRetainedConnection);
+    }
+
+    private void setRetainedConnection(InputStream in) {
+        synchronized (cancelSignal) {
+            retainedConnection = in;
+            if (cancelSignal.get()) {
+                abort();
+            }
+        }
     }
 
     private static void logUpdate(String updateString, HttpRequest request) {}
+
+    /** Best effort that tries to close an underlying HTTP connection.
+     *  May still hang waiting for the HTTP request to complete. */
+    @Override
+    public void abort() {
+        cancelSignal.set(true);
+        synchronized (cancelSignal) {
+            try {
+                InputStream in = retainedConnection;
+                if (in != null) {
+                    in.close();
+                    retainedConnection = null;
+                }
+            } catch (Exception ex) {
+                Log.warn(this, "Error during abort", ex);
+            }
+        }
+    }
 }

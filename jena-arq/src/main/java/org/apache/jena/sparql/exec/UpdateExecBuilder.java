@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.exec;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.core.Var;
@@ -64,6 +66,8 @@ public interface UpdateExecBuilder {
     public default UpdateExecBuilder substitution(String var, Node value) {
         return substitution(Var.alloc(var), value);
     }
+
+    public UpdateExecBuilder timeout(long value, TimeUnit timeUnit);
 
     public UpdateExec build();
 
