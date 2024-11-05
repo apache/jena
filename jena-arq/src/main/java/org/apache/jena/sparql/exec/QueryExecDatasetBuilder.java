@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -34,8 +33,10 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.QueryEngineFactory;
 import org.apache.jena.sparql.engine.QueryEngineRegistry;
-import org.apache.jena.sparql.engine.Timeouts;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.Timeouts;
+import org.apache.jena.sparql.engine.Timeouts.Timeout;
+import org.apache.jena.sparql.engine.Timeouts.TimeoutBuilderImpl;
 import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.ContextAccumulator;
@@ -69,10 +70,7 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
 
     // Uses initial binding to execution (old, original) feature
     private Binding      initialBinding      = null;
-    private long         initialTimeout      = UNSET;
-    private TimeUnit     initialTimeoutUnit  = null;
-    private long         overallTimeout      = UNSET;
-    private TimeUnit     overallTimeoutUnit  = null;
+    private TimeoutBuilderImpl timeoutBuilder  = new TimeoutBuilderImpl();
 
     private QueryExecDatasetBuilder() { }
 
@@ -166,58 +164,20 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
 
     @Override
     public QueryExecDatasetBuilder timeout(long value, TimeUnit timeUnit) {
-        this.initialTimeout = UNSET;
-        this.initialTimeoutUnit = null;
-        this.overallTimeout = value;
-        this.overallTimeoutUnit = timeUnit;
+        timeoutBuilder.timeout(value, timeUnit);
         return this;
     }
 
     @Override
     public QueryExecDatasetBuilder initialTimeout(long value, TimeUnit timeUnit) {
-        this.initialTimeout = value < 0 ? -1L : value ;
-        this.initialTimeoutUnit = timeUnit;
+        timeoutBuilder.initialTimeout(value, timeUnit);
         return this;
     }
 
     @Override
     public QueryExecDatasetBuilder overallTimeout(long value, TimeUnit timeUnit) {
-        this.overallTimeout = value;
-        this.overallTimeoutUnit = timeUnit;
+        timeoutBuilder.overallTimeout(value, timeUnit);
         return this;
-    }
-
-    // Set times from context if not set directly. e..g Context provides default values.
-    // Contrast with SPARQLQueryProcessor where the context is limiting values of the protocol parameter.
-    private static void defaultTimeoutsFromContext(QueryExecDatasetBuilder builder, Context cxt) {
-        applyTimeouts(builder, cxt.get(ARQ.queryTimeout));
-    }
-
-    /** Take obj, find the timeout(s) and apply to the builder */
-    private static void applyTimeouts(QueryExecDatasetBuilder builder, Object obj) {
-        if ( obj == null )
-            return ;
-        try {
-            if ( obj instanceof Number ) {
-                long x = ((Number)obj).longValue();
-                if ( builder.overallTimeout < 0 )
-                    builder.overallTimeout(x, TimeUnit.MILLISECONDS);
-            } else if ( obj instanceof String ) {
-                String str = obj.toString();
-                Pair<Long, Long> pair = Timeouts.parseTimeoutStr(str, TimeUnit.MILLISECONDS);
-                if ( pair == null ) {
-                    Log.warn(builder, "Bad timeout string: "+str);
-                    return ;
-                }
-                if ( builder.initialTimeout < 0 )
-                    builder.initialTimeout(pair.getLeft(), TimeUnit.MILLISECONDS);
-                if ( builder.overallTimeout < 0 )
-                    builder.overallTimeout(pair.getRight(), TimeUnit.MILLISECONDS);
-            } else
-                Log.warn(builder, "Can't interpret timeout: " + obj);
-        } catch (Exception ex) {
-            Log.warn(builder, "Exception setting timeouts (context) from: "+obj);
-        }
     }
 
     @Override
@@ -243,17 +203,17 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
             queryStringActual = null;
         }
 
-        defaultTimeoutsFromContext(this, cxt);
+        Timeouts.applyDefaultQueryTimeoutFromContext(this.timeoutBuilder, cxt);
 
         if ( dataset != null )
             cxt.set(ARQConstants.sysCurrentDataset, DatasetFactory.wrap(dataset));
         if ( queryActual != null )
             cxt.set(ARQConstants.sysCurrentQuery, queryActual);
 
+        Timeout timeout = timeoutBuilder.build();
+
         QueryExec qExec = new QueryExecDataset(queryActual, queryStringActual, dataset, cxt, qeFactory,
-                                               initialTimeout, initialTimeoutUnit,
-                                               overallTimeout, overallTimeoutUnit,
-                                               initialBinding);
+                                               timeout, initialBinding);
         return qExec;
     }
 }

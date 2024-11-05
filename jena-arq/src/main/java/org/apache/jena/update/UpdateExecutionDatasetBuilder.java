@@ -18,6 +18,8 @@
 
 package org.apache.jena.update;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QueryExecution;
@@ -128,6 +130,12 @@ public class UpdateExecutionDatasetBuilder implements UpdateExecutionBuilder {
         Var var = Var.alloc(varName);
         Node val = value.asNode();
         builder.substitution(var, val);
+        return this;
+    }
+
+    @Override
+    public UpdateExecutionBuilder timeout(long value, TimeUnit timeUnit) {
+        builder.timeout(value, timeUnit);
         return this;
     }
 

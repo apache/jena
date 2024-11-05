@@ -20,9 +20,11 @@ package org.apache.jena.sparql.util;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
 import org.apache.jena.atlas.lib.Lib;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.ARQException;
@@ -416,6 +418,26 @@ public class Context {
 
     public static void setCurrentDateTime(Context context) {
         context.set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime());
+    }
+
+    public static AtomicBoolean getCancelSignal(Context context) {
+        if ( context == null )
+            return null;
+        try {
+            return context.get(ARQConstants.symCancelQuery);
+        } catch (ClassCastException ex) {
+            Log.error(Context.class, "Class cast exception: Expected AtomicBoolean for cancel control: "+ex.getMessage());
+            return null;
+        }
+    }
+
+    public static AtomicBoolean getOrSetCancelSignal(Context context) {
+        AtomicBoolean cancelSignal = getCancelSignal(context);
+        if (cancelSignal == null) {
+            cancelSignal = new AtomicBoolean(false);
+            context.set(ARQConstants.symCancelQuery, cancelSignal);
+        }
+        return cancelSignal;
     }
 
     /** Merge an outer (defaults to the system global context)

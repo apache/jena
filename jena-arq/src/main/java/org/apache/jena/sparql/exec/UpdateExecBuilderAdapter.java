@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.exec;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.ResultBinding;
@@ -115,6 +116,12 @@ public class UpdateExecBuilderAdapter
     @Override
     public UpdateExecBuilder substitution(Var var, Node value) {
         builder = builder.substitution(var.getName(), ModelUtils.convertGraphNodeToRDFNode(value));
+        return this;
+    }
+
+    @Override
+    public UpdateExecBuilder timeout(long timeout, TimeUnit timeoutUnit) {
+        builder = builder.timeout(timeout, timeoutUnit);
         return this;
     }
 

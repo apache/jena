@@ -18,6 +18,8 @@
 
 package org.apache.jena.update;
 
+import org.apache.jena.sparql.util.Context;
+
 /**
  * An instance of a execution of an UpdateRequest.
  * Applies to UpdateExec (GPI) and UpdateExecution (API).
@@ -26,4 +28,10 @@ public interface UpdateProcessor
 {
     /** Execute */
     public void execute() ;
+
+    /** Attempt to asynchronously abort an update execution. */
+    public default void abort() { }
+
+    /** Returns the processor's context. Null if there is none. */
+    public default Context getContext() { return null ; }
 }

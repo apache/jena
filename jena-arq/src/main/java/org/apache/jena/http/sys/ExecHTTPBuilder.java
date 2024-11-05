@@ -280,29 +280,18 @@ public abstract class ExecHTTPBuilder<X, Y> {
     public Y context(Context context) {
         if ( context == null )
             return thisBuilder();
-        ensureContext();
         contextAcc.context(context);
-        //this.context.putAll(context);
         return thisBuilder();
     }
 
     public Y set(Symbol symbol, Object value) {
-        ensureContext();
         contextAcc.set(symbol, value);
-        //context.set(symbol, value);
         return thisBuilder();
     }
 
     public Y set(Symbol symbol, boolean value) {
-        ensureContext();
         contextAcc.set(symbol, value);
-        //context.set(symbol, value);
         return thisBuilder();
-    }
-
-    private void ensureContext() {
-//        if ( context == null )
-//            context = new Context();
     }
 
     /**

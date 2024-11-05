@@ -30,12 +30,12 @@ public interface UpdateEngine
      *  Signal start of a request being executed
      */
     public void startRequest();
-    
+
     /**
-     * Signal end of a request being executed 
+     * Signal end of a request being executed
      */
     public void finishRequest();
-    
+
     /**
      * Returns an {@link UpdateSink} that accepts Update operations
      */

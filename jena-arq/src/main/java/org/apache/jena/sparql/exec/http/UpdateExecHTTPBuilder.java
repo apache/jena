@@ -45,6 +45,6 @@ public class UpdateExecHTTPBuilder extends ExecUpdateHTTPBuilder<UpdateExecHTTP,
                                   copyArray(usingGraphURIs),
                                   copyArray(usingNamedGraphURIs),
                                   new HashMap<>(httpHeaders),
-                                  sendMode, cxt);
+                                  sendMode, cxt, timeout, timeoutUnit);
     }
 }

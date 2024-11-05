@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -42,13 +43,21 @@ import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.QueryExecBuilder;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.function.FunctionBase0;
+import org.apache.jena.sparql.function.FunctionEnv;
 import org.apache.jena.sparql.function.FunctionRegistry ;
 import org.apache.jena.sparql.function.library.wait ;
 import org.apache.jena.sparql.graph.GraphFactory ;
 import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
 import org.junit.AfterClass ;
 import org.junit.Assert;
 import org.junit.BeforeClass ;
@@ -228,6 +237,73 @@ public class TestQueryExecutionCancel {
         cancellationTest("JSON {\":a\": \"b\"} WHERE {}", exec->exec.execJson().get(0));
     }
 
+    /** Set cancel signal function via {@link QueryExecBuilder#set(Symbol, Object)}. */
+    @Test
+    public void test_cancel_signal_1() {
+        DatasetGraph dsg = DatasetGraphFactory.create();
+        FunctionRegistry fnReg = registerCancelSignalFunction(new FunctionRegistry());
+        try (QueryExec qe = QueryExec.dataset(dsg).query("SELECT (<urn:cancelSignal>() AS ?foobar) { }")
+                .set(ARQConstants.registryFunctions, fnReg)
+                .build()) {
+            Assert.assertEquals(1, ResultSetFormatter.consume(ResultSet.adapt(qe.select())));
+        }
+    }
+
+    /** Set cancel signal function via {@link QueryExecBuilder#context(Context)}. */
+    @Test
+    public void test_cancel_signal_2() {
+        DatasetGraph dsg = DatasetGraphFactory.create();
+        Context cxt = ARQ.getContext().copy();
+        FunctionRegistry fnReg = registerCancelSignalFunction(new FunctionRegistry());
+        FunctionRegistry.set(cxt, fnReg);
+        try (QueryExec qe = QueryExec.dataset(dsg).query("SELECT (<urn:cancelSignal>() AS ?foobar) { }").context(cxt).build()) {
+            Assert.assertEquals(1, ResultSetFormatter.consume(ResultSet.adapt(qe.select())));
+        }
+    }
+
+    /** Set cancel signal function via {@link QueryExec#getContext()}. */
+    @Test
+    public void test_cancel_signal_3() {
+        DatasetGraph dsg = DatasetGraphFactory.create();
+        try (QueryExec qe = QueryExec.dataset(dsg).query("SELECT (<urn:cancelSignal>() AS ?foobar) { }").build()) {
+            FunctionRegistry fnReg = registerCancelSignalFunction(new FunctionRegistry());
+            FunctionRegistry.set(qe.getContext(), fnReg);
+            ResultSetFormatter.consume(ResultSet.adapt(qe.select()));
+        }
+    }
+
+    /** Registers the function <urn:cancelSignal> which returns its value if present.
+     *  A RuntimeException is raised if there is no cancel signal in the execution context. */
+    static FunctionRegistry registerCancelSignalFunction(FunctionRegistry fnReg) {
+        fnReg.put("urn:cancelSignal", iri -> new FunctionBase0() {
+            @Override
+            protected NodeValue exec(List<NodeValue> args, FunctionEnv env) {
+                ExecutionContext execCxt = (ExecutionContext)env;
+                AtomicBoolean cancelSignal = execCxt.getCancelSignal();
+                if (cancelSignal == null) {
+                    throw new RuntimeException("No cancel signal in execution context.");
+                }
+                return NodeValue.makeBoolean(cancelSignal.get());
+            }
+
+            @Override
+            public NodeValue exec() {
+                throw new IllegalStateException("Should never be called");
+            }
+        });
+
+        return fnReg;
+    }
+
+    /** Create a model with 1000 triples. */
+    static Graph createTestGraph() {
+        Graph graph = GraphFactory.createDefaultGraph();
+        IntStream.range(0, 1000)
+            .mapToObj(i -> NodeFactory.createURI("http://www.example.org/r" + i))
+            .forEach(node -> graph.add(node, node, node));
+        return graph;
+    }
+
     static <T> void cancellationTest(String queryString, Function<QueryExec, Iterator<T>> itFactory, Consumer<Iterator<T>> itConsumer) {
         cancellationTest(queryString, itFactory::apply);
         cancellationTestForIterator(queryString, itFactory, itConsumer);
@@ -244,7 +320,7 @@ public class TestQueryExecutionCancel {
     }
 
     /** Obtain an iterator and only afterwards abort the query exec.
-     * Operations on the iterator are now expected to fail. */
+     *  Operations on the iterator are now expected to fail. */
     static <T> void cancellationTestForIterator(String queryString, Function<QueryExec, Iterator<T>> itFactory, Consumer<Iterator<T>> itConsumer) {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         dsg.add(SSE.parseQuad("(_ :s :p :o)"));
@@ -255,10 +331,8 @@ public class TestQueryExecutionCancel {
         }
     }
 
-    /**
-     * Test that creates iterators over a billion result rows and attempts to cancel them.
-     * If this test hangs then it is likely that something went wrong in the cancellation machinery.
-     */
+    /** Test that creates iterators over a billion result rows and attempts to cancel them.
+     *  If this test hangs then it is likely that something went wrong in the cancellation machinery. */
     @Test(timeout = 10000)
     public void test_cancel_concurrent_1() {
         int maxCancelDelayInMillis = 100;
@@ -268,11 +342,7 @@ public class TestQueryExecutionCancel {
         int taskCount = cpuCount * 10;
 
         // Create a model with 1000 triples
-        Graph graph = GraphFactory.createDefaultGraph();
-        IntStream.range(0, 1000)
-            .mapToObj(i -> NodeFactory.createURI("http://www.example.org/r" + i))
-            .forEach(node -> graph.add(node, node, node));
-        Model model = ModelFactory.createModelForGraph(graph);
+        Model model = ModelFactory.createModelForGraph(createTestGraph());
 
         // Create a query that creates 3 cross joins - resulting in one billion result rows
         Query query = QueryFactory.create("SELECT * { ?a ?b ?c . ?d ?e ?f . ?g ?h ?i . }");
@@ -289,10 +359,8 @@ public class TestQueryExecutionCancel {
         }
     }
 
-    /**
-     * Reusable method that creates a parallel stream that starts query executions
-     * and schedules cancel tasks on a separate thread pool.
-     */
+    /** Reusable method that creates a parallel stream that starts query executions
+     *  and schedules cancel tasks on a separate thread pool. */
     public static void runConcurrentAbort(int taskCount, int maxCancelDelay, Callable<QueryExecution> qeFactory, Function<QueryExecution, ?> processor) {
         Random cancelDelayRandom = new Random();
         ExecutorService executorService = Executors.newCachedThreadPool();

@@ -18,9 +18,13 @@
 
 package org.apache.jena.sparql.modify;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.Timeouts;
+import org.apache.jena.sparql.engine.Timeouts.Timeout;
 import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.update.UpdateProcessor ;
 import org.apache.jena.update.UpdateRequest ;
@@ -35,12 +39,23 @@ public class UpdateProcessorBase implements UpdateProcessor
     protected final Binding inputBinding;
     protected final UpdateEngineFactory factory ;
     protected final Context context ;
+    protected final Timeout timeout ;
+
+    @Deprecated
+    public UpdateProcessorBase(UpdateRequest request,
+            DatasetGraph datasetGraph,
+            Binding inputBinding,
+            Context context,
+            UpdateEngineFactory factory) {
+        this(request, datasetGraph, inputBinding, context, factory, null);
+    }
 
     public UpdateProcessorBase(UpdateRequest request,
                                DatasetGraph datasetGraph,
                                Binding inputBinding,
                                Context context,
-                               UpdateEngineFactory factory)
+                               UpdateEngineFactory factory,
+                               Timeout timeout)
     {
         this.request = request ;
         this.datasetGraph = datasetGraph ;
@@ -48,6 +63,11 @@ public class UpdateProcessorBase implements UpdateProcessor
         this.context = context;
         Context.setCurrentDateTime(this.context) ;
         this.factory = factory ;
+        this.timeout = timeout;
+        Context.getOrSetCancelSignal(this.context) ;
+        if (timeout != null) {
+            Timeouts.setUpdateTimeout(context, timeout);
+        }
     }
 
     @Override
@@ -55,11 +75,27 @@ public class UpdateProcessorBase implements UpdateProcessor
         UpdateEngine uProc = factory.create(datasetGraph, inputBinding, context);
         uProc.startRequest();
 
+        // context.get(ARQ.updateTimeout);
         try {
             UpdateSink sink = uProc.getUpdateSink();
             Iter.sendToSink(request.iterator(), sink);     // Will call close on sink if there are no exceptions
         } finally {
             uProc.finishRequest() ;
+        }
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
+    }
+
+    @Override
+    public void abort() {
+        // Right now abort is only signaled via the context's cancel signal.
+        // An improvement might be introducing UpdateEngine.abort().
+        AtomicBoolean cancelSignal = Context.getCancelSignal(context);
+        if (cancelSignal != null) {
+            cancelSignal.set(true);
         }
     }
 }

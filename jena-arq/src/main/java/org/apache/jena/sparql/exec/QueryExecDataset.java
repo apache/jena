@@ -51,6 +51,7 @@ import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorWrapper;
+import org.apache.jena.sparql.engine.Timeouts.Timeout;
 import org.apache.jena.sparql.graph.GraphOps;
 import org.apache.jena.sparql.modify.TemplateLib;
 import org.apache.jena.sparql.syntax.ElementGroup;
@@ -87,11 +88,17 @@ public class QueryExecDataset implements QueryExec
     private long                     timeout2         = TIMEOUT_UNSET;
     private final AlarmClock         alarmClock       = AlarmClock.get();
     private long                     queryStartTime   = -1; // Unset
-    private AtomicBoolean            cancelSignal     = new AtomicBoolean(false);
+    private AtomicBoolean            cancelSignal;
+
+    @Deprecated
+    protected QueryExecDataset(Query query, String queryString, DatasetGraph datasetGraph, Context cxt,
+            QueryEngineFactory qeFactory, long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2,
+            Binding initialToEngine) {
+        this(query, queryString, datasetGraph, cxt, qeFactory, new Timeout(timeout1, timeUnit1, timeout2, timeUnit2), initialToEngine);
+    }
 
     protected QueryExecDataset(Query query, String queryString, DatasetGraph datasetGraph, Context cxt,
-                               QueryEngineFactory qeFactory,
-                               long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2,
+                               QueryEngineFactory qeFactory, Timeout timeout,
                                Binding initialToEngine) {
         // Context cxt is already a safe copy.
         this.query = query;
@@ -99,10 +106,14 @@ public class QueryExecDataset implements QueryExec
         this.dataset = datasetGraph;
         this.qeFactory = qeFactory;
         this.context = (cxt == null) ? Context.setupContextForDataset(cxt, datasetGraph) : cxt;
-        this.timeout1 = asMillis(timeout1, timeUnit1);
-        this.timeout2 = asMillis(timeout2, timeUnit2);
+        this.timeout1 = timeout.initialTimeoutMillis();
+        this.timeout2 = timeout.overallTimeoutMillis();
         // See also query substitution handled in QueryExecBuilder
         this.initialBinding = initialToEngine;
+
+        // Cancel signal may originate from an e.c. an update execution.
+        this.cancelSignal = Context.getOrSetCancelSignal(context);
+
         init();
     }
 
@@ -110,10 +121,6 @@ public class QueryExecDataset implements QueryExec
         Context.setCurrentDateTime(context);
         if ( query != null )
             context.put(ARQConstants.sysCurrentQuery, query);
-    }
-
-    private static long asMillis(long duration, TimeUnit timeUnit) {
-        return (duration < 0) ? duration : timeUnit.toMillis(duration);
     }
 
     @Override
@@ -468,16 +475,6 @@ public class QueryExecDataset implements QueryExec
             return;
         }
 
-        // JENA-2141 - the timeout can go off while building the query iterator structure.
-        // In this case, use a signal passed through the context.
-        // We don't know if getPlan().iterator() does a lot of work or not
-        // (ideally it shouldn't start executing the query but in some sub-systems
-        // it might be necessary)
-        //
-        // This applies to the time to first result because to get the first result, the
-        // queryIterator must have been built. So it does not apply for the second
-        // stage of N,-1 or N,M.
-        context.set(ARQConstants.symCancelQuery, cancelSignal);
         TimeoutCallback callback = new TimeoutCallback() ;
         expectedCallback.set(callback) ;
 

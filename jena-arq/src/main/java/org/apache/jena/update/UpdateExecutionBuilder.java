@@ -18,6 +18,8 @@
 
 package org.apache.jena.update;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.util.Context;
@@ -46,6 +48,10 @@ public interface UpdateExecutionBuilder {
     public UpdateExecutionBuilder substitution(QuerySolution querySolution);
 
     public UpdateExecutionBuilder substitution(String varName, RDFNode value);
+
+    public UpdateExecutionBuilder timeout(long value, TimeUnit timeUnit);
+
+    public default UpdateExecutionBuilder timeout(long value) { return timeout(value, TimeUnit.MILLISECONDS); }
 
     public UpdateExecution build();
 

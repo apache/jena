@@ -20,6 +20,7 @@ package org.apache.jena.sparql.exec;
 
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.Timeouts.Timeout;
 import org.apache.jena.sparql.modify.UpdateEngineFactory;
 import org.apache.jena.sparql.modify.UpdateProcessorBase;
 import org.apache.jena.sparql.util.Context;
@@ -28,8 +29,8 @@ import org.apache.jena.update.UpdateRequest;
 public class UpdateExecDataset extends UpdateProcessorBase implements UpdateExec {
 
     protected UpdateExecDataset(UpdateRequest request, DatasetGraph datasetGraph,
-                                Binding inputBinding, Context context, UpdateEngineFactory factory) {
-        super(request, datasetGraph, inputBinding, context, factory);
+                                Binding inputBinding, Context context, UpdateEngineFactory factory, Timeout timeout) {
+        super(request, datasetGraph, inputBinding, context, factory, timeout);
     }
 
     @Override

@@ -21,16 +21,20 @@ package org.apache.jena.sparql.exec;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.graph.Node;
-import org.apache.jena.query.Query;
+import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.Timeouts.Timeout;
+import org.apache.jena.sparql.engine.Timeouts.TimeoutBuilderImpl;
 import org.apache.jena.sparql.modify.UpdateEngineFactory;
 import org.apache.jena.sparql.modify.UpdateEngineRegistry;
 import org.apache.jena.sparql.syntax.syntaxtransform.UpdateTransformOps;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.ContextAccumulator;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateException;
@@ -41,15 +45,18 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
 
     public static UpdateExecDatasetBuilder create() { return new UpdateExecDatasetBuilder(); }
 
-    private DatasetGraph dataset            = null;
-    private Query        query              = null;
-    private Context      context            = null;
-    // Uses query rewrite to replace variables by values.
-    private Map<Var, Node>  substitutionMap  = null;
+    private DatasetGraph dataset              = null;
+    private ContextAccumulator contextAcc     = ContextAccumulator.newBuilder(()->ARQ.getContext(), ()->Context.fromDataset(dataset));
 
-    private Binding       initialBinding    = null;
-    private UpdateRequest update            = null;
-    private UpdateRequest updateRequest     = new UpdateRequest();
+    // Uses query rewrite to replace variables by values.
+    private Map<Var, Node> substitutionMap    = null;
+
+    private Binding        initialBinding     = null;
+
+    private TimeoutBuilderImpl timeoutBuilder = new TimeoutBuilderImpl();
+
+    private UpdateRequest  update             = null;
+    private UpdateRequest  updateRequest      = new UpdateRequest();
 
     private UpdateExecDatasetBuilder() {}
 
@@ -96,29 +103,24 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
     public UpdateExecDatasetBuilder context(Context context) {
         if ( context == null )
             return this;
-        ensureContext();
-        this.context.putAll(context);
+        this.contextAcc.context(context);
         return this;
     }
 
     @Override
     public UpdateExecDatasetBuilder set(Symbol symbol, Object value) {
-        ensureContext();
-        this.context.set(symbol, value);
+        this.contextAcc.set(symbol, value);
         return this;
     }
 
     @Override
     public UpdateExecDatasetBuilder set(Symbol symbol, boolean value) {
-        ensureContext();
-        this.context.set(symbol, value);
+        this.contextAcc.set(symbol, value);
         return this;
     }
 
-
-    private void ensureContext() {
-        if ( context == null )
-            context = new Context();
+    public Context getContext() {
+        return contextAcc.context();
     }
 
     @Override
@@ -140,6 +142,12 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
             substitutionMap = new HashMap<>();
     }
 
+    @Override
+    public UpdateExecDatasetBuilder timeout(long timeout, TimeUnit timeoutUnit) {
+        this.timeoutBuilder.timeout(timeout, timeoutUnit);
+        return this;
+    }
+
     /** Use {@link #substitution(Binding)} */
     @Deprecated
     public UpdateExecDatasetBuilder initialBinding(Binding initialBinding) {
@@ -157,11 +165,14 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
         if ( substitutionMap != null && ! substitutionMap.isEmpty() )
             actualUpdate = UpdateTransformOps.transform(actualUpdate, substitutionMap);
 
-        Context cxt = Context.setupContextForDataset(context, dataset);
+        Context cxt = getContext();
         UpdateEngineFactory f = UpdateEngineRegistry.get().find(dataset, cxt);
         if ( f == null )
             throw new UpdateException("Failed to find an UpdateEngine");
-        UpdateExec uExec = new UpdateExecDataset(actualUpdate, dataset, initialBinding, cxt, f);
+
+        Timeout timeout = timeoutBuilder.build();
+
+        UpdateExec uExec = new UpdateExecDataset(actualUpdate, dataset, initialBinding, cxt, f, timeout);
         return uExec;
     }
 
