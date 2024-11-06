@@ -196,7 +196,8 @@ public interface Transactional
      */
     public ReadWrite transactionMode();
 
-    /** Return the transaction type used in {@code begin(TxnType)}.
+    /**
+     * Return the transaction type used in {@code begin(TxnType)}.
      * If the caller is not in a transaction, this method returns null.
      */
     public TxnType transactionType();
