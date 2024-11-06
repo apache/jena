@@ -313,6 +313,38 @@ public class TestTokenizerText {
         tokenizeAndTestExact("'\\U00000020'", StringType.STRING1, " ");
     }
 
+    // Raw newline and carriage return not allowed in single quoted strings
+
+    @Test(expected = RiotParseException.class)
+    public void tokenUnit_str12() {
+        tokenFirst("'abc\rdef'");
+    }
+
+    @Test(expected = RiotParseException.class)
+    public void tokenUnit_str13() {
+        tokenFirst("'abc\ndef'");
+    }
+
+    @Test(expected = RiotParseException.class)
+    public void tokenUnit_str14() {
+        tokenFirst("\"abc\rdef\"");
+    }
+
+    @Test(expected = RiotParseException.class)
+    public void tokenUnit_str15() {
+        tokenFirst("\"abc\ndef\"");
+    }
+
+    @Test(expected = RiotParseException.class)
+    public void tokenUnit_str16() {
+        tokenFirst("'\r'");
+    }
+
+    @Test(expected = RiotParseException.class)
+    public void tokenUnit_str17() {
+        tokenFirst("\"\n\"");
+    }
+
     @Test
     public void tokenUnit_str_long1() {
         tokenizeAndTestExact("'''aaa'''", StringType.LONG_STRING1, "aaa");
@@ -367,6 +399,27 @@ public class TestTokenizerText {
     public void tokenUnit_str_long11() {
         tokenFirst("'''");
     }
+
+    @Test
+    public void tokenUnit_str_long20() {
+        tokenizeAndTestExact("\"\"\"abc\ndef\"\"\"", StringType.LONG_STRING2, "abc\ndef");
+    }
+
+    @Test
+    public void tokenUnit_str_long21() {
+        tokenizeAndTestExact("\"\"\"abc\rdef\"\"\"", StringType.LONG_STRING2, "abc\rdef");
+    }
+
+    @Test
+    public void tokenUnit_str_long22() {
+        tokenizeAndTestExact("'''abc\ndef'''", StringType.LONG_STRING1, "abc\ndef");
+    }
+
+    @Test
+    public void tokenUnit_str_long23() {
+        tokenizeAndTestExact("'''abc\rdef'''", StringType.LONG_STRING1, "abc\rdef");
+    }
+
 
     @Test
     public void tokenUnit_str_long12() {
