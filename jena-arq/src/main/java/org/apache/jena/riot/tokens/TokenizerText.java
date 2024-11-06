@@ -215,7 +215,7 @@ public final class TokenizerText implements Tokenizer
                 int ch3 = reader.peekChar();
                 if ( ch3 == ch ) {
                     reader.readChar();     // Read potential third quote.
-                    token.setImage(readLongString(ch, false));
+                    token.setImage(readStringQuote3(ch, false));
                     StringType st = (ch == CH_QUOTE1) ? StringType.LONG_STRING1 : StringType.LONG_STRING2;
                     token.setStringType(st);
                 } else {
@@ -232,7 +232,7 @@ public final class TokenizerText implements Tokenizer
                 }
             } else {
                 // One quote character.
-                token.setImage(readString(ch, ch));
+                token.setImage(readStringQuote1(ch, ch));
                 // Record exactly what form of STRING was seen.
                 StringType st = (ch == CH_QUOTE1) ? StringType.STRING1 : StringType.STRING2;
                 token.setStringType(st);
@@ -788,7 +788,7 @@ public final class TokenizerText implements Tokenizer
 
     // Get characters between two markers.
     // strEscapes may be processed
-    private String readString(int startCh, int endCh) {
+    private String readStringQuote1(int startCh, int endCh) {
         // Position at start of string.
         stringBuilder.setLength(0);
         // Assumes first delimiter char read already.
@@ -802,15 +802,20 @@ public final class TokenizerText implements Tokenizer
                     warning("Unicode replacement character U+FFFD in string");
             }
             if ( ch == NotACharacter || ch == ReverseOrderBOM )
-                warning("Unicode non-character U+%4X in string", ch);
-            if ( ch == EOF ) {
-                // if ( endNL ) return stringBuilder.toString();
+                warning("Unicode non-character U+%04X in string", ch);
+            if ( ch == EOF )
                 fatal("Broken token: %s", stringBuilder.toString());
-            }
-            else if ( ch == NL )
-                fatal("Broken token (newline): %s", stringBuilder.toString());
             else if ( ch == endCh )
                 return stringBuilder.toString();
+            else if ( ch == NL )
+                fatal("Broken token (newline in string)", stringBuilder.toString());
+            else if ( ch == CR )
+                fatal("Broken token (carriage return in string)", stringBuilder.toString());
+            // Legal in Turtle/N-Triples - maybe warn?
+//            else if ( ch == FF )
+//                warning("Bad token (form feed in string)", stringBuilder.toString());
+//            else if ( ch == VT )
+//                fatal("Bad token (vertical tab in string)", stringBuilder.toString());
             else if ( ch == CH_RSLASH )
                 // Allow escaped replacement character.
                 ch = readLiteralEscape();
@@ -818,7 +823,7 @@ public final class TokenizerText implements Tokenizer
         }
     }
 
-    private String readLongString(int quoteChar, boolean endNL) {
+    private String readStringQuote3(int quoteChar, boolean endNL) {
         stringBuilder.setLength(0);
         for (;;) {
             int ch = reader.readChar();
