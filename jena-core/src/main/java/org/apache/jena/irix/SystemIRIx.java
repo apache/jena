@@ -31,19 +31,30 @@ import org.apache.jena.shared.JenaException;
  */
 public class SystemIRIx {
 
-    // -- System provider choice
+    // -- System IRI provider choice
     private enum ProviderImpl { IRI0, IRI3986 }
+    // **** Default system IRI provider
     // Jena 5.x : default is the legacy jena-iri
     private static final ProviderImpl providerImpl = ProviderImpl.IRI0;
+    // Jena 6.x : jena-iri3986
     //private static final ProviderImpl providerImpl = ProviderImpl.IRI3986;
-    // --
 
     // -- System-wide provider.
 
     private static IRIProvider provider = makeFreshSystemProvider();
 
-    private static final String envVariableProvider = "JENA_IRIPROVIDER";
-    private static final String sysPropertyProvider = "jena.iriprovider";
+    /**
+     * Environment variable used to set the system-wide IRI provider. This must be
+     * set when executing the JVM.
+     */
+    public static final String envVariableProvider = "JENA_IRIPROVIDER";
+
+    /**
+     * System property used to set the system-wide IRI provider.
+     * If the provider is changed after Jena start-up,
+     * call {@link #reset()} to reset providers.
+     */
+    public static final String sysPropertyProvider = "jena.iriprovider";
 
     public static IRIProvider makeFreshSystemProvider() {
         ProviderImpl sysProviderImpl = getProviderImpl();
