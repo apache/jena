@@ -35,7 +35,7 @@ import org.apache.jena.shared.WrappedIOException ;
 import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.FileUtils ;
 import org.apache.jena.util.PrintUtil ;
-import org.apache.jena.util.Tokenizer ;
+import org.apache.jena.util.SimpleTokenizer ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -702,7 +702,7 @@ public class Rule implements ClauseEntry {
     public static class Parser {
 
         /** Tokenizer */
-        private Tokenizer stream;
+        private SimpleTokenizer stream;
 
         /** Look ahead, null if none */
         private String lookahead;
@@ -738,7 +738,7 @@ public class Rule implements ClauseEntry {
          * @param source the string to be parsed
          */
         Parser(String source,BuiltinRegistry registry) {
-            stream = new Tokenizer(source, "()[], \t\n\r", "'\"", true);
+            stream = new SimpleTokenizer(source, "()[], \t\n\r", "'\"", true);
             lookahead = null;
             this.registry=registry;
         }

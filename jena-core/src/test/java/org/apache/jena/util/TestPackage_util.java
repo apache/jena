@@ -35,7 +35,7 @@ public class TestPackage_util extends TestSuite {
     /** Creates new TestPackage */
     private TestPackage_util() {
         super( "util" );
-        addTest( "TestTokenzier",          TestTokenizer.suite());
+        addTest( "TestSimpleTokenzier",    TestSimpleTokenizer.suite());
         addTest( "TestFileUtils",          TestFileUtils.suite() );
         addTest( "TestHashUtils",          TestCollectionFactory.suite() );
         addTest( "TestLocationMapper",     TestLocationMapper.suite() ) ;
