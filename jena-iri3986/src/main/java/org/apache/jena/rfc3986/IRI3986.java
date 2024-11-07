@@ -1374,17 +1374,7 @@ public class IRI3986 implements IRI {
             return false;
         char ch1 = charAt(idx + 1);
         char ch2 = charAt(idx + 2);
-        return percentCheck(idx, ch1, ch2);
-    }
-
-    private boolean percentCheck(int idx, char ch1, char ch2) {
-        if ( ch1 == EOF || ch2 == EOF ) {
-            throw parseError(iriStr, idx + 1, "Incomplete %-encoded character");
-        }
-        // Any case.
-        if ( Chars3986.isHexDigit(ch1) && Chars3986.isHexDigit(ch2) )
-            return true;
-        throw parseError(iriStr, idx + 1, "Bad %-encoded character [" + displayChar(ch1) + " " + displayChar(ch2) + "]");
+        return Chars3986.percentCheck(ch1, ch2, iriStr, idx);
     }
 
     // pchar = unreserved / pct-encoded / sub-delims / ":" / "@"

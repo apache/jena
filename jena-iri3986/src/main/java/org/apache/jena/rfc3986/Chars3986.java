@@ -37,8 +37,11 @@ public class Chars3986 {
     //  ipchar        = iunreserved / pct-encoded / sub-delims / ":" / "@"
     //                = ipchar / ucschar
 
-    /** RFC3986 pchar */
-    public static boolean isPChar(char ch, String str, int posn) {
+    /**
+     * Test whether {@code ch} is an RFC3986 pchar.
+     * This may need to look ahead in the string if the character is a {@code %}.
+     */
+    public static boolean isPChar(char ch, CharSequence str, int posn) {
         return unreserved(ch) || isPctEncoded(ch, str, posn) || subDelims(ch) || ch == ':' || ch == '@';
     }
 
@@ -60,7 +63,7 @@ public class Chars3986 {
             return false;
         char ch1 = charAt(s, x+1);
         char ch2 = charAt(s, x+2);
-        return percentCheck(x, ch1, ch2);
+        return percentCheck(ch1, ch2, s, x);
     }
 
     public static boolean isAlpha(char ch) {
@@ -173,17 +176,22 @@ public class Chars3986 {
 
     /** Return a display string for a character suitable for error messages. */
     public static String displayChar(char ch) {
-        return String.format("%c (0x%04X)", ch, (int)ch);
+        return String.format("%c(U+%04X)", ch, (int)ch);
     }
 
-    private static boolean percentCheck(int idx, char ch1, char ch2) {
+    /**
+     * Check whether {@code ch1} and {@code ch2} are percent-encoding hex characters.
+     */
+    public static boolean percentCheck(char ch1, char ch2, CharSequence source, int idx) {
         if ( ch1 == EOF || ch2 == EOF ) {
-            parseError(null, idx+1, "Incomplete %-encoded character");
+            parseError(source.toString(), idx+1, "Incomplete %-encoded character");
             return false;
         }
+        // Any case.
+
         if ( isHexDigit(ch1) && isHexDigit(ch2) )
             return true;
-        parseError(null, idx+1, "Bad %-encoded character ["+displayChar(ch1)+" "+displayChar(ch2)+"]");
+        parseError(source.toString(), idx+1, "Bad %-encoded character ["+displayChar(ch1)+" "+displayChar(ch2)+"]");
         return false;
     }
 
@@ -229,7 +237,7 @@ public class Chars3986 {
     }
 
     // How to handle parse errors (percent encoding).
-    private static void parseError(String string, int posn, String msg) {
-        throw ParseErrorIRI3986.parseError(string, posn, msg);
+    private static void parseError(String source, int posn, String msg) {
+        throw ParseErrorIRI3986.parseError(source, posn, msg);
     }
 }
