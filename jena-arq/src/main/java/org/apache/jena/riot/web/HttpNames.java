@@ -64,17 +64,18 @@ public class HttpNames
     public static final String graphTargetDefault   = "default" ;
     public static final String graphTargetUnion     = "union" ;
 
-    public static final String paramUpdate          = "update" ;
-    public static final String paramRequest         = "request" ;
-    public static final String paramUsingGraphURI        = "using-graph-uri" ;
-    public static final String paramUsingNamedGraphURI   = "using-named-graph-uri" ;
-
-    // SPARQL parameter names
+    // SPARQL query parameter names
     public static final String paramQuery           = "query" ;
     public static final String paramQueryRef        = "query-ref" ;
     public static final String paramDefaultGraphURI = "default-graph-uri" ;
     public static final String paramNamedGraphURI   = "named-graph-uri" ;
     public static final String paramTarget          = "target" ;
+
+    // SPARQL Update parameter names
+    public static final String paramUpdate          = "update" ;
+    public static final String paramRequest         = "request" ;   // Alternative name.
+    public static final String paramUsingGraphURI        = "using-graph-uri" ;
+    public static final String paramUsingNamedGraphURI   = "using-named-graph-uri" ;
 
     // Jena parameter names (SPARQL protocol extensions)
     public static final String paramStyleSheet      = "stylesheet" ;

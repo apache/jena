@@ -19,16 +19,21 @@
 package org.apache.jena.sparql.exec.http;
 
 import static org.apache.jena.sparql.sse.SSE.parseQuad;
-import static org.junit.Assert.assertTrue;
 
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.http.HttpLib;
+import org.apache.jena.http.HttpOp;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
+
+import static org.junit.Assert.*;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -76,7 +81,7 @@ public class TestUpdateExecHTTP {
 
     private static String service() { return dsURL; }
     private static String serviceQuery() { return dsURL+"/query"; }
-
+    private static String serviceUpdate() { return dsURL+"/update"; }
 
     @Test public void update_1() {
         UpdateExecHTTP uExec = UpdateExecHTTP.service(service())
@@ -110,9 +115,41 @@ public class TestUpdateExecHTTP {
         }
     }
 
+    // Alternative to UpdateExecHTTP -- convenient update from other languages
+    // Fuseki treats:
+    //    POST ...?request=...
+    //    POST ...?update=...
+    // as an update.
+    @Test public void update_POST_queryString_1() {
+        String update1 = "INSERT DATA { <x:s> <x:p> 567 }";
+        String queryString1 = "update="+HttpLib.urlEncodeQueryString(update1);
+
+        String update2 = "CLEAR DEFAULT";
+        String queryString2 = "update="+HttpLib.urlEncodeQueryString(update2);
+
+        // Multiple operation endpoint.
+        HttpOp.httpPost(service()+"?"+queryString1);
+        Graph g1 = GSP.service(service()).defaultGraph().GET();
+        assertEquals(1, g1.size());
+
+        HttpOp.httpPost(service()+"?"+queryString2);
+        Graph g2 = GSP.service(service()).defaultGraph().GET();
+        assertEquals(0, g2.size());
+    }
+
+    @Test public void update_POST_queryString_2() {
+        String update = "INSERT DATA { <x:s> <x:p> 567 }";
+        String queryString = "request="+HttpLib.urlEncodeQueryString(update);
+
+        // Update endpoint.
+        HttpOp.httpPost(serviceUpdate()+"?"+queryString);
+
+        Graph g = GSP.service(service()).defaultGraph().GET();
+        assertEquals(1, g.size());
+    }
+
     // ?user-graph-uri= and ?using-named-graph-uri only apply to the WHERE clause of
     // an update.
-
     @Test public void update_using_1() {
         try {
             update_using_1_test();
