@@ -283,14 +283,20 @@ public abstract class SPARQLQueryProcessor extends ActionService
             }
         }
         catch (QueryParseException ex) {
+            abortSilent(action);
             // Late stage static error (e.g. bad fixed Lucene query string).
             ServletOps.errorBadRequest("Query parse error: \n" + queryString + "\n" + SPARQLProtocol.messageForException(ex));
         }
         catch (QueryCancelledException ex) {
+            abortSilent(action);
             // Additional counter information.
             incCounter(action.getEndpoint().getCounters(), QueryTimeouts);
             throw ex;
         } finally { action.endRead(); }
+    }
+
+    private static void abortSilent(HttpAction action) {
+        action.abortSilent();
     }
 
     /**
