@@ -58,7 +58,7 @@ public class ActionPrefixesRW extends ActionPrefixesR {
             action.abortSilent();
             ServletOps.errorOccurred(ex);
         } finally {
-            action.end();
+            action.endWrite();
         }
     }
 
@@ -101,7 +101,7 @@ public class ActionPrefixesRW extends ActionPrefixesR {
                 ServletOps.errorOccurred(ex);
             }
         } finally {
-            action.end();
+            action.endWrite();
         }
     }
 }
