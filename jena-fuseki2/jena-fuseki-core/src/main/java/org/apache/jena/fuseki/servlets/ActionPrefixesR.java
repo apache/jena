@@ -215,6 +215,5 @@ public class ActionPrefixesR extends ActionPrefixesBase {
         }
         action.commit();
         ServletOps.success(action);
-        action.endRead();
     }
 }
