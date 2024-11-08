@@ -320,42 +320,6 @@ public class HttpAction
         startActionTxn();
     }
 
-    private /*public*/ void endInternal() {
-        // Commit or abort may have called end() already.
-        // Possibly multiple endWrite, endRead (not ideal, but not breaking)
-        if ( actionTxEndCalled )
-            return;
-        actionTxEndCalled = true;
-        finishActionTxn();
-        if ( dataService != null )
-            dataService.finishTxn();
-        if ( transactional != null && transactional.isInTransaction() )
-            forceAbort();
-        leaveActionTxn();
-    }
-
-    /** Force an abort - i.e. abort with protection against anything going wrong. */
-    private void forceAbort() {
-        ReadWrite rwMode = transactional.transactionMode();
-        if ( rwMode == null )
-            // Damaged system.
-            return;
-        switch(rwMode) {
-            case READ -> {}
-            case WRITE -> {
-                // Write transactions must have explicitly called commit or abort.
-                FmtLog.warn(log, "[%d] Transaction still active - no commit or abort seen (forced abort)", this.id);
-                try {
-                    transactional.abort();
-                } catch (RuntimeException ex) {
-                    FmtLog.warn(log, "[%d] Exception in forced abort (trying to continue)", this.id, ex);
-                }
-            }
-        }
-        try { transactional.end(); }
-        catch (RuntimeException ex) {}
-    }
-
     /**
      * Begin a transaction - this should be paired with an {@link #end()}
      * <pre>
@@ -422,11 +386,57 @@ public class HttpAction
         endInternal();
     }
 
-    // An action begin-end is on the same thread. No concurrency issues for this flag.
+    private void endInternal() {
+        // Commit or abort may have called end() already.
+        // Possibly multiple endWrite, endRead (not ideal, but not breaking)
+        if ( actionTxnEndCalled )
+            return;
+        actionTxnEndCalled = true;
+        finishActionTxn();
+        if ( dataService != null )
+            dataService.finishTxn();
+        if ( transactional != null ) {
+            if ( transactional.isInTransaction() )
+                completeTransactional();
+            // Perform end()
+            try { transactional.end(); }
+            catch (RuntimeException ex) {}
+        }
+        leaveActionTxn();
+    }
+
+    /**
+     * Complete the transactional:
+     * <ul>
+     * <li>Read - No additional action needed</li>
+     * <li>Write force an abort</li>
+     * <ul>
+     */
+    private void completeTransactional() {
+        ReadWrite rwMode = transactional.transactionMode();
+        if ( rwMode == null )
+            // Damaged system. Robustly ignore.
+            return;
+        switch(rwMode) {
+            case READ -> {/* begin-end is accepted for a read action : work done in  transactional.end() */}
+            case WRITE -> {
+                // Write transactions must have explicitly called commit or abort.
+                FmtLog.warn(log, "[%d] Transaction still active - no commit or abort seen (forced abort)", this.id);
+                try {
+                    transactional.abort();
+                } catch (RuntimeException ex) {
+                    FmtLog.warn(log, "[%d] Exception in forced abort (trying to continue)", this.id, ex);
+                }
+            }
+        }
+    }
+
+    // An action begin-end is on the same thread.
+    // No concurrency issues for these variables.
     private boolean isInActionTxn = false;
     private int actionTxnCount = 0;
-    /** Used to detect two calls to {@link #endAny} */
-    private boolean actionTxEndCalled = false;
+    // Protect against nesting endInternal. This should not happen.
+    private boolean actionTxnEndCalled = false;
 
     // begin :: enter then start
     // end  ::  finish then leave
@@ -462,7 +472,7 @@ public class HttpAction
     private void startActionTxn() {
         isInActionTxn = true;
         actionTxnCount++;
-        actionTxEndCalled = false;
+        actionTxnEndCalled = false;
     }
 
     /**
@@ -483,7 +493,7 @@ public class HttpAction
     public void commit() {
         if ( transactional != null )
             transactional.commit();
-        end();
+        endInternal();
     }
 
     /** Abort: ignore exceptions (for clearup code) */
@@ -493,7 +503,7 @@ public class HttpAction
                 transactional.abort();
         } catch (Exception ex) {
         } finally {
-            try { end(); } catch (Exception ex) {}
+            try { endInternal(); } catch (Exception ex) {}
         }
     }
 
