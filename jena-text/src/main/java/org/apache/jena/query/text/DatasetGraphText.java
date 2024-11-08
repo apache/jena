@@ -255,14 +255,22 @@ public class DatasetGraphText extends DatasetGraphTextMonitor implements Transac
             super.end();
             return;
         }
-        if ( readWriteMode.get() == ReadWrite.WRITE ) {
-            // If we are still in a write transaction at this point, then commit
-            // was never called, so rollback the TextIndex and the dataset.
-            abortAction.run();
+        ReadWrite rwMode = readWriteMode.get();
+        switch(rwMode) {
+            case READ ->{
+                super.getMonitor().finish();
+                super.end();
+                readWriteMode.set(null);
+            }
+            case WRITE ->{
+                // If we are still in a write transaction at this point, then commit
+                // was never called, so rollback the TextIndex and the dataset.
+                super.getMonitor().finish();
+                abortAction.run();
+                super.end();
+                readWriteMode.set(null);
+            }
         }
-        super.end();
-        super.getMonitor().finish();
-        readWriteMode.set(null);
     }
 
     @Override
