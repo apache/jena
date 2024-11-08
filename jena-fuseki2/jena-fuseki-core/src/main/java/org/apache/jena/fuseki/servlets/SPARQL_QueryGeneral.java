@@ -28,14 +28,14 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.system.GraphLoadUtils;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Query;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.sparql.core.DatasetDescription;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.DatasetGraphZero;
 
 public class SPARQL_QueryGeneral extends ServletAction {
@@ -109,62 +109,16 @@ public class SPARQL_QueryGeneral extends ServletAction {
                 if ( datasetDesc.isEmpty() )
                     return null;
 
-                List<String> graphURLs = datasetDesc.getDefaultGraphURIs();
-                List<String> namedGraphs = datasetDesc.getNamedGraphURIs();
-
-                if ( graphURLs.size() == 0 && namedGraphs.size() == 0 )
+                if ( datasetDesc.isEmpty() )
                     return null;
 
-                Dataset dataset = DatasetFactory.create();
-                // Look in cache for loaded graphs!!
+                DatasetGraph dsg = DatasetGraphFactory.create();
+                dsg.executeWrite(()-> {
+                    datasetDescDefaultGraph(action, dsg, datasetDesc);
+                    datasetDescNamedGraphs(action, dsg, datasetDesc);
+                });
 
-                // ---- Default graph
-                {
-                    Model model = ModelFactory.createDefaultModel();
-                    for ( String uri : graphURLs ) {
-                        if ( uri == null || uri.equals("") )
-                            throw new InternalErrorException("Default graph URI is null or the empty string");
-
-                        try {
-                            GraphLoadUtils.loadModel(model, uri, MaxTriples);
-                            action.log.info(format("[%d] Load (default graph) %s", action.id, uri));
-                        }
-                        catch (RiotException ex) {
-                            action.log.info(format("[%d] Parsing error loading %s: %s", action.id, uri, ex.getMessage()));
-                            ServletOps.errorBadRequest("Failed to load URL (parse error) " + uri + " : " + ex.getMessage());
-                        }
-                        catch (Exception ex) {
-                            action.log.info(format("[%d] Failed to load (default) %s: %s", action.id, uri, ex.getMessage()));
-                            ServletOps.errorBadRequest("Failed to load URL " + uri);
-                        }
-                    }
-                    dataset.setDefaultModel(model);
-                }
-                // ---- Named graphs
-                if ( namedGraphs != null ) {
-                    for ( String uri : namedGraphs ) {
-                        if ( uri == null || uri.equals("") )
-                            throw new InternalErrorException("Named graph URI is null or the empty string");
-
-                        try {
-                            Model model = ModelFactory.createDefaultModel();
-                            GraphLoadUtils.loadModel(model, uri, MaxTriples);
-                            action.log.info(format("[%d] Load (named graph) %s", action.id, uri));
-                            dataset.addNamedModel(uri, model);
-                        }
-                        catch (RiotException ex) {
-                            action.log.info(format("[%d] Parsing error loading %s: %s", action.id, uri, ex.getMessage()));
-                            ServletOps.errorBadRequest("Failed to load URL (parse error) " + uri + " : " + ex.getMessage());
-                        }
-                        catch (Exception ex) {
-                            action.log.info(format("[%d] Failed to load (named graph) %s: %s", action.id, uri, ex.getMessage()));
-                            ServletOps.errorBadRequest("Failed to load URL " + uri);
-                        }
-                    }
-                }
-
-                return dataset.asDatasetGraph();
-
+                return dsg;
             }
             catch (ActionErrorException ex) {
                 throw ex;
@@ -175,6 +129,52 @@ public class SPARQL_QueryGeneral extends ServletAction {
                 return null;
             }
         }
-    }
 
+        // ---- Default graph
+        private static void datasetDescDefaultGraph(HttpAction action, DatasetGraph dsg, DatasetDescription datasetDesc) {
+            List<String> graphURLs = datasetDesc.getDefaultGraphURIs();
+            Graph graph = dsg.getDefaultGraph();
+
+            for ( String uri : graphURLs ) {
+                if ( uri == null || uri.equals("") )
+                    throw new InternalErrorException("Default graph URI is null or the empty string");
+                try {
+                    GraphLoadUtils.loadGraph(graph, uri, MaxTriples);
+                    action.log.info(format("[%d] Load (default graph) %s", action.id, uri));
+                }
+                catch (RiotException ex) {
+                    action.log.info(format("[%d] Parsing error loading %s: %s", action.id, uri, ex.getMessage()));
+                    ServletOps.errorBadRequest("Failed to load URL (parse error) " + uri + " : " + ex.getMessage());
+                }
+                catch (Exception ex) {
+                    action.log.info(format("[%d] Failed to load (default) %s: %s", action.id, uri, ex.getMessage()));
+                    ServletOps.errorBadRequest("Failed to load URL " + uri);
+                }
+            }
+        }
+
+        // ---- Named graphs
+        private static void datasetDescNamedGraphs(HttpAction action, DatasetGraph dsg, DatasetDescription datasetDesc) {
+            List<String> namedGraphs = datasetDesc.getNamedGraphURIs();
+            for ( String uri : namedGraphs ) {
+                if ( uri == null || uri.equals("") )
+                    throw new InternalErrorException("Named graph URI is null or the empty string");
+
+                try {
+                    Node graphName = NodeFactory.createURI(uri);
+                    Graph graph = dsg.getGraph(graphName);
+                    GraphLoadUtils.loadGraph(graph, uri, MaxTriples);
+                    action.log.info(format("[%d] Load (named graph) %s", action.id, uri));
+                }
+                catch (RiotException ex) {
+                    action.log.info(format("[%d] Parsing error loading %s: %s", action.id, uri, ex.getMessage()));
+                    ServletOps.errorBadRequest("Failed to load URL (parse error) " + uri + " : " + ex.getMessage());
+                }
+                catch (Exception ex) {
+                    action.log.info(format("[%d] Failed to load (named graph) %s: %s", action.id, uri, ex.getMessage()));
+                    ServletOps.errorBadRequest("Failed to load URL " + uri);
+                }
+            }
+        }
+    }
 }
