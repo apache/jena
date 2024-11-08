@@ -76,14 +76,6 @@ public class ScriptFunction extends FunctionBase {
     private Set<String> allowList;
     private Set<String> denyList;
 
-    // Collect language names (for reference).
-//    private static Set<String> languageNames = new HashSet<>();
-//    static {
-//        scriptEngineManager
-//            .getEngineFactories()
-//            .forEach(sef -> sef.getNames().forEach(languageNames::add));
-//    }
-
     public static boolean isScriptFunction(String uri) {
         if (!uri.startsWith(ARQ_NS)) {
             return false;
@@ -201,7 +193,7 @@ public class ScriptFunction extends FunctionBase {
         String lookupLang =  "js".equals(lang) ? "javascript" : lang;
         ScriptEngine engine = scriptEngineManager.getEngineByName(lookupLang);
         if (engine == null)
-            throw new ExprException("Unknown scripting language: " + lang);
+            throw new ExprException("Unknown scripting language: " + lookupLang+ " : "+listEngines());
         // Enforce Nashorn compatibility for Graal.js
         if (engine.getFactory().getEngineName().equals("Graal.js")) {
             engine.getContext().setAttribute("polyglot.js.nashorn-compat", true, ScriptContext.ENGINE_SCOPE);
@@ -239,5 +231,13 @@ public class ScriptFunction extends FunctionBase {
     // For testing purposes only
     static void clearEngineCache() {
         enginePools.clear();
+    }
+
+    private static List<String> listEngines() {
+        List<String> languageNames = new ArrayList<>();
+        scriptEngineManager
+            .getEngineFactories()
+            .forEach(sef -> sef.getNames().forEach(languageNames::add));
+        return languageNames;
     }
 }
