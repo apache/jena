@@ -49,7 +49,7 @@ public class ActionExecLib {
 
     /**
      * Returns a fresh HTTP Action for this request.
-     * @param dap
+     * @param dap DataAccessPoint
      * @param request HTTP request
      * @param response HTTP response
      * @return a new HTTP Action
@@ -82,9 +82,6 @@ public class ActionExecLib {
      * and {@link ServletProcessor} for administration actions.
      * <p>
      * Return false if the ActionProcessor is null.
-     *
-     * @param action
-     * @param processor
      */
     public static void execAction(HttpAction action, ActionProcessor processor) {
         boolean b = execAction(action, ()->processor);

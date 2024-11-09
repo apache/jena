@@ -1056,7 +1056,7 @@
                  https://maven.apache.org/guides/mini/guide-reproducible-builds.html
             -->
             <notimestamp>true</notimestamp>
-            <doclint>none</doclint>
+            <doclint>-missing</doclint>
             <quiet>true</quiet>
             <version>true</version>
             <show>public</show>

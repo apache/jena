@@ -66,7 +66,7 @@ public class LoaderFactory {
      * other quad data is discarded.
      * <p>
      * For other behaviours, use {@link #basicLoader(DatasetGraph, MonitorOutput)}
-     * and wrap the {@linkStreamRDF} from {@link DataLoader#stream()}) with the required
+     * and wrap the {@link StreamRDF} from {@link DataLoader#stream()}) with the required
      * transformation.
      *
      * @see #basicLoader(DatasetGraph, MonitorOutput)
@@ -104,7 +104,7 @@ public class LoaderFactory {
      * other quad data is discarded.
      * <p>
      * For other behaviours, use {@link #basicLoader(DatasetGraph, MonitorOutput)}
-     * and wrap the {@linkStreamRDF} from {@link DataLoader#stream()}) with the required
+     * and wrap the {@link StreamRDF} from {@link DataLoader#stream()}) with the required
      * transformation.
      *
      * @see #sequentialLoader(DatasetGraph, MonitorOutput)

@@ -43,9 +43,6 @@ public class SPARQL_QueryDataset extends SPARQLQueryProcessor {
      * Function to return the {@code Pair<DatasetGraph, Query>} based on processing any dataset description as {@link DynamicDatasets a dynamic dataset}.
      * The query is modified to remove any dataset description.
      *
-     * @param action
-     * @param query
-     * @param queryStringLog
      * @return Pair&lt;DatasetGraph, Query&gt;
      */
     public Pair<DatasetGraph, Query> decideDatasetDynamic(HttpAction action, Query query, String queryStringLog) {

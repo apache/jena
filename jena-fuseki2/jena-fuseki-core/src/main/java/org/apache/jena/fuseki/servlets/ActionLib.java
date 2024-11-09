@@ -202,7 +202,7 @@ public class ActionLib {
      * Parse RDF content from the body of the request of the action, ends the
      * request, and sends a 400 if there is a parse error.
      *
-     * @throws ActionErrorException
+     * @throws ActionErrorException ActionErrorException
      */
     public static void parseOrError(HttpAction action, StreamRDF dest, Lang lang, String base) {
         try {
@@ -216,7 +216,7 @@ public class ActionLib {
     /**
      * Parse RDF content. This wraps up the parse step reading from an action.
      * It includes handling compression if the {@code Content-Encoding} header is present
-     * @throws RiotParseException
+     * @throws RiotParseException RiotParseException
      */
     public static void parse(HttpAction action, StreamRDF dest, Lang lang, String base) {
         try {
@@ -227,7 +227,7 @@ public class ActionLib {
 
     /**
      * Parse RDF content. This wraps up the parse step reading from an input stream.
-     * @throws RiotParseException
+     * @throws RiotParseException RiotParseException
      */
     public static void parse(HttpAction action, StreamRDF dest, InputStream input, Lang lang, String base) {
         try {
@@ -389,7 +389,7 @@ public class ActionLib {
 
     /**
      * Get the content type of an action.
-     * @param  action
+     * @param  action HttpAction
      * @return ContentType
      */
     public static ContentType getContentType(HttpAction action) {

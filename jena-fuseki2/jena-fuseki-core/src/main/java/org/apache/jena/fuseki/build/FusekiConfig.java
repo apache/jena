@@ -143,7 +143,6 @@ public class FusekiConfig {
     /** Get the allowed users on a resource.
      *  Returns null if the resource is null or if there were no settings.
      *
-     * @param resource
      * @return RequestAuthorization
      */
     public static AuthPolicy allowedUsers(Resource resource) {

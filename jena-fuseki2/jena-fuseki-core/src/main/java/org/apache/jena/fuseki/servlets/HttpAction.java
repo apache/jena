@@ -673,7 +673,6 @@ public class HttpAction
      * Get the request input stream, bypassing any compression.
      * The state of the input stream is unknown.
      * Only useful for skipping a body on a connection.
-     * @throws IOException
      */
     public InputStream getRequestInputStreamRaw() throws IOException {
         return request.getInputStream();

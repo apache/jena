@@ -50,10 +50,6 @@ public class ServletOps {
      *  Note that we do not set a custom Reason Phrase.
      *  <br/>
      *  HTTPS/2 does not have a "Reason Phrase".
-     *
-     * @param response
-     * @param statusCode
-     * @param message
      */
     public static void responseSendError(HttpServletResponse response, int statusCode, String message) {
         response.setStatus(statusCode);

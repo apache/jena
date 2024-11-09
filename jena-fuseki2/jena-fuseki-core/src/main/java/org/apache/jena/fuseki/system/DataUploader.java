@@ -62,7 +62,7 @@ public class DataUploader {
      * {@code multipart/mixed} (<a href="https://tools.ietf.org/html/rfc204">RFC 2046</a>) and
      * {@code multipart/form-data} (<a href="https://tools.ietf.org/html/rfc1867">RFC 1867</a>)
      * with a file part.
-     * @throws RiotParseException
+     * @throws RiotParseException RiotParseException
      */
     public static UploadDetails incomingData(HttpAction action, StreamRDF dest) {
         ContentType ct = ActionLib.getContentType(action);

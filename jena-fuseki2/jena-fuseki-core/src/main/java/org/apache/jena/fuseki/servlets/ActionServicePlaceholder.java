@@ -22,7 +22,7 @@ import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.server.Endpoint;
 
 /**
- * A NoOp implementation of {@ActionService}.
+ * A NoOp implementation of {@link ActionService}.
  * <p>
  * This is only for use as a placeholder during configuration. It must be replaced in
  * an {@link Endpoint} during server building with another implementation.

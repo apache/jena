@@ -324,7 +324,7 @@ public class IRI3986 implements IRI {
 
     /**
      * Return an immutable list of the violations for this IRI.
-     * @See {@link #forEachViolation(Consumer)}.
+     * See {@link #forEachViolation(Consumer)}.
      */
     public List<Violation> violations() {
         if ( reports == null )
@@ -754,7 +754,7 @@ public class IRI3986 implements IRI {
         return iri;
     }
 
-    /** Build a {@linkIRI3986} from components. */
+    /** Build a {@link IRI3986} from components. */
     public static IRI3986 build(String scheme, String authority, String path, String query, String fragment) {
         String s = rebuild(scheme, authority, path, query, fragment);
         return newAndParseEx(s);

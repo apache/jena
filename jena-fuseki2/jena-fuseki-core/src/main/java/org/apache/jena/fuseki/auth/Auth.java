@@ -86,8 +86,8 @@ public class Auth {
      * Test whether a user (principal) is allowed by a authorization policy.
      * The policy can be null, meaning no restrictions, and the function returns true.
      * {@code user} maybe null, meaning unauthenticated and any policy must deal with this.
-     * @param user
-     * @param policy
+     * @param user User
+     * @param policy Policy
      * @return boolean True if the policy is null or allows the user.
      */
     public static boolean allow(String user, AuthPolicy policy) {
@@ -103,8 +103,8 @@ public class Auth {
      * Additional, return true/false - see {@link #allow(String, AuthPolicy)}.
      * The policy can be null, meaning no restrictions, and the function returns true.
      * {@code user} maybe null, meaning unauthenticated and any policy must deal with this.
-     * @param user
-     * @param policy
+     * @param user User
+     * @param policy Policy
      * @param notAllowed Runnable to execute if the policy does not allow the user.
      */
     public static boolean allow(String user, AuthPolicy policy, Runnable notAllowed) {
