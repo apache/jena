@@ -25,35 +25,30 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Creator;
 import org.apache.jena.atlas.lib.SetUtils;
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
 import org.apache.jena.tdb1.TDB1;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.TDB2;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
 /** Test a controlled Dataset with access by TDB filter or general DatasetGraphFiltered. */
 @RunWith(Parameterized.class)
@@ -117,26 +112,19 @@ public class TestSecurityFilterLocal {
         final DatasetGraph dsg1 = applyFilterDSG
             ? DataAccessCtl.filteredDataset(dsg, sCxt)
             : dsg;
-        Dataset ds = DatasetFactory.wrap(dsg1);
         return
-            Txn.calculateRead(ds, ()->{
-                try(QueryExecution qExec = QueryExecutionFactory.create(queryString, ds)) {
-//                    if ( applyFilterTDB && ! sCxt.equals(SecurityContext.NONE)) {
-//                        ((SecurityContextView)sCxt).filterTDB(dsg1, qExec);
-//                    }
+            Txn.calculateRead(dsg1, ()->{
+                try(QueryExec qExec = QueryExec.dataset(dsg1).query(queryString).build()) {
                     if ( applyFilterTDB )
                         sCxt.filterTDB(dsg1, qExec);
-                    List<QuerySolution> results = Iter.toList(qExec.execSelect());
-                    Stream<Node> stream = results.stream()
-                        .map(qs->qs.get("s"))
-                        .filter(Objects::nonNull)
-                        .map(RDFNode::asNode);
+                    List<Binding> results = Iter.toList(qExec.select());
+                    Stream<Node> stream = results.stream().map(qs -> qs.get("s")).filter(Objects::nonNull);
                     return SetUtils.toSet(stream);
                 }
             });
     }
 
-    private Set<Node> subjects(DatasetGraph dsg,  Function<DatasetGraph, Graph> graphChoice, String queryString, SecurityContext sCxt) {
+    private Set<Node> subjects(DatasetGraph dsg, Function<DatasetGraph, Graph> graphChoice, String queryString, SecurityContext sCxt) {
         final DatasetGraph dsg1 = applyFilterDSG
             ? DataAccessCtl.filteredDataset(dsg, sCxt)
             : dsg;
@@ -144,14 +132,13 @@ public class TestSecurityFilterLocal {
         if ( graph == null )
             // Can't see the graph.
             return Collections.emptySet();
-        Model model = ModelFactory.createModelForGraph(graph);
         return
             Txn.calculateRead(testdsg, ()->{
-                try(QueryExecution qExec = QueryExecutionFactory.create(queryString, model)) {
+                try(QueryExec qExec = QueryExec.graph(graph).query(queryString).build()) {
                     if ( applyFilterTDB )
                         sCxt.filterTDB(dsg1, qExec);
-                    List<QuerySolution> results = Iter.toList(qExec.execSelect());
-                    Stream<Node> stream = results.stream().map(qs->qs.get("s")).filter(Objects::nonNull).map(RDFNode::asNode);
+                    List<Binding> results = Iter.toList(qExec.select());
+                    Stream<Node> stream = results.stream().map(qs->qs.get("s")).filter(Objects::nonNull);
                     return SetUtils.toSet(stream);
                 }
             });
@@ -162,14 +149,13 @@ public class TestSecurityFilterLocal {
         final DatasetGraph dsg1 = applyFilterDSG
             ? DataAccessCtl.filteredDataset(dsg, sCxt)
             : dsg;
-        Dataset ds = DatasetFactory.wrap(dsg1);
         return
-            Txn.calculateRead(ds, ()->{
-                try(QueryExecution qExec = QueryExecutionFactory.create(queryGraphNames, ds)) {
+            Txn.calculateRead(dsg1, ()->{
+                try(QueryExec qExec = QueryExec.dataset(dsg1).query(queryGraphNames).build()) {
                     if ( applyFilterTDB )
                         sCxt.filterTDB(dsg1, qExec);
-                    List<QuerySolution> results = Iter.toList(qExec.execSelect());
-                    Stream<Node> stream = results.stream().map(qs->qs.get("g")).filter(Objects::nonNull).map(RDFNode::asNode);
+                    List<Binding> results = Iter.toList(qExec.select());
+                    Stream<Node> stream = results.stream().map(qs->qs.get("g")).filter(Objects::nonNull);
                     return SetUtils.toSet(stream);
                 }
             });

@@ -22,11 +22,13 @@ import java.util.Iterator;
 import java.util.Objects;
 
 import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.exec.QueryExecResult;
 
 /**
@@ -130,6 +132,14 @@ public class SPARQLResult {
         if ( !isBoolean() )
             throw new ResultSetException("Not a boolean result");
         return booleanResult;
+    }
+
+    public Graph getGraph() {
+        return getModel().getGraph();
+    }
+
+    public DatasetGraph getDatasetGraph() {
+        return dataset.asDatasetGraph();
     }
 
     public Model getModel() {

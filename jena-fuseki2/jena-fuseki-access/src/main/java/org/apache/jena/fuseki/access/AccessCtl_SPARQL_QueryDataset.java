@@ -28,9 +28,9 @@ import java.util.function.Function;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
 import org.apache.jena.sparql.core.*;
 import org.apache.jena.sparql.core.DynamicDatasets.DynamicDatasetGraph;
+import org.apache.jena.sparql.exec.QueryExec;
 
 /** A Query {@link ActionService} that inserts a security filter on each query. */
 final
@@ -105,7 +105,7 @@ public class AccessCtl_SPARQL_QueryDataset extends SPARQL_QueryDataset {
     }
 
     @Override
-    protected QueryExecution createQueryExecution(HttpAction action, Query query, DatasetGraph target) {
+    protected QueryExec createQueryExec(HttpAction action, Query query, DatasetGraph target) {
         if ( ! ALLOW_FROM ) {
             if ( target instanceof DynamicDatasetGraph )
                 // Protocol query/FROM should have been caught by decideDataset
@@ -116,13 +116,13 @@ public class AccessCtl_SPARQL_QueryDataset extends SPARQL_QueryDataset {
         // Dataset of the service, not computed by decideDataset.
         DatasetGraph dsg = action.getActiveDSG();
         if ( dsg == null )
-            return super.createQueryExecution(action, query, target);
+            return super.createQueryExec(action, query, target);
         if ( ! DataAccessCtl.isAccessControlled(dsg) )
-            return super.createQueryExecution(action, query, target);
+            return super.createQueryExec(action, query, target);
 
         SecurityContext sCxt = DataAccessLib.getSecurityContext(action, dsg, requestUser);
         // A QueryExecution for controlled access
-        QueryExecution qExec = sCxt.createQueryExecution(query, target);
+        QueryExec qExec = sCxt.createQueryExec(query, target);
         return qExec;
     }
 }

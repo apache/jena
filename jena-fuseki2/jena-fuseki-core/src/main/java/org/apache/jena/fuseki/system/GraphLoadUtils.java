@@ -20,18 +20,18 @@
 package org.apache.jena.fuseki.system;
 
 import org.apache.jena.fuseki.Fuseki;
-import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 
-/** A packaging of code to do a controlled read of a graph or model */
+/** A packaging of code to do a controlled read of a graph or  */
 
 public class GraphLoadUtils
 {
-    // ---- Graph level
-
     public static Graph readGraph(String uri, int limit) {
         Graph g = GraphMemFactory.createDefaultGraphSameTerm();
         readUtil(g, uri, limit);
@@ -42,9 +42,26 @@ public class GraphLoadUtils
         readUtil(g, uri, limit);
     }
 
-    // ** Worker.
+    public static DatasetGraph readDataset(String uri, int limit) {
+        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
+        readUtil(dsg, uri, limit);
+        return dsg;
+    }
+
+    public static void loadDataset(DatasetGraph dsg, String uri, int limit) {
+        readUtil(dsg, uri, limit);
+    }
+
+    // Worker/Graph
     private static void readUtil(Graph graph, String uri, int limit) {
         StreamRDF sink = StreamRDFLib.graph(graph);
+        sink = new StreamRDFLimited(sink, limit);
+        RDFParser.source(uri).streamManager(Fuseki.webStreamManager).parse(sink);
+    }
+
+    // Worker/DatasetGraph
+    private static void readUtil(DatasetGraph dsg, String uri, int limit) {
+        StreamRDF sink = StreamRDFLib.dataset(dsg);
         sink = new StreamRDFLimited(sink, limit);
         RDFParser.source(uri).streamManager(Fuseki.webStreamManager).parse(sink);
     }
