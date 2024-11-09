@@ -19,10 +19,11 @@
 package org.apache.jena.fuseki.servlets.prefixes;
 
 import org.apache.jena.fuseki.servlets.ActionPrefixesRW;
+import org.apache.jena.fuseki.servlets.ActionREST;
 import org.apache.jena.fuseki.servlets.HttpAction;
 
 /**
- * An {@linkActionREST} that provides a all the HTTP services over a fixed {@link PrefixesAccess}.
+ * An {@link ActionREST} that provides a all the HTTP services over a fixed {@link PrefixesAccess}.
  * <p>
  * This is in support of testing.
  * Instead of taking the prefixes from the action, this classes uses a provided {@link PrefixesAccess}.

@@ -116,8 +116,6 @@ public class FusekiLogging
 
     /**
      * Set up logging. Allow an extra location. This may be null.
-     *
-     * @param extraDir
      */
     public static synchronized void setLogging(Path extraDir) {
 

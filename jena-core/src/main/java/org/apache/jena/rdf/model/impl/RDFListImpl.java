@@ -402,8 +402,8 @@ public class RDFListImpl
     /**
      * <p>
      * Replace the value at the i'th position in the list with the given value.
-     * If the list is too short to have an i'th element, throws a {@link
-     * ListIndexException}.
+     * If the list is too short to have an i'th element, throws
+     * a {@link ListIndexException}.
      * </p>
      *
      * @param i The index into the list, from 0
@@ -502,8 +502,8 @@ public class RDFListImpl
      * the head of the the list formed from the
      * given <code>nodes</code>. This is a non side-effecting
      * operation on either this list or the given list, but generates a copy
-     * of this list.  For a more storage efficient alternative, see {@link
-     * #concatenate concatenate}.
+     * of this list.  For a more storage efficient alternative,
+     * see {@link #concatenate concatenate}.
      * </p>
      *
      * @param nodes An iterator whose range is RDFNode
@@ -521,8 +521,8 @@ public class RDFListImpl
      * Answer a new list that is formed by adding each element of this list to
      * the head of the given <code>list</code>. This is a non side-effecting
      * operation on either this list or the given list, but generates a copy
-     * of this list.  For a more storage efficient alternative, see {@link
-     * #concatenate concatenate}.
+     * of this list.  For a more storage efficient alternative,
+     * see {@link #concatenate concatenate}.
      * </p>
      *
      * @param list The argument list
@@ -798,8 +798,8 @@ public class RDFListImpl
      * Answer an iterator over the elements of the list. Note that this iterator
      * does not take a snapshot of the list, so changes to the list statements
      * in the model while iterating will affect the behaviour of the iterator.
-     * To get an iterator that is not affected by model changes, use {@link
-     * #asJavaList}.
+     * To get an iterator that is not affected by model changes,
+     * use {@link #asJavaList}.
      * </p>
      *
      * @return A closable iterator over the elements of the list.

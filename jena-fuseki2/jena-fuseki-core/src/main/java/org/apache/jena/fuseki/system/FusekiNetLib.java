@@ -41,7 +41,7 @@ import org.apache.jena.sparql.util.Convert;
 public class FusekiNetLib {
     /**
      * Get the content type of an action or return the default.
-     * @param  request
+     * @param  request Request
      * @return ContentType
      */
     public static ContentType getContentType(HttpServletRequest request) {
@@ -53,7 +53,7 @@ public class FusekiNetLib {
 
     /**
      * Get the incoming {@link Lang} based on Content-Type of an action.
-     * @param  action
+     * @param  action HttpAction
      * @param  dft Default if no "Content-Type:" found.
      * @return ContentType
      */

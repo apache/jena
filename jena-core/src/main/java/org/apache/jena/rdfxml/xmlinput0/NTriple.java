@@ -83,7 +83,7 @@ import org.xml.sax.SAXParseException;
  * </dt><dd>
  * Ignores numbered error/warning conditions.
  * </dl>
- * @deprecate Legacy. To be removed.
+ * @deprecated Legacy. To be removed.
  */
 @Deprecated
 public class NTriple implements ARPErrorNumbers {

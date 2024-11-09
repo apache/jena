@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-module org.seaborne.iri4ld {
+module org.apache.jena.iri3986 {
     exports org.apache.jena.rfc3986;
     exports org.apache.jena.rfc3986.cmd;
 }

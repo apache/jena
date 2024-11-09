@@ -73,6 +73,12 @@
         <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
 
+     <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-jar-plugin</artifactId>
+       <inherited>false</inherited>
+     </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -95,7 +101,6 @@
           </execution>
         </executions>
         <configuration>
-          <doclint>none</doclint>
           <windowtitle>Apache Jena IRI3986</windowtitle>
           <doctitle>Apache Jena IRI3986 ${project.version}</doctitle>
         </configuration>

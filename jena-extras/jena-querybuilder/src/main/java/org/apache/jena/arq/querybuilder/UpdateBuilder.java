@@ -262,7 +262,7 @@ public class UpdateBuilder {
      * @param p the predicate object
      * @param o the object object.
      * @return a TriplePath
-     * @deprecatd use {@link #makeTriplePaths(Object, Object, Object)}
+     * @deprecated use {@link #makeTriplePaths(Object, Object, Object)}
      */
     @Deprecated(since="5.0.0")
     public TriplePath makeTriplePath(Object s, Object p, Object o) {
@@ -272,7 +272,7 @@ public class UpdateBuilder {
         }
         return new TriplePath(Triple.create(makeNode(s), (Node) po, makeNode(o)));
     }
-   
+
     /**
      * Make a collection of one or more {@code TriplePath} objects from the objects.
      *
@@ -346,7 +346,7 @@ public class UpdateBuilder {
     private List<Triple> makeTriples(Object s, Object p, Object o) {
         return Converters.makeTriples(s, p, o, prefixHandler.getPrefixes());
     }
-    
+
     /**
      * Add a quad to the insert statement.
      *
@@ -900,7 +900,7 @@ public class UpdateBuilder {
         whereProcessor.addOptional(collection);
         return this;
     }
-    
+
     /**
      * Add the contents of a where handler as an optional statement.
      *
@@ -1015,7 +1015,7 @@ public class UpdateBuilder {
 
         return retval;
     }
-    
+
     /**
      * Create a list node from a list of objects as per RDF Collections.
      *

@@ -153,48 +153,46 @@ public class SparseArraySpliterator<E> implements Spliterator<E> {
     }
 
     /**
-     * Returns an estimate of the number of elements that would be
-     * encountered by a {@link #forEachRemaining} traversal, or returns {@link
-     * Long#MAX_VALUE} if infinite, unknown, or too expensive to compute.
+     * Returns an estimate of the number of elements that would be encountered by a
+     * {@link #forEachRemaining} traversal, or returns {@link Long#MAX_VALUE} if
+     * infinite, unknown, or too expensive to compute.
+     * <p>
+     * If this Spliterator is {@link #SIZED} and has not yet been partially traversed
+     * or split, or this Spliterator is {@link #SUBSIZED} and has not yet been
+     * partially traversed, this estimate must be an accurate count of elements that
+     * would be encountered by a complete traversal. Otherwise, this estimate may be
+     * arbitrarily inaccurate, but must decrease as specified across invocations of
+     * {@link #trySplit}.
      *
-     * <p>If this Spliterator is {@link #SIZED} and has not yet been partially
-     * traversed or split, or this Spliterator is {@link #SUBSIZED} and has
-     * not yet been partially traversed, this estimate must be an accurate
-     * count of elements that would be encountered by a complete traversal.
-     * Otherwise, this estimate may be arbitrarily inaccurate, but must decrease
-     * as specified across invocations of {@link #trySplit}.
-     *
-     * @return the estimated size, or {@code Long.MAX_VALUE} if infinite,
-     * unknown, or too expensive to compute.
+     * @return the estimated size, or {@code Long.MAX_VALUE} if infinite, unknown, or
+     *     too expensive to compute.
      * @apiNote Even an inexact estimate is often useful and inexpensive to compute.
-     * For example, a sub-spliterator of an approximately balanced binary tree
-     * may return a value that estimates the number of elements to be half of
-     * that of its parent; if the root Spliterator does not maintain an
-     * accurate count, it could estimate size to be the power of two
-     * corresponding to its maximum depth.
+     *     For example, a sub-spliterator of an approximately balanced binary tree
+     *     may return a value that estimates the number of elements to be half of
+     *     that of its parent; if the root Spliterator does not maintain an accurate
+     *     count, it could estimate size to be the power of two corresponding to its
+     *     maximum depth.
      */
     @Override
     public long estimateSize() { return ((long) (this.fillRatio  * pos)) + 1L; }
 
     /**
-     * Returns a set of characteristics of this Spliterator and its
-     * elements. The result is represented as ORed values from {@link
-     * #ORDERED}, {@link #DISTINCT}, {@link #SORTED}, {@link #SIZED},
-     * {@link #NONNULL}, {@link #IMMUTABLE}, {@link #CONCURRENT},
-     * {@link #SUBSIZED}.  Repeated calls to {@code characteristics()} on
-     * a given spliterator, prior to or in-between calls to {@code trySplit},
-     * should always return the same result.
-     *
-     * <p>If a Spliterator reports an inconsistent set of
-     * characteristics (either those returned from a single invocation
-     * or across multiple invocations), no guarantees can be made
-     * about any computation using this Spliterator.
+     * Returns a set of characteristics of this Spliterator and its elements. The
+     * result is represented as ORed values from {@link #ORDERED}, {@link #DISTINCT},
+     * {@link #SORTED}, {@link #SIZED}, {@link #NONNULL}, {@link #IMMUTABLE},
+     * {@link #CONCURRENT}, {@link #SUBSIZED}. Repeated calls to
+     * {@code characteristics()} on a given spliterator, prior to or in-between calls
+     * to {@code trySplit}, should always return the same result.
+     * <p>
+     * If a Spliterator reports an inconsistent set of characteristics (either those
+     * returned from a single invocation or across multiple invocations), no
+     * guarantees can be made about any computation using this Spliterator.
      *
      * @return a representation of characteristics
-     * @apiNote The characteristics of a given spliterator before splitting
-     * may differ from the characteristics after splitting.  For specific
-     * examples see the characteristic values {@link #SIZED}, {@link #SUBSIZED}
-     * and {@link #CONCURRENT}.
+     * @apiNote The characteristics of a given spliterator before splitting may
+     *     differ from the characteristics after splitting. For specific examples see
+     *     the characteristic values {@link #SIZED}, {@link #SUBSIZED} and
+     *     {@link #CONCURRENT}.
      */
     @Override
     public int characteristics() {
