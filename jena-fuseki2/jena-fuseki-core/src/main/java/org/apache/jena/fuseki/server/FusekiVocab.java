@@ -21,15 +21,13 @@ package org.apache.jena.fuseki.server;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIx;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 
 public class FusekiVocab
 {
     public static String NS = "http://jena.apache.org/fuseki#";
-    private static Model model = ModelFactory.createDefaultModel();
 
     public static final Resource tServer            = resource("Server");
 
@@ -92,21 +90,8 @@ public class FusekiVocab
     public static final Resource opPREFIXES_R       = resource("prefixes-r");
     public static final Resource opPREFIXES_RW      = resource("prefixes-rw");
 
-    // Internal
-    private static final String stateNameActive     = DataServiceStatus.ACTIVE.name;
-    private static final String stateNameOffline    = DataServiceStatus.OFFLINE.name;
-    private static final String stateNameClosing    = DataServiceStatus.CLOSING.name;
-    private static final String stateNameClosed     = DataServiceStatus.CLOSED.name;
-
-    public static final Resource stateActive        = resource(stateNameActive);
-    public static final Resource stateOffline       = resource(stateNameOffline);
-    public static final Resource stateClosing       = resource(stateNameClosing);
-    public static final Resource stateClosed        = resource(stateNameClosed);
-
-//    public static final Property pStatus            = property("status");
-
-    private static Resource resource(String localname) { return model.createResource(iri(localname)); }
-    private static Property property(String localname) { return model.createProperty(iri(localname)); }
+    private static Resource resource(String localname) { return ResourceFactory.createResource(iri(localname)); }
+    private static Property property(String localname) { return ResourceFactory.createProperty(iri(localname)); }
 
     private static String iri(String localname) {
         String uri = NS + localname;

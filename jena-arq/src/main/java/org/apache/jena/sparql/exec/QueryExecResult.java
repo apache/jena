@@ -29,7 +29,7 @@ import org.apache.jena.sparql.resultset.SPARQLResult;
 /**
  * This class is for the outcome of {@link QueryExec}.
  * <p>
- * See {@link SPARQLResult} for The Model-level equivalent.
+ * See {@link SPARQLResult} for the model-level equivalent.
  */
 
 public class QueryExecResult {
@@ -58,7 +58,7 @@ public class QueryExecResult {
 
     protected QueryExecResult() {}
 
-    public QueryExecResult(Graph model) {
+    public QueryExecResult(Graph graph) {
         set(graph);
     }
 

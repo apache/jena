@@ -18,8 +18,6 @@
 
 package org.apache.jena.fuseki.server;
 
-import org.apache.jena.rdf.model.Resource;
-
 public enum DataServiceStatus {
 
     UNINITIALIZED("Uninitialized"),
@@ -30,17 +28,4 @@ public enum DataServiceStatus {
 
     public final String name;
     DataServiceStatus(String string) { name = string; }
-
-    public static DataServiceStatus status(Resource r) {
-        if ( FusekiVocab.stateActive.equals(r) )
-            return ACTIVE;
-        if ( FusekiVocab.stateOffline.equals(r) )
-            return OFFLINE;
-        if ( FusekiVocab.stateClosing.equals(r) )
-            return CLOSING;
-        if ( FusekiVocab.stateClosed.equals(r) )
-            return CLOSED;
-        return null;
-    }
 }
-

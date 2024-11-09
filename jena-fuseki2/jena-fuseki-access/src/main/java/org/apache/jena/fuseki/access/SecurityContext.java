@@ -31,6 +31,8 @@ import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.QueryExecutionAdapter;
 import org.apache.jena.sparql.util.Context;
 
 /** A {@link SecurityContext} is the things actor (user, role) is allowed to do.
@@ -78,11 +80,19 @@ public interface SecurityContext {
 
     public boolean visableDefaultGraph();
 
+    /** @deprecated Use {@link #createQueryExec(Query, DatasetGraph)} */
+    @Deprecated(forRemoval = true)
     public default QueryExecution createQueryExecution(String queryString, DatasetGraph dsg) {
         return createQueryExecution(QueryFactory.create(queryString), dsg);
     }
 
-    public QueryExecution createQueryExecution(Query query, DatasetGraph dsg);
+    /** @deprecated Use {@link #createQueryExec(Query, DatasetGraph)} */
+    @Deprecated(forRemoval = true)
+    public default QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
+        return QueryExecutionAdapter.adapt(createQueryExec(query, dsg));
+    }
+
+    public QueryExec createQueryExec(Query query, DatasetGraph dsg);
 
     /**
      * Quad filter to reflect the security policy of this {@link SecurityContext}. It is
@@ -97,7 +107,7 @@ public interface SecurityContext {
      * Throws {@link IllegalArgumentException} if {@link DatasetGraph} is not a TDB1 or TDB2 backed dataset.
      * May throw {@link UnsupportedOperationException}.
      */
-    public default void filterTDB(DatasetGraph dsg, QueryExecution qExec) {
+    public default void filterTDB(DatasetGraph dsg, QueryExec qExec) {
         if ( ! org.apache.jena.tdb1.sys.TDBInternal.isTDB1(dsg) || ! org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dsg) )
             throw new IllegalArgumentException("Not a TDB database");
         throw new UnsupportedOperationException();

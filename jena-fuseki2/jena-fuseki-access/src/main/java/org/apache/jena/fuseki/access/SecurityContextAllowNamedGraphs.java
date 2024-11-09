@@ -23,10 +23,9 @@ import java.util.function.Predicate;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.exec.QueryExec;
 
 /** A {@link SecurityContext} that allows access to the default graph but not named graphs. */
 public class SecurityContextAllowNamedGraphs implements SecurityContext {
@@ -43,9 +42,8 @@ public class SecurityContextAllowNamedGraphs implements SecurityContext {
     public boolean visableDefaultGraph() { return true; }
 
     @Override
-    public QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
-
-        return QueryExecutionFactory.create(query, dsg);
+    public QueryExec createQueryExec(Query query, DatasetGraph dsg) {
+        return QueryExec.dataset(dsg).query(query).build();
     }
 
     /**
@@ -54,5 +52,5 @@ public class SecurityContextAllowNamedGraphs implements SecurityContext {
      * efficient.
      */
     @Override
-    public Predicate<Quad> predicateQuad() { return q-> ! Quad.isDefaultGraph(q.getGraph()); }
+    public Predicate<Quad> predicateQuad() { return q -> ! Quad.isDefaultGraph(q.getGraph()); }
 }

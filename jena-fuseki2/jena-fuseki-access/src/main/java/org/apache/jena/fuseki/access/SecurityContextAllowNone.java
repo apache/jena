@@ -24,11 +24,10 @@ import java.util.function.Predicate;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphSink;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.exec.QueryExec;
 
 /** A {@link SecurityContext} that does not allow any access. */
 public class SecurityContextAllowNone implements SecurityContext {
@@ -44,15 +43,15 @@ public class SecurityContextAllowNone implements SecurityContext {
     public boolean visableDefaultGraph() { return false; }
 
     @Override
-    public QueryExecution createQueryExecution(Query query, DatasetGraph dsg) {
-        return QueryExecutionFactory.create(query, DatasetGraphSink.create());
+    public QueryExec createQueryExec(Query query, DatasetGraph dsg) {
+        return QueryExec.dataset(DatasetGraphSink.create()).query(query).build();
     }
 
     @Override
     public Predicate<Quad> predicateQuad() { return q -> false; }
 
     @Override
-    public void filterTDB(DatasetGraph dsg, QueryExecution qExec) {
+    public void filterTDB(DatasetGraph dsg, QueryExec qExec) {
         Predicate<?> pred = tuple->false;
         qExec.getContext().set(GraphFilter.getContextKey(dsg), pred);
     }
