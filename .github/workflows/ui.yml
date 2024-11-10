@@ -1,0 +1,90 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+name: Apache Jena UI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # Unit tests, faster, only run on GH for the ASF repository.
+  unit-test-and-build:
+    if: github.repository == 'apache/jena'
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+        java_version: [ '21' ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          working-directory: jena-fuseki2/jena-fuseki-ui
+          node-version: 'lts/*'
+
+      - name: Set up JDK ${{ matrix.java_version }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java_version }}
+
+      - name: Build with Maven
+        run: mvn -B --file pom.xml --projects jena-fuseki2/jena-fuseki-ui --also-make-dependents test install
+
+      - name: Lint
+        working-directory: jena-fuseki2/jena-fuseki-ui
+        run: yarn lint
+
+  cypress-run:
+    # End-to-end tests, only run on GH for the ASF repository.
+    if: github.repository == 'apache/jena'
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [ firefox, chrome, electron ]
+        os: [ ubuntu-latest ]
+
+    env:
+      COVERAGE: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          working-directory: jena-fuseki2/jena-fuseki-ui
+          node-version: 'lts/*'
+
+      - name: Test (E2E)
+        uses: cypress-io/github-action@v6
+        env:
+          BASE_URL: http://localhost:8080/
+          FUSEKI_URL: http://localhost:3030/
+        with:
+          working-directory: jena-fuseki2/jena-fuseki-ui
+          config-file: cypress.config.mjs
+          browser: ${{ matrix.browser }}
+          build: yarn run build
+          start: yarn run serve:offline
+          config: baseUrl=${{ env.BASE_URL }}
+          wait-on: '${{ env.FUSEKI_URL }}$/ping, ${{ env.BASE_URL }}index.html'
+          wait-on-timeout: 120
