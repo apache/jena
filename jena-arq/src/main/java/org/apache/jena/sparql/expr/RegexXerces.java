@@ -18,9 +18,9 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.ext.xerces.impl.xpath.regex.ParseException;
-import org.apache.jena.ext.xerces.impl.xpath.regex.REUtil;
-import org.apache.jena.ext.xerces.impl.xpath.regex.RegularExpression;
+import org.apache.jena.ext.xerces_regex.RegexParseException;
+import org.apache.jena.ext.xerces_regex.REUtil;
+import org.apache.jena.ext.xerces_regex.RegularExpression;
 
 public class RegexXerces implements RegexEngine
 {
@@ -47,7 +47,7 @@ public class RegexXerces implements RegexEngine
         // Always "u", never patternStr
         // x: Remove whitespace characters (#x9, #xA, #xD and #x20) unless in [] classes
         try { return new RegularExpression(patternStr, flags) ; }
-        catch (ParseException pEx)
+        catch (RegexParseException pEx)
         { throw new ExprEvalException("Regex: Pattern exception: "+pEx) ; }
     }
 }
