@@ -21,15 +21,16 @@ package org.apache.jena.fuseki;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import org.junit.Test;
+
 import org.apache.jena.fuseki.build.DatasetDescriptionMap;
 import org.apache.jena.fuseki.build.FusekiConfig;
-import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb1.assembler.VocabTDB1;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Test;
 
 public class TestBuilder {
 
@@ -49,17 +50,17 @@ public class TestBuilder {
     }
     @Test
     public void testVerifySameDatasetObjectForSameDescription() {
-
-        Dataset ds1 = FusekiConfig.getDataset(dsDesc1, registry);
-        Dataset ds2 = FusekiConfig.getDataset(dsDesc1, registry);
+        DatasetDescriptionMap registry = new DatasetDescriptionMap();
+        DatasetGraph ds1 = FusekiConfig.getDataset(dsDesc1.getModel().getGraph(), dsDesc1.asNode(), registry);
+        DatasetGraph ds2 = FusekiConfig.getDataset(dsDesc1.getModel().getGraph(), dsDesc1.asNode(), registry);
         assertEquals(ds1, ds2);
     }
 
     @Test
     public void testVerifyDifferentDatasetObjectsForDifferentDescriptions() {
-
-        Dataset ds1 = FusekiConfig.getDataset(dsDesc1, registry);
-        Dataset ds2 = FusekiConfig.getDataset(dsDesc2, registry);
+        DatasetDescriptionMap registry = new DatasetDescriptionMap();
+        DatasetGraph ds1 = FusekiConfig.getDataset(dsDesc1.getModel().getGraph(), dsDesc1.asNode(), registry);
+        DatasetGraph ds2 = FusekiConfig.getDataset(dsDesc2.getModel().getGraph(), dsDesc2.asNode(), registry);
         assertNotEquals(ds1, ds2);
     }
 }

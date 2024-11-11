@@ -44,7 +44,7 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NiceIterator;
 import org.apache.jena.vocabulary.RDF;
 
-/** Graph utilities. See also GraphFactory. */
+/** Graph utilities. */
 
 public class GraphUtils {
 

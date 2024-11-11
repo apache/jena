@@ -108,13 +108,14 @@ public class AssemblerUtils
     }
 
     public static Model readAssemblerFile(String assemblerFile) {
-        Model spec = null ;
+        Model spec = null;
         try {
-            spec = RDFDataMgr.loadModel(assemblerFile) ;
-        } catch (Exception ex)
-        { throw new ARQException("Failed reading assembler description: "+ex.getMessage()) ; }
+            spec = RDFDataMgr.loadModel(assemblerFile);
+        } catch (Exception ex) {
+            throw new ARQException("Failed reading assembler description: " + ex.getMessage());
+        }
         addRegistered(spec);
-        return spec ;
+        return spec;
     }
 
     /** Add any extra information to the model.

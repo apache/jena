@@ -28,6 +28,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServlet;
@@ -57,14 +58,12 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.sparql.util.NotUniqueException;
-import org.apache.jena.sparql.util.graph.GraphUtils;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.G;
+import org.apache.jena.system.RDFDataException;
 import org.apache.jena.web.HttpSC;
 import org.eclipse.jetty.ee10.servlet.DefaultServlet;
 import org.eclipse.jetty.ee10.servlet.FilterHolder;
@@ -796,19 +795,7 @@ public class FusekiServer {
          */
         public Builder parseConfig(Model model) {
             requireNonNull(model, "model");
-            Resource server = FusekiConfig.findServer(model);
-            processConfigServerLevel(server);
-
-            // Process server and services, whether via server ja:services or, if absent, by finding by type.
-
-            // Context is only set, not deleted, in a configuration file.
-            Context settings = new Context();
-            List<DataAccessPoint> x = FusekiConfig.processServerConfiguration(model, settings);
-
-            // Side effect - sets global context.
-            Fuseki.getContext().putAll(settings);
-            // Can further modify the services in the configuration file.
-            x.forEach(dap->addDataAccessPoint(dap));
+            parseConfiguration(model.getGraph());
             configModel = model;
             return this;
         }
@@ -821,8 +808,30 @@ public class FusekiServer {
          * a text index.
          */
         public Builder parseConfig(Graph graph) {
-            return parseConfig(ModelFactory.createModelForGraph(graph));
+            requireNonNull(graph, "graph");
+            parseConfiguration(graph);
+            configModel = ModelFactory.createModelForGraph(graph);
+            return this;
         }
+
+        public void parseConfiguration(Graph graph) {
+            requireNonNull(graph, "graph");
+
+            Node server = FusekiConfig.findServer(graph);
+            processConfigServerLevel(graph, server);
+
+            // Process server and services, whether via server ja:services or, if absent, by finding by type.
+
+            // Context is only set, not deleted, in a configuration file.
+            Context settings = new Context();
+            List<DataAccessPoint> x = FusekiConfig.processServerConfiguration(graph, settings);
+
+            // Side effect - sets global context.
+            Fuseki.getContext().putAll(settings);
+            // Can further modify the services in the configuration file.
+            x.forEach(dap->addDataAccessPoint(dap));
+        }
+
 
         /** Add a {@link DataAccessPoint} as a builder. */
         private Builder addDataAccessPoint(DataAccessPoint dap) {
@@ -852,29 +861,37 @@ public class FusekiServer {
         private void processConfigServerLevel(Resource server) {
             if ( server == null )
                 return;
+            processConfigServerLevel(server.getModel().getGraph(), server.asNode());
+        }
 
-            if ( server.hasProperty(FusekiVocab.pServerContextPath) )
-                contextPath(argString(server, FusekiVocab.pServerContextPath, "/"));
-            enablePing(argBoolean(server, FusekiVocab.pServerPing,  false));
-            enableStats(argBoolean(server, FusekiVocab.pServerStats, false));
-            enableMetrics(argBoolean(server, FusekiVocab.pServerMetrics, false));
-            enableCompact(argBoolean(server, FusekiVocab.pServerCompact, false));
+        private void processConfigServerLevel(Graph config, Node server) {
+            if ( server == null )
+                return;
 
-            processConfAuthentication(server);
-
-            serverAuth = FusekiConfig.allowedUsers(server);
+            if ( G.hasProperty(config, server, FusekiVocabG.pServerContextPath) )
+                contextPath(argString(config, server, FusekiVocabG.pServerContextPath, "/"));
+            enablePing(argBoolean(config, server, FusekiVocabG.pServerPing,  false));
+            enableStats(argBoolean(config, server, FusekiVocabG.pServerStats, false));
+            enableMetrics(argBoolean(config, server, FusekiVocabG.pServerMetrics, false));
+            enableCompact(argBoolean(config, server, FusekiVocabG.pServerCompact, false));
+            processConfAuthentication(config, server);
+            serverAuth = FusekiConfig.allowedUsers(config, server);
         }
 
         /** Process password file, auth and realm settings on the server description. **/
         private void processConfAuthentication(Resource server) {
-            String passwdFile = GraphUtils.getAsStringValue(server, FusekiVocab.pPasswordFile);
+
+        }
+
+        private void processConfAuthentication(Graph config, Node server) {
+            String passwdFile = getAsString(config, server, FusekiVocabG.pPasswordFile);
             if ( passwdFile != null )
                 passwordFile(passwdFile);
-            String realmStr = GraphUtils.getAsStringValue(server, FusekiVocab.pRealm);
+            String realmStr = getAsString(config, server, FusekiVocabG.pRealm);
             if ( realmStr != null )
                 realm(realmStr);
 
-            String authStr = GraphUtils.getAsStringValue(server, FusekiVocab.pAuth);
+            String authStr = getAsString(config, server, FusekiVocabG.pAuth);
             if ( authStr != null ) {
                 AuthScheme authScheme = AuthScheme.scheme(authStr);
                 switch (authScheme) {
@@ -889,39 +906,49 @@ public class FusekiServer {
             }
         }
 
-        private static boolean argBoolean(Resource r, Property p, boolean dftValue) {
-            try { GraphUtils.atmostOneProperty(r, p); }
-            catch (NotUniqueException ex) {
-                throw new FusekiConfigException(ex.getMessage());
-            }
-            Statement stmt = r.getProperty(p);
-            if ( stmt == null )
-                return dftValue;
+        private static boolean argBoolean(Graph graph, Node r, Node p, boolean dftValue) {
             try {
-                return stmt.getBoolean();
-            } catch (JenaException ex) {
-                throw new FusekiConfigException("Not a boolean for '"+p+"' : "+stmt.getObject());
+                Boolean bool = getAsBoolean(graph, r, p);
+                if ( bool == null )
+                    return dftValue;
+                return bool;
+            } catch (RDFDataException ex) {
+                throw new FusekiConfigException("Boolean argument "+r+" "+p+" "+ex.getMessage());
             }
         }
 
-        private static String argString(Resource r, Property p, String dftValue) {
-            try { GraphUtils.atmostOneProperty(r, p); }
-            catch (NotUniqueException ex) {
-                throw new FusekiConfigException(ex.getMessage());
-            }
-            Statement stmt = r.getProperty(p);
-            if ( stmt == null )
-                return dftValue;
+        private static String argString(Graph graph, Node r, Node p, String dftValue) {
             try {
-                Node n = stmt.getObject().asLiteral().asNode();
-                if ( ! G.isString(n) )
-                    throw new FusekiConfigException("Not a string for '"+p+"' : "+stmt.getObject());
-                return n.getLiteralLexicalForm();
-            } catch (JenaException ex) {
-                throw new FusekiConfigException("Not a string for '"+p+"' : "+stmt.getObject());
+                String str = getAsString(graph, r, p);
+                if ( str == null )
+                    return dftValue;
+                return str;
+            } catch (RDFDataException ex) {
+                throw new FusekiConfigException("String argument "+r+" "+p+" "+ex.getMessage());
             }
         }
 
+        /** URI or xsd:string as java string. **/
+        private static String getAsString(Graph config, Node server, Node property) {
+            Node n = G.getZeroOrOneSP(config, server, property);
+            if ( n == null )
+                return null;
+            if ( n.isURI() )
+                return n.getURI();
+            if ( G.isString(n) )
+                return G.asString(n);
+            throw new FusekiConfigException("Not a URI or a string");
+        }
+
+        private static Boolean getAsBoolean(Graph config, Node server, Node property) {
+            Node n = G.getZeroOrOneSP(config, server, property);
+            if ( n == null )
+                return null;
+            if ( G.isBoolean(n) ) {
+                return G.asBoolean(n);
+            }
+            throw new FusekiConfigException("Not a boolean");
+        }
 
         /**
          * Choose the HTTP authentication scheme.

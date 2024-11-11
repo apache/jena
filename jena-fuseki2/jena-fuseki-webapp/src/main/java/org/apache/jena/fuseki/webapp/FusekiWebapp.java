@@ -37,7 +37,6 @@ import org.apache.jena.cmd.CmdException;
 import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
-import org.apache.jena.fuseki.build.DatasetDescriptionMap;
 import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.cmd.FusekiArgs;
 import org.apache.jena.fuseki.mgt.Template;
@@ -282,7 +281,6 @@ public class FusekiWebapp
 
     private static DataAccessPoint configFromTemplate(String templateFile, String datasetPath,
                                                       boolean allowUpdate, Map<String, String> params) {
-        DatasetDescriptionMap registry = new DatasetDescriptionMap();
         // ---- Setup
         if ( params == null ) {
             params = new HashMap<>();
@@ -311,7 +309,7 @@ public class FusekiWebapp
         Lang lang = RDFLanguages.filenameToLang(templateFile, Lang.TTL);
         Model model = RDFParser.fromString(str, lang).base(datasetPath).toModel();
 
-        List<DataAccessPoint> defns = FusekiConfig.servicesAndDatasets(model);
+        List<DataAccessPoint> defns = FusekiConfig.servicesAndDatasets(model.getGraph());
         if ( defns.size() != 1 ) {
             if ( defns.isEmpty() )
                 ServletOps.errorBadRequest("No description of a Fuseki service");

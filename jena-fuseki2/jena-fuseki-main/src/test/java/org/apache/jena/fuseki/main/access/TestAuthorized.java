@@ -23,19 +23,21 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
+
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.build.FusekiConfig;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.RDFDataMgr;
-import org.junit.Test;
 
 public class TestAuthorized {
 
-    static Model model = RDFDataMgr.loadModel("testing/Access/allowedUsers.ttl");
+    private static Graph allowedUsersGraph = RDFDataMgr.loadGraph("testing/Access/allowedUsers.ttl");
 
     @Test public void auth_anon() {
         AuthPolicy auth = Auth.ANY_ANON;
@@ -89,21 +91,25 @@ public class TestAuthorized {
         assertFalse(auth.isAllowed("user3"));
     }
 
+    private static Node node(String uri) {
+        return NodeFactory.createURI(uri);
+    }
+
     @Test public void auth_parse_no_info_1() {
-        Resource r = model.createResource("http://example/notInData");
-        AuthPolicy auth = FusekiConfig.allowedUsers(r);
+        Node r = node("<http://example/notInData>");
+        AuthPolicy auth = FusekiConfig.allowedUsers(allowedUsersGraph, r);
         assertNull(auth);
     }
 
     @Test public void auth_parse_no_info_2() {
-        Resource r = model.createResource("http://example/none");
-        AuthPolicy auth = FusekiConfig.allowedUsers(r);
+        Node r = node("http://example/none");
+        AuthPolicy auth = FusekiConfig.allowedUsers(allowedUsersGraph, r);
         assertNull(auth);
     }
 
     @Test public void auth_parse_1() {
-        Resource r = model.createResource("http://example/r1");
-        AuthPolicy auth = FusekiConfig.allowedUsers(r);
+        Node r = node("http://example/r1");
+        AuthPolicy auth = FusekiConfig.allowedUsers(allowedUsersGraph, r);
         assertNotNull(auth);
         assertFalse(auth.isAllowed(null));
         assertTrue(auth.isAllowed("user1"));
@@ -112,8 +118,8 @@ public class TestAuthorized {
     }
 
     @Test public void auth_parse_2() {
-        Resource r = model.createResource("http://example/r2");
-        AuthPolicy auth = FusekiConfig.allowedUsers(r);
+        Node r = node("http://example/r2");
+        AuthPolicy auth = FusekiConfig.allowedUsers(allowedUsersGraph, r);
         assertNotNull(auth);
         assertFalse(auth.isAllowed(null));
         assertTrue(auth.isAllowed("user1"));
@@ -122,8 +128,8 @@ public class TestAuthorized {
     }
 
     @Test public void auth_parse_loggedIn() {
-        Resource r = model.createResource("http://example/rLoggedIn");
-        AuthPolicy auth = FusekiConfig.allowedUsers(r);
+        Node r = node("http://example/rLoggedIn");
+        AuthPolicy auth = FusekiConfig.allowedUsers(allowedUsersGraph, r);
         assertNotNull(auth);
         assertFalse(auth.isAllowed(null));
         assertTrue(auth.isAllowed("user1"));

@@ -19,7 +19,6 @@
 package org.apache.jena.fuseki.build;
 
 import static org.apache.jena.fuseki.build.FusekiPrefixes.PREFIXES;
-import static org.apache.jena.riot.out.NodeFmtLib.displayStr;
 
 import java.lang.reflect.Constructor;
 import java.net.URL;
@@ -34,11 +33,24 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.fuseki.servlets.ActionService;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.query.*;
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.riot.out.NodeFmtLib;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.shared.JenaException;
-import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.QueryExecBuilder;
+import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.util.graph.GNode;
+import org.apache.jena.sparql.util.graph.GraphList;
+import org.apache.jena.system.G;
 import org.apache.jena.vocabulary.RDFS;
 
 /**
@@ -48,72 +60,39 @@ import org.apache.jena.vocabulary.RDFS;
 
     private BuildLib() {}
 
-    // ---- Helper code
-    /*package*/ static ResultSet query(String string, Model m) {
-        return query(string, m, null, null);
+    /*package*/ static RowSet query(String string, Graph graph) {
+        return query(string, graph, null, null);
     }
 
-    /*package*/ static RDFNode queryOne(String string, Model m, String varname) {
-        ResultSet rs = query(string, m);
-        return getExactlyOne(rs, varname);
-    }
-
-    private static RDFNode getExactlyOne(ResultSet rs, String varname) {
-        if ( ! rs.hasNext() )
-            return null;
-        QuerySolution qs = rs.next();
-        if ( rs.hasNext() )
-            return null;
-        return qs.get(varname);
-    }
-
-    /*package*/ static ResultSet query(String string, Dataset ds) {
-        return query(string, ds, null, null);
-    }
-
-    /*package*/ static ResultSet query(String string, Model m, String varName, RDFNode value) {
+    /*package*/ static RowSet query(String string, Graph graph, String varName, Node value) {
         Query query = QueryFactory.create(PREFIXES + string);
-        QuerySolutionMap initValues = null;
+        QueryExecBuilder qExec = QueryExec.graph(graph).query(query);
         if ( varName != null && value != null )
-            initValues = querySolution(varName, value);
-        try ( QueryExecution qExec = QueryExecution.create().query(query).model(m).initialBinding(initValues).build() ) {
-            return ResultSetFactory.copyResults(qExec.execSelect());
-        }
+            qExec.substitution(varName, value);
+        return qExec.build().select().materialize();
     }
 
-    /*package*/ static ResultSet query(String string, Dataset ds, String varName, RDFNode value) {
-        Query query = QueryFactory.create(PREFIXES + string);
-        QuerySolutionMap initValues = null;
-        if ( varName != null && value != null )
-            initValues = querySolution(varName, value);
-        try ( QueryExecution qExec = QueryExecution
-                    .dataset(ds)
-                    .query(query)
-                    .substitution(initValues)
-                    .build() ) {
-            return ResultSetFactory.copyResults(qExec.execSelect());
-        }
+    private static Binding querySubstitution(String varName, Node value) {
+        Var var = Var.alloc(varName);
+        return BindingFactory.binding(var, value);
     }
 
-    private static QuerySolutionMap querySolution(String varName, RDFNode value) {
-        QuerySolutionMap qsm = new QuerySolutionMap();
-        querySolution(qsm, varName, value);
-        return qsm;
+    /*package*/ static Node getOne(Graph graph, Node subject, Node property) {
+        List<Node> x = G.listSP(graph, subject, property);
+        if ( x.isEmpty() )
+            throw new FusekiConfigException("No property '" + BuildLib.displayStr(graph, property) + "' for service " + BuildLib.displayStr(graph, subject));
+        if ( x.size() > 1 )
+            throw new FusekiConfigException("Multiple properties '" + BuildLib.displayStr(graph, property) + "' for service " + BuildLib.displayStr(graph, subject));
+        return x.get(0);
     }
 
-    /*package*/ static QuerySolutionMap querySolution(QuerySolutionMap qsm, String varName, RDFNode value) {
-        qsm.add(varName, value);
-        return qsm;
-    }
-
-    /*package*/ static RDFNode getOne(Resource svc, Property property) {
-        ResultSet rs = BuildLib.query("SELECT * { ?svc <" + property.getURI() + "> ?x}", svc.getModel(), "svc", svc);
-        if ( !rs.hasNext() )
-            throw new FusekiConfigException("No property '" + property + "' for service " + BuildLib.nodeLabel(svc));
-        RDFNode x = rs.next().get("x");
-        if ( rs.hasNext() )
-            throw new FusekiConfigException("Multiple properties '" + property + "' for service " + BuildLib.nodeLabel(svc));
-        return x;
+    /*package*/ static Node getZeroOrOne(Graph graph, Node subject, Node property) {
+        List<Node> x = G.listSP(graph, subject, property);
+        if ( x.isEmpty() )
+            return null;
+        if ( x.size() > 1 )
+            throw new FusekiConfigException("Multiple triples for "+displayStr(graph, subject)+" "+displayStr(graph, property));
+        return x.get(0);
     }
 
     /**
@@ -121,84 +100,80 @@ import org.apache.jena.vocabulary.RDFS;
      * mixture. If the subject/property isn't present, return null, so a caller can tell
      * the difference between "not present" and an empty list value.
      */
-    /*package*/ static Collection<RDFNode> getAll(Resource resource, String property) {
-        ResultSet rs = BuildLib.query("SELECT * { ?subject " + property + " ?x}", resource.getModel(), "subject", resource);
-        if ( ! rs.hasNext() )
+    /*package*/ static Collection<Node> getMultiple(Graph graph, Node resource, Node property) {
+        List<Node> nodes = G.listSP(graph, resource, property);
+        if ( nodes.isEmpty() )
             return null;
-        List<RDFNode> results = new ArrayList<>();
-        rs.forEachRemaining(qs->{
-            RDFNode n = qs.get("x");
-            try {
-                RDFList list = n.as(RDFList.class);
-                results.addAll(list.asJavaList());
-            } catch (JenaException x) {
-                // Not a list.
-                results.add(n);
-            }
+        // For mall lists (one level) - expand by members.
+        List<Node> results = new ArrayList<>();
+
+        nodes.forEach(node->{
+            List<Node> members = listMembers(graph, node);
+            if ( members != null )
+                results.addAll(members);
+            else
+                results.add(node);
         });
         return results;
     }
 
+    private static List<Node> listMembers(Graph graph, Node node) {
+        GNode gnode = new GNode(graph, node);
+        if ( ! GraphList.isListNode(gnode) )
+            return null;
+        List<Node> list = GraphList.members(gnode);
+        return list;
+    }
+
     // Node presentation
-    /*package*/ static String nodeLabel(RDFNode n) {
+
+    /*package*/ static String displayStr(Graph graph, Node n) {
         if ( n == null )
-            return "<null>";
-        if ( n instanceof Resource r)
-            return strForResource(r);
+            return "NULL";
+        if ( graph == null )
+            return NodeFmtLib.str(n, null);
 
-        Literal lit = (Literal)n;
-        return lit.getLexicalForm();
+        PrefixMap prefixMap = Prefixes.adapt(graph);
+        return NodeFmtLib.str(n, null, prefixMap);
     }
 
-    /*package*/ static String strForResource(Resource r) {
-        return strForResource(r, r.getModel());
-    }
+    /*package*/ static String strForResource(Graph graph, Node node) {
+        if ( node == null )
+            return "NULL";
+        if ( G.hasProperty(graph, node, RDFS.Nodes.label) ) {
 
-    /*package*/ static String strForResource(Resource r, PrefixMapping pm) {
-        if ( r == null )
-            return "NULL ";
-        if ( r.hasProperty(RDFS.label) ) {
-            RDFNode n = r.getProperty(RDFS.label).getObject();
-            if ( n instanceof Literal literal )
-                return literal.getString();
+            Node label = G.getOneSP(graph, node, RDFS.Nodes.label);
+            if ( label.isLiteral() )
+                return label.getLiteralLexicalForm();
         }
 
-        if ( r.isAnon() )
+        if ( node.isBlank() )
             return "<<blank node>>";
 
-        if ( pm == null )
-            pm = r.getModel();
-
-        return strForURI(r.getURI(), pm);
+        if ( node.isURI() )
+            return strForURI(graph, node.getURI());
+        throw notSupported(node);
     }
 
-    /*package*/ static String strForURI(String uri, PrefixMapping pm) {
-        if ( pm != null ) {
-            String x = pm.shortForm(uri);
+    private static RuntimeException notSupported(Node node) {
+        return new JenaException("Not supported: "+node);
+    }
 
-            if ( !x.equals(uri) )
+    /*package*/ static String strForURI(Graph graph, String uri) {
+        if ( graph != null ) {
+            PrefixMap prefixMap = Prefixes.adapt(graph);
+            String x = graph.getPrefixMapping().qnameFor(uri);
+            if ( x != null )
                 return x;
         }
         return "<" + uri + ">";
     }
 
-    /*package*/ static RDFNode getZeroOrOne(Resource ep, Property property) {
-        StmtIterator iter = ep.listProperties(property);
-        try {
-            if ( ! iter.hasNext() )
-                return null;
-            RDFNode x = iter.next().getObject();
-            if ( iter.hasNext() )
-                throw new FusekiConfigException("Multiple triples for "+displayStr(ep)+" "+displayStr(property));
-            return x;
-        } finally { iter.close(); }
-    }
-
     /** Load a class (an {@link ActionService}) and create an {@link Operation} for it. */
-    /*package*/ static Pair<Operation, ActionService> loadOperationActionService(RDFNode implementation) {
+    /*package*/ static Pair<Operation, ActionService> loadOperationActionService(Graph graph, Node implementation) {
         String classURI = implementation.isLiteral()
-            ? implementation.asLiteral().getLexicalForm()
-            : ((Resource)implementation).getURI();
+            ? implementation.getLiteralLexicalForm()
+            : implementation.getURI();
         String javaScheme = "java:";
         String fileScheme = "file:";
         String scheme = null;

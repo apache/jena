@@ -21,10 +21,11 @@ package org.apache.jena.fuseki.build;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 import static org.apache.jena.fuseki.build.BuildLib.getZeroOrOne;
-import static org.apache.jena.fuseki.build.BuildLib.nodeLabel;
-import static org.apache.jena.fuseki.server.FusekiVocab.*;
+import static org.apache.jena.fuseki.server.FusekiVocabG.*;
+import static org.apache.jena.fuseki.build.BuildLib.displayStr;
 import static org.apache.jena.riot.RDFLanguages.filenameToLang;
 import static org.apache.jena.riot.RDFParserRegistry.isRegistered;
+import static org.apache.jena.system.G.isResource;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +40,6 @@ import org.apache.jena.assembler.Assembler;
 import org.apache.jena.assembler.JA;
 import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.Pair;
-import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.FusekiException;
@@ -48,10 +48,10 @@ import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.auth.AuthPolicyList;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.ActionService;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.riot.Lang;
@@ -59,9 +59,10 @@ import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.core.assembler.NamedDatasetAssembler;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.util.Context;
-import org.apache.jena.sparql.util.FmtUtils;
-import org.apache.jena.sparql.util.graph.GraphUtils;
+import org.apache.jena.system.G;
 import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 
@@ -112,22 +113,22 @@ public class FusekiConfig {
         return dataServiceBuilder;
     }
 
-    public static void addDataService(DataAccessPointRegistry dataAccessPoints, String name, DataService dataService) {
-        name = DataAccessPoint.canonical(name);
-        if ( dataAccessPoints.isRegistered(name) )
-            throw new FusekiConfigException("Data service name already registered: "+name);
-        DataAccessPoint dap = new DataAccessPoint(name, dataService);
-        dataAccessPoints.register(dap);
-    }
-
-    public static void addDataset(DataAccessPointRegistry dataAccessPoints, String name, DatasetGraph dsg, boolean withUpdate) {
-        name = DataAccessPoint.canonical(name);
-        if ( dataAccessPoints.isRegistered(name) )
-            throw new FusekiConfigException("Data service name already registered: "+name);
-        DataService dataService = buildDataServiceStd(dsg, withUpdate);
-        DataAccessPoint dap = new DataAccessPoint(name, dataService);
-        dataAccessPoints.register(dap);
-    }
+//    private static void addDataService(DataAccessPointRegistry dataAccessPoints, String name, DataService dataService) {
+//        name = DataAccessPoint.canonical(name);
+//        if ( dataAccessPoints.isRegistered(name) )
+//            throw new FusekiConfigException("Data service name already registered: "+name);
+//        DataAccessPoint dap = new DataAccessPoint(name, dataService);
+//        dataAccessPoints.register(dap);
+//    }
+//
+//    public static void addDataset(DataAccessPointRegistry dataAccessPoints, String name, DatasetGraph dsg, boolean withUpdate) {
+//        name = DataAccessPoint.canonical(name);
+//        if ( dataAccessPoints.isRegistered(name) )
+//            throw new FusekiConfigException("Data service name already registered: "+name);
+//        DataService dataService = buildDataServiceStd(dsg, withUpdate);
+//        DataAccessPoint dap = new DataAccessPoint(name, dataService);
+//        dataAccessPoints.register(dap);
+//    }
 
     public static DataService buildDataServiceStd(DatasetGraph dsg, boolean withUpdate) {
         return DataService.newBuilder(dsg)
@@ -140,21 +141,25 @@ public class FusekiConfig {
         dataAccessPoints.remove(name);
     }
 
+    @Deprecated
+    public static AuthPolicy allowedUsers(Resource server) {
+        return allowedUsers(server.getModel().getGraph(), server.asNode());
+    }
+
     /** Get the allowed users on a resource.
      *  Returns null if the resource is null or if there were no settings.
      *
      * @return RequestAuthorization
      */
-    public static AuthPolicy allowedUsers(Resource resource) {
+    public static AuthPolicy allowedUsers(Graph graph, Node resource) {
         if ( resource == null )
             return null;
-        Collection<RDFNode> allowedUsers = BuildLib.getAll(resource, "fu:"+pAllowedUsers.getLocalName());
+        Collection<Node> allowedUsers = BuildLib.getMultiple(graph, resource, pAllowedUsers);
         if ( allowedUsers == null )
             // Indicate no settings.
             return null;
         // Check all values are simple strings
         List<String> bad = allowedUsers.stream()
-            .map(RDFNode::asNode)
             .filter(rn -> ! Util.isSimpleString(rn))
             .map(rn->rn.toString())
             .collect(toList());
@@ -164,14 +169,37 @@ public class FusekiConfig {
         }
         // RDFNodes/literals to strings.
         Collection<String> userNames = allowedUsers.stream()
-            .map(RDFNode::asNode)
             .map(Node::getLiteralLexicalForm)
             .collect(toList());
         return Auth.policyAllowSpecific(userNames);
     }
 
     /**
-     * Process a configuration file and return the {@link DataAccessPoint DataAccessPoints};
+     * Process a configuration and return the {@link DataAccessPoint DataAccessPoints};
+     * set the context provided for server-wide settings.
+     *
+     * This bundles together the steps:
+     * <ul>
+     * <li>{@link #findServer}
+     * <li>{@link #parseContext}
+     * <li>{@link #processLoadClass} (legacy)
+     * <li>{@link #servicesAndDatasets}
+     * </ul>
+     */
+    public static List<DataAccessPoint> processServerConfiguration(Graph configuration, Context context) {
+        Node server = findServer(configuration);
+        if ( server != null ) {
+            // XXX Temporary
+            Resource rServer = resource(configuration, server);
+            mergeContext(configuration,server, context);
+            processLoadClass(configuration,server);
+        }
+        // Process services, whether via server ja:services or, if absent, by finding by type.
+        return servicesAndDatasets$(configuration, server);
+    }
+
+    /**
+     * Process a configuration and return the {@link DataAccessPoint DataAccessPoints};
      * set the context provided for server-wide settings.
      *
      * This bundles together the steps:
@@ -183,21 +211,32 @@ public class FusekiConfig {
      * </ul>
      */
     public static List<DataAccessPoint> processServerConfiguration(Model configuration, Context context) {
-        Resource server = findServer(configuration);
-        if ( server != null ) {
-            mergeContext(server, context);
-            processLoadClass(server);
-        }
-        // Process services, whether via server ja:services or, if absent, by finding by type.
-        return servicesAndDatasets$(server, configuration);
+        return processServerConfiguration(configuration.getGraph(), context);
+    }
+
+    // XXX Adapter
+    /*package*/ static Resource resource(Graph graph, Node node) {
+        Model m = ModelFactory.createModelForGraph(graph);
+        RDFNode rNode = m.asRDFNode(node);
+        if ( ! rNode.isResource() )
+            throw new FusekiConfigException("Not a resource: "+node);
+        return rNode.asResource();
+    }
+
+    @Deprecated
+    public static Resource findServer(Model model) {
+        Node server = findServer(model.getGraph());
+        if ( server == null )
+            return null;
+        return resource(model.getGraph(), server);
     }
 
     /* Find the server resource in a configuration file.
      * Returns null if there isn't one.
      * Raises {@link FusekiConfigException} is there are more than one.
      */
-    public static Resource findServer(Model model) {
-        List<Resource> servers = GraphUtils.listResourcesByType(model, FusekiVocab.tServer);
+    public static Node findServer(Graph graph) {
+        List<Node> servers = G.nodesOfTypeAsList(graph, FusekiVocabG.tServer);
         if ( servers.size() == 0 )
             // "No server" is fine.
             return null;
@@ -205,7 +244,7 @@ public class FusekiConfig {
             throw new FusekiConfigException(servers.size()
                                             + " servers found (must be exactly one in a configuration file)");
         // ---- Server
-        Resource server = servers.get(0);
+        Node server = servers.get(0);
         return server;
     }
 
@@ -213,48 +252,51 @@ public class FusekiConfig {
      * Process the resource for {@link Context} settings.
      * Return a new {@link Context}
      */
-    private static Context parseContext(Resource resource) {
+    private static Context parseContext(Graph configuration, Node resource) {
         if ( resource == null )
             return null;
-        return AssemblerUtils.parseContext(resource);
+        Resource r = resource(configuration, resource);
+        return AssemblerUtils.parseContext(r);
     }
 
     /**
      * Process the resource for {@link Context} settings
      * and update an existing {@link Context}.
      */
-    private static void mergeContext(Resource resource, Context context) {
+    private static void mergeContext(Graph configuration, Node resource, Context context) {
         if ( resource == null )
             return ;
-        AssemblerUtils.mergeContext(resource, context);
+        Resource r = resource(configuration, resource);
+        AssemblerUtils.mergeContext(r, context);
     }
 
     /**
      * Process any {@code ja:loadClass}
      */
-    public static void processLoadClass(Resource server) {
+    public static void processLoadClass(Graph configuration, Node server) {
         if ( server == null )
             return;
-        StmtIterator sIter = server.listProperties(JA.loadClass);
-        for (; sIter.hasNext(); ) {
-            Statement s = sIter.nextStatement();
-            RDFNode rn = s.getObject();
+        List<Node> x = G.listSP(configuration, server, JA.loadClass.asNode());
+
+        for ( Node rn : x ) {
             String className = null;
-            if ( rn instanceof Resource res ) {
-                String uri = res.getURI();
-                if ( uri == null ) {
-                    log.warn("Blank node for class to load");
-                    continue;
-                }
+            if ( rn.isBlank() ) {
+                log.warn("Blank node for class to load");
+                continue;
+            }
+            if ( rn.isURI() ) {
+                String uri = rn.getURI();
                 String javaScheme = "java:";
                 if ( !uri.startsWith(javaScheme) ) {
                     log.warn("Class to load is not 'java:': " + uri);
                     continue;
                 }
                 className = uri.substring(javaScheme.length());
-            }
-            if ( rn instanceof Literal lit)
-                className = lit.getLexicalForm();
+            } else if ( G.isString(rn) )
+                className = rn.getLiteralLexicalForm();
+
+            if ( className == null )
+                throw new FusekiConfigException("Not a class name: "+displayStr(configuration, rn));
             loadAndInit(className);
         }
     }
@@ -264,40 +306,39 @@ public class FusekiConfig {
      * It looks {@code fuseki:services ( .... )} then, if not found, all {@code rtdf:type fuseki:services}.
      * @see #processServerConfiguration
      */
+    public static List<DataAccessPoint> servicesAndDatasets(Graph graph) {
+        Node server = findServer(graph);
+        return servicesAndDatasets$(graph, server);
+    }
+
+    @Deprecated
     public static List<DataAccessPoint> servicesAndDatasets(Model model) {
-        Resource server = findServer(model);
-        return servicesAndDatasets$(server, model);
+        return servicesAndDatasets(model.getGraph());
     }
 
-    /** Find and process datasets and services in a configuration file
-     * starting from {@code server} which can have a {@code fuseki:services ( .... )}
-     * but, if not found, all {@code rdf:type fuseki:services} are processed.
-     */
-    private
-    /*public*/ static List<DataAccessPoint> servicesAndDatasets_notUsed(Resource server) {
-        Objects.requireNonNull(server);
-        return servicesAndDatasets$(server, server.getModel());
-    }
-
-    private static List<DataAccessPoint> servicesAndDatasets$(Resource server, Model model) {
+    private static List<DataAccessPoint> servicesAndDatasets$(Graph configuration, Node server) {
         DatasetDescriptionMap dsDescMap = new DatasetDescriptionMap();
         NamedDatasetAssembler.sharedDatasetPool.clear();
         // ---- Services
         // Server to services.
-        ResultSet rs = BuildLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", model, "s", server);
+        RowSet rs = BuildLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", configuration, "s", server);
+
+        List<Node> services = rs.stream().map(b->b.get("service")).toList();
+
         List<DataAccessPoint> accessPoints = new ArrayList<>();
 
         // If none, look for services by type.
         if ( ! rs.hasNext() )
             // No "fu:services ( .... )" so try looking for services directly.
             // This means Fuseki2, service configuration files (no server section) work for --conf.
-            rs = BuildLib.query("SELECT ?service { ?service a fu:Service }", model);
+            rs = BuildLib.query("SELECT ?service { ?service a fu:Service }", configuration);
 
         // rs is a result set of services to process.
         for (; rs.hasNext(); ) {
-            QuerySolution soln = rs.next();
-            Resource svc = soln.getResource("service");
-            DataAccessPoint acc = buildDataAccessPoint(svc, dsDescMap);
+            Binding soln = rs.next();
+            Node svc = soln.get("service");
+
+            DataAccessPoint acc = buildDataAccessPoint(configuration, svc, dsDescMap);
             if ( acc != null )
                 accessPoints.add(acc);
         }
@@ -350,7 +391,7 @@ public class FusekiConfig {
                 DatasetDescriptionMap dsDescMap = new DatasetDescriptionMap();
                 String fn = IRILib.filenameToIRI(p.toString());
                 log.info("Load configuration: "+fn);
-                Model m = readAssemblerFile(fn);
+                Graph m = readAssemblerFile(fn).getGraph();
                 readConfiguration(m, dsDescMap, dataServiceRef);
             }
         } catch (IOException ex) {
@@ -359,53 +400,57 @@ public class FusekiConfig {
         return dataServiceRef;
     }
 
-    /** Read a configuration in a model.
+    /**
+     * Read a configuration in a model.
      * Allow dataset descriptions to be carried over from another place.
      * Add to a list.
      */
-    private static void readConfiguration(Model m, DatasetDescriptionMap dsDescMap, List<DataAccessPoint> dataServiceRef) {
-        List<Resource> services = GraphUtils.listResourcesByType(m, FusekiVocab.fusekiService);
+    private static void readConfiguration(Graph configuration, DatasetDescriptionMap dsDescMap, List<DataAccessPoint> dataServiceRef) {
+        List<Node> services = G.nodesOfTypeAsList(configuration, FusekiVocabG.fusekiService);
 
         if ( services.size() == 0 ) {
             log.error("No services found");
             throw new FusekiConfigException();
         }
 
-        for ( Resource service : services ) {
-            DataAccessPoint acc = buildDataAccessPoint(service, dsDescMap);
+        for ( Node service : services ) {
+            DataAccessPoint acc = buildDataAccessPoint(configuration,service, dsDescMap);
             if ( acc != null )
                 dataServiceRef.add(acc);
         }
     }
 
-    /** Build a DataAccessPoint, including DataService, from the description at Resource svc */
+    @Deprecated
     public static DataAccessPoint buildDataAccessPoint(Resource svc, DatasetDescriptionMap dsDescMap) {
-        RDFNode n = BuildLib.getOne(svc, FusekiVocab.pServiceName);
+        return buildDataAccessPoint(svc.getModel().getGraph(), svc.asNode(), dsDescMap);
+    }
+
+    /** Build a DataAccessPoint, including DataService, from the description at Resource svc */
+    public static DataAccessPoint buildDataAccessPoint(Graph configuration, Node fusekiService, DatasetDescriptionMap dsDescMap) {
+        Node n = BuildLib.getOne(configuration, fusekiService, FusekiVocabG.pServiceName);
         try {
             if ( ! n.isLiteral() )
-                throw new FusekiConfigException("Not a literal for access point name: "+FmtUtils.stringForRDFNode(n));
-            Literal object = n.asLiteral();
+                throw new FusekiConfigException("Not a literal for access point name: "+BuildLib.displayStr(configuration, n));
+            if ( ! Util.isSimpleString(n) )
+                Fuseki.configLog.error(format("Service name '%s' is not a string", BuildLib.strForResource(configuration, n)));
 
-            if ( object.getDatatype() != null && ! object.getDatatype().equals(XSDDatatype.XSDstring) )
-                Fuseki.configLog.error(format("Service name '%s' is not a string", FmtUtils.stringForRDFNode(object)));
-
-            String name = object.getLexicalForm();
+            String name = n.getLiteralLexicalForm();
             name = DataAccessPoint.canonical(name);
-            AuthPolicy allowedUsers = allowedUsers(svc);
-            DataService dataService = buildDataService(svc, dsDescMap).setAuthPolicy(allowedUsers).build();
+            AuthPolicy allowedUsers = allowedUsers(configuration, fusekiService);
+            DataService dataService = buildDataService(configuration, fusekiService, dsDescMap).setAuthPolicy(allowedUsers).build();
             DataAccessPoint dataAccess = new DataAccessPoint(name, dataService);
             return dataAccess;
         } catch (FusekiException ex) {
-            Fuseki.configLog.error("Skipping: Failed to build service for "+FmtUtils.stringForRDFNode(n));
+            Fuseki.configLog.error("Skipping: Failed to build service for "+BuildLib.displayStr(configuration, n));
             Fuseki.configLog.error("    "+ex.getMessage());
             return null;
         }
     }
 
-    private static DataService.Builder buildDataService(Resource fusekiService, DatasetDescriptionMap dsDescMap) {
-        Resource datasetDesc = (Resource)BuildLib.getOne(fusekiService, FusekiVocab.pDataset);
-        Dataset ds = getDataset(datasetDesc, dsDescMap);
-        DataService.Builder dataService = DataService.newBuilder(ds.asDatasetGraph());
+    private static DataService.Builder buildDataService(Graph configuration, Node fusekiService, DatasetDescriptionMap dsDescMap) {
+        Node datasetDesc = BuildLib.getOne(configuration, fusekiService, FusekiVocabG.pDataset);
+        DatasetGraph dsg = getDataset(configuration, datasetDesc, dsDescMap);
+        DataService.Builder dataService = DataService.newBuilder(dsg);
         Set<Endpoint> endpoints1 = new HashSet<>();
         Set<Endpoint> endpoints2 = new HashSet<>();
 
@@ -413,11 +458,11 @@ public class FusekiConfig {
         //    fuseki:serviceQuery "sparql";
         //or
         //    fuseki:serviceQuery [ fuseki:name "sparql" ; fuseki:allowedUsers (..) ];
-        accEndpointOldStyle(endpoints1, Operation.Query,    fusekiService,  pServiceQueryEP);
-        accEndpointOldStyle(endpoints1, Operation.Update,   fusekiService,  pServiceUpdateEP);
-        //accEndpointOldStyle(endpoints1, Operation.Upload,   fusekiService,  pServiceUploadEP);
-        accEndpointOldStyle(endpoints1, Operation.GSP_R,    fusekiService,  pServiceReadGraphStoreEP);
-        accEndpointOldStyle(endpoints1, Operation.GSP_RW,   fusekiService,  pServiceReadWriteGraphStoreEP);
+        accEndpointOldStyle(endpoints1, Operation.Query,    configuration, fusekiService,  pServiceQueryEP);
+        accEndpointOldStyle(endpoints1, Operation.Update,   configuration, fusekiService,  pServiceUpdateEP);
+        //accEndpointOldStyle(endpoints1, Operation.Upload,   configuration, fusekiService,  pServiceUploadEP);
+        accEndpointOldStyle(endpoints1, Operation.GSP_R,    configuration, fusekiService,  pServiceReadGraphStoreEP);
+        accEndpointOldStyle(endpoints1, Operation.GSP_RW,   configuration, fusekiService,  pServiceReadWriteGraphStoreEP);
 
         // ---- Legacy for old style: a request would also try the dataset (i.e. no endpoint name).
         // If "sparql" then allow /dataset?query=
@@ -435,7 +480,7 @@ public class FusekiConfig {
         //   fuseki:endpoint [ fuseki:operation fuseki:query ; fuseki:name "" ; fuseki:allowedUsers (....) ] ;
         //   and more.
 
-        accFusekiEndpoints(endpoints2, fusekiService, dsDescMap);
+        accFusekiEndpoints(endpoints2, configuration, fusekiService, dsDescMap);
         // This will overwrite old style entries of the same fuseki:name.
         endpoints2.forEach(dataService::addEndpoint);
 
@@ -477,12 +522,12 @@ public class FusekiConfig {
 
     /** Find and parse {@code fuseki:endpoint} descriptions. */
     private
-    static void accFusekiEndpoints(Set<Endpoint> endpoints, Resource fusekiService, DatasetDescriptionMap dsDescMap) {
-        StmtIterator endpointsDesc = fusekiService.listProperties(pEndpoint);
-        endpointsDesc.forEachRemaining(ep-> {
-            if ( ! ep.getObject().isResource() )
-                throw new FusekiConfigException("Literal for fuseki:endpoint: expected blank node or resource: "+FmtUtils.stringForRDFNode(fusekiService));
-            Endpoint endpoint = buildEndpoint(fusekiService, ep.getObject().asResource());
+    static void accFusekiEndpoints(Set<Endpoint> endpoints, Graph configuration, Node fusekiService, DatasetDescriptionMap dsDescMap) {
+        List<Node> endpointsDesc = G.listSP(configuration, fusekiService, pEndpoint);
+        endpointsDesc.forEach(ep-> {
+            if ( ! isResource(ep) )
+                throw new FusekiConfigException("Literal for fuseki:endpoint: expected blank node or resource: "+displayStr(configuration, fusekiService));
+            Endpoint endpoint = buildEndpoint(configuration, fusekiService, ep);
             endpoints.add(endpoint);
         });
     }
@@ -505,51 +550,50 @@ public class FusekiConfig {
      *     ] ;
      * </pre>
      */
-    private static Endpoint buildEndpoint(Resource fusekiService, Resource endpoint) {
+    private static Endpoint buildEndpoint(Graph configuration, Node fusekiService, Node endpoint) {
         // Endpoints are often blank nodes so use fusekiService in error messages.
         // fuseki:operation
-        RDFNode opResource = getZeroOrOne(endpoint, pOperation);
+        Node opRef = BuildLib.getOne(configuration, endpoint, pOperation);
         Operation op = null;
-        if ( opResource != null ) {
-            if ( ! opResource.isResource() || opResource.isAnon() )
-                throw exception("Blank node endpoint operation in service %s", nodeLabel(fusekiService));
-            Node opRef = opResource.asNode();
+        if ( opRef != null ) {
+            if ( G.isBlank(opRef) )
+                throw exception("Blank node endpoint operation in service %s", displayStr(configuration, fusekiService));
             op = Operation.get(opRef);
         }
 
         // fuseki:implementation - checking only, not active.
         if ( op == null ) {
-            RDFNode rImpl = getZeroOrOne(endpoint, pImplementation);
+            Node rImpl = getZeroOrOne(configuration, endpoint, pImplementation);
             if ( rImpl == null )
-                throw exception("No implementation for fuseki:operation '%s' in service %s", nodeLabel(opResource), nodeLabel(fusekiService));
+                throw exception("No implementation for fuseki:operation '%s' in service %s", displayStr(configuration, opRef), displayStr(configuration, fusekiService));
             // Global registry. Replace existing registry.
-            Pair<Operation, ActionService> x = BuildLib.loadOperationActionService(rImpl);
+            Pair<Operation, ActionService> x = BuildLib.loadOperationActionService(configuration, rImpl);
             Operation op2 = x.getLeft();
             ActionService proc = x.getRight();
             if ( op2 == null )
-                throw exception("Failed to load implementation for fuseki:operation '%s' in service %s", nodeLabel(opResource), nodeLabel(fusekiService));
+                throw exception("Failed to load implementation for fuseki:operation '%s' in service %s", displayStr(configuration, opRef), displayStr(configuration, fusekiService));
             op = op2;
             // Using a blank node (!) for the operation means this is safe!
             // OperationRegistry.get().register(op2, proc);
         }
 
         // fuseki:allowedUsers
-        AuthPolicy authPolicy = FusekiConfig.allowedUsers(endpoint);
+        AuthPolicy authPolicy = FusekiConfig.allowedUsers(configuration, endpoint);
 
         // fuseki:name
-        RDFNode epNameR = getZeroOrOne(endpoint, pEndpointName);
-        String epName = null;
-        if ( epNameR == null ) {
+        Node epNameN = getZeroOrOne(configuration, endpoint, pEndpointName);
+        String epName;
+        if ( epNameN == null ) {
 //            // Make required to give "" for dataset, not default to dataset if missing.
 //            throw exception("No service name for endpoint", fusekiService, ep, pServiceName);
             epName = Endpoint.DatasetEP.string;
         } else {
-            if ( ! epNameR.isLiteral() )
+            if ( ! G.isString(epNameN) )
                 throw exception("Not a literal for service name for endpoint", fusekiService, endpoint, pEndpointName);
-            epName = epNameR.asLiteral().getLexicalForm();
+            epName = epNameN.getLiteralLexicalForm();
         }
 
-        Context cxt = parseContext(endpoint);
+        Context cxt = parseContext(configuration, endpoint);
 
         // Per-endpoint context.
         // Could add special names:
@@ -576,33 +620,34 @@ public class FusekiConfig {
     //    fuseki:serviceQuery "sparql";
     //or
     //    fuseki:serviceQuery [ fuseki:name "sparql" ; fuseki:allowedUsers (..) ];
-    private static void accEndpointOldStyle(Collection<Endpoint> endpoints, Operation operation, Resource svc, Property property) {
-        String p = "<"+property.getURI()+">";
-        ResultSet rs = BuildLib.query("SELECT * { ?svc " + p + " ?ep}", svc.getModel(), "svc", svc);
-        for (; rs.hasNext(); ) {
-            QuerySolution soln = rs.next();
-            // No policy yet - set below if one is found.
+    private static void accEndpointOldStyle(Collection<Endpoint> endpoints, Operation operation, Graph configuration, Node svc, Node endpointProperty) {
+
+        List<Node> endPts = G.listSP(configuration, svc, endpointProperty);
+        endPts.forEach(ep->{
             AuthPolicy authPolicy = null;
-            RDFNode ep = soln.get("ep");
             String endpointName = null;
             if ( ep.isLiteral() )
                 // fuseki:serviceQuery "sparql"
-                endpointName = soln.getLiteral("ep").getLexicalForm();
-            else if ( ep.isResource() ) {
-                Resource r = (Resource)ep;
+                endpointName = ep.getLiteralLexicalForm();
+            else if ( isResource(ep) ) {
                 try {
                     // [ fuseki:name ""; fuseki:allowedUsers ( "" "" ) ]
-                    Statement stmt = r.getProperty(FusekiVocab.pEndpointName);
-                    if ( stmt == null )
-                        throw new FusekiConfigException("Expected property <"+FusekiVocab.pEndpointName+"> with <"+property.getURI()+"> for <"+svc+">");
-                    endpointName = stmt.getString();
-                    List<RDFNode> x = GraphUtils.multiValue(r, FusekiVocab.pAllowedUsers);
+
+                    List<Node> named = G.listSP(configuration, ep, FusekiVocabG.pEndpointName);
+                    if ( named.isEmpty() )
+                        throw new FusekiConfigException("Expected property <"+FusekiVocabG.pEndpointName+"> with <"+endpointProperty.getURI()+"> for "+BuildLib.displayStr(configuration, svc));
+                    if ( named.size() > 1 )
+                        throw new FusekiConfigException("Multiple property values for <"+FusekiVocabG.pEndpointName+"> with <"+endpointProperty.getURI()+"> for "+BuildLib.displayStr(configuration, svc));
+                    endpointName = named.get(0).getLiteralLexicalForm();
+                    // XXX Necessary? check
+                    List<Node> x = G.listSP(configuration, ep, FusekiVocabG.pAllowedUsers);
                     if ( x.size() > 1 )
-                        throw new FusekiConfigException("Multiple fuseki:"+FusekiVocab.pAllowedUsers.getLocalName()+" for "+r);
+                        throw new FusekiConfigException("Multiple fuseki:"+FusekiVocabG.pAllowedUsers.getLocalName()+" for "+displayStr(configuration, ep));
+                    // Check
                     if ( ! x.isEmpty() )
-                        authPolicy = allowedUsers(r);
+                        authPolicy = allowedUsers(configuration, ep);
                 } catch(JenaException | ClassCastException ex) {
-                    throw new FusekiConfigException("Failed to parse endpoint: "+r);
+                    throw new FusekiConfigException("Failed to parse endpoint: "+displayStr(configuration, ep));
                 }
             } else {
                 throw new FusekiConfigException("Unrecognized: "+ep);
@@ -612,7 +657,7 @@ public class FusekiConfig {
                 endpointName = null;
             Endpoint endpoint = Endpoint.create(operation, endpointName, authPolicy);
             endpoints.add(endpoint);
-        }
+        });
     }
 
     private static void accEndpoint(Collection<Endpoint> endpoints, Operation operation) {
@@ -630,26 +675,37 @@ public class FusekiConfig {
         endpoints.add(endpoint);
     }
 
+    @Deprecated
     public static Dataset getDataset(Resource datasetDesc, DatasetDescriptionMap dsDescMap) {
+        DatasetGraph dsg = getDataset(datasetDesc.getModel().getGraph(), datasetDesc.asNode(), dsDescMap);
+        return DatasetFactory.wrap(dsg);
+    }
+
+    public static DatasetGraph getDataset(Graph configuration, Node datasetDesc, DatasetDescriptionMap dsDescMap) {
         // check if this one already built
         // This is absolute and does not require a NamedDatasetAssembler and to have a ja:name.
         // ja:name/NamedDatasetAssembler must be used if the service datasets need to
         // wire up sharing of a graph of datasets (not TDB).
 
-        Dataset ds = dsDescMap.get(datasetDesc);
-        if ( ds != null )
-            return ds;
+        DatasetGraph dsg = dsDescMap.get(datasetDesc);
+        if ( dsg != null )
+            return dsg;
 
         // Not seen before.
         // Check if the description is in the model.
-        if ( !datasetDesc.hasProperty(RDF.type) )
-            throw new FusekiConfigException("No rdf:type for dataset " + nodeLabel(datasetDesc));
+        if ( ! G.hasProperty(configuration, datasetDesc, RDF.Nodes.type) )
+            throw new FusekiConfigException("No rdf:type for dataset " + displayStr(configuration, datasetDesc));
 
         // Should have been done already. e.g. ActionDatasets.execPostContainer,
         // AssemblerUtils.readAssemblerFile < FusekiServer.parseConfigFile.
         //AssemblerUtils.addRegistered(datasetDesc.getModel());
-        ds = (Dataset)Assembler.general.open(datasetDesc);
-        dsDescMap.register(datasetDesc, ds);
-        return ds;
+
+        Resource r = resource(configuration, datasetDesc);
+        Dataset ds = (Dataset)Assembler.general.open(r);
+        if ( ds == null )
+            throw new FusekiConfigException("Bad description of a dataset: " + displayStr(configuration, datasetDesc));
+        dsg = ds.asDatasetGraph();
+        dsDescMap.register(datasetDesc, dsg);
+        return dsg;
     }
 }

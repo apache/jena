@@ -41,10 +41,10 @@ import java.util.function.Supplier;
 import static org.apache.jena.graph.Node.ANY;
 
 /**
- * A library of functions for working with {@link Graph}. Internally all
+ * A library of functions for working with {@link Graph graphs}. Internally, all
  * {@link ExtendedIterator ExtendedIterators} used, run to completion or have
  * {@code .close()} called. Any {@link ExtendedIterator ExtendedIterators} returned
- * by functions in this library must be used in the same way
+ * by functions in this library must be used in the same way.
  */
 public class G {
     private G() {}
@@ -91,6 +91,12 @@ public class G {
         if ( ! n.isLiteral() )
             throw new RDFDataException("Not a literal: "+NodeFmtLib.strTTL(n));
         return hasDatatype(n, XSDDatatype.XSDboolean);
+    }
+
+    public static boolean asBoolean(Node n)     {
+        if ( ! isBoolean(n) )
+            throw new RDFDataException("Not a boolean: "+NodeFmtLib.strTTL(n));
+        return Boolean.TRUE.equals(n.getLiteralValue());
     }
 
     /**
@@ -267,7 +273,6 @@ public class G {
      */
     public static boolean hasOnePO(Graph graph, Node predicate, Node object) {
         Objects.requireNonNull(graph, "graph");
-        // Not contains!
         return findUniqueTriple(graph, Node.ANY, predicate, object) != null;
     }
 
@@ -325,8 +330,6 @@ public class G {
         return findZeroOneQuad(dsg, graph, subject, predicate, object);
     }
 
-    // ---- Multiple matches.
-
     /**
      * Get triple if there is exactly one to match the s/p/o; else return null
      * if none or more than one.
@@ -335,6 +338,8 @@ public class G {
         Objects.requireNonNull(dsg, "DatasetGraph");
         return findQuadOrNull(dsg, graph, subject, predicate, object);
     }
+
+    // ---- Multiple matches.
 
     /**
      * {@link ExtendedIterator} of objects where the triple matches for subject and
