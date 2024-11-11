@@ -197,8 +197,7 @@ public class ActionDatasets extends ActionContainerItem {
                     RDFDataMgr.write(outCopy, modelData, Lang.TURTLE);
                 }
 
-                // Need to be in Resource space at this point.
-                DataAccessPoint dataAccessPoint = FusekiConfig.buildDataAccessPoint(subject, registry);
+                DataAccessPoint dataAccessPoint = FusekiConfig.buildDataAccessPoint(subject.getModel().getGraph(), subject.asNode(), registry);
                 if ( dataAccessPoint == null ) {
                     FmtLog.error(action.log, "Failed to build DataAccessPoint: datasetPath = %s; DataAccessPoint name = %s", datasetPath, dataAccessPoint);
                     ServletOps.errorBadRequest("Failed to build DataAccessPoint");

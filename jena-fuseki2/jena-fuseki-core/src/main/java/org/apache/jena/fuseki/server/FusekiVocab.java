@@ -27,7 +27,8 @@ import org.apache.jena.rdf.model.ResourceFactory;
 
 public class FusekiVocab
 {
-    public static String NS = "http://jena.apache.org/fuseki#";
+    // Keep in-step with FusekiVocabG (same constants, but as nodes).
+    public static final String NS = "http://jena.apache.org/fuseki#";
 
     public static final Resource tServer            = resource("Server");
 

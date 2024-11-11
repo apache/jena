@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.build;
+package org.apache.jena.fuseki.build.model;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.rdf.model.Resource;
 
 /**
  * Record of datasets created from descriptions.
@@ -33,20 +33,20 @@ import org.apache.jena.sparql.core.DatasetGraph;
  * corresponds to one dataset object when multiple services refer to the
  * same dataset.
  */
-public class DatasetDescriptionMap {
+class DatasetDescriptionMapM  {
 
-	private Map<Node, DatasetGraph> map = new HashMap<>();
+	private Map<Resource, Dataset> map = new HashMap<>();
 
-	public DatasetDescriptionMap() {}
+	/*package*/ DatasetDescriptionMapM() {}
 
-    public void register(Node node, DatasetGraph ds) {
-        DatasetGraph dsCurrent = map.get(node);
+    public void register(Resource node, Dataset ds) {
+        Dataset dsCurrent = map.get(node);
         if ( dsCurrent != null && ! dsCurrent.equals(ds) )
             Log.warn(this.getClass(), "Replacing registered dataset for "+node);
         map.put(node, ds);
     }
 
-    public DatasetGraph get(Node node) {
+    public Dataset get(Resource node) {
         return map.get(node);
     }
 
