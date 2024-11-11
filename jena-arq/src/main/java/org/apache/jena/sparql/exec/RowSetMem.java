@@ -49,26 +49,9 @@ public class RowSetMem implements RowSetRewindable
      * @param other     The other RowSetMem object
      */
     private RowSetMem(RowSetMem other) {
-        // Should be no need to isolate the rows list.
-        this(other, false);
-    }
-
-    /**
-     * Create an in-memory result set from another one
-     *
-     * @param other
-     *            The other ResultSetMem object
-     * @param takeCopy
-     *            Should we copy the rows?
-     */
-
-    private RowSetMem(RowSetMem other, boolean takeCopy) {
         vars = other.vars;
-        if ( takeCopy )
-            rows = new ArrayList<>(other.rows);
-        else
-            // Share results (not the iterator).
-            rows = other.rows;
+        // Share results (not the iterator).
+        rows = other.rows;
         reset();
     }
 
@@ -80,21 +63,26 @@ public class RowSetMem implements RowSetRewindable
      */
 
     private RowSetMem(RowSet other) {
-        this.rows = new ArrayList<>();
-        other.forEachRemaining(rows::add);
+        if ( other instanceof RowSetMem rsm ) {
+            // See also the RowSetMem(RowSetMem) constructor.
+            // This code is in case there wasn't compile time type information available.
+            rows = rsm.rows;
+            vars = rsm.getResultVars();
+            return;
+        }
+        // Copy necessary.
+        List<Binding> arr = new ArrayList<>();
+        other.forEachRemaining(arr::add);
+        this.rows = arr;
         this.vars = other.getResultVars();
         reset();
     }
 
-    /**
-     * Is there another possibility?
-     */
+    /** Is there another row? */
     @Override
     public boolean hasNext() { return iterator.hasNext() ; }
 
-    /**
-     * Moves onto the next result possibility.
-     */
+    /** Moves onto the next result possibility. */
     @Override
     public Binding next()  { rowNumber++ ; return iterator.next() ; }
 
@@ -109,19 +97,15 @@ public class RowSetMem implements RowSetRewindable
         rowNumber = 0;
     }
 
-    /** Return the "row" number for the current iterator item
-     */
+    /** Return the "row" number for the current iterator item */
     @Override
     public long getRowNumber() { return rowNumber ; }
 
-    /**
-     *  Return the number of rows
-     */
+    /**  Return the number of rows (not the number remaining in an iterator) */
     @Override
     public long size() { return rows.size() ; }
 
-    /** Get the variable names for the projection
-     */
+    /** Get the variable names for the projection */
     @Override
     public List<Var> getResultVars() { return vars ; }
 

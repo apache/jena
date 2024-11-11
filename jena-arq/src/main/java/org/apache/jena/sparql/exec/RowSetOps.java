@@ -19,11 +19,8 @@
 package org.apache.jena.sparql.exec;
 
 import java.io.OutputStream;
-import java.util.Iterator;
 
-import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.ResultSetMgr;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.system.PrefixMap;
@@ -33,9 +30,10 @@ import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.resultset.ResultsWriter;
 
-/** RowSetFormatter - Convenience ways to call the various output formatters.
- *  in various formats.
- *  @see ResultSetMgr
+/** 
+ * RowSetOps - Convenience ways to call the various output formatters.
+ * 
+ * @see ResultSetMgr
  */
 
 public class RowSetOps {
@@ -131,22 +129,4 @@ public class RowSetOps {
     public static void out(OutputStream out, boolean answer) {
         ResultsWriter.create().lang(ResultSetLang.RS_Text).write(out, answer);
     }
-
-    /** Touch every var/value */
-    private static void materialize(QuerySolution qs) {
-        for ( Iterator<String> iter = qs.varNames(); iter.hasNext(); ) {
-            String vn = iter.next();
-            RDFNode n = qs.get(vn);
-        }
-    }
-
-//    public static long count(RowSet rowSet) {
-//        return Iter.count(rowSet);
-//    }
-
-    // ---- SSE
-
-
-    // ---- CSV
-
 }
