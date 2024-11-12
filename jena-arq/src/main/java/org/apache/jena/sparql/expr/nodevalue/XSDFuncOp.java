@@ -567,7 +567,7 @@ public class XSDFuncOp
         String flagsStr = null;
         if ( nvFlags != null )
             flagsStr = checkAndGetStringLiteral("replace", nvFlags).getLiteralLexicalForm();
-        return strReplace(nvStr, RegexJava.makePattern("replace", pat, flagsStr), nvReplacement);
+        return strReplace(nvStr, RegexEngine.makePattern("replace", pat, flagsStr), nvReplacement);
     }
 
     public static NodeValue strReplace(NodeValue nvStr, Pattern pattern, NodeValue nvReplacement) {

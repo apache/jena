@@ -36,7 +36,7 @@ public class E_StrReplace extends ExprFunctionN {
             if ( expr4 != null && expr4.isConstant() && expr4.getConstant().isString() )
                 flags = expr4.getConstant().getString();
             String patternStr = expr2.getConstant().getString();
-            pattern = RegexJava.makePattern("REPLACE", patternStr, flags);
+            pattern = RegexEngine.makePattern("REPLACE", patternStr, flags);
         }
     }
 

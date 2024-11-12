@@ -92,10 +92,10 @@ class RegexParser {
     public void setLocale(Locale locale) {
         try {
             if (locale != null) {
-                this.resources = ResourceBundle.getBundle("org.apache.jena.ext.xerces.impl.xpath.regex.message", locale);
+                this.resources = ResourceBundle.getBundle("org.apache.jena.ext.xerces_regex.message", locale);
             }
             else {
-                this.resources = ResourceBundle.getBundle("org.apache.jena.ext.xerces.impl.xpath.regex.message");
+                this.resources = ResourceBundle.getBundle("org.apache.jena.ext.xerces_regex.message");
             }
         }
         catch (MissingResourceException mre) {

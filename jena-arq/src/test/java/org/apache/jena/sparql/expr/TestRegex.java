@@ -25,7 +25,6 @@ import java.util.Collection;
 
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.sparql.util.Symbol;
 import org.junit.AfterClass;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
@@ -38,12 +37,12 @@ public class TestRegex
 {
     @Parameters(name = "{index}: {0}")
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { { "Java Regex",   ARQ.javaRegex },
-                                              { "Xerces Regex", ARQ.xercesRegex } });
+        return Arrays.asList(new Object[][] { { "Java Regex",   RegexEngine.RegexImpl.Java },
+                                              { "Xerces Regex",  RegexEngine.RegexImpl.Xerces } });
     }
 
-    public TestRegex(String name, Symbol setting) {
-        ARQ.getContext().set(ARQ.regexImpl, setting) ;
+    public TestRegex(String name, RegexEngine.RegexImpl regexImpl) {
+        RegexEngine.setRegexImpl(regexImpl);
     }
 
     private static Object value;
