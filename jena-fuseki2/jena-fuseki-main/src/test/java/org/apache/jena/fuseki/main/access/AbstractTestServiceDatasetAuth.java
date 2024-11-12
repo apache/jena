@@ -23,15 +23,15 @@ import static org.apache.jena.fuseki.main.FusekiTestLib.expectOK;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery401;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery403;
 
+import org.junit.Test;
+
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdfconnection.LibSec;
-import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.sparql.util.QueryExecUtils;
+import org.apache.jena.rdflink.RDFLink;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.RowSetOps;
 import org.apache.jena.web.AuthSetup;
-import org.junit.Test;
 
 /** Tests for a dataset with SPARQL query and update, and no named endpoint services.
  * See {@link TestServiceDataAuthConfig} and {@link TestServiceDataAuthBuild}.
@@ -47,10 +47,10 @@ public abstract class AbstractTestServiceDatasetAuth {
     @Test public void no_auth() {
         // No user -> fails login
         expectQuery401(() -> {
-            try ( RDFConnection conn = RDFConnection.connect(server().datasetURL("/db")) ) {
+            try ( RDFLink conn = RDFLink.connect(server().datasetURL("/db")) ) {
                 //conn.update("INSERT DATA { <x:s> <x:p> <x:o> }");
-                try ( QueryExecution qExec = conn.query("SELECT * { ?s ?p ?o }") ) {
-                    ResultSetFormatter.consume(qExec.execSelect());
+                try ( QueryExec qExec = conn.query("SELECT * { ?s ?p ?o }") ) {
+                    RowSetOps.consume(qExec.select());
                 }
             }
         });
@@ -69,9 +69,9 @@ public abstract class AbstractTestServiceDatasetAuth {
     @Test public void user2_query() {
         expectOK(()->{
             LibSec.withAuth(server().datasetURL("/db"), auth2, conn1 -> {
-                try (RDFConnection conn = conn1) {
-                    try ( QueryExecution qExec = conn.query("SELECT * { ?s ?p ?o }") ) {
-                        ResultSetFormatter.consume(qExec.execSelect());
+                try (RDFLink conn = conn1) {
+                    try ( QueryExec qExec = conn.query("SELECT * { ?s ?p ?o }") ) {
+                        RowSetOps.consume(qExec.select());
                     }
                 }});
         });
@@ -88,9 +88,9 @@ public abstract class AbstractTestServiceDatasetAuth {
     @Test public void user3_query() {
         expectQuery403(()->{
             LibSec.withAuth(server().datasetURL("/db"), auth3, conn1 -> {
-                try (RDFConnection conn = conn1) {
-                    try ( QueryExecution qExec = conn.query("SELECT * { ?s ?p ?o }") ) {
-                        QueryExecUtils.executeQuery(qExec);
+                try (RDFLink conn = conn1) {
+                    try ( QueryExec qExec = conn.query("SELECT * { ?s ?p ?o }") ) {
+                        qExec.select().materialize();
                     }
                 }});
         });

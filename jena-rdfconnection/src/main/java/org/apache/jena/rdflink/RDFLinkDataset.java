@@ -145,7 +145,7 @@ public class RDFLinkDataset implements RDFLink {
     @Override
     public Graph get() {
         checkOpen();
-        return get(null);
+        return get((Node)null);
     }
 
     @Override

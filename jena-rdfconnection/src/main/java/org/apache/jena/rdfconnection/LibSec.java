@@ -27,6 +27,8 @@ import java.util.function.Consumer;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.auth.AuthDomain;
 import org.apache.jena.http.auth.AuthEnv;
+import org.apache.jena.rdflink.RDFLink;
+import org.apache.jena.rdflink.RDFLinkHTTP;
 import org.apache.jena.web.AuthSetup;
 
 public class LibSec {
@@ -45,14 +47,14 @@ public class LibSec {
         return HttpEnv.httpClientBuilder().authenticator(a).build();
     }
 
-    public static void withAuth(String urlStr, AuthSetup auth, Consumer<RDFConnection> action) {
+    public static void withAuth(String urlStr, AuthSetup auth, Consumer<RDFLink> action) {
         // Prefix
         URI urix = URI.create(urlStr);
         //String requestTarget = HttpLib.requestTarget(urix);
         AuthDomain domain = new AuthDomain(urix);
         try {
             AuthEnv.get().registerUsernamePassword(urix, auth.user, auth.password);
-            try ( RDFConnection conn = RDFConnectionRemote.newBuilder().destination(urlStr).build() ) {
+            try ( RDFLink conn = RDFLinkHTTP.newBuilder().destination(urlStr).build() ) {
                 action.accept(conn);
             }
         } finally {

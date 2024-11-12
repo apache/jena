@@ -21,18 +21,19 @@ package org.apache.jena.fuseki.main.access;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectOK;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery401;
 
-import org.apache.jena.atlas.web.WebLib;
-import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.rdfconnection.LibSec;
-import org.apache.jena.rdfconnection.RDFConnection;
-import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
-import org.apache.jena.sparql.util.QueryExecUtils;
-import org.apache.jena.web.AuthSetup;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import org.apache.jena.atlas.web.WebLib;
+import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.rdfconnection.LibSec;
+import org.apache.jena.rdfconnection.RDFConnection;
+import org.apache.jena.rdflink.RDFLink;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.web.AuthSetup;
 
 /**
  * Test a server with a password file and no other auth policies. Should become a
@@ -65,9 +66,9 @@ public class TestPasswdOnly {
     // Bounced by Jetty.
     @Test(expected=QueryExceptionHTTP.class)
     public void passwd_no_user_A() {
-        try (RDFConnection conn = RDFConnection.queryConnect("http://localhost:" + port + "/db")) {
-            try ( QueryExecution qExec = conn.query("ASK{}") ) {
-                QueryExecUtils.executeQuery(qExec);
+        try (RDFLink conn = RDFLink.queryConnect("http://localhost:" + port + "/db")) {
+            try ( QueryExec qExec = conn.query("ASK{}") ) {
+                qExec.ask();
             }
         }
     }

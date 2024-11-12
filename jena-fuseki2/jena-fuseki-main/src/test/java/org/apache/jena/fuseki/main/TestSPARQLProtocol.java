@@ -20,18 +20,25 @@ package org.apache.jena.fuseki.main;
 
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.*;
 import org.apache.jena.riot.WebContent;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.exec.RowSetOps;
 import org.apache.jena.sparql.exec.http.GSP;
-import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
+import org.apache.jena.sparql.exec.http.QueryExecHTTP;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Convert;
-import org.apache.jena.update.*;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.jena.update.UpdateExecution;
+import org.apache.jena.update.UpdateExecutionFactory;
+import org.apache.jena.update.UpdateFactory;
+import org.apache.jena.update.UpdateRequest;
 
 public class TestSPARQLProtocol extends AbstractFusekiTest
 {
@@ -56,9 +63,9 @@ public class TestSPARQLProtocol extends AbstractFusekiTest
     @Test
     public void query_01() {
         Query query = QueryFactory.create("SELECT * { ?s ?p ?o }");
-        try ( QueryExecution qexec = QueryExecution.service(serviceQuery(), query) ) {
-            ResultSet rs = qexec.execSelect();
-            int x = ResultSetFormatter.consume(rs);
+        try ( QueryExec qexec = QueryExec.service(serviceQuery()).query(query).build() ) {
+            RowSet rs = qexec.select();
+            long x = RowSetOps.count(rs);
             assertTrue(x != 0);
         }
     }
@@ -66,13 +73,13 @@ public class TestSPARQLProtocol extends AbstractFusekiTest
     @Test
     public void query_02() {
         Query query = QueryFactory.create("SELECT * { ?s ?p ?o }");
-        QueryExecution qExec = QueryExecutionHTTP.create()
+        QueryExec qExec = QueryExecHTTP.newBuilder()
                 .endpoint(serviceQuery())
                 .query(query)
                 .acceptHeader(WebContent.contentTypeResultsJSON)
                 .build();
-        ResultSet rs = qExec.execSelect();
-        int x = ResultSetFormatter.consume(rs);
+        RowSet rs = qExec.select();
+        long x = RowSetOps.count(rs);
         assertTrue(x != 0);
     }
 

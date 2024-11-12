@@ -28,6 +28,10 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.util.Iterator;
 
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.web.AcceptList;
 import org.apache.jena.atlas.web.MediaType;
@@ -39,20 +43,14 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.*;
-import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.exec.http.GSP;
-import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
-import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
-import org.apache.jena.sparql.exec.http.Service;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.http.*;
 import org.apache.jena.sparql.resultset.ResultSetCompare;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Convert;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 public class TestQuery extends AbstractFusekiTest {
 
@@ -190,8 +188,8 @@ public class TestQuery extends AbstractFusekiTest {
     public void query_construct_02()
     {
         String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
-        try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), query) ) {
-            Model result = qExec.execConstruct();
+        try ( QueryExec qExec = QueryExec.service(serviceQuery()).query(query).build() ) {
+            Graph result = qExec.construct();
             assertEquals(1, result.size());
         }
     }
@@ -199,8 +197,8 @@ public class TestQuery extends AbstractFusekiTest {
     @Test
     public void query_describe_01() {
         String query = "DESCRIBE ?s WHERE {?s ?p ?o}";
-        try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), query) ) {
-            Model result = qExec.execDescribe();
+        try ( QueryExec qExec = QueryExec.service(serviceQuery()).query(query).build() ) {
+            Graph result = qExec.describe();
             assertFalse(result.isEmpty());
         }
     }
@@ -208,8 +206,8 @@ public class TestQuery extends AbstractFusekiTest {
     @Test
     public void query_describe_02() {
         String query = "DESCRIBE <http://example/somethingelse> WHERE { }";
-        try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), query) ) {
-            Model result = qExec.execDescribe();
+        try ( QueryExec qExec = QueryExec.service(serviceQuery()).query(query).build() ) {
+            Graph result = qExec.describe();
             assertTrue(result.isEmpty());
         }
     }
@@ -262,8 +260,8 @@ public class TestQuery extends AbstractFusekiTest {
         String query = "DESCRIBE ?s WHERE {?s ?p ?o}";
         for (MediaType type : rdfOfferTest.entries()) {
             String contentType = type.toHeaderString();
-            QueryExecutionHTTP qExec =
-                    QueryExecutionHTTPBuilder.create()
+            QueryExecHTTP qExec =
+                    QueryExecHTTPBuilder.create()
                     .httpClient(client)
                     .endpoint(serviceQuery())
                     .queryString(query)
@@ -271,10 +269,10 @@ public class TestQuery extends AbstractFusekiTest {
                     .build();
 
             try ( qExec ) {
-                Model m = qExec.execDescribe();
+                Graph graph = qExec.describe();
                 String x = qExec.getHttpResponseContentType();
                 assertEquals(contentType, x);
-                assertFalse(m.isEmpty());
+                assertFalse(graph.isEmpty());
             }
         }
     }
