@@ -18,7 +18,7 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
-import static org.apache.jena.shacl.compact.writer.CompactOut.*;
+import static org.apache.jena.shacl.compact.writer.CompactOut.compactQuotedString;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -31,7 +31,7 @@ import org.apache.jena.shacl.lib.ShLib;
 import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.validation.ReportItem;
 import org.apache.jena.shacl.vocabulary.SHACL;
-import org.apache.jena.sparql.expr.RegexJava;
+import org.apache.jena.sparql.expr.RegexEngine;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 
 /** sh:pattern.
@@ -46,7 +46,7 @@ public class PatternConstraint extends ConstraintTerm {
 
     public PatternConstraint(String pattern, String flagsStr) {
         this.flagsStr = flagsStr;
-        int flags = RegexJava.makeMask(flagsStr);
+        int flags = RegexEngine.makeMask(flagsStr);
         if ( flagsStr != null && flagsStr.contains("q") )
             this.patternString = Pattern.quote(pattern);
         else

@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 import org.apache.jena.graph.Node;
 import org.apache.jena.shex.sys.ReportItem;
 import org.apache.jena.shex.sys.ValidationContext;
-import org.apache.jena.sparql.expr.RegexJava;
+import org.apache.jena.sparql.expr.RegexEngine;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 
 /** sh:pattern.
@@ -44,7 +44,7 @@ public class StrRegexConstraint extends NodeConstraintComponent {
         this.flagsStr = flagsStr;
         // Special quotes
         // Adds "q"
-        int flags = RegexJava.makeMask(flagsStr);
+        int flags = RegexEngine.makeMask(flagsStr);
         if ( flagsStr != null && flagsStr.contains("q") )
             this.patternString = Pattern.quote(pattern);
         else

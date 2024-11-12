@@ -229,18 +229,26 @@ public class ARQ
 
     /**
      * Determine which regular expression system to use.
-     * The value of this context entry should be a string or symbol
-     * of one of the following:
-     *   javaRegex :   use java.util.regex (support features outside the strict SPARQL regex language)
-     *   xercesRegex : use the internal XPath regex engine (more compliant)
+     * The value of this context entry should be a string:
+     * <ul>
+     * <li>"{@code javaRegex}" : use java.util.regex (support features outside the strict SPARQL regex language)</li>
+     * <li>"{@code xercesRegex}" : use the internal XPath regex engine (more compliant; slower)</li>
+     * </ul>
+     * The default is to use the JDK regular expression.
      */
-
     public static final Symbol regexImpl =  SystemARQ.allocSymbol("regexImpl");
 
-
-    /** Symbol to name java.util.regex regular expression engine */
+    /**
+     * Symbol to name java.util.regex regular expression engine
+     * @deprecated Use string "javaRegex"
+     */
+    @Deprecated(forRemoval = true)
     public static final Symbol javaRegex =  SystemARQ.allocSymbol("javaRegex");
-    /** Symbol to name the Xerces-J regular expression engine */
+    /**
+     * Symbol to name the Xerces-J regular expression engine
+     * @deprecated Use string "xercesRegex"
+     */
+    @Deprecated(forRemoval = true)
     public static final Symbol xercesRegex =  SystemARQ.allocSymbol("xercesRegex");
 
     /**
