@@ -167,7 +167,7 @@ public class TestSecurityFilterLocal {
         assertSeen(visible);
     }
 
-    // QueryExecution
+    // Query execution
     private void filter_user(String user, Node ... expected) {
         SecurityContext sCxt = reg.get(user);
         Set<Node> visible = subjects(testdsg, queryAll, sCxt);
@@ -241,7 +241,7 @@ public class TestSecurityFilterLocal {
         assertSeen(visible);
     }
 
-    // QueryExecution w/ Union default graph
+    // Query execution w/ union default graph
     private void filter_union_user(String user, Node ... expected) {
         SecurityContext sCxt = reg.get(user);
         Set<Node> visible;
@@ -289,56 +289,56 @@ public class TestSecurityFilterLocal {
     }
 
 
-    // Graph/Model
-    @Test public void query_model_userNone() {
-        query_model_user(testdsg, dsg->dsg.getDefaultGraph(), "userNone");
+    // Graph
+    @Test public void query_graph_userNone() {
+        query_graph_user(testdsg, dsg->dsg.getDefaultGraph(), "userNone");
     }
 
-    @Test public void query_model_userDft() {
-        query_model_user(testdsg, dsg->dsg.getDefaultGraph(), "userDft", s0);
+    @Test public void query_graph_userDft() {
+        query_graph_user(testdsg, dsg->dsg.getDefaultGraph(), "userDft", s0);
     }
 
-    @Test public void query_model_user0() {
-        query_model_user(testdsg, dsg->dsg.getDefaultGraph(), "user0", s0);
+    @Test public void query_graph_user0() {
+        query_graph_user(testdsg, dsg->dsg.getDefaultGraph(), "user0", s0);
     }
 
-    @Test public void query_model_user1() {
-        query_model_user(testdsg, dsg->dsg.getDefaultGraph(), "user1", s0);
+    @Test public void query_graph_user1() {
+        query_graph_user(testdsg, dsg->dsg.getDefaultGraph(), "user1", s0);
     }
 
-    @Test public void query_model_user2() {
-        query_model_user(testdsg, dsg->dsg.getDefaultGraph(), "user2");
+    @Test public void query_graph_user2() {
+        query_graph_user(testdsg, dsg->dsg.getDefaultGraph(), "user2");
     }
 
-    @Test public void query_model_ng_userNone() {
-        query_model_user(testdsg, dsg->dsg.getGraph(g1), "userNone");
+    @Test public void query_graph_ng_userNone() {
+        query_graph_user(testdsg, dsg->dsg.getGraph(g1), "userNone");
     }
 
-    @Test public void query_model_ng_user11() {
-        query_model_user(testdsg, dsg->dsg.getGraph(g1), "user1", s1);
+    @Test public void query_graph_ng_user11() {
+        query_graph_user(testdsg, dsg->dsg.getGraph(g1), "user1", s1);
     }
 
-    @Test public void query_model_ng_user21() {
-        query_model_user(testdsg, dsg->dsg.getGraph(g1), "user2", s1);
+    @Test public void query_graph_ng_user21() {
+        query_graph_user(testdsg, dsg->dsg.getGraph(g1), "user2", s1);
     }
 
-    @Test public void query_model_ng_user12() {
-        query_model_user(testdsg, dsg->dsg.getGraph(g2), "user1");
+    @Test public void query_graph_ng_user12() {
+        query_graph_user(testdsg, dsg->dsg.getGraph(g2), "user1");
     }
 
-    @Test public void query_model_ng_user22() {
-        query_model_user(testdsg, dsg->dsg.getGraph(g2), "user2", s2);
+    @Test public void query_graph_ng_user22() {
+        query_graph_user(testdsg, dsg->dsg.getGraph(g2), "user2", s2);
     }
 
-    @Test public void query_model_userXa() {
-        query_model_user(testdsg, dsg->dsg.getDefaultGraph(), "userX");
+    @Test public void query_graph_userXa() {
+        query_graph_user(testdsg, dsg->dsg.getDefaultGraph(), "userX");
     }
 
-    @Test public void query_model_userXb() {
-        query_model_user(testdsg, dsg->dsg.getGraph(g1), "userX");
+    @Test public void query_graph_userXb() {
+        query_graph_user(testdsg, dsg->dsg.getGraph(g1), "userX");
     }
 
-    private void query_model_user(DatasetGraph dsg, Function<DatasetGraph, Graph> graphChoice, String user, Node ... expected) {
+    private void query_graph_user(DatasetGraph dsg, Function<DatasetGraph, Graph> graphChoice, String user, Node ... expected) {
         SecurityContext sCxt = reg.get(user);
         Set<Node> visible = subjects(dsg, graphChoice, queryDft, sCxt);
         assertSeen(visible, expected);

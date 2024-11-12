@@ -26,7 +26,6 @@ import java.util.function.Predicate;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.exec.QueryExec;
@@ -99,7 +98,7 @@ public class SecurityContextView implements SecurityContext {
 
     /**
      * Apply a filter suitable for the TDB-backed {@link DatasetGraph}, to the {@link Context} of the
-     * {@link QueryExecution}. This does not modify the {@link DatasetGraph}.
+     * {@link QueryExec}. This does not modify the {@link DatasetGraph}.
      */
     @Override
     public void filterTDB(DatasetGraph dsg, QueryExec qExec) {

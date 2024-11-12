@@ -30,8 +30,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.jena.http.HttpOp;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -42,9 +40,6 @@ public class TestPlainServer {
 
     private static FusekiServer server = null;
     private static int port;
-
-    private static Model data;
-    private static Dataset dataset;
 
     private static String serverURL;
 

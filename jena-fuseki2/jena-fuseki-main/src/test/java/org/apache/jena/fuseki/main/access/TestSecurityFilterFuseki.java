@@ -24,8 +24,14 @@ import static org.junit.Assert.fail;
 
 import java.util.*;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.lib.SetUtils;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.access.DataAccessCtl;
 import org.apache.jena.fuseki.access.SecurityContext;
@@ -33,27 +39,23 @@ import org.apache.jena.fuseki.access.SecurityContextView;
 import org.apache.jena.fuseki.access.SecurityRegistry;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.JettySecurityLib;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.QuerySolution;
-import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdfconnection.RDFConnection;
+import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
+import org.apache.jena.system.G;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.eclipse.jetty.ee10.servlet.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.UserStore;
 import org.eclipse.jetty.util.security.Credential;
 import org.eclipse.jetty.util.security.Password;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class TestSecurityFilterFuseki {
@@ -234,14 +236,10 @@ public class TestSecurityFilterFuseki {
 
     private Set<Node> gsp(String user, String password, String graphName) {
         Set<Node> results = new HashSet<>();
-        try (RDFConnection conn = RDFConnection.connectPW(baseUrl, user, password)) {
-            Model model = (graphName == null) ? conn.fetch() : conn.fetch(graphName);
+        try (RDFLink conn = RDFLink.connectPW(baseUrl, user, password)) {
+            Graph graph = (graphName == null) ? conn.get() : conn.get(graphName);
             // Extract subjects.
-            Set<Node> seen =
-                SetUtils.toSet(
-                    Iter.asStream(model.listSubjects())
-                        .map(r->r.asNode())
-                        );
+            Set<Node> seen = Iter.toSet(G.iterSubjects(graph));
             return seen;
         }
     }

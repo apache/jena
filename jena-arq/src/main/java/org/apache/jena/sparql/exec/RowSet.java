@@ -79,8 +79,8 @@ public interface RowSet extends IteratorCloseable<Binding> {
 
     /**
      * Normally a RowSet is processed until complete which implicitly closes any
-     * underlying resources. This "close" operation exists to explicitly do this in
-     * cases where it does onto automatically. There is no need to close RowSets
+     * underlying resources. This "close" operation exists to explicitly end use of the RowSet
+     * in cases where it does happen. There is no need to close RowSets
      * normally - it is the {@link QueryExec} that should be closed.
      */
     @Override

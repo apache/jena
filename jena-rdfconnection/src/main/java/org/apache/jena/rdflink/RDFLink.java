@@ -25,6 +25,7 @@ import java.util.function.Consumer;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
@@ -429,6 +430,18 @@ public interface RDFLink extends
      */
     @Override
     public Graph get();
+
+    /** Fetch a named graph.
+     * This is SPARQL Graph Store Protocol HTTP GET or equivalent.
+     *
+     * @param graphName URI string for the graph name (null or {@link Quad#defaultGraphIRI} for the default graph)
+     * @return Graph
+     */
+    @Override
+    public default Graph get(String graphName) {
+        Node gn = NodeFactory.createURI(graphName) ;
+        return get(gn);
+    }
 
     /** Fetch a named graph.
      * This is SPARQL Graph Store Protocol HTTP GET or equivalent.

@@ -40,6 +40,14 @@ public interface LinkDatasetGraphAccess extends Transactional, AutoCloseable
      * @param graphName URI string for the graph name (null or {@link Quad#defaultGraphIRI} for the default graph)
      * @return Graph
      */
+    public Graph get(String graphName);
+
+    /** Fetch a named graph.
+     * This is SPARQL Graph Store Protocol HTTP GET or equivalent.
+     *
+     * @param graphName URI string for the graph name (null or {@link Quad#defaultGraphIRI} for the default graph)
+     * @return Graph
+     */
     public Graph get(Node graphName);
 
     /** Fetch the default graph.

@@ -121,7 +121,7 @@ public class AccessCtl_SPARQL_QueryDataset extends SPARQL_QueryDataset {
             return super.createQueryExec(action, query, target);
 
         SecurityContext sCxt = DataAccessLib.getSecurityContext(action, dsg, requestUser);
-        // A QueryExecution for controlled access
+        // A query execution for controlled access
         QueryExec qExec = sCxt.createQueryExec(query, target);
         return qExec;
     }

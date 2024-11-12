@@ -20,22 +20,21 @@ package org.apache.jena.fuseki.main;
 
 import java.util.function.Consumer;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.fuseki.test.HttpTest;
 import org.apache.jena.graph.Graph;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdfconnection.RDFConnection;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.rdflink.RDFLink;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /** Tests for .add("/ds", dsg) */
 public class TestFusekiStdSetup {
@@ -43,22 +42,20 @@ public class TestFusekiStdSetup {
     private static FusekiServer server = null;
     private static int port;
 
-    private static Model data;
-    private static Dataset dataset;
+    private static Graph data;
+    private static DatasetGraph dataset;
 
     private static String URL;
 
     @BeforeClass
     public static void beforeClass() {
-        Graph graph = SSE.parseGraph(StrUtils.strjoinNL
+        data = SSE.parseGraph(StrUtils.strjoinNL
             ("(graph"
             ,"   (:s :p 1)"
             ,")"));
-        data = ModelFactory.createModelForGraph(graph);
 
-        DatasetGraph dsgData = DatasetGraphFactory.create();
-        dsgData.add(SSE.parseQuad("(:g :s :p 2 )"));
-        dataset = DatasetFactory.wrap(dsgData);
+        dataset = DatasetGraphFactory.create();
+        dataset.add(SSE.parseQuad("(:g :s :p 2 )"));
 
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
 
@@ -93,12 +90,12 @@ public class TestFusekiStdSetup {
 
     @Test
     public void stdSetup_endpoint_4() {
-        exec(URL, "/get", conn -> conn.fetch());
+        exec(URL, "/get", conn -> conn.get());
     }
 
     @Test
     public void stdSetup_endpoint_5() {
-        exec(URL, "/data", conn -> conn.fetch());
+        exec(URL, "/data", conn -> conn.get());
     }
 
     @Test
@@ -123,17 +120,18 @@ public class TestFusekiStdSetup {
 
     @Test
     public void stdSetup_dataset_3() {
-        exec(URL, conn -> conn.fetch());
+        exec(URL, conn -> conn.get());
     }
 
     @Test
     public void stdSetup_dataset_4() {
-        exec(URL, conn -> conn.fetchDataset());
+        exec(URL, conn -> conn.getDataset());
     }
 
     @Test
     public void stdSetup_dataset_5() {
-        exec(URL, conn -> conn.put("http://example", data));
+        Node gn = NodeFactory.createURI("http://example");
+        exec(URL, conn -> conn.put(gn, data));
     }
 
     @Test
@@ -158,18 +156,18 @@ public class TestFusekiStdSetup {
     }
 
     @Test public void stdSetup_endpoint_bad_5() {
-        HttpTest.expect404( () -> exec(URL+"2", "", (RDFConnection conn)->conn.queryAsk("ASK{}")) );
+        HttpTest.expect404( () -> exec(URL+"2", "", conn->conn.queryAsk("ASK{}")) );
     }
 
     @Test public void stdSetup_endpoint_bad_6() {
         HttpTest.expect404( () -> exec(URL, "/nonsense", conn -> conn.putDataset(dataset)) );
     }
 
-    private static void exec(String url, Consumer<RDFConnection> action) {
+    private static void exec(String url, Consumer<RDFLink> action) {
         execEx(url, null, action);
     }
 
-    private static void exec(String url, String ep, Consumer<RDFConnection> action) {
+    private static void exec(String url, String ep, Consumer<RDFLink> action) {
         try {
             execEx(url, ep, action);
         } catch (HttpException ex) {
@@ -179,7 +177,7 @@ public class TestFusekiStdSetup {
         }
     }
 
-    private static void execEx(String url, String ep, Consumer<RDFConnection> action) {
+    private static void execEx(String url, String ep, Consumer<RDFLink> action) {
         String dest;
         if ( ep == null || ep.isEmpty() ) {
             dest = url;
@@ -190,7 +188,7 @@ public class TestFusekiStdSetup {
                 ep = ep.substring(1);
             dest = url+ep;
         }
-        try ( RDFConnection conn = RDFConnection.connect(dest) ) {
+        try ( RDFLink conn = RDFLink.connect(dest) ) {
             action.accept(conn);
         }
     }

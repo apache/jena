@@ -306,11 +306,11 @@ public abstract class SPARQLQueryProcessor extends ActionService
      */
     protected abstract void validateQuery(HttpAction action, Query query);
 
-    /** Create the {@link QueryExecution} for this operation.
+    /** Create the {@link QueryExec} for this operation.
      * @param action
      * @param query
      * @param dataset
-     * @return QueryExecution
+     * @return QueryExec
      */
     protected QueryExec createQueryExec(HttpAction action, Query query, DatasetGraph dataset) {
         QueryExecDatasetBuilder builder = QueryExec.newBuilder()
@@ -368,16 +368,16 @@ public abstract class SPARQLQueryProcessor extends ActionService
             return setupTimeout;
     }
 
-    /** Perform the {@link QueryExecution} once.
+    /** Perform the {@link QueryExec} once.
      * @param action
-     * @param queryExecution
-     * @param requestQuery Original query; queryExecution query may have been modified.
+     * @param queryExec
+     * @param requestQuery Original query; the QueryExec query may have been modified.
      * @param queryStringLog Informational string created from the initial query.
      * @return
      */
-    protected QueryExecResult executeQuery(HttpAction action, QueryExec queryExecution, Query requestQuery, String queryStringLog) {
+    protected QueryExecResult executeQuery(HttpAction action, QueryExec queryExec, Query requestQuery, String queryStringLog) {
         if ( requestQuery.isSelectType() ) {
-            RowSet rs = queryExecution.select();
+            RowSet rs = queryExec.select();
 
             // Force some query execution now.
             // If the timeout-first-row goes off, the output stream has not
@@ -393,23 +393,23 @@ public abstract class SPARQLQueryProcessor extends ActionService
         }
 
         if ( requestQuery.isConstructType() ) {
-            DatasetGraph dataset = queryExecution.constructDataset();
+            DatasetGraph dataset = queryExec.constructDataset();
             return new QueryExecResult(dataset);
         }
 
         if ( requestQuery.isDescribeType() ) {
-            Graph graph = queryExecution.describe();
+            Graph graph = queryExec.describe();
             return new QueryExecResult(graph);
         }
 
         if ( requestQuery.isAskType() ) {
-            boolean b = queryExecution.ask();
+            boolean b = queryExec.ask();
             return new QueryExecResult(b);
         }
 
         if ( requestQuery.isJsonType() ) {
-            Iterator<JsonObject> jsonIterator = queryExecution.execJsonItems();
-            //JsonArray jsonArray = queryExecution.execJson();
+            Iterator<JsonObject> jsonIterator = queryExec.execJsonItems();
+            //JsonArray jsonArray = queryExec.execJson();
             return new QueryExecResult(jsonIterator);
         }
 
