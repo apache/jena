@@ -23,6 +23,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 import org.apache.jena.atlas.logging.LogCtl;
@@ -43,17 +46,24 @@ import org.junit.Test;
 public class TestFusekiMainCmdArguments {
 
     private static String level = null;
+    private static File jettyConfigFile;
+    private static String jettyConfigFilename;
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeClass public static void beforeClass() throws IOException {
         // This is not reset by each running server.
         FusekiLogging.setLogging();
         level = LogCtl.getLevel(Fuseki.serverLog);
         LogCtl.setLevel(Fuseki.serverLog, "WARN");
+
+        // Create a fake Jetty config file just to avoid File Not Found error
+        jettyConfigFile = Files.createTempFile("jetty-config",".xml").toFile();
+        jettyConfigFilename = jettyConfigFile.getAbsolutePath();
     }
 
     @AfterClass public static void afterClass() {
         if ( level != null )
             LogCtl.setLevel(Fuseki.serverLog, level);
+        jettyConfigFile.delete();
     }
 
     private FusekiServer server = null;
@@ -272,7 +282,7 @@ public class TestFusekiMainCmdArguments {
     @Test
     public void test_error_jettyConfigFileAndPort() {
         // given
-        List<String> arguments = List.of("--mem", "--jetty=file", "--port=99", "/path");
+        List<String> arguments = List.of("--mem", "--jetty=" + jettyConfigFilename, "--port=99", "/path");
         String expectedMessage = "Cannot specify the port and also provide a Jetty configuration file";
         // when, then
         testForCmdException(arguments, expectedMessage);
@@ -281,7 +291,7 @@ public class TestFusekiMainCmdArguments {
     @Test
     public void test_error_jettyConfigFileAndLocalHost() {
         // given
-        List<String> arguments = List.of("--mem", "--jetty=file", "--localhost", "/path");
+        List<String> arguments = List.of("--mem", "--jetty=" + jettyConfigFilename, "--localhost", "/path");
         String expectedMessage = "Cannot specify 'localhost' and also provide a Jetty configuration file";
         // when, then
         testForCmdException(arguments, expectedMessage);
@@ -357,7 +367,7 @@ public class TestFusekiMainCmdArguments {
     @Test
     public void test_error_passwdFile_withJetty() {
         // given
-        List<String> arguments = List.of("--mem", "--passwd=missing_file", "--jetty=file", "/dataset");
+        List<String> arguments = List.of("--mem", "--passwd=missing_file", "--jetty=" + jettyConfigFilename, "/dataset");
         String expectedMessage = "Can't specify a password file and also provide a Jetty configuration file";
         // when, then
         testForCmdException(arguments, expectedMessage);
@@ -375,7 +385,7 @@ public class TestFusekiMainCmdArguments {
     @Test
     public void test_error_httpsConfig_withJetty() {
         // given
-        List<String> arguments = List.of("--mem", "--httpsPort=12345", "--https=something", "--jetty=file", "/dataset");
+        List<String> arguments = List.of("--mem", "--httpsPort=12345", "--https=something", "--jetty=" + jettyConfigFilename, "/dataset");
         String expectedMessage = "Can't specify \"https\" and also provide a Jetty configuration file";
         // when, then
         testForCmdException(arguments, expectedMessage);
@@ -384,7 +394,7 @@ public class TestFusekiMainCmdArguments {
     @Test
     public void test_error_auth_withJetty() {
         // given
-        List<String> arguments = List.of("--mem", "--auth=12345", "--jetty=file", "/dataset");
+        List<String> arguments = List.of("--mem", "--auth=12345", "--jetty=" + jettyConfigFilename, "/dataset");
         String expectedMessage = "Can't specify authentication and also provide a Jetty configuration file";
         // when, then
         testForCmdException(arguments, expectedMessage);
@@ -440,7 +450,7 @@ public class TestFusekiMainCmdArguments {
     // Build and set the server
     private void buildServer(String... cmdline) {
         if ( server != null )
-            fail("Bad test - a server has aleardy been created");
+            fail("Bad test - a server has already been created");
         server = FusekiMain.build(cmdline);
         server.start();
     }

@@ -21,14 +21,15 @@ package org.apache.jena.fuseki.main.cmds;
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.graph.Graph;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sparql.core.DatasetGraph;
 
 /**
  * Setup details (command line, config file) from command line processing.
- * This is built by {@link FusekiMain#exec}.
- * This is processed by {@link FusekiMain#buildServer}.
+ * This is built by {@link FusekiMain#processModulesAndArgs}.
+ * This is processed by {@link FusekiMain#applyServerArgs}.
  */
-class ServerConfig {
+public class ServerArgs {
     /** Server port. This is the http port when both http and https are active. */
     public int port                     = -1;
     /** Loopback */
@@ -64,7 +65,8 @@ class ServerConfig {
     public Graph rdfsGraph              = null;
 
     // ... or this.
-    public String serverConfig          = null;
+    public String serverConfigFile      = null;
+    public Model serverConfigModel      = null;
 
     /** No registered datasets without it being an error. */
     public boolean empty                = false;
