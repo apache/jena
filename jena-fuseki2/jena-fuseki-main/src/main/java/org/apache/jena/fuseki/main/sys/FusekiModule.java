@@ -56,7 +56,7 @@ import org.apache.jena.rdf.model.Model;
  *     Modules must not rely on a call to {@code serverStopped} happening.</li>
  * </ul>
  */
-public interface FusekiModule extends FusekiBuildCycle, FusekiStartStop, FusekiActionCycle {
+public interface FusekiModule extends FusekiServerArgsCustomiser, FusekiBuildCycle, FusekiStartStop, FusekiActionCycle {
     // Gather all interface method together.
     // Inherited javadoc.
 
@@ -65,9 +65,11 @@ public interface FusekiModule extends FusekiBuildCycle, FusekiStartStop, FusekiA
 
     // ---- Build cycle
 
+    /** {@inheritDoc} */
     @Override
     public default void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) { }
 
+    /** {@inheritDoc} */
     @Override
     public default void configured(FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
         dapRegistry.accessPoints().forEach(accessPoint->configDataAccessPoint(accessPoint, configModel));

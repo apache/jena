@@ -801,6 +801,11 @@ public class FusekiServer {
         }
 
         /**
+         * Return the config model
+         */
+        public Model configModel() { return configModel; }
+
+        /**
          * Configure using a Fuseki services/datasets assembler in a {@link Graph}.
          * <p>
          * The application is responsible for ensuring a correct classpath. For example,
@@ -849,7 +854,7 @@ public class FusekiServer {
         public Builder jettyServerConfig(String filename) {
             requireNonNull(filename, "filename");
             if ( ! FileOps.exists(filename) )
-                throw new FusekiConfigException("File no found: "+filename);
+                throw new FusekiConfigException("File not found: "+filename);
             this.jettyServerConfig = filename;
             return this;
         }

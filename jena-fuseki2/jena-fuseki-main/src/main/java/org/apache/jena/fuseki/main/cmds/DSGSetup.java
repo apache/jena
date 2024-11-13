@@ -33,7 +33,7 @@ import org.apache.jena.tdb2.DatabaseMgr;
      * Given a path name and a preference of TDB1/TDB2 for new databases, return
      * details of the setup to use.
      */
-    /*package*/ static void setupTDB(String directory, boolean useTDB2, ServerConfig serverConfig) {
+    /*package*/ static void setupTDB(String directory, boolean useTDB2, ServerArgs serverArgs) {
         File dir = Path.of(directory).toFile();
         if ( ! dir.exists() )
             throw new CmdException("Directory does not exist: " + directory);
@@ -46,40 +46,40 @@ import org.apache.jena.tdb2.DatabaseMgr;
 
         if ( IO.isEmptyDirectory(directory) ) {
             if ( useTDB2 )
-                setupTDB2(directory, serverConfig);
+                setupTDB2(directory, serverArgs);
             else
-                setupTDB1(directory, serverConfig);
+                setupTDB1(directory, serverArgs);
             return;
         }
 
         // Exists, not empty or does not exist
         if ( TDBOps.isTDB1(directory) ) {
-            setupTDB1(directory, serverConfig);
+            setupTDB1(directory, serverArgs);
             return;
         } else if ( TDBOps.isTDB2(directory) ) {
-            setupTDB2(directory, serverConfig);
+            setupTDB2(directory, serverArgs);
             return;
         } else
             throw new CmdException("Directory not a database: " + directory);
     }
 
-    private static void setupTDB1(String directory, ServerConfig serverConfig) {
-        serverConfig.datasetDescription = "TDB1 dataset: location="+directory;
-        serverConfig.dsg = TDB1Factory.createDatasetGraph(directory);
+    private static void setupTDB1(String directory, ServerArgs serverArgs) {
+        serverArgs.datasetDescription = "TDB1 dataset: location="+directory;
+        serverArgs.dsg = TDB1Factory.createDatasetGraph(directory);
     }
 
-    private static void setupTDB2(String directory, ServerConfig serverConfig) {
-        serverConfig.datasetDescription = "TDB2 dataset: location="+directory;
-        serverConfig.dsg = DatabaseMgr.connectDatasetGraph(directory);
+    private static void setupTDB2(String directory, ServerArgs serverArgs) {
+        serverArgs.datasetDescription = "TDB2 dataset: location="+directory;
+        serverArgs.dsg = DatabaseMgr.connectDatasetGraph(directory);
     }
 
-    public static void setupMemTDB(boolean useTDB2, ServerConfig serverConfig) {
+    public static void setupMemTDB(boolean useTDB2, ServerArgs serverArgs) {
         String tag = useTDB2 ? "TDB2" : "TDB1";
-        serverConfig.datasetDescription = tag+" dataset in-memory";
-        serverConfig.dsg = useTDB2
+        serverArgs.datasetDescription = tag+" dataset in-memory";
+        serverArgs.dsg = useTDB2
             ? DatabaseMgr.createDatasetGraph()
             : TDB1Factory.createDatasetGraph();
-        serverConfig.allowUpdate = true;
+        serverArgs.allowUpdate = true;
 
     }
 }
