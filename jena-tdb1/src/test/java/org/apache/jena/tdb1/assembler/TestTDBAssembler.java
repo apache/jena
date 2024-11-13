@@ -20,126 +20,123 @@ package org.apache.jena.tdb1.assembler;
 
 import static org.junit.Assert.assertTrue;
 
-import org.apache.jena.assembler.JA ;
-import org.apache.jena.assembler.exceptions.AssemblerException ;
-import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
-import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab ;
+import org.apache.jena.assembler.JA;
+import org.apache.jena.assembler.exceptions.AssemblerException;
+import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils;
+import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import org.apache.jena.tdb1.ConfigTest;
 import org.apache.jena.tdb1.store.DatasetGraphTDB;
 import org.apache.jena.tdb1.store.GraphTDB;
 import org.apache.jena.tdb1.sys.TDBInternal;
 import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;
-import org.junit.AfterClass ;
-import org.junit.Before ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-public class TestTDBAssembler
-{
+public class TestTDBAssembler {
     // Can be slow - explicitly closes the dataset.
-    static String dirAssem      = null ;
-    static final String dirDB   = ConfigTest.getTestingDir()+"/DB" ;
+    static String dirAssem = null;
+    static final String dirDB = ConfigTest.getTestingDir() + "/DB";
 
-    @BeforeClass static public void beforeClass()
-    {
-        dirAssem = ConfigTest.getTestingDataRoot()+"/Assembler" ;
-        FileOps.ensureDir(dirDB) ;
+    @BeforeClass
+    static public void beforeClass() {
+        dirAssem = ConfigTest.getTestingDataRoot() + "/Assembler";
+        FileOps.ensureDir(dirDB);
     }
 
-    @Before public void before()
-    {
-        TDBInternal.reset() ;
-        FileOps.clearDirectory(dirDB) ;
+    @Before
+    public void before() {
+        TDBInternal.reset();
+        FileOps.clearDirectory(dirDB);
     }
 
-    @AfterClass static public void afterClass()
-    {
-        TDBInternal.reset() ;
-        FileOps.clearDirectory(dirDB) ;
+    @AfterClass
+    static public void afterClass() {
+        TDBInternal.reset();
+        FileOps.clearDirectory(dirDB);
     }
 
-    @Test public void createDatasetDirect()
-    {
-        createTest(dirAssem+"/tdb-dataset.ttl", VocabTDB1.tDatasetTDB) ;
+    @Test
+    public void createDatasetDirect() {
+        createTest(dirAssem + "/tdb-dataset.ttl", VocabTDB1.tDatasetTDB);
     }
 
-    @Test public void createDatasetEmbed()
-    {
-        createTest(dirAssem+"/tdb-dataset-embed.ttl", DatasetAssemblerVocab.tDataset) ;
+    @Test
+    public void createDatasetEmbed() {
+        createTest(dirAssem + "/tdb-dataset-embed.ttl", DatasetAssemblerVocab.tDataset);
     }
 
-    private void createTest(String filename, Resource type)
-    {
-        Object thing = AssemblerUtils.build(filename, type) ;
-        assertTrue(thing instanceof Dataset) ;
-        Dataset ds = (Dataset)thing ;
-        assertTrue(ds.asDatasetGraph() instanceof DatasetGraphTransaction) ;
-        assertTrue(ds.supportsTransactions()) ;
+    private void createTest(String filename, Resource type) {
+        Object thing = AssemblerUtils.build(filename, type);
+        assertTrue(thing instanceof Dataset);
+        Dataset ds = (Dataset)thing;
+        assertTrue(ds.asDatasetGraph() instanceof DatasetGraphTransaction);
+        assertTrue(ds.supportsTransactions());
         ds.close();
 
     }
 
-    @Test public void createGraphDirect()
-    {
-        testGraph(dirAssem+"/tdb-graph.ttl", false) ;
+    @Test
+    public void createGraphDirect() {
+        testGraph(dirAssem + "/tdb-graph.ttl", false);
     }
 
-    @Test public void createGraphEmbed()
-    {
-        String f = dirAssem+"/tdb-graph-embed.ttl" ;
-        Object thing = null ;
-        try { thing = AssemblerUtils.build( f, JA.Model) ; }
-        catch (AssemblerException e)
-        {
-            e.getCause().printStackTrace(System.err) ;
-            throw e ;
+    @Test
+    public void createGraphEmbed() {
+        String f = dirAssem + "/tdb-graph-embed.ttl";
+        Object thing = null;
+        try {
+            thing = AssemblerUtils.build(f, JA.Model);
+        } catch (AssemblerException e) {
+            e.getCause().printStackTrace(System.err);
+            throw e;
         }
 
-        assertTrue(thing instanceof Model) ;
-        Graph graph = ((Model)thing).getGraph() ;
-        assertTrue(graph instanceof GraphTDB) ;
+        assertTrue(thing instanceof Model);
+        Graph graph = ((Model)thing).getGraph();
+        assertTrue(graph instanceof GraphTDB);
 
-        DatasetGraphTDB ds = ((GraphTDB)graph).getDatasetGraphTDB() ;
+        DatasetGraphTDB ds = ((GraphTDB)graph).getDatasetGraphTDB();
         if ( ds != null )
             ds.close();
     }
 
-    @Test public void createNamedGraph1()
-    {
-        testGraph(dirAssem+"/tdb-named-graph-1.ttl", true) ;
+    @Test
+    public void createNamedGraph1() {
+        testGraph(dirAssem + "/tdb-named-graph-1.ttl", true);
     }
 
-    @Test public void createNamedGraph2()
-    {
-        testGraph(dirAssem+"/tdb-named-graph-2.ttl", true) ;
+    @Test
+    public void createNamedGraph2() {
+        testGraph(dirAssem + "/tdb-named-graph-2.ttl", true);
     }
 
-    @Test public void createNamedGraphViaDataset()
-    {
-        testGraph(dirAssem+"/tdb-graph-ref-dataset.ttl",false) ;
+    @Test
+    public void createNamedGraphViaDataset() {
+        testGraph(dirAssem + "/tdb-graph-ref-dataset.ttl", false);
     }
 
-    private static void testGraph(String assemblerFile, boolean named)
-    {
-        Object thing = null ;
-        try { thing = AssemblerUtils.build( assemblerFile, VocabTDB1.tGraphTDB) ; }
-        catch (AssemblerException e)
-        {
-            e.getCause().printStackTrace(System.err) ;
-            throw e ;
+    private static void testGraph(String assemblerFile, boolean named) {
+        Object thing = null;
+        try {
+            thing = AssemblerUtils.build(assemblerFile, VocabTDB1.tGraphTDB);
+        } catch (AssemblerException e) {
+            e.getCause().printStackTrace(System.err);
+            throw e;
         }
 
-        assertTrue(thing instanceof Model) ;
-        Graph graph = ((Model)thing).getGraph() ;
+        assertTrue(thing instanceof Model);
+        Graph graph = ((Model)thing).getGraph();
 
-        assertTrue(graph instanceof GraphTDB) ;
+        assertTrue(graph instanceof GraphTDB);
 
-        DatasetGraphTDB ds = ((GraphTDB)graph).getDatasetGraphTDB() ;
+        DatasetGraphTDB ds = ((GraphTDB)graph).getDatasetGraphTDB();
         if ( ds != null )
             ds.close();
     }

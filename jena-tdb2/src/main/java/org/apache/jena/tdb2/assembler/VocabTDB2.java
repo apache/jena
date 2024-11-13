@@ -20,8 +20,6 @@ package org.apache.jena.tdb2.assembler;
 
 
 import org.apache.jena.assembler.Assembler;
-import org.apache.jena.assembler.ConstAssembler;
-import org.apache.jena.assembler.JA;
 import org.apache.jena.assembler.assemblers.AssemblerGroup;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
@@ -36,12 +34,21 @@ public class VocabTDB2
     public static String getURI() { return NS; }
 
     // Types
-    public static final Resource tDatasetTDB        = Vocab.type(NS, "DatasetTDB2");
+
+    public static final Resource tDatasetTDB        = Vocab.type(NS, "DatasetTDB");
+    public static final Resource tDatasetTDB2       = Vocab.type(NS, "DatasetTDB2");
+    /** @deprecated Use {@link #tDatasetTDB} */
+    @Deprecated(forRemoval = true)
     public static final Resource tDatasetTDB_alt    = Vocab.type(NS, "DatasetTDB");
-    public static final Resource tGraphTDB          = Vocab.type(NS, "GraphTDB2");
+
+    public static final Resource tGraphTDB          = Vocab.type(NS, "GraphTDB");
+    public static final Resource tGraphTDB2         = Vocab.type(NS, "GraphTDB2");
+    /** @deprecated Use {@link #tGraphTDB} */
+    @Deprecated
     public static final Resource tGraphTDB_alt      = Vocab.type(NS, "GraphTDB");
+
 //    public static final Resource tTupleIndex        = Vocab.type(NS, "TupleIndex");
-    public static final Resource tNodeTable         = Vocab.type(NS, "NodeTable");
+//    public static final Resource tNodeTable         = Vocab.type(NS, "NodeTable");
 
     public static final Property pLocation          = Vocab.property(NS, "location");
     public static final Property pUnionDefaultGraph = Vocab.property(NS, "unionDefaultGraph");
@@ -51,15 +58,16 @@ public class VocabTDB2
     public static final Property pGraphName2        = Vocab.property(NS, "namedGraph");
     public static final Property pDataset           = Vocab.property(NS, "dataset");
 
-    public static final Property pNodes             = Vocab.property(NS, "nodes");
-
-    // Indexes
-    public static final Property pDescription       = Vocab.property(getURI(), "description");
-    public static final Property pFile              = Vocab.property(getURI(), "file");
-
-    // Nodes
-    public static final Property pNodeIndex         = Vocab.property(getURI(), "nodeIndex");
-    public static final Property pNodeData          = Vocab.property(getURI(), "nodeData");
+    // Not implemented.
+//    public static final Property pNodes             = Vocab.property(NS, "nodes");
+//
+//    // Indexes
+//    public static final Property pDescription       = Vocab.property(getURI(), "description");
+//    public static final Property pFile              = Vocab.property(getURI(), "file");
+//
+//    // Nodes
+//    public static final Property pNodeIndex         = Vocab.property(getURI(), "nodeIndex");
+//    public static final Property pNodeData          = Vocab.property(getURI(), "nodeData");
 
     // Setting
     public static final Property pSetting           = Vocab.property(getURI(), "setting");
@@ -79,10 +87,9 @@ public class VocabTDB2
 
     static void registerWith(AssemblerGroup g) {
         // Wire in the assemblers.
-        AssemblerUtils.registerDataset(tDatasetTDB, new DatasetAssemblerTDB2());
-        AssemblerUtils.registerDataset(tDatasetTDB_alt, new DatasetAssemblerTDB2());
-        AssemblerUtils.register(ConstAssembler.general(), tGraphTDB, new TDB2GraphAssembler(), JA.Model);
-        AssemblerUtils.register(ConstAssembler.general(), tGraphTDB_alt, new TDB2GraphAssembler(), JA.Model);
-
+        AssemblerUtils.registerDataset(tDatasetTDB,  new DatasetAssemblerTDB2());
+        AssemblerUtils.registerDataset(tDatasetTDB2, new DatasetAssemblerTDB2());
+        AssemblerUtils.registerModel(tGraphTDB,      new TDB2GraphAssembler());
+        AssemblerUtils.registerModel(tGraphTDB2,     new TDB2GraphAssembler());
     }
 }
