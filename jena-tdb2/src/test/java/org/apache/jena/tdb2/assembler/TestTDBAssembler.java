@@ -63,7 +63,7 @@ public class TestTDBAssembler
 
     @Test
     public void createDatasetDirect() {
-        createTest(dirAssem + "/tdb-dataset.ttl", VocabTDB2.tDatasetTDB);
+        createTest(dirAssem + "/tdb-dataset.ttl", VocabTDB2.tDatasetTDB2);
     }
 
     @Test
@@ -124,7 +124,7 @@ public class TestTDBAssembler
     private static void testGraph(String assemblerFile, boolean named) {
         Object thing = null;
         try {
-            thing = AssemblerUtils.build(assemblerFile, VocabTDB2.tGraphTDB);
+            thing = AssemblerUtils.build(assemblerFile, VocabTDB2.tGraphTDB2);
         }
         catch (AssemblerException e) {
             e.getCause().printStackTrace(System.err);

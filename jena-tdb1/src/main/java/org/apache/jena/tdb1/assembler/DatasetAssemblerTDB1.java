@@ -45,6 +45,8 @@ public class DatasetAssemblerTDB1 extends DatasetAssembler
 
     static { JenaSystem.init(); }
 
+    public DatasetAssemblerTDB1() {}
+
     @Override
     public DatasetGraph createDataset(Assembler a, Resource root) {
         return make(a, root);
