@@ -36,7 +36,6 @@ import org.junit.runners.Suite;
     , TestAdmin.class
     , TestAdminAPI.class
     , TestWebappServerReadOnly.class
-    , TestBuilder.class
     , TestWebappMetrics.class
 })
 

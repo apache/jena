@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki;
+package org.apache.jena.fuseki.server;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -32,7 +32,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb1.assembler.VocabTDB1;
 import org.apache.jena.vocabulary.RDF;
 
-public class TestBuilder {
+public class TestDatasetDescriptionMap {
 
     private static final Model dsModel;
     private static final Resource dsDesc1;
