@@ -27,8 +27,6 @@ import org.apache.jena.shared.WrappedIOException;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
@@ -72,6 +70,6 @@ public class TestRuleLoader  {
     public void load_from_file_with_custom_builtins() {
         BuiltinRegistry br = createBuiltinRegistry();
         List<Rule> rules = Rule.rulesFromURL("testing/reasoners/bugs/custom-builtins.rules", br);
-        assertEquals(List.of("ruleWithBuiltin"), rules.stream().map(Rule::getName).collect(Collectors.toList()));
+        assertEquals(List.of("ruleWithBuiltin"), rules.stream().map(Rule::getName).toList());
     }
 }

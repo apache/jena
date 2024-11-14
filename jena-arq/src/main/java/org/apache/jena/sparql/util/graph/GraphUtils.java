@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.IRILib;
-import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -301,8 +300,7 @@ public class GraphUtils {
         QuerySolutionMap qsm = new QuerySolutionMap();
         qsm.add("ATYPE", atype);
         try(QueryExecution qExec = QueryExecution.model(model).query(q).initialBinding(qsm).build() ) {
-            return ListUtils.toList(
-                    QueryExecUtils.getAll(qExec, "root").stream().map(r->(Resource)r));
+            return QueryExecUtils.getAll(qExec, "root").stream().map(r->(Resource)r).toList();
         }
     }
 

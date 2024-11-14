@@ -39,10 +39,10 @@ public class StreamOps {
         return Iter.asStream(iter);
     }
 
-    /** Stream to {@link List} */
-    public static <X> List<X> toList(Stream<X> stream) {
-        return stream.collect(Collectors.toList());
-    }
+//    /** Stream to {@link List} */
+//    public static <X> List<X> toList(Stream<X> stream) {
+//        return stream.toList();
+//    }
 
     /** Stream to {@link Set} */
     public static <X> Set<X> toSet(Stream<X> stream) {
@@ -69,19 +69,19 @@ public class StreamOps {
 
     public static <X> Stream<X> print(PrintStream out, Stream<X> stream) {
         stream = stream.map(item -> { out.println(item); return item; });
-        return toList(stream).stream();
+        return stream.toList().stream();
     }
 
     public static <X> Stream<X> print(PrintStream out, String leader, Stream<X> stream) {
         String prefix = (leader==null) ? "" : leader;
         stream = stream.map(item -> { out.print(prefix); out.println(item); return item; });
-        return toList(stream).stream();
+        return stream.toList().stream();
     }
 
 
     /** Print immediate, noting empty streams */
     public static <X> Stream<X> debug(Stream<X> stream) {
-        List<X> elts = StreamOps.toList(stream);
+        List<X> elts = stream.toList();
         if ( elts.isEmpty() )
             System.out.println("[empty]");
         else {
@@ -91,5 +91,4 @@ public class StreamOps {
         }
         return elts.stream();
     }
-
 }

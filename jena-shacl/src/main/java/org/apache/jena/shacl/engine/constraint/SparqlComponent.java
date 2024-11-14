@@ -18,8 +18,6 @@
 
 package org.apache.jena.shacl.engine.constraint;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.List;
 import java.util.Objects;
 
@@ -58,11 +56,11 @@ public class SparqlComponent {
         this.requiredParameters = params.stream()
             .filter(param->!param.isOptional())
             .map(param->param.getParameterPath())
-            .collect(toList());
+            .toList();
         this.optionalParameters = params.stream()
             .filter(param->param.isOptional())
             .map(param->param.getParameterPath())
-            .collect(toList());
+            .toList();
         this.reportNode = reportNode;
         this.sparqlString = sparqlString;
         this.query = ShLib.parseQueryString(sparqlString);

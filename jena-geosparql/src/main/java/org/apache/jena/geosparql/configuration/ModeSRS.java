@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
@@ -82,7 +81,7 @@ public class ModeSRS {
             }
         }
 
-        srsList = srsMap.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue())).collect(Collectors.toList());
+        srsList = srsMap.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue())).toList();
     }
 
     public List<Entry<String, Integer>> getSrsList() {

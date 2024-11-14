@@ -65,7 +65,7 @@ public class RunTestRDFXML {
                 .filter(Files::isRegularFile)
                 .map(Path::toString)
                 .filter(fn->fn.endsWith(".rdf"))
-                .collect(Collectors.toList());
+                .toList();
         } catch (IOException ex) {
             throw IOX.exception(ex);
         }
@@ -207,7 +207,7 @@ public class RunTestRDFXML {
                 // If not enabling entity support in StAX
                 //.filter(fn-> ( xmlParserType != XMLParser.StAX || !fn.startsWith("entities") ) )
                 .map(fn->LOCAL_DIR.resolve(fn).toString())
-                .collect(Collectors.toList());
+                .toList();
 
         return testfilesAbs;
     }

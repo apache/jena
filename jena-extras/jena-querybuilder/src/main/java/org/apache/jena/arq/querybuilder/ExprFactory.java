@@ -19,8 +19,6 @@ package org.apache.jena.arq.querybuilder;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.jena.arq.querybuilder.clauses.WhereClause;
 import org.apache.jena.graph.Node;
 import org.apache.jena.shared.PrefixMapping;
@@ -1599,7 +1597,7 @@ public class ExprFactory {
      */
     public final ExprList asList(Object... args) {
         // make sure the list is modifyable
-        List<Expr> lst = Arrays.asList(args).stream().map(arg -> asExpr(arg)).collect(Collectors.toList());
+        List<Expr> lst = Arrays.asList(args).stream().map(arg -> asExpr(arg)).toList();
         return new ExprList(lst);
     }
 

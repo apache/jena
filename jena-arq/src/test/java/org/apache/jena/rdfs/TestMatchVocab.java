@@ -24,16 +24,16 @@ import static org.apache.jena.rdfs.LibTestRDFS.node;
 import java.io.PrintStream;
 import java.util.List;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import org.apache.jena.atlas.lib.ListUtils;
-import org.apache.jena.atlas.lib.StreamOps;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdfs.engine.ConstRDFS;
 import org.apache.jena.rdfs.setup.MatchVocabRDFS;
 import org.apache.jena.riot.RDFDataMgr;
-import org.junit.Assert;
-import org.junit.Test;
 
 /** Test the setup matcher that provides access to a setup as a (s,p,o) access */
 public class TestMatchVocab {
@@ -100,6 +100,6 @@ public class TestMatchVocab {
     }
 
     private List<Triple> match(Node s, Node p, Node o) {
-        return StreamOps.toList(matchVocab.match(s, p, o));
+        return matchVocab.match(s, p, o).toList();
     }
 }

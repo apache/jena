@@ -666,7 +666,7 @@ public class TransformFilterPlacement extends TransformCopy {
 
         if ( false ) {
             // Push everything, always
-            // Left as a safty fall back.
+            // Left as a safety fall back.
             List<Op> x = new ArrayList<>() ;
             input.getElements().forEach(op->{
                 Placement p = transform(exprs, op) ;
@@ -683,7 +683,6 @@ public class TransformFilterPlacement extends TransformCopy {
         // Don't push any expressions that aren't used in any of the arms of the disjunction.
         // This is more about being tidy.
         List<Expr> unplaced = new ArrayList<>(exprs.getList()) ;
-        //List<Placement> x = input.getElements().stream().map(op->transform(exprs, op)).collect(Collectors.toList()) ;
         List<Placement> placements = new ArrayList<>(exprs.size()) ;
         Boolean someChange = Boolean.FALSE ;
         for ( Op op : input.getElements() ) {

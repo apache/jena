@@ -193,7 +193,7 @@ public class HandlerBasedValidationListener implements ValidationListener {
         }
 
         private List<Consumer<ValidationEvent>> getHandlers(Map<Class<? extends ValidationEvent>, List<Consumer<ValidationEvent>>> handlers, List<Class<? extends ValidationEvent>> eventTypes) {
-            return eventTypes.stream().flatMap(t -> handlers.getOrDefault(t, List.of()).stream()).collect(Collectors.toList());
+            return eventTypes.stream().flatMap(t -> handlers.getOrDefault(t, List.of()).stream()).toList();
         }
     }
 

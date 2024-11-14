@@ -20,7 +20,6 @@ package org.apache.jena.sparql.modify;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream ;
 
 import org.apache.jena.atlas.iterator.Iter;
@@ -64,7 +63,7 @@ public class TemplateLib {
         Stream<Quad> remappedStream = quads.stream().map(q->
             !q.isDefaultGraph() ? q : new Quad(dftGraph, q.getSubject(), q.getPredicate(), q.getObject())
         ) ;
-        return remappedStream.collect(Collectors.toList());
+        return remappedStream.toList();
     }
 
     /** Substitute into triple patterns */

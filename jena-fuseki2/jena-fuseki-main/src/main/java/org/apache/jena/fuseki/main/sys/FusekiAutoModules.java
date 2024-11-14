@@ -23,8 +23,6 @@ import java.util.Objects;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.lib.Version;
 import org.apache.jena.atlas.logging.FmtLog;
@@ -207,12 +205,12 @@ public class FusekiAutoModules {
                     .map(mapper)
                     .filter(Objects::nonNull)
                     .sorted((x,y)-> Integer.compare(x.level(), y.level()))
-                    .collect(Collectors.toList());
+                    .toList();
             // Start, and convert to FusekiModules (generics issue)
             List<FusekiModule> fmods = autoMods.stream().map(afmod->{
                 afmod.start();
-                return afmod;
-            }).collect(Collectors.toList());
+                return (FusekiModule)afmod;
+            }).toList();
 
             fmods.forEach(m->{
                 String name = m.name();

@@ -20,7 +20,6 @@ package org.apache.jena.atlas.lib;
 
 import static java.lang.String.format;
 import static java.util.Arrays.stream ;
-import static java.util.stream.Collectors.toList;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -154,7 +153,7 @@ public class StrUtils //extends StringUtils
     }
 
     public static List<Character> toCharList(String str) {
-        return str.codePoints().mapToObj(i -> (char) i).map(Character::valueOf).collect(toList());
+        return str.codePoints().mapToObj(i -> (char) i).map(Character::valueOf).toList();
     }
 
     // ==== Encoding and decoding strings based on a marker character (e.g. %)

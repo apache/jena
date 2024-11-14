@@ -26,8 +26,6 @@ import static org.apache.jena.sparql.graph.NodeConst.nodeRDFType;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.HttpException;
@@ -203,7 +201,7 @@ public class Imports {
      * indicating "any owl:imports".
      */
     public static List<Node> allImports(Node base, Graph graph) {
-        List<Node> imports = iter(G.listSP(graph, base, nodeOwlImports)).filter(Node::isURI).collect(Collectors.toList());
+        List<Node> imports = iter(G.listSP(graph, base, nodeOwlImports)).filter(Node::isURI).toList();
         return imports;
     }
 }

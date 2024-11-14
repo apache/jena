@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter;
@@ -100,8 +99,8 @@ public class TestServiceEnhancerBatcher {
 
         // For each obtained batch extract the list of values
         List<List<Integer>> actualBatchIds = Streams.stream(it)
-                .map(groupedBatch -> groupedBatch.getBatch().getItems().values().stream().map(Entry::getValue).collect(Collectors.toList()))
-                .collect(Collectors.toList());
+                .map(groupedBatch -> groupedBatch.getBatch().getItems().values().stream().map(Entry::getValue).toList())
+                .toList();
 
         Assert.assertEquals(expectedBatchIds, actualBatchIds);
     }

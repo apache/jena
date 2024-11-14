@@ -20,8 +20,6 @@ package org.apache.jena.sparql.algebra ;
 
 import java.util.* ;
 import java.util.function.BiConsumer ;
-import java.util.stream.Collectors ;
-
 import org.apache.jena.atlas.lib.NotImplemented ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -116,12 +114,12 @@ public class OpAsQuery {
             if ( opHaving != null )
                 System.out.printf("having: %s\n", opHaving.getExprs()) ;
             if ( opExtends != null && !opExtends.isEmpty() ) {
-                List<VarExprList> z = opExtends.stream().map(x -> x.getVarExprList()).collect(Collectors.toList()) ;
+                List<VarExprList> z = opExtends.stream().map(x -> x.getVarExprList()).toList() ;
                 System.out.printf("assigns: %s\n", z) ;
             }
             if ( opGroup != null ) {
                 List<ExprAggregator> aggregators = opGroup.getAggregators() ;
-                List<Var> aggVars = aggregators.stream().map(x -> x.getAggVar().asVar()).collect(Collectors.toList()) ;
+                List<Var> aggVars = aggregators.stream().map(x -> x.getAggVar().asVar()).toList() ;
                 System.out.printf("group: %s |-| %s\n", opGroup.getGroupVars(), opGroup.getAggregators()) ;
                 System.out.printf("group agg vars: %s\n", aggVars) ;
             }

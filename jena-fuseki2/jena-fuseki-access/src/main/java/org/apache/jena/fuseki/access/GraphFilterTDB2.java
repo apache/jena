@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.util.Symbol;
@@ -55,12 +54,10 @@ class GraphFilterTDB2 extends GraphFilter<NodeId> {
         List<NodeId> x =
             Txn.calculateRead(dsg, ()->{
                 NodeTable nt = TDBInternal.getDatasetGraphTDB(dsg).getQuadTable().getNodeTupleTable().getNodeTable();
-                return
-                    ListUtils.toList(
-                        namedGraphs.stream()
+                return namedGraphs.stream()
                         .map(n->nt.getNodeIdForNode(n))
                         .filter(Objects::nonNull)
-                        );
+                        .toList();
             });
         return new GraphFilterTDB2(x, matchDefaultGraph);
     }

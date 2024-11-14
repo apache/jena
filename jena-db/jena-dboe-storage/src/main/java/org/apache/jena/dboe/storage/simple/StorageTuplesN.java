@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Match;
@@ -50,7 +49,7 @@ public class StorageTuplesN {
     }
 
     public void removeAll(Tuple<Node> pattern) {
-        List<Tuple<Node>> acc = ListUtils.toList(find(pattern));
+        List<Tuple<Node>> acc = find(pattern).toList();
         acc.stream().forEach(this::delete);
     }
 

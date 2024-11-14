@@ -23,8 +23,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
@@ -155,7 +153,7 @@ public class ShexValidationTest implements Runnable {
             }
             if (this.extensionResults != null) {
                 List<String> output = semActPlugin.getOut();
-                assertEquals(String.format("expected %s lines from SemAct, got %s", String.join("\n", extensionResults.stream().map(p -> p.getRight()).collect(Collectors.toList())), String.join("\n", output)), output.size(), extensionResults.size());
+                assertEquals(String.format("expected %s lines from SemAct, got %s", String.join("\n", extensionResults.stream().map(p -> p.getRight()).toList()), String.join("\n", output)), output.size(), extensionResults.size());
                 for(int i = 0; i < extensionResults.size(); i++) {
                     String expected = extensionResults.get(i).getRight();
                     String actual = output.get(i);
