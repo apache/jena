@@ -18,20 +18,21 @@
 
 package org.apache.jena.mem2;
 
+import static org.apache.jena.testing_framework.GraphHelper.node;
+import static org.apache.jena.testing_framework.GraphHelper.triple;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import org.apache.jena.datatypes.xsd.impl.XSDDouble;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.hamcrest.collection.IsEmptyCollection;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.stream.Collectors;
-
-import static org.apache.jena.testing_framework.GraphHelper.node;
-import static org.apache.jena.testing_framework.GraphHelper.triple;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
 
 public abstract class AbstractGraphMem2Test {
 
@@ -379,7 +380,7 @@ public abstract class AbstractGraphMem2Test {
 
         var t = triple("x R y");
         sut.add(t);
-        var findings = sut.stream(t.getSubject(), t.getPredicate(), t.getObject()).collect(Collectors.toList());
+        var findings = sut.stream(t.getSubject(), t.getPredicate(), t.getObject()).toList();
         assertEquals(1, findings.size());
         assertEquals(findings.get(0), t);
     }
@@ -408,7 +409,7 @@ public abstract class AbstractGraphMem2Test {
         sut.add(cBb);
         sut.add(cBc);
 
-        var findings = sut.stream(null, null, null).collect(Collectors.toList());
+        var findings = sut.stream(null, null, null).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAa, aAb, aAc, bAa, bAb, bAc, cBa, cBb, cBc));
     }
 
@@ -436,16 +437,16 @@ public abstract class AbstractGraphMem2Test {
         sut.add(cBb);
         sut.add(cBc);
 
-        var findings = sut.stream(aAa.getSubject(), null, null).collect(Collectors.toList());
+        var findings = sut.stream(aAa.getSubject(), null, null).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAa, aAb, aAc));
 
-        findings = sut.stream(bAa.getSubject(), null, null).collect(Collectors.toList());
+        findings = sut.stream(bAa.getSubject(), null, null).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(bAa, bAb, bAc));
 
-        findings = sut.stream(cBa.getSubject(), null, null).collect(Collectors.toList());
+        findings = sut.stream(cBa.getSubject(), null, null).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(cBa, cBb, cBc));
 
-        findings = sut.stream(node("d"), null, null).collect(Collectors.toList());
+        findings = sut.stream(node("d"), null, null).toList();
         assertThat(findings, IsEmptyCollection.empty());
     }
 
@@ -473,13 +474,13 @@ public abstract class AbstractGraphMem2Test {
         sut.add(cBb);
         sut.add(cBc);
 
-        var findings = sut.stream(null, aAa.getPredicate(), null).collect(Collectors.toList());
+        var findings = sut.stream(null, aAa.getPredicate(), null).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAa, aAb, aAc, bAa, bAb, bAc));
 
-        findings = sut.stream(null, cBa.getPredicate(), null).collect(Collectors.toList());
+        findings = sut.stream(null, cBa.getPredicate(), null).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(cBa, cBb, cBc));
 
-        findings = sut.stream(null, node("C"), null).collect(Collectors.toList());
+        findings = sut.stream(null, node("C"), null).toList();
         assertThat(findings, IsEmptyCollection.empty());
     }
 
@@ -507,16 +508,16 @@ public abstract class AbstractGraphMem2Test {
         sut.add(cBb);
         sut.add(cBc);
 
-        var findings = sut.stream(null, null, aAa.getObject()).collect(Collectors.toList());
+        var findings = sut.stream(null, null, aAa.getObject()).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAa, bAa, cBa));
 
-        findings = sut.stream(null, null, aAb.getObject()).collect(Collectors.toList());
+        findings = sut.stream(null, null, aAb.getObject()).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAb, bAb, cBb));
 
-        findings = sut.stream(null, null, aAc.getObject()).collect(Collectors.toList());
+        findings = sut.stream(null, null, aAc.getObject()).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAc, bAc, cBc));
 
-        findings = sut.stream(null, null, node("d")).collect(Collectors.toList());
+        findings = sut.stream(null, null, node("d")).toList();
         assertThat(findings, IsEmptyCollection.empty());
     }
 
@@ -544,19 +545,19 @@ public abstract class AbstractGraphMem2Test {
         sut.add(cBb);
         sut.add(cBc);
 
-        var findings = sut.stream(aAa.getSubject(), aAa.getPredicate(), null).collect(Collectors.toList());
+        var findings = sut.stream(aAa.getSubject(), aAa.getPredicate(), null).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAa, aAb, aAc));
 
-        findings = sut.stream(bAa.getSubject(), bAa.getPredicate(), null).collect(Collectors.toList());
+        findings = sut.stream(bAa.getSubject(), bAa.getPredicate(), null).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(bAa, bAb, bAc));
 
-        findings = sut.stream(cBa.getSubject(), cBa.getPredicate(), null).collect(Collectors.toList());
+        findings = sut.stream(cBa.getSubject(), cBa.getPredicate(), null).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(cBa, cBb, cBc));
 
-        findings = sut.stream(node("a"), node("C"), null).collect(Collectors.toList());
+        findings = sut.stream(node("a"), node("C"), null).toList();
         assertThat(findings, IsEmptyCollection.empty());
 
-        findings = sut.stream(node("d"), node("D"), null).collect(Collectors.toList());
+        findings = sut.stream(node("d"), node("D"), null).toList();
         assertThat(findings, IsEmptyCollection.empty());
     }
 
@@ -584,22 +585,22 @@ public abstract class AbstractGraphMem2Test {
         sut.add(cBb);
         sut.add(cBc);
 
-        var findings = sut.stream(aAa.getSubject(), null, aAa.getObject()).collect(Collectors.toList());
+        var findings = sut.stream(aAa.getSubject(), null, aAa.getObject()).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAa));
 
-        findings = sut.stream(bAa.getSubject(), null, bAa.getObject()).collect(Collectors.toList());
+        findings = sut.stream(bAa.getSubject(), null, bAa.getObject()).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(bAa));
 
-        findings = sut.stream(cBa.getSubject(), null, cBa.getObject()).collect(Collectors.toList());
+        findings = sut.stream(cBa.getSubject(), null, cBa.getObject()).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(cBa));
 
-        findings = sut.stream(node("d"), null, node("d")).collect(Collectors.toList());
+        findings = sut.stream(node("d"), null, node("d")).toList();
         assertThat(findings, IsEmptyCollection.empty());
 
-        findings = sut.stream(node("d"), null, node("a")).collect(Collectors.toList());
+        findings = sut.stream(node("d"), null, node("a")).toList();
         assertThat(findings, IsEmptyCollection.empty());
 
-        findings = sut.stream(node("a"), null, node("d")).collect(Collectors.toList());
+        findings = sut.stream(node("a"), null, node("d")).toList();
         assertThat(findings, IsEmptyCollection.empty());
     }
 
@@ -627,22 +628,22 @@ public abstract class AbstractGraphMem2Test {
         sut.add(cBb);
         sut.add(cBc);
 
-        var findings = sut.stream(null, aAa.getPredicate(), aAa.getObject()).collect(Collectors.toList());
+        var findings = sut.stream(null, aAa.getPredicate(), aAa.getObject()).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAa, bAa));
 
-        findings = sut.stream(null, bAa.getPredicate(), bAa.getObject()).collect(Collectors.toList());
+        findings = sut.stream(null, bAa.getPredicate(), bAa.getObject()).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAa, bAa));
 
-        findings = sut.stream(null, cBa.getPredicate(), cBa.getObject()).collect(Collectors.toList());
+        findings = sut.stream(null, cBa.getPredicate(), cBa.getObject()).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(cBa));
 
-        findings = sut.stream(null, node("C"), node("a")).collect(Collectors.toList());
+        findings = sut.stream(null, node("C"), node("a")).toList();
         assertThat(findings, IsEmptyCollection.empty());
 
-        findings = sut.stream(null, node("A"), node("d")).collect(Collectors.toList());
+        findings = sut.stream(null, node("A"), node("d")).toList();
         assertThat(findings, IsEmptyCollection.empty());
 
-        findings = sut.stream(null, node("D"), node("d")).collect(Collectors.toList());
+        findings = sut.stream(null, node("D"), node("d")).toList();
         assertThat(findings, IsEmptyCollection.empty());
     }
 

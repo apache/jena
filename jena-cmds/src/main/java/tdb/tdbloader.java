@@ -23,7 +23,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.query.ARQ;
@@ -127,13 +126,13 @@ public class tdbloader extends CmdTDBGraph {
 
     // Check files exists before starting.
     private void checkFiles(List<String> urls) {
-        List<String> problemFiles = ListUtils.toList(urls.stream().filter(u -> FileUtils.isFile(u))
+        List<String> problemFiles = urls.stream().filter(u -> FileUtils.isFile(u))
                                                          // Only check local files.
                                                          .map(Paths::get)
-                                                         .filter(p -> !Files.exists(p) || !Files.isRegularFile(p /* follow
-                                                                                                                  * links */)
-                                                                      || !Files.isReadable(p))
-                                                         .map(Path::toString));
+                                                         /* follows links */
+                                                         .filter(p -> !Files.exists(p) || !Files.isRegularFile(p) || !Files.isReadable(p))
+                                                         .map(Path::toString)
+                                                         .toList();
         if ( !problemFiles.isEmpty() ) {
             String str = String.join(", ", problemFiles);
             throw new CmdException("Can't read files : " + str);

@@ -33,7 +33,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.apache.jena.graph.Graph;
@@ -298,7 +297,7 @@ public class TestQueryExecutionCancel {
         Random cancelDelayRandom = new Random();
         ExecutorService executorService = Executors.newCachedThreadPool();
         try {
-            List<Integer> list = IntStream.range(0, taskCount).boxed().collect(Collectors.toList());
+            List<Integer> list = IntStream.range(0, taskCount).boxed().toList();
             list
                 .parallelStream()
                 .forEach(i -> {

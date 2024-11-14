@@ -26,7 +26,6 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.atlas.lib.Pair;
-import org.apache.jena.atlas.lib.StreamOps;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -43,7 +42,7 @@ public class LibTestRDFS {
      * Remove triples with a predicate which is RDFS schema vocabulary.
      */
     public static List<Triple> removeRDFS(List<Triple> x) {
-        return StreamOps.toList(x.stream().filter(ConstRDFS.filterNotRDFS));
+        return x.stream().filter(ConstRDFS.filterNotRDFS).toList();
     }
 
     /** Create a Jena-rules backed graph */

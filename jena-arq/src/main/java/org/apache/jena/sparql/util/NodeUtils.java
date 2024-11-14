@@ -20,7 +20,6 @@ package org.apache.jena.sparql.util;
 
 import java.util.*;
 
-import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.atlas.lib.SetUtils;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
@@ -107,9 +106,7 @@ public class NodeUtils
 
     /** Convert strings to a List of {@link Node Nodes}. */
     public static List<Node> convertToListNodes(List<String> namedGraphs) {
-        List<Node> nodes = ListUtils.toList(
-            namedGraphs.stream().map(NodeFactory::createURI)
-            );
+        List<Node> nodes = namedGraphs.stream().map(NodeFactory::createURI).toList();
         return nodes;
     }
 

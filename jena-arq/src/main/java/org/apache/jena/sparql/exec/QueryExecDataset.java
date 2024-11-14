@@ -22,8 +22,6 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
-
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.json.JsonObject;
@@ -169,7 +167,7 @@ public class QueryExecDataset implements QueryExec
 
     private RowSet execute() {
         startQueryIterator();
-        List<Var> vars = query.getResultVars().stream().map(Var::alloc).collect(Collectors.toList());
+        List<Var> vars = query.getResultVars().stream().map(Var::alloc).toList();
         return RowSetStream.create(vars, queryIterator);
     }
 

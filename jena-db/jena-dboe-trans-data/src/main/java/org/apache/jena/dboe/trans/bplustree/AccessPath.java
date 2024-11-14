@@ -20,8 +20,6 @@ package org.apache.jena.dboe.trans.bplustree;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.jena.atlas.lib.InternalErrorException;
 
 public class AccessPath {
@@ -64,7 +62,7 @@ public class AccessPath {
 
     @Override
     public String toString() {
-        return traversed.stream().map(x-> x.toString()).collect(Collectors.toList()).toString();
+        return traversed.stream().map(x-> x.toString()).toList().toString();
     }
 }
 

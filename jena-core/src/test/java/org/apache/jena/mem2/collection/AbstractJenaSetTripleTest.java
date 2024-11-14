@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.apache.jena.testing_framework.GraphHelper.triple;
@@ -174,7 +173,7 @@ public abstract class AbstractJenaSetTripleTest {
         sut.tryAdd(t0);
 
         final var spliterator = sut.keySpliterator();
-        final var list = StreamSupport.stream(spliterator, false).collect(Collectors.toList());
+        final var list = StreamSupport.stream(spliterator, false).toList();
         assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder(t0));
     }
 
@@ -187,7 +186,7 @@ public abstract class AbstractJenaSetTripleTest {
         sut.tryAdd(t1);
 
         final var spliterator = sut.keySpliterator();
-        final var list = StreamSupport.stream(spliterator, false).collect(Collectors.toList());
+        final var list = StreamSupport.stream(spliterator, false).toList();
         assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder(t0, t1));
     }
 
@@ -202,14 +201,14 @@ public abstract class AbstractJenaSetTripleTest {
         sut.tryAdd(t2);
 
         final var spliterator = sut.keySpliterator();
-        final var list = StreamSupport.stream(spliterator, false).collect(Collectors.toList());
+        final var list = StreamSupport.stream(spliterator, false).toList();
         assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder(t0, t1, t2));
     }
 
     @Test
     public void testKeyStreamEmpty() {
         var stream = sut.keyStream();
-        assertThat(stream.collect(Collectors.toList()), IsEmptyCollection.empty());
+        assertThat(stream.toList(), IsEmptyCollection.empty());
     }
 
     @Test
@@ -219,7 +218,7 @@ public abstract class AbstractJenaSetTripleTest {
         sut.tryAdd(t0);
 
         final var stream = sut.keyStream();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(t0));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(t0));
     }
 
     @Test
@@ -231,7 +230,7 @@ public abstract class AbstractJenaSetTripleTest {
         sut.tryAdd(t1);
 
         final var stream = sut.keyStream();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(t0, t1));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(t0, t1));
     }
 
     @Test
@@ -245,13 +244,13 @@ public abstract class AbstractJenaSetTripleTest {
         sut.tryAdd(t2);
 
         final var stream = sut.keyStream();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(t0, t1, t2));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(t0, t1, t2));
     }
 
     @Test
     public void testKeyStreamParallelEmpty() {
         var stream = sut.keyStreamParallel();
-        assertThat(stream.collect(Collectors.toList()), IsEmptyCollection.empty());
+        assertThat(stream.toList(), IsEmptyCollection.empty());
     }
 
     @Test
@@ -261,7 +260,7 @@ public abstract class AbstractJenaSetTripleTest {
         sut.tryAdd(t0);
 
         final var stream = sut.keyStreamParallel();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(t0));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(t0));
     }
 
     @Test
@@ -273,7 +272,7 @@ public abstract class AbstractJenaSetTripleTest {
         sut.tryAdd(t1);
 
         final var stream = sut.keyStreamParallel();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(t0, t1));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(t0, t1));
     }
 
     @Test
@@ -287,7 +286,7 @@ public abstract class AbstractJenaSetTripleTest {
         sut.tryAdd(t2);
 
         final var stream = sut.keyStreamParallel();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(t0, t1, t2));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(t0, t1, t2));
     }
 
     @Test

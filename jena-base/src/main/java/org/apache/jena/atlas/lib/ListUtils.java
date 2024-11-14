@@ -23,8 +23,7 @@ import static java.util.stream.Collectors.joining;
 
 import java.util.ArrayList ;
 import java.util.List ;
-import java.util.stream.Collectors ;
-import java.util.stream.Stream ;
+import java.util.stream.Stream;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.logging.Log ;
@@ -35,7 +34,7 @@ public class ListUtils
     private ListUtils() {}
 
     public static <T> List<T> unique(List<T> list) {
-        return toList(list.stream().distinct());
+        return list.stream().distinct().toList();
     }
 
     public static List<Integer> asList(int...values) {
@@ -51,9 +50,10 @@ public class ListUtils
         return list.get(list.size()-1);
     }
 
-    // This is commonly needed
+    /** @deprecated Call {@link Stream#toList} */
+    @Deprecated(forRemoval = true)
     public static <T> List<T> toList(Stream<T> stream) {
-        return stream.collect(Collectors.toList()) ;
+        return stream.toList() ;
     }
 
     public static <T> String str(T[] array) {

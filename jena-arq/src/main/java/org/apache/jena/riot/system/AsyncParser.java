@@ -28,8 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 import org.apache.jena.atlas.iterator.IteratorCloseable;
 import org.apache.jena.atlas.iterator.IteratorSlotted;
 import org.apache.jena.atlas.lib.InternalErrorException;
@@ -189,7 +187,7 @@ public class AsyncParser {
     private static List<RDFParserBuilder> urlsToSource(List<String> filesOrURLs) {
         return filesOrURLs.stream().map(
                     uriOrFile -> RDFParser.source(uriOrFile).errorHandler(dftErrorHandler))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     /** Create a source object from the given arguments that is suitable for use with

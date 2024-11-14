@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.apache.jena.testing_framework.GraphHelper.node;
@@ -305,7 +304,7 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(n0, null);
 
         final var spliterator = sut.keySpliterator();
-        final var list = StreamSupport.stream(spliterator, false).collect(Collectors.toList());
+        final var list = StreamSupport.stream(spliterator, false).toList();
         assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder(n0));
     }
 
@@ -314,7 +313,7 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(node("s"), 1);
 
         final var spliterator = sut.valueSpliterator();
-        final var list = StreamSupport.stream(spliterator, false).collect(Collectors.toList());
+        final var list = StreamSupport.stream(spliterator, false).toList();
         assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder(1));
     }
 
@@ -327,7 +326,7 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(n1, null);
 
         final var spliterator = sut.keySpliterator();
-        final var list = StreamSupport.stream(spliterator, false).collect(Collectors.toList());
+        final var list = StreamSupport.stream(spliterator, false).toList();
         assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder(n0, n1));
     }
 
@@ -337,7 +336,7 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(node("s2"), 2);
 
         final var spliterator = sut.valueSpliterator();
-        final var list = StreamSupport.stream(spliterator, false).collect(Collectors.toList());
+        final var list = StreamSupport.stream(spliterator, false).toList();
         assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder(1, 2));
     }
 
@@ -352,7 +351,7 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(n2, null);
 
         final var spliterator = sut.keySpliterator();
-        final var list = StreamSupport.stream(spliterator, false).collect(Collectors.toList());
+        final var list = StreamSupport.stream(spliterator, false).toList();
         assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder(n0, n1, n2));
     }
 
@@ -363,20 +362,20 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(node("s3"), 3);
 
         final var spliterator = sut.valueSpliterator();
-        final var list = StreamSupport.stream(spliterator, false).collect(Collectors.toList());
+        final var list = StreamSupport.stream(spliterator, false).toList();
         assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder(1, 2, 3));
     }
 
     @Test
     public void testKeyStreamEmpty() {
         var stream = sut.keyStream();
-        assertThat(stream.collect(Collectors.toList()), IsEmptyCollection.empty());
+        assertThat(stream.toList(), IsEmptyCollection.empty());
     }
 
     @Test
     public void testValueStreamEmpty() {
         var stream = sut.valueStream();
-        assertThat(stream.collect(Collectors.toList()), IsEmptyCollection.empty());
+        assertThat(stream.toList(), IsEmptyCollection.empty());
     }
 
     @Test
@@ -386,7 +385,7 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(n0, null);
 
         final var stream = sut.keyStream();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(n0));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(n0));
     }
 
     @Test
@@ -394,7 +393,7 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(node("s"), 1);
 
         final var stream = sut.valueStream();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(1));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(1));
     }
 
     @Test
@@ -406,7 +405,7 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(n1, null);
 
         final var stream = sut.keyStream();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(n0, n1));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(n0, n1));
     }
 
     @Test
@@ -415,7 +414,7 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(node("s2"), 2);
 
         final var stream = sut.valueStream();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(1, 2));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(1, 2));
     }
 
     @Test
@@ -429,7 +428,7 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(n2, null);
 
         final var stream = sut.keyStream();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(n0, n1, n2));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(n0, n1, n2));
     }
 
     @Test
@@ -439,19 +438,19 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(node("s3"), 3);
 
         final var stream = sut.valueStream();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(1, 2, 3));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(1, 2, 3));
     }
 
     @Test
     public void testKeyStreamParallelEmpty() {
         var stream = sut.keyStreamParallel();
-        assertThat(stream.collect(Collectors.toList()), IsEmptyCollection.empty());
+        assertThat(stream.toList(), IsEmptyCollection.empty());
     }
 
     @Test
     public void testValueStreamParallelEmpty() {
         var stream = sut.valueStreamParallel();
-        assertThat(stream.collect(Collectors.toList()), IsEmptyCollection.empty());
+        assertThat(stream.toList(), IsEmptyCollection.empty());
     }
 
     @Test
@@ -461,7 +460,7 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(n0, null);
 
         final var stream = sut.keyStreamParallel();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(n0));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(n0));
     }
 
     @Test
@@ -469,7 +468,7 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(node("s"), 1);
 
         final var stream = sut.valueStreamParallel();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(1));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(1));
     }
 
     @Test
@@ -481,7 +480,7 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(n1, null);
 
         final var stream = sut.keyStreamParallel();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(n0, n1));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(n0, n1));
     }
 
     @Test
@@ -490,7 +489,7 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(node("s2"), 2);
 
         final var stream = sut.valueStreamParallel();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(1, 2));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(1, 2));
     }
 
     @Test
@@ -504,7 +503,7 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(n2, null);
 
         final var stream = sut.keyStreamParallel();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(n0, n1, n2));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(n0, n1, n2));
     }
 
     @Test
@@ -514,7 +513,7 @@ public abstract class AbstractJenaMapNodeTest {
         sut.put(node("s3"), 3);
 
         final var stream = sut.valueStreamParallel();
-        assertThat(stream.collect(Collectors.toList()), IsIterableContainingInAnyOrder.containsInAnyOrder(1, 2, 3));
+        assertThat(stream.toList(), IsIterableContainingInAnyOrder.containsInAnyOrder(1, 2, 3));
     }
 
     @Test

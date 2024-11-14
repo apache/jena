@@ -20,8 +20,6 @@ package org.apache.jena.shacl.compact.writer;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.CollectionUtils;
@@ -139,10 +137,10 @@ public class CompactWriter {
     public static void output(IndentedWriter out, NodeFormatter nodeFmt, ShapeOutputVisitor visitor, Shape sh) {
         List<Target> targetImplicitClasses = sh.getTargets().stream()
             .filter(t->t.getTargetType()==TargetType.implicitClass)
-            .collect(Collectors.toList());
+            .toList();
         List<Target> targetClasses = sh.getTargets().stream()
             .filter(t->t.getTargetType()==TargetType.targetClass)
-            .collect(Collectors.toList());
+            .toList();
 
         if ( targetImplicitClasses.isEmpty() ) {
             out.print("shape ");

@@ -27,7 +27,6 @@ import java.util.stream.Stream;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.FileOps;
-import org.apache.jena.atlas.lib.StreamOps;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
@@ -90,11 +89,10 @@ public class shex_parse extends CmdGeneral {
                  String[] a = x.split(",");
                  return Arrays.stream(a);
              };
-             List<String> values =
-                 StreamOps.toList(getValues(argOutput).stream()
+             List<String> values = getValues(argOutput).stream()
                      .flatMap(f)
                      .map(s->s.toLowerCase())
-                     );
+                     .toList();
              printText = values.remove("text") || values.remove("t");
              printCompact = values.remove("compact") || values.remove("c");
              printRDF = values.remove("rdf") || values.remove("r");

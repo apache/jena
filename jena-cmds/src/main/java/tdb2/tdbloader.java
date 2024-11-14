@@ -18,8 +18,6 @@
 
 package tdb2;
 
-import static org.apache.jena.atlas.lib.ListUtils.toList;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -160,14 +158,15 @@ public class tdbloader extends CmdTDBGraph {
 
     // Check files exists before starting.
     private void checkFiles(List<String> urls) {
-        List<String> problemFiles = toList(urls.stream()
+        List<String> problemFiles = urls.stream()
                                            // Local files.
                                            .filter(u -> FileUtils.isFile(u))
                                            .map(Paths::get)
                                            .filter(p -> !Files.exists(p) ||
                                                         !Files.isRegularFile(p /* this follows links */) ||
                                                         !Files.isReadable(p))
-                                           .map(Path::toString));
+                                           .map(Path::toString)
+                                           .toList();
         if ( !problemFiles.isEmpty() ) {
             if ( problemFiles.size() == 1 )
                 throw new CmdException("Can't read file : " + problemFiles.get(0));

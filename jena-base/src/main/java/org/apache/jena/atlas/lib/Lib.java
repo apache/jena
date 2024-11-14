@@ -20,7 +20,6 @@ package org.apache.jena.atlas.lib;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Stream;
 import java.util.zip.Adler32;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
@@ -52,12 +51,6 @@ public class Lib
             return directory+path;
         else
             return directory+"/"+path;
-    }
-
-    /** Stream to {@link List} */
-    public static <X> List<X> toList(Stream<X> stream) {
-        // Findability.
-        return StreamOps.toList(stream);
     }
 
     /** "ConcurrentHashSet" */

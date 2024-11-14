@@ -21,8 +21,6 @@ package org.apache.jena.sparql.engine.iterator;
 import static org.junit.Assert.fail;
 
 import java.util.List ;
-import java.util.stream.Collectors;
-
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
@@ -50,7 +48,7 @@ public class TestDataBagDistinctOrder  {
         cxt.set(ARQ.spillToDiskThreshold, 2L);
 
         List<QuerySolution> x = ResultSetFormatter.toList(qExec.execSelect());
-        List<Integer> z = x.stream().map(qsoln->qsoln.getLiteral("v").getInt()).collect(Collectors.toList());
+        List<Integer> z = x.stream().map(qsoln->qsoln.getLiteral("v").getInt()).toList();
         for ( int i = 0 ; i < z.size()-1; i++ ) {
             int v1 = z.get(i);
             int v2 = z.get(i+1);

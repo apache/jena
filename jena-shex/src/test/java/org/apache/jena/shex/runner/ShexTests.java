@@ -19,8 +19,6 @@
 package org.apache.jena.shex.runner;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
 import org.apache.jena.arq.junit.manifest.Manifest;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.arq.junit.manifest.Prefix;
@@ -308,7 +306,7 @@ public class ShexTests {
         if (traitsRsrc == null)
             return null;
         List<Statement> x = entry.getEntry().listProperties(ShexT.trait).toList();
-        return x.stream().map(t -> t.getObject().asResource()).collect(Collectors.toList());
+        return x.stream().map(t -> t.getObject().asResource()).toList();
     }
 
     private static boolean runTestExclusionsInclusions(ManifestEntry entry) {
@@ -328,7 +326,7 @@ public class ShexTests {
 
             List<Resource> traits = extractTraits(entry);
             if (traits != null) {
-                List<Resource> excludedBecause = traits.stream().filter(excl -> excludeTraits.contains(excl)).collect(Collectors.toList());
+                List<Resource> excludedBecause = traits.stream().filter(excl -> excludeTraits.contains(excl)).toList();
                 if (excludedBecause.size() > 0)
                     return false;
             }

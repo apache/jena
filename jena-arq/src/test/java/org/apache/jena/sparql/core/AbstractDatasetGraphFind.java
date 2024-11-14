@@ -21,7 +21,6 @@ package org.apache.jena.sparql.core;
 import static org.apache.jena.atlas.iterator.Iter.asStream ;
 import static org.apache.jena.atlas.iterator.Iter.toList;
 import static org.apache.jena.atlas.iterator.Iter.toSet;
-import static org.apache.jena.atlas.lib.StreamOps.toList;
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertFalse ;
 import static org.junit.Assert.assertNotNull;
@@ -29,8 +28,6 @@ import static org.junit.Assert.assertTrue ;
 import static org.junit.Assert.fail;
 
 import java.util.*;
-import java.util.stream.Collectors ;
-
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.ListUtils;
 import org.apache.jena.graph.Node ;
@@ -205,7 +202,7 @@ public abstract class AbstractDatasetGraphFind {
         assertEquals(3, x.size()) ;
         x.stream().allMatch(q->q.getGraph().equals(Quad.unionGraph)) ;
 
-        List<Triple> z = x.stream().map(Quad::asTriple).collect(Collectors.toList()) ;
+        List<Triple> z = x.stream().map(Quad::asTriple).toList();
         assertTrue(z.contains(q4.asTriple())) ;
         assertTrue(z.contains(q5.asTriple())) ;
         Quad qx = Quad.create(Quad.unionGraph, q4.asTriple()) ;
@@ -286,14 +283,14 @@ public abstract class AbstractDatasetGraphFind {
     }
 
     @Test public void stream_dsg_01() {
-        List<Quad> x = toList(dsg.stream());
+        List<Quad> x = dsg.stream().toList();
         assertEquals(10, x.size()) ;
         assertTrue(x.contains(q1)) ;
         assertTrue(x.contains(q5)) ;
     }
 
     @Test public void stream_dsg_02() {
-        List<Quad> x = toList(dsg.stream(null, s,p,o)) ;
+        List<Quad> x = dsg.stream(null, s,p,o).toList();
         assertEquals(4, x.size()) ;
         assertFalse(x.contains(q2)) ;
         assertFalse(x.contains(q4)) ;
@@ -312,7 +309,7 @@ public abstract class AbstractDatasetGraphFind {
     }
 
     static List<Triple> quadsToDistinctTriples(Iterator<Quad> iter) {
-        return asStream(iter).map(Quad::asTriple).distinct().collect(Collectors.toList()) ;
+        return asStream(iter).map(Quad::asTriple).distinct().toList() ;
     }
 
     static void print(List<Quad> x) {

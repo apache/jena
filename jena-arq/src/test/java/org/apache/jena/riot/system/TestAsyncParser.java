@@ -35,7 +35,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.IteratorCloseable;
@@ -210,7 +209,7 @@ public class TestAsyncParser {
 
         List<EltStreamRDF> expected;
         try (Stream<EltStreamRDF> s = AsyncParser.of(new ByteArrayInputStream(goodInputStr.getBytes()), Lang.TURTLE, null).streamElements()) {
-            expected = s.collect(Collectors.toList());
+            expected = s.toList();
         }
 
         // Validate parser on the good data
@@ -225,7 +224,7 @@ public class TestAsyncParser {
             try (Stream<EltStreamRDF> s = AsyncParser.of(new ByteArrayInputStream(badInputStr.getBytes()), Lang.TURTLE, null)
                     .setChunkSize(chunkSize)
                     .streamElements()) {
-                List<EltStreamRDF> actual = s.collect(Collectors.toList());
+                List<EltStreamRDF> actual = s.toList();
                 Assert.assertEquals(expectedGoodEventCount + 1, actual.size());
                 Assert.assertEquals(expected, actual.subList(0, expectedGoodEventCount));
                 Assert.assertTrue(actual.get(actual.size() - 1).isException());
@@ -250,7 +249,7 @@ public class TestAsyncParser {
             })
             .streamElements()
             .limit(1000)) { // The limit is just a safety net to prevent infinite parsing in case of malfunction
-            actual = stream.collect(Collectors.toList());
+            actual = stream.toList();
         }
 
         // Check that only the expected number of elements were dispatched

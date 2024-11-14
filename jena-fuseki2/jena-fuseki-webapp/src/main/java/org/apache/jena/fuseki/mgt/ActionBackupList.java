@@ -27,8 +27,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.jena.atlas.json.JsonBuilder;
 import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.fuseki.ctl.ActionCtl;
@@ -78,7 +76,7 @@ public class ActionBackupList extends ActionCtl {
             ServletOps.errorOccurred(ex);
         }
 
-        List<String> fileNames = paths.stream().map((p)->p.getFileName().toString()).sorted().collect(Collectors.toList());
+        List<String> fileNames = paths.stream().map((p)->p.getFileName().toString()).sorted().toList();
 
         JsonBuilder builder = new JsonBuilder();
         builder.startObject("top");

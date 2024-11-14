@@ -21,8 +21,6 @@ package org.apache.jena.shacl.parser;
 import static org.apache.jena.shacl.lib.ShLib.displayStr;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
 import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -244,7 +242,7 @@ public class Constraints {
     }
 
     private static List<Shape> shapes(Graph g, Map<Node, Shape> parsed, Set<Node> traversed, List<Node> elts) {
-        return elts.stream().map(x->ShapesParser.parseShapeStep(traversed, parsed, g, x)).collect(Collectors.toList());
+        return elts.stream().map(x->ShapesParser.parseShapeStep(traversed, parsed, g, x)).toList();
     }
 
     private static Constraint parseQualifiedValueShape(Graph g, Node s, Node p, Node o, Map<Node, Shape> parsed, Set<Node> traversed) {
@@ -304,6 +302,6 @@ public class Constraints {
             if ( ! Util.isSimpleString(n) )
                 throw new ShaclParseException("Not a string "+displayStr(n)+" in list "+elts);
             return n.getLiteralLexicalForm();
-        }).collect(Collectors.toList());
+        }).toList();
     }
 }

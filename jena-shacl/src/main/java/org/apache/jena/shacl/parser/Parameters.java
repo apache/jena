@@ -21,8 +21,6 @@ package org.apache.jena.shacl.parser;
 import static org.apache.jena.shacl.sys.C.TRUE;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.commons.collections4.MultiMapUtils;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.jena.graph.Graph;
@@ -40,7 +38,7 @@ public class Parameters {
         List<Parameter> params =
             G.listSP(shapesGraph, sccNode, SHACL.parameter).stream()
                 .map(pn->parseParameter(shapesGraph, sccNode, pn))
-                .collect(Collectors.toList());
+                .toList();
         return params;
     }
 

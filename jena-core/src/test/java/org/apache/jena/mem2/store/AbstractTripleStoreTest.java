@@ -26,8 +26,6 @@ import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.stream.Collectors;
-
 import static org.apache.jena.testing_framework.GraphHelper.node;
 import static org.apache.jena.testing_framework.GraphHelper.triple;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -380,7 +378,7 @@ public abstract class AbstractTripleStoreTest {
 
         var t = triple("x R y");
         sut.add(t);
-        var findings = sut.stream(t).collect(Collectors.toList());
+        var findings = sut.stream(t).toList();
         assertEquals(1, findings.size());
         assertEquals(findings.get(0), t);
     }
@@ -409,7 +407,7 @@ public abstract class AbstractTripleStoreTest {
         sut.add(cBb);
         sut.add(cBc);
 
-        var findings = sut.stream(triple("?? ?? ??")).collect(Collectors.toList());
+        var findings = sut.stream(triple("?? ?? ??")).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAa, aAb, aAc, bAa, bAb, bAc, cBa, cBb, cBc));
     }
 
@@ -437,16 +435,16 @@ public abstract class AbstractTripleStoreTest {
         sut.add(cBb);
         sut.add(cBc);
 
-        var findings = sut.stream(Triple.createMatch(aAa.getSubject(), null, null)).collect(Collectors.toList());
+        var findings = sut.stream(Triple.createMatch(aAa.getSubject(), null, null)).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAa, aAb, aAc));
 
-        findings = sut.stream(Triple.createMatch(bAa.getSubject(), null, null)).collect(Collectors.toList());
+        findings = sut.stream(Triple.createMatch(bAa.getSubject(), null, null)).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(bAa, bAb, bAc));
 
-        findings = sut.stream(Triple.createMatch(cBa.getSubject(), null, null)).collect(Collectors.toList());
+        findings = sut.stream(Triple.createMatch(cBa.getSubject(), null, null)).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(cBa, cBb, cBc));
 
-        findings = sut.stream(triple("d ?? ??")).collect(Collectors.toList());
+        findings = sut.stream(triple("d ?? ??")).toList();
         assertThat(findings, IsEmptyCollection.empty());
     }
 
@@ -474,13 +472,13 @@ public abstract class AbstractTripleStoreTest {
         sut.add(cBb);
         sut.add(cBc);
 
-        var findings = sut.stream(Triple.createMatch(null, aAa.getPredicate(), null)).collect(Collectors.toList());
+        var findings = sut.stream(Triple.createMatch(null, aAa.getPredicate(), null)).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAa, aAb, aAc, bAa, bAb, bAc));
 
-        findings = sut.stream(Triple.createMatch(null, cBa.getPredicate(), null)).collect(Collectors.toList());
+        findings = sut.stream(Triple.createMatch(null, cBa.getPredicate(), null)).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(cBa, cBb, cBc));
 
-        findings = sut.stream(triple("?? C ??")).collect(Collectors.toList());
+        findings = sut.stream(triple("?? C ??")).toList();
         assertThat(findings, IsEmptyCollection.empty());
     }
 
@@ -508,16 +506,16 @@ public abstract class AbstractTripleStoreTest {
         sut.add(cBb);
         sut.add(cBc);
 
-        var findings = sut.stream(Triple.createMatch(null, null, aAa.getObject())).collect(Collectors.toList());
+        var findings = sut.stream(Triple.createMatch(null, null, aAa.getObject())).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAa, bAa, cBa));
 
-        findings = sut.stream(Triple.createMatch(null, null, aAb.getObject())).collect(Collectors.toList());
+        findings = sut.stream(Triple.createMatch(null, null, aAb.getObject())).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAb, bAb, cBb));
 
-        findings = sut.stream(Triple.createMatch(null, null, aAc.getObject())).collect(Collectors.toList());
+        findings = sut.stream(Triple.createMatch(null, null, aAc.getObject())).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAc, bAc, cBc));
 
-        findings = sut.stream(triple("?? ?? d")).collect(Collectors.toList());
+        findings = sut.stream(triple("?? ?? d")).toList();
         assertThat(findings, IsEmptyCollection.empty());
     }
 
@@ -545,19 +543,19 @@ public abstract class AbstractTripleStoreTest {
         sut.add(cBb);
         sut.add(cBc);
 
-        var findings = sut.stream(Triple.createMatch(aAa.getSubject(), aAa.getPredicate(), null)).collect(Collectors.toList());
+        var findings = sut.stream(Triple.createMatch(aAa.getSubject(), aAa.getPredicate(), null)).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAa, aAb, aAc));
 
-        findings = sut.stream(Triple.createMatch(bAa.getSubject(), bAa.getPredicate(), null)).collect(Collectors.toList());
+        findings = sut.stream(Triple.createMatch(bAa.getSubject(), bAa.getPredicate(), null)).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(bAa, bAb, bAc));
 
-        findings = sut.stream(Triple.createMatch(cBa.getSubject(), cBa.getPredicate(), null)).collect(Collectors.toList());
+        findings = sut.stream(Triple.createMatch(cBa.getSubject(), cBa.getPredicate(), null)).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(cBa, cBb, cBc));
 
-        findings = sut.stream(triple("a C ??")).collect(Collectors.toList());
+        findings = sut.stream(triple("a C ??")).toList();
         assertThat(findings, IsEmptyCollection.empty());
 
-        findings = sut.stream(triple("d D ??")).collect(Collectors.toList());
+        findings = sut.stream(triple("d D ??")).toList();
         assertThat(findings, IsEmptyCollection.empty());
     }
 
@@ -585,22 +583,22 @@ public abstract class AbstractTripleStoreTest {
         sut.add(cBb);
         sut.add(cBc);
 
-        var findings = sut.stream(Triple.createMatch(aAa.getSubject(), null, aAa.getObject())).collect(Collectors.toList());
+        var findings = sut.stream(Triple.createMatch(aAa.getSubject(), null, aAa.getObject())).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAa));
 
-        findings = sut.stream(Triple.createMatch(bAa.getSubject(), null, bAa.getObject())).collect(Collectors.toList());
+        findings = sut.stream(Triple.createMatch(bAa.getSubject(), null, bAa.getObject())).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(bAa));
 
-        findings = sut.stream(Triple.createMatch(cBa.getSubject(), null, cBa.getObject())).collect(Collectors.toList());
+        findings = sut.stream(Triple.createMatch(cBa.getSubject(), null, cBa.getObject())).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(cBa));
 
-        findings = sut.stream(triple("d ?? d")).collect(Collectors.toList());
+        findings = sut.stream(triple("d ?? d")).toList();
         assertThat(findings, IsEmptyCollection.empty());
 
-        findings = sut.stream(triple("d ?? a")).collect(Collectors.toList());
+        findings = sut.stream(triple("d ?? a")).toList();
         assertThat(findings, IsEmptyCollection.empty());
 
-        findings = sut.stream(triple("a ?? d")).collect(Collectors.toList());
+        findings = sut.stream(triple("a ?? d")).toList();
         assertThat(findings, IsEmptyCollection.empty());
     }
 
@@ -628,22 +626,22 @@ public abstract class AbstractTripleStoreTest {
         sut.add(cBb);
         sut.add(cBc);
 
-        var findings = sut.stream(Triple.createMatch(null, aAa.getPredicate(), aAa.getObject())).collect(Collectors.toList());
+        var findings = sut.stream(Triple.createMatch(null, aAa.getPredicate(), aAa.getObject())).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAa, bAa));
 
-        findings = sut.stream(Triple.createMatch(null, bAa.getPredicate(), bAa.getObject())).collect(Collectors.toList());
+        findings = sut.stream(Triple.createMatch(null, bAa.getPredicate(), bAa.getObject())).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(aAa, bAa));
 
-        findings = sut.stream(Triple.createMatch(null, cBa.getPredicate(), cBa.getObject())).collect(Collectors.toList());
+        findings = sut.stream(Triple.createMatch(null, cBa.getPredicate(), cBa.getObject())).toList();
         assertThat(findings, IsIterableContainingInAnyOrder.containsInAnyOrder(cBa));
 
-        findings = sut.stream(triple("?? C a")).collect(Collectors.toList());
+        findings = sut.stream(triple("?? C a")).toList();
         assertThat(findings, IsEmptyCollection.empty());
 
-        findings = sut.stream(triple("?? A d")).collect(Collectors.toList());
+        findings = sut.stream(triple("?? A d")).toList();
         assertThat(findings, IsEmptyCollection.empty());
 
-        findings = sut.stream(triple("?? D d")).collect(Collectors.toList());
+        findings = sut.stream(triple("?? D d")).toList();
         assertThat(findings, IsEmptyCollection.empty());
     }
 
