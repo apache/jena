@@ -41,10 +41,6 @@ public class InitFuseki implements JenaSubsystemLifecycle {
     @Override
     public int level() { return 101; }
 
-    /**
-     * Load modules, call "start()".
-     * Each {@link FusekiModule} will be called during the server build process.
-     */
     public static void init() {
         if ( initialized ) {
             return;
@@ -56,8 +52,8 @@ public class InitFuseki implements JenaSubsystemLifecycle {
             }
             initialized = true;
             JenaSystem.logLifecycle("Fuseki.init - start");
-            // Leave until known to be needed FusekiServer build with no specific FusekikModules given.
-            // FusekiModulesCtl.setup();
+
+            FusekiModules.init();
             try {
                 Cmds.injectCmd("fuseki", a->FusekiMainCmd.main(a));
             } catch (NoClassDefFoundError ex) {

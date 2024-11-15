@@ -23,15 +23,50 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * List of {@linkplain FusekiModule Fuseki modules}.
- * This is the immutable group of modules for a server.
+ * A collection of {@linkplain FusekiModule Fuseki modules}.
  * <p>
+ * There is one specific collection of modules - a system wide set of modules.
+ * This collection defaults to the automatically discovered modules {@link FusekiAutoModules#load()}.
+ *
  * @see FusekiAutoModules
  */
 public class FusekiModules {
 
+    private static FusekiModules autoLoadedFusekiModules = FusekiAutoModules.get();
+    // Never null, maybe empty
+    private static FusekiModules systemFusekiModules = autoLoadedFusekiModules;
+
+    /**
+     * There is a system wide set of modules used when o other are indicated.
+     * These default to the automatically discovered modules.
+     */
+    public static void setSystemDefault(FusekiModules fusekiModules) {
+        systemFusekiModules = ( fusekiModules == null ) ? FusekiModules.create() : fusekiModules;
+    }
+
+    /** Restore the original setting of the system default collection. */
+    public static void restoreSystemDefault() {
+        systemFusekiModules = autoLoadedFusekiModules;
+    }
+
+    public static FusekiModules getSystemModules() {
+        return systemFusekiModules;
+    }
+
+    // Do initialization at a predictable point.
+    /*package*/ static void init() {}
+
+    // ----
+
     /** A Fuseki module with no members. */
     public static final FusekiModules empty() { return FusekiModules.create(); }
+
+    // Testing.
+    /*package*/ static void resetSystemDefault() {
+        // Reload, reset. Fresh objects.
+        autoLoadedFusekiModules = FusekiAutoModules.load();
+        systemFusekiModules = autoLoadedFusekiModules;
+    }
 
     /** Create a collection of Fuseki modules */
     public static FusekiModules create(FusekiModule ... modules) {
@@ -42,6 +77,10 @@ public class FusekiModules {
     public static FusekiModules create(List<FusekiModule> modules) {
         return new FusekiModules(modules);
     }
+
+//    public static FusekiModules autoloadedModules() {
+//        return FusekiAutoModules.load();
+//    }
 
     private final List<FusekiModule> modules;
 

@@ -25,13 +25,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.jena.atlas.logging.LogCtl;
-import org.apache.jena.fuseki.Fuseki;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.sys.JenaSystem;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /** Same packege for access */
 public class TestFusekiModules {
@@ -48,23 +47,22 @@ public class TestFusekiModules {
     }
 
     private static void reset() {
-        FusekiAutoModules.reset();
+        ModuleByServiceLoader.reset();
+        FusekiModules.resetSystemDefault();
     }
 
     @Test public void lifecycle_1() {
-        reset();
-
         ModuleForTest module = new ModuleForTest();
         FusekiModules fmods = FusekiModules.create(module);
 
         // Mock default set.
-        FusekiAutoModules.setSystemDefault(fmods);
+        FusekiModules.setSystemDefault(fmods);
 
         FusekiServer.Builder builder = FusekiServer.create().port(0);
         try {
             lifecycle(builder, module);
         } finally {
-            FusekiAutoModules.setSystemDefault(null);
+            FusekiModules.setSystemDefault(null);
         }
     }
 
@@ -73,7 +71,6 @@ public class TestFusekiModules {
 
         ModuleForTest module = new ModuleForTest();
         FusekiModules fmods = FusekiModules.create(module);
-        FusekiAutoModules.setSystemDefault(null);
         // Explicit FusekiModules
         FusekiServer.Builder builder = FusekiServer.create().fusekiModules(fmods).port(0);
         lifecycle(builder, module);
@@ -107,23 +104,18 @@ public class TestFusekiModules {
     }
 
     @Test public void autoload_1() {
-        reset();
+        // Included reload.
         ModuleByServiceLoader.reset();
+        FusekiModules.resetSystemDefault();
 
-        // Default : loaded FusekiAutoModules
-        FusekiServer.Builder builder = FusekiServer.create().port(0);
-        //Generates "warn"
-        LogCtl.withLevel(Fuseki.serverLog, "error", ()->{
-            builder.build();
-        });
-        ModuleForTest module = ModuleByServiceLoader.lastLoaded();
-
+        // Reloaded by FusekiModules.resetSystemDefault
         assertEquals(1, ModuleByServiceLoader.countLoads.get());
         assertEquals(1, ModuleByServiceLoader.countStart.get());
 
-        assertEquals("prepare:",       1, module.countPrepared.getPlain());
-        assertEquals("configured:",    1, module.countConfiguration.get());
-        assertEquals("server: ",       1, module.countServer.get());
+        // Default : loaded FusekiModules
+        FusekiServer.Builder builder = FusekiServer.create().port(0);
+        ModuleForTest module = ModuleByServiceLoader.lastLoaded();
+        lifecycle(builder, module);
     }
 
     @Test public void server_module_1() {
