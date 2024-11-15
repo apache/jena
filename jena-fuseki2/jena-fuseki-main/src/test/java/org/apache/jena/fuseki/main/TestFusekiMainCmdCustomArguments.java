@@ -19,9 +19,7 @@
 package org.apache.jena.fuseki.main;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.junit.After;
@@ -94,6 +92,16 @@ public class TestFusekiMainCmdCustomArguments {
     }
 
     @Test
+    public void test_custom_allowNoArgs() {
+        String[] arguments1 = {"--port=0"};
+        FusekiServerArgsCustomiser customiser = new TestArgsAllowNoSetup();
+        FusekiServer server1 = test(customiser, arguments1, serv->{});
+        // Dataset arguments are allowed.
+        String[] arguments2 = {"--port=0","--mem", "/ds"};
+        FusekiServer server2 = test(customiser, arguments2, serv->{});
+    }
+
+    @Test
     public void test_custom_flag() {
         String[] arguments = {"--port=0", "--mem", "--custom-flag", "/ds"};
         test(new ArgDecl(false, "custom-flag"), arguments, true, null);
@@ -108,7 +116,7 @@ public class TestFusekiMainCmdCustomArguments {
     @Test
     public void test_custom_confModel_noFlag() {
         String[] arguments = {"--port=0", "--mem", "/ds"};
-        FusekiCliCustomModel customiser = new FusekiCliCustomModel(new ArgDecl(false, "fixed"), confFixed);
+        TestArgsCustomModelAltArg customiser = new TestArgsCustomModelAltArg(new ArgDecl(false, "fixed"), confFixed);
         test(customiser, arguments, server->{
             assertSame(null, customiser.notedServerConfigModel);
             DataAccessPoint dap1 = server.getDataAccessPointRegistry().get("/ds");
@@ -119,10 +127,10 @@ public class TestFusekiMainCmdCustomArguments {
     }
 
     @Test
-    public void test_custom_confModel_withFlag() {
+    public void test_custom_confModel_replace() {
         // Ignores command line.
-        String[] arguments = {"--port=0", "--mem", "--fixed", "/ds"};
-        FusekiCliCustomModel customiser = new FusekiCliCustomModel(new ArgDecl(false, "fixed"), confFixed);
+        String[] arguments = {"--port=0", "--conf=somefile.ttl", "--fixed"};
+        FusekiServerArgsCustomiser customiser = new TestArgsCustomModelAltArg(new ArgDecl(false, "fixed"), confFixed);
         FusekiServer server = test(customiser, arguments, serv->{
             DataAccessPoint dap1 = serv.getDataAccessPointRegistry().get("/ds");
             assertNull(dap1);
@@ -133,10 +141,40 @@ public class TestFusekiMainCmdCustomArguments {
         assertFalse(server.getDataAccessPointRegistry().isRegistered("/ds"));
     }
 
+    @Test
+    public void test_custom_confModel_different() {
+        // Ignores command line --conf setting.
+        String[] arguments = {"--port=0", "--conf=somefile.ttl"};
+        FusekiServerArgsCustomiser customiser = new TestArgsMyConfModel();
+        FusekiServer server = test(customiser, arguments, serv->{
+            DataAccessPoint dap1 = serv.getDataAccessPointRegistry().get("/ds");
+            assertNull(dap1);
+            DataAccessPoint dap2 = serv.getDataAccessPointRegistry().get("/dataset");
+            assertNotNull(dap2);
+        });
+        assertTrue(server.getDataAccessPointRegistry().isRegistered("/dataset"));
+        assertFalse(server.getDataAccessPointRegistry().isRegistered("/ds"));
+    }
+
+    @Test
+    public void test_custom_confModel_different_ignore() {
+        // --conf not used. Does not reset.
+        String[] arguments = {"--port=0", "--mem", "/ds"};
+        FusekiServerArgsCustomiser customiser = new TestArgsMyConfModel();
+        FusekiServer server = test(customiser, arguments, serv->{
+            DataAccessPoint dap1 = serv.getDataAccessPointRegistry().get("/ds");
+            assertNotNull(dap1);
+            DataAccessPoint dap2 = serv.getDataAccessPointRegistry().get("/dataset");
+            assertNull(dap2);
+        });
+        assertFalse(server.getDataAccessPointRegistry().isRegistered("/dataset"));
+        assertTrue(server.getDataAccessPointRegistry().isRegistered("/ds"));
+    }
+
     // ----
 
     private void test(ArgDecl argDecl, String[] arguments, boolean seen, String value) {
-        FusekiCliCustomArg customiser = new FusekiCliCustomArg(argDecl);
+        TestArgsCustomArg customiser = new TestArgsCustomArg(argDecl);
         test(customiser, arguments, (server)->{
             assertEquals(seen, customiser.argSeen);
             assertEquals(value, customiser.argValue);
@@ -145,26 +183,36 @@ public class TestFusekiMainCmdCustomArguments {
 
     private FusekiServer test(FusekiServerArgsCustomiser customiser, String[] arguments, Consumer<FusekiServer> checker) {
         FusekiMain.resetCustomisers();
-        FusekiMain.addCustomiser(customiser);
+        if ( customiser != null )
+            FusekiMain.addCustomiser(customiser);
         FusekiServer server = FusekiMain.build(arguments);
         if ( checker != null )
             checker.accept(server);
         return server;
     }
 
-    // ---- Test FusekiCliCustomisers
+    // ---- Arg customisers.
 
-    static class FusekiCliCustomArg implements FusekiServerArgsCustomiser {
+    // Allow no daatset or configuration.
+    static class TestArgsAllowNoSetup implements FusekiServerArgsCustomiser {
+        @Override
+        public void serverArgsModify(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
+            serverArgs.allowEmpty = true;
+        }
+    }
+
+    // Custom argument.
+    static class TestArgsCustomArg implements FusekiServerArgsCustomiser {
         final ArgDecl argDecl;
         String argValue = null;
         boolean argSeen = false;
 
-        FusekiCliCustomArg(ArgDecl argDecl) {
+        TestArgsCustomArg(ArgDecl argDecl) {
             this.argDecl = argDecl;
         }
 
         @Override
-        public void serverArgsModify(CmdGeneral fusekiCmd) {
+        public void serverArgsModify(CmdGeneral fusekiCmd, ServerArgs serverConfig) {
             fusekiCmd.add(argDecl);
         }
 
@@ -175,19 +223,20 @@ public class TestFusekiMainCmdCustomArguments {
         }
     };
 
-    static class FusekiCliCustomModel implements FusekiServerArgsCustomiser {
+    // --fixed triggers replacing the comfiguration model.
+    static class TestArgsCustomModelAltArg implements FusekiServerArgsCustomiser {
         final ArgDecl argDecl;
         final Model fixedModel;
         Model notedServerConfigModel = null;
         boolean argSeen = false;
 
-        FusekiCliCustomModel(ArgDecl argDecl, Model conf) {
+        TestArgsCustomModelAltArg(ArgDecl argDecl, Model conf) {
             this.argDecl = argDecl;
             this.fixedModel = conf;
         }
 
         @Override
-        public void serverArgsModify(CmdGeneral fusekiCmd) {
+        public void serverArgsModify(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
             fusekiCmd.add(argDecl);
         }
 
@@ -210,18 +259,23 @@ public class TestFusekiMainCmdCustomArguments {
         }
     };
 
-    static class FusekiCliCustomConfiguration implements FusekiServerArgsCustomiser {
-        @Override public void serverArgsModify(CmdGeneral fusekiCmd) { }
-        @Override public void serverArgsPrepare(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
-            if ( Objects.equals(serverArgs.serverConfigFile, "placeholder") ) {
+    // Replace --conf setting with the model. Do nothing if no --conf.
+    static class TestArgsMyConfModel implements FusekiServerArgsCustomiser {
+
+        TestArgsMyConfModel() { }
+
+        @Override
+        public void serverArgsModify(CmdGeneral fusekiCmd, ServerArgs serverArgs) {}
+
+        @Override
+        public void serverArgsPrepare(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
+            if ( serverArgs.serverConfigFile != null ) {
+                serverArgs.serverConfigFile = null;
                 serverArgs.serverConfigModel = confFixed;
             }
-
-            //serverArgs.serverConfigFile;
-            //serverArgs.serverConfigModel;
         }
 
-        @Override public void serverArgsBuilder(FusekiServer.Builder serverBuilder, Model configModel) {}
-    }
-
+        @Override
+        public void serverArgsBuilder(FusekiServer.Builder serverBuilder, Model configModel) {}
+    };
 }

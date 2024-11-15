@@ -32,7 +32,7 @@ import org.apache.jena.fuseki.main.FusekiServer;
 import org.slf4j.Logger;
 
 /**
- * Control of {@link FusekiAutoModule} found via {@link ServiceLoader}.
+ * Management of {@link FusekiAutoModule automatically loaded modules} found via {@link ServiceLoader}.
  */
 public class FusekiAutoModules {
 
@@ -44,7 +44,6 @@ public class FusekiAutoModules {
 
     private static boolean allowDiscovery = true;
     private static boolean enabled = true;
-    private static FusekiModules altFusekiModules = null;
 
     /*package*/ static boolean logModuleLoading() {
         return Lib.isPropertyOrEnvVarSetToTrue(logLoadingProperty, envLogLoadingProperty);
@@ -78,37 +77,40 @@ public class FusekiAutoModules {
         autoModules = createServiceLoaderModules();
     }
 
+    private static FusekiModules currentLoadedModules = null;
+
     /**
-     * Load the the system wide Fuseki modules if it has not already been loaded.
-     * If disabled, return an empty  FusekiModules
+     * Load FusekiAutoModules. This call reloads the modules every call.
+     * If disabled, return an empty {@link FusekiModules}.
      */
-    public static FusekiModules load() {
+    static FusekiModules load() {
         if ( ! enabled )
             return FusekiModules.empty();
-        if ( altFusekiModules != null )
-            return altFusekiModules;
-        return getServiceLoaderModules().load();
+        currentLoadedModules = getServiceLoaderModules().load();
+        return get();
+    }
+
+    /**
+     * Return the current (last loaded) Fuseki auto-modules.
+     */
+    static FusekiModules get() {
+        if ( currentLoadedModules == null )
+            load();
+        return currentLoadedModules;
     }
 
     // -- ServiceLoader machinery.
 
     // testing
     /*package*/ static void reset() {
-        autoModules = null;
-    }
-
-    /**
-     * Ignore any discovered modules and use the given FusekiModules.
-     * Pass null to clear a previous setting.
-     */
-    static void setSystemDefault(FusekiModules fusekiModules) {
-        altFusekiModules = fusekiModules;
+        load();
     }
 
     // Single auto-module controller.
     private static FusekiServiceLoaderModules autoModules = null;
 
     private static FusekiServiceLoaderModules getServiceLoaderModules() {
+        // Load once.
         if ( autoModules == null )
             setup();
         return autoModules;

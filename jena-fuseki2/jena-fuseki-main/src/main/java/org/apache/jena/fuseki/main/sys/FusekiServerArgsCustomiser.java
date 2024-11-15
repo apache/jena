@@ -76,8 +76,9 @@ public interface FusekiServerArgsCustomiser {
      * The server construction is aborted.
      *
      * @param fusekiCmd Fuseki Main command line arguments
+     * @param serverArgs Intial setting before command line processing.
      */
-    public default void serverArgsModify(CmdGeneral fusekiCmd) { }
+    public default void serverArgsModify(CmdGeneral fusekiCmd, ServerArgs serverArgs) { }
 
     /**
      * Called at the end command line argument processing.
@@ -85,6 +86,9 @@ public interface FusekiServerArgsCustomiser {
      * This allows a Fuseki module to pull out custom arguments it has added and
      * process them appropriately, including validating or modifying the
      * {@link ServerArgs} that will be used to build the server.
+     * This method can set the set the dataset, in which case
+     * a command line dataset setup or configuration file server
+     * set up is not performed.
      * <p>
      * This method can throw {@link CmdException} to indicate errors.
      * This will cause a error message to be printed, without the stack trace.
@@ -99,8 +103,11 @@ public interface FusekiServerArgsCustomiser {
     /**
      * Called at the end of applying the {@link ServerArgs} to the builder.
      * <p>
-     * The configuration model (if any) has been setup. This step can do validation
-     * and argument processing dependent on the configuration model.
+     * This step can do validation and argument processing dependent on the configuration model.
+     * <p>
+     * If there is a configuration model, this has been processed by the builder
+     * <p>
+     * If a command line dataset setup is being used, this is the dataset has been created.
      * <p>
      * This method can throw {@link CmdException} to indicate errors.
      * This will cause a error message to be printed, without the stack trace.

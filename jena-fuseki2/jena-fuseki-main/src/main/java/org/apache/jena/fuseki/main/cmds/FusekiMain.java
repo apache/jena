@@ -19,13 +19,14 @@
 package org.apache.jena.fuseki.main.cmds;
 
 import static arq.cmdline.ModAssembler.assemblerDescDecl;
+import static org.apache.jena.fuseki.main.cmds.FusekiMain.SetupType.*;
 
 import java.net.BindException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import arq.cmdline.CmdARQ;
 import arq.cmdline.ModDatasetAssembler;
@@ -33,17 +34,14 @@ import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.AuthScheme;
-import org.apache.jena.cmd.ArgDecl;
-import org.apache.jena.cmd.ArgModuleGeneral;
-import org.apache.jena.cmd.CmdException;
-import org.apache.jena.cmd.TerminationException;
+import org.apache.jena.cmd.*;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiMainInfo;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.sys.FusekiAutoModules;
-import org.apache.jena.fuseki.main.sys.FusekiServerArgsCustomiser;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
+import org.apache.jena.fuseki.main.sys.FusekiServerArgsCustomiser;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.FusekiCoreInfo;
@@ -53,13 +51,10 @@ import org.apache.jena.fuseki.validation.IRIValidator;
 import org.apache.jena.fuseki.validation.QueryValidator;
 import org.apache.jena.fuseki.validation.UpdateValidator;
 import org.apache.jena.query.ARQ;
-import org.apache.jena.query.Dataset;
 import org.apache.jena.rdfs.RDFSFactory;
-import org.apache.jena.riot.*;
-import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.system.Txn;
-import org.apache.jena.tdb1.transaction.TransactionManager;
 import org.slf4j.Logger;
 
 public class FusekiMain extends CmdARQ {
@@ -121,12 +116,10 @@ public class FusekiMain extends CmdARQ {
 
     private static ArgDecl  argValidators   = new ArgDecl(ArgDecl.NoValue,  "validators");
 
-    private static List<ArgModuleGeneral> additionalArgs = new ArrayList<>();
+    private ModDatasetAssembler modDataset  = new ModDatasetAssembler();
+    private List<FusekiServerArgsCustomiser> customiseServerArgs;
+    private final ServerArgs serverArgs     = new ServerArgs();
 
-    // private static ModLocation modLocation = new ModLocation();
-    private static ModDatasetAssembler modDataset      = new ModDatasetAssembler();
-
-    private final ServerArgs serverArgs  = new ServerArgs();
     // Default
     private boolean useTDB2 = true;
 
@@ -140,11 +133,11 @@ public class FusekiMain extends CmdARQ {
     public static FusekiServer.Builder builder(String... args) {
         // Parses command line, sets arguments.
         FusekiMain fusekiMain = new FusekiMain(args);
-        // Process command line args according to the argument specified.
+        // Process command line args according to the arguments specified.
         fusekiMain.process();
-        // Apply command line/serverArgs to a builder.
-        FusekiServer.Builder builder = fusekiMain.builder();
-        applyServerArgs(builder, fusekiMain.serverArgs);
+        // Apply serverArgs to a builder.
+        FusekiServer.Builder builder = FusekiServer.create();
+        fusekiMain.applyServerArgs(builder, fusekiMain.serverArgs);
         return builder;
     }
 
@@ -159,27 +152,37 @@ public class FusekiMain extends CmdARQ {
     /**
      * Create a server and run, within the same JVM.
      * This is the command line entry point.
+     * This function does not return.
+     * See also {@link #build} to create and return a server.
      */
-    static void run(String... argv) {
+    public static void run(String... argv) {
         JenaSystem.init();
         new FusekiMain(argv).mainRun();
     }
 
     /**
-     * Registers a custom arguments module
-     * <p>
-     * This approach is useful when your custom arguments affect global server/runtime setup and don't need to directly
-     * impact Fuseki Server building.  If you need to impact server building then use
-     * {@link #addCustomiser(FusekiServerArgsCustomiser)} instead
-     * </p>
-     * @param argModule Arguments module
+     * Registers a custom arguments module.
+     *
      * @deprecated Register a {@link org.apache.jena.fuseki.main.sys.FusekiServerArgsCustomiser} via
-     * {@link #addCustomiser(FusekiServerArgsCustomiser)} instead.
+     *             {@link #addCustomiser(FusekiServerArgsCustomiser)} instead.
      */
-    @Deprecated(forRemoval =  true)
-    public static void addArgModule(ArgModuleGeneral argModule) { additionalArgs.add(argModule); }
+    @Deprecated(forRemoval = true)
+    public static void addArgModule(ArgModuleGeneral argModule) {
+        FusekiServerArgsCustomiser customiser =
+        new FusekiServerArgsCustomiser() {
+            final ArgModuleGeneral argMod = argModule;
+            @Override
+            public void serverArgsModify(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
+                fusekiCmd.addModule(argMod);
+            }
+            @Override
+            public void serverArgsPrepare(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
+                argMod.processArgs(fusekiCmd);
+            }
+        };
+        addCustomiser(customiser);
+    }
 
-    private static final List<FusekiServerArgsCustomiser> customiseServerArgs = new ArrayList<>();
     /**
      * Registers a CLI customiser
      * <p>
@@ -191,28 +194,55 @@ public class FusekiMain extends CmdARQ {
      */
     public static void addCustomiser(FusekiServerArgsCustomiser customiser) {
         Objects.requireNonNull(customiser);
-        customiseServerArgs.add(customiser);
+        ArgCustomizers.addCustomiser(customiser);
     }
 
     /**
      * Resets any previously registered CLI customisers
      */
     public static void resetCustomisers() {
-        customiseServerArgs.clear();
+        ArgCustomizers.resetCustomisers();
     }
 
-    // --
+    private void applyCustomisers(Consumer<FusekiServerArgsCustomiser> action) {
+        for (FusekiServerArgsCustomiser customiser : customiseServerArgs) {
+            action.accept(customiser);
+        }
+    }
+//
+//    private List<FusekiServerArgsCustomiser> customiseServerArgs() {
+//        if ( customiseServerArgs == null )
+//            customiseServerArgs = new arrayList<>();
+//        return customiseServerArgs;
+//    }
+
+    // Customiser Lifecycle
+    //
+    // :: Setup args
+    // -- Called at the end of FusekiMain.argumentsSetup() after the standard arguments have been added.
+    // ---- FusekiServerArgsCustomiser.serverArgsModify(CmdLineGeneral, ServerArgs)
+    //
+    // :: Get values
+    // -- End of FusekiMain.processModulesAndArgs
+    // ---- FusekiServerArgsCustomiser.serverArgsPrepare(CmdGeneral fusekiCmd, ServerArgs serverArgs)
+
+    // :: Prepare server builder
+    // -- End of applyServerArgs
+    // ---- FusekiServerArgsCustomiser.serverArgsBuilder(FusekiServer.Builder serverBuilder, Model configModel)
+
+    // == builder.build.
+    // Decide FusekiModules
+    // --> then into FusekiBuildCycle.prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) { }
 
     protected FusekiMain(String... argv) {
         super(argv);
+        // Snapshot for this FusekiMain instance
+        customiseServerArgs = List.copyOf(ArgCustomizers.get());
+        argumentsSetup();
+    }
 
-        if ( false )
-            // Consider ...
-            TransactionManager.QueueBatchSize = TransactionManager.QueueBatchSize / 2;
-
+    private void argumentsSetup() {
         getUsage().startCategory("Fuseki Main");
-
-        additionalArgs.forEach(aMod->super.addModule(aMod));
 
         // Control the order!
         add(argMem, "--mem",
@@ -227,14 +257,13 @@ public class FusekiMain extends CmdARQ {
             "Use an existing TDB database (or create if does not exist)");
         add(argMemTDB, "--memTDB",
             "Create an in-memory, non-persistent dataset using TDB (testing only)");
-//            add(argEmpty, "--empty",
-//                "Run with no datasets and services");
         add(argRDFS, "--rdfs=FILE",
             "Apply RDFS on top of the dataset");
         add(argConfig, "--config=FILE",
             "Use a configuration file to determine the services");
         addModule(modDataset);
-        add(argEmpty); // Hidden for now.
+
+        add(argEmpty); // Hidden
         add(argPort, "--port",
             "Listen on this port number");
         add(argLocalhost, "--localhost",
@@ -269,8 +298,6 @@ public class FusekiMain extends CmdARQ {
             "jetty.xml server configuration");
         add(argCORS, "--cors=FILE", "Configure CORS settings from file");
         add(argNoCORS, "--no-cors", "Disable CORS");
-        // put in the configuration file
-//            add(argRealm, "--realm=REALM", "Realm name");
 
         add(argWithPing,    "--ping",       "Enable /$/ping");
         add(argWithStats,   "--stats",      "Enable /$/stats");
@@ -281,63 +308,116 @@ public class FusekiMain extends CmdARQ {
 
         super.modVersion.addClass("Fuseki", Fuseki.class);
 
-        for (FusekiServerArgsCustomiser customiser : customiseServerArgs) {
-            customiser.serverArgsModify(this);
-        }
+        applyCustomisers(customiser -> customiser.serverArgsModify(this, serverArgs));
     }
 
-    static String argUsage = "[--config=FILE] [--mem|--desc=AssemblerFile|--file=FILE] [--port PORT] /DatasetPathName";
+    static String argUsage = "[--config=FILE|--mem|--loc=DIR|--file=FILE] [--port PORT] /DatasetPathName";
 
     @Override
     protected String getSummary() {
         return getCommandName() + " " + argUsage;
     }
 
+    // Command line DSG
+    enum SetupType { UNSET,
+                   MEM, FILE, TDB, MEMTDB,  // Datasets on the command line
+                   CONF,                    // Configuration file.
+                   ASSEM,                   // Assembler for a datasets. Legacy.
+                   NONE,                   // Explicitly no dataset or configurtion file.
+                   SPARQLer                 // SPARQler mode
+    }
+
     @Override
     protected void processModulesAndArgs() {
         Logger log = Fuseki.serverLog;
-
         serverArgs.verboseLogging = super.isVerbose();
+        if ( ! serverArgs.bypassStdArgs )
+            processStdArguments(log);
+        // Have customisers process their own arguments.
+        applyCustomisers(customiser->customiser.serverArgsPrepare(this, serverArgs));
+    }
 
-        boolean allowEmpty = contains(argEmpty) || contains(argSparqler);
+    private void processStdArguments(Logger log) {
+        // Allow, but not require, no dataset or configuration
+        boolean allowEmpty = serverArgs.allowEmpty;
 
-        // ---- Checking consistency
+        // ---- Definition type
         int numDefinitions = 0;
+        SetupType setup = UNSET;
 
-        if ( contains(argMem) )
+        if ( contains(argMem) ) {
+            setup = MEM;
             numDefinitions++;
-        if ( contains(argFile) )
+        }
+        if ( contains(argFile) ) {
+            setup = FILE;
             numDefinitions++;
-        if ( contains(assemblerDescDecl) )
+        }
+        if ( contains(assemblerDescDecl) ) {
+            setup = ASSEM;
             numDefinitions++;
-        if ( contains(argTDB) )
+        }
+        if ( contains(argTDB) ) {
+            setup = TDB;
             numDefinitions++;
-        if ( contains(argMemTDB) )
+        }
+        if ( contains(argMemTDB) ) {
+            setup = MEMTDB;
             numDefinitions++;
-        if ( contains(argConfig) )
+        }
+        if ( contains(argConfig) ) {
+            setup = CONF;
             numDefinitions++;
+        }
+        if ( contains(argEmpty) ) {
+            setup = NONE;
+            //numDefinitions++;
+        }
+        if ( contains(argSparqler) ) {
+            setup = SPARQLer;
+            //numDefinitions++;
+        }
 
-        if ( numDefinitions == 0 && ! allowEmpty )
-            throw new CmdException("No dataset specified on the command line.");
+        // ---- Validation
+
+        if ( setup == UNSET && allowEmpty )
+            setup = NONE;
+
+        // Starting empty.
+        boolean startEmpty = ( setup == NONE || setup == SPARQLer );
 
         if ( numDefinitions > 1 )
             throw new CmdException("Multiple ways providing a dataset. Only one of --mem, --file, --loc or --conf");
 
-        if ( numDefinitions > 0 && allowEmpty )
+        if ( startEmpty && numDefinitions > 0 )
             throw new CmdException("Dataset provided but 'no dataset' flag given");
 
-        //---- check: Invalid: --conf + service name.
+        if ( startEmpty && ! getPositional().isEmpty() )
+            throw new CmdException("Dataset name provided but 'no dataset' flag given");
+
+        if ( ! startEmpty && numDefinitions == 0 )
+            throw new CmdException("No dataset or configuration specified on the command line");
+
+        // Configuration file OR dataset
+
         if ( contains(argConfig) ) {
-            if ( getPositional().size() != 0 )
+            // Invalid combination: --conf + service name.
+            if ( ! getPositional().isEmpty() )
                 throw new CmdException("Can't have both a configuration file and a service name");
             if ( contains(argRDFS) )
-                throw new CmdException("Need to define RDFS setup in the configuration file.");
+                throw new CmdException("Need to define RDFS setup in the configuration file");
         } else {
-            if ( ! allowEmpty && getPositional().size() == 0 )
-                throw new CmdException("Missing service name");
+            // No --conf
             if ( getPositional().size() > 1 )
                 throw new CmdException("Multiple dataset path names given");
-            if ( getPositional().size() != 0 )
+            if ( ! startEmpty && getPositional().size() == 0 ) {
+                if ( setup == UNSET )
+                    throw new CmdException("Missing dataset description and service name");
+                else
+                    throw new CmdException("Missing service name");
+            }
+            // Finally!
+            if ( getPositional().size() == 1 )
                 serverArgs.datasetPath = DataAccessPoint.canonical(getPositionalArg(0));
         }
 
@@ -348,6 +428,86 @@ public class FusekiMain extends CmdARQ {
             throw new CmdException("--update and a configuration file does not make sense (control using the configuration file only)");
         boolean allowUpdate = contains(argUpdate);
         serverArgs.allowUpdate = allowUpdate;
+
+        // ---- Dataset
+        // A server has one of the command line dataset setups or a configuration file,
+        // or "--empty" or "--sparqler"
+        // Only one of these is chosen from the checking above.
+
+        // Which TDB to use to create a command line TDB database.
+        if ( contains(argTDB1mode) )
+            useTDB2 = false;
+        if ( contains(argTDB2mode) )
+            useTDB2 = true;
+
+        switch(setup) {
+            case CONF->{
+                serverArgs.serverConfigFile = getValue(argConfig);
+            }
+            case MEM->{
+                serverArgs.dsgMaker = args->DSGSetup.setupMem(log, args);
+            }
+            case FILE->{
+                List<String> filenames = getValues(argFile);
+                serverArgs.dsgMaker = args->DSGSetup.setupFile(log, filenames, args);
+            }
+            case TDB->{
+                String directory = getValue(argTDB);
+                serverArgs.dsgMaker = args->DSGSetup.setupTDB(log, directory, useTDB2, args);
+            }
+            case NONE->{
+                serverArgs.startEmpty = true;
+                serverArgs.datasetDescription = "No dataset";
+            }
+            case ASSEM->{
+                serverArgs.dsgMaker = args->DSGSetup.setupAssembler(log, modDataset, args);
+            }
+            case MEMTDB->{
+                DSGSetup.setupMemTDB(log, useTDB2, serverArgs);
+            }
+            case UNSET->{
+                throw new CmdException("Internal error");
+            }
+            case SPARQLer -> {
+                String filebase = getValue(argSparqler);
+                if ( !FileOps.exists(filebase) )
+                    throw new CmdException("File area not found: " + filebase);
+                serverArgs.contentDirectory = filebase;
+                serverArgs.addGeneral = "/sparql";
+                serverArgs.startEmpty = true;
+                serverArgs.validators = true;
+            }
+            default -> throw new IllegalArgumentException("Unexpected value: " + setup);
+        }
+
+        // ---- RDFS
+        if ( contains(argRDFS) ) {
+            String rdfsVocab = getValue(argRDFS);
+            if ( !FileOps.exists(rdfsVocab) )
+                throw new CmdException("No such file for RDFS: "+rdfsVocab);
+            serverArgs.rdfsGraph = RDFDataMgr.loadGraph(rdfsVocab);
+            serverArgs.datasetDescription = serverArgs.datasetDescription+ " (with RDFS)";
+            serverArgs.dsg = RDFSFactory.datasetRDFS(serverArgs.dsg, serverArgs.rdfsGraph);
+        }
+
+        // ---- Misc features.
+        if ( contains(argTimeout) ) {
+            String str = getValue(argTimeout);
+            ARQ.getContext().set(ARQ.queryTimeout, str);
+        }
+
+        if ( contains(argGeneralQuerySvc) ) {
+            String z = getValue(argGeneralQuerySvc);
+            if ( ! z.startsWith("/") )
+                z = "/"+z;
+            serverArgs.addGeneral = z;
+        }
+
+        if ( contains(argValidators) ) {
+            serverArgs.validators = true;
+        }
+
+        // -- Server setup.
 
         boolean hasJettyConfigFile = contains(argJettyConfig);
 
@@ -365,117 +525,6 @@ public class FusekiMain extends CmdARQ {
                 throw new CmdException("Cannot specify 'localhost' and also provide a Jetty configuration file");
             serverArgs.loopback = true;
         }
-
-        // ---- Dataset
-        // Only one of these is chosen from the checking above.
-
-        // Which TDB to use to create a command line TDB database.
-        if ( contains(argTDB1mode) )
-            useTDB2 = false;
-        if ( contains(argTDB2mode) )
-            useTDB2 = true;
-
-        if ( allowEmpty ) {
-            serverArgs.empty = true;
-            serverArgs.datasetDescription = "No dataset";
-        }
-
-        // Fuseki config file
-        if ( contains(argConfig) )
-            serverArgs.serverConfigFile = getValue(argConfig);
-
-        // Ways to set up a dataset.
-        if ( contains(argMem) ) {
-            serverArgs.datasetDescription = "in-memory";
-            // Only one setup should be called by the test above but to be safe
-            // and in case of future changes, clear the configuration.
-            serverArgs.dsg = DatasetGraphFactory.createTxnMem();
-            // Always allow, else you can't do very much!
-            serverArgs.allowUpdate = true;
-        }
-
-        if ( contains(argFile) ) {
-            List<String> filenames = getValues(argFile);
-            serverArgs.datasetDescription = "in-memory, with files loaded";
-            // Update is not enabled by default for --file
-            serverArgs.allowUpdate = contains(argUpdate);
-            serverArgs.dsg = DatasetGraphFactory.createTxnMem();
-
-            for(String filename : filenames ) {
-                String pathname = filename;
-                if ( filename.startsWith("file:") )
-                    pathname = filename.substring("file:".length());
-                if ( !FileOps.exists(pathname) )
-                    throw new CmdException("File not found: " + filename);
-
-                // INITIAL DATA.
-                Lang language = RDFLanguages.filenameToLang(filename);
-                if ( language == null )
-                    throw new CmdException("Cannot guess language for file: " + filename);
-                Txn.executeWrite(serverArgs.dsg,  ()-> {
-                    try {
-                        log.info("Dataset: in-memory: load file: " + filename);
-                        RDFDataMgr.read(serverArgs.dsg, filename);
-                    } catch (RiotException ex) {
-                        throw new CmdException("Failed to load file: " + filename);
-                    }
-                });
-            }
-        }
-
-        if ( contains(argMemTDB) ) {
-            DSGSetup.setupMemTDB(useTDB2, serverArgs);
-        }
-
-        if ( contains(argTDB) ) {
-            String directory = getValue(argTDB);
-            DSGSetup.setupTDB(directory, useTDB2, serverArgs);
-        }
-
-        if ( contains(assemblerDescDecl) ) {
-            serverArgs.datasetDescription = "Assembler: "+ getValue(assemblerDescDecl);
-            // Need to add service details.
-            Dataset ds = modDataset.createDataset();
-            serverArgs.dsg = ds.asDatasetGraph();
-        }
-
-        if ( contains(argRDFS) ) {
-            String rdfsVocab = getValue(argRDFS);
-            if ( !FileOps.exists(rdfsVocab) )
-                throw new CmdException("No such file for RDFS: "+rdfsVocab);
-            serverArgs.rdfsGraph = RDFDataMgr.loadGraph(rdfsVocab);
-            serverArgs.datasetDescription = serverArgs.datasetDescription+ " (with RDFS)";
-            serverArgs.dsg = RDFSFactory.datasetRDFS(serverArgs.dsg, serverArgs.rdfsGraph);
-        }
-
-        // ---- Misc features.
-        if ( contains(argTimeout) ) {
-            String str = getValue(argTimeout);
-            ARQ.getContext().set(ARQ.queryTimeout, str);
-        }
-
-        if ( contains(argSparqler) ) {
-            String filebase = getValue(argSparqler);
-            if ( ! FileOps.exists(filebase) )
-                throw new CmdException("File area not found: "+filebase);
-            serverArgs.contentDirectory = filebase;
-            serverArgs.addGeneral = "/sparql";
-            serverArgs.empty = true;
-            serverArgs.validators = true;
-        }
-
-        if ( contains(argGeneralQuerySvc) ) {
-            String z = getValue(argGeneralQuerySvc);
-            if ( ! z.startsWith("/") )
-                z = "/"+z;
-            serverArgs.addGeneral = z;
-        }
-
-        if ( contains(argValidators) ) {
-            serverArgs.validators = true;
-        }
-
-        // -- Server setup.
 
         if ( contains(argContextPath) ) {
             String contextPath = getValue(argContextPath);
@@ -539,7 +588,7 @@ public class FusekiMain extends CmdARQ {
             // Allows for external setting of serverArgs.fusekiModules
             if ( serverArgs.fusekiModules == null ) {
                 FusekiAutoModules.setup();
-                serverArgs.fusekiModules = FusekiAutoModules.load();
+                serverArgs.fusekiModules = FusekiModules.getSystemModules();
             }
         } else {
             // Disabled module discovery.
@@ -563,11 +612,6 @@ public class FusekiMain extends CmdARQ {
         serverArgs.withStats = contains(argWithStats);
         serverArgs.withMetrics = contains(argWithMetrics);
         serverArgs.withCompact = contains(argWithCompact);
-
-        // Deal with any customisers
-        for (FusekiServerArgsCustomiser customiser : customiseServerArgs) {
-            customiser.serverArgsPrepare(this, serverArgs);
-        }
     }
 
     private int portNumber(ArgDecl arg) {
@@ -598,6 +642,7 @@ public class FusekiMain extends CmdARQ {
 
     @Override
     protected void exec() {
+        // Arguments have been processed to set serverArgs
         try {
             Logger log = Fuseki.serverLog;
             FusekiMainInfo.logServerCode(log);
@@ -635,25 +680,21 @@ public class FusekiMain extends CmdARQ {
      * The server has not been started.
      */
     private FusekiServer makeServer(ServerArgs serverArgs) {
-        FusekiServer.Builder builder = builder();
+        FusekiServer.Builder builder = FusekiServer.create();
         return buildServer(builder, serverArgs);
-    }
-
-    protected FusekiServer.Builder builder() {
-        return FusekiServer.create();
     }
 
     /**
      * Process {@link ServerArgs} and build a server.
      * The server has not been started.
      */
-    private static FusekiServer buildServer(FusekiServer.Builder builder, ServerArgs serverArgs) {
+    private FusekiServer buildServer(FusekiServer.Builder builder, ServerArgs serverArgs) {
         applyServerArgs(builder, serverArgs);
         return builder.build();
     }
 
     /** Apply {@link ServerArgs} to a {@link FusekiServer.Builder}. */
-    private static void applyServerArgs(FusekiServer.Builder builder, ServerArgs serverArgs) {
+    private void applyServerArgs(FusekiServer.Builder builder, ServerArgs serverArgs) {
         if ( serverArgs.jettyConfigFile != null )
             builder.jettyServerConfig(serverArgs.jettyConfigFile);
         builder.port(serverArgs.port);
@@ -672,23 +713,15 @@ public class FusekiMain extends CmdARQ {
             builder.addServlet("/$/validate/data",   new DataValidator());
         }
 
-//        if ( ! serverArgs.empty ) {
-//            if ( serverArgs.serverConfig != null )
-//                // Config file.
-//                builder.parseConfigFile(serverArgs.serverConfig);
-//            else
-//                // One dataset.
-//                builder.add(serverArgs.datasetPath, serverArgs.dsg, serverArgs.allowUpdate);
-//        }
-
-        if ( ! serverArgs.empty ) {
-            // A CLI customiser may have already set the model.
+        // Apply argument for the database services
+        if ( ! serverArgs.startEmpty ) {
             if (serverArgs.serverConfigModel != null ) {
+                // -- Customiser has already set the configuration model
                 builder.parseConfig(serverArgs.serverConfigModel);
                 serverArgs.datasetDescription = "Configuration: provided";
             } else if ( serverArgs.serverConfigFile != null ) {
+                // -- Configuration file.
                 // if there is a configuration file, read it.
-                // Read the model.
                 String file = serverArgs.serverConfigFile;
                 if ( file.startsWith("file:") )
                     file = file.substring("file:".length());
@@ -699,13 +732,20 @@ public class FusekiMain extends CmdARQ {
                     throw new CmdException("Is a directory: "+file);
                 serverArgs.datasetDescription = "Configuration: "+path.toAbsolutePath();
                 serverArgs.serverConfigModel = RDFParser.source(path).toModel();
+                // ... and perform server configuration
                 builder.parseConfig(serverArgs.serverConfigModel);
             } else {
-                // One dataset up by command line arguments.
-                if ( serverArgs.dsg == null || serverArgs.datasetPath == null ) {
+                // -- A dataset setup by command line arguments.
+                if ( serverArgs.datasetPath == null )
+                    throw new CmdException("No URL path name for the dataset");
+                // The dataset setup by command line arguments.
+                // A customizer may have set the dataset.
+                if ( serverArgs.dsg == null )
+                    serverArgs.dsgMaker.accept(serverArgs);
+                // Should have been set somehow by this point.
+                if ( serverArgs.dsg == null )
                     // Internal error: should have happened during checking earlier.
                     throw new CmdException("Failed to set the dataset service");
-                }
                 builder.add(serverArgs.datasetPath, serverArgs.dsg, serverArgs.allowUpdate);
             }
         }
@@ -746,10 +786,8 @@ public class FusekiMain extends CmdARQ {
         if ( serverArgs.withCompact )
             builder.enableCompact(true);
 
-        // Allow customisers to process their own arguments.
-        for (FusekiServerArgsCustomiser customiser : customiseServerArgs) {
-            customiser.serverArgsBuilder(builder, builder.configModel());
-        }
+        // Allow customisers to inspect and modify the builder.
+        applyCustomisers(customiser->customiser.serverArgsBuilder(builder, serverArgs.serverConfigModel));
     }
 
     /** Information from the command line setup */
@@ -757,11 +795,11 @@ public class FusekiMain extends CmdARQ {
         if ( super.isQuiet() )
             return;
 
-        if ( serverArgs.empty ) {
-            FmtLog.info(log, "No SPARQL datasets services");
+        if ( serverArgs.startEmpty ) {
+            FmtLog.info(log, "No SPARQL dataset services");
         } else {
             if ( serverArgs.datasetPath == null && serverArgs.serverConfigModel == null )
-                log.error("No dataset path nor server configuration file");
+                log.error("No dataset path or server configuration file");
         }
 
         DataAccessPointRegistry dapRegistry = DataAccessPointRegistry.get(server.getServletContext());

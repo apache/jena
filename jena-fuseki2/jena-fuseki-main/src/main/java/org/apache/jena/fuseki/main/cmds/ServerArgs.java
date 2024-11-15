@@ -18,6 +18,8 @@
 
 package org.apache.jena.fuseki.main.cmds;
 
+import java.util.function.Consumer;
+
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.graph.Graph;
@@ -31,56 +33,66 @@ import org.apache.jena.sparql.core.DatasetGraph;
  */
 public class ServerArgs {
     /** Server port. This is the http port when both http and https are active. */
-    public int port                     = -1;
+    public int port                       = -1;
     /** Loopback */
-    public boolean   loopback           = false;
+    public boolean loopback               = false;
 
     // https
-    public int httpsPort                = -1;
-    public String httpsKeysDetails      = null;
+    public int httpsPort                  = -1;
+    public String httpsKeysDetails        = null;
 
     // Jetty server configuration file.
-    public String jettyConfigFile       = null;
+    public String jettyConfigFile         = null;
 
     /** The dataset name (canonical form) */
-    public String    datasetPath        = null;
+    public String  datasetPath            = null;
     /** Allow update */
-    public boolean   allowUpdate        = false;
+    public boolean allowUpdate            = false;
 
-    public boolean   verboseLogging     = false;
+    public boolean verboseLogging         = false;
 
-    // FusekiModules to use for this server build.
-    public FusekiModules fusekiModules  = null;
+    /**
+     * FusekiModules to use during the server build *
+     * Command line customisers are handled separately by FusekiMain.
+     */
+    public FusekiModules fusekiModules    = null;
 
-    public boolean withCORS             = true;
-    public String corsConfigFile        = null;
-    public boolean withPing             = false;
-    public boolean withStats            = false;
-    public boolean withMetrics          = false;
-    public boolean withCompact          = false;
+    public boolean withCORS               = true;
+    public String corsConfigFile          = null;
+    public boolean withPing               = false;
+    public boolean withStats              = false;
+    public boolean withMetrics            = false;
+    public boolean withCompact            = false;
 
-    // This is set ...
-    public DatasetGraph dsg             = null;
+    // Either a dataset setup from the command line (delayed creation of the dataset) ...
+    public Consumer<ServerArgs> dsgMaker  = null;
+    public DatasetGraph dsg               = null;
     /** RDFS dataset - only when dataset is defined on the command line. */
-    public Graph rdfsGraph              = null;
+    public Graph rdfsGraph                = null;
 
-    // ... or this.
-    public String serverConfigFile      = null;
-    public Model serverConfigModel      = null;
+    // ... or configuration file.
+    public String serverConfigFile        = null;
+    public Model serverConfigModel        = null;
 
-    /** No registered datasets without it being an error. */
-    public boolean empty                = false;
+    /** Allow no datasets without it being an error. This is not an argument. */
+    public boolean allowEmpty             = false;
+    /** Start without a dataset or configuration (this is {@code --empty}) */
+    public boolean startEmpty             = false;
+
     /** General query processor servlet */
-    public String addGeneral            = null;
+    public String addGeneral              = null;
 
-    public boolean validators           = false;
+    public boolean validators             = false;
     /** An informative label */
-    public String datasetDescription    = null;
-    public String servletContextPath    = null;
-    public String contentDirectory      = null;
+    public String datasetDescription      = null;
+    public String servletContextPath      = null;
+    public String contentDirectory        = null;
 
     // Server authentication
-    public AuthScheme authScheme        = null;
-    public String passwdFile            = null;
-    public String realm                 = null;
+    public AuthScheme authScheme          = null;
+    public String passwdFile              = null;
+    public String realm                   = null;
+
+    /** Don't process standard arguments. This is a not a command argument.*/
+    public boolean bypassStdArgs          = false;
 }

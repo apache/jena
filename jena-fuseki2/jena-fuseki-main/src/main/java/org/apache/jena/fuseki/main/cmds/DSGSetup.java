@@ -20,12 +20,27 @@ package org.apache.jena.fuseki.main.cmds;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 
+import arq.cmdline.ModDatasetAssembler;
 import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.fuseki.system.spot.TDBOps;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFLanguages;
+import org.apache.jena.riot.RiotException;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
+import org.apache.jena.system.Txn;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb2.DatabaseMgr;
+import org.slf4j.Logger;
+
+/**
+ * Various ways to build a dataset from command line arguments.
+ */
 
 /*package*/ class DSGSetup {
 
@@ -33,7 +48,7 @@ import org.apache.jena.tdb2.DatabaseMgr;
      * Given a path name and a preference of TDB1/TDB2 for new databases, return
      * details of the setup to use.
      */
-    /*package*/ static void setupTDB(String directory, boolean useTDB2, ServerArgs serverArgs) {
+    /*package*/ static void setupTDB(Logger log, String directory, boolean useTDB2, ServerArgs serverArgs) {
         File dir = Path.of(directory).toFile();
         if ( ! dir.exists() )
             throw new CmdException("Directory does not exist: " + directory);
@@ -46,40 +61,78 @@ import org.apache.jena.tdb2.DatabaseMgr;
 
         if ( IO.isEmptyDirectory(directory) ) {
             if ( useTDB2 )
-                setupTDB2(directory, serverArgs);
+                setupTDB2(log, directory, serverArgs);
             else
-                setupTDB1(directory, serverArgs);
+                setupTDB1(log, directory, serverArgs);
             return;
         }
 
         // Exists, not empty or does not exist
         if ( TDBOps.isTDB1(directory) ) {
-            setupTDB1(directory, serverArgs);
+            setupTDB1(log, directory, serverArgs);
             return;
         } else if ( TDBOps.isTDB2(directory) ) {
-            setupTDB2(directory, serverArgs);
+            setupTDB2(log, directory, serverArgs);
             return;
         } else
             throw new CmdException("Directory not a database: " + directory);
     }
 
-    private static void setupTDB1(String directory, ServerArgs serverArgs) {
+    private static void setupTDB1(Logger log, String directory, ServerArgs serverArgs) {
         serverArgs.datasetDescription = "TDB1 dataset: location="+directory;
         serverArgs.dsg = TDB1Factory.createDatasetGraph(directory);
     }
 
-    private static void setupTDB2(String directory, ServerArgs serverArgs) {
+    private static void setupTDB2(Logger log, String directory, ServerArgs serverArgs) {
         serverArgs.datasetDescription = "TDB2 dataset: location="+directory;
         serverArgs.dsg = DatabaseMgr.connectDatasetGraph(directory);
     }
 
-    public static void setupMemTDB(boolean useTDB2, ServerArgs serverArgs) {
+    /*package*/ static void setupMemTDB(Logger log, boolean useTDB2, ServerArgs serverArgs) {
         String tag = useTDB2 ? "TDB2" : "TDB1";
         serverArgs.datasetDescription = tag+" dataset in-memory";
         serverArgs.dsg = useTDB2
             ? DatabaseMgr.createDatasetGraph()
             : TDB1Factory.createDatasetGraph();
         serverArgs.allowUpdate = true;
+    }
 
+    /*package*/ static void setupMem(Logger log, ServerArgs serverArgs) {
+        serverArgs.datasetDescription = "in-memory";
+        serverArgs.dsg = DatasetGraphFactory.createTxnMem();
+        serverArgs.allowUpdate = true;
+    }
+
+    /*package*/ static void setupFile(Logger log, List<String> filenames, ServerArgs serverArgs) {
+        serverArgs.datasetDescription = "in-memory, with files loaded";
+        serverArgs.dsg = DatasetGraphFactory.createTxnMem();
+
+        for(String filename : filenames ) {
+            String pathname = filename;
+            if ( filename.startsWith("file:") )
+                pathname = filename.substring("file:".length());
+            if ( !FileOps.exists(pathname) )
+                throw new CmdException("File not found: " + filename);
+
+            // INITIAL DATA.
+            Lang language = RDFLanguages.filenameToLang(filename);
+            if ( language == null )
+                throw new CmdException("Cannot guess language for file: " + filename);
+            Txn.executeWrite(serverArgs.dsg,  ()-> {
+                try {
+                    log.info("Dataset: in-memory: load file: " + filename);
+                    RDFDataMgr.read(serverArgs.dsg, filename);
+                } catch (RiotException ex) {
+                    throw new CmdException("Failed to load file: " + filename);
+                }
+            });
+        }
+
+    }
+
+    public static void setupAssembler(Logger log, ModDatasetAssembler modDataset, ServerArgs serverArgs) {
+        serverArgs.datasetDescription = "Assembler: "+ modDataset.getAssemblerFile();
+        Dataset ds = modDataset.createDataset();
+        serverArgs.dsg = ds.asDatasetGraph();
     }
 }

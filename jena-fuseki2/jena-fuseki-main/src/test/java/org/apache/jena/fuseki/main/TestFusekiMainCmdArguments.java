@@ -18,10 +18,7 @@
 package org.apache.jena.fuseki.main;
 
 import static java.util.Collections.emptyList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,8 +30,10 @@ import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
+import org.apache.jena.fuseki.main.cmds.ServerArgs;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.riot.SysRIOT;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -55,7 +54,7 @@ public class TestFusekiMainCmdArguments {
         level = LogCtl.getLevel(Fuseki.serverLog);
         LogCtl.setLevel(Fuseki.serverLog, "WARN");
 
-        // Create a fake Jetty config file just to avoid File Not Found error
+        // Create a fake Jetty config file just to avoid "File Not Found" error
         jettyConfigFile = Files.createTempFile("jetty-config",".xml").toFile();
         jettyConfigFilename = jettyConfigFile.getAbsolutePath();
     }
@@ -72,10 +71,19 @@ public class TestFusekiMainCmdArguments {
             server.stop();
     }
 
+    // Test the initial settings in ServerArgs for customisation
+    // control features that are not argument values.
+    @Test
+    public void argDefaults() {
+        ServerArgs serverArgs = new ServerArgs();
+        assertFalse("Wrong default setting: allowEmpty", serverArgs.allowEmpty);
+        assertFalse("Wrong default setting: bypassStdArgs", serverArgs.bypassStdArgs);
+    }
+
     @Test
     public void test_empty() {
         // given
-        List<String> arguments = List.of("--port=0", "--empty", "/dataset");
+        List<String> arguments = List.of("--port=0", "--empty");
         // when
         buildServer(buildCmdLineArguments(arguments));
         // then
@@ -125,6 +133,15 @@ public class TestFusekiMainCmdArguments {
     }
 
     @Test
+    public void test_empty_but_named() {
+        // given
+        List<String> arguments = List.of("--port=0", "--empty", "/dataset");
+        String expectedMessage = "Dataset name provided but 'no dataset' flag given";
+        // when, then
+        testForCmdException(arguments, expectedMessage);
+    }
+
+    @Test
     public void test_error_contextpath() {
         // given
         List<String> arguments = List.of("--mem", "--contextpath=ABC/", "/path");
@@ -137,7 +154,7 @@ public class TestFusekiMainCmdArguments {
     public void test_error_noDataSetProvided() {
         // given
         List<String> arguments = List.of("/dataset");
-        String expectedMessage = "No dataset specified on the command line.";
+        String expectedMessage = "No dataset or configuration specified on the command line";
         // when, then
         testForCmdException(arguments, expectedMessage);
     }
@@ -146,7 +163,7 @@ public class TestFusekiMainCmdArguments {
     public void test_error_noArguments_emptyString() {
         // given
         String emptyString = "";
-        String expectedMessage = "No dataset specified on the command line.";
+        String expectedMessage = "No dataset or configuration specified on the command line";
         // when
         Throwable actual = null;
         try {
@@ -164,7 +181,7 @@ public class TestFusekiMainCmdArguments {
     public void test_error_noArguments_null() {
         // given
         String nullString = null;
-        String expectedMessage = "No dataset specified on the command line.";
+        String expectedMessage = "No dataset or configuration specified on the command line";
         // when
         Throwable actual = null;
         try {
@@ -182,7 +199,7 @@ public class TestFusekiMainCmdArguments {
     public void test_error_noArguments_emptyList() {
         // given
         List<String> arguments = emptyList();
-        String expectedMessage = "No dataset specified on the command line.";
+        String expectedMessage = "No dataset or configuration specified on the command line";
         // when, then
         testForCmdException(arguments, expectedMessage);
     }
@@ -219,7 +236,7 @@ public class TestFusekiMainCmdArguments {
     public void test_error_configFileWithRDFS() {
         // given
         List<String> arguments = List.of("--config=file", "--rdfs=file");
-        String expectedMessage = "Need to define RDFS setup in the configuration file.";
+        String expectedMessage = "Need to define RDFS setup in the configuration file";
         // when, then
         testForCmdException(arguments, expectedMessage);
     }
@@ -339,7 +356,7 @@ public class TestFusekiMainCmdArguments {
     @Test
     public void test_error_missingSparqlerFile() {
         // given
-        List<String> arguments = List.of("--sparqler=missing_file", "/dataset");
+        List<String> arguments = List.of("--sparqler=missing_file");
         String expectedMessage = "File area not found: missing_file";
         // when, then
         testForCmdException(arguments, expectedMessage);
