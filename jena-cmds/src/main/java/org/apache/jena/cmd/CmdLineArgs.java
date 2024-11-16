@@ -32,12 +32,18 @@ public class CmdLineArgs extends CommandLineBase {
     }
 
     private boolean processedArgs = false;
-    protected Map<String, ArgDecl> argMap = new HashMap<>();   // Map from string name to ArgDecl
-    protected Map<String, Arg> args = new HashMap<>();         // Name to Arg
-    protected List<String> positionals = new ArrayList<>();    // Positional arguments as strings.
 
-    public void process() throws IllegalArgumentException
-    {
+    // Setup:
+    // Map of declarations of accepted arguments.
+    protected Map<String, ArgDecl> argMap = new HashMap<>();
+
+    // After command line processing:
+    // Map of arguments seen, with values.
+    protected Map<String, Arg> args = new HashMap<>();
+    // Positional arguments as strings.
+    protected List<String> positionals = new ArrayList<>();
+
+    public void process() throws IllegalArgumentException {
         processedArgs = true;
         apply(new ArgProcessor());
     }
@@ -47,9 +53,8 @@ public class CmdLineArgs extends CommandLineBase {
     /** Add an argument to those to be accepted on the command line.
      * @param argName Name
      * @param hasValue True if the command takes a (string) value
-     * @return The CommandLine processor object
+     * @return The command line processor object
      */
-
     public CmdLineArgs add(String argName, boolean hasValue) {
         return add(new ArgDecl(hasValue, argName));
     }
@@ -58,25 +63,87 @@ public class CmdLineArgs extends CommandLineBase {
      *  Argument order reflects ArgDecl.
      * @param hasValue True if the command takes a (string) value
      * @param argName Name
-     * @return The CommandLine processor object
+     * @return The command line processor object
      */
-
     public CmdLineArgs add(boolean hasValue, String argName) {
         return add(new ArgDecl(hasValue, argName));
     }
 
     /** Add an argument object
-     * @param arg Argument to add
-     * @return The CommandLine processor object
+     * @param argDecl Argument to add
+     * @return The command line processor object
      */
-
-    public CmdLineArgs add(ArgDecl arg) {
-        for (Iterator<String> iter = arg.names(); iter.hasNext();) {
-            String name = iter.next();
+    public CmdLineArgs add(ArgDecl argDecl) {
+        for ( String name : argDecl.getNames() ) {
             if ( argMap.containsKey(name) )
                 Log.warn(this, "Argument '" + name + "' already added");
-            argMap.put(name, arg);
+            argMap.put(name, argDecl);
         }
+        return this;
+    }
+
+    /**
+     * Remove an argument and any values set for this argument.
+     * @param argDecl Argument to remove
+     * @return The command line processor object
+     */
+    public CmdLineArgs removeArg(ArgDecl argDecl) {
+        for ( String name : argDecl.getNames() ) {
+            removeArg(name);
+        }
+        return this;
+    }
+
+    /**
+     * Remove an argument and any values set for this argument.
+     * This only removed the use of the specific name.
+     * See {@link #removeArgAll(String)} for removing this name
+     * and all its synonyms.
+     *
+     * @param argName Argument to remove
+     * @return The command line processor object
+     */
+    public CmdLineArgs removeArg(String argName) {
+        argMap.remove(argName);
+        args.remove(argName);
+        return this;
+    }
+
+    /**
+     * Remove an argument and all its synonyms, together with any
+     * values already set for these arguments. {@link #removeArg(String)}
+     * for removing just this particular name.
+     *
+     * @param argName Argument to remove
+     * @return The command line processor object
+     */
+    public CmdLineArgs removeArgAll(String argName) {
+        ArgDecl argDecl = findArgDecl(argName);
+        if ( argDecl != null )
+            removeArg(argDecl);
+        return this;
+    }
+
+    private ArgDecl findArgDecl(String argName) {
+        return argMap.get(argName);
+    }
+
+    /**
+     * Remove argument declarations and argument values.
+     */
+    public CmdLineArgs clear() {
+        argMap.clear();
+        args.clear();
+        return this;
+    }
+
+    /**
+     * Forget any argument values; retain the  argument declarations.
+     * Call {@link #process()} to re-process the command line.
+     */
+    public CmdLineArgs reset() {
+        processedArgs = false;
+        args.clear();
         return this;
     }
 
@@ -122,7 +189,6 @@ public class CmdLineArgs extends CommandLineBase {
             arg.setValue(value);
             arg.addValue(value);
         }
-
         return this;
     }
 
