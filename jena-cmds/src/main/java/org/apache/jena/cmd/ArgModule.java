@@ -18,9 +18,8 @@
 
 package org.apache.jena.cmd;
 
-public interface ArgModule
-{
+/** A group of related arguments */
+public interface ArgModule {
     // Argument processing phase
     public void processArgs(CmdArgModule cmdLine);
 }
-
