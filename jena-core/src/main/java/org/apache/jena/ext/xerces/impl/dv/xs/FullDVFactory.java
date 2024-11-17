@@ -78,21 +78,13 @@ public class FullDVFactory extends BaseDVFactory {
         // full schema simple type names
         final String DOUBLE            = "double";
         final String DURATION          = "duration";
-        final String ENTITY            = "ENTITY";
-        final String ENTITIES          = "ENTITIES";
         final String FLOAT             = "float";
         final String HEXBINARY         = "hexBinary";
-        final String ID                = "ID";
-        final String IDREF             = "IDREF";
-        final String IDREFS            = "IDREFS";
         final String NAME              = "Name";
         final String NCNAME            = "NCName";
         final String NMTOKEN           = "NMTOKEN";
-        final String NMTOKENS          = "NMTOKENS";
         final String LANGUAGE          = "language";
         final String NORMALIZEDSTRING  = "normalizedString";
-        final String NOTATION          = "NOTATION";
-        final String QNAME             = "QName";
         final String STRING            = "string";
         final String TOKEN             = "token";
 
@@ -105,8 +97,6 @@ public class FullDVFactory extends BaseDVFactory {
         types.put(DOUBLE, new XSSimpleTypeDecl(anySimpleType, DOUBLE, XSSimpleTypeDecl.DV_DOUBLE, XSSimpleType.ORDERED_PARTIAL, true, true, true, true, XSConstants.DOUBLE_DT));
         types.put(DURATION, new XSSimpleTypeDecl(anySimpleType, DURATION, XSSimpleTypeDecl.DV_DURATION, XSSimpleType.ORDERED_PARTIAL, false, false, false, true, XSConstants.DURATION_DT));
         types.put(HEXBINARY, new XSSimpleTypeDecl(anySimpleType, HEXBINARY, XSSimpleTypeDecl.DV_HEXBINARY, XSSimpleType.ORDERED_FALSE, false, false, false, true, XSConstants.HEXBINARY_DT));
-        types.put(QNAME, new XSSimpleTypeDecl(anySimpleType, QNAME, XSSimpleTypeDecl.DV_QNAME, XSSimpleType.ORDERED_FALSE, false, false, false, true, XSConstants.QNAME_DT));
-        types.put(NOTATION, new XSSimpleTypeDecl(anySimpleType, NOTATION, XSSimpleTypeDecl.DV_NOTATION, XSSimpleType.ORDERED_FALSE, false, false, false, true, XSConstants.NOTATION_DT));
 
         facets.whiteSpace =  XSSimpleType.WS_REPLACE;
         XSSimpleTypeDecl normalizedDV = new XSSimpleTypeDecl(stringDV, NORMALIZEDSTRING , URI_SCHEMAFORSCHEMA, (short)0, false, null, XSConstants.NORMALIZEDSTRING_DT);
@@ -134,36 +124,10 @@ public class FullDVFactory extends BaseDVFactory {
         ncnameDV.applyFacets1(facets, XSSimpleType.FACET_WHITESPACE, (short)0, XSSimpleTypeDecl.SPECIAL_PATTERN_NCNAME);
         types.put(NCNAME, ncnameDV);
 
-        types.put(ID, new XSSimpleTypeDecl(ncnameDV,  ID, XSSimpleTypeDecl.DV_ID, XSSimpleType.ORDERED_FALSE, false, false, false , true, XSConstants.ID_DT));
-        XSSimpleTypeDecl idrefDV = new XSSimpleTypeDecl(ncnameDV,  IDREF , XSSimpleTypeDecl.DV_IDREF, XSSimpleType.ORDERED_FALSE, false, false, false, true, XSConstants.IDREF_DT);
-        types.put(IDREF, idrefDV);
-
-        facets.minLength = 1;
-        XSSimpleTypeDecl tempDV = new XSSimpleTypeDecl(null, URI_SCHEMAFORSCHEMA, (short)0, idrefDV, true, null);
-        XSSimpleTypeDecl idrefsDV = new XSSimpleTypeDecl(tempDV, IDREFS, URI_SCHEMAFORSCHEMA, (short)0, false, null);
-        idrefsDV.applyFacets1(facets, XSSimpleType.FACET_MINLENGTH, (short)0);
-        types.put(IDREFS, idrefsDV);
-
-        XSSimpleTypeDecl entityDV = new XSSimpleTypeDecl(ncnameDV, ENTITY , XSSimpleTypeDecl.DV_ENTITY, XSSimpleType.ORDERED_FALSE, false, false, false, true, XSConstants.ENTITY_DT);
-        types.put(ENTITY, entityDV);
-
-        facets.minLength = 1;
-        tempDV = new XSSimpleTypeDecl(null, URI_SCHEMAFORSCHEMA, (short)0, entityDV, true, null);
-        XSSimpleTypeDecl entitiesDV = new XSSimpleTypeDecl(tempDV, ENTITIES, URI_SCHEMAFORSCHEMA, (short)0, false, null);
-        entitiesDV.applyFacets1(facets, XSSimpleType.FACET_MINLENGTH, (short)0);
-        types.put(ENTITIES, entitiesDV);
-
-
         facets.whiteSpace  = XSSimpleType.WS_COLLAPSE;
         XSSimpleTypeDecl nmtokenDV = new XSSimpleTypeDecl(tokenDV, NMTOKEN, URI_SCHEMAFORSCHEMA, (short)0, false, null, XSConstants.NMTOKEN_DT);
         nmtokenDV.applyFacets1(facets, XSSimpleType.FACET_WHITESPACE, (short)0, XSSimpleTypeDecl.SPECIAL_PATTERN_NMTOKEN);
         types.put(NMTOKEN, nmtokenDV);
-
-        facets.minLength = 1;
-        tempDV = new XSSimpleTypeDecl(null, URI_SCHEMAFORSCHEMA, (short)0, nmtokenDV, true, null);
-        XSSimpleTypeDecl nmtokensDV = new XSSimpleTypeDecl(tempDV, NMTOKENS, URI_SCHEMAFORSCHEMA, (short)0, false, null);
-        nmtokensDV.applyFacets1(facets, XSSimpleType.FACET_MINLENGTH, (short)0);
-        types.put(NMTOKENS, nmtokensDV);
     }//createBuiltInTypes(SymbolHash)
 
 }//XFormsDVFactory

@@ -20,7 +20,6 @@ package org.apache.jena.ext.xerces.impl.dv.xs;
 import java.math.BigInteger;
 import java.util.AbstractList;
 import java.util.Locale;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.apache.jena.ext.xerces.impl.Constants;
@@ -48,6 +47,7 @@ import org.w3c.dom.TypeInfo;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
 
+    protected static final short DV_ANYSIMPLETYPE = PRIMITIVE_ANYSIMPLETYPE;
     protected static final short DV_STRING        = PRIMITIVE_STRING;
     protected static final short DV_BOOLEAN       = PRIMITIVE_BOOLEAN;
     protected static final short DV_DECIMAL       = PRIMITIVE_DECIMAL;
@@ -65,21 +65,13 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
     protected static final short DV_HEXBINARY     = PRIMITIVE_HEXBINARY;
     protected static final short DV_BASE64BINARY  = PRIMITIVE_BASE64BINARY;
     protected static final short DV_ANYURI        = PRIMITIVE_ANYURI;
-    protected static final short DV_QNAME         = PRIMITIVE_QNAME;
     protected static final short DV_PRECISIONDECIMAL = PRIMITIVE_PRECISIONDECIMAL;
-    protected static final short DV_NOTATION      = PRIMITIVE_NOTATION;
 
-    protected static final short DV_ANYSIMPLETYPE = 0;
-    protected static final short DV_ID            = DV_NOTATION + 1;
-    protected static final short DV_IDREF         = DV_NOTATION + 2;
-    protected static final short DV_ENTITY        = DV_NOTATION + 3;
-    protected static final short DV_INTEGER       = DV_NOTATION + 4;
-    protected static final short DV_LIST          = DV_NOTATION + 5;
-    protected static final short DV_UNION         = DV_NOTATION + 6;
-    protected static final short DV_YEARMONTHDURATION = DV_NOTATION + 7;
-    protected static final short DV_DAYTIMEDURATION	= DV_NOTATION + 8;
-    protected static final short DV_ANYATOMICTYPE = DV_NOTATION + 9;
-    protected static final short DV_DATETIMESTAMP = DV_NOTATION + 10;
+    protected static final short DV_INTEGER       = DV_PRECISIONDECIMAL + 1;
+    protected static final short DV_YEARMONTHDURATION = DV_PRECISIONDECIMAL + 2;
+    protected static final short DV_DAYTIMEDURATION	= DV_PRECISIONDECIMAL + 3;
+    protected static final short DV_ANYATOMICTYPE = DV_PRECISIONDECIMAL + 4;
+    protected static final short DV_DATETIMESTAMP = DV_PRECISIONDECIMAL + 5;
 
     private static final TypeValidator[] gDVs = {
         new AnySimpleDV(),
@@ -100,15 +92,8 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
         new HexBinaryDV(),
         new Base64BinaryDV(),
         new AnyURIDV(),
-        new QNameDV(),
         new PrecisionDecimalDV(),   // XML Schema 1.1 type
-        new QNameDV(),              // NOTATION -- use the same one as qname
-        new IDDV(),
-        new IDREFDV(),
-        new EntityDV(),
         new IntegerDV(),
-        new ListDV(),
-        new UnionDV(),
         new YearMonthDurationDV(),  // XML Schema 1.1 type
         new DayTimeDurationDV(),    // XML Schema 1.1 type
         new AnyAtomicDV(),          // XML Schema 1.1 type
@@ -137,15 +122,8 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
         NORMALIZE_TRIM, //HexBinaryDV(),
         NORMALIZE_NONE, //Base64BinaryDV(),  // Base64 know how to deal with spaces
         NORMALIZE_TRIM, //AnyURIDV(),
-        NORMALIZE_TRIM, //QNameDV(),
         NORMALIZE_TRIM, //PrecisionDecimalDV() (Schema 1.1)
-        NORMALIZE_TRIM, //QNameDV(),   // notation
-        NORMALIZE_TRIM, //IDDV(),
-        NORMALIZE_TRIM, //IDREFDV(),
-        NORMALIZE_TRIM, //EntityDV(),
         NORMALIZE_TRIM, //IntegerDV(),
-        NORMALIZE_FULL, //ListDV(),
-        NORMALIZE_NONE, //UnionDV(),
         NORMALIZE_TRIM, //YearMonthDurationDV() (Schema 1.1)
         NORMALIZE_TRIM, //DayTimeDurationDV() (Schema 1.1)
         NORMALIZE_NONE, //AnyAtomicDV() (Schema 1.1)
@@ -178,8 +156,6 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
     static final int DERIVATION_ANY = 0;
     static final int DERIVATION_RESTRICTION = 1;
     static final int DERIVATION_EXTENSION = 2;
-    static final int DERIVATION_UNION = 4;
-    static final int DERIVATION_LIST = 8;
 
     static final ValidationContext fEmptyContext = new ValidationContext() {
         @Override
@@ -367,16 +343,6 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
 
         fVariety = fBase.fVariety;
         fValidationDV = fBase.fValidationDV;
-        switch (fVariety) {
-            case VARIETY_ATOMIC:
-                break;
-            case VARIETY_LIST:
-                fItemType = fBase.fItemType;
-                break;
-            case VARIETY_UNION:
-                fMemberTypes = fBase.fMemberTypes;
-                break;
-        }
 
         // always inherit facets from the base.
         // in case a type is created, but applyFacets is not called
@@ -420,59 +386,6 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
         fBuiltInKind = base.fBuiltInKind;
     }
 
-    //Create a new simple type for list.
-    protected XSSimpleTypeDecl(String name, String uri, short finalSet, XSSimpleTypeDecl itemType, boolean isImmutable,
-            XSObjectList annotations) {
-        fBase = fAnySimpleType;
-        fTypeName = name;
-        fTargetNamespace = uri;
-        fFinalSet = finalSet;
-        fAnnotations = annotations;
-
-        fVariety = VARIETY_LIST;
-        fItemType = itemType;
-        fValidationDV = DV_LIST;
-        fFacetsDefined = FACET_WHITESPACE;
-        fFixedFacet = FACET_WHITESPACE;
-        fWhiteSpace = WS_COLLAPSE;
-
-        //setting fundamental facets
-        calcFundamentalFacets();
-        fIsImmutable = isImmutable;
-
-        // Values of this type are lists
-        fBuiltInKind = XSConstants.LIST_DT;
-    }
-
-    //Create a new simple type for union.
-    protected XSSimpleTypeDecl(String name, String uri, short finalSet, XSSimpleTypeDecl[] memberTypes,
-            XSObjectList annotations) {
-        fBase = fAnySimpleType;
-        fTypeName = name;
-        fTargetNamespace = uri;
-        fFinalSet = finalSet;
-        fAnnotations = annotations;
-
-        fVariety = VARIETY_UNION;
-        fMemberTypes = memberTypes;
-        fValidationDV = DV_UNION;
-        // even for union, we set whitespace to something
-        // this will never be used, but we can use fFacetsDefined to check
-        // whether applyFacets() is allwwed: it's not allowed
-        // if fFacetsDefined != 0
-        fFacetsDefined = FACET_WHITESPACE;
-        fWhiteSpace = WS_COLLAPSE;
-
-        //setting fundamental facets
-        calcFundamentalFacets();
-        // none of the schema-defined types are unions, so just set
-        // fIsImmutable to false.
-        fIsImmutable = false;
-
-        // No value can be of this type, so it's unavailable.
-        fBuiltInKind = XSConstants.UNAVAILABLE_DT;
-    }
-
     //set values for restriction.
     protected XSSimpleTypeDecl setRestrictionValues(XSSimpleTypeDecl base, String name, String uri, short finalSet,
             XSObjectList annotations) {
@@ -487,16 +400,6 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
 
         fVariety = fBase.fVariety;
         fValidationDV = fBase.fValidationDV;
-        switch (fVariety) {
-            case VARIETY_ATOMIC:
-                break;
-            case VARIETY_LIST:
-                fItemType = fBase.fItemType;
-                break;
-            case VARIETY_UNION:
-                fMemberTypes = fBase.fMemberTypes;
-                break;
-        }
 
         // always inherit facets from the base.
         // in case a type is created, but applyFacets is not called
@@ -523,65 +426,6 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
 
         // Inherit from the base type
         fBuiltInKind = base.fBuiltInKind;
-
-        return this;
-    }
-
-    //set values for list.
-    protected XSSimpleTypeDecl setListValues(String name, String uri, short finalSet, XSSimpleTypeDecl itemType,
-            XSObjectList annotations) {
-        //decline to do anything if the object is immutable.
-        if(fIsImmutable) return null;
-        fBase = fAnySimpleType;
-        fAnonymous = false;
-        fTypeName = name;
-        fTargetNamespace = uri;
-        fFinalSet = finalSet;
-        fAnnotations = annotations;
-
-        fVariety = VARIETY_LIST;
-        fItemType = itemType;
-        fValidationDV = DV_LIST;
-        fFacetsDefined = FACET_WHITESPACE;
-        fFixedFacet = FACET_WHITESPACE;
-        fWhiteSpace = WS_COLLAPSE;
-
-        //setting fundamental facets
-        calcFundamentalFacets();
-
-        // Values of this type are lists
-        fBuiltInKind = XSConstants.LIST_DT;
-
-        return this;
-    }
-
-    //set values for union.
-    protected XSSimpleTypeDecl setUnionValues(String name, String uri, short finalSet, XSSimpleTypeDecl[] memberTypes,
-            XSObjectList annotations) {
-        //decline to do anything if the object is immutable.
-        if(fIsImmutable) return null;
-        fBase = fAnySimpleType;
-        fAnonymous = false;
-        fTypeName = name;
-        fTargetNamespace = uri;
-        fFinalSet = finalSet;
-        fAnnotations = annotations;
-
-        fVariety = VARIETY_UNION;
-        fMemberTypes = memberTypes;
-        fValidationDV = DV_UNION;
-        // even for union, we set whitespace to something
-        // this will never be used, but we can use fFacetsDefined to check
-        // whether applyFacets() is allwwed: it's not allowed
-        // if fFacetsDefined != 0
-        fFacetsDefined = FACET_WHITESPACE;
-        fWhiteSpace = WS_COLLAPSE;
-
-        //setting fundamental facets
-        calcFundamentalFacets();
-
-        // No value can be of this type, so it's unavailable.
-        fBuiltInKind = XSConstants.UNAVAILABLE_DT;
 
         return this;
     }
@@ -638,49 +482,8 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
     }
 
     @Override
-    public boolean isIDType(){
-        switch (fVariety) {
-            case VARIETY_ATOMIC:
-                return fValidationDV == DV_ID;
-            case VARIETY_LIST:
-                return fItemType.isIDType();
-            case VARIETY_UNION:
-                for (int i = 0; i < fMemberTypes.length; i++) {
-                    if (fMemberTypes[i].isIDType())
-                        return true;
-                }
-        }
-        return false;
-    }
-
-    @Override
-    public short getWhitespace() throws DatatypeException{
-        if (fVariety == VARIETY_UNION) {
-            throw new DatatypeException("dt-whitespace", new Object[]{fTypeName});
-        }
+    public short getWhitespace() {
         return fWhiteSpace;
-    }
-
-    @Override
-    public short getPrimitiveKind() {
-        if (fVariety == VARIETY_ATOMIC && fValidationDV != DV_ANYSIMPLETYPE) {
-            if (fValidationDV == DV_ID || fValidationDV == DV_IDREF || fValidationDV == DV_ENTITY) {
-                return DV_STRING;
-            }
-            else if (fValidationDV == DV_INTEGER) {
-                return DV_DECIMAL;
-            }
-            else if (Constants.SCHEMA_1_1_SUPPORT && (fValidationDV == DV_YEARMONTHDURATION || fValidationDV == DV_DAYTIMEDURATION)) {
-                return DV_DURATION;
-            }
-            else {
-                return fValidationDV;
-            }
-        }
-        else {
-            // REVISIT: error situation. runtime exception?
-            return (short)0;
-        }
     }
 
     /**
@@ -710,37 +513,6 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
         else {
             // REVISIT: error situation. runtime exception?
             return null;
-        }
-    }
-
-    /**
-     * If variety is <code>list</code> the item type definition (an atomic or
-     * union simple type definition) is available, otherwise
-     * <code>null</code>.
-     */
-    @Override
-    public XSSimpleTypeDefinition getItemType() {
-        if (fVariety == VARIETY_LIST) {
-            return fItemType;
-        }
-        else {
-            // REVISIT: error situation. runtime exception?
-            return null;
-        }
-    }
-
-    /**
-     * If variety is <code>union</code> the list of member type definitions (a
-     * non-empty sequence of simple type definitions) is available,
-     * otherwise an empty <code>XSObjectList</code>.
-     */
-    @Override
-    public XSObjectList getMemberTypes() {
-        if (fVariety == VARIETY_UNION) {
-            return new XSObjectListImpl(fMemberTypes, fMemberTypes.length);
-        }
-        else {
-            return XSObjectListImpl.EMPTY_LIST;
         }
     }
 
@@ -1658,35 +1430,6 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
         short type = validatedInfo.actualValueType;
         ShortList itemType = validatedInfo.itemValueTypes;
 
-        // For QName and NOTATION types, we don't check length facets
-        if (fValidationDV != DV_QNAME && fValidationDV != DV_NOTATION) {
-            int length = fDVs[fValidationDV].getDataLength(ob);
-
-            // maxLength
-            if ( (fFacetsDefined & FACET_MAXLENGTH) != 0 ) {
-                if ( length > fMaxLength ) {
-                    throw new InvalidDatatypeValueException("cvc-maxLength-valid",
-                            new Object[]{content, Integer.toString(length), Integer.toString(fMaxLength), fTypeName});
-                }
-            }
-
-            //minLength
-            if ( (fFacetsDefined & FACET_MINLENGTH) != 0 ) {
-                if ( length < fMinLength ) {
-                    throw new InvalidDatatypeValueException("cvc-minLength-valid",
-                            new Object[]{content, Integer.toString(length), Integer.toString(fMinLength), fTypeName});
-                }
-            }
-
-            //length
-            if ( (fFacetsDefined & FACET_LENGTH) != 0 ) {
-                if ( length != fLength ) {
-                    throw new InvalidDatatypeValueException("cvc-length-valid",
-                            new Object[]{content, Integer.toString(length), Integer.toString(fLength), fTypeName});
-                }
-            }
-        }
-
         //enumeration
         if ( ((fFacetsDefined & FACET_ENUMERATION) != 0 ) ) {
             boolean present = false;
@@ -1794,44 +1537,8 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
     }
 
     private void checkExtraRules(ValidationContext context, ValidatedInfo validatedInfo) throws InvalidDatatypeValueException {
-
         Object ob = validatedInfo.actualValue;
-
-        if (fVariety == VARIETY_ATOMIC) {
-
-            fDVs[fValidationDV].checkExtraRules(ob, context);
-
-        } else if (fVariety == VARIETY_LIST) {
-
-            ListDV.ListData values = (ListDV.ListData)ob;
-            XSSimpleType memberType = validatedInfo.memberType;
-            int len = values.getLength();
-            try {
-                if (fItemType.fVariety == VARIETY_UNION) {
-                    XSSimpleTypeDecl[] memberTypes = (XSSimpleTypeDecl[])validatedInfo.memberTypes;
-                    for (int i = len-1; i >= 0; i--) {
-                        validatedInfo.actualValue = values.item(i);
-                        validatedInfo.memberType = memberTypes[i];
-                        fItemType.checkExtraRules(context, validatedInfo);
-                    }
-                } else { // (fVariety == VARIETY_ATOMIC)
-                    for (int i = len-1; i >= 0; i--) {
-                        validatedInfo.actualValue = values.item(i);
-                        fItemType.checkExtraRules(context, validatedInfo);
-                    }
-                }
-            }
-            finally {
-                validatedInfo.actualValue = values;
-                validatedInfo.memberType = memberType;
-            }
-
-        } else { // (fVariety == VARIETY_UNION)
-
-            ((XSSimpleTypeDecl)validatedInfo.memberType).checkExtraRules(context, validatedInfo);
-
-        }
-
+        fDVs[fValidationDV].checkExtraRules(ob, context);
     }// checkExtraRules()
 
     //we can still return object for internal use.
@@ -1839,140 +1546,55 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
             ValidatedInfo validatedInfo, boolean needNormalize)
     throws InvalidDatatypeValueException{
 
-        String nvalue;
-        if (needNormalize) {
-            nvalue = normalize(content, fWhiteSpace);
-        } else {
-            nvalue = content.toString();
-        }
-        if ( (fFacetsDefined & FACET_PATTERN ) != 0 ) {
-            RegularExpression regex;
-            for (int idx = fPattern.size()-1; idx >= 0; idx--) {
-                regex = (RegularExpression)fPattern.elementAt(idx);
-                if (!regex.matches(nvalue)){
-                    throw new InvalidDatatypeValueException("cvc-pattern-valid",
-                            new Object[]{content,
-                            fPatternStr.elementAt(idx),
+    String nvalue;
+    if (needNormalize) {
+        nvalue = normalize(content, fWhiteSpace);
+    } else {
+        nvalue = content.toString();
+    }
+    if ( (fFacetsDefined & FACET_PATTERN ) != 0 ) {
+        RegularExpression regex;
+        for (int idx = fPattern.size()-1; idx >= 0; idx--) {
+            regex = (RegularExpression)fPattern.elementAt(idx);
+            if (!regex.matches(nvalue)){
+                throw new InvalidDatatypeValueException("cvc-pattern-valid",
+                        new Object[]{content,
+                        fPatternStr.elementAt(idx),
 
-                            fTypeName});
-                }
+                        fTypeName});
             }
         }
+    }
 
-        if (fVariety == VARIETY_ATOMIC) {
+        // validate special kinds of token, in place of old pattern matching
+        if (fPatternType != SPECIAL_PATTERN_NONE) {
 
-            // validate special kinds of token, in place of old pattern matching
-            if (fPatternType != SPECIAL_PATTERN_NONE) {
-
-                boolean seenErr = false;
-                if (fPatternType == SPECIAL_PATTERN_NMTOKEN) {
-                    // PATTERN "\\c+"
-                    seenErr = !XercesXMLChar.isValidNmtoken(nvalue);
-                }
-                else if (fPatternType == SPECIAL_PATTERN_NAME) {
-                    // PATTERN "\\i\\c*"
-                    seenErr = !XercesXMLChar.isValidName(nvalue);
-                }
-                else if (fPatternType == SPECIAL_PATTERN_NCNAME) {
-                    // PATTERN "[\\i-[:]][\\c-[:]]*"
-                    seenErr = !XercesXMLChar.isValidNCName(nvalue);
-                }
-                if (seenErr) {
-                    throw new InvalidDatatypeValueException("cvc-datatype-valid.1.2.1",
-                            new Object[]{nvalue, SPECIAL_PATTERN_STRING[fPatternType]});
-                }
+            boolean seenErr = false;
+            if (fPatternType == SPECIAL_PATTERN_NMTOKEN) {
+                // PATTERN "\\c+"
+                seenErr = !XercesXMLChar.isValidNmtoken(nvalue);
             }
-
-            validatedInfo.normalizedValue = nvalue;
-            Object avalue = fDVs[fValidationDV].getActualValue(nvalue, context);
-            validatedInfo.actualValue = avalue;
-            validatedInfo.actualValueType = fBuiltInKind;
-            validatedInfo.actualType = this;
-
-            return avalue;
-
-        } else if (fVariety == VARIETY_LIST) {
-
-            StringTokenizer parsedList = new StringTokenizer(nvalue, " ");
-            int countOfTokens = parsedList.countTokens() ;
-            Object[] avalue = new Object[countOfTokens];
-            boolean isUnion = fItemType.getVariety() == VARIETY_UNION;
-            short[] itemTypes = new short[isUnion ? countOfTokens : 1];
-            if (!isUnion)
-                itemTypes[0] = fItemType.fBuiltInKind;
-            XSSimpleTypeDecl[] memberTypes = new XSSimpleTypeDecl[countOfTokens];
-            for(int i = 0 ; i < countOfTokens ; i ++){
-                // we can't call fItemType.validate(), otherwise checkExtraRules()
-                // will be called twice: once in fItemType.validate, once in
-                // validate method of this type.
-                // so we take two steps to get the actual value:
-                // 1. fItemType.getActualValue()
-                // 2. fItemType.chekcFacets()
-                avalue[i] = fItemType.getActualValue(parsedList.nextToken(), context, validatedInfo, false);
-                if (context.needFacetChecking() &&
-                        (fItemType.fFacetsDefined != 0 && fItemType.fFacetsDefined != FACET_WHITESPACE)) {
-                    fItemType.checkFacets(validatedInfo);
-                }
-                memberTypes[i] = (XSSimpleTypeDecl)validatedInfo.memberType;
-                if (isUnion)
-                    itemTypes[i] = memberTypes[i].fBuiltInKind;
+            else if (fPatternType == SPECIAL_PATTERN_NAME) {
+                // PATTERN "\\i\\c*"
+                seenErr = !XercesXMLChar.isValidName(nvalue);
             }
-
-            ListDV.ListData v = new ListDV.ListData(avalue);
-            validatedInfo.actualValue = v;
-            validatedInfo.actualValueType = isUnion ? XSConstants.LISTOFUNION_DT : XSConstants.LIST_DT;
-            validatedInfo.memberType = null;
-            validatedInfo.memberTypes = memberTypes;
-            validatedInfo.itemValueTypes = new ShortListImpl(itemTypes, itemTypes.length);
-            validatedInfo.normalizedValue = nvalue;
-            // Need to set it here or it will become the item type
-            validatedInfo.actualType = this;
-
-            return v;
-
-        } else { // (fVariety == VARIETY_UNION)
-            final Object _content = (fMemberTypes.length > 1 && content != null) ? content.toString() : content;
-            for (int i = 0; i < fMemberTypes.length; i++) {
-                try {
-                    // we can't call fMemberType[i].validate(), otherwise checkExtraRules()
-                    // will be called twice: once in fMemberType[i].validate, once in
-                    // validate method of this type.
-                    // so we take two steps to get the actual value:
-                    // 1. fMemberType[i].getActualValue()
-                    // 2. fMemberType[i].chekcFacets()
-                    Object aValue = fMemberTypes[i].getActualValue(_content, context, validatedInfo, true);
-                    if (context.needFacetChecking() &&
-                            (fMemberTypes[i].fFacetsDefined != 0 && fMemberTypes[i].fFacetsDefined != FACET_WHITESPACE)) {
-                        fMemberTypes[i].checkFacets(validatedInfo);
-                    }
-                    validatedInfo.memberType = fMemberTypes[i];
-                    // Need to set it here or it will become the member type
-                    validatedInfo.actualType = this;
-                    return aValue;
-                } catch(InvalidDatatypeValueException invalidValue) {
-                }
+            else if (fPatternType == SPECIAL_PATTERN_NCNAME) {
+                // PATTERN "[\\i-[:]][\\c-[:]]*"
+                seenErr = !XercesXMLChar.isValidNCName(nvalue);
             }
-            StringBuffer typesBuffer = new StringBuffer();
-            XSSimpleTypeDecl decl;
-            for(int i = 0;i < fMemberTypes.length; i++) {
-                if(i != 0)
-                    typesBuffer.append(" | ");
-                decl = fMemberTypes[i];
-                if(decl.fTargetNamespace != null) {
-                    typesBuffer.append('{');
-                    typesBuffer.append(decl.fTargetNamespace);
-                    typesBuffer.append('}');
-                }
-                typesBuffer.append(decl.fTypeName);
-                if(decl.fEnumeration != null) {
-                    typesBuffer.append(" : ");
-                    decl.appendEnumString(typesBuffer);
-                }
+            if (seenErr) {
+                throw new InvalidDatatypeValueException("cvc-datatype-valid.1.2.1",
+                        new Object[]{nvalue, SPECIAL_PATTERN_STRING[fPatternType]});
             }
-            throw new InvalidDatatypeValueException("cvc-datatype-valid.1.2.3",
-                    new Object[]{content, fTypeName, typesBuffer.toString()});
         }
 
+        validatedInfo.normalizedValue = nvalue;
+        Object avalue = fDVs[fValidationDV].getActualValue(nvalue, context);
+        validatedInfo.actualValue = avalue;
+        validatedInfo.actualValueType = fBuiltInKind;
+        validatedInfo.actualType = this;
+
+        return avalue;
     }//getActualValue()
 
     @Override
@@ -2417,110 +2039,22 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
     }
 
     private void setOrdered(){
-
         // When {variety} is atomic, {value} is inherited from {value} of {base type definition}. For all "primitive" types {value} is as specified in the table in Fundamental Facets (C.1).
-        if(fVariety == VARIETY_ATOMIC){
-            this.fOrdered = fBase.fOrdered;
-        }
-
-        // When {variety} is list, {value} is false.
-        else if(fVariety == VARIETY_LIST){
-            this.fOrdered = ORDERED_FALSE;
-        }
-
-        // When {variety} is union, the {value} is partial unless one of the following:
-        // 1. If every member of {member type definitions} is derived from a common ancestor other than the simple ur-type, then {value} is the same as that ancestor's ordered facet.
-        // 2. If every member of {member type definitions} has a {value} of false for the ordered facet, then {value} is false.
-        else if(fVariety == VARIETY_UNION){
-            int length = fMemberTypes.length;
-            // REVISIT: is the length possible to be 0?
-            if (length == 0) {
-                this.fOrdered = ORDERED_PARTIAL;
-                return;
-            }
-            // we need to process the first member type before entering the loop
-            short ancestorId = getPrimitiveDV(fMemberTypes[0].fValidationDV);
-            boolean commonAnc = ancestorId != DV_ANYSIMPLETYPE;
-            boolean allFalse = fMemberTypes[0].fOrdered == ORDERED_FALSE;
-            // for the other member types, check whether the value is false
-            // and whether they have the same ancestor as the first one
-            for (int i = 1; i < fMemberTypes.length && (commonAnc || allFalse); i++) {
-                if (commonAnc)
-                    commonAnc = ancestorId == getPrimitiveDV(fMemberTypes[i].fValidationDV);
-                if (allFalse)
-                    allFalse = fMemberTypes[i].fOrdered == ORDERED_FALSE;
-            }
-            if (commonAnc) {
-                // REVISIT: all member types should have the same ordered value
-                //          just use the first one. Can we assume this?
-                this.fOrdered = fMemberTypes[0].fOrdered;
-            } else if (allFalse) {
-                this.fOrdered = ORDERED_FALSE;
-            } else {
-                this.fOrdered = ORDERED_PARTIAL;
-            }
-        }
-
+        this.fOrdered = fBase.fOrdered;
     }//setOrdered
 
     private void setNumeric(){
-        if(fVariety == VARIETY_ATOMIC){
-            this.fNumeric = fBase.fNumeric;
-        }
-        else if(fVariety == VARIETY_LIST){
-            this.fNumeric = false;
-        }
-        else if(fVariety == VARIETY_UNION){
-            XSSimpleType[] memberTypes = fMemberTypes;
-            for(int i = 0 ; i < memberTypes.length ; i++){
-                if(!memberTypes[i].getNumeric() ){
-                    this.fNumeric = false;
-                    return;
-                }
-            }
-            this.fNumeric = true;
-        }
-
+        this.fNumeric = fBase.fNumeric;
     }//setNumeric
 
     private void setBounded(){
-        if(fVariety == VARIETY_ATOMIC){
-            if( (((this.fFacetsDefined & FACET_MININCLUSIVE) != 0)  || ((this.fFacetsDefined & FACET_MINEXCLUSIVE) != 0))
-                    &&  (((this.fFacetsDefined & FACET_MAXINCLUSIVE) != 0)  || ((this.fFacetsDefined & FACET_MAXEXCLUSIVE) != 0)) ){
-                this.fBounded = true;
-            }
-            else{
-                this.fBounded = false;
-            }
-        }
-        else if(fVariety == VARIETY_LIST){
-            if( ((this.fFacetsDefined & FACET_LENGTH) != 0 ) || ( ((this.fFacetsDefined & FACET_MINLENGTH) != 0 )
-                    &&  ((this.fFacetsDefined & FACET_MAXLENGTH) != 0 )) ){
-                this.fBounded = true;
-            }
-            else{
-                this.fBounded = false;
-            }
-
-        }
-        else if(fVariety == VARIETY_UNION){
-
-            XSSimpleTypeDecl [] memberTypes = this.fMemberTypes;
-            short ancestorId = 0 ;
-
-            if(memberTypes.length > 0){
-                ancestorId = getPrimitiveDV(memberTypes[0].fValidationDV);
-            }
-
-            for(int i = 0 ; i < memberTypes.length ; i++){
-                if(!memberTypes[i].getBounded() || (ancestorId != getPrimitiveDV(memberTypes[i].fValidationDV)) ){
-                    this.fBounded = false;
-                    return;
-                }
-            }
+        if( (((this.fFacetsDefined & FACET_MININCLUSIVE) != 0)  || ((this.fFacetsDefined & FACET_MINEXCLUSIVE) != 0))
+                &&  (((this.fFacetsDefined & FACET_MAXINCLUSIVE) != 0)  || ((this.fFacetsDefined & FACET_MAXEXCLUSIVE) != 0)) ){
             this.fBounded = true;
         }
-
+        else{
+            this.fBounded = false;
+        }
     }//setBounded
 
     private boolean specialCardinalityCheck(){
@@ -2534,58 +2068,32 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
     } //specialCardinalityCheck()
 
     private void setCardinality(){
-        if(fVariety == VARIETY_ATOMIC){
-            if(fBase.fFinite){
+        if(fBase.fFinite){
+            this.fFinite = true;
+        }
+        else {// (!fBase.fFinite)
+            if ( ((this.fFacetsDefined & FACET_LENGTH) != 0 ) || ((this.fFacetsDefined & FACET_MAXLENGTH) != 0 )
+                    || ((this.fFacetsDefined & FACET_TOTALDIGITS) != 0 ) ){
                 this.fFinite = true;
             }
-            else {// (!fBase.fFinite)
-                if ( ((this.fFacetsDefined & FACET_LENGTH) != 0 ) || ((this.fFacetsDefined & FACET_MAXLENGTH) != 0 )
-                        || ((this.fFacetsDefined & FACET_TOTALDIGITS) != 0 ) ){
+            else if( (((this.fFacetsDefined & FACET_MININCLUSIVE) != 0 ) || ((this.fFacetsDefined & FACET_MINEXCLUSIVE) != 0 ))
+                    && (((this.fFacetsDefined & FACET_MAXINCLUSIVE) != 0 ) || ((this.fFacetsDefined & FACET_MAXEXCLUSIVE) != 0 )) ){
+                if( ((this.fFacetsDefined & FACET_FRACTIONDIGITS) != 0 ) || specialCardinalityCheck()){
                     this.fFinite = true;
-                }
-                else if( (((this.fFacetsDefined & FACET_MININCLUSIVE) != 0 ) || ((this.fFacetsDefined & FACET_MINEXCLUSIVE) != 0 ))
-                        && (((this.fFacetsDefined & FACET_MAXINCLUSIVE) != 0 ) || ((this.fFacetsDefined & FACET_MAXEXCLUSIVE) != 0 )) ){
-                    if( ((this.fFacetsDefined & FACET_FRACTIONDIGITS) != 0 ) || specialCardinalityCheck()){
-                        this.fFinite = true;
-                    }
-                    else{
-                        this.fFinite = false;
-                    }
                 }
                 else{
                     this.fFinite = false;
                 }
             }
-        }
-        else if(fVariety == VARIETY_LIST){
-            if( ((this.fFacetsDefined & FACET_LENGTH) != 0 ) || ( ((this.fFacetsDefined & FACET_MINLENGTH) != 0 )
-                    && ((this.fFacetsDefined & FACET_MAXLENGTH) != 0 )) ){
-                this.fFinite = true;
-            }
             else{
                 this.fFinite = false;
             }
-
         }
-        else if(fVariety == VARIETY_UNION){
-            XSSimpleType [] memberTypes = fMemberTypes;
-            for(int i = 0 ; i < memberTypes.length ; i++){
-                if(!(memberTypes[i].getFinite()) ){
-                    this.fFinite = false;
-                    return;
-                }
-            }
-            this.fFinite = true;
-        }
-
     }//setCardinality
 
     private short getPrimitiveDV(short validationDV){
 
-        if (validationDV == DV_ID || validationDV == DV_IDREF || validationDV == DV_ENTITY){
-            return DV_STRING;
-        }
-        else if (validationDV == DV_INTEGER) {
+        if (validationDV == DV_INTEGER) {
             return DV_DECIMAL;
         }
         else if (Constants.SCHEMA_1_1_SUPPORT && (validationDV == DV_YEARMONTHDURATION || validationDV == DV_DAYTIMEDURATION)) {
@@ -2683,25 +2191,9 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
             }
         }
 
-        // list
-        if ((derivationMethod & DERIVATION_LIST) != 0) {
-            if (isDerivedByList(ancestorNS, ancestorName, this)) {
-                return true;
-            }
-        }
-
-        // union
-        if ((derivationMethod & DERIVATION_UNION) != 0) {
-            if (isDerivedByUnion(ancestorNS, ancestorName, this)) {
-                return true;
-            }
-        }
-
         // extension
         if (((derivationMethod & DERIVATION_EXTENSION) != 0)
-                && (((derivationMethod & DERIVATION_RESTRICTION) == 0)
-                        && ((derivationMethod & DERIVATION_LIST) == 0)
-                        && ((derivationMethod & DERIVATION_UNION) == 0))) {
+                && (((derivationMethod & DERIVATION_RESTRICTION) == 0))) {
             return false;
         }
 
@@ -2709,9 +2201,7 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
         // restriction, list, extension or union) is set to 1 for the
         // derivationMethod parameter.
         if (((derivationMethod & DERIVATION_EXTENSION) == 0)
-                && (((derivationMethod & DERIVATION_RESTRICTION) == 0)
-                        && ((derivationMethod & DERIVATION_LIST) == 0)
-                        && ((derivationMethod & DERIVATION_UNION) == 0))) {
+                && (((derivationMethod & DERIVATION_RESTRICTION) == 0))) {
             return isDerivedByAny(ancestorNS, ancestorName, this);
         }
 
@@ -2748,28 +2238,13 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
                 break;
             }
 
-            // check if derived by restriction or list or union
+            // check if derived by restriction
             if (isDerivedByRestriction(ancestorNS, ancestorName, type)) {
-                return true;
-            } else if (isDerivedByList(ancestorNS, ancestorName, type)) {
-                return true;
-            } else  if (isDerivedByUnion(ancestorNS, ancestorName, type)) {
                 return true;
             }
             oldType = type;
-            // get the base, item or member type depending on the variety
-            if (((XSSimpleTypeDecl) type).getVariety() == VARIETY_ABSENT
-                    || ((XSSimpleTypeDecl) type).getVariety() == VARIETY_ATOMIC) {
-                type = type.getBaseType();
-            } else if (((XSSimpleTypeDecl) type).getVariety() == VARIETY_UNION) {
-                for (int i = 0; i < ((XSSimpleTypeDecl) type).getMemberTypes().getLength(); i++) {
-                    return isDerivedByAny(ancestorNS, ancestorName,
-                            (XSTypeDefinition) ((XSSimpleTypeDecl) type)
-                            .getMemberTypes().item(i));
-                }
-            } else if (((XSSimpleTypeDecl) type).getVariety() == VARIETY_LIST) {
-                type = ((XSSimpleTypeDecl) type).getItemType();
-            }
+            // get the base type
+            type = type.getBaseType();
         }
 
         return derivedFrom;
@@ -2805,73 +2280,6 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
 
         return false;
     }
-
-    /**
-     * Checks if a type is derived from another by list. See:
-     * http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/core.html#TypeInfo-isDerivedFrom
-     *
-     * @param ancestorNS
-     *            The namspace of the ancestor type declaration
-     * @param ancestorName
-     *            The name of the ancestor type declaration
-     * @param type
-     *            The reference type definition
-     *
-     * @return boolean True if the type is derived by list for the reference type
-     */
-    private boolean isDerivedByList (String ancestorNS, String ancestorName, XSTypeDefinition type) {
-        // If the variety is union
-        if (type !=null && ((XSSimpleTypeDefinition)type).getVariety() == VARIETY_LIST) {
-
-            // get the {item type}
-            XSTypeDefinition itemType = ((XSSimpleTypeDefinition)type).getItemType();
-
-            // T2 is the {item type definition}
-            if (itemType != null) {
-
-                // T2 is derived from the other type definition by DERIVATION_RESTRICTION
-                if (isDerivedByRestriction(ancestorNS, ancestorName, itemType)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Checks if a type is derived from another by union.  See:
-     * http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/core.html#TypeInfo-isDerivedFrom
-     *
-     * @param ancestorNS
-     *            The namspace of the ancestor type declaration
-     * @param ancestorName
-     *            The name of the ancestor type declaration
-     * @param type
-     *            The reference type definition
-     *
-     * @return boolean True if the type is derived by union for the reference type
-     */
-    private boolean isDerivedByUnion (String ancestorNS, String ancestorName, XSTypeDefinition type) {
-
-        // If the variety is union
-        if (type !=null && ((XSSimpleTypeDefinition)type).getVariety() == VARIETY_UNION) {
-
-            // get member types
-            XSObjectList memberTypes = ((XSSimpleTypeDefinition)type).getMemberTypes();
-
-            for (int i = 0; i < memberTypes.getLength(); i++) {
-                // One of the {member type definitions} is T2.
-                if (memberTypes.item(i) != null) {
-                    // T2 is derived from the other type definition by DERIVATION_RESTRICTION
-                    if (isDerivedByRestriction(ancestorNS, ancestorName,(XSSimpleTypeDefinition)memberTypes.item(i))) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
 
     static final XSSimpleTypeDecl fAnySimpleType = new XSSimpleTypeDecl(null, "anySimpleType", DV_ANYSIMPLETYPE, ORDERED_FALSE, false, true, false, true, XSConstants.ANYSIMPLETYPE_DT);
 

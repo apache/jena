@@ -91,35 +91,4 @@ public abstract class SchemaDVFactory {
     public abstract XSSimpleType createTypeRestriction(String name, String targetNamespace,
                                                        short finalSet, XSSimpleType base,
                                                        XSObjectList annotations);
-
-    /**
-     * Create a new simple type which is derived by list from another simple
-     * type.
-     *
-     * @param name              name of the new type, could be null
-     * @param targetNamespace   target namespace of the new type, could be null
-     * @param finalSet          value of "final"
-     * @param itemType          item type of the list type
-     * @param annotations       set of annotations
-     * @return                  the newly created simple type
-     */
-    public abstract XSSimpleType createTypeList(String name, String targetNamespace,
-                                                short finalSet, XSSimpleType itemType,
-                                                XSObjectList annotations);
-
-    /**
-     * Create a new simple type which is derived by union from a list of other
-     * simple types.
-     *
-     * @param name              name of the new type, could be null
-     * @param targetNamespace   target namespace of the new type, could be null
-     * @param finalSet          value of "final"
-     * @param memberTypes       member types of the union type
-     * @param annotations       set of annotations
-     * @return                  the newly created simple type
-     */
-    public abstract XSSimpleType createTypeUnion(String name, String targetNamespace,
-                                                 short finalSet, XSSimpleType[] memberTypes,
-                                                 XSObjectList annotations);
-
 }

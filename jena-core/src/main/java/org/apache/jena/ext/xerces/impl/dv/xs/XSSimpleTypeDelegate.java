@@ -84,11 +84,6 @@ public class XSSimpleTypeDelegate
     }
 
     @Override
-    public XSSimpleTypeDefinition getItemType() {
-        return type.getItemType();
-    }
-
-    @Override
     public StringList getLexicalEnumeration() {
         return type.getLexicalEnumeration();
     }
@@ -101,11 +96,6 @@ public class XSSimpleTypeDelegate
     @Override
     public StringList getLexicalPattern() {
         return type.getLexicalPattern();
-    }
-
-    @Override
-    public XSObjectList getMemberTypes() {
-        return type.getMemberTypes();
     }
 
     @Override
@@ -205,11 +195,6 @@ public class XSSimpleTypeDelegate
     }
 
     @Override
-    public short getPrimitiveKind() {
-        return type.getPrimitiveKind();
-    }
-
-    @Override
     public short getWhitespace() throws DatatypeException {
         return type.getWhitespace();
     }
@@ -217,11 +202,6 @@ public class XSSimpleTypeDelegate
     @Override
     public boolean isEqual(Object value1, Object value2) {
         return type.isEqual(value1, value2);
-    }
-
-    @Override
-    public boolean isIDType() {
-        return type.isIDType();
     }
 
     @Override
