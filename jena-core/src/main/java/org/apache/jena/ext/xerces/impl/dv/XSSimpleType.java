@@ -51,6 +51,8 @@ public interface XSSimpleType extends XSSimpleTypeDefinition {
      * see <a href='http://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes'>
      * XML Schema Part 2: Datatypes </a>
      */
+    /** "anySimpleType" type */
+    public static final short PRIMITIVE_ANYSIMPLETYPE = 0;
     /** "string" type */
     public static final short PRIMITIVE_STRING        = 1;
     /** "boolean" type */
@@ -85,22 +87,10 @@ public interface XSSimpleType extends XSSimpleTypeDefinition {
     public static final short PRIMITIVE_BASE64BINARY  = 16;
     /** "anyURI" type */
     public static final short PRIMITIVE_ANYURI        = 17;
-    /** "QName" type */
-    public static final short PRIMITIVE_QNAME         = 18;
     /** "precisionDecimal" type */
-    public static final short PRIMITIVE_PRECISIONDECIMAL = 19;
+    public static final short PRIMITIVE_PRECISIONDECIMAL = 18;
     /** "NOTATION" type */
-    public static final short PRIMITIVE_NOTATION      = 20;
-
-    /**
-     * return an ID representing the built-in primitive base type.
-     * REVISIT: This method is (currently) for internal use only.
-     *          the constants returned from this method are not finalized yet.
-     *          the names and values might change in the further.
-     *
-     * @return   an ID representing the built-in primitive base type
-     */
-    public short getPrimitiveKind();
+    public static final short PRIMITIVE_NOTATION      = 19;
 
     /**
      * validate a given string against this simple type.
@@ -179,16 +169,6 @@ public interface XSSimpleType extends XSSimpleTypeDefinition {
      *                < = if value1 < value2
      */
     //public short compare(Object value1, Object value2);
-
-    /**
-     * Check whether this type is or is derived from ID.
-     * REVISIT: this method makes ID special, which is not a good design.
-     *          but since ID is not a primitive, there doesn't seem to be a
-     *          clean way of doing it except to define special method like this.
-     *
-     * @return  whether this simple type is or is derived from ID.
-     */
-    public boolean isIDType();
 
     /**
      * Return the whitespace corresponding to this datatype.

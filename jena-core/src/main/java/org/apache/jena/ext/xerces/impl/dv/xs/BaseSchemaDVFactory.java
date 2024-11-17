@@ -57,13 +57,8 @@ public abstract class BaseSchemaDVFactory extends SchemaDVFactory {
         final String DAY               = "gDay";
         final String DECIMAL           = "decimal";
         final String DOUBLE            = "double";
-        final String ENTITY            = "ENTITY";
-        final String ENTITIES          = "ENTITIES";
         final String FLOAT             = "float";
         final String HEXBINARY         = "hexBinary";
-        final String ID                = "ID";
-        final String IDREF             = "IDREF";
-        final String IDREFS            = "IDREFS";
         final String INT               = "int";
         final String INTEGER           = "integer";
         final String LONG              = "long";
@@ -73,14 +68,11 @@ public abstract class BaseSchemaDVFactory extends SchemaDVFactory {
         final String MONTHDAY          = "gMonthDay";
         final String NCNAME            = "NCName";
         final String NMTOKEN           = "NMTOKEN";
-        final String NMTOKENS          = "NMTOKENS";
         final String LANGUAGE          = "language";
         final String NONNEGATIVEINTEGER= "nonNegativeInteger";
         final String NONPOSITIVEINTEGER= "nonPositiveInteger";
         final String NORMALIZEDSTRING  = "normalizedString";
-        final String NOTATION          = "NOTATION";
         final String POSITIVEINTEGER   = "positiveInteger";
-        final String QNAME             = "QName";
         final String SHORT             = "short";
         final String STRING            = "string";
         final String TIME              = "time";
@@ -91,6 +83,15 @@ public abstract class BaseSchemaDVFactory extends SchemaDVFactory {
         final String UNSIGNEDSHORT     = "unsignedShort";
         final String YEAR              = "gYear";
         final String YEARMONTH         = "gYearMonth";
+
+        // These SHOULD NOT be used in RDF 1.1
+        // Only kept here because this is used by the respective datatype registrations in XSDDatatype.
+        // TODO: remove this in Jena 6 together with the datatype registrations.
+        final String ENTITY            = "ENTITY";
+        final String ID                = "ID";
+        final String IDREF             = "IDREF";
+        final String NOTATION          = "NOTATION";
+        final String QNAME             = "QName";
 
         final XSFacets facets = new XSFacets();
         
@@ -187,7 +188,6 @@ public abstract class BaseSchemaDVFactory extends SchemaDVFactory {
         builtInTypes.put(FLOAT, new XSSimpleTypeDecl(baseAtomicType, FLOAT, XSSimpleTypeDecl.DV_FLOAT, XSSimpleType.ORDERED_PARTIAL, true, true, true, true, XSConstants.FLOAT_DT));
         builtInTypes.put(DOUBLE, new XSSimpleTypeDecl(baseAtomicType, DOUBLE, XSSimpleTypeDecl.DV_DOUBLE, XSSimpleType.ORDERED_PARTIAL, true, true, true, true, XSConstants.DOUBLE_DT));
         builtInTypes.put(HEXBINARY, new XSSimpleTypeDecl(baseAtomicType, HEXBINARY, XSSimpleTypeDecl.DV_HEXBINARY, XSSimpleType.ORDERED_FALSE, false, false, false, true, XSConstants.HEXBINARY_DT));
-        builtInTypes.put(NOTATION, new XSSimpleTypeDecl(baseAtomicType, NOTATION, XSSimpleTypeDecl.DV_NOTATION, XSSimpleType.ORDERED_FALSE, false, false, false, true, XSConstants.NOTATION_DT));
 
         facets.whiteSpace =  XSSimpleType.WS_REPLACE;
         XSSimpleTypeDecl normalizedDV = new XSSimpleTypeDecl(stringDV, NORMALIZEDSTRING , URI_SCHEMAFORSCHEMA, (short)0, false, null, XSConstants.NORMALIZEDSTRING_DT);
@@ -215,37 +215,20 @@ public abstract class BaseSchemaDVFactory extends SchemaDVFactory {
         ncnameDV.applyFacets1(facets, XSSimpleType.FACET_WHITESPACE, (short)0, XSSimpleTypeDecl.SPECIAL_PATTERN_NCNAME);
         builtInTypes.put(NCNAME, ncnameDV);
 
-        builtInTypes.put(QNAME, new XSSimpleTypeDecl(baseAtomicType, QNAME, XSSimpleTypeDecl.DV_QNAME, XSSimpleType.ORDERED_FALSE, false, false, false, true, XSConstants.QNAME_DT));
-
-        builtInTypes.put(ID, new XSSimpleTypeDecl(ncnameDV,  ID, XSSimpleTypeDecl.DV_ID, XSSimpleType.ORDERED_FALSE, false, false, false , true, XSConstants.ID_DT));
-        XSSimpleTypeDecl idrefDV = new XSSimpleTypeDecl(ncnameDV,  IDREF , XSSimpleTypeDecl.DV_IDREF, XSSimpleType.ORDERED_FALSE, false, false, false, true, XSConstants.IDREF_DT);
-        builtInTypes.put(IDREF, idrefDV);
-
-        facets.minLength = 1;
-        XSSimpleTypeDecl tempDV = new XSSimpleTypeDecl(null, URI_SCHEMAFORSCHEMA, (short)0, idrefDV, true, null);
-        XSSimpleTypeDecl idrefsDV = new XSSimpleTypeDecl(tempDV, IDREFS, URI_SCHEMAFORSCHEMA, (short)0, false, null);
-        idrefsDV.applyFacets1(facets, XSSimpleType.FACET_MINLENGTH, (short)0);
-        builtInTypes.put(IDREFS, idrefsDV);
-
-        XSSimpleTypeDecl entityDV = new XSSimpleTypeDecl(ncnameDV, ENTITY , XSSimpleTypeDecl.DV_ENTITY, XSSimpleType.ORDERED_FALSE, false, false, false, true, XSConstants.ENTITY_DT);
-        builtInTypes.put(ENTITY, entityDV);
-
-        facets.minLength = 1;
-        tempDV = new XSSimpleTypeDecl(null, URI_SCHEMAFORSCHEMA, (short)0, entityDV, true, null);
-        XSSimpleTypeDecl entitiesDV = new XSSimpleTypeDecl(tempDV, ENTITIES, URI_SCHEMAFORSCHEMA, (short)0, false, null);
-        entitiesDV.applyFacets1(facets, XSSimpleType.FACET_MINLENGTH, (short)0);
-        builtInTypes.put(ENTITIES, entitiesDV);
-
         facets.whiteSpace  = XSSimpleType.WS_COLLAPSE;
         XSSimpleTypeDecl nmtokenDV = new XSSimpleTypeDecl(tokenDV, NMTOKEN, URI_SCHEMAFORSCHEMA, (short)0, false, null, XSConstants.NMTOKEN_DT);
         nmtokenDV.applyFacets1(facets, XSSimpleType.FACET_WHITESPACE, (short)0, XSSimpleTypeDecl.SPECIAL_PATTERN_NMTOKEN);
         builtInTypes.put(NMTOKEN, nmtokenDV);
 
-        facets.minLength = 1;
-        tempDV = new XSSimpleTypeDecl(null, URI_SCHEMAFORSCHEMA, (short)0, nmtokenDV, true, null);
-        XSSimpleTypeDecl nmtokensDV = new XSSimpleTypeDecl(tempDV, NMTOKENS, URI_SCHEMAFORSCHEMA, (short)0, false, null);
-        nmtokensDV.applyFacets1(facets, XSSimpleType.FACET_MINLENGTH, (short)0);
-        builtInTypes.put(NMTOKENS, nmtokensDV);
+        // Dummy registrations for XML datatypes that SHOULD NOT be used in RDF 1.1.
+        // We don't do any validation on them.
+        // Only kept here because this is used by the respective datatype registrations in XSDDatatype.
+        // TODO: remove this in Jena 6 together with the datatype registrations.
+        builtInTypes.put(ENTITY, XSSimpleTypeDecl.fAnySimpleType);
+        builtInTypes.put(ID, XSSimpleTypeDecl.fAnySimpleType);
+        builtInTypes.put(IDREF, XSSimpleTypeDecl.fAnySimpleType);
+        builtInTypes.put(NOTATION, XSSimpleTypeDecl.fAnySimpleType);
+        builtInTypes.put(QNAME, XSSimpleTypeDecl.fAnySimpleType);
     } //createBuiltInTypes()
 
     /**
@@ -267,52 +250,6 @@ public abstract class BaseSchemaDVFactory extends SchemaDVFactory {
            return st.setRestrictionValues((XSSimpleTypeDecl)base, name, targetNamespace, finalSet, annotations);
         }
         return new XSSimpleTypeDecl((XSSimpleTypeDecl)base, name, targetNamespace, finalSet, false, annotations);
-    }
-
-    /**
-     * Create a new simple type which is derived by list from another simple
-     * type.
-     *
-     * @param name              name of the new type, could be null
-     * @param targetNamespace   target namespace of the new type, could be null
-     * @param finalSet          value of "final"
-     * @param itemType          item type of the list type
-     * @param annotations       set of annotations
-     * @return                  the newly created simple type
-     */
-    public XSSimpleType createTypeList(String name, String targetNamespace,
-                                       short finalSet, XSSimpleType itemType,
-                                       XSObjectList annotations) {
-        if (fDeclPool != null) {
-           XSSimpleTypeDecl st= fDeclPool.getSimpleTypeDecl();
-           return st.setListValues(name, targetNamespace, finalSet, (XSSimpleTypeDecl)itemType, annotations);
-        }
-        return new XSSimpleTypeDecl(name, targetNamespace, finalSet, (XSSimpleTypeDecl)itemType, false, annotations);
-    }
-
-    /**
-     * Create a new simple type which is derived by union from a list of other
-     * simple types.
-     *
-     * @param name              name of the new type, could be null
-     * @param targetNamespace   target namespace of the new type, could be null
-     * @param finalSet          value of "final"
-     * @param memberTypes       member types of the union type
-     * @param annotations       set of annotations
-     * @return                  the newly created simple type
-     */
-    public XSSimpleType createTypeUnion(String name, String targetNamespace,
-                                        short finalSet, XSSimpleType[] memberTypes,
-                                        XSObjectList annotations) {
-        int typeNum = memberTypes.length;
-        XSSimpleTypeDecl[] mtypes = new XSSimpleTypeDecl[typeNum];
-        System.arraycopy(memberTypes, 0, mtypes, 0, typeNum);
-
-        if (fDeclPool != null) {
-           XSSimpleTypeDecl st= fDeclPool.getSimpleTypeDecl();
-           return st.setUnionValues(name, targetNamespace, finalSet, mtypes, annotations);
-        }
-        return new XSSimpleTypeDecl(name, targetNamespace, finalSet, mtypes, annotations);
     }
 
     public void setDeclPool (XSDeclarationPool declPool){

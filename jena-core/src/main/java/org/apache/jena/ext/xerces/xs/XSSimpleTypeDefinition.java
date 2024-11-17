@@ -35,14 +35,6 @@ public interface XSSimpleTypeDefinition extends XSTypeDefinition {
      * <code>Atomic</code> type.
      */
     public static final short VARIETY_ATOMIC            = 1;
-    /**
-     * <code>List</code> type.
-     */
-    public static final short VARIETY_LIST              = 2;
-    /**
-     * <code>Union</code> type.
-     */
-    public static final short VARIETY_UNION             = 3;
 
     // Facets
     /**
@@ -129,20 +121,6 @@ public interface XSSimpleTypeDefinition extends XSTypeDefinition {
      * type integer the <code>INTEGER_DV</code> is returned.
      */
     public short getBuiltInKind();
-
-    /**
-     * If variety is <code>list</code> the item type definition (an atomic or 
-     * union simple type definition) is available, otherwise 
-     * <code>null</code>. 
-     */
-    public XSSimpleTypeDefinition getItemType();
-
-    /**
-     * If variety is <code>union</code> the list of member type definitions (a 
-     * non-empty sequence of simple type definitions) is available, 
-     * otherwise an empty <code>XSObjectList</code>. 
-     */
-    public XSObjectList getMemberTypes();
 
     /**
      * [facets]: all facets defined on this type. The value is a bit 

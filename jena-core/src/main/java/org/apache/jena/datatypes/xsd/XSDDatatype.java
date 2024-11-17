@@ -112,9 +112,6 @@ public class XSDDatatype extends BaseDatatype {
     public static final XSDDatatype XSDnormalizedString = new XSDBaseStringType("normalizedString", String.class);
 
     /** Datatype representing xsd:anyURI */
-    // If you see this, remove commented lines.
-    // Merely temporary during switch over and testing.
-    //public static final XSDDatatype XSDanyURI = new XSDDatatype("anyURI", URI.class);
     public static final XSDDatatype XSDanyURI = new XSDPlainType("anyURI", URI.class);
 
     /** Datatype representing xsd:token */
@@ -123,10 +120,11 @@ public class XSDDatatype extends BaseDatatype {
     /** Datatype representing xsd:Name */
     public static final XSDDatatype XSDName = new XSDBaseStringType("Name");
 
-    /** Datatype representing xsd:QName */
-    // If you see this, remove commented lines.
-    // Merely temporary during switch over and testing.
-    // public static final XSDDatatype XSDQName = new XSDDatatype("QName");
+    /**
+     * Datatype representing xsd:QName
+     * @deprecated will be removed in Jena 6
+     */
+    @Deprecated(forRemoval = true)
     public static final XSDDatatype XSDQName = new XSDPlainType("QName");
 
     /** Datatype representing xsd:language */
@@ -135,25 +133,35 @@ public class XSDDatatype extends BaseDatatype {
     /** Datatype representing xsd:NMTOKEN */
     public static final XSDDatatype XSDNMTOKEN = new XSDBaseStringType("NMTOKEN");
 
-    /** Datatype representing xsd:ENTITY */
+    /**
+     * Datatype representing xsd:ENTITY
+     * @deprecated will be removed in Jena 6
+     */
+    @Deprecated(forRemoval = true)
     public static final XSDDatatype XSDENTITY = new XSDBaseStringType("ENTITY");
 
-    /** Datatype representing xsd:ID */
+    /**
+     * Datatype representing xsd:ID
+     * @deprecated will be removed in Jena 6
+     */
+    @Deprecated(forRemoval = true)
     public static final XSDDatatype XSDID = new XSDBaseStringType("ID");
 
     /** Datatype representing xsd:NCName */
     public static final XSDDatatype XSDNCName = new XSDBaseStringType("NCName");
 
-    /** Datatype representing xsd:IDREF */
-    // If you see this, remove commented lines.
-    // Merely temporary during switch over and testing.
-    //public static final XSDDatatype XSDIDREF = new XSDDatatype("IDREF");
+    /**
+     * Datatype representing xsd:IDREF
+     * @deprecated will be removed in Jena 6
+     */
+    @Deprecated(forRemoval = true)
     public static final XSDDatatype XSDIDREF = new XSDPlainType("IDREF");
 
-    /** Datatype representing xsd:NOTATION */
-    // If you see this, remove commented lines.
-    // Merely temporary during switch over and testing.
-    //public static final XSDDatatype XSDNOTATION = new XSDDatatype("NOTATION");
+    /**
+     * Datatype representing xsd:NOTATION
+     * @deprecated will be removed in Jena 6
+     */
+    @Deprecated(forRemoval = true)
     public static final XSDDatatype XSDNOTATION = new XSDPlainType("NOTATION");
 
     /** Datatype representing xsd:hexBinary */
@@ -197,17 +205,6 @@ public class XSDDatatype extends BaseDatatype {
 
     /** Datatype representing xsd:gMonthDay */
     public static final XSDDatatype XSDgMonthDay = new XSDMonthDayType("gMonthDay");
-
-    // The following are list rather than simple types and are omitted for now
-
-//    /** Datatype representing xsd:ENTITIES */
-//    public static final XSDDatatype XSDENTITIES = new XSDBaseStringType("ENTITIES");
-//
-//    /** Datatype representing xsd:NMTOKENS */
-//    public static final XSDDatatype XSDNMTOKENS = new XSDBaseStringType("NMTOKENS");
-//
-//    /** Datatype representing xsd:IDREFS */
-//    public static final XSDDatatype XSDIDREFS = new XSDBaseStringType("IDREFS");
 
 //=======================================================================
 // local variables
@@ -310,83 +307,6 @@ public class XSDDatatype extends BaseDatatype {
     public Object extendedTypeDefinition() {
         return typeDeclaration;
     }
-
-    // The following code parses an external XSD file for XSD datatype definitions.
-    // See an example "testing/xsd/daml+oil-ex-dt.xsd" and TestTypeLiterals.testUserDefined.
-    // It calls into Xerces internal XM parsing, which is problematic if switching to the
-    // JDK built-in XML parser in Java9 and later.
-
-//    /**
-//     * Create and register a set of types specified in a user schema file.
-//     * We use the (illegal) DAML+OIL approach that the uriref of the type
-//     * is the url of the schema file with fragment ID corresponding the
-//     * the name of the type.
-//     *
-//     * @param uri the absolute uri of the schema file to be loaded
-//     * @param reader the Reader stream onto the file (useful if you wish to load a cached copy of the schema file)
-//     * @param encoding the encoding of the source file (can be null)
-//     * @param tm the type mapper into which to load the definitions
-//     * @return a List of strings giving the uri's of the newly defined datatypes
-//     * @throws DatatypeFormatException if there is a problem during load (not that we use Xerces
-//     * in default mode for load which may provide diagnostic output direct to stderr)
-//     */
-//    public static List<String> loadUserDefined(String uri, Reader reader, String encoding, TypeMapper tm) throws DatatypeFormatException {
-//        return loadUserDefined(new XMLInputSource(null, uri, uri, reader, encoding), tm);
-//    }
-//
-//    /**
-//     * Create and register a set of types specified in a user schema file.
-//     * We use the (illegal) DAML+OIL approach that the uriref of the type
-//     * is the url of the schema file with fragment ID corresponding the
-//     * the name of the type.
-//     *
-//     * @param uri the absolute uri of the schema file to be loaded, this should be a resolvable URL
-//     * @param encoding the encoding of the source file (can be null)
-//     * @param tm the type mapper into which to load the definitions
-//     * @return a List of strings giving the uri's of the newly defined datatypes
-//     * @throws DatatypeFormatException if there is a problem during load (not that we use Xerces
-//     * in default mode for load which may provide diagnostic output direct to stderr)
-//     */
-//    public static List<String> loadUserDefined(String uri, String encoding, TypeMapper tm) throws DatatypeFormatException {
-//        return loadUserDefined(new XMLInputSource(null, uri, uri), tm);
-//    }
-//
-//    /**
-//     * Internal implementation of loadUserDefined
-//     *
-//     * @param uri the absolute uri of the schema file to be loaded
-//     * @param reader the Reader stream onto the file (useful if you wish to load a cached copy of the schema file)
-//     * @param encoding the encoding of the source file (can be null)
-//     * @param tm the type mapper into which to load the definitions
-//     * @return a List of strings giving the uri's of the newly defined datatypes
-//     * @throws DatatypeFormatException if there is a problem during load (not that we use Xerces
-//     * in default mode for load which may provide diagnostic output direct to stderr)
-//     */
-//    private static List<String> loadUserDefined(XMLInputSource source, TypeMapper tm) throws DatatypeFormatException {
-//        XMLGrammarPreparser parser = new XMLGrammarPreparser();
-//        parser.registerPreparser(XMLGrammarDescription.XML_SCHEMA, null);
-//        try {
-//            XSGrammar xsg = (XSGrammar) parser.preparseGrammar(XMLGrammarDescription.XML_SCHEMA, source);
-//            org.apache.xerces.xs.XSModel xsm = xsg.toXSModel();
-//            XSNamedMap map = xsm.getComponents(XSTypeDefinition.SIMPLE_TYPE);
-//            int numDefs = map.getLength();
-//            ArrayList<String> names = new ArrayList<>(numDefs);
-//            for (int i = 0; i < numDefs; i++) {
-//                XSSimpleType xstype = (XSSimpleType) map.item(i);
-//                // Filter built in types - only needed for 2.6.0
-//                if ( ! XSD.equals(xstype.getNamespace()) ) {
-//                    //xstype.derivedFrom()
-//                    XSDDatatype definedType = new XSDGenericType(xstype, source.getSystemId());
-//                    tm.registerDatatype(definedType);
-//                    names.add(definedType.getURI());
-//                }
-//            }
-//            return names;
-//        } catch (Exception e) {
-//            e.printStackTrace();    // Temp
-//            throw new DatatypeFormatException(e.toString());
-//        }
-//    }
 
     /**
      * Convert a validated xerces data value into the corresponding java data value.
@@ -596,6 +516,9 @@ public class XSDDatatype extends BaseDatatype {
         tm.registerDatatype(XSDtoken);
         tm.registerDatatype(XSDName);
         tm.registerDatatype(XSDlanguage);
+
+        // According to the RDF 1.1 spec, these datatypes SHOULD NOT be used in RDF.
+        // Jena will not do any special handling or validation of these datatypes.
         tm.registerDatatype(XSDQName);
         tm.registerDatatype(XSDNMTOKEN);
         tm.registerDatatype(XSDID);
@@ -603,10 +526,6 @@ public class XSDDatatype extends BaseDatatype {
         tm.registerDatatype(XSDNCName);
         tm.registerDatatype(XSDNOTATION);
         tm.registerDatatype(XSDIDREF);
-
-//        tm.registerDatatype(XSDIDREFS);
-//        tm.registerDatatype(XSDENTITIES);
-//        tm.registerDatatype(XSDNMTOKENS);
     }
 
     /**
