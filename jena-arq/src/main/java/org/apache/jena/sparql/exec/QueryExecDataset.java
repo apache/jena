@@ -111,7 +111,7 @@ public class QueryExecDataset implements QueryExec
         // See also query substitution handled in QueryExecBuilder
         this.initialBinding = initialToEngine;
 
-        // Cancel signal may originate from an e.c. an update execution.
+        // Cancel signal may originate from e.g. an update execution.
         this.cancelSignal = Context.getOrSetCancelSignal(context);
 
         init();
