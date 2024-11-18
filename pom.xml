@@ -70,7 +70,7 @@
     <ver.jetty>12.0.15</ver.jetty>
     <ver.jakarta-servlet>6.1.0</ver.jakarta-servlet>
 
-    <ver.shiro>2.0.1</ver.shiro>
+    <ver.shiro>2.0.2</ver.shiro>
 
     <ver.protobuf>4.28.3</ver.protobuf>
     <ver.libthrift>0.21.0</ver.libthrift>
