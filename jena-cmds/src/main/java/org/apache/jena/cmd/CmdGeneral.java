@@ -27,7 +27,6 @@ public abstract class CmdGeneral extends CmdArgModule
 {
     protected ModGeneral modGeneral = new ModGeneral(this::printHelp);
     protected ModVersion modVersion = new ModVersion(true);
-    // Could be turned into a module but these are convenient as inherited flags
 
     protected CmdGeneral(String[] argv) {
         super(argv);
