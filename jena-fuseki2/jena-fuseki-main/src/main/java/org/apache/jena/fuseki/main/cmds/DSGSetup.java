@@ -107,7 +107,7 @@ import org.slf4j.Logger;
         serverArgs.datasetDescription = "in-memory, with files loaded";
         serverArgs.dsg = DatasetGraphFactory.createTxnMem();
 
-        for(String filename : filenames ) {
+        for ( String filename : filenames ) {
             String pathname = filename;
             if ( filename.startsWith("file:") )
                 pathname = filename.substring("file:".length());

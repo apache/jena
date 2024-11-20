@@ -37,7 +37,7 @@ public class FusekiModules {
     private static FusekiModules systemFusekiModules = autoLoadedFusekiModules;
 
     /**
-     * There is a system wide set of modules used when o other are indicated.
+     * There is a system wide set of modules used when no other modules are indicated.
      * These default to the automatically discovered modules.
      */
     public static void setSystemDefault(FusekiModules fusekiModules) {
