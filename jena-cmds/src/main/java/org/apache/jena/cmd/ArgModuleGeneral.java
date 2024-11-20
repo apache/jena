@@ -19,6 +19,10 @@
 package org.apache.jena.cmd;
 
 public interface ArgModuleGeneral extends ArgModule {
-    // Registration phase for usage messages
+    /** Registration phase for arguments, including usage messages */
     public abstract void registerWith(CmdGeneral cmdLine);
+
+    /** Processing phase after the command line has been parsed and the arguments present are known. */
+    @Override
+    public default void processArgs(CmdArgModule cmdLine) {}
 }

@@ -18,20 +18,29 @@
 
 package org.apache.jena.cmds;
 
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
+
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
-import org.junit.Test;
-
 import org.apache.jena.cmd.Arg;
+import org.apache.jena.cmd.Args;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.cmd.CmdLineArgs;
 
 public class TestCmdLine {
+
+    private static String DIR = "testing/cmd/";
+
     @Test
     public void test_Simple1() {
         String args[] = {""};
@@ -117,7 +126,7 @@ public class TestCmdLine {
     }
 
 
-    @Test(expected = CmdException.class)
+    @Test
     public void test_removeArg1() {
         String args[] = {"--arg=V1", "-v"};
         CmdLineArgs cl = new CmdLineArgs(args);
@@ -125,6 +134,79 @@ public class TestCmdLine {
         cl.add(argA);
         cl.removeArg(argA);
         // Exception.
-        cl.process();
+        assertThrows(CmdException.class, ()->cl.process());
     }
+
+
+    @Test
+    public void args_no_file_1() {
+        String[] args = {};
+        testArgsFileGood(args, new String[0]);
+    }
+
+    @Test
+    public void args_no_file_2() {
+        String[] args = {"-q", "-v", "positional"};
+        testArgsFileGood(args, "-q", "-v", "positional");
+    }
+
+    @Test
+    public void args_file_01() {
+        String[] args = {"@"+DIR+"args-good-1"};
+        testArgsFileGood(args, "--arg", "--arg1", "value1", "--arg2=value2", "--empty=", "--trailingspaces", "-q", "positional 1", "positional 2");
+    }
+
+    @Test
+    public void args_file_02() {
+        String[] args = {"@"+DIR+"args-good-2"};
+        testArgsFileGood(args, "-arg", "--", "positional");
+    }
+
+    @Test
+    public void args_file_03() {
+        String[] args = {"@"+DIR+"args-good-3"};
+        testArgsFileGood(args, "text");
+    }
+
+
+    @Test
+    public void args_file_bad_01() {
+        String[] args = {"@"+DIR+"args-good-1", "--another"};
+        testArgsFileBad(args);
+    }
+
+    @Test
+    public void args_file_bad_02() {
+        String[] args = {"@"+DIR+"args-good-1", "@"+DIR+"args-good-2"};
+        testArgsFileBad(args);
+    }
+
+    @Test
+    public void args_file_bad_03() {
+        String[] args = {"@"};
+        testArgsFileBad(args);
+    }
+
+    @Test
+    public void args_file_bad_04() {
+        String[] args = {"@ filename"};
+        testArgsFileBad(args);
+    }
+
+    @Test
+    public void args_file_bad_file_01() {
+        String[] args = {"@"+DIR+"args-bad-1"};
+        testArgsFileBad(args);
+    }
+
+    private void testArgsFileGood(String[] args, String...expected) {
+        String[] args2 = Args.argsPrepare(args);
+        //assertArrayEquals(expected, args2, ()->{ return "Expected: "+Arrays.asList(expected)+" Got: "+Arrays.asList(args2)});
+        assertArrayEquals(expected, args2, ()->("Expected: "+Arrays.asList(expected)+" Got: "+Arrays.asList(args2)));
+    }
+
+    private void testArgsFileBad(String[] args) {
+        assertThrows(CmdException.class, ()->Args.argsPrepare(args));
+    }
+
 }

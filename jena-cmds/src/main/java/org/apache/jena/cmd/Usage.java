@@ -27,7 +27,7 @@ import org.apache.jena.atlas.iterator.Iter;
 
 public class Usage
 {
-    public static class Category {
+    private static class Category {
         String desc;
         List<Entry> entries = new ArrayList<>();
         Category(String desc) {
@@ -35,60 +35,53 @@ public class Usage
         }
     }
 
-    private static class Entry {
-        String arg;
-        String msg;
-        Entry(String arg, String msg) {
-            this.arg = arg;
-            this.msg = msg;
-        }
+    private record Entry(String arg, String msg) {}
+
+    private List<Category> categories = new ArrayList<>();
+
+    public Usage() {
+        // Start with an unnamed category
+        startCategory(null);
     }
 
-   private List<Category> categories = new ArrayList<>();
+    public void startCategory(String desc) {
+        categories.add(new Category(desc));
+    }
 
-   public Usage() {
-       // Start with an unnamed category
-       startCategory(null);
-   }
+    public void addUsage(String argName, String msg) {
+        current().entries.add(new Entry(argName, msg));
+    }
 
-   public void startCategory(String desc) {
-       categories.add(new Category(desc));
-   }
+    public void output(PrintStream out) {
+        output(new IndentedWriter(out));
+    }
 
-   public void addUsage(String argName, String msg) {
-       current().entries.add(new Entry(argName, msg));
-   }
+    public void output(IndentedWriter out) {
+        int INDENT1 = 2;
+        int INDENT2 = 4;
+        out.incIndent(INDENT1);
 
-   public void output(PrintStream out) {
-       output(new IndentedWriter(out));
-   }
+        Iter.reverseIterate(categories, c->{
+            if ( c.desc != null ) {
+                out.println(c.desc);
+            }
+            out.incIndent(INDENT2);
+            for ( final Entry e : c.entries ) {
+                out.print(e.arg);
+                if ( e.msg != null ) {
+                    out.pad(20);
+                    out.print("   ");
+                    out.print(e.msg);
+                }
+                out.println();
+            }
+            out.decIndent(INDENT2);
+        });
+        out.decIndent(INDENT1);
+        out.flush();
+    }
 
-   public void output(IndentedWriter out) {
-       int INDENT1 = 2;
-       int INDENT2 = 4;
-       out.incIndent(INDENT1);
-
-       Iter.reverseIterate(categories, c->{
-           if ( c.desc != null ) {
-               out.println(c.desc);
-           }
-           out.incIndent(INDENT2);
-           for ( final Entry e : c.entries ) {
-               out.print(e.arg);
-               if ( e.msg != null ) {
-                   out.pad(20);
-                   out.print("   ");
-                   out.print(e.msg);
-               }
-               out.println();
-           }
-           out.decIndent(INDENT2);
-       });
-       out.decIndent(INDENT1);
-       out.flush();
-   }
-
-   private Category current() {
-       return categories.get(categories.size() - 1);
-   }
+    private Category current() {
+        return categories.get(categories.size() - 1);
+    }
 }

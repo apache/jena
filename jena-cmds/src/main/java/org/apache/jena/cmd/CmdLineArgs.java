@@ -50,7 +50,7 @@ public class CmdLineArgs extends CommandLineBase {
 
     // ---- Setting the ArgDecls
 
-    /** Add an argument to those to be accepted on the command line.
+    /** Add an argument declaration sto those to be accepted on the command line.
      * @param argName Name
      * @param hasValue True if the command takes a (string) value
      * @return The command line processor object
@@ -59,7 +59,7 @@ public class CmdLineArgs extends CommandLineBase {
         return add(new ArgDecl(hasValue, argName));
     }
 
-    /** Add an argument to those to be accepted on the command line.
+    /** Add an argument declaration to those to be accepted on the command line.
      *  Argument order reflects ArgDecl.
      * @param hasValue True if the command takes a (string) value
      * @param argName Name
@@ -69,7 +69,7 @@ public class CmdLineArgs extends CommandLineBase {
         return add(new ArgDecl(hasValue, argName));
     }
 
-    /** Add an argument object
+    /** Add an argument declaration
      * @param argDecl Argument to add
      * @return The command line processor object
      */
@@ -83,7 +83,7 @@ public class CmdLineArgs extends CommandLineBase {
     }
 
     /**
-     * Remove an argument and any values set for this argument.
+     * Remove an argument declaration and any values set for this argument.
      * @param argDecl Argument to remove
      * @return The command line processor object
      */
@@ -194,7 +194,7 @@ public class CmdLineArgs extends CommandLineBase {
 
     // ---- Indirection
 
-    static final String DefaultIndirectMarker = "@";
+    static final String DefaultIndirectMarker = "^";
     public boolean matchesIndirect(String s) { return matchesIndirect(s, DefaultIndirectMarker); }
     public boolean matchesIndirect(String s, String marker) { return s.startsWith(marker); }
 
@@ -242,7 +242,6 @@ public class CmdLineArgs extends CommandLineBase {
      */
 
     public boolean hasArg(ArgDecl argDecl) { return getArg(argDecl) != null; }
-
 
     /** Get the argument associated with the argument declaration.
      *  Actually returns the LAST one seen

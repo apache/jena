@@ -1,0 +1,12 @@
+# Comment. First blank line has zero chars the second has 4 spaces
+--arg
+
+--arg1 value1
+--arg2=value2
+--empty=
+
+  --trailingspaces    
+-q
+    # comment
+positional 1
+positional 2
