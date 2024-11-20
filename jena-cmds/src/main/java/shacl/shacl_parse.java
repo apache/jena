@@ -19,6 +19,7 @@
 package shacl;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -96,10 +97,11 @@ public class shacl_parse extends CmdGeneral {
                  String[] a = x.split(",");
                  return Arrays.stream(a);
              };
-             List<String> values = getValues(argOutput).stream()
+             List<String> outputValues = getValues(argOutput).stream()
                      .flatMap(f)
                      .map(s->s.toLowerCase())
                      .toList();
+             List<String> values = new ArrayList<>(outputValues); // Mutable.
              printText = values.remove("text") || values.remove("t");
              printCompact = values.remove("compact") || values.remove("c");
              printRDF = values.remove("rdf") || values.remove("r") || values.remove("ttl");
