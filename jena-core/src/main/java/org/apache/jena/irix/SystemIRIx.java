@@ -40,7 +40,6 @@ public class SystemIRIx {
     //private static final ProviderImpl providerImpl = ProviderImpl.IRI3986;
 
     // -- System-wide provider.
-
     private static IRIProvider provider = makeFreshSystemProvider();
 
     /**
@@ -57,6 +56,7 @@ public class SystemIRIx {
     public static final String sysPropertyProvider = "jena.iriprovider";
 
     public static IRIProvider makeFreshSystemProvider() {
+
         ProviderImpl sysProviderImpl = getProviderImpl();
 
         // ** This is the implementation choice point. **
@@ -90,13 +90,11 @@ public class SystemIRIx {
                 case "IRI0" ->  ProviderImpl.IRI0;
                 default -> null;
             };
-            if ( impl != null ) {
-                sysProviderImpl = impl;
-                Log.info(SystemIRIx.class, "IRI Provider: "+impl);
-            } else {
+            if ( impl == null ) {
                 Log.error(SystemIRIx.class, "IRI Provider not recognized: "+pNorm);
-                System.exit(1);
+                return sysProviderImpl;
             }
+            sysProviderImpl = impl;
         }
         return sysProviderImpl;
     }
