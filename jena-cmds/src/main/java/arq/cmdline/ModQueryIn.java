@@ -16,99 +16,99 @@
  * limitations under the License.
  */
 
-package arq.cmdline ;
+package arq.cmdline;
 
-import java.io.IOException ;
+import java.io.IOException;
 
 import org.apache.jena.cmd.*;
-import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryFactory ;
-import org.apache.jena.query.Syntax ;
-import org.apache.jena.shared.JenaException ;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.Syntax;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.NotFoundException;
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.util.FileUtils ;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.util.FileUtils;
 
 public class ModQueryIn extends ModBase {
-    protected final ArgDecl queryFileDecl   = new ArgDecl(ArgDecl.HasValue, "query", "file") ;
-    protected final ArgDecl querySyntaxDecl = new ArgDecl(ArgDecl.HasValue, "syntax", "syn", "in") ;
-    protected final ArgDecl queryBaseDecl   = new ArgDecl(ArgDecl.HasValue, "base") ;
+    protected final ArgDecl queryFileDecl = new ArgDecl(ArgDecl.HasValue, "query", "file");
+    protected final ArgDecl querySyntaxDecl = new ArgDecl(ArgDecl.HasValue, "syntax", "syn", "in");
+    protected final ArgDecl queryBaseDecl = new ArgDecl(ArgDecl.HasValue, "base");
 
-    private Syntax          defaultQuerySyntax     = Syntax.syntaxARQ ;
-    private Syntax          querySyntax     = null ;
-    private String          queryFilename   = null ;
-    private String          queryString     = null ;
-    private Query           query           = null ;
-    private String          baseURI         = null ;
+    private Syntax defaultQuerySyntax = Syntax.syntaxARQ;
+    private Syntax querySyntax = null;
+    private String queryFilename = null;
+    private String queryString = null;
+    private Query query = null;
+    private String baseURI = null;
 
     public ModQueryIn(Syntax defaultSyntax) {
-        defaultQuerySyntax = defaultSyntax ;
-        querySyntax = defaultSyntax ;
+        defaultQuerySyntax = defaultSyntax;
+        querySyntax = defaultSyntax;
     }
 
     @Override
     public void registerWith(CmdGeneral cmdLine) {
-        cmdLine.getUsage().startCategory("Query") ;
-        cmdLine.add(queryFileDecl,   "--query, --file",  "File containing a query") ;
-        cmdLine.add(querySyntaxDecl, "--syntax, --in",   "Syntax of the query") ;
-        cmdLine.add(queryBaseDecl,   "--base",           "Base URI for the query") ;
+        cmdLine.getUsage().startCategory("Query");
+        cmdLine.add(queryFileDecl, "--query, --file", "File containing a query");
+        cmdLine.add(querySyntaxDecl, "--syntax, --in", "Syntax of the query");
+        cmdLine.add(queryBaseDecl, "--base", "Base URI for the query");
     }
 
     @Override
     public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException {
         if ( cmdline.contains(queryBaseDecl) )
-            baseURI = cmdline.getValue(queryBaseDecl) ;
+            baseURI = cmdline.getValue(queryBaseDecl);
 
         if ( cmdline.contains(queryFileDecl) ) {
-            queryFilename = cmdline.getValue(queryFileDecl) ;
-            querySyntax = Syntax.guessQueryFileSyntax(queryFilename, defaultQuerySyntax) ;
+            queryFilename = cmdline.getValue(queryFileDecl);
+            querySyntax = Syntax.guessQueryFileSyntax(queryFilename, defaultQuerySyntax);
         }
 
         if ( cmdline.getNumPositional() == 0 && queryFilename == null )
-            cmdline.cmdError("No query string or query file") ;
+            cmdline.cmdError("No query string or query file");
 
         if ( cmdline.getNumPositional() > 1 )
-            cmdline.cmdError("Only one query string allowed") ;
+            cmdline.cmdError("Only one query string allowed");
 
         if ( cmdline.getNumPositional() == 1 && queryFilename != null )
-            cmdline.cmdError("Either query string or query file - not both") ;
+            cmdline.cmdError("Either query string or query file - not both");
 
         if ( queryFilename == null ) {
             // One positional argument.
-            String qs = cmdline.getPositionalArg(0) ;
+            String qs = cmdline.getPositionalArg(0);
             if ( cmdline.matchesIndirect(qs) )
-                querySyntax = Syntax.guessQueryFileSyntax(qs, defaultQuerySyntax) ;
+                querySyntax = Syntax.guessQueryFileSyntax(qs, defaultQuerySyntax);
 
-            queryString = cmdline.indirect(qs) ;
+            queryString = cmdline.indirect(qs);
         }
 
         // Set syntax
         if ( cmdline.contains(querySyntaxDecl) ) {
             // short name
-            String s = cmdline.getValue(querySyntaxDecl) ;
-            Syntax syn = Syntax.lookup(s) ;
+            String s = cmdline.getValue(querySyntaxDecl);
+            Syntax syn = Syntax.lookup(s);
             if ( syn == null )
-                cmdline.cmdError("Unrecognized syntax: " + s) ;
-            querySyntax = syn ;
+                cmdline.cmdError("Unrecognized syntax: " + s);
+            querySyntax = syn;
         }
     }
 
     public Syntax getQuerySyntax() {
-        return querySyntax ;
+        return querySyntax;
     }
 
     public Query getQuery() {
         if ( query != null )
-            return query ;
+            return query;
 
         if ( queryFilename != null && queryString != null ) {
-            System.err.println("Both query string and query file name given") ;
-            throw new TerminationException(1) ;
+            System.err.println("Both query string and query file name given");
+            throw new TerminationException(1);
         }
 
         if ( queryFilename == null && queryString == null ) {
-            System.err.println("No query string and no query file name given") ;
-            throw new TerminationException(1) ;
+            System.err.println("No query string and no query file name given");
+            throw new TerminationException(1);
         }
 
         try {
@@ -116,40 +116,39 @@ public class ModQueryIn extends ModBase {
                 if ( queryFilename.equals("-") ) {
                     try {
                         // Stderr?
-                        queryString = FileUtils.readWholeFileAsUTF8(System.in) ;
+                        queryString = FileUtils.readWholeFileAsUTF8(System.in);
                         // And drop into next if
                     } catch (IOException ex) {
-                        throw new CmdException("Error reading stdin", ex) ;
+                        throw new CmdException("Error reading stdin", ex);
                     }
                 } else {
                     try {
-                        query = QueryFactory.read(queryFilename, baseURI, getQuerySyntax()) ;
-                        return query ;
+                        query = QueryFactory.read(queryFilename, baseURI, getQuerySyntax());
+                        return query;
                     } catch (NotFoundException ex) {
-                        throw new JenaException("Failed to load Query: "+ex.getMessage());
+                        throw new JenaException("Failed to load Query: " + ex.getMessage());
                     }
                 }
             }
 
-            query = QueryFactory.create(queryString, baseURI, getQuerySyntax()) ;
-            return query ;
+            query = QueryFactory.create(queryString, baseURI, getQuerySyntax());
+            return query;
         } catch (ARQInternalErrorException intEx) {
-            System.err.println(intEx.getMessage()) ;
+            System.err.println(intEx.getMessage());
             if ( intEx.getCause() != null ) {
-                System.err.println("Cause:") ;
-                intEx.getCause().printStackTrace(System.err) ;
-                System.err.println() ;
+                System.err.println("Cause:");
+                intEx.getCause().printStackTrace(System.err);
+                System.err.println();
             }
-            intEx.printStackTrace(System.err) ;
-            throw new TerminationException(99) ;
-        }
-        catch (JenaException ex) {
-            System.err.println(ex.getMessage()) ;
-            throw new TerminationException(2) ;
+            intEx.printStackTrace(System.err);
+            throw new TerminationException(99);
+        } catch (JenaException ex) {
+            System.err.println(ex.getMessage());
+            throw new TerminationException(2);
         } catch (Exception ex) {
-            System.out.flush() ;
-            ex.printStackTrace(System.err) ;
-            throw new TerminationException(98) ;
+            System.out.flush();
+            ex.printStackTrace(System.err);
+            throw new TerminationException(98);
         }
     }
 }
