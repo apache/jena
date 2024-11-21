@@ -23,57 +23,51 @@ import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdArgModule;
 import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.cmd.ModBase;
-import org.apache.jena.sparql.sse.Item ;
-import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.sse.Item;
+import org.apache.jena.sparql.sse.SSE;
 
-public class ModItem extends ModBase
-{
-    protected final ArgDecl queryFileDecl = new ArgDecl(ArgDecl.HasValue, "file") ;
+public class ModItem extends ModBase {
+    protected final ArgDecl queryFileDecl = new ArgDecl(ArgDecl.HasValue, "file");
 
-    private String filename = null ;
-    private String parseString = null ;
-    private Item item = null ;
+    private String filename = null;
+    private String parseString = null;
+    private Item item = null;
 
     @Override
-    public void registerWith(CmdGeneral cmdLine)
-    {
-        cmdLine.getUsage().startCategory("Item") ;
-        cmdLine.add(queryFileDecl, "--file=", "File") ;
+    public void registerWith(CmdGeneral cmdLine) {
+        cmdLine.getUsage().startCategory("Item");
+        cmdLine.add(queryFileDecl, "--file=", "File");
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
-    {
-        if ( cmdLine.contains(queryFileDecl) )
-        {
-            filename = cmdLine.getValue(queryFileDecl) ;
-            parseString = IO.readWholeFileAsUTF8(filename) ;
-            return ;
+    public void processArgs(CmdArgModule cmdLine) {
+        if ( cmdLine.contains(queryFileDecl) ) {
+            filename = cmdLine.getValue(queryFileDecl);
+            parseString = IO.readWholeFileAsUTF8(filename);
+            return;
         }
 
         if ( cmdLine.getNumPositional() == 0 && filename == null )
-            cmdLine.cmdError("No query string or query file") ;
+            cmdLine.cmdError("No query string or query file");
 
         if ( cmdLine.getNumPositional() > 1 )
-            cmdLine.cmdError("Only one query string allowed") ;
+            cmdLine.cmdError("Only one query string allowed");
 
         if ( cmdLine.getNumPositional() == 1 && filename != null )
-            cmdLine.cmdError("Either query string or query file - not both") ;
+            cmdLine.cmdError("Either query string or query file - not both");
 
-        if ( filename == null )
-        {
-            String qs = cmdLine.getPositionalArg(0) ;
-            parseString = cmdLine.indirect(qs) ;
+        if ( filename == null ) {
+            String qs = cmdLine.getPositionalArg(0);
+            parseString = cmdLine.indirect(qs);
         }
     }
 
-    public Item getItem()
-    {
+    public Item getItem() {
         if ( item != null )
-            return item ;
+            return item;
         // Need to get the (outer) prologue.
-        item = SSE.parseItem(parseString) ;
-        return item ;
+        item = SSE.parseItem(parseString);
+        return item;
     }
 
 }

@@ -23,59 +23,50 @@ import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdArgModule;
 import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.cmd.ModBase;
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.sse.SSE;
 
-public class ModAlgebra extends ModBase
-{
-    protected final ArgDecl queryFileDecl = new ArgDecl(ArgDecl.HasValue, "query", "file") ;
+public class ModAlgebra extends ModBase {
+    protected final ArgDecl queryFileDecl = new ArgDecl(ArgDecl.HasValue, "query", "file");
 
-    private String queryFilename   = null ;
-    private String queryString = null ;
-    private Op op = null ;
+    private String queryFilename = null;
+    private String queryString = null;
+    private Op op = null;
 
     @Override
-    public void registerWith(CmdGeneral cmdLine)
-    {
-        cmdLine.getUsage().startCategory("Query") ;
-        cmdLine.add(queryFileDecl,
-                    "--query, --file",
-                    "File containing an algebra query") ;
+    public void registerWith(CmdGeneral cmdLine) {
+        cmdLine.getUsage().startCategory("Query");
+        cmdLine.add(queryFileDecl, "--query, --file", "File containing an algebra query");
     }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
-    {
-        if ( cmdLine.contains(queryFileDecl) )
-        {
-            queryFilename = cmdLine.getValue(queryFileDecl) ;
-            queryString = IO.readWholeFileAsUTF8(queryFilename) ;
+    public void processArgs(CmdArgModule cmdLine) {
+        if ( cmdLine.contains(queryFileDecl) ) {
+            queryFilename = cmdLine.getValue(queryFileDecl);
+            queryString = IO.readWholeFileAsUTF8(queryFilename);
         }
 
         if ( cmdLine.getNumPositional() == 0 && queryFilename == null )
-            cmdLine.cmdError("No query string or query file") ;
+            cmdLine.cmdError("No query string or query file");
 
         if ( cmdLine.getNumPositional() > 1 )
-            cmdLine.cmdError("Only one query string allowed") ;
+            cmdLine.cmdError("Only one query string allowed");
 
         if ( cmdLine.getNumPositional() == 1 && queryFilename != null )
-            cmdLine.cmdError("Either query string or query file - not both") ;
+            cmdLine.cmdError("Either query string or query file - not both");
 
-
-        if ( queryFilename == null )
-        {
-            String qs = cmdLine.getPositionalArg(0) ;
-            queryString = cmdLine.indirect(qs) ;
+        if ( queryFilename == null ) {
+            String qs = cmdLine.getPositionalArg(0);
+            queryString = cmdLine.indirect(qs);
         }
     }
 
-    public Op getOp()
-    {
+    public Op getOp() {
         if ( op != null )
-            return op ;
-        op = SSE.parseOp(queryString) ;
+            return op;
+        op = SSE.parseOp(queryString);
         if ( op == null )
-            System.err.println("Failed to parse : "+queryString) ;
-        return op ;
+            System.err.println("Failed to parse : " + queryString);
+        return op;
     }
 }

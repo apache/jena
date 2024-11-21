@@ -18,75 +18,63 @@
 
 package arq;
 
-import java.util.List ;
+import java.util.List;
 
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.update.*;
-import arq.cmdline.CmdARQ ;
-import arq.cmdline.ModRemote ;
+import arq.cmdline.CmdARQ;
+import arq.cmdline.ModRemote;
 
-public class rupdate extends CmdARQ
-{
-    static final ArgDecl updateArg = new ArgDecl(ArgDecl.HasValue, "update", "file") ;
+public class rupdate extends CmdARQ {
+    static final ArgDecl updateArg = new ArgDecl(ArgDecl.HasValue, "update", "file");
 
-    protected ModRemote     modRemote =     new ModRemote() ;
+    protected ModRemote modRemote = new ModRemote();
 
-    List<String> requestFiles = null ;
+    List<String> requestFiles = null;
 
-    public static void main(String... argv)
-    {
-        new rupdate(argv).mainRun() ;
+    public static void main(String...argv) {
+        new rupdate(argv).mainRun();
     }
 
-    protected rupdate(String[] argv)
-    {
-        super(argv) ;
-        super.add(updateArg, "--update=FILE", "Update commands to execute") ;
-        super.addModule(modRemote) ;
+    protected rupdate(String[] argv) {
+        super(argv);
+        super.add(updateArg, "--update=FILE", "Update commands to execute");
+        super.addModule(modRemote);
     }
 
     @Override
-    protected void processModulesAndArgs()
-    {
-        requestFiles = getValues(updateArg) ;   // ????
-        super.processModulesAndArgs() ;
-    }
-
-
-    @Override
-    protected String getSummary()
-    {
-        return getCommandName()+" --service=URL --update=<request file>" ;
+    protected void processModulesAndArgs() {
+        requestFiles = getValues(updateArg);   // ????
+        super.processModulesAndArgs();
     }
 
     @Override
-    protected void exec()
-    {
-        if ( modRemote.getServiceURL() == null )
-        {
-            throw new CmdException("No endpoint given") ;
-        }
-        String endpoint = modRemote.getServiceURL() ;
+    protected String getSummary() {
+        return getCommandName() + " --service=URL --update=<request file>";
+    }
 
-        for ( String filename : requestFiles )
-        {
-            UpdateRequest req = UpdateFactory.read( filename );
-            exec( endpoint, req );
+    @Override
+    protected void exec() {
+        if ( modRemote.getServiceURL() == null ) {
+            throw new CmdException("No endpoint given");
+        }
+        String endpoint = modRemote.getServiceURL();
+
+        for ( String filename : requestFiles ) {
+            UpdateRequest req = UpdateFactory.read(filename);
+            exec(endpoint, req);
         }
 
-        for ( String requestString : super.getPositional() )
-        {
-            requestString = indirect( requestString );
-            UpdateRequest req = UpdateFactory.create( requestString );
-            exec( endpoint, req );
+        for ( String requestString : super.getPositional() ) {
+            requestString = indirect(requestString);
+            UpdateRequest req = UpdateFactory.create(requestString);
+            exec(endpoint, req);
         }
     }
 
-    private void exec(String endpoint, UpdateRequest req)
-    {
+    private void exec(String endpoint, UpdateRequest req) {
         UpdateExecution.service(endpoint).update(req).execute();
     }
 
 }
-
