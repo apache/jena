@@ -23,10 +23,11 @@ import static org.apache.jena.atlas.lib.Lib.uppercase;
 import org.apache.jena.sparql.sse.Tags;
 
 public class E_SHA1 extends ExprDigest {
-    private static final String symbol = uppercase(Tags.tagSHA1);
+    private static final String symbol = Tags.tagSHA1;
+    private static final String printName = uppercase(symbol);
 
     public E_SHA1(Expr expr) {
-        super(expr, symbol, "SHA-1");
+        super(expr, symbol, printName, "SHA-1");
     }
 
     @Override

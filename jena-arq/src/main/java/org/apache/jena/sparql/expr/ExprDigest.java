@@ -25,19 +25,23 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.CacheFactory;
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.serializer.SerializationContext;
 
 public abstract class ExprDigest extends ExprFunction1
 {
     private final String digestName;
+    // Historically, MD5 and SH* have been printed upper case.
+    private final String printName;
     private MessageDigest digestCache;
 
-    public ExprDigest(Expr expr, String symbol, String digestName)
-    {
+    public ExprDigest(Expr expr, String symbol, String printName, String digestName) {
         super(expr, symbol);
         this.digestName = digestName;
+        this.printName = printName;
         try {
             digestCache = MessageDigest.getInstance(digestName);
         } catch (NoSuchAlgorithmException e) {
@@ -45,10 +49,8 @@ public abstract class ExprDigest extends ExprFunction1
         }
     }
 
-    private MessageDigest getDigest()
-    {
-        if ( digestCache != null )
-        {
+    private MessageDigest getDigest() {
+        if ( digestCache != null ) {
             MessageDigest digest2 = null;
             try {
                 digest2 = (MessageDigest)digestCache.clone();
@@ -96,5 +98,10 @@ public abstract class ExprDigest extends ExprFunction1
         } catch (Exception ex2) {
             throw new ARQInternalErrorException(ex2);
         }
+    }
+
+    @Override
+    public String getFunctionPrintName(SerializationContext cxt) {
+        return Lib.uppercase(super.getFunctionPrintName(cxt));
     }
 }
