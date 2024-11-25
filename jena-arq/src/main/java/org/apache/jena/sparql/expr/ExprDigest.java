@@ -25,7 +25,6 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.CacheFactory;
-import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.ARQInternalErrorException;
@@ -102,6 +101,6 @@ public abstract class ExprDigest extends ExprFunction1
 
     @Override
     public String getFunctionPrintName(SerializationContext cxt) {
-        return Lib.uppercase(super.getFunctionPrintName(cxt));
+        return printName;
     }
 }
