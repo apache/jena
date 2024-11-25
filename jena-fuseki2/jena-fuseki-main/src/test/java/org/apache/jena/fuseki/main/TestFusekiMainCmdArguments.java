@@ -281,8 +281,8 @@ public class TestFusekiMainCmdArguments {
     @Test
     public void test_error_configFile_directory() {
         // given
-        List<String> arguments = List.of("--config=testing/");
-        String expectedMessage = "Is a directory: testing/";
+        List<String> arguments = List.of("--config=testing");
+        String expectedMessage = "Is a directory: testing";
         // when, then
         testForCmdException(arguments, expectedMessage);
     }
@@ -323,7 +323,6 @@ public class TestFusekiMainCmdArguments {
         testForCmdException(arguments, expectedMessage);
     }
 
-
     @Test
     public void test_error_argConfigFile_UnrecognisedFileType() {
         // given
@@ -361,7 +360,6 @@ public class TestFusekiMainCmdArguments {
         // when, then
         testForCmdException(arguments, expectedMessage);
     }
-
 
     @Test
     public void test_error_incorrectContextPath() {
@@ -447,18 +445,10 @@ public class TestFusekiMainCmdArguments {
 
     private void testForCmdException(List<String> arguments, String expectedMessage) {
         // when
-        Throwable actual = null;
-        try {
-            buildServer(buildCmdLineArguments(arguments));
-        } catch (Exception e) {
-            actual = e;
-        }
+        CmdException actual = assertThrows(CmdException.class, ()->buildServer(buildCmdLineArguments(arguments)));
         // then
-        assertNotNull(actual);
-        assertTrue("Expecting correct exception", (actual instanceof CmdException));
         assertEquals("Expecting correct message", expectedMessage, actual.getMessage());
     }
-
 
     private static String[] buildCmdLineArguments(List<String> listArgs) {
         return listArgs.toArray(new String[0]);

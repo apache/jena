@@ -81,7 +81,7 @@ public class FusekiLogging
             logLogging("Old system property used '%s'", logLoggingPropertyAlt);
             return x.equalsIgnoreCase("true");
         }
-        x = Lib.getenv("FUSEKI_LOGLOGGING", logLoggingProperty);
+        x = Lib.getenv(logLoggingProperty, envLogLoggingProperty);
         return x != null && x.equalsIgnoreCase("true");
     }
 
@@ -137,11 +137,16 @@ public class FusekiLogging
         }
 
         logLogging("Setup");
+
+        // NB Search for a file before looking on the classpath.
+        // This allows the file to override any built-in logging configuration.
+        // However, in tests, this means a development file "log4j2.properties"
+        // may get picked up.
+
         // Look for a log4j2.properties file in the current working directory
         // and a place (e.g. FUSEKI_BASE in the webapp/full server) for easy customization.
         String fn1 = "log4j2.properties";
         String fn2 = null;
-
         if ( extraDir != null )
             fn2 = extraDir.resolve("log4j2.properties").toString();
         if ( attempt(fn1) ) return;

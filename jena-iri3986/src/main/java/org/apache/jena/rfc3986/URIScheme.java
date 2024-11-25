@@ -109,7 +109,7 @@ public enum URIScheme {
         };
     }
 
-    /** Scheme name */
+    /** Scheme name; no ':' */
     public String getSchemeName() {
         return schemeName;
     }

@@ -520,6 +520,11 @@ public class FusekiServer {
         /** Set the location (filing system directory) to serve static files from. */
         public Builder staticFileBase(String directory) {
             requireNonNull(directory, "directory");
+            if ( directory.startsWith("jar:") ) {
+                // jetty resource
+                this.staticContentDir = directory;
+                return this;
+            }
             if ( ! FileOps.exists(directory) )
                 Fuseki.configLog.warn("File area not found: "+directory);
             // Resolve path.
@@ -836,7 +841,6 @@ public class FusekiServer {
             // Can further modify the services in the configuration file.
             x.forEach(dap->addDataAccessPoint(dap));
         }
-
 
         /** Add a {@link DataAccessPoint} as a builder. */
         private Builder addDataAccessPoint(DataAccessPoint dap) {

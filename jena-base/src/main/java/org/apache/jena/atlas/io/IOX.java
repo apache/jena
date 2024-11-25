@@ -318,4 +318,28 @@ public class IOX {
         }
         return null;
     }
+
+    /**
+     * Check whether a file name points to a readable, regular file.
+     * Generate an exception if not.
+     */
+    public static void checkReadableFile(String file, Function<String, RuntimeException> exceptionMaker) {
+        Path path = Path.of(file);
+        checkReadableFile(path, exceptionMaker);
+    }
+
+    /**
+     * Check whether a file path points to a readable, regular file.
+     * Generate an exception if not.
+     */
+    public static void checkReadableFile(Path path, Function<String, RuntimeException> exceptionMaker) {
+        if ( ! Files.exists(path) )
+            throw exceptionMaker.apply("File not found: "+path);
+        if ( Files.isDirectory(path) )
+            throw exceptionMaker.apply("Is a directory: "+path);
+        if ( !Files.isRegularFile(path) )
+            throw exceptionMaker.apply("Not a regular file: "+path);
+        if ( !Files.isReadable(path) )
+            throw exceptionMaker.apply("Not readable: "+path);
+    }
 }
