@@ -218,9 +218,11 @@ public class FusekiAutoModules {
                 String name = m.name();
                 if ( name == null )
                     name = m.getClass().getSimpleName();
-                FmtLog.info(LOG, "Module: %s (%s)",
-                                 name,
-                                 Version.versionForClass(m.getClass()).orElse("unknown"));
+                String verStr = Version.versionForClass(m.getClass()).orElse(null);
+                if ( verStr == null )
+                    FmtLog.info(LOG, "Module: %s", name);
+                else
+                    FmtLog.info(LOG, "Module: %s (%s)", name, verStr);
             });
 
             return FusekiModules.create(fmods);

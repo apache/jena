@@ -246,7 +246,7 @@ public class TestFusekiMainCmdCustomArguments {
             if ( argSeen ) {
                 serverArgs.serverConfigModel = fixedModel;
                 notedServerConfigModel = fixedModel;
-                serverArgs.dsg = null;
+                serverArgs.dataset = null;
             }
         }
 

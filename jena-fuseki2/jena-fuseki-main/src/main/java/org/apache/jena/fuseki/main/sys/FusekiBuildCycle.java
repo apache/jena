@@ -43,7 +43,7 @@ import org.apache.jena.rdf.model.Model;
  */
 public interface FusekiBuildCycle {
     /**
-     * Display name to identify this module.
+     * A display name to identify this module.
      */
     public String name();
 

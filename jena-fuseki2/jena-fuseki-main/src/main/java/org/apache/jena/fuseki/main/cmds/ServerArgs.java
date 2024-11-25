@@ -65,10 +65,11 @@ public class ServerArgs {
     public boolean withCompact            = false;
 
     // Either a dataset setup from the command line (delayed creation of the dataset) ...
+    // The consumer should set the "dataset" field and the description field.
     public Consumer<ServerArgs> dsgMaker  = null;
-    public DatasetGraph dsg               = null;
+    public DatasetGraph dataset           = null;
     /** RDFS dataset - only when dataset is defined on the command line. */
-    public Graph rdfsGraph                = null;
+    public Graph rdfsSchemaGraph          = null;
 
     // ... or configuration file.
     public String serverConfigFile        = null;
@@ -76,6 +77,7 @@ public class ServerArgs {
 
     /** Allow no datasets without it being an error. This is not an argument. */
     public boolean allowEmpty             = false;
+    public SetupType setup                = SetupType.UNSET;
     /** Start without a dataset or configuration (this is {@code --empty}) */
     public boolean startEmpty             = false;
 
