@@ -116,6 +116,9 @@ public class Fuseki {
     /** Instance of log for operations */
     public static final Logger        actionLog         = LoggerFactory.getLogger(actionLogName);
 
+    /** Instance of log for operations : alternative variable name */
+    public static final Logger        fusekiLog         = LoggerFactory.getLogger(actionLogName);
+
     /** Logger name for standard webserver log file request log */
     public static final String        requestLogName    = PATH + ".Request";
 

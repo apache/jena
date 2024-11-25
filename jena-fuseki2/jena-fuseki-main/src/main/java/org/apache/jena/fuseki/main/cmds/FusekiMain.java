@@ -19,10 +19,9 @@
 package org.apache.jena.fuseki.main.cmds;
 
 import static arq.cmdline.ModAssembler.assemblerDescDecl;
-import static org.apache.jena.fuseki.main.cmds.FusekiMain.SetupType.*;
+import static org.apache.jena.fuseki.main.cmds.SetupType.*;
 
 import java.net.BindException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
@@ -31,8 +30,8 @@ import java.util.function.Consumer;
 import arq.cmdline.CmdARQ;
 import arq.cmdline.ModDatasetAssembler;
 import org.apache.jena.assembler.exceptions.AssemblerException;
+import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.lib.FileOps;
-import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.cmd.*;
 import org.apache.jena.fuseki.Fuseki;
@@ -51,7 +50,6 @@ import org.apache.jena.fuseki.validation.IRIValidator;
 import org.apache.jena.fuseki.validation.QueryValidator;
 import org.apache.jena.fuseki.validation.UpdateValidator;
 import org.apache.jena.query.ARQ;
-import org.apache.jena.rdfs.RDFSFactory;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sys.JenaSystem;
@@ -318,15 +316,6 @@ public class FusekiMain extends CmdARQ {
         return getCommandName() + " " + argUsage;
     }
 
-    // Command line DSG
-    enum SetupType { UNSET,
-                   MEM, FILE, TDB, MEMTDB,  // Datasets on the command line
-                   CONF,                    // Configuration file.
-                   ASSEM,                   // Assembler for a datasets. Legacy.
-                   NONE,                   // Explicitly no dataset or configurtion file.
-                   SPARQLer                 // SPARQler mode
-    }
-
     @Override
     protected void processModulesAndArgs() {
         Logger log = Fuseki.serverLog;
@@ -338,8 +327,6 @@ public class FusekiMain extends CmdARQ {
     }
 
     private void processStdArguments(Logger log) {
-        // Allow, but not require, no dataset or configuration
-        boolean allowEmpty = serverArgs.allowEmpty;
 
         // ---- Definition type
         int numDefinitions = 0;
@@ -380,7 +367,7 @@ public class FusekiMain extends CmdARQ {
 
         // ---- Validation
 
-        if ( setup == UNSET && allowEmpty )
+        if ( setup == UNSET && serverArgs.allowEmpty )
             setup = NONE;
 
         // Starting empty.
@@ -398,10 +385,9 @@ public class FusekiMain extends CmdARQ {
         if ( ! startEmpty && numDefinitions == 0 )
             throw new CmdException("No dataset or configuration specified on the command line");
 
-        // Configuration file OR dataset
-
+        // Configuration file OR command line dataset
         if ( contains(argConfig) ) {
-            // Invalid combination: --conf + service name.
+            // Invalid combination: --conf + arguments related to command line setup.
             if ( ! getPositional().isEmpty() )
                 throw new CmdException("Can't have both a configuration file and a service name");
             if ( contains(argRDFS) )
@@ -421,13 +407,15 @@ public class FusekiMain extends CmdARQ {
                 serverArgs.datasetPath = DataAccessPoint.canonical(getPositionalArg(0));
         }
 
-        serverArgs.datasetDescription = "<unset>";
-
         // ---- check: Invalid: --update + --conf
         if ( contains(argUpdate) && contains(argConfig) )
             throw new CmdException("--update and a configuration file does not make sense (control using the configuration file only)");
         boolean allowUpdate = contains(argUpdate);
         serverArgs.allowUpdate = allowUpdate;
+
+        // -- Record the choice.
+        serverArgs.setup = setup;
+        serverArgs.datasetDescription = "<unset>";
 
         // ---- Dataset
         // A server has one of the command line dataset setups or a configuration file,
@@ -485,9 +473,7 @@ public class FusekiMain extends CmdARQ {
             String rdfsVocab = getValue(argRDFS);
             if ( !FileOps.exists(rdfsVocab) )
                 throw new CmdException("No such file for RDFS: "+rdfsVocab);
-            serverArgs.rdfsGraph = RDFDataMgr.loadGraph(rdfsVocab);
-            serverArgs.datasetDescription = serverArgs.datasetDescription+ " (with RDFS)";
-            serverArgs.dsg = RDFSFactory.datasetRDFS(serverArgs.dsg, serverArgs.rdfsGraph);
+            serverArgs.rdfsSchemaGraph = RDFDataMgr.loadGraph(rdfsVocab);
         }
 
         // ---- Misc features.
@@ -643,6 +629,7 @@ public class FusekiMain extends CmdARQ {
     @Override
     protected void exec() {
         // Arguments have been processed to set serverArgs
+        // Check for command line or config setup.
         try {
             Logger log = Fuseki.serverLog;
             FusekiMainInfo.logServerCode(log);
@@ -681,20 +668,14 @@ public class FusekiMain extends CmdARQ {
      */
     private FusekiServer makeServer(ServerArgs serverArgs) {
         FusekiServer.Builder builder = FusekiServer.create();
-        return buildServer(builder, serverArgs);
-    }
-
-    /**
-     * Process {@link ServerArgs} and build a server.
-     * The server has not been started.
-     */
-    private FusekiServer buildServer(FusekiServer.Builder builder, ServerArgs serverArgs) {
         applyServerArgs(builder, serverArgs);
         return builder.build();
     }
 
     /** Apply {@link ServerArgs} to a {@link FusekiServer.Builder}. */
     private void applyServerArgs(FusekiServer.Builder builder, ServerArgs serverArgs) {
+        boolean commandLineSetup = ( serverArgs.dataset != null || serverArgs.dsgMaker != null );
+
         if ( serverArgs.jettyConfigFile != null )
             builder.jettyServerConfig(serverArgs.jettyConfigFile);
         builder.port(serverArgs.port);
@@ -714,6 +695,10 @@ public class FusekiMain extends CmdARQ {
         }
 
         // Apply argument for the database services
+        // if not empty
+        //   If there is a config model - use that (ignore command line dataset)
+        //   If there is a config file - load and use that (ignore command line dataset)
+        //   Command line.
         if ( ! serverArgs.startEmpty ) {
             if (serverArgs.serverConfigModel != null ) {
                 // -- Customiser has already set the configuration model
@@ -721,32 +706,35 @@ public class FusekiMain extends CmdARQ {
                 serverArgs.datasetDescription = "Configuration: provided";
             } else if ( serverArgs.serverConfigFile != null ) {
                 // -- Configuration file.
-                // if there is a configuration file, read it.
                 String file = serverArgs.serverConfigFile;
                 if ( file.startsWith("file:") )
                     file = file.substring("file:".length());
                 Path path = Path.of(file);
-                if ( ! Files.exists(path) )
-                    throw new CmdException("File not found: "+file);
-                if ( Files.isDirectory(path) )
-                    throw new CmdException("Is a directory: "+file);
+                IOX.checkReadableFile(file, msg->new CmdException(msg));
                 serverArgs.datasetDescription = "Configuration: "+path.toAbsolutePath();
                 serverArgs.serverConfigModel = RDFParser.source(path).toModel();
                 // ... and perform server configuration
                 builder.parseConfig(serverArgs.serverConfigModel);
             } else {
+                // No serverConfigFile, no serverConfigModel.
                 // -- A dataset setup by command line arguments.
                 if ( serverArgs.datasetPath == null )
                     throw new CmdException("No URL path name for the dataset");
                 // The dataset setup by command line arguments.
                 // A customizer may have set the dataset.
-                if ( serverArgs.dsg == null )
+                if ( serverArgs.dataset == null ) {
+                    // The dsgMaker should set serverArgs.dataset and serverArgs.datasetDescription
                     serverArgs.dsgMaker.accept(serverArgs);
-                // Should have been set somehow by this point.
-                if ( serverArgs.dsg == null )
+                }
+                // This should have been set somehow by this point.
+                if ( serverArgs.dataset == null )
                     // Internal error: should have happened during checking earlier.
                     throw new CmdException("Failed to set the dataset service");
-                builder.add(serverArgs.datasetPath, serverArgs.dsg, serverArgs.allowUpdate);
+                // RDFS -- Command line - add RDFS
+                if ( serverArgs.rdfsSchemaGraph != null ) {
+                    DSGSetup.setupRDFS(Fuseki.serverLog, serverArgs.rdfsSchemaGraph, serverArgs);
+                }
+                builder.add(serverArgs.datasetPath, serverArgs.dataset, serverArgs.allowUpdate);
             }
         }
 
@@ -794,13 +782,6 @@ public class FusekiMain extends CmdARQ {
     private void infoCmd(FusekiServer server, Logger log) {
         if ( super.isQuiet() )
             return;
-
-        if ( serverArgs.startEmpty ) {
-            FmtLog.info(log, "No SPARQL dataset services");
-        } else {
-            if ( serverArgs.datasetPath == null && serverArgs.serverConfigModel == null )
-                log.error("No dataset path or server configuration file");
-        }
 
         DataAccessPointRegistry dapRegistry = DataAccessPointRegistry.get(server.getServletContext());
         if ( serverArgs.datasetPath != null ) {

@@ -79,6 +79,13 @@ public class AuthEnv {
     /**
      * Remove the registration for a URI endpoint.
      */
+    public void unregisterUsernamePassword(String uri) {
+        unregisterUsernamePassword(URI.create(uri));
+    }
+
+    /**
+     * Remove the registration for a URI endpoint.
+     */
     public void unregisterUsernamePassword(URI uri) {
         AuthDomain location = new AuthDomain(uri);
         passwordRegistry.remove(location);
