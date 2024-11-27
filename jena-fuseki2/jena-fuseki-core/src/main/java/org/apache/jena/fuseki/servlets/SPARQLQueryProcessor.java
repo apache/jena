@@ -440,7 +440,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
             // DESCRIBE results are graphs
             Responses.doResponseGraph(action, result.graph());
         else if ( result.isBoolean() )
-            Responses.doResponseResultSet(action, result.booleanResult());
+            Responses.doResponseBoolean(action, result.booleanResult());
         else if ( result.isJson() )
             Responses.doResponseJson(action, result.jsonItems());
         else

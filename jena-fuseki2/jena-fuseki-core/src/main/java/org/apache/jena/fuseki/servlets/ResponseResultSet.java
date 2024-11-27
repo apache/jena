@@ -31,7 +31,7 @@ import org.apache.jena.sparql.exec.RowSet;
 public class ResponseResultSet
 {
     public static void doResponseResultSet(HttpAction action, Boolean booleanResult) {
-        Responses.doResponseResultSet(action, booleanResult);
+        Responses.doResponseBoolean(action, booleanResult);
     }
 
     public static void doResponseResultSet(HttpAction action, ResultSet resultSet, Prologue qPrologue) {

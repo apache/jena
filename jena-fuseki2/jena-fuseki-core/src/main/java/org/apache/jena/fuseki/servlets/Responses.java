@@ -149,7 +149,7 @@ public class Responses
         // Jetty closes the stream if it is a gzip stream.
     }
 
-    public static void doResponseResultSet(HttpAction action, Boolean booleanResult) {
+    public static void doResponseBoolean(HttpAction action, Boolean booleanResult) {
         ResponseResults.doResponseResultSet$(action, null, booleanResult, null, DEF.rsOfferBoolean);
     }
 
@@ -231,23 +231,28 @@ public class Responses
             String charset = charsetUTF8;
             String jsonCallback = null;
 
-            if ( Objects.equals(serializationType, contentTypeResultsXML) ) {
-                charset = null;
-                if ( stylesheetURL != null )
-                    cxt.set(RowSetWriterXML.xmlStylesheet, stylesheetURL);
-            }
-            if ( Objects.equals(serializationType, contentTypeResultsJSON) ) {
-                jsonCallback = paramCallback(action.getRequest());
-            }
-            if (Objects.equals(serializationType, WebContent.contentTypeResultsThrift) ) {
-                if ( booleanResult != null )
-                    ServletOps.errorBadRequest("Can't write a boolean result in thrift");
-                charset = null;
-            }
-            if (Objects.equals(serializationType, WebContent.contentTypeResultsProtobuf) ) {
-                if ( booleanResult != null )
-                    ServletOps.errorBadRequest("Can't write a boolean result in protobuf");
-                charset = null;
+            switch(serializationType) {
+                case contentTypeResultsXML-> {
+                    // XML controls the character set
+                    charset = null;
+                    if ( stylesheetURL != null )
+                        cxt.set(RowSetWriterXML.xmlStylesheet, stylesheetURL);
+                }
+                case contentTypeResultsJSON -> {
+                    // JSON is always UTF-8.
+                    // charset = null;
+                    jsonCallback = paramCallback(action.getRequest());
+                }
+                case contentTypeResultsThrift -> {
+                    if ( booleanResult != null )
+                        ServletOps.errorBadRequest("Can't write a boolean result in thrift");
+                    charset = null;
+                }
+                case contentTypeResultsProtobuf -> {
+                    if ( booleanResult != null )
+                        ServletOps.errorBadRequest("Can't write a boolean result in protobuf");
+                    charset = null;
+                }
             }
 
             // Finally, the general case
@@ -509,12 +514,13 @@ public class Responses
         // Stop caching (not that ?queryString URLs are cached anyway)
         if ( true )
             ServletOps.setNoCache(action);
-        // See: http://www.w3.org/International/O-HTTP-charset.html
         if ( contentType != null ) {
-            if ( charset != null && !isXML(contentType) )
+            if ( charset != null && !isXML(contentType) ) {
+                // Doing it ourselves means it is logged for "verbose"
                 contentType = contentType + "; charset=" + charset;
-            action.log.trace("Content-Type for response: " + contentType);
+            }
             action.setResponseContentType(contentType);
+            action.log.trace("Content-Type for response: " + contentType);
         }
     }
 
