@@ -62,8 +62,8 @@ public class JettyLib {
         // RDF syntax
         mimeTypes.addMimeMapping("nt",      WebContent.contentTypeNTriples);
         mimeTypes.addMimeMapping("nq",      WebContent.contentTypeNQuads);
-        mimeTypes.addMimeMapping("ttl",     WebContent.contentTypeTurtle+";charset=utf-8");
-        mimeTypes.addMimeMapping("trig",    WebContent.contentTypeTriG+";charset=utf-8");
+        mimeTypes.addMimeMapping("ttl",     WebContent.contentTypeTurtle);
+        mimeTypes.addMimeMapping("trig",    WebContent.contentTypeTriG);
         mimeTypes.addMimeMapping("rdf",     WebContent.contentTypeRDFXML);
         mimeTypes.addMimeMapping("jsonld",  WebContent.contentTypeJSONLD);
         mimeTypes.addMimeMapping("rj",      WebContent.contentTypeRDFJSON);
