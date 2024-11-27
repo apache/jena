@@ -405,20 +405,21 @@ public class UpdateEngineWorker implements UpdateVisitor
         try {
             Iterator<Binding> bindings = evalBindings(query, dsg, inputBinding, context);
 
-            if ( false ) {
-                List<Binding> x = Iter.toList(bindings);
-                System.out.printf("====>> Bindings (%d)\n", x.size());
-                //Iter.print(System.out, x.iterator());
-                // More readable.
-                List<Var> vars = Var.varList(query.getResultVars());
-                RowSet rs = RowSetStream.create(vars, x.iterator());
-                PrefixMap pmap = datasetGraph.prefixes();
-                RowSetOps.out(System.out, rs, datasetGraph.prefixes());
-                System.out.println("====<<");
-                bindings = Iter.iter(x);
+            try {
+                if ( false ) {
+                    List<Binding> x = Iter.toList(bindings);
+                    System.out.printf("====>> Bindings (%d)\n", x.size());
+                    List<Var> vars = Var.varList(query.getResultVars());
+                    RowSet rs = RowSetStream.create(vars, x.iterator());
+                    PrefixMap pmap = datasetGraph.prefixes();
+                    RowSetOps.out(System.out, rs, datasetGraph.prefixes());
+                    System.out.println("====<<");
+                    bindings = Iter.iter(x);
+                }
+                db.addAll(bindings);
+            } finally {
+                Iter.close(bindings);
             }
-            db.addAll(bindings);
-            Iter.close(bindings);
 
             Iterator<Binding> it = db.iterator();
             execDelete(datasetGraph, update.getDeleteQuads(), withGraph, it);
