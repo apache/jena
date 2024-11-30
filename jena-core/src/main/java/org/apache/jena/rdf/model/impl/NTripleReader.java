@@ -20,7 +20,8 @@ package org.apache.jena.rdf.model.impl;
 
 import java.io.*;
 import java.net.URL;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.GraphEvents ;
@@ -38,7 +39,7 @@ public class NTripleReader extends Object implements RDFReaderI {
     static final Logger log = LoggerFactory.getLogger(NTripleReader.class);
 
     private Model model = null;
-    private Hashtable<String, Resource> anons = new Hashtable<>();
+    private Map<String, Resource> anons = new HashMap<>();
 
     private IStream in = null;
     private boolean inErr = false;
@@ -115,7 +116,7 @@ public class NTripleReader extends Object implements RDFReaderI {
             model.notifyEvent( GraphEvents.finishRead );
         }
     }
-    
+
     protected final void unwrappedReadRDF() {
         Resource subject;
         Property predicate = null;
@@ -223,7 +224,7 @@ public class NTripleReader extends Object implements RDFReaderI {
 
     protected Literal readLiteral()  {
 
-        StringBuffer lit = new StringBuffer(sbLength);
+        StringBuilder lit = new StringBuilder(sbLength);
 
         if (!expect("\""))
             return null;
@@ -277,7 +278,7 @@ public class NTripleReader extends Object implements RDFReaderI {
                         return null;
 					if ( lang.length() > 0 )
 					    deprecated("Language tags are not permitted on typed literals.");
-                    
+
                     return model.createTypedLiteral(
                         lit.toString(),
                         datatypeURI);
@@ -333,7 +334,7 @@ public class NTripleReader extends Object implements RDFReaderI {
         inErr = true;
     }
     private String readLang() {
-        StringBuffer lang = new StringBuffer(15);
+        StringBuilder lang = new StringBuilder(15);
 
 
         while (true) {
@@ -350,7 +351,7 @@ public class NTripleReader extends Object implements RDFReaderI {
         return inErr;
     }
     protected String readURI() {
-        StringBuffer uri = new StringBuffer(sbLength);
+        StringBuilder uri = new StringBuilder(sbLength);
 
         while (in.nextChar() != '>') {
             char inChar = in.readChar();
@@ -368,7 +369,7 @@ public class NTripleReader extends Object implements RDFReaderI {
     }
 
     protected String readName() {
-        StringBuffer name = new StringBuffer(sbLength);
+        StringBuilder name = new StringBuilder(sbLength);
 
         char nextChar;
         while (Character.isLetterOrDigit(nextChar=in.nextChar())
@@ -436,7 +437,7 @@ public class NTripleReader extends Object implements RDFReaderI {
             + ": "
             + msg;
     }
-    
+
 }
 
 class IStream {
@@ -491,5 +492,5 @@ class IStream {
     protected int getCharpos() {
         return charpos;
     }
-    
+
 }

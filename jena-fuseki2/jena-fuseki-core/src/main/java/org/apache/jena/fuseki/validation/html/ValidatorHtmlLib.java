@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.validation.html;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
 import jakarta.servlet.ServletOutputStream;
@@ -52,7 +53,7 @@ public class ValidatorHtmlLib {
         content.accept(out);
         out.flush();
         String x = htmlQuote(out.asString());
-        byte b[] = x.getBytes("UTF-8");
+        byte b[] = x.getBytes(StandardCharsets.UTF_8);
         outStream.write(b);
         finishFixed(outStream);
     }

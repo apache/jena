@@ -29,37 +29,31 @@ import org.apache.jena.util.FileUtils ;
 import org.slf4j.LoggerFactory;
 
 /** Abstract class that sorts out input streams, readers and base URIs, to call a
- * single worker function with model, UTF8 reader and visited base  
+ * single worker function with model, UTF8 reader and visited base
  */
 @SuppressWarnings("deprecation")
 public abstract class JenaReaderBase implements RDFReaderI
 {
 	protected RDFErrorHandler errorHandler = null ;
-	
+
 	public JenaReaderBase() {}
 
     @Override
     final
-    public void read(Model model, Reader r, String base) 
-	{ 
+    public void read(Model model, Reader r, String base)
+	{
         checkReader(r) ;
         readImpl(model, r, base) ;
 	}
 
     @Override
     final
-	public void read(Model model, java.lang.String url) 
+	public void read(Model model, java.lang.String url)
 	{
 	      try {
         	URLConnection conn = new URL(url).openConnection();
         	String encoding = conn.getContentEncoding();
-        	if ( encoding == null )
-               read(model, new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8), url);
-        	else
-            {
-                LoggerFactory.getLogger(this.getClass()).warn("URL content is not UTF-8") ;
-                read(model, new InputStreamReader(conn.getInputStream(),encoding), url);
-            }
+        	read(model, new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8), url);
         }
         catch (JenaException e)
         {
@@ -76,11 +70,11 @@ public abstract class JenaReaderBase implements RDFReaderI
 
     @Override
     final
-    public void read(Model model, InputStream in, String base) 
+    public void read(Model model, InputStream in, String base)
 	{
         readImpl(model, FileUtils.asBufferedUTF8(in), base) ;
     }
-	
+
     @Override
     final
 	public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler)
@@ -89,7 +83,7 @@ public abstract class JenaReaderBase implements RDFReaderI
 		errorHandler = errHandler ;
 		return old ;
 	}
-    
+
     @Override
     final
 	public Object setProperty(String propName, Object propValue)
@@ -108,7 +102,7 @@ public abstract class JenaReaderBase implements RDFReaderI
     private void readImpl(Model model, Reader reader, String base)
     {
         // The reader has been checked, if possible, by now or
-        // constructed correctly by code here. 
+        // constructed correctly by code here.
         if ( base != null )
             base = N3IRIResolver.resolveGlobal(base) ;
         try {

@@ -82,7 +82,7 @@ package org.apache.jena.rfc3986;
         // 5.2.4 step 1.
         int inputBufferStart = 0;
         int inputBufferEnd = path.length();
-        StringBuffer output = new StringBuffer();
+        StringBuilder output = new StringBuilder();
         // 5.2.4 step 2.
         while (inputBufferStart < inputBufferEnd) {
             String in = path.substring(inputBufferStart);
@@ -135,7 +135,7 @@ package org.apache.jena.rfc3986;
         return output.toString();
     }
 
-    private static void removeLastSeqment(StringBuffer output) {
+    private static void removeLastSeqment(StringBuilder output) {
         int ix = output.length();
         while (ix > 0) {
             ix--;

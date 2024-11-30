@@ -176,7 +176,7 @@ public class RowSetWriterText implements RowSetWriter {
         for ( int col = 0 ; col < colWidths.length ; col++ ) {
             String s = row[col];
             int pad = colWidths[col];
-            StringBuffer sbuff = new StringBuffer(120);
+            StringBuilder sbuff = new StringBuilder(120);
 
             if ( col > 0 )
                 sbuff.append(colSep);

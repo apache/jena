@@ -18,25 +18,14 @@
 
 package org.apache.jena.atlas.io;
 
-import java.io.ByteArrayInputStream ;
-import java.io.UnsupportedEncodingException ;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 
-public class TestPeekInputStreamSource extends AbstractTestPeekInputStream
-{
+public class TestPeekInputStreamSource extends AbstractTestPeekInputStream {
     @Override
-    PeekInputStream make(String contents, int size)
-    {
-        // Very carefuly ensure this is not a byte array-based PeekReader
-        ByteArrayInputStream bin ;
-        try
-        {
-            bin = new ByteArrayInputStream(contents.getBytes("ASCII")) ;
-        } catch (UnsupportedEncodingException ex)
-        {
-            ex.printStackTrace();
-            return null ;
-        }
-        
-        return PeekInputStream.make(bin, size) ;
+    PeekInputStream make(String contents, int size) {
+        // Very carefully ensure this is not a byte array-based PeekReader
+        ByteArrayInputStream bin = new ByteArrayInputStream(contents.getBytes(StandardCharsets.US_ASCII));
+        return PeekInputStream.make(bin, size);
     }
 }

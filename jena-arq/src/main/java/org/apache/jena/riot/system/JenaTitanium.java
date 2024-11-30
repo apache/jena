@@ -106,7 +106,7 @@ public class JenaTitanium {
     private static Node valueToNode(ParserProfile parserProfile, Optional<RdfResource> value) {
         if ( value.isEmpty() )
             return null;
-        return valueToNode(parserProfile, value.get());
+        return valueToNode(parserProfile, value.orElseThrow());
     }
 
     private static Node valueToNode(ParserProfile parserProfile, RdfValue value) {
@@ -123,7 +123,7 @@ public class JenaTitanium {
             RDFDatatype datatype = NodeFactory.getType(dt);
             Optional<String> lang = literal.getLanguage();
             if ( lang.isPresent() )
-                return parserProfile.createLangLiteral(lex, lang.get(), line, col);
+                return parserProfile.createLangLiteral(lex, lang.orElseThrow(), line, col);
             return parserProfile.createTypedLiteral(lex, datatype, line, col);
         }
         throw new JenaTitaniumException("Not recognized: "+value);

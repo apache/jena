@@ -262,7 +262,7 @@ public class DecimalDV extends TypeValidator {
                 return;
             }
             // for -0.1, total digits is 1, so we need 3 extra spots
-            StringBuffer buffer = new StringBuffer(totalDigits+3);
+            StringBuilder buffer = new StringBuilder(totalDigits+3);
             if (sign == -1)
                 buffer.append('-');
             if (intDigits != 0)

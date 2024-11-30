@@ -212,7 +212,7 @@ public class TestData implements ARPErrorNumbers{
     void characterize(Class< ? extends FrameI> f){
         inCharacterize = true;
         int sz = eventList.size;
-        StringBuffer rslt = new StringBuffer();
+        StringBuilder rslt = new StringBuilder();
         String skip = null;
         eventList.test(f);
         rslt.append(eventListName(f,null));
@@ -243,7 +243,7 @@ public class TestData implements ARPErrorNumbers{
     }
 
     private String eventListName(Class< ? extends FrameI> f, Class< ? extends FrameI> f2) {
-        StringBuffer rslt = new StringBuffer();
+        StringBuilder rslt = new StringBuilder();
         rslt.append(stateName(f, f2));
         for (int i=0;i<eventList.size;i++) {
            rslt.append(' ');
@@ -375,8 +375,8 @@ public class TestData implements ARPErrorNumbers{
     Set<String> data = new TreeSet<>(new Comparator<String>(){
         @Override
         public int compare(String arg1, String arg2) {
-            StringBuffer b1 = new StringBuffer(arg1).reverse();
-            StringBuffer b2 = new StringBuffer(arg2).reverse();
+            StringBuilder b1 = new StringBuilder(arg1).reverse();
+            StringBuilder b2 = new StringBuilder(arg2).reverse();
             return b1.toString().compareTo(b2.toString());
         }}
             );

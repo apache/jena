@@ -111,7 +111,7 @@ public class YearDV extends AbstractDateTimeDV {
      */
     @Override
     protected String dateToString(DateTimeData date) {
-        StringBuffer message = new StringBuffer(5);
+        StringBuilder message = new StringBuilder(5);
         append(message, date.year, 4);
         append(message, (char)date.utc, 0);
         return message.toString();

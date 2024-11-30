@@ -22,6 +22,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
@@ -200,7 +201,7 @@ public class LocationLock {
         File lockFile = getLockFile();
         checkLockFileForWrite(lockFile);
         // Write our PID to the lock file
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(lockFile))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(lockFile, StandardCharsets.UTF_8))) {
             writer.write(Integer.toString(pid));
             writer.close();
         } catch (IOException e) {

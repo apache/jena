@@ -696,8 +696,8 @@ public class HttpAction
         return request.getRequestURI();
     }
 
-    public StringBuffer getRequestRequestURL() {
-        return request.getRequestURL();
+    public String getRequestRequestURL() {
+        return request.getRequestURL().toString();
     }
 
     public String getRequestPathInfo() {

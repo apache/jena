@@ -23,28 +23,26 @@ import static org.apache.jena.riot.resultset.ResultSetLang.RS_JSON;
 import static org.apache.jena.riot.resultset.ResultSetLang.RS_TSV;
 import static org.apache.jena.riot.resultset.ResultSetLang.RS_XML;
 
-import java.io.ByteArrayOutputStream ;
-import java.io.OutputStream ;
-import java.io.UnsupportedEncodingException ;
-import java.nio.charset.StandardCharsets ;
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.ResultSetMgr ;
+import org.apache.jena.riot.ResultSetMgr;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.riot.rowset.rw.RowSetWriterXML;
-import org.apache.jena.shared.PrefixMapping ;
+import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQConstants;
-import org.apache.jena.sparql.ARQException ;
-import org.apache.jena.sparql.ARQNotImplemented ;
-import org.apache.jena.sparql.core.Prologue ;
+import org.apache.jena.sparql.ARQException;
+import org.apache.jena.sparql.ARQNotImplemented;
+import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.resultset.ResultsFormat;
 import org.apache.jena.sparql.resultset.ResultsWriter;
 import org.apache.jena.sys.JenaSystem;
@@ -70,7 +68,7 @@ public class ResultSetFormatter {
      * @param qresults   result set
      */
     public static void out(ResultSet qresults)
-    { out(System.out, qresults) ; }
+    { out(System.out, qresults); }
 
     /**
      * Output a result set in a text format.  The result set is consumed.
@@ -83,7 +81,7 @@ public class ResultSetFormatter {
      * @param qresults   result set
      */
     public static void out(OutputStream out, ResultSet qresults)
-    { out(out, qresults, (PrefixMapping)null) ; }
+    { out(out, qresults, (PrefixMapping)null); }
 
     /**
      * Output a result set in a text format.  The result set is consumed.
@@ -96,7 +94,7 @@ public class ResultSetFormatter {
      * @param query     May be used to abbreviate URIs
      */
     public static void out(ResultSet qresults, Query query)
-    { out(System.out, qresults, query) ; }
+    { out(System.out, qresults, query); }
 
     /**
      * Output a result set in a text format.  The result set is consumed.
@@ -109,7 +107,7 @@ public class ResultSetFormatter {
      * @param prologue   May be used to abbreviate URIs
      */
     public static void out(ResultSet qresults, Prologue prologue)
-    { out(System.out, qresults, prologue) ; }
+    { out(System.out, qresults, prologue); }
 
     //    /**
 //     * Output a result set in a text format.
@@ -118,7 +116,7 @@ public class ResultSetFormatter {
 //     * @param query      May be used to abbreviate URIs
 //     */
 //    public static void out(OutputStream out, ResultSet qresults, Query query)
-//    { out(out, qresults, query.getPrefixMapping()) ; }
+//    { out(out, qresults, query.getPrefixMapping()); }
 
     /**
      * Output a result set in a text format.  The result set is consumed.
@@ -131,7 +129,7 @@ public class ResultSetFormatter {
      * @param pmap      Prefix mapping for abbreviating URIs.
      */
     public static void out(ResultSet qresults, PrefixMapping pmap)
-    { out(System.out, qresults, pmap) ; }
+    { out(System.out, qresults, pmap); }
 
     /**
      * Output a result set in a text format.  The result set is consumed.
@@ -172,7 +170,7 @@ public class ResultSetFormatter {
      * @param answer    The boolean answer
      */
     public static void out(boolean answer)
-    { out(System.out, answer) ; }
+    { out(System.out, answer); }
 
     /**
      * Output an ASK answer
@@ -195,9 +193,9 @@ public class ResultSetFormatter {
 
     public static String asText(ResultSet qresults)
     {
-        ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
-        out(arr, qresults) ;
-        return new String(arr.toByteArray(), StandardCharsets.UTF_8) ;
+        ByteArrayOutputStream arr = new ByteArrayOutputStream();
+        out(arr, qresults);
+        return new String(arr.toByteArray(), StandardCharsets.UTF_8);
     }
 
     /** Return a string that has the result set serialized as a text table
@@ -214,14 +212,9 @@ public class ResultSetFormatter {
 
     public static String asText(ResultSet qresults, Prologue prologue)
     {
-        ByteArrayOutputStream arr = new ByteArrayOutputStream() ;
-        out(arr, qresults, prologue) ;
-        try { return new String(arr.toByteArray(), "UTF-8") ; }
-        catch (UnsupportedEncodingException e)
-        {
-            Log.warn(ResultSetFormatter.class, "UnsupportedEncodingException") ;
-            return null ;
-        }
+        ByteArrayOutputStream arr = new ByteArrayOutputStream();
+        out(arr, qresults, prologue);
+        return new String(arr.toByteArray(), StandardCharsets.UTF_8);
     }
 
     // ----------------------------------------------------------------
@@ -233,15 +226,15 @@ public class ResultSetFormatter {
 
     public static int consume(ResultSet resultSet)
     {
-        int count = 0 ;
-        for ( ; resultSet.hasNext() ; )
+        int count = 0;
+        for (; resultSet.hasNext(); )
         {
             // Force nodes to be materialized.
-            QuerySolution result = resultSet.nextSolution() ;
+            QuerySolution result = resultSet.nextSolution();
             materialize(result);
-            count++ ;
+            count++;
         }
-        return count ;
+        return count;
     }
 
     /**
@@ -251,20 +244,20 @@ public class ResultSetFormatter {
      */
     static public List<QuerySolution> toList(ResultSet resultSet)
     {
-        List<QuerySolution> list = new ArrayList<>() ;
-        for ( ; resultSet.hasNext() ; ) {
-            QuerySolution result = resultSet.nextSolution() ;
+        List<QuerySolution> list = new ArrayList<>();
+        for (; resultSet.hasNext(); ) {
+            QuerySolution result = resultSet.nextSolution();
             materialize(result);
-            list.add(result) ;
+            list.add(result);
         }
-        return list ;
+        return list;
     }
 
     /** Touch every var/value */
     private static void materialize(QuerySolution qs) {
-        for ( Iterator<String> iter = qs.varNames() ; iter.hasNext() ; ) {
+        for ( Iterator<String> iter = qs.varNames(); iter.hasNext(); ) {
             String vn = iter.next();
-            RDFNode n = qs.get(vn) ;
+            RDFNode n = qs.get(vn);
         }
     }
 
@@ -275,7 +268,7 @@ public class ResultSetFormatter {
      */
 
     static public void output(ResultSet resultSet, ResultsFormat rFmt)
-    { output(System.out, resultSet, rFmt) ; }
+    { output(System.out, resultSet, rFmt); }
 
     /** Output a ResultSet in some format.
      *  To get detailed control over each format, call the appropriate operation directly.
@@ -289,13 +282,13 @@ public class ResultSetFormatter {
         Lang lang = ResultsFormat.convert(rFmt);
         if ( lang != null ) {
             output(outStream, resultSet, lang);
-            return ;
+            return;
         }
 
         boolean b = ResultsFormat.oldWrite(outStream, rFmt, null, resultSet);
         if ( b )
-            return ;
-        throw new ARQException("Unknown ResultSet format: " + rFmt) ;
+            return;
+        throw new ARQException("Unknown ResultSet format: " + rFmt);
     }
 
     // ---- General Output
@@ -323,13 +316,13 @@ public class ResultSetFormatter {
      */
     public static void output(OutputStream outStream, Iterator<JsonObject> jsonItems)
     {
-        IndentedWriter out = new IndentedWriter(outStream) ;
-        out.println("[") ;
-        out.incIndent() ;
+        IndentedWriter out = new IndentedWriter(outStream);
+        out.println("[");
+        out.incIndent();
         while (jsonItems.hasNext())
         {
-            JsonObject jsonItem = jsonItems.next() ;
-            jsonItem.output(out) ;
+            JsonObject jsonItem = jsonItems.next();
+            jsonItem.output(out);
             if ( jsonItems.hasNext() )
                 out.println(" ,");
             else
@@ -349,7 +342,7 @@ public class ResultSetFormatter {
      * @param qresults      result set
      */
     static public void outputAsXML(ResultSet qresults)
-    { outputAsXML(System.out, qresults) ; }
+    { outputAsXML(System.out, qresults); }
 
     /** Output a result set in the XML format
      *
@@ -391,7 +384,7 @@ public class ResultSetFormatter {
      */
 
     public static void outputAsXML(boolean booleanResult)
-    { outputAsXML(System.out, booleanResult) ; }
+    { outputAsXML(System.out, booleanResult); }
 
     /** Output a boolean result in the XML format
      *
@@ -408,7 +401,7 @@ public class ResultSetFormatter {
      * @param stylesheet    The URL of the stylesheet
      */
     public static void outputAsXML(boolean booleanResult, String stylesheet)
-    { outputAsXML(System.out, booleanResult, stylesheet) ; }
+    { outputAsXML(System.out, booleanResult, stylesheet); }
 
     /** Output a boolean result in the XML format
      *
@@ -437,7 +430,7 @@ public class ResultSetFormatter {
 
     public static String asXMLString(ResultSet qresults)
     {
-        return asXMLString(qresults, null) ;
+        return asXMLString(qresults, null);
     }
 
     /** Return a string that has the result set serialized as XML (not RDF)
@@ -471,7 +464,7 @@ public class ResultSetFormatter {
 
     public static String asXMLString(boolean booleanResult)
     {
-        return asXMLString(booleanResult, null) ;
+        return asXMLString(booleanResult, null);
     }
 
     /** Return a string that has the result set serialized as XML (not RDF)
@@ -502,7 +495,7 @@ public class ResultSetFormatter {
      */
 
     static public void outputAsJSON(ResultSet resultSet)
-    { outputAsJSON(System.out, resultSet) ; }
+    { outputAsJSON(System.out, resultSet); }
 
     /** Output a result set in the JSON format
      *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a>
@@ -513,7 +506,7 @@ public class ResultSetFormatter {
      */
 
     static public void outputAsJSON(OutputStream outStream, ResultSet resultSet)
-    { output(outStream, resultSet, RS_JSON) ; }
+    { output(outStream, resultSet, RS_JSON); }
 
     /** Output a result set in the JSON format
      *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a>
@@ -523,7 +516,7 @@ public class ResultSetFormatter {
      */
 
     static public void outputAsJSON(boolean booleanResult)
-    { outputAsJSON(System.out, booleanResult) ; }
+    { outputAsJSON(System.out, booleanResult); }
 
     /** Output a result set in the JSON format
      *  Format: <a href="http://www.w3.org/TR/rdf-sparql-json-res/">Serializing SPARQL Query Results in JSON</a>
@@ -534,7 +527,7 @@ public class ResultSetFormatter {
      */
 
     static public void outputAsJSON(OutputStream outStream, boolean booleanResult)
-    { output(outStream, booleanResult, RS_JSON) ; }
+    { output(outStream, booleanResult, RS_JSON); }
 
     // ---- SSE
 
@@ -545,7 +538,7 @@ public class ResultSetFormatter {
      */
 
     static public void outputAsSSE(boolean booleanResult)
-    { outputAsSSE(System.out, booleanResult ) ; }
+    { outputAsSSE(System.out, booleanResult ); }
 
     /** Output a boolean result in the SSE format
      *  Format: <a href="http://jena.apache.org/documentation/notes/sse.html">SSE</a>
@@ -556,7 +549,7 @@ public class ResultSetFormatter {
 
     static public void outputAsSSE(OutputStream outStream, boolean booleanResult)
     {
-        throw new ARQNotImplemented("outputAsSSE") ;
+        throw new ARQNotImplemented("outputAsSSE");
     }
 
     /** Output a result set in the SSE format
@@ -565,7 +558,7 @@ public class ResultSetFormatter {
      */
 
     static public void outputAsSSE(ResultSet resultSet)
-    { outputAsSSE(System.out, resultSet) ; }
+    { outputAsSSE(System.out, resultSet); }
 
     /** Output a result set in the SSE format
      *  Format: <a href="http://jena.apache.org/documentation/notes/sse.html">SSE</a>
@@ -573,7 +566,7 @@ public class ResultSetFormatter {
      */
 
     static public void outputAsSSE(ResultSet resultSet, Prologue prologue)
-    { outputAsSSE(System.out, resultSet, prologue) ; }
+    { outputAsSSE(System.out, resultSet, prologue); }
 
     /** Output a result set in the SSE format
      *  Format: <a href="http://jena.apache.org/documentation/notes/sse.html">SSE</a>
@@ -582,7 +575,7 @@ public class ResultSetFormatter {
      */
 
     static public void outputAsSSE(OutputStream outStream, ResultSet resultSet)
-    { outputAsSSE(outStream, resultSet, null) ; }
+    { outputAsSSE(outStream, resultSet, null); }
 
     /** Output a result set in the SSE format
      *  Format: <a href="http://jena.apache.org/documentation/notes/sse.html">SSE</a>
@@ -593,7 +586,7 @@ public class ResultSetFormatter {
 
     static public void outputAsSSE(OutputStream outStream, ResultSet resultSet, Prologue prologue)
     {
-        throw new ARQNotImplemented("outputAsSSE") ;
+        throw new ARQNotImplemented("outputAsSSE");
     }
 
     // ---- CSV
@@ -604,7 +597,7 @@ public class ResultSetFormatter {
      */
 
     static public void outputAsCSV(boolean booleanResult)
-    { outputAsCSV(System.out, booleanResult ) ; }
+    { outputAsCSV(System.out, booleanResult ); }
 
     /** Output a boolean result in CSV format
      *
@@ -620,7 +613,7 @@ public class ResultSetFormatter {
      */
 
     static public void outputAsCSV(ResultSet resultSet)
-    { outputAsCSV(System.out, resultSet) ; }
+    { outputAsCSV(System.out, resultSet); }
 
     /** Output a result set in CSV format
      * @param outStream  The output stream
@@ -638,7 +631,7 @@ public class ResultSetFormatter {
      */
 
     static public void outputAsTSV(boolean booleanResult)
-    { outputAsTSV(System.out, booleanResult ) ; }
+    { outputAsTSV(System.out, booleanResult ); }
 
     /** Output a boolean result in TSV format
      *
@@ -654,7 +647,7 @@ public class ResultSetFormatter {
      */
 
     static public void outputAsTSV(ResultSet resultSet)
-    { outputAsTSV(System.out, resultSet) ; }
+    { outputAsTSV(System.out, resultSet); }
 
     /** Output a result set in TSV format
      * @param outStream  The output stream

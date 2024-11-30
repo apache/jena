@@ -31,7 +31,7 @@ public class OuterXMLLiteral extends AbsXMLLiteral {
    final String parseType;
     
     public OuterXMLLiteral(WantsObjectFrameI s, AbsXMLContext x, String pt) {
-        super(s, x, new StringBuffer());
+        super(s, x, new StringBuilder());
         parseType = pt;
         
     }

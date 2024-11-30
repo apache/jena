@@ -75,7 +75,7 @@ public class DateDV extends DateTimeDV {
 
     @Override
     protected String dateToString(DateTimeData date) {
-        StringBuffer message = new StringBuffer(25);
+        StringBuilder message = new StringBuilder(25);
         append(message, date.year, 4);
         message.append('-');
         append(message, date.month, 2);

@@ -744,7 +744,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                 Object rVal = rNode.getLiteralValue();
                 if (rVal instanceof Functor) {
                     Functor rFunc = (Functor)rVal;
-                    StringBuffer description = new StringBuffer();
+                    StringBuilder description = new StringBuilder();
                     String nature = rFunc.getName();
                     String type = rFunc.getArgs()[0].toString();
                     String text = rFunc.getArgs()[1].toString();

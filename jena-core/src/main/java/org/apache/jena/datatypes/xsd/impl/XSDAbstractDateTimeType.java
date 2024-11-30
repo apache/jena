@@ -264,12 +264,12 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
      }
 
      /**
-      * Computes index of given char within StringBuffer
+      * Computes index of given char within StringBuilder
       *
       * @param start
       * @param end
-      * @param ch     character to look for in StringBuffer
-      * @return index of ch within StringBuffer
+      * @param ch     character to look for in StringBuilder
+      * @return index of ch within StringBuilder
       */
      protected  int indexOf (String buffer, int start, int end, char ch) {
          for ( int i=start;i<end;i++ ) {
@@ -380,7 +380,7 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
      }
 
      public String dateToString(int[] date) {
-         StringBuffer message = new StringBuffer(25);
+         StringBuilder message = new StringBuilder(25);
          append(message, date[CY], 4);
          message.append('-');
          append(message, date[M], 2);
@@ -401,7 +401,7 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
      /** Append the fraction time part of a date/time vector to
       * a string buffer.
       */
-     public static void appendFractionalTime(StringBuffer buff, int fsec, int scale) {
+     public static void appendFractionalTime(StringBuilder buff, int fsec, int scale) {
          String msString = Integer.toString(fsec);
          int pad = scale - msString.length();
          while (pad > 0) {
@@ -413,7 +413,7 @@ public class XSDAbstractDateTimeType extends XSDDatatype {
          buff.append(msString.substring(0, trunc));
      }
      
-     protected void append(StringBuffer message, int value, int nch) {
+     protected void append(StringBuilder message, int value, int nch) {
          if (value < 0) {
              message.append('-');
              value = -value;

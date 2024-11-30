@@ -20,40 +20,40 @@ package org.apache.jena.atlas.io;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayOutputStream ;
-import java.io.IOException ;
-import java.io.OutputStreamWriter ;
-import java.io.Writer ;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
-import org.junit.Test ;
+import org.junit.Test;
 
-public class TestPrintUtils
-{
-    @Test public void hex1()
-    {
-        String s = test(0,4) ;
-        assertEquals("0000", s) ;
-    }
-    
-    @Test public void hex2()
-    {
-        String s = test(1,8) ;
-        assertEquals("00000001", s) ;
+public class TestPrintUtils {
+    @Test
+    public void hex1() {
+        String s = test(0, 4);
+        assertEquals("0000", s);
     }
 
-    @Test public void hex3()
-    {
-        String s = test(0xFF,2) ;
-        assertEquals("FF", s) ;
+    @Test
+    public void hex2() {
+        String s = test(1, 8);
+        assertEquals("00000001", s);
     }
 
-    private static String test(int value, int width)
-    {
-        ByteArrayOutputStream x = new ByteArrayOutputStream() ;
-        Writer out = new OutputStreamWriter(x) ;
-        OutputUtils.printHex(out, value, width) ;
-        try { out.flush() ; } catch (IOException ex) {}
-        String s = x.toString() ;
-        return s ;
+    @Test
+    public void hex3() {
+        String s = test(0xFF, 2);
+        assertEquals("FF", s);
+    }
+
+    private static String test(int value, int width) {
+        ByteArrayOutputStream x = new ByteArrayOutputStream();
+        Writer out = new OutputStreamWriter(x);
+        OutputUtils.printHex(out, value, width);
+        try {
+            out.flush();
+        } catch (IOException ex) {}
+        String s = x.toString();
+        return s;
     }
 }

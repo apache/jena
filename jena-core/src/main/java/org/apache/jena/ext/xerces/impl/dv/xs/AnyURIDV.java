@@ -104,7 +104,7 @@ public class AnyURIDV extends TypeValidator {
     // and non-ASCII characters (whose value >= 128).
     private static String encode(String anyURI){
         int len = anyURI.length(), ch;
-        StringBuffer buffer = new StringBuffer(len*3);
+        StringBuilder buffer = new StringBuilder(len*3);
 
         // for each character in the anyURI
         int i = 0;

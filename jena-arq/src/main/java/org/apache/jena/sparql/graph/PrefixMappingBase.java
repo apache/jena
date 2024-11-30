@@ -238,7 +238,7 @@ public abstract class PrefixMappingBase implements PrefixMapping {
         Optional<Entry<String, String>> e = findMapping(uri, true);
         if ( ! e.isPresent() )
             return uri;
-        return e.get().getKey() + ":" + uri.substring((e.get().getValue()).length());
+        return e.orElseThrow().getKey() + ":" + uri.substring((e.get().getValue()).length());
     }
 
     @Override

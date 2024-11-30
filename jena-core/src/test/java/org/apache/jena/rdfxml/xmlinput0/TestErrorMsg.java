@@ -63,7 +63,7 @@ public class TestErrorMsg extends TestCase {
 		String regexPresent,
 		String regexAbsent)
 		throws IOException {
-		final StringBuffer buf = new StringBuffer();
+		final StringBuilder buf = new StringBuilder();
         ARP0 arp = new ARP0();
 		arp.getHandlers().setErrorHandler(new ErrorHandler() {
 

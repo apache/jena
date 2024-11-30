@@ -18,13 +18,9 @@
 
 package org.apache.jena.atlas.io;
 
-
-
-public class TestPeekReaderCharSequence extends AbstractTestPeekReader
-{
+public class TestPeekReaderCharSequence extends AbstractTestPeekReader {
     @Override
-    PeekReader make(String contents, int size)
-    {
-        return PeekReader.readString(contents) ;
+    PeekReader make(String contents, int size) {
+        return PeekReader.readString(contents);
     }
 }

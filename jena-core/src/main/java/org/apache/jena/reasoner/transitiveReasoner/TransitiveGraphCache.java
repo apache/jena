@@ -642,7 +642,7 @@ public class TransitiveGraphCache implements Finder {
      * Dump a description of the cache to a string for debug.
      */
     public String dump() {
-    	StringBuffer sb = new StringBuffer();
+    	StringBuilder sb = new StringBuilder();
         for ( GraphNode n : nodeMap.values() )
         {
             sb.append( n.dump() );

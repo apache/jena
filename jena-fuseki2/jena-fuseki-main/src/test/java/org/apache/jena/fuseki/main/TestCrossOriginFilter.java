@@ -71,10 +71,8 @@ public class TestCrossOriginFilter {
     @AfterClass
     public static void afterClass() {
         if ( systemValue != null ) {
-            if ( systemValue.isPresent() )
-                System.setProperty(jdkAllowRestrictedHeaders, systemValue.get());
-            else
-                System.clearProperty(jdkAllowRestrictedHeaders);
+            systemValue.ifPresentOrElse((x)->System.setProperty(jdkAllowRestrictedHeaders, x),
+                                        ()->System.clearProperty(jdkAllowRestrictedHeaders));
         }
     }
 

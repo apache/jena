@@ -150,7 +150,7 @@ public class MonthDV extends AbstractDateTimeDV {
      */
     @Override
     protected String dateToString(DateTimeData date) {
-        StringBuffer message = new StringBuffer(5);
+        StringBuilder message = new StringBuilder(5);
         message.append('-');
         message.append('-');
         append(message, date.month, 2);

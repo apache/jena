@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.service.enhancer.slice.impl;
 
-import com.google.common.primitives.Ints;
-
 import org.apache.jena.sparql.service.enhancer.slice.api.ArrayOps;
 
 public class BufferOverArray<A>
@@ -47,7 +45,7 @@ public class BufferOverArray<A>
 
     @Override
     public void write(long offsetInBuffer, A arrayWithItemsOfTypeT, int arrOffset, int arrLength) {
-        int offsetInBufferInt = Ints.checkedCast(offsetInBuffer);
+        int offsetInBufferInt = Math.toIntExact(offsetInBuffer);
         arrayOps.copy(arrayWithItemsOfTypeT, arrOffset, array, offsetInBufferInt, arrLength);
     }
 
@@ -64,7 +62,7 @@ public class BufferOverArray<A>
     @Override
     public int readInto(A tgt, int tgtOffset, long srcOffset, int length) {
         int capacityInt = arrayOps.length(array);
-        int srcOffsetInt = Ints.checkedCast(srcOffset);
+        int srcOffsetInt = Math.toIntExact(srcOffset);
         int result = Math.max(Math.min(capacityInt - srcOffsetInt, length), 0);
         arrayOps.copy(array, srcOffsetInt, tgt, tgtOffset, result);
 

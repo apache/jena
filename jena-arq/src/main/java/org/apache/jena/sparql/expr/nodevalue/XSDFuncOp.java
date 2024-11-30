@@ -592,10 +592,10 @@ public class XSDFuncOp
 
     private static String replaceAll(Matcher matcher, String rep) {
         try {
-            StringBuffer sb = null ;   // Delay until needed
+            StringBuilder sb = null ;   // Delay until needed
             while(matcher.find()) {
                 if ( sb == null )
-                    sb = new StringBuffer() ;
+                    sb = new StringBuilder() ;
                 else {
                     // Do one match of zerolength string otherwise filter out.
                     if (matcher.start() == matcher.end() )

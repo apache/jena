@@ -42,7 +42,7 @@ public abstract class AbsXMLLiteral extends Frame {
         return "";
     }
     
-    final protected StringBuffer rslt;
+    final protected StringBuilder rslt;
     public final Map<String, String> namespaces; 
 
     private static String prefix(String qname) {
@@ -63,7 +63,7 @@ public abstract class AbsXMLLiteral extends Frame {
         rslt.append(s);
     }
 
-    public AbsXMLLiteral(FrameI p, AbsXMLContext x, StringBuffer r) {
+    public AbsXMLLiteral(FrameI p, AbsXMLContext x, StringBuilder r) {
         super(p, x);
         rslt = r;
         namespaces = xmlNameSpace;
@@ -75,7 +75,7 @@ public abstract class AbsXMLLiteral extends Frame {
     }
     public AbsXMLLiteral(XMLHandler h,AbsXMLContext x) {
         super(h, x);
-        rslt = new StringBuffer();
+        rslt = new StringBuilder();
         namespaces = xmlNameSpace;
     }
     

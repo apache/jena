@@ -308,7 +308,7 @@ public class ModelExpansion
         @Override
         public String toString()
             {
-            StringBuffer result = new StringBuffer( "[" );
+            StringBuilder result = new StringBuilder( "[" );
             LinkedSeq scan = this;
             while (scan != null) { result.append( scan.item ); scan = scan.rest; result.append( " " ); }
             return result.append( "]" ).toString();

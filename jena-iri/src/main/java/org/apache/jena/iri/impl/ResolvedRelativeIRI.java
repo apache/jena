@@ -146,7 +146,7 @@ public class ResolvedRelativeIRI extends AbsIRIImpl {
     }
     private String mergePathsRemoveDots(String basePath) {
         int slash = basePath.lastIndexOf('/');
-        StringBuffer output = new StringBuffer();
+        StringBuilder output = new StringBuilder();
         if (slash!=-1)
             output.append(basePath.substring(0,slash+1));
         if (base.dotsOK()&&rel.dotsOK())
@@ -178,7 +178,7 @@ public class ResolvedRelativeIRI extends AbsIRIImpl {
         return removeDotSegments(output.toString());    
     }
 
-    private static void removeLastSeqment2(StringBuffer output) {
+    private static void removeLastSeqment2(StringBuilder output) {
         int ix = output.length()-1;
         if (ix<=0)
             return;

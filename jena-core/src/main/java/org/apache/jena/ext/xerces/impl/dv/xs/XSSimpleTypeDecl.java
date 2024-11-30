@@ -1471,7 +1471,7 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
                 }
             }
             if(!present){
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 appendEnumString(sb);
                 throw new InvalidDatatypeValueException("cvc-enumeration-valid",
                         new Object [] {content, sb.toString()});
@@ -1619,7 +1619,7 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
         if (len == 0 || ws == WS_PRESERVE)
             return content;
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (ws == WS_REPLACE) {
             char ch;
             // when it's replace, just replace #x9, #xa, #xd by #x20
@@ -1677,12 +1677,12 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
             }
         }
 
-        if (!(content instanceof StringBuffer)) {
+        if (!(content instanceof StringBuilder)) {
             String strContent = content.toString();
             return normalize(strContent, ws);
         }
 
-        StringBuffer sb = (StringBuffer)content;
+        StringBuilder sb = (StringBuilder)content;
         int len = sb.length();
         if (len == 0)
             return "";
@@ -2975,7 +2975,7 @@ public class XSSimpleTypeDecl implements XSSimpleType, TypeInfo {
         return valueType;
     }
 
-    private void appendEnumString(StringBuffer sb) {
+    private void appendEnumString(StringBuilder sb) {
         sb.append('[');
         for (int i = 0; i < fEnumerationSize; i++) {
             if (i != 0) {

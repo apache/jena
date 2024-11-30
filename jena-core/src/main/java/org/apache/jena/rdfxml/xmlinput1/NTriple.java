@@ -87,7 +87,7 @@ import org.xml.sax.SAXParseException;
 @SuppressWarnings("deprecation")
 public class NTriple implements ARPErrorNumbers {
 
-	private static StringBuffer line = new StringBuffer();
+	private static StringBuilder line = new StringBuilder();
 	private static ARP arp;
 	private static String xmlBase = null;
 	private static boolean numbers = false;
@@ -555,8 +555,8 @@ int debugC = 0;
 		return rslt.toString();
 	}
 
-	private static StringBuffer escapeUTF8(String str) {
-		StringBuffer rslt = new StringBuffer();
+	private static StringBuilder escapeUTF8(String str) {
+		StringBuilder rslt = new StringBuilder();
 		try {
 			for (byte b : str.getBytes("utf-8")) {
 				rslt.append("Z");

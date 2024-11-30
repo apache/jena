@@ -395,7 +395,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
      * </p>
      */
     @Override public String toString() {
-        StringBuffer buf = new StringBuffer( "OneToManyMap{" );
+        StringBuilder buf = new StringBuilder( "OneToManyMap{" );
         String sep = "";
 
         for ( From key : keySet() )

@@ -445,7 +445,7 @@ public class TestPropEltErrorMsg extends TestCase {
 	@Override
     protected void runTest() {
         Attributes noAtts = new Atts();
-		final StringBuffer buf = new StringBuffer();
+		final StringBuilder buf = new StringBuilder();
 		XMLHandler arp = new XMLHandler();
 		arp.getHandlers().setErrorHandler(new ErrorHandler() {
 

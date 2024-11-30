@@ -26,7 +26,7 @@ import org.xml.sax.SAXParseException;
 abstract class AbsWantLiteralValueOrDescription extends
         WantDescription {
 
-    private StringBuffer buf;
+    private StringBuilder buf;
     
     private boolean checkComposingChar = true;
 
@@ -46,7 +46,7 @@ abstract class AbsWantLiteralValueOrDescription extends
      * characters is called once, then endElement, and we form a literal from
      * the characters. This involves creating a string, if we used a char[] then
      * we would have another char[] to char[] copy, which is one too many. Hence
-     * we use a StringBuffer. b) <eg:prop> <eg:typedNode /> </eg:prop> with two
+     * we use a StringBuilder. b) <eg:prop> <eg:typedNode /> </eg:prop> with two
      * lots of characters both white. This case happens from within
      * InsidePropertyElementFrame, and the second lot of characters do not get
      * here.
@@ -58,17 +58,17 @@ abstract class AbsWantLiteralValueOrDescription extends
             checkComposingChar(taint,ch, start, length);
         checkComposingChar = false;
         if (buf == null)
-            buf = new StringBuffer(length);
+            buf = new StringBuilder(length);
         getBuf().append(ch, start, length);
     }
 
-    void setBuf(StringBuffer buf) {
+    void setBuf(StringBuilder buf) {
         this.buf = buf;
     }
 
-    StringBuffer getBuf() {
+    StringBuilder getBuf() {
         if (buf == null)
-            buf = new StringBuffer(0);
+            buf = new StringBuilder(0);
         return buf;
     }
 

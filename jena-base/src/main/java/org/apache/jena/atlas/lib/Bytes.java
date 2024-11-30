@@ -20,12 +20,12 @@ package org.apache.jena.atlas.lib;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import java.io.UnsupportedEncodingException ;
-import java.nio.ByteBuffer ;
-import java.nio.CharBuffer ;
-import java.nio.charset.CharsetDecoder ;
-import java.nio.charset.CharsetEncoder ;
-import java.nio.charset.CoderResult ;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CoderResult;
+import java.nio.charset.StandardCharsets;
 
 /** Byte-oriented operations.  Packing and unpacking integers
  *  is in network order (Big endian - which is the preferred order in Java).
@@ -38,52 +38,52 @@ public class Bytes
 
     /** String to UTF8 bytes */
     public static byte[] asUTF8bytes(String s) {
-        return s.getBytes(UTF_8) ;
+        return s.getBytes(UTF_8);
     }
 
     /** String from UTF8 bytes */
     public static String fromUTF8bytes(byte[] bytes) {
-        return new String(bytes, UTF_8) ;
+        return new String(bytes, UTF_8);
     }
 
     /** Compare two byte arrays which may be of different lengths */
     public static int compare(byte[] x1, byte[] x2)
     {
-        int n = Math.min(x1.length, x2.length) ;
+        int n = Math.min(x1.length, x2.length);
 
-        for ( int i = 0 ; i < n ; i++ )
+        for ( int i = 0; i < n; i++ )
         {
-            byte b1 = x1[i] ;
-            byte b2 = x2[i] ;
+            byte b1 = x1[i];
+            byte b2 = x2[i];
             if ( b1 == b2 )
-                continue ;
+                continue;
             // Treat as unsigned values in the bytes.
-            return (b1&0xFF) - (b2&0xFF) ;
+            return (b1&0xFF) - (b2&0xFF);
         }
 
-        return x1.length - x2.length ;
+        return x1.length - x2.length;
     }
 
     public static int compareByte(byte b1, byte b2)
     {
-        return (b1&0xFF) - (b2&0xFF) ;
+        return (b1&0xFF) - (b2&0xFF);
     }
 
     public static byte[] copyOf(byte[] bytes)
     {
-        return copyOf(bytes, 0, bytes.length) ;
+        return copyOf(bytes, 0, bytes.length);
     }
 
     public static byte[] copyOf(byte[] bytes, int start)
     {
-        return copyOf(bytes, start, bytes.length-start) ;
+        return copyOf(bytes, start, bytes.length-start);
     }
 
     public static byte[] copyOf(byte[] bytes, int start, int length)
     {
-        byte[] newByteArray = new byte[length] ;
-        System.arraycopy(bytes, start, newByteArray, 0, length) ;
-        return newByteArray ;
+        byte[] newByteArray = new byte[length];
+        System.arraycopy(bytes, start, newByteArray, 0, length);
+        return newByteArray;
     }
 
     final public static byte[] hexDigitsUC = {
@@ -100,9 +100,9 @@ public class Bytes
      * @see Integer#SIZE
      */
     public static byte[] intToBytes(int v) {
-        byte[] bytes = new byte[Integer.BYTES] ;
+        byte[] bytes = new byte[Integer.BYTES];
         setInt(v, bytes);
-        return bytes ;
+        return bytes;
     }
 
     /** Put a long value into an allocated byte array.
@@ -111,16 +111,16 @@ public class Bytes
      * @see Long#SIZE
      */
     public static byte[] longToBytes(long v) {
-        byte[] bytes = new byte[Long.BYTES] ;
+        byte[] bytes = new byte[Long.BYTES];
         setLong(v, bytes);
-        return bytes ;
+        return bytes;
     }
 
     /** Get an int from a byte array (network order)
      * @param b Byte Array
      */
     public static final int getInt(byte[]b)
-    { return getInt(b, 0) ; }
+    { return getInt(b, 0); }
 
     /** Get an int from a byte array (network order)
      * @param b Byte Array
@@ -131,14 +131,14 @@ public class Bytes
         return assembleInt(b[idx+0],
                            b[idx+1],
                            b[idx+2],
-                           b[idx+3]) ;
+                           b[idx+3]);
     }
 
     /** Get a long from a byte array (network order)
      * @param b Byte Array
      */
     public static final long getLong(byte[]b)
-    { return getLong(b, 0) ; }
+    { return getLong(b, 0); }
 
     /** Get a long from a byte array (network order)
      * @param b Byte Array
@@ -153,7 +153,7 @@ public class Bytes
                             b[idx+4],
                             b[idx+5],
                             b[idx+6],
-                            b[idx+7]) ;
+                            b[idx+7]);
 
     }
 
@@ -162,7 +162,7 @@ public class Bytes
      * @param b byte array
      */
     public static final void setInt(int value, byte[]b)
-    { setInt(value, b, 0) ; }
+    { setInt(value, b, 0); }
 
     /** Put an int into a byte array from a given position
      * @param x The integer
@@ -171,11 +171,11 @@ public class Bytes
      */
     public static final void setInt(int x, byte[]b, int idx)
     {
-//        b[idx+0] = byte3(value) ;
-//        b[idx+1] = byte2(value) ;
-//        b[idx+2] = byte1(value) ;
-//        b[idx+3] = byte0(value) ;
-      b[idx+0] = (byte)((x >> 24)&0xFF) ;
+//        b[idx+0] = byte3(value);
+//        b[idx+1] = byte2(value);
+//        b[idx+2] = byte1(value);
+//        b[idx+3] = byte0(value);
+      b[idx+0] = (byte)((x >> 24)&0xFF);
       b[idx+1] = (byte)((x >> 16)&0xFF);
       b[idx+2] = (byte)((x >>  8)&0xFF);
       b[idx+3] = (byte)(x &0xFF);
@@ -188,7 +188,7 @@ public class Bytes
      * @param b byte array
      */
     public static final void setLong(long value, byte[]b)
-    { setLong(value, b, 0) ; }
+    { setLong(value, b, 0); }
 
     /** Put a long into a byte array from a given position
      * @param value The integer
@@ -196,24 +196,24 @@ public class Bytes
      * @param idx starting point
      */
     public static final void setLong(long value, byte[] b, int idx) {
-        int lo = (int)(value & 0xFFFFFFFFL) ;
-        int hi = (int)(value >>> 32) ;
-        setInt(hi, b, idx) ;
-        setInt(lo, b, idx + 4) ;
+        int lo = (int)(value & 0xFFFFFFFFL);
+        int hi = (int)(value >>> 32);
+        setInt(hi, b, idx);
+        setInt(lo, b, idx + 4);
     }
 
     /** int to byte array */
     public static byte[] packInt(int val) {
-        byte[] valBytes = new byte[Integer.SIZE / Byte.SIZE] ;
-        setInt(val, valBytes, 0) ;
-        return valBytes ;
+        byte[] valBytes = new byte[Integer.SIZE / Byte.SIZE];
+        setInt(val, valBytes, 0);
+        return valBytes;
     }
 
     /** long to byte array */
     public static byte[] packLong(long val) {
-        byte[] valBytes = new byte[Long.SIZE / Byte.SIZE] ;
-        setLong(val, valBytes, 0) ;
-        return valBytes ;
+        byte[] valBytes = new byte[Long.SIZE / Byte.SIZE];
+        setLong(val, valBytes, 0);
+        return valBytes;
     }
 
     /** Make an int order of args -- high to low */
@@ -221,7 +221,7 @@ public class Bytes
         return ((b3 & 0xFF) << 24) |
                ((b2 & 0xFF) << 16) |
                ((b1 & 0xFF) <<  8) |
-               ((b0 & 0xFF) <<  0) ;
+               ((b0 & 0xFF) <<  0);
     }
 
     /** Make a long order of args -- high to low */
@@ -233,7 +233,7 @@ public class Bytes
                ((b3 & 0xFFL) << 24) |
                ((b2 & 0xFFL) << 16) |
                ((b1 & 0xFFL) <<  8) |
-               ((b0 & 0xFFL) <<  0) ;
+               ((b0 & 0xFFL) <<  0);
     }
 
     private static byte byte3(int x) { return (byte)(x >> 24); }
@@ -243,79 +243,65 @@ public class Bytes
 
     /** Return the UTF-8 bytes for a string */
     public static byte[] string2bytes(String x) {
-        try {
-            return x.getBytes("UTF-8") ;
-        }
-        catch (UnsupportedEncodingException ex) {
-            // Impossible.
-            ex.printStackTrace() ;
-            return null ;
-        }
+        return x.getBytes(StandardCharsets.UTF_8);
     }
 
     /** Return the string for some UTF-8 bytes */
     public static String bytes2string(byte[] x) {
-        try {
-            return new String(x, "UTF-8") ;
-        }
-        catch (UnsupportedEncodingException ex) {
-            // Impossible-ish.
-            ex.printStackTrace() ;
-            return null ;
-        }
+        return new String(x, StandardCharsets.UTF_8);
     }
 
     /** Encode a string into a ByteBuffer : on return position is the end of the encoding */
     public static int toByteBuffer(CharSequence s, ByteBuffer bb) {
-        //BlockUTF8.fromChars(s, bb) ;
+        //BlockUTF8.fromChars(s, bb);
         CharsetEncoder enc = Chars.allocEncoder();
-        int x = toByteBuffer(s, bb, enc) ;
-        Chars.deallocEncoder(enc) ;
-        return x ;
+        int x = toByteBuffer(s, bb, enc);
+        Chars.deallocEncoder(enc);
+        return x;
     }
 
     /** Encode a string into a ByteBuffer : on return position is the end of the encoding */
     public static int toByteBuffer(CharSequence s, ByteBuffer bb, CharsetEncoder enc) {
-        int start = bb.position() ;
+        int start = bb.position();
         CharBuffer cBuff = CharBuffer.wrap(s);
         enc.reset();
-        CoderResult r = enc.encode(cBuff, bb, true) ;
+        CoderResult r = enc.encode(cBuff, bb, true);
         if ( r.isOverflow() )
-            throw new InternalErrorException("Bytes.toByteBuffer: encode overflow (1)") ;
-        r = enc.flush(bb) ;
+            throw new InternalErrorException("Bytes.toByteBuffer: encode overflow (1)");
+        r = enc.flush(bb);
         if ( r.isOverflow() )
-            throw new InternalErrorException("Bytes.toByteBuffer: encode overflow (2)") ;
+            throw new InternalErrorException("Bytes.toByteBuffer: encode overflow (2)");
 //        if ( r.isUnderflow() )
-//            throw new InternalErrorException("Bytes.toByteBuffer: encode underflow") ;
-        int finish = bb.position() ;
-        return finish-start ;
+//            throw new InternalErrorException("Bytes.toByteBuffer: encode underflow");
+        int finish = bb.position();
+        return finish-start;
     }
 
     /** Decode a string into a ByteBuffer */
     public static String fromByteBuffer(ByteBuffer bb)
     {
-        //return BlockUTF8.toString(bb) ;
+        //return BlockUTF8.toString(bb);
         // To be removed (Dec 2011)
         CharsetDecoder dec = Chars.allocDecoder();
-        String x = fromByteBuffer(bb, dec) ;
-        Chars.deallocDecoder(dec) ;
-        return x ;
+        String x = fromByteBuffer(bb, dec);
+        Chars.deallocDecoder(dec);
+        return x;
     }
 
     /** Decode a string into a ByteBuffer */
     public static String fromByteBuffer(ByteBuffer bb, CharsetDecoder dec) {
         if ( bb.remaining() == 0 )
-            return "" ;
-        dec.reset() ;
-        CharBuffer cBuff = CharBuffer.allocate(bb.remaining()) ;
-        CoderResult r = dec.decode(bb, cBuff, true) ;
+            return "";
+        dec.reset();
+        CharBuffer cBuff = CharBuffer.allocate(bb.remaining());
+        CoderResult r = dec.decode(bb, cBuff, true);
         if ( r.isOverflow() )
-            throw new InternalErrorException("fromByteBuffer: decode overflow (1)") ;
-        r = dec.flush(cBuff) ;
+            throw new InternalErrorException("fromByteBuffer: decode overflow (1)");
+        r = dec.flush(cBuff);
         if ( r.isOverflow() )
-            throw new InternalErrorException("fromByteBuffer: decode overflow (2)") ;
-        cBuff.flip() ;
-        return cBuff.toString() ;
+            throw new InternalErrorException("fromByteBuffer: decode overflow (2)");
+        cBuff.flip();
+        return cBuff.toString();
     }
 
     /**
@@ -323,66 +309,66 @@ public class Bytes
      * array.
      */
     public static String asHex(byte[] bytes) {
-        return asHexUC(bytes) ;
+        return asHexUC(bytes);
     }
 
     public static String asHexUC(byte[] bytes) {
-        return asHex(bytes, 0, bytes.length, Chars.hexDigitsUC) ;
+        return asHex(bytes, 0, bytes.length, Chars.hexDigitsUC);
     }
 
     public static String asHexLC(byte[] bytes) {
-        return asHex(bytes, 0, bytes.length, Chars.hexDigitsLC) ;
+        return asHex(bytes, 0, bytes.length, Chars.hexDigitsLC);
     }
 
     public static String asHex(byte[] bytes, int start, int finish, char[] hexDigits) {
-        StringBuilder sw = new StringBuilder(bytes.length*2) ;
-        for ( int i = start ; i < finish ; i++ ) {
-            byte b = bytes[i] ;
-            int hi = (b & 0xF0) >> 4 ;
-            int lo = b & 0xF ;
-            // if ( i != start ) sw.append(' ') ;
-            sw.append(hexDigits[hi]) ;
-            sw.append(hexDigits[lo]) ;
+        StringBuilder sw = new StringBuilder(bytes.length*2);
+        for ( int i = start; i < finish; i++ ) {
+            byte b = bytes[i];
+            int hi = (b & 0xF0) >> 4;
+            int lo = b & 0xF;
+            // if ( i != start ) sw.append(' ');
+            sw.append(hexDigits[hi]);
+            sw.append(hexDigits[lo]);
         }
-        return sw.toString() ;
+        return sw.toString();
     }
 
     /** Return a hex string representing the byte. */
     public static String asHex(byte b)
     {
-        return asHexUC(b) ;
+        return asHexUC(b);
     }
 
     public static String asHexUC(byte b)
     {
-        return asHex(b, Chars.hexDigitsUC) ;
+        return asHex(b, Chars.hexDigitsUC);
     }
 
     public static String asHexLC(byte b)
     {
-        return asHex(b, Chars.hexDigitsLC) ;
+        return asHex(b, Chars.hexDigitsLC);
     }
 
     private static String asHex(byte b, char[] hexDigits)
     {
-        int hi = (b & 0xF0) >> 4 ;
-        int lo = b & 0xF ;
-        char[] chars = new char[2] ;
-        chars[0] = hexDigits[hi] ;
-        chars[1] = hexDigits[lo] ;
-        return new String(chars) ;
+        int hi = (b & 0xF0) >> 4;
+        int lo = b & 0xF;
+        char[] chars = new char[2];
+        chars[0] = hexDigits[hi];
+        chars[1] = hexDigits[lo];
+        return new String(chars);
     }
 
 
     public static int hexCharToInt(char c)
     {
         if ( '0' <= c && c <= '9' )
-            return c-'0' ;
+            return c-'0';
         else if ( 'A' <= c && c <= 'F' )
-            return c-'A'+10 ;
+            return c-'A'+10;
         else if ( 'a' <= c && c <= 'f' )
-            return c-'a'+10 ;
+            return c-'a'+10;
         else
-            throw new IllegalArgumentException("Bad index char : "+c) ;
+            throw new IllegalArgumentException("Bad index char : "+c);
     }
 }

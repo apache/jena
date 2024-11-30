@@ -74,7 +74,7 @@ import org.apache.jena.update.UpdateRequest;
  * </p>
  * <h4>Buffer Usage</h4>
  * <p>
- * Additionally you may use this purely as a {@link StringBuffer} replacement
+ * Additionally you may use this purely as a {@link StringBuilder} replacement
  * for creating queries since it provides a large variety of convenience methods
  * for appending things either as-is or as nodes (which causes appropriate
  * formatting to be applied).

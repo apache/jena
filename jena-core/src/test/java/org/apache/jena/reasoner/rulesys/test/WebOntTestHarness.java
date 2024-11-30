@@ -52,6 +52,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -489,7 +490,7 @@ public class WebOntTestHarness {
         if (fname.startsWith(BASE_URI)) {
             fname = fname.substring(BASE_URI.length());
         }
-        Reader reader = new BufferedReader(new FileReader(BASE_TESTDIR + fname));
+        Reader reader = new BufferedReader(new FileReader(BASE_TESTDIR + fname, StandardCharsets.UTF_8));
         model.read(reader, BASE_URI + fname, langType);
         return model;
     }

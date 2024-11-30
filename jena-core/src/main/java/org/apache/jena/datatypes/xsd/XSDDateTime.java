@@ -299,7 +299,7 @@ public class XSDDateTime extends AbstractDateTime {
      * Return the lexical form of the time component.
      */
     public String timeLexicalForm() {
-        StringBuffer buff = new StringBuffer();
+        StringBuilder buff = new StringBuilder();
         if(data[h]<10) buff.append("0");
         buff.append(data[h]);
 

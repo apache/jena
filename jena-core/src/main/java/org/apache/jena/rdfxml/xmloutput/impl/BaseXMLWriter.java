@@ -569,7 +569,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	static private final char ESCAPE = 'X';
 
 	static private String escapedId(String id) {
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < id.length(); i++) {
 			char ch = id.charAt(i);
 			if (ch != ESCAPE
@@ -584,7 +584,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 
     static final char [] hexchar = "0123456789abcdef".toCharArray();
 
-	static private void escape( StringBuffer sb, char ch) {
+	static private void escape( StringBuilder sb, char ch) {
 		sb.append( ESCAPE );
 		int charcode = ch;
 		do {
@@ -865,7 +865,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     }
 
     static private String flags2str(int f) {
-	StringBuffer oldValue = new StringBuffer(64);
+	StringBuilder oldValue = new StringBuilder(64);
 	if ( (f&IRIRelativize.SAMEDOCUMENT)!=0 )
 	   oldValue.append( "same-document, " );
 	if ( (f&IRIRelativize.NETWORK)!=0 )

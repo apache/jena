@@ -301,10 +301,8 @@ public abstract class AbstractTestIRIxRIOT_system {
         InputStream in = generateSource(iri);
         RDFParserBuilder builder = RDFParser.source(in).forceLang(lang);
         builder.base(base);
-        if ( strict.isPresent() )
-            builder.strict(strict.get());
-        if ( checking.isPresent() )
-            builder.checking(checking.get());
+        strict.ifPresent(builder::strict);
+        checking.ifPresent(builder::checking);
         runTest(builder, iri, numErrors, numWarnings);
     }
 

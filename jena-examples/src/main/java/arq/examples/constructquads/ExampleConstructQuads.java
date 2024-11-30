@@ -19,6 +19,7 @@
 package arq.examples.constructquads;
 
 import java.io.* ;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 
 import org.apache.jena.graph.Triple;
@@ -50,7 +51,7 @@ public class ExampleConstructQuads {
 		Resource o1 = model.createResource("http://eg.com/o1");
 		model1.add(s1, p1, o1);
 		dataset.addNamedModel("http://eg.com/g1", model1);
-		
+
 		PrintUtil.printOut(dataset.asDatasetGraph().find());
 
 		// construct named graph
@@ -150,7 +151,7 @@ public class ExampleConstructQuads {
 			PrintUtil.printOut(quads);
 		}
 		System.out.println(query);
-		
+
 		// short form 4
 		System.out.println("default graph projection:");
 		queryString = "CONSTRUCT { {<http://eg.com/s> <http://eg.com/p> ?o} GRAPH ?g {<http://eg.com/s1> <http://eg.com/p1> ?o} } WHERE{ GRAPH ?g {<http://eg.com/s1> <http://eg.com/p1> ?o} }";
@@ -173,7 +174,7 @@ public class ExampleConstructQuads {
 				});
 		for (File test : tests) {
 			System.out.println("======== File: "+test.getName());
-			try (BufferedReader br = new BufferedReader(new FileReader(test))) {
+			try (BufferedReader br = new BufferedReader(new FileReader(test, StandardCharsets.UTF_8))) {
 				String line = null;
 				while( (line = br.readLine()) != null){
 					System.out.println(line);

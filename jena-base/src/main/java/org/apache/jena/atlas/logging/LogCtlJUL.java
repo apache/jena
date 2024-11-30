@@ -22,6 +22,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Level;
@@ -105,7 +106,7 @@ public class LogCtlJUL {
 
     public static void setJavaLoggingDft() {
         try {
-            InputStream details = new ByteArrayInputStream(defaultProperties.getBytes("UTF-8"));
+            InputStream details = new ByteArrayInputStream(defaultProperties.getBytes(StandardCharsets.UTF_8));
             readJavaLoggingConfiguration(details);
         } catch (Exception ex) {
             throw new AtlasException(ex);

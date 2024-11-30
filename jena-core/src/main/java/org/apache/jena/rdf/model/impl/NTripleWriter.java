@@ -18,12 +18,15 @@
 
 package org.apache.jena.rdf.model.impl;
 
-import java.io.*;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale ;
 
 import org.apache.jena.rdf.model.* ;
-import org.apache.jena.shared.* ;
-import org.apache.jena.util.FileUtils ;
+import org.apache.jena.shared.UnknownPropertyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,23 +37,16 @@ public class NTripleWriter extends Object implements RDFWriterI {
     RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
 
     protected static Logger logger = LoggerFactory.getLogger( NTripleWriter.class );
-    
+
     public NTripleWriter() {
     }
     @Override
     public void write(Model model, OutputStream out, String base)
          {
         try {
-            Writer w;
-            try {
-                w = new OutputStreamWriter(out, "ascii");
-            } catch (UnsupportedEncodingException e) {
-                logger.warn( "ASCII is not supported: in NTripleWriter.write", e );
-                w = FileUtils.asUTF8(out);
-            }
+            Writer w = new OutputStreamWriter(out, StandardCharsets.US_ASCII);
             write(model, w, base);
             w.flush();
-
         } catch (Exception ioe) {
             errorHandler.error(ioe);
         }
@@ -100,7 +96,7 @@ public class NTripleWriter extends Object implements RDFWriterI {
 
     public void setNsPrefix(String prefix, String ns) {
     }
-    
+
     public String getPrefixFor( String uri )
         { return null; }
 

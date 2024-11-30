@@ -81,7 +81,7 @@ public class cacheLs
     private static Optional<BindingBuilder> processArg(Optional<BindingBuilder> builderOpt, List<Node> nodes, int i, Supplier<Node> valueSupplier) {
         Optional<BindingBuilder> result = builderOpt;
         if (builderOpt.isPresent()) {
-            BindingBuilder builder = builderOpt.get();
+            BindingBuilder builder = builderOpt.orElseThrow();
             int n = nodes.size();
             if (i < n) {
                 Node key = nodes.get(i);
@@ -132,7 +132,7 @@ public class cacheLs
 
                 Optional<BindingBuilder> parentBuilder = Optional.of(BindingFactory.builder(inputBinding));
                 if (sv != null) {
-                    parentBuilder.get().add(sv, idNode);
+                    parentBuilder.orElseThrow().add(sv, idNode);
                 }
 
                 ServiceCacheKey key = idToKey.get(id);

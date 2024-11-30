@@ -227,7 +227,7 @@ public class GraphTestBase extends JenaTestBase
     */
     public static String nice( Graph g, Map<Node, Object> bnodes )
         {
-        StringBuffer b = new StringBuffer( g.size() * 100 );
+        StringBuilder b = new StringBuilder( g.size() * 100 );
         ExtendedIterator<Triple> it = GraphUtil.findAll( g );
         while (it.hasNext()) niceTriple( b, bnodes, it.next() );
         return b.toString();
@@ -238,7 +238,7 @@ public class GraphTestBase extends JenaTestBase
         of the triple <code>t</code> on a new line, using (and updating)
         <code>bnodes</code> to supply "nice" strings for any blank nodes.
     */
-    protected static void niceTriple( StringBuffer b, Map<Node, Object> bnodes, Triple t )
+    protected static void niceTriple( StringBuilder b, Map<Node, Object> bnodes, Triple t )
         {
         b.append( "\n    " );
         appendNode( b, bnodes, t.getSubject() );
@@ -258,7 +258,7 @@ public class GraphTestBase extends JenaTestBase
         is a bnode, re-use any existing string for it from <code>bnodes</code>
         or make a new one of the form <i>_bNNNN</i> with NNNN a new integer.
     */
-    protected static void appendNode( StringBuffer b, Map<Node, Object> bnodes, Node n )
+    protected static void appendNode( StringBuilder b, Map<Node, Object> bnodes, Node n )
         {
         b.append( ' ' );
         if (n.isBlank())

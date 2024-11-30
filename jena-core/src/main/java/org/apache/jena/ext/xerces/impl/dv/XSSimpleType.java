@@ -106,7 +106,7 @@ public interface XSSimpleType extends XSSimpleTypeDefinition {
 
     /**
      * validate a given string value, represented by content.toString().
-     * note that if content is a StringBuffer, for performance reasons,
+     * note that if content is a StringBuilder, for performance reasons,
      * it's possible that the content of the string buffer is modified.
      *
      * @param content       the string value that needs to be validated

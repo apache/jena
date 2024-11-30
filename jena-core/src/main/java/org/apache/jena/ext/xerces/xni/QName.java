@@ -165,7 +165,7 @@ public class QName
     @Override
     public String toString() {
 
-        StringBuffer str = new StringBuffer();
+        StringBuilder str = new StringBuilder();
         boolean comma = false;
         if (prefix != null) {
             str.append("prefix=\"").append(prefix).append('"');

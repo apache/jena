@@ -17,16 +17,7 @@
  */
 package org.apache.jena.permissions.graph;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphEventManager;
@@ -306,7 +297,7 @@ public class SecuredGraphEventManager implements GraphEventManager {
     // the security evaluator in use
     private final SecuredGraph securedGraph;
     private final Graph baseGraph;
-    private final Map<GraphListener, Stack<SecuredGraphListener>> listenerMap = new HashMap<>();
+    private final Map<GraphListener, Deque<SecuredGraphListener>> listenerMap = new HashMap<>();
     private static Set<Action> DELETE;
     private static Set<Action> ADD;
 
@@ -496,9 +487,9 @@ public class SecuredGraphEventManager implements GraphEventManager {
 
     @Override
     public synchronized GraphEventManager register(final GraphListener listener) {
-        Stack<SecuredGraphListener> sgl = listenerMap.get(listener);
+        Deque<SecuredGraphListener> sgl = listenerMap.get(listener);
         if (sgl == null) {
-            sgl = new Stack<>();
+            sgl = new ArrayDeque<>();
         }
         sgl.push(new SecuredGraphListener(listener));
         listenerMap.put(listener, sgl);
@@ -507,7 +498,7 @@ public class SecuredGraphEventManager implements GraphEventManager {
 
     @Override
     public synchronized GraphEventManager unregister(final GraphListener listener) {
-        final Stack<SecuredGraphListener> sgl = listenerMap.get(listener);
+        final Deque<SecuredGraphListener> sgl = listenerMap.get(listener);
         if (sgl != null) {
             if (sgl.size() == 1) {
                 listenerMap.remove(listener);

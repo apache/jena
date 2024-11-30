@@ -20,89 +20,79 @@ package org.apache.jena.atlas.io;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayInputStream ;
-import java.io.IOException ;
-import java.io.InputStream ;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
-import org.apache.jena.atlas.lib.Bytes ;
-import org.junit.Test ;
+import org.apache.jena.atlas.lib.Bytes;
+import org.junit.Test;
 
-public class TestInputStreamBuffered
-{
-    @Test public void test_01() throws IOException
-    {
-        InputStream in = stream("") ;
-        InputStream in2 = new InputStreamBuffered(in) ;
-        int x = count(in2) ;
-        assertEquals(0, x) ;
-    }
-    
-    @Test public void test_02() throws IOException
-    {
-        InputStream in = stream(1,2,3,4) ;
-        InputStream in2 = new InputStreamBuffered(in) ;
-        check(in2, 1,2,3,4) ;
-    }
-    
-    @Test public void test_03() throws IOException
-    {
-        InputStream in = stream(1,2,3,4) ;
-        InputStream in2 = new InputStreamBuffered(in, 2) ;
-        check(in2, 1,2,3,4) ;
-    }
-    
-    @Test public void test_04() throws IOException
-    {
-        InputStream in = stream(1,2,3,4) ;
-        InputStream in2 = new InputStreamBuffered(in, 1) ;
-        check(in2, 1,2,3,4) ;
-        assertEquals(-1, in.read()) ;
-    }
-    
-    
-    private static InputStream stream(String data)
-    {
-        byte[] b = Bytes.string2bytes(data) ;
-        return new ByteArrayInputStream(b) ;
-    }
-    
-    private static InputStream stream(byte...bytes)
-    {
-        return new ByteArrayInputStream(bytes) ;
+public class TestInputStreamBuffered {
+    @Test
+    public void test_01() throws IOException {
+        InputStream in = stream("");
+        InputStream in2 = new InputStreamBuffered(in);
+        int x = count(in2);
+        assertEquals(0, x);
     }
 
-    private static InputStream stream(int...bytes)
-    {
-        return stream(ints2bytes(bytes)) ;
+    @Test
+    public void test_02() throws IOException {
+        InputStream in = stream(1, 2, 3, 4);
+        InputStream in2 = new InputStreamBuffered(in);
+        check(in2, 1, 2, 3, 4);
+    }
+
+    @Test
+    public void test_03() throws IOException {
+        InputStream in = stream(1, 2, 3, 4);
+        InputStream in2 = new InputStreamBuffered(in, 2);
+        check(in2, 1, 2, 3, 4);
+    }
+
+    @Test
+    public void test_04() throws IOException {
+        InputStream in = stream(1, 2, 3, 4);
+        InputStream in2 = new InputStreamBuffered(in, 1);
+        check(in2, 1, 2, 3, 4);
+        assertEquals(-1, in.read());
+    }
+
+    private static InputStream stream(String data) {
+        byte[] b = Bytes.string2bytes(data);
+        return new ByteArrayInputStream(b);
+    }
+
+    private static InputStream stream(byte...bytes) {
+        return new ByteArrayInputStream(bytes);
+    }
+
+    private static InputStream stream(int...bytes) {
+        return stream(ints2bytes(bytes));
     }
 
     // Convenience.
-    private static byte[] ints2bytes(int...values)
-    {
-        byte b[] = new byte[values.length] ;
+    private static byte[] ints2bytes(int...values) {
+        byte b[] = new byte[values.length];
         for ( int i = 0 ; i < b.length ; i++ )
-            b[i] = (byte)values[i] ;
-        return b ;
+            b[i] = (byte)values[i];
+        return b;
     }
 
-    private static int count(InputStream in) throws IOException
-    {
-        int count = 0 ;
-        while(in.read() != -1 )
-            count++ ;
-        return count ;
+    private static int count(InputStream in) throws IOException {
+        int count = 0;
+        while (in.read() != -1)
+            count++;
+        return count;
     }
 
-    private static void check(InputStream in, int ...bytes) throws IOException
-    {
-        check(in, ints2bytes(bytes)) ;
+    private static void check(InputStream in, int...bytes) throws IOException {
+        check(in, ints2bytes(bytes));
     }
 
-    private static void check(InputStream in, byte ...bytes) throws IOException
-    {
-        for ( byte b : bytes )
-        {
-            assertEquals(b, (byte)in.read()) ;
+    private static void check(InputStream in, byte...bytes) throws IOException {
+        for ( byte b : bytes ) {
+            assertEquals(b, (byte)in.read());
         }
     }
 
