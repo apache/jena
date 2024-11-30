@@ -76,14 +76,14 @@ class DigestLib {
         if ( optAuth.isEmpty() )
             throw new HttpException("Username/password required but not present in HttpClient");
         // We just want the PasswordAuthentication!
-        PasswordAuthentication x = optAuth.get().requestPasswordAuthenticationInstance(null,
-                                                                                       null,
-                                                                                       -1,   //port,
-                                                                                       null, //protocol,
-                                                                                       null, //prompt,
-                                                                                       null, //scheme,
-                                                                                       null, //url,
-                                                                                       RequestorType.SERVER);
+        PasswordAuthentication x = optAuth.orElseThrow().requestPasswordAuthenticationInstance(null,
+                                                                                               null,
+                                                                                               -1,   //port,
+                                                                                               null, //protocol,
+                                                                                               null, //prompt,
+                                                                                               null, //scheme,
+                                                                                               null, //url,
+                                                                                               RequestorType.SERVER);
         String user = x.getUserName();
         String password = new String(x.getPassword());
         return Pair.create(user, password);

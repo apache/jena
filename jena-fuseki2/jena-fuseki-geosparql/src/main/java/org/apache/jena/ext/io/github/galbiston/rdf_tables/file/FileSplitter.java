@@ -25,6 +25,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -58,7 +59,7 @@ public class FileSplitter {
         LOGGER.info("File Splitting Started: {}", inputFile.getPath());
 
         //Read file
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFile, StandardCharsets.UTF_8))) {
 
             List<String> lines = new ArrayList<>(LINE_MAXIMUM);
             int fileNumber = 1;
@@ -92,7 +93,7 @@ public class FileSplitter {
     private static void writeToFile(List<String> lines, int fileNumber, File sourceFile, String header) {
         File targetFile = FileSupport.insertFileCount(sourceFile, fileNumber);
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(targetFile))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(targetFile, StandardCharsets.UTF_8))) {
             bw.write(header);
             bw.newLine();
             for (String line : lines) {

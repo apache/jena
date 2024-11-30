@@ -452,7 +452,7 @@ class GraphNode {
      * Dump a set to a string for debug.
      */
     private static String dumpSet(Set<GraphNode> s) {
-    	StringBuffer sb = new StringBuffer();
+    	StringBuilder sb = new StringBuilder();
     	sb.append("{");
     	boolean started = false;
         for ( GraphNode value : s )

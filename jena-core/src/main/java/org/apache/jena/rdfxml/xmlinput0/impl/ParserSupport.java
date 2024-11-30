@@ -152,7 +152,7 @@ public class ParserSupport implements ARPErrorNumbers, Names {
          return true;
     }
 
-    protected boolean isWhite(StringBuffer buf) {
+    protected boolean isWhite(StringBuilder buf) {
         for (int i=buf.length()-1;i>=0;i--)
            if (! isWhite(buf.charAt(i)) )
                return false;

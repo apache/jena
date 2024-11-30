@@ -21,6 +21,7 @@ package org.apache.jena.tdb1.store;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.jena.tdb1.TDB1Exception;
 import org.apache.jena.tdb1.base.file.Location;
@@ -35,20 +36,20 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * Tests for {@link LocationLock} inconjucntion with {@link StoreConnection}s 
+ * Tests for {@link LocationLock} inconjucntion with {@link StoreConnection}s
  */
 public class TestLocationLockStoreConnection {
 
     private static boolean negativePidsTreatedAsAlive = false;
-    
+
     @Rule
     public TemporaryFolder tempDir = new TemporaryFolder();
-    
+
     @BeforeClass
     public static void setup() {
         negativePidsTreatedAsAlive = ProcessUtils.negativePidsTreatedAsAlive();
     }
-    
+
     @Test
     public void location_lock_store_connection_01() {
         Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
@@ -74,7 +75,7 @@ public class TestLocationLockStoreConnection {
     @Test(expected = TDB1Exception.class)
     public void location_lock_store_connection_02() throws IOException {
         Assume.assumeTrue(negativePidsTreatedAsAlive);
-        
+
         Location dir = Location.create(tempDir.getRoot().getAbsolutePath());
         LocationLock lock = dir.getLock();
         Assert.assertTrue(lock.canLock());
@@ -83,10 +84,10 @@ public class TestLocationLockStoreConnection {
         Assert.assertTrue(lock.canObtain());
 
         // Write a fake PID to the lock file
-        try(BufferedWriter writer = 
-            new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
+        try(BufferedWriter writer =
+            new BufferedWriter(new FileWriter(dir.getPath("tdb.lock"), StandardCharsets.UTF_8))) {
             // Fake PID that would never be valid
-            writer.write(Integer.toString(-1234)); 
+            writer.write(Integer.toString(-1234));
         }
         Assert.assertTrue(lock.isLocked());
         Assert.assertFalse(lock.isOwned());

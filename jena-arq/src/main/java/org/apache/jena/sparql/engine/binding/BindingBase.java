@@ -132,7 +132,7 @@ abstract public class BindingBase implements Binding
 
     @Override
     public String toString() {
-        StringBuffer sbuff = new StringBuffer();
+        StringBuilder sbuff = new StringBuilder();
         format1(sbuff);
 
         if ( parent != null ) {
@@ -146,7 +146,7 @@ abstract public class BindingBase implements Binding
     }
 
     // Do one level of binding
-    public void format1(StringBuffer sbuff) {
+    public void format1(StringBuilder sbuff) {
         if ( isEmpty() ) {
             sbuff.append("()");
             return;
@@ -163,7 +163,7 @@ abstract public class BindingBase implements Binding
         }
     }
 
-    protected void fmtVar(StringBuffer sbuff, Var var) {
+    protected void fmtVar(StringBuilder sbuff, Var var) {
         Node node = get(var);
         String tmp = FmtUtils.stringForObject(node);
         sbuff.append("( ?" + var.getVarName() + " = " + tmp + " )");
@@ -171,7 +171,7 @@ abstract public class BindingBase implements Binding
 
     // Do one level of binding
     public String toString1() {
-        StringBuffer sbuff = new StringBuffer();
+        StringBuilder sbuff = new StringBuilder();
         format1(sbuff);
         return sbuff.toString();
     }

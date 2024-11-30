@@ -22,6 +22,7 @@ import java.io.BufferedReader ;
 import java.io.FileReader ;
 import java.io.IOException ;
 import java.io.Reader ;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.reasoner.InfGraph ;
@@ -50,51 +51,51 @@ import org.slf4j.LoggerFactory ;
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
     public static String BASE_URI = "http://www.w3.org/2002/03owlt/";
-    
+
     /** The base directory in which the test data is actually stored */
     public static String baseDir = "testing/wg/";
-    
+
     /** The namespace for the test specification schema */
     public static final String NS_OTEST = "http://www.w3.org/2002/03owlt/testOntology#";
-    
+
     /** The namespace for the test specification schema */
     public static final String NS_RTEST = "http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#";
-    
+
     /** The rdf class for positive tests */
     public static final Resource PositiveEntailmentTest;
-    
+
     /** The rdf class for positive tests */
     public static final Resource NegativeEntailmentTest;
-    
+
     /** The predicate defining the description of the test */
     public static final Property descriptionP;
-    
+
     /** The predicate defining a premise for the test */
     public static final Property premiseDocumentP;
-    
+
     /** The predicate defining the conclusion from the test */
     public static final Property conclusionDocumentP;
-    
+
     /** The predicate defining the status of the test */
     public static final Property statusP;
-    
+
     /** The reasoner factory being tested */
     protected ReasonerFactory reasonerF;
-    
+
     /** The configuration information for the reasoner */
     protected Resource configuration;
-    
+
     /** The test case which has invoke this test */
     protected TestCase testcase;
-    
+
     /** The processing time used since testcase creation */
     protected static long timeCost = 0;
-    
+
     /** The total number of tests run */
     protected static int numTests = 0;
-    
+
     protected static Logger logger = LoggerFactory.getLogger(OWLWGTester.class);
-    
+
     // Static initializer for the predicates
     static {
         PositiveEntailmentTest = ResourceFactory.createProperty(NS_OTEST, "PositiveEntailmentTest");
@@ -104,7 +105,7 @@ public class OWLWGTester {
         conclusionDocumentP = ResourceFactory.createProperty(NS_RTEST, "conclusionDocument");
         statusP = ResourceFactory.createProperty(NS_RTEST, "status");
     }
-    
+
     /**
      * Constructor
      * @param reasonerF the factory for the reasoner to be tested
@@ -116,7 +117,7 @@ public class OWLWGTester {
         this.testcase = testcase;
         this.configuration = configuration;
     }
-    
+
     /**
      * Run all the tests in the manifest
      * @param manifestFile the name of the manifest file relative to baseDir
@@ -160,7 +161,7 @@ public class OWLWGTester {
         String description = test.getRequiredProperty(descriptionP).getObject().toString();
         String status = test.getRequiredProperty(statusP).getObject().toString();
         logger.debug("WG test " + test.getURI() + " - " + status);
-        
+
         // Load up the premise documents
         Model premises = ModelFactory.createDefaultModel();
         for (StmtIterator premisesI = test.listProperties(premiseDocumentP); premisesI.hasNext(); ) {
@@ -170,7 +171,7 @@ public class OWLWGTester {
         // Load up the conclusions document
         Resource conclusionsRes = (Resource) test.getRequiredProperty(conclusionDocumentP).getObject();
         Model conclusions = loadFile(conclusionsRes.toString() + ".rdf");
-        
+
         // Construct the inferred graph
         // Optional logging
         if (log) {
@@ -185,11 +186,11 @@ public class OWLWGTester {
         long t1 = System.currentTimeMillis();
         InfGraph graph = reasoner.bind(premises.getGraph());
         Model result = ModelFactory.createModelForGraph(graph);
-        
+
         if (stats && graph instanceof FBRuleInfGraph) {
 //            ((FBRuleInfGraph)graph).resetLPProfile(true);
         }
-        
+
         // Check the results against the official conclusions
         boolean correct = true;
         if (testType.equals(PositiveEntailmentTest)) {
@@ -204,12 +205,12 @@ public class OWLWGTester {
         if (stats) {
             logger.info("Time=" + (t2-t1) + "ms for " + test.getURI());
             printStats();
-            
+
             if (graph instanceof FBRuleInfGraph) {
                 ((FBRuleInfGraph)graph).printLPProfile();
             }
         }
-        
+
         if (!correct) {
             // List all the forward deductions for debugging
 //            if (graph instanceof FBRuleInfGraph) {
@@ -219,8 +220,8 @@ public class OWLWGTester {
 //                org.apache.jena.PrintUtil.printOut(deductions.find(null,null,null));
 //            }
         }
-        
-        // Signal the results        
+
+        // Signal the results
         if (testcase != null) {
             Assert.assertTrue("Test: " + test + "\n" +  reasonerF.getURI() + "\n" + description, correct);
         }
@@ -228,7 +229,7 @@ public class OWLWGTester {
     }
 
     /**
-     * Utility to load a file as a Model. 
+     * Utility to load a file as a Model.
      * Files are assumed to be relative to the BASE_URI.
      * @param file the file name, relative to baseDir
      * @return the loaded Model
@@ -245,12 +246,12 @@ public class OWLWGTester {
         if (fname.startsWith(BASE_URI)) {
             fname = fname.substring(BASE_URI.length());
         }
-        Reader reader = new BufferedReader(new FileReader(baseDir + fname));
+        Reader reader = new BufferedReader(new FileReader(baseDir + fname, StandardCharsets.UTF_8));
         result.read(reader, BASE_URI + fname, langType);
         return result;
     }
-    
-    
+
+
     /**
      * Log (info level) some summary information on the timecost of the tests.
      */

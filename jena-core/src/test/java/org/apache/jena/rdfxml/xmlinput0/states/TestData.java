@@ -21,6 +21,7 @@ package org.apache.jena.rdfxml.xmlinput0.states;
 import java.io.FileWriter ;
 import java.io.IOException ;
 import java.lang.reflect.InvocationTargetException ;
+import java.nio.charset.StandardCharsets;
 import java.util.* ;
 
 import org.apache.jena.rdfxml.xmlinput0.ARPErrorNumbers;
@@ -35,7 +36,7 @@ import org.xml.sax.SAXParseException ;
  * an error
  */
 public class TestData implements ARPErrorNumbers{
-    
+
     private static final URIReference foo = URIReference.createNoChecks("http://foo/");
     private static final URIReference bar = URIReference.createNoChecks("http://bar/");
 
@@ -46,12 +47,12 @@ public class TestData implements ARPErrorNumbers{
 //        } catch (SAXParseException e) {
 //           e.printStackTrace();
 //        }
-//        
+//
 //    }
     static String dataFile = "testing0/arp/state.txt";
     static AbsXMLContext xmlContext;
-    
-    static { 
+
+    static {
         try {
             xmlContext= new XMLBaselessContext(xmlHandler,
                     ERR_RESOLVING_AGAINST_RELATIVE_BASE).withBase(xmlHandler,"http://example.org/base/");
@@ -60,20 +61,20 @@ public class TestData implements ARPErrorNumbers{
         }
     }
     static TestFrame testFrame = new TestFrame(xmlHandler, xmlContext);
-    
+
     static char white[] = { 32, 32, 32, 32, 32 };
 
     static char black[] = { 97, 98, 99, 100, 101 };
 
     private static final AttrEvent xmlSpace = new AttrEvent(QName.xml("space"));
-    static Event allEvents[] = { 
+    static Event allEvents[] = {
            new ElementEvent(QName.rdf("li")),
             new ElementEvent(QName.rdf("Description")),
             new ElementEvent("F",QName.rdf("RDF")),
             new ElementEvent(QName.eg("Goo")),
             new AttrEvent(QName.xml("base")),
             new AttrEvent("g", QName.xml("lang"), "en"),
-            new AttrEvent(QName.eg("foo")), 
+            new AttrEvent(QName.eg("foo")),
             xmlSpace,
             new AttrEvent("B", QName.rdf("bagID"), "en"),
             new AttrEvent(QName.rdf("about")),
@@ -110,7 +111,7 @@ public class TestData implements ARPErrorNumbers{
                     from.characters(black, 0, 5);
                     return from;
                 }
-            }, 
+            },
             new InternalEvent("P", "pred-object") {
                 @Override
                 FrameI apply(FrameI from, Attributes att) {
@@ -212,7 +213,7 @@ public class TestData implements ARPErrorNumbers{
     void characterize(Class< ? extends FrameI> f){
         inCharacterize = true;
         int sz = eventList.size;
-        StringBuffer rslt = new StringBuffer();
+        StringBuilder rslt = new StringBuilder();
         String skip = null;
         eventList.test(f);
         rslt.append(eventListName(f,null));
@@ -243,7 +244,7 @@ public class TestData implements ARPErrorNumbers{
     }
 
     private String eventListName(Class< ? extends FrameI> f, Class< ? extends FrameI> f2) {
-        StringBuffer rslt = new StringBuffer();
+        StringBuilder rslt = new StringBuilder();
         rslt.append(stateName(f, f2));
         for (int i=0;i<eventList.size;i++) {
            rslt.append(' ');
@@ -265,18 +266,18 @@ public class TestData implements ARPErrorNumbers{
     }
 
     private String testInfo(Class< ? extends FrameI> f) {
-        return 
+        return
         eventList.testFailure ? (eventList.testException ? "!" : "?") :
-           (stateName(eventList.testResult.getClass(),f) + " " + 
+           (stateName(eventList.testResult.getClass(),f) + " " +
                 xmlHandler.info() + " " + testFrame.info());
     }
 
     static Class<?> tryClasses[] = { FrameI.class, AbsXMLLiteral.class,
             HasSubjectFrameI.class, WantsObjectFrameI.class };
 
-  
+
     static FrameI create(Class<? extends FrameI> cl) throws InstantiationException, IllegalAccessException, InvocationTargetException {
-       FrameI frame = null; 
+       FrameI frame = null;
        Object args[] = state2Args.get(cl);
         Class<?> types[] = new Class<?>[args.length];
         for (int i = 1; i < args.length; i++) {
@@ -302,7 +303,7 @@ public class TestData implements ARPErrorNumbers{
         }
         return frame;
     }
-    
+
     void expand(Class< ? extends FrameI> f) {
         if (AbsXMLLiteral.class.isAssignableFrom(f))
             return;
@@ -313,7 +314,7 @@ public class TestData implements ARPErrorNumbers{
         if (localCount % 20000 == 0)
             stats(f);
         if (!eventList.test(f)) {
-            if (!shorterTestFails(f)) 
+            if (!shorterTestFails(f))
                 data.add(eventListName(f,null)+" $ " + testInfo(f));
             return;
         }
@@ -341,9 +342,9 @@ public class TestData implements ARPErrorNumbers{
             eventList.pop();
         }
     }
-    
+
     private Random dice = new Random(23);
-    
+
     private boolean randomPurgeXMLAttrs() {
         int weight = 0;
         eventList.rewind();
@@ -375,8 +376,8 @@ public class TestData implements ARPErrorNumbers{
     Set<String> data = new TreeSet<>(new Comparator<String>(){
         @Override
         public int compare(String arg1, String arg2) {
-            StringBuffer b1 = new StringBuffer(arg1).reverse();
-            StringBuffer b2 = new StringBuffer(arg2).reverse();
+            StringBuilder b1 = new StringBuilder(arg1).reverse();
+            StringBuilder b2 = new StringBuilder(arg2).reverse();
             return b1.toString().compareTo(b2.toString());
         }}
             );
@@ -407,7 +408,7 @@ public class TestData implements ARPErrorNumbers{
             }
             stats(f);
         }
-        try ( FileWriter fw = new FileWriter(dataFile) ) {
+        try ( FileWriter fw = new FileWriter(dataFile, StandardCharsets.UTF_8) ) {
             Iterator<String> it2 = data.iterator();
             while (it.hasNext()) {
                 fw.write(it2.next());

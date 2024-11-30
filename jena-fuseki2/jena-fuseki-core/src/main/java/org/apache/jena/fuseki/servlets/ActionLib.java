@@ -111,7 +111,7 @@ public class ActionLib {
      * @return String The full URL, including query string.
      */
     public static String wholeRequestURL(HttpServletRequest request) {
-        StringBuffer sb = request.getRequestURL();
+        StringBuilder sb = new StringBuilder(request.getRequestURL());
         String queryString = request.getQueryString();
         if ( queryString != null ) {
             sb.append("?");

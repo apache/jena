@@ -47,7 +47,7 @@ public class TestPMap extends Assert {
 		final Stream<Entry<String, String>> testStream = testMap.entryStream();
 		final Map<String, String> recoveredMap = testStream.collect(toMap(Entry::getKey, Entry::getValue));
 		for (final Entry<String, String> e : recoveredMap.entrySet()) {
-			assertEquals(e.getValue(), testMap.get(e.getKey()).get());
+			assertEquals(e.getValue(), testMap.get(e.getKey()).orElseThrow());
 			testMap = testMap.minus(e.getKey());
 		}
 		assertEquals(0, testMap.entryStream().count());

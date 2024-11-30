@@ -27,7 +27,7 @@ import java.util.stream.IntStream;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.PeekingIterator;
 import com.google.common.collect.SetMultimap;
-import com.google.common.primitives.Ints;
+
 import org.apache.jena.sparql.service.enhancer.impl.util.SinglePrefetchIterator;
 
 /**
@@ -169,7 +169,7 @@ public class IteratorFactoryWithBuffer<T, I extends Iterator<T>>
                     throw new IllegalStateException();
                 }
 
-                int relOffset = Ints.checkedCast(absOffset - absBufferOffset);
+                int relOffset = Math.toIntExact(absOffset - absBufferOffset);
 
                 long bufferSize = buffer == null ? 0 : buffer.size();
 

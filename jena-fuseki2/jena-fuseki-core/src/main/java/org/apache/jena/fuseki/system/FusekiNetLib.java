@@ -87,10 +87,10 @@ public class FusekiNetLib {
 
     /** Helper function for displaying an HttpServletRequest */
     public static String fmtRequest(HttpServletRequest request) {
-        StringBuffer sbuff = new StringBuffer();
+        StringBuilder sbuff = new StringBuilder();
         sbuff.append(request.getMethod());
         sbuff.append(" ");
-        sbuff.append(Convert.decWWWForm(request.getRequestURL()));
+        sbuff.append(Convert.decWWWForm(request.getRequestURL().toString()));
 
         String qs = request.getQueryString();
         if ( qs != null ) {

@@ -30,7 +30,7 @@ public class BindingRoot extends Binding0 {
     }
 
     @Override
-    public void format1(StringBuffer sBuff) {
+    public void format1(StringBuilder sBuff) {
         sBuff.append("[Root]");
     }
 }

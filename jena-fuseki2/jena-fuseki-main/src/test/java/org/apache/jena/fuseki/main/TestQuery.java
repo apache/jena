@@ -293,7 +293,7 @@ public class TestQuery extends AbstractFusekiTest {
         URL u = new URL(serviceQuery() + "?query=" + qs);
         HttpURLConnection conn = (HttpURLConnection)u.openConnection();
         String result = null;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         try ( InputStream is = new BufferedInputStream(conn.getInputStream());
               BufferedReader br = new BufferedReader(new InputStreamReader(is)) ) {
             String inputLine = "";

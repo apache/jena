@@ -205,7 +205,7 @@ public class BindingVector implements BindingEnvironment {
      */
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for ( Node anEnvironment : environment )
         {
             if ( anEnvironment == null )

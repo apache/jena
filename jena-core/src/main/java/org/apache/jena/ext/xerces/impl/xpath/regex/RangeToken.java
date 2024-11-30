@@ -560,7 +560,7 @@ final class RangeToken extends Token implements java.io.Serializable {
             else if (this == Token.token_spaces)
                 ret = "\\s";
             else {
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 sb.append('[');
                 for (int i = 0;  i < this.ranges.length;  i += 2) {
                     if ((options & RegularExpression.SPECIAL_COMMA) != 0 && i > 0)  sb.append(',');
@@ -583,7 +583,7 @@ final class RangeToken extends Token implements java.io.Serializable {
             else if (this == Token.token_not_spaces)
                 ret = "\\S";
             else {
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 sb.append("[^");
                 for (int i = 0;  i < this.ranges.length;  i += 2) {
                     if ((options & RegularExpression.SPECIAL_COMMA) != 0 && i > 0)  sb.append(',');

@@ -18,19 +18,19 @@
 
 package org.apache.jena.sparql.util;
 
-import java.io.UnsupportedEncodingException ;
-import java.net.URLDecoder ;
-import java.net.URLEncoder ;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.jena.atlas.lib.IRILib;
 
 /**
  * Encode for a www-forms.
+ *
  * @see IRILib
  * @see URLEncoder#encode
  */
-public class Convert
-{
+public class Convert {
     // UTF-8 is required in Java implementations
 
     // Choose the characters to escape.
@@ -39,54 +39,43 @@ public class Convert
     // 2.2. Reserved Characters
     // 2.4.3 Excluded US-ASCII Characters
     //
-    // reserved    = ";" | "/" | "?" | ":" | "@" | "&" | "=" | "+" |
-    //               "$" | ","
+    // reserved = ";" | "/" | "?" | ":" | "@" | "&" | "=" | "+" |
+    // "$" | ","
     //
-    // control     = <US-ASCII coded characters 00-1F and 7F hexadecimal>
-    // space       = <US-ASCII coded character 20 hexadecimal>
+    // control = <US-ASCII coded characters 00-1F and 7F hexadecimal>
+    // space = <US-ASCII coded character 20 hexadecimal>
     //
-    // delims      = "<" | ">" | "#" | "%" | <">
-    // unwise      = "{" | "}" | "|" | "\" | "^" | "[" | "]" | "`"
+    // delims = "<" | ">" | "#" | "%" | <">
+    // unwise = "{" | "}" | "|" | "\" | "^" | "[" | "]" | "`"
     //
     // These should be OK:
     //
-    // unreserved  = alphanum | mark
-    // mark        = "-" | "_" | "." | "!" | "~" | "*" | "'" | "(" | ")"
+    // unreserved = alphanum | mark
+    // mark = "-" | "_" | "." | "!" | "~" | "*" | "'" | "(" | ")"
 
     // URLEncoder is savage:
 
     // + The alphanumeric characters "a" through "z",
-    //   "A" through "Z" and "0" through "9" remain the same.
+    // "A" through "Z" and "0" through "9" remain the same.
     // + The special characters ".", "-", "*", and "_" remain the same.
     // + The space character " " is converted into a plus sign "+".
     // + All other characters are unsafe and are first converted into
-    //   one or more bytes using some encoding scheme.
+    // one or more bytes using some encoding scheme.
 
-    public static String encWWWForm(String s)
-    {
-        try {
-            return URLEncoder.encode(s, "UTF-8") ;
-            // Can't fail - UTF-8 is required
-        } catch (UnsupportedEncodingException ex) { return null ;}
+    public static String encWWWForm(String s) {
+        return URLEncoder.encode(s, StandardCharsets.UTF_8);
     }
 
-    public static String encWWWForm(StringBuffer sbuff)
-    {
-        return encWWWForm(sbuff.toString()) ;
+    public static String encWWWForm(StringBuilder sbuff) {
+        return encWWWForm(sbuff.toString());
     }
 
-
-    public static String decWWWForm(String s)
-    {
-        try {
-            return URLDecoder.decode(s, "UTF-8") ;
-            // Can't fail - UTF-8 is required
-        } catch (UnsupportedEncodingException ex) { return null ;}
+    public static String decWWWForm(String s) {
+        return URLDecoder.decode(s, StandardCharsets.UTF_8);
     }
 
-    public static String decWWWForm(StringBuffer sbuff)
-    {
-        return decWWWForm(sbuff.toString()) ;
+    public static String decWWWForm(StringBuilder sbuff) {
+        return decWWWForm(sbuff.toString());
     }
 
 }

@@ -18,39 +18,34 @@
 
 package org.apache.jena.atlas.lib;
 
-import java.util.ArrayList ;
-import java.util.Collections ;
-import java.util.Comparator ;
-import java.util.Enumeration ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Properties ;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
 
 /** Sorted output */
-public class PropertiesSorted extends Properties
-{
-    private Comparator<String> comparator = null ;
+public class PropertiesSorted extends Properties {
+    private Comparator<String> comparator = null;
 
-    //public SortedProperties() { super() ; }
+    // public SortedProperties() { super() ; }
 
-    public PropertiesSorted(Comparator<String> comparator)
-    {
-        super() ;
-        this.comparator = comparator ;
+    public PropertiesSorted(Comparator<String> comparator) {
+        super();
+        this.comparator = comparator;
     }
-
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public synchronized Enumeration<Object> keys()
-    {
-        // Old world - enumeration, untyped. But we know they are strings (Propetries hides non-strings in get)
-        Enumeration<Object> keys = super.keys() ;
-        List<String> keys2 = new ArrayList<>(super.size()) ;
+    public synchronized Enumeration<Object> keys() {
+        // Old world - enumeration.
+        Enumeration<Object> keys = super.keys();
+        List<String> keys2 = new ArrayList<>(super.size());
 
-        for( ; keys.hasMoreElements() ; )
-        {
-            Object obj = keys.nextElement() ;
+        for ( ; keys.hasMoreElements() ; ) {
+            Object obj = keys.nextElement();
             if ( obj instanceof String str )
                 keys2.add(str);
         }
@@ -58,29 +53,25 @@ public class PropertiesSorted extends Properties
         if ( comparator == null )
             Collections.sort(keys2);
         else
-            Collections.sort(keys2, comparator) ;
+            Collections.sort(keys2, comparator);
 
-        return new IteratorToEnumeration(keys2.listIterator()) ;
+        return new IteratorToEnumeration(keys2.listIterator());
     }
 
-    static class IteratorToEnumeration<T>  implements Enumeration<T>
-    {
-        private Iterator<T> iterator ;
+    static class IteratorToEnumeration<T> implements Enumeration<T> {
+        private Iterator<T> iterator;
 
-        public IteratorToEnumeration(Iterator<T> iterator)
-        {
-            this.iterator = iterator ;
+        public IteratorToEnumeration(Iterator<T> iterator) {
+            this.iterator = iterator;
         }
 
         @Override
-        public boolean hasMoreElements()
-        {
-            return iterator.hasNext() ;
+        public boolean hasMoreElements() {
+            return iterator.hasNext();
         }
 
         @Override
-        public T nextElement()
-        {
+        public T nextElement() {
             return iterator.next();
         }
     }

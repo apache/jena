@@ -21,6 +21,7 @@ package org.apache.jena.rdfxml.xmlinput0.states;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ public class TestARPStates extends TestCase {
         TestSuite rslt = new TestSuite();
         //rslt.setName("ARP state machine");
         Map<String, TestSuite> tests = new HashMap<>();
-        try ( LineNumberReader r = new LineNumberReader(new FileReader(TestData.dataFile)) ) {
+        try ( LineNumberReader r = new LineNumberReader(new FileReader(TestData.dataFile, StandardCharsets.UTF_8)) ) {
             while (true) {
                 String line = r.readLine();
                 if (line == null)

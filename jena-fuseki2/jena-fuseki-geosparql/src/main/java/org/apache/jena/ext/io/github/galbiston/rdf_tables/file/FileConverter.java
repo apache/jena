@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -87,7 +88,8 @@ public class FileConverter {
         int lineNumber = 1;
 
         CSVParserBuilder parserBuilder = new CSVParserBuilder().withSeparator(delimiter);
-        try (CSVReader reader = new CSVReaderBuilder(new FileReader(inputFile)).withCSVParser(parserBuilder.build()).build()) {
+        try (CSVReader reader = new CSVReaderBuilder(new FileReader(inputFile, StandardCharsets.UTF_8))
+                                       .withCSVParser(parserBuilder.build()).build()) {
 
             String baseURI = readHeader(reader.readNext(), datatypeURIs, propertyURIs, classURIs, targetColumns, propertyDirections);
 

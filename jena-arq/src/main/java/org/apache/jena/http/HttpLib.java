@@ -292,7 +292,7 @@ public class HttpLib {
         if ( x.isEmpty() )
             return -1;
         try {
-            return Long.parseLong(x.get());
+            return Long.parseLong(x.orElseThrow());
         } catch (NumberFormatException ex) { return -1; }
     }
 
@@ -794,7 +794,7 @@ public class HttpLib {
         Optional<String> value2 = response.headers().firstValue("Server");
         if ( value2.isEmpty() )
             return false;
-        String headerValue = value2.get();
+        String headerValue = value2.orElseThrow();
         boolean isFuseki = headerValue.startsWith("Apache Jena Fuseki") ||
                            headerValue.toLowerCase().contains("fuseki");
         return isFuseki;

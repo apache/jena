@@ -2786,7 +2786,7 @@ class XMLGregorianCalendarImpl
             // Format is
             // "GMT" ('-'|''+') (digit digit?) (digit digit)?
             //                   hour          minutes
-            StringBuffer customTimezoneId = new StringBuffer(8);
+            StringBuilder customTimezoneId = new StringBuilder(8);
             customTimezoneId.append("GMT");
             customTimezoneId.append(sign);
             customTimezoneId.append(hour);
@@ -3038,7 +3038,7 @@ public void clear() {
     }
 
     private String format( String format ) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         int fidx=0,flen=format.length();
 
         while(fidx<flen) {
@@ -3120,7 +3120,7 @@ public void clear() {
      *      number of digits. For example, 5 will be printed as "0005"
      *      if nDigits==4.
      */
-    private void printNumber( StringBuffer out, int number, int nDigits ) {
+    private void printNumber( StringBuilder out, int number, int nDigits ) {
         String s = String.valueOf(number);
         for (int i = s.length(); i < nDigits; i++) {
             out.append('0');
@@ -3140,7 +3140,7 @@ public void clear() {
      *      number of digits. For example, 5 will be printed as "0005"
      *      if nDigits==4.
      */
-    private void printNumber( StringBuffer out, BigInteger number, int nDigits) {
+    private void printNumber( StringBuilder out, BigInteger number, int nDigits) {
         String s = number.toString();
         for (int i=s.length(); i < nDigits; i++) {
             out.append('0');
@@ -3167,17 +3167,17 @@ public void clear() {
         }
 
         /* Insert decimal point */
-        StringBuffer buf;
+        StringBuilder buf;
         int insertionPoint = intString.length() - scale;
         if (insertionPoint == 0) { /* Point goes right before intVal */
             return "0." + intString;
         }
         else if (insertionPoint > 0) { /* Point goes inside intVal */
-            buf = new StringBuffer(intString);
+            buf = new StringBuilder(intString);
             buf.insert(insertionPoint, '.');
         }
         else { /* We must insert zeros between point and intVal */
-            buf = new StringBuffer(3 - insertionPoint + intString.length());
+            buf = new StringBuilder(3 - insertionPoint + intString.length());
             buf.append("0.");
             for (int i = 0; i < -insertionPoint; i++) {
                 buf.append('0');

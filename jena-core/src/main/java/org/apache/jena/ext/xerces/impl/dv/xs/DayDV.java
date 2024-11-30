@@ -99,7 +99,7 @@ public class DayDV extends AbstractDateTimeDV {
      */
     @Override
     protected String dateToString(DateTimeData date) {
-        StringBuffer message = new StringBuffer(6);
+        StringBuilder message = new StringBuilder(6);
         message.append('-');
         message.append('-');
         message.append('-');

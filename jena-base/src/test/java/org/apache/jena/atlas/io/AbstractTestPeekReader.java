@@ -21,223 +21,214 @@ package org.apache.jena.atlas.io;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test ;
+import org.junit.Test;
 
-public abstract class AbstractTestPeekReader
-{
-    static int INIT_LINE = PeekReader.INIT_LINE ;
-    static int INIT_COL = PeekReader.INIT_COL ;
-    
-    abstract PeekReader make(String contents, int size) ;
-    
-    @Test public void read0()
-    {
-        assertEquals("Init line", 1, INIT_LINE) ;
-        assertEquals("Init col", 1, INIT_COL) ;
-    }
-    
-    @Test public void read1()
-    {
-        PeekReader r = make("") ;
-        checkLineCol(r, INIT_LINE, INIT_COL) ;
-        
-        int x = r.peekChar() ;
-        assertEquals(-1, x) ;
-        x = r.readChar() ;
-        assertEquals(-1, x) ;
-        x = r.readChar() ;
-        assertEquals(-1, x) ;
-    }
-    
-    @Test public void read2()
-    {
-        // Assumes we start at (1,1) 
-        PeekReader r = make("a") ;
-        checkLineCol(r, INIT_LINE, INIT_COL) ;
-        
-        int x = r.peekChar() ;
-        assertEquals('a', x) ;
-        checkLineCol(r, INIT_LINE, INIT_COL) ;
-        
-        x = r.readChar() ;
-        checkLineCol(r, INIT_LINE, INIT_COL+1) ;
-        assertEquals('a', x) ;
-        
-        x = r.peekChar() ;
-        assertEquals(-1, x) ;
-        
-        x = r.readChar() ;
-        assertEquals(-1, x) ;
+public abstract class AbstractTestPeekReader {
+    static int INIT_LINE = PeekReader.INIT_LINE;
+    static int INIT_COL = PeekReader.INIT_COL;
+
+    abstract PeekReader make(String contents, int size);
+
+    @Test
+    public void read0() {
+        assertEquals("Init line", 1, INIT_LINE);
+        assertEquals("Init col", 1, INIT_COL);
     }
 
-    @Test public void read3()
-    {
-        String c = "abcde" ;
-        PeekReader r = make(c) ;
-        
-        for ( int i = 0 ; i < c.length(); i++ )
-        {
-            checkLineCol(r, INIT_LINE, i+INIT_COL) ;
-            assertEquals(i, r.getPosition()) ;
-            assertEquals(c.charAt(i), r.readChar()) ;
+    @Test
+    public void read1() {
+        PeekReader r = make("");
+        checkLineCol(r, INIT_LINE, INIT_COL);
+
+        int x = r.peekChar();
+        assertEquals(-1, x);
+        x = r.readChar();
+        assertEquals(-1, x);
+        x = r.readChar();
+        assertEquals(-1, x);
+    }
+
+    @Test
+    public void read2() {
+        // Assumes we start at (1,1)
+        PeekReader r = make("a");
+        checkLineCol(r, INIT_LINE, INIT_COL);
+
+        int x = r.peekChar();
+        assertEquals('a', x);
+        checkLineCol(r, INIT_LINE, INIT_COL);
+
+        x = r.readChar();
+        checkLineCol(r, INIT_LINE, INIT_COL + 1);
+        assertEquals('a', x);
+
+        x = r.peekChar();
+        assertEquals(-1, x);
+
+        x = r.readChar();
+        assertEquals(-1, x);
+    }
+
+    @Test
+    public void read3() {
+        String c = "abcde";
+        PeekReader r = make(c);
+
+        for ( int i = 0 ; i < c.length() ; i++ ) {
+            checkLineCol(r, INIT_LINE, i + INIT_COL);
+            assertEquals(i, r.getPosition());
+            assertEquals(c.charAt(i), r.readChar());
         }
-        assertTrue(r.eof()) ;
+        assertTrue(r.eof());
     }
 
-    @Test public void read4()
-    {
-        position("abcde") ;
+    @Test
+    public void read4() {
+        position("abcde");
     }
 
-    @Test public void read5()
-    {
-        position("abc\nde") ;
+    @Test
+    public void read5() {
+        position("abc\nde");
     }
 
-    @Test public void read6()
-    {
-        position("abc\nde\n") ;
-    }
-    
-    @Test public void read7()
-    {
-        position("") ;
+    @Test
+    public void read6() {
+        position("abc\nde\n");
     }
 
-    @Test public void read8()
-    {
-        position("x") ;
+    @Test
+    public void read7() {
+        position("");
     }
 
-
-    @Test public void read9()
-    {
-        PeekReader r = make("a\nb\n") ;
-        checkLineCol(r, INIT_LINE, INIT_COL) ;
-        int x = r.peekChar() ;
-        assertEquals('a', x) ;
-        checkLineCol(r, INIT_LINE, INIT_COL) ;
-        
-        x = r.readChar() ;
-        assertEquals('a', x) ;
-        checkLineCol(r, INIT_LINE, INIT_COL+1) ;
-
-        x = r.readChar() ;
-        assertEquals('\n', x) ;
-        checkLineCol(r, INIT_LINE+1, INIT_COL) ;
-    }
-    
-    @Test public void unread1()
-    {
-        PeekReader r = make("abc") ;
-        assertEquals('a', r.peekChar()) ;
-        r.pushbackChar('Z') ;
-        assertEquals('Z', r.peekChar()) ;
-        contains(r, "Zabc") ;
+    @Test
+    public void read8() {
+        position("x");
     }
 
-    @Test public void unread2()
-    {
-        PeekReader r = make("abc") ;
-        checkLineCol(r, INIT_LINE, INIT_COL) ;
-        r.readChar() ;
+    @Test
+    public void read9() {
+        PeekReader r = make("a\nb\n");
+        checkLineCol(r, INIT_LINE, INIT_COL);
+        int x = r.peekChar();
+        assertEquals('a', x);
+        checkLineCol(r, INIT_LINE, INIT_COL);
+
+        x = r.readChar();
+        assertEquals('a', x);
+        checkLineCol(r, INIT_LINE, INIT_COL + 1);
+
+        x = r.readChar();
+        assertEquals('\n', x);
+        checkLineCol(r, INIT_LINE + 1, INIT_COL);
+    }
+
+    @Test
+    public void unread1() {
+        PeekReader r = make("abc");
+        assertEquals('a', r.peekChar());
+        r.pushbackChar('Z');
+        assertEquals('Z', r.peekChar());
+        contains(r, "Zabc");
+    }
+
+    @Test
+    public void unread2() {
+        PeekReader r = make("abc");
+        checkLineCol(r, INIT_LINE, INIT_COL);
+        r.readChar();
         // Pushback does not move line/col backwards.
-        checkLineCol(r, INIT_LINE, INIT_COL+1) ;
-        assertEquals('b', r.peekChar()) ;
-        checkLineCol(r, INIT_LINE, INIT_COL+1) ;
-        r.pushbackChar('a') ;
-        checkLineCol(r, INIT_LINE, INIT_COL+1) ;
-        contains(r, "abc") ;
-    }
-    
-    @Test public void unread3()
-    {
-        PeekReader r = make("") ;
-        r.readChar() ;
-        assertEquals(-1, r.peekChar()) ;
-        r.pushbackChar('a') ;
-        contains(r, "a") ;
+        checkLineCol(r, INIT_LINE, INIT_COL + 1);
+        assertEquals('b', r.peekChar());
+        checkLineCol(r, INIT_LINE, INIT_COL + 1);
+        r.pushbackChar('a');
+        checkLineCol(r, INIT_LINE, INIT_COL + 1);
+        contains(r, "abc");
     }
 
-    @Test public void unread4()
-    {
-        PeekReader r = make("") ;
-        r.readChar() ;
-        assertEquals(-1, r.peekChar()) ;
-        r.pushbackChar('0') ;
-        r.pushbackChar('1') ;
-        r.pushbackChar('2') ;
-        r.pushbackChar('3') ;
-        contains(r, "3210") ;   // Backwards!
+    @Test
+    public void unread3() {
+        PeekReader r = make("");
+        r.readChar();
+        assertEquals(-1, r.peekChar());
+        r.pushbackChar('a');
+        contains(r, "a");
     }
 
-    @Test public void unread5()
-    {
-        PeekReader r = make("") ;
-        long lineNum = r.getLineNum() ;
-        long colNum = r.getColNum() ;
-        
-        checkLineCol(r, lineNum, colNum) ;
-        
-        r.pushbackChar('0') ;
-        checkLineCol(r, lineNum, colNum) ;  // Unmoved.
-        r.pushbackChar('1') ;
-        checkLineCol(r, lineNum, colNum) ;
-        assertEquals('1', r.readChar()) ;
-        
-        checkLineCol(r, lineNum, colNum) ;  // Unmoved.
-        r.pushbackChar('2') ;
-        r.pushbackChar('3') ;
-        checkLineCol(r, lineNum, colNum) ;  // Unmoved.
-        assertEquals('3', r.peekChar()) ;
-        contains(r, "320") ;
+    @Test
+    public void unread4() {
+        PeekReader r = make("");
+        r.readChar();
+        assertEquals(-1, r.peekChar());
+        r.pushbackChar('0');
+        r.pushbackChar('1');
+        r.pushbackChar('2');
+        r.pushbackChar('3');
+        contains(r, "3210");   // Backwards!
     }
 
-    private static void checkLineCol(PeekReader r, long lineNum, long colNum)
-    {
-        assertEquals("Line", lineNum, r.getLineNum()) ; 
-        assertEquals("Column", colNum, r.getColNum()) ;
+    @Test
+    public void unread5() {
+        PeekReader r = make("");
+        long lineNum = r.getLineNum();
+        long colNum = r.getColNum();
+
+        checkLineCol(r, lineNum, colNum);
+
+        r.pushbackChar('0');
+        checkLineCol(r, lineNum, colNum);  // Unmoved.
+        r.pushbackChar('1');
+        checkLineCol(r, lineNum, colNum);
+        assertEquals('1', r.readChar());
+
+        checkLineCol(r, lineNum, colNum);  // Unmoved.
+        r.pushbackChar('2');
+        r.pushbackChar('3');
+        checkLineCol(r, lineNum, colNum);  // Unmoved.
+        assertEquals('3', r.peekChar());
+        contains(r, "320");
     }
-    
-    private void position(String contents)
-    {
-        PeekReader r = make(contents) ;
-        
-        int line = INIT_LINE ;
-        int col = INIT_COL ;
-        checkLineCol(r, line, col) ;
-        assertEquals(0, r.getPosition()) ;
-        
-        for ( int i = 0 ; i < contents.length(); i++ )
-        {
-            int x = r.readChar() ;
-            if ( x != -1 )
-            {
-                if ( x == '\n' )
-                {
-                    line++ ;
-                    col = INIT_COL ;
-                }
-                else
-                    col++ ;
+
+    private static void checkLineCol(PeekReader r, long lineNum, long colNum) {
+        assertEquals("Line", lineNum, r.getLineNum());
+        assertEquals("Column", colNum, r.getColNum());
+    }
+
+    private void position(String contents) {
+        PeekReader r = make(contents);
+
+        int line = INIT_LINE;
+        int col = INIT_COL;
+        checkLineCol(r, line, col);
+        assertEquals(0, r.getPosition());
+
+        for ( int i = 0 ; i < contents.length() ; i++ ) {
+            int x = r.readChar();
+            if ( x != -1 ) {
+                if ( x == '\n' ) {
+                    line++;
+                    col = INIT_COL;
+                } else
+                    col++;
             }
-            assertEquals(contents.charAt(i), x) ;
-            assertEquals(i+1, r.getPosition()) ;
-            checkLineCol(r, line, col) ;
+            assertEquals(contents.charAt(i), x);
+            assertEquals(i + 1, r.getPosition());
+            checkLineCol(r, line, col);
         }
-        assertTrue(r.eof()) ;
+        assertTrue(r.eof());
     }
-    
-    private static void contains(PeekReader r, String contents)
-    {
-        for ( int i = 0 ; i < contents.length(); i++ )
-        {
-            int x = r.readChar() ;
-            assertEquals("\""+contents+"\" -- Index "+i+" Expected:'"+contents.charAt(i)+"' Got: '"+(char)x+"'", contents.charAt(i), x) ;
+
+    private static void contains(PeekReader r, String contents) {
+        for ( int i = 0 ; i < contents.length() ; i++ ) {
+            int x = r.readChar();
+            assertEquals("\"" + contents + "\" -- Index " + i + " Expected:'" + contents.charAt(i) + "' Got: '" + (char)x + "'",
+                         contents.charAt(i), x);
         }
-        assertTrue(r.eof()) ;
+        assertTrue(r.eof());
     }
-    
-    private PeekReader make(String contents)
-    { return make(contents, 2) ; }
+
+    private PeekReader make(String contents) {
+        return make(contents, 2);
+    }
 }

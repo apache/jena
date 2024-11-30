@@ -387,12 +387,12 @@ public abstract class AbstractDateTimeDV extends TypeValidator {
 	}
 
 	/**
-	 * Computes index of given char within StringBuffer
+	 * Computes index of given char within StringBuilder
 	 *
 	 * @param start
 	 * @param end
-	 * @param ch     character to look for in StringBuffer
-	 * @return index of ch within StringBuffer
+	 * @param ch     character to look for in StringBuilder
+	 * @return index of ch within StringBuilder
 	 */
 	protected  int indexOf (String buffer, int start, int end, char ch) {
 		for ( int i=start;i<end;i++ ) {
@@ -735,7 +735,7 @@ public abstract class AbstractDateTimeDV extends TypeValidator {
 
 
 	protected String dateToString(DateTimeData date) {
-		StringBuffer message = new StringBuffer(25);
+		StringBuilder message = new StringBuilder(25);
 		append(message, date.year, 4);
 		message.append('-');
 		append(message, date.month, 2);
@@ -751,7 +751,7 @@ public abstract class AbstractDateTimeDV extends TypeValidator {
 		return message.toString();
 	}
 
-	protected final void append(StringBuffer message, int value, int nch) {
+	protected final void append(StringBuilder message, int value, int nch) {
         if (value == Integer.MIN_VALUE) {
             message.append(value);
             return;
@@ -780,7 +780,7 @@ public abstract class AbstractDateTimeDV extends TypeValidator {
 		}
 	}
 
-	protected final void append(StringBuffer message, double value) {
+	protected final void append(StringBuilder message, double value) {
 	    if (value < 0) {
 	        message.append('-');
 	        value = -value;
@@ -791,7 +791,7 @@ public abstract class AbstractDateTimeDV extends TypeValidator {
 	    append2(message, value);
 	}
 
-    protected final void append2(StringBuffer message, double value) {
+    protected final void append2(StringBuilder message, double value) {
         final int intValue = (int) value;
         if (value == intValue) {
             message.append(intValue);
@@ -801,7 +801,7 @@ public abstract class AbstractDateTimeDV extends TypeValidator {
         }
     }
 
-    private void append3(StringBuffer message, double value) {
+    private void append3(StringBuilder message, double value) {
         String d = String.valueOf(value);
         int eIndex = d.indexOf('E');
         if (eIndex == -1) {
@@ -1093,7 +1093,7 @@ public abstract class AbstractDateTimeDV extends TypeValidator {
     }
 
     protected final BigDecimal getFractionalSecondsAsBigDecimal(DateTimeData data) {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         append3(buf, data.unNormSecond);
         String value = buf.toString();
         final int index = value.indexOf('.');

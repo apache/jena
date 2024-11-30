@@ -77,7 +77,7 @@ public class ComponentPatternParser implements ViolationCodes {
     int groupCount;
 
     // result data
-    final StringBuffer rslt = new StringBuffer();
+    final StringBuilder rslt = new StringBuilder();
 
     int shouldLowerCase;
 
@@ -233,7 +233,7 @@ public class ComponentPatternParser implements ViolationCodes {
             throw new IllegalArgumentException(split[field-1]+" macro syntax error");
         field++;
         rslt.append("?:(?:");  // make group non-capturing.
-        StringBuffer caseInsensitiveEx = new StringBuffer();
+        StringBuilder caseInsensitiveEx = new StringBuilder();
         while (classify[field-1]!=CLOSE_PAREN || sqCount>0 ) {
             if (field >= split.length)
                 throw new IllegalArgumentException(
@@ -283,7 +283,7 @@ public class ComponentPatternParser implements ViolationCodes {
         rslt.append(")");
     }
 
-    private void makeCaseInsensitive(StringBuffer caseInsensitiveEx) {
+    private void makeCaseInsensitive(StringBuilder caseInsensitiveEx) {
         for (int i=0;i<split[field].length();i++) {
             char c = split[field].charAt(i);
             if (c>='a' && c<='z') {

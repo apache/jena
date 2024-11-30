@@ -18,15 +18,13 @@
 
 package org.apache.jena.atlas.io;
 
-import java.io.StringReader ;
+import java.io.StringReader;
 
-public class TestPeekReaderSource extends AbstractTestPeekReader
-{
+public class TestPeekReaderSource extends AbstractTestPeekReader {
     @Override
-    PeekReader make(String contents, int size)
-    {
-        // Very carefuly ensure this is not a string-based PeekReader
-        StringReader r = new StringReader(contents) ;
-        return PeekReader.make(r, size) ;
+    PeekReader make(String contents, int size) {
+        // Very carefully ensure this is not a string-based PeekReader
+        StringReader r = new StringReader(contents);
+        return PeekReader.make(r, size);
     }
 }

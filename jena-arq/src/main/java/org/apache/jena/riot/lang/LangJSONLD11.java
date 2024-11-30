@@ -133,7 +133,7 @@ public class LangJSONLD11 implements ReaderRIOT {
      */
     private static void extractPrefixes(Document document, BiConsumer<String, String> action) {
         try {
-            JsonStructure js = document.getJsonContent().get();
+            JsonStructure js = document.getJsonContent().orElseThrow();
             switch (js.getValueType()) {
             case ARRAY:
                 extractPrefixes(js, action);

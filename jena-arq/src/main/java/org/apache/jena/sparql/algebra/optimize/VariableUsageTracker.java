@@ -18,10 +18,7 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 import org.apache.jena.sparql.core.Var;
 
@@ -31,7 +28,7 @@ import org.apache.jena.sparql.core.Var;
  */
 public class VariableUsageTracker {
 
-    private Stack<Map<String, Integer>> stack = new Stack<>();
+    private Deque<Map<String, Integer>> stack = new ArrayDeque<>();
     private Map<String, Integer> variables = new HashMap<>();
 
     public void push() {

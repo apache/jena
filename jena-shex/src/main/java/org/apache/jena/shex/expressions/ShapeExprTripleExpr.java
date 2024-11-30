@@ -163,7 +163,7 @@ public class ShapeExprTripleExpr extends ShapeExpression {
         public Builder shapeExpr(TripleExpression tripleExpr) { this.tripleExpr = tripleExpr; return this; }
 
         public ShapeExprTripleExpr build() {
-            boolean isClosed = (closed == null) ? false : closed.get();
+            boolean isClosed = (closed == null) ? false : closed.orElseThrow();
             return new ShapeExprTripleExpr(label, extras, isClosed, tripleExpr, semActs);
         }
     }

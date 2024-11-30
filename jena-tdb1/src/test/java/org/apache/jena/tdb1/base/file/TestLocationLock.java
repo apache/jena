@@ -21,6 +21,7 @@ package org.apache.jena.tdb1.base.file;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.jena.tdb1.TDB1Exception;
 import org.apache.jena.tdb1.sys.ProcessUtils;
@@ -88,7 +89,7 @@ public class TestLocationLock {
         Assert.assertTrue(lock.canObtain());
 
         // Write a fake PID to the lock file
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock"), StandardCharsets.UTF_8))) {
             writer.write(Integer.toString(-1234)); // Fake PID that would never
                                                    // be valid
         }
@@ -109,7 +110,7 @@ public class TestLocationLock {
         Assert.assertTrue(lock.canObtain());
 
         // Write a fake PID to the lock file
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock"), StandardCharsets.UTF_8))) {
             // Fake PID that would never be valid
             writer.write(Integer.toString(-1234));
         }
@@ -133,7 +134,7 @@ public class TestLocationLock {
         Assert.assertTrue(lock.canObtain());
 
         // Write a fake PID to the lock file
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock"), StandardCharsets.UTF_8))) {
             // Fake PID that would never be valid
             writer.write(Integer.toString(-1234));
         }
@@ -156,9 +157,9 @@ public class TestLocationLock {
         Assert.assertFalse(lock.isOwned());
         Assert.assertTrue(lock.canObtain());
 
-        // Write a TDB2 format lock file
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock")))) {
-            // TDB2 format lock file, this writes a new line to the end of the lock file
+        // Write a TDB1 format lock file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dir.getPath("tdb.lock"), StandardCharsets.UTF_8))) {
+            // TDB1 format lock file, this writes a new line to the end of the lock file
             writer.write(Integer.toString(-1234));
             writer.write('\n');
         }

@@ -35,7 +35,7 @@ abstract public class AbsIRIImpl extends  IRI implements
         // 5.2.4 step 1.
         int inputBufferStart = 0;
         int inputBufferEnd = path.length();
-        StringBuffer output = new StringBuffer();
+        StringBuilder output = new StringBuilder();
         // 5.2.4 step 2.
         while (inputBufferStart < inputBufferEnd) {
             String in = path.substring(inputBufferStart);
@@ -88,7 +88,7 @@ abstract public class AbsIRIImpl extends  IRI implements
         return output.toString();
     }
 
-    private static void removeLastSeqment(StringBuffer output) {
+    private static void removeLastSeqment(StringBuilder output) {
         int ix = output.length();
         while (ix > 0) {
             ix--;
@@ -263,7 +263,7 @@ abstract public class AbsIRIImpl extends  IRI implements
     }
 
     private String createASCIIString() throws MalformedIDNException {
-        StringBuffer asciiString = new StringBuffer();
+        StringBuilder asciiString = new StringBuilder();
 
         if (has(SCHEME)) {
             toAscii(asciiString, getScheme(), errors(SCHEME));
@@ -295,7 +295,7 @@ abstract public class AbsIRIImpl extends  IRI implements
         return asciiString.toString();
     }
 
-    private void regNameToAscii(StringBuffer asciiString, String host) throws MalformedIDNException  {
+    private void regNameToAscii(StringBuilder asciiString, String host) throws MalformedIDNException  {
         if ((errors(HOST) & ToAsciiMask) == 0) {
             asciiString.append(host);
             return;
@@ -325,7 +325,7 @@ abstract public class AbsIRIImpl extends  IRI implements
         */
     }
 
-    private void toAscii(StringBuffer asciiString, String field, long errs) {
+    private void toAscii(StringBuilder asciiString, String field, long errs) {
         if ((errs & ToAsciiMask) == 0) {
             asciiString.append(field);
             return;
@@ -738,7 +738,7 @@ abstract public class AbsIRIImpl extends  IRI implements
 
     @Override
     public String getASCIIHost() throws MalformedURLException {
-        StringBuffer asciiString = new StringBuffer();
+        StringBuilder asciiString = new StringBuilder();
 
         String host = getRawHost();
         if (host==null)

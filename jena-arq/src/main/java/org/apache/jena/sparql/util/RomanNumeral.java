@@ -103,7 +103,7 @@ public class RomanNumeral
             throw new NumberFormatException("Roman numerals are 1-3999 (" + i + ")") ;
         if ( i > 3999 )
             throw new NumberFormatException("Roman numerals are 1-3999 (" + i + ")") ;
-        StringBuffer sbuff = new StringBuffer() ;
+        StringBuilder sbuff = new StringBuilder() ;
 
         i = i2r(sbuff, i, "M", 1000, "CM", 900, "D", 500, "CD", 400) ;
         i = i2r(sbuff, i, "C", 100, "XC", 90, "L", 50, "XL", 40) ;
@@ -116,7 +116,7 @@ public class RomanNumeral
         return sbuff.toString() ;
     }
 
-    private static int i2r(StringBuffer sbuff, int i,
+    private static int i2r(StringBuilder sbuff, int i,
                            String tens,  int iTens,
                            String nines, int iNines,
                            String fives, int iFives,

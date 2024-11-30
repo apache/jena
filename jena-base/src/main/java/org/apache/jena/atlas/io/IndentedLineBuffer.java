@@ -35,8 +35,6 @@ public class IndentedLineBuffer extends IndentedWriter
         sw = (StringWriter)super.out ;
     }
 
-    public StringBuffer getBuffer() { return sw.getBuffer(); }
-
     public String asString() { return sw.toString() ; }
     @Override
     public String toString() { return asString() ; }

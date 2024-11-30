@@ -22,6 +22,7 @@ import java.io.BufferedReader ;
 import java.io.FileReader ;
 import java.io.IOException ;
 import java.io.Reader ;
+import java.nio.charset.StandardCharsets;
 import java.util.* ;
 
 import junit.framework.TestCase ;
@@ -134,7 +135,7 @@ public class ReasonerTester {
             langType = "N3";
         }
         Model result = ModelFactory.createDefaultModel();
-        Reader reader = new BufferedReader(new FileReader(baseDir + file));
+        Reader reader = new BufferedReader(new FileReader(baseDir + file, StandardCharsets.UTF_8));
         result.read(reader, BASE_URI + file, langType);
         if (cache) {
             sourceCache.put(file, result);

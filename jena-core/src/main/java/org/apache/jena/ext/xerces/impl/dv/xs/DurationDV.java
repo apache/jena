@@ -351,7 +351,7 @@ public class DurationDV extends AbstractDateTimeDV {
 
     @Override
     protected String dateToString(DateTimeData date) {
-        StringBuffer message = new StringBuffer(30);
+        StringBuilder message = new StringBuilder(30);
         if ( date.year<0 || date.month<0 || date.day<0
                 || date.hour<0 || date.minute<0 || date.second<0) {
             message.append('-');

@@ -398,7 +398,6 @@ public class TestIter
         assertFalse(b);
     }
 
-
     @Test public void noneMatch1() {
         boolean b = Iter.noneMatch(data("1", "2", "3"), x->x.equals("A"));
         assertTrue(b);
@@ -412,7 +411,7 @@ public class TestIter
     @Test public void findFirst1() {
         Optional<String> r = Iter.findFirst(data("A", "2", "3"), x->x.equals("A"));
         assertTrue(r.isPresent());
-        assertEquals("A", r.get());
+        assertEquals("A", r.orElseThrow());
     }
 
     @Test public void findFirst2() {
@@ -423,7 +422,7 @@ public class TestIter
     @Test public void findAny1() {
         Optional<String> r = Iter.findAny(data("A", "2", "3"), x->x.equals("A"));
         assertTrue(r.isPresent());
-        assertEquals("A", r.get());
+        assertEquals("A", r.orElseThrow());
     }
 
     @Test public void reduce1() {
@@ -449,19 +448,19 @@ public class TestIter
     @Test public void min2() {
         Optional<String> x = Iter.min(data("2"), String::compareTo);
         assertTrue(x.isPresent());
-        assertEquals("2", x.get());
+        assertEquals("2", x.orElseThrow());
     }
 
     @Test public void min3() {
         Optional<String> x = Iter.min(data("1", "2", "3"), String::compareTo);
         assertTrue(x.isPresent());
-        assertEquals("1", x.get());
+        assertEquals("1", x.orElseThrow());
     }
 
     @Test public void min4() {
         Optional<String> x = Iter.min(data("3", "1", "2"), String::compareTo);
         assertTrue(x.isPresent());
-        assertEquals("1", x.get());
+        assertEquals("1", x.orElseThrow());
     }
 
     @Test public void max1() {
@@ -472,19 +471,19 @@ public class TestIter
     @Test public void max2() {
         Optional<String> x = Iter.max(data("2"), String::compareTo);
         assertTrue(x.isPresent());
-        assertEquals("2", x.get());
+        assertEquals("2", x.orElseThrow());
     }
 
     @Test public void max3() {
         Optional<String> x = Iter.max(data("1", "2", "3"), String::compareTo);
         assertTrue(x.isPresent());
-        assertEquals("3", x.get());
+        assertEquals("3", x.orElseThrow());
     }
 
     @Test public void max4() {
         Optional<String> x = Iter.max(data("3", "1", "2"), String::compareTo);
         assertTrue(x.isPresent());
-        assertEquals("3", x.get());
+        assertEquals("3", x.orElseThrow());
     }
 
     @Test public void collect3() {

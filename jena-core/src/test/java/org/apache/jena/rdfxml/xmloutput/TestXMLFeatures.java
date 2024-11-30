@@ -19,6 +19,7 @@
 package org.apache.jena.rdfxml.xmloutput;
 
 import java.io.* ;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection ;
 import java.util.HashSet ;
 import java.util.Iterator ;
@@ -503,7 +504,7 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		    RDFWriterI writer = m.getWriter(lang);
 		    writer.setProperty("relativeURIs", relativeParam);
 		    writer.write(m, bos, base);
-	        contents = bos.toString("UTF8");
+	        contents = bos.toString(StandardCharsets.UTF_8);
 		}
 
 		try {

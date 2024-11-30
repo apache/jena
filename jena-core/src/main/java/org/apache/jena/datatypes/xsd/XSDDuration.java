@@ -117,7 +117,7 @@ public class XSDDuration extends AbstractDateTime {
         if ( data[CY]==0 && data[M]==0 && data[D]==0 && data[h]==0 && data[m]==0 && data[s]==0 && data[ms]==0 )
             return "PT0S" ;
 
-        StringBuffer message = new StringBuffer(30);
+        StringBuilder message = new StringBuilder(30);
         int negate = 1;
         if ( data[CY]<0 || data[M]<0 || data[D]<0 || data[h]<0 || data[m]<0 || data[s]<0 || data[ms]<0 ) {
             message.append('-');

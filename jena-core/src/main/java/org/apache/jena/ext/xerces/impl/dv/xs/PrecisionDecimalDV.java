@@ -164,14 +164,14 @@ class PrecisionDecimalDV extends TypeValidator {
             if(fvalue.equals(oval.fvalue))
                 return EQUAL;
 
-            StringBuffer temp1 = new StringBuffer(fvalue);
-            StringBuffer temp2 = new StringBuffer(oval.fvalue);
+            StringBuilder temp1 = new StringBuilder(fvalue);
+            StringBuilder temp2 = new StringBuilder(oval.fvalue);
 
             truncateTrailingZeros(temp1, temp2);
             return temp1.toString().compareTo(temp2.toString());
         }
 
-        private void truncateTrailingZeros(StringBuffer fValue, StringBuffer otherFValue) {
+        private void truncateTrailingZeros(StringBuilder fValue, StringBuilder otherFValue) {
             for(int i = fValue.length() - 1;i >= 0; i--)
                 if(fValue.charAt(i) == '0')
                     fValue.deleteCharAt(i);
@@ -230,8 +230,8 @@ class PrecisionDecimalDV extends TypeValidator {
                     //otherwise the 2 combined values are the same
                     if(pvalue > val.pvalue) {
                         int expDiff = pvalue - val.pvalue;
-                        StringBuffer buffer = new StringBuffer(ivalue);
-                        StringBuffer fbuffer = new StringBuffer(fvalue);
+                        StringBuilder buffer = new StringBuilder(ivalue);
+                        StringBuilder fbuffer = new StringBuilder(fvalue);
                         for(int i = 0;i < expDiff; i++) {
                             if(i < fracDigits) {
                                 buffer.append(fvalue.charAt(i));
@@ -244,8 +244,8 @@ class PrecisionDecimalDV extends TypeValidator {
                     }
                     else {
                         int expDiff = val.pvalue - pvalue;
-                        StringBuffer buffer = new StringBuffer(val.ivalue);
-                        StringBuffer fbuffer = new StringBuffer(val.fvalue);
+                        StringBuilder buffer = new StringBuilder(val.ivalue);
+                        StringBuilder fbuffer = new StringBuilder(val.fvalue);
                         for(int i = 0;i < expDiff; i++) {
                             if(i < val.fracDigits) {
                                 buffer.append(val.fvalue.charAt(i));
@@ -286,8 +286,8 @@ class PrecisionDecimalDV extends TypeValidator {
             if(fValue.equals(otherFValue))
                 return EQUAL;
 
-            StringBuffer temp1=new StringBuffer(fValue);
-            StringBuffer temp2=new StringBuffer(otherFValue);
+            StringBuilder temp1=new StringBuilder(fValue);
+            StringBuilder temp2=new StringBuilder(otherFValue);
 
             truncateTrailingZeros(temp1, temp2);
             ret = temp1.toString().compareTo(temp2.toString());

@@ -93,7 +93,7 @@ public class TimeDV extends AbstractDateTimeDV {
      */
     @Override
     protected String dateToString(DateTimeData date) {
-        StringBuffer message = new StringBuffer(16);
+        StringBuilder message = new StringBuilder(16);
         append(message, date.hour, 2);
         message.append(':');
         append(message, date.minute, 2);

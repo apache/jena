@@ -399,7 +399,7 @@ public class ReaderTriX implements ReaderRIOT {
     }
 
     private String slurpRDFXMLLiteral(XMLStreamReader parser) throws XMLStreamException {
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
         int depth = 0;
 
         while(parser.hasNext()) {
