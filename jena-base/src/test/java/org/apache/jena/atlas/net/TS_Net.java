@@ -16,28 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas;
+package org.apache.jena.atlas.net;
+
 
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
-import org.apache.jena.atlas.io.TS_IO ;
-import org.apache.jena.atlas.iterator.TS_Iterator ;
-import org.apache.jena.atlas.lib.TS_Lib ;
-import org.apache.jena.atlas.lib.persistent.TS_Persistent;
-import org.apache.jena.atlas.lib.tuple.TS_Tuple ;
-import org.apache.jena.atlas.net.TS_Net;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    // Library
-      TS_Lib.class
-    , TS_Tuple.class
-    , TS_Iterator.class
-    , TS_IO.class
-    , TS_Persistent.class
-    , TS_Net.class
+    TestHost.class
 })
-
-public class TC_Atlas
-{}
+public class TS_Net {}
