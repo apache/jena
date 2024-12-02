@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,7 @@ import java.text.CharacterIterator;
 
 /**
  * {@literal @xerces.internal}
- * 
+ *
  * @version $Id: REUtil.java 828015 2009-10-21 13:56:13Z knoaman $
  */
 public final class REUtil {
@@ -338,7 +338,7 @@ public final class REUtil {
         StringBuilder buffer = null;
         for (int i = 0;  i < len;  i ++) {
             int ch = literal.charAt(i);
-            if (".*+?{[()|\\^$".indexOf(ch) >= 0) {
+            if (".*+?{}[]()|\\^$".indexOf(ch) >= 0) {
                 if (buffer == null) {
                     buffer = new StringBuilder(i+(len-i)*2);
                     if (i > 0)  buffer.append(literal.substring(0, i));

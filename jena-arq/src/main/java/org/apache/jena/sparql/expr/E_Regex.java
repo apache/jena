@@ -91,9 +91,9 @@ public class E_Regex extends ExprFunctionN
             throw new ExprException("REGEX: Pattern is not a string: " + vPattern);
         if ( vFlags != null && !vFlags.isString() )
             throw new ExprException("REGEX: Pattern flags are not a string: " + vFlags);
-        String s = (vFlags == null) ? null : vFlags.getString();
-        checkFlags(s);
-        return makeRegexEngine(vPattern.getString(), s);
+        String flags = (vFlags == null) ? null : vFlags.getString();
+        checkFlags(flags);
+        return makeRegexEngine(vPattern.getString(), flags);
     }
 
     private static void checkFlags(String flags) {

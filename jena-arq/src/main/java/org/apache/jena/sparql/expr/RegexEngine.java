@@ -94,26 +94,19 @@ public abstract class RegexEngine {
     public static int makeMask(String modifiers) {
         if ( modifiers == null )
             return 0;
-
         int newMask = 0;
         for ( int i = 0 ; i < modifiers.length() ; i++ ) {
             switch (modifiers.charAt(i)) {
-                case 'i' :
+                case 'i' -> {
                     newMask |= Pattern.UNICODE_CASE;
                     newMask |= Pattern.CASE_INSENSITIVE;
-                    break;
-                case 'm' :
-                    newMask |= Pattern.MULTILINE;
-                    break;
-                case 's' :
-                    newMask |= Pattern.DOTALL;
-                    break;
-                // Not supported by Java regex
-                // case 'x': newMask |= Pattern.; break;
-                case 'q' :;
-                    break;
-
-                default :
+                }
+                case 'm' -> newMask |= Pattern.MULTILINE;
+                case 's' -> newMask |= Pattern.DOTALL;
+                case 'x' -> newMask |= Pattern.COMMENTS;
+                // Handled separately.
+                case 'q' -> {}
+                default ->
                     throw new ExprEvalException("Unsupported flag in regex modifiers: " + modifiers.charAt(i));
             }
         }
@@ -132,7 +125,6 @@ public abstract class RegexEngine {
             Matcher m = regexPattern.matcher(s);
             return m.find();
         }
-
     }
 
     public static class RegexXerces extends RegexEngine {
