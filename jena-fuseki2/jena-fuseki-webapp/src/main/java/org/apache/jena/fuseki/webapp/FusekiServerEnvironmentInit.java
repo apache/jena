@@ -45,7 +45,7 @@ public class FusekiServerEnvironmentInit implements ServletContextListener {
                 // https://logging.apache.org/log4j/2.x/manual/webapp.html
                 FusekiLogging.markInitialized(true);
             } else {
-                FusekiLogging.setLogging(FusekiEnv.FUSEKI_BASE);
+                FusekiLogging.setLogging(FusekiEnv.FUSEKI_BASE, false);
             }
         }
         JenaSystem.init();

@@ -43,7 +43,7 @@ import org.apache.jena.fuseki.Fuseki;
  */
 public class FusekiLogging
 {
-    // This class must not have static constants, or otherwise not "Fuseki.*"
+    // This class must not have static Fuseki constants, or otherwise not "Fuseki.*"
     // or any class else where that might kick off logging.  Otherwise, the
     // setLogging is pointless (it's already set).
 
@@ -67,13 +67,13 @@ public class FusekiLogging
         "log4j2-test.xml", "log4j2.xml"
     };
 
+    // These allow logLogging to be set from the java invocation.
     public static String envLogLoggingProperty = "FUSEKI_LOGLOGGING";
     public static String logLoggingProperty = "fuseki.logLogging";
     private static String logLoggingPropertyAlt = "fuseki.loglogging";
 
-    // This is also set every call of seLogging.
-    // That picks up any in-code settings of the logging properties.
-    private static boolean logLogging = getLogLogging();
+    // This is set in the call of setLogging.
+    private static boolean logLogging = false;
 
     private static final boolean getLogLogging() {
         String x = System.getProperty(logLoggingPropertyAlt);
@@ -102,7 +102,12 @@ public class FusekiLogging
 
     /** Set up logging. */
     public static synchronized void setLogging() {
-        setLogging(null);
+        setLogging(false);
+    }
+
+    /** Set up logging. */
+    public static synchronized void setLogging(boolean logLoggingSetup) {
+        setLogging(null, logLoggingSetup);
     }
 
     public static final String log4j2_configurationFile = LogCtl.log4j2ConfigFileProperty;
@@ -116,15 +121,20 @@ public class FusekiLogging
 
     /**
      * Set up logging. Allow an extra location. This may be null.
+     * @param extraDir
+     * @param logLoggingSetup If true, tracing logging setup.
      */
-    public static synchronized void setLogging(Path extraDir) {
-
+    public static synchronized void setLogging(Path extraDir, boolean logLoggingSetup) {
         // Cope with repeated calls so code can call this to ensure
         if ( loggingInitialized )
             return;
         loggingInitialized = true;
 
-        logLogging = getLogLogging();
+        if ( logLoggingSetup )
+            logLogging = true;
+        else
+            logLogging = getLogLogging();
+
         logLogging("Set logging");
 
         // Is there a log4j setup provided?
@@ -159,17 +169,7 @@ public class FusekiLogging
             // Instead, we manually load a resource.
             logLogging("Try classpath %s", resourceName);
             URL url = Thread.currentThread().getContextClassLoader().getResource(resourceName);
-//            if ( url != null ) {
-//                // Problem - test classes can be on the classpath (development mainly).
-//                if ( url.toString().contains("-tests.jar") || url.toString().contains("test-classes") )
-//                    url = null;
-//            }
-
             if ( url != null ) {
-                try ( InputStream inputStream = url.openStream() ) {
-                    String x = IO.readWholeFileAsUTF8(inputStream);
-                } catch (IOException ex) { IO.exception(ex); }
-
                 try ( InputStream inputStream = url.openStream() ) {
                     loadConfiguration(inputStream, resourceName);
                 } catch (IOException ex) { IO.exception(ex); }
