@@ -338,7 +338,7 @@ public final class REUtil {
         StringBuilder buffer = null;
         for (int i = 0;  i < len;  i ++) {
             int ch = literal.charAt(i);
-            if (".*+?{[()|\\^$".indexOf(ch) >= 0) {
+            if (".*+?{}[]()|\\^$".indexOf(ch) >= 0) {
                 if (buffer == null) {
                     buffer = new StringBuilder(i+(len-i)*2);
                     if (i > 0)  buffer.append(literal.substring(0, i));
