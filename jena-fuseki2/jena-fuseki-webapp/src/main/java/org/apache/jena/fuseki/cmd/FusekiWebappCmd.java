@@ -58,7 +58,7 @@ public class FusekiWebappCmd {
     static {
         FusekiEnv.mode = FusekiEnv.INIT.STANDALONE;
         FusekiEnv.setEnvironment();
-        FusekiLogging.setLogging(FusekiEnv.FUSEKI_BASE);
+        FusekiLogging.setLogging(FusekiEnv.FUSEKI_BASE, false);
     }
 
     static public void main(String... argv) {
