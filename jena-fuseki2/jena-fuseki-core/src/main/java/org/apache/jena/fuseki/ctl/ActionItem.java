@@ -21,7 +21,6 @@ package org.apache.jena.fuseki.ctl;
 import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
-import org.apache.jena.web.HttpSC;
 
 /** Action on items in a container, but not the container itself */
 public abstract class ActionItem extends ActionContainerItem
@@ -31,14 +30,14 @@ public abstract class ActionItem extends ActionContainerItem
     @Override
     final
     protected JsonValue execGetContainer(HttpAction action) {
-        ServletOps.error(HttpSC.METHOD_NOT_ALLOWED_405);
+        ServletOps.errorMethodNotAllowed(action.getMethod());
         return null;
     }
 
     @Override
     final
     protected JsonValue execPostContainer(HttpAction action) {
-        ServletOps.error(HttpSC.METHOD_NOT_ALLOWED_405);
+        ServletOps.errorMethodNotAllowed(action.getMethod());
         return null;
     }
 }
