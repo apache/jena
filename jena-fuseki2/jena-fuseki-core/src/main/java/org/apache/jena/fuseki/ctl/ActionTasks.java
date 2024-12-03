@@ -28,7 +28,6 @@ import org.apache.jena.fuseki.async.AsyncTask;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
-import org.apache.jena.web.HttpSC;
 
 public class ActionTasks extends ActionCtl
 {
@@ -63,7 +62,7 @@ public class ActionTasks extends ActionCtl
         else if ( method.equals(METHOD_POST) )
             execPost(action, name);
         else
-            ServletOps.error(HttpSC.METHOD_NOT_ALLOWED_405);
+            ServletOps.errorMethodNotAllowed(action.getMethod());
     }
 
     private void execGet(HttpAction action, String name) {

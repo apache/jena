@@ -26,7 +26,6 @@ import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
-import org.apache.jena.web.HttpSC;
 
 /** Base for actions that are container and also have actions on items */
 public abstract class ActionContainerItem extends ActionCtl {
@@ -44,9 +43,8 @@ public abstract class ActionContainerItem extends ActionCtl {
         else if ( method.equals(METHOD_DELETE) )
             performDelete(action);
         else
-            ServletOps.error(HttpSC.METHOD_NOT_ALLOWED_405);
+            ServletOps.errorMethodNotAllowed(action.getMethod());
     }
-
 
     @Override
     public void execOptions(HttpAction action) {
