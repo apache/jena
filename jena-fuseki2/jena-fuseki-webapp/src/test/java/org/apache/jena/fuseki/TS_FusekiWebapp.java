@@ -26,15 +26,14 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
       TestWebappSPARQLProtocol.class
     , TestWebappAuthQuery_JDK.class
     , TestWebappAuthUpdate_JDK.class
     , TestWebappFileUpload.class
-    , TestAdmin.class
-    , TestAdminAPI.class
+    , TestWebappAdmin.class
+    , TestWebappAdminAPI.class
     , TestWebappServerReadOnly.class
     , TestWebappMetrics.class
 })

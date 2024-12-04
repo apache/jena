@@ -40,7 +40,6 @@ public class ActionStats extends ActionContainerItem
     @Override
     public void validate(HttpAction action) {}
 
-    // This does not consult the system database for dormant etc.
     protected JsonValue execCommonContainer(HttpAction action) {
         if ( action.verbose )
             action.log.info(format("[%d] GET stats all", action.id));
