@@ -56,7 +56,7 @@ import org.awaitility.Awaitility;
 import org.junit.*;
 
 /** Tests of the admin functionality */
-public class TestAdmin extends AbstractFusekiWebappTest {
+public class TestWebappAdmin extends AbstractFusekiWebappTest {
 
     // Name of the dataset in the assembler file.
     static String dsTest      = "test-ds1";

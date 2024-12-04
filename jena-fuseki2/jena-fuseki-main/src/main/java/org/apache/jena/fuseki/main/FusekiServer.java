@@ -61,6 +61,7 @@ import org.apache.jena.rdf.model.*;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.ContextAccumulator;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.G;
 import org.apache.jena.system.RDFDataException;
@@ -142,10 +143,25 @@ public class FusekiServer {
      * still be created for the server to be able to provide the action. An endpoint
      * dispatches to an operation, and an operation maps to an implementation. This is a
      * specialised operation - normal use is the operation {@link #create()}.
+     * @deprecated Use {@link #create(OperationRegistry, Context)}.
      */
+    @Deprecated(forRemoval = true)
     public static Builder create(OperationRegistry serviceDispatchRegistry) {
-        return new Builder(serviceDispatchRegistry);
+        return create(serviceDispatchRegistry, Fuseki.getContext());
     }
+
+    /**
+     * Return a builder, with a custom set of operation-action mappings. An endpoint must
+     * still be created for the server to be able to provide the action. An endpoint
+     * dispatches to an operation, and an operation maps to an implementation. This is a
+     * specialised operation - normal use is the operation {@link #create()}.
+     */
+    public static Builder create(OperationRegistry serviceDispatchRegistry, Context context) {
+        if ( context == null )
+            context = Fuseki.getContext();
+        return new Builder(serviceDispatchRegistry, context);
+    }
+
 
     /**
      * Default port when running in Java via {@code FusekiServer....build()}.
@@ -446,7 +462,7 @@ public class FusekiServer {
         private SecurityHandler          securityHandler    = null;
         private Map<String, Object>      servletAttr        = new HashMap<>();
 
-        //private Context                  context            = null;
+        private final ContextAccumulator context;
 
         // The default CORS settings.
         private static final Map<String, String> corsInitParamsDft = new LinkedHashMap<>();
@@ -467,13 +483,13 @@ public class FusekiServer {
         // Builder with standard operation-action mapping.
         private Builder() {
             this.operationRegistry = OperationRegistry.createStd();
+            this.context = ContextAccumulator.newBuilder(()->Fuseki.getContext().copy());
         }
 
         // Builder with provided operation-action mapping.
-        private Builder(OperationRegistry operationRegistry) {
-            // Isolate.
-            this.operationRegistry = OperationRegistry.createEmpty();
-            OperationRegistry.copyConfig(operationRegistry, this.operationRegistry);
+        private Builder(OperationRegistry operationRegistry, Context context) {
+            this.operationRegistry = new OperationRegistry(operationRegistry);
+            this.context = ContextAccumulator.newBuilder(()->context.copy());
         }
 
         /**

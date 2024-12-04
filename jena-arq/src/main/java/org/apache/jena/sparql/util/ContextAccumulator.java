@@ -43,7 +43,7 @@ public class ContextAccumulator {
     private Context      baseContext        = null;
 
     // Context when built
-    private Context      builtContext        = null;
+    private Context      builtContext       = null;
 
     public static ContextAccumulator newBuilder() {
         return new ContextAccumulator();
@@ -77,7 +77,7 @@ public class ContextAccumulator {
 
     /**
      * If no explicit base, this is the default. It will be copied to isolate it at the build point.
-     * Default implement is to return ARQ.getContext().
+     * Default implementation is to return ARQ.getContext().
      */
     protected Context baseContext() { return ARQ.getContext(); }
 
@@ -108,7 +108,7 @@ public class ContextAccumulator {
      */
     public Context context() {
         // Freeze and return.
-        return getOrBuiltContext();
+        return getOrBuildContext();
     }
 
     /**
@@ -129,7 +129,7 @@ public class ContextAccumulator {
     }
 
     // Build once.
-    private Context getOrBuiltContext() {
+    private Context getOrBuildContext() {
         if ( builtContext == null )
             builtContext = buildProcess();
         return builtContext;

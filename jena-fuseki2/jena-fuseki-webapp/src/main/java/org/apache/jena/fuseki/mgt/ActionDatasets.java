@@ -141,10 +141,6 @@ public class ActionDatasets extends ActionContainerItem {
                 else
                     assemblerFromBody(action, dest);
 
-                Model model = ModelFactory.createDefaultModel();
-                model.add(modelData);
-                AssemblerUtils.addRegistered(model);
-
                 // ----
                 // Keep a persistent copy immediately.  This is not used for
                 // anything other than being "for the record".
@@ -152,6 +148,12 @@ public class ActionDatasets extends ActionContainerItem {
                 try ( OutputStream outCopy = IO.openOutputFile(systemFileCopy) ) {
                     RDFDataMgr.write(outCopy, modelData, Lang.TURTLE);
                 }
+
+                Model model = ModelFactory.createDefaultModel();
+                model.add(modelData);
+                // Add the dataset and graph wiring.
+                AssemblerUtils.addRegistered(model);
+
                 // ----
                 // Process configuration.
 
