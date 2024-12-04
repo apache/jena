@@ -38,7 +38,7 @@ import org.junit.Test;
 /** More tests of the admin functionality
  * See also TestAdmin.
  */
-public class TestAdminAPI extends AbstractFusekiWebappTest {
+public class TestWebappAdminAPI extends AbstractFusekiWebappTest {
 
     @Test public void add_delete_api_1() throws Exception {
         if ( org.apache.jena.tdb1.sys.SystemTDB.isWindows )

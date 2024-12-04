@@ -40,6 +40,7 @@ import org.junit.Test;
  * Tests for multi-part file upload.
  */
 public class TestWebappFileUpload extends AbstractFusekiWebappTest {
+
     @Test
     public void upload_gsp_01() {
         FileSender x = new FileSender(ServerCtl.serviceGSP() + "?default");

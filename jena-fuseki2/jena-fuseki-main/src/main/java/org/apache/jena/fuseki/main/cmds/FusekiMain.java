@@ -240,9 +240,11 @@ public class FusekiMain extends CmdARQ {
     }
 
     private void argumentsSetup() {
-        getUsage().startCategory("Fuseki Main");
+        getUsage().startCategory("Fuseki");
 
-        // Control the order!
+        add(argConfig, "--config=FILE",
+            "Use a configuration file to determine the services");
+        // ---- Describe the dataset on the command line.
         add(argMem, "--mem",
             "Create an in-memory, non-persistent dataset for the server");
         add(argFile, "--file=FILE",
@@ -257,25 +259,33 @@ public class FusekiMain extends CmdARQ {
             "Create an in-memory, non-persistent dataset using TDB (testing only)");
         add(argRDFS, "--rdfs=FILE",
             "Apply RDFS on top of the dataset");
-        add(argConfig, "--config=FILE",
-            "Use a configuration file to determine the services");
+        add(argUpdate, "--update",
+                "Allow updates (via SPARQL Update and SPARQL HTTP Update)");
         addModule(modDataset);
 
+        // ---- Server setup
         add(argEmpty); // Hidden
         add(argPort, "--port",
             "Listen on this port number");
         add(argLocalhost, "--localhost",
             "Listen only on the localhost interface");
-        add(argTimeout, "--timeout=",
-            "Global timeout applied to queries (value in ms) -- format is X[,Y] ");
-        add(argUpdate, "--update",
-            "Allow updates (via SPARQL Update and SPARQL HTTP Update)");
         add(argGZip, "--gzip=on|off",
-            "Enable GZip compression (HTTP Accept-Encoding) if request header set");
+                "Enable GZip compression (HTTP Accept-Encoding) if request header set");
         add(argBase, "--base=DIR",
             "Directory for static content");
         add(argContextPath, "--contextPath=PATH",
             "Context path for the server");
+        add(argHttps, "--https=CONF",
+                "https certificate access details. JSON file { \"cert\":FILE , \"passwd\"; SECRET } ");
+        add(argHttpsPort, "--httpsPort=NUM",
+                "https port (default port is 3043)");
+        add(argPasswdFile, "--passwd=FILE",
+                "Password file");
+
+        add(argTimeout, "--timeout=",
+                "Global timeout applied to queries (value in ms) -- format is X[,Y] ");
+
+        // ---- Servlets
         add(argSparqler, "--sparqler=DIR",
             "Run with SPARQLer services Directory for static content");
         add(argValidators, "--validators",
@@ -285,13 +295,6 @@ public class FusekiMain extends CmdARQ {
 
         add(argAuth, "--auth=[basic|digest]",
             "Run the server using basic or digest authentication");
-        add(argHttps, "--https=CONF",
-            "https certificate access details. JSON file { \"cert\":FILE , \"passwd\"; SECRET } ");
-        add(argHttpsPort, "--httpsPort=NUM",
-            "https port (default port is 3043)");
-
-        add(argPasswdFile, "--passwd=FILE",
-            "Password file");
         add(argJettyConfig, "--jetty=FILE",
             "jetty.xml server configuration");
         add(argCORS, "--cors=FILE", "Configure CORS settings from file");
