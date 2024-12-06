@@ -23,14 +23,37 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.query.QueryException;
+import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
+import org.apache.jena.sparql.util.Symbol;
 
 /** Query iterator that checks everything was closed correctly */
 public class QueryIteratorCheck extends QueryIteratorWrapper
 {
     private ExecutionContext execCxt ;
+
+    /**
+     * Whether detection of open iterator should raise an {@link OpenIteratorException}.
+     * This symbol should only be used for internal testing.
+     */
+    public static Symbol failOnOpenIterator = SystemARQ.allocSymbol("failOnOpenIterator");
+
+    /**
+     * Exception to indicate open iterators. Only used for testing.
+     *
+     * @implNote
+     *   This class does not extend {@link QueryException} because those will be caught and handled by {@link QueryIteratorBase#close()}.
+     */
+    public static class OpenIteratorException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+        public OpenIteratorException() { super() ; }
+        public OpenIteratorException(Throwable cause) { super(cause) ; }
+        public OpenIteratorException(String msg) { super(msg) ; }
+        public OpenIteratorException(String msg, Throwable cause) { super(msg, cause) ; }
+    }
 
     private QueryIteratorCheck(QueryIterator qIter, ExecutionContext execCxt) {
         super(qIter);
@@ -72,10 +95,18 @@ public class QueryIteratorCheck extends QueryIteratorWrapper
         }
 
         Iterator<QueryIterator> iterOpen = execContext.listOpenIterators();
-        while (iterOpen.hasNext()) {
-            QueryIterator qIterOpen = iterOpen.next();
-            warn(qIterOpen, "Open iterator: ");
-            iterOpen.remove();
+        if (iterOpen.hasNext()) {
+            int i = 0;
+            while (iterOpen.hasNext()) {
+                QueryIterator qIterOpen = iterOpen.next();
+                warn(qIterOpen, "Open iterator [execCxt@" + System.identityHashCode(execContext) + "]: ");
+                iterOpen.remove();
+                ++i;
+            }
+            boolean enableException = execContext.getContext().get(failOnOpenIterator, false);
+            if (enableException) {
+                throw new OpenIteratorException("Unexpectedly encountered " + i + " open iterators.");
+            }
         }
     }
 
