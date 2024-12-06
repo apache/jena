@@ -20,6 +20,7 @@ package org.apache.jena.sparql.engine.main;
 
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.core.Substitute ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
@@ -49,6 +50,11 @@ public class StageGeneratorGeneric implements StageGenerator {
         return execute(pattern, reorder, input, execCxt) ;
     }
 
+    /**
+     * Attempts to construct an iterator that executes the input against the pattern.
+     * If the construction fails, such as due to {@link QueryCancelledException}, then the exception is passed on
+     * and the input iterator will be closed.
+     */
     protected QueryIterator execute(BasicPattern pattern, ReorderTransformation reorder,
                                     QueryIterator input, ExecutionContext execCxt) {
         Explain.explain(pattern, execCxt.getContext()) ;
