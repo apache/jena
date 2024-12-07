@@ -497,7 +497,7 @@ public class RowSetReaderXML implements RowSetReader {
 
               if ( s == null || p == null || o == null )
                   staxError("Bad <triple> term");
-              Node node = NodeFactory.createTripleNode(s, p, o);
+              Node node = NodeFactory.createTripleTerm(s, p, o);
               return node;
           }
             return null;

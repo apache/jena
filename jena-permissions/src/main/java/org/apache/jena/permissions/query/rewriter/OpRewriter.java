@@ -235,6 +235,24 @@ public class OpRewriter implements OpVisitor {
         addOp(OpLateral.create(rewriteOp2(opLateral, rewriter), rewriter.getResult()));
     }
 
+    @Override
+    public void visit(OpSemiJoin opSemiJoin) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Starting visiting OpSemiJoin");
+        }
+        final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
+        addOp(OpLateral.create(rewriteOp2(opSemiJoin, rewriter), rewriter.getResult()));
+    }
+
+    @Override
+    public void visit(OpAntiJoin opAntiJoin) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Starting visiting OpSemiJoin");
+        }
+        final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
+        addOp(OpLateral.create(rewriteOp2(opAntiJoin, rewriter), rewriter.getResult()));
+    }
+
     /**
      * Rewrite left and right
      */
@@ -256,18 +274,6 @@ public class OpRewriter implements OpVisitor {
             LOG.debug("Starting visiting OpDatasetName");
         }
         addOp(dsNames);
-    }
-
-    /**
-     * Rewrite left and right
-     */
-    @Override
-    public void visit(final OpDiff opDiff) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Starting visiting OpDiff");
-        }
-        final OpRewriter rewriter = new OpRewriter(securityEvaluator, graphIRI);
-        addOp(OpDiff.create(rewriteOp2(opDiff, rewriter), rewriter.getResult()));
     }
 
     /**

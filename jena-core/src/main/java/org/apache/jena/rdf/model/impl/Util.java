@@ -156,7 +156,7 @@ public class Util extends Object {
      * A Node is a well-formed directional language string if it has a language tag
      * and it has an initial text direction.
      */
-    public static boolean isDirLangString(Node n) {
+    public static boolean isLangDirString(Node n) {
         Objects.requireNonNull(n);
         if ( ! n.isLiteral() )
             return false;
@@ -210,7 +210,7 @@ public class Util extends Object {
     }
 
     /** Return true if the literal is well-formed, has a language tag and a text direction. */
-    public static boolean isDirLangString(Literal lit) {
+    public static boolean isLangDirString(Literal lit) {
         Objects.requireNonNull(lit);
         String lang = lit.getLanguage();
         if ( lang == null )

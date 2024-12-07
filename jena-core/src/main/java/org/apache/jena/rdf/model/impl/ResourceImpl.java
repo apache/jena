@@ -111,7 +111,7 @@ public class ResourceImpl extends EnhNode implements Resource {
     }
 
     public ResourceImpl(Statement statement, ModelCom m) {
-        this( NodeFactory.createTripleNode(statement.asTriple()), m);
+        this( NodeFactory.createTripleTerm(statement.asTriple()), m);
     }
 
     @Override

@@ -201,7 +201,7 @@ public class ThriftConvert
             return;
         }
 
-        if ( node.isNodeTriple() ) {
+        if ( node.isTripleTerm() ) {
             Triple triple = node.getTriple();
 
             RDF_Term sTerm = new RDF_Term();
@@ -306,7 +306,7 @@ public class ThriftConvert
         if ( term.isSetTripleTerm() ) {
             RDF_Triple rt = term.getTripleTerm();
             Triple t = convert(rt, pmap);
-            return NodeFactory.createTripleNode(t);
+            return NodeFactory.createTripleTerm(t);
         }
 
         if ( term.isSetVariable() )
