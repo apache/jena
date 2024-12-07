@@ -81,6 +81,25 @@ public class OpAsQuery {
         return converter.convert() ;
     }
 
+    public static Element asElement(Op op) {
+        Query query = asQuery(op);
+        Element elt = isPrimitiveQuery(query)
+            ? query.getQueryPattern()
+            : new ElementSubQuery(query);
+        return elt;
+    }
+
+    /** Whether the query is a plain <code>SELECT * { pattern }</code>.  */
+    private static boolean isPrimitiveQuery(Query query) {
+        boolean isNonPrimitive =
+            !query.isQueryResultStar() || query.isDistinct() || query.isReduced() ||
+            query.hasLimit() || query.hasOffset() ||
+            query.hasAggregators() || query.hasGroupBy() || query.hasHaving() ||
+            query.hasOrderBy() ||
+            query.hasValues();
+        return !isNonPrimitive;
+    }
+
     static class /* struct */ QueryLevelDetails {
         // The stack of processing in a query is:
         // slice-distinct/reduce-project-order-filter[having]-extend*[AS and aggregate naming]-group-pattern

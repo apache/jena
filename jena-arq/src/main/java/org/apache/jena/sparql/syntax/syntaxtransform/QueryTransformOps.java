@@ -69,7 +69,7 @@ public class QueryTransformOps {
         Query q2 = QueryTransformOps.shallowCopy(query);
         // Mutate the q2 structures which are already allocated and no other code can access yet.
 
-        mutateByQueryType(q2, transform, exprTransform);
+        mutateByQueryType(q2, exprTransform);
         mutateVarExprList(q2.getGroupBy(), exprTransform);
         mutateExprList(q2.getHavingExprs(), exprTransform);
         if (q2.getOrderBy() != null)
@@ -116,7 +116,7 @@ public class QueryTransformOps {
     }
 
     // Do the result form part of the cloned query.
-    private static void mutateByQueryType(Query q2, ElementTransform transform, ExprTransform exprTransform) {
+    private static void mutateByQueryType(Query q2, ExprTransform exprTransform) {
         switch(q2.queryType()) {
             case ASK : break;
             case CONSTRUCT :
@@ -125,7 +125,7 @@ public class QueryTransformOps {
                 Template template = q2.getConstructTemplate();
                 QuadAcc acc = new QuadAcc();
                 List<Quad> quads = template.getQuads();
-                template.getQuads().forEach(q->{
+                quads.forEach(q->{
                     Node g = transform(q.getGraph(), exprTransform);
                     Node s = transform(q.getSubject(), exprTransform);
                     Node p = transform(q.getPredicate(), exprTransform);
@@ -145,7 +145,8 @@ public class QueryTransformOps {
             case CONSTRUCT_JSON :
                 throw new UnsupportedOperationException("Transform of JSON template queries");
             case UNKNOWN :
-                throw new JenaException("Unknown qu ery type");
+            default :
+                throw new JenaException("Unknown query type");
         }
     }
 
