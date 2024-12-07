@@ -330,6 +330,11 @@ public class TestOpAsQuery {
     }
 
     @Test
+    public void testSubQuery4() {
+        test_roundTripQuery("SELECT ?z { SELECT ?x {  } }");
+    }
+
+    @Test
     public void testAggregatesInSubQuery1() {
         //Simplified form of a test case provided via the mailing list (JENA-445)
         String query = "SELECT ?key ?agg WHERE { SELECT ?key (COUNT(*) AS ?agg) { ?key ?p ?o } GROUP BY ?key }";
@@ -482,6 +487,83 @@ public class TestOpAsQuery {
                                                            "SELECT * { GRAPH ?g { { ?x ?y ?z FILTER(EXISTS { ?s ?p ?o }) } ?x ?y ?z } }",
                                                               syntaxARQ); }
 
+    @Test
+    public void testExists07a() {
+        String query = """
+            SELECT ?x {
+              ?x a ?y .
+              FILTER EXISTS { ?y a ?z }
+            }
+            """;
+        test_roundTripQuery(query);
+    }
+
+    @Test
+    public void testExists07b() {
+        String input = """
+            SELECT ?x {
+              ?x a ?y
+              FILTER EXISTS { SELECT * { ?y a ?z } }
+            }
+            """;
+        // Going through the algebra is expected to lose the SELECT * { } part within EXISTS.
+        String expected = """
+            SELECT ?x {
+              ?x a ?y
+              FILTER EXISTS { ?y a ?z }
+            }
+            """;
+        test_roundTripQueryViaAlgebra(input, expected);
+    }
+
+    @Test
+    public void testExists08a() {
+        String input = """
+            SELECT * {
+              ?x a ?y
+              FILTER EXISTS { SELECT * { ?y a ?z } LIMIT 1 }
+            }
+            """;
+        test_roundTripQuery(input);
+        test_roundTripQueryViaAlgebra(input, input);
+    }
+
+    // Tests exists with a subquery within a subquery.
+    @Test
+    public void testExists09a() {
+        String input = """
+            SELECT ?x {
+              SELECT ?x {
+                ?x a ?y
+                FILTER EXISTS { SELECT * { ?y a ?z } }
+              }
+            }
+            """;
+        // Going through the algebra is expected to lose the SELECT * { } part within EXISTS.
+        String expected = """
+            SELECT ?x {
+              SELECT ?x {
+                ?x a ?y
+                FILTER EXISTS { ?y a ?z }
+              }
+            }
+            """;
+        test_roundTripQueryViaAlgebra(input, expected);
+    }
+
+    @Test
+    public void testExists09b() {
+        String queryStr = """
+            SELECT ?x {
+              SELECT ?x {
+                ?x a ?y
+                FILTER EXISTS { SELECT * { ?y a ?z } LIMIT 1 }
+              }
+            }
+            """;
+        test_roundTripQuery(queryStr, Syntax.syntaxARQ);
+    }
+
     @Test public void testNotExists01() { test_roundTripQuery("SELECT * { ?x ?y ?z NOT EXISTS { ?s ?p ?o } }",
                                                            "SELECT * { ?x ?y ?z FILTER NOT EXISTS { ?s ?p ?o } }",
                                                            syntaxARQ); }
@@ -502,8 +584,6 @@ public class TestOpAsQuery {
     @Test public void testNotExists06() { test_roundTripQuery("SELECT * { GRAPH ?g { ?x ?y ?z NOT EXISTS { ?s ?p ?o } ?x ?y ?z } }",
                                                            "SELECT * { GRAPH ?g { { ?x ?y ?z FILTER(NOT EXISTS { ?s ?p ?o }) } ?x ?y ?z } }",
                                                               syntaxARQ); }
-
-
 
     @Test
     public void testTable1() {
@@ -601,6 +681,12 @@ public class TestOpAsQuery {
     // (e.g. BINDs in pattern have extra scoping {} which is safe but unnecessary.
     private static void test_roundTripQuery(String query, String outcome) {
         test_roundTripQuery(query, outcome, Syntax.syntaxSPARQL_11);
+    }
+
+    /** query->algebra->OpAsQuery->assert equality with outcome */
+    private static void test_roundTripQueryViaAlgebra(String query, String outcome) {
+        String opStr = Algebra.compile(QueryFactory.create(query)).toString();
+        test_AlgebraToQuery(opStr, outcome);
     }
 
     private static void test_roundTripQuery(String query, String outcome, Syntax syntax) {
