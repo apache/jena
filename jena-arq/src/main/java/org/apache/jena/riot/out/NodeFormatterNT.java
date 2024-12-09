@@ -75,6 +75,15 @@ public class NodeFormatterNT extends NodeFormatterBase
     }
 
     @Override
+    public void formatLitLangDir(AWriter w, String lex, String langTag, String direction) {
+        writeEscaped(w, lex);
+        w.print('@');
+        w.print(langTag);
+        w.print("--");
+        w.print(direction);
+    }
+
+    @Override
     public void formatLitDT(AWriter w, String lex, String datatypeURI) {
         writeEscaped(w, lex);
         w.print("^^");
