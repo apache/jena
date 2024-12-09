@@ -219,7 +219,7 @@ public class ExprLib
     public static Expr nodeToExpr(Node n) {
         if ( n.isVariable() )
             return new ExprVar(n);
-        if ( n.isNodeTriple() )
+        if ( n.isTripleTerm() )
             return new ExprTripleTerm(n);
         return NodeValue.makeNode(n);
     }

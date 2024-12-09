@@ -20,8 +20,8 @@ package org.apache.jena.rdfpatch.text;
 
 import static org.apache.jena.rdfpatch.changes.PatchCodes.*;
 import static org.apache.jena.riot.tokens.TokenType.DOT;
-import static org.apache.jena.riot.tokens.TokenType.GT2;
-import static org.apache.jena.riot.tokens.TokenType.LT2;
+import static org.apache.jena.riot.tokens.TokenType.L_TRIPLE;
+import static org.apache.jena.riot.tokens.TokenType.R_TRIPLE;
 
 import java.io.InputStream;
 import java.util.LinkedHashMap;
@@ -260,14 +260,14 @@ public class RDFPatchReaderText implements PatchProcessor {
 
     private static Node nextNode(Tokenizer tokenizer) {
         Token tok = nextToken(tokenizer);
-        if ( tok.hasType(LT2) ) {
+        if ( tok.hasType(L_TRIPLE) ) {
             Node s = nextNode(tokenizer);
             Node p = nextNode(tokenizer);
             Node o = nextNode(tokenizer);
             Token tok2 = nextToken(tokenizer);
-            if ( ! tok2.hasType(GT2) )
-                exception(tok2, "Expected token type: "+GT2+": got "+tok2);
-            return NodeFactory.createTripleNode(s, p, o);
+            if ( ! tok2.hasType(R_TRIPLE) )
+                exception(tok2, "Expected token type: "+R_TRIPLE+": got "+tok2);
+            return NodeFactory.createTripleTerm(s, p, o);
         }
         return tokenToNode(tok);
     }

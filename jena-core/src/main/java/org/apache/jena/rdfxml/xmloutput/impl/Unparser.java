@@ -397,6 +397,9 @@ class Unparser {
         if (!(val instanceof Resource))
             return false;
         Resource r = (Resource) val;
+        if ( r.isStmtResource() )
+            throw new JenaException("Triple terms not supported in RDF/XML");
+
         if (!(allPropsAreAttr(r) || doing.contains(r)))
             return false;
         // '<' propName '/>' is 6.12.1 rather than 6.12.4
@@ -1279,9 +1282,7 @@ class Unparser {
 
     private boolean hasProperties(Resource r) {
         ExtendedIterator<Statement> ss = listProperties(r);
-        if (avoidExplicitReification && // ( r instanceof Statement ) &&
-                (!r.isAnon()) && isLocalReference(r)
-                && res2statement.containsKey(r)) {
+        if (avoidExplicitReification && (!r.isAnon()) && !r.isStmtResource() && isLocalReference(r) && res2statement.containsKey(r)) {
             ss = new MapFilterIterator<>(new MapFilter<Statement, Statement>() {
                 @Override
                 public Statement accept(Statement o) {

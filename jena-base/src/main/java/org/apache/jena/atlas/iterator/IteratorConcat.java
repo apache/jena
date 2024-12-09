@@ -26,7 +26,9 @@ import java.util.function.Consumer;
 
 /**
  * Iterator of Iterators IteratorConcat is better when there are lots of iterators to
- * be joined. IteratorCons is slightly better for two iterators.
+ * be joined.
+ * <p>
+ * {@link IteratorCons} is slightly better for two iterators.
  */
 
 public class IteratorConcat<T> implements IteratorCloseable<T> {

@@ -62,6 +62,9 @@ public interface ParserProfile {
     /** Create a literal for a string+language */
     public Node createLangLiteral(String lexical, String langTag, long line, long col);
 
+    /** Create a literal for a string+language+base direction */
+    public Node createLangDirLiteral(String lexical, String langTag, String direction, long line, long col);
+
     /** Create a literal for a string */
     public Node createStringLiteral(String lexical, long line, long col);
 
@@ -71,11 +74,23 @@ public interface ParserProfile {
     /** Create a fresh blank node */
     public Node createBlankNode(Node scope, long line, long col);
 
-    /** Create a triple node (RDF-star) */
-    public Node createTripleNode(Node subject, Node predicate, Node object, long line, long col);
+    /** Create a triple term (RDF-star) */
+    public Node createTripleTerm(Node subject, Node predicate, Node object, long line, long col);
+
+    /** @deprecated Use {@link #createTripleTerm} */
+    @Deprecated
+    public default Node createTripleNode(Node subject, Node predicate, Node object, long line, long col) {
+        return createTripleTerm(subject, predicate, object, line, col);
+    }
 
     /** Create a triple node (RDF-star) */
-    public Node createTripleNode(Triple triple, long line, long col);
+    public Node createTripleTerm(Triple triple, long line, long col);
+
+    /** @deprecated Use {@link #createTripleTerm} */
+    @Deprecated
+    public default Node createTripleNode(Triple triple, long line, long col) {
+        return createTripleTerm(triple, line, col);
+    }
 
     /** Create a graph node. This is an N3-formula and not named graphs */
     public Node createGraphNode(Graph graph, long line, long col);

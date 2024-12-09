@@ -34,8 +34,9 @@ import org.junit.runner.RunWith;
 @Prefix("TIM-")
 @Manifests
 ({
-    "testing/ARQ/manifest-arq.ttl" ,
-    "testing/rdf-star-cg/sparql/eval/manifest.ttl"
+    "testing/ARQ/manifest-arq.ttl"
+    // [rdf-star CG]
+    //, "testing/rdf-star-cg/sparql/eval/manifest.ttl"
 })
 
 public class Scripts_TIM

@@ -11,16 +11,25 @@
       <typedLiteral datatype="http://www.w3.org/2001/XMLSchema#integer">123</typedLiteral>
     </triple>
     <triple>
+      <uri>http://example/s</uri>
+      <qname>ex:tripleTerm</qname>
       <triple>
         <uri>http://example/s</uri>
         <qname>ex:p</qname>
         <qname>ex:o</qname>
       </triple>
-      <qname>ex:embedded</qname>
+    </triple>
+    <triple>
+      <uri>http://example/s</uri>
+      <qname>ex:tripleTermNested</qname>
       <triple>
         <uri>http://example/s</uri>
         <qname>ex:p</qname>
-        <qname>ex:o</qname>
+        <triple>
+          <uri>http://example/s</uri>
+          <qname>ex:p</qname>
+          <qname>ex:o</qname>
+        </triple>
       </triple>
     </triple>
   </graph>

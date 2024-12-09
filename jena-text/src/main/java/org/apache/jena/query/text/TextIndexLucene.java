@@ -36,7 +36,6 @@ import org.apache.jena.query.text.analyzer.Util;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.lucene.analysis.Analyzer ;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.core.KeywordAnalyzer ;
@@ -809,7 +808,6 @@ public class TextIndexLucene implements TextIndex {
     }
 
     private Node entryToNode(String v) {
-        // TEMP
-        return NodeFactoryExtra.createLiteralNode(v, null, null) ;
+        return NodeFactory.createLiteralString(v) ;
     }
 }

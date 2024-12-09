@@ -1178,13 +1178,13 @@ public final class TokenizerText implements Tokenizer
             int ch = reader.peekChar();
             if ( ch == '-' ) {
                 if ( seenTextDirection )
-                   fatal("Bad language tag with text direction");
+                   fatal("Bad language tag with base direction");
                 reader.readChar();
                 insertCodepointDirect(stringBuilder, ch);
                 int ch2 = reader.peekChar();
                 if ( ch2 == '-' ) {
                     reader.readChar();
-                    // Initial text direction
+                    // base direction
                     insertCodepointDirect(stringBuilder, ch2);
                     seenTextDirection = true;
                 }

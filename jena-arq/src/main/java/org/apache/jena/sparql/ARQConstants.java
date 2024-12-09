@@ -68,6 +68,9 @@ public class ARQConstants
     /** XML namespace */
     public static final String XML_NS = "http://www.w3.org/XML/1998/namespace" ;
 
+    /** ITS namespace (Internationalization Tag Set (ITS) Version 2.0) */
+    public static final String ITS_NS = "http://www.w3.org/2005/11/its" ;
+
     /** XML Schema namespace */
     public static final String XML_SCHEMA_NS = "http://www.w3.org/2001/XMLSchema#" ;
 

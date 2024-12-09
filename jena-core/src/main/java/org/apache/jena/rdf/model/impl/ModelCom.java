@@ -122,7 +122,7 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
 
     @Override
     public Model add(Resource s, Property p, String o)  {
-        return add( s, p, literal( o, "" ) );
+        return add( s, p, literal( o ) );
     }
 
     @Override
@@ -131,8 +131,14 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
         return this;
     }
 
+    private Literal literal( String s )
+    { return new LiteralImpl( NodeFactory.createLiteralString(s), this ); }
+
     private Literal literal( String s, String lang)
     { return new LiteralImpl( NodeFactory.createLiteralLang( s, lang), this ); }
+
+    private Literal literal( String s, String lang, String textDirection)
+    { return new LiteralImpl( NodeFactory.createLiteralDirLang( s, lang, textDirection), this ); }
 
     private Literal literal( String lex, RDFDatatype datatype)
     { return new LiteralImpl( NodeFactory.createLiteralDT( lex, datatype), this ); }
@@ -140,6 +146,10 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     @Override
     public Model add( Resource s, Property p, String o, String l )
     { return add( s, p, literal(o, l) ); }
+
+    @Override
+    public Model add( Resource s, Property p, String o, String l, String d)
+    { return add( s, p, literal(o, l, d) ); }
 
     @Override
     public Model addLiteral( Resource s, Property p, Literal o )
@@ -328,6 +338,10 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     { return contains( s, p, literal( o, l ) ); }
 
     @Override
+    public boolean contains( Resource s, Property p, String o, String l, String d)
+    { return contains( s, p, literal( o, l, d ) ); }
+
+    @Override
     public boolean containsLiteral(Resource s, Property p, Object o)
     { return contains( s, p, asObject( o ) ); }
 
@@ -381,6 +395,24 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
             // this is not OK when L is null: returns only the statements whose lang is ""
             // return listStatements( S, P, Node.createLiteral( O, L, false ) );
             if (L != null) return listStatements( S, P, NodeFactory.createLiteralLang( O, L ) );
+            // there's maybe a better way
+            return new StringFilteredStmtIterator(O, listStatements(S, P, Node.ANY));
+        } else {
+            return new LangFilteredStmtIterator(L, listStatements(S, P, Node.ANY));
+        }
+    }
+
+    @Override
+    public StmtIterator listStatements( Resource S, Property P, String O, String L, String D ) {
+        if (O != null) {
+            // this is not OK when L is null: returns only the statements whose lang is ""
+            // return listStatements( S, P, Node.createLiteral( O, L, false ) );
+            if (L != null) {
+                if ( D != null )
+                    return listStatements( S, P, NodeFactory.createLiteralDirLang( O, L, D ) );
+                else
+                    return listStatements( S, P, NodeFactory.createLiteralLang( O, L ) );
+            }
             // there's maybe a better way
             return new StringFilteredStmtIterator(O, listStatements(S, P, Node.ANY));
         } else {
@@ -473,11 +505,15 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
 
     @Override
     public ResIterator listSubjectsWithProperty( Property p, String o )
-    { return listSubjectsWithProperty( p, o, "" ); }
+    { return listSubjectsWithProperty( p, literal(o) ); }
 
     @Override
     public ResIterator listSubjectsWithProperty( Property p, String o, String l )
     { return listResourcesWithProperty(p, literal( o, l ) ); }
+
+    @Override
+    public ResIterator listSubjectsWithProperty( Property p, String o, String l, String d)
+    { return listResourcesWithProperty(p, literal( o, l, d ) ); }
 
     @Override
     public Resource createResource( Resource type )
@@ -672,6 +708,10 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     @Override
     public Literal createLiteral( String v, String l )
     { return literal( v, l ); }
+
+    @Override
+    public Literal createLiteral( String v, String l, String d)
+    { return literal( v, l, d ); }
 
     @Override
     public Statement createLiteralStatement( Resource r, Property p, boolean o )

@@ -49,7 +49,7 @@ public class ResultSetStream implements ResultSet
 
     /** Create a streaming ResultSet, with resources sharing a common Model */
     public static ResultSet create(List<String> resultVars, Model m, Iterator<Binding> iter) {
-        return new ResultSetStream(0, resultVars, m, iter);
+        return new ResultSetStream(resultVars, m, iter);
     }
 
     /** Create a {@code ResultSet} from a {@literal List<Var>} and an {@literal Iterator<Binding>}. */
@@ -57,7 +57,7 @@ public class ResultSetStream implements ResultSet
         return ResultSet.adapt(RowSetStream.create(resultVars, iter));
     }
 
-    protected ResultSetStream(int dummy, List<String> resultVars, Model m, Iterator<Binding> iter) {
+    protected ResultSetStream(List<String> resultVars, Model m, Iterator<Binding> iter) {
         this.queryExecutionIter = iter;
         this.resultVars = resultVars;
         this.currentQuerySolution = null;

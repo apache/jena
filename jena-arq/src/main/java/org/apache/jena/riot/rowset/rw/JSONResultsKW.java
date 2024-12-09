@@ -39,6 +39,7 @@ public class JSONResultsKW
     // Legacy: kTypedLiteral
     public static final String kTypedLiteral  = "typed-literal" ;
     public static final String kXmlLang       = "xml:lang" ;
+    public static final String kBaseDirection = "its:dir" ;
     public static final String kDatatype      = "datatype" ;
     public static final String kBnode         = "bnode" ;
     public static final String kBoolean       = "boolean" ;

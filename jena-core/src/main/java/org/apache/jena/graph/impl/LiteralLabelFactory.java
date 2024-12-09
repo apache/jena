@@ -66,10 +66,10 @@ public class LiteralLabelFactory
     }
 
     /**
-     * Build a literal label from its lexical form,language tag and initial text direction
+     * Build a literal label from its lexical form,language tag and base direction
      * @param lex the lexical form of the literal
      * @param lang the optional language tag
-     * @param textDir the optional initial text direction (lang required)
+     * @param textDir the optional base direction (lang required)
      */
     public static LiteralLabel createDirLang(String lex, String lang, TextDirection textDir) {
         RDFDatatype dt = fixDatatype(null, lang, textDir);

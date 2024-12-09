@@ -256,7 +256,7 @@ public class RowSetReaderJSON_V1 implements RowSetReader {
             Node s = parseOneTerm(sTerm, labelMap);
             Node p = parseOneTerm(pTerm, labelMap);
             Node o = parseOneTerm(oTerm, labelMap);
-            return NodeFactory.createTripleNode(s, p, o);
+            return NodeFactory.createTripleTerm(s, p, o);
         }
 
         // Get a object from an object - use the first name in the fields list

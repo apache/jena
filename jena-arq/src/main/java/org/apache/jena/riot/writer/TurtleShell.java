@@ -857,11 +857,11 @@ public abstract class TurtleShell {
                         if ( sConn == 0 && containedInOneGraph(subj) )
                             // Not used as an object in this graph.
                             freeBnodes.add(subj);
-                    } else if ( subj.isNodeTriple() ) {
+                    } else if ( subj.isTripleTerm() ) {
                         extractBlankNodesInTripleTerms(blankNodesInTripleTerms, subj);
                     }
 
-                    if ( obj.isNodeTriple() ) {
+                    if ( obj.isTripleTerm() ) {
                         extractBlankNodesInTripleTerms(blankNodesInTripleTerms, obj);
                         continue;
                     }
@@ -896,12 +896,12 @@ public abstract class TurtleShell {
 
             if ( tSubj.isBlank() )
                 blankNodesInTripleTerms.add(tSubj);
-            else if ( tSubj.isNodeTriple() )
+            else if ( tSubj.isTripleTerm() )
                 extractBlankNodesInTripleTerms(blankNodesInTripleTerms, tSubj);
 
             if ( tObj.isBlank() )
                 blankNodesInTripleTerms.add(tObj);
-            else if ( tObj.isNodeTriple() )
+            else if ( tObj.isTripleTerm() )
                 extractBlankNodesInTripleTerms(blankNodesInTripleTerms, tObj);
         }
 

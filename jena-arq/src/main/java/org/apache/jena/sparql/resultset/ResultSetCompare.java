@@ -349,7 +349,7 @@ public class ResultSetCompare
             if ( n1.isVariable() && n2.isVariable() )
                 return mapping.makeIsomorphic(n1, n2);
 
-            if ( n1.isNodeTriple() && n2.isNodeTriple() ) {
+            if ( n1.isTripleTerm() && n2.isTripleTerm() ) {
                 Triple t1 = n1.getTriple();
                 Triple t2 = n2.getTriple();
                 return  Iso.tripleIso(t1, t2, mapping);

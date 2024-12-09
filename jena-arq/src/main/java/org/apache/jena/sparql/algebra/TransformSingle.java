@@ -72,13 +72,16 @@ public class TransformSingle implements Transform
     @Override
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return opLeftJoin ; }
     @Override
-    public Op transform(OpDiff opDiff, Op left, Op right)           { return opDiff ; }
-    @Override
     public Op transform(OpMinus opMinus, Op left, Op right)         { return opMinus ; }
     @Override
     public Op transform(OpUnion opUnion, Op left, Op right)         { return opUnion ; }
     @Override
     public Op transform(OpLateral opCopLateral, Op left, Op right)  { return opCopLateral ; }
+    @Override
+    public Op transform(OpSemiJoin opSemiJoin, Op left, Op right)   { return opSemiJoin ; }
+    @Override
+    public Op transform(OpAntiJoin opAntiJoin, Op left, Op right)   { return opAntiJoin ; }
+
     @Override
     public Op transform(OpConditional opCond, Op left, Op right)    { return opCond ; }
 

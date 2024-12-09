@@ -18,7 +18,7 @@
 
 package org.apache.jena.graph;
 
-import static org.apache.jena.atlas.lib.Lib.lowercase;
+import java.util.Objects;
 
 import org.apache.jena.shared.JenaException;
 
@@ -43,12 +43,31 @@ public enum TextDirection {
     }
 
     public static TextDirection create(String label) {
-        String s = lowercase(label);
-        return switch(s) {
+        Objects.requireNonNull(label);
+        return switch (label) {
             case "ltr" -> LTR;
-            case "rtl"-> RTL;
-            default ->
-                throw new JenaException("Initial text direction must be 'ltr' or 'rtl'");
+            case "rtl" -> RTL;
+            case "LTR", "RTL"
+                -> throw new JenaException("Base direction must be lowercase: got: "+label);
+            default -> throw new JenaException("Base direction must be 'ltr' or 'rtl'");
+        };
+    }
+
+    // Null works better if the code wants to give a context-sensitive error message.
+    public static TextDirection createOrNull(String label) {
+        Objects.requireNonNull(label);
+        return switch (label) {
+            case "ltr" -> LTR;
+            case "rtl" -> RTL;
+            case "LTR", "RTL" -> null;
+            default -> null;
+        };
+    }
+
+    public static boolean isValid(String label) {
+        return switch (label) {
+            case "ltr", "rtl" -> true;
+            default -> false;
         };
     }
 }

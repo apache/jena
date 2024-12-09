@@ -25,6 +25,8 @@ import java.util.function.Consumer;
 
 /**
  *  Null Iterator - also guaranteed shareable and immutable
+ *  <p>
+ *  @deprecated Use {@link Iter#nullIterator()}.
  */
 @Deprecated
 public class NullIterator<T> implements Iterator<T> {

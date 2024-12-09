@@ -37,8 +37,9 @@ import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprList;
 
-/** Table join - this only happens if the patterns can not be streamed.
- * This code is simple!
+/**
+ * Table join.
+ * This code is simple! Reference query engine.
  * Primarily for use in testing and also the reference query engine which is designed for simplicity, not performance.
  */
 public class TableJoin

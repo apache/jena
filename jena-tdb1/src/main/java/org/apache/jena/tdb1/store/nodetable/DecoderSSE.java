@@ -62,7 +62,7 @@ class DecoderSSE
 
     protected static Node parseNode(Tokenizer tokens) {
         Token token = nextToken(tokens);
-        if ( token.hasType(TokenType.LT2) )
+        if ( token.hasType(TokenType.L_TRIPLE) )
             return parseTripleTerm(tokens);
         return tokenAsNode(token);
     }
@@ -71,9 +71,9 @@ class DecoderSSE
     protected static Node parseTripleTerm(Tokenizer tokens) {
         Triple t = parseTriple(tokens);
         Token x = nextToken(tokens);
-        if ( x.getType() != TokenType.GT2 )
-            exception(x, "Triple term not terminated by >>: %s");
-        return NodeFactory.createTripleNode(t);
+        if ( x.getType() != TokenType.R_TRIPLE )
+            exception(x, "Triple term not terminated by )>>: %s");
+        return NodeFactory.createTripleTerm(t);
     }
 
     // Parse three terms and produce a triple.

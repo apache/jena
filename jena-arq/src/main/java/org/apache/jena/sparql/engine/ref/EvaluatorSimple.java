@@ -19,6 +19,7 @@
 package org.apache.jena.sparql.engine.ref;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.jena.atlas.lib.Lib;
@@ -188,6 +189,65 @@ public class EvaluatorSimple implements Evaluator {
         left.close();
         return result;
     }
+
+    private enum HALF_JOIN {
+        SEMI {
+            @Override
+            public Binding onOneMatch(Binding bindingLeft) { return bindingLeft; }
+            @Override
+            public Binding onNoMatches(Binding bindingLeft) { return null; }
+        } ,
+        ANTI {
+            @Override
+            public Binding onOneMatch(Binding bindingLeft) { return null; }
+            @Override
+            public Binding onNoMatches(Binding bindingLeft) { return null; }
+        }
+        ;
+        public abstract Binding onOneMatch(Binding bindingLeft);
+        public abstract Binding onNoMatches(Binding bindingLeft);
+    };
+
+
+    @Override
+    public Table semiJoin(Table left, Table right) {
+        return halfJoin(HALF_JOIN.SEMI, left, right);
+    }
+
+    @Override
+    public Table antiJoin(Table left, Table right) {
+        return halfJoin(HALF_JOIN.ANTI, left, right);
+    }
+
+    // SemiJoin and AnitJoin
+    private Table halfJoin(HALF_JOIN halfJoin, Table left, Table right) {
+        if ( left.isEmpty() ) {
+            left.close();
+            return TableFactory.createEmpty();
+        }
+        TableN result = new TableN();
+
+        left.iterator(getExecContext()).forEachRemaining(bindingLeft->{
+            boolean hasMatch = false;
+            for ( Iterator<Binding> iterRight = right.rows(); iterRight.hasNext() ; ) {
+                Binding bindingRight = iterRight.next();
+                boolean matches = Algebra.compatible(bindingLeft, bindingRight);
+                if ( matches ) {
+                    hasMatch = true;
+                    if ( halfJoin == HALF_JOIN.SEMI )
+                        result.addBinding(bindingLeft);
+                    break;
+                }
+            }
+            if ( !hasMatch ) {
+                if ( halfJoin == HALF_JOIN.ANTI )
+                    result.addBinding(bindingLeft);
+            }
+        });
+        return result;
+    }
+
+
 
     @Override
     public Table list(Table table) {

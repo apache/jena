@@ -181,7 +181,7 @@ public enum NodeType implements Named
 //            if ( n.getLiteralDatatype() == XSDDatatype.XSDdateTime )
 //                return DATETIME ;
         }
-        if ( n.isNodeTriple() ) return TRIPLETERM;
+        if ( n.isTripleTerm() ) return TRIPLETERM;
         return OTHER ;
     }
 

@@ -80,7 +80,7 @@ public class NodecSSE implements Nodec
         } else if ( node.isBlank() && ! onlySafeBNodeLabels ) {
             // Special case.
             str = "_:"+node.getBlankNodeLabel();
-        } else if ( node.isNodeTriple() ) {
+        } else if ( node.isTripleTerm() ) {
             // See comments in DecodeSSE.
             str = NodeFmtLib.strNT(node);
         }
@@ -162,7 +162,7 @@ public class NodecSSE implements Nodec
         if ( node.isVariable() )
             // "?"
             return 1 + maxLength(node.getName());
-        if ( node.isNodeTriple() ) {
+        if ( node.isTripleTerm() ) {
             Triple t = node.getTriple();
             // Leading an trailing <<>>, 4 spaces
             return (2 + 4 + 2) + maxLength(t.getSubject()) + maxLength(t.getPredicate()) + maxLength(t.getObject());

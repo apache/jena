@@ -46,8 +46,8 @@ import org.apache.thrift.transport.TTransportException;
  */
 public class ThriftRDF {
 
-    private static int BUFSIZE_IN   = 128*1024 ;
-    private static int BUFSIZE_OUT  = 128*1024 ;
+    private static int BUFSIZE_IN   = 128*1024;
+    private static int BUFSIZE_OUT  = 128*1024;
 
     /**
      * Create an {@link StreamRDF} for output.  A filename ending {@code .gz} will have
@@ -59,7 +59,7 @@ public class ThriftRDF {
      * @return StreamRDF A stream to send to.
      */
     public static StreamRDF streamToFile(String filename) {
-        return streamToFile(filename, false) ;
+        return streamToFile(filename, false);
     }
 
     /**
@@ -73,10 +73,10 @@ public class ThriftRDF {
      * @return StreamRDF A stream to send to.
      */
     public static StreamRDF streamToFile(String filename, boolean withValues) {
-        OutputStream out = IO.openOutputFile(filename) ;
-        BufferedOutputStream bout = new BufferedOutputStream(out, BUFSIZE_OUT) ;
-        TProtocol protocol = TRDF.protocol(bout) ;
-        return new StreamRDF2Thrift(protocol, withValues) ;
+        OutputStream out = IO.openOutputFile(filename);
+        BufferedOutputStream bout = new BufferedOutputStream(out, BUFSIZE_OUT);
+        TProtocol protocol = TRDF.protocol(bout);
+        return new StreamRDF2Thrift(protocol, withValues);
     }
 
     /**
@@ -87,7 +87,7 @@ public class ThriftRDF {
      * @return StreamRDF A stream to send to.
      */
     public static StreamRDF streamToOutputStream(OutputStream out) {
-        return streamToOutputStream(out, false) ;
+        return streamToOutputStream(out, false);
     }
 
     /**
@@ -99,7 +99,7 @@ public class ThriftRDF {
      * @return StreamRDF A stream to send to.
      */
     public static StreamRDF streamToOutputStream(OutputStream out, boolean withValues) {
-        return new StreamRDF2Thrift(out, withValues) ;
+        return new StreamRDF2Thrift(out, withValues);
     }
 
     /**
@@ -110,7 +110,7 @@ public class ThriftRDF {
      * @return StreamRDF A stream to send to.
      */
     public static StreamRDF streamToTProtocol(TProtocol protocol) {
-        return streamToTProtocol(protocol, false) ;
+        return streamToTProtocol(protocol, false);
     }
 
     /**
@@ -122,7 +122,7 @@ public class ThriftRDF {
      * @return StreamRDF A stream to send to.
      */
     public static StreamRDF streamToTProtocol(TProtocol protocol, boolean withValues) {
-        return new StreamRDF2Thrift(protocol, withValues) ;
+        return new StreamRDF2Thrift(protocol, withValues);
     }
 
     /**
@@ -133,9 +133,9 @@ public class ThriftRDF {
      * @param dest Sink
      */
     public static void fileToStream(String filename, StreamRDF dest) {
-        InputStream in = IO.openFile(filename) ;
-        TProtocol protocol = TRDF.protocol(in) ;
-        protocolToStream(protocol, dest) ;
+        InputStream in = IO.openFile(filename);
+        TProtocol protocol = TRDF.protocol(in);
+        protocolToStream(protocol, dest);
     }
 
     /**
@@ -144,8 +144,8 @@ public class ThriftRDF {
      * @param dest StreamRDF
      */
     public static void inputStreamToStream(InputStream in, StreamRDF dest) {
-        TProtocol protocol = TRDF.protocol(in) ;
-        protocolToStream(protocol, dest) ;
+        TProtocol protocol = TRDF.protocol(in);
+        protocolToStream(protocol, dest);
     }
 
     /**
@@ -154,12 +154,12 @@ public class ThriftRDF {
      * @param dest Sink
      */
     public static void protocolToStream(TProtocol protocol, StreamRDF dest) {
-        PrefixMap pmap = PrefixMapFactory.create() ;
-        final Thrift2StreamRDF s = new Thrift2StreamRDF(pmap, dest) ;
-        dest.start() ;
-        apply(protocol, z -> TRDF.visit(z, s)) ;
+        PrefixMap pmap = PrefixMapFactory.create();
+        final Thrift2StreamRDF s = new Thrift2StreamRDF(pmap, dest);
+        dest.start();
+        apply(protocol, z -> TRDF.visit(z, s));
         // Includes flushing the protocol.
-        dest.finish() ;
+        dest.finish();
     }
 
     /**
@@ -168,19 +168,19 @@ public class ThriftRDF {
      * @param action   Code to act on the row.
      */
     public static void apply(TProtocol protocol, Consumer<RDF_StreamRow> action) {
-        RDF_StreamRow row = new RDF_StreamRow() ;
+        RDF_StreamRow row = new RDF_StreamRow();
         // Bug in 0.13.0 / TIOStreamTransport.isOpen / THRIFT-5022
         //while(protocol.getTransport().isOpen()) {
         while(true) {
-            try { row.read(protocol) ; }
+            try { row.read(protocol); }
             catch (TTransportException e) {
                 if ( e.getType() == TTransportException.END_OF_FILE )
                     // THRIFT-5022 // break;
                     return;
             }
-            catch (TException ex) { TRDF.exception(ex) ; }
-            action.accept(row) ;
-            row.clear() ;
+            catch (TException ex) { TRDF.exception(ex); }
+            action.accept(row);
+            row.clear();
         }
     }
 
@@ -190,34 +190,34 @@ public class ThriftRDF {
      * @param in InputStream
      */
     public static void dump(OutputStream out, InputStream in) {
-        IndentedWriter iOut = new IndentedWriter(out) ;
-        StreamRowTRDFPrinter printer = new StreamRowTRDFPrinter(iOut) ;
-        TProtocol protocol = TRDF.protocol(in) ;
+        IndentedWriter iOut = new IndentedWriter(out);
+        StreamRowTRDFPrinter printer = new StreamRowTRDFPrinter(iOut);
+        TProtocol protocol = TRDF.protocol(in);
         apply(protocol, z -> TRDF.visit(z, printer));
-        iOut.flush() ;
+        iOut.flush();
     }
 
     public static RowSet readRowSet(InputStream in) {
-        return readRowSet(TRDF.protocol(in)) ;
+        return readRowSet(TRDF.protocol(in));
     }
 
     public static RowSet readRowSet(TProtocol protocol) {
-        Thift2Binding t2b = new Thift2Binding(protocol) ;
-        return RowSetStream.create(t2b.getVars(), t2b) ;
+        Thift2Binding t2b = new Thift2Binding(protocol);
+        return RowSetStream.create(t2b.getVars(), t2b);
     }
 
     public static void writeRowSet(OutputStream out, RowSet rowSet) {
-        writeRowSet(out, rowSet, false) ;
+        writeRowSet(out, rowSet, false);
     }
 
     public static void writeRowSet(OutputStream out, RowSet rowSet, boolean withValues) {
         out = TRDF.ensureBuffered(out);
-        writeRowSet(TRDF.protocol(out), rowSet, withValues) ;
-        IO.flush(out) ;
+        writeRowSet(TRDF.protocol(out), rowSet, withValues);
+        IO.flush(out);
     }
 
     public static void writeRowSet(TProtocol protocol, RowSet rowSet) {
-        writeRowSet(protocol, rowSet, false) ;
+        writeRowSet(protocol, rowSet, false);
     }
 
     public static void writeRowSet(TProtocol protocol, RowSet rowSet, boolean encodeValues) {
@@ -225,6 +225,6 @@ public class ThriftRDF {
         try ( Binding2Thrift b2t = new Binding2Thrift(protocol, vars, encodeValues) ) {
             rowSet.forEachRemaining(b2t::output);
         }
-        //Done by Binding2Thrift.close() -- LibThriftRDF.flush(protocol) ;
+        //Done by Binding2Thrift.close() -- LibThriftRDF.flush(protocol);
     }
 }

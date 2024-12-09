@@ -71,7 +71,7 @@ public class G {
     public static boolean isBlank(Node n)       { return n != null && n.isBlank(); }
     public static boolean isLiteral(Node n)     { return n != null && n.isLiteral(); }
     public static boolean isResource(Node n)    { return n != null && (n.isURI()||n.isBlank()); }
-    public static boolean isNodeTriple(Node n)  { return n != null && n.isNodeTriple(); }
+    public static boolean isNodeTriple(Node n)  { return n != null && n.isTripleTerm(); }
     public static boolean isNodeGraph(Node n)   { return n != null && n.isNodeGraph(); }
     public static boolean isNullOrAny(Node n)   { return n == null || Node.ANY.equals(n); }
 
@@ -1049,17 +1049,25 @@ public class G {
             // Any mix of node types except both strings with lang tags.
             return match.equals(data);
 
-        // Both nodes with language tags : compare languages case insensitively.
         String lex1 = match.getLiteralLexicalForm();
         String lex2 = data.getLiteralLexicalForm();
         if ( ! lex1.equals(lex2) )
             return false;
+        // Both nodes with language tags and same lexical forms.
+        // Compare languages case insensitively.
         String lang1 = match.getLiteralLanguage();
         String lang2 = data.getLiteralLanguage();
         return lang1.equalsIgnoreCase(lang2);
     }
 
-    /** Contains, and language tags compare case-insentively */
+
+    /**
+     * Contains: language tags compare case-insentively
+     *
+     * @deprecated Jena5: This should not be necessary any more.
+     *             Language tags are normalized during Node creation.
+     */
+    @Deprecated
     public static boolean containsByLang(Graph g, Node s, Node p, Node o) {
         // Try exact.
         if ( g.contains(s, p, o) )
@@ -1079,7 +1087,13 @@ public class G {
         }
     }
 
-    /** Contains, and language tags match case-insentively */
+    /**
+     * Find: language tags compare case-insentively
+     *
+     * @deprecated Jena5: This should not be necessary any more.
+     *             Language tags are normalized during Node creation.
+     */
+    @Deprecated
     public static ExtendedIterator<Triple> findByLang(Graph g, Node s, Node p, Node o) {
         // No specific value given.
         if ( G.isNullOrAny(o) )

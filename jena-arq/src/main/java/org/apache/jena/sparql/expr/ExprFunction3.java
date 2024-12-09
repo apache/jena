@@ -86,7 +86,7 @@ public abstract class ExprFunction3 extends ExprFunction
     /** Special form evaluation (example, don't eval the arguments first) */
     protected NodeValue evalSpecial(Binding binding, FunctionEnv env) { return null; }
 
-    public NodeValue eval(NodeValue x, NodeValue y, NodeValue z, FunctionEnv env) { return eval(x,y, z); }
+    public NodeValue eval(NodeValue x, NodeValue y, NodeValue z, FunctionEnv env) { return eval(x, y, z); }
 
     public abstract NodeValue eval(NodeValue x, NodeValue y, NodeValue z);
 

@@ -363,6 +363,24 @@ public class FormatterElement extends FormatterBase implements ElementVisitor {
     }
 
     @Override
+    public void visit(ElementSemiJoin el) {
+        out.print("SEMIJOIN");
+        out.incIndent(INDENT);
+        out.newline();
+        visitAsGroup(el.getSubElement());
+        out.decIndent(INDENT);
+    }
+
+    @Override
+    public void visit(ElementAntiJoin el) {
+        out.print("ANTIJOIN");
+        out.incIndent(INDENT);
+        out.newline();
+        visitAsGroup(el.getSubElement());
+        out.decIndent(INDENT);
+    }
+
+    @Override
     public void visit(ElementNamedGraph el) {
         visitNodePattern("GRAPH", el.getGraphNameNode(), el.getElement());
     }

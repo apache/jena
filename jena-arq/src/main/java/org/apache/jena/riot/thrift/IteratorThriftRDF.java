@@ -18,52 +18,52 @@
 
 package org.apache.jena.riot.thrift;
 
-import org.apache.jena.riot.system.* ;
-import org.apache.jena.riot.thrift.wire.RDF_StreamRow ;
-import org.apache.thrift.TException ;
-import org.apache.thrift.protocol.TProtocol ;
-import org.apache.thrift.transport.TTransportException ;
+import org.apache.jena.riot.system.*;
+import org.apache.jena.riot.thrift.wire.RDF_StreamRow;
+import org.apache.thrift.TException;
+import org.apache.thrift.protocol.TProtocol;
+import org.apache.thrift.transport.TTransportException;
 
 /**
  *  Iterator over a Thrift-encoded RDF stream.
  */
 public class IteratorThriftRDF extends IteratorStreamRowRDF {
 
-    private final PrefixMap pmap = PrefixMapFactory.create() ;
-    private final StreamRDFCollectOne collector = new StreamRDFCollectOne(pmap) ;
-    private final Thrift2StreamRDF converter = new Thrift2StreamRDF(pmap, collector) ;
+    private final PrefixMap pmap = PrefixMapFactory.create();
+    private final StreamRDFCollectOne collector = new StreamRDFCollectOne(pmap);
+    private final Thrift2StreamRDF converter = new Thrift2StreamRDF(pmap, collector);
     
-    private final RDF_StreamRow row = new RDF_StreamRow() ;
-    private final TProtocol protocol ;
-    private StreamRDFCollectOne slot ;
-    private boolean finished = false ;
+    private final RDF_StreamRow row = new RDF_StreamRow();
+    private final TProtocol protocol;
+    private StreamRDFCollectOne slot;
+    private boolean finished = false;
 
     public IteratorThriftRDF(TProtocol protocol) {
-        this.protocol = protocol ;
+        this.protocol = protocol;
     }
     
     @Override
     protected boolean hasMore() {
-        return true ;
+        return true;
     }
 
     @Override
     protected StreamRowRDF moveToNext() {
         // THRIFT-5022 : isOpen for TIOStreamTransport is broken.
 //        if ( ! protocol.getTransport().isOpen() )
-//            return null ;
+//            return null;
 
-        try { row.read(protocol) ; }
+        try { row.read(protocol); }
         catch (TTransportException e) {
             if ( e.getType() == TTransportException.END_OF_FILE )
-                return null ;
+                return null;
         }
-        catch (TException ex) { TRDF.exception(ex) ; }
+        catch (TException ex) { TRDF.exception(ex); }
         
         TRDF.visit(row, converter); 
         
-        row.clear() ;
-        return collector.getRow() ;
+        row.clear();
+        return collector.getRow();
     }
 
 }

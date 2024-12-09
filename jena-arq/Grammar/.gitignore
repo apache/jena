@@ -9,5 +9,7 @@ Y12.html
 sparql-grammar.html
 # Grammar in BNF text
 sparql.bnf
-# Grammar in HTML as a standalone web page.
+## BNF
+sparql.bnf
+## Grammar in HTML as a standalone web page.
 sparql-html.html

@@ -26,7 +26,7 @@ import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.vocabulary.RDF;
 
 /**
- * {@code rdf:dirLangString} - a literal with language and initial text direction.
+ * {@code rdf:dirLangString} - a literal with language and base direction.
  * <p>
  * This covers the unusual case of {@code "foo"^^rdf:dirLangString}.
  */

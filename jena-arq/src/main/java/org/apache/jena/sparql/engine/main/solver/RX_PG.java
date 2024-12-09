@@ -114,14 +114,14 @@ import org.apache.jena.sparql.util.Context;
         Node o1 = null;
 
         // Recurse.
-        if ( s.isNodeTriple() ) {
+        if ( s.isTripleTerm() ) {
             Triple t2 = s.getTriple();
             Var var = varAlloc(execCxt).allocVar();
             Triple tripleTerm = Triple.create(t2.getSubject(), t2.getPredicate(), t2.getObject());
             chain = matchTripleStar(chain, var, tripleTerm, execCxt);
             s1 = var;
         }
-        if ( o.isNodeTriple() ) {
+        if ( o.isTripleTerm() ) {
             Triple t2 = o.getTriple();
             Var var = varAlloc(execCxt).allocVar();
             Triple tripleTerm = Triple.create(t2.getSubject(), t2.getPredicate(), t2.getObject());
@@ -167,9 +167,9 @@ import org.apache.jena.sparql.util.Context;
      * Test whether a triple has an triple term as one of its components.
      */
     private static boolean tripleHasNodeTriple(Triple triple) {
-        return triple.getSubject().isNodeTriple()
+        return triple.getSubject().isTripleTerm()
                /*|| triple.getPredicate().isNodeTriple()*/
-               || triple.getObject().isNodeTriple();
+               || triple.getObject().isTripleTerm();
     }
 
     private static VarAlloc varAlloc(ExecutionContext execCxt) {

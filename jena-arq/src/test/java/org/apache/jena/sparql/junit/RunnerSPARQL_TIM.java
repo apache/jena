@@ -28,6 +28,9 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.junit.runners.model.InitializationError;
 
+/**
+ * Run scripted tests using TIM (Transaction InMemory) dataset implementation.
+ */
 public class RunnerSPARQL_TIM extends AbstractRunnerOfTests {
 
     public RunnerSPARQL_TIM(Class<? > klass) throws InitializationError {
@@ -35,7 +38,7 @@ public class RunnerSPARQL_TIM extends AbstractRunnerOfTests {
     }
 
     private static Function<ManifestEntry, Runnable> testMaker() {
-        Creator<Dataset> creator = ()->DatasetFactory.create();
+        Creator<Dataset> creator = ()->DatasetFactory.createTxnMem();
         return
             (manifestEntry) ->
                 SparqlTests.makeSPARQLTestExecOnly(manifestEntry, creator);

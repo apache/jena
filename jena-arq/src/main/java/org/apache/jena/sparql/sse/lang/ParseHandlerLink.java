@@ -75,7 +75,6 @@ public class ParseHandlerLink extends ParseHandlerResolver
 
     @Override
     protected boolean endOfDecl(ItemList list, Item item) {
-        // XXX No. This does not allow for nested "@names"
         super.setFormResult(item);
         if ( namedItems.containsKey(currentName) )
             throwException("Name already defined: " + currentName, item);

@@ -133,13 +133,6 @@ class ExecutionDispatch implements OpVisitor {
     }
 
     @Override
-    public void visit(OpDiff opDiff) {
-        QueryIterator input = pop();
-        QueryIterator qIter = opExecutor.execute(opDiff, input);
-        push(qIter);
-    }
-
-    @Override
     public void visit(OpMinus opMinus) {
         QueryIterator input = pop();
         QueryIterator qIter = opExecutor.execute(opMinus, input);
@@ -157,6 +150,21 @@ class ExecutionDispatch implements OpVisitor {
     public void visit(OpLateral opLateral) {
         QueryIterator input = pop();
         QueryIterator qIter = opExecutor.execute(opLateral, input);
+        push(qIter);
+    }
+
+    @Override
+    public void visit(OpSemiJoin opSemiJoin) {
+        QueryIterator input = pop();
+        QueryIterator qIter = opExecutor.execute(opSemiJoin, input);
+        push(qIter);
+    }
+
+
+    @Override
+    public void visit(OpAntiJoin opAntiJoin) {
+        QueryIterator input = pop();
+        QueryIterator qIter = opExecutor.execute(opAntiJoin, input);
         push(qIter);
     }
 

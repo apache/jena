@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+echo "Grammar to sparql.bnf (text)"
+
+(
+    jj2bnf 'sparql_12.txt' 'tokens.txt'
+) > sparql.bnf

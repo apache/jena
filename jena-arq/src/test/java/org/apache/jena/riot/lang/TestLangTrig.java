@@ -29,7 +29,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
-/** Test the behaviour of the RIOT reader for TriG.  TriG includes checking of terms */
+/** Test the behaviour of the RIOT reader for TriG.  TriG includes checking of terms. */
 public class TestLangTrig
 {
     @Test public void trig_01()     { parse("{}") ; }
@@ -53,34 +53,56 @@ public class TestLangTrig
 
     @Test public void trig_11()
     {
-        DatasetGraph dsg = parse("@prefix ex:  <http://example/> .",
-                                 "{ ex:s ex:p 123 }") ;
+        DatasetGraph dsg = parse("""
+                @prefix ex:  <http://example/> .
+                { ex:s ex:p 123 }
+                """) ;
         assertEquals(1, dsg.getDefaultGraph().size()) ;
         Triple t = dsg.getDefaultGraph().find(null,null,null).next();
         Triple t2 = SSE.parseTriple("(<http://example/s> <http://example/p> 123)") ;
     }
 
-
-    @Test public void trig_12()     { parse("@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .",
-                                            "{ <x> <p> '1'^^xsd:byte }") ; }
+    @Test
+    public void trig_12() {
+        parse("""
+                PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+                { <x> <p> '1'^^xsd:byte }
+              """);
+    }
 
     // Also need to check that the RiotExpection is called in normal use.
 
     // Bad terms.
     @Test (expected=ExError.class)
-    public void trig_20()     { parse("@prefix ex:  <bad iri> .", "{ ex:s ex:p 123 }") ; }
+    public void trig_20() {
+        parse("""
+                @prefix ex:  <bad iri> .
+                { ex:s ex:p 123 }
+              """);
+    }
 
-    @Test (expected=ExError.class)
-    public void trig_21()     { parse("@prefix ex:  <http://example/> .", "{ ex:s <http://example/broken p> 123 }") ; }
+    @Test(expected = ExError.class)
+    public void trig_21() {
+        parse("""
+                @prefix ex:  <http://example/> .
+                { ex:s <http://example/broken p> 123 }
+                """);
+    }
 
-    @Test (expected=ExError.class)
-    public void trig_22()     { parse("{ <x> <p> 'number'^^<bad uri> }") ; }
+    @Test(expected = ExError.class)
+    public void trig_22() {
+        parse("{ <x> <p> 'number'^^<bad uri> }");
+    }
 
-    @Test (expected=ExWarning.class)
-    public void trig_23()     { parse("@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .", "{ <x> <p> 'number'^^xsd:byte }") ; }
+    @Test(expected = ExWarning.class)
+    public void trig_23() {
+        parse("""
+                @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+                { <x> <p> 'number'^^xsd:byte }
+                """);
+    }
 
-    private static DatasetGraph parse(String... strings) {
-        String string = String.join("\n", strings) ;
+    private static DatasetGraph parse(String string) {
         return ParserTests.parser().fromString(string).lang(Lang.TRIG).toDatasetGraph();
     }
 

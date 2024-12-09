@@ -249,8 +249,8 @@ public class LiteralImpl extends EnhNode implements Literal {
     }
 
     @Override
-    public String getTextDirection() {
-        TextDirection textDir = asNode().getLiteralTextDirection();
+    public String getBaseDirection() {
+        TextDirection textDir = asNode().getLiteralBaseDirection();
         if ( textDir == null )
             return null;
         return textDir.direction();

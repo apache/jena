@@ -115,6 +115,17 @@ class QuadIteratorBuilder implements ElementVisitor {
     }
 
     @Override
+    public void visit(ElementSemiJoin el) {
+        throw new QueryParseException("semijoin not permitted in data quad", -1, -1);
+    }
+
+    @Override
+    public void visit(ElementAntiJoin el) {
+        throw new QueryParseException("antijoin not permitted in data quad", -1, -1);
+    }
+
+
+    @Override
     public void visit(ElementOptional el) {
         throw new QueryParseException("optional not permitted in data quad", -1, -1);
     }

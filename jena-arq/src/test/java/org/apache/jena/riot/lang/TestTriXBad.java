@@ -54,13 +54,10 @@ public class TestTriXBad {
                   { DIR+"/trix-bad-08.trix" } ,
                   { DIR+"/trix-bad-09.trix" } ,
 
-                  { DIR+"/trix-star-bad-asserted-1.trix" },
-                  { DIR+"/trix-star-bad-asserted-2.trix" },
-                  { DIR+"/trix-star-bad-emb-1.trix" },
-                  { DIR+"/trix-star-bad-emb-2.trix" },
-                  { DIR+"/trix-star-bad-emb-nested-1.trix" },
-                  { DIR+"/trix-star-bad-emb-nested-2.trix" },
-                  { DIR+"/trix-star-bad-emb-nested-3.trix" }
+                  { DIR+"/trix-star-bad-triple-term-1.trix" },
+                  { DIR+"/trix-star-bad-triple-term-2.trix" },
+                  { DIR+"/trix-star-bad-triple-term-3.trix" },
+                  { DIR+"/trix-star-bad-triple-term-4.trix" },
                   });
     }
 

@@ -27,12 +27,12 @@ public class ResultSetAdapter extends ResultSetStream /*implements ResultSet*/ {
     private final RowSet rowSet;
 
     public ResultSetAdapter(RowSet rowSet) {
-        super(0, Var.varNames(rowSet.getResultVars()), null, rowSet);
+        super(Var.varNames(rowSet.getResultVars()), null, rowSet);
         this.rowSet = rowSet;
     }
 
     public ResultSetAdapter(RowSet rowSet, Model m) {
-        super(0, Var.varNames(rowSet.getResultVars()), m, rowSet);
+        super(Var.varNames(rowSet.getResultVars()), m, rowSet);
         this.rowSet = rowSet;
     }
 

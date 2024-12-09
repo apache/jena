@@ -129,6 +129,22 @@ public class WhereValidator implements ElementVisitor {
     }
 
     @Override
+    public void visit(ElementSemiJoin el) {
+        checkMatching(el);
+        if (!matching) {
+            el.getSubElement().visit(this);
+        }
+    }
+
+    @Override
+    public void visit(ElementAntiJoin el) {
+        checkMatching(el);
+        if (!matching) {
+            el.getSubElement().visit(this);
+        }
+    }
+
+    @Override
     public void visit(ElementOptional el) {
         checkMatching(el);
         if (!matching) {

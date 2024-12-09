@@ -26,7 +26,7 @@ import org.apache.jena.graph.impl.LiteralLabel ;
 import org.apache.jena.vocabulary.RDF;
 
 /**
- * {@code rdf:dirLangString} - a literal with language and initial text direction.
+ * {@code rdf:langString} - a literal with language and no base direction.
  * <p>
  * This covers the unusual case of {@code "foo"^^rdf:langString}.
  * When there is a language tag, there is a lexical form but it is in two parts lex@lang.

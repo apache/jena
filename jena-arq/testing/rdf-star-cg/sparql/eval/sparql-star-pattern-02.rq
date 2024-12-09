@@ -1,6 +1,0 @@
-PREFIX :       <http://example/>
-
-SELECT * {
-  <<:s :p1 ?o>> ?q ?z .
-  :s :p1 ?o .
-}

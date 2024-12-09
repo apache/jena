@@ -29,6 +29,7 @@ public interface NodeValueVisitor
     public void visit(NodeValueInteger nv);
     public void visit(NodeValueNode nv);
     public void visit(NodeValueLang nv);
+    public void visit(NodeValueLangDir nv);
     public void visit(NodeValueString nv);
     public void visit(NodeValueSortKey nv);
     public void visit(NodeValueDateTime nv);

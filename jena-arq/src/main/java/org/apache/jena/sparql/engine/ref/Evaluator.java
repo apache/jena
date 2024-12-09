@@ -54,8 +54,11 @@ public interface Evaluator
     public Table diff(Table tableLeft, Table tableRight);
     public Table minus(Table left, Table right);
     public Table union(Table tableLeft, Table tableRight);
-    public Table lateral(Table left, Op right);
     public Table condition(Table left, Table right);
+
+    public Table lateral(Table left, Op right);
+    public Table semiJoin(Table left, Table right);
+    public Table antiJoin(Table left, Table right);
 
     public Table filter(ExprList expressions, Table tableLeft);
 
@@ -68,4 +71,5 @@ public interface Evaluator
     public Table distinct(Table table);
     public Table reduced(Table table);
     public Table slice(Table table, long start, long length);
+
 }

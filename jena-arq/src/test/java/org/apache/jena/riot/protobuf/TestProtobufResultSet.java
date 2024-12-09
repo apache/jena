@@ -40,7 +40,7 @@ import org.apache.jena.sparql.sse.builders.BuilderRowSet;
 import org.junit.Test;
 
 public class TestProtobufResultSet {
-    // Only datatypes that transmitted perfectly.
+    // Only datatypes that are transmitted perfectly.
     static ResultSetRewindable rs0 = make
         ("(resultset (?x ?y)"
          , "   (row (?x _:a) (?y 3))"
@@ -49,7 +49,7 @@ public class TestProtobufResultSet {
          , "   (row (?x _:a))"
          , "   (row)"
          , "   (row (?x 2) (?y 10))"
-         , "   (row (?x 2) (?y <<_:a :p :o>>))"
+         , "   (row (?x 2) (?y <<(_:a :p :o)>>))"
          , ")"
          ) ;
 
@@ -57,13 +57,13 @@ public class TestProtobufResultSet {
         ("(resultset (?x ?y)"
          , "   (row (?x 1) (?y 3))"
          , "   (row (?x 1) (?y 'a'))"
-         , "   (row (?x 2) (?y <<:s :p :o>>))"
+         , "   (row (?x 2) (?y <<(:s :p :o)>>))"
          , ")"
          ) ;
     static ResultSetRewindable rs2 = make
         ("(resultset (?x ?y)"
          , "   (row (?x 1) (?y 'a'))"
-         , "   (row (?x 2) (?y <<:s :p :o>>))"
+         , "   (row (?x 2) (?y <<(:s :p :o)>>))"
          , "   (row (?x 1) (?y 3))"
          , ")"
          ) ;

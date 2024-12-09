@@ -26,10 +26,11 @@ import org.apache.jena.riot.out.NodeFmtLib ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingBase ;
-import org.apache.jena.sparql.engine.binding.BindingFactory ;
-import org.apache.jena.tdb1.TDB1Exception ;
-import org.apache.jena.tdb1.store.NodeId ;
-import org.apache.jena.tdb1.store.nodetable.NodeTable ;
+import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.tdb1.TDB1Exception;
+import org.apache.jena.tdb1.lib.DumpOps;
+import org.apache.jena.tdb1.store.NodeId;
+import org.apache.jena.tdb1.store.nodetable.NodeTable;
 
 /** Bind that delays turning a NodeId into a Node until explicitly needed by get() */
 
@@ -125,9 +126,15 @@ public class BindingTDB extends BindingBase
             if ( NodeId.isDoesNotExist(id) )
                 return null;
             n = nodeTable.getNodeForNodeId(id) ;
-            if ( n == null )
+            if ( n == null ) {
+
+                n = nodeTable.getNodeForNodeId(id) ;
+
+                DumpOps.dumpNodeTable(nodeTable);
+
                 // But there was to put it in the BindingNodeId.
                 throw new TDB1Exception("No node in NodeTable for NodeId "+id);
+            }
             // Update cache.
             cachePut(var, n) ;
             return n ;

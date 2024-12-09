@@ -18,67 +18,67 @@
 
 package org.apache.jena.riot.thrift;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.riot.thrift.wire.RDF_PrefixDecl ;
-import org.apache.jena.riot.thrift.wire.RDF_Quad ;
-import org.apache.jena.riot.thrift.wire.RDF_Term ;
-import org.apache.jena.riot.thrift.wire.RDF_Triple ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.riot.thrift.wire.RDF_PrefixDecl;
+import org.apache.jena.riot.thrift.wire.RDF_Quad;
+import org.apache.jena.riot.thrift.wire.RDF_Term;
+import org.apache.jena.riot.thrift.wire.RDF_Triple;
 
 /** Print (in debug format) an rdf-thrift stream */ 
 public class StreamRowTRDFPrinter implements VisitorStreamRowTRDF
 {
-    private static final boolean ONELINE = false ;
-    private final IndentedWriter out ;
+    private static final boolean ONELINE = false;
+    private final IndentedWriter out;
 
-    public StreamRowTRDFPrinter(IndentedWriter out) { this.out = out ; }
+    public StreamRowTRDFPrinter(IndentedWriter out) { this.out = out; }
     
     @Override
     public void visit(RDF_Triple triple) {
-        out.print("RDF_Triple") ;
+        out.print("RDF_Triple");
         out.incIndent(); 
-        gap() ;
-        print(triple.getS()) ;
-        gap() ;
-        print(triple.getP()) ;
-        gap() ;
-        print(triple.getO()) ;
-        lineEnd() ;
+        gap();
+        print(triple.getS());
+        gap();
+        print(triple.getP());
+        gap();
+        print(triple.getO());
+        lineEnd();
         out.decIndent();
     }
 
     @Override
     public void visit(RDF_Quad quad) {
-        out.print("RDF_Quad") ;
+        out.print("RDF_Quad");
         out.incIndent(); 
-        gap() ;
-        print(quad.getS()) ;
-        gap() ;
-        print(quad.getP()) ;
-        gap() ;
-        print(quad.getO()) ;
+        gap();
+        print(quad.getS());
+        gap();
+        print(quad.getP());
+        gap();
+        print(quad.getO());
         if ( quad.isSetG() ) {
-            gap() ;
-            print(quad.getG()) ;
+            gap();
+            print(quad.getG());
         }
-        lineEnd() ;
+        lineEnd();
         out.decIndent();
     }
 
     @Override
     public void visit(RDF_PrefixDecl prefix) {
-        out.printf("RDF_PrefixDecl (%s: %s)\n", prefix.getPrefix(), prefix.getUri()) ;
+        out.printf("RDF_PrefixDecl (%s: %s)\n", prefix.getPrefix(), prefix.getUri());
     }
     
     private void gap() { 
         if ( ONELINE )
-            out.print(" ") ;
+            out.print(" ");
         else
-            out.println() ;
+            out.println();
     }
     
     private void lineEnd() {
         if ( ! ONELINE )
-            out.println() ;
+            out.println();
     }
     
     private void startRow() { }
@@ -86,6 +86,6 @@ public class StreamRowTRDFPrinter implements VisitorStreamRowTRDF
     private void finishRow() { }
     
     private void print(RDF_Term term) {
-        out.print(term.toString()) ;
+        out.print(term.toString());
     }
 }

@@ -46,10 +46,10 @@ import org.apache.jena.vocabulary.RDF;
  *
  */
 public class WhereHandler implements Handler {
-    
-    private static Predicate<Node> checkPredicate = n -> n.isURI() || n.isVariable() ||n.equals(Node.ANY);
-    
-    private static Predicate<Node> checkSubject = n -> checkPredicate.test(n) || n.isBlank() || n.isNodeTriple();
+
+    private static Predicate<Node> checkPredicate = n -> n.isURI() || n.isVariable() || n.equals(Node.ANY);
+
+    private static Predicate<Node> checkSubject = n -> checkPredicate.test(n) || n.isBlank();
 
 
     // the query to modify
@@ -171,7 +171,7 @@ public class WhereHandler implements Handler {
      * @param t The trip to test.
      */
     private static void testTriple(TriplePath t) {
-        
+
         // verify Triple is valid
         boolean validSubject = checkSubject.test(t.getSubject());
         boolean validPredicate = t.isTriple() ? checkPredicate.test(t.getPredicate()) : t.getPath() != null;
@@ -229,7 +229,7 @@ public class WhereHandler implements Handler {
 
         }
     }
-    
+
     /**
      * Add the triple path to the where clause
      *
@@ -262,7 +262,7 @@ public class WhereHandler implements Handler {
     public void addOptional(TriplePath t) throws IllegalArgumentException {
         addOptional(Arrays.asList(t));
     }
-    
+
     /**
      * Add an optional triple to the where clause
      *
@@ -397,7 +397,7 @@ public class WhereHandler implements Handler {
         epb.addTriple(subQuery);
         getClause().addElement(new ElementNamedGraph(graph, epb));
     }
-    
+
     /**
      * Add a graph to the where clause.
      *

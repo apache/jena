@@ -30,6 +30,7 @@ import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.TextDirection;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIx;
@@ -56,21 +57,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Base class parsers, mainly SPARQL related */
-public class QueryParserBase
-{
+public class QueryParserBase {
     // NodeConst
-    protected final Node XSD_TRUE       = NodeConst.nodeTrue;
-    protected final Node XSD_FALSE      = NodeConst.nodeFalse;
+    protected final Node XSD_TRUE = NodeConst.nodeTrue;
+    protected final Node XSD_FALSE = NodeConst.nodeFalse;
 
-    protected final Node nRDFtype       = NodeConst.nodeRDFType;
+    protected final Node nRDFtype = NodeConst.nodeRDFType;
 
-    protected final Node nRDFnil        = NodeConst.nodeNil;
-    protected final Node nRDFfirst      = NodeConst.nodeFirst;
-    protected final Node nRDFrest       = NodeConst.nodeRest;
+    protected final Node nRDFnil = NodeConst.nodeNil;
+    protected final Node nRDFfirst = NodeConst.nodeFirst;
+    protected final Node nRDFrest = NodeConst.nodeRest;
 
-    protected final Node nRDFsubject    = RDF.Nodes.subject;
-    protected final Node nRDFpredicate  = RDF.Nodes.predicate;
-    protected final Node nRDFobject     = RDF.Nodes.object;
+    protected final Node nRDFsubject = RDF.Nodes.subject;
+    protected final Node nRDFpredicate = RDF.Nodes.predicate;
+    protected final Node nRDFobject = RDF.Nodes.object;
+
+    protected final Node nRDFreifies = RDF.Nodes.reifies;
 
     // ----
     // Graph patterns, true; in templates, false.
@@ -88,7 +90,7 @@ public class QueryParserBase
     // This is the map used allocate blank node labels during parsing.
     // 1/ It is different between CONSTRUCT and the query pattern
     // 2/ Each BasicGraphPattern is a scope for blank node labels so each
-    //    BGP causes the map to be cleared at the start of the BGP
+    // BGP causes the map to be cleared at the start of the BGP
 
     protected LabelToNodeMap activeLabelMap = anonVarLabels;
     protected Set<String> previousLabels = new HashSet<>();
@@ -96,16 +98,21 @@ public class QueryParserBase
     // Aggregates are only allowed in places where grouping can happen.
     // e.g. SELECT clause but not a FILTER.
     private boolean allowAggregatesInExpressions = false;
-    private int     aggregateDepth               = 0;
+    private int aggregateDepth = 0;
 
-    //LabelToNodeMap listLabelMap = new LabelToNodeMap(true, new VarAlloc("L"));
+    // LabelToNodeMap listLabelMap = new LabelToNodeMap(true, new VarAlloc("L"));
     // ----
 
     public QueryParserBase() {}
 
     protected Prologue prologue;
-    public void setPrologue(Prologue prologue) { this.prologue = prologue; }
-    public Prologue getPrologue() { return prologue; }
+    public void setPrologue(Prologue prologue) {
+        this.prologue = prologue;
+    }
+
+    public Prologue getPrologue() {
+        return prologue;
+    }
 
     protected void setBase(String iriStr, int line, int column) {
         if ( isBNodeIRI(iriStr) )
@@ -116,7 +123,7 @@ public class QueryParserBase
 
     protected void setPrefix(String prefix, String uriStr, int line, int column) {
         // Should have happen in the parser because this step is "token to prefix".
-        //prefix = fixupPrefix(prefix, line, column);
+        // prefix = fixupPrefix(prefix, line, column);
         getPrologue().setPrefix(prefix, uriStr);
     }
 
@@ -124,7 +131,9 @@ public class QueryParserBase
         setBNodesAreVariables(!b);
     }
 
-    protected boolean getBNodesAreVariables()   { return bNodesAreVariables; }
+    protected boolean getBNodesAreVariables() {
+        return bNodesAreVariables;
+    }
 
     protected void setBNodesAreVariables(boolean bNodesAreVariables) {
         this.bNodesAreVariables = bNodesAreVariables;
@@ -134,7 +143,9 @@ public class QueryParserBase
             activeLabelMap = bNodeLabels;
     }
 
-    protected boolean getBNodesAreAllowed()   { return bNodesAreAllowed; }
+    protected boolean getBNodesAreAllowed() {
+        return bNodesAreAllowed;
+    }
 
     protected void setBNodesAreAllowed(boolean bNodesAreAllowed) {
         this.bNodesAreAllowed = bNodesAreAllowed;
@@ -149,9 +160,17 @@ public class QueryParserBase
     }
 
     // Tracking for nested aggregates.
-    protected void startAggregate()   { aggregateDepth++; }
-    protected int getAggregateDepth() { return aggregateDepth; }
-    protected void finishAggregate()  { aggregateDepth--; }
+    protected void startAggregate() {
+        aggregateDepth++;
+    }
+
+    protected int getAggregateDepth() {
+        return aggregateDepth;
+    }
+
+    protected void finishAggregate() {
+        aggregateDepth--;
+    }
 
     protected Element compressGroupOfOneGroup(ElementGroup elg) {
         // remove group of one group.
@@ -190,7 +209,7 @@ public class QueryParserBase
     }
 
     protected void checkString(String string, int line, int column) {
-        for ( int i = 0; i < string.length(); i++ ) {
+        for ( int i = 0 ; i < string.length() ; i++ ) {
             // Not "codePointAt" which does surrogate processing.
             char ch = string.charAt(i);
             // Check surrogate pairs are pairs.
@@ -199,7 +218,7 @@ public class QueryParserBase
                 if ( i == string.length() )
                     throw new QueryParseException("Bad surrogate pair (end of string)", line, column);
                 char ch1 = string.charAt(i);
-                if ( ! Character.isLowSurrogate(ch1) ) {
+                if ( !Character.isLowSurrogate(ch1) ) {
                     throw new QueryParseException("Bad surrogate pair (high surrogate not followed by low surrogate)", line, column);
                 }
             } else if ( Character.isLowSurrogate(ch) ) {
@@ -208,20 +227,81 @@ public class QueryParserBase
         }
     }
 
-    protected Node createLiteral(String lexicalForm, String langTag, String datatypeURI) {
+    // ---- Literals
+    // Strings, lang strings, dirlang strings and datatyped literals.
+
+    protected Node createLiteralString(String lexicalForm, int line, int column) {
+        return NodeFactory.createLiteralString(lexicalForm);
+    }
+
+    protected Node createLiteralDT(String lexicalForm, String datatypeURI, int line, int column) {
+        // Can't have type and lang tag in parsing.
+        return createLiteralAny(lexicalForm, null, null, datatypeURI, line, column);
+    }
+
+    protected Node createLiteralLang(String lexicalForm, String langTagDir, int line, int column) {
+        // Can't have type and lang tag in parsing.
+        return createLiteralAny(lexicalForm, langTagDir, null, null, line, column);
+    }
+
+    /**
+     * Create a literal, given all possible component parts.
+     */
+    private Node createLiteralAny(String lexicalForm, String langTag, String textDirStr, String datatypeURI, int line, int column) {
         Node n = null;
         // Can't have type and lang tag in parsing.
         if ( datatypeURI != null ) {
+            if ( langTag != null || textDirStr != null )
+                throw new ARQInternalErrorException("Datatype with lang/langDir");
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatypeURI);
             n = NodeFactory.createLiteralDT(lexicalForm, dType);
-        } else if ( langTag != null && !langTag.isEmpty() )
-            n = NodeFactory.createLiteralLang(lexicalForm, langTag);
-        else
-            n = NodeFactory.createLiteralString(lexicalForm);
-        return n;
+            return n;
+        }
+
+        // datatypeURI is null
+        if ( langTag == null && textDirStr == null )
+            return NodeFactory.createLiteralString(lexicalForm);
+
+         // Strip '@'
+        langTag = langTag.substring(1);
+
+        // See if we split langTag into language tag and base direction.
+        String textDirStr2 = textDirStr;
+        String langTag2 = langTag;
+        if ( textDirStr == null ) {
+            int idx = langTag.indexOf("--");
+            if ( idx >= 0 ) {
+                textDirStr2 = langTag.substring(idx+2);
+                langTag2 = langTag.substring(0, idx);
+            }
+        }
+
+        if ( langTag2 != null && textDirStr2 != null ) {
+            if ( ! TextDirection.isValid(textDirStr2) )
+                throw new QueryParseException("Illegal base direction: '"+textDirStr2+"'", line, column);
+            return NodeFactory.createLiteralDirLang(lexicalForm, langTag2, textDirStr2);
+        }
+        // langTag != null, textDirStr == null.
+        return NodeFactory.createLiteralLang(lexicalForm, langTag2);
     }
 
-    protected long integerValue(String s) {
+//     protected String langFromToken(String image) {
+//         int idx = image.indexOf("--");
+//         if ( idx < 0 )
+//             // No direction; remove @
+//             return image.substring(1);
+//         return image.substring(1, idx);
+//     }
+//
+//     protected String dirFromToken(String image) {
+//         int idx = image.indexOf("--");
+//         if ( idx < 0 )
+//             return null;
+//         // Not checked for value
+//         return image.substring(idx+2);
+// 	}
+
+	protected long integerValue(String s) {
         try {
             if ( s.startsWith("+") )
                 s = s.substring(1);
@@ -231,14 +311,12 @@ public class QueryParserBase
                 return Long.parseLong(s, 16);
             }
             return Long.parseLong(s);
-        }
-        catch (NumberFormatException ex) {
+        } catch (NumberFormatException ex) {
             try {
                 // Possible too large for a long.
                 BigInteger integer = new BigInteger(s);
                 throwParseException("Number '" + s + "' is a valid number but can't not be stored in a long");
-            }
-            catch (NumberFormatException ex2) {}
+            } catch (NumberFormatException ex2) {}
             throw new QueryParseException(ex, -1, -1);
         }
     }
@@ -272,6 +350,10 @@ public class QueryParserBase
         // s = unescapeCodePoint(s, line, column);
         // Check \ u did not put in any illegals.
         return Var.alloc(s);
+    }
+
+    protected Node createTripleTerm(Node s, Node p, Node o, int line, int column) {
+        return NodeFactory.createTripleTerm(s, p, o);
     }
 
     // ---- IRIs and Nodes
@@ -309,7 +391,7 @@ public class QueryParserBase
         try {
             IRIx resolvedIRIx = getPrologue().getBase().resolve(iriStr);
             return resolvedIRIx;
-        } catch (RelativeIRIException ex ) {
+        } catch (RelativeIRIException ex) {
             errorHandler.error("Relative IRI: " + iriStr, line, col);
             return IRIx.createAny(iriStr);
         } catch (IRIException ex) {
@@ -358,17 +440,17 @@ public class QueryParserBase
     // A BasicGraphPattern is any sequence of TripleBlocks, separated by filters,
     // but not by other graph patterns.
 
-    protected void startBasicGraphPattern()
-    { activeLabelMap.clear(); }
+    protected void startBasicGraphPattern() {
+        activeLabelMap.clear();
+    }
 
-    protected void endBasicGraphPattern()
-    { previousLabels.addAll(activeLabelMap.getLabels()); }
+    protected void endBasicGraphPattern() {
+        previousLabels.addAll(activeLabelMap.getLabels());
+    }
 
-    protected void startTriplesBlock()
-    { }
+    protected void startTriplesBlock() {}
 
-    protected void endTriplesBlock()
-    { }
+    protected void endTriplesBlock() {}
 
     // On entry to a new group, the current BGP is ended.
     protected void startGroup(ElementGroup elg) {
@@ -383,15 +465,17 @@ public class QueryParserBase
     // --------
 
     protected void checkConcrete(Node n, int line, int column) {
-        if ( ! n.isConcrete() )
-            throwParseException("Term is not concrete: "+n, line, column);
+        if ( !n.isConcrete() )
+            throwParseException("Term is not concrete: " + n, line, column);
     }
 
     // BNode from a list
-//    protected Node createListNode()
-//    { return listLabelMap.allocNode(); }
+// protected Node createListNode()
+// { return listLabelMap.allocNode(); }
 
-    protected Node createListNode(int line, int column) { return createBNode(line, column); }
+    protected Node createListNode(int line, int column) {
+        return createBNode(line, column);
+    }
 
     // Unlabelled bNode.
     protected Node createBNode(int line, int column) {
@@ -411,17 +495,13 @@ public class QueryParserBase
         return activeLabelMap.asNode(label);
     }
 
-    protected Node preConditionAnnotation(Node s, Node p, Path path, Node o, int line, int column) {
+    protected Node preConditionReifier(Node s, Node p, Path path, Node o, int line, int column) {
         if ( p != null )
             return p;
         if ( path instanceof P_Link )
             return ((P_Link)path).getNode();
-        throwParseException("Only simple paths allowed with annotation syntax", line, column);
+        throwParseException("Only simple paths allowed with reifier syntax", line, column);
         return null;
-    }
-
-    protected Node createQuotedTriple(Node s, Node p, Node o, int line, int column) {
-        return NodeFactory.createTripleNode(s, p, o);
     }
 
     protected Expr createExprExists(Element element) {
@@ -477,15 +557,34 @@ public class QueryParserBase
         }
     }
 
-    protected Expr asExpr(Node n) {
-        return ExprLib.nodeToExpr(n);
+    protected Node insertTripleReifier(TripleCollector acc, Node reifierId, Node s, Node p, Node o, int line, int column) {
+        Node tripleTerm = createTripleTerm(s, p, o, line, column);
+        if ( reifierId == null )
+            reifierId = createBNode(line, column);
+        Triple t = Triple.create(reifierId, nRDFreifies, tripleTerm);
+        acc.addTriple(t);
+        return reifierId;
     }
 
-    protected Expr asExprNoSign(Node n) {
-        String lex = n.getLiteralLexicalForm();
-        String lang = n.getLiteralLanguage();
-        String dtURI = n.getLiteralDatatypeURI();
-        n = createLiteral(lex, lang, dtURI);
+    private Node annotationReifierId = null;
+
+    protected void setReifierId(Node reifId) {
+        annotationReifierId = reifId;
+    }
+
+    protected Node getOrAllocReifierId(TripleCollector acc, Node s, Node p, Node o, int line, int column) {
+        if ( annotationReifierId != null )
+            return annotationReifierId;
+        Node reifierId = createBNode(-1, -1);
+        insertTripleReifier(acc, reifierId, s, p, o, line, column);
+        return reifierId;
+    }
+
+    protected void clearReifierId() {
+        annotationReifierId = null;
+    }
+
+    protected Expr asExpr(Node n) {
         return ExprLib.nodeToExpr(n);
     }
 
@@ -524,21 +623,22 @@ public class QueryParserBase
 
     // Utilities to remove escapes in strings.
 
-    /*package-testing*/ static String unescapeStr(String s)
-    { return unescapeStr(s, -1, -1); }
+    /* package-testing */ static String unescapeStr(String s) {
+        return unescapeStr(s, -1, -1);
+    }
 //
-//    public static String unescapeCodePoint(String s)
-//    { return unescape(s, '\\', true, 1, 1); }
+// public static String unescapeCodePoint(String s)
+// { return unescape(s, '\\', true, 1, 1); }
 //
-//    protected String unescapeCodePoint(String s, int line, int column)
-//    { return unescape(s, '\\', true, line, column); }
-
+// protected String unescapeCodePoint(String s, int line, int column)
+// { return unescape(s, '\\', true, line, column); }
 
     // Do we need the line/column versions?
-    // Why not catch exceptions and comvert to  QueryParseException
+    // Why not catch exceptions and comvert to QueryParseException
 
-    protected static String unescapeStr(String s, int line, int column)
-    { return unescape(s, '\\', false, line, column); }
+    protected static String unescapeStr(String s, int line, int column) {
+        return unescape(s, '\\', false, line, column);
+    }
 
     // Worker function
     protected static String unescape(String s, char escape, boolean pointCodeOnly, int line, int column) {
@@ -564,7 +664,7 @@ public class QueryParserBase
         int len = s.length();
         StringBuilder sb = new StringBuilder();
 
-        for ( int i = 0; i < len; i++ ) {
+        for ( int i = 0 ; i < len ; i++ ) {
             char ch = s.charAt(i);
             // Keep line and column numbers.
             switch (ch) {

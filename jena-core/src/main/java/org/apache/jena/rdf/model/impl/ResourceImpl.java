@@ -111,7 +111,7 @@ public class ResourceImpl extends EnhNode implements Resource {
     }
 
     public ResourceImpl(Statement statement, ModelCom m) {
-        this( NodeFactory.createTripleNode(statement.asTriple()), m);
+        this( NodeFactory.createTripleTerm(statement.asTriple()), m);
     }
 
     @Override
@@ -139,7 +139,7 @@ public class ResourceImpl extends EnhNode implements Resource {
         if ( isAnon() )
             return m.createResource( getId() );
         if ( isStmtResource() )
-            return  m.createResource( getStmtTerm() );
+            return m.createResource( getStmtTerm() );
         if ( asNode().isConcrete() == false )
             return (Resource) m.getRDFNode( asNode() );
         // if isURIResource()

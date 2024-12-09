@@ -32,9 +32,17 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+
 import org.apache.jena.atlas.data.DataBag;
 import org.apache.jena.atlas.iterator.IteratorCloseable;
 import org.apache.jena.atlas.iterator.IteratorSlotted;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.lang.LabelToNode;
@@ -45,14 +53,7 @@ import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.resultset.ResultSetException;
-import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.vocabulary.RDF;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
 
 /**
  * Streaming RowSet implementation for application/sparql-results+json
@@ -384,24 +385,33 @@ public class RowSetJSONStreaming<E> extends IteratorSlotted<Binding> implements 
             valueStr = valueJson.getAsString();
             JsonElement langJson = term.get(kXmlLang);
             JsonElement dtJson = term.get(kDatatype);
+            JsonElement dirJson = term.get(kBaseDirection);
 
             String lang = langJson == null ? null : langJson.getAsString();
             String dtStr = dtJson == null ? null : dtJson.getAsString();
+            String dirStr = dirJson == null ? null : dirJson.getAsString();
+
+            // Strictly, xml:lang=... and datatype=rdf:langString is wrong
+            // (the datatype should be absent)
+            // The RDF specs recommend omitting the datatype. They did
+            // however come after the SPARQL 1.1 docs
+            // it's more of a "SHOULD" than a "MUST".
+            // datatype=xsd:string is also unnecessary.
 
             if ( lang != null ) {
-                // Strictly, xml:lang=... and datatype=rdf:langString is wrong
-                // (the datatype should be absent)
-                // The RDF specs recommend omitting the datatype. They did
-                // however come after the SPARQL 1.1 docs
-                // it's more of a "SHOULD" than a "MUST".
-                // datatype=xsd:string is also unnecessary.
-                if ( dtStr != null && !dtStr.equals(RDF.dtLangString.getURI()) ) {
-                    // Must agree.
-                    throw new ResultSetException("Both language and datatype defined, datatype is not rdf:langString:\n" + term);
+                if ( dirStr != null ) {
+                    if ( dtStr != null && !dtStr.equals(RDF.dtDirLangString.getURI()) )
+                        throw new ResultSetException("Language, base direction and datatype defined, datatype is not rdf:dirLangString: " + term);
+                } else {
+                    if ( dtStr != null && !dtStr.equals(RDF.dtLangString.getURI()) )
+                        throw new ResultSetException("Language datatype defined, datatype is not rdf:langString: " + term);
                 }
+            } else if ( dirStr != null ) {
+                throw new ResultSetException("Base direction defined, but no language given: " + term);
             }
 
-            result = NodeFactoryExtra.createLiteralNode(valueStr, lang, dtStr);
+            RDFDatatype dType = ( dtStr == null ) ? null : TypeMapper.getInstance().getSafeTypeByName(dtStr) ;
+            result = NodeFactory.createLiteral(valueStr, lang, dirStr, dType);
             break;
         case kBnode:
             valueStr = valueJson.getAsString();
@@ -419,7 +429,7 @@ public class RowSetJSONStreaming<E> extends IteratorSlotted<Binding> implements 
             Node p = parseOneTerm(jp, labelMap, onUnknownRdfTermType);
             Node o = parseOneTerm(jo, labelMap, onUnknownRdfTermType);
 
-            result = NodeFactory.createTripleNode(s, p, o);
+            result = NodeFactory.createTripleTerm(s, p, o);
             break;
         default:
             if (onUnknownRdfTermType != null) {

@@ -1,7 +1,0 @@
-PREFIX :       <http://example/>
-
-# Nesting via match
-SELECT * {
-  ?t :p3 :z .
-  << ?t  :p3 :z >> :q :o . 
-}

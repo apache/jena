@@ -18,13 +18,13 @@
 
 package org.apache.jena.riot.thrift;
 
-import org.apache.jena.riot.thrift.wire.RDF_PrefixDecl ;
-import org.apache.jena.riot.thrift.wire.RDF_Quad ;
-import org.apache.jena.riot.thrift.wire.RDF_Triple ;
+import org.apache.jena.riot.thrift.wire.RDF_PrefixDecl;
+import org.apache.jena.riot.thrift.wire.RDF_Quad;
+import org.apache.jena.riot.thrift.wire.RDF_Triple;
 
 /** Visitor for RDF_StreamRow */
 public interface VisitorStreamRowTRDF {
-    public void visit(RDF_Triple triple) ;
-    public void visit(RDF_Quad quad) ;
-    public void visit(RDF_PrefixDecl prefix) ;
+    public void visit(RDF_Triple triple);
+    public void visit(RDF_Quad quad);
+    public void visit(RDF_PrefixDecl prefix);
 }

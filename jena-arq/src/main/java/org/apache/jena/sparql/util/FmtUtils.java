@@ -26,6 +26,7 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Node_Literal ;
+import org.apache.jena.graph.TextDirection;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIx;
@@ -180,7 +181,8 @@ public class FmtUtils {
     public static void stringForLiteral(StringBuilder result, Node_Literal literal, SerializationContext context) {
         String datatype = literal.getLiteralDatatypeURI();
         String lang = literal.getLiteralLanguage();
-        String s = literal.getLiteralLexicalForm();
+        String lex = literal.getLiteralLexicalForm();
+       TextDirection textDir = literal.getLiteralBaseDirection();
 
         // For some literals we can use plain literal form unless the Serialization
         // Context explicitly says not to. For backwards compatibility if using a
@@ -191,14 +193,14 @@ public class FmtUtils {
             // Assume valid text
             if ( datatype.equals(XSD.integer.getURI()) ) {
                 try {
-                    String s1 = s;
+                    String s1 = lex;
                     // BigInteger does not allow leading +
                     // so chop it off before the format test
                     // BigDecimal does allow a leading +
-                    if ( s.startsWith("+") )
-                        s1 = s.substring(1);
+                    if ( lex.startsWith("+") )
+                        s1 = lex.substring(1);
                     new java.math.BigInteger(s1);
-                    result.append(s);
+                    result.append(lex);
                     return;
                 } catch (NumberFormatException nfe) {}
                 // No luck. Continue.
@@ -206,11 +208,11 @@ public class FmtUtils {
             }
 
             if ( datatype.equals(XSD.decimal.getURI()) ) {
-                if ( s.indexOf('.') > 0 ) {
+                if ( lex.indexOf('.') > 0 ) {
                     try {
                         // BigDecimal does allow a leading +
-                        new java.math.BigDecimal(s);
-                        result.append(s);
+                        new java.math.BigDecimal(lex);
+                        result.append(lex);
                         return;
                     } catch (NumberFormatException nfe) {}
                     // No luck. Continue.
@@ -221,10 +223,10 @@ public class FmtUtils {
                 // Assumes SPARQL has decimals and doubles.
                 // Must have 'e' or 'E' to be a double short form.
 
-                if ( s.indexOf('e') >= 0 || s.indexOf('E') >= 0 ) {
+                if ( lex.indexOf('e') >= 0 || lex.indexOf('E') >= 0 ) {
                     try {
-                        Double.parseDouble(s);
-                        result.append(s);
+                        Double.parseDouble(lex);
+                        result.append(lex);
                         return;  // returm the original lexical form.
                     } catch (NumberFormatException nfe) {}
                     // No luck. Continue.
@@ -236,8 +238,8 @@ public class FmtUtils {
                 // The lexical form must be lower case.
                 // if ( s.equals("true") || s.equals("1") ) return s ;
                 // if ( s.equals("false") || s.equals("0") ) return s ;
-                if ( s.equals("true") || s.equals("false") ) {
-                    result.append(s);
+                if ( lex.equals("true") || lex.equals("false") ) {
+                    result.append(lex);
                     return;
                 }
 
@@ -246,11 +248,19 @@ public class FmtUtils {
         }
 
         result.append("\"");
-        stringEsc(result, s, true);
+        stringEsc(result, lex, true);
         result.append("\"");
 
         if ( NodeUtils.isSimpleString(literal) ) {
             // No op.
+            return;
+        }
+
+        if ( NodeUtils.isDirLangString(literal) ) {
+            result.append("@");
+            result.append(lang);
+            result.append("--");
+            result.append(textDir.direction());
             return;
         }
 
@@ -340,15 +350,15 @@ public class FmtUtils {
             result.append("?").append(n.getName());
         } else if ( n.equals(Node.ANY) ) {
             result.append("ANY");
-        } else if ( n.isNodeTriple() ) {
+        } else if ( n.isTripleTerm() ) {
             Triple t = n.getTriple();
-            result.append("<< ");
+            result.append("<<( ");
             stringForNode(result, t.getSubject(), context);
             result.append(" ");
             stringForNode(result, t.getPredicate(), context);
             result.append(" ");
             stringForNode(result, t.getObject(), context);
-            result.append(" >>");
+            result.append(" )>>");
         } else if ( n.isNodeGraph() ) {
             Log.warn(FmtUtils.class, "Can not turn a graph term node into a string");
             result.append(" { graph }");

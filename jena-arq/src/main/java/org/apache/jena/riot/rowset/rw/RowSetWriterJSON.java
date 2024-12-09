@@ -30,6 +30,7 @@ import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.json.io.JSWriter;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.TextDirection;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.rdf.model.impl.Util;
@@ -242,7 +243,7 @@ public class RowSetWriterJSON implements RowSetWriter {
         }
 
         private void writeValue(IndentedWriter out, Node value, boolean multiLine) {
-            if ( multiLine || value.isNodeTriple() )
+            if ( multiLine || value.isTripleTerm() )
                 println(out, "{");
             else
                 print(out, "{ ");
@@ -257,13 +258,13 @@ public class RowSetWriterJSON implements RowSetWriter {
                 writeValueURI(out, value, multiLine);
             else if ( value.isBlank() )
                 writeValueBlankNode(out, value, multiLine);
-            else if ( value.isNodeTriple() )
+            else if ( value.isTripleTerm() )
                 writeValueNodeTriple(out, value, multiLine);
             else if ( value.isNodeGraph() )
                 writeValueNodeGraph(out, value, multiLine);
             else
                 Log.warn(RowSetWriterJSON.class, "Unknown RDFNode type in result set: " + value.getClass());
-            if ( multiLine || value.isNodeTriple()) // OR triple
+            if ( multiLine || value.isTripleTerm()) // OR triple
                 println(out) ;
             else
                 print(out, " ");
@@ -282,9 +283,11 @@ public class RowSetWriterJSON implements RowSetWriter {
 
         private void writeValueLiteral(IndentedWriter out, Node literal, boolean multiLine) {
             String datatype = literal.getLiteralDatatypeURI();
-            String lang = literal.getLiteralLanguage();
 
-            if ( Util.isSimpleString(literal) || Util.isLangString(literal) ) {
+            if ( Util.isSimpleString(literal) || Util.isLangString(literal) || Util.isDirLangString(literal) ) {
+                String lang = literal.getLiteralLanguage();
+                TextDirection direction = literal.getLiteralBaseDirection();
+
                 print(out, quoteName(kType), ": ", quote(kLiteral), " , ");
                 if ( multiLine )
                     println(out);
@@ -294,6 +297,13 @@ public class RowSetWriterJSON implements RowSetWriter {
                     if ( multiLine )
                         println(out);
                 }
+
+                if ( direction != null  ) {
+                    print(out, quoteName(kBaseDirection), ": ", quote(direction.direction()), " , ");
+                    if ( multiLine )
+                        println(out);
+                }
+
             } else {
                 print(out, quoteName(kType), ": ", quote(kLiteral), " , ");
                 if ( MultiLineValues )

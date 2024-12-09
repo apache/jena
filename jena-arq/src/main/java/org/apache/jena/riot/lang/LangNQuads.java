@@ -58,33 +58,10 @@ public class LangNQuads extends LangNTuple<Quad> {
 
     @Override
     protected final Quad parseOne() {
-        Token sToken = nextToken();
-        if ( sToken.isEOF() )
-            exception(sToken, "Premature end of file: %s", sToken);
-        Node s;
-        if ( sToken.hasType(TokenType.LT2) )
-            s = parseTripleTerm();
-        else {
-            checkIRIOrBNode(sToken);
-            s = tokenAsNode(sToken);
-        }
-
-        Token pToken = nextToken();
-        if ( pToken.isEOF() )
-            exception(pToken, "Premature end of file: %s", pToken);
-        checkIRI(pToken);
-        Node p = tokenAsNode(pToken);
-
-        Token oToken = nextToken();
-        if ( oToken.isEOF() )
-            exception(oToken, "Premature end of file: %s", oToken);
-        Node o;
-        if ( oToken.hasType(TokenType.LT2) )
-            o = parseTripleTerm();
-        else {
-            checkRDFTerm(oToken);
-            o = tokenAsNode(oToken);
-        }
+        Token token = peekToken();
+        Node s = parseSubject();
+        Node p = parsePredicate();
+        Node o = parseObject();
 
         Token xToken = nextToken();    // Maybe DOT
         if ( xToken.getType() == TokenType.EOF )
@@ -97,8 +74,6 @@ public class LangNQuads extends LangNTuple<Quad> {
         if ( xToken.getType() != TokenType.DOT ) {
             // Allow bNodes for graph names.
             checkIRIOrBNode(xToken);
-            // Allow only IRIs
-            // checkIRI(xToken) ;
             c = tokenAsNode(xToken);
             xToken = nextToken();
             currentGraph = c;
@@ -111,7 +86,7 @@ public class LangNQuads extends LangNTuple<Quad> {
         if ( xToken.getType() != TokenType.DOT )
             exception(xToken, "Quad not terminated by DOT: %s", xToken);
 
-        return profile.createQuad(c, s, p, o, sToken.getLine(), sToken.getColumn());
+        return profile.createQuad(c, s, p, o, token.getLine(), token.getColumn());
     }
 
     @Override
