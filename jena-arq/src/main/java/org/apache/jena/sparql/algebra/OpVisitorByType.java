@@ -92,10 +92,6 @@ public abstract class OpVisitorByType implements OpVisitor
     { visitLeftJoin(opLeftJoin) ; }
 
     @Override
-    public void visit(OpDiff opDiff)
-    { visit2(opDiff) ; }
-
-    @Override
     public void visit(OpMinus opMinus)
     { visit2(opMinus) ; }
 
@@ -103,8 +99,17 @@ public abstract class OpVisitorByType implements OpVisitor
     public void visit(OpUnion opUnion)
     { visit2(opUnion) ; }
 
-    @Override public void visit(OpLateral opLateral)
+    @Override
+    public void visit(OpLateral opLateral)
     { visit2(opLateral) ; }
+
+    @Override
+    public void visit(OpSemiJoin opSemiJoin)
+    { visit2(opSemiJoin) ; }
+
+    @Override
+    public void visit(OpAntiJoin opAntiJoin)
+    { visit2(opAntiJoin) ; }
 
     @Override
     public void visit(OpConditional opCond)

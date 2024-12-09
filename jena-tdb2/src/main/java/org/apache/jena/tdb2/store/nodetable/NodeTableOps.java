@@ -45,7 +45,4 @@ public class NodeTableOps {
         }
         return nodes;
     }
-
-
 }
-

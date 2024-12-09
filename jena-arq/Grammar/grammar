@@ -42,6 +42,7 @@ function grammar
 
 ##     echo "---- Create HTML"
 ##     jjdoc -OUTPUT_FILE=${FILE%%.jj}.html "${FILE}"
+    
     echo "---- Create text form"
     jjdoc -TEXT=true -OUTPUT_FILE=${FILE%%.jj}.txt "${FILE}"
 

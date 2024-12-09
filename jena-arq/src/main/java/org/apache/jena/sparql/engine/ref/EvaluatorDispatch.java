@@ -151,16 +151,7 @@ public class EvaluatorDispatch implements OpVisitor {
             System.out.println("NULL");
         }
 
-
         Table table = evaluator.leftJoin(left, right, opLeftJoin.getExprs());
-        push(table);
-    }
-
-    @Override
-    public void visit(OpDiff opDiff) {
-        Table left = eval(opDiff.getLeft());
-        Table right = eval(opDiff.getRight());
-        Table table = evaluator.diff(left, right);
         push(table);
     }
 
@@ -193,6 +184,22 @@ public class EvaluatorDispatch implements OpVisitor {
     public void visit(OpLateral opLateral) {
         Table left = eval(opLateral.getLeft());
         Table table = evaluator.lateral(left, opLateral.getRight());
+        push(table);
+    }
+
+    @Override
+    public void visit(OpSemiJoin opSemiJoin) {
+        Table left = eval(opSemiJoin.getLeft());
+        Table right = eval(opSemiJoin.getRight());
+        Table table = evaluator.semiJoin(left, right);
+        push(table);
+    }
+
+    @Override
+    public void visit(OpAntiJoin opAntiJoin) {
+        Table left = eval(opAntiJoin.getLeft());
+        Table right = eval(opAntiJoin.getRight());
+        Table table = evaluator.antiJoin(left, right);
         push(table);
     }
 

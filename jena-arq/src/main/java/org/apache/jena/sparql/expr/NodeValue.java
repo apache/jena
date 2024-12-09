@@ -39,6 +39,7 @@ import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.ext.xerces.DatatypeFactoryInst;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.TextDirection;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.SystemARQ;
@@ -187,6 +188,12 @@ public abstract class NodeValue extends ExprNode
 
     public static NodeValue makeLangString(String s, String lang)
     { return new NodeValueLang(s, lang); }
+
+    public static NodeValue makeDirLangString(String s, String lang, String langDir)
+    { return new NodeValueLangDir(s, lang, langDir); }
+
+    public static NodeValue makeDirLangString(String s, String lang, TextDirection textDirection)
+    { return new NodeValueLangDir(s, lang, textDirection); }
 
     public static NodeValue makeDecimal(BigDecimal d)
     { return new NodeValueDecimal(d); }
@@ -391,7 +398,7 @@ public abstract class NodeValue extends ExprNode
 
     public boolean isTripleTerm() {
         forceToNode();
-        return node.isNodeTriple();
+        return node.isTripleTerm();
     }
 
     public ValueSpace getValueSpace() {
@@ -542,7 +549,8 @@ public abstract class NodeValue extends ExprNode
 
     public boolean     getBoolean()     { raise(new ExprEvalTypeException("Not a boolean: "+this)); return false; }
     public String      getString()      { raise(new ExprEvalTypeException("Not a string: "+this)); return null; }
-    public String      getLang()        { raise(new ExprEvalTypeException("Not a string: "+this)); return null; }
+    public String      getLang()        { raise(new ExprEvalTypeException("Not a lang string: "+this)); return null; }
+    public String      getLangDir()     { raise(new ExprEvalTypeException("Not a langdir string: "+this)); return null; }
     public NodeValueSortKey getSortKey()        { raise(new ExprEvalTypeException("Not a sort key: "+this)); return null; }
 
     public BigInteger  getInteger()     { raise(new ExprEvalTypeException("Not an integer: "+this)); return null; }
@@ -576,6 +584,9 @@ public abstract class NodeValue extends ExprNode
                 if ( NodeValue.VerboseWarnings )
                     Log.warn(NodeValue.class, "Lang tag and datatype (datatype ignored)");
             }
+            // RDF 1.2
+            if ( NodeUtils.hasLangDir(node) )
+                    return new NodeValueLangDir(node);
             return new NodeValueLang(node);
         }
 
@@ -610,9 +621,12 @@ public abstract class NodeValue extends ExprNode
     // Returns null for unrecognized literal.
     private static NodeValue _setByValue(Node node) {
         // This should not happen.
-        // nodeToNodeValue should have dealt with it.
-        if ( NodeUtils.hasLang(node) )
+        // nodeToNodeValue should have been dealt with it.
+        if ( NodeUtils.hasLang(node) ) {
+            if ( NodeUtils.hasLangDir(node) )
+                return new NodeValueLangDir(node);
             return new NodeValueLang(node);
+        }
         LiteralLabel lit = node.getLiteral();
         RDFDatatype datatype = lit.getDatatype();
 

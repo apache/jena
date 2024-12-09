@@ -1,7 +1,0 @@
-PREFIX :       <http://example/>
-
-SELECT * {
-    { <<?s ?p :o>> ?p ?z }
-    UNION
-    { ?z ?p  <<?s ?p :o>> }
-}

@@ -22,7 +22,8 @@ import org.apache.jena.sparql.algebra.OpVisitor ;
 import org.apache.jena.sparql.algebra.op.* ;
 
 /** A visitor helper that maps all visits to a few general ones.
- *  Does not visit expressions at all. */ 
+ *  Does not visit expressions at all.
+ */
 public interface OpVisitorByType extends OpVisitor
 {
     public void DUMMY() ;
@@ -30,11 +31,11 @@ public interface OpVisitorByType extends OpVisitor
     public void visitN(OpN op) ;
 
     public void visit2(Op2 op) ;
-    
+
     public void visit1(Op1 op) ;
-    
-    public void visit0(Op0 op) ;    
-    
+
+    public void visit0(Op0 op) ;
+
     public default void visitExt(OpExt op) {
         op.effectiveOp().visit(this);
     }
@@ -104,11 +105,6 @@ public interface OpVisitorByType extends OpVisitor
     }
 
     @Override
-    public default void visit(OpDiff opDiff) {
-        visit2(opDiff);
-    }
-
-    @Override
     public default void visit(OpMinus opMinus) {
         visit2(opMinus);
     }
@@ -117,6 +113,22 @@ public interface OpVisitorByType extends OpVisitor
     public default void visit(OpUnion opUnion) {
         visit2(opUnion);
     }
+
+    @Override
+    public default void visit(OpLateral opLateral) {
+        visit2(opLateral);
+    }
+
+    @Override
+    public default void visit(OpSemiJoin opSemiJoin) {
+        visit2(opSemiJoin);
+    }
+
+    @Override
+    public default void visit(OpAntiJoin opAntiJoin) {
+        visit2(opAntiJoin);
+    }
+
 
     @Override
     public default void visit(OpConditional opCond) {
@@ -177,7 +189,7 @@ public interface OpVisitorByType extends OpVisitor
     public default void visit(OpTopN opTop) {
         visit1(opTop);
     }
-    
+
     @Override
     public default void visit(OpAssign opAssign) {
         visit1(opAssign);

@@ -360,11 +360,23 @@ public class TestExpressions
 
     @Test public void lang_01() { testString("LANG('tea time'@en)", "en") ; }
     // Aside For some strange reason, the language code is GB not UK.
-    // The state is UK! "The United Kingdom of Great Britain and Norther Ireland."
+    // "The United Kingdom of Great Britain and Norther Ireland."
     // The four countries England, Scotland, Wales and Northern Ireland (since 1922).
     // It's complicated: https://en.wikipedia.org/wiki/United_Kingdom
     @Test public void lang_02() { testString("LANG('tea time'@en-gb)", "en-GB") ; }
     @Test public void lang_03() { testString("LANG('tea time')", "") ; }
+    @Test public void lang_04() { testBoolean("hasLANG('tea time'@en-gb)", true) ; }
+    @Test public void lang_05() { testBoolean("hasLANG('tea time')", false) ; }
+
+    // hasLANG  hasLANGDIR  LANG  LANGDIR  STRLANGDIR
+    @Test public void langdir_01() { testBoolean("hasLANGDIR('coffee time')", false) ; }
+    @Test public void langdir_02() { testString("LANGDIR('coffee time')", "") ; }
+    @Test public void langdir_03() { testSyntax("STRLANGDIR('abc', 'fr', 'ltr')"); }
+
+    @Test public void langdir_04() { testBoolean("hasLANGDIR( STRLANGDIR('abc', 'fr', 'ltr') )", true); }
+    @Test public void langdir_05() { testString("LANGDIR( STRLANGDIR('abc', 'fr', 'ltr') )", "ltr"); }
+    @Test public void langdir_06() { testString("LANG( STRLANGDIR('abc', 'fr', 'ltr') )", "fr"); }
+    @Test public void langdir_07() { testString("LANGDIR( STRLANG('abc', 'fr--ltr') )", ""); }
 
     @Test public void langmatches_01() { testBoolean("LANGMATCHES('EN', 'en')", true) ; }
     @Test public void langmatches_02() { testBoolean("LANGMATCHES('en', 'en')", true) ; }
@@ -379,6 +391,16 @@ public class TestExpressions
 
     @Test public void langmatches_10() { testBoolean("LANGMATCHES('', '*')", false) ; }
     @Test public void langmatches_11() { testBoolean("LANGMATCHES('en-us', '*')", true) ; }
+
+    // RDF 1.2: triple terms.
+    @Test public void tripleterm_01() { testEval("TRIPLE(<x:s>, <x:p>, 123)"); }
+    @Test public void tripleterm_02() { testURI("SUBJECT( TRIPLE(<x:s>, <x:p>, 123) )", "x:s"); }
+    @Test public void tripleterm_03() { testURI("PREDICATE( TRIPLE(<x:s>, <x:p>, 123) )", "x:p"); }
+
+    @Test(expected=QueryParseException.class)
+    public void tripleterm_03a() { testURI("PROPERTY( TRIPLE(<x:s>, <x:p>, 123) )", "x:p"); }
+
+    @Test public void tripleterm_04() { testNumeric("OBJECT( TRIPLE(<x:s>, <x:p>, 123) )", 123); }
 
     @Test public void boolean_129() { testBoolean("isURI(?x)", true, env) ; }
     @Test public void boolean_130() { testBoolean("isURI(?a)", false, env) ; }

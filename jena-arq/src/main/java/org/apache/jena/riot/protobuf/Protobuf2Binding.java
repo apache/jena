@@ -19,32 +19,32 @@
 package org.apache.jena.riot.protobuf;
 
 import java.io.IOException;
-import java.io.InputStream ;
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.iterator.IteratorSlotted ;
-import org.apache.jena.graph.Node ;
+import org.apache.jena.atlas.iterator.IteratorSlotted;
+import org.apache.jena.graph.Node;
 import org.apache.jena.riot.protobuf.wire.PB_RDF.RDF_DataTuple;
 import org.apache.jena.riot.protobuf.wire.PB_RDF.RDF_Term;
 import org.apache.jena.riot.protobuf.wire.PB_RDF.RDF_VarTuple;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
 
-/** Converted from SPARQL result set encoded in Thrift to Bindings */
-public class Protobuf2Binding extends IteratorSlotted<Binding> implements Iterator<Binding> {
+/** Convert from SPARQL result set encoded in Protobuf to Bindings */
+class Protobuf2Binding extends IteratorSlotted<Binding> implements Iterator<Binding> {
 
-    private List<Var> vars = new ArrayList<>() ;
-    private List<String> varNames = new ArrayList<>() ;
-    private InputStream input ;
-    private BindingBuilder b = Binding.builder() ;
+    private List<Var> vars = new ArrayList<>();
+    private List<String> varNames = new ArrayList<>();
+    private InputStream input;
+    private BindingBuilder b = Binding.builder();
 
-    public Protobuf2Binding(InputStream input) {
-        this.input = input ;
-        readVars() ;
+    Protobuf2Binding(InputStream input) {
+        this.input = input;
+        readVars();
     }
 
     private void readVars() {
@@ -52,13 +52,13 @@ public class Protobuf2Binding extends IteratorSlotted<Binding> implements Iterat
             RDF_VarTuple vrow = RDF_VarTuple.parseDelimitedFrom(input);
             if ( vrow != null )
                 vrow.getVarsList().forEach(rv->varNames.add(rv.getName()));
-            vars = Var.varList(varNames) ;
+            vars = Var.varList(varNames);
         } catch (IOException ex) { IO.exception(ex); }
     }
 
-    public List<Var> getVars()              { return vars ; }
+    List<Var> getVars()              { return vars; }
 
-    public List<String> getVarNames()       { return varNames ; }
+    List<String> getVarNames()       { return varNames; }
 
     @Override
     protected Binding moveToNext() {
@@ -69,22 +69,22 @@ public class Protobuf2Binding extends IteratorSlotted<Binding> implements Iterat
                 return null;
             List<RDF_Term> row = dataTuple.getRowList();
             if ( row.size() != vars.size() )
-                throw new RiotProtobufException(String.format("Vars %d : Row length : %d", vars.size(), row.size())) ;
-            for ( int i = 0 ;  i < vars.size() ; i++ ) {
+                throw new RiotProtobufException(String.format("Vars %d : Row length : %d", vars.size(), row.size()));
+            for ( int i = 0;  i < vars.size(); i++ ) {
                 // Old school
-                Var v = vars.get(i) ;
-                RDF_Term rt = row.get(i) ;
+                Var v = vars.get(i);
+                RDF_Term rt = row.get(i);
                 if ( rt.hasUndefined() )
-                    continue ;
-                Node n = ProtobufConvert.convert(rt) ;
-                b.add(v, n) ;
+                    continue;
+                Node n = ProtobufConvert.convert(rt);
+                b.add(v, n);
             }
         } catch (IOException ex) { IO.exception(ex); }
-        return b.build() ;
+        return b.build();
     }
 
     @Override
     protected boolean hasMore() {
-        return true ;
+        return true;
     }
 }

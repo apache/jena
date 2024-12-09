@@ -46,8 +46,7 @@ public class BuilderOp
 
     private static BuilderOp builderOp = new BuilderOp();
 
-    public static Op build(Item item)
-    {
+    public static Op build(Item item) {
         if (item.isNode() )
             BuilderLib.broken(item, "Attempt to build op structure from a plain node");
 
@@ -62,8 +61,7 @@ public class BuilderOp
 
     protected Map<String, Build> dispatch = new HashMap<>();
 
-    public BuilderOp()
-    {
+    public BuilderOp() {
         addBuild(Tags.tagBGP,           buildBGP);
         addBuild(Tags.tagQuadPattern,   buildQuadPattern);
         addBuild(Tags.tagQuadBlock,     buildQuadBlock);
@@ -79,11 +77,12 @@ public class BuilderOp
         addBuild(Tags.tagSequence,      buildSequence);
         addBuild(Tags.tagDisjunction,   buildDisjunction);
         addBuild(Tags.tagLeftJoin,      buildLeftJoin);
-        addBuild(Tags.tagDiff,          buildDiff);
         addBuild(Tags.tagMinus,         buildMinus);
         addBuild(Tags.tagUnion,         buildUnion);
         addBuild(Tags.tagDatasetNames,  buildDatasetNames);
         addBuild(Tags.tagLateral,       buildLateral);
+        addBuild(Tags.tagSemiJoin,      buildSemiJoin);
+        addBuild(Tags.tagAntiJoin,      buildAntiJoin);
         addBuild(Tags.tagConditional,   buildConditional);
 
         addBuild(Tags.tagToList,        buildToList);
@@ -104,25 +103,20 @@ public class BuilderOp
         addBuild(Tags.tagLabel,         buildLabel);
     }
 
-
-    public static void add(String tag, Build builder)
-    {
+    public static void add(String tag, Build builder) {
         builderOp.addBuild(tag, builder);
     }
 
-    public static void remove(String tag)
-    {
+    public static void remove(String tag) {
         builderOp.removeBuild(tag);
     }
 
-    public static boolean contains(String tag)
-    {
+    public static boolean contains(String tag) {
         return builderOp.containsBuild(tag);
     }
 
     // The main recursive build operation.
-    private Op build(ItemList list)
-    {
+    private Op build(ItemList list) {
         Item head = list.get(0);
         String tag = head.getSymbol();
 
@@ -134,25 +128,21 @@ public class BuilderOp
         return null;
     }
 
-    public static BasicPattern buildBGP(Item item)
-    {
-        if ( ! item.isTagged(Tags.tagBGP) )
+    public static BasicPattern buildBGP(Item item) {
+        if ( !item.isTagged(Tags.tagBGP) )
             BuilderLib.broken(item, "Not a basic graph pattern");
-        if ( ! item.isList() )
+        if ( !item.isList() )
             BuilderLib.broken(item, "Not a list for a basic graph pattern");
         ItemList list = item.getList();
         return buildBGP(list);
-
     }
 
-    private static BasicPattern buildBGP(ItemList list)
-    {
+    private static BasicPattern buildBGP(ItemList list) {
         // Skips the tag.
         BasicPattern triples = new BasicPattern();
-        for ( int i = 1; i < list.size(); i++ )
-        {
+        for ( int i = 1 ; i < list.size() ; i++ ) {
             Item item = list.get(i);
-            if ( ! item.isList() )
+            if ( !item.isList() )
                 BuilderLib.broken(item, "Not a triple structure");
             Triple t = BuilderGraph.buildTriple(item.getList());
             triples.add(t);
@@ -160,36 +150,29 @@ public class BuilderOp
         return triples;
     }
 
-    protected Op build(ItemList list, int idx)
-    {
+    protected Op build(ItemList list, int idx) {
         return build(list.get(idx).getList());
     }
 
     // <<<< ---- Coordinate these
     // Lowercase on insertion?
-    protected void addBuild(String tag, Build builder)
-    {
+    protected void addBuild(String tag, Build builder) {
         dispatch.put(tag, builder);
     }
 
-    protected void removeBuild(String tag)
-    {
+    protected void removeBuild(String tag) {
         dispatch.remove(tag);
     }
 
-    protected boolean containsBuild(String tag)
-    {
+    protected boolean containsBuild(String tag) {
         return findBuild(tag) != null;
 
     }
 
-    protected Build findBuild(String str)
-    {
-        for ( String key : dispatch.keySet() )
-        {
-            if ( str.equalsIgnoreCase( key ) )
-            {
-                return dispatch.get( key );
+    protected Build findBuild(String str) {
+        for ( String key : dispatch.keySet() ) {
+            if ( str.equalsIgnoreCase(key) ) {
+                return dispatch.get(key);
             }
         }
         return null;
@@ -202,7 +185,7 @@ public class BuilderOp
 
     // Not static.  The initialization through the singleton would not work
     // (static initialization order - these operations would need to go
-    // before the singelton.
+    // before the singleton.
     // Or assign null and create object on first call but that breaks add/remove
     final protected Build buildTable = (ItemList list) -> {
             Item t = Item.createList(list);
@@ -331,14 +314,6 @@ public class BuilderOp
 		return op;
     };
 
-    final protected Build buildDiff = (ItemList list) -> {
-		BuilderLib.checkLength(3, 4, list, "diff: wanted 2 arguments");
-		Op left = build(list, 1);
-		Op right  = build(list, 2);
-		Op op = OpDiff.create(left, right);
-		return op;
-    };
-
     final protected Build buildMinus = (ItemList list) -> {
 		BuilderLib.checkLength(3, 4, list, "minus: wanted 2 arguments");
 		Op left = build(list, 1);
@@ -366,6 +341,22 @@ public class BuilderOp
         Op left = build(list, 1);
         Op right = build(list, 2);
         Op op = OpLateral.create(left, right);
+        return op;
+    };
+
+    final protected Build buildSemiJoin = (ItemList list) -> {
+        BuilderLib.checkLength(3, 4, list, "lateral");
+        Op left = build(list, 1);
+        Op right = build(list, 2);
+        Op op = OpSemiJoin.create(left, right);
+        return op;
+    };
+
+    final protected Build buildAntiJoin = (ItemList list) -> {
+        BuilderLib.checkLength(3, 4, list, "lateral");
+        Op left = build(list, 1);
+        Op right = build(list, 2);
+        Op op = OpAntiJoin.create(left, right);
         return op;
     };
 

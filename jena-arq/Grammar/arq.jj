@@ -628,6 +628,18 @@ Element TriplesBlock(ElementPathBlock acc) : { }
   ( <DOT> (TriplesBlock(acc))? )?
     { return acc ; }
 }
+Node ReifiedTripleBlock(TripleCollector acc) : { Node reifId ; }
+{
+  reifId = ReifiedTriple(acc)
+  PropertyList(reifId, acc)
+  { return reifId ; }
+}
+Node ReifiedTripleBlockPath(TripleCollector acc) : { Node reifId ; }
+{
+  reifId = ReifiedTriple(acc)
+  PropertyListPath(reifId, acc)
+  { return reifId ; }
+}
 Element GraphPatternNotTriples() : { Element el = null ; }
 {
  (
@@ -636,6 +648,10 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = OptionalGraphPattern()
  |
    el = LateralGraphPattern()
+ |
+   el = SemiJoinGraphPattern()
+ |
+   el = AntiJoinGraphPattern()
  |
    el = MinusGraphPattern()
  |
@@ -666,6 +682,14 @@ Element OptionalGraphPattern() : { Element el ; }
 Element LateralGraphPattern() : { Element el ; }
 { <LATERAL> el = GroupGraphPattern()
     { return new ElementLateral(el) ; }
+}
+Element SemiJoinGraphPattern() : { Element el ; }
+{ <SEMIJOIN> el = GroupGraphPattern()
+    { return new ElementSemiJoin(el) ; }
+}
+Element AntiJoinGraphPattern() : { Element el ; }
+{ <ANTIJOIN> el = GroupGraphPattern()
+    { return new ElementAntiJoin(el) ; }
 }
 Element GraphGraphPattern() : { Element el ; Node n ;}
 {
@@ -756,7 +780,20 @@ Node DataBlockValue() : { Node n ; String iri ; }
 | n = NumericLiteral() { return n ; }
 | n = BooleanLiteral() { return n ; }
 | <UNDEF> { return null ; }
-| n = QuotedTripleData() { return n ; }
+| n = TripleTermData() { return n ; }
+}
+Node Reifier() : { Token tok = null ; Node reifId = null ; }
+{
+    tok = <TILDE>
+    (reifId = VarOrReifierId() )?
+    { return reifId; }
+}
+Node VarOrReifierId() : { Node n = null; String iri = null; }
+{
+   ( n = Var() { return n; }
+   | iri = iri() { return createNode(iri) ; }
+   | n = BlankNode() { return n ; }
+   )
 }
 Element Assignment() : { Var v ; Expr expr ; }
 {
@@ -833,7 +870,7 @@ Expr FunctionCall() : { String fname ; Args a ; }
   {
      if ( AggregateRegistry.isRegistered(fname) ) {
          if ( ! getAllowAggregatesInExpressions() )
-            throwParseException("Aggregate expression not legal at this point : "+fname, -1, -1) ;
+            throwParseException("Aggregate expression not legal at this point : "+fname, token.beginLine, token.beginColumn) ;
          Aggregator agg = AggregatorFactory.createCustom(fname, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;
          return exprAgg ;
@@ -898,6 +935,8 @@ void TriplesSameSubject(TripleCollector acc) : { Node s ; }
   s = TriplesNode(tempAcc)
   PropertyList(s, tempAcc)
   { insert(acc, tempAcc) ; }
+|
+  ReifiedTripleBlock(acc)
 }
 void PropertyList(Node s, TripleCollector acc) : { }
 {
@@ -941,6 +980,8 @@ void TriplesSameSubjectPath(TripleCollector acc) : { Node s ; }
   s = TriplesNodePath(tempAcc)
   PropertyListPath(s, tempAcc)
   { insert(acc, tempAcc) ; }
+|
+  ReifiedTripleBlockPath(acc)
 }
 void PropertyListPath(Node s, TripleCollector acc) : { }
 {
@@ -1059,6 +1100,11 @@ Path PathMod(Path p) : { long i1 ; long i2 ; }
        )
    )
 }
+long Integer() : {Token t ;}
+{
+    t = <INTEGER>
+    { return integerValue(t.image) ; }
+}
 Path PathPrimary() : { String str ; Path p ; Node n ; }
 {
   (
@@ -1109,16 +1155,11 @@ P_Path0 PathOneInPropertySet() : { String str ; Node n ; }
     )
   )
 }
-long Integer() : {Token t ;}
-{
-    t = <INTEGER>
-    { return integerValue(t.image) ; }
-}
 Node TriplesNode(TripleCollectorMark acc) : { Node n ; }
 {
-  n = Collection(acc) { return n ; }
+   n = Collection(acc) { return n ; }
  |
-  n = BlankNodePropertyList(acc) { return n ; }
+   n = BlankNodePropertyList(acc) { return n ; }
 }
 Node BlankNodePropertyList(TripleCollector acc) : { Token t ; }
 {
@@ -1130,9 +1171,9 @@ Node BlankNodePropertyList(TripleCollector acc) : { Token t ; }
 }
 Node TriplesNodePath(TripleCollectorMark acc) : { Node n ; }
 {
-  n = CollectionPath(acc) { return n ; }
+   n = CollectionPath(acc) { return n ; }
  |
-  n = BlankNodePropertyListPath(acc) { return n ; }
+   n = BlankNodePropertyListPath(acc) { return n ; }
 }
 Node BlankNodePropertyListPath(TripleCollector acc) : { Token t ; }
 {
@@ -1190,80 +1231,177 @@ Node CollectionPath(TripleCollectorMark acc) :
        insert(acc, lastCell, nRDFrest, nRDFnil) ;
      return listHead ; }
 }
-void AnnotationPath(TripleCollector acc, Node s, Node p, Path path, Node o) : {}
+void AnnotationPath(TripleCollector acc, Node s, Node p, Path path, Node o) : { Node reifId = null ; }
 {
   (
-    <L_ANN>
-      { Node pAnn = preConditionAnnotation(s, p, path, o, token.beginLine, token.beginColumn) ;
-        Node x = createQuotedTriple(s, pAnn, o, token.beginLine, token.beginColumn);
-      }
-      PropertyListPathNotEmpty(x, acc)
-    <R_ANN>
-  )?
+    { p = preConditionReifier(s, p, path, o, token.beginLine, token.beginColumn); }
+    reifId = Reifier()
+    { reifId = insertTripleReifier(acc, reifId, s, p, o, token.beginLine, token.beginColumn) ; }
+    { setReifierId(reifId); }
+  |
+    {
+      p = preConditionReifier(s, p, path, o, token.beginLine, token.beginColumn);
+      reifId = getOrAllocReifierId(acc, s, p, o, token.beginLine, token.beginColumn);
+    }
+    { clearReifierId(); }
+    AnnotationBlockPath(acc, reifId)
+  )*
+  { clearReifierId(); }
 }
-void Annotation(TripleCollector acc, Node s, Node p, Path path, Node o) : { }
+void AnnotationBlockPath(TripleCollector acc, Node reifId) : { }
+{
+   <L_ANN>
+      PropertyListPathNotEmpty(reifId, acc)
+   <R_ANN>
+}
+void Annotation(TripleCollector acc, Node s, Node p, Path path, Node o) : { Node reifId = null ; }
 {
   (
-    <L_ANN>
-      { Node pAnn = preConditionAnnotation(s, p, path, o, token.beginLine, token.beginColumn) ;
-        Node x = createQuotedTriple(s, p, o, token.beginLine, token.beginColumn);
-      }
-      PropertyListNotEmpty(x, acc)
-    <R_ANN>
-  )?
+    { p = preConditionReifier(s, p, path, o, token.beginLine, token.beginColumn); }
+    reifId = Reifier()
+    { reifId = insertTripleReifier(acc, reifId, s, p, o, token.beginLine, token.beginColumn) ; }
+    { setReifierId(reifId); }
+  |
+    {
+      p = preConditionReifier(s, p, path, o, token.beginLine, token.beginColumn);
+      reifId = getOrAllocReifierId(acc, s, p, o, token.beginLine, token.beginColumn);
+    }
+    { clearReifierId(); }
+    AnnotationBlock(acc, reifId)
+  )*
+}
+void AnnotationBlock(TripleCollector acc, Node reifId) : { }
+{
+   <L_ANN>
+      PropertyListNotEmpty(reifId, acc)
+   <R_ANN>
 }
 Node GraphNode(TripleCollectorMark acc) : { Node n ; }
 {
-  n = VarOrTerm() { return n ; }
+   n = VarOrTerm() { return n ; }
  |
-  n = TriplesNode(acc) { return n ; }
+   n = TriplesNode(acc) { return n ; }
+ |
+   n = ReifiedTriple(acc) { return n ; }
 }
 Node GraphNodePath(TripleCollectorMark acc) : { Node n ; }
 {
   n = VarOrTerm() { return n ; }
- |
+|
   n = TriplesNodePath(acc) { return n ; }
+|
+  n = ReifiedTriple(acc) { return n ; }
 }
 Node VarOrTerm() : { Node n = null ; String iri ; }
 {
   ( n = Var()
   | iri = iri() { return createNode(iri) ; }
-  | n = RDFLiteral() { return n ; }
-  | n = NumericLiteral() { return n ; }
-  | n = BooleanLiteral() { return n ; }
-  | n = BlankNode() { return n ; }
+  | n = RDFLiteral()
+  | n = NumericLiteral()
+  | n = BooleanLiteral()
+  | n = BlankNode()
   | <NIL> { return nRDFnil ; }
-  | n = QuotedTriple()
-)
-  { return n ; }
+  | n = TripleTerm() { return n; }
+  )
+  { return n; }
 }
-Node QuotedTriple() : { Node n = null ; Token t ; Node s , p , o ; }
+Node ReifiedTriple(TripleCollector acc) : { Node reifId = null ; Token tok ; Node s; Node p ; Node o ; }
 {
-  t = <LT2>
-  s = VarOrTerm()
+  tok = <LT2>
+  s = ReifiedTripleSubject(acc)
   p = Verb()
-  o = VarOrTerm()
-  { n = createQuotedTriple(s, p, o, t.beginLine, t.beginColumn); }
+  o = ReifiedTripleObject(acc)
+  (reifId = Reifier())?
+  { reifId = insertTripleReifier(acc, reifId, s, p, o, tok.beginLine, tok.beginColumn) ; }
   <GT2>
+  { return reifId; }
+}
+Node ReifiedTripleSubject(TripleCollector acc) : { Node s; String iri; }
+{
+  ( s = Var()
+  | iri = iri() { s = createNode(iri) ; }
+  | s = RDFLiteral()
+  | s = NumericLiteral()
+  | s = BooleanLiteral()
+  | s = BlankNode()
+  | s = ReifiedTriple(acc)
+  )
+  { return s; }
+}
+Node ReifiedTripleObject(TripleCollector acc) : { Node o; String iri; }
+{
+  ( o = Var()
+  | iri = iri() { o = createNode(iri) ; }
+  | o = RDFLiteral()
+  | o = NumericLiteral()
+  | o = BooleanLiteral()
+  | o = BlankNode()
+  | o = ReifiedTriple(acc)
+  | o = TripleTerm()
+  )
+  { return o; }
+}
+Node TripleTerm() : { Node n = null ; Token openToken ; String iri ; Node s , p , o ; }
+{
+    openToken = <L_TRIPLE>
+    s = TripleTermSubject()
+    p = Verb()
+    o = TripleTermObject()
+    { n = createTripleTerm(s, p, o, openToken.beginLine, openToken.beginColumn); }
+    <R_TRIPLE>
+    { return n ; }
+}
+Node TripleTermSubject() : { Node n; String iri; }
+{
+  ( n = Var()
+  | iri = iri() { n = createNode(iri) ; }
+  | n = RDFLiteral()
+  | n = NumericLiteral()
+  | n = BooleanLiteral()
+  | n = BlankNode()
+  )
   { return n; }
 }
-Node QuotedTripleData() : { Node n = null ; Token t ; String iri ; Node s , p , o ; }
+Node TripleTermObject() : { Node n; String iri; }
 {
-  t = <LT2>
-  ( s = DataValueTerm() )
-  ( iri = iri() { p = createNode(iri) ; } | <KW_A> { p = nRDFtype ; } )
-  ( o = DataValueTerm() )
-  { n = createQuotedTriple(s, p, o, t.beginLine, t.beginColumn); }
-  <GT2>
+  ( n = Var()
+  | iri = iri() { n = createNode(iri) ; }
+  | n = RDFLiteral()
+  | n = NumericLiteral()
+  | n = BooleanLiteral()
+  | n = BlankNode()
+  | n = TripleTerm() { return n; }
+  )
   { return n; }
 }
-Node DataValueTerm() : { Node n = null ; String iri ; Node s , p , o ; }
+Node TripleTermData() : { Node n = null ; Token openToken ; String iri ; Node s , p , o ; }
 {
-  iri = iri() { return createNode(iri) ; }
-| n = RDFLiteral() { return n ; }
-| n = NumericLiteral() { return n ; }
-| n = BooleanLiteral() { return n ; }
-| n = QuotedTripleData() { return n ; }
+    openToken = <L_TRIPLE>
+    s = TripleTermDataSubject()
+    ( iri = iri() { p = createNode(iri) ; } | <KW_A> { p = nRDFtype ; } )
+    o = TripleTermDataObject()
+    { n = createTripleTerm(s, p, o, openToken.beginLine, openToken.beginColumn); }
+    <R_TRIPLE>
+    { return n ; }
+}
+Node TripleTermDataSubject() : { Node n = null; String iri; }
+{
+ ( iri = iri() { n = createNode(iri) ; }
+ | n = RDFLiteral()
+ | n = NumericLiteral()
+ | n = BooleanLiteral()
+ )
+ { return n; }
+}
+Node TripleTermDataObject() : { Node n = null; String iri; }
+{
+ ( iri = iri() { n = createNode(iri) ; }
+ | n = RDFLiteral()
+ | n = NumericLiteral()
+ | n = BooleanLiteral()
+ | n = TripleTermData()
+ )
+ { return n; }
 }
 Node VarOrIri() : {Node n = null ; String iri ; }
 {
@@ -1401,27 +1539,38 @@ Expr PrimaryExpression() : { Expr expr ; Node n ; }
   | n = NumericLiteral() { return asExpr(n) ; }
   | n = BooleanLiteral() { return asExpr(n) ; }
   | n = Var() { return asExpr(n) ; }
-  | n = ExprQuotedTriple() { return asExpr(n) ; }
+  | n = ExprTripleTerm() { return asExpr(n) ; }
   )
 }
-Node ExprVarOrTerm() : { Node n; String s;}
+Node ExprTripleTerm() : { Token t ; Node s,p,o,n; }
 {
-  ( s = iri() { n = createNode(s); }
+  t = <L_TRIPLE>
+  s = ExprTripleTermSubject()
+  p = Verb()
+  o = ExprTripleTermObject()
+  { n = createTripleTerm(s, p, o, t.beginLine, t.beginColumn); }
+  <R_TRIPLE>
+  { return n; }
+}
+Node ExprTripleTermSubject() : { Node n; String iri; }
+{
+  ( iri = iri() { n = createNode(iri); }
   | n = RDFLiteral()
   | n = NumericLiteral()
   | n = BooleanLiteral()
   | n = Var()
-  | n = ExprQuotedTriple()
   )
   { return n; }
 }
-Node ExprQuotedTriple() : { Token t ; Node s,p,o,n; }
-{ t = <LT2>
-  s = ExprVarOrTerm()
-  p = Verb()
-  o = ExprVarOrTerm()
-  { n = createQuotedTriple(s, p, o, t.beginLine, t.beginColumn); }
-  <GT2>
+Node ExprTripleTermObject() : { Node n; String iri; }
+{
+  ( iri = iri() { n = createNode(iri); }
+  | n = RDFLiteral()
+  | n = NumericLiteral()
+  | n = BooleanLiteral()
+  | n = Var()
+  | n = ExprTripleTerm()
+  )
   { return n; }
 }
 Expr BrackettedExpression() : { Expr expr ; }
@@ -1441,6 +1590,8 @@ Expr BuiltInCall() : { Expr expr ;
   | <LANGMATCHES>
        <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_LangMatches(expr1, expr2) ; }
+  | <LANGDIR> <LPAREN> expr = Expression() <RPAREN>
+    { return new E_LangDir(expr) ; }
   | <DTYPE> <LPAREN> expr = Expression() <RPAREN>
     { return new E_Datatype(expr) ; }
   | <BOUND> <LPAREN> gn = Var() <RPAREN>
@@ -1514,6 +1665,10 @@ Expr BuiltInCall() : { Expr expr ;
     { return new E_Conditional(expr, expr1, expr2) ; }
   | <STRLANG> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_StrLang(expr1, expr2) ; }
+  | <STRLANGDIR> <LPAREN> expr1 = Expression() <COMMA>
+                          expr2 = Expression() <COMMA>
+                          expr3 = Expression() <RPAREN>
+    { return new E_StrLangDir(expr1, expr2, expr3) ; }
   | <STRDT> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_StrDatatype(expr1, expr2) ; }
   | <SAME_TERM> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
@@ -1528,13 +1683,19 @@ Expr BuiltInCall() : { Expr expr ;
     { return new E_IsLiteral(expr) ; }
   | <IS_NUMERIC> <LPAREN> expr = Expression() <RPAREN>
     { return new E_IsNumeric(expr) ; }
+  | <HAS_LANG> <LPAREN> expr = Expression() <RPAREN>
+    { return new E_HasLang(expr) ; }
+  | <HAS_LANGDIR> <LPAREN> expr = Expression() <RPAREN>
+    { return new E_HasLangDir(expr) ; }
   |
     expr = RegexExpression() { return expr ; }
   | expr = ExistsFunc() { return expr ; }
   | expr = NotExistsFunc() { return expr ; }
-| <IS_TRIPLE> <LPAREN> expr = Expression() <RPAREN>
+  | <IS_TRIPLE> <LPAREN> expr = Expression() <RPAREN>
     { return new E_IsTriple(expr) ; }
-  | <TRIPLE> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <COMMA> expr3 = Expression() <RPAREN>
+  | <TRIPLE> <LPAREN> expr1 = Expression() <COMMA>
+                       expr2 = Expression() <COMMA>
+                       expr3 = Expression() <RPAREN>
     { return new E_TripleFn(expr1, expr2, expr3) ; }
   | <SUBJECT> <LPAREN> expr = Expression() <RPAREN>
     { return new E_TripleSubject(expr) ; }
@@ -1689,7 +1850,7 @@ Expr iriOrFunction() : { String iri ; Args a = null ; }
        return asExpr(createNode(iri)) ;
     if ( AggregateRegistry.isRegistered(iri) ) {
          if ( ! getAllowAggregatesInExpressions() )
-            throwParseException("Aggregate expression not legal at this point : "+iri, -1, -1) ;
+            throwParseException("Aggregate expression not legal at this point : "+iri, token.beginLine, token.beginColumn) ;
          Aggregator agg = AggregatorFactory.createCustom(iri, a) ;
          Expr exprAgg = getQuery().allocAggregate(agg) ;
          return exprAgg ;
@@ -1697,16 +1858,17 @@ Expr iriOrFunction() : { String iri ; Args a = null ; }
     return new E_Function(iri, a) ;
   }
 }
-Node RDFLiteral() : { Token t ; String lex = null ; }
+Node RDFLiteral() : { Token t ; String lex = null ; String uri = null ; }
 {
   lex = String()
-  { String lang = null ; String uri = null ; }
   (
-    ( t = <LANGTAG> { lang = stripChars(t.image, 1) ; } )
+    t = <LANG_DIR>
+    { return createLiteralLang(lex, t.image, token.beginLine, token.beginColumn); }
   |
-    ( <DATATYPE> uri = iri() )
+     <DATATYPE> uri = iri()
+     { return createLiteralDT(lex, uri, token.beginLine, token.beginColumn); }
   )?
-    { return createLiteral(lex, lang, uri) ; }
+  { return createLiteralString(lex, token.beginLine, token.beginColumn) ; }
 }
 Node NumericLiteral() : { Node n ; }
 {
@@ -1802,7 +1964,7 @@ TOKEN:
 | <BLANK_NODE_LABEL: "_:" (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)? >
 | <VAR1: "?" <VARNAME> >
 | <VAR2: "$" <VARNAME> >
-| <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* >
+| <LANG_DIR: <AT> (<A2Z>)+("-" (<A2ZN>)+)* ( "--" (<A2Z>)* )? >
 | <#A2Z: ["a"-"z","A"-"Z"]>
 | <#A2ZN: ["a"-"z","A"-"Z","0"-"9"]>
 }
@@ -1837,7 +1999,9 @@ TOKEN [IGNORE_CASE] :
 | < BIND: "bind" >
 | < SERVICE: "service" >
 | < LET: "LET" >
-| < LATERAL: "LATERAL" >
+| < LATERAL: "lateral" >
+| < SEMIJOIN: "semijoin" >
+| < ANTIJOIN: "antijoin" >
 | < UNFOLD: "unfold" >
 | < TRIPLE: "TRIPLE" >
 | < IS_TRIPLE: "isTRIPLE" >
@@ -1881,15 +2045,19 @@ TOKEN [IGNORE_CASE] :
 | < SHORTEST: "shortest" >
 | < STR: "str" >
 | < STRLANG: "strlang" >
+| < STRLANGDIR: "strlangdir" >
 | < STRDT: "strdt" >
 | < DTYPE: "datatype" >
 | < LANG: "lang" >
 | < LANGMATCHES: "langmatches" >
+| < LANGDIR: "langdir" >
 | < IS_URI: "isURI" >
 | < IS_IRI: "isIRI" >
 | < IS_BLANK: "isBlank" >
 | < IS_LITERAL: "isLiteral" >
 | < IS_NUMERIC: "isNumeric" >
+| < HAS_LANG: "hasLang" >
+| < HAS_LANGDIR: "hasLangDir" >
 | < REGEX: "regex" >
 | < SAME_TERM: "sameTerm" >
 | < RAND: "RAND" >
@@ -2014,12 +2182,14 @@ TOKEN :
 | < LT: "<" >
 | < LE: "<=" >
 | < GE: ">=" >
-| < GT2: ">>" >
+| < L_TRIPLE: "<<(" >
+| < R_TRIPLE: ")>>" >
 | < LT2: "<<" >
-| <L_ANN: "{|" >
-| <R_ANN: "|}" >
-| < BANG: "!" >
+| < GT2: ">>" >
+| < L_ANN: "{|" >
+| < R_ANN: "|}" >
 | < TILDE: "~" >
+| < BANG: "!" >
 | < COLON: ":" >
 | < SC_OR: "||" >
 | < SC_AND: "&&" >

@@ -148,6 +148,18 @@ public class ElementRewriter extends AbstractRewriter<Element> implements Elemen
     }
 
     @Override
+    public void visit(ElementSemiJoin el) {
+        el.getSubElement().visit(this);
+        push(new ElementSemiJoin(getResult()));
+    }
+
+    @Override
+    public void visit(ElementAntiJoin el) {
+        el.getSubElement().visit(this);
+        push(new ElementAntiJoin(getResult()));
+    }
+
+    @Override
     public void visit(ElementOptional el) {
         el.getOptionalElement().visit(this);
         push(new ElementOptional(getResult()));

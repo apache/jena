@@ -20,26 +20,26 @@ package org.apache.jena.riot.thrift;
 
 import java.io.*;
 
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.thrift.wire.RDF_ANY ;
-import org.apache.jena.riot.thrift.wire.RDF_StreamRow ;
-import org.apache.jena.riot.thrift.wire.RDF_Term ;
-import org.apache.jena.riot.thrift.wire.RDF_UNDEF ;
-import org.apache.thrift.TException ;
-import org.apache.thrift.protocol.TCompactProtocol ;
-import org.apache.thrift.protocol.TJSONProtocol ;
-import org.apache.thrift.protocol.TProtocol ;
-import org.apache.thrift.protocol.TTupleProtocol ;
-import org.apache.thrift.transport.TIOStreamTransport ;
-import org.apache.thrift.transport.TTransport ;
+import org.apache.jena.atlas.io.IO;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.riot.RiotException;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.thrift.wire.RDF_ANY;
+import org.apache.jena.riot.thrift.wire.RDF_StreamRow;
+import org.apache.jena.riot.thrift.wire.RDF_Term;
+import org.apache.jena.riot.thrift.wire.RDF_UNDEF;
+import org.apache.thrift.TException;
+import org.apache.thrift.protocol.TCompactProtocol;
+import org.apache.thrift.protocol.TJSONProtocol;
+import org.apache.thrift.protocol.TProtocol;
+import org.apache.thrift.protocol.TTupleProtocol;
+import org.apache.thrift.transport.TIOStreamTransport;
+import org.apache.thrift.transport.TTransport;
 
 /** Support operations for RDF Thrift */
 public class TRDF {
-    private static final int BUFSIZE_IN   = 128*1024 ;
-    private static final int BUFSIZE_OUT  = 128*1024; ;
+    private static final int BUFSIZE_IN   = 128*1024;
+    private static final int BUFSIZE_OUT  = 128*1024;;
 
     public static InputStream ensureBuffered(InputStream input) {
         if ( input instanceof BufferedInputStream )
@@ -64,11 +64,11 @@ public class TRDF {
     public static TProtocol protocol(InputStream in) {
         in = ensureBuffered(in);
         try {
-            TTransport transport = new TIOStreamTransport(in) ;
-            transport.open() ;
-            TProtocol protocol = protocol(transport) ;
-            return protocol ;
-        } catch (TException ex) { TRDF.exception(ex) ; return null ; }
+            TTransport transport = new TIOStreamTransport(in);
+            transport.open();
+            TProtocol protocol = protocol(transport);
+            return protocol;
+        } catch (TException ex) { TRDF.exception(ex); return null; }
     }
 
     /**
@@ -81,11 +81,11 @@ public class TRDF {
         out = ensureBuffered(out);
         try {
             // Flushing the protocol will flush the BufferedOutputStream
-            TTransport transport = new TIOStreamTransport(out) ;
-            transport.open() ;
-            TProtocol protocol = protocol(transport) ;
-            return protocol ;
-        } catch (TException ex) { TRDF.exception(ex) ; return null ; }
+            TTransport transport = new TIOStreamTransport(out);
+            transport.open();
+            TProtocol protocol = protocol(transport);
+            return protocol;
+        } catch (TException ex) { TRDF.exception(ex); return null; }
     }
 
     /**
@@ -93,55 +93,55 @@ public class TRDF {
      * @param filename
      */
     public static TProtocol protocol(String filename) {
-        InputStream in = IO.openFile(filename) ;
-        TProtocol protocol = protocol(in) ;
-        return protocol ;
+        InputStream in = IO.openFile(filename);
+        TProtocol protocol = protocol(in);
+        return protocol;
     }
 
     public static TProtocol protocol(TTransport transport) {
-        if ( true ) return new TCompactProtocol(transport) ;
+        if ( true ) return new TCompactProtocol(transport);
 
         // Keep the warnings down.
-        if ( false ) return new TTupleProtocol(transport) ;
-        if ( false ) return new TJSONProtocol(transport) ;
-        throw new RiotThriftException("No protocol impl choosen") ;
+        if ( false ) return new TTupleProtocol(transport);
+        if ( false ) return new TJSONProtocol(transport);
+        throw new RiotThriftException("No protocol impl choosen");
     }
 
     /** Flush a TProtocol; exceptions converted to {@link RiotException} */
     public static void flush(TProtocol protocol) {
-        flush(protocol.getTransport()) ;
+        flush(protocol.getTransport());
     }
 
     /** Flush a TTransport; exceptions converted to {@link RiotException} */
     public static void flush(TTransport transport) {
-        try { transport.flush() ; }
-        catch (TException ex) { TRDF.exception(ex) ; }
+        try { transport.flush(); }
+        catch (TException ex) { TRDF.exception(ex); }
     }
 
-    public static final RDF_ANY ANY = new RDF_ANY() ;
+    public static final RDF_ANY ANY = new RDF_ANY();
     /** The Thrift RDF Term 'ANY' */
-    public static final RDF_Term tANY = new RDF_Term() ;
+    public static final RDF_Term tANY = new RDF_Term();
     /** The Thrift RDF Term 'UNDEF' */
-    public static final RDF_UNDEF UNDEF = new RDF_UNDEF() ;
+    public static final RDF_UNDEF UNDEF = new RDF_UNDEF();
     public static final RDF_Term tUNDEF = new RDF_Term();
 
-    static { tANY.setAny(new RDF_ANY()) ; }
+    static { tANY.setAny(new RDF_ANY()); }
 
-    static { tUNDEF.setUndefined(new RDF_UNDEF()) ; }
+    static { tUNDEF.setUndefined(new RDF_UNDEF()); }
 
     public static void visit(RDF_StreamRow row, VisitorStreamRowTRDF visitor) {
         if ( row.isSetTriple() ) {
-            visitor.visit(row.getTriple()) ;
+            visitor.visit(row.getTriple());
         } else if ( row.isSetQuad() ) {
-            visitor.visit(row.getQuad()) ;
+            visitor.visit(row.getQuad());
         } else if ( row.isSetPrefixDecl() ) {
-            visitor.visit(row.getPrefixDecl()) ;
+            visitor.visit(row.getPrefixDecl());
         } else {
-            Log.warn(ThriftConvert.class, "visit: Unrecognized: "+row) ;
+            Log.warn(ThriftConvert.class, "visit: Unrecognized: "+row);
         }
     }
 
-    public static void exception(TException ex) { throw new RiotThriftException(ex) ; }
+    public static void exception(TException ex) { throw new RiotThriftException(ex); }
 
 }
 

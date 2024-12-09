@@ -49,13 +49,15 @@ public class OpVisitorBase implements OpVisitor
 
     @Override public void visit(OpLeftJoin opLeftJoin)          {}
 
-    @Override public void visit(OpLateral opLateral)            {}
-
     @Override public void visit(OpConditional opCond)           {}
 
     @Override public void visit(OpMinus opMinus)                {}
 
-    @Override public void visit(OpDiff opDiff)                  {}
+    @Override public void visit(OpLateral opLateral)            {}
+
+    @Override public void visit(OpSemiJoin opSemiJoin)          {}
+
+    @Override public void visit(OpAntiJoin opAntiJoin)          {}
 
     @Override public void visit(OpUnion opUnion)                {}
 

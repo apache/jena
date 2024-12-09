@@ -62,8 +62,8 @@ public class TestQuadFilter
         Dataset ds = createDataset();
         DatasetGraph dsg = ds.asDatasetGraph();
         Txn.executeWrite(dsg, () -> {
-            Quad q1 = SSE.parseQuad("(:g1 << :s :p :o1 >> :q :z1)");
-            Quad q2 = SSE.parseQuad("(:g2 << :s :p :o2 >> :q :z2)");
+            Quad q1 = SSE.parseQuad("(:g1 :r1 rdf:reifies <<( :s :p :o1 )>>)");
+            Quad q2 = SSE.parseQuad("(:g2 :r2 rdf:reifies <<( :s :p :o2 )>>)");
             dsg.add(q1);
             dsg.add(q2);
         });
@@ -85,8 +85,14 @@ public class TestQuadFilter
     @Test public void quad_filter_2()   { test(ds1, "SELECT * { ?s ?p ?o }", 1, 2); }
     @Test public void quad_filter_3()   { test(ds1, "SELECT * { GRAPH ?g { } }", 1, 2); }
 
-    @Test public void quad_filter_4()   { test(ds2, "SELECT * { GRAPH ?g { << ?s ?p ?o >> ?q ?z } }", 1, 2); }
-    @Test public void quad_filter_5()   { test(ds2, "SELECT * { << ?s ?p ?o >> ?q ?z }", 1, 2); }
+    @Test public void quad_filter_4()   { test(ds2, "SELECT * { GRAPH ?g { ?x ?q <<( ?s ?p ?o )>> } }", 1, 2); }
+    @Test public void quad_filter_5()   { test(ds2, "SELECT * { ?x ?q <<( ?s ?p ?o )>> }", 1, 2); }
+
+    @Test public void quad_filter_6()   { test(ds2, "SELECT * { << ?s ?p ?o >> }", 1, 2); }
+    @Test public void quad_filter_7()   { test(ds2, "SELECT * { <http://example/r1> ?P ?O }", 1, 1); }
+
+    // Reified triple.
+    @Test public void quad_filter_8()   { test(ds2, "SELECT * { << ?s ?p <http://example/o2> >> }", 0, 1); }
 
     private static void test(Dataset dataset, String qs, int withFilter, int withoutFilter) {
         Predicate<Tuple<NodeId>> filter = createFilter(dataset);

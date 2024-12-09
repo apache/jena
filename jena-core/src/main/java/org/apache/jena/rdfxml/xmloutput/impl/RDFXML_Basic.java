@@ -23,6 +23,7 @@ import java.io.PrintWriter;
 import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.impl.Util ;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.vocabulary.RDFSyntax ;
 
 /** Writes out an XML serialization of a model.
@@ -144,6 +145,9 @@ public class RDFXML_Basic extends BaseXMLWriter
 		if (r.isAnon()) {
 			writer.print(rdfAt("nodeID") + "=" + attributeQuoted(anonId(r)));
 		} else {
+		    if ( r.isStmtResource() )
+		        throw new JenaException("Triple terms not supported in RDF/XML");
+
 			writer.print(
 				rdfAt("resource")
 					+ "="

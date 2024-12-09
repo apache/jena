@@ -68,76 +68,76 @@ public class TestRDFStarTranslation {
 
     @Test public void rdfx_01() {
         // One term
-        Graph graph = data("(graph (<<:s :p :o>> :q :z) (:s1 :p1 :o1) )");
+        Graph graph = data("(graph (<<(:s :p :o)>> :q :z) (:s1 :p1 :o1) )");
         testEncode(graph, 5, (g)-> G.getOnePO(g, q, z));
     }
 
     @Test public void rdfx_02() {
         // One term, used twice, subj/subj
-        Graph graph = data("(graph (<<:s :p :o>> :q :z) (<<:s :p :o>> :q2 :z2) )");
+        Graph graph = data("(graph (<<(:s :p :o)>> :q :z) (<<(:s :p :o)>> :q2 :z2) )");
         testEncode(graph, 5, (g)-> G.getOnePO(g, q, z));
     }
 
     @Test public void rdfx_03() {
         // One term, used twice, subj/obj
-        Graph graph = data("(graph (<<:s :p :o>> :q :z) (:a :q <<:s :p :o>>) )");
+        Graph graph = data("(graph (<<(:s :p :o)>> :q :z) (:a :q <<(:s :p :o)>>) )");
         testEncode(graph, 5, (g)-> G.getOnePO(g, q, z));
     }
 
     @Test public void rdfx_04() {
         // One term, used subj/obj same triple.
-        Graph graph = data("(graph (<<:s :p :o>> :q <<:s :p :o>>) (<<:s :p :o>> :q :z) )");
+        Graph graph = data("(graph (<<(:s :p :o)>> :q <<(:s :p :o)>>) (<<(:s :p :o)>> :q :z) )");
         testEncode(graph, 5, (g)-> G.getOnePO(g, q, z));
     }
 
     @Test public void rdfx_05() {
         // Two terms
-        Graph graph = data("(graph (<<:s :p :o>> :q <<:s1 :p1 :o1>>) (<<:s :p :o>> :q :z) )");
+        Graph graph = data("(graph (<<(:s :p :o)>> :q <<(:s1 :p1 :o1)>>) (<<(:s :p :o)>> :q :z) )");
         testEncode(graph, 8, (g)-> G.getOnePO(g, q, z));
     }
 
     @Test public void rdfx_10() {
         // One term
-        testEncodeDecode("(graph (<<:s :p :o>> :q :z) (:s1 :p1 :o1) )");
+        testEncodeDecode("(graph (<<(:s :p :o)>> :q :z) (:s1 :p1 :o1) )");
     }
 
     @Test public void rdfx_11() {
         // One term, used twice, subj/subj
-        testEncodeDecode("(graph (<<:s :p :o>> :q :z) (<<:s :p :o>> :q2 :z2) )");
+        testEncodeDecode("(graph (<<(:s :p :o)>> :q :z) (<<(:s :p :o)>> :q2 :z2) )");
     }
 
     @Test public void rdfx_12() {
         // One term, used twice, subj/obj
-        testEncodeDecode("(graph (<<:s :p :o>> :q :z) (:a :q <<:s :p :o>>) )");
+        testEncodeDecode("(graph (<<(:s :p :o)>> :q :z) (:a :q <<(:s :p :o)>>) )");
     }
 
     @Test public void rdfx_13() {
         // One term, used subj/obj same triple.
-        testEncodeDecode("(graph (<<:s :p :o>> :q <<:s :p :o>>) (<<:s :p :o>> :q :z) )");
+        testEncodeDecode("(graph (<<(:s :p :o)>> :q <<(:s :p :o)>>) (<<(:s :p :o)>> :q :z) )");
     }
 
     @Test public void rdfx_14() {
         // Two terms, used subj/obj same triple.
-        testEncodeDecode("(graph (<<:s :p :o>> :q <<:s1 :p1 :o1>>) (<<:s :p :o>> :q :z) )");
+        testEncodeDecode("(graph (<<(:s :p :o)>> :q <<(:s1 :p1 :o1)>>) (<<(:s :p :o)>> :q :z) )");
     }
 
     @Test public void rdfx_15() {
-        testEncodeDecode("(graph (<< <<:s :p :o>> :r :z>> :q :a) )");
+        testEncodeDecode("(graph (<<( <<(:s :p :o)>> :r :z)>> :q :a) )");
     }
 
     @Test public void rdfx_18() {
         String data = StrUtils.strjoinNL
             ("(graph"
-            ,"  (<<:s :p :o>> :q :z)"
-            ,"  (<<:s :p :o>> :r <<:s :p :o>>)"
-            ,"  (:a :q <<:s :p :o>>)"
+            ,"  (<<(:s :p :o)>> :q :z)"
+            ,"  (<<(:s :p :o)>> :r <<(:s :p :o)>>)"
+            ,"  (:a :q <<(:s :p :o)>>)"
             ,"  (:s :p :o)"
             ,")");
         testEncodeDecode(data);
     }
 
     @Test public void rdfx_19() {
-        testEncodeDecode("(graph (<< <<:s :p :o>> :r <<:s1 :p1 :o1>>>> :q <<:s :p :o>>) )");
+        testEncodeDecode("(graph (<<( <<(:s :p :o)>> :r <<(:s1 :p1 :o1)>>)>> :q <<(:s :p :o)>>) )");
     }
 
     static Graph data(String dataStr) {
@@ -210,71 +210,71 @@ public class TestRDFStarTranslation {
 
     @Test public void rdfx_inplace_01() {
         // One term
-        testInPlace("(graph (<<:s :p :o>> :q :z) (:s1 :p1 :o1) )");
+        testInPlace("(graph (<<(:s :p :o)>> :q :z) (:s1 :p1 :o1) )");
     }
 
     @Test public void rdfx_inplace_02() {
         // One term, used twice, subj/subj
-        testInPlace("(graph (<<:s :p :o>> :q :z) (<<:s :p :o>> :q2 :z2) )");
+        testInPlace("(graph (<<(:s :p :o)>> :q :z) (<<(:s :p :o)>> :q2 :z2) )");
     }
 
     @Test public void rdfx_inplace_03() {
         // One term, used twice, subj/obj
-        testInPlace("(graph (<<:s :p :o>> :q :z) (:a :q <<:s :p :o>>) )");
+        testInPlace("(graph (<<(:s :p :o)>> :q :z) (:a :q <<(:s :p :o)>>) )");
     }
 
     @Test public void rdfx_inplace_04() {
         // One term, used subj/obj same triple.
-        testInPlace("(graph (<<:s :p :o>> :q <<:s :p :o>>) (<<:s :p :o>> :q :z) )");
+        testInPlace("(graph (<<(:s :p :o)>> :q <<(:s :p :o)>>) (<<(:s :p :o)>> :q :z) )");
     }
 
     @Test public void rdfx_inplace_05() {
         // Two terms
-        testInPlace("(graph (<<:s :p :o>> :q <<:s1 :p1 :o1>>) (<<:s :p :o>> :q :z) )");
+        testInPlace("(graph (<<(:s :p :o)>> :q <<(:s1 :p1 :o1)>>) (<<(:s :p :o)>> :q :z) )");
     }
 
     @Test public void rdfx_inplace_10() {
         // One term
-        testInPlace("(graph (<<:s :p :o>> :q :z) (:s1 :p1 :o1) )");
+        testInPlace("(graph (<<(:s :p :o)>> :q :z) (:s1 :p1 :o1) )");
     }
 
     @Test public void rdfx_inplace_11() {
         // One term, used twice, subj/subj
-        testInPlace("(graph (<<:s :p :o>> :q :z) (<<:s :p :o>> :q2 :z2) )");
+        testInPlace("(graph (<<(:s :p :o)>> :q :z) (<<(:s :p :o)>> :q2 :z2) )");
     }
 
     @Test public void rdfx_inplace_12() {
         // One term, used twice, subj/obj
-        testInPlace("(graph (<<:s :p :o>> :q :z) (:a :q <<:s :p :o>>) )");
+        testInPlace("(graph (<<(:s :p :o)>> :q :z) (:a :q <<(:s :p :o)>>) )");
     }
 
     @Test public void rdfx_inplace_13() {
         // One term, used subj/obj same triple.
-        testInPlace("(graph (<<:s :p :o>> :q <<:s :p :o>>) (<<:s :p :o>> :q :z) )");
+        testInPlace("(graph (<<(:s :p :o)>> :q <<(:s :p :o)>>) (<<(:s :p :o)>> :q :z) )");
     }
 
     @Test public void rdfx_inplace_14() {
         // Two terms, used subj/obj same triple.
-        testInPlace("(graph (<<:s :p :o>> :q <<:s1 :p1 :o1>>) (<<:s :p :o>> :q :z) )");
+        testInPlace("(graph (<<(:s :p :o)>> :q <<(:s1 :p1 :o1)>>) (<<(:s :p :o)>> :q :z) )");
     }
 
     @Test public void rdfx_inplace_15() {
-        testInPlace("(graph (<< <<:s :p :o>> :r :z>> :q :a) )");
+        testInPlace("(graph (<<( <<(:s :p :o)>> :r :z)>> :q :a) )");
     }
 
     @Test public void rdfx_inplace_18() {
         String data = StrUtils.strjoinNL
             ("(graph"
-            ,"  (<<:s :p :o>> :q :z)"
-            ,"  (<<:s :p :o>> :r <<:s :p :o>>)"
-            ,"  (:a :q <<:s :p :o>>)"
+            ,"  (<<(:s :p :o)>> :q :z)"
+            ,"  (<<(:s :p :o)>> :r <<(:s :p :o)>>)"
+            ,"  (:a :q <<(:s :p :o)>>)"
             ,"  (:s :p :o)"
             ,")");
         testInPlace(data);
     }
 
     @Test public void rdfx_inplace_19() {
-        testEncodeDecode("(graph (<< <<:s :p :o>> :r <<:s1 :p1 :o1>>>> :q <<:s :p :o>>) )");
+        testEncodeDecode("(graph (<<( <<(:s :p :o)>> :r <<(:s1 :p1 :o1)>>)>> :q <<(:s :p :o)>>) )");
     }
 }
 

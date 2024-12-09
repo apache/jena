@@ -57,7 +57,7 @@ final public class LiteralLabel {
     private final String lang;
 
     /**
-     * The initial text direction of a language literal.
+     * The base direction of a language literal.
      * Datatype rdf:dirLangSring.
      */
     private final TextDirection textDir;
@@ -418,10 +418,9 @@ final public class LiteralLabel {
     }
 
     /**
-     * Answer the initial text direction associated with this literal (the empty string if there's
-     * no text direction).
+     * Answer the base direction associated with this literal (null if there's no base direction).
      */
-    public TextDirection initialTextDirection() {
+    public TextDirection baseDirection() {
         return textDir;
     }
 
@@ -486,8 +485,11 @@ final public class LiteralLabel {
         boolean langEquals = Objects.equals(lang, otherLiteral.language());
         if ( ! langEquals )
             return false;
-        // Ignore xml flag as it is calculated from the lexical form + datatype
-        // Ignore value as lexical form + datatype -> value is a function.
+
+        boolean dirEquals = Objects.equals(textDir, otherLiteral.baseDirection());
+        if ( ! dirEquals )
+            return false;
+
         return true;
     }
 
@@ -533,13 +535,13 @@ final public class LiteralLabel {
             if ( isLangString(lit2) ) return false;
         }
 
-        // -- Language tag strings with initial text direction
+        // -- Language tag strings with base direction
         if ( isLangStringDir(lit1) && isLangStringDir(lit2) ) {
             String lex1 = lit1.getLexicalForm();
             String lex2 = lit2.getLexicalForm();
             return lex1.equals(lex2)
                     && lit1.language().equalsIgnoreCase(lit2.language())
-                    && lit1.initialTextDirection().equals(lit2.initialTextDirection());
+                    && lit1.baseDirection().equals(lit2.baseDirection());
         } else {
             if ( isLangStringDir(lit1) ) return false;
             if ( isLangStringDir(lit2) ) return false;
@@ -569,15 +571,15 @@ final public class LiteralLabel {
 
     /**
      * Return true if the literal label is a well-formed language string (rdf:langString).
-     * Language strings do not have an initial text direction.
+     * Language strings do not have an base direction.
      * This test excludes "abc"^^rdf:langString (not well-formed).
      */
     private static boolean isLangString(LiteralLabel lit) {
         // Duplicate of Util.isLangString except for the additional consistency check.
         if ( isEmpty(lit.language()) )
             return false;
-        if ( lit.initialTextDirection() != null )
-            // Has an initial text direction so it is n't
+        if ( lit.baseDirection() != null )
+            // Has an base direction so it isn't
             return false;
         // Internal check.
         if ( ! Objects.equals(lit.getDatatype(), RDF.dtLangString) )
@@ -586,7 +588,7 @@ final public class LiteralLabel {
     }
 
     /**
-     * Return true if the literal label is a well-formed language string with text direction.
+     * Return true if the literal label is a well-formed language string with base direction.
      * This excludes "abc"^^rdf:dirLangString.
      */
     private static boolean isLangStringDir(LiteralLabel lit) {
@@ -595,11 +597,11 @@ final public class LiteralLabel {
         // Allow "abc"@--rtl
 //        if ( isEmpty(lit.language()) )
 //            return false;
-        if ( lit.initialTextDirection() == null )
+        if ( lit.baseDirection() == null )
             return false;
         // Internal check.
         if ( ! Objects.equals(lit.getDatatype(), RDF.dtDirLangString) )
-            throw new JenaException("Literal with language string and text direction which is not rdf:dirLangString: "+lit);
+            throw new JenaException("Literal with language string and base direction which is not rdf:dirLangString: "+lit);
         return true;
     }
 

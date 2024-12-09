@@ -181,7 +181,7 @@ public class ParseHandlerPlain implements ParseHandler {
         Node o = tripleTermStack.removeLast();
         Node p = tripleTermStack.removeLast();
         Node s = tripleTermStack.removeLast();
-        Node n = NodeFactory.createTripleNode(s, p, o);
+        Node n = NodeFactory.createTripleTerm(s, p, o);
         inTripleTermDepth--;
 
         if ( inTripleTermDepth == 0 ) {

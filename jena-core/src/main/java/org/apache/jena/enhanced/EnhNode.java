@@ -87,14 +87,14 @@ public class EnhNode extends Polymorphic<RDFNode> implements FrontsNode
         An enhanced node is a statement resource iff its underlying node is a triple term (RDF-star).
      */
     public final boolean isStmtResource() {
-        return node.isNodeTriple();
+        return node.isTripleTerm();
     }
 
     /**
         An enhanced node is a resource if it's node is a URI node, a blank node or a triple term.
     */
     public final boolean isResource() {
-        return node.isURI() || node.isBlank() || node.isNodeTriple();
+        return node.isURI() || node.isBlank() || node.isTripleTerm();
     }
     
     /**

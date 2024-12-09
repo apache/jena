@@ -526,7 +526,7 @@ public class TestNode extends GraphTestBase
         Node s = node( "uri1" );
         Node p = node( "uri2" );
         Node o = node( "uri1" );
-        Node nt = NodeFactory.createTripleNode(s, p, o);
+        Node nt = NodeFactory.createTripleTerm(s, p, o);
         nt.visitWith(nv);
         // ---
         Graph g = GraphMemFactory.empty();

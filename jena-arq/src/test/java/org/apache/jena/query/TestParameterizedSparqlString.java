@@ -728,6 +728,28 @@ public class TestParameterizedSparqlString {
         testAsQuery(query);
     }
 
+    @Test
+    public void test_param_string_dirlang_1() {
+        // Test lang+direction literal injection
+        String cmdText = "SELECT * WHERE { ?s ?p ?o }";
+        ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
+        query.setLiteral("o", "قطة", "ar", "ltr");
+
+        test(query, new String[] { "قطة", "@ar", "--ltr" }, new String[] { "?o" });
+        testAsQuery(query);
+    }
+
+    @Test
+    public void test_param_string_dirlang_2() {
+        // Test lang+direction literal injection
+        String cmdText = "SELECT * WHERE { ?s ?p ? }";
+        ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
+        query.setLiteral(0, "قطة", "ar", "ltr");
+
+        test(query, new String[] { "قطة", "@ar", "--ltr" }, new String[] { "? " });
+        testAsQuery(query);
+    }
+
     @Test(expected = QueryException.class)
     public void test_param_string_bad_1() {
         // Test bad input - not a valid query

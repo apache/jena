@@ -263,7 +263,7 @@ public class RDFStar {
     }
 
     private static Node nodeReif(Node x, Cache<Node_Triple, Node> cache, StreamRDF output) {
-        if ( ! x.isNodeTriple() )
+        if ( ! x.isTripleTerm() )
             return x;
         Triple t = x.getTriple();
         // Reify any nested triple terms. Reifications sent to stream.
@@ -271,7 +271,7 @@ public class RDFStar {
         // If its a new triple, this node is based on the replacement t2.
         Node_Triple nt = ( t2 == null )
             ? (Node_Triple)x
-            : (Node_Triple)NodeFactory.createTripleNode(t2);
+            : (Node_Triple)NodeFactory.createTripleTerm(t2);
         return cache.get(nt, key->genReif(key, output));
     }
 
@@ -288,7 +288,7 @@ public class RDFStar {
                 Node s = G.getOneSP(graph, reif, rdfSubject);
                 Node p = G.getOneSP(graph, reif, rdfPredicate);
                 Node o = G.getOneSP(graph, reif, rdfObject);
-                Node tripleTerm = NodeFactory.createTripleNode(s,p,o);
+                Node tripleTerm = NodeFactory.createTripleTerm(s,p,o);
                 map.put(reif, tripleTerm);
             }
         };
@@ -328,7 +328,7 @@ public class RDFStar {
                 if ( x1 == null )
                     return x;
                 // Recursively translate
-                if ( x1.isNodeTriple() ) {
+                if ( x1.isTripleTerm() ) {
                     Triple triple = x1.getTriple();
                     Node s = triple.getSubject();
                     Node p = triple.getPredicate();
@@ -337,7 +337,7 @@ public class RDFStar {
                     Node o1 = translate(o, map);
                     if ( s == s1 && o == o1 )
                         return x1;
-                    x1 = NodeFactory.createTripleNode(s1, p, o1);
+                    x1 = NodeFactory.createTripleTerm(s1, p, o1);
                 }
                 return x1;
             }
@@ -350,9 +350,9 @@ public class RDFStar {
      * Test whether a triple has an triple term as one of its components.
      */
     static boolean tripleHasNodeTriple(Triple triple) {
-        return triple.getSubject().isNodeTriple()
+        return triple.getSubject().isTripleTerm()
                /*|| triple.getPredicate().isNodeTriple()*/
-               || triple.getObject().isNodeTriple();
+               || triple.getObject().isTripleTerm();
     }
 
     private static Graph copyGraph(Graph graph) {
@@ -397,7 +397,7 @@ public class RDFStar {
         Node p = pReifTriple.getObject();
         Node o = oReifTriple.getObject();
 
-        Node nodeTriple = NodeFactory.createTripleNode(s, p, o);
+        Node nodeTriple = NodeFactory.createTripleTerm(s, p, o);
         if ( false )
             inserts.add(Triple.create(s, p, o));
 
@@ -481,7 +481,7 @@ public class RDFStar {
             // Non-URI character to separate the URI, in case we start using the string without hashing.
             return node.getLiteralLexicalForm()+" "+node.getLiteralDatatypeURI();
         }
-        if ( node.isNodeTriple() )
+        if ( node.isTripleTerm() )
             return reifStr(node.getTriple());
         throw new JenaException("Node type not supported in Node_Triple: "+node);
     }

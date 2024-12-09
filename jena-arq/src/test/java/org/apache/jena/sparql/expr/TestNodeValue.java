@@ -104,7 +104,7 @@ public class TestNodeValue
         assertTrue("Not same float: " + v1 + " & " + v2, v1.getFloat() == v2.getFloat());
         assertTrue("Not same float as double: " + v1 + " & " + v2, v1.getDouble() == v2.getDouble());
     }
-    
+
     @Test
     public void testFloat4() {
         NodeValue v1 = NodeValue.makeNodeFloat("5.7");
@@ -1233,8 +1233,8 @@ public class TestNodeValue
 
     @Test
     public void testTripleTerms1() {
-        Node n1 = SSE.parseNode("<<:s :p 123>>");
-        Node n2 = SSE.parseNode("<<:s :p 456>>");
+        Node n1 = SSE.parseNode("<<(:s :p 123)>>");
+        Node n2 = SSE.parseNode("<<(:s :p 456)>>");
         NodeValue nv1 = NodeValue.makeNode(n1);
         NodeValue nv2 = NodeValue.makeNode(n2);
         int xa = NodeValue.compare(nv1, nv2);
@@ -1245,8 +1245,8 @@ public class TestNodeValue
 
     @Test(expected=ExprNotComparableException.class)
     public void testTripleTerms2() {
-        Node n1 = SSE.parseNode("<<:s :p 123>>");
-        Node n2 = SSE.parseNode("<<:s :p 'abc'>>");
+        Node n1 = SSE.parseNode("<<(:s :p 123)>>");
+        Node n2 = SSE.parseNode("<<(:s :p 'abc')>>");
         NodeValue nv1 = NodeValue.makeNode(n1);
         NodeValue nv2 = NodeValue.makeNode(n2);
         NodeValue.compare(nv1, nv2);
@@ -1254,13 +1254,12 @@ public class TestNodeValue
 
     @Test
     public void testTripleTerms3() {
-        // Jena 4.6.0 :: 'abc' < before 123
-        Node n1 = SSE.parseNode("<<:s :p 123>>");
-        Node n2 = SSE.parseNode("<<:s :p 'abc'>>");
+        // General (sort) comparison. 'abc' < before 123
+        Node n1 = SSE.parseNode("<<(:s :p 123)>>");
+        Node n2 = SSE.parseNode("<<(:s :p 'abc')>>");
         NodeValue nv1 = NodeValue.makeNode(n1);
         NodeValue nv2 = NodeValue.makeNode(n2);
         int x = NodeValue.compareAlways(nv1, nv2);
         assertEquals(Expr.CMP_GREATER, x);
     }
-
 }

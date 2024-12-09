@@ -103,7 +103,7 @@ public class TestNodec
         Node s = NodeFactory.createBlankNode("a");
         Node p = NodeFactory.createURI("http://ex/p");
         Node o = NodeFactory.createLiteralLang("testcase", "en");
-        Node t = NodeFactory.createTripleNode(s, p, o);
+        Node t = NodeFactory.createTripleTerm(s, p, o);
         test (t);
     }
 

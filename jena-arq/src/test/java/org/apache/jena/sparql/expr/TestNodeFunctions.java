@@ -23,6 +23,7 @@ import static org.junit.Assert.*;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.TextDirection;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 import org.apache.jena.sparql.graph.NodeConst;
@@ -101,36 +102,36 @@ public class TestNodeFunctions {
 
     @Test
     public void testRDFtermEquals5() {
-        Node n1 = SSE.parseNode("<<:s :p 123>>");
-        Node n2 = SSE.parseNode("<<:s :p 123>>");
+        Node n1 = SSE.parseNode("<<(:s :p 123)>>");
+        Node n2 = SSE.parseNode("<<(:s :p 123)>>");
         assertTrue(NodeFunctions.rdfTermEquals(n1, n2));
     }
 
     @Test
     public void testRDFtermEquals6() {
-        Node n1 = SSE.parseNode("<<:s :p1 123>>");
-        Node n2 = SSE.parseNode("<<:s :p2 123>>");
+        Node n1 = SSE.parseNode("<<(:s :p1 123)>>");
+        Node n2 = SSE.parseNode("<<(:s :p2 123)>>");
         assertFalse(NodeFunctions.rdfTermEquals(n1, n2));
     }
 
     @Test(expected=ExprEvalException.class)
     public void testRDFtermEquals7() {
-        Node n1 = SSE.parseNode("<<:s :p <<:a :b 'abc'>>>>");
-        Node n2 = SSE.parseNode("<<:s :p <<:a :b 123>>>>");
+        Node n1 = SSE.parseNode("<<(:s :p <<(:a :b 'abc')>>)>>");
+        Node n2 = SSE.parseNode("<<(:s :p <<(:a :b 123)>>)>>");
         NodeFunctions.rdfTermEquals(n1, n2);
     }
 
     @Test(expected=ExprEvalException.class)
     public void testRDFtermEquals8() {
-        Node n1 = SSE.parseNode("<<:s :p 123>>");
-        Node n2 = SSE.parseNode("<<:s :p 'xyz'>>");
+        Node n1 = SSE.parseNode("<<(:s :p 123)>>");
+        Node n2 = SSE.parseNode("<<(:s :p 'xyz')>>");
         assertFalse(NodeFunctions.rdfTermEquals(n1, n2));
         assertFalse(NodeFunctions.rdfTermEquals(n2, n1));
     }
 
     @Test
     public void testRDFtermEquals9() {
-        Node n1 = SSE.parseNode("<<:s :p 123>>");
+        Node n1 = SSE.parseNode("<<(:s :p 123)>>");
         Node n2 = SSE.parseNode("'xyz'");
         assertFalse(NodeFunctions.rdfTermEquals(n1, n2));
         assertFalse(NodeFunctions.rdfTermEquals(n2, n1));
@@ -257,6 +258,22 @@ public class TestNodeFunctions {
     public void testLang5() {
         NodeValue nv = NodeValue.makeNode(NodeFactory.createURI("http://example/"));
         NodeValue r = NodeFunctions.lang(nv);
+    }
+
+
+    @Test public void testDirLang1() {
+        Node n = NodeFactory.createLiteralDirLang("abc",  "en", TextDirection.LTR);
+        NodeValue nv = NodeValue.makeNode(n);
+        NodeValue lang = NodeFunctions.lang(nv);
+        NodeValue dir = NodeFunctions.langdir(nv);
+        assertEquals("en", lang.getString());
+        assertEquals("ltr", dir.getString());
+    }
+
+    @Test public void testDirLang2() {
+        Node n = NodeFactory.createLiteralDirLang("abc",  "en", "ltr");
+        NodeValue nv = NodeValue.makeDirLangString("abc", "en", "ltr");
+        assertEquals(nv.asNode(), n);
     }
 
     @Test public void testLangMatches1() {

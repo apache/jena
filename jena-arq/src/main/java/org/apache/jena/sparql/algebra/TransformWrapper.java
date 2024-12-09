@@ -18,98 +18,100 @@
 
 package org.apache.jena.sparql.algebra;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.sparql.algebra.op.* ;
+import org.apache.jena.sparql.algebra.op.*;
 
 /** Wrap another transform and pass on the transform operation */
 public class TransformWrapper implements Transform
 {
-    protected final Transform transform ;
+    protected final Transform transform;
 
     public TransformWrapper(Transform transform)
     {
-        this.transform = transform ;
+        this.transform = transform;
     }
 
     @Override
-    public Op transform(OpTable opTable)                    { return transform.transform(opTable) ; }
+    public Op transform(OpTable opTable)                    { return transform.transform(opTable); }
     @Override
-    public Op transform(OpBGP opBGP)                        { return transform.transform(opBGP) ; }
+    public Op transform(OpBGP opBGP)                        { return transform.transform(opBGP); }
     @Override
-    public Op transform(OpTriple opTriple)                  { return transform.transform(opTriple) ; }
+    public Op transform(OpTriple opTriple)                  { return transform.transform(opTriple); }
     @Override
-    public Op transform(OpQuad opQuad)                      { return transform.transform(opQuad) ; }
+    public Op transform(OpQuad opQuad)                      { return transform.transform(opQuad); }
     @Override
-    public Op transform(OpPath opPath)                      { return transform.transform(opPath) ; }
+    public Op transform(OpPath opPath)                      { return transform.transform(opPath); }
 
     @Override
-    public Op transform(OpProcedure opProc, Op subOp)       { return transform.transform(opProc, subOp) ; }
+    public Op transform(OpProcedure opProc, Op subOp)       { return transform.transform(opProc, subOp); }
     @Override
-    public Op transform(OpPropFunc opPropFunc, Op subOp)    { return transform.transform(opPropFunc, subOp) ; }
+    public Op transform(OpPropFunc opPropFunc, Op subOp)    { return transform.transform(opPropFunc, subOp); }
 
     @Override
-    public Op transform(OpDatasetNames dsNames)             { return transform.transform(dsNames) ; }
+    public Op transform(OpDatasetNames dsNames)             { return transform.transform(dsNames); }
     @Override
-    public Op transform(OpQuadPattern quadPattern)          { return transform.transform(quadPattern) ; }
+    public Op transform(OpQuadPattern quadPattern)          { return transform.transform(quadPattern); }
     @Override
-    public Op transform(OpQuadBlock quadBlock)              { return transform.transform(quadBlock) ; }
+    public Op transform(OpQuadBlock quadBlock)              { return transform.transform(quadBlock); }
 
     @Override
-    public Op transform(OpFilter opFilter, Op subOp)        { return transform.transform(opFilter, subOp) ; }
+    public Op transform(OpFilter opFilter, Op subOp)        { return transform.transform(opFilter, subOp); }
     @Override
-    public Op transform(OpGraph opGraph, Op subOp)          { return transform.transform(opGraph, subOp) ; }
+    public Op transform(OpGraph opGraph, Op subOp)          { return transform.transform(opGraph, subOp); }
     @Override
-    public Op transform(OpService opService, Op subOp)      { return transform.transform(opService, subOp) ; }
+    public Op transform(OpService opService, Op subOp)      { return transform.transform(opService, subOp); }
 
     @Override
-    public Op transform(OpAssign opAssign, Op subOp)        { return transform.transform(opAssign, subOp) ; }
+    public Op transform(OpAssign opAssign, Op subOp)        { return transform.transform(opAssign, subOp); }
     @Override
-    public Op transform(OpExtend opExtend, Op subOp)        { return transform.transform(opExtend, subOp) ; }
+    public Op transform(OpExtend opExtend, Op subOp)        { return transform.transform(opExtend, subOp); }
     @Override
-    public Op transform(OpUnfold opUnfold, Op subOp)        { return transform.transform(opUnfold, subOp) ; }
+    public Op transform(OpUnfold opUnfold, Op subOp)        { return transform.transform(opUnfold, subOp); }
 
     @Override
-    public Op transform(OpJoin opJoin, Op left, Op right)           { return transform.transform(opJoin, left, right) ; }
+    public Op transform(OpJoin opJoin, Op left, Op right)           { return transform.transform(opJoin, left, right); }
     @Override
-    public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return transform.transform(opLeftJoin, left, right) ; }
+    public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return transform.transform(opLeftJoin, left, right); }
     @Override
-    public Op transform(OpDiff opDiff, Op left, Op right)           { return transform.transform(opDiff, left, right) ; }
+    public Op transform(OpMinus opMinus, Op left, Op right)         { return transform.transform(opMinus, left, right); }
     @Override
-    public Op transform(OpMinus opMinus, Op left, Op right)         { return transform.transform(opMinus, left, right) ; }
+    public Op transform(OpUnion opUnion, Op left, Op right)         { return transform.transform(opUnion, left, right); }
     @Override
-    public Op transform(OpUnion opUnion, Op left, Op right)         { return transform.transform(opUnion, left, right) ; }
+    public Op transform(OpLateral opLateral, Op left, Op right)     { return transform.transform(opLateral, left, right); }
     @Override
-    public Op transform(OpLateral opLateral, Op left, Op right)     { return transform.transform(opLateral, left, right) ; }
+    public Op transform(OpSemiJoin opSemiJoin, Op left, Op right)   { return transform.transform(opSemiJoin, left, right); }
     @Override
-    public Op transform(OpConditional opCond, Op left, Op right)    { return transform.transform(opCond, left, right) ; }
+    public Op transform(OpAntiJoin opAntiJoin, Op left, Op right)   { return transform.transform(opAntiJoin, left, right); }
+    @Override
+    public Op transform(OpConditional opCond, Op left, Op right)    { return transform.transform(opCond, left, right); }
 
     @Override
-    public Op transform(OpSequence opSequence, List<Op> elts)       { return transform.transform(opSequence, elts) ; }
+    public Op transform(OpSequence opSequence, List<Op> elts)       { return transform.transform(opSequence, elts); }
     @Override
-    public Op transform(OpDisjunction opDisjunction, List<Op> elts) { return transform.transform(opDisjunction, elts) ; }
+    public Op transform(OpDisjunction opDisjunction, List<Op> elts) { return transform.transform(opDisjunction, elts); }
 
     @Override
-    public Op transform(OpExt opExt)                        { return transform.transform(opExt) ; }
+    public Op transform(OpExt opExt)                        { return transform.transform(opExt); }
     @Override
-    public Op transform(OpNull opNull)                      { return transform.transform(opNull) ; }
+    public Op transform(OpNull opNull)                      { return transform.transform(opNull); }
     @Override
-    public Op transform(OpLabel opLabel, Op subOp)          { return transform.transform(opLabel, subOp) ; }
+    public Op transform(OpLabel opLabel, Op subOp)          { return transform.transform(opLabel, subOp); }
 
     @Override
-    public Op transform(OpList opList, Op subOp)            { return transform.transform(opList, subOp) ; }
+    public Op transform(OpList opList, Op subOp)            { return transform.transform(opList, subOp); }
     @Override
-    public Op transform(OpOrder opOrder, Op subOp)          { return transform.transform(opOrder, subOp) ; }
+    public Op transform(OpOrder opOrder, Op subOp)          { return transform.transform(opOrder, subOp); }
     @Override
-    public Op transform(OpTopN opTop, Op subOp)             { return transform.transform(opTop, subOp) ; }
+    public Op transform(OpTopN opTop, Op subOp)             { return transform.transform(opTop, subOp); }
     @Override
-    public Op transform(OpProject opProject, Op subOp)      { return transform.transform(opProject, subOp) ; }
+    public Op transform(OpProject opProject, Op subOp)      { return transform.transform(opProject, subOp); }
     @Override
-    public Op transform(OpDistinct opDistinct, Op subOp)    { return transform.transform(opDistinct, subOp) ; }
+    public Op transform(OpDistinct opDistinct, Op subOp)    { return transform.transform(opDistinct, subOp); }
     @Override
-    public Op transform(OpReduced opReduced, Op subOp)      { return transform.transform(opReduced, subOp) ; }
+    public Op transform(OpReduced opReduced, Op subOp)      { return transform.transform(opReduced, subOp); }
     @Override
-    public Op transform(OpSlice opSlice, Op subOp)          { return transform.transform(opSlice, subOp) ; }
+    public Op transform(OpSlice opSlice, Op subOp)          { return transform.transform(opSlice, subOp); }
     @Override
-    public Op transform(OpGroup opGroup, Op subOp)          { return transform.transform(opGroup, subOp) ; }
+    public Op transform(OpGroup opGroup, Op subOp)          { return transform.transform(opGroup, subOp); }
 }

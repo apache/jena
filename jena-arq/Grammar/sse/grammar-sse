@@ -40,8 +40,8 @@ function grammar
 
 ##     echo "---- Create HTML"
 ##     jjdoc -OUTPUT_FILE=${FILE%%.jj}.html "${FILE}"
-    echo "---- Create text form"
-    jjdoc -TEXT=true -OUTPUT_FILE=${FILE%%.jj}.txt "${FILE}"
+##     echo "---- Create text form"
+##     jjdoc -TEXT=true -OUTPUT_FILE=${FILE%%.jj}.txt "${FILE}"
 
     echo "---- Fixing Java warnings in TokenMgrError"
     F="$DIR/TokenMgrError.java"
@@ -57,19 +57,18 @@ function grammar
 if [ $# == 0 ]
 then
     set -- unisyn
-    ## echo "Usage: grammar [arq|sparql|rdql]" 1>&2
-    ## exit 1
-    fi
+fi
 
 for G in "$@"
 do
     case "$G" in
 	unisyn)
-	    cp ../header.jj parser.jj
-	    # The parser that is exactly the working group grammar
-	    cat "$GRAMMAR" | cpp -P >> parser.jj
-	    grammar parser.jj sse/lang/parser SSE_ParserCore
-	    [ "$RC" = 0 ] && rm parser.jj
+## 	    cp ../header.jj parser.jj
+## 	    # The parser that is exactly the working group grammar
+## 	    cat "$GRAMMAR" | cpp -P >> parser.jj
+## 	    grammar parser.jj sse/lang/parser SSE_ParserCore
+## 	    [ "$RC" = 0 ] && rm parser.jj
+	    grammar sse.jj sse/lang/parser SSE_ParserCore
 	    ;;
 	*)    echo "**** Unknown grammar: $G" 1>&2
 	      ;;

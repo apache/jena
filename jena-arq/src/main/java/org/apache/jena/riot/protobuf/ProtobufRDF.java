@@ -49,7 +49,7 @@ public class ProtobufRDF {
      * @return StreamRDF A stream to send to.
      */
     public static StreamRDF streamToFile(String filename) {
-        return streamToFile(filename, false) ;
+        return streamToFile(filename, false);
     }
 
     /**
@@ -63,7 +63,7 @@ public class ProtobufRDF {
      * @return StreamRDF A stream to send to.
      */
     public static StreamRDF streamToFile(String filename, boolean withValues) {
-        OutputStream out = IO.openOutputFile(filename) ;
+        OutputStream out = IO.openOutputFile(filename);
         out = IO.ensureBuffered(out);
         return streamToOutputStream(out);
     }
@@ -95,7 +95,7 @@ public class ProtobufRDF {
      * @param dest Sink
      */
     public static void fileToStream(String filename, StreamRDF dest) {
-        InputStream in = IO.openFileBuffered(filename) ;
+        InputStream in = IO.openFileBuffered(filename);
         inputStreamToStreamRDF(in, dest);
     }
 

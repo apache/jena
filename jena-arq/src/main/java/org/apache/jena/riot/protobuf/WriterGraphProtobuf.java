@@ -21,40 +21,40 @@ package org.apache.jena.riot.protobuf;
 import static org.apache.jena.riot.RDFFormat.RDF_PROTO_VALUES;
 import static org.apache.jena.riot.RDFLanguages.RDFPROTO;
 
-import java.io.OutputStream ;
-import java.io.Writer ;
+import java.io.OutputStream;
+import java.io.Writer;
 
-import org.apache.jena.atlas.lib.NotImplemented ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.riot.Lang ;
+import org.apache.jena.atlas.lib.NotImplemented;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.riot.WriterGraphRIOT ;
-import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.system.StreamRDFOps ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.riot.WriterGraphRIOT;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.StreamRDFOps;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.sparql.util.Context;
 
 /** Write a graph as RDF Protobuf */
 public class WriterGraphProtobuf implements WriterGraphRIOT
 {
-    private final boolean withValues ;
+    private final boolean withValues;
     public WriterGraphProtobuf(RDFFormat fmt) {
-        this.withValues = RDF_PROTO_VALUES.equals(fmt) ;
+        this.withValues = RDF_PROTO_VALUES.equals(fmt);
     }
     @Override
     public Lang getLang() {
-        return RDFPROTO ;
+        return RDFPROTO;
     }
     @Override
     public void write(Writer out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
-        throw new NotImplemented("Writing binary data to a java.io.Writer is not supported. Please use an OutputStream") ;
+        throw new NotImplemented("Writing binary data to a java.io.Writer is not supported. Please use an OutputStream");
     }
 
     @Override
     public void write(OutputStream out, Graph graph, PrefixMap prefixMap, String baseURI, Context context) {
-        StreamRDF stream = ProtobufRDF.streamToOutputStream(out, withValues) ;
-        stream.start() ;
-        StreamRDFOps.graphToStream(graph, stream) ;
-        stream.finish() ;
+        StreamRDF stream = ProtobufRDF.streamToOutputStream(out, withValues);
+        stream.start();
+        StreamRDFOps.graphToStream(graph, stream);
+        stream.finish();
     }
 }

@@ -55,6 +55,12 @@ public class ElementVisitorBase implements ElementVisitor
     public void visit(ElementLateral el)        { }
 
     @Override
+    public void visit(ElementSemiJoin el)       { }
+
+    @Override
+    public void visit(ElementAntiJoin el)       { }
+
+    @Override
     public void visit(ElementGroup el)          { }
 
     @Override

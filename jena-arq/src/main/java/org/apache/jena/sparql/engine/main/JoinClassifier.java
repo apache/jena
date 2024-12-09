@@ -55,7 +55,8 @@ public class JoinClassifier
         if ( right instanceof OpExtend )    return false ;
         if ( right instanceof OpAssign )    return false ;
         if ( right instanceof OpGroup )     return false ;
-//        if ( right instanceof OpDiff )      return false ;
+//        if ( right instanceof OpSemiJoin )      return false ;
+//        if ( right instanceof OpAntiJoin )      return false ;
 //        if ( right instanceof OpMinus )     return false ;
 
         if ( right instanceof OpSlice )     return false ;
@@ -83,7 +84,8 @@ public class JoinClassifier
     }
     private static OpVisitor checkForUnsafeVisitor = new OpVisitorBase() {
         @Override public void visit(OpMinus opMinus) { throw new UnsafeLinearOpException(); }
-        @Override public void visit(OpDiff opDiff)   { throw new UnsafeLinearOpException(); }
+        @Override public void visit(OpSemiJoin opSemiJoin)   { throw new UnsafeLinearOpException(); }
+        @Override public void visit(OpAntiJoin opAntiJoin)   { throw new UnsafeLinearOpException(); }
     };
 
     private static boolean isSafeForLinear(Op op) {

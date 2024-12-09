@@ -40,7 +40,7 @@ public class ExprTripleTerm extends ExprNode {
     private final NodeValue nvTripleTerm;
 
     public ExprTripleTerm(Node node) {
-        if ( ! node.isNodeTriple() )
+        if ( ! node.isTripleTerm() )
             throw new ARQInternalErrorException("Not a triple term "+node) ;
         Node_Triple tripleTerm = (Node_Triple)node;
         this.tripleTerm = tripleTerm;
@@ -60,7 +60,7 @@ public class ExprTripleTerm extends ExprNode {
         Triple t1 = tripleTerm.getTriple();
         Triple t2 = Substitute.substitute(t1, binding);
         if ( t2.isConcrete() ) {
-            Node tripleTerm2 = NodeFactory.createTripleNode(t2);
+            Node tripleTerm2 = NodeFactory.createTripleTerm(t2);
             return NodeValue.makeNode(tripleTerm2);
         }
         throw new VariableNotBoundException("Not concrete: triple "+tripleTerm) ;
@@ -85,7 +85,7 @@ public class ExprTripleTerm extends ExprNode {
         Triple t2 = Substitute.substitute(tripleTerm.getTriple(), binding);
         if ( t2 == t1 )
             return this;
-        Node nodeTriple = NodeFactory.createTripleNode(t2);
+        Node nodeTriple = NodeFactory.createTripleTerm(t2);
         return new ExprTripleTerm(nodeTriple);
     }
 

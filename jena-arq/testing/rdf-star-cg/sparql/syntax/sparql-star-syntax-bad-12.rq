@@ -1,6 +1,0 @@
-PREFIX : <http://example.com/>
-
-SELECT * {
-    ?s ?p ?o .
-    FILTER ( isTRIPLE(<< ?s ?p [] >>) )
-}

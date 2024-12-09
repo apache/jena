@@ -101,7 +101,7 @@ class ARQParserBase extends SPARQLParserBase
     protected ParserProfile parserProfileForCDTs = null;
 
     @Override
-    protected Node createLiteral(String lexicalForm, String langTag, String datatypeURI) {
+    protected Node createLiteralDT(String lexicalForm, String datatypeURI, int line, int column) {
         // CDT literals need to be handled in a special way because their
         // lexical forms may contain blank node identifiers, and the same
         // blank node identifier in different CDT literals within the same
@@ -118,14 +118,14 @@ class ARQParserBase extends SPARQLParserBase
         if ( cdtDatatype != null ) {
             ensureParserProfileForCDTs();
             try {
-                return parserProfileForCDTs.createTypedLiteral(lexicalForm, cdtDatatype, 0L, 0L);
+                return parserProfileForCDTs.createTypedLiteral(lexicalForm, cdtDatatype, line, column);
             }
             catch ( DatatypeFormatException ex ) {
                 return createIllformedLiteral(lexicalForm, cdtDatatype);
             }
         }
 
-        return super.createLiteral(lexicalForm, langTag, datatypeURI);
+        return super.createLiteralDT(lexicalForm, datatypeURI, line, column);
     }
 
     protected void ensureParserProfileForCDTs() {

@@ -135,7 +135,7 @@ public class SolverRX3 {
         }
 
         // nPattern is <<>> with variables. Is the data a <<>>?
-        if ( !nData.isNodeTriple() )
+        if ( !nData.isTripleTerm() )
             return false;
 
         // nData is <<>>, nPattern is <<>>

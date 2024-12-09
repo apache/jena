@@ -258,7 +258,7 @@ public class ValuesClauseTest<T extends ValuesClause<?>> extends AbstractClauseT
         builder.addValueRow("fu", null);
         Triple expected = Triple.create(NodeFactory.createURI("a"), 
                 NodeFactory.createURI("b"), NodeFactory.createURI("c"));
-        Node tripleNode = NodeFactory.createTripleNode(expected);
+        Node tripleNode = NodeFactory.createTripleTerm(expected);
         builder.addValueRow(tripleNode, null);
 
         Query query = builder.build();

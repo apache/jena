@@ -23,6 +23,7 @@ import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Node_Triple;
+import org.apache.jena.graph.TextDirection;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.ARQInternalErrorException;
 
@@ -54,13 +55,13 @@ public abstract class NodeFormatterBase implements NodeFormatter
 
     protected void formatNodeTriple(AWriter w, Node n) {
         Triple t = n.getTriple();
-        w.print("<< ");
+        w.print("<<( ");
         format(w, t.getSubject());
         w.print(" ");
         format(w, t.getPredicate());
         w.print(" ");
         format(w, t.getObject());
-        w.print(" >>");
+        w.print(" )>>");
     }
 
     @Override
@@ -74,8 +75,11 @@ public abstract class NodeFormatterBase implements NodeFormatter
         RDFDatatype dt = n.getLiteralDatatype();
         String lang = n.getLiteralLanguage();
         String lex = n.getLiteralLexicalForm();
+        TextDirection textDir = n.getLiteralBaseDirection();
 
-        if ( lang != null && ! lang.equals("") ) {
+        if ( textDir != null ) {
+            formatLitLangDir(w, lex, lang, textDir.direction());
+        } else if ( lang != null && ! lang.equals("") ) {
             formatLitLang(w, lex, lang);
         } else if ( dt == null ) {
             // RDF 1.0, simple literal.

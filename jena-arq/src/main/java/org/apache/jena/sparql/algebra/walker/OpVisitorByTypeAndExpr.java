@@ -119,11 +119,6 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
     }
 
     @Override
-    public default void visit(OpDiff opDiff) {
-        visit2(opDiff);
-    }
-
-    @Override
     public default void visit(OpMinus opMinus) {
         visit2(opMinus);
     }
@@ -136,6 +131,16 @@ public interface OpVisitorByTypeAndExpr extends OpVisitor
     @Override
     public default void visit(OpLateral opLateral) {
         visit2(opLateral);
+    }
+
+    @Override
+    public default void visit(OpSemiJoin opSemiJoin) {
+        visit2(opSemiJoin);
+    }
+
+    @Override
+    public default void visit(OpAntiJoin opAntiJoin) {
+        visit2(opAntiJoin);
     }
 
     @Override

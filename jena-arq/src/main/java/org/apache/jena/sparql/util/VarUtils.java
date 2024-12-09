@@ -58,7 +58,7 @@ public class VarUtils {
 
         if ( n.isVariable() )
             acc.add(Var.alloc(n));
-        else if ( n.isNodeTriple() ) {
+        else if ( n.isTripleTerm() ) {
             Triple t = n.getTriple();
             addVarsFromTriple(acc, t);
         }

@@ -1,3 +1,0 @@
-PREFIX : <http://example/>
-
-:G {<<[] :p [] >> :q :z .}

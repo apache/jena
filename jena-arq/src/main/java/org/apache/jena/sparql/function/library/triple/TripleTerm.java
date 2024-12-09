@@ -32,6 +32,6 @@ public class TripleTerm extends FunctionBase3 {
 
     @Override
     public NodeValue exec(NodeValue nv1, NodeValue nv2, NodeValue nv3) {
-        return EmbeddedTripleFunctions.fnTriple(nv1, nv2, nv3);
+        return TripleTermOps.fnTriple(nv1, nv2, nv3);
     }
 }

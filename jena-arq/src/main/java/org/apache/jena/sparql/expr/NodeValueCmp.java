@@ -90,7 +90,7 @@ public class NodeValueCmp {
             case VSPACE_BOOLEAN :
                 return XSDFuncOp.compareBoolean(nv1, nv2) == CMP_EQUAL;
 
-            case VSPACE_QUOTED_TRIPLE : {
+            case VSPACE_TRIPLE_TERM : {
                 Triple t1 = nv1.getNode().getTriple();
                 Triple t2 = nv2.getNode().getTriple();
                 return nSameValueAs(t1.getSubject(),   t2.getSubject()) &&
@@ -328,7 +328,7 @@ public class NodeValueCmp {
 //                return CMP_EQUAL;  // Both plain or both xsd:string.
             }
 
-            case VSPACE_QUOTED_TRIPLE: {
+            case VSPACE_TRIPLE_TERM: {
                 Triple t1 = nv1.asNode().getTriple();
                 Triple t2 = nv2.asNode().getTriple();
                 int x = nCompare(t1.getSubject(), t2.getSubject(), sortOrderingCompare);

@@ -20,8 +20,10 @@ package org.apache.jena.riot.system;
 
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.datatypes.xsd.impl.RDFDirLangString;
 import org.apache.jena.datatypes.xsd.impl.RDFLangString;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.TextDirection;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.iri.IRI;
 import org.apache.jena.irix.*;
@@ -66,7 +68,7 @@ public class Checker {
             return checkLiteral(node, errorHandler, line, col);
         else if ( node.isVariable() )
             return checkVar(node, errorHandler, line, col);
-        else if ( node.isNodeTriple() ) {
+        else if ( node.isTripleTerm() ) {
             Triple t = node.getTriple();
             return check(t.getSubject()) && check(t.getPredicate()) && check(t.getObject())
                     && checkTriple(t);
@@ -138,24 +140,40 @@ public class Checker {
             errorHandler(errorHandler).error("Not a literal: " + node, line, col);
             return false;
         }
-
-        return checkLiteral(node.getLiteralLexicalForm(), node.getLiteralLanguage(), node.getLiteralDatatype(), errorHandler, line, col);
+        return checkLiteral(node.getLiteralLexicalForm(), node.getLiteralLanguage(), node.getLiteralBaseDirection(), node.getLiteralDatatype(), errorHandler, line, col);
     }
 
     public static boolean checkLiteral(String lexicalForm, RDFDatatype datatype, ErrorHandler errorHandler, long line, long col) {
-        return checkLiteral(lexicalForm, null, datatype, errorHandler, line, col);
+        return checkLiteral(lexicalForm, null, (TextDirection)null, datatype, errorHandler, line, col);
     }
 
     public static boolean checkLiteral(String lexicalForm, String lang, ErrorHandler errorHandler, long line, long col) {
-        return checkLiteral(lexicalForm, lang, null, errorHandler, line, col);
+        return checkLiteral(lexicalForm, lang, (TextDirection)null, null, errorHandler, line, col);
     }
 
+    /** @deprecated Use {@link #checkLiteral(String, String, ErrorHandler, long, long)} */
+    @Deprecated
     public static boolean checkLiteral(String lexicalForm, String lang, RDFDatatype datatype, ErrorHandler errorHandler, long line, long col) {
+        return checkLiteral(lexicalForm, lang, (TextDirection)null, datatype, errorHandler, line, col);
+    }
+
+    public static boolean checkLiteral(String lexicalForm, String lang, String direction, RDFDatatype datatype, ErrorHandler errorHandler, long line, long col) {
+        TextDirection textDir = null;
+        if ( direction != null ) {
+            textDir = TextDirection.createOrNull(direction);
+            if ( textDir == null )
+                errorHandler(errorHandler).error("Language direction not valid: " + direction, line, col);
+        }
+        return checkLiteral(lexicalForm, lang, textDir, datatype, errorHandler, line, col);
+    }
+
+    public static boolean checkLiteral(String lexicalForm, String lang, TextDirection direction, RDFDatatype datatype, ErrorHandler errorHandler, long line, long col) {
         boolean hasLang = ( lang != null && !lang.isEmpty() );
+        boolean hasTextDirection = direction != null;
         boolean hasDatatype = datatype != null;
 
         if ( !hasDatatype && !hasLang) {
-            // This will become an xsd:string or rdf:langString.
+            // This will become an xsd:string
             // No further checking needed.
             return true;
         }
@@ -171,16 +189,25 @@ public class Checker {
             // No datatype is acceptable - NodeFactory deal with that case.
             if ( hasDatatype ) {
                 // Jena is using the RDF 1.1 or later standard...
-                if ( ! datatype.equals( RDFLangString.rdfLangString ) ) {
-                    errorHandler(errorHandler).error("Literal has language but wrong datatype", line, col);
+                if ( hasTextDirection && ! datatype.equals( RDFDirLangString.rdfDirLangString ) ) {
+                    errorHandler(errorHandler).error("Literal has language and base direction but wrong datatype: "+datatype, line, col);
+                    return false;
+                }
+                else if ( ! datatype.equals( RDFLangString.rdfLangString ) ) {
+                    errorHandler(errorHandler).error("Literal has language but wrong datatype: "+datatype, line, col);
                     return false;
                 }
             }
             return true;
+        } else {
+            // No lang => no base direction
+            if ( hasTextDirection )
+                errorHandler(errorHandler).error("Language base direction without language", line, col);
+            // Fallthrough
         }
 
-        // If the Literal has a datatype (but no language)...
-        if ( datatype.equals( XSDDatatype.XSDstring) )
+        // If the Literal has a datatype (but no language or base direction)...
+        if ( datatype.equals(XSDDatatype.XSDstring) )
             // Simple literals are always well-formed...
             return true;
         return validateByDatatype(lexicalForm, datatype, errorHandler, line, col);
@@ -319,7 +346,7 @@ public class Checker {
             rc = false;
         }
 
-        if ( subject == null || (!subject.isURI() && !subject.isBlank() && !subject.isNodeTriple()) ) {
+        if ( subject == null || (!subject.isURI() && !subject.isBlank() && !subject.isTripleTerm()) ) {
             errorHandler(errorHandler).error("Subject is not a URI, blank node or RDF-star triple term", line, col);
             rc = false;
         }
@@ -327,7 +354,7 @@ public class Checker {
             errorHandler(errorHandler).error("Predicate not a URI", line, col);
             rc = false;
         }
-        if ( object == null || (!object.isURI() && !object.isBlank() && !object.isLiteral() && !subject.isNodeTriple()) ) {
+        if ( object == null || (!object.isURI() && !object.isBlank() && !object.isLiteral() && !subject.isTripleTerm()) ) {
             errorHandler(errorHandler).error("Object is not a URI, blank node, literal or RDF-star triple term", line, col);
             rc = false;
         }

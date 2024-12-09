@@ -25,7 +25,6 @@ import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.util.Context ;
 
 /** Environment passed to functions -- see also {@link org.apache.jena.sparql.engine.ExecutionContext} */
-
 public class FunctionEnvBase implements FunctionEnv
 {
     private Context context ;
@@ -34,11 +33,11 @@ public class FunctionEnvBase implements FunctionEnv
     private ExecutionContext execContext = null ;
 
     public FunctionEnvBase() { this(ARQ.getContext(), null, null) ; }
-    
+
     public FunctionEnvBase(Context context) { this ( context, null, null) ; }
-    
+
     public FunctionEnvBase(ExecutionContext execCxt)
-    { 
+    {
         this(execCxt.getContext(), execCxt.getActiveGraph(), execCxt.getDataset()) ;
         execContext = execCxt ;
     }

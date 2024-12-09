@@ -51,7 +51,7 @@ import java.util.Deque;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-import static org.apache.jena.riot.lang.ReaderTriX.State.E_TRIPLE;
+import static org.apache.jena.riot.lang.ReaderTriX.State.TRIPLE_TERM;
 import static org.apache.jena.riot.lang.ReaderTriX.State.GRAPH;
 import static org.apache.jena.riot.lang.ReaderTriX.State.OUTER;
 import static org.apache.jena.riot.lang.ReaderTriX.State.TRIPLE;
@@ -119,8 +119,8 @@ public class ReaderTriX implements ReaderRIOT {
     private static String rdfXMLLiteral = RDF.xmlLiteral.getURI();
 
     // State TRIPLE is "asserted triple" - a triple that will go into the output.
-    // State E_TRIPLE is an "embedded triple" (<<>>) that will be term in another triple/quad.
-    enum State { OUTER, TRIX, GRAPH, TRIPLE, E_TRIPLE }
+    // State TRIPLE_TERM is a triple term (<<()>>) that will be term in another triple/quad.
+    enum State { OUTER, TRIX, GRAPH, TRIPLE, TRIPLE_TERM }
 
     private static class NodeMarker extends Node_Marker {
         protected NodeMarker(String label) {
@@ -129,14 +129,14 @@ public class ReaderTriX implements ReaderRIOT {
     }
 
     private static Node nAssertedTriple = new NodeMarker("asserted triple");
-    private static Node nEmbeddedTriple = new NodeMarker("embedded triple");
+    private static Node nTripleTerm = new NodeMarker("triple term");
 
     private void read(XMLStreamReader parser, String baseURI, StreamRDF output) {
         State state = OUTER;
         Node g = null;
         Deque<Node> terms = new ArrayDeque<>();
-        // Depth of embedded triple nesting. 0 - not in an embedded triple
-        int embeddedTripleDepth = 0;
+        // Depth of triple term nesting. 0 - not in a triple term
+        int tripleTermDepth = 0;
         try {
             while(parser.hasNext()) {
                 int event = parser.next();
@@ -173,13 +173,13 @@ public class ReaderTriX implements ReaderRIOT {
                                         state = TRIPLE;
                                         push(terms, nAssertedTriple);
                                         break;
-                                    // Embedded triple. If E_TRIPLE nested embedded triple.
+                                    // If TRIPLE_TERM,  nested triple term
                                     case TRIPLE:
-                                        state = E_TRIPLE;
+                                        state = TRIPLE_TERM;
                                         // fall through.
-                                    case E_TRIPLE:
-                                        embeddedTripleDepth++;
-                                        push(terms, nEmbeddedTriple);
+                                    case TRIPLE_TERM:
+                                        tripleTermDepth++;
+                                        push(terms, nTripleTerm);
                                         break;
                                     default: staxErrorOutOfPlaceElement(parser);
                                 }
@@ -189,7 +189,7 @@ public class ReaderTriX implements ReaderRIOT {
                             case TriX.tagId:
                             case TriX.tagQName:
                             case TriX.tagURI: {
-                                if ( state != GRAPH && state != TRIPLE && state != E_TRIPLE )
+                                if ( state != GRAPH && state != TRIPLE && state != TRIPLE_TERM )
                                     staxErrorOutOfPlaceElement(parser);
                                 Node n = term(parser, profile);
 
@@ -272,17 +272,15 @@ public class ReaderTriX implements ReaderRIOT {
                                             break;
                                         }
 
-                                        case E_TRIPLE: {
-                                            if ( ! nEmbeddedTriple.equals(marker) )
+                                        case TRIPLE_TERM: {
+                                            if ( ! nTripleTerm.equals(marker) )
                                                 // Internal error.
-                                                staxError(parser.getLocation(), "Misaligned embedded triple.");
-                                            //System.out.println("Embedded: Terms: "+terms.size());
-                                            // Embedded triple.
-                                            Node nt = NodeFactory.createTripleNode(s, p, o);
+                                                staxError(parser.getLocation(), "Misaligned triple term.");
+                                            // Triple term.
+                                            Node nt = profile.createTripleTerm(s, p, o, line, col);
                                             push(terms, nt);
-                                            embeddedTripleDepth--;
-                                            if ( embeddedTripleDepth == 0 )
-                                                // Did this complete an embedded triple?
+                                            tripleTermDepth--;
+                                            if ( tripleTermDepth == 0 )
                                                 state = TRIPLE;
                                             break;
                                         }
@@ -293,7 +291,6 @@ public class ReaderTriX implements ReaderRIOT {
                                 } catch (NoSuchElementException ex) {
                                     staxError(parser.getLocation(), "Too few terms for a triple.");
                                 }
-
                             }
                             case TriX.tagGraph:
                                 state = TRIX;
@@ -383,13 +380,14 @@ public class ReaderTriX implements ReaderRIOT {
                     : parser.getElementText();
                 return profile.createTypedLiteral(lex, rdt, line, col);
             }
-            case TriX.tagTriple: {
-                Node s = term(parser, profile);
-                Node p = term(parser, profile);
-                Node o = term(parser, profile);
-                Node n = profile.createTripleNode(s, p, o, line, col);
-                return n;
-            }
+            // Triple term done elswwhere
+//            case TriX.tagTriple: {
+//                Node s = term(parser, profile);
+//                Node p = term(parser, profile);
+//                Node o = term(parser, profile);
+//                Node n = profile.createTripleTerm(s, p, o, line, col);
+//                return n;
+//            }
             default: {
                 QName qname = parser.getName();
                 staxError(parser.getLocation(), "Unrecognized tag -- "+qnameAsString(qname));

@@ -1,13 +1,21 @@
+#!/usr/bin/bash
 ## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
-echo "Grammar to X.html, fragments file to Y.html"
+echo "Grammar output in sparql-grammar.html"
 
 ##jj2html 'sparql_11.txt' 'tokens.txt' > X11.html
 ##grammarExtracts < X11.html > Y11.html
 
-jj2html 'sparql_12.txt' 'tokens.txt' > X12.html
-grammarExtracts < X12.html > Y12.html
+(
+    echo "        <!-- GRAMMAR -->"
+    jj2html 'sparql_12.txt' 'tokens.txt'
+    echo "        <!-- GRAMMAR -->"
+) > sparql-grammar.html
+
+## Produce a standlone web page
+## mv sparql-grammar.html X12.hmtl
+## grammarExtracts < sparql-grammar.html > sparql-html.thml
 
 ## jj2html 'arq_12.txt' 'tokens.txt' > X.html
 ## grammarExtracts < X.html > Y.html
 
-echo "Check X and Y for IRI_REF because \" became '"
+##?? echo "Check X and Y for IRI_REF because \" became '"

@@ -18,12 +18,12 @@
 
 package org.apache.jena.riot.protobuf;
 
-import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.RiotException;
 
 public class RiotProtobufException extends RiotException {
-    public RiotProtobufException()                          { super() ; }
-    public RiotProtobufException(String msg)                { super(msg) ; }
-    public RiotProtobufException(Throwable th)              { super(th) ; }
-    public RiotProtobufException(String msg, Throwable th)  { super(msg, th) ; }
+    public RiotProtobufException()                          { super(); }
+    public RiotProtobufException(String msg)                { super(msg); }
+    public RiotProtobufException(Throwable th)              { super(th); }
+    public RiotProtobufException(String msg, Throwable th)  { super(msg, th); }
 }
 

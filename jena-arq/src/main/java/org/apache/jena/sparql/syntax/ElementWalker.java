@@ -142,6 +142,24 @@ public class ElementWalker {
         }
 
         @Override
+        public void visit(ElementSemiJoin el) {
+            before(el);
+            if ( el.getSubElement() != null )
+                el.getSubElement().visit(this);
+            proc.visit(el);
+            after(el);
+        }
+
+        @Override
+        public void visit(ElementAntiJoin el) {
+            before(el);
+            if ( el.getSubElement() != null )
+                el.getSubElement().visit(this);
+            proc.visit(el);
+            after(el);
+        }
+
+        @Override
         public void visit(ElementDataset el) {
             before(el);
             if ( el.getElement() != null )

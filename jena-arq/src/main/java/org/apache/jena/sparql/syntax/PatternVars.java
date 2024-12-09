@@ -18,46 +18,125 @@
 
 package org.apache.jena.sparql.syntax;
 
-import java.util.Collection ;
-import java.util.LinkedHashSet ;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 
-import org.apache.jena.sparql.core.Var ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.TriplePath;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.core.VarExprList;
+import org.apache.jena.sparql.util.VarUtils;
 
-/** Get the variables potentially bound by an element.
- *  All mentioned variables except those in MINUS and FILTER (and hence NOT EXISTS)
- *  The work is done by PatternVarsVisitor.
+/**
+ * Get the variables potentially bound by an element. All mentioned variables except
+ * those in MINUS, SEMIJOIN, ANTIJOIN and FILTER (and hence NOT EXISTS).
  */
-public class PatternVars
-{
-    public static Collection<Var> vars(Element element) { return vars(new LinkedHashSet<Var>(), element) ; }
-
-    public static Collection<Var> vars(Collection<Var> s, Element element)
-    {
-        PatternVarsVisitor v = new PatternVarsVisitor(s) ;
-        vars(element, v) ;
-        return s ;
+public class PatternVars {
+    public static Collection<Var> vars(Element element) {
+        return vars(new LinkedHashSet<Var>(), element);
     }
 
-    public static void vars(Element element, PatternVarsVisitor visitor)
-    {
-        ElementWalker.EltWalker walker = new WalkerSkipMinus(visitor) ;
-        ElementWalker.walk$(element, walker) ;
+    public static Collection<Var> vars(Collection<Var> s, Element element) {
+        PatternVarsVisitor v = new PatternVarsVisitor(s);
+        vars(element, v);
+        return s;
     }
 
-    public static class WalkerSkipMinus extends ElementWalker.EltWalker
-    {
-        protected WalkerSkipMinus(ElementVisitor visitor)
-        {
-            super(visitor, null, null) ;
+    public static void vars(Element element, PatternVarsVisitor visitor) {
+        ElementWalker.EltWalker walker = new WalkerSkipNonBinding(visitor);
+        ElementWalker.walk$(element, walker);
+    }
+
+    /** Algebra forms that don't contribute variables to "SELECT *". */
+    private static class WalkerSkipNonBinding extends ElementWalker.EltWalker {
+        protected WalkerSkipNonBinding(ElementVisitor visitor) {
+            super(visitor, null, null);
         }
-        
+
         @Override
-        public void visit(ElementMinus el)
-        {
-            // Don't go down the RHS of MINUS
-            //if ( el.getMinusElement() != null )
-            //    el.getMinusElement().visit(this) ;
-            proc.visit(el) ;
+        public void visit(ElementMinus el) { proc.visit(el); }
+
+        @Override
+        public void visit(ElementSemiJoin el) { proc.visit(el); }
+
+        @Override
+        public void visit(ElementAntiJoin el) { proc.visit(el); }
+    }
+
+    private static class PatternVarsVisitor extends ElementVisitorBase
+    {
+        public Collection<Var> acc;
+        /*package*/ PatternVarsVisitor(Collection<Var> s) {
+            acc = s;
         }
+
+        @Override
+        public void visit(ElementTriplesBlock el) {
+            for ( Iterator<Triple> iter = el.patternElts(); iter.hasNext(); ) {
+                Triple t = iter.next();
+                VarUtils.addVarsFromTriple(acc, t);
+            }
+        }
+
+        @Override
+        public void visit(ElementPathBlock el) {
+            for ( Iterator<TriplePath> iter = el.patternElts(); iter.hasNext(); ) {
+                TriplePath tp = iter.next();
+                // If it's triple-izable, then use the triple.
+                if ( tp.isTriple() )
+                    VarUtils.addVarsFromTriple(acc, tp.asTriple());
+                else
+                    VarUtils.addVarsFromTriplePath(acc, tp);
+            }
+        }
+
+        // Variables here are non-binding.
+        @Override public void visit(ElementExists el)       { }
+        @Override public void visit(ElementNotExists el)    { }
+        @Override public void visit(ElementMinus el)        { }
+        @Override public void visit(ElementSemiJoin el)     { }
+        @Override public void visit(ElementAntiJoin el)     { }
+        @Override public void visit(ElementFilter el)       { }
+
+        @Override
+        public void visit(ElementNamedGraph el) {
+            VarUtils.addVar(acc, el.getGraphNameNode());
+        }
+
+        @Override
+        public void visit(ElementSubQuery el) {
+            el.getQuery().setResultVars();
+            VarExprList x = el.getQuery().getProject();
+            acc.addAll(x.getVars());
+        }
+
+        @Override
+        public void visit(ElementAssign el) {
+            acc.add(el.getVar());
+        }
+
+        @Override
+        public void visit(ElementBind el) {
+            acc.add(el.getVar());
+        }
+
+        @Override
+        public void visit(ElementUnfold el) {
+            acc.add(el.getVar1());
+            if ( el.getVar2() != null )
+                acc.add(el.getVar2());
+        }
+
+        @Override
+        public void visit(ElementData el) {
+            acc.addAll(el.getVars());
+        }
+
+//        @Override
+//        public void visit(ElementService el) {
+//            // Although if this isn't defined elsewhere the query won't work.
+//            VarUtils.addVar(acc, el.getServiceNode());
+//        }
     }
 }

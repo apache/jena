@@ -110,10 +110,10 @@ public class Rename {
     }
 
     private static Node reverseVarRename(Node node, String varPrefix, boolean repeatedly) {
-        if ( node.isNodeTriple() ) {
+        if ( node.isTripleTerm() ) {
             Triple t1 = node.getTriple();
             Triple t2 = NodeTransformLib.transform(n->Rename.reverseVarRename(n, varPrefix, repeatedly), t1);
-            return Objects.equals(t1, t2) ? node : NodeFactory.createTripleNode(t2);
+            return Objects.equals(t1, t2) ? node : NodeFactory.createTripleTerm(t2);
         }
 
         if ( !Var.isVar(node) )
@@ -169,10 +169,10 @@ public class Rename {
 
         @Override
         public final Node apply(Node node) {
-            if ( node.isNodeTriple() ) {
+            if ( node.isTripleTerm() ) {
                 Triple t1 = node.getTriple();
                 Triple t2 = NodeTransformLib.transform(this, t1);
-                return Objects.equals(t1, t2) ? node : NodeFactory.createTripleNode(t2);
+                return Objects.equals(t1, t2) ? node : NodeFactory.createTripleTerm(t2);
             } else if ( !Var.isVar(node) ) {
                 return node;
             }

@@ -46,24 +46,24 @@ public class NodeConst {
     public static final Node nodeTen       = literal("10", XSDDatatype.XSDinteger);
     public static final Node nodeMinusOne  = literal("-1", XSDDatatype.XSDinteger);
     public static final Node emptyString   = NodeFactory.createLiteralString("");
-    public static final Node TRUE = NodeConst.nodeTrue;
-    public static final Node FALSE = NodeConst.nodeFalse;
+    public static final Node TRUE          = NodeConst.nodeTrue;
+    public static final Node FALSE         = NodeConst.nodeFalse;
 
     // It should be safe to use RDF.Nodes.
-    // Fallback code "just in case"
-    public static final Node nodeRDFType   = RDF.Nodes.type;  // uri(RDF.uri+"type")
-    public static final Node nodeFirst     = RDF.Nodes.first; // uri(RDF.uri+"first")
-    public static final Node nodeRest      = RDF.Nodes.rest;  // uri(RDF.uri+"rest")
-    public static final Node nodeNil       = RDF.Nodes.nil;   // uri(RDF.uri+"nil")
+    // Code 'uri(RDF.uri+"type")' as fallback
+    public static final Node nodeRDFType   = RDF.Nodes.type;
+    public static final Node nodeFirst     = RDF.Nodes.first;
+    public static final Node nodeRest      = RDF.Nodes.rest;
+    public static final Node nodeReifies   = RDF.Nodes.reifies;
+    public static final Node nodeNil       = RDF.Nodes.nil;
     public static final Node nodeANY       = Node.ANY;
-
 
     public static final Node nodeOwlImports       = OWL.imports.asNode();   // uri("http://www.w3.org/2002/07/owl#imports")
     public static final Node nodeOwlOntology      = OWL.Ontology.asNode();  // uri("http://www.w3.org/2002/07/owl#Ontology")
     public static final Node nodeOwlSameAs        = OWL.sameAs.asNode();    // uri("http://www.w3.org/2002/07/owl#sameAs")
     public static final Node rdfLangString        = RDF.Nodes.langString;
     public static final RDFDatatype dtLangString  = RDF.dtLangString;
-    
+
     public static Literal mTRUE = ResourceFactory.createTypedLiteral(true);
     public static Literal mFALSE = ResourceFactory.createTypedLiteral(false);
 

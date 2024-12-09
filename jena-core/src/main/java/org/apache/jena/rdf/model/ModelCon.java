@@ -498,12 +498,32 @@ public interface ModelCon {
      * @return this model
      * @param s the subject of the statement to add
      * @param p the predicate of the statement to add
-     * @param lex the lexcial form of the literal
+     * @param lex the lexical form of the literal
      * @param datatype the datatype of the literal
      */
     Model add(Resource s, Property p, String lex, RDFDatatype datatype) ;
 
-    Model add(Resource s, Property p, String o, String l) ;
+    /** add a statement to this model.
+    *
+    * @return this model
+    * @param s the subject of the statement to add
+    * @param p the predicate of the statement to add
+    * @param lex the lexical form of the literal
+    * @param lang the language of the literal
+    * @param datatype the datatype of the literal
+    */
+    Model add(Resource s, Property p, String lex, String lang) ;
+
+    /** add a statement to this model.
+    *
+    * @return this model
+    * @param s the subject of the statement to add
+    * @param p the predicate of the statement to add
+    * @param lex the lexical form of the literal
+    * @param lang the language of the literal
+    * @param dir the base direction of the literal
+    */
+    Model add(Resource s, Property p, String lex, String lang, String direction) ;
 
     /**
         remove the statement <code>(s, p, o)</code> from this model and
@@ -579,7 +599,7 @@ public interface ModelCon {
      *  that match a pattern.  The statements selected are those
      *  whose subject matches the <code>subject</code> argument,
      *  whose predicate matches the <code>predicate</code> argument
-     *  and whose object matchesthe <code>object</code> argument.</p>
+     *  and whose object matches the <code>object</code> argument.</p>
      * @return an iterator over the subjects
      * @param subject   The subject sought
      * @param predicate The predicate sought
@@ -593,13 +613,13 @@ public interface ModelCon {
      *  that match a pattern.  The statements selected are those
      *  whose subject matches the <code>subject</code> argument,
      *  whose predicate matches the <code>predicate</code> argument
-     *  and whose object matchesthe <code>object</code> argument.
+     *  and whose object matches the <code>object</code> argument.
      *  If an argument is <code>null</code> it matches anything.</p>
      * @return an iterator over the subjects
      * @param subject   The subject sought
      * @param predicate The predicate sought
      * @param object    The value sought
-     * @param lang      The lang code ofthe string.
+     * @param lang      The lang code of the string.
 
      */
     StmtIterator listStatements(Resource subject,
@@ -608,6 +628,27 @@ public interface ModelCon {
                                 String   lang)
     ;
 
+    /** Find all the statements matching a pattern.
+     * <p>Return an iterator over all the statements in a model
+     *  that match a pattern.  The statements selected are those
+     *  whose subject matches the <code>subject</code> argument,
+     *  whose predicate matches the <code>predicate</code> argument
+     *  and whose object matches the <code>object</code> argument.
+     *  If an argument is <code>null</code> it matches anything.</p>
+     * @return an iterator over the subjects
+     * @param subject   The subject sought
+     * @param predicate The predicate sought
+     * @param object    The value sought
+     * @param lang      The lang code of the string.
+     * @param direction The base direction of the string.
+
+     */
+    StmtIterator listStatements(Resource subject,
+                                Property predicate,
+                                String   object,
+                                String   lang,
+                                String   direction)
+    ;
     /**
         Answer an iterator [without duplicates] over all the resources in this
         model which have value o' for property p, where o' is the typed literal
@@ -653,19 +694,28 @@ public interface ModelCon {
     /** lists all subjects with a given property and property value.
      * @return an iterator over the set of subjects
      * @param p The predicate sought.
-     * @param o The property value sought.
+     * @param str The property value sought.
      */
-    ResIterator listSubjectsWithProperty( Property p, String o );
+    ResIterator listSubjectsWithProperty( Property p, String str );
 
     /** lists all subjects with a given property and property value.
 
      * @return an iterator over the set of subjects
      * @param p The predicate sought.
-     * @param o The property value sought.
-     * @param l the language associated with the object
-
+     * @param str The property value sought.
+     * @param lang the language associated with the object
      */
-    ResIterator listSubjectsWithProperty( Property p, String o, String l );
+    ResIterator listSubjectsWithProperty( Property p, String str, String lang );
+
+    /** lists all subjects with a given property and property value.
+
+     * @return an iterator over the set of subjects
+     * @param p The predicate sought.
+     * @param str The property value sought.
+     * @param lang the language associated with the object
+     * @param dir the text directio associated with the object
+     */
+    ResIterator listSubjectsWithProperty( Property p, String str, String lang, String dir );
 
     /**
         Answer true iff this model contains the statement (s, p, o') where
@@ -712,19 +762,30 @@ public interface ModelCon {
     /** Determine if a statement is present in this model.
      * @return true if the statement with subject s, property p and object o
      * is in the model, false otherwise
-     * @param s The subject of the statment tested.
+     * @param s The subject of the statement tested.
      * @param p The predicate of the statement tested.
-     * @param o The object of the statement tested.
+     * @param lex The string object in the statement tested.
      */
-    boolean contains( Resource s, Property p, String o );
+    boolean contains( Resource s, Property p, String lex );
 
     /** Determine if a statement is present in this model.
      * @return true if the statement with subject s, property p and object o
      * is in the model, false otherwise
-     * @param s The subject of the statment tested.
+     * @param s The subject of the statement tested.
      * @param p The predicate of the statement tested.
-     * @param o The object of the statement tested.
-     * @param l the language associated with the object
+     * @param lex The string object in the statement tested.
+     * @param lang the language associated with the object.
      */
-    boolean contains( Resource s, Property p, String o, String l );
+    boolean contains( Resource s, Property p, String lex, String lang );
+
+    /** Determine if a statement is present in this model.
+     * @return true if the statement with subject s, property p and object o
+     * is in the model, false otherwise
+     * @param s The subject of the statement tested.
+     * @param p The predicate of the statement tested.
+     * @param lex The string object in the statement tested.
+     * @param lang the language associated with the object.
+     * @param dir the language associated with the object.
+     */
+    boolean contains( Resource s, Property p, String lex, String lang, String dir );
 }
