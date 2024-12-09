@@ -36,10 +36,10 @@ import org.apache.jena.sparql.serializer.SerializationContext ;
 /** Execute each sub stage against the input.
  *  Streamed SPARQL Union. */
 
-public class QueryIterUnion extends QueryIterRepeatApply 
+public class QueryIterUnion extends QueryIterRepeatApply
 {
     protected List<Op> subOps  ;
-    
+
     public QueryIterUnion(QueryIterator input,
                           List<Op> subOps,
                           ExecutionContext context)
@@ -56,16 +56,24 @@ public class QueryIterUnion extends QueryIterRepeatApply
         {
             subOp = QC.substitute(subOp, binding) ;
             QueryIterator parent = QueryIterSingleton.create(binding, getExecContext()) ;
-            QueryIterator qIter = QC.execute(subOp, parent, getExecContext()) ;
-            unionQIter.add(qIter) ;
+
+            // In case of a failure, such as due to QueryCancelledException, make sure to clean things up.
+            try {
+                QueryIterator qIter = QC.execute(subOp, parent, getExecContext()) ;
+                unionQIter.add(qIter) ;
+            } catch (Exception e) {
+                e.addSuppressed(new RuntimeException("Exception during construction of union stage execution."));
+                parent.close();
+                unionQIter.close();
+                throw e;
+            }
         }
-        
         return unionQIter ;
     }
-    
+
     @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
-    { 
+    {
         out.println(Lib.className(this)) ;
         out.incIndent() ;
         for (Op op : subOps)
