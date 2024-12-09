@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.function.library.triple.EmbeddedTripleFunctions;
+import org.apache.jena.sparql.function.library.triple.TripleTermOps;
 import org.apache.jena.sparql.sse.Tags;
 
 public class E_TripleFn extends ExprFunction3 {
@@ -32,7 +32,7 @@ public class E_TripleFn extends ExprFunction3 {
 
     @Override
     public NodeValue eval(NodeValue s, NodeValue p, NodeValue o) {
-        return EmbeddedTripleFunctions.fnTriple(s, p, o);
+        return TripleTermOps.fnTriple(s, p, o);
     }
 
     @Override

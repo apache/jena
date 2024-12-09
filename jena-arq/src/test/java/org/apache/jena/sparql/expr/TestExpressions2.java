@@ -195,17 +195,17 @@ public class TestExpressions2
 
     // RDF-star
     @Test public void triple_term_cmp_01()
-    { eval("<<<ex:s> <ex:p> <ex:p>>> = <<<ex:s> <ex:p> <ex:p>>>"); }
+    { eval("<<(<ex:s> <ex:p> <ex:p>)>> = <<(<ex:s> <ex:p> <ex:p>)>>"); }
 
     @Test public void triple_term_cmp_02()
-    { eval("<<<ex:s> <ex:p> <ex:o1>>> != <<<ex:s> <ex:p> <ex:o2>>>"); }
+    { eval("<<(<ex:s> <ex:p> <ex:o1>)>> != <<(<ex:s> <ex:p> <ex:o2>)>>"); }
 
     @Test public void triple_term_cmp_03()
-    { eval("<<<ex:s> <ex:p> 1>> < <<<ex:s> <ex:p> 2>>"); }
+    { eval("<<(<ex:s> <ex:p> 1)>> < <<(<ex:s> <ex:p> 2)>>"); }
 
     @Test (expected=ExprEvalException.class)
     public void triple_term_cmp_04()
-    { eval("<<<ex:s> <ex:p1> 2>> < <<<ex:s> <ex:p2> 2>>"); }
+    { eval("<<(<ex:s> <ex:p1> 2)>> < <<(<ex:s> <ex:p2> 2)>>"); }
 
     // XSD casts
 

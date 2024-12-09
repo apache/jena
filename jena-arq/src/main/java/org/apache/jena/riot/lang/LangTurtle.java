@@ -43,7 +43,7 @@ public class LangTurtle extends LangTurtleBase {
 
     @Override
     protected final void oneTopLevelElement() {
-        triplesSameSubject() ;
+        triples() ;
     }
 
     @Override

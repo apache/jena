@@ -223,7 +223,7 @@ public class RDFPatchReaderBinary implements PatchProcessor {
             Node p = fromThrift(rt.getP()) ;
             Node o = fromThrift(rt.getO()) ;
             Triple t = Triple.create(s, p, o) ;
-            return NodeFactory.createTripleNode(t);
+            return NodeFactory.createTripleTerm(t);
         }
 
         throw new PatchException("No conversion to a Node: "+term.toString());
