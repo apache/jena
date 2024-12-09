@@ -20,6 +20,7 @@ package org.apache.jena.arq.junit.sparql.tests;
 
 import static org.junit.Assert.fail;
 
+import org.apache.jena.arq.junit.LibTest;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
 import org.apache.jena.query.Query;
 
@@ -47,12 +48,17 @@ public class QuerySyntaxTest implements Runnable {
             if ( !expectLegalSyntax )
                 fail("Expected parse failure");
         } catch (QueryException qEx) {
-            if ( expectLegalSyntax )
+            if ( expectLegalSyntax ) {
+                String filename = SparqlTestLib.queryFile(testEntry);
+                LibTest.printFile(filename);
                 throw qEx;
+            }
             // Expected a failure.
         } catch (Exception ex) {
             ex.printStackTrace();
             fail("Exception: " + ex.getClass().getName() + ": " + ex.getMessage());
         }
     }
+
+
 }
