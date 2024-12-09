@@ -143,6 +143,20 @@ public class ElementTransformCopyBase implements ElementTransform {
     }
 
     @Override
+    public Element transform(ElementSemiJoin el, Element elt1) {
+        if ( !alwaysCopy && el.getSubElement() == elt1 )
+            return el;
+        return new ElementSemiJoin(elt1);
+    }
+
+    @Override
+    public Element transform(ElementAntiJoin el, Element elt1) {
+        if ( !alwaysCopy && el.getSubElement() == elt1 )
+            return el;
+        return new ElementAntiJoin(elt1);
+    }
+
+    @Override
     public Element transform(ElementGroup el, List<Element> elts) {
         if ( !alwaysCopy && el.getElements() == elts )
             return el;

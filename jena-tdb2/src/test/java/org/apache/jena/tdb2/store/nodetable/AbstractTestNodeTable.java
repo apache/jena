@@ -62,6 +62,8 @@ public abstract class AbstractTestNodeTable
     @Test public void nodetable_03()    { testNode("_:x"); }
     @Test public void nodetable_04()    { testNode("'x'"); }
     @Test public void nodetable_05()    { testNode("'x'@en"); }
-    @Test public void nodetable_06()    { testNode("'x'^^<http://example/dt>"); }
-    @Test public void nodetable_07()    { testNode("'نواف'"); }
+    @Test public void nodetable_06()    { testNode("'x'@en--ltr"); }
+    @Test public void nodetable_07()    { testNode("'x'^^<http://example/dt>"); }
+    @Test public void nodetable_08()    { testNode("'نواف'"); }
+    @Test public void nodetable_09()    { testNode("'نواف'"); }
 }

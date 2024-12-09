@@ -58,6 +58,16 @@ public class LangEngine {
         return peekIter.peek();
     }
 
+    // Development!
+    protected final void printToken() {
+        if ( tokenEOF != null ) {
+            System.out.println("<EOF>");
+            return;
+        }
+        Token token = peekToken();
+        System.out.println(token);
+    }
+
     // Set when we get to EOF to record line/col of the EOF.
     private Token tokenEOF = null;
 
@@ -134,11 +144,17 @@ public class LangEngine {
 
     protected final void exception(Token token, String msg, Object... args) {
         if ( token != null )
-            exceptionDirect(String.format(msg, args), token.getLine(), token.getColumn());
+            exception(String.format(msg, args), token.getLine(), token.getColumn());
         else
-            exceptionDirect(String.format(msg, args), -1, -1);
+            exception(String.format(msg, args), -1, -1);
     }
 
+    protected final void exception(String msg, long line, long col) {
+        raiseException(new RiotParseException(msg, line, col));
+    }
+
+    /** @deprecated use {@link #exception(String, long, long)}*/
+    @Deprecated(forRemoval = true)
     protected final void exceptionDirect(String msg, long line, long col) {
         raiseException(new RiotParseException(msg, line, col));
     }

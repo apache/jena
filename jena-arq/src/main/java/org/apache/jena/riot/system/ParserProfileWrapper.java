@@ -79,6 +79,11 @@ public class ParserProfileWrapper implements ParserProfile
     }
 
     @Override
+    public Node createLangDirLiteral(String lexical, String langTag, String direction, long line, long col) {
+        return get().createLangDirLiteral(lexical, langTag, direction, line, col);
+    }
+
+    @Override
     public Node createStringLiteral(String lexical, long line, long col) {
         return get().createStringLiteral(lexical, line, col);
     }
@@ -94,13 +99,13 @@ public class ParserProfileWrapper implements ParserProfile
     }
 
     @Override
-    public Node createTripleNode(Node subject, Node predicate, Node object, long line, long col) {
-        return get().createTripleNode(subject, predicate, object, line, col);
+    public Node createTripleTerm(Node subject, Node predicate, Node object, long line, long col) {
+        return get().createTripleTerm(subject, predicate, object, line, col);
     }
 
     @Override
-    public Node createTripleNode(Triple triple, long line, long col) {
-        return get().createTripleNode(triple, line, col);
+    public Node createTripleTerm(Triple triple, long line, long col) {
+        return get().createTripleTerm(triple, line, col);
     }
 
     @Override

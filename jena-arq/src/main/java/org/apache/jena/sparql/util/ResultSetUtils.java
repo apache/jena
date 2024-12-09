@@ -23,20 +23,23 @@ import java.util.List ;
 
 import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.query.ResultSet ;
+import org.apache.jena.query.ResultSetRewindable;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.ARQException ;
-import org.apache.jena.sparql.resultset.ResultSetMem ;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.ResultSetStream;
+import org.apache.jena.sparql.engine.binding.Binding;
 
 public class ResultSetUtils
 {
     /**
      * Extracts a List filled with the binding of selectElement variable for each
      * query solution as RDFNodes (Resources or Literals).
-     * Exhausts the result set.  Create a rewindable one to use multiple times. 
-     *   
-     * @see org.apache.jena.query.ResultSetFactory   
+     * Exhausts the result set.  Create a rewindable one to use multiple times.
+     *
+     * @see org.apache.jena.query.ResultSetFactory
      */
     public static List<RDFNode> resultSetToList(ResultSet rs, String selectElement)
     {
@@ -50,11 +53,11 @@ public class ResultSetUtils
         }
         return items ;
     }
-    
+
     /**
      * Extracts a List filled with the binding of selectElement variable for each
-     * query solution, turned into a string (URIs or lexical forms).  
-     * Exhausts the result set.  Create a rewindable one to use multiple times. 
+     * query solution, turned into a string (URIs or lexical forms).
+     * Exhausts the result set.  Create a rewindable one to use multiple times.
      * @see org.apache.jena.query.ResultSetFactory
      */
     public static List<String> resultSetToStringList(ResultSet rs,
@@ -75,21 +78,36 @@ public class ResultSetUtils
             {
                 items.add( ((Resource)rn).getId().getLabelString() ) ;
             }
-            else 
+            else
                 throw new ARQException("Unknow thing in results : "+rn) ;
         }
         return items ;
     }
 
     /**
-     * Create an in-memory result set from an array of 
-     * ResulSets. It is assumed that all the ResultSets 
+     * Create an in-memory result set from a number of
+     * ResulSets. It is assumed that all the ResultSets
      * from the array have the same variables.
-     * 
+     * Row order is preserved.
+     * The input ResultSets are exhausted.
+     *
      * @param sets the ResultSets to concatenate.
+     * @returns ResultSetRewindable
      */
-    public static ResultSet union(ResultSet... sets) {
-        return new ResultSetMem(sets);
+    public static ResultSetRewindable merge(ResultSet... sets) {
+        List<Var> vars = new ArrayList<>();
+        List<Binding> rows = new ArrayList<>();
+        for ( ResultSet rs : sets ) {
+            for ( ; rs.hasNext() ; ) {
+                Binding binding = rs.nextBinding();
+                binding.vars().forEachRemaining(v-> {
+                    if ( !vars.contains(v) ) {
+                        vars.add(v);
+                    }
+                });
+                rows.add(binding);
+            }
+        }
+        return ResultSetStream.create(vars, rows.iterator()).rewindable();
     }
-    
 }
