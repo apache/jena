@@ -205,15 +205,11 @@ public class VarFinder
 
         @Override
         public void visit(OpMinus opMinus) {
-            mergeMinusDiff(opMinus.getLeft(), opMinus.getRight()) ;
+            mergeRightMask(opMinus.getLeft(), opMinus.getRight()) ;
         }
 
-        @Override
-        public void visit(OpDiff opDiff) {
-            mergeMinusDiff(opDiff.getLeft(), opDiff.getRight()) ;
-        }
-
-        private void mergeMinusDiff(Op left, Op right) {
+        // Operations whose RHS does not contribute to the variables in-scope (MINUS, SEMIJOIN, ANTIJOIN)
+        private void mergeRightMask(Op left, Op right) {
             mergeVars(left) ;
             VarUsageVisitor usage = VarUsageVisitor.apply(right);
             // Everything in the right side is really a filter.
@@ -224,6 +220,14 @@ public class VarFinder
             filterMentions.addAll(usage.filterMentions) ;
             filterMentions.addAll(usage.assignMentions) ;
         }
+
+        @Override
+        public void visit(OpSemiJoin opSemiJoin)
+        { mergeRightMask(opSemiJoin.getLeft(), opSemiJoin.getRight()) ; }
+
+        @Override
+        public void visit(OpAntiJoin opAntiJoin)
+        { mergeRightMask(opAntiJoin.getLeft(), opAntiJoin.getRight()) ; }
 
         private static void combinefilterMentions(VarUsageVisitor usage, Set<Var> mentions) {
             for ( Var v : mentions ) {

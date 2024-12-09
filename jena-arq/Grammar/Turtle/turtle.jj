@@ -80,9 +80,9 @@ void Statement() : {}
 {
     Directive()
   | DirectiveOld()
-//  | (TriplesSameSubject() (<DOT> | <EOF> ) )
+//  | (Triples() (<DOT> | <EOF> ) )
   // Strict
-  | (TriplesSameSubject() <DOT> )
+  | (Triples() <DOT> )
 }
 
 // Turtle [3] directive
@@ -106,17 +106,15 @@ void DirectiveOld() : { Token t ; String iri ; }
     { setBase(iri, t.beginLine, t.beginColumn) ; }
 }
 
-// Turtle [6] triples
-void TriplesSameSubject() : { Node s ; } 
+void Triples() : { Node n; }
 {
-  s = Subject()
-  PredicateObjectList(s) 
+  n = Subject() PredicateObjectList(n)
 |
-  s = BlankNodePropertyList()
-  ( PredicateObjectList(s) )?
+  n = BlankNodePropertyList() ( PredicateObjectList(n) )?
+|
+  n = ReifiedTriple() ( PredicateObjectList(n) )?
 }
 
-// Turtle [7] predicateObjectList
 void PredicateObjectList(Node s) : { Node p = null ; }
 {
     p = Verb()
@@ -124,7 +122,6 @@ void PredicateObjectList(Node s) : { Node p = null ; }
     (<SEMICOLON> (p = Verb() ObjectList(s, p))? )*
 }
 
-// Turtle [8] objectList
 void ObjectList(Node s, Node p): { Node o ; } 
 {
   o = Object()
@@ -135,17 +132,6 @@ void ObjectList(Node s, Node p): { Node o ; }
     { emitTriple(token.beginLine, token.beginColumn, s, p, o) ; }
     Annotation(s, p, o)
   )*
-}
-
-// RDF-star Annotation Syntax
-void Annotation(Node s, Node p, Node o) : {}
-{
-  (
-    <L_ANN>
-      { Node x = createQuotedTriple(s, p, o, token.beginLine, token.beginColumn); }
-      PredicateObjectList(x)
-    <R_ANN>
-  )?
 }
 
 // Turtle [9] verb
@@ -163,12 +149,9 @@ Node Subject() : { Node s; String iri ; }
     s = BlankNode()
   |
     s = Collection()
-  |
-    s = QuotedTriple()
   )
   { return s ; }
 }
-
 
 // Turtle [11] predicate
 Node Predicate() : { String iri;}
@@ -185,41 +168,10 @@ Node Object(): { Node o ; String iri; }
   | o = Collection()
   | o = BlankNodePropertyList()
   | o = Literal()
-  | o = QuotedTriple()
+  | o = TripleTerm()
+  | o = ReifiedTriple()
   )
   { return o; }
-}
-
-Node QuotedTripleSubject(): { Node o ; String iri; }
-{
-  ( iri = iri() { o = createURI(iri, token.beginLine, token.beginColumn) ; }
-  | o = BlankNode()
-  | o = QuotedTriple()
-  )
-  { return o; }
-}
-
-Node QuotedTripleObject(): { Node o ; String iri; }
-{
-  ( iri = iri() { o = createURI(iri, token.beginLine, token.beginColumn) ; }
-  | o = BlankNode()
-  | o = Literal()
-  | o = QuotedTriple()
-  )
-  { return o ; } 
-}
-
-// The syntax for RDF-star <<>>
-Node QuotedTriple() : { Node s , p , o ; Token t ; }
-{
-  t = <LT2>
-  s = QuotedTripleSubject()
-  p = Verb()
-  o = QuotedTripleObject()
-  <GT2>
-  { Node n = createQuotedTriple(s, p, o, t.beginLine, t.beginColumn);
-    return n;
-  }
 }
 
 // Turtle [13] literal
@@ -302,7 +254,7 @@ Node RDFLiteral() : { Token t ; String lex = null ; }
 String LangTag() : { Token t ; }
 {
   // Enumerate the directives here because they look like language tags.
-  ( t = <LANGTAG> | t = AnyDirective() )
+  ( t = <LANG_DIR> | t = AnyDirective() )
   { String lang = stripChars(t.image, 1) ; return lang ; }
 }
 
@@ -367,6 +319,106 @@ String IRIREF() : { Token t ; }
 {
   t = <IRIref>
   { return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ; }
+}
+
+Node Reifier() : { Node n = null; String iriStr; Token t; }
+{
+  t = <TILDE>
+  (
+    iriStr = iri() { n = createURI(iriStr, token.beginLine, token.beginColumn) ; }
+  | n = BlankNode()
+  )?
+  { if ( n == null ) n = createBNode(t.beginLine, t.beginColumn) ; }
+  { return n ; }
+}
+
+Node ReifiedTriple() : { Node reifId = null ; Token tok ;  Node s; Node p ; Node o ; }
+{
+   tok = <LT2>
+   s = ReifiedTripleSubject()
+   p = Verb()
+   o = ReifiedTripleObject()
+   ( reifId = Reifier())?
+   { reifId = emitTripleReifier(tok.beginLine, tok.beginColumn, reifId, s, p, o); }
+   <GT2>
+   { return reifId ; }
+}
+
+// rtSubject
+Node ReifiedTripleSubject() : { Node s; String iri; } {
+  ( iri = iri() { s = createURI(iri, token.beginLine, token.beginColumn) ; }
+  | s = BlankNode()
+  | s = ReifiedTriple()
+  )
+  { return s; }
+}
+
+// rtObject
+Node ReifiedTripleObject() : { Node o; String iri; } {
+  ( iri = iri() { o = createURI(iri, token.beginLine, token.beginColumn) ; }
+  | o = BlankNode()
+  | o = Literal()
+  | o = TripleTerm()
+  | o = ReifiedTriple()
+  )
+  { return o; }
+}
+
+Node TripleTerm() : { Node n = null ; Token openToken ; String iri ; Node s , p , o ; }
+{
+  <L_TRIPLE>
+  s = TripleTermSubject()
+  p = Verb()
+  o = TripleTermObject()
+  <R_TRIPLE>
+  { return createTripleTerm(s, p, o, token.beginLine, token.beginColumn) ; }
+}
+
+// ttSubject
+Node TripleTermSubject(): { Node o ; String iri; }
+{
+  ( iri = iri() { o = createURI(iri, token.beginLine, token.beginColumn) ; }
+  | o = BlankNode()
+  )
+  { return o; }
+}
+
+// ttObject
+Node TripleTermObject(): { Node o ; String iri; }
+{
+  ( iri = iri() { o = createURI(iri, token.beginLine, token.beginColumn) ; }
+  | o = BlankNode()
+  | o = Literal()
+  | o = TripleTerm()
+  )
+  { return o ; } 
+}
+
+// RDF-star Annotation Syntax
+void Annotation(Node s, Node p, Node o) : { Node reifId = null; }
+{
+  (
+    reifId = Reifier()
+    { reifId = emitTripleReifier(token.beginLine, token.beginColumn, reifId, s, p, o) ; }
+    { setReifierId(reifId); }
+  |
+    { reifId = getOrAllocReifierId(s, p, o, token.beginLine, token.beginColumn); }
+    { clearReifierId(); }
+    AnnotationBlock(reifId)
+  ) *
+}
+
+void AnnotationBlock( Node reifId ) : {}
+{
+   <L_ANN>
+   PredicateObjectList(reifId)
+   <R_ANN>
+// (
+//     <L_ANN>
+//       { Node x = createQuotedTriple(s, p, o, token.beginLine, token.beginColumn); }
+//       PredicateObjectList(x)
+//     <R_ANN>
+//   )?
 }
 
 // ------------------------------------------
@@ -457,18 +509,23 @@ TOKEN :
 | < SEMICOLON: ";" >
 | < COMMA:     "," >
 | < DOT:       "." >
-| < LT2:       "<<" >
-| < GT2:       ">>" >
-| < L_ANN:     "{|" >
-| < R_ANN:     "|}" >
 
 | < DATATYPE: "^^">
 | < AT: "@">
 
+| < L_TRIPLE:  "<<(" >
+| < R_TRIPLE:  ")>>" >
+| < LT2:       "<<" >
+| < GT2:       ">>" >
+| < L_ANN:     "{|" >
+| < R_ANN:     "|}" >
+| < TILDE:     "~"  >
+| < VBAR:      "|" >
+
 |  <PNAME_NS: (<PN_PREFIX>)? ":" >
 |  <PNAME_LN: <PNAME_NS> <PN_LOCAL> >
 |  <BLANK_NODE_LABEL: "_:" (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)?  >
-|  <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* >
+|  <LANG_DIR: <AT> (<A2Z>)+("-" (<A2ZN>)+)* ( "--" (<A2Z>)* )? >
 |  <#A2Z: ["a"-"z","A"-"Z"]>
 |  <#A2ZN: ["a"-"z","A"-"Z","0"-"9"]>
 

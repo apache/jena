@@ -38,7 +38,7 @@ public class TestNodeEdgeCases {
     }
 
     @Test public void term_create_02() {
-        // "abc"^rdf:dirLangString (no language, no initial text direction)
+        // "abc"^^rdf:dirLangString (no language, no base direction)
         Node node1 = NodeFactory.createLiteral("abc", null, (String)null, RDFDirLangString.rdfDirLangString);
         assertNotNull(node1);
         Node node2 = NodeFactory.createLiteralDT("abc", RDFDirLangString.rdfDirLangString);

@@ -24,7 +24,6 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 /** LATERAL */
-
 public class ElementLateral extends Element
 {
     private final Element right ;
