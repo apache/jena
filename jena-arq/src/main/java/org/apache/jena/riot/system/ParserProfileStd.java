@@ -144,11 +144,19 @@ public class ParserProfileStd implements ParserProfile {
     }
 
     private boolean allowSpecialNode(Node node) {
-        return allowNodeExtentions && node instanceof Node_Triple;
+        return allowNodeExtentions;
     }
 
     protected void checkTriple(Node subject, Node predicate, Node object, long line, long col) {
         if ( subject == null || (!subject.isURI() && !subject.isBlank()) ) {
+            if ( subject.isLiteral() ) {
+                errorHandler.error("Subject is a literal: "+subject, line, col);
+                throw new RiotException("Bad subject: " + subject);
+            }
+            if ( subject.isTripleTerm() ) {
+                errorHandler.error("Subject is a triple term: "+subject, line, col);
+                throw new RiotException("Bad subject: " + subject);
+            }
             if ( !allowSpecialNode(subject) ) {
                 errorHandler.error("Subject is not a URI or blank node", line, col);
                 throw new RiotException("Bad subject: " + subject);
@@ -158,7 +166,7 @@ public class ParserProfileStd implements ParserProfile {
             errorHandler.error("Predicate not a URI", line, col);
             throw new RiotException("Bad predicate: " + predicate);
         }
-        if ( object == null || (!object.isURI() && !object.isBlank() && !object.isLiteral()) ) {
+        if ( object == null || (!object.isURI() && !object.isBlank() && !object.isLiteral() && !object.isTripleTerm() ) ) {
             if ( !allowSpecialNode(object) ) {
                 errorHandler.error("Object is not a URI, blank node or literal", line, col);
                 throw new RiotException("Bad object: " + object);
@@ -212,8 +220,17 @@ public class ParserProfileStd implements ParserProfile {
     @Override
     public Node createLangLiteral(String lexical, String langTag, long line, long col) {
         if ( checking )
-            Checker.checkLiteral(lexical, langTag, null, errorHandler, line, col);
+            Checker.checkLiteral(lexical, langTag, errorHandler, line, col);
         return factory.createLangLiteral(lexical, langTag);
+    }
+
+    @Override
+    public Node createLangDirLiteral(String lexical, String langTag, String direction, long line, long col) {
+        if ( ! TextDirection.isValid(direction) )
+            throw new RiotException("Invalid base direction: '"+direction+"'. Must be 'ltr' or 'rtl'");
+        if ( checking )
+            Checker.checkLiteral(lexical, langTag, direction, null, errorHandler, line, col);
+            return factory.createLangDirLiteral(lexical, langTag, direction);
     }
 
     @Override
@@ -235,13 +252,17 @@ public class ParserProfileStd implements ParserProfile {
     }
 
     @Override
-    public Node createTripleNode(Node subject, Node predicate, Node object, long line, long col) {
-        return NodeFactory.createTripleNode(subject, predicate, object);
+    public Node createTripleTerm(Node subject, Node predicate, Node object, long line, long col) {
+        if ( checking )
+            checkTriple(subject, predicate, object, line, col);
+        return NodeFactory.createTripleTerm(subject, predicate, object);
     }
 
     @Override
-    public Node createTripleNode(Triple triple, long line, long col) {
-        return NodeFactory.createTripleNode(triple);
+    public Node createTripleTerm(Triple triple, long line, long col) {
+        if ( checking )
+            checkTriple(triple.getSubject(), triple.getPredicate(), triple.getObject(), line, col);
+        return NodeFactory.createTripleTerm(triple);
     }
 
     @Override
@@ -261,7 +282,7 @@ public class ParserProfileStd implements ParserProfile {
     }
 
     @Override
-    public Node create(Node currentGraph, Token token) {
+    public final Node create(Node currentGraph, Token token) {
         // Dispatches to the underlying ParserFactory operation
         long line = token.getLine();
         long col = token.getColumn();
@@ -305,6 +326,13 @@ public class ParserProfileStd implements ParserProfile {
             }
 
             case LITERAL_LANG :
+                String langdir = token.getImage2();
+                int idx = langdir.indexOf("--");
+                if ( idx >= 0 ) {
+                    String textDir = langdir.substring(idx+2);
+                    String lang = langdir.substring(0, idx);
+                    return createLangDirLiteral(str, lang, textDir, line, col);
+                }
                 return createLangLiteral(str, token.getImage2(), line, col);
 
             case STRING :

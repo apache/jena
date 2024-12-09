@@ -17,10 +17,24 @@
  */
 
 package org.apache.jena.sparql.lang.sparql_11;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.TypeMapper;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.lang.SPARQLParserBase ;
 
-class SPARQLParser11Base
-        extends SPARQLParserBase
-        implements SPARQLParser11Constants
-{
+class SPARQLParser11Base extends SPARQLParserBase implements SPARQLParser11Constants {
+    // LEGACY
+    protected Node createLiteral(String lexicalForm, String langTag, String datatypeURI) {
+        Node n = null;
+        // Can't have type and lang tag in parsing.
+        if ( datatypeURI != null ) {
+            RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatypeURI);
+            n = NodeFactory.createLiteralDT(lexicalForm, dType);
+        } else if ( langTag != null && !langTag.isEmpty() )
+            n = NodeFactory.createLiteralLang(lexicalForm, langTag);
+        else
+            n = NodeFactory.createLiteralString(lexicalForm);
+        return n;
+    }
 }

@@ -18,12 +18,12 @@
 
 package org.apache.jena.riot.thrift;
 
-import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.RiotException;
 
 public class RiotThriftException extends RiotException {
-    public RiotThriftException()                          { super() ; }
-    public RiotThriftException(String msg)                { super(msg) ; }
-    public RiotThriftException(Throwable th)              { super(th) ; }
-    public RiotThriftException(String msg, Throwable th)  { super(msg, th) ; }
+    public RiotThriftException()                          { super(); }
+    public RiotThriftException(String msg)                { super(msg); }
+    public RiotThriftException(Throwable th)              { super(th); }
+    public RiotThriftException(String msg, Throwable th)  { super(msg, th); }
 }
 

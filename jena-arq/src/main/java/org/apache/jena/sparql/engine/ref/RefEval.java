@@ -27,6 +27,7 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.algebra.Algebra;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.Table;
 import org.apache.jena.sparql.algebra.TableFactory;
@@ -34,6 +35,7 @@ import org.apache.jena.sparql.algebra.op.OpDatasetNames;
 import org.apache.jena.sparql.algebra.op.OpGraph;
 import org.apache.jena.sparql.algebra.op.OpQuadPattern;
 import org.apache.jena.sparql.algebra.table.TableEmpty;
+import org.apache.jena.sparql.algebra.table.TableN;
 import org.apache.jena.sparql.algebra.table.TableUnit;
 import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -192,5 +194,63 @@ public class RefEval {
         if ( hideBNodeVars )
             qIter = new QueryIterDistinguishedVars(qIter, execCxt);
         return qIter;
+    }
+
+    // SemiJoin And AntiJoin
+
+    private enum HALF_JOIN {
+        SEMI {
+            @Override
+            public Binding onOneMatch(Binding bindingLeft) { return bindingLeft; }
+            @Override
+            public Binding onNoMatches(Binding bindingLeft) { return null; }
+        } ,
+        ANTI {
+            @Override
+            public Binding onOneMatch(Binding bindingLeft) { return null; }
+            @Override
+            public Binding onNoMatches(Binding bindingLeft) { return null; }
+        }
+        ;
+        public abstract Binding onOneMatch(Binding bindingLeft);
+        public abstract Binding onNoMatches(Binding bindingLeft);
+    };
+
+
+    static Table semiJoin(Table left, Table right) {
+        return halfJoin(HALF_JOIN.SEMI, left, right);
+    }
+
+    static Table antiJoin(Table left, Table right) {
+        return halfJoin(HALF_JOIN.ANTI, left, right);
+    }
+
+    static Table halfJoin(HALF_JOIN halfJoin, Table left, Table right) {
+        if ( left.isEmpty() ) {
+            left.close();
+            return TableFactory.createEmpty();
+        }
+        TableN result = new TableN();
+        left.rows().forEachRemaining(bindingLeft->{
+            boolean hasMatch = false;
+            for ( Iterator<Binding> iterRight = right.rows(); iterRight.hasNext() ; ) {
+                Binding bindingRight = iterRight.next();
+                boolean matches = Algebra.compatible(bindingLeft, bindingRight);
+                if ( matches ) {
+                    hasMatch = true;
+                    Binding b = halfJoin.onOneMatch(bindingLeft);
+                    if ( b != null )
+                        result.addBinding(b);
+                    break;
+                }
+            }
+            if ( ! hasMatch ) {
+                Binding b = halfJoin.onNoMatches(bindingLeft);
+                if ( b != null )
+                    result.addBinding(b);
+            }
+        });
+        right.close();
+        return result;
     }
 }

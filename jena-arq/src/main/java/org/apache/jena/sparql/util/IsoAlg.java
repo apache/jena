@@ -247,7 +247,7 @@ public class IsoAlg {
                 return true;
             if ( n.isVariable() )
                 return true;
-            if ( n.isNodeTriple() ) {
+            if ( n.isTripleTerm() ) {
                 Tuple<Node> tuple1 = tripleToTuple.apply(n.getTriple());
                 boolean b = containsMappable(tuple1);
                 if ( b )
@@ -311,8 +311,8 @@ public class IsoAlg {
             return null;
         }
 
-        if ( n1.isNodeTriple() ) {
-            if ( n2.isNodeTriple() ) {
+        if ( n1.isTripleTerm() ) {
+            if ( n2.isTripleTerm() ) {
                 Triple t1 = n1.getTriple();
                 Triple t2 = n2.getTriple();
                 Tuple<Node> tuple1 = tripleToTuple.apply(t1);
@@ -320,7 +320,7 @@ public class IsoAlg {
                 // Whether to records the triple term mapping.
                 return gen(tuple1, tuple2, mapping, mappable, nodeTest);
             }
-        } else if ( n2.isNodeTriple() ) {
+        } else if ( n2.isTripleTerm() ) {
             return null;
         }
 
