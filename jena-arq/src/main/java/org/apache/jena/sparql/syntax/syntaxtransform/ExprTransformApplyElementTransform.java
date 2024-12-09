@@ -43,7 +43,7 @@ public class ExprTransformApplyElementTransform extends ExprTransformCopy
     @Override
     public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg)
     {
-        Element el2 = ElementTransformer.transform(funcOp.getElement(), transform);
+        Element el2 = ElementTransformer.transform(funcOp.getElement(), transform, this);
 
         if ( el2 == funcOp.getElement() )
             return super.transform(funcOp, args, opArg);

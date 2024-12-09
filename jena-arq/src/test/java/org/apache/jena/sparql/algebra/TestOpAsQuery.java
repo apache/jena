@@ -330,6 +330,11 @@ public class TestOpAsQuery {
     }
 
     @Test
+    public void testSubQuery4() {
+        test_roundTripQuery("SELECT ?z { SELECT ?x {  } }");
+    }
+
+    @Test
     public void testAggregatesInSubQuery1() {
         //Simplified form of a test case provided via the mailing list (JENA-445)
         String query = "SELECT ?key ?agg WHERE { SELECT ?key (COUNT(*) AS ?agg) { ?key ?p ?o } GROUP BY ?key }";
@@ -482,6 +487,20 @@ public class TestOpAsQuery {
                                                            "SELECT * { GRAPH ?g { { ?x ?y ?z FILTER(EXISTS { ?s ?p ?o }) } ?x ?y ?z } }",
                                                               syntaxARQ); }
 
+    // Tests exists with a subquery within a subquery.
+    @Test
+    public void testExists07() {
+        String queryStr = """
+            SELECT ?x {
+              SELECT ?x {
+                ?x a ?y
+                FILTER EXISTS { SELECT * { ?y a ?z } }
+              }
+            }
+            """;
+        test_roundTripQuery(queryStr, Syntax.syntaxARQ);
+    }
+
     @Test public void testNotExists01() { test_roundTripQuery("SELECT * { ?x ?y ?z NOT EXISTS { ?s ?p ?o } }",
                                                            "SELECT * { ?x ?y ?z FILTER NOT EXISTS { ?s ?p ?o } }",
                                                            syntaxARQ); }
@@ -502,8 +521,6 @@ public class TestOpAsQuery {
     @Test public void testNotExists06() { test_roundTripQuery("SELECT * { GRAPH ?g { ?x ?y ?z NOT EXISTS { ?s ?p ?o } ?x ?y ?z } }",
                                                            "SELECT * { GRAPH ?g { { ?x ?y ?z FILTER(NOT EXISTS { ?s ?p ?o }) } ?x ?y ?z } }",
                                                               syntaxARQ); }
-
-
 
     @Test
     public void testTable1() {
