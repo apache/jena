@@ -31,6 +31,6 @@ public class TriplePredicate extends FunctionBase1 {
 
     @Override
     public NodeValue exec(NodeValue nv) {
-        return EmbeddedTripleFunctions.triplePredicate(nv);
+        return TripleTermOps.triplePredicate(nv);
     }
 }

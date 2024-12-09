@@ -25,15 +25,16 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.util.FmtUtils;
 
-/** A NodeValue that is a lang tagged literal (rdf:langString).
+/**
+ * A NodeValue that is a lang tagged literal (rdf:langString).
  * A string + language tag which is not ""
  */
 public class NodeValueLang extends NodeValue {
-    // We could extends NodeValueString for the machinery
-    // but it get confusing as then it is a NodeValueString 
+    // We could extend NodeValueString for the machinery
+    // but it get confusing as then it is a NodeValueString
     // but isString is false.
-    
-    private final String string; 
+
+    private final String string;
     private final String lang;
 
     public NodeValueLang(String lex, String lang) {
@@ -42,7 +43,7 @@ public class NodeValueLang extends NodeValue {
         if ( lang.isEmpty() )
             throw new IllegalArgumentException("lang is the empty string");
     }
-    
+
     public NodeValueLang(Node n) {
         super(Objects.requireNonNull(n));
         this.string = n.getLiteralLexicalForm();
@@ -53,27 +54,29 @@ public class NodeValueLang extends NodeValue {
     public boolean isLangString() {
         return true;
     }
-    
     @Override
     public String getString()   { return string; }
 
     @Override
     public String getLang()     { return lang; }
-    
+
+    @Override
+    public String getLangDir()  { return ""; }
+
     @Override
     public String asString()    { return string; }
-    
+
     @Override
     protected Node makeNode()
     { return NodeFactory.createLiteralLang(string, lang); }
-    
+
     @Override
-    public String toString() { 
+    public String toString() {
         if ( getNode() != null )
             return FmtUtils.stringForNode(getNode());
         return "'"+getString()+"'@"+lang ;
     }
-    
+
     @Override
     public void visit(NodeValueVisitor visitor) { visitor.visit(this); }
 }

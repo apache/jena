@@ -64,7 +64,7 @@ public class ItemLift {
 
     /** Reverse lift. */
     public static Item lowerCompound(Node node) {
-        if ( node.isNodeTriple() ) {
+        if ( node.isTripleTerm() ) {
             Item newItem = ItemLift.lowerCompound(node, -1, -1);
             return newItem;
         }
@@ -79,13 +79,13 @@ public class ItemLift {
     }
 
     private static Item lowerCompound(Node node, int line, int column) {
-        if ( node.isNodeTriple()) {
+        if ( node.isTripleTerm()) {
             Triple t = node.getTriple();
             Node s = t.getSubject();
             Node p = t.getPredicate();
             Node o = t.getObject();
             ItemList list = new ItemList();
-            list.add(Tags.tagQTriple);
+            list.add(Tags.tagTripleTerm);
             list.add(nodeToItem(s, -1, -1));
             list.add(nodeToItem(p, -1, -1));
             list.add(nodeToItem(o, -1, -1));
@@ -125,45 +125,45 @@ public class ItemLift {
 
     // ==== API
 
-    // ---- Quoted triple specific
+    // ---- Triple term specific
 
-    private static boolean isValidQuotedTriple(Item item) {
-        return item.isTagged(Tags.tagQTriple) && item.getList().size() == 4;
+    private static boolean isValidTripleTerm(Item item) {
+        return item.isTagged(Tags.tagTripleTerm) && item.getList().size() == 4;
     }
 
-    private static boolean isValidQuotedTriple(ItemList list) {
-        return list.isTagged(Tags.tagQTriple) && list.size() == 4;
+    private static boolean isValidTripleTerm(ItemList list) {
+        return list.isTagged(Tags.tagTripleTerm) && list.size() == 4;
     }
 
     // Entry to recursion.
-    private static Item liftQuotedTriple(ItemList list, int line, int column) {
-        Node n = liftQuotedTripleToNode(list);
+    private static Item liftTripleTerm(ItemList list, int line, int column) {
+        Node n = liftTripleTermToNode(list);
         return Item.createNode(n, line, column);
     }
 
-    private static Node liftQuotedTripleToNode(Item item) {
+    private static Node liftTripleTermToNode(Item item) {
         if ( item.isNode() )
             return item.getNode();
-        if ( ! isValidQuotedTriple(item))
-            throw new SSE_Exception("Not valid for a quoted triple: "+item.toString());
-        return liftQuotedTripleToNode(item.getList());
+        if ( ! isValidTripleTerm(item))
+            throw new SSE_Exception("Not valid for a triple term: "+item.toString());
+        return liftTripleTermToNode(item.getList());
     }
 
-    private static Node liftQuotedTripleToNode(ItemList list) {
+    private static Node liftTripleTermToNode(ItemList list) {
         if ( list.isEmpty() )
             broken(list, "Not a quoted triple (empty list)");
-        if ( ! isValidQuotedTriple(list) )
-            broken(list, "Not valid for a quoted triple: "+list);
-        return buildQuotedTriple(list);
+        if ( ! isValidTripleTerm(list) )
+            broken(list, "Not valid for a triple term: "+list);
+        return buildTripleTerm(list);
     }
 
-    private static Node buildQuotedTriple(ItemList list) {
+    private static Node buildTripleTerm(ItemList list) {
         // Recurses
-        Node s = liftQuotedTripleToNode(list.get(1));
-        Node p = liftQuotedTripleToNode(list.get(2));
-        Node o = liftQuotedTripleToNode(list.get(3));
+        Node s = liftTripleTermToNode(list.get(1));
+        Node p = liftTripleTermToNode(list.get(2));
+        Node o = liftTripleTermToNode(list.get(3));
         Triple triple = Triple.create(s, p, o);
-        return NodeFactory.createTripleNode(triple);
+        return NodeFactory.createTripleTerm(triple);
     }
 
     // ---- Symbols
@@ -195,8 +195,8 @@ public class ItemLift {
     private static class LiftAll extends ItemTransformBase {
         @Override
         public Item transform(Item item, ItemList list) {
-            if ( isValidQuotedTriple(list) )
-                return ItemLift.liftQuotedTriple(list, item.getLine(),item.getColumn());
+            if ( isValidTripleTerm(list) )
+                return ItemLift.liftTripleTerm(list, item.getLine(),item.getColumn());
             return super.transform(item, list);
         }
 
@@ -215,7 +215,7 @@ public class ItemLift {
             Item item2 = nodeToItem(node, item.getLine(), item.getColumn());
             if (item2 != null )
                 return item2;
-            if ( node.isNodeTriple() )
+            if ( node.isTripleTerm() )
                 return ItemLift.lowerCompound(node, item.getLine(), item.getColumn());
             return super.transform(item, node);
         }
@@ -224,8 +224,8 @@ public class ItemLift {
     private static class LiftCompound extends ItemTransformBase {
         @Override
         public Item transform(Item item, ItemList list) {
-            if ( isValidQuotedTriple(list) )
-                return ItemLift.liftQuotedTriple(list, item.getLine(),item.getColumn());
+            if ( isValidTripleTerm(list) )
+                return ItemLift.liftTripleTerm(list, item.getLine(),item.getColumn());
             return super.transform(item, list);
         }
     }
@@ -233,7 +233,7 @@ public class ItemLift {
     private static class LowerCompound extends ItemTransformBase {
         @Override
         public Item transform(Item item, Node node) {
-            if ( node.isNodeTriple() ) {
+            if ( node.isTripleTerm() ) {
                 Item newItem = ItemLift.nodeToItem(node, item.getLine(),item.getColumn());
                 return newItem;
             }
