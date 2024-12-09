@@ -30,7 +30,15 @@ import org.apache.jena.riot.tokens.TokenType;
 import org.apache.jena.riot.tokens.Tokenizer;
 import org.apache.jena.sparql.graph.NodeConst;
 
-/** The main engine for all things Turtle-ish (Turtle, TriG). */
+/**
+ * The main engine for all things Turtle-ish (Turtle, TriG).
+ * <p>
+ * This parser generates a form of generalized RDF
+ * with literals and triple terms as subjects,
+ * but not arbitrary predicates.
+ * <p>
+ * The additional conditions area applied when the triples are created by the {@link ParserProfile}
+ */
 public abstract class LangTurtleBase extends LangBase {
     // See http://www.w3.org/TR/turtle/
     // Some predicates (if accepted)
@@ -165,32 +173,33 @@ public abstract class LangTurtleBase extends LangBase {
         nextToken();
     }
 
+    // [8] triples ::= subject predicateObjectList
+    //               | blankNodePropertyList predicateObjectList?
+    //               | reifiedTriple predicateObjectList?
+    //
     // Unlike many operations in this parser suite
     // this does not assume that we are definitely
     // entering this state. It does checks and may
     // signal a parse exception.
 
-    protected final void triplesSameSubject() {
+    protected final void triples() {
         // Either a IRI/prefixed name or a construct that generates triples
-
-        // TriplesSameSubject -> Term PropertyListNotEmpty
+        //     subject predicateObjectList
         if ( lookingAt(NODE) ) {
-            triples();
+            triplesSameSubject();
             return;
         }
 
         boolean maybeList = lookingAt(LPAREN);
 
-        // Turtle: TriplesSameSubject -> TriplesNode PropertyList?
-        // TriG:   (blankNodePropertyList | collection) predicateObjectList? '.'
-        //         labelOrSubject (wrappedGraph | predicateObjectList '.')
-        if ( peekTriplesNodeCompound() ) {
+        //     blankNodePropertyList predicateObjectList?
+        if ( peekTriplesNodeCompound() ) { // LBRACKET, LBRACE, LPAREN
             Node n = triplesNodeCompound();
 
             // May be followed by:
-            // A predicateObject list
-            // A DOT or EOF.
-            // But if a DOT or EOF, then it can't have been () or [].
+            //   A predicateObject list
+            //   A DOT or EOF.
+            //   But if a DOT or EOF, then it can't have been () or [].
 
             // Turtle, as spec'ed does not allow
             // (1 2 3 4) .
@@ -224,61 +233,221 @@ public abstract class LangTurtleBase extends LangBase {
             return;
         }
 
+        // RDF 1.2
+        // reified triple,possible a declaration (empty predicateObjectList).
+        //     reifiedTriple predicateObjectList?
         // <<>> subject position. Rule [10]
         if ( lookingAt(LT2) ) {
-            Node subject = parseTripleTerm();
+            Node subject = parseReifiedTriple();
+            // predicateObjectList may be empty - peek for DOT.
+            if ( lookingAt(DOT) ) {
+                // ReifiedTriple declaration.
+                nextToken();
+                return;
+            }
             predicateObjectList(subject);
             expectEndOfTriples();
             return;
         }
 
+        // Triple Term in the subject position.
+        // This generates an error as the triple is created.
+        // The parser is more general.
+        if ( lookingAt(L_TRIPLE) ) {
+            // [RDF-1.2]
+            // ttSubject
+            // predicate
+            // ttObject
+            Node subject = parseTripleTerm();
+            // XXX Cleaner error handling to be general.
+            exception(peekToken(), "Subject is a triple term");
+//            predicateObjectList(subject);
+//            expectEndOfTriples();
+            return;
+        }
         exception(peekToken(), "Out of place: %s", peekToken());
     }
 
-    // Parse a << >> : RDF-star
-    // XXX Update grammar extract to RDF-star CG report.
-    /* The Turtle grammar is:
-            tripleX ::= ’<<’ subjectX predicate objectX ’>>’
-            subjectX ::= iri | BlankNode | tripleX
-            objectX ::= iri | BlankNode | literal | tripleX
-            [10x]    subject ::= iri | BlankNode | collection | tripleX
-            [12x]    object ::= iri | BlankNode | collection | blankNodePropertyList | literal | tripleX
-       i.e. no compounds inside <<>>
-     */
-
+    // RDF 1.2
+    // [26]  reifiedTriple ::= '<<' (subject | reifiedTriple) verb object reifier? '>>'
+    // [26]  reifiedTriple ::= '<<' rtSubject verb rtObject reifier? '>>'
     // Assumes looking at << (LT2) on entry
-    // node() or nodeX
-    private Node parseTripleTerm() {
-        Token token = nextToken();
-        Node s = subjectX();
+    private Node parseReifiedTriple() {
+        Token startToken = nextToken(); // LT2
+        long startLine = startToken.getLine();
+        long startColumn = startToken.getColumn();
 
-        Node p = predicate();  // predicate() == node();nextToken();
-        nextToken();
+        Node s = rtSubject(startToken);
+        Node p = predicate();
+        // rtObject - no blankPredicateObjectList or collection.
+        Node o = rtObject(startToken);
 
-        Node o = objectX();
+        Node reif = possibleReifier(s, p, o, startLine, startColumn);
 
         if ( ! lookingAt(GT2) )
             exception(peekToken(), "Expected >>, found %s", peekToken().text());
         nextToken();
 
-        return profile.createTripleNode(s, p, o, token.getLine(), token.getColumn());
+        Node tripleTerm = profile.createTripleTerm(s, p, o, startLine, startColumn);
+        // XXX profile.createTripleReifier
+        // emitTripleReifier(s, p, o, startReifiedTripleToken.getLine(), startReifiedTripleToken.getColumn());
+        emitTriple(reif, NodeConst.nodeReifies, tripleTerm);
+
+        return reif;
     }
 
-    private Node subjectX() {
-        Node node = nodeX("subject");
-        if ( node.isLiteral() )
-            exception(peekToken(), "Literal as subject in RDF-star triple");
-        return node;
-    }
+    // -- rtSubject rules
+    // ??? profile.isValidTriple(s,p,o);
+    //profile.createTriple(s, p, o, token.getLine(), token.getColumn());
 
-    private Node objectX() {
-        Node node = nodeX("object");
-        return node;
-    }
-
-    // Does consume the token.
-    private Node nodeX(String posnLabel) {
+    private Node rtSubject(Token startToken) {
         if ( lookingAt(LT2) )
+            return parseReifiedTriple();
+        Node s = possibleAnon() ;
+        if ( s != null )
+            return s;
+        s = node();
+        if ( ! (s.isURI() || s.isBlank() ) )
+            // ReifiedTriple covered by branch.
+            exception(peekToken(), "Subject in a reified triple is not a URI, blank node or a nested reified triple: %s", s);
+        return s;
+    }
+
+    // -- rtObject rules
+    private Node rtObject(Token startToken) {
+        if (lookingAt(LT2) )
+            return parseReifiedTriple();
+        Node o = possibleAnon() ;
+        if ( o != null )
+            return o;
+        // Not compound triples (blankPredicateObjectList, collections).
+        o = object();
+        if ( ! (o.isURI() || o.isBlank() || o.isLiteral() || o.isTripleTerm() ) )
+            exception(startToken, "Illgeal object in a reified triple: %s", o);
+        return o;
+    }
+
+    // Possible [], not [ :p 123 ]
+    private Node possibleAnon() {
+        if ( ! lookingAt(LBRACKET) )
+            return null;
+        // Consume LBRACKET
+        nextToken();
+        if ( ! lookingAt(RBRACKET) )
+            exception(peekToken(), "Found '[' in reified triple. It must be followed by ']' but got: "+peekToken());
+        // Consume RBRACKET
+        Token token = nextToken();
+        Node x = profile.createBlankNode(currentGraph, token.getLine(), token.getColumn());
+        return x;
+    }
+
+//    // XXX Checker.validateTriple
+//    // XXX TripleTerm
+//    private void validateTriple(Node s, Node p, Node o, String usage, Token token) {
+//        if ( ! (s.isURI() || s.isBlank() ) )
+//            // ReifiedTriple covered by branch.
+//            exception(token, "Subject in a %s is not a URI, blank node or a nested reified triple: %s", usage, s);
+//        if ( ! p.isURI() )
+//            exception(token, "Predicate in a %s is not a URI: %s", usage, p);
+//        if ( ! (o.isURI() || o.isBlank() || o.isLiteral() || o.isNodeTriple() ) )
+//            exception(token, "Object in a %s is not a URI, blank node, nested reified triple or triple term : %s", usage, o);
+//    }
+
+    private Node parseTripleTerm() {
+        Token entryToken = nextToken();
+        Node s = ttSubject();
+        if ( s.isTripleTerm() )
+            exception(entryToken, "Subject of a triple term is a triple term");
+        Node p = predicate();
+        Node o = ttObject();
+        if ( ! lookingAt(R_TRIPLE) )
+            exception(peekToken(), "Expected )>>, found %s", peekToken().text());
+        nextToken();
+        return profile.createTripleTerm(s, p, o, entryToken.getLine(), entryToken.getColumn());
+    }
+
+    protected Node possibleReifier(Node s, Node p, Node o, long line, long column) {
+        if ( lookingAt(TokenType.VBAR) )
+            exception(peekToken(), "Bad syntax: reifiers are '~', not '|'");
+
+        if ( ! lookingAt(TokenType.TILDE) )
+            return profile.createBlankNode(currentGraph, line, column);
+        // XXX Check BNF
+        return Reifier(s, p, o, line, column);
+    }
+
+    protected Node Reifier(Node s, Node p, Node o, long line, long column) {
+        // Tilde
+        Token tildeToken = nextToken();
+        Token tokenReif = peekToken();
+
+        if ( lookingAt(TokenType.LITERAL_DT) || lookingAt(TokenType.LITERAL_LANG) ) {
+            nextToken();
+            exception(tildeToken, "Reifiers are URIs or blank nodes: found %s", tokenReif);
+        }
+
+        Node reif;
+        // URI or bNode
+        if ( lookingAtIRIorBNode() ) {
+            // XXX   and use elsewhere : nodeURIorBLankNode()
+            nextToken();
+            reif = tokenAsNode(tokenReif);
+        } else if ( lookingAt(LBRACKET) ) {
+            // ANON
+            nextToken();
+            Token t = peekToken();
+            if ( ! lookingAt(RBRACKET) )
+                exception(peekToken(), "Bad %s in RDF triple. Expected ] after [", "riefier", peekToken().text());
+            nextToken();
+            reif = profile.createBlankNode(currentGraph, t.getLine(), t.getColumn());
+        } else {
+            // Just "~" No reifier id
+            // or some syntax error we will detect later.
+            reif = profile.createBlankNode(currentGraph, tildeToken.getLine(), tildeToken.getColumn());
+        }
+        return reif;
+    }
+
+    private Node ttSubject() {
+        Node node = term("subject");
+        // XXX Maybe allow but restrict later.
+        if ( node.isLiteral() )
+            exception(peekToken(), "Literals are not legal in the subject position.");
+        if ( node.isTripleTerm() ) {
+            exception(peekToken(), "Triple terms are not legal in the subject position.");
+        }
+        return node;
+    }
+
+    private Node ttObject() {
+        Node node = term("object");
+        return node;
+    }
+
+    // Generalized.
+    // Triples with, for example, literals in the subject position, are rejected when the triple is created.
+    private Node subject() {
+        return nodeTerm();
+    }
+
+    private Node object() {
+        return nodeTerm();
+    }
+
+    // Single token terms, triple terms and reified triples.
+    private Node nodeTerm() {
+        if ( lookingAt(LT2) )
+            return parseReifiedTriple();
+        if ( lookingAt(L_TRIPLE) )
+            return parseTripleTerm();
+        Node node = node();
+        return node;
+    }
+
+    /** Any RDFTerm, including compound structures but not reified triples. */
+    // XXX RENAME
+    private Node term(String posnLabel) {
+        if ( lookingAt(L_TRIPLE) )
             return parseTripleTerm();
 
         // ANON
@@ -287,30 +456,33 @@ public abstract class LangTurtleBase extends LangBase {
         // Method triplesNodeCompound ()-> triplesBlankNode(subject)
         //    can cope with zero length, covering grammar token ANON and rule [7] predicateObjectList cases
         // But here, in RDF-star, only [] is legal.
+
+        // XXX Generalize and reuse in Reifier.
+        // []
         if ( lookingAt(LBRACKET) ) {
             nextToken();
             Token t = peekToken();
             if ( ! lookingAt(RBRACKET) )
-                exception(peekToken(), "Bad %s in RDF-star triple after [, expected ]", posnLabel, peekToken().text());
+                exception(peekToken(), "Bad %s in RDF triple. Expected ] after [", posnLabel, peekToken().text());
             nextToken();
             return profile.createBlankNode(currentGraph, t.getLine(), t.getColumn());
         }
 
+        // Single token terms
         if ( ! lookingAt(NODE) )
-            exception(peekToken(), "Bad %s in RDF-star triple", posnLabel, peekToken().text());
+            exception(peekToken(), "Bad %s in RDF-star triple: %s", posnLabel, peekToken().text());
         Node node = node();
-        nextToken();
         return node;
     }
 
     // Must be at least one triple.
-    protected final void triples() {
+    //   Not reifiedTriple
+    protected final void triplesSameSubject() {
         // Looking at a node.
-        Node subject = node();
+        Node subject = subject();
         if ( subject == null )
             exception(peekToken(), "Not recognized: expected node: %s", peekToken().text());
 
-        nextToken();
         predicateObjectList(subject);
         expectEndOfTriples();
     }
@@ -329,13 +501,21 @@ public abstract class LangTurtleBase extends LangBase {
             expectOrEOF("Triples not terminated by DOT", DOT);
     }
 
+    protected final boolean lookingAtIRIorBNode() {
+        if ( eof() )
+            return false;
+        Token t = peekToken();
+        // Does not cover "[ ]"
+        return t.isIRI() || t.isBNode();
+    }
+
     protected final void predicateObjectList(Node subject) {
         predicateObjectItem(subject);
 
         for (;;) {
             if ( !lookingAt(SEMICOLON) )
                 break;
-            // predicatelist continues - move over all ";"
+            // predicateList continues - move over all ";"
             while (lookingAt(SEMICOLON))
                 nextToken();
             if ( !peekPredicate() )
@@ -348,34 +528,38 @@ public abstract class LangTurtleBase extends LangBase {
 
     protected final void predicateObjectItem(Node subject) {
         Node predicate = predicate();
-        nextToken();
         objectList(subject, predicate);
     }
 
     static protected final Node nodeSameAs     = NodeConst.nodeOwlSameAs;
     static protected final Node nodeLogImplies = NodeFactory.createURI("http://www.w3.org/2000/10/swap/log#implies");
 
-    /** Get predicate - maybe null for "illegal" */
-    protected final Node predicate() {
-        Token t = peekToken();
+    // XXX verb()
 
-        if ( t.hasType(TokenType.KEYWORD) ) {
-            Token tErr = peekToken();
-            String image = peekToken().getImage();
+    // [11]  verb  ::= predicate | 'a'
+    // [12]  subject ::= iri | BlankNode | collection
+    // [13]  predicate ::= iri
+    // and '=' (owl:sameAs),
+    /** Get predicate - return null for "illegal" */
+    protected final Node predicate() {
+        if ( lookingAt(TokenType.KEYWORD) ) {
+            Token kwToken = nextToken();
+            String image = kwToken.getImage();
             if ( image.equals(KW_A) )
                 return NodeConst.nodeRDFType;
             // N3-isms
             if ( !isStrictMode() && image.equals(KW_SAME_AS) )
                 return nodeSameAs;
             // Relationship between two formulae in N3.
-//            if ( !strict && image.equals(KW_LOG_IMPLIES) )
+//            if ( !isStrictMode() && image.equals(KW_LOG_IMPLIES) )
 //                return log:implies;
-            exception(tErr, "Unrecognized keyword: " + image);
+            exception(kwToken, "Unrecognized keyword: " + image);
         }
 
+        Token token = peekToken();
         Node n = node();
         if ( n == null || !n.isURI() )
-            exception(t, "Expected IRI for predicate: got: %s", t);
+            exception(token, "Expected IRI for predicate: got: %s", token);
         return n;
     }
 
@@ -400,34 +584,30 @@ public abstract class LangTurtleBase extends LangBase {
         return false;
     }
 
-    /** Create a Node for the current token.
-     *  Does not create nodes/triples for compound structures.
-     *  May return "null" for not-a-node.
-     *  Does not consume the token.
+    /**
+     *  Create a Node for the current single token.
+     *  <p>
+     *  It does not cover tripleTerms, which involves multiple tokens,
+     *  nodes/triples for compound structures, {@code ()} nor {@code []}.
+     *  Returns "null" for not-a-node.
      */
     protected final Node node() {
-        // Token to Node
         Node n = tokenAsNode(peekToken());
         if ( n == null )
             return null;
+        nextToken();
         return n;
     }
 
+    // XXX Update for RDF 1.2
     protected final void objectList(Node subject, Node predicate) {
         for (;;) {
             // object ::=
             Node object = triplesNode();
             emitTriple(subject, predicate, object);
-            // RDF-star annotation syntax
-            if ( lookingAt(L_ANN) ) {
-                Token tNext = nextToken();
-                if ( lookingAt(R_ANN) )
-                    exception(tNext, "Empty annotation");
-                Node x = profile.createTripleNode(subject, predicate, object, currLine, currCol);
-                predicateObjectList(x);
-                expect("Missing end annotation", R_ANN);
-            }
 
+            // Maybe annotation.
+            possibleAnnotations(subject, predicate, object);
             if ( !moreTokens() )
                 break;
             if ( !lookingAt(COMMA) )
@@ -437,13 +617,35 @@ public abstract class LangTurtleBase extends LangBase {
         }
     }
 
+    private void possibleAnnotations(Node subject, Node predicate, Node object) {
+        for(;;) {
+            if ( !lookingAt(TokenType.TILDE) && !lookingAt(L_ANN) && /*old style, not adopted*/ !lookingAt(TokenType.VBAR) )
+                return;
+
+            Token tokenReifer = peekToken();
+            // Always allocate. TILDE or L_ANN.
+            Node reif = possibleReifier(subject, predicate, object, tokenReifer.getLine(), tokenReifer.getColumn());
+            Node tripleTerm = profile.createTripleTerm(subject, predicate, object, tokenReifer.getLine(), tokenReifer.getColumn());
+            emit(reif, NodeConst.nodeReifies, tripleTerm);
+
+            // RDF-star annotation syntax
+            if ( lookingAt(L_ANN) ) {
+                Token tNext = nextToken();
+                if ( lookingAt(R_ANN) )
+                    exception(tNext, "Empty annotation");
+                predicateObjectList(reif);
+                expect("Missing end annotation", R_ANN);
+            }
+        }
+    }
+
     // A structure of triples that itself generates a node.
     // Special checks for [] and ().
 
+    // XXX Use object()
     protected final Node triplesNode() { // == [12] object in the grammar.
         if ( lookingAt(NODE) ) {
             Node n = node();
-            nextToken();
             return n;
         }
 
@@ -464,6 +666,9 @@ public abstract class LangTurtleBase extends LangBase {
         }
 
         if ( lookingAt(LT2) )
+            return parseReifiedTriple();
+
+        if ( lookingAt(L_TRIPLE) )
             return parseTripleTerm();
 
         return triplesNodeCompound();

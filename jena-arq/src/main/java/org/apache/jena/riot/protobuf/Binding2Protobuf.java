@@ -18,28 +18,28 @@
 
 package org.apache.jena.riot.protobuf;
 
-import java.io.OutputStream ;
-import java.util.Collection ;
-import java.util.Iterator ;
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Iterator;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 import org.apache.jena.riot.protobuf.wire.PB_RDF.*;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
 
 /** Converted from Bindings to SPARQL result set encoded in Protobuf */
 public class Binding2Protobuf implements AutoCloseable {
     private final RDF_DataTuple.Builder row = RDF_DataTuple.newBuilder();
     private final RDF_Term.Builder term = RDF_Term.newBuilder();
-    private final Collection<Var> vars ;
-    private final OutputStream out ;
-    private final boolean encodeValues ;
+    private final Collection<Var> vars;
+    private final OutputStream out;
+    private final boolean encodeValues;
 
     public Binding2Protobuf(OutputStream out, Collection<Var> vars, boolean encodeValues) {
-        this.out = out ;
-        this.vars = vars ;
-        this.encodeValues = encodeValues ;
-        varsRow() ;
+        this.out = out;
+        this.vars = vars;
+        this.encodeValues = encodeValues;
+        varsRow();
     }
 
     private void varsRow() {
@@ -55,15 +55,15 @@ public class Binding2Protobuf implements AutoCloseable {
 
     public void output(Binding binding) {
         row.clear();
-        Iterator<Var> vIter = (vars == null ? null : vars.iterator()) ;
+        Iterator<Var> vIter = (vars == null ? null : vars.iterator());
         if ( vIter == null )
-            vIter = binding.vars() ;
+            vIter = binding.vars();
         vIter.forEachRemaining(v -> {
             term.clear();
-            Node n = binding.get(v) ;
+            Node n = binding.get(v);
             RDF_Term rt = ProtobufConvert.toProtobuf(n, term, encodeValues);
             row.addRow(rt);
-        }) ;
+        });
         PBufRDF.writeDelimitedTo(row.build(), out);
     }
 

@@ -159,7 +159,7 @@ public class ExprVars
                 action.var(acc, Var.alloc(node));
                 return;
             }
-            if ( node.isNodeTriple() )
+            if ( node.isTripleTerm() )
                 process(node.getTriple());
         }
     }

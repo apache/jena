@@ -12,6 +12,7 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
 
   private static final org.apache.thrift.protocol.TField LEX_FIELD_DESC = new org.apache.thrift.protocol.TField("lex", org.apache.thrift.protocol.TType.STRING, (short)1);
   private static final org.apache.thrift.protocol.TField LANGTAG_FIELD_DESC = new org.apache.thrift.protocol.TField("langtag", org.apache.thrift.protocol.TType.STRING, (short)2);
+  private static final org.apache.thrift.protocol.TField BASE_DIRECTION_FIELD_DESC = new org.apache.thrift.protocol.TField("baseDirection", org.apache.thrift.protocol.TType.STRING, (short)5);
   private static final org.apache.thrift.protocol.TField DATATYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("datatype", org.apache.thrift.protocol.TType.STRING, (short)3);
   private static final org.apache.thrift.protocol.TField DT_PREFIX_FIELD_DESC = new org.apache.thrift.protocol.TField("dtPrefix", org.apache.thrift.protocol.TType.STRUCT, (short)4);
 
@@ -20,6 +21,7 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
 
   public @org.apache.thrift.annotation.Nullable java.lang.String lex; // required
   public @org.apache.thrift.annotation.Nullable java.lang.String langtag; // optional
+  public @org.apache.thrift.annotation.Nullable java.lang.String baseDirection; // optional
   public @org.apache.thrift.annotation.Nullable java.lang.String datatype; // optional
   public @org.apache.thrift.annotation.Nullable RDF_PrefixName dtPrefix; // optional
 
@@ -27,6 +29,7 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     LEX((short)1, "lex"),
     LANGTAG((short)2, "langtag"),
+    BASE_DIRECTION((short)5, "baseDirection"),
     DATATYPE((short)3, "datatype"),
     DT_PREFIX((short)4, "dtPrefix");
 
@@ -48,6 +51,8 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
           return LEX;
         case 2: // LANGTAG
           return LANGTAG;
+        case 5: // BASE_DIRECTION
+          return BASE_DIRECTION;
         case 3: // DATATYPE
           return DATATYPE;
         case 4: // DT_PREFIX
@@ -95,13 +100,15 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
   }
 
   // isset id assignments
-  private static final _Fields optionals[] = {_Fields.LANGTAG,_Fields.DATATYPE,_Fields.DT_PREFIX};
+  private static final _Fields optionals[] = {_Fields.LANGTAG,_Fields.BASE_DIRECTION,_Fields.DATATYPE,_Fields.DT_PREFIX};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.LEX, new org.apache.thrift.meta_data.FieldMetaData("lex", org.apache.thrift.TFieldRequirementType.REQUIRED, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.LANGTAG, new org.apache.thrift.meta_data.FieldMetaData("langtag", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.BASE_DIRECTION, new org.apache.thrift.meta_data.FieldMetaData("baseDirection", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.DATATYPE, new org.apache.thrift.meta_data.FieldMetaData("datatype", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
@@ -131,6 +138,9 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
     if (other.isSetLangtag()) {
       this.langtag = other.langtag;
     }
+    if (other.isSetBaseDirection()) {
+      this.baseDirection = other.baseDirection;
+    }
     if (other.isSetDatatype()) {
       this.datatype = other.datatype;
     }
@@ -148,6 +158,7 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
   public void clear() {
     this.lex = null;
     this.langtag = null;
+    this.baseDirection = null;
     this.datatype = null;
     this.dtPrefix = null;
   }
@@ -199,6 +210,31 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
   public void setLangtagIsSet(boolean value) {
     if (!value) {
       this.langtag = null;
+    }
+  }
+
+  @org.apache.thrift.annotation.Nullable
+  public java.lang.String getBaseDirection() {
+    return this.baseDirection;
+  }
+
+  public RDF_Literal setBaseDirection(@org.apache.thrift.annotation.Nullable java.lang.String baseDirection) {
+    this.baseDirection = baseDirection;
+    return this;
+  }
+
+  public void unsetBaseDirection() {
+    this.baseDirection = null;
+  }
+
+  /** Returns true if field baseDirection is set (has been assigned a value) and false otherwise */
+  public boolean isSetBaseDirection() {
+    return this.baseDirection != null;
+  }
+
+  public void setBaseDirectionIsSet(boolean value) {
+    if (!value) {
+      this.baseDirection = null;
     }
   }
 
@@ -271,6 +307,14 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
       }
       break;
 
+    case BASE_DIRECTION:
+      if (value == null) {
+        unsetBaseDirection();
+      } else {
+        setBaseDirection((java.lang.String)value);
+      }
+      break;
+
     case DATATYPE:
       if (value == null) {
         unsetDatatype();
@@ -300,6 +344,9 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
     case LANGTAG:
       return getLangtag();
 
+    case BASE_DIRECTION:
+      return getBaseDirection();
+
     case DATATYPE:
       return getDatatype();
 
@@ -322,6 +369,8 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
       return isSetLex();
     case LANGTAG:
       return isSetLangtag();
+    case BASE_DIRECTION:
+      return isSetBaseDirection();
     case DATATYPE:
       return isSetDatatype();
     case DT_PREFIX:
@@ -361,6 +410,15 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
         return false;
     }
 
+    boolean this_present_baseDirection = true && this.isSetBaseDirection();
+    boolean that_present_baseDirection = true && that.isSetBaseDirection();
+    if (this_present_baseDirection || that_present_baseDirection) {
+      if (!(this_present_baseDirection && that_present_baseDirection))
+        return false;
+      if (!this.baseDirection.equals(that.baseDirection))
+        return false;
+    }
+
     boolean this_present_datatype = true && this.isSetDatatype();
     boolean that_present_datatype = true && that.isSetDatatype();
     if (this_present_datatype || that_present_datatype) {
@@ -393,6 +451,10 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
     hashCode = hashCode * 8191 + ((isSetLangtag()) ? 131071 : 524287);
     if (isSetLangtag())
       hashCode = hashCode * 8191 + langtag.hashCode();
+
+    hashCode = hashCode * 8191 + ((isSetBaseDirection()) ? 131071 : 524287);
+    if (isSetBaseDirection())
+      hashCode = hashCode * 8191 + baseDirection.hashCode();
 
     hashCode = hashCode * 8191 + ((isSetDatatype()) ? 131071 : 524287);
     if (isSetDatatype())
@@ -429,6 +491,16 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
     }
     if (isSetLangtag()) {
       lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.langtag, other.langtag);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = java.lang.Boolean.compare(isSetBaseDirection(), other.isSetBaseDirection());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetBaseDirection()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.baseDirection, other.baseDirection);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -491,6 +563,16 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
         sb.append("null");
       } else {
         sb.append(this.langtag);
+      }
+      first = false;
+    }
+    if (isSetBaseDirection()) {
+      if (!first) sb.append(", ");
+      sb.append("baseDirection:");
+      if (this.baseDirection == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.baseDirection);
       }
       first = false;
     }
@@ -581,6 +663,14 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 5: // BASE_DIRECTION
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.baseDirection = iprot.readString();
+              struct.setBaseDirectionIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           case 3: // DATATYPE
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.datatype = iprot.readString();
@@ -640,6 +730,13 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
           oprot.writeFieldEnd();
         }
       }
+      if (struct.baseDirection != null) {
+        if (struct.isSetBaseDirection()) {
+          oprot.writeFieldBegin(BASE_DIRECTION_FIELD_DESC);
+          oprot.writeString(struct.baseDirection);
+          oprot.writeFieldEnd();
+        }
+      }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -663,15 +760,21 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
       if (struct.isSetLangtag()) {
         optionals.set(0);
       }
-      if (struct.isSetDatatype()) {
+      if (struct.isSetBaseDirection()) {
         optionals.set(1);
       }
-      if (struct.isSetDtPrefix()) {
+      if (struct.isSetDatatype()) {
         optionals.set(2);
       }
-      oprot.writeBitSet(optionals, 3);
+      if (struct.isSetDtPrefix()) {
+        optionals.set(3);
+      }
+      oprot.writeBitSet(optionals, 4);
       if (struct.isSetLangtag()) {
         oprot.writeString(struct.langtag);
+      }
+      if (struct.isSetBaseDirection()) {
+        oprot.writeString(struct.baseDirection);
       }
       if (struct.isSetDatatype()) {
         oprot.writeString(struct.datatype);
@@ -686,16 +789,20 @@ public class RDF_Literal implements org.apache.thrift.TBase<RDF_Literal, RDF_Lit
       org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
       struct.lex = iprot.readString();
       struct.setLexIsSet(true);
-      java.util.BitSet incoming = iprot.readBitSet(3);
+      java.util.BitSet incoming = iprot.readBitSet(4);
       if (incoming.get(0)) {
         struct.langtag = iprot.readString();
         struct.setLangtagIsSet(true);
       }
       if (incoming.get(1)) {
+        struct.baseDirection = iprot.readString();
+        struct.setBaseDirectionIsSet(true);
+      }
+      if (incoming.get(2)) {
         struct.datatype = iprot.readString();
         struct.setDatatypeIsSet(true);
       }
-      if (incoming.get(2)) {
+      if (incoming.get(3)) {
         struct.dtPrefix = new RDF_PrefixName();
         struct.dtPrefix.read(iprot);
         struct.setDtPrefixIsSet(true);

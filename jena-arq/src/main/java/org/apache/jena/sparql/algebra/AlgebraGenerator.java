@@ -307,6 +307,13 @@ public class AlgebraGenerator
         if ( elt instanceof ElementLateral eltLateral )
             return compileElementLateral(current, eltLateral);
 
+        if ( elt instanceof ElementSemiJoin eltSemiJoin )
+            return compileElementSemiJoin(current, eltSemiJoin);
+
+        if ( elt instanceof ElementAntiJoin eltAntiJoin )
+            return compileElementAntiJoin(current, eltAntiJoin);
+
+
         if ( elt instanceof ElementMinus elt2 )
             return compileElementMinus(current, elt2);
 
@@ -399,6 +406,18 @@ public class AlgebraGenerator
         Element subElt = eltLateral.getLateralElement();
         Op op = compileElement(subElt);
         return OpLateral.create(current, op);
+    }
+
+    protected Op compileElementSemiJoin(Op current, ElementSemiJoin eltSemiJoin) {
+        Element subElt = eltSemiJoin.getSubElement();
+        Op op = compileElement(subElt);
+        return OpSemiJoin.create(current, op);
+    }
+
+    protected Op compileElementAntiJoin(Op current, ElementAntiJoin eltAntiJoin) {
+        Element subElt = eltAntiJoin.getSubElement();
+        Op op = compileElement(subElt);
+        return OpAntiJoin.create(current, op);
     }
 
     protected Op compileBasicPattern(BasicPattern pattern) {

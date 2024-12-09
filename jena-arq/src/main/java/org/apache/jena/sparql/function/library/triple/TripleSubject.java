@@ -31,6 +31,6 @@ public class TripleSubject extends FunctionBase1 {
 
     @Override
     public NodeValue exec(NodeValue nv) {
-        return EmbeddedTripleFunctions.tripleSubject(nv);
+        return TripleTermOps.tripleSubject(nv);
     }
 }

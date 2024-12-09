@@ -56,7 +56,7 @@ public class ExprRewriter extends AbstractRewriter<Expr> implements ExprVisitor 
 
     /**
      * Constructor.
-     * 
+     *
      * @param values the values to replace.
      */
     public ExprRewriter(Map<Var, Node> values) {
@@ -164,7 +164,7 @@ public class ExprRewriter extends AbstractRewriter<Expr> implements ExprVisitor 
     public void visit(ExprTripleTerm tripleTerm) {
         Triple t1 = tripleTerm.getTriple();
         Triple t2 = rewrite(t1);
-        Node ntt = NodeFactory.createTripleNode(t2);
+        Node ntt = NodeFactory.createTripleTerm(t2);
         push(ExprLib.nodeToExpr(ntt));
     }
 
