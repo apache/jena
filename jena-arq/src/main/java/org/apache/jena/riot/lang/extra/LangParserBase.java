@@ -55,6 +55,8 @@ public class LangParserBase {
     protected final Node nRDFpredicate  = RDF.Nodes.predicate ;
     protected final Node nRDFobject     = RDF.Nodes.object ;
 
+    protected final Node nRDFreifies = RDF.Nodes.reifies;
+
     protected StreamRDF stream;
     protected ParserProfile profile;
 
@@ -130,8 +132,8 @@ public class LangParserBase {
         return n ;
     }
 
-    protected Node createQuotedTriple(Node s, Node p, Node o, int line, int column) {
-        return profile.createTripleNode(s, p, o, line, column);
+    protected Node createTripleTerm(Node s, Node p, Node o, int line, int column) {
+        return profile.createTripleTerm(s, p, o, line, column);
     }
 
     protected Node createLiteralInteger(String lexicalForm, int line, int column) {
@@ -188,9 +190,35 @@ public class LangParserBase {
         profile.getPrefixMap().add(prefix,iri);
         stream.prefix(prefix, iri);
     }
-
     protected void emitTriple(int line, int column, Node s, Node p, Node o) {
         stream.triple(Triple.create(s, p, o));
+    }
+
+    protected Node emitTripleReifier(int line, int column, Node reifierId, Node s, Node p, Node o) {
+        Node tripleTerm = createTripleTerm(s, p, o, line, column);
+        if ( reifierId == null )
+            reifierId = createBNode(line, column);
+        Triple reifiedTriple = Triple.create(reifierId, nRDFreifies, tripleTerm);
+        stream.triple(reifiedTriple);
+        return reifierId;
+    }
+
+    private Node annotationReifierId = null;
+
+    protected void setReifierId(Node reifId) {
+        annotationReifierId = reifId;
+    }
+
+    protected Node getOrAllocReifierId(Node s, Node p, Node o, int line, int column) {
+        if ( annotationReifierId != null )
+            return annotationReifierId;
+        Node reifierId = createBNode(line, column);
+        emitTripleReifier(line, column, reifierId, s, p, o);
+        return reifierId;
+    }
+
+    protected void clearReifierId() {
+        annotationReifierId = null;
     }
 
     protected String unescapeIRI(String iriStr) {

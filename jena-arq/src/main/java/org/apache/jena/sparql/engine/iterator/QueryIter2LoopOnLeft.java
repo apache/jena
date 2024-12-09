@@ -24,59 +24,55 @@ import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 
-/** Binary operation done by looping on the left, and materializing the right - this is not streamed on the right
- * See also QueryIterRepeatApply */
+/**
+ * Binary operation done by looping on the left, and materializing the right - this
+ * is not streamed on the right See also QueryIterRepeatApply
+ */
 public abstract class QueryIter2LoopOnLeft extends QueryIter2
 {
-    Table tableRight ; 
-    Binding slot = null ;
-    
-    public QueryIter2LoopOnLeft(QueryIterator left, QueryIterator right, ExecutionContext qCxt)
-    {
-        super(left, right, qCxt) ;
-        
+    protected Table tableRight ;
+    private Binding slot = null ;
+
+    public QueryIter2LoopOnLeft(QueryIterator left, QueryIterator right, ExecutionContext qCxt) {
+        super(left, right, qCxt);
+
         // Materialized right.
-        tableRight = TableFactory.create(getRight()) ;
+        tableRight = TableFactory.create(getRight());
         getRight().close();
     }
 
     @Override
-    protected final void closeSubIterator()
-    { tableRight.close(); }
-    
+    protected final void closeSubIterator() {
+        getLeft().close();
+        tableRight.close(); }
+
     @Override
-    protected void requestSubCancel()
-    { }
-   
-    @Override
-    protected final boolean hasNextBinding()
-    {
-        if ( slot != null )
-            return true ;
-        
-        while ( getLeft().hasNext() )
-        {
-            Binding bindingLeft = getLeft().nextBinding() ;
-            slot = getNextSlot(bindingLeft) ;
-            if ( slot != null )
-            {
-                slot = bindingLeft ; 
-                return true ;
-            }
-        }
-        getLeft().close() ;
-        return false ;
+    protected void requestSubCancel() {
+        getLeft().cancel();
     }
 
-    protected abstract Binding getNextSlot(Binding bindingLeft) ;
+    @Override
+    protected final boolean hasNextBinding() {
+        if ( slot != null )
+            return true;
+        while (getLeft().hasNext()) {
+            Binding bindingLeft = getLeft().nextBinding();
+            slot = getNextSlot(bindingLeft);
+            if ( slot != null )
+                return true;
+        }
+        getLeft().close();
+        return false;
+    }
+
+    protected abstract Binding getNextSlot(Binding bindingLeft);
 
     @Override
-    protected final Binding moveToNextBinding()
-    {
-        if ( ! hasNextBinding() )
-            return null ;
-        Binding x = slot ;
-        slot = null ;
-        return x ;
+    protected final Binding moveToNextBinding() {
+        if ( !hasNextBinding() )
+            return null;
+        Binding x = slot;
+        slot = null;
+        return x;
     }
 }
