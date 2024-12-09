@@ -9,7 +9,7 @@ notifications:
     jira_options:  link label
 
 github:
-  description: "Apache Jena"
+  description: "Apache Jena, A free and open source Java framework for building Semantic Web and Linked Data applications."
   homepage: https://jena.apache.org/
   protected_branches:
     main
@@ -20,4 +20,8 @@ github:
     - jena
     - rdf
     - sparql
+  enabled_merge_buttons:
+    squash: false
+    rebase: true
+    merge: false
 
