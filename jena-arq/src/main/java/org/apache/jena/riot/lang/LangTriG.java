@@ -45,12 +45,14 @@ public class LangTriG extends LangTurtleBase {
 
     @Override
     protected final void oneTopLevelElement() {
-        //oneNamedGraphBlock() ;
-        oneNamedGraphBlock2() ;
+        //oneNamedGraphBlockOriginal() ;
+        oneNamedGraphBlock() ;
     }
 
-    // Version for proposed Turtle-in-TriG and keyword GRAPH
-    protected final void oneNamedGraphBlock2() {
+    // RDF 1.1 TriG
+    //   Default graph can Turtle (i.e. no braces)
+    //   keyword GRAPH
+    protected final void oneNamedGraphBlock() {
         // Which may not be a graph block.
         Node graphNode = null ;
         Token token = peekToken() ;
@@ -99,7 +101,6 @@ public class LangTriG extends LangTurtleBase {
             } else {
                 // [ :p ... ]
                 // [ :p ... ] :p ...
-                // XXX This fragment must be in Turtle somewhere
                 if ( mustBeNamedGraph )
                     exception(t, "Keyword 'GRAPH' must start a named graph") ;
                 triplesBlankNode(blank) ;
@@ -113,7 +114,6 @@ public class LangTriG extends LangTurtleBase {
         } else if ( token.isNode() ) {
             // Either :s :p :o or :g { ... }
             Node n = node() ;
-            nextToken() ;
             token = peekToken() ;
             if ( lookingAt(LBRACE) )
                 graphNode = n ;
@@ -147,36 +147,36 @@ public class LangTriG extends LangTurtleBase {
 
     protected final void turtle() {
         // This does expectEndOfTriplesTurtle() ;
-        triplesSameSubject() ;
+        triples() ;
     }
 
-    // Old version , tradition trig with RDF 1.1 Turtle tokens.
-    protected final void oneNamedGraphBlock() {
-        // Directives are only between graph blocks.
-        Node graphNode = null ;
-        Token token = peekToken() ;
-        Token t = token ; // Keep for error message.
-
-        // [ ] { ... }
-        if ( lookingAt(LBRACKET) ) {
-            nextToken() ;
-            token = peekToken() ;
-            if ( lookingAt(RBRACKET) )
-                exception(t, "Broken term: [ not followed by ]") ;
-
-            graphNode = profile.createBlankNode(graphNode, t.getLine(), t.getColumn()) ;
-            nextToken() ;
-        } else {
-            // <uri> { ... }
-            // { ... }
-            if ( token.isNode() ) {
-                graphNode = node() ;
-                nextToken() ;
-            }
-        }
-
-        bracedGraph(t, graphNode) ;
-    }
+//    // Pre RDF 1.1 standardization. Tradition trig with RDF 1.1 Turtle tokens.
+//    // Default graph is always { ... }
+//    protected final void oneNamedGraphBlockOriginal() {
+//        // Directives are only between graph blocks.
+//        Node graphNode = null ;
+//        Token token = peekToken() ;
+//        Token t = token ; // Keep for error message.
+//
+//        // [ ] { ... }
+//        if ( lookingAt(LBRACKET) ) {
+//            nextToken() ;
+//            token = peekToken() ;
+//            if ( lookingAt(RBRACKET) )
+//                exception(t, "Broken term: [ not followed by ]") ;
+//
+//            graphNode = profile.createBlankNode(graphNode, t.getLine(), t.getColumn()) ;
+//            nextToken() ;
+//        } else {
+//            // <uri> { ... }
+//            // { ... }
+//            if ( token.isNode() ) {
+//                graphNode = node() ;
+//            }
+//        }
+//
+//        bracedGraph(t, graphNode) ;
+//    }
 
     private void bracedGraph(Token t, Node graphNode) {
         if ( graphNode != null ) {
@@ -213,7 +213,7 @@ public class LangTriG extends LangTurtleBase {
             // this does not assume that we are definitely entering
             // this state and can throw an error if the first token
             // is not acceptable.
-            triplesSameSubject() ;
+            triples() ;
         }
 
         // **** Turtle.

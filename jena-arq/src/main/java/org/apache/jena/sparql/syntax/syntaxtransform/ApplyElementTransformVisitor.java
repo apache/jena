@@ -132,6 +132,20 @@ class ApplyElementTransformVisitor implements ElementVisitor {
     }
 
     @Override
+    public void visit(ElementSemiJoin el) {
+        Element elSub = pop();
+        Element el2 = transform.transform(el, elSub);
+        push(el2);
+    }
+
+    @Override
+    public void visit(ElementAntiJoin el) {
+        Element elSub = pop();
+        Element el2 = transform.transform(el, elSub);
+        push(el2);
+    }
+
+    @Override
     public void visit(ElementGroup el) {
         ElementGroup newElt = new ElementGroup();
         transformFromTo(el.getElements(), newElt.getElements());

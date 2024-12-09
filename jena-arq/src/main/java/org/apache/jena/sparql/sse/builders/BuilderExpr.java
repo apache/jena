@@ -163,7 +163,7 @@ public class BuilderExpr
     private final static Map<String, Build> dispatch;
 
     public static Expr buildExpr(Item item) {
-        // Before testing for a list because of RDF terms that are lists: (qtriple).
+        // Before testing for a list because of there are RDF terms that are lists: (qtriple).
         if ( item.isNode() )
             return ExprLib.nodeToExpr(item.getNode());
 
@@ -367,13 +367,13 @@ public class BuilderExpr
     };
 
     private static Build buildNot = (ItemList list) -> {
-        BuilderLib.checkLength(2, list, "!: wanted 1 arguments: got :"+numArgs(list));
+        BuilderLib.checkLength(2, list, "!: wanted 1 argument: got :"+numArgs(list));
         Expr ex = buildExpr(list.get(1));
         return new E_LogicalNot(ex);
     };
 
     private static Build buildStr = (ItemList list) -> {
-        BuilderLib.checkLength(2, list, "str: wanted 1 arguments: got :"+numArgs(list));
+        BuilderLib.checkLength(2, list, "str: wanted 1 argument: got :"+numArgs(list));
         Expr ex = buildExpr(list.get(1));
         return new E_Str(ex);
     };
@@ -383,6 +383,14 @@ public class BuilderExpr
         Expr ex1 = buildExpr(list.get(1));
         Expr ex2 = buildExpr(list.get(2));
         return new E_StrLang(ex1, ex2);
+    };
+
+    private static Build buildStrLangDir = (ItemList list) -> {
+        BuilderLib.checkLength(4, list, "strlangdir: wanted 3 arguments: got :"+numArgs(list));
+        Expr ex1 = buildExpr(list.get(1));
+        Expr ex2 = buildExpr(list.get(2));
+        Expr ex3 = buildExpr(list.get(3));
+        return new E_StrLangDir(ex1, ex2, ex3);
     };
 
     private static Build buildStrDatatype = (ItemList list) -> {
@@ -615,11 +623,16 @@ public class BuilderExpr
     };
 
     private static Build buildLang = (ItemList list) -> {
-        BuilderLib.checkLength(2, list, "lang: wanted 1 arguments: got :"+numArgs(list));
+        BuilderLib.checkLength(2, list, "lang: wanted 1 argument: got :"+numArgs(list));
         Expr ex = buildExpr(list.get(1));
         return new E_Lang(ex);
     };
 
+    private static Build buildLangDir = (ItemList list) -> {
+        BuilderLib.checkLength(2, list, "langdir: wanted 1 argument: got :"+numArgs(list));
+        Expr ex = buildExpr(list.get(1));
+        return new E_LangDir(ex);
+    };
     private static Build buildLangMatches = (ItemList list) -> {
         BuilderLib.checkLength(3, list, "langmatches: wanted 2 arguments: got :"+numArgs(list));
         Expr left = buildExpr(list.get(1));
@@ -635,13 +648,13 @@ public class BuilderExpr
     };
 
     private static Build buildDatatype = (ItemList list) -> {
-        BuilderLib.checkLength(2, list, "datatype: wanted 1 arguments: got :"+numArgs(list));
+        BuilderLib.checkLength(2, list, "datatype: wanted 1 argument: got :"+numArgs(list));
         Expr ex = buildExpr(list.get(1));
         return new E_Datatype(ex);
     };
 
     private static Build buildBound = (ItemList list) -> {
-        BuilderLib.checkLength(2, list, "bound: wanted 1 arguments: got :"+numArgs(list));
+        BuilderLib.checkLength(2, list, "bound: wanted 1 argument: got :"+numArgs(list));
         Expr ex = buildExpr(list.get(1));
         return new E_Bound(ex);
     };
@@ -665,52 +678,63 @@ public class BuilderExpr
     };
 
     private static Build buildIsIRI = (ItemList list) -> {
-        BuilderLib.checkLength(2, list, "isIRI: wanted 1 arguments: got :"+numArgs(list));
+        BuilderLib.checkLength(2, list, "isIRI: wanted 1 argument: got :"+numArgs(list));
         Expr ex = buildExpr(list.get(1));
         return new E_IsIRI(ex);
     };
 
     private static Build buildIsURI = (ItemList list) -> {
-        BuilderLib.checkLength(2, list, "isURI: wanted 1 arguments: got :"+numArgs(list));
+        BuilderLib.checkLength(2, list, "isURI: wanted 1 argument: got :"+numArgs(list));
         Expr ex = buildExpr(list.get(1));
         return new E_IsURI(ex);
     };
 
     private static Build buildIsBlank = (ItemList list) -> {
-        BuilderLib.checkLength(2, list, "isBlank: wanted 1 arguments: got: "+numArgs(list));
+        BuilderLib.checkLength(2, list, "isBlank: wanted 1 argument: got: "+numArgs(list));
         Expr ex = buildExpr(list.get(1));
         return new E_IsBlank(ex);
     };
 
     private static Build buildIsLiteral = (ItemList list) -> {
-        BuilderLib.checkLength(2, list, "isLiteral: wanted 1 arguments: got: "+numArgs(list));
+        BuilderLib.checkLength(2, list, "isLiteral: wanted 1 argument: got: "+numArgs(list));
         Expr ex = buildExpr(list.get(1));
         return new E_IsLiteral(ex);
     };
 
     private static Build buildIsNumeric = (ItemList list) -> {
-        BuilderLib.checkLength(2, list, "isNumeric: wanted 1 arguments: got: "+numArgs(list));
+        BuilderLib.checkLength(2, list, "isNumeric: wanted 1 argument: got: "+numArgs(list));
         Expr ex = buildExpr(list.get(1));
         return new E_IsNumeric(ex);
     };
 
+    private static Build buildIsLang = (ItemList list) -> {
+        BuilderLib.checkLength(2, list, "isLang: wanted 1 argument: got: "+numArgs(list));
+        Expr ex = buildExpr(list.get(1));
+        return new E_HasLang(ex);
+    };
+
+    private static Build buildIsLangDir = (ItemList list) -> {
+        BuilderLib.checkLength(2, list, "isLangDir: wanted 1 argument: got: "+numArgs(list));
+        Expr ex = buildExpr(list.get(1));
+        return new E_HasLangDir(ex);
+    };
+
     private static Build buildExists = (ItemList list) -> {
-        BuilderLib.checkLength(2, list, "exists: wanted 1 arguments: got: "+numArgs(list));
+        BuilderLib.checkLength(2, list, "exists: wanted 1 argument: got: "+numArgs(list));
         Op op = BuilderOp.build(list.get(1));
         return new E_Exists(op);
     };
 
     private static Build buildNotExists = (ItemList list) -> {
-        BuilderLib.checkLength(2, list, "notexists: wanted 1 arguments: got: "+numArgs(list));
+        BuilderLib.checkLength(2, list, "notexists: wanted 1 argument: got: "+numArgs(list));
         Op op = BuilderOp.build(list.get(1));
         return new E_NotExists(op);
     };
 
     private static Build buildBNode = (ItemList list) -> {
-        BuilderLib.checkLength(1, 2, list, "bnode: wanted 0 or 1 arguments: got: "+numArgs(list));
+        BuilderLib.checkLength(1, 2, list, "bnode: wanted 0 or 1 argument: got: "+numArgs(list));
         if ( list.size() == 1 )
             return E_BNode.create();
-
         Expr expr = buildExpr(list.get(1));
         return E_BNode.create(expr);
     };
@@ -967,131 +991,144 @@ public class BuilderExpr
     };
 
     private static Map<String, Build> createDispatchTable() {
-        Map<String, Build> dispatch = new HashMap<>();
-        dispatch.put(Tags.tagRegex, buildRegex);
-        dispatch.put(Tags.symEQ, buildEQ);
-        dispatch.put(Tags.tagEQ, buildEQ);
-        dispatch.put(Tags.symNE, buildNE);
-        dispatch.put(Tags.tagNE, buildNE);
-        dispatch.put(Tags.symGT, buildGT);
-        dispatch.put(Tags.tagGT, buildGT);
-        dispatch.put(Tags.symLT, buildLT);
-        dispatch.put(Tags.tagLT, buildLT);
-        dispatch.put(Tags.symLE, buildLE);
-        dispatch.put(Tags.tagLE, buildLE);
-        dispatch.put(Tags.symGE, buildGE);
-        dispatch.put(Tags.tagGE, buildGE);
-        dispatch.put(Tags.symOr, buildOr);
-        dispatch.put(Tags.tagOr, buildOr);
-        dispatch.put(Tags.symAnd, buildAnd);
-        dispatch.put(Tags.tagAnd, buildAnd);
-        dispatch.put(Tags.symPlus, buildPlus);
-        dispatch.put(Tags.tagAdd,  buildPlus);
-        dispatch.put(Tags.symMinus, buildMinus);
-        dispatch.put(Tags.tagSubtract, buildMinus);
-        dispatch.put(Tags.tagMinus, buildMinus);    // Not to be confused with Op for SPARQL MINUS
+        Map<String, Build> dispatchMap = new HashMap<>();
+        dispatch(dispatchMap, Tags.tagRegex, buildRegex);
+        dispatch(dispatchMap, Tags.symEQ, buildEQ);
+        dispatch(dispatchMap, Tags.tagEQ, buildEQ);
+        dispatch(dispatchMap, Tags.symNE, buildNE);
+        dispatch(dispatchMap, Tags.tagNE, buildNE);
+        dispatch(dispatchMap, Tags.symGT, buildGT);
+        dispatch(dispatchMap, Tags.tagGT, buildGT);
+        dispatch(dispatchMap, Tags.symLT, buildLT);
+        dispatch(dispatchMap, Tags.tagLT, buildLT);
+        dispatch(dispatchMap, Tags.symLE, buildLE);
+        dispatch(dispatchMap, Tags.tagLE, buildLE);
+        dispatch(dispatchMap, Tags.symGE, buildGE);
+        dispatch(dispatchMap, Tags.tagGE, buildGE);
+        dispatch(dispatchMap, Tags.symOr, buildOr);
+        dispatch(dispatchMap, Tags.tagOr, buildOr);
+        dispatch(dispatchMap, Tags.symAnd, buildAnd);
+        dispatch(dispatchMap, Tags.tagAnd, buildAnd);
+        dispatch(dispatchMap, Tags.symPlus, buildPlus);
+        dispatch(dispatchMap, Tags.tagAdd,  buildPlus);
+        dispatch(dispatchMap, Tags.symMinus, buildMinus);
+        dispatch(dispatchMap, Tags.tagSubtract, buildMinus);
+        dispatch(dispatchMap, Tags.tagMinus, buildMinus);    // Not to be confused with Op for SPARQL MINUS
 
-        dispatch.put(Tags.tagUnaryPlus, buildUnaryPlus);
-        dispatch.put(Tags.tagUnaryMinus, buildUnaryMinus);
+        dispatch(dispatchMap, Tags.tagUnaryPlus, buildUnaryPlus);
+        dispatch(dispatchMap, Tags.tagUnaryMinus, buildUnaryMinus);
 
-        dispatch.put(Tags.symMult, buildMult);
-        dispatch.put(Tags.tagMultiply, buildMult);
+        dispatch(dispatchMap, Tags.symMult, buildMult);
+        dispatch(dispatchMap, Tags.tagMultiply, buildMult);
 
-        dispatch.put(Tags.symDiv, buildDiv);
-        dispatch.put(Tags.tagDivide, buildDiv);
+        dispatch(dispatchMap, Tags.symDiv, buildDiv);
+        dispatch(dispatchMap, Tags.tagDivide, buildDiv);
 
-        dispatch.put(Tags.tagIDiv, buildIDiv);
-        dispatch.put(Tags.tagMod, buildMod);
+        dispatch(dispatchMap, Tags.tagIDiv, buildIDiv);
+        dispatch(dispatchMap, Tags.tagMod, buildMod);
 
-        dispatch.put(Tags.tagNot, buildNot);   // Same builders for (not ..) and (! ..)
-        dispatch.put(Tags.symNot, buildNot);
+        dispatch(dispatchMap, Tags.tagNot, buildNot);   // Same builders for (not ..) and (! ..)
+        dispatch(dispatchMap, Tags.symNot, buildNot);
 
-        dispatch.put(Tags.tagStr, buildStr);
-        dispatch.put(Tags.tagStrLang, buildStrLang);
-        dispatch.put(Tags.tagStrDatatype, buildStrDatatype);
+        dispatch(dispatchMap, Tags.tagStr, buildStr);
+        dispatch(dispatchMap, Tags.tagStrLang, buildStrLang);
+        dispatch(dispatchMap, Tags.tagStrLangDir, buildStrLangDir);
+        dispatch(dispatchMap, Tags.tagStrDatatype, buildStrDatatype);
 
-        dispatch.put(Tags.tagYear, buildYear);
-        dispatch.put(Tags.tagMonth, buildMonth);
-        dispatch.put(Tags.tagDay, buildDay);
-        dispatch.put(Tags.tagHours, buildHours);
-        dispatch.put(Tags.tagMinutes, buildMinutes);
-        dispatch.put(Tags.tagSeconds, buildSeconds);
-        dispatch.put(Tags.tagTimezone, buildTimezone);
-        dispatch.put(Tags.tagTZ, buildTZ);
-        dispatch.put(Tags.tagAdjust, buildAdjust);
+        dispatch(dispatchMap, Tags.tagYear, buildYear);
+        dispatch(dispatchMap, Tags.tagMonth, buildMonth);
+        dispatch(dispatchMap, Tags.tagDay, buildDay);
+        dispatch(dispatchMap, Tags.tagHours, buildHours);
+        dispatch(dispatchMap, Tags.tagMinutes, buildMinutes);
+        dispatch(dispatchMap, Tags.tagSeconds, buildSeconds);
+        dispatch(dispatchMap, Tags.tagTimezone, buildTimezone);
+        dispatch(dispatchMap, Tags.tagTZ, buildTZ);
+        dispatch(dispatchMap, Tags.tagAdjust, buildAdjust);
 
-        dispatch.put(Tags.tagRand, buildRand);
-        dispatch.put(Tags.tagNow, buildNow);
-        dispatch.put(Tags.tagUUID, buildUUID);
-        dispatch.put(Tags.tagStrUUID, buildStrUUID);
-        dispatch.put(Tags.tagVersion, buildVersion);
+        dispatch(dispatchMap, Tags.tagRand, buildRand);
+        dispatch(dispatchMap, Tags.tagNow, buildNow);
+        dispatch(dispatchMap, Tags.tagUUID, buildUUID);
+        dispatch(dispatchMap, Tags.tagStrUUID, buildStrUUID);
+        dispatch(dispatchMap, Tags.tagVersion, buildVersion);
 
-        dispatch.put(Tags.tagMD5, buildMD5);
-        dispatch.put(Tags.tagSHA1, buildSHA1);
-        dispatch.put(Tags.tagSHA224, buildSHA224);
-        dispatch.put(Tags.tagSHA256, buildSHA256);
-        dispatch.put(Tags.tagSHA384, buildSHA384);
-        dispatch.put(Tags.tagSHA512, buildSHA512);
+        dispatch(dispatchMap, Tags.tagMD5, buildMD5);
+        dispatch(dispatchMap, Tags.tagSHA1, buildSHA1);
+        dispatch(dispatchMap, Tags.tagSHA224, buildSHA224);
+        dispatch(dispatchMap, Tags.tagSHA256, buildSHA256);
+        dispatch(dispatchMap, Tags.tagSHA384, buildSHA384);
+        dispatch(dispatchMap, Tags.tagSHA512, buildSHA512);
 
-        dispatch.put(Tags.tagStrlen, buildStrlen);
-        dispatch.put(Tags.tagSubstr, buildSubstr);
-        dispatch.put(Tags.tagReplace, buildStrReplace);
-        dispatch.put(Tags.tagStrUppercase, buildStrUppercase);
-        dispatch.put(Tags.tagStrLowercase, buildStrLowercase);
-        dispatch.put(Tags.tagStrEnds, buildStrEnds);
-        dispatch.put(Tags.tagStrStarts, buildStrStarts);
-        dispatch.put(Tags.tagStrBefore, buildStrBefore);
-        dispatch.put(Tags.tagStrAfter, buildStrAfter);
-        dispatch.put(Tags.tagStrContains, buildStrContains);
-        dispatch.put(Tags.tagStrEncodeForURI, buildStrEncode);
+        dispatch(dispatchMap, Tags.tagStrlen, buildStrlen);
+        dispatch(dispatchMap, Tags.tagSubstr, buildSubstr);
+        dispatch(dispatchMap, Tags.tagReplace, buildStrReplace);
+        dispatch(dispatchMap, Tags.tagStrUppercase, buildStrUppercase);
+        dispatch(dispatchMap, Tags.tagStrLowercase, buildStrLowercase);
+        dispatch(dispatchMap, Tags.tagStrEnds, buildStrEnds);
+        dispatch(dispatchMap, Tags.tagStrStarts, buildStrStarts);
+        dispatch(dispatchMap, Tags.tagStrBefore, buildStrBefore);
+        dispatch(dispatchMap, Tags.tagStrAfter, buildStrAfter);
+        dispatch(dispatchMap, Tags.tagStrContains, buildStrContains);
+        dispatch(dispatchMap, Tags.tagStrEncodeForURI, buildStrEncode);
 
-        dispatch.put(Tags.tagNumAbs, buildNumAbs);
-        dispatch.put(Tags.tagNumRound, buildNumRound);
-        dispatch.put(Tags.tagNumCeiling, buildNumCeiling);
-        dispatch.put(Tags.tagNumFloor, buildNumFloor);
-        dispatch.put(Tags.tagIsNumeric, buildIsNumeric);
+        dispatch(dispatchMap, Tags.tagNumAbs, buildNumAbs);
+        dispatch(dispatchMap, Tags.tagNumRound, buildNumRound);
+        dispatch(dispatchMap, Tags.tagNumCeiling, buildNumCeiling);
+        dispatch(dispatchMap, Tags.tagNumFloor, buildNumFloor);
 
-        dispatch.put(Tags.tagLang, buildLang);
-        dispatch.put(Tags.tagLangMatches, buildLangMatches);
-        dispatch.put(Tags.tagSameTerm, buildSameTerm);
-        dispatch.put(Tags.tagDatatype, buildDatatype);
-        dispatch.put(Tags.tagBound, buildBound);
-        dispatch.put(Tags.tagCoalesce, buildCoalesce);
-        dispatch.put(Tags.tagConcat, buildConcat);
-        dispatch.put(Tags.tagIf, buildConditional);
-        dispatch.put(Tags.tagIsIRI, buildIsIRI);
-        dispatch.put(Tags.tagIsURI, buildIsURI);
-        dispatch.put(Tags.tagIsBlank, buildIsBlank);
-        dispatch.put(Tags.tagIsLiteral, buildIsLiteral);
-        dispatch.put(Tags.tagExists, buildExists);
-        dispatch.put(Tags.tagNotExists, buildNotExists);
+        dispatch(dispatchMap, Tags.tagLang, buildLang);
+        dispatch(dispatchMap, Tags.tagLangDir, buildLangDir);
+        dispatch(dispatchMap, Tags.tagLangMatches, buildLangMatches);
 
-        dispatch.put(Tags.tagBNode, buildBNode);
-        dispatch.put(Tags.tagIri, buildIri);
-        dispatch.put(Tags.tagUri, buildUri);
-        dispatch.put(Tags.tagIri2, buildIri2);
-        dispatch.put(Tags.tagUri2, buildUri2);
+        dispatch(dispatchMap, Tags.tagSameTerm, buildSameTerm);
+        dispatch(dispatchMap, Tags.tagDatatype, buildDatatype);
+        dispatch(dispatchMap, Tags.tagBound, buildBound);
+        dispatch(dispatchMap, Tags.tagCoalesce, buildCoalesce);
+        dispatch(dispatchMap, Tags.tagConcat, buildConcat);
+        dispatch(dispatchMap, Tags.tagIf, buildConditional);
+        dispatch(dispatchMap, Tags.tagIsIRI, buildIsIRI);
+        dispatch(dispatchMap, Tags.tagIsURI, buildIsURI);
+        dispatch(dispatchMap, Tags.tagIsBlank, buildIsBlank);
+        dispatch(dispatchMap, Tags.tagIsLiteral, buildIsLiteral);
 
-        dispatch.put(Tags.tagIn, buildIn);
-        dispatch.put(Tags.tagNotIn, buildNotIn);
+        dispatch(dispatchMap, Tags.tagIsNumeric, buildIsNumeric);
+        dispatch(dispatchMap, Tags.tagHasLang, buildIsLang);
+        dispatch(dispatchMap, Tags.tagHasLangDir, buildIsLangDir);
 
-        dispatch.put(Tags.tagSubject, buildSubject);
-        dispatch.put(Tags.tagPredicate, buildPredicate);
-        dispatch.put(Tags.tagObject, buildObject);
-        dispatch.put(Tags.tagFnTriple, buildTripleFn);
-        dispatch.put(Tags.tagIsTriple, buildIsTriple);
+        dispatch(dispatchMap, Tags.tagExists, buildExists);
+        dispatch(dispatchMap, Tags.tagNotExists, buildNotExists);
 
-        dispatch.put(Tags.tagCall, buildCall);
+        dispatch(dispatchMap, Tags.tagBNode, buildBNode);
+        dispatch(dispatchMap, Tags.tagIri, buildIri);
+        dispatch(dispatchMap, Tags.tagUri, buildUri);
+        dispatch(dispatchMap, Tags.tagIri2, buildIri2);
+        dispatch(dispatchMap, Tags.tagUri2, buildUri2);
 
-        dispatch.put(Tags.tagCount, buildCount);
-        dispatch.put(Tags.tagSum, buildSum);
-        dispatch.put(Tags.tagMin, buildMin);
-        dispatch.put(Tags.tagMax, buildMax);
-        dispatch.put(Tags.tagAvg, buildAvg);
-        dispatch.put(Tags.tagSample, buildSample);
-        dispatch.put(Tags.tagGroupConcat, buildGroupConcat);
-        dispatch.put(Tags.tagAgg,  buildCustomAggregate);
-        return dispatch;
+        dispatch(dispatchMap, Tags.tagIn, buildIn);
+        dispatch(dispatchMap, Tags.tagNotIn, buildNotIn);
+
+        dispatch(dispatchMap, Tags.tagSubject, buildSubject);
+        dispatch(dispatchMap, Tags.tagPredicate, buildPredicate);
+        dispatch(dispatchMap, Tags.tagObject, buildObject);
+        dispatch(dispatchMap, Tags.tagFnTriple, buildTripleFn);
+        dispatch(dispatchMap, Tags.tagIsTriple, buildIsTriple);
+
+        dispatch(dispatchMap, Tags.tagCall, buildCall);
+
+        dispatch(dispatchMap, Tags.tagCount, buildCount);
+        dispatch(dispatchMap, Tags.tagSum, buildSum);
+        dispatch(dispatchMap, Tags.tagMin, buildMin);
+        dispatch(dispatchMap, Tags.tagMax, buildMax);
+        dispatch(dispatchMap, Tags.tagAvg, buildAvg);
+        dispatch(dispatchMap, Tags.tagSample, buildSample);
+        dispatch(dispatchMap, Tags.tagGroupConcat, buildGroupConcat);
+        dispatch(dispatchMap, Tags.tagAgg,  buildCustomAggregate);
+        return dispatchMap;
+    }
+
+    private static void dispatch(Map<String, Build> dispatchMap, String tag, Build build) {
+        if ( dispatchMap.containsKey(tag) )
+            throw new ARQInternalErrorException("Multiple dispatch entry for "+tag);
+        dispatchMap.put(tag, build);
     }
 
     //  --------

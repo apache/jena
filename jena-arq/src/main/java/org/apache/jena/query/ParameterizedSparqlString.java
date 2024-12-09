@@ -483,7 +483,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            Lexical Value
      */
     public void appendLiteral(String value) {
-        this.appendNode(NodeFactoryExtra.createLiteralNode(value, null, null));
+        this.appendNode(NodeFactory.createLiteralString(value));
     }
 
     /**
@@ -496,7 +496,22 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            Language
      */
     public void appendLiteral(String value, String lang) {
-        this.appendNode(NodeFactoryExtra.createLiteralNode(value, lang, null));
+        this.appendNode(NodeFactory.createLiteralLang(value, lang));
+    }
+
+    /**
+     * Appends a literal with a lexical value, language and base direction to the command text
+     * as a constant using appropriate formatting
+     *
+     * @param value
+     *            Lexical Value
+     * @param lang
+     *            Language
+     * @param direction
+     *            Base direction
+     */
+    public void appendLiteral(String value, String lang, String direction) {
+        this.appendNode(NodeFactory.createLiteralDirLang(value, lang, direction));
     }
 
     /**
@@ -509,7 +524,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *            Datatype
      */
     public void appendLiteral(String value, RDFDatatype datatype) {
-        this.appendNode(NodeFactoryExtra.createLiteralNode(value, null, datatype.getURI()));
+        this.appendNode(NodeFactory.createLiteralDT(value, datatype));
     }
 
     /**
@@ -866,7 +881,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *
      */
     public void setLiteral(int index, String value) {
-        this.setParam(index, NodeFactoryExtra.createLiteralNode(value, null, null));
+        this.setParam(index, NodeFactory.createLiteralString(value));
     }
 
     /**
@@ -883,7 +898,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *
      */
     public void setLiteral(String var, String value) {
-        this.setParam(var, NodeFactoryExtra.createLiteralNode(value, null, null));
+        this.setParam(var, NodeFactory.createLiteralString(value));
     }
 
     /**
@@ -902,7 +917,47 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *
      */
     public void setLiteral(int index, String value, String lang) {
-        this.setParam(index, NodeFactoryExtra.createLiteralNode(value, lang, null));
+        this.setParam(index, NodeFactory.createLiteralLang(value, lang));
+    }
+
+    /**
+     * Sets a variable parameter to a literal with a language
+     * <p>
+     * Setting a parameter to null is equivalent to calling
+     * {@link #clearParam(String)} for the given variable
+     * </p>
+     *
+     * @param var
+     *            Variable
+     * @param value
+     *            Lexical Value
+     * @param lang
+     *            Language
+     * @param baseDirection
+     *            Base direction
+     */
+    public void setLiteral(String var, String value, String lang, String baseDirection) {
+        this.setParam(var, NodeFactory.createLiteralDirLang(value, lang, baseDirection));
+    }
+
+    /**
+     * Sets a positional parameter to a literal with a language and base direction
+     * <p>
+     * Setting a parameter to null is equivalent to calling
+     * {@link #clearParam(int)} for the given index
+     * </p>
+     *
+     * @param index
+     *            Positional index
+     * @param value
+     *            Lexical Value
+     * @param lang
+     *            Language
+     * @param baseDirection
+     *            Base direction
+     */
+    public void setLiteral(int index, String value, String lang, String baseDirection) {
+        this.setParam(index, NodeFactory.createLiteralDirLang(value, lang, baseDirection));
     }
 
     /**
@@ -921,7 +976,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *
      */
     public void setLiteral(String var, String value, String lang) {
-        this.setParam(var, NodeFactoryExtra.createLiteralNode(value, lang, null));
+        this.setParam(var, NodeFactory.createLiteralLang(value, lang));
     }
 
     /**
@@ -940,7 +995,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *
      */
     public void setLiteral(int index, String value, RDFDatatype datatype) {
-        this.setParam(index, this.model.createTypedLiteral(value, datatype));
+        this.setParam(index, NodeFactory.createLiteralDT(value, datatype));
     }
 
     /**
@@ -959,7 +1014,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
      *
      */
     public void setLiteral(String var, String value, RDFDatatype datatype) {
-        this.setParam(var, this.model.createTypedLiteral(value, datatype));
+        this.setParam(var, NodeFactory.createLiteralDT(value, datatype));
     }
 
     /**

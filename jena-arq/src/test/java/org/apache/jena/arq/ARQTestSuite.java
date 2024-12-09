@@ -21,7 +21,6 @@ package org.apache.jena.arq;
 import org.apache.jena.atlas.TC_Atlas_ARQ;
 import org.apache.jena.atlas.legacy.BaseTest2;
 import org.apache.jena.external.Scripts_LangSuiteCG;
-import org.apache.jena.external.Scripts_RDFStar;
 import org.apache.jena.external.Scripts_SPARQL11;
 import org.apache.jena.http.auth.TS_HttpAuth;
 import org.apache.jena.rdfs.TS_InfRdfs;
@@ -74,8 +73,9 @@ import org.junit.runners.Suite;
     Scripts_SPARQL11.class,
 
     Scripts_TIM.class,
-    // rdf-star CG tests
-    Scripts_RDFStar.class
+    Scripts_DatasetMap.class,
+    Scripts_DatasetMapLink.class
+    // [rdf-star CG] tests - no longer valid
 
     // Only runs when src-examples is a source folder, which it isn't in the build.
     //, org.apache.jena.arq.examples.TC_Examples.class

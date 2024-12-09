@@ -56,21 +56,7 @@ import org.apache.jena.permissions.model.SecuredRDFNode;
 import org.apache.jena.permissions.model.SecuredResource;
 import org.apache.jena.permissions.model.SecuredSeq;
 import org.apache.jena.permissions.model.SecuredStatement;
-import org.apache.jena.rdf.model.AnonId;
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelChangedListener;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.NsIterator;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.RDFReaderF;
-import org.apache.jena.rdf.model.RDFReaderI;
-import org.apache.jena.rdf.model.RDFWriterI;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.NsIteratorImpl;
 import org.apache.jena.rdf.model.impl.RDFReaderFImpl;
 import org.apache.jena.rdf.model.impl.StmtIteratorImpl;
@@ -451,6 +437,23 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
     /**
      * @sec.graph Update
+     * @sec.triple Create the triple Triple(s,p,literal(o,l,false))
+     * @throws UpdateDeniedException
+     * @throws AddDeniedException
+     * @throws AuthenticationRequiredException if user is not authenticated and is
+     *                                         required to be.
+     */
+    @Override
+    public SecuredModel add(final Resource s, final Property p, final String o, final String l, final String dir)
+            throws UpdateDeniedException, AddDeniedException, AuthenticationRequiredException {
+        checkUpdate();
+        checkCreate(Triple.create(s.asNode(), p.asNode(), NodeFactory.createLiteralDirLang(o, l, dir)));
+        holder.getBaseItem().add(s, p, o, l, dir);
+        return holder.getSecuredItem();
+    }
+
+    /**
+     * @sec.graph Update
      * @sec.triple Create the statement as a triple
      * @throws UpdateDeniedException
      * @throws AddDeniedException
@@ -744,6 +747,23 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public boolean contains(final Resource s, final Property p, final String o, final String l)
             throws ReadDeniedException, AuthenticationRequiredException {
         return containsAny(() -> holder.getBaseItem().listStatements(s, p, o, l));
+    }
+
+    /**
+     * @sec.graph Read
+     * @sec.triple Read Triple( s, p, SecNode.ANY )
+     *
+     *             if {@link SecurityEvaluator#isHardReadError()} is true and the
+     *             user does not have read access then false will be returned.
+     *
+     * @throws ReadDeniedException
+     * @throws AuthenticationRequiredException if user is not authenticated and is
+     *                                         required to be.
+     */
+    @Override
+    public boolean contains(final Resource s, final Property p, final String o, final String l, final String dir)
+            throws ReadDeniedException, AuthenticationRequiredException {
+        return containsAny(() -> holder.getBaseItem().listStatements(s, p, o, l, dir));
     }
 
     /**
@@ -1181,6 +1201,12 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     public SecuredLiteral createLiteral(final String v, final String language) {
         return SecuredLiteralImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createLiteral(v, language));
     }
+
+    @Override
+    public SecuredLiteral createLiteral(final String v, final String language, final String direction) {
+        return SecuredLiteralImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createLiteral(v, language, direction));
+    }
+
 
     /**
      * @sec.graph Update
@@ -2388,6 +2414,11 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
         return stmtIterator(() -> holder.getBaseItem().listStatements(subject, predicate, object, lang));
     }
 
+    @Override
+    public StmtIterator listStatements(Resource subject, Property predicate, String object, String lang, String direction) {
+        return stmtIterator(() -> holder.getBaseItem().listStatements(subject, predicate, object, lang, direction));
+    }
+
     /**
      * @sec.graph Read
      * @sec.triple Read at least one Triple( s, p, o ) for each resource returned
@@ -3257,5 +3288,10 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
                 iter.close();
             }
         }
+    }
+
+    @Override
+    public ResIterator listSubjectsWithProperty(Property p, String str, String lang, String dir) {
+        return null;
     }
 }

@@ -311,9 +311,9 @@ public class TestOrdering {
     }
 
     @Test
-    public void test_nodeTriple_1() {
-        Node x = SSE.parseNode("<<:s :p 1>>");
-        Node y = SSE.parseNode("<<:s :p 2>>");
+    public void test_tripleterm_1() {
+        Node x = SSE.parseNode("<<(:s :p 1)>>");
+        Node y = SSE.parseNode("<<(:s :p 2)>>");
         int res = NodeCmp.compareRDFTerms(x, y);
         assertTrue(Expr.CMP_LESS == res);
         res = NodeCmp.compareRDFTerms(y, x);
@@ -321,9 +321,9 @@ public class TestOrdering {
     }
 
     @Test
-    public void test_nodeTriple_2() {
-        Node x = SSE.parseNode("<<:s2 :p 1>>");
-        Node y = SSE.parseNode("<<:s1 :p 2>>");
+    public void test_tripleterm_2() {
+        Node x = SSE.parseNode("<<(:s2 :p 1)>>");
+        Node y = SSE.parseNode("<<(:s1 :p 2)>>");
         int res = NodeCmp.compareRDFTerms(x, y);
         assertTrue(Expr.CMP_GREATER == res);
         res = NodeCmp.compareRDFTerms(y, x);
@@ -331,17 +331,17 @@ public class TestOrdering {
     }
 
     @Test
-    public void test_nodeTriple_3() {
-        Node x = SSE.parseNode("<<:s :p 2>>");
-        Node y = SSE.parseNode("<<:s :p 2>>");
+    public void test_tripleterm_3() {
+        Node x = SSE.parseNode("<<(:s :p 2)>>");
+        Node y = SSE.parseNode("<<(:s :p 2)>>");
         int res = NodeCmp.compareRDFTerms(x, y);
         assertTrue(Expr.CMP_EQUAL == res);
     }
 
     @Test
-    public void test_nodeTriple_4() {
+    public void test_tripleterm_4() {
         Node x = SSE.parseNode("'abc'");
-        Node y = SSE.parseNode("<<:s :p 2>>");
+        Node y = SSE.parseNode("<<(:s :p 2)>>");
         int res = NodeCmp.compareRDFTerms(x, y);
         // After literals.
         assertTrue(Expr.CMP_LESS == res);
@@ -350,9 +350,9 @@ public class TestOrdering {
     }
 
     @Test
-    public void test_nodeTriple_5() {
+    public void test_tripleterm_5() {
         Node x = SSE.parseNode("<uri>");
-        Node y = SSE.parseNode("<<:s :p 2>>");
+        Node y = SSE.parseNode("<<(:s :p 2)>>");
         int res = NodeCmp.compareRDFTerms(x, y);
         // After URIs
         assertTrue(Expr.CMP_LESS == res);

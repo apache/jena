@@ -105,13 +105,15 @@ public class NodeFactory {
      *
      * @deprecated Use {@link #createLiteralLang(String, String)}.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static Node createLiteral(String string, String lang) {
         return createLiteralLang(string, lang);
     }
 
     /**
      * Make a literal with specified language. The lexical form must not be null.
+     * <p>
+     * If the {@code lang} contains "--" it is interpreted as including a base direction.
      *
      * @param string  the lexical form of the literal
      * @param lang    the optional language tag
@@ -120,23 +122,40 @@ public class NodeFactory {
         Objects.requireNonNull(string, "null lexical form for literal");
         if ( isEmpty(lang) )
             return new Node_Literal(string);
-        else {
-           String langFmt = formatLanguageTag(lang);
-           return new Node_Literal(string, langFmt);
+
+        int idx = lang.indexOf("--");
+        if ( idx >= 0 ) {
+            String textDir = lang.substring(idx+2);
+            if ( textDir.isEmpty() )
+                throw new JenaException("Empty base direction after '--'");
+            lang = lang.substring(0, idx);
+            return createLiteralDirLang(string, lang, textDir);
         }
+        String langFmt = formatLanguageTag(lang);
+        return new Node_Literal(string, langFmt);
     }
 
     /**
      * Make a literal with specified language and language direction.
      * The lexical form must not be null.
-     * The language must not be null if a non-direction is provided.
+     * The language must not be null or "" if a non-direction is provided.
      *
      * @param string  the lexical form of the literal
      * @param lang    the optional language tag
      * @param textDir the optional language direction
      */
     public static Node createLiteralDirLang(String string, String lang, String textDir) {
-        TextDirection textDirEnum = initialTextDirection(textDir);
+        boolean emptyDirection = textDir == null || textDir.isEmpty();
+        if ( lang == null || lang.isEmpty() ) {
+            if ( ! emptyDirection )
+                throw new JenaException("No langtag but base direction is given");
+            return createLiteralString(string);
+        }
+        if ( lang.contains("--") && ! emptyDirection )
+            throw new JenaException("Langtag contains '--' and  a base direction is given");
+        if ( emptyDirection )
+            return createLiteralLang(string, lang);
+        TextDirection textDirEnum = baseDirection(textDir);
         String langFmt = formatLanguageTag(lang);
         return createLiteralDirLang(string, langFmt, textDirEnum);
     }
@@ -162,8 +181,9 @@ public class NodeFactory {
      * Build a literal node.
      * <p>
      * This is a convenience operation for passing in language and datatype without
-     * needing the caller to differentiate between the xsd:string, rdf:langString and other
-     * datatype cases.
+     * needing the caller to differentiate between the xsd:string, rdf:langString, rdf:dirLangString
+     * and other datatype cases.
+     * <p>
      * It calls {@link #createLiteralString(String)},
      * {@link #createLiteralDirLang(String, String, String)} or
      * {@link #createLiteralDT(String, RDFDatatype)}
@@ -174,7 +194,7 @@ public class NodeFactory {
      * @param dtype the type of the literal or null.
      */
     public static Node createLiteral(String lex, String lang, RDFDatatype dtype) {
-        return createLiteral(lex, lang, Node.noTextDirection, dtype);
+        return createLiteralInternal(lex, lang, Node.noTextDirection, dtype);
     }
 
     /**
@@ -183,6 +203,7 @@ public class NodeFactory {
      * This is a convenience operation for passing in language and datatype without
      * needing the caller to differentiate between the xsd:string, rdf:langString, and other
      * datatype cases.
+     * <p>
      * It calls {@link #createLiteralString(String)},
      * {@link #createLiteralDirLang(String, String, String)} or
      * {@link #createLiteralDT(String, RDFDatatype)}
@@ -194,8 +215,8 @@ public class NodeFactory {
      * @param dtype the type of the literal or null.
      */
     public static Node createLiteral(String lex, String lang, String textDir, RDFDatatype dtype) {
-        TextDirection textDirEnum = initialTextDirection(textDir);
-        return createLiteral(lex, lang, textDirEnum, dtype);
+        TextDirection textDirEnum = baseDirection(textDir);
+        return createLiteralInternal(lex, lang, textDirEnum, dtype);
     }
 
     /**
@@ -215,6 +236,14 @@ public class NodeFactory {
      * @param dtype the type of the literal or null.
      */
     public static Node createLiteral(String lex, String lang, TextDirection textDir, RDFDatatype dtype) {
+        return createLiteralInternal(lex, lang, textDir, dtype);
+    }
+
+    /**
+     * Make a literal from any legal combination language tag, base direction and datatype.
+     * Any of these can be null when not needed.
+     */
+    private static Node createLiteralInternal(String lex, String lang, TextDirection textDir, RDFDatatype dtype) {
         Objects.requireNonNull(lex, "null lexical form for literal");
         boolean hasLang = ! isEmpty(lang);
         if ( hasLang ) {
@@ -225,11 +254,13 @@ public class NodeFactory {
                         throw new JenaException("Datatype is not rdf:langString but a language was given");
                 } else {
                     if ( ! dtype.equals(RDFDirLangString.rdfDirLangString) )
-                        throw new JenaException("Datatype is not rdf:dirLangString but a language and initial text direction was given");
+                        throw new JenaException("Datatype is not rdf:dirLangString but a language and base direction was given");
                 }
             }
-
-            return createLiteralDirLang(lex, langFmt, textDir);
+            if ( textDir == null )
+                return createLiteralLang(lex, langFmt);
+            else
+                return createLiteralDirLang(lex, langFmt, textDir);
         }
 
         if ( dtype == null )
@@ -240,15 +271,15 @@ public class NodeFactory {
         boolean hasTextDirLang = ( textDir != null );
         if ( hasTextDirLang ) {
             if ( dtype.equals(RDFDirLangString.rdfDirLangString) ) {
-                // No language. Datatype is rdf:dirLangString, Does have an initial text direction
-                throw new JenaException("Datatype is rdf:dirLangString and has an initial text direction but no language given");
+                // No language. Datatype is rdf:dirLangString, Does have an base direction
+                throw new JenaException("Datatype is rdf:dirLangString and has an base direction but no language given");
             } else if ( dtype.equals(RDFLangString.rdfLangString) ) {
-                // No language. Datatype is rdf:langString, Does have an initial text direction.
-                throw new JenaException("Datatype is rdf:langString and has an initial text direction but no language given");
+                // No language. Datatype is rdf:langString, Does have an base direction.
+                throw new JenaException("Datatype is rdf:langString and has an ibase direction but no language given");
             }
         }
 
-        // Datatype. No language, no initial text direction.
+        // Datatype. No language, no base direction.
         // Allow "abc"^^rdf:langString
         // Allow "abc"^^rdf:dirLangString
 
@@ -256,12 +287,16 @@ public class NodeFactory {
 //        if ( dtype.equals(RDFLangString.rdfLangString) )
 //            throw new JenaException("Datatype is rdf:langString but no language given");
 //        if ( dtype.equals(RDFDirLangString.rdfDirLangString) && noTextDir(textDir) )
-//            throw new JenaException("Datatype is rdf:dirLangString but no initial text direction given");
+//            throw new JenaException("Datatype is rdf:dirLangString but no ibase direction given");
 
         Node n = createLiteralDT(lex, dtype);
         return n;
     }
 
+    /*
+     * Controls whether langtags are normalized or not.
+     * RDF treats language tags in a case-insensitive manner. One way to do that is to normalize the strings.
+     */
     /*package*/ static final boolean legacyLangTag = false;
     /** Prepare the language tag - apply formatting normalization */
     private static String formatLanguageTag(String langTagStr) {
@@ -275,11 +310,13 @@ public class NodeFactory {
         return LangTags.basicFormat(langTagStr);
     }
 
-    /** Prepare the initial text direction - apply formatting normalization */
-    private static TextDirection initialTextDirection(String input) {
+    /** Prepare the base direction. */
+    private static TextDirection baseDirection(String input) {
         if ( isEmpty(input) )
             return Node.noTextDirection;
         // Throws JenaException on bad input.
+        // If there is formatting normalization, it happens here.
+        // RDF 1.2 strictly is 'ltr', 'rtl' only.
         TextDirection textDir = TextDirection.create(input);
         return textDir;
     }
@@ -308,8 +345,7 @@ public class NodeFactory {
     /** Create a Node based on the value
      * If the value is a string we
      * assume this is intended to be a lexical form after all.
-     * @param value
-     *          The value, mapped according to registered types.
+     * @param value The value, mapped according to registered types.
      * @return Node
      */
     public static Node createLiteralByValue(Object value) {
@@ -320,10 +356,8 @@ public class NodeFactory {
     /** Create a Node based on the value
      * If the value is a string we
      * assume this is intended to be a lexical form after all.
-     * @param value
-     *          The value, mapped according to registered types.
-     * @param dtype
-     *          RDF Datatype.
+     * @param value The value, mapped according to registered types.
+     * @param dtype RDF Datatype.
      * @return Node
      */
     public static Node createLiteralByValue(Object value, RDFDatatype dtype) {
@@ -332,14 +366,31 @@ public class NodeFactory {
     }
 
     /** Create a triple node (RDF-star) */
-    public static Node createTripleNode(Node s, Node p, Node o) {
-        Triple triple = Triple.create(s, p, o);
-        return createTripleNode(triple);
+    public static Node createTripleTerm(Node s, Node p, Node o) {
+        return new Node_Triple(s, p, o);
     }
 
-    /** Create a triple node (RDF-star) */
-    public static Node createTripleNode(Triple triple) {
+    /** Create a triple term (RDF-star) */
+    public static Node createTripleTerm(Triple triple) {
         return new Node_Triple(triple);
+    }
+
+    /**
+     * Create a triple term (RDF-star)
+     * @deprecated Use {@link #createTripleTerm(Node, Node, Node)}
+     */
+    @Deprecated
+    public static Node createTripleNode(Node s, Node p, Node o) {
+        return createTripleTerm(s, p, o);
+    }
+
+    /**
+     * Create a triple node (RDF-star)
+     * @deprecated Use {@link #createTripleTerm(Triple)}
+     */
+    @Deprecated
+    public static Node createTripleNode(Triple triple) {
+        return createTripleTerm(triple);
     }
 
     /** Create a graph node. This is an N3-formula; it is not a named graph (see "quad") */
