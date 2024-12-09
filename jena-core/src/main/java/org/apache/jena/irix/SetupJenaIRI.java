@@ -99,9 +99,11 @@ public class SetupJenaIRI {
         setErrorWarning(iriCheckerFactory, ViolationCodes.NON_INITIAL_DOT_SEGMENT, false, false);
 
         // == Character related.
-        //setErrorWarning(iriFactoryInst, ViolationCodes.NOT_NFC,  false, false);
+        // Causes confusion! And this is only advice in RDF Concepts.
+        setErrorWarning(iriCheckerFactory, ViolationCodes.NOT_NFC,  false, false);
         // NFKC is not mentioned in RDF 1.1. Switch off.
         setErrorWarning(iriCheckerFactory, ViolationCodes.NOT_NFKC, false, false);
+        // The MAYBE ViolationCodes are never generated.
 
         // ** Applies to various unicode blocks.
 

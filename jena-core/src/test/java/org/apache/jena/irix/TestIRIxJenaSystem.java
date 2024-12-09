@@ -33,8 +33,8 @@ import org.apache.jena.iri.IRI;
 
 /**
  * Test of parsing and schema violations.
- * <p>s
- * This is the test suite that compares result with jena-iri.
+ * <p>
+ * This is the test suite that compares results with jena-iri.
  * See also {@link TestIRIxSyntaxRFC3986} for RDF 3986 syntax only parsing.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -89,6 +89,9 @@ public class TestIRIxJenaSystem extends AbstractTestIRIx_3986 {
     @Test public void parse_17() { good("/a:b/"); }
 
     @Test public void parse_18() { good("/z/a:b"); }
+
+    // This character is from a report on users@jena.
+    @Test public void parse_nfc() { good("http://host/ή"); }
 
     // ---- bad
 

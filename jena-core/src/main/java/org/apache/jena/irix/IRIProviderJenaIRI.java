@@ -249,23 +249,24 @@ public class IRIProviderJenaIRI implements IRIProvider {
             // Global settings below; this section is for conditional filtering.
             // See also Checker.iriViolations for WARN filtering.
             switch(code) {
-                case Violation.PROHIBITED_COMPONENT_PRESENT:
+                case Violation.PROHIBITED_COMPONENT_PRESENT->{
                     // Allow "u:p@" when non-strict.
                     // Jena3 compatibility.
                     if ( isHTTP(iri) && ! STRICT_HTTP && v.getComponent() == IRIComponents.USER )
                         continue;
-                    break;
-                case Violation.SCHEME_PATTERN_MATCH_FAILED:
+                }
+                case Violation.SCHEME_PATTERN_MATCH_FAILED->{
                     if ( isURN(iri) && ! STRICT_URN )
                         continue;
                     if ( isFILE(iri) )
                         continue;
-                    break;
-                case Violation.REQUIRED_COMPONENT_MISSING:
+                }
+                case Violation.REQUIRED_COMPONENT_MISSING->{
                     // jena-iri handling of "file:" URIs is only for (an interpretation of) RFC 1738.
                     // RFC8089 allows relative file URIs and a wider use of characters.
                     if ( isFILE(iri) )
                         continue;
+                }
             }
             // Signal first error.
             String msg = v.getShortMessage();
