@@ -220,7 +220,7 @@ public class StreamWriterTriX implements StreamRDF {
             out.println();
             return;
         }
-        if ( node.isNodeTriple() ) {
+        if ( node.isTripleTerm() ) {
             StreamWriterTriX.write(out, node.getTriple(), prefixMap);
             return;
         }

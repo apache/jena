@@ -29,9 +29,10 @@ import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeConstants.Field;
 import javax.xml.datatype.Duration;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.datatypes.xsd.XSDDatatype ;
+import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.TextDirection;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIs;
@@ -137,7 +138,7 @@ public class NodeFunctions {
                 return false;
             return node1.getLiteralLanguage().equalsIgnoreCase(node2.getLiteralLanguage());
         }
-        if ( node1.isNodeTriple() && node2.isNodeTriple() ) {
+        if ( node1.isTripleTerm() && node2.isTripleTerm() ) {
             return sameTriples(node1.getTriple(), node2.getTriple());
         }
         return false;
@@ -179,7 +180,7 @@ public class NodeFunctions {
             NodeValue.raise(new ExprEvalException("Mismatch in RDFterm-equals: " + n1 + ", " + n2));
         }
 
-        if ( n1.isNodeTriple() && n2.isNodeTriple() ) {
+        if ( n1.isTripleTerm() && n2.isTripleTerm() ) {
             Triple t1 = n1.getTriple();
             Triple t2 = n2.getTriple();
             return rdfTermEquals(t1.getSubject(), t2.getSubject())
@@ -203,18 +204,18 @@ public class NodeFunctions {
             return node.getURI();
         if ( node.isBlank() && ! ARQ.isTrue(ARQ.strictSPARQL) )
              return RiotLib.blankNodeToIriString(node);
-        if ( node.isNodeTriple() && ! ARQ.isTrue(ARQ.strictSPARQL) ) {
+        if ( node.isTripleTerm() && ! ARQ.isTrue(ARQ.strictSPARQL) ) {
             Triple t = node.getTriple();
             // Recursion. Assumes no cycles!
             Function<Node, String> f = NodeFmtLib::strTTL;
             return "<< " + f.apply(t.getSubject()) + " " + f.apply(t.getPredicate()) + " " + f.apply(t.getObject()) + " >>";
         }
         if ( node.isBlank() )
-            NodeValue.raise(new ExprEvalException("Blank node: " + node));
-        if ( node.isNodeTriple())
-            NodeValue.raise(new ExprEvalException("Quoted triple: " + node));
-        NodeValue.raise(new ExprEvalException("Not valid for STR(): " + node));
-        return "[undef]";
+            NodeValue.raise(new ExprEvalException("Blank node: " + node)) ;
+        if ( node.isTripleTerm())
+            NodeValue.raise(new ExprEvalException("Triple term: " + node)) ;
+        NodeValue.raise(new ExprEvalException("Not valid for STR(): " + node)) ;
+        return "[undef]" ;
     }
 
     // -------- sort key (collation)
@@ -246,7 +247,27 @@ public class NodeFunctions {
         return NodeFactory.createURI(s);
     }
 
+    public static NodeValue isNumeric(NodeValue nv) {
+        return NodeValue.booleanReturn( nv.isNumber() );
+    }
+
     // -------- lang
+
+    public static NodeValue hasLang(NodeValue nv) {
+        return NodeValue.booleanReturn(hasLang(nv.asNode())) ;
+    }
+
+    public static boolean hasLang(Node node) {
+        return NodeUtils.hasLang(node);
+    }
+
+    public static NodeValue hasLangDir(NodeValue nv) {
+        return NodeValue.booleanReturn(hasLangDir(nv.asNode())) ;
+    }
+
+    public static boolean hasLangDir(Node node) {
+        return NodeUtils.hasLangDir(node);
+    }
 
     public static NodeValue lang(NodeValue nv) {
         if ( nv.isLangString() )
@@ -263,8 +284,27 @@ public class NodeFunctions {
 
         String s = node.getLiteralLanguage();
         if ( s == null )
-            s = "";
-        return s;
+            return "" ;
+        return s ;
+    }
+
+    public static NodeValue langdir(NodeValue nv) {
+        if ( nv.isLangString() )
+            return NodeValue.makeString(nv.getLangDir()) ;
+        if ( nv.isLiteral() )
+            return NodeValue.nvEmptyString ;
+        NodeValue.raise(new ExprTypeException("lang: Not a literal: " + nv.asQuotedString())) ;
+        return null;
+    }
+
+    public static String langdir(Node node) {
+        if ( !node.isLiteral() )
+            NodeValue.raise(new ExprTypeException("lang: Not a literal: " + FmtUtils.stringForNode(node))) ;
+
+        TextDirection textDir = node.getLiteralBaseDirection() ;
+        if ( textDir == null )
+            return "";
+        return textDir.direction();
     }
 
     // -------- langMatches
@@ -503,10 +543,28 @@ public class NodeFunctions {
         return NodeValue.makeLangString(lex, lang);
     }
 
+    public static NodeValue strLangDir(NodeValue v1, NodeValue v2, NodeValue v3) {
+        if ( !v1.isString() )
+            throw new ExprEvalException("Not a string (arg 1): " + v1) ;
+        if ( !v2.isString() )
+            throw new ExprEvalException("Not a string (arg 2): " + v2) ;
+        if ( !v2.isString() )
+            throw new ExprEvalException("Not a string (arg 3): " + v2) ;
+        String lex = v1.asString() ;
+        String lang = v2.asString() ;
+        if ( lang.isEmpty() )
+            throw new ExprEvalException("Empty lang tag") ;
+        String textDirStr = v3.asString();
+        if ( textDirStr.isEmpty() )
+            throw new ExprEvalException("Empty base direction") ;
+        TextDirection textDir = TextDirection.createOrNull(v3.asString());
+        if ( textDir == null )
+            throw new ExprEvalException("Invalid base direction: '"+textDirStr+"'") ;
+        return NodeValue.makeDirLangString(lex, lang, textDir);
+    }
 
-    /** Canonocal duration of 0 -- "P0S" */
+    /** Canonical duration of 0 -- "PT0S" */
     private static Duration zeroDuration = NodeValue.xmlDatatypeFactory.newDuration(true, null, null, null, null, null, BigDecimal.ZERO) ;
-
     /** A duration, tided */
     public static Duration duration(int seconds) {
         if ( seconds == 0 )

@@ -60,8 +60,8 @@ public abstract class Node implements Serializable {
     public static final String noLangTag = "";
 
     /**
-     * The TextDirection used when a literal does not have an initial text direction setting.
-     * Accessing the initial text direction of a non-literal will throw an exception.
+     * The TextDirection used when a literal does not have an base direction setting.
+     * Accessing the base direction of a non-literal will throw an exception.
      * @see Util#hasDirection(Node)
      */
     public static final TextDirection noTextDirection = null;
@@ -117,8 +117,16 @@ public abstract class Node implements Serializable {
     /**
      * Answer true iff this node is an "triple node" (RDF-star)
      */
-    public boolean isNodeTriple()
+    public boolean isTripleTerm()
     { return false; }
+
+    /**
+     * Answer true iff this node is an "triple node" (RDF-star)
+     * @deprecated use {@link #isTripleTerm}
+     */
+    @Deprecated(forRemoval = true)
+    public boolean isNodeTriple()
+    { return isTripleTerm(); }
 
     /**
      * Answer true iff this node is an "graph node" (N3 formula). This is not related
@@ -166,12 +174,12 @@ public abstract class Node implements Serializable {
     public String getLiteralLanguage()
     { throw new NotLiteral( this ); }
 
-    /** Return the initial text direction for an rdf:dirLangString literal.
-     * Does not return null if the literal is a rdf:dirLangString literal.
-     * Returns null if the text direction is not set (and the datatype won't be rdf:dirLangString).
+    /**
+     * Return the base direction for a literal.
+     * Returns null if the node is a literal and does not have a base direction.
      * Otherwise die horribly.
      */
-    public TextDirection getLiteralTextDirection()
+    public TextDirection getLiteralBaseDirection()
     { throw new NotLiteral( this ); }
 
     /**

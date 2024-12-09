@@ -147,50 +147,49 @@ public class TestIsoMatcher
                                                  "(<_:a> :p1 <_:b>) (<_:b> :p2 <_:a>)",
                                                  true); }
 
-
     // RDF-star terms
-    @Test public void iso_graph_40() { testGraphIso("(<<:s :p :o>> :q1 :z1) (<<_:a :p :o>> :q2 :z2)",
-                                                    "(<<_:a :p :o>> :q2 :z2) (<<:s :p :o>> :q1 :z1)",
+    @Test public void iso_graph_40() { testGraphIso("(<<(:s :p :o)>> :q1 :z1) (<<(_:a :p :o)>> :q2 :z2)",
+                                                    "(<<(_:a :p :o)>> :q2 :z2) (<<(:s :p :o)>> :q1 :z1)",
                                                     true); }
 
-    @Test public void iso_graph_41() { testGraphIso("(<< _:a :p :o>> :q1 :z1) (<< _:a :p :o>> :q2 :z2) (_:a :p :o)",
-                                                    "(<< _:a :p :o>> :q2 :z2) (<< _:a :p :o>> :q1 :z1) (_:a :p :o)",
+    @Test public void iso_graph_41() { testGraphIso("(<<( _:a :p :o)>> :q1 :z1) (<<( _:a :p :o)>> :q2 :z2) (_:a :p :o)",
+                                                    "(<<( _:a :p :o)>> :q2 :z2) (<<( _:a :p :o)>> :q1 :z1) (_:a :p :o)",
                                                     true); }
 
-    @Test public void iso_graph_42() { testGraphIso("(<<<_:a> :p :o>> :q1 :z1) (<<<_:a> :p :o>> :q2 :z2)",
-                                                    "(<<<_:a> :p :o>> :q2 :z2) (<<<_:b> :p :o>> :q1 :z1)",
+    @Test public void iso_graph_42() { testGraphIso("(<<(<_:a> :p :o)>> :q1 :z1) (<<(<_:a> :p :o)>> :q2 :z2)",
+                                                    "(<<(<_:a> :p :o)>> :q2 :z2) (<<(<_:b> :p :o)>> :q1 :z1)",
                                                     false); }
 
-    @Test public void iso_graph_43() { testGraphIso("(<< << _:a :p :o >> :q1 :z1>> :q2 :z2)",
-                                                    "(<< << _:a :p :o >> :q1 :z1>> :q2 :z2)",
+    @Test public void iso_graph_43() { testGraphIso("(<<( <<( _:a :p :o )>> :q1 :z1)>> :q2 :z2)",
+                                                    "(<<( <<( _:a :p :o )>> :q1 :z1)>> :q2 :z2)",
                                                     true); }
 
-    @Test public void iso_graph_44() { testGraphIso("(<< :a1 :q1 << :s :p _:o >> >> :q2 :z2)",
-                                                    "(<< :a1 :q1 << :s :p _:o >> >> :q2 :z2)",
+    @Test public void iso_graph_44() { testGraphIso("(<<( :a1 :q1 <<( :s :p _:o )>> )>> :q2 :z2)",
+                                                    "(<<( :a1 :q1 <<( :s :p _:o )>> )>> :q2 :z2)",
                                                     true); }
 
-    @Test public void iso_triple_terms_1() { testTripleTerms("<< <_:a1> :p :o>>",
-                                                             "<< <_:a2> :p :o>>",
+    @Test public void iso_triple_terms_1() { testTripleTerms("<<( <_:a1> :p :o)>>",
+                                                             "<<( <_:a2> :p :o)>>",
                                                              true);}
 
-    @Test public void iso_triple_terms_2() { testTripleTerms("<< <_:a1> :p :o>>",
-                                                             "<<:s :p <_:a3> >>",
+    @Test public void iso_triple_terms_2() { testTripleTerms("<<( <_:a1> :p :o)>>",
+                                                             "<<(:s :p <_:a3> )>>",
                                                              false);}
 
-    @Test public void iso_triple_terms_3() { testTripleTerms("<< <_:a4> :p <_:a4> >>",
-                                                             "<< <_:a5> :p <_:a5> >>",
+    @Test public void iso_triple_terms_3() { testTripleTerms("<<( <_:a4> :p <_:a4> )>>",
+                                                             "<<( <_:a5> :p <_:a5> )>>",
                                                              true ); }
 
-    @Test public void iso_triple_terms_4() { testTripleTerms("<< <_:a4> :p <_:a4> >>",
-                                                             "<< <_:a6> :p <_:b6> >>",
+    @Test public void iso_triple_terms_4() { testTripleTerms("<<( <_:a4> :p <_:a4> )>>",
+                                                             "<<( <_:a6> :p <_:b6> )>>",
                                                              false); }
 
-    @Test public void iso_triple_terms_5() { testTripleTerms("<< <_:a7> :p << <_:b7> :q :o >> >>",
-                                                             "<< <_:a8> :p << <_:b8> :q :o >> >>",
+    @Test public void iso_triple_terms_5() { testTripleTerms("<<( <_:a7> :p <<( <_:b7> :q :o )>> )>>",
+                                                             "<<( <_:a8> :p <<( <_:b8> :q :o )>> )>>",
                                                              true); }
 
-    @Test public void iso_triple_terms_6() { testTripleTerms("<< <_:a7> :p << <_:b7> :q :o >> >>",
-                                                             "<< <_:a9> :p << :s :q :o >>>>",
+    @Test public void iso_triple_terms_6() { testTripleTerms("<<( <_:a7> :p <<( <_:b7> :q :o )>> )>>",
+                                                             "<<( <_:a9> :p <<( :s :q :o )>>)>>",
                                                              false); }
 
     @Test public void iso_dsg_50() { testDSG("(graph (_:a <p> _:a)) (graph <g> (<s> <q> _:a))" ,
@@ -202,8 +201,8 @@ public class TestIsoMatcher
                                          "(graph (_:a <p> _:a)) (graph <g> (<s> <q> _:b))" ,
                                          false) ; }
 
-    @Test public void iso_dsg_52() { testDSG("(:g << << _:a :p :o >> :q1 :z1>> :q2 :z2)",
-                                             "(:g << << _:a :p :o >> :q1 :z1>> :q2 :z2)",
+    @Test public void iso_dsg_52() { testDSG("(:g <<( <<( _:a :p :o )>> :q1 :z1)>> :q2 :z2)",
+                                             "(:g <<( <<( _:a :p :o )>> :q1 :z1)>> :q2 :z2)",
                                              true); }
 
     // List based tests

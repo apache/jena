@@ -32,9 +32,9 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
 
-/** A result set held in-memory. rewindable.
+/**
+ * A result set held in-memory. rewindable.
  */
-
 public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
 {
     protected List<Binding> rows = new ArrayList<>();
@@ -60,7 +60,6 @@ public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
      * @param takeCopy
      *            Should we copy the rows?
      */
-
     public ResultSetMem(ResultSetMem imrs2, boolean takeCopy) {
         varNames = imrs2.varNames;
         if ( takeCopy )
@@ -77,7 +76,6 @@ public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
      * necessary internal datastructures are shared. This operation destroys
      * (uses up) a ResultSet object that is not an in-memory one.
      */
-
     public ResultSetMem(ResultSet qr) {
         model = qr.getResourceModel();
         if ( qr instanceof ResultSetMem ) {
@@ -91,29 +89,6 @@ public class ResultSetMem implements ResultSetRewindable, ResultSetPeekable
                 Binding rb = BindingFactory.copy(qr.nextBinding());
                 rows.add(rb);
             }
-        }
-        reset();
-    }
-
-    /**
-     * Create an in-memory result set from an array of ResulSets. It is assumed
-     * that all the ResultSets from the array have the same variables.
-     *
-     * @param sets
-     *            the ResultSet objects to concatenate.
-     */
-
-    public ResultSetMem(ResultSet... sets) {
-        varNames = sets[0].getResultVars();
-
-        for ( ResultSet rs : sets ) {
-            if ( !varNames.equals(rs.getResultVars()) )
-                throw new ResultSetException("ResultSet must have the same variables.");
-            if ( rs instanceof ResultSetMem )
-                rows.addAll(((ResultSetMem)rs).rows);
-            else
-                while (rs.hasNext())
-                    rows.add(rs.nextBinding());
         }
         reset();
     }

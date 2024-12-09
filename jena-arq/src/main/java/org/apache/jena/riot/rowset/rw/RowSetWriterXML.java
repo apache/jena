@@ -291,7 +291,7 @@ public class RowSetWriterXML implements RowSetWriter {
                 printBlankNode(node);
                 return;
             }
-            if ( node.isNodeTriple() ) {
+            if ( node.isTripleTerm() ) {
                 printTripleTerm(node);
                 return;
             }
@@ -330,11 +330,21 @@ public class RowSetWriterXML implements RowSetWriter {
             out.print("<");
             out.print(dfLiteral);
 
-            if ( Util.isLangString(literal) ) {
+            if ( Util.isLangString(literal) ||  Util.isDirLangString(literal) ) {
                 String lang = literal.getLiteralLanguage();
+                if ( Util.isDirLangString(literal) ) {
+                    out.print(" xmlns:its=\"http://www.w3.org/2005/11/its\" its:version=\"2.0\"");
+                    out.println();
+                    out.print("        ");
+                }
                 out.print(" xml:lang=\"");
                 out.print(lang);
                 out.print("\"");
+                if ( Util.isDirLangString(literal) ) {
+                    out.print(" its:dir=\"");
+                    out.print(literal.getLiteralBaseDirection().direction());
+                    out.print("\"");
+                }
             } else if ( !Util.isSimpleString(literal) ) {
                 // Datatype
                 // (RDF 1.1) not xsd:string nor rdf:langString.
