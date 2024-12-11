@@ -25,23 +25,23 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 
 public class QueryIterPeek extends QueryIter1
 {
-    private Binding binding = null ; 
+    private Binding binding = null ;
     private boolean closed = false ;
-    
+
     public static QueryIterPeek create(QueryIterator iterator, ExecutionContext cxt)
     {
         if ( iterator instanceof QueryIterPeek)
             return (QueryIterPeek)iterator ;
         return new QueryIterPeek(iterator, cxt) ;
     }
-    
+
     private QueryIterPeek(QueryIterator iterator, ExecutionContext cxt)
     {
         super(iterator, cxt) ;
     }
 
     /** Returns the next binding without moving on.  Returns "null" for no such element. */
-    public Binding peek() 
+    public Binding peek()
     {
         if ( closed ) return null ;
         if ( ! hasNextBinding() )
@@ -73,7 +73,7 @@ public class QueryIterPeek extends QueryIter1
     @Override
     protected void closeSubIterator()
     { closed = true ; }
-    
+
     @Override
     protected void requestSubCancel()
     { }
