@@ -18,17 +18,18 @@
 
 package org.apache.jena.ontapi.impl;
 
-import org.apache.jena.ontapi.UnionGraph;
-import org.apache.jena.ontapi.utils.Graphs;
-import org.apache.jena.ontapi.utils.Iterators;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.GraphEventManager;
 import org.apache.jena.graph.GraphEvents;
 import org.apache.jena.graph.GraphListener;
+import org.apache.jena.graph.GraphUtil;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.compose.CompositionBase;
 import org.apache.jena.graph.impl.SimpleEventManager;
+import org.apache.jena.ontapi.UnionGraph;
+import org.apache.jena.ontapi.utils.Graphs;
+import org.apache.jena.ontapi.utils.Iterators;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
@@ -223,7 +224,7 @@ public class UnionGraphImpl extends CompositionBase implements UnionGraph {
         Triple t = Triple.createMatch(s, p, o);
         UnionGraph.EventManager em = getEventManager();
         em.onDeleteTriple(this, t);
-        super.remove(s, p, o);
+        GraphUtil.remove(this, s, p, o);
         em.notifyEvent(this, GraphEvents.remove(s, p, o));
     }
 

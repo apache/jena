@@ -68,6 +68,7 @@ import org.apache.jena.ontapi.utils.StdModels;
 import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelChangedListener;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFList;
 import org.apache.jena.rdf.model.RDFNode;
@@ -353,6 +354,25 @@ public class OntGraphModelImpl extends ModelCom implements OntModel, OntEnhGraph
     @Override
     public Model getBaseModel() {
         return new ModelCom(getBaseGraph());
+    }
+
+    @Override
+    public OntGraphModelImpl register(ModelChangedListener listener) {
+        getUnionGraph().getEventManager().register(adapt(listener));
+        return this;
+    }
+
+    @Override
+    public OntGraphModelImpl unregister(ModelChangedListener listener) {
+        getUnionGraph().getEventManager().unregister(adapt(listener));
+        return this;
+    }
+
+    @Override
+    public OntGraphModelImpl notifyEvent(Object event) {
+        var ug = getUnionGraph();
+        ug.getEventManager().notifyEvent(ug, event);
+        return this;
     }
 
     @Override

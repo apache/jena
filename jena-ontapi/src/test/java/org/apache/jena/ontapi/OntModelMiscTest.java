@@ -25,15 +25,19 @@ import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntDisjoint;
 import org.apache.jena.ontapi.model.OntModel;
 import org.apache.jena.ontapi.utils.OntModels;
+import org.apache.jena.rdf.listeners.StatementListener;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.OWL2;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -153,5 +157,103 @@ public class OntModelMiscTest {
         Assertions.assertEquals(0, actual1.size());
 
         Assertions.assertThrows(IllegalArgumentException.class, ont::createDifferentIndividuals);
+    }
+
+    @ParameterizedTest
+    @EnumSource(names = {
+            "OWL2_DL_MEM_RDFS_BUILTIN_INF",
+            "OWL2_DL_MEM",
+            "OWL2_DL_MEM_RDFS_INF",
+            "OWL2_DL_MEM_TRANS_INF",
+            "OWL2_DL_MEM_RULES_INF",
+            "OWL2_MEM",
+            "OWL2_MEM_RDFS_INF",
+            "OWL2_MEM_TRANS_INF",
+            "OWL2_MEM_RULES_INF",
+            "OWL2_MEM_MINI_RULES_INF",
+            "OWL2_MEM_MICRO_RULES_INF",
+            "OWL2_EL_MEM",
+            "OWL2_EL_MEM_RDFS_INF",
+            "OWL2_EL_MEM_TRANS_INF",
+            "OWL2_EL_MEM_RULES_INF",
+            "OWL2_QL_MEM",
+            "OWL2_QL_MEM_RDFS_INF",
+            "OWL2_QL_MEM_TRANS_INF",
+            "OWL2_QL_MEM_RULES_INF",
+            "OWL2_RL_MEM",
+            "OWL2_RL_MEM_RDFS_INF",
+            "OWL2_RL_MEM_TRANS_INF",
+            "OWL2_RL_MEM_RULES_INF",
+            "OWL1_DL_MEM",
+            "OWL1_DL_MEM_RDFS_INF",
+            "OWL1_DL_MEM_TRANS_INF",
+            "OWL1_DL_MEM_RULES_INF",
+            "OWL1_MEM",
+            "OWL1_MEM_RDFS_INF",
+            "OWL1_MEM_TRANS_INF",
+            "OWL1_MEM_RULES_INF",
+            "OWL1_MEM_MINI_RULES_INF",
+            "OWL1_MEM_MICRO_RULES_INF",
+            "OWL1_LITE_MEM",
+            "OWL1_LITE_MEM_RDFS_INF",
+            "OWL1_LITE_MEM_TRANS_INF",
+            "OWL1_LITE_MEM_RULES_INF",
+            "RDFS_MEM",
+            "RDFS_MEM_RDFS_INF",
+            "RDFS_MEM_TRANS_INF",
+    })
+    public void testModelChangeListenerGH2868(TestSpec spec) {
+        var listener = new TestModelChangedListener();
+        var m = OntModelFactory.createModel(spec.inst).register(listener);
+
+        var type1 = m.createOntClass("http://x1");
+        type1.removeProperties();
+        Assertions.assertEquals(1, listener.addedStatements.size());
+        Assertions.assertEquals(1, listener.removedStatements.size());
+        Assertions.assertEquals(1, listener.events.size());
+
+        listener.clear();
+
+        var type2 = m.createOntClass("http://x2");
+        m.remove(type2.getMainStatement());
+        Assertions.assertEquals(1, listener.addedStatements.size());
+        Assertions.assertEquals(1, listener.removedStatements.size());
+        Assertions.assertEquals(0, listener.events.size());
+
+        listener.clear();
+
+        m.createOntClass("http://x3");
+        m.createOntClass("http://x4");
+        m.removeAll(null, RDF.type, null);
+        Assertions.assertEquals(2, listener.addedStatements.size());
+        Assertions.assertEquals(2, listener.removedStatements.size());
+        Assertions.assertEquals(1, listener.events.size());
+    }
+
+    private static class TestModelChangedListener extends StatementListener {
+        private final List<Statement> addedStatements = new ArrayList<>();
+        private final List<Statement> removedStatements = new ArrayList<>();
+        private final List<Object> events = new ArrayList<>();
+
+        @Override
+        public void addedStatement(Statement x) {
+            addedStatements.add(x);
+        }
+
+        @Override
+        public void removedStatement(Statement x) {
+            removedStatements.add(x);
+        }
+
+        @Override
+        public void notifyEvent(Model m, Object event) {
+            events.add(event);
+        }
+
+        private void clear() {
+            addedStatements.clear();
+            removedStatements.clear();
+            events.clear();
+        }
     }
 }

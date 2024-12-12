@@ -22,6 +22,7 @@ import org.apache.jena.enhanced.EnhGraph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.ontapi.OntJenaException;
 import org.apache.jena.ontapi.OntModelControls;
+import org.apache.jena.ontapi.common.OntPersonalities;
 import org.apache.jena.ontapi.impl.OntGraphModelImpl;
 import org.apache.jena.ontapi.model.OntClass;
 import org.apache.jena.ontapi.model.OntDataProperty;
@@ -34,6 +35,7 @@ import org.apache.jena.ontapi.model.OntRelationalProperty;
 import org.apache.jena.ontapi.model.OntStatement;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.OWL2;
+import org.apache.jena.vocabulary.RDFS;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,10 +44,9 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * {@code owl:Class} Implementation.
- * Instance of this class as a class with unknown nature is only available in a spec with corresponding permissions
- * ({@link OntModelControls}).
- * Specialized classes have their own implementations ({@link NamedImpl} or {@link OntClassImpl}).
+ * Simple Ontology Class implementation.
+ * Represents RDFS OntClass or OWL OntClass with unknown nature.
+ * Specialized OWL classes have their own implementations ({@link NamedImpl} or {@link OntClassImpl}).
  */
 @SuppressWarnings("WeakerAccess")
 public class OntSimpleClassImpl extends OntObjectImpl implements OntClass {
@@ -56,7 +57,7 @@ public class OntSimpleClassImpl extends OntObjectImpl implements OntClass {
 
     @Override
     public Optional<OntStatement> findRootStatement() {
-        return getOptionalRootStatement(this, OWL2.Class);
+        return getOptionalRootStatement(this, OntPersonalities.isRDFS(getModel().getOntPersonality()) ? RDFS.Class : OWL2.Class);
     }
 
     @Override
