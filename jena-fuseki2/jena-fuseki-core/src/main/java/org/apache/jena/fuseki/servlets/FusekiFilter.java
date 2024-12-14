@@ -34,7 +34,7 @@ import org.slf4j.Logger;
  * for any service.
  */
 public class FusekiFilter implements Filter {
-    private static Logger log = Fuseki.serverLog;
+    private static Logger LOG = Fuseki.serverLog;
 
     @Override
     public void init(FilterConfig filterConfig) {}
@@ -50,7 +50,7 @@ public class FusekiFilter implements Filter {
             if ( handled )
                 return;
         } catch (Throwable ex) {
-            log.info("Filter: unexpected exception: "+ex.getMessage(),ex);
+            LOG.info("Filter: unexpected exception: "+ex.getMessage(),ex);
         }
 
         // Not found - continue.
