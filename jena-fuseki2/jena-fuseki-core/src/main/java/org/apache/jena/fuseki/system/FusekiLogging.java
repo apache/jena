@@ -279,15 +279,14 @@ public class FusekiLogging
                 logger.jetty.name  = org.eclipse.jetty
                 logger.jetty.level = WARN
 
-                logger.apache-http.name   = org.apache.http
-                logger.apache-http.level  = WARN
                 logger.shiro.name = org.apache.shiro
                 logger.shiro.level = WARN
 
-                # Hide bug in Shiro 1.5.0
+                # Hide issue with Shiro 1.5.0+, 2.0.0
                 logger.shiro-realm.name = org.apache.shiro.realm.text.IniRealm
                 logger.shiro-realm.level = ERROR
 
+                ## (NCSA) Common Log Format request log
                 # This goes out in NCSA format
                 appender.plain.type = Console
                 appender.plain.name = PLAIN

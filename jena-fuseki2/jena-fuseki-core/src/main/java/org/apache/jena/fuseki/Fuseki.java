@@ -132,14 +132,16 @@ public class Fuseki {
     /** Instance of log for operations. */
     public static final Logger        adminLog          = LoggerFactory.getLogger(adminLogName);
 
-    /** Admin log file for operations. */
-    public static final String        builderLogName    = PATH + ".Builder";
-
-    /** Instance of log for operations. */
-    public static final Logger        builderLog        = LoggerFactory.getLogger(builderLogName);
-
-    /** Validation log file for operations. */
-    public static final String        validationLogName = PATH + ".Validate";
+    // Unused
+//    /** Admin log file for operations. */
+//    public static final String        builderLogName    = PATH + ".Builder";
+//
+//    /** Instance of log for operations. */
+//    public static final Logger        builderLog        = LoggerFactory.getLogger(builderLogName);
+//
+//    // Now validation uses action logger.
+//    /** Validation log file for operations. */
+//    public static final String        validationLogName = PATH + ".Validate";
 
     /** Instance of log for validation. */
     public static final Logger        validationLog     = LoggerFactory.getLogger(adminLogName);
@@ -150,10 +152,13 @@ public class Fuseki {
     /** Instance of log for general server messages. */
     public static final Logger        serverLog         = LoggerFactory.getLogger(serverLogName);
 
-    /** Logger used for the servletContent.log operations (if settable -- depends on environment) */
+    /**
+     * Logger used for the servletContent.log operations (if settable -- depends on environment).
+     * This is both the display name of the servlet context and the logger name.
+     */
     public static final String        servletRequestLogName     = PATH + ".Servlet";
 
-    /** Actual log file for config server messages. */
+    /** log for config server messages. */
     public static final String        configLogName     = PATH + ".Config";
 
     /** Instance of log for config server messages. */
