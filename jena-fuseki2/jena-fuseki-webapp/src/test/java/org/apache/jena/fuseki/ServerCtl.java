@@ -30,6 +30,7 @@ import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.cmd.FusekiArgs;
 import org.apache.jena.fuseki.cmd.JettyFusekiWebapp;
 import org.apache.jena.fuseki.cmd.JettyServerConfig;
+import org.apache.jena.fuseki.system.FusekiCore;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.apache.jena.fuseki.webapp.FusekiServerListener;
 import org.apache.jena.fuseki.webapp.FusekiWebapp;
@@ -37,6 +38,7 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.modify.request.Target;
 import org.apache.jena.sparql.modify.request.UpdateDrop;
+import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.Update;
 import org.apache.jena.update.UpdateExecutionFactory;
@@ -83,7 +85,10 @@ import org.apache.jena.update.UpdateProcessor;
  * </pre>
  */
 public class ServerCtl {
-    static { Fuseki.init(); }
+    static {
+        JenaSystem.init();
+        FusekiCore.init();
+    }
 
     /* Cut&Paste versions:
 
