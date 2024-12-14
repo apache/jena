@@ -79,6 +79,6 @@ public class DemoService extends ActionREST {
     public void validate(HttpAction action) { }
 
     private void notSupported(HttpAction action) {
-        ServletOps.errorMethodNotAllowed(action.getMethod()+" "+action.getActionURI());
+        ServletOps.errorMethodNotAllowed(action.getRequestMethod()+" "+action.getActionURI());
     }
 }

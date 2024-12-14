@@ -38,12 +38,12 @@ public class ActionStatsText extends ActionCtl
 
     @Override
     public void validate(HttpAction action) {
-        switch(action.getMethod() ) {
+        switch(action.getRequestMethod() ) {
             case HttpNames.METHOD_GET:
             case HttpNames.METHOD_POST:
                 return;
             default:
-                ServletOps.errorMethodNotAllowed(action.getMethod());
+                ServletOps.errorMethodNotAllowed(action.getRequestMethod());
         }
     }
 

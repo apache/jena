@@ -43,7 +43,7 @@ public abstract class ActionContainerItem extends ActionCtl {
         else if ( method.equals(METHOD_DELETE) )
             performDelete(action);
         else
-            ServletOps.errorMethodNotAllowed(action.getMethod());
+            ServletOps.errorMethodNotAllowed(action.getRequestMethod());
     }
 
     @Override

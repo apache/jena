@@ -30,14 +30,14 @@ public abstract class ActionItem extends ActionContainerItem
     @Override
     final
     protected JsonValue execGetContainer(HttpAction action) {
-        ServletOps.errorMethodNotAllowed(action.getMethod());
+        ServletOps.errorMethodNotAllowed(action.getRequestMethod());
         return null;
     }
 
     @Override
     final
     protected JsonValue execPostContainer(HttpAction action) {
-        ServletOps.errorMethodNotAllowed(action.getMethod());
+        ServletOps.errorMethodNotAllowed(action.getRequestMethod());
         return null;
     }
 }
