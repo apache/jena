@@ -18,45 +18,27 @@
 
 package org.apache.jena.sparql.core.assembler;
 
-import java.util.Map;
-
 import org.apache.jena.assembler.Assembler;
-import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.core.DatasetGraphSink;
 import org.apache.jena.sparql.core.DatasetGraphZero;
 
 /**
- * An assembler that creates datasets that do nothing, either a sink or a always empty one.
-
- * @see DatasetGraphSink
+ * An assembler that creates datasets that do nothing, either a sink or an always empty one.
+ *
  * @see DatasetGraphZero
  */
 
-public class DatasetNullAssembler extends NamedDatasetAssembler {
+public class DatasetZeroAssembler extends NamedDatasetAssembler {
 
-    private final Resource tDataset;
+    public static Resource getType() { return DatasetAssemblerVocab.tDatasetZero; }
 
-    public DatasetNullAssembler(Resource tDataset) {
-        this.tDataset = tDataset;
-    }
+    public DatasetZeroAssembler() {}
 
     @Override
     public DatasetGraph createDataset(Assembler a, Resource root) {
-        DatasetGraph dsg;
-        if ( DatasetAssemblerVocab.tDatasetSink.equals(tDataset) )
-            dsg = DatasetGraphSink.create();
-        else if ( DatasetAssemblerVocab.tDatasetZero.equals(tDataset) )
-            dsg = DatasetGraphZero.create();
-        else
-            throw new InternalErrorException();
+        DatasetGraph dsg = DatasetGraphZero.create();
         AssemblerUtils.mergeContext(root, dsg.getContext());
         return dsg;
-    }
-
-    @Override
-    public Map<String, DatasetGraph> pool() {
-        return sharedDatasetPool;
     }
 }

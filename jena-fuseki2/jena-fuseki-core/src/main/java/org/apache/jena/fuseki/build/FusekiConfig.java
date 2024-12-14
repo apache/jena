@@ -20,9 +20,9 @@ package org.apache.jena.fuseki.build;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
+import static org.apache.jena.fuseki.build.BuildLib.displayStr;
 import static org.apache.jena.fuseki.build.BuildLib.getZeroOrOne;
 import static org.apache.jena.fuseki.server.FusekiVocabG.*;
-import static org.apache.jena.fuseki.build.BuildLib.displayStr;
 import static org.apache.jena.riot.RDFLanguages.filenameToLang;
 import static org.apache.jena.riot.RDFParserRegistry.isRegistered;
 import static org.apache.jena.system.G.isResource;
@@ -52,14 +52,16 @@ import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.core.assembler.NamedDatasetAssembler;
-import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.system.G;
@@ -323,21 +325,15 @@ public class FusekiConfig {
         // Server to services.
         RowSet rs = BuildLib.query("SELECT * { ?s fu:services [ list:member ?service ] }", configuration, "s", server);
 
-        List<Node> services = rs.stream().map(b->b.get("service")).toList();
-
-        List<DataAccessPoint> accessPoints = new ArrayList<>();
-
         // If none, look for services by type.
         if ( ! rs.hasNext() )
             // No "fu:services ( .... )" so try looking for services directly.
             // This means Fuseki2, service configuration files (no server section) work for --conf.
             rs = BuildLib.query("SELECT ?service { ?service a fu:Service }", configuration);
 
-        // rs is a result set of services to process.
-        for (; rs.hasNext(); ) {
-            Binding soln = rs.next();
-            Node svc = soln.get("service");
-
+        List<Node> services = rs.stream().map(b->b.get("service")).toList();
+        List<DataAccessPoint> accessPoints = new ArrayList<>();
+        for (Node svc : services ) {
             DataAccessPoint acc = buildDataAccessPoint(configuration, svc, dsDescMap);
             if ( acc != null )
                 accessPoints.add(acc);
