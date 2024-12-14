@@ -65,8 +65,8 @@ public class AssemblerUtils
         initialized = true ;
         registerDataset(tDataset,         new DatasetAssemblerGeneral());
         registerDataset(tDatasetOne,      new DatasetOneAssembler());
-        registerDataset(tDatasetZero,     new DatasetNullAssembler(tDatasetZero));
-        registerDataset(tDatasetSink,     new DatasetNullAssembler(tDatasetSink));
+        registerDataset(tDatasetZero,     new DatasetZeroAssembler());
+        registerDataset(tDatasetSink,     new DatasetSinkAssembler());
         registerDataset(tMemoryDataset,   new InMemDatasetAssembler());
         registerDataset(tDatasetTxnMem,   new InMemDatasetAssembler());
         registerDataset(tDatasetView,     new ViewDatasetAssembler());
