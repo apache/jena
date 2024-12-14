@@ -1705,7 +1705,7 @@ public class FusekiServer {
                 contextPath = "/" + contextPath;
             ServletContextHandler context = new ServletContextHandler();
             context.setDisplayName(Fuseki.servletRequestLogName);
-            // Also set on the server which handles request that don't dispatch.
+            // Also set on the server which handles requests that don't Fuseki-dispatch.
             context.setErrorHandler(errorHandler);
             context.setContextPath(contextPath);
             // SPARQL Update by HTML - not the best way but.
