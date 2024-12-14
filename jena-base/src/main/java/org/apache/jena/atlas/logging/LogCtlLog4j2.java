@@ -52,10 +52,7 @@ import org.apache.logging.log4j.core.config.yaml.YamlConfigurationFactory;
 public class LogCtlLog4j2 {
 
     /** Default log4j2 setup */
-    public  static String log4j2setup = String.join(log4jSetupSep(),
-                                                    log4j2setupBase(),
-                                                    log4j2setupJenaLib(),
-                                                    log4j2setupFuseki());
+    public static String log4j2setup = Log4j2Setup.log4j2setup();
 
     /**
      * Reset logging for log4j2.
@@ -82,7 +79,36 @@ public class LogCtlLog4j2 {
         reconfigureLog4j(config);
     }
 
-    /** Check logging level of a Logger */
+    /** get logging level of a Logger as a string */
+    /* package */ static String getLoggerlevel(String logger) {
+        Level level = org.apache.logging.log4j.LogManager.getLogger(logger).getLevel();
+        if ( level != null )
+            return level.toString();
+        return null;
+
+    }
+
+    /** Set logging level of a Logger */
+    /*package*/ static void setLoggerlevel(String logger, String levelName) {
+        org.apache.logging.log4j.Level level = org.apache.logging.log4j.Level.ALL;
+        if ( levelName == null )
+            level = null;
+        else if ( levelName.equalsIgnoreCase("info") )
+            level = org.apache.logging.log4j.Level.INFO;
+        else if ( levelName.equalsIgnoreCase("debug") )
+            level = org.apache.logging.log4j.Level.DEBUG;
+        else if ( levelName.equalsIgnoreCase("warn") || levelName.equalsIgnoreCase("warning") )
+            level = org.apache.logging.log4j.Level.WARN;
+        else if ( levelName.equalsIgnoreCase("error") || levelName.equalsIgnoreCase("severe") )
+            level = org.apache.logging.log4j.Level.ERROR;
+        else if ( levelName.equalsIgnoreCase("fatal") )
+            level = org.apache.logging.log4j.Level.FATAL;
+        else if ( levelName.equalsIgnoreCase("OFF") )
+            level = org.apache.logging.log4j.Level.OFF;
+        LogCtlLog4j2.setLoggerlevel(logger, level);
+    }
+
+    /** Set logging level of a Logger */
     /*package*/ static void setLoggerlevel(String logger, Level level) {
         try {
             if ( !logger.equals("") )
@@ -94,7 +120,7 @@ public class LogCtlLog4j2 {
         }
     }
 
-    /** Check logging level of a Logger */
+    /** Set logging level of a Logger */
     /*package*/ static void setLoggerlevel(Logger logger, Level level) {
         try {
             org.apache.logging.log4j.core.config.Configurator.setLevel(logger, level);
@@ -102,7 +128,6 @@ public class LogCtlLog4j2 {
             Log.warnOnce(LogCtlLog4j2.class, "Log4j2 Configurator not found", LogCtl.class);
         }
     }
-
 
     /**
      * Enum for possible syntax of a Log4j configuration file.
@@ -259,81 +284,93 @@ public class LogCtlLog4j2 {
         return hint;
     }
 
-    /** Line separate/blank line for concatenating log4j syntax fragments. */
-    private static String log4jSetupSep() { return "\n"; }
+    // Hide constants.
+    static class Log4j2Setup {
 
-    /**
-     * A basic logging setup. Time and level INFO.
-     */
-    private static String log4j2setupBase() {
-        return """
-                ## Log4j2 properties syntax.
-                status = error
-                name = JenaLoggingDft
+        private static String log4j2setup() {
+            return String.join(log4jSetupSep(),
+                               log4j2setupBase(),
+                               log4j2setupJenaLib(),
+                               log4j2setupFuseki());
+        }
 
-                # filters = threshold
-                # filter.threshold.type = ThresholdFilter
-                # filter.threshold.level = ALL
+        /** Line separate/blank line for concatenating log4j syntax fragments. */
+        private static String log4jSetupSep() { return "\n"; }
 
-                appender.console.type = Console
-                appender.console.name = OUT
-                appender.console.target = SYSTEM_OUT
-                appender.console.layout.type = PatternLayout
-                appender.console.layout.pattern = %d{HH:mm:ss} %-5p %-15c{1} :: %m%n
-                # appender.console.layout.pattern = [%d{yyyy-MM-dd HH:mm:ss}] %-5p %-15c{1} :: %m%n
+        /**
+         * A basic logging setup. Time and level INFO.
+         */
+        private static String log4j2setupBase() {
+            return """
+                    ## Log4j2 properties syntax.
+                    status = error
+                    name = JenaLoggingDft
 
-                rootLogger.level                  = INFO
-                rootLogger.appenderRef.stdout.ref = OUT
-                """;
-    }
-    /** Default log4j fragment needed for Jena command line tools. */
-    private static String log4j2setupJenaLib() {
-        return """
-                logger.jena.name  = org.apache.jena
-                logger.jena.level = INFO
+                    # filters = threshold
+                    # filter.threshold.type = ThresholdFilter
+                    # filter.threshold.level = ALL
 
-                logger.arq-exec.name  = org.apache.jena.arq.exec
-                logger.arq-exec.level = INFO
+                    appender.console.type = Console
+                    appender.console.name = OUT
+                    appender.console.target = SYSTEM_OUT
+                    appender.console.layout.type = PatternLayout
+                    appender.console.layout.pattern = %d{HH:mm:ss} %-5p %-15c{1} :: %m%n
+                    # appender.console.layout.pattern = [%d{yyyy-MM-dd HH:mm:ss}] %-5p %-15c{1} :: %m%n
 
-                logger.riot.name  = org.apache.jena.riot
-                logger.riot.level = INFO
-                """;
-    }
-    /** Additional log4j fragment for Fuseki in case the general default is used with embedded Fuseki. */
-    private static String log4j2setupFuseki() {
-        return """
-                # Fuseki. In case this logging setup gets install for embedded Fuseki.
+                    rootLogger.level                  = INFO
+                    rootLogger.appenderRef.stdout.ref = OUT
+                    """;
+        }
+        /** Default log4j fragment needed for Jena command line tools. */
+        private static String log4j2setupJenaLib() {
+            return """
+                    logger.jena.name  = org.apache.jena
+                    logger.jena.level = INFO
 
-                logger.fuseki.name  = org.apache.jena.fuseki
-                logger.fuseki.level = INFO
-                logger.fuseki-fuseki.name  = org.apache.jena.fuseki.Fuseki
-                logger.fuseki-fuseki.level = INFO
+                    logger.arq-exec.name  = org.apache.jena.arq.exec
+                    logger.arq-exec.level = INFO
 
-                logger.fuseki-server.name  = org.apache.jena.fuseki.Server
-                logger.fuseki-server.level = INFO
+                    logger.riot.name  = org.apache.jena.riot
+                    logger.riot.level = INFO
+                    """;
+        }
+        /** Additional log4j fragment for Fuseki in case the general default is used with embedded Fuseki. */
+        private static String log4j2setupFuseki() {
+            return """
+                    # Fuseki. In case this logging setup gets install for embedded Fuseki.
 
-                logger.fuseki-config.name  = org.apache.jena.fuseki.Config
-                logger.fuseki-config.level = INFO
+                    logger.fuseki.name  = org.apache.jena.fuseki
+                    logger.fuseki.level = INFO
+                    logger.fuseki-fuseki.name  = org.apache.jena.fuseki.Fuseki
+                    logger.fuseki-fuseki.level = INFO
 
-                logger.fuseki-admin.name  = org.apache.jena.fuseki.Admin
-                logger.fuseki-admin.level = INFO
+                    logger.fuseki-server.name  = org.apache.jena.fuseki.Server
+                    logger.fuseki-server.level = INFO
 
-                logger.jetty.name  = org.eclipse.jetty
-                logger.jetty.level = WARN
+                    logger.fuseki-config.name  = org.apache.jena.fuseki.Config
+                    logger.fuseki-config.level = INFO
 
-                logger.shiro.name = org.apache.shiro
-                logger.shiro.level = WARN
+                    logger.fuseki-admin.name  = org.apache.jena.fuseki.Admin
+                    logger.fuseki-admin.level = INFO
 
-                # This goes out in NCSA format
-                appender.plain.type = Console
-                appender.plain.name = PLAIN
-                appender.plain.layout.type = PatternLayout
-                appender.plain.layout.pattern = %m%n
+                    logger.jetty.name  = org.eclipse.jetty
+                    logger.jetty.level = WARN
 
-                logger.fuseki-request.name                   = org.apache.jena.fuseki.Request
-                logger.fuseki-request.additivity             = false
-                logger.fuseki-request.level                  = OFF
-                logger.fuseki-request.appenderRef.plain.ref  = PLAIN
-                """;
+                    logger.shiro.name = org.apache.shiro
+                    logger.shiro.level = WARN
+
+                    # This goes out in NCSA format
+                    appender.plain.type = Console
+                    appender.plain.name = PLAIN
+                    appender.plain.layout.type = PatternLayout
+                    appender.plain.layout.pattern = %m%n
+
+                    logger.fuseki-request.name                   = org.apache.jena.fuseki.Request
+                    logger.fuseki-request.additivity             = false
+                    logger.fuseki-request.level                  = OFF
+                    logger.fuseki-request.appenderRef.plain.ref  = PLAIN
+                    """;
+        }
+
     }
 }
