@@ -59,9 +59,13 @@ public class FusekiLib {
     /**
      * Process a configuration mode to find the DataServices and reset the server
      * {@link DataAccessPointRegistry}. The only server-level setting processed is
-     * the {@code fuseki:services} list. Other settings are ignored.
+     * the {@code fuseki:services} list; other settings are ignored.
      */
     public static void reload(FusekiServer server, Model configuration) {
+        // See also FusekiServer.applyDatabaseSetup
+        //      prepareDataServices(dapRegistry, operationReg);
+        //      OperationRegistry.set(servletContext, operationReg);
+        //      DataAccessPointRegistry.set(servletContext, dapRegistry);
         DataAccessPointRegistry newRegistry = new DataAccessPointRegistry();
         OperationRegistry operationRegistry = server.getOperationRegistry();
 

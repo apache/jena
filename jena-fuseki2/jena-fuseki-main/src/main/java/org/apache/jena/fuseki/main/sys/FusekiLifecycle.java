@@ -24,7 +24,7 @@ import org.apache.jena.base.module.SubsystemLifecycle;
  * A {@link SubsystemLifecycle} for Fuseki.
  * This lifecycle is run after Jena system initialization.
  * Jena system initialization includes system initialization of Fuseki itself
- * in {@link InitFuseki}.
+ * in {@link InitFusekiMain}.
  * This lifecycle is for extensions to an initialized Fuseki server
  * and is used via {@link FusekiAutoModule}.
  */

@@ -31,6 +31,7 @@ import org.apache.jena.cmd.TerminationException;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.mgt.Template;
+import org.apache.jena.fuseki.system.FusekiCore;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.fuseki.webapp.FusekiEnv;
 import org.apache.jena.fuseki.webapp.FusekiServerListener;
@@ -96,7 +97,7 @@ public class FusekiWebappCmd {
         static public void innerMain(String... argv) {
             JenaSystem.init();
             // Do explicitly so it happens after subsystem initialization.
-            Fuseki.init();
+            FusekiCore.init();
             new FusekiCmdInner(argv).mainRun();
         }
 
