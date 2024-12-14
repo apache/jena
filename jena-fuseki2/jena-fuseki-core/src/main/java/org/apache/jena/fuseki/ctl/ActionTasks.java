@@ -62,7 +62,7 @@ public class ActionTasks extends ActionCtl
         else if ( method.equals(METHOD_POST) )
             execPost(action, name);
         else
-            ServletOps.errorMethodNotAllowed(action.getMethod());
+            ServletOps.errorMethodNotAllowed(action.getRequestMethod());
     }
 
     private void execGet(HttpAction action, String name) {
