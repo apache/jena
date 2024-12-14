@@ -401,8 +401,6 @@ public class ActionLib {
     }
 
     private static void setCommonHeadersForOptions(HttpServletResponse httpResponse) {
-        if ( Fuseki.CORS_ENABLED )
-            httpResponse.setHeader(HttpNames.hAccessControlAllowHeaders, "X-Requested-With, Content-Type, Authorization");
         setCommonHeaders(httpResponse);
     }
 
@@ -411,8 +409,6 @@ public class ActionLib {
     }
 
     private static void setCommonHeaders(HttpServletResponse httpResponse) {
-        if ( Fuseki.CORS_ENABLED )
-            httpResponse.setHeader(HttpNames.hAccessControlAllowOrigin, "*");
         if ( Fuseki.outputFusekiServerHeader )
             httpResponse.setHeader(HttpNames.hServer, Fuseki.serverHttpName);
     }

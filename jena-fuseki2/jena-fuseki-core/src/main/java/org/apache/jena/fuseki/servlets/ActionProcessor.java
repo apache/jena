@@ -29,7 +29,7 @@ public interface ActionProcessor {
      * @param action   HTTP Action
      */
     public default void process(HttpAction action) {
-        switch ( action.getMethod() ) {
+        switch ( action.getRequestMethod() ) {
             case METHOD_GET ->       execGet(action);
             case METHOD_POST ->      execPost(action);
             case METHOD_PATCH ->     execPatch(action);
@@ -38,7 +38,7 @@ public interface ActionProcessor {
             case METHOD_HEAD ->      execHead(action);
             case METHOD_OPTIONS->    execOptions(action);
             case METHOD_TRACE ->     execTrace(action);
-            default -> execAny(action.getMethod(), action);
+            default -> execAny(action.getRequestMethod(), action);
         }
     }
 
