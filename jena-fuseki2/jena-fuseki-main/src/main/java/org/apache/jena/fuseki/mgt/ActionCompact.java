@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,23 +16,8 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.server;
+package org.apache.jena.fuseki.mgt;
 
-import java.util.concurrent.atomic.LongAdder;
+public class ActionCompact {
 
-/** A statistics counter. The value is "eventual consistent" */
-public class Counter {
-    // Not for synchronization
-    private LongAdder counter = new LongAdder();
-
-    public Counter()   {}
-
-    public void inc()   { counter.increment(); }
-    public void dec()   { counter.decrement(); }
-    public long value() { return counter.sum(); }
-
-    @Override
-    public String toString() {
-        return counter.toString();
-    }
 }
