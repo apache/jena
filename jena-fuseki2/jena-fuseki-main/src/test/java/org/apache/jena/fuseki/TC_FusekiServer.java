@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,23 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.server;
+package org.apache.jena.fuseki;
 
-import java.util.concurrent.atomic.LongAdder;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-/** A statistics counter. The value is "eventual consistent" */
-public class Counter {
-    // Not for synchronization
-    private LongAdder counter = new LongAdder();
+import org.apache.jena.fuseki.main.TC_FusekiMain;
+import org.apache.jena.fuseki.mod.TC_FusekiMods;
 
-    public Counter()   {}
-
-    public void inc()   { counter.increment(); }
-    public void dec()   { counter.decrement(); }
-    public long value() { return counter.sum(); }
-
-    @Override
-    public String toString() {
-        return counter.toString();
-    }
-}
+@Suite
+@SelectClasses({
+    TC_FusekiMain.class,
+    TC_FusekiMods.class
+})
+public class TC_FusekiServer {}

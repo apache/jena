@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,23 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.server;
+package org.apache.jena.fuseki.mod;
 
-import java.util.concurrent.atomic.LongAdder;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-/** A statistics counter. The value is "eventual consistent" */
-public class Counter {
-    // Not for synchronization
-    private LongAdder counter = new LongAdder();
+import org.junit.jupiter.api.Test;
 
-    public Counter()   {}
+import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.run.FusekiModServer;
 
-    public void inc()   { counter.increment(); }
-    public void dec()   { counter.decrement(); }
-    public long value() { return counter.sum(); }
+/**
+ * Test for the whole Fuseki server, not components.
+ */
+public class TestFusekiServer {
+    @Test public void run() {
+        // Setup
+        FusekiServer server = FusekiModServer.runAsync("--port=0", "--empty");
+        int port = server.getPort();
+        assertNotEquals(0, port, "Port is zero after async start");
 
-    @Override
-    public String toString() {
-        return counter.toString();
     }
 }
