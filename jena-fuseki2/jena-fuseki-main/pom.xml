@@ -83,6 +83,19 @@
       <artifactId>jetty-xml</artifactId>
     </dependency>
 
+    <!-- Apache Shiro -->
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-core</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-web</artifactId>
+      <classifier>jakarta</classifier>
+    </dependency>
+    
+    <!-- Testing -->
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
@@ -96,8 +109,31 @@
     </dependency>
 
     <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
       <groupId>org.junit.platform</groupId>
       <artifactId>junit-platform-suite</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+<!-- 
+   Only needed if the Junit5 artifacts don't pick the right runner
+   <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${ver.junit}</version>
+      <scope>test</scope>
+    </dependency>
+-->    
+
+
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -106,31 +142,6 @@
       <artifactId>log4j-slf4j2-impl</artifactId>
       <optional>true</optional>
       <scope>compile</scope>
-    </dependency>
-
-    <!-- Include Shiro - for the example in src/test/java/ -->
-
-    <dependency>
-      <groupId>org.apache.shiro</groupId>
-      <artifactId>shiro-core</artifactId>
-      <classifier>jakarta</classifier>
-      <scope>test</scope>
-      <optional>true</optional>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.shiro</groupId>
-      <artifactId>shiro-config-core</artifactId>
-      <scope>test</scope>
-      <optional>true</optional>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.shiro</groupId>
-      <artifactId>shiro-web</artifactId>
-      <classifier>jakarta</classifier>
-      <scope>test</scope>
-      <optional>true</optional>
     </dependency>
 
     <!-- Testing for custom functions only -->

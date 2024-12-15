@@ -16,23 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.server;
+package org.apache.jena.fuseki.authz;
 
-import java.util.concurrent.atomic.LongAdder;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
-/** A statistics counter. The value is "eventual consistent" */
-public class Counter {
-    // Not for synchronization
-    private LongAdder counter = new LongAdder();
+/** An authorization filter that always denies access and sends back HTTP 403 */
+public class DenyFilter extends AuthorizationFilter403 {
 
-    public Counter()   {}
-
-    public void inc()   { counter.increment(); }
-    public void dec()   { counter.decrement(); }
-    public long value() { return counter.sum(); }
+    public DenyFilter() { super("Access denied"); }
 
     @Override
-    public String toString() {
-        return counter.toString();
+    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        return false;
     }
 }
