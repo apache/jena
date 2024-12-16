@@ -57,7 +57,7 @@ public class QueryIterAddTripleTerm extends QueryIterProcessBinding {
         if ( ! matchedTriple.isConcrete() )
             // Not all concrete terms.
             return null;
-        Node nt = NodeFactory.createTripleNode(matchedTriple);
+        Node nt = NodeFactory.createTripleTerm(matchedTriple);
         // This makes it a filter. Syntactically not allowed but execution support
         // "AS ?t" for existing ?t where it must be the same RDF term.
         if ( binding.contains(var) ) {
