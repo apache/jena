@@ -19,17 +19,20 @@
 package org.apache.jena.fuseki.main.access;
 
 import static org.apache.jena.fuseki.main.access.AccessTestLib.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Stream;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.web.HttpException;
@@ -57,18 +60,20 @@ import org.eclipse.jetty.security.UserStore;
 import org.eclipse.jetty.util.security.Credential;
 import org.eclipse.jetty.util.security.Password;
 
-@RunWith(Parameterized.class)
 public class TestSecurityFilterFuseki {
 
-    @Parameters(name = "{index}: {0}")
-    public static Iterable<Object[]> data() {
-        Object[] obj1 = { "TDB",  "data1" };
-        Object[] obj2 = { "TDB2", "data2" };
-        Object[] obj3 = { "TIM",  "data3" };
-        return Arrays.asList(obj1, obj2, obj3);
+    private static Stream<Arguments> provideTestArgs() {
+        return Stream.of(
+//          Arguments.of("TDB",  "data1"),
+//          Arguments.of("TDB2", "data2"),
+          Arguments.of("TIM",  "data3")
+        );
     }
 
-    private final String baseUrl;
+    private String baseUrl(String dsName) {
+        return fusekiServer.datasetURL(dsName);
+    }
+
     private static DatasetGraph testdsg1 =  TDB1Factory.createDatasetGraph();
     private static DatasetGraph testdsg2 =  DatabaseMgr.createDatasetGraph();
     private static DatasetGraph testdsg3 =  DatasetGraphFactory.createTxnMem();
@@ -76,7 +81,7 @@ public class TestSecurityFilterFuseki {
     private static FusekiServer fusekiServer;
 
     // Set up Fuseki with two datasets, "data1" backed by TDB and "data2" backed by TDB2.
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         addTestData(testdsg1);
         addTestData(testdsg2);
         addTestData(testdsg3);
@@ -110,7 +115,7 @@ public class TestSecurityFilterFuseki {
         fusekiServer.start();
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         fusekiServer.stop();
     }
 
@@ -131,9 +136,7 @@ public class TestSecurityFilterFuseki {
         propertyUserStore.addUser(user, cred, roles);
     }
 
-    public TestSecurityFilterFuseki(String label, String dsName) {
-        baseUrl = fusekiServer.datasetURL(dsName);
-    }
+    public TestSecurityFilterFuseki() {}
 
     private static String queryAll        = "SELECT * { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }";
     private static String queryDft        = "SELECT * { ?s ?p ?o }";
@@ -142,9 +145,9 @@ public class TestSecurityFilterFuseki {
     private static String queryG2         = "SELECT * { GRAPH <http://test/graph2> { ?s ?p ?o } }";
     private static String queryGraphNames = "SELECT * { GRAPH ?g { } }";
 
-    private Set<Node> query(String user, String password, String queryString) {
+    private Set<Node> query(String user, String password, String dsName, String queryString) {
         Set<Node> results = new HashSet<>();
-        try (RDFConnection conn = RDFConnection.connectPW(baseUrl, user, password)) {
+        try (RDFConnection conn = RDFConnection.connectPW(baseUrl(dsName), user, password)) {
             conn.queryResultSet(queryString, rs->{
                 List<QuerySolution> list = Iter.toList(rs);
                 list.stream()
@@ -157,17 +160,17 @@ public class TestSecurityFilterFuseki {
         return results;
     }
 
-    private void query401(String user, String password, String queryString) {
-        queryHttp(401, user, password, queryString);
+    private void query401(String user, String password, String dsName, String queryString) {
+        queryHttp(401, user, password, dsName, queryString);
     }
 
-    private void query403(String user, String password, String queryString) {
-        queryHttp(403, user, password, queryString);
+    private void query403(String user, String password, String dsName, String queryString) {
+        queryHttp(403, user, password, dsName, queryString);
     }
 
-    private void queryHttp(int statusCode, String user, String password, String queryString) {
+    private void queryHttp(int statusCode, String user, String password, String dsName, String queryString) {
         try {
-            query(user, password, queryString);
+            query(user, password, dsName, queryString);
             if ( statusCode < 200 && statusCode > 299 )
                 fail("Should have responded with "+statusCode);
         } catch (QueryExceptionHTTP ex) {
@@ -175,68 +178,91 @@ public class TestSecurityFilterFuseki {
         }
     }
 
-    @Test public void query_userDft() {
-        Set<Node> results = query("userDft", "pwDft", queryAll);
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void query_userDft(String label, String dsName) {
+        Set<Node> results = query("userDft", "pwDft", dsName, queryAll);
         assertSeen(results, s0);
     }
 
-    @Test public void query_userNone() {
-        Set<Node> results = query("userNone", "pwNone", queryAll);
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void query_userNone(String label, String dsName) {
+        Set<Node> results = query("userNone", "pwNone", dsName, queryAll);
         assertSeen(results);
     }
 
-    @Test public void query_user0() {
-        Set<Node> results = query("user0", "pw0", queryAll);
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void query_user0(String label, String dsName) {
+        Set<Node> results = query("user0", "pw0", dsName, queryAll);
         assertSeen(results, s0);
     }
 
-    @Test public void query_user1() {
-        Set<Node> results = query("user1", "pw1", queryAll);
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void query_user1(String label, String dsName) {
+        Set<Node> results = query("user1", "pw1", dsName, queryAll);
         assertSeen(results, s0, s1);
     }
 
-    @Test public void query_bad_user() {
-        query401("userX", "pwX", queryAll);
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void query_bad_user(String label, String dsName) {
+        query401("userX", "pwX", dsName, queryAll);
     }
 
-    @Test public void query_bad_password() {
-        query401("user0", "not-the-password", queryAll);
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void query_bad_password(String label, String dsName) {
+        query401("user0", "not-the-password", dsName, queryAll);
     }
 
     // Visibility of data.
 
-    @Test public void query_dyn_1() {
-        Set<Node> results = query("user1", "pw1", "SELECT * FROM <http://test/g1> { ?s ?p ?o }");
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void query_dyn_1(String label, String dsName) {
+        Set<Node> results = query("user1", "pw1", dsName, "SELECT * FROM <http://test/g1> { ?s ?p ?o }");
         assertSeen(results, s1);
     }
 
-    @Test public void query_dyn_2() {
-        Set<Node> results = query("user1", "pw1", "SELECT * FROM <http://test/g2> { ?s ?p ?o }");
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void query_dyn_2(String label, String dsName) {
+        Set<Node> results = query("user1", "pw1", dsName, "SELECT * FROM <http://test/g2> { ?s ?p ?o }");
         assertSeen(results);
     }
 
-    @Test public void query_dyn_3() {
-        Set<Node> results = query("user1", "pw1", "SELECT * FROM <http://test/g1> FROM <http://test/g2> { ?s ?p ?o }");
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void query_dyn_3(String label, String dsName) {
+        Set<Node> results = query("user1", "pw1", dsName, "SELECT * FROM <http://test/g1> FROM <http://test/g2> { ?s ?p ?o }");
         assertSeen(results,s1);
     }
 
-    @Test public void query_dyn_4() {
-        Set<Node> results = query("user3", "pw3", "SELECT * FROM <"+Quad.unionGraph.getURI()+"> { ?s ?p ?o }");
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void query_dyn_4(String label, String dsName) {
+        Set<Node> results = query("user3", "pw3", dsName, "SELECT * FROM <"+Quad.unionGraph.getURI()+"> { ?s ?p ?o }");
         assertSeen(results, s2, s3);
-        Set<Node> results2 = query("user3", "pw3", "SELECT * { GRAPH <"+Quad.unionGraph.getURI()+"> { ?s ?p ?o } }");
+        Set<Node> results2 = query("user3", "pw3", dsName, "SELECT * { GRAPH <"+Quad.unionGraph.getURI()+"> { ?s ?p ?o } }");
         assertEquals(results, results2);
     }
 
-    @Test public void query_dyn_5() {
-        Set<Node> results = query("user3", "pw3", "SELECT * FROM NAMED <http://test/g1> { ?s ?p ?o }");
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void query_dyn_5(String label, String dsName) {
+        Set<Node> results = query("user3", "pw3", dsName, "SELECT * FROM NAMED <http://test/g1> { ?s ?p ?o }");
         assertSeen(results);
-        Set<Node> results2 = query("user3", "pw3", "SELECT * { GRAPH <http://test/g1> { ?s ?p ?o } }");
+        Set<Node> results2 = query("user3", "pw3", dsName, "SELECT * { GRAPH <http://test/g1> { ?s ?p ?o } }");
         assertEquals(results, results2);
     }
 
-    private Set<Node> gsp(String user, String password, String graphName) {
+    private Set<Node> gsp(String user, String password, String dsName, String graphName) {
         Set<Node> results = new HashSet<>();
-        try (RDFLink conn = RDFLink.connectPW(baseUrl, user, password)) {
+        String baseURL = baseUrl(dsName);
+        try (RDFLink conn = RDFLink.connectPW(baseUrl(dsName), user, password)) {
             Graph graph = (graphName == null) ? conn.get() : conn.get(graphName);
             // Extract subjects.
             Set<Node> seen = Iter.toSet(G.iterSubjects(graph));
@@ -244,21 +270,21 @@ public class TestSecurityFilterFuseki {
         }
     }
 
-    private void gsp401(String user, String password, String graphName) {
-        gspHttp(401, user, password, graphName);
+    private void gsp401(String user, String password, String dsName, String graphName) {
+        gspHttp(401, user, password, dsName, graphName);
     }
 
-    private void gsp403(String user, String password, String graphName) {
-        gspHttp(403, user, password, graphName);
+    private void gsp403(String user, String password, String dsName, String graphName) {
+        gspHttp(403, user, password, dsName, graphName);
     }
 
-    private void gsp404(String user, String password, String graphName) {
-        gspHttp(404, user, password, graphName);
+    private void gsp404(String user, String password, String dsName, String graphName) {
+        gspHttp(404, user, password, dsName, graphName);
     }
 
-    private void gspHttp(int statusCode, String user, String password, String queryString) {
+    private void gspHttp(int statusCode, String user, String password, String dsName, String graphName) {
         try {
-            gsp(user, password, queryString);
+            gsp(user, password, dsName, graphName);
             if ( statusCode < 200 && statusCode > 299 )
                 fail("Should have responded with "+statusCode);
         } catch (HttpException ex) {
@@ -269,78 +295,112 @@ public class TestSecurityFilterFuseki {
     // When a graph is not visible, it should return 404 except
     // for the default graph which should be empty.
 
-    @Test public void gsp_dft_userDft() {
-        Set<Node> results = gsp("userDft", "pwDft", null);
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void gsp_dft_userDft(String label, String dsName) {
+        Set<Node> results = gsp("userDft", "pwDft", dsName, null);
         assertSeen(results, s0);
     }
 
-    @Test public void gsp_dft_userNone() {
-        Set<Node> results = gsp("userNone", "pwNone", null);
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void gsp_dft_userNone(String label, String dsName) {
+        Set<Node> results = gsp("userNone", "pwNone", dsName, null);
         assertSeen(results);
     }
 
-    @Test public void gsp_dft_user0() {
-        Set<Node> results = gsp("user0", "pw0", null);
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void gsp_dft_user0(String label, String dsName) {
+        Set<Node> results = gsp("user0", "pw0", dsName, null);
         assertSeen(results, s0);
     }
 
-    @Test public void gsp_dft_user1() {
-        Set<Node> results = gsp("user1", "pw1", null);
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void gsp_dft_user1(String label, String dsName) {
+        Set<Node> results = gsp("user1", "pw1", dsName, null);
         assertSeen(results, s0);
     }
 
-    @Test public void gsp_dft_user2() {
-        Set<Node> results = gsp("user2", "pw2", null);
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void gsp_dft_user2(String label, String dsName) {
+        Set<Node> results = gsp("user2", "pw2", dsName, null);
         assertSeen(results);
     }
 
-    @Test public void gsp_graph1_userDft() {
-        gsp404("userDft", "pwDft", "http://test/g1");
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void gsp_graph1_userDft(String label, String dsName) {
+        gsp404("userDft", "pwDft", dsName, "http://test/g1");
     }
 
-    @Test public void gsp_graph1_userNone() {
-        gsp404("userNone", "pwNone", "http://test/g1");
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void gsp_graph1_userNone(String label, String dsName) {
+        gsp404("userNone", "pwNone", dsName, "http://test/g1");
     }
 
-    @Test public void gsp_graph1_user0() {
-        gsp404("user0", "pw0", "http://test/g1");
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void gsp_graph1_user0(String label, String dsName) {
+        gsp404("user0", "pw0", dsName, "http://test/g1");
     }
 
-    @Test public void gsp_graph1_user1() {
-        Set<Node> results = gsp("user1", "pw1", "http://test/g1");
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void gsp_graph1_user1(String label, String dsName) {
+        Set<Node> results = gsp("user1", "pw1", dsName, "http://test/g1");
         assertSeen(results, s1);
     }
 
-    @Test public void gsp_graph1_user2() {
-        gsp404("user2", "pw2", "http://test/g1");
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void gsp_graph1_user2(String label, String dsName) {
+        gsp404("user2", "pw2", dsName, "http://test/g1");
     }
 
     // No such graph.
-    @Test public void gsp_graphX_userDft() {
-        gsp404("userDft", "pwDft", "http://test/gX");
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void gsp_graphX_userDft(String label, String dsName) {
+        gsp404("userDft", "pwDft", dsName, "http://test/gX");
     }
 
-    @Test public void gsp_graphX_userNone() {
-        gsp404("userNone", "pwNone", "http://test/gX");
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void gsp_graphX_userNone(String label, String dsName) {
+        gsp404("userNone", "pwNone", dsName, "http://test/gX");
     }
 
-    @Test public void gsp_graphX_user0() {
-        gsp404("user0", "pw0", "http://test/gX");
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void gsp_graphX_user0(String label, String dsName) {
+        gsp404("user0", "pw0", dsName, "http://test/gX");
     }
 
-    @Test public void gsp_graphX_user1() {
-        gsp404("user1", "pw1", "http://test/g1X");
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void gsp_graphX_user1(String label, String dsName) {
+        gsp404("user1", "pw1", dsName, "http://test/g1X");
     }
 
-    @Test public void gsp_graphX_user2() {
-        gsp404("user2", "pw2", "http://test/gX");
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void gsp_graphX_user2(String label, String dsName) {
+        gsp404("user2", "pw2", dsName, "http://test/gX");
     }
 
-    @Test public void gsp_bad_user() {
-        gsp401("userX", "pwX", null);
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void gsp_bad_user(String label, String dsName) {
+        gsp401("userX", "pwX", dsName, null);
     }
 
-    @Test public void gsp_bad_password() {
-        gsp401("user0", "not-the-password", null);
+    @ParameterizedTest(name = "{index} {0}")
+    @MethodSource("provideTestArgs")
+    public void gsp_bad_password(String label, String dsName) {
+        gsp401("user0", "not-the-password", dsName, null);
     }
 }

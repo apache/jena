@@ -18,12 +18,17 @@
 package org.apache.jena.fuseki.main;
 
 import static java.util.Collections.emptyList;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.atlas.web.WebLib;
@@ -34,11 +39,6 @@ import org.apache.jena.fuseki.main.cmds.ServerArgs;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.riot.SysRIOT;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 /**
  * NOTE: we will randomise the port (--port=0) on all happy paths in order to avoid conflict with existing runs.
  */
@@ -48,7 +48,7 @@ public class TestFusekiMainCmdArguments {
     private static File jettyConfigFile;
     private static String jettyConfigFilename;
 
-    @BeforeClass public static void beforeClass() throws IOException {
+    @BeforeAll public static void beforeClass() throws IOException {
         // This is not reset by each running server.
         FusekiLogging.setLogging();
         level = LogCtl.getLevel(Fuseki.serverLog);
@@ -59,14 +59,14 @@ public class TestFusekiMainCmdArguments {
         jettyConfigFilename = jettyConfigFile.getAbsolutePath();
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         if ( level != null )
             LogCtl.setLevel(Fuseki.serverLog, level);
         jettyConfigFile.delete();
     }
 
     private FusekiServer server = null;
-    @After public void after() {
+    @AfterEach public void after() {
         if ( server != null )
             server.stop();
     }
@@ -76,8 +76,8 @@ public class TestFusekiMainCmdArguments {
     @Test
     public void argDefaults() {
         ServerArgs serverArgs = new ServerArgs();
-        assertFalse("Wrong default setting: allowEmpty", serverArgs.allowEmpty);
-        assertFalse("Wrong default setting: bypassStdArgs", serverArgs.bypassStdArgs);
+        assertFalse(serverArgs.allowEmpty, "Wrong default setting: allowEmpty");
+        assertFalse(serverArgs.bypassStdArgs, "Wrong default setting: bypassStdArgs");
     }
 
     @Test
@@ -165,16 +165,10 @@ public class TestFusekiMainCmdArguments {
         String emptyString = "";
         String expectedMessage = "No dataset or configuration specified on the command line";
         // when
-        Throwable actual = null;
-        try {
-            buildServer(emptyString);
-        } catch (Exception e) {
-            actual = e;
-        }
+        CmdException actual = assertThrows(CmdException.class, ()-> buildServer(emptyString));
+
         // then
-        assertNotNull(actual);
-        assertTrue("Expecting correct exception", (actual instanceof CmdException));
-        assertEquals("Expecting correct message", expectedMessage, actual.getMessage());
+        assertEquals(expectedMessage, actual.getMessage(), "Expecting correct message");
     }
 
     @Test
@@ -183,16 +177,9 @@ public class TestFusekiMainCmdArguments {
         String nullString = null;
         String expectedMessage = "No dataset or configuration specified on the command line";
         // when
-        Throwable actual = null;
-        try {
-            buildServer(nullString);
-        } catch (Exception e) {
-            actual = e;
-        }
+        CmdException actual = assertThrows(CmdException.class, ()-> buildServer(nullString));
         // then
-        assertNotNull(actual);
-        assertTrue("Expecting correct exception", (actual instanceof CmdException));
-        assertEquals("Expecting correct message", expectedMessage, actual.getMessage());
+        assertEquals(expectedMessage, actual.getMessage(), "Expecting correct message");
     }
 
     @Test
@@ -447,7 +434,7 @@ public class TestFusekiMainCmdArguments {
         // when
         CmdException actual = assertThrows(CmdException.class, ()->buildServer(buildCmdLineArguments(arguments)));
         // then
-        assertEquals("Expecting correct message", expectedMessage, actual.getMessage());
+        assertEquals(expectedMessage, actual.getMessage(), "Expecting correct message");
     }
 
     private static String[] buildCmdLineArguments(List<String> listArgs) {

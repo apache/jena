@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki.main.access;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -30,7 +30,6 @@ import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
-
 
 /** Some data and functions common to access control tests. */
 public class AccessTestLib {

@@ -18,6 +18,9 @@
 
 package org.apache.jena.fuseki.main.access;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.auth.AuthPolicy;
 import org.apache.jena.fuseki.main.FusekiServer;
@@ -26,8 +29,6 @@ import org.apache.jena.fuseki.server.Endpoint;
 import org.apache.jena.fuseki.server.Operation;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.junit.After;
-import org.junit.Before;
 
 /**
  * AbstractTestServiceDatasetAuth with a programmatically built server which should be
@@ -36,12 +37,14 @@ import org.junit.Before;
 public class TestServiceDataAuthConfig extends AbstractTestServiceDatasetAuth {
     private FusekiServer server;
 
-    @Before public void before() {
+    @BeforeEach
+    public void before() {
         server = build(port, null);
         server.start();
     }
 
-    @After public void after () {
+    @AfterEach
+    public void after () {
         server.stop();
     }
 
