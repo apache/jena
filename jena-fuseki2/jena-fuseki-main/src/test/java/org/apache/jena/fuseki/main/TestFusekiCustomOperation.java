@@ -19,7 +19,7 @@
 package org.apache.jena.fuseki.main;
 
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectFail;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.net.http.HttpRequest.BodyPublishers;
@@ -45,7 +45,7 @@ import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.web.HttpSC;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Test for adding a new operation */
 public class TestFusekiCustomOperation {
@@ -166,20 +166,24 @@ public class TestFusekiCustomOperation {
         testServer(server, url, "", false, true);
     }
 
-    @Test(expected = FusekiConfigException.class)
+    @Test
     public void cfg_bad_01() {
-        FusekiServer.create().port(port).registerOperation(newOp, null, customHandler).addEndpoint("/UNKNOWN", endpointName, newOp);
-        // .build();
+        assertThrows(FusekiConfigException.class, ()->
+            FusekiServer.create().port(port).registerOperation(newOp, null, customHandler).addEndpoint("/UNKNOWN", endpointName, newOp)
+            // .build();
+        );
     }
 
-    @Test(expected = FusekiConfigException.class)
+    @Test
     public void cfg_bad_02() {
-        FusekiServer.create().port(port)
-            // .registerOperation(newOp, null, customHandler)
-            .add("/ds", DatasetGraphFactory.createTxnMem(), true)
-            // Unregistered.
-            .addEndpoint("/ds", endpointName, newOp);
-        // .build();
+        assertThrows(FusekiConfigException.class, ()->
+            FusekiServer.create().port(port)
+                // .registerOperation(newOp, null, customHandler)
+                .add("/ds", DatasetGraphFactory.createTxnMem(), true)
+                // Unregistered.
+                .addEndpoint("/ds", endpointName, newOp)
+            // .build();
+            );
     }
 
     // Bad test: MIME type must match.

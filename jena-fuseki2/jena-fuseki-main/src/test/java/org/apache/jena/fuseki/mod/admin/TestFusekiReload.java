@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki.mod.admin;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -26,9 +26,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.logging.LogCtl;
@@ -53,12 +53,12 @@ public class TestFusekiReload {
     private static Path fConfig1       = DIR.resolve("reload-config1.ttl");
     private static Path fConfig2       = DIR.resolve("reload-config2.ttl");
 
-    @Before public void before() {
+    @BeforeEach public void before() {
         // Initial state
         copyFile(fConfig1, fConfigServer);
     }
 
-    @AfterClass public static void after() {
+    @AfterAll public static void after() {
         try {
             Files.delete(fConfigServer);
         } catch (IOException ex) {
@@ -138,9 +138,9 @@ public class TestFusekiReload {
         QueryExec qExec = QueryExecHTTP.service(server.datasetURL(datasetName)).query(queryString).build();
         try {
             RowSetOps.consume(qExec.select());
-            assertEquals(datasetName, expectedStatusCode, 200);
+            assertEquals(expectedStatusCode, 200, datasetName);
         } catch (QueryExceptionHTTP ex) {
-            assertEquals(datasetName, expectedStatusCode, ex.getStatusCode());
+            assertEquals(expectedStatusCode, ex.getStatusCode(), datasetName);
         }
     }
 

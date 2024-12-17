@@ -18,10 +18,13 @@
 
 package org.apache.jena.fuseki.main.access;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.fuseki.main.auth.SimpleBearer;
-import org.junit.Test;
 
 public class TestSimpleBearer {
 

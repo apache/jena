@@ -16,14 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.servlets.prefixes;
+package org.apache.jena.fuseki.servlets;
 
 import org.junit.jupiter.api.Test;
+
+import org.apache.jena.fuseki.servlets.prefixes.PrefixUtils;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UtilsTests {
+public class TestPrefixesCore {
     @Test
     public void prefixIsValidTrue0() {
         assertTrue(PrefixUtils.prefixIsValid("prefix1"));
@@ -48,10 +50,17 @@ public class UtilsTests {
     public void prefixIsValidTrue4() {
         assertTrue(PrefixUtils.prefixIsValid("ca7--t"));
     }
+
     @Test
     public void prefixIsValidTrue5() {
         assertTrue(PrefixUtils.prefixIsValid("a__b"));
     }
+
+    @Test
+    public void prefixIsValidTrue6() {
+        assertTrue(PrefixUtils.prefixIsValid(""));
+    }
+
     @Test
     public void prefixIsValidFalse0() {
         assertFalse(PrefixUtils.prefixIsValid("-prefix1"));
@@ -64,16 +73,11 @@ public class UtilsTests {
 
     @Test
     public void prefixIsValidFalse2() {
-        assertFalse(PrefixUtils.prefixIsValid(""));
-    }
-
-    @Test
-    public void prefixIsValidFalse4() {
         assertFalse(PrefixUtils.prefixIsValid("c-b--"));
     }
 
     @Test
-    public void prefixIsValidFalse5() {
+    public void prefixIsValidFalse3() {
         assertFalse(PrefixUtils.prefixIsValid("pre/fix"));
     }
 
@@ -86,5 +90,4 @@ public class UtilsTests {
     public void uriIsValidFalse0() {
         assertFalse(PrefixUtils.uriIsValid("..."));
     }
-
 }

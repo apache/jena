@@ -18,8 +18,12 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.fuseki.server.DataService;
@@ -36,9 +40,6 @@ import org.apache.jena.sparql.function.scripting.ScriptLangSymbols;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 import org.apache.jena.sys.JenaSystem;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class TestFusekiCustomScriptFunc {
 
@@ -56,7 +57,7 @@ public class TestFusekiCustomScriptFunc {
     private static String dsName = "/ds" ;
     private static FusekiServer server = null;
 
-    @BeforeClass public static void enableScripting() {
+    @BeforeAll public static void enableScripting() {
         systemPropertyScriptingOldValue = System.getProperty(ARQ.systemPropertyScripting);
         scriptFunctionsOldValue = ARQ.getContext().get(symFunctions);
         // Enable
@@ -79,7 +80,7 @@ public class TestFusekiCustomScriptFunc {
                 .build().start();
     }
 
-    @AfterClass public static void disableScripting() {
+    @AfterAll public static void disableScripting() {
         if ( server != null )
             server.stop();
         if ( systemPropertyScriptingOldValue != null )

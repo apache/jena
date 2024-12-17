@@ -18,7 +18,7 @@
 package org.apache.jena.fuseki.main;
 
 import static org.apache.jena.http.HttpLib.handleResponseRtnString;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 import java.net.http.HttpRequest;
@@ -29,7 +29,7 @@ import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.HttpLib;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestMetrics extends AbstractFusekiTest {
 
