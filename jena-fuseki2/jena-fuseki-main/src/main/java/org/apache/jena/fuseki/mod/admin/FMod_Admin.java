@@ -125,6 +125,14 @@ public class FMod_Admin implements FusekiModule {
     @Override
     public void prepare(FusekiServer.Builder builder, Set<String> datasetNames, Model configModel) {
         // Unpack
+
+        // XXX Do better!
+        FusekiApp.FUSEKI_BASE = null;
+
+//        FusekiApp fusekiApp = new FusekiApp();
+//        //fusekiApp.init();
+//        String fusekiApp.FUSEKI_BASE
+
         Path path = FusekiApp.setup();
 
         FmtLog.info(LOG, "Fuseki Admin: %s", path);

@@ -35,6 +35,6 @@ import org.apache.jena.fuseki.mod.shiro.TestModShiro;
     // Apache Shiro
     TestModShiro.class
 })
-public class TC_FusekiMods {
-    public TC_FusekiMods() {}
+public class TS_FusekiMods {
+    public TS_FusekiMods() {}
 }

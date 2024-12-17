@@ -18,21 +18,21 @@
 
 package org.apache.jena.fuseki;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 import org.apache.jena.fuseki.server.TestDatasetDescriptionMap;
 import org.apache.jena.fuseki.server.TestDispatchOnURI;
 import org.apache.jena.fuseki.servlets.TestCrossOriginFilterMock;
+import org.apache.jena.fuseki.servlets.TestPrefixesCore;
 
-// Most testing needs a server.
-@RunWith(Suite.class)
-@SuiteClasses({
+@Suite
+@SelectClasses({
     TestValidators.class,
     TestDispatchOnURI.class,
     TestCrossOriginFilterMock.class,
-    TestDatasetDescriptionMap.class
+    TestDatasetDescriptionMap.class,
+    TestPrefixesCore.class
 })
 public class TS_FusekiCore {}
 

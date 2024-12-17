@@ -18,11 +18,16 @@
 
 package org.apache.jena.fuseki.main.access;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.http.HttpClient;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
@@ -40,10 +45,6 @@ import org.apache.jena.web.AuthSetup;
 import org.apache.jena.web.HttpSC;
 import org.eclipse.jetty.ee10.servlet.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.UserStore;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * Tests for access to services using programmatic setup.
@@ -62,7 +63,7 @@ public class TestSecurityBuilderSetup {
     // Not in the user store.
     private static AuthSetup authSetupX;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         int port = WebLib.choosePort();
 
@@ -109,14 +110,14 @@ public class TestSecurityBuilderSetup {
 
     }
 
-    @Before
+    @BeforeEach
     public void before() {
 //        // Reset before every test and after the suite.
 //        HttpClient hc = HttpOp.createDefaultHttpClient();
 //        HttpOp.setDefaultHttpClient(hc);
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         fusekiServer.stop();
 //        HttpClient hc = HttpOp.createDefaultHttpClient();
