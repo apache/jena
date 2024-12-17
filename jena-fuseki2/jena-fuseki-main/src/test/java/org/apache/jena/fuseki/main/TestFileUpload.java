@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.web.TypedInputStream;
@@ -35,7 +35,7 @@ import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.web.FileSender;
 import org.apache.jena.web.HttpSC;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for multi-part file upload.

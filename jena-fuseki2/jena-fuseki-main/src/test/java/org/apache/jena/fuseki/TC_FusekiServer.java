@@ -21,12 +21,16 @@ package org.apache.jena.fuseki;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
-import org.apache.jena.fuseki.main.TC_FusekiMain;
-import org.apache.jena.fuseki.mod.TC_FusekiMods;
+import org.apache.jena.fuseki.main.TS_FusekiMain;
+import org.apache.jena.fuseki.main.access.TS_SecurityFuseki;
+import org.apache.jena.fuseki.main.prefixes.TS_PrefixesService;
+import org.apache.jena.fuseki.mod.TS_FusekiMods;
 
 @Suite
 @SelectClasses({
-    TC_FusekiMain.class,
-    TC_FusekiMods.class
+    TS_FusekiMain.class,
+    TS_SecurityFuseki.class,
+    TS_FusekiMods.class,
+    TS_PrefixesService.class
 })
 public class TC_FusekiServer {}

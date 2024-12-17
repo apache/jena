@@ -18,8 +18,9 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.function.Consumer;
 
@@ -35,7 +36,7 @@ import org.apache.jena.sparql.exec.http.QueryExecHTTP;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.system.Txn;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestMultipleEmbedded {
 
@@ -45,7 +46,7 @@ public class TestMultipleEmbedded {
     static Quad q2 = SSE.parseQuad("(_ :s :p 2)");
 
     // Two servers, same port -> bad.
-    @Test(expected=FusekiException.class)
+    @Test
     public void multiple_01() {
         DatasetGraph dsg = dataset();
 
@@ -54,18 +55,15 @@ public class TestMultipleEmbedded {
         // Same port - Bad.
         FusekiServer server2 = FusekiServer.create().port(port).add("/ds2", dsg).build();
 
-        server1.start();
-
         try {
-            server2.start();
-        } catch (FusekiException ex) {
+            server1.start();
+            FusekiException ex = assertThrows(FusekiException.class, ()->server2.start());
             // Jetty 9.4.12 throws BindException
             // Jetty 9.4.26 throws IOException cause BindException
             Throwable cause = ex.getCause();
             if ( cause instanceof java.io.IOException )
                 cause = cause.getCause();
             assertTrue(cause instanceof java.net.BindException);
-            throw ex;
         } finally {
             try { server1.stop(); } catch (Exception ex) {}
             try { server2.stop(); } catch (Exception ex) {}

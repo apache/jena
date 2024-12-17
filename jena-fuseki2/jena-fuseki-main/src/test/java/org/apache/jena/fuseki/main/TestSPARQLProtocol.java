@@ -18,15 +18,16 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.query.*;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSet;
@@ -50,7 +51,7 @@ public class TestSPARQLProtocol extends AbstractFusekiTest
     private static final Graph   graph1        = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 1)))");
     private static final Graph   graph2        = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 2)))");
 
-    @Before
+    @BeforeEach
     public void before() {
         GSP.service(serviceGSP()).defaultGraph().PUT(graph1);
         GSP.service(serviceGSP()).graphName(gn1).PUT(graph2);

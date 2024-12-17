@@ -20,10 +20,10 @@ package org.apache.jena.fuseki.main;
 import static org.apache.jena.fuseki.servlets.CrossOriginFilter.*;
 import static org.apache.jena.http.HttpLib.handleResponseNoBody;
 import static org.apache.jena.riot.web.HttpNames.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,14 +39,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.http.HttpLib;
 import org.apache.jena.riot.web.HttpNames;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * Integration tests for CORS handling.
@@ -62,13 +63,13 @@ public class TestCrossOriginFilter {
 //    private static String URL = null;
     private static Optional<String> systemValue = null;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         // Allow pretending to be another host
         systemValue = Optional.ofNullable(System.setProperty(jdkAllowRestrictedHeaders, "host"));
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         if ( systemValue != null ) {
             systemValue.ifPresentOrElse((x)->System.setProperty(jdkAllowRestrictedHeaders, x),
@@ -172,8 +173,9 @@ public class TestCrossOriginFilter {
     }
 
     private static void assertEqualsIgnoreCase(String allowCreds, String string) {
-        assertEquals("Not equals (ignoring case)",
-                     Lib.lowercase(allowCreds), Lib.lowercase(string));
+        assertEquals(Lib.lowercase(allowCreds),
+                     Lib.lowercase(string),
+                     "Not equals (ignoring case)");
     }
 
     // Assumes no repeated but different case.
@@ -215,7 +217,7 @@ public class TestCrossOriginFilter {
             assertNotNull(response);
             assertEquals(response.statusCode(), 200);
             String actualAllowedHeaders = HttpLib.responseHeader(response, HttpNames.hAccessControlAllowHeaders);
-            assertNotNull("Expecting valid headers", actualAllowedHeaders);
+            assertNotNull(actualAllowedHeaders, "Expecting valid headers");
             assertEquals(expectedAllowedHeaders, actualAllowedHeaders);
             handleResponseNoBody(response);
         });
@@ -234,7 +236,7 @@ public class TestCrossOriginFilter {
             assertNotNull(response);
             assertEquals(response.statusCode(), 200);
             String actualAllowedHeaders = HttpLib.responseHeader(response, HttpNames.hAccessControlAllowHeaders);
-            assertNull("No headers expected given invalid request", actualAllowedHeaders);
+            assertNull(actualAllowedHeaders, "No headers expected given invalid request");
             handleResponseNoBody(response);
         });
     }
@@ -254,7 +256,7 @@ public class TestCrossOriginFilter {
             assertNotNull(response);
             assertEquals(response.statusCode(), 200);
             String actualAllowedHeaders = HttpLib.responseHeader(response, HttpNames.hAccessControlAllowHeaders);
-            assertNotNull("Expecting valid headers", actualAllowedHeaders);
+            assertNotNull(actualAllowedHeaders, "Expecting valid headers");
             assertEquals(expectedAllowedHeaders, actualAllowedHeaders);
             handleResponseNoBody(response);
         });
@@ -273,7 +275,7 @@ public class TestCrossOriginFilter {
             assertNotNull(response);
             assertEquals(response.statusCode(), 200);
             String actualAllowedHeaders = HttpLib.responseHeader(response, HttpNames.hAccessControlAllowHeaders);
-            assertNull("No headers expected given invalid request", actualAllowedHeaders);
+            assertNull(actualAllowedHeaders, "No headers expected given invalid request");
             handleResponseNoBody(response);
         });
     }

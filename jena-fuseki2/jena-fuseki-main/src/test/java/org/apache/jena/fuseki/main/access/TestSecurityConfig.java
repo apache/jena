@@ -20,13 +20,15 @@ package org.apache.jena.fuseki.main.access;
 
 import static org.apache.jena.fuseki.test.HttpTest.expectQuery401;
 import static org.apache.jena.fuseki.test.HttpTest.expectQuery403;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.http.HttpClient;
 import java.util.function.Consumer;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.HttpException;
@@ -39,7 +41,6 @@ import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.sparql.exec.http.QueryExecHTTP;
 import org.apache.jena.web.AuthSetup;
 import org.apache.jena.web.HttpSC;
-import org.junit.Test;
 
 /**
  * Tests for security of the server, services and endpoints using configuration file setup.

@@ -20,9 +20,11 @@ package org.apache.jena.fuseki.main;
 
 import static org.apache.jena.fuseki.test.HttpTest.expect400;
 import static org.apache.jena.fuseki.test.HttpTest.expect404;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.web.TypedInputStream;
@@ -34,7 +36,6 @@ import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.rdfconnection.RDFConnectionRemote;
 import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
 import org.apache.jena.sparql.core.Var;
-import org.junit.Test;
 
 /** Test server configuration by configuration file */
 public class TestConfigFile {
@@ -371,21 +372,21 @@ public class TestConfigFile {
 
     private static void assertCxtValueNotNull(RDFConnection conn, String contextSymbol) {
         boolean b = conn.queryAsk(PREFIXES+"ASK { FILTER (afn:context('"+contextSymbol+"') != '' ) }");
-        assertTrue(contextSymbol, b);
+        assertTrue(b, contextSymbol);
     }
 
     private static void assertCxtValueNull(RDFConnection conn, String contextSymbol) {
         boolean b = conn.queryAsk(PREFIXES+"ASK { FILTER (afn:context('"+contextSymbol+"') = '' ) }");
-        assertTrue("Not null: "+contextSymbol, b);
+        assertTrue(b, "Not null: "+contextSymbol);
     }
     private static void assertQueryTrue(RDFConnection conn, String qs) {
         boolean b = conn.queryAsk(PREFIXES+qs);
-        assertTrue(qs, b);
+        assertTrue(b, qs);
     }
 
     private static void assertQueryFalse(RDFConnection conn, String qs) {
         boolean b = conn.queryAsk(PREFIXES+qs);
-        assertFalse(qs, b);
+        assertFalse(b, qs);
     }
 
     private FusekiServer server(int port, String configFile) {

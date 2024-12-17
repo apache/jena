@@ -20,7 +20,7 @@ package org.apache.jena.fuseki.main;
 
 import org.apache.jena.fuseki.test.FusekiTest;
 import org.apache.jena.http.HttpOp;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestHttpOptions extends AbstractFusekiTest
 {
