@@ -22,7 +22,7 @@ import static org.apache.jena.fuseki.main.FusekiTestLib.expect400;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expect404;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery400;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery404;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -53,7 +53,7 @@ import org.apache.jena.sparql.exec.http.QueryExecHTTP;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateExecution;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
 public class TestFusekiServerBuild {

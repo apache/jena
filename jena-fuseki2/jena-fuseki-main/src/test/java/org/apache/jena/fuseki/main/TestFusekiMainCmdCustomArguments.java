@@ -23,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.function.Consumer;
 
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.cmd.ArgDecl;
@@ -61,13 +61,13 @@ public class TestFusekiMainCmdCustomArguments {
 
     private static String level = null;
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         FusekiLogging.setLogging();
         level = LogCtl.getLevel(Fuseki.serverLog);
         LogCtl.setLevel(Fuseki.serverLog, "WARN");
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         if ( level != null )
             LogCtl.setLevel(Fuseki.serverLog, level);
     }
@@ -85,10 +85,10 @@ public class TestFusekiMainCmdCustomArguments {
         test(new ArgDecl(false, "special"), arguments, false, null);
     }
 
-    @Test(expected = CmdException.class)
+    @Test
     public void test_custom_no_custom_args_decl() {
         String[] arguments = {"--port=0", "--special", "--mem","/ds"};
-        FusekiServer server = FusekiMain.build(arguments);
+        assertThrows(CmdException.class, ()->FusekiMain.build(arguments));
     }
 
     @Test

@@ -18,10 +18,11 @@
 
 package org.apache.jena.fuseki.main;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.junit.After;
-import org.junit.Before;
 
 /**
  * Common setup for running a server with services and an initially empty database.
@@ -39,7 +40,7 @@ public class AbstractFusekiTest {
     protected String serviceGSP_R()   { return databaseURL()+"/get"; }
     protected String serviceGSP()     { return databaseURL()+"/data"; }
 
-    @Before public void startServer() {
+    @BeforeEach public void startServer() {
         DatasetGraph dsgTesting = DatasetGraphFactory.createTxnMem();
         server = FusekiServer.create()
                 .port(0)
@@ -50,7 +51,7 @@ public class AbstractFusekiTest {
                 .start();
     }
 
-    @After public void stopServer() {
+    @AfterEach public void stopServer() {
         if ( server != null )
             server.stop();
     }
