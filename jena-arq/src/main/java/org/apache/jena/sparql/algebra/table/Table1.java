@@ -24,7 +24,6 @@ import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.out.NodeFmtLib ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
@@ -34,25 +33,24 @@ import org.apache.jena.sparql.engine.iterator.QueryIterSingleton ;
 
 /** A table of one row of one binding */
 public class Table1 extends TableBase {
-    private Var  var ;
-    private Node value ;
+    private final Binding row;
 
     public Table1(Var var, Node value) {
-        this.var = var ;
-        this.value = value ;
+        this.row = BindingFactory.binding(var, value);
+    }
+
+    public Table1(Binding row) {
+        this.row = row;
     }
 
     @Override
     public Iterator<Binding> rows() {
-        Binding b = BindingFactory.binding(var, value) ;
-        return Iter.singletonIterator(b) ;
+        return Iter.singletonIterator(row) ;
     }
 
     @Override
     public QueryIterator iterator(ExecutionContext execCxt) {
-        // Root binding?
-        Binding binding = BindingFactory.binding(var, value) ;
-        QueryIterator qIter = QueryIterSingleton.create(null, var, value, execCxt) ;
+        QueryIterator qIter = QueryIterSingleton.create(row, execCxt) ;
         return qIter ;
     }
 
@@ -61,15 +59,15 @@ public class Table1 extends TableBase {
 
     @Override
     public List<Var> getVars() {
-        List<Var> x = new ArrayList<>() ;
-        x.add(var) ;
-        return x ;
+        List<Var> x = new ArrayList<>();
+        row.forEach((v,n)->x.add(v));
+        return x;
     }
 
     @Override
     public List<String> getVarNames() {
         List<String> x = new ArrayList<>() ;
-        x.add(var.getVarName()) ;
+        row.forEach((v,n)->x.add(v.getName()));
         return x ;
     }
 
@@ -85,6 +83,6 @@ public class Table1 extends TableBase {
 
     @Override
     public String toString() {
-        return "Table1(" + var + "," + NodeFmtLib.displayStr(value) + ")" ;
+        return "Table1(" + row + ")" ;
     }
 }
