@@ -49,7 +49,7 @@ import org.apache.jena.sparql.syntax.syntaxtransform.UpdateTransformOps;
 public class Substitute {
     /**
      * Inject takes an {@link Op} to transform using a {Binding binding}. The
-     * transformation assumes the Ope structure is legal for the operation. The
+     * transformation assumes the Op structure is legal for the operation. The
      * transformation is to wrap each place a variable is used (BGP, GRAPH, Path and
      * some equivalent operations) with a {@code BIND} to restrict the vartibale to a specific value
      * while still retaining the variable (e.g for FILETERs).
@@ -71,7 +71,7 @@ public class Substitute {
      */
     public static Op inject(Op opInput, Binding binding) {
         Set<Var> injectVars = binding.varsMentioned();
-        Transform transform = new QueryIterLateral.TransformInject(injectVars, binding::get);
+        Transform transform = new QueryIterLateral.TransformInject(injectVars, binding);
         Op opOutput = Transformer.transform(transform, opInput);
         return opOutput;
     }
