@@ -44,24 +44,25 @@ public class ModEngine extends ModBase
     private boolean timing = false ;
 
     @Override
-    public void registerWith(CmdGeneral cmdLine)
-    {
-        cmdLine.getUsage().startCategory("Query Engine") ;
-        cmdLine.add(engineDecl, "--engine=EngineName", "Register another engine factory[ref]") ;
-        cmdLine.add(unEngineDecl, "--unengine=EngineName", "Unregister an engine factory") ;
+    public void registerWith(CmdGeneral cmdLine) {
+        cmdLine.getUsage().startCategory("Query Engine");
+        cmdLine.add(engineDecl, "--engine=EngineName", "Register another engine factory[ref]");
+        cmdLine.add(unEngineDecl, "--unengine=EngineName", "Unregister an engine factory");
     }
 
-    public void checkCommandLine(CmdGeneral cmdLine)
-    {}
+    public void resetRegistrations() {
+        QueryEngineRef.unregister();
+        QueryEngineRefQuad.unregister();
+        QueryEngineMainQuad.unregister();
+    }
 
     @Override
-    public void processArgs(CmdArgModule cmdLine)
-    {
+    public void processArgs(CmdArgModule cmdLine) {
 
-        List<String> engineDecls = cmdLine.getValues(engineDecl) ;
+        List<String> engineDecls = cmdLine.getValues(engineDecl);
 
-//        if ( x.size() > 0 )
-//            QueryEngineRegistry.get().factories().clear() ;
+        // if ( x.size() > 0 )
+        // QueryEngineRegistry.get().factories().clear() ;
 
         for ( String engineName : engineDecls ) {
             switch (engineName.toLowerCase()) {
@@ -75,7 +76,7 @@ public class ModEngine extends ModBase
             }
         }
 
-        List<String> unEngineDecls = cmdLine.getValues(unEngineDecl) ;
+        List<String> unEngineDecls = cmdLine.getValues(unEngineDecl);
         for ( String engineName : unEngineDecls ) {
             switch (engineName.toLowerCase()) {
                 case "reference", "ref" -> QueryEngineRef.unregister();

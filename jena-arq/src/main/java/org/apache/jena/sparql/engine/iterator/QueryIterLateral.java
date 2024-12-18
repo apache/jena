@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,8 +28,11 @@ import org.apache.jena.atlas.lib.SetUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.Table;
 import org.apache.jena.sparql.algebra.TransformCopy;
 import org.apache.jena.sparql.algebra.op.*;
+import org.apache.jena.sparql.algebra.table.Table1;
+import org.apache.jena.sparql.algebra.table.TableN;
 import org.apache.jena.sparql.core.*;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
@@ -74,14 +78,14 @@ public class QueryIterLateral extends QueryIterRepeatApply {
         private final Set<Var> injectVars;
         private final Set<Node> varsAsNodes;
         private final Function<Var, Node> replacement;
+        private final Binding binding;
         private static final boolean substitute = true;
 
-        // Replacement becomes binding.??
-        // Or "op call injection"!!
-        public TransformInject(Set<Var> injectVars, Function<Var, Node> replacement) {
+        public TransformInject(Set<Var> injectVars, Binding binding) {
             this.injectVars = injectVars;
             this.varsAsNodes = Set.copyOf(injectVars);
-            this.replacement = replacement;
+            this.replacement = binding::get;
+            this.binding = binding;
         }
 
         @Override
@@ -215,6 +219,7 @@ public class QueryIterLateral extends QueryIterRepeatApply {
 //            Basic Graph Pattern Matching
 //            Property Path Patterns
 //            evaluation of algebra form Graph(var,P) involving a variable (from the syntax GRAPH ?variable {&hellip;})
+        // and also nested (table unit) inside (extend)
 
         @Override
         public Op transform(OpPath opPath) {
@@ -268,6 +273,36 @@ public class QueryIterLateral extends QueryIterRepeatApply {
             Op op2 = new OpTriple(t2);
             Op opExec = OpAssign.create(op2, assigns);
             return opExec;
+        }
+
+        private OpTable tableUnitTransformed = null;
+
+        @Override
+        public Op transform(OpTable opTable) {
+            // Unit table.
+            if ( opTable.isJoinIdentity() ) {
+                if ( tableUnitTransformed == null ) {
+                    Table table2 = new Table1(binding);
+                    // Multiple assignment does not matter!
+                    tableUnitTransformed = OpTable.create(table2);
+                }
+                return tableUnitTransformed;
+            }
+
+            // By the assignment restriction, the binding only needs to be added to each row of the table.
+            Table table = opTable.getTable();
+            // Table vars.
+            List<Var> vars = new ArrayList<>(table.getVars());
+            binding.vars().forEachRemaining(vars::add);
+            TableN table2 = new TableN(vars);
+            BindingBuilder builder = BindingFactory.builder();
+            table.iterator(null).forEachRemaining(row->{
+                builder.reset();
+                builder.addAll(row);
+                builder.addAll(binding);
+                table2.addBinding(builder.build());
+            });
+            return OpTable.create(table2);
         }
 
         private Triple applyReplacement(Triple triple, Function<Var, Node> replacement) {
