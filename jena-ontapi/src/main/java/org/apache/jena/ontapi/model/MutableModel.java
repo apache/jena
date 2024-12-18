@@ -21,6 +21,7 @@ package org.apache.jena.ontapi.model;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelChangedListener;
 import org.apache.jena.rdf.model.ModelCon;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
@@ -109,4 +110,36 @@ interface MutableModel<R extends Model> extends Model {
 
     @Override
     R add(Resource s, Property p, String lex, String lang);
+
+    /**
+     * Registers a listener for model-changed events on this model.
+     * The methods on the listener will be called when API add/remove calls on the model succeed
+     * [in whole or in part].
+     * The same listener may be registered many times;
+     * if so, its methods will be called as many times as it's registered for each event.
+     *
+     * @param listener {@link ModelChangedListener}, not null
+     * @return this model, for cascading
+     */
+    R register(ModelChangedListener listener);
+
+    /**
+     * Unregisters a listener from model-changed events on this model.
+     * The listener is detached from the model.
+     * The model is returned to permit cascading.
+     * If the listener is not attached to the model, then nothing happens.
+     *
+     * @param listener {@link ModelChangedListener}, not null
+     */
+    R unregister(ModelChangedListener listener);
+
+    /**
+     * Notifies any listeners that the {@code event} has occurred.
+     *
+     * @param event the event, which has occurred, e.g. {@code GraphEvents#startRead}
+     * @return this model, for cascading
+     * @see ModelChangedListener
+     * @see org.apache.jena.graph.GraphEvents
+     */
+    R notifyEvent(Object event);
 }
