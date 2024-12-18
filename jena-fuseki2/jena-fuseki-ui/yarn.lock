@@ -555,10 +555,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-9.16.0.tgz#3df2b2dd3b9163056616886c86e4082f45dbf3f4"
   integrity sha512-tw2HxzQkrbeuvyj1tG2Yqq+0H9wGoI2IMk4EOsQeX+vmd75FtJAzf+gTA69WF+baUKRYQ3x2kbLE08js5OsTVg==
 
-"@fortawesome/fontawesome-common-types@6.7.1":
-  version "6.7.1"
-  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-6.7.1.tgz#6201640f39fdcf8e41cd9d1a92b2da3a96817fa4"
-  integrity sha512-gbDz3TwRrIPT3i0cDfujhshnXO9z03IT1UKRIVi/VEjpNHtSBIP2o5XSm+e816FzzCFEzAxPw09Z13n20PaQJQ==
+"@fortawesome/fontawesome-common-types@6.7.2":
+  version "6.7.2"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-6.7.2.tgz#7123d74b0c1e726794aed1184795dbce12186470"
+  integrity sha512-Zs+YeHUC5fkt7Mg1l6XTniei3k4bwG/yo3iFUtZWd/pMx9g3fdvkSK9E0FOC+++phXOka78uJcYb8JaFkW52Xg==
 
 "@fortawesome/fontawesome-common-types@^0.2.36":
   version "0.2.36"
@@ -566,11 +566,11 @@
   integrity sha512-a/7BiSgobHAgBWeN7N0w+lAhInrGxksn13uK7231n2m8EDPE3BMCl9NZLTGrj9ZXfCmC6LM0QLqXidIizVQ6yg==
 
 "@fortawesome/fontawesome-svg-core@^6.4.2":
-  version "6.7.1"
-  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-6.7.1.tgz#1f8ebb6f35cf02f89c110198514e848de17ac99e"
-  integrity sha512-8dBIHbfsKlCk2jHQ9PoRBg2Z+4TwyE3vZICSnoDlnsHA6SiMlTwfmW6yX0lHsRmWJugkeb92sA0hZdkXJhuz+g==
+  version "6.7.2"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-6.7.2.tgz#0ac6013724d5cc327c1eb81335b91300a4fce2f2"
+  integrity sha512-yxtOBWDrdi5DD5o1pmVdq3WMCvnobT0LU6R8RyyVXPvFRd2o79/0NCuQoCjNTeZz9EzA9xS3JxNWfv54RIHFEA==
   dependencies:
-    "@fortawesome/fontawesome-common-types" "6.7.1"
+    "@fortawesome/fontawesome-common-types" "6.7.2"
 
 "@fortawesome/free-solid-svg-icons@^5.14.0":
   version "5.15.4"
@@ -580,11 +580,11 @@
     "@fortawesome/fontawesome-common-types" "^0.2.36"
 
 "@fortawesome/free-solid-svg-icons@^6.4.2":
-  version "6.7.1"
-  resolved "https://registry.yarnpkg.com/@fortawesome/free-solid-svg-icons/-/free-solid-svg-icons-6.7.1.tgz#c1f9a6c25562a12c283e87e284f9d82a5b0dbcc0"
-  integrity sha512-BTKc0b0mgjWZ2UDKVgmwaE0qt0cZs6ITcDgjrti5f/ki7aF5zs+N91V6hitGo3TItCFtnKg6cUVGdTmBFICFRg==
+  version "6.7.2"
+  resolved "https://registry.yarnpkg.com/@fortawesome/free-solid-svg-icons/-/free-solid-svg-icons-6.7.2.tgz#fe25883b5eb8464a82918599950d283c465b57f6"
+  integrity sha512-GsBrnOzU8uj0LECDfD5zomZJIjrPhIlWU82AHwa2s40FKH+kcxQaBvBo3Z4TxyZHIyX8XTDxsyA33/Vx9eFuQA==
   dependencies:
-    "@fortawesome/fontawesome-common-types" "6.7.1"
+    "@fortawesome/fontawesome-common-types" "6.7.2"
 
 "@fortawesome/vue-fontawesome@^3.0.3":
   version "3.0.8"
@@ -1241,36 +1241,36 @@
     js-beautify "^1.14.9"
     vue-component-type-helpers "^2.0.0"
 
-"@zazuko/yasgui-utils@^4.4.2":
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/@zazuko/yasgui-utils/-/yasgui-utils-4.4.2.tgz#f79d156b49b35c63477ea08a0fa1dc771b976595"
-  integrity sha512-ufZP0VydUTvQX9QP4V57V/cV00427qOnWsNOMjB373qs/EbN1UAcASjpJtwoo2nqUvGgNdEqHh2nOTlHQZCZEA==
+"@zazuko/yasgui-utils@^4.4.3":
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasgui-utils/-/yasgui-utils-4.4.3.tgz#839834fd2ca01ee212abce60e49e33fc38ab5de5"
+  integrity sha512-/kvP/eewMRpbuFw6qUPPsIQ0SbCQPTbWHGQLLPbpYllQqH50xgH5j7Cb5rytcyb9QuAzIsGs0T1qmfm6ZVCuqw==
   dependencies:
     "@types/node" "^22.5.4"
     dompurify "^2.0.7"
     store "^2.0.12"
 
-"@zazuko/yasqe@^4.2.34", "@zazuko/yasqe@^4.4.2":
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/@zazuko/yasqe/-/yasqe-4.4.2.tgz#5e090ad15cf6441bdb982cec02282b89cd21d624"
-  integrity sha512-cq+bmTjwy4QTfNDLv5OtL5JTVOGvj89bwKXUP6yROsZJiWPN2PAS+VbikBwFcexdRc81wiseSyvX6wgePXBvUg==
+"@zazuko/yasqe@^4.2.34", "@zazuko/yasqe@^4.4.3":
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasqe/-/yasqe-4.4.3.tgz#1402a2f1f9387a666644be523c90dcfd4a695157"
+  integrity sha512-h+Xl3VV8EK0WTcu9Vn48onkdojLwufnh6pxqJoXYxJijBziJVfw2GYzrcXqd5d6BXdzo8SWyDo8DBY1tf79h7A==
   dependencies:
     "@types/lodash-es" "^4.17.3"
-    "@zazuko/yasgui-utils" "^4.4.2"
+    "@zazuko/yasgui-utils" "^4.4.3"
     codemirror "^5.51.0"
     lodash-es "^4.17.15"
     query-string "^6.10.1"
 
 "@zazuko/yasr@^4.2.34":
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/@zazuko/yasr/-/yasr-4.4.2.tgz#e2368bbfb8d359e38517a4b3c3c9ff1d46e7a613"
-  integrity sha512-pMSKUaObledKC8k8ns1JhMRztb/Bd8khwy35s5Jbvpl3cjA/r4CHMODvDV5SKbof4A/RSNkpucTjP7fB5tN1kQ==
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasr/-/yasr-4.4.3.tgz#5221c4be4f9977a26113b2362b677e4bded01d24"
+  integrity sha512-oXUki+3u0jE0tmKe+nNTm/Da7ubl02447QokAqgsS7yT/wFKZUMKbEYKmXME85AJ1Ziy5JArZVmTo6pWveembg==
   dependencies:
     "@fortawesome/free-solid-svg-icons" "^5.14.0"
     "@json2csv/plainjs" "^7.0.4"
     "@types/lodash-es" "^4.17.3"
-    "@zazuko/yasgui-utils" "^4.4.2"
-    "@zazuko/yasqe" "^4.4.2"
+    "@zazuko/yasgui-utils" "^4.4.3"
+    "@zazuko/yasqe" "^4.4.3"
     codemirror "^5.51.0"
     colors "^1.4.0"
     column-resizer "^1.4.0"
@@ -4602,9 +4602,9 @@ node-releases@^2.0.14:
   integrity sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==
 
 nodemon@^3.0.1:
-  version "3.1.7"
-  resolved "https://registry.yarnpkg.com/nodemon/-/nodemon-3.1.7.tgz#07cb1f455f8bece6a499e0d72b5e029485521a54"
-  integrity sha512-hLj7fuMow6f0lbB0cD14Lz2xNjwsyruH251Pk4t/yIitCFJbmY1myuLlHm/q06aST4jg6EgAh74PIBBrRqpVAQ==
+  version "3.1.9"
+  resolved "https://registry.yarnpkg.com/nodemon/-/nodemon-3.1.9.tgz#df502cdc3b120e1c3c0c6e4152349019efa7387b"
+  integrity sha512-hdr1oIb2p6ZSxu3PB2JWWYS7ZQ0qvaZsc3hK8DR8f02kRzc8rjYmxAIvdz+aYC+8F2IjNaB7HMcSDg8nQpJxyg==
   dependencies:
     chokidar "^3.5.2"
     debug "^4"
