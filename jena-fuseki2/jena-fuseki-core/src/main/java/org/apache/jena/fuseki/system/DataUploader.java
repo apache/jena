@@ -105,7 +105,7 @@ public class DataUploader {
 
     // Previously, Jena has used HttpServletRequests.getParts.
     // Each application server (Tomcat and Jetty) has special configuration.
-    // Use Apache Commons FileUpload as the mulipart parser as it is portable.
+    // Use Apache Commons FileUpload as the multipart parser as it is portable.
 
     /**
      * Process an HTTP upload of RDF files (triples or quads) with content type

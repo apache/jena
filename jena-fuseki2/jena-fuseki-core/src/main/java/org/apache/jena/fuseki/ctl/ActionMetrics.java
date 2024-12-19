@@ -17,7 +17,9 @@
  */
 package org.apache.jena.fuseki.ctl;
 
-import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.metrics.MetricsProvider;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
@@ -42,7 +44,12 @@ public class ActionMetrics extends ActionCtl {
 
     @Override
     public void execute(HttpAction action) {
-        MetricsProviderRegistry.get().scrape( action );
+        MetricsProvider metricsProvider = MetricsProvider.getMetricsProvider(getServletContext());
+        if ( metricsProvider == null ) {
+            Log.warn(Fuseki.actionLog, "No metrics provider");
+            ServletOps.errorOccurred("No metrics provider");
+        }
+        metricsProvider.scrape( action );
         ServletOps.success(action);
     }
 }

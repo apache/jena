@@ -66,11 +66,11 @@ public class ActionBackupList extends ActionCtl {
     };
 
     private JsonValue description(HttpAction action) {
-        if ( ! Files.isDirectory(FusekiApp.dirBackups) )
-            ServletOps.errorOccurred(format("[%d] Backup area '%s' is not a directory", action.id, FusekiApp.dirBackups));
+        if ( ! Files.isDirectory(FusekiServerCtl.dirBackups) )
+            ServletOps.errorOccurred(format("[%d] Backup area '%s' is not a directory", action.id, FusekiServerCtl.dirBackups));
 
         List<Path> paths = new ArrayList<>();
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(FusekiApp.dirBackups, filterVisibleFiles)) {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(FusekiServerCtl.dirBackups, filterVisibleFiles)) {
             stream.forEach(paths::add);
         } catch (IOException ex) {
             action.log.error(format("[%d] Backup file list :: IOException :: %s", action.id, ex.getMessage()));

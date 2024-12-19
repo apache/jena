@@ -183,6 +183,7 @@ public class Fuseki {
     public static final String attrOperationRegistry       = "org.apache.jena.fuseki:OperationRegistry";
     public static final String attrAuthorizationService    = "org.apache.jena.fuseki:AuthorizationService";
     public static final String attrFusekiServer            = "org.apache.jena.fuseki:Server";
+    public static final String attrMetricsProvider         = "org.apache.jena.fuseki:MetricsProvider";
 
     public static void setVerbose(ServletContext cxt, boolean verbose) {
         cxt.setAttribute(attrVerbose, Boolean.valueOf(verbose));

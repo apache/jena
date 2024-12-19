@@ -23,12 +23,11 @@ import java.util.Objects;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.function.Function;
-import org.apache.jena.atlas.lib.Lib;
+
 import org.apache.jena.atlas.lib.Version;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
-import org.apache.jena.fuseki.main.FusekiServer;
 import org.slf4j.Logger;
 
 /**
@@ -39,54 +38,19 @@ public class FusekiAutoModules {
     private static final Logger LOG = Fuseki.serverLog;
     private static final Object lock = new Object();
 
-    public static final String logLoadingProperty = "fuseki.logLoading";
-    public static final String envLogLoadingProperty = "FUSEKI_LOGLOADING";
-
-    private static boolean allowDiscovery = true;
-    private static boolean enabled = true;
-
-    /*package*/ static boolean logModuleLoading() {
-        return Lib.isPropertyOrEnvVarSetToTrue(logLoadingProperty, envLogLoadingProperty);
-    }
-
-    /*package*/ static Logger logger() {
-        return LOG;
-    }
-
-    /**
-     * Enable/disable discovery of modules using the service loader.
-     * The default is 'enabled'.
-     */
-    public static void enable(boolean setting) {
-        enabled = setting;
-    }
-
-    /** Whether the system loaded modules are enabled. */
-    public static boolean isEnabled() {
-        return enabled;
-    }
-
-    /**
-     * Setup discovery of modules using the service loader.
-     * This replaces any current setup.
-     */
-    public static void setup() {
-        if ( ! isEnabled() )
-            return;
-        // Setup and discover now
-        autoModules = createServiceLoaderModules();
-    }
-
+    // Remember last loading.
     private static FusekiModules currentLoadedModules = null;
+    // ServiceLoader
+    private static ServiceLoader<FusekiAutoModule> serviceLoader = null;
+
 
     /**
      * Load FusekiAutoModules. This call reloads the modules every call.
-     * If disabled, return an empty {@link FusekiModules}.
      */
     static FusekiModules load() {
-        if ( ! enabled )
-            return FusekiModules.empty();
-        currentLoadedModules = getServiceLoaderModules().load();
+        if ( serviceLoader == null )
+            serviceLoader = createServiceLoader();
+        currentLoadedModules = loadAutoModules(serviceLoader);
         return get();
     }
 
@@ -101,131 +65,79 @@ public class FusekiAutoModules {
 
     // -- ServiceLoader machinery.
 
-    // testing
-    /*package*/ static void reset() {
-        load();
-    }
+//    // testing
+//    /*package*/ static void reset() {
+//        load();
+//    }
 
-    // Single auto-module controller.
-    private static FusekiServiceLoaderModules autoModules = null;
-
-    private static FusekiServiceLoaderModules getServiceLoaderModules() {
-        // Load once.
-        if ( autoModules == null )
-            setup();
-        return autoModules;
-    }
-
-    private static FusekiServiceLoaderModules createServiceLoaderModules() {
-        FusekiServiceLoaderModules newAutoModules = new FusekiServiceLoaderModules();
-        newAutoModules.setDiscovery();
-        return newAutoModules;
+    /**
+     * Discover FusekiModules via {@link java.util.ServiceLoader}.
+     * This step does not create the module objects.
+     */
+    private static ServiceLoader<FusekiAutoModule> createServiceLoader() {
+        Class<FusekiAutoModule> moduleClass = FusekiAutoModule.class;
+        ServiceLoader<FusekiAutoModule> newServiceLoader = null;
+        synchronized (lock) {
+            try {
+                newServiceLoader = ServiceLoader.load(moduleClass, FusekiAutoModules.class.getClassLoader());
+            } catch (ServiceConfigurationError ex) {
+                FmtLog.error(LOG, ex, "Problem with service loading for %s", moduleClass.getName());
+                throw ex;
+            }
+            if ( LOG.isDebugEnabled() ) {
+                newServiceLoader.stream().forEach(provider->{
+                    FmtLog.info(LOG, "Fuseki Module: %s", provider.type().getSimpleName());
+                });
+            }
+        }
+        return newServiceLoader;
     }
 
     /**
-     * Use {@link java.util.ServiceLoader} to find {@link FusekiModule}
-     * available via the classpath or modules.
-     * <p>
-     * These are the modules used when building a {@link FusekiServer} if
-     * {@link FusekiServer.Builder#setFusekiModules} is not used.
+     * Instantiate modules found using a ServiceLoader.
+     * Each call to {@code load()} creates a new object for the FusekiModule.
+     * {@code start()} on each module has not been called.
      */
-    private static class FusekiServiceLoaderModules {
-
-        // This keeps the list of discovered Fuseki modules.
-        private ServiceLoader<FusekiAutoModule> serviceLoader = null;
-
-        private FusekiServiceLoaderModules() { }
-
-        private void setDiscovery() {
-            serviceLoader = discover();
+    private static FusekiModules loadAutoModules(ServiceLoader<FusekiAutoModule> serviceLoader) {
+        if ( serviceLoader == null ) {
+            FmtLog.error(LOG, "Discovery step has not happened or it failed. Call FusekiSystemModules.discovery before FusekiSystemModules.load()");
+            throw new FusekiConfigException("Discovery not performed");
         }
 
-        /**
-         * Discover FusekiModules via {@link java.util.ServiceLoader}.
-         * This step does not create the module objects.
-         */
-        private ServiceLoader<FusekiAutoModule> discover() {
-            // Look for the 4.8.0 name (FusekiModule) which (4.9.0) is split into
-            // FusekiModule (interface) and FusekiAutoModule (this is loaded by ServiceLoader)
-            // Remove sometime!
-            discoveryWarnLegacy();
-
-            Class<FusekiAutoModule> moduleClass = FusekiAutoModule.class;
-            ServiceLoader<FusekiAutoModule> newServiceLoader = null;
-            synchronized (this) {
-                try {
-                    newServiceLoader = ServiceLoader.load(moduleClass, this.getClass().getClassLoader());
-                } catch (ServiceConfigurationError ex) {
-                    FmtLog.error(LOG, ex, "Problem with service loading for %s", moduleClass.getName());
-                    throw ex;
-                }
-                if ( LOG.isDebugEnabled() ) {
-                    newServiceLoader.stream().forEach(provider->{
-                        FmtLog.info(LOG, "Fuseki Module: %s", provider.type().getSimpleName());
-                    });
-                }
-            }
-            return newServiceLoader;
-        }
-
-        private void discoveryWarnLegacy() {
-            Class<FusekiModule> moduleClass = FusekiModule.class;
+        Function<ServiceLoader.Provider<FusekiAutoModule>, FusekiAutoModule> mapper = provider -> {
             try {
-                ServiceLoader<FusekiModule> newServiceLoader = ServiceLoader.load(moduleClass, this.getClass().getClassLoader());
-                newServiceLoader.stream().forEach(provider->{
-                    FmtLog.warn(FusekiAutoModules.class, "Ignored: \"%s\" : legacy use of interface FusekiModule which has changed to FusekiAutoModule", provider.type().getSimpleName());
-                });
+                FusekiAutoModule afmod =  provider.get();
+                return afmod;
             } catch (ServiceConfigurationError ex) {
-                // Ignore - we were only checking.
+                FmtLog.error(LOG, ex,
+                             "Error instantiating class %s for %s", provider.type().getName(), FusekiModule.class.getName());
+                return null;
             }
-        }
+        };
 
-        /**
-         * Instantiate modules found using the ServiceLoader.
-         * Each call to {@code load()} creates a new object for the FusekiModule.
-         * {@code start()} on each module has not been called.
-         */
-        private FusekiModules load() {
-            if ( serviceLoader == null ) {
-                FmtLog.error(LOG, "Discovery step has not happened or it failed. Call FusekiSystemModules.discovery before FusekiSystemModules.load()");
-                throw new FusekiConfigException("Discovery not performed");
-            }
+        // Create auto-module object, skip loads in error, sort auto-modules into level order.
+        List<FusekiAutoModule> autoMods = serviceLoader.stream()
+                .map(mapper)
+                .filter(Objects::nonNull)
+                .sorted((x,y)-> Integer.compare(x.level(), y.level()))
+                .toList();
+        // Start, and convert to FusekiModules (generics issue)
+        List<FusekiModule> fmods = autoMods.stream().map(afmod->{
+            afmod.start();
+            return (FusekiModule)afmod;
+        }).toList();
 
-            Function<ServiceLoader.Provider<FusekiAutoModule>, FusekiAutoModule> mapper = provider -> {
-                try {
-                    FusekiAutoModule afmod =  provider.get();
-                    return afmod;
-                } catch (ServiceConfigurationError ex) {
-                    FmtLog.error(LOG, ex,
-                                 "Error instantiating class %s for %s", provider.type().getName(), FusekiModule.class.getName());
-                    return null;
-                }
-            };
+        fmods.forEach(m->{
+            String name = m.name();
+            if ( name == null )
+                name = m.getClass().getSimpleName();
+            String verStr = Version.versionForClass(m.getClass()).orElse(null);
+            if ( verStr == null )
+                FmtLog.info(LOG, "Module: %s", name);
+            else
+                FmtLog.info(LOG, "Module: %s (%s)", name, verStr);
+        });
 
-            // Create auto-module object, skip loads in error, sort auto-modules into level order.
-            List<FusekiAutoModule> autoMods = serviceLoader.stream()
-                    .map(mapper)
-                    .filter(Objects::nonNull)
-                    .sorted((x,y)-> Integer.compare(x.level(), y.level()))
-                    .toList();
-            // Start, and convert to FusekiModules (generics issue)
-            List<FusekiModule> fmods = autoMods.stream().map(afmod->{
-                afmod.start();
-                return (FusekiModule)afmod;
-            }).toList();
-
-            fmods.forEach(m->{
-                String name = m.name();
-                if ( name == null )
-                    name = m.getClass().getSimpleName();
-                String verStr = Version.versionForClass(m.getClass()).orElse(null);
-                if ( verStr == null )
-                    FmtLog.info(LOG, "Module: %s", name);
-                else
-                    FmtLog.info(LOG, "Module: %s (%s)", name, verStr);
-            });
-
-            return FusekiModules.create(fmods);
-        }
+        return FusekiModules.create(fmods);
     }
 }

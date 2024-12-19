@@ -34,7 +34,7 @@ import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.cmds.ServerArgs;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
-import org.apache.jena.fuseki.mgt.FusekiApp;
+import org.apache.jena.fuseki.mgt.FusekiServerCtl;
 import org.apache.jena.rdf.model.Model;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
@@ -45,8 +45,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Fuseki Module for Apache Shiro.
  * <p>
- * TODO
- * Configuration
+ * Looks for an argument {@code --shiro=file}, and
+ * in environment variable {@code FUSEKI_SHIRO}
+ * (including via system proprties).
  */
 public class FMod_Shiro implements FusekiModule {
 
@@ -79,7 +80,6 @@ public class FMod_Shiro implements FusekiModule {
 
     private static ArgDecl argShiroIni = new ArgDecl(true, "shiro", "shiro-ini");
 
-    // XXX Should be a per build variable.
     private String shiroFile = null;
 
     public FMod_Shiro() {
@@ -122,7 +122,7 @@ public class FMod_Shiro implements FusekiModule {
     public void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) {
         if ( shiroFile == null ) {
             // Environment variable:  FUSEKI_SHIRO
-            shiroFile = Lib.getenv(FusekiApp.envFusekiShiro);
+            shiroFile = Lib.getenv(FusekiServerCtl.envFusekiShiro);
         }
 
         if ( shiroFile == null ) {

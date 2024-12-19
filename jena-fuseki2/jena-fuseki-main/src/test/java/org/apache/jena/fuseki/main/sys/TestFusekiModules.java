@@ -45,20 +45,13 @@ public class TestFusekiModules {
         // Created, not loaded
     }
 
-    private static void reset() {
-        ModuleByServiceLoader.reset();
-        FusekiModules.resetSystemDefault();
-    }
-
     @Test public void lifecycle_1() {
         ModuleForTest module = new ModuleForTest();
         FusekiModules fmods = FusekiModules.create(module);
-
         // Mock default set.
         FusekiModules.setSystemDefault(fmods);
-
-        FusekiServer.Builder builder = FusekiServer.create().port(0);
         try {
+            FusekiServer.Builder builder = FusekiServer.create().port(0);
             lifecycle(builder, module);
         } finally {
             FusekiModules.setSystemDefault(null);
@@ -66,7 +59,8 @@ public class TestFusekiModules {
     }
 
     @Test public void lifecycle_2() {
-        reset();
+        ModuleByServiceLoader.reset();
+        FusekiModules.resetSystemDefault();
 
         ModuleForTest module = new ModuleForTest();
         FusekiModules fmods = FusekiModules.create(module);
@@ -103,18 +97,24 @@ public class TestFusekiModules {
     }
 
     @Test public void autoload_1() {
-        // Included reload.
+        FusekiModules systemModules = FusekiModules.getSystemModules();
         ModuleByServiceLoader.reset();
-        FusekiModules.resetSystemDefault();
+        try  {
+            FusekiModules loadedModules = FusekiAutoModules.load();
+            FusekiModules.setSystemDefault(loadedModules);
 
-        // Reloaded by FusekiModules.resetSystemDefault
-        assertEquals(1, ModuleByServiceLoader.countLoads.get());
-        assertEquals(1, ModuleByServiceLoader.countStart.get());
+            // Reloaded by FusekiModules.resetSystemDefault
+            assertEquals(1, ModuleByServiceLoader.countLoads.get(),"countLoads:");
+            assertEquals(1, ModuleByServiceLoader.countStart.get(), "countStart:");
 
-        // Default : loaded FusekiModules
-        FusekiServer.Builder builder = FusekiServer.create().port(0);
-        ModuleForTest module = ModuleByServiceLoader.lastLoaded();
-        lifecycle(builder, module);
+            // Default : loaded FusekiModules
+            FusekiServer.Builder builder = FusekiServer.create().port(0);
+            ModuleForTest module = ModuleByServiceLoader.lastLoaded();
+            lifecycle(builder, module);
+        } finally {
+            ModuleByServiceLoader.reset();
+            FusekiModules.setSystemDefault(systemModules);
+        }
     }
 
     @Test public void server_module_1() {

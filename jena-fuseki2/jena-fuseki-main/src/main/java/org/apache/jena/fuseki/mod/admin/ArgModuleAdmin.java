@@ -26,7 +26,7 @@ import org.apache.jena.cmd.ArgModuleGeneral;
 import org.apache.jena.cmd.CmdArgModule;
 import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.fuseki.FusekiConfigException;
-import org.apache.jena.fuseki.mgt.FusekiApp;
+import org.apache.jena.fuseki.mgt.FusekiServerCtl;
 
 public class ArgModuleAdmin implements ArgModuleGeneral {
     // Add a static of "extra command"
@@ -58,7 +58,7 @@ public class ArgModuleAdmin implements ArgModuleGeneral {
         if ( ! Files.isWritable(directory)  )
             throw new FusekiConfigException("Not writable: "+dirStr);
 
-        FusekiApp.FUSEKI_BASE = directory;
+        FusekiServerCtl.FUSEKI_BASE = directory;
     }
 
     @Override

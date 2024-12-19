@@ -37,7 +37,7 @@ import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
-import org.apache.jena.fuseki.mgt.FusekiApp;
+import org.apache.jena.fuseki.mgt.FusekiServerCtl;
 import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.http.HttpEnv;
@@ -62,7 +62,7 @@ public class TestModShiro {
     }
 
     @BeforeEach void before() {
-        System.getProperties().remove(FusekiApp.envFusekiShiro);
+        System.getProperties().remove(FusekiServerCtl.envFusekiShiro);
         AuthEnv.get().clearAuthEnv();
     }
 
@@ -71,7 +71,7 @@ public class TestModShiro {
     }
 
     @AfterAll static void afterAll() {
-        System.getProperties().remove(FusekiApp.envFusekiShiro);
+        System.getProperties().remove(FusekiServerCtl.envFusekiShiro);
     }
 
     private String unlocalhost(FusekiServer server, String dataset) {
@@ -83,7 +83,7 @@ public class TestModShiro {
 
     /** Builder for a server with Shiro */
     private FusekiServer.Builder serverBuilderWithShiro(String filename) {
-        System.getProperties().setProperty(FusekiApp.envFusekiShiro, filename);
+        System.getProperties().setProperty(FusekiServerCtl.envFusekiShiro, filename);
         FusekiModules modules = FusekiModules.create(FMod_Shiro.create());
         return FusekiServer.create()
                 .port(0)

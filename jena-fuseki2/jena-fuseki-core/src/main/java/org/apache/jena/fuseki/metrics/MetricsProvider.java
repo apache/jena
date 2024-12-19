@@ -17,12 +17,43 @@
  */
 package org.apache.jena.fuseki.metrics;
 
+import java.util.Objects;
+
 import io.micrometer.core.instrument.MeterRegistry;
+import jakarta.servlet.ServletContext;
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.servlets.HttpAction;
 
+/** Micrometer registry and output generator. */
 public interface MetricsProvider {
+    public MeterRegistry getMeterRegistry();
+    public void scrape(HttpAction action);
 
-    MeterRegistry getMeterRegistry();
-    void scrape(HttpAction action);
+    /** Bind each data access point in a DataAccessPointRegistry to the system Micrometer {@link MeterRegistry}. */
+    public default void dataAccessPointMetrics(MetricsProvider metricsProvider, DataAccessPointRegistry dapRegistry) {
+        try {
+            MeterRegistry meterRegistry = metricsProvider.getMeterRegistry();
+            if (meterRegistry != null) {
+                dapRegistry.accessPoints().forEach(dap->{
+                    new FusekiRequestsMetrics( dap ).bindTo( meterRegistry );
+                });
+            }
+        } catch (Throwable th) {
+            Fuseki.configLog.error("Failed to bind all data access points to netrics provider", th);
+        }
+    }
 
+    public static void setMetricsProvider(ServletContext servletContext, MetricsProvider provider) {
+        Objects.requireNonNull(servletContext);
+        if ( provider == null )
+            servletContext.removeAttribute(Fuseki.attrMetricsProvider);
+        else
+            servletContext.setAttribute(Fuseki.attrMetricsProvider, provider);
+    }
+
+    public static MetricsProvider getMetricsProvider(ServletContext servletContext) {
+        Objects.requireNonNull(servletContext);
+        return (MetricsProvider)servletContext.getAttribute(Fuseki.attrMetricsProvider);
+    }
 }
