@@ -27,7 +27,9 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.fuseki.system.spot.TDBOps;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.query.Dataset;
+import org.apache.jena.rdfs.RDFSFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
@@ -40,9 +42,16 @@ import org.slf4j.Logger;
 
 /**
  * Various ways to build a dataset from command line arguments.
+ *
+ * @implNote
+ * This code is extracted so as to keep {@link FusekiMain} more manageable.
  */
 
 /*package*/ class DSGSetup {
+    // Each setup* should set ensure
+    //   serverArgs.datasetDescription
+    //   serverArgs.dataset
+    // are set on exit.
 
     /**
      * Given a path name and a preference of TDB1/TDB2 for new databases, return
@@ -71,27 +80,28 @@ import org.slf4j.Logger;
         if ( TDBOps.isTDB1(directory) ) {
             setupTDB1(log, directory, serverArgs);
             return;
-        } else if ( TDBOps.isTDB2(directory) ) {
+        }
+        if ( TDBOps.isTDB2(directory) ) {
             setupTDB2(log, directory, serverArgs);
             return;
-        } else
-            throw new CmdException("Directory not a database: " + directory);
+        }
+        throw new CmdException("Directory not a database: " + directory);
     }
 
     private static void setupTDB1(Logger log, String directory, ServerArgs serverArgs) {
         serverArgs.datasetDescription = "TDB1 dataset: location="+directory;
-        serverArgs.dsg = TDB1Factory.createDatasetGraph(directory);
+        serverArgs.dataset = TDB1Factory.createDatasetGraph(directory);
     }
 
     private static void setupTDB2(Logger log, String directory, ServerArgs serverArgs) {
         serverArgs.datasetDescription = "TDB2 dataset: location="+directory;
-        serverArgs.dsg = DatabaseMgr.connectDatasetGraph(directory);
+        serverArgs.dataset = DatabaseMgr.connectDatasetGraph(directory);
     }
 
     /*package*/ static void setupMemTDB(Logger log, boolean useTDB2, ServerArgs serverArgs) {
         String tag = useTDB2 ? "TDB2" : "TDB1";
         serverArgs.datasetDescription = tag+" dataset in-memory";
-        serverArgs.dsg = useTDB2
+        serverArgs.dataset = useTDB2
             ? DatabaseMgr.createDatasetGraph()
             : TDB1Factory.createDatasetGraph();
         serverArgs.allowUpdate = true;
@@ -99,13 +109,13 @@ import org.slf4j.Logger;
 
     /*package*/ static void setupMem(Logger log, ServerArgs serverArgs) {
         serverArgs.datasetDescription = "in-memory";
-        serverArgs.dsg = DatasetGraphFactory.createTxnMem();
+        serverArgs.dataset = DatasetGraphFactory.createTxnMem();
         serverArgs.allowUpdate = true;
     }
 
     /*package*/ static void setupFile(Logger log, List<String> filenames, ServerArgs serverArgs) {
         serverArgs.datasetDescription = "in-memory, with files loaded";
-        serverArgs.dsg = DatasetGraphFactory.createTxnMem();
+        serverArgs.dataset = DatasetGraphFactory.createTxnMem();
 
         for ( String filename : filenames ) {
             String pathname = filename;
@@ -118,21 +128,27 @@ import org.slf4j.Logger;
             Lang language = RDFLanguages.filenameToLang(filename);
             if ( language == null )
                 throw new CmdException("Cannot guess language for file: " + filename);
-            Txn.executeWrite(serverArgs.dsg,  ()-> {
+            Txn.executeWrite(serverArgs.dataset,  ()-> {
                 try {
                     log.info("Dataset: in-memory: load file: " + filename);
-                    RDFDataMgr.read(serverArgs.dsg, filename);
+                    RDFDataMgr.read(serverArgs.dataset, filename);
                 } catch (RiotException ex) {
                     throw new CmdException("Failed to load file: " + filename);
                 }
             });
         }
-
     }
 
     public static void setupAssembler(Logger log, ModDatasetAssembler modDataset, ServerArgs serverArgs) {
         serverArgs.datasetDescription = "Assembler: "+ modDataset.getAssemblerFile();
         Dataset ds = modDataset.createDataset();
-        serverArgs.dsg = ds.asDatasetGraph();
+        serverArgs.dataset = ds.asDatasetGraph();
+    }
+
+    public static void setupRDFS(Logger serverlog, Graph rdfsSchemaGraph, ServerArgs serverArgs) {
+        serverArgs.datasetDescription = (serverArgs.datasetDescription == null)
+                ? "RDFS"
+                : serverArgs.datasetDescription+ " (with RDFS)";
+        serverArgs.dataset = RDFSFactory.datasetRDFS(serverArgs.dataset, rdfsSchemaGraph);
     }
 }

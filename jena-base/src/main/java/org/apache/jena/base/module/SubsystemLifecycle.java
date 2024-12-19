@@ -34,8 +34,8 @@ public interface SubsystemLifecycle {
     public void stop();
 
     /**
-     * Provide a marker as to the level to order initialization, 10,20,30,... See
-     * {@link Subsystem} for details.
+     * Provide a marker as to the level to order initialization, 10,20,30,...
+     * See {@link Subsystem} for details.
      */
     default public int level() {
         return 9999;

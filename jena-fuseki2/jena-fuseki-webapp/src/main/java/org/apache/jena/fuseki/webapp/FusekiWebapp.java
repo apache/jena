@@ -46,6 +46,7 @@ import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.fuseki.system.FusekiCore;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdfs.RDFSFactory;
@@ -55,6 +56,7 @@ import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
+import org.apache.jena.sys.JenaSystem;
 
 public class FusekiWebapp
 {
@@ -122,7 +124,8 @@ public class FusekiWebapp
             Path FUSEKI_HOME = FusekiEnv.FUSEKI_HOME;
             Path FUSEKI_BASE = FusekiEnv.FUSEKI_BASE;
 
-            Fuseki.init();
+            JenaSystem.init();
+            FusekiCore.init();
             Fuseki.configLog.info("FUSEKI_HOME="+ ((FUSEKI_HOME==null) ? "unset" : FUSEKI_HOME.toString()));
             Fuseki.configLog.info("FUSEKI_BASE="+FUSEKI_BASE.toString());
 

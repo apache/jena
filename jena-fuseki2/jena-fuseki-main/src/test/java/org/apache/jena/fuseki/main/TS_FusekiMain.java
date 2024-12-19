@@ -18,14 +18,14 @@
 
 package org.apache.jena.fuseki.main;
 
-import org.apache.jena.fuseki.main.prefixes.*;
-import org.apache.jena.fuseki.main.sys.TestFusekiModules;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
+import org.apache.jena.fuseki.main.prefixes.TS_PrefixesService;
+import org.apache.jena.fuseki.main.sys.TestFusekiModules;
+
 @Suite
 @SelectClasses({
-
   TestPlainServer.class
 
   // This tests modules and modifies the system state.
@@ -54,10 +54,10 @@ import org.junit.platform.suite.api.Suite;
   , TestPatchFuseki.class
   , TestFusekiCustomScriptFunc.class
 
-  , PrefixesServiceTests.class
-
+  , TS_PrefixesService.class
   , TestMetrics.class
   , TestFusekiShaclValidation.class
+
 })
 public class TS_FusekiMain {}
 

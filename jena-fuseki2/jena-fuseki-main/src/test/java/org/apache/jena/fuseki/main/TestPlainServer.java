@@ -18,22 +18,22 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /** Test Fuseki with plain servlet and handling a file area */
 public class TestPlainServer {
@@ -43,7 +43,7 @@ public class TestPlainServer {
 
     private static String serverURL;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         FusekiServer server = FusekiServer.create()
             .port(0)
@@ -76,7 +76,7 @@ public class TestPlainServer {
         }
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         if ( server != null )
             server.stop();
@@ -109,7 +109,7 @@ public class TestPlainServer {
     }
 
     @Test public void plainFile3() {
-        String x = HttpOp.httpGetString(serverURL+"/file-top.txt");
+        String x = HttpOp.httpGetString(serverURL+"/exists.txt");
         assertNotNull(x);
         assertTrue(x.contains("CONTENT"));
     }

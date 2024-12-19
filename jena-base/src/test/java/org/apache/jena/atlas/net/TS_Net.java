@@ -16,18 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.main.prefixes;
+package org.apache.jena.atlas.net;
 
-import org.junit.platform.suite.api.SelectClasses;
-import org.junit.platform.suite.api.Suite;
 
-@Suite
-@SelectClasses({
-      TestPrefixesActions.class
-    , TestPrefixesServicePlain.class
-    , TestPrefixesServiceRDF.class
-    , TestPrefixesServicePrefixesMap.class
-    , TestPrefixesActionResponse.class
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
 
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestHost.class
 })
-public class PrefixesServiceTests {}
+public class TS_Net {}

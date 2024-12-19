@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.core.assembler;
 
-import java.util.Map;
-
 import org.apache.jena.assembler.Assembler;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -37,11 +35,6 @@ public class ViewDatasetAssembler extends NamedDatasetAssembler  {
     public static Resource getType() { return DatasetAssemblerVocab.tDatasetView; }
 
     public ViewDatasetAssembler() {}
-
-    @Override
-    public Map<String, DatasetGraph> pool() {
-        return sharedDatasetPool;
-    }
 
     @Override
     public DatasetGraph createDataset(Assembler a, Resource root) {

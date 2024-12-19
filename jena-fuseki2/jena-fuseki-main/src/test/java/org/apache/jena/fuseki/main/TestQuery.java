@@ -18,9 +18,9 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -28,9 +28,8 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.util.Iterator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.json.JsonArray;
 import org.apache.jena.atlas.web.AcceptList;
@@ -62,7 +61,7 @@ public class TestQuery extends AbstractFusekiTest {
     private static final Graph   graph1        = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 1)))");
     private static final Graph   graph2        = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 2)))");
 
-    @Before
+    @BeforeEach
     public void before() {
         GSP.service(serviceGSP()).defaultGraph().PUT(graph1);
         GSP.service(serviceGSP()).graphName(gn1).PUT(graph2);
@@ -89,7 +88,7 @@ public class TestQuery extends AbstractFusekiTest {
             Var x = Var.alloc("x");
             while (rs.hasNext()) {
                 Binding b = rs.nextBinding();
-                Assert.assertNotNull(b.get(x));
+                assertNotNull(b.get(x));
             }
         } finally {
             Fuseki.getContext().set(Service.httpServiceAllowed, serverSetting);
@@ -101,7 +100,7 @@ public class TestQuery extends AbstractFusekiTest {
         String query = "ASK { }";
         try (QueryExecution qExec = QueryExecution.service(serviceQuery() + "?output=json", query)) {
             boolean result = qExec.execAsk();
-            Assert.assertTrue(result);
+            assertTrue(result);
         }
     }
 
@@ -110,7 +109,7 @@ public class TestQuery extends AbstractFusekiTest {
         String qs = Convert.encWWWForm("ASK{}");
         URL u = new URL(serviceQuery() + "?query=" + qs);
         HttpURLConnection conn = (HttpURLConnection)u.openConnection();
-        Assert.assertTrue(conn.getHeaderField(Fuseki.FusekiRequestIdHeader) != null);
+        assertTrue(conn.getHeaderField(Fuseki.FusekiRequestIdHeader) != null);
     }
 
     @Test
@@ -155,8 +154,8 @@ public class TestQuery extends AbstractFusekiTest {
 
         try ( QueryExecutionHTTP qExec = QueryExecutionHTTP.service(serviceQuery(), query) ) {
             Iterator<Quad> result = qExec.execConstructQuads();
-            Assert.assertTrue(result.hasNext());
-            Assert.assertEquals( "http://eg/g", result.next().getGraph().getURI());
+            assertTrue(result.hasNext());
+            assertEquals( "http://eg/g", result.next().getGraph().getURI());
 
         }
     }
@@ -169,8 +168,8 @@ public class TestQuery extends AbstractFusekiTest {
 
         try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), query) ) {
             Dataset result = qExec.execConstructDataset();
-            Assert.assertTrue(result.asDatasetGraph().find().hasNext());
-            Assert.assertEquals( "http://eg/g", result.asDatasetGraph().find().next().getGraph().getURI());
+            assertTrue(result.asDatasetGraph().find().hasNext());
+            assertEquals( "http://eg/g", result.asDatasetGraph().find().next().getGraph().getURI());
         }
     }
 
@@ -180,7 +179,7 @@ public class TestQuery extends AbstractFusekiTest {
         String query = " CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
         try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), query) ) {
             Iterator<Triple> result = qExec.execConstructTriples();
-            Assert.assertTrue(result.hasNext());
+            assertTrue(result.hasNext());
         }
     }
 
@@ -302,8 +301,8 @@ public class TestQuery extends AbstractFusekiTest {
             }
             result = sb.toString();
         }
-        Assert.assertNotNull(result);
-        Assert.assertTrue(result.contains("http://example/x"));
+        assertNotNull(result);
+        assertTrue(result.contains("http://example/x"));
     }
 
     private void execQuery(String queryString, int exceptedRowCount) {
@@ -318,7 +317,7 @@ public class TestQuery extends AbstractFusekiTest {
         try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), queryString) ) {
             ResultSet rs = qExec.execSelect();
             boolean b = ResultSetCompare.equalsByTerm(rs, expectedResultSet);
-            assertTrue("Result sets different", b);
+            assertTrue(b, "Result sets different");
         }
     }
 

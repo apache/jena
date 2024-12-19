@@ -22,11 +22,12 @@ import static org.apache.jena.fuseki.main.FusekiTestLib.expect400;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expect404;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery400;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery404;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.function.Consumer;
 
+import jakarta.servlet.ServletContext;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.logging.LogCtl;
@@ -52,7 +53,7 @@ import org.apache.jena.sparql.exec.http.QueryExecHTTP;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateExecution;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
 public class TestFusekiServerBuild {
@@ -60,9 +61,13 @@ public class TestFusekiServerBuild {
 
     @Test public void fuseki_build_1() {
         FusekiServer server = FusekiServer.create().port(3456).build();
-        // Not started. Port not assigned.
         assertTrue(server.getHttpPort() == 3456 );
         assertTrue(server.getHttpsPort() == -1 );
+
+        ServletContext cxt = server.getServletContext();
+        FusekiServer server2 = FusekiServer.get(cxt);
+        assertNotNull(server2);
+        assertEquals(server, server2);
     }
 
     @Test public void fuseki_build_2() {
