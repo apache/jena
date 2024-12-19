@@ -54,6 +54,32 @@ public class LogCtlJUL {
 
     private LogCtlJUL() {}
 
+    /*package*/ static String getLevelJUL(String logger) {
+        java.util.logging.Level level = java.util.logging.Logger.getLogger(logger).getLevel();
+        if ( level == null )
+            return null;
+        if ( level == java.util.logging.Level.SEVERE )
+            return "ERROR";
+        return level.getName();
+    }
+
+    /*package*/ static void setLevelJUL(String logger, String levelName) {
+        java.util.logging.Level level = java.util.logging.Level.ALL;
+        if ( levelName == null )
+            level = null;
+        else if ( levelName.equalsIgnoreCase("info") )
+            level = java.util.logging.Level.INFO;
+        else if ( levelName.equalsIgnoreCase("debug") )
+            level = java.util.logging.Level.FINE;
+        else if ( levelName.equalsIgnoreCase("warn") || levelName.equalsIgnoreCase("warning") )
+            level = java.util.logging.Level.WARNING;
+        else if ( levelName.equalsIgnoreCase("error") || levelName.equalsIgnoreCase("severe") )
+            level = java.util.logging.Level.SEVERE;
+        else if ( levelName.equalsIgnoreCase("OFF") )
+            level = java.util.logging.Level.OFF;
+        java.util.logging.Logger.getLogger(logger).setLevel(level);
+    }
+
     /**
      * Reset java.util.logging - this overrides the previous configuration, if any.
      */

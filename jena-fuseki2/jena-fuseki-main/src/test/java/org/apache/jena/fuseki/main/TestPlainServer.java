@@ -109,7 +109,7 @@ public class TestPlainServer {
     }
 
     @Test public void plainFile3() {
-        String x = HttpOp.httpGetString(serverURL+"/file-top.txt");
+        String x = HttpOp.httpGetString(serverURL+"/exists.txt");
         assertNotNull(x);
         assertTrue(x.contains("CONTENT"));
     }

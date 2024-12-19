@@ -26,7 +26,9 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
 import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.system.FusekiCore;
 import org.apache.jena.irix.IRIs;
+import org.apache.jena.sys.JenaSystem;
 import org.apache.shiro.lang.io.ResourceUtils;
 import org.apache.shiro.web.env.EnvironmentLoader;
 import org.apache.shiro.web.env.ResourceBasedWebEnvironment;
@@ -86,8 +88,9 @@ public class ShiroEnvironmentLoader extends EnvironmentLoader implements Servlet
 
     /** Look for a Shiro ini file, or return null */
     private static String huntForShiroIni(String[] locations) {
+        JenaSystem.init();
+        FusekiCore.init();
         FusekiEnv.setEnvironment();
-        Fuseki.init();
         for ( String loc : locations ) {
             // If file:, look for that file.
             // If a relative name without scheme, look in FUSEKI_BASE, FUSEKI_HOME, webapp.

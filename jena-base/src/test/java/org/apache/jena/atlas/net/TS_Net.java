@@ -16,18 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.main.sys;
+package org.apache.jena.atlas.net;
 
-import org.apache.jena.base.module.SubsystemLifecycle;
 
-/**
- * A {@link SubsystemLifecycle} for Fuseki.
- * This lifecycle is run after Jena system initialization.
- * Jena system initialization includes system initialization of Fuseki itself
- * in {@link InitFusekiMain}.
- * This lifecycle is for extensions to an initialized Fuseki server
- * and is used via {@link FusekiAutoModule}.
- */
-public interface FusekiLifecycle extends SubsystemLifecycle {
-    // Placeholder.
-}
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestHost.class
+})
+public class TS_Net {}

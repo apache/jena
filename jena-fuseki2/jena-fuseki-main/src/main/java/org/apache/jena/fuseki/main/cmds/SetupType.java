@@ -16,18 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.main.sys;
+package org.apache.jena.fuseki.main.cmds;
 
-import org.apache.jena.base.module.SubsystemLifecycle;
-
-/**
- * A {@link SubsystemLifecycle} for Fuseki.
- * This lifecycle is run after Jena system initialization.
- * Jena system initialization includes system initialization of Fuseki itself
- * in {@link InitFusekiMain}.
- * This lifecycle is for extensions to an initialized Fuseki server
- * and is used via {@link FusekiAutoModule}.
- */
-public interface FusekiLifecycle extends SubsystemLifecycle {
-    // Placeholder.
+// Command line DSG
+public enum SetupType {
+    UNSET,
+    MEM, FILE, TDB, MEMTDB,  // Datasets on the command line
+    CONF,                    // Configuration file.
+    ASSEM,                   // Assembler for a datasets. Legacy.
+    NONE,                    // Explicitly no dataset or configuration file.
+    SPARQLer                 // SPARQler mode
 }

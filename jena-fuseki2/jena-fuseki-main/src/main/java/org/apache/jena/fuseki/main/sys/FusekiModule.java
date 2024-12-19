@@ -60,8 +60,12 @@ public interface FusekiModule extends FusekiServerArgsCustomiser, FusekiBuildCyc
     // Gather all interface method together.
     // Inherited javadoc.
 
+    /**
+     * {@inheritDoc}
+     * <p>This defaults to the Java simple class name of module.
+     */
     @Override
-    public String name();
+    public default String name() { return null; }
 
     // ---- Build cycle
 

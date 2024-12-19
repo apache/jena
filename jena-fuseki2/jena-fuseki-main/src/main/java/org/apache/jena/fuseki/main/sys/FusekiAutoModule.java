@@ -79,6 +79,15 @@ public interface FusekiAutoModule extends FusekiModule, FusekiLifecycle {
     @Override
     public default void stop() {}
 
+    /**
+     * Level for ordering calling all loaded {@code FusekiAutoModule}.
+     * Levels 0-999 are reserved and should not be used except by system FusekiAutoModule
+     */
+    @Override
+    public default int level() {
+        return 9999;
+    }
+
     // ---- Build cycle
 
     /** {@inheritDoc} */
