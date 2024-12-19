@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki.main.cmds;
 
-import org.apache.jena.fuseki.run.FusekiModServer;
+import org.apache.jena.fuseki.mod.FusekiModServer;
 import org.apache.jena.fuseki.system.FusekiLogging;
 
 /** Fuseki command that runs a Fuseki server with the admin UI.

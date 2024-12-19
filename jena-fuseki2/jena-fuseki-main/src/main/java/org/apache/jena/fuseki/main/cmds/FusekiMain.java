@@ -333,7 +333,11 @@ public class FusekiMain extends CmdARQ {
 
     private void processStdArguments(Logger log) {
 
-        // ---- Definition type
+        // ---- Command line definition of setup
+        // One dataset
+        // or a config file
+        // or a "standard setup" e.g.SPARQLer
+        // or empty allowed
         int numDefinitions = 0;
         SetupType setup = UNSET;
 

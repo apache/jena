@@ -20,9 +20,11 @@ package org.apache.jena.fuseki.mod.prometheus;
 
 import java.util.Set;
 
+import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.ctl.ActionMetrics;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
-import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
+import org.apache.jena.fuseki.metrics.MetricsProvider;
 import org.apache.jena.rdf.model.Model;
 
 /**
@@ -43,21 +45,18 @@ public class FMod_Prometheus implements FusekiModule {
 //    public int level() {
 //        return 5000;
 //    }
-//
-//    @Override public void start() {
-//        Fuseki.configLog.info("FMod Prometheus Metrics");
-//        MetricsProviderRegistry.set(new PrometheusMetricsProvider());
-//    }
 
     @Override
     public String name() { return "FMod Prometheus Metrics"; }
 
     @Override public void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) {
-        //MetricsProviderRegistry.set(new PrometheusMetricsProvider());
+        MetricsProvider metricsProvider = new PrometheusMetricsProvider();
+        serverBuilder.addServletAttribute(Fuseki.attrMetricsProvider, metricsProvider);
         serverBuilder.addServlet("/$/metrics", new ActionMetrics());
     }
 
     @Override public void server(FusekiServer server) {
-        MetricsProviderRegistry.dataAccessPointMetrics(server.getDataAccessPointRegistry());
+        MetricsProvider metricsProvider = MetricsProvider.getMetricsProvider(server.getServletContext());
+        metricsProvider.dataAccessPointMetrics(metricsProvider, server.getDataAccessPointRegistry());
     }
 }

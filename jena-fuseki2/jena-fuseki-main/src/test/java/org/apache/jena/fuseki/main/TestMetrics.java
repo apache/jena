@@ -18,6 +18,7 @@
 package org.apache.jena.fuseki.main;
 
 import static org.apache.jena.http.HttpLib.handleResponseRtnString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
@@ -25,11 +26,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.HttpLib;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames;
-import org.junit.jupiter.api.Test;
+import org.apache.jena.web.HttpSC;
 
 public class TestMetrics extends AbstractFusekiTest {
 
@@ -38,8 +41,9 @@ public class TestMetrics extends AbstractFusekiTest {
         String r = serverURL() + "$/metrics";
         HttpRequest request = HttpRequest.newBuilder().uri(HttpLib.toRequestURI(r)).build();
         HttpResponse<InputStream> response = HttpLib.executeJDK(HttpEnv.getDftHttpClient(), request, BodyHandlers.ofInputStream());
-        String body = handleResponseRtnString(response);
+        assertEquals(HttpSC.OK_200, response.statusCode());
 
+        String body = handleResponseRtnString(response);
         String ct = response.headers().firstValue(HttpNames.hContentType).orElse(null);
         assertTrue(ct.contains(WebContent.contentTypeTextPlain));
         assertTrue(ct.contains(WebContent.charsetUTF8));

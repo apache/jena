@@ -45,12 +45,11 @@ public class TestFusekiModules {
         // Created, not loaded
     }
 
-    private static void reset() {
-        ModuleByServiceLoader.reset();
-        FusekiModules.resetSystemDefault();
-    }
 
     @Test public void lifecycle_1() {
+        ModuleByServiceLoader.reset();
+        FusekiModules.resetSystemDefault();
+
         ModuleForTest module = new ModuleForTest();
         FusekiModules fmods = FusekiModules.create(module);
 
@@ -66,7 +65,8 @@ public class TestFusekiModules {
     }
 
     @Test public void lifecycle_2() {
-        reset();
+        ModuleByServiceLoader.reset();
+        FusekiModules.resetSystemDefault();
 
         ModuleForTest module = new ModuleForTest();
         FusekiModules fmods = FusekiModules.create(module);
@@ -103,18 +103,23 @@ public class TestFusekiModules {
     }
 
     @Test public void autoload_1() {
-        // Included reload.
-        ModuleByServiceLoader.reset();
-        FusekiModules.resetSystemDefault();
+        boolean b = FusekiAutoModules.isEnabled();
+        FusekiAutoModules.enable(true);  // "--modules"
+        try {
+            ModuleByServiceLoader.reset();
+            FusekiModules.resetSystemDefault();
 
-        // Reloaded by FusekiModules.resetSystemDefault
-        assertEquals(1, ModuleByServiceLoader.countLoads.get());
-        assertEquals(1, ModuleByServiceLoader.countStart.get());
+            // Reloaded by FusekiModules.resetSystemDefault
+            assertEquals(1, ModuleByServiceLoader.countLoads.get(),"countLoads:");
+            assertEquals(1, ModuleByServiceLoader.countStart.get(), "countStart:");
 
-        // Default : loaded FusekiModules
-        FusekiServer.Builder builder = FusekiServer.create().port(0);
-        ModuleForTest module = ModuleByServiceLoader.lastLoaded();
-        lifecycle(builder, module);
+            // Default : loaded FusekiModules
+            FusekiServer.Builder builder = FusekiServer.create().port(0);
+            ModuleForTest module = ModuleByServiceLoader.lastLoaded();
+            lifecycle(builder, module);
+        } finally {
+            FusekiAutoModules.enable(b);
+        }
     }
 
     @Test public void server_module_1() {

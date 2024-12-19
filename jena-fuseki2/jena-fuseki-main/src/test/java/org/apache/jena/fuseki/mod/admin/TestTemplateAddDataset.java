@@ -36,7 +36,7 @@ import org.apache.jena.atlas.web.TypedInputStream;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
-import org.apache.jena.fuseki.mgt.FusekiApp;
+import org.apache.jena.fuseki.mgt.FusekiServerCtl;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdfconnection.RDFConnection;
@@ -85,7 +85,7 @@ public class TestTemplateAddDataset {
             server.stop();
         serverURL = null;
         // Clearup FMod_Shiro.
-        System.getProperties().remove(FusekiApp.envFusekiShiro);
+        System.getProperties().remove(FusekiServerCtl.envFusekiShiro);
     }
 
     protected String urlRoot() {
@@ -143,7 +143,7 @@ public class TestTemplateAddDataset {
         int x1 = count(conn);
         assertEquals(1, x1);
 
-        Path pathDB = FusekiApp.dirDatabases.resolve(dbName);
+        Path pathDB = FusekiServerCtl.dirDatabases.resolve(dbName);
 
         if ( hasFiles )
             assertTrue(Files.exists(pathDB));

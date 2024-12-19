@@ -50,7 +50,6 @@ public class TestConfigFile {
 
         """;
 
-
     private static RDFConnection namedServices(String baseURL) {
         return RDFConnectionRemote.newBuilder()
             .destination(baseURL)
