@@ -34,7 +34,7 @@ import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.cmds.ServerArgs;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
-import org.apache.jena.fuseki.mgt.FusekiApp;
+import org.apache.jena.fuseki.mgt.FusekiServerCtl;
 import org.apache.jena.fuseki.validation.DataValidator;
 import org.apache.jena.fuseki.validation.IRIValidator;
 import org.apache.jena.fuseki.validation.QueryValidator;
@@ -130,7 +130,7 @@ public class FMod_UI implements FusekiModule {
         // 2:: $FUSEKI_BASE/webapp
         // If the FUSEKI_BASE does not exists, it is created later in FMod_admin.prepare
         // and does not include Fuseki app.
-        String x = fromPath(FusekiApp.FUSEKI_BASE, directoryNameUI);
+        String x = fromPath(FusekiServerCtl.FUSEKI_BASE, directoryNameUI);
         if ( x != null ) {
             LOG.info("Fuseki UI - path resource: "+x);
             return x;

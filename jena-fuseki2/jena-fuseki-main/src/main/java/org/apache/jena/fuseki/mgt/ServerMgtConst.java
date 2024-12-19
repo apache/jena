@@ -20,7 +20,7 @@ package org.apache.jena.fuseki.mgt;
 
 /**
  * Various constants used in the management API functions and JSON responses in the
- * webapp/full server.
+ * Fuseki server app.
  */
 public class ServerMgtConst {
     public static final String  opDatasets      = "datasets";

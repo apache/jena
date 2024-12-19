@@ -56,7 +56,7 @@ import org.apache.jena.fuseki.ctl.ActionSleep;
 import org.apache.jena.fuseki.ctl.JsonConstCtl;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
-import org.apache.jena.fuseki.mgt.FusekiApp;
+import org.apache.jena.fuseki.mgt.FusekiServerCtl;
 import org.apache.jena.fuseki.mgt.ServerMgtConst;
 import org.apache.jena.fuseki.server.ServerConst;
 import org.apache.jena.fuseki.test.HttpTest;
@@ -121,7 +121,7 @@ public class TestAdmin {
             server.stop();
         serverURL = null;
         // Clearup FMod_Shiro.
-        System.getProperties().remove(FusekiApp.envFusekiShiro);
+        System.getProperties().remove(FusekiServerCtl.envFusekiShiro);
     }
 
     protected String urlRoot() {

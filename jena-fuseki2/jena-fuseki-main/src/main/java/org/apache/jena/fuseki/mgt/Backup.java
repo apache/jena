@@ -54,7 +54,7 @@ public class Backup
 
         String timestamp = DateTimeUtils.nowAsString("yyyy-MM-dd_HH-mm-ss");
         String filename = ds + "_" + timestamp;
-        filename = FusekiApp.dirBackups.resolve(filename).toString();
+        filename = FusekiServerCtl.dirBackups.resolve(filename).toString();
         return filename;
     }
 

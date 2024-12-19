@@ -28,6 +28,5 @@ import org.junit.platform.suite.api.Suite;
     , TestPrefixesServiceRDF.class
     , TestPrefixesServicePrefixesMap.class
     , TestPrefixesActionResponse.class
-
 })
-public class TS_PrefixesService {}
+public class PrefixesServiceTests {}

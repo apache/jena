@@ -24,7 +24,7 @@ import java.nio.file.Path;
 public class Template
 {
     public static Path getPath(String templateName) {
-        return FusekiApp.FUSEKI_BASE.resolve(templateName);
+        return FusekiServerCtl.FUSEKI_BASE.resolve(templateName);
     }
 
     public static final String templateDir            = "templates";

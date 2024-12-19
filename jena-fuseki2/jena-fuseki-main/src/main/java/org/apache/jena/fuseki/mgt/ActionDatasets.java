@@ -140,7 +140,7 @@ public class ActionDatasets extends ActionContainerItem {
                 // ----
                 // Keep a persistent copy immediately.  This is not used for
                 // anything other than being "for the record".
-                systemFileCopy = FusekiApp.dirSystemFileArea.resolve(uuid.toString()).toString();
+                systemFileCopy = FusekiServerCtl.dirSystemFileArea.resolve(uuid.toString()).toString();
                 try ( OutputStream outCopy = IO.openOutputFile(systemFileCopy) ) {
                     RDFDataMgr.write(outCopy, descriptionModel, Lang.TURTLE);
                 }
@@ -186,8 +186,8 @@ public class ActionDatasets extends ActionContainerItem {
 
                 action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath));
 
-                configFile = FusekiApp.generateConfigurationFilename(datasetPath);
-                List<String> existing = FusekiApp.existingConfigurationFile(datasetPath);
+                configFile = FusekiServerCtl.generateConfigurationFilename(datasetPath);
+                List<String> existing = FusekiServerCtl.existingConfigurationFile(datasetPath);
                 if ( ! existing.isEmpty() )
                     ServletOps.error(HttpSC.CONFLICT_409, "Configuration file for '"+datasetPath+"' already exists");
 
@@ -318,7 +318,7 @@ public class ActionDatasets extends ActionContainerItem {
 
                 // Find the configuration.
                 String filename = name.startsWith("/") ? name.substring(1) : name;
-                List<String> configurationFiles = FusekiApp.existingConfigurationFile(filename);
+                List<String> configurationFiles = FusekiServerCtl.existingConfigurationFile(filename);
 
                 if ( configurationFiles.isEmpty() ) {
                     // ---- Unmanaged
@@ -363,7 +363,7 @@ public class ActionDatasets extends ActionContainerItem {
                     // Delete databases created by the UI, or the admin operation, which are
                     // in predictable, unshared location on disk.
                     // There may not be any database files, the in-memory case.
-                    Path pDatabase = FusekiApp.dirDatabases.resolve(filename);
+                    Path pDatabase = FusekiServerCtl.dirDatabases.resolve(filename);
                     if ( Files.exists(pDatabase)) {
                         try {
                             if ( Files.isSymbolicLink(pDatabase)) {
@@ -411,7 +411,7 @@ public class ActionDatasets extends ActionContainerItem {
             params.put(Template.NAME, dbName.substring(1));
         else
             params.put(Template.NAME, dbName);
-        FusekiApp.addGlobals(params);
+        FusekiServerCtl.addGlobals(params);
 
         //action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType ));
 
