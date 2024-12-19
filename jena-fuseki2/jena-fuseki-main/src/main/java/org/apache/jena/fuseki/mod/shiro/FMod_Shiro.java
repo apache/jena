@@ -34,7 +34,7 @@ import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.cmds.ServerArgs;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
-import org.apache.jena.fuseki.mgt.FusekiApp;
+import org.apache.jena.fuseki.mgt.FusekiServerCtl;
 import org.apache.jena.rdf.model.Model;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
@@ -122,7 +122,7 @@ public class FMod_Shiro implements FusekiModule {
     public void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) {
         if ( shiroFile == null ) {
             // Environment variable:  FUSEKI_SHIRO
-            shiroFile = Lib.getenv(FusekiApp.envFusekiShiro);
+            shiroFile = Lib.getenv(FusekiServerCtl.envFusekiShiro);
         }
 
         if ( shiroFile == null ) {
