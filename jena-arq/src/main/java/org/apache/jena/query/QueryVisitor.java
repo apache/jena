@@ -24,25 +24,25 @@ import org.apache.jena.sparql.core.Prologue ;
 
 public interface QueryVisitor
 {
-    public void startVisit(Query query) ;
-    public void visitPrologue(Prologue prologue) ;
+    public default void startVisit(Query query) {}
+    public default void visitPrologue(Prologue prologue) {}
 
-    public void visitResultForm(Query query) ;
-    public void visitSelectResultForm(Query query) ;
-    public void visitConstructResultForm(Query query) ;
-    public void visitDescribeResultForm(Query query) ;
-    public void visitAskResultForm(Query query) ;
-    public void visitJsonResultForm(Query query);
+    public default void visitResultForm(Query query) {}
+    public default void visitSelectResultForm(Query query) {}
+    public default void visitConstructResultForm(Query query) {}
+    public default void visitDescribeResultForm(Query query) {}
+    public default void visitAskResultForm(Query query) {}
+    public default void visitJsonResultForm(Query query) {}
 
-    public void visitDatasetDecl(Query query) ;
-    public void visitQueryPattern(Query query) ;
-    
-    public void visitGroupBy(Query query) ;
-    public void visitHaving(Query query) ;
-    public void visitOrderBy(Query query) ;
-    public void visitLimit(Query query) ;
-    public void visitOffset(Query query) ;
-    public void visitValues(Query query) ;
-    
-    public void finishVisit(Query query) ;
+    public default void visitDatasetDecl(Query query) {}
+    public default void visitQueryPattern(Query query) {}
+
+    public default void visitGroupBy(Query query) {}
+    public default void visitHaving(Query query) {}
+    public default void visitOrderBy(Query query) {}
+    public default void visitLimit(Query query) {}
+    public default void visitOffset(Query query) {}
+    public default void visitValues(Query query) {}
+
+    public default void finishVisit(Query query) {}
 }
