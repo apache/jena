@@ -15,14 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.fuseki.metrics.prometheus;
+package org.apache.jena.fuseki.metrics;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.prometheusmetrics.PrometheusConfig;
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 import jakarta.servlet.ServletOutputStream;
-import org.apache.jena.fuseki.metrics.FusekiMetrics;
-import org.apache.jena.fuseki.metrics.MetricsProvider;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.riot.WebContent;

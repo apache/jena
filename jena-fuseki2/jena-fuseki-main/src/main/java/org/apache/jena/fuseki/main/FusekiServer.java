@@ -52,7 +52,8 @@ import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.ctl.*;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.main.sys.*;
-import org.apache.jena.fuseki.metrics.MetricsProviderRegistry;
+import org.apache.jena.fuseki.metrics.MetricsProvider;
+import org.apache.jena.fuseki.mod.prometheus.PrometheusMetricsProvider;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.graph.Graph;
@@ -1406,17 +1407,19 @@ public class FusekiServer {
             // FusekiModule call - inspect the DataAccessPointRegistry.
             FusekiModuleStep.configured(modules, this, dapRegistry, configModel);
 
-            // Setup Prometheus metrics. This will become a module.
-            bindPrometheus(dapRegistry);
-
-            // Process the DataAccessPointRegistry for security.
-            buildSecurity(dapRegistry);
-
             try {
                 validate();
 
+                // Process the DataAccessPointRegistry for security.
+                buildSecurity(dapRegistry);
+
                 // Build the ServletContextHandler - the Jetty server configuration.
                 ServletContextHandler handler = buildFusekiServerContext();
+                handler.getServletContext();
+
+                // Setup Prometheus metrics.
+                bindPrometheus(handler.getServletContext(), dapRegistry);
+
                 boolean hasFusekiSecurityHandler = applySecurityHandler(handler);
                 // Prepare the DataAccessPointRegistry.
                 // Put it in the servlet context.
@@ -1426,8 +1429,6 @@ public class FusekiServer {
                 // Must be after the DataAccessPointRegistry is in the servlet context.
                 if ( hasFusekiSecurityHandler )
                     applyAccessControl(handler, dapRegistry);
-
-
 
                 if ( jettyServerConfig != null ) {
                     // Jetty server configuration provided.
@@ -1487,9 +1488,15 @@ public class FusekiServer {
             return dapRegistry;
         }
 
-        private void bindPrometheus(DataAccessPointRegistry dapRegistry) {
-            if ( withMetrics )
-                MetricsProviderRegistry.dataAccessPointMetrics(dapRegistry);
+        private void bindPrometheus(ServletContext servletContext, DataAccessPointRegistry dapRegistry) {
+            if ( withMetrics ) {
+                MetricsProvider metricProvider = MetricsProvider.getMetricsProvider(servletContext);
+                if ( metricProvider == null ) {
+                    metricProvider = new PrometheusMetricsProvider();
+                    MetricsProvider.setMetricsProvider(servletContext, metricProvider);
+                }
+                metricProvider.dataAccessPointMetrics(metricProvider, dapRegistry);
+            }
         }
 
         /**

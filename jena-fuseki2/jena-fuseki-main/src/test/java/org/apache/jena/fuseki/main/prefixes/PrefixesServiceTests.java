@@ -16,17 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.system;
+package org.apache.jena.fuseki.main.prefixes;
 
-import org.apache.jena.sparql.core.DatasetGraph;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-public class UploadDetailsWithName {
-    public final String graphName;
-    public final DatasetGraph data;
-    public final long count;
-    public UploadDetailsWithName(String gn, DatasetGraph dsg, long parserCount) {
-        this.graphName = gn;
-        this.data = dsg;
-        this.count = parserCount;
-    }
-}
+@Suite
+@SelectClasses({
+      TestPrefixesActions.class
+    , TestPrefixesServicePlain.class
+    , TestPrefixesServiceRDF.class
+    , TestPrefixesServicePrefixesMap.class
+    , TestPrefixesActionResponse.class
+})
+public class PrefixesServiceTests {}

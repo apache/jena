@@ -38,7 +38,7 @@ import org.apache.jena.fuseki.main.sys.FusekiModule;
 import org.apache.jena.fuseki.mgt.ActionBackup;
 import org.apache.jena.fuseki.mgt.ActionBackupList;
 import org.apache.jena.fuseki.mgt.ActionDatasets;
-import org.apache.jena.fuseki.mgt.FusekiApp;
+import org.apache.jena.fuseki.mgt.FusekiServerCtl;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
@@ -80,8 +80,8 @@ public class FMod_Admin implements FusekiModule {
         ArgModuleGeneral argModule = new ArgModuleGeneral() {
             @Override
             public void registerWith(CmdGeneral cmdLine) {
-                cmdLine.add(argAdmin, "--admin", "Enable server admin with user:password");
-                cmdLine.add(argAdminArea,"--adminRun", "Directory for server configuration");
+//                cmdLine.add(argAdmin, "--admin", "Enable server admin with user:password");
+//                cmdLine.add(argAdminArea,"--adminRun", "Directory for server configuration");
             }
             @Override
             public void processArgs(CmdArgModule cmdLine) {}
@@ -101,6 +101,7 @@ public class FMod_Admin implements FusekiModule {
         if ( dirStr != null )
             directory = Path.of(dirStr);
 
+        // Phase 2
         if ( admin.equals("localhost") ) {}
         else {
             String pwFile = admin;
@@ -113,7 +114,7 @@ public class FMod_Admin implements FusekiModule {
             if ( ! Files.isWritable(directory)  )
                 throw new FusekiConfigException("Not writable: "+dirStr);
         }
-        FusekiApp.FUSEKI_BASE = directory;
+        FusekiServerCtl.FUSEKI_BASE = directory;
     }
 
 //    @Override
@@ -124,28 +125,26 @@ public class FMod_Admin implements FusekiModule {
 
     @Override
     public void prepare(FusekiServer.Builder builder, Set<String> datasetNames, Model configModel) {
-        // Unpack
+        // Ensure the work area is setup
 
-        // XXX Do better!
-        FusekiApp.FUSEKI_BASE = null;
-
-//        FusekiApp fusekiApp = new FusekiApp();
-//        //fusekiApp.init();
-//        String fusekiApp.FUSEKI_BASE
-
-        Path path = FusekiApp.setup();
+        Path path;
+        synchronized(FusekiServerCtl.class) {
+            // Temporary - one at a time because FUSEKI_BASE is static.
+            FusekiServerCtl app = new FusekiServerCtl(null);
+            path = app.setup();
+        }
 
         FmtLog.info(LOG, "Fuseki Admin: %s", path);
 
         // Shiro.
-        Path shiroIni = path.resolve(FusekiApp.DFT_SHIRO_INI);
+        Path shiroIni = path.resolve(FusekiServerCtl.DFT_SHIRO_INI);
         if ( Files.exists(shiroIni) ) {
-            System.setProperty(FusekiApp.envFusekiShiro, shiroIni.toString());
+            System.setProperty(FusekiServerCtl.envFusekiShiro, shiroIni.toString());
         } else {
             FmtLog.info(LOG, "No shiro.ini: dir=%s", path);
         }
 
-        String configDir = FusekiApp.dirConfiguration.toString();
+        String configDir = FusekiServerCtl.dirConfiguration.toString();
         List<DataAccessPoint> directoryDatabases = FusekiConfig.readConfigurationDirectory(configDir);
 
         if ( directoryDatabases.isEmpty() )

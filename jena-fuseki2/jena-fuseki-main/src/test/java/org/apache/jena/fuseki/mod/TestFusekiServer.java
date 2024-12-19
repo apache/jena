@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.fuseki.run.FusekiModServer;
 
 /**
  * Test for the whole Fuseki server, not components.

@@ -26,6 +26,7 @@ import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.rdf.model.Model;
 
+// Must be in jena-fuseki-main/src/test/resources/META-INF/services/org.apache.jena.fuseki.main.sys.FusekiAutoModule
 public class ModuleByServiceLoader extends ModuleForTest implements FusekiAutoModule  {
 
     private static ModuleByServiceLoader module = null;

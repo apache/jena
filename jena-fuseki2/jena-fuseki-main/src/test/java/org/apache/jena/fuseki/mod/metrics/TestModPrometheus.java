@@ -27,13 +27,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
+import org.apache.jena.fuseki.metrics.MetricsProvider;
 import org.apache.jena.fuseki.mod.prometheus.FMod_Prometheus;
+import org.apache.jena.fuseki.mod.prometheus.PrometheusMetricsProvider;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.HttpLib;
 import org.apache.jena.riot.WebContent;
@@ -41,6 +41,7 @@ import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestModPrometheus {
 
     private FusekiServer testServer = null;
@@ -62,6 +63,15 @@ public class TestModPrometheus {
     }
 
     @Test
+    @Order(1)
+    public void metrics_available() {
+        MetricsProvider metricsProvider = MetricsProvider.getMetricsProvider(testServer.getServletContext());
+        assertNotNull(metricsProvider);
+        assertTrue(metricsProvider instanceof PrometheusMetricsProvider);
+    }
+
+    @Test
+    @Order(2)
     public void can_retrieve_metrics() {
         String metricsURL = testServer.serverURL()+"$/metrics";
         HttpRequest request = HttpRequest.newBuilder().uri(HttpLib.toRequestURI(metricsURL)).build();
