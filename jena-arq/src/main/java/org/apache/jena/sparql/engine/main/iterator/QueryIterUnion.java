@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql.engine.main.iterator;
 
+import java.util.Iterator;
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
@@ -26,20 +27,18 @@ import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.engine.iterator.QueryIterConcat ;
+import org.apache.jena.sparql.engine.iterator.QueryIter;
 import org.apache.jena.sparql.engine.iterator.QueryIterRepeatApply ;
-import org.apache.jena.sparql.engine.iterator.QueryIterSingleton ;
 import org.apache.jena.sparql.engine.main.QC ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
-
 
 /** Execute each sub stage against the input.
  *  Streamed SPARQL Union. */
 
-public class QueryIterUnion extends QueryIterRepeatApply 
+public class QueryIterUnion extends QueryIterRepeatApply
 {
     protected List<Op> subOps  ;
-    
+
     public QueryIterUnion(QueryIterator input,
                           List<Op> subOps,
                           ExecutionContext context)
@@ -51,21 +50,62 @@ public class QueryIterUnion extends QueryIterRepeatApply
     @Override
     protected QueryIterator nextStage(Binding binding)
     {
-        QueryIterConcat unionQIter = new QueryIterConcat(getExecContext()) ;
-        for (Op subOp : subOps)
-        {
-            subOp = QC.substitute(subOp, binding) ;
-            QueryIterator parent = QueryIterSingleton.create(binding, getExecContext()) ;
-            QueryIterator qIter = QC.execute(subOp, parent, getExecContext()) ;
-            unionQIter.add(qIter) ;
-        }
-        
-        return unionQIter ;
+        Iterator<Op> subOpIt = subOps.iterator();
+        return new QueryIter(getExecContext()) {
+            QueryIterator qIter = null;
+
+            @Override
+            protected void requestCancel() {
+                performRequestCancel(qIter);
+            }
+
+            @Override
+            protected Binding moveToNextBinding() {
+                return qIter.next();
+            }
+
+            @Override
+            protected boolean hasNextBinding() {
+                for (;;) {
+                    if (qIter != null) {
+                        if (qIter.hasNext()) {
+                            return true;
+                        } else {
+                            qIter.close();
+                            qIter = null;
+                        }
+                    } else {
+                        if (subOpIt.hasNext()) {
+                            Op subOp = subOpIt.next();
+                            qIter = QC.execute(subOp, binding, getExecContext());
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            protected void closeIterator() {
+                performClose(qIter);
+            }
+
+            @Override
+            public void output(IndentedWriter out, SerializationContext sCxt) {
+                QueryIterator subIter = qIter;
+                out.println(Lib.className(this) + "/" + Lib.className(subIter));
+                if (subIter != null) {
+                    out.incIndent();
+                    subIter.output(out, sCxt);
+                    out.decIndent();
+                }
+            }
+        };
     }
-    
+
     @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
-    { 
+    {
         out.println(Lib.className(this)) ;
         out.incIndent() ;
         for (Op op : subOps)

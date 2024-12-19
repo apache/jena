@@ -20,6 +20,7 @@ package org.apache.jena.sparql.engine.main;
 
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.sparql.core.BasicPattern ;
 import org.apache.jena.sparql.core.Substitute ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
@@ -49,6 +50,11 @@ public class StageGeneratorGeneric implements StageGenerator {
         return execute(pattern, reorder, input, execCxt) ;
     }
 
+    /**
+     * Attempts to construct an iterator that executes the input against the pattern.
+     * If the construction fails, such as due to {@link QueryCancelledException}, then the exception is passed on
+     * and the input iterator will be closed.
+     */
     protected QueryIterator execute(BasicPattern pattern, ReorderTransformation reorder,
                                     QueryIterator input, ExecutionContext execCxt) {
         Explain.explain(pattern, execCxt.getContext()) ;
@@ -65,13 +71,21 @@ public class StageGeneratorGeneric implements StageGenerator {
                 QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
                 // And now use this one
                 input = peek ;
-                Binding b = peek.peek() ;
+                Binding b ;
+                try {
+                    b = peek.peek() ;
+                } catch (Exception e) {
+                    // Close peek iterator on failure e.g. due to cancellation.
+                    peek.close() ;
+                    e.addSuppressed(new RuntimeException("Error during peek().")) ;
+                    throw e ;
+                }
                 bgp2 = Substitute.substitute(pattern, b) ;
             }
             ReorderProc reorderProc = reorder.reorderIndexes(bgp2) ;
             pattern = reorderProc.reorder(pattern) ;
         }
         Explain.explain("Reorder/generic", pattern, execCxt.getContext()) ;
-        return PatternMatchData.execute(execCxt.getActiveGraph(), pattern, input, null, execCxt);
+        return PatternMatchData.execute(execCxt.getActiveGraph(), pattern, input, null, execCxt) ;
     }
 }

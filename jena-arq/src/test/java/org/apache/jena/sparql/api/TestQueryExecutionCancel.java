@@ -23,6 +23,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -47,6 +48,8 @@ import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.iterator.QueryIteratorCheck;
+import org.apache.jena.sparql.engine.iterator.QueryIteratorCheck.OpenIteratorException;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.QueryExecBuilder;
 import org.apache.jena.sparql.expr.NodeValue;
@@ -335,6 +338,18 @@ public class TestQueryExecutionCancel {
      *  If this test hangs then it is likely that something went wrong in the cancellation machinery. */
     @Test(timeout = 10000)
     public void test_cancel_concurrent_1() {
+        // Create a query that creates 3 cross joins - resulting in one billion result rows.
+        test_cancel_concurrent("SELECT * { ?a ?b ?c . ?d ?e ?f . ?g ?h ?i . }");
+    }
+
+    @Test(timeout = 10000)
+    public void test_cancel_concurrent_2() {
+        // Create a query that creates 3 cross joins - resulting in one billion result rows.
+        // Tests against additional operators, namely UNION and BIND.
+        test_cancel_concurrent("SELECT * { { ?a ?b ?c . ?d ?e ?f . ?g ?h ?i . } UNION { BIND('x' AS ?x) } }");
+    }
+
+    private static void test_cancel_concurrent(String queryString) {
         int maxCancelDelayInMillis = 100;
 
         int cpuCount = Runtime.getRuntime().availableProcessors();
@@ -344,8 +359,7 @@ public class TestQueryExecutionCancel {
         // Create a model with 1000 triples
         Model model = ModelFactory.createModelForGraph(createTestGraph());
 
-        // Create a query that creates 3 cross joins - resulting in one billion result rows
-        Query query = QueryFactory.create("SELECT * { ?a ?b ?c . ?d ?e ?f . ?g ?h ?i . }");
+        Query query = QueryFactory.create(queryString);
         Callable<QueryExecution> qeFactory = () -> QueryExecutionFactory.create(query, model);
 
         runConcurrentAbort(taskCount, maxCancelDelayInMillis, qeFactory, TestQueryExecutionCancel::doCount);
@@ -375,6 +389,10 @@ public class TestQueryExecutionCancel {
                     } catch (Exception e) {
                         throw new RuntimeException("Failed to build a query execution", e);
                     }
+
+                    // Fail if any iterators are not properly closed
+                    qe.getContext().set(QueryIteratorCheck.failOnOpenIterator, true);
+
                     Future<?> future = executorService.submit(() -> processor.apply(qe));
                     int delayToAbort = cancelDelayRandom.nextInt(maxCancelDelay);
                     try {
@@ -394,6 +412,13 @@ public class TestQueryExecutionCancel {
                             e.printStackTrace();
                         }
                         Assert.assertEquals(QueryCancelledException.class, cause.getClass());
+
+                        boolean hasOpenIterators = Arrays.stream(cause.getSuppressed())
+                                .anyMatch(x -> x instanceof OpenIteratorException);
+                        if (hasOpenIterators) {
+                            throw new RuntimeException("Encountered open iterators.", e);
+                        }
+
                     } catch (InterruptedException e) {
                         // Ignored
                     } finally {
