@@ -231,13 +231,6 @@ class OpRewriter extends AbstractRewriter<Op> implements OpVisitor {
     }
 
     @Override
-    public void visit(OpDiff opDiff) {
-        opDiff.getRight().visit(this);
-        opDiff.getLeft().visit(this);
-        push(OpDiff.create(pop(), pop()));
-    }
-
-    @Override
     public void visit(OpMinus opMinus) {
         opMinus.getRight().visit(this);
         opMinus.getLeft().visit(this);
@@ -249,6 +242,20 @@ class OpRewriter extends AbstractRewriter<Op> implements OpVisitor {
         opLateral.getRight().visit(this);
         opLateral.getLeft().visit(this);
         push(OpLateral.create(pop(), pop()));
+    }
+
+    @Override
+    public void visit(OpSemiJoin opSemiJoin) {
+        opSemiJoin.getRight().visit(this);
+        opSemiJoin.getLeft().visit(this);
+        push(OpSemiJoin.create(pop(), pop()));
+    }
+
+    @Override
+    public void visit(OpAntiJoin opAntiJoin) {
+        opAntiJoin.getRight().visit(this);
+        opAntiJoin.getLeft().visit(this);
+        push(OpAntiJoin.create(pop(), pop()));
     }
 
     @Override

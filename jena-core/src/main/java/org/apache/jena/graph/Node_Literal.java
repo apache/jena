@@ -49,7 +49,7 @@ public class Node_Literal extends Node
     /*package*/ Node_Literal(String lex, String lang, TextDirection textDir) {
         Objects.requireNonNull(lex, "null lexical form for literal");
         Objects.requireNonNull(lang, "null language");
-        Objects.requireNonNull(textDir, "null text direction");
+        Objects.requireNonNull(textDir, "null base direction");
         this.label = LiteralLabelFactory.createDirLang(lex, lang, textDir);
     }
 
@@ -80,8 +80,8 @@ public class Node_Literal extends Node
     { return getLiteral().language(); }
 
     @Override
-    public final TextDirection getLiteralTextDirection()
-    { return getLiteral().initialTextDirection(); }
+    public final TextDirection getLiteralBaseDirection()
+    { return getLiteral().baseDirection(); }
 
 
     @Override

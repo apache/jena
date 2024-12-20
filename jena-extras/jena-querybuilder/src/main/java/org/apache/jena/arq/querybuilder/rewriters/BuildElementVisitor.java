@@ -25,7 +25,6 @@ import org.apache.jena.sparql.syntax.*;
 /**
  * An element visitor that does an in-place modification of the elements to fix
  * union-of-one and similar issues.
- *
  */
 public class BuildElementVisitor implements ElementVisitor {
     private Element result;
@@ -113,6 +112,25 @@ public class BuildElementVisitor implements ElementVisitor {
         }
     }
 
+    @Override
+    public void visit(ElementSemiJoin el) {
+        el.getSubElement().visit(this);
+        if (result == el.getSubElement()) {
+            result = el;
+        } else {
+            result = new ElementSemiJoin(result);
+        }
+    }
+
+    @Override
+    public void visit(ElementAntiJoin el) {
+        el.getSubElement().visit(this);
+        if (result == el.getSubElement()) {
+            result = el;
+        } else {
+            result = new ElementAntiJoin(result);
+        }
+    }
 
     @Override
     public void visit(ElementOptional el) {

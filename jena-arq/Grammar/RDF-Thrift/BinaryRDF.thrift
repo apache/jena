@@ -44,8 +44,10 @@ struct RDF_BNode {
 // union with additional values. 
 
 struct RDF_Literal {
+// Keep this numbering.
 1: required string  lex ;
 2: optional string  langtag ;
+5: optional string  baseDirection ;
 3: optional string  datatype ;          // Either 3 or 4 but UNION is heavy.
 4: optional RDF_PrefixName dtPrefix ;   // datatype as prefix name
 }

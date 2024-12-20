@@ -231,13 +231,21 @@ public interface Model
 	public Property createProperty(String nameSpace, String localName);
 
 	/**
-        Create an untyped literal from a String value with a specified language.
+       Create an untyped literal from a String value with a specified language.
 	   @param v the lexical form of the literal
 	   @param language the language associated with the literal
 	   @return a new literal representing the value v with the given language
 	 */
-
 	public Literal createLiteral(String v, String language);
+
+	/**
+       Create an untyped literal from a String value with a specified language.
+       @param v the lexical form of the literal
+       @param language the language associated with the literal
+       @param baseDirection the base direction associated with the literal
+       @return a new literal representing the value v with the given language
+	 */
+	public Literal createLiteral(String v, String language, String baseDirection);
 
     /**
         Build a typed literal from its lexical form. The

@@ -348,8 +348,9 @@ public class RowSetReaderXML implements RowSetReader {
             return ;
         }
 
-
+        //xmlns:its="http://www.w3.org/2005/11/its" its:version="2.0"
         static final String XML_NS = ARQConstants.XML_NS ;
+        static final String ITS_NS = ARQConstants.ITS_NS ;
 
         private Binding getOneSolution() throws XMLStreamException {
             if ( finished )
@@ -420,6 +421,7 @@ public class RowSetReaderXML implements RowSetReader {
               // "If the namespaceURI is null the namespace is not checked for equality"
               // StAX(.codehaus.org) copes both ways round
               String langTag = parser.getAttributeValue(XML_NS, "lang") ;
+              String baseDir = parser.getAttributeValue(ITS_NS, "dir") ;
 
               // Works for XML literals (returning them as a string)
               String text = parser.getElementText() ;
@@ -428,7 +430,7 @@ public class RowSetReaderXML implements RowSetReader {
               if ( datatype != null )
                   dType = TypeMapper.getInstance().getSafeTypeByName(datatype) ;
 
-              Node n = NodeFactory.createLiteral(text, langTag, dType) ;
+              Node n = NodeFactory.createLiteral(text, langTag, baseDir, dType) ;
               return n ;
           }
 
@@ -497,7 +499,7 @@ public class RowSetReaderXML implements RowSetReader {
 
               if ( s == null || p == null || o == null )
                   staxError("Bad <triple> term");
-              Node node = NodeFactory.createTripleNode(s, p, o);
+              Node node = NodeFactory.createTripleTerm(s, p, o);
               return node;
           }
             return null;

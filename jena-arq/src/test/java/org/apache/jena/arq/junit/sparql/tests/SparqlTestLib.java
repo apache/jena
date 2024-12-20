@@ -48,7 +48,7 @@ class SparqlTestLib {
         throw new AssertionError(msg);
     }
 
-    static private String queryFile(ManifestEntry entry) {
+    static String queryFile(ManifestEntry entry) {
         Resource r = entry.getAction();
 
         if ( r.hasProperty(VocabTestQuery.query) )

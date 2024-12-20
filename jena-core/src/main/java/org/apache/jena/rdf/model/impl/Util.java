@@ -142,7 +142,7 @@ public class Util extends Object {
 
     /**
      * A Node is a well-formed language string if it has a language tag
-     * and it does not have an initial text direction.
+     * and it does not have a base direction.
      * This excludes {@code "abc"^^rdf:langString} which is not well-formed.
      */
     public static boolean isLangString(Node n) {
@@ -154,7 +154,7 @@ public class Util extends Object {
 
     /**
      * A Node is a well-formed directional language string if it has a language tag
-     * and it has an initial text direction.
+     * and it has an base direction.
      */
     public static boolean isDirLangString(Node n) {
         Objects.requireNonNull(n);
@@ -179,7 +179,7 @@ public class Util extends Object {
     }
 
     private static boolean hasDirectionText(Node n) {
-        TextDirection textDir = n.getLiteralTextDirection();
+        TextDirection textDir = n.getLiteralBaseDirection();
         return textDir != null;
     }
 
@@ -209,13 +209,13 @@ public class Util extends Object {
         return ! lang.equals("");
     }
 
-    /** Return true if the literal is well-formed, has a language tag and a text direction. */
+    /** Return true if the literal is well-formed, has a language tag and a base direction. */
     public static boolean isDirLangString(Literal lit) {
         Objects.requireNonNull(lit);
         String lang = lit.getLanguage();
         if ( lang == null )
             return false;
-        String textDir = lit.getTextDirection();
+        String textDir = lit.getBaseDirection();
         if ( textDir == null )
             return false;
         return true;
