@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;

@@ -18,8 +18,13 @@
 
 package org.apache.jena.fuseki.main;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.graph.Graph;
@@ -28,12 +33,10 @@ import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.Convert;
 import org.apache.jena.update.UpdateExecution;
-import org.junit.Before;
-import org.junit.Test;
 
 public class TestSPARQLProtocolTimeout extends AbstractFusekiTest
 {
-    @Before
+    @BeforeEach
     public void before() {
         Graph graph = createTestGraph();
         GSP.service(serviceGSP()).defaultGraph().PUT(graph);
@@ -54,11 +57,13 @@ public class TestSPARQLProtocolTimeout extends AbstractFusekiTest
 
     /** If the HTTP client reaches its timeout and disconnects from the server then it is up
      *  to the server whether it will cancel or complete the started SPARQL update execution. */
-    @Test(expected = HttpException.class)
+    @Test
     public void update_timeout_01() {
-        UpdateExecution.service(serviceUpdate())
-            .update("INSERT { } WHERE { ?a ?b ?c . ?d ?e ?f . ?g ?h ?i . }")
-            .timeout(500, TimeUnit.MILLISECONDS)
-            .execute();
+        assertThrows(HttpException.class, ()->
+            UpdateExecution.service(serviceUpdate())
+                .update("INSERT { } WHERE { ?a ?b ?c . ?d ?e ?f . ?g ?h ?i . }")
+                .timeout(500, TimeUnit.MILLISECONDS)
+                .execute()
+                );
     }
 }

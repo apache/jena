@@ -20,10 +20,11 @@ package org.apache.jena.fuseki.main.access;
 
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectOK;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery401;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.main.FusekiServer;
@@ -44,7 +45,7 @@ public class TestPasswdOnly {
     protected static int port;
     private static AuthSetup auth1;
 
-    @BeforeClass public static void beforeClass () {
+    @BeforeAll public static void beforeClass () {
         port = WebLib.choosePort();
         server = FusekiServer.create()
             //.verbose(true)
@@ -59,18 +60,20 @@ public class TestPasswdOnly {
         auth1 = new AuthSetup("localhost", port, "user1", "pw1", null);
     }
 
-    @AfterClass public static void afterClass () {
+    @AfterAll public static void afterClass () {
         server.stop();
     }
 
     // Bounced by Jetty.
-    @Test(expected=QueryExceptionHTTP.class)
+    @Test
     public void passwd_no_user_A() {
-        try (RDFLink conn = RDFLink.queryConnect("http://localhost:" + port + "/db")) {
-            try ( QueryExec qExec = conn.query("ASK{}") ) {
-                qExec.ask();
+        assertThrows(QueryExceptionHTTP.class, () -> {
+            try (RDFLink conn = RDFLink.queryConnect("http://localhost:" + port + "/db")) {
+                try (QueryExec qExec = conn.query("ASK{}")) {
+                    qExec.ask();
+                }
             }
-        }
+        });
     }
 
     @Test

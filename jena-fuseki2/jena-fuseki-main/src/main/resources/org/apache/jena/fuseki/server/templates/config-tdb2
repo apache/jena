@@ -1,0 +1,32 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+
+## ---------------------------------------------------------------
+## Updatable TDB dataset with all services enabled.
+
+<#service_tdb_all> rdf:type fuseki:Service ;
+    rdfs:label                         "TDB2 {NAME}" ;
+    fuseki:name                        "{NAME}" ;
+    fuseki:serviceQuery                "" ;
+    fuseki:serviceQuery                "sparql" ;
+    fuseki:serviceQuery                "query" ;
+    fuseki:serviceUpdate               "" ;
+    fuseki:serviceUpdate               "update" ;
+    fuseki:serviceUpload               "upload" ;
+    fuseki:serviceReadWriteGraphStore  "data" ;     
+    fuseki:serviceReadGraphStore       "get" ;
+    fuseki:dataset                     <#tdb_dataset_readwrite> ;
+    
+    .
+
+<#tdb_dataset_readwrite> rdf:type      tdb2:DatasetTDB2 ;
+    tdb2:location "{FUSEKI_BASE}/databases/{NAME}" ;
+    ##ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "3000" ] ;
+    ##tdb2:unionDefaultGraph true ;
+    .

@@ -21,6 +21,9 @@ package org.apache.jena.fuseki.main;
 import java.net.Authenticator;
 import java.net.http.HttpClient;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import org.apache.jena.http.auth.AuthLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
@@ -28,8 +31,6 @@ import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.jena.sparql.exec.http.QueryExecutionHTTPBuilder;
 import org.apache.jena.sparql.exec.http.UpdateExecutionHTTP;
 import org.apache.jena.sparql.exec.http.UpdateExecutionHTTPBuilder;
-import org.junit.After;
-import org.junit.Before;
 
 /**
  * Common setup for running a server with an initially empty database with authentication by password file.
@@ -44,7 +45,7 @@ public class AbstractTestAuth_JDK {
     protected String databaseURL()    { return server.datasetURL(datasetPath()); }
     protected String serverURL()      { return server.serverURL(); }
 
-    @Before public void startServer() {
+    @BeforeEach public void startServer() {
         String passwordFile = "testing/Access/auth-jdk-passwd";
         DatasetGraph dsgTesting = DatasetGraphFactory.createTxnMem();
         server = FusekiServer.create()
@@ -57,7 +58,7 @@ public class AbstractTestAuth_JDK {
         server.start();
     }
 
-    @After public void stopServer() {
+    @AfterEach public void stopServer() {
         if ( server != null )
             server.stop();
     }

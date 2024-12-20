@@ -145,11 +145,6 @@ public class FusekiAutoModules {
          * This step does not create the module objects.
          */
         private ServiceLoader<FusekiAutoModule> discover() {
-            // Look for the 4.8.0 name (FusekiModule) which (4.9.0) is split into
-            // FusekiModule (interface) and FusekiAutoModule (this is loaded by ServiceLoader)
-            // Remove sometime!
-            discoveryWarnLegacy();
-
             Class<FusekiAutoModule> moduleClass = FusekiAutoModule.class;
             ServiceLoader<FusekiAutoModule> newServiceLoader = null;
             synchronized (this) {
@@ -166,18 +161,6 @@ public class FusekiAutoModules {
                 }
             }
             return newServiceLoader;
-        }
-
-        private void discoveryWarnLegacy() {
-            Class<FusekiModule> moduleClass = FusekiModule.class;
-            try {
-                ServiceLoader<FusekiModule> newServiceLoader = ServiceLoader.load(moduleClass, this.getClass().getClassLoader());
-                newServiceLoader.stream().forEach(provider->{
-                    FmtLog.warn(FusekiAutoModules.class, "Ignored: \"%s\" : legacy use of interface FusekiModule which has changed to FusekiAutoModule", provider.type().getSimpleName());
-                });
-            } catch (ServiceConfigurationError ex) {
-                // Ignore - we were only checking.
-            }
         }
 
         /**
