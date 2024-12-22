@@ -17,11 +17,7 @@
 
 package org.apache.jena.ext.xerces.impl.dv.xs;
 
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.apache.jena.ext.xerces.impl.dv.InvalidDatatypeValueException;
-import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
 
 /**
  * Validator for &lt;gMonth&gt; datatype (W3C Schema Datatypes)
@@ -43,7 +39,7 @@ public class MonthDV extends AbstractDateTimeDV {
      * @return a valid and normalized gMonth object
      */
     @Override
-    public Object getActualValue(String content, ValidationContext context) throws InvalidDatatypeValueException{
+    public Object getActualValue(String content) throws InvalidDatatypeValueException{
         try{
             return parse(content);
         } catch(Exception ex){
@@ -101,48 +97,6 @@ public class MonthDV extends AbstractDateTimeDV {
     }
 
     /**
-     * Overwrite compare algorithm to optimize month comparison
-     *
-     * REVISIT: this one is lack of the third parameter: boolean strict, so it
-     *          doesn't override the method in the base. But maybe this method
-     *          is not correctly implemented, and I did encounter errors when
-     *          trying to add the extra parameter. I'm leaving it as is. -SG
-     *
-     * @param date1
-     * @param date2
-     * @return less, greater, equal, indeterminate
-     */
-    /*protected  short compareDates(DateTimeData date1, DateTimeData date2) {
-
-        if ( date1.utc==date2.utc ) {
-            return (short)((date1.month>=date2.month)?(date1.month>date2.month)?1:0:-1);
-        }
-
-        if ( date1.utc=='Z' || date2.utc=='Z' ) {
-
-            if ( date1.month==date2.month ) {
-                //--05--Z and --05--
-                return INDETERMINATE;
-            }
-            if ( (date1.month+1 == date2.month || date1.month-1 == date2.month) ) {
-                //--05--Z and (--04-- or --05--)
-                //REVISIT: should this case be less than or equal?
-                //         maxExclusive should fail but what about maxInclusive
-                //
-                return INDETERMINATE;
-            }
-        }
-
-        if ( date1.month<date2.month ) {
-            return -1;
-        }
-        else {
-            return 1;
-        }
-
-    }*/
-
-    /**
      * Converts month object representation to String
      *
      * @param date   month object
@@ -156,13 +110,5 @@ public class MonthDV extends AbstractDateTimeDV {
         append(message, date.month, 2);
         append(message, (char)date.utc, 0);
         return message.toString();
-    }
-    
-    @Override
-    protected XMLGregorianCalendar getXMLGregorianCalendar(DateTimeData date) {
-        return datatypeFactory.newXMLGregorianCalendar(DatatypeConstants.FIELD_UNDEFINED, date.unNormMonth, 
-                DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, 
-                DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, 
-                date.hasTimeZone() ? date.timezoneHr * 60 + date.timezoneMin : DatatypeConstants.FIELD_UNDEFINED);
     }
 }

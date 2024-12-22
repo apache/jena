@@ -17,11 +17,7 @@
 
 package org.apache.jena.ext.xerces.impl.dv.xs;
 
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.apache.jena.ext.xerces.impl.dv.InvalidDatatypeValueException;
-import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
 
 /**
  * Validator for &lt;gMonthDay&gt; datatype (W3C Schema Datatypes)
@@ -46,7 +42,7 @@ public class MonthDayDV extends AbstractDateTimeDV {
      * @return a valid and normalized gMonthDay object
      */
     @Override
-    public Object getActualValue(String content, ValidationContext context) throws InvalidDatatypeValueException {
+    public Object getActualValue(String content) throws InvalidDatatypeValueException {
         try{
             return parse(content);
         } catch(Exception ex){
@@ -119,14 +115,6 @@ public class MonthDayDV extends AbstractDateTimeDV {
         append(message, date.day, 2);
         append(message, (char)date.utc, 0);
         return message.toString();
-    }
-    
-    @Override
-    protected XMLGregorianCalendar getXMLGregorianCalendar(DateTimeData date) {
-        return datatypeFactory.newXMLGregorianCalendar(DatatypeConstants.FIELD_UNDEFINED, date.unNormMonth, date.unNormDay, 
-                DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, 
-                DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, 
-                date.hasTimeZone() ? date.timezoneHr * 60 + date.timezoneMin : DatatypeConstants.FIELD_UNDEFINED);
     }
 }
 

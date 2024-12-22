@@ -18,7 +18,6 @@
 package org.apache.jena.ext.xerces.impl.dv.xs;
 
 import org.apache.jena.ext.xerces.impl.dv.InvalidDatatypeValueException;
-import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
 
 /**
  * Validator for &lt;dateTimeStamp&gt; datatype (W3C Schema Datatypes)
@@ -28,7 +27,7 @@ public class DateTimeStampDV extends DateTimeDV {
    private final String invalidDateTimeStampMessage = "%s is an invalid dateTimeStamp data type value. The timezone is missing.";
 
    @Override
-   public Object getActualValue(String content, ValidationContext context) throws InvalidDatatypeValueException {
+   public Object getActualValue(String content) throws InvalidDatatypeValueException {
       try{
          return parse(content);
       } catch(Exception ex){

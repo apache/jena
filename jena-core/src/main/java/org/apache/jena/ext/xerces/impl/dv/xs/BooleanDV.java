@@ -18,7 +18,6 @@
 package org.apache.jena.ext.xerces.impl.dv.xs;
 
 import org.apache.jena.ext.xerces.impl.dv.InvalidDatatypeValueException;
-import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
 
 /**
  * Represent the schema type "boolean"
@@ -37,7 +36,7 @@ public class BooleanDV extends TypeValidator {
         return (XSSimpleTypeDecl.FACET_PATTERN | XSSimpleTypeDecl.FACET_WHITESPACE);
     }
 
-    public Object getActualValue(String content, ValidationContext context) throws InvalidDatatypeValueException {
+    public Object getActualValue(String content) throws InvalidDatatypeValueException {
         if ("false".equals(content) || "0".equals(content)) {
             return Boolean.FALSE;
         }

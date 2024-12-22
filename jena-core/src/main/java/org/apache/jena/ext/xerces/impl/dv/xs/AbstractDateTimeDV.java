@@ -21,11 +21,9 @@ import java.math.BigDecimal;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.jena.ext.xerces.DatatypeFactoryInst;
 import org.apache.jena.ext.xerces.impl.Constants;
-import org.apache.jena.ext.xerces.xs.datatypes.XSDateTime;
 
 /**
  * This is the base class of all date/time datatype validators.
@@ -64,29 +62,9 @@ public abstract class AbstractDateTimeDV extends TypeValidator {
     protected static final DatatypeFactory datatypeFactory = DatatypeFactoryInst.newDatatypeFactory();
 
     public short getAllowedFacets(){
-		return ( XSSimpleTypeDecl.FACET_PATTERN | XSSimpleTypeDecl.FACET_WHITESPACE | XSSimpleTypeDecl.FACET_ENUMERATION |XSSimpleTypeDecl.FACET_MAXINCLUSIVE |XSSimpleTypeDecl.FACET_MININCLUSIVE | XSSimpleTypeDecl.FACET_MAXEXCLUSIVE  | XSSimpleTypeDecl.FACET_MINEXCLUSIVE  );
+		return ( XSSimpleTypeDecl.FACET_PATTERN | XSSimpleTypeDecl.FACET_WHITESPACE | XSSimpleTypeDecl.FACET_MAXINCLUSIVE |XSSimpleTypeDecl.FACET_MININCLUSIVE | XSSimpleTypeDecl.FACET_MAXEXCLUSIVE  | XSSimpleTypeDecl.FACET_MINEXCLUSIVE  );
 	}//getAllowedFacets()
 
-
-	// distinguishes between identity and equality for date/time values
-	// ie: two values representing the same "moment in time" but with different
-	// remembered timezones are now equal but not identical.
-    public boolean isIdentical (Object value1, Object value2) {
-		if (!(value1 instanceof DateTimeData) || !(value2 instanceof DateTimeData)) {
-			return false;
-		}
-
-		DateTimeData v1 = (DateTimeData)value1;
-		DateTimeData v2 = (DateTimeData)value2;
-
-		// original timezones must be the same in addition to date/time values
-		// being 'equal'
-		if ((v1.timezoneHr == v2.timezoneHr) && (v1.timezoneMin == v2.timezoneMin)) {
-			return v1.equals(v2);
-		}
-
-		return false;
-	}//isIdentical()
 
 	// the parameters are in compiled form (from getActualValue)
     public int compare (Object value1, Object value2) {
@@ -910,7 +888,7 @@ public abstract class AbstractDateTimeDV extends TypeValidator {
 	/**
 	 * Represents date time data
 	 */
-	static final class DateTimeData implements XSDateTime {
+	static final class DateTimeData {
 		int year, month, day, hour, minute, utc;
 		double second;
 		int timezoneHr, timezoneMin;
@@ -963,96 +941,11 @@ public abstract class AbstractDateTimeDV extends TypeValidator {
             return canonical;
         }
 		/* (non-Javadoc)
-		 * @see org.apache.xerces.xs.datatypes.XSDateTime#getYear()
-		 */
-        public int getYears() {
-            if(type instanceof DurationDV)
-                return 0;
-			return normalized?year:unNormYear;
-		}
-		/* (non-Javadoc)
-		 * @see org.apache.xerces.xs.datatypes.XSDateTime#getMonth()
-		 */
-        public int getMonths() {
-            if(type instanceof DurationDV) {
-                return year*12 + month;
-            }
-			return normalized?month:unNormMonth;
-		}
-		/* (non-Javadoc)
-		 * @see org.apache.xerces.xs.datatypes.XSDateTime#getDay()
-		 */
-        public int getDays() {
-            if(type instanceof DurationDV)
-                return 0;
-			return normalized?day:unNormDay;
-		}
-		/* (non-Javadoc)
-		 * @see org.apache.xerces.xs.datatypes.XSDateTime#getHour()
-		 */
-        public int getHours() {
-            if(type instanceof DurationDV)
-                return 0;
-			return normalized?hour:unNormHour;
-		}
-		/* (non-Javadoc)
-		 * @see org.apache.xerces.xs.datatypes.XSDateTime#getMinutes()
-		 */
-        public int getMinutes() {
-            if(type instanceof DurationDV)
-                return 0;
-			return normalized?minute:unNormMinute;
-		}
-		/* (non-Javadoc)
-		 * @see org.apache.xerces.xs.datatypes.XSDateTime#getSeconds()
-		 */
-        public double getSeconds() {
-            if(type instanceof DurationDV) {
-                return day*24*60*60 + hour*60*60 + minute*60 + second;
-            }
-			return normalized?second:unNormSecond;
-		}
-		/* (non-Javadoc)
 		 * @see org.apache.xerces.xs.datatypes.XSDateTime#hasTimeZone()
 		 */
         public boolean hasTimeZone() {
 			return utc != 0;
 		}
-		/* (non-Javadoc)
-		 * @see org.apache.xerces.xs.datatypes.XSDateTime#getTimeZoneHours()
-		 */
-        public int getTimeZoneHours() {
-			return timezoneHr;
-		}
-		/* (non-Javadoc)
-		 * @see org.apache.xerces.xs.datatypes.XSDateTime#getTimeZoneMinutes()
-		 */
-        public int getTimeZoneMinutes() {
-			return timezoneMin;
-		}
-        /* (non-Javadoc)
-         * @see org.apache.xerces.xs.datatypes.XSDateTime#getLexicalValue()
-         */
-        public String getLexicalValue() {
-            return originalValue;
-        }
-        /* (non-Javadoc)
-         * @see org.apache.xerces.xs.datatypes.XSDateTime#normalize()
-         */
-        public XSDateTime normalize() {
-            if(!normalized) {
-                DateTimeData dt = (DateTimeData)this.clone();
-                dt.normalized = true;
-                return dt;
-            }
-            return this;
-        }
-        /* (non-Javadoc)
-         * @see org.apache.xerces.xs.datatypes.XSDateTime#isNormalized()
-         */
-        public boolean isNormalized() {
-            return normalized;
-        }
 
         public Object clone() {
             DateTimeData dt = new DateTimeData(this.year, this.month, this.day, this.hour,
@@ -1069,24 +962,7 @@ public abstract class AbstractDateTimeDV extends TypeValidator {
             dt.unNormSecond = this.unNormSecond;
             return dt;
         }
-
-        /* (non-Javadoc)
-         * @see org.apache.xerces.xs.datatypes.XSDateTime#getXMLGregorianCalendar()
-         */
-        public XMLGregorianCalendar getXMLGregorianCalendar() {
-            return type.getXMLGregorianCalendar(this);
-        }
-        /* (non-Javadoc)
-         * @see org.apache.xerces.xs.datatypes.XSDateTime#getDuration()
-         */
-        public Duration getDuration() {
-            return type.getDuration(this);
-        }
 	}
-
-    protected XMLGregorianCalendar getXMLGregorianCalendar(DateTimeData data) {
-        return null;
-    }
 
     protected Duration getDuration(DateTimeData data) {
         return null;

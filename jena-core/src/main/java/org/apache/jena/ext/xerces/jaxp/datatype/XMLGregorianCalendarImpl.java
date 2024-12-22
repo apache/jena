@@ -342,30 +342,6 @@ class XMLGregorianCalendarImpl
         "Timezone"
     };
 
-    /**
-     * <p>Use as a template for default field values when
-     * converting to a {@link GregorianCalendar}, set to a leap
-     * year date of January 1, 0400 at midnight.</p>
-     *
-     * <p>Fields that are optional for an <code>xsd:dateTime</code> instances are defaulted to not being set to any value.
-     * <code>XMLGregorianCalendar</code> fields millisecond, fractional second and timezone return the value indicating
-     * that the field is not set, {@link DatatypeConstants#FIELD_UNDEFINED} for millisecond and timezone
-     * and <code>null</code> for fractional second.</p>
-     *
-     * @see #toGregorianCalendar(TimeZone, Locale, XMLGregorianCalendar)
-     */
-    public static final XMLGregorianCalendar LEAP_YEAR_DEFAULT =
-        createDateTime(
-                400,  //year
-                DatatypeConstants.JANUARY,  //month
-                1,  // day
-                0,  // hour
-                0,  // minute
-                0,  // second
-                DatatypeConstants.FIELD_UNDEFINED,  // milliseconds
-                DatatypeConstants.FIELD_UNDEFINED // timezone
-        );
-
     // Constructors
 
     /**
@@ -631,20 +607,6 @@ class XMLGregorianCalendarImpl
                             Integer.valueOf(hour), Integer.valueOf(minute), Integer.valueOf(second),
                             Integer.valueOf(millisecond), Integer.valueOf(timezone)})
             );
-            /*
-                throw new IllegalArgumentException(
-                    "year = " + year
-                    + ", month = " + month
-                    + ", day = " + day
-                    + ", hour = " + hour
-                    + ", minute = " + minute
-                    + ", second = " + second
-                    + ", millisecond = " + millisecond
-                    + ", timezone = " + timezone
-                    + ", is not a valid representation of an XML Gregorian Calendar value."
-                    );
-             */
-
         }
         save();
     }
@@ -736,85 +698,6 @@ class XMLGregorianCalendarImpl
      * <p>Create a Java representation of XML Schema builtin datatype <code>dateTime</code>.
      * All possible fields are specified for this factory method.</p>
      *
-     * @param year represents both high-order eons and low-order year.
-     * @param month of <code>dateTime</code>
-     * @param day of <code>dateTime</code>
-     * @param hours of <code>dateTime</code>
-     * @param minutes of <code>dateTime</code>
-     * @param seconds of <code>dateTime</code>
-     * @param fractionalSecond value of null indicates optional field is absent.
-     * @param timezone offset in minutes. {@link DatatypeConstants#FIELD_UNDEFINED} indicates optional field is not set.
-     *
-     * @return <code>XMLGregorianCalendar</code> created from parameter values.
-     *
-     * @see DatatypeConstants#FIELD_UNDEFINED
-     *
-     * @throws IllegalArgumentException if any parameter is outside value
-     * constraints for the field as specified in
-     * <a href="#datetimefieldmapping">date/time field mapping table</a>.
-     */
-	public static XMLGregorianCalendar createDateTime(
-	        BigInteger year,
-	        int month,
-	        int day,
-	        int hours,
-	        int minutes,
-	        int seconds,
-	        BigDecimal fractionalSecond,
-	        int timezone) {
-
-	    return new XMLGregorianCalendarImpl(
-	            year,
-	            month,
-	            day,
-	            hours,
-	            minutes,
-	            seconds,
-	            fractionalSecond,
-	            timezone);
-	}
-
-    /**
-     * <p>Create a Java instance of XML Schema builtin datatype dateTime.</p>
-     *
-     * @param year represents both high-order eons and low-order year.
-     * @param month of <code>dateTime</code>
-     * @param day of <code>dateTime</code>
-     * @param hour of <code>dateTime</code>
-     * @param minute of <code>dateTime</code>
-     * @param second of <code>dateTime</code>
-     *
-     * @return <code>XMLGregorianCalendar</code> created from parameter values.
-     *
-     * @throws IllegalArgumentException if any parameter is outside value constraints for the field as specified in
-     *   <a href="#datetimefieldmapping">date/time field mapping table</a>.
-     *
-     * @see DatatypeConstants#FIELD_UNDEFINED
-     */
-    public static XMLGregorianCalendar createDateTime(
-            int year,
-            int month,
-            int day,
-            int hour,
-            int minute,
-            int second) {
-
-        return new XMLGregorianCalendarImpl(
-                year,
-                month,
-                day,
-                hour,
-                minute,
-                second,
-                DatatypeConstants.FIELD_UNDEFINED,  //millisecond
-                DatatypeConstants.FIELD_UNDEFINED //timezone
-        );
-    }
-
-    /**
-     * <p>Create a Java representation of XML Schema builtin datatype <code>dateTime</code>.
-     * All possible fields are specified for this factory method.</p>
-     *
      * @param year represents low-order year.
      * @param month of <code>dateTime</code>
      * @param day of <code>dateTime</code>
@@ -845,145 +728,6 @@ class XMLGregorianCalendarImpl
                 year,
                 month,
                 day,
-                hours,
-                minutes,
-                seconds,
-                milliseconds,
-                timezone);
-    }
-
-    /**
-     * <p>Create a Java representation of XML Schema builtin datatype <code>date</code> or <code>g*</code>.</p>
-     *
-     * <p>For example, an instance of <code>gYear</code> can be created invoking this factory
-     * with <code>month</code> and <code>day</code> parameters set to
-     * {@link DatatypeConstants#FIELD_UNDEFINED}.</p>
-     *
-     * @param year of <code>XMLGregorianCalendar</code> to be created.
-     * @param month of <code>XMLGregorianCalendar</code> to be created.
-     * @param day of <code>XMLGregorianCalendar</code> to be created.
-     * @param timezone offset in minutes. {@link DatatypeConstants#FIELD_UNDEFINED} indicates optional field is not set.
-     *
-     * @return <code>XMLGregorianCalendar</code> created from parameter values.
-     *
-     * @see DatatypeConstants#FIELD_UNDEFINED
-     *
-     * @throws IllegalArgumentException if any parameter is outside value
-     * constraints for the field as specified in
-     * <a href="#datetimefieldmapping">date/time field mapping table</a>.
-     */
-    public static XMLGregorianCalendar createDate(
-            int year,
-            int month,
-            int day,
-            int timezone) {
-
-        return new XMLGregorianCalendarImpl(
-                year,
-                month,
-                day,
-                DatatypeConstants.FIELD_UNDEFINED, // hour
-                DatatypeConstants.FIELD_UNDEFINED, // minute
-                DatatypeConstants.FIELD_UNDEFINED, // second
-                DatatypeConstants.FIELD_UNDEFINED, // millisecond
-                timezone);
-    }
-
-    /**
-     * Create a Java instance of XML Schema builtin datatype <code>time</code>.
-     * @param hours number of hours
-     * @param minutes number of minutes
-     * @param seconds number of seconds
-     * @param timezone offset in minutes. {@link DatatypeConstants#FIELD_UNDEFINED} indicates optional field is not set.
-     *
-     * @return <code>XMLGregorianCalendar</code> created from parameter values.
-     *
-     * @see DatatypeConstants#FIELD_UNDEFINED
-     *
-     * @throws IllegalArgumentException if any parameter is outside value
-     * constraints for the field as specified in
-     * <a href="#datetimefieldmapping">date/time field mapping table</a>.
-     */
-    public static XMLGregorianCalendar createTime(
-            int hours,
-            int minutes,
-            int seconds,
-            int timezone) {
-
-        return new XMLGregorianCalendarImpl(
-                DatatypeConstants.FIELD_UNDEFINED, // Year
-                DatatypeConstants.FIELD_UNDEFINED, // Month
-                DatatypeConstants.FIELD_UNDEFINED, // Day
-                hours,
-                minutes,
-                seconds,
-                DatatypeConstants.FIELD_UNDEFINED, //Millisecond
-                timezone);
-    }
-
-    /**
-     * <p>Create a Java instance of XML Schema builtin datatype time.</p>
-     *
-     * @param hours number of hours
-     * @param minutes number of minutes
-     * @param seconds number of seconds
-     * @param fractionalSecond value of <code>null</code> indicates that this optional field is not set.
-     * @param timezone offset in minutes. {@link DatatypeConstants#FIELD_UNDEFINED} indicates optional field is not set.
-     *
-     * @return <code>XMLGregorianCalendar</code> created from parameter values.
-     *
-     * @see DatatypeConstants#FIELD_UNDEFINED
-     *
-     * @throws IllegalArgumentException if any parameter is outside value
-     * constraints for the field as specified in
-     * <a href="#datetimefieldmapping">date/time field mapping table</a>.
-     */
-    public static XMLGregorianCalendar createTime(
-            int hours,
-            int minutes,
-            int seconds,
-            BigDecimal fractionalSecond,
-            int timezone) {
-
-        return new XMLGregorianCalendarImpl(
-                null,            // Year
-                DatatypeConstants.FIELD_UNDEFINED, // month
-                DatatypeConstants.FIELD_UNDEFINED, // day
-                hours,
-                minutes,
-                seconds,
-                fractionalSecond,
-                timezone);
-    }
-
-    /**
-     * <p>Create a Java instance of XML Schema builtin datatype time.</p>
-     *
-     * @param hours number of hours
-     * @param minutes number of minutes
-     * @param seconds number of seconds
-     * @param milliseconds number of milliseconds
-     * @param timezone offset in minutes. {@link DatatypeConstants#FIELD_UNDEFINED} indicates optional field is not set.
-     *
-     * @return <code>XMLGregorianCalendar</code> created from parameter values.
-     *
-     * @see DatatypeConstants#FIELD_UNDEFINED
-     *
-     * @throws IllegalArgumentException if any parameter is outside value
-     * constraints for the field as specified in
-     * <a href="#datetimefieldmapping">date/time field mapping table</a>.
-     */
-    public static XMLGregorianCalendar createTime(
-            int hours,
-            int minutes,
-            int seconds,
-            int milliseconds,
-            int timezone) {
-
-        return new XMLGregorianCalendarImpl(
-                DatatypeConstants.FIELD_UNDEFINED, // year
-                DatatypeConstants.FIELD_UNDEFINED, // month
-                DatatypeConstants.FIELD_UNDEFINED, // day
                 hours,
                 minutes,
                 seconds,
@@ -2615,8 +2359,6 @@ class XMLGregorianCalendarImpl
      *                 within the specified <code>defaults</code> is undefined,
      *                 just use <code>java.util.GregorianCalendar</code> defaults.
      * @return a java.util.GregorianCalendar conversion of this instance.
-     *
-     * @see #LEAP_YEAR_DEFAULT
      */
     @Override
     public GregorianCalendar toGregorianCalendar(java.util.TimeZone timezone,
