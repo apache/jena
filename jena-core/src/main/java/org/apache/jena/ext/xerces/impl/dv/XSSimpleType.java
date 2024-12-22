@@ -96,53 +96,21 @@ public interface XSSimpleType extends XSSimpleTypeDefinition {
      * validate a given string against this simple type.
      *
      * @param content       the string value that needs to be validated
-     * @param context       the validation context
      * @param validatedInfo used to store validation result
      *
      * @return              the actual value (QName, Boolean) of the string value
      */
-    public Object validate(String content, ValidationContext context, ValidatedInfo validatedInfo)
-        throws InvalidDatatypeValueException;
-
-    /**
-     * validate a given string value, represented by content.toString().
-     * note that if content is a StringBuilder, for performance reasons,
-     * it's possible that the content of the string buffer is modified.
-     *
-     * @param content       the string value that needs to be validated
-     * @param context       the validation context
-     * @param validatedInfo used to store validation result
-     *
-     * @return              the actual value (QName, Boolean) of the string value
-     */
-    public Object validate(Object content, ValidationContext context, ValidatedInfo validatedInfo)
+    public Object validate(String content, ValidatedInfo validatedInfo)
         throws InvalidDatatypeValueException;
 
     /**
      * Validate an actual value against this simple type.
      *
-     * @param context       the validation context
      * @param validatedInfo used to provide the actual value and member types
      * @exception InvalidDatatypeValueException  exception for invalid values.
      */
-    public void validate(ValidationContext context, ValidatedInfo validatedInfo)
+    public void validate(ValidatedInfo validatedInfo)
         throws InvalidDatatypeValueException;
-
-    /**
-     * If this type is created from restriction, then some facets can be applied
-     * to the simple type. <code>XSFacets</code> is used to pass the value of
-     * different facets.
-     *
-     * @param facets        the value of all the facets
-     * @param presentFacet  bit combination value of the costraining facet
-     *                      constants which are present.
-     * @param fixedFacet    bit combination value of the costraining facet
-     *                      constants which are fixed.
-     * @param context       the validation context
-     * @exception InvalidDatatypeFacetException  exception for invalid facet values.
-     */
-    public void applyFacets(XSFacets facets, short presentFacet, short fixedFacet, ValidationContext context)
-        throws InvalidDatatypeFacetException;
 
     /**
      * Check whether two actual values are equal.
@@ -152,30 +120,4 @@ public interface XSSimpleType extends XSSimpleTypeDefinition {
      * @return        true if the two value are equal
      */
     public boolean isEqual(Object value1, Object value2);
-
-    /**
-     * Check the order of the two actual values. (May not be supported by all
-     * simple types.
-     * REVISIT: Andy believes that a compare() method is necessary.
-     *          I don't see the necessity for schema (the only place where we
-     *          need to compare two values is to check min/maxIn/Exclusive
-     *          facets, but we only need a private method for this case.)
-     *          But Andy thinks XPATH potentially needs this compare() method.
-     *
-     * @param value1  the first value
-     * @prarm value2  the second value
-     * @return        > 0 if value1 > value2
-     *                = 0 if value1 == value2
-     *                < = if value1 < value2
-     */
-    //public short compare(Object value1, Object value2);
-
-    /**
-     * Return the whitespace corresponding to this datatype.
-     * 
-     * @return valid values are WS_PRESERVE, WS_REPLACE, WS_COLLAPSE.
-     * @exception DatatypeException
-     *                   union datatypes don't have whitespace facet associated with them
-     */
-    public short getWhitespace() throws DatatypeException;
 }

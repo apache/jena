@@ -42,6 +42,7 @@ public class TestDatatypes {
     public XSDDatatype xsdDuration = XSDDatatype.XSDduration ;
     public XSDDatatype xsdYearMonthDuration = XSDDatatype.XSDyearMonthDuration ;
     public XSDDatatype xsdDayTimeDuration = XSDDatatype.XSDdayTimeDuration ;
+    public XSDDatatype xsdLanguage = XSDDatatype.XSDlanguage ;
 
     @Test public void registration_01()   { checkRegistration1("dateTime", XSD.dateTime); }
     @Test public void registration_02()   { checkRegistration1("dateTimeStamp", XSD.dateTimeStamp); }
@@ -146,6 +147,32 @@ public class TestDatatypes {
     @Test public void dayTimeDuration_07() {
         invalid(xsdDuration, "P1DT") ;
         invalid(xsdDayTimeDuration, "P1DT") ;
+    }
+
+    @Test public void language_01() {
+        valid(xsdLanguage, "en") ;
+        valid(xsdLanguage, "en-UK") ;
+        valid(xsdLanguage, "es-419") ;
+    }
+
+    @Test public void language_02() {
+        invalid(xsdLanguage, "-") ;
+        invalid(xsdLanguage, "en-") ;
+        invalid(xsdLanguage, "-en-UK") ;
+        invalid(xsdLanguage, "-es-419-") ;
+    }
+
+    @Test public void language_03() {
+        valid(xsdLanguage, "zh-Hans") ;
+        valid(xsdLanguage, "zh-Hant-HK") ;
+        valid(xsdLanguage, "de-CH-1901") ;
+        valid(xsdLanguage, "de-DE-u-co-phonebk") ;
+    }
+
+    @Test public void language_04() {
+        // non-ASCII characters are not allowed
+        // (here: "goose" in Polish)
+        invalid(xsdLanguage, "gęś") ;
     }
 
     @Test public void valueToLex_bigdecimal_01() {

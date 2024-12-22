@@ -32,7 +32,6 @@ import org.apache.jena.ext.xerces.impl.dv.util.Base64;
 import org.apache.jena.ext.xerces.impl.dv.util.HexBin;
 import org.apache.jena.ext.xerces.impl.dv.xs.DecimalDV;
 import org.apache.jena.ext.xerces.impl.dv.xs.XSSimpleTypeDecl;
-import org.apache.jena.ext.xerces.impl.validation.ValidationState;
 import org.apache.jena.ext.xerces.util.SymbolHash;
 import org.apache.jena.ext.xerces.xs.XSConstants;
 import org.apache.jena.ext.xerces.xs.XSTypeDefinition;
@@ -263,9 +262,8 @@ public class XSDDatatype extends BaseDatatype {
     @Override
     public Object parse(String lexicalForm) throws DatatypeFormatException {
         try {
-            ValidationContext context = new ValidationState();
             ValidatedInfo resultInfo = new ValidatedInfo();
-            typeDeclaration.validate(lexicalForm, context, resultInfo);
+            typeDeclaration.validate(lexicalForm, resultInfo);
             return convertValidatedDataValue(resultInfo);
         } catch (InvalidDatatypeValueException e) {
             throw new DatatypeFormatException(lexicalForm, this, "during parse -" + e);

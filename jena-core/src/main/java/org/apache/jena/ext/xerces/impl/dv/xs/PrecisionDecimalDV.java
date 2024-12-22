@@ -18,7 +18,6 @@
 package org.apache.jena.ext.xerces.impl.dv.xs;
 
 import org.apache.jena.ext.xerces.impl.dv.InvalidDatatypeValueException;
-import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
 
 /**
  * Validator for <precisionDecimal> datatype (W3C Schema 1.1)
@@ -333,14 +332,14 @@ class PrecisionDecimalDV extends TypeValidator {
      */
     @Override
     public short getAllowedFacets() {
-        return ( XSSimpleTypeDecl.FACET_PATTERN | XSSimpleTypeDecl.FACET_WHITESPACE | XSSimpleTypeDecl.FACET_ENUMERATION |XSSimpleTypeDecl.FACET_MAXINCLUSIVE |XSSimpleTypeDecl.FACET_MININCLUSIVE | XSSimpleTypeDecl.FACET_MAXEXCLUSIVE  | XSSimpleTypeDecl.FACET_MINEXCLUSIVE | XSSimpleTypeDecl.FACET_TOTALDIGITS | XSSimpleTypeDecl.FACET_FRACTIONDIGITS);
+        return ( XSSimpleTypeDecl.FACET_PATTERN | XSSimpleTypeDecl.FACET_WHITESPACE | XSSimpleTypeDecl.FACET_MAXINCLUSIVE |XSSimpleTypeDecl.FACET_MININCLUSIVE | XSSimpleTypeDecl.FACET_MAXEXCLUSIVE  | XSSimpleTypeDecl.FACET_MINEXCLUSIVE);
     }
 
     /* (non-Javadoc)
      * @see org.apache.xerces.impl.dv.xs.TypeValidator#getActualValue(java.lang.String, org.apache.xerces.impl.dv.ValidationContext)
      */
     @Override
-    public Object getActualValue(String content, ValidationContext context)
+    public Object getActualValue(String content)
     throws InvalidDatatypeValueException {
         try {
             return new XPrecisionDecimal(content);
@@ -364,10 +363,4 @@ class PrecisionDecimalDV extends TypeValidator {
         return ((XPrecisionDecimal)value).totalDigits;
     }
 
-    @Override
-    public boolean isIdentical(Object value1, Object value2) {
-        if(!(value2 instanceof XPrecisionDecimal) || !(value1 instanceof XPrecisionDecimal))
-            return false;
-        return ((XPrecisionDecimal)value1).isIdentical((XPrecisionDecimal)value2);
-    }
 }

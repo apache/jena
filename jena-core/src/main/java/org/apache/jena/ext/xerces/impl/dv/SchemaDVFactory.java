@@ -18,7 +18,6 @@
 package org.apache.jena.ext.xerces.impl.dv;
 
 import org.apache.jena.ext.xerces.util.SymbolHash;
-import org.apache.jena.ext.xerces.xs.XSObjectList;
 
 /**
  * Defines a factory API that enables applications to <p>
@@ -76,19 +75,4 @@ public abstract class SchemaDVFactory {
      * @return      a SymbolHash which contains all built-in simple types
      */
     public abstract SymbolHash getBuiltInTypes();
-
-    /**
-     * Create a new simple type which is derived by restriction from another
-     * simple type.
-     *
-     * @param name              name of the new type, could be null
-     * @param targetNamespace   target namespace of the new type, could be null
-     * @param finalSet          value of "final"
-     * @param base              base type of the new type
-     * @param annotations       set of annotations
-     * @return                  the newly created simple type
-     */
-    public abstract XSSimpleType createTypeRestriction(String name, String targetNamespace,
-                                                       short finalSet, XSSimpleType base,
-                                                       XSObjectList annotations);
 }
