@@ -97,8 +97,8 @@ public class FusekiMain extends CmdARQ {
     private static ArgDecl  argWithMetrics  = new ArgDecl(ArgDecl.NoValue,  "withMetrics", "metrics");
     private static ArgDecl  argWithCompact  = new ArgDecl(ArgDecl.NoValue,  "withCompact", "compact");
 
-    // Default is "true" and use modules found by the ServiceLoader.
-    private static ArgDecl  argEnableModules  = new ArgDecl(ArgDecl.HasValue,  "modules", "fuseki-modules");
+//    // Use modules found by the ServiceLoader.
+//    private static ArgDecl  argEnableModules  = new ArgDecl(ArgDecl.HasValue,  "modules", "fuseki-modules");
 
     private static ArgDecl  argAuth         = new ArgDecl(ArgDecl.HasValue, "auth");
 
@@ -306,7 +306,7 @@ public class FusekiMain extends CmdARQ {
         add(argWithMetrics, "--metrics",    "Enable /$/metrics");
         add(argWithCompact, "--compact",    "Enable /$/compact/*");
 
-        add(argEnableModules, "--modules=true|false", "Enable Fuseki modules");
+        //add(argEnableModules, "--modules=true|false", "Enable Fuseki modules");
 
         super.modVersion.addClass("Fuseki", Fuseki.class);
 
@@ -575,12 +575,12 @@ public class FusekiMain extends CmdARQ {
             serverArgs.jettyConfigFile = jettyConfigFile;
         }
 
+        // Allows for external setting of serverArgs.fusekiModules
         if ( serverArgs.fusekiModules == null ) {
-            // Allows for external setting of serverArgs.fusekiModules
-            boolean withModules = hasValueOfTrue(argEnableModules);
-            serverArgs.fusekiModules = withModules
-                    ? FusekiModules.getSystemModules()
-                    : FusekiModules.empty();
+            // Get modules from system-wide setup.
+            // This (Fuseki 5.3.0- defaults to an empty set of modules.
+//            boolean withModules = hasValueOfTrue(argEnableModules);
+            serverArgs.fusekiModules = FusekiModules.getSystemModules();
         }
 
         if ( contains(argCORS) ) {

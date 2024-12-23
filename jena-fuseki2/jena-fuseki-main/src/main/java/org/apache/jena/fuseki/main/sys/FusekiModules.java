@@ -32,9 +32,8 @@ import java.util.function.Consumer;
  */
 public class FusekiModules {
 
-    private static FusekiModules autoLoadedFusekiModules = FusekiAutoModules.get();
     // Never null, maybe empty
-    private static FusekiModules systemFusekiModules = autoLoadedFusekiModules;
+    private static FusekiModules systemFusekiModules = FusekiModules.create();
 
     /**
      * There is a system wide set of modules used when no other modules are indicated.
@@ -46,15 +45,12 @@ public class FusekiModules {
 
     /** Restore the original setting of the system default collection. */
     public static void restoreSystemDefault() {
-        systemFusekiModules = autoLoadedFusekiModules;
+        systemFusekiModules = FusekiModules.create();
     }
 
     public static FusekiModules getSystemModules() {
-        if ( systemFusekiModules == null ) {
-            if ( autoLoadedFusekiModules == null )
-                autoLoadedFusekiModules = FusekiAutoModules.get();
-            systemFusekiModules = autoLoadedFusekiModules;
-        }
+        if ( systemFusekiModules == null )
+            systemFusekiModules = FusekiAutoModules.get();
         return systemFusekiModules;
     }
 
@@ -69,8 +65,7 @@ public class FusekiModules {
     // Testing.
     /*package*/ static void resetSystemDefault() {
         // Reload, reset. Fresh objects.
-        autoLoadedFusekiModules = FusekiAutoModules.load();
-        systemFusekiModules = autoLoadedFusekiModules;
+        systemFusekiModules = FusekiAutoModules.get();
     }
 
     /** Create a collection of Fuseki modules */
