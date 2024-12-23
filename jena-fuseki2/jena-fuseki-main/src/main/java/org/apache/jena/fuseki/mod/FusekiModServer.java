@@ -75,6 +75,7 @@ public class FusekiModServer {
         }
 
         FusekiModules modules = serverModules;
+        // Set system modules - these are picked up in FusekiMain
         FusekiModules.setSystemDefault(modules);
         FusekiServer server = FusekiServer.construct(args);
         return server;

@@ -21,7 +21,9 @@ import java.util.Objects;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.servlet.ServletContext;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
+import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.servlets.HttpAction;
 
@@ -33,15 +35,22 @@ public interface MetricsProvider {
     /** Bind each data access point in a DataAccessPointRegistry to the system Micrometer {@link MeterRegistry}. */
     public default void dataAccessPointMetrics(MetricsProvider metricsProvider, DataAccessPointRegistry dapRegistry) {
         try {
-            MeterRegistry meterRegistry = metricsProvider.getMeterRegistry();
-            if (meterRegistry != null) {
-                dapRegistry.accessPoints().forEach(dap->{
-                    new FusekiRequestsMetrics( dap ).bindTo( meterRegistry );
-                });
-            }
+            dapRegistry.accessPoints().forEach(dap->addDataAccessPointMetrics(dap));
         } catch (Throwable th) {
             Fuseki.configLog.error("Failed to bind all data access points to netrics provider", th);
         }
+    }
+
+    public default void addDataAccessPointMetrics(DataAccessPoint dataAccessPoint) {
+        MeterRegistry meterRegistry = this.getMeterRegistry();
+        if (meterRegistry != null )
+            addDataAccessPointMetrics(meterRegistry, dataAccessPoint);
+    }
+
+    private static void addDataAccessPointMetrics(MeterRegistry meterRegistry, DataAccessPoint dataAccessPoint) {
+        if ( dataAccessPoint == null )
+            Log.warn(MetricsProvider.class, "addDataAccessPointMetrics: Null DataAccessPoint");
+        new FusekiRequestsMetrics(dataAccessPoint).bindTo(meterRegistry);
     }
 
     public static void setMetricsProvider(ServletContext servletContext, MetricsProvider provider) {
