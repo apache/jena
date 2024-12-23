@@ -72,7 +72,7 @@
 
     <ver.shiro>2.0.2</ver.shiro>
 
-    <ver.protobuf>4.29.1</ver.protobuf>
+    <ver.protobuf>4.29.2</ver.protobuf>
     <ver.libthrift>0.21.0</ver.libthrift>
 
     <ver.caffeine>3.1.8</ver.caffeine>
@@ -98,7 +98,7 @@
 
     <!-- Testing -->
     <ver.junit4>4.13.2</ver.junit4>
-    <ver.junit5>5.11.3</ver.junit5>
+    <ver.junit5>5.11.4</ver.junit5>
     <ver.junit5-platform>1.10.2</ver.junit5-platform>
  
     <ver.mockito>5.14.2</ver.mockito>
