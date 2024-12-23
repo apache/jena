@@ -45,19 +45,13 @@ public class TestFusekiModules {
         // Created, not loaded
     }
 
-
     @Test public void lifecycle_1() {
-        ModuleByServiceLoader.reset();
-        FusekiModules.resetSystemDefault();
-
         ModuleForTest module = new ModuleForTest();
         FusekiModules fmods = FusekiModules.create(module);
-
         // Mock default set.
         FusekiModules.setSystemDefault(fmods);
-
-        FusekiServer.Builder builder = FusekiServer.create().port(0);
         try {
+            FusekiServer.Builder builder = FusekiServer.create().port(0);
             lifecycle(builder, module);
         } finally {
             FusekiModules.setSystemDefault(null);
@@ -103,11 +97,11 @@ public class TestFusekiModules {
     }
 
     @Test public void autoload_1() {
-        boolean b = FusekiAutoModules.isEnabled();
-        FusekiAutoModules.enable(true);  // "--modules"
-        try {
-            ModuleByServiceLoader.reset();
-            FusekiModules.resetSystemDefault();
+        FusekiModules systemModules = FusekiModules.getSystemModules();
+        ModuleByServiceLoader.reset();
+        try  {
+            FusekiModules loadedModules = FusekiAutoModules.load();
+            FusekiModules.setSystemDefault(loadedModules);
 
             // Reloaded by FusekiModules.resetSystemDefault
             assertEquals(1, ModuleByServiceLoader.countLoads.get(),"countLoads:");
@@ -118,7 +112,8 @@ public class TestFusekiModules {
             ModuleForTest module = ModuleByServiceLoader.lastLoaded();
             lifecycle(builder, module);
         } finally {
-            FusekiAutoModules.enable(b);
+            ModuleByServiceLoader.reset();
+            FusekiModules.setSystemDefault(systemModules);
         }
     }
 

@@ -26,6 +26,7 @@ import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.rdf.model.Model;
 
+// Not autoloaded
 public class ModuleForTest implements FusekiModule {
 
     public AtomicInteger countPrepared = new AtomicInteger(0);

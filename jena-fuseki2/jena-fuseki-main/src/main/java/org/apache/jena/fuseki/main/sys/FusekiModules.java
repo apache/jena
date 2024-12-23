@@ -50,6 +50,11 @@ public class FusekiModules {
     }
 
     public static FusekiModules getSystemModules() {
+        if ( systemFusekiModules == null ) {
+            if ( autoLoadedFusekiModules == null )
+                autoLoadedFusekiModules = FusekiAutoModules.get();
+            systemFusekiModules = autoLoadedFusekiModules;
+        }
         return systemFusekiModules;
     }
 
@@ -77,10 +82,6 @@ public class FusekiModules {
     public static FusekiModules create(List<FusekiModule> modules) {
         return new FusekiModules(modules);
     }
-
-//    public static FusekiModules autoloadedModules() {
-//        return FusekiAutoModules.load();
-//    }
 
     private final List<FusekiModule> modules;
 

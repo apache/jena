@@ -38,7 +38,6 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiMainInfo;
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.fuseki.main.sys.FusekiAutoModules;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.fuseki.main.sys.FusekiServerArgsCustomiser;
 import org.apache.jena.fuseki.main.sys.InitFusekiMain;
@@ -576,22 +575,12 @@ public class FusekiMain extends CmdARQ {
             serverArgs.jettyConfigFile = jettyConfigFile;
         }
 
-        boolean withModules = hasValueOfTrue(argEnableModules);
-        if ( withModules ) {
-            // Use the discovered ones.
-            FusekiAutoModules.enable(true);
+        if ( serverArgs.fusekiModules == null ) {
             // Allows for external setting of serverArgs.fusekiModules
-            if ( serverArgs.fusekiModules == null ) {
-                FusekiAutoModules.setup();
-                serverArgs.fusekiModules = FusekiModules.getSystemModules();
-            }
-        } else {
-            // Disabled module discovery.
-            FusekiAutoModules.enable(false);
-            // Allows for external setting of serverArgs.fusekiModules
-            if ( serverArgs.fusekiModules == null ) {
-                serverArgs.fusekiModules = FusekiModules.empty();
-            }
+            boolean withModules = hasValueOfTrue(argEnableModules);
+            serverArgs.fusekiModules = withModules
+                    ? FusekiModules.getSystemModules()
+                    : FusekiModules.empty();
         }
 
         if ( contains(argCORS) ) {

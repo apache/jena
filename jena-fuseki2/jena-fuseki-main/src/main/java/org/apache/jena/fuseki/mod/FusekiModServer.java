@@ -63,10 +63,7 @@ public class FusekiModServer {
         // Better?: moded startup - i.e. setting defaults.
 
         if ( args.length == 0 ) {
-            String [] defaultArgs = { "--port=3030"
-                , "--empty"
-                , "--modules=true"
-            };
+            String [] defaultArgs = { "--port=3030", "--empty" };
             args = defaultArgs;
         } else {
             List<String> argsList = new ArrayList<String>(Arrays.asList(args));

@@ -45,9 +45,6 @@ public class FusekiServerCmd {
      * syntax but not start it.
      */
     static public void main(String... args) {
-        // Fix up args
-        // --empty
-        // --modules=true
         FusekiModServer.runAsync(args).join();
     }
 }
