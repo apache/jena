@@ -18,7 +18,6 @@
 package org.apache.jena.ext.xerces.impl.dv.xs;
 
 import org.apache.jena.ext.xerces.impl.dv.InvalidDatatypeValueException;
-import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
 
 /**
  * Represent the schema type "anySimpleType"
@@ -38,7 +37,7 @@ public class AnySimpleDV extends TypeValidator {
         return 0;
     }
 
-    public Object getActualValue(String content, ValidationContext context) throws InvalidDatatypeValueException {
+    public Object getActualValue(String content) throws InvalidDatatypeValueException {
         return content;
     }
 

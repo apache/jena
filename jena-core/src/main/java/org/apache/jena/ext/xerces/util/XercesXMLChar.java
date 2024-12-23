@@ -719,107 +719,6 @@ public class XercesXMLChar {
     //
 
     /**
-     * Returns true if the specified character is a supplemental character.
-     *
-     * @param c The character to check.
-     */
-    public static boolean isSupplemental(int c) {
-        return (c >= 0x10000 && c <= 0x10FFFF);
-    }
-
-    /**
-     * Returns true the supplemental character corresponding to the given
-     * surrogates.
-     *
-     * @param h The high surrogate.
-     * @param l The low surrogate.
-     */
-    public static int supplemental(char h, char l) {
-        return (h - 0xD800) * 0x400 + (l - 0xDC00) + 0x10000;
-    }
-
-    /**
-     * Returns the high surrogate of a supplemental character
-     *
-     * @param c The supplemental character to "split".
-     */
-    public static char highSurrogate(int c) {
-        return (char) (((c - 0x00010000) >> 10) + 0xD800);
-    }
-
-    /**
-     * Returns the low surrogate of a supplemental character
-     *
-     * @param c The supplemental character to "split".
-     */
-    public static char lowSurrogate(int c) {
-        return (char) (((c - 0x00010000) & 0x3FF) + 0xDC00);
-    }
-
-    /**
-     * Returns whether the given character is a high surrogate
-     *
-     * @param c The character to check.
-     */
-    public static boolean isHighSurrogate(int c) {
-        return (0xD800 <= c && c <= 0xDBFF);
-    }
-
-    /**
-     * Returns whether the given character is a low surrogate
-     *
-     * @param c The character to check.
-     */
-    public static boolean isLowSurrogate(int c) {
-        return (0xDC00 <= c && c <= 0xDFFF);
-    }
-
-
-    /**
-     * Returns true if the specified character is valid. This method
-     * also checks the surrogate character range from 0x10000 to 0x10FFFF.
-     * <p>
-     * If the program chooses to apply the mask directly to the
-     * <code>CHARS</code> array, then they are responsible for checking
-     * the surrogate character range.
-     *
-     * @param c The character to check.
-     */
-    public static boolean isValid(int c) {
-        return (c < 0x10000 && (CHARS[c] & MASK_VALID) != 0) ||
-               (0x10000 <= c && c <= 0x10FFFF);
-    } // isValid(int):boolean
-
-    /**
-     * Returns true if the specified character is invalid.
-     *
-     * @param c The character to check.
-     */
-    public static boolean isInvalid(int c) {
-        return !isValid(c);
-    } // isInvalid(int):boolean
-
-    /**
-     * Returns true if the specified character can be considered content.
-     *
-     * @param c The character to check.
-     */
-    public static boolean isContent(int c) {
-        return (c < 0x10000 && (CHARS[c] & MASK_CONTENT) != 0) ||
-               (0x10000 <= c && c <= 0x10FFFF);
-    } // isContent(int):boolean
-
-    /**
-     * Returns true if the specified character can be considered markup.
-     * Markup characters include '&lt;', '&amp;', and '%'.
-     *
-     * @param c The character to check.
-     */
-    public static boolean isMarkup(int c) {
-        return c == '<' || c == '&' || c == '%';
-    } // isMarkup(int):boolean
-
-    /**
      * Returns true if the specified character is a space character
      * as defined by production [3] in the XML 1.0 specification.
      *
@@ -872,17 +771,6 @@ public class XercesXMLChar {
     public static boolean isNCName(int c) {
         return c < 0x10000 && (CHARS[c] & MASK_NCNAME) != 0;
     } // isNCName(int):boolean
-
-    /**
-     * Returns true if the specified character is a valid Pubid
-     * character as defined by production [13] in the XML 1.0
-     * specification.
-     *
-     * @param c The character to check.
-     */
-    public static boolean isPubid(int c) {
-        return c < 0x10000 && (CHARS[c] & MASK_PUBID) != 0;
-    } // isPubid(int):boolean
 
     /*
      * [5] Name ::= (Letter | '_' | ':') (NameChar)*
@@ -964,67 +852,6 @@ public class XercesXMLChar {
         }
         return true;
     } // isValidName(String):boolean
-
-
-
-
-
-    // encodings
-
-    /**
-     * Returns true if the encoding name is a valid IANA encoding.
-     * This method does not verify that there is a decoder available
-     * for this encoding, only that the characters are valid for an
-     * IANA encoding name.
-     *
-     * @param ianaEncoding The IANA encoding name.
-     */
-    public static boolean isValidIANAEncoding(String ianaEncoding) {
-        if (ianaEncoding != null) {
-            int length = ianaEncoding.length();
-            if (length > 0) {
-                char c = ianaEncoding.charAt(0);
-                if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
-                    for (int i = 1; i < length; i++) {
-                        c = ianaEncoding.charAt(i);
-                        if ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z') &&
-                            (c < '0' || c > '9') && c != '.' && c != '_' &&
-                            c != '-') {
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-            }
-        }
-        return false;
-    } // isValidIANAEncoding(String):boolean
-
-    /**
-     * Returns true if the encoding name is a valid Java encoding.
-     * This method does not verify that there is a decoder available
-     * for this encoding, only that the characters are valid for an
-     * Java encoding name.
-     *
-     * @param javaEncoding The Java encoding name.
-     */
-    public static boolean isValidJavaEncoding(String javaEncoding) {
-        if (javaEncoding != null) {
-            int length = javaEncoding.length();
-            if (length > 0) {
-                for (int i = 1; i < length; i++) {
-                    char c = javaEncoding.charAt(i);
-                    if ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z') &&
-                        (c < '0' || c > '9') && c != '.' && c != '_' &&
-                        c != '-') {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
-        return false;
-    } // isValidIANAEncoding(String):boolean
     
     // other methods
     

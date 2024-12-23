@@ -17,13 +17,9 @@
 
 package org.apache.jena.ext.xerces.impl.dv.xs;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Objects;
 
 import org.apache.jena.ext.xerces.impl.dv.InvalidDatatypeValueException;
-import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
-import org.apache.jena.ext.xerces.xs.datatypes.XSDecimal;
 
 /**
  * Represent the schema type "decimal"
@@ -39,11 +35,11 @@ public class DecimalDV extends TypeValidator {
 
     @Override
     public final short getAllowedFacets(){
-        return ( XSSimpleTypeDecl.FACET_PATTERN | XSSimpleTypeDecl.FACET_WHITESPACE | XSSimpleTypeDecl.FACET_ENUMERATION |XSSimpleTypeDecl.FACET_MAXINCLUSIVE |XSSimpleTypeDecl.FACET_MININCLUSIVE | XSSimpleTypeDecl.FACET_MAXEXCLUSIVE  | XSSimpleTypeDecl.FACET_MINEXCLUSIVE | XSSimpleTypeDecl.FACET_TOTALDIGITS | XSSimpleTypeDecl.FACET_FRACTIONDIGITS);
+        return ( XSSimpleTypeDecl.FACET_PATTERN | XSSimpleTypeDecl.FACET_WHITESPACE | XSSimpleTypeDecl.FACET_MAXINCLUSIVE |XSSimpleTypeDecl.FACET_MININCLUSIVE | XSSimpleTypeDecl.FACET_MAXEXCLUSIVE  | XSSimpleTypeDecl.FACET_MINEXCLUSIVE);
     }
 
     @Override
-    public Object getActualValue(String content, ValidationContext context) throws InvalidDatatypeValueException {
+    public Object getActualValue(String content) throws InvalidDatatypeValueException {
         try {
             return new XDecimal(content);
         } catch (NumberFormatException nfe) {
@@ -67,7 +63,7 @@ public class DecimalDV extends TypeValidator {
     }
 
     // Avoid using the heavy-weight java.math.BigDecimal
-    static class XDecimal implements XSDecimal {
+    static class XDecimal {
         // sign: 0 for vlaue 0; 1 for positive values; -1 for negative values
         int sign = 1;
         // total digits. >= 1
@@ -279,84 +275,6 @@ public class DecimalDV extends TypeValidator {
                 }
             }
             canonical = buffer.toString();
-        }
-
-        @Override
-        public BigDecimal getBigDecimal() {
-            if (sign == 0) {
-                return new BigDecimal(BigInteger.ZERO);
-            }
-            return new BigDecimal(toString());
-        }
-
-        @Override
-        public BigInteger getBigInteger() throws NumberFormatException {
-            if (fracDigits != 0) {
-                throw new NumberFormatException();
-            }
-            if (sign == 0) {
-                return BigInteger.ZERO;
-            }
-            if (sign == 1) {
-                return new BigInteger(ivalue);
-            }
-            return new BigInteger("-" + ivalue);
-        }
-
-        @Override
-        public long getLong() throws NumberFormatException {
-            if (fracDigits != 0) {
-                throw new NumberFormatException();
-            }
-            if (sign == 0) {
-                return 0L;
-            }
-            if (sign == 1) {
-                return Long.parseLong(ivalue);
-            }
-            return Long.parseLong("-" + ivalue);
-        }
-
-        @Override
-        public int getInt() throws NumberFormatException {
-            if (fracDigits != 0) {
-                throw new NumberFormatException();
-            }
-            if (sign == 0) {
-                return 0;
-            }
-            if (sign == 1) {
-                return Integer.parseInt(ivalue);
-            }
-            return Integer.parseInt("-" + ivalue);
-        }
-
-        @Override
-        public short getShort() throws NumberFormatException {
-            if (fracDigits != 0) {
-                throw new NumberFormatException();
-            }
-            if (sign == 0) {
-                return 0;
-            }
-            if (sign == 1) {
-                return Short.parseShort(ivalue);
-            }
-            return Short.parseShort("-" + ivalue);
-        }
-
-        @Override
-        public byte getByte() throws NumberFormatException {
-            if (fracDigits != 0) {
-                throw new NumberFormatException();
-            }
-            if (sign == 0) {
-                return 0;
-            }
-            if (sign == 1) {
-                return Byte.parseByte(ivalue);
-            }
-            return Byte.parseByte("-" + ivalue);
         }
 
         @Override

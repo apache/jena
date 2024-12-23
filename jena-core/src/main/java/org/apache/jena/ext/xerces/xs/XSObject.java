@@ -22,11 +22,6 @@ package org.apache.jena.ext.xerces.xs;
  * model. 
  */
 public interface XSObject {
-    /**
-     *  The <code>type</code> of this object, i.e. 
-     * <code>ELEMENT_DECLARATION</code>. 
-     */
-    public short getType();
 
     /**
      * The name of type <code>NCName</code>, as defined in XML Namespaces, of 
@@ -44,12 +39,5 @@ public interface XSObject {
      * unspecified. 
      */
     public String getNamespace();
-
-    /**
-     * A namespace schema information item corresponding to the target 
-     * namespace of the component, if it is globally declared; or 
-     * <code>null</code> otherwise.
-     */
-    public XSNamespaceItem getNamespaceItem();
 
 }

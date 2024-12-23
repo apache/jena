@@ -23,7 +23,6 @@ import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.Duration;
 
 import org.apache.jena.ext.xerces.impl.dv.InvalidDatatypeValueException;
-import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
 
 /**
  * Used to validate the <dayTimeDuration> type
@@ -37,7 +36,7 @@ import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
 class DayTimeDurationDV extends DurationDV {
     
     @Override
-    public Object getActualValue(String content, ValidationContext context)
+    public Object getActualValue(String content)
         throws InvalidDatatypeValueException {
         try {
             return parse(content, DurationDV.DAYTIMEDURATION_TYPE);

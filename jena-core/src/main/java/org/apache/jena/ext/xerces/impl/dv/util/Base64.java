@@ -42,7 +42,6 @@ public final class  Base64 {
     static private final int  TWENTYFOURBITGROUP = 24;
     static private final int  EIGHTBIT           = 8;
     static private final int  SIXTEENBIT         = 16;
-    static private final int  SIXBIT             = 6;
     static private final int  FOURBYTE           = 4;
     static private final int  SIGN               = -128;
     static private final char PAD                = '=';
@@ -92,10 +91,6 @@ public final class  Base64 {
 
     protected static boolean isData(char octect) {
         return (octect < BASELENGTH && base64Alphabet[octect] != -1);
-    }
-
-    protected static boolean isBase64(char octect) {
-        return (isWhiteSpace(octect) || isPad(octect) || isData(octect));
     }
 
     /**

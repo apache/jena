@@ -21,125 +21,6 @@ package org.apache.jena.ext.xerces.xs;
  *  This interface defines constants used by this specification.
  */
 public interface XSConstants {
-    // XML Schema Components
-    /**
-     * The object describes an attribute declaration.
-     */
-    public static final short ATTRIBUTE_DECLARATION     = 1;
-    /**
-     * The object describes an element declaration.
-     */
-    public static final short ELEMENT_DECLARATION       = 2;
-    /**
-     * The object describes a complex type or simple type definition.
-     */
-    public static final short TYPE_DEFINITION           = 3;
-    /**
-     * The object describes an attribute use definition.
-     */
-    public static final short ATTRIBUTE_USE             = 4;
-    /**
-     * The object describes an attribute group definition.
-     */
-    public static final short ATTRIBUTE_GROUP           = 5;
-    /**
-     * The object describes a model group definition.
-     */
-    public static final short MODEL_GROUP_DEFINITION    = 6;
-    /**
-     * A model group.
-     */
-    public static final short MODEL_GROUP               = 7;
-    /**
-     * The object describes a particle.
-     */
-    public static final short PARTICLE                  = 8;
-    /**
-     * The object describes a wildcard.
-     */
-    public static final short WILDCARD                  = 9;
-    /**
-     * The object describes an identity constraint definition.
-     */
-    public static final short IDENTITY_CONSTRAINT       = 10;
-    /**
-     * The object describes a notation declaration.
-     */
-    public static final short NOTATION_DECLARATION      = 11;
-    /**
-     * The object describes an annotation.
-     */
-    public static final short ANNOTATION                = 12;
-    /**
-     * The object describes a constraining facet. Note: this object does not 
-     * describe pattern and enumeration facets.
-     */
-    public static final short FACET                     = 13;
-    /**
-     * The object describes enumeration and pattern facets. 
-     */
-    public static final short MULTIVALUE_FACET          = 14;
-
-    // Derivation constants
-    /**
-     * No constraint is available.
-     */
-    public static final short DERIVATION_NONE           = 0;
-    /**
-     * <code>XSTypeDefinition</code> final set or 
-     * <code>XSElementDeclaration</code> disallowed substitution group.
-     */
-    public static final short DERIVATION_EXTENSION      = 1;
-    /**
-     * <code>XSTypeDefinition</code> final set or 
-     * <code>XSElementDeclaration</code> disallowed substitution group.
-     */
-    public static final short DERIVATION_RESTRICTION    = 2;
-    /**
-     * <code>XSTypeDefinition</code> final set.
-     */
-    public static final short DERIVATION_SUBSTITUTION   = 4;
-    /**
-     * <code>XSTypeDefinition</code> final set.
-     */
-    public static final short DERIVATION_UNION          = 8;
-    /**
-     * <code>XSTypeDefinition</code> final set.
-     */
-    public static final short DERIVATION_LIST           = 16;
-
-    // Scope
-    /**
-     * The scope of a declaration within named model groups or attribute 
-     * groups is <code>absent</code>. The scope of such a declaration is 
-     * determined when it is used in the construction of complex type 
-     * definitions. 
-     */
-    public static final short SCOPE_ABSENT              = 0;
-    /**
-     * A scope of <code>global</code> identifies top-level declarations. 
-     */
-    public static final short SCOPE_GLOBAL              = 1;
-    /**
-     * <code>Locally scoped</code> declarations are available for use only 
-     * within the complex type.
-     */
-    public static final short SCOPE_LOCAL               = 2;
-
-    // Value Constraint
-    /**
-     * Indicates that the component does not have any value constraint.
-     */
-    public static final short VC_NONE                   = 0;
-    /**
-     * Indicates that there is a default value constraint.
-     */
-    public static final short VC_DEFAULT                = 1;
-    /**
-     * Indicates that there is a fixed value constraint for this attribute.
-     */
-    public static final short VC_FIXED                  = 2;
-
     // Built-in types: primitive and derived
     /**
      * anySimpleType
@@ -214,10 +95,6 @@ public interface XSConstants {
      */
     public static final short ANYURI_DT                 = 18;
     /**
-     * QName
-     */
-    public static final short QNAME_DT                  = 19;
-    /**
      * NOTATION
      */
     public static final short NOTATION_DT               = 20;
@@ -245,14 +122,6 @@ public interface XSConstants {
      * NCName
      */
     public static final short NCNAME_DT                 = 26;
-    /**
-     * ID
-     */
-    public static final short ID_DT                     = 27;
-    /**
-     * IDREF
-     */
-    public static final short IDREF_DT                  = 28;
     /**
      * ENTITY
      */
@@ -309,15 +178,6 @@ public interface XSConstants {
      * positiveInteger
      */
     public static final short POSITIVEINTEGER_DT        = 42;
-    /**
-     * The type represents a list type definition whose item type (itemType) 
-     * is a union type definition
-     */
-    public static final short LISTOFUNION_DT            = 43;
-    /**
-     * The type represents a list type definition.
-     */
-    public static final short LIST_DT                   = 44;
     /**
      * The built-in type category is not available.
      */

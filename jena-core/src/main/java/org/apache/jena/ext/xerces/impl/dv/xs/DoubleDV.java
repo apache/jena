@@ -18,8 +18,6 @@
 package org.apache.jena.ext.xerces.impl.dv.xs;
 
 import org.apache.jena.ext.xerces.impl.dv.InvalidDatatypeValueException;
-import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
-import org.apache.jena.ext.xerces.xs.datatypes.XSDouble;
 
 /**
  * Represent the schema type "double"
@@ -35,12 +33,12 @@ public class DoubleDV extends TypeValidator {
 
     @Override
     public short getAllowedFacets(){
-        return ( XSSimpleTypeDecl.FACET_PATTERN | XSSimpleTypeDecl.FACET_WHITESPACE | XSSimpleTypeDecl.FACET_ENUMERATION |XSSimpleTypeDecl.FACET_MAXINCLUSIVE |XSSimpleTypeDecl.FACET_MININCLUSIVE | XSSimpleTypeDecl.FACET_MAXEXCLUSIVE  | XSSimpleTypeDecl.FACET_MINEXCLUSIVE  );
+        return ( XSSimpleTypeDecl.FACET_PATTERN | XSSimpleTypeDecl.FACET_WHITESPACE | XSSimpleTypeDecl.FACET_MAXINCLUSIVE |XSSimpleTypeDecl.FACET_MININCLUSIVE | XSSimpleTypeDecl.FACET_MAXEXCLUSIVE  | XSSimpleTypeDecl.FACET_MINEXCLUSIVE  );
     }//getAllowedFacets()
 
     //convert a String to Double form, we have to take care of cases specified in spec like INF, -INF and NaN
     @Override
-    public Object getActualValue(String content, ValidationContext context) throws InvalidDatatypeValueException {
+    public Object getActualValue(String content) throws InvalidDatatypeValueException {
         try{
             return new XDouble(content);
         } catch (NumberFormatException ex){
@@ -53,16 +51,6 @@ public class DoubleDV extends TypeValidator {
     public int compare(Object value1, Object value2) {
         return ((XDouble)value1).compareTo((XDouble)value2);
     }//compare()
-
-    //distinguishes between identity and equality for double datatype
-    //0.0 is equal but not identical to -0.0
-    @Override
-    public boolean isIdentical (Object value1, Object value2) {
-        if (value2 instanceof XDouble) {
-            return ((XDouble)value1).isIdentical((XDouble)value2);
-        }
-        return false;
-    }//isIdentical()
 
     /**
      * Returns true if it's possible that the given
@@ -81,7 +69,7 @@ public class DoubleDV extends TypeValidator {
         return true;
     }
 
-    private static final class XDouble implements XSDouble {
+    private static final class XDouble {
         private final double value;
         public XDouble(String s) throws NumberFormatException {
             if (isPossibleFP(s)) {
@@ -132,23 +120,6 @@ public class DoubleDV extends TypeValidator {
             }
             long v = Double.doubleToLongBits(value);
             return (int) (v ^ (v >>> 32));
-        }
-
-        // NOTE: 0.0 is equal but not identical to -0.0
-        public boolean isIdentical (XDouble val) {
-            if (val == this) {
-                return true;
-            }
-
-            if (value == val.value) {
-                return (value != 0.0d ||
-                    (Double.doubleToLongBits(value) == Double.doubleToLongBits(val.value)));
-            }
-
-            if (value != value && val.value != val.value)
-                return true;
-
-            return false;
         }
 
         private int compareTo(XDouble val) {
@@ -267,11 +238,6 @@ public class DoubleDV extends TypeValidator {
                     canonical = new String(chars, 0, len);
                 }
             }
-        }
-
-        @Override
-        public double getValue() {
-            return value;
         }
     }
 } // class DoubleDV

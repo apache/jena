@@ -27,6 +27,7 @@ import java.util.ResourceBundle;
  * @author  Neeraj Bajaj, Sun Microsystems
  * @version $Id: DatatypeMessageFormatter.java 813087 2009-09-09 19:35:27Z mrglavas $
  */
+@SuppressWarnings("unused")
 public class DatatypeMessageFormatter {
     
     private static final String BASE_NAME = "org.apache.jena.ext.xerces.impl.msg.DatatypeMessages";
@@ -77,20 +78,7 @@ public class DatatypeMessageFormatter {
             throw new MissingResourceException(key, msg, key);
         }
 
-        // no message
-        if (msg == null) {
-            msg = key;
-            if (arguments.length > 0) {
-                StringBuilder str = new StringBuilder(msg);
-                str.append('?');
-                for (int i = 0; i < arguments.length; i++) {
-                    if (i > 0) {
-                        str.append('&');
-                    }
-                    str.append(String.valueOf(arguments[i]));
-                }
-            }
-        }
+        // msg cannot be null
         return msg;
     }
 }

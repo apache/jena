@@ -18,7 +18,6 @@
 package org.apache.jena.ext.xerces.impl.dv.xs;
 
 import org.apache.jena.ext.xerces.impl.dv.InvalidDatatypeValueException;
-import org.apache.jena.ext.xerces.impl.dv.ValidationContext;
 
 /**
  * All primitive types plus ID/IDREF/ENTITY/INTEGER are derived from this abstract
@@ -42,14 +41,8 @@ public abstract class TypeValidator {
     // for number types (decimal, double, float, and types derived from them),
     // get the BigDecimal, Double, Flout object.
     // for some types (string and derived), they just return the string itself
-    public abstract Object getActualValue(String content, ValidationContext context)
+    public abstract Object getActualValue(String content)
         throws InvalidDatatypeValueException;
-
-    // for ID/IDREF/ENTITY types, do some extra checking after the value is
-    // checked to be valid with respect to both lexical representation and
-    // facets
-    public void checkExtraRules(Object value, ValidationContext context) throws InvalidDatatypeValueException {
-    }
 
     // the following methods might not be supported by every DV.
     // but XSSimpleTypeDecl should know which type supports which methods,
@@ -61,25 +54,11 @@ public abstract class TypeValidator {
     public static final short EQUAL         = 0;
     public static final short GREATER_THAN  = 1;
     public static final short INDETERMINATE = 2;
-    
-    // where there is distinction between identity and equality, this method
-    // will be overwritten
-    // checks whether the two values are identical; for ex, this distinguishes 
-    // -0.0 from 0.0 
-    public boolean isIdentical (Object value1, Object value2) {
-        return value1.equals(value2);
-    }
 
     // check the order relation between the two values
     // the parameters are in compiled form (from getActualValue)
     public int compare(Object value1, Object value2) {
         return -1;
-    }
-
-    // get the length of the value
-    // the parameters are in compiled form (from getActualValue)
-    public int getDataLength(Object value) {
-        return (value instanceof String) ? ((String)value).length() : -1;
     }
 
     // get the number of digits of the value

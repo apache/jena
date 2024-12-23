@@ -1864,17 +1864,6 @@ class DurationImpl
             seconds);
     }
 
-    /**
-     * Returns the sign of this duration in -1,0, or 1.
-     *
-     * @return
-     *      -1 if this duration is negative, 0 if the duration is zero,
-     *      and 1 if the duration is postive.
-     */
-    public int signum() {
-        return signum;
-    }
-
 
     /**
      * Adds this duration to a {@link Calendar} object.
