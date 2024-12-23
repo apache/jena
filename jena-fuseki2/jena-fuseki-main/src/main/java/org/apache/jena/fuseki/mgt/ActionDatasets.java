@@ -42,6 +42,7 @@ import org.apache.jena.fuseki.build.DatasetDescriptionMap;
 import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.ctl.ActionContainerItem;
 import org.apache.jena.fuseki.ctl.JsonDescription;
+import org.apache.jena.fuseki.metrics.MetricsProvider;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.FusekiVocab;
@@ -107,6 +108,7 @@ public class ActionDatasets extends ActionContainerItem {
 
     // ---- POST
 
+    /** Create dataset */
     @Override
     protected JsonValue execPostContainer(HttpAction action) {
         UUID uuid = UUID.randomUUID();
@@ -208,8 +210,13 @@ public class ActionDatasets extends ActionContainerItem {
                 if ( ! datasetPath.equals(dataAccessPoint.getName()) )
                     FmtLog.warn(action.log, "Inconsistent names: datasetPath = %s; DataAccessPoint name = %s", datasetPath, dataAccessPoint);
                 succeeded = true;
-
                 action.getDataAccessPointRegistry().register(dataAccessPoint);
+                
+                // Add to metrics
+                MetricsProvider metricProvider = action.getMetricsProvider();
+                if ( metricProvider != null )
+                    action.getMetricsProvider().addDataAccessPointMetrics(dataAccessPoint);
+
                 action.setResponseContentType(WebContent.contentTypeTextPlain);
                 ServletOps.success(action);
             } catch (IOException ex) { IO.exception(ex); }
