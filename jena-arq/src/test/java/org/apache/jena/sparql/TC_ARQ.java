@@ -19,7 +19,7 @@
 package org.apache.jena.sparql;
 
 import org.apache.jena.query.TS_Query;
-import org.apache.jena.rdf_star.TS_RDF_Star;
+import org.apache.jena.rdf12.TS_RDF12;
 import org.apache.jena.sparql.algebra.TS_Algebra ;
 import org.apache.jena.sparql.algebra.optimize.TS_Optimization ;
 import org.apache.jena.sparql.api.TS_API ;
@@ -97,7 +97,9 @@ import org.junit.runners.Suite ;
 
     // Outside org.apache.jena.sparql
     , TS_Query.class
-    , TS_RDF_Star.class
+    
+    // RDF 1.2 tests. These track the working group.
+    , TS_RDF12.class
     // And scripted tests.
 })
 

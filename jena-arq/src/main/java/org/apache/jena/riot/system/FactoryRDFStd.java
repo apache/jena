@@ -66,6 +66,11 @@ public class FactoryRDFStd implements FactoryRDF {
     }
 
     @Override
+    public Node createLangDirLiteral(String lexical, String langTag, String direction) {
+        return NodeFactory.createLiteralDirLang(lexical, langTag, direction) ;
+    }
+
+    @Override
     public Node createStringLiteral(String lexical) {
         return NodeFactory.createLiteralString(lexical) ;
     }
