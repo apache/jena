@@ -76,5 +76,4 @@ public class SimpleMetricsProvider implements MetricsProvider {
         if ( ! str.endsWith("\n") )
             sbuff.append("\n");
     }
-
 }

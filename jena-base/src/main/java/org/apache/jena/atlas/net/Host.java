@@ -128,27 +128,4 @@ public class Host {
             throw unknownHostException;
         }
     }
-
-    // @formatter:off
-//    public static void main(String ... arg) throws UnknownHostException {
-//        try {
-//            for (Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements();) {
-//                NetworkInterface iface = ifaces.nextElement();
-//                // Iterate all IP addresses assigned to each card...
-//                for (Enumeration<InetAddress> inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements();) {
-//                    InetAddress inetAddr = inetAddrs.nextElement();
-//                    System.out.println("IP Address : '" +inetAddr.getHostAddress()+"'");
-//                }
-//            }
-//            System.out.println();
-//
-//            InetAddress inetAddr = getLocalHostLANAddress();
-//            //InetAddress localhost = InetAddress.getLocalHost();
-//            System.out.println("System IP Address : '" +inetAddr.getHostAddress()+"'");
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            System.exit(0);
-//        }
-//    }
-    // @formatter:on
 }

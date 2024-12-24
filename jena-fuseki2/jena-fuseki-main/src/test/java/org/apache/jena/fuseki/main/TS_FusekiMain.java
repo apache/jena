@@ -26,7 +26,6 @@ import org.apache.jena.fuseki.main.sys.TestFusekiModules;
 
 @Suite
 @SelectClasses({
-
   TestPlainServer.class
 
   // This tests modules and modifies the system state.

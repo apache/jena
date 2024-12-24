@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.GZIPInputStream;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,6 +42,7 @@ import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
+import org.apache.jena.fuseki.metrics.MetricsProvider;
 import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.system.ActionCategory;
 import org.apache.jena.query.ReadWrite;
@@ -249,6 +251,23 @@ public class HttpAction
      */
     public DataAccessPointRegistry getDataAccessPointRegistry() {
         return dataAccessPointRegistry;
+    }
+
+    /**
+     * Get {@link ServletContext} (may be null).
+     */
+    public ServletContext getServletContext() {
+        return request.getServletContext();
+    }
+
+    /**
+     * Get the {@link MetricsProvider} for this action.
+     */
+    public MetricsProvider getMetricsProvider() {
+        ServletContext servletContext = getServletContext();
+        if ( servletContext == null )
+            return null;
+        return MetricsProvider.getMetricsProvider(servletContext);
     }
 
     /**

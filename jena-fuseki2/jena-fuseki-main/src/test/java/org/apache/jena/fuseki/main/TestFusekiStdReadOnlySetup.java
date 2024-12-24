@@ -20,9 +20,9 @@ package org.apache.jena.fuseki.main;
 
 import java.util.function.Consumer;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.web.HttpException;
@@ -48,7 +48,7 @@ public class TestFusekiStdReadOnlySetup {
 
     private static String URL;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         data = SSE.parseGraph(StrUtils.strjoinNL
             ("(graph"
@@ -68,7 +68,7 @@ public class TestFusekiStdReadOnlySetup {
         URL = server.datasetURL("/ds");
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         if ( server != null )
             server.stop();

@@ -36,9 +36,8 @@ import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.cmd.*;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
-import org.apache.jena.fuseki.main.FusekiMainInfo;
+import org.apache.jena.fuseki.main.FusekiInfo;
 import org.apache.jena.fuseki.main.FusekiServer;
-import org.apache.jena.fuseki.main.sys.FusekiAutoModules;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.fuseki.main.sys.FusekiServerArgsCustomiser;
 import org.apache.jena.fuseki.main.sys.InitFusekiMain;
@@ -98,7 +97,7 @@ public class FusekiMain extends CmdARQ {
     private static ArgDecl  argWithMetrics  = new ArgDecl(ArgDecl.NoValue,  "withMetrics", "metrics");
     private static ArgDecl  argWithCompact  = new ArgDecl(ArgDecl.NoValue,  "withCompact", "compact");
 
-    // Default is "true" and use modules found by the ServiceLoader.
+    // Use modules found by the ServiceLoader. Currently, no-op.
     private static ArgDecl  argEnableModules  = new ArgDecl(ArgDecl.HasValue,  "modules", "fuseki-modules");
 
     private static ArgDecl  argAuth         = new ArgDecl(ArgDecl.HasValue, "auth");
@@ -195,6 +194,20 @@ public class FusekiMain extends CmdARQ {
     public static void addCustomiser(FusekiServerArgsCustomiser customiser) {
         Objects.requireNonNull(customiser);
         ArgCustomizers.addCustomiser(customiser);
+    }
+
+    /**
+     * Registers CLI customisers.
+     * <p>
+     * CLI customisers can add one/more custom arguments into the Fuseki Server CLI arguments and then can apply those
+     * to the Fuseki server being built during the processing of {@link #processModulesAndArgs()}.  This allows for
+     * custom arguments that directly affect how the Fuseki server is built to be created.
+     * </p>
+     * @see #addCustomiser(FusekiServerArgsCustomiser)
+     */
+    public static void addCustomisers(FusekiModules customiserSet) {
+        Objects.requireNonNull(customiserSet);
+        customiserSet.forEach(customiser->ArgCustomizers.addCustomiser(customiser));
     }
 
     /**
@@ -307,7 +320,7 @@ public class FusekiMain extends CmdARQ {
         add(argWithMetrics, "--metrics",    "Enable /$/metrics");
         add(argWithCompact, "--compact",    "Enable /$/compact/*");
 
-        add(argEnableModules, "--modules=true|false", "Enable Fuseki modules");
+        add(argEnableModules, "--modules=true|false", "Enable Fuseki autoloaded modules");
 
         super.modVersion.addClass("Fuseki", Fuseki.class);
 
@@ -333,7 +346,11 @@ public class FusekiMain extends CmdARQ {
 
     private void processStdArguments(Logger log) {
 
-        // ---- Definition type
+        // ---- Command line definition of setup
+        // One dataset
+        // or a config file
+        // or a "standard setup" e.g.SPARQLer
+        // or empty allowed
         int numDefinitions = 0;
         SetupType setup = UNSET;
 
@@ -572,22 +589,12 @@ public class FusekiMain extends CmdARQ {
             serverArgs.jettyConfigFile = jettyConfigFile;
         }
 
-        boolean withModules = hasValueOfTrue(argEnableModules);
-        if ( withModules ) {
-            // Use the discovered ones.
-            FusekiAutoModules.enable(true);
-            // Allows for external setting of serverArgs.fusekiModules
-            if ( serverArgs.fusekiModules == null ) {
-                FusekiAutoModules.setup();
+        // Allows for external setting of serverArgs.fusekiModules
+        if ( serverArgs.fusekiModules == null ) {
+            // Get modules from system-wide setup.
+            boolean withModules = hasValueOfTrue(argEnableModules);
+            if ( withModules )
                 serverArgs.fusekiModules = FusekiModules.getSystemModules();
-            }
-        } else {
-            // Disabled module discovery.
-            FusekiAutoModules.enable(false);
-            // Allows for external setting of serverArgs.fusekiModules
-            if ( serverArgs.fusekiModules == null ) {
-                serverArgs.fusekiModules = FusekiModules.empty();
-            }
         }
 
         if ( contains(argCORS) ) {
@@ -637,7 +644,7 @@ public class FusekiMain extends CmdARQ {
         // Check for command line or config setup.
         try {
             Logger log = Fuseki.serverLog;
-            FusekiMainInfo.logServerCode(log);
+            FusekiInfo.logServerCode(log);
             FusekiServer server = makeServer(serverArgs);
             infoCmd(server, log);
             try {

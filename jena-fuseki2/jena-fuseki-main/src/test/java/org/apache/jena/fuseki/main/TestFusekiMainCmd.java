@@ -18,9 +18,9 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -35,7 +35,7 @@ import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test Fuseki Main command line.

@@ -172,7 +172,6 @@ class SpotTDB2 {
         /*
          * prefixes...
          */
-        // XXX validateBPT(location, params.getPrefixTableBaseName());
         validateBPT(location, params.getPrefixTableBaseName());
         validateDAT(location, params.getPrefixTableBaseName()+"-data");
 

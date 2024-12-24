@@ -189,7 +189,6 @@ public class FusekiConfig {
     public static List<DataAccessPoint> processServerConfiguration(Graph configuration, Context context) {
         Node server = findServer(configuration);
         if ( server != null ) {
-            // XXX Temporary
             Resource rServer = resource(configuration, server);
             mergeContext(configuration,server, context);
             processLoadClass(configuration,server);
@@ -213,8 +212,6 @@ public class FusekiConfig {
     public static List<DataAccessPoint> processServerConfiguration(Model configuration, Context context) {
         return processServerConfiguration(configuration.getGraph(), context);
     }
-
-    // XXX Adapter
     /*package*/ static Resource resource(Graph graph, Node node) {
         Model m = ModelFactory.createModelForGraph(graph);
         RDFNode rNode = m.asRDFNode(node);
@@ -271,7 +268,7 @@ public class FusekiConfig {
     }
 
     /**
-     * Process any {@code ja:loadClass}
+     * Legacy support for {@code ja:loadClass}
      */
     public static void processLoadClass(Graph configuration, Node server) {
         if ( server == null )
@@ -633,7 +630,7 @@ public class FusekiConfig {
                     if ( named.size() > 1 )
                         throw new FusekiConfigException("Multiple property values for <"+FusekiVocabG.pEndpointName+"> with <"+endpointProperty.getURI()+"> for "+BuildLib.displayStr(configuration, svc));
                     endpointName = named.get(0).getLiteralLexicalForm();
-                    // XXX Necessary? check
+                    // Check for multiple
                     List<Node> x = G.listSP(configuration, ep, FusekiVocabG.pAllowedUsers);
                     if ( x.size() > 1 )
                         throw new FusekiConfigException("Multiple fuseki:"+FusekiVocabG.pAllowedUsers.getLocalName()+" for "+displayStr(configuration, ep));

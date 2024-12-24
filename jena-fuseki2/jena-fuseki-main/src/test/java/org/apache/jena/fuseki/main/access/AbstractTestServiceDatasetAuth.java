@@ -23,7 +23,7 @@ import static org.apache.jena.fuseki.main.FusekiTestLib.expectOK;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery401;
 import static org.apache.jena.fuseki.main.FusekiTestLib.expectQuery403;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.web.WebLib;
 import org.apache.jena.fuseki.main.FusekiServer;

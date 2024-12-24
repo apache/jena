@@ -52,7 +52,7 @@ public class ServerArgs {
     public boolean verboseLogging         = false;
 
     /**
-     * FusekiModules to use during the server build *
+     * FusekiModules to use during the server build
      * Command line customisers are handled separately by FusekiMain.
      */
     public FusekiModules fusekiModules    = null;
@@ -75,7 +75,7 @@ public class ServerArgs {
     public String serverConfigFile        = null;
     public Model serverConfigModel        = null;
 
-    /** Allow no datasets without it being an error. This is not an argument. */
+    /** Allow no datasets without it being an error. This is not a command argument. */
     public boolean allowEmpty             = false;
     public SetupType setup                = SetupType.UNSET;
     /** Start without a dataset or configuration (this is {@code --empty}) */

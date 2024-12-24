@@ -18,13 +18,17 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.riot.Lang;
@@ -33,16 +37,10 @@ import org.apache.jena.sparql.core.assembler.NamedDatasetAssembler;
 import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sys.JenaSystem;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 /**
  * Testing configurations involving shared datasets
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestFusekiDatasetSharing {
     static {
         JenaSystem.init();
@@ -63,7 +61,7 @@ public class TestFusekiDatasetSharing {
     private static String URL_ds_view_unnamed_1;
     private static String URL_ds_view_unnamed_2;
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         NamedDatasetAssembler.sharedDatasetPool.clear();
         Graph g = RDFParser.source(DIR+"ds-sharing.ttl").lang(Lang.TTL).toGraph();
 
@@ -103,7 +101,7 @@ public class TestFusekiDatasetSharing {
         assertEquals(all1.size(), all2.size());
     }
 
-    @AfterClass public static void afterClass() {
+    @AfterAll public static void afterClass() {
         if ( server != null )
             server.stop();
         NamedDatasetAssembler.sharedDatasetPool.clear();
@@ -162,9 +160,8 @@ public class TestFusekiDatasetSharing {
         Graph data2 = GSP.service(URL2).defaultGraph().GET();
 
         if ( canSee )
-            assertFalse(msg, data2.isEmpty());
+            assertFalse(data2.isEmpty(),msg);
         else
-            assertTrue(msg,data2.isEmpty());
+            assertTrue(data2.isEmpty(), msg);
     }
-
 }
