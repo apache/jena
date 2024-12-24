@@ -22,7 +22,7 @@ import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.fuseki.server.FusekiCoreInfo;
 import org.slf4j.Logger;
 
-public class FusekiMainInfo {
+public class FusekiInfo {
 
     /** Details of the code version. */
     public static void logCode(Logger log) {
@@ -31,8 +31,8 @@ public class FusekiMainInfo {
 
     /** Log server details. */
     public static void logServer(Logger log, FusekiServer server, boolean verbose) {
-        FusekiMainInfo.logServerConnections(log, server);
-        FusekiMainInfo.logServerDatasets(log, server, verbose);
+        FusekiInfo.logServerConnections(log, server);
+        FusekiInfo.logServerDatasets(log, server, verbose);
         if ( server.getStaticContentDir() != null )
             FmtLog.info(log,  "Static files: %s", server.getStaticContentDir());
     }

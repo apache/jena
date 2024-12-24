@@ -147,9 +147,10 @@ public class FMod_Admin implements FusekiModule {
         String configDir = FusekiServerCtl.dirConfiguration.toString();
         List<DataAccessPoint> directoryDatabases = FusekiConfig.readConfigurationDirectory(configDir);
 
-        if ( directoryDatabases.isEmpty() )
+        if ( directoryDatabases.isEmpty() && datasetNames.isEmpty() )
             FmtLog.info(LOG, "No databases: dir=%s", configDir);
         else {
+            datasetNames.forEach(n->FmtLog.info(Fuseki.configLog, "Database: %s", n));
             directoryDatabases.forEach(dap -> FmtLog.info(Fuseki.configLog, "Database: %s", dap.getName()));
         }
 

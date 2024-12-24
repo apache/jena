@@ -85,7 +85,7 @@ public class TestTemplateAddDataset {
             server.stop();
         serverURL = null;
         // Clearup FMod_Shiro.
-        System.getProperties().remove(FusekiServerCtl.envFusekiShiro);
+        FusekiServerCtl.clearUpSystemState();
     }
 
     protected String urlRoot() {

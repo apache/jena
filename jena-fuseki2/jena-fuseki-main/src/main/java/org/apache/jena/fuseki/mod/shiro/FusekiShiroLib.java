@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import jakarta.servlet.ServletContext;
+import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.rfc3986.URIScheme;
 import org.apache.shiro.lang.io.ResourceUtils;
@@ -47,7 +48,9 @@ import org.apache.shiro.web.env.EnvironmentLoaderListener;
         for ( String loc : locations ) {
             // If file:, look for that file.
             if ( loc.startsWith(fileSchemePrefix) ) {
-                Path p = Path.of(loc.substring(fileSchemePrefix.length()));
+                // Convert (back) to a filesystem path.
+                String fn = IRILib.IRIToFilename(loc);
+                Path p = Path.of(fn);
                 if ( Files.exists(p) )
                     return loc;
                 // Ignore.

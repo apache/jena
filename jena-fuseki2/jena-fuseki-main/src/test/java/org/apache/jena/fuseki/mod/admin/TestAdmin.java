@@ -120,8 +120,7 @@ public class TestAdmin {
         if ( server != null )
             server.stop();
         serverURL = null;
-        // Clearup FMod_Shiro.
-        System.getProperties().remove(FusekiServerCtl.envFusekiShiro);
+        FusekiServerCtl.clearUpSystemState();
     }
 
     protected String urlRoot() {
@@ -226,18 +225,17 @@ public class TestAdmin {
 
         try {
             Path f = Path.of(fileBase+"config-ds-plain-1.ttl");
-            {
-                httpPost(urlRoot()+"$/"+opDatasets,
-                         WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8,
-                         BodyPublishers.ofFile(f));
-            }
+            httpPost(urlRoot()+"$/"+opDatasets,
+                     WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8,
+                     BodyPublishers.ofFile(f));
             // Check exists.
             checkExists(dsTest);
+            // Try again.
             try {
-            } catch (HttpException ex) {
                 httpPost(urlRoot()+"$/"+opDatasets,
                          WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8,
                          BodyPublishers.ofFile(f));
+            } catch (HttpException ex) {
                 assertEquals(HttpSC.CONFLICT_409, ex.getStatusCode());
             }
         } catch (IOException ex) { IO.exception(ex); return; }

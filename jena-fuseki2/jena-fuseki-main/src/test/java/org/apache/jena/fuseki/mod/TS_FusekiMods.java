@@ -38,7 +38,8 @@ import org.apache.jena.fuseki.mod.shiro.TestModShiro;
     // Prometheus
     TestModPrometheus.class,
     // Apache Shiro
-    TestModShiro.class
+    TestModShiro.class,
+    TestFusekiServer.class
 })
 public class TS_FusekiMods {
     public TS_FusekiMods() {}

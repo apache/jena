@@ -41,6 +41,7 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.build.DatasetDescriptionMap;
 import org.apache.jena.fuseki.build.FusekiConfig;
+import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.FusekiVocabG;
@@ -389,6 +390,13 @@ public class FusekiServerCtl {
         if ( ! Files.isWritable(p) )
             throw new FusekiConfigException("Not writable: "+p);
         return p;
+    }
+
+    /** Running a full-features server set some global state. Clear this up. (mainly for tests.)*/
+    public static void clearUpSystemState() {
+        System.getProperties().remove(FusekiServerCtl.envFusekiShiro);
+        System.getProperties().remove(FusekiServerCtl.envFusekiBase);
+        FusekiMain.resetCustomisers();
     }
 
     private static Path makePath(Path root , String relName ) {
