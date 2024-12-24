@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki.main.cmds;
 
-import org.apache.jena.fuseki.mod.FusekiModServer;
+import org.apache.jena.fuseki.mod.FusekiServerRunner;
 import org.apache.jena.fuseki.system.FusekiLogging;
 
 /** Fuseki command that runs a Fuseki server with the admin UI.
@@ -45,7 +45,7 @@ public class FusekiServerCmd {
      * syntax but not start it.
      */
     static public void main(String... args) {
-        FusekiModServer.runAsync(args).join();
+        FusekiServerRunner.main(args);
     }
 }
 

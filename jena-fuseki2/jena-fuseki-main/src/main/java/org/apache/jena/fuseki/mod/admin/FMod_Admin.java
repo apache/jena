@@ -69,8 +69,12 @@ public class FMod_Admin implements FusekiModule {
 
     private static Logger LOG = Fuseki.configLog;
 
-    private ArgDecl argAdmin = new ArgDecl(true, "admin");
-    private ArgDecl argAdminArea = new ArgDecl(true, "adminArea", "adminBase");
+    private static ArgDecl argAdmin = new ArgDecl(true, "admin");
+    private static ArgDecl argAdminArea = new ArgDecl(true, "adminArea", "adminBase");
+
+    // Module state.
+    private String admin = null;
+    private Path directory = null;
 
     @Override
     public void serverArgsModify(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
@@ -80,6 +84,7 @@ public class FMod_Admin implements FusekiModule {
         ArgModuleGeneral argModule = new ArgModuleGeneral() {
             @Override
             public void registerWith(CmdGeneral cmdLine) {
+                // Phase 2
 //                cmdLine.add(argAdmin, "--admin", "Enable server admin with user:password");
 //                cmdLine.add(argAdminArea,"--adminRun", "Directory for server configuration");
             }
@@ -91,30 +96,30 @@ public class FMod_Admin implements FusekiModule {
 
     @Override
     public void serverArgsPrepare(CmdGeneral fusekiCmd, ServerArgs serverArgs) {
-        String admin = fusekiCmd.getValue(argAdmin);
-        if ( admin == null ) {
-            return;
-        }
-
-        Path directory = null;
         String dirStr = fusekiCmd.getValue(argAdminArea);
         if ( dirStr != null )
             directory = Path.of(dirStr);
 
         // Phase 2
-        if ( admin.equals("localhost") ) {}
-        else {
-            String pwFile = admin;
-        }
+//        String admin = fusekiCmd.getValue(argAdmin);
+//        if ( admin == null ) {
+//            return;
+//        }
+//
+//        if ( admin.equals("localhost") ) {}
+//        else {
+//            String pwFile = admin;
+//        }
 
         if ( directory != null ) {
             if ( ! Files.isDirectory(directory) )
                 throw new FusekiConfigException("Not a directory: "+dirStr);
-
             if ( ! Files.isWritable(directory)  )
                 throw new FusekiConfigException("Not writable: "+dirStr);
         }
-        FusekiServerCtl.FUSEKI_BASE = directory;
+
+        // "directory" null mean use the FUSEKI_BASE environment variable, done by "new FusekiServerCtl"
+
     }
 
 //    @Override
@@ -127,29 +132,27 @@ public class FMod_Admin implements FusekiModule {
     public void prepare(FusekiServer.Builder builder, Set<String> datasetNames, Model configModel) {
         // Ensure the work area is setup
 
-        Path path;
-        synchronized(FusekiServerCtl.class) {
-            // Temporary - one at a time because FUSEKI_BASE is static.
-            FusekiServerCtl app = new FusekiServerCtl(null);
-            path = app.setup();
-        }
-
-        FmtLog.info(LOG, "Fuseki Admin: %s", path);
+        FusekiServerCtl serverCtl = new FusekiServerCtl(directory);
+        serverCtl.setup();
+        Path fusekiBase = serverCtl.getFusekiBase();
+        builder.addServletAttribute(Fuseki.attrFusekiServerCtl, serverCtl);
+        FmtLog.info(LOG, "Fuseki Admin: %s", fusekiBase);
 
         // Shiro.
-        Path shiroIni = path.resolve(FusekiServerCtl.DFT_SHIRO_INI);
+        Path shiroIni = fusekiBase.resolve(FusekiServerCtl.DFT_SHIRO_INI);
         if ( Files.exists(shiroIni) ) {
             System.setProperty(FusekiServerCtl.envFusekiShiro, shiroIni.toString());
         } else {
-            FmtLog.info(LOG, "No shiro.ini: dir=%s", path);
+            FmtLog.info(LOG, "No shiro.ini: dir=%s", fusekiBase);
         }
 
         String configDir = FusekiServerCtl.dirConfiguration.toString();
         List<DataAccessPoint> directoryDatabases = FusekiConfig.readConfigurationDirectory(configDir);
 
-        if ( directoryDatabases.isEmpty() )
+        if ( directoryDatabases.isEmpty() && datasetNames.isEmpty() )
             FmtLog.info(LOG, "No databases: dir=%s", configDir);
         else {
+            datasetNames.forEach(n->FmtLog.info(Fuseki.configLog, "Database: %s", n));
             directoryDatabases.forEach(dap -> FmtLog.info(Fuseki.configLog, "Database: %s", dap.getName()));
         }
 
@@ -182,4 +185,9 @@ public class FMod_Admin implements FusekiModule {
                 .enableCompact(true)
                 ;
     }
+
+    // Currently, the server admin area does not move during the run of a server.
+    /** {@inheritDoc} */
+    @Override
+    public void serverReload(FusekiServer server) { }
 }

@@ -34,10 +34,11 @@ import org.apache.jena.rdf.model.Model;
  */
 public class FMod_Prometheus implements FusekiModule {
 
-    private static FusekiModule singleton = new FMod_Prometheus();
-    public static FusekiModule get() {
-        return singleton;
+    public static FusekiModule create() {
+        return new FMod_Prometheus();
     }
+
+    private MetricsProvider metricsProvider = null;
 
     public FMod_Prometheus() {}
 
@@ -50,7 +51,7 @@ public class FMod_Prometheus implements FusekiModule {
     public String name() { return "FMod Prometheus Metrics"; }
 
     @Override public void prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) {
-        MetricsProvider metricsProvider = new PrometheusMetricsProvider();
+        metricsProvider = new PrometheusMetricsProvider();
         serverBuilder.addServletAttribute(Fuseki.attrMetricsProvider, metricsProvider);
         serverBuilder.addServlet("/$/metrics", new ActionMetrics());
     }

@@ -46,10 +46,9 @@ import org.slf4j.Logger;
 
 public class FMod_UI implements FusekiModule {
 
-    // Only one module needed - it is stateless.
     private static FusekiModule singleton = new FMod_UI();
-    public static FusekiModule get() {
-        return singleton;
+    public static FusekiModule create() {
+        return new FMod_UI();
     }
 
     public FMod_UI() {}
@@ -63,11 +62,14 @@ public class FMod_UI implements FusekiModule {
 //    }
 
     private static ArgDecl argUIFiles = new ArgDecl(true, "ui");
-    private String uiAppLocation = null;
+
     /** Java resource name used to find the UI files. */
     private static String resourceNameUI = "webapp";
-    /** Directory name of the root of UI files with {@code FUSEKI_BASE} */
+    /** Directory name of the root of UI files */
     private static String directoryNameUI = "webapp";
+
+    // UI resources location.
+    private String uiAppLocation = null;
 
     @Override
     public String name() {
@@ -95,8 +97,14 @@ public class FMod_UI implements FusekiModule {
             return;
         }
 
+        FusekiServerCtl serverCtl = (FusekiServerCtl)builder.getServletAttribute(Fuseki.attrFusekiServerCtl);
+        if ( serverCtl == null ) {
+            LOG.warn("No server control");
+            return;
+        }
+
         if ( uiAppLocation == null ) {
-            uiAppLocation = findFusekiApp();
+            uiAppLocation = findFusekiApp(serverCtl);
             if ( uiAppLocation == null ) {
                 LOG.warn("No Static content location has been found");
                 return;
@@ -114,26 +122,32 @@ public class FMod_UI implements FusekiModule {
         // LOG.info("Fuseki UI loaded");
     }
 
+    // Currently, fixed location during the run of a server.
+    /** {@inheritDoc} */
+    @Override
+    public void serverReload(FusekiServer server) { }
+
     /**
      * Locate the UI files.
      * <ol>
      * <li>Command line name of a directory</li>
-     * <li>{@code $FUSEKI_BASE/webapp}</li>
+     * <li>{@code FusekiServerCtl.getFusekibase()/webapp}</li>
      * <li>Classpath java resource {@code webapp}</li>
      * <ol>
      */
-    private String findFusekiApp() {
+    private String findFusekiApp(FusekiServerCtl serverCtl) {
         // 1:: Command line setting.
         if ( uiAppLocation != null )
             return uiAppLocation;
 
-        // 2:: $FUSEKI_BASE/webapp
-        // If the FUSEKI_BASE does not exists, it is created later in FMod_admin.prepare
-        // and does not include Fuseki app.
-        String x = fromPath(FusekiServerCtl.FUSEKI_BASE, directoryNameUI);
-        if ( x != null ) {
-            LOG.info("Fuseki UI - path resource: "+x);
-            return x;
+        // 2::FusekiServerCtl.getFusekibase()/webapp
+        if ( serverCtl != null ) {
+            Path fusekiBase =  serverCtl.getFusekiBase();
+            String x = fromPath(fusekiBase, directoryNameUI);
+            if ( x != null ) {
+                LOG.info("Fuseki UI - path resource: "+x);
+                return x;
+            }
         }
 
         // 3:: From a jar.

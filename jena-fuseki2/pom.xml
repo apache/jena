@@ -57,8 +57,7 @@
     <!-- Fuseki main server -->
     <module>jena-fuseki-main</module>
 
-    <!-- Fuseki modules for Fuseki main-->
-    <!-- ... -->
+    <!-- fuseki-server.jar -->
     <module>jena-fuseki-server</module>
     
     <!-- Fuseki Webapp -->

@@ -20,6 +20,7 @@ package org.apache.jena.fuseki.mgt;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -31,13 +32,15 @@ import org.apache.jena.util.FileUtils;
 public class TemplateFunctions
 {
     /** Read in a template from a file, substitute for {NAME} and return the string. */
-    public static String templateFile(String templateName, Map<String, String> params, Lang lang) {
-        String templateFilename = Template.getPath(templateName).toString();
+    public static String templateFile(Path directory, String templateName, Map<String, String> params, Lang lang) {
+        String templateFilename = directory.resolve(templateName).toString();
         String template;
-        try { template = FileUtils.readWholeFileAsUTF8(templateFilename); }
-        catch (IOException ex) {
+        try {
+            template = FileUtils.readWholeFileAsUTF8(templateFilename);
+        } catch (IOException ex) {
             Fuseki.serverLog.error("File not found: "+templateFilename);
-            IO.exception(ex); return null;
+            IO.exception(ex);
+            return null;
         }
         return templateString(template, params, lang);
     }
@@ -74,7 +77,7 @@ public class TemplateFunctions
                      Lang.JSONLD.equals(lang)  ||
                      Lang.RDFJSON.equals(lang)
                     ) {
-                    // Make safe for a RDF language ""-string - especially MS Windows \ path separators.
+                    // Make safe for an RDF language ""-string - especially MS Windows \ path separators.
                     x = x.replace("\\", "\\\\");
                     x = x.replace("\"", "\\\"");
                 }

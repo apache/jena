@@ -232,8 +232,7 @@ public class FusekiLogging
     }
 
     private static String log4j2setupFallback() {
-        // The logging file for Fuseki in Tomcat webapp is in "log4j2.properties" in the webapp root directory.
-        // This is used by command line Fuseki (full and main)
+        // This is the default
 
 //      filters = threshold
 //      filter.threshold.type = ThresholdFilter
@@ -247,6 +246,7 @@ public class FusekiLogging
                 appender.console.name = OUT
                 appender.console.target = SYSTEM_OUT
                 appender.console.layout.type = PatternLayout
+                ##appender.console.layout.pattern = %d{HH:mm:ss} %-5p %-15c{1} :: %m%n
                 appender.console.layout.pattern = [%d{yyyy-MM-dd HH:mm:ss}] %-10c{1} %-5p %m%n
 
                 rootLogger.level                  = WARN
@@ -297,8 +297,7 @@ public class FusekiLogging
                 logger.fuseki-request.additivity             = false
                 logger.fuseki-request.level                  = OFF
                 logger.fuseki-request.appenderRef.plain.ref  = PLAIN
-                    );
-                    """;
+               """;
     }
 
     public static void resetLogging(String configString) {

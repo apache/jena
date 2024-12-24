@@ -37,7 +37,6 @@ public class FusekiCoreInfo {
     }
 
     /** Log details - this function is about command line details */
-    // Shared between FusekiMain and Fuseki Webapp (currently).
     public static void logServerCmdSetup(Logger log, boolean verbose, DataAccessPointRegistry dapRegistry,
                                          String datasetPath, String datasetDescription, String serverConfigFile, String staticFiles) {
         if ( datasetPath != null )
@@ -46,16 +45,11 @@ public class FusekiCoreInfo {
             FmtLog.info(log, "Configuration file: %s", serverConfigFile);
 
         FusekiCoreInfo.logDataAccessPointRegistry(log, dapRegistry, verbose);
-
         if ( staticFiles != null )
             FmtLog.info(log, "Static files: %s", staticFiles);
-
-        if ( verbose ) {
-            PlatformInfo.logDetailsSystem(log);
+        PlatformInfo.logDetailsSystem(log);
+        if ( verbose )
             PlatformInfo.logDetailsJVM(log);
-        }
-        else
-            PlatformInfo.logDetailsSystemPlain(log);
     }
 
     /** Log a {@link DataAccessPointRegistry} */

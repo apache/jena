@@ -182,7 +182,10 @@ public class Fuseki {
     public static final String attrNameRegistry            = "org.apache.jena.fuseki:DataAccessPointRegistry";
     public static final String attrOperationRegistry       = "org.apache.jena.fuseki:OperationRegistry";
     public static final String attrAuthorizationService    = "org.apache.jena.fuseki:AuthorizationService";
+    // The Fuseki Server
     public static final String attrFusekiServer            = "org.apache.jena.fuseki:Server";
+    // The FusekiServerCtl object for the admin area; may be null
+    public static final String attrFusekiServerCtl         = "org.apache.jena.fuseki:ServerCtl";
     public static final String attrMetricsProvider         = "org.apache.jena.fuseki:MetricsProvider";
 
     public static void setVerbose(ServletContext cxt, boolean verbose) {
