@@ -211,7 +211,7 @@ public class ActionDatasets extends ActionContainerItem {
                     FmtLog.warn(action.log, "Inconsistent names: datasetPath = %s; DataAccessPoint name = %s", datasetPath, dataAccessPoint);
                 succeeded = true;
                 action.getDataAccessPointRegistry().register(dataAccessPoint);
-                
+
                 // Add to metrics
                 MetricsProvider metricProvider = action.getMetricsProvider();
                 if ( metricProvider != null )
@@ -418,7 +418,14 @@ public class ActionDatasets extends ActionContainerItem {
             params.put(Template.NAME, dbName.substring(1));
         else
             params.put(Template.NAME, dbName);
-        FusekiServerCtl.addGlobals(params);
+
+        FusekiServerCtl serverCtl = FusekiServerCtl.get(action.getServletContext());
+        if ( serverCtl != null )
+            serverCtl.addGlobals(params);
+        else {
+            ServletOps.errorOccurred("No admin area");
+            // No return.
+        }
 
         //action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType ));
 
@@ -429,7 +436,7 @@ public class ActionDatasets extends ActionContainerItem {
             ServletOps.errorBadRequest(format("dbType can be only one of %s", keys));
         }
 
-        String instance = TemplateFunctions.templateFile(template, params, Lang.TTL);
+        String instance = TemplateFunctions.templateFile(serverCtl.getFusekiBase(), template, params, Lang.TTL);
         RDFParser.create().source(new StringReader(instance)).base("http://base/").lang(Lang.TTL).parse(dest);
     }
 

@@ -80,6 +80,7 @@ public class FMod_Shiro implements FusekiModule {
 
     private static ArgDecl argShiroIni = new ArgDecl(true, "shiro", "shiro-ini");
 
+    // Module state (for reload).
     private String shiroFile = null;
 
     public FMod_Shiro() {
@@ -107,12 +108,7 @@ public class FMod_Shiro implements FusekiModule {
 
     // The filter is added in prepare().
     // This allows other Fuseki modules, such as FMod_Admin, to setup shiro.ini.
-    // FMod_Admin unpacks a default one to $FUSEKI_BASE/shiro.ini (usually "run/shiro.ini")
-
-//    @Override
-//    public void serverArgsBuilder(FusekiServer.Builder serverBuilder, Model configModel) {
-//        //Add filter.
-//    }
+    // FMod_Admin unpacks a default one to FUSEKI_BASE/shiro.ini (usually "run/shiro.ini")
 
      /**
       * Determine the Shiro configuration file.
@@ -181,8 +177,10 @@ public class FMod_Shiro implements FusekiModule {
         }
     }
 
-    @Override
-    public void serverAfterStarting(FusekiServer server) {}
-
-// @Override public void serverStopped(FusekiServer server) { }
+    // Later:
+    // Reload shirio.ini file and reset.
+//    // Currently, no actual - the server admin area does not move during the run of a server.
+//    /** {@inheritDoc} */
+//    @Override
+//    public void serverReload(FusekiServer server) { }
 }

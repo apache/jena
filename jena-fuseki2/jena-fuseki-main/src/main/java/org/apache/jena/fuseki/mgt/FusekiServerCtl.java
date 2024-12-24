@@ -29,18 +29,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+import jakarta.servlet.ServletContext;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.FmtLog;
+import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.cmd.CmdException;
 import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.build.DatasetDescriptionMap;
 import org.apache.jena.fuseki.build.FusekiConfig;
+import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataService;
 import org.apache.jena.fuseki.server.FusekiVocabG;
@@ -57,20 +60,23 @@ import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.system.G;
 
 public class FusekiServerCtl {
-    /**
-     * Root of the varying files in this deployment. Often $PWD/run.
-     * This location must be writable.
-     */
-    public static Path FUSEKI_BASE = null;
-
-    public static final String DFT_SHIRO_INI          = "shiro.ini";
     public static final String envFusekiBase          = "FUSEKI_BASE";
     public static final String envFusekiShiro         = "FUSEKI_SHIRO";
+    public static final String DFT_SHIRO_INI          = "shiro.ini";
 
-    // Relative names of directories in the FUSEKI_BASE area.
+    public static FusekiServerCtl get(ServletContext cxt) {
+        if ( cxt == null )
+           return null;
+        FusekiServerCtl fusekiServerCtl = (FusekiServerCtl)cxt.getAttribute(Fuseki.attrFusekiServerCtl);
+        if ( fusekiServerCtl == null )
+            Log.warn(FusekiServerCtl.class, "No FusekiServerCtl in ServletContext");
+        return fusekiServerCtl;
+    }
+
+    // Relative names of directories in the Fuseki base area.
     private static final String databasesLocationBase = "databases";
     // Place to put Lucene text and spatial indexes.
-    private static final String    databaseIndexesDir = "text_indexes";
+    private static final String databaseIndexesDir    = "text_indexes";
 
     private static final String backupDirNameBase     = "backups";
     private static final String configDirNameBase     = "configuration";
@@ -83,7 +89,6 @@ public class FusekiServerCtl {
     public static int levelFModAdmin                  = BaseFusekiAutoModuleLevel;
     public static int levelFModUI                     = BaseFusekiAutoModuleLevel+10;
     public static int levelFModShiro                  = BaseFusekiAutoModuleLevel+20;
-
 
     /** Directory for TDB databases - this is known to the assembler templates */
     public static Path        dirDatabases       = null;
@@ -107,73 +112,53 @@ public class FusekiServerCtl {
     // Marks the end of successful initialization.
     /*package*/static boolean serverInitialized  = false;
 
-//    /** OLD
-//     * Root of the Fuseki installation for fixed files.
-//     * This may be null (e.g. running inside a web application container)
-//     */
-//    public static Path FUSEKI_HOME = null;
-
-    // Too much is done with statics, assuming one server+admin process
-    // At the moment, it is one setup happening at a time.
-    // Once created, it is independent.
-    // Better, less statics, more FusekiServerApp instance object.
-    // Current limitation: FUSEKI_BASE is static and set in
-    //    FusekiApp.java          line 275
-    //    ArgModuleAdmin.java     line 61
-    //    FMod_Admin.java         line 117
-    //    FMod_UI.java            line 133
-    //    Template.java           line 27
-    //    ActionDadasets uses addGlobals.
-
     // Default - "run" in the current directory.
     public static final String dftFusekiBase = "run";
 
-    public FusekiServerCtl(String location) {
-        if ( location == null ) {
-            FUSEKI_BASE = null;
-            return;
-        }
-        FUSEKI_BASE = Path.of(location);
+    private Path fusekiBase = null;
+
+
+    public FusekiServerCtl(Path location) {
+        if ( location == null )
+            location = envFusekiBase();
+
+        this.fusekiBase = location;
     }
 
-    public Path setup() {
-        // Set the location of the BASE area
-        setFusekiBase();
-        // Ensure the BASE area exists on disk.
-        setBaseAreaOnDisk();
-        // Format the BASE area.
-        ensureBaseArea(FUSEKI_BASE);
-        return FUSEKI_BASE;
+    public Path getFusekiBase() {
+        return fusekiBase;
     }
 
-    private void setFusekiBase() {
-        if ( FUSEKI_BASE == null )
-            FUSEKI_BASE = select_FUSEKI_BASE();
-    }
 
-    private Path select_FUSEKI_BASE() {
+    private Path envFusekiBase() {
         // Does not guarantee existence
-        Path setting = null;
-        if ( FUSEKI_BASE == null )
-            setting = calc_FUSEKI_BASE();
+        if ( fusekiBase != null )
+            return fusekiBase;
+        String valueFusekiBase = getenv("FUSEKI_BASE");
+        if ( valueFusekiBase == null )
+            valueFusekiBase = dftFusekiBase;
+        Path setting = Path.of(valueFusekiBase);
         setting = setting.toAbsolutePath();
         return setting;
     }
 
-    private Path calc_FUSEKI_BASE() {
-        String valueFusekiBase = getenv("FUSEKI_BASE");
-        if ( valueFusekiBase == null )
-            valueFusekiBase = dftFusekiBase;
-        return Path.of(valueFusekiBase);
+    /**
+     *  Set up the area if not already formatted.
+     */
+    public void setup() {
+        // Ensure the BASE area exists on disk.
+        setBaseAreaOnDisk();
+        // Format the BASE area.
+        ensureBaseArea();
     }
 
     private void setBaseAreaOnDisk() {
-        FmtLog.info(Fuseki.configLog, "FUSEKI_BASE=%s", FUSEKI_BASE);
-        if ( ! Files.exists(FUSEKI_BASE) ) {
+        FmtLog.info(Fuseki.configLog, "Fuseki Base = %s", fusekiBase);
+        if ( ! Files.exists(fusekiBase) ) {
             try {
-                Files.createDirectories(FUSEKI_BASE);
+                Files.createDirectories(fusekiBase);
             } catch (IOException e) {
-                throw new FusekiConfigException("Failed to create FUSEKI_BASE: "+FUSEKI_BASE);
+                throw new FusekiConfigException("Failed to create Fuseki Base: "+fusekiBase);
             }
         }
         // Further checks in ensureBaseArea
@@ -182,17 +167,18 @@ public class FusekiServerCtl {
     /**
      * Create directories if found to be missing.
      */
-    private void ensureBaseArea(Path baseArea) {
+    private void ensureBaseArea() {
+        Path baseArea = fusekiBase;
         if ( Files.exists(baseArea) ) {
             if ( ! Files.isDirectory(baseArea) )
-                throw new FusekiConfigException("FUSEKI_BASE is not a directory: "+baseArea);
+                throw new FusekiConfigException("Fuseki base is not a directory: "+baseArea);
             if ( ! Files.isWritable(baseArea) )
-                throw new FusekiConfigException("FUSEKI_BASE is not writable: "+baseArea);
+                throw new FusekiConfigException("Fuseki base is not writable: "+baseArea);
         } else {
             ensureDir(baseArea);
         }
 
-        // Ensure FUSEKI_BASE has the assumed directories.
+        // Ensure the Fuseki base area has the assumed directories.
         dirTemplates        = writeableDirectory(baseArea, templatesNameBase);
         dirDatabases        = writeableDirectory(baseArea, databasesLocationBase);
         dirBackups          = writeableDirectory(baseArea, backupDirNameBase);
@@ -202,7 +188,7 @@ public class FusekiServerCtl {
 
         // ---- Initialize with files.
 
-//        // Copy missing files into FUSEKI_BASE
+        // Copy missing files into the Fuseki base
         // Interacts with FMod_Shiro.
         if ( Lib.getenv(FusekiServerCtl.envFusekiShiro) == null ) {
             copyFileIfMissing(null, DFT_SHIRO_INI, baseArea);
@@ -256,7 +242,7 @@ public class FusekiServerCtl {
         // DRY -- ActionDatasets (and others?)
         addGlobals(params);
 
-        String str = TemplateFunctions.templateFile(templateFile, params, Lang.TTL);
+        String str = TemplateFunctions.templateFile(fusekiBase, templateFile, params, Lang.TTL);
         Lang lang = RDFLanguages.filenameToLang(str, Lang.TTL);
 
         Graph configuration = RDFParser.fromString(str, lang).toGraph();
@@ -271,16 +257,14 @@ public class FusekiServerCtl {
         return dap;
     }
 
-    public static void addGlobals(Map<String, String> params) {
+    public void addGlobals(Map<String, String> params) {
         if ( params == null ) {
             Fuseki.configLog.warn("FusekiApp.addGlobals : params is null", new Throwable());
             return;
         }
 
         if ( ! params.containsKey("FUSEKI_BASE") )
-            params.put("FUSEKI_BASE", pathStringOrElse(FUSEKI_BASE, "unset"));
-//        if ( ! params.containsKey("FUSEKI_HOME") )
-//            params.put("FUSEKI_HOME", pathStringOrElse(FusekiAppEnv.FUSEKI_HOME, "unset"));
+            params.put("FUSEKI_BASE", pathStringOrElse(fusekiBase, "unset"));
     }
 
     /** Copy a file from src to dst under name fn.
@@ -389,6 +373,13 @@ public class FusekiServerCtl {
         if ( ! Files.isWritable(p) )
             throw new FusekiConfigException("Not writable: "+p);
         return p;
+    }
+
+    /** Running a full-features server sets some global state. Clear this up. (mainly for tests.)*/
+    public static void clearUpSystemState() {
+        System.getProperties().remove(FusekiServerCtl.envFusekiShiro);
+        System.getProperties().remove(FusekiServerCtl.envFusekiBase);
+        FusekiMain.resetCustomisers();
     }
 
     private static Path makePath(Path root , String relName ) {

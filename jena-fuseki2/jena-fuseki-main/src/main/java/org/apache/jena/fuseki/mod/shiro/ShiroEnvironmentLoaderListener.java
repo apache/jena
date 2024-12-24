@@ -69,7 +69,7 @@ class ShiroEnvironmentLoaderListener extends EnvironmentLoaderListener{
                 shiroConfigLog.info(format("No Shiro file found (tried: %s)", locations));
                 return;
             }
-            shiroConfigLog.info("Shiro INI: "+loc);
+            shiroConfigLog.info("Shiro file: "+loc);
             String[] configLocationsHere = new String[] {loc};
             env.setConfigLocations(configLocationsHere);
         }

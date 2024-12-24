@@ -24,7 +24,8 @@ import java.util.function.Function;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.slf4j.Logger;
 
-public class PlatformInfo {
+/** Platform inforamtion - OS and JVM */
+/*package*/ class PlatformInfo {
 
     public static void main(String ...args) throws IOException {
         long maxMem = Runtime.getRuntime().maxMemory();
@@ -35,14 +36,8 @@ public class PlatformInfo {
         System.out.printf("max=%s  total=%s  used=%s  free=%s\n", f.apply(maxMem), f.apply(totalMem), f.apply(usedMem), f.apply(freeMem));
     }
 
-    /** System details section */
-    public static void logDetailsSystem(Logger log) {
-        log.info("System");
-        logDetailsSystemPlain(log);
-    }
-
-    /** System details, no section header */
-    public static void logDetailsSystemPlain(Logger log) {
+    /** System details */
+    /*package*/ static void logDetailsSystem(Logger log) {
         String prefix = "  ";
         long maxMem = Runtime.getRuntime().maxMemory();
         long totalMem = Runtime.getRuntime().totalMemory();
@@ -60,19 +55,16 @@ public class PlatformInfo {
     }
 
     /** JVM details section. */
-    public static void logDetailsJVM(Logger log) {
+    /*package*/ static void logDetailsJVM(Logger log) {
         String prefix = "  ";
-        log.info("Java");
         logOne(log, prefix, "java.vendor");
         logOne(log, prefix, "java.home");
         logOne(log, prefix, "java.runtime.version");
         logOne(log, prefix, "java.runtime.name");
-        //logOne(log, "java.endorsed.dirs");
         logOne(log, prefix, "user.language");
         logOne(log, prefix, "user.timezone");
         logOne(log, prefix, "user.country");
         logOne(log, prefix, "user.dir");
-        //logOne(log, prefix, "file.encoding");
     }
 
     private static void logOne(Logger log, String prefix, String property) {

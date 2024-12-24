@@ -37,6 +37,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -59,6 +60,7 @@ import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.fuseki.mgt.FusekiServerCtl;
 import org.apache.jena.fuseki.mgt.ServerMgtConst;
 import org.apache.jena.fuseki.server.ServerConst;
+import org.apache.jena.fuseki.system.FusekiLogging;
 import org.apache.jena.fuseki.test.HttpTest;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -87,6 +89,10 @@ public class TestAdmin {
 
     private String serverURL = null;
     private FusekiServer server = null;
+
+    @BeforeAll public static void logging() {
+        FusekiLogging.setLogging();
+    }
 
     @BeforeEach public void startServer() {
         System.setProperty("FUSEKI_BASE", "target/run");
@@ -120,8 +126,7 @@ public class TestAdmin {
         if ( server != null )
             server.stop();
         serverURL = null;
-        // Clearup FMod_Shiro.
-        System.getProperties().remove(FusekiServerCtl.envFusekiShiro);
+        FusekiServerCtl.clearUpSystemState();
     }
 
     protected String urlRoot() {
@@ -226,18 +231,17 @@ public class TestAdmin {
 
         try {
             Path f = Path.of(fileBase+"config-ds-plain-1.ttl");
-            {
-                httpPost(urlRoot()+"$/"+opDatasets,
-                         WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8,
-                         BodyPublishers.ofFile(f));
-            }
+            httpPost(urlRoot()+"$/"+opDatasets,
+                     WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8,
+                     BodyPublishers.ofFile(f));
             // Check exists.
             checkExists(dsTest);
+            // Try again.
             try {
-            } catch (HttpException ex) {
                 httpPost(urlRoot()+"$/"+opDatasets,
                          WebContent.contentTypeTurtle+"; charset="+WebContent.charsetUTF8,
                          BodyPublishers.ofFile(f));
+            } catch (HttpException ex) {
                 assertEquals(HttpSC.CONFLICT_409, ex.getStatusCode());
             }
         } catch (IOException ex) { IO.exception(ex); return; }

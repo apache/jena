@@ -18,15 +18,8 @@
 
 package org.apache.jena.fuseki.mgt;
 
-import java.nio.file.Path;
-
-
 public class Template
 {
-    public static Path getPath(String templateName) {
-        return FusekiServerCtl.FUSEKI_BASE.resolve(templateName);
-    }
-
     public static final String templateDir            = "templates";
 
     // These are used by the command line start up.

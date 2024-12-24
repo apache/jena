@@ -20,19 +20,77 @@ package org.apache.jena.fuseki.mod;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.cmds.FusekiMain;
+import org.apache.jena.fuseki.main.sys.FusekiModules;
+import org.apache.jena.fuseki.mgt.FusekiServerCtl;
+import org.apache.jena.fuseki.system.FusekiLogging;
+import org.apache.jena.http.HttpOp;
 
 /**
  * Test for the whole Fuseki server, not components.
  */
 public class TestFusekiServer {
-    @Test public void run() {
-        // Setup
-        FusekiServer server = FusekiModServer.runAsync("--port=0", "--empty");
-        int port = server.getPort();
-        assertNotEquals(0, port, "Port is zero after async start");
 
+    private static String serverBase =  "target/runBase";
+
+    @BeforeAll static void beforeAll() {
+        FusekiModules.restoreSystemDefault();
+        FusekiServerCtl.clearUpSystemState();
+        FusekiLogging.setLogging();
+    }
+
+    @AfterEach void afterEach() {
+        FusekiModules.restoreSystemDefault();
+        FusekiServerCtl.clearUpSystemState();
+    }
+
+    @Test
+    public void runCmdLine() {
+        String runBase = serverBase+"1";
+        setup(runBase);
+        // Build-run command line
+        FusekiServer server = FusekiServerRunner.runAsync("--port=0", "--empty");
+        try {
+            int port = server.getPort();
+            assertNotEquals(0, port, "Port is zero after async start");
+        } finally {
+            FusekiMain.resetCustomisers();
+            server.stop();
+            tearDown(runBase);
+        }
+    }
+
+    @Test
+    public void buildRun() {
+        String runBase = serverBase+"2";
+        setup(runBase);
+        // Build-run programmatically.
+        FusekiModules serverModules = FusekiServerRunner.serverModules();
+        FusekiServer server = FusekiServer.create().port(0).fusekiModules(serverModules).build();
+        server.start();
+        try {
+            int port = server.getPort();
+            assertNotEquals(0, port, "Port is zero after async start");
+            // check it has a UI.
+            HttpOp.httpGetString(server.serverURL()+"#");
+        } finally {
+            server.stop();
+            tearDown(runBase);
+        }
+    }
+
+    private void setup(String runBase) {
+        System.setProperty(FusekiServerCtl.envFusekiBase, runBase);
+        FileOps.clearAll(runBase);
+    }
+
+    private void tearDown(String runBase) {
+        FileOps.clearAll(runBase);
     }
 }

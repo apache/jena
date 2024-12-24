@@ -36,7 +36,6 @@ import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.cmd.*;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
-import org.apache.jena.fuseki.main.FusekiMainInfo;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.fuseki.main.sys.FusekiServerArgsCustomiser;
@@ -56,6 +55,7 @@ import org.apache.jena.sys.JenaSystem;
 import org.slf4j.Logger;
 
 public class FusekiMain extends CmdARQ {
+
     /** Default HTTP port when running from the command line. */
     public static int defaultPort          = 3030;
     /** Default HTTPS port when running from the command line. */
@@ -97,8 +97,8 @@ public class FusekiMain extends CmdARQ {
     private static ArgDecl  argWithMetrics  = new ArgDecl(ArgDecl.NoValue,  "withMetrics", "metrics");
     private static ArgDecl  argWithCompact  = new ArgDecl(ArgDecl.NoValue,  "withCompact", "compact");
 
-//    // Use modules found by the ServiceLoader.
-//    private static ArgDecl  argEnableModules  = new ArgDecl(ArgDecl.HasValue,  "modules", "fuseki-modules");
+    // Use modules found by the ServiceLoader. Currently, no-op.
+    private static ArgDecl  argEnableModules  = new ArgDecl(ArgDecl.HasValue,  "modules", "fuseki-modules");
 
     private static ArgDecl  argAuth         = new ArgDecl(ArgDecl.HasValue, "auth");
 
@@ -194,6 +194,20 @@ public class FusekiMain extends CmdARQ {
     public static void addCustomiser(FusekiServerArgsCustomiser customiser) {
         Objects.requireNonNull(customiser);
         ArgCustomizers.addCustomiser(customiser);
+    }
+
+    /**
+     * Registers CLI customisers.
+     * <p>
+     * CLI customisers can add one/more custom arguments into the Fuseki Server CLI arguments and then can apply those
+     * to the Fuseki server being built during the processing of {@link #processModulesAndArgs()}.  This allows for
+     * custom arguments that directly affect how the Fuseki server is built to be created.
+     * </p>
+     * @see #addCustomiser(FusekiServerArgsCustomiser)
+     */
+    public static void addCustomisers(FusekiModules customiserSet) {
+        Objects.requireNonNull(customiserSet);
+        customiserSet.forEach(customiser->ArgCustomizers.addCustomiser(customiser));
     }
 
     /**
@@ -306,7 +320,7 @@ public class FusekiMain extends CmdARQ {
         add(argWithMetrics, "--metrics",    "Enable /$/metrics");
         add(argWithCompact, "--compact",    "Enable /$/compact/*");
 
-        //add(argEnableModules, "--modules=true|false", "Enable Fuseki modules");
+        add(argEnableModules, "--modules=true|false", "Enable Fuseki autoloaded modules");
 
         super.modVersion.addClass("Fuseki", Fuseki.class);
 
@@ -578,9 +592,9 @@ public class FusekiMain extends CmdARQ {
         // Allows for external setting of serverArgs.fusekiModules
         if ( serverArgs.fusekiModules == null ) {
             // Get modules from system-wide setup.
-            // This (Fuseki 5.3.0- defaults to an empty set of modules.
-//            boolean withModules = hasValueOfTrue(argEnableModules);
-            serverArgs.fusekiModules = FusekiModules.getSystemModules();
+            boolean withModules = hasValueOfTrue(argEnableModules);
+            if ( withModules )
+                serverArgs.fusekiModules = FusekiModules.getSystemModules();
         }
 
         if ( contains(argCORS) ) {
@@ -630,7 +644,7 @@ public class FusekiMain extends CmdARQ {
         // Check for command line or config setup.
         try {
             Logger log = Fuseki.serverLog;
-            FusekiMainInfo.logServerCode(log);
+            FusekiCoreInfo.logCode(log);
             FusekiServer server = makeServer(serverArgs);
             infoCmd(server, log);
             try {

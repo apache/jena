@@ -26,7 +26,6 @@ import java.net.Authenticator;
 import java.net.http.HttpClient;
 import java.util.regex.Pattern;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,23 +54,20 @@ public class TestModShiro {
 
     static {
         FusekiLogging.setLogging();
-        // Incase it is finding file:log4j.properties first.
+        // In case it is finding file:log4j.properties first.
 //        LogCtl.disable(Fuseki.serverLog);
 //        LogCtl.disable(Fuseki.actionLog);
 //        LogCtl.disable(FMod_Shiro.shiroConfigLog);
     }
 
     @BeforeEach void before() {
-        System.getProperties().remove(FusekiServerCtl.envFusekiShiro);
+        FusekiServerCtl.clearUpSystemState();
         AuthEnv.get().clearAuthEnv();
     }
 
     @AfterEach void after() {
         AuthEnv.get().clearAuthEnv();
-    }
-
-    @AfterAll static void afterAll() {
-        System.getProperties().remove(FusekiServerCtl.envFusekiShiro);
+        FusekiServerCtl.clearUpSystemState();
     }
 
     private String unlocalhost(FusekiServer server, String dataset) {
@@ -108,7 +104,6 @@ public class TestModShiro {
             attemptByLocalhost(server, dsLocal);
         } finally {
             server.stop();
-            AuthEnv.get().clearAuthEnv();
         }
     }
 
@@ -164,7 +159,6 @@ public class TestModShiro {
 
         } finally {
             server.stop();
-            AuthEnv.get().clearAuthEnv();
         }
     }
 
