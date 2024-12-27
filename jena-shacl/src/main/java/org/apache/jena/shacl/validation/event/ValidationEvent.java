@@ -21,7 +21,7 @@ package org.apache.jena.shacl.validation.event;
 import org.apache.jena.shacl.engine.ValidationContext;
 
 /**
- * All events during SHACL validation implement this interface, providing access to the {@link org.apache.jena.ext.xerces.impl.dv.ValidationContext}.
+ * All events during SHACL validation implement this interface, providing access to the {@link ValidationContext}.
  */
 public interface ValidationEvent {
     ValidationContext getValidationContext();
