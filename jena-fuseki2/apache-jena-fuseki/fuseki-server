@@ -114,14 +114,16 @@ then
     LOGGING="-Dlog4j.configurationFile=$DFT_LOG_CONF"
 fi
 
+## Plain server, no UI, no admin work area.
+## MAIN=org.apache.jena.fuseki.main.cmds.FusekiMainCmd
+MAIN=org.apache.jena.fuseki.main.cmds.FusekiServerCmd
+
 if [ -n "$LOGGING" ]
 then
-    exec "$JAVA" $JVM_ARGS "$LOGGING" -cp "$CP" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
+    exec "$JAVA" $JVM_ARGS "$LOGGING" -cp "$CP" "$MAIN" "$@"
 else
-    exec "$JAVA" $JVM_ARGS -cp "$CP" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
+    exec "$JAVA" $JVM_ARGS -cp "$CP" "$MAIN" "$@"
 fi
-
-exec "$JAVA" $JVM_ARGS $LOGGING -cp "$CP" org.apache.jena.fuseki.cmd.FusekiCmd "$@"
 
 ## Adding custom code to the Fuseki server:
 ##

@@ -296,17 +296,19 @@ then
 fi
 
 # Run command
+## Plain server, no UI, no admin work area.
+## MAIN=org.apache.jena.fuseki.main.cmds.FusekiMainCmd
+MAIN=org.apache.jena.fuseki.main.cmds.FusekiServerCmd
 
 if [ -z "$FUSEKI_CLASSES" ]
 then
-  RUN_ARGS=(${JAVA_OPTIONS[@]} -jar "$FUSEKI_START" "${FUSEKI_ADDITIONAL_ARGS[@]}" $FUSEKI_ARGS)
+  RUN_ARGS=(${JAVA_OPTIONS[@]} -cp "$FUSEKI_START" "$MAIN" "${FUSEKI_ADDITIONAL_ARGS[@]}" $FUSEKI_ARGS)
 else
-  RUN_ARGS=(${JAVA_OPTIONS[@]} -cp "$FUSEKI_START:$FUSEKI_CLASSES" org.apache.jena.fuseki.cmd.FusekiCmd "${FUSEKI_ADDITIONAL_ARGS[@]}" $FUSEKI_ARGS)
+  RUN_ARGS=(${JAVA_OPTIONS[@]} -cp "$FUSEKI_START:$FUSEKI_CLASSES" "$MAIN" "${FUSEKI_ADDITIONAL_ARGS[@]}" $FUSEKI_ARGS)
 fi
 RUN_CMD=("$JAVA" "${RUN_ARGS[@]}")
 
 # Export the variables to be seen by the java server process.
-export FUSEKI_HOME
 export FUSEKI_BASE
 
 #####################################################
