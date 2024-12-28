@@ -205,6 +205,17 @@ public class TestExpressions
     @Test(expected=ExprEvalException.class)
     public void boolean_74()       { testBoolean("isNumeric(?x)", true) ; }
 
+    // 24:00:00
+    // Equal
+    static String dateTime1999_24 = "'1999-12-31T24:00:00Z'^^<"+XSDDatatype.XSDdateTime.getURI()+">" ;
+    static String dateTime2000_00 = "'2000-01-01T00:00:00Z'^^<"+XSDDatatype.XSDdateTime.getURI()+">" ;
+
+    static String time_24 = "'24:00:00'^^<"+XSDDatatype.XSDtime.getURI()+">" ;
+    static String time_00 = "'00:00:00'^^<"+XSDDatatype.XSDtime.getURI()+">" ;
+
+    @Test public void dateTime24_01() { testBoolean(dateTime1999_24+" = "+dateTime2000_00 , true) ; }
+    @Test public void time24_01()     { testBoolean(time_24+" = "+time_00 , true) ; }
+
     static String duration1 =  "'P1Y1M1DT1H1M1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
     static String duration2 =  "'P2Y1M1DT1H1M1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
     static String duration3 =  "'P1Y1M1DT1H1M1S"+"'^^<"+XSDDatatype.XSDduration.getURI()+">";
@@ -418,6 +429,7 @@ public class TestExpressions
     static String dateTime3 = "'2005-01-01T12:03:34Z'^^<"+XSDDatatype.XSDdateTime.getURI()+">" ;
     // Later
     static String dateTime4 = "'2005-02-25T13:00:00Z'^^<"+XSDDatatype.XSDdateTime.getURI()+">" ;
+
     static String time1 = "'12:03:34Z'^^<" + XSDDatatype.XSDtime.getURI() + ">";
     static String time2 = "'12:03:34Z'^^<" + XSDDatatype.XSDtime.getURI() + ">";
     static String time3 = "'13:00:00Z'^^<" + XSDDatatype.XSDtime.getURI() + ">";
