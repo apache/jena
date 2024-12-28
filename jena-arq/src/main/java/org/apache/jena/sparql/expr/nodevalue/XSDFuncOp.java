@@ -1142,6 +1142,13 @@ public class XSDFuncOp
                 dt.setHour(0);
             return dt;
         }
+        if ( nv.isDateTime() ) {
+            if ( dt.getHour() == 24 ) {
+                dt.setHour(0);
+                dt.add(duration1day);
+            }
+            return dt;
+        }
         return dt;
     }
 
@@ -1169,6 +1176,14 @@ public class XSDFuncOp
             if ( dt.getHour() == 24 )
                 // Normalize "24:00:00"
                 dt.setHour(0);
+            return dt;
+        }
+        if ( nv.isDateTime() ) {
+            if ( dt.getHour() == 24 ) {
+                dt.setHour(0);
+                dt.add(duration1day);
+            }
+            return dt;
         }
         return dt;
     }
@@ -1611,7 +1626,9 @@ public class XSDFuncOp
         return NodeValue.makeInteger((BigInteger)x) ;
     }
 
-    public static Duration zeroDuration = NodeValue.xmlDatatypeFactory.newDuration(true, null, null, null, null, null, BigDecimal.ZERO) ;
+    private static Duration duration1day = NodeValue.xmlDatatypeFactory.newDuration(true,
+                                                                                    BigInteger.ZERO, BigInteger.ZERO, BigInteger.ONE,
+                                                                                    BigInteger.ZERO, BigInteger.ZERO, BigDecimal.ZERO) ;
 
     public static int compareDuration(NodeValue nv1, NodeValue nv2) {
         return compareDuration(nv1.getDuration(), nv2.getDuration()) ;

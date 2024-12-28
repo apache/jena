@@ -503,10 +503,14 @@ public class NodeFunctions {
         return NodeValue.makeLangString(lex, lang) ;
     }
 
+
+    /** Canonocal duration of 0 -- "P0S" */
+    private static Duration zeroDuration = NodeValue.xmlDatatypeFactory.newDuration(true, null, null, null, null, null, BigDecimal.ZERO) ;
+
     /** A duration, tided */
     public static Duration duration(int seconds) {
         if ( seconds == 0 )
-            return XSDFuncOp.zeroDuration;
+            return zeroDuration;
         Duration dur = NodeValue.xmlDatatypeFactory.newDuration(1000L*seconds);
         // Neaten the duration. Not all the fields are zero.
         dur = NodeValue.xmlDatatypeFactory.newDuration(dur.getSign()>=0,
