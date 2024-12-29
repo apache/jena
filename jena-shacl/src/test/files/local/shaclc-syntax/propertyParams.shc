@@ -20,4 +20,5 @@ shapeClass ex:TestPropertyParams {
    :q2 lessThanOrEquals=:q99 .
    :q3 ! lessThan=:q98 .
    :q4 disjoint=:q97 .
+   :zz message="MESSAGE"  severity= sh:Warning  deactivated = true .
 }

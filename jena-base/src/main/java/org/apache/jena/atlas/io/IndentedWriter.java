@@ -303,6 +303,7 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
 
     /** Get row/line (counts from 1) */
     public int getRow() { return row; }
+
     /** Get the absolute column.
      *  This is the location where the next character on the line will be printed.
      *  The IndentedWriter may not yet have padded to this place.

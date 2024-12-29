@@ -106,7 +106,7 @@ public class CompactWriter {
 
     /** Write in compact syntax or skip, noting the fact in a comment */
     private static void writeOneShapeCompactOrSkip(IndentedWriter out, NodeFormatter nodeFmt, ShapeOutputVisitor visitor, Shape sh) {
-        // Write a shape is we can, else comment.
+        // Write a shape if we can, else comment.
         try {
             try ( IndentedLineBuffer out2 = new IndentedLineBuffer() ) {
                 // Need new visitor to hold the IndentedLineBuffer
@@ -179,7 +179,7 @@ public class CompactWriter {
      */
     public static void output(IndentedWriter out, NodeFormatter nodeFmt, Shape sh) {
         // If this were critical for performance, having a "serialization context"
-        // with out, nodeFmt and prefixes" would be better. But this is the only place the
+        // with "out", "nodeFmt" and "prefixes" would be better.
         PrefixMapping prefixMappingWithStd = SHACLC.withStandardPrefixes(sh.getShapeGraph().getPrefixMapping());
         ShapeOutputVisitor visitor = new ShapeOutputVisitor(prefixMappingWithStd, nodeFmt, out);
         sh.visit(visitor);
