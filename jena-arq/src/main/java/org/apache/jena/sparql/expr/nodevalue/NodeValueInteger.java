@@ -18,62 +18,62 @@
 
 package org.apache.jena.sparql.expr.nodevalue;
 
-import java.math.BigDecimal ;
-import java.math.BigInteger ;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.sparql.expr.NodeValue;
 
 
 public class NodeValueInteger extends NodeValue
 {
-    //long integer = Integer.MIN_VALUE ;
+    //long integer = Integer.MIN_VALUE;
     // The performance impact of this seems to be very low
     // After all, much of the work is pattern matching. 
-    BigInteger integer ;
+    BigInteger integer;
     
-    public NodeValueInteger(BigInteger i)         { super() ; integer = i ; }
-    public NodeValueInteger(BigInteger i, Node n) { super(n) ; integer = i ; }
-//   public NodeValueInteger(long i, Node n)       { super(n) ; integer = new BigInteger(Long.toString(i)) ; }
-    public NodeValueInteger(long i)               { super() ; integer = new BigInteger(Long.toString(i)) ; }
+    public NodeValueInteger(BigInteger i)         { super(); integer = i; }
+    public NodeValueInteger(BigInteger i, Node n) { super(n); integer = i; }
+//   public NodeValueInteger(long i, Node n)       { super(n); integer = new BigInteger(Long.toString(i)); }
+    public NodeValueInteger(long i)               { super(); integer = new BigInteger(Long.toString(i)); }
 
     @Override
-    public boolean isNumber() { return true ; }
+    public boolean isNumber() { return true; }
     @Override
-    public boolean isInteger() { return true ; }
+    public boolean isInteger() { return true; }
     @Override
-    public boolean isDecimal() { return true ; }
+    public boolean isDecimal() { return true; }
     @Override
-    public boolean isFloat()  { return true ; }
+    public boolean isFloat()  { return true; }
     @Override
-    public boolean isDouble() { return true ; }
+    public boolean isDouble() { return true; }
     
     @Override
-    public BigInteger  getInteger()   { return integer ; }
+    public BigInteger  getInteger()   { return integer; }
     @Override
-    public double getDouble()  { return integer.doubleValue() ; }
+    public double getDouble()  { return integer.doubleValue(); }
     @Override
-    public float  getFloat()   { return integer.floatValue() ; }
+    public float  getFloat()   { return integer.floatValue(); }
     @Override
-    public BigDecimal getDecimal()  { return new BigDecimal(integer) ; }
+    public BigDecimal getDecimal()  { return new BigDecimal(integer); }
 
     @Override
     protected Node makeNode()
-    { return NodeFactory.createLiteralDT(integer.toString(), XSDDatatype.XSDinteger) ; }
+    { return NodeFactory.createLiteralDT(integer.toString(), XSDDatatype.XSDinteger); }
     
     @Override
-    public String asString() { return toString() ; }
+    public String asString() { return toString(); }
     
     @Override
     public String toString()
     { 
         // Preserve lexical form
-        if ( getNode() != null ) return super.asString() ;  // str()
-        return integer.toString() ;
+        if ( getNode() != null ) return super.asString();  // str()
+        return integer.toString();
     }
     
     @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
+    public void visit(NodeValueVisitor visitor) { visitor.visit(this); }
 }

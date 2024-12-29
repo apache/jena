@@ -18,35 +18,35 @@
 
 package org.apache.jena.sparql.expr.nodevalue;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.graph.NodeConst ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.graph.NodeConst;
 
 
 public class NodeValueBoolean extends NodeValue
 {
-    boolean bool = false ;
+    boolean bool = false;
     
-    public NodeValueBoolean(boolean b)         { super() ;  bool = b ; }
-    public NodeValueBoolean(boolean b, Node n) { super(n) ; bool = b ; }
+    public NodeValueBoolean(boolean b)         { super();  bool = b; }
+    public NodeValueBoolean(boolean b, Node n) { super(n); bool = b; }
 
     @Override
-    public boolean isBoolean()  { return true ; }
+    public boolean isBoolean()  { return true; }
 
     @Override
-    public boolean getBoolean() { return bool ; }
+    public boolean getBoolean() { return bool; }
 
     @Override
     protected Node makeNode() 
-    { return bool ? NodeConst.nodeTrue :  NodeConst.nodeFalse ; } 
+    { return bool ? NodeConst.nodeTrue :  NodeConst.nodeFalse; } 
     
     @Override
-    public String asString() { return toString() ; }
+    public String asString() { return toString(); }
     
     @Override
     public String toString()
-    { return bool ? "true" : "false" ; }
+    { return bool ? "true" : "false"; }
     
     @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
+    public void visit(NodeValueVisitor visitor) { visitor.visit(this); }
 }

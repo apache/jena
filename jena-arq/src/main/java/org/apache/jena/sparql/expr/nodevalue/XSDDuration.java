@@ -95,7 +95,7 @@ public class XSDDuration {
 
     /** Check whether a duration field is unset or is zero */
     private static boolean zeroField(Duration duration, Field field) {
-        return ! duration.isSet(field) || duration.getField(field).intValue() == 0 ;
+        return ! duration.isSet(field) || duration.getField(field).intValue() == 0;
     }
 
     /**

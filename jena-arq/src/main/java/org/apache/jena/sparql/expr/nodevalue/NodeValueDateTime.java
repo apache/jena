@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -20,31 +20,28 @@ package org.apache.jena.sparql.expr.nodevalue;
 
 import static org.apache.jena.datatypes.xsd.XSDDatatype.*;
 
-import javax.xml.datatype.XMLGregorianCalendar ;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.jena.datatypes.RDFDatatype;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.expr.NodeValue;
 
 public class NodeValueDateTime extends NodeValue
 {
-    final private XMLGregorianCalendar datetime ;
+    final private XMLGregorianCalendar datetime;
 
     /** Lex - caller removes leading and trailing whitespace. */
     public static NodeValueDateTime create(String lex, Node n) {
-        XMLGregorianCalendar datetime;
-        // Java bug : Java6, Java8: gMonth with a timezone of Z causes IllegalArgumentException
-        if ( XSDgMonth.equals(n.getLiteralDatatype()) )
-        {
-            if ( lex.endsWith("Z") )
-            {
-                lex = lex.substring(0, lex.length()-1) ;
-                datetime = NodeValue.xmlDatatypeFactory.newXMLGregorianCalendar(lex) ;
-                datetime.setTimezone(0) ;
+        // Java bug : gMonth with a timezone of Z causes IllegalArgumentException
+        if ( XSDgMonth.equals(n.getLiteralDatatype()) ) {
+            if ( lex.endsWith("Z") ) {
+                lex = lex.substring(0, lex.length() - 1);
+                XMLGregorianCalendar datetime = NodeValue.xmlDatatypeFactory.newXMLGregorianCalendar(lex);
+                datetime.setTimezone(0);
                 return new NodeValueDateTime(datetime, n);
             }
         }
-        datetime = NodeValue.xmlDatatypeFactory.newXMLGregorianCalendar(lex) ;
+        XMLGregorianCalendar datetime = NodeValue.xmlDatatypeFactory.newXMLGregorianCalendar(lex);
         return new NodeValueDateTime(datetime, n);
     }
 
@@ -63,19 +60,19 @@ public class NodeValueDateTime extends NodeValue
     }
 
     @Override
-    public boolean isDate()         { return XSDdate.equals(getNode().getLiteralDatatype()) ; }
+    public boolean isDate()         { return XSDdate.equals(getNode().getLiteralDatatype()); }
     @Override
-    public boolean isTime()         { return XSDtime.equals(getNode().getLiteralDatatype()) ; }
+    public boolean isTime()         { return XSDtime.equals(getNode().getLiteralDatatype()); }
     @Override
-    public boolean isGYear()        { return XSDgYear.equals(getNode().getLiteralDatatype()) ; }
+    public boolean isGYear()        { return XSDgYear.equals(getNode().getLiteralDatatype()); }
     @Override
-    public boolean isGYearMonth()   { return XSDgYearMonth.equals(getNode().getLiteralDatatype()) ; }
+    public boolean isGYearMonth()   { return XSDgYearMonth.equals(getNode().getLiteralDatatype()); }
     @Override
-    public boolean isGMonth()       { return XSDgMonth.equals(getNode().getLiteralDatatype()) ; }
+    public boolean isGMonth()       { return XSDgMonth.equals(getNode().getLiteralDatatype()); }
     @Override
-    public boolean isGMonthDay()    { return XSDgMonthDay.equals(getNode().getLiteralDatatype()) ; }
+    public boolean isGMonthDay()    { return XSDgMonthDay.equals(getNode().getLiteralDatatype()); }
     @Override
-    public boolean isGDay()         { return XSDgDay.equals(getNode().getLiteralDatatype()) ; }
+    public boolean isGDay()         { return XSDgDay.equals(getNode().getLiteralDatatype()); }
 
     @Override
     public XMLGregorianCalendar getDateTime() {
@@ -86,11 +83,11 @@ public class NodeValueDateTime extends NodeValue
     @Override
     protected Node makeNode()
     {
-        return null ;
+        return null;
     }
 
     @Override
     public void visit(NodeValueVisitor visitor)
-    { visitor.visit(this) ; }
+    { visitor.visit(this); }
 }
 

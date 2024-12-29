@@ -18,8 +18,8 @@
 
 package org.apache.jena.sparql.expr.nodevalue;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.expr.NodeValue;
 
 
 /** A NodeValue that isn't anything else - unrecognized literals, URIs and blank nodes.
@@ -29,12 +29,12 @@ public class NodeValueNode extends NodeValue
 {
     // ??? subclasses for NodeValueUnknownLiteralType, NodeValueLiteralBadLexicalForm
     
-    public NodeValueNode(Node n) { super(n) ; }
+    public NodeValueNode(Node n) { super(n); }
 
     @Override
     protected Node makeNode()
-    { return asNode() ; } 
+    { return asNode(); } 
     
     @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
+    public void visit(NodeValueVisitor visitor) { visitor.visit(this); }
 }
