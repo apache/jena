@@ -98,7 +98,7 @@ public final class NodeValueSortKey extends NodeValue implements Comparable<Node
     public String toString()
     { 
         if (getNode() != null) {
-            return FmtUtils.stringForNode(getNode()) ;
+            return FmtUtils.stringForNode(getNode());
         }
         return "'"+getString()+"'";
     }
@@ -111,7 +111,7 @@ public final class NodeValueSortKey extends NodeValue implements Comparable<Node
         String c1 = this.getCollation();
         String c2 = other.getCollation();
         if (c1 == null || c2 == null || ! c1.equals(c2))
-            return XSDFuncOp.compareString(this, other) ;
+            return XSDFuncOp.compareString(this, other);
         // locales are parsed. Here we could think about caching if necessary
         Locale desiredLocale = Locale.forLanguageTag(c1);
         // collators are already stored in a concurrent map by the JVM, with <locale, softref<collator>>

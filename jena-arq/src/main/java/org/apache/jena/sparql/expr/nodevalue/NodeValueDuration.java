@@ -18,38 +18,38 @@
 
 package org.apache.jena.sparql.expr.nodevalue;
 
-import javax.xml.datatype.Duration ;
+import javax.xml.datatype.Duration;
 
-import org.apache.jena.datatypes.xsd.XSDDatatype ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.sparql.expr.NodeValue ;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.sparql.expr.NodeValue;
 
 /** XSD Duration */ 
 
 public class NodeValueDuration extends NodeValue
 {
-    Duration duration ; 
+    Duration duration; 
     
     public NodeValueDuration(Duration dt)
     { 
-        duration = dt ;
+        duration = dt;
     }
     
-    public NodeValueDuration(Duration dt, Node n) { super(n) ; duration = dt ; }
+    public NodeValueDuration(Duration dt, Node n) { super(n); duration = dt; }
     
     @Override
-    public boolean isDuration() { return true ; }
+    public boolean isDuration() { return true; }
     @Override
-    public Duration getDuration()     { return duration ; }
+    public Duration getDuration()     { return duration; }
 
     @Override
     protected Node makeNode()
     {
-        String lex = duration.toString() ;
-        return NodeFactory.createLiteralDT(lex, XSDDatatype.XSDduration) ;
+        String lex = duration.toString();
+        return NodeFactory.createLiteralDT(lex, XSDDatatype.XSDduration);
     }
     
     @Override
-    public void visit(NodeValueVisitor visitor) { visitor.visit(this) ; }
+    public void visit(NodeValueVisitor visitor) { visitor.visit(this); }
 }
