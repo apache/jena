@@ -18,11 +18,14 @@
 
 package org.apache.jena.shacl.compact.writer;
 
-import static org.apache.jena.shacl.compact.writer.CompactOut.*;
+import static org.apache.jena.shacl.compact.writer.CompactOut.compact;
+import static org.apache.jena.shacl.compact.writer.CompactOut.compactUnquotedString;
 
 import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.graph.Node;
 import org.apache.jena.riot.out.NodeFormatter;
 import org.apache.jena.shacl.engine.ShaclPaths;
+import org.apache.jena.shacl.engine.Target;
 import org.apache.jena.shacl.engine.constraint.MaxCount;
 import org.apache.jena.shacl.engine.constraint.MinCount;
 import org.apache.jena.shacl.parser.*;
@@ -47,25 +50,29 @@ public class ShapeOutputVisitor implements ShapeVisitor {
         this.prologue = prologue;
     }
 
-    /** New ShapeOutputVisitor, using the same setup but with a different {@link IndentedWriter} */
+    /** New ShapeOutputVisitor, using the same setup */
     public ShapeOutputVisitor fork(IndentedWriter out) {
         return new ShapeOutputVisitor(this.nodeFmt, out, this.prologue);
     }
 
     @Override
     public void visit(NodeShape nodeShape) {
-        printShape(nodeShape);
-        printTargets(nodeShape);
+        boolean printingStarted = printTargets(nodeShape);
+        // nodeParams, not constraints : 'deactivated' | 'severity' | 'message' | (name) | (description)
+        printShapeParams(nodeShape, true, printingStarted);
         nodeShape.getConstraints().forEach(c->nodeConstraint(c));
         nodeShape.getPropertyShapes().forEach(this::outputPropertyShape);
     }
 
     @Override
     public void visit(PropertyShape propertyShape) {
-        printShape(propertyShape);
+        boolean outputStarted = false;
         // Any nodeParam constraint?
         Path path = propertyShape.getPath();
         ShaclPaths.write(out, path, prologue);
+        outputStarted = true;
+
+        printShapeParams(propertyShape, false, outputStarted);
 
         int minCount = -1 ;
         int maxCount = -1;
@@ -108,32 +115,52 @@ public class ShapeOutputVisitor implements ShapeVisitor {
         propertyShape.getPropertyShapes().forEach(this::outputPropertyShape);
     }
 
-    private void printShape(Shape shape) {
-        if ( shape.deactivated() ) {
-            compactUnquotedString(out, "deactivated", "true");
+
+    private void paramPrinter(boolean forNodeShape, boolean outputStarted, Runnable action) {
+        if ( outputStarted )
+            out.println(" ");
+        action.run();
+        if ( forNodeShape )
             out.println(" .");
-        }
-        if ( shape.getSeverity() != null && ! SHACL.Violation.equals(shape.getSeverity().level())) {
-            compact(out, nodeFmt, "severity",shape.getSeverity().level());
-            out.println(" .");
-        }
-        if ( shape.getMessages() != null ) {
-            shape.getMessages().forEach(msg->{
-                compact(out, nodeFmt, "message", msg);
-                out.println(" .");
-            });
-        }
     }
 
-    private void printTargets(Shape shape) {
-        shape.getTargets().forEach(target->{
+    private boolean printShapeParams(Shape shape, boolean forNodeShape, boolean outputStarted) {
+        if ( shape.deactivated() ) {
+            paramPrinter(forNodeShape, outputStarted,
+                         ()->compactUnquotedString(out, "deactivated", "true") );
+            outputStarted = true;
+        }
+        if ( shape.getSeverity() != null && ! SHACL.Violation.equals(shape.getSeverity().level())) {
+            paramPrinter(forNodeShape, outputStarted,
+                         ()->compact(out, nodeFmt, "severity", shape.getSeverity().level()) );
+            outputStarted = true;
+        }
+
+        if ( shape.getMessages() != null ) {
+            boolean space = outputStarted;
+            for ( Node msg : shape.getMessages() ) {
+                if ( space )
+                    out.print(" ");
+                compact(out, nodeFmt, "message", msg);
+                if ( forNodeShape )
+                    out.println(" .");
+                space = true;
+            }
+            outputStarted = space;
+        }
+        return outputStarted;
+    }
+
+    private boolean printTargets(Shape shape) {
+        boolean havePrinted = false;
+        for ( Target target : shape.getTargets() ) {
             switch ( target.getTargetType() ) {
                 case implicitClass :
                     // Different syntax. Already printed.
-                    return;
+                    continue;
                 case targetClass :
                     // Different syntax. Already printed.
-                    return;
+                    continue;
                 case targetNode :
                     break;
                 case targetObjectsOf :
@@ -149,7 +176,9 @@ public class ShapeOutputVisitor implements ShapeVisitor {
             out.print(" = ");
             nodeFmt.format(out, target.getObject());
             out.println(" .");
-        });
+            havePrinted = true;
+        }
+        return havePrinted;
     }
 
     private void outputPropertyShape(PropertyShape ps) {

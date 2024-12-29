@@ -6,6 +6,9 @@ shapeClass ex:TestNodeParams {
    nodeKind=sh:IRI .
    datatype=xsd:double .
    pattern="^.*$" .
+   message="MESSAGE" .
+   severity= sh:Warning .
+   deactivated = true .
    languageIn=["en" "fr"] .
    minLength=3 . 
    maxLength=5 .
