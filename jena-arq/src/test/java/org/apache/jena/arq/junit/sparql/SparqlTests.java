@@ -30,6 +30,7 @@ import org.apache.jena.sparql.junit.QueryTestException;
 import org.apache.jena.sparql.vocabulary.TestManifestUpdate_11;
 import org.apache.jena.sparql.vocabulary.TestManifestX;
 import org.apache.jena.sparql.vocabulary.TestManifest_11;
+import org.apache.jena.sparql.vocabulary.TestManifest_12;
 import org.apache.jena.vocabulary.TestManifest;
 
 public class SparqlTests {
@@ -70,6 +71,8 @@ public class SparqlTests {
             return new QuerySyntaxTest(entry, querySyntax, true);
         if ( testType.equals(TestManifest_11.PositiveSyntaxTest11) )
             return new QuerySyntaxTest(entry, querySyntax11, true);
+//        if ( testType.equals(TestManifest_12.PositiveSyntaxTest12) )
+//            return new QuerySyntaxTest(entry, querySyntax12, true);
         if ( testType.equals(TestManifestX.PositiveSyntaxTestARQ) )
             return new QuerySyntaxTest(entry, Syntax.syntaxARQ, true);
 
@@ -97,6 +100,11 @@ public class SparqlTests {
         if ( testType.equals(TestManifest_11.NegativeUpdateSyntaxTest11) )
             return new UpdateSyntaxTest(entry, querySyntax11, false);
         if ( testType.equals(TestManifestX.NegativeUpdateSyntaxTestARQ) )
+            return new UpdateSyntaxTest(entry, Syntax.syntaxARQ, false);
+
+        if ( testType.equals(TestManifest_12.PositiveUpdateSyntaxTest) )
+            return new UpdateSyntaxTest(entry, Syntax.syntaxARQ, true);
+        if ( testType.equals(TestManifest_12.NegativeUpdateSyntaxTest) )
             return new UpdateSyntaxTest(entry, Syntax.syntaxARQ, false);
 
         //---- Query Evaluation Tests

@@ -21,10 +21,15 @@ package org.apache.jena.graph.test;
 import static org.junit.Assert.*;
 
 import org.apache.jena.graph.*;
+import org.apache.jena.rdf.model.impl.Util;
+import org.apache.jena.vocabulary.RDF;
+
 import org.junit.Test;
 
-/** Tests for {@link Node_Triple} and other unusual nodes */
+/** More tests for {@link Node Nodes}. */
 public class TestNodeExtras {
+
+    // See also TestRDFStringLiterals
 
     private static Node s = NodeFactory.createBlankNode();
     private static Node p = NodeCreateUtils.create("eg:p");
@@ -35,9 +40,9 @@ public class TestNodeExtras {
 
     private static Triple triple9 = Triple.create(NodeFactory.createBlankNode(),p,o);
 
-    private static Node newTripleTerm(Triple triple)             { return NodeFactory.createTripleNode(triple); }
+    private static Node newTripleTerm(Triple triple)             { return NodeFactory.createTripleTerm(triple); }
 
-    private static Node newTripleTerm(Node s, Node p , Node o)   { return NodeFactory.createTripleNode(s,p,o); }
+    private static Node newTripleTerm(Node s, Node p , Node o)   { return NodeFactory.createTripleTerm(s,p,o); }
 
     private static Node_Graph newGraphTerm(Graph graph)          { return new Node_Graph(graph); }
 
@@ -45,7 +50,7 @@ public class TestNodeExtras {
 
      @Test public void term_triple_1() {
         Node nt = newTripleTerm(s,p,o);
-        assertTrue(nt.isNodeTriple());
+        assertTrue(nt.isTripleTerm());
         assertNotNull(nt.getTriple());
         assertNotNull(nt.getTriple());
         assertEquals(triple1, nt.getTriple());
@@ -103,5 +108,29 @@ public class TestNodeExtras {
         assertEquals(nGraph, nGraph);
         assertNotEquals(nGraph.getGraph().hashCode(), nGraph.hashCode());
         assertTrue(nGraph.sameValueAs(nGraph));
+    }
+
+    @Test
+    public void term_dirLangString_1() {
+        Node nDirLangString = NodeFactory.createLiteralDirLang("abc", "EN", TextDirection.LTR);
+        assertTrue(nDirLangString.isLiteral());
+        assertTrue(Util.hasLang(nDirLangString));
+        assertTrue(Util.hasDirection(nDirLangString));
+        assertEquals(RDF.dtDirLangString, nDirLangString.getLiteralDatatype());
+        // Normalized.
+        assertEquals("en", nDirLangString.getLiteralLanguage());
+        assertEquals(TextDirection.LTR, nDirLangString.getLiteralBaseDirection());
+    }
+
+    @Test
+    public void term_dirLangString_2() {
+        // Make via langtag
+        Node nDirLangString = NodeFactory.createLiteralLang("abc", "en--ltr");
+        assertTrue(nDirLangString.isLiteral());
+        assertTrue(Util.hasLang(nDirLangString));
+        assertTrue(Util.hasDirection(nDirLangString));
+        assertEquals(RDF.dtDirLangString, nDirLangString.getLiteralDatatype());
+        assertEquals("en", nDirLangString.getLiteralLanguage());
+        assertEquals(TextDirection.LTR, nDirLangString.getLiteralBaseDirection());
     }
 }

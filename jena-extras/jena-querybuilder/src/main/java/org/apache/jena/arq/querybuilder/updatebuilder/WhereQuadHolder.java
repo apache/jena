@@ -55,11 +55,11 @@ public class WhereQuadHolder implements QuadHolder {
 
     private Element whereClause;
     private final PrefixHandler prefixHandler;
-    
-    
+
+
     private static Predicate<Node> checkPredicate = n -> n.isURI() || n.isVariable() ||n.equals(Node.ANY);
-    
-    private static Predicate<Node> checkSubject = n -> checkPredicate.test(n) || n.isBlank() || n.isNodeTriple();
+
+    private static Predicate<Node> checkSubject = n -> checkPredicate.test(n) || n.isBlank();
 
 
     /**
@@ -229,7 +229,7 @@ public class WhereQuadHolder implements QuadHolder {
     public void addWhere(Collection<TriplePath> t) throws IllegalArgumentException {
         t.forEach(this::addWhere);
     }
-    
+
     /**
      * Add an optional triple to the where clause
      *
@@ -244,7 +244,7 @@ public class WhereQuadHolder implements QuadHolder {
         ElementOptional opt = new ElementOptional(epb);
         getClause().addElement(opt);
     }
-    
+
     /**
      * Add an optional TriplePath to the where clause
      *
