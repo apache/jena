@@ -20,7 +20,7 @@ package org.apache.jena.fuseki.test;
 
 import java.util.Objects;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 public class FusekiTest {
 
@@ -29,10 +29,10 @@ public class FusekiTest {
         str = str.replace(" ", "");
         String[] x = str.split(",");
         for ( String ex : expected ) {
-            Assert.assertTrue("Got: "+str+" - Does not contain "+ex, containsStr(ex, x));
+            Assertions.assertTrue(containsStr(ex, x), "Got: "+str+" - Does not contain "+ex);
         }
         for ( String s : x ) {
-            Assert.assertTrue("Got: "+str+" - Not expected "+s, containsStr(s, expected));
+            Assertions.assertTrue(containsStr(s, expected), "Got: "+str+" - Not expected "+s);
         }
     }
 

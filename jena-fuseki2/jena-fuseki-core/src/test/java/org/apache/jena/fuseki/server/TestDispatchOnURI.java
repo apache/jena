@@ -18,14 +18,12 @@
 
 package org.apache.jena.fuseki.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
 import org.apache.jena.fuseki.servlets.ActionLib;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /*
  * Test the request URI part of dispatch.
@@ -38,7 +36,7 @@ public class TestDispatchOnURI {
     private static DataAccessPointRegistry registryNoRoot;
     private static DataAccessPointRegistry registryWithRoot;
 
-    @BeforeClass public static void beforeClass() {
+    @BeforeAll public static void beforeClass() {
         registryNoRoot = new DataAccessPointRegistry();
         DataService dSrv1 = DataService.newBuilder()
                 .addEndpoint(Operation.Query)
@@ -119,7 +117,7 @@ public class TestDispatchOnURI {
 
     private void testNoDispatch(String requestURI, DataAccessPointRegistry registry) {
         DataAccessPoint dap = Dispatcher.locateDataAccessPoint(requestURI, registry);
-        assertNull("Expect no dispatch for "+requestURI, dap);
+        assertNull(dap, "Expected no dispatch for "+requestURI);
     }
 
     private void testDispatch(String requestURI, DataAccessPointRegistry registry, String expectedDataset, String expectedEndpoint) {
@@ -132,6 +130,6 @@ public class TestDispatchOnURI {
         // The request URI part of dispatch choice in Dispatcher.chooseProcessor(HttpAction action)
         String ep = ActionLib.mapRequestToEndpointName(requestURI, dap);
         assertNotNull(ep);
-        assertEquals("Endpoint", expectedEndpoint, ep);
+        assertEquals(expectedEndpoint, ep);
     }
 }

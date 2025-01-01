@@ -18,24 +18,27 @@
 
 package org.apache.jena.fuseki.test;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Assertions;
+
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
 import org.apache.jena.web.HttpSC;
-import org.junit.Assert;
 
 public class HttpTest {
 
     public static void expect4xx(Runnable action) {
         try {
             action.run();
-            Assert.fail("Expected HttpException");
+            Assertions.fail("Expected HttpException");
         } catch (QueryExceptionHTTP ex) {
             if ( ex.getStatusCode() < 400 || ex.getStatusCode() > 499 )
-                Assert.fail(ex.getMessage());
+                Assertions.fail(ex.getMessage());
             } catch (HttpException ex) {
             // -1 : any status code in HttpException
             if ( ex.getStatusCode() < 400 || ex.getStatusCode() > 499 )
-                Assert.fail(ex.getMessage());
+                Assertions.fail(ex.getMessage());
         }
     }
 
@@ -63,17 +66,16 @@ public class HttpTest {
         execWithHttpException(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, action);
     }
 
-
     public static void execWithHttpException(int expectedStatusCode, Runnable action) {
         try {
             action.run();
-            Assert.fail("Expected HttpException "+expectedStatusCode);
+            fail("Expected HttpException "+expectedStatusCode);
         } catch (QueryExceptionHTTP ex) {
             if ( expectedStatusCode > 0 )
-                Assert.assertEquals(ex.getMessage()+" ::", expectedStatusCode, ex.getStatusCode());
+                Assertions.assertEquals(expectedStatusCode, ex.getStatusCode(), ex.getMessage()+" ::");
         } catch (HttpException ex) {
             if ( expectedStatusCode > 0 )
-                Assert.assertEquals(ex.getMessage()+" ::", expectedStatusCode, ex.getStatusCode());
+                Assertions.assertEquals(expectedStatusCode, ex.getStatusCode(), ex.getMessage()+" ::");
         }
     }
 
