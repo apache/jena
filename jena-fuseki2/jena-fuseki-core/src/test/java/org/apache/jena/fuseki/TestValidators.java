@@ -18,8 +18,11 @@
 
 package org.apache.jena.fuseki;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.fuseki.server.Validators;
-import org.junit.Test;
 
 public class TestValidators {
     @Test public void validator_service_1() {
@@ -50,49 +53,49 @@ public class TestValidators {
         Validators.serviceName("/abc.def_ghi");
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_service_bad_1() {
-        Validators.serviceName(null);
+        assertThrows(FusekiConfigException.class, ()->Validators.serviceName(null));
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_service_bad_2() {
-        Validators.serviceName(" ");
+        assertThrows(FusekiConfigException.class, ()->Validators.serviceName(" "));
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_service_bad_3() {
-        Validators.serviceName("\\");
+        assertThrows(FusekiConfigException.class, ()->Validators.serviceName("\\"));
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_service_bad_4() {
-        Validators.serviceName("<");
+        assertThrows(FusekiConfigException.class, ()->Validators.serviceName("<"));
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_service_bad_5() {
-        Validators.serviceName(">");
+        assertThrows(FusekiConfigException.class, ()->Validators.serviceName(">"));
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_service_bad_6() {
-        Validators.serviceName("?");
+        assertThrows(FusekiConfigException.class, ()->Validators.serviceName("?"));
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_service_bad_7() {
-        Validators.serviceName("#");
+        assertThrows(FusekiConfigException.class, ()->Validators.serviceName("#"));
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_service_bad_8() {
-        Validators.serviceName("\"");
+        assertThrows(FusekiConfigException.class, ()->Validators.serviceName("\""));
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_service_bad_20() {
-        Validators.serviceName("<http://example/>");
+        assertThrows(FusekiConfigException.class, ()->Validators.serviceName("<http://example/>"));
     }
 
     @Test  public void validator_endpoint_null() {
@@ -127,49 +130,49 @@ public class TestValidators {
         Validators.endpointName("/abc.def_ghi");
     }
 
-//    @Test(expected=FusekiConfigException.class)
+//    @Test
 //    public void validator_endpoint_bad_1() {
 //        Validators.endpointName(null);
 //    }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_endpoint_bad_2() {
-        Validators.endpointName(" ");
+        assertThrows(FusekiConfigException.class, ()->Validators.endpointName(" "));
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_endpoint_bad_3() {
-        Validators.endpointName("\\");
+        assertThrows(FusekiConfigException.class, ()->Validators.endpointName("\\"));
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_endpoint_bad_4() {
-        Validators.endpointName("<");
+        assertThrows(FusekiConfigException.class, ()->Validators.endpointName("<"));
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_endpoint_bad_5() {
-        Validators.endpointName(">");
+        assertThrows(FusekiConfigException.class, ()->Validators.endpointName(">"));
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_endpoint_bad_6() {
-        Validators.endpointName("?");
+        assertThrows(FusekiConfigException.class, ()->Validators.endpointName("?"));
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_endpoint_bad_7() {
-        Validators.endpointName("#");
+        assertThrows(FusekiConfigException.class, ()->Validators.endpointName("#"));
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_endpoint_bad_8() {
-        Validators.endpointName("\"");
+        assertThrows(FusekiConfigException.class, ()->Validators.endpointName("\""));
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_endpoint_bad_20() {
-        Validators.endpointName("<http://example/>");
+        assertThrows(FusekiConfigException.class, ()->Validators.endpointName("<http://example/>)"));
     }
 
     @Test public void validator_graph_1() {
@@ -180,13 +183,13 @@ public class TestValidators {
         Validators.graphName("http://example/abc#def");
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_graph_bad_1() {
-        Validators.graphName("abc");
+        assertThrows(FusekiConfigException.class, ()->Validators.graphName("abc"));
     }
 
-    @Test(expected=FusekiConfigException.class)
+    @Test
     public void validator_graph_bad_2() {
-        Validators.graphName("#abc");
+        assertThrows(FusekiConfigException.class, ()->Validators.graphName("#abc"));
     }
 }
