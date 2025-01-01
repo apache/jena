@@ -24,7 +24,6 @@ import java.util.Set;
 
 import jakarta.servlet.Filter;
 import org.apache.jena.atlas.io.IOX;
-import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdException;
@@ -36,6 +35,7 @@ import org.apache.jena.fuseki.main.cmds.ServerArgs;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
 import org.apache.jena.fuseki.mgt.FusekiServerCtl;
 import org.apache.jena.rdf.model.Model;
+import org.apache.shiro.lang.io.ResourceUtils;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee10.servlet.SessionHandler;
@@ -126,8 +126,12 @@ public class FMod_Shiro implements FusekiModule {
         }
 
         if ( shiroFile != null ) {
-            IOX.checkReadableFile(shiroFile, FusekiConfigException::new);
-            Filter filter = new FusekiShiroFilter(shiroFile);
+            // Shiro-style.
+            String shiroResourceName = FusekiShiroLib.withResourcePrefix(shiroFile);
+            if ( ! ResourceUtils.resourceExists(shiroResourceName) )
+                throw new FusekiConfigException("Shiro resource does not exist");
+            //IOX.checkReadableFile(shiroFile, FusekiConfigException::new);
+            Filter filter = new FusekiShiroFilter(shiroResourceName);
             // This is a "before" filter.
             serverBuilder.addFilter("/*", filter);
         }
@@ -142,18 +146,19 @@ public class FMod_Shiro implements FusekiModule {
      */
     private static class FusekiShiroFilter extends ShiroFilter {
 
-        private final String shiroInitializationFile;
+        private final String shiroInitializationResource;
 
-        FusekiShiroFilter(String filename) {
-            shiroInitializationFile = IRILib.filenameToIRI(filename);
+        FusekiShiroFilter(String shiroResourceName) {
+            // Shiro file: URLs are "file:<no encoding>"
+            shiroInitializationResource = shiroResourceName;
         }
 
         @Override
         public void init() throws Exception {
             // Intercept Shiro initialization.
             List<String> locations = List.of();
-            if ( shiroInitializationFile != null ) {
-                locations = List.of(shiroInitializationFile);
+            if ( shiroInitializationResource != null ) {
+                locations = List.of(shiroInitializationResource);
             }
             FusekiShiroLib.shiroEnvironment(getServletContext(), locations);
             super.init();

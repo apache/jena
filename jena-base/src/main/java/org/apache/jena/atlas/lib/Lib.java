@@ -172,6 +172,15 @@ public class Lib
         return x;
     }
 
+    /**
+     * Set the environment name in the java system properties (NB not the immutable
+     * process environment variables). {@link #getenv(String)} looks in the system
+     * properties as well as the process environment variables.
+     */
+    public static void setenv(String sysPropName, String value) {
+        System.getProperties().setProperty(sysPropName, value);
+    }
+
     /** Test whether a property (environment variable or system property) is true. */
     public static boolean isPropertyOrEnvVarSetToTrue(String name) {
         return isPropertyOrEnvVarSetToTrue(name, name);
