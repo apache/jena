@@ -18,12 +18,12 @@
 
 package org.apache.jena.atlas.lib;
 
-import java.io.File ;
+import java.io.File;
 import java.net.URLEncoder;
 import java.nio.file.Path;
 
-import org.apache.jena.atlas.AtlasException ;
-import org.apache.jena.base.Sys ;
+import org.apache.jena.atlas.AtlasException;
+import org.apache.jena.base.Sys;
 
 /** Operations related to IRIs.
  *  <p>
@@ -50,7 +50,7 @@ public class IRILib
      * segment       = *pchar
      * segment-nz    = 1*pchar
      * segment-nz-nc = 1*( unreserved / pct-encoded / sub-delims / "@" )
-     *                  ; non-zero-length segment without any colon ":"
+     *                 ; non-zero-length segment without any colon ":"
      * pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
      * query         = *( pchar / "/" / "?" )
      * fragment      = *( pchar / "/" / "?" )
@@ -66,10 +66,10 @@ public class IRILib
     // Not allowed in URIs, and '%'
     private static char uri_non_chars[] = {
         '%', '"', '<', '>', '{', '}', '|', '\\', '`', '^', ' ',  '\n', '\r', '\t', '£'
-    } ;
+    };
 
     // RFC 2396
-    //private static char uri_unwise[]    = { '{' , '}', '|', '\\', '^', '[', ']', '`' } ;
+    //private static char uri_unwise[]    = { '{' , '}', '|', '\\', '^', '[', ']', '`' };
 
     // Javascript: A-Z a-z 0-9 - _ . ! ~ * ' ( )
     // URLEncoder.encode(string)
@@ -85,9 +85,9 @@ public class IRILib
      * Include ':' (segment-nc) and '/' (segment separator).
      */
     private static char[] charsComponent = {
-        //
+        // reserved : sub-delims and gen-delims
         '!', '$', '&', '\'', '(', ')', '*', '+', ',', ';', '=', ':', '/', '?', '#', '[', ']', '@',
-        // Other
+        // Other ASCII characters that should be encoded
         '%', '"', '<', '>', '{', '}', '|', '\\', '`', '^', ' ',  '\n', '\r', '\t', '£'
     };
 
@@ -99,7 +99,7 @@ public class IRILib
         '!', '$', '&', '\'', '(', ')', '*', '+', ',', ';', '=',/* ':', '/',*/ '?', '#', '[', ']', '@',
         // Other
         '%', '"', '<', '>', '{', '}', '|', '\\', '`', '^', ' ',  '\n', '\r', '\t', '£'
-    } ;
+    };
 
     // segment       = *pchar
     // pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
@@ -131,22 +131,20 @@ public class IRILib
     };
 
     // The initializers must have run.
-    static final String cwd ;
-    static final String cwdURL ;
+    private static final String cwdURL;
 
     // Current directory, with trailing "/"
     // This matters for resolution.
     static {
-        String x = new File(".").getAbsolutePath() ;
-        x = x.substring(0, x.length()-1) ;
-        cwd = x ;
-        cwdURL = plainFilenameToURL(cwd) ;
+        String cwd = new File(".").getAbsolutePath();
+        cwd = cwd.substring(0, cwd.length()-1);
+        cwdURL = plainFilenameToURL(cwd);
     }
 
     // See also IRIResolver
     /** Return a string that is an IRI for the filename.*/
     public static String fileToIRI(File f) {
-        return filenameToIRI(f.getAbsolutePath()) ;
+        return filenameToIRI(f.getAbsolutePath());
     }
 
     /** Create a string that is a IRI for the filename.
@@ -158,32 +156,32 @@ public class IRILib
      *  </ul>
      */
     public static String filenameToIRI(String fn) {
-        if ( fn == null ) return cwdURL ;
-
-        if ( fn.length() == 0 ) return cwdURL ;
-
+        if ( fn == null )
+            return cwdURL;
+        if ( fn.length() == 0 )
+            return cwdURL;
         if ( fn.startsWith("file:") )
-            return normalizeFilenameURI(fn) ;
-        return plainFilenameToURL(fn) ;
+            return normalizeFilenameURI(fn);
+        return plainFilenameToURL(fn);
     }
 
     /** Convert a file: IRI to a filename */
     public static String IRIToFilename(String iri) {
         if ( ! iri.startsWith("file:") )
-            throw new AtlasException("Not a file: URI: "+iri) ;
+            throw new AtlasException("Not a file: URI: "+iri);
 
-        String fn ;
+        String fn;
         if ( iri.startsWith("file:///") )
-            fn = iri.substring("file://".length()) ;
+            fn = iri.substring("file://".length());
         else
-            fn = iri.substring("file:".length()) ;
+            fn = iri.substring("file:".length());
         // MS Windows: we can have
         //  file:///C:/path or file:/C:/path
         // At this point, we have a filename of /C:/
         // so need strip the leading "/"
         fn = fixupWindows(fn);
 
-        return decodeHex(fn) ;
+        return decodeHex(fn);
     }
 
     /** Convert a plain file name (no file:) to a file: URL */
@@ -191,43 +189,41 @@ public class IRILib
         // No "file:"
         // Make Absolute filename.
 
-        boolean trailingSlash = fn.endsWith("/") ;
+        boolean trailingSlash = fn.endsWith("/");
 
         // To get Path.toAbsolutePath to work, we need to convert /C:/ to C:/
         // then back again.
-        fn = fixupWindows(fn) ;
+        fn = fixupWindows(fn);
         try {
             // Windows issue
             // Drive letter may not exists in which case it has no working directory "x:"
-            fn = Path.of(fn).toAbsolutePath().normalize().toString() ;
+            fn = Path.of(fn).toAbsolutePath().normalize().toString();
         } catch (java.io.IOError ex) {
             // Any IO problems - > ignore.
         }
         if ( trailingSlash && ! fn.endsWith("/") )
-            fn = fn + "/" ;
+            fn = fn + "/";
 
-        if ( Sys.isWindows )
-        {
+        if ( Sys.isWindows ) {
             // C:\ => file:///C:/...
             if ( windowsDrive(fn, 0) )
                 // Windows drive letter - already absolute path.
                 // Make "URI" absolute path
-                fn = "/"+fn ;
+                fn = "/"+fn;
             // Convert \ to /
             // Maybe should do this on all platforms? i.e consistency.
-            fn = fn.replace('\\', '/' ) ;
+            fn = fn.replace('\\', '/' );
         }
 
-        fn = encodeFileURL(fn) ;
-        return "file://"+fn ;
+        fn = encodeFileURL(fn);
+        return "file://"+fn;
     }
 
     // Case of Windows /C:/ which can come from URL.toString
     // giving file:/C:/ and decoding file:///C:/
     private static String fixupWindows(String fn) {
-        if ( Sys.isWindows &&
-             fn.length() >= 3 && fn.charAt(0) == '/' && windowsDrive(fn, 1))
-             fn = fn.substring(1) ;
+        if ( Sys.isWindows && fn.length() >= 3 && fn.charAt(0) == '/' && windowsDrive(fn, 1))
+             fn = fn.substring(1);
         return fn;
     }
 
@@ -235,37 +231,36 @@ public class IRILib
      * The test is can we find "C:" at location {@code i}.
      */
     private static boolean windowsDrive(String fn, int i) {
-        return
-            fn.length() >= 2+i &&
-            fn.charAt(1+i) == ':' &&
-            isA2Z(fn.charAt(i)) ;
+        return fn.length() >= 2+i &&
+               fn.charAt(1+i) == ':' &&
+               isA2Z(fn.charAt(i));
     }
 
     private static boolean isA2Z(char ch) {
-        return ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') ;
+        return ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z');
     }
 
     /** Sanitize a "file:" URL. Must start "file:" */
     private static String normalizeFilenameURI(String fn) {
         if ( ! fn.startsWith("file:/") ) {
             // Relative path.
-            String fn2 = fn.substring("file:".length()) ;
-            return plainFilenameToURL(fn2) ;
+            String fn2 = fn.substring("file:".length());
+            return plainFilenameToURL(fn2);
         }
 
         // Starts file:// or file:///
         if ( fn.startsWith("file:///") )
             // Assume it's good and return as-is.
-            return fn ;
+            return fn;
 
         if ( fn.startsWith("file://") ) {
             // file: URL with host name (maybe!)
-            return fn ;
+            return fn;
         }
 
         // Must be file:/
-        String fn2 = fn.substring("file:".length()) ;
-        return plainFilenameToURL(fn2) ;
+        String fn2 = fn.substring("file:".length());
+        return plainFilenameToURL(fn2);
     }
 
     /** Encode using the rules for a component (e.g. ':' and '/' get encoded)
@@ -273,8 +268,8 @@ public class IRILib
      * Does not encode non-ASCII characters
      */
     public static String encodeUriComponent(String string) {
-        String encStr = StrUtils.encodeHex(string,'%', charsComponent) ;
-        return encStr ;
+        String encStr = StrUtils.encodeHex(string,'%', charsComponent);
+        return encStr;
     }
 
     /**
@@ -285,17 +280,17 @@ public class IRILib
      * query part but it is then a legal, character.
      */
     public static String encodeUriQueryFrag(String string) {
-        String encStr = StrUtils.encodeHex(string,'%', charsQueryFrag) ;
+        String encStr = StrUtils.encodeHex(string,'%', charsQueryFrag);
         // Space is special.
         String encStr1 = encStr.replace("%20",  "+");
-        return encStr1 ;
+        return encStr1;
     }
 
     public static String decodeUriQueryFrag(String string) {
         // Space is special. Reverse order compared to encodeUriQueryFrag
         String decStr0 = string.replace("+",  " ");
-        String decStr = StrUtils.decodeHex(decStr0,'%') ;
-        return decStr ;
+        String decStr = StrUtils.decodeHex(decStr0,'%');
+        return decStr;
     }
 
 
@@ -303,8 +298,8 @@ public class IRILib
      *  Does not encode non-ASCII characters
      */
     public static String encodeFileURL(String string) {
-        String encStr = StrUtils.encodeHex(string,'%', charsFilename) ;
-        return encStr ;
+        String encStr = StrUtils.encodeHex(string,'%', charsFilename);
+        return encStr;
     }
 
     /** Encode using the rules for a path (e.g. ':' and '/' do not get encoded) */
@@ -312,16 +307,16 @@ public class IRILib
         // Not perfect.
         // Encode path.
         // %-encode chars.
-        uri = StrUtils.encodeHex(uri, '%', charsPath) ;
-        return uri ;
+        uri = StrUtils.encodeHex(uri, '%', charsPath);
+        return uri;
     }
 
     public static String encodeNonASCII(String string) {
         if ( ! containsNonASCII(string) )
-            return string ;
+            return string;
 
-        byte[] bytes = StrUtils.asUTF8bytes(string) ;
-        StringBuilder sw = new StringBuilder() ;
+        byte[] bytes = StrUtils.asUTF8bytes(string);
+        StringBuilder sw = new StringBuilder();
         for ( byte b : bytes ) {
             // Signed bytes ...
             if ( b > 0 ) {
@@ -335,16 +330,16 @@ public class IRILib
             sw.append( Chars.hexDigitsUC[hi] );
             sw.append( Chars.hexDigitsUC[lo] );
         }
-        return sw.toString() ;
+        return sw.toString();
     }
 
     public static boolean containsNonASCII(String string){
-        for ( int i = 0 ; i < string.length() ; i++ ) {
-            char ch = string.charAt(i) ;
+        for ( int i = 0; i < string.length(); i++ ) {
+            char ch = string.charAt(i);
             if ( ch >= 127 )
                 return true;
         }
-        return false ;
+        return false;
     }
 
     /**
@@ -359,6 +354,6 @@ public class IRILib
      * It will not decode '+' used for space (application/x-www-form-urlencoded).
      */
     public static String decodeHex(String string) {
-        return StrUtils.decodeHex(string, '%') ;
+        return StrUtils.decodeHex(string, '%');
     }
 }

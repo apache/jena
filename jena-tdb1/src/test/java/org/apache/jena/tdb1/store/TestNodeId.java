@@ -33,24 +33,24 @@ import org.junit.Test ;
 public class TestNodeId
 {
 //    @BeforeClass public static void beforeClass() {
-//        // If running just this test suite, then this happenes before SystemTDB initialization.    
-//        System.getProperties().setProperty("tdb:store.enableInlineLiterals", "true") ;
+//        // If running just this test suite, then this happens before SystemTDB initialization.
+//        Lib.setenv("tdb:store.enableInlineLiterals", "true") ;
 //    }
-    
+
     @Test public void nodeId_01()
     {
         NodeId nodeId = NodeId.create(37) ;
         assertEquals(37L, nodeId.getId()) ;
     }
-    
+
     @Test public void nodeId_02()
     {
         NodeId nodeId = NodeId.create(-1L) ;
         assertEquals(-1L, nodeId.getId()) ;
     }
-    
+
     // Inlines
-    
+
     @Test public void nodeId_int_01()
     { test("1", NodeFactoryExtra.parseNode("1")) ; }
 
@@ -65,71 +65,71 @@ public class TestNodeId
 
     @Test public void nodeId_int_05()
     { test("-1",  NodeFactoryExtra.parseNode("-1")) ; }
-    
+
     @Test public void nodeId_int_06()
     { test("-180",  NodeFactoryExtra.parseNode("-180")) ; }
 
     @Test public void nodeId_int_07()
     { test("01",  NodeFactoryExtra.parseNode("1")) ; }
-    
+
     @Test public void nodeId_int_08()
     { test("+01",  NodeFactoryExtra.parseNode("1")) ; }
-    
+
     @Test public void nodeId_int_09()
     // More than Long.MAX_VALUE
     { test("92233720368547758070",  (Node)null) ; }
 
     // On the edge.
-    
-    static long X = 1L<<55 ;        // Just too large 
-    static long Y = -((1L<<55) +1) ;   // Just too small 
-    
+
+    static long X = 1L<<55 ;        // Just too large
+    static long Y = -((1L<<55) +1) ;   // Just too small
+
     @Test public void nodeId_int_10()
     { test("\""+Long.toString(X)+"\"^^xsd:integer",  (Node)null) ; }
 
     @Test public void nodeId_int_11()
-    { 
+    {
         Node n = NodeValue.makeInteger(X-1).asNode() ;
-        test("\""+Long.toString(X-1)+"\"^^xsd:integer",  n) ; 
+        test("\""+Long.toString(X-1)+"\"^^xsd:integer",  n) ;
     }
 
     @Test public void nodeId_int_12()
     { test("\""+Long.toString(Y)+"\"^^xsd:integer",  (Node)null) ; }
 
     @Test public void nodeId_int_13()
-    { 
+    {
         Node n = NodeValue.makeInteger(Y+1).asNode() ;
-        test("\""+Long.toString(Y+1)+"\"^^xsd:integer",  n) ; 
+        test("\""+Long.toString(Y+1)+"\"^^xsd:integer",  n) ;
     }
 
     @Test public void nodeId_int_20()
     { test("'300'^^xsd:byte",  (Node)null) ; }
-    
+
 
     @Test public void nodeId_decimal_1()
     { test("3.14", NodeFactoryExtra.parseNode("3.14")) ; }
 
     @Test public void nodeId_decimal_2()
     { test("123456789.123456789", (Node)null) ; }
-    
+
     // Just this once, directly create the Node.
     @Test public void nodeId_decimal_3()
     { test("12.89", NodeFactory.createLiteralDT("12.89", XSDDatatype.XSDdecimal)) ; }
 
     @Test public void nodeId_decimal_4()
     { test("-1.0",  NodeFactoryExtra.parseNode("-1.0")) ; }
-    
+
     // This number has > 47 bits of value : 2412.80478192688
     @Test public void nodeId_decimal_5()
     { test("2412.80478192688",  (Node)null) ; }
-    
+
     // This number has > 47 bits of value : -2412.80478192688
     @Test public void nodeId_decimal_6()
     { test("-2412.80478192688",  (Node)null) ; }
 
     @Test public void nodeId_decimal_7()
-    { test("'0.00000001'^^xsd:decimal",  
-           NodeFactory.createLiteralDT("0.00000001", XSDDatatype.XSDdecimal)) ; 
+    { test("'0.00000001'^^xsd:decimal",
+           NodeFactory.createLiteralDT("0.00000001", XSDDatatype.XSDdecimal)) ;
     }
 
     @Test public void nodeId_decimal_8()
@@ -151,22 +151,22 @@ public class TestNodeId
     @Test public void nodeId_dateTime_05()
     { test("'2008-04-28T15:36:15'^^xsd:dateTime") ; }
 
-    // Note the trailing zero - system does not preserve perfect lexical forms. 
+    // Note the trailing zero - system does not preserve perfect lexical forms.
     @Test public void nodeId_dateTime_06()
     { test("'2008-04-28T15:36:05.450'^^xsd:dateTime", "'2008-04-28T15:36:05.45'^^xsd:dateTime") ; }
 
     // Old Java bug, now fixed: T24:00:00 not accepted by JDK DatatypeFactory.newXMLGregorianCalendar(lex)
-    // Note the Jena value is an XSDDateTime so it retains the "24"/"00" next day distinction. 
+    // Note the Jena value is an XSDDateTime so it retains the "24"/"00" next day distinction.
     @Test public void nodeId_dateTime_07()
     { test("'2008-04-28T24:00:00'^^xsd:dateTime") ; }
-    
+
     // Out of range.
     @Test public void nodeId_dateTime_08()
     { test("'8008-04-28T15:36:05.45'^^xsd:dateTime", (Node)null) ; }
 
     @Test public void nodeId_dateTime_09()
     { test("'2008-04-28T15:36:05.001'^^xsd:dateTime") ; }
-    
+
     @Test public void nodeId_dateTime_10()
     { test("'2008-04-28T15:36:05.01'^^xsd:dateTime") ; }
 
@@ -230,7 +230,7 @@ public class TestNodeId
     { test("'0'^^xsd:boolean", NodeFactoryExtra.parseNode("'false'^^xsd:boolean")) ; }
 
     private void test(String x) { test(x, x) ; }
-    
+
     private void test(String x, String expected)
     {
         test(x, NodeFactoryExtra.parseNode(expected)) ;
@@ -244,7 +244,7 @@ public class TestNodeId
 
         if ( nodeId != null )
             assertTrue("Converted NodeId but datatype test was false", b) ;
-        
+
         if ( correct == null )
         {
             assertNull("Expected no encoding: got: "+nodeId, nodeId) ;
@@ -253,11 +253,11 @@ public class TestNodeId
         assertNotNull("Expected inlining: "+n, nodeId) ;
         Node n2 = NodeId.extract(nodeId) ;
         assertNotNull("Expected recovery", n2) ;
-        
+
         String s = "("+correct.getLiteralLexicalForm()+","+n2.getLiteralLexicalForm()+")" ;
-        
+
         assertTrue("Not same value: "+s, correct.sameValueAs(n2)) ;
-        
+
         // Term equality.
         assertEquals("Not same term", correct, n2) ;
     }

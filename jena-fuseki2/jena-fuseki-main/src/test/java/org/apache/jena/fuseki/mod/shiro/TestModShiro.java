@@ -30,8 +30,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.net.Host;
 import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.cmds.FusekiMain;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
@@ -79,11 +81,28 @@ public class TestModShiro {
 
     /** Builder for a server with Shiro */
     private FusekiServer.Builder serverBuilderWithShiro(String filename) {
-        System.getProperties().setProperty(FusekiServerCtl.envFusekiShiro, filename);
+        Lib.setenv(FusekiServerCtl.envFusekiShiro, filename);
         FusekiModules modules = FusekiModules.create(FMod_Shiro.create());
-        return FusekiServer.create()
-                .port(0)
-                .fusekiModules(modules);
+        return FusekiServer.create().port(0).fusekiModules(modules);
+    }
+
+    // Shiro resource naming is "file:<unencoded path>"
+    @Test public void access_shiro_file_1() {
+        String dsname = "/ds";
+        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
+        FusekiServer server = serverBuilderWithShiro("testing/Shiro/shiro withSpaceInName.ini")
+                .add(dsname, dsg)
+                .build();
+        try { server.start(); }
+        finally { server.stop(); }
+    }
+
+    @Test public void access_shiro_file_2() {
+        String dsname = "/ds";
+        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
+        FusekiServer.Builder builder = serverBuilderWithShiro("testing/Shiro/shiro-no-such-file.ini");
+        // Even if no datasets, it's an error - Shiro protects the whole server.
+        assertThrows(FusekiConfigException.class, ()->builder.build());
     }
 
     @Test public void access_localhost() {

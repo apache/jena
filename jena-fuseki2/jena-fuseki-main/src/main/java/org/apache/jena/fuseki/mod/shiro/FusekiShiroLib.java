@@ -23,9 +23,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import jakarta.servlet.ServletContext;
-import org.apache.jena.atlas.lib.IRILib;
 import org.apache.jena.fuseki.FusekiConfigException;
-import org.apache.jena.rfc3986.URIScheme;
 import org.apache.shiro.lang.io.ResourceUtils;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 
@@ -37,19 +35,28 @@ import org.apache.shiro.web.env.EnvironmentLoaderListener;
             shiroListener.initEnvironment(servletContext);
         } catch (org.apache.shiro.config.ConfigurationException ex) {
             ShiroEnvironmentLoaderListener.shiroConfigLog.error("Failed to initialize Shiro: "+ex.getMessage());
-            throw new FusekiConfigException(ex.getMessage());
+            throw new FusekiConfigException(ex.getMessage(), ex);
         }
     }
 
-    private static String fileSchemePrefix = URIScheme.FILE.getPrefix();
+    private static final String fileShiroPrefix = "file:";
+    private static final int fileShiroPrefixLength = fileShiroPrefix.length();
 
-    /** Look for a Shiro ini file, returning the first found, or return null */
+    /**
+     * Look for a Shiro ini file, returning the first found, or return null.
+     * The input is a IRI ("file:" encoded for spaces etc).
+     * The returned resource will be "Shiro" style - starts "file:", "url:", "classpath:"
+     * but no encoding of the path.
+     * In Shiro, no prefix causes it to use {@link ServlectContext#getResourceAsStream}.
+     * <p>
+     * See {@link ResourceUtils#hasResourcePrefix} and {@link ResourceUtils#getInputStreamForPath}.
+     */
     static String huntForShiroIni(List<String> locations) {
         for ( String loc : locations ) {
             // If file:, look for that file.
-            if ( loc.startsWith(fileSchemePrefix) ) {
-                // Convert (back) to a filesystem path.
-                String fn = IRILib.IRIToFilename(loc);
+            if ( loc.startsWith(fileShiroPrefix) ) {
+                // Shiro format resource name.
+                String fn = loc.substring(fileShiroPrefixLength);
                 Path p = Path.of(fn);
                 if ( Files.exists(p) )
                     return loc;
@@ -62,4 +69,22 @@ import org.apache.shiro.web.env.EnvironmentLoaderListener;
         }
         return null;
     }
+
+    public static String withResourcePrefix(String shiroFileName) {
+        if ( shiroFileName.startsWith(fileShiroPrefix) )
+            return shiroFileName;
+        // How Shiro likes it. file:, unencoded filename.
+        return fileShiroPrefix+shiroFileName;
+    }
+
+    public static String removeResourcePrefix(String shiroFileResource) {
+        if ( shiroFileResource.startsWith(fileShiroPrefix) ) {
+            // Shiro format resource name.
+            // Convert (back) to a filesystem path.
+            String fn = shiroFileResource.substring(fileShiroPrefixLength);
+            return fn;
+        }
+        return shiroFileResource;
+    }
+
 }
