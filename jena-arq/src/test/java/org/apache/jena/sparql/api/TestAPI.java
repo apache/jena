@@ -66,6 +66,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+
 public class TestAPI
 {
     private static final String ns = "http://example/ns#" ;
@@ -90,6 +91,7 @@ public class TestAPI
         d.addNamedModel(g1.getURI(), m);
     }
 
+    @SuppressWarnings("removal")
     @Test public void testInitialBindingsConstruct1()
     {
         QuerySolutionMap init = new QuerySolutionMap() ;
@@ -106,6 +108,7 @@ public class TestAPI
         }
     }
 
+    @SuppressWarnings("removal")
     @Test public void testInitialBindingsConstruct2()
     {
         QuerySolutionMap init = new QuerySolutionMap() ;
@@ -171,6 +174,7 @@ public class TestAPI
         assertTrue(smap2.contains("o")) ;
     }
 
+    @SuppressWarnings("removal")
     @Test public void testInitialBindings1()
     {
         QuerySolutionMap init = new QuerySolutionMap() ;
@@ -184,6 +188,7 @@ public class TestAPI
         }
     }
 
+    @SuppressWarnings("removal")
     @Test public void testInitialBindings2()
     {
         QuerySolutionMap init = new QuerySolutionMap() ;
@@ -197,6 +202,7 @@ public class TestAPI
         }
     }
 
+    @SuppressWarnings("removal")
     @Test public void testInitialBindings3()
     {
         QuerySolutionMap init = new QuerySolutionMap() ;
@@ -211,6 +217,7 @@ public class TestAPI
         }
     }
 
+    @SuppressWarnings("removal")
     @Test public void testInitialBindings4()
     {
         // Test derived from report by Holger Knublauch
@@ -242,6 +249,7 @@ public class TestAPI
     /**
      * Initial binding substitution happens before optimization so initial bindings can make a semantically always false query into one that can return true
      */
+    @SuppressWarnings("removal")
     @Test public void testInitialBindings5() {
         // From JENA-500
         Query query = QueryFactory.create(
@@ -264,6 +272,7 @@ public class TestAPI
     /**
      * Initial binding substitution happens before optimization so initial bindings can make a semantically always false query into one that can return true
      */
+    @SuppressWarnings("removal")
     @Test public void testInitialBindings6() {
         // From JENA-500
         Query query = QueryFactory.create(

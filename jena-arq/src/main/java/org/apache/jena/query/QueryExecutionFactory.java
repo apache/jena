@@ -187,7 +187,7 @@ public class QueryExecutionFactory
      * @return QueryExecution
      * @deprecated Use {@code QueryExecution.dataset(dataset).query(query).substitution(querySolution).build()}.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static QueryExecution create(Query query, Dataset dataset, QuerySolution querySolution) {
         checkArg(query);
         return QueryExecution.dataset(dataset).query(query).substitution(querySolution).build();
@@ -201,7 +201,7 @@ public class QueryExecutionFactory
      * @return QueryExecution
      * @deprecated Use {@code QueryExecution#model(model).query(query).substitution(querySolution).build()}.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static QueryExecution create(Query query, Model model, QuerySolution querySolution) {
         checkArg(query);
         return QueryExecution.model(model).query(query).substitution(querySolution).build();
@@ -260,7 +260,7 @@ public class QueryExecutionFactory
 
     // This form of "make" has support for "initialBinding" (seed the execution)
     // The preferred approach is to use "substitution" )(replace variables with RDF terms).
-    @SuppressWarnings("all")
+    @SuppressWarnings("removal")
     private static QueryExecution make$(Query query, Dataset dataset, DatasetGraph datasetGraph, Binding initialBinding) {
         QueryExecDatasetBuilder builder = QueryExecDataset.newBuilder().query(query);
         if ( initialBinding != null )

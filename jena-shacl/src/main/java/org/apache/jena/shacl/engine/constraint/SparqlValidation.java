@@ -96,6 +96,7 @@ import org.apache.jena.sparql.util.ModelUtils;
     }
 
     /** return true if the validation is "conforms" */
+    @SuppressWarnings("removal")
     private static boolean validateMap(ValidationContext vCxt, Graph data, Shape shape,
                                         Node focusNode, Path path, Node valueNode,
                                         Query _query, Map<Parameter, Node> parameterMap,
