@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,15 +18,12 @@
 package org.apache.jena.ext.xerces.impl.dv;
 
 /**
- * The class used to pass all facets to {@link XSSimpleType#applyFacets}.
- *
- * {@literal @xerces.internal} 
+ * {@literal @xerces.internal}
  *
  * @author Sandy Gao, IBM
  *
  * @version $Id: XSFacets.java 699892 2008-09-28 21:08:27Z mrglavas $
  */
-@SuppressWarnings("all")
 public class XSFacets {
 
     /**

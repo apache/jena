@@ -50,6 +50,7 @@ public class EvalSparql {
 
     private static boolean USE_QueryTransformOps = true;
 
+    @SuppressWarnings("removal")
     public static Collection<Node> evalSparqlComponent(Graph data, Node node, SparqlComponent sparqlComponent) {
         checkForRequiredParams(data, node, sparqlComponent);
 

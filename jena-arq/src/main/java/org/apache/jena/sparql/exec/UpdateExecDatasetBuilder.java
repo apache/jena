@@ -148,8 +148,8 @@ public class UpdateExecDatasetBuilder implements UpdateExecBuilder {
         return this;
     }
 
-    /** Use {@link #substitution(Binding)} */
-    @Deprecated
+    /** @deprecated Use {@link #substitution(Binding)} */
+    @Deprecated(forRemoval = true)
     public UpdateExecDatasetBuilder initialBinding(Binding initialBinding) {
         this.initialBinding = initialBinding;
         return this;

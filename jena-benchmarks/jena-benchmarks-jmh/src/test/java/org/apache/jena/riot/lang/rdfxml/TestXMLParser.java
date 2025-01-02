@@ -53,6 +53,7 @@ public class TestXMLParser {
     public String param1_ParserLang;
 
 
+    @SuppressWarnings("removal")
     private static Lang getLang(String langName) {
         switch (langName) {
             case "RRX.RDFXML_SAX":
@@ -72,6 +73,7 @@ public class TestXMLParser {
         }
     }
 
+    @SuppressWarnings("removal")
     private static org.apache.shadedJena510.riot.Lang getLangJena510(String langName) {
         switch (langName) {
             case "RRX.RDFXML_SAX":

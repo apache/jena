@@ -30,6 +30,7 @@ import java.util.Objects;
 
 public class GraphTripleNodeHelper480 implements GraphTripleNodeHelper<Graph, Triple, Node> {
 
+    @SuppressWarnings("deprecation")
     @Override
     public Graph createGraph(Context.GraphClass graphClass) {
         if (Objects.requireNonNull(graphClass) == Context.GraphClass.GraphMem) {
@@ -38,6 +39,7 @@ public class GraphTripleNodeHelper480 implements GraphTripleNodeHelper<Graph, Tr
         throw new IllegalArgumentException("Unknown graph class: " + graphClass);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public List<Triple> readTriples(String graphUri) {
         var list = new ArrayList<Triple>();
