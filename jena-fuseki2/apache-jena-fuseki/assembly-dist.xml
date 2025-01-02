@@ -43,23 +43,15 @@
       <outputFileNameMapping>fuseki-server.jar</outputFileNameMapping>
     </dependencySet>
   </dependencySets>
-
-  <files>
-    <file>
-      <source>dist/LICENSE</source>
-      <destName>LICENSE</destName>
-    </file>
-    <file>
-      <source>dist/NOTICE</source>
-      <destName>NOTICE</destName>
-    </file>
-    <file>
-      <source>dist/README</source>
-      <destName>README</destName>
-    </file>
-  </files>
-
+  
   <fileSets>
+
+    <fileSet>
+      <!-- NOTICE, LICENSE, README -->
+      <directory>dist</directory>
+      <outputDirectory></outputDirectory>
+    </fileSet>
+    
     <fileSet>
       <outputDirectory></outputDirectory>
       <includes>
@@ -86,7 +78,6 @@
       <includes>
         <include>fuseki-server</include>
         <include>fuseki-backup</include>
-        <include>bin/*</include>
       </includes>
     </fileSet>
     
