@@ -16,7 +16,7 @@
 
 @echo off
 @REM modify this to name the server jar
-java -Xmx1500M -cp fuseki-server.jar org.apache.jena.fuseki.main.cmds.FusekiServerCmd %*
+java -Xmx4G -cp fuseki-server.jar org.apache.jena.fuseki.main.cmds.FusekiServerCmd %*
 
 @REM Adding custom code to the Fuseki server:
 @REM  

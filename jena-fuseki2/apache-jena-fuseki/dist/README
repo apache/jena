@@ -17,10 +17,6 @@ The script 'fuseki' is a Linux init script to run Fuseki as an OS service.
 The file 'fuseki.service' is a systemd unit file to run Fuseki2 as a service.
 Instructions are in comments at the start of the files.
 
-The directory 'bin/' contains some scripts execute SPARQL Protocol and
-SPARQL Graph Store Protocol operations.
-Documentation: http://jena.apache.org/documentation/fuseki2/soh.html
-
 A WAR file to run Fuseki in a webapp container server, such as Apache
 Tomcat, can be obtained from https://downloads.apache.org/jena/binaries/
 or https://repo1.maven.org/maven2/org/apache/jena/jena-fuseki-war/.
