@@ -136,7 +136,6 @@ public class FMod_Admin implements FusekiModule {
         serverCtl.setup();
         Path fusekiBase = serverCtl.getFusekiBase();
         builder.addServletAttribute(Fuseki.attrFusekiServerCtl, serverCtl);
-        FmtLog.info(LOG, "Fuseki Admin: %s", fusekiBase);
 
         // Shiro.
         Path shiroIni = fusekiBase.resolve(FusekiServerCtl.DFT_SHIRO_INI);
