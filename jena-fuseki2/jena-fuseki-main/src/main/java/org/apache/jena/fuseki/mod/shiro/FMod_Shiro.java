@@ -149,7 +149,7 @@ public class FMod_Shiro implements FusekiModule {
         private final String shiroInitializationResource;
 
         FusekiShiroFilter(String shiroResourceName) {
-            // Shiro file: URLs are "file:<no encoding>"
+            // Shiro file -- URLs are "file:<no encoding>"
             shiroInitializationResource = shiroResourceName;
         }
 
