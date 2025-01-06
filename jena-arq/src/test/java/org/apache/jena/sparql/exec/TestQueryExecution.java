@@ -20,12 +20,10 @@ package org.apache.jena.sparql.exec;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
-
-import org.apache.jena.graph.Node;
-import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.algebra.Table;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
-import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.sse.SSE;
+import org.junit.Test;
 
 /** Miscellaneous tests, e.g. from reports. */
 public class TestQueryExecution {
@@ -40,11 +38,28 @@ public class TestQueryExecution {
                 }
             }
             """;
-        DatasetGraph dsg = DatasetGraphFactory.empty();
-        RowSet rowSet = QueryExec.dataset(dsg).query(qsReport).select();
-        Binding row = rowSet.next();
-        row.contains("xOut");
-        Node x = row.get("xOut");
-        assertEquals("x", x.getLiteralLexicalForm());
+
+        Table expected = SSE.parseTable("(table (row (?xIn 'x') (?x 1) (?xOut 'x') ) )");
+        Table actual = QueryExec.dataset(DatasetGraphFactory.empty()).query(qsReport).table();
+        assertEquals(expected, actual);
+    }
+
+    @Test public void lateral_with_nesting() {
+        // GH-2924
+        String qsReport = """
+            SELECT * {
+                BIND(1 AS ?s)
+                LATERAL {
+                    BIND(?s AS ?x)
+                    LATERAL {
+                        BIND(?s AS ?y)
+                    }
+                }
+            }
+            """;
+
+        Table expected = SSE.parseTable("(table (row (?s 1) (?x 1) (?y 1) ) )");
+        Table actual = QueryExec.dataset(DatasetGraphFactory.empty()).query(qsReport).table();
+        assertEquals(expected, actual);
     }
 }

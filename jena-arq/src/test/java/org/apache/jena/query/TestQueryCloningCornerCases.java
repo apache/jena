@@ -17,11 +17,15 @@
  */
 package org.apache.jena.query;
 
+import java.util.List;
+
 import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.syntax.ElementData;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.ElementPathBlock;
+import org.apache.jena.sparql.util.NodeFactoryExtra;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Assert;
 import org.junit.Test;
@@ -70,22 +74,17 @@ public class TestQueryCloningCornerCases {
     public void testCloneOfValuesDataBlock() {
         String str = "PREFIX eg: <http://www.example.org/> "
                 + "SELECT * { ?s eg:foo/eg:bar ?o } VALUES (?s ?o) { (eg:baz 1) }";
-
         Query query = QueryFactory.create(str);
 
-        // Modifications of a query's values data block
-        // The cloned query's lists of variables and bindings are independent
-        // from those from the original query
-        {
-            Query clone = TestQueryCloningEssentials.checkedClone(query);
+        // Modifying a clone's value data block must not affect that of the original query.
+        Query clone = TestQueryCloningEssentials.checkedClone(query);
+        Assert.assertEquals(query.getValuesData(), clone.getValuesData());
 
-            clone.getValuesData().clear();
-            Assert.assertEquals(0, clone.getValuesData().size());
-            Assert.assertNotEquals(0, query.getValuesData().size());
+        Var x = Var.alloc("x");
+        clone.setValuesDataBlock(
+            List.of(x),
+            List.of(BindingFactory.binding(x, NodeFactoryExtra.intToNode(1))));
 
-            clone.getValuesVariables().clear();
-            Assert.assertEquals(0, clone.getValuesVariables().size());
-            Assert.assertNotEquals(0, query.getValuesVariables().size());
-        }
+        Assert.assertNotEquals(query.getValuesData(), clone.getValuesData());
     }
 }

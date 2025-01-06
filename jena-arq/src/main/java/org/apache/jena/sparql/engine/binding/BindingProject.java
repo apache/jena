@@ -35,4 +35,17 @@ public class BindingProject extends BindingProjectBase {
     protected boolean accept(Var var) {
         return projectionVars.contains(var) ;
     }
+
+    @Override
+    public Binding detach() {
+        Binding b = binding.detach();
+        return b == binding
+            ? this
+            : new BindingProject(projectionVars, b);
+    }
+
+    @Override
+    protected Binding detachWithNewParent(Binding newParent) {
+        throw new UnsupportedOperationException("Should never be called.");
+    }
 }

@@ -18,7 +18,6 @@
 
 package org.apache.jena.sparql.engine.iterator;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,10 +28,11 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.Table;
+import org.apache.jena.sparql.algebra.TableFactory;
 import org.apache.jena.sparql.algebra.TransformCopy;
 import org.apache.jena.sparql.algebra.op.*;
 import org.apache.jena.sparql.algebra.table.Table1;
-import org.apache.jena.sparql.algebra.table.TableN;
+import org.apache.jena.sparql.algebra.table.TableBuilder;
 import org.apache.jena.sparql.core.*;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
@@ -291,18 +291,25 @@ public class QueryIterLateral extends QueryIterRepeatApply {
 
             // By the assignment restriction, the binding only needs to be added to each row of the table.
             Table table = opTable.getTable();
-            // Table vars.
-            List<Var> vars = new ArrayList<>(table.getVars());
-            binding.vars().forEachRemaining(vars::add);
-            TableN table2 = new TableN(vars);
+
+            TableBuilder tableBuilder = TableFactory.builder();
+            tableBuilder.addVars(table.getVars());
+            tableBuilder.addVarsFromRow(binding);
+
             BindingBuilder builder = BindingFactory.builder();
-            table.iterator(null).forEachRemaining(row->{
+            table.iterator(null).forEachRemaining(row -> {
                 builder.reset();
                 builder.addAll(row);
-                builder.addAll(binding);
-                table2.addBinding(builder.build());
+
+                // Forcibly add the input binding - this may reassign variables.
+                // The restriction imposed by SyntaxVarScope.checkLATERAL prevents
+                // reassignment of a variable to a _different_ value.
+                binding.forEach(builder::set);
+
+                tableBuilder.addRow(builder.build());
             });
-            return OpTable.create(table2);
+            Table newTable = tableBuilder.build();
+            return OpTable.create(newTable);
         }
 
         private Triple applyReplacement(Triple triple, Function<Var, Node> replacement) {

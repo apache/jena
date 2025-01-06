@@ -25,13 +25,13 @@ import java.util.List ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.core.Var ;
 
-/** Common framework for projection; 
+/** Common framework for projection;
  * the projection policy is provided by
- * abstract method {@link #accept(Var)} 
+ * abstract method {@link #accept(Var)}
  */
 public abstract class BindingProjectBase extends BindingBase {
     private List<Var>     actualVars = null ;
-    private final Binding binding ;
+    protected final Binding binding ;
 
     public BindingProjectBase(Binding bind) {
         super(null) ;

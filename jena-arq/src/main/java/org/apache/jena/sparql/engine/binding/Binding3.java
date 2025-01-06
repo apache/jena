@@ -132,4 +132,9 @@ public class Binding3 extends BindingBase {
 
         return null;
     }
+
+    @Override
+    protected Binding detachWithNewParent(Binding newParent) {
+        return new Binding3(newParent, var1, value1, var2, value2, var3, value3);
+    }
 }

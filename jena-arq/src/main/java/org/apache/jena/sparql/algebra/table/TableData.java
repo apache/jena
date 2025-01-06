@@ -18,23 +18,21 @@
 
 package org.apache.jena.sparql.algebra.table ;
 
+import java.util.Collections;
 import java.util.List ;
 
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 
+/** Immutable table. */
 public class TableData extends TableN {
     public TableData(List<Var> variables, List<Binding> rows) {
-        super(variables, rows) ;
+        super(Collections.unmodifiableList(variables), Collections.unmodifiableList(rows)) ;
     }
 
     @Override
     public void addBinding(Binding binding) {
         throw new ARQException("Can't add bindings to an existing data table") ;
-    }
-
-    public List<Binding> getRows() {
-        return rows ;
     }
 }

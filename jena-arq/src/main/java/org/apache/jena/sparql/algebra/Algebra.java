@@ -161,22 +161,27 @@ public class Algebra
 
         // If compatible, merge. Iterate over variables in right but not in left.
         BindingBuilder b = Binding.builder(bindingLeft);
-        for ( Iterator<Var> vIter = bindingRight.vars() ; vIter.hasNext() ; ) {
-            Var v = vIter.next();
-            Node n = bindingRight.get(v);
+        bindingRight.forEach((v, n) -> {
             if ( !bindingLeft.contains(v) )
                 b.add(v, n);
-        }
+        });
         return b.build();
     }
 
     public static boolean compatible(Binding bindingLeft, Binding bindingRight) {
         // Test to see if compatible: Iterate over variables in left
-        for ( Iterator<Var> vIter = bindingLeft.vars() ; vIter.hasNext() ; ) {
-            Var v = vIter.next();
-            Node nLeft = bindingLeft.get(v);
-            Node nRight = bindingRight.get(v);
+        return compatible(bindingLeft, bindingRight, bindingLeft.vars());
+    }
 
+    /** Test to see if bindings are compatible for all variables of the provided iterator. */
+    public static boolean compatible(Binding bindingLeft, Binding bindingRight, Iterator<Var> vars) {
+        while (vars.hasNext() ) {
+            Var v = vars.next();
+            Node nLeft = bindingLeft.get(v);
+            if ( nLeft == null )
+                continue;
+
+            Node nRight = bindingRight.get(v);
             if ( nRight != null && !nRight.equals(nLeft) )
                 return false;
         }

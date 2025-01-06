@@ -105,6 +105,10 @@ public class ImmutableUniqueList<T> extends AbstractList<T> {
             return this ;
         }
 
+        public int size() {
+            return items == null ? 0 : items.size();
+        }
+
         public boolean isEmpty() {
             return items == null || items.isEmpty();
         }
@@ -182,16 +186,5 @@ public class ImmutableUniqueList<T> extends AbstractList<T> {
             }
         }
         return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        return super.equals(obj);
     }
 }

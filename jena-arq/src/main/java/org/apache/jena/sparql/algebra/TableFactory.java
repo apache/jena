@@ -22,36 +22,55 @@ import java.util.List ;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.sparql.algebra.table.Table1 ;
+import org.apache.jena.sparql.algebra.table.TableBuilder;
 import org.apache.jena.sparql.algebra.table.TableEmpty ;
 import org.apache.jena.sparql.algebra.table.TableN ;
 import org.apache.jena.sparql.algebra.table.TableUnit ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
+import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.exec.RowSet ;
 
 public class TableFactory
 {
     public static Table createUnit()
     { return new TableUnit() ; }
-    
+
     public static Table createEmpty()
     { return new TableEmpty() ; }
 
     public static Table create()
     { return new TableN() ; }
-    
+
     public static Table create(List<Var> vars)
     { return new TableN(vars) ; }
-    
+
     public static Table create(QueryIterator queryIterator)
-    { 
+    {
         if ( queryIterator.isJoinIdentity() ) {
             queryIterator.close();
             return createUnit() ;
         }
-        
-        return new TableN(queryIterator) ;
+
+        return builder().consumeRowsAndVars(queryIterator).build();
     }
 
     public static Table create(Var var, Node value)
     { return new Table1(var, value) ; }
+
+    /** Creates a table from the detached bindings of the row set. */
+    public static Table create(RowSet rs)
+    {
+        TableBuilder builder = builder();
+        builder.addVars(rs.getResultVars());
+        rs.forEach(row -> {
+            Binding b = row.detach();
+            builder.addRow(b);
+        });
+        return builder.build();
+    }
+
+    public static TableBuilder builder() {
+        return new TableBuilder();
+    }
 }

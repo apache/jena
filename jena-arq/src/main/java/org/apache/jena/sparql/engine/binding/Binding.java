@@ -90,4 +90,11 @@ public interface Binding
 
     @Override
     public boolean equals(Object other);
+
+    /**
+     * Returns a binding which is guaranteed to be independent of
+     * any resources such as an ongoing query execution or a disk-based dataset.
+     * May return itself if it is already detached.
+     */
+    public Binding detach();
 }

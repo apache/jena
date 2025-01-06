@@ -25,6 +25,9 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.Syntax;
+import org.apache.jena.riot.rowset.RowSetOnClose;
+import org.apache.jena.sparql.algebra.Table;
+import org.apache.jena.sparql.algebra.TableFactory;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.util.Context;
@@ -81,9 +84,16 @@ public interface QueryExecBuilder extends QueryExecMod {
 
     // build-and-use short cuts
 
-    /** Build and execute as a SELECT query. */
+    /**
+     * Build and execute as a SELECT query.
+     * The caller must eventually close the returned RowSet
+     * in order to free any associated resources.
+     * Use {@link #table()} to obtain an independent in-memory copy of the row set.
+     */
     public default RowSet select() {
-        return build().select();
+        QueryExec qExec = build();
+        RowSet core = qExec.select();
+        return new RowSetOnClose(core, qExec::close);
     }
 
     /** Build and execute as a CONSTRUCT query. */
@@ -105,5 +115,19 @@ public interface QueryExecBuilder extends QueryExecMod {
         try ( QueryExec qExec = build() ) {
             return qExec.ask();
         }
+    }
+
+    /**
+     * Build and execute as a SELECT query.
+     * Creates and returns an independent in-memory table by materializing the underlying row set.
+     * Subsequently, {@link Table#toRowSet()} can be used to obtain a fresh row set view over the table.
+     */
+    public default Table table() {
+        Table result;
+        try (QueryExec qExec = build()) {
+            RowSet rowSet = qExec.select();
+            result = TableFactory.create(rowSet);
+        }
+        return result;
     }
 }

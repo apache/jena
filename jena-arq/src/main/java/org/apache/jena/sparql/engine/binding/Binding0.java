@@ -51,4 +51,9 @@ public class Binding0 extends BindingBase
 
     @Override
     protected Node get1(Var var) { return null; }
+
+    @Override
+    protected Binding detachWithNewParent(Binding newParent) {
+        return new Binding0(newParent);
+    }
 }
