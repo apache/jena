@@ -28,8 +28,7 @@ import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.fuseki.main.sys.FusekiServerArgsCustomiser;
 
 /**
- * The list of {@link FusekiServerArgsCustomiser} used by FusekiMain.
- *
+ * The list of {@link FusekiServerArgsCustomiser FusekiServerArgsCustomisers} used by FusekiMain.
  */
 class ArgCustomizers {
     private ArgCustomizers(){}
