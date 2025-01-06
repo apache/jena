@@ -1,0 +1,37 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+name: Apache Jena Pull Request CI
+
+on:
+  pull_request:
+    branches:
+      - AFS/**
+    target_branch:
+      - main
+##     authors:
+##       - app/dependabot
+
+permissions:
+  contents: read
+
+jobs:
+  dependabot:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        java_version: ['17']
+
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK ${{ matrix.java_version }}
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: ${{ matrix.java_version }}
+
+    - name: Build PR with Maven
+      run: mvn -B --file pom.xml -Dmaven.javadoc.skip=true install
