@@ -222,12 +222,6 @@ public class FusekiMain extends CmdARQ {
             action.accept(customiser);
         }
     }
-//
-//    private List<FusekiServerArgsCustomiser> customiseServerArgs() {
-//        if ( customiseServerArgs == null )
-//            customiseServerArgs = new arrayList<>();
-//        return customiseServerArgs;
-//    }
 
     // Customiser Lifecycle
     //
@@ -243,8 +237,8 @@ public class FusekiMain extends CmdARQ {
     // -- End of applyServerArgs
     // ---- FusekiServerArgsCustomiser.serverArgsBuilder(FusekiServer.Builder serverBuilder, Model configModel)
 
-    // == builder.build.
-    // Decide FusekiModules
+    // == Enter the build lifecycle in builder.build().
+    //    Decide FusekiModules for the build.
     // --> then into FusekiBuildCycle.prepare(FusekiServer.Builder serverBuilder, Set<String> datasetNames, Model configModel) { }
 
     protected FusekiMain(String... argv) {
@@ -255,8 +249,9 @@ public class FusekiMain extends CmdARQ {
     }
 
     private void argumentsSetup() {
+        modVersion.addClass("Fuseki", Fuseki.class);
+        
         getUsage().startCategory("Fuseki");
-
         add(argConfig, "--config=FILE",
             "Use a configuration file to determine the services");
         // ---- Describe the dataset on the command line.
@@ -296,10 +291,8 @@ public class FusekiMain extends CmdARQ {
                 "https port (default port is 3043)");
         add(argPasswdFile, "--passwd=FILE",
                 "Password file");
-
         add(argTimeout, "--timeout=",
                 "Global timeout applied to queries (value in ms) -- format is X[,Y] ");
-
         // ---- Servlets
         add(argSparqler, "--sparqler=DIR",
             "Run with SPARQLer services Directory for static content");
@@ -321,8 +314,6 @@ public class FusekiMain extends CmdARQ {
         add(argWithCompact, "--compact",    "Enable /$/compact/*");
 
         add(argEnableModules, "--modules=true|false", "Enable Fuseki autoloaded modules");
-
-        super.modVersion.addClass("Fuseki", Fuseki.class);
 
         applyCustomisers(customiser -> customiser.serverArgsModify(this, serverArgs));
     }
@@ -640,38 +631,44 @@ public class FusekiMain extends CmdARQ {
 
     @Override
     protected void exec() {
-        // Arguments have been processed to set serverArgs
-        // Check for command line or config setup.
+        FusekiCoreInfo.logCode(Fuseki.serverLog);
+        FusekiServer server = execMakeServer();
+        execStartServer(server);
+    }
+
+    private FusekiServer execMakeServer() {
         try {
-            Logger log = Fuseki.serverLog;
-            FusekiCoreInfo.logCode(log);
-            FusekiServer server = makeServer(serverArgs);
-            infoCmd(server, log);
-            try {
-                server.start();
-            } catch (FusekiException ex) {
-                if ( ex.getCause() instanceof BindException ) {
-                    if ( serverArgs.jettyConfigFile == null )
-                        Fuseki.serverLog.error("Failed to start server: "+ex.getCause().getMessage()+ ": port="+serverArgs.port);
-                    else
-                        Fuseki.serverLog.error("Failed to start server: "+ex.getCause().getMessage()+ ": port in use");
-                    System.exit(1);
-                }
-                throw ex;
-            } catch (Exception ex) {
-                throw new FusekiException("Failed to start server: " + ex.getMessage(), ex);
-            }
-            // This does not normally return.
-            server.join();
-            System.exit(0);
-        }
-        catch (AssemblerException | FusekiException  ex) {
+            FusekiCoreInfo.logCode(Fuseki.serverLog);
+            // Arguments have been processed to produce serverArgs in processModulesAndArgs()
+            return makeServer(serverArgs);
+        } catch (AssemblerException | FusekiException  ex) {
             if ( ex.getCause() != null )
                 System.err.println(ex.getCause().getMessage());
             else
                 System.err.println(ex.getMessage());
             throw new TerminationException(1);
         }
+    }
+
+    private void execStartServer(FusekiServer server) {
+        infoCmd(server, Fuseki.serverLog);
+        try {
+            server.start();
+        } catch (FusekiException ex) {
+            if ( ex.getCause() instanceof BindException ) {
+                if ( serverArgs.jettyConfigFile == null )
+                    Fuseki.serverLog.error("Failed to start server: "+ex.getCause().getMessage()+ ": port="+serverArgs.port);
+                else
+                    Fuseki.serverLog.error("Failed to start server: "+ex.getCause().getMessage()+ ": port in use");
+                System.exit(1);
+            }
+            throw ex;
+        } catch (Exception ex) {
+            throw new FusekiException("Failed to start server: " + ex.getMessage(), ex);
+        }
+        // This does not normally return.
+        server.join();
+        System.exit(0);
     }
 
     /**

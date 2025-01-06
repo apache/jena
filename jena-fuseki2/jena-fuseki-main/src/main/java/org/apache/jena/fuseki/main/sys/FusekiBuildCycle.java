@@ -82,8 +82,8 @@ public interface FusekiBuildCycle {
 
     /**
      * This method is called for each {@link DataAccessPoint} by the default
-     * implementation of {@link #configured} after the new servers
-     * DataAccessPointRegistry has been built.
+     * implementation of {@link #configured} after the new server's
+     * {@link DataAccessPointRegistry} has been built.
      */
     public default void configDataAccessPoint(DataAccessPoint dap, Model configModel) {}
 
