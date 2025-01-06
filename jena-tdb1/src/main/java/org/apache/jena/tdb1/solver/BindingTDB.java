@@ -26,9 +26,10 @@ import org.apache.jena.riot.out.NodeFmtLib ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingBase ;
-import org.apache.jena.tdb1.TDB1Exception;
-import org.apache.jena.tdb1.store.NodeId;
-import org.apache.jena.tdb1.store.nodetable.NodeTable;
+import org.apache.jena.sparql.engine.binding.BindingFactory ;
+import org.apache.jena.tdb1.TDB1Exception ;
+import org.apache.jena.tdb1.store.NodeId ;
+import org.apache.jena.tdb1.store.nodetable.NodeTable ;
 
 /** Bind that delays turning a NodeId into a Node until explicitly needed by get() */
 
@@ -158,5 +159,15 @@ public class BindingTDB extends BindingBase
         Node node = get(var) ;
         String tmp = NodeFmtLib.displayStr(node) ;
         sbuff.append("( ?"+var.getVarName()+extra+" = "+tmp+" )") ;
+    }
+
+    @Override
+    public Binding detach() {
+        return BindingFactory.copy(this);
+    }
+
+    @Override
+    protected Binding detachWithNewParent(Binding newParent) {
+        throw new UnsupportedOperationException("Should never be called.");
     }
 }

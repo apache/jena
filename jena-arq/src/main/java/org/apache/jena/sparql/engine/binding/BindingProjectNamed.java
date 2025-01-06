@@ -33,4 +33,17 @@ public class BindingProjectNamed extends BindingProjectBase {
     protected boolean accept(Var var) {
         return var.isNamedVar() ;
     }
+
+    @Override
+    public Binding detach() {
+        Binding b = binding.detach();
+        return b == binding
+            ? this
+            : new BindingProjectNamed(b);
+    }
+
+    @Override
+    protected Binding detachWithNewParent(Binding newParent) {
+        throw new UnsupportedOperationException("Should never be called.");
+    }
 }

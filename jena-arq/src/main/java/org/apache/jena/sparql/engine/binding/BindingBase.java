@@ -202,4 +202,19 @@ abstract public class BindingBase implements Binding
         }
         return hash;
     }
+
+    @Override
+    public Binding detach() {
+        Binding newParent = (parent == null) ? null : parent.detach();
+        Binding result = (newParent == parent)
+                ? detachWithOriginalParent()
+                : detachWithNewParent(newParent);
+        return result;
+    }
+
+    protected Binding detachWithOriginalParent() {
+        return this;
+    }
+
+    protected abstract Binding detachWithNewParent(Binding newParent);
 }

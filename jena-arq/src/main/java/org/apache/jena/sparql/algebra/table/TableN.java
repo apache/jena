@@ -21,6 +21,7 @@ package org.apache.jena.sparql.algebra.table ;
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.Objects ;
 
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
@@ -49,15 +50,12 @@ public class TableN extends TableBase {
     }
 
     protected TableN(List<Var> variables, List<Binding> rows) {
-        this.vars = variables ;
-        this.rows = rows ;
+        this.vars = Objects.requireNonNull(variables) ;
+        this.rows = Objects.requireNonNull(rows) ;
     }
 
     private void materialize(QueryIterator qIter) {
-        while (qIter.hasNext()) {
-            Binding binding = qIter.nextBinding() ;
-            addBinding(binding) ;
-        }
+        qIter.forEachRemaining(this::addBinding);
         qIter.close() ;
     }
 
@@ -104,5 +102,9 @@ public class TableN extends TableBase {
     @Override
     public List<Var> getVars() {
         return vars ;
+    }
+
+    public List<Binding> getRows() {
+        return rows;
     }
 }

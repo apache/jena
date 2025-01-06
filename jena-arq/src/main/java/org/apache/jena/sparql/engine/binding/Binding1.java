@@ -70,4 +70,9 @@ public class Binding1 extends BindingBase {
             return value;
         return null;
     }
+
+    @Override
+    protected Binding detachWithNewParent(Binding newParent) {
+        return new Binding1(newParent, var, value);
+    }
 }

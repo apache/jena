@@ -61,4 +61,9 @@ public class BindingOverMap extends BindingBase {
     protected boolean isEmpty1() {
         return map.isEmpty();
     }
+
+    @Override
+    protected Binding detachWithNewParent(Binding newParent) {
+        return new BindingOverMap(newParent, map);
+    }
 }

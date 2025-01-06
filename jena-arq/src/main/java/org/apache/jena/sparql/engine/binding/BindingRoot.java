@@ -33,4 +33,9 @@ public class BindingRoot extends Binding0 {
     public void format1(StringBuilder sBuff) {
         sBuff.append("[Root]");
     }
+
+    @Override
+    protected Binding detachWithNewParent(Binding newParent) {
+        return this;
+    }
 }
