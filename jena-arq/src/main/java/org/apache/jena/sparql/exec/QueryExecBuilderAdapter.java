@@ -36,8 +36,7 @@ import org.apache.jena.sparql.util.ModelUtils;
 import org.apache.jena.sparql.util.Symbol;
 
 /** QueryExecBuilder view over a QueryExecutionBuilder */
-public class QueryExecBuilderAdapter
-    implements QueryExecBuilder
+public class QueryExecBuilderAdapter implements QueryExecBuilder
 {
     protected QueryExecutionBuilder builder;
 
@@ -143,9 +142,14 @@ public class QueryExecBuilderAdapter
     }
 
     @Override
-    public QueryExecBuilder timeout(long value, TimeUnit timeUnit) {
-        builder = builder.timeout(value, timeUnit);
+    public QueryExecBuilder timeout(long timeout, TimeUnit timeUnit) {
+        builder = builder.timeout(timeout, timeUnit);
         return this;
+    }
+
+    @Override
+    public QueryExecBuilder timeout(long timeout) {
+        return timeout(timeout, TimeUnit.MILLISECONDS);
     }
 
     @Override

@@ -163,20 +163,25 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
     }
 
     @Override
-    public QueryExecDatasetBuilder timeout(long value, TimeUnit timeUnit) {
-        timeoutBuilder.timeout(value, timeUnit);
+    public QueryExecDatasetBuilder timeout(long timeout) {
+        return timeout(timeout, TimeUnit.MICROSECONDS);
+    }
+
+    @Override
+    public QueryExecDatasetBuilder timeout(long timeout, TimeUnit timeUnit) {
+        timeoutBuilder.timeout(timeout, timeUnit);
         return this;
     }
 
     @Override
-    public QueryExecDatasetBuilder initialTimeout(long value, TimeUnit timeUnit) {
-        timeoutBuilder.initialTimeout(value, timeUnit);
+    public QueryExecDatasetBuilder initialTimeout(long timeout, TimeUnit timeUnit) {
+        timeoutBuilder.initialTimeout(timeout, timeUnit);
         return this;
     }
 
     @Override
-    public QueryExecDatasetBuilder overallTimeout(long value, TimeUnit timeUnit) {
-        timeoutBuilder.overallTimeout(value, timeUnit);
+    public QueryExecDatasetBuilder overallTimeout(long timeout, TimeUnit timeUnit) {
+        timeoutBuilder.overallTimeout(timeout, timeUnit);
         return this;
     }
 
