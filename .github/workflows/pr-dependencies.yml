@@ -1,0 +1,44 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+name: Maven Build on PR
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+    branches:
+      - 'main'
+      
+permissions:
+  contents: read
+
+jobs:
+      
+  build-pr:
+    ## Dependabot only
+    if: github.actor == 'dependabot[bot]'
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk_distribution: ['temurin']
+        os: [ubuntu-latest]
+        java_version: ['21']
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ matrix.java_version }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: ${{ matrix.jdk_distribution }}
+          java-version: ${{ matrix.java_version }}
+
+      - name: Build with Maven (Java${{ matrix.java_version }} ${{ matrix.jdk_distribution }})
+        ## No javadoc - that needs visual check
+        run: mvn -B --file pom.xml -Dmaven.javadoc.skip=true install
