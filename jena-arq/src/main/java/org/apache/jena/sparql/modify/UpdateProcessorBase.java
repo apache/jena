@@ -43,10 +43,10 @@ public class UpdateProcessorBase implements UpdateProcessor
 
     @Deprecated
     public UpdateProcessorBase(UpdateRequest request,
-            DatasetGraph datasetGraph,
-            Binding inputBinding,
-            Context context,
-            UpdateEngineFactory factory) {
+                               DatasetGraph datasetGraph,
+                               Binding inputBinding,
+                               Context context,
+                               UpdateEngineFactory factory) {
         this(request, datasetGraph, inputBinding, context, factory, null);
     }
 
