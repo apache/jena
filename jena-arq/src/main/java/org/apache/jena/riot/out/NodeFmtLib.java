@@ -76,6 +76,32 @@ public class NodeFmtLib
         return strNodesTTL(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject());
     }
 
+    /** Format a triple as N-Triples. */
+    public static String strNT(Triple triple) {
+        return strNQ(triple.getSubject(), triple.getPredicate(), triple.getObject(), null);
+    }
+
+    /** Format a quad as N-Quads. */
+    public static String strNQ(Quad quad) {
+        return strNQ(quad.getSubject(), quad.getPredicate(), quad.getObject(), quad.getGraph());
+    }
+
+    /** Format the components of a quad as N-Quads. The graph component may be null. */
+    public static String strNQ(Node s, Node p, Node o, Node g) {
+        StringBuilder result = new StringBuilder();
+        result.append(strNT(s));
+        result.append(" ");
+        result.append(strNT(p));
+        result.append(" ");
+        result.append(strNT(o));
+        if (g != null && !Quad.isDefaultGraph(g)) {
+            result.append(" ");
+            result.append(strNT(g));
+        }
+        result.append(" .");
+        return result.toString();
+    }
+
     /** With Turtle abbreviation for literals, no prefixes of base URI */
     public static String strTTL(Node node) {
         return strNode(node, ttlFormatter);
@@ -83,7 +109,7 @@ public class NodeFmtLib
 
     /** Format in N-triples style. */
     public static String strNT(Node node) {
-        return strNode(node, ttlFormatter);
+        return strNode(node, ntFormatter);
     }
 
     /** Format in N-triples style. */

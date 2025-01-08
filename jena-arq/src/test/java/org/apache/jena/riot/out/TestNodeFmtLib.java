@@ -21,6 +21,10 @@ package org.apache.jena.riot.out;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.RDF ;
@@ -65,7 +69,7 @@ public class TestNodeFmtLib
     @Test public void fmtNode_00() { testNT ("<a>", "<a>") ; }
 
     @Test public void fmtNode_11() { testNT ("<"+RDF.getURI()+"type>", "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>") ; }
-    @Test public void fmtNode_12() { testNT ("'123'^^xsd:integer", "123") ; }
+    @Test public void fmtNode_12() { testNT ("'123'^^xsd:integer", "\"123\"^^<http://www.w3.org/2001/XMLSchema#integer>") ; }
     @Test public void fmtNode_13() { testNT ("'abc'^^xsd:integer", "\"abc\"^^<http://www.w3.org/2001/XMLSchema#integer>") ; }
 
     // NB - Not 'a' which is position sensitive.
@@ -103,4 +107,44 @@ public class TestNodeFmtLib
         assertEquals(output, x) ;
     }
 
+    @Test
+    public void strNT_triple() {
+        Triple triple = SSE.parseTriple("(<urn:s> rdf:type <urn:o>)");
+        assertEquals(
+            "<urn:s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <urn:o> .",
+            NodeFmtLib.strNT(triple));
+    }
+
+    @Test
+    public void strNT_triple_bnode() {
+        // Note that <_:abc> actually parses as a blank node and preserves its label.
+        Triple triple = SSE.parseTriple("(<_:abc> rdf:type <urn:o>)");
+        assertEquals(
+            "_:Babc <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <urn:o> .",
+            NodeFmtLib.strNT(triple));
+    }
+
+    @Test
+    public void strNT_triple_int() {
+        Triple triple = SSE.parseTriple("(<urn:s> <urn:value> 1)");
+        assertEquals(
+            "<urn:s> <urn:value> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .",
+            NodeFmtLib.strNT(triple));
+    }
+
+    @Test
+    public void strNQ_quad_namedGraph() {
+        Quad quad = SSE.parseQuad("(<urn:g> <urn:s> rdf:type <urn:o>)");
+        assertEquals(
+            "<urn:s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <urn:o> <urn:g> .",
+            NodeFmtLib.strNQ(quad));
+    }
+
+    @Test
+    public void strNQ_quad_defaultGraph() {
+        Quad quad = SSE.parseQuad("(_ <urn:s> rdf:type <urn:o>)");
+        assertEquals(
+            "<urn:s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <urn:o> .",
+            NodeFmtLib.strNQ(quad));
+    }
 }
