@@ -26,7 +26,9 @@ import java.io.PrintStream;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.jena.iri3986.provider.IRIProvider3986;
 import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIProvider;
 import org.apache.jena.irix.IRIx;
 
 public class IRIValidatorHTML
@@ -60,6 +62,8 @@ public class IRIValidatorHTML
 
             try {
                 boolean first = true;
+                IRIProvider provider = new IRIProvider3986();
+
                 for ( String iriStr : args ) {
                     if ( iriStr.startsWith("<") ) {
                         iriStr = iriStr.substring(1);
@@ -70,7 +74,7 @@ public class IRIValidatorHTML
                         System.out.println();
                     first = false;
                     try {
-                        IRIx iri = IRIx.create(iriStr);
+                        IRIx iri = provider.create(iriStr);
                         System.out.println(iriStr + " ==> " + iri);
                         if ( iri.isRelative() )
                             System.out.println("Relative IRI: " + iriStr);
