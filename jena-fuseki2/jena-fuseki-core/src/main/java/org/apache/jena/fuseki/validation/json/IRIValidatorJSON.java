@@ -28,7 +28,9 @@ import java.util.List;
 import org.apache.jena.atlas.json.JsonBuilder;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.fuseki.servlets.ServletOps;
+import org.apache.jena.iri3986.provider.IRIProvider3986;
 import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIProvider;
 import org.apache.jena.irix.IRIx;
 
 public class IRIValidatorJSON {
@@ -55,13 +57,15 @@ public class IRIValidatorJSON {
         obj.key(jIRIs);
         obj.startArray();
 
+        IRIProvider provider = new IRIProvider3986();
+
         for ( String iriStr : args ) {
             obj.startObject();
             obj.key(jIRI).value(iriStr);
             List<String> errors = new ArrayList<>();
             List<String> warnings = new ArrayList<>();
             try {
-                IRIx iri = IRIx.create(iriStr);
+                IRIx iri = provider.create(iriStr);
                 System.out.println(iriStr + " ==> " + iri);
                 if ( iri.isRelative() )
                     if ( iri.isRelative() )
