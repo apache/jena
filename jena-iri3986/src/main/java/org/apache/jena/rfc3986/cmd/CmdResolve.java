@@ -35,7 +35,7 @@ public class CmdResolve {
         String relStr = fixup(args[1]);
 
         IRI3986 base = createOrExit(baseStr, "Bad base");
-        IRI3986 rel = createOrExit(baseStr, "Bad ");
+        IRI3986 rel = createOrExit(relStr, "Bad relative IRI");
 
         if ( ! base.isAbsolute() ) {
             System.err.println("Base should be an absolute IRI: '" +base+"'");
@@ -44,9 +44,9 @@ public class CmdResolve {
         IRI3986 result = base.resolve(rel);
         System.out.println("Base:     "+base);
         System.out.println("IRI:      "+rel);
+        System.out.println();
         System.out.println("Resolved: "+result);
-
+        System.out.println();
         print(result);
     }
 }
-

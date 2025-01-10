@@ -47,7 +47,6 @@ public class TestParseURN {
     // 32 character NID
     @Test public void parseURN_11() { goodURN1("urn:123456789-123456789-123456789-12:nss", "urn", "123456789-123456789-123456789-12", "nss"); }
 
-
     @Test public void parseURN_20() { goodURN1("urn:nid:nss?+R1?+R2",  "urn", "nid", "nss", "R1?+R2", null, null); }  // The r-component includes the ?+R2
     @Test public void parseURN_21() { goodURN1("urn:nid:nss?=Q?+R",    "urn", "nid", "nss", null, "Q?+R", null); }    // The q-component includes the ?+R
     @Test public void parseURN_22() { goodURN1("urn:nid:nss?=Q?+",     "urn", "nid", "nss", null, "Q?+", null); }     // The q-component includes the ?+
@@ -55,8 +54,6 @@ public class TestParseURN {
     @Test public void parseURN_24() { goodURN1("urn:nid:nss?=Q?=",     "urn", "nid", "nss", null, "Q?=", null); }     // The q-component includes the ?=
     @Test public void parseURN_25() { goodURN1("urn:nid:nss?+R?Z",     "urn", "nid", "nss", "R?Z", null, null); }     // The r-component includes the ?Z
     @Test public void parseURN_26() { goodURN1("urn:nid:nss?=Q?n=v",   "urn", "nid", "nss", null, "Q?n=v", null); }   // The q-component includes the "?name=value"
-
-
 
     @Test public void parseURN_bad_01() { badURN("cat:ns:s"); }
     @Test public void parseURN_bad_02() { badURN("urn:ns"); }
@@ -66,18 +63,21 @@ public class TestParseURN {
     @Test public void parseURN_bad_05() { badURN("urn:n:s"); }
     @Test public void parseURN_bad_06() { badURN("urn:-ns:123"); }
     @Test public void parseURN_bad_07() { badURN("urn:ns-:123"); }
-
-    // Bad components.
-    @Test public void parseURN_bad_10() { badURN1("urn:nid:nss?+#F"); }
-    @Test public void parseURN_bad_11() { badURN1("urn:nid:nss?=#F"); }
-    @Test public void parseURN_bad_12() { badURN1("urn:nid:nss?+R?="); }
-    @Test public void parseURN_bad_13() { badURN1("urn:nid:nss?+?=Q"); }
-
-    @Test public void parseURN_bad_14() { badURN1("urn:nid:nss?"); }
-    @Test public void parseURN_bad_15() { badURN1("urn:nid:nss?junk"); }
-
     // 33 characters
     @Test public void parseURN_bad_08() { badURN("urn:123456789-123456789-123456789-123:nss"); }
+
+    @Test public void parseURN_bad_10() { badURN("urn:"); }
+    @Test public void parseURN_bad_11() { badURN("urn::"); }
+    @Test public void parseURN_bad_12() { badURN("urn::abc"); }
+
+    // Bad components.
+    @Test public void parseURN_bad_20() { badURN1("urn:nid:nss?+#F"); }
+    @Test public void parseURN_bad_21() { badURN1("urn:nid:nss?=#F"); }
+    @Test public void parseURN_bad_22() { badURN1("urn:nid:nss?+R?="); }
+    @Test public void parseURN_bad_23() { badURN1("urn:nid:nss?+?=Q"); }
+
+    @Test public void parseURN_bad_24() { badURN1("urn:nid:nss?"); }
+    @Test public void parseURN_bad_25() { badURN1("urn:nid:nss?junk"); }
 
     private void badURN(String string) {
         URN x = ParseURN.parseURN(string);

@@ -77,8 +77,8 @@ public class IRIProvider3986 implements IRIProvider {
 
         @Override
         public IRIx resolve(String other) {
+            // create3986() - checks syntax, and errors if in strict mode.
             IRI3986 iriOther = create3986(other);
-            // Does not complain if iriOther is bad but create3986 did checking.
             IRI3986 iri2 = this.iri.resolve(iriOther);
             return newIRIx(iri2);
         }
@@ -87,7 +87,6 @@ public class IRIProvider3986 implements IRIProvider {
         public IRIx resolve(IRIx other) {
             IRIx3986 iriOther = (IRIx3986)other;
             IRI3986 iri2 = this.iri.resolve(iriOther.iri);
-            //violations(iri2);
             return newIRIx(iri2);
         }
 

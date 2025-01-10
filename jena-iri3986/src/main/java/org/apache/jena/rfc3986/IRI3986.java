@@ -448,8 +448,7 @@ public class IRI3986 implements IRI {
     }
 
     /**
-     * <a href="https://tools.ietf.org/html/rfc3986#section-4.3">RFC 3986, Section
-     * 4.3</a>
+     * <a href="https://tools.ietf.org/html/rfc3986#section-4.3">RFC 3986, Section 4.3</a>
      */
     @Override
     public boolean isAbsolute() {
@@ -458,8 +457,7 @@ public class IRI3986 implements IRI {
     }
 
     /**
-     * <a href="https://tools.ietf.org/html/rfc3986#section-4.2">RFC 3986, Section
-     * 4.2</a>
+     * <a href="https://tools.ietf.org/html/rfc3986#section-4.2">RFC 3986, Section 4.2</a>
      */
     @Override
     public boolean isRelative() {
@@ -1622,8 +1620,7 @@ public class IRI3986 implements IRI {
 
         if ( !hasHost() )
             schemeReport(this, Issue.http_no_host, scheme, "http and https URI schemes require //host/");
-
-        if ( /* hasHost() && */ (host0 == host1) )
+        else if ( /* hasHost() && */ (host0 == host1) )
             schemeReport(this, Issue.http_empty_host, scheme, "http and https URI schemes do not allow the host to be empty");
 
         // https://tools.ietf.org/html/rfc3986#section-3.2.3
@@ -1951,8 +1948,10 @@ public class IRI3986 implements IRI {
 
     private static void addReportParseError(IRI3986 iri, String iriStr, String message) {
         // The iri object is probably only partial populated.
-        // Use iriStr for the message.
-        String msg = "'"+iriStr+"' : "+message;
+        // Exception message already has the IRI string. But check.
+        String msg = message;
+        if ( ! message.startsWith("<"+iriStr+">") )
+            msg = "'"+iriStr+"' : "+message;
         Violation v = new Violation(iriStr, null, Issue.ParseError, msg);
         addReport(iri, v);
     }

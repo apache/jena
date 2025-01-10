@@ -215,8 +215,13 @@ public class ParseURN {
             handler.accept(Issue.urn_bad_nid, "No namespace id");
             return -1;
         }
+
+        if ( ch == ':' ) {
+            handler.accept(Issue.urn_bad_nid, "Missing namespace id");
+            return -1;
+        }
         if ( ! Chars3986.isAlphaNum(ch) ) {
-            handler.accept(Issue.urn_bad_nid, "Namespace id does no start with an alphabetic ASCII character");
+            handler.accept(Issue.urn_bad_nid, "Namespace id does not start with an alphabetic ASCII character");
             return -1;
         }
         x++;
@@ -258,7 +263,7 @@ public class ParseURN {
 
         // RFC 8141 section 5.1 (described in RFC 3406)
         if ( LibParseIRI.caseInsensitiveRegion(string, startNamespace, "X-") ) {
-            String start = string.substring(0,2);
+            String start = string.substring(startNamespace,2+startNamespace);
             handler.accept(Issue.urn_x_namespace, "Namespace id starts with '"+start+"'");
             return -1;
         }
@@ -270,7 +275,7 @@ public class ParseURN {
                 char chx = charAt(string, i);
                 if ( !seenNonZero ) {
                     if ( chx == '0' ) {
-                        handler.accept(Issue.urn_bad_nid, "Leading zero in an informal namepsace");
+                        handler.accept(Issue.urn_bad_nid, "Leading zero in an informal namespace");
                         return -1;
                     } else
                         seenNonZero = true;
