@@ -35,7 +35,7 @@ public class CmdRelative {
         String relStr = fixup(args[1]);
 
         IRI3986 base = createOrExit(baseStr, "Bad base");
-        IRI3986 target = createOrExit(relStr, "Bad");
+        IRI3986 target = createOrExit(relStr, "Bad IRI");
 
         if ( ! base.isAbsolute() ) {
             System.err.println("Base must be an absolute IRI: '" +base+"'");
@@ -45,7 +45,9 @@ public class CmdRelative {
         IRI3986 result = base.relativize(target);
         System.out.println("Base:     "+base);
         System.out.println("IRI:      "+target);
+        System.out.println();
         System.out.println("Relative: "+result);
+        System.out.println();
 
         print(result);
     }

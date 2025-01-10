@@ -80,27 +80,29 @@ public class TestURISchemes {
     @Test public void scheme_urn_05() { schemeViolation("urn:and-:nss", URIScheme.URN, Issue.urn_bad_nid); }
 
     @Test public void scheme_urn_06() { schemeViolation("urn:", URIScheme.URN, Issue.urn_bad_nid); }
-    @Test public void scheme_urn_07() { schemeViolation("urn:x:abc", URIScheme.URN, Issue.urn_bad_nid); }
-    @Test public void scheme_urn_08() { schemeViolation("urn:abc:", URIScheme.URN, Issue.urn_bad_nss); }
+    @Test public void scheme_urn_07() { schemeViolation("urn::", URIScheme.URN, Issue.urn_bad_nid); }
+    @Test public void scheme_urn_08() { schemeViolation("urn::abc", URIScheme.URN, Issue.urn_bad_nid); }
 
+    @Test public void scheme_urn_09() { schemeViolation("urn:x:abc", URIScheme.URN, Issue.urn_bad_nid); }
+    @Test public void scheme_urn_10() { schemeViolation("urn:abc:", URIScheme.URN, Issue.urn_bad_nss); }
 
     // OK by URN syntax, forbidden by RFC 8141 section 5.1
-    @Test public void scheme_urn_09() { schemeViolation("urn:X-local:nss", URIScheme.URN, Issue.urn_x_namespace); }
-    @Test public void scheme_urn_10() { schemeViolation("urn:x-local:nss", URIScheme.URN, Issue.urn_x_namespace); }
+    @Test public void scheme_urn_11() { schemeViolation("urn:X-local:nss", URIScheme.URN, Issue.urn_x_namespace); }
+    @Test public void scheme_urn_12() { schemeViolation("urn:x-local:nss", URIScheme.URN, Issue.urn_x_namespace); }
     // OK by URN syntax, forbidden by RFC 8141 section 5.1 Informal namespace.
-    @Test public void scheme_urn_11() { schemeViolation("urn:urn-abc:nss", URIScheme.URN, Issue.urn_bad_nid); }
-    @Test public void scheme_urn_12() { good("urn:urn-7:nss"); }
-    @Test public void scheme_urn_13() { good("urn:nid:a"); }
+    @Test public void scheme_urn_13() { schemeViolation("urn:urn-abc:nss", URIScheme.URN, Issue.urn_bad_nid); }
+    @Test public void scheme_urn_14() { good("urn:urn-7:nss"); }
+    @Test public void scheme_urn_15() { good("urn:nid:a"); }
 
     // 32 char NID
-    @Test public void scheme_urn_14() { good("urn:12345678901234567890123456789012:a"); }
+    @Test public void scheme_urn_16() { good("urn:12345678901234567890123456789012:a"); }
     // 33 char NID
-    @Test public void scheme_urn_15() { schemeViolation("urn:abcdefghij-123456789-123456789-yz:a", URIScheme.URN, Issue.urn_bad_nid); }
+    @Test public void scheme_urn_17() { schemeViolation("urn:abcdefghij-123456789-123456789-yz:a", URIScheme.URN, Issue.urn_bad_nid); }
     // Bad by URN specific rule for the query components.
-    @Test public void scheme_urn_16() { schemeViolation("urn:local:abc/def?query=foo", URIScheme.URN, Issue.urn_bad_components); }
+    @Test public void scheme_urn_18() { schemeViolation("urn:local:abc/def?query=foo", URIScheme.URN, Issue.urn_bad_components); }
     // Two f-components = two fragments
-    @Test public void scheme_urn_17() { badSyntax("urn:local:abc/def#f1#f2"); }
-    @Test public void scheme_urn_18() { schemeViolation("urn:αβγ:abc", URIScheme.URN, Issue.urn_bad_nid); }
+    @Test public void scheme_urn_19() { badSyntax("urn:local:abc/def#f1#f2"); }
+    @Test public void scheme_urn_20() { schemeViolation("urn:αβγ:abc", URIScheme.URN, Issue.urn_bad_nid); }
 
     // == urn:uuid:
 
