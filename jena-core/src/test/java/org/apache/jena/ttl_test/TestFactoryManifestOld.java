@@ -27,19 +27,18 @@ import org.apache.jena.util.junit.ManifestOldItemHandler;
 import org.apache.jena.util.junit.TestUtils;
 import org.slf4j.LoggerFactory;
 
-
 public abstract class TestFactoryManifestOld implements ManifestOldItemHandler
 {
     private TestSuite currentTestSuite = null ;
     private TestSuite testSuite = null ;
-    
+
     public TestFactoryManifestOld() {}
-    
+
     public TestSuite process(String filename)
     {
         return oneManifest(filename) ;
     }
-    
+
     private TestSuite oneManifest(String filename)
     {
         TestSuite ts1 = new TestSuite() ;
@@ -47,7 +46,7 @@ public abstract class TestFactoryManifestOld implements ManifestOldItemHandler
         try {
             m = new ManifestOld(filename) ;
         } catch (JenaException ex)
-        { 
+        {
             LoggerFactory.getLogger(TestFactoryManifestOld.class).warn("Failed to load: "+filename+"\n"+ex.getMessage(), ex) ;
             ts1.setName("BROKEN") ;
             return ts1 ;
@@ -55,7 +54,7 @@ public abstract class TestFactoryManifestOld implements ManifestOldItemHandler
         if ( m.getName() != null )
             ts1.setName(TestUtils.safeName(m.getName())) ;
         else
-            ts1.setName("Unnamed Manifest") ; 
+            ts1.setName("Unnamed Manifest") ;
 
         // Recurse
         for (Iterator <String>iter = m.includedManifests() ; iter.hasNext() ; )
@@ -65,14 +64,14 @@ public abstract class TestFactoryManifestOld implements ManifestOldItemHandler
             currentTestSuite = ts2 ;
             ts1.addTest(ts2) ;
         }
-      
+
         currentTestSuite = ts1 ;
         m.apply(this) ;
         return ts1 ;
     }
-    
+
     protected TestSuite getTestSuite() { return currentTestSuite ; }
-    
+
     /** Handle an item in a manifest */
     @Override
     public final boolean processManifestItem(Resource manifest ,
@@ -87,11 +86,11 @@ public abstract class TestFactoryManifestOld implements ManifestOldItemHandler
         return true ;
     }
 
-    
+
     protected abstract Test makeTest(Resource manifest ,
                            Resource item ,
                            String testName ,
                            Resource action ,
                            Resource result) ;
-    
+
 }

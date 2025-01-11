@@ -24,25 +24,25 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.graph.Triple ;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIs;
+import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.shared.PrefixMapping ;
 import org.apache.jena.shared.impl.PrefixMappingImpl ;
-import org.apache.jena.ttl_test.JenaURIException;
-import org.apache.jena.ttl_test.N3IRIResolver;
 import org.apache.jena.vocabulary.RDF ;
 
-@SuppressWarnings("deprecation")
 public class TurtleParserBase
 {
     // Should be the same as ARQ ParserBase and Prologues.
     protected final Node XSD_TRUE   = NodeFactory.createLiteral("true", null, XSDDatatype.XSDboolean) ;
     protected final Node XSD_FALSE  = NodeFactory.createLiteral("false", null, XSDDatatype.XSDboolean) ;
-    
+
     protected final Node nRDFtype       = RDF.type.asNode() ;
-    
+
     protected final Node nRDFnil        = RDF.nil.asNode() ;
     protected final Node nRDFfirst      = RDF.first.asNode() ;
     protected final Node nRDFrest       = RDF.rest.asNode() ;
-    
+
     protected final Node nRDFsubject    = RDF.subject.asNode() ;
     protected final Node nRDFpredicate  = RDF.predicate.asNode() ;
     protected final Node nRDFobject     = RDF.object.asNode() ;
@@ -50,72 +50,72 @@ public class TurtleParserBase
     protected final String SWAP_NS      = "http://www.w3.org/2000/10/swap/" ;
     protected final String SWAP_LOG_NS  = "http://www.w3.org/2000/10/swap/log#" ;
     protected final Node nLogImplies    = NodeFactory.createURI(SWAP_LOG_NS+"implies") ;
-    
+
     protected final Node nOwlSameAs     = NodeFactory.createURI("http://www.w3.org/2002/07/owl#sameAs") ;
-    
+
     protected boolean strictTurtle = true ;
-    protected boolean skolomizedBNodes = true ; 
-    
+    protected boolean skolomizedBNodes = true ;
+
+    protected PrefixMapping prefixMapping = new PrefixMappingImpl() ;
+    protected IRIxResolver resolver = IRIs.stdResolver();
+
     public TurtleParserBase() {}
-    
-    PrefixMapping prefixMapping = new PrefixMappingImpl() ;
-    N3IRIResolver resolver = new N3IRIResolver() ;
-    
-    protected String getBaseURI()       { return resolver.getBaseIRI() ; }
+
+    protected String getBaseURI()       { return resolver.getBaseURI() ; }
     public void setBaseURI(String u)
     {
-        resolver = new N3IRIResolver(u) ;
+        resolver = IRIxResolver.create(u).build();
     }
-    
+
     protected void setBase(String iriStr , int line, int column)
     {
         // Already resolved.
         setBaseURI(iriStr) ;
     }
-    
+
     public PrefixMapping getPrefixMapping() { return prefixMapping ; }
-    
+
     // label => bNode for construct templates patterns
     LabelToNodeMap bNodeLabels = new LabelToNodeMap() ;
-    
-    TurtleEventHandler handler = null ; 
+
+    TurtleEventHandler handler = null ;
     public void setEventHandler(TurtleEventHandler h) { handler = h ; }
-    
+
     protected void emitTriple(int line, int col, Triple triple)
     {
         handler.triple(line, col, triple) ;
     }
-    
+
     protected void startFormula(int line, int col)
     { handler.startFormula(line, col) ; }
-    
+
     protected void endFormula(int line, int col)
     {handler.endFormula(line, col) ; }
-    
+
     protected void setPrefix(int line, int col, String prefix, String uri)
     {
         prefixMapping.setNsPrefix(prefix, uri) ;
         handler.prefix(line, col, prefix, uri) ;
     }
-    
+
     protected int makePositiveInteger(String lexicalForm)
     {
         if ( lexicalForm == null )
             return -1 ;
-        
+
         return Integer.parseInt(lexicalForm) ;
     }
-    
+
     protected Node createLiteralInteger(String lexicalForm)
     {
         return NodeFactory.createLiteral(lexicalForm, null, XSDDatatype.XSDinteger) ;
     }
-    
+
     protected Node createLiteralDouble(String lexicalForm)
     {
         return NodeFactory.createLiteral(lexicalForm, null, XSDDatatype.XSDdouble) ;
     }
-    
+
     protected Node createLiteralDecimal(String lexicalForm)
     {
         return NodeFactory.createLiteral(lexicalForm, null, XSDDatatype.XSDdecimal) ;
@@ -126,7 +126,7 @@ public class TurtleParserBase
         String uri = (datatype==null) ? null : datatype.getURI() ;
         return createLiteral(lexicalForm, langTag,  uri) ;
     }
-    
+
     protected Node createLiteral(String lexicalForm, String langTag, String datatypeURI)
     {
         Node n = null ;
@@ -140,7 +140,7 @@ public class TurtleParserBase
             n = NodeFactory.createLiteral(lexicalForm, langTag, null) ;
         return n ;
     }
-    
+
     protected long integerValue(String s)
     {
         if ( s.startsWith("+") )
@@ -153,25 +153,25 @@ public class TurtleParserBase
         }
         return Long.parseLong(s) ;
     }
-    
+
     protected double doubleValue(String s)
     {
         if ( s.startsWith("+") )
             s = s.substring(1) ;
         double valDouble = Double.parseDouble(s) ;
-        return valDouble ; 
+        return valDouble ;
     }
-    
+
     protected String stripQuotes(String s)
     {
         return s.substring(1,s.length()-1)  ;
     }
-    
+
     protected String stripQuotes3(String s)
     {
         return s.substring(3,s.length()-3)  ;
     }
-    
+
     protected String stripChars(String s, int n)
     {
         return s.substring(n, s.length())  ;
@@ -182,24 +182,26 @@ public class TurtleParserBase
         iriStr = stripQuotes(iriStr) ;
         return resolveIRI(iriStr, line, column) ;
     }
-    
+
     protected String resolveIRI(String iriStr , int line, int column)
     {
         if ( isBNodeIRI(iriStr) )
             return iriStr ;
-        
+
         if ( resolver != null )
             iriStr = _resolveIRI(iriStr, line, column) ;
         return iriStr ;
     }
-    
-    private String _resolveIRI(String iriStr , int line, int column)
-    {
-        try { iriStr = resolver.resolve(iriStr) ; }
-        catch (JenaURIException ex) { throwParseException(ex.getMessage(), line, column) ; }
-        return iriStr ;
+
+    private String _resolveIRI(String iriStr, int line, int column) {
+        try {
+            return resolver.resolve(iriStr).str();
+        } catch (IRIException ex) {
+            throwParseException(ex.getMessage(), line, column);
+            return null;
+        }
     }
-    
+
     protected String resolvePName(String qname, int line, int column)
     {
         String s = myExpandPrefix(prefixMapping, qname) ;
@@ -219,7 +221,7 @@ public class TurtleParserBase
             // there is no prefix but what s the expanded and original form are
             // actually the same character string ?
             int colon = qname.indexOf( ':' );
-            if (colon < 0) 
+            if (colon < 0)
                 return null ;
             String prefix = qname.substring( 0, colon ) ;
             if ( prefixMapping.getNsPrefixURI(prefix) != null )
@@ -229,17 +231,17 @@ public class TurtleParserBase
         }
         return s ;
     }
-    
+
     final static String bNodeLabelStart = "_:" ;
-    
+
     protected Node createListNode() { return createBNode() ; }
 
     // Unlabelled bNode.
     protected Node createBNode() { return bNodeLabels.allocNode() ; }
-    
+
     //  Labelled bNode.
     protected Node createBNode(String label, int line, int column)
-    { 
+    {
         return bNodeLabels.asNode(label) ;
     }
     protected Node createVariable(String s, int line, int column)
@@ -247,7 +249,7 @@ public class TurtleParserBase
         s = s.substring(1) ; // Drop the marker
         return NodeFactory.createVariable(s) ;
     }
-    
+
     protected Node createNode(String iri)
     {
         // Is it a bNode label? i.e. <_:xyz>
@@ -259,19 +261,19 @@ public class TurtleParserBase
         }
         return NodeFactory.createURI(iri) ;
     }
-    
+
     protected boolean isBNodeIRI(String iri)
     {
         return skolomizedBNodes && iri.startsWith(bNodeLabelStart) ;
     }
-    
 
-    
+
+
 //    protected Node createNodeFromURI(String s, int line, int column)
 //    {
 //        s = stripQuotes(s) ;
 //        String uriStr = s ;     // Mutated
-//        
+//
 //        try {
 //            uriStr = resolver.resolve(uriStr) ;
 //        } catch (JenaURIException ex)
@@ -280,21 +282,21 @@ public class TurtleParserBase
 //        }
 //        return Node.createURI(uriStr) ;
 //    }
-    
+
     protected void throwParseException(String s , int line, int column)
     {
         throw new TurtleParseException(exMsg(s, line, column)) ;
     }
-    
+
     protected String fixupPrefix(String prefix, int line, int column)
     {
         if ( prefix.endsWith(":") )
             prefix = prefix.substring(0, prefix.length()-1) ;
-        return prefix ; 
+        return prefix ;
     }
-    
+
     // Utilities to remove escapes
-    
+
     // Testing interface
     public static String unescapeStr(String s)
     { return unescape(s, '\\', false, 1, 1) ; }
@@ -305,18 +307,18 @@ public class TurtleParserBase
 //    protected String unescapeCodePoint(String s, int line, int column)
 //    { return unescape(s, '\\', true, line, column) ; }
 
-    
+
     protected String unescapeStr(String s, int line, int column)
     { return unescape(s, '\\', false, line, column) ; }
-    
+
     // Worker function
     private static String unescape(String s, char escape, boolean pointCodeOnly, int line, int column)
     {
         int i = s.indexOf(escape) ;
-        
+
         if ( i == -1 )
             return s ;
-        
+
         // Dump the initial part straight into the string buffer
         StringBuilder sb = new StringBuilder(s.substring(0,i)) ;
         int len = s.length() ;
@@ -326,7 +328,7 @@ public class TurtleParserBase
             // Keep line and column numbers.
             switch (ch)
             {
-                case '\n': 
+                case '\n':
                 case '\r':
                     line++ ;
                     column = 1 ;
@@ -341,14 +343,14 @@ public class TurtleParserBase
                 sb.append(ch) ;
                 continue ;
             }
-                
+
             // Escape
             if ( i >= len-1 )
                 throw new TurtleParseException(exMsg("Illegal escape at end of string", line, column)) ;
             char ch2 = s.charAt(i+1) ;
             column = column+1 ;
             i = i + 1 ;
-            
+
             // \\u and \\U
             if ( ch2 == 'u' )
             {
@@ -374,10 +376,10 @@ public class TurtleParserBase
                 column = column+8 ;
                 continue ;
             }
-            
+
             // Are we doing just point code escapes?
-            // If so, \X-anything else is legal as a literal "\" and "X" 
-            
+            // If so, \X-anything else is legal as a literal "\" and "X"
+
             if ( pointCodeOnly )
             {
                 sb.append('\\') ;
@@ -385,12 +387,12 @@ public class TurtleParserBase
                 i = i + 1 ;
                 continue ;
             }
-            
+
             // Not just codepoints.  Must be a legal escape.
             char ch3 = 0 ;
             switch (ch2)
             {
-                case 'n': ch3 = '\n' ;  break ; 
+                case 'n': ch3 = '\n' ;  break ;
                 case 't': ch3 = '\t' ;  break ;
                 case 'r': ch3 = '\r' ;  break ;
                 case 'b': ch3 = '\b' ;  break ;
@@ -411,7 +413,7 @@ public class TurtleParserBase
     {
 //        if ( i+len >= s.length() )
 //        {
-//            
+//
 //        }
         int x = 0 ;
         for ( int j = i ; j < i+len ; j++ )
@@ -421,7 +423,7 @@ public class TurtleParserBase
            int k = 0  ;
            switch (ch)
            {
-               case '0': k = 0 ; break ; 
+               case '0': k = 0 ; break ;
                case '1': k = 1 ; break ;
                case '2': k = 2 ; break ;
                case '3': k = 3 ; break ;
@@ -444,7 +446,7 @@ public class TurtleParserBase
         }
         return x ;
     }
-    
+
     protected static String exMsg(String msg, int line, int column)
     {
         return "Line " + line + ", column " + column + ": " + msg ;

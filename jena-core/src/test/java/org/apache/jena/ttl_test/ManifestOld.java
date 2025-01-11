@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.util.FileManager ;
 import org.apache.jena.util.junit.ManifestOldItemHandler;
@@ -48,11 +49,10 @@ public class ManifestOld
     Resource manifestRes = null ;
 
 
-    @SuppressWarnings("deprecation")
     public ManifestOld(String fn)
     {
         log.debug("Manifest = "+fn ) ;
-        filename = org.apache.jena.ttl_test.N3IRIResolver.resolveGlobal(fn) ;
+        filename = IRIs.resolve(fn) ;
         log.debug("         = "+filename ) ;
         manifest = FileManager.getInternal().loadModelInternal(filename) ;
         parseIncludes() ;

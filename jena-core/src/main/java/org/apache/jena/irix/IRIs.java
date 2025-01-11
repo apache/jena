@@ -111,7 +111,7 @@ public class IRIs {
         return resolver(getSystemBase());
     }
 
-    /** Return a general purpose resolver, with the current system base as its base IRI. */
+    /** Return a general purpose resolver, with the given IRI as as its base IRI. */
     public static IRIxResolver resolver(String base) {
         return IRIxResolver.create(base).resolve(true).allowRelative(false).build();
     }

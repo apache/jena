@@ -23,15 +23,16 @@ import java.nio.charset.StandardCharsets ;
 import java.io.* ;
 
 import org.apache.jena.graph.GraphEvents ;
+import org.apache.jena.irix.IRIs;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.* ;
 import org.apache.jena.util.FileUtils ;
 import org.slf4j.LoggerFactory;
 
-/** Abstract class that sorts out input streams, readers and base URIs, to call a
+/**
+ * Abstract class that sorts out input streams, readers and base URIs, to call a
  * single worker function with model, UTF8 reader and visited base
  */
-@SuppressWarnings("deprecation")
 public abstract class JenaReaderBase implements RDFReaderI
 {
 	protected RDFErrorHandler errorHandler = null ;
@@ -104,7 +105,7 @@ public abstract class JenaReaderBase implements RDFReaderI
         // The reader has been checked, if possible, by now or
         // constructed correctly by code here.
         if ( base != null )
-            base = N3IRIResolver.resolveGlobal(base) ;
+            base = IRIs.resolve(base);
         try {
             model.notifyEvent( GraphEvents.startRead );
             readWorker(model, reader,  base) ;
