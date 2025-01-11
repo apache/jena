@@ -21,21 +21,22 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
 
-import junit.framework.JUnit4TestAdapter;
 import org.junit.Test;
+
+import junit.framework.JUnit4TestAdapter;
 
 public class TestIRIFactory {
 	static public junit.framework.Test suite() {
 		return new JUnit4TestAdapter(TestIRIFactory.class);
 	}
-	
+
     @SuppressWarnings("deprecation")
 	private static IRIFactory iriFactory = IRIFactory.jenaImplementation();
-	
+
 	@Test
 	public void createFromURI() {
 		URI uri = URI.create("http://johndoe:secret@example.com:81/page?2#hash");
-		IRI iri = iriFactory.create(uri);		
+		IRI iri = iriFactory.create(uri);
 		assertEquals("http", iri.getScheme());
 		assertEquals("johndoe:secret", iri.getRawUserinfo());
 		assertEquals("example.com", iri.getRawHost());
@@ -50,17 +51,17 @@ public class TestIRIFactory {
 		URI relative = URI.create("page/deeper.txt?q");
 		IRI relativeIri = iriFactory.create(relative);
 		assertEquals("page/deeper.txt", relativeIri.getRawPath());
-		
+
 		IRI base = iriFactory.create("http://example.com/relative/path?q=somethingelse");
 		IRI absolute = base.create(relative);
 		assertEquals("http://example.com/relative/page/deeper.txt?q", absolute.toString());
-		
+
 		URI other = URI.create("http://other.example.net/");
 		IRI otherIri = base.create(other);
 		assertEquals("http://other.example.net/", otherIri.toASCIIString());
 	}
-	
-    @Test(expected=IRIException.class)
+
+    @Test(expected=IRIException0.class)
     public void constructFromDubiousURI() throws Exception {
         // Legal URI by Java
         URI relative = URI.create("unknown:abc");
@@ -70,5 +71,5 @@ public class TestIRIFactory {
         // Expect exception
         IRI relativeIri = IRIFactory.iriImplementation().construct(relative);
     }
-	
+
 }

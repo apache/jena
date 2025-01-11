@@ -488,7 +488,7 @@ characters ("[", "]") are not part of the above list
      * @param query Query string
      * @param fragment Fragment
      * @return An IRI with the given components.
-     * * @throws IRIException If the resulting IRI
+     * * @throws IRIException0 If the resulting IRI
      *    has unfixable errors, e.g. non-ascii chars in the scheme name
 
      @see #setEncoding(String)
@@ -501,7 +501,7 @@ characters ("[", "]") are not part of the above list
             String path,
             String query,
             String fragment
-            ) throws IRIException {
+            ) throws IRIException0 {
         return throwAnyErrors(create( scheme,
                 userInfo,
                 host,
@@ -531,7 +531,7 @@ characters ("[", "]") are not part of the above list
      * @param fragment Fragment
      * @return An IRI with the given components.
 
-     * @throws IRIException If the resulting IRI
+     * @throws IRIException0 If the resulting IRI
      *    has unfixable errors, e.g. non-ascii chars in the scheme name
 
      @see #setEncoding(String)
@@ -542,7 +542,7 @@ characters ("[", "]") are not part of the above list
             String path,
             String query,
             String fragment
-            ) throws IRIException {
+            ) throws IRIException0 {
         return throwAnyErrors(create( scheme,
                 authority,
                 path,

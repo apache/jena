@@ -28,10 +28,10 @@ package org.apache.jena.iri;
  * but merely remember the error to be accessed by the user
  * using {@link IRI#violations(boolean)}.
  */
-abstract public class IRIException extends RuntimeException  {
+abstract public class IRIException0 extends RuntimeException  {
 
 
-    protected IRIException() {
+    protected IRIException0() {
         super();
         
     }
