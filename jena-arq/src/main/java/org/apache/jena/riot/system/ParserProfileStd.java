@@ -20,13 +20,13 @@ package org.apache.jena.riot.system;
 
 import java.util.Objects;
 
-import org.apache.jena.atlas.lib.Cache;
-import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.*;
-import org.apache.jena.iri.IRI;
-import org.apache.jena.irix.*;
+import org.apache.jena.irix.IRIException;
+import org.apache.jena.irix.IRIx;
+import org.apache.jena.irix.IRIxResolver;
+import org.apache.jena.irix.RelativeIRIException;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.tokens.Token;
@@ -48,7 +48,6 @@ public class ParserProfileStd implements ParserProfile {
     private final boolean strictMode;
     private final boolean checking;
     private static int DftCacheSize = 500;
-    private final Cache<String, IRI> iriCache;
 
     private boolean allowNodeExtentions;
 
@@ -61,7 +60,6 @@ public class ParserProfileStd implements ParserProfile {
         this.prefixMap = prefixMap;
         this.context = context;
         this.checking = checking;
-        this.iriCache = checking ? CacheFactory.createCache(DftCacheSize) : null;
         this.strictMode = strictMode;
         this.allowNodeExtentions = true; // (context.isTrue(RIOT.ALLOW_NODE_EXT)) ;
     }
@@ -132,13 +130,6 @@ public class ParserProfileStd implements ParserProfile {
             Checker.iriViolationMessage(uriStr, isError, message, line, col, errorHandler);
         });
 
-        // Jena up to 5.2.0 behaviour: Always jena-iri messages
-//        IRI iri;
-//        if ( irix instanceof IRIProviderJenaIRI.IRIxJena )
-//            iri = (IRI)irix.getImpl();
-//        else
-//            iri = iriCache.get(uriStr, x -> SetupJenaIRI.iriCheckerFactory().create(x));
-//        Checker.iriViolations(iri, errorHandler, false, true, line, col);
     }
 
     /**
