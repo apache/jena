@@ -17,9 +17,8 @@
 
 package org.apache.jena.ext.xerces_regex;
 
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -70,7 +69,7 @@ class RegexParser {
     String regex;
     int regexlen;
     int options;
-    ResourceBundle resources;
+    static private final Map<String, String> messages = messagesMap();
     int chardata;
     int nexttoken;
     static protected final int S_NORMAL = 0;
@@ -82,30 +81,11 @@ class RegexParser {
     boolean hasBackReferences;
     Vector references = null;
 
-    public RegexParser() {
-        this.setLocale(Locale.getDefault());
-    }
-    public RegexParser(Locale locale) {
-        this.setLocale(locale);
-    }
-
-    public void setLocale(Locale locale) {
-        try {
-            if (locale != null) {
-                this.resources = ResourceBundle.getBundle("org.apache.jena.ext.xerces_regex.message", locale);
-            }
-            else {
-                this.resources = ResourceBundle.getBundle("org.apache.jena.ext.xerces_regex.message");
-            }
-        }
-        catch (MissingResourceException mre) {
-            throw new RuntimeException("Installation Problem???  Couldn't load messages: "
-                                       + mre.getMessage());
-        }
-    }
+    public RegexParser() {}
 
     final RegexParseException ex(String key, int loc) {
-        return new RegexParseException(this.resources.getString(key), loc);
+        String msg = messages.getOrDefault(key, key);
+        return new RegexParseException(msg, loc);
     }
 
     protected final boolean isSet(int flag) {
@@ -1227,4 +1207,95 @@ class RegexParser {
             }
         }
     }
+
+    private static Map<String, String> messagesMap() {
+        Map<String,String> map = new HashMap<>();
+        map.put("parser.parse.1", "Wrong character.");
+        map.put("parser.parse.2", "Invalid reference number.");
+        map.put("parser.next.1", "A character is required after \\.");
+        map.put("parser.next.2", "'?' is not expected.  '(?:' or '(?=' or '(?!' or '(?<' or '(?#' or '(?>'?");
+        map.put("parser.next.3", "'(?<=' or '(?<!' is expected.");
+        map.put("parser.next.4", "A comment is not terminated.");
+        map.put("parser.factor.1", "')' is expected.");
+        map.put("parser.factor.2", "Unexpected end of the pattern in a modifier group.");
+        map.put("parser.factor.3", "':' is expected.");
+        map.put("parser.factor.4", "Unexpected end of the pattern in a conditional group.");
+        map.put("parser.factor.5", "A back reference or an anchor or a lookahead or a lookbehind is expected in a conditional pattern.");
+        map.put("parser.factor.6", "There are more than three choices in a conditional group.");
+        map.put("parser.atom.1", "A character in U+0040-U+005f must follow \\c.");
+        map.put("parser.atom.2", "A '{' is required before a character category.");
+        map.put("parser.atom.3", "A property name is not closed by '}'.");
+        map.put("parser.atom.4", "Unexpected meta character.");
+        map.put("parser.atom.5", "Unknown property.");
+        map.put("parser.cc.1", "A POSIX character class must be closed by ':]'.");
+        map.put("parser.cc.2", "Unexpected end of the pattern in a character class.");
+        map.put("parser.cc.3", "Unknown name for a POSIX character class.");
+        map.put("parser.cc.4", "'-' is invalid here.");
+        map.put("parser.cc.5", "']' is expected.");
+        map.put("parser.cc.6", "'[' is invalid in a character class.  Write '\\['.");
+        map.put("parser.cc.7", "']' is invalid in a character class.  Write '\\]'.");
+        map.put("parser.cc.8", "'-' is an invalid character range. Write '\\-'.");
+        map.put("parser.ope.1", "'[' is expected.");
+        map.put("parser.ope.2", "')' or '-[' or '+[' or '&[' is expected.");
+        map.put("parser.ope.3", "The range end code point is less than the start code point.");
+        map.put("parser.descape.1", "Invalid Unicode hex notation.");
+        map.put("parser.descape.2", "Overflow in a hex notation.");
+        map.put("parser.descape.3", "'\\x{' must be closed by '}'.");
+        map.put("parser.descape.4", "Invalid Unicode code point.");
+        map.put("parser.descape.5", "An anchor must not be here.");
+        map.put("parser.process.1", "This expression is not supported in the current option setting.");
+        map.put("parser.quantifier.1", "Invalid quantifier. A digit is expected.");
+        map.put("parser.quantifier.2", "Invalid quantifier. Invalid quantity or a '}' is missing.");
+        map.put("parser.quantifier.3", "Invalid quantifier. A digit or '}' is expected.");
+        map.put("parser.quantifier.4", "Invalid quantifier. A min quantity must be <= a max quantity.");
+        map.put("parser.quantifier.5", "Invalid quantifier. A quantity value overflow.");
+        return Map.copyOf(map);
+    }
+
+    // Original messages.properties file
+    // @formatter:off
+    /*
+# Version message.properties svn:595212 2007-11-15 05:28:57Z mrglavas
+
+parser.parse.1=Wrong character.
+parser.parse.2=Invalid reference number.
+parser.next.1=A character is required after \\.
+parser.next.2='?' is not expected.  '(?:' or '(?=' or '(?!' or '(?<' or '(?#' or '(?>'?
+parser.next.3='(?<=' or '(?<!' is expected.
+parser.next.4=A comment is not terminated.
+parser.factor.1=')' is expected.
+parser.factor.2=Unexpected end of the pattern in a modifier group.
+parser.factor.3=':' is expected.
+parser.factor.4=Unexpected end of the pattern in a conditional group.
+parser.factor.5=A back reference or an anchor or a lookahead or a lookbehind is expected in a conditional pattern.
+parser.factor.6=There are more than three choices in a conditional group.
+parser.atom.1=A character in U+0040-U+005f must follow \\c.
+parser.atom.2=A '{' is required before a character category.
+parser.atom.3=A property name is not closed by '}'.
+parser.atom.4=Unexpected meta character.
+parser.atom.5=Unknown property.
+parser.cc.1=A POSIX character class must be closed by ':]'.
+parser.cc.2=Unexpected end of the pattern in a character class.
+parser.cc.3=Unknown name for a POSIX character class.
+parser.cc.4='-' is invalid here.
+parser.cc.5=']' is expected.
+parser.cc.6='[' is invalid in a character class.  Write '\\['.
+parser.cc.7=']' is invalid in a character class.  Write '\\]'.
+parser.cc.8='-' is an invalid character range. Write '\\-'.
+parser.ope.1='[' is expected.
+parser.ope.2=')' or '-[' or '+[' or '&[' is expected.
+parser.ope.3=The range end code point is less than the start code point.
+parser.descape.1=Invalid Unicode hex notation.
+parser.descape.2=Overflow in a hex notation.
+parser.descape.3='\\x{' must be closed by '}'.
+parser.descape.4=Invalid Unicode code point.
+parser.descape.5=An anchor must not be here.
+parser.process.1=This expression is not supported in the current option setting.
+parser.quantifier.1=Invalid quantifier. A digit is expected.
+parser.quantifier.2=Invalid quantifier. Invalid quantity or a '}' is missing.
+parser.quantifier.3=Invalid quantifier. A digit or '}' is expected.
+parser.quantifier.4=Invalid quantifier. A min quantity must be <= a max quantity.
+parser.quantifier.5=Invalid quantifier. A quantity value overflow.
+*/
+    // @formatter:on
 }
