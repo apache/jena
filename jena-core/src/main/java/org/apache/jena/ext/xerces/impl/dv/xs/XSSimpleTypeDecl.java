@@ -288,8 +288,8 @@ public class XSSimpleTypeDecl implements XSSimpleType {
         try {
             applyFacets(facets, XSSimpleTypeDefinition.FACET_WHITESPACE, patternType);
         } catch (InvalidDatatypeFacetException e) {
-            // should never gets here, internel error
-            throw new RuntimeException("internal error");
+            // should never gets here, internal error
+            throw new RuntimeException("internal error", e);
         }
         // we've now applied facets; so lock this object:
         fIsImmutable = true;

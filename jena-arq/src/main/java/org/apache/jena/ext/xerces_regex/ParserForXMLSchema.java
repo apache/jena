@@ -18,7 +18,6 @@
 package org.apache.jena.ext.xerces_regex;
 
 import java.util.Hashtable;
-import java.util.Locale;
 
 /**
  * A regular expression parser for the XML Schema.
@@ -31,10 +30,7 @@ import java.util.Locale;
 class ParserForXMLSchema extends RegexParser {
 
     public ParserForXMLSchema() {
-        //this.setLocale(Locale.getDefault());
-    }
-    public ParserForXMLSchema(Locale locale) {
-        super(locale);
+        super();
     }
 
     @Override

@@ -18,7 +18,6 @@
 package org.apache.jena.ext.xerces_regex;
 
 import java.text.CharacterIterator;
-import java.util.Locale;
 import java.util.Stack;
 
 /**
@@ -2262,17 +2261,6 @@ public class RegularExpression implements java.io.Serializable {
         this.setPattern(regex, options);
     }
 
-    /**
-     * Creates a new RegularExpression instance with options.
-     *
-     * @param regex A regular expression
-     * @param options A String consisted of "i" "m" "s" "u" "w" "," "X"
-     * @exception RegexParseException <VAR>regex</VAR> is not conforming to the syntax.
-     */
-    public RegularExpression(String regex, String options, Locale locale) throws RegexParseException {
-        this.setPattern(regex, options, locale);
-    }
-
     RegularExpression(String regex, RX_Token tok, int parens, boolean hasBackReferences, int options) {
         this.regex = regex;
         this.tokentree = tok;
@@ -2284,35 +2272,25 @@ public class RegularExpression implements java.io.Serializable {
     /**
      *
      */
-    public void setPattern(String newPattern) throws RegexParseException {
-        this.setPattern(newPattern, Locale.getDefault());
+    public void setPattern(String newPattern) {
+        this.setPattern(newPattern);
     }
 
-    public void setPattern(String newPattern, Locale locale) throws RegexParseException {
-        this.setPattern(newPattern, this.options, locale);
+    public void setPattern(String newPattern, String options) {
+        this.setPattern(newPattern, REUtil.parseOptions(options));
     }
 
-    private void setPattern(String newPattern, int options, Locale locale) throws RegexParseException {
+    private void setPattern(String newPattern, int options) {
         this.regex = newPattern;
         this.options = options;
         RegexParser rp = RegularExpression.isSet(this.options, RegularExpression.XMLSCHEMA_MODE)
-                         ? new ParserForXMLSchema(locale) : new RegexParser(locale);
+                         ? new ParserForXMLSchema() : new RegexParser();
         this.tokentree = rp.parse(this.regex, this.options);
         this.nofparen = rp.parennumber;
         this.hasBackReferences = rp.hasBackReferences;
 
         this.operations = null;
         this.context = null;
-    }
-    /**
-     *
-     */
-    public void setPattern(String newPattern, String options) throws RegexParseException {
-        this.setPattern(newPattern, options, Locale.getDefault());
-    }
-
-    public void setPattern(String newPattern, String options, Locale locale) throws RegexParseException {
-        this.setPattern(newPattern, REUtil.parseOptions(options), locale);
     }
 
     /**
