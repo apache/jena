@@ -44,12 +44,12 @@ public interface IRIFactoryI {
      * @param i
      *            The IRI to use.
      * @return A new IRI object.
-     * @throws IRIException
+     * @throws IRIException0
      *             If a violation of the standards being enforced by the factory
      *             has been detected, and this violation is classified by the
      *             factory as an error.
      */
-    IRI construct(IRI i) throws IRIException ;
+    IRI construct(IRI i) throws IRIException0 ;
 
     /**
      * Make a new IRI object (possibly including IRI resolution), and check it
@@ -58,12 +58,12 @@ public interface IRIFactoryI {
      * @param s
      *            The IRI to use.
      * @return A new IRI object.
-     * @throws IRIException
+     * @throws IRIException0
      *             If a violation of the standards being enforced by the factory
      *             has been detected, and this violation is classified by the
      *             factory as an error.
      */
-    IRI construct(String s) throws IRIException ;
+    IRI construct(String s) throws IRIException0 ;
 
     /**
      * Make a new IRI object (possibly including IRI resolution), and check it
@@ -72,12 +72,12 @@ public interface IRIFactoryI {
      * @param uri
      *            The IRI string to use.
      * @return A new IRI object.
-     * @throws IRIException
+     * @throws IRIException0
      *             If a violation of the standards being enforced by the factory
      *             has been detected, and this violation is classified by the
      *             factory as an error.
      */
-    IRI construct(URI uri) throws IRIException ;
+    IRI construct(URI uri) throws IRIException0 ;
 
     /**
      * Make a new IRI object (possibly including IRI resolution), and check it

@@ -22,7 +22,7 @@ package org.apache.jena.iri.impl;
 import java.net.URI;
 
 import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIException ;
+import org.apache.jena.iri.IRIException0;
 import org.apache.jena.iri.IRIFactoryI ;
 
 abstract public class AbsIRIFactoryImpl implements IRIFactoryI {
@@ -43,30 +43,30 @@ abstract public class AbsIRIFactoryImpl implements IRIFactoryI {
 //                AbsIRIImpl.NO_EXCEPTIONS)
                 );
     }
-    
+
     @Override
     public IRI create(URI uri) {
 		return create(uri.toASCIIString());
     }
-    
-    
+
+
     @Override
-    public IRI construct(String s) throws IRIException {
+    public IRI construct(String s) throws IRIException0 {
       return throwAnyErrors(create(s));
     }
 
     //@Override
     @Override
-    public IRI construct(IRI i) throws IRIException {
-        return throwAnyErrors(create(i)); 
+    public IRI construct(IRI i) throws IRIException0 {
+        return throwAnyErrors(create(i));
     }
-        
+
     @Override
-    public IRI construct(URI uri) throws IRIException {
+    public IRI construct(URI uri) throws IRIException0 {
         return throwAnyErrors(create(uri));
     }
 
-    protected IRI throwAnyErrors(IRI rslt) throws IRIException {
+    protected IRI throwAnyErrors(IRI rslt) throws IRIException0 {
         if (rslt.hasViolation(false)) {
             throw new IRIImplException(rslt.violations(false).next());
 //            Iterator it = rslt.exceptions();
@@ -74,7 +74,7 @@ abstract public class AbsIRIFactoryImpl implements IRIFactoryI {
 //                Violation v = (Violation)it.next();
 //                if (v.isError())
 //                    throw new IRIImplException(v);
-//            } 
+//            }
         }
         return rslt;
     }

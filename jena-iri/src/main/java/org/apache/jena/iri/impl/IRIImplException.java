@@ -18,10 +18,10 @@
 
 package org.apache.jena.iri.impl;
 
-import org.apache.jena.iri.IRIException ;
+import org.apache.jena.iri.IRIException0;
 import org.apache.jena.iri.Violation ;
 
-public class IRIImplException extends IRIException {
+public class IRIImplException extends IRIException0 {
 
     private static final long serialVersionUID = 1072420548744246731L;
     private final Violation violation;
@@ -39,6 +39,6 @@ public class IRIImplException extends IRIException {
     public String getMessage() {
         return getViolation().getShortMessage();
     }
-    
+
 
 }

@@ -105,7 +105,7 @@ class CheckerJenaIRI {
                 errorHandler(errorHandler).warning("Bad IRI: " + msg, line, col);
             } else
                 errorHandler(errorHandler).warning("Not advised IRI: " + msg, line, col);
-        } catch (org.apache.jena.iri.IRIException | org.apache.jena.irix.IRIException ex) {}
+        } catch (org.apache.jena.iri.IRIException0 | org.apache.jena.irix.IRIException ex) {}
     }
 
     private static ErrorHandler errorHandler(ErrorHandler handler) {

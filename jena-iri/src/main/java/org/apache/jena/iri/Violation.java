@@ -21,8 +21,8 @@ package org.apache.jena.iri;
 /**
  * Information concerning a
  * violation of some specification concerning IRIs.
- * This may be wrapped in 
- * an {@link IRIException} and thrown, 
+ * This may be wrapped in
+ * an {@link IRIException0} and thrown,
  * or may be returned by
  * {@link IRI#violations(boolean)}. Which conditions
  * result in errors and warnings
@@ -31,10 +31,6 @@ package org.apache.jena.iri;
  */
 public abstract class  Violation implements ViolationCodes, IRIComponents {
 
-
-    // TODO e-mail about dot-segments
-    
-    // TODO single script in a component
     /**
      * The value from {@link ViolationCodes}
      * corresponding to this condition.
@@ -73,22 +69,22 @@ public abstract class  Violation implements ViolationCodes, IRIComponents {
      * @return The error message.
      */
     abstract public String getShortMessage();
-    
+
     /**
      * A long description of the error condition,
-     * typically including the 
+     * typically including the
      * @return The error message.
      */
     abstract public String getLongMessage();
-    
-    
+
+
     /**
-     * The URL of the 
+     * The URL of the
      * section of the specification which has been violated.
      * @return The error message.
      */
     abstract public String getSpecificationURL();
-    
+
     /**
      * Using the settings of the factory associated
      * with the IRI associated with this violation,
