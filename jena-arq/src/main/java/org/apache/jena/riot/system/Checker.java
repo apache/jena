@@ -130,15 +130,6 @@ public class Checker {
         } catch (org.apache.jena.iri.IRIException0 | org.apache.jena.irix.IRIException ex) {}
     }
 
-//    /**
-//     * Process violations on an IRI Calls the {@link ErrorHandler} on all errors and
-//     * warnings (as warnings).
-//     */
-//    @Deprecated(forRemoval = true)
-//    public static void iriViolations(IRI iri) {
-//        iriViolations(iri, nullErrorHandler, false, true, -1L, -1L);
-//    }
-//
     final static private Pattern langPattern = Pattern.compile("[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*");
 
     public static boolean checkLiteral(Node node) {
