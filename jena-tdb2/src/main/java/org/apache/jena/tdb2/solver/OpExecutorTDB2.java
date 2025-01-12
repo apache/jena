@@ -263,7 +263,7 @@ public class OpExecutorTDB2 extends OpExecutor
         // The Op may be a sequence due to TransformFilterPlacement
         // so we need to do a full execution step, not go straight to the SolverLib.
 
-        ExecutionContext ec2 = new ExecutionContext(execCxt);
+        ExecutionContext ec2 =  ExecutionContext.copy(execCxt);
         ec2.setExecutor(plainFactory);
 
         // Solve without going through this executor again.

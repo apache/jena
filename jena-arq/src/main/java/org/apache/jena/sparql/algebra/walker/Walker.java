@@ -129,7 +129,7 @@ public class Walker {
      public static void walk(VarExprList varExprList, OpVisitor opVisitor, ExprVisitor exprVisitor) {
          if ( varExprList == null )
              return;
-         varExprList.forEachExpr((v,e)->walk(e,opVisitor, exprVisitor));
+         varExprList.forEachExpr((v,e)->walk(e, opVisitor, exprVisitor));
      }
 
     private static OpVisitor   nullOpVisitor   = new OpVisitorBase();

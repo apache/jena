@@ -121,6 +121,7 @@ interface MutableModel<R extends Model> extends Model {
      * @param listener {@link ModelChangedListener}, not null
      * @return this model, for cascading
      */
+    @Override
     R register(ModelChangedListener listener);
 
     /**
@@ -131,6 +132,7 @@ interface MutableModel<R extends Model> extends Model {
      *
      * @param listener {@link ModelChangedListener}, not null
      */
+    @Override
     R unregister(ModelChangedListener listener);
 
     /**
@@ -141,5 +143,6 @@ interface MutableModel<R extends Model> extends Model {
      * @see ModelChangedListener
      * @see org.apache.jena.graph.GraphEvents
      */
+    @Override
     R notifyEvent(Object event);
 }
