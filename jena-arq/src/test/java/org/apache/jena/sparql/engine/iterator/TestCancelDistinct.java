@@ -17,25 +17,27 @@
  */
 package org.apache.jena.sparql.engine.iterator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.Test;
+
 import org.apache.jena.atlas.data.DistinctDataBag;
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.graph.Graph;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
-import org.apache.jena.sparql.engine.main.OpExecutorFactory;
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.util.Context;
-import org.junit.Test;
 
 public class TestCancelDistinct {
 
@@ -98,12 +100,8 @@ public class TestCancelDistinct {
     }
 
     final Context params = new Context();
-
-    final Graph activeGraph = null;
     final DatasetGraph dataset = null;
-    final OpExecutorFactory factory = null;
-
-    final ExecutionContext c = new ExecutionContext(params, activeGraph, dataset, factory);
+    final ExecutionContext cxt = ExecutionContext.create(dataset, params);
 
     /**
        test that of a QueryIterDistinct with an active databag is
@@ -113,7 +111,7 @@ public class TestCancelDistinct {
         params.set(ARQ.spillToDiskThreshold, 0);
 
         QueryIteratorBase base = new MockQueryIterator(BindingFactory.empty());
-        QueryIterDistinct d = new QueryIterDistinct(base, null, c);
+        QueryIterDistinct d = new QueryIterDistinct(base, null, cxt);
 
         assertNull(d.db);
 
@@ -132,7 +130,7 @@ public class TestCancelDistinct {
         params.set(ARQ.spillToDiskThreshold, 0);
 
         QueryIteratorBase base = new MockQueryIterator(BindingFactory.empty());
-        QueryIterDistinct d = new QueryIterDistinct(base, null, c);
+        QueryIterDistinct d = new QueryIterDistinct(base, null, cxt);
 
         // when there is no databag, close leaves it null
         assertNull(d.db);
@@ -144,7 +142,7 @@ public class TestCancelDistinct {
         params.set(ARQ.spillToDiskThreshold, 0);
 
         QueryIteratorBase base = new MockQueryIterator(BindingFactory.empty());
-        QueryIterDistinct d = new QueryIterDistinct(base, null, c);
+        QueryIterDistinct d = new QueryIterDistinct(base, null, cxt);
 
         assertNull(d.db);
         Binding ignored = d.next();

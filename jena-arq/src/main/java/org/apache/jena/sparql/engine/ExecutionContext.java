@@ -27,7 +27,7 @@ import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.engine.main.OpExecutor;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.engine.main.OpExecutorFactory;
 import org.apache.jena.sparql.engine.main.QC;
 import org.apache.jena.sparql.function.FunctionEnv;
@@ -49,6 +49,12 @@ public class ExecutionContext implements FunctionEnv
     private final AtomicBoolean cancelSignal;
 
     /** Clone */
+    public static ExecutionContext copy(ExecutionContext other) {
+        return new ExecutionContext(other);
+    }
+
+    /** @deprecated Use {@link #copy(ExecutionContext)} */
+    @Deprecated
     public ExecutionContext(ExecutionContext other) {
         this.context = other.context;
         this.dataset = other.dataset;
@@ -59,27 +65,105 @@ public class ExecutionContext implements FunctionEnv
         this.cancelSignal = other.cancelSignal;
     }
 
+    /** Create ExecutionContext from {@link FunctionEnv} */
+    public static ExecutionContext fromFunctionEnv(FunctionEnv functionEnv) {
+        return new ExecutionContext(functionEnv);
+    }
+
+    private ExecutionContext(FunctionEnv other) {
+        this.context = other.getContext();
+        this.dataset = other.getDataset();
+        this.openIterators = new ArrayList<>();
+        if ( TrackAllIterators )
+            this.allIterators  = new ArrayList<>();
+        else
+            this.allIterators  = null;
+        this.activeGraph = other.getActiveGraph();
+        this.executor = QC.getFactory(context);
+        this.cancelSignal = Context.getCancelSignal(context);
+    }
+
     /** Clone and change active graph - shares tracking */
+    public static ExecutionContext copyChangeActiveGraph(ExecutionContext other, Graph activeGraph) {
+        return new ExecutionContext(other, activeGraph);
+    }
+
+    /**
+     * Clone and change active graph - shares tracking
+     * @deprecated Use {@link #copyChangeActiveGraph(ExecutionContext, Graph)}.
+     */
+    @Deprecated
     public ExecutionContext(ExecutionContext other, Graph activeGraph) {
         this(other);
         this.activeGraph = activeGraph;
     }
 
-    /** Setup with defaults of global settings */
+    /**
+     * ExecutionContext for normal execution over a dataset, with defaults for
+     * {@link Context} and {@link OpExecutorFactory}.
+     */
+    public static ExecutionContext create(DatasetGraph dataset) {
+        Context cxt = ARQ.getContext().copy();
+        return create(dataset, cxt);
+    }
+
+    /**
+     * ExecutionContext for normal execution over a dataset, with defaults for
+     * {@link Context} and {@link OpExecutorFactory}.
+     */
+    public static ExecutionContext create(DatasetGraph dataset, Context context) {
+        Graph dftGraph = (dataset == null) ? null : dataset.getDefaultGraph();
+        return new ExecutionContext(context,
+                                    dftGraph, dataset,
+                                    QC.getFactory(context),
+                                    Context.getCancelSignal(context));
+    }
+
+    /**
+     * ExecutionContext for normal execution over a graph, with defaults for
+     * {@link Context} and {@link OpExecutorFactory}.
+     */
+    public static ExecutionContext createForGraph(Graph graph) {
+        Context cxt = ARQ.getContext().copy();
+        return createForGraph(graph, cxt);
+    }
+
+    /**
+     * ExecutionContext for normal execution over a graph.
+     */
+    public static ExecutionContext createForGraph(Graph graph,  Context cxt) {
+        DatasetGraph dsg = (graph == null) ? null : DatasetGraphFactory.wrap(graph);
+        return create(dsg, cxt);
+    }
+
+    // ---- Previous generation - constructors
+
+    /**
+     * Setup with defaults of global settings
+     * @deprecated Use {@link #create(DatasetGraph)}
+     * */
+    @Deprecated(forRemoval = true)
     public ExecutionContext(DatasetGraph dataset) {
         this(dataset, QC.getFactory(ARQ.getContext()));
     }
 
-    /** Setup with defaults of global settings but explicit {@link OpExecutor} factory. */
+    /** Setup with defaults of global settings but explicit {@link OpExecutorFactory}.
+     * @deprecated Use {@link #create(DatasetGraph)}
+     */
+    @Deprecated(forRemoval = true)
     public ExecutionContext(DatasetGraph dataset, OpExecutorFactory factory) {
         this(ARQ.getContext().copy(), dataset.getDefaultGraph(), dataset, factory);
     }
 
+    /** @deprecated Use a "create" function where possible. */
+    @Deprecated
     public ExecutionContext(Context params, Graph activeGraph, DatasetGraph dataset, OpExecutorFactory factory) {
         this(params, activeGraph, dataset, factory, Context.getCancelSignal(params));
     }
 
-    private ExecutionContext(Context params, Graph activeGraph, DatasetGraph dataset, OpExecutorFactory factory, AtomicBoolean cancelSignal) {
+    /** @deprecated This will be changed to be private. */
+    @Deprecated
+    public ExecutionContext(Context params, Graph activeGraph, DatasetGraph dataset, OpExecutorFactory factory, AtomicBoolean cancelSignal) {
         this.context = params;
         this.dataset = dataset;
         this.openIterators = new ArrayList<>();
@@ -90,10 +174,16 @@ public class ExecutionContext implements FunctionEnv
         this.cancelSignal = cancelSignal;
     }
 
-    @Override
-    public Context getContext()       { return context; }
+    // ---- Previous generation - constructors
 
-    public AtomicBoolean getCancelSignal()       { return cancelSignal; }
+    @Override
+    public Context getContext() {
+        return context;
+    }
+
+    public AtomicBoolean getCancelSignal() {
+        return cancelSignal;
+    }
 
     public void openIterator(QueryIterator qIter) {
         openIterators.add(qIter);

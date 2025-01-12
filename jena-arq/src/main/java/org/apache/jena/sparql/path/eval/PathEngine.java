@@ -205,13 +205,14 @@ abstract public class PathEngine
         return graph.find(s, p, o) ;
     }
 
+    /* As general as possible property function inclusion */
     private Iterator<Triple> graphFindWorker(Graph graph, Node s, PropertyFunctionFactory f, Node p, Node o, Context context) {
         // Expensive?
         PropertyFunction pf = f.create(p.getURI()) ;
         PropFuncArg sv = arg(s, "S") ;
         PropFuncArg ov = arg(o, "O") ;
-        QueryIterator r = QueryIterRoot.create(new ExecutionContext(context, graph, null, null)) ;
-        QueryIterator qIter = pf.exec(r, sv, p, ov, new ExecutionContext(ARQ.getContext(), graph, null, null)) ;
+        QueryIterator r = QueryIterRoot.create(ExecutionContext.createForGraph(graph, context));
+        QueryIterator qIter = pf.exec(r, sv, p, ov, ExecutionContext.createForGraph(graph, ARQ.getContext()));
         if ( ! qIter.hasNext() )
             return Iter.nullIterator() ;
         List<Triple> array = new ArrayList<>() ;

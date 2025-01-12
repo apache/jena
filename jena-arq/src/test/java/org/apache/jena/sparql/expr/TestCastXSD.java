@@ -18,18 +18,20 @@
 
 package org.apache.jena.sparql.expr;
 
+import org.junit.AfterClass ;
+import org.junit.Assert ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
+
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ARQ ;
 import org.apache.jena.sparql.ARQConstants ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.sse.SSE ;
+import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.ExprUtils ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
-import org.junit.AfterClass ;
-import org.junit.Assert ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
 
 public class TestCastXSD {
 
@@ -148,8 +150,8 @@ public class TestCastXSD {
 
     private NodeValue cast(String input$) {
         Expr input = ExprUtils.parse(input$) ;
-        ARQ.getContext().set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime()) ;
-        FunctionEnv env = new ExecutionContext(ARQ.getContext(), null, null, null) ;
+        Context cxt = ARQ.getContext().copy().set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime()) ;
+        FunctionEnv env = ExecutionContext.create(null, cxt);
         return input.eval(null, env) ;
     }
 }

@@ -98,7 +98,7 @@ public class RefEval {
             Graph graph = execCxt.getDataset().getGraph(opGraph.getNode());
             if ( graph == null ) // But contains was true?!!
                 throw new InternalErrorException("Graph was present, now it's not");
-            ExecutionContext execCxt2 = new ExecutionContext(execCxt, graph);
+            ExecutionContext execCxt2 = ExecutionContext.copyChangeActiveGraph(execCxt, graph);
             Evaluator e2 = EvaluatorFactory.create(execCxt2);
             return eval(e2, opGraph.getSubOp());
         }
@@ -109,7 +109,7 @@ public class RefEval {
         for ( Iterator<Node> iter = execCxt.getDataset().listGraphNodes() ; iter.hasNext() ; ) {
             Node gn = iter.next();
             Graph graph = execCxt.getDataset().getGraph(gn);
-            ExecutionContext execCxt2 = new ExecutionContext(execCxt, graph);
+            ExecutionContext execCxt2 = ExecutionContext.copyChangeActiveGraph(execCxt, graph);
             Evaluator e2 = EvaluatorFactory.create(execCxt2);
 
             Table tableVarURI = TableFactory.create(gVar, gn);
@@ -150,13 +150,13 @@ public class RefEval {
                 g = ds.getGraph(opQuad.getGraphNode());
             if ( g == null )
                 return new TableEmpty();
-            ExecutionContext cxt2 = new ExecutionContext(cxt, g);
+            ExecutionContext cxt2 = ExecutionContext.copyChangeActiveGraph(cxt, g);
             QueryIterator qIter = executeBGP(pattern, QueryIterRoot.create(cxt2), cxt2);
             return TableFactory.create(qIter);
         } else {
             // Variable.
             Var gVar = Var.alloc(opQuad.getGraphNode());
-            // Or just just devolve to OpGraph and get OpUnion chain of OpJoin
+            // Or just devolve to OpGraph and get OpUnion chain of OpJoin
             QueryIterConcat concat = new QueryIterConcat(cxt);
             for ( Iterator<Node> graphNodes = cxt.getDataset().listGraphNodes() ; graphNodes.hasNext() ; ) {
                 Node gn = graphNodes.next();
@@ -165,7 +165,7 @@ public class RefEval {
 
                 Graph g = cxt.getDataset().getGraph(gn);
                 Binding b = BindingFactory.binding(BindingRoot.create(), gVar, gn);
-                ExecutionContext cxt2 = new ExecutionContext(cxt, g);
+                ExecutionContext cxt2 = ExecutionContext.copyChangeActiveGraph(cxt, g);
 
                 // Eval the pattern, eval the variable, join.
                 // Pattern may be non-linear in the variable - do a pure execution.

@@ -25,18 +25,17 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingRoot ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 
-/** The root binding is one-row, usually no columns making it the join identity.
- *  It has columns only for an initial binding.
+/** The root binding is one-row and has no columns making it the join identity.
  *  It is useful to be able to spot it before having to activate a {@link QueryIterator}.
- *  Executing with a pre-set binding does not use QueryIterRoot.
+ *  Executing with a pre-set binding does not use {@code QueryIterRoot}.
  */
-public class QueryIterRoot extends QueryIterYieldN 
+public class QueryIterRoot extends QueryIterYieldN
     // Not "extends QueryIterSingleton" so we don't get its factory statics.
 {
-    /** Create a root */ 
+    /** Create a root */
     public static QueryIterator create(ExecutionContext execCxt)
     { return create(BindingRoot.create(), execCxt) ; }
-    
+
     /** Create a root with an initial binding */
     public static QueryIterator create(Binding binding, ExecutionContext execCxt)
     { return new QueryIterRoot(binding, execCxt) ; }
@@ -52,7 +51,7 @@ public class QueryIterRoot extends QueryIterYieldN
         else
             out.print("QueryIterRoot: "+binding);
     }
-    
+
     @Override
     public boolean isJoinIdentity() { return binding.isEmpty(); }
 }

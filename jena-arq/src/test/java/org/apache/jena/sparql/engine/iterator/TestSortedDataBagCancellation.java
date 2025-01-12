@@ -27,10 +27,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.Test;
+
 import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.impl.GraphPlain ;
 import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -40,19 +40,12 @@ import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingComparator;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
-import org.apache.jena.sparql.engine.main.OpExecutor;
 import org.apache.jena.sparql.engine.main.OpExecutorFactory;
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.util.Context;
-import org.junit.Test;
 /*
 	Test that a SortedDataBag used inside a QueryIterSort
 	does indeed cut off when cancelled.
-
-	This is horribly clunky because of the effort of
-	setting up. Maybe we should instead be content to
-	test the SortedDataBag correctly?
-
 */
 public class TestSortedDataBagCancellation {
 
@@ -63,33 +56,25 @@ public class TestSortedDataBagCancellation {
 
     final Context params = new Context();
 
-    final OpExecutorFactory factory = new OpExecutorFactory() {
+    final OpExecutorFactory factory = ec -> { throw new UnsupportedOperationException(); };
 
-        @Override
-        public OpExecutor create(ExecutionContext ec) {
-            throw new UnsupportedOperationException();
-        }
-    };
-
-    final Graph activeGraph = GraphPlain.plain();
-
-    final DatasetGraph dataset = DatasetGraphFactory.create();
-
+    final DatasetGraph dataset = DatasetGraphFactory.empty();
     final List<SortCondition> conditions = new ArrayList<>();
 
-    final ExecutionContext ec = new ExecutionContext(params, activeGraph, dataset, factory);
+    final ExecutionContext ec =  ExecutionContext.create(dataset, params);
 
     final BindingComparator base_bc = new BindingComparator(conditions, ec);
     final SpecialBindingComparator bc = new SpecialBindingComparator(base_bc, ec);
 
-    QueryIteratorItems baseIter = new QueryIteratorItems();
+    private QueryIteratorItems baseIter = createBaseIter();
 
-    {
-        baseIter.bindings.add(b1);
-        baseIter.bindings.add(b2);
-        baseIter.bindings.add(b3);
-        baseIter.bindings.add(b4);
-        ;
+    private static QueryIteratorItems createBaseIter() {
+        QueryIteratorItems iter = new QueryIteratorItems();
+        iter.bindings.add(b1);
+        iter.bindings.add(b2);
+        iter.bindings.add(b3);
+        iter.bindings.add(b4);
+        return iter;
     }
 
     QueryIterSort qs = new QueryIterSort(baseIter, bc, ec);
