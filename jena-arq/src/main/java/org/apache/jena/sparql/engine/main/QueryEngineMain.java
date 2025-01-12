@@ -33,24 +33,24 @@ import org.apache.jena.sparql.util.Context ;
 
 public class QueryEngineMain extends QueryEngineBase
 {
-    static public QueryEngineFactory getFactory() { return factory ; } 
+    static public QueryEngineFactory getFactory() { return factory ; }
     static public void register()       { QueryEngineRegistry.addFactory(factory) ; }
     static public void unregister()     { QueryEngineRegistry.removeFactory(factory) ; }
 
     public QueryEngineMain(Op op, DatasetGraph dataset, Binding input, Context context)
     { super(op, dataset, input, context) ; }
-    
+
     public QueryEngineMain(Query query, DatasetGraph dataset, Binding input, Context context)
-    { 
+    {
         super(query, dataset, input, context) ;
     }
-    
+
     @Override
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding input, Context context)
     {
-        ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg, QC.getFactory(context)) ;
-        QueryIterator qIter1 = 
-            ( input.isEmpty() ) ? QueryIterRoot.create(execCxt) 
+        ExecutionContext execCxt = ExecutionContext.create(dsg, context);
+        QueryIterator qIter1 =
+            ( input.isEmpty() ) ? QueryIterRoot.create(execCxt)
                                 : QueryIterRoot.create(input, execCxt);
         QueryIterator qIter = QC.execute(op, qIter1, execCxt) ;
         // Wrap with something to check for closed iterators.
@@ -60,27 +60,27 @@ public class QueryEngineMain extends QueryEngineBase
             qIter = QueryIteratorTiming.time(qIter) ;
         return qIter ;
     }
-    
+
     @Override
     protected Op modifyOp(Op op)
-    { 
+    {
         if ( context.isFalse(ARQ.optimization) )
             return minimalModifyOp(op) ;
         return Algebra.optimize(op, super.context) ;
     }
-    
+
     protected Op minimalModifyOp(Op op) {
         return Optimize.minimalOptimizationFactory.create(context).rewrite(op);
     }
-    
+
     // -------- Factory
-    
+
     private static QueryEngineFactory factory = new QueryEngineMainFactory() ;
-    
+
     protected static class QueryEngineMainFactory implements QueryEngineFactory
     {
         @Override
-        public boolean accept(Query query, DatasetGraph dataset, Context context) 
+        public boolean accept(Query query, DatasetGraph dataset, Context context)
         { return true ; }
 
         @Override
@@ -89,9 +89,9 @@ public class QueryEngineMain extends QueryEngineBase
             QueryEngineMain engine = new QueryEngineMain(query, dataset, input, context) ;
             return engine.getPlan() ;
         }
-        
+
         @Override
-        public boolean accept(Op op, DatasetGraph dataset, Context context) 
+        public boolean accept(Op op, DatasetGraph dataset, Context context)
         { return true ; }
 
         @Override

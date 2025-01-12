@@ -23,14 +23,13 @@ import java.util.List ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.util.Context ;
 
 public class TestDistinctMem extends AbstractTestDistinctReduced {
 
     @Override
     protected QueryIterator createQueryIter(List<Binding> data) {
         QueryIterator qIter = QueryIterPlainWrapper.create(data.iterator()) ;
-        return new QueryIterDistinctMem(qIter, new ExecutionContext(new Context(), null, null, null)) ;
+        return new QueryIterDistinctMem(qIter, ExecutionContext.createForGraph(null)) ;
     }
 
 }

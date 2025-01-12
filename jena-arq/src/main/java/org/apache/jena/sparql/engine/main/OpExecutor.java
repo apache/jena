@@ -145,7 +145,7 @@ public class OpExecutor {
         // default graph and union graph.
 
         if ( Quad.isDefaultGraph(gn) ) {
-            ExecutionContext cxt2 = new ExecutionContext(execCxt, execCxt.getDataset().getDefaultGraph());
+            ExecutionContext cxt2 = ExecutionContext.copyChangeActiveGraph(execCxt, execCxt.getDataset().getDefaultGraph());
             return execute(subOp, input, cxt2);
         }
 

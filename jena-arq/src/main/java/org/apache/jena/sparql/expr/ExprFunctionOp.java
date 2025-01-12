@@ -62,11 +62,7 @@ public abstract class ExprFunctionOp extends ExprFunction
 
     @Override
     public final NodeValue eval(Binding binding, FunctionEnv env) {
-        ExecutionContext execCxt = new ExecutionContext(env.getContext(),
-                                                        env.getActiveGraph(),
-                                                        env.getDataset(),
-                                                        QC.getFactory(env.getContext())
-                                                        );
+        ExecutionContext execCxt = ExecutionContext.fromFunctionEnv(env);
         QueryIterator qIter1 = QueryIterSingleton.create(binding, execCxt);
         QueryIterator qIter = QC.execute(op, qIter1, execCxt);
         // Wrap with something to check for closed iterators.

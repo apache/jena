@@ -33,7 +33,7 @@ public class TestDistinctDataBagLimited extends AbstractTestDistinctReduced {
         QueryIterator qIter = QueryIterPlainWrapper.create(data.iterator()) ;
         Context cxt = new Context() ;
         cxt.set(ARQ.spillToDiskThreshold, 2L);
-        return new QueryIterDistinct(qIter, null, new ExecutionContext(cxt, null, null, null)) ;
+        return new QueryIterDistinct(qIter, null, ExecutionContext.create(null, cxt));
     }
 
 }

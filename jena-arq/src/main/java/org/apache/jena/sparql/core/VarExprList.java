@@ -124,6 +124,8 @@ public class VarExprList {
     }
 
     public void add(Var var) {
+        if ( var == null )
+            throw new ARQInternalErrorException("Attempt to add a null variable");
         // Checking here controls whether duplicate variables are allowed.
         // Duplicates with expressions are not allowed (add(Var, Expr))
         // See ARQ.allowDuplicateSelectColumns
@@ -140,8 +142,6 @@ public class VarExprList {
             return;
         }
 
-        if ( var == null )
-            throw new ARQInternalErrorException("Attempt to add a named expression with a null variable");
         if ( exprs.containsKey(var) )
             throw new ARQInternalErrorException("Attempt to assign an expression again");
         add(var);

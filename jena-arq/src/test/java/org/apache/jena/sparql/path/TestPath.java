@@ -28,6 +28,9 @@ import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.junit.Assert ;
+import org.junit.Test ;
+
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
@@ -50,8 +53,6 @@ import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderPath ;
 import org.apache.jena.sparql.sse.writers.WriterPath ;
-import org.junit.Assert ;
-import org.junit.Test ;
 
 public class TestPath
 {
@@ -255,80 +256,79 @@ public class TestPath
     @Test public void path_34()   { test(graph3, n1,   ":p+",       n2,n3,n4) ; }
 
 
-    private static List<Binding> eval(Graph graph, String start$, String pathStr, String finish$)
-    {
-        return eval(graph, SSE.parseNode(start$, pmap), pathStr, SSE.parseNode(finish$, pmap)) ;
+    private static List<Binding> eval(Graph graph, String start$, String pathStr, String finish$) {
+        return eval(graph, SSE.parseNode(start$, pmap), pathStr, SSE.parseNode(finish$, pmap));
     }
 
-    private static List<Binding> eval(Graph graph, Node start, String pathStr, Node finish)
-    {
-        Path path = SSE.parsePath(pathStr, pmap) ;
-        QueryIterator qIter = PathLib.execTriplePath(BindingFactory.root(), start, path, finish, new ExecutionContext(ARQ.getContext(), graph, null, null)) ;
-        return Iter.toList(qIter) ;
+    private static List<Binding> eval(Graph graph, Node start, String pathStr, Node finish) {
+        Path path = SSE.parsePath(pathStr, pmap);
+        QueryIterator qIter = PathLib.execTriplePath(BindingFactory.root(), start, path, finish,
+                                                     ExecutionContext.createForGraph(graph));
+        return Iter.toList(qIter);
     }
 
-    @Test public void path_35()
-    {
-        List<Binding> x = eval(graph6, "?x", "(path+ :p)", "?y" ) ;
-        assertEquals(4, x.size()) ;
+    @Test
+    public void path_35() {
+        List<Binding> x = eval(graph6, "?x", "(path+ :p)", "?y");
+        assertEquals(4, x.size());
     }
 
-    @Test public void path_36()
-    {
+    @Test
+    public void path_36() {
         // Same end points.
-        List<Binding> x = eval(graph6, "?x", "(path+ :p)", "?x" ) ;
-        assertEquals(2, x.size()) ;
+        List<Binding> x = eval(graph6, "?x", "(path+ :p)", "?x");
+        assertEquals(2, x.size());
     }
 
-    @Test public void path_37()
-    {
-        List<Binding> x = eval(graph6, "?x", "(path* :p)", "?x" ) ;
-        assertEquals(2, x.size()) ;
-        Node node1 = x.get(0).get(Var.alloc("x")) ;
-        Node node2 = x.get(1).get(Var.alloc("x")) ;
-        assertFalse(node1.equals(node2)) ;
-        assertTrue(node1.equals(n1) || node1.equals(n2)) ;
-        assertTrue(node2.equals(n1) || node2.equals(n2)) ;
+    @Test
+    public void path_37() {
+        List<Binding> x = eval(graph6, "?x", "(path* :p)", "?x");
+        assertEquals(2, x.size());
+        Node node1 = x.get(0).get(Var.alloc("x"));
+        Node node2 = x.get(1).get(Var.alloc("x"));
+        assertFalse(node1.equals(node2));
+        assertTrue(node1.equals(n1) || node1.equals(n2));
+        assertTrue(node2.equals(n1) || node2.equals(n2));
     }
 
-    @Test public void path_38()
-    {
+    @Test
+    public void path_38() {
         // Same end points.
-        List<Binding> x = eval(graph6, "?x", "(pathN+ :p)", "?x" ) ;
+        List<Binding> x = eval(graph6, "?x", "(pathN+ :p)", "?x");
 
-        assertEquals(2, x.size()) ;
-        Node node1 = x.get(0).get(Var.alloc("x")) ;
-        Node node2 = x.get(1).get(Var.alloc("x")) ;
-        assertFalse(node1.equals(node2)) ;
-        assertTrue(node1.equals(n1) || node1.equals(n2)) ;
-        assertTrue(node2.equals(n1) || node2.equals(n2)) ;
+        assertEquals(2, x.size());
+        Node node1 = x.get(0).get(Var.alloc("x"));
+        Node node2 = x.get(1).get(Var.alloc("x"));
+        assertFalse(node1.equals(node2));
+        assertTrue(node1.equals(n1) || node1.equals(n2));
+        assertTrue(node2.equals(n1) || node2.equals(n2));
     }
 
-    @Test public void path_39()
-    {
-        List<Binding> x = eval(graph6, "?x", "(pathN* :p)", "?x" ) ;
-        assertEquals(2, x.size()) ;
+    @Test
+    public void path_39() {
+        List<Binding> x = eval(graph6, "?x", "(pathN* :p)", "?x");
+        assertEquals(2, x.size());
     }
 
-    @Test public void path_50()
-    {
-        List<Binding> x = eval(graph1, "?x", "(notoneof :DoesNotExist)", "<n4>" ) ;
-        assertEquals(1, x.size()) ;
+    @Test
+    public void path_50() {
+        List<Binding> x = eval(graph1, "?x", "(notoneof :DoesNotExist)", "<n4>");
+        assertEquals(1, x.size());
     }
 
-    @Test public void path_51()
-    {
-        List<Binding> x = eval(graph1, "?x", "(notoneof :DoesNotExist)", "?z" ) ;
-        assertEquals(3, x.size()) ;
+    @Test
+    public void path_51() {
+        List<Binding> x = eval(graph1, "?x", "(notoneof :DoesNotExist)", "?z");
+        assertEquals(3, x.size());
     }
 
-    @Test public void path_52()
-    {
-        List<Binding> x = eval(graph1, "<n1>", "(notoneof :DoesNotExist)", "?z" ) ;
-        assertEquals(1, x.size()) ;
+    @Test
+    public void path_52() {
+        List<Binding> x = eval(graph1, "<n1>", "(notoneof :DoesNotExist)", "?z");
+        assertEquals(1, x.size());
     }
 
-    // TODO Shortest path is not implemented yet.  These also need to be verified that they are correct.
+    // Shortest path is not implemented.  These also need to be verified that they are correct.
 //    @Ignore @Test public void path_40()   { test(graph1, n1,   "shortest(:p*)",       n1) ; }
 //    @Ignore @Test public void path_41()   { test(graph1, n1,   "shortest(:p+)",       n2) ; }
 //    @Ignore @Test public void path_42()   { test(graph2, n1,   "shortest(:p*/:q)",    n4) ; }
@@ -338,27 +338,26 @@ public class TestPath
 //    @Ignore @Test public void path_46()   { test(graph5, n1,   "shortest(:p*/:q)",    n4, n5) ; }
 
     // ----
-    private static void testOrdered(Graph graph, Node start, String string, Node... expectedNodes) {
-        test(graph, start, string, expectedNodes, true, true) ;
+    private static void testOrdered(Graph graph, Node start, String string, Node...expectedNodes) {
+        test(graph, start, string, expectedNodes, true, true);
     }
 
-    private static void test(Graph graph, Node start, String string, Node... expectedNodes) {
-        test(graph, start, string, expectedNodes, true, false) ;
+    private static void test(Graph graph, Node start, String string, Node...expectedNodes) {
+        test(graph, start, string, expectedNodes, true, false);
     }
 
-    private static void testReverseOrdered(Graph graph, Node start, String string, Node... expectedNodes) {
-        test(graph, start, string, expectedNodes, false, true) ;
+    private static void testReverseOrdered(Graph graph, Node start, String string, Node...expectedNodes) {
+        test(graph, start, string, expectedNodes, false, true);
     }
 
-    private static void test(Graph graph, Node start, String string, Node[] expectedNodes,
-                             boolean directionForward, boolean ordered) {
-        Path p = PathParser.parse(string, pmap) ;
-        Iterator<Node> resultsIter =
-            directionForward ? PathEval.eval(graph, start, p, ARQ.getContext()) : PathEval.evalReverse(graph, start, p, ARQ.getContext()) ;
-        List<Node> results = Iter.toList(resultsIter) ;
-        List<Node> expected = Arrays.asList(expectedNodes) ;
-        Assert.assertTrue("expected:"+expected+", got:"+results, equalsUnordered(expected, results)) ;
+    private static void test(Graph graph, Node start, String string, Node[] expectedNodes, boolean directionForward, boolean ordered) {
+        Path p = PathParser.parse(string, pmap);
+        Iterator<Node> resultsIter = directionForward
+            ? PathEval.eval(graph, start, p, ARQ.getContext()) : PathEval.evalReverse(graph, start, p, ARQ.getContext());
+        List<Node> results = Iter.toList(resultsIter);
+        List<Node> expected = Arrays.asList(expectedNodes);
+        Assert.assertTrue("expected:" + expected + ", got:" + results, equalsUnordered(expected, results));
         if ( ordered )
-            Assert.assertEquals("expected(ordered)", expected, results) ;
+            Assert.assertEquals("expected(ordered)", expected, results);
     }
 }

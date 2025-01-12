@@ -22,7 +22,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;

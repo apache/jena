@@ -30,7 +30,6 @@ import org.apache.jena.sparql.engine.*;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorCheck;
-import org.apache.jena.sparql.engine.main.QC;
 import org.apache.jena.sparql.util.Context;
 
 /** "Reference" query engine - this simply executes the algebra expression as-is
@@ -65,8 +64,7 @@ public class QueryEngineRef extends QueryEngineBase
     public QueryIterator eval(Op op, DatasetGraph dsg, Binding binding, Context context) {
         if ( binding.vars().hasNext() )
             op = Substitute.substitute(op, binding);
-
-        ExecutionContext execCxt = new ExecutionContext(context, dsg.getDefaultGraph(), dsg, QC.getFactory(context));
+        ExecutionContext execCxt = ExecutionContext.create(dsg, context);
         Evaluator eval = EvaluatorFactory.create(execCxt);
         Table table = RefEval.eval(eval, op);
         QueryIterator qIter = table.iterator(execCxt);

@@ -182,7 +182,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
                 return null ;
                 //throw new ARQInternalErrorException(".containsGraph was true but .getGraph is null") ;
 
-            ExecutionContext cxt2 = new ExecutionContext(outerCxt, g) ;
+            ExecutionContext cxt2 = ExecutionContext.copyChangeActiveGraph(outerCxt, g) ;
             QueryIterator subInput = QueryIterSingleton.create(binding, cxt2) ;
             return QC.execute(opExec, subInput, cxt2) ;
         }
