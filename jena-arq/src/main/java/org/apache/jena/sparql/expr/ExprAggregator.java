@@ -33,7 +33,7 @@ import org.apache.jena.sparql.serializer.SerializationContext;
 
 /**
  * Group aggregation functions calculated a value during grouping and placed in the
- * output binding. This class is relationship of an aggregation expression and that
+ * output binding. This class is the relationship of an aggregation expression and that
  * variable. Evaluation returns the variable's bound value.
  */
 

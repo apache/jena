@@ -409,7 +409,7 @@ public class OpAsQuery {
 
         private static void processAssigns(List<OpAssign> assigns, BiConsumer<Var, Expr> action) {
             assigns.forEach(assign->{
-                assign.getVarExprList().forEachExpr(action) ;
+                assign.getVarExprList().forEachVarExpr(action) ;
             });
         }
 

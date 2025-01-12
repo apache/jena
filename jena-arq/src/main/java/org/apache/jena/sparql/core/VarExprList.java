@@ -66,7 +66,7 @@ public class VarExprList {
     /**
      * Call the action for each (variable, expression) defined.
      * Not called when there is no expression, just a variable.
-     * (c.f. {@link #forEachVarExpr}). Not order preserving.
+     * (c.f. {@link #forEachVarExpr}).
      */
     public void forEachExpr(BiConsumer<Var, Expr> action) {
         exprs.forEach(action);
@@ -75,8 +75,6 @@ public class VarExprList {
     /**
      * Call the action for each variable, in order.
      * The expression may be null.
-     * Called when there is no expression, just a variable (c.f.
-     * {@link #forEachExpr}).
      */
     public void forEachVarExpr(BiConsumer<Var, Expr> action) {
         // * See {@link #forEach}

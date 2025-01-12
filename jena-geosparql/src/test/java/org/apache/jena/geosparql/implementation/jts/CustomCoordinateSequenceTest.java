@@ -74,7 +74,6 @@ public class CustomCoordinateSequenceTest {
     @Test
     public void testGetCoordinate_3DSpatial_1DMeasure() {
         CustomCoordinateSequence sequence = new CustomCoordinateSequence(CoordinateSequenceDimensions.XYZM, "1 1 1 1, 2 2 2 2, 3 3 3 3");
-        System.out.println(sequence);
         Coordinate coord = new CoordinateXYZM();
         int index = 1;
 
