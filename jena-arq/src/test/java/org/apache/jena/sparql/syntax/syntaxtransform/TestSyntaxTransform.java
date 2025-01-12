@@ -35,7 +35,7 @@ import org.apache.jena.update.UpdateRequest;
 import org.junit.Test;
 
 /** Test of variable replaced by value */
-public class TestSyntaxTransform
+public class TestQuerySyntaxTransform
 {
     @Test public void subst_query_01() {
         testQuery("SELECT * { }",

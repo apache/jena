@@ -20,7 +20,7 @@ package org.apache.jena.sparql.syntax;
 
 import org.apache.jena.sparql.syntax.syntaxtransform.TestFlattenSyntax ;
 import org.apache.jena.sparql.syntax.syntaxtransform.TestQueryOps ;
-import org.apache.jena.sparql.syntax.syntaxtransform.TestSyntaxTransform ;
+import org.apache.jena.sparql.syntax.syntaxtransform.TestQuerySyntaxTransform ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
@@ -30,7 +30,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     TestQueryParser.class
     , TestSerialization.class
     , TestQueryOps.class
-    , TestSyntaxTransform.class
+    , TestQuerySyntaxTransform.class
     , TestFlattenSyntax.class
 })
 
