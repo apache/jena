@@ -27,15 +27,15 @@ import org.apache.jena.query.QueryFactory ;
 public class TestQueryOps
 {
     @Test public void queryOp_01() { testShallowCopy("SELECT * { }") ; }
-    
+
     @Test public void queryOp_02() { testShallowCopy("SELECT ?x { }") ; }
-    
+
     @Test public void queryOp_03() { testShallowCopy("SELECT * { ?s ?p ?o }") ; }
 
     @Test public void queryOp_04() { testShallowCopy("SELECT ?x { ?s ?p ?o }") ; }
 
     @Test public void queryOp_05() { testShallowCopy("SELECT (?x+1 AS ?z) ?y { }") ; }
-    
+
     @Test public void queryOp_06() { testShallowCopy("SELECT DISTINCT (?x+1 AS ?z) ?y { }") ; }
 
     @Test public void queryOp_07() { testShallowCopy("SELECT REDUCED (?x+1 AS ?z) ?y { }") ; }
@@ -54,6 +54,5 @@ public class TestQueryOps
         Query q2 = QueryTransformOps.shallowCopy(q1) ;
         assertEquals(q1, q2) ;
     }
-
 }
 
