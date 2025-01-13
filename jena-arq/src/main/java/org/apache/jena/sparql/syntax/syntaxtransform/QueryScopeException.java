@@ -16,28 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.syntax;
+package org.apache.jena.sparql.syntax.syntaxtransform;
 
-import org.junit.platform.suite.api.SelectClasses;
-import org.junit.platform.suite.api.Suite;
+import org.apache.jena.query.QueryException;
 
-import org.apache.jena.sparql.syntax.syntaxtransform.*;
-
-@Suite
-@SelectClasses({
-
-//import org.junit.runner.RunWith;
-//import org.junit.runners.Suite;
-//import org.junit.runners.Suite.SuiteClasses;
-//@RunWith(Suite.class)
-//@SuiteClasses({
-    TestQueryParser.class
-    , TestSerialization.class
-    , TestQueryShallowCopy.class
-    , TestQuerySubstituteScope.class
-    , TestQuerySyntaxTransform.class
-    , TestQuerySyntaxSubstitute.class
-    , TestFlattenSyntax.class
-})
-
-public class TS_Syntax {}
+public class QueryScopeException extends QueryException {
+    public QueryScopeException(String msg) { super(msg) ; }
+    public QueryScopeException(String msg, Throwable cause) { super(msg, cause) ; }
+}

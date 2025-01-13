@@ -115,7 +115,7 @@ import org.apache.jena.sparql.util.ModelUtils;
             Map<Var, Node> substitutions = parameterMapToSyntaxSubstitutions(parameterMap, focusNode, path);
             if ( query.isAskType() )
                 addSubstition(substitutions, "value", valueNode);
-            Query query2 = QueryTransformOps.transform(query, substitutions);
+            Query query2 = QueryTransformOps.replaceVars(query, substitutions);
             qExec = QueryExecutionFactory.create(query2, model);
         } else {
             // Done with pre-binding.

@@ -62,7 +62,7 @@ public class EvalSparql {
             // Done with QueryTransformOps.transform
             DatasetGraph dsg = DatasetGraphFactory.wrap(data);
             Map<Var, Node> substitutions = parametersToSyntaxSubstitutions(data, node, sparqlComponent.getParams());
-            Query query2 = QueryTransformOps.transform(query, substitutions);
+            Query query2 = QueryTransformOps.replaceVars(query, substitutions);
             try ( QueryExecution qExec = QueryExecutionFactory.create(query2, dsg)) {
                 return evalSparqlOneVar(qExec);
             }

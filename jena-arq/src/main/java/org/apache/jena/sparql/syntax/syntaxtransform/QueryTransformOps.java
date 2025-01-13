@@ -18,6 +18,8 @@
 
 package org.apache.jena.sparql.syntax.syntaxtransform;
 
+import static org.apache.jena.sparql.syntax.syntaxtransform.QuerySyntaxSubstituteScope.scopeCheck;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,23 +45,72 @@ import org.apache.jena.sparql.syntax.*;
 
 /** Support for transformation of query abstract syntax. */
 public class QueryTransformOps {
-    /** Transform a query based on a mapping from {@link Var} variable to replacement {@link Node}. */
+
+    /**
+     * Replace variables in a query by RDF terms.
+     * The replacements are added to the return queries SELECT clause (if a SELECT query).
+     * <p>
+     * @throws QueryScopeException if the query contains variables used in a
+     *   way that does not allow substitution (.e.g {@code AS ?var} or used in
+     *   {@code VALUES}).
+     */
+    public static Query syntaxSubstitute(Query input, Map<Var, Node> substitutions) {
+        scopeCheck(input, substitutions.keySet());
+        Query output = transformTopLevel(input, substitutions);
+        return output;
+    }
+
+    // Call transform, add in the substitutions as top-level SELECT expressions/
+    private static Query transformTopLevel(Query query, Map<Var, Node> substitutions) {
+        Query query2 = transformSubstitute(query, substitutions);
+        // Include substitutions
+        if ( query.isSelectType() ) {
+            query2.setQueryResultStar(false);
+            substitutions.forEach((v, n) -> {
+                var nv = NodeValue.makeNode(n);
+                query2.getProject().update(v, NodeValue.makeNode(n));
+            });
+        }
+        return query2;
+    }
+
+    /** @deprecated Use {@link #queryReplaceVars} */
+    @Deprecated
     public static Query transform(Query query, Map<Var, ? extends Node> substitutions) {
-        ElementTransform eltrans = new ElementTransformSubst(substitutions);
-        NodeTransform nodeTransform = new NodeTransformSubst(substitutions);
-        ExprTransform exprTrans = new ExprTransformNodeElement(nodeTransform, eltrans);
-        return transform(query, eltrans, exprTrans);
+        return replaceVars(query, substitutions);
+    }
+
+    /** Transform a query based on a mapping from {@link Var} variable to replacement {@link Node}. */
+    public static Query replaceVars(Query query, Map<Var, ? extends Node> substitutions) {
+        return transformSubstitute(query, substitutions);
+    }
+
+
+    /** @deprecated Use {@link #queryReplaceVars} */
+    @Deprecated
+    public static Query transformQuery(Query query, Map<String, ? extends RDFNode> substitutions)    {
+        return queryReplaceVars(query, substitutions);
     }
 
     /**
      * Transform a query based on a mapping from variable name to replacement
      * {@link RDFNode} (a {@link Resource} (or blank node) or a {@link Literal}).
      */
-    public static Query transformQuery(Query query, Map<String, ? extends RDFNode> substitutions) {
+    public static Query queryReplaceVars(Query query, Map<String, ? extends RDFNode> substitutions) {
         // Must have a different name because of Java's erasure of parameterised types.
         Map<Var, Node> map = TransformElementLib.convert(substitutions);
-        return transform(query, map);
+        return replaceVars(query, map);
     }
+
+    private static Query transformSubstitute(Query query, Map<Var, ? extends Node> substitutions) {
+        scopeCheck(query, substitutions.keySet());
+        ElementTransform eltrans = new ElementTransformSubst(substitutions);
+        NodeTransform nodeTransform = new NodeTransformSubst(substitutions);
+        ExprTransform exprTrans = new ExprTransformNodeElement(nodeTransform, eltrans);
+        return transform(query, eltrans, exprTrans);
+    }
+
+    // ----------------
 
     /**
      * Transform a query using {@link ElementTransform} and {@link ExprTransform}.
@@ -68,7 +119,6 @@ public class QueryTransformOps {
     public static Query transform(Query query, ElementTransform transform, ExprTransform exprTransform) {
         Query q2 = QueryTransformOps.shallowCopy(query);
         // Mutate the q2 structures which are already allocated and no other code can access yet.
-
         mutateByQueryType(q2, exprTransform);
         mutateVarExprList(q2.getGroupBy(), exprTransform);
         mutateExprList(q2.getHavingExprs(), exprTransform);
