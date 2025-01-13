@@ -47,24 +47,8 @@
       </dependency>
 
       <dependency>
-		<groupId>com.opencsv</groupId>
-	    <artifactId>opencsv</artifactId>
-		<version>5.9</version>
-	        <!-- rdf-tables:1.0.4
-               -> com.opencsv:opencsv:jar:3.9 
-                 -> commons-beanutils:commons-beanutils:19.3
-             CVE-2019-10086 https://nvd.nist.gov/vuln/detail/CVE-2019-10086 
-             commons-beanutils:commons-beanutils:jar:1.9.3
-             Needs to be 1.9.4.
-             We exclude it from rdf-tables and directly depend on it here.
-    	    -->
-        <exclusions>
-          <!-- Use jcl-over-slf4j -->
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
+        <groupId>com.opencsv</groupId>
+        <artifactId>opencsv</artifactId>
       </dependency>
 
       <dependency>
