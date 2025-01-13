@@ -204,7 +204,7 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
         String queryStringActual = queryString;
 
         if ( substitutionMap != null && ! substitutionMap.isEmpty() ) {
-            queryActual = QueryTransformOps.transform(query, substitutionMap);
+            queryActual = QueryTransformOps.replaceVars(query, substitutionMap);
             queryStringActual = null;
         }
 

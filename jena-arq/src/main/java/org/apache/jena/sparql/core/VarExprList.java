@@ -158,6 +158,17 @@ public class VarExprList {
         exprs.remove(var);
     }
 
+    /**
+     * If the variable is already in the VarExprList, replace the expression.
+     * This retains the list order.
+     * Otherwise, add the variable and expression.
+     */
+    public void update(Var var, Expr newExpr) {
+        exprs.put(var, newExpr);
+        if ( ! vars.contains(var) )
+            vars.add(var);
+    }
+
     public void clear() {
         vars.clear();
         exprs.clear();

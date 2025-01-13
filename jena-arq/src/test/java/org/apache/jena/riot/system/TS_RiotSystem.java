@@ -18,9 +18,6 @@
 
 package org.apache.jena.riot.system;
 
-
-
-// 2024-10 Using Junit5 can confuse Eclipse testing.
 // Test classes get missed
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;

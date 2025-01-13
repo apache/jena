@@ -328,7 +328,7 @@ public abstract class ExecHTTPBuilder<X, Y> {
                     throw new QueryException("Substitution only supported for Query objects. Failed to parse the given string as a Query object.", e);
                 }
             }
-            queryActual = QueryTransformOps.transform(queryActual, substitutionMap);
+            queryActual = QueryTransformOps.replaceVars(queryActual, substitutionMap);
             queryStringActual = queryActual.toString();
         }
         Context cxt = contextAcc.context();

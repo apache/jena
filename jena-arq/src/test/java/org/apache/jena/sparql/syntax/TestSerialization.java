@@ -18,7 +18,12 @@
 
 package org.apache.jena.sparql.syntax;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.query.Query ;
 import org.apache.jena.query.QueryFactory ;
@@ -29,7 +34,6 @@ import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpAsQuery ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.FmtUtils ;
-import org.junit.Test ;
 
 public class TestSerialization
 {

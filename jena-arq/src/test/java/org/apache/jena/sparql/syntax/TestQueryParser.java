@@ -18,11 +18,14 @@
 
 package org.apache.jena.sparql.syntax;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
+
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.sparql.lang.QueryParserBase;
-import org.junit.Test;
 import org.slf4j.Logger;
 
 /**
@@ -49,34 +52,33 @@ public class TestQueryParser {
         testParseIRIs("<http://[::1]/abc>");
     }
 
-    @Test(expected = QueryParseException.class)
+    @Test
     public void syntax_uri_brace_1() {
-        testParseIRIs("<http://example/{}>");
+        assertThrows(QueryParseException.class, ()->testParseIRIs("<http://example/{}>"));
     }
 
-    @Test(expected = QueryParseException.class)
-    public void syntax_uri_brace_2() {
-        testParseIRIs("<http://example/#{}>");
+    @Test public void syntax_uri_brace_2() {
+        assertThrows(QueryParseException.class, ()->testParseIRIs("<http://example/#{}>"));
     }
 
-    @Test(expected = QueryParseException.class)
+    @Test
     public void syntax_uri_space_1() {
-        testParseIRIs("<http://example/abc def>");
+        assertThrows(QueryParseException.class, ()->testParseIRIs("<http://example/abc def>"));
     }
 
-    @Test(expected = QueryParseException.class)
+    @Test
     public void syntax_uri_space_2() {
-        testParseIRIs("<http://example/abc?q= def>");
+        assertThrows(QueryParseException.class, ()->testParseIRIs("<http://example/abc?q= def>"));
     }
 
-    @Test(expected = QueryParseException.class)
+    @Test
     public void syntax_uri_space_3() {
-        testParseIRIs("< http://example/abc>");
+        assertThrows(QueryParseException.class, ()->testParseIRIs("< http://example/abc>"));
     }
 
-    @Test(expected = QueryParseException.class)
+    @Test
     public void syntax_uri_space_4() {
-        testParseIRIs("<http://example/abc >");
+        assertThrows(QueryParseException.class, ()->testParseIRIs("<http://example/abc >"));
     }
 
     // Test that a URI string can be used in Turtle data
