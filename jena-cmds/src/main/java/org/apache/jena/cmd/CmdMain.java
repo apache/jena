@@ -51,8 +51,7 @@ public abstract class CmdMain extends CmdLineArgs
     { mainRun(true, true); }
 
     /** Run command */
-    public int mainRun(boolean exitOnSuccess, boolean exitOnFailure)
-    {
+    public int mainRun(boolean exitOnSuccess, boolean exitOnFailure) {
         try { mainMethod(); }
         catch (TerminationException ex) { System.exit(ex.getCode()); }
         catch (IllegalArgumentException ex)
