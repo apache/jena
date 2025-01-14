@@ -106,7 +106,7 @@ public class FMod_UI implements FusekiModule {
         if ( uiAppLocation == null ) {
             uiAppLocation = findFusekiApp(serverCtl);
             if ( uiAppLocation == null ) {
-                LOG.warn("No Static content location has been found");
+                LOG.warn("No static content location");
                 return;
             }
         } else {

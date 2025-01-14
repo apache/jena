@@ -48,7 +48,7 @@ public class FusekiServerRunner {
     public static FusekiServer runAsync(String... args) {
         FusekiServer server = construct(args);
         try {
-            server.start();
+            return server.start();
         } catch (FusekiException ex) {
             if ( ex.getCause() instanceof BindException ) {
 //                if ( serverArgs.jettyConfigFile == null )
@@ -62,7 +62,6 @@ public class FusekiServerRunner {
         } catch (Exception ex) {
             throw new FusekiException("Failed to start server: " + ex.getMessage(), ex);
         }
-        return server.start();
     }
 
     public static FusekiServer construct(String... args) {

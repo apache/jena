@@ -250,7 +250,7 @@ public class FusekiMain extends CmdARQ {
 
     private void argumentsSetup() {
         modVersion.addClass("Fuseki", Fuseki.class);
-        
+
         getUsage().startCategory("Fuseki");
         add(argConfig, "--config=FILE",
             "Use a configuration file to determine the services");
@@ -638,8 +638,6 @@ public class FusekiMain extends CmdARQ {
 
     private FusekiServer execMakeServer() {
         try {
-            FusekiCoreInfo.logCode(Fuseki.serverLog);
-            // Arguments have been processed to produce serverArgs in processModulesAndArgs()
             return makeServer(serverArgs);
         } catch (AssemblerException | FusekiException  ex) {
             if ( ex.getCause() != null )
@@ -650,6 +648,7 @@ public class FusekiMain extends CmdARQ {
         }
     }
 
+    /** The method is blocking. */
     private void execStartServer(FusekiServer server) {
         infoCmd(server, Fuseki.serverLog);
         try {
