@@ -40,5 +40,5 @@ updates:
     groups:
       npm-patch-group:
         update-types:
-        - "patch"
+        - "minor"
     open-pull-requests-limit: 10
