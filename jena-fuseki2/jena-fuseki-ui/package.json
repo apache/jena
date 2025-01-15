@@ -67,7 +67,7 @@
     "run-script-os": "^1.1.6",
     "sass": "^1.69.4",
     "sinon": "^19.0.2",
-    "vite": "^5.0.12",
+    "vite": "^6.0.7",
     "vite-plugin-istanbul": "^6.0.2",
     "vitest": "^2.0.4",
     "wait-on": "^8.0.0"
