@@ -29,7 +29,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena</artifactId>
-    <version>5.3.0-SNAPSHOT</version>
+    <version>5.3.0</version>
   </parent>
   
   <organization>
@@ -45,7 +45,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <automatic.module.name>org.apache.jena.permissions</automatic.module.name>
-    <argLine></argLine>
+    <argLine />
   </properties>
 
   <build>
