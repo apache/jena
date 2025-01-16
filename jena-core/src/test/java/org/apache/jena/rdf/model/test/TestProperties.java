@@ -25,9 +25,9 @@ import org.apache.jena.vocabulary.RDFS ;
 import org.junit.Assert;
 import junit.framework.TestCase;
 
-public class TestPropertyImpl extends TestCase
+public class TestProperties extends TestCase
 {
-	public TestPropertyImpl( final String name )
+	public TestProperties( final String name )
 	{
 		super(name);
 	}

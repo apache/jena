@@ -109,7 +109,7 @@ public abstract class AbstractTestPackage extends TestSuite
 		addTest(TestRemoveSPO.class, modelFactory);
 		addTest(TestListSubjectsEtc.class, modelFactory);
 		addTest(TestModelRead.class, modelFactory);
-		addTestSuite(TestPropertyImpl.class);
+		addTestSuite(TestProperties.class);
 		addTest(TestContainerConstructors.class, modelFactory);
 		addTest(TestAltMethods.class, modelFactory);
 		addTest(TestBagMethods.class, modelFactory);
