@@ -47,7 +47,7 @@ public class TestHost {
         // Assumes the machine has some kind of IP networking.
         try {
             // InetAddress.toString is "host/address"
-            String addr = Host.getHostAddress();
+            String addr = Host.getHostAddressForIRI();
             assertNotNull(addr);
             assertFalse(addr.contains("/"));
         } catch ( RuntimeIOException ex) {
