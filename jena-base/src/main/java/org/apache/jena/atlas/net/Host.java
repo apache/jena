@@ -19,6 +19,7 @@
 package org.apache.jena.atlas.net;
 
 import java.io.IOException;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.UnknownHostException;
@@ -29,16 +30,24 @@ import org.apache.jena.atlas.io.IOX;
 
 public class Host {
     /**
-     * Returns a host address, for what is most likely the machine's LAN IP address
-     * (not a loopback address, 127.0.0.x or ::1). If there is no other choice, it returns
-     * <code>a local host address</code>.
+     * Returns a host address in a form suitable for an IRI authority host.
+     * This is not a loopback address, 127.0.0.x or ::1.
      */
-    public static String getHostAddress() {
+    public static String getHostAddressForIRI() {
         try {
             InetAddress addr = getLocalHostLANAddress$();
             if ( addr == null )
                 return null;
-            return addr.getHostAddress();
+            String hostAddress = addr.getHostAddress();
+            if ( addr instanceof Inet6Address ) {
+                // Remove zoneId
+                hostAddress = hostAddress.replaceFirst("%.*","");
+                // If you do want the zone id, the % needs encoding.
+                // hostAddress = hostAddress.replaceFirst("%","%25");
+                // Wrap in "[ ... ]"
+                hostAddress = "["+hostAddress+"]";
+            }
+            return hostAddress;
         } catch ( UnknownHostException ex) {
             return null;
         }

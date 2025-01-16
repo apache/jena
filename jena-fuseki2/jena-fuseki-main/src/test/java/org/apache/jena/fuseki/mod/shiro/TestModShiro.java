@@ -51,7 +51,7 @@ import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.exec.http.QueryExecHTTP;
 
 public class TestModShiro {
-    static final String unlocal = Host.getHostAddress();
+    static final String unlocal = determineUnlocal();
     static final String localRE = Pattern.quote("localhost");
 
     static {
@@ -72,10 +72,16 @@ public class TestModShiro {
         FusekiServerCtl.clearUpSystemState();
     }
 
+    private static String determineUnlocal() {
+        // Get a string for the host in a URL that names this machine but isn't localhost.
+        return Host.getHostAddressForIRI();
+    }
+
     private String unlocalhost(FusekiServer server, String dataset) {
         String local  = server.datasetURL(dataset);
-        if ( unlocal != null )
+        if ( unlocal != null ) {
             local = local.replaceFirst(localRE, unlocal);
+        }
         return local;
     }
 
