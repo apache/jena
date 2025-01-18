@@ -237,6 +237,11 @@ public abstract class SPARQLQueryProcessor extends ActionService
     }
 
     protected void execute(String queryString, HttpAction action) {
+        if ( queryString.isEmpty() )
+            ServletOps.errorBadRequest("Error: Empty query string");
+        if ( queryString.isBlank() )
+            ServletOps.errorBadRequest("Error: Blank query string");
+
         String queryStringLog = ServletOps.formatForLog(queryString);
         if ( action.verbose ) {
             String str = queryString;
