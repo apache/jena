@@ -21,8 +21,8 @@ package org.apache.jena.riot.system;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.Quad ;
 
-/** Send to two stream */
-public class StreamRDF2 implements StreamRDF 
+/** Send to two streams */
+public class StreamRDF2 implements StreamRDF
 {
     protected final StreamRDF sink1 ;
     protected final StreamRDF sink2 ;
@@ -31,7 +31,7 @@ public class StreamRDF2 implements StreamRDF
         this.sink1 = sink1 ;
         this.sink2 = sink2 ;
     }
-    
+
     @Override
     public void start() {
         sink1.start() ;

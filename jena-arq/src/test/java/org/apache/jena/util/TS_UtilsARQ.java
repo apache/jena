@@ -16,20 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.rdfs;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.rdfs.setup.BaseSetupRDFS;
+package org.apache.jena.util;
 
-/** RDFS setup in Node space */
-public class SetupRDFS extends BaseSetupRDFS<Node> {
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
 
-    public SetupRDFS(Graph vocab) {
-        super(vocab);
-    }
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestNodeUtils.class
+})
 
-    @Override
-    protected Node fromNode(Node node) {
-        return node;
-    }
-}
+public class TS_UtilsARQ {}

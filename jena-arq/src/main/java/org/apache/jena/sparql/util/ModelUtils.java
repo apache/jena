@@ -18,22 +18,22 @@
 
 package org.apache.jena.sparql.util;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.query.QueryException ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.RDFNode ;
-import org.apache.jena.rdf.model.Statement ;
-import org.apache.jena.rdf.model.StmtIterator ;
-import org.apache.jena.rdf.model.impl.LiteralImpl ;
-import org.apache.jena.rdf.model.impl.ResourceImpl ;
-import org.apache.jena.rdf.model.impl.StmtIteratorImpl ;
-import org.apache.jena.sparql.ARQInternalErrorException ;
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.query.QueryException;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.rdf.model.impl.LiteralImpl;
+import org.apache.jena.rdf.model.impl.ResourceImpl;
+import org.apache.jena.rdf.model.impl.StmtIteratorImpl;
+import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.util.ModelCollector;
-import org.apache.jena.util.iterator.ClosableIterator ;
+import org.apache.jena.util.iterator.ClosableIterator;
 
 public class ModelUtils
 {
@@ -46,22 +46,22 @@ public class ModelUtils
 
     public static RDFNode convertGraphNodeToRDFNode(Node node, Model model) {
         if ( node.isVariable() )
-            throw new QueryException("Variable: "+node) ;
+            throw new QueryException("Variable: "+node);
 
         // Best way.
         if ( model != null )
-             return model.asRDFNode(node) ;
+             return model.asRDFNode(node);
 
         if ( node.isLiteral() )
-            return new LiteralImpl(node, null) ;
+            return new LiteralImpl(node, null);
 
         if ( node.isURI() || node.isBlank() )
-            return new ResourceImpl(node, null) ;
+            return new ResourceImpl(node, null);
 
         if ( node.isNodeTriple() )
-            return new ResourceImpl(node, null) ;
+            return new ResourceImpl(node, null);
 
-        throw new ARQInternalErrorException("Unknown node type for node: "+node) ;
+        throw new ARQInternalErrorException("Unknown node type for node: "+node);
     }
 
     /** Convert a {@link Node} (graph SPI) to an RDFNode (model API)
@@ -73,18 +73,17 @@ public class ModelUtils
         return convertGraphNodeToRDFNode(node, null);
     }
 
-    public static Statement tripleToStatement(Model model, Triple t)
-    {
+    public static Statement tripleToStatement(Model model, Triple t) {
         if ( model == null )
-            throw new ARQInternalErrorException("Attempt to create statement with null model") ;
+            throw new ARQInternalErrorException("Attempt to create statement with null model");
 
-        Node sNode = t.getSubject() ;
-        Node pNode = t.getPredicate() ;
-        Node oNode = t.getObject() ;
+        Node sNode = t.getSubject();
+        Node pNode = t.getPredicate();
+        Node oNode = t.getObject();
 
         if (!isValidAsStatement(sNode, pNode, oNode)) return null;
 
-        return model.asStatement(t) ;
+        return model.asStatement(t);
     }
 
     /**
@@ -97,19 +96,12 @@ public class ModelUtils
      * @param p Predicate
      * @param o Object
      * @return True if a valid Statement can be formed
+     *
+     * @deprecated Use {@link NodeUtils#isValidAsRDF(Node, Node, Node)}.
      */
-    public static boolean isValidAsStatement(Node s, Node p, Node o)
-    {
-        if ( s.isLiteral() || s.isVariable() )
-            return false ;
-
-        if ( ! p.isURI() )  // Not variable, literal or blank.
-            return false ;
-
-        if ( o.isVariable() )
-            return false ;
-
-        return true;
+    @Deprecated
+    public static boolean isValidAsStatement(Node s, Node p, Node o) {
+        return NodeUtils.isValidAsRDF(s, p, o);
     }
 
     public static StmtIterator triplesToStatements(final Iterator<Triple> it, final Model refModel) {

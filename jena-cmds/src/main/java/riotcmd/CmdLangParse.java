@@ -61,7 +61,7 @@ public abstract class CmdLangParse extends CmdGeneral {
     protected ModTime modTime = new ModTime();
     protected ModLangParse modLangParse = new ModLangParse();
     protected ModLangOutput modLangOutput = new ModLangOutput();
-    protected SetupRDFS setup = null;
+    protected SetupRDFS setupRDFS = null;
     protected ModContext modContext = new ModContext();
     protected ArgDecl argStrict = new ArgDecl(ArgDecl.NoValue, "strict");
 
@@ -181,7 +181,7 @@ public abstract class CmdLangParse extends CmdGeneral {
     protected void exec$() {
 
         if ( modLangParse.getRDFSVocab() != null )
-            setup = RDFSFactory.setupRDFS(modLangParse.getRDFSVocab().getGraph());
+            setupRDFS = RDFSFactory.setupRDFS(modLangParse.getRDFSVocab().getGraph());
 
         if ( modLangOutput.compressedOutput() ) {
             try {
@@ -374,8 +374,13 @@ public abstract class CmdLangParse extends CmdGeneral {
 
         // Build parser output additions.
         StreamRDF s = parserOutputStream;
-        if ( setup != null )
-            s = RDFSFactory.streamRDFS(s, setup);
+        if ( setupRDFS != null ) {
+            // Remove literals as subjects
+            s = RDFSFactory.removeGeneralizedRDF(s);
+            // Generate RDFS (this feeds into the stream created above).
+            s = RDFSFactory.streamRDFS(s, setupRDFS);
+            // Parser sends data to RDFS, which goes to the filter, then to parserOutputStream
+        }
         // If added here, count is quads and triples seen in the input.
         if ( modLangParse.mergeQuads() )
             s = new QuadsToTriples(s);
