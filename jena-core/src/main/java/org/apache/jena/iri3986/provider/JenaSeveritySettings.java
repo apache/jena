@@ -78,12 +78,12 @@ public class JenaSeveritySettings {
         SeverityMap.setSeverity(severityMap, Issue.file_bad_form,                     Severity.WARNING);
         SeverityMap.setSeverity(severityMap, Issue.file_relative_path,                Severity.WARNING);
 
-        // did
+        // DID
         SeverityMap.setSeverity(severityMap, Issue.did_bad_syntax,                    Severity.ERROR);
+
         // OID
         SeverityMap.setSeverity(severityMap, Issue.oid_bad_syntax,                    Severity.ERROR);
-        // OID
-        SeverityMap.setSeverity(severityMap, Issue.oid_scheme_not_registered,                Severity.WARNING);
+        SeverityMap.setSeverity(severityMap, Issue.oid_scheme_not_registered,         Severity.WARNING);
 
         return SeverityMap.create("Jena settings", severityMap);
     }

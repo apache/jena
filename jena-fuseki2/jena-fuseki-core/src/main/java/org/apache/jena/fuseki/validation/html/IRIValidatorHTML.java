@@ -79,10 +79,14 @@ public class IRIValidatorHTML
                         if ( iri.isRelative() )
                             System.out.println("Relative IRI: " + iriStr);
 
-                        iri.handleViolations((error,msg)->{
-                            String str = htmlQuote(msg);
-                            System.out.println(str);
-                        });
+                        if ( iri.hasViolations() ) {
+                            System.out.println();
+                            iri.handleViolations((error,msg)->{
+                                String str = htmlQuote(msg);
+                                String category = (error)?"Error":"Warning";
+                                System.out.printf("  %-7s : %s\n", category, str);
+                            });
+                        }
                     } catch (IRIException ex) {
                         System.out.println(iriStr);
                         System.out.println("Bad IRI: "+ex.getMessage());
