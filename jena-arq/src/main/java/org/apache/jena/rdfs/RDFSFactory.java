@@ -22,6 +22,7 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.util.NodeUtils;
 
 /** Factory for data+RDFS inference. */
 public class RDFSFactory {
@@ -78,5 +79,10 @@ public class RDFSFactory {
     /** Expand a stream of RDF using RDFS */
     public static StreamRDF streamRDFS(StreamRDF data, SetupRDFS setup) {
         return new InfStreamRDFS(data, setup);
+    }
+
+    /** RDFS can generate "symmetric RDF", "generalized RDF" - e.g. triples with literals as subjects. */
+    public static StreamRDF removeGeneralizedRDF(StreamRDF data) {
+        return NodeUtils.removeGeneralizedRDF(data);
     }
 }

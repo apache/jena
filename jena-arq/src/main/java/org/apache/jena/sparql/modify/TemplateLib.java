@@ -30,7 +30,7 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Substitute;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.util.ModelUtils;
+import org.apache.jena.sparql.util.NodeUtils;
 
 public class TemplateLib {
     // See also Substitute -- combine?
@@ -79,7 +79,7 @@ public class TemplateLib {
                 List<Triple> tripleList = new ArrayList<>(triples.size());
                 for ( Triple triple : triples ) {
                     Triple q = subst(triple, b, bNodeMap);
-                    if ( !q.isConcrete() || !ModelUtils.isValidAsStatement(q.getSubject(), q.getPredicate(), q.getObject()) ) {
+                    if ( !q.isConcrete() || ! NodeUtils.isValidAsRDF(q.getSubject(), q.getPredicate(), q.getObject()) ) {
                         // Log.warn(TemplateLib.class, "Unbound quad:
                         // "+FmtUtils.stringForQuad(quad)) ;
                         continue;
