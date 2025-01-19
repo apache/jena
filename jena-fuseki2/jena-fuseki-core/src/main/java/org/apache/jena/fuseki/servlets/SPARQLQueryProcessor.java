@@ -271,7 +271,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
             ServletOps.errorBadRequest("Error: \n" + queryString + "\n" + msg);
         }
 
-        // Assumes finished whole thing by end of sendResult.
+        // Assumes finished whole thing by end of sendResults.
         try {
             action.beginRead();
             Pair<DatasetGraph, Query> p = decideDataset(action, query, queryStringLog);
@@ -282,7 +282,7 @@ public abstract class SPARQLQueryProcessor extends ActionService
 
             try ( QueryExec qExec = createQueryExec(action, q, dataset); ) {
                 QueryExecResult result = executeQuery(action, qExec, query, queryStringLog);
-                // Deals with exceptions itself.
+                // Deals with response exceptions itself.
                 sendResults(action, result, query.getPrologue());
             }
         }
