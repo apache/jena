@@ -164,7 +164,7 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
 
     @Override
     public QueryExecDatasetBuilder timeout(long timeout) {
-        return timeout(timeout, TimeUnit.MICROSECONDS);
+        return timeout(timeout, TimeUnit.MILLISECONDS);
     }
 
     @Override
