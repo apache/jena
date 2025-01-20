@@ -115,8 +115,10 @@ then
 fi
 
 ## Plain server, no UI, no admin work area.
-## MAIN=org.apache.jena.fuseki.main.cmds.FusekiMainCmd
-MAIN=org.apache.jena.fuseki.main.cmds.FusekiServerCmd
+## MAIN="${MAIN:-org.apache.jena.fuseki.main.cmds.FusekiMainCmd}"
+
+## Fuseki server, with UI and admin area.
+MAIN="${MAIN:-org.apache.jena.fuseki.main.cmds.FusekiServerCmd}"
 
 if [ -n "$LOGGING" ]
 then
