@@ -1,8 +1,66 @@
+==== Apache Jena 5.3.0
+Released: 2025-01-21
+Issues: https://s.apache.org/jena-5.3.0-issues
+Announcement:
+https://lists.apache.org/thread/4gk0kpf75hyk58db343hx13nzq8pvldg
+
+The main feature for Jena 5.2.0 is an implementation of CDT "Composite 
+Datatype Literals", an experimental idea for dealing with maps and lists 
+in RDF and SPARQL while remaining within RDF 1.1.
+
+All issues in the release:
+   https://s.apache.org/jena-5.2.0-issues
+
+and includes
+
+* hash join improvements
+* performance improvements for RDF/XML parsing, and for command startup.
+* refinement of jena-ontapi
+
+== CDT : "Composite Datatype Literals"
+This is a contribution from AWSlabs.
+
+The website:
+   https://github.com/awslabs/SPARQL-CDTs
+Spec:
+   https://w3id.org/awslabs/neptune/SPARQL-CDTs/spec/latest.html
+
+SPARQL
+   https://github.com/w3c/sparql-dev/tree/main/SEP/SEP-0009
+
+Issue: https://github.com/apache/jena/issues/2518
+PR:    https://github.com/apache/jena/pull/2501
+
+This is "experimental" meaning it is subject to change.  There should be 
+no impact if the feature isn't used.
+
+== Contributions
+
+CDT: Composite Datatype Literals
+Olaf Hartig (@Hartig) et al.
+   https://github.com/apache/jena/issues/2518
+   https://github.com/w3c/sparql-dev/tree/main/SEP/SEP-0009
+   https://github.com/awslabs/SPARQL-CDTs
+
+Hash join improvements.
+   @Aklakan Claus Stadler
+   https://github.com/apache/jena/issues/2404
+   https://github.com/apache/jena/pull/2405
+
+GH-2580: Added parseCheck flags to query and update exec builders
+   https://github.com/apache/jena/issues/2580
+This helps when dealing with vendor extensions to SPARQL.
+   @Aklakan Claus Stadler
+
+GH-2578: Fix Quad.isTriple() handling in JenaTitanium
+   @Ostrzyciel Piotr Sowiński
+
+
 ==== Apache Jena 5.2.0
 Released: 2024-10-15
 Issues: https://s.apache.org/jena-5.2.0-issues
 Announcement:
-https://lists.apache.org/thread/
+https://lists.apache.org/thread/ynf70r2z6cs7x48cvytqqk5bxh6qln9l
 
 The main feature for Jena 5.2.0 is an implementation of CDT "Composite Datatype
 Literals", an experimental idea for dealing with maps and lists in RDF and
