@@ -596,12 +596,12 @@ public interface Model
      */
 	public Model write( OutputStream out, String lang, String base );
 
-	/** @deprecated Use RIOT via {@code org.apache.jena.riotRDFDataMgr} or call {@link Model#read}. */
+	/** @deprecated Use RIOT via {@code org.apache.jena.riot.RDFDataMgr} or call {@link Model#read}. */
     @Override
     @Deprecated
     public RDFReaderI getReader(String lang);
 
-    /** @deprecated Use RIOT via {@code org.apache.jena.riotRDFDataMgr} or call {@link Model#write}. */
+    /** @deprecated Use RIOT via {@code org.apache.jena.riot.RDFDataMgr} or call {@link Model#write}. */
     @Override
     @Deprecated
     public RDFWriterI getWriter(String lang);
