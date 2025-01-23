@@ -113,7 +113,7 @@ public class LangTags {
                 sb.setLength(0);
                 continue;
             }
-            error("Bad character: (0x%02X) '%c' index %d", (int)ch, str(ch), idx);
+            error("Bad character: (0x%02X) '%s' index %d", (int)ch, str(ch), idx);
         }
         String strLast = sb.toString();
         if ( strLast.isEmpty() ) {
