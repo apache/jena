@@ -42,7 +42,6 @@ import org.apache.jena.irix.IRIx;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.lang.rdfxml.RDFXMLParseException;
 import org.apache.jena.riot.out.NodeFmtLib;
-import org.apache.jena.riot.system.FactoryRDF;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.util.Context;
@@ -382,7 +381,7 @@ class ParserRRX_SAX
 
     // ---- Parser Setup
     private final ParserProfile parserProfile;
-    private final FactoryRDF factory;
+  //  private final FactoryRDF factory;
     private final Context context;
     private final org.apache.jena.riot.system.ErrorHandler errorHandler;
     private final String initialXmlBase;
@@ -497,7 +496,6 @@ class ParserRRX_SAX
         // Debug
 
         this.parserProfile = parserProfile;
-        this.factory = parserProfile.getFactorRDF();
         this.errorHandler = parserProfile.getErrorHandler();
         this.context = context;
         this.initialXmlBase = xmlBase;
