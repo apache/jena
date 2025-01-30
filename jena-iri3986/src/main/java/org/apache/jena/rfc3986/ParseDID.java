@@ -43,7 +43,7 @@ public class ParseDID {
 
     April 2021: At-risk : add: empty  method-specific-id
 */
-    private static final Pattern DID_PATTERN = Pattern.compile("^did:[a-z]+:(?:(?:[A-Za-z0-9.-_]|%[0-9]A-Fa-f]{2})+)$");
+    private static final Pattern DID_PATTERN = Pattern.compile("^did:[a-z]+:(?:(?:[a-z0-9.-_]|%[0-9]A-Fa-f]{2})+)$");
     private static final int DIDStart = "did:".length();
 
     static
@@ -54,10 +54,6 @@ public class ParseDID {
         //int end = length;
         int end = string.length();
         int p = DIDStart;
-
-        // XXX if string is empty or single space.
-        // XXX if string starts "."
-        // XXX if string ends ":"
 
         int q = methodName(string, p);
         if ( q <= p+1)
@@ -84,6 +80,7 @@ public class ParseDID {
                 p++;
                 return p;
             }
+            // Special upper case for better error message?
             if ( ! methodChar(ch) )
                 error(str, "Bad character: '"+Character.toString(ch)+"'");
             p++;
