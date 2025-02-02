@@ -38,7 +38,6 @@ import org.apache.jena.irix.IRIException;
 import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIx;
 import org.apache.jena.query.ARQ;
-import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.expr.ExprEvalException;
@@ -127,22 +126,31 @@ public class NodeFunctions {
         return NodeValue.booleanReturn(sameTerm(nv1.asNode(), nv2.asNode()));
     }
 
+    // Jena - up to Jena 4.
+    // Language tags were kept in the case form they were given as.
+    // Jena5 - language tags are canonicalised.
+
     /** sameTerm(x,y) */
     public static boolean sameTerm(Node node1, Node node2) {
-        if ( node1.equals(node2) )
-            return true;
-        if ( Util.isLangString(node1) && Util.isLangString(node2) ) {
-            String lex1 = node1.getLiteralLexicalForm();
-            String lex2 = node2.getLiteralLexicalForm();
-            if ( !lex1.equals(lex2) )
-                return false;
-            return node1.getLiteralLanguage().equalsIgnoreCase(node2.getLiteralLanguage());
-        }
-        if ( node1.isTripleTerm() && node2.isTripleTerm() ) {
-            return sameTriples(node1.getTriple(), node2.getTriple());
-        }
-        return false;
+        return node1.sameTermAs(node2);
     }
+
+//    /** sameTerm(x,y) */
+//    public static boolean sameTerm(Node node1, Node node2) {
+//        if ( node1.equals(node2) )
+//            return true;
+//        if ( Util.isLangString(node1) && Util.isLangString(node2) ) {
+//            String lex1 = node1.getLiteralLexicalForm();
+//            String lex2 = node2.getLiteralLexicalForm();
+//            if ( !lex1.equals(lex2) )
+//                return false;
+//            return node1.getLiteralLanguage().equalsIgnoreCase(node2.getLiteralLanguage());
+//        }
+//        if ( node1.isTripleTerm() && node2.isTripleTerm() ) {
+//            return sameTriples(node1.getTriple(), node2.getTriple());
+//        }
+//        return false;
+//    }
 
     private static boolean sameTriples(Triple t1, Triple t2) {
         return sameTerm(t1.getSubject(), t2.getSubject())
