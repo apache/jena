@@ -16,8 +16,9 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.util;
+package org.apache.jena.sparql.util.iso;
 
+import static org.apache.jena.atlas.lib.tuple.TupleFactory.tuple;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
@@ -25,15 +26,21 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Test;
+
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.atlas.lib.tuple.TupleFactory;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.sse.Item;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.sse.builders.BuilderNode;
-import org.junit.Test;
+import org.apache.jena.sparql.util.IsoMatcher;
+import org.apache.jena.sparql.util.NodeUtils;
+import org.apache.jena.util.iterator.ExtendedIterator;
 
 public class TestIsoMatcher
 {
@@ -336,10 +343,10 @@ public class TestIsoMatcher
         Graph g1 = SSE.parseGraph(s1);
         Graph g2 = SSE.parseGraph(s2);
 
-        Collection<Tuple<Node>> x1 = IsoMatcher.tuplesTriples(g1.find());
-        Collection<Tuple<Node>> x2 = IsoMatcher.tuplesTriples(g2.find());
+        Collection<Tuple<Node>> x1 = tuplesTriples(g1.find());
+        Collection<Tuple<Node>> x2 = tuplesTriples(g2.find());
 
-        boolean b = IsoAlg.isIsomorphic(x1, x2, Iso.mappableBlankNodesVariables, NodeUtils.sameRdfTerm);
+        boolean b = IsoAlgTuple.isIsomorphic(x1, x2, IsoLib.mappableBlankNodesVariables, NodeUtils.sameRdfTerm);
         if ( b != expected ) {
             System.out.println("====");
             SSE.write(g1);
@@ -370,5 +377,12 @@ public class TestIsoMatcher
             System.out.println("Expected: "+iso+"; got: "+b);
         }
         assertEquals(iso, b);
+    }
+
+    /*package*/ static List<Tuple<Node>> tuplesTriples(ExtendedIterator<Triple> iter) {
+        try {
+            return Iter.iter(iter).map(t->tuple(t.getSubject(), t.getPredicate(), t.getObject())).toList();
+        }
+        finally { iter.close(); }
     }
 }
