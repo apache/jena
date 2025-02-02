@@ -353,30 +353,28 @@ public abstract class NodeValue extends ExprNode
         return makeNode(lexicalForm, XSDdate);
     }
 
-   // ----------------------------------------------------------------
-   // ---- Expr interface
-
-   @Override
-   public NodeValue eval(Binding binding, FunctionEnv env) {
-       return this;
-   }
-
-   // NodeValues are immutable so no need to duplicate.
-   @Override
-   public Expr copySubstitute(Binding binding) {
-       return this;
-   }
+    // ----------------------------------------------------------------
+    // ---- Expr interface
 
     @Override
-    public Expr applyNodeTransform(NodeTransform transform)
-    {
+    public NodeValue eval(Binding binding, FunctionEnv env) {
+        return this;
+    }
+
+    // NodeValues are immutable so no need to duplicate.
+    @Override
+    public Expr copySubstitute(Binding binding) {
+        return this;
+    }
+
+    @Override
+    public Expr applyNodeTransform(NodeTransform transform) {
         Node n = asNode();
         n = transform.apply(n);
         return makeNode(n);
     }
 
-    public Node evalNode(Binding binding, ExecutionContext execCxt)
-    {
+    public Node evalNode(Binding binding, ExecutionContext execCxt) {
         return asNode();
     }
 
