@@ -26,6 +26,10 @@ import java.io.ByteArrayOutputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
+
 import org.apache.jena.atlas.legacy.BaseTest2 ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
@@ -36,15 +40,9 @@ import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerText;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.graph.NodeConst ;
-import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderBinding ;
-import org.apache.jena.sparql.util.NodeUtils ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
-
 
 public class TestBindingStreams
 {
@@ -106,82 +104,70 @@ public class TestBindingStreams
     @Test public void bindingStream_60()              { testWriteRead(bb1) ; }
 
     @Test
-    public void bindingStream_61()
-    {
-        Node bn = NodeFactory.createBlankNode("unusual") ;
-        Binding b = BindingFactory.binding(Var.alloc("v"), bn) ;
-        testWriteRead(b) ;
+    public void bindingStream_61() {
+        Node bn = NodeFactory.createBlankNode("unusual");
+        Binding b = BindingFactory.binding(Var.alloc("v"), bn);
+        testWriteRead(b);
     }
 
     @Test public void bindingStream_62()              { testWriteRead(bb2) ; }
 
     @Test public void bindingStream_63()              { testWriteRead(bb3) ; }
 
+    static void testRead(String x, Binding...bindings) {
+        Tokenizer t = TokenizerText.create().fromString(x).build();;
+        BindingInputStream inStream = new BindingInputStream(t);
 
-    static void testRead(String x, Binding ... bindings)
-    {
-        Tokenizer t = TokenizerText.create().fromString(x).build(); ;
-        BindingInputStream inStream = new BindingInputStream(t) ;
-
-        if ( bindings.length == 0 )
-        {
+        if ( bindings.length == 0 ) {
             for ( ; inStream.hasNext() ; )
-                inStream.next() ;
-            return ;
+                inStream.next();
+            return;
         }
 
-        int i ;
-        for ( i = 0 ; inStream.hasNext() ; i++ )
-        {
-            Binding b = inStream.next() ;
-            assertTrue("Bindings do not match: expected="+bindings[i]+" got="+b, equalBindings(bindings[i], b)) ;
+        int i;
+        for ( i = 0 ; inStream.hasNext() ; i++ ) {
+            Binding b = inStream.next();
+            assertTrue("Bindings do not match: expected=" + bindings[i] + " got=" + b, equalBindings(bindings[i], b));
         }
 
-        assertEquals("Wrong length: expect= "+bindings.length+" got="+i,bindings.length, i) ;
+        assertEquals("Wrong length: expect= " + bindings.length + " got=" + i, bindings.length, i);
     }
 
     static void testWriteRead(Binding ... bindings) { testWriteRead(null, bindings) ; }
 
-    static void testWriteRead(PrefixMap prefixMap, Binding ... bindings)
-    {
-        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        BindingOutputStream output = new BindingOutputStream(out, prefixMap) ;
+    static void testWriteRead(PrefixMap prefixMap, Binding...bindings) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        BindingOutputStream output = new BindingOutputStream(out, prefixMap);
 
         for ( Binding b : bindings )
-            output.write(b) ;
-        output.flush() ;
+            output.write(b);
+        output.flush();
 
         // When the going gets tough, the tough put in trace statements:
-        //System.out.println("T: \n"+out.toString()) ;
+        // System.out.println("T: \n"+out.toString()) ;
 
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
-        BindingInputStream input = new BindingInputStream(in) ;
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        BindingInputStream input = new BindingInputStream(in);
 
-        List<Binding> results = new ArrayList<>() ;
-        for ( ; input.hasNext() ; )
-        {
-            results.add(input.next()) ;
+        List<Binding> results = new ArrayList<>();
+        for ( ; input.hasNext() ; ) {
+            results.add(input.next());
         }
-        assertEquals(bindings.length, results.size()) ;
-        for ( int i = 0 ; i < bindings.length ; i++ )
-        {
-            Binding b1 = bindings[i] ;
-            Binding b2 = results.get(i) ;
-            assertTrue("Bindings do not match: expected="+b1+" got="+b2, equalBindings(b1, b2)) ;
+        assertEquals(bindings.length, results.size());
+        for ( int i = 0 ; i < bindings.length ; i++ ) {
+            Binding b1 = bindings[i];
+            Binding b2 = results.get(i);
+            assertTrue("Bindings do not match: expected=" + b1 + " got=" + b2, equalBindings(b1, b2));
         }
     }
 
-
-    private static boolean equalBindings(Binding binding1, Binding binding2)
-    {
-        // Need to have the exact same terms coming back (therefore we can't use BNodeIso to compare values)
-        return ResultSetCompare.equal(binding1, binding2, NodeUtils.sameNode) ;
+    private static boolean equalBindings(Binding binding1, Binding binding2) {
+        // Identical
+        return BindingLib.equals(binding1, binding2) ;
     }
 
-
-    private static Binding build(String string)
-    {
-        Item item = SSE.parse("(binding "+string+")") ;
-        return BuilderBinding.build(item) ;
+    private static Binding build(String string) {
+        Item item = SSE.parse("(binding " + string + ")");
+        return BuilderBinding.build(item);
     }
 }

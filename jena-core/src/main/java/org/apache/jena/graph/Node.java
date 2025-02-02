@@ -246,12 +246,15 @@ public abstract class Node implements Serializable {
     /*package*/ Node( ) {}
 
     /**
-     * Java rules for equals. See also {#sameTermAs} and {#sameValueAs} Nodes only equal
-     * other Nodes that have equal labels.
+     * Java rules for equals. See also {#sameTermAs} and {#sameValueAs}.
+     * Nodes only equal other Nodes that have equal labels.
      */
     @Override
     public abstract boolean equals(Object o);
 
+    /**
+     * RDF term equality.
+     */
     public boolean sameTermAs(Object o)
     { return equals( o ); }
 

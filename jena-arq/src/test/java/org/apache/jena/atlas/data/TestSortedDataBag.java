@@ -42,13 +42,12 @@ public class TestSortedDataBag
     private static final String LETTERS = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
     private Random random;
 
-    @Test public void testSorting()
-    {
+    @Test
+    public void testSorting() {
         testSorting(500, 10);
     }
 
-    private void testSorting(int numBindings, int threshold)
-    {
+    private void testSorting(int numBindings, int threshold) {
         List<Binding> unsorted = randomBindings(numBindings);
 
         List<SortCondition> conditions = new ArrayList<>();
@@ -59,22 +58,16 @@ public class TestSortedDataBag
 
         List<Binding> sorted = new ArrayList<>();
 
-        SortedDataBag<Binding> db = new SortedDataBag<>(
-                new ThresholdPolicyCount<Binding>(threshold),
-                SerializationFactoryFinder.bindingSerializationFactory(),
-                comparator);
-        try
-        {
+        SortedDataBag<Binding> db = new SortedDataBag<>(new ThresholdPolicyCount<Binding>(threshold),
+                                                        SerializationFactoryFinder.bindingSerializationFactory(), comparator);
+        try {
             db.addAll(unsorted);
             Iterator<Binding> iter = db.iterator();
-            while (iter.hasNext())
-            {
+            while (iter.hasNext()) {
                 sorted.add(iter.next());
             }
             Iter.close(iter);
-        }
-        finally
-        {
+        } finally {
             db.close();
         }
 
@@ -82,13 +75,13 @@ public class TestSortedDataBag
         assertEquals(unsorted, sorted);
     }
 
-    @Test public void testSortingWithPreMerge()
-    {
+    @Test
+    public void testSortingWithPreMerge() {
         // Save the original value...
         int origMaxSpillFiles = SortedDataBag.MAX_SPILL_FILES;
-        try
-        {
+        try {
             // Vary the number of spill files and bindings so we get a variable number of premerge rounds
+            // @formatter:off
             SortedDataBag.MAX_SPILL_FILES = 2;    testSorting(1, 1);
             SortedDataBag.MAX_SPILL_FILES = 2;    testSorting(2, 1);
             SortedDataBag.MAX_SPILL_FILES = 2;    testSorting(3, 1);
@@ -99,37 +92,31 @@ public class TestSortedDataBag
             SortedDataBag.MAX_SPILL_FILES = 100;  testSorting(1000, 10);
             SortedDataBag.MAX_SPILL_FILES = 2;    testSorting(10, 10);
             SortedDataBag.MAX_SPILL_FILES = 5;    testSorting(10, 10);
-        }
-        finally
-        {
+            // @formatter:on
+        } finally {
             SortedDataBag.MAX_SPILL_FILES = origMaxSpillFiles;
         }
     }
 
-    @Test public void testTemporaryFilesAreCleanedUpAfterCompletion()
-    {
+    @Test
+    public void testTemporaryFilesAreCleanedUpAfterCompletion() {
         List<Binding> unsorted = randomBindings(500);
 
         List<SortCondition> conditions = new ArrayList<>();
         conditions.add(new SortCondition(new ExprVar("8"), Query.ORDER_ASCENDING));
         BindingComparator comparator = new BindingComparator(conditions);
 
-        SortedDataBag<Binding> db = new SortedDataBag<>(
-                new ThresholdPolicyCount<Binding>(10),
-                SerializationFactoryFinder.bindingSerializationFactory(),
-                comparator);
+        SortedDataBag<Binding> db = new SortedDataBag<>(new ThresholdPolicyCount<Binding>(10),
+                                                        SerializationFactoryFinder.bindingSerializationFactory(), comparator);
 
         List<File> spillFiles = new ArrayList<>();
-        try
-        {
+        try {
             db.addAll(unsorted);
             spillFiles.addAll(db.getSpillFiles());
 
             int count = 0;
-            for (File file : spillFiles)
-            {
-                if (file.exists())
-                {
+            for ( File file : spillFiles ) {
+                if ( file.exists() ) {
                     count++;
                 }
             }
@@ -137,46 +124,36 @@ public class TestSortedDataBag
             assertEquals(49, count);
 
             Iterator<Binding> iter = db.iterator();
-            while (iter.hasNext())
-            {
+            while (iter.hasNext()) {
                 iter.next();
             }
             Iter.close(iter);
-        }
-        finally
-        {
+        } finally {
             db.close();
         }
 
         int count = 0;
-        for (File file : spillFiles)
-        {
-            if (file.exists())
-            {
+        for ( File file : spillFiles ) {
+            if ( file.exists() ) {
                 count++;
             }
         }
         assertEquals(0, count);
     }
 
-    private List<Binding> randomBindings(int numBindings)
-    {
+    private List<Binding> randomBindings(int numBindings) {
         random = new Random();
-        Var[] vars = new Var[]{
-            Var.alloc("1"), Var.alloc("2"), Var.alloc("3"),
-            Var.alloc("4"), Var.alloc("5"), Var.alloc("6"),
-            Var.alloc("7"), Var.alloc("8"), Var.alloc("9"), Var.alloc("0")
-        };
+        Var[] vars = new Var[]{Var.alloc("1"), Var.alloc("2"), Var.alloc("3"), Var.alloc("4"), Var.alloc("5"), Var.alloc("6"),
+            Var.alloc("7"), Var.alloc("8"), Var.alloc("9"), Var.alloc("0")};
         List<Binding> toReturn = new ArrayList<>();
-        for(int i = 0; i < numBindings; i++){
+        for ( int i = 0 ; i < numBindings ; i++ ) {
             toReturn.add(randomBinding(vars));
         }
 
         return toReturn;
     }
 
-    private Binding randomBinding(Var[] vars)
-    {
+    private Binding randomBinding(Var[] vars) {
         BindingBuilder builder = Binding.builder();
         builder.add(vars[0], NodeFactory.createBlankNode());
         builder.add(vars[1], NodeFactory.createURI(randomURI()));
@@ -191,30 +168,26 @@ public class TestSortedDataBag
         return builder.build();
     }
 
-    private String randomURI()
-    {
+    private String randomURI() {
         return String.format("http://%s.example.com/%s", randomString(10), randomString(10));
     }
 
-    private String randomString(int length)
-    {
+    private String randomString(int length) {
         StringBuilder builder = new StringBuilder();
-        for(int i = 0; i < length; i++){
+        for ( int i = 0 ; i < length ; i++ ) {
             builder.append(LETTERS.charAt(random.nextInt(LETTERS.length())));
         }
         return builder.toString();
     }
 
-    private void getNextAndExpectException(QueryIterator iter)
-    {
-        try{
+    private void getNextAndExpectException(QueryIterator iter) {
+        try {
             iter.hasNext();
             fail("Expected an exception here");
-        }catch(QueryCancelledException e){
+        } catch (QueryCancelledException e) {
             // expected
-        }catch(Exception e){
+        } catch (Exception e) {
             fail("Unexpected exception");
         }
     }
-
 }

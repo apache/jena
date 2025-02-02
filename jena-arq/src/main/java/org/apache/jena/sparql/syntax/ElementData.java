@@ -27,9 +27,8 @@ import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.algebra.table.TableData ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.resultset.ResultSetCompare ;
+import org.apache.jena.sparql.resultset.ResultsCompare;
 import org.apache.jena.sparql.util.NodeIsomorphismMap ;
-import org.apache.jena.sparql.util.NodeUtils ;
 
 public class ElementData extends Element
 {
@@ -81,7 +80,8 @@ public class ElementData extends Element
         ElementData f2 = (ElementData)el2 ;
         if ( ! vars.equals(f2.vars) )
             return false ;
-        if ( ! ResultSetCompare.equalsByTest(rows, f2.rows, new ResultSetCompare.BNodeIso(NodeUtils.sameNode)) )
+
+        if ( ! ResultsCompare.equalsByTerm(rows, f2.rows) )
             return false ;
         return true ;
     }

@@ -112,81 +112,72 @@ public class TestResultSetFormat1
     	")" } ;
 
     @Parameters
-    public static Collection<Object[]> data()
-    {
+    public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] { {$rs0}, {$rs1}, {$rs2}, {$rs3}, {$rs4}, {$rs5}, {$rs6}, {$rs7}, {$rs8}, {$rs9}, {$rs10}, {$rs11} } ) ;
     }
 
     private final String[] $rs ;
 
-    public TestResultSetFormat1(String[] rs)
-    {
-        this.$rs = rs ;
+    public TestResultSetFormat1(String[] rs) {
+        this.$rs = rs;
     }
 
-    static ResultSet make(String... strings)
-    {
+    static ResultSet make(String...strings) {
         if ( strings.length == 0 )
-            throw new IllegalArgumentException() ;
+            throw new IllegalArgumentException();
 
-        String x = StrUtils.strjoinNL(strings) ;
-        Item item = SSE.parse(x) ;
+        String x = StrUtils.strjoinNL(strings);
+        Item item = SSE.parse(x);
         return ResultSetFactory.makeRewindable(BuilderRowSet.build(item));
     }
 
-    @Test public void resultset_01()
-    {
-        ResultSet rs = make($rs) ;
-        ResultSetFormatter.asText(rs) ;
+    @Test
+    public void resultset_01() {
+        ResultSet rs = make($rs);
+        ResultSetFormatter.asText(rs);
     }
 
-    @Test public void resultset_02()
-    {
-        ResultSet rs = make($rs) ;
-        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        ResultSetFormatter.outputAsXML(out, rs) ;
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
-        ResultSet rs2 = ResultSetFactory.fromXML(in) ;
+    @Test
+    public void resultset_02() {
+        ResultSet rs = make($rs);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ResultSetFormatter.outputAsXML(out, rs);
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        ResultSet rs2 = ResultSetFactory.fromXML(in);
         checkIsomorphic(rs, rs2);
     }
 
-    @Test public void resultset_03()
-    {
-        ResultSet rs = make($rs) ;
-        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        ResultSetFormatter.outputAsJSON(out, rs) ;
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
-        ResultSet rs2 = ResultSetFactory.fromJSON(in) ;
+    @Test
+    public void resultset_03() {
+        ResultSet rs = make($rs);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ResultSetFormatter.outputAsJSON(out, rs);
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        ResultSet rs2 = ResultSetFactory.fromJSON(in);
         checkIsomorphic(rs, rs2);
     }
 
-    @Test public void resultset_04()
-    {
-        ResultSet rs = make($rs) ;
-        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        ResultSetFormatter.outputAsTSV(out, rs) ;
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
+    @Test
+    public void resultset_04() {
+        ResultSet rs = make($rs);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ResultSetFormatter.outputAsTSV(out, rs);
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
         ResultSet rs2 = ResultSetMgr.read(in, ResultSetLang.RS_TSV);
         checkIsomorphic(rs, rs2);
     }
 
-    @Test public void resultset_05()
-    {
-        ResultSet rs = make($rs) ;
-        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        ResultSetFormatter.outputAsCSV(out, rs) ;
+    @Test
+    public void resultset_05() {
+        ResultSet rs = make($rs);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ResultSetFormatter.outputAsCSV(out, rs);
     }
 
-    private static void checkIsomorphic(ResultSet x, ResultSet y)
-    {
+    private static void checkIsomorphic(ResultSet x, ResultSet y) {
         ResultSetRewindable rs1 = x.rewindable();
         ResultSetRewindable rs2 = y.rewindable();
-//        System.out.println(ResultSetFormatter.asText(rs1));
-//        System.out.println();
-//        System.out.println(ResultSetFormatter.asText(rs2));
-//        rs1.reset();
-//        rs2.reset();
-        Assert.assertTrue(ResultSetCompare.isomorphic(rs1, rs2)) ;
+        Assert.assertTrue(ResultsCompare.equalsByTerm(rs1, rs2));
     }
 
 }

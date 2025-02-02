@@ -39,7 +39,7 @@ import org.apache.jena.query.ResultSetFactory ;
 import org.apache.jena.query.ResultSetRewindable ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.ResultSetMgr ;
-import org.apache.jena.sparql.resultset.ResultSetCompare ;
+import org.apache.jena.sparql.resultset.ResultsCompare ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderRowSet;
 
@@ -97,7 +97,7 @@ public class TestResultSetIO {
         ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs) ;
         if ( ! lang.equals(RS_CSV) ) {
             // CSV is not faithful
-            assertTrue(ResultSetCompare.equalsByTerm(test_rs, rsw)) ;
+            assertTrue(ResultsCompare.equalsByTerm(test_rs, rsw)) ;
         }
 
         rsw.reset();
@@ -109,7 +109,7 @@ public class TestResultSetIO {
         rsw.reset();
         in = new ByteArrayInputStream(out2.toByteArray()) ;
         ResultSet rs2 = ResultSetMgr.read(in, lang) ;
-        assertTrue(ResultSetCompare.equalsByTerm(rsw, rs2)) ;
+        assertTrue(ResultsCompare.equalsByTerm(rsw, rs2)) ;
     }
 }
 

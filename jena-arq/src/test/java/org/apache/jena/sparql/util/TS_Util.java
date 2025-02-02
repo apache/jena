@@ -28,7 +28,6 @@ import org.junit.runners.Suite.SuiteClasses ;
     TestList.class ,
     TestFmtUtils.class,
     TestContextUtils.class,
-    TestIsoMatcher.class,
     TestGraphUtils.class,
     TestQueryCheckRW.class
 })

@@ -35,7 +35,7 @@ import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.ref.TableJoin;
 import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.resultset.ResultSetCompare ;
+import org.apache.jena.sparql.resultset.ResultsCompare ;
 import org.apache.jena.sparql.sse.SSE ;
 
 /** Tests on tables and the simple nest loop join (TableJoin) used by the reference query engine */
@@ -115,7 +115,7 @@ public class TestTableJoin
         public static boolean equalsByTerm(Table table1, Table table2) {
             ResultSet rs1 = ResultSetFactory.create(table1.iterator(null), table1.getVarNames()) ;
             ResultSet rs2 = ResultSetFactory.create(table2.iterator(null), table2.getVarNames()) ;
-            return ResultSetCompare.equalsByTerm(rs1, rs2) ;
+            return ResultsCompare.equalsByTerm(rs1, rs2) ;
         }
     }
 
