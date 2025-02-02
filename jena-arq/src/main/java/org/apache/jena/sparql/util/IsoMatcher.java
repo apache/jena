@@ -31,16 +31,19 @@ import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.sparql.util.iso.IsoAlgRows;
+import org.apache.jena.sparql.util.iso.IsoAlgTuple;
+import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
  * Simple isomorphism testing for on unordered collections.
  * This code is simple and slow.
- * For graphs, the Graph isomorphism code in Jena is much better (better tested, better performance)
  * This code can work on any tuples of nodes.
  *
  * See {@link Iso} for isomorphism for ordered lists.
  *
- * See {@link IsoAlg} for the isomorphism algorithm.
+ * See {@link IsoAlgTuple} for the isomorphism algorithm.
+ * See {@link IsoAlgRows} for the isomorphism algorithm for rowsets.
  */
 public class IsoMatcher
 {
@@ -64,20 +67,23 @@ public class IsoMatcher
     }
 
     /** Helper - convert to {@code List<Tuple<Node>>} */
-    /*package*/ static List<Tuple<Node>> tuplesTriples(Iterator<Triple> iter) {
-        return Iter.iter(iter).map(t->tuple(t.getSubject(), t.getPredicate(), t.getObject())).toList();
-    }
-
-    /** Helper - convert to {@code List<Tuple<Node>>} */
-    public static List<Tuple<Node>> tuplesQuads(Iterator<Quad> iter) {
+    private static List<Tuple<Node>> tuplesQuads(Iterator<Quad> iter) {
         return Iter.iter(iter).map(q->tuple(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject())).toList();
     }
 
+    /** Helper - convert to {@code List<Tuple<Node>>} */
+    private static List<Tuple<Node>> tuplesTriples(ExtendedIterator<Triple> iter) {
+        try {
+            return Iter.iter(iter).map(t->tuple(t.getSubject(), t.getPredicate(), t.getObject())).toList();
+        }
+        finally { iter.close(); }
+    }
+
     /** Collection of tuples isomorphism, with choice of when two nodes are "equal".
-     * See also {@link IsoAlg#isIsomorphic(Collection, Collection, org.apache.jena.sparql.util.Iso.Mappable, EqualityTest)}
+     * See also {@link IsoAlgTuple#isIsomorphic(Collection, Collection, org.apache.jena.sparql.util.Iso.Mappable, EqualityTest)}
      * for isomorphisms testing for more than just blank nodes.
      */
-    public static boolean isomorphic(Collection<Tuple<Node>> x1, Collection<Tuple<Node>> x2, EqualityTest nodeTest) {
-        return IsoAlg.isIsomorphic(x1, x2, nodeTest);
+    private static boolean isomorphic(Collection<Tuple<Node>> x1, Collection<Tuple<Node>> x2, EqualityTest nodeTest) {
+        return IsoAlgTuple.isIsomorphic(x1, x2, nodeTest);
     }
 }
