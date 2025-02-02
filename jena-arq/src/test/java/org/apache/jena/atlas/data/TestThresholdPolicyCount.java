@@ -21,29 +21,24 @@ package org.apache.jena.atlas.data;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test ;
+import org.junit.Test;
 
+public class TestThresholdPolicyCount {
 
-public class TestThresholdPolicyCount
-{
-    
     @Test
-    public void count_01()
-    {
+    public void count_01() {
         ThresholdPolicyCount<String> policy = new ThresholdPolicyCount<>(0);
         assertTrue(policy.isThresholdExceeded());
     }
-    
+
     @Test
-    public void count_02()
-    {
+    public void count_02() {
         ThresholdPolicyCount<String> policy = new ThresholdPolicyCount<>(1);
         assertFalse(policy.isThresholdExceeded());
     }
-    
+
     @Test
-    public void count_03()
-    {
+    public void count_03() {
         ThresholdPolicyCount<String> policy = new ThresholdPolicyCount<>(1);
         assertFalse(policy.isThresholdExceeded());
         policy.increment("a");

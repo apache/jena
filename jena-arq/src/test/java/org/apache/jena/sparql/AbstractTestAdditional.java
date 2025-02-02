@@ -27,7 +27,7 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.RowSetOps;
 import org.apache.jena.sparql.exec.RowSetRewindable;
-import org.apache.jena.sparql.resultset.ResultSetCompare;
+import org.apache.jena.sparql.resultset.ResultsCompare;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.system.Txn;
 import org.junit.Test;
@@ -70,7 +70,7 @@ public abstract class AbstractTestAdditional {
     }
 
     private static void testRS(RowSetRewindable rsExpected, RowSetRewindable rsGot) {
-        boolean b = ResultSetCompare.equalsByTerm(rsExpected, rsGot);
+        boolean b = ResultsCompare.equalsByTerm(rsExpected, rsGot);
         if (! b ) {
             rsExpected.reset();
             rsGot.reset();

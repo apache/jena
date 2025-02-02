@@ -34,7 +34,7 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.ExprList ;
-import org.apache.jena.sparql.resultset.ResultSetCompare ;
+import org.apache.jena.sparql.resultset.ResultsCompare ;
 import org.apache.jena.sparql.sse.SSE ;
 
 /** Tests for inner/equi joins */
@@ -340,7 +340,7 @@ public abstract class AbstractTestJoin {
     private static boolean equalTables(Table table1, Table table2) {
         ResultSet rs1 =  ResultSetFactory.create(table1.iterator(null), table1.getVarNames()) ;
         ResultSet rs2 =  ResultSetFactory.create(table2.iterator(null), table2.getVarNames()) ;
-        return ResultSetCompare.equalsByTerm(rs1, rs2) ;
+        return ResultsCompare.equalsByTerm(rs1, rs2) ;
     }
 }
 

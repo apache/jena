@@ -18,30 +18,35 @@
 
 package org.apache.jena.sparql.util;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 
 /** Map nodes to nodes. */
 public class NodeIsomorphismMap
 {
-    private Map<Node, Node> map = new HashMap<>() ;
-    
+    private Map<Node, Node> map = new HashMap<>();
+
     public NodeIsomorphismMap() {}
-    
-    private Node get(Node key)                { return map.get(key) ; }
-    private void put(Node key, Node value)    { map.put(key, value) ; }
-    
+
+    private Node get(Node key)                { return map.get(key); }
+    private void put(Node key, Node value)    { map.put(key, value); }
+
     public boolean makeIsomorphic(Node n1, Node n2) {
         if ( n1.isBlank() && n2.isBlank() ) {
-            Node other = get(n1) ;
+            Node other = get(n1);
             if ( other == null ) {
-                put(n1, n2) ;
-                return true ;
+                put(n1, n2);
+                return true;
             }
-            return other.equals(n2) ;
+            return other.equals(n2);
         }
-        return n1.equals(n2) ;
+        return n1.equals(n2);
+    }
+
+    @Override
+    public String toString() {
+        return "Iso["+map.toString()+"]";
     }
 }

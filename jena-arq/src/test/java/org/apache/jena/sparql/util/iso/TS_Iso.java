@@ -16,22 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.atlas.data;
+package org.apache.jena.sparql.util.iso;
 
-import java.io.File;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+import org.junit.runners.Suite.SuiteClasses ;
 
-/**
- * This class exists so that we can examine the internals of a DataBag during testing
- * (which we can do here since it is in the same package).
- */
-public class DataBagExaminer {
-    public static int countTemporaryFiles(AbstractDataBag<? > bag) {
-        int count = 0;
-        for ( File tempFile : bag.getSpillFiles() ) {
-            if ( tempFile.exists() ) {
-                count++;
-            }
-        }
-        return count;
-    }
-}
+@RunWith(Suite.class)
+@SuiteClasses( {
+    TestIso.class,
+    TestIsoMatcher.class,
+    TestIsoAlgRows.class
+})
+
+public class TS_Iso { }

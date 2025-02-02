@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.util;
+package org.apache.jena.sparql.util.iso;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +29,9 @@ import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.atlas.lib.tuple.TupleFactory;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.sparql.util.Iso.Mappable;
+import org.apache.jena.sparql.util.EqualityTest;
+import org.apache.jena.sparql.util.Iso;
+import org.apache.jena.sparql.util.NodeUtils;
 
 /**
  * Simple isomorphism testing for collections of tuples of nodes. This can be used
@@ -37,75 +39,65 @@ import org.apache.jena.sparql.util.Iso.Mappable;
  * better (better tested, better performance) for graph isomorphism. This code is
  * simple, easier to understand, and works on collections of tuples, not just graphs.
  */
-public class IsoAlg {
+public class IsoAlgTuple {
 
-    /** Record the mapping of a node. This is a one-way linked list. */
-    public static class Mapping {
-        final Node     node1;
-        final Node     node2;
-        final Mapping  parent;
+//    /** Record the IsoMapping of a node. This is a one-way linked list. */
+//    private static class IsoMapping {
+//        final Node     node1;
+//        final Node     node2;
+//        final IsoMapping  parent;
+//
+//        static final IsoMapping rootIsoMapping = new Mapping(null, null, null);
+//
+//        Mapping(IsoMapping parent, Node node1, Node node2) {
+//            super();
+//            this.parent = parent;
+//            this.node1 = node1;
+//            this.node2 = node2;
+//        }
+//
+//        boolean mapped(Node node) {
+//            return map(node) != null;
+//        }
+//
+//        Node map(Node node) {
+//            IsoMapping IsoMapping = this;
+//            while (IsoMapping != rootMapping) {
+//                if ( mapping.node1.equals(node) )
+//                    return mapping.node2;
+//                IsoMapping = mapping.parent;
+//            }
+//            return null;
+//        }
+//
+//        boolean reverseMapped(Node node) {
+//            return reverseMap(node) != null;
+//        }
+//
+//        Node reverseMap(Node node) {
+//            IsoMapping IsoMapping = this;
+//            while (IsoMapping != rootMapping) {
+//                if ( mapping.node2.equals(node) )
+//                    return mapping.node1;
+//                IsoMapping = mapping.parent;
+//            }
+//            return null;
+//        }
+//
+//        @Override
+//        public String toString() {
+//            StringBuilder sbuff = new StringBuilder();
+//            IsoMapping IsoMapping = this;
+//            while (IsoMapping != rootMapping) {
+//                sbuff.append("{" + mapping.node1 + " => " + mapping.node2 + "}");
+//                IsoMapping = mapping.parent;
+//            }
+//            sbuff.append("{}");
+//            return sbuff.toString();
+//        }
+//    }
 
-        public static final Mapping rootMapping = new Mapping(null, null, null);
-
-        public Mapping(Mapping parent, Node node1, Node node2) {
-            super();
-            this.parent = parent;
-            this.node1 = node1;
-            this.node2 = node2;
-        }
-
-        public boolean mapped(Node node) {
-            return map(node) != null;
-        }
-
-        public Node map(Node node) {
-            Mapping mapping = this;
-            while (mapping != rootMapping) {
-                if ( mapping.node1.equals(node) )
-                    return mapping.node2;
-                mapping = mapping.parent;
-            }
-            return null;
-        }
-
-        public boolean reverseMapped(Node node) {
-            return reverseMap(node) != null;
-        }
-
-        public Node reverseMap(Node node) {
-            Mapping mapping = this;
-            while (mapping != rootMapping) {
-                if ( mapping.node2.equals(node) )
-                    return mapping.node1;
-                mapping = mapping.parent;
-            }
-            return null;
-        }
-
-
-        @Override
-        public String toString() {
-            StringBuilder sbuff = new StringBuilder();
-            Mapping mapping = this;
-            while (mapping != rootMapping) {
-                sbuff.append("{" + mapping.node1 + " => " + mapping.node2 + "}");
-                mapping = mapping.parent;
-            }
-            sbuff.append("{}");
-            return sbuff.toString();
-        }
-    }
-
-    static class Possibility {
-        final Tuple<Node> tuple;
-        final Mapping     mapping;
-
-        public Possibility(Tuple<Node> tuple, Mapping mapping) {
-            super();
-            this.tuple = tuple;
-            this.mapping = mapping;
-        }
-
+    private record Possibility(Tuple<Node> tuple, IsoMapping mapping) {
         @Override
         public String toString() {
             return String.format("Poss|%s %s|", tuple, mapping);
@@ -121,51 +113,55 @@ public class IsoAlg {
      * or {@link NodeUtils#sameRdfTerm} (Node.equals, with lang tag insensitive testing).
      */
     public static boolean isIsomorphic(Collection<Tuple<Node>> x1, Collection<Tuple<Node>> x2, EqualityTest nodeTest) {
-        return isIsomorphic(x1, x2, Iso.mappableBlankNodes, nodeTest);
+        return isIsomorphic(x1, x2, IsoLib.mappableBlankNodes, nodeTest);
     }
 
     /**
-     * Isomorphism test based on a class of mappable elements (e.g. blank nodes {@linkplain Iso#mappableBlankNodes},
+     * Isomorphism test based on a class of IsoLib.Mappable elements (e.g. blank nodes {@linkplain Iso#mappableBlankNodes},
      * or blank nodes and variables {@linkplain Iso#mappableBlankNodesVariables}).
      * Two nodes considered "equal" by an equality test such as
      * {@link NodeUtils#sameValue} (SPARQL value testing),
      * {@link NodeUtils#sameNode} (Node.equals),
      * or {@link NodeUtils#sameRdfTerm} (Node.equals, with lang tag insensitive testing).
      */
-    public static boolean isIsomorphic(Collection<Tuple<Node>> x1, Collection<Tuple<Node>> x2, Iso.Mappable mappable, EqualityTest nodeTest) {
-        return matcher(x1, x2, Mapping.rootMapping, mappable, nodeTest);
+    /*package*/ static boolean isIsomorphic(Collection<Tuple<Node>> x1, Collection<Tuple<Node>> x2, IsoLib.Mappable mappable, EqualityTest nodeTest) {
+        if ( x1.size() != x2.size() )
+            return false;
+        return matcher(x1, x2, IsoMapping.rootMapping, mappable, nodeTest);
     }
 
     /**
-     * Isomorphism test based on a class of mappable elements (e.g. blank nodes {@linkplain Iso#mappableBlankNodes},
+     * Isomorphism test based on a class of IsoLib.Mappable elements (e.g. blank nodes {@linkplain Iso#mappableBlankNodes},
      * or blank nodes and variables {@linkplain Iso#mappableBlankNodesVariables}).
      * Two nodes considered "equal" by an equality test such as
      * {@link NodeUtils#sameValue} (SPARQL value testing),
      * {@link NodeUtils#sameNode} (Node.equals),
      * or {@link NodeUtils#sameRdfTerm} (Node.equals, with lang tag insensitive testing).
      */
-    public static Mapping isIsomorphic(Tuple<Node> tuple1, Tuple<Node> tuple2, Mapping mapping, Mappable mappable, EqualityTest nodeTest) {
-        return gen(tuple1, tuple2, mapping, mappable, nodeTest);
+    private static IsoMapping isIsomorphic(Tuple<Node> tuple1, Tuple<Node> tuple2, IsoMapping mapping, IsoLib.Mappable mappable, EqualityTest nodeTest) {
+        return matchTuples(tuple1, tuple2, mapping, mappable, nodeTest);
     }
 
     // Debug.
     private static final boolean        DEBUG = false;
-    private static final IndentedWriter out   = new IndentedWriter(System.out);
-    static {
-        out.setFlushOnNewline(true);
+    private static final IndentedWriter out   = debugIndentedWriter();
+    private static final IndentedWriter debugIndentedWriter() {
+        IndentedWriter iout = null;
+        if ( DEBUG ) {
+            iout = new IndentedWriter(System.out);
+            iout.setFlushOnNewline(true);
+        }
+        return iout;
     }
 
-    private static boolean matcher(Collection<Tuple<Node>> tuples1, Collection<Tuple<Node>> tuples2, Mapping mapping,
-                                   Iso.Mappable mappable, EqualityTest nodeTest) {
+    private static boolean matcher(Collection<Tuple<Node>> tuples1, Collection<Tuple<Node>> tuples2, IsoMapping mapping,
+                                   IsoLib.Mappable mappable, EqualityTest nodeTest) {
         if ( DEBUG ) {
             out.println("match: ");
             out.println("  1: " + tuples1);
             out.println("  2: " + tuples2);
             out.println("  M: " + mapping);
         }
-        if ( tuples1.size() != tuples2.size() )
-            return false;
-
         // Process the inputs : tuples of all non-mappable terms can be processed here (Node.equals)
         // Loop on tuples1:
         //   if not mappable, remove from tuples2.
@@ -176,6 +172,7 @@ public class IsoAlg {
         // Fast path.
         if ( true )
         {
+            // XXX We can move this out to the caller of matcher.
             List<Tuple<Node>> tuples1$ = new ArrayList<>();
             // Step one - copy non-mappable tuples or exit now.
             for ( Tuple<Node> t1 : tuples1 ) {
@@ -187,7 +184,7 @@ public class IsoAlg {
                 }
                 tuples1$.add(t1);
             }
-            // Tuples for mappable processing.
+            // Tuples for IsoLib.Mappable processing.
             tuples1 = tuples1$;
         } else
             // No pre-process concrete.
@@ -205,10 +202,10 @@ public class IsoAlg {
 
             List<Possibility> causes = matcher(t1, tuples2, mapping, mappable, nodeTest);
 
-            if ( DEBUG )
+            if ( DEBUG ) {
                 out.println("    Possibilities: Tuple" + t1 + " :: " + causes);
-
-            out.incIndent();
+                out.incIndent();
+            }
             try {
                 // Try each possible tuple-tuple matching until one succeeds all the
                 // way.
@@ -218,9 +215,9 @@ public class IsoAlg {
                     // Try t1 -> t2
                     Tuple<Node> t2 = c.tuple;
                     tuples2.remove(t2);
-                    // Try without t1 and t2, using the mapping of this cause.
-                    if ( tuples1.isEmpty() && tuples2.isEmpty() ) // They are the
-                        // same size.
+                    // Try without t1 and t2, using the IsoMapping of this cause.
+                    if ( tuples1.isEmpty() && tuples2.isEmpty() )
+                        // They are the same size.
                         return true;
                     // Recurse
                     if ( matcher(tuples1, tuples2, c.mapping, mappable, nodeTest) ) {
@@ -235,7 +232,7 @@ public class IsoAlg {
                 return false;
             }
             finally {
-                out.decIndent();
+                if ( DEBUG ) out.decIndent();
             }
         }
         return true;
@@ -258,11 +255,10 @@ public class IsoAlg {
     }
 
     /** Return all possible tuple-tuple matches from tuple t1 to tuples in x2 */
-    private static List<Possibility> matcher(Tuple<Node> t1, Collection<Tuple<Node>> g2, Mapping mapping, Iso.Mappable mappable,
-                                       EqualityTest nodeTest) {
+    private static List<Possibility> matcher(Tuple<Node> t1, Collection<Tuple<Node>> g2, IsoMapping mapping, IsoLib.Mappable mappable, EqualityTest nodeTest) {
         List<Possibility> matches = new ArrayList<>();
         for ( Tuple<Node> t2 : g2 ) {
-            Mapping step = gen(t1, t2, mapping, mappable, nodeTest);
+            IsoMapping step = matchTuples(t1, t2, mapping, mappable, nodeTest);
             if ( step != null ) {
                 Possibility c = new Possibility(t2, step);
                 matches.add(c);
@@ -272,19 +268,19 @@ public class IsoAlg {
     }
 
     /**
-     * Find a mapping between the tuples, given a start mapping.
-     * Return a mapping or null for "no match".
+     * Find a IsoMapping between the tuples, given a start mapping.
+     * Return a IsoMapping or null for "no match".
      */
-    private static Mapping gen(Tuple<Node> t1, Tuple<Node> t2, Mapping _mapping, Iso.Mappable mappable, EqualityTest nodeTest) {
+    private static IsoMapping matchTuples(Tuple<Node> t1, Tuple<Node> t2, IsoMapping _mapping, IsoLib.Mappable mappable, EqualityTest nodeTest) {
         if ( t1.len() != t2.len() )
             return null;
 
-        Mapping mapping = _mapping;
+        IsoMapping mapping = _mapping;
         for ( int i = 0 ; i < t1.len() ; i++ ) {
             Node n1 = t1.get(i);
             Node n2 = t2.get(i);
 
-            Mapping mapping2 = gen(n1, n2, mapping, mappable, nodeTest);
+            IsoMapping mapping2 = matchTerms(n1, n2, mapping, mappable, nodeTest);
             if ( mapping2 == null )
                 return null;
             mapping = mapping2;
@@ -297,15 +293,14 @@ public class IsoAlg {
                                        triple.getPredicate(),
                                        triple.getObject());
 
-
-    static Mapping gen(Node n1, Node n2, Mapping _mapping, Iso.Mappable mappable, EqualityTest nodeTest) {
-        Mapping mapping = _mapping;
+    static IsoMapping matchTerms(Node n1, Node n2, IsoMapping _mapping, IsoLib.Mappable mappable, EqualityTest nodeTest) {
+        IsoMapping mapping = _mapping;
         Node n1m = mapping.map(n1);
 
         if ( n1m != null ) {
             // Already mapped
             if ( n1m.equals(n2) )
-                // Exact equals after mapping t1 slot.
+                // Exact equals after IsoMapping n1.
                 return mapping;
             // No match.
             return null;
@@ -317,8 +312,7 @@ public class IsoAlg {
                 Triple t2 = n2.getTriple();
                 Tuple<Node> tuple1 = tripleToTuple.apply(t1);
                 Tuple<Node> tuple2 = tripleToTuple.apply(t2);
-                // Whether to records the triple term mapping.
-                return gen(tuple1, tuple2, mapping, mappable, nodeTest);
+                return matchTuples(tuple1, tuple2, mapping, mappable, nodeTest);
             }
         } else if ( n2.isTripleTerm() ) {
             return null;
@@ -333,7 +327,7 @@ public class IsoAlg {
             }
             // **** If n2 not already mapped.
 
-            mapping = new Mapping(mapping, n1, n2);
+            mapping = new IsoMapping(mapping, n1, n2);
             return mapping;
         }
 

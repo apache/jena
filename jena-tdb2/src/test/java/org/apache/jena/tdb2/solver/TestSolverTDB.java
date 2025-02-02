@@ -24,10 +24,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.query.*;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
@@ -40,13 +45,10 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.exec.RowSetOps;
 import org.apache.jena.sparql.exec.RowSetRewindable;
-import org.apache.jena.sparql.resultset.ResultSetCompare;
+import org.apache.jena.sparql.resultset.ResultsCompare;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.tdb2.ConfigTest;
 import org.apache.jena.tdb2.junit.TL;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class TestSolverTDB {
     static Dataset dataset = null;
@@ -137,7 +139,7 @@ public class TestSolverTDB {
         RowSetRewindable rsw1 = rs1.rewindable();
         RowSetRewindable rsw2 = rs2.rewindable();
 
-        boolean b = ResultSetCompare.equalsByValue(rsw1, rsw2);
+        boolean b = ResultsCompare.equalsByValue(rsw1, rsw2);
         if ( b != result ) {
             System.out.println("Different: ");
             rsw1.reset();
