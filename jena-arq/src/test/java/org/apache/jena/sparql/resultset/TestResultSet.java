@@ -82,7 +82,7 @@ public class TestResultSet {
 
         ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray());
         ResultSet rs2 = ResultSetFactory.fromXML(ins);
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertTrue(ResultsCompare.equalsByTerm(rs1, rs2));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class TestResultSet {
         rs1.reset();
         InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(x));
         ResultSet rs2 = ResultSetFactory.fromXML(in);
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertTrue(ResultsCompare.equalsByTerm(rs1, rs2));
     }
 
     @Test
@@ -103,7 +103,7 @@ public class TestResultSet {
         rs1.reset();
         ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray());
         ResultSet rs2 = ResultSetFactory.fromXML(ins);
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertTrue(ResultsCompare.equalsByTerm(rs1, rs2));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class TestResultSet {
         rs1.reset();
         InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(x));
         ResultSet rs2 = ResultSetFactory.fromXML(in);
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertTrue(ResultsCompare.equalsByTerm(rs1, rs2));
     }
 
     // RDF
@@ -124,7 +124,7 @@ public class TestResultSet {
         Model model = RDFOutput.encodeAsModel(rs1);
         rs1.reset();
         ResultSet rs2 = RDFInput.fromRDF(model);
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertTrue(ResultsCompare.equalsByTerm(rs1, rs2));
     }
 
     @Test
@@ -133,7 +133,7 @@ public class TestResultSet {
         Model model = RDFOutput.encodeAsModel(rs1);
         rs1.reset();
         ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(RDFInput.fromRDF(model));
-        boolean b = ResultSetCompare.equalsByTerm(rs1, rs2);
+        boolean b = ResultsCompare.equalsByTerm(rs1, rs2);
         if ( !b ) {
             rs1.reset();
             rs2.reset();
@@ -154,7 +154,7 @@ public class TestResultSet {
         rs1.reset();
         ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray());
         ResultSet rs2 = ResultSetFactory.fromJSON(ins);
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertTrue(ResultsCompare.equalsByTerm(rs1, rs2));
     }
 
     @Test
@@ -166,7 +166,7 @@ public class TestResultSet {
         ByteArrayInputStream ins = new ByteArrayInputStream(arr.toByteArray());
         ResultSet rs2 = ResultSetFactory.fromJSON(ins);    // Test using the DAWG
                                                            // examples
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertTrue(ResultsCompare.equalsByTerm(rs1, rs2));
     }
 
     // Into some format.
@@ -225,7 +225,7 @@ public class TestResultSet {
         ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
         ResultSet rs2 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
         ResultSet rs3 = make2("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
-        assertTrue(ResultSetCompare.equalsByTerm(rs3, ResultSetUtils.merge(rs1, rs2)));
+        assertTrue(ResultsCompare.equalsByTerm(rs3, ResultSetUtils.merge(rs1, rs2)));
     }
 
     private void test_RS_fmt(ResultSet rs, ResultsFormat fmt, boolean ordered) {
@@ -238,11 +238,11 @@ public class TestResultSet {
         ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(ResultSetFactory.load(ins, fmt));
 
         // Ordered? Unordered?
-        boolean b = ResultSetCompare.equalsByTerm(rs1, rs2);
+        boolean b = ResultsCompare.equalsByTerm(rs1, rs2);
         if ( ordered ) {
             rs1.reset();
             rs2.reset();
-            b = b & ResultSetCompare.equalsByTerm(rs1, rs2);
+            b = b & ResultsCompare.equalsByTerm(rs1, rs2);
         }
 
         if ( !b ) {
@@ -261,17 +261,17 @@ public class TestResultSet {
     public void test_RS_cmp_1() {
         ResultSetRewindable rs1 = new ResultSetMem();
         ResultSetRewindable rs2 = new ResultSetMem();
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertTrue(ResultsCompare.equalsByTerm(rs1, rs2));
         rs1.reset();
         rs2.reset();
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertTrue(ResultsCompare.equalsByTerm(rs1, rs2));
     }
 
     @Test
     public void test_RS_cmp_2() {
         ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
         ResultSet rs2 = new ResultSetMem();
-        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertFalse(ResultsCompare.equalsByTerm(rs1, rs2));
 
     }
 
@@ -279,15 +279,15 @@ public class TestResultSet {
     public void test_RS_cmp_3() {
         ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
         ResultSet rs2 = new ResultSetMem();
-        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertFalse(ResultsCompare.equalsByTerm(rs1, rs2));
     }
 
     @Test
     public void test_RS_cmp_4() {
         ResultSet rs1 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
         ResultSet rs2 = make("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertTrue(ResultsCompare.equalsByTerm(rs1, rs2));
+        assertTrue(ResultsCompare.equalsByTerm(rs1, rs2));
     }
 
     @Test
@@ -296,13 +296,13 @@ public class TestResultSet {
         ResultSetRewindable rs1 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local:1"));
         ResultSetRewindable rs2 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local:2"));
 
-        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertFalse(ResultsCompare.equalsByTerm(rs1, rs2));
         rs1.reset();
         rs2.reset();
 
         assertTrue(rs1.hasNext());
         assertTrue(rs2.hasNext());
-        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertFalse(ResultsCompare.equalsByTerm(rs1, rs2));
     }
 
     @Test
@@ -310,12 +310,12 @@ public class TestResultSet {
         // Different variable, same values
         ResultSetRewindable rs1 = makeRewindable("x", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
         ResultSetRewindable rs2 = makeRewindable("y", org.apache.jena.graph.NodeFactory.createURI("tag:local"));
-        assertFalse(ResultSetCompare.equalsByTermAndOrder(rs1, rs2));
+        assertFalse(ResultsCompare.equalsByTermAndOrder(rs1, rs2));
         rs1.reset();
         rs2.reset();
         assertTrue(rs1.hasNext());
         assertTrue(rs2.hasNext());
-        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2));
+        assertFalse(ResultsCompare.equalsByTerm(rs1, rs2));
     }
 
     // Value based
@@ -323,8 +323,8 @@ public class TestResultSet {
     public void test_RS_cmp_value_1() {
         ResultSetRewindable rs1 = makeRewindable("x", NodeFactoryExtra.parseNode("123"));
         ResultSetRewindable rs2 = makeRewindable("x", NodeFactoryExtra.parseNode("0123"));
-        assertFalse(ResultSetCompare.equalsByTerm(rs1, rs2));
-        assertTrue(ResultSetCompare.equalsByValue(rs1, rs2));
+        assertFalse(ResultsCompare.equalsByTerm(rs1, rs2));
+        assertTrue(ResultsCompare.equalsByValue(rs1, rs2));
     }
 
     // Peeking
@@ -503,25 +503,19 @@ public class TestResultSet {
 
     // ---- Isomorphism.
 
-    /* This is from the DAWG test suite. Result set 1: --------------- | x | y |
-     * =============== | _:b0 | _:b1 | | _:b2 | _:b3 | | _:b1 | _:b0 |
-     * --------------- Result set 2: --------------- | x | y | =============== | _:b1
-     * | _:b0 | | _:b3 | _:b2 | | _:b2 | _:b3 | --------------- */
-
-    // nasty result set.
-    // These are the same but the first row of rs2$ throws in a wrong mapping of
-    // b0/c1
-
-    // Right mapping is:
-    // b0->c3, b1->c2, b2->c1, b3->c0
-    // Currently we get, working simply top to bottom, no backtracking:
-    // b0->c1, b1->c0, b2->c3, b3->c2, then last row fails as _:b1 is mapped to c0,
-    // b0 to c1 not (c2, c3)
-
-    private static String[] rs1$ = {"(resultset (?x ?y)", "   (row (?x _:b0) (?y _:b1))", "   (row (?x _:b2) (?y _:b3))",
-        "   (row (?x _:b1) (?y _:b0))", ")"};
-    private static String[] rs2$ = {"(resultset (?x ?y)", "   (row (?x _:c1) (?y _:c0))", "   (row (?x _:c3) (?y _:c2))",
-        "   (row (?x _:c2) (?y _:c3))", ")"};
+    private static String[] rs1$ = {
+        "(resultset (?x ?y)",
+        "   (row (?x _:b0) (?y _:b1))",
+        "   (row (?x _:b2) (?y _:b3))",
+        "   (row (?x _:b1) (?y _:b0))",
+        ")"
+    };
+    private static String[] rs2$ = {
+        "(resultset (?x ?y)",
+        "   (row (?x _:c1) (?y _:c0))",
+        "   (row (?x _:c3) (?y _:c2))",
+        "   (row (?x _:c2) (?y _:c3))",
+        ")"};
 
     @Test
     public void test_RS_iso_1() {
@@ -531,14 +525,10 @@ public class TestResultSet {
     private void isotest(String[] rs1$2, String[] rs2$2) {
         ResultSetRewindable rs1 = make(StrUtils.strjoinNL(rs1$));
         ResultSetRewindable rs2 = make(StrUtils.strjoinNL(rs2$));
-
-        assertTrue(ResultSetCompare.isomorphic(rs1, rs2));
+        assertTrue(ResultsCompare.equalsByTerm(rs1, rs2));
         rs1.reset();
         rs2.reset();
-        assertTrue(ResultSetCompare.equalsByTerm(rs1, rs2));
-        rs1.reset();
-        rs2.reset();
-        assertTrue(ResultSetCompare.equalsByValue(rs1, rs2));
+        assertTrue(ResultsCompare.equalsByValue(rs1, rs2));
     }
 
     private static ResultSetRewindable make(String x) {
@@ -580,12 +570,14 @@ public class TestResultSet {
         ByteArrayInputStream y = new ByteArrayInputStream(x.toByteArray());
 
         ResultSetRewindable rs2 = ResultSetFactory.copyResults(ResultsReader.create().context(cxt).lang(sparqlresultlang).read(y));
+
         rs1.reset();
         rs2.reset();
+
         if ( same )
-            assertTrue(ResultSetCompare.equalsExact(rs1, rs2));
+            assertTrue(ResultsCompare.equalsExact(rs1, rs2));
         else
-            assertFalse(ResultSetCompare.equalsExact(rs1, rs2));
+            assertFalse(ResultsCompare.equalsExact(rs1, rs2));
     }
 
     // -------- Support functions
