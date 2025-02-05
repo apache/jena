@@ -69,7 +69,7 @@
     "sinon": "^19.0.2",
     "vite": "^6.0.11",
     "vite-plugin-istanbul": "^6.0.2",
-    "vitest": "^2.0.4",
+    "vitest": "^3.0.5",
     "wait-on": "^8.0.0"
   },
   "resolutions": {
