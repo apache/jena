@@ -18,6 +18,12 @@
 
 package org.apache.jena.sparql.service.enhancer.impl;
 
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
@@ -25,10 +31,12 @@ import org.apache.jena.query.Syntax;
 import org.apache.jena.sparql.algebra.Algebra;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.OpAsQuery;
+import org.apache.jena.sparql.algebra.OpVars;
 import org.apache.jena.sparql.algebra.op.OpService;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.syntax.syntaxtransform.QueryTransformOps;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -51,11 +59,7 @@ public class TestServiceEnhancerBatchQueryRewriter {
         batch.put(0, new PartitionRequest<>(0, BindingFactory.binding(o, NodeFactory.createLiteralString("x1")), 1, 5));
         batch.put(1, new PartitionRequest<>(1, BindingFactory.binding(o, NodeFactory.createLiteralString("x2")), 2, 6));
 
-        BatchQueryRewriter rewriter = new BatchQueryRewriter(new OpServiceInfo(op), Var.alloc("idx"), false, false, false);
-        BatchQueryRewriteResult rewrite = rewriter.rewrite(batch);
-        Op resultOp = rewrite.getOp();
-        Query actualQuery = OpAsQuery.asQuery(resultOp);
-
+        Query actualQuery = defaultRewrite(op, batch);
         Query expectedQuery = QueryFactory.create(String.join("\n",
             "SELECT  *",
             "WHERE",
@@ -85,5 +89,66 @@ public class TestServiceEnhancerBatchQueryRewriter {
             "ORDER BY ASC(?idx) ?s"));
 
         Assert.assertEquals(expectedQuery, actualQuery);
+    }
+
+    /** GH-2992: Blank nodes must be relabeled wher building batch unions. */
+    @Test
+    public void testReport_01() {
+        OpService op = (OpService)Algebra.compile(QueryFactory.create("""
+            PREFIX sachem: <http://bioinfo.uochb.cas.cz/rdf/v1.0/sachem#>
+            SELECT * {
+              SERVICE <http://example.org/> { ?COMPOUND sachem:substructureSearch [ sachem:query ?STRUCTURE ] }
+            }
+            """, Syntax.syntaxARQ).getQueryPattern());
+
+        Batch<Integer, PartitionRequest<Binding>> batch = BatchImpl.forInteger();
+        Var o = Var.alloc("STRUCTURE");
+        batch.put(0, new PartitionRequest<>(0, BindingFactory.binding(o, NodeFactory.createLiteralString("[He]")), 0, Long.MAX_VALUE));
+        batch.put(1, new PartitionRequest<>(1, BindingFactory.binding(o, NodeFactory.createLiteralString("[Ar]")), 0, Long.MAX_VALUE));
+
+        Query actualQuery = defaultRewrite(op, batch);
+        Query expectedQuery = harmonizeBnodes(QueryFactory.create("""
+            SELECT  *
+            WHERE
+              {   { ?COMPOUND  <http://bioinfo.uochb.cas.cz/rdf/v1.0/sachem#substructureSearch>  _:b0 .
+                    _:b0      <http://bioinfo.uochb.cas.cz/rdf/v1.0/sachem#query>  "[He]"
+                    BIND(0 AS ?idx)
+                  }
+                UNION
+                  {   { ?COMPOUND  <http://bioinfo.uochb.cas.cz/rdf/v1.0/sachem#substructureSearch>  _:b1 .
+                        _:b1      <http://bioinfo.uochb.cas.cz/rdf/v1.0/sachem#query>  "[Ar]"
+                        BIND(1 AS ?idx)
+                      }
+                    UNION
+                      { BIND(1000000000 AS ?idx) }
+                  }
+              }
+            ORDER BY ASC(?idx)
+            """));
+
+        Assert.assertEquals(expectedQuery, actualQuery);
+    }
+
+    private static Query defaultRewrite(OpService op , Batch<Integer, PartitionRequest<Binding>> batch) {
+        BatchQueryRewriter rewriter = new BatchQueryRewriter(new OpServiceInfo(op), Var.alloc("idx"), false, false, false);
+        BatchQueryRewriteResult rewrite = rewriter.rewrite(batch);
+        Op resultOp = rewrite.getOp();
+        Query result = harmonizeBnodes(OpAsQuery.asQuery(resultOp));
+        return result;
+    }
+
+    /** Relabel blank nodes in the order of their occurrence in the query. */
+    private static Query harmonizeBnodes(Query query) {
+        Op op = Algebra.compile(query);
+        Set<Var> vars = new LinkedHashSet<>();
+        OpVars.mentionedVars(op, vars);
+
+        int nextBnodeId[] = {0};
+        Map<Var, Node> varMap = vars.stream()
+            .filter(v -> Var.isBlankNodeVar(v))
+            .collect(Collectors.toMap(v -> v, v -> NodeFactory.createBlankNode("b" + (++nextBnodeId[0]))));
+
+        Query result = QueryTransformOps.replaceVars(query, varMap);
+        return result;
     }
 }
