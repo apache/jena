@@ -31,17 +31,23 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.SortCondition;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.OpAsQuery;
 import org.apache.jena.sparql.algebra.OpLib;
-import org.apache.jena.sparql.algebra.op.*;
+import org.apache.jena.sparql.algebra.op.OpExtend;
+import org.apache.jena.sparql.algebra.op.OpOrder;
+import org.apache.jena.sparql.algebra.op.OpSlice;
+import org.apache.jena.sparql.algebra.op.OpUnion;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.main.QC;
 import org.apache.jena.sparql.expr.ExprVar;
 import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.graph.NodeTransformLib;
 import org.apache.jena.sparql.service.enhancer.impl.util.BindingUtils;
 
 /**
@@ -163,6 +169,9 @@ public class BatchQueryRewriter {
 
             op = QC.substitute(op, normedBinding);
 
+            // Relabel any blank nodes
+            op = NodeTransformLib.transform(node -> relabelBnode(node, idx), op);
+
             long o = req.hasOffset() ? req.getOffset() : Query.NOLIMIT;
             long l = req.hasLimit() ? req.getLimit() : Query.NOLIMIT;
 
@@ -187,5 +196,13 @@ public class BatchQueryRewriter {
         Map<Var, Var> renames = new HashMap<>(serviceInfo.getVisibleSubOpVarsNormedToScoped());
         renames.put(idxVar, idxVar);
         return new BatchQueryRewriteResult(newOp, renames);
+    }
+
+    private static Node relabelBnode(Node node, long idx) {
+        return Var.isBlankNodeVar(node) // Typically, only bnode vars should occur at this stage.
+            ? Var.alloc(node.getName() + "_" + idx)
+            : node.isBlank() // Conventional bnodes handled here for robustness.
+                ? NodeFactory.createBlankNode(node.getBlankNodeLabel() + "_" + idx)
+                : node;
     }
 }
