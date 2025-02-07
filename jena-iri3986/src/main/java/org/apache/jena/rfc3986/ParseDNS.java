@@ -52,7 +52,7 @@ public class ParseDNS {
      *   Internationalization
      */
 
-    /* RFC952:
+    /* RFC 952:
      *
      * <hname> ::= <name>*["."<name>]
      * <name> ::=  <let>[*[<let-or-digit-or-hyphen>]<let-or-digit>]
