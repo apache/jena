@@ -17,7 +17,7 @@ jobs:
       
   build-pr:
     ## Dependabot only
-    if: github.actor == 'dependabot[bot]'
+    ## if: github.actor == 'dependabot[bot]'
     
     strategy:
       fail-fast: false
