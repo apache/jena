@@ -495,6 +495,7 @@ public class TestsARP extends TestCase implements RDFErrorHandler, ARPErrorNumbe
 //        checkExpected() ;
 //    }
 
+    @SuppressWarnings("removal")
     public void testNTripleEscaping() {
     	String data[][] = {
     			{ "foo", "foo" },
@@ -505,7 +506,7 @@ public class TestsARP extends TestCase implements RDFErrorHandler, ARPErrorNumbe
     	};
     	for (String p[] : data ) {
 //    		System.err.println(NTriple.escapeNTriple(p[0]));
-    		Assert.assertEquals("NTriple escaping", p[1],NTriple.escapeNTriple(p[0]) );
+    		Assert.assertEquals("NTriple escaping", p[1],NTripleARP1.escapeNTriple(p[0]) );
     	}
 
 
