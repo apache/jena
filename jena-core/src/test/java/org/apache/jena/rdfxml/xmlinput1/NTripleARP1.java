@@ -22,7 +22,7 @@
  * Created on July 13, 2001, 10:06 PM
  */
 
-package org.apache.jena.rdfxml.xmlinput0;
+package org.apache.jena.rdfxml.xmlinput1;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -83,21 +83,15 @@ import org.xml.sax.SAXParseException;
  * </dt><dd>
  * Ignores numbered error/warning conditions.
  * </dl>
- * @deprecated Legacy. To be removed.
+ * @deprecated Internaluse only To be removed.
  */
-@Deprecated
-public class NTriple implements ARPErrorNumbers {
+@Deprecated(forRemoval = true)
+public class NTripleARP1 implements ARPErrorNumbers {
 
 	private static StringBuilder line = new StringBuilder();
-    private static ARP0 arp;
+	private static ARP arp;
 	private static String xmlBase = null;
 	private static boolean numbers = false;
-	/** Starts an RDF/XML to NTriple converter.
-	 * @param args The command-line arguments.
-	 */
-	static public void main(String args[]) {
-		mainEh(args, null, null);
-	}
 	static StatementHandler andMeToo = null;
 	/** Starts an RDF/XML to NTriple converter,
 	 * using an error handler, and an ARPHandler.
@@ -113,7 +107,7 @@ public class NTriple implements ARPErrorNumbers {
 		andMeToo = ap;
 		//SH sh = new SH();
 		int i;
-		arp = new ARP0();
+		arp = new ARP();
 		ARPHandlers handlers = arp.getHandlers();
 		handlers.setStatementHandler(getSH(true));
 //        arp.getOptions().setEmbedding(true);
@@ -198,7 +192,7 @@ public class NTriple implements ARPErrorNumbers {
 	static void usage() {
 		System.err.println(
 			"java <class-path> "
-				+ NTriple.class.getName()
+				+ NTripleARP1.class.getName()
 				+ " ( [ -[xstfurR]][ -b xmlBase -[eiw] NNN[,NNN...] ] [ file ] [ url ] )... ");
 		System.err.println(
 			"    All options, files and URLs can be intemingled in any order.");

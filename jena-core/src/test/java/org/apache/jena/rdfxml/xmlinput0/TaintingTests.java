@@ -178,7 +178,7 @@ public class TaintingTests extends TestCase implements ErrorHandler,
 	}
 
     @Override
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     public void runTest() throws IOException {
         ByteArrayOutputStream goodBytes = new ByteArrayOutputStream();
         ByteArrayOutputStream badBytes = new ByteArrayOutputStream();
@@ -187,7 +187,7 @@ public class TaintingTests extends TestCase implements ErrorHandler,
         try (PrintStream out = new PrintStream(goodBytes); PrintStream err = new PrintStream(badBytes); ) {
             System.setOut(out);
             System.setErr(err);
-            NTriple.mainEh(new String[]{"-e","102,136,105,103,108,107,116,106,004,131",
+            NTripleARP0.mainEh(new String[]{"-e","102,136,105,103,108,107,116,106,004,131",
                 "-E","-b",base,fileName},this,null);
         }
         finally {
