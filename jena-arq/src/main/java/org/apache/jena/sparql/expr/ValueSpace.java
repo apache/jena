@@ -101,7 +101,7 @@ public enum ValueSpace {
     VSPACE_CDT_MAP(301),
 
     VSPACE_SORTKEY(900),
-    VSPACE_QUOTED_TRIPLE(999),      // RDF-star : Last recognized value space.
+    VSPACE_TRIPLE_TERM(999),      // RDF-star : Last recognized value space.
 
     // Unknown RDF term value space.
     VSPACE_UNKNOWN(6000),
@@ -124,46 +124,9 @@ public enum ValueSpace {
         return Integer.compare(vs1.comparisonOrder, vs2.comparisonOrder);
     }
 
-//    public static ValueSpace valueSpace(NodeValue nv) {
-//        // XXX Check!
-//        if ( nv == null ) return VSPACE_UNDEF;
-//        if ( nv.isNumber() )        return VSPACE_NUM ;
-//        if ( nv.isDateTime() )      return VSPACE_DATETIME ;
-//        if ( nv.isString())         return VSPACE_STRING ;
-//        if ( nv.isBoolean())        return VSPACE_BOOLEAN ;
-//        if ( nv.isTripleTerm())     return VSPACE_TRIPLE_TERM ;
-//        if ( ! nv.isLiteral() )     return VSPACE_NODE ;
-//
-//        if ( ! SystemARQ.ValueExtensions )
-//            return VSPACE_UNKNOWN ;
-//
-//        // Datatypes and their value spaces that are an extension of minimal SPARQL 1.1
-//        if ( nv.isDate() )          return VSPACE_DATE ;
-//        if ( nv.isTime() )          return VSPACE_TIME ;
-//        if ( nv.isDuration() )      return VSPACE_DURATION ;
-//
-//        if ( nv.isGYear() )         return VSPACE_G_YEAR ;
-//        if ( nv.isGYearMonth() )    return VSPACE_G_YEARMONTH ;
-//        if ( nv.isGMonth() )        return VSPACE_G_MONTH ;
-//        if ( nv.isGMonthDay() )     return VSPACE_G_MONTHDAY ;
-//        if ( nv.isGDay() )          return VSPACE_G_DAY ;
-//
-//        if ( nv.isSortKey() )       return VSPACE_SORTKEY ;
-//
-//        // Forces to node so put after the possibly value-only cases
-//        if ( nv.isBlank() ) return VSPACE_BLANKNODE;
-//        if ( nv.isIRI() ) return VSPACE_URI;
-//        if ( nv.isVariable() ) return VSPACE_VARIABLE;
-//
-//        if ( NodeUtils.hasLang(nv.asNode()) )
-//            return VSPACE_LANG ;
-//        return VSPACE_UNKNOWN ;
-//    }
-
     public static ValueSpace valueSpace(NodeValue nv) {
-        // XXX Check!
         // Maybe code getValueSpace into type hierarchy.
-        if ( nv == null ) return VSPACE_UNDEF;
+        if ( nv == null )           return VSPACE_UNDEF;
         if ( nv.isNumber() )        return VSPACE_NUM ;
         if ( nv.isDateTime() )      return VSPACE_DATETIME ;
         if ( nv.isString())         return VSPACE_STRING ;
@@ -194,7 +157,7 @@ public enum ValueSpace {
         if ( nv.isSortKey() )       return VSPACE_SORTKEY ;
 
         if ( nv.isLiteral() ) {
-            final String dtURI = nv.getDatatypeURI() ;
+            String dtURI = nv.getDatatypeURI() ;
             if ( CompositeDatatypeList.uri.equals(dtURI) )  return VSPACE_CDT_LIST ;
             if ( CompositeDatatypeMap.uri.equals(dtURI) )   return VSPACE_CDT_MAP ;
         }
@@ -204,11 +167,11 @@ public enum ValueSpace {
         if ( nv.isBlank() )         return VSPACE_BLANKNODE;
         if ( nv.isIRI() )           return VSPACE_URI;
         if ( nv.isVariable() )      return VSPACE_VARIABLE;
-        if ( nv.isTripleTerm())     return VSPACE_QUOTED_TRIPLE ;
+        if ( nv.isTripleTerm())     return VSPACE_TRIPLE_TERM ;
 
         if ( NodeUtils.hasLang(nv.asNode()) )
             return VSPACE_LANG ;
-        //Includes unrecognized datatypes.
+        // Includes unrecognized datatypes.
         return VSPACE_UNKNOWN ;
     }
 

@@ -17,45 +17,39 @@
  */
 
 package org.apache.jena.sparql.serializer;
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.BasicPattern ;
-import org.apache.jena.sparql.util.FmtUtils ;
 
-public abstract class FormatterBase
-{
-    protected IndentedWriter out ;
-    protected SerializationContext context ;
-    protected FormatterBase(IndentedWriter _out, SerializationContext _context)
-    {
-        out = _out ;
-        context = _context ; 
-    }
-    
-    public void startVisit()  {}
-    public void finishVisit() { out.flush() ; }
-    
-    // Utilities
-    
-    protected void formatTriples(BasicPattern pattern)
-    {
-        FmtUtils.formatPattern(out, pattern, context) ;
-    }
-    
-    protected void formatTriple(Triple tp)
-    {
-        out.print(slotToString(tp.getSubject())) ;
-        out.print(" ") ;
-        out.print(slotToString(tp.getPredicate())) ;
-        out.print(" ") ;
-        out.print(slotToString(tp.getObject())) ;
-    }
-    
-    protected String slotToString(Node n)
-    {
-        return FmtUtils.stringForNode(n, context) ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.util.FmtUtils;
+
+public abstract class FormatterBase {
+    protected IndentedWriter out;
+    protected SerializationContext context;
+    protected FormatterBase(IndentedWriter _out, SerializationContext _context) {
+        out = _out;
+        context = _context;
     }
 
+    public void startVisit() {}
+
+    public void finishVisit() { out.flush(); }
+
+    protected void formatTriples(BasicPattern pattern) {
+        FmtUtils.formatPattern(out, pattern, context);
+    }
+
+    protected void formatTriple(Triple tp) {
+        out.print(slotToString(tp.getSubject()));
+        out.print(" ");
+        out.print(slotToString(tp.getPredicate()));
+        out.print(" ");
+        out.print(slotToString(tp.getObject()));
+    }
+
+    protected String slotToString(Node n) {
+        return FmtUtils.stringForNode(n, context);
+    }
 
 }

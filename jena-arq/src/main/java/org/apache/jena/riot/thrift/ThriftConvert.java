@@ -27,9 +27,11 @@ import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.datatypes.xsd.impl.RDFDirLangString;
 import org.apache.jena.datatypes.xsd.impl.RDFLangString;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.TextDirection;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.PrefixMapFactory;
@@ -174,11 +176,13 @@ public class ThriftConvert
             String lex = node.getLiteralLexicalForm();
             String dt = node.getLiteralDatatypeURI();
             String lang = node.getLiteralLanguage();
+            TextDirection baseDir = node.getLiteralBaseDirection();
 
             // General encoding.
             RDF_Literal literal = new RDF_Literal(lex);
             if ( node.getLiteralDatatype().equals(XSDDatatype.XSDstring) ||
-                    node.getLiteralDatatype().equals(RDFLangString.rdfLangString) ) {
+                 node.getLiteralDatatype().equals(RDFLangString.rdfLangString) ||
+                 node.getLiteralDatatype().equals(RDFDirLangString.rdfDirLangString) ) {
                 dt = null;
             }
 
@@ -192,6 +196,12 @@ public class ThriftConvert
             if ( lang != null && ! lang.isEmpty() )
                 literal.setLangtag(lang);
             term.setLiteral(literal);
+
+            if ( baseDir != null ) {
+                String baseStr = baseDir.direction();
+                literal.setBaseDirection(baseStr);
+            }
+            term.setLiteral(literal);
             return;
         }
 
@@ -201,7 +211,7 @@ public class ThriftConvert
             return;
         }
 
-        if ( node.isNodeTriple() ) {
+        if ( node.isTripleTerm() ) {
             Triple triple = node.getTriple();
 
             RDF_Term sTerm = new RDF_Term();
@@ -277,7 +287,8 @@ public class ThriftConvert
             RDFDatatype dt = NodeFactory.getType(dtString);
 
             String lang = lit.getLangtag();
-            return NodeFactory.createLiteral(lex, lang, dt);
+            String baseDir = lit.getBaseDirection();
+            return NodeFactory.createLiteral(lex, lang, baseDir, dt);
         }
 
         if ( term.isSetValInteger() ) {
@@ -306,7 +317,7 @@ public class ThriftConvert
         if ( term.isSetTripleTerm() ) {
             RDF_Triple rt = term.getTripleTerm();
             Triple t = convert(rt, pmap);
-            return NodeFactory.createTripleNode(t);
+            return NodeFactory.createTripleTerm(t);
         }
 
         if ( term.isSetVariable() )

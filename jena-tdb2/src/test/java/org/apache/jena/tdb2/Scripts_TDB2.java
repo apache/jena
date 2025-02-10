@@ -34,8 +34,9 @@ import org.junit.runner.RunWith;
 @Prefix("TDB2-")
 @Manifests
 ({
-    "testing/manifest.ttl",
-    "../jena-arq/testing/rdf-star-cg/sparql/eval/manifest.ttl"
+    "testing/manifest.ttl"
+    // RDF-star CG tests - no longer valid
+    // ,"../jena-arq/testing/rdf-star-cg/sparql/eval/manifest.ttl"
 })
 
 public class Scripts_TDB2

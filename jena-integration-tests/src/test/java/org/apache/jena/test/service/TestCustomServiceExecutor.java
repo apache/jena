@@ -23,6 +23,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.function.Consumer;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
@@ -32,12 +35,10 @@ import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.sparql.algebra.Table;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
-import org.apache.jena.sparql.resultset.ResultSetCompare;
+import org.apache.jena.sparql.resultset.ResultsCompare;
 import org.apache.jena.sparql.service.ServiceExecutorRegistry;
 import org.apache.jena.sparql.service.single.ServiceExecutor;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestCustomServiceExecutor {
 
@@ -143,7 +144,7 @@ public class TestCustomServiceExecutor {
 
     public static void assertResult(String serviceIri, Consumer<QueryExecution> qePostProcessor, boolean withSilent) {
         ResultSetRewindable actual = runTestQuery(serviceIri, qePostProcessor, withSilent);
-        boolean isEqual = ResultSetCompare.equalsExact(actual, ResultSet.adapt(table.toRowSet()));
+        boolean isEqual = ResultsCompare.equalsExact(actual, ResultSet.adapt(table.toRowSet()));
         if (!isEqual) {
             actual.reset();
             ResultSetMgr.write(System.err, actual, ResultSetLang.RS_Text);

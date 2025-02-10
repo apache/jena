@@ -49,7 +49,6 @@ public class ParserSSEBase
     { handler.emitPName(line, column, pname); }
 
     protected void emitSymbol(int line, int column, String pname) {
-        // XXX Fix escapes?
         handler.emitSymbol(line, column, pname);
     }
 

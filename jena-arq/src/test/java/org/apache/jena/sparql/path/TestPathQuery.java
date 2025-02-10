@@ -27,7 +27,8 @@ import org.apache.jena.query.QueryFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sparql.exec.*;
-import org.apache.jena.sparql.resultset.ResultSetCompare;
+import org.apache.jena.sparql.resultset.ResultsCompare;
+
 import org.junit.Test;
 
 /** Path tests using queries. */
@@ -75,7 +76,7 @@ public class TestPathQuery {
     }
 
     @Test public void testPathByQuery_unboundEnds_05() {
-        String qsPath     = "PREFIX : <http://example/> SELECT * { ?s :p{1,3} ?o }";
+        String qsPath     = "PREFIX : <http://example/> SELECT ?s ?o { ?s :p{1,3} ?o }";
         // Same results for the test data, not in general.
         String qsExpected = "PREFIX : <http://example/> SELECT ?s ?o { { ?s :p ?o } UNION { ?s :p [:p ?o]} }";
         test(graph1, qsPath, qsExpected);
@@ -91,6 +92,7 @@ public class TestPathQuery {
             System.out.println(qsPath);
             print("Actual", rs1);
             print("Expected", rs2);
+            rowSetEquals(rs1, rs2);
         }
         assertTrue(same);
     }
@@ -102,7 +104,8 @@ public class TestPathQuery {
     }
 
     private boolean rowSetEquals(RowSetRewindable rowset1, RowSetRewindable rowset2) {
-        return ResultSetCompare.equalsByTerm(rowset1, rowset2);
+        // XXX [ISO] Use exact.
+        return ResultsCompare.equalsExact(rowset1, rowset2);
     }
 
     private void print(String label, RowSetRewindable rowset) {

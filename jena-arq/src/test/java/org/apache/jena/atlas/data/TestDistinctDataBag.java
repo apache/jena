@@ -24,19 +24,22 @@ import static org.junit.Assert.assertTrue;
 import java.io.File ;
 import java.util.*;
 
+import org.junit.Test ;
+
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.binding.*;
-import org.apache.jena.sparql.resultset.ResultSetCompare ;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
+import org.apache.jena.sparql.engine.binding.BindingComparator;
+import org.apache.jena.sparql.engine.binding.BindingFactory;
+import org.apache.jena.sparql.resultset.ResultsCompare;
 import org.apache.jena.sparql.sse.Item ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderBinding ;
 import org.apache.jena.sparql.system.SerializationFactoryFinder;
-import org.apache.jena.sparql.util.NodeUtils ;
-import org.junit.Test ;
 
 public class TestDistinctDataBag
 {
@@ -51,8 +54,7 @@ public class TestDistinctDataBag
     static Binding bb1 = build("(?a _:XYZ) (?b 1)");
     static Binding x10 = build("(?x <http://example/abc>)") ;
 
-    @Test public void testDistinct()
-    {
+    @Test public void testDistinct() {
         List<Binding> undistinct = new ArrayList<>();
         undistinct.add(b12);
         undistinct.add(b19);
@@ -71,55 +73,44 @@ public class TestDistinctDataBag
                 new ThresholdPolicyCount<Binding>(2),
                 SerializationFactoryFinder.bindingSerializationFactory(),
                 new BindingComparator(new ArrayList<SortCondition>()));
-        try
-        {
+        try {
             db.addAll(undistinct);
 
             Iterator<Binding> iter = db.iterator();
-            while (iter.hasNext())
-            {
+            while (iter.hasNext()) {
                 distinct.add(iter.next());
             }
             Iter.close(iter);
-        }
-        finally
-        {
+        } finally {
             db.close();
         }
 
         assertEquals(control.size(), distinct.size());
-        assertTrue(ResultSetCompare.equalsByTest(control, distinct, NodeUtils.sameNode));
+        assertTrue(ResultsCompare.equalsExact(control, distinct));
     }
 
-    @Test public void testTemporaryFilesAreCleanedUpAfterCompletion()
-    {
+    @Test
+    public void testTemporaryFilesAreCleanedUpAfterCompletion() {
         List<Binding> undistinct = new ArrayList<>();
         random = new Random();
-        Var[] vars = new Var[]{
-            Var.alloc("1"), Var.alloc("2"), Var.alloc("3"),
-            Var.alloc("4"), Var.alloc("5"), Var.alloc("6"),
-            Var.alloc("7"), Var.alloc("8"), Var.alloc("9"), Var.alloc("0")
-        };
-        for(int i = 0; i < 500; i++){
+        Var[] vars = new Var[]{Var.alloc("1"), Var.alloc("2"), Var.alloc("3"), Var.alloc("4"), Var.alloc("5"), Var.alloc("6"),
+            Var.alloc("7"), Var.alloc("8"), Var.alloc("9"), Var.alloc("0")};
+        for ( int i = 0 ; i < 500 ; i++ ) {
             undistinct.add(randomBinding(vars));
         }
 
-        DistinctDataBag<Binding> db = new DistinctDataBag<>(
-                new ThresholdPolicyCount<Binding>(10),
-                SerializationFactoryFinder.bindingSerializationFactory(),
-                new BindingComparator(new ArrayList<SortCondition>()));
+        DistinctDataBag<Binding> db = new DistinctDataBag<>(new ThresholdPolicyCount<Binding>(10),
+                                                            SerializationFactoryFinder.bindingSerializationFactory(),
+                                                            new BindingComparator(new ArrayList<SortCondition>()));
 
         List<File> spillFiles = new ArrayList<>();
-        try
-        {
+        try {
             db.addAll(undistinct);
             spillFiles.addAll(db.getSpillFiles());
 
             int count = 0;
-            for (File file : spillFiles)
-            {
-                if (file.exists())
-                {
+            for ( File file : spillFiles ) {
+                if ( file.exists() ) {
                     count++;
                 }
             }
@@ -127,36 +118,29 @@ public class TestDistinctDataBag
             assertEquals(49, count);
 
             Iterator<Binding> iter = db.iterator();
-            while (iter.hasNext())
-            {
+            while (iter.hasNext()) {
                 iter.next();
             }
             Iter.close(iter);
-        }
-        finally
-        {
+        } finally {
             db.close();
         }
 
         int count = 0;
-        for (File file : spillFiles)
-        {
-            if (file.exists())
-            {
+        for ( File file : spillFiles ) {
+            if ( file.exists() ) {
                 count++;
             }
         }
         assertEquals(0, count);
     }
 
-    private static Binding build(String string)
-    {
-        Item item = SSE.parse("(binding "+string+")") ;
-        return BuilderBinding.build(item) ;
+    private static Binding build(String string) {
+        Item item = SSE.parse("(binding " + string + ")");
+        return BuilderBinding.build(item);
     }
 
-    private Binding randomBinding(Var[] vars)
-    {
+    private Binding randomBinding(Var[] vars) {
         BindingBuilder builder = Binding.builder();
         builder.add(vars[0], NodeFactory.createBlankNode());
         builder.add(vars[1], NodeFactory.createURI(randomURI()));
@@ -171,15 +155,13 @@ public class TestDistinctDataBag
         return builder.build();
     }
 
-    public String randomURI()
-    {
+    public String randomURI() {
         return String.format("http://%s.example.com/%s", randomString(10), randomString(10));
     }
 
-    public String randomString(int length)
-    {
+    public String randomString(int length) {
         StringBuilder builder = new StringBuilder();
-        for(int i = 0; i < length; i++){
+        for ( int i = 0 ; i < length ; i++ ) {
             builder.append(LETTERS.charAt(random.nextInt(LETTERS.length())));
         }
         return builder.toString();
@@ -215,6 +197,6 @@ public class TestDistinctDataBag
         }
 
         assertEquals(control.size(), distinct.size());
-        assertTrue(ResultSetCompare.equalsByTest(control, distinct, NodeUtils.sameNode));
+        assertTrue(ResultsCompare.equalsExact(control, distinct));
     }
 }

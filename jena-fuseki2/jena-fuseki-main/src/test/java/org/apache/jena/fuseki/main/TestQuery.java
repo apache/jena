@@ -18,8 +18,9 @@
 
 package org.apache.jena.fuseki.main;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.*;
@@ -47,7 +48,7 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.http.*;
-import org.apache.jena.sparql.resultset.ResultSetCompare;
+import org.apache.jena.sparql.resultset.ResultsCompare;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Convert;
 
@@ -316,7 +317,7 @@ public class TestQuery extends AbstractFusekiTest {
     private void execQuery(String queryString, ResultSet expectedResultSet) {
         try ( QueryExecution qExec = QueryExecution.service(serviceQuery(), queryString) ) {
             ResultSet rs = qExec.execSelect();
-            boolean b = ResultSetCompare.equalsByTerm(rs, expectedResultSet);
+            boolean b = ResultsCompare.equalsByTerm(rs, expectedResultSet);
             assertTrue(b, "Result sets different");
         }
     }
