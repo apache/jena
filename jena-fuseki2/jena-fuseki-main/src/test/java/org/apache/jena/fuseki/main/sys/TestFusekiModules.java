@@ -100,7 +100,8 @@ public class TestFusekiModules {
         FusekiModules systemModules = FusekiModules.getSystemModules();
         ModuleByServiceLoader.reset();
         try  {
-            FusekiModules loadedModules = FusekiAutoModules.load();
+            FusekiModules.resetSystemDefault();
+            FusekiModules loadedModules = FusekiAutoModules.get();
             FusekiModules.setSystemDefault(loadedModules);
 
             // Reloaded by FusekiModules.resetSystemDefault
