@@ -43,32 +43,39 @@ public class FusekiAutoModules {
     // ServiceLoader
     private static ServiceLoader<FusekiAutoModule> serviceLoader = null;
 
-
-    /**
-     * Load FusekiAutoModules. This call reloads the modules every call.
-     */
-    static FusekiModules load() {
-        if ( serviceLoader == null )
-            serviceLoader = createServiceLoader();
-        currentLoadedModules = loadAutoModules(serviceLoader);
-        return get();
-    }
-
     /**
      * Return the current (last loaded) Fuseki auto-modules.
      */
     static FusekiModules get() {
-        if ( currentLoadedModules == null )
-            load();
+        if ( currentLoadedModules != null )
+            return currentLoadedModules;
+        synchronized(lock) {
+            if ( currentLoadedModules == null )
+                load();
+            return currentLoadedModules;
+        }
+    }
+
+    /**
+     * Load FusekiAutoModules. This call reloads the modules every call.
+     */
+    private static FusekiModules load() {
+        synchronized (lock) {
+            if ( serviceLoader == null )
+                serviceLoader = createServiceLoader();
+            currentLoadedModules = loadAutoModules(serviceLoader);
+        }
         return currentLoadedModules;
     }
 
-    // -- ServiceLoader machinery.
+    /**
+     * For testing only.
+     */
+    static void reset() {
+        currentLoadedModules = null;
+    }
 
-//    // testing
-//    /*package*/ static void reset() {
-//        load();
-//    }
+    // -- ServiceLoader machinery.
 
     /**
      * Discover FusekiModules via {@link java.util.ServiceLoader}.
@@ -77,7 +84,7 @@ public class FusekiAutoModules {
     private static ServiceLoader<FusekiAutoModule> createServiceLoader() {
         Class<FusekiAutoModule> moduleClass = FusekiAutoModule.class;
         ServiceLoader<FusekiAutoModule> newServiceLoader = null;
-        synchronized (lock) {
+        synchronized (lock) { // Not necessary if createServiceLoader() only called from load(). But harmless.
             try {
                 newServiceLoader = ServiceLoader.load(moduleClass, FusekiAutoModules.class.getClassLoader());
             } catch (ServiceConfigurationError ex) {
