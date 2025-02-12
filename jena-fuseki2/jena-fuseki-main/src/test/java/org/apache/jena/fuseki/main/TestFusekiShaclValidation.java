@@ -39,7 +39,7 @@ public class TestFusekiShaclValidation {
 
     @BeforeAll
     public static void beforeClass() {
-        FusekiServer server = FusekiServer.create()
+        server = FusekiServer.create()
             .port(0)
             .parseConfigFile(DIR+"config-validation.ttl")
             .build();
@@ -49,8 +49,10 @@ public class TestFusekiShaclValidation {
 
     @AfterAll
     public static void afterClass() {
-        if ( server != null )
+        if ( server != null ) {
             server.stop();
+            server = null;
+        }
     }
 
     @Test
