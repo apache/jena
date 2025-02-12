@@ -116,8 +116,16 @@
                 <exclude>META-INF/DEPENDENCIES</exclude>
                 <exclude>META-INF/MANIFEST.MF</exclude>
                 <exclude>**/module-info.class</exclude>
+                <exclude>META-INF/versions/9/OSGI-INF/MANIFEST.MF</exclude>
               </excludes>
             </filter>
+            <filter>
+              <artifact>org.omnifaces:omnifaces</artifact>
+              <excludes>
+                <exclude>META-INF/beans.xml</exclude>
+                <exclude>META-INF/faces-config.xml</exclude>
+             </excludes>
+           </filter>
           </filters>
         </configuration>
         <executions>

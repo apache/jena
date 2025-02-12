@@ -114,6 +114,7 @@
                                         <exclude>META-INF/DEPENDENCIES</exclude>
                                         <exclude>META-INF/MANIFEST.MF</exclude>
                                         <exclude>**/module-info.class</exclude>
+                                        <exclude>META-INF/LICENSE-notice.md</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
