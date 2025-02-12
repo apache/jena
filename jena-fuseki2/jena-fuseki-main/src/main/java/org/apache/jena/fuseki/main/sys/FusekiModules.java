@@ -26,18 +26,21 @@ import java.util.function.Consumer;
  * A collection of {@linkplain FusekiModule Fuseki modules}.
  * <p>
  * There is one specific collection of modules - a system wide set of modules.
- * This collection defaults to the automatically discovered modules {@link FusekiAutoModules#load()}.
+ * This collection defaults to the automatically discovered modules {@link FusekiAutoModules#get()}.
  *
  * @see FusekiAutoModules
  */
 public class FusekiModules {
 
-    // Never null, maybe empty
-    private static FusekiModules systemFusekiModules = FusekiModules.create();
+    // Null means "not initialized".
+    // Null should never leave this class!
+    private static FusekiModules systemFusekiModules = null;
 
     /**
      * There is a system wide set of modules used when no other modules are indicated.
      * These default to the automatically discovered modules.
+     *
+     * Use {@link #resetSystemDefault} to cause a reload of Fuseki auto modules.
      */
     public static void setSystemDefault(FusekiModules fusekiModules) {
         systemFusekiModules = ( fusekiModules == null ) ? FusekiModules.create() : fusekiModules;
@@ -45,7 +48,7 @@ public class FusekiModules {
 
     /** Restore the original setting of the system default collection. */
     public static void restoreSystemDefault() {
-        systemFusekiModules = FusekiModules.create();
+        systemFusekiModules = null;
     }
 
     public static FusekiModules getSystemModules() {
@@ -65,6 +68,7 @@ public class FusekiModules {
     // Testing.
     /*package*/ static void resetSystemDefault() {
         // Reload, reset. Fresh objects.
+        FusekiAutoModules.reset();
         systemFusekiModules = FusekiAutoModules.get();
     }
 
