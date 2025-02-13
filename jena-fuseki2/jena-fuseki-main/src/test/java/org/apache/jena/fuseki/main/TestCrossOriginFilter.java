@@ -58,9 +58,6 @@ public class TestCrossOriginFilter {
 
     /** System property that allows "Host" to be set. */
     private static String jdkAllowRestrictedHeaders = "jdk.httpclient.allowRestrictedHeaders";
-
-//    private static FusekiServer server = null;
-//    private static String URL = null;
     private static Optional<String> systemValue = null;
 
     @BeforeAll

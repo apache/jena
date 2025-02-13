@@ -60,7 +60,7 @@ public class TestFusekiStdReadOnlySetup {
 
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
 
-        FusekiServer server = FusekiServer.create()
+        server = FusekiServer.create()
             .add("/ds", dsg, false)
             .port(0)
             .build();
