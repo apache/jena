@@ -45,7 +45,7 @@ public class TestPlainServer {
 
     @BeforeAll
     public static void beforeClass() {
-        FusekiServer server = FusekiServer.create()
+        server = FusekiServer.create()
             .port(0)
             .add("/ds", DatasetGraphFactory.createTxnMem())
             // Named like a dataset service

@@ -66,7 +66,6 @@ public class TestFusekiDatasetSharing {
         Graph g = RDFParser.source(DIR+"ds-sharing.ttl").lang(Lang.TTL).toGraph();
 
         server = FusekiServer.create().port(0).parseConfig(g).start();
-        //FusekiMainInfo.logServer(Fuseki.serverLog, server, true);
 
         // fuseki:name "ds-named"
         // fuseki:name "ds-rdfs-base-named"
