@@ -81,6 +81,8 @@ public class rdftests extends CmdGeneral
         RIOT.getContext().set(RIOT.symTurtleDirectiveStyle, "sparql");
     }
 
+    // Test runners are in jena-arq, package org.apache.jena.arq.junit.runners
+
     public static void main(String...argv) {
         try { new rdftests(argv).mainRun(); }
         catch (TerminationException ex) {

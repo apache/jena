@@ -19,12 +19,14 @@
 package org.apache.jena.sparql.syntax;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QueryParseException;
+import static org.apache.jena.query.Syntax.*;
 import org.apache.jena.sparql.lang.QueryParserBase;
 import org.slf4j.Logger;
 
@@ -38,6 +40,46 @@ public class TestQueryParser {
 
     private static void silent(Runnable action) {
         LogCtl.withLevel(loggerSPARQL, "fatal", action);
+    }
+
+    // Single backslash so a Java string escape, raw surrogate in the string.
+    @Test
+    public void syntax_unicode_raw_surrogate_uri() {
+        QueryParseException ex = assertThrows(QueryParseException.class,  ()->testParse("SELECT * { <http://example/\uD800> ?p ?o}"));
+        assertTrue(ex.getMessage().contains("surrogate"));
+    }
+
+    @Test
+    public void syntax_unicode_raw_surrogate_string() {
+        QueryParseException ex = assertThrows(QueryParseException.class,  ()->testParse("SELECT * { ?s ?p '\uD800' }"));
+        assertTrue(ex.getMessage().contains("surrogate"));
+    }
+
+    // Double backslash so the query string has an escape in it.
+    @Test
+    public void syntax_unicode_escaped_surrogate_uri() {
+        QueryParseException ex = assertThrows(QueryParseException.class,  ()->testParse("SELECT * { <http://example/\\uD800> ?p ?o}"));
+        assertTrue(ex.getMessage().contains("surrogate"));
+    }
+
+    @Test
+    public void syntax_unicode_escaped_surrogate_strings() {
+        QueryParseException ex = assertThrows(QueryParseException.class,  ()->testParse("SELECT * { ?s ?p '\\uD800'}"));
+        assertTrue(ex.getMessage().contains("surrogate"));
+    }
+
+    @Test
+    public void syntax_unicode_surrogate_pair_by_unicode_escape() {
+        // Allow - because Java strings may have surrogate pairs so we allow then in unicode escapes if paired.
+        testParse("SELECT * { ?s ?p '\\uD801\\uDC37'}");
+
+//        QueryParseException ex = assertThrows(QueryParseException.class,  ()->testParse("SELECT * { ?s ?p '\\uD801\\uDC37'}"));
+//        assertTrue(ex.getMessage().contains("surrogate"));
+    }
+
+    private static void testParse(String string) {
+        QueryFactory.create(string, syntaxSPARQL_12);
+        QueryFactory.create(string, syntaxARQ);
     }
 
     @Test public void syntax_uri_brackets_1() {
