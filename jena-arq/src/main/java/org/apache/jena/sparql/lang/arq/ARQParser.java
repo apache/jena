@@ -7442,8 +7442,8 @@ lex = stripQuotes3(t.image) ;
       jj_consume_token(-1);
       throw new ParseException();
     }
-checkString(lex, t.beginLine, t.beginColumn) ;
-      lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
+lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
+      checkString(lex, t.beginLine, t.beginColumn) ;
       {if ("" != null) return lex ;}
     throw new Error("Missing return statement in function");
 }
