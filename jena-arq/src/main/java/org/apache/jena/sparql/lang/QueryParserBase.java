@@ -208,11 +208,17 @@ public class QueryParserBase {
         return NodeFactory.createLiteral(lex, lang, dt);
     }
 
+    // Because of Java (Java strings have surrogate pairs) we only detect singleton surrogates.
     protected void checkString(String string, int line, int column) {
+        // Checks for bare surrogate pairs.
         for ( int i = 0 ; i < string.length() ; i++ ) {
             // Not "codePointAt" which does surrogate processing.
             char ch = string.charAt(i);
-            // Check surrogate pairs are pairs.
+
+            // Check surrogate pairs are in pairs. Pairs are high-low.
+            if ( Character.isLowSurrogate(ch) )
+                throw new QueryParseException("Bad surrogate pair (low surrogate without high surrogate)", line, column);
+
             if ( Character.isHighSurrogate(ch) ) {
                 i++;
                 if ( i == string.length() )
@@ -221,8 +227,6 @@ public class QueryParserBase {
                 if ( !Character.isLowSurrogate(ch1) ) {
                     throw new QueryParseException("Bad surrogate pair (high surrogate not followed by low surrogate)", line, column);
                 }
-            } else if ( Character.isLowSurrogate(ch) ) {
-                throw new QueryParseException("Bad surrogate pair (low surrogate without high surrogate)", line, column);
             }
         }
     }
@@ -345,7 +349,6 @@ public class QueryParserBase {
 
     protected Var createVariable(String s, int line, int column) {
         s = s.substring(1); // Drop the marker
-
         // This is done by the parser input stream nowadays.
         // s = unescapeCodePoint(s, line, column);
         // Check \ u did not put in any illegals.
@@ -361,6 +364,8 @@ public class QueryParserBase {
     protected String resolveQuotedIRI(String iriStr, int line, int column) {
         iriStr = stripQuotes(iriStr);
         iriStr = unescapeUnicode(iriStr, line, column);
+        // Check for Unicode surrogates
+        checkString(iriStr, line, column);
         return resolveIRI(iriStr, line, column);
     }
 
@@ -634,10 +639,14 @@ public class QueryParserBase {
 // { return unescape(s, '\\', true, line, column); }
 
     // Do we need the line/column versions?
-    // Why not catch exceptions and comvert to QueryParseException
-
+    // Why not catch exceptions and convert to QueryParseException
     protected static String unescapeStr(String s, int line, int column) {
         return unescape(s, '\\', false, line, column);
+    }
+
+    /** Unescape unicode - no surrogate processing. */
+    protected static String unescapeUnicode(String s, int line, int column) {
+        return unescape(s, '\\', true, line, column);
     }
 
     // Worker function
@@ -648,10 +657,6 @@ public class QueryParserBase {
             throwParseException(ex.getMessage(), line, column);
             return null;
         }
-    }
-
-    protected static String unescapeUnicode(String s, int line, int column) {
-        return unescape(s, '\\', true, line, column);
     }
 
     protected static String unescapePName(String s, int line, int column) {
