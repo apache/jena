@@ -28,8 +28,7 @@ export default defineConfig({
       scss: {
         api: "modern-compiler",
         silenceDeprecations: ["import", "global-builtin","color-functions","mixed-decls"],
-      },
-      
+      }
     },
   },
   base: './',
@@ -57,8 +56,8 @@ export default defineConfig({
     },
   },
   build: {
-    // Our largest chunk: dist/assets/yasqe.min-ec8f4984.js 508.16 kB │ gzip: 130.97 kB
-    chunkSizeWarningLimit: 550,
+    // Our largest chunk: target/webapp/static/Query-CakHSd_3.js  1,172.48 kB │ gzip: 350.95 kB
+    chunkSizeWarningLimit: 1250,
     // Change build paths to make them Maven compatible.
     outDir: 'target/webapp',
     assetsDir: 'static',
