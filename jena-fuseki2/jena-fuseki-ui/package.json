@@ -39,6 +39,8 @@
     "vue-upload-component": "^3.1.8"
   },
   "devDependencies": {
+    "@babel/core": "^7.0.1",
+    "@babel/preset-env": "^7.0.0",
     "@cypress/code-coverage": "^3.12.4",
     "@cypress/vue": "^6.0.0",
     "@eslint/js": "^9.2.0",
@@ -48,6 +50,7 @@
     "@vue/compiler-sfc": "^3.3.6",
     "@vue/eslint-config-standard": "^8.0.1",
     "@vue/test-utils": "^2.4.1",
+    "babel-loader": "^9",
     "concurrently": "^9.0.0",
     "cross-env": "^7.0.3",
     "cypress": "^14.0.0",
@@ -70,7 +73,8 @@
     "vite": "^6.0.11",
     "vite-plugin-istanbul": "^7.0.0",
     "vitest": "^3.0.5",
-    "wait-on": "^8.0.0"
+    "wait-on": "^8.0.0",
+    "webpack": "^5"
   },
   "resolutions": {},
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
