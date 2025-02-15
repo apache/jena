@@ -40,11 +40,11 @@ public class HttpException extends RuntimeException {
         this.response = null;
     }
 
-    public HttpException(int statusCode, String statusLine, String response) {
+    public HttpException(int statusCode, String statusLine, String responseMessage) {
         super(exMessage(statusCode, statusLine));
         this.statusCode = statusCode;
         this.statusLine = statusLine ;
-        this.response = response;
+        this.response = responseMessage;
     }
 
     private static String exMessage(int statusCode, String statusLine) {

@@ -183,9 +183,9 @@ public class HttpLib {
         else if ( inRange(httpStatusCode, 200, 299) ) {
             // Success. Continue processing.
         }
-        else if ( inRange(httpStatusCode, 300, 399) ) {
-            // We had follow redirects on (default client) so it's http->https,
-            // or the application passed on a HttpClient with redirects off.
+        if ( inRange(httpStatusCode, 300, 399) ) {
+            // We had "follow redirects" on (default client) so it's http->https,
+            // or the application passed in a HttpClient with redirects off.
             // Either way, we should not continue processing.
             try {
                 finish(response);
@@ -266,7 +266,7 @@ public class HttpLib {
     }
 
     /**
-     * Clear up and generate an exception - used for 4xx and 5xx.
+     * Clear up and generate an exception - used for 4xx and 5xx, 3xx when not following redirects.
      * This consumes the response body.
      */
     static HttpException exception(HttpResponse<InputStream> response, int httpStatusCode) {
@@ -313,18 +313,18 @@ public class HttpLib {
      *  See {@link BodySubscribers#ofInputStream()}.
      */
     public static void finish(InputStream input) {
-        consume(input);
+        consumeAndClose(input);
     }
 
     // This is extracted from commons-io, IOUtils.skip.
     // Changes:
     // * No exception.
-    // * Always consumes to the end of stream (or stream throws IOException)
+    // * Always consumes to the end of stream (or stream throws IOException) and closes the input stream.
     // * Larger buffer
     private static int SKIP_BUFFER_SIZE = 8*1024;
     private static byte[] SKIP_BYTE_BUFFER = null;
 
-    private static void consume(final InputStream input) {
+    private static void consumeAndClose(final InputStream input) {
         /*
          * N.B. no need to synchronize this because: - we don't care if the buffer is created multiple times (the data
          * is ignored) - we always use the same size buffer, so if it it is recreated it will still be OK (if the buffer
@@ -344,6 +344,7 @@ public class HttpLib {
                 bytesRead += n;
             }
         } catch (IOException ex) { /*ignore*/ }
+        try { input.close() ; } catch (Throwable th) { /*silent*/ }
     }
 
     /** String to {@link URI}. Throws {@link HttpException} on bad syntax or if the URI isn't absolute. */
