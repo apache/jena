@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
 
+import org.apache.jena.fuseki.main.ConfigureTests;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
@@ -52,7 +53,8 @@ public class TestDSP {
     }
 
     @AfterClass public static void afterClass() {
-        EnvTest.stop(env);
+        if ( ConfigureTests.CloseTestServers )
+            EnvTest.stop(env);
     }
 
     private String url(String path) { return env.datasetPath(path); }
@@ -135,7 +137,7 @@ public class TestDSP {
         assertEquals(ct, h);
     }
 
-    
+
 
     // 404
 
