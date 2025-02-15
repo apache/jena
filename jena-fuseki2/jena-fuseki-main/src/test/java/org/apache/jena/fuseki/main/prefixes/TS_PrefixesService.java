@@ -29,4 +29,4 @@ import org.junit.platform.suite.api.Suite;
     , TestPrefixesServicePrefixesMap.class
     , TestPrefixesActionResponse.class
 })
-public class PrefixesServiceTests {}
+public class TS_PrefixesService {}

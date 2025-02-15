@@ -27,6 +27,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
 
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.http.HttpOp;
 import org.apache.jena.query.Dataset;
@@ -41,10 +46,6 @@ import org.apache.jena.riot.WebContent;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.IsoMatcher;
 import org.apache.jena.test.conn.EnvTest;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class TestModelStore {
 
@@ -111,26 +112,28 @@ public class TestModelStore {
         ModelStore.service(gspServiceURL()).GET();
     }
 
-    @Test public void gsp_post_get_ct_01() {
-        String graphName = "http://example/graph";
-        ModelStore.service(gspServiceURL())
-            .namedGraph(graphName)
-            .POST(graph);
-        Model m1 = ModelStore.service(gspServiceURL())
-            .defaultGraph()
-            .acceptHeader("application/rdf+xml")
-            .GET();
-        assertNotNull(m1);
-        assertTrue(m1.isEmpty());
+    // Moved to TestModelStore2
 
-        Model m2 = ModelStore.service(gspServiceURL())
-            .namedGraph(graphName)
-            .acceptHeader("application/rdf+xml")
-            .GET();
-        assertNotNull(m2);
-        assertFalse(m2.isEmpty());
-        assertTrue(graph.isIsomorphicWith(m2));
-    }
+//    @Test public void gsp_post_get_ct_01() {
+//        String graphName = "http://example/graph";
+//        ModelStore.service(gspServiceURL())
+//            .namedGraph(graphName)
+//            .POST(graph);
+//        Model m1 = ModelStore.service(gspServiceURL())
+//            .defaultGraph()
+//            .acceptHeader("application/rdf+xml")
+//            .GET();
+//        assertNotNull(m1);
+//        assertTrue(m1.isEmpty());
+//
+//        Model m2 = ModelStore.service(gspServiceURL())
+//            .namedGraph(graphName)
+//            .acceptHeader("application/rdf+xml")
+//            .GET();
+//        assertNotNull(m2);
+//        assertFalse(m2.isEmpty());
+//        assertTrue(graph.isIsomorphicWith(m2));
+//    }
 
     @Test public void gsp_put_get_ct_02() {
         ModelStore.service(gspServiceURL())
@@ -169,13 +172,14 @@ public class TestModelStore {
         assertTrue(s2.isEmpty());
     }
 
-    @Test public void gsp_dft_ct_1() {
-        ModelStore.service(url("/ds")).defaultGraph().contentType(RDFFormat.RDFXML).PUT(DIR+"data-rdfxml");
-    }
-
-    @Test public void gsp_dft_ct_2() {
-        ModelStore.service(url("/ds")).defaultGraph().contentTypeHeader(WebContent.contentTypeRDFXML).PUT(DIR+"data-rdfxml");
-    }
+    // Moved - investigation
+//    @Test public void gsp_dft_ct_1() {
+//        ModelStore.service(url("/ds")).defaultGraph().contentType(RDFFormat.RDFXML).PUT(DIR+"data-rdfxml");
+//    }
+//
+//    @Test public void gsp_dft_ct_2() {
+//        ModelStore.service(url("/ds")).defaultGraph().contentTypeHeader(WebContent.contentTypeRDFXML).PUT(DIR+"data-rdfxml");
+//    }
 
     // ----------------------------------------
 

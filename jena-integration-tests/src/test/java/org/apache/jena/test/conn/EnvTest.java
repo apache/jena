@@ -25,6 +25,7 @@ import java.time.Duration;
 
 import org.apache.jena.atlas.web.AuthScheme;
 import org.apache.jena.fuseki.auth.Auth;
+import org.apache.jena.fuseki.main.ConfigureTests;
 import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.JettySecurityLib;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -67,7 +68,7 @@ public class EnvTest {
         EnvTest.stop(env);
     }
 */
-    public static boolean VERBOSE = false;
+    public static boolean VERBOSE = ConfigureTests.VerboseServer;
 
     public  final FusekiServer server;
     private final String dsName;

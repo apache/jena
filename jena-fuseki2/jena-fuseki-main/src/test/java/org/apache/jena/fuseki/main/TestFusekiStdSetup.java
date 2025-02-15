@@ -18,6 +18,8 @@
 
 package org.apache.jena.fuseki.main;
 
+import static org.apache.jena.fuseki.main.ConfigureTests.OneServerPerTestSuite;
+
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.AfterAll;
@@ -47,120 +49,213 @@ public class TestFusekiStdSetup {
 
     private static String URL;
 
-    @BeforeAll
-    public static void beforeClass() {
+    @BeforeAll public static void buildData() {
         data = SSE.parseGraph(StrUtils.strjoinNL
-            ("(graph"
-            ,"   (:s :p 1)"
-            ,")"));
+                              ("(graph"
+                              ,"   (:s :p 1)"
+                              ,")"));
 
         dataset = DatasetGraphFactory.create();
         dataset.add(SSE.parseQuad("(:g :s :p 2 )"));
+    }
 
-        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
+    // ==== Common code: TestFusekiStdSetup, TestFusekiStdReadOnlySetup, TestFusekiShaclValidation
 
-        server = FusekiServer.create()
-            .add("/ds", dsg)
-            .port(0)
-            .build();
-        server.start();
-        URL = server.datasetURL("/ds");
+    private static Object lock = new Object();
+
+    private static void sync(Runnable action) {
+        synchronized(lock) {
+            action.run();
+        }
+    }
+
+    @BeforeAll
+    public static void beforeClass() {
+        if (OneServerPerTestSuite ) {
+            server = createServer().start();
+        }
     }
 
     @AfterAll
     public static void afterClass() {
-        if ( server != null )
-            server.stop();
+        if ( OneServerPerTestSuite )
+            stopServer(server);
     }
+
+    @FunctionalInterface
+    interface Action { void run(String datasetURL); }
+
+    private void withServer(Action action) {
+        FusekiServer server = server();
+        try {
+            String datasetURL = server.datasetURL("/ds");
+            sync(()-> {
+                action.run(datasetURL);
+            });
+        } finally {
+            finishWithServer(server);
+        }
+    }
+
+    private static FusekiServer createServer() {
+        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
+        synchronized(lock) {
+            server = FusekiServer.create()
+                    .verbose(ConfigureTests.VerboseServer)
+                    .add("/ds", dsg, true)
+                    .port(0)
+                    .build();
+        }
+        return server;
+    }
+
+    private FusekiServer server() {
+        if ( OneServerPerTestSuite )
+            return server;
+        else
+            return createServer().start();
+    }
+
+    private void finishWithServer(FusekiServer server) {
+        if ( ConfigureTests.OneServerPerTestSuite )
+            return;
+        stopServer(server);
+    }
+
+    private static void stopServer(FusekiServer server) {
+        if ( ! ConfigureTests.CloseTestServers )
+            return;
+        sync(()->server.stop());
+    }
+
+    // ====
 
     @Test
     public void stdSetup_endpoint_1() {
-        exec(URL, "/query", conn -> conn.queryAsk("ASK{}"));
+        withServer((URL)->{
+            exec(URL, "/query", conn -> conn.queryAsk("ASK{}"));
+        });
     }
 
     @Test
     public void stdSetup_endpoint_2() {
-        exec(URL, "/sparql", conn -> conn.queryAsk("ASK{}"));
+        withServer((URL)->{
+            exec(URL, "/sparql", conn -> conn.queryAsk("ASK{}"));
+        });
     }
 
     @Test
     public void stdSetup_endpoint_3() {
-        exec(URL, "/update", conn -> conn.update("INSERT DATA { <x:s> <x:p> 123 }"));
+        withServer((URL)->{
+            exec(URL, "/update", conn -> conn.update("INSERT DATA { <x:s> <x:p> 123 }"));
+        });
     }
 
     @Test
     public void stdSetup_endpoint_4() {
-        exec(URL, "/get", conn -> conn.get());
+        withServer((URL)->{
+            exec(URL, "/get", conn -> conn.get());
+        });
     }
 
     @Test
     public void stdSetup_endpoint_5() {
-        exec(URL, "/data", conn -> conn.get());
+        withServer((URL)->{
+            exec(URL, "/data", conn -> conn.get());
+        });
     }
 
     @Test
     public void stdSetup_endpoint_6() {
-        exec(URL, "/data", conn -> conn.put(data));
+        withServer((URL)->{
+            exec(URL, "/data", conn -> conn.put(data));
+        });
     }
 
     @Test
     public void stdSetup_endpoint_7() {
-        exec(URL, "/data", conn -> conn.putDataset(dataset));
+        withServer((URL)->{
+            exec(URL, "/data", conn -> conn.putDataset(dataset));
+        });
     }
 
     @Test
     public void stdSetup_dataset_1() {
-        exec(URL, conn -> conn.queryAsk("ASK{}"));
+        withServer((URL)->{
+            exec(URL, conn -> conn.queryAsk("ASK{}"));
+        });
     }
 
     @Test
     public void stdSetup_dataset_2() {
-        exec(URL, conn -> conn.update("INSERT DATA { <x:s> <x:p> 123 }"));
+        withServer((URL)->{
+            exec(URL, conn -> conn.update("INSERT DATA { <x:s> <x:p> 123 }"));
+        });
     }
 
     @Test
     public void stdSetup_dataset_3() {
-        exec(URL, conn -> conn.get());
+        withServer((URL)->{
+            exec(URL, conn -> conn.get());
+        });
     }
 
     @Test
     public void stdSetup_dataset_4() {
-        exec(URL, conn -> conn.getDataset());
+        withServer((URL)->{
+            exec(URL, conn -> conn.getDataset());
+        });
     }
 
     @Test
     public void stdSetup_dataset_5() {
         Node gn = NodeFactory.createURI("http://example");
-        exec(URL, conn -> conn.put(gn, data));
+        withServer((URL)->{
+            exec(URL, conn -> conn.put(gn, data));
+        });
     }
 
     @Test
     public void stdSetup_dataset_6() {
-        exec(URL, conn -> conn.putDataset(dataset));
+        withServer((URL)->{
+            exec(URL, conn -> conn.putDataset(dataset));
+        });
     }
 
     @Test public void stdSetup_endpoint_bad_1() {
-        HttpTest.expect405( () -> exec(URL, "/get", conn->conn.put(data)) );
+        withServer((URL)->{
+            HttpTest.expect405( () -> exec(URL, "/get", conn->conn.put(data)) );
+        });
     }
 
     @Test public void stdSetup_endpoint_bad_2() {
-        HttpTest.expect415( () -> exec(URL, "/query",  conn->conn.update("INSERT DATA { <x:s> <x:p> 123 }")) );
+        withServer((URL)->{
+            HttpTest.expect415( () -> exec(URL, "/query",  conn->conn.update("INSERT DATA { <x:s> <x:p> 123 }")) );
+        });
     }
 
     @Test public void stdSetup_endpoint_bad_3() {
-        HttpTest.expect405( () -> exec(URL, "/update", conn->conn.queryAsk("ASK{}")) );
+        withServer((URL)->{
+            HttpTest.expect405( () -> exec(URL, "/update", conn->conn.queryAsk("ASK{}")) );
+        });
     }
 
     @Test public void stdSetup_endpoint_bad_4() {
-        HttpTest.expect404( () -> exec(URL, "/doesNotExist", conn->conn.queryAsk("ASK{}")) );
+        withServer((URL)->{
+            HttpTest.expect404( () -> exec(URL, "/doesNotExist", conn->conn.queryAsk("ASK{}")) );
+        });
     }
 
     @Test public void stdSetup_endpoint_bad_5() {
-        HttpTest.expect404( () -> exec(URL+"2", "", conn->conn.queryAsk("ASK{}")) );
+        withServer((URL)->{
+            HttpTest.expect404( () -> exec(URL+"2", "", conn->conn.queryAsk("ASK{}")) );
+        });
     }
 
     @Test public void stdSetup_endpoint_bad_6() {
-        HttpTest.expect404( () -> exec(URL, "/nonsense", conn -> conn.putDataset(dataset)) );
+        withServer((URL)->{
+            HttpTest.expect404( () -> exec(URL, "/nonsense", conn -> conn.putDataset(dataset)) );
+        });
     }
 
     private static void exec(String url, Consumer<RDFLink> action) {

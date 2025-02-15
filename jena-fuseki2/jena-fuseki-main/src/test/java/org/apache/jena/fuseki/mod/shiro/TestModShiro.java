@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.Authenticator;
 import java.net.http.HttpClient;
-import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +51,7 @@ import org.apache.jena.sparql.exec.http.QueryExecHTTP;
 
 public class TestModShiro {
     static final String unlocal = determineUnlocal();
-    static final String localRE = Pattern.quote("localhost");
+    static final String localRE = "(localhost)|(127.0.0.1)|(::1)";
 
     static {
         FusekiLogging.setLogging();
