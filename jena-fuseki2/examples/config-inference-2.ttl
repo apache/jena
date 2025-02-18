@@ -45,7 +45,7 @@ PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
     tdb2:dataset :tdbDataset .
 
 ## Base data in TDB.
-:tdbDataset rdf:type tdb2:DatasetTDB2 ;
+:tdbDataset rdf:type tdb2:DatasetTDB ;
     tdb2:location "DB" ;
     # If the unionDefaultGraph is used, then the "update" service should be removed.
     # tdb:unionDefaultGraph true ;

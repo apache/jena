@@ -57,7 +57,7 @@ PREFIX text:    <http://jena.apache.org/text#>
     text:index     :indexLucene ;
     .
 
-:base_dataset rdf:type      tdb2:DatasetTDB2 ;
+:base_dataset rdf:type      tdb2:DatasetTDB ;
     tdb2:location "DB2"
     .
 

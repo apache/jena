@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import arq.cmdline.ModDataset;
+import org.apache.jena.assembler.Assembler;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.cmd.ArgDecl;
 import org.apache.jena.cmd.CmdArgModule;
@@ -30,11 +31,14 @@ import org.apache.jena.cmd.CmdGeneral;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shared.JenaException;
+import org.apache.jena.sparql.ARQException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab;
+import org.apache.jena.sparql.util.graph.GraphUtils;
 import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.tdb2.assembler.VocabTDB2;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
@@ -43,11 +47,11 @@ import org.apache.jena.tdb2.store.DatasetGraphTDB;
 public class ModTDBDataset extends ModDataset {
     // Mixes assembler, location and "tdb"
     // Can make a single model or a dataset
-    
+
     private ArgDecl argMem                  = new ArgDecl(ArgDecl.HasValue, "mem", "data") ;
     private ModTDBAssembler modAssembler    = new ModTDBAssembler() ;
     private String inMemFile                = null ;
-    
+
     public ModTDBDataset() {}
 
     @Override
@@ -75,11 +79,11 @@ public class ModTDBDataset extends ModDataset {
             // Two variants: plain dataset with TDB2 dataset or plain building
             // (which may go wrong later if TDB2 directly is needed).
             try {
-                thing = (Dataset)AssemblerUtils.build(modAssembler.getAssemblerFile(), VocabTDB2.tDatasetTDB);
+                thing = buildDataset(modAssembler);
                 if ( thing != null ) {
                     DatasetGraph dsg = thing.asDatasetGraph();
                     if ( !(dsg instanceof DatasetGraphSwitchable) && !(dsg instanceof DatasetGraphTDB) )
-                        Log.warn(this, "Unexpected: Not a TDB2 dataset for type DatasetTDB2");
+                        Log.warn(this, "Unexpected: Not a TDB2 dataset");
                 }
                 if ( thing == null )
                     // Should use assembler inheritance but how do we assert
@@ -99,6 +103,19 @@ public class ModTDBDataset extends ModDataset {
         // No assembler - use location to find a database.
         Dataset ds = TDB2Factory.connectDataset(modAssembler.getLocation());
         return ds;
+    }
+
+    /** Build a dataset - several possible names (legacy) */
+    private static Dataset buildDataset(ModTDBAssembler modAssembler) {
+        Model spec = AssemblerUtils.readAssemblerFile(modAssembler.getAssemblerFile());
+        // throws ARQException("Multiple types for: " + tDataset);
+        Resource root = GraphUtils.findRootByType(spec, VocabTDB2.tDatasetTDB);
+        if ( root == null )
+            // Not found - try again.
+            root = GraphUtils.findRootByType(spec, VocabTDB2.tDatasetTDB2);
+        if ( root == null )
+            throw new ARQException("Not found: No such type: <" + VocabTDB2.tDatasetTDB + ">");
+        return (Dataset)Assembler.general.open(root) ;
     }
 
     public Location getLocation() {
