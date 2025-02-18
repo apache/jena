@@ -308,7 +308,7 @@ public class OpExecutor {
     }
 
     protected QueryIterator execute(OpService opService, QueryIterator input) {
-        return ServiceExec.exec(input, opService, execCxt);
+        return ServiceExec.exec(opService, input, execCxt);
     }
 
     // Quad form, "GRAPH ?g {}" Flip back to OpGraph.
