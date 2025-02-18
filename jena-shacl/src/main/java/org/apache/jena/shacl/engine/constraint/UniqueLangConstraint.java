@@ -78,7 +78,7 @@ public class UniqueLangConstraint implements Constraint {
                     String msg = toString()+" Duplicate langtag: "+obj.getLiteralLanguage();
                     vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape,  focusNode, this, path, obj,
                                     false));
-                    vCxt.reportEntry(msg, shape, focusNode, path, null, this);
+                    vCxt.reportEntry(msg, shape, focusNode, path, obj, this);
                     results.add(tag);
                 }
                 seen.add(tag);
