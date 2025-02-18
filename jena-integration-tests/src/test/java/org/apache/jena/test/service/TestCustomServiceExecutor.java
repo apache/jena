@@ -25,14 +25,23 @@ import java.util.function.Consumer;
 
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.query.*;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.ResultSetMgr;
 import org.apache.jena.riot.resultset.ResultSetLang;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.algebra.Table;
+import org.apache.jena.sparql.algebra.op.OpService;
+import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.ExecutionContext;
+import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.resultset.ResultSetCompare;
+import org.apache.jena.sparql.service.ServiceExec;
 import org.apache.jena.sparql.service.ServiceExecutorRegistry;
 import org.apache.jena.sparql.service.single.ServiceExecutor;
 import org.apache.jena.sparql.sse.SSE;
@@ -113,6 +122,104 @@ public class TestCustomServiceExecutor {
         } finally {
             LogCtl.setLevel(logClass, logLevel);
         }
+    }
+
+    /**
+     * A test case where custom executors both forward requests down the chain as well
+     * as start the chain over using {@link ServiceExec#exec(QueryIterator, OpService, ExecutionContext)}.
+     *
+     * This test case tests the chain for bulk execution.
+     */
+    @Test
+    public void testRestartServiceChainBulk() {
+        Node a = NodeFactory.createURI("urn:a");
+        Node b = NodeFactory.createURI("urn:b");
+        Node c = NodeFactory.createURI("urn:c");
+
+        // The comments are numbered with the expected order of the execution flow.
+
+        ServiceExecutorRegistry reg = new ServiceExecutorRegistry();
+        reg.addBulkLink((opService, input, execCxt, chain) -> {
+            Node node = opService.getService();
+            if (node.equals(a)) {
+                // 2. Match 'a' and restart the chain with 'b'
+                return ServiceExec.exec(new OpService(b, opService.getSubOp(), false), input, execCxt);
+            } else if (node.equals(c)) {
+                // 4. Match 'c' and return the test table
+                return table.iterator(execCxt);
+            } else {
+                throw new RuntimeException("Unexpectedly got: " + node);
+            }
+        });
+
+        reg.addBulkLink((opService, input, execCxt, chain) -> {
+            Node node = opService.getService();
+            if (node.equals(a)) {
+                // 1. Match 'a' and forward 'a'
+                return chain.createExecution(opService, input, execCxt);
+            } else if (node.equals(b)) {
+                // 3. Match 'b' and forward 'c'
+                return chain.createExecution(new OpService(c, opService.getSubOp(), false), input, execCxt);
+            } else {
+                throw new RuntimeException("Unexpectedly got: " + node);
+            }
+        });
+
+        // 0. Start the test with 'a'
+        Table actualTable = QueryExec.dataset(DatasetGraphFactory.empty())
+            .query("SELECT ?s ?p ?o { SERVICE <urn:a> { } }")
+            .set(ARQConstants.registryServiceExecutors, reg)
+            .table();
+        Assert.assertEquals(table, actualTable);
+    }
+
+    /**
+     * A test case where custom executors both forward requests down the chain as well
+     * as start the chain over using {@link ServiceExec#exec(OpService, OpService, Binding, ExecutionContext)}.
+     *
+     * This test case tests the chain for single binding execution.
+     */
+    @Test
+    public void testRestartServiceChainSingle() {
+        Node a = NodeFactory.createURI("urn:a");
+        Node b = NodeFactory.createURI("urn:b");
+        Node c = NodeFactory.createURI("urn:c");
+
+        // The comments are numbered with the expected order of the execution flow.
+
+        ServiceExecutorRegistry reg = new ServiceExecutorRegistry();
+        reg.addSingleLink((opExecute, opOriginal, binding, execCxt, chain) -> {
+            Node node = opExecute.getService();
+            if (node.equals(a)) {
+                // 2. Match 'a' and restart the chain with 'b'
+                return ServiceExec.exec(new OpService(b, opExecute.getSubOp(), false), opOriginal, binding, execCxt);
+            } else if (node.equals(c)) {
+                // 4. Match 'c' and return the test table
+                return table.iterator(execCxt);
+            } else {
+                throw new RuntimeException("Unexpectedly got: " + node);
+            }
+        });
+
+        reg.addSingleLink((opExecute, opOriginal, binding, execCxt, chain) -> {
+            Node node = opExecute.getService();
+            if (node.equals(a)) {
+                // 1. Match 'a' and forward 'a'
+                return chain.createExecution(opExecute, opOriginal, binding, execCxt);
+            } else if (node.equals(b)) {
+                // 3. Match 'b' and forward 'c'
+                return chain.createExecution(new OpService(c, opExecute.getSubOp(), false), opOriginal, binding, execCxt);
+            } else {
+                throw new RuntimeException("Unexpectedly got: " + node);
+            }
+        });
+
+        // 0. Start the test with 'a'
+        Table actualTable = QueryExec.dataset(DatasetGraphFactory.empty())
+            .query("SELECT ?s ?p ?o { SERVICE <urn:a> { } }")
+            .set(ARQConstants.registryServiceExecutors, reg)
+            .table();
+        Assert.assertEquals(table, actualTable);
     }
 
     // Check to rule out interference with conventional access to remote endpoints.
