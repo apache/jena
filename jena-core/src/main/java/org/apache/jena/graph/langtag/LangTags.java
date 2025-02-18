@@ -86,8 +86,6 @@ public class LangTags {
             else {
                 // case depends on ;length
                 sb.append(strcase(s));
-                // is it the start of an extension or privateuse
-                // XXX s.length()==1?
                 if ( s.length() == 1 )
                     singleton = true;
             }

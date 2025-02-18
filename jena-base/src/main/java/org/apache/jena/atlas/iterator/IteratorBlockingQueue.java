@@ -24,46 +24,45 @@ import java.util.concurrent.BlockingQueue ;
 
 /** Iterator over a blocking queue until queue end seen */
 
-public class IteratorBlockingQueue<T> implements Iterator<T>
-{
-    private BlockingQueue<T> queue ;
-    private boolean finished = false ;
-    private T slot = null ;
-    private T endMarker ;
+public class IteratorBlockingQueue<T> implements Iterator<T> {
+    private BlockingQueue<T> queue;
+    private boolean finished = false;
+    private T slot = null;
+    private T endMarker;
 
-    public IteratorBlockingQueue(BlockingQueue<T> queue, T endMarker) { this.queue = queue ; this.endMarker = endMarker ; }
-
-    @Override
-    public boolean hasNext()
-    {
-        if ( finished ) return false ;
-        if ( slot != null ) return true ;
-        try
-        {
-            slot = queue.take() ;
-            if ( slot == endMarker )
-            {
-                finished = true ;
-                slot = null ;
-                return false ;
-            }
-            return true ;
-
-        } catch (InterruptedException ex)
-        {
-            ex.printStackTrace();
-
-        }
-        return false ;
+    public IteratorBlockingQueue(BlockingQueue<T> queue, T endMarker) {
+        this.queue = queue;
+        this.endMarker = endMarker;
     }
 
     @Override
-    public T next()
-    {
-        if ( ! hasNext() )
-            throw new NoSuchElementException() ;
-        T item = slot ;
-        slot = null ;
-        return item ;
+    public boolean hasNext() {
+        if ( finished )
+            return false;
+        if ( slot != null )
+            return true;
+        try {
+            slot = queue.take();
+            if ( slot == endMarker ) {
+                finished = true;
+                slot = null;
+                return false;
+            }
+            return true;
+
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+
+        }
+        return false;
+    }
+
+    @Override
+    public T next() {
+        if ( !hasNext() )
+            throw new NoSuchElementException();
+        T item = slot;
+        slot = null;
+        return item;
     }
 }

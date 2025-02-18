@@ -33,7 +33,7 @@ import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.query.ResultSetRewindable ;
 import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.sparql.exec.RowSet;
-import org.apache.jena.sparql.resultset.ResultSetCompare ;
+import org.apache.jena.sparql.resultset.ResultsCompare ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.junit.Test ;
 
@@ -70,7 +70,7 @@ public class TestThriftResultSet {
         // not reordered
         r1.reset();
         rs2.reset() ;
-        assertFalse(ResultSetCompare.equalsByTermAndOrder(r1, rs2)) ;
+        assertFalse(ResultsCompare.equalsByTermAndOrder(r1, rs2)) ;
         rs2.reset() ;
     }
 
@@ -79,7 +79,7 @@ public class TestThriftResultSet {
         // not reordered
         r2.reset();
         rs1.reset() ;
-        assertFalse(ResultSetCompare.equalsByTermAndOrder(r2, rs1)) ;
+        assertFalse(ResultsCompare.equalsByTermAndOrder(r2, rs1)) ;
         rs1.reset() ;
     }
 
@@ -93,7 +93,7 @@ public class TestThriftResultSet {
         RowSet rs$ = ThriftRDF.readRowSet(in) ;
         ResultSetRewindable resultSet2 = ResultSetFactory.makeRewindable(rs$) ;
         // Includes bnode labels.
-        ResultSetCompare.equalsExact(resultSet, resultSet2) ;
+        ResultsCompare.equalsExact(resultSet, resultSet2) ;
         resultSet.reset();
         resultSet2.reset();
         return resultSet2 ;
