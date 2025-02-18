@@ -142,14 +142,14 @@ public class AssemblerUtils
     }
 
     public static Object build(Model assemblerModel, Resource type) {
-        Resource root = null ;
+        Resource root = null;
         try {
-            root = GraphUtils.findRootByType(assemblerModel, type) ;
+            root = GraphUtils.findRootByType(assemblerModel, type);
             if ( root == null )
-                throw new ARQException("No such type: <"+type+">");
-
-        } catch (TypeNotUniqueException ex)
-        { throw new ARQException("Multiple types for: "+tDataset) ; }
+                throw new ARQException("No such type: <" + type + ">");
+        } catch (TypeNotUniqueException ex) {
+            throw new ARQException("Multiple types for: " + tDataset);
+        }
         return Assembler.general.open(root) ;
     }
     /** Look for and build context declarations.

@@ -74,6 +74,6 @@ PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
 
 ## The database
 
-:dataset_tdb2  rdf:type tdb2:DatasetTDB2 ;
+:dataset_tdb2  rdf:type tdb2:DatasetTDB ;
     tdb2:location "DB2" ;
     .
