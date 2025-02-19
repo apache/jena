@@ -39,7 +39,7 @@ public class ServiceExec {
      */
     @Deprecated(forRemoval = true, since = "5.4.0")
     public static QueryIterator exec(QueryIterator input, OpService opService, ExecutionContext execCxt) {
-        return exec(input, opService, execCxt);
+        return exec(opService, input, execCxt);
     }
 
     /**
