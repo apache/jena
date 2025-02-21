@@ -34,6 +34,7 @@ import org.apache.jena.shacl.engine.ValidationContext;
 import org.apache.jena.shacl.parser.Constraint;
 import org.apache.jena.shacl.parser.ConstraintVisitor;
 import org.apache.jena.shacl.parser.Shape;
+import org.apache.jena.shacl.sys.ShaclSystem;
 import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnPathNodesEvent;
 import org.apache.jena.shacl.validation.event.ConstraintEvaluatedOnSinglePathNodeEvent;
 import org.apache.jena.shacl.vocabulary.SHACL;
@@ -78,7 +79,8 @@ public class UniqueLangConstraint implements Constraint {
                     String msg = toString()+" Duplicate langtag: "+obj.getLiteralLanguage();
                     vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape,  focusNode, this, path, obj,
                                     false));
-                    vCxt.reportEntry(msg, shape, focusNode, path, obj, this);
+                    Node valueNode = ShaclSystem.getMode().equals(ShaclSystem.Mode.NORMAL) ? obj : null;
+                    vCxt.reportEntry(msg, shape, focusNode, path, valueNode, this);
                     results.add(tag);
                 }
                 seen.add(tag);

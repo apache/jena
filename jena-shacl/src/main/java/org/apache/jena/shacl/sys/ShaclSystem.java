@@ -36,4 +36,16 @@ public class ShaclSystem {
 
     /** The current system-wide {@link ShaclValidator}. */
     public static ShaclValidator get() { return globalDefault; }
+
+    /** Mode of operation to indicate environment. */
+    public enum Mode { NORMAL, TEST }
+
+    /** Default mode of operation is NORMAL. */
+    private static Mode mode = Mode.NORMAL;
+
+    /** Set the mode of operation. */
+    public static void setMode(Mode mode) { ShaclSystem.mode = mode; }
+
+    /** Get the mode of operation. */
+    public static Mode getMode() { return mode; }
 }
