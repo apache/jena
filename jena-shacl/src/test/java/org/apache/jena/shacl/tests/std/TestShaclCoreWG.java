@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.jena.shacl.sys.ShaclSystem;
 import org.apache.jena.shacl.testing.ShaclTest;
 import org.apache.jena.shacl.testing.ShaclTestItem;
 import org.apache.jena.shacl.testing.ShaclTests;
@@ -43,6 +44,7 @@ public class TestShaclCoreWG {
     private ShaclTestItem test;
 
     public TestShaclCoreWG(String name,  ShaclTestItem test) {
+        ShaclSystem.setMode(ShaclSystem.Mode.TEST);
         this.test = test;
     }
 
