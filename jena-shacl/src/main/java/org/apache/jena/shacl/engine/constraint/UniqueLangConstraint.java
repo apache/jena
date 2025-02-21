@@ -79,7 +79,7 @@ public class UniqueLangConstraint implements Constraint {
                     String msg = toString()+" Duplicate langtag: "+obj.getLiteralLanguage();
                     vCxt.notifyValidationListener(() -> new ConstraintEvaluatedOnSinglePathNodeEvent(vCxt, shape,  focusNode, this, path, obj,
                                     false));
-                    Node valueNode = ShaclSystem.getMode().equals(ShaclSystem.Mode.NORMAL) ? obj : null;
+                    Node valueNode = ShaclSystem.getMode() == ShaclSystem.Mode.NORMAL ? obj : null;
                     vCxt.reportEntry(msg, shape, focusNode, path, valueNode, this);
                     results.add(tag);
                 }
