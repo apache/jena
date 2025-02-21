@@ -64,7 +64,6 @@ ex:ValidInstance1
           sh:resultSeverity sh:Violation ;
           sh:sourceConstraintComponent sh:UniqueLangConstraintComponent ;
           sh:sourceShape ex:TestShape-testProperty ;
-          sh:value "Myself"@en ;
         ] ;
       sh:result [
           rdf:type sh:ValidationResult ;
@@ -73,7 +72,6 @@ ex:ValidInstance1
           sh:resultSeverity sh:Violation ;
           sh:sourceConstraintComponent sh:UniqueLangConstraintComponent ;
           sh:sourceShape ex:TestShape-testProperty ;
-          sh:value "I"@en ;
         ] ;
       sh:result [
           rdf:type sh:ValidationResult ;
@@ -82,7 +80,6 @@ ex:ValidInstance1
           sh:resultSeverity sh:Violation ;
           sh:sourceConstraintComponent sh:UniqueLangConstraintComponent ;
           sh:sourceShape ex:TestShape-testProperty ;
-          sh:value "Ich"@de ;
         ] ;
     ] ;
   mf:status sht:approved ;
