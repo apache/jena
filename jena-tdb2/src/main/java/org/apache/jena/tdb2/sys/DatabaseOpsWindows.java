@@ -35,7 +35,6 @@ import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.lib.InternalErrorException;
-import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.dboe.DBOpEnvException;
@@ -49,9 +48,11 @@ import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Old DatabaseOps code for compaction (up to Jena 5.0.0-rc1).
- * Needed for MS Windows.
- *
+/**
+ * Old DatabaseOps code for compaction (up to Jena 5.0.0-rc1).
+ * Needed for MS Windows:
+ * (1) does not allow directories with memory -mapped file to be renamed/moved
+ * (2) does not release memory-mapped files until the JVM exits
  */
 class DatabaseOpsWindows {
     private static Logger LOG = LoggerFactory.getLogger(DatabaseOpsWindows.class);
@@ -101,8 +102,9 @@ class DatabaseOpsWindows {
             LOG.debug(String.format("Compact %s -> %s\n", db1.getFileName(), db2.getFileName()));
 
             try {
-                compaction(container, loc1, loc2);
+                compaction_win(container, loc1, loc2);
                 // Container now using the new location.
+                // The original database is not in use.
             } catch (RuntimeIOException ex) {
                 // Clear up - disk problems.
                 try { IO.deleteAll(db2); } catch (Throwable th) { /* Continue with original error. */ }
@@ -123,6 +125,7 @@ class DatabaseOpsWindows {
             if ( shouldDeleteOld ) {
                 // Compact put each of the databases into exclusive mode to do the switchover.
                 // There are no previous transactions on the old database at this point.
+                // MS Windows. Does not take effect until the JVM exits.
                 Path loc1Path = IO_DB.asPath(loc1);
                 LOG.warn("Database will not be fully deleted until after a server restart: (old db path='" + loc1Path + "')");
                 deleteDatabase(loc1Path);
@@ -130,18 +133,8 @@ class DatabaseOpsWindows {
         }
     }
 
-    private static void deleteDatabase(Path locationPath) {
-        try (Stream<Path> walk = Files.walk(locationPath)){
-            walk.sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
-        } catch (IOException ex) {
-            throw IOX.exception(ex);
-        }
-    }
-
     /** Copy the latest version from one location to another. */
-    private static void compaction(DatasetGraphSwitchable container, Location loc1, Location loc2) {
+    private static void compaction_win(DatasetGraphSwitchable container, Location loc1, Location loc2) {
         if ( loc1.isMem() || loc2.isMem() )
             throw new TDBException("Compact involves a memory location: "+loc1+" : "+loc2);
 
@@ -180,13 +173,6 @@ class DatabaseOpsWindows {
             DatasetGraphTDB dsgCompact = StoreConnection.connectCreate(loc2).getDatasetGraphTDB();
             CopyDSG.copy(dsgBase, dsgCompact);
 
-            if ( false ) {
-                // DEVELOMENT. FAke a long copy time in state copy.
-                System.err.println("-- Inside compact 1");
-                Lib.sleep(3_000);
-                System.err.println("-- Inside compact 2");
-            }
-
             TransactionCoordinator txnMgr2 = dsgCompact.getTxnSystem().getTxnMgr();
             // Update TransactionCoordinator and switch over.
             txnMgr2.execExclusive(()->{
@@ -213,7 +199,6 @@ class DatabaseOpsWindows {
             // New database running.
             // New transactions go to this database.
             // Old readers continue on db1.
-
         });
 
 
@@ -222,8 +207,20 @@ class DatabaseOpsWindows {
         // This call is not undone.
         // Database1 is no longer in use.
         txnMgr1.startExclusiveMode();
+
         // Clean-up.
+        // MS Windows does not fully release memory mapped until the JVM exits.
         StoreConnection.release(dsgBase.getLocation());
+    }
+
+    private static void deleteDatabase(Path locationPath) {
+        try (Stream<Path> walk = Files.walk(locationPath)){
+            walk.sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+        } catch (IOException ex) {
+            throw IOX.exception(ex);
+        }
     }
 
     /** Copy certain configuration files from {@code loc1} to {@code loc2}. */
@@ -301,7 +298,6 @@ class DatabaseOpsWindows {
         //indexes.sort(Long::compareTo);
         return paths;
     }
-
 
     private static Pattern numberPattern = Pattern.compile("[\\d]+");
     /** Given a filename in "base-NNNN(-text)" format, return the value of NNNN */
