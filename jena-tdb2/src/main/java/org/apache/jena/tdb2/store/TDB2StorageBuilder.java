@@ -31,7 +31,6 @@ import org.apache.jena.dboe.base.record.RecordFactory;
 import org.apache.jena.dboe.index.Index;
 import org.apache.jena.dboe.index.RangeIndex;
 import org.apache.jena.dboe.storage.DatabaseRDF;
-import org.apache.jena.dboe.storage.StoragePrefixes;
 import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.dboe.trans.bplustree.BPlusTree;
 import org.apache.jena.dboe.trans.bplustree.BPlusTreeFactory;
@@ -95,7 +94,7 @@ public class TDB2StorageBuilder {
 
         TDB2StorageBuilder builder = new TDB2StorageBuilder(txnSystem, location, params, new ComponentIdMgr(UUID.randomUUID()));
         StorageTDB storage = builder.buildStorage();
-        StoragePrefixes prefixes = builder.buildPrefixes();
+        StoragePrefixesTDB prefixes = builder.buildPrefixes();
 
         // Finalize.
         builder.components.forEach(txnCoord::add);
@@ -193,7 +192,7 @@ public class TDB2StorageBuilder {
         return dsg;
     }
 
-    private StoragePrefixes buildPrefixes() {
+    private StoragePrefixesTDB buildPrefixes() {
         NodeTable nodeTablePrefixes = buildNodeTable(params.getPrefixTableBaseName(), false);
         StoragePrefixesTDB prefixes = buildPrefixTable(nodeTablePrefixes);
         return prefixes;

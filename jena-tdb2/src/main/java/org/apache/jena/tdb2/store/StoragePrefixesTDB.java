@@ -37,9 +37,10 @@ import org.apache.jena.tdb2.store.nodetupletable.NodeTupleTable;
 
 public class StoragePrefixesTDB implements StoragePrefixes {
 
-    static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0);
+    /*package*/ static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0);
     private TransactionalSystem txnSystem;
     private NodeTupleTable prefixTable;
+    private boolean closed = false;
 
     public StoragePrefixesTDB(TransactionalSystem txnSystem, NodeTupleTable prefixTable) {
         this.txnSystem = txnSystem;
@@ -149,4 +150,14 @@ public class StoragePrefixesTDB implements StoragePrefixes {
             throw new TransactionException("Not in a transaction");
         txn.ensureWriteTxn();
     }
+
+    // This does not need to be synchronized.
+    // The caller is responsible for a quiet system (e.g. no transactions active)
+    /*package*/ void close() {
+        if ( closed )
+            return;
+        closed = true;
+        prefixTable.close();
+    }
+
 }

@@ -311,7 +311,8 @@ public class DatabaseOps {
     public static void compact(DatasetGraphSwitchable container, boolean shouldDeleteOld) {
         if ( Sys.isWindows) {
             // Windows does not support Files.move when the directory contains memory mapped files.
-            // https://github.com/apache/jena/issues/2315
+            // MS Windows: 2024-03-08 https://github.com/apache/jena/issues/2315
+            // Moving the temporary directory does not work.
             DatabaseOpsWindows.compact_win(container, shouldDeleteOld);
             return;
         }
@@ -342,12 +343,11 @@ public class DatabaseOps {
             LOG.debug(String.format("Compact %s -> %s\n", db1.getFileName(), db2.getFileName()));
             if ( Files.exists(db2) )
                 throw new TDBException("Inconsistent : "+db2+" already exists");
-
-            // MS Windows: 2024-03-08 https://github.com/apache/jena/issues/2315
-            // Moving the temporary directory does not work.
+            // End checks
 
             // Location of the storage area for the compacted database.
             // This is a temporary directory that is atomically moved into place when complete.
+            // This is not supported by MS Windows.
 
             Path tmpDir = makeTempDirName(db2);
             if ( Files.exists(tmpDir) )
@@ -358,6 +358,7 @@ public class DatabaseOps {
             try {
                 compaction(container, loc1, loc2tmp, db2);
                 // Container now using the new location.
+                // The original database is not in use.
             } catch (RuntimeIOException ex) {
                 // Clear up - disk problems.
                 try { IO.deleteAll(tmpDir); } catch (Throwable th) { /* Continue with original error. */ }
@@ -473,7 +474,9 @@ public class DatabaseOps {
         // This call is not undone.
         // Database1 is no longer in use.
         txnMgr1.startExclusiveMode();
+
         // Clean-up.
+        // Includes dsgBase.shutdown() which closes files.
         StoreConnection.release(dsgBase.getLocation());
     }
 

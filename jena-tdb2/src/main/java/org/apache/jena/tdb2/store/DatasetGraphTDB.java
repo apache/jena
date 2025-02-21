@@ -24,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.dboe.storage.StoragePrefixes;
 import org.apache.jena.dboe.storage.system.DatasetGraphStorage;
 import org.apache.jena.dboe.trans.bplustree.BPlusTree;
 import org.apache.jena.dboe.transaction.txn.TransactionalSystem;
@@ -42,6 +41,7 @@ final
 public class DatasetGraphTDB extends DatasetGraphStorage
 {
     private final StorageTDB storageTDB;
+    private final StoragePrefixesTDB storagePrefixes;
     private final Location location;
     private final TransactionalSystem txnSystem;
     private final StoreParams storeParams;
@@ -49,8 +49,9 @@ public class DatasetGraphTDB extends DatasetGraphStorage
     private boolean isClosed = false;
 
     public DatasetGraphTDB(Location location, StoreParams params, ReorderTransformation reorderTransformation,
-                           StorageTDB storage, StoragePrefixes prefixes, TransactionalSystem txnSystem) {
+                           StorageTDB storage, StoragePrefixesTDB prefixes, TransactionalSystem txnSystem) {
         super(storage, prefixes, txnSystem);
+        this.storagePrefixes = prefixes;
         this.storageTDB = storage;
         this.location = location;
         this.storeParams = params;
@@ -96,13 +97,17 @@ public class DatasetGraphTDB extends DatasetGraphStorage
 
     @Override
     public void close() {
+        if ( isClosed )
+            return;
         isClosed = true;
         super.close();
+        storageTDB.close();
+        storagePrefixes.close();
     }
 
     public void shutdown() {
-        close();
         txnSystem.getTxnMgr().shutdown();
+        close();
     }
 
     @Override
