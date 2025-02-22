@@ -54,10 +54,20 @@ public class QueryIterLateral extends QueryIterRepeatApply {
         this.isUnit = isJoinIdentity(subOp);
     }
 
-    private boolean isJoinIdentity(Op op) {
+    private static boolean isJoinIdentity(Op op) {
         if( ! ( op instanceof OpTable table ) )
             return false;
         return table.isJoinIdentity();
+    }
+
+    /** Choice of variable setting */
+    private static Op assignments(Op op, VarExprList varExprs) {
+        // Assign (LET) is safer (it is not an error to assign to variable if already
+        // set to the same term) but this operation is not portable.
+        //return OpAssign.create(op, varExprs);
+
+        // BIND
+        return OpExtend.create(op, varExprs);
     }
 
     @Override
@@ -114,7 +124,7 @@ public class QueryIterLateral extends QueryIterRepeatApply {
             Op opExec = substitute
                     ? Substitute.substitute(opBGP, substitutions)
                     : opBGP;
-            opExec = OpAssign.create(opExec, assigns);
+            opExec = assignments(opExec, assigns);
             return opExec;
         }
 
@@ -145,11 +155,9 @@ public class QueryIterLateral extends QueryIterRepeatApply {
                 Binding substitutions = builder.build();
                 opExec = Substitute.substitute(opQuadPattern, substitutions);
             }
-            opExec = OpAssign.create(opExec, assigns);
+            opExec = assignments(opExec, assigns);
             return opExec;
         }
-
-        // XXX Extract - do one node
 
         @Override
         public Op transform(OpService opService, Op subOp) {
@@ -173,7 +181,7 @@ public class QueryIterLateral extends QueryIterRepeatApply {
                 op2 = new OpService(g2, subOp, opService.getSilent());
             } else
                 op2 = new OpService(g, subOp, opService.getSilent());
-            Op opExec = OpAssign.create(op2, assigns);
+            Op opExec = assignments(op2, assigns);
             return opExec;
         }
 
@@ -199,7 +207,7 @@ public class QueryIterLateral extends QueryIterRepeatApply {
                 op2 = new OpGraph(g2, subOp);
             } else
                 op2 = new OpGraph(g, subOp);
-            Op opExec = OpAssign.create(op2, assigns);
+            Op opExec = assignments(op2, assigns);
             return opExec;
         }
 
@@ -231,7 +239,6 @@ public class QueryIterLateral extends QueryIterRepeatApply {
             if ( path.isTriple() ) {
                 Triple t1 = path.asTriple();
                 generateAssignmentTriple(t1, assigns, builder);
-                // XXX Triple t2 = Substitute.substitute(triple, binding);
                 Triple t2 = applyReplacement(t1, replacement);
                 if ( t1.equals(t2) )
                     return opPath;
@@ -255,7 +262,7 @@ public class QueryIterLateral extends QueryIterRepeatApply {
             Node o2 = applyReplacement(o, replacement);
             TriplePath path2 = new TriplePath(s2, path.getPath(), o2);
             Op op2 = new OpPath(path2);
-            Op opExec = OpAssign.create(op2, assigns);
+            Op opExec = assignments(op2, assigns);
             return opExec;
         }
 
@@ -271,7 +278,7 @@ public class QueryIterLateral extends QueryIterRepeatApply {
             if ( substitute )
                 t2 = applyReplacement(triple, replacement);
             Op op2 = new OpTriple(t2);
-            Op opExec = OpAssign.create(op2, assigns);
+            Op opExec = assignments(op2, assigns);
             return opExec;
         }
 
@@ -349,9 +356,6 @@ public class QueryIterLateral extends QueryIterRepeatApply {
 //
 //            Triple triple2 = Triple.create(s, p, o);
 //            return triple2;
-//        }
-
-        // XXX Other, non-std, ops.
 
         private void generateAssignmentNode(Node n, VarExprList assigns, BindingBuilder builder) {
             if ( n == null )
@@ -371,7 +375,7 @@ public class QueryIterLateral extends QueryIterRepeatApply {
             }
         }
 
-        // XXX Needed? To avoid object allocation.
+        // Avoid object allocation.
         private boolean workToDo(Node n) {
             if ( n == null )
                 return false;

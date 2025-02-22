@@ -34,9 +34,9 @@ public class OpAssign extends OpExtendAssign {
     // Not possible if it's the reassignment of something already assigned.
 
     /** Create an OpAssign or add to an existing one.
-     * This cooperation collapses what would otherwise be stacks
-     * of OpExtend.
-     */ 
+     * This operation collapses what would otherwise be
+     * stacks of OpAssign.
+     */
     static public Op assign(Op op, Var var, Expr expr) {
         if ( !(op instanceof OpAssign) )
             return create(op, var, expr);
@@ -54,7 +54,7 @@ public class OpAssign extends OpExtendAssign {
     /** Create an v or add to an existing one.
      * This operation collapses what would otherwise be stacks
      * of OpAssign.
-     */ 
+     */
     static public Op assign(Op op, VarExprList exprs) {
         if ( !(op instanceof OpAssign) )
             return create(op, exprs);
@@ -102,7 +102,7 @@ public class OpAssign extends OpExtendAssign {
         OpAssign op = new OpAssign(subOp, new VarExprList(getVarExprList()));
         return op;
     }
-    
+
     @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap) {
         if ( !(other instanceof OpAssign) )
