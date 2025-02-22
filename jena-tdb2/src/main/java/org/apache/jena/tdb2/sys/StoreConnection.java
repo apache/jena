@@ -134,10 +134,9 @@ public class StoreConnection
 
         // No transactions at this point
         // (or we don't care and are clearing up forcefully.)
+        // This closes open files.
 
         sConn.getDatasetGraphTDB().shutdown();
-        // Done by DatasetGraphTDB()
-        //txnCoord.shutdown();
 
         sConn.isValid = false;
         cache.remove(location);

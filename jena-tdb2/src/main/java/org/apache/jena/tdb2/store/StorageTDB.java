@@ -33,11 +33,9 @@ import org.apache.jena.sparql.core.Quad;
 
 /** {@link StorageRDF} for TDB2 */
 public class StorageTDB implements StorageRDF {
-    // SWITCHING. This could be the switch point, not the DatasetGraph. Probably makes little difference.
     private TripleTable                 tripleTable;
     private QuadTable                   quadTable;
     private TransactionalSystem         txnSystem;
-    // SWITCHING.
 
     // In notifyAdd and notifyDelete,  check whether the change is a real change or not.
     // e.g. Adding a quad already present is not a real change.
@@ -201,5 +199,15 @@ public class StorageTDB implements StorageRDF {
         if ( txn == null )
             throw new TransactionException("Not in a write transaction");
         txn.ensureWriteTxn();
+    }
+
+    // This does not need to be synchronized.
+    // The caller is responsible for a quiet system (e.g. no transactions active)
+    /*package*/ void close() {
+        if ( closed )
+            return;
+        closed = true;
+        tripleTable.close();
+        quadTable.close();
     }
 }
