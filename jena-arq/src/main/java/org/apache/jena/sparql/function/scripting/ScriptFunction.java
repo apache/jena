@@ -37,6 +37,7 @@ import org.apache.jena.atlas.lib.Pool;
 import org.apache.jena.atlas.lib.PoolBase;
 import org.apache.jena.atlas.lib.PoolSync;
 import org.apache.jena.query.ARQ;
+import org.apache.jena.query.QueryParseException;
 import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.sparql.expr.*;
 import org.apache.jena.sparql.function.FunctionBase;
@@ -163,7 +164,7 @@ public class ScriptFunction extends FunctionBase {
             try {
                 r = engine.invokeFunction(name, params);
             } catch (ScriptException e) {
-                throw new ExprEvalException("Failed to evaluate " + lang + "function '" + name + "'", e);
+                throw new QueryParseException("Failed to evaluate " + lang + "function '" + name + "'", e, -1, -1);
             } catch (NoSuchMethodException e) {
                 throw new ExprUndefFunction("No such " + lang + " function '" + name + "'", name);
             }

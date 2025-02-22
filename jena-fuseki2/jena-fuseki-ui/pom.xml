@@ -107,7 +107,7 @@
                             <goal>yarn</goal>
                         </goals>
                         <configuration>
-                            <arguments>run build</arguments>
+                            <arguments>run build --mode development</arguments>
                         </configuration>
                     </execution>
                     <execution>

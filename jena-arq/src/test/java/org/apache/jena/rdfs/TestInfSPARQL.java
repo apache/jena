@@ -114,5 +114,27 @@ public class TestInfSPARQL {
         }
     }
 
+    @Test
+    public void sparql4() {
+        Graph vocab = SSE.parseGraph("(graph (:p rdfs:range :R) (:p rdfs:domain :D) )");
+        DatasetGraph dsg0 = DatasetGraphFactory.createTxnMem();
+
+        DatasetGraph dsg = RDFSFactory.datasetRDFS(dsg0, vocab);
+        dsg.executeWrite(() -> {
+            dsg.add(quad("(:g1 :x :p :y)"));
+        });
+
+        // Named graphs, duplicates.
+        {
+            String qs2 = PREFIXES + "SELECT * { GRAPH <" + Quad.unionGraph.getURI() + "> { ?s ?p ?o } }";
+            Query query2 = QueryFactory.create(qs2);
+
+            try (QueryExecution qExec = QueryExecutionFactory.create(query2, dsg)) {
+                ResultSet rs = qExec.execSelect();
+                ResultSetFormatter.out(rs);
+            }
+        }
+    }
+
 
 }

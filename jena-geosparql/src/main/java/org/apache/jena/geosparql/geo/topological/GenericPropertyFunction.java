@@ -32,7 +32,6 @@ import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
@@ -235,11 +234,11 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
             GeometryWrapper geom = GeometryWrapper.extract(geometryLiteral);
             GeometryWrapper transformedGeom = geom.transform(spatialIndex.getSrsInfo());
             Envelope searchEnvelope = transformedGeom.getEnvelope();
-            HashSet<Resource> features = spatialIndex.query(searchEnvelope);
+            HashSet<Node> features = spatialIndex.query(searchEnvelope, graph);
 
             // Check each of the Features that match the search.
             QueryIterator featuresIter = QueryIterPlainWrapper.create(
-                    Iter.map(features.iterator(), feature -> BindingFactory.binding(binding, unboundVar, feature.asNode())),
+                    Iter.map(features.iterator(), feature -> BindingFactory.binding(binding, unboundVar, feature)),
                     execCxt);
 
             QueryIterator queryIterator = QueryIter.flatMap(featuresIter,
@@ -334,3 +333,4 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
         return filterFunction.exec(subjectGeometryLiteral, objectGeometryLiteral);
     }
 }
+
