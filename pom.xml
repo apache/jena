@@ -99,7 +99,7 @@
 
     <!-- Testing -->
     <ver.junit4>4.13.2</ver.junit4>
-    <ver.junit5>5.11.4</ver.junit5>
+    <ver.junit5>5.12.0</ver.junit5>
     <ver.junit5-platform>1.10.2</ver.junit5-platform>
  
     <ver.mockito>5.15.2</ver.mockito>
