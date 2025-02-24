@@ -647,6 +647,13 @@ public class BuilderExpr
         return new E_SameTerm(left, right);
     };
 
+    private static Build buildSameValue = (ItemList list) -> {
+        BuilderLib.checkLength(3, list, "samevalue: wanted 2 arguments: got :"+numArgs(list));
+        Expr left = buildExpr(list.get(1));
+        Expr right = buildExpr(list.get(2));
+        return new E_SameValue(left, right);
+    };
+
     private static Build buildDatatype = (ItemList list) -> {
         BuilderLib.checkLength(2, list, "datatype: wanted 1 argument: got :"+numArgs(list));
         Expr ex = buildExpr(list.get(1));
@@ -1080,6 +1087,7 @@ public class BuilderExpr
         dispatch(dispatchMap, Tags.tagLangMatches, buildLangMatches);
 
         dispatch(dispatchMap, Tags.tagSameTerm, buildSameTerm);
+        dispatch(dispatchMap, Tags.tagSameValue, buildSameValue);
         dispatch(dispatchMap, Tags.tagDatatype, buildDatatype);
         dispatch(dispatchMap, Tags.tagBound, buildBound);
         dispatch(dispatchMap, Tags.tagCoalesce, buildCoalesce);

@@ -1760,6 +1760,7 @@ TOKEN [IGNORE_CASE] :
 | < HAS_LANGDIR: "hasLangDir" >
 | < REGEX: "regex" >
 | < SAME_TERM: "sameTerm" >
+| < SAME_VALUE: "sameValue" >
 | < RAND: "RAND" >
 | < ABS: "ABS" >
 | < CEIL: "CEIL" >
