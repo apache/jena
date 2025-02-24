@@ -817,7 +817,7 @@ void ConstructQuadsNotTriples(QuadAccSink acc) :
 
 void TriplesTemplate(TripleCollector acc) : { }
 {    // same as ConstructTriples
-#if SPARQL_12
+#ifdef SPARQL_12
     // Version for the spec.
     TriplesSameSubject(acc)
     (<DOT> (TriplesTemplate(acc))?)?
@@ -2150,7 +2150,7 @@ Expr BuiltInCall() : { Expr expr ;
   | <BOUND> <LPAREN> gn = Var() <RPAREN>
     { return new E_Bound(new ExprVar(gn)) ; }
 
-#if ARQ
+#ifdef ARQ
     // ARQ extension
     // IRI(expr rel:String or IRI)
     // IRI(expr base:IRI, expr rel:String or IRI)
@@ -2186,7 +2186,7 @@ Expr BuiltInCall() : { Expr expr ;
     
   | <ROUND> <LPAREN> expr1 = Expression() <RPAREN> { return new E_NumRound(expr1) ; }
 
-#if ARQ
+#ifdef ARQ
   | <MOD>  <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN> { return new E_OpNumericMod(expr1, expr2); }
   
   | <IDIV> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN> { return new E_OpNumericIntegerDivide(expr1, expr2); }
@@ -2235,7 +2235,7 @@ Expr BuiltInCall() : { Expr expr ;
     
   | <TIMEZONE> <LPAREN> expr1 = Expression() <RPAREN> { return new E_DateTimeTimezone(expr1) ; }
   | <TZ> <LPAREN> expr1 = Expression() <RPAREN> { return new E_DateTimeTZ(expr1) ; }
-#if ARQ
+#ifdef ARQ
   | <ADJUST>
     // One or two arguments
     <LPAREN> expr1 = Expression() (<COMMA> expr2 = Expression())? <RPAREN>
@@ -2257,14 +2257,14 @@ Expr BuiltInCall() : { Expr expr ;
 
   | <SHA512>      <LPAREN> expr1 = Expression() <RPAREN> { return new E_SHA512(expr1) ; }
 
-#if ARQ
+#ifdef ARQ
   | <VERSION> <NIL>     { return new E_Version(); }
 #endif    
 
   | <COALESCE> a = ExpressionList()
     { return new E_Coalesce(a) ; }
     
-#if ARQ
+#ifdef ARQ
   // Maybe also allow ?func(?a1,?a2,...)
 //  | <CALL> a = ExpressionList()
 //    { return new E_Call(a) ; }
@@ -2297,6 +2297,11 @@ Expr BuiltInCall() : { Expr expr ;
 
   | <SAME_TERM> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_SameTerm(expr1, expr2) ; }
+
+#ifdef ARQ
+  | <SAME_VALUE> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
+    { return new E_SameValue(expr1, expr2) ; }
+#endif
 
   | <IS_IRI> <LPAREN> expr = Expression() <RPAREN>
     { return new E_IsIRI(expr) ; }
@@ -2620,7 +2625,8 @@ String String() : { Token t ; String lex ; }
   | t = <STRING_LITERAL_LONG1> { lex = stripQuotes3(t.image) ; }
   | t = <STRING_LITERAL_LONG2> { lex = stripQuotes3(t.image) ; }
   )
-    { lex = prepareLexicalForm(lex, t.beginLine, t.beginColumn) ;
+    { lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
+      checkString(lex, t.beginLine, t.beginColumn) ;
       return lex ;
     }
 }
@@ -2840,6 +2846,7 @@ TOKEN [IGNORE_CASE] :
 |  < HAS_LANGDIR: "hasLangDir" >   
 |  < REGEX:       "regex" >
 |  < SAME_TERM:   "sameTerm" >
+|  < SAME_VALUE:  "sameValue" >
 
 |  < RAND:        "RAND" >
 |  < ABS:         "ABS" >
