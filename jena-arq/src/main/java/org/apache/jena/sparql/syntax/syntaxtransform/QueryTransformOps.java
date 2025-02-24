@@ -21,9 +21,12 @@ package org.apache.jena.sparql.syntax.syntaxtransform;
 import static org.apache.jena.sparql.syntax.syntaxtransform.QuerySyntaxSubstituteScope.scopeCheck;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -193,7 +196,9 @@ public class QueryTransformOps {
                 mutateVarExprList(q2.getProject(), exprTransform);
                 break;
             case CONSTRUCT_JSON :
-                throw new UnsupportedOperationException("Transform of JSON template queries");
+                Map<String, Node> newJsonMapping = transformJsonMapping(q2.getJsonMapping(), exprTransform);
+                q2.setJsonMapping(newJsonMapping);
+                break;
             case UNKNOWN :
             default :
                 throw new JenaException("Unknown query type");
@@ -316,6 +321,16 @@ public class QueryTransformOps {
 
         }
         return varExprList2;
+    }
+
+    private static Map<String, Node> transformJsonMapping(Map<String, Node> jsonMapping, ExprTransform exprTransform) {
+        Map<String, Node> result = jsonMapping.entrySet().stream()
+            .collect(Collectors.toMap(
+                Entry::getKey,
+                e -> transform(e.getValue(), exprTransform), // transform(Node, ExprTransform) never returns null.
+                (u, v) -> v,          // Clashes can't happen.
+                LinkedHashMap::new)); // Retain order.
+        return result;
     }
 
     // Transform a variable node (for low-usage cases).
