@@ -631,12 +631,6 @@ public class QueryParserBase {
     /* package-testing */ static String unescapeStr(String s) {
         return unescapeStr(s, -1, -1);
     }
-//
-// public static String unescapeCodePoint(String s)
-// { return unescape(s, '\\', true, 1, 1); }
-//
-// protected String unescapeCodePoint(String s, int line, int column)
-// { return unescape(s, '\\', true, line, column); }
 
     // Do we need the line/column versions?
     // Why not catch exceptions and convert to QueryParseException
