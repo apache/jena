@@ -1673,6 +1673,8 @@ Expr BuiltInCall() : { Expr expr ;
     { return new E_StrDatatype(expr1, expr2) ; }
   | <SAME_TERM> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_SameTerm(expr1, expr2) ; }
+  | <SAME_VALUE> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
+    { return new E_SameValue(expr1, expr2) ; }
   | <IS_IRI> <LPAREN> expr = Expression() <RPAREN>
     { return new E_IsIRI(expr) ; }
   | <IS_URI> <LPAREN> expr = Expression() <RPAREN>
@@ -2060,6 +2062,7 @@ TOKEN [IGNORE_CASE] :
 | < HAS_LANGDIR: "hasLangDir" >
 | < REGEX: "regex" >
 | < SAME_TERM: "sameTerm" >
+| < SAME_VALUE: "sameValue" >
 | < RAND: "RAND" >
 | < ABS: "ABS" >
 | < CEIL: "CEIL" >
