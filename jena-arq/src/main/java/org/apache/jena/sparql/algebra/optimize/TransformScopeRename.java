@@ -31,7 +31,6 @@ import org.apache.jena.sparql.engine.Rename;
  * hide variables, but we only need to account for OpProject because group is never
  * executed linearly.
  */
-
 public class TransformScopeRename {
     // Is there an OpProject before any pattern algebra operators?
     // We don't need to rename through this one.
@@ -51,18 +50,19 @@ public class TransformScopeRename {
 
         public TransformScopeRename$(Op op) {
             this.op = op;
+
             Op op2 = op;
-            while (op2 instanceof OpModifier) {
+            while (op2 instanceof OpModifier opMod) {
                 // If already true ...
                 if ( op2 instanceof OpProject ) {
                     outerMostOpProject = true;
                     break;
                 }
-                op2 = ((OpModifier)op2).getSubOp();
+                op2 = opMod.getSubOp();
             }
             // Set the project counter: renaming begins when this hits one.
-            // Set 2 to there is a project in the top-most OpModifers.
-            // This does not cause a rename so start renaming at depth .
+            // Setting it to 2 here if it is a project in the top-most OpModifers.
+            // This does not cause a rename so start renaming at depth.
             // otherwise rename from depth 1.
             if ( outerMostOpProject )
                 projectRenameDepth = 2;
@@ -71,6 +71,8 @@ public class TransformScopeRename {
         }
 
         public Op work() {
+            // Before/after maintain the projectCount.
+            // It can't be done in transform(OpProject) because it is not the walker step.
             return Transformer.transform(new RenameByScope(), op, new BeforeWalk(), new AfterWalk());
         }
 
