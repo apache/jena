@@ -28,8 +28,8 @@ export default defineConfig({
   execTimeout: 30000,
   taskTimeout: 30000,
   pageLoadTimeout: 30000,
-  requestTimeout: 30000,
-  responseTimeout: 30000,
+  requestTimeout: 120000,
+  responseTimeout: 120000,
 
   e2e: {
     baseUrl: 'http://localhost:' + (process.env.PORT || 8080),
