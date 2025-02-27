@@ -168,7 +168,7 @@ public class NodeFactory {
         Objects.requireNonNull(string, "null lexical form for literal");
         if ( isEmpty(lang) ) {
             if ( textDir != null )
-                throw new JenaException("The language must be gived for a language direction literal");
+                throw new JenaException("The language must be given for a language direction literal");
             return new Node_Literal(string);
         }
         if ( noTextDir(textDir) )
