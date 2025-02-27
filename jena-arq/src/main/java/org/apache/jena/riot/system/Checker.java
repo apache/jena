@@ -30,6 +30,7 @@ import org.apache.jena.irix.*;
 import org.apache.jena.langtagx.LangTagX;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.util.SplitIRI;
+import org.apache.jena.vocabulary.RDF;
 
 /**
  * Functions for checking nodes, triples and quads.
@@ -151,7 +152,7 @@ public class Checker {
         return checkLiteral(lexicalForm, lang, (TextDirection)null, null, errorHandler, line, col);
     }
 
-    /** @deprecated Use {@link #checkLiteral(String, String, ErrorHandler, long, long)} */
+    /** @deprecated Use {@link #checkLiteral(String, String, String, RDFDatatype, ErrorHandler, long, long)} */
     @Deprecated
     public static boolean checkLiteral(String lexicalForm, String lang, RDFDatatype datatype, ErrorHandler errorHandler, long line, long col) {
         return checkLiteral(lexicalForm, lang, (TextDirection)null, datatype, errorHandler, line, col);
@@ -194,22 +195,29 @@ public class Checker {
                     return false;
                 }
                 else if ( ! datatype.equals( RDFLangString.rdfLangString ) ) {
-                    errorHandler(errorHandler).error("Literal has language but wrong datatype: "+datatype, line, col);
+                    errorHandler(errorHandler).error("Literal has language but wrong datatype: "+datatype.getURI(), line, col);
                     return false;
                 }
             }
             return true;
-        } else {
-            // No lang => no base direction
-            if ( hasTextDirection )
-                errorHandler(errorHandler).error("Language base direction without language", line, col);
-            // Fallthrough
         }
+        // No lang => no base direction
+        if ( hasTextDirection )
+            errorHandler(errorHandler).error("Language base direction without language", line, col);
 
-        // If the Literal has a datatype (but no language or base direction)...
         if ( datatype.equals(XSDDatatype.XSDstring) )
             // Simple literals are always well-formed...
             return true;
+        
+        // If the Literal has a datatype (but no language or base direction)...
+        if ( datatype.equals(RDF.dtLangString) ) {
+            errorHandler(errorHandler).warning("Literal has datatype "+datatype.getURI()+" but no language tag", line, col);
+            return false;
+        }
+        if ( datatype.equals(RDF.dtDirLangString) ) {
+            errorHandler(errorHandler).warning("Literal has datatype "+datatype.getURI()+" but no language tag and no base direction", line, col);
+            return false;
+        }
         return validateByDatatype(lexicalForm, datatype, errorHandler, line, col);
     }
 

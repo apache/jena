@@ -230,7 +230,7 @@ public class ParserProfileStd implements ParserProfile {
             throw new RiotException("Invalid base direction: '"+direction+"'. Must be 'ltr' or 'rtl'");
         if ( checking )
             Checker.checkLiteral(lexical, langTag, direction, null, errorHandler, line, col);
-            return factory.createLangDirLiteral(lexical, langTag, direction);
+        return factory.createLangDirLiteral(lexical, langTag, direction);
     }
 
     @Override
@@ -283,27 +283,31 @@ public class ParserProfileStd implements ParserProfile {
 
     @Override
     public final Node create(Node currentGraph, Token token) {
-        // Dispatches to the underlying ParserFactory operation
+        return create(this, currentGraph, token);
+    }
+
+    private final static Node create(ParserProfile profile, Node currentGraph, Token token) {
+        // Dispatches to the underlying ParserFactory operation via a create* method.
         long line = token.getLine();
         long col = token.getColumn();
         String str = token.getImage();
         switch (token.getType()) {
             case BNODE :
-                return createBlankNode(currentGraph, str, line, col);
+                return profile.createBlankNode(currentGraph, str, line, col);
             case IRI :
-                return createURI(str, line, col);
+                return profile.createURI(str, line, col);
             case PREFIXED_NAME : {
                 String prefix = str;
                 String suffix = token.getImage2();
-                String expansion = expandPrefixedName(prefix, suffix, token);
-                return createURI(expansion, line, col);
+                String expansion = expandPrefixedName(profile, prefix, suffix, token);
+                return profile.createURI(expansion, line, col);
             }
             case DECIMAL :
-                return createTypedLiteral(str, XSDDatatype.XSDdecimal, line, col);
+                return profile.createTypedLiteral(str, XSDDatatype.XSDdecimal, line, col);
             case DOUBLE :
-                return createTypedLiteral(str, XSDDatatype.XSDdouble, line, col);
+                return profile.createTypedLiteral(str, XSDDatatype.XSDdouble, line, col);
             case INTEGER :
-                return createTypedLiteral(str, XSDDatatype.XSDinteger, line, col);
+                return profile.createTypedLiteral(str, XSDDatatype.XSDinteger, line, col);
             case LITERAL_DT : {
                 Token tokenDT = token.getSubToken2();
                 String uriStr;
@@ -314,15 +318,15 @@ public class ParserProfileStd implements ParserProfile {
                     case PREFIXED_NAME : {
                         String prefix = tokenDT.getImage();
                         String suffix = tokenDT.getImage2();
-                        uriStr = expandPrefixedName(prefix, suffix, tokenDT);
+                        uriStr = expandPrefixedName(profile, prefix, suffix, tokenDT);
                         break;
                     }
                     default :
                         throw new RiotException("Expected IRI for datatype: " + token);
                 }
-                uriStr = resolveIRI(uriStr, tokenDT.getLine(), tokenDT.getColumn());
+                uriStr = profile.resolveIRI(uriStr, tokenDT.getLine(), tokenDT.getColumn());
                 RDFDatatype dt = NodeFactory.getType(uriStr);
-                return createTypedLiteral(str, dt, line, col);
+                return profile.createTypedLiteral(str, dt, line, col);
             }
 
             case LITERAL_LANG :
@@ -331,21 +335,21 @@ public class ParserProfileStd implements ParserProfile {
                 if ( idx >= 0 ) {
                     String textDir = langdir.substring(idx+2);
                     String lang = langdir.substring(0, idx);
-                    return createLangDirLiteral(str, lang, textDir, line, col);
+                    return profile.createLangDirLiteral(str, lang, textDir, line, col);
                 }
-                return createLangLiteral(str, token.getImage2(), line, col);
+                return profile.createLangLiteral(str, token.getImage2(), line, col);
 
             case STRING :
-                return createStringLiteral(str, line, col);
+                return profile.createStringLiteral(str, line, col);
 
             case BOOLEAN :
-                return createTypedLiteral(str, XSDDatatype.XSDboolean, line, col);
+                return profile.createTypedLiteral(str, XSDDatatype.XSDboolean, line, col);
 
             default : {
-                Node x = createNodeFromToken(currentGraph, token, line, col);
+                Node x = profile.createNodeFromToken(currentGraph, token, line, col);
                 if ( x != null )
                     return x;
-                errorHandler.fatal("Not a valid token for an RDF term: " + token, line, col);
+                profile.getErrorHandler().fatal("Not a valid token for an RDF term: " + token, line, col);
                 return null;
             }
         }
@@ -363,12 +367,12 @@ public class ParserProfileStd implements ParserProfile {
         return prefixMap;
     }
 
-    private String expandPrefixedName(String prefix, String localPart, Token token) {
-        String expansion = prefixMap.expand(prefix, localPart);
+    private static String expandPrefixedName(ParserProfile profile, String prefix, String localPart, Token token) {
+        String expansion = profile.getPrefixMap().expand(prefix, localPart);
         if ( expansion == null ) {
             if ( ARQ.isTrue(ARQ.fixupUndefinedPrefixes) )
                 return RiotLib.fixupPrefixIRI(prefix, localPart);
-            errorHandler.fatal("Undefined prefix: " + prefix, token.getLine(), token.getColumn());
+            profile.getErrorHandler().fatal("Undefined prefix: " + prefix, token.getLine(), token.getColumn());
         }
         return expansion;
     }
