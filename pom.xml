@@ -70,7 +70,12 @@
     <ver.jetty>12.0.16</ver.jetty>
     <ver.jakarta-servlet>6.1.0</ver.jakarta-servlet>
 
+    <!-- 
+         These two go together
+         See jena-fuseki-webapp and https://shiro.apache.org/jakarta-ee.html
+    -->
     <ver.shiro>2.0.2</ver.shiro>
+    <ver.omnifaces>4.6.1</ver.omnifaces>
 
     <ver.protobuf>4.29.3</ver.protobuf>
     <ver.libthrift>0.21.0</ver.libthrift>
