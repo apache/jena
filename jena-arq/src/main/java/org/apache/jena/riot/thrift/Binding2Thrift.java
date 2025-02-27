@@ -18,84 +18,84 @@
 
 package org.apache.jena.riot.thrift;
 
-import java.io.OutputStream ;
+import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collection ;
-import java.util.Iterator ;
+import java.util.Collection;
+import java.util.Iterator;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.riot.thrift.wire.RDF_DataTuple ;
-import org.apache.jena.riot.thrift.wire.RDF_Term ;
-import org.apache.jena.riot.thrift.wire.RDF_VAR ;
-import org.apache.jena.riot.thrift.wire.RDF_VarTuple ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.thrift.TException ;
-import org.apache.thrift.protocol.TProtocol ;
-import org.apache.thrift.transport.TIOStreamTransport ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.riot.thrift.wire.RDF_DataTuple;
+import org.apache.jena.riot.thrift.wire.RDF_Term;
+import org.apache.jena.riot.thrift.wire.RDF_VAR;
+import org.apache.jena.riot.thrift.wire.RDF_VarTuple;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.thrift.TException;
+import org.apache.thrift.protocol.TProtocol;
+import org.apache.thrift.transport.TIOStreamTransport;
 import org.apache.thrift.transport.TTransportException;
 
 /** Converted from Bindings to SPARQL result set encoded in Thrift */
 public class Binding2Thrift implements AutoCloseable {
-    private final RDF_DataTuple row = new RDF_DataTuple() ;
-    private final Collection<Var> vars ;
-    private final OutputStream out ;
-    private final TProtocol protocol ;
-    private final boolean encodeValues ;
+    private final RDF_DataTuple row = new RDF_DataTuple();
+    private final Collection<Var> vars;
+    private final OutputStream out;
+    private final TProtocol protocol;
+    private final boolean encodeValues;
 
     public Binding2Thrift(OutputStream out, Collection<Var> vars, boolean encodeValues) {
-        this.out = out ;
-        this.vars = vars ;
+        this.out = out;
+        this.vars = vars;
         try {
-            TIOStreamTransport transport = new TIOStreamTransport(out) ;
-            this.protocol = TRDF.protocol(transport) ;
+            TIOStreamTransport transport = new TIOStreamTransport(out);
+            this.protocol = TRDF.protocol(transport);
         } catch (TTransportException ex) { throw new RiotThriftException(ex); }
-        this.encodeValues = encodeValues ;
-        varsRow() ;
+        this.encodeValues = encodeValues;
+        varsRow();
     }
 
     private void varsRow() {
-        RDF_VarTuple vrow = new RDF_VarTuple(new ArrayList<>(vars.size())) ;
+        RDF_VarTuple vrow = new RDF_VarTuple(new ArrayList<>(vars.size()));
         for ( Var v : vars ) {
-            RDF_VAR rv = new RDF_VAR() ;
-            rv.setName(v.getName()) ;
-            vrow.addToVars(rv) ;
+            RDF_VAR rv = new RDF_VAR();
+            rv.setName(v.getName());
+            vrow.addToVars(rv);
         }
-        try { vrow.write(protocol) ; }
-        catch (TException e) { TRDF.exception(e) ; }
+        try { vrow.write(protocol); }
+        catch (TException e) { TRDF.exception(e); }
     }
 
     public Binding2Thrift(TProtocol out, Collection<Var> vars, boolean encodeValues) {
-        this.vars = vars ;
-        this.out = null ;
-        this.protocol = out ;
-        this.encodeValues = encodeValues ;
-        varsRow() ;
+        this.vars = vars;
+        this.out = null;
+        this.protocol = out;
+        this.encodeValues = encodeValues;
+        varsRow();
     }
 
     public void output(Binding binding) {
-        Iterator<Var> vIter = (vars == null ? null : vars.iterator()) ;
+        Iterator<Var> vIter = (vars == null ? null : vars.iterator());
         if ( vIter == null )
-            vIter = binding.vars() ;
+            vIter = binding.vars();
         // ** Java8
 //        vIter.forEachRemaining(v -> {
-//            Node n = binding.get(v) ;
-//            RDF_Term rt = ( n == null ) ? TRDF.tUNDEF : ThriftConvert.convert(n) ;
-//            row.addToRow(rt) ;
-//        }) ;
+//            Node n = binding.get(v);
+//            RDF_Term rt = ( n == null ) ? TRDF.tUNDEF : ThriftConvert.convert(n);
+//            row.addToRow(rt);
+//        });
         while(vIter.hasNext()) {
             Var v = vIter.next();
-            Node n = binding.get(v) ;
-            RDF_Term rt = ( n == null ) ? TRDF.tUNDEF : ThriftConvert.convert(n, encodeValues) ;
-            row.addToRow(rt) ;
+            Node n = binding.get(v);
+            RDF_Term rt = ( n == null ) ? TRDF.tUNDEF : ThriftConvert.convert(n, encodeValues);
+            row.addToRow(rt);
         }
-        try { row.write(protocol) ; }
-        catch (TException e) { TRDF.exception(e) ; }
-        row.clear() ;
+        try { row.write(protocol); }
+        catch (TException e) { TRDF.exception(e); }
+        row.clear();
     }
 
     @Override
     public void close() {
-        TRDF.flush(protocol) ;
+        TRDF.flush(protocol);
     }
 }

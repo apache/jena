@@ -654,7 +654,7 @@ public class ExprFactoryTest {
     public void asExprTest_Triplenode() {
         Triple expected = Triple.create(NodeFactory.createURI("a"), 
                 NodeFactory.createURI("b"), NodeFactory.createURI("c"));
-        Node tripleNode = NodeFactory.createTripleNode(expected);
+        Node tripleNode = NodeFactory.createTripleTerm(expected);
         Expr e = factory.asExpr(tripleNode);
         assertTrue(e instanceof NodeValueNode);
         NodeValueNode n = (NodeValueNode) e;

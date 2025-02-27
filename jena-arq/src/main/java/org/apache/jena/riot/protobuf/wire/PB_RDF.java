@@ -1794,21 +1794,62 @@ public final class PB_RDF {
     boolean getSimple();
 
     /**
+     * <pre>
+     * Language tag only literal
+     * </pre>
+     *
      * <code>string langtag = 2;</code>
      * @return Whether the langtag field is set.
      */
     boolean hasLangtag();
     /**
+     * <pre>
+     * Language tag only literal
+     * </pre>
+     *
      * <code>string langtag = 2;</code>
      * @return The langtag.
      */
     java.lang.String getLangtag();
     /**
+     * <pre>
+     * Language tag only literal
+     * </pre>
+     *
      * <code>string langtag = 2;</code>
      * @return The bytes for langtag.
      */
     com.google.protobuf.ByteString
         getLangtagBytes();
+
+    /**
+     * <pre>
+     * Language tag and base direction separated by "--"
+     * </pre>
+     *
+     * <code>string langdir = 5;</code>
+     * @return Whether the langdir field is set.
+     */
+    boolean hasLangdir();
+    /**
+     * <pre>
+     * Language tag and base direction separated by "--"
+     * </pre>
+     *
+     * <code>string langdir = 5;</code>
+     * @return The langdir.
+     */
+    java.lang.String getLangdir();
+    /**
+     * <pre>
+     * Language tag and base direction separated by "--"
+     * </pre>
+     *
+     * <code>string langdir = 5;</code>
+     * @return The bytes for langdir.
+     */
+    com.google.protobuf.ByteString
+        getLangdirBytes();
 
     /**
      * <code>string datatype = 3;</code>
@@ -1890,6 +1931,7 @@ public final class PB_RDF {
             com.google.protobuf.AbstractMessage.InternalOneOfEnum {
       SIMPLE(9),
       LANGTAG(2),
+      LANGDIR(5),
       DATATYPE(3),
       DTPREFIX(4),
       LITERALKIND_NOT_SET(0);
@@ -1911,6 +1953,7 @@ public final class PB_RDF {
         switch (value) {
           case 9: return SIMPLE;
           case 2: return LANGTAG;
+          case 5: return LANGDIR;
           case 3: return DATATYPE;
           case 4: return DTPREFIX;
           case 0: return LITERALKIND_NOT_SET;
@@ -1990,6 +2033,10 @@ public final class PB_RDF {
 
     public static final int LANGTAG_FIELD_NUMBER = 2;
     /**
+     * <pre>
+     * Language tag only literal
+     * </pre>
+     *
      * <code>string langtag = 2;</code>
      * @return Whether the langtag field is set.
      */
@@ -1997,6 +2044,10 @@ public final class PB_RDF {
       return literalKindCase_ == 2;
     }
     /**
+     * <pre>
+     * Language tag only literal
+     * </pre>
+     *
      * <code>string langtag = 2;</code>
      * @return The langtag.
      */
@@ -2018,6 +2069,10 @@ public final class PB_RDF {
       }
     }
     /**
+     * <pre>
+     * Language tag only literal
+     * </pre>
+     *
      * <code>string langtag = 2;</code>
      * @return The bytes for langtag.
      */
@@ -2032,6 +2087,70 @@ public final class PB_RDF {
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         if (literalKindCase_ == 2) {
+          literalKind_ = b;
+        }
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int LANGDIR_FIELD_NUMBER = 5;
+    /**
+     * <pre>
+     * Language tag and base direction separated by "--"
+     * </pre>
+     *
+     * <code>string langdir = 5;</code>
+     * @return Whether the langdir field is set.
+     */
+    public boolean hasLangdir() {
+      return literalKindCase_ == 5;
+    }
+    /**
+     * <pre>
+     * Language tag and base direction separated by "--"
+     * </pre>
+     *
+     * <code>string langdir = 5;</code>
+     * @return The langdir.
+     */
+    public java.lang.String getLangdir() {
+      java.lang.Object ref = "";
+      if (literalKindCase_ == 5) {
+        ref = literalKind_;
+      }
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (literalKindCase_ == 5) {
+          literalKind_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * Language tag and base direction separated by "--"
+     * </pre>
+     *
+     * <code>string langdir = 5;</code>
+     * @return The bytes for langdir.
+     */
+    public com.google.protobuf.ByteString
+        getLangdirBytes() {
+      java.lang.Object ref = "";
+      if (literalKindCase_ == 5) {
+        ref = literalKind_;
+      }
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        if (literalKindCase_ == 5) {
           literalKind_ = b;
         }
         return b;
@@ -2149,6 +2268,9 @@ public final class PB_RDF {
       if (literalKindCase_ == 4) {
         output.writeMessage(4, (org.apache.jena.riot.protobuf.wire.PB_RDF.RDF_PrefixName) literalKind_);
       }
+      if (literalKindCase_ == 5) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 5, literalKind_);
+      }
       if (literalKindCase_ == 9) {
         output.writeBool(
             9, (boolean)((java.lang.Boolean) literalKind_));
@@ -2174,6 +2296,9 @@ public final class PB_RDF {
       if (literalKindCase_ == 4) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, (org.apache.jena.riot.protobuf.wire.PB_RDF.RDF_PrefixName) literalKind_);
+      }
+      if (literalKindCase_ == 5) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, literalKind_);
       }
       if (literalKindCase_ == 9) {
         size += com.google.protobuf.CodedOutputStream
@@ -2206,6 +2331,10 @@ public final class PB_RDF {
         case 2:
           if (!getLangtag()
               .equals(other.getLangtag())) return false;
+          break;
+        case 5:
+          if (!getLangdir()
+              .equals(other.getLangdir())) return false;
           break;
         case 3:
           if (!getDatatype()
@@ -2240,6 +2369,10 @@ public final class PB_RDF {
         case 2:
           hash = (37 * hash) + LANGTAG_FIELD_NUMBER;
           hash = (53 * hash) + getLangtag().hashCode();
+          break;
+        case 5:
+          hash = (37 * hash) + LANGDIR_FIELD_NUMBER;
+          hash = (53 * hash) + getLangdir().hashCode();
           break;
         case 3:
           hash = (37 * hash) + DATATYPE_FIELD_NUMBER;
@@ -2465,6 +2598,12 @@ public final class PB_RDF {
             onChanged();
             break;
           }
+          case LANGDIR: {
+            literalKindCase_ = 5;
+            literalKind_ = other.literalKind_;
+            onChanged();
+            break;
+          }
           case DATATYPE: {
             literalKindCase_ = 3;
             literalKind_ = other.literalKind_;
@@ -2529,6 +2668,12 @@ public final class PB_RDF {
                 literalKindCase_ = 4;
                 break;
               } // case 34
+              case 42: {
+                java.lang.String s = input.readStringRequireUtf8();
+                literalKindCase_ = 5;
+                literalKind_ = s;
+                break;
+              } // case 42
               case 72: {
                 literalKind_ = input.readBool();
                 literalKindCase_ = 9;
@@ -2681,6 +2826,10 @@ public final class PB_RDF {
       }
 
       /**
+       * <pre>
+       * Language tag only literal
+       * </pre>
+       *
        * <code>string langtag = 2;</code>
        * @return Whether the langtag field is set.
        */
@@ -2689,6 +2838,10 @@ public final class PB_RDF {
         return literalKindCase_ == 2;
       }
       /**
+       * <pre>
+       * Language tag only literal
+       * </pre>
+       *
        * <code>string langtag = 2;</code>
        * @return The langtag.
        */
@@ -2711,6 +2864,10 @@ public final class PB_RDF {
         }
       }
       /**
+       * <pre>
+       * Language tag only literal
+       * </pre>
+       *
        * <code>string langtag = 2;</code>
        * @return The bytes for langtag.
        */
@@ -2734,6 +2891,10 @@ public final class PB_RDF {
         }
       }
       /**
+       * <pre>
+       * Language tag only literal
+       * </pre>
+       *
        * <code>string langtag = 2;</code>
        * @param value The langtag to set.
        * @return This builder for chaining.
@@ -2747,6 +2908,10 @@ public final class PB_RDF {
         return this;
       }
       /**
+       * <pre>
+       * Language tag only literal
+       * </pre>
+       *
        * <code>string langtag = 2;</code>
        * @return This builder for chaining.
        */
@@ -2759,6 +2924,10 @@ public final class PB_RDF {
         return this;
       }
       /**
+       * <pre>
+       * Language tag only literal
+       * </pre>
+       *
        * <code>string langtag = 2;</code>
        * @param value The bytes for langtag to set.
        * @return This builder for chaining.
@@ -2768,6 +2937,123 @@ public final class PB_RDF {
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
         literalKindCase_ = 2;
+        literalKind_ = value;
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <pre>
+       * Language tag and base direction separated by "--"
+       * </pre>
+       *
+       * <code>string langdir = 5;</code>
+       * @return Whether the langdir field is set.
+       */
+      @java.lang.Override
+      public boolean hasLangdir() {
+        return literalKindCase_ == 5;
+      }
+      /**
+       * <pre>
+       * Language tag and base direction separated by "--"
+       * </pre>
+       *
+       * <code>string langdir = 5;</code>
+       * @return The langdir.
+       */
+      @java.lang.Override
+      public java.lang.String getLangdir() {
+        java.lang.Object ref = "";
+        if (literalKindCase_ == 5) {
+          ref = literalKind_;
+        }
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (literalKindCase_ == 5) {
+            literalKind_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Language tag and base direction separated by "--"
+       * </pre>
+       *
+       * <code>string langdir = 5;</code>
+       * @return The bytes for langdir.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getLangdirBytes() {
+        java.lang.Object ref = "";
+        if (literalKindCase_ == 5) {
+          ref = literalKind_;
+        }
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          if (literalKindCase_ == 5) {
+            literalKind_ = b;
+          }
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Language tag and base direction separated by "--"
+       * </pre>
+       *
+       * <code>string langdir = 5;</code>
+       * @param value The langdir to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLangdir(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        literalKindCase_ = 5;
+        literalKind_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Language tag and base direction separated by "--"
+       * </pre>
+       *
+       * <code>string langdir = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLangdir() {
+        if (literalKindCase_ == 5) {
+          literalKindCase_ = 0;
+          literalKind_ = null;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * Language tag and base direction separated by "--"
+       * </pre>
+       *
+       * <code>string langdir = 5;</code>
+       * @param value The bytes for langdir to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLangdirBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        literalKindCase_ = 5;
         literalKind_ = value;
         onChanged();
         return this;
@@ -15256,37 +15542,38 @@ public final class PB_RDF {
       "\n\020binary-rdf.proto\"\026\n\007RDF_IRI\022\013\n\003iri\030\001 \001" +
       "(\t\"3\n\016RDF_PrefixName\022\016\n\006prefix\030\001 \001(\t\022\021\n\t" +
       "localName\030\002 \001(\t\"\032\n\tRDF_BNode\022\r\n\005label\030\001 " +
-      "\001(\t\"\207\001\n\013RDF_Literal\022\013\n\003lex\030\001 \001(\t\022\020\n\006simp" +
-      "le\030\t \001(\010H\000\022\021\n\007langtag\030\002 \001(\tH\000\022\022\n\010datatyp" +
-      "e\030\003 \001(\tH\000\022#\n\010dtPrefix\030\004 \001(\0132\017.RDF_Prefix" +
-      "NameH\000B\r\n\013literalKind\"+\n\013RDF_Decimal\022\r\n\005" +
-      "value\030\001 \001(\022\022\r\n\005scale\030\002 \001(\021\"\027\n\007RDF_Var\022\014\n" +
-      "\004name\030\001 \001(\t\"\t\n\007RDF_ANY\"\013\n\tRDF_UNDEF\"\014\n\nR" +
-      "DF_REPEAT\"\371\002\n\010RDF_Term\022\027\n\003iri\030\001 \001(\0132\010.RD" +
-      "F_IRIH\000\022\033\n\005bnode\030\002 \001(\0132\n.RDF_BNodeH\000\022\037\n\007" +
-      "literal\030\003 \001(\0132\014.RDF_LiteralH\000\022%\n\nprefixN" +
-      "ame\030\004 \001(\0132\017.RDF_PrefixNameH\000\022\034\n\010variable" +
-      "\030\005 \001(\0132\010.RDF_VarH\000\022!\n\ntripleTerm\030\006 \001(\0132\013" +
-      ".RDF_TripleH\000\022\027\n\003any\030\007 \001(\0132\010.RDF_ANYH\000\022\037" +
-      "\n\tundefined\030\010 \001(\0132\n.RDF_UNDEFH\000\022\035\n\006repea" +
-      "t\030\t \001(\0132\013.RDF_REPEATH\000\022\024\n\nvalInteger\030\024 \001" +
-      "(\022H\000\022\023\n\tvalDouble\030\025 \001(\001H\000\022\"\n\nvalDecimal\030" +
-      "\026 \001(\0132\014.RDF_DecimalH\000B\006\n\004term\"N\n\nRDF_Tri" +
-      "ple\022\024\n\001S\030\001 \001(\0132\t.RDF_Term\022\024\n\001P\030\002 \001(\0132\t.R" +
-      "DF_Term\022\024\n\001O\030\003 \001(\0132\t.RDF_Term\"b\n\010RDF_Qua" +
-      "d\022\024\n\001S\030\001 \001(\0132\t.RDF_Term\022\024\n\001P\030\002 \001(\0132\t.RDF" +
-      "_Term\022\024\n\001O\030\003 \001(\0132\t.RDF_Term\022\024\n\001G\030\004 \001(\0132\t" +
-      ".RDF_Term\"-\n\016RDF_PrefixDecl\022\016\n\006prefix\030\001 " +
-      "\001(\t\022\013\n\003uri\030\002 \001(\t\"\221\001\n\rRDF_StreamRow\022%\n\npr" +
-      "efixDecl\030\001 \001(\0132\017.RDF_PrefixDeclH\000\022\035\n\006tri" +
-      "ple\030\002 \001(\0132\013.RDF_TripleH\000\022\031\n\004quad\030\003 \001(\0132\t" +
-      ".RDF_QuadH\000\022\030\n\004base\030\004 \001(\0132\010.RDF_IRIH\000B\005\n" +
-      "\003row\")\n\nRDF_Stream\022\033\n\003row\030\001 \003(\0132\016.RDF_St" +
-      "reamRow\"&\n\014RDF_VarTuple\022\026\n\004vars\030\001 \003(\0132\010." +
-      "RDF_Var\"\'\n\rRDF_DataTuple\022\026\n\003row\030\001 \003(\0132\t." +
-      "RDF_Term\"(\n\tRDF_Graph\022\033\n\006triple\030\001 \003(\0132\013." +
-      "RDF_TripleB.\n\"org.apache.jena.riot.proto" +
-      "buf.wireB\006PB_RDFH\001b\006proto3"
+      "\001(\t\"\232\001\n\013RDF_Literal\022\013\n\003lex\030\001 \001(\t\022\020\n\006simp" +
+      "le\030\t \001(\010H\000\022\021\n\007langtag\030\002 \001(\tH\000\022\021\n\007langdir" +
+      "\030\005 \001(\tH\000\022\022\n\010datatype\030\003 \001(\tH\000\022#\n\010dtPrefix" +
+      "\030\004 \001(\0132\017.RDF_PrefixNameH\000B\r\n\013literalKind" +
+      "\"+\n\013RDF_Decimal\022\r\n\005value\030\001 \001(\022\022\r\n\005scale\030" +
+      "\002 \001(\021\"\027\n\007RDF_Var\022\014\n\004name\030\001 \001(\t\"\t\n\007RDF_AN" +
+      "Y\"\013\n\tRDF_UNDEF\"\014\n\nRDF_REPEAT\"\371\002\n\010RDF_Ter" +
+      "m\022\027\n\003iri\030\001 \001(\0132\010.RDF_IRIH\000\022\033\n\005bnode\030\002 \001(" +
+      "\0132\n.RDF_BNodeH\000\022\037\n\007literal\030\003 \001(\0132\014.RDF_L" +
+      "iteralH\000\022%\n\nprefixName\030\004 \001(\0132\017.RDF_Prefi" +
+      "xNameH\000\022\034\n\010variable\030\005 \001(\0132\010.RDF_VarH\000\022!\n" +
+      "\ntripleTerm\030\006 \001(\0132\013.RDF_TripleH\000\022\027\n\003any\030" +
+      "\007 \001(\0132\010.RDF_ANYH\000\022\037\n\tundefined\030\010 \001(\0132\n.R" +
+      "DF_UNDEFH\000\022\035\n\006repeat\030\t \001(\0132\013.RDF_REPEATH" +
+      "\000\022\024\n\nvalInteger\030\024 \001(\022H\000\022\023\n\tvalDouble\030\025 \001" +
+      "(\001H\000\022\"\n\nvalDecimal\030\026 \001(\0132\014.RDF_DecimalH\000" +
+      "B\006\n\004term\"N\n\nRDF_Triple\022\024\n\001S\030\001 \001(\0132\t.RDF_" +
+      "Term\022\024\n\001P\030\002 \001(\0132\t.RDF_Term\022\024\n\001O\030\003 \001(\0132\t." +
+      "RDF_Term\"b\n\010RDF_Quad\022\024\n\001S\030\001 \001(\0132\t.RDF_Te" +
+      "rm\022\024\n\001P\030\002 \001(\0132\t.RDF_Term\022\024\n\001O\030\003 \001(\0132\t.RD" +
+      "F_Term\022\024\n\001G\030\004 \001(\0132\t.RDF_Term\"-\n\016RDF_Pref" +
+      "ixDecl\022\016\n\006prefix\030\001 \001(\t\022\013\n\003uri\030\002 \001(\t\"\221\001\n\r" +
+      "RDF_StreamRow\022%\n\nprefixDecl\030\001 \001(\0132\017.RDF_" +
+      "PrefixDeclH\000\022\035\n\006triple\030\002 \001(\0132\013.RDF_Tripl" +
+      "eH\000\022\031\n\004quad\030\003 \001(\0132\t.RDF_QuadH\000\022\030\n\004base\030\004" +
+      " \001(\0132\010.RDF_IRIH\000B\005\n\003row\")\n\nRDF_Stream\022\033\n" +
+      "\003row\030\001 \003(\0132\016.RDF_StreamRow\"&\n\014RDF_VarTup" +
+      "le\022\026\n\004vars\030\001 \003(\0132\010.RDF_Var\"\'\n\rRDF_DataTu" +
+      "ple\022\026\n\003row\030\001 \003(\0132\t.RDF_Term\"(\n\tRDF_Graph" +
+      "\022\033\n\006triple\030\001 \003(\0132\013.RDF_TripleB.\n\"org.apa" +
+      "che.jena.riot.protobuf.wireB\006PB_RDFH\001b\006p" +
+      "roto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -15315,7 +15602,7 @@ public final class PB_RDF {
     internal_static_RDF_Literal_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_RDF_Literal_descriptor,
-        new java.lang.String[] { "Lex", "Simple", "Langtag", "Datatype", "DtPrefix", "LiteralKind", });
+        new java.lang.String[] { "Lex", "Simple", "Langtag", "Langdir", "Datatype", "DtPrefix", "LiteralKind", });
     internal_static_RDF_Decimal_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_RDF_Decimal_fieldAccessorTable = new

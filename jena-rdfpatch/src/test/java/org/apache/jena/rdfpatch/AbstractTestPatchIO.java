@@ -38,12 +38,12 @@ public abstract class AbstractTestPatchIO {
     private static Node g2 = SSE.parseNode("_:g2");
     private static Node s1 = SSE.parseNode(":s1");
     private static Node s2 = SSE.parseNode("_:s2");
-    private static Node s3 = SSE.parseNode("<<_:b :y 123>>");
+    private static Node s3 = SSE.parseNode("<<(_:b :y 123)>>");
     private static Node p1 = SSE.parseNode("<http://example/p1>");
     private static Node p2 = SSE.parseNode(":p2");
     private static Node o1 = SSE.parseNode("<http://example/o1>");
     private static Node o2 = SSE.parseNode("123");
-    private static Node o3 = SSE.parseNode("<< <<_:b :q _:b>> :prop _:b >>");
+    private static Node o3 = SSE.parseNode("<<(  _:b :prop <<( _:b :q _:b )>> )>>");
 
     // Dubious
     private static Node zo1 = SSE.parseNode("'abc\uFFFDdef'");

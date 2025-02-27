@@ -18,20 +18,17 @@
 
 package org.apache.jena.atlas.data;
 
-import java.io.File ;
+import java.io.File;
 
 /**
- * This class exists so that we can examine the internals of a DataBag during testing (which we can do here since it is in the same package).
+ * This class exists so that we can examine the internals of a DataBag during testing
+ * (which we can do here since it is in the same package).
  */
-public class DataBagExaminer
-{
-    public static int countTemporaryFiles(AbstractDataBag<?> bag)
-    {
+public class DataBagExaminer {
+    public static int countTemporaryFiles(AbstractDataBag<? > bag) {
         int count = 0;
-        for (File tempFile : bag.getSpillFiles())
-        {
-            if (tempFile.exists())
-            {
+        for ( File tempFile : bag.getSpillFiles() ) {
+            if ( tempFile.exists() ) {
                 count++;
             }
         }

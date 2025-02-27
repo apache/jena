@@ -81,43 +81,63 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
 
     // One triple, not including terminator.
     protected final Triple parseTriple() {
+        Token token = peekToken();
+        Node s = parseSubject();
+        Node p = parsePredicate();
+        Node o = parseObject();
+        return profile.createTriple(s, p, o, token.getLine(), token.getColumn());
+    }
+
+    protected final Node parseSubject() {
+        // If we allow triple term in the subject position.
+        // These would be rejected when the triple is created by the standard parser profile.
+        //Node s = parseRDFTerm("subject");
+
         Token sToken = nextToken();
         if ( sToken.isEOF() )
             exception(sToken, "Premature end of file: %s", sToken);
-        Node s;
-        if ( sToken.hasType(TokenType.LT2) )
-            s = parseTripleTerm();
-        else {
-            checkIRIOrBNode(sToken);
-            s = tokenAsNode(sToken);
-        }
+        checkIRIOrBNode(sToken);
+        Node s = tokenAsNode(sToken);
+        return s;
+    }
 
+    // Parse, must be a URI.
+    protected final Node parsePredicate() {
         Token pToken = nextToken();
         if ( pToken.isEOF() )
             exception(pToken, "Premature end of file: %s", pToken);
         checkIRI(pToken);
         Node p = tokenAsNode(pToken);
-
-        Token oToken = nextToken();
-        if ( oToken.isEOF() )
-            exception(oToken, "Premature end of file: %s", oToken);
-        Node o;
-        if ( oToken.hasType(TokenType.LT2) )
-            o = parseTripleTerm();
-        else {
-            checkRDFTerm(oToken);
-            o = tokenAsNode(oToken);
-        }
-        return profile.createTriple(s, p, o, sToken.getLine(), sToken.getColumn());
+        return p;
     }
 
-    // Looking at "<<" (LT2)
-    final protected Node parseTripleTerm() {
+    // Parse, must be a URI.
+    protected final Node parseObject() {
+        return parseRDFTerm("object");
+    }
+
+    // General subject/object term
+    protected final Node parseRDFTerm(String posn) {
+        Token token = nextToken();
+        if ( token.isEOF() )
+            exception(token, "Premature end of file: %s", token);
+        Node term;
+        if ( token.hasType(TokenType.L_TRIPLE) )
+            term = parseTripleTerm();
+        else {
+            checkRDFTerm(posn, token);
+            term = tokenAsNode(token);
+        }
+        return term;
+    }
+
+    // Looking at "<<(" (L_TRIPLE)
+    protected final Node parseTripleTerm() {
         Triple t = parseTriple();
         Token x = nextToken();
-        if ( x.getType() != TokenType.GT2 )
-            exception(x, "Triple term not terminated by >>: %s", x);
-        return NodeFactory.createTripleNode(t);
+        if ( x.getType() != TokenType.R_TRIPLE )
+            exception(x, "Triple term not terminated by )>>: %s", x);
+        return NodeFactory.createTripleTerm(t);
     }
 
     protected final void checkIRIOrBNode(Token token) {
@@ -134,7 +154,7 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
         exception(token, "Expected IRI: Got: %s", token);
     }
 
-    protected final void checkRDFTerm(Token token) {
+    protected final void checkRDFTerm(String posn, Token token) {
         switch (token.getType()) {
             case IRI:
             case BNODE:
@@ -147,7 +167,7 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
                 checkString(token.getSubToken1());
                 return ;
             default:
-                exception(token, "Illegal object: %s", token) ;
+                exception(token, "Illegal %s: %s", posn, token) ;
         }
     }
 

@@ -39,6 +39,7 @@ import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.ext.xerces.DatatypeFactoryInst;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.TextDirection;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.SystemARQ;
@@ -188,6 +189,12 @@ public abstract class NodeValue extends ExprNode
     public static NodeValue makeLangString(String s, String lang)
     { return new NodeValueLang(s, lang); }
 
+    public static NodeValue makeDirLangString(String s, String lang, String langDir)
+    { return new NodeValueLangDir(s, lang, langDir); }
+
+    public static NodeValue makeDirLangString(String s, String lang, TextDirection textDirection)
+    { return new NodeValueLangDir(s, lang, textDirection); }
+
     public static NodeValue makeDecimal(BigDecimal d)
     { return new NodeValueDecimal(d); }
 
@@ -246,37 +253,33 @@ public abstract class NodeValue extends ExprNode
     // ----------------------------------------------------------------
     // ---- Construct NodeValue from graph nodes
 
-    public static NodeValue makeNode(Node n)
-    {
+    public static NodeValue makeNode(Node n) {
         return nodeToNodeValue(n);
     }
 
-    public static NodeValue makeNode(String lexicalForm, RDFDatatype dtype)
-    {
+    public static NodeValue makeNode(String lexicalForm, RDFDatatype dtype) {
         Node n = NodeFactory.createLiteralDT(lexicalForm, dtype);
         return NodeValue.makeNode(n);
     }
 
     // Convenience - knows that lang tags aren't allowed with datatypes.
-    public static NodeValue makeNode(String lexicalForm, String langTag, Node datatype)
-    {
-        String uri = (datatype==null) ? null : datatype.getURI();
-        return makeNode(lexicalForm, langTag,  uri);
+    public static NodeValue makeNode(String lexicalForm, String langTag, Node datatype) {
+        String uri = (datatype == null) ? null : datatype.getURI();
+        return makeNode(lexicalForm, langTag, uri);
     }
 
-    public static NodeValue makeNode(String lexicalForm, String langTag, String datatype)
-    {
+    public static NodeValue makeNode(String lexicalForm, String langTag, String datatype) {
         if ( datatype != null && datatype.equals("") )
             datatype = null;
 
         if ( langTag != null && datatype != null )
             // raise??
-            Log.warn(NodeValue.class, "Both lang tag and datatype defined (lexcial form '"+lexicalForm+"')");
+            Log.warn(NodeValue.class, "Both lang tag and datatype defined (lexcial form '" + lexicalForm + "')");
 
         Node n = null;
         if ( langTag != null )
             n = NodeFactory.createLiteralLang(lexicalForm, langTag);
-        else if ( datatype != null) {
+        else if ( datatype != null ) {
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatype);
             n = NodeFactory.createLiteralDT(lexicalForm, dType);
         } else
@@ -359,21 +362,18 @@ public abstract class NodeValue extends ExprNode
 
     // NodeValues are immutable so no need to duplicate.
     @Override
-    public Expr copySubstitute(Binding binding)
-    {
+    public Expr copySubstitute(Binding binding) {
         return this;
     }
 
     @Override
-    public Expr applyNodeTransform(NodeTransform transform)
-    {
+    public Expr applyNodeTransform(NodeTransform transform) {
         Node n = asNode();
         n = transform.apply(n);
         return makeNode(n);
     }
 
-    public Node evalNode(Binding binding, ExecutionContext execCxt)
-    {
+    public Node evalNode(Binding binding, ExecutionContext execCxt) {
         return asNode();
     }
 
@@ -395,7 +395,7 @@ public abstract class NodeValue extends ExprNode
 
     public boolean isTripleTerm() {
         forceToNode();
-        return node.isNodeTriple();
+        return node.isTripleTerm();
     }
 
     public ValueSpace getValueSpace() {
@@ -548,7 +548,8 @@ public abstract class NodeValue extends ExprNode
 
     public boolean     getBoolean()     { raise(new ExprEvalTypeException("Not a boolean: "+this)); return false; }
     public String      getString()      { raise(new ExprEvalTypeException("Not a string: "+this)); return null; }
-    public String      getLang()        { raise(new ExprEvalTypeException("Not a string: "+this)); return null; }
+    public String      getLang()        { raise(new ExprEvalTypeException("Not a lang string: "+this)); return null; }
+    public String      getLangDir()     { raise(new ExprEvalTypeException("Not a langdir string: "+this)); return null; }
     public NodeValueSortKey getSortKey()        { raise(new ExprEvalTypeException("Not a sort key: "+this)); return null; }
 
     public BigInteger  getInteger()     { raise(new ExprEvalTypeException("Not an integer: "+this)); return null; }
@@ -582,6 +583,9 @@ public abstract class NodeValue extends ExprNode
                 if ( NodeValue.VerboseWarnings )
                     Log.warn(NodeValue.class, "Lang tag and datatype (datatype ignored)");
             }
+            // RDF 1.2
+            if ( NodeUtils.hasLangDir(node) )
+                    return new NodeValueLangDir(node);
             return new NodeValueLang(node);
         }
 
@@ -616,9 +620,12 @@ public abstract class NodeValue extends ExprNode
     // Returns null for unrecognized literal.
     private static NodeValue _setByValue(Node node) {
         // This should not happen.
-        // nodeToNodeValue should have dealt with it.
-        if ( NodeUtils.hasLang(node) )
+        // nodeToNodeValue should have been dealt with it.
+        if ( NodeUtils.hasLang(node) ) {
+            if ( NodeUtils.hasLangDir(node) )
+                return new NodeValueLangDir(node);
             return new NodeValueLang(node);
+        }
         LiteralLabel lit = node.getLiteral();
         RDFDatatype datatype = lit.getDatatype();
 

@@ -80,21 +80,21 @@ public class ItemWriter
     }
 
     private static void writeNode(IndentedWriter out, Node node, SerializationContext sCxt) {
-        if ( node.isNodeTriple() ) {
+        if ( node.isTripleTerm() ) {
             Triple t = node.getTriple();
             if ( writeQuotedTriplesAsNodes ) {
-                // As <<....>>
-                out.print("<< ");
+                // As <<(....)>>
+                out.print("<<( ");
                 writeNode(out, t.getSubject(), sCxt);
                 out.print(" ");
                 writeNode(out, t.getPredicate(), sCxt);
                 out.print(" ");
                 writeNode(out, t.getObject(), sCxt);
-                out.print(" >>");
+                out.print(" )>>");
             } else {
-                // As (qtriple ...)
+                // As (triple ...) -- RDF Triple term.
                 out.print("(");
-                out.print(Tags.tagQTriple);
+                out.print(Tags.tagTripleTerm);
                 out.print(" ");
                 writeNode(out, t.getSubject(), sCxt);
                 out.print(" ");
@@ -183,7 +183,7 @@ public class ItemWriter
         }
 
         // Tags to leave on one line.
-        private static Set<String> oneLineTags = Set.of(Tags.tagQTriple, Tags.tagTriple);
+        private static Set<String> oneLineTags = Set.of(Tags.tagTripleTerm, Tags.tagTriple);
 
         @Override
         public void visit(Item item, ItemList list) {
