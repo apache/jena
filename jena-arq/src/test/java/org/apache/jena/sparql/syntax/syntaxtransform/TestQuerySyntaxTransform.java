@@ -185,6 +185,12 @@ public class TestQuerySyntaxTransform
                            "x", "<urn:ex:z>");
     }
 
+    @Test public void transformTransformJsonReplace_30() {
+        testQuery("JSON { \"s\": ?s } { ?s ?p ?o }",
+                  "JSON { \"s\": 123 } { ?s ?p ?o }",
+                  "s", "123");
+    }
+
     //static final String PREFIX = "PREFIX : <http://example/>\n";
     static final String PREFIX = "";
 
