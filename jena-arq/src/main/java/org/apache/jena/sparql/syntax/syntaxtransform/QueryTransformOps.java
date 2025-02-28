@@ -413,6 +413,7 @@ public class QueryTransformOps {
         @Override
         public void visitJsonResultForm(Query query) {
             newQuery.setQueryJsonType();
+            newQuery.setJsonMapping(query.getJsonMapping());
         }
 
         @Override
