@@ -18,7 +18,7 @@
 package org.apache.jena.geosparql.spatial.property_functions;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -31,12 +31,12 @@ import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
 import org.apache.jena.geosparql.spatial.ConvertLatLon;
 import org.apache.jena.geosparql.spatial.SearchEnvelope;
-import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndex;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
@@ -66,7 +66,7 @@ public abstract class GenericSpatialPropertyFunction extends PFuncSimpleAndList 
     @Override
     public final QueryIterator execEvaluated(Binding binding, Node subject, Node predicate, PropFuncArg object, ExecutionContext execCxt) {
         try {
-            spatialIndex = SpatialIndex.retrieve(execCxt);
+            spatialIndex = SpatialIndexUtils.retrieve(execCxt);
             spatialArguments = extractObjectArguments(predicate, object, spatialIndex.getSrsInfo());
             return search(binding, execCxt, subject, spatialArguments.limit);
         } catch (SpatialIndexException ex) {
@@ -184,15 +184,35 @@ public abstract class GenericSpatialPropertyFunction extends PFuncSimpleAndList 
 
         //Find all Features in the spatial index which are within the rough search envelope.
         SearchEnvelope searchEnvelope = spatialArguments.searchEnvelope;
-        HashSet<Resource> features = searchEnvelope.check(spatialIndex);
+        Graph activeGraph = execCxt.getActiveGraph();
+
+        Node graphName = SpatialIndexUtils.unwrapGraphName(activeGraph);
+        Collection<Node> features = searchEnvelope.check(spatialIndex, graphName);
+//        Collection<Node> features;
+//
+//// FIXME: Confirm that we no longer need to consider symSpatialIndexPerGraph. We just pass the graph to the index and if the index
+////        supports named graphs than it will restrict matches to that graph - otherwise we'll just get more results with more post-processing work.
+//        if (!execCxt.getDataset().getContext().get(SpatialIndexUtils.symSpatialIndexPerGraph, false)) {
+//            // no index per graph activated, thus, fallback to query the default graph spatial index tree only
+//            // which is the default behaviour
+//            features = searchEnvelope.check(spatialIndex, null);
+//        } else {
+//            // check if context is a named graph, if so use to query only the corresponding spatial index tree
+//            // otherwise, query only the default graph spatial index tree
+//            Node graphName = SpatialIndexUtils.unwrapGraphName(activeGraph);
+//            features = searchEnvelope.check(spatialIndex, graphName);
+////            features = graphName != null
+////                    ? searchEnvelope.check(spatialIndex, graphName)
+////                    : searchEnvelope.check(spatialIndex);
+//        }
 
         Var subjectVar = Var.alloc(subject.getName());
 
-        Stream<Resource> stream = features.stream();
+        Stream<Node> stream = features.stream();
         if (requireSecondFilter()) {
-            stream = stream.filter(feature -> checkBound(execCxt, feature.asNode()));
+            stream = stream.filter(feature -> checkBound(execCxt, feature));
         }
-        Iterator<Binding> iterator = stream.map(feature -> BindingFactory.binding(binding, subjectVar, feature.asNode()))
+        Iterator<Binding> iterator = stream.map(feature -> BindingFactory.binding(binding, subjectVar, feature))
                 .limit(limit)
                 .iterator();
         return QueryIterPlainWrapper.create(iterator, execCxt);

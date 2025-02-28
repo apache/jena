@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import org.apache.jena.geosparql.spatial.index.v1.SpatialIndexV1;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.locationtech.jts.geom.Envelope;
@@ -29,6 +31,7 @@ import org.locationtech.jts.geom.Envelope;
  * Spatial Index Items in a Serializable form for file reading or writing.
  *
  */
+@Deprecated /** Serializable java class of spatial index v1. Moving this class would break Java serialization. */
 public class SpatialIndexStorage implements Serializable {
 
     private final String srsURI;
@@ -41,7 +44,7 @@ public class SpatialIndexStorage implements Serializable {
         this.storageItems = new ArrayList<>(spatialIndexItems.size());
 
         for (SpatialIndexItem spatialIndexItem : spatialIndexItems) {
-            StorageItem storageItem = new StorageItem(spatialIndexItem.getEnvelope(), spatialIndexItem.getItem());
+            StorageItem storageItem = new StorageItem(spatialIndexItem.getEnvelope(), spatialIndexItem.getItem().getURI());
             storageItems.add(storageItem);
         }
     }
@@ -62,8 +65,8 @@ public class SpatialIndexStorage implements Serializable {
         return indexItems;
     }
 
-    public SpatialIndex getSpatialIndex() throws SpatialIndexException {
-        return new SpatialIndex(getIndexItems(), srsURI);
+    public SpatialIndexV1 getSpatialIndex() throws SpatialIndexException {
+        return new SpatialIndexV1(getIndexItems(), srsURI);
     }
 
     private class StorageItem implements Serializable {
@@ -74,6 +77,11 @@ public class SpatialIndexStorage implements Serializable {
         public StorageItem(Envelope envelope, Resource item) {
             this.envelope = envelope;
             this.uri = item.getURI();
+        }
+
+        public StorageItem(Envelope envelope, String uri) {
+            this.envelope = envelope;
+            this.uri = uri;
         }
 
         public Envelope getEnvelope() {

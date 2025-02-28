@@ -18,7 +18,6 @@
 package org.apache.jena.geosparql.geo.topological;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import org.apache.jena.atlas.iterator.Iter;
@@ -27,12 +26,12 @@ import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.index.QueryRewriteIndex;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
-import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndex;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
@@ -155,7 +154,7 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
             }
         }
 
-        boolean isSpatialIndex = SpatialIndex.isDefined(execCxt);
+        boolean isSpatialIndex = SpatialIndexUtils.isDefined(execCxt);
         QueryIterator result;
         if (!isSpatialIndex || filterFunction.isDisjoint() || filterFunction.isDisconnected()) {
             //Disjointed so retrieve all cases.
@@ -231,15 +230,16 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
             Node geometryLiteral = boundGeometryLiteral.getGeometryLiteral();
 
             //Perform the search of the Spatial Index of the Dataset.
-            SpatialIndex spatialIndex = SpatialIndex.retrieve(execCxt);
+            SpatialIndex spatialIndex = SpatialIndexUtils.retrieve(execCxt);
             GeometryWrapper geom = GeometryWrapper.extract(geometryLiteral);
             GeometryWrapper transformedGeom = geom.transform(spatialIndex.getSrsInfo());
             Envelope searchEnvelope = transformedGeom.getEnvelope();
-            HashSet<Resource> features = spatialIndex.query(searchEnvelope);
+            Node graphName = SpatialIndexUtils.unwrapGraphName(graph);
+            Collection<Node> features = spatialIndex.query(searchEnvelope, graphName);
 
             // Check each of the Features that match the search.
             QueryIterator featuresIter = QueryIterPlainWrapper.create(
-                    Iter.map(features.iterator(), feature -> BindingFactory.binding(binding, unboundVar, feature.asNode())),
+                    Iter.map(features.iterator(), feature -> BindingFactory.binding(binding, unboundVar, feature)),
                     execCxt);
 
             QueryIterator queryIterator = QueryIter.flatMap(featuresIter,
@@ -257,6 +257,7 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
         }
     }
 
+    // FIXME Same feature with different geometries in separated graphs might break with old logic
     private QueryIterator findByFeature(Graph graph, Binding binding, Binding featureBinding,
             boolean isSubjectBound, Node boundNode, Node predicate, Var unboundVar,
             ExecutionContext execCxt, Collection<Node> assertedNodes) {
@@ -334,3 +335,4 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
         return filterFunction.exec(subjectGeometryLiteral, objectGeometryLiteral);
     }
 }
+
