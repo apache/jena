@@ -503,6 +503,17 @@ public class Query extends Prologue implements Cloneable, Printable
         return Collections.unmodifiableMap(jsonMapping);
     }
 
+    /**
+     * Overwrite all prior JSON mappings with new ones.
+     *
+     * @param newJsonMapping The new JSON mappings. Must not be null.
+     */
+    public void setJsonMapping(Map<String, Node> newJsonMapping) {
+        Objects.requireNonNull(newJsonMapping);
+        jsonMapping.clear();
+        jsonMapping.putAll(newJsonMapping);
+    }
+
     // ---- Aggregates
 
     // Record allocated aggregations.
