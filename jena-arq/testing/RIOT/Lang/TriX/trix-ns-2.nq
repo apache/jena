@@ -1,2 +1,3 @@
 <http://example/s> <http://example.org/p> "123"^^<http://www.w3.org/2001/XMLSchema#integer> .
-<< <http://example/s> <http://example.org/p> <http://example.org/o> >> <http://example.org/embedded> << <http://example/s> <http://example.org/p> <http://example.org/o> >> .
+<http://example/s> <http://example.org/tripleTerm> <<( <http://example/s> <http://example.org/p> <http://example.org/o> )>> .
+<http://example/s> <http://example.org/tripleTermNested> <<( <http://example/s> <http://example.org/p> <<( <http://example/s> <http://example.org/p> <http://example.org/o> )>> )>> .

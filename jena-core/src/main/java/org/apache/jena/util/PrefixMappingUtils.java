@@ -150,7 +150,7 @@ public class PrefixMappingUtils {
             uri = node.getURI();
         else if ( node.isLiteral() )
             uri = node.getLiteralDatatypeURI();
-        else if ( node.isNodeTriple() ) {
+        else if ( node.isTripleTerm() ) {
             process(node.getTriple(), inUse, trie);
             return ;
         }
@@ -243,7 +243,7 @@ public class PrefixMappingUtils {
             uri = node.getURI();
         else if ( node.isLiteral() )
             uri = node.getLiteralDatatypeURI();
-        else if ( node.isNodeTriple() ) {
+        else if ( node.isTripleTerm() ) {
             processTTL(node.getTriple(), inUse, prefixMapping);
             return ;
         }

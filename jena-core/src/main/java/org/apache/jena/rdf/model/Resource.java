@@ -21,7 +21,6 @@ package org.apache.jena.rdf.model;
 import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.shared.PropertyNotFoundException ;
 
-
 /** An RDF Resource.
 
     Resource instances when created may be associated with a specific model.

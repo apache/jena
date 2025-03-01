@@ -22,18 +22,7 @@ import java.util.Map;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.NodeValue;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueBoolean;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueDateTime;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueDecimal;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueDouble;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueDuration;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueFloat;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueInteger;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueLang;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueNode;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueSortKey;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueString;
-import org.apache.jena.sparql.expr.nodevalue.NodeValueVisitor;
+import org.apache.jena.sparql.expr.nodevalue.*;
 
 /**
  * A rewriter that implements NodeValueVisitor
@@ -102,7 +91,11 @@ class NodeValueRewriter extends AbstractRewriter<NodeValue> implements NodeValue
 
     @Override
     public void visit(NodeValueLang nv) {
-
         push(new NodeValueLang(changeNode(nv.asNode())));
+    }
+
+    @Override
+    public void visit(NodeValueLangDir nv) {
+        push(new NodeValueLangDir(changeNode(nv.asNode())));
     }
 }

@@ -27,20 +27,21 @@ import java.util.ArrayList ;
 import java.util.Collection ;
 import java.util.List ;
 
+import org.junit.Before ;
+import org.junit.Test ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Parameterized ;
+import org.junit.runners.Parameterized.Parameters ;
+
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.query.ResultSet ;
 import org.apache.jena.query.ResultSetFactory ;
 import org.apache.jena.query.ResultSetRewindable ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.ResultSetMgr ;
-import org.apache.jena.sparql.resultset.ResultSetCompare ;
+import org.apache.jena.sparql.resultset.ResultsCompare ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.sse.builders.BuilderRowSet;
-import org.junit.Before ;
-import org.junit.Test ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Parameterized ;
-import org.junit.runners.Parameterized.Parameters ;
 
 @RunWith(Parameterized.class)
 public class TestResultSetIO {
@@ -69,6 +70,9 @@ public class TestResultSetIO {
         ,"   (row (?x 1)           )"
         ,"   (row           (?y 2) )"
         ,"   (row )"
+        ,"   (row (?x 'abc'@en--ltr))"
+        ,"   (row (?x 'abc'@en))"
+        ,"   (row (?x 'abc'))"
         ,")"
         ) ;
 
@@ -86,13 +90,15 @@ public class TestResultSetIO {
         ByteArrayOutputStream out1 = new ByteArrayOutputStream() ;
         ResultSetMgr.write(out1, test_rs, lang) ;
         test_rs.reset();
+
         ByteArrayInputStream in = new ByteArrayInputStream(out1.toByteArray()) ;
 
         ResultSet rs = ResultSetMgr.read(in, lang) ;
         ResultSetRewindable rsw = ResultSetFactory.makeRewindable(rs) ;
-        if ( ! lang.equals(RS_CSV) )
+        if ( ! lang.equals(RS_CSV) ) {
             // CSV is not faithful
-            assertTrue(ResultSetCompare.equalsByTerm(test_rs, rsw)) ;
+            assertTrue(ResultsCompare.equalsByTerm(test_rs, rsw)) ;
+        }
 
         rsw.reset();
         test_rs.reset();
@@ -103,7 +109,7 @@ public class TestResultSetIO {
         rsw.reset();
         in = new ByteArrayInputStream(out2.toByteArray()) ;
         ResultSet rs2 = ResultSetMgr.read(in, lang) ;
-        assertTrue(ResultSetCompare.equalsByTerm(rsw, rs2)) ;
+        assertTrue(ResultsCompare.equalsByTerm(rsw, rs2)) ;
     }
 }
 
