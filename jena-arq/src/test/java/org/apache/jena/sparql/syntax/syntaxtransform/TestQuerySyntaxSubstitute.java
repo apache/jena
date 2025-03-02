@@ -37,79 +37,79 @@ public class TestQuerySyntaxSubstitute {
     private static Map<Var, Node> substitutions2 = Map.of(Var.alloc("x"), NodeFactory.createURI("http://example/xxx"),
                                                           Var.alloc("y"), NodeFactory.createURI("http://example/yyy"));
 
-    @Test public void syntaxSubstitue_01() {
-        testSubstitue("SELECT * { ?x :p ?z }", substitutions1,
+    @Test public void syntaxSubstitute_01() {
+        testSubstitute("SELECT * { ?x :p ?z }", substitutions1,
                       "SELECT ?z (:xxx AS ?x) { :xxx :p ?z }"
                       );
     }
 
-    @Test public void syntaxSubstitue_02() {
-        testSubstitue("SELECT ?x { ?x :p ?z }", substitutions1,
+    @Test public void syntaxSubstitute_02() {
+        testSubstitute("SELECT ?x { ?x :p ?z }", substitutions1,
                       "SELECT (:xxx AS ?x) { :xxx :p ?z }"
                       );
     }
 
-    @Test public void syntaxSubstitue_03() {
-        testSubstitue("SELECT ?z { :a :p ?z }", substitutions1,
+    @Test public void syntaxSubstitute_03() {
+        testSubstitute("SELECT ?z { :a :p ?z }", substitutions1,
                       "SELECT ?z (:xxx AS ?x) { :a :p ?z }"
                       );
     }
 
-    @Test public void syntaxSubstitue_04() {
-        testSubstitue("SELECT ?x ?z { ?x :p ?z }", substitutions1,
+    @Test public void syntaxSubstitute_04() {
+        testSubstitute("SELECT ?x ?z { ?x :p ?z }", substitutions1,
                       "SELECT (:xxx AS ?x) ?z { :xxx :p ?z }"
                       );
     }
 
-    @Test public void syntaxSubstitue_10() {
-        testSubstitue("SELECT ?y ?x { ?x :p ?y }", substitutions2,
+    @Test public void syntaxSubstitute_10() {
+        testSubstitute("SELECT ?y ?x { ?x :p ?y }", substitutions2,
                       "SELECT (:yyy AS ?y) (:xxx AS ?x) { :xxx :p :yyy }"
                       );
     }
 
-    @Test public void syntaxSubstitue_11() {
-        testSubstitue("SELECT ?y ?p ?x { ?x ?p ?y }", substitutions2,
+    @Test public void syntaxSubstitute_11() {
+        testSubstitute("SELECT ?y ?p ?x { ?x ?p ?y }", substitutions2,
                       "SELECT (:yyy AS ?y) ?p (:xxx AS ?x) { :xxx ?p :yyy }"
                       );
     }
 
     // GH-2799: Sub-queries not yet ready.
 //    // Sub-query visible variable.
-//    @Test public void syntaxSubstitue_12() {
-//        testSubstitue("SELECT * { ?s ?p ?o { SELECT ?x { ?x :p ?y } } }", substitutions1,
+//    @Test public void syntaxSubstitute_12() {
+//        testSubstitute("SELECT * { ?s ?p ?o { SELECT ?x { ?x :p ?y } } }", substitutions1,
 //                      "SELECT (:yyy AS ?y) ?p (:xxx AS ?x) { ?s ?p ?o { SELECT * { :xxx :p ?y } }}"
 //                      );
 //    }
 //
 //    // Sub-query hidden variable.
-//    @Test public void syntaxSubstitue_13() {
-//        testSubstitue("SELECT * { ?s ?p ?o { SELECT ?y { ?x :p ?y } } }", substitutions1,
+//    @Test public void syntaxSubstitute_13() {
+//        testSubstitute("SELECT * { ?s ?p ?o { SELECT ?y { ?x :p ?y } } }", substitutions1,
 //                      "SELECT ?s ?p ?o (:xxx AS ?x) { ?s ?p ?o { SELECT * { :xxx :p ?y } }}"
 //                      );
 //    }
 //
 //    // Multi-level variable.
-//    @Test public void syntaxSubstitue_14() {
-//        testSubstitue("SELECT * { ?x ?p ?o { SELECT * { ?x :p ?y } } }", substitutions2,
+//    @Test public void syntaxSubstitute_14() {
+//        testSubstitute("SELECT * { ?x ?p ?o { SELECT * { ?x :p ?y } } }", substitutions2,
 //                      "" //"SELECT (:yyy AS ?y) ?p (:xxx AS ?x) { ?s ?p ?o { SELECT * { :xxx :p ?y } }}"
 //                      );
 //    }
 
-    @Test public void syntaxSubstitue_50() {
+    @Test public void syntaxSubstitute_50() {
         assertThrows(QueryScopeException.class, ()->
-            testSubstitue("SELECT (456 AS ?x) { ?y :p ?z }",  substitutions1,
+            testSubstitute("SELECT (456 AS ?x) { ?y :p ?z }",  substitutions1,
                           ""
                           ));
     }
 
-    @Test public void syntaxSubstitue_51() {
+    @Test public void syntaxSubstitute_51() {
         assertThrows(QueryScopeException.class, ()->
-            testSubstitue("SELECT * { ?y :p ?z BIND(789 AS ?x)}", substitutions1,
+            testSubstitute("SELECT * { ?y :p ?z BIND(789 AS ?x)}", substitutions1,
                           ""
                           ));
     }
 
-    private void testSubstitue(String qs, Map<Var, Node> substitutions, String outcome) {
+    private void testSubstitute(String qs, Map<Var, Node> substitutions, String outcome) {
         String prologue = "PREFIX : <http://example/> ";
         String queryString = prologue+qs;
         Query query = QueryFactory.create(queryString);

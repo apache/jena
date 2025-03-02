@@ -24,7 +24,8 @@ import org.apache.jena.sparql.algebra.walker.ApplyTransformVisitor;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.expr.*;
 
-/** An {@link ExprTransform} that applies a {@link NodeTransform}
+/**
+ * An {@link ExprTransform} that applies a {@link NodeTransform}
  * to {@link NodeValue} and {@link ExprVar} inside expressions.
  * <p>
  * This does not transform triple patterns in {@link ExprFunctionOp}
@@ -34,9 +35,8 @@ import org.apache.jena.sparql.expr.*;
  */
 public class NodeTransformExpr extends ExprTransformCopy {
     private final NodeTransform transform ;
-    public NodeTransformExpr(NodeTransform transform)
-    {
-        this.transform = transform ;
+    public NodeTransformExpr(NodeTransform transform) {
+        this.transform = transform;
     }
 
     @Override

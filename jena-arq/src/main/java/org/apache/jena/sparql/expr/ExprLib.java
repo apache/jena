@@ -93,111 +93,103 @@ public class ExprLib
 
     /** transform an expression that may involve aggregates into one that just uses the variable for the aggregate */
 
-    public static Expr replaceAggregateByVariable(Expr expr)
-    {
-        return ExprTransformer.transform(replaceAgg, expr) ;
+    public static Expr replaceAggregateByVariable(Expr expr) {
+        return ExprTransformer.transform(replaceAgg, expr);
     }
 
 //    /** transform expressions that may involve aggregates into one that just uses the variable for the aggregate */
 //    public static ExprList replaceAggregateByVariable(ExprList exprs)
 //    {
 //        return ExprTransformer.transform(replaceAgg, exprs) ;
-//    }
+//}
 
-    private static ExprTransform replaceAgg = new ExprTransformCopy()
-    {
+    private static ExprTransform replaceAgg = new ExprTransformCopy() {
         @Override
-        public Expr transform(ExprAggregator eAgg)
-        { return eAgg.getAggVar()  ; }
-    } ;
+        public Expr transform(ExprAggregator eAgg) {
+            return eAgg.getAggVar();
+        }
+    };
 
-    /** Decide whether an expression is safe for using a graph substitution.
-     * Need to be careful about value-like tests when the graph is not
-     * matched in a value fashion.
+    /**
+     * Decide whether an expression is safe for using a graph substitution. Need to
+     * be careful about value-like tests when the graph is not matched in a value
+     * fashion.
      */
 
-    public static boolean isAssignmentSafeEquality(Expr expr)
-    {
-        return isAssignmentSafeEquality(expr, false, false) ;
+    public static boolean isAssignmentSafeEquality(Expr expr) {
+        return isAssignmentSafeEquality(expr, false, false);
     }
 
     /**
-     * @param graphHasStringEquality    True if the graph triple matching equates xsd:string and plain literal
-     * @param graphHasNumercialValueEquality    True if the graph triple matching equates numeric values
+     * @param graphHasStringEquality True if the graph triple matching equates
+     *     xsd:string and plain literal
+     * @param graphHasNumercialValueEquality True if the graph triple matching
+     *     equates numeric values
      */
 
-    public static boolean isAssignmentSafeEquality(Expr expr, boolean graphHasStringEquality, boolean graphHasNumercialValueEquality)
-    {
+    public static boolean isAssignmentSafeEquality(Expr expr, boolean graphHasStringEquality, boolean graphHasNumercialValueEquality) {
         if ( !(expr instanceof E_Equals) && !(expr instanceof E_SameTerm) )
-            return false ;
+            return false;
 
         // Corner case: sameTerm is false for string/plain literal,
         // but true in the graph.
 
-        ExprFunction2 eq = (ExprFunction2)expr ;
-        Expr left = eq.getArg1() ;
-        Expr right = eq.getArg2() ;
-        Var var = null ;
-        NodeValue constant = null ;
+        ExprFunction2 eq = (ExprFunction2)expr;
+        Expr left = eq.getArg1();
+        Expr right = eq.getArg2();
+        Var var = null;
+        NodeValue constant = null;
 
-        if ( left.isVariable() && right.isConstant() )
-        {
-            var = left.asVar() ;
-            constant = right.getConstant() ;
-        }
-        else if ( right.isVariable() && left.isConstant() )
-        {
-            var = right.asVar() ;
-            constant = left.getConstant() ;
+        if ( left.isVariable() && right.isConstant() ) {
+            var = left.asVar();
+            constant = right.getConstant();
+        } else if ( right.isVariable() && left.isConstant() ) {
+            var = right.asVar();
+            constant = left.getConstant();
         }
 
         // Not between a variable and a constant
         if ( var == null || constant == null )
-            return false ;
+            return false;
 
-        if ( ! constant.isLiteral() )
-            // URIs, bNodes.  Any bNode will have come from a substitution - not legal syntax in filters
-            return true ;
+        if ( !constant.isLiteral() )
+            // URIs, bNodes. Any bNode will have come from a substitution - not legal
+            // syntax in filters
+            return true;
 
-        if (expr instanceof E_SameTerm)
-        {
+        if ( expr instanceof E_SameTerm ) {
             if ( graphHasStringEquality && constant.isString() )
                 // Graph is not same term
-                return false ;
+                return false;
             if ( graphHasNumercialValueEquality && constant.isNumber() )
-                return false ;
-            return true ;
+                return false;
+            return true;
         }
 
-        // Final check for "=" where a FILTER = can do value matching when the graph does not.
-        if ( expr instanceof E_Equals )
-        {
-            if ( ! graphHasStringEquality && constant.isString() )
-                return false ;
-            if ( ! graphHasNumercialValueEquality && constant.isNumber() )
-                return false ;
-            return true ;
+        // Final check for "=" where a FILTER = can do value matching when the graph
+        // does not.
+        if ( expr instanceof E_Equals ) {
+            if ( !graphHasStringEquality && constant.isString() )
+                return false;
+            if ( !graphHasNumercialValueEquality && constant.isNumber() )
+                return false;
+            return true;
         }
         // Unreachable.
-        throw new ARQInternalErrorException() ;
+        throw new ARQInternalErrorException();
     }
 
-    /** Some "functions" are non-deterministic (unstable) -
-     * calling them with the same arguments
-     * does not yields the same answer each time.
-     * Therefore how and when they are called
-     * matters.
-     *
-     * Functions: RAND, UUID, StrUUID, BNode
-     *
-     * NOW() is safe.
+    /**
+     * Some "functions" are non-deterministic (unstable) - calling them with the same
+     * arguments does not yields the same answer each time. Therefore how and when
+     * they are called matters. Functions: RAND, UUID, StrUUID, BNode NOW() is safe.
      */
     public static boolean isStable(Expr expr) {
         try {
-            Walker.walk(expr, exprVisitorCheckForNonFunctions) ;
-            return true ;
-        } catch ( ExprUnstable ex ) {
-            return false ;
+            Walker.walk(expr, exprVisitorCheckForNonFunctions);
+            return true;
+        } catch (ExprUnstable ex) {
+            return false;
         }
     }
 
@@ -212,22 +204,24 @@ public class ExprLib
             if ( exprFn instanceof Unstable )
                 throw new ExprUnstable();
         }
-    } ;
+    };
 
     private static class ExprUnstable extends ExprException {
         // Filling in the stack trace is the expensive part of
         // an exception but we don't need it.
         @Override
-        public Throwable fillInStackTrace() { return this ; }
+        public Throwable fillInStackTrace() {
+            return this;
+        }
     }
 
     /** Go from a node to an expression. */
     public static Expr nodeToExpr(Node n) {
         if ( n.isVariable() )
-            return new ExprVar(n) ;
+            return new ExprVar(n);
         if ( n.isNodeTriple() )
             return new ExprTripleTerm(n);
-        return NodeValue.makeNode(n) ;
+        return NodeValue.makeNode(n);
     }
 
     public static Expr rewriteTriple(Triple t) {

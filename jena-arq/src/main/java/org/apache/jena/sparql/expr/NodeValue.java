@@ -246,37 +246,33 @@ public abstract class NodeValue extends ExprNode
     // ----------------------------------------------------------------
     // ---- Construct NodeValue from graph nodes
 
-    public static NodeValue makeNode(Node n)
-    {
-        return nodeToNodeValue(n);
+    public static NodeValue makeNode(Node node) {
+        return nodeToNodeValue(node);
     }
 
-    public static NodeValue makeNode(String lexicalForm, RDFDatatype dtype)
-    {
+    public static NodeValue makeNode(String lexicalForm, RDFDatatype dtype) {
         Node n = NodeFactory.createLiteralDT(lexicalForm, dtype);
         return NodeValue.makeNode(n);
     }
 
     // Convenience - knows that lang tags aren't allowed with datatypes.
-    public static NodeValue makeNode(String lexicalForm, String langTag, Node datatype)
-    {
-        String uri = (datatype==null) ? null : datatype.getURI();
-        return makeNode(lexicalForm, langTag,  uri);
+    public static NodeValue makeNode(String lexicalForm, String langTag, Node datatype) {
+        String uri = (datatype == null) ? null : datatype.getURI();
+        return makeNode(lexicalForm, langTag, uri);
     }
 
-    public static NodeValue makeNode(String lexicalForm, String langTag, String datatype)
-    {
+    public static NodeValue makeNode(String lexicalForm, String langTag, String datatype) {
         if ( datatype != null && datatype.equals("") )
             datatype = null;
 
         if ( langTag != null && datatype != null )
             // raise??
-            Log.warn(NodeValue.class, "Both lang tag and datatype defined (lexcial form '"+lexicalForm+"')");
+            Log.warn(NodeValue.class, "Both lang tag and datatype defined (lexcial form '" + lexicalForm + "')");
 
         Node n = null;
         if ( langTag != null )
             n = NodeFactory.createLiteralLang(lexicalForm, langTag);
-        else if ( datatype != null) {
+        else if ( datatype != null ) {
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatype);
             n = NodeFactory.createLiteralDT(lexicalForm, dType);
         } else
@@ -353,16 +349,16 @@ public abstract class NodeValue extends ExprNode
    // ----------------------------------------------------------------
    // ---- Expr interface
 
-    @Override
-    public NodeValue eval(Binding binding, FunctionEnv env)
-    { return this; }
+   @Override
+   public NodeValue eval(Binding binding, FunctionEnv env) {
+       return this;
+   }
 
-    // NodeValues are immutable so no need to duplicate.
-    @Override
-    public Expr copySubstitute(Binding binding)
-    {
-        return this;
-    }
+   // NodeValues are immutable so no need to duplicate.
+   @Override
+   public Expr copySubstitute(Binding binding) {
+       return this;
+   }
 
     @Override
     public Expr applyNodeTransform(NodeTransform transform)
@@ -524,16 +520,14 @@ public abstract class NodeValue extends ExprNode
     public boolean isTime()         { return false; }
     public boolean isDuration()     { return false; }
 
-    public boolean isYearMonthDuration()
-    {
+    public boolean isYearMonthDuration() {
         if ( ! isDuration() ) return false;
         Duration dur = getDuration();
         return ( dur.isSet(YEARS) || dur.isSet(MONTHS) ) &&
                ! dur.isSet(DAYS) && ! dur.isSet(HOURS) && ! dur.isSet(MINUTES) && ! dur.isSet(SECONDS);
     }
 
-    public boolean isDayTimeDuration()
-    {
+    public boolean isDayTimeDuration() {
         if ( ! isDuration() ) return false;
         Duration dur = getDuration();
         return !dur.isSet(YEARS) && ! dur.isSet(MONTHS) &&

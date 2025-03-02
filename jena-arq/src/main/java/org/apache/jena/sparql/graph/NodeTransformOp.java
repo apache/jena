@@ -35,8 +35,8 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.path.Path ;
 
-/** A {@link Transform} that applies a {@link NodeTransform}
- * to graph patterns.
+/**
+ *  A {@link Transform} that applies a {@link NodeTransform} to graph patterns.
  * <p>
  * This does not transform expressions. That is done by {@link NodeTransformExpr}.
  *
@@ -44,7 +44,7 @@ import org.apache.jena.sparql.path.Path ;
  */
 class NodeTransformOp extends TransformCopy {
 
-    // This finds everywhere that nodes can lurk in an algebra expression:
+    // This finds everywhere that nodes can occur in an algebra expression:
     //   BGPs, paths, triples, quads, service
     //   GRAPH, GRAPH{} (DatasetNames)
     //   OrderBy, GroupBy
