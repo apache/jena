@@ -36,16 +36,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.github.galbiston</groupId>
-      <artifactId>expiring-map</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
       <version>5.4.0-SNAPSHOT</version>
@@ -74,11 +64,6 @@
     <dependency>
       <groupId>org.jdom</groupId>
       <artifactId>jdom2</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-collections4</artifactId>
     </dependency>
 
     <dependency>
