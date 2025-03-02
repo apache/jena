@@ -22,8 +22,6 @@ import java.util.function.Function;
 
 import org.apache.jena.graph.Node ;
 
-/** Convert nodes to nodes - Vars may need to be translated into Vars. */
+/** Convert nodes to nodes */
 @FunctionalInterface
-public interface NodeTransform extends Function<Node, Node>
-{
-}
+public interface NodeTransform extends Function<Node, Node> {}

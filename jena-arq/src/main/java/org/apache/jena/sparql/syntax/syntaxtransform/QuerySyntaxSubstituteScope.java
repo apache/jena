@@ -61,7 +61,7 @@ public class QuerySyntaxSubstituteScope {
 
     private static void checkAssignment(String context, Collection<Var> vars, Var assignedVar) {
         if ( vars.contains(assignedVar) )
-            reject("BIND", assignedVar);
+            reject(context, assignedVar);
     }
 
     private static void reject(String elementName, Var badVar) {

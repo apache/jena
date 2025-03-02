@@ -139,7 +139,6 @@ public class Rename {
 
     }
 
-
     // ---- Transforms that do the renaming and unrenaming.
 
     static class RenameNode implements NodeTransform {
