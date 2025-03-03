@@ -18,8 +18,6 @@
 
 package org.apache.jena.sparql.syntax.syntaxtransform;
 
-import static org.apache.jena.sparql.syntax.syntaxtransform.QuerySyntaxSubstituteScope.scopeCheck;
-
 import java.util.*;
 
 import org.apache.jena.graph.Node;
@@ -46,42 +44,47 @@ public class QueryTransformOps {
     /**
      * Replace variables in a query by RDF terms.
      * The replacements are added to the return queries SELECT clause (if a SELECT query).
-     * <p>
+     *
      * @throws QueryScopeException if the query contains variables used in a
      *   way that does not allow substitution (.e.g {@code AS ?var} or used in
      *   {@code VALUES}).
+     *
+     *  @see #replaceVars(Query, Map) to replace variables without adding the replacements to the SELECT clause.
      */
-    public static Query syntaxSubstitute(Query input, Map<Var, Node> substitutions) {
-        scopeCheck(input, substitutions.keySet());
-        Query output = transformTopLevel(input, substitutions);
-        return output;
-    }
-
-    // Call transform, add in the substitutions as top-level SELECT expressions/
-    private static Query transformTopLevel(Query query, Map<Var, Node> substitutions) {
-        Query query2 = transformSubstitute(query, substitutions);
+    public static Query syntaxSubstitute(Query input, Map<Var, ? extends Node> substitutions) {
+        Query query2 = transformSubstitute(input, substitutions);
         // Include substitutions
-        if ( query.isSelectType() ) {
+        if ( input.isSelectType() ) {
             query2.setQueryResultStar(false);
+            List<Var> projectVars = query2.getProjectVars();
             substitutions.forEach((v, n) -> {
-                var nv = NodeValue.makeNode(n);
-                query2.getProject().update(v, NodeValue.makeNode(n));
+                if ( ! projectVars.contains(v) ) {
+                    var nv = NodeValue.makeNode(n);
+                    query2.getProject().update(v, NodeValue.makeNode(n));
+                }
             });
         }
         return query2;
     }
 
-    /** @deprecated Use {@link #queryReplaceVars} */
+    /** @deprecated Use {@link #replaceVars} */
     @Deprecated
     public static Query transform(Query query, Map<Var, ? extends Node> substitutions) {
         return replaceVars(query, substitutions);
     }
 
-    /** Transform a query based on a mapping from {@link Var} variable to replacement {@link Node}. */
+    /**
+     * Transform a query based on a mapping from {@link Var} variable to replacement {@link Node}.
+     * The replacement can be a constant or another variable.
+     * This operation does not record the substitution made.
+     *
+     * See {@link #syntaxSubstitute(Query,Map)}
+     * @throws QueryScopeException if the query contains variables used in a
+     *   way that does not allow constant substitution.
+     */
     public static Query replaceVars(Query query, Map<Var, ? extends Node> substitutions) {
         return transformSubstitute(query, substitutions);
     }
-
 
     /** @deprecated Use {@link #queryReplaceVars} */
     @Deprecated
@@ -100,7 +103,15 @@ public class QueryTransformOps {
     }
 
     private static Query transformSubstitute(Query query, Map<Var, ? extends Node> substitutions) {
-        scopeCheck(query, substitutions.keySet());
+        // Those variables that are mapped to constants, not variables.
+        // Replacing a variable by another variable is always possible - no scoping issues.
+        Set<Var> varsForConst = new HashSet<>();
+        substitutions.forEach((var,node) -> {
+          if (! ( node instanceof Var ) )
+              varsForConst.add(var);
+        });
+        QuerySyntaxSubstituteScope.scopeCheck(query, varsForConst);
+
         ElementTransform eltrans = new ElementTransformSubst(substitutions);
         NodeTransform nodeTransform = new NodeTransformSubst(substitutions);
         ExprTransform exprTrans = new ExprTransformNodeElement(nodeTransform, eltrans);
@@ -108,6 +119,11 @@ public class QueryTransformOps {
     }
 
     // ----------------
+
+    public static Query transform(Query query, ElementTransform transform) {
+        ExprTransform noop = new ExprTransformApplyElementTransform(transform);
+        return transform(query, transform, noop);
+    }
 
     /**
      * Transform a query using {@link ElementTransform} and {@link ExprTransform}.
@@ -197,11 +213,6 @@ public class QueryTransformOps {
             default :
                 throw new JenaException("Unknown query type");
         }
-    }
-
-    public static Query transform(Query query, ElementTransform transform) {
-        ExprTransform noop = new ExprTransformApplyElementTransform(transform);
-        return transform(query, transform, noop);
     }
 
     // Transform CONSTRUCT query template

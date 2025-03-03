@@ -18,31 +18,40 @@
 
 package org.apache.jena.sparql.syntax.syntaxtransform;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Node_Variable;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.query.Query;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.TriplePath;
 import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.graph.NodeTransform;
-import org.apache.jena.sparql.syntax.Element;
-import org.apache.jena.sparql.syntax.ElementPathBlock;
-import org.apache.jena.sparql.syntax.ElementTriplesBlock;
+import org.apache.jena.sparql.syntax.*;
 
 /**
  * An {@link ElementTransform} which replaces occurrences of a variable with a Node value.
  * Because a {@link Var} is a subclass of {@link Node_Variable} which is a {@link Node},
  * this includes variable renaming.
  * <p>
- * This is a transformation on the syntax - all occurrences of a variable are replaced, even if
- * inside sub-select's and not project (which means it is effectively a different variable).
+ * This is a transformation on the syntax - all occurrences of a variable are replaced, even
+ * inside sub-select's regardless of being in a projection
+ * (which means it is effectively a different variable).
+ * <p>
+ * This class does no validity checking.
+ * See {@link QuerySyntaxSubstituteScope} for checks.
  */
 public class ElementTransformSubst extends ElementTransformCopyBase {
     private final NodeTransform nodeTransform;
+    private final Map<Var, ? extends Node> mapping;
 
     public ElementTransformSubst(Map<Var, ? extends Node> mapping) {
+        this.mapping = mapping;
         this.nodeTransform = new NodeTransformSubst(mapping);
     }
 
@@ -122,7 +131,48 @@ public class ElementTransformSubst extends ElementTransformCopyBase {
         return Quad.create(g1, s1, p1, o1);
     }
 
+    @Override
+    public ElementSubQuery transform(ElementSubQuery subQuery, Query newQuery) {
+        return subQuery;
+    }
+
+
+    // VALUES : Only var->var is supported.
+    // var -> const should have been spotted by QuerySyntaxSubstituteScope.scopeCheck
+
+    @Override
+    public ElementData transform(ElementData data) {
+        // Check for var-var. If none, no work to do.
+        List<Var> vars = data.getVars();
+        boolean workToDo = vars.stream().anyMatch(v->mapping.containsKey(v));
+        if ( ! workToDo )
+            return data;
+
+        List<Var> vars2 = vars.stream().map(v->transformVar(v)).toList();
+
+        List<Binding> rows = data.getRows();
+        List<Binding> rows2 = new ArrayList<>();
+
+        BindingBuilder bb = BindingBuilder.create();
+        rows.forEach(binding -> {
+            bb.reset();
+            binding.forEach((v,n)->{
+                Var v2 = transformVar(v);
+                bb.add(v2, n);
+            });
+            rows2.add(bb.build());
+        });
+        return new ElementData(vars2, rows2);
+    }
+
     private Node transform(Node n) {
         return nodeTransform.apply(n);
+    }
+
+    private Var transformVar(Var var) {
+        Node n = nodeTransform.apply(var);
+        if ( n instanceof Var v)
+            return v;
+        return var;
     }
 }
