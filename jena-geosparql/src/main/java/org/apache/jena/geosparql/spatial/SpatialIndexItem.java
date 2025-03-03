@@ -17,7 +17,8 @@
  */
 package org.apache.jena.geosparql.spatial;
 
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.graph.Node;
+import org.apache.jena.rdf.model.RDFNode;
 import org.locationtech.jts.geom.Envelope;
 
 /**
@@ -27,9 +28,23 @@ import org.locationtech.jts.geom.Envelope;
 public class SpatialIndexItem {
 
     private final Envelope envelope;
-    private final Resource item;
+    private final Node item;
 
-    public SpatialIndexItem(Envelope envelope, Resource item) {
+    @Deprecated // (forRemoval = true)
+    public static SpatialIndexItem of(Envelope envelope, RDFNode item) {
+        return new SpatialIndexItem(envelope, item);
+    }
+
+    public static SpatialIndexItem of(Envelope envelope, Node node) {
+        return new SpatialIndexItem(envelope, node);
+    }
+
+    @Deprecated // (forRemoval = true)
+    public SpatialIndexItem(Envelope envelope, RDFNode item) {
+        this(envelope, item.asNode());
+    }
+
+    public SpatialIndexItem(Envelope envelope, Node item) {
         this.envelope = envelope;
         this.item = item;
     }
@@ -38,7 +53,7 @@ public class SpatialIndexItem {
         return envelope;
     }
 
-    public Resource getItem() {
+    public Node getItem() {
         return item;
     }
 
@@ -46,5 +61,4 @@ public class SpatialIndexItem {
     public String toString() {
         return "SpatialIndexItem{" + "envelope=" + envelope + ", item=" + item + '}';
     }
-
 }

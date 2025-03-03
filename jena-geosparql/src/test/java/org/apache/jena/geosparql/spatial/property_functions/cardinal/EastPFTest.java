@@ -17,16 +17,15 @@
  */
 package org.apache.jena.geosparql.spatial.property_functions.cardinal;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
+
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.spatial.CardinalDirection;
 import org.apache.jena.geosparql.spatial.SearchEnvelope;
 import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexTestData;
+import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -91,8 +90,8 @@ public class EastPFTest {
         GeometryWrapper geometryWrapper = SpatialIndexTestData.HONOLULU_GEOMETRY_WRAPPER;
         EastPF instance = new EastPF();
         SearchEnvelope searchEnvelope = instance.buildSearchEnvelope(geometryWrapper, SpatialIndexTestData.WGS_84_SRS_INFO); //Needed to initialise the search.
-        HashSet<Resource> expResult = new HashSet<>(Arrays.asList(SpatialIndexTestData.LONDON_FEATURE, SpatialIndexTestData.HONOLULU_FEATURE, SpatialIndexTestData.NEW_YORK_FEATURE));
-        HashSet<Resource> result = searchEnvelope.check(spatialIndex);
+        Set<Node> expResult = SpatialIndexTestData.asNodes(List.of(SpatialIndexTestData.LONDON_FEATURE, SpatialIndexTestData.HONOLULU_FEATURE, SpatialIndexTestData.NEW_YORK_FEATURE));
+        Collection<Node> result = searchEnvelope.check(spatialIndex);
         assertEquals(expResult, result);
     }
 
@@ -108,8 +107,8 @@ public class EastPFTest {
         GeometryWrapper geometryWrapper = SpatialIndexTestData.PERTH_GEOMETRY_WRAPPER;
         EastPF instance = new EastPF();
         SearchEnvelope searchEnvelope = instance.buildSearchEnvelope(geometryWrapper, SpatialIndexTestData.WGS_84_SRS_INFO); //Needed to initialise the search.
-        HashSet<Resource> expResult = new HashSet<>(Arrays.asList(SpatialIndexTestData.AUCKLAND_FEATURE, SpatialIndexTestData.PERTH_FEATURE, SpatialIndexTestData.HONOLULU_FEATURE, SpatialIndexTestData.NEW_YORK_FEATURE));
-        HashSet<Resource> result = searchEnvelope.check(spatialIndex);
+        Set<Node> expResult = SpatialIndexTestData.asNodes(List.of(SpatialIndexTestData.AUCKLAND_FEATURE, SpatialIndexTestData.PERTH_FEATURE, SpatialIndexTestData.HONOLULU_FEATURE, SpatialIndexTestData.NEW_YORK_FEATURE));
+        Collection<Node> result = searchEnvelope.check(spatialIndex);
         assertEquals(expResult, result);
     }
 

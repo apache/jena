@@ -17,15 +17,17 @@
  */
 package org.apache.jena.geosparql.spatial;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import static org.junit.Assert.assertEquals;
+
+import java.util.Collection;
+import java.util.Set;
+
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.implementation.vocabulary.Unit_URI;
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.graph.Node;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -364,8 +366,8 @@ public class SearchEnvelopeTest {
         SearchEnvelope instance = SearchEnvelope.build(geometryWrapper, SpatialIndexTestData.WGS_84_SRS_INFO, radius, unitsURI);
 
         //Function Test
-        HashSet<Resource> expResult = new HashSet<>(Arrays.asList(SpatialIndexTestData.LONDON_FEATURE));
-        HashSet<Resource> result = instance.check(spatialIndex);
+        Set<Node> expResult = Set.of(SpatialIndexTestData.LONDON_FEATURE.asNode());
+        Collection<Node> result = instance.check(spatialIndex);
         assertEquals(expResult, result);
     }
 
@@ -384,8 +386,8 @@ public class SearchEnvelopeTest {
         SearchEnvelope instance = SearchEnvelope.build(geometryWrapper, SpatialIndexTestData.WGS_84_SRS_INFO, radius, unitsURI);
 
         //Function Test
-        HashSet<Resource> expResult = new HashSet<>();
-        HashSet<Resource> result = instance.check(spatialIndex);
+        Collection<Node> expResult = Set.of();
+        Collection<Node> result = instance.check(spatialIndex);
         assertEquals(expResult, result);
     }
 
