@@ -50,13 +50,13 @@ public class NodeTransformExpr extends ExprTransformCopy {
     }
 
     /** Transform node then create a {@link ExprVar} or {@link NodeValue}. */
-    private Expr transform(Node input) {
+    @Override
+    public Expr transform(Node input) {
         Node n = transform.apply(input);
         if ( n == null )
             throw new InternalErrorException("NodeTransform creates a null");
         if ( ! Var.isVar(n) )
             return NodeValue.makeNode(n);
-        String name = Var.alloc(n).getVarName();
-        return new ExprVar(n.getName());
+        return new ExprVar(n);
     }
 }
