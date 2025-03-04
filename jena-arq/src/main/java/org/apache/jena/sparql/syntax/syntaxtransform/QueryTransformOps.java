@@ -20,13 +20,7 @@ package org.apache.jena.sparql.syntax.syntaxtransform;
 
 import static org.apache.jena.sparql.syntax.syntaxtransform.QuerySyntaxSubstituteScope.scopeCheck;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -179,10 +173,10 @@ public class QueryTransformOps {
                 QuadAcc acc = new QuadAcc();
                 List<Quad> quads = template.getQuads();
                 quads.forEach(q->{
-                    Node g = transform(q.getGraph(), exprTransform);
-                    Node s = transform(q.getSubject(), exprTransform);
-                    Node p = transform(q.getPredicate(), exprTransform);
-                    Node o = transform(q.getObject(), exprTransform);
+                    Node g = transformOrSame(q.getGraph(), exprTransform);
+                    Node s = transformOrSame(q.getSubject(), exprTransform);
+                    Node p = transformOrSame(q.getPredicate(), exprTransform);
+                    Node o = transformOrSame(q.getObject(), exprTransform);
                     acc.addQuad(Quad.create(g, s, p, o));
                 });
                 Template template2 = new Template(acc);
@@ -268,7 +262,7 @@ public class QueryTransformOps {
     private static void mutateDescribeVar(List<Var> varList, List<Node> constants, ExprTransform exprTransform) {
         List<Var> varList2 = new ArrayList<>(varList.size());
         for (Var v : varList) {
-            Node n = transform(v, exprTransform);
+            Node n = transformOrSame(v, exprTransform);
             if ( n != v ) {
                 if ( !constants.contains(n) )
                     constants.add(n);
@@ -324,24 +318,21 @@ public class QueryTransformOps {
     }
 
     private static Map<String, Node> transformJsonMapping(Map<String, Node> jsonMapping, ExprTransform exprTransform) {
-        Map<String, Node> result = jsonMapping.entrySet().stream()
-            .collect(Collectors.toMap(
-                Entry::getKey,
-                e -> transform(e.getValue(), exprTransform), // transform(Node, ExprTransform) never returns null.
-                (u, v) -> v,          // Clashes can't happen.
-                LinkedHashMap::new)); // Retain order.
+        Map<String, Node> result = new LinkedHashMap<>();
+        jsonMapping.forEach((k,n)->{
+            Node n2 = transformOrSame(n, exprTransform);
+            result.put(k, n2);
+        });
         return result;
     }
 
-    // Transform a variable node (for low-usage cases).
-    // Returns node object for "no transform"
-    private static Node transform(Node node, ExprTransform exprTransform) {
+    // Transform a variable node.
+    // Returns the argument java object for "no transform"
+    private static Node transformOrSame(Node node, ExprTransform exprTransform) {
         if ( ! Var.isVar(node) )
             return node;
-        Var v = Var.alloc(node);
-        ExprVar ev = new ExprVar(v);
-        Expr e2 = exprTransform.transform(ev);
-        if (e2 == null || e2 == ev )
+        Expr e2 = exprTransform.transform(node);
+        if ( e2 == null )
             return node;
         if ( ! e2.isConstant() )
             return node;
@@ -351,8 +342,7 @@ public class QueryTransformOps {
     static class QueryShallowCopy implements QueryVisitor {
         final Query newQuery = new Query();
 
-        QueryShallowCopy() {
-        }
+        QueryShallowCopy() {}
 
         @Override
         public void startVisit(Query query) {
