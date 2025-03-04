@@ -18,7 +18,9 @@
 
 package org.apache.jena.sparql.expr;
 
+import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.algebra.Op ;
+import org.apache.jena.sparql.core.Var;
 
 public interface ExprTransform
 {
@@ -29,8 +31,17 @@ public interface ExprTransform
     public Expr transform(ExprFunctionN func, ExprList args) ;
     public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg) ;
     public Expr transform(NodeValue nv) ;
-    //default public Expr transform(ExprNone exprNone) { return exprNone ; }
+
+    public default Expr transform(Node node) {
+        if ( Var.isVar(node) ) {
+            ExprVar exprVar = new ExprVar(node);
+            return transform(exprVar);
+        }
+        NodeValue nv = NodeValue.makeNode(node);
+        return transform(nv);
+    }
+
     public Expr transform(ExprNone exprNone) ;
-    public Expr transform(ExprVar nv) ;
+    public Expr transform(ExprVar exprVar) ;
     public Expr transform(ExprAggregator eAgg) ;
 }

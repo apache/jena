@@ -96,6 +96,7 @@ public class QueryCompare implements QueryVisitor
     @Override
     public void visitJsonResultForm(Query query) {
         check("Not both JSON queries", query2.isJsonType());
+        check("Json mapping", query.getJsonMapping(), query2.getJsonMapping());
     }
 
     @Override
