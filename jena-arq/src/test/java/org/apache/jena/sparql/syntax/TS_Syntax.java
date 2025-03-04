@@ -25,12 +25,6 @@ import org.apache.jena.sparql.syntax.syntaxtransform.*;
 
 @Suite
 @SelectClasses({
-
-//import org.junit.runner.RunWith;
-//import org.junit.runners.Suite;
-//import org.junit.runners.Suite.SuiteClasses;
-//@RunWith(Suite.class)
-//@SuiteClasses({
     TestQueryParser.class
     , TestSerialization.class
     , TestQueryShallowCopy.class

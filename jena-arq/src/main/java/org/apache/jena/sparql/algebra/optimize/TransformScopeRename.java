@@ -18,101 +18,85 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.algebra.OpVisitorByTypeBase ;
-import org.apache.jena.sparql.algebra.TransformCopy ;
-import org.apache.jena.sparql.algebra.Transformer ;
-import org.apache.jena.sparql.algebra.op.OpModifier ;
-import org.apache.jena.sparql.algebra.op.OpProject ;
-import org.apache.jena.sparql.engine.Rename ;
+import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpVisitorByTypeBase;
+import org.apache.jena.sparql.algebra.TransformCopy;
+import org.apache.jena.sparql.algebra.Transformer;
+import org.apache.jena.sparql.algebra.op.OpModifier;
+import org.apache.jena.sparql.algebra.op.OpProject;
+import org.apache.jena.sparql.engine.Rename;
 
-/** Rename variables so that names can be treated globally.
- *  (project) and (group) can hide variables, but we only
- *  need to account for OpProject because group is never
- *  executed linearly. 
+/**
+ * Rename variables so that names can be treated globally. (project) and (group) can
+ * hide variables, but we only need to account for OpProject because group is never
+ * executed linearly.
  */
 
-public class TransformScopeRename
-{
+public class TransformScopeRename {
     // Is there an OpProject before any pattern algebra operators?
     // We don't need to rename through this one.
 
     // Track OpProject
 
-    public static Op transform(Op op)
-    {
-        return new TransformScopeRename$(op).work() ;
+    public static Op transform(Op op) {
+        return new TransformScopeRename$(op).work();
     }
 
-    private static class TransformScopeRename$
-    {
-        private boolean outerMostOpProject = false ;
-        private int projectRenameDepth = 0 ;
-        private int projectCount = 0 ;
-        
-        private Op op ;
+    private static class TransformScopeRename$ {
+        private boolean outerMostOpProject = false;
+        private int projectRenameDepth = 0;
+        private int projectCount = 0;
 
-        public TransformScopeRename$(Op op)
-        {
-            this.op = op ;
-            {
-                Op op2 = op ;
-                while( op2 instanceof OpModifier )
-                {
-                    // If already true ...
-                    if ( op2 instanceof OpProject )
-                    {
-                        outerMostOpProject = true ;
-                        break ;
-                    }
-                    op2 = ((OpModifier)op2).getSubOp() ;
+        private Op op;
+
+        public TransformScopeRename$(Op op) {
+            this.op = op;
+            Op op2 = op;
+            while (op2 instanceof OpModifier) {
+                // If already true ...
+                if ( op2 instanceof OpProject ) {
+                    outerMostOpProject = true;
+                    break;
                 }
+                op2 = ((OpModifier)op2).getSubOp();
             }
             // Set the project counter: renaming begins when this hits one.
             // Set 2 to there is a project in the top-most OpModifers.
             // This does not cause a rename so start renaming at depth .
             // otherwise rename from depth 1.
             if ( outerMostOpProject )
-                projectRenameDepth = 2 ;
+                projectRenameDepth = 2;
             else
                 projectRenameDepth = 1;
         }
-        
-        public Op work()
-        {
-            return Transformer.transform(new RenameByScope(), op, new BeforeWalk(), new AfterWalk()) ;   
+
+        public Op work() {
+            return Transformer.transform(new RenameByScope(), op, new BeforeWalk(), new AfterWalk());
         }
 
-
-        private class BeforeWalk extends OpVisitorByTypeBase
-        {
+        private class BeforeWalk extends OpVisitorByTypeBase {
             @Override
-            public void visit(OpProject opProject)
-            {
-                projectCount++ ;
+            public void visit(OpProject opProject) {
+                projectCount++;
             }
         }
 
-        private class AfterWalk extends OpVisitorByTypeBase
-        {
+        private class AfterWalk extends OpVisitorByTypeBase {
             @Override
-            public void visit(OpProject opProject)
-            {
-                --projectCount ;
+            public void visit(OpProject opProject) {
+                --projectCount;
             }
         }
 
-        private class RenameByScope extends TransformCopy
-        {
+        private class RenameByScope extends TransformCopy {
             @Override
-            public Op transform(OpProject opProject, Op subOp)
-            { 
+            public Op transform(OpProject opProject, Op subOp) {
                 // Need to find the right project
-                // We already stripped outer modifier. 
+                // We already stripped outer modifier.
                 if ( projectCount >= projectRenameDepth )
                     // Inner ones already done.
-                    subOp = Rename.renameVars(subOp, opProject.getVars()) ;
-                return super.transform(opProject, subOp) ;
+                    subOp = Rename.renameVars(subOp, opProject.getVars());
+                return super.transform(opProject, subOp);
             }
         }
     }
