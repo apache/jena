@@ -557,8 +557,8 @@ public class RDFParser {
                 : IRIxResolver.create().base(baseStr).resolve(resolve).allowRelative(allowRelative).build();
         PrefixMap pmap = ( this.prefixMap != null ) ? this.prefixMap : PrefixMapFactory.create();
         ParserProfileStd parserFactory = new CDTAwareParserProfile(factory, errorHandler,
-                                                              parserResolver, pmap,
-                                                              context, checking$, strict);
+                                                                   parserResolver, pmap,
+                                                                   context, checking$, strict);
         return parserFactory;
     }
 }

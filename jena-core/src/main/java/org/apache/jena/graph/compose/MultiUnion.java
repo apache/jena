@@ -48,7 +48,6 @@ public class MultiUnion extends Polyadic
         super();
     }
 
-
     /**
      * <p>
      * Construct a union of all of the given graphs
@@ -59,7 +58,6 @@ public class MultiUnion extends Polyadic
     public MultiUnion( Graph[] graphs) {
         super( graphs );
     }
-
 
     /**
      * <p>
@@ -108,26 +106,24 @@ public class MultiUnion extends Polyadic
         getRequiredBaseGraph().delete( t );
     }
 
-
     /**
      * <p>
-     * Answer true if at least one of the graphs in this union contain the given triple.
+     * Answer true if at least one of the graphs in this union contain the given
+     * triple.
      * </p>
      *
      * @param t A triple
      * @return True if any of the graphs in the union contain t
      */
-    @Override  public boolean graphBaseContains( Triple t )
-        {
-            for ( Graph m_subGraph : m_subGraphs )
-            {
-                if ( m_subGraph.contains( t ) )
-                {
-                    return true;
-                }
+    @Override
+    public boolean graphBaseContains(Triple t) {
+        for ( Graph m_subGraph : m_subGraphs ) {
+            if ( m_subGraph.contains(t) ) {
+                return true;
             }
-        return false;
         }
+        return false;
+    }
 
     /**
      * <p>
@@ -149,29 +145,27 @@ public class MultiUnion extends Polyadic
          Answer the result of <code>find( t )</code> on the single graph in
          this union.
     */
-    private ExtendedIterator<Triple> singleGraphFind( final Triple t )
-        { return (m_subGraphs.get( 0 )).find(  t  ); }
-
+    private ExtendedIterator<Triple> singleGraphFind(final Triple t) {
+        return (m_subGraphs.get(0)).find(t);
+    }
 
     /**
      * Answer the concatenation of all the iterators from a-subGraph.find( t ).
      */
-    private ExtendedIterator<Triple> multiGraphFind(final Triple t)
-    {
-        Set<Triple> seen = CollectionFactory.createHashedSet() ;
-        ExtendedIterator<Triple> result = NullIterator.instance() ;
-        boolean finished = false ;
+    private ExtendedIterator<Triple> multiGraphFind(final Triple t) {
+        Set<Triple> seen = CollectionFactory.createHashedSet();
+        ExtendedIterator<Triple> result = NullIterator.instance();
+        boolean finished = false;
         try {
-            for ( Graph m_subGraph : m_subGraphs )
-            {
-                ExtendedIterator<Triple> newTriples = recording( rejecting( m_subGraph.find( t ), seen ), seen );
-                result = result.andThen( newTriples );
+            for ( Graph m_subGraph : m_subGraphs ) {
+                ExtendedIterator<Triple> newTriples = recording(rejecting(m_subGraph.find(t), seen), seen);
+                result = result.andThen(newTriples);
             }
-            finished = true ;
-            return result ;
+            finished = true;
+            return result;
         } finally { // Throwable happened.
-            if (!finished)
-                result.close() ;
+            if ( !finished )
+                result.close();
         }
     }
 

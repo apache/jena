@@ -18,38 +18,43 @@
 
 package org.apache.jena.graph.compose;
 
-import org.apache.jena.graph.* ;
-import org.apache.jena.util.iterator.* ;
+import org.apache.jena.graph.*;
+import org.apache.jena.util.iterator.*;
 
 /**
-    Class representing the dynamic set difference L - R of two graphs. This is updatable;
-    the updates are written through to one or other of the base graphs.
-*/
-public class Difference extends Dyadic implements Graph 
-	{
+ * Class representing the dynamic set difference L - R of two graphs. This is
+ * updatable; the updates are written through to one or other of the base graphs.
+ */
+public class Difference extends Dyadic implements Graph {
     /**
-        Initialise a graph representing the difference L - R.
-    */
-	public Difference( Graph L, Graph R )
-		{ super( L, R ); }
-		
-    /**
-        Add a triple to the difference: add it to the left operand, and remove it from the 
-        right operand.
-    */
-	@Override public void performAdd( Triple t )
-		{
-		L.add( t );
-		R.delete( t );
-		}
+     * Initialise a graph representing the difference L - R.
+     */
+    public Difference(Graph L, Graph R) {
+        super(L, R);
+    }
 
     /**
-        Remove a triple from the difference: remove it from the left operand. [It could
-        be added to the right operand instead, but somehow that feels less satisfactory.]
-    */
-	@Override public void performDelete( Triple t )
-		{ L.delete( t ); }
+     * Add a triple to the difference: add it to the left operand, and remove it from
+     * the right operand.
+     */
+    @Override
+    public void performAdd(Triple t) {
+        L.add(t);
+        R.delete(t);
+    }
 
-	@Override public ExtendedIterator<Triple> _graphBaseFind( Triple t ) 
-		{ return L.find( t ). filterDrop ( ifIn( R ) ); }
-	}
+    /**
+     * Remove a triple from the difference: remove it from the left operand. [It
+     * could be added to the right operand instead, but somehow that feels less
+     * satisfactory.]
+     */
+    @Override
+    public void performDelete(Triple t) {
+        L.delete(t);
+    }
+
+    @Override
+    public ExtendedIterator<Triple> _graphBaseFind(Triple t) {
+        return L.find(t).filterDrop(ifIn(R));
+    }
+}
