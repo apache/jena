@@ -16,20 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.core ;
+package org.apache.jena.sparql.core;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 import java.util.stream.Stream;
 
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.lib.Closeable ;
-import org.apache.jena.graph.Graph ;
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.query.Dataset ;
+import org.apache.jena.atlas.lib.Closeable;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.query.Dataset;
 import org.apache.jena.riot.system.PrefixMap;
-import org.apache.jena.shared.Lock ;
-import org.apache.jena.sparql.util.Context ;
+import org.apache.jena.shared.Lock;
+import org.apache.jena.sparql.util.Context;
 
 /** DatasetGraph: The graph representation of an RDF Dataset. See {@link Dataset}
  * for the Model level of an RDF dataset.
@@ -43,13 +43,13 @@ public interface DatasetGraph extends Transactional, Closeable
     // ---- Graph container view
 
     /** Get the default graph as a Jena Graph */
-    public Graph getDefaultGraph() ;
+    public Graph getDefaultGraph();
 
     /** Get the graph named by graphNode : returns null when there is no such graph.
      * NB Whether a dataset contains a graph if there are no triples is not defined - see the specific implementation.
      * Some datasets are "open" - they have all graphs even if no triples.
      */
-    public Graph getGraph(Node graphNode) ;
+    public Graph getGraph(Node graphNode);
 
     /**
      * Return a {@link Graph} that is the union of all named graphs in this dataset. This
@@ -67,7 +67,7 @@ public interface DatasetGraph extends Transactional, Closeable
      * @param graphNode
      * @return boolean
      */
-    public boolean containsGraph(Node graphNode) ;
+    public boolean containsGraph(Node graphNode);
 
     /**
      * Add the given graph to the dataset.
@@ -75,26 +75,26 @@ public interface DatasetGraph extends Transactional, Closeable
      * get the graph and add triples to it, or add quads to the dataset.
      * Do not assume that the same Java object is returned by {@link #getGraph}
      */
-    public void addGraph(Node graphName, Graph graph) ;
+    public void addGraph(Node graphName, Graph graph);
 
     /** Remove all data associated with the named graph.
      * This will include prefixes associated with the graph.
      */
-    public void removeGraph(Node graphName) ;
+    public void removeGraph(Node graphName);
 
     /** Iterate over all names of named graphs */
-    public Iterator<Node> listGraphNodes() ;
+    public Iterator<Node> listGraphNodes();
 
     // ---- Quad view
 
     /** Add a quad */
-    public void add(Quad quad) ;
+    public void add(Quad quad);
 
     /** Delete a quad */
-    public void delete(Quad quad) ;
+    public void delete(Quad quad);
 
     /** Add a quad */
-    public void add(Node g, Node s, Node p, Node o) ;
+    public void add(Node g, Node s, Node p, Node o);
 
     /** Add the {@code src} DatasetGraph to this one. */
     public default void addAll(DatasetGraph src) {
@@ -102,10 +102,10 @@ public interface DatasetGraph extends Transactional, Closeable
     }
 
     /** Delete a quad */
-    public void delete(Node g, Node s, Node p, Node o) ;
+    public void delete(Node g, Node s, Node p, Node o);
 
     /** Delete any quads matching the pattern */
-    public void deleteAny(Node g, Node s, Node p, Node o) ;
+    public void deleteAny(Node g, Node s, Node p, Node o);
 
     /** Iterate over all quads in the dataset graph */
     public default Iterator<Quad> find() {
@@ -115,17 +115,17 @@ public interface DatasetGraph extends Transactional, Closeable
     /** Find matching quads in the dataset - may include wildcards, Node.ANY or null
      * @see Graph#find(Triple)
      */
-    public Iterator<Quad> find(Quad quad) ;
+    public Iterator<Quad> find(Quad quad);
 
     /** Find matching quads in the dataset (including default graph) - may include wildcards, Node.ANY or null
      * @see Graph#find(Node,Node,Node)
      */
-    public Iterator<Quad> find(Node g, Node s, Node p , Node o) ;
+    public Iterator<Quad> find(Node g, Node s, Node p , Node o);
 
     /** Find matching quads in the dataset in named graphs only - may include wildcards, Node.ANY or null
      * @see Graph#find(Node,Node,Node)
      */
-    public Iterator<Quad> findNG(Node g, Node s, Node p , Node o) ;
+    public Iterator<Quad> findNG(Node g, Node s, Node p , Node o);
 
     /** Returns a {@link Stream} of {@link Quad Quads} matching a pattern.
      *
@@ -144,31 +144,31 @@ public interface DatasetGraph extends Transactional, Closeable
     }
 
     /** Test whether the dataset (including default graph) contains a quad - may include wildcards, Node.ANY or null */
-    public boolean contains(Node g, Node s, Node p , Node o) ;
+    public boolean contains(Node g, Node s, Node p , Node o);
 
     /** Test whether the dataset contains a quad (including default graph)- may include wildcards, Node.ANY or null */
-    public boolean contains(Quad quad) ;
+    public boolean contains(Quad quad);
 
     /** Remove everything - remove all named graphs, clear the default graph */
-    public void clear() ;
+    public void clear();
 
     /** Test whether the dataset is empty */
-    public boolean isEmpty() ;
+    public boolean isEmpty();
 
     /** Return a lock for the dataset to help with concurrency control
      * @see Lock
      */
-    public Lock getLock() ;
+    public Lock getLock();
 
     /** Get the context associated with this object - may be null */
-    public Context getContext() ;
+    public Context getContext();
 
     /** Get the size (number of named graphs) - may be -1 for unknown */
-    public long size() ;
+    public long size();
 
     /** Close the dataset */
     @Override
-    public void close() ;
+    public void close();
 
     /** Prefixes for this DatasetGraph */
     public PrefixMap prefixes();
@@ -184,7 +184,7 @@ public interface DatasetGraph extends Transactional, Closeable
      * See {@link #supportsTransactionAbort()} for {@link #abort}.
      * In addition, check details of a specific implementation.
      */
-    public boolean supportsTransactions() ;
+    public boolean supportsTransactions();
 
     /** Declare whether {@link #abort} is supported.
      *  This goes along with clearing up after exceptions inside application transaction code.

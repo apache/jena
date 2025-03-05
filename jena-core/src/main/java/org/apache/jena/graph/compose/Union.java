@@ -26,43 +26,43 @@ import org.apache.jena.util.CollectionFactory ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /**
-    A class representing the dynamic union of two graphs. Addition only affects the left 
-    operand, deletion affects both. 
+    A class representing the dynamic union of two graphs. Addition only affects the left
+    operand, deletion affects both.
     @see MultiUnion
 */
 
-public class Union extends Dyadic implements Graph 
-	{
-	public Union( Graph L, Graph R )
-		{ super( L, R ); }
-		
+public class Union extends Dyadic implements Graph
+{
+    public Union( Graph L, Graph R )
+    { super( L, R ); }
+
     /**
         To add a triple to the union, add it to the left operand; this is asymmetric.
-    */
-	@Override public void performAdd( Triple t )
-		{ L.add( t ); }
+     */
+    @Override public void performAdd( Triple t )
+    { L.add( t ); }
 
     /**
         To remove a triple, remove it from <i>both</i> operands.
-    */
-	@Override public void performDelete( Triple t )
-		{
-		L.delete( t );
-		R.delete( t );
-		}
+     */
+    @Override public void performDelete( Triple t )
+    {
+        L.delete( t );
+        R.delete( t );
+    }
 
     @Override public boolean graphBaseContains( Triple t )
-        { return L.contains( t ) || R.contains( t ); }
-        
+    { return L.contains( t ) || R.contains( t ); }
+
     /**
         To find in the union, find in the components, concatenate the results, and omit
         duplicates. That last is a performance penalty, but I see no way to remove it
         unless we know the graphs do not overlap.
-    */
-	@Override protected ExtendedIterator<Triple> _graphBaseFind( final Triple t ) 
-	    {
-	    Set<Triple> seen = CollectionFactory.createHashedSet();
-        return recording( L.find( t ), seen ).andThen( rejecting( R.find( t ), seen ) ); 
-	    // return L.find( t ) .andThen( rejecting( R.find( t ), L ) ); 
-		}
-	}
+     */
+    @Override protected ExtendedIterator<Triple> _graphBaseFind( final Triple t )
+    {
+        Set<Triple> seen = CollectionFactory.createHashedSet();
+        return recording( L.find( t ), seen ).andThen( rejecting( R.find( t ), seen ) );
+        // return L.find( t ) .andThen( rejecting( R.find( t ), L ) );
+    }
+}

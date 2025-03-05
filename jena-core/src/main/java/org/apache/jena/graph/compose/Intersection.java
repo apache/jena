@@ -18,7 +18,7 @@
 
 /*
     INSERT HP DISCLAIMER HERE
-    
+
     Dynamic intersection, May 2002, hedgehog
 */
 
@@ -31,26 +31,25 @@ import org.apache.jena.util.iterator.* ;
 /**
     The dynamic intersection of two graphs L and R. <code>add()</code> affects both L and R, whereas <code>delete()</code> affects L only.
 */
-public class Intersection extends Dyadic implements Graph
-	{
-	public Intersection( Graph L, Graph R )
-	    {
-	    super( L, R );
-	    }
-	    
-	@Override public void performAdd( Triple t )
-	    {
-	    L.add( t );
-	    R.add( t );
-	    }
+public class Intersection extends Dyadic implements Graph {
+    public Intersection(Graph L, Graph R) {
+        super(L, R);
+    }
 
-	@Override public void performDelete( Triple t )
-		{
-		if (this.contains( t )) L.delete( t );
-		}
-		
-	@Override protected ExtendedIterator<Triple> _graphBaseFind( Triple s )
-		{
-        return L.find( s ) .filterKeep(  ifIn( R ) );
-		}
-	}
+    @Override
+    public void performAdd(Triple t) {
+        L.add(t);
+        R.add(t);
+    }
+
+    @Override
+    public void performDelete(Triple t) {
+        if ( this.contains(t) )
+            L.delete(t);
+    }
+
+    @Override
+    protected ExtendedIterator<Triple> _graphBaseFind(Triple s) {
+        return L.find(s).filterKeep(ifIn(R));
+    }
+}

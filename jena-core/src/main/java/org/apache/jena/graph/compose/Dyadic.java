@@ -18,79 +18,75 @@
 
 package org.apache.jena.graph.compose;
 
-import org.apache.jena.graph.* ;
-import org.apache.jena.graph.impl.SimpleEventManager ;
-import org.apache.jena.util.iterator.ExtendedIterator ;
+import org.apache.jena.graph.*;
+import org.apache.jena.graph.impl.SimpleEventManager;
+import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
-    Base class for the two-operand composition operations; has two graphs L and R
-*/
+ * Base class for the two-operand composition operations; has two graphs L and R
+ */
 
-public abstract class Dyadic extends CompositionBase
-	{
-	protected Graph L;
-	protected Graph R;
+public abstract class Dyadic extends CompositionBase {
+    protected Graph L;
+    protected Graph R;
 
     /**
-        When the graph is constructed, copy the prefix mappings of both components
-        into this prefix mapping. The prefix mapping doesn't change afterwards with the
-        components, which might be regarded as a bug.
-    */
-	public Dyadic( Graph L, Graph R )
-		{
-		this.L = L;
-		this.R = R;
-        getPrefixMapping()
-            .setNsPrefixes( L.getPrefixMapping() )
-            .setNsPrefixes( R.getPrefixMapping() )
-            ;
-		}
-
-
-	/**
-	 * override graphBaseFind to return an iterator that will report when
-	 * a deletion occurs.
-	 */
-	@Override
-    protected final ExtendedIterator<Triple> graphBaseFind( Triple m )
-    {
-		return SimpleEventManager.notifyingRemove( this, this._graphBaseFind( m ) );
+     * When the graph is constructed, copy the prefix mappings of both components
+     * into this prefix mapping. The prefix mapping doesn't change afterwards with
+     * the components, which might be regarded as a bug.
+     */
+    public Dyadic(Graph L, Graph R) {
+        this.L = L;
+        this.R = R;
+        getPrefixMapping().setNsPrefixes(L.getPrefixMapping()).setNsPrefixes(R.getPrefixMapping());
     }
 
-	/**
-	 * The method that the overridden graphBaseFind( Triple t ) calls to actually
-	 * do the work of finding.
-	 */
-	protected abstract ExtendedIterator<Triple> _graphBaseFind( Triple t );
-
+    /**
+     * override graphBaseFind to return an iterator that will report when a deletion
+     * occurs.
+     */
     @Override
-    public void close()
-    	{
-    	L.close();
-    	R.close();
-    	this.closed = true;
-        }
-
-    /**
-        Generic dependsOn, true iff it depends on either of the subgraphs.
-    */
-    @Override
-    public boolean dependsOn( Graph other )
-        { return other == this || L.dependsOn( other ) || R.dependsOn( other ); }
-
-    public Union union( Graph X )
-        { return new Union( this, X ); }
-
-    /**
-         Answer the left (first) operand of this Dyadic.
-    */
-    public Graph getL()
-        { return L; }
-
-    /**
-         Answer the right (second) operand of this Dyadic.
-    */
-    public Graph getR()
-        { return R; }
-
+    protected final ExtendedIterator<Triple> graphBaseFind(Triple m) {
+        return SimpleEventManager.notifyingRemove(this, this._graphBaseFind(m));
     }
+
+    /**
+     * The method that the overridden graphBaseFind( Triple t ) calls to actually do
+     * the work of finding.
+     */
+    protected abstract ExtendedIterator<Triple> _graphBaseFind(Triple t);
+
+    @Override
+    public void close() {
+        L.close();
+        R.close();
+        this.closed = true;
+    }
+
+    /**
+     * Generic dependsOn, true iff it depends on either of the subgraphs.
+     */
+    @Override
+    public boolean dependsOn(Graph other) {
+        return other == this || L.dependsOn(other) || R.dependsOn(other);
+    }
+
+    public Union union(Graph X) {
+        return new Union(this, X);
+    }
+
+    /**
+     * Answer the left (first) operand of this Dyadic.
+     */
+    public Graph getL() {
+        return L;
+    }
+
+    /**
+     * Answer the right (second) operand of this Dyadic.
+     */
+    public Graph getR() {
+        return R;
+    }
+
+}

@@ -18,56 +18,56 @@
 
 package org.apache.jena.sparql.algebra.optimize;
 
-import org.apache.jena.query.ARQ ;
-import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.SystemARQ ;
-import org.apache.jena.sparql.algebra.* ;
-import org.apache.jena.sparql.algebra.op.OpLabel ;
-import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.sparql.util.Symbol ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.SystemARQ;
+import org.apache.jena.sparql.algebra.*;
+import org.apache.jena.sparql.algebra.op.OpLabel;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** The standard optimization sequence. */
 public class OptimizerStd implements Rewrite
 {
-    static private Logger log = LoggerFactory.getLogger(Optimize.class) ;
-    private final Context context ;
+    static private Logger log = LoggerFactory.getLogger(Optimize.class);
+    private final Context context;
 
     public OptimizerStd(Context context) {
-        this.context = context ;
+        this.context = context;
     }
 
     /** Alternative name for compatibility only */
-    public static final Symbol filterPlacementOldName = SystemARQ.allocSymbol("filterPlacement") ;
+    public static final Symbol filterPlacementOldName = SystemARQ.allocSymbol("filterPlacement");
 
     @Override
     public Op rewrite(Op op) {
         // Record optimizer
         if ( context.get(ARQConstants.sysOptimizer) == null )
-            context.set(ARQConstants.sysOptimizer, this) ;
+            context.set(ARQConstants.sysOptimizer, this);
 
         // Old name, new name fixup.
         if ( context.isDefined(filterPlacementOldName) ) {
             if ( context.isUndef(ARQ.optFilterPlacement) )
-                context.set(ARQ.optFilterPlacement, context.get(filterPlacementOldName)) ;
+                context.set(ARQ.optFilterPlacement, context.get(filterPlacementOldName));
         }
 
         if ( false ) {
             // Removal of "group of one" join (AKA SPARQL "simplification")
             // is done during algebra generation in AlgebraGenerator
-            op = apply("Simplify", new TransformSimplify(), op) ;
-            op = apply("Delabel", new TransformRemoveLabels(), op) ;
+            op = apply("Simplify", new TransformSimplify(), op);
+            op = apply("Delabel", new TransformRemoveLabels(), op);
         }
 
         // ** TransformScopeRename
         // This is a requirement for the linearization execution that the default
         // ARQ query engine uses where possible.
         // This transformation must be done (e.g. by QueryEngineBase) if no other optimization is done.
-        op = TransformScopeRename.transform(op) ;
+        op = TransformScopeRename.transform(op);
 
         // Prepare expressions.
-        OpWalker.walk(op, new OpVisitorExprPrepare(context)) ;
+        OpWalker.walk(op, new OpVisitorExprPrepare(context));
 
         // Convert paths to triple patterns if possible.
         if ( context.isTrueOrUndef(ARQ.optPathFlatten) ) {
@@ -78,7 +78,7 @@ public class OptimizerStd implements Rewrite
             }
             // and merge adjacent BGPs (part 1)
             if ( context.isTrueOrUndef(ARQ.optMergeBGPs) )
-                op = apply("Merge BGPs", new TransformMergeBGPs(), op) ;
+                op = apply("Merge BGPs", new TransformMergeBGPs(), op);
         }
 
         // Having done the required transforms, specifically TransformScopeRename,
@@ -87,55 +87,55 @@ public class OptimizerStd implements Rewrite
 
         // Expression constant folding
         if ( context.isTrueOrUndef(ARQ.optExprConstantFolding) )
-            op = transformExprConstantFolding(op) ;
+            op = transformExprConstantFolding(op);
 
         if ( context.isTrueOrUndef(ARQ.propertyFunctions) )
-            op = transformPropertyFunctions(op) ;
+            op = transformPropertyFunctions(op);
 
         // Expand (A&&B) to two filter (A), (B) so that they can be placed independently.
         if ( context.isTrueOrUndef(ARQ.optFilterConjunction) )
-            op = transformFilterConjunction(op) ;
+            op = transformFilterConjunction(op);
 
         // Expand IN and NOT IN which then allows other optimizations to be applied.
         if ( context.isTrueOrUndef(ARQ.optFilterExpandOneOf) )
-            op = transformFilterExpandOneOf(op) ;
+            op = transformFilterExpandOneOf(op);
 
         // Eliminate/Inline assignments where possible
         // Do this before we do some of the filter transformation work as inlining assignments
         // may give us more flexibility in optimizing the resulting filters
         if ( context.isTrue(ARQ.optInlineAssignments) )
-            op = transformInlineAssignments(op) ;
+            op = transformInlineAssignments(op);
 
         // Apply some general purpose filter transformations
         if ( context.isTrueOrUndef(ARQ.optFilterImplicitJoin) )
-            op = transformFilterImplicitJoin(op) ;
+            op = transformFilterImplicitJoin(op);
 
         if ( context.isTrueOrUndef(ARQ.optImplicitLeftJoin) )
-            op = transformFilterImplicitLeftJoin(op) ;
+            op = transformFilterImplicitLeftJoin(op);
 
         if ( context.isTrueOrUndef(ARQ.optFilterDisjunction) )
-            op = transformFilterDisjunction(op) ;
+            op = transformFilterDisjunction(op);
 
         // Some ORDER BY-LIMIT N queries can be done more efficiently by only recording
         // the top N items, so a full sort is not needed.
         if ( context.isTrueOrUndef(ARQ.optTopNSorting) )
-            op = transformTopNSorting(op) ;
+            op = transformTopNSorting(op);
 
         // ORDER BY+DISTINCT optimizations
         // We apply the one that changes evaluation order first since when it does apply it will give much
         // better performance than just transforming DISTINCT to REDUCED
 
         if ( context.isTrueOrUndef(ARQ.optOrderByDistinctApplication) )
-            op = transformOrderByDistinctApplication(op) ;
+            op = transformOrderByDistinctApplication(op);
 
         // Transform some DISTINCT to REDUCED, slightly more liberal transform that ORDER BY+DISTINCT application
         // Reduces memory consumption.
         if ( context.isTrueOrUndef(ARQ.optDistinctToReduced) )
-            op = transformDistinctToReduced(op) ;
+            op = transformDistinctToReduced(op);
 
         // Find joins/leftJoin that can be done by index joins (generally preferred as fixed memory overhead).
         if ( context.isTrueOrUndef(ARQ.optIndexJoinStrategy) )
-            op = transformJoinStrategy(op) ;
+            op = transformJoinStrategy(op);
 
         // Do a basic reordering so that triples with more defined terms go first.
         // 2022-11: This does not take into account values flowed into the BGP
@@ -143,7 +143,7 @@ public class OptimizerStd implements Rewrite
         // Use "ARQ.getContext.set(ARQ.optReorderBGP, true)" to enable.
         //if ( context.isTrueOrUndef(ARQ.optReorderBGP) )
         if ( context.isTrue(ARQ.optReorderBGP) )
-            op = transformReorder(op) ;
+            op = transformReorder(op);
 
         // Place filters close to where their input variables are defined.
         // This prunes the output of that step as early as possible.
@@ -158,37 +158,37 @@ public class OptimizerStd implements Rewrite
         // of a filter in a (sequence) from each half of a (join).
         // This is harmless but it looks a bit odd.
         if ( context.isTrueOrUndef(ARQ.optFilterPlacement) )
-            op = transformFilterPlacement(op) ;
+            op = transformFilterPlacement(op);
 
         // Replace suitable FILTER(?x = TERM) with (assign) and write the TERM for ?x in the pattern.
         // Apply (possible a second time) after FILTER placement as it can create new possibilities.
         // See JENA-616.
        if ( context.isTrueOrUndef(ARQ.optFilterEquality) )
-           op = transformFilterEquality(op) ;
+           op = transformFilterEquality(op);
 
         // Replace suitable FILTER(?x != TERM) with (minus (original) (table)) where the table contains
         // the candidate rows to be eliminated
         // Off by default due to minimal performance difference
         if ( context.isTrue(ARQ.optFilterInequality) )
-            op = transformFilterInequality(op) ;
+            op = transformFilterInequality(op);
 
         // Promote table empty as late as possible since this will only be produced by other
         // optimizations and never directly from algebra generation
         if ( context.isTrueOrUndef(ARQ.optPromoteTableEmpty) )
-            op = transformPromoteTableEmpty(op) ;
+            op = transformPromoteTableEmpty(op);
 
         // Merge adjacent BGPs
         if ( context.isTrueOrUndef(ARQ.optMergeBGPs) )
-            op = transformMergeBGPs(op) ;
+            op = transformMergeBGPs(op);
 
         // Merge (extend) and (assign) stacks
         if ( context.isTrueOrUndef(ARQ.optMergeExtends) )
-            op = transformExtendCombine(op) ;
+            op = transformExtendCombine(op);
 
         // Mark
         if ( false )
-            op = OpLabel.create("Transformed", op) ;
-        return op ;
+            op = OpLabel.create("Transformed", op);
+        return op;
     }
 
     protected Op transformExprConstantFolding(Op op) {
@@ -196,14 +196,14 @@ public class OptimizerStd implements Rewrite
     }
 
     protected Op transformPropertyFunctions(Op op) {
-        return apply("Property Functions", new TransformPropertyFunction(context), op) ;
+        return apply("Property Functions", new TransformPropertyFunction(context), op);
     }
 
     protected Op transformFilterConjunction(Op op) {
-        return apply("filter conjunctions to ExprLists", new TransformFilterConjunction(), op) ;
+        return apply("filter conjunctions to ExprLists", new TransformFilterConjunction(), op);
     }
     protected Op transformFilterExpandOneOf(Op op) {
-        return apply("Break up IN and NOT IN", new TransformExpandOneOf(), op) ;
+        return apply("Break up IN and NOT IN", new TransformExpandOneOf(), op);
     }
 
     protected Op transformInlineAssignments(Op op) {
@@ -219,11 +219,11 @@ public class OptimizerStd implements Rewrite
     }
 
     protected Op transformFilterDisjunction(Op op) {
-        return apply("Filter Disjunction", new TransformFilterDisjunction(), op) ;
+        return apply("Filter Disjunction", new TransformFilterDisjunction(), op);
     }
 
     protected Op transformTopNSorting(Op op) {
-        return apply("TopN Sorting", new TransformTopN(), op) ;
+        return apply("TopN Sorting", new TransformTopN(), op);
     }
 
     protected Op transformOrderByDistinctApplication(Op op) {
@@ -231,26 +231,26 @@ public class OptimizerStd implements Rewrite
     }
 
     protected Op transformDistinctToReduced(Op op) {
-        return apply("Distinct replaced with reduced", new TransformDistinctToReduced(), op) ;
+        return apply("Distinct replaced with reduced", new TransformDistinctToReduced(), op);
     }
 
     protected Op transformJoinStrategy(Op op) {
-        return apply("Index Join strategy", new TransformJoinStrategy(), op) ;
+        return apply("Index Join strategy", new TransformJoinStrategy(), op);
     }
 
     protected Op transformFilterPlacement(Op op) {
         if ( context.isTrue(ARQ.optFilterPlacementConservative))
-            op = apply("Filter Placement (conservative)", new TransformFilterPlacementConservative(), op) ;
+            op = apply("Filter Placement (conservative)", new TransformFilterPlacementConservative(), op);
         else {
             // Whether to push into BGPs
-            boolean b = context.isTrueOrUndef(ARQ.optFilterPlacementBGP) ;
-            op = apply("Filter Placement", new TransformFilterPlacement(b), op) ;
+            boolean b = context.isTrueOrUndef(ARQ.optFilterPlacementBGP);
+            op = apply("Filter Placement", new TransformFilterPlacement(b), op);
         }
-        return op ;
+        return op;
     }
 
     protected Op transformFilterEquality(Op op) {
-        return apply("Filter Equality", new TransformFilterEquality(), op) ;
+        return apply("Filter Equality", new TransformFilterEquality(), op);
     }
 
     protected Op transformFilterInequality(Op op) {
@@ -258,54 +258,53 @@ public class OptimizerStd implements Rewrite
     }
 
     protected Op transformPromoteTableEmpty(Op op) {
-        return apply("Table Empty Promotion", new TransformPromoteTableEmpty(), op) ;
+        return apply("Table Empty Promotion", new TransformPromoteTableEmpty(), op);
     }
 
     protected Op transformMergeBGPs(Op op) {
-        return apply("Merge BGPs", new TransformMergeBGPs(), op) ;
+        return apply("Merge BGPs", new TransformMergeBGPs(), op);
     }
 
     protected Op transformReorder(Op op) {
-        return  apply("ReorderMerge BGPs", new TransformReorder(), op) ;
+        return  apply("ReorderMerge BGPs", new TransformReorder(), op);
     }
 
     protected Op transformExtendCombine(Op op) {
-        return apply("Combine BIND/LET", new TransformExtendCombine(), op) ;
+        return apply("Combine BIND/LET", new TransformExtendCombine(), op);
     }
 
     public static Op apply(Transform transform, Op op) {
-        Op op2 = Transformer.transformSkipService(transform, op) ;
+        Op op2 = Transformer.transformSkipService(transform, op);
         if ( op2 != op )
-            return op2 ;
-        return op ;
+            return op2;
+        return op;
     }
 
-    private static final boolean debug = false ;
+    private static final boolean debug = false;
     private static final boolean printNoAction = false;
 
     public static Op apply(String label, Transform transform, Op op) {
-        Op op2 = Transformer.transformSkipService(transform, op) ;
-
+        Op op2 = Transformer.transformSkipService(transform, op);
 
         if ( debug ) {
             if ( printNoAction && label != null )
-                log.info("Transform: " + label) ;
+                log.info("Transform: " + label);
             if ( op == op2 ) {
                 if ( printNoAction )
-                    log.info("No change (==)") ;
-                return op2 ;
+                    log.info("No change (==)");
+                return op2;
             }
             if ( op.equals(op2) ) {
                 if ( printNoAction )
-                    log.info("No change (equals)") ;
-                return op2 ;
+                    log.info("No change (equals)");
+                return op2;
             }
 
             if ( ! printNoAction && label != null );
-                log.info("Transform: " + label) ;
-            log.info("\n" + op.toString()) ;
-            log.info("\n" + op2.toString()) ;
+                log.info("Transform: " + label);
+            log.info("\n" + op.toString());
+            log.info("\n" + op2.toString());
         }
-        return op2 ;
+        return op2;
     }
 }
