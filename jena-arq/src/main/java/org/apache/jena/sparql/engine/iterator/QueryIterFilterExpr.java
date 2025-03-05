@@ -21,6 +21,7 @@ package org.apache.jena.sparql.engine.iterator;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -48,6 +49,9 @@ public class QueryIterFilterExpr extends QueryIterProcessBinding {
             if ( expr.isSatisfied(binding, super.getExecContext()) )
                 return binding;
             return null;
+        } catch (QueryCancelledException ex) {
+            ex.addSuppressed(new RuntimeException("Query cancelled exception."));
+            throw ex;
         } catch (ExprException ex) {
             // Some evaluation exception: should not happen.
             Log.warn(this, "Expression Exception in " + expr, ex);
