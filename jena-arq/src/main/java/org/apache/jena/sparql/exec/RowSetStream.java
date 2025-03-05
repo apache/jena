@@ -21,6 +21,7 @@ package org.apache.jena.sparql.exec;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.sparql.core.Var;
@@ -71,5 +72,13 @@ public class RowSetStream implements RowSet {
     @Override
     public void close() {
         Iter.close(iterator);
+    }
+
+    @Override
+    public void forEachRemaining(Consumer<? super Binding> action) {
+        iterator.forEachRemaining(b -> {
+            ++rowNumber;
+            action.accept(b);
+        });
     }
 }
