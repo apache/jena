@@ -333,7 +333,7 @@ public class ActionLib {
     }
 
     /**
-     * Output a graph to the HTTP response (does not set the status code) using the given Content-Type string.
+     * Output a graph to the HTTP response using the given Content-Type string.
      * One of {@code lang} and {@code fmt} maybe null and will be calculated.
      * {@code actualContentType} maybe null in which case the standard content type for the syntax is used.
      */

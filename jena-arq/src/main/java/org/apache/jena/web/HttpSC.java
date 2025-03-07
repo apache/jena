@@ -88,9 +88,6 @@ public class HttpSC {
      public static final int RANGE_NOT_SATISFIABLE_416 = 416;
      public static final int EXPECTATION_FAILED_417 = 417;
 
-//     @Deprecated
-//     public static final int I_AM_A_TEAPOT_418 = 418;
-
      public static final int IM_A_TEAPOT_418 = 418;
      public static final int ENHANCE_YOUR_CALM_420 = 420;
      public static final int MISDIRECTED_REQUEST_421 = 421;
