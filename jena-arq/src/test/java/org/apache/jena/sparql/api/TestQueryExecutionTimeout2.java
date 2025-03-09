@@ -22,13 +22,30 @@ import static org.apache.jena.atlas.lib.Lib.sleep ;
 import static org.junit.Assume.assumeFalse;
 
 import java.util.concurrent.TimeUnit;
+import java.util.stream.LongStream;
 
 import org.apache.jena.base.Sys ;
 import org.apache.jena.graph.Graph ;
-import org.apache.jena.query.* ;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.impl.GraphBase;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.query.QueryCancelledException;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.DatasetGraphFactory ;
 import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.join.AbstractIterHashJoin;
+import org.apache.jena.sparql.engine.main.solver.StageMatchTriple;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.QueryExecDataset;
+import org.apache.jena.sparql.exec.RowSetOps;
+import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.iterator.NiceIterator;
+import org.apache.jena.util.iterator.WrappedIterator;
 import org.junit.Assert ;
 import org.junit.Before;
 import org.junit.Test ;
@@ -109,6 +126,84 @@ public class TestQueryExecutionTimeout2
 
     private int timeout(int time1, int time2) {
         return mayBeErratic ? time2 : time1 ;
+    }
+
+    /**
+     * Test case for GH-3044.
+     * {@link AbstractIterHashJoin} used to eagerly populate a hash probe table on iterator construction,
+     * while {@link QueryExecDataset} held a lock that prevented async abort while the iterator was being constructed.
+     */
+    @Test(timeout = 5000, expected = QueryCancelledException.class)
+    public void test_timeout_hashJoin() {
+        // A very large virtual graph.
+        Graph graph = new GraphBase() {
+            @Override
+            protected ExtendedIterator<Triple> graphBaseFind(Triple triplePattern) {
+                return WrappedIterator.createNoRemove(LongStream.range(0, Long.MAX_VALUE)
+                    .mapToObj(i -> NodeFactory.createURI("http://www.example.org/r" + i))
+                    .peek(x -> {
+                        // Throttle binding generation to prevent going out-ouf-memory.
+                        // Bindings are likely to be stored in an in-memory hash probe table.
+                        try {
+                            Thread.sleep(1);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .map(i -> Triple.create(i, i, i))
+                    .filter(triplePattern::matches)
+                    .iterator());
+            }
+        };
+
+        try (QueryExec qe = QueryExec
+            .graph(graph)
+            .timeout(100, TimeUnit.MILLISECONDS)
+            .query("""
+            SELECT * {
+                ?a ?b ?c .
+                  # When this test case was written, a hash probe table was created for the rhs.
+                  {
+                    ?c ?d ?e .
+                  }
+                UNION
+                  { BIND('x' AS ?x) }
+            }
+            """).build()) {
+            RowSetOps.count(qe.select());
+        }
+    }
+
+    /** Test to ensure timeouts are considered in {@link StageMatchTriple} when producing only empty joins from a large set of triples. */
+    @Test(expected = QueryCancelledException.class)
+    public void test_timeout_stageMatchTriple() {
+        // A very large virtual graph that never matches a concrete subject.
+        Graph graph = new GraphBase() {
+            @Override
+            protected ExtendedIterator<Triple> graphBaseFind(Triple t) {
+                if (t.getMatchSubject() != null && t.getMatchSubject().isConcrete()) {
+                    // Don't match any concrete subject
+                    return NiceIterator.emptyIterator();
+                } else {
+                    // Generate :sI :p :oI triples
+                    return WrappedIterator.createNoRemove(LongStream.range(0, Long.MAX_VALUE)
+                        .mapToObj(i -> Triple.create(NodeFactory.createURI("http://www.example.org/s" + i), t.getPredicate(), NodeFactory.createURI("http://www.example.org/o" + i)))
+                        .iterator());
+                }
+            }
+        };
+
+        try (QueryExec qe = QueryExec
+            .graph(graph)
+            .timeout(100, TimeUnit.MILLISECONDS)
+            .query("""
+            SELECT * {
+                ?a <urn:p> ?c .
+                ?c <urn:p> ?e .
+            }
+            """).build()) {
+            RowSetOps.count(qe.select());
+        }
     }
 }
 

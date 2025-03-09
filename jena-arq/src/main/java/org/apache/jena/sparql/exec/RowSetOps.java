@@ -30,9 +30,9 @@ import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.Prologue;
 import org.apache.jena.sparql.resultset.ResultsWriter;
 
-/** 
+/**
  * RowSetOps - Convenience ways to call the various output formatters.
- * 
+ *
  * @see ResultSetMgr
  */
 
@@ -51,7 +51,7 @@ public class RowSetOps {
      * This operation consumes the RowSet.
      */
     public static long count(RowSet rowSet)
-    { return rowSet.rewindable().size(); }
+    { return rowSet.stream().count(); }
 
     /**
      * Output a result set in a text format.  The result set is consumed.
