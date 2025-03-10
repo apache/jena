@@ -77,7 +77,7 @@
     <ver.shiro>2.0.2</ver.shiro>
     <ver.omnifaces>4.6.1</ver.omnifaces>
 
-    <ver.protobuf>4.29.3</ver.protobuf>
+    <ver.protobuf>4.30.0</ver.protobuf>
     <ver.libthrift>0.21.0</ver.libthrift>
 
     <ver.caffeine>3.2.0</ver.caffeine>
