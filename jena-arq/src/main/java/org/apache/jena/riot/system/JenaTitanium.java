@@ -41,7 +41,9 @@ public class JenaTitanium {
         public JenaTitaniumException(String msg) { super(msg); }
     }
 
-    /** Translate a Jena {@link DatasetGraph} to a Titanium JSON-LD dataset */
+    /**
+     * Translate a Jena {@link DatasetGraph} to a Titanium JSON-LD dataset
+     */
     public static RdfDataset convert(DatasetGraph dataset) {
         RdfProvider provider = RdfProvider.provider();
         RdfDataset rdfDataset = provider.createDataset();
@@ -64,7 +66,11 @@ public class JenaTitanium {
         return rdfDataset;
     }
 
-    /** Translate a Titanium JSON-LD dataset to a {@link DatasetGraph} */
+    /**
+     * Translate a Titanium JSON-LD dataset to a {@link DatasetGraph}
+     * @deprecated No longer used by the LangJSONLD_11
+     */
+    @Deprecated(forRemoval = true)
     public static DatasetGraph convert(RdfDataset dataset, ParserProfile parserProfile) {
         DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
         StreamRDF dest = StreamRDFLib.dataset(dsg);
@@ -72,14 +78,27 @@ public class JenaTitanium {
         return dsg;
     }
 
-    /** Translate a Titanium JSON-LD dataset to a {@link StreamRDF} */
+    /**
+     * Translate a Titanium JSON-LD dataset to a {@link DatasetGraph}
+     */
+    public static DatasetGraph convert(RdfDataset dataset) {
+        DatasetGraph dsg = DatasetGraphFactory.createTxnMem();
+        StreamRDF dest = StreamRDFLib.dataset(dsg);
+        convert(dataset, dest);
+        return dsg;
+    }
+
+    /**
+     * Translate a Titanium JSON-LD dataset to a {@link StreamRDF}
+     */
     public static void convert(RdfDataset dataset, StreamRDF output) {
         convert(dataset, RiotLib.dftProfile(), output);
     }
 
-    /** Translate a Titanium JSON-LD dataset to a {@link StreamRDF} */
+    /**
+     * Translate a Titanium JSON-LD dataset to a {@link StreamRDF}.
+     */
     public static void convert(RdfDataset dataset, ParserProfile parserProfile, StreamRDF output) {
-        RdfProvider provider = RdfProvider.provider();
         for ( RdfNQuad rdfQuad : dataset.toList() ) {
             Optional<RdfResource> gn = rdfQuad.getGraphName();
             RdfResource subj = rdfQuad.getSubject();
