@@ -107,7 +107,7 @@
     <ver.junit5>5.12.0</ver.junit5>
     <ver.junit5-platform>1.10.2</ver.junit5-platform>
  
-    <ver.mockito>5.15.2</ver.mockito>
+    <ver.mockito>5.16.0</ver.mockito>
     <ver.awaitility>4.3.0</ver.awaitility>
     <ver.contract.tests>0.2.0</ver.contract.tests>
 
