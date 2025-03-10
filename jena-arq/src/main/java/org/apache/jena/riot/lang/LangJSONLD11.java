@@ -30,6 +30,8 @@ import com.apicatalog.jsonld.document.Document;
 import com.apicatalog.jsonld.document.JsonDocument;
 import com.apicatalog.jsonld.lang.Keywords;
 import com.apicatalog.rdf.RdfDataset;
+import com.apicatalog.rdf.api.RdfConsumerException;
+import com.apicatalog.rdf.api.RdfQuadConsumer;
 
 import jakarta.json.JsonObject;
 import jakarta.json.JsonString;
@@ -38,14 +40,18 @@ import jakarta.json.JsonValue;
 import jakarta.json.stream.JsonLocation;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.atlas.web.ContentType;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.TypeMapper;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.ReaderRIOT;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.system.ErrorHandler;
-import org.apache.jena.riot.system.JenaTitanium;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.SystemARQ;
+import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.sparql.util.Symbol;
 
@@ -113,7 +119,12 @@ public class LangJSONLD11 implements ReaderRIOT {
         JsonLdOptions opts = getJsonLdOptions(baseURI, context);
         RdfDataset dataset = JsonLd.toRdf(document).options(opts).base(baseURI).get();
         extractPrefixes(document, output::prefix);
-        JenaTitanium.convert(dataset, profile, output);
+
+        RdfQuadConsumer consumer = new JsonLDToStreamRDF(output, profile);
+        JsonLd.toRdf(document).options(opts).provide(consumer);
+
+        // Titanium 1.5.0 and earlier.
+        // JenaTitanium.convert(dataset, profile, output);
     }
 
     /**
@@ -200,5 +211,58 @@ public class LangJSONLD11 implements ReaderRIOT {
     private static JsonLdOptions getJsonLdOptions(String baseURI, Context jenaContext) {
         JsonLdOptions opts = jenaContext.get(JSONLD_OPTIONS);
         return (opts != null) ? opts : new JsonLdOptions();
+    }
+
+    static class JsonLDToStreamRDF implements RdfQuadConsumer {
+        private static long line = -1L;
+        private static long col = -1L;
+
+        private final StreamRDF output;
+        private final ParserProfile profile;
+
+        JsonLDToStreamRDF(StreamRDF output, ParserProfile profile) {
+            this.output = output;
+            this.profile = profile;
+        }
+
+        @Override
+        public RdfQuadConsumer quad(String subject, String predicate, String object,
+                                    String datatype, String language, String direction,
+                                    String graph) throws RdfConsumerException {
+            Node g = (graph == null) ? null : convertToNode(graph);
+            Node s = convertToNode(subject);
+            Node p = convertToNode(predicate);
+            Node o;
+
+            if ( RdfQuadConsumer.isLiteral(datatype, language, direction) )
+                o = convertToLiteral(object, datatype, language, direction);
+            else
+                o = convertToNode(object);
+
+            if ( g == null )
+                output.triple(Triple.create(s, p, o));
+            else
+                output.quad(Quad.create(g, s, p, o));
+            return this;
+        }
+        private Node convertToNode(String str) {
+            if ( RdfQuadConsumer.isBlank(str) ) {
+                str = str.substring(2); // Remove "_:"
+                Node bn = profile.getFactorRDF().createBlankNode(str);
+                return bn;
+            }
+            str = profile.resolveIRI(str, line, col);
+            Node iri = profile.createURI(str, line, col);
+            return iri;
+        }
+
+        private Node convertToLiteral(String lexical, String datatypeURI, String language, String direction) {
+            if ( RdfQuadConsumer.isLangString(datatypeURI, language, direction) )
+                return profile.createLangLiteral(lexical, language, line, col);
+//                if ( RdfQuadConsumer.isDirLangString(datatype, language, direction) )
+//                    return factory.createDirLangLiteral(str, language, direction);
+            RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatypeURI) ;
+            return profile.createTypedLiteral(lexical, dType, line, col);
+        }
     }
 }

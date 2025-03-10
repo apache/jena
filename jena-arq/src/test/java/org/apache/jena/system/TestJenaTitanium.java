@@ -29,13 +29,11 @@ import java.io.StringWriter;
 import com.apicatalog.rdf.RdfDataset;
 import com.apicatalog.rdf.io.RdfWriter;
 import com.apicatalog.rdf.io.error.RdfWriterException;
-import com.apicatalog.rdf.io.nquad.NQuadsWriter;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.system.JenaTitanium;
-import org.apache.jena.riot.system.RiotLib;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
@@ -98,7 +96,8 @@ public class TestJenaTitanium {
 
         // Check the RdfDataset
         try ( StringWriter writer = new StringWriter() ) {
-            RdfWriter w = new NQuadsWriter(writer);
+            @SuppressWarnings("deprecation")
+            RdfWriter w = new com.apicatalog.rdf.io.nquad.NQuadsWriter(writer);
             w.write(rdfDataset);
             String s = writer.toString();
             assertTrue(s.contains("_:b0"));
@@ -106,7 +105,7 @@ public class TestJenaTitanium {
             assertTrue(s.contains("@en"));
         }
 
-        DatasetGraph dsg2 = JenaTitanium.convert(rdfDataset, RiotLib.dftProfile());
+        DatasetGraph dsg2 = JenaTitanium.convert(rdfDataset);
         assertTrue(IsoMatcher.isomorphic(dsg1, dsg2));
     }
 
@@ -127,7 +126,7 @@ public class TestJenaTitanium {
         RdfDataset rdfDataset = JenaTitanium.convert(dsg1);
 
         // Try converting it back – it should not output any nulls.
-        DatasetGraph dsg2 = JenaTitanium.convert(rdfDataset, RiotLib.dftProfile());
+        DatasetGraph dsg2 = JenaTitanium.convert(rdfDataset);
         dsg2.find().forEachRemaining(q->{
             assertNotNull(q.getGraph());
             assertTrue(q.isDefaultGraph());
