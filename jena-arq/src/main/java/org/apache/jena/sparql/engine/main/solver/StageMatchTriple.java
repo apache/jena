@@ -20,12 +20,14 @@ package org.apache.jena.sparql.engine.main.solver;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.binding.Binding;
@@ -61,6 +63,18 @@ public class StageMatchTriple {
         // ExtendedIterator<Triple> graphIter = graph.find(s2, p2, o2) ;
         // Language tags.
         ExtendedIterator<Triple> graphIter = G.findByLang(graph, s2, p2, o2);
+
+        // Add cancel.
+        AtomicBoolean cancelSignal = execCxt.getCancelSignal();
+        if (cancelSignal != null) {
+            graphIter = graphIter.mapWith(x -> {
+                if (cancelSignal.get()) {
+                    throw new QueryCancelledException();
+                }
+                return x;
+            });
+        }
+
         ExtendedIterator<Binding> iter = graphIter.mapWith( r -> mapper(resultsBuilder, s, p, o, r)).filterDrop(Objects::isNull);
         return iter;
     }
