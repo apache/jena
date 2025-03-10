@@ -26,9 +26,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
-import arq.cmdline.CmdARQ;
-import arq.cmdline.ModDatasetAssembler;
 import org.apache.jena.assembler.exceptions.AssemblerException;
 import org.apache.jena.atlas.io.IOX;
 import org.apache.jena.atlas.lib.FileOps;
@@ -37,6 +36,7 @@ import org.apache.jena.cmd.*;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.main.FusekiServer;
+import org.apache.jena.fuseki.main.sys.FusekiModule;
 import org.apache.jena.fuseki.main.sys.FusekiModules;
 import org.apache.jena.fuseki.main.sys.FusekiServerArgsCustomiser;
 import org.apache.jena.fuseki.main.sys.InitFusekiMain;
@@ -53,6 +53,9 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.sys.JenaSystem;
 import org.slf4j.Logger;
+
+import arq.cmdline.CmdARQ;
+import arq.cmdline.ModDatasetAssembler;
 
 public class FusekiMain extends CmdARQ {
 
@@ -580,12 +583,23 @@ public class FusekiMain extends CmdARQ {
             serverArgs.jettyConfigFile = jettyConfigFile;
         }
 
-        // Allows for external setting of serverArgs.fusekiModules
-        if ( serverArgs.fusekiModules == null ) {
-            // Get modules from system-wide setup.
-            boolean withModules = hasValueOfTrue(argEnableModules);
-            if ( withModules )
-                serverArgs.fusekiModules = FusekiModules.getSystemModules();
+        boolean withModules = hasValueOfTrue(argEnableModules);
+        if ( withModules ) {
+            FusekiModules presetModules = serverArgs.fusekiModules;
+            // Get auto modules from system-wide setup.
+            FusekiModules autoModules = FusekiModules.getSystemModules();
+
+            // Merge preset and auto-loaded modules into one FusekiModules instance.
+            if ( presetModules == null ) {
+                serverArgs.fusekiModules = autoModules;
+            } else {
+                List<FusekiModule> allModules = Stream.concat(
+                        presetModules.asList().stream(),
+                        autoModules.asList().stream())
+                    .distinct()
+                    .toList();
+                serverArgs.fusekiModules = FusekiModules.create(allModules);
+            }
         }
 
         if ( contains(argCORS) ) {
