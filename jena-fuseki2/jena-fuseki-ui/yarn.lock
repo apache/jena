@@ -1820,13 +1820,6 @@
   dependencies:
     undici-types "~5.26.4"
 
-"@types/node@^22.5.4":
-  version "22.5.4"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.5.4.tgz#83f7d1f65bc2ed223bdbf57c7884f1d5a4fa84e8"
-  integrity sha512-FDuKUJQm/ju9fT/SeX/6+gBzoPzlVCzfzmGkwKvRHQVxi4BntVbyIwf6a4Xn62mrvndLiml6z/UBXIdEVjQLXg==
-  dependencies:
-    undici-types "~6.19.2"
-
 "@types/sinonjs__fake-timers@8.1.1":
   version "8.1.1"
   resolved "https://registry.yarnpkg.com/@types/sinonjs__fake-timers/-/sinonjs__fake-timers-8.1.1.tgz#b49c2c70150141a15e0fa7e79cf1f92a72934ce3"
@@ -1843,6 +1836,11 @@
   integrity sha512-ypzHFE/wBzh+BlH6rrBgS5I/Z7RD21pGhZ2rltb/+ZrVM1awdZwjx7hE5XfuYgHWk9uvV5HLZN3SloevCAp3Bw==
   dependencies:
     "@types/estree" "*"
+
+"@types/trusted-types@^2.0.7":
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/@types/trusted-types/-/trusted-types-2.0.7.tgz#baccb07a970b91707df3a3e8ba6896c57ead2d11"
+  integrity sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==
 
 "@types/yauzl@^2.9.1":
   version "2.10.3"
@@ -2183,22 +2181,20 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@zazuko/yasgui-utils@^4.4.3":
-  version "4.4.3"
-  resolved "https://registry.yarnpkg.com/@zazuko/yasgui-utils/-/yasgui-utils-4.4.3.tgz#839834fd2ca01ee212abce60e49e33fc38ab5de5"
-  integrity sha512-/kvP/eewMRpbuFw6qUPPsIQ0SbCQPTbWHGQLLPbpYllQqH50xgH5j7Cb5rytcyb9QuAzIsGs0T1qmfm6ZVCuqw==
+"@zazuko/yasgui-utils@^4.4.3", "@zazuko/yasgui-utils@^4.5.0":
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasgui-utils/-/yasgui-utils-4.5.0.tgz#2be45255ea501dbef79f79edd8fa691381627744"
+  integrity sha512-+m8Y33mNS51wBA+mN52sjtucyyKJB4ihkKaL+w6jtezEuO/DkDpwGpGywVYeXtnE5eW0XQOEPCFW/A/aXMnWyg==
   dependencies:
-    "@types/node" "^22.5.4"
-    dompurify "^2.0.7"
+    dompurify "^3.2.4"
     store "^2.0.12"
 
 "@zazuko/yasqe@^4.2.34", "@zazuko/yasqe@^4.4.3":
-  version "4.4.3"
-  resolved "https://registry.yarnpkg.com/@zazuko/yasqe/-/yasqe-4.4.3.tgz#1402a2f1f9387a666644be523c90dcfd4a695157"
-  integrity sha512-h+Xl3VV8EK0WTcu9Vn48onkdojLwufnh6pxqJoXYxJijBziJVfw2GYzrcXqd5d6BXdzo8SWyDo8DBY1tf79h7A==
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasqe/-/yasqe-4.5.0.tgz#5d9daa2f57283d312a1a6c07d62174411193c4e6"
+  integrity sha512-YqsCViZHQ3XuFw3147S4eogm/fY4mGIJeFbdSk+cgHhhGSUHrj1N0+vHw2QdNbgU1QsU6myXlHULhgXPFi5SuA==
   dependencies:
-    "@types/lodash-es" "^4.17.3"
-    "@zazuko/yasgui-utils" "^4.4.3"
+    "@zazuko/yasgui-utils" "^4.5.0"
     codemirror "^5.51.0"
     lodash-es "^4.17.15"
     query-string "^6.10.1"
@@ -3457,6 +3453,13 @@ dompurify@^2.0.7:
   version "2.5.6"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.5.6.tgz#8402b501611eaa7fb3786072297fcbe2787f8592"
   integrity sha512-zUTaUBO8pY4+iJMPE1B9XlO2tXVYIcEA4SNGtvDELzTSCQO7RzH+j7S180BmhmJId78lqGU2z19vgVx2Sxs/PQ==
+
+dompurify@^3.2.4:
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.2.4.tgz#af5a5a11407524431456cf18836c55d13441cd8e"
+  integrity sha512-ysFSFEDVduQpyhzAob/kkuJjf5zWkZD8/A9ywSp1byueyuCfHamrCBa14/Oc2iiB0e51B+NpxSl5gmzn+Ms/mg==
+  optionalDependencies:
+    "@types/trusted-types" "^2.0.7"
 
 dunder-proto@^1.0.1:
   version "1.0.1"
@@ -7619,11 +7622,6 @@ undici-types@~5.26.4:
   version "5.26.5"
   resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-5.26.5.tgz#bcd539893d00b56e964fd2657a4866b221a65617"
   integrity sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==
-
-undici-types@~6.19.2:
-  version "6.19.8"
-  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.19.8.tgz#35111c9d1437ab83a7cdc0abae2f26d88eda0a02"
-  integrity sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==
 
 unicode-canonical-property-names-ecmascript@^2.0.0:
   version "2.0.1"
