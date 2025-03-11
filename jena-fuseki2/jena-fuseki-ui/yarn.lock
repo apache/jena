@@ -1801,18 +1801,6 @@
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
 
-"@types/lodash-es@^4.17.3":
-  version "4.17.12"
-  resolved "https://registry.yarnpkg.com/@types/lodash-es/-/lodash-es-4.17.12.tgz#65f6d1e5f80539aa7cfbfc962de5def0cf4f341b"
-  integrity sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==
-  dependencies:
-    "@types/lodash" "*"
-
-"@types/lodash@*":
-  version "4.14.202"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.202.tgz#f09dbd2fb082d507178b2f2a5c7e74bd72ff98f8"
-  integrity sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==
-
 "@types/node@*":
   version "20.9.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-20.9.0.tgz#bfcdc230583aeb891cf51e73cfdaacdd8deae298"
@@ -2181,7 +2169,7 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@zazuko/yasgui-utils@^4.4.3", "@zazuko/yasgui-utils@^4.5.0":
+"@zazuko/yasgui-utils@^4.5.0":
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/@zazuko/yasgui-utils/-/yasgui-utils-4.5.0.tgz#2be45255ea501dbef79f79edd8fa691381627744"
   integrity sha512-+m8Y33mNS51wBA+mN52sjtucyyKJB4ihkKaL+w6jtezEuO/DkDpwGpGywVYeXtnE5eW0XQOEPCFW/A/aXMnWyg==
@@ -2189,7 +2177,7 @@
     dompurify "^3.2.4"
     store "^2.0.12"
 
-"@zazuko/yasqe@^4.2.34", "@zazuko/yasqe@^4.4.3":
+"@zazuko/yasqe@^4.2.34", "@zazuko/yasqe@^4.5.0":
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/@zazuko/yasqe/-/yasqe-4.5.0.tgz#5d9daa2f57283d312a1a6c07d62174411193c4e6"
   integrity sha512-YqsCViZHQ3XuFw3147S4eogm/fY4mGIJeFbdSk+cgHhhGSUHrj1N0+vHw2QdNbgU1QsU6myXlHULhgXPFi5SuA==
@@ -2200,22 +2188,21 @@
     query-string "^6.10.1"
 
 "@zazuko/yasr@^4.2.34":
-  version "4.4.3"
-  resolved "https://registry.yarnpkg.com/@zazuko/yasr/-/yasr-4.4.3.tgz#5221c4be4f9977a26113b2362b677e4bded01d24"
-  integrity sha512-oXUki+3u0jE0tmKe+nNTm/Da7ubl02447QokAqgsS7yT/wFKZUMKbEYKmXME85AJ1Ziy5JArZVmTo6pWveembg==
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/@zazuko/yasr/-/yasr-4.5.0.tgz#ea8e2777a54257033756dd85e7729664fad2808a"
+  integrity sha512-gquSemhdoonYah7rxoI0AK9smza1Dbukb+GhMSR9OqsRlXxdRhTakEGynyd2ltXKVTPhEbSWgJXiDhcG0lanZA==
   dependencies:
     "@fortawesome/free-solid-svg-icons" "^5.14.0"
     "@json2csv/plainjs" "^7.0.4"
-    "@types/lodash-es" "^4.17.3"
-    "@zazuko/yasgui-utils" "^4.4.3"
-    "@zazuko/yasqe" "^4.4.3"
+    "@zazuko/yasgui-utils" "^4.5.0"
+    "@zazuko/yasqe" "^4.5.0"
     codemirror "^5.51.0"
     colors "^1.4.0"
     column-resizer "^1.4.0"
     datatables.net "^2.0.5"
     datatables.net-dt "^2.0.5"
-    dompurify "^2.0.7"
-    jquery "^3.5.0"
+    dompurify "^3.2.4"
+    jquery "^3.7.1"
     lodash-es "^4.17.15"
     n3 "^1.3.5"
     papaparse "^5.3.1"
@@ -3448,11 +3435,6 @@ doctrine@^3.0.0:
   integrity sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==
   dependencies:
     esutils "^2.0.2"
-
-dompurify@^2.0.7:
-  version "2.5.6"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.5.6.tgz#8402b501611eaa7fb3786072297fcbe2787f8592"
-  integrity sha512-zUTaUBO8pY4+iJMPE1B9XlO2tXVYIcEA4SNGtvDELzTSCQO7RzH+j7S180BmhmJId78lqGU2z19vgVx2Sxs/PQ==
 
 dompurify@^3.2.4:
   version "3.2.4"
@@ -5236,7 +5218,7 @@ joi@^17.13.3:
     "@sideway/formula" "^3.0.1"
     "@sideway/pinpoint" "^2.0.0"
 
-jquery@>=1.7, jquery@^3.5.0:
+jquery@>=1.7, jquery@^3.7.1:
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.7.1.tgz#083ef98927c9a6a74d05a6af02806566d16274de"
   integrity sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==
