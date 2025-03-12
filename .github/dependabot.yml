@@ -37,8 +37,8 @@ updates:
       interval: "weekly"
       day: "wednesday"
     versioning-strategy: increase-if-necessary
-##     groups:
-##       npm-patch-group:
-##         update-types:
-##         - "minor"
+    groups:
+      npm-patch-group:
+        update-types:
+        - "patch"
     open-pull-requests-limit: 10
