@@ -156,7 +156,7 @@ public class TestAdmin {
     // --- Ping
 
     @Test public void ping_1() {
-        httpGet(urlRoot()+"$/"+opPing);
+        try(TypedInputStream typedInputStream = httpGet(urlRoot()+"$/"+opPing)){};
     }
 
     @Test public void ping_2() {

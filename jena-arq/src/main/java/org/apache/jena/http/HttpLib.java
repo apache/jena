@@ -43,6 +43,7 @@ import java.util.function.Function;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
+import org.apache.commons.io.output.NullOutputStream;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
@@ -60,6 +61,8 @@ import org.apache.jena.sparql.util.Context;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.apache.commons.io.IOUtils.copyLarge;
 
 /**
  * Operations related to SPARQL HTTP requests - Query, Update and Graph Store protocols.
@@ -316,35 +319,21 @@ public class HttpLib {
         consume(input);
     }
 
-    // This is extracted from commons-io, IOUtils.skip.
+    // This is extracted from commons-io, IOUtils.consume
     // Changes:
     // * No exception.
-    // * Always consumes to the end of stream (or stream throws IOException)
-    // * Larger buffer
-    private static int SKIP_BUFFER_SIZE = 8*1024;
-    private static byte[] SKIP_BYTE_BUFFER = null;
-
-    private static void consume(final InputStream input) {
-        /*
-         * N.B. no need to synchronize this because: - we don't care if the buffer is created multiple times (the data
-         * is ignored) - we always use the same size buffer, so if it it is recreated it will still be OK (if the buffer
-         * size were variable, we would need to synch. to ensure some other thread did not create a smaller one)
-         */
-        if (SKIP_BYTE_BUFFER == null) {
-            SKIP_BYTE_BUFFER = new byte[SKIP_BUFFER_SIZE];
-        }
-        long bytesRead = 0; // Informational
+    // * Always consumes to the end of stream
+    // * Changed return type from long to void
+    public static void consume(final InputStream input)  {
         try {
-            for(;;) {
-                // See https://issues.apache.org/jira/browse/IO-203 for why we use read() rather than delegating to skip()
-                final long n = input.read(SKIP_BYTE_BUFFER, 0, SKIP_BUFFER_SIZE);
-                if (n < 0) { // EOF
-                    break;
-                }
-                bytesRead += n;
-            }
-        } catch (IOException ex) { /*ignore*/ }
+            copyLarge(input, NullOutputStream.INSTANCE);
+        }
+        catch (IOException ex)
+        {   LOG.info("consume ignored in catch: " + ex.getMessage());
+            LOG.info(ex.getStackTrace().toString());
+        }
     }
+
 
     /** String to {@link URI}. Throws {@link HttpException} on bad syntax or if the URI isn't absolute. */
     public static URI toRequestURI(String uriStr) {

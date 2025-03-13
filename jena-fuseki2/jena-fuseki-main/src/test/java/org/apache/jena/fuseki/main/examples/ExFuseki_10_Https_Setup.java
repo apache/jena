@@ -64,8 +64,8 @@ public class ExFuseki_10_Https_Setup {
             .destination("https://localhost:3443/ds")
             .build();
 
-        try ( RDFConnection conn = connSingle ) {
-            QueryExecution qExec = conn.query("ASK{}");
+        try ( RDFConnection conn = connSingle ;
+              QueryExecution qExec = conn.query("ASK{}")) {
             QueryExecUtils.executeQuery(qExec);
         }
     }

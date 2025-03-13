@@ -71,27 +71,25 @@ public class TestPrefixesActionResponse {
 
     @Test
     public void getAllJson() {
-        TypedInputStream x = httpGet(testReadURL());
-        assertEquals("application/json", x.getContentType(), "Expected application/json");
-        String response = IO.readWholeFileAsUTF8(x);
+        try ( TypedInputStream x = httpGet(testReadURL())) {
+            assertEquals("application/json", x.getContentType(), "Expected application/json");
+            String response = IO.readWholeFileAsUTF8(x);
         // JSON array
-        JsonElement elt = JsonParser.parseString(response);
-        assertTrue(elt.isJsonArray());
-        JsonArray array = elt.getAsJsonArray();
-        assertEquals(2, array.size());
-
-        JsonObject x1 = array.get(0).getAsJsonObject();
-        JsonObject x2 = array.get(1).getAsJsonObject();
-
-        String fPrefix0 = x1.get("prefix").getAsString();
-        if ( fPrefix0.equals("prefix2") ) {
-            JsonObject tmp = x1;
-            x1 = x2;
-            x2 = tmp;
+            JsonElement elt = JsonParser.parseString(response);
+            assertTrue(elt.isJsonArray());
+            JsonArray array = elt.getAsJsonArray();
+            assertEquals(2, array.size());
+            JsonObject x1 = array.get(0).getAsJsonObject();
+            JsonObject x2 = array.get(1).getAsJsonObject();
+            String fPrefix0 = x1.get("prefix").getAsString();
+            if ( fPrefix0.equals("prefix2") ) {
+                JsonObject tmp = x1;
+                x1 = x2;
+                x2 = tmp;
+            }
+            testJSON(x1, "prefix1", "http://example/ns#");
+            testJSON(x2, "prefix2", "http://example/namespace/");
         }
-
-        testJSON(x1, "prefix1", "http://example/ns#");
-        testJSON(x2, "prefix2", "http://example/namespace/");
     }
 
     private void testJSON(JsonObject jsonObj, String prefixValue, String uriValue) {
@@ -103,19 +101,21 @@ public class TestPrefixesActionResponse {
 
     @Test
     public void getPrefixJson() {
-        TypedInputStream x = httpGet(testReadURL()+"?prefix=prefix1");
-        //assertEquals("application/json", x.getContentType(), "Expected application/json");
-        String response = IO.readWholeFileAsUTF8(x);
-        assertEquals("http://example/ns#", response);
+        try (TypedInputStream x = httpGet(testReadURL()+"?prefix=prefix1")) {
+            //assertEquals("application/json", x.getContentType(), "Expected application/json");
+            String response = IO.readWholeFileAsUTF8(x);
+            assertEquals("http://example/ns#", response);
+        }
     }
 
     @Test
     public void getPrefixNone() {
         // check content type
-        TypedInputStream x = execStream(testReadURL(), "?prefix=noSuchPrefix");
+        try (TypedInputStream x = execStream(testReadURL(), "?prefix=noSuchPrefix")){
         //assertEquals("application/json", x.getContentType(), "Expected application/json");
         String response = IO.readWholeFileAsUTF8(x);
         assertTrue(response.isEmpty());
+        }
     }
 
     private static TypedInputStream execStream(String url, String queryString) {
