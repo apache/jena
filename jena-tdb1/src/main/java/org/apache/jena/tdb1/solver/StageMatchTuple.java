@@ -20,6 +20,7 @@ package org.apache.jena.tdb1.solver;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -28,6 +29,7 @@ import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.atlas.lib.tuple.Tuple;
 import org.apache.jena.atlas.lib.tuple.TupleFactory;
 import org.apache.jena.graph.Node;
+import org.apache.jena.query.QueryCancelledException;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.tdb1.store.NodeId;
@@ -66,6 +68,17 @@ class StageMatchTuple {
             List<Tuple<NodeId>> x = Iter.toList(iterMatches);
             System.out.println(x);
             iterMatches = x.iterator();
+        }
+
+        // Add cancel check.
+        AtomicBoolean cancelSignal = execCxt.getCancelSignal();
+        if (cancelSignal != null) {
+            iterMatches = Iter.map(iterMatches, x -> {
+                 if (cancelSignal.get()) {
+                     throw new QueryCancelledException();
+                 }
+                 return x;
+            });
         }
 
         // ** Allow a triple or quad filter here.
