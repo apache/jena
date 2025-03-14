@@ -259,8 +259,8 @@ public class LangJSONLD11 implements ReaderRIOT {
         private Node convertToLiteral(String lexical, String datatypeURI, String language, String direction) {
             if ( RdfQuadConsumer.isLangString(datatypeURI, language, direction) )
                 return profile.createLangLiteral(lexical, language, line, col);
-//                if ( RdfQuadConsumer.isDirLangString(datatype, language, direction) )
-//                    return factory.createDirLangLiteral(str, language, direction);
+            if ( RdfQuadConsumer.isDirLangString(datatypeURI, language, direction) )
+                return profile.createLangDirLiteral(lexical, language, direction, line, col);
             RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(datatypeURI) ;
             return profile.createTypedLiteral(lexical, dType, line, col);
         }
