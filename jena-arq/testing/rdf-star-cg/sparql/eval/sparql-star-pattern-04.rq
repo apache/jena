@@ -1,6 +1,0 @@
-PREFIX :       <http://example/>
-
-## No match
-SELECT * {
-   ?s ?p << :s :p1 :zz >> .
-}

@@ -55,7 +55,8 @@ message RDF_Literal {
   string lex = 1 ;
   oneof literalKind {
     bool simple = 9 ;
-    string langtag = 2 ;
+    string langtag = 2 ;    // Language tag only literal
+    string langdir = 5 ;    // Language tag and base direction separated by "--"
     string datatype = 3 ;
     RDF_PrefixName dtPrefix = 4 ;
   }

@@ -60,7 +60,8 @@ public class StageMatchTriple {
         Node o2 = tripleNode(o) ;
         // ExtendedIterator<Triple> graphIter = graph.find(s2, p2, o2) ;
         // Language tags.
-        ExtendedIterator<Triple> graphIter = G.findByLang(graph, s2, p2, o2);
+        //ExtendedIterator<Triple> graphIter = G.findByLang(graph, s2, p2, o2);
+        ExtendedIterator<Triple> graphIter = G.find(graph, s2, p2, o2);
         ExtendedIterator<Binding> iter = graphIter.mapWith( r -> mapper(resultsBuilder, s, p, o, r)).filterDrop(Objects::isNull);
         return iter;
     }

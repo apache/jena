@@ -23,10 +23,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.function.Consumer;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import org.apache.jena.atlas.logging.LogCtl;
-import org.apache.jena.query.*;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.ResultSetMgr;
@@ -41,20 +44,20 @@ import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.iterator.QueryIter;
 import org.apache.jena.sparql.exec.QueryExec;
-import org.apache.jena.sparql.resultset.ResultSetCompare;
+import org.apache.jena.sparql.resultset.ResultsCompare;
 import org.apache.jena.sparql.service.ServiceExec;
 import org.apache.jena.sparql.service.ServiceExecutorRegistry;
 import org.apache.jena.sparql.service.single.ServiceExecutor;
 import org.apache.jena.sparql.sse.SSE;
-import org.junit.Assert;
-import org.junit.Test;
 
 public class TestCustomServiceExecutor {
 
     static Table table = SSE.parseTable("(table (row (?s 1) (?p 2) (?o 3) ) )");
 
-    /** A custom service factory that yields the above table for any request
-     *  to urn:customService */
+    /**
+     * A custom service factory that yields the above table
+     * for any request to urn:customService
+     */
     static ServiceExecutor factory = (op, opOriginal, binding, execCxt) ->
         op.getService().getURI().equals("urn:customService")
             ? table.iterator(execCxt)
@@ -251,7 +254,7 @@ public class TestCustomServiceExecutor {
 
     public static void assertResult(String serviceIri, Consumer<QueryExecution> qePostProcessor, boolean withSilent) {
         ResultSetRewindable actual = runTestQuery(serviceIri, qePostProcessor, withSilent);
-        boolean isEqual = ResultSetCompare.equalsExact(actual, ResultSet.adapt(table.toRowSet()));
+        boolean isEqual = ResultsCompare.equalsExact(actual, ResultSet.adapt(table.toRowSet()));
         if (!isEqual) {
             actual.reset();
             ResultSetMgr.write(System.err, actual, ResultSetLang.RS_Text);

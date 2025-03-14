@@ -65,6 +65,10 @@ public final class ElementTransformIdentity implements ElementTransform
     @Override
     public Element transform(ElementLateral el, Element subElt) { return el; }
     @Override
+    public Element transform(ElementSemiJoin el, Element subElt) { return el; }
+    @Override
+    public Element transform(ElementAntiJoin el, Element subElt) { return el; }
+    @Override
     public Element transform(ElementGroup el, List<Element> members) { return el; }
     @Override
     public Element transform(ElementDataset el, Element subElt) { return el; }

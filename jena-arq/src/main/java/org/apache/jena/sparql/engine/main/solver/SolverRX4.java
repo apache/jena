@@ -54,7 +54,7 @@ public class SolverRX4 {
         // Should all work without this trap for plain RDF.
         if ( DATAPATH ) {
             if ( ! tripleHasEmbTripleWithVars(pattern) &&
-                    (graphName == null || ! graphName.isNodeTriple() ) )
+                    (graphName == null || ! graphName.isTripleTerm() ) )
                 // No variables inside <<>>
                 return matchDataQuad(chain, graphName, pattern, execCxt);
         }
@@ -154,7 +154,7 @@ public class SolverRX4 {
         }
 
         // nPattern is <<>> with variables. Is the data a <<>>?
-        if ( !nData.isNodeTriple() )
+        if ( !nData.isTripleTerm() )
             return false;
 
         // nData is <<>>, nPattern is <<>>

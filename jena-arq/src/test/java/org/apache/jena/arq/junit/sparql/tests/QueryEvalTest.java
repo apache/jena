@@ -50,7 +50,7 @@ import org.apache.jena.sparql.engine.binding.BindingBuilder;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 import org.apache.jena.sparql.junit.QueryTestException;
-import org.apache.jena.sparql.resultset.ResultSetCompare;
+import org.apache.jena.sparql.resultset.ResultsCompare;
 import org.apache.jena.sparql.resultset.SPARQLResult;
 import org.apache.jena.sparql.util.IsoMatcher;
 import org.apache.jena.sparql.vocabulary.ResultSetGraphVocab;
@@ -211,7 +211,7 @@ public class QueryEvalTest implements Runnable {
         if ( results == null )
             return;
 
-        // Assumes resultSetCompare can cope with full isomorphism possibilities.
+        // Assumes ResultsCompare can cope with full isomorphism possibilities.
         ResultSetRewindable resultsExpected;
         if ( results.isResultSet() )
             resultsExpected = ResultSetFactory.makeRewindable(results.getResultSet());
@@ -301,14 +301,14 @@ public class QueryEvalTest implements Runnable {
     private static boolean resultSetEquivalent(Query query, ResultSetRewindable resultsExpected, ResultSetRewindable resultsActual) {
         if ( compareResultSetsByValue ) {
             if ( query.isOrdered() )
-                return ResultSetCompare.equalsByValueAndOrder(resultsExpected, resultsActual);
+                return ResultsCompare.equalsByValueAndOrder(resultsExpected, resultsActual);
             else
-                return ResultSetCompare.equalsByValue(resultsExpected, resultsActual);
+                return ResultsCompare.equalsByValue(resultsExpected, resultsActual);
         } else {
             if ( query.isOrdered() )
-                return ResultSetCompare.equalsByTermAndOrder(resultsExpected, resultsActual);
+                return ResultsCompare.equalsByTermAndOrder(resultsExpected, resultsActual);
             else
-                return ResultSetCompare.equalsByTerm(resultsExpected, resultsActual);
+                return ResultsCompare.equalsByTerm(resultsExpected, resultsActual);
         }
     }
 

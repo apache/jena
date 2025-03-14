@@ -20,22 +20,24 @@ package org.apache.jena.sparql.syntax;
 
 public interface ElementVisitor
 {
-    public void visit(ElementTriplesBlock el) ;
-    public void visit(ElementPathBlock el) ;
-    public void visit(ElementFilter el) ;
-    public void visit(ElementAssign el) ;
-    public void visit(ElementBind el) ;
-    public void visit(ElementUnfold el) ;
-    public void visit(ElementData el) ;
-    public void visit(ElementUnion el) ;
-    public void visit(ElementOptional el) ;
-    public void visit(ElementLateral el) ;
-    public void visit(ElementGroup el) ;
-    public void visit(ElementDataset el) ;
-    public void visit(ElementNamedGraph el) ;
-    public void visit(ElementExists el) ;
-    public void visit(ElementNotExists el) ;
-    public void visit(ElementMinus el) ;
-    public void visit(ElementService el) ;
-    public void visit(ElementSubQuery el) ;
+    public void visit(ElementTriplesBlock el);
+    public void visit(ElementPathBlock el);
+    public void visit(ElementFilter el);
+    public void visit(ElementAssign el);
+    public void visit(ElementBind el);
+    public void visit(ElementUnfold el);
+    public void visit(ElementData el);
+    public void visit(ElementUnion el);
+    public void visit(ElementOptional el);
+    public void visit(ElementLateral el);
+    public void visit(ElementSemiJoin el);
+    public void visit(ElementAntiJoin el);
+    public void visit(ElementGroup el);
+    public void visit(ElementDataset el);
+    public void visit(ElementNamedGraph el);
+    public void visit(ElementExists el);
+    public void visit(ElementNotExists el);
+    public void visit(ElementMinus el);
+    public void visit(ElementService el);
+    public void visit(ElementSubQuery el);
 }

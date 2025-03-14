@@ -80,9 +80,11 @@ public class RDF {
     public static final Property    object          = property("object");
     public static final Property    type            = property("type");
     public static final Property    value           = property("value");
+    public static final Property    reifies         = property("reifies");
+
     // RDF 1.1 - the datatypes of language strings
     public static final Resource    langString      = resource("langString");
-    // RDF 1.2 - the datatypes of language strings with text direction
+    // RDF 1.2 - the datatypes of language strings with base direction
     public static final Resource    dirLangString   = resource("dirLangString");
     // rdf:XMLLiteral
     public static final Resource    xmlLiteral      = resource("XMLLiteral");
@@ -133,11 +135,17 @@ public class RDF {
         // This should not be needed anymore.
         public static Resource Alt()                { return resource( "Alt" ); }
         public static Resource Bag()                { return resource( "Bag" ); }
-        // Java8 bug : https://bugzilla.redhat.com/show_bug.cgi?id=1423421
-        // Can't have a method called Property() - it crashes the javadoc generation.
+
+        // This was a due to a Java8 bug : https://bugzilla.redhat.com/show_bug.cgi?id=1423421
+        //  Can't have a method name ending in "Property" - it crashes the javadoc generation.
         //  https://bugzilla.redhat.com/show_bug.cgi?id=1423421 ==>
         //  https://bugs.openjdk.java.net/browse/JDK-8061305
+
+        /** @deprecated Use {@link #Property()} */
+        @Deprecated(forRemoval = true)
         public static Resource _Property()          { return resource( "Property" ); }
+
+        public static Resource Property()           { return resource( "Property" ); }
         public static Resource Seq()                { return resource( "Seq" ); }
         public static Resource Statement()          { return resource( "Statement" ); }
         public static Resource List()               { return resource( "List" ); }
@@ -203,5 +211,6 @@ public class RDF {
         public static final Node language       = RDF.language.asNode();
         public static final Node direction      = RDF.direction.asNode();
         public static final Node PlainLiteral   = RDF.PlainLiteral.asNode();
+        public static final Node reifies        = RDF.reifies.asNode();
     }
 }

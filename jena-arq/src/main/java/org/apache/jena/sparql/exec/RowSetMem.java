@@ -49,8 +49,8 @@ public class RowSetMem implements RowSetRewindable
      * @param other     The other RowSetMem object
      */
     private RowSetMem(RowSetMem other) {
+        // Share vars and rows but not the iterator.
         vars = other.vars;
-        // Share results (not the iterator).
         rows = other.rows;
         reset();
     }
@@ -61,7 +61,6 @@ public class RowSetMem implements RowSetRewindable
      * necessary internal datastructures are shared. This operation destroys
      * (uses up) a RowSet object that is not an in-memory one.
      */
-
     private RowSetMem(RowSet other) {
         if ( other instanceof RowSetMem rsm ) {
             // See also the RowSetMem(RowSetMem) constructor.
