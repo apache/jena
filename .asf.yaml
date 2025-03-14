@@ -7,6 +7,7 @@ notifications:
     issues:        issues@jena.apache.org
     pullrequests:  pr@jena.apache.org
     jira_options:  link label
+    discussions:   issues@jena.apache.org
 
 github:
   description: "Apache Jena, A free and open source Java framework for building Semantic Web and Linked Data applications."
@@ -15,6 +16,7 @@ github:
     main
   features:
     issues: true
+    discussions: true
   labels:
     - apache
     - jena
@@ -24,4 +26,3 @@ github:
     squash: false
     rebase: true
     merge: false
-
