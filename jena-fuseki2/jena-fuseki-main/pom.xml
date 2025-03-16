@@ -215,6 +215,7 @@
           <includes>
             <include>**/TS_*.java</include>
           </includes>
+            <argLine>-Dfuseki.loglogging=true -Djdk.httpclient.HttpClient.log=errors,requests,headers,frames[:control:data:window:all..],content,ssl,trace,channel</argLine>
         </configuration>
       </plugin>
 
