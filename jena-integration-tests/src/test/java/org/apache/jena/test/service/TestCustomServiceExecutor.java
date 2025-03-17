@@ -39,6 +39,7 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.iterator.QueryIter;
 import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.resultset.ResultSetCompare;
 import org.apache.jena.sparql.service.ServiceExec;
@@ -146,7 +147,7 @@ public class TestCustomServiceExecutor {
                 return ServiceExec.exec(new OpService(b, opService.getSubOp(), false), input, execCxt);
             } else if (node.equals(c)) {
                 // 4. Match 'c' and return the test table
-                return table.iterator(execCxt);
+                return QueryIter.flatMap(input, x -> table.iterator(execCxt), execCxt);
             } else {
                 throw new RuntimeException("Unexpectedly got: " + node);
             }

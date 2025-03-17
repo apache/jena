@@ -185,11 +185,38 @@ public class TestQuerySyntaxTransform
                            "x", "<urn:ex:z>");
     }
 
+    @Test public void transformTransformJsonReplace_01() {
+        testQuery("JSON { 'key': ?x } {  }",
+                  "JSON { 'key': 123 } { }",
+                  "x", "123");
+    }
+
+    @Test public void transformTransformJsonReplace_02() {
+        testQuery("PREFIX : <http://example/> JSON { \"o\": ?o } { ?s :p ?o }",
+                  "PREFIX : <http://example/> JSON { \"o\": 123 } { ?s :p 123}",
+                  "o", "123");
+    }
+
+    @Test public void transformTransformJsonReplace_03() {
+        String queryString = """
+                JSON { "s" : ?s ,
+                       "x" : ?x ,
+                       "unused": ?unused ,
+                       "fixed" : 'fixed' } WHERE {}
+              """;
+        String expectedString = """
+                JSON { "s" : ?s ,
+                       "x" : "abc" ,
+                       "unused": ?unused ,
+                       "fixed" : 'fixed' } WHERE {}
+                """;
+        testQuery(queryString, expectedString, "x", "'abc'");
+    }
+
     //static final String PREFIX = "PREFIX : <http://example/>\n";
     static final String PREFIX = "";
 
-    private void testQuery(String input, String output, String varStr, String valStr)
-    {
+    private void testQuery(String input, String output, String varStr, String valStr) {
         Query q1 = QueryFactory.create(PREFIX+input);
         Query qExpected = QueryFactory.create(PREFIX+output);
 

@@ -62,6 +62,12 @@ public class HttpTest {
         execWithHttpException(HttpSC.METHOD_NOT_ALLOWED_405, action);
     }
 
+    // 406 : "Accept:" failure
+    public static void expect406(Runnable action) {
+        execWithHttpException(HttpSC.NOT_ACCEPTABLE_406, action);
+    }
+
+    // 415 : Can not receive Content-Type
     public static void expect415(Runnable action) {
         execWithHttpException(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, action);
     }

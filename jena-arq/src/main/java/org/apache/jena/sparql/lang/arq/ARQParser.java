@@ -778,7 +778,7 @@ if ( ! t.image.equals(":") )
     case VAR1:
     case VAR2:{
       o = Var();
-getQuery().addResultVar((Var)o) ; getQuery().addJsonMapping(s, o) ;
+getQuery().addJsonMapping(s, o) ;
       break;
       }
     case STRING_LITERAL1:
@@ -786,7 +786,7 @@ getQuery().addResultVar((Var)o) ; getQuery().addJsonMapping(s, o) ;
     case STRING_LITERAL_LONG1:
     case STRING_LITERAL_LONG2:{
       o = RDFLiteral();
-getQuery().addResultVar(s, NodeValue.makeNode(o)) ; getQuery().addJsonMapping(s, o) ;
+getQuery().addJsonMapping(s, o) ;
       break;
       }
     case INTEGER:
@@ -799,13 +799,13 @@ getQuery().addResultVar(s, NodeValue.makeNode(o)) ; getQuery().addJsonMapping(s,
     case DECIMAL_NEGATIVE:
     case DOUBLE_NEGATIVE:{
       o = NumericLiteral();
-getQuery().addResultVar(s, NodeValue.makeNode(o)) ; getQuery().addJsonMapping(s, o) ;
+getQuery().addJsonMapping(s, o) ;
       break;
       }
     case TRUE:
     case FALSE:{
       o = BooleanLiteral();
-getQuery().addResultVar(s, NodeValue.makeNode(o)) ; getQuery().addJsonMapping(s, o) ;
+getQuery().addJsonMapping(s, o) ;
       break;
       }
     default:

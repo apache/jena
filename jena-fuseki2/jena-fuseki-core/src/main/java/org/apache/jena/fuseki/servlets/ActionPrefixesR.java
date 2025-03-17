@@ -173,7 +173,7 @@ public class ActionPrefixesR extends ActionPrefixesBase {
                 case WebContent.contentTypeTextPlain -> responseText(action, prefix, namespace);
                 case WebContent.contentTypeJSON -> responseJSON(action, prefix, namespace);
                 default ->
-                    ServletOps.error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415);
+                    ServletOps.error(HttpSC.NOT_ACCEPTABLE_406);
             }
             FmtLog.info(action.log, "[%d] %s -> %s", action.id, prefix, namespace);
             ServletOps.success(action);
