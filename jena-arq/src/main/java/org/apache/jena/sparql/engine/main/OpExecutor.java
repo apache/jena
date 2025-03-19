@@ -200,7 +200,7 @@ public class OpExecutor {
         // the results.
 
         if ( false ) {
-            // If needed, applies to OpDiff and OpLeftJoin as well.
+            // If needed, applies to OpLeftJoin as well.
             List<Binding> a = all(input);
             QueryIterator qIter1 = QueryIterPlainWrapper.create(a.iterator(), execCxt);
             QueryIterator qIter2 = QueryIterPlainWrapper.create(a.iterator(), execCxt);
@@ -241,16 +241,24 @@ public class OpExecutor {
         return qIter;
     }
 
+    protected QueryIterator execute(OpSemiJoin opSemiJoin, QueryIterator input) {
+        QueryIterator left = exec(opSemiJoin.getLeft(), input);
+        QueryIterator right = exec(opSemiJoin.getRight(), root());
+        QueryIterator qIter = QueryIterHalfJoin.semiJoin(left, right, execCxt);
+        return qIter;
+    }
+
+    protected QueryIterator execute(OpAntiJoin opAntiJoin, QueryIterator input) {
+        QueryIterator left = exec(opAntiJoin.getLeft(), input);
+        QueryIterator right = exec(opAntiJoin.getRight(), root());
+        QueryIterator qIter = QueryIterHalfJoin.antiJoin(left, right, execCxt);
+        return qIter;
+    }
+
     protected QueryIterator execute(OpConditional opCondition, QueryIterator input) {
         QueryIterator left = exec(opCondition.getLeft(), input);
         QueryIterator qIter = new QueryIterOptionalIndex(left, opCondition.getRight(), execCxt);
         return qIter;
-    }
-
-    protected QueryIterator execute(OpDiff opDiff, QueryIterator input) {
-        QueryIterator left = exec(opDiff.getLeft(), input);
-        QueryIterator right = exec(opDiff.getRight(), root());
-        return new QueryIterDiff(left, right, execCxt);
     }
 
     protected QueryIterator execute(OpMinus opMinus, QueryIterator input) {

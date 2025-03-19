@@ -34,7 +34,7 @@ import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.ResultSetStream ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.main.QueryEngineMain ;
-import org.apache.jena.sparql.resultset.ResultSetCompare ;
+import org.apache.jena.sparql.resultset.ResultsCompare ;
 import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.junit.AfterClass ;
@@ -204,7 +204,7 @@ public class TestSemanticEquivalence {
                 }
                 Assert.assertEquals(expected, rsOpt.size());
             }
-            Assert.assertTrue(ResultSetCompare.isomorphic(rs, rsOpt));
+            Assert.assertTrue(ResultsCompare.equalsByTerm(rs, rsOpt));
         } finally {
             // Restore previous state
             if (isEnabled) {
@@ -268,7 +268,7 @@ public class TestSemanticEquivalence {
             Assert.assertEquals(expected, rsOpt.size());
             iterOpt.close();
 
-            Assert.assertTrue(ResultSetCompare.isomorphic(rs, rsOpt));
+            Assert.assertTrue(ResultsCompare.equalsByTerm(rs, rsOpt));
         } finally {
             // Restore previous state
             if (isEnabled) {

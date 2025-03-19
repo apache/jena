@@ -103,8 +103,8 @@ public class NodeCmp {
             return Expr.CMP_LESS;
 
         // -- Triple nodes.
-        if ( node1.isNodeTriple() ) {
-            if ( node2.isNodeTriple() ) {
+        if ( node1.isTripleTerm() ) {
+            if ( node2.isTripleTerm() ) {
                 Triple t1 = node1.getTriple();
                 Triple t2 = node2.getTriple();
                 int x1 = compareRDFTerms(t1.getSubject(), t2.getSubject());
@@ -120,7 +120,7 @@ public class NodeCmp {
             }
         }
 
-        if ( node2.isNodeTriple() )
+        if ( node2.isTripleTerm() )
             return Expr.CMP_GREATER;
 
         // No URIs, no blanks, no literals, no triple terms nodes by this point

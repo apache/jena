@@ -296,11 +296,6 @@ public class WriterOp
         }
 
         @Override
-        public void visit(OpDiff opDiff) {
-            visitOp2(opDiff);
-        }
-
-        @Override
         public void visit(OpMinus opMinus) {
             visitOp2(opMinus);
         }
@@ -313,6 +308,16 @@ public class WriterOp
         @Override
         public void visit(OpLateral opLateral) {
             visitOp2(opLateral);
+        }
+
+        @Override
+        public void visit(OpSemiJoin opSemiJoin) {
+            visitOp2(opSemiJoin);
+        }
+
+        @Override
+        public void visit(OpAntiJoin opAntiJoin) {
+            visitOp2(opAntiJoin);
         }
 
         @Override

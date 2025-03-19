@@ -18,85 +18,55 @@
 
 package org.apache.jena.sparql.util;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.jena.graph.Node ;
+import org.apache.jena.graph.Node;
 
 /** Map nodes to blank node representations. */
-public class NodeToLabelMap
-{
+public class NodeToLabelMap {
     // Could abstract again as a node -> label cache + cache miss handler.
-    int bNodeCounter = 0 ;
-    Map<Node, String> bNodeStrings = new HashMap<>() ;
-    boolean bNodesAsFakeURIs = false ;
-    String prefixString = "b" ;
+    int bNodeCounter = 0;
+    Map<Node, String> bNodeStrings = new HashMap<>();
+    boolean bNodesAsFakeURIs = false;
+    String prefixString = "b";
 
-    public NodeToLabelMap() { this("b") ; }
+    public NodeToLabelMap() {
+        this("b");
+    }
 
-    public NodeToLabelMap(String prefix) { this(prefix, false) ; }
+    public NodeToLabelMap(String prefix) {
+        this(prefix, false);
+    }
 
-    public NodeToLabelMap(String prefix, boolean bNodesAsFakeURIs)
-    {
+    public NodeToLabelMap(String prefix, boolean bNodesAsFakeURIs) {
         if ( prefix == null || prefix.equals("") )
-            throw new IllegalArgumentException("Must provide a prefix") ;
-        this.prefixString = "_:"+prefix ;
-        this.bNodesAsFakeURIs = bNodesAsFakeURIs ;
+            throw new IllegalArgumentException("Must provide a prefix");
+        this.prefixString = "_:" + prefix;
+        this.bNodesAsFakeURIs = bNodesAsFakeURIs;
     }
 
     // Null means not mapped
-    public String asString(Node n)
-    {
-        if ( ! n.isBlank() )
-            return null ;
-
-        return mapNode(n) ;
+    public String asString(Node n) {
+        if ( !n.isBlank() )
+            return null;
+        return mapNode(n);
     }
 
     // synchronized because this may be used from a static via FmtUtils
-    protected synchronized String mapNode(Node n)
-    {
-        String s = bNodeStrings.get(n) ;
+    protected synchronized String mapNode(Node n) {
+        String s = bNodeStrings.get(n);
         if ( s != null )
-            return s ;
+            return s;
 
-        s = genStringForNode(n) ;
-        bNodeStrings.put(n, s) ;
-        return s ;
+        s = genStringForNode(n);
+        bNodeStrings.put(n, s);
+        return s;
     }
 
-    protected String genStringForNode(Node n)
-    {
+    protected String genStringForNode(Node n) {
         if ( bNodesAsFakeURIs && n.isBlank() )
-            return "<_:"+n.getBlankNodeLabel()+">" ;
-
-        return  prefixString+(bNodeCounter++) ;
+            return "<_:" + n.getBlankNodeLabel() + ">";
+        return prefixString + (bNodeCounter++);
     }
-
-//    /**
-//     * @return Returns the prefix.
-//     */
-//    public String getPrefixString()
-//    {
-//        return prefixString ;
-//    }
-//
-//    /**
-//     * @param prefix The prefix to set.
-//     */
-//    public void setPrefixString(String prefix)
-//    {
-//        if ( prefix == null )
-//        {
-//            Log.fatal(this,"Prefix string is null") ;
-//            throw new ARQInternalErrorException("Prefix string is null") ;
-//        }
-//        if ( prefix.equals("") )
-//        {
-//            Log.fatal(this,"Prefix string is the empty string") ;
-//            throw new ARQInternalErrorException("Prefix string is the empty string") ;
-//        }
-//
-//        this.prefixString = prefix ;
-//    }
 }

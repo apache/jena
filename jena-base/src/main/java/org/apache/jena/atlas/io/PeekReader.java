@@ -157,6 +157,7 @@ public final class PeekReader extends Reader {
         currChar = ch;
     }
 
+    /** Next character or EOF. Sets peekChar. */
     public final int readChar() {
         return nextChar();
     }
