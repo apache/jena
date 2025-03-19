@@ -44,17 +44,13 @@ public class QueryIteratorWrapper extends QueryIteratorBase {
 
     @Override
     protected void closeIterator() {
-        if ( iterator != null ) {
-            iterator.close();
-            iterator = null;
-        }
+        performClose(iterator);
+        iterator = null;
     }
 
     @Override
     protected void requestCancel() {
-        if ( iterator != null ) {
-            iterator.cancel();
-        }
+        performRequestCancel(iterator);
     }
 
     @Override
@@ -70,5 +66,4 @@ public class QueryIteratorWrapper extends QueryIteratorBase {
         out.decIndent();
         // out.println(Utils.className(this)+"/"+Utils.className(iterator)) ;
     }
-
 }
