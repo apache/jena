@@ -43,8 +43,8 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
     protected long s_trailerResults       = 0 ;       // Results from the trailer iterator.
     // See also stats in the probe table.
 
-    protected final JoinKey               joinKey ;
-    protected final MultiHashProbeTable   hashTable ;
+    protected JoinKey                   joinKey ;
+    protected MultiHashProbeTable       hashTable ;
 
     private QueryIterator               iterStream ;
     private Binding                     rowStream       = null ;
@@ -61,40 +61,46 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
     protected AbstractIterHashJoin(JoinKey initialJoinKey, QueryIterator probeIter, QueryIterator streamIter, ExecutionContext execCxt) {
         super(probeIter, streamIter, execCxt) ;
 
-        if ( initialJoinKey == null ) {
-            // This block computes an initial join key from the common variables of each iterator's first binding.
-            QueryIterPeek pProbe = QueryIterPeek.create(probeIter, execCxt) ;
-            QueryIterPeek pStream = QueryIterPeek.create(streamIter, execCxt) ;
-
-            Binding bLeft = pProbe.peek() ;
-            Binding bRight = pStream.peek() ;
-
-            List<Var> varsLeft = Iter.toList(bLeft.vars()) ;
-            List<Var> varsRight = Iter.toList(bRight.vars()) ;
-
-            initialJoinKey = JoinKey.create(varsLeft, varsRight) ;
-
-            probeIter = pProbe ;
-            streamIter = pStream ;
-        }
-
-        JoinKey maxJoinKey = null;
-
         this.joinKey = initialJoinKey ;
         this.iterStream = streamIter ;
-        this.hashTable = new MultiHashProbeTable(maxJoinKey, initialJoinKey) ;
         this.iterCurrent = null ;
-        buildHashTable(probeIter) ;
+    }
+
+    private void doInit() {
+        QueryIterator probeIter = getLeft();
+        try {
+            if ( joinKey == null ) {
+                // This block computes an initial join key from the common variables of each iterator's first binding.
+                ExecutionContext execCxt = getExecContext();
+                QueryIterPeek pProbe = QueryIterPeek.create(probeIter, execCxt) ;
+                probeIter = pProbe ;
+
+                QueryIterPeek pStream = QueryIterPeek.create(iterStream, execCxt) ;
+                this.iterStream = pStream ;
+
+                Binding bLeft = pProbe.peek() ;
+                Binding bRight = pStream.peek() ;
+
+                List<Var> varsLeft = Iter.toList(bLeft.vars()) ;
+                List<Var> varsRight = Iter.toList(bRight.vars()) ;
+
+                joinKey = JoinKey.create(varsLeft, varsRight) ;
+            }
+
+            JoinKey maxJoinKey = null;
+            this.hashTable = new MultiHashProbeTable(maxJoinKey, joinKey) ;
+            buildHashTable(probeIter) ;
+        } finally {
+            probeIter.close();
+        }
     }
 
     private void buildHashTable(QueryIterator iter1) {
         state = Phase.HASH ;
-        for (; iter1.hasNext();) {
-            Binding row1 = iter1.next() ;
+        iter1.forEachRemaining(row1 -> {
             s_countProbe ++ ;
             hashTable.put(row1) ;
-        }
-        iter1.close() ;
+        });
         state = Phase.STREAM ;
     }
 
@@ -127,8 +133,10 @@ public abstract class AbstractIterHashJoin extends QueryIter2 {
         switch ( state ) {
             case DONE : return null ;
             case HASH :
-            case INIT :
                 throw new IllegalStateException() ;
+            case INIT :
+                doInit();
+                break;
             case TRAILER :
                 return doOneTail() ;
             case STREAM :
