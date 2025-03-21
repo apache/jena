@@ -18,7 +18,7 @@
 package org.apache.jena.geosparql.spatial.property_functions;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -33,10 +33,10 @@ import org.apache.jena.geosparql.spatial.ConvertLatLon;
 import org.apache.jena.geosparql.spatial.SearchEnvelope;
 import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexUtils;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
@@ -66,7 +66,7 @@ public abstract class GenericSpatialPropertyFunction extends PFuncSimpleAndList 
     @Override
     public final QueryIterator execEvaluated(Binding binding, Node subject, Node predicate, PropFuncArg object, ExecutionContext execCxt) {
         try {
-            spatialIndex = SpatialIndex.retrieve(execCxt);
+            spatialIndex = SpatialIndexUtils.retrieve(execCxt);
             spatialArguments = extractObjectArguments(predicate, object, spatialIndex.getSrsInfo());
             return search(binding, execCxt, subject, spatialArguments.limit);
         } catch (SpatialIndexException ex) {
@@ -184,15 +184,17 @@ public abstract class GenericSpatialPropertyFunction extends PFuncSimpleAndList 
 
         //Find all Features in the spatial index which are within the rough search envelope.
         SearchEnvelope searchEnvelope = spatialArguments.searchEnvelope;
-        HashSet<Resource> features = searchEnvelope.check(spatialIndex);
+        Graph activeGraph = execCxt.getActiveGraph();
 
+        Node graphName = SpatialIndexUtils.unwrapGraphName(activeGraph);
+        Collection<Node> features = searchEnvelope.check(spatialIndex, graphName);
         Var subjectVar = Var.alloc(subject.getName());
 
-        Stream<Resource> stream = features.stream();
+        Stream<Node> stream = features.stream();
         if (requireSecondFilter()) {
-            stream = stream.filter(feature -> checkBound(execCxt, feature.asNode()));
+            stream = stream.filter(feature -> checkBound(execCxt, feature));
         }
-        Iterator<Binding> iterator = stream.map(feature -> BindingFactory.binding(binding, subjectVar, feature.asNode()))
+        Iterator<Binding> iterator = stream.map(feature -> BindingFactory.binding(binding, subjectVar, feature))
                 .limit(limit)
                 .iterator();
         return QueryIterPlainWrapper.create(iterator, execCxt);
