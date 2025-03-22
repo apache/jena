@@ -16,13 +16,31 @@
  * limitations under the License.
  */
 
-package arq;
+package org.apache.jena.langtag;
 
-public class iri {
+/**
+ * See also {@link LangTags}.
+ */
+public class SysLangTag {
 
-    public static void main(String[] args) {
-        // Renamed to ...
-        jena.iri.main(args);
+    /**
+     * Create a {@link LangTag} using the system-wide default language tag parser,
+     * which is {@link LangTagRFC5646}.
+     *
+     */
+    public static LangTag create(String languageTag) {
+        return LangTagRFC5646.create(languageTag);
     }
 
+    /**
+     * Format language tag.
+     * This is the system-wide policy for formatting language tags.
+     */
+    public static String formatLangTag(String input) {
+        if ( input == null )
+            return "";
+        if ( input.isEmpty() )
+            return input;
+        return LangTags.basicFormat(input);
+    }
 }

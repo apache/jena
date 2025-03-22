@@ -16,13 +16,8 @@
  * limitations under the License.
  */
 
-package arq;
+package org.apache.jena.langtag;
 
-public class iri {
-
-    public static void main(String[] args) {
-        // Renamed to ...
-        jena.iri.main(args);
-    }
-
+public class LangTagException extends RuntimeException {
+    public LangTagException(String msg) { super(msg); }
 }

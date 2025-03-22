@@ -16,13 +16,16 @@
  * limitations under the License.
  */
 
-package arq;
+package org.apache.jena.langtag;
 
-public class iri {
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-    public static void main(String[] args) {
-        // Renamed to ...
-        jena.iri.main(args);
-    }
+@Suite
+@SelectClasses( {
+    TestLangTag.class
+    , TestLangTagFormat.class
+    , TestLangTagsOps.class
+})
 
-}
+public class TS_LangTag { }

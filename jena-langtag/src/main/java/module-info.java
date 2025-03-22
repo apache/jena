@@ -16,13 +16,7 @@
  * limitations under the License.
  */
 
-package arq;
-
-public class iri {
-
-    public static void main(String[] args) {
-        // Renamed to ...
-        jena.iri.main(args);
-    }
-
+module org.apache.jena.langtag {
+    exports org.apache.jena.langtag;
+    exports org.apache.jena.langtag.cmd;
 }
