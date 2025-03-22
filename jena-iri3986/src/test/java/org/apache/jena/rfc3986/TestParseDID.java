@@ -20,7 +20,7 @@ package org.apache.jena.rfc3986;
 
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.apache.jena.rfc3986.ParseDID.DIDParseException;
 
