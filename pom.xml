@@ -203,6 +203,7 @@
       <modules>
         <module>jena-iri</module>
         <module>jena-iri3986</module>
+        <module>jena-langtag</module>
         <module>jena-base</module>
         
         <module>jena-core</module>
@@ -266,6 +267,7 @@
         <!-- Basic modules -->
         <module>jena-iri</module>
         <module>jena-iri3986</module>
+        <module>jena-langtag</module>
         <module>jena-base</module>
 
         <!-- Main modules -->

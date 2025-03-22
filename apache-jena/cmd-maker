@@ -26,6 +26,8 @@
 ## the "jena" script is slightly different (see end of script).
 
 CMDS=$(cat <<EOF
+jena.iri
+jena.langtag
 jena.rdfcat
 jena.rdfcompare
 jena.rdfcopy
@@ -34,7 +36,6 @@ jena.schemagen
 arq.rdfdiff
 arq.sparql
 arq.arq
-arq.iri
 arq.juuid
 arq.rsparql
 arq.rset
