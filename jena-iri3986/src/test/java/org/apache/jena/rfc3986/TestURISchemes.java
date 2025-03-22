@@ -22,7 +22,7 @@ import static org.apache.jena.rfc3986.LibTestURI.badSyntax;
 import static org.apache.jena.rfc3986.LibTestURI.good;
 import static org.apache.jena.rfc3986.LibTestURI.schemeViolation;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Test IRIs for scheme-specific validation rules. */
 public class TestURISchemes {

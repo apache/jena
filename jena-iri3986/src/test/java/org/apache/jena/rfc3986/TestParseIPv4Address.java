@@ -20,7 +20,7 @@ package org.apache.jena.rfc3986;
 
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestParseIPv4Address {
     @Test public void addr_ipv4_01()    { good4("15.16.17.18"); }
