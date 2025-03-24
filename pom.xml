@@ -67,7 +67,7 @@
     <ver.jakarta.json>2.0.1</ver.jakarta.json>
 
     <!-- These two must be in-step -->
-    <ver.jetty>12.0.17</ver.jetty>
+    <ver.jetty>12.0.18</ver.jetty>
     <ver.jakarta-servlet>6.1.0</ver.jakarta-servlet>
 
     <!-- 
@@ -82,7 +82,7 @@
 
     <ver.caffeine>3.2.0</ver.caffeine>
     <!-- Most of Jena uses other libraries for equivalent functionality. -->
-    <ver.guava>33.4.0-jre</ver.guava>
+    <ver.guava>33.4.5-jre</ver.guava>
 
     <ver.gson>2.12.1</ver.gson>
     <ver.lucene>9.12.1</ver.lucene>
