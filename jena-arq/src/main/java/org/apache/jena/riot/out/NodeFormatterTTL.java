@@ -102,9 +102,14 @@ public class NodeFormatterTTL extends NodeFormatterNT
     private String abbrevByBase(String uriStr) {
         if ( baseIRI == null )
             return null;
-        IRIx relInput = IRIx.create(uriStr);
-        IRIx relativized = baseIRI.relativize(relInput);
-        return (relativized==null) ? null : relativized.toString();
+        try {
+            IRIx relInput = IRIx.create(uriStr);
+            IRIx relativized = baseIRI.relativize(relInput);
+            return (relativized==null) ? null : relativized.toString();
+        } catch (IRIException ex) {
+            // Bad IRI - print as is (and hope!)
+            return uriStr;
+        }
     }
 
     @Override

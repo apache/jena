@@ -25,12 +25,14 @@ import static org.junit.Assume.assumeTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.jena.graph.Graph;
-import org.apache.jena.sparql.graph.GraphFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import org.apache.jena.graph.Graph;
+import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.sparql.sse.SSE;
 
 /** Tests for Turtle and Trig pertty format */
 @RunWith(Parameterized.class)
@@ -111,5 +113,11 @@ public class TestTurtleWriterPretty {
                 .parse(g2);
             assertFalse(g.isIsomorphicWith(g2));
         }
+    }
+
+    @Test public void writer_baddata_iri_1() {
+        // SSE allows aweful IRIs! Good for test data ...
+        Graph g = SSE.parseGraph("(graph (:s :p <[[>))");
+        String x = RDFWriter.source(g).base("http://example/").format(format).asString();
     }
 }
