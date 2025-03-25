@@ -102,4 +102,4 @@ then
     JENA_CP="$JENA_CP:$CLASSPATH"
 fi
 
-"$JAVA" $JVM_ARGS $LOGGING -cp "$JENA_CP" jena.iri "$@" 
+"$JAVA" $JVM_ARGS $LOGGING -cp "$JENA_CP" jena.langtag "$@" 
