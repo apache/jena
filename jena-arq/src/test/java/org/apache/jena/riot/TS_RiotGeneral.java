@@ -35,11 +35,6 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestRDFParser.class
     , TestRDFWriter.class
     , TestParseURISchemeBases.class
-
-    , TestTurtleTrigWriter.class
-    , TestTurtleWriterPretty.class
-
-    , TestJsonLDReader.class
 })
 
 public class TS_RiotGeneral

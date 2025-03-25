@@ -16,12 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.riot.lang;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+
+import org.junit.Test;
 
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
@@ -31,13 +33,14 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.Test;
 
-public class TestJsonLDReader {
+public class TestLangJsonLD {
 
     // These tests fail under some java11 (but not java17)
     // for RIOT default JSON-LD 1.1 because Titanium contacts schema.org
