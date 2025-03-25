@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.riot.writer;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -31,12 +31,13 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import org.apache.jena.graph.Graph;
+import org.apache.jena.riot.*;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.sse.SSE;
 
-/** Tests for Turtle and Trig pertty format */
+/** Tests for Turtle and Trig formats */
 @RunWith(Parameterized.class)
-public class TestTurtleWriterPretty {
+public class TestTurtleFormats {
     @Parameters(name = "{index}: {0}")
     public static Iterable<Object[]> data() {
         List<Object[]> x = new ArrayList<>() ;
@@ -55,7 +56,7 @@ public class TestTurtleWriterPretty {
 
     private final String filename;
 
-    public TestTurtleWriterPretty(String name, RDFFormat format) {
+    public TestTurtleFormats(String name, RDFFormat format) {
         this.format = format;
         if ( format.getLang().equals(Lang.TRIG) )
             this.filename = DIR+"rdfwriter-02.trig";
@@ -115,7 +116,7 @@ public class TestTurtleWriterPretty {
         }
     }
 
-    @Test public void writer_baddata_iri_1() {
+    @Test public void writer_bad_data_iri_1() {
         // SSE allows aweful IRIs! Good for test data ...
         Graph g = SSE.parseGraph("(graph (:s :p <[[>))");
         String x = RDFWriter.source(g).base("http://example/").format(format).asString();

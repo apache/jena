@@ -28,11 +28,16 @@ import org.junit.runners.Suite.SuiteClasses ;
     TestWriterRegistration.class
     , TestRiotWriterGraph.class
     , TestRiotWriterDataset.class
-    , TestRDFJSON.class
+
     , TestTurtleWriter.class
-    , TestTriXWriter.class
+    , TestTrigWriter.class
+    , TestTurtleFormats.class
+
     , TestWriterRDFXML.class
     , TestWriterRDFXML_Properties.class
+
+    , TestTriXWriter.class
+    , TestRDFJSON.class
 })
 
 public class TS_RiotWriter

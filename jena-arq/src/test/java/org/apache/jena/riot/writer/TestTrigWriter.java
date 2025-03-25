@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.riot.writer;
 
 import static org.junit.Assert.assertTrue;
 
@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.jena.graph.Graph;
+import org.apache.jena.riot.*;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +33,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /** Tests for Turtle (and Trig) */
 @RunWith(Parameterized.class)
-public class TestTurtleTrigWriter {
+public class TestTrigWriter {
     @Parameters(name = "{index}: {0}")
     public static Iterable<Object[]> data() {
         List<Object[]> x = new ArrayList<>() ;
@@ -46,26 +47,23 @@ public class TestTurtleTrigWriter {
         x.add(new Object[]{"Trig/Blocks", RDFFormat.TRIG_BLOCKS});
         x.add(new Object[]{"Trig/Flat", RDFFormat.TRIG_FLAT});
         x.add(new Object[]{"Trig/Long", RDFFormat.TRIG_LONG});
-        return x ; 
+        return x ;
     }
-    
-    private static String DIR = "testing/RIOT/Writer/";
 
+    private static String DIR = "testing/RIOT/Writer/";
     private static String BASE = "http://BASE/";
 
     private final RDFFormat format;
-
     private final String filename;
-    
 
-    public TestTurtleTrigWriter(String name, RDFFormat format) {
+    public TestTrigWriter(String name, RDFFormat format) {
         this.format = format;
         if ( format.getLang().equals(Lang.TRIG) )
             this.filename = DIR+"rdfwriter-02.trig";
         else
             this.filename = DIR+"rdfwriter-01.ttl";
     }
-    
+
     // read file, with external base URI
     private static Graph data(String fn, String baseURI) {
         Graph g1 = GraphFactory.createDefaultGraph();
@@ -81,8 +79,8 @@ public class TestTurtleTrigWriter {
         // This has a relative URI
         // Not an ideal URI but legal (host is upper case). Allowed.
         Graph g = data(filename, BASE);
-        
-        String written = 
+
+        String written =
             RDFWriter.create()
                 .base(BASE)
                 .source(g)
@@ -90,13 +88,9 @@ public class TestTurtleTrigWriter {
                 .format(format)
                 .base(BASE)
                 .asString();
-        
+
         // Test BASE used.
         assertTrue(written.contains("<>"));
         assertTrue(written.contains("BASE"));
     }
-
-    // Stream writer (BLOCKS and FLAT) don't print a base URI unless explicitly given one in the data.
-    // THis test is in TestTurtleWriterPretty
-    //@Test public void writer_parse_base_2()
 }

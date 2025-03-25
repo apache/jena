@@ -39,6 +39,10 @@ import org.junit.runners.Suite ;
     , TestLangTurtle.class
     , TestLangTrig.class
     , TestLangRdfJson.class
+
+    , TestLangJsonLD.class
+    , TestLangJsonLD_DocLoader.class
+
     , TestRDFXML_ReaderProperties.class
     , TestTriXReader.class
     , TestTriXBad.class

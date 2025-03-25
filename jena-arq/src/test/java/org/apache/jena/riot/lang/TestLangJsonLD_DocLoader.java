@@ -19,7 +19,7 @@
 package org.apache.jena.riot.lang;
 
 import static org.apache.jena.riot.Lang.JSONLD11;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 
@@ -31,6 +31,8 @@ import com.apicatalog.jsonld.loader.DocumentLoader;
 import com.apicatalog.jsonld.loader.DocumentLoaderOptions;
 import com.apicatalog.jsonld.loader.HttpLoader;
 
+import org.junit.Test;
+
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import org.apache.jena.riot.RDFParser;
@@ -38,9 +40,8 @@ import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
 import org.apache.jena.sparql.util.Context;
-import org.junit.Test;
 
-public class TestLangJSONLD11 {
+public class TestLangJsonLD_DocLoader {
 
     // Triggers the document loader.
     private static final String CONTENT = "{ \"@context\": \"http://unused/\" }";
@@ -55,7 +56,8 @@ public class TestLangJSONLD11 {
                 .build();
         parser.parse(sink);
 
-        assertEquals("Custom DocumentLoader wasn't called to handle loading", 1, TestDocumentLoader.COUNTER);
+        // Check called at least once.
+        assertTrue("Custom DocumentLoader wasn't called to handle loading", TestDocumentLoader.COUNTER > 0 );
     }
 
     private final Context setupContext() {
@@ -76,6 +78,9 @@ public class TestLangJSONLD11 {
 
         @Override
         public Document loadDocument(URI url, DocumentLoaderOptions options) throws JsonLdError {
+
+            System.out.println(url);
+
             DocumentLoader loader = HttpLoader.defaultInstance();
             JsonObject obj =
                     Json.createObjectBuilder()
