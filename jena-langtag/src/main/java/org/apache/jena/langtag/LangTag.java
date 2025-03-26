@@ -48,6 +48,21 @@ import java.util.Locale;
 public sealed interface LangTag permits LangTagJDK, LangTagRFC5646, LangTagRE {
 
     /**
+     * Create a {@link LangTag} from a string
+     * that meets the
+     * <a href="https://datatracker.ietf.org/doc/html/rfc5646#section-2.1">syntax of RFC 5646</a>.
+     *
+     * @throws LangTagException if the string is syntacticly invalid.
+     */
+    public static LangTag of(String string) {
+        LangTag langTag =  SysLangTag.create(string);
+        // Implementations should not return null but just in case ...
+        if ( langTag == null )
+            throw new LangTagException("Bad syntax");
+        return langTag;
+    }
+
+    /**
      * Formatted according to the RFC 5646 rules.
      * <p>
      * {@code toString()} should return the language tag with the same case as it was originally.

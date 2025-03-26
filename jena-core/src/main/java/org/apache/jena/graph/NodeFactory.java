@@ -20,6 +20,7 @@ package org.apache.jena.graph;
 
 
 import static org.apache.jena.atlas.lib.Lib.isEmpty;
+import static org.apache.jena.langtagx.LangTagX.formatLanguageTag;
 
 import java.util.Objects;
 
@@ -30,7 +31,6 @@ import org.apache.jena.datatypes.xsd.impl.RDFDirLangString;
 import org.apache.jena.datatypes.xsd.impl.RDFLangString;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.graph.impl.LiteralLabelFactory;
-import org.apache.jena.graph.langtag.LangTags;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sys.JenaSystem;
 
@@ -137,8 +137,7 @@ public class NodeFactory {
      */
     public static Node createLiteralDirLang(String string, String lang, String textDir) {
         TextDirection textDirEnum = initialTextDirection(textDir);
-        String langFmt = formatLanguageTag(lang);
-        return createLiteralDirLang(string, langFmt, textDirEnum);
+        return createLiteralDirLang(string, lang, textDirEnum);
     }
 
     private static boolean noTextDir(TextDirection textDir) {
@@ -149,7 +148,7 @@ public class NodeFactory {
         Objects.requireNonNull(string, "null lexical form for literal");
         if ( isEmpty(lang) ) {
             if ( textDir != null )
-                throw new JenaException("The language must be gived for a language direction literal");
+                throw new JenaException("The language must be given for a language direction literal");
             return new Node_Literal(string);
         }
         if ( noTextDir(textDir) )
@@ -205,6 +204,7 @@ public class NodeFactory {
      * needing the caller to differentiate between the xsd:string, rdf:langString, and other
      * datatype cases.
      * It calls {@link #createLiteralString(String)},
+     * {@link #createLiteralLang(String, String)} or
      * {@link #createLiteralDirLang(String, String, String)} or
      * {@link #createLiteralDT(String, RDFDatatype)}
      * as appropriate.
@@ -217,36 +217,28 @@ public class NodeFactory {
     public static Node createLiteral(String lex, String lang, TextDirection textDir, RDFDatatype dtype) {
         Objects.requireNonNull(lex, "null lexical form for literal");
         boolean hasLang = ! isEmpty(lang);
-        if ( hasLang ) {
-            String langFmt = formatLanguageTag(lang);
-            if ( dtype != null ) {
-                if ( noTextDir(textDir) ) {
-                    if ( ! dtype.equals(RDFLangString.rdfLangString) )
-                        throw new JenaException("Datatype is not rdf:langString but a language was given");
-                } else {
-                    if ( ! dtype.equals(RDFDirLangString.rdfDirLangString) )
-                        throw new JenaException("Datatype is not rdf:dirLangString but a language and initial text direction was given");
-                }
-            }
+        boolean hasTextDirLang = ! noTextDir(textDir);
 
-            return createLiteralDirLang(lex, langFmt, textDir);
+        if ( hasTextDirLang && ! hasLang )
+            throw new JenaException("The language must be given for a language direction literal");
+
+        // Datatype check when lang present.
+        if ( hasLang ) {
+            if ( ! hasTextDirLang ) {
+                if ( dtype != null && ! dtype.equals(RDFLangString.rdfLangString) )
+                    throw new JenaException("Datatype is not rdf:langString but a language was given");
+                return createLiteralLang(lex, lang);
+            }
+            // hasLang && hasTextDirLang
+            if ( dtype != null && ! dtype.equals(RDFDirLangString.rdfDirLangString) )
+                throw new JenaException("Datatype is not rdf:dirLangString but a language and initial text direction was given");
+            return createLiteralDirLang(lex, lang, textDir);
         }
 
+        // no language tag, no text direction, no datatype.
         if ( dtype == null )
             // No datatype, no lang (it is null or "") => xsd:string.
             return createLiteralString(lex);
-
-        // No language. Has a datatype.
-        boolean hasTextDirLang = ( textDir != null );
-        if ( hasTextDirLang ) {
-            if ( dtype.equals(RDFDirLangString.rdfDirLangString) ) {
-                // No language. Datatype is rdf:dirLangString, Does have an initial text direction
-                throw new JenaException("Datatype is rdf:dirLangString and has an initial text direction but no language given");
-            } else if ( dtype.equals(RDFLangString.rdfLangString) ) {
-                // No language. Datatype is rdf:langString, Does have an initial text direction.
-                throw new JenaException("Datatype is rdf:langString and has an initial text direction but no language given");
-            }
-        }
 
         // Datatype. No language, no initial text direction.
         // Allow "abc"^^rdf:langString
@@ -260,19 +252,6 @@ public class NodeFactory {
 
         Node n = createLiteralDT(lex, dtype);
         return n;
-    }
-
-    /*package*/ static final boolean legacyLangTag = false;
-    /** Prepare the language tag - apply formatting normalization */
-    private static String formatLanguageTag(String langTagStr) {
-        // LangTags.formatLangtag(input) except with the legacy option.
-        if ( langTagStr == null )
-            return Node.noLangTag;
-        if ( legacyLangTag )
-            return langTagStr;
-        if ( langTagStr.isEmpty() )
-            return langTagStr;
-        return LangTags.basicFormat(langTagStr);
     }
 
     /** Prepare the initial text direction - apply formatting normalization */

@@ -26,6 +26,7 @@ import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.langtagx.LangTagX;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.riot.out.NodeFmtLib;
 import org.apache.jena.riot.system.ErrorHandler;
@@ -35,7 +36,6 @@ import org.apache.jena.riot.system.PrefixMapZero;
 import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.riot.tokens.Tokenizer;
 import org.apache.jena.riot.tokens.TokenizerText;
-import org.apache.jena.riot.web.LangTag;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.util.NodeUtils;
 import org.apache.jena.tdb1.TDB1;
@@ -74,7 +74,8 @@ public class NodecSSE implements Nodec
         } else if ( node.isLiteral() && NodeUtils.isLangString(node) ) {
             // Check syntactically valid.
             String lang = node.getLiteralLanguage();
-            if ( ! LangTag.check(lang) )
+            // Weak, defensive check.
+            if ( ! LangTagX.checkLanguageTagBasicSyntax(lang) )
                 throw new TDB1Exception("bad language tag: "+node);
         } else if ( node.isBlank() && ! onlySafeBNodeLabels ) {
             // Special case.

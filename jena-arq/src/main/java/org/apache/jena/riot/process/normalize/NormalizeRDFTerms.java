@@ -25,7 +25,7 @@ import org.apache.jena.datatypes.RDFDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.riot.web.LangTag ;
+import org.apache.jena.langtagx.LangTagX;
 import org.apache.jena.sparql.util.NodeUtils ;
 import org.apache.jena.vocabulary.RDF ;
 
@@ -189,7 +189,7 @@ public class NormalizeRDFTerms implements NormalizeTerm {
      */
     private static Node canonicalLangtag(Node node) {
         String langTag = node.getLiteralLanguage();
-        String langTag2 = LangTag.canonical(langTag);
+        String langTag2 = LangTagX.formatLanguageTag(langTag);
         if ( langTag2.equals(langTag) )
             return node;
         //String textDir = n.getLiteralTextDirection();

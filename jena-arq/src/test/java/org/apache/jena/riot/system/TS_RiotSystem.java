@@ -18,17 +18,11 @@
 
 package org.apache.jena.riot.system;
 
-// Test classes get missed
-import org.junit.platform.suite.api.SelectClasses;
-import org.junit.platform.suite.api.Suite;
-@Suite
-@SelectClasses({
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
 
-//import org.junit.runner.RunWith;
-//import org.junit.runners.Suite;
-//import org.junit.runners.Suite.SuiteClasses;
-//@RunWith(Suite.class)
-//@SuiteClasses({
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
       TestChecker.class
     , TestStreamRDF.class
     , TestFactoryRDF.class

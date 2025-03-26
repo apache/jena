@@ -19,11 +19,10 @@
 package org.apache.jena.riot.web ;
 
 import java.util.Locale ;
-import java.util.regex.Matcher ;
-import java.util.regex.Pattern ;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.apache.jena.atlas.lib.Chars ;
-import org.apache.jena.riot.system.RiotChars ;
+import org.apache.jena.langtagx.LangTagX;
 
 /**
  * Language tags: support for parsing and canonicalization of case.
@@ -34,8 +33,9 @@ import org.apache.jena.riot.system.RiotChars ;
  * <li>Matching Language tags: <a href="http://www.ietf.org/rfc/rfc4647.txt">RFC 4647</a></li>
  * <li>Language tags syntax (BCP 47): <a href="http://www.ietf.org/rfc/rfc5646.txt">RFC 5646</a></li>
  * </ul>
+ * @deprecated Use {@link LangTagX}
  */
-
+@Deprecated(forRemoval = true)
 public class LangTag {
     // Valid language tag, not irregular, not grand-fathered.
     /** Index of the language part */
@@ -135,45 +135,12 @@ public class LangTag {
 
     /**
      * Validate - basic syntax check for a language tags: [a-zA-Z]+ ('-'[a-zA-Z0-9]+)*
+     *
+     * @deprecated Use {@link LangTagX#checkLanguageTag(String)}
      */
+    @Deprecated(forRemoval = true)
     public static boolean check(String languageTag) {
-        int len = languageTag.length() ;
-        int idx = 0 ;
-        boolean first = true ;
-        while (idx < languageTag.length()) {
-            int idx2 = checkPart(languageTag, idx, first) ;
-            first = false ;
-            if ( idx2 == idx )
-                // zero length part.
-                return false ;
-            idx = idx2 ;
-            if ( idx == len )
-                return true ;
-            if ( languageTag.charAt(idx) != Chars.CH_DASH )
-                return false ;
-            idx++ ;
-            if ( idx == len )
-                // trailing DASH
-                return false ;
-        }
-        return true ;
-    }
-
-    private static int checkPart(String languageTag, int idx, boolean leader) {
-        for (; idx < languageTag.length(); idx++) {
-            int ch = languageTag.charAt(idx) ;
-            if ( leader ) {
-                if ( RiotChars.isA2Z(ch) )
-                    continue ;
-            } else {
-                if ( RiotChars.isA2ZN(ch) )
-                    continue ;
-            }
-            // Not acceptable.
-            return idx ;
-        }
-        // Off end.
-        return idx ;
+        return LangTagX.checkLanguageTag(languageTag);
     }
 
     /**
@@ -181,8 +148,10 @@ public class LangTag {
      * constants for the array contents. Parts not present cause a null in
      * the return array.
      *
-     * @return Langtag parts, or null if the input string does not parse as a lang tag.
+     * @return The language tag parts, or null if the input string does not parse as a lang tag.
+     * @deprecated Use {@link org.apache.jena.langtag.LangTag#of(String)} to create a language tag object.
      */
+    @Deprecated(forRemoval = true)
     public static String[] parse(String languageTag) {
         String[] parts = new String[partsLength] ;
 
@@ -224,50 +193,6 @@ public class LangTag {
         return parts ;
     }
 
-    /** Canonicalize with the rules of RFC 4646, or RFC5646 without replacement of preferred form. */
-    public static String canonical(String str) {
-        if ( str == null )
-            return null ;
-        String[] parts = parse(str) ;
-        String x = canonical(parts) ;
-        if ( x == null ) {
-            // Could try to apply the rule case-setting rules
-            // even through it's not a conforming langtag.
-            return str ;
-        }
-        return x ;
-    }
-
-    /**
-     * Canonicalize with the rules of RFC 4646 "In this format, all non-initial
-     * two-letter subtags are uppercase, all non-initial four-letter subtags are
-     * titlecase, and all other subtags are lowercase." In addition, leave
-     * extensions unchanged.
-     * <p>
-     * This is the same as RFC5646 without replacement of preferred form
-     * or consulting the registry.
-     */
-    public static String canonical(String[] parts) {
-        // We canonicalised parts on parsing.
-        if ( parts == null )
-            return null ;
-
-        if ( parts[0] == null ) {
-            // Grandfathered
-            return parts[idxExtension] ;
-        }
-
-        StringBuilder sb = new StringBuilder() ;
-        sb.append(parts[0]) ;
-        for (int i = 1; i < parts.length; i++) {
-            if ( parts[i] != null ) {
-                sb.append("-") ;
-                sb.append(parts[i]) ;
-            }
-        }
-        return sb.toString() ;
-    }
-
     private static String strcase(String string) {
         if ( string == null )
             return null ;
@@ -277,6 +202,7 @@ public class LangTag {
             return titlecase(string) ;
         return lowercase(string) ;
     }
+
 
     private static String lowercase(String string) {
         if ( string == null )
@@ -297,5 +223,13 @@ public class LangTag {
         ch1 = Character.toUpperCase(ch1) ;
         string = lowercase(string.substring(1)) ;
         return ch1 + string ;
+    }
+    /**
+     * Canonicalize with the rules ofRFC 5646 without replacement of preferred form.
+     * @deprecated Use {@link LangTagX#formatLanguageTag(String)}
+     */
+    @Deprecated(forRemoval = true)
+    public static String canonical(String langTagStr) {
+        return LangTagX.formatLanguageTag(langTagStr);
     }
 }

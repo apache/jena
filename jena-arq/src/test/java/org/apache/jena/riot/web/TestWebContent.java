@@ -20,51 +20,44 @@ package org.apache.jena.riot.web;
 
 import org.junit.Assert;
 
-import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.WebContent;
 import org.junit.Test;
 
 public class TestWebContent {
 
     @Test
-    public void testCanonicaliseMimeTypes1()
-    {
+    public void testCanonicaliseMimeTypes1() {
         testCanonicalise(WebContent.contentTypeTurtle, WebContent.contentTypeTurtle);
         testCanonicalise(WebContent.contentTypeTurtleAlt1, WebContent.contentTypeTurtle);
     }
 
     @Test
-    public void testCanonicaliseMimeTypes2()
-    {
+    public void testCanonicaliseMimeTypes2() {
         testCanonicalise(WebContent.contentTypeN3, WebContent.contentTypeN3);
         testCanonicalise(WebContent.contentTypeN3Alt1, WebContent.contentTypeN3);
         testCanonicalise(WebContent.contentTypeN3Alt2, WebContent.contentTypeN3);
     }
 
     @Test
-    public void testCanonicaliseMimeTypes3()
-    {
+    public void testCanonicaliseMimeTypes3() {
         testCanonicalise(WebContent.contentTypeNTriples, WebContent.contentTypeNTriples);
         testCanonicalise(WebContent.contentTypeNTriplesAlt, WebContent.contentTypeNTriples);
     }
 
     @Test
-    public void testCanonicaliseMimeTypes4()
-    {
+    public void testCanonicaliseMimeTypes4() {
         testCanonicalise(WebContent.contentTypeNQuads, WebContent.contentTypeNQuads);
         testCanonicalise(WebContent.contentTypeNQuadsAlt1, WebContent.contentTypeNQuads);
     }
 
     @Test
-    public void testCanonicaliseMimeTypes5()
-    {
+    public void testCanonicaliseMimeTypes5() {
         testCanonicalise(WebContent.contentTypeTriG, WebContent.contentTypeTriG);
         testCanonicalise(WebContent.contentTypeTriGAlt1, WebContent.contentTypeTriG);
     }
 
-    private void testCanonicalise(String input, String expected)
-    {
+    private void testCanonicalise(String input, String expected) {
         String canonical = WebContent.contentTypeCanonical(input);
         Assert.assertEquals(expected, canonical);
     }
-
 }

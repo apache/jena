@@ -28,7 +28,7 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
      TestIRI.class
-    , TestLang.class
+    , TestRDFLanguages.class
     , TestBlankNodeAllocator.class
     , TestNodeAllocator.class       // Older tests
     , TestLabelToNode.class         // Newer tests

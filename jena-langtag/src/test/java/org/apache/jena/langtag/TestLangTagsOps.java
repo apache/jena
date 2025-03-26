@@ -27,22 +27,22 @@ import org.junit.jupiter.api.Test;
 public class TestLangTagsOps {
     @Test
     public void sameLangTag_01() {
-        LangTag langTag1 = LangTags.of("en-GB");
-        LangTag langTag2 = LangTags.of("en-GB");
+        LangTag langTag1 = LangTag.of("en-GB");
+        LangTag langTag2 = LangTag.of("en-GB");
         sameLangTag(langTag1, langTag2, true,  true, true);
     }
 
     @Test
     public void sameLangTag_02() {
-        LangTag langTag1 = LangTags.of("en-GB");
-        LangTag langTag2 = LangTags.of("en-gb");
+        LangTag langTag1 = LangTag.of("en-GB");
+        LangTag langTag2 = LangTag.of("en-gb");
         sameLangTag(langTag1, langTag2, true,  false, false);
     }
 
     @Test
     public void sameLangTag_03() {
-        LangTag langTag1 = LangTags.of("en-GB-Latn");
-        LangTag langTag2 = LangTags.of("en-gb");
+        LangTag langTag1 = LangTag.of("en-GB-Latn");
+        LangTag langTag2 = LangTag.of("en-gb");
         sameLangTag(langTag1, langTag2, false,  false, false);
     }
 

@@ -78,9 +78,6 @@ public class TestLangJsonLD_DocLoader {
 
         @Override
         public Document loadDocument(URI url, DocumentLoaderOptions options) throws JsonLdError {
-
-            System.out.println(url);
-
             DocumentLoader loader = HttpLoader.defaultInstance();
             JsonObject obj =
                     Json.createObjectBuilder()

@@ -42,6 +42,7 @@ import org.apache.jena.riot.writer.TS_RiotWriter ;
     , TS_Out.class
     , TS_Lang.class
     , TS_RiotGeneral.class
+    , TS_RiotSystem.class
     , TS_IO2.class
     , TS_RIOTAdapters.class
     , TS_Process.class

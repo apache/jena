@@ -212,7 +212,7 @@ public class ParserProfileStd implements ParserProfile {
     @Override
     public Node createLangLiteral(String lexical, String langTag, long line, long col) {
         if ( checking )
-            Checker.checkLiteral(lexical, langTag, errorHandler, line, col);
+            Checker.checkLiteral(lexical, langTag, null, errorHandler, line, col);
         return factory.createLangLiteral(lexical, langTag);
     }
 
