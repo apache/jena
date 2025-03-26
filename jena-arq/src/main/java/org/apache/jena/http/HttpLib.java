@@ -183,7 +183,10 @@ public class HttpLib {
         else if ( inRange(httpStatusCode, 200, 299) ) {
             // Success. Continue processing.
         }
-        else if ( inRange(httpStatusCode, 300, 399) ) {
+        // update end of range to 599 to cover exception for larger range
+        // to debug if replacing exception(response, httpStatusCode) removes
+        // CI failure
+        else if ( inRange(httpStatusCode, 300, 599) ) {
             // We had follow redirects on (default client) so it's http->https,
             // or the application passed on a HttpClient with redirects off.
             // Either way, we should not continue processing.
@@ -270,7 +273,8 @@ public class HttpLib {
      * This consumes the response body.
      */
     static HttpException exception(HttpResponse<InputStream> response, int httpStatusCode) {
-        URI uri = response.request().uri();
+        // URI not used
+       // URI uri = response.request().uri();
         InputStream in = response.body();
         if ( in == null )
             return new HttpException(httpStatusCode, HttpSC.getMessage(httpStatusCode));
@@ -281,6 +285,7 @@ public class HttpLib {
                 if ( msg.isBlank())
                     msg = null;
             } catch (RuntimeIOException e) {
+                LOG.warn("HttpException exception(hr<is> r, int hsc) msg:{} stack trace: {}", e.getMessage(), e.getStackTrace().toString());
                 msg = null;
             }
             return new HttpException(httpStatusCode, HttpSC.getMessage(httpStatusCode), msg);
