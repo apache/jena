@@ -33,7 +33,7 @@ import org.apache.jena.util.FileUtils ;
 import org.junit.Assert ;
 import org.junit.Test ;
 
-public class TestLang
+public class TestRDFLanguages
 {
     static { JenaSystem.init(); }
     @Test public void registration_01() { testregistration(RDFLanguages.RDFXML) ; }

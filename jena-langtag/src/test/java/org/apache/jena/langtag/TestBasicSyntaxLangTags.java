@@ -21,8 +21,6 @@ package org.apache.jena.langtag;
 import static org.apache.jena.langtag.LangTags.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,9 +34,11 @@ public class TestBasicSyntaxLangTags {
     @Test public void basic_02() { basicSplitCheck("en-GB", "en", "GB"); }
     @Test public void basic_03() { basicSplitCheck("en-gb", "en", "gb"); }
     @Test public void basic_04() { basicSplitCheck("en", "en"); }
+    @Test public void basic_05() { basicSplitCheck("en-123", "en","123"); }
+    @Test public void basic_06() { basicSplitCheck("e", "e"); }
 
     // Showing the split does not allocate subtags to their category. e.g. "x-private" is split.
-    @Test public void basic_05() { basicSplitCheck("en-Latn-GB-boont-r-extended-sequence-x-private",
+    @Test public void basic_10() { basicSplitCheck("en-Latn-GB-boont-r-extended-sequence-x-private",
                                                    "en","Latn", "GB", "boont", "r", "extended", "sequence", "x", "private"); }
 
     @Test public void basic_bad_01() { basicSplitCheckBad(""); }
@@ -46,6 +46,8 @@ public class TestBasicSyntaxLangTags {
     @Test public void basic_bad_03() { basicSplitCheckBad("--"); }
     @Test public void basic_bad_04() { basicSplitCheckBad("abc-xy%20"); }
     @Test public void basic_bad_05() { basicSplitCheckBad("abc def"); }
+    @Test public void basic_bad_06() { basicSplitCheckBad("a12-def"); }
+    @Test public void basic_bad_07() { basicSplitCheckBad("9-def"); }
 
     static void basicSplitCheck(String input, String...parts) {
         basicSplitTest(input, parts);

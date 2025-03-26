@@ -18,8 +18,6 @@
 
 package org.apache.jena.riot.system;
 
-import java.util.regex.Pattern;
-
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.datatypes.xsd.impl.RDFLangString;
@@ -27,6 +25,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.iri.IRI;
 import org.apache.jena.irix.*;
+import org.apache.jena.langtagx.LangTagX;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.util.SplitIRI;
 
@@ -130,8 +129,6 @@ public class Checker {
         } catch (org.apache.jena.iri.IRIException0 | org.apache.jena.irix.IRIException ex) {}
     }
 
-    final static private Pattern langPattern = Pattern.compile("[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*");
-
     public static boolean checkLiteral(Node node) {
         return checkLiteral(node, nullErrorHandler, -1L, -1L);
     }
@@ -165,8 +162,8 @@ public class Checker {
 
         // If the Literal has a language...
         if ( hasLang ) {
-            // Test language tag format -- not a perfect test...
-            if ( !langPattern.matcher(lang).matches() ) {
+            // Test language tag format
+            if ( !LangTagX.checkLanguageTag(lang) ) {
                 errorHandler(errorHandler).warning("Language not valid: " + lang, line, col);
                 return false;
             }

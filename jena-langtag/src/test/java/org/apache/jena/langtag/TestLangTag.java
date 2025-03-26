@@ -49,7 +49,6 @@ public class TestLangTag {
     @Test public void test_lang_basic_22() { testPrivateUse("az-Latn-x-latn", "az-Latn-x-latn", "az", "Latn", null, null, null, "x-latn"); }
     @Test public void test_lang_basic_23() { testPrivateUse("sss-x-y", "sss-x-y", "sss", null, null, null, null, "x-y"); }
 
-
     @Test public void test_lang_bad_01() { testBad("123"); }
     @Test public void test_lang_bad_02() { testBad("abcdefghijklmn"); }
     @Test public void test_lang_bad_03() { testBad("abcdefghijklmn-123"); }
@@ -93,6 +92,14 @@ public class TestLangTag {
     @Test public void test_langtag_special_02() { testNotJDK("en-GB-oed", "en-GB-oed", "en", null, "GB", "oed",  null, null); }
     @Test public void test_langtag_special_03() { testFormatting("EN-gb-OED", "en-GB-oed"); }
     @Test public void test_langtag_special_04() { testNotJDK("EN-gb-OED", "en-GB-oed", "en", null, "GB", "oed",  null, null); }
+
+    // Only LangTagRFC5646 (the JDK replaces the language name)
+    @Test public void test_langtag_special_11() { test1_RFC5646("sgn-BE-FR", "sgn-BE-FR", "sgn-BE-FR", null, null, null, null, null); }
+    @Test public void test_langtag_special_12() { test1_RFC5646("sgn-BE-NL", "sgn-BE-NL", "sgn-BE-NL", null, null, null, null, null); }
+    @Test public void test_langtag_special_13() { test1_RFC5646("sgn-CH-DE", "sgn-CH-DE", "sgn-CH-DE", null, null, null, null, null); }
+
+    // Does not exist
+    @Test public void test_langtag_special_14() { testBad("sgn-GB-SW"); }
 
     // The examples from RFC 5646
     @Test public void test_lang_10() { testRFC5646("de", "de", "de", null, null, null, null); }
@@ -148,7 +155,6 @@ public class TestLangTag {
     @Test public void test_lang_61() { testPrivateUse("en-Latn-GB-boont-r-extended-sequence-s-another-x-private", "en-Latn-GB-boont-r-extended-sequence-s-another-x-private",
                                                        "en","Latn", "GB", "boont", "r-extended-sequence-s-another", "x-private"); }
 
-
     /** General test - include JDK */
     private static void testRFC5646(String langString, String formatted, String lang, String script, String region, String variant, String extension) {
         runTest(langString, formatted, lang, script, region, variant, extension, null, true);
@@ -156,10 +162,9 @@ public class TestLangTag {
 
     /** Has a private use part */
     private static void testPrivateUse(String langString, String formatted, String lang, String script, String region, String variant, String extension, String privateUse) {
-        // Private use is supported by LanTagJDK by extracting the "x" extension
+        // Private use is supported by LangTagJDK by extracting the "x" extension
         runTest(langString, formatted, lang, script, region, variant, extension, privateUse, true);
     }
-
 
     /** Run a test which is not properly supported by the JDK-Locale based implementation. */
     private static void testNotJDK(String langString, String formatted, String lang, String script, String region, String variant, String extension, String privateUse) {
@@ -182,9 +187,9 @@ public class TestLangTag {
                                 String lang, String script, String region, String variant, String extension, String privateuse,
                                 boolean jdkSupported) {
         // Run the test with varied case of the input string.
-        test1(langString,               formatted, lang, script, region, variant, extension, privateuse);
-        test1(langString.toLowerCase(), formatted, lang, script, region, variant, extension, privateuse);
-        test1(langString.toUpperCase(), formatted, lang, script, region, variant, extension, privateuse);
+        test1_RFC5646(langString,               formatted, lang, script, region, variant, extension, privateuse);
+        test1_RFC5646(langString.toLowerCase(), formatted, lang, script, region, variant, extension, privateuse);
+        test1_RFC5646(langString.toUpperCase(), formatted, lang, script, region, variant, extension, privateuse);
 
         // Formatting.
         testFormatting(langString, formatted);
@@ -213,7 +218,7 @@ public class TestLangTag {
     }
 
     // Test execution for LangTagRFC5646 on one exact input string.
-    private static void test1(String langString, String formatted, String lang, String script, String region, String variant, String extension, String privateuse) {
+    private static void test1_RFC5646(String langString, String formatted, String lang, String script, String region, String variant, String extension, String privateuse) {
         LangTag langTag = LangTagRFC5646.create(langString);
         assertNotNull(langTag);
         assertEquals(lang, langTag.getLanguage(), "Lang");

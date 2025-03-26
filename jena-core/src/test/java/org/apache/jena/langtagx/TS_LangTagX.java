@@ -16,30 +16,27 @@
  * limitations under the License.
  */
 
-package org.apache.jena.langtag;
+package org.apache.jena.langtagx;
 
-/**
- * See also {@link LangTags}.
- */
-public class SysLangTag {
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-    /**
-     * Create a {@link LangTag} using the system-wide default language tag parser,
-     * which is {@link LangTagRFC5646}.
-     */
-    public static LangTag create(String languageTag) {
-        return LangTagRFC5646.create(languageTag);
-    }
+import junit.framework.JUnit4TestAdapter;
+import junit.framework.TestSuite;
 
-    /**
-     * Format language tag.
-     * This is the system-wide policy for formatting language tags.
-     */
-    public static String formatLangTag(String input) {
-        if ( input == null )
-            return "";
-        if ( input.isEmpty() )
-            return input;
-        return create(input).str();
+//JUnit5. Does not mix with JUnit3. So until jena-core updates to JUnit 4 or 5 ...
+//@Suite
+//@SelectClasses({
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestLangTagX.class
+})
+
+public class TS_LangTagX {
+    public static TestSuite suite() {
+        TestSuite ts = new TestSuite();
+        ts.setName("LangTagX");
+        ts.addTest(new JUnit4TestAdapter(TS_LangTagX.class));
+        return ts;
     }
 }

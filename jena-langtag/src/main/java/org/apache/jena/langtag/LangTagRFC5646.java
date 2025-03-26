@@ -87,7 +87,17 @@ public final  class LangTagRFC5646 implements LangTag{
 
     @Override
     public String getLanguage() {
-        return getSubTag("Language", langTagString, language0, language1, CaseRule.LOWER);
+        String x = getSubTag("Language", langTagString, language0, language1, CaseRule.LOWER);
+        if ( ! isGrandfathered )
+            return x;
+        // The general getSubTag code will get these wrong.
+        // "sgn-BE-FR", "sgn-BE-NL", "sgn-CH-DE"
+        return switch(x) {
+            case "sgn-be-fr"->"sgn-BE-FR";
+            case "sgn-be-nl"->"sgn-BE-NL";
+            case "sgn-ch-de"->"sgn-CH-DE";
+            default -> x;
+        };
     }
 
     @Override
@@ -163,7 +173,23 @@ public final  class LangTagRFC5646 implements LangTag{
     public String str() {
         if ( isPrivateUseLanguage )
             return InternalLangTag.lowercase(langTagString);
+        String x = irregularFormat(langTagString);
+        if ( x != null )
+            return x;
+        // Format by parts
+        // Works for en-GB-oed - the variant is not syntax compatible but the variant formatting rules applies.
+        StringBuffer sb = new StringBuffer();
+        add(sb, getLanguage());
+        add(sb, getScript());
+        add(sb, getRegion());
+        add(sb, getVariant());
+        add(sb, getExtension());
+        add(sb, getPrivateUse());
+        return sb.toString();
+    }
 
+    /** Return a string if there is special formatting for this language tag, else return null */
+    private static String irregularFormat(String langTagString) {
         // Some irregular special cases.
         if ( InternalLangTag.caseInsensitivePrefix(langTagString, "sgn-") ) {
             // "sgn-BE-FR", "sgn-BE-NL", "sgn-CH-DE"
@@ -174,21 +200,12 @@ public final  class LangTagRFC5646 implements LangTag{
             if ( langTagString.equalsIgnoreCase("sgn-CH-DE") )
                 return "sgn-CH-DE";
         }
-
         if ( langTagString.startsWith("i-") || langTagString.startsWith("I-") ) {
             String lcLangTagStr = InternalLangTag.lowercase(langTagString);
             if ( irregular_i.contains(lcLangTagStr) )
                 return lcLangTagStr;
         }
-
-        StringBuffer sb = new StringBuffer();
-        add(sb, getLanguage());
-        add(sb, getScript());
-        add(sb, getRegion());
-        add(sb, getVariant());
-        add(sb, getExtension());
-        add(sb, getPrivateUse());
-        return sb.toString();
+        return null;
     }
 
     private void add(StringBuffer sb, String subtag) {
@@ -556,7 +573,7 @@ public final  class LangTagRFC5646 implements LangTag{
             char ch = string.charAt(x);
             if ( ch != '-' )
                 break;
-            int x1 = maybeSubtag1(string, N, x+1, min, max);
+            int x1 = maybeOneSubtag(string, N, x+1, min, max);
             if ( x1 <= 0 )
                 break;
             if ( x1 == N ) {
@@ -572,7 +589,7 @@ public final  class LangTagRFC5646 implements LangTag{
      * Peek for a segment between min and max in length.
      * The initial  "-" has been read.
      */
-    private static int maybeSubtag1(String string, int N, int idxStart, int min, int max) {
+    private static int maybeOneSubtag(String string, int N, int idxStart, int min, int max) {
         int idx = idxStart;
         if ( idx >= N )
             return -1;

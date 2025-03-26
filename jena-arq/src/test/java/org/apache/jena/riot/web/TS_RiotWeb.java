@@ -23,12 +23,9 @@ import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
-@SuiteClasses({ 
-    TestLangTag.class
-    , TestWebContent.class
+@SuiteClasses({
+    TestWebContent.class
 })
 
-public class TS_RiotWeb
-{
-}
+public class TS_RiotWeb {}
 

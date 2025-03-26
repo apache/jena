@@ -73,7 +73,7 @@ public class TestTypedLiterals extends TestCase {
     /**
      * Test the base functioning of unknown datatypes
      */
-    public void testUnknown() {
+    public void testUnknownDatatype() {
         String typeURI =  "urn:jena-dt:unknown";
         String typeURI2 = "urn:jena-dt:unknown2";
 
@@ -82,7 +82,7 @@ public class TestTypedLiterals extends TestCase {
         Literal l1 = m.createTypedLiteral("foo", typeURI);
         Literal l3 = m.createTypedLiteral("15", typeURI);
         Literal l5 = m.createTypedLiteral("foo", typeURI2);
-        Literal l6 = m.createLiteral("foo", "lang1");
+        Literal l6 = m.createLiteral("foo", "lang");
         JenaParameters.enableSilentAcceptanceOfUnknownDatatypes = originalFlag;
         // Check for successful creation
 

@@ -25,7 +25,7 @@ import java.util.function.BiFunction;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.langtag.LangTags;
+import org.apache.jena.langtagx.LangTagX;
 import org.apache.jena.riot.process.StreamRDFApplyObject;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.util.NodeUtils;
@@ -41,7 +41,8 @@ public class StreamCanonicalLangTag extends StreamRDFApplyObject {
 
     /** Return a {@link StreamRDF} that converts language tags to canonical form (RFC 4646, 5646). */
     public static StreamRDF toCanonical(StreamRDF other) {
-        Locale.Builder locBuild = new Locale.Builder();
+        // Only for LangTagJDK
+        Locale.Builder locBuild = null; //new Locale.Builder();
         return new StreamCanonicalLangTag(other, locBuild,
                                           (b,n) -> canonical(locBuild, n, StreamCanonicalLangTag::langTagCanonical));
     }
@@ -65,7 +66,7 @@ public class StreamCanonicalLangTag extends StreamRDFApplyObject {
     }
 
     static String langTagCanonical(Locale.Builder locBuild, String str) {
-        return LangTags.basicFormat(str);
+        return LangTagX.formatLanguageTag(str);
     }
 
     static String langTagLC(Locale.Builder locBuild, String str) {
