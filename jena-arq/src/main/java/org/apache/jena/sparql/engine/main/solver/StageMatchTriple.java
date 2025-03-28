@@ -60,10 +60,8 @@ public class StageMatchTriple {
         Node s2 = tripleNode(s) ;
         Node p2 = tripleNode(p) ;
         Node o2 = tripleNode(o) ;
-        // ExtendedIterator<Triple> graphIter = graph.find(s2, p2, o2) ;
-        // Language tags.
-        ExtendedIterator<Triple> graphIter = G.findByLang(graph, s2, p2, o2);
 
+        ExtendedIterator<Triple> graphIter = G.find(graph, s2, p2, o2);
         // Add cancel.
         AtomicBoolean cancelSignal = execCxt.getCancelSignal();
         if (cancelSignal != null) {
@@ -74,7 +72,6 @@ public class StageMatchTriple {
                 return x;
             });
         }
-
         ExtendedIterator<Binding> iter = graphIter.mapWith( r -> mapper(resultsBuilder, s, p, o, r)).filterDrop(Objects::isNull);
         return iter;
     }

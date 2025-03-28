@@ -38,6 +38,8 @@ public interface FactoryRDF {
 
     public Node createLangLiteral(String lexical, String langTag);
 
+    public Node createLangDirLiteral(String lexical, String langTag, String direction);
+
     public Node createStringLiteral(String lexical);
 
     /** Create a blank node which is completely new and used nowhere else. */

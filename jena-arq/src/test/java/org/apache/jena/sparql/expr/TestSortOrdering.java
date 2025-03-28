@@ -102,30 +102,30 @@ public class TestSortOrdering {
 //    }
 
     @Test public void ordering_20() {
-        String s1 = "<<:s1 :p :o>>";
-        String s2 = "<<:s2 :p :o>>";
-        String s3 = "<<:s3 :p :o>>";
+        String s1 = "<<(:s1 :p :o)>>";
+        String s2 = "<<(:s2 :p :o)>>";
+        String s3 = "<<(:s3 :p :o)>>";
         test(s1, s2, s3);
     }
 
     @Test public void ordering_21() {
-        String s1 = "<<:s :p :o>>";
-        String s2 = "<<:s :p :o1>>";
-        String s3 = "<<:s :p1 :o1>>";
+        String s1 = "<<(:s :p :o)>>";
+        String s2 = "<<(:s :p :o1)>>";
+        String s3 = "<<(:s :p1 :o1)>>";
         test(s1, s2, s3);
     }
 
     @Test public void ordering_22() {
-        String s1 = "<<:s :p 1>>";
-        String s2 = "<<:s :p 2>>";
-        String s3 = "<<:s :p 3>>";
+        String s1 = "<<(:s :p 1)>>";
+        String s2 = "<<(:s :p 2)>>";
+        String s3 = "<<(:s :p 3)>>";
         test(s1, s2, s3);
     }
 
     @Test public void ordering_23() {
-        String s1 = "<<:s :p '1'>>";
-        String s2 = "<<:s :p '1'@en>>";
-        String s3 = "<<:s :p 1>>";
+        String s1 = "<<(:s :p '1')>>";
+        String s2 = "<<(:s :p '1'@en)>>";
+        String s3 = "<<(:s :p 1)>>";
         test(s1, s2, s3);
     }
 
@@ -153,7 +153,7 @@ public class TestSortOrdering {
     @Test public void ordering_53() {
         String s1 = "'2022-12-28T10:11:12'^^xsd:dateTime";
         String s2 = "'3033-12-28T10:11:12'^^xsd:dateTime";
-        String s3 = "<<:s :p :o>>";
+        String s3 = "<<(:s :p :o)>>";
         test(s1, s2, s3);
     }
 

@@ -87,9 +87,9 @@ public class ListUtils
         List<T> list2a = new ArrayList<>(list2);
         for ( T elt : list1 )
             list2a.remove(elt);
-        if ( list2a.size() != 0 )
-            return false;
-        return true;
+        if ( list2a.isEmpty() )
+            return true;
+        return false;
     }
 
     /**

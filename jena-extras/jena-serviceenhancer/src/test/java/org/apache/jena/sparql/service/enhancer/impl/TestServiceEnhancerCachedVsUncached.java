@@ -25,24 +25,20 @@ import java.util.Random;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.ResultSetFactory;
-import org.apache.jena.query.ResultSetFormatter;
-import org.apache.jena.query.ResultSetRewindable;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.sparql.engine.iterator.QueryIterSlice;
-import org.apache.jena.sparql.resultset.ResultSetCompare;
-import org.apache.jena.sparql.service.ServiceExecutorRegistry;
-import org.apache.jena.sparql.service.enhancer.init.ServiceEnhancerInit;
-import org.apache.jena.sparql.util.Context;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sparql.engine.iterator.QueryIterSlice;
+import org.apache.jena.sparql.resultset.ResultsCompare;
+import org.apache.jena.sparql.service.ServiceExecutorRegistry;
+import org.apache.jena.sparql.service.enhancer.init.ServiceEnhancerInit;
+import org.apache.jena.sparql.util.Context;
 
 
 /**
@@ -90,7 +86,7 @@ public class TestServiceEnhancerCachedVsUncached {
                     cxtMutator.accept(qeB.getContext());
                     rsB = ResultSetFactory.makeRewindable(qeB.execSelect());
 
-                    boolean isEqual = ResultSetCompare.equalsByValue(rsA, rsB);
+                    boolean isEqual = ResultsCompare.equalsByValue(rsA, rsB);
                     if (!isEqual) {
                         rsA.reset();
                         ResultSetFormatter.out(System.out, rsA);

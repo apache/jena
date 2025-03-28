@@ -25,10 +25,11 @@ import java.util.function.Consumer;
 import org.apache.jena.atlas.lib.Lib;
 
 /**
- * IteratorCons : the concatenation of two iterators. See also
- * {@link IteratorConcat}. If there potentially many iterators to be joined, it is
- * better to create an IteratorConcat explicitly and add each iterator. IteratorCons
- * is slightly better in the two iterator case.
+ * IteratorCons : the concatenation of two iterators.
+ * <p>
+ * See also {@link IteratorConcat}. If there potentially many iterators to be joined,
+ * it is better to create an IteratorConcat explicitly and add each iterator.
+ * IteratorCons is slightly better in the two iterator case.
  */
 public class IteratorCons<T> implements IteratorCloseable<T> {
     // No - we don't really need IteratorCons and IteratorConcat

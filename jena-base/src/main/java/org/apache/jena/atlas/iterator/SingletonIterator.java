@@ -21,29 +21,34 @@ package org.apache.jena.atlas.iterator;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
-public class SingletonIterator<T> implements Iterator<T>
-{
-    private T thing = null ;
-    private boolean yielded = false ;
+/**
+ * Use {@link Iter#singletonIterator}.
+ */
+public class SingletonIterator<T> implements Iterator<T> {
+    private T thing = null;
+    private boolean yielded = false;
 
-    public SingletonIterator(T thing) { this.thing = thing ; }
+    public static <X> Iterator<X> create(X item){ return new SingletonIterator<>(item); }
 
-    @Override
-    public boolean hasNext()
-    {
-        return ! yielded ;
+    /*package*/ SingletonIterator(T thing) {
+        this.thing = thing;
     }
 
     @Override
-    public T next()
-    {
+    public boolean hasNext() {
+        return !yielded;
+    }
+
+    @Override
+    public T next() {
         if ( yielded )
-            throw new NoSuchElementException("SingletonIterator.next") ;
-        yielded = true ;
-        return thing ;
+            throw new NoSuchElementException("SingletonIterator.next");
+        yielded = true;
+        return thing;
     }
 
     @Override
-    public void remove()
-    { throw new UnsupportedOperationException("SingletonIterator.remove") ;}
+    public void remove() {
+        throw new UnsupportedOperationException("SingletonIterator.remove");
+    }
 }

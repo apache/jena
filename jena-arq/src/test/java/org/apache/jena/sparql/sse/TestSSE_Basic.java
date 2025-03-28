@@ -237,27 +237,27 @@ public class TestSSE_Basic
     @Test public void testMisc_11()    { testNotEquals("(a)", "()"); }
     @Test public void testMisc_12()    { testNotEquals("(a)", "(<a>)"); }
 
-    @Test public void testTripleTerm_1()  { testNode("<< :s :p :o >>"); }
-    @Test public void testTripleTerm_2()  { testNode("<<:s :p :o>>"); }
-    @Test public void testTripleTerm_3()  { testNode("<< ?s ?p ?o >>"); }
-    @Test public void testTripleTerm_4()  { testNode("<<<< :s :p :o >> :q << :s :p :o >>>>"); }
+    @Test public void testTripleTerm_1()  { testNode("<<( :s :p :o )>>"); }
+    @Test public void testTripleTerm_2()  { testNode("<<(:s :p :o)>>"); }
+    @Test public void testTripleTerm_3()  { testNode("<<( ?s ?p ?o )>>"); }
+    @Test public void testTripleTerm_4()  { testNode("<<(<<( :s :p :o )>> :q <<( :s :p :o )>>)>>"); }
 
-    @Test public void testTripleTerm_10()  { parseBad("<< :s :p :o "); }
-    @Test public void testTripleTerm_11()  { parseBad("<< :s >>"); }
-    @Test public void testTripleTerm_12()  { parseBad("<< :s :p >>"); }
-    @Test public void testTripleTerm_13()  { parseBad("<< <<:s :p :o >> :q >> "); }
+    @Test public void testTripleTerm_10()  { parseBad("<<( :s :p :o "); }
+    @Test public void testTripleTerm_11()  { parseBad("<<( :s )>>"); }
+    @Test public void testTripleTerm_12()  { parseBad("<<( :s :p )>>"); }
+    @Test public void testTripleTerm_13()  { parseBad("<<( <<(:s :p :o )>> :q )>> "); }
 
-    @Test public void testQuotedTriple_1()  { testNode("(qtriple :s :p :o)"); }
-    @Test public void testQuotedTriple_2()  { testNode("(qtriple :s :p :o)"); }
-    @Test public void testQuotedTriple_3()  { testNode("(qtriple ?s ?p ?o)"); }
-    @Test public void testQuotedTriple_4()  { testNode("(qtriple (qtriple :s :p :o ) :q (qtriple :s :p :o))"); }
-    @Test public void testQuotedTriple_5()  { testNode("(qtriple << :s :p :o >> :q << :s :p :o >>)"); }
+    @Test public void testTripleTermTag_1()  { testNode("(tripleterm :s :p :o)"); }
+    @Test public void testTripleTermTag_2()  { testNode("(tripleterm :s :p :o)"); }
+    @Test public void testTripleTermTag_3()  { testNode("(tripleterm ?s ?p ?o)"); }
+    @Test public void testTripleTermTag_4()  { testNode("(tripleterm (tripleterm :s :p :o ) :q (tripleterm :s :p :o))"); }
+    @Test public void testTripleTermTag_5()  { testNode("(tripleterm <<( :s :p :o )>> :q <<( :s :p :o )>>)"); }
 
     // Legal as  structure, can't be lifted.
-    @Test public void testQuotedTriple_11()  { parseBadNoLift("(qtriple :s)"); }
-    @Test public void testQuotedTriple_12()  { parseBadNoLift("(qtriple :s :p)"); }
-    @Test public void testQuotedTriple_13()  { parseBadNoLift("(qtriple (qtriple :s :p :o) :q "); }
-    @Test public void testQuotedTriple_14()  { parseBadNoLift("(qtriple <<:s :p :o >> :q "); }
+    @Test public void testTripleTermTag_11()  { parseBadNoLift("(tripleterm :s)"); }
+    @Test public void testTripleTermTag_12()  { parseBadNoLift("(tripleterm :s :p)"); }
+    @Test public void testTripleTermTag_13()  { parseBadNoLift("(tripleterm (tripleterm :s :p :o) :q "); }
+    @Test public void testTripleTermTag_14()  { parseBadNoLift("(tripleterm <<(:s :p :o )>> :q "); }
 
 
     @Test
