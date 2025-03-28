@@ -51,13 +51,13 @@ public class CmdLangTag {
         try {
             System.out.printf("%-16s %s\n", "Input:", languageTag);
             LangTag langTag = SysLangTag.create(languageTag);
-            System.out.printf("%-16s %s\n", "Formatted:", langTag.str());
-            print("Language:",    langTag.getLanguage(), true);
-            print("Script:",      langTag.getScript(), true);
-            print("Region:",      langTag.getRegion(), true);
-            print("Variant:",     langTag.getVariant(), false);
-            print("Extension:",   langTag.getExtension(), false);
-            print("Private Use:", langTag.getPrivateUse(), false);
+            print("Formatted:",   langTag.str(),            true);
+            print("Language:",    langTag.getLanguage(),    true);
+            print("Script:",      langTag.getScript(),      true);
+            print("Region:",      langTag.getRegion(),      true);
+            print("Variant:",     langTag.getVariant(),     false);
+            print("Extension:",   langTag.getExtension(),   false);
+            print("Private Use:", langTag.getPrivateUse(),  false);
         } catch (LangTagException ex) {
             System.out.println("Bad language tag");
             System.out.printf("%s\n", ex.getMessage());

@@ -44,10 +44,7 @@ import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.FusekiCoreInfo;
 import org.apache.jena.fuseki.servlets.SPARQL_QueryGeneral;
-import org.apache.jena.fuseki.validation.DataValidator;
-import org.apache.jena.fuseki.validation.IRIValidator;
-import org.apache.jena.fuseki.validation.QueryValidator;
-import org.apache.jena.fuseki.validation.UpdateValidator;
+import org.apache.jena.fuseki.validation.*;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFParser;
@@ -710,10 +707,11 @@ public class FusekiMain extends CmdARQ {
 
         if ( serverArgs.validators ) {
             // Validators.
-            builder.addServlet("/$/validate/query",  new QueryValidator());
-            builder.addServlet("/$/validate/update", new UpdateValidator());
-            builder.addServlet("/$/validate/iri",    new IRIValidator());
-            builder.addServlet("/$/validate/data",   new DataValidator());
+            builder.addServlet("/$/validate/query",     new QueryValidator());
+            builder.addServlet("/$/validate/update",    new UpdateValidator());
+            builder.addServlet("/$/validate/iri",       new IRIValidator());
+            builder.addServlet("/$/validate/langtag",   new LangTagValidator());
+            builder.addServlet("/$/validate/data",      new DataValidator());
         }
 
         // Apply argument for the database services
