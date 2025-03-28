@@ -36,7 +36,7 @@ import org.apache.jena.update.UpdateRequest;
 
 public class UpdateValidatorHTML
 {
-    public UpdateValidatorHTML()
+    private UpdateValidatorHTML()
     { }
 
     static final String paramLineNumbers      = "linenumbers";

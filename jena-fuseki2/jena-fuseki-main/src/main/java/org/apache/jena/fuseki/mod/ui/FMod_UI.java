@@ -35,10 +35,7 @@ import org.apache.jena.fuseki.main.FusekiServer;
 import org.apache.jena.fuseki.main.cmds.ServerArgs;
 import org.apache.jena.fuseki.main.sys.FusekiModule;
 import org.apache.jena.fuseki.mgt.FusekiServerCtl;
-import org.apache.jena.fuseki.validation.DataValidator;
-import org.apache.jena.fuseki.validation.IRIValidator;
-import org.apache.jena.fuseki.validation.QueryValidator;
-import org.apache.jena.fuseki.validation.UpdateValidator;
+import org.apache.jena.fuseki.validation.*;
 import org.apache.jena.rdf.model.Model;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.resource.ResourceFactory;
@@ -117,6 +114,7 @@ public class FMod_UI implements FusekiModule {
                .addServlet("/$/validate/query",     new QueryValidator())
                .addServlet("/$/validate/update",    new UpdateValidator())
                .addServlet("/$/validate/iri",       new IRIValidator())
+               .addServlet("/$/validate/langtag",   new LangTagValidator())
                .addServlet("/$/validate/data",      new DataValidator())
                .enableStats(true);
         // LOG.info("Fuseki UI loaded");

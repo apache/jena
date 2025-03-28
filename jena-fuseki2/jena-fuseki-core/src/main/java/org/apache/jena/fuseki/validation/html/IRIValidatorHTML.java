@@ -33,7 +33,7 @@ import org.apache.jena.irix.IRIx;
 
 public class IRIValidatorHTML
 {
-    public IRIValidatorHTML()
+    private IRIValidatorHTML()
     { }
 
     static final String paramIRI      = "iri";
