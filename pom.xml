@@ -77,12 +77,12 @@
     <ver.shiro>2.0.2</ver.shiro>
     <ver.omnifaces>4.6.1</ver.omnifaces>
 
-    <ver.protobuf>4.30.1</ver.protobuf>
+    <ver.protobuf>4.30.2</ver.protobuf>
     <ver.libthrift>0.21.0</ver.libthrift>
 
     <ver.caffeine>3.2.0</ver.caffeine>
     <!-- Most of Jena uses other libraries for equivalent functionality. -->
-    <ver.guava>33.4.5-jre</ver.guava>
+    <ver.guava>33.4.6-jre</ver.guava>
 
     <ver.gson>2.12.1</ver.gson>
     <ver.lucene>9.12.1</ver.lucene>
