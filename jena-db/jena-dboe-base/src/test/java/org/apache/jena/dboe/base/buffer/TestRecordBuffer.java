@@ -24,7 +24,7 @@ import static org.apache.jena.dboe.test.RecordLib.r;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.apache.jena.dboe.base.record.Record;
 import org.apache.jena.dboe.base.record.RecordFactory;
 import org.apache.jena.dboe.sys.SystemIndex;
@@ -33,7 +33,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestRecordBuffer extends Assert
+public class TestRecordBuffer
 {
     static RecordFactory recordFactory = new RecordFactory(RecordLib.TestRecordLength, 0);
 

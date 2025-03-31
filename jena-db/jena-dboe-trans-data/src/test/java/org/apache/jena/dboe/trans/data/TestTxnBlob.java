@@ -18,12 +18,19 @@
 
 package org.apache.jena.dboe.trans.data;
 
+
+import static org.junit.Assert.*;
+
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import org.apache.jena.dboe.base.file.BufferChannel;
 import org.apache.jena.dboe.base.file.BufferChannelMem;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.transaction.Transactional;
 import org.apache.jena.dboe.transaction.TransactionalFactory;
 import org.apache.jena.dboe.transaction.txn.ComponentId;
@@ -31,12 +38,9 @@ import org.apache.jena.dboe.transaction.txn.journal.Journal;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.system.ThreadAction;
 import org.apache.jena.system.ThreadTxn;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.jena.system.Txn;
 
-public class TestTxnBlob extends Assert {
+public class TestTxnBlob {
     private Journal         journal;
     private TransBlob       transBlob;
     private Transactional   transactional;

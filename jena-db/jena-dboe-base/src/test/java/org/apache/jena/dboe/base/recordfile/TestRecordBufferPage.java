@@ -18,7 +18,12 @@
 
 package org.apache.jena.dboe.base.recordfile;
 
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import org.apache.jena.dboe.base.block.BlockMgr;
 import org.apache.jena.dboe.base.block.BlockMgrFactory;
 import org.apache.jena.dboe.base.buffer.RecordBuffer;
@@ -27,11 +32,8 @@ import org.apache.jena.dboe.base.record.RecordFactory;
 import org.apache.jena.dboe.base.recordbuffer.RecordBufferPage;
 import org.apache.jena.dboe.base.recordbuffer.RecordBufferPageMgr;
 import org.apache.jena.dboe.sys.SystemIndex;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
-public class TestRecordBufferPage extends Assert
+public class TestRecordBufferPage
 {
     // Testing: records are 2 bytes, 3 records per block.
 

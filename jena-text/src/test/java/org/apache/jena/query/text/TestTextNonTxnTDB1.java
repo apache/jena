@@ -22,148 +22,147 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.junit.AssertExtra ;
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.sse.SSE ;
+import org.junit.Test;
+
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.tdb1.TDB1;
 import org.apache.jena.tdb1.TDB1Factory;
-import org.apache.jena.vocabulary.RDFS ;
+import org.apache.jena.vocabulary.RDFS;
 import org.apache.lucene.store.ByteBuffersDirectory;
-import org.apache.lucene.store.Directory ;
-import org.junit.Test ;
+import org.apache.lucene.store.Directory;
 
 /** Text dataset tests using TDB1 non-transactionally, including context unionDefaultGraph */
-public class TestTextNonTxnTDB1 extends AssertExtra
-{
+public class TestTextNonTxnTDB1 {
     private static Dataset create() {
-        Dataset ds1 = TDB1Factory.createDataset() ;
-        Directory dir = new ByteBuffersDirectory() ;
+        Dataset ds1 = TDB1Factory.createDataset();
+        Directory dir = new ByteBuffersDirectory();
         EntityDefinition eDef = new EntityDefinition("iri", "text");
         eDef.setPrimaryPredicate(RDFS.label);
-        TextIndex tidx = new TextIndexLucene(dir, new TextIndexConfig(eDef)) ;
-        Dataset ds = TextDatasetFactory.create(ds1, tidx) ;
-        return ds ;
+        TextIndex tidx = new TextIndexLucene(dir, new TextIndexConfig(eDef));
+        Dataset ds = TextDatasetFactory.create(ds1, tidx);
+        return ds;
     }
 
     @Test public void textTDB1_1() {
         // Check the union graph stil works
-        Dataset ds = create() ;
-        ds.getContext().set(TDB1.symUnionDefaultGraph, true) ;
-        Quad quad = SSE.parseQuad("(<g> <p> rdfs:label 'foo')") ;
-        ds.asDatasetGraph().add(quad) ;
-        Query q = QueryFactory.create("SELECT * { ?s ?p ?o }") ;
-        QueryExecution qexec = QueryExecutionFactory.create(q, ds) ;
-        ResultSet rs = qexec.execSelect() ;
-        List<QuerySolution> x = Iter.toList(rs) ;
+        Dataset ds = create();
+        ds.getContext().set(TDB1.symUnionDefaultGraph, true);
+        Quad quad = SSE.parseQuad("(<g> <p> rdfs:label 'foo')");
+        ds.asDatasetGraph().add(quad);
+        Query q = QueryFactory.create("SELECT * { ?s ?p ?o }");
+        QueryExecution qexec = QueryExecutionFactory.create(q, ds);
+        ResultSet rs = qexec.execSelect();
+        List<QuerySolution> x = Iter.toList(rs);
         assertEquals(1,x.size());
     }
 
     @Test public void textTDB1_2() {
         // Check text query and union graph
-        Dataset ds = create() ;
-        ds.getContext().set(TDB1.symUnionDefaultGraph, true) ;
-        Quad quad = SSE.parseQuad("(<g> <s> rdfs:label 'foo')") ;
-        ds.asDatasetGraph().add(quad) ;
+        Dataset ds = create();
+        ds.getContext().set(TDB1.symUnionDefaultGraph, true);
+        Quad quad = SSE.parseQuad("(<g> <s> rdfs:label 'foo')");
+        ds.asDatasetGraph().add(quad);
 
         String qs = StrUtils.strjoinNL("PREFIX text: <http://jena.apache.org/text#>",
                                        "PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>",
                                        "SELECT *",
-                                       "{ ?s text:query 'foo' ;",
+                                       "{ ?s text:query 'foo';",
                                        "     rdfs:label 'foo'",
                                        "}"
-                                       ) ;
-        Query q = QueryFactory.create(qs) ;
-        QueryExecution qexec = QueryExecutionFactory.create(q, ds) ;
-        ResultSet rs = qexec.execSelect() ;
-        List<QuerySolution> x = Iter.toList(rs) ;
+                                       );
+        Query q = QueryFactory.create(qs);
+        QueryExecution qexec = QueryExecutionFactory.create(q, ds);
+        ResultSet rs = qexec.execSelect();
+        List<QuerySolution> x = Iter.toList(rs);
         assertEquals(1,x.size());
     }
 
     @Test public void textTDB1_3() {
-        Dataset ds = create() ;
-        ds.getContext().set(TDB1.symUnionDefaultGraph, true) ;
+        Dataset ds = create();
+        ds.getContext().set(TDB1.symUnionDefaultGraph, true);
         data(ds,
              "(<ex:g1> <s1> rdfs:label 'foo')",
-             "(<ex:g2> <s2> rdfs:label 'bar')") ;
+             "(<ex:g2> <s2> rdfs:label 'bar')");
 
-        ds.begin(ReadWrite.READ) ;
+        ds.begin(ReadWrite.READ);
         String qs = StrUtils.strjoinNL(
             "PREFIX text: <http://jena.apache.org/text#>",
             "PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>",
             "SELECT *",
-            "{ ?s text:query 'foo' ;",
+            "{ ?s text:query 'foo';",
             "     rdfs:label 'foo'",
             "}"
-            ) ;
+            );
 
-        Query q = QueryFactory.create(qs) ;
-        QueryExecution qexec = QueryExecutionFactory.create(q, ds) ;
-        ResultSet rs = qexec.execSelect() ;
-        List<QuerySolution> x = Iter.toList(rs) ;
-        ds.end() ;
+        Query q = QueryFactory.create(qs);
+        QueryExecution qexec = QueryExecutionFactory.create(q, ds);
+        ResultSet rs = qexec.execSelect();
+        List<QuerySolution> x = Iter.toList(rs);
+        ds.end();
         assertEquals(1,x.size());
     }
 
     @Test public void textTDB1_4() {
-        Dataset ds = create() ;
+        Dataset ds = create();
         data(ds,
              "(<ex:g1> <s1> rdfs:label 'foo')",
              "(<ex:g1> <s2> rdfs:label 'apple')",
-             "(<ex:g2> <s3> rdfs:label 'bar')") ;
+             "(<ex:g2> <s3> rdfs:label 'bar')");
 
-        ds.begin(ReadWrite.READ) ;
+        ds.begin(ReadWrite.READ);
         String qs = StrUtils.strjoinNL(
             "PREFIX text:   <http://jena.apache.org/text#>",
             "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
             "SELECT *",
             "FROM <ex:g1>",
             "{ ?s text:query 'foo' . ?s rdfs:label ?o }"
-            ) ;
-        Query q = QueryFactory.create(qs) ;
-        QueryExecution qexec = QueryExecutionFactory.create(q, ds) ;
-        ResultSet rs = qexec.execSelect() ;
-        List<QuerySolution> x = Iter.toList(rs) ;
-        ds.end() ;
+            );
+        Query q = QueryFactory.create(qs);
+        QueryExecution qexec = QueryExecutionFactory.create(q, ds);
+        ResultSet rs = qexec.execSelect();
+        List<QuerySolution> x = Iter.toList(rs);
+        ds.end();
         assertEquals(1,x.size());
     }
 
     @Test public void textTDB1_5() {
-        Dataset ds = create() ;
+        Dataset ds = create();
         data(ds,
              "(<ex:g1> <s1> rdfs:label 'foo')",
              "(<ex:g1> <s2> rdfs:label 'apple')",
-             "(<ex:g2> <s3> rdfs:label 'food')") ;
+             "(<ex:g2> <s3> rdfs:label 'food')");
 
-        ds.begin(ReadWrite.READ) ;
+        ds.begin(ReadWrite.READ);
         String qs = StrUtils.strjoinNL(
             "PREFIX text:   <http://jena.apache.org/text#>",
             "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
             "SELECT *",
             "FROM <"+Quad.unionGraph.getURI()+">",
             "{ ?s text:query 'foo*' . ?s rdfs:label ?o }"
-            ) ;
-        Query q = QueryFactory.create(qs) ;
-        QueryExecution qexec = QueryExecutionFactory.create(q, ds) ;
-        ResultSet rs = qexec.execSelect() ;
-        List<QuerySolution> x = Iter.toList(rs) ;
-        ds.end() ;
+            );
+        Query q = QueryFactory.create(qs);
+        QueryExecution qexec = QueryExecutionFactory.create(q, ds);
+        ResultSet rs = qexec.execSelect();
+        List<QuerySolution> x = Iter.toList(rs);
+        ds.end();
         assertEquals(2,x.size());
     }
 
     @Test public void textTDB1_6() {
-        Dataset ds = create() ;
+        Dataset ds = create();
         data(ds,
              "(<ex:g1> <s1> rdfs:label 'foo')",
              "(<ex:g1> <s2> rdfs:label 'apple')",
-             "(<ex:g2> <s3> rdfs:label 'food')") ;
+             "(<ex:g2> <s3> rdfs:label 'food')");
 
-        ds.begin(ReadWrite.READ) ;
+        ds.begin(ReadWrite.READ);
         String qs = StrUtils.strjoinNL(
             "PREFIX text:   <http://jena.apache.org/text#>",
             "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
@@ -171,17 +170,17 @@ public class TestTextNonTxnTDB1 extends AssertExtra
             "{ GRAPH <"+Quad.unionGraph.getURI()+">",
             "    { ?s text:query 'foo*' . ?s rdfs:label ?o }",
             "}"
-            ) ;
-        Query q = QueryFactory.create(qs) ;
-        QueryExecution qexec = QueryExecutionFactory.create(q, ds) ;
-        ResultSet rs = qexec.execSelect() ;
-        List<QuerySolution> x = Iter.toList(rs) ;
-        ds.end() ;
+            );
+        Query q = QueryFactory.create(qs);
+        QueryExecution qexec = QueryExecutionFactory.create(q, ds);
+        ResultSet rs = qexec.execSelect();
+        List<QuerySolution> x = Iter.toList(rs);
+        ds.end();
         assertEquals(2,x.size());
     }
 
     @Test public void textTDB1_7_subject_bound_first() {
-        Dataset ds = create() ;
+        Dataset ds = create();
         data(ds,
             "(<ex:g1> <s1> rdfs:label 'foo')",
             "(<ex:g1> <s1> rdf:type <http://example.org/Entity>)",
@@ -190,24 +189,24 @@ public class TestTextNonTxnTDB1 extends AssertExtra
             "(<ex:g2> <s3> rdfs:label 'food')",
             "(<ex:g2> <s3> rdf:type <http://example.org/Entity>)");
 
-        ds.begin(ReadWrite.READ) ;
+        ds.begin(ReadWrite.READ);
         String qs = StrUtils.strjoinNL(
             "PREFIX text:   <http://jena.apache.org/text#>",
             "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
             "SELECT *",
             "FROM <ex:g1>",
             "{ ?s a <http://example.org/Entity> . ?s text:query 'foo' }"
-            ) ;
-        Query q = QueryFactory.create(qs) ;
-        QueryExecution qexec = QueryExecutionFactory.create(q, ds) ;
-        ResultSet rs = qexec.execSelect() ;
-        List<QuerySolution> x = Iter.toList(rs) ;
-        ds.end() ;
+            );
+        Query q = QueryFactory.create(qs);
+        QueryExecution qexec = QueryExecutionFactory.create(q, ds);
+        ResultSet rs = qexec.execSelect();
+        List<QuerySolution> x = Iter.toList(rs);
+        ds.end();
         assertEquals(1,x.size());
     }
 
     @Test public void textTDB1_8_bnode_subject() {
-        Dataset ds = create() ;
+        Dataset ds = create();
         dataTurtle(ds,
             StrUtils.strjoinNL(
                 "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
@@ -215,23 +214,23 @@ public class TestTextNonTxnTDB1 extends AssertExtra
             )
         );
 
-        ds.begin(ReadWrite.READ) ;
+        ds.begin(ReadWrite.READ);
         String qs = StrUtils.strjoinNL(
             "PREFIX text:   <http://jena.apache.org/text#>",
             "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
             "SELECT *",
             "{ ?s text:query 'foo' . ?s a <http://example.org/Entity> }"
-            ) ;
-        Query q = QueryFactory.create(qs) ;
-        QueryExecution qexec = QueryExecutionFactory.create(q, ds) ;
-        ResultSet rs = qexec.execSelect() ;
-        List<QuerySolution> x = Iter.toList(rs) ;
-        ds.end() ;
+            );
+        Query q = QueryFactory.create(qs);
+        QueryExecution qexec = QueryExecutionFactory.create(q, ds);
+        ResultSet rs = qexec.execSelect();
+        List<QuerySolution> x = Iter.toList(rs);
+        ds.end();
         assertEquals(1,x.size());
     }
 
     @Test public void textTDB1_9_bnode_subject_bound_first() {
-        Dataset ds = create() ;
+        Dataset ds = create();
         dataTurtle(ds,
             StrUtils.strjoinNL(
                 "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
@@ -239,25 +238,25 @@ public class TestTextNonTxnTDB1 extends AssertExtra
             )
         );
 
-        ds.begin(ReadWrite.READ) ;
+        ds.begin(ReadWrite.READ);
         String qs = StrUtils.strjoinNL(
             "PREFIX text:   <http://jena.apache.org/text#>",
             "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
             "SELECT *",
             "{ ?s a <http://example.org/Entity> . ?s text:query 'foo' }"
-            ) ;
-        Query q = QueryFactory.create(qs) ;
-        QueryExecution qexec = QueryExecutionFactory.create(q, ds) ;
-        ResultSet rs = qexec.execSelect() ;
-        List<QuerySolution> x = Iter.toList(rs) ;
-        ds.end() ;
+            );
+        Query q = QueryFactory.create(qs);
+        QueryExecution qexec = QueryExecutionFactory.create(q, ds);
+        ResultSet rs = qexec.execSelect();
+        List<QuerySolution> x = Iter.toList(rs);
+        ds.end();
         assertEquals(1,x.size());
     }
 
     private static void data(Dataset ds, String... quadStrs) {
         for ( String qs : quadStrs ) {
-            Quad quad = SSE.parseQuad(qs) ;
-            ds.asDatasetGraph().add(quad) ;
+            Quad quad = SSE.parseQuad(qs);
+            ds.asDatasetGraph().add(quad);
         }
     }
 

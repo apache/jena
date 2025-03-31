@@ -29,7 +29,6 @@ import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
-import org.junit.Assert ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
@@ -38,7 +37,7 @@ import org.junit.runners.Parameterized.Parameters ;
 
 @RunWith(Parameterized.class)
 
-public class TestTriXBad extends Assert /*BaseTest*/ {
+public class TestTriXBad {
 
     static String DIR = "testing/RIOT/Lang/TriX" ;
 

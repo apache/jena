@@ -18,17 +18,17 @@
 
 package org.apache.jena.dboe.base.file;
 
-import org.junit.Assert;
-
 import static org.apache.jena.dboe.test.BufferTestLib.sameValue;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
-import org.apache.jena.dboe.base.block.Block;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class AbstractTestBlockAccessFixedSize extends Assert
-{
+import org.apache.jena.dboe.base.block.Block;
+
+public abstract class AbstractTestBlockAccessFixedSize {
     // Fixed block tests.
 
     int blkSize;

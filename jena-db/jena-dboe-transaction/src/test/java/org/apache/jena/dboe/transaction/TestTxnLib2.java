@@ -22,8 +22,10 @@ import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.transaction.txn.TransactionCoordinator;
+
+import static org.junit.Assert.*;
+
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,7 +33,7 @@ import org.junit.Test;
  *  Rather than a TransactionalComponent,
  *  TransactionalInteger
  */
-public class TestTxnLib2 extends Assert {
+public class TestTxnLib2 {
     // With setup/teardown / not from AbstractTestTxn
     private final long InitValue = 7;
     TransactionalInteger integer;

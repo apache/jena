@@ -18,10 +18,13 @@
 
 package org.apache.jena.sparql.engine.join;
 
+import static org.junit.Assert.fail;
+
+import org.junit.Test ;
+
 import org.apache.jena.sparql.algebra.Table ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.expr.ExprList ;
-import org.junit.Test ;
 
 /** Tests for inner/equi joins */
 public abstract class AbstractTestInnerJoin extends AbstractTestJoin {

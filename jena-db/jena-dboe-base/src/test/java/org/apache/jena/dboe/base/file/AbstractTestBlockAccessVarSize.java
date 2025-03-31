@@ -21,6 +21,9 @@ package org.apache.jena.dboe.base.file;
 import static org.apache.jena.dboe.test.BufferTestLib.*;
 
 import org.apache.jena.dboe.base.block.Block;
+
+import static org.junit.Assert.assertNotSame;
+
 import org.junit.Test;
 
 public abstract class AbstractTestBlockAccessVarSize extends AbstractTestBlockAccessFixedSize

@@ -20,11 +20,13 @@ package org.apache.jena.dboe.base.record;
 
 import static org.apache.jena.dboe.test.RecordLib.intToRecord;
 import static org.apache.jena.dboe.test.RecordLib.recordToInt;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-public class TestRecord extends Assert
+public class TestRecord
 {
     static final public int RecLen = 4;
 

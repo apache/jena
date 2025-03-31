@@ -28,6 +28,9 @@ import static org.apache.jena.riot.RDFFormat.NTRIPLES;
 import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.pGraphName;
 import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.pNamedGraph;
 import static org.apache.jena.vocabulary.RDF.type;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,6 +39,8 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
+
+import org.junit.Test;
 
 import org.apache.jena.assembler.JA ;
 import org.apache.jena.assembler.exceptions.CannotConstructException;
@@ -50,14 +55,12 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.util.IsoMatcher;
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Tests for {@link InMemDatasetAssembler}
  *
  */
-public class TestInMemDatasetAssembler extends Assert {
+public class TestInMemDatasetAssembler {
 
     private static File createTempFile(String prefix, String suffix) throws IOException {
         Path path =  Files.createTempFile(prefix, suffix);

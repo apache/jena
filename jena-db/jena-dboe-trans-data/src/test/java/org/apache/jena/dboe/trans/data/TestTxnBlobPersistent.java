@@ -29,9 +29,12 @@ import org.apache.jena.dboe.transaction.Transactional;
 import org.apache.jena.dboe.transaction.TransactionalFactory;
 import org.apache.jena.dboe.transaction.txn.ComponentId;
 import org.apache.jena.dboe.transaction.txn.journal.Journal;
+
+import static org.junit.Assert.*;
+
 import org.junit.*;
 
-public class TestTxnBlobPersistent extends Assert {
+public class TestTxnBlobPersistent {
     private final static String DIR  = "target/blobtest";
     private final static String JRNL = DIR+"/journal.jrnl";
     private final static String DATA = DIR+"/blob.data";
