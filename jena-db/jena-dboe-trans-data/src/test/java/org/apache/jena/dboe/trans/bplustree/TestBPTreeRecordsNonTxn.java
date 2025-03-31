@@ -27,9 +27,12 @@ import org.apache.jena.dboe.base.recordbuffer.RecordBufferPage;
 import org.apache.jena.dboe.base.recordbuffer.RecordBufferPageMgr;
 import org.apache.jena.dboe.sys.SystemIndex;
 import org.apache.jena.dboe.test.RecordLib;
+
+import static org.junit.Assert.*;
+
 import org.junit.*;
 
-public class TestBPTreeRecordsNonTxn extends Assert {
+public class TestBPTreeRecordsNonTxn {
     static private boolean             oldNullOut;
 
     static private int                 blockSize;

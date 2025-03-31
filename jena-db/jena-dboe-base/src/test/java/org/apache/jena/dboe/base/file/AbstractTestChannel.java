@@ -20,12 +20,12 @@ package org.apache.jena.dboe.base.file;
 
 import java.nio.ByteBuffer;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class AbstractTestChannel extends Assert
+public abstract class AbstractTestChannel
 {
     protected abstract BufferChannel open();
 

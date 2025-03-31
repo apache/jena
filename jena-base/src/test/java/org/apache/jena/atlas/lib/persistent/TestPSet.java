@@ -19,13 +19,13 @@
 package org.apache.jena.atlas.lib.persistent;
 
 import static java.util.stream.Collectors.toSet;
+import static org.junit.Assert.*;
 
 import java.util.Set;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-public class TestPSet extends Assert {
+public class TestPSet {
 
 	@Test
 	public void plusAndMinusWorkCorrectly() {

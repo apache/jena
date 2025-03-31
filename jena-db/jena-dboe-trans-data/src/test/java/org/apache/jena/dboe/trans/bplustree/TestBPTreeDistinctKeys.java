@@ -34,6 +34,7 @@ import java.util.*;
 import static org.apache.jena.dboe.index.testlib.IndexTestLib.testInsert;
 import static org.apache.jena.dboe.test.RecordLib.TestRecordLength;
 import static org.apache.jena.dboe.test.RecordLib.toIntList;
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class TestBPTreeDistinctKeys extends TestBPTreeModes {

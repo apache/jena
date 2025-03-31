@@ -18,20 +18,21 @@
 
 package org.apache.jena.sparql.core.mem;
 
-import static org.awaitility.Awaitility.await ;
 import static org.apache.jena.graph.NodeFactory.createBlankNode ;
 import static org.apache.jena.query.ReadWrite.READ ;
 import static org.apache.jena.query.ReadWrite.WRITE ;
+import static org.awaitility.Awaitility.await ;
+import static org.junit.Assert.*;
 import static org.slf4j.LoggerFactory.getLogger ;
 
 import java.util.concurrent.atomic.AtomicBoolean ;
 
-import org.apache.jena.sparql.core.Quad ;
-import org.junit.Assert ;
 import org.junit.Test ;
+
+import org.apache.jena.sparql.core.Quad ;
 import org.slf4j.Logger ;
 
-public class TestDatasetGraphInMemoryThreading extends Assert {
+public class TestDatasetGraphInMemoryThreading {
 
 	Logger log = getLogger(TestDatasetGraphInMemoryThreading.class);
 
@@ -51,7 +52,6 @@ public class TestDatasetGraphInMemoryThreading extends Assert {
 
 		// we introduce a Writer thread
 		new Thread() {
-
 			@Override
 			public void run() {
 				dsg.begin(WRITE);

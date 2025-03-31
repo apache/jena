@@ -20,6 +20,8 @@ package org.apache.jena.dboe.trans.bplustree;
 
 import static org.apache.jena.dboe.index.testlib.IndexTestLib.add;
 import static org.apache.jena.dboe.test.RecordLib.intToRecord;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 

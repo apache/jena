@@ -18,6 +18,9 @@
 
 package org.apache.jena.sparql.engine.join;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
@@ -33,10 +36,9 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.expr.ExprList ;
 import org.apache.jena.sparql.resultset.ResultSetCompare ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.junit.Assert ;
 
 /** Tests for inner/equi joins */
-public abstract class AbstractTestJoin extends Assert {
+public abstract class AbstractTestJoin {
 
     protected static Table table0() { return parseTableInt("(table)") ; }
 

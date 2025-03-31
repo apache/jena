@@ -18,15 +18,16 @@
 
 package org.apache.jena.dboe.base.buffer;
 
+import static org.junit.Assert.*;
+
 import java.nio.ByteBuffer;
 
 import org.apache.jena.dboe.sys.SystemIndex;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestPtrBuffer extends Assert
+public class TestPtrBuffer
 {
     static boolean originalNullOut;
     @BeforeClass static public void beforeClass() {

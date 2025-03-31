@@ -21,11 +21,11 @@ package org.apache.jena.dboe.base.block;
 import java.nio.ByteBuffer;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestBlockMgrTracked extends Assert
+public class TestBlockMgrTracked
 {
     // Mainly testing the tracking
 

@@ -18,16 +18,21 @@
 
 package org.apache.jena.dboe.base.file;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 
-import org.junit.Assert;
-import org.apache.jena.dboe.ConfigTestDBOE;
-import org.apache.jena.dboe.sys.Names;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestMetaFile extends Assert
+import org.apache.jena.dboe.ConfigTestDBOE;
+import org.apache.jena.dboe.sys.Names;
+
+public class TestMetaFile
 {
     String testfile = null;
     String testfileMeta = null;

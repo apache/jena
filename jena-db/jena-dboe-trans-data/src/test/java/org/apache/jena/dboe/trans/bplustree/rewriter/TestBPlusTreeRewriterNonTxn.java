@@ -22,6 +22,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import org.apache.jena.atlas.lib.Bytes;
 import org.apache.jena.dboe.base.block.BlockMgr;
 import org.apache.jena.dboe.base.block.BlockMgrFactory;
@@ -34,13 +38,8 @@ import org.apache.jena.dboe.sys.Names;
 import org.apache.jena.dboe.trans.bplustree.BPTreeException;
 import org.apache.jena.dboe.trans.bplustree.BPlusTree;
 import org.apache.jena.dboe.trans.bplustree.BPlusTreeParams;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
-public class TestBPlusTreeRewriterNonTxn extends Assert
-{
+public class TestBPlusTreeRewriterNonTxn {
     // See also CmdTestBlusTreeRewriter for randomized soak testing.
 
     static int KeySize     = 4;

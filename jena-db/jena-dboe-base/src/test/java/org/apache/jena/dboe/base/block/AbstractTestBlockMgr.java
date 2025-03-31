@@ -21,12 +21,12 @@ package org.apache.jena.dboe.base.block;
 import java.nio.ByteBuffer;
 
 import static org.apache.jena.atlas.lib.ByteBufferLib.fill;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class AbstractTestBlockMgr extends Assert {
+public abstract class AbstractTestBlockMgr {
     static final public int BlkSize  = 256;
 
     protected BlockMgr      blockMgr = null;

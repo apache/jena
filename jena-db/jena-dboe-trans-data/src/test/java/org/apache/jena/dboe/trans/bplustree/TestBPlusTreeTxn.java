@@ -18,19 +18,21 @@
 
 package org.apache.jena.dboe.trans.bplustree;
 
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.index.testlib.IndexTestLib;
-import org.apache.jena.system.Txn;
 import org.apache.jena.dboe.test.RecordLib;
 import org.apache.jena.dboe.transaction.Transactional;
 import org.apache.jena.dboe.transaction.TransactionalFactory;
 import org.apache.jena.dboe.transaction.txn.TransactionalComponent;
 import org.apache.jena.query.ReadWrite;
-import org.junit.Assert;
-import org.junit.Test;
+import org.apache.jena.system.Txn;
 
 /** Tests of B+Tree and transactions */
-public class TestBPlusTreeTxn extends Assert {
+public class TestBPlusTreeTxn {
 
     static BPlusTree createBPTree() {
         return BPlusTreeFactory.makeMem(2, 2, RecordLib.TestRecordLength, 0);
