@@ -74,8 +74,7 @@ public class AssemblerUtils
         registerDataset(tMemoryDataset,   new InMemDatasetAssembler());
         registerDataset(tDatasetTxnMem,   new InMemDatasetAssembler());
         registerDataset(tDatasetView,     new ViewDatasetAssembler());
-
-        registerModel(tViewGraph,          new ViewGraphAssembler());
+        registerModel(tViewGraph,         new ViewGraphAssembler());
     }
 
     private static Model modelExtras = ModelFactory.createDefaultModel();
