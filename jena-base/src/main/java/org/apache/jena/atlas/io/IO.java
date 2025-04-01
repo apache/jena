@@ -209,7 +209,6 @@ public class IO
         return new InputStreamReader(in, StandardCharsets.UTF_8);
     }
 
-
     /** Create a unbuffered reader that uses ASCII encoding */
     static public Reader asASCII(InputStream in) {
         //return new InputStreamReader(in, StandardCharsets.US_ASCII);
