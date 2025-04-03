@@ -27,7 +27,6 @@ import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.resource.ResourceFactory;
 
 /** Helpers for working with Jetty.
@@ -86,19 +85,18 @@ public class JettyLib {
         mimeTypes.addMimeMapping("tsv",     WebContent.contentTypeTextTSV);
     }
 
-    /** HTTP configuration with setting for Fuseki workload. No "secure" settings. */
+    /** HTTP configuration with setting for Fuseki workload. */
     public static HttpConfiguration httpConfiguration() {
-        HttpConfiguration http_config = new HttpConfiguration();
-        // Some people do try very large operations ... really, should use POST.
-        http_config.setRequestHeaderSize(512 * 1024);
-        http_config.setOutputBufferSize(1024 * 1024);
-//      http_config.setResponseHeaderSize(8192);
-        http_config.setSendServerVersion(false);
-        return http_config;
+        HttpConfiguration httpConfig = new HttpConfiguration();
+        httpConfig.setRequestHeaderSize(FusekiSystemConstants.jettyRequestHeaderSize);
+        httpConfig.setResponseHeaderSize(FusekiSystemConstants.jettyResponseHeaderSize);
+        httpConfig.setOutputBufferSize(FusekiSystemConstants.jettyOutputBufferSize);
+        httpConfig.setSendServerVersion(false);
+        return httpConfig;
     }
 
-    /** Create a resource for a filename */
-    public static Resource newResource(String filename) {
+    /** Create a Jetty resource for a filename */
+    public static org.eclipse.jetty.util.resource.Resource newResource(String filename) {
         return ResourceFactory.root().newResource(filename);
     }
 }

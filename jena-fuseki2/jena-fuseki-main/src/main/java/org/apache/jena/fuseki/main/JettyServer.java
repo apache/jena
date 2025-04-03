@@ -36,6 +36,7 @@ import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
+import org.apache.jena.fuseki.main.sys.FusekiSystemConstants;
 import org.apache.jena.fuseki.main.sys.JettyLib;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.OperationRegistry;
@@ -64,7 +65,10 @@ import org.slf4j.LoggerFactory;
 public class JettyServer {
     // Possibility: Use this for the super class of FusekiServer or within FusekiServer.jettyServer
     // as implementation inheritance.
-    // Caution : there are small differences e.g. in building where order matters.
+    // Caution :
+    //   there are small differences e.g. in building where order matters.
+    //   Setting default (look for FusekiServerConstants)
+    //
 
     private static Logger LOG = LoggerFactory.getLogger("HTTP");
 
@@ -410,6 +414,8 @@ public class JettyServer {
             context.setDisplayName(servletContextName);
             context.setErrorHandler(errorHandler);
             context.setContextPath(contextPath);
+            // Large - for SPARQL Update by HTML forms
+            context.setMaxFormContentSize(FusekiSystemConstants.jettyMaxFormContentSize);
             if ( securityHandler != null )
                 context.setSecurityHandler(securityHandler);
             return context;
@@ -469,16 +475,12 @@ public class JettyServer {
     }
 
     private static void serverAddConnectors(Server server, int port,  boolean loopback) {
-        HttpConnectionFactory f1 = new HttpConnectionFactory();
-
-        //f1.getHttpConfiguration().setRequestHeaderSize(512 * 1024);
-        //f1.getHttpConfiguration().setOutputBufferSize(1024 * 1024);
-        f1.getHttpConfiguration().setSendServerVersion(false);
+        HttpConfiguration httpConnectionFactory = JettyLib.httpConfiguration();
+        HttpConnectionFactory f1 = new HttpConnectionFactory(httpConnectionFactory);
         ServerConnector connector = new ServerConnector(server, f1);
         connector.setPort(port);
         server.addConnector(connector);
         if ( loopback )
             connector.setHost("localhost");
     }
-
 }
