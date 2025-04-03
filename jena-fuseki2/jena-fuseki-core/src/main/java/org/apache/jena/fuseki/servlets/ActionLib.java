@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format;
+import static org.apache.jena.riot.web.HttpNames.METHOD_POST;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -394,6 +395,27 @@ public class ActionLib {
      */
     public static ContentType getContentType(HttpAction action) {
         return FusekiNetLib.getContentType(action.getRequest());
+    }
+
+    public static boolean isHTMLForm(HttpAction action) {
+        String method = action.getRequestMethod();
+        if ( ! method.equals(METHOD_POST) )
+            return false;
+
+        String ct = getContentMediaType(action);
+        return WebContent.contentTypeHTMLForm.equalsIgnoreCase(ct);
+    }
+
+    /** Get the content type without any HTTP header field parameters such as "charset=" */
+    public static String getContentMediaType(HttpAction action) {
+        String ct = action.getRequestContentType();
+        // Without ";charset="
+        if ( ct != null ) {
+            int idx = ct.indexOf(';');
+            if ( idx > 0 )
+                ct = ct.substring(0, idx).trim();
+        }
+        return ct;
     }
 
     public static void setCommonHeadersForOptions(HttpAction action) {

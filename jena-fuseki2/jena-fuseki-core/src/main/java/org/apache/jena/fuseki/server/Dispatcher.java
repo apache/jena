@@ -35,7 +35,6 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.auth.Auth;
 import org.apache.jena.fuseki.servlets.*;
 import org.apache.jena.fuseki.system.ActionCategory;
-import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
@@ -414,8 +413,15 @@ public class Dispatcher {
      * nor that access control will allow it to be performed.
      */
     private static Operation chooseOperation(HttpAction action, EndpointSet epSet) {
-        // which is a DispatchFunction.
         HttpServletRequest request = action.getRequest();
+
+        // Forces query string / HTML form processing for better error handling.
+        try {
+            request.getParameterMap();
+        } catch (Throwable th) {
+            ServletOps.errorBadRequest(th.getMessage());
+            return null;
+        }
 
         // ---- Dispatch based on HttpParams : Query, Update, GSP.
         // -- Query
@@ -431,14 +437,8 @@ public class Dispatcher {
             return Update;
 
         // ---- Content-type
-        String ct = request.getContentType();
-        // Without ";charset="
-        if ( ct != null ) {
-            int idx = ct.indexOf(';');
-            if ( idx > 0 )
-                ct = ct.substring(0, idx);
-        }
         // -- Any registration?
+        String ct = ActionLib.getContentMediaType(action);
         if ( ct != null ) {
             Operation operation = action.getOperationRegistry().findByContentType(ct);
             if ( operation != null )
@@ -459,10 +459,7 @@ public class Dispatcher {
         // Place for an extension point.
         boolean hasParams = request.getParameterMap().size() > 0;
         if ( hasParams ) {
-            // One nasty case:
-            // Bad HTML form (content-type  application/x-www-form-urlencoded), but body is not an HTML form.
-            //  map is one entry, and the key is all of the body,
-            if ( WebContent.contentTypeHTMLForm.equals(request.getContentType()) ) {
+            if ( ActionLib.isHTMLForm(action) ) {
                 ServletOps.errorBadRequest("Malformed request: unrecognized HTML form request");
                 return null;
             }

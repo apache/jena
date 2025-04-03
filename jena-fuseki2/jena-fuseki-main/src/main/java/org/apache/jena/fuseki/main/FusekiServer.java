@@ -1715,8 +1715,8 @@ public class FusekiServer {
             // Also set on the server which handles requests that don't Fuseki-dispatch.
             context.setErrorHandler(errorHandler);
             context.setContextPath(contextPath);
-            // SPARQL Update by HTML - not the best way but.
-            context.setMaxFormContentSize(1024*1024);
+            // SPARQL Update by HTML form POST (not great, but does get used)
+            context.setMaxFormContentSize(FusekiSystemConstants.jettyMaxFormContentSize);
             // securityHandler done in buildAccessControl
             return context;
         }
@@ -1825,8 +1825,8 @@ public class FusekiServer {
             if ( Fuseki.outputJettyServerHeader )
                 httpConfig.setSendServerVersion(true);
 
-            HttpConnectionFactory f1 = new HttpConnectionFactory(httpConfig);
-            ServerConnector connector = new ServerConnector(server, f1);
+            HttpConnectionFactory httpConnectionFactory = new HttpConnectionFactory(httpConfig);
+            ServerConnector connector = new ServerConnector(server, httpConnectionFactory);
             connector.setPort(port);
             server.addConnector(connector);
             server.setHandler(handler);
