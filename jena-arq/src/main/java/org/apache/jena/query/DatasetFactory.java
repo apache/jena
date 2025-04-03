@@ -301,7 +301,7 @@ public class DatasetFactory {
      */
     public static Dataset assemble(Resource resource) {
         Objects.requireNonNull(resource, "resource can not be null") ;
-        Dataset ds = (Dataset) Assembler.general.open(resource);
+        Dataset ds = (Dataset) Assembler.general().open(resource);
         return ds;
     }
 }

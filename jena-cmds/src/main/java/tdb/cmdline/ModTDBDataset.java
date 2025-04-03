@@ -111,7 +111,7 @@ public class ModTDBDataset extends ModDataset {
             root = GraphUtils.findRootByType(spec, VocabTDB1.tDatasetTDB1);
         if ( root == null )
             throw new ARQException("Not found: No such type: <" + VocabTDB1.tDatasetTDB + ">");
-        return (Dataset)Assembler.general.open(root) ;
+        return (Dataset)Assembler.general().open(root) ;
     }
 
     public Location getLocation() {

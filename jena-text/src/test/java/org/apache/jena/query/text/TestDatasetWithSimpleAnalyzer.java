@@ -101,7 +101,7 @@ public class TestDatasetWithSimpleAnalyzer extends AbstractTestDatasetWithTextIn
 //        deleteOldFiles();
         indexDir.mkdirs();
         Resource root = specModel.getResource(SPEC_ROOT_URI);
-        dataset = (Dataset) Assembler.general.open(root);
+        dataset = (Dataset) Assembler.general().open(root);
     }
     
     

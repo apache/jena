@@ -65,7 +65,7 @@ public class GraphRDFSAssembler extends AssemblerBase implements Assembler {
         if ( graph == null )
             throw new AssemblerException(root, "Required base graph missing: "+VocabRDFS.tGraphRDFS) ;
 
-        Model base = (Model)Assembler.general.open(graph);
+        Model base = (Model)Assembler.general().open(graph);
 
         String schemaFile = getAsStringValue(root, VocabRDFS.pRdfsSchemaFile);
         if ( schemaFile == null )

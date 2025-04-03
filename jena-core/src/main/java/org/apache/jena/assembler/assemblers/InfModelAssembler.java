@@ -26,6 +26,9 @@ import org.apache.jena.reasoner.rulesys.GenericRuleReasonerFactory ;
 
 public class InfModelAssembler extends ModelAssembler
     {
+
+    public InfModelAssembler() {}
+
     @Override
     protected Model openEmptyModel( Assembler a, Resource root, Mode mode )
         {
@@ -44,13 +47,13 @@ public class InfModelAssembler extends ModelAssembler
 
     protected Reasoner getReasoner( Assembler a, Resource root )
         { return getReasonerFactory( a, root ).create( root ); }
-    
+
     protected ReasonerFactory getReasonerFactory( Assembler a, Resource root )
-        { 
+        {
         Resource factory = getUniqueResource( root, JA.reasoner );
         return factory == null
             ? GenericRuleReasonerFactory.theInstance()
             : (ReasonerFactory) a.open( factory )
-            ;        
+            ;
         }
     }
