@@ -692,7 +692,7 @@ public class FusekiConfig {
         //AssemblerUtils.addRegistered(datasetDesc.getModel());
 
         Resource r = resource(configuration, datasetDesc);
-        Dataset ds = (Dataset)Assembler.general.open(r);
+        Dataset ds = (Dataset)Assembler.general().open(r);
         if ( ds == null )
             throw new FusekiConfigException("Bad description of a dataset: " + displayStr(configuration, datasetDesc));
         dsg = ds.asDatasetGraph();

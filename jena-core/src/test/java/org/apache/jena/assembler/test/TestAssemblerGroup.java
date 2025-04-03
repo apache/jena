@@ -40,7 +40,7 @@ public class TestAssemblerGroup extends AssemblerTestBase
 
     @Override protected Class<? extends Assembler> getAssemblerClass()
         { return AssemblerGroup.class; }
-    
+
     public void testEmptyAssemblerGroup()
         {
         AssemblerGroup a = AssemblerGroup.create();
@@ -51,32 +51,32 @@ public class TestAssemblerGroup extends AssemblerTestBase
 
     protected void checkFailsType( Assembler a, String type )
         {
-        try 
-            { 
-            a.open( resourceInModel( "x rdf:type " + type ) ); 
-            fail( "should trap missing implementation" ); 
+        try
+            {
+            a.open( resourceInModel( "x rdf:type " + type ) );
+            fail( "should trap missing implementation" );
             }
         catch (NoSpecificTypeException e)
             {
             assertEquals( resource( "x" ), e.getRoot() );
             }
-//        catch (NoImplementationException e) 
-//            { 
-//            assertEquals( resource( "x" ), e.getRoot() ); 
+//        catch (NoImplementationException e)
+//            {
+//            assertEquals( resource( "x" ), e.getRoot() );
 //            assertEquals( JA.Object, e.getType() );
 //            assertNotNull( e.getAssembler() );
 //            }
         }
-    
+
     public static boolean loaded = false;
-    
+
     public static class Trivial {
         // Use the hook static method - copes with classes already loaded.
         public static void whenRequiredByAssembler(AssemblerGroup ag) {
             loaded = true;
         }
     }
-    
+
     public void testLoadsClasses()
         {
         AssemblerGroup a = AssemblerGroup.create();
@@ -88,14 +88,14 @@ public class TestAssemblerGroup extends AssemblerTestBase
         assertEquals( "mockmockmock", a.open( root ) );
         assertTrue( "the assembler group did not obey the ja:loadClass directive", loaded );
         }
-    
+
     static class MockAssembler extends AssemblerBase
         {
         @Override
         public Object open( Assembler a, Resource root, Mode mode )
             { return "mockmockmock"; }
         }
-    
+
     public void testSingletonAssemblerGroup()
         {
         AssemblerGroup a = AssemblerGroup.create();
@@ -103,7 +103,7 @@ public class TestAssemblerGroup extends AssemblerTestBase
         a.openModel( resourceInModel( "x rdf:type ja:InfModel" ) );
         checkFailsType( a, "js:DefaultModel" );
         }
-    
+
     public void testMultipleAssemblerGroup()
         {
         AssemblerGroup a = AssemblerGroup.create();
@@ -113,7 +113,7 @@ public class TestAssemblerGroup extends AssemblerTestBase
         assertFalse( a.openModel( resourceInModel( "y rdf:type ja:MemoryModel" ) ) instanceof InfModel );
         checkFailsType( a, "js:DefaultModel" );
         }
-    
+
     public void testImpliedType()
         {
         AssemblerGroup a = AssemblerGroup.create();
@@ -122,22 +122,22 @@ public class TestAssemblerGroup extends AssemblerTestBase
         a.implementWith( JA.InfModel, new NamedObjectAssembler( resource( "x" ), expected ) );
         assertSame( expected, a.open( root ) );
         }
-    
+
     public void testBuiltinGroup()
         {
-        AssemblerGroup g = Assembler.general;
+        AssemblerGroup g = Assembler.general();
         assertInstanceOf( Model.class, g.open( resourceInModel( "x rdf:type ja:DefaultModel" ) ) );
         assertInstanceOf( InfModel.class, g.open( resourceInModel( "x rdf:type ja:InfModel" ) ) );
         assertMemoryModel( g.open( resourceInModel( "x rdf:type ja:MemoryModel" ) ) );
         }
-    
-    private static Assembler mockAssembler = new AssemblerBase() 
+
+    private static Assembler mockAssembler = new AssemblerBase()
         {
         @Override
         public Object open( Assembler a, Resource root, Mode mode )
             { return null; }
         };
-    
+
     public void testAddingImplAddsSubclass()
         {
         final Model [] fullModel = new Model[1];
@@ -150,19 +150,19 @@ public class TestAssemblerGroup extends AssemblerTestBase
         Resource typeA = resource( "typeA" ), typeB = resource( "typeB" );
         g.implementWith( typeA, mockAssembler );
         g.implementWith( typeB, mockAssembler );
-        g.open( root );    
+        g.open( root );
         assertTrue( fullModel[0].contains( typeA, RDFS.subClassOf, JA.Object ) );
         assertTrue( fullModel[0].contains( typeB, RDFS.subClassOf, JA.Object ) );
         }
-    
-    public static class ImplementsSPOO 
+
+    public static class ImplementsSPOO
         {
         public static void whenRequiredByAssembler( AssemblerGroup g )
             {
             g.implementWith( resource( "SPOO" ), mockAssembler );
             }
         }
-    
+
     public void testClassesLoadedBeforeAddingTypes()
         {
         String className = ImplementsSPOO.class.getName();
@@ -172,7 +172,7 @@ public class TestAssemblerGroup extends AssemblerTestBase
         g.open( root );
         assertEquals( resourceSet( "SPOO ja:MemoryModel" ), g.implementsTypes() );
         }
-    
+
     protected void assertMemoryModel( Object object )
         {
         if (object instanceof Model)
@@ -183,12 +183,12 @@ public class TestAssemblerGroup extends AssemblerTestBase
         else
             fail( "expected a Model, but got a " + object.getClass() );
         }
-    
+
     public void testPassesSelfIn()
         {
         final AssemblerGroup group = AssemblerGroup.create();
         final Object result = new Object();
-        Assembler fake = new AssemblerBase() 
+        Assembler fake = new AssemblerBase()
             {
             @Override
             public Object open( Assembler a, Resource root, Mode irrelevant )
@@ -200,7 +200,7 @@ public class TestAssemblerGroup extends AssemblerTestBase
         group.implementWith( JA.Object, fake );
         assertSame( result, group.open( resourceInModel( "x rdf:type ja:Object" ) ) );
         }
-    
+
     public void testCopyPreservesMapping()
         {
         AssemblerGroup initial = AssemblerGroup
@@ -210,5 +210,5 @@ public class TestAssemblerGroup extends AssemblerTestBase
         AssemblerGroup copy = initial.copy();
         assertSame( initial.assemblerFor( JA.InfModel ), copy.assemblerFor( JA.InfModel ) );
         }
-    
+
     }

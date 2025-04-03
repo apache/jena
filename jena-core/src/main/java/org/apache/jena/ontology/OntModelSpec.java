@@ -281,7 +281,7 @@ public class OntModelSpec {
     */
     public static OntModelSpec assemble( Resource root )
         {
-        Object assembled = Assembler.general.open( root );
+        Object assembled = Assembler.general().open( root );
         if (!(assembled instanceof OntModelSpec))
             throw new JenaException( "assemble: expected an OntModelSpec, but got a " + assembled.getClass().getName() );
         return (OntModelSpec) assembled;

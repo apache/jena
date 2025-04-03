@@ -21,16 +21,16 @@ package org.apache.jena.assembler;
 import org.apache.jena.assembler.assemblers.* ;
 
 /*
-   Assembler initialization - so it works when inside class initialization processes.
+   Assembler initialization.
    Assembler is an interface and constants are statics (implicitly or explicitly final)
    which makes controlling order tricky.
 
-   Solution: initialization code (ie. inside jenaSystem.init) must use teh methods here,
+   Solution: initialization code (ie. inside jenaSystem.init) must use the methods here,
    and not Assembler.constant.
 
-   Use ConstAssembler.general(), not Assembler.general.
+   Use ConstAssembler.general(), not Assembler.general().
 */
-public class ConstAssembler
+/*package*/ class ConstAssembler
 {
     private static Assembler defaultModel = null ;
 	public static Assembler defaultModel() {
@@ -109,10 +109,9 @@ public class ConstAssembler
 		return documentManager ;
 	}
 
-    private static AssemblerGroup general = null ;
-    public  static AssemblerGroup general() {
-        if ( general == null ) {
-            general =  AssemblerGroup.create()
+    private static AssemblerGroup general = makeGeneral();
+    private static AssemblerGroup makeGeneral() {
+        return AssemblerGroup.create()
                 .implementWith( JA.DefaultModel, defaultModel() )
                 .implementWith( JA.MemoryModel, memoryModel() )
                 .implementWith( JA.InfModel, infModel() )
@@ -127,7 +126,11 @@ public class ConstAssembler
                 .implementWith( JA.RuleSet, ruleSet() )
                 .implementWith( JA.DocumentManager, documentManager() )
                 ;
-        }
+    }
+
+    public static AssemblerGroup general() {
         return general ;
     }
+
+    static void init() {}
 }

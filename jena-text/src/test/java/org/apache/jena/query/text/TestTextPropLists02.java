@@ -146,7 +146,7 @@ public class TestTextPropLists02 extends AbstractTestDatasetWithTextIndexBase {
         TextAssembler.init();
         indexDir.mkdirs();
         Resource root = specModel.getResource(SPEC_ROOT_URI);
-        dataset = (Dataset) Assembler.general.open(root);
+        dataset = (Dataset) Assembler.general().open(root);
     }
 
 

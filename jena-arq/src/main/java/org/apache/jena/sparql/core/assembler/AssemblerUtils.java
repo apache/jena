@@ -18,51 +18,55 @@
 
 package org.apache.jena.sparql.core.assembler;
 
-import org.apache.jena.assembler.Assembler ;
-import org.apache.jena.assembler.ConstAssembler ;
-import org.apache.jena.assembler.JA ;
-import org.apache.jena.assembler.assemblers.AssemblerGroup ;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.query.* ;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.rdf.model.ResourceFactory ;
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.shared.PrefixMapping ;
-import org.apache.jena.sparql.ARQException ;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.util.Context ;
-import org.apache.jena.sparql.util.MappingRegistry ;
-import org.apache.jena.sparql.util.Symbol ;
-import org.apache.jena.sparql.util.TypeNotUniqueException ;
-import org.apache.jena.sparql.util.graph.GraphUtils ;
-import org.apache.jena.sys.JenaSystem ;
-import org.apache.jena.system.Txn;
-import org.apache.jena.vocabulary.RDFS ;
 import static org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab.*;
 
 import java.util.Objects;
+
+import org.apache.jena.assembler.Assembler;
+import org.apache.jena.assembler.JA;
+import org.apache.jena.assembler.assemblers.AssemblerGroup;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.QuerySolutionMap;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.shared.PrefixMapping;
+import org.apache.jena.sparql.ARQException;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.MappingRegistry;
+import org.apache.jena.sparql.util.Symbol;
+import org.apache.jena.sparql.util.TypeNotUniqueException;
+import org.apache.jena.sparql.util.graph.GraphUtils;
+import org.apache.jena.sys.JenaSystem;
+import org.apache.jena.system.Txn;
+import org.apache.jena.vocabulary.RDFS;
 
 public class AssemblerUtils
 {
     // Wrappers for reading things form a file - assumes one of the thing per file.
     public static PrefixMapping readPrefixMapping(String file)
     {
-        PrefixMapping pm = (PrefixMapping)AssemblerUtils.build(file, JA.PrefixMapping) ;
-        return pm ;
+        PrefixMapping pm = (PrefixMapping)AssemblerUtils.build(file, JA.PrefixMapping);
+        return pm;
     }
 
-    private static boolean initialized = false ;
+    private static boolean initialized = false;
+    private static AssemblerGroup generalAssembler = Assembler.general();
 
-    static { JenaSystem.init() ; }
+    static { JenaSystem.init(); }
 
     static public void init()
     {
         if ( initialized )
-            return ;
-        initialized = true ;
+            return;
+        initialized = true;
         registerDataset(tDataset,         new DatasetAssemblerGeneral());
         registerDataset(tDatasetOne,      new DatasetOneAssembler());
         registerDataset(tDatasetZero,     new DatasetZeroAssembler());
@@ -74,37 +78,37 @@ public class AssemblerUtils
         registerModel(tViewGraph,          new ViewGraphAssembler());
     }
 
-    private static Model modelExtras = ModelFactory.createDefaultModel() ;
+    private static Model modelExtras = ModelFactory.createDefaultModel();
 
     // Legacy. Supports assemblers using a general "rdf:type ja:dataset"
-    private static Resource datasetAssemblerType = DatasetAssemblerVocab.tDataset ;
+    private static Resource datasetAssemblerType = DatasetAssemblerVocab.tDataset;
 
     /** Register an assembler that creates a dataset */
     static public void registerDataset(Resource r, Assembler a) {
-       register(ConstAssembler.general(), r, a, datasetAssemblerType) ;
+       register(generalAssembler, r, a, datasetAssemblerType);
     }
 
     /** Register an assembler that creates a dataset */
     static public void registerModel(Resource r, Assembler a) {
-        register(ConstAssembler.general(), r, a, JA.Model) ;
+        register(generalAssembler, r, a, JA.Model);
     }
 
     /** Register an additional assembler */
     static public void register(AssemblerGroup g, Resource r, Assembler a, Resource superType) {
-        registerAssembler(g, r, a) ;
+        registerAssembler(g, r, a);
         if ( superType != null && ! superType.equals(r) ) {
             // This is called during Jena-wide initialization.
             // Use function for constant (JENA-1294)
-           modelExtras.add(r, RDFS.Init.subClassOf(), superType) ;
+           modelExtras.add(r, RDFS.Init.subClassOf(), superType);
         }
     }
 
     /** register */
     public static void registerAssembler(AssemblerGroup group, Resource r, Assembler a) {
         if ( group == null )
-            group = ConstAssembler.general();
+            group = generalAssembler;
         group.implementWith(r, a);
-        // assemblerAssertions.add(r, RDFS.subClassOf, JA.Object) ;
+        // assemblerAssertions.add(r, RDFS.subClassOf, JA.Object);
     }
 
     public static Model readAssemblerFile(String assemblerFile) {
@@ -126,18 +130,18 @@ public class AssemblerUtils
      * @return Model The same model after modification.
      */
     public static Model addRegistered(Model model) {
-        model.add(modelExtras) ;
-        return model ;
+        model.add(modelExtras);
+        return model;
     }
 
     public static Object build(String assemblerFile, String typeURI) {
-        Resource type = ResourceFactory.createResource(typeURI) ;
-        return build(assemblerFile, type) ;
+        Resource type = ResourceFactory.createResource(typeURI);
+        return build(assemblerFile, type);
     }
 
     public static Object build(String assemblerFile, Resource type) {
-        Objects.requireNonNull(assemblerFile, "No assembler file") ;
-        Model spec = readAssemblerFile(assemblerFile) ;
+        Objects.requireNonNull(assemblerFile, "No assembler file");
+        Model spec = readAssemblerFile(assemblerFile);
         return build(spec, type);
     }
 
@@ -150,13 +154,13 @@ public class AssemblerUtils
         } catch (TypeNotUniqueException ex) {
             throw new ARQException("Multiple types for: " + tDataset);
         }
-        return Assembler.general.open(root) ;
+        return generalAssembler.open(root);
     }
     /** Look for and build context declarations.
      * e.g.
      * <pre>
-     * root ... ;
-     *   ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
+     * root ...;
+     *   ja:context [ ja:cxtName "arq:queryTimeout";  ja:cxtValue "10000" ];
      *   ...
      * </pre>
      * Short name forms of context parameters can be used.
@@ -205,30 +209,30 @@ public class AssemblerUtils
     /** Look for and merge in context declarations.
      * e.g.
      * <pre>
-     * root ... ;
-     *   ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
+     * root ...;
+     *   ja:context [ ja:cxtName "arq:queryTimeout";  ja:cxtValue "10000" ];
      *   ...
      * </pre>
      * Short name forms of context parameters can be used.
      * Setting as string "undef" will remove the context setting.
      */
     public static void mergeContext(Resource r, Context context) {
-        String qs = "PREFIX ja: <"+JA.getURI()+">\nSELECT * { ?x ja:context [ ja:cxtName ?name ; ja:cxtValue ?value ] }" ;
-        QuerySolutionMap qsm = new QuerySolutionMap() ;
-        qsm.add("x", r) ;
+        String qs = "PREFIX ja: <"+JA.getURI()+">\nSELECT * { ?x ja:context [ ja:cxtName ?name; ja:cxtValue ?value ] }";
+        QuerySolutionMap qsm = new QuerySolutionMap();
+        qsm.add("x", r);
         QueryExecution qExec = QueryExecution.model(r.getModel()).query(qs).substitution(qsm).build();
-        ResultSet rs = qExec.execSelect() ;
+        ResultSet rs = qExec.execSelect();
         while ( rs.hasNext() )
         {
-            QuerySolution soln = rs.next() ;
-            String name = soln.getLiteral("name").getLexicalForm() ;
-            String value = soln.getLiteral("value").getLexicalForm() ;  // Works for numbers as well!
-            name = MappingRegistry.mapPrefixName(name) ;
-            Symbol symbol = Symbol.create(name) ;
+            QuerySolution soln = rs.next();
+            String name = soln.getLiteral("name").getLexicalForm();
+            String value = soln.getLiteral("value").getLexicalForm();  // Works for numbers as well!
+            name = MappingRegistry.mapPrefixName(name);
+            Symbol symbol = Symbol.create(name);
             if ( "undef".equalsIgnoreCase(value) )
-                context.remove(symbol) ;
+                context.remove(symbol);
             else
-                context.set(symbol, value) ;
+                context.set(symbol, value);
         }
     }
 }

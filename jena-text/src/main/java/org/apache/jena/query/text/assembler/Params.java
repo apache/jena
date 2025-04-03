@@ -264,7 +264,7 @@ public class Params {
                 throw new TextIndexException("Analyzer param spec text:paramValue must be an analyzer spec resource: " + valueNode);
             }
 
-            Analyzer analyzer = (Analyzer) Assembler.general.open((Resource) valueNode);
+            Analyzer analyzer = (Analyzer) Assembler.general().open((Resource) valueNode);
             return new ParamSpec(name, analyzer, Analyzer.class);
 
         default:

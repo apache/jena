@@ -85,7 +85,7 @@ public class VocabTDB2
     static public synchronized void init() {
         if ( initialized )
             return;
-        registerWith(Assembler.general);
+        registerWith(Assembler.general());
         initialized = true;
     }
 
