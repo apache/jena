@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.function.Consumer;
 
-import org.junit.After;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -70,13 +70,15 @@ public class TestFusekiMainCmdCustomArguments {
     @AfterAll public static void afterClass() {
         if ( level != null )
             LogCtl.setLevel(Fuseki.serverLog, level);
+        // Clear up!
     }
 
     private FusekiServer server = null;
 
-    @After public void after() {
+    @AfterEach public void after() {
         if ( server != null )
             server.stop();
+        FusekiMain.resetCustomisers();
     }
 
     @Test
@@ -139,6 +141,7 @@ public class TestFusekiMainCmdCustomArguments {
         });
         assertTrue(server.getDataAccessPointRegistry().isRegistered("/dataset"));
         assertFalse(server.getDataAccessPointRegistry().isRegistered("/ds"));
+        FusekiMain.resetCustomisers();
     }
 
     @Test
@@ -223,7 +226,7 @@ public class TestFusekiMainCmdCustomArguments {
         }
     };
 
-    // --fixed triggers replacing the comfiguration model.
+    // --fixed triggers replacing the configuration model.
     static class TestArgsCustomModelAltArg implements FusekiServerArgsCustomiser {
         final ArgDecl argDecl;
         final Model fixedModel;

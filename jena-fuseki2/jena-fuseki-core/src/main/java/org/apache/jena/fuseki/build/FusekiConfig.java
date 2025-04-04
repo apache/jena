@@ -394,7 +394,7 @@ public class FusekiConfig {
     /**
      * Read a configuration in a model.
      * Allow dataset descriptions to be carried over from another place.
-     * Add to a list.
+     * Add the {@link DataAccessPoint} to a list.
      */
     private static void readConfiguration(Graph configuration, DatasetDescriptionMap dsDescMap, List<DataAccessPoint> dataServiceRef) {
         List<Node> services = G.nodesOfTypeAsList(configuration, FusekiVocabG.fusekiService);
@@ -666,7 +666,7 @@ public class FusekiConfig {
         endpoints.add(endpoint);
     }
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static Dataset getDataset(Resource datasetDesc, DatasetDescriptionMap dsDescMap) {
         DatasetGraph dsg = getDataset(datasetDesc.getModel().getGraph(), datasetDesc.asNode(), dsDescMap);
         return DatasetFactory.wrap(dsg);
@@ -688,7 +688,6 @@ public class FusekiConfig {
             throw new FusekiConfigException("No rdf:type for dataset " + displayStr(configuration, datasetDesc));
 
         // Should have been done already. e.g. ActionDatasets.execPostContainer,
-        // AssemblerUtils.readAssemblerFile < FusekiServer.parseConfigFile.
         //AssemblerUtils.addRegistered(datasetDesc.getModel());
 
         Resource r = resource(configuration, datasetDesc);

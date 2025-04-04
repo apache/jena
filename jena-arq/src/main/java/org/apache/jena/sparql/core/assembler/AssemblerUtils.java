@@ -111,6 +111,10 @@ public class AssemblerUtils
         // assemblerAssertions.add(r, RDFS.subClassOf, JA.Object);
     }
 
+    /**
+     * Read a file and make ready for use with assemblers.
+     * It calls {@link #prepareForAssembler}.
+     */
     public static Model readAssemblerFile(String assemblerFile) {
         Model spec = null;
         try {
@@ -118,20 +122,27 @@ public class AssemblerUtils
         } catch (Exception ex) {
             throw new ARQException("Failed reading assembler description: " + ex.getMessage());
         }
-        addRegistered(spec);
+        prepareForAssembler(spec);
         return spec;
     }
 
     /** Add any extra information to the model.
      * Such information includes registration of datasets (e.g. TDB1, TDB2)
-     * done by {@link #register} ({@link #registerDataset}, {@link #registerModel}.
+     * done by {@link #register} ({@link #registerDataset}, {@link #registerModel}
+     * and adding subclass relationship used for models.
      * It avoids directly modifying {@link Assembler#general}.
      * @param model
      * @return Model The same model after modification.
      */
-    public static Model addRegistered(Model model) {
+    public static Model prepareForAssembler(Model model) {
         model.add(modelExtras);
         return model;
+    }
+
+    /** @deprecated Use {@link #prepareForAssembler(Model)} */
+    @Deprecated(forRemoval = true)
+    public static Model addRegistered(Model model) {
+        return prepareForAssembler(model);
     }
 
     public static Object build(String assemblerFile, String typeURI) {
