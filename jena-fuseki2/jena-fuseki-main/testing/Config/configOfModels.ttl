@@ -1,0 +1,39 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+## Fuseki Server configuration file.
+## Teh dataset has inf models that depend on TDB graph models.
+
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+PREFIX res:     <http://jena.hpl.hp.com/2003/>
+
+:serviceData rdf:type fuseki:Service ;
+    fuseki:name "Data" ;
+    fuseki:dataset :dsData ;
+    .
+
+:dsData rdf:type ja:RDFDataset ;
+  ja:defaultGraph :graphDefault ;
+  .
+
+:graphDefault rdf:type tdb2:GraphTDB2 ;
+    tdb2:dataset :ds_tdb2_Data ;
+    .
+
+:ds_tdb2_Data rdf:type tdb2:DatasetTDB2 ;
+    rdfs:label "Data TDB2 Dataset" ;
+    tdb2:location "--mem--" ;
+    .
+
+## GH-3106 - use :graphDefault interfered with dataset creation.
+:graphInfData rdf:type ja:InfModel ;
+     ja:baseModel :graphDefault ;
+     ja:reasoner [
+         rdf:type ja:Reasoner ;
+         ja:reasonerURL res:OWLMicroFBRuleReasoner
+     ];
+     .

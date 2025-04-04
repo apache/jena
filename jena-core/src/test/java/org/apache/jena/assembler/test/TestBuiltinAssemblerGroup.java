@@ -67,7 +67,7 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
         {
         PrefixMapping wanted = PrefixMapping.Factory.create().setNsPrefix( "P", "spoo:/" );
         Resource r = resourceInModel( "x ja:prefix 'P'; x ja:namespace 'spoo:/'" );
-        assertEquals( wanted, Assembler.general.open( r ) );
+        assertEquals( wanted, Assembler.general().open( r ) );
         }
 
     public void testRecognisesAndAssemblesMultiplePrefixMappings()
@@ -76,7 +76,7 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
             .setNsPrefix( "P", "spoo:/" ).setNsPrefix( "Q", "flarn:/" );
         Resource r = resourceInModel
             ( "x ja:includes y; x ja:includes z; y ja:prefix 'P'; y ja:namespace 'spoo:/'; z ja:prefix 'Q'; z ja:namespace 'flarn:/'" );
-        assertEquals( wanted, Assembler.general.open( r ) );
+        assertEquals( wanted, Assembler.general().open( r ) );
         }
 
     public static void assertEquals( PrefixMapping wanted, Object got )
@@ -89,6 +89,6 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
 
     private void assertAssemblerClass( Resource type, Class<?> C )
         {
-        assertInstanceOf( C, Assembler.general.assemblerFor( type ) );
+        assertInstanceOf( C, Assembler.general().assemblerFor( type ) );
         }
     }

@@ -46,7 +46,7 @@ public class AllAccept extends AssemblerTestBase
     public void testUnadornedInferenceModel()
         {
         Resource root = resourceInModel( "x ja:reasoner R; R rdf:type ja:ReasonerFactory" );
-        Model m = Assembler.general.openModel( root );
+        Model m = Assembler.general().openModel( root );
         assertInstanceOf( InfModel.class, m );
         InfModel inf = (InfModel) m;
         assertIsoModels( empty, inf.getRawModel() );
@@ -61,7 +61,7 @@ public class AllAccept extends AssemblerTestBase
             data.write( fs, "N3" );
         }
         Resource root = resourceInModel( "x rdf:type ja:MemoryModel; x ja:content y; y ja:externalContent file:" + f.getAbsolutePath() );
-        Model m = Assembler.general.openModel( root );
+        Model m = Assembler.general().openModel( root );
         assertIsoModels( data, m );
         }
     }

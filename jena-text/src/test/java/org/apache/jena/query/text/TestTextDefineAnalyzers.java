@@ -144,7 +144,7 @@ public class TestTextDefineAnalyzers extends AbstractTestDatasetWithTextIndexBas
         specModel.read(reader, "", "TURTLE");
         TextAssembler.init();
         Resource root = specModel.getResource(SPEC_ROOT_URI);
-        dataset = (Dataset) Assembler.general.open(root);
+        dataset = (Dataset) Assembler.general().open(root);
     }
 
     @After

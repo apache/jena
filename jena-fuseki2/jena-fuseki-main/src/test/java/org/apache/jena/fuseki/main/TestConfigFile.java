@@ -321,6 +321,15 @@ public class TestConfigFile {
         }
     }
 
+    // GH-3106.
+    // Several types of Model.
+    // Requires that the configuration file has had the assembler registrations added correctly.
+    @Test public void setupDatasetOfModels() {
+        FusekiServer server = FusekiServer.construct("--port=0", "--conf", DIR+"configOfModels.ttl");
+        server.start();
+        server.stop();
+    }
+
     private static String NL = "\n";
 
     private void unionGraph(String fnConfig, String dbName) {

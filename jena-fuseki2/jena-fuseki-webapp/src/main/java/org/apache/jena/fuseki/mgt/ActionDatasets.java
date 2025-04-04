@@ -151,8 +151,8 @@ public class ActionDatasets extends ActionContainerItem {
 
                 Model model = ModelFactory.createDefaultModel();
                 model.add(modelData);
-                // Add the dataset and graph wiring.
-                AssemblerUtils.addRegistered(model);
+                // Add dataset and model declarations.
+                model = AssemblerUtils.prepareForAssembler(model);
 
                 // ----
                 // Process configuration.

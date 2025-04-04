@@ -31,8 +31,7 @@ import org.apache.jena.rdf.model.* ;
     not an instruction.
 
 */
-public interface Assembler
-    {
+public interface Assembler {
 
     /**
         The core operation: answer a new object constructed according to the
@@ -94,5 +93,9 @@ public interface Assembler
 
     public static final Assembler documentManager = ConstAssembler.documentManager();
 
+    public static AssemblerGroup general() { return general; }
+
+    /** @deprecated use {@link #general()} */
+    @Deprecated(forRemoval = true)
     public static final AssemblerGroup general = ConstAssembler.general() ;
-    }
+}

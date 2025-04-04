@@ -18,18 +18,19 @@
 
 package org.apache.jena.sys;
 
+import org.apache.jena.assembler.Assembler;
 import org.apache.jena.irix.SystemIRIx;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
 public class InitJenaCore  implements JenaSubsystemLifecycle {
-    private static volatile boolean initialized = false ;
-    private static Object           initLock    = new Object() ;
+    private static volatile boolean initialized = false;
+    private static Object           initLock    = new Object();
 
     @Override
     public void start() {
-        init() ;
+        init();
     }
 
     @Override
@@ -37,29 +38,30 @@ public class InitJenaCore  implements JenaSubsystemLifecycle {
 
     @Override
     public int level() {
-        return 10 ;
+        return 10;
     }
 
     public static void init() {
         if ( initialized )
-            return ;
+            return;
         synchronized (initLock) {
             if ( initialized ) {
-                JenaSystem.logLifecycle("JenaCore.init - skip") ;
-                return ;
+                JenaSystem.logLifecycle("JenaCore.init - skip");
+                return;
             }
-            initialized = true ;
-            JenaSystem.logLifecycle("JenaCore.init - start") ;
+            initialized = true;
+            JenaSystem.logLifecycle("JenaCore.init - start");
 
             // Initialization
             SystemIRIx.init();
             // Touch classes with constants.
             // This isn't necessary but it makes it more deterministic.
             // These constants are reused in various places.
-            RDF.getURI() ;
-            RDFS.getURI() ;
-            OWL.getURI() ;
-            JenaSystem.logLifecycle("JenaCore.init - finish") ;
+            RDF.getURI();
+            RDFS.getURI();
+            OWL.getURI();
+            Assembler.general();
+            JenaSystem.logLifecycle("JenaCore.init - finish");
         }
     }
 }

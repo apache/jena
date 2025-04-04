@@ -29,9 +29,9 @@ import org.junit.Test ;
 import static org.junit.Assert.* ;
 
 public class TestTextIndexLuceneAssembler extends AbstractTestTextAssembler {
-    
+
     @Test public void testIndexHasEntityMap() {
-        TextIndexLucene index = (TextIndexLucene) Assembler.general.open(SIMPLE_INDEX_SPEC);
+        TextIndexLucene index = (TextIndexLucene) Assembler.general().open(SIMPLE_INDEX_SPEC);
         try {
             assertEquals(RDFS.label.asNode(), index.getDocDef().getPrimaryPredicate());
         }
@@ -42,9 +42,9 @@ public class TestTextIndexLuceneAssembler extends AbstractTestTextAssembler {
 
     @Test public void testLiteralDirectory() {
         TextIndexLuceneAssembler assembler = new TextIndexLuceneAssembler();
-        
+
         Resource root = SIMPLE_INDEX_SPEC_LITERAL_DIR;
-        Assembler a = Assembler.general;
+        Assembler a = Assembler.general();
         // the open method is not supposed to throw exceptions when the directory is
         // a literal
         TextIndexLucene index = (TextIndexLucene)assembler.open(a, root, /*mode*/ null);
@@ -60,7 +60,7 @@ public class TestTextIndexLuceneAssembler extends AbstractTestTextAssembler {
         TextIndexLuceneAssembler assembler = new TextIndexLuceneAssembler();
 
         Resource root = SIMPLE_INDEX_SPEC2;
-        Assembler a = Assembler.general;
+        Assembler a = Assembler.general();
         // the open method is not supposed to throw exceptions when the directory is
         // a resource
         TextIndexLucene index = (TextIndexLucene) assembler.open(a, root, /*mode*/ null);
@@ -77,7 +77,7 @@ public class TestTextIndexLuceneAssembler extends AbstractTestTextAssembler {
         TextIndexLuceneAssembler assembler = new TextIndexLuceneAssembler();
 
         Resource root = SIMPLE_INDEX_SPEC_MEM_DIR;
-        Assembler a = Assembler.general;
+        Assembler a = Assembler.general();
         // the open method is not supposed to throw exceptions when the directory is
         // a iri resource
         TextIndexLucene index = (TextIndexLucene) assembler.open(a, root, /*mode*/ null);
@@ -88,9 +88,9 @@ public class TestTextIndexLuceneAssembler extends AbstractTestTextAssembler {
             index.close();
         }
     }
-    
+
     @Test public void testQueryAnalyzer() {
-        TextIndexLucene index = (TextIndexLucene) Assembler.general.open(SIMPLE_INDEX_SPEC_QUERY_ANALYZER);
+        TextIndexLucene index = (TextIndexLucene) Assembler.general().open(SIMPLE_INDEX_SPEC_QUERY_ANALYZER);
         try {
             assertTrue(index.getQueryAnalyzer() instanceof KeywordAnalyzer);
         }

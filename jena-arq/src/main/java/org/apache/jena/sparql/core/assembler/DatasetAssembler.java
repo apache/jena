@@ -69,7 +69,7 @@ public abstract class DatasetAssembler extends AssemblerBase implements Assemble
         Resource dataset = getResourceValue(dbAssem, pDataset) ;
         if ( dataset == null )
             throw new AssemblerException(dbAssem, "Required base dataset missing: "+dbAssem) ;
-        Dataset base = (Dataset)Assembler.general.open(dataset);
+        Dataset base = (Dataset)Assembler.general().open(dataset);
         return base.asDatasetGraph();
     }
 }

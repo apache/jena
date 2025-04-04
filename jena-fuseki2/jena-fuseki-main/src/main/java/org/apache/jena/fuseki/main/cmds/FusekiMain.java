@@ -48,6 +48,7 @@ import org.apache.jena.fuseki.validation.*;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFParser;
+import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sys.JenaSystem;
 import org.slf4j.Logger;
 
@@ -731,8 +732,12 @@ public class FusekiMain extends CmdARQ {
                     file = file.substring("file:".length());
                 Path path = Path.of(file);
                 IOX.checkReadableFile(file, msg->new CmdException(msg));
+
                 serverArgs.datasetDescription = "Configuration: "+path.toAbsolutePath();
                 serverArgs.serverConfigModel = RDFParser.source(path).toModel();
+                // Add dataset and model declarations.
+                AssemblerUtils.prepareForAssembler(serverArgs.serverConfigModel);
+
                 // ... and perform server configuration
                 builder.parseConfig(serverArgs.serverConfigModel);
             } else {

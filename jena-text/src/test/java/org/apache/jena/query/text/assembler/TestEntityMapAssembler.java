@@ -100,31 +100,31 @@ public class TestEntityMapAssembler {
     
     @Test public void EntityHasMapEntryWithSimpleAnalyzer() {
         EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
-        EntityDefinition entityDef = entDefAssem.open(Assembler.general, spec3,  null);
+        EntityDefinition entityDef = entDefAssem.open(Assembler.general(), spec3,  null);
         assertEquals(SimpleAnalyzer.class, entityDef.getAnalyzer(SPEC1_DEFAULT_FIELD).getClass());
     }
     
     @Test public void EntityHasMapEntryWithStandardAnalyzerAndStopWords() {
         EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
-        EntityDefinition entityDef = entDefAssem.open(Assembler.general, spec4,  null);
+        EntityDefinition entityDef = entDefAssem.open(Assembler.general(), spec4,  null);
         assertEquals(StandardAnalyzer.class, entityDef.getAnalyzer(SPEC1_DEFAULT_FIELD).getClass());
     }
     
     @Test public void EntityHasMapEntryWithKeywordAnalyzer() {
         EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
-        EntityDefinition entityDef = entDefAssem.open(Assembler.general, spec5,  null);
+        EntityDefinition entityDef = entDefAssem.open(Assembler.general(), spec5,  null);
         assertEquals(KeywordAnalyzer.class, entityDef.getAnalyzer(SPEC1_DEFAULT_FIELD).getClass());
     }    
     
     @Test public void EntityHasMapEntryWithLowerCaseKeywordAnalyzer() {
         EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
-        EntityDefinition entityDef = entDefAssem.open(Assembler.general, spec6,  null);
+        EntityDefinition entityDef = entDefAssem.open(Assembler.general(), spec6,  null);
         assertEquals(LowerCaseKeywordAnalyzer.class, entityDef.getAnalyzer(SPEC1_DEFAULT_FIELD).getClass());
     }    
     
     @Test public void EntityHasMapEntryWithConfigurableAnalyzer() {
         EntityDefinitionAssembler entDefAssem = new EntityDefinitionAssembler();
-        EntityDefinition entityDef = entDefAssem.open(Assembler.general, spec7,  null);
+        EntityDefinition entityDef = entDefAssem.open(Assembler.general(), spec7,  null);
         assertEquals(ConfigurableAnalyzer.class, entityDef.getAnalyzer(SPEC1_DEFAULT_FIELD).getClass());
     }    
     

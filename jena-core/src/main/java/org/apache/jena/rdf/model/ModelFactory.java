@@ -85,7 +85,7 @@ public class ModelFactory extends ModelFactoryBase
         is the prefix of Jena Assembler objects.
     */
     public static Model assembleModelFrom(Resource root) {
-        return Assembler.general.openModel(root);
+        return Assembler.general().openModel(root);
     }
 
     /**
