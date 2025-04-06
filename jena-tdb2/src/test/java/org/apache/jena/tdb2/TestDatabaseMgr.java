@@ -18,17 +18,25 @@
 
 package org.apache.jena.tdb2;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.dboe.base.file.Location;
-import org.apache.jena.system.Txn;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.sse.SSE;
+import org.apache.jena.system.Txn;
+import org.apache.jena.tdb2.params.StoreParams;
+import org.apache.jena.tdb2.params.StoreParamsBuilder;
+import org.apache.jena.tdb2.sys.DatabaseConnection;
 import org.apache.jena.tdb2.sys.TDBInternal;
-import org.junit.Test;
 
-/** Test of DatabaseMgr - the DatasetGraph level API to TDB2 **/
+/** Test of DatabaseMgr - the DatasetGraph level API to TDB2 */
 public class TestDatabaseMgr
 {
 //    String DIRx = ConfigTest.getCleanDir();
@@ -75,16 +83,31 @@ public class TestDatabaseMgr
             DatasetGraph dg1 = DatabaseMgr.connectDatasetGraph(LOC);
             DatasetGraph dg2 = DatabaseMgr.connectDatasetGraph(Location.create(LOC.getDirectoryPath()));
             assertSame(dg1, dg2);
-            Txn.executeWrite(dg1, ()-> {
-                dg1.add(quad1);
-            });
-            Txn.executeRead(dg2, ()-> {
-                assertTrue(dg2.contains(quad1));
-            });
+            Txn.executeWrite(dg1, ()-> dg1.add(quad1));
+            Txn.executeRead(dg2, ()-> assertTrue(dg2.contains(quad1)));
         }
         finally {
             FileOps.clearDirectory(DIRx);
         }
 
+    }
+
+    @Test
+    public void testDatabaseMgrStoreParams() {
+        TDBInternal.reset();
+        Location LOC = Location.mem();
+        // Not recommended for any real use!
+        int testBlockSize = 1024 ;
+        StoreParams storeParams1 = StoreParamsBuilder.create("test").blockSize(testBlockSize).build();
+        DatasetGraph dg1 = DatabaseMgr.connectDatasetGraph(LOC, storeParams1);
+
+        Txn.executeWrite(dg1, ()-> dg1.add(quad1));
+        Txn.executeRead(dg1, () -> assertTrue(dg1.contains(quad1)));
+
+        DatabaseConnection conn = DatabaseConnection.connectCreate(LOC);
+        DatasetGraph dg2 = DatabaseMgr.connectDatasetGraph(LOC);
+
+        StoreParams storeParams2 = TDBInternal.requireStorage(dg1).getStoreParams();
+        assertEquals(testBlockSize, storeParams2.getBlockSize().intValue());
     }
 }
