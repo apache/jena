@@ -21,6 +21,7 @@ package org.apache.jena.tdb2;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.tdb2.params.StoreParams;
 import org.apache.jena.tdb2.store.DatasetGraphSwitchable;
 import org.apache.jena.tdb2.store.DatasetGraphTDB;
 import org.apache.jena.tdb2.sys.DatabaseConnection;
@@ -37,18 +38,28 @@ public class DatabaseMgr {
     private DatabaseMgr() {}
 
     // All creation of DatasetGraph for TDB2 goes through this method.
-    private static DatasetGraph DB_ConnectCreate(Location location) {
-        return DatabaseConnection.connectCreate(location).getDatasetGraph();
+    private static DatasetGraph DB_ConnectCreate(Location location, StoreParams storeParams) {
+        return DatabaseConnection.connectCreate(location, storeParams).getDatasetGraph();
     }
 
     /** Create or connect to a TDB2-backed dataset */
     public static DatasetGraph connectDatasetGraph(Location location) {
-        return DB_ConnectCreate(location);
+        return DB_ConnectCreate(location, null);
     }
 
     /** Create or connect to a TDB2-backed dataset */
     public static DatasetGraph connectDatasetGraph(String location) {
         return connectDatasetGraph(Location.create(location));
+    }
+
+    /** Create or connect to a TDB2-backed dataset with specific {@link StoreParams}. */
+    public static DatasetGraph connectDatasetGraph(Location location, StoreParams storeParams) {
+        return DB_ConnectCreate(location, storeParams);
+    }
+
+    /** Create or connect to a TDB2-backed dataset with specific {@link StoreParams}. */
+    public static DatasetGraph connectDatasetGraph(String location, StoreParams storeParams) {
+        return connectDatasetGraph(Location.create(location), storeParams);
     }
 
     /**

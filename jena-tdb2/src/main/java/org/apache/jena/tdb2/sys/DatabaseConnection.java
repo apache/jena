@@ -50,16 +50,27 @@ public class DatabaseConnection {
      * Get the {@code DatabaseConnection} to a location, creating the storage
      * structures with default settings if it does not exist.
      */
-    public synchronized static DatabaseConnection connectCreate(Location location) {
+    public static DatabaseConnection connectCreate(Location location) {
         return connectCreate(location, null, null);
     }
 
-    /** Get the {@code DatabaseConnection} to a location,
-     *  creating the storage structures if it does not exist.
-     *  Use the provided {@link StoreParams} - any persistent setting
-     *  already at the location take precedence.
+    /**
+     * Get the {@code DatabaseConnection} to a location,
+     * creating the storage structures if it does not exist.
+     * Use the provided {@link StoreParams} - any persistent setting
+     * already at the location take precedence.
      */
-    public synchronized static DatabaseConnection connectCreate(Location location, StoreParams params, ReorderTransformation reorderTransform) {
+    public static DatabaseConnection connectCreate(Location location, StoreParams params) {
+        return make(location, params, null);
+    }
+
+    /**
+     * Get the {@code DatabaseConnection} to a location,
+     * creating the storage structures if it does not exist.
+     * Use the provided {@link StoreParams} - any persistent setting
+     * already at the location take precedence.
+     */
+    public static DatabaseConnection connectCreate(Location location, StoreParams params, ReorderTransformation reorderTransform) {
         return make(location, params, reorderTransform);
     }
 
