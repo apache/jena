@@ -67,7 +67,7 @@
     <ver.jakarta.json>2.0.1</ver.jakarta.json>
 
     <!-- These two must be in-step -->
-    <ver.jetty>12.0.18</ver.jetty>
+    <ver.jetty>12.0.19</ver.jetty>
     <ver.jakarta-servlet>6.1.0</ver.jakarta-servlet>
 
     <!-- 
@@ -126,7 +126,7 @@
     <ver.plugin.rat>0.16.1</ver.plugin.rat>
     <ver.plugin.assembly>3.7.1</ver.plugin.assembly>
     <ver.plugin.compiler>3.14.0</ver.plugin.compiler>
-    <ver.plugin.surefire>3.5.2</ver.plugin.surefire>
+    <ver.plugin.surefire>3.5.3</ver.plugin.surefire>
     <ver.plugin.javadoc>3.11.2</ver.plugin.javadoc>
     <ver.plugin.war>3.4.0</ver.plugin.war>
     <ver.plugin.shade>3.6.0</ver.plugin.shade>
