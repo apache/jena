@@ -60,6 +60,6 @@ public class ExTDB3
             { throw new JenaException("Multiple types for: "+DatasetAssemblerVocab.tDataset) ; }
         }
 
-        Dataset ds = (Dataset)Assembler.general.open(root) ;
+        Dataset ds = (Dataset)Assembler.general().open(root) ;
     }
 }

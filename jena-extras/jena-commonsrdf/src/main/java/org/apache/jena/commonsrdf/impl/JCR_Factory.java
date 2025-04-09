@@ -25,7 +25,7 @@ import org.apache.commons.rdf.api.*;
 import org.apache.jena.commonsrdf.JenaCommonsRDF;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.riot.web.LangTag;
+import org.apache.jena.langtagx.LangTagX;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.graph.GraphFactory;
 
@@ -44,7 +44,7 @@ public class JCR_Factory {
     }
 
     public static Literal createLiteralLang(String lexStr, String langTag) {
-        langTag = LangTag.canonical(langTag);
+        langTag = LangTagX.formatLanguageTag(langTag);
         return new JCR_Literal(NodeFactory.createLiteralLang(lexStr, langTag));
     }
 

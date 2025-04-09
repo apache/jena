@@ -81,8 +81,12 @@ public class ParseDID {
                 return p;
             }
             // Special upper case for better error message?
-            if ( ! methodChar(ch) )
-                error(str, "Bad character: '"+Character.toString(ch)+"'");
+            if ( ! methodChar(ch) ) {
+                if ( uppercaseMethodChar(ch) )
+                    error(str, "Uppercase character (not allowed in DID method name): '"+Character.toString(ch)+"'");
+                else
+                    error(str, "Bad character: '"+Character.toString(ch)+"'");
+            }
             p++;
         }
         if ( p != end && start+1 == p )
@@ -117,6 +121,10 @@ public class ParseDID {
 
     private static boolean methodChar(char ch) {
         return (ch >= 'a' && ch <= 'z');
+    }
+
+    private static boolean uppercaseMethodChar(char ch) {
+        return (ch >= 'A' && ch <= 'Z');
     }
 
     private static boolean idchar(char ch, String str, int p) {

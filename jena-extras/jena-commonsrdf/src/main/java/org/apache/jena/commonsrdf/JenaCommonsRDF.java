@@ -26,10 +26,10 @@ import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.langtagx.LangTagX;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.web.LangTag;
 import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sys.JenaSystem;
@@ -64,7 +64,7 @@ public class JenaCommonsRDF {
             Literal lit = (Literal)term;
             RDFDatatype dt = NodeFactory.getType(lit.getDatatype().getIRIString());
             String lang = lit.getLanguageTag().orElse("");
-            lang = LangTag.canonical(lang);
+            lang = LangTagX.formatLanguageTag(lang);
             return NodeFactory.createLiteral(lit.getLexicalForm(), lang, dt);
         }
 
