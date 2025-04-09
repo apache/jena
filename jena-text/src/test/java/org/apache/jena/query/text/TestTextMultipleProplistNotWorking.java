@@ -94,13 +94,13 @@ public class TestTextMultipleProplistNotWorking extends AbstractTestDatasetWithT
                     text:directory "mem" ;
                     text:multilingualSupport true ;
                     text:defineAnalyzers (
-                      [ text:addLang "en-01" ;
-                        text:searchFor ( "en-01" "en-02" ) ;
+                      [ text:addLang "en-001" ;
+                        text:searchFor ( "en-001" "en-002" ) ;
                         text:analyzer [ a text:StandardAnalyzer ]
                       ]
 
-                      [ text:addLang "en-02" ;
-                        text:searchFor ( "en-01" "en-02" ) ;
+                      [ text:addLang "en-002" ;
+                        text:searchFor ( "en-001" "en-002" ) ;
                         text:analyzer [ a text:StandardAnalyzer ]
                       ] ) ;
                     text:entityMap <#entMap> ;
@@ -255,34 +255,34 @@ public class TestTextMultipleProplistNotWorking extends AbstractTestDatasetWithT
     public void test02TextPropNotWorkingInSomeCases() {
         final String turtleA = TURTLE_PROLOG2+"""
                 <http://id.example.test/1>
-                  rdfs:label "beer"@en-01 ;
-                  mt:altLabel "pint"@en-01 ;
+                  rdfs:label "beer"@en-001 ;
+                  mt:altLabel "pint"@en-001 ;
                   mx:alt_label "pivečko"@cs ;
-                  mt:note "Booze is a pleasure"@en-01, "Chlast je slast"@cs .
+                  mt:note "Booze is a pleasure"@en-001, "Chlast je slast"@cs .
 
                 <http://id.example.test/2>
-                  mt:alt_label "ale"@en-01 , "burgundy"@en-01 ;
-                  rdfs:label "wine"@en-01 ;
-                  mt:altLabel "champagne"@en-01 ;
+                  mt:alt_label "ale"@en-001 , "burgundy"@en-001 ;
+                  rdfs:label "wine"@en-001 ;
+                  mt:altLabel "champagne"@en-001 ;
                   mx:alt_label "víno"@cs ;
-                  mt:note  "Red or white"@en-01, "Červené či bílé"@cs .
+                  mt:note  "Red or white"@en-001, "Červené či bílé"@cs .
 
                 <http://id.example.test/3>
-                  mt:alt_label "Scotch"@en-01 ;
-                  rdfs:comment "Johnnie Walker red label "@en-01 .
+                  mt:alt_label "Scotch"@en-001 ;
+                  rdfs:comment "Johnnie Walker red label "@en-001 .
                """;
 
         putTurtleInModel(turtleA, null) ;
         String queryString = QUERY_PROLOG2+"""
                 SELECT ?s ?lit
                 WHERE {
-                  (?s ?sc ?lit) text:query ( mt:includeNotes "red booze"@en-02 ) .
+                  (?s ?sc ?lit) text:query ( mt:includeNotes "red booze"@en-002 ) .
                 }
                 """;
         String queryStringMtNote = QUERY_PROLOG2+"""
                 SELECT ?s ?lit
                 WHERE {
-                  (?s ?sc ?lit)  text:query ( mt:note "red booze"@en-02 ) .
+                  (?s ?sc ?lit)  text:query ( mt:note "red booze"@en-002 ) .
                 }
                 """;
 
