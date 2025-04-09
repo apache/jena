@@ -73,6 +73,13 @@ public class LangTagX {
         }
     }
 
+    /** @deprecated Use {@link #formatLanguageTag(String)} */
+    @Deprecated(forRemoval = true)
+    public static String canonical(String langTagStr) {
+        // Only for transition support.
+        return formatLanguageTag(langTagStr);
+    }
+
     /**
      * Check a string is valid as a language tag.
      * This function returns true or false and does not throw an exception.

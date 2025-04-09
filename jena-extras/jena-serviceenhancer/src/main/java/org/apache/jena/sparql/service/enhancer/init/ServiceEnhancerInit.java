@@ -98,7 +98,7 @@ public class ServiceEnhancerInit
         // Register SELF extension
         registerServiceExecutorSelf(ServiceExecutorRegistry.get());
 
-        registerWith(Assembler.general);
+        registerWith(Assembler.general());
 
         // Important: This registers the (property) functions but
         // without setting enableMgmt to true in the context some of them

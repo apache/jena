@@ -145,7 +145,7 @@ public class SecuredAssembler extends ModelAssembler implements AssemblerConstan
         if (initialized)
             return;
         MappingRegistry.addPrefixMapping("sec", URI);
-        registerWith(Assembler.general);
+        registerWith(Assembler.general());
         initialized = true;
     }
 
@@ -156,7 +156,7 @@ public class SecuredAssembler extends ModelAssembler implements AssemblerConstan
      */
     static void registerWith(AssemblerGroup group) {
         if (group == null)
-            group = Assembler.general;
+            group = Assembler.general();
         group.implementWith(SECURED_MODEL, new SecuredAssembler());
         group.implementWith(EVALUATOR_ASSEMBLER, new SecurityEvaluatorAssembler());
     }
