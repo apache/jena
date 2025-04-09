@@ -1,0 +1,98 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+    width: 80%;
+    max-width: 1200px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+textarea {
+    width: 100%;
+    height: 350px;
+    padding: 10px;
+    box-sizing: border-box;
+    resize: vertical; /* Allow vertical resizing only */
+}
+
+button {
+    display: block;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.button-container {
+  display: flex;
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <h2>Spatial Indexer</h2>
+
+    <div class="button-container">
+      <button id="sendBtn">Re-index all graphs</button>
+      <button id="abortBtn" disabled="true">Abort</button>
+      <!-- <button onclick="showCurl()" title="Create a curl request for copy&amp;paste">Curl</button> -->
+    </div>
+
+    <textarea id="output" readonly="true" placeholder="Response area."></textarea>
+  </div>
+
+  <script>
+  const sendBtn = document.getElementById('sendBtn');
+  const abortBtn = document.getElementById('abortBtn');
+
+  const endpoint = document.location.href
+
+  const abortController = new AbortController();
+  const signal = abortController.signal;
+
+  function setAbortDisabled(value) {
+    abortBtn.disabled = value;
+    sendBtn.disabled = !value;
+  }
+
+  sendBtn.addEventListener("click", async () => {
+    setAbortDisabled(false);
+    const params = new URLSearchParams({ "graph": "union", "commit": null });
+    try {
+      const response = await fetch(endpoint, { "method": "POST", "body": params, signal })
+      output.value = "Re-index complete. " + await response.text();
+    } catch (error) {
+      output.value = `Error: ${error.message}`;
+    }
+    setAbortDisabled(true);
+  });
+
+  abortBtn.addEventListener("click", async () => {
+    abortController.abort();
+    output.value = "Aborted.";
+  });
+
+  /*
+  function showCurl() {
+    const payloadStr = buildRequest();
+    output.value = `curl -X POST '${toBashString(endpoint)}' -d '${toBashString(payloadStr)}'`;
+    debug.value = "";
+  }
+  */
+
+</script>
+</body>
+</html>
+
+
