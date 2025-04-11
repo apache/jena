@@ -46,6 +46,7 @@ import java.util.zip.InflaterInputStream;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.atlas.web.TypedInputStream;
@@ -175,31 +176,31 @@ public class HttpLib {
     public static void handleHttpStatusCode(HttpResponse<InputStream> response) {
         int httpStatusCode = response.statusCode();
         // There is no status message in HTTP/2.
-        if ( ! inRange(httpStatusCode, 100, 599) )
+        if ( ! inRange(httpStatusCode, 100, 599) ) {
             throw new HttpException("Status code out of range: "+httpStatusCode);
-        else if ( inRange(httpStatusCode, 100, 199) ) {
-            // Informational
         }
-        else if ( inRange(httpStatusCode, 200, 299) ) {
+        if ( inRange(httpStatusCode, 100, 199) ) {
+            // Informational
+            return;
+        }
+        if ( inRange(httpStatusCode, 200, 299) ) {
             // Success. Continue processing.
+            return;
         }
         if ( inRange(httpStatusCode, 300, 399) ) {
             // We had "follow redirects" on (default client) so it's http->https,
             // or the application passed in a HttpClient with redirects off.
             // Either way, we should not continue processing.
-            try {
-                finish(response);
-            } catch (Exception ex) {
-                throw new HttpException("Error discarding body of "+httpStatusCode , ex);
-            }
-            throw new HttpException(httpStatusCode, HttpSC.getMessage(httpStatusCode));
-        }
-        else if ( inRange(httpStatusCode, 400, 499) ) {
             throw exception(response, httpStatusCode);
         }
-        else if ( inRange(httpStatusCode, 500, 599) ) {
+        if ( inRange(httpStatusCode, 400, 499) ) {
             throw exception(response, httpStatusCode);
         }
+        if ( inRange(httpStatusCode, 500, 599) ) {
+            throw exception(response, httpStatusCode);
+        }
+
+        throw new InternalErrorException("Unknown status code: "+httpStatusCode);
     }
 
     /**
