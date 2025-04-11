@@ -149,7 +149,7 @@ public class TestSSE_Basic
 
     @Test public void testSymbol_1()    { testSymbol("word"); }
     @Test public void testSymbol_2()    { testSymbol("+"); }
-    // XXX Parser broken
+    // Conflict with RDF term syntax.
 //    @Test public void testSymbol_3()    { testSymbol("^^"); }
 //    @Test public void testSymbol_4()    { testSymbol("^^<foo>"); }
 //    @Test public void testSymbol_5()    { testSymbol("@"); }

@@ -67,8 +67,6 @@ public class WriterShExC {
         boolean printNL = hasHeader;
         NodeFormatter formatter = new NodeFormatterTTL(schema.getBase(), schema.getPrefixMap());
 
-        // XXX [Print] printNL needs to flow across calls.
-        //PrintCxt cxt = new PrintCxt(out, schema.getBase(), schema.getPrefixMap());
         schema.getShapes().forEach( shape->print(out, formatter, shape, printNL) );
     }
 

@@ -234,7 +234,7 @@ public abstract class LangTurtleBase extends LangBase {
         }
 
         // RDF 1.2
-        // reified triple,possible a declaration (empty predicateObjectList).
+        // reified triple, possibly a declaration (empty predicateObjectList).
         //     reifiedTriple predicateObjectList?
         // <<>> subject position. Rule [10]
         if ( lookingAt(LT2) ) {
@@ -254,15 +254,7 @@ public abstract class LangTurtleBase extends LangBase {
         // This generates an error as the triple is created.
         // The parser is more general.
         if ( lookingAt(L_TRIPLE) ) {
-            // [RDF-1.2]
-            // ttSubject
-            // predicate
-            // ttObject
             Node subject = parseTripleTerm();
-            // XXX Cleaner error handling to be general.
-            exception(peekToken(), "Subject is a triple term");
-//            predicateObjectList(subject);
-//            expectEndOfTriples();
             return;
         }
         exception(peekToken(), "Out of place: %s", peekToken());
@@ -289,10 +281,7 @@ public abstract class LangTurtleBase extends LangBase {
         nextToken();
 
         Node tripleTerm = profile.createTripleTerm(s, p, o, startLine, startColumn);
-        // XXX profile.createTripleReifier
-        // emitTripleReifier(s, p, o, startReifiedTripleToken.getLine(), startReifiedTripleToken.getColumn());
         emitTriple(reif, NodeConst.nodeReifies, tripleTerm);
-
         return reif;
     }
 

@@ -42,7 +42,6 @@ public class TestTxnBinaryDataFile {
     private Transactional transactional;
 
     @Before public void before() {
-        // XXX Builder.
         journal = Journal.create(Location.mem());
         baseBinData = new BinaryDataFileMem();
         BufferChannel chan = FileFactory.createBufferChannelMem();

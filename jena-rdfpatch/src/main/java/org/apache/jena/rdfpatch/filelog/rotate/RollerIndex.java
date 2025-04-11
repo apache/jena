@@ -117,7 +117,6 @@ class RollerIndex implements Roller {
     public Path nextFilename() {
         long idx = nextIndex();
         currentId = idx;
-        // XXX FileMgr.freshFilename(directory, baseFilename, (int)idx, INC_SEP, fmtModifer);
         lastFilename = filename(currentId);
         return lastFilename;
     }

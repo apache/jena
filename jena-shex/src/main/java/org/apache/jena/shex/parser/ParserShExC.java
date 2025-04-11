@@ -368,8 +368,6 @@ public class ParserShExC extends LangParserBase {
     protected void finishShapeDefinition(TripleExpression tripleExpr, List<Node> extras, boolean closed, List<SemAct> semActs) {
         if ( tripleExpr == null )
             return;
-            // XXX [Print] Below causes "{ ; }"
-            //tripleExpr = TripleExprNone.get();
         ShapeExprTripleExpr shape = ShapeExprTripleExpr.newBuilder()
                 //.label(???)
                 .closed(closed)
@@ -435,7 +433,6 @@ public class ParserShExC extends LangParserBase {
     }
 
     protected void finishTripleConstraint(Node label, int idx, Node predicate, boolean reverse, Cardinality cardinality, List<SemAct> semActs) {
-        if ( label != null ) { /*ref*/ } // XXX
         List<ShapeExpression> args = finishShapeOp(idx);
         if ( args == null )
             throw new InternalErrorException("TripleConstraint with null argument ShapeExpression.");
@@ -452,7 +449,6 @@ public class ParserShExC extends LangParserBase {
     }
 
     // ---- Node Constraints.
-    // XXX [ NodeConstraint] Do we need the different constraints here?
 
     protected int startLiteralNodeConstraint(int line, int column) {
         startNodeConstraint();

@@ -138,9 +138,6 @@ public class ParseDNS {
 
         List<Integer> dots = new ArrayList<>(4);
 
-        // XXX if string starts "."
-        // XXX if string ends "."
-
         while (p < end) {
             p = label(p);
             if ( p < 0 )

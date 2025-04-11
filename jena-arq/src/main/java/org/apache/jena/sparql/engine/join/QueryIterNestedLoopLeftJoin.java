@@ -33,12 +33,10 @@ import org.apache.jena.sparql.expr.ExprList ;
  * Nested Loop left Join (materializing on the right, streaming on the left)
  * A simple, dependable join.
  * <p>
- * See {@link Join#nestedLoopLeftJoinBasic} for a very simple implementation for 
- * testing purposes only. 
+ * See {@link Join#nestedLoopLeftJoinBasic} for a very simple implementation for
+ * testing purposes only.
  */
 public class QueryIterNestedLoopLeftJoin extends QueryIter2 {
-    // XXX Can we materialise left instead?
-    
     private long s_countLHS     = 0;
     private long s_countRHS     = 0;
     private long s_countResults = 0;
@@ -109,19 +107,19 @@ public class QueryIterNestedLoopLeftJoin extends QueryIter2 {
             if ( ! foundMatch ) {
                 s_countResults++;
                 Binding r = rowLeft ;
-                rowLeft = null; 
+                rowLeft = null;
                 return r ;
             }
             rowLeft = null;
         }
     }
-    
+
     private boolean applyConditions(Binding binding) {
         if ( conditions == null )
             return true ;
         return conditions.isSatisfied(binding, getExecContext()) ;
     }
-    
+
     @Override
     protected void requestSubCancel() {}
 

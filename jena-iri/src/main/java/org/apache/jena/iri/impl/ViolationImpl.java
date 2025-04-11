@@ -35,14 +35,14 @@ public class ViolationImpl extends Violation {
     final private int slot;
 //    int index;
     final private AbsIRIImpl iri;
-    
+
 //    public IRIImplUncheckedException(String iri,int code, int slot, int charIndex) {
 //        this.iri = iri;
 //        this.code = code;
 //        this.slot = slot;
 //        this.index = charIndex;
 //    }
-    
+
     public ViolationImpl(IRI iri, int slot, int code) {
       this.iri = (AbsIRIImpl)iri;
       this.code = code;
@@ -63,7 +63,7 @@ public class ViolationImpl extends Violation {
     public int getComponent() {
         return slot;
     }
-    
+
     @Override
     public String component() {
     	return componentName(slot);
@@ -111,7 +111,6 @@ public class ViolationImpl extends Violation {
 
     @Override
 	public String getSpecificationURL() {
-        // TODO getSpecificationURL
         throw new UnsupportedOperationException("Not yet implemented.");
     }
 

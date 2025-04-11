@@ -478,7 +478,6 @@ public class NodeValueCmp {
             return CompositeDatatypeMap.compare(l1, l2, true);
         }
 
-        // XXX G and Date cases.
         int vsOrder = ValueSpace.comparisonOrder(vs1, vs2);
 
         if ( vsOrder < 0 )
@@ -487,11 +486,6 @@ public class NodeValueCmp {
             return CMP_GREATER;
 
         // Compare by value. if equal (and we know nv1 and nv2 are not .equals), or indeterminate, compare by terms.
-        // XXX Review NodeValue.compare(nv1, nv2);
-        //  Pass ValueSpaces
-            // NodeValue.compare(nv1, nv2);
-
-        // XXX Lang tags
         try {
             int x1 = compareByValue(nv1, nv2);
             if ( x1 == CMP_LESS || x1 == CMP_GREATER )

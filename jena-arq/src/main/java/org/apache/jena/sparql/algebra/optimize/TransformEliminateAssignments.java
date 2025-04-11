@@ -372,49 +372,6 @@ public class TransformEliminateAssignments extends TransformCopy {
     @Override
     public Op transform(OpGroup opGroup, Op subOp) {
         return super.transform(opGroup, subOp);
-
-        // TODO Unclear if this will work properly or not because group can
-        // introduce new assignments as well as evaluate expressions
-
-        //@formatter:off
-//        if (!this.isApplicable())
-//            return super.transform(opGroup, subOp);
-//
-//        // See what vars are used in the filter
-//        Collection<Var> vars = new ArrayList<>();
-//        VarExprList exprs = new VarExprList(opGroup.getGroupVars());
-//        List<ExprAggregator> aggs = new ArrayList<ExprAggregator>(opGroup.getAggregators());
-//        for (Expr expr : exprs.getExprs().values()) {
-//            ExprVars.varsMentioned(vars, expr);
-//        }
-//
-//        // Are any of these vars single usage?
-//        boolean modified = false;
-//        for (Var var : vars) {
-//            // Usage count will be 2 if we can eliminate the assignment
-//            // First usage is when it is introduced by the assignment and the
-//            // second is when it is used now in this group by
-//            Expr e = getAssignExpr(var);
-//            if (this.tracker.getUsageCount(var) == 2 && hasAssignment(var) && canInline(e)) {
-//                // Can go back and eliminate that assignment
-//                subOp = eliminateAssignment(subOp, var);
-//                // Replace the variable usage with the expression in both the
-//                // expressions and the aggregators
-//                ExprTransform transform = new ExprTransformSubstitute(var, e);
-//                exprs = processVarExprList(exprs, transform);
-//                aggs = processAggregators(aggs, transform);
-//                this.tracker.getAssignments().remove(var);
-//                modified = true;
-//            }
-//        }
-//
-//        // Create a new group by if we've substituted any expressions
-//        if (modified) {
-//            return new OpGroup(subOp, exprs, aggs);
-//        }
-//
-//        return super.transform(opGroup, subOp);
-        //@formatter:on
     }
 
     private Op eliminateAssignment(Op subOp, Var var) {
@@ -537,7 +494,7 @@ public class TransformEliminateAssignments extends TransformCopy {
         public void visit(OpUnion opUnion) {
             unsafe();
         }
-        
+
         @Override
         public void visit(OpJoin opJoin) {
             unsafe();

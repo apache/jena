@@ -134,8 +134,7 @@ public abstract class AssemblerBase implements Assembler
         Throw an exception if <code>uri</code> doesn't start with "java:",
         otherwise answer the string beyond the ":".
     */
-    private static String mustBeJava( String uri )
-        { // TODO replace JenaException
+    private static String mustBeJava( String uri ) {
         if (uri.startsWith( "java:" )) return uri.substring( 5 );
         throw new JenaException( "class name URI must start with 'java:': " + uri );
         }

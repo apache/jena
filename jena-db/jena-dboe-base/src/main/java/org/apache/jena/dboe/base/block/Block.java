@@ -25,8 +25,6 @@ import org.apache.jena.atlas.lib.ByteBufferLib;
 
 public final class Block
 {
-    // XXX Note development code added to enforce read-only use. Marked [RO]
-
     // While the general mechanisms support long block id,
     // some uses make restrictions.
     // BlockMgrs:
@@ -41,7 +39,7 @@ public final class Block
     private boolean readOnly = false;
     private boolean modified = false;
 
-    private /*[[Dev-RO]] final*/ ByteBuffer byteBuffer;
+    private final ByteBuffer byteBuffer;
     // If the byteBuffer is, say, a slice of another one,
     // this can be used to carry a ref to the real ByteBuffer.
     private ByteBuffer underlyingByteBuffer;

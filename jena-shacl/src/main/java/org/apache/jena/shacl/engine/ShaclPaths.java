@@ -94,7 +94,6 @@ public class ShaclPaths {
         return path(graph, node);
     }
 
-    // XXX Better error checking.
     private static Path path(Graph graph, Node node) {
         if ( node.isURI() && ! C.NIL.equals(node) )
             return PathFactory.pathLink(node);

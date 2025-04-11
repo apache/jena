@@ -80,7 +80,6 @@ public class DistinctDataNet<E> extends DistinctDataBag<E> {
         return toReturn;
     }
 
-    // TODO: Will be used by the .netIterator() method
     protected List<File> getNetSpillFiles() {
         return super.getSpillFiles();
     }

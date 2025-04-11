@@ -55,8 +55,6 @@ public class QueryIterAssign extends QueryIterProcessBinding
 
     @Override
     public Binding accept(Binding binding) {
-        // XXX Assumes ExprList.get(, Binding, )
-        //BindingMap b = BindingFactory.create(binding);
         BindingBuilder b = Binding.builder(binding);
         for ( Var v : exprs.getVars() ) {
             // if "binding", not "b" used, we get (Lisp) "let"

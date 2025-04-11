@@ -214,7 +214,6 @@ public class ShExC {
             NodeConstraint nc = shape.getNodeConstraint();
             if ( nc == null )
                 return;
-            // XXX [NodeConstraint]
             DatatypeConstraint dtConstraint = null;
             Set<StrLengthKind> x = new HashSet<>(3);
             for ( NodeConstraintComponent expr: nc.components() ) {

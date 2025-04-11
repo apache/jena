@@ -25,8 +25,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
 abstract class Collection extends WantDescription {
-    // TODO: not for 2.3. document this carefully.    
-   
+
     WantsObjectI nextSlot;
     public Collection(WantsObjectFrameI s, AbsXMLContext x) {
         super(s, x);
@@ -55,19 +54,19 @@ public FrameI startElement(String uri, String localName, String rawName,
           }
       };
       return fi;
-      
+
     }
    /** Must use second bnode in the first triple.
        Can use either bnode in further triples.
    */
    abstract void restTriple(ANode subj,ANode obj);
-   
+
    /** Must use both bnodes in the first triple.
        Can use either bnode in further triples.
    */
    abstract void firstTriple(ANode subj, ANode obj);
    abstract ANode nil() ;
-    
+
 
     @Override
     final public void endElement() throws SAXParseException {
@@ -86,7 +85,7 @@ public FrameI startElement(String uri, String localName, String rawName,
         }
         super.abort();
     }
-    
-   
+
+
 
 }

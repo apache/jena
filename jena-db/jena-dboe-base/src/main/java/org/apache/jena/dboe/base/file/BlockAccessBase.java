@@ -100,7 +100,6 @@ public abstract class BlockAccessBase implements BlockAccess {
             String msg = format("%s : Block id has gone negative: %d (long = %d)", label, id, z);
             throw new InternalErrorException(msg);
         }
-        // TODO Fix this when proper free block management is introduced.
         numFileBlocks++;
         return id;
     }

@@ -84,8 +84,6 @@ public class FactoryRDFStd implements FactoryRDF {
                 Log.warn(this, "Bad variant "+variant+" for blank node") ;
         }
 
-        // XXX Style: Do this fast.  Guava? Apache commons? Special case for char[32]
-        // (Eventually, blank node Nodes will have two longs normally.)
         return createBlankNode(String.format("%08X%08X", mostSigBits, leastSigBits)) ;
     }
 

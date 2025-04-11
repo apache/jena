@@ -141,8 +141,6 @@ public class ProgressMonitorOutput implements ProgressMonitor {
             // *1000L is milli to second conversion
             if ( thisTime != 0 && timePoint != 0 ) {
                 long batchAvgRate = (counterBatch * 1000L) / thisTime;
-                // XXX Too large : first after file switch. ???timePoint is wrong.
-                //System.err.printf("** %d %d\n",getRunningTotal(), timePoint );
                 long runAvgRate = (getRunningTotal() * 1000L) / timePoint;
                 print("Add: %,d %s (Batch: %,d / Avg: %,d)", getRunningTotal(), label, batchAvgRate, runAvgRate);
             } else {

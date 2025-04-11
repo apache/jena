@@ -58,7 +58,6 @@ public class UniqueLangConstraint implements Constraint {
     @Override
     public void validateNodeShape(ValidationContext vCxt, Graph data, Shape shape, Node focusNode) {
         // Node shape -> not allowed
-        // XXX Make parse error.
         throw new ShaclException("sh:uniqueLang with no path");
     }
 

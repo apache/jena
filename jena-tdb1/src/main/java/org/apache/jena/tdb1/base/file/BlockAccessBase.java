@@ -30,11 +30,11 @@ import org.apache.jena.tdb1.sys.SystemTDB;
 import org.slf4j.Logger ;
 
 /** Support for a disk file backed FileAccess */
-public abstract class BlockAccessBase implements BlockAccess 
+public abstract class BlockAccessBase implements BlockAccess
 {
     protected final int blockSize ;
-    protected final FileBase file ; 
-    
+    protected final FileBase file ;
+
     protected final String label ;
     protected long numFileBlocks = -1 ;             // Don't overload use of this!
     protected final AtomicLong seq ;                // Id (future)
@@ -47,7 +47,7 @@ public abstract class BlockAccessBase implements BlockAccess
         this.label = FileOps.basename(filename) ;
         long filesize = file.size() ;               // This is not related to used file length in mapped mode.
         long longBlockSize = blockSize ;
-            
+
         numFileBlocks = filesize/longBlockSize ;    // This is not related to used file length in mapped mode.
         seq = new AtomicLong(numFileBlocks) ;
 
@@ -64,9 +64,9 @@ public abstract class BlockAccessBase implements BlockAccess
     protected abstract Logger getLog()  ;
     @Override
     final public boolean isEmpty() { return isEmpty ; }
-    
+
     final protected void writeNotification(Block block) { isEmpty = false ; }
-    
+
     final protected void overwriteNotification(Block block)
     {
         // Write at end => extend
@@ -77,18 +77,18 @@ public abstract class BlockAccessBase implements BlockAccess
         }
     }
 
-    
-    //@Override 
+
+    //@Override
     final
-    //public 
+    //public
     protected int allocateId()
     {
         checkIfClosed() ;
         int id = (int)seq.getAndIncrement() ;
-        numFileBlocks ++ ;  // TODO Fix this when proper freeblock management is introduced.
+        numFileBlocks ++ ;
         return id ;
     }
-    
+
     @Override
     final synchronized
     public boolean valid(long id)
@@ -98,7 +98,7 @@ public abstract class BlockAccessBase implements BlockAccess
             return false ;
         if ( id < 0 )
             return false ;
-        return true ; 
+        return true ;
     }
 
     final
@@ -106,7 +106,7 @@ public abstract class BlockAccessBase implements BlockAccess
     {
         if ( id > Integer.MAX_VALUE )
             throw new BlockException(format("BlockAccessBase: Id (%d) too large", id )) ;
-        
+
         // Access to numFileBlocks not synchronized - it's only a check
         if ( id < 0 || id >= numFileBlocks )
         {
@@ -118,7 +118,7 @@ public abstract class BlockAccessBase implements BlockAccess
             }
         }
     }
-    
+
     final protected void check(Block block)
     {
         check(block.getId()) ;
@@ -133,17 +133,17 @@ public abstract class BlockAccessBase implements BlockAccess
     {
         file.sync() ;
     }
-    
+
     //@Override
-    final public boolean isClosed() { return file.channel() == null ; }  
-    
-    protected final void checkIfClosed() 
-    { 
-        if ( isClosed() ) 
+    final public boolean isClosed() { return file.channel() == null ; }
+
+    protected final void checkIfClosed()
+    {
+        if ( isClosed() )
             getLog().error("File has been closed") ;
     }
-    
-    protected abstract void _close() ; 
+
+    protected abstract void _close() ;
 
     @Override
     final public void close()
@@ -151,7 +151,7 @@ public abstract class BlockAccessBase implements BlockAccess
         _close() ;
         file.close() ;
     }
-    
+
     @Override
     public String getLabel()
     {

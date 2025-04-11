@@ -170,9 +170,7 @@ public class IsoAlgTuple {
         tuples2 = new HashSet<>(tuples2);
 
         // Fast path.
-        if ( true )
-        {
-            // XXX We can move this out to the caller of matcher.
+        if ( true ) {
             List<Tuple<Node>> tuples1$ = new ArrayList<>();
             // Step one - copy non-mappable tuples or exit now.
             for ( Tuple<Node> t1 : tuples1 ) {

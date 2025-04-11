@@ -230,8 +230,6 @@ public class AggFoldMap extends AggregatorBase
 
 			final CDTKey key = CDTFactory.createKey( nvKey.asNode() );
 
-			// TODO: what do we do if the map already contains an entry with the same key?
-
 			final CDTValue value;
 			final NodeValue nvValue = ExprLib.evalOrNull(expr2, binding, functionEnv);
 			if ( nvValue == null ) {

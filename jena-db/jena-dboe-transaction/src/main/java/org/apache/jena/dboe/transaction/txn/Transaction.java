@@ -299,7 +299,6 @@ public class Transaction implements TransactionInfo {
             throw new TransactionException("Not in a write transaction");
     }
 
-    // XXX Duplicate -- TransactionalComponentLifecycle
     private void checkState(TxnState expected) {
         TxnState s = getState();
         if ( s != expected )
