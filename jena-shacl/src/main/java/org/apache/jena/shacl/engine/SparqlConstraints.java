@@ -60,7 +60,6 @@ public class SparqlConstraints {
         Node message = G.getZeroOrOneSP(shapesGraph, sparqlConstraintNode, SHACL.message);
         boolean deactivated = absentOrOne(shapesGraph, sparqlConstraintNode, SHACL.deactivated, NodeConst.nodeTrue);
 
-        // XXX Optimize prefixes acquisition in case of use from more than one place.
         Query query = ShLib.extractSPARQLQuery(shapesGraph, sparqlConstraintNode);
         String msg = (message != null && message.isLiteral() ? message.getLiteralLexicalForm() : null );
         return new SparqlConstraint(query, msg);

@@ -116,7 +116,6 @@ public class RefEval {
 
             Table tableVarURI = TableFactory.create(gVar, gn);
             // Evaluate the pattern, join with this graph node possibility.
-            // XXX If Var.ANON then no-opt.
             Table patternTable = eval(e2, opGraph.getSubOp());
             Table stepResult = evaluator.join(patternTable, tableVarURI);
 

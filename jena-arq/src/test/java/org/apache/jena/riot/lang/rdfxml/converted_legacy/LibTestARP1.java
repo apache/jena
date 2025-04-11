@@ -141,8 +141,6 @@ class LibTestARP1 {
         ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStrict;
 
         try {
-            // XXX ARP generate warnings rather than errors in some cases.
-            // XXX Fix!
             withLogLevel(SysRIOT.getLogger(),
                          "FATAL", ()->{
                              InputStream input = IO.openFile(fnInput);

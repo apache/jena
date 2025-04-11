@@ -290,7 +290,6 @@ public class FileUtils
         return ++counter;
     }
 
-    // TODO Replace with a FileManager
     /**
      Answer a BufferedReader than reads from the named resource file as
      UTF-8, possibly throwing WrappedIOExceptions.

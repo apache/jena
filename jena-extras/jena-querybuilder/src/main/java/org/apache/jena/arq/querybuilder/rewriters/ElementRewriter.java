@@ -103,8 +103,6 @@ public class ElementRewriter extends AbstractRewriter<Element> implements Elemen
 
     @Override
     public void visit(ElementUnfold el) {
-// TODO: double check this method; I copied and adapted the method of
-//   ElementBind (see above) but I am not entirely sure it is correct
         Node n1 = changeNode(el.getVar1());
         Node n2 = changeNode(el.getVar2());
         if ( Objects.equals(n1, el.getVar1()) && Objects.equals(n2, el.getVar2()) ) {

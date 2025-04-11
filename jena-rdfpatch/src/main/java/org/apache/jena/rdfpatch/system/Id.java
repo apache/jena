@@ -30,7 +30,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.impl.Util;
 
-// XXX Should use this! At the moemnt a patch id is a Node.
 /**
  * An identifier. When encoded, the {@code Id} can be a URI or string literal.
  * The preferred form is a {@code <uuid:...>}.

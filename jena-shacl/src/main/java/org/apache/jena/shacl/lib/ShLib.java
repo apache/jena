@@ -291,7 +291,7 @@ public class ShLib {
     }
 
     public static String extractSPARQLQueryString(Graph shapesGraph, Node sparqlNode) {
-        // XXX Optimize prefixes acquisition in case of use from more than one place.
+        // Optimize prefixes acquisition in case of use from more than one place.
         String prefixes = prefixes(shapesGraph, sparqlNode);
         Node selectNode;
         try {

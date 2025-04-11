@@ -104,7 +104,6 @@ public class TestPathQuery {
     }
 
     private boolean rowSetEquals(RowSetRewindable rowset1, RowSetRewindable rowset2) {
-        // XXX [ISO] Use exact.
         return ResultsCompare.equalsExact(rowset1, rowset2);
     }
 

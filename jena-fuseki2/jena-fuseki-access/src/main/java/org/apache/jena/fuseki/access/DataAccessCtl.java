@@ -127,7 +127,6 @@ public class DataAccessCtl {
 
         Collection<Node> names = sCxt.visibleGraphs();
         if ( names == null )
-            // TODO does not scale.
             names = Iter.toList(dsg.listGraphNodes());
 
         return new DatasetGraphFilteredView(dsg, sCxt.predicateQuad(), sCxt.visibleGraphs());

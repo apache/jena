@@ -65,9 +65,6 @@ public class TestProtobufStreamRDF {
 
     static DatasetGraph datasetGraph = SSE.parseDatasetGraph(dgs) ;
 
-    // TODO Empty.
-    // Graph as triples delimiter/blk.
-
     // Using delimited streams.
     @Test public void graph_01() throws IOException {
         testGraph(true);

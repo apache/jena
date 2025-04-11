@@ -107,7 +107,6 @@ public class ParseIPv6Address {
     }
 
     /** Parse option zoneId after IPv6 address. RFC 6874 */
-    // TODO Is this legal after IPv4 address?
     private static int parseIPv6OptionalZone(CharSequence string, int idx, int end) {
         if ( idx >= end )
             return idx;

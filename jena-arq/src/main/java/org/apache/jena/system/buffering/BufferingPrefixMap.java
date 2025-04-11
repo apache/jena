@@ -118,7 +118,6 @@ public class BufferingPrefixMap extends PrefixMapBase {
 
     @Override
     public int size() {
-        // XXX Wrong for added same prefix, different iri.
         return (int)stream().count();
     }
 

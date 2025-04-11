@@ -907,7 +907,7 @@ public abstract class AbstractDateTimeDV extends TypeValidator {
 		int position;
 		// a pointer to the type that was used go generate this data
 		// note that this is not the actual simple type, but one of the
-		// statically created XXXDV objects, so this won't cause any GC problem.
+		// statically created DV objects, so this won't cause any GC problem.
 		final AbstractDateTimeDV type;
 		private String canonical;
 		public DateTimeData(String originalValue, AbstractDateTimeDV type) {

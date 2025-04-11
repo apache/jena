@@ -82,14 +82,11 @@ public abstract class AbstractDatasetGraphAddDelete extends DatasetGraphWrapper 
 
     // Unbundle deleteAny
     private static final int DeleteBufferSize = 10000;
-    @Override
     /** Simple implementation but done without assuming iterator.remove() */
+    @Override
     public void deleteAny(Node g, Node s, Node p, Node o) {
-        // TODO DRY This code.
         // This is duplicated: see DatasetGraphBase.
-        // We need to do the conversion here.
-        // DRY => DSGUtils
-        // Convert deleteAny to deletes.
+        // Must go through this.delete
         Quad[] buffer = new Quad[DeleteBufferSize];
         while (true) {
             Iterator<Quad> iter = find(g, s, p, o);
@@ -102,7 +99,7 @@ public abstract class AbstractDatasetGraphAddDelete extends DatasetGraphWrapper 
             }
             // Delete them.
             for ( int i = 0 ; i < len ; i++ ) {
-                delete(buffer[i]);
+                this.delete(buffer[i]);
                 buffer[i] = null;
             }
             // Finished?

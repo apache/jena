@@ -35,7 +35,6 @@ import org.apache.jena.rdfpatch.changes.RDFChangesWrapper;
  *  To do this, call {@link #doAbort()} in {@link #txnNoChangeCommit()}
  */
 public class RDFChangesSuppressEmpty extends RDFChangesWrapper {
-    // TODO Add RDFChanges.cancel.
 
     public RDFChangesSuppressEmpty(RDFChanges other) {
         super(other);

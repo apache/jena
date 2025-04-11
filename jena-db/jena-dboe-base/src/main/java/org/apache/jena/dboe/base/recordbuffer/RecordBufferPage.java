@@ -52,12 +52,8 @@ public final class RecordBufferPage extends RecordBufferPageBase
 
     @Override
     protected void _reset(Block block) {
-        // TODO -- should this be format?
         // Print this
         super.rebuild(block, this.getCount());
-        //?? use .format
-//        // TODO WRONG : block is overlying.
-//        this.link = block.getByteBuffer().getInt(LINK);
     }
 
     public static int calcRecordSize(RecordFactory factory, int blkSize)

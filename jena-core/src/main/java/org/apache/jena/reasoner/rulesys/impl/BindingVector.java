@@ -33,24 +33,24 @@ import org.apache.jena.util.PrintUtil ;
  * use of reference chains.
  */
 public class BindingVector implements BindingEnvironment {
-    
+
     /** The current binding set */
     protected Node[] environment;
-    
+
     /**
-     * Constructor - create an empty binding environment 
+     * Constructor - create an empty binding environment
      */
     public BindingVector(int size) {
-        environment = new Node[size]; 
+        environment = new Node[size];
     }
-    
+
     /**
-     * Constructor - create a binding environment from a vector of bindings 
+     * Constructor - create a binding environment from a vector of bindings
      */
     public BindingVector(Node [] env) {
-        environment = env; 
+        environment = env;
     }
-    
+
     /**
      * Constructor - create a binding environment which is a copy
      * of the given environment
@@ -58,9 +58,9 @@ public class BindingVector implements BindingEnvironment {
     public BindingVector(BindingVector clone) {
         Node[] orig = clone.environment;
         environment = new Node[orig.length];
-        System.arraycopy(orig, 0, environment, 0, orig.length); 
+        System.arraycopy(orig, 0, environment, 0, orig.length);
     }
-    
+
     /**
      * Return the current array of bindings. Useful for fast access to
      * several bindings, not useful for doing updates.
@@ -68,7 +68,7 @@ public class BindingVector implements BindingEnvironment {
     public Node[] getEnvironment() {
         return environment;
     }
-        
+
     /**
      * If the node is a variable then return the current binding (null if not bound)
      * otherwise return the node itself.
@@ -104,7 +104,7 @@ public class BindingVector implements BindingEnvironment {
             return node;
         }
     }
-    
+
     /**
      * Return the most ground version of the node. If the node is not a variable
      * just return it, if it is a variable bound in this environment return the binding,
@@ -119,7 +119,7 @@ public class BindingVector implements BindingEnvironment {
             return bind;
         }
     }
-    
+
     /**
      * Bind the ith variable in the current environment to the given value.
      * Checks that the new binding is compatible with any current binding.
@@ -138,7 +138,7 @@ public class BindingVector implements BindingEnvironment {
             return node.sameValueAs(value);
         }
     }
-    
+
     /**
      * Bind a variable in the current environment to the given value.
      * Checks that the new binding is compatible with any current binding.
@@ -154,7 +154,7 @@ public class BindingVector implements BindingEnvironment {
             return var.sameValueAs(value);
         }
     }
-   
+
     /**
      * Bind the variables in a goal pattern using the binding environment, to
      * generate a more specialized goal
@@ -168,8 +168,8 @@ public class BindingVector implements BindingEnvironment {
                 getGroundVersion(goal.getObject())
         );
     }
-    
-// Replaced by version below for consistency with stack variant    
+
+// Replaced by version below for consistency with stack variant
 //    /**
 //     * Instatiate a goal pattern using the binding environment
 //     * @param goal the TriplePattern to be instantiated
@@ -182,7 +182,7 @@ public class BindingVector implements BindingEnvironment {
 //                getGroundVersion(goal.getObject())
 //        );
 //    }
-    
+
     /**
      * Instantiate a triple pattern against the current environment.
      * This version handles unbound variables by turning them into bNodes.
@@ -199,7 +199,7 @@ public class BindingVector implements BindingEnvironment {
         if (o.isVariable()) o = NodeFactory.createBlankNode();
         return Triple.create(s, p, o);
     }
-    
+
     /**
      * Printable form
      */
@@ -220,7 +220,7 @@ public class BindingVector implements BindingEnvironment {
         }
         return buffer.toString();
     }
-        
+
     /**
      * Unify a goal with the head of a rule. This is a poor-man's unification,
      * we should try switching to a more conventional global-variables-with-trail
@@ -232,18 +232,18 @@ public class BindingVector implements BindingEnvironment {
      * or null if the unification fails. If a variable in the environment becomes
      * aliased to another variable through the unification this is represented
      * by having its value in the environment be the variable to which it is aliased.
-     */ 
+     */
     public static BindingVector unify(TriplePattern goal, TriplePattern head, int numRuleVars) {
-        Node[] gEnv = new Node[numRuleVars];       // TODO: check
+        Node[] gEnv = new Node[numRuleVars];
         Node[] hEnv = new Node[numRuleVars];
-        
+
         if (!unify(goal.getSubject(), head.getSubject(), gEnv, hEnv)) {
             return null;
-        } 
+        }
         if (!unify(goal.getPredicate(), head.getPredicate(), gEnv, hEnv)) {
-            return null; 
-        } 
-        
+            return null;
+        }
+
         Node gObj = goal.getObject();
         Node hObj = head.getObject();
         if (Functor.isFunctor(gObj)) {
@@ -274,11 +274,11 @@ public class BindingVector implements BindingEnvironment {
             }
         } else {
             if (!unify(gObj, hObj, gEnv, hEnv)) return null;
-        } 
+        }
         // Successful bind if we get here
         return new BindingVector(hEnv);
     }
-    
+
     /**
      * Unify a single pair of goal/head nodes. Unification of a head var to
      * a goal var is recorded using an Integer in the head env to point to a
@@ -293,7 +293,7 @@ public class BindingVector implements BindingEnvironment {
                 int gIndex = ((Node_RuleVariable)gNode).getIndex();
                 if (gIndex < 0) return true;
                 if (gEnv[gIndex] == null) {
-                    // First time bind so record link 
+                    // First time bind so record link
                     gEnv[gIndex] = hNode;
                 } else {
                     // aliased var so follow trail to alias
@@ -315,7 +315,7 @@ public class BindingVector implements BindingEnvironment {
                         hEnv[hIndex] = gNode;
                     } else {
                         // Already bound to a ground node
-                        return hVal.sameValueAs(gNode); 
+                        return hVal.sameValueAs(gNode);
                     }
                 }
             }
@@ -324,7 +324,7 @@ public class BindingVector implements BindingEnvironment {
             if (gNode instanceof Node_RuleVariable) {
                 int gIndex = ((Node_RuleVariable)gNode).getIndex();
                 if (gIndex < 0) return true;
-                Node gVal = gEnv[gIndex]; 
+                Node gVal = gEnv[gIndex];
                 if (gVal == null) {
                     //. No variable alias so just record binding
                     gEnv[gIndex] = hNode;
@@ -337,11 +337,11 @@ public class BindingVector implements BindingEnvironment {
                 }
                 return true;
             } else {
-                return hNode.sameValueAs(gNode); 
+                return hNode.sameValueAs(gNode);
             }
         }
     }
-  
+
     /** Equality override */
     @Override
     public boolean equals(Object o) {
@@ -360,7 +360,7 @@ public class BindingVector implements BindingEnvironment {
         }
         return true;
     }
-        
+
     /** hash function override */
     @Override
     public int hashCode() {
@@ -371,6 +371,6 @@ public class BindingVector implements BindingEnvironment {
         }
         return hash;
     }
-    
+
 
 }

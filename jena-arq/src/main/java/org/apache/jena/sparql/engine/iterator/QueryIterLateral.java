@@ -344,18 +344,7 @@ public class QueryIterLateral extends QueryIterRepeatApply {
                 return ( x2 == null ) ? n : x2;
             }
             return n;
-    }
-
-//        // Allow for nulls.
-//        private Triple transform(Triple triple) {
-//
-//            if ( assigns.isEmpty() )
-//                return triple;
-//
-//            // XXX assignments()
-//
-//            Triple triple2 = Triple.create(s, p, o);
-//            return triple2;
+        }
 
         private void generateAssignmentNode(Node n, VarExprList assigns, BindingBuilder builder) {
             if ( n == null )

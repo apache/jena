@@ -37,9 +37,6 @@ public class NodeIdFactory
     // On-disk: may be shorter (controlled by get/set ByteBuffer and byte[]).
     // In-memory - always int-long
 
-    // XXX Chance for a cache?
-    // See also TupleIndexRecord.
-
     private static NodeId create(NodeIdType type, int v1, long v2) {
         if ( isSpecial(type) ) {
             if ( NodeId.equals(NodeId.NodeDoesNotExist, v1, v2) )

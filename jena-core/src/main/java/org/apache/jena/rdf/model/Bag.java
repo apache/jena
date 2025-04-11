@@ -58,5 +58,4 @@ public interface Bag extends Container {
      * @param v The value to be removed from the bag.
      * @return this container to enable cascading calls.
      */
-//TODO    public Container remove(String v) ;
 }

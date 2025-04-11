@@ -88,7 +88,6 @@ public class PatternConstraint extends ConstraintTerm {
 
     @Override
     public void printCompact(IndentedWriter out, NodeFormatter nodeFmt) {
-        // XXX flagStr?
         compactQuotedString(out, "pattern", patternString);
         if ( flagsStr != null ) {
             out.print(" ");
