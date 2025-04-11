@@ -308,7 +308,7 @@ public class QueryExecHTTP implements QueryExec {
         try {
             RDFDataMgr.read(graph, in, lang);
         } catch (RiotException ex) {
-            HttpLib.finish(in);
+            finish(in);
             throw ex;
         }
         return graph;

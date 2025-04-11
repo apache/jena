@@ -26,6 +26,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.StringReader;
 
 import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.fuseki.main.ConfigureTests;
+
 import static org.apache.jena.fuseki.test.HttpTest.*;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -60,13 +62,9 @@ public class TestGSP {
     }
 
     @AfterClass public static void afterClass() {
-        EnvTest.stop(env);
+        if ( ConfigureTests.CloseTestServers )
+            EnvTest.stop(env);
     }
-
-    // TESTS:
-    // Change RDFFormat.
-    // Chnage httpClient
-    // And DSP.
 
     private static Graph graph1 = SSE.parseGraph("(graph (:s :p :x) (:s :p 1))");
     private static Graph graph2 = SSE.parseGraph("(graph (:s :p :x) (:s :p 2))");
