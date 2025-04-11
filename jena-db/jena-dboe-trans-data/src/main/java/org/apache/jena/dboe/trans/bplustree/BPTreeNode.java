@@ -287,9 +287,6 @@ public final class BPTreeNode extends BPTreePage
         // Pages from pointer slots x1 to x2 (inc because while we exclude maxRec,
         // keys are only a max of the subtree they mark out.
 
-        // XXX Just grab them now - later, keep indexes and fetch on next().
-        // XXX Epoch tracking
-
         List<BPTreePage> x = new ArrayList<>(x2-x1+1);
         for ( int i = x1; i <= x2 ; i++ )
             x.add(get(i));

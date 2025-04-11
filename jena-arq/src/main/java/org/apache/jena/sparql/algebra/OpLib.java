@@ -35,9 +35,6 @@ public class OpLib
         return op;
     }
 
-    // XXX These may change to be a specific Op implementation.
-    // Needs a visitor change.
-
     /**
      * Return an {@code Op} that is the join unit - {@code (join unit(), X) = X)}.
      * It is one row of zero columns.

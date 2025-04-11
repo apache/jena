@@ -70,7 +70,6 @@ import java.util.regex.Pattern;
 
         if ( rqString == null && fString == null )
             return null;
-        // XXX isEmpty?
         if ( rqString == null || rqString.isEmpty() ) {
             if ( fString == null )
                 return null;

@@ -39,7 +39,6 @@ public class ShapeExprWalker implements ShapeExprVisitor {
         this.afterVisitor = afterVisitor;
         // Walker because TripleExpr can contain a ShapeExpression
         this.tripleExprWalker = new TripleExprWalker(beforeTripleExprVisitor, afterTripleExprVisitor, this);
-        // XXX [NodeConstraint] - no recursion.
         this.nodeConstraintVisitor = nodeConstraintVisitor;
     }
 

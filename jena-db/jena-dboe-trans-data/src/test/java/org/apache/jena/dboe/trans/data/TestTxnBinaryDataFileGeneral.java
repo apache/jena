@@ -33,7 +33,6 @@ public class TestTxnBinaryDataFileGeneral extends AbstractTestBinaryDataFile {
 
     @Override
     protected BinaryDataFile createBinaryDataFile() {
-        // XXX Builder.
         journal = Journal.create(Location.mem());
         baseBinData = new BinaryDataFileMem();
         BufferChannel chan = FileFactory.createBufferChannelMem();

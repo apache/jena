@@ -164,7 +164,6 @@ public class DatasetBuilderStd {
         this.blockMgrBuilder = blockMgrBuilder;
         this.objectFileBuilder = objectFileBuilder;
         this.recorder = new Recorder();
-        // XXX YUK
         setupRecord();
     }
 
@@ -204,9 +203,6 @@ public class DatasetBuilderStd {
     private static String DB_CONFIG_FILE = "tdb.cfg";
 
     // Main engine for building.
-    // Called by DatasetBuilderTxn
-    // XXX Rework - provide a cloning constructor (copies maps).
-    // Or "reset"
     public DatasetGraphTDB _build(Location location, StoreParams params, boolean writeable, ReorderTransformation _transform) {
         return buildWorker(location, writeable, _transform, params);
     }

@@ -48,12 +48,10 @@ public class FileLib
         }
     }
 
-    // TODO remove and call ChannelManager directly
     public static FileChannel openManaged(String filename) {
         return openManaged(filename, "rw");
     }
 
-    // TODO remove and call ChannelManager directly
     public static FileChannel openManaged(String filename, String mode) {
         return ChannelManager.acquire(filename, mode);
     }

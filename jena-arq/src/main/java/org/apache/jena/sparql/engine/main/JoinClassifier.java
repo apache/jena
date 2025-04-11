@@ -305,11 +305,10 @@ public class JoinClassifier
         return result;
     }
 
-    /***
+    /**
      * Return an iterator over the given op's immediate sub ops.
      * An empty iterator is returned for Op0 and OpExt.
      */
-    // XXX This method could go to OpLib or the Op interface directly
     private static Iterator<Op> getSubOps(Op op) {
         if (op instanceof Op1)
             return Iter.singletonIterator(((Op1)op).getSubOp());

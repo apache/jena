@@ -354,7 +354,7 @@ public class TestIRIxJenaSystem extends AbstractTestIRIx_3986 {
 
     @Test public void parse_urn_uuid_bad_07() { badSpecific("urn:uuid:" + testUUID + "?abc"); }
 
-    // XXX Not ASCII in the NSS part
+    // Not ASCII in the NSS part
     @Test public void parse_urn_uuid_bad_12() { badSpecific("urn:uuid:" + testUUID + "#αβγ"); }
     @Test public void parse_urn_uuid_bad_13() { badSpecific("urn:uuid:" + testUUID + "?=αβγ"); }
     @Test public void parse_urn_uuid_bad_14() { badSpecific("urn:uuid:" + testUUID + "?+αβγ"); }

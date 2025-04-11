@@ -26,7 +26,7 @@ import org.apache.jena.datatypes.xsd.impl.XSDAbstractDateTimeType ;
 /**
  * Represent an XSD duration value. We use a seven dimensional space
  * with years, months, days, hours, minutes, seconds and fractional seconds.
- * This deviates from the spec which allows arbitrary position 
+ * This deviates from the spec which allows arbitrary position
  * decimals for seconds.
  */
 
@@ -35,62 +35,62 @@ public class XSDDuration extends AbstractDateTime {
     /**
      * Constructor - should only be used by the internals but public scope because
      * the internals spread across multiple packages.
-     * 
+     *
      * @param value the date/time value returned by the parsing
      */
     public XSDDuration(Object value) {
         super(value);
     }
-    
+
     /**
      * Return the number of years in the duration
      */
     public int getYears() {
         return data[CY];
     }
-    
+
     /**
      * Return the number of months in the duration
      */
     public int getMonths() {
         return data[M];
     }
-    
+
     /**
      * Return the number of years in the duration
      */
     public int getDays() {
         return data[D];
     }
-    
+
     /**
      * Return the number of hours in the duration
      */
     public int getHours() {
         return data[h];
     }
-    
+
     /**
      * Return the number of minutes in the duration
      */
     public int getMinutes() {
         return data[m];
     }
-    
+
     /**
      * Return the number of full seconds in the duration
      */
     public int getFullSeconds() {
         return data[s];
     }
-    
+
     /**
      * Return the number of seconds in the duration, including fractional part
      */
     public double getSeconds() {
         return data[s] + fractionalSeconds;
     }
-    
+
     /**
      * Return the number of seconds in the duration, including the fractional part,
      * in a lossless but expensive notation - i.e. a BigDecimal.
@@ -99,7 +99,7 @@ public class XSDDuration extends AbstractDateTime {
         return BigDecimal.valueOf( data[ms], data[msscale])
                      .add( BigDecimal.valueOf(data[s]));
     }
-    
+
     /**
      * Return the time component of the duration - i.e. just the hours/mins/seconds,
      * and returns the values in seconds.
@@ -107,7 +107,7 @@ public class XSDDuration extends AbstractDateTime {
     public double getTimePart() {
         return ((data[h]) * 60l + data[m]) * 60l + getSeconds();
     }
-    
+
     /**
      * Serializer
      */
@@ -164,7 +164,7 @@ public class XSDDuration extends AbstractDateTime {
     }
 
     // The following duration comparison code is based on Xerces DurationDV, Apache Software Foundation
-    
+
     // order-relation on duration is a partial order. The dates below are used to
     // for comparison of 2 durations, based on the fact that
     // duration x and y is x<=y iff s+x<=s+y
@@ -186,19 +186,19 @@ public class XSDDuration extends AbstractDateTime {
      * @param date2  Unnormalized duration
      * @param strict (min/max)Exclusive strict == true ( LESS_THAN ) or ( GREATER_THAN )
      *               (min/max)Inclusive strict == false (LESS_EQUAL) or (GREATER_EQUAL)
-     * @return INDETERMINATE if the order relationship between date1 and date2 is indeterminate. 
-     * EQUAL if the order relation between date1 and date2 is EQUAL.  
+     * @return INDETERMINATE if the order relationship between date1 and date2 is indeterminate.
+     * EQUAL if the order relation between date1 and date2 is EQUAL.
      * If the strict parameter is true, return LESS_THAN if date1 is less than date2 and
-     * return GREATER_THAN if date1 is greater than date2. 
+     * return GREATER_THAN if date1 is greater than date2.
      * If the strict parameter is false, return LESS_THAN if date1 is less than OR equal to date2 and
-     * return GREATER_THAN if date1 is greater than OR equal to date2 
+     * return GREATER_THAN if date1 is greater than OR equal to date2
      */
     @Override
     protected short compareValues(int[] date1, int[] date2, boolean strict) {
 
         date1 = canonical(date1) ;
         date2 = canonical(date2) ;
-        
+
         //REVISIT: this is unoptimazed vs of comparing 2 durations
         //         Algorithm is described in 3.2.6.2 W3C Schema Datatype specs
         //
@@ -270,7 +270,7 @@ public class XSDDuration extends AbstractDateTime {
         }
         return resultA;
     }
-    
+
     /**
      * Equality function (value based).
      */
@@ -292,11 +292,11 @@ public class XSDDuration extends AbstractDateTime {
         }
         return super.equals(obj) ;
     }
-    
+
     @Override
     public int hashCode() {
         int[] data1 = canonical(this.data) ;
-        int hash = 1816 ; 
+        int hash = 1816 ;
         for ( int aData : data1 )
             hash = ( hash << 1 ) ^ aData;
         return hash;
@@ -357,22 +357,21 @@ public class XSDDuration extends AbstractDateTime {
         duration[utc]='Z';
         return duration;
     }
-    
-    
+
     // XXX Signedness?
-    // Day-time, year-month canonicalization. 
+    // Day-time, year-month canonicalization.
     private static int[] canonical(int[] val) {
         val = Arrays.copyOf(val, val.length) ;
-        
+
         while ( val[ms] >= 1000 ) {
-            val[s] += 1 ; 
+            val[s] += 1 ;
             val[ms] -= 1000 ;
         }
         while ( val[ms] <= -1000 ) {
-            val[s] -= 1 ; 
+            val[s] -= 1 ;
             val[ms] += 1000 ;
         }
-        
+
         while ( val[s] >= 60 ) {
             val[m] += 1 ;
             val[s] -= 60 ;
@@ -382,7 +381,7 @@ public class XSDDuration extends AbstractDateTime {
             val[s] += 60 ;
         }
 
-        
+
         while ( val[m] >= 60 ) {
             val[h] += 1 ;
             val[m] -= 60 ;
@@ -400,7 +399,7 @@ public class XSDDuration extends AbstractDateTime {
             val[D] -= 1 ;
             val[h] += 24 ;
         }
-        
+
         while ( val[M] >= 12 ) {
             val[CY] += 1 ;
             val[M] -= 12 ;

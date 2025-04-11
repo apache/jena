@@ -21,7 +21,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
 abstract class Event {
-    // TODO: not for 2.3. get rid of short names all together, not good idea.
     final String oneChar;
     final String name;
     public Event(String oneChar, String name) {

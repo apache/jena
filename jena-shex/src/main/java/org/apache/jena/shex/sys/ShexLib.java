@@ -87,20 +87,6 @@ public class ShexLib {
         shExpr.visit(walker);
     }
 
-
-    // XXX Does this make sense?
-//    private static void walk(ShapeExpression shExpr,
-//                             ShapeExprVisitor beforeVisitor, ShapeExprVisitor afterVisitor,
-//                             //TripleExprVisitor beforeTripleExpressionVisitor, TripleExprVisitor afterTripleExpressionVisitor,
-//                             //NodeConstraint beforeNodeConstraintVisitor, NodeConstraint afterNodeConstraintVisitor
-//                             NodeConstraintVisitor beforeNodeConstraintVisitor, NodeConstraint afterNodeConstraintVisitor
-//                            ) {
-//        ShapeExprWalker walker = new ShapeExprWalker(beforeVisitor, afterVisitor,
-//                                                     beforeTripleExpressionVisitor, afterTripleExpressionVisitor,
-//                                                     beforeNodeConstraintVisitor, afterNodeConstraintVisitor);
-//        shExpr.visit(walker);
-//    }
-
     private static PrefixMap displayPrefixMap = PrefixMapFactory.createForOutput();
     private static NodeFormatter nodeFmtAbbrev = new NodeFormatterTTL(null, displayPrefixMap);
 

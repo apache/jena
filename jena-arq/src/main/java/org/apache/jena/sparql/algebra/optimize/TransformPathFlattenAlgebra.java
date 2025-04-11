@@ -144,7 +144,6 @@ public class TransformPathFlattenAlgebra extends TransformCopy {
             }
 
             if ( !backwards.isEmpty() ) {
-                // TODO Could reverse here.
                 P_NegPropSet pBwd = new P_NegPropSet();
                 for ( P_Path0 p : backwards )
                     pBwd.add(p);
