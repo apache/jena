@@ -510,7 +510,6 @@ public interface ModelCon {
     * @param p the predicate of the statement to add
     * @param lex the lexical form of the literal
     * @param lang the language of the literal
-    * @param datatype the datatype of the literal
     */
     Model add(Resource s, Property p, String lex, String lang) ;
 
@@ -521,7 +520,7 @@ public interface ModelCon {
     * @param p the predicate of the statement to add
     * @param lex the lexical form of the literal
     * @param lang the language of the literal
-    * @param dir the base direction of the literal
+    * @param direction the base direction of the literal
     */
     Model add(Resource s, Property p, String lex, String lang, String direction) ;
 

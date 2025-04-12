@@ -64,7 +64,8 @@ function grammar
     F="$DIR/JavaCharStream.java"
     if [ -e "$F" ]
     then
-	sed -e 's/public/\n@SuppressWarnings("all")\npublic/' < $F > F 
+	perl -0777 -pe 's/public\nclass JavaCharStream/\@SuppressWarnings("all")\npublic\nclass JavaCharStream/' < $F > F
+	##sed -e 's/^public$/@SuppressWarnings("all")\npublic/' < $F > F 
 	mv F $F
     fi
 
