@@ -722,13 +722,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.python</groupId>
-        <artifactId>jython-standalone</artifactId>
-        <version>${ver.jython}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
         <groupId>org.openjdk.jmh</groupId>
         <artifactId>jmh-core</artifactId>
         <version>${ver.org.openjdk.jmh}</version>
