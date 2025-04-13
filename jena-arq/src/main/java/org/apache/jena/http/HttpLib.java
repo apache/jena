@@ -322,25 +322,21 @@ public class HttpLib {
     // This is extracted from commons-io, IOUtils.skip.
     // Changes:
     // * No exception.
-    // * Always consumes to the end of stream (or stream throws IOException) and closes the input stream.
-    // * Larger buffer
-    private static int SKIP_BUFFER_SIZE = 8*1024;
-    private static byte[] SKIP_BYTE_BUFFER = null;
+    // * Always consumes to the end of stream, or the stream throws IOException.
+    // This function closes the input stream.
+
+    private static final int SKIP_BUFFER_SIZE = 16*1024;
+    // This buffer is only every written. It does not matter if
+    /// two threads overlap while writing because we never read the buffer.
+    // What matters is that it is fixed size.
+    private static final byte[] SKIP_BYTE_BUFFER_WO = new byte[SKIP_BUFFER_SIZE];
 
     private static void consumeAndClose(final InputStream input) {
-        /*
-         * N.B. no need to synchronize this because: - we don't care if the buffer is created multiple times (the data
-         * is ignored) - we always use the same size buffer, so if it it is recreated it will still be OK (if the buffer
-         * size were variable, we would need to synch. to ensure some other thread did not create a smaller one)
-         */
-        if (SKIP_BYTE_BUFFER == null) {
-            SKIP_BYTE_BUFFER = new byte[SKIP_BUFFER_SIZE];
-        }
         long bytesRead = 0; // Informational
         try {
             for(;;) {
                 // See https://issues.apache.org/jira/browse/IO-203 for why we use read() rather than delegating to skip()
-                final long n = input.read(SKIP_BYTE_BUFFER, 0, SKIP_BUFFER_SIZE);
+                final long n = input.read(SKIP_BYTE_BUFFER_WO, 0, SKIP_BUFFER_SIZE);
                 if (n < 0) { // EOF
                     break;
                 }
