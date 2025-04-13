@@ -74,7 +74,7 @@
          These two go together
          See jena-fuseki-webapp and https://shiro.apache.org/jakarta-ee.html
     -->
-    <ver.shiro>2.0.2</ver.shiro>
+    <ver.shiro>2.0.3</ver.shiro>
     <ver.omnifaces>4.6.1</ver.omnifaces>
 
     <ver.protobuf>4.30.2</ver.protobuf>
