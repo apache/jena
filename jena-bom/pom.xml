@@ -113,6 +113,7 @@
         <artifactId>jena-geosparql</artifactId>
         <version>${project.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.apache.jena</groupId>
         <artifactId>jena-permissions</artifactId>
@@ -135,6 +136,7 @@
         <artifactId>jena-fuseki-access</artifactId>
         <version>${project.version}</version>
       </dependency>
+
       <!--
       <dependency>
         <groupId>org.apache.jena</groupId>
@@ -232,6 +234,12 @@
       <dependency>
         <groupId>org.apache.jena</groupId>
         <artifactId>jena-iri3986</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.jena</groupId>
+        <artifactId>jena-langtag</artifactId>
         <version>${project.version}</version>
       </dependency>
 
