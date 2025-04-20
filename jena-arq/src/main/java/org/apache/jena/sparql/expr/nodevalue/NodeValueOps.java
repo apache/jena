@@ -30,11 +30,20 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.sparql.expr.ExprEvalException;
 import org.apache.jena.sparql.expr.ExprEvalTypeException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.ValueSpace;
+import org.apache.jena.sparql.util.NodeUtils;
 
-/** The code parts of arithmetic operations on {@link NodeValue}s.
+/**
+ * Operations relating to {@link NodeValue NodeValues}.
+ * <ul>
+ * <li>The code parts of arithmetic operations on {@link NodeValue}s.
+ * <li>Library code such as Argument testing
+ * </ul>
+ * <p>
+ * This class is not considered to be part of the ARQ API.
  */
 public class NodeValueOps
 {
@@ -283,5 +292,72 @@ public class NodeValueOps
         long x1 = gcal1.getTimeInMillis();
         long x2 = gcal2.getTimeInMillis();
         return NodeValue.xmlDatatypeFactory.newDuration(x1 - x2);
+    }
+
+    /**
+     * check and get a string (may be a simple literal, literal with language
+     * tag or an XSD string).
+     */
+    public static Node checkAndGetStringLiteral(String label, NodeValue nv) {
+        Node n = nv.asNode();
+        if ( !n.isLiteral() )
+            throw new ExprEvalException(label + ": Not a literal: " + nv);
+        String lang = n.getLiteralLanguage();
+
+        if ( NodeUtils.isLangString(n) )
+            // Language tag.  Legal.
+            return n;
+
+        // No language tag : either no datatype or a datatype of xsd:string
+        // Includes the case of rdf:langString and no language ==> Illegal as a compatible string.
+
+        if ( nv.isString() )
+                return n;
+        throw new ExprEvalException(label + ": Not a string literal: " + nv);
+    }
+
+    /**
+     * Check for string operations with primary first arg and second arg
+     * (e.g. CONTAINS).  The arguments are not used in the same way and the check
+     * operation is not symmetric.
+     * <ul>
+     * <li> "abc"@en is compatible with "abc"
+     * <li> "abc" is NOT compatible with "abc"@en
+     * </ul>
+     */
+    public static void checkTwoArgumentStringLiterals(String label, NodeValue arg1, NodeValue arg2) {
+
+        /* Quote the spec:
+         * Compatibility of two arguments is defined as:
+         *    The arguments are simple literals or literals typed as xsd:string
+         *    The arguments are plain literals with identical language tags
+         *    The first argument is a plain literal with language tag and the second argument is a simple literal or literal typed as xsd:string
+         */
+
+        Node n1 = checkAndGetStringLiteral(label, arg1);
+        Node n2 = checkAndGetStringLiteral(label, arg2);
+        String lang1 = n1.getLiteralLanguage();
+        String lang2 = n2.getLiteralLanguage();
+        if ( lang1 == null )
+            lang1 = "";
+        if ( lang2 == null )
+            lang2 = "";
+
+        // Case 1
+        if ( lang1.equals("") ) {
+            if ( lang2.equals("") )
+                return;
+            throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2);
+        }
+
+        // Case 2
+        if ( lang1.equalsIgnoreCase(lang2) )
+            return;
+
+        // Case 3
+        if ( lang2.equals("") )
+            return;
+
+        throw new ExprEvalException(label + ": Incompatible: " + arg1 + " and " + arg2);
     }
 }

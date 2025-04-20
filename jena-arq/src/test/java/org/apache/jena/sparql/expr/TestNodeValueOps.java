@@ -20,10 +20,41 @@ package org.apache.jena.sparql.expr;
 
 import static org.junit.Assert.assertEquals;
 
+import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueOps;
+import org.apache.jena.vocabulary.RDF;
+
 import org.junit.Test;
 
 public class TestNodeValueOps {
+
+    @Test public void testCheckAndGetStringLiteral1() {
+        NodeValue nv = NodeValue.makeNode("abc", XSDDatatype.XSDstring);
+        Node n = NodeValueOps.checkAndGetStringLiteral("Test", nv);
+        assertEquals( "abc", n.getLiteralLexicalForm());
+    }
+
+    @Test public void testCheckAndGetStringLiteral2() {
+        NodeValue nv = NodeValue.makeNode("abc", XSDDatatype.XSDnormalizedString);
+        Node n = NodeValueOps.checkAndGetStringLiteral("Test", nv);
+        assertEquals( "abc", n.getLiteralLexicalForm());
+    }
+
+    @Test public void testCheckAndGetStringLiteral3() {
+        NodeValue nv = NodeValue.makeString("abc");
+        Node n = NodeValueOps.checkAndGetStringLiteral("Test", nv);
+        assertEquals( "abc", n.getLiteralLexicalForm());
+    }
+
+    @Test(expected=ExprEvalException.class)
+    public void testCheckAndGetStringLiteral4() {
+        // The form "abc"^^rdf:langString (no lang tag) is not derived from xsd:string.
+        NodeValue nv = NodeValue.makeNode("abc", RDF.dtLangString);
+        Node n = NodeValueOps.checkAndGetStringLiteral("Test", nv);
+        assertEquals( "abc", n.getLiteralLexicalForm());
+    }
+
     // ** Addition
     // Numerics
     @Test

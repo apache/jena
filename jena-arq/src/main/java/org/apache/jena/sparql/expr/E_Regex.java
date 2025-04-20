@@ -24,7 +24,7 @@ import org.apache.commons.lang3.StringUtils ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.query.ARQ ;
-import org.apache.jena.sparql.expr.nodevalue.NodeFunctions ;
+import org.apache.jena.sparql.expr.nodevalue.NodeValueOps;
 import org.apache.jena.sparql.sse.Tags ;
 import org.apache.jena.sparql.util.FmtUtils ;
 
@@ -62,7 +62,7 @@ public class E_Regex extends ExprFunctionN
 
     @Override
     public NodeValue eval(List<NodeValue> args) {
-        Node arg = NodeFunctions.checkAndGetStringLiteral("REGEX", args.get(0));
+        Node arg = NodeValueOps.checkAndGetStringLiteral("REGEX", args.get(0));
         NodeValue vPattern = args.get(1);
         NodeValue vFlags = (args.size() == 2 ? null : args.get(2));
 

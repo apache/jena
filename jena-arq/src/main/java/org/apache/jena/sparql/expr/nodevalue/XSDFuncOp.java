@@ -19,8 +19,6 @@
 package org.apache.jena.sparql.expr.nodevalue;
 
 import static javax.xml.datatype.DatatypeConstants.*;
-import static org.apache.jena.sparql.expr.nodevalue.NodeFunctions.checkAndGetStringLiteral;
-import static org.apache.jena.sparql.expr.nodevalue.NodeFunctions.checkTwoArgumentStringLiterals;
 import static org.apache.jena.sparql.expr.nodevalue.NumericType.OP_DECIMAL;
 import static org.apache.jena.sparql.expr.nodevalue.NumericType.OP_DOUBLE;
 import static org.apache.jena.sparql.expr.nodevalue.NumericType.OP_FLOAT;
@@ -63,7 +61,7 @@ public class XSDFuncOp
 {
     private XSDFuncOp() {}
 
-    // The choice of "24" is arbitrary but more than 18 (XSD 1.0) or 16 XSD 1.1) as required by F&O
+    // The choice of "24" is arbitrary but more than 18 (XSD 1.0) or 16 (XSD 1.1) as required by F&O
     //   F&O 3.1: section 4.2 (end intro)
     //   https://www.w3.org/TR/xpath-functions/#op.numeric section 4.2
     private static final int DIVIDE_PRECISION = 24;
@@ -556,23 +554,23 @@ public class XSDFuncOp
     }
 
     public static NodeValue strlen(NodeValue nvString) {
-        Node n = checkAndGetStringLiteral("strlen", nvString);
+        Node n = NodeValueOps.checkAndGetStringLiteral("strlen", nvString);
         String str = n.getLiteralLexicalForm();
         int len = str.codePointCount(0, str.length());
         return NodeValue.makeInteger(len);
     }
 
     public static NodeValue strReplace(NodeValue nvStr, NodeValue nvPattern, NodeValue nvReplacement, NodeValue nvFlags) {
-        String pat = checkAndGetStringLiteral("replace", nvPattern).getLiteralLexicalForm();
+        String pat = NodeValueOps.checkAndGetStringLiteral("replace", nvPattern).getLiteralLexicalForm();
         String flagsStr = null;
         if ( nvFlags != null )
-            flagsStr = checkAndGetStringLiteral("replace", nvFlags).getLiteralLexicalForm();
+            flagsStr = NodeValueOps.checkAndGetStringLiteral("replace", nvFlags).getLiteralLexicalForm();
         return strReplace(nvStr, RegexEngine.makePattern("replace", pat, flagsStr), nvReplacement);
     }
 
     public static NodeValue strReplace(NodeValue nvStr, Pattern pattern, NodeValue nvReplacement) {
-        String n = checkAndGetStringLiteral("replace", nvStr).getLiteralLexicalForm();
-        String rep = checkAndGetStringLiteral("replace", nvReplacement).getLiteralLexicalForm();
+        String n = NodeValueOps.checkAndGetStringLiteral("replace", nvStr).getLiteralLexicalForm();
+        String rep = NodeValueOps.checkAndGetStringLiteral("replace", nvReplacement).getLiteralLexicalForm();
         String x = replaceAll(pattern.matcher(n), rep);
         if ( x == null )
             // No replacement.
@@ -621,7 +619,7 @@ public class XSDFuncOp
     }
 
     public static NodeValue substring(NodeValue nvString, NodeValue nvStart, NodeValue nvLength) {
-        Node n = checkAndGetStringLiteral("substring", nvString);
+        Node n = NodeValueOps.checkAndGetStringLiteral("substring", nvString);
         RDFDatatype dt = n.getLiteralDatatype();
         // XSD F&O:
         try {
@@ -708,7 +706,7 @@ public class XSDFuncOp
     }
 
     public static NodeValue strContains(NodeValue string, NodeValue match) {
-        checkTwoArgumentStringLiterals("contains", string, match);
+        NodeValueOps.checkTwoArgumentStringLiterals("contains", string, match);
         String lex1 = string.asNode().getLiteralLexicalForm();
         String lex2 = match.asNode().getLiteralLexicalForm();
         boolean x = StrUtils.contains(lex1, lex2);
@@ -716,14 +714,14 @@ public class XSDFuncOp
     }
 
     public static NodeValue strStartsWith(NodeValue string, NodeValue match) {
-        checkTwoArgumentStringLiterals("strStarts", string, match);
+        NodeValueOps.checkTwoArgumentStringLiterals("strStarts", string, match);
         String lex1 = string.asNode().getLiteralLexicalForm();
         String lex2 = match.asNode().getLiteralLexicalForm();
         return NodeValue.booleanReturn(lex1.startsWith(lex2));
     }
 
     public static NodeValue strEndsWith(NodeValue string, NodeValue match) {
-        checkTwoArgumentStringLiterals("strEnds", string, match);
+        NodeValueOps.checkTwoArgumentStringLiterals("strEnds", string, match);
         String lex1 = string.asNode().getLiteralLexicalForm();
         String lex2 = match.asNode().getLiteralLexicalForm();
         return NodeValue.booleanReturn(lex1.endsWith(lex2));
@@ -736,7 +734,7 @@ public class XSDFuncOp
     }
 
     public static NodeValue strBefore(NodeValue string, NodeValue match) {
-        checkTwoArgumentStringLiterals("strBefore", string, match);
+        NodeValueOps.checkTwoArgumentStringLiterals("strBefore", string, match);
         String lex1 = string.asNode().getLiteralLexicalForm();
         String lex2 = match.asNode().getLiteralLexicalForm();
         Node mainArg = string.asNode();
@@ -753,7 +751,7 @@ public class XSDFuncOp
     }
 
     public static NodeValue strAfter(NodeValue string, NodeValue match) {
-        checkTwoArgumentStringLiterals("strAfter", string, match);
+        NodeValueOps.checkTwoArgumentStringLiterals("strAfter", string, match);
         String lex1 = string.asNode().getLiteralLexicalForm();
         String lex2 = match.asNode().getLiteralLexicalForm();
         Node mainArg = string.asNode();
@@ -770,14 +768,14 @@ public class XSDFuncOp
     }
 
     public static NodeValue strLowerCase(NodeValue string) {
-        Node n = checkAndGetStringLiteral("lcase", string);
+        Node n = NodeValueOps.checkAndGetStringLiteral("lcase", string);
         String lex = n.getLiteralLexicalForm();
         String lex2 = lex.toLowerCase();
         return calcReturn(lex2, string.asNode());
     }
 
     public static NodeValue strUpperCase(NodeValue string) {
-        Node n = checkAndGetStringLiteral("ucase", string);
+        Node n = NodeValueOps.checkAndGetStringLiteral("ucase", string);
         String lex = n.getLiteralLexicalForm();
         String lex2 = lex.toUpperCase();
         return calcReturn(lex2, string.asNode());
@@ -820,7 +818,7 @@ public class XSDFuncOp
         StringBuilder sb = new StringBuilder();
 
         for (NodeValue nv : args) {
-            Node n = checkAndGetStringLiteral("CONCAT", nv);
+            Node n = NodeValueOps.checkAndGetStringLiteral("CONCAT", nv);
             String lang1 = n.getLiteralLanguage();
             if ( !lang1.equals("") ) {
                 if ( lang != null && !lang1.equals(lang) )
