@@ -22,6 +22,7 @@ package org.apache.jena.geosparql.configuration;
  *
  */
 public class SrsException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
     public SrsException(String msg) {
         super(msg);

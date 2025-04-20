@@ -18,8 +18,8 @@
 package org.apache.jena.geosparql.implementation;
 
 import java.io.Serializable;
-import java.lang.invoke.MethodHandles;
 import java.util.Objects;
+
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
@@ -57,16 +57,13 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.opengis.util.FactoryException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  *
  */
 public class GeometryWrapper implements Serializable {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final long serialVersionUID = 1L;
 
     private final DimensionInfo dimensionInfo;
     private final SRSInfo srsInfo;
@@ -449,9 +446,9 @@ public class GeometryWrapper implements Serializable {
             //Convert to WGS84. Use WGS84 and not CRS84 as assuming WGS8 is more prevalent.
             CoordinateReferenceSystem wgs84CRS = SRSRegistry.getCRS(SRS_URI.WGS84_CRS);
             MathTransform transform = MathTransformRegistry.getMathTransform(srsInfo.getCrs(), wgs84CRS);
-            
+
             DirectPosition wgs84Point = transform.transform(point, null);
-            
+
             //Find the UTM zone.
             utmURI = SRSRegistry.findUTMZoneURIFromWGS84(wgs84Point.getOrdinate(0), wgs84Point.getOrdinate(1));
 

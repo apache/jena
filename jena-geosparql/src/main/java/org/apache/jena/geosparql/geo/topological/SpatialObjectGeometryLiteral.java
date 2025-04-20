@@ -27,10 +27,8 @@ import org.apache.jena.geosparql.spatial.ConvertLatLon;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.system.G;
 import org.apache.jena.system.RDFDataException;
-import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDF;
 
 /**
@@ -126,7 +124,6 @@ public class SpatialObjectGeometryLiteral {
 
         if (geometry != null) {
             //Find the Geometry Literal of the Geometry.
-            ExtendedIterator<Triple> iter = graph.find(geometry, Geo.HAS_SERIALIZATION_NODE, null);
             Node literalNode = G.getSP(graph, geometry, Geo.HAS_SERIALIZATION_NODE);
             // If hasSerialization not found then check asWKT.
             if (literalNode == null)

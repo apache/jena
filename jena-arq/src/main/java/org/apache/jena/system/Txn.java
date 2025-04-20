@@ -18,8 +18,10 @@
 
 package org.apache.jena.system;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.core.Transactional;
 
@@ -136,5 +138,47 @@ public class Txn {
             txn.abort();
             txn.end();
         } catch (Throwable th2) { th.addSuppressed(th2); }
+    }
+
+    /**
+     * Begins a transaction and returns a transaction control instance suitable
+     * for use with try-with-resources blocks.
+     * See {@link #autoTxn(Transactional, TxnType)}.
+     */
+    public static AutoTxn autoTxn(Transactional txn, ReadWrite readWrite) {
+        return autoTxn(txn, TxnType.convert(readWrite));
+    }
+
+    /**
+     * Begins a transaction and returns a {@linkplain AutoTxn} instance suitable
+     * for use with try-with-resources blocks.
+     * This allows for raising checked exceptions in an idiomatic way.
+     * Closing the AutoTxn instance will abort the transaction unless there has
+     * been an explicit call to {@linkplain AutoTxn#commit()}.
+     * <p>
+     *
+     * Usage example:
+     * <pre>
+     * public void myMethod() throws IOException {
+     *   try (AutoTxn txn = Txn.autoTxn(dataset, TxnType.WRITE)) {
+     *     // Do work.
+     *     if (someError) {
+     *         throw new IOException();
+     *     }
+     *     // Explicitly call commit on success.
+     *     txn.commit();
+     *   }
+     * }
+     * </pre>
+     */
+    public static AutoTxn autoTxn(Transactional txn, TxnType txnType) {
+        Objects.requireNonNull(txn);
+        Objects.requireNonNull(txnType);
+        boolean isTxnStartedHere = !txn.isInTransaction();
+        if ( !isTxnStartedHere )
+            TxnOp.compatibleWithPromote(txnType, txn);
+        else
+            txn.begin(txnType);
+        return new AutoTxn(txn, isTxnStartedHere);
     }
 }

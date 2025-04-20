@@ -17,13 +17,15 @@
  */
 package org.apache.jena.geosparql.geo.topological;
 
-import org.apache.jena.datatypes.DatatypeFormatException;
-import org.apache.jena.datatypes.xsd.XSDDatatype;
 import static org.apache.jena.geosparql.geo.topological.QueryRewriteTestData.FEATURE_B;
 import static org.apache.jena.geosparql.geo.topological.QueryRewriteTestData.GEOMETRY_B;
 import static org.apache.jena.geosparql.geo.topological.QueryRewriteTestData.GEO_FEATURE_LITERAL;
 import static org.apache.jena.geosparql.geo.topological.QueryRewriteTestData.GEO_FEATURE_Y;
 import static org.apache.jena.geosparql.geo.topological.QueryRewriteTestData.LITERAL_B;
+import static org.junit.Assert.assertEquals;
+
+import org.apache.jena.datatypes.DatatypeFormatException;
+import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
@@ -33,7 +35,6 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -44,14 +45,16 @@ import org.junit.Test;
  */
 public class SpatialObjectGeometryLiteralTest {
 
-    private static Model MODEL;
+    private static Model MODEL_GEOSPARQL;
+    private static Model MODEL_WGS84;
 
     public SpatialObjectGeometryLiteralTest() {
     }
 
     @BeforeClass
     public static void setUpClass() {
-        MODEL = QueryRewriteTestData.createTestData();
+        MODEL_GEOSPARQL = QueryRewriteTestData.addTestDataGeoSparql(ModelFactory.createDefaultModel());
+        MODEL_WGS84 = QueryRewriteTestData.addTestDataWgs84(ModelFactory.createDefaultModel());
     }
 
     @AfterClass
@@ -72,7 +75,7 @@ public class SpatialObjectGeometryLiteralTest {
     @Test
     public void testRetrieve() {
 
-        Graph graph = MODEL.getGraph();
+        Graph graph = MODEL_GEOSPARQL.getGraph();
         Node targetSpatialObject = null;
         SpatialObjectGeometryLiteral instance = SpatialObjectGeometryLiteral.retrieve(graph, targetSpatialObject);
 
@@ -87,7 +90,7 @@ public class SpatialObjectGeometryLiteralTest {
     @Test
     public void testRetrieveGeometryLiteral_geometry() {
 
-        Graph graph = MODEL.getGraph();
+        Graph graph = MODEL_GEOSPARQL.getGraph();
         Resource targetSpatialObject = GEOMETRY_B;
         SpatialObjectGeometryLiteral expResult = new SpatialObjectGeometryLiteral(GEOMETRY_B.asNode(), LITERAL_B.asNode());
         SpatialObjectGeometryLiteral result = SpatialObjectGeometryLiteral.retrieve(graph, targetSpatialObject.asNode());
@@ -102,7 +105,7 @@ public class SpatialObjectGeometryLiteralTest {
 
         Resource targetSpatialObject = FEATURE_B;
         SpatialObjectGeometryLiteral expResult = new SpatialObjectGeometryLiteral(FEATURE_B.asNode(), LITERAL_B.asNode());
-        SpatialObjectGeometryLiteral result = SpatialObjectGeometryLiteral.retrieve(MODEL.getGraph(), targetSpatialObject.asNode());
+        SpatialObjectGeometryLiteral result = SpatialObjectGeometryLiteral.retrieve(MODEL_GEOSPARQL.getGraph(), targetSpatialObject.asNode());
         assertEquals(expResult, result);
     }
 
@@ -114,7 +117,7 @@ public class SpatialObjectGeometryLiteralTest {
 
         Resource targetSpatialObject = ResourceFactory.createResource("http://example.org#GeometryE");
 
-        SpatialObjectGeometryLiteral instance = SpatialObjectGeometryLiteral.retrieve(MODEL.getGraph(), targetSpatialObject.asNode());
+        SpatialObjectGeometryLiteral instance = SpatialObjectGeometryLiteral.retrieve(MODEL_GEOSPARQL.getGraph(), targetSpatialObject.asNode());
 
         boolean expResult = false;
         boolean result = instance.isValid();
@@ -129,7 +132,7 @@ public class SpatialObjectGeometryLiteralTest {
 
         Resource targetSpatialObject = ResourceFactory.createResource("http://example.org#X");
 
-        SpatialObjectGeometryLiteral instance = SpatialObjectGeometryLiteral.retrieve(MODEL.getGraph(), targetSpatialObject.asNode());
+        SpatialObjectGeometryLiteral instance = SpatialObjectGeometryLiteral.retrieve(MODEL_GEOSPARQL.getGraph(), targetSpatialObject.asNode());
 
         boolean expResult = false;
         boolean result = instance.isValid();
@@ -144,7 +147,7 @@ public class SpatialObjectGeometryLiteralTest {
 
         Resource targetSpatialObject = GEO_FEATURE_Y;
         SpatialObjectGeometryLiteral expResult = new SpatialObjectGeometryLiteral(GEO_FEATURE_Y.asNode(), GEO_FEATURE_LITERAL.asNode());
-        SpatialObjectGeometryLiteral result = SpatialObjectGeometryLiteral.retrieve(MODEL.getGraph(), targetSpatialObject.asNode());
+        SpatialObjectGeometryLiteral result = SpatialObjectGeometryLiteral.retrieve(MODEL_WGS84.getGraph(), targetSpatialObject.asNode());
         assertEquals(expResult, result);
     }
 

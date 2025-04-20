@@ -18,6 +18,7 @@
 package org.apache.jena.geosparql.implementation.jts;
 
 import java.io.Serializable;
+
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.CoordinateSequenceFactory;
@@ -27,6 +28,7 @@ import org.locationtech.jts.geom.CoordinateSequenceFactory;
  *
  */
 public class CustomCoordinateSequenceFactory implements CoordinateSequenceFactory, Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Override
     public CoordinateSequence create(Coordinate[] coordinates) {

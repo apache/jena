@@ -18,10 +18,12 @@
 
 package org.apache.jena.sparql.util;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 import org.apache.jena.atlas.lib.Lib;
 import org.apache.jena.atlas.logging.Log;
@@ -385,6 +387,11 @@ public class Context {
 
     public void clear() {
         context.clear();
+    }
+
+    /** Atomic compute. */
+    public <V> Object compute(Symbol key, BiFunction<Symbol, Object, V> remappingFunction) {
+        return context.compute(key, remappingFunction);
     }
 
     @Override
