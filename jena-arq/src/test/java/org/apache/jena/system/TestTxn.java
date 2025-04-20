@@ -21,6 +21,7 @@ package org.apache.jena.system;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.TxnType;
@@ -31,7 +32,7 @@ import org.junit.Test ;
 
 public class TestTxn {
 
-    TxnCounter counter = new TxnCounter(0) ; 
+    TxnCounter counter = new TxnCounter(0) ;
 
     @Test public void txn_basic_01() {
         long v1 = counter.get() ;
@@ -42,7 +43,7 @@ public class TestTxn {
     }
 
     @Test public void txn_basic_02() {
-        long x = 
+        long x =
             Txn.calculateRead(counter, () -> {
                 assertEquals("In R, value()", 0, counter.value()) ;
                 assertEquals("In R, get()", 0, counter.get()) ;
@@ -53,7 +54,7 @@ public class TestTxn {
 
     @Test public void txn_basic_03() {
         Txn.executeWrite(counter, counter::inc) ;
-        long x = 
+        long x =
             Txn.calculateRead(counter, () -> {
                 assertEquals("In R, value()", 1, counter.value()) ;
                 assertEquals("In R, get()", 1, counter.get()) ;
@@ -63,7 +64,7 @@ public class TestTxn {
     }
 
     @Test public void txn_basic_05() {
-        long x = 
+        long x =
             Txn.calculateWrite(counter, () -> {
                 counter.inc() ;
                 assertEquals("In W, value()", 0, counter.value()) ;
@@ -74,7 +75,7 @@ public class TestTxn {
     }
 
     @Test public void txn_write_01() {
-        long x = 
+        long x =
             Txn.calculateWrite(counter, () -> {
                 counter.inc() ;
                 assertEquals("In W, value()", 0, counter.value()) ;
@@ -87,7 +88,7 @@ public class TestTxn {
     }
 
     @Test public void txn_write_02() {
-        long x = 
+        long x =
             Txn.calculateWrite(counter, () -> {
                 counter.inc() ;
                 assertEquals("In W, value()", 0, counter.value()) ;
@@ -121,13 +122,13 @@ public class TestTxn {
 
     @Test public void txn_rw_1() {
         assertEquals(0, counter.get()) ;
-        
+
         Txn.executeWrite(counter, () -> {
             counter.inc() ;
             assertEquals("In W, value()", 0, counter.value()) ;
             assertEquals("In W, get()",1, counter.get()) ;
         }) ;
-        
+
         assertEquals("Direct value()", 1, counter.value()) ;
         assertEquals("Direct get()", 1, counter.get()) ;
 
@@ -148,7 +149,7 @@ public class TestTxn {
             assertEquals("In W, value()", 0, counter.value()) ;
             assertEquals("In W, get()",1, counter.get()) ;
         }) ;
-        
+
         assertEquals("Direct value()", 1, counter.get()) ;
         assertEquals("Direct get()", 1, counter.get()) ;
 
@@ -160,11 +161,11 @@ public class TestTxn {
 
     @Test public void txn_continue_1() {
         Txn.executeWrite(counter, ()->counter.set(91)) ;
-        
+
         Txn.executeWrite(counter, ()-> {
             assertEquals("In txn, value()", 91, counter.value()) ;
             assertEquals("In txn, read()", 91, counter.read()) ;
-            counter.inc(); 
+            counter.inc();
             Txn.executeWrite(counter, ()->{
                 assertEquals("In txn, value()", 91, counter.value()) ;
                 assertEquals("In txn, get()", 92, counter.read()) ;
@@ -175,11 +176,11 @@ public class TestTxn {
 
     @Test public void txn_continue_2() {
         Txn.executeWrite(counter, ()->counter.set(91)) ;
-        
+
         Txn.executeWrite(counter, ()-> {
             assertEquals("In txn, value()", 91, counter.value()) ;
             assertEquals("In txn, read()", 91, counter.read()) ;
-            counter.inc(); 
+            counter.inc();
             Txn.executeWrite(counter, ()->{
                 assertEquals("In txn, value()", 91, counter.value()) ;
                 assertEquals("In txn, get()", 92, counter.read()) ;
@@ -195,7 +196,7 @@ public class TestTxn {
     @Test(expected=ExceptionFromTest.class)
     public void txn_exception_01() {
         Txn.executeWrite(counter, counter::inc) ;
-        
+
         Txn.executeWrite(counter, () -> {
             counter.inc() ;
             assertEquals("In W, value()", 1, counter.value()) ;
@@ -207,7 +208,7 @@ public class TestTxn {
     @Test
     public void txn_exception_02() {
         Txn.executeWrite(counter, ()->counter.set(8)) ;
-    
+
         try {
             Txn.executeWrite(counter, () -> {
                 counter.inc();
@@ -327,7 +328,7 @@ public class TestTxn {
             Txn.exec(counter, TxnType.WRITE, ()->{});
         });
     }
-    
+
     @Test(expected=JenaTransactionException.class)
     public void txn_nested_12() {
         Txn.exec(counter, TxnType.READ_PROMOTE, ()->{
@@ -339,7 +340,7 @@ public class TestTxn {
             Txn.exec(counter, TxnType.WRITE, ()->{});
         });
     }
-    
+
     @Test
     public void txn_nested_13() {
         Txn.exec(counter, TxnType.READ_COMMITTED_PROMOTE, ()->{
@@ -378,34 +379,34 @@ public class TestTxn {
     @Test
     public void txn_threaded_02() {
         //Transactional tx = DatasetGraphFactory.createTxnMem();
-        Transactional tx = counter; 
-        
+        Transactional tx = counter;
+
         // Start and enter the W transaction.
         ThreadAction a = ThreadTxn.threadTxnWrite(tx, ()->{});
 
         // ThreadAction started ... in W transaction.
         Txn.exec(tx, TxnType.READ_PROMOTE, ()->{
             // ... have the thread action complete.
-            a.run(); 
+            a.run();
             // Blocks promotion.
             boolean b = tx.promote();
             assertFalse(b);
             assertEquals(ReadWrite.READ, tx.transactionMode());
         });
     }
-    
+
     @Test
     public void txn_threaded_03() {
         Transactional tx = DatasetGraphFactory.createTxnMem();
-        //Transactional tx = counter; 
-        
+        //Transactional tx = counter;
+
         // Start and enter the W transaction.
         ThreadAction a = ThreadTxn.threadTxnWriteAbort(tx, ()->{});
 
         // ThreadAction started ... in W transaction.
         Txn.exec(tx, TxnType.READ_PROMOTE, ()->{
             // ... have the thread action abort..
-            a.run(); 
+            a.run();
             // Does not block promotion.
             boolean b = tx.promote();
             assertTrue(b);
@@ -413,6 +414,32 @@ public class TestTxn {
         });
     }
 
+    @Test public void autoTxn_write_01() {
+        long actualValue;
+        try (AutoTxn txn = Txn.autoTxn(counter, TxnType.WRITE)) {
+            counter.inc() ;
+            assertEquals("In W, value()", 0, counter.value()) ;
+            assertEquals("In W, get()",1, counter.get()) ;
+            actualValue = counter.get() ;
+            counter.commit() ;
+        }
+        long expectedValue = counter.get();
+        assertEquals("Outside W", expectedValue, actualValue) ;
+    }
+
+    @Test public void autoTxn_write_02() {
+        long expectedValue = counter.get();
+        try (AutoTxn txn = Txn.autoTxn(counter, TxnType.WRITE)) {
+            counter.inc() ;
+            assertEquals("In W, value()", 0, counter.value()) ;
+            assertEquals("In W, get()",1, counter.get()) ;
+            // Intermediate value will be reverted.
+            long intermediateValue = counter.get() ;
+            assertNotEquals(expectedValue, intermediateValue);
+            // no commit - auto-close is expected to abort.
+        }
+        long actualValue = counter.get();
+        assertEquals("Outside W", expectedValue, actualValue) ;
+    }
 }
 
- 

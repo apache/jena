@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spatial Index Controls</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .controls {
+            display: flex;
+            box-sizing: border-box;
+            width: 100%;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .log-info {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+
+        .log-computing {
+            background-color: #ccc;
+            color: #333;
+        }
+
+        .log-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .log-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rebuild Spatial Index for Selected Graphs</h1>
+
+    <div id="status-controls" class="controls" style="flex-direction: column;">
+        <div style="display: flex; width: 100%;">
+            <button id="toggle-status" style="display: none;">Show Stack Trace</button>
+        </div>
+        <div id="status-container" style="width: 100%;">
+            <pre id="status-message"></pre>
+        </div>
+    </div>
+
+    <div id="controls" class="controls">
+        <input type="text" id="filter" placeholder="Type to filter...">
+        <button id="deselect-all">Deselect all</button>
+        <button id="apply-action">Index all graphs</button>
+        <button id="stop-action">Stop running action</button>
+        <div title="If checked then the final index will contain ONLY the selected graphs. If not checked then the selected graphs will be updated in the index. When unsure leave this unchecked.">
+          <input id="replace-toggle" type="checkbox">
+          <label for="replace-toggle">Replace index with selected graphs</label>
+        </div>
+        <div title="Maximum thread pool size for indexing graphs. One thread can index one graph. If set to 0 then the maximum pool size becomes the number of available server threads.">
+          <input type="number" id="max-thread-count" min="0" max="10000" value="1">
+          <label for="max-thread-count">max threads</label>
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin-left: auto;">
+            <button id="clean-action">Remove absent graphs from index</button>
+        </div>
+        <!-- <button id="stop-action">Stop running action</button> -->
+    </div>
+
+    <!--
+    <div class="controls" style="flex-direction: column;">
+        <div style="display: flex; justify-content: flex-end; width: 100%;">
+            <button id="toggle-status" style="display: none;">Show Stack Trace</button>
+        </div>
+        <div id="status-container" style="width: 100%;">
+            <pre id="status-message" style="margin-top: 10px; padding: 10px; border-radius: 5px; white-space: pre-wrap;"></pre>
+        </div>
+    </div>
+    -->
+
+    <table>
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Graph Name</th>
+            </tr>
+        </thead>
+        <tbody id="graph-list">
+            <!-- Graph checkboxes will be populated here -->
+        </tbody>
+    </table>
+
+    <script>
+        const sparqlEndpoint = document.location.href + '/../';
+        const apiEndpoint = document.location.href;
+        const eventEndpoint = new EventSource(apiEndpoint + '?command=events');
+
+        function setStatusClass(el, statusClass) {
+            el.classList.remove('log-success', 'log-error', 'log-info', 'log-computing');
+            el.classList.add(statusClass);
+        }
+
+        let status = {};
+
+        eventEndpoint.onmessage = async e => {
+            // console.log('Got message:', e.data);
+            status = JSON.parse(e.data);
+
+            // For selenium unit testing store the latest message on the window!
+            window.lastEvent = status;
+            updateStatus();
+        };
+
+        eventEndpoint.onerror = async e => {
+            console.error('SSE error', e);
+        };
+
+        async function fetchIndexerStatus() {
+            const params = new URLSearchParams({ "command": "status" });
+            try {
+              const response = await fetch(apiEndpoint, { "method": "POST", "body": params })
+
+              if (response.status != 200) {
+                  const text = await response.text();
+                  throw new Error("HTTP Error: " + text);
+              }
+              const json = await response.json();
+              return json;
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+            }
+        }
+
+        async function cancelIndexing() {
+            const params = new URLSearchParams({ "command": "cancel" });
+            try {
+                const response = await fetch(apiEndpoint, { "method": "POST", "body": params })
+                if (response.status != 200) {
+                    const text = await response.text();
+                    throw new Error("HTTP Error: " + text);
+                }
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+            }
+        }
+
+        async function fetchGraphs() {
+            const query = `SELECT ?g { { BIND(<urn:x-arq:DefaultGraph> AS ?g) } UNION { BIND(<urn:x-arq:UnionGraph> AS ?g) } UNION { { SELECT * { GRAPH ?g { } } ORDER BY ?g } } }`;
+            const url = `${sparqlEndpoint}?query=${encodeURIComponent(query)}&format=application/json`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                return data.results.bindings.map(binding => binding.g.value);
+            } catch (error) {
+                console.error('Error fetching graphs:', error);
+                return [];
+            }
+        }
+
+        function renderGraphs(graphs) {
+            const graphList = document.getElementById('graph-list');
+            graphList.innerHTML = '';
+
+            graphs.forEach(graph => {
+                const row = document.createElement('tr');
+
+                const checkboxCell = document.createElement('td');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = graph;
+                checkbox.addEventListener('change', updateApplyButtonLabel);
+                checkboxCell.appendChild(checkbox);
+
+                const nameCell = document.createElement('td');
+                nameCell.textContent = graph;
+
+                row.appendChild(checkboxCell);
+                row.appendChild(nameCell);
+                graphList.appendChild(row);
+            });
+        }
+
+        function updateApplyButtonLabel() {
+            const selectedGraphs = document.querySelectorAll('#graph-list input:checked');
+            applyBtn.textContent = selectedGraphs.length === 0 ? 'Index all graphs' : `Index ${selectedGraphs.length} graphs`;
+        }
+
+        document.getElementById('filter').addEventListener('input', function () {
+            const filterText = this.value.toLowerCase();
+            document.querySelectorAll('#graph-list tr').forEach(row => {
+                const label = row.children[1].textContent.toLowerCase();
+                row.style.display = label.includes(filterText) ? '' : 'none';
+            });
+        });
+
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+
+        const deselectAllBtn = document.getElementById('deselect-all');
+        const applyBtn = document.getElementById('apply-action');
+        const cleanBtn = document.getElementById('clean-action');
+        const replaceCb = document.getElementById('replace-toggle');
+        const maxThreadCountInput = document.getElementById('max-thread-count');
+
+        async function reIndexGraphs(graphs) {
+            applyBtn.disabled = true;
+            const replaceMode = replaceCb.checked;
+            const maxThreadCountStr = maxThreadCountInput.value;
+            const maxThreadCount = maxThreadCountStr ? parseInt(maxThreadCountStr) : 1;
+
+            const params = new URLSearchParams({
+              "command": "index",
+              "graph": JSON.stringify(graphs),
+              "replaceMode": replaceMode,
+              "maxThreadCount": maxThreadCount
+            });
+
+            try {
+                const response = await fetch(apiEndpoint, { "method": "POST", "body": params, signal })
+
+                if (response.status != 200) {
+                    const text = await response.text();
+                    throw new Error("HTTP Error: " + text);
+                }
+
+            }   catch (error) {
+                alert(`Error: ${error.message}`);
+            }
+            applyBtn.disabled = false;
+        }
+
+        async function cleanGraphs() {
+            applyBtn.disabled = true;
+            const params = new URLSearchParams({ "command": "clean" });
+            try {
+                const response = await fetch(apiEndpoint, { "method": "POST", "body": params, signal })
+
+                if (response.status != 200) {
+                    const text = await response.text();
+                    throw new Error("HTTP Error: " + text);
+                }
+
+            }   catch (error) {
+                alert(`Error: ${error.message}`);
+            }
+            applyBtn.disabled = false;
+        }
+
+        applyBtn.addEventListener('click', function () {
+            const selectedGraphs = Array.from(document.querySelectorAll('#graph-list input:checked'))
+                .map(checkbox => checkbox.value);
+            reIndexGraphs(selectedGraphs);
+        });
+
+        cleanBtn.addEventListener('click', function () {
+            cleanGraphs();
+        });
+
+        deselectAllBtn.addEventListener('click', function () {
+            document.querySelectorAll('#graph-list input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
+            updateApplyButtonLabel();
+        });
+
+        function updateStatus() {
+            updateCancelButton();
+            updateStatusMessage();
+        }
+
+        function updateCancelButton() {
+            const elt = document.getElementById('stop-action');
+            elt.style.display = 'none';
+            elt.innerHTML = "Stop running indexer.";
+            elt.disabled = false;
+
+            if (status?.isIndexing) {
+                elt.style.display = '';
+                if (status?.isAborting) {
+                    elt.innerHTML = "Aborting...";
+                    elt.disabled = true;
+                }
+            }
+        }
+
+        // Update status message and style.
+        function updateStatusMessage() {
+            const statusEl = document.getElementById('status-controls');
+            const messageEl = document.getElementById('status-message');
+            const toggleBtn = document.getElementById('toggle-status');
+            const statusContainer = document.getElementById('status-container');
+            const time = status.time;
+
+            if (time !== undefined && time > 0) {
+                const dateStr = new Date(status.time).toLocaleString() + " ";
+                if (status.isIndexing) {
+                    messageEl.textContent = dateStr + "Computation is ongoing...";
+                    setStatusClass(statusEl, "log-computing");
+                    toggleBtn.style.display = 'none';
+                    statusContainer.style.display = 'block';
+                } else if (status.error) {
+                    toggleBtn.style.display = 'block';
+                    toggleBtn.textContent = 'Hide Stack Trace';
+                    statusContainer.style.display = 'block';
+
+                    toggleBtn.onclick = () => {
+                        const visible = statusContainer.style.display === 'block';
+                        statusContainer.style.display = visible ? 'none' : 'block';
+                        toggleBtn.textContent = visible ? 'Show Stack Trace' : 'Hide Stack Trace';
+                    };
+
+                    messageEl.textContent = dateStr + `An error occurred:\n${status.error}`;
+                    setStatusClass(statusEl, "log-error");
+                } else if (status.message) {
+                    messageEl.textContent = dateStr + status.message;
+                    setStatusClass(statusEl, "log-success");
+                    toggleBtn.style.display = 'none';
+                    statusContainer.style.display = 'block';
+                } else {
+                    const suffix = status.message ? ': ' + status.message : '.';
+                    messageEl.textContent = dateStr + "Indexer finished successfully" + suffix;
+                    setStatusClass(statusEl, "log-success");
+                    toggleBtn.style.display = 'none';
+                    statusContainer.style.display = 'block';
+                }
+            } else {
+                messageEl.textContent = "No indexer status information present.";
+                setStatusClass(statusEl, "log-info");
+                toggleBtn.style.display = 'none';
+                statusContainer.style.display = 'block';
+                return;
+            }
+        }
+
+        document.getElementById('stop-action').addEventListener('click', function() {
+            cancelIndexing();
+        });
+
+        cleanBtn.addEventListener('click', function() {
+            cancelIndexing();
+        });
+
+        async function initialize() {
+            status = await fetchIndexerStatus();
+            updateStatus();
+
+            const graphs = await fetchGraphs();
+            renderGraphs(graphs);
+            updateApplyButtonLabel();
+        }
+
+        updateStatus();
+        initialize();
+    </script>
+</body>
+</html>
+

@@ -24,8 +24,6 @@ import org.apache.jena.geosparql.implementation.parsers.wkt.WKTReader;
 import org.apache.jena.geosparql.implementation.parsers.wkt.WKTWriter;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.locationtech.jts.geom.Geometry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * WKTDatatype class allows the URI "geo:wktLiteral" to be used as a datatype
@@ -43,9 +41,6 @@ import org.slf4j.LoggerFactory;
  * specify an explicit spatial reference system URI.
  */
 public class WKTDatatype extends GeometryDatatype {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(WKTDatatype.class);
-
     /**
      * The default WKT type URI.
      */
