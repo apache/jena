@@ -42,7 +42,7 @@ public class InitGeoSPARQL implements JenaSubsystemLifecycle {
         if ( initialized )
             return ;
         synchronized (initLock) {
-            if ( initialized ) {
+            if ( initialized || System.getProperty("jena.geosparql.skip", "false").equalsIgnoreCase("true") ) {
                 JenaSystem.logLifecycle("InitGeoSPARQL - skip") ;
                 return ;
             }

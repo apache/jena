@@ -57,6 +57,8 @@
     <!-- Fuseki main server -->
     <module>jena-fuseki-main</module>
 
+    <module>jena-fuseki-mod-geosparql</module>
+
     <!-- fuseki-server.jar -->
     <module>jena-fuseki-server</module>
     

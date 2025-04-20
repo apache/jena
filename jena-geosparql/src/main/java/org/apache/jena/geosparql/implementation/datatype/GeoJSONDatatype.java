@@ -19,16 +19,11 @@ package org.apache.jena.geosparql.implementation.datatype;
 
 import org.apache.jena.datatypes.BaseDatatype;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /*
  * this GeoJSONDatatype does not yet do anything other than wrap a literal
  */
 public class GeoJSONDatatype extends BaseDatatype {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(GeoJSONDatatype.class);
-
     /**
      * The default GML type URI.
      */
@@ -45,5 +40,4 @@ public class GeoJSONDatatype extends BaseDatatype {
     private GeoJSONDatatype() {
         super(URI);
     }
-
 }

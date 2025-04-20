@@ -17,16 +17,19 @@
  */
 package org.apache.jena.geosparql.implementation.jts;
 
+import static org.apache.jena.geosparql.configuration.GeoSPARQLConfig.PRECISION_MODEL_SCALE_FACTOR;
+
 import java.io.Serializable;
+
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.PrecisionModel;
-import static org.apache.jena.geosparql.configuration.GeoSPARQLConfig.PRECISION_MODEL_SCALE_FACTOR;
 
 /**
  *
  *
  */
 public class CustomGeometryFactory implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(PRECISION_MODEL_SCALE_FACTOR), 0, new CustomCoordinateSequenceFactory());
 

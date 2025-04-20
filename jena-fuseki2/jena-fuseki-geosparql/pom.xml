@@ -25,7 +25,7 @@
       <artifactId>jena-fuseki</artifactId>
       <version>5.5.0-SNAPSHOT</version>
     </parent>
-    
+
     <description>GeoSPARQL with Fuseki</description>
 
     <properties>
@@ -71,11 +71,6 @@
         <artifactId>jul-to-slf4j</artifactId>
       </dependency>
 
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-slf4j2-impl</artifactId>
-      </dependency>
-
       <!-- Put in to ensure the dependency isn't optional. -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -85,6 +80,13 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j2-impl</artifactId>
+        <scope>test</scope>
       </dependency>
 
       <dependency>

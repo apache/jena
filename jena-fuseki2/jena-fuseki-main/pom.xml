@@ -26,7 +26,7 @@
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-fuseki</artifactId>
     <version>5.5.0-SNAPSHOT</version>
-  </parent> 
+  </parent>
 
   <packaging>jar</packaging>
 
@@ -34,7 +34,7 @@
     <automatic.module.name>org.apache.jena.fuseki.main</automatic.module.name>
   </properties>
 
-  <dependencies> 
+  <dependencies>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
@@ -92,7 +92,7 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-security</artifactId>
     </dependency>
-    
+
     <!-- For parsing Jetty configuration files -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -104,13 +104,13 @@
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-core</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-web</artifactId>
       <classifier>jakarta</classifier>
     </dependency>
-    
+
     <!-- Testing -->
     <dependency>
       <groupId>org.junit.vintage</groupId>
@@ -129,14 +129,14 @@
       <artifactId>junit-jupiter-params</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.junit.platform</groupId>
       <artifactId>junit-platform-suite</artifactId>
       <scope>test</scope>
     </dependency>
 
-<!-- 
+<!--
    Only needed if the Junit5 artifacts don't pick the right runner
    <dependency>
       <groupId>junit</groupId>
@@ -144,7 +144,7 @@
       <version>${ver.junit}</version>
       <scope>test</scope>
     </dependency>
--->    
+-->
 
 
     <dependency>
@@ -172,7 +172,7 @@
       <scope>test</scope>
       <type>pom</type>
     </dependency>
-    
+
   </dependencies>
 
   <build>
@@ -198,11 +198,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <executions> 
+        <executions>
           <execution>
-            <id>attach-sources-test</id> 
+            <id>attach-sources-test</id>
             <goals>
-              <goal>test-jar-no-fork</goal> 
+              <goal>test-jar-no-fork</goal>
             </goals>
           </execution>
         </executions>

@@ -17,6 +17,8 @@
  */
 package org.apache.jena.geosparql.configuration;
 
+import static org.apache.jena.geosparql.configuration.GeoSPARQLConfig.DECIMAL_PLACES_PRECISION;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -32,9 +34,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
+
 import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.datatypes.RDFDatatype;
-import static org.apache.jena.geosparql.configuration.GeoSPARQLConfig.DECIMAL_PLACES_PRECISION;
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.datatype.GMLDatatype;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
@@ -44,6 +46,7 @@ import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.implementation.vocabulary.GeoSPARQL_URI;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
 import org.apache.jena.geosparql.spatial.ConvertLatLon;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexUtils;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.ReadWrite;
@@ -63,6 +66,8 @@ import org.apache.jena.reasoner.Reasoner;
 import org.apache.jena.reasoner.ReasonerRegistry;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.system.AutoTxn;
+import org.apache.jena.system.Txn;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDFS;
 import org.opengis.geometry.MismatchedDimensionException;
@@ -501,23 +506,29 @@ public class GeoSPARQLOperations {
      * @return SRS URI
      */
     public static final String findModeSRS(Dataset dataset) throws SrsException {
+        // return SRS if set via assembler config
+        if (dataset.getContext().isDefined(SpatialIndexUtils.symSrsUri)) {
+            return dataset.getContext().getAsString(SpatialIndexUtils.symSrsUri);
+        }
+
         LOGGER.info("Find Mode SRS - Started");
         ModeSRS modeSRS = new ModeSRS();
         //Default Model
-        dataset.begin(ReadWrite.READ);
-        Model defaultModel = dataset.getDefaultModel();
-        modeSRS.search(defaultModel);
+        try (AutoTxn txn = Txn.autoTxn(dataset, ReadWrite.READ)) {
+            Model defaultModel = dataset.getDefaultModel();
+            modeSRS.search(defaultModel);
 
-        //Named Models
-        Iterator<String> graphNames = dataset.listNames();
-        while (graphNames.hasNext()) {
-            String graphName = graphNames.next();
-            Model namedModel = dataset.getNamedModel(graphName);
-            modeSRS.search(namedModel);
+            //Named Models
+            Iterator<String> graphNames = dataset.listNames();
+            while (graphNames.hasNext()) {
+                String graphName = graphNames.next();
+                Model namedModel = dataset.getNamedModel(graphName);
+                modeSRS.search(namedModel);
+            }
+
+            txn.commit();
+            LOGGER.info("Find Mode SRS - Completed");
         }
-
-        LOGGER.info("Find Mode SRS - Completed");
-        dataset.end();
 
         return modeSRS.getModeURI();
     }
@@ -982,24 +993,24 @@ public class GeoSPARQLOperations {
 
     /**
      * Convert the input model to the most frequent coordinate reference system
-     * and default datatype.
+     * and default datatype using WKT geometry representation.
      *
      * @param inputModel
      * @return Output of conversion.
      */
     public static final Model convert(Model inputModel) {
-        return convertSRSDatatype(inputModel, null, null);
+        return convertSRSDatatype(inputModel, null, WKTDatatype.INSTANCE);
     }
 
     /**
-     * Convert the input model to the output coordinate reference system.
+     * Convert the input model to the output coordinate reference system using WKT geometry representation.
      *
      * @param inputModel
      * @param outputSrsURI
      * @return Output of conversion.
      */
     public static final Model convert(Model inputModel, String outputSrsURI) {
-        return convertSRSDatatype(inputModel, outputSrsURI, null);
+        return convertSRSDatatype(inputModel, outputSrsURI, WKTDatatype.INSTANCE);
     }
 
     /**
@@ -1041,24 +1052,25 @@ public class GeoSPARQLOperations {
 
     /**
      * Convert the input dataset to the most frequent coordinate reference
-     * system and default datatype.
+     * system and default datatype using WKT geometry representation.
      *
      * @param dataset
      * @return Converted dataset.
      */
     public static final Dataset convert(Dataset dataset) {
-        return convert(dataset, null, null);
+        return convert(dataset, null, WKTDatatype.INSTANCE);
     }
 
     /**
-     * Convert the input dataset to the output coordinate reference system.
+     * Convert the input dataset to the output coordinate reference system
+     * using WKT geometry representation.
      *
      * @param dataset
      * @param outputSrsURI
      * @return Converted dataset.
      */
     public static final Dataset convert(Dataset dataset, String outputSrsURI) {
-        return convert(dataset, outputSrsURI, null);
+        return convert(dataset, outputSrsURI, WKTDatatype.INSTANCE);
     }
 
     /**
