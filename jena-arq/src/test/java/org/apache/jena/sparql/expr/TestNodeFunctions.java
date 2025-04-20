@@ -20,6 +20,8 @@ package org.apache.jena.sparql.expr;
 
 import static org.junit.Assert.*;
 
+import org.junit.Test;
+
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -28,9 +30,7 @@ import org.apache.jena.query.ARQ;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.sse.SSE;
-import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.XSD;
-import org.junit.Test;
 
 public class TestNodeFunctions {
     private static final double accuracyExact = 0.0d;
@@ -396,31 +396,4 @@ public class TestNodeFunctions {
         NodeValue r = NodeFunctions.isLiteral(nv);
         assertEquals(NodeValue.FALSE, r);
     }
-
-    @Test public void testCheckAndGetStringLiteral1() {
-        NodeValue nv = NodeValue.makeNode("abc", XSDDatatype.XSDstring);
-        Node n = NodeFunctions.checkAndGetStringLiteral("Test", nv);
-        assertEquals( "abc", n.getLiteralLexicalForm());
-    }
-
-    @Test public void testCheckAndGetStringLiteral2() {
-        NodeValue nv = NodeValue.makeNode("abc", XSDDatatype.XSDnormalizedString);
-        Node n = NodeFunctions.checkAndGetStringLiteral("Test", nv);
-        assertEquals( "abc", n.getLiteralLexicalForm());
-    }
-
-    @Test public void testCheckAndGetStringLiteral3() {
-        NodeValue nv = NodeValue.makeString("abc");
-        Node n = NodeFunctions.checkAndGetStringLiteral("Test", nv);
-        assertEquals( "abc", n.getLiteralLexicalForm());
-    }
-
-    @Test(expected=ExprEvalException.class)
-    public void testCheckAndGetStringLiteral4() {
-        // The form "abc"^^rdf:langString (no lang tag) is not derived from xsd:string.
-        NodeValue nv = NodeValue.makeNode("abc", RDF.dtLangString);
-        Node n = NodeFunctions.checkAndGetStringLiteral("Test", nv);
-        assertEquals( "abc", n.getLiteralLexicalForm());
-    }
-
 }

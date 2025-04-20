@@ -38,7 +38,6 @@ public class E_Subtract extends ExprFunction2
     {
         if ( ARQ.isStrictMode() )
             return XSDFuncOp.numSubtract(x, y) ;
-
         return NodeValueOps.subtractionNV(x, y) ;
     }
     
