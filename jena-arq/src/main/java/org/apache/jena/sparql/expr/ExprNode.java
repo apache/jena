@@ -29,7 +29,7 @@ import org.apache.jena.sparql.graph.NodeTransform;
 import org.apache.jena.sparql.sse.writers.WriterExpr;
 
 /**
- * A node that is a constraint expression that can be evaluated
+ * A node that is a constraint expression that can be evaluated.
  * An {@link Expr} is already a Constraint - ExprNode is the base implementation
  * of all {@link Expr} classes that provides the Constraint machinery.
  */

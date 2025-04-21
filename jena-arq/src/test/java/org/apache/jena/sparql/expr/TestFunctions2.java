@@ -526,7 +526,7 @@ public class TestFunctions2
     // SHA1
 
     @Test public void sha1_01()      { test("sha1('abcd')","'81fe8bfe87576c3ecb22426f8e57847382917acf'") ; }
-    @Test public void sha1_02()            { test("sha1('abcd'^^xsd:string)","'81fe8bfe87576c3ecb22426f8e57847382917acf'") ; }
+    @Test public void sha1_02()      { test("sha1('abcd'^^xsd:string)","'81fe8bfe87576c3ecb22426f8e57847382917acf'") ; }
     @Test(expected=ExprEvalException.class)
     public void sha1_03()            { test("sha1('abcd'@en)","'81fe8bfe87576c3ecb22426f8e57847382917acf'") ; }
     @Test(expected=ExprEvalException.class)

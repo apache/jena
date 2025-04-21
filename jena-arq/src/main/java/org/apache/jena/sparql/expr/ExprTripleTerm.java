@@ -31,8 +31,7 @@ import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.graph.NodeTransform ;
 
 /**
- * RDF-star triple term in an expression (AKA quoted triple).
- * It can still have variables in it.
+ * RDF 1.2 triple term in an expression.
  */
 public class ExprTripleTerm extends ExprNode {
 
