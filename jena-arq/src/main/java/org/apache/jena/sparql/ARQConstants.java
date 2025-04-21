@@ -53,6 +53,9 @@ public class ARQConstants
     /** RDFS namespace prefix */
     public static final String rdfsPrefix = "http://www.w3.org/2000/01/rdf-schema#"; //RDFS.getURI() ;
 
+    /** SPARQL namespace prefix */
+    public static final String sparqlPrefix = "https://www.w3.org/ns/sparql#";
+
     /** OWL namespace prefix */
     public static final String owlPrefix = "http://www.w3.org/2002/07/owl#"; //OWL.getURI() ;
 
@@ -128,6 +131,7 @@ public class ARQConstants
         globalPrefixMap.setNsPrefix("xsd",  xsdPrefix) ;
         globalPrefixMap.setNsPrefix("owl" , owlPrefix) ;
         globalPrefixMap.setNsPrefix("fn" ,  fnPrefix) ;
+        globalPrefixMap.setNsPrefix("sparql",  sparqlPrefix) ;
         // Treat op: as fn: (op: has no namespace in XSD F&O).
         globalPrefixMap.setNsPrefix("op" ,  fnPrefix) ;
         globalPrefixMap.setNsPrefix("math" ,  mathPrefix) ;
