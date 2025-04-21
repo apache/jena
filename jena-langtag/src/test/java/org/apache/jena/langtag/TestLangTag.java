@@ -49,6 +49,12 @@ public class TestLangTag {
     @Test public void test_lang_basic_22() { testPrivateUse("az-Latn-x-latn", "az-Latn-x-latn", "az", "Latn", null, null, null, "x-latn"); }
     @Test public void test_lang_basic_23() { testPrivateUse("sss-x-y", "sss-x-y", "sss", null, null, null, null, "x-y"); }
 
+
+    // 4 chars reserved
+    // 5-8 characters
+    @Test public void test_lang_basic_30() { testRFC5646("abcd", "abcd",            "abcd", null, null, null, null); }
+    @Test public void test_lang_basic_31() { testRFC5646("abcdefgh", "abcdefgh",    "abcdefgh", null, null, null, null); }
+
     @Test public void test_lang_bad_01() { testBad("123"); }
     @Test public void test_lang_bad_02() { testBad("abcdefghijklmn"); }
     @Test public void test_lang_bad_03() { testBad("abcdefghijklmn-123"); }
@@ -64,9 +70,9 @@ public class TestLangTag {
 
     // Wrong lengths
     @Test public void test_lang_bad_20() { testBad("s"); }
-    @Test public void test_lang_bad_21() { testBad("abcdefghi"); }
-    @Test public void test_lang_bad_22() { testBad("en-abcdefghi"); }
-    @Test public void test_lang_bad_23() { testBad("en-Latn-x-abcdefghi"); }
+    @Test public void test_lang_bad_21() { testBad("abcdefghz"); }
+    @Test public void test_lang_bad_22() { testBad("en-abcdefghz"); }
+    @Test public void test_lang_bad_23() { testBad("en-Latn-x-abcdefghz"); }
 
     // Bad extension
     @Test public void test_lang_bad_31() { testBad("sss-d"); }

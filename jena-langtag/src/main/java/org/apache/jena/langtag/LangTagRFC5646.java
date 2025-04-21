@@ -237,23 +237,43 @@ public final  class LangTagRFC5646 implements LangTag{
 
         LangTagRFC5646 langtag = new LangTagRFC5646(string);
         final int N = string.length();
-        // Language-Tag  = langtag             ; normal language tags
-        //               / privateuse          ; private use tag
-        //               / grandfathered       ; grandfathered tags
-
-        // langtag       = language
-        //                 ["-" script]
-        //                 ["-" region]
-        //                 *("-" variant)
-        //                 *("-" extension)
-        //                 ["-" privateuse]
-
-        // script        = 4ALPHA              ; ISO 15924 code
-        // region        = 2ALPHA              ; ISO 3166-1 code
-        //               / 3DIGIT              ; UN M.49 code
-        // variant       = 5*8alphanum         ; registered variants
-        //               / (DIGIT 3alphanum)
-        // extension     = singleton 1*("-" (2*8alphanum))
+        // @formatter:off
+        //         langtag       = language
+        //                         ["-" script]
+        //                         ["-" region]
+        //                         *("-" variant)
+        //                         *("-" extension)
+        //                         ["-" privateuse]
+        //
+        //         language      = 2*3ALPHA            ; shortest ISO 639 code
+        //                         ["-" extlang]       ; sometimes followed by
+        //                                             ; extended language subtags
+        //                       / 4ALPHA              ; or reserved for future use
+        //                       / 5*8ALPHA            ; or registered language subtag
+        //
+        //         extlang       = 3ALPHA              ; selected ISO 639 codes
+        //                         *2("-" 3ALPHA)      ; permanently reserved
+        //
+        //         script        = 4ALPHA              ; ISO 15924 code
+        //
+        //         region        = 2ALPHA              ; ISO 3166-1 code
+        //                       / 3DIGIT              ; UN M.49 code
+        //
+        //         variant       = 5*8alphanum         ; registered variants
+        //                       / (DIGIT 3alphanum)
+        //
+        //         extension     = singleton 1*("-" (2*8alphanum))
+        //
+        //                                             ; Single alphanumerics
+        //                                             ; "x" reserved for private use
+        //         singleton     = DIGIT               ; 0 - 9
+        //                       / %x41-57             ; A - W
+        //                       / %x59-5A             ; Y - Z
+        //                       / %x61-77             ; a - w
+        //                       / %x79-7A             ; y - z
+        //
+        //         privateuse    = "x" 1*("-" (1*8alphanum))
+        // @formatter:on
 
         if ( N == 0 )
             InternalLangTag.error("Empty string");
@@ -325,13 +345,15 @@ public final  class LangTagRFC5646 implements LangTag{
                     InternalLangTag.error("Trailing characters in private langtag: '%s'", string.substring(langtag.privateuse1));
                 return langtag;
             }
+            // else
             InternalLangTag.error("Language part is 1 character: it must be 2-3 characters (4-8 reserved for future use), \"x-\", or a recognized grandfathered tag");
         }
 
+        if ( segLen > 8 )
+            InternalLangTag.error("Language too long (2-3 characters, 4-8 reserved for future use)");
+
         if ( idx2 < 0 ) {
             // language only.
-            if ( segLen > 8 )
-                InternalLangTag.error("Language too long (2-3 characters, 4-8 reserved for future use)");
             langtag.language0 = 0;
             langtag.language1 = N;
             InternalLangTag.checkAlpha(string, N, langtag.language0, langtag.language1);
@@ -340,9 +362,6 @@ public final  class LangTagRFC5646 implements LangTag{
 
         if ( idx == idx2 )
             InternalLangTag.error("Can not find the language subtag: '%s'", string);
-
-        if ( segLen < 2 || segLen > 4 )
-            InternalLangTag.error("Language: '%s'", string);
 
         langtag.language0 = idx;
 
@@ -360,10 +379,15 @@ public final  class LangTagRFC5646 implements LangTag{
                 idx2 = extEnd;
                 InternalLangTag.checkAlphaMinus(string, N, extStart, langtag.language1);
             }
-        } else if ( segLen > 8 ) {
+        } else if ( segLen >= 4 && segLen <= 8 ) {
+            //                       / 4ALPHA              ; or reserved for future use
+            //                       / 5*8ALPHA            ; or registered language subtag
+            // Dubious.
+            InternalLangTag.checkAlpha(string, N, langtag.language0, idx2);
+        } else {
             InternalLangTag.error("Language too long (2-3 characters, 4-8 reserved for future use)");
         }
-        // -- extlang
+
         langtag.language1 = idx2;
         // Info
         noteSegment("language", string, langtag.language0, langtag.language1);
