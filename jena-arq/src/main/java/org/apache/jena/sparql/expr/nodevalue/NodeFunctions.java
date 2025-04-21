@@ -68,6 +68,7 @@ public class NodeFunctions {
         return node1.sameTermAs(node2);
     }
 
+// Before jena stored normalized language tags ...
 //    /** sameTerm(x,y) */
 //    public static boolean sameTerm(Node node1, Node node2) {
 //        if ( node1.equals(node2) )
@@ -84,17 +85,16 @@ public class NodeFunctions {
 //        }
 //        return false;
 //    }
-
-    private static boolean sameTriples(Triple t1, Triple t2) {
-        return sameTerm(t1.getSubject(), t2.getSubject())
-            && sameTerm(t1.getPredicate(), t2.getPredicate())
-            && sameTerm(t1.getObject(), t2.getObject());
-    }
+//
+//    private static boolean sameTriples(Triple t1, Triple t2) {
+//        return sameTerm(t1.getSubject(), t2.getSubject())
+//            && sameTerm(t1.getPredicate(), t2.getPredicate())
+//            && sameTerm(t1.getObject(), t2.getObject());
+//    }
 
     // -------- RDFterm-equals -- raises an exception on "don't know" for literals.
 
     // Exact as defined by SPARQL spec, when there are no value extensions.
-    // That means no language tag understanding.
     //   Exception for two literals that might be equal but we don't know because of language tags.
     public static boolean rdfTermEquals(Node n1, Node n2) {
         if ( n1.equals(n2) )
