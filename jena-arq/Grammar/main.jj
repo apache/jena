@@ -160,7 +160,7 @@ void ByteOrderMark() : {}
 
 void Prologue() : {}
 {
-  ( BaseDecl() | PrefixDecl() )*
+  ( BaseDecl() | PrefixDecl() | VersionDecl() ) *
 }
 
 void BaseDecl() : { Token t ; String iri ; }
@@ -176,6 +176,25 @@ void PrefixDecl() : { Token t ; String iri ; }
       setPrefix(s, iri, t.beginLine, t.beginColumn) ; }
 }
 
+void VersionDecl() : { Token t ; String version ; }
+{
+    t = <VERSION> version = VersionSpecifier()
+    { declareVersion(version, t.beginLine, t.beginColumn); }
+}
+
+String VersionSpecifier() : { Token t ; String version ; }
+{
+    ( t = <STRING_LITERAL1> { version = stripQuotes(t.image) ; }
+    | t = <STRING_LITERAL2> { version = stripQuotes(t.image) ; }
+    )
+    {
+      checkString(version, t.beginLine, t.beginColumn) ;
+      version = unescapeStr(version,  t.beginLine, t.beginColumn) ;
+      return version;
+    }
+}
+
+ 
 // ---- Query type clauses
 
 void SelectQuery() : { }
@@ -2731,6 +2750,7 @@ TOKEN [IGNORE_CASE] :
 // Prologue
    < BASE:        "base" >
 |  < PREFIX:      "prefix" >
+|  < VERSION:     "version" >
 
 // Result forms
 |  < SELECT:      "select" >
@@ -2884,9 +2904,6 @@ TOKEN [IGNORE_CASE] :
 |  < NOW:         "NOW" >
 |  < UUID:        "UUID" >
 |  < STRUUID:     "STRUUID" >
-#ifdef ARQ
-|  < VERSION:     "VERSION" >
-#endif
 
 | < MD5:          "MD5" >
 | < SHA1:         "SHA1" >

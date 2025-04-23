@@ -18,60 +18,60 @@
 
 package org.apache.jena.sparql.lang;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.jena.query.Syntax ;
+import org.apache.jena.query.Syntax;
 
 public class SPARQLParserRegistry
 {
     // the map contains the registered factories hashed by the syntaxes
-    Map<Syntax, SPARQLParserFactory> factories = new HashMap<>() ;
+    Map<Syntax, SPARQLParserFactory> factories = new HashMap<>();
 
     // Singleton
-    static SPARQLParserRegistry registry = null ;
+    static SPARQLParserRegistry registry = null;
     static synchronized public SPARQLParserRegistry get() {
         if ( registry == null )
-            init() ;
+            init();
         return registry;
     }
 
     private SPARQLParserRegistry() { }
 
     private static synchronized void init() {
-        SPARQLParserRegistry reg = new SPARQLParserRegistry() ;
+        SPARQLParserRegistry reg = new SPARQLParserRegistry();
 
         reg.add(Syntax.syntaxSPARQL_10,
                 new SPARQLParserFactory() {
             @Override
-            public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_10.equals(syntax) ; }
+            public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_10.equals(syntax); }
             @Override
-            public SPARQLParser create( Syntax syntax ) { return new ParserSPARQL10() ; } }) ;
+            public SPARQLParser create( Syntax syntax ) { return new ParserSPARQL10(); } });
 
         reg.add(Syntax.syntaxSPARQL_11,
                 new SPARQLParserFactory() {
             @Override
-            public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_11.equals(syntax) ; }
+            public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_11.equals(syntax); }
             @Override
-            public SPARQLParser create( Syntax syntax ) { return new ParserSPARQL11() ; } }) ;
+            public SPARQLParser create( Syntax syntax ) { return new ParserSPARQL11(); } });
 
         reg.add(Syntax.syntaxSPARQL_12,
                 new SPARQLParserFactory() {
             @Override
-            public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_12.equals(syntax) ; }
+            public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_12.equals(syntax); }
             @Override
-            public SPARQLParser create( Syntax syntax ) { return new ParserSPARQL12() ; } }) ;
+            public SPARQLParser create( Syntax syntax ) { return new ParserSPARQL12(); } });
 
         reg.add(Syntax.syntaxARQ,
                 new SPARQLParserFactory() {
             @Override
-            public boolean accept(Syntax syntax ) { return Syntax.syntaxARQ.equals(syntax) ; }
+            public boolean accept(Syntax syntax ) { return Syntax.syntaxARQ.equals(syntax); }
             @Override
-            public SPARQLParser create ( Syntax syntax ) { return new ParserARQ() ; } }) ;
+            public SPARQLParser create ( Syntax syntax ) { return new ParserARQ(); } });
 
         // Defend against concurrent start up (even if not synchronised).
         // Protects against, not fixes, the problem.
-        registry = reg ;
+        registry = reg;
     }
 
     /** Return a suitable factory for the given syntax
@@ -81,7 +81,7 @@ public class SPARQLParserRegistry
      */
 
     public static SPARQLParserFactory findFactory(Syntax syntax)
-    { return get().getFactory(syntax) ; }
+    { return get().getFactory(syntax); }
 
     /** Return a suitable parser for the given syntax
      *
@@ -90,7 +90,7 @@ public class SPARQLParserRegistry
      */
 
     public static SPARQLParser parser(Syntax syntax)
-    { return get().createParser(syntax) ; }
+    { return get().createParser(syntax); }
 
     /** Return a suitable parser factory for the given syntax
      *
@@ -99,7 +99,7 @@ public class SPARQLParserRegistry
      */
 
     public SPARQLParserFactory getFactory(Syntax syntax)
-    { return factories.get(syntax) ; }
+    { return factories.get(syntax); }
 
     /** Return a suitable parser for the given syntax
      *
@@ -108,8 +108,8 @@ public class SPARQLParserRegistry
      */
 
     public SPARQLParser createParser(Syntax syntax) {
-        SPARQLParserFactory f = getFactory(syntax) ;
-        return ( f != null ) ? f.create(syntax) : null ;
+        SPARQLParserFactory f = getFactory(syntax);
+        return ( f != null ) ? f.create(syntax) : null;
     }
 
     /** Register the given parser factory for the specified syntax.
@@ -117,7 +117,7 @@ public class SPARQLParserRegistry
      *  given one.
      */
     public static void addFactory(Syntax syntax, SPARQLParserFactory f)
-    { get().add(syntax, f) ; }
+    { get().add(syntax, f); }
 
     /** Register the given parser factory for the specified syntax.
      *  If another factory is registered for the syntax it is replaced by the
@@ -126,23 +126,23 @@ public class SPARQLParserRegistry
     public void add(Syntax syntax, SPARQLParserFactory f) {
         if ( ! f.accept(syntax) )
             throw new IllegalArgumentException( "The given parser factory does not accept the specified syntax." );
-        factories.put(syntax, f) ;
+        factories.put(syntax, f);
     }
 
     /** Unregister the parser factory associated with the given syntax */
     public static void removeFactory(Syntax syntax)
-    { get().remove(syntax) ; }
+    { get().remove(syntax); }
 
     /** Unregister the parser factory associated with the given syntax */
     public void remove(Syntax syntax)
-    { factories.remove(syntax) ; }
+    { factories.remove(syntax); }
 
     /** Checks whether a parser factory is registered for the given syntax */
     public static boolean containsParserFactory(Syntax syntax)
-    { return get().containsFactory(syntax) ; }
+    { return get().containsFactory(syntax); }
 
     /** Checks whether a parser factory is registered for the given syntax */
     public boolean containsFactory(Syntax syntax)
-    { return factories.containsKey(syntax) ; }
+    { return factories.containsKey(syntax); }
 
 }

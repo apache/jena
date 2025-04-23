@@ -35,6 +35,8 @@ public class Prologue
 
     protected PrefixMapping prefixMap = null ;
     protected IRIxResolver resolver = null ;
+    // RDF 1.2+
+    private String version;
 
     public Prologue() { this(new PrefixMappingImpl(), (IRIxResolver)null) ; }
 
@@ -105,6 +107,21 @@ public class Prologue
         }
         this.seenBaseURI = true ;
         this.resolver = IRIxResolver.create(baseURI).build();
+    }
+
+    // --- Query version (RDF 1.2)
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    /**
+     * Return the version string declared in SPARQL.
+     * This is <em>not</em> the code version.
+     * Returns null for "not set", which is the common case.
+     */
+    public String getVersion() {
+        return this.version;
     }
 
     // ---- Query prefixes

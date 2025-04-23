@@ -47,6 +47,7 @@
 
 [<BASE>]       ::= 'BASE'
 [<PREFIX>]     ::= 'PREFIX'
+[<VERSION>]    ::= 'VERSION'
 [<SELECT>]     ::= 'SELECT'
 [<DESCRIBE>]   ::= 'DESCRIBE'
 [<CONSTRUCT>]  ::= 'CONSTRUCT'

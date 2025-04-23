@@ -59,7 +59,7 @@ void UpdateUnit() : {}
 }
 void Prologue() : {}
 {
-  ( BaseDecl() | PrefixDecl() )*
+  ( BaseDecl() | PrefixDecl() | VersionDecl() ) *
 }
 void BaseDecl() : { Token t ; String iri ; }
 {
@@ -71,6 +71,22 @@ void PrefixDecl() : { Token t ; String iri ; }
     <PREFIX> t = <PNAME_NS> iri = IRIREF()
     { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn);
       setPrefix(s, iri, t.beginLine, t.beginColumn) ; }
+}
+void VersionDecl() : { Token t ; String version ; }
+{
+    t = <VERSION> version = VersionSpecifier()
+    { declareVersion(version, t.beginLine, t.beginColumn); }
+}
+String VersionSpecifier() : { Token t ; String version ; }
+{
+    ( t = <STRING_LITERAL1> { version = stripQuotes(t.image) ; }
+    | t = <STRING_LITERAL2> { version = stripQuotes(t.image) ; }
+    )
+    {
+      checkString(version, t.beginLine, t.beginColumn) ;
+      version = unescapeStr(version, t.beginLine, t.beginColumn) ;
+      return version;
+    }
 }
 void SelectQuery() : { }
 {
@@ -1686,6 +1702,7 @@ TOKEN [IGNORE_CASE] :
 {
    < BASE: "base" >
 | < PREFIX: "prefix" >
+| < VERSION: "version" >
 | < SELECT: "select" >
 | < DISTINCT: "distinct" >
 | < REDUCED: "reduced" >

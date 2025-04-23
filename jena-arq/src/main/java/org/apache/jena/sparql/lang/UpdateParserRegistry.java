@@ -26,7 +26,7 @@ import org.apache.jena.query.Syntax ;
 public class UpdateParserRegistry
 {
     // the map contains the registered factories hashed by the syntaxes
-    Map<Syntax, UpdateParserFactory> factories = new HashMap<>() ;
+    private Map<Syntax, UpdateParserFactory> factories = new HashMap<>() ;
 
     // Singleton
     static UpdateParserRegistry registry = null;
