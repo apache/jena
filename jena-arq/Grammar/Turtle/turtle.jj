@@ -86,7 +86,7 @@ void Statement() : {}
 }
 
 // Turtle [3] directive
-void Directive() : { Token t ; String iri ; }
+void Directive() : { Token t ; String iri ; String verStr ;}
 {
     <PREFIX> t = <PNAME_NS> iri = IRIREF()
     { String s = canonicalPrefix(t.image, t.beginLine, t.beginColumn) ;
@@ -94,9 +94,27 @@ void Directive() : { Token t ; String iri ; }
  |
     t = <BASE> iri = IRIREF()
     { setBase(iri, t.beginLine, t.beginColumn) ; }
+ |
+    t = <VERSION> verStr = VersionSpecificer()
+    { declareVersion(verStr, t.beginLine, t.beginColumn); }
 }
 
-void DirectiveOld() : { Token t ; String iri ; }
+String VersionSpecificer() : {  Token t; String verStr; }
+{
+  
+  ( t = <STRING_LITERAL1> { verStr = stripQuotes(t.image) ; }
+  | t = <STRING_LITERAL2> { verStr = stripQuotes(t.image) ; }
+//   | t = <STRING_LITERAL_LONG1> { verStr = stripQuotes3(t.image) ; }
+//   | t = <STRING_LITERAL_LONG2> { verStr = stripQuotes3(t.image) ; }
+  )
+    {
+      checkString(verStr, t.beginLine, t.beginColumn) ;
+      verStr = unescapeStr(verStr,  t.beginLine, t.beginColumn) ;
+      return verStr ;
+    }  
+}
+
+void DirectiveOld() : { Token t ; Token t2 ; String iri ; String verStr ; }
 {
     <PREFIX_OLD> t = <PNAME_NS> iri = IRIREF() <DOT>
     { String s = canonicalPrefix(t.image, t.beginLine, t.beginColumn) ;
@@ -104,6 +122,9 @@ void DirectiveOld() : { Token t ; String iri ; }
  |
     t = <BASE_OLD> iri = IRIREF() <DOT>
     { setBase(iri, t.beginLine, t.beginColumn) ; }
+ |
+    t = <VERSION_OLD> verStr = VersionSpecificer() <DOT>
+    { declareVersion(verStr, t.beginLine, t.beginColumn); }
 }
 
 void Triples() : { Node n; }
@@ -260,10 +281,11 @@ String LangTag() : { Token t ; }
 
 Token AnyDirective() : { Token t ; }
 {
-    ( t = <PREFIX> | t = <BASE> ) { return t ; }
+    ( t = <PREFIX_OLD> | t = <BASE_OLD> | t = <VERSION_OLD> )
+    { return t ; }
 }
 
-// Turtle [133s BooleanLiteral
+// Turtle [133s] BooleanLiteral
 Node BooleanLiteral() : {}
 {
   <TRUE> { return XSD_TRUE ; }
@@ -436,12 +458,14 @@ TOKEN : // Case sensitive tokens.
   <KW_A:  "a" >
 | < PREFIX_OLD:      "@prefix" >
 | < BASE_OLD:        "@base" > 
+| < VERSION_OLD:     "@version" > 
 }
 
 TOKEN [IGNORE_CASE] :
 {
    < BASE:        "base" >
 |  < PREFIX:      "prefix" >
+|  < VERSION:     "version" >
 
 |  < TRUE:        "true" >
 |  < FALSE:       "false" >
