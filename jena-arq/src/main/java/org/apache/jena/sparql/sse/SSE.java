@@ -44,6 +44,7 @@ import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprList;
+import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.path.Path;
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.sse.builders.*;
@@ -186,6 +187,18 @@ public class SSE {
         if ( !str.trim().equals(str) )
             throw new ItemException("Whitespace around node");
         return parseNode(new StringReader(str), pmap);
+    }
+
+    /** Parse a string to obtain a {@link NodeValue}. */
+    public static NodeValue parseNodeValue(String str) {
+        return parseNodeValue(str, null);
+    }
+
+    /** Parse a string to obtain a {@link NodeValue}. */
+    public static NodeValue parseNodeValue(String str, PrefixMapping pmap) {
+        Node node = parseNode(new StringReader(str), pmap);
+        NodeValue nv = NodeValue.makeNode(node);
+        return nv;
     }
 
     /** Parse a string to obtain a Quad */

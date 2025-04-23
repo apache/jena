@@ -20,12 +20,14 @@ package org.apache.jena.sparql.sse;
 
 import static org.junit.Assert.*;
 
+import org.junit.Test;
+
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.core.Var;
-import org.junit.Test;
+import org.apache.jena.sparql.expr.NodeValue;
 
 public class TestSSE_Basic
 {
@@ -144,6 +146,10 @@ public class TestSSE_Basic
     @Test public void testTypedLit_1() { testNode("\"123\"^^<http://example/type>", typeLit1); }
     @Test public void testTypedLit_2() { testNode("'123'^^<http://example/type>", typeLit1); }
     @Test public void testTypedLit_3() { testNode("'3'^^<"+XSDDatatype.XSDinteger.getURI()+">", int3); }
+
+    // ---- NodeValues
+    @Test public void testNodeValue_1()    { testNodeValue("3", NodeValue.makeInteger(3)); }
+    @Test public void testNodeValue_2()    { testNodeValue("<http://example/>", NodeValue.makeNode(NodeFactory.createURI("http://example/"))); }
 
     // --- Symbols
 
@@ -355,6 +361,11 @@ public class TestSSE_Basic
     private void testNode(String str, Node result) {
         Node node = parseNode(str);
         assertEquals(result, node);
+    }
+
+    private void testNodeValue(String str, NodeValue result) {
+        NodeValue nodeValue = SSE.parseNodeValue(str);
+        assertEquals(result, nodeValue);
     }
 
     private Node parseNode(String str) {
