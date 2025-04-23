@@ -37,6 +37,7 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestExpressionsMath.class
     , TestFunctions.class
     , TestFunctions2.class
+    , TestFunctionsByURI.class
     , TestTripleTermFunctions.class
     , TestLeviathanFunctions.class
     , TestNodeValueOps.class

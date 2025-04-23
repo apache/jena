@@ -36,6 +36,7 @@ import org.apache.jena.sparql.algebra.optimize.TransformOrderByDistinctApplicati
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.exec.http.QuerySendMode;
 import org.apache.jena.sparql.expr.aggregate.AggregateRegistry;
+import org.apache.jena.sparql.expr.urifunctions.SPARQLFuncOp;
 import org.apache.jena.sparql.function.FunctionRegistry;
 import org.apache.jena.sparql.function.scripting.ScriptLangSymbols;
 import org.apache.jena.sparql.mgt.Explain;
@@ -685,6 +686,7 @@ public class ARQ
             ServiceExecutorRegistry.init();
             AggregateRegistry.init();
             PropertyFunctionRegistry.init();
+            SPARQLFuncOp.init();
 
             // Register the datatypes for the CDT literals
             TypeMapper.getInstance().registerDatatype(CompositeDatatypeList.type) ;

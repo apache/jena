@@ -581,19 +581,16 @@ public class TestFunctions2
 
     // --------
 
-    private static PrefixMapping pmap = ARQConstants.getGlobalPrefixMap() ;
+    private static PrefixMapping pmap = ARQConstants.getGlobalPrefixMap();
 
-    private static void test(String string, String result)
-    {
-        Expr expr = ExprUtils.parse(string, pmap) ;
-        NodeValue nv = expr.eval(null, new FunctionEnvBase()) ;
-        Node r = NodeFactoryExtra.parseNode(result) ;
-        NodeValue nvr = NodeValue.makeNode(r) ;
+    private static void test(String string, String result) {
+        Expr expr = ExprUtils.parse(string, pmap);
+        NodeValue nv = expr.eval(null, new FunctionEnvBase());
+        Node r = NodeFactoryExtra.parseNode(result);
+        NodeValue nvr = NodeValue.makeNode(r);
 
-        assertTrue("Not same value: Expected: "+nvr+" : Actual = "+nv, NodeValue.sameValueAs(nvr, nv)) ;
+        assertTrue("Not same value: Expected: " + nvr + " : Actual = " + nv, NodeValue.sameValueAs(nvr, nv));
         // test result must be lexical form exact.
-        assertEquals(r, nv.asNode()) ;
+        assertEquals(r, nv.asNode());
     }
-
-    // ROUND to TestXSDFuncOps.
 }
