@@ -126,17 +126,17 @@ public class ARQConstants
     protected static final PrefixMapping globalPrefixMap = new PrefixMappingImpl() ;
     static {
         //globalPrefixMap.setNsPrefixes(PrefixMapping.Standard) ;
-        globalPrefixMap.setNsPrefix("rdf",  rdfPrefix) ;
-        globalPrefixMap.setNsPrefix("rdfs", rdfsPrefix) ;
-        globalPrefixMap.setNsPrefix("xsd",  xsdPrefix) ;
-        globalPrefixMap.setNsPrefix("owl" , owlPrefix) ;
-        globalPrefixMap.setNsPrefix("fn" ,  fnPrefix) ;
-        globalPrefixMap.setNsPrefix("sparql",  sparqlPrefix) ;
+        globalPrefixMap.setNsPrefix("rdf",      rdfPrefix) ;
+        globalPrefixMap.setNsPrefix("rdfs",     rdfsPrefix) ;
+        globalPrefixMap.setNsPrefix("xsd",      xsdPrefix) ;
+        globalPrefixMap.setNsPrefix("owl" ,     owlPrefix) ;
+        globalPrefixMap.setNsPrefix("fn" ,      fnPrefix) ;
+        globalPrefixMap.setNsPrefix("sparql",   sparqlPrefix) ;
         // Treat op: as fn: (op: has no namespace in XSD F&O).
-        globalPrefixMap.setNsPrefix("op" ,  fnPrefix) ;
-        globalPrefixMap.setNsPrefix("math" ,  mathPrefix) ;
-        globalPrefixMap.setNsPrefix("afn",  ARQFunctionLibraryURI) ;
-        globalPrefixMap.setNsPrefix("apf",  ARQPropertyFunctionLibraryURI) ;
+        globalPrefixMap.setNsPrefix("op" ,      fnPrefix) ;
+        globalPrefixMap.setNsPrefix("math" ,    mathPrefix) ;
+        globalPrefixMap.setNsPrefix("afn",      ARQFunctionLibraryURI) ;
+        globalPrefixMap.setNsPrefix("apf",      ARQPropertyFunctionLibraryURI) ;
     }
     public static PrefixMapping getGlobalPrefixMap() { return globalPrefixMap ; }
 
