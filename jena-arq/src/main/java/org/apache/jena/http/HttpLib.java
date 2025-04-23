@@ -729,7 +729,7 @@ public class HttpLib {
     }
 
     /**
-     * Return a modifier that will set the Accept header to the value.
+     * Return a modifier that will set headers using the values in the map.
      * An argument of "null" means "no action".
      */
     public static Consumer<HttpRequest.Builder> setHeaders(Map<String, String> headers) {
