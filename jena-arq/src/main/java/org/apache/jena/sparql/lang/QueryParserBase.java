@@ -58,19 +58,19 @@ import org.slf4j.LoggerFactory;
 
 /** Base class parsers, mainly SPARQL related */
 public class QueryParserBase {
-    // NodeConst
-    protected final Node XSD_TRUE = NodeConst.nodeTrue;
-    protected final Node XSD_FALSE = NodeConst.nodeFalse;
 
-    protected final Node nRDFtype = NodeConst.nodeRDFType;
+    protected final Node XSD_TRUE       = NodeConst.nodeTrue ;
+    protected final Node XSD_FALSE      = NodeConst.nodeFalse ;
 
-    protected final Node nRDFnil = NodeConst.nodeNil;
-    protected final Node nRDFfirst = NodeConst.nodeFirst;
-    protected final Node nRDFrest = NodeConst.nodeRest;
+    protected final Node nRDFtype       = NodeConst.nodeRDFType ;
 
-    protected final Node nRDFsubject = RDF.Nodes.subject;
-    protected final Node nRDFpredicate = RDF.Nodes.predicate;
-    protected final Node nRDFobject = RDF.Nodes.object;
+    protected final Node nRDFnil        = NodeConst.nodeNil ;
+    protected final Node nRDFfirst      = NodeConst.nodeFirst ;
+    protected final Node nRDFrest       = NodeConst.nodeRest ;
+
+    protected final Node nRDFsubject    = RDF.Nodes.subject ;
+    protected final Node nRDFpredicate  = RDF.Nodes.predicate ;
+    protected final Node nRDFobject     = RDF.Nodes.object ;
 
     protected final Node nRDFreifies = RDF.Nodes.reifies;
 
@@ -125,6 +125,10 @@ public class QueryParserBase {
         // Should have happen in the parser because this step is "token to prefix".
         // prefix = fixupPrefix(prefix, line, column);
         getPrologue().setPrefix(prefix, uriStr);
+    }
+
+    protected void declareVersion(String version, int line, int column) {
+        getPrologue().setVersion(version);
     }
 
     protected void setInConstructTemplate(boolean b) {

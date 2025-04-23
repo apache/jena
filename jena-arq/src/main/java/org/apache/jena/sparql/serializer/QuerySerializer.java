@@ -36,8 +36,8 @@ import org.apache.jena.sparql.syntax.Element ;
 import org.apache.jena.sparql.syntax.Template ;
 import org.apache.jena.sparql.util.FmtUtils ;
 
-/** 
- * Serialize a query into SPARQL or ARQ formats 
+/**
+ * Serialize a query into SPARQL or ARQ formats
  */
 public class QuerySerializer implements QueryVisitor
 {
@@ -49,7 +49,7 @@ public class QuerySerializer implements QueryVisitor
     protected Prologue prologue = null ;
 
     QuerySerializer(OutputStream        _out,
-                    FormatterElement    formatterElement, 
+                    FormatterElement    formatterElement,
                     FmtExprSPARQL       formatterExpr,
                     FormatterTemplate   formatterTemplate)
     {
@@ -58,7 +58,7 @@ public class QuerySerializer implements QueryVisitor
     }
 
     QuerySerializer(IndentedWriter      iwriter,
-                    FormatterElement    formatterElement, 
+                    FormatterElement    formatterElement,
                     FmtExprSPARQL       formatterExpr,
                     FormatterTemplate   formatterTemplate)
     {
@@ -67,16 +67,17 @@ public class QuerySerializer implements QueryVisitor
         fmtElement = formatterElement ;
         fmtExpr = formatterExpr ;
     }
-    
+
     @Override
     public void startVisit(Query query)  {}
-    
+
     @Override
     public void visitResultForm(Query query)  {}
 
     @Override
     public void visitPrologue(Prologue prologue)
-    { 
+    {
+
         this.prologue = prologue ;
         int row1 = out.getRow() ;
         PrologueSerializer.output(out, prologue) ;
@@ -84,7 +85,7 @@ public class QuerySerializer implements QueryVisitor
         if ( row1 != row2 )
             out.newline() ;
     }
-    
+
     @Override
     public void visitSelectResultForm(Query query)
     {
@@ -94,14 +95,14 @@ public class QuerySerializer implements QueryVisitor
         if ( query.isReduced() )
             out.print("REDUCED ") ;
         out.print(" ") ; //Padding
-        
+
         if ( query.isQueryResultStar() )
             out.print("*") ;
         else
             appendNamedExprList(query, out, query.getProject()) ;
         out.newline() ;
     }
-    
+
     @Override
     public void visitConstructResultForm(Query query)
     {
@@ -120,12 +121,12 @@ public class QuerySerializer implements QueryVisitor
             out.decIndent(BLOCK_INDENT) ;
         }
     }
-    
+
     @Override
     public void visitDescribeResultForm(Query query)
     {
         out.print("DESCRIBE ") ;
-        
+
         if ( query.isQueryResultStar() )
             out.print("*") ;
         else
@@ -138,7 +139,7 @@ public class QuerySerializer implements QueryVisitor
         }
         out.newline() ;
     }
-    
+
     @Override
     public void visitAskResultForm(Query query)
     {
@@ -192,7 +193,7 @@ public class QuerySerializer implements QueryVisitor
             }
         }
     }
-    
+
     @Override
     public void visitQueryPattern(Query query)
     {
@@ -201,7 +202,7 @@ public class QuerySerializer implements QueryVisitor
             out.print("WHERE") ;
             out.incIndent(BLOCK_INDENT) ;
             out.newline() ;
-            
+
             Element el = query.getQueryPattern() ;
 
             fmtElement.visitAsGroup(el) ;
@@ -210,7 +211,7 @@ public class QuerySerializer implements QueryVisitor
             out.newline() ;
         }
     }
-    
+
     @Override
     public void visitGroupBy(Query query)
     {
@@ -259,27 +260,27 @@ public class QuerySerializer implements QueryVisitor
             out.println() ;
         }
     }
-    
+
     @Override
     public void visitLimit(Query query)
     {
         if ( query.hasLimit() )
         {
             out.print("LIMIT   "+query.getLimit()) ;
-            out.newline() ; 
+            out.newline() ;
         }
     }
-    
+
     @Override
     public void visitOffset(Query query)
     {
         if ( query.hasOffset() )
         {
             out.print("OFFSET  "+query.getOffset()) ;
-            out.newline() ; 
+            out.newline() ;
         }
     }
-    
+
     @Override
     public void visitValues(Query query)
     {
@@ -327,20 +328,20 @@ public class QuerySerializer implements QueryVisitor
         out.ensureStartOfLine() ;
         out.print("}") ;
     }
-    
+
     private static void outputValuesOneRow(IndentedWriter out, List<Var> variables, Binding row, SerializationContext cxt) {
         // A value may be null for UNDEF
         for ( Var var : variables )
         {
             out.print(" ") ;
-            Node value = row.get(var) ; 
+            Node value = row.get(var) ;
             if ( value == null )
                 out.print("UNDEF") ;
             else {
                 // Context for bnodes.
                 // Bnodes don't occur in legal syntax but a rewritten query may
                 // have them.  The output will not be legal SPARQL.
-                // ARQ (SPARQL with extensions) does parse blankd nodes in VALUES. 
+                // ARQ (SPARQL with extensions) does parse blankd nodes in VALUES.
                 out.print(FmtUtils.stringForNode(value, cxt)) ;
             }
         }
@@ -351,9 +352,9 @@ public class QuerySerializer implements QueryVisitor
     {
         out.flush() ;
     }
-    
+
     // ----
-    
+
     void appendVarList(Query query, IndentedWriter sb, List<String> vars)
     {
         boolean first = true ;
@@ -367,7 +368,7 @@ public class QuerySerializer implements QueryVisitor
         }
 
     }
-        
+
     void appendNamedExprList(Query query, IndentedWriter sb, VarExprList namedExprs)
     {
         boolean first = true ;
@@ -376,27 +377,27 @@ public class QuerySerializer implements QueryVisitor
             Expr expr = namedExprs.getExpr(var) ;
             if ( ! first )
                 sb.print(" ") ;
-            
-            if ( expr != null ) 
+
+            if ( expr != null )
             {
-                // The following are safe to write without () 
+                // The following are safe to write without ()
                 // Compare/merge with fmtExpr.format
-                boolean needParens = true ; 
-                
+                boolean needParens = true ;
+
                 if ( expr.isFunction() )
                     needParens = false ;
 //                else if ( expr instanceof E_Aggregator )
-//                    // Aggregators are variables (the function maps to an internal variable 
+//                    // Aggregators are variables (the function maps to an internal variable
 //                    // that is accesses by the E_Aggregator
 //                    needParens = false ;
                 else if ( expr.isVariable() )
                     needParens = false ;
-                
+
                 if ( ! Var.isAllocVar(var) )
                     // AS ==> need parens
                     needParens = true  ;
-                
-                if ( needParens ) 
+
+                if ( needParens )
                     out.print("(") ;
                 fmtExpr.format(expr) ;
                 if ( ! Var.isAllocVar(var) )
@@ -404,7 +405,7 @@ public class QuerySerializer implements QueryVisitor
                     sb.print(" AS ") ;
                     sb.print(var.toString()) ;
                 }
-                if ( needParens ) 
+                if ( needParens )
                     out.print(")") ;
             }
             else
@@ -414,7 +415,7 @@ public class QuerySerializer implements QueryVisitor
             first = false ;
         }
     }
-    
+
     static void appendURIList(Query query, IndentedWriter sb, List<Node> vars)
     {
         SerializationContext cxt = new SerializationContext(query) ;
@@ -427,5 +428,5 @@ public class QuerySerializer implements QueryVisitor
             first = false ;
         }
     }
-    
+
 }

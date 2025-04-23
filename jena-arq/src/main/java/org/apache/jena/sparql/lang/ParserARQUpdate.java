@@ -18,53 +18,46 @@
 
 package org.apache.jena.sparql.lang;
 
-import java.io.Reader ;
+import java.io.Reader;
 
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.query.QueryException ;
-import org.apache.jena.query.QueryParseException ;
-import org.apache.jena.shared.JenaException ;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.query.QueryException;
+import org.apache.jena.query.QueryParseException;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.Prologue;
-import org.apache.jena.sparql.lang.arq.ARQParser ;
-import org.apache.jena.sparql.modify.UpdateSink ;
+import org.apache.jena.sparql.lang.arq.ARQParser;
+import org.apache.jena.sparql.modify.UpdateSink;
 
-public class ParserARQUpdate extends UpdateParser
-{
+public class ParserARQUpdate extends UpdateParser {
     public ParserARQUpdate() {}
 
     @Override
-    protected void executeParse(UpdateSink sink, Prologue prologue, Reader r)
-    {
-        ARQParser parser = null ;
+    protected void executeParse(UpdateSink sink, Prologue prologue, Reader r) {
+        ARQParser parser = null;
         try {
-            parser = new ARQParser(r) ;
-            parser.setUpdate(prologue, sink) ;
-            parser.UpdateUnit() ;
+            parser = new ARQParser(r);
+            parser.setUpdate(prologue, sink);
+            parser.UpdateUnit();
+        } catch (org.apache.jena.sparql.lang.arq.ParseException ex) {
+            throw new QueryParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn);
+        } catch (org.apache.jena.sparql.lang.arq.TokenMgrError tErr) {
+            // Last valid token : not the same as token error message - but this
+            // should not happen
+            int col = parser.token.endColumn;
+            int line = parser.token.endLine;
+            throw new QueryParseException(tErr.getMessage(), line, col);
         }
-        catch (org.apache.jena.sparql.lang.arq.ParseException ex)
-        {
-            throw new QueryParseException(ex.getMessage(),
-                                          ex.currentToken.beginLine,
-                                          ex.currentToken.beginColumn
-            ) ; }
-        catch (org.apache.jena.sparql.lang.arq.TokenMgrError tErr)
-        {
-            // Last valid token : not the same as token error message - but this should not happen
-            int col = parser.token.endColumn ;
-            int line = parser.token.endLine ;
-            throw new QueryParseException(tErr.getMessage(), line, col) ; }
 
-        catch (QueryException ex) { throw ex ; }
-        catch (JenaException ex)  { throw new QueryException(ex.getMessage(), ex) ; }
-        catch (Error err)
-        {
+        catch (QueryException ex) {
+            throw ex;
+        } catch (JenaException ex) {
+            throw new QueryException(ex.getMessage(), ex);
+        } catch (Error err) {
             // The token stream can throw errors.
-            throw new QueryParseException(err.getMessage(), err, -1, -1) ;
-        }
-        catch (Throwable th)
-        {
-            Log.error(this, "Unexpected throwable: ",th) ;
-            throw new QueryException(th.getMessage(), th) ;
+            throw new QueryParseException(err.getMessage(), err, -1, -1);
+        } catch (Throwable th) {
+            Log.error(this, "Unexpected throwable: ", th);
+            throw new QueryException(th.getMessage(), th);
         }
     }
 }

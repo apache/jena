@@ -27,13 +27,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader ;
 
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
+
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.rdf.model.Property ;
 import org.apache.jena.rdf.model.Resource ;
-import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExError;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
@@ -42,9 +45,6 @@ import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
 
 public class TestLangTurtle
 {
@@ -130,8 +130,7 @@ public class TestLangTurtle
 
     private static Graph parse(String...strings) {
         String string = String.join("\n", strings);
-        // Not picking up errorHAndler
-        return ParserTests.parser().fromString(string).lang(Lang.TTL).errorHandler(new ErrorHandlerEx()).toGraph();
+        return ParserTests.parser().fromString(string).lang(Lang.TTL).toGraph();
     }
 
     private static Triple parseOneTriple(String...strings) {
@@ -200,10 +199,78 @@ public class TestLangTurtle
         assertEquals(t2, t) ;
     }
 
+    // RDF 1.2 (some basic testing)
+
+    private static final String PREFIXES = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX : <ex:/> ";
+
+    @Test
+    public void turtle_rdf12_01() {
+        Graph graph = parse(PREFIXES, "<< :s :p 123 >> . ") ;
+        assertEquals(1, graph.size());
+    }
+
+    @Test
+    public void turtle_rdf12_02() {
+        Graph graph = parse(PREFIXES, "<< :s :p 123 >> :q 'abc' ") ;
+        assertEquals(2, graph.size());
+    }
+
+    @Test
+    public void turtle_rdf12_03() {
+        Graph graph = parse(PREFIXES, "[] rdf:reifies <<( :s :p :o )>>");
+        assertEquals(1, graph.size());
+    }
+
+    @Test (expected=ExFatal.class)
+    public void turtle_rdf12_04() {
+        // Triple term as subject
+        Graph graph = parse(PREFIXES, "<<( :s :p :o )>> :q :z ");
+    }
+
+    @Test (expected=ExFatal.class)
+    public void turtle_rdf12_05() {
+        // Triple term as subject
+        Graph graph = parse(PREFIXES, ":a <<( :s :p :o )>> :b :c");
+    }
+
+    @Test
+    public void turtle_rdf12_11() {
+        Triple t = parseOneTriple("VERSION \"1.2\" <x:s> <x:p> 123 . ") ;
+    }
+
+    @Test
+    public void turtle_rdf12_12() {
+        Triple t = parseOneTriple("VERSION '1.2' <x:s> <x:p> 123 . ") ;
+    }
+
+    @Test
+    public void turtle_rdf12_13() {
+        Triple t = parseOneTriple("@version '1.2' . <x:s> <x:p> 123 . ") ;
+    }
+
+    public void turtle_rdf12_14() {
+        Triple t = parseOneTriple("@version \"1.2\" . <x:s> <x:p> 123 . ") ;
+    }
+
+    @Test (expected=ExFatal.class)
+    public void turtle_rdf12_bad_11() {
+        Triple t = parseOneTriple("VERSION '1.2' . <x:s> <x:p> 123 . ") ;
+    }
+
+    @Test (expected=ExFatal.class)
+    public void turtle_rdf12_bad_12() {
+        Triple t = parseOneTriple("VERSION '''1.2''' <x:s> <x:p> 123 . ") ;
+    }
+
+    @Test (expected=ExFatal.class)
+    public void turtle_rdf12_bad_13() {
+        Triple t = parseOneTriple("@version \"\"\"1.2\"\"\" <x:s> <x:p> 123 . ") ;
+    }
+
     // No Formulae. Not trig.
     @Test (expected=ExFatal.class)
-    public void turtle_10()     { parse("@prefix ex:  <http://example/> .  { ex:s ex:p 123 . } ") ; }
+    public void turtle_50()     { parse("@prefix ex:  <http://example/> .  { ex:s ex:p 123 . } ") ; }
 
     @Test (expected=ExWarning.class)
-    public void turtle_20()     { parse("@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> . <x> <p> 'number'^^xsd:byte }") ; }
+    public void turtle_60()     { parse("@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> . <x> <p> 'number'^^xsd:byte }") ; }
 }

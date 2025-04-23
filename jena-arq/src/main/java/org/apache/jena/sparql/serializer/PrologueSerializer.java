@@ -18,63 +18,68 @@
 
 package org.apache.jena.sparql.serializer;
 
-import java.util.Map ;
+import java.util.Map;
 
-import org.apache.jena.atlas.io.IndentedWriter ;
-import org.apache.jena.sparql.core.Prologue ;
-import org.apache.jena.sparql.util.FmtUtils ;
-import org.apache.jena.sparql.util.PrefixMapping2 ;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.lib.Chars;
+import org.apache.jena.atlas.lib.EscapeStr;
+import org.apache.jena.sparql.core.Prologue;
+import org.apache.jena.sparql.util.FmtUtils;
+import org.apache.jena.sparql.util.PrefixMapping2;
 
-public class PrologueSerializer
-{
-    public static void output(IndentedWriter out, Prologue prologue)
-    {
-        printBase(prologue, out) ;
-        printPrefixes(prologue, out) ;
+public class PrologueSerializer {
+    public static void output(IndentedWriter out, Prologue prologue) {
+        printVersion(prologue, out);
+        printBase(prologue, out);
+        printPrefixes(prologue, out);
     }
-    
-    private static void printBase(Prologue prologue, IndentedWriter out)
-    {
-        if ( prologue.getBaseURI() != null && prologue.explicitlySetBaseURI() )
-        {
-            out.print("BASE    ") ;
-            out.print("<"+prologue.getBaseURI()+">") ;
-            out.newline() ;
+
+    private static void printVersion(Prologue prologue, IndentedWriter out) {
+        if ( prologue.getVersion() != null ) {
+            out.print("VERSION ");
+            char qChar = Chars.CH_QUOTE2;
+            String x = EscapeStr.stringEsc(prologue.getVersion(), Chars.CH_QUOTE2);
+            out.print(qChar);
+            out.print(x);
+            out.print(qChar);
+            out.newline();
         }
     }
 
-    public static void printPrefixes(Prologue prologue, IndentedWriter out)
-    {
+    private static void printBase(Prologue prologue, IndentedWriter out) {
+        if ( prologue.getBaseURI() != null && prologue.explicitlySetBaseURI() ) {
+            out.print("BASE    ");
+            out.print("<" + prologue.getBaseURI() + ">");
+            out.newline();
+        }
+    }
+
+    public static void printPrefixes(Prologue prologue, IndentedWriter out) {
         if ( prologue.getPrefixMapping() == null )
-            return ;
-        
-        Map<String, String> pmap = null ;
+            return;
 
-        if ( prologue.getPrefixMapping() instanceof PrefixMapping2 )
-        {
-            PrefixMapping2 pm2 = (PrefixMapping2)prologue.getPrefixMapping() ;
-            pmap = pm2.getNsPrefixMap(false) ;
-        }
-        else
-        {
-            Map<String, String> _pmap = prologue.getPrefixMapping().getNsPrefixMap() ;
-            pmap = _pmap ;
+        Map<String, String> pmap = null;
+
+        if ( prologue.getPrefixMapping() instanceof PrefixMapping2 ) {
+            PrefixMapping2 pm2 = (PrefixMapping2)prologue.getPrefixMapping();
+            pmap = pm2.getNsPrefixMap(false);
+        } else {
+            Map<String, String> _pmap = prologue.getPrefixMapping().getNsPrefixMap();
+            pmap = _pmap;
         }
 
-        if ( pmap.size() > 0 )
-        {
-            //boolean first = true ;
-            for (String k : pmap.keySet())
-            {
-                String v = pmap.get(k) ;
-                out.print("PREFIX  ") ;
-                out.print(k) ;
-                out.print(':') ;
-                out.print(' ', 4-k.length()) ;
-                // Include at least one space 
-                out.print(' ') ;
-                out.print(FmtUtils.stringForURI(v)) ;
-                out.newline() ;
+        if ( pmap.size() > 0 ) {
+            // boolean first = true ;
+            for ( String k : pmap.keySet() ) {
+                String v = pmap.get(k);
+                out.print("PREFIX  ");
+                out.print(k);
+                out.print(':');
+                out.print(' ', 4 - k.length());
+                // Include at least one space
+                out.print(' ');
+                out.print(FmtUtils.stringForURI(v));
+                out.newline();
             }
         }
     }
