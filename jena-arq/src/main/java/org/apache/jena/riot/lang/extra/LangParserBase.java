@@ -158,10 +158,6 @@ public class LangParserBase {
         String prefix = pname.substring(0, idx);
         String localPart = pname.substring(idx+1);
         localPart = LangParserLib.unescapePName(localPart, line, column);
-
-        if ( localPart.contains("\\") )
-            System.out.println("X");
-
         String expansion = profile.getPrefixMap().expand(prefix, localPart);
         if ( expansion == null ) {
             if ( ARQ.isTrue(ARQ.fixupUndefinedPrefixes) )
@@ -190,6 +186,11 @@ public class LangParserBase {
         profile.getPrefixMap().add(prefix,iri);
         stream.prefix(prefix, iri);
     }
+
+    protected void declareVersion(String version, int line, int column) {
+        stream.version(version);
+    }
+
     protected void emitTriple(int line, int column, Node s, Node p, Node o) {
         stream.triple(Triple.create(s, p, o));
     }
