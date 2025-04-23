@@ -55,19 +55,9 @@ import org.eclipse.jetty.security.UserStore;
  */
 public class EnvTest {
 
-/* Cut&Paste
-  For MS Windows
-
-    private EnvTest env;
-
-    @Before public void before() {
-        env = EnvTest.create("/ds");
-    }
-
-    @After public void after() {
-        EnvTest.stop(env);
-    }
-*/
+    // VERBOSE - development debugging aid for individual tests.
+    // When run in the full Jena suite, logging from Fuseki is off
+    // so no verbose output will be seen.
     public static boolean VERBOSE = ConfigureTests.VerboseServer;
 
     public  final FusekiServer server;
@@ -91,9 +81,6 @@ public class EnvTest {
         return new EnvTest(dsName, dsg, user, password);
     }
 
-    // verbose - development debugging aid for individual tests.
-    // When run in the full Jena suite, logging from Fuseki is off
-    // so no verbose output will be seen.
     private EnvTest(String path, DatasetGraph dsg, String user, String password) {
         if ( ! path.startsWith("/") )
             path = "/"+path;
@@ -140,7 +127,6 @@ public class EnvTest {
     public DatasetGraph dsg()   { return dataset; }
     public String user()        { return user; }
     public String password()    { return password; }
-
 
     public String serverPath(String path) {
         if ( path.startsWith("/") )
