@@ -25,6 +25,7 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.system.ParserProfile;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.tokens.StringType;
 import org.apache.jena.riot.tokens.Token;
 import org.apache.jena.riot.tokens.TokenType;
 import org.apache.jena.riot.tokens.Tokenizer;
@@ -73,12 +74,13 @@ public abstract class LangTurtleBase extends LangBase {
         while (moreTokens()) {
             Token t = peekToken();
             if ( lookingAt(DIRECTIVE) ) {
-                directive(); // @form.
+                directiveAtWord(); // @form.
                 continue;
             }
 
             if ( lookingAt(KEYWORD) ) {
-                if ( t.getImage().equalsIgnoreCase("PREFIX") || t.getImage().equalsIgnoreCase("BASE") ) {
+                String text = t.getImage();
+                if ( text.equalsIgnoreCase("PREFIX") || text.equalsIgnoreCase("BASE") || text.equalsIgnoreCase("VERSION") ) {
                     directiveKeyword();
                     continue;
                 }
@@ -95,11 +97,12 @@ public abstract class LangTurtleBase extends LangBase {
     protected abstract void oneTopLevelElement();
 
     /**
-     * Emit a triple - nodes have been checked as has legality of
-     * node type in location.
+     * Emit a triple - nodes have been checked as has the
+     * legality of node type in location.
      */
     protected abstract void emit(Node subject, Node predicate, Node object);
 
+    // Directive, keyword form.
     protected final void directiveKeyword() {
         Token t = peekToken();
         String x = t.getImage();
@@ -114,15 +117,20 @@ public abstract class LangTurtleBase extends LangBase {
             directivePrefix();
             return;
         }
+
+        if ( x.equalsIgnoreCase("VERSION") ) {
+            directiveVersion();
+            return;
+        }
+
         exception(t, "Unrecognized keyword for directive: %s", x);
     }
 
-    protected final void directive() {
-        // It's a directive ...
+    // Directive, @-form.
+    protected final void directiveAtWord() {
         Token t = peekToken();
         String x = t.getImage();
         nextToken();
-
         if ( x.equals("base") ) {
             directiveBase();
             if ( isStrictMode() )
@@ -135,6 +143,15 @@ public abstract class LangTurtleBase extends LangBase {
 
         if ( x.equals("prefix") ) {
             directivePrefix();
+            if ( isStrictMode() )
+                // The line number is probably one ahead due to the newline
+                expect("Prefix directive not terminated by a dot", DOT);
+            else
+                skipIf(DOT);
+            return;
+        }
+        if ( x.equals("version") ) {
+            directiveVersion();
             if ( isStrictMode() )
                 // The line number is probably one ahead due to the newline
                 expect("Prefix directive not terminated by a dot", DOT);
@@ -170,6 +187,22 @@ public abstract class LangTurtleBase extends LangBase {
         String baseIRI = profile.resolveIRI(str, currLine, currCol);
         profile.setBaseIRI(baseIRI);
         emitBase(baseIRI);
+        nextToken();
+    }
+
+    protected final void directiveVersion() {
+        Token token = peekToken();
+        // Single quoted string only.
+        StringType stringType = token.getStringType();
+        switch(stringType) {
+            case STRING1, STRING2 ->{}
+            case LONG_STRING1, LONG_STRING2 ->
+                exception(token, "Triple-quoted strings not allowed for the version string");
+            default ->
+                exception(token, "Expected a single-quoted string for the version setting (found '" + token + "')");
+        }
+        String versionStr = token.getImage();
+        emitVersion(versionStr);
         nextToken();
     }
 
@@ -765,6 +798,10 @@ public abstract class LangTurtleBase extends LangBase {
 
     private final void emitBase(String baseStr) {
         dest.base(baseStr);
+    }
+
+    private final void emitVersion(String versionStr) {
+        dest.version(versionStr)  ;
     }
 
     protected final Node tokenAsNode(Token token) {
