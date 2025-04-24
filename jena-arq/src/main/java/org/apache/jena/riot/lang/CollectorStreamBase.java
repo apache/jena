@@ -39,6 +39,7 @@ import org.apache.jena.sparql.core.Quad ;
  *
  * @param <T> Type of the value stored in the collection
  */
+@Deprecated(forRemoval = true)
 public abstract class CollectorStreamBase<T> implements StreamRDF {
 	private final PrefixMap prefixes = PrefixMapFactory.create();
 	private String baseIri;
@@ -64,6 +65,9 @@ public abstract class CollectorStreamBase<T> implements StreamRDF {
 	public void prefix(String prefix, String iri) {
 		prefixes.add(prefix, iri);
 	}
+
+	@Override
+	public void version(String version) {}
 
 	public PrefixMap getPrefixes() {
 		return prefixes;

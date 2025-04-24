@@ -161,6 +161,9 @@ public class DataBatcher implements StreamRDFCounting, BulkStartFinish {
             prefixHandler.accept(prefix, iri);
     }
 
+    @Override
+    public void version(String version) {}
+
     private List<Triple>  allocChunkTriples() {
         return new ArrayList<>(LoaderConst.ChunkSize);
     }

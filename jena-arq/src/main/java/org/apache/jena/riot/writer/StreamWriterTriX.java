@@ -98,6 +98,8 @@ public class StreamWriterTriX implements StreamRDF {
         // See notes.
     }
 
+    @Override public void version(String version) {} // Ignore.
+
     @Override
     public void triple(Triple triple) {
         if ( inGraph && gn != null ) {

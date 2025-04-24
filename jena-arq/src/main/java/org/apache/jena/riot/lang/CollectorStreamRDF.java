@@ -67,6 +67,9 @@ public class CollectorStreamRDF implements StreamRDF {
 		this.baseIri = base;
 	}
 
+    @Override
+    public void version(String version) {}
+
 	@Override
 	public void prefix(String prefix, String iri) {
 		prefixes.add(prefix, iri);

@@ -16,18 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system ;
+package org.apache.jena.riot.system;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.riot.out.NodeFmtLib ;
-import org.apache.jena.sparql.core.Quad ;
-import org.slf4j.Logger ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.riot.out.NodeFmtLib;
+import org.apache.jena.sparql.core.Quad;
+import org.slf4j.Logger;
 
 public class LoggingStreamRDF implements StreamRDF {
-    private Logger log ;
+    private Logger log;
 
     public LoggingStreamRDF(Logger log) {
-        this.log = log ;
+        this.log = log;
     }
 
     @Override
@@ -35,24 +35,29 @@ public class LoggingStreamRDF implements StreamRDF {
 
     @Override
     public void triple(Triple triple) {
-        String string = NodeFmtLib.str(triple) ;
-        log.info(string) ;
+        String string = NodeFmtLib.str(triple);
+        log.info(string);
     }
 
     @Override
     public void quad(Quad quad) {
-        String string = NodeFmtLib.str(quad) ;
-        log.info(string) ;
+        String string = NodeFmtLib.str(quad);
+        log.info(string);
     }
 
     @Override
     public void base(String base) {
-        log.info("BASE -- " + base) ;
+        log.info("BASE -- " + base);
     }
 
     @Override
     public void prefix(String prefix, String iri) {
-        log.info("Prefix (" + prefix + "," + iri + ")") ;
+        log.info("Prefix (" + prefix + "," + iri + ")");
+    }
+
+    @Override
+    public void version(String version) {
+        log.info("Version (\"" + version + "\"");
     }
 
     @Override

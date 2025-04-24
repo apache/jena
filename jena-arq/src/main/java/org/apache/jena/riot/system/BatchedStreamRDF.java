@@ -141,4 +141,9 @@ public class BatchedStreamRDF implements StreamRDF {
     public void prefix(String prefix, String iri) {
         batchProc.prefix(prefix, iri);
     }
+
+    @Override
+    public void version(String version) {
+        batchProc.version(version);
+    }
 }

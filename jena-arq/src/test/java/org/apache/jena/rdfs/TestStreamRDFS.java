@@ -31,7 +31,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdfs.setup.ConfigRDFS;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.lang.CollectorStreamTriples;
+import org.apache.jena.riot.lang.CollectorStreamRDF;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFOps;
 import org.apache.jena.sparql.graph.NodeConst;
@@ -105,10 +105,10 @@ public class TestStreamRDFS {
 
     // Inference to a list
     private static List<Triple> infOutput(Consumer<StreamRDF> action) {
-        CollectorStreamTriples dest = new CollectorStreamTriples();
+        CollectorStreamRDF dest = new CollectorStreamRDF();
         StreamRDF stream = RDFSFactory.streamRDFS(dest, vocab);
         exec(stream, action);
-        return dest.getCollected();
+        return dest.getTriples();
     }
 
     private static void exec(StreamRDF stream, Consumer<StreamRDF> action) {

@@ -20,17 +20,18 @@ package org.apache.jena.tdb2.sys;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.riot.lang.CollectorStreamTriples;
+import org.apache.jena.riot.lang.CollectorStreamRDF;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.tdb2.DatabaseMgr;
 import org.apache.jena.tdb2.store.NodeId;
 import org.apache.jena.tdb2.store.NodeIdInline;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * This specifically tests by putting a node into a TDB2 database and getting them
@@ -97,10 +98,10 @@ public class TestNormalizedTermsTDB2 {
     }
 
     private void testViaStream(Node nInput, Node nNorm) {
-        CollectorStreamTriples collector = new CollectorStreamTriples();
+        CollectorStreamRDF collector = new CollectorStreamRDF();
         StreamRDF stream = NormalizeTermsTDB2.stream(collector);
         stream.triple(Triple.create(s, p, nInput));
-        Triple triple2 = collector.getCollected().get(0);
+        Triple triple2 = collector.getTriples().get(0);
         Node streamObj = triple2.getObject();
         assertEquals(nNorm, streamObj);
     }

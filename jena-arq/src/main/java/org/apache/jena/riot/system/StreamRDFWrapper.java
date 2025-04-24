@@ -53,6 +53,10 @@ public class StreamRDFWrapper implements StreamRDF
     { other.prefix(prefix, iri) ; }
 
     @Override
+    public void version(String versionString)
+    { other.version(versionString); }
+
+    @Override
     public void finish()
     { other.finish() ; }
 }

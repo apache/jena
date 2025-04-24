@@ -31,6 +31,8 @@ import java.util.function.Predicate;
 
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.atlas.lib.Chars;
+import org.apache.jena.atlas.lib.EscapeStr;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -41,6 +43,8 @@ import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.LabelToNode;
+import org.apache.jena.riot.out.quoted.QuotedStringOutput;
+import org.apache.jena.riot.out.quoted.QuotedStringOutputNT;
 import org.apache.jena.riot.writer.DirectiveStyle;
 import org.apache.jena.riot.writer.WriterGraphRIOTBase;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -387,6 +391,39 @@ public class RiotLib {
         out.print("<");
         out.print(uri);
         out.print(">");
+        out.print(" .");
+        out.println();
+    }
+
+    private static final QuotedStringOutput quotedStringProc = new QuotedStringOutputNT();
+    /**
+     * Write a version.
+     * Write using {@code version} or {@code VERSION}.
+     */
+    public static void writeVersion(IndentedWriter out, String version, DirectiveStyle writeStyle) {
+        if ( writeStyle == DirectiveStyle.AT )
+            writeVersionOldStyle(out, version);
+        else
+            writeVersionNewStyle(out, version);
+    }
+
+    private static void writeVersionNewStyle(IndentedWriter out, String version) {
+        char chQuote = Chars.CH_QUOTE2;
+        String escVersion = EscapeStr.stringEsc(version, Chars.CH_QUOTE2);
+        out.print("VERSION ");
+        out.print(chQuote);
+        out.print(escVersion);
+        out.print(chQuote);
+        out.println();
+    }
+
+    private static void writeVersionOldStyle(IndentedWriter out, String version) {
+        char chQuote = Chars.CH_QUOTE2;
+        String escVersion = EscapeStr.stringEsc(version, Chars.CH_QUOTE2);
+        out.print("@version ");
+        out.print(chQuote);
+        out.print(escVersion);
+        out.print(chQuote);
         out.print(" .");
         out.println();
     }

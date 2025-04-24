@@ -582,6 +582,9 @@ public class AsyncParser {
             deliver(elt);
         }
 
+        @Override
+        public void version(String version) {}
+
         private void deliver(EltStreamRDF elt) {
             destination.accept(elt);
         }

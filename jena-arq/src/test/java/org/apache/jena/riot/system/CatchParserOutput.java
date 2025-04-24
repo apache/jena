@@ -31,6 +31,7 @@ public class CatchParserOutput implements StreamRDF
     public List<Quad>        quads       = new ArrayList<>() ;
     public List<Pair<String,String>>     prefixes     = new ArrayList<>() ;
     public List<String>     bases       = new ArrayList<>() ;
+    public List<String>     versions    = new ArrayList<>() ;
 
     public int startCalled = 0 ;
 
@@ -45,6 +46,8 @@ public class CatchParserOutput implements StreamRDF
     @Override public void base(String base)         { bases.add(base) ; }
 
     @Override public void prefix(String prefix, String iri) { prefixes.add(Pair.create(prefix, iri)) ; }
+
+    @Override public void version(String version)   { versions.add(version); }
 
     @Override public void finish()  { finishCalled++ ; }
 }

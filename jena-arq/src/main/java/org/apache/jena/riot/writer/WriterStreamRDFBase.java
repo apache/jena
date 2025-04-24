@@ -168,6 +168,11 @@ public abstract class WriterStreamRDFBase implements StreamRDF
         RiotLib.writePrefix(out, prefix, iri, directiveStyle);
     }
 
+    @Override
+    public void version(String version) {
+        RiotLib.writeVersion(out, version, directiveStyle);
+    }
+
     protected void prefixSetup(String prefix, String iri) {}
 
     protected void outputNode(Node n) {

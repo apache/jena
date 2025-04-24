@@ -132,7 +132,8 @@ public class EscapeStr
             }
 
             // Normal case!
-            out.print(c);        }
+            out.print(c);
+        }
     }
 
     /** Write a string with Unicode to ASCII conversion using \-u escapes */

@@ -274,6 +274,9 @@ public class BulkLoader {
         }
 
         @Override
+        public void version(String version) {}
+
+        @Override
         public void finish() {}
     }
 
@@ -357,6 +360,9 @@ public class BulkLoader {
         public void prefix(String prefix, String iri) {
             prefixMap.add(prefix, iri);
         }
+
+        @Override
+        public void version(String version) {}
 
         @Override
         public void finish() {}

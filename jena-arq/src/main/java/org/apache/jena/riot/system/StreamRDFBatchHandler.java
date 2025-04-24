@@ -50,6 +50,9 @@ public interface StreamRDFBatchHandler {
     /** prefix declaration seen */
     public void prefix(String prefix, String iri);
 
+    /** version declaration seen */
+    default public void version(String version) {}
+
     /** Finish parsing */
     public void finish();
 }

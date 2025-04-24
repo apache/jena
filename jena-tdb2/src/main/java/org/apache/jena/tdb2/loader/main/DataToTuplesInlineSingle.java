@@ -138,6 +138,9 @@ public class DataToTuplesInlineSingle implements StreamRDFCounting, BulkStartFin
         prefixes.add_ext(Prefixes.nodeDataset, prefix, iri);
     }
 
+    @Override
+    public void version(String version) {}
+
     private static Tuple<NodeId> nodes(NodeTable nt, Triple triple) {
         NodeId s = idForNode(nt, triple.getSubject());
         NodeId p = idForNode(nt, triple.getPredicate());

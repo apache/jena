@@ -80,4 +80,7 @@ public class StreamPatch implements StreamRDF {
     public void prefix(String prefix, String iri) {
         changes.addPrefix(null, prefix, iri);
     }
+
+    @Override
+    public void version(String version) {}
 }

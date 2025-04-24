@@ -21,26 +21,26 @@ package arq.examples.riot;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.lang.CollectorStreamBase;
-import org.apache.jena.riot.lang.CollectorStreamTriples;
+import org.apache.jena.riot.lang.CollectorStreamRDF;
 
 /**
  * Example of using RIOT for streaming RDF to be stored into a Collection.
- * 
- * Suitable for single-threaded parsing, for use with small data or distributed 
+ *
+ * Suitable for single-threaded parsing, for use with small data or distributed
  * computing frameworks (e.g. Hadoop) where the overhead of creating many threads
- * is significant. 
- * 
+ * is significant.
+ *
  * @see CollectorStreamBase
  */
 public class ExRIOT5_StreamRDFCollect {
 
     public static void main(String... argv) {
         final String filename = "data.ttl";
-        
-        CollectorStreamTriples inputStream = new CollectorStreamTriples();
+
+        CollectorStreamRDF inputStream = new CollectorStreamRDF();
         RDFParser.source(filename).parse(inputStream);
 
-        for (Triple triple : inputStream.getCollected()) {
+        for (Triple triple : inputStream.getTriples()) {
         	System.out.println(triple);
         }
     }

@@ -165,6 +165,9 @@ public class DataToTuplesInline implements StreamRDFCounting, BulkStartFinish {
         prefixes.add_ext(Prefixes.nodeDataset, prefix, iri);
     }
 
+    @Override
+    public void version(String version) {}
+
     private static void accTuples(Triple triple, NodeTable nodeTable, List<Tuple<NodeId>> acc) {
         acc.add(nodes(nodeTable, triple));
     }

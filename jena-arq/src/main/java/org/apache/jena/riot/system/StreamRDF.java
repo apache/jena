@@ -25,13 +25,13 @@ import org.apache.jena.sparql.core.Quad ;
  *  The parser event model is that items are emitted for significant events.
  *  The events are start/finish, emitting triples/quads/tuples as necessary, prefixes and base directives.
  *  Tuples are generalized triples or quads.  A triple language will call triple(),
- *  quad language quad() in preference.    
+ *  quad language quad() in preference.
  */
 public interface StreamRDF
 {
     /** Start processing */
     public void start() ;
-    
+
     /** Triple emitted */
     public void triple(Triple triple) ;
 
@@ -46,6 +46,9 @@ public interface StreamRDF
 
     /** prefix declaration seen */
     public void prefix(String prefix, String iri) ;
+
+    /** version declaration seen */
+    public void version(String version);
 
     /** Finish processing */
     public void finish() ;

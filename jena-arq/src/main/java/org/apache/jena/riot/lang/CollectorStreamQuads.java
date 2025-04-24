@@ -29,6 +29,7 @@ import org.apache.jena.sparql.core.Quad ;
  *
  * @see CollectorStreamBase
  */
+@Deprecated(forRemoval = true)
 public class CollectorStreamQuads extends CollectorStreamBase<Quad>	implements StreamRDF {
 	private List<Quad> quads = new ArrayList<>();
 
