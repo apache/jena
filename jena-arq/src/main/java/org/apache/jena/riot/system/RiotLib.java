@@ -43,8 +43,6 @@ import org.apache.jena.irix.IRIxResolver;
 import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.lang.LabelToNode;
-import org.apache.jena.riot.out.quoted.QuotedStringOutput;
-import org.apache.jena.riot.out.quoted.QuotedStringOutputNT;
 import org.apache.jena.riot.writer.DirectiveStyle;
 import org.apache.jena.riot.writer.WriterGraphRIOTBase;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -395,7 +393,6 @@ public class RiotLib {
         out.println();
     }
 
-    private static final QuotedStringOutput quotedStringProc = new QuotedStringOutputNT();
     /**
      * Write a version.
      * Write using {@code version} or {@code VERSION}.

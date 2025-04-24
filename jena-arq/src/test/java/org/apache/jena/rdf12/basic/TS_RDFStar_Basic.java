@@ -29,8 +29,7 @@ import org.junit.runners.Suite;
     TestNTriplesStarParse.class,
     TestTrigStarParse.class,
     TestTurtleStarParse.class,
-
-//    TestSPARQLStarParse.class,
+    TestSPARQL12Parse.class
 })
 public class TS_RDFStar_Basic {
 }

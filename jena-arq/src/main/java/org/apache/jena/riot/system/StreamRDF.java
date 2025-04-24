@@ -48,7 +48,7 @@ public interface StreamRDF
     public void prefix(String prefix, String iri) ;
 
     /** version declaration seen */
-    public void version(String version);
+    public default void version(String version) {}
 
     /** Finish processing */
     public void finish() ;
