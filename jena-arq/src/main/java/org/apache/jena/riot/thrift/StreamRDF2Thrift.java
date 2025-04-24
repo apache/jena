@@ -150,6 +150,9 @@ public class StreamRDF2Thrift implements StreamRDF, AutoCloseable
     }
 
     @Override
+    public void version(String version) {}
+
+    @Override
     public void close() {
         finish();
     }

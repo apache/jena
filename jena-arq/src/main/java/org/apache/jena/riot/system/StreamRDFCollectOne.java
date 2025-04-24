@@ -31,7 +31,7 @@ public class StreamRDFCollectOne implements StreamRDF {
     public StreamRDFCollectOne() {
         pmap = PrefixMapFactory.create() ;
     }
-    
+
     public StreamRDFCollectOne(PrefixMap pmap) {
         this.pmap = pmap ;
     }
@@ -59,8 +59,11 @@ public class StreamRDFCollectOne implements StreamRDF {
     }
 
     @Override
+    public void version(String version) {}
+
+    @Override
     public void finish() {}
-    
+
     public StreamRowRDF getRow() {
         return row ;
     }

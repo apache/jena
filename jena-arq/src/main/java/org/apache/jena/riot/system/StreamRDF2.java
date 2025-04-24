@@ -18,54 +18,59 @@
 
 package org.apache.jena.riot.system;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.Quad;
 
 /** Send to two streams */
-public class StreamRDF2 implements StreamRDF
-{
-    protected final StreamRDF sink1 ;
-    protected final StreamRDF sink2 ;
+public class StreamRDF2 implements StreamRDF {
+    protected final StreamRDF sink1;
+    protected final StreamRDF sink2;
 
     public StreamRDF2(StreamRDF sink1, StreamRDF sink2) {
-        this.sink1 = sink1 ;
-        this.sink2 = sink2 ;
+        this.sink1 = sink1;
+        this.sink2 = sink2;
     }
 
     @Override
     public void start() {
-        sink1.start() ;
-        sink2.start() ;
+        sink1.start();
+        sink2.start();
     }
 
     @Override
     public void triple(Triple triple) {
-        sink1.triple(triple) ;
-        sink2.triple(triple) ;
+        sink1.triple(triple);
+        sink2.triple(triple);
     }
 
     @Override
     public void quad(Quad quad) {
-        sink1.quad(quad) ;
-        sink2.quad(quad) ;
+        sink1.quad(quad);
+        sink2.quad(quad);
     }
 
     @Override
     public void base(String base) {
-        sink1.base(base) ;
-        sink2.base(base) ;
+        sink1.base(base);
+        sink2.base(base);
     }
 
     @Override
     public void prefix(String prefix, String iri) {
-        sink1.prefix(prefix, iri) ;
-        sink2.prefix(prefix, iri) ;
+        sink1.prefix(prefix, iri);
+        sink2.prefix(prefix, iri);
+    }
+
+    @Override
+    public void version(String version) {
+        sink1.version(version);
+        sink2.version(version);
     }
 
     @Override
     public void finish() {
-        sink1.finish() ;
-        sink2.finish() ;
+        sink1.finish();
+        sink2.finish();
     }
 
 }

@@ -109,6 +109,9 @@ public class StreamRDF2Protobuf implements StreamRDF, AutoCloseable
     }
 
     @Override
+    public void version(String version) {}
+
+    @Override
     public void triple(Triple triple) {
         streamRowBuilder.clear();
         RDF_Triple triplePB = PBufRDF.rdfTriple(triple, tripleBuilder, termBuilder);

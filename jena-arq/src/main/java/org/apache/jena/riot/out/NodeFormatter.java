@@ -46,9 +46,12 @@ public interface NodeFormatter
     /** String with language tag */
     public void formatLitLang(AWriter w, String lex, String langTag);
 
-    /** String with language tag and base direction */
+    /** String with language tag and base direction (RDF 1.2) */
     public void formatLitLangDir(AWriter w, String lex, String langTag, String direction);
 
-    /** Literal with datatype, not a simple literal, not an xsd:string (RDF 1.1), no language tag. */
+    /**
+     * Literal with datatype, not a simple literal, not an xsd:string (RDF 1.1), no
+     * language tag or and base direction.
+     */
     public void formatLitDT(AWriter w, String lex, String datatypeURI);
 }

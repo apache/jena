@@ -58,6 +58,9 @@ public class ToGraph implements StreamRDF {
     public void prefix(String prefix, String iri) {}
 
     @Override
+    public void version(String version) {}
+
+    @Override
     public void finish() {}
 
     public Graph getGraph() {

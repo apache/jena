@@ -152,8 +152,7 @@ public class ProcNodeTableDataBuilder {
         {}
 
         @Override
-        public void finishBulk()
-        {
+        public void finishBulk() {
             writerTriples.flush();
             writerQuads.flush();
             nodeTable.sync();
@@ -161,36 +160,31 @@ public class ProcNodeTableDataBuilder {
         }
 
         @Override
-        public void triple(Triple triple)
-        {
+        public void triple(Triple triple) {
             Node s = triple.getSubject();
             Node p = triple.getPredicate();
             Node o = triple.getObject();
-            process(Quad.tripleInQuad,s,p,o);
+            process(Quad.tripleInQuad, s, p, o);
         }
 
         @Override
-        public void quad(Quad quad)
-        {
+        public void quad(Quad quad) {
             Node s = quad.getSubject();
             Node p = quad.getPredicate();
             Node o = quad.getObject();
             Node g = null;
             // Union graph?!
-            if ( ! quad.isTriple() && ! quad.isDefaultGraph() )
+            if ( !quad.isTriple() && !quad.isDefaultGraph() )
                 g = quad.getGraph();
-            process(g,s,p,o);
+            process(g, s, p, o);
         }
 
-
-        private void process(Node g, Node s, Node p, Node o)
-        {
+        private void process(Node g, Node s, Node p, Node o) {
             NodeId sId = nodeTable.getAllocateNodeId(s);
             NodeId pId = nodeTable.getAllocateNodeId(p);
             NodeId oId = nodeTable.getAllocateNodeId(o);
 
-            if ( g != null )
-            {
+            if ( g != null ) {
                 NodeId gId = nodeTable.getAllocateNodeId(g);
                 writerQuads.write(gId.getId());
                 writerQuads.write(sId.getId());
@@ -199,9 +193,7 @@ public class ProcNodeTableDataBuilder {
                 writerQuads.endOfRow();
                 if ( stats != null )
                     stats.record(gId, sId, pId, oId);
-            }
-            else
-            {
+            } else {
                 writerTriples.write(sId.getId());
                 writerTriples.write(pId.getId());
                 writerTriples.write(oId.getId());
@@ -212,17 +204,20 @@ public class ProcNodeTableDataBuilder {
             monitor.tick();
         }
 
-        public StatsCollectorNodeId getCollector() { return stats; }
+        public StatsCollectorNodeId getCollector() {
+            return stats;
+        }
 
         @Override
-        public void base(String base)
-        {}
+        public void base(String base) {}
 
         @Override
-        public void prefix(String prefix, String iri)
-        {
+        public void prefix(String prefix, String iri) {
             dsg.getStoragePrefixes().getPrefixMap().add(prefix, iri);
         }
+
+        @Override
+        public void version(String version) {}
     }
 }
 

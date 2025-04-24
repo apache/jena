@@ -18,32 +18,28 @@
 
 package org.apache.jena.riot.system;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.Quad ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.Quad;
 
-public class StreamRDFBase implements StreamRDF
-{
+public class StreamRDFBase implements StreamRDF {
     @Override
-    public void start()
-    {}
+    public void start() {}
 
     @Override
-    public void triple(Triple triple)
-    {}
+    public void triple(Triple triple) {}
 
     @Override
-    public void quad(Quad quad)
-    {}
+    public void quad(Quad quad) {}
 
     @Override
-    public void base(String base)
-    {}
+    public void base(String base) {}
 
     @Override
-    public void prefix(String prefix, String iri)
-    {}
+    public void prefix(String prefix, String iri) {}
 
     @Override
-    public void finish()
-    {}
+    public void version(String version) {}
+
+    @Override
+    public void finish() {}
 }

@@ -21,8 +21,9 @@ package org.apache.jena.riot.system;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.sparql.core.Quad ;
 
-/** {@link StreamRDF} that throws an exception on each operation except {@code start()} and {@code finish()}.
- *  @see StreamRDFBase
+/**
+ * {@link StreamRDF} that throws an exception on each operation except {@code start()} and {@code finish()}.
+ * @see StreamRDFBase
  */
 public class StreamRDFReject implements StreamRDF
 {
@@ -47,4 +48,9 @@ public class StreamRDFReject implements StreamRDF
     @Override
     public void prefix(String prefix, String iri)
     { throw new UnsupportedOperationException("StreamRDF.prefix"); }
+
+    @Override
+    public void version(String version)
+    { throw new UnsupportedOperationException("StreamRDF.version"); }
+
 }

@@ -45,10 +45,9 @@ public class TestCollectorStream {
 
     @Test
     public void test_streamed_triples() {
-        CollectorStreamTriples out = new CollectorStreamTriples();
+        CollectorStreamRDF out = new CollectorStreamRDF();
         List<Triple> expected = writeTriples(out, 10);
-
-        Assert.assertEquals(expected, out.getCollected());
+        Assert.assertEquals(expected, out.getTriples());
     }
 
     private List<Quad> writeQuads(StreamRDF out, int size) {
@@ -66,9 +65,8 @@ public class TestCollectorStream {
 
     @Test
     public void test_streamed_quads() {
-        CollectorStreamQuads out = new CollectorStreamQuads();
+        CollectorStreamRDF out = new CollectorStreamRDF();
         List<Quad> expected = writeQuads(out, 10);
-
-        Assert.assertEquals(expected, out.getCollected());
+        Assert.assertEquals(expected, out.getQuads());
     }
 }

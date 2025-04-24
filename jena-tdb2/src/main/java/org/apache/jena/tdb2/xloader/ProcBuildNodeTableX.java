@@ -449,6 +449,9 @@ public class ProcBuildNodeTableX {
         public void prefix(String prefix, String iri) {}
 
         @Override
+        public void version(String version) {}
+
+        @Override
         public void finish() {
             IO.flush(outputData);
         }

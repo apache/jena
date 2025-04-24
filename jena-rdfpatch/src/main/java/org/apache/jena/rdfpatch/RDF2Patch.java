@@ -55,6 +55,9 @@ public class RDF2Patch implements StreamRDF {
     public void base(String base) {}
 
     @Override
+    public void version(String version) {}
+
+    @Override
     public void prefix(String prefix, String iri) {
         changes.addPrefix(null, prefix, iri);
     }

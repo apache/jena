@@ -308,5 +308,8 @@ public class ProcIngestDataX {
         public void prefix(String prefix, String iri) {
             dsg.prefixes().add(prefix, iri);
         }
+
+        @Override
+        public void version(String version) {}
     }
 }

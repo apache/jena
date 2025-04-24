@@ -118,6 +118,9 @@ public class WriterStreamRDFPlain implements StreamRDF {
     @Override
     public void prefix(String prefix, String iri) {}
 
+    @Override
+    public void version(String version) {}
+
     private static boolean outputGraphSlot(Node g) {
         return (g != null && g != Quad.tripleInQuad && !Quad.isDefaultGraph(g));
     }
