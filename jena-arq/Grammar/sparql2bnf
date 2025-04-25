@@ -4,4 +4,4 @@ echo "Grammar to sparql.bnf (text)"
 
 (
     jj2bnf 'sparql_12.txt' 'tokens.txt'
-) > sparql.bnf
+) > sparql-grammar.bnf
