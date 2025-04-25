@@ -28,6 +28,7 @@ import org.apache.jena.riot.resultset.ResultSetLang;
 import org.apache.jena.sparql.sse.Item;
 import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.sparql.sse.builders.BuilderRowSet;
+import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
@@ -46,6 +47,8 @@ import java.util.Collection;
 @RunWith(Parameterized.class)
 public class TestResultSetFormat1
 {
+    static { JenaSystem.init(); }
+
     // Test with ResultSets.
     // This does all the RowSet testing because ResultSets are now just wrappers on RowSets.
 

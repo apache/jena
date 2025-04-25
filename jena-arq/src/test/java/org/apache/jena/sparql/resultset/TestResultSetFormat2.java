@@ -35,10 +35,14 @@ import org.apache.jena.riot.rowset.rw.rs_json.Severity;
 import org.apache.jena.sparql.ARQException ;
 import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sys.JenaSystem;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class TestResultSetFormat2 {
+
+    static { JenaSystem.init(); }
+
     @Test
     public void resultset_tsv_01() {
         // Empty Header Row (no variables), no rows.
