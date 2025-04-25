@@ -96,6 +96,8 @@ public class JenaSystem {
         static final boolean IS_INITIALIZED = jenaSystemInitialization();
 
         private static boolean jenaSystemInitialization() {
+
+
             JenaSystem.initialized = true; // Set early to avoid blocking on static initialization.
             setup();
             if ( DEBUG_INIT )
@@ -107,13 +109,24 @@ public class JenaSystem {
     }
 
     private static void setup() {
-        // Called inside synchronized
-        if ( singleton == null ) {
-            singleton = new Subsystem<>(JenaSubsystemLifecycle.class);
-            SubsystemRegistry<JenaSubsystemLifecycle> reg =
-                    new SubsystemRegistryServiceLoader<>(JenaSubsystemLifecycle.class);
-            singleton.setSubsystemRegistry(reg);
-            reg.add(new JenaInitLevel0());
+        try {
+            if ( singleton == null ) {
+                singleton = new Subsystem<>(JenaSubsystemLifecycle.class);
+                SubsystemRegistry<JenaSubsystemLifecycle> reg =
+                        new SubsystemRegistryServiceLoader<>(JenaSubsystemLifecycle.class);
+                singleton.setSubsystemRegistry(reg);
+                reg.add(new JenaInitLevel0());
+            }
+        } catch (Throwable th) {
+            // This really, really should not happen.
+            System.err.println(">> JenaSystem initialization");
+            System.err.println(th.getMessage());
+            if ( th.getCause() != null )
+                System.err.println(th.getCause().getMessage());
+            System.err.println("----");
+            th.printStackTrace();
+            System.err.println("<< JenaSystem initialization");
+            throw th;
         }
     }
 
