@@ -13,9 +13,7 @@ echo "Grammar output in sparql-grammar.html"
 
 ## Produce a standlone web page
 ## mv sparql-grammar.html X12.hmtl
-## grammarExtracts < sparql-grammar.html > sparql-html.thml
+## grammarExtracts < sparql-grammar.html > sparql-html.html
 
 ## jj2html 'arq_12.txt' 'tokens.txt' > X.html
 ## grammarExtracts < X.html > Y.html
-
-##?? echo "Check X and Y for IRI_REF because \" became '"

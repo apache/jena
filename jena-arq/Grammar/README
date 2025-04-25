@@ -1,5 +1,8 @@
 ==== SPARQL Parser
 
+The active grammar is in main.jj.
+This covers current SPARQL and any ARQ extensions.
+
 Run
 
     grammar
@@ -7,7 +10,11 @@ Run
 This produces the code for the current version SPARQL
 and the ARQ (SPARQL with extensions) parsers.
 
-==
+Note:
+cpp (the C Preprocessor) must be installed.
+The grammar script runs cpp over main.jj to produce arq.jj and sparql.jj.
+
+==== HTML
 
 To produce the HTML for the SPARQL Grammar for the W3C spec:
 produce the SPARQL 1.2 specific file
@@ -28,4 +35,45 @@ Running
 
     sparql2bnf
 
-produces a text BNF form.
+produces a text BNF form in sparql-grammar.bnf
+
+Run
+
+   grammarExtracts < sparql-grammar.html > sparql-html.html
+
+to get a webpage for the grammar.
+
+====
+
+To generate the "tokens.txt" file, use
+
+    jj2tokens sparql_12.jj > tokens.txt
+
+to get a basic starting point. It will need manual editing, noting which token to inline
+and not to go in the terminal section.
+==== The Grammars
+See Archive for old, historical material.
+
+main.jj - Template for SPARQL and ARQ
+    cpp input to produce sparql.jj or arq.jj
+
+sparql_11.jj - The SPARQL working group syntax
+    This should be exactly the grammar in the SPARQL 1.1 rec.
+    Generates org.apache.jena.query.parser.sparql_11.SPARQLParser
+
+sparql_12.jj - The RDF Star working group syntax
+    This should be exactly the grammar in the SPARQL 1.2 rec.
+    Generates org.apache.jena.query.parser.sparql_12.SPARQLParser
+
+arq.jj - The native query language of the query engine
+    Generates org.apache.jena.query.parser.arq.ARQParser
+
+sparql_10-final.jj - SPARQL 1.0, but updated to match internal chnages in ARQ.
+    This should produce the grammar in the SPARQ 1.0/DAWG rec.
+    Generates org.apache.jena.query.parser.sparql_10.SPARQLParser
+    
+Final/sparql_10-final.jj is original for the SPARQL 1.0 specification. 
+Final/sparql_11-final.jj is original for the SPARQL 1.1 specification.
+
+This should produce the HTML grammar in the SPARQL 1.0/DAWG and SPARQL 1.1
+specifications.
