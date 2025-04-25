@@ -18,14 +18,25 @@
 
 package org.apache.jena.riot.lang;
 
+import static org.apache.jena.riot.lang.ReaderTriX.State.*;
+
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.datatypes.xsd.impl.XMLLiteralType;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Node_Marker;
@@ -43,19 +54,6 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.util.JenaXMLInput;
 import org.apache.jena.vocabulary.RDF;
-
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-
-import static org.apache.jena.riot.lang.ReaderTriX.State.TRIPLE_TERM;
-import static org.apache.jena.riot.lang.ReaderTriX.State.GRAPH;
-import static org.apache.jena.riot.lang.ReaderTriX.State.OUTER;
-import static org.apache.jena.riot.lang.ReaderTriX.State.TRIPLE;
-import static org.apache.jena.riot.lang.ReaderTriX.State.TRIX;
 
 /** Read TriX.
  *  See {@link TriX} for details.
@@ -113,10 +111,10 @@ public class ReaderTriX implements ReaderRIOT {
         read(xReader,  baseURI, output);
     }
 
-    private static String nsRDF = RDF.getURI();
+    private static String nsRDF = RDF.uri;
     private static String nsXSD = XSDDatatype.XSD; // No "#"
-    private static String nsXML0 = "http://www.w3.org/XML/1998/namespace";
-    private static String rdfXMLLiteral = RDF.xmlLiteral.getURI();
+    private static String nsXML = "http://www.w3.org/XML/1998/namespace";
+    private static String rdfXMLLiteral = XMLLiteralType.XMLLiteralTypeURI;
 
     // State TRIPLE is "asserted triple" - a triple that will go into the output.
     // State TRIPLE_TERM is a triple term (<<()>>) that will be term in another triple/quad.
@@ -359,7 +357,7 @@ public class ReaderTriX implements ReaderRIOT {
                     staxError(parser.getLocation(), "Multiple attributes : only one allowed");
                 String lang = null;
                 if ( x == 1 )
-                    lang = attribute(parser, nsXML0, TriX.attrXmlLang);
+                    lang = attribute(parser, nsXML, TriX.attrXmlLang);
                 String lex = parser.getElementText();
                 if ( lang == null )
                     return profile.createStringLiteral(lex, line, col);
