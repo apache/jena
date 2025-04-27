@@ -131,6 +131,10 @@ public abstract class LangTurtleBase extends LangBase {
         Token t = peekToken();
         String x = t.getImage();
         nextToken();
+        processAtDirective(t, x);
+    }
+
+    private void processAtDirective(Token t, String x) {
         if ( x.equals("base") ) {
             directiveBase();
             if ( isStrictMode() )
@@ -192,18 +196,37 @@ public abstract class LangTurtleBase extends LangBase {
 
     protected final void directiveVersion() {
         Token token = peekToken();
-        // Single quoted string only.
+        String directive = null;
+
+        if ( token.hasType(TokenType.LITERAL_LANG) ) {
+            // The case of
+            //    VERSION "1.2"\n@prefix <uri>
+            // Plain string followed by old style directive tokenized as a LITERAL_LANG
+            Token subToken = token.getSubToken1();
+            directive = token.getImage2(); // This is the "language" without '@'
+            token = subToken;
+        }
+
+        if ( ! token.isString() )
+            exception(token, "Version must be a string (found '" + token + "')");
+
+        // Single quoted string only. '1.2' and "1.2", not '''- or """- strings.
         StringType stringType = token.getStringType();
         switch(stringType) {
             case STRING1, STRING2 ->{}
             case LONG_STRING1, LONG_STRING2 ->
-                exception(token, "Triple-quoted strings not allowed for the version string");
+                exception(token, "Triple-quoted strings not allowed for the version string (found '" + token + "')");
             default ->
-                exception(token, "Expected a single-quoted string for the version setting (found '" + token + "')");
+                exception(token, "Expected a quoted string for the version setting (found '" + token + "')");
         }
         String versionStr = token.getImage();
         emitVersion(versionStr);
         nextToken();
+
+        // If we broke up the LITERAL_LANG token, now process
+        // the language tag part as a directive.
+        if ( directive != null )
+            processAtDirective(token, directive);
     }
 
     // [8] triples ::= subject predicateObjectList
