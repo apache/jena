@@ -1,59 +1,163 @@
+==== Apache Jena 5.4.0
+Released: 2025-04-27
+Issues: https://s.apache.org/jena-5.4.0-issues
+Announcement:
+https://lists.apache.org/thread/j8qx6zbxgl12d42q3bpckfxjh760jx9m
+
+Jena 5.4.0 introduces a preview of RDF 1.2 support.
+This work is *experimental* and is subject to change
+in future releases.
+
+== RDF 1.2
+
+RDF 1.2 is different to the RDF-star Community Group proposal. This 
+release gives users a chance to assess the impact if they use any of the 
+RDF-star CG work (i.e. have << >> in the data).
+
+The RDF 1.2 / SPARQL 1.2 specs aren't finished.
+Jena will track the work of the RDF and SPARQL Working Group.
+
+In this experimental release:
+- Triple terms and rdf:reifies.
+- Initial text direction of literals.
+- API updated for RDF 1.2.
+- Turtle, Trig, N-Triples, Q-quads and SPARQL parsing updated for
+   triple terms and initial text direction.
+
+Not in this experimental release:
+- Rendering of SPARQL result sets in the Fuseki UI
+- RDF/XML support
+- Turtle pretty printing. The turtle output is correct RDF 1.2 but
+   there is no Turtle pretty printing using the syntax for reified
+   triples or annotations.
+- HTTP protocol changes
+- There are working group discussions about version directives which
+   are still in-progress within the working group. There is nothing
+   in the experimental Jena code.
+
+The RDF 1.2 Primer:
+https://www.w3.org/TR/rdf12-primer/#section-triple-terms
+
+RDF 1.2 Concepts and Abstract Syntax
+https://www.w3.org/TR/rdf12-concepts/
+
+RDF 1.2 Turtle
+https://www.w3.org/TR/rdf12-turtle/
+
+SPARQL 1.2 Query
+https://www.w3.org/TR/sparql12-query/
+
+These document are currently working group drafts.
+
+==  New artifact
+
+Jena 5.4.0 introduces a new module jena-langtag for language tag parsing 
+in compliance with RFC 5646. Language tag validation is strengthened. 
+When parsing, language tag violations are still treated as warnings.
+
+== Contributions
+
+@Ostrzyciel has contributed several test cases for initialization
+and also cleaning up of Jena's use of Apache Xerces-derived code for RDF 
+datatypes:
+
+@OyvindLGjesdal has contributed improvement to the jena-text build for 
+java21 and also in fixing the unstable build on github actions.
+
+@Aklakan has contributed support for timeouts in SPARQL Updates, 
+provided fixes for closing execution iterators, OpAsQuery, and for 
+NodeFmtLib.
+
+Committers with PRs: rvesse, sszuev, kinow, arne-bdt, afs
+
+
 ==== Apache Jena 5.3.0
 Released: 2025-01-21
 Issues: https://s.apache.org/jena-5.3.0-issues
 Announcement:
 https://lists.apache.org/thread/4gk0kpf75hyk58db343hx13nzq8pvldg
 
-The main feature for Jena 5.2.0 is an implementation of CDT "Composite 
-Datatype Literals", an experimental idea for dealing with maps and lists 
-in RDF and SPARQL while remaining within RDF 1.1.
+ena 5.3.0 has changes in the structure of the Fuseki server; a new IRI provider; and clean-up and simplification of Jena's use of Apache Xerces code in RDF Datatypes.
 
-All issues in the release:
-   https://s.apache.org/jena-5.2.0-issues
+==== Contributions
 
-and includes
+@Ostrzyciel has contributed several test cases for initialization in
 
-* hash join improvements
-* performance improvements for RDF/XML parsing, and for command startup.
-* refinement of jena-ontapi
+  Datatypes:
+  https://github.com/apache/jena/issues/2797
 
-== CDT : "Composite Datatype Literals"
-This is a contribution from AWSlabs.
+  JenaSystem.init deadlock
+  https://github.com/apache/jena/issues/2787
 
-The website:
-   https://github.com/awslabs/SPARQL-CDTs
-Spec:
-   https://w3id.org/awslabs/neptune/SPARQL-CDTs/spec/latest.html
+  TypeMapper.getSafeTypeByName race condition
+  https://github.com/apache/jena/issues/2795
 
-SPARQL
-   https://github.com/w3c/sparql-dev/tree/main/SEP/SEP-0009
+and also cleaning up of Jena's use of Apache Xerces-derived code for RDF datatypes:
 
-Issue: https://github.com/apache/jena/issues/2518
-PR:    https://github.com/apache/jena/pull/2501
+ https://github.com/apache/jena/issues/2828
+ PRs:
+    GH-2828: Remove unused code in ext.xerces
+      https://github.com/apache/jena/pulls/2906
+    GH-2828: Remove validation for XML-only datatypes
+      https://github.com/apache/jena/pulls/2846
+    GH-2797: Lazy init for ValidationState hash maps
+      https://github.com/apache/jena/pulls/2798
 
-This is "experimental" meaning it is subject to change.  There should be 
-no impact if the feature isn't used.
+@OyvindLGjesdal
+  Improve jena-text build (java21->)
+  https://github.com/apache/jena/pull/2782
 
-== Contributions
+@Aklakan
+  Support for Timeouts on Updates
+  https://github.com/apache/jena/issues/2821
 
-CDT: Composite Datatype Literals
-Olaf Hartig (@Hartig) et al.
-   https://github.com/apache/jena/issues/2518
-   https://github.com/w3c/sparql-dev/tree/main/SEP/SEP-0009
-   https://github.com/awslabs/SPARQL-CDTs
+Committers with PRs: rvesse, sszuev, kinow, arne-bdt, afs
 
-Hash join improvements.
-   @Aklakan Claus Stadler
-   https://github.com/apache/jena/issues/2404
-   https://github.com/apache/jena/pull/2405
+and not forgetting @dependabot
 
-GH-2580: Added parseCheck flags to query and update exec builders
-   https://github.com/apache/jena/issues/2580
-This helps when dealing with vendor extensions to SPARQL.
-   @Aklakan Claus Stadler
+==== Fuseki
 
-GH-2578: Fix Quad.isTriple() handling in JenaTitanium
-   @Ostrzyciel Piotr Sowiński
+The artifact jena-fuseki-main now has equivalent functionality, including UI, to the former Fuseki/webapp packaging.
+
+The artifact jena-fuseki-server packages jena-fuseki-main with dependencies and UI files into a single jar. This is now the jar
+in the Fuseki download.
+
+It should be a drop-in replacement.
+
+There is no functionality added or removed; it is a better base for future development.
+
+Fuseki/webapp packaging for the WAR file which will continue to be produced but may not get all future Fuseki development features.
+
+==== IRI3986
+
+Issue: https://github.com/apache/jena/issues/2800
+New maven artifact and jar: jena-iri3986.
+
+This adds a new IRI parser and checker. It is the upcoming replacement for jena-iri.
+
+General URIs are handled, with additional URI scheme specific rules for:
+   http:, https:, did:, file:,
+   urn:, (including urn:uuid:, urn:oid:),
+   example:
+and non-standard schemes
+   uuid: and oid:
+
+When parsing, "Bad syntax", that is, not passing the grammar of RFC 3986 is treated as a parse error. Violations of scheme-specific rules are warnings. The severity levels can be adjusted.
+
+This is the same as principle as Jena has had, but the parser/checker is
+jena-iri3986 supports URI scheme-specific rules for the latest
+
+This new IRI implementation is not active by default.
+
+It is activated by setting the environment variable
+
+   JENA_IRIPROVIDER=IRI3986
+
+or java system property, then call SystemIRIx.reset().
+
+On the command line, try it out with
+
+    env JENA_IRIPROVIDER=IRI3986 riot MyInterestingData.ttl 
 
 
 ==== Apache Jena 5.2.0
