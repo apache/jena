@@ -75,7 +75,7 @@
          See jena-fuseki-webapp and https://shiro.apache.org/jakarta-ee.html
     -->
     <ver.shiro>2.0.4</ver.shiro>
-    <ver.omnifaces>4.6.1</ver.omnifaces>
+    <ver.omnifaces>4.6.2</ver.omnifaces>
 
     <ver.protobuf>4.30.2</ver.protobuf>
     <ver.libthrift>0.21.0</ver.libthrift>
@@ -84,7 +84,7 @@
     <!-- Most of Jena uses other libraries for equivalent functionality. -->
     <ver.guava>33.4.8-jre</ver.guava>
 
-    <ver.gson>2.13.0</ver.gson>
+    <ver.gson>2.13.1</ver.gson>
     <ver.lucene>9.12.1</ver.lucene>
 
     <ver.commons-io>2.19.0</ver.commons-io>
