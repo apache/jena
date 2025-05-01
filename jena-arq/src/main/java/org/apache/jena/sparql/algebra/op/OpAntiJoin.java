@@ -34,7 +34,7 @@ public class OpAntiJoin extends Op2
     private OpAntiJoin(Op left, Op right) { super(left, right); }
 
     @Override
-    public String getName() { return Tags.tagSemiJoin; }
+    public String getName() { return Tags.tagAntiJoin; }
 
     @Override
     public Op apply(Transform transform, Op left, Op right)
