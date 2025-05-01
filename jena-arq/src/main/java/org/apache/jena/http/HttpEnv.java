@@ -23,6 +23,7 @@ import java.net.http.HttpClient.Redirect;
 import java.time.Duration;
 
 import org.apache.jena.http.sys.RegistryRequestModifier;
+import org.apache.jena.query.ARQ;
 import org.apache.jena.riot.RDFFormat;
 
 /**
@@ -59,6 +60,8 @@ public class HttpEnv {
     private static HttpClient buildDftHttpClient() {
         return httpClientBuilder().build();
     }
+
+    public static final String UserAgent = ARQ.VERSION.contains("devel") ? "ApacheJena" : "ApacheJena/"+ARQ.VERSION;
 
     public static HttpClient.Builder httpClientBuilder() {
         return HttpClient.newBuilder()

@@ -33,6 +33,7 @@ import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.http.RegistryHttpClient;
 import org.apache.jena.query.*;
+import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.sparql.SystemARQ ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpAsQuery ;
@@ -229,6 +230,7 @@ public class Service {
         QueryExecHTTP qExec = QueryExecHTTP.newBuilder()
                 .endpoint(serviceURL)
                 .timeout(timeoutMillis, TimeUnit.MILLISECONDS)
+                .httpHeader(HttpNames.hUserAgent, HttpEnv.UserAgent)
                 .query(query)
                 .params(serviceParams)
                 .context(context)
