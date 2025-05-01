@@ -42,6 +42,7 @@ public class HttpNames
     public static final String hServer              = "Server" ;
     public static final String hLocation            = "Location" ;
     public static final String hVary                = "Vary" ;
+    public static final String hUserAgent           = "User-Agent" ;
     public static final String charset              = "charset" ;
 
     // CORS:
