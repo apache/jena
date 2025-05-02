@@ -18,53 +18,46 @@
 
 package org.apache.jena.sparql.syntax;
 
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
-public class ElementAssign extends Element
-{
-    private Var var ;
-    private Expr expr ;
+public class ElementAssign extends Element {
+    private Var var;
+    private Expr expr;
 
-    public ElementAssign(Var v, Expr expr)
-    {
-        this.var = v ; 
-        this.expr = expr ;
+    public ElementAssign(Var v, Expr expr) {
+        this.var = v;
+        this.expr = expr;
     }
 
-    public Var getVar()
-    {
-        return var ;
+    public Var getVar() {
+        return var;
     }
 
-    public Expr getExpr()
-    {
-        return expr ;
+    public Expr getExpr() {
+        return expr;
     }
 
     @Override
-    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
-    {
-        if ( ! ( el2 instanceof ElementAssign ) )
-            return false ;
-        ElementAssign f2 = (ElementAssign)el2 ;
-        if ( ! this.getVar().equals(f2.getVar() ))
-            return false ;
-        if ( ! this.getExpr().equals(f2.getExpr()) )
-            return false ;
-        return true ;
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap) {
+        if ( !(el2 instanceof ElementAssign) )
+            return false;
+        ElementAssign f2 = (ElementAssign)el2;
+        if ( !this.getVar().equals(f2.getVar()) )
+            return false;
+        if ( !this.getExpr().equals(f2.getExpr()) )
+            return false;
+        return true;
     }
 
     @Override
-    public int hashCode()
-    {
-        return var.hashCode()^expr.hashCode();
+    public int hashCode() {
+        return var.hashCode() ^ expr.hashCode();
     }
 
     @Override
-    public void visit(ElementVisitor v)
-    {
-        v.visit(this) ;
+    public void visit(ElementVisitor v) {
+        v.visit(this);
     }
 }

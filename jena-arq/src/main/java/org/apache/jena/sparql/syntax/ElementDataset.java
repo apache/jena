@@ -18,57 +18,57 @@
 
 package org.apache.jena.sparql.syntax;
 
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
-/** ElementDataset - an association of an RDF Dataset 
- * (graph level version) with a query pattern.
- * Unused in parser. */
+/**
+ * ElementDataset - an association of an RDF Dataset (graph level version) with a
+ * query pattern. Unused in parser.
+ */
 
-public class ElementDataset extends Element1
-{
+public class ElementDataset extends Element1 {
     // Can keep either form - but not both.
     // Helps because models have prefixes.
-    private DatasetGraph dataset = null ;
-    
-    public ElementDataset(DatasetGraph data, Element patternElement)
-    {
-        super(patternElement) ;
-        this.dataset = data ;
+    private DatasetGraph dataset = null;
+
+    public ElementDataset(DatasetGraph data, Element patternElement) {
+        super(patternElement);
+        this.dataset = data;
     }
-    
-    public DatasetGraph getDataset() { return dataset ; }
-    
+
+    public DatasetGraph getDataset() {
+        return dataset;
+    }
+
     @Override
-    public int hashCode()
-    { 
-        int x = getElement().hashCode() ;
+    public int hashCode() {
+        int x = getElement().hashCode();
         if ( getDataset() != null )
-            x ^= getDataset().hashCode() ;
-        return x ;
+            x ^= getDataset().hashCode();
+        return x;
     }
-    
+
     @Override
-    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
-    {
-        if ( el2 == null ) return false ;
-        if ( ! ( el2 instanceof ElementDataset ) )
-            return false ;
-        ElementDataset blk = (ElementDataset)el2 ;
-        
-        if ( ! getElement().equalTo(blk.getElement(), isoMap) )
-            return false ;
-        
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap) {
+        if ( el2 == null )
+            return false;
+        if ( !(el2 instanceof ElementDataset) )
+            return false;
+        ElementDataset blk = (ElementDataset)el2;
+
+        if ( !getElement().equalTo(blk.getElement(), isoMap) )
+            return false;
+
         // Dataset both null
         if ( getDataset() == null && blk.getDataset() == null )
-            return true ;
-        
+            return true;
+
         if ( getDataset() != blk.getDataset() )
-            return false ;
-        
-        return true ;
+            return false;
+
+        return true;
     }
-    
+
     @Override
-    public void visit(ElementVisitor v) { v.visit(this) ; }
+    public void visit(ElementVisitor v) { v.visit(this); }
 }

@@ -18,36 +18,35 @@
 
 package org.apache.jena.sparql.syntax;
 
-import org.apache.jena.query.Query ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.query.Query;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 public class ElementSubQuery extends Element
 {
-    Query query ;
-    
-    public ElementSubQuery(Query query)
-    {
-        this.query = query ;
+    private Query query;
+
+    public ElementSubQuery(Query query) {
+        this.query = query;
     }
-    
-    public Query getQuery() { return query ; } 
-    
-    @Override
-    public boolean equalTo(Element other, NodeIsomorphismMap isoMap)
-    {
-        if ( ! ( other instanceof ElementSubQuery) )
-            return false ;
-        ElementSubQuery el = (ElementSubQuery)other ;
-        return query.equals(el.query) ;
+
+    public Query getQuery() {
+        return query;
     }
 
     @Override
-    public int hashCode()
-    {
-        return query.hashCode() ;
+    public boolean equalTo(Element other, NodeIsomorphismMap isoMap) {
+        if ( !(other instanceof ElementSubQuery) )
+            return false;
+        ElementSubQuery el = (ElementSubQuery)other;
+        return query.equals(el.query);
+    }
+
+    @Override
+    public int hashCode() {
+        return query.hashCode();
     }
 
     @Override
     public void visit(ElementVisitor v)
-    { v.visit(this) ; }
+    { v.visit(this); }
 }

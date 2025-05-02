@@ -18,13 +18,13 @@
 
 package org.apache.jena.sparql.syntax;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.TriplePath ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.TriplePath;
 
 
 public interface TripleCollector
 {
-    public void addTriple(Triple t) ;
-    
-    public void addTriplePath(TriplePath tPath) ;
+    public void addTriple(Triple t);
+
+    public void addTriplePath(TriplePath tPath);
 }

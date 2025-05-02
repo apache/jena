@@ -24,63 +24,24 @@ package org.apache.jena.sparql.syntax;
 
 public class ElementVisitorBase implements ElementVisitor
 {
-    @Override
-    public void visit(ElementTriplesBlock el)   { }
-
-    @Override
-    public void visit(ElementFilter el)         { }
-
-    @Override
-    public void visit(ElementAssign el)         { }
-
-    @Override
-    public void visit(ElementBind el)           { }
-
-    @Override
-    public void visit(ElementUnfold el)         { }
-
-    @Override
-    public void visit(ElementData el)           { }
-
-    @Override
-    public void visit(ElementUnion el)          { }
-
-    @Override
-    public void visit(ElementDataset el)        { }
-
-    @Override
-    public void visit(ElementOptional el)       { }
-
-    @Override
-    public void visit(ElementLateral el)        { }
-
-    @Override
-    public void visit(ElementSemiJoin el)       { }
-
-    @Override
-    public void visit(ElementAntiJoin el)       { }
-
-    @Override
-    public void visit(ElementGroup el)          { }
-
-    @Override
-    public void visit(ElementNamedGraph el)     { }
-
-    @Override
-    public void visit(ElementExists el)         { }
-
-    @Override
-    public void visit(ElementNotExists el)      { }
-
-    @Override
-    public void visit(ElementMinus el)          { }
-
-    @Override
-    public void visit(ElementService el)        { }
-
-    @Override
-    public void visit(ElementSubQuery el)       { }
-
-    @Override
-    public void visit(ElementPathBlock el)      { }
+    @Override public void visit(ElementTriplesBlock el)   { }
+    @Override public void visit(ElementFilter el)         { }
+    @Override public void visit(ElementAssign el)         { }
+    @Override public void visit(ElementBind el)           { }
+    @Override public void visit(ElementUnfold el)         { }
+    @Override public void visit(ElementData el)           { }
+    @Override public void visit(ElementUnion el)          { }
+    @Override public void visit(ElementDataset el)        { }
+    @Override public void visit(ElementOptional el)       { }
+    @Override public void visit(ElementLateral el)        { }
+    @Override public void visit(ElementSemiJoin el)       { }
+    @Override public void visit(ElementAntiJoin el)       { }
+    @Override public void visit(ElementGroup el)          { }
+    @Override public void visit(ElementNamedGraph el)     { }
+    @Override public void visit(ElementExists el)         { }
+    @Override public void visit(ElementNotExists el)      { }
+    @Override public void visit(ElementMinus el)          { }
+    @Override public void visit(ElementService el)        { }
+    @Override public void visit(ElementSubQuery el)       { }
+    @Override public void visit(ElementPathBlock el)      { }
 }

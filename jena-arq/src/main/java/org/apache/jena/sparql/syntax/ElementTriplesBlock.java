@@ -18,73 +18,68 @@
 
 package org.apache.jena.sparql.syntax;
 
-import java.util.Iterator ;
+import java.util.Iterator;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.ARQException ;
-import org.apache.jena.sparql.core.BasicPattern ;
-import org.apache.jena.sparql.core.TriplePath ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.ARQException;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.core.TriplePath;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 /** The syntax element for a SPARQL BasicGraphPattern (SPARQL 1.0)*/
-
 public class ElementTriplesBlock extends Element implements TripleCollectorMark
 {
-    private final BasicPattern pattern ; 
+    private final BasicPattern pattern;
 
-    public ElementTriplesBlock()
-    { 
-        pattern = new BasicPattern() ; 
-    }
-    
-    public ElementTriplesBlock(BasicPattern bgp)
-    { 
-        pattern = bgp ;
+    public ElementTriplesBlock() {
+        pattern = new BasicPattern();
     }
 
-    public boolean isEmpty() { return pattern.isEmpty() ; }
-    
+    public ElementTriplesBlock(BasicPattern bgp) {
+        pattern = bgp;
+    }
+
+    public boolean isEmpty() { return pattern.isEmpty(); }
+
     @Override
     public void addTriple(Triple t)
-    { pattern.add(t) ; }
-    
+    { pattern.add(t); }
+
     @Override
-    public int mark() { return pattern.size() ; }
-    
+    public int mark() { return pattern.size(); }
+
     @Override
     public void addTriple(int index, Triple t)
-    { pattern.add(index, t) ; }
-    
+    { pattern.add(index, t); }
+
     @Override
     public void addTriplePath(TriplePath path)
-    { throw new ARQException("Triples-only collector") ; }
+    { throw new ARQException("Triples-only collector"); }
 
     @Override
     public void addTriplePath(int index, TriplePath path)
-    { throw new ARQException("Triples-only collector") ; }
-    
-    public BasicPattern getPattern() { return pattern ; }
+    { throw new ARQException("Triples-only collector"); }
+
+    public BasicPattern getPattern() { return pattern; }
     public Iterator<Triple> patternElts() { return pattern.iterator(); }
-    
+
     @Override
-    public int hashCode()
-    { 
-        int calcHashCode = Element.HashBasicGraphPattern ;
-        calcHashCode ^=  pattern.hashCode() ; 
-        return calcHashCode ;
+    public int hashCode() {
+        int calcHashCode = Element.HashBasicGraphPattern;
+        calcHashCode ^= pattern.hashCode();
+        return calcHashCode;
     }
 
     @Override
-    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
-    {
-        if ( ! ( el2 instanceof ElementTriplesBlock) )
-            return false ;
-        ElementTriplesBlock eg2 = (ElementTriplesBlock)el2 ;
-        return this.pattern.equiv(eg2.pattern, isoMap) ; 
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap) {
+        if ( !(el2 instanceof ElementTriplesBlock) )
+            return false;
+        ElementTriplesBlock eg2 = (ElementTriplesBlock)el2;
+        return this.pattern.equiv(eg2.pattern, isoMap);
     }
 
     @Override
-    public void visit(ElementVisitor v) { v.visit(this) ; }
+    public void visit(ElementVisitor v) { v.visit(this); }
 
- 
+
 }

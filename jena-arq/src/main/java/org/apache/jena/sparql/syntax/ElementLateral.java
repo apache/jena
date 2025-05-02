@@ -24,36 +24,38 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 /** LATERAL */
-public class ElementLateral extends Element
-{
-    private final Element right ;
+public class ElementLateral extends Element {
+    private final Element right;
 
     public ElementLateral(Element right) {
         this(right, null, false);
     }
 
     private ElementLateral(Element right, List<Var> vars, boolean seenStar) {
-        this.right = right ;
+        this.right = right;
     }
 
-    public Element getLateralElement()  { return right ; }
+    public Element getLateralElement() {
+        return right;
+    }
 
     @Override
     public int hashCode() {
-        int hash = Element.HashLateral ;
-        hash = hash ^ getLateralElement().hashCode() ;
-        return hash ;
+        int hash = Element.HashLateral;
+        hash = hash ^ getLateralElement().hashCode();
+        return hash;
     }
 
     @Override
     public boolean equalTo(Element el2, NodeIsomorphismMap isoMap) {
-        if ( el2 == null ) return false ;
-        if ( ! ( el2 instanceof ElementLateral ) )
-            return false ;
-        ElementLateral other = (ElementLateral)el2 ;
+        if ( el2 == null )
+            return false;
+        if ( !(el2 instanceof ElementLateral) )
+            return false;
+        ElementLateral other = (ElementLateral)el2;
         return getLateralElement().equalTo(other.getLateralElement(), isoMap);
     }
 
     @Override
-    public void visit(ElementVisitor v) { v.visit(this) ; }
+    public void visit(ElementVisitor v) { v.visit(this); }
 }

@@ -18,57 +18,50 @@
 
 package org.apache.jena.sparql.syntax;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
-public class ElementUnion extends Element
-{
-    List<Element> elements = new ArrayList<>() ;
+public class ElementUnion extends Element {
+    List<Element> elements = new ArrayList<>();
 
-    public ElementUnion()
-    { }
+    public ElementUnion() {}
 
-    public ElementUnion(Element el)
-    { 
-        //Used by the SPARQL 1.1 style UNION
-        this() ;
-        addElement(el) ;
+    public ElementUnion(Element el) {
+        this();
+        addElement(el);
     }
 
-    
-    public void addElement(Element el) { elements.add(el) ; }
-    public List<Element> getElements() { return elements ; }
-   
+    public void addElement(Element el) { elements.add(el); }
+    public List<Element> getElements() { return elements; }
+
     @Override
-    public int hashCode()
-    { 
-        int calcHashCode = Element.HashUnion ; 
-        calcHashCode ^=  getElements().hashCode() ;
-        return calcHashCode ;
+    public int hashCode() {
+        int calcHashCode = Element.HashUnion;
+        calcHashCode ^= getElements().hashCode();
+        return calcHashCode;
     }
 
     @Override
-   public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
-    {
-        if ( el2 == null ) return false ;
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap) {
+        if ( el2 == null )
+            return false;
 
-        if ( ! ( el2 instanceof ElementUnion) )
-            return false ;
-        ElementUnion eu2 = (ElementUnion)el2 ;
+        if ( !(el2 instanceof ElementUnion) )
+            return false;
+        ElementUnion eu2 = (ElementUnion)el2;
         if ( this.getElements().size() != eu2.getElements().size() )
-            return false ;
-        for ( int i = 0 ; i < this.getElements().size() ; i++ )
-        {
-            Element e1 = getElements().get(i) ;
-            Element e2 = eu2.getElements().get(i) ;
-            if ( ! e1.equalTo(e2, isoMap) )
-                return false ;
+            return false;
+        for ( int i = 0; i < this.getElements().size(); i++ ) {
+            Element e1 = getElements().get(i);
+            Element e2 = eu2.getElements().get(i);
+            if ( !e1.equalTo(e2, isoMap) )
+                return false;
         }
-        return true ;
+        return true;
     }
- 
+
     @Override
-    public void visit(ElementVisitor v) { v.visit(this) ; }
+    public void visit(ElementVisitor v) { v.visit(this); }
 }
