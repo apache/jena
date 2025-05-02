@@ -18,35 +18,34 @@
 
 package org.apache.jena.sparql.syntax;
 
-import org.apache.jena.sparql.expr.Expr ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.expr.Expr;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 /** A constraint (Filter) in a query expression. */
-
 public class ElementFilter extends Element
 {
-    Expr expr = null ;
+    Expr expr = null;
 
-    public ElementFilter(Expr expr) { this.expr = expr ; }
-    
-    public Expr getExpr() { return expr ; }
-    
-    @Override
-    public void visit(ElementVisitor v) { v.visit(this) ; }
+    public ElementFilter(Expr expr) { this.expr = expr; }
+
+    public Expr getExpr() { return expr; }
 
     @Override
-    public int hashCode() { return expr.hashCode() ; }
-    
+    public void visit(ElementVisitor v) { v.visit(this); }
+
+    @Override
+    public int hashCode() { return expr.hashCode(); }
+
     @Override
     public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
     {
-        if ( el2 == null ) return false ;
+        if ( el2 == null ) return false;
 
         if ( ! ( el2 instanceof ElementFilter ) )
-            return false ;
-        ElementFilter f2 = (ElementFilter)el2 ;
+            return false;
+        ElementFilter f2 = (ElementFilter)el2;
         if ( ! this.getExpr().equalsBySyntax(f2.getExpr()) )
-            return false ;
-        return true ;
+            return false;
+        return true;
     }
 }

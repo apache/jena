@@ -18,35 +18,35 @@
 
 package org.apache.jena.sparql.syntax;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.ARQException ;
-import org.apache.jena.sparql.core.BasicPattern ;
-import org.apache.jena.sparql.core.TriplePath ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.ARQException;
+import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.core.TriplePath;
 
 /** A triples-only TripleCollector. */
 
 public class TripleCollectorBGP implements TripleCollectorMark
 {
-    BasicPattern bgp = new BasicPattern() ;
-    
+    BasicPattern bgp = new BasicPattern();
+
     public TripleCollectorBGP() {}
-    
-    public BasicPattern getBGP() { return bgp ; }
-    
+
+    public BasicPattern getBGP() { return bgp; }
+
     @Override
-    public void addTriple(Triple t) { bgp.add(t) ; }
-    
+    public void addTriple(Triple t) { bgp.add(t); }
+
     @Override
-    public int mark() { return bgp.size() ; }
-    
+    public int mark() { return bgp.size(); }
+
     @Override
-    public void addTriple(int index, Triple t) { bgp.add(index, t) ; }
-    
+    public void addTriple(int index, Triple t) { bgp.add(index, t); }
+
     @Override
     public void addTriplePath(TriplePath path)
-    { throw new ARQException("Triples-only collector") ; }
+    { throw new ARQException("Triples-only collector"); }
 
     @Override
     public void addTriplePath(int index, TriplePath path)
-    { throw new ARQException("Triples-only collector") ; }
+    { throw new ARQException("Triples-only collector"); }
 }

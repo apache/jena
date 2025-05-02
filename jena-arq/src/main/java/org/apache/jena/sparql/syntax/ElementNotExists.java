@@ -18,12 +18,11 @@
 
 package org.apache.jena.sparql.syntax;
 
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 /** The syntax element for "Not Exists" in a pattern. */
 
-public class ElementNotExists extends Element1
-{
+public class ElementNotExists extends Element1 {
     public ElementNotExists(Element el) {
         super(el);
     }
@@ -47,7 +46,5 @@ public class ElementNotExists extends Element1
     }
 
     @Override
-    public void visit(ElementVisitor v) {
-        v.visit(this);
-    }
+    public void visit(ElementVisitor v) { v.visit(this); }
 }

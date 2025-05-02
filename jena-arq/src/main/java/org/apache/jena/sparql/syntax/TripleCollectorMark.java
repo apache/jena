@@ -18,8 +18,8 @@
 
 package org.apache.jena.sparql.syntax;
 
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.TriplePath ;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.TriplePath;
 
 
 public interface TripleCollectorMark extends TripleCollector
@@ -27,8 +27,8 @@ public interface TripleCollectorMark extends TripleCollector
     // The contract with the mark is that there should be no disturbing
     // triples 0..(mark-1) before using a mark. That is, use marks in
     // LIFO (stack) order.
-    public int mark() ;
-    public void addTriple(int index, Triple t) ;
-    
-    public void addTriplePath(int index, TriplePath tPath) ;
+    public int mark();
+    public void addTriple(int index, Triple t);
+
+    public void addTriplePath(int index, TriplePath tPath);
 }

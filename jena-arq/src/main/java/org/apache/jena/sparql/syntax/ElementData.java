@@ -18,83 +18,71 @@
 
 package org.apache.jena.sparql.syntax;
 
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import org.apache.jena.sparql.ARQException ;
-import org.apache.jena.sparql.algebra.Table ;
-import org.apache.jena.sparql.algebra.table.TableData ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.ARQException;
+import org.apache.jena.sparql.algebra.Table;
+import org.apache.jena.sparql.algebra.table.TableData;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.resultset.ResultsCompare;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
-public class ElementData extends Element
-{
-    private List<Var> vars ;
-    private List<Binding> rows ;
+public class ElementData extends Element {
+    private List<Var> vars;
+    private List<Binding> rows;
 
-    public ElementData()
-    {
-        this(new ArrayList<>(), new ArrayList<>()) ;
+    public ElementData() {
+        this(new ArrayList<>(), new ArrayList<>());
     }
 
-    public ElementData(List<Var> vars, List<Binding> rows)
-    {
-        this.vars = vars ;
-        this.rows = rows ;
+    public ElementData(List<Var> vars, List<Binding> rows) {
+        this.vars = vars;
+        this.rows = rows;
     }
 
-    public Table getTable()
-    {
-        return new TableData(vars, rows) ;
+    public Table getTable() {
+        return new TableData(vars, rows);
     }
 
-    public List<Var> getVars()      { return vars ; }
-    public List<Binding> getRows()  { return rows ; }
+    public List<Var> getVars()      { return vars; }
+    public List<Binding> getRows()  { return rows; }
 
-    public void add(Var var)
-    {
-        if ( ! vars.contains(var) )
-            vars.add(var) ;
+    public void add(Var var) {
+        if ( !vars.contains(var) )
+            vars.add(var);
     }
 
-    public void add(Binding binding)
-    {
-        Iterator<Var> iter = binding.vars() ;
-        while(iter.hasNext())
-        {
-            Var v = iter.next() ;
-            if ( ! vars.contains(v) )
-                throw new ARQException("Variable "+v+" not already declared for ElementData") ;
+    public void add(Binding binding) {
+        Iterator<Var> iter = binding.vars();
+        while (iter.hasNext()) {
+            Var v = iter.next();
+            if ( !vars.contains(v) )
+                throw new ARQException("Variable " + v + " not already declared for ElementData");
         }
-        rows.add(binding) ;
+        rows.add(binding);
     }
 
     @Override
-    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
-    {
-        if ( ! ( el2 instanceof ElementData ) )
-            return false ;
-        ElementData f2 = (ElementData)el2 ;
-        if ( ! vars.equals(f2.vars) )
-            return false ;
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap) {
+        if ( !(el2 instanceof ElementData) )
+            return false;
+        ElementData f2 = (ElementData)el2;
+        if ( !vars.equals(f2.vars) )
+            return false;
 
-        if ( ! ResultsCompare.equalsByTerm(rows, f2.rows) )
-            return false ;
-        return true ;
+        if ( !ResultsCompare.equalsByTerm(rows, f2.rows) )
+            return false;
+        return true;
     }
 
     @Override
-    public int hashCode()
-    {
-        return vars.hashCode()^rows.hashCode() ;
+    public int hashCode() {
+        return vars.hashCode() ^ rows.hashCode();
     }
 
     @Override
-    public void visit(ElementVisitor v)
-    {
-        v.visit(this) ;
-    }
+    public void visit(ElementVisitor v) { v.visit(this); }
 }

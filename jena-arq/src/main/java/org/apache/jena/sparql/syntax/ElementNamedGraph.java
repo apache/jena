@@ -18,56 +18,55 @@
 
 package org.apache.jena.sparql.syntax;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 /** Evaluate a query element based on source information in a named collection. */
 
-public class ElementNamedGraph extends Element
-{
-    private Node sourceNode ;
-    private Element element ;
+public class ElementNamedGraph extends Element {
+    private Node sourceNode;
+    private Element element;
 
     // GRAPH * (not in SPARQL)
-    public ElementNamedGraph(Element el)
-    {
-        this(null, el) ;
+    public ElementNamedGraph(Element el) {
+        this(null, el);
     }
 
     // GRAPH <uri> or GRAPH ?var
-    public ElementNamedGraph(Node n, Element el)
-    {
-        sourceNode = n ;
-        element = el ;
+    public ElementNamedGraph(Node n, Element el) {
+        sourceNode = n;
+        element = el;
     }
-    
-    public Node getGraphNameNode() { return sourceNode ; }
-    
+
+    public Node getGraphNameNode() {
+        return sourceNode;
+    }
+
     /** @return Returns the element. */
-    public Element getElement()
-    {
-        return element ;
-    }
-    
-    @Override
-    public int hashCode() { return element.hashCode() ^ sourceNode.hashCode() ; }
-
-    @Override
-    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
-    {
-        if ( el2 == null ) return false ;
-
-        if ( ! ( el2 instanceof ElementNamedGraph ) ) 
-            return false ;
-        ElementNamedGraph g2 = (ElementNamedGraph)el2 ;
-        if ( ! this.getGraphNameNode().equals(g2.getGraphNameNode()) )
-            return false ;
-        if ( ! this.getElement().equalTo(g2.getElement(), isoMap) )
-            return false ;
-        return true ;
+    public Element getElement() {
+        return element;
     }
 
-    
     @Override
-    public void visit(ElementVisitor v) { v.visit(this) ; }
+    public int hashCode() {
+        return element.hashCode() ^ sourceNode.hashCode();
+    }
+
+    @Override
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap) {
+        if ( el2 == null )
+            return false;
+
+        if ( !(el2 instanceof ElementNamedGraph) )
+            return false;
+        ElementNamedGraph g2 = (ElementNamedGraph)el2;
+        if ( !this.getGraphNameNode().equals(g2.getGraphNameNode()) )
+            return false;
+        if ( !this.getElement().equalTo(g2.getElement(), isoMap) )
+            return false;
+        return true;
+    }
+
+    @Override
+    public void visit(ElementVisitor v) { v.visit(this); }
 }

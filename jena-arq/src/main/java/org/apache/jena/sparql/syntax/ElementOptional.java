@@ -18,41 +18,40 @@
 
 package org.apache.jena.sparql.syntax;
 
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 /** An optional element in a query. */
 
-public class ElementOptional extends Element
-{
-    Element optionalPart ;
+public class ElementOptional extends Element {
+    Element optionalPart;
 
-    public ElementOptional(Element optionalPart)
-    {
-        this.optionalPart = optionalPart ;
+    public ElementOptional(Element optionalPart) {
+        this.optionalPart = optionalPart;
     }
 
-    public Element getOptionalElement() { return optionalPart ; }
-
-    @Override
-    public int hashCode()
-    {
-        int hash = Element.HashOptional ;
-        hash = hash ^ getOptionalElement().hashCode() ;
-        return hash ;
+    public Element getOptionalElement() {
+        return optionalPart;
     }
 
     @Override
-    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap)
-    {
-        if ( el2 == null ) return false ;
-
-        if ( ! ( el2 instanceof ElementOptional ) ) 
-            return false ;
-        
-        ElementOptional opt2 = (ElementOptional)el2 ;
-        return getOptionalElement().equalTo(opt2.getOptionalElement(), isoMap) ;
+    public int hashCode() {
+        int hash = Element.HashOptional;
+        hash = hash ^ getOptionalElement().hashCode();
+        return hash;
     }
-    
+
     @Override
-    public void visit(ElementVisitor v) { v.visit(this) ; }
+    public boolean equalTo(Element el2, NodeIsomorphismMap isoMap) {
+        if ( el2 == null )
+            return false;
+
+        if ( !(el2 instanceof ElementOptional) )
+            return false;
+
+        ElementOptional opt2 = (ElementOptional)el2;
+        return getOptionalElement().equalTo(opt2.getOptionalElement(), isoMap);
+    }
+
+    @Override
+    public void visit(ElementVisitor v) { v.visit(this); }
 }

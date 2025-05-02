@@ -18,10 +18,9 @@
 
 package org.apache.jena.sparql.syntax;
 
-import org.apache.jena.sparql.util.NodeIsomorphismMap ;
+import org.apache.jena.sparql.util.NodeIsomorphismMap;
 
 /** The syntax element for "Exists" in a pattern. */
-
 public class ElementExists extends Element1 {
     public ElementExists(Element el) {
         super(el);

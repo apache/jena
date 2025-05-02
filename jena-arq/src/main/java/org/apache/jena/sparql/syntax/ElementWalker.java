@@ -93,9 +93,9 @@ public class ElementWalker {
         @Override
         public void visit(ElementUnfold el)
         {
-            before(el) ;
-            proc.visit(el) ;
-            after(el) ;
+            before(el);
+            proc.visit(el);
+            after(el);
         }
 
         @Override

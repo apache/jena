@@ -18,17 +18,14 @@
 
 package org.apache.jena.sparql.syntax;
 
-
 /** Element1 - elements that have a single subElement. */
-
-public abstract class Element1 extends Element
-{
+public abstract class Element1 extends Element {
     // Not used very widely.
     // For historical reasons ElementOptional does not use this.
     // It could do - it just doesn't.
-    private Element element ;
+    private Element element;
 
-    protected Element1(Element element) { this.element = element ; }
+    protected Element1(Element element) { this.element = element; }
 
-    public Element getElement() { return element ; }
+    public Element getElement() { return element; }
 }
