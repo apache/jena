@@ -55,19 +55,50 @@ public class SyntaxVarScope {
      */
     //@formatter:on
 
+    /**
+     * Apply the SPARQL scope rules to a query.
+     * Throw {@link QueryParseException} if there is a violation.
+     */
     public static void check(Query query) {
-        if ( query.getQueryPattern() == null )
-            // DESCRIBE may not have a pattern
+        Element queryPattern = query.getQueryPattern();
+        if ( queryPattern == null ) {
+            // DESCRIBE may not have a pattern in which case there are no checks to perform.
             return;
-        check(query.getQueryPattern());
-        // Check this level.
-        checkQueryScope(query);
-        // Other checks.
-        Collection<Var> vars = varsOfQuery(query);
-        check(query, vars);
+        }
+
+        checkElement(queryPattern);
+
+        // Check scoping at this level (SELECT, GROUP BY)
+        // Does not include variables in trailing VALUES.
+        // A trailing VALUES is joined to the query results, including SELECT clause,
+        // and so does not affect scope at this level.
+        Collection<Var> vars = PatternVars.vars(query.getQueryPattern());
+
+        // SELECT expressions
+        checkExprListAssignment(vars, query.getProject());
+
+        // Check for SELECT * GROUP BY
+        // Legal in ARQ, not in SPARQL 1.1, 1.2
+        if ( !Syntax.syntaxARQ.equals(query.getSyntax()) ) {
+            if ( query.isQueryResultStar() && query.hasGroupBy() )
+                throw new QueryParseException("SELECT * not legal with GROUP BY", -1, -1);
+        }
+
+        // Check any variable in an expression is in scope (if GROUP BY)
+        checkExprVarGroupBy(query);
     }
 
-    public static void check(Element queryPattern) {
+    /**
+     * @deprecated use {@link checkElement}
+     */
+    @Deprecated(forRemoval = true)
+    public static void check(Element queryPattern) { checkElement(queryPattern); }
+
+    /**
+     * Apply the SPARQL scope rules to a query element (part or all of a WEHERE clause).
+     * Throw {@link QueryParseException} if there is a violation.
+     */
+    public static void checkElement(Element queryPattern) {
         checkSubQuery(queryPattern);
         checkPatternAssign(queryPattern);
     }
@@ -86,44 +117,6 @@ public class SyntaxVarScope {
         ElementWalker.walk(el, v);
     }
 
-    // Check one level of query - SELECT expressions
-    private static void checkQueryScope(Query query) {
-        Collection<Var> vars = varsOfQuery(query);
-        checkExprListAssignment(vars, query.getProject());
-    }
-
-    // get all vars of a query
-    private static Collection<Var> varsOfQuery(Query query) {
-        Collection<Var> vars = PatternVars.vars(query.getQueryPattern());
-        if ( query.hasValues() )
-            vars.addAll(query.getValuesVariables());
-        return vars;
-    }
-
-    // Other check (not scoping at this level) of a query
-    private static void check(Query query, Collection<Var> vars) {
-        // Check any expressions are assigned to fresh variables.
-        checkExprListAssignment(vars, query.getProject());
-
-        // Check for SELECT * GROUP BY
-        // Legal in ARQ, not in SPARQL 1.1
-        if ( !Syntax.syntaxARQ.equals(query.getSyntax()) ) {
-            if ( query.isQueryResultStar() && query.hasGroupBy() )
-                throw new QueryParseException("SELECT * not legal with GROUP BY", -1, -1);
-        }
-
-        // Check any variable in an expression is in scope (if GROUP BY)
-        checkExprVarUse(query);
-
-        // Check GROUP BY AS
-        // ENABLE
-        if ( false && query.hasGroupBy() ) {
-            VarExprList exprList2 = query.getGroupBy();
-            checkExprListAssignment(vars, exprList2);
-            // CHECK
-        }
-    }
-
     private static void checkExprListAssignment(Collection<Var> vars, VarExprList exprList) {
         Set<Var> vars2 = new LinkedHashSet<>(vars);
         exprList.forEachExpr((v, e) -> {
@@ -136,7 +129,7 @@ public class SyntaxVarScope {
         });
     }
 
-    private static void checkExprVarUse(Query query) {
+    private static void checkExprVarGroupBy(Query query) {
         if ( query.hasGroupBy() ) {
             VarExprList groupKey = query.getGroupBy();
 
@@ -171,7 +164,7 @@ public class SyntaxVarScope {
             return;
         // expr not null
         if ( scope.contains(var) )
-            throw new QueryParseException("Variable used when already in-scope: "+var+" in "+fmtAssignment(expr, var), -1 , -1) ;
+            throw new QueryParseException("Variable used when already in-scope: "+var+" in "+fmtAssignment(expr, var), -1 , -1);
 
         // test for impossible variables - bound() is a bit odd.
         if ( false ) {
@@ -183,32 +176,29 @@ public class SyntaxVarScope {
         }
     }
 
-    private static String fmtExprList(VarExprList exprList) {
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for ( Var v : exprList.getVars() ) {
-            Expr e = exprList.getExpr(v);
-            if ( !first ) {
-                sb.append(" ");
-            }
-            first = false;
-            sb.append("(").append(e).append(" AS ").append(v).append(")");
-        }
-        return sb.toString();
-    }
+//    private static String fmtExprList(VarExprList exprList) {
+//        StringBuilder sb = new StringBuilder();
+//        boolean first = true;
+//        for ( Var v : exprList.getVars() ) {
+//            Expr e = exprList.getExpr(v);
+//            if ( !first ) {
+//                sb.append(" ");
+//            }
+//            first = false;
+//            sb.append("(").append(e).append(" AS ").append(v).append(")");
+//        }
+//        return sb.toString();
+//    }
 
     private static String fmtAssignment(Expr expr, Var var) {
         return "(" + expr + " AS " + var + ")";
     }
-
-    // Modified walked for variables.
 
     /** Visitor for subqueries scope rules . */
     private static class SubQueryScopeChecker extends ElementVisitorBase {
         @Override
         public void visit(ElementSubQuery el) {
             Query query = el.getQuery();
-            checkQueryScope(query);
             // Recursively check sub-queries in sub-queries.
             check(el.getQuery());
         }
@@ -255,7 +245,7 @@ public class SyntaxVarScope {
         /** Calculate scope, working forwards */
         private static Collection<Var> calcScope(List<Element> elements, int start, int finish) {
             Collection<Var> accScope = new HashSet<>();
-            for ( int i = start ; i < finish ; i++ ) {
+            for ( int i = start; i < finish; i++ ) {
                 Element e = elements.get(i);
                 PatternVars.vars(accScope, e);
             }

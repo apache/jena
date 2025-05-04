@@ -176,7 +176,7 @@ public class SPARQLParserBase extends QueryParserBase {
     private static UpdateVisitor v = new UpdateVisitorBase() {
         @Override
         public void visit(UpdateModify mod) {
-            SyntaxVarScope.check(mod.getWherePattern()) ;
+            SyntaxVarScope.checkElement(mod.getWherePattern()) ;
         }
     } ;
 
