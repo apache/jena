@@ -19,16 +19,16 @@
 package org.apache.jena.sparql.lang;
 
 import java.io.FileReader;
-import java.io.InputStream ;
-import java.io.Reader ;
+import java.io.InputStream;
+import java.io.Reader;
 import java.io.StringReader;
 
 import org.apache.jena.atlas.logging.Log;
-import org.apache.jena.query.QueryParseException ;
-import org.apache.jena.query.Syntax ;
+import org.apache.jena.query.QueryParseException;
+import org.apache.jena.query.Syntax;
 import org.apache.jena.sparql.core.Prologue;
-import org.apache.jena.sparql.modify.UpdateSink ;
-import org.apache.jena.util.FileUtils ;
+import org.apache.jena.sparql.modify.UpdateSink;
+import org.apache.jena.util.FileUtils;
 
 /** 
  * This class provides the root of lower level access to all the update parsers.

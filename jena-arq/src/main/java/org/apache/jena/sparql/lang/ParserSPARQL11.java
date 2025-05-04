@@ -18,22 +18,22 @@
 
 package org.apache.jena.sparql.lang;
 
-import java.io.Reader ;
-import java.io.StringReader ;
+import java.io.Reader;
+import java.io.StringReader;
 
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryException ;
-import org.apache.jena.query.QueryParseException ;
-import org.apache.jena.query.Syntax ;
-import org.apache.jena.shared.JenaException ;
-import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11 ;
-import org.apache.jena.sparql.syntax.Element ;
-import org.apache.jena.sparql.syntax.Template ;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryException;
+import org.apache.jena.query.QueryParseException;
+import org.apache.jena.query.Syntax;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.sparql.lang.sparql_11.SPARQLParser11;
+import org.apache.jena.sparql.syntax.Element;
+import org.apache.jena.sparql.syntax.Template;
 
 public class ParserSPARQL11 extends SPARQLParser
 {
-    private interface Action { void exec(SPARQLParser11 parser) throws Exception ; }
+    private interface Action { void exec(SPARQLParser11 parser) throws Exception; }
 
     @Override
     protected Query parse$(final Query query, String queryString) {

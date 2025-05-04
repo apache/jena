@@ -18,19 +18,19 @@
 
 package org.apache.jena.sparql.lang;
 
-import java.util.* ;
+import java.util.*;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryParseException ;
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.core.Prologue ;
-import org.apache.jena.sparql.core.Var ;
-import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryParseException;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.core.Prologue;
+import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
-import org.apache.jena.sparql.modify.UpdateSink ;
-import org.apache.jena.sparql.modify.request.* ;
-import org.apache.jena.update.Update ;
+import org.apache.jena.sparql.modify.UpdateSink;
+import org.apache.jena.sparql.modify.request.*;
+import org.apache.jena.update.Update;
 
 /** Class that has all the parse event operations and other query/update specific things */
 public class SPARQLParserBase extends QueryParserBase {
@@ -44,37 +44,37 @@ public class SPARQLParserBase extends QueryParserBase {
         setPrologue(q);
     }
 
-    public Query getQuery() { return query ; }
+    public Query getQuery() { return query; }
 
     // The ARQ parser is both query and update languages.
 
 //    // ---- SPARQL/Update (Submission)
-//    private UpdateRequest requestSubmission = null ;
+//    private UpdateRequest requestSubmission = null;
 //
-//    protected UpdateRequest getUpdateRequestSubmission() { return requestSubmission ; }
+//    protected UpdateRequest getUpdateRequestSubmission() { return requestSubmission; }
 //    public void setUpdateRequest(UpdateRequest request)
 //    {
-//        setPrologue(request) ;
-//        this.requestSubmission = request ;
+//        setPrologue(request);
+//        this.requestSubmission = request;
 //        // And create a query because we may have nested selects.
-//        this.query = new Query () ;
+//        this.query = new Query ();
 //    }
 
-    private UpdateSink sink = null ;
+    private UpdateSink sink = null;
 
     // Places to push settings across points where we reset.
-    private boolean oldBNodesAreVariables ;
-    private boolean oldBNodesAreAllowed ;
+    private boolean oldBNodesAreVariables;
+    private boolean oldBNodesAreAllowed;
 
     // Count of subSelect nesting.
     // Level 0 is top level.
     // Level -1 is not in a pattern WHERE clause.
-    private int queryLevel = -1 ;
-    private Deque<Set<String>>    stackPreviousLabels = new ArrayDeque<>() ;
-    private Deque<LabelToNodeMap> stackCurrentLabels = new ArrayDeque<>() ;
+    private int queryLevel = -1;
+    private Deque<Set<String>>    stackPreviousLabels = new ArrayDeque<>();
+    private Deque<LabelToNodeMap> stackCurrentLabels = new ArrayDeque<>();
 
     public void setUpdate(Prologue prologue, UpdateSink sink) {
-        this.sink = sink ;
+        this.sink = sink;
         this.query = new Query();
         setPrologue(prologue);
     }
@@ -88,10 +88,10 @@ public class SPARQLParserBase extends QueryParserBase {
     protected void finishUpdateRequest()   {}
 
 //    protected void startBasicGraphPattern()
-//    { activeLabelMap.clear() ; }
+//    { activeLabelMap.clear(); }
 //
 //    protected void endBasicGraphPattern()
-//    { oldLabels.addAll(activeLabelMap.getLabels()) ; }
+//    { oldLabels.addAll(activeLabelMap.getLabels()); }
 
     protected void startUpdateOperation()  {}
     protected void finishUpdateOperation() {}
@@ -176,9 +176,9 @@ public class SPARQLParserBase extends QueryParserBase {
     private static UpdateVisitor v = new UpdateVisitorBase() {
         @Override
         public void visit(UpdateModify mod) {
-            SyntaxVarScope.checkElement(mod.getWherePattern()) ;
+            SyntaxVarScope.checkElement(mod.getWherePattern());
         }
-    } ;
+    };
 
     private void verifyUpdate(Update update) {
         update.visit(v);
@@ -194,13 +194,13 @@ public class SPARQLParserBase extends QueryParserBase {
 
     protected void pushQuery() {
         if ( query == null )
-            throw new ARQInternalErrorException("Parser query object is null") ;
-        stack.push(query) ;
+            throw new ARQInternalErrorException("Parser query object is null");
+        stack.push(query);
     }
 
     protected void startSubSelect(int line, int col) {
         pushQuery();
-        query = newSubQuery(getPrologue()) ;
+        query = newSubQuery(getPrologue());
     }
 
     protected Query newSubQuery(Prologue progloue) {
@@ -214,89 +214,89 @@ public class SPARQLParserBase extends QueryParserBase {
     }
 
     protected Query endSubSelect(int line, int column) {
-        Query subQuery = query ;
+        Query subQuery = query;
         if ( ! subQuery.isSelectType() )
-            throwParseException("Subquery not a SELECT query", line, column) ;
+            throwParseException("Subquery not a SELECT query", line, column);
         popQuery();
-        return subQuery ;
+        return subQuery;
     }
 
-    private List<Var> variables = null ;
-    private List<Binding> values = null ;
+    private List<Var> variables = null;
+    private List<Binding> values = null;
     private BindingBuilder rowBuilder;
-    private int currentColumn = -1 ;
+    private int currentColumn = -1;
 
     // Trailing VALUES.
     protected void startValuesClause(int line, int col) {
-        variables = new ArrayList<>() ;
-        values = new ArrayList<>() ;
+        variables = new ArrayList<>();
+        values = new ArrayList<>();
         rowBuilder = Binding.builder();
     }
 
     protected void finishValuesClause(int line, int col)
     {
-        getQuery().setValuesDataBlock(variables, values) ;
+        getQuery().setValuesDataBlock(variables, values);
     }
 
     // ElementData. VALUES in the WHERE clause.
     protected void startInlineData(List<Var> vars, List<Binding> rows, int line, int col) {
-        variables = vars ;
-        values = rows ;
+        variables = vars;
+        values = rows;
         rowBuilder = Binding.builder();
     }
 
     protected void finishInlineData(int line, int col)
     {}
 
-    protected void emitDataBlockVariable(Var v)                     { variables.add(v) ; }
+    protected void emitDataBlockVariable(Var v)                     { variables.add(v); }
 
     protected void startDataBlockValueRow(int line, int col) {
         rowBuilder.reset();
-        currentColumn = -1 ;
+        currentColumn = -1;
     }
 
     protected void emitDataBlockValue(Node n, int line, int col) {
-        currentColumn++ ;
+        currentColumn++;
 
         if ( currentColumn >= variables.size() )
             // Exception will be thrown later when we have the complete row count.
-            return ;
+            return;
 
-        Var v = variables.get(currentColumn) ;
+        Var v = variables.get(currentColumn);
         if ( n != null && ! n.isConcrete() ) {
-            String msg = QueryParseException.formatMessage("Term is not concrete: "+n, line, col) ;
-            throw new QueryParseException(msg, line, col) ;
+            String msg = QueryParseException.formatMessage("Term is not concrete: "+n, line, col);
+            throw new QueryParseException(msg, line, col);
         }
         if ( n != null )
-            rowBuilder.add(v, n) ;
+            rowBuilder.add(v, n);
     }
 
     protected void finishDataBlockValueRow(int line, int col) {
         //if ( variables.size() != currentValueRow().size() )
         if ( currentColumn+1 != variables.size() )
         {
-            String msg = String.format("Mismatch: %d variables but %d values",variables.size(), currentColumn+1) ;
-            msg = QueryParseException.formatMessage(msg, line, col) ;
-            throw new QueryParseException(msg, line , col) ;
+            String msg = String.format("Mismatch: %d variables but %d values",variables.size(), currentColumn+1);
+            msg = QueryParseException.formatMessage(msg, line, col);
+            throw new QueryParseException(msg, line , col);
         }
         values.add(rowBuilder.build());
     }
 
     private void pushLabelState() {
         // Hide used labels already tracked.
-        stackPreviousLabels.push(previousLabels) ;
-        stackCurrentLabels.push(activeLabelMap) ;
-        previousLabels = new HashSet<>() ;
-        activeLabelMap.clear() ;
+        stackPreviousLabels.push(previousLabels);
+        stackCurrentLabels.push(activeLabelMap);
+        previousLabels = new HashSet<>();
+        activeLabelMap.clear();
     }
 
     private void popLabelState() {
-        previousLabels = stackPreviousLabels.pop() ;
+        previousLabels = stackPreviousLabels.pop();
         activeLabelMap = stackCurrentLabels.pop();
     }
 
     private void clearLabelState() {
-        activeLabelMap.clear() ;
-        previousLabels.clear() ;
+        activeLabelMap.clear();
+        previousLabels.clear();
     }
 }

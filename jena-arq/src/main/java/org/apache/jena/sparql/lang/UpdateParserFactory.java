@@ -18,7 +18,7 @@
 
 package org.apache.jena.sparql.lang;
 
-import org.apache.jena.query.Syntax ;
+import org.apache.jena.query.Syntax;
 
 public interface UpdateParserFactory
 {

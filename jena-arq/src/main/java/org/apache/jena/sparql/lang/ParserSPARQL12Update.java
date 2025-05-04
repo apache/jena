@@ -18,16 +18,16 @@
 
 package org.apache.jena.sparql.lang;
 
-import java.io.Reader ;
+import java.io.Reader;
 
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.query.QueryException ;
-import org.apache.jena.query.QueryParseException ;
-import org.apache.jena.shared.JenaException ;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.query.QueryException;
+import org.apache.jena.query.QueryParseException;
+import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.Prologue;
-import org.apache.jena.sparql.lang.sparql_12.SPARQLParser12 ;
-import org.apache.jena.sparql.modify.UpdateSink ;
-import org.apache.jena.update.UpdateException ;
+import org.apache.jena.sparql.lang.sparql_12.SPARQLParser12;
+import org.apache.jena.sparql.modify.UpdateSink;
+import org.apache.jena.update.UpdateException;
 
 public class ParserSPARQL12Update extends UpdateParser
 {
@@ -35,7 +35,7 @@ public class ParserSPARQL12Update extends UpdateParser
 
     @Override
     protected void executeParse(UpdateSink sink, Prologue prologue, Reader r) {
-        SPARQLParser12 parser = null ;
+        SPARQLParser12 parser = null;
         try {
             parser = new SPARQLParser12(r);
             parser.setUpdate(prologue, sink);
