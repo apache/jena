@@ -18,22 +18,22 @@
 
 package org.apache.jena.sparql.lang;
 
-import java.io.Reader ;
-import java.io.StringReader ;
+import java.io.Reader;
+import java.io.StringReader;
 
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryException ;
-import org.apache.jena.query.QueryParseException ;
-import org.apache.jena.query.Syntax ;
-import org.apache.jena.shared.JenaException ;
-import org.apache.jena.sparql.lang.sparql_10.SPARQLParser10 ;
-import org.apache.jena.sparql.syntax.Element ;
-import org.apache.jena.sparql.syntax.Template ;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryException;
+import org.apache.jena.query.QueryParseException;
+import org.apache.jena.query.Syntax;
+import org.apache.jena.shared.JenaException;
+import org.apache.jena.sparql.lang.sparql_10.SPARQLParser10;
+import org.apache.jena.sparql.syntax.Element;
+import org.apache.jena.sparql.syntax.Template;
 
 public class ParserSPARQL10 extends SPARQLParser
 {
-    private interface Action { void exec(SPARQLParser10 parser) throws Exception ; }
+    private interface Action { void exec(SPARQLParser10 parser) throws Exception; }
 
     @Override
     protected Query parse$(final Query query, String queryString) {
@@ -67,8 +67,8 @@ public class ParserSPARQL10 extends SPARQLParser
 
     // All throwable handling.
     private static void perform(Query query, String string, Action action) {
-        Reader in = new StringReader(string) ;
-        SPARQLParser10 parser = new SPARQLParser10(in) ;
+        Reader in = new StringReader(string);
+        SPARQLParser10 parser = new SPARQLParser10(in);
         try {
             query.setStrict(true);
             parser.setQuery(query);
@@ -92,7 +92,7 @@ public class ParserSPARQL10 extends SPARQLParser
             throw new QueryParseException(err.getMessage(), err, -1, -1);
         } catch (Throwable th) {
             Log.warn(ParserSPARQL10.class, "Unexpected throwable: ", th);
-            throw new QueryException(th.getMessage(), th) ;
+            throw new QueryException(th.getMessage(), th);
         }
     }
 }

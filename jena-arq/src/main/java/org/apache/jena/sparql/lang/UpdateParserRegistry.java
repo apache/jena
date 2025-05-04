@@ -18,15 +18,15 @@
 
 package org.apache.jena.sparql.lang;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.jena.query.Syntax ;
+import org.apache.jena.query.Syntax;
 
 public class UpdateParserRegistry
 {
     // the map contains the registered factories hashed by the syntaxes
-    private Map<Syntax, UpdateParserFactory> factories = new HashMap<>() ;
+    private Map<Syntax, UpdateParserFactory> factories = new HashMap<>();
 
     // Singleton
     static UpdateParserRegistry registry = null;
@@ -39,30 +39,30 @@ public class UpdateParserRegistry
     private UpdateParserRegistry() {}
 
     private static synchronized void init() {
-        UpdateParserRegistry reg = new UpdateParserRegistry() ;
+        UpdateParserRegistry reg = new UpdateParserRegistry();
 
         reg.add(Syntax.syntaxSPARQL_11,
                 new UpdateParserFactory() {
             @Override
-            public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_11.equals(syntax) ; }
+            public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_11.equals(syntax); }
             @Override
-            public UpdateParser create( Syntax syntax ) { return new ParserSPARQL11Update() ; } }) ;
+            public UpdateParser create( Syntax syntax ) { return new ParserSPARQL11Update(); } });
 
         reg.add(Syntax.syntaxSPARQL_12,
                 new UpdateParserFactory() {
             @Override
-            public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_12.equals(syntax) ; }
+            public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_12.equals(syntax); }
             @Override
-            public UpdateParser create( Syntax syntax ) { return new ParserSPARQL12Update() ; } }) ;
+            public UpdateParser create( Syntax syntax ) { return new ParserSPARQL12Update(); } });
 
         reg.add(Syntax.syntaxARQ,
                 new UpdateParserFactory() {
             @Override
-            public boolean accept(Syntax syntax ) { return Syntax.syntaxARQ.equals(syntax) ; }
+            public boolean accept(Syntax syntax ) { return Syntax.syntaxARQ.equals(syntax); }
             @Override
-            public UpdateParser create ( Syntax syntax ) { return new ParserARQUpdate() ; } }) ;
+            public UpdateParser create ( Syntax syntax ) { return new ParserARQUpdate(); } });
 
-        registry = reg ;
+        registry = reg;
     }
 
     /** Return a suitable factory for the given syntax
@@ -72,7 +72,7 @@ public class UpdateParserRegistry
      */
 
     public static UpdateParserFactory findFactory(Syntax syntax)
-    { return get().getFactory(syntax) ; }
+    { return get().getFactory(syntax); }
 
     /** Return a suitable parser for the given syntax
      *
@@ -81,7 +81,7 @@ public class UpdateParserRegistry
      */
 
     public static UpdateParser parser(Syntax syntax)
-    { return get().createParser(syntax) ; }
+    { return get().createParser(syntax); }
 
     /** Return a suitable parser factory for the given syntax
      *
@@ -90,7 +90,7 @@ public class UpdateParserRegistry
      */
 
     public UpdateParserFactory getFactory(Syntax syntax)
-    { return factories.get(syntax) ; }
+    { return factories.get(syntax); }
 
     /** Return a suitable parser for the given syntax
      *
@@ -99,8 +99,8 @@ public class UpdateParserRegistry
      */
 
     public UpdateParser createParser(Syntax syntax) {
-        UpdateParserFactory f = getFactory(syntax) ;
-        return ( f != null ) ? f.create(syntax) : null ;
+        UpdateParserFactory f = getFactory(syntax);
+        return ( f != null ) ? f.create(syntax) : null;
     }
 
     /** Register the given parser factory for the specified syntax.
@@ -108,7 +108,7 @@ public class UpdateParserRegistry
      *  given one.
      */
     public static void addFactory(Syntax syntax, UpdateParserFactory f)
-    { get().add(syntax, f) ; }
+    { get().add(syntax, f); }
 
     /** Register the given parser factory for the specified syntax.
      *  If another factory is registered for the syntax it is replaced by the
@@ -118,23 +118,23 @@ public class UpdateParserRegistry
     {
         if ( ! f.accept(syntax) )
             throw new IllegalArgumentException( "The given parser factory does not accept the specified syntax." );
-        factories.put(syntax, f) ;
+        factories.put(syntax, f);
     }
 
     /** Unregister the parser factory associated with the given syntax */
     public static void removeFactory(Syntax syntax)
-    { get().remove(syntax) ; }
+    { get().remove(syntax); }
 
     /** Unregister the parser factory associated with the given syntax */
     public void remove(Syntax syntax)
-    { factories.remove(syntax) ; }
+    { factories.remove(syntax); }
 
     /** Checks whether a parser factory is registered for the given syntax */
     public static boolean containsParserFactory(Syntax syntax)
-    { return get().containsFactory(syntax) ; }
+    { return get().containsFactory(syntax); }
 
     /** Checks whether a parser factory is registered for the given syntax */
     public boolean containsFactory(Syntax syntax)
-    { return factories.containsKey(syntax) ; }
+    { return factories.containsKey(syntax); }
 
 }

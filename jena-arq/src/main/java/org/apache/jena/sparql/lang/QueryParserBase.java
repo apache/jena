@@ -59,18 +59,18 @@ import org.slf4j.LoggerFactory;
 /** Base class parsers, mainly SPARQL related */
 public class QueryParserBase {
 
-    protected final Node XSD_TRUE       = NodeConst.nodeTrue ;
-    protected final Node XSD_FALSE      = NodeConst.nodeFalse ;
+    protected final Node XSD_TRUE       = NodeConst.nodeTrue;
+    protected final Node XSD_FALSE      = NodeConst.nodeFalse;
 
-    protected final Node nRDFtype       = NodeConst.nodeRDFType ;
+    protected final Node nRDFtype       = NodeConst.nodeRDFType;
 
-    protected final Node nRDFnil        = NodeConst.nodeNil ;
-    protected final Node nRDFfirst      = NodeConst.nodeFirst ;
-    protected final Node nRDFrest       = NodeConst.nodeRest ;
+    protected final Node nRDFnil        = NodeConst.nodeNil;
+    protected final Node nRDFfirst      = NodeConst.nodeFirst;
+    protected final Node nRDFrest       = NodeConst.nodeRest;
 
-    protected final Node nRDFsubject    = RDF.Nodes.subject ;
-    protected final Node nRDFpredicate  = RDF.Nodes.predicate ;
-    protected final Node nRDFobject     = RDF.Nodes.object ;
+    protected final Node nRDFsubject    = RDF.Nodes.subject;
+    protected final Node nRDFpredicate  = RDF.Nodes.predicate;
+    protected final Node nRDFobject     = RDF.Nodes.object;
 
     protected final Node nRDFreifies = RDF.Nodes.reifies;
 
@@ -215,7 +215,7 @@ public class QueryParserBase {
     // Because of Java (Java strings have surrogate pairs) we only detect singleton surrogates.
     protected void checkString(String string, int line, int column) {
         // Checks for bare surrogate pairs.
-        for ( int i = 0 ; i < string.length() ; i++ ) {
+        for ( int i = 0; i < string.length(); i++ ) {
             // Not "codePointAt" which does surrogate processing.
             char ch = string.charAt(i);
 
@@ -667,7 +667,7 @@ public class QueryParserBase {
         int len = s.length();
         StringBuilder sb = new StringBuilder();
 
-        for ( int i = 0 ; i < len ; i++ ) {
+        for ( int i = 0; i < len; i++ ) {
             char ch = s.charAt(i);
             // Keep line and column numbers.
             switch (ch) {

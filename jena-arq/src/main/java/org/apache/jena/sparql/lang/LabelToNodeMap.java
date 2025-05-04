@@ -18,15 +18,15 @@
 
 package org.apache.jena.sparql.lang;
 
-import java.util.HashMap ;
-import java.util.Map ;
-import java.util.Set ;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-import org.apache.jena.graph.Node ;
-import org.apache.jena.graph.NodeFactory ;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.riot.lang.LabelToNode;
-import org.apache.jena.sparql.ARQConstants ;
-import org.apache.jena.sparql.core.VarAlloc ;
+import org.apache.jena.sparql.ARQConstants;
+import org.apache.jena.sparql.core.VarAlloc;
 
 
 /** Map from _:* form to bNodes or variables.
@@ -36,13 +36,13 @@ import org.apache.jena.sparql.core.VarAlloc ;
 public class LabelToNodeMap
 {
 
-    private Map<String, Node> bNodeLabels = new HashMap<>() ;
+    private Map<String, Node> bNodeLabels = new HashMap<>();
 
     // Variables or bNodes?
     // True means variables (query pattern)
     // False means blank node (construct template)
-    boolean generateVars = false ;
-    VarAlloc allocator = null ;
+    boolean generateVars = false;
+    VarAlloc allocator = null;
 
     /**
      * Create blank nodes, with the same blank node returned for the same label.
@@ -52,7 +52,7 @@ public class LabelToNodeMap
      */
     @Deprecated
     public static LabelToNodeMap createBNodeMap()
-    { return new LabelToNodeMap(false, null) ; }
+    { return new LabelToNodeMap(false, null); }
 
     /**
      * Create variables (Var), starting from zero each time This means that parsing a
@@ -62,32 +62,32 @@ public class LabelToNodeMap
      * @return LabelToNodeMap
      */
     public static LabelToNodeMap createVarMap()
-    { return new LabelToNodeMap(true, new VarAlloc(ARQConstants.allocParserAnonVars) ) ; }
+    { return new LabelToNodeMap(true, new VarAlloc(ARQConstants.allocParserAnonVars) ); }
 
     private LabelToNodeMap(boolean genVars, VarAlloc allocator) {
-        generateVars = genVars ;
-        this.allocator = allocator ;
+        generateVars = genVars;
+        this.allocator = allocator;
     }
 
-    public Set<String> getLabels()  { return bNodeLabels.keySet() ; }
+    public Set<String> getLabels()  { return bNodeLabels.keySet(); }
 
     public Node asNode(String label) {
-        Node n = bNodeLabels.get(label) ;
+        Node n = bNodeLabels.get(label);
         if ( n != null )
-            return n ;
-        n = allocNode() ;
-        bNodeLabels.put(label, n) ;
-        return n ;
+            return n;
+        n = allocNode();
+        bNodeLabels.put(label, n);
+        return n;
     }
 
     public Node allocNode() {
         if ( generateVars )
-            return allocAnonVariable() ;
-        return NodeFactory.createBlankNode() ;
+            return allocAnonVariable();
+        return NodeFactory.createBlankNode();
     }
 
     private Node allocAnonVariable() {
-        return allocator.allocVar() ;
+        return allocator.allocVar();
     }
 
     public void clear() {

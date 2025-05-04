@@ -18,9 +18,9 @@
 
 package org.apache.jena.sparql.lang;
 
-import org.apache.jena.query.Query ;
-import org.apache.jena.query.QueryParseException ;
-import org.apache.jena.query.Syntax ;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryParseException;
+import org.apache.jena.query.Syntax;
 
 /** This class provides the root of lower level access to all the parsers.
  *  Each subclass hides the details of the per-language exception handlers and other
@@ -30,13 +30,13 @@ import org.apache.jena.query.Syntax ;
 public abstract class SPARQLParser
 {
     public final Query parse(Query query, String queryString) throws QueryParseException {
-        Query parsedQuery = parse$(query, queryString) ;
-        validateParsedQuery(parsedQuery) ;
+        Query parsedQuery = parse$(query, queryString);
+        validateParsedQuery(parsedQuery);
         parsedQuery.resetResultVars();
-        return parsedQuery ;
+        return parsedQuery;
     }
 
-    protected abstract Query parse$(Query query, String queryString) throws QueryParseException ;
+    protected abstract Query parse$(Query query, String queryString) throws QueryParseException;
 
     public static boolean canParse(Syntax syntaxURI) {
         return SPARQLParserRegistry.get().containsFactory(syntaxURI);
