@@ -18,6 +18,11 @@
 
 package org.apache.jena.sparql;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
 import org.apache.jena.query.TS_Query;
 import org.apache.jena.rdf12.TS_RDF12;
 import org.apache.jena.sparql.algebra.TS_Algebra ;
@@ -52,15 +57,12 @@ import org.apache.jena.sparql.syntax.TS_Syntax ;
 import org.apache.jena.sparql.transaction.TS_Transaction ;
 import org.apache.jena.sparql.util.TS_DyadicDatasetGraphs;
 import org.apache.jena.sparql.util.TS_Util ;
-import org.apache.jena.sparql.util.iso.TS_Iso ;
 import org.apache.jena.sparql.util.compose.TS_DatasetCollectors;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.apache.jena.sparql.util.iso.TS_Iso ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
+
     TS_SSE.class
     , TS_LangSPARQL.class
 
@@ -110,7 +112,7 @@ public class TC_ARQ
     private static boolean bVerboseWarnings;
     private static boolean bWarnOnUnknownFunction;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         bVerboseWarnings = NodeValue.VerboseWarnings;
         bWarnOnUnknownFunction = E_Function.WarnOnUnknownFunction;
@@ -118,7 +120,7 @@ public class TC_ARQ
         E_Function.WarnOnUnknownFunction = false;
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         NodeValue.VerboseWarnings = bVerboseWarnings;
         E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction;
