@@ -138,10 +138,8 @@ public class QueryTransformOps {
         if (q2.getOrderBy() != null)
             mutateSortConditions(q2.getOrderBy(), exprTransform);
         mutateQueryPattern(q2, transform, exprTransform);
-        if ( query.isQueryResultStar() ) {
-            // Reset internal to only what now can be seen.
-            q2.resetResultVars();
-        }
+        // Reset internal to only what now can be seen.
+        q2.resetResultVars();
         setAggregators(q2, query, exprTransform);
         return q2;
     }

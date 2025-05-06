@@ -37,8 +37,8 @@ public class QueryCompare implements QueryVisitor
         if ( query1 == query2 )
             return true;
 
-        query1.setResultVars();
-        query2.setResultVars();
+        query1.ensureResultVars();
+        query2.ensureResultVars();
         QueryCompare visitor = new QueryCompare(query1);
         try {
             query2.visit(visitor);

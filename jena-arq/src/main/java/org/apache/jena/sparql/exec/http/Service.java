@@ -169,7 +169,7 @@ public class Service {
             else {
                 query = QueryFactory.create();
                 query.setQueryPattern(el);
-                query.setResultVars();
+                query.ensureResultVars();
             }
         }
 

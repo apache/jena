@@ -38,8 +38,9 @@ import org.apache.jena.sparql.core.Quad ;
  * of creating many threads is significant.
  *
  * @param <T> Type of the value stored in the collection
+ * @deprecated Use {@link CollectorStreamRDF}
  */
-@Deprecated(forRemoval = true)
+@Deprecated  //(forRemoval = true) -- this confuses the compiler in the maven build.
 public abstract class CollectorStreamBase<T> implements StreamRDF {
 	private final PrefixMap prefixes = PrefixMapFactory.create();
 	private String baseIri;

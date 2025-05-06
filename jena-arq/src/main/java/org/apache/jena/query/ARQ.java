@@ -234,9 +234,9 @@ public class ARQ
     public static final Symbol useSAX = SystemARQ.allocSymbol("useSAX");
 
     /**
-     * Indicate whether duplicate select and groupby variables are allowed.
-     * If false, duplicates are silently suppressed; it's not an error.
+     * @deprecated Ignored
      */
+    @Deprecated(forRemoval = true)
     public static final boolean allowDuplicateSelectColumns = false;
 
     /**

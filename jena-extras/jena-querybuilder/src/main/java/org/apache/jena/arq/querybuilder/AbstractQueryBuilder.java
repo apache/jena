@@ -569,7 +569,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
 
         handlerBlock.build();
 
-        q.resetResultVars();
+        q.ensureResultVars();
         return q;
     }
 
@@ -600,7 +600,7 @@ public abstract class AbstractQueryBuilder<T extends AbstractQueryBuilder<T>>
         final HandlerBlock hb = new HandlerBlock(retval);
         final HandlerBlock hb2 = new HandlerBlock(q2);
         hb.addAll(hb2);
-        q2.resetResultVars();
+        q2.ensureResultVars();
         return retval;
     }
 

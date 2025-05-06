@@ -26,6 +26,7 @@ import org.apache.jena.sparql.syntax.syntaxtransform.*;
 @Suite
 @SelectClasses({
     TestQueryParser.class
+    , TestQueryProjectVars.class
     , TestSerialization.class
     , TestQueryShallowCopy.class
     , TestQuerySubstituteScope.class

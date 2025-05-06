@@ -125,7 +125,7 @@ public class TestQueryParser {
 
     // Test that a URI string can be used in Turtle data
     // and in SPARQL in the same way.
-    public static void testParseIRIs(String string) {
+    private static void testParseIRIs(String string) {
         silent(()->QueryFactory.create("SELECT * { "+string+" a <http://example/TYPE> }"));
     }
 }

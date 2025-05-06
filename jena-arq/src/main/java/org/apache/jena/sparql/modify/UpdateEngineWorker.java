@@ -554,7 +554,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         query.setQueryPattern(pattern);
         query.setQuerySelectType();
         query.setQueryResultStar(true);
-        query.resetResultVars();
+        query.ensureResultVars();
         return query;
     }
 
