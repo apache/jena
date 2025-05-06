@@ -18,10 +18,30 @@
 
 package org.apache.jena.arq;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterAll;
+
+
+// JUnit 4
+//import org.junit.AfterClass;
+//import org.junit.BeforeClass;
+//import org.junit.runner.RunWith;
+//import org.junit.runners.Suite;
+//@RunWith(Suite.class)
+//@Suite.SuiteClasses( {
+
+//JUnit 5
+//import org.junit.platform.suite.api.SelectClasses;
+//import org.junit.platform.suite.api.Suite;
+//import org.junit.jupiter.api.BeforeAll;
+//import org.junit.jupiter.api.AfterAll;
+//
+//@Suite
+//@SelectClasses({
 
 import org.apache.jena.atlas.TC_Atlas_ARQ;
 import org.apache.jena.atlas.legacy.BaseTest2;
@@ -44,8 +64,8 @@ import org.apache.jena.util.TS_UtilsARQ;
  * All the ARQ tests
  */
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
+@Suite
+@SelectClasses({
     TC_Atlas_ARQ.class,
 
     TS_UtilsARQ.class,
@@ -94,14 +114,14 @@ public class ARQTestSuite {
 
     public static final String log4jPropertiesResourceName = "log4j2.properties";
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         NodeValue.VerboseWarnings = false;
         E_Function.WarnOnUnknownFunction = false;
         BaseTest2.setTestLogging();
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         BaseTest2.unsetTestLogging();
     }
