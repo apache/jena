@@ -52,7 +52,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     protected QueryEngineBase(Query query, DatasetGraph dsg, Binding input, Context cxt) {
         this(dsg, input, cxt);
         this.query = query;
-        query.setResultVars();
+        query.ensureResultVars();
         // Unoptimized so far.
         setOp(createOp(query));
         dataset = prepareDataset(dsg, query);

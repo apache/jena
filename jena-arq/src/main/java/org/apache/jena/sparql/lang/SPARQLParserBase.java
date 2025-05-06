@@ -82,7 +82,9 @@ public class SPARQLParserBase extends QueryParserBase {
     // Signal start/finish of units
 
     protected void startQuery() {}
-    protected void finishQuery() {}
+    protected void finishQuery() {
+        query.ensureResultVars();
+    }
 
     protected void startUpdateRequest()    {}
     protected void finishUpdateRequest()   {}
@@ -205,8 +207,9 @@ public class SPARQLParserBase extends QueryParserBase {
 
     protected Query newSubQuery(Prologue progloue) {
         // The parser uses the same prologue throughout the parsing process.
-        // For printing purposes, the subquery must not have a prologue of its own.
-        return new Query();
+        Query subQuery = new Query();
+        subQuery.setSyntax(query.getSyntax());
+        return subQuery;
     }
 
     protected void popQuery() {
@@ -217,6 +220,8 @@ public class SPARQLParserBase extends QueryParserBase {
         Query subQuery = query;
         if ( ! subQuery.isSelectType() )
             throwParseException("Subquery not a SELECT query", line, column);
+        // Sort out SELECT *
+        subQuery.ensureResultVars();
         popQuery();
         return subQuery;
     }

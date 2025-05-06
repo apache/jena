@@ -178,6 +178,16 @@ public class QueryExecDataset implements QueryExec
         return RowSetStream.create(vars, queryIterator);
     }
 
+    private void fixupResultVars() {
+        if ( initialBinding != null && ! initialBinding.isEmpty()) {
+            //query = query.cloneQuery();
+            synchronized(query) {
+                query.setQueryResultStar(true);
+                //query.resetResultVars();
+            }
+        }
+    }
+
     // -- Construct
     @Override
     public Graph construct(Graph graph) {
@@ -201,7 +211,8 @@ public class QueryExecDataset implements QueryExec
             throw new QueryExecException("Attempt to get a CONSTRUCT model from a " + labelForQuery(query) + " query");
         // This causes there to be no PROJECT around the pattern.
         // That in turn, exposes the initial bindings.
-        query.setQueryResultStar(true);
+
+        fixupResultVars();
 
         startQueryIterator();
 
@@ -218,7 +229,8 @@ public class QueryExecDataset implements QueryExec
             throw new QueryExecException("Attempt to get a CONSTRUCT model from a " + labelForQuery(query) + " query");
         // This causes there to be no PROJECT around the pattern.
         // That in turn, exposes the initial bindings.
-        query.setQueryResultStar(true);
+
+        fixupResultVars();
 
         startQueryIterator();
 
@@ -248,11 +260,13 @@ public class QueryExecDataset implements QueryExec
 
         if ( !query.isDescribeType() )
             throw new QueryExecException("Attempt to get a DESCRIBE result from a " + labelForQuery(query) + " query");
-        query.setResultVars();
+
         // If there was no WhereClause, use an empty pattern (one solution, no
         // columns).
         if ( query.getQueryPattern() == null )
             query.setQueryPattern(new ElementGroup());
+
+        fixupResultVars();
 
         Set<Node> set = new HashSet<>();
 

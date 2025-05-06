@@ -667,7 +667,7 @@ public class TestOpAsQuery {
         Query outcome = r[1];
         stripNamespacesAndBase(input) ;
         stripNamespacesAndBase(outcome) ;
-        // Check it can be translated to alegbra.
+        // Check it can be translated to algebra.
         Op op1 = Algebra.compile(input);
         Op op2 = Algebra.compile(outcome);
         // Oops - breaks testModifiersOnSubQuery2 (REDUCED lost but DISTINCT is OK).

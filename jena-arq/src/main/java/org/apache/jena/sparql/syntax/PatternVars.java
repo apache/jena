@@ -106,7 +106,6 @@ public class PatternVars {
 
         @Override
         public void visit(ElementSubQuery el) {
-            el.getQuery().setResultVars();
             VarExprList x = el.getQuery().getProject();
             acc.addAll(x.getVars());
         }

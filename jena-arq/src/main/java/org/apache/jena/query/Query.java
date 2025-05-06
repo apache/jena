@@ -350,14 +350,14 @@ public class Query extends Prologue implements Cloneable, Printable
     /** Return a list of the variables requested (SELECT) */
     public List<String> getResultVars() {
         // Ensure "SELECT *" processed
-        setResultVars();
+        ensureResultVars();
         return Var.varNames(projectVars.getVars());
     }
 
     /** Return a list of the variables requested (SELECT) */
     public List<Var> getProjectVars() {
         // Ensure "SELECT *" processed
-        setResultVars();
+        ensureResultVars();
         return projectVars.getVars();
     }
 
@@ -368,17 +368,93 @@ public class Query extends Prologue implements Cloneable, Printable
     /** Add a collection of projection variables to a SELECT query */
     public void addProjectVars(Collection<? > vars) {
         for ( Object obj : vars ) {
-            if ( obj instanceof String ) {
-                this.addResultVar((String)obj);
+            if ( obj instanceof String s ) {
+                addResultVar(s);
                 continue;
             }
-            if ( obj instanceof Var ) {
-                this.addResultVar((Var)obj);
+            if ( obj instanceof Var v ) {
+                addResultVar(v);
                 continue;
             }
             throw new QueryException("Not a variable or variable name: " + obj);
         }
         resultVarsSet = true;
+    }
+
+    /**
+     * Are the projectVars set?
+     * This can happen incrementally (the syntax has explicitly named variables e.g. {@code SELECT ?x`})
+     * or by analysis {@code SELECT *}.
+     */
+    private boolean resultVarsSet = false;
+
+    /**
+     * Set the results variables if necessary, when the query has "*" ({@code SELECT *}
+     * or {@code DESCRIBE *}) and for a construct query. This operation is idempotent and can
+     * be called to ensure the results variables have been set.
+     * @deprecated Use {@link #ensureResultVars()}
+     */
+    @Deprecated(forRemoval = true)
+    public void setResultVars() {
+        ensureResultVars();
+    }
+
+    public void ensureResultVars() {
+        if ( resultVarsSet )
+            return;
+        _resetResultVars();
+    }
+
+    /**
+     * If modifying a query, it may be necessary to reset the calculated result
+     * variables of the query for {@code SELECT *} and {@code DESCRIBE *} and
+     * {@code CONSTRUCT}.
+     */
+    public void resetResultVars() {
+        _resetResultVars();
+    }
+
+    private void _resetResultVars() {
+        if ( isQueryResultStar() )
+            projectVars.clear();
+
+        if ( getQueryPattern() == null ) {
+            if ( !this.isDescribeType() )
+                Log.warn(this, "No query pattern in non-DESCRIBE query");
+            resultVarsSet = true;
+            return;
+        }
+
+        _findAndAddNamedVars();
+        resultVarsSet = true;
+    }
+
+    private void _findAndAddNamedVars() {
+        Iterator<Var> varIter = null;
+        if ( isQueryResultStar() ) {
+            if ( hasGroupBy() ) {
+                varIter = groupVars.getVars().iterator();
+            } else {
+                // Binding variables -- in patterns, not in filters and not in EXISTS
+                LinkedHashSet<Var> queryVars = new LinkedHashSet<>();
+                PatternVars.vars(queryVars, this.getQueryPattern());
+                if ( this.hasValues() )
+                    queryVars.addAll(getValuesVariables());
+                varIter = queryVars.iterator();
+            }
+
+        } else {
+            varIter = projectVars.getVars().iterator();
+        }
+
+        // All query variables, including ones from bNodes in the query.
+
+        for ( ; varIter.hasNext() ; ) {
+            Var var = varIter.next();
+            if ( var.isNamedVar() && ! projectVars.contains(var) ) {
+                addResultVar(var);
+            }
+        }
     }
 
     /** Add a projection variable to a SELECT query */
@@ -436,19 +512,18 @@ public class Query extends Prologue implements Cloneable, Printable
                 // SELECT (?a+?b AS ?x) ?x
                 throw new QueryBuildException("Duplicate variable (had an expression) in result projection '" + v + "'");
             // SELECT ?x ?x
-            if ( !ARQ.allowDuplicateSelectColumns )
-                return;
-            // else drop through and have two variables of the same name.
+            return;
         }
         varExprList.add(v);
     }
 
-    private static void _addVarExpr(VarExprList varExprList, Var v, Expr expr) {
+    private void _addVarExpr(VarExprList varExprList, Var v, Expr expr) {
         if ( varExprList.contains(v) )
             // SELECT ?x (?a+?b AS ?x)
             // SELECT (2*?a AS ?x) (?a+?b AS ?x)
             throw new QueryBuildException("Duplicate variable in result projection '" + v + "'");
         varExprList.add(v, expr);
+        resultVarsSet = true;
     }
 
     protected VarExprList groupVars = new VarExprList();
@@ -467,8 +542,7 @@ public class Query extends Prologue implements Cloneable, Printable
         addGroupBy(Var.alloc(varName));
     }
 
-    public void addGroupBy(Node v)
-    {
+    public void addGroupBy(Node v) {
         _addVar(groupVars, Var.alloc(v));
     }
 
@@ -483,7 +557,6 @@ public class Query extends Prologue implements Cloneable, Printable
             addGroupBy(expr.asVar());
             return;
         }
-
         groupVars.add(v, expr);
     }
 
@@ -615,85 +688,10 @@ public class Query extends Prologue implements Cloneable, Printable
         throw new QueryException("Result node not recognized: " + node);
     }
 
-    /** Get the result list (things wanted - not the results themselves)
-     *  of a DESCRIBE query. */
+    /**
+     * Get the result list URI of a DESCRIBE query.
+     */
     public List<Node> getResultURIs() { return resultNodes; }
-
-    private boolean resultVarsSet = false;
-    /**
-     * Set the results variables if necessary, when the query has "*" ({@code SELECT *}
-     * or {@code DESCRIBE *}) and for a construct query. This operation is idempotent and can
-     * be called to ensure the results variables have been set.
-     */
-    public void setResultVars() {
-        if ( resultVarsSet )
-            return;
-        synchronized (this) {
-            if ( resultVarsSet )
-                return;
-            // Synchronized in case this query is used in a multithreaded
-            // situation calling setResultVars(). JENA-1861.
-            resetResultVars();
-            resultVarsSet = true;
-        }
-    }
-
-    /**
-     * If modifying a query, it may be necessary to reset the calculate of the result
-     * variables of the query for {@code SELECT *} and {@code DESCRIBE *} and {@code CONSTRUCT}.
-     */
-    public void resetResultVars() {
-        if ( isQueryResultStar() )
-            projectVars.clear();
-
-        if ( getQueryPattern() == null ) {
-            if ( !this.isDescribeType() )
-                Log.warn(this, "setResultVars(): no query pattern");
-            return;
-        }
-
-        if ( isSelectType() ) {
-            if ( isQueryResultStar() )
-                findAndAddNamedVars();
-            return;
-        }
-
-        if ( isConstructType() ) {
-            // All named variables are in-scope
-            findAndAddNamedVars();
-            return;
-        }
-
-        if ( isDescribeType() ) {
-            if ( isQueryResultStar() )
-                findAndAddNamedVars();
-            return;
-        }
-//        if ( isAskType() ) {
-//        }
-    }
-
-    private void findAndAddNamedVars() {
-        Iterator<Var> varIter = null;
-        if ( hasGroupBy() )
-            varIter = groupVars.getVars().iterator();
-        else {
-            // Binding variables -- in patterns, not in filters and not in EXISTS
-            LinkedHashSet<Var> queryVars = new LinkedHashSet<>();
-            PatternVars.vars(queryVars, this.getQueryPattern());
-            if ( this.hasValues() )
-                queryVars.addAll(getValuesVariables());
-            varIter = queryVars.iterator();
-        }
-
-        // All query variables, including ones from bNodes in the query.
-
-        for ( ; varIter.hasNext() ; ) {
-            Var var = varIter.next();
-            if ( var.isNamedVar() )
-                addResultVar(var);
-        }
-    }
 
     public void visit(QueryVisitor visitor) {
         visitor.startVisit(this);

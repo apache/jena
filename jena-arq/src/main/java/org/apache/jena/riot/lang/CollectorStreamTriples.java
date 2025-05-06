@@ -27,9 +27,11 @@ import org.apache.jena.riot.system.StreamRDF;
 /**
  * Collector stream for triples.
  *
- * @see CollectorStreamBase
+ * @deprecated Use {@link CollectorStreamRDF}
  */
 @Deprecated(forRemoval = true)
+@SuppressWarnings("all")
+
 public class CollectorStreamTriples extends CollectorStreamBase<Triple> implements StreamRDF {
 	private List<Triple> triples = new ArrayList<>();
 

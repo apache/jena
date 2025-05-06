@@ -190,7 +190,7 @@ public class QueryExecDatasetBuilder implements QueryExecMod, QueryExecBuilder {
         Objects.requireNonNull(query, "No query for QueryExec");
         // Queries can have FROM/FROM NAMED or VALUES to get data.
         //Objects.requireNonNull(dataset, "No dataset for QueryExec");
-        query.setResultVars();
+        query.ensureResultVars();
         Context cxt = getContext();
 
         QueryEngineFactory qeFactory = QueryEngineRegistry.findFactory(query, dataset, cxt);
