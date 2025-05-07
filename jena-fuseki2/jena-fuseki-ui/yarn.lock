@@ -809,11 +809,6 @@
   resolved "https://registry.yarnpkg.com/@bufbuild/protobuf/-/protobuf-2.2.3.tgz#9cd136f6b687e63e9b517b3a54211ece942897ee"
   integrity sha512-tFQoXHJdkEOSwj5tRIZSPNUuXK3RaR7T1nUrPgbYX1pUbvqqaaZAsfo+NXBPsz5rZMSKVFrgK1WL8Q/MSLvprg==
 
-"@colors/colors@1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
-  integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
-
 "@csstools/color-helpers@^5.0.1":
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/@csstools/color-helpers/-/color-helpers-5.0.1.tgz#829f1c76f5800b79c51c709e2f36821b728e0e10"
@@ -2296,9 +2291,9 @@ boolbase@^1.0.0:
   integrity sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==
 
 bootstrap@^5.3.2:
-  version "5.3.5"
-  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-5.3.5.tgz#be42cfe0d580e97ee1abb7d38ce94f5c393c9bb6"
-  integrity sha512-ct1CHKtiobRimyGzmsSldEtM03E8fcEX4Tb3dGXz1V8faRwM50+vfHwTzOxB3IlKO7m+9vTH3s/3C6T2EAPeTA==
+  version "5.3.6"
+  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-5.3.6.tgz#fbd91ebaff093f5b191a1c01a8c866d24f9fa6e1"
+  integrity sha512-jX0GAcRzvdwISuvArXn3m7KZscWWFAf1MKBcnzaN02qWMb3jpMoUX4/qgeiGzqyIb4ojulRzs89UCUmGcFSzTA==
 
 brace-expansion@^1.1.7:
   version "1.1.11"
@@ -2532,14 +2527,14 @@ cli-cursor@^3.1.0:
   dependencies:
     restore-cursor "^3.1.0"
 
-cli-table3@~0.6.5:
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/cli-table3/-/cli-table3-0.6.5.tgz#013b91351762739c16a9567c21a04632e449bf2f"
-  integrity sha512-+W/5efTR7y5HRD7gACw9yQjqMVvEMLBHmboM/kPWam+H+Hmyrgjh6YncVKK122YZkXrLudzTuAukUw9FnMf7IQ==
+cli-table3@0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/cli-table3/-/cli-table3-0.6.1.tgz#36ce9b7af4847f288d3cdd081fbd09bf7bd237b8"
+  integrity sha512-w0q/enDHhPLq44ovMGdQeeDLvwxwavsJX7oQGYt/LrBlYsyaxyDnp6z3QzFut/6kLLKnlcUVJLrpB7KBfgG/RA==
   dependencies:
     string-width "^4.2.0"
   optionalDependencies:
-    "@colors/colors" "1.5.0"
+    colors "1.4.0"
 
 cli-truncate@^2.1.0:
   version "2.1.0"
@@ -2594,7 +2589,7 @@ colorjs.io@^0.5.0:
   resolved "https://registry.yarnpkg.com/colorjs.io/-/colorjs.io-0.5.2.tgz#63b20139b007591ebc3359932bef84628eb3fcef"
   integrity sha512-twmVoizEW7ylZSN32OgKdXRmo1qg+wT5/6C3xu5b9QsWzSFAhHLn2xd8ro0diCsKfCj1RdaTP/nrcW+vAoQPIw==
 
-colors@^1.4.0:
+colors@1.4.0, colors@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.4.0.tgz#c50491479d4c1bdaed2c9ced32cf7c7dc2360f78"
   integrity sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==
@@ -2806,9 +2801,9 @@ cypress-vite@^1.4.2:
     debug "^4.3.4"
 
 cypress@^14.0.0:
-  version "14.3.2"
-  resolved "https://registry.yarnpkg.com/cypress/-/cypress-14.3.2.tgz#04a6ea66c1715119ef41dda5851d75801cc1e226"
-  integrity sha512-n+yGD2ZFFKgy7I3YtVpZ7BcFYrrDMcKj713eOZdtxPttpBjCyw/R8dLlFSsJPouneGN7A/HOSRyPJ5+3/gKDoA==
+  version "14.3.3"
+  resolved "https://registry.yarnpkg.com/cypress/-/cypress-14.3.3.tgz#cbf7fbc79fd139ba55ea51a6d1ee3d9018a59ce2"
+  integrity sha512-1Rz7zc9iqLww6BysaESqUhtIuaFHS7nL3wREovAKYsNhLTfX3TbcBWHWgEz70YimH2NkSOsm4oIcJJ9HYHOlew==
   dependencies:
     "@cypress/request" "^3.0.8"
     "@cypress/xvfb" "^1.2.4"
@@ -2823,7 +2818,7 @@ cypress@^14.0.0:
     check-more-types "^2.24.0"
     ci-info "^4.1.0"
     cli-cursor "^3.1.0"
-    cli-table3 "~0.6.5"
+    cli-table3 "0.6.1"
     commander "^6.2.1"
     common-tags "^1.8.0"
     dayjs "^1.10.4"
@@ -7437,9 +7432,9 @@ vite-plugin-istanbul@^7.0.0:
     test-exclude "^7.0.1"
 
 "vite@^5.0.0 || ^6.0.0", vite@^6.0.11:
-  version "6.3.4"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-6.3.4.tgz#d441a72c7cd9a93b719bb851250a4e6c119c9cff"
-  integrity sha512-BiReIiMS2fyFqbqNT/Qqt4CVITDU9M9vE+DKcVAsB+ZV0wvTKd+3hMbkpxz1b+NmEDMegpVbisKiAZOnvO92Sw==
+  version "6.3.5"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-6.3.5.tgz#fec73879013c9c0128c8d284504c6d19410d12a3"
+  integrity sha512-cZn6NDFE7wdTpINgs++ZJ4N49W2vRp8LCKrn3Ob1kYNtOo21vfDoaV5GzBfLU4MovSAB8uNRm4jgzVQZ+mBzPQ==
   dependencies:
     esbuild "^0.25.0"
     fdir "^6.4.4"
@@ -7554,9 +7549,9 @@ webpack-sources@^3.2.3:
   integrity sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==
 
 webpack@^5:
-  version "5.99.7"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.99.7.tgz#60201c1ca66da046b07d006c2f6e0cc5e8a7bdba"
-  integrity sha512-CNqKBRMQjwcmKR0idID5va1qlhrqVUKpovi+Ec79ksW8ux7iS1+A6VqzfZXgVYCFRKl7XL5ap3ZoMpwBJxcg0w==
+  version "5.99.8"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.99.8.tgz#dd31a020b7c092d30c4c6d9a4edb95809e7f5946"
+  integrity sha512-lQ3CPiSTpfOnrEGeXDwoq5hIGzSjmwD72GdfVzF7CQAI7t47rJG9eDWvcEkEn3CUQymAElVvDg3YNTlCYj+qUQ==
   dependencies:
     "@types/eslint-scope" "^3.7.7"
     "@types/estree" "^1.0.6"
