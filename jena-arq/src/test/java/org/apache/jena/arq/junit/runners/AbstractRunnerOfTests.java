@@ -19,15 +19,11 @@
 package org.apache.jena.arq.junit.runners;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
 import org.apache.jena.arq.junit.manifest.*;
-import org.apache.jena.atlas.io.IndentedWriter;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.sparql.junit.EarlReport;
-import org.apache.jena.sparql.vocabulary.VocabTestQuery;
+
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
@@ -47,7 +43,7 @@ import org.junit.runners.model.InitializationError;
  * This class sorts out the annotations, including providing before/after class, then
  * creates a hierarchy of tests to run.
  *
- * @see RunnerOneTest
+ * @see SetupManifests
  */
 public abstract class AbstractRunnerOfTests extends ParentRunner<Runner> {
     private Description  description;
@@ -57,138 +53,48 @@ public abstract class AbstractRunnerOfTests extends ParentRunner<Runner> {
 
     public AbstractRunnerOfTests(Class<? > klass, Function<ManifestEntry, Runnable> maker) throws InitializationError {
         super(klass);
-        String label = getLabel(klass);
+        String label = SetupManifests.getLabel(klass);
         if ( label == null )
             label = klass.getName();
-        String prefix = getPrefix(klass);
-        String[] manifests = getManifests(klass);
-        if ( manifests.length == 0 )
+
+        // Get the annotation arguments.
+        String prefix = SetupManifests.getPrefix(klass);
+        description = Description.createSuiteDescription(label);
+        prepare(klass, maker,prefix);
+    }
+
+    private void prepare(Class<? > klass, Function<ManifestEntry, Runnable> maker, String prefix) throws InitializationError {
+        List<String> manifests = SetupManifests.getManifests(klass);
+        if ( manifests.isEmpty() )
             //System.err.println("No manifests: "+label);
             throw new InitializationError("No manifests");
-        description = Description.createSuiteDescription(label);
+        prepare(manifests, klass.getSimpleName(), maker, prefix);
+    }
 
+    private void prepare(List<String> manifests, String traceName, Function<ManifestEntry, Runnable> maker, String prefix) throws InitializationError {
+        // For each manifest
         for ( String manifestFile : manifests ) {
             //System.out.println("** "+klass.getSimpleName()+" -- "+manifestFile);
-            if ( PrintManifests ) {
-                out.println("** "+klass.getSimpleName()+" -- "+manifestFile);
-                out.incIndent();
+            if ( SetupManifests.PrintManifests ) {
+                if ( traceName != null )
+                    SetupManifests.out.println("** "+traceName+" -- "+manifestFile);
+                else
+                    SetupManifests.out.println("** Manifest: "+manifestFile);
+                SetupManifests.out.incIndent();
             }
             Manifest manifest = Manifest.parse(manifestFile);
-            if ( PrintManifests ) {
+            if ( SetupManifests.PrintManifests ) {
                 // Record manifests.
-                Manifest.walk(manifest, m->out.println(m.getFileName()+" :: "+m.getName()), e->{});
+                Manifest.walk(manifest, m->SetupManifests.out.println(m.getFileName()+" :: "+m.getName()), e->{});
             }
-            Runner runner = build(null, manifest, maker, prefix);
+            Runner runner = SetupManifests.build(null, manifest, maker, prefix);
             description.addChild(runner.getDescription());
             children.add(runner);
-            if ( PrintManifests )
-                out.decIndent();
+            if ( SetupManifests.PrintManifests )
+                SetupManifests.out.decIndent();
         }
-        if ( PrintManifests )
-            out.flush();
-    }
-
-    // Print all manifests, top level and included.
-    private static boolean PrintManifests = false;
-    private static IndentedWriter out = IndentedWriter.stdout;
-
-    /**
-     * Do one level of tests. test are {@link Runnable Runnables} that each succeed or fail with an exception.
-     */
-    public static RunnerOneManifest build(EarlReport report, Manifest manifest, Function<ManifestEntry, Runnable> maker, String prefix) {
-        Description description = Description.createSuiteDescription(manifest.getName());
-        if ( PrintManifests )
-            out.println(manifest.getFileName()+" :: "+manifest.getName());
-        RunnerOneManifest thisLevel = new RunnerOneManifest(manifest, description);
-
-        Iterator<String> sub = manifest.includedManifests();
-        while(sub.hasNext() ) {
-            if ( PrintManifests )
-                out.incIndent();
-
-            String mf = sub.next();
-            Manifest manifestSub = Manifest.parse(mf);
-            Runner runner = build(report, manifestSub, maker, prefix);
-            thisLevel.add(runner);
-            if ( PrintManifests )
-                out.decIndent();
-        }
-
-        // Check entries do have test targets.
-
-        manifest.entries().forEach(entry->{
-            if ( entry.getAction() == null )
-                throw new RuntimeException("Missing: action ["+entry.getEntry()+"]");
-            if ( entry.getName() == null )
-                throw new RuntimeException("Missing: label ["+entry.getEntry()+"]");
-        });
-
-        prepareTests(report, thisLevel, manifest, maker, prefix);
-        return thisLevel;
-    }
-
-    private static String prepareTestLabel(ManifestEntry entry, String prefix) {
-        String label = fixupName(entry.getName());
-        if ( prefix != null )
-            label = prefix+label;
-
-        // action URI or action -> qt:query
-        String str = null;
-
-        if ( entry.getAction() != null ) {
-            if ( entry.getAction().isURIResource() )
-                str = entry.getAction().getURI();
-            else if ( entry.getAction().isAnon() ) {
-                Statement stmt = entry.getAction().getProperty(VocabTestQuery.query);
-                if ( stmt != null && stmt.getObject().isURIResource() )
-                    str = stmt.getObject().asResource().getURI();
-            }
-        }
-
-        if ( str != null ) {
-            int x = str.lastIndexOf('/');
-            if ( x > 0 && x < str.length() ) {
-                String fn = str.substring(x+1) ;
-                label = label+" ("+fn+")";
-            }
-        }
-        return label;
-    }
-
-    public static void prepareTests(EarlReport report, RunnerOneManifest level, Manifest manifest, Function<ManifestEntry, Runnable> maker, String prefix) {
-        manifest.entries().forEach(entry->{
-            String label = prepareTestLabel(entry, prefix);
-            Runnable runnable = maker.apply(entry);
-            if ( runnable != null ) {
-                Runner r = new RunnerOneTest(label, runnable, entry.getURI(), report);
-                level.add(r);
-            }
-        });
-    }
-
-    public static String fixupName(String string) {
-        // Eclipse used to parse test names and () were special. 
-//        string = string.replace('(', '[');
-//        string = string.replace(')', ']');
-        return string;
-    }
-
-    private static String getLabel(Class<? > klass) {
-        Label annotation = klass.getAnnotation(Label.class);
-        return ( annotation == null ) ? null : annotation.value();
-    }
-
-    private static String getPrefix(Class<? > klass) {
-        Prefix annotation = klass.getAnnotation(Prefix.class);
-        return ( annotation == null ) ? null : annotation.value();
-    }
-
-    private static String[] getManifests(Class<? > klass) throws InitializationError {
-        Manifests annotation = klass.getAnnotation(Manifests.class);
-        if ( annotation == null ) {
-            throw new InitializationError(String.format("class '%s' must have a @Manifests annotation", klass.getName()));
-        }
-        return annotation.value();
+        if ( SetupManifests.PrintManifests )
+            SetupManifests.out.flush();
     }
 
     @Override

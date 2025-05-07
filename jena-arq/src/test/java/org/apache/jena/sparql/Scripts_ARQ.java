@@ -55,5 +55,4 @@ public class Scripts_ARQ
         NodeValue.VerboseWarnings = bVerboseWarnings;
         E_Function.WarnOnUnknownFunction = bWarnOnUnknownFunction;
     }
-
 }

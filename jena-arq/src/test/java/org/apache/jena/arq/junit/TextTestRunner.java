@@ -20,16 +20,17 @@ package org.apache.jena.arq.junit;
 
 import java.util.function.Function;
 
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.Runner;
+
 import org.apache.jena.arq.junit.manifest.Manifest;
 import org.apache.jena.arq.junit.manifest.ManifestEntry;
-import org.apache.jena.arq.junit.runners.AbstractRunnerOfTests;
-import org.apache.jena.arq.junit.runners.RunnerOneManifest;
+import org.apache.jena.arq.junit.runners.SetupManifests;
 import org.apache.jena.atlas.junit.TextListenerLong;
 import org.apache.jena.sparql.expr.E_Function;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.junit.EarlReport;
-import org.junit.runner.JUnitCore;
-import org.junit.runner.Result;
 
 public class TextTestRunner {
 
@@ -39,7 +40,7 @@ public class TextTestRunner {
 
     public static void runOne(EarlReport report, String manifestFile, Function<ManifestEntry, Runnable> testMaker) {
         Manifest manifest = Manifest.parse(manifestFile);
-        RunnerOneManifest top = AbstractRunnerOfTests.build(report, manifest, testMaker, null);
+        Runner top = SetupManifests.build(report, manifest, testMaker, null);
 
         NodeValue.VerboseWarnings = false ;
         E_Function.WarnOnUnknownFunction = false ;
