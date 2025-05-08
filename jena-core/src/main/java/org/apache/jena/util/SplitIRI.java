@@ -67,7 +67,8 @@ public class SplitIRI
         return string.substring(0, i);
     }
 
-    /** Calculate a localname - do not escape PN_LOCAL_ESC.
+    /**
+     * Calculate a localname - do not escape PN_LOCAL_ESC.
      * This is not guaranteed to be legal Turtle.
      * Use with {@link #namespace}
      * Return an empty string if there is no split point.
@@ -177,7 +178,8 @@ public class SplitIRI
 */
     // @formatter:on
 
-    /** Find the URI split point, return the index into the string that is the
+    /**
+     * Find the URI split point, return the index into the string that is the
      *  first character of a legal Turtle local name.
      * <p>
      * This is a pragmatic choice, not just finding the maximal point.
@@ -236,7 +238,7 @@ public class SplitIRI
 
         int splitPoint = -1;
         // Work backwards, checking for
-        // ((PN_CHARS | '.' | ':' | PLX)*
+        // (PN_CHARS | '.' | ':' | PLX)*
         for ( int i = uri.length()-1; i > limit; i-- ) {
             char ch = uri.charAt(i);
             if ( /*RiotChars.*/isPNChars_U_N(ch) || /*RiotChars.*/isPN_LOCAL_ESC(ch) || ch == ':' || ch == '-' || ch == '.' )
@@ -282,7 +284,7 @@ public class SplitIRI
      * splitXML with local stricter XML 1.0 rules (only single Java characters)
      * @deprecated Retained as a record of previous split handling.
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated
     public static int splitXML10(String string) { return splitNamespaceXML10(string); }
 
     /**
