@@ -31,25 +31,25 @@ import org.apache.jena.reasoner.test.TestUtil ;
 /**
  * Tests for MonitorGraph implementation.
  */
-
+@SuppressWarnings("removal")
 public class TestMonitors extends TestCase {
 
     /**
      * Boilerplate for junit
-     */ 
+     */
     public TestMonitors( String name ) {
-        super( name ); 
+        super( name );
     }
-    
+
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
     public static TestSuite suite() {
-        return new TestSuite( TestMonitors.class ); 
-    }  
+        return new TestSuite( TestMonitors.class );
+    }
 
-    // constants used in the tests 
+    // constants used in the tests
     String NS = "http://jena.hpl.hp.com/test#";
     Node a = NodeCreateUtils.create(NS + "a");
     Node p = NodeCreateUtils.create(NS + "p");
@@ -59,32 +59,32 @@ public class TestMonitors extends TestCase {
     Triple t4 = Triple.create(a, p, NodeCreateUtils.create(NS + "v4"));
     Triple t5 = Triple.create(a, p, NodeCreateUtils.create(NS + "v5"));
     Triple t6 = Triple.create(a, p, NodeCreateUtils.create(NS + "v6"));
-    
+
     /**
      * Basic graph level test, no monitoring
      */
     public void testBasics() {
         Graph base = GraphMemFactory.createGraphMem();
         MonitorGraph monitor = new MonitorGraph(base);
-        
+
         // base data
         base.add(t1);
         base.add(t2);
         base.add(t3);
-        
+
         // Test changes from empty
         List<Triple> additions = new ArrayList<>();
         List<Triple> deletions = new ArrayList<>();
         monitor.snapshot(additions, deletions);
         TestUtil.assertIteratorValues(this, additions.iterator(), new Object[] {t1, t2, t3});
         TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[] {});
-        
+
         // Make some new changes
         base.add(t4);
         base.add(t5);
         base.delete(t1);
         base.delete(t2);
-        
+
         additions.clear();
         deletions.clear();
         monitor.snapshot(additions, deletions);
@@ -92,7 +92,7 @@ public class TestMonitors extends TestCase {
         TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[] {t1, t2});
         TestUtil.assertIteratorValues(this, monitor.find(Node.ANY, Node.ANY, Node.ANY), new Object[] {t3, t4, t5});
     }
-    
+
     /**
      * Monitoring test.
      */
@@ -105,36 +105,36 @@ public class TestMonitors extends TestCase {
         base.add(t1);
         base.add(t2);
         base.add(t3);
-        
+
         listener.has(new Object[]{});
-        
+
         // Test changes from empty
         List<Triple> additions = new ArrayList<>();
         List<Triple> deletions = new ArrayList<>();
         monitor.snapshot(additions, deletions);
         TestUtil.assertIteratorValues(this, additions.iterator(), new Object[] {t1, t2, t3});
         TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[] {});
-        
+
         listener.assertHas(new Object[] {"addList", monitor, additions, "deleteList", monitor, deletions});
         listener.clear();
-        
+
         // Make some new changes
         base.add(t4);
         base.add(t5);
         base.delete(t1);
         base.delete(t2);
-        
+
         additions.clear();
         deletions.clear();
         monitor.snapshot(additions, deletions);
         TestUtil.assertIteratorValues(this, additions.iterator(), new Object[] {t4, t5});
         TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[] {t1, t2});
         TestUtil.assertIteratorValues(this, monitor.find(Node.ANY, Node.ANY, Node.ANY), new Object[] {t3, t4, t5});
-        
+
         listener.assertHas(new Object[] {"addList", monitor, additions, "deleteList", monitor, deletions});
         listener.clear();
     }
-    
+
     /**
      * Test model level access
      */
@@ -148,16 +148,16 @@ public class TestMonitors extends TestCase {
         Statement s3 = base.createStatement(ar, pr, "3");
         Statement s4 = base.createStatement(ar, pr, "4");
         Statement s5 = base.createStatement(ar, pr, "5");
-        
+
         MonitorModel monitor = new MonitorModel(base);
         RecordingModelListener listener = new RecordingModelListener();
         monitor.register(listener);
-        
+
         // base data
         base.add(s1);
         base.add(s2);
         base.add(s3);
-        
+
         // Test changes from empty
         List<Statement> additions = new ArrayList<>();
         List<Statement> deletions = new ArrayList<>();
@@ -166,22 +166,22 @@ public class TestMonitors extends TestCase {
         TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[] {});
         listener.assertHas(new Object[] {"addList", additions, "removeList", deletions});
         listener.clear();
-        
+
         // Make some new changes
         base.add(s4);
         base.add(s5);
         base.remove(s1);
         base.remove(s2);
-        
+
         additions.clear();
         deletions.clear();
         monitor.snapshot(additions, deletions);
         TestUtil.assertIteratorValues(this, additions.iterator(), new Object[] {s4, s5});
         TestUtil.assertIteratorValues(this, deletions.iterator(), new Object[] {s1, s2});
         TestUtil.assertIteratorValues(this, monitor.listStatements(), new Object[] {s3, s4, s5});
-        
+
         listener.assertHas(new Object[] {"addList", additions, "removeList", deletions});
         listener.clear();
     }
-   
+
 }
