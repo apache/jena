@@ -23,11 +23,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.util.iterator.NiceIterator ;
 
 
 /**
+ * @deprecated Use {@link Iter#toList(Iterator)} and {@link Iter#toSet(Iterator)}
  */
+@Deprecated(forRemoval = true)
 public class IteratorCollection
     {
     /**
@@ -35,7 +38,7 @@ public class IteratorCollection
     */
     private IteratorCollection()
         {}
-    
+
     /**
         Answer the elements of the given iterator as a set. The iterator is consumed
         by the operation. Even if an exception is thrown, the iterator will be closed.

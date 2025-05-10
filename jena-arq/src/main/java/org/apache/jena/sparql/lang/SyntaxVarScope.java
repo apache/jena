@@ -89,7 +89,7 @@ public class SyntaxVarScope {
     }
 
     /**
-     * @deprecated use {@link checkElement}
+     * @deprecated use {@link #checkElement}
      */
     @Deprecated(forRemoval = true)
     public static void check(Element queryPattern) { checkElement(queryPattern); }

@@ -27,14 +27,12 @@ import static org.junit.Assert.fail;
 
 import java.util.Iterator;
 
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Node_URI;
-import org.apache.jena.graph.Triple;
+import org.junit.runner.RunWith;
+
+import org.apache.jena.graph.*;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.testing_framework.AbstractGraphProducer;
 import org.apache.jena.util.iterator.ExtendedIterator;
-import org.junit.runner.RunWith;
 import org.xenei.junit.contract.Contract.Inject;
 import org.xenei.junit.contract.ContractImpl;
 import org.xenei.junit.contract.ContractSuite;
@@ -46,11 +44,11 @@ import org.xenei.junit.contract.IProducer;
 @SuppressWarnings("deprecation")
 public class GraphMem_CS {
 
-	protected IProducer<GraphMem> graphProducer = new AbstractGraphProducer<GraphMem>() {
+	protected IProducer<Graph> graphProducer = new AbstractGraphProducer<Graph>() {
 
 		@Override
-		protected GraphMem createNewGraph() {
-			return new GraphMem();
+		protected Graph createNewGraph() {
+			return GraphMemFactory.createDefaultGraph();
 		}
 
 		@Override
@@ -66,7 +64,7 @@ public class GraphMem_CS {
 	};
 
 	@Inject
-	public IProducer<GraphMem> getGraphProducer() {
+	public IProducer<Graph> getGraphProducer() {
 		return graphProducer;
 	}
 

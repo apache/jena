@@ -18,6 +18,13 @@
 
 package org.apache.jena.system;
 
+import static org.apache.jena.graph.Node.ANY;
+
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.atlas.lib.Copyable;
 import org.apache.jena.datatypes.RDFDatatype;
@@ -30,15 +37,7 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.graph.NodeConst;
 import org.apache.jena.sparql.util.graph.GNode;
 import org.apache.jena.sparql.util.graph.GraphList;
-import org.apache.jena.util.IteratorCollection;
 import org.apache.jena.util.iterator.ExtendedIterator;
-
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
-import static org.apache.jena.graph.Node.ANY;
 
 /**
  * A library of functions for working with {@link Graph graphs}. Internally, all
@@ -975,8 +974,7 @@ public class G {
     }
 
     private static void addIteratorWorker( Graph graph, Iterator<Triple> it ) {
-        List<Triple> s = IteratorCollection.iteratorToList( it );
-        addIteratorWorkerDirect(graph, s.iterator());
+        addIteratorWorkerDirect(graph, it);
     }
 
     private static void addIteratorWorkerDirect( Graph graph, Iterator<Triple> it ) {

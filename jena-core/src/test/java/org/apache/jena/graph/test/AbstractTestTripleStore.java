@@ -18,6 +18,7 @@
 
 package org.apache.jena.graph.test;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.impl.TripleStore ;
 
 /**
@@ -27,46 +28,46 @@ public abstract class AbstractTestTripleStore extends GraphTestBase
     {
     public AbstractTestTripleStore( String name )
         { super( name ); }
-    
+
     /**
-         Subclasses must over-ride to return a new empty TripleStore. 
+         Subclasses must over-ride to return a new empty TripleStore.
     */
     public abstract TripleStore getTripleStore();
-    
+
     protected TripleStore store;
-    
+
     @Override
     public void setUp()
         {
         store = getTripleStore();
         }
-    
+
     public void testEmpty()
         { testEmpty( store ); }
-    
+
     public void testAddOne()
         {
         store.add( triple( "x P y" ) );
         assertEquals( false, store.isEmpty() );
         assertEquals( 1, store.size() );
         assertEquals( true, store.contains( triple( "x P y" ) ) );
-        assertEquals( nodeSet( "x" ), iteratorToSet( store.listSubjects() ) );
-        assertEquals( nodeSet( "y" ), iteratorToSet( store.listObjects() ) );
-        assertEquals( tripleSet( "x P y" ), iteratorToSet( store.find( triple( "?? ?? ??" ) ) ) );
+        assertEquals( nodeSet( "x" ), Iter.toSet( store.listSubjects() ) );
+        assertEquals( nodeSet( "y" ), Iter.toSet( store.listObjects() ) );
+        assertEquals( tripleSet( "x P y" ), Iter.toSet( store.find( triple( "?? ?? ??" ) ) ) );
         }
 
     public void testListSubjects()
         {
         someStatements( store );
-        assertEquals( nodeSet( "a x _z r q" ), iteratorToSet( store.listSubjects() ) );
+        assertEquals( nodeSet( "a x _z r q" ), Iter.toSet( store.listSubjects() ) );
         }
-    
+
     public void testListObjects()
         {
         someStatements( store );
-        assertEquals( nodeSet( "b y i _j _t 17" ), iteratorToSet( store.listObjects() ) );
+        assertEquals( nodeSet( "b y i _j _t 17" ), Iter.toSet( store.listObjects() ) );
         }
-    
+
     public void testContains()
         {
         someStatements( store );
@@ -83,29 +84,29 @@ public abstract class AbstractTestTripleStore extends GraphTestBase
         assertEquals( false, store.contains( triple( "b Z r" ) ) );
         assertEquals( false, store.contains( triple( "_a P x" ) ) );
         }
-    
+
     public void testFind()
         {
         someStatements( store );
-        assertEquals( tripleSet( "" ), iteratorToSet( store.find( triple( "no such thing" ) ) ) );
-        assertEquals( tripleSet( "a P b; a P i" ), iteratorToSet( store.find( triple( "a P ??" ) ) ) );
-        assertEquals( tripleSet( "a P b; x P y; a P i" ), iteratorToSet( store.find( triple( "?? P ??" ) ) ) );
-        assertEquals( tripleSet( "x P y; x R y" ), iteratorToSet( store.find( triple( "x ?? y" ) ) ) );
-        assertEquals( tripleSet( "_z Q _j" ), iteratorToSet( store.find( triple( "?? ?? _j" ) ) ) );
-        assertEquals( tripleSet( "q R 17" ), iteratorToSet( store.find( triple( "?? ?? 17" ) ) ) );
+        assertEquals( tripleSet( "" ), Iter.toSet( store.find( triple( "no such thing" ) ) ) );
+        assertEquals( tripleSet( "a P b; a P i" ), Iter.toSet( store.find( triple( "a P ??" ) ) ) );
+        assertEquals( tripleSet( "a P b; x P y; a P i" ), Iter.toSet( store.find( triple( "?? P ??" ) ) ) );
+        assertEquals( tripleSet( "x P y; x R y" ), Iter.toSet( store.find( triple( "x ?? y" ) ) ) );
+        assertEquals( tripleSet( "_z Q _j" ), Iter.toSet( store.find( triple( "?? ?? _j" ) ) ) );
+        assertEquals( tripleSet( "q R 17" ), Iter.toSet( store.find( triple( "?? ?? 17" ) ) ) );
         }
-    
+
     public void testRemove()
         {
         store.add( triple( "nothing before ace" ) );
         store.add( triple( "ace before king" ) );
         store.add( triple( "king before queen" ) );
         store.delete( triple( "ace before king" ) );
-        assertEquals( tripleSet( "king before queen; nothing before ace" ), iteratorToSet( store.find( triple( "?? ?? ??" ) ) ) );
+        assertEquals( tripleSet( "king before queen; nothing before ace" ), Iter.toSet( store.find( triple( "?? ?? ??" ) ) ) );
         store.delete( triple( "king before queen" ) );
-        assertEquals( tripleSet( "nothing before ace" ), iteratorToSet( store.find( triple( "?? ?? ??" ) ) ) );
+        assertEquals( tripleSet( "nothing before ace" ), Iter.toSet( store.find( triple( "?? ?? ??" ) ) ) );
         }
-    
+
     public void someStatements( TripleStore ts )
         {
         ts.add( triple( "a P b" ) );
@@ -116,7 +117,7 @@ public abstract class AbstractTestTripleStore extends GraphTestBase
         ts.add( triple( "r S _t" ) );
         ts.add( triple( "q R 17" ) );
         }
-    
+
     public void testEmpty( TripleStore ts )
         {
         assertEquals( true, ts.isEmpty() );

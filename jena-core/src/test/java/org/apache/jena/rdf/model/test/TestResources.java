@@ -21,14 +21,15 @@ package org.apache.jena.rdf.model.test;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.jena.graph.test.GraphTestBase ;
+import org.junit.Assert;
+
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
 import org.apache.jena.shared.InvalidPropertyURIException ;
 import org.apache.jena.shared.PropertyNotFoundException ;
 import org.apache.jena.test.JenaTestBase ;
 import org.apache.jena.vocabulary.RDF ;
-import org.junit.Assert;
 
 public class TestResources extends AbstractModelTestBase
 {
@@ -260,24 +261,21 @@ public class TestResources extends AbstractModelTestBase
             JenaTestBase.pass();
         }
 		//
-		Assert.assertEquals(13,
-				GraphTestBase.iteratorToSet(r.listProperties(RDF.value)).size());
-		Assert.assertEquals(setOf(r), GraphTestBase.iteratorToSet(r
-				.listProperties(RDF.value).mapWith(Statement::getSubject)));
+		Assert.assertEquals(13, Iter.toSet(r.listProperties(RDF.value)).size());
+		Assert.assertEquals(setOf(r), Iter.toSet(r.listProperties(RDF.value).mapWith(Statement::getSubject)));
 		//
-		Assert.assertEquals(0, GraphTestBase.iteratorToSet(r.listProperties(p))
+		Assert.assertEquals(0, Iter.toSet(r.listProperties(p))
 				.size());
 		Assert.assertEquals(
 				new HashSet<Resource>(),
-				GraphTestBase.iteratorToSet(r.listProperties(p).mapWith(
+				Iter.toSet(r.listProperties(p).mapWith(
 						Statement::getSubject)));
 		//
 		Assert.assertEquals(13 + numProps,
-				GraphTestBase.iteratorToSet(r.listProperties()).size());
+		                    Iter.toSet(r.listProperties()).size());
 		Assert.assertEquals(
 				setOf(r),
-				GraphTestBase.iteratorToSet(r.listProperties().mapWith(
-						Statement::getSubject)));
+				Iter.toSet(r.listProperties().mapWith(Statement::getSubject)));
 		//
 		r.removeProperties();
 		Assert.assertEquals(0, r.listProperties().toList().size());

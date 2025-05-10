@@ -52,6 +52,7 @@ import org.apache.jena.util.ModelCollector.IntersectionModelCollector;
 import org.apache.jena.util.ModelCollector.UnionModelCollector;
 import org.junit.Test;
 
+@SuppressWarnings("removal")
 public class TestModelCollector {
 
     public static junit.framework.Test suite() {

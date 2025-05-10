@@ -66,4 +66,9 @@ public class GraphReadOnly extends WrappedGraph
     public PrefixMapping getPrefixMapping() {
         return new PrefixMappingReadOnly(getWrapped().getPrefixMapping());
     }
+
+    @Override
+    public String toString() {
+        return super.base.toString();
+    }
 }

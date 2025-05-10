@@ -21,28 +21,17 @@ package org.apache.jena.testing_framework;
 /**
  * Foo set of static test helpers.  Generally included as a static.
  */
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.*;
 
-import org.apache.jena.graph.GraphMemFactory;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.GraphUtil;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.*;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.util.CollectionFactory;
-import org.apache.jena.util.IteratorCollection;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 public class GraphHelper extends TestUtils {
@@ -55,23 +44,19 @@ public class GraphHelper extends TestUtils {
 		return NodeCreateUtils.create(x);
 	}
 
-	/**
-	 * Answer a set containing the elements from the iterator <code>it</code>; a
-	 * shorthand for <code>IteratorCollection.iteratorToSet(it)</code>, which
-	 * see.
-	 */
-	public static <T> Set<T> iteratorToSet(Iterator<? extends T> it) {
-		return IteratorCollection.iteratorToSet(it);
-	}
-
-	/**
-	 * Answer a list containing the elements from the iterator <code>it</code>,
-	 * in order; a shorthand for
-	 * <code>IteratorCollection.iteratorToList(it)</code>, which see.
-	 */
-	public static <T> List<T> iteratorToList(Iterator<? extends T> it) {
-		return IteratorCollection.iteratorToList(it);
-	}
+//	/**
+//	 * Answer a set containing the elements from the iterator <code>it</code>.
+//	 */
+//	public static <T> Set<T> Iter.toSet(Iterator<? extends T> it) {
+//		return Iter.toSet(it);
+//	}
+//
+//	/**
+//	 * Answer a list containing the elements from the iterator <code>it</code>.
+//	 */
+//	public static <T> List<T> Iter.toList(Iterator<? extends T> it) {
+//		return Iter.toList(it);
+//	}
 
 	/**
 	 * Answer a set of the nodes described (as per <code>node()</code>) by the

@@ -37,6 +37,7 @@ public class Delta extends CompositionBase implements Graph {
     private Graph additions;
     private Graph deletions;
 
+    @SuppressWarnings("deprecation")
     public Delta(Graph base) {
         super();
         this.base = GraphPlain.plain(base);

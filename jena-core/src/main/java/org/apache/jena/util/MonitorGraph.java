@@ -25,15 +25,18 @@ import org.apache.jena.graph.impl.* ;
 
 /**
  * Graph wrapper which provides normal access to an underlying graph but
- * also maintains a snapshot of the triples it was last known to contain. 
+ * also maintains a snapshot of the triples it was last known to contain.
  * A snapshot action
  * causes the set of changes between this and the previous snapshot to
- * be calculated and the cache updated. The snapshot process will also 
+ * be calculated and the cache updated. The snapshot process will also
  * fire change notification.
+ *
+ * @deprecated Do not use - to be removed.
  */
+@Deprecated(forRemoval = true)
 
 public class MonitorGraph extends WrappedGraph {
-    
+
     /** The last known snapshot, a set of triples */
     protected Set<Triple> snapshot = new HashSet<>();
 
@@ -41,7 +44,7 @@ public class MonitorGraph extends WrappedGraph {
     public MonitorGraph(Graph g) {
         super(g);
     }
-    
+
     /**
      * Compute the differences between the current monitored graph and the last
      * snapshot. The changes will also be forwarded to any listeners.
@@ -53,11 +56,11 @@ public class MonitorGraph extends WrappedGraph {
         boolean listening = getEventManager().listening();
         boolean wantAdditions = listening || additions != null;
         boolean wantDeletions = listening || deletions != null;
-        
+
         List<Triple> additionsTemp = (additions != null) ? additions : new ArrayList<>();
         List<Triple> deletionsTemp = (deletions != null) ? deletions : new ArrayList<>();
         Set<Triple>  deletionsTempSet = (wantDeletions) ? new HashSet<>() : null;
-        
+
         if (wantAdditions || wantDeletions) {
             if (wantDeletions) {
                 deletionsTempSet.addAll(snapshot);
@@ -77,12 +80,12 @@ public class MonitorGraph extends WrappedGraph {
             // for the method signature for compatibility with listeners
             deletionsTemp.addAll(deletionsTempSet);
         }
-        
+
         if (listening) {
             getEventManager().notifyAddList(this, additionsTemp);
             getEventManager().notifyDeleteList(this, deletionsTemp);
         }
-        
+
         // Update shapshot
         // In somecases applying the already computed changes may be cheaper, could optmize
         // this based on relative sizes if it becomes an issue.
@@ -92,5 +95,5 @@ public class MonitorGraph extends WrappedGraph {
         }
 
     }
-    
+
 }

@@ -287,7 +287,7 @@ public class TestRDFParser {
     private static Node p = SSE.parseNode(":p");
 
     private void testNormalization(String input, String output, RDFParserBuilder builder) {
-        Graph graph = GraphFactory.createPlainGraph();
+        Graph graph = GraphFactory.createDefaultGraph();
         String x = PREFIX + ":s :p " + input;
         builder.source(new StringReader(x)).parse(graph);
         assertEquals(1, graph.size());

@@ -39,7 +39,7 @@ public class TurtleWriter extends TurtleWriterBase {
         private void write(Graph graph) {
             writeBase(baseURI);
             writePrefixes(prefixMap);
-            if ( !prefixMap.isEmpty() && !graph.isEmpty() )
+            if ( ( baseURI != null || !prefixMap.isEmpty() ) && !graph.isEmpty() )
                 out.println();
             writeGraphTTL(graph);
         }

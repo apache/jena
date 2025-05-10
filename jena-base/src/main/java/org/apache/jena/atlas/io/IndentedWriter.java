@@ -354,7 +354,7 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     /** Set the marker included at end of line - set to null for "none".  Usually used for debugging. */
     public void setEndOfLineMarker(String marker)  {  endOfLineMarker = marker; }
 
-    /** Flat mode - print without NL, for a more compact representation*/
+    /** Flat mode - print without NL, for a more compact representation */
     public boolean inFlatMode()                     { return flatMode; }
     /** Flat mode - print without NL, for a more compact representation*/
     public void setFlatMode(boolean flatMode)       { this.flatMode = flatMode; }

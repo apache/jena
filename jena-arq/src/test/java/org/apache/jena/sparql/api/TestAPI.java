@@ -52,7 +52,6 @@ import org.apache.jena.sparql.core.DatasetGraphFactory;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.graph.GraphFactory;
 import org.apache.jena.sparql.util.IsoMatcher;
-import org.apache.jena.sparql.util.ModelUtils;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.junit.Test;
@@ -394,11 +393,11 @@ public class TestAPI
 
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
 
-        Iterator<Triple> ts = qExec.execConstructTriples();
+        Iterator<Triple> iterTriples = qExec.execConstructTriples();
         Model result = ModelFactory.createDefaultModel();
-        while (ts.hasNext()) {
-            Triple t = ts.next();
-            Statement stmt = ModelUtils.tripleToStatement(result, t);
+        while (iterTriples.hasNext()) {
+            Triple triple = iterTriples.next();
+            Statement stmt = result.asStatement(triple);
             if ( stmt != null )
                 result.add(stmt);
         }
@@ -413,13 +412,13 @@ public class TestAPI
 
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
 
-        Iterator<Quad> ts = qExec.execConstructQuads();
+        Iterator<Quad> iterQuads = qExec.execConstructQuads();
         DatasetGraph result = DatasetGraphFactory.create();
         long count = 0;
-        while (ts.hasNext()) {
+        while (iterQuads.hasNext()) {
             count++;
-            Quad qd = ts.next();
-            result.add(qd);
+            Quad quad = iterQuads.next();
+            result.add(quad);
         }
 
         DatasetGraph expected = DatasetGraphFactory.create();
@@ -437,12 +436,12 @@ public class TestAPI
 
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
 
-        Iterator<Quad> ts = qExec.execConstructQuads();
+        Iterator<Quad> iterQuads = qExec.execConstructQuads();
         DatasetGraph result = DatasetGraphFactory.create();
         long count = 0;
-        while (ts.hasNext()) {
+        while (iterQuads.hasNext()) {
             count++;
-            result.add( ts.next() );
+            result.add( iterQuads.next() );
         }
         DatasetGraph expected = DatasetGraphFactory.create();
         expected.add(Quad.defaultGraphNodeGenerated, s.asNode(), p.asNode(), o.asNode());
@@ -456,11 +455,11 @@ public class TestAPI
         String queryString = "CONSTRUCT { ?s ?p ?o GRAPH ?g1 { ?s1 ?p1 ?o1 } } WHERE { ?s ?p ?o. GRAPH ?g1 { ?s1 ?p1 ?o1 } }";
         Query q = QueryFactory.create(queryString, Syntax.syntaxARQ);
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
-        Iterator<Triple> ts = qExec.execConstructTriples();
+        Iterator<Triple> iterTriples = qExec.execConstructTriples();
         Model result = ModelFactory.createDefaultModel();
-        while (ts.hasNext()) {
-            Triple t = ts.next();
-            Statement stmt = ModelUtils.tripleToStatement(result, t);
+        while (iterTriples.hasNext()) {
+            Triple triple = iterTriples.next();
+            Statement stmt = result.asStatement(triple);
             if ( stmt != null )
                 result.add(stmt);
         }
@@ -488,13 +487,13 @@ public class TestAPI
 
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
 
-        Iterator<Quad> ts = qExec.execConstructQuads();
+        Iterator<Quad> iterQuads = qExec.execConstructQuads();
         long count = 0;
         Quad expected = Quad.create( g1.asNode(), s.asNode(), p.asNode(), o.asNode());
-        while (ts.hasNext()) {
+        while (iterQuads.hasNext()) {
             count++;
-            Quad qd = ts.next();
-            assertEquals(expected, qd);
+            Quad quad = iterQuads.next();
+            assertEquals(expected, quad);
         }
         assertEquals(3, count); // 3 duplicated quads
     }
@@ -521,13 +520,13 @@ public class TestAPI
 
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
 
-        Iterator<Quad> ts = qExec.execConstructQuads();
+        Iterator<Quad> iterQuads = qExec.execConstructQuads();
         long count = 0;
         Quad expected = Quad.create( g1.asNode(), s.asNode(), p.asNode(), o.asNode());
-        while (ts.hasNext()) {
+        while (iterQuads.hasNext()) {
             count++;
-            Quad qd = ts.next();
-            assertEquals(expected, qd);
+            Quad quad = iterQuads.next();
+            assertEquals(expected, quad);
         }
         assertEquals(6, count); // 6 duplicated quads
     }
@@ -539,12 +538,12 @@ public class TestAPI
 
         QueryExecution qExec = QueryExecutionFactory.create(q, d);
 
-        Iterator<Quad> quads = qExec.execConstructQuads();
+        Iterator<Quad> iterQuads = qExec.execConstructQuads();
         DatasetGraph result = DatasetGraphFactory.create();
         long count = 0;
-        while (quads.hasNext()) {
+        while (iterQuads.hasNext()) {
             count++;
-            Quad qd = quads.next();
+            Quad qd = iterQuads.next();
             result.add(qd);
         }
 

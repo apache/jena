@@ -73,6 +73,10 @@ public class ModelUtils
         return convertGraphNodeToRDFNode(node, null);
     }
 
+    /**
+     * @deprecated Use {@link Model#asStatement(Triple)}.
+     */
+   @Deprecated(forRemoval = true)
     public static Statement tripleToStatement(Model model, Triple t) {
         if ( model == null )
             throw new ARQInternalErrorException("Attempt to create statement with null model");
@@ -81,7 +85,7 @@ public class ModelUtils
         Node pNode = t.getPredicate();
         Node oNode = t.getObject();
 
-        if (!isValidAsStatement(sNode, pNode, oNode)) return null;
+        if (!NodeUtils.isValidAsRDF(sNode, pNode, oNode)) return null;
 
         return model.asStatement(t);
     }
@@ -99,11 +103,15 @@ public class ModelUtils
      *
      * @deprecated Use {@link NodeUtils#isValidAsRDF(Node, Node, Node)}.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static boolean isValidAsStatement(Node s, Node p, Node o) {
         return NodeUtils.isValidAsRDF(s, p, o);
     }
 
+    /**
+    * @deprecated Use {@link NodeUtils#isValidAsRDF(Node, Node, Node)}.
+    */
+   @Deprecated(forRemoval = true)
     public static StmtIterator triplesToStatements(final Iterator<Triple> it, final Model refModel) {
         return new StmtIteratorImpl(Iter.map(it, refModel::asStatement)) {
             // Make sure to close the incoming iterator
@@ -118,15 +126,19 @@ public class ModelUtils
         };
     }
 
+    /** @deprecated To be removed. */
+    @Deprecated(forRemoval = true)
     public static ModelCollector intersectCollector() {
         return new ModelCollector.IntersectionModelCollector();
     }
 
+    /** @deprecated To be removed. */
+    @Deprecated(forRemoval = true)
     public static ModelCollector unionCollector() {
         return new ModelCollector.UnionModelCollector();
     }
-
-    public static Iterator<Triple> statementsToTriples(final Iterator<Statement> it) {
-        return Iter.onClose(Iter.map(it, Statement::asTriple), ()->Iter.close(it));
-    }
+//
+//    public static Iterator<Triple> statementsToTriples(final Iterator<Statement> it) {
+//        return Iter.onClose(Iter.map(it, Statement::asTriple), ()->Iter.close(it));
+//    }
 }

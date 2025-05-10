@@ -18,14 +18,18 @@
 
 package org.apache.jena.graph.impl;
 
+import static org.apache.jena.testing_framework.GraphHelper.nodeSet;
+import static org.apache.jena.testing_framework.GraphHelper.triple;
+import static org.apache.jena.testing_framework.GraphHelper.tripleSet;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import org.junit.After;
 import org.junit.Before;
+
+import org.apache.jena.atlas.iterator.Iter;
 import org.xenei.junit.contract.Contract;
 import org.xenei.junit.contract.ContractTest;
-
-import static org.junit.Assert.*;
-
-import static org.apache.jena.testing_framework.GraphHelper.*;
 import org.xenei.junit.contract.IProducer;
 
 /**
@@ -36,7 +40,7 @@ import org.xenei.junit.contract.IProducer;
 public class TripleStoreContractTest<T extends TripleStore> {
 
 	protected TripleStore store;
-	
+
 	private IProducer<T> producer;
 
 	public TripleStoreContractTest() {
@@ -71,23 +75,23 @@ public class TripleStoreContractTest<T extends TripleStore> {
 		assertEquals(false, store.isEmpty());
 		assertEquals(1, store.size());
 		assertEquals(true, store.contains(triple("x P y")));
-		assertEquals(nodeSet("x"), iteratorToSet(store.listSubjects()));
-		assertEquals(nodeSet("y"), iteratorToSet(store.listObjects()));
+		assertEquals(nodeSet("x"), Iter.toSet(store.listSubjects()));
+		assertEquals(nodeSet("y"), Iter.toSet(store.listObjects()));
 		assertEquals(tripleSet("x P y"),
-				iteratorToSet(store.find(triple("?? ?? ??"))));
+				Iter.toSet(store.find(triple("?? ?? ??"))));
 	}
 
 	@ContractTest
 	public void testListSubjects() {
 		someStatements(store);
-		assertEquals(nodeSet("a x _z r q"), iteratorToSet(store.listSubjects()));
+		assertEquals(nodeSet("a x _z r q"), Iter.toSet(store.listSubjects()));
 	}
 
 	@ContractTest
 	public void testListObjects() {
 		someStatements(store);
 		assertEquals(nodeSet("b y i _j _t 17"),
-				iteratorToSet(store.listObjects()));
+				Iter.toSet(store.listObjects()));
 	}
 
 	@ContractTest
@@ -111,17 +115,17 @@ public class TripleStoreContractTest<T extends TripleStore> {
 	public void testFind() {
 		someStatements(store);
 		assertEquals(tripleSet(""),
-				iteratorToSet(store.find(triple("no such thing"))));
+				Iter.toSet(store.find(triple("no such thing"))));
 		assertEquals(tripleSet("a P b; a P i"),
-				iteratorToSet(store.find(triple("a P ??"))));
+				Iter.toSet(store.find(triple("a P ??"))));
 		assertEquals(tripleSet("a P b; x P y; a P i"),
-				iteratorToSet(store.find(triple("?? P ??"))));
+				Iter.toSet(store.find(triple("?? P ??"))));
 		assertEquals(tripleSet("x P y; x R y"),
-				iteratorToSet(store.find(triple("x ?? y"))));
+				Iter.toSet(store.find(triple("x ?? y"))));
 		assertEquals(tripleSet("_z Q _j"),
-				iteratorToSet(store.find(triple("?? ?? _j"))));
+				Iter.toSet(store.find(triple("?? ?? _j"))));
 		assertEquals(tripleSet("q R 17"),
-				iteratorToSet(store.find(triple("?? ?? 17"))));
+				Iter.toSet(store.find(triple("?? ?? 17"))));
 	}
 
 	@ContractTest
@@ -131,10 +135,10 @@ public class TripleStoreContractTest<T extends TripleStore> {
 		store.add(triple("king before queen"));
 		store.delete(triple("ace before king"));
 		assertEquals(tripleSet("king before queen; nothing before ace"),
-				iteratorToSet(store.find(triple("?? ?? ??"))));
+				Iter.toSet(store.find(triple("?? ?? ??"))));
 		store.delete(triple("king before queen"));
 		assertEquals(tripleSet("nothing before ace"),
-				iteratorToSet(store.find(triple("?? ?? ??"))));
+				Iter.toSet(store.find(triple("?? ?? ??"))));
 	}
 
 	protected void someStatements(TripleStore ts) {

@@ -41,7 +41,6 @@ import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shared.JenaException;
-import org.apache.jena.sparql.SystemARQ;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.ResultSetStream;
@@ -175,30 +174,23 @@ public class QueryEvalTest implements Runnable {
     }
 
     private Dataset createDataset(List<String> defaultGraphURIs, List<String> namedGraphURIs) {
-        // Allow "qt:data" to be quads in defaultGraphURIs.
-        SystemARQ.UsePlainGraph = true;
-        try {
-            Dataset ds = createEmptyDataset();
-            Txn.executeWrite(ds, ()->{
-                if ( defaultGraphURIs != null ) {
-                    for ( String sourceURI : defaultGraphURIs ) {
-                        SparqlTestLib.parser(sourceURI).parse(ds);
-                    }
+    // Allow "qt:data" to be quads in defaultGraphURIs.
+        Dataset ds = createEmptyDataset();
+        Txn.executeWrite(ds, ()->{
+            if ( defaultGraphURIs != null ) {
+                for ( String sourceURI : defaultGraphURIs ) {
+                    SparqlTestLib.parser(sourceURI).parse(ds);
                 }
-                if ( namedGraphURIs != null ) {
-                    for ( String sourceURI : namedGraphURIs ) {
-                        String absSourceURI = IRIs.resolve(sourceURI);
-                        Model m = ds.getNamedModel(absSourceURI);
-                        SparqlTestLib.parser(sourceURI).parse(m);
-                    }
+            }
+            if ( namedGraphURIs != null ) {
+                for ( String sourceURI : namedGraphURIs ) {
+                    String absSourceURI = IRIs.resolve(sourceURI);
+                    Model m = ds.getNamedModel(absSourceURI);
+                    SparqlTestLib.parser(sourceURI).parse(m);
                 }
-            });
-            return ds;
-        }
-        finally {
-            SystemARQ.UsePlainGraph = false;
-        }
-
+            }
+        });
+        return ds;
     }
 
     private void runTestSelect(Query query, QueryExecution qe) {

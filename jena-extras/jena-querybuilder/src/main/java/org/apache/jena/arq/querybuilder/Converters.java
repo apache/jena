@@ -18,12 +18,7 @@
 package org.apache.jena.arq.querybuilder;
 
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -38,7 +33,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RiotException;
-import org.apache.jena.riot.system.PrefixMapFactory;
+import org.apache.jena.riot.system.Prefixes;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.ARQInternalErrorException;
 import org.apache.jena.sparql.core.TriplePath;
@@ -186,7 +181,7 @@ public class Converters {
 
         if (o instanceof String) {
             try {
-                return checkVar(NodeFactoryExtra.parseNode((String) o, PrefixMapFactory.create(pMapping)));
+                return checkVar(NodeFactoryExtra.parseNode((String) o, Prefixes.adapt(pMapping)));
             } catch (final RiotException e) {
                 // expected in some cases -- do nothing
             }

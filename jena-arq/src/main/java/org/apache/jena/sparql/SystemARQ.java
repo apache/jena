@@ -58,8 +58,10 @@ public class SystemARQ
     public static boolean EnableRomanNumerals   = true ;
 
     /**
-     * Use a plain graph (sameValueAs is term equality)
+     * Use a plain graph (sameAs is term equality)
+     * @deprecated From jena5, all graph are term equality except where support the Model API.
      */
+    @Deprecated(forRemoval = true)
     public static boolean UsePlainGraph         = false ;
 
     /**

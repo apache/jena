@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,14 +18,11 @@
 
 package org.apache.jena.rdf.model.test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.apache.jena.graph.test.GraphTestBase ;
+import org.junit.Assert;
+
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.rdf.listeners.ChangedListener ;
 import org.apache.jena.rdf.listeners.NullListener ;
 import org.apache.jena.rdf.listeners.ObjectListener ;
@@ -38,7 +35,6 @@ import org.apache.jena.rdf.model.impl.StmtIteratorImpl ;
 import org.apache.jena.rdf.model.test.helpers.ModelHelper ;
 import org.apache.jena.rdf.model.test.helpers.RecordingModelListener ;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
-import org.junit.Assert;
 
 /**
  * Tests for model events and listeners.
@@ -65,7 +61,7 @@ public class TestModelEvents extends AbstractModelTestBase
 			}
 			if (x instanceof Iterator<?>)
 			{
-				return GraphTestBase.iteratorToList((Iterator<?>) x);
+				return Iter.toList((Iterator<?>) x);
 			}
 			return x;
 		}

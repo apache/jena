@@ -21,8 +21,8 @@ package org.apache.jena.graph;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.testing_framework.AbstractRecordingListener;
-import org.apache.jena.testing_framework.GraphHelper;
 
 /**
  * This testing listener records the event names and data, and provides a method
@@ -48,7 +48,7 @@ public class RecordingGraphListener extends AbstractRecordingListener implements
 
 	@Override
 	public void notifyAddIterator(Graph g, Iterator<Triple> it) {
-		record("addIterator", g, GraphHelper.iteratorToList(it));
+		record("addIterator", g, Iter.toList(it));
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class RecordingGraphListener extends AbstractRecordingListener implements
 
 	@Override
 	public void notifyDeleteIterator(Graph g, Iterator<Triple> it) {
-		record("deleteIterator", g, GraphHelper.iteratorToList(it));
+		record("deleteIterator", g, Iter.toList(it));
 	}
 
 	@Override

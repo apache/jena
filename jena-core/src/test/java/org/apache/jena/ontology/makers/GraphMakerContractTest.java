@@ -19,12 +19,13 @@
 package org.apache.jena.ontology.makers;
 
 import static org.junit.Assert.*;
+
 import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
-import org.xenei.junit.contract.Contract;
-import org.xenei.junit.contract.ContractTest;
+
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -32,8 +33,10 @@ import org.apache.jena.ontology.models.GraphMaker;
 import org.apache.jena.shared.AlreadyExistsException;
 import org.apache.jena.shared.DoesNotExistException;
 import org.apache.jena.testing_framework.GraphHelper;
-import org.xenei.junit.contract.IProducer;
 import org.apache.jena.testing_framework.TestUtils;
+import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.ContractTest;
+import org.xenei.junit.contract.IProducer;
 
 /**
  * GraphMaker contract test.
@@ -170,7 +173,7 @@ public class GraphMakerContractTest {
 	 * Test that we can find a graph once its been created. We need to know if
 	 * two graphs are "the same" here: we have a temporary work-around but it is
 	 * not sound.
-	 * 
+	 *
 	 */
 	@ContractTest
 	public void testCanFindCreatedGraph() {
@@ -267,7 +270,7 @@ public class GraphMakerContractTest {
 		Graph Y = graphMaker.createGraph(y);
 		Graph Z = graphMaker.createGraph(z);
 		Set<String> wanted = TestUtils.setOfStrings(x + " " + y + " " + z);
-		assertEquals(wanted, GraphHelper.iteratorToSet(graphMaker.listGraphs()));
+		assertEquals(wanted, Iter.toSet(graphMaker.listGraphs()));
 		X.close();
 		Y.close();
 		Z.close();
@@ -284,7 +287,7 @@ public class GraphMakerContractTest {
 		Graph Y = graphMaker.createGraph(y);
 		Graph Z = graphMaker.createGraph(z);
 		graphMaker.removeGraph(x);
-		Set<String> s = GraphHelper.iteratorToSet(graphMaker.listGraphs());
+		Set<String> s = Iter.toSet(graphMaker.listGraphs());
 		assertEquals(TestUtils.setOfStrings(y + " " + z), s);
 		X.close();
 		Y.close();

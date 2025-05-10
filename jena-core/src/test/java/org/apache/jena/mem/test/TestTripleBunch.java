@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.graph.test.GraphTestBase ;
 import org.apache.jena.mem.* ;
@@ -40,9 +41,9 @@ public abstract class TestTripleBunch extends GraphTestBase
         { super( name ); }
 
     protected static final TripleBunch emptyBunch = new ArrayBunch();
-    
+
     protected abstract TripleBunch getBunch();
-    
+
     public void testEmptyBunch()
         {
         TripleBunch b = getBunch();
@@ -58,9 +59,9 @@ public abstract class TestTripleBunch extends GraphTestBase
         b.add( tripleSPO );
         assertEquals( 1, b.size() );
         assertTrue( b.contains( tripleSPO ) );
-        assertEquals( listOf( tripleSPO ), iteratorToList( b.iterator() ) );
+        assertEquals( listOf( tripleSPO ), Iter.toList( b.iterator() ) );
         }
-    
+
     public void testAddElements()
         {
         TripleBunch b = getBunch();
@@ -69,9 +70,9 @@ public abstract class TestTripleBunch extends GraphTestBase
         assertEquals( 2, b.size() );
         assertTrue( b.contains( tripleSPO ) );
         assertTrue( b.contains( tripleXQY ) );
-        assertEquals( setOf( tripleSPO, tripleXQY ), iteratorToSet( b.iterator() ) );
+        assertEquals( setOf( tripleSPO, tripleXQY ), Iter.toSet( b.iterator() ) );
         }
-    
+
     public void testRemoveOnlyElement()
         {
         TripleBunch b = getBunch();
@@ -81,7 +82,7 @@ public abstract class TestTripleBunch extends GraphTestBase
         assertFalse( b.contains( tripleSPO ) );
         assertFalse( b.iterator().hasNext() );
         }
-    
+
     public void testRemoveFirstOfTwo()
         {
         TripleBunch b = getBunch();
@@ -91,7 +92,7 @@ public abstract class TestTripleBunch extends GraphTestBase
         assertEquals( 1, b.size() );
         assertFalse( b.contains( tripleSPO ) );
         assertTrue( b.contains( tripleXQY ) );
-        assertEquals( listOf( tripleXQY ), iteratorToList( b.iterator() ) );
+        assertEquals( listOf( tripleXQY ), Iter.toList( b.iterator() ) );
         }
 
     public void testTableGrows()
@@ -102,7 +103,7 @@ public abstract class TestTripleBunch extends GraphTestBase
         b.add( triple( "a I b" ) );
         b.add( triple( "c J d" ) );
         }
-    
+
     public void testIterator()
         {
         TripleBunch b = getBunch();
@@ -111,7 +112,7 @@ public abstract class TestTripleBunch extends GraphTestBase
         b.add( triple( "e R f" ) );
         assertEquals( tripleSet( "a P b; c Q d; e R f" ), b.iterator().toSet() );
         }
-    
+
     public void testIteratorRemoveOneItem()
         {
         TripleBunch b = getBunch();
@@ -122,7 +123,7 @@ public abstract class TestTripleBunch extends GraphTestBase
         while (it.hasNext()) if (it.next().equals( triple( "c Q d") )) it.remove();
         assertEquals( tripleSet( "a P b; e R f" ), b.iterator().toSet() );
         }
-    
+
     public void testIteratorRemoveAlltems()
         {
         TripleBunch b = getBunch();
@@ -133,21 +134,21 @@ public abstract class TestTripleBunch extends GraphTestBase
         while (it.hasNext()) it.removeNext();
         assertEquals( tripleSet( "" ), b.iterator().toSet() );
         }
-        
+
     protected List<Triple> listOf( Triple x )
         {
         List<Triple> result = new ArrayList<>();
         result.add( x );
         return result;
         }
-    
+
     protected Set<Triple> setOf( Triple x, Triple y )
         {
         Set<Triple> result = setOf( x );
         result.add( y );
         return result;
         }
-    
+
     protected Set<Triple> setOf( Triple x )
         {
         Set<Triple> result = new HashSet<>();

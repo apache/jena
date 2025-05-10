@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,12 +22,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.jena.graph.test.GraphTestBase ;
+import org.junit.Assert;
+
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.rdf.model.test.helpers.ModelHelper ;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
 import org.apache.jena.vocabulary.RDF ;
-import org.junit.Assert;
 
 public class TestObjects extends AbstractModelTestBase
 {
@@ -145,13 +146,13 @@ public class TestObjects extends AbstractModelTestBase
 		final Set<Literal> wanted = literalsUpto(TestObjects.numberSubjects
 				* TestObjects.numberPredicates);
 		Assert.assertEquals(wanted,
-				GraphTestBase.iteratorToSet(model.listObjects()));
+				Iter.toSet(model.listObjects()));
 	}
 
 	public void testListObjectsOfPropertyByProperty()
 	{
 		fill(model);
-		final List<RDFNode> L = GraphTestBase.iteratorToList(model
+		final List<RDFNode> L = Iter.toList(model
 				.listObjectsOfProperty(ModelHelper
 						.property(TestObjects.predicatePrefix + "0/p")));
 		Assert.assertEquals(TestObjects.numberSubjects, L.size());
@@ -167,7 +168,7 @@ public class TestObjects extends AbstractModelTestBase
 		{
 			model.addLiteral(s, RDF.value, i);
 		}
-		final List<RDFNode> L = GraphTestBase.iteratorToList(model
+		final List<RDFNode> L = Iter.toList(model
 				.listObjectsOfProperty(s, RDF.value));
 		Assert.assertEquals(size, L.size());
 		final Set<Literal> wanted = literalsUpto(size);
@@ -188,7 +189,7 @@ public class TestObjects extends AbstractModelTestBase
 		final List<Resource> L = model.listSubjects().toList();
 		Assert.assertEquals(TestObjects.numberSubjects, L.size());
 		final Set<Resource> wanted = subjectSet(TestObjects.numberSubjects);
-		Assert.assertEquals(wanted, GraphTestBase.iteratorToSet(L.iterator()));
+		Assert.assertEquals(wanted, Iter.toSet(L.iterator()));
 	}
 
 }
