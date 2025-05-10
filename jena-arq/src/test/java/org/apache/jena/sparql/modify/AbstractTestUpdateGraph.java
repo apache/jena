@@ -360,7 +360,7 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
         DatasetGraph gStore = getEmptyDatasetGraph();
         script(gStore, "data-2.ru");
 
-        Graph g = GraphFactory.createPlainGraph();
+        Graph g = GraphFactory.createDefaultGraph();
         Node b = org.apache.jena.graph.NodeFactory.createBlankNode();
 
         g.add(Triple.create(s, p, b));
