@@ -142,7 +142,7 @@ public class QueryTestItem
 
         if ( ResultsFormat.isRDFGraphSyntax(format) ) {
             // Load plain.
-            Graph g = GraphFactory.createPlainGraph();
+            Graph g = GraphFactory.createDefaultGraph();
             SparqlTestLib.parser(resultFile).parse(g);
             Model m = ModelFactory.createModelForGraph(g);
             return new SPARQLResult(m) ;

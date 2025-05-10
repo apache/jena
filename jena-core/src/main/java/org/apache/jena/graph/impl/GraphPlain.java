@@ -35,24 +35,31 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  */
 public class GraphPlain extends WrappedGraph
 {
-    /** Return a graph that only has term-equality
+    /**
+     * Return a graph that only has term-equality
      * and storage in the {@code base} graph.
      * Update affects the base graph.
+     * @deprecated From Jena5, graphs are all "same term".
      */
+    @Deprecated
     public static Graph plain(Graph base) {
         if ( ! base.getCapabilities().handlesLiteralTyping() )
             return base;
         return new GraphPlain(base);
     }
 
-    /** Return a graph that only has term-equality. */
+    /**
+     * Return a graph that only has term-equality.
+     * @deprecated From Jena5, graphs are all "same term".
+     */
+    @Deprecated
     public static Graph plain() {
         return plain(GraphMemFactory.createDefaultGraph());
     }
 
     private final Capabilities capabilities;
 
-    protected GraphPlain(Graph other) {
+    private GraphPlain(Graph other) {
         super(other);
         capabilities = new WrappedCapabilities(base.getCapabilities()) {
             @Override public boolean handlesLiteralTyping() { return false; }
@@ -121,7 +128,7 @@ public class GraphPlain extends WrappedGraph
     }
 
     /**
-     * Match a ground triple (even ANY and variablesare considered ground terms in the
+     * Match a ground triple (even ANY and variables are considered ground terms in the
      * data triple) with S/P/O which can be wildcards (ANY or null).
      */
     private static boolean sameTermMatch(Node matchSubj, Node matchPred, Node matchObj, Triple dataTriple) {

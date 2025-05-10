@@ -111,6 +111,7 @@ public class GraphMemFactory
      * used in Jena2, Jena3 and Jena4 for in-memory graphs.
      * Jena5 changed to "same term" semantics.
      * This method will continue to provide a "same value" graph.
+     * This is used for the Model API.
      */
     public static Graph createDefaultGraphSameValue() {
         @SuppressWarnings("deprecation")

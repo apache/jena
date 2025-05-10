@@ -31,7 +31,6 @@ import org.apache.jena.graph.GraphMemFactory;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.impl.GraphPlain;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.Transactional;
@@ -66,10 +65,7 @@ public class BufferingGraph extends GraphWrapper implements BufferingCtl {
     public BufferingGraph(Graph graph) {
         super(graph);
         prefixMapping = new BufferingPrefixMapping(graph.getPrefixMapping());
-        if ( graph.getCapabilities().handlesLiteralTyping())
-            addedGraph = GraphMemFactory.createDefaultGraph();
-        else
-            addedGraph = GraphPlain.plain();
+        addedGraph = GraphMemFactory.createDefaultGraph();
     }
 
     public Graph base() { return get(); }

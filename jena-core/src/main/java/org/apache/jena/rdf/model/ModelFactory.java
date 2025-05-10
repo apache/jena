@@ -54,41 +54,6 @@ public class ModelFactory extends ModelFactoryBase
         {}
 
     /**
-        Answer a Model constructed from the single resource in
-        <code>singleRoot</code> of type <code>ja:Model</code>.
-        See the Assembler howto (doc/assembler/assembler-howto.html)
-        for documentation of Assembler descriptions. See also
-        <code>findAssemblerRoots</code> to find the set of possible
-        roots in a description, and <code>assemblerModelFrom(Resource)</code>
-        for assembling a model from its single description.
-    */
-    public static Model assembleModelFrom(Model singleRoot) {
-        return assembleModelFrom(AssemblerHelp.singleModelRoot(singleRoot));
-    }
-
-    /**
-        Answer a Set of resources present in <code>m</code> that are
-        explicitly or implicitly of type ja:Object, ie, suitable as roots for
-        <code>assemblerModelFrom</code>. Note that the resource
-        objects returned need <i>not</i> have <code>m</code> as
-        their <code>getModel()</code> - they may be members of an
-        extended constructed model.
-    */
-    public static Set<Resource> findAssemblerRoots(Model m) {
-        return AssemblerHelp.findAssemblerRoots(m);
-    }
-
-    /**
-        Answer a Model as described the Assembler specification rooted
-        at the Resource <code>root</code> in its Model. <code>Resource</code>
-        must be of rdf:type <code>ja:Object</code>, where <code>ja</code>
-        is the prefix of Jena Assembler objects.
-    */
-    public static Model assembleModelFrom(Resource root) {
-        return Assembler.general().openModel(root);
-    }
-
-    /**
      * Answer a fresh Model for use with the Model API.
      * <p>
      * This model is "same value" for Model API compatibility.
@@ -222,6 +187,41 @@ public class ModelFactory extends ModelFactoryBase
      */
     public static OntModel createOntologyModel() {
         return createOntologyModel( ProfileRegistry.OWL_LANG );
+    }
+
+    /**
+        Answer a Model constructed from the single resource in
+        <code>singleRoot</code> of type <code>ja:Model</code>.
+        See the Assembler howto (doc/assembler/assembler-howto.html)
+        for documentation of Assembler descriptions. See also
+        <code>findAssemblerRoots</code> to find the set of possible
+        roots in a description, and <code>assemblerModelFrom(Resource)</code>
+        for assembling a model from its single description.
+    */
+    public static Model assembleModelFrom(Model singleRoot) {
+        return assembleModelFrom(AssemblerHelp.singleModelRoot(singleRoot));
+    }
+
+    /**
+        Answer a Set of resources present in <code>m</code> that are
+        explicitly or implicitly of type ja:Object, i.e., suitable as roots for
+        <code>assemblerModelFrom</code>. Note that the resource
+        objects returned need <i>not</i> have <code>m</code> as
+        their <code>getModel()</code> - they may be members of an
+        extended constructed model.
+    */
+    public static Set<Resource> findAssemblerRoots(Model m) {
+        return AssemblerHelp.findAssemblerRoots(m);
+    }
+
+    /**
+        Answer a Model as described the Assembler specification rooted
+        at the Resource <code>root</code> in its Model. <code>Resource</code>
+        must be of rdf:type <code>ja:Object</code>, where <code>ja</code>
+        is the prefix of Jena Assembler objects.
+    */
+    public static Model assembleModelFrom(Resource root) {
+        return Assembler.general().openModel(root);
     }
 
     /**
