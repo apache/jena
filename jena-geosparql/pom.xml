@@ -14,7 +14,9 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jena-geosparql</artifactId>
   <packaging>jar</packaging>
@@ -33,7 +35,6 @@
   </properties>
 
   <dependencies>
-
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
@@ -43,18 +44,6 @@
     <dependency>
       <groupId>org.apache.sis.core</groupId>
       <artifactId>sis-referencing</artifactId>
-    </dependency>
-    
-    <!-- Evntually this wil be:
-    <dependency>
-      <groupId>jakarta.xml.bind</groupId>
-      <artifactId>jakarta.xml.bind-api</artifactId>
-    </dependency>
-    -->
-    
-	<dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
     </dependency>
 
     <dependency>
@@ -78,8 +67,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-collections4</artifactId>
+      <groupId>com.esotericsoftware</groupId>
+      <artifactId>kryo</artifactId>
     </dependency>
 
     <!-- Non-free; testing only -->
@@ -101,7 +90,6 @@
       <artifactId>log4j-slf4j2-impl</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -133,11 +121,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <executions> 
+        <executions>
           <execution>
-            <id>attach-sources-test</id> 
+            <id>attach-sources-test</id>
             <goals>
-              <goal>test-jar-no-fork</goal> 
+              <goal>test-jar-no-fork</goal>
             </goals>
           </execution>
         </executions>
