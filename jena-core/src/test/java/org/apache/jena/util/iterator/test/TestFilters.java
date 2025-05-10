@@ -18,31 +18,31 @@
 
 package org.apache.jena.util.iterator.test;
 
-import java.util.*;
+import java.util.Iterator;
 import java.util.function.Predicate;
 
 import junit.framework.TestSuite;
-
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
-import org.apache.jena.util.iterator.* ;
+import org.apache.jena.util.iterator.FilterIterator;
 
 public class TestFilters extends ModelTestBase
     {
     public TestFilters( String name )
         { super( name ); }
-    
+
     public static TestSuite suite()
         { return new TestSuite( TestFilters.class ); }
 
-    protected Predicate<String> containsA = o -> contains( o, 'a' );    
-    
+    protected Predicate<String> containsA = o -> contains( o, 'a' );
+
     public void testFilterIterator()
         {
         Iterator<String> i = iteratorOfStrings( "there's an a in some animals" );
         Iterator<String> it = new FilterIterator<>( containsA, i );
-        assertEquals( listOfStrings( "an a animals" ), iteratorToList( it ) );
+        assertEquals( listOfStrings( "an a animals" ), Iter.toList( it ) );
         }
-    
+
     protected boolean contains( Object o, char ch )
         { return o.toString().indexOf( ch ) > -1; }
     }

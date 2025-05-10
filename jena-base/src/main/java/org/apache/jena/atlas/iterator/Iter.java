@@ -221,24 +221,28 @@ public class Iter<T> implements IteratorCloseable<T> {
     }
 
     // ---- collect
-    /** See {@link Stream#collect(Supplier, BiConsumer, BiConsumer)}, except without the {@code BiConsumer<R, R> combiner} */
-    public static <T,R> R collect(Iterator<T> iter, Supplier<R> supplier, BiConsumer<R, ? super T> accumulator) {
-        R result = supplier.get();
-        iter.forEachRemaining(elt -> accumulator.accept(result, elt));
-        return result;
-    }
-
     /** See {@link Stream#collect(Collector)} */
     public static <T, R, A> R collect(Iterator<T> iter, Collector<? super T, A, R> collector) {
         A a = collect(iter, collector.supplier(), collector.accumulator());
         return collector.finisher().apply(a);
     }
 
+    /** See {@link Stream#collect(Supplier, BiConsumer, BiConsumer)}, except without the {@code BiConsumer<R, R> combiner} */
+    public static <T,R> R collect(Iterator<T> iter, Supplier<R> supplier, BiConsumer<R, ? super T> accumulator) {
+        R result = supplier.get();
+        apply(iter, elt -> accumulator.accept(result, elt));
+        return result;
+    }
+
     /** Act on elements of an iterator.
      * @see #map(Iterator, Function)
      */
-    public static <T> void apply(Iterator<? extends T> stream, Consumer<T> action) {
-        stream.forEachRemaining(action);
+    public static <T> void apply(Iterator<? extends T> iter, Consumer<T> action) {
+        try {
+            iter.forEachRemaining(action);
+        } finally {
+            Iter.close(iter);
+        }
     }
 
     // ---- Filter

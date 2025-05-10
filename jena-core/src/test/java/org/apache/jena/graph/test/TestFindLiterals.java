@@ -21,6 +21,7 @@ package org.apache.jena.graph.test;
 import java.util.Set;
 
 import junit.framework.TestSuite;
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -161,6 +162,6 @@ public class TestFindLiterals extends GraphTestBase {
         g.add( Triple.create( SS, P, as ) );
         g.add( Triple.create( SI, P, ai ) );
         g.add( Triple.create( SL, P, al ) );
-        assertEquals( 4, iteratorToSet( g.find( Node.ANY, P, NodeCreateUtils.create( "42" ) ) ).size() );
+        assertEquals( 4, Iter.toSet( g.find( Node.ANY, P, NodeCreateUtils.create( "42" ) ) ).size() );
         }
     }

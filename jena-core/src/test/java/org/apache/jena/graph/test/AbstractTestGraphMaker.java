@@ -20,6 +20,7 @@ package org.apache.jena.graph.test;
 
 import java.util.Set;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
@@ -43,15 +44,15 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
     {
     public AbstractTestGraphMaker( String name )
         { super( name ); }
-            
+
     public abstract GraphMaker getGraphMaker();
-    
+
     private GraphMaker gf;
-    
+
     @Override
     public void setUp()
         { gf = getGraphMaker(); }
-        
+
     @Override
     public void tearDown()
         { gf.close(); }
@@ -67,22 +68,22 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         assertSame( g1, gf.getGraph() );
         g1.close();
         }
-        
+
     public void testCreateGraph()
         {
-        assertDiffer( "each created graph must differ", gf.createGraph(), gf.createGraph() );    
+        assertDiffer( "each created graph must differ", gf.createGraph(), gf.createGraph() );
         }
-    
+
     public void testAnyName()
         {
         gf.createGraph( "plain" ).close();
         gf.createGraph( "with.dot" ).close();
         gf.createGraph( "http://electric-hedgehog.net/topic#marker" ).close();
         }
-        
+
     /**
-        Test that we can't create a graph with the same name twice. 
-    */    
+        Test that we can't create a graph with the same name twice.
+    */
     public void testCannotCreateTwice()
         {
         String name = jName( "bonsai" );
@@ -95,10 +96,10 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         catch (AlreadyExistsException e)
             {}
         }
-        
+
     private String jName( String name )
         { return "jena-test-AbstractTestGraphMaker-" + name; }
-        
+
     public void testCanCreateTwice()
         {
         String name = jName( "bridge" );
@@ -108,17 +109,17 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         Graph g3 = gf.createGraph( name );
         assertTrue( "graphs should be the same", sameGraph( g1, g3 ) );
         }
-    
+
     /**
         Test that we cannot open a graph that does not exist.
-    */    
+    */
     public void testCannotOpenUncreated()
         {
         String name = jName( "noSuchGraph" );
         try { gf.openGraph( name, true );  fail( name + " should not exist" ); }
-        catch (DoesNotExistException e) { }  
+        catch (DoesNotExistException e) { }
         }
-        
+
     /**
         Test that we *can* open a graph that hasn't been created
     */
@@ -129,20 +130,20 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         g1.close();
         gf.openGraph( name, true );
         }
-    
+
     /**
         Utility - test that a graph with the given name exists.
-     */    
+     */
     private void testExists( String name )
         { assertTrue( name + " should exist", gf.hasGraph( name ) ); }
-     
-        
+
+
     /**
         Utility - test that no graph with the given name exists.
      */
     private void testDoesNotExist( String name )
         {  assertFalse( name + " should exist", gf.hasGraph( name ) ); }
-            
+
     /**
         Test that we can find a graph once its been created. We need to know
         if two graphs are "the same" here: we have a temporary
@@ -159,7 +160,7 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         assertTrue( "should find alpha", sameGraph( g1, g2 ) );
         assertTrue( "should find beta", sameGraph( h1, h2 ) );
         }
-        
+
     /**
         Weak test for "same graph": adding this to one is visible in t'other.
         Stopgap for use in testCanFindCreatedGraph.
@@ -172,7 +173,7 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         g2.add( Triple.create( O, P, S ) );
         return g2.contains( S, P, O ) && g1.contains( O, P, S );
         }
-        
+
     /**
         Test that we can remove a graph from the factory without disturbing
         another graph's binding.
@@ -188,7 +189,7 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         testExists( beta );
         testDoesNotExist( alpha );
         }
-        
+
     public void testHasnt()
         {
         assertFalse( "no such graph", gf.hasGraph( "john" ) );
@@ -199,18 +200,18 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         assertTrue( "john now exists", gf.hasGraph( "john" ) );
         assertFalse( "no such graph", gf.hasGraph( "paul" ) );
         assertFalse( "no such graph", gf.hasGraph( "george" ) );
-    /* */    
+    /* */
         gf.createGraph( "paul", true );
         assertTrue( "john still exists", gf.hasGraph( "john" ) );
         assertTrue( "paul now exists", gf.hasGraph( "paul" ) );
         assertFalse( "no such graph", gf.hasGraph( "george" ) );
-    /* */    
+    /* */
         gf.removeGraph( "john" );
         assertFalse( "john has been removed", gf.hasGraph( "john" ) );
         assertTrue( "paul still exists", gf.hasGraph( "paul" ) );
         assertFalse( "no such graph", gf.hasGraph( "george" ) );
         }
-        
+
     public void testCarefulClose()
         {
         Graph x = gf.createGraph( "x" );
@@ -220,34 +221,34 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         y.add( triple( "p RR q" ) );
         y.close();
         }
-        
+
     /**
         Test that a maker with no graphs lists no names.
     */
     public void testListNoGraphs()
-        { 
+        {
         Set<String> s = gf.listGraphs().toSet();
         if (s.size() > 0)
             fail( "found names from 'empty' graph maker: " + s );
         }
-    
+
     /**
         Test that a maker with three graphs inserted lists those three grapsh; we don't
         mind what order they appear in. We also use funny names to ensure that the spelling
-        that goes in is the one that comes out [should really be in a separate test]. 
-    */    
+        that goes in is the one that comes out [should really be in a separate test].
+    */
     public void testListThreeGraphs()
         { String x = "x", y = "y/sub", z = "z:boo";
         Graph X = gf.createGraph( x );
         Graph Y = gf.createGraph( y );
         Graph Z = gf.createGraph( z );
         Set<String> wanted = setOfStrings( x + " " + y + " " + z );
-        assertEquals( wanted, iteratorToSet( gf.listGraphs() ) ); 
+        assertEquals( wanted, Iter.toSet( gf.listGraphs() ) );
         X.close(); Y.close(); Z.close(); }
-        
+
     /**
         Test that a maker with some things put in and then some removed gets the right
-        things listed. 
+        things listed.
     */
     public void testListAfterDelete()
         { String x = "x_y", y = "y//zub", z = "a:b/c";
@@ -255,9 +256,9 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         Graph Y = gf.createGraph( y );
         Graph Z = gf.createGraph( z );
         gf.removeGraph( x );
-        Set<String> s = iteratorToSet( gf.listGraphs() );
+        Set<String> s = Iter.toSet( gf.listGraphs() );
         assertEquals( setOfStrings( y + " " + z ), s );
         X.close(); Y.close(); Z.close();
         }
-        
+
     }

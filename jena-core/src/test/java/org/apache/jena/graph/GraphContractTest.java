@@ -30,6 +30,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.junit.After;
+
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.mem.TrackingTripleIterator;
 import org.apache.jena.rdf.model.Model;
@@ -42,7 +45,6 @@ import org.apache.jena.testing_framework.AbstractGraphProducer;
 import org.apache.jena.testing_framework.NodeCreateUtils;
 import org.apache.jena.util.iterator.ClosableIterator;
 import org.apache.jena.util.iterator.ExtendedIterator;
-import org.junit.After;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xenei.junit.contract.Contract;
@@ -822,7 +824,7 @@ public class GraphContractTest<T extends Graph>
 							"Should have found 4 elements, does %s really implement literal typing",
 							g.getClass()),
 					4,
-					iteratorToSet(
+					Iter.toSet(
 							g.find(Node.ANY, P, NodeCreateUtils.create("42")))
 									.size());
 			txnRollback(g);
@@ -960,7 +962,7 @@ public class GraphContractTest<T extends Graph>
 					String.format(
 							"Should have found 4 elements, does %s really implement literal typing",
 							g.getClass()),
-					4, iteratorToSet(g.find(Triple.create(Node.ANY, P,
+					4, Iter.toSet(g.find(Triple.create(Node.ANY, P,
 							NodeCreateUtils.create("42")))).size());
 			txnRollback(g);
 		}
