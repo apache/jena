@@ -16,9 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.util.iterator;
+package org.apache.jena.shared;
 
 import java.util.*;
+
+import org.apache.jena.util.iterator.WrappedIterator;
 /**
  * RandomOrderIterator - Reorders the elements returned by an Iterator.
  */
