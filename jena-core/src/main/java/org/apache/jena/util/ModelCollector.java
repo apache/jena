@@ -26,13 +26,17 @@ import org.apache.jena.atlas.lib.IdentityFinishCollector.UnorderedIdentityFinish
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 
+/**
+ * @deprecated To be removed.
+ */
+@Deprecated(forRemoval = true)
 public abstract class ModelCollector implements UnorderedIdentityFinishCollector<Model, Model> {
 
     @Override
     public Supplier<Model> supplier() {
         return ModelFactory::createDefaultModel;
     }
-    
+
     public ConcurrentModelCollector concurrent() {
         return new ConcurrentModelCollector(this);
     }
