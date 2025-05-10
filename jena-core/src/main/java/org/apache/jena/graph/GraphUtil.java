@@ -25,7 +25,6 @@ import java.util.Set;
 
 import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.impl.GraphWithPerform;
-import org.apache.jena.util.IteratorCollection;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.WrappedIterator;
 
@@ -123,28 +122,28 @@ public class GraphUtil
     public static void add(Graph graph, Iterator<Triple> it) {
         if ( OldStyle && graph instanceof GraphWithPerform ) {
             // Materialize for the notify.
-            List<Triple> s = IteratorCollection.iteratorToList(it) ;
+            List<Triple> s = Iter.toList(it) ;
             addIteratorWorkerDirect(graph, s.iterator());
             graph.getEventManager().notifyAddIterator(graph, s) ;
         }
         else
             addIteratorWorker(graph, it);
     }
-    
+
     /** Add triples into the destination (arg 1) from the source (arg 2)*/
     public static void addInto(Graph dstGraph, Graph srcGraph ) {
         if ( dstGraph == srcGraph && ! dstGraph.getEventManager().listening() )
             return ;
         dstGraph.getPrefixMapping().setNsPrefixes(srcGraph.getPrefixMapping()) ;
-        addIteratorWorker(dstGraph, findAll( srcGraph ));  
+        addIteratorWorker(dstGraph, findAll( srcGraph ));
         dstGraph.getEventManager().notifyAddGraph( dstGraph, srcGraph );
     }
-    
-    private static void addIteratorWorker( Graph graph, Iterator<Triple> it ) { 
-        List<Triple> s = IteratorCollection.iteratorToList( it );
+
+    private static void addIteratorWorker( Graph graph, Iterator<Triple> it ) {
+        List<Triple> s = Iter.toList(it);
         addIteratorWorkerDirect(graph, s.iterator());
     }
-    
+
     private static void addIteratorWorkerDirect( Graph graph, Iterator<Triple> it ) {
         if ( OldStyle && graph instanceof GraphWithPerform ) {
             GraphWithPerform g = (GraphWithPerform)graph;
@@ -179,7 +178,7 @@ public class GraphUtil
     public static void delete(Graph graph, Iterator<Triple> it) {
         if ( OldStyle && graph instanceof GraphWithPerform ) {
             // Materialize for the notify.
-            List<Triple> s = IteratorCollection.iteratorToList(it) ;
+            List<Triple> s = Iter.toList(it); ;
             deleteIteratorWorkerDirect(graph, s.iterator());
             graph.getEventManager().notifyDeleteIterator(graph, s) ;
         } else
@@ -264,7 +263,7 @@ public class GraphUtil
      * modification" safe - it internally takes a copy of the iterator.
      */
     private static void deleteIteratorWorker(Graph graph, Iterator<Triple> it) {
-        List<Triple> s = IteratorCollection.iteratorToList(it) ;
+        List<Triple> s = Iter.toList(it) ;
         deleteIteratorWorkerDirect(graph, s.iterator());
     }
 

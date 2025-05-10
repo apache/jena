@@ -21,6 +21,7 @@ package org.apache.jena.util.iterator.test;
 import java.util.List ;
 
 import junit.framework.TestSuite ;
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.rdf.model.test.ModelTestBase ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.NiceIterator ;
@@ -30,19 +31,19 @@ public class TestAndThen extends ModelTestBase
     {
     public TestAndThen( String name )
         { super( name ); }
-    
+
     public static TestSuite suite()
         { return new TestSuite( TestAndThen.class ); }
 
     public void testAndThen()
-        { 
+        {
         ExtendedIterator<String> L = iteratorOfStrings( "a b c" );
         ExtendedIterator<String> R = iteratorOfStrings( "d e f" );
         assertInstanceOf( NiceIterator.class, L );
         assertInstanceOf( NiceIterator.class, R );
-        assertEquals( listOfStrings( "a b c d e f" ), iteratorToList( L.andThen( R ) ) );
+        assertEquals( listOfStrings( "a b c d e f" ), Iter.toList( L.andThen( R ) ) );
         }
-    
+
     public void testAndThenExtension()
         {
         ExtendedIterator<String> L = iteratorOfStrings( "a b c" );
@@ -52,9 +53,9 @@ public class TestAndThen extends ModelTestBase
         ExtendedIterator<String> LRX = LR.andThen( X );
         assertSame( LR, LRX );
         List<String> aToI = listOfStrings( "a b c d e f g h i" );
-        assertEquals( aToI, iteratorToList( LRX ) );
+        assertEquals( aToI, Iter.toList( LRX ) );
         }
-    
+
     public void testClosingConcatenationClosesRemainingIterators()
         {
         LoggingClosableIterator<String> L = new LoggingClosableIterator<>( iteratorOfStrings( "only" ) );
@@ -66,77 +67,77 @@ public class TestAndThen extends ModelTestBase
         assertTrue( "middle iterator should have been closed", M.isClosed() );
         assertTrue( "final iterator should have been closed", R.isClosed() );
         }
-    
+
     public void testRemove1()
     {
         List<String> L = listOfStrings("a b c");
         List<String> R = listOfStrings("d e f");
-        
+
         ExtendedIterator<String> Lit = WrappedIterator.create(L.iterator());
         ExtendedIterator<String> Rit = WrappedIterator.create(R.iterator());
-        
+
         ExtendedIterator<String> LR = Lit.andThen( Rit ) ;
-        
+
         while (LR.hasNext())
         {
             String s = LR.next();
-            
+
             if ("c".equals(s))
             {
                 LR.hasNext();  // test for JENA-60
                 LR.remove();
             }
         }
-        
+
         assertEquals("ab", concatAsString(L));
         assertEquals("def", concatAsString(R));
     }
-    
+
     public void testRemove2()
     {
         List<String> L = listOfStrings("a b c");
         List<String> R = listOfStrings("d e f");
-        
+
         ExtendedIterator<String> Lit = WrappedIterator.create(L.iterator());
         ExtendedIterator<String> Rit = WrappedIterator.create(R.iterator());
-        
+
         ExtendedIterator<String> LR = Lit.andThen( Rit ) ;
-        
+
         while (LR.hasNext())
         {
             String s = LR.next();
-            
+
             if ("d".equals(s))
             {
                 LR.hasNext();  // test for JENA-60
                 LR.remove();
             }
         }
-        
+
         assertEquals("abc", concatAsString(L));
         assertEquals("ef", concatAsString(R));
     }
-    
+
     public void testRemove3()
     {
         List<String> L = listOfStrings("a b c");
         List<String> R = listOfStrings("d e f");
-        
+
         ExtendedIterator<String> Lit = WrappedIterator.create(L.iterator());
         ExtendedIterator<String> Rit = WrappedIterator.create(R.iterator());
-        
+
         ExtendedIterator<String> LR = Lit.andThen( Rit ) ;
-        
+
         while (LR.hasNext())
         {
             LR.next();
         }
         LR.remove();
-        
+
         assertEquals("abc", concatAsString(L));
         assertEquals("de", concatAsString(R));
     }
-    
+
     private String concatAsString(List<String> strings)
     {
         String toReturn = "";
@@ -146,5 +147,5 @@ public class TestAndThen extends ModelTestBase
         }
         return toReturn;
     }
-    
+
     }

@@ -31,6 +31,7 @@ import org.apache.jena.util.iterator.NullIterator ;
 import org.apache.jena.util.iterator.SingletonIterator ;
 import org.apache.jena.util.iterator.WrappedIterator ;
 
+@SuppressWarnings("removal")
 public class TestIteratorCollection extends GraphTestBase
     {
     public TestIteratorCollection( String name )
@@ -38,24 +39,24 @@ public class TestIteratorCollection extends GraphTestBase
 
     public static TestSuite suite()
         { return new TestSuite( TestIteratorCollection.class ); }
-    
+
     public void testEmptyToEmptySet()
         {
         assertEquals( CollectionFactory.createHashedSet(), IteratorCollection.iteratorToSet( NullIterator.instance() ) );
         }
-    
+
     public void testSingletonToSingleSet()
         {
-        assertEquals( oneSet( "single" ), iteratorToSet( new SingletonIterator<>( "single" ) ) );
+        assertEquals( oneSet( "single" ), IteratorCollection.iteratorToSet( new SingletonIterator<>( "single" ) ) );
         }
-    
+
     public void testLotsToSet()
         {
         Object [] elements = new Object[] {"now", "is", "the", "time"};
         Iterator<Object> it = Arrays.asList( elements ).iterator();
         assertEquals( setLots( elements ), IteratorCollection.iteratorToSet( it ) );
         }
-    
+
     public void testCloseForSet()
         {
         testCloseForSet( new Object[] {} );
@@ -64,13 +65,13 @@ public class TestIteratorCollection extends GraphTestBase
         testCloseForSet( new Object[] {"another", "one", "plus", Boolean.FALSE} );
         testCloseForSet( new Object[] {"the", "king", "is", "in", "his", "counting", "house"} );
         }
-    
+
     protected void testCloseForSet( Object[] objects )
         {
         final boolean [] closed = {false};
-        Iterator<Object> iterator = new WrappedIterator<Object>( Arrays.asList( objects ).iterator() ) 
+        Iterator<Object> iterator = new WrappedIterator<Object>( Arrays.asList( objects ).iterator() )
             { @Override public void close() { super.close(); closed[0] = true; } };
-        iteratorToSet( iterator );
+        IteratorCollection.iteratorToSet( iterator );
         assertTrue( closed[0] );
         }
 
@@ -78,18 +79,18 @@ public class TestIteratorCollection extends GraphTestBase
         {
         assertEquals( new ArrayList<>(), IteratorCollection.iteratorToList( NullIterator.instance() ) );
         }
-    
+
     public void testSingletonToSingletonList()
         {
         assertEquals( oneList( "just one" ), IteratorCollection.iteratorToList( new SingletonIterator<>( "just one" ) ) );
         }
-    
+
     public void testLotsToList()
         {
         List<Object> list = Arrays.asList( new Object[] {"to", "be", "or", "not", "to", "be"}  );
         assertEquals( list, IteratorCollection.iteratorToList( list.iterator() ) );
         }
-        
+
     public void testCloseForList()
         {
         testCloseForList( new Object[] {} );
@@ -98,13 +99,13 @@ public class TestIteratorCollection extends GraphTestBase
         testCloseForList( new Object[] {"another", "one", "plus", Boolean.FALSE} );
         testCloseForList( new Object[] {"the", "king", "is", "in", "his", "counting", "house"} );
         }
-    
+
     protected void testCloseForList( Object[] objects )
         {
         final boolean [] closed = {false};
-        Iterator<Object> iterator = new WrappedIterator<Object>( Arrays.asList( objects ).iterator() ) 
+        Iterator<Object> iterator = new WrappedIterator<Object>( Arrays.asList( objects ).iterator() )
             { @Override public void close() { super.close(); closed[0] = true; } };
-        iteratorToList( iterator );
+        IteratorCollection.iteratorToList( iterator );
         assertTrue( closed[0] );
         }
 
@@ -114,7 +115,7 @@ public class TestIteratorCollection extends GraphTestBase
         result.add( x );
         return result;
         }
-    
+
     protected Set<Object> setLots( Object [] elements )
         {
         Set<Object> result = new HashSet<>();
@@ -124,7 +125,7 @@ public class TestIteratorCollection extends GraphTestBase
             }
         return result;
         }
-    
+
     protected List<Object> oneList( Object x )
         {
         List<Object> result = new ArrayList<>();

@@ -18,11 +18,17 @@
 
 package org.apache.jena.graph.test;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import junit.framework.TestSuite;
-import org.apache.jena.graph.* ;
-import org.apache.jena.graph.Triple.* ;
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.graph.Node;
+import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Node_URI;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.Triple.Field;
 import org.apache.jena.mem.NodeToTriplesMapMem ;
 
 /**
@@ -34,88 +40,88 @@ public class TestNodeToTriplesMapMem extends GraphTestBase
     {
     public TestNodeToTriplesMapMem(String name )
         { super( name ); }
-    
+
     public static TestSuite suite()
         { return new TestSuite( TestNodeToTriplesMapMem.class ); }
-    
+
     protected NodeToTriplesMapMem ntS = new NodeToTriplesMapMem( Field.fieldSubject, Field.fieldPredicate, Field.fieldObject );
-    	
+
     protected NodeToTriplesMapMem ntP = new NodeToTriplesMapMem( Field.fieldPredicate, Field.fieldObject, Field.fieldSubject );
-    	
+
     protected NodeToTriplesMapMem ntO = new NodeToTriplesMapMem( Field.fieldObject, Field.fieldPredicate, Field.fieldSubject );
 
     protected static final Node x = node( "x" );
-    
+
     protected static final Node y = node( "y" );
-    
+
     public void testZeroSize()
         {
         testZeroSize( "fresh NTM", ntS );
         }
-    
+
     protected void testZeroSize( String title, NodeToTriplesMapMem nt )
         {
         assertEquals( title + " should have size 0", 0, nt.size() );
         assertEquals( title + " should be isEmpty()", true, nt.isEmpty() );
         assertEquals( title + " should have empty domain", false, nt.domain().hasNext() );
         }
-    
+
     public void testAddOne()
         {
         ntS.add( triple( "x P y" ) );
         testJustOne( x, ntS );
         }
-    
+
     public void testAddOneTwice()
         {
         addTriples( ntS, "x P y; x P y" );
         testJustOne( x, ntS );
         }
-    
+
     protected void testJustOne( Node x, NodeToTriplesMapMem nt )
         {
         assertEquals( 1, nt.size() );
         assertEquals( false, nt.isEmpty() );
-        assertEquals( just( x ), iteratorToSet( nt.domain() ) );
+        assertEquals( just( x ), Iter.toSet( nt.domain() ) );
         }
-    
+
     public void testAddTwoUnshared()
         {
         addTriples( ntS, "x P a; y Q b" );
         assertEquals( 2, ntS.size() );
         assertEquals( false, ntS.isEmpty() );
-        assertEquals( both( x, y ), iteratorToSet( ntS.domain() ) );
+        assertEquals( both( x, y ), Iter.toSet( ntS.domain() ) );
         }
-    
+
     public void testAddTwoShared()
         {
         addTriples( ntS, "x P a; x Q b" );
         assertEquals( 2, ntS.size() );
         assertEquals( false, ntS.isEmpty() );
-        assertEquals( just( x ), iteratorToSet( ntS.domain() ) );
+        assertEquals( just( x ), Iter.toSet( ntS.domain() ) );
         }
-    
+
     public void testClear()
         {
         addTriples( ntS, "x P a; x Q b; y R z" );
         ntS.clear();
         testZeroSize( "cleared NTM", ntS );
         }
-    
+
     public void testAllIterator()
         {
         String triples = "x P b; y P d; y P f";
         addTriples( ntS, triples );
-        assertEquals( tripleSet( triples ), iteratorToSet( ntS.iterateAll() ) );
+        assertEquals( tripleSet( triples ), Iter.toSet( ntS.iterateAll() ) );
         }
-    
+
     public void testOneIterator()
         {
         addTriples( ntS, "x P b; y P d; y P f" );
         assertEquals( tripleSet( "x P b" ), ntS.iterator( x, null ).toSet() );
         assertEquals( tripleSet( "y P d; y P f" ), ntS.iterator( y, null ).toSet() );
         }
-    
+
     public void testRemove()
         {
         addTriples( ntS, "x P b; y P d; y R f" );
@@ -123,7 +129,7 @@ public class TestNodeToTriplesMapMem extends GraphTestBase
         assertEquals( 2, ntS.size() );
         assertEquals( tripleSet( "x P b; y R f" ), ntS.iterateAll().toSet() );
         }
-    
+
     public void testRemoveByIterator()
         {
         addTriples( ntS, "x nice a; a nasty b; x nice c" );
@@ -199,21 +205,21 @@ public class TestNodeToTriplesMapMem extends GraphTestBase
         ntS.remove( triple( "x P a" ) );
         assertEquals( tripleSet( "y Q b; z R c" ), ntS.iterateAll().toSet() );
         }
-    
+
     public void testUnspecificRemoveP()
         {
         addTriples( ntP, "x P a; y Q b; z R c" );
         ntP.remove( triple( "y Q b" ) );
         assertEquals( tripleSet( "x P a; z R c" ), ntP.iterateAll().toSet() );
         }
-    
+
     public void testUnspecificRemoveO()
         {
         addTriples( ntO, "x P a; y Q b; z R c" );
         ntO.remove( triple( "z R c" ) );
         assertEquals( tripleSet( "x P a; y Q b" ), ntO.iterateAll().toSet() );
         }
-    
+
     public void testAddBooleanResult()
         {
         assertEquals( true, ntS.add( triple( "x P y" ) ) );
@@ -225,7 +231,7 @@ public class TestNodeToTriplesMapMem extends GraphTestBase
         assertEquals( true, ntS.add( triple( "y R s" ) ) );
         assertEquals( false, ntS.add( triple( "y R s" ) ) );
         }
-    
+
     public void testRemoveBooleanResult()
         {
         assertEquals( false, ntS.remove( triple( "x P y" ) ) );
@@ -234,7 +240,7 @@ public class TestNodeToTriplesMapMem extends GraphTestBase
         assertEquals( true, ntS.remove( triple( "x P y" ) ) );
         assertEquals( false, ntS.remove( triple( "x P y" ) ) );
         }
-    
+
     public void testContains()
         {
         addTriples( ntS, "x P y; a P b" );
@@ -246,9 +252,9 @@ public class TestNodeToTriplesMapMem extends GraphTestBase
         assertFalse( ntS.contains( triple( "e T f" ) ) );
         assertFalse( ntS.contains( triple( "_x F 17" ) ) );
         }
-    
+
     // TODO more here
-    
+
     protected void addTriples( NodeToTriplesMapMem nt, String facts )
         {
         Triple [] t = tripleArray( facts );
@@ -257,7 +263,7 @@ public class TestNodeToTriplesMapMem extends GraphTestBase
                 nt.add( aT );
             }
         }
-    
+
     protected static <T> Set<T> just( T x )
         {
         Set<T> result = new HashSet<>();
@@ -271,5 +277,5 @@ public class TestNodeToTriplesMapMem extends GraphTestBase
         result.add( y );
         return result;
         }
-    
+
     }

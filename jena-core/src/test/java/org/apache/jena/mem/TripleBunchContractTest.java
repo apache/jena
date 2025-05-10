@@ -17,24 +17,25 @@
  */
 package org.apache.jena.mem;
 
-import static org.junit.Assert.*;
-import static org.apache.jena.testing_framework.GraphHelper.*;
+import static org.apache.jena.testing_framework.GraphHelper.triple;
+import static org.apache.jena.testing_framework.GraphHelper.tripleSet;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.junit.After;
 import org.junit.Before;
-import org.xenei.junit.contract.Contract;
-import org.xenei.junit.contract.ContractTest;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.Triple;
-import org.xenei.junit.contract.IProducer;
 import org.apache.jena.testing_framework.NodeCreateUtils;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.xenei.junit.contract.Contract;
+import org.xenei.junit.contract.ContractTest;
+import org.xenei.junit.contract.IProducer;
 
 /**
  * Test triple bunch implementations - NOT YET FINISHED
@@ -83,7 +84,7 @@ public class TripleBunchContractTest {
 		testingBunch.add(tripleSPO);
 		assertEquals(1, testingBunch.size());
 		assertTrue(testingBunch.contains(tripleSPO));
-		assertEquals(listOf(tripleSPO), iteratorToList(testingBunch.iterator()));
+		assertEquals(listOf(tripleSPO), Iter.toList(testingBunch.iterator()));
 	}
 
 	@ContractTest
@@ -94,7 +95,7 @@ public class TripleBunchContractTest {
 		assertTrue(testingBunch.contains(tripleSPO));
 		assertTrue(testingBunch.contains(tripleXQY));
 		assertEquals(setOf(tripleSPO, tripleXQY),
-				iteratorToSet(testingBunch.iterator()));
+				Iter.toSet(testingBunch.iterator()));
 	}
 
 	@ContractTest
@@ -114,7 +115,7 @@ public class TripleBunchContractTest {
 		assertEquals(1, testingBunch.size());
 		assertFalse(testingBunch.contains(tripleSPO));
 		assertTrue(testingBunch.contains(tripleXQY));
-		assertEquals(listOf(tripleXQY), iteratorToList(testingBunch.iterator()));
+		assertEquals(listOf(tripleXQY), Iter.toList(testingBunch.iterator()));
 	}
 
 	@ContractTest

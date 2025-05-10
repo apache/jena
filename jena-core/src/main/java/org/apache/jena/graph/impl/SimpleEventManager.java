@@ -18,12 +18,16 @@
 
 package org.apache.jena.graph.impl;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.jena.graph.*;
+import org.apache.jena.atlas.iterator.Iter;
+import org.apache.jena.graph.Graph;
+import org.apache.jena.graph.GraphEventManager;
+import org.apache.jena.graph.GraphListener;
+import org.apache.jena.graph.Triple;
 import org.apache.jena.mem.TrackingTripleIterator;
-import org.apache.jena.util.IteratorCollection;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
 /**
@@ -104,7 +108,7 @@ public class SimpleEventManager implements GraphEventManager
 
     @Override
     public void notifyAddIterator(Graph g, Iterator<Triple> it) {
-        notifyAddIterator(g, IteratorCollection.iteratorToList(it));
+        notifyAddIterator(g, Iter.toList(it));
     }
 
     @Override
@@ -139,7 +143,7 @@ public class SimpleEventManager implements GraphEventManager
 
     @Override
     public void notifyDeleteIterator(Graph g, Iterator<Triple> it) {
-        notifyDeleteIterator(g, IteratorCollection.iteratorToList(it));
+        notifyDeleteIterator(g, Iter.toList(it));
     }
 
     @Override

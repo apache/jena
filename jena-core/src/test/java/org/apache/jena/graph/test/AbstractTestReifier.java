@@ -18,6 +18,7 @@
 
 package org.apache.jena.graph.test;
 
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.graph.* ;
 import org.apache.jena.rdf.model.impl.ReifierStd ;
 import org.apache.jena.shared.AlreadyReifiedException ;
@@ -25,7 +26,7 @@ import org.apache.jena.shared.CannotReifyException ;
 import org.apache.jena.vocabulary.RDF ;
 
 /**
-    Abstract base class for reification tests. 
+    Abstract base class for reification tests.
  */
 public abstract class AbstractTestReifier extends GraphTestBase
 {
@@ -65,12 +66,12 @@ public abstract class AbstractTestReifier extends GraphTestBase
         g.add( NodeCreateUtils.createTriple( "x rdf:subject s" ) );
         assertEquals( 1, g.size() );
         g.add( NodeCreateUtils.createTriple( "x rdf:predicate p" ) );
-        assertEquals( 2, g.size() );  
+        assertEquals( 2, g.size() );
         g.add( NodeCreateUtils.createTriple( "x rdf:object o" ) );
-        assertEquals( 3, g.size() );            
+        assertEquals( 3, g.size() );
         g.add( NodeCreateUtils.createTriple( "x rdf:type rdf:Statement" ) );
         assertEquals( 4, g.size() );
-        assertTrue( ReifierStd.hasTriple(g, triple( "s p o" ) ) );                      
+        assertTrue( ReifierStd.hasTriple(g, triple( "s p o" ) ) );
     }
 
     /**
@@ -95,19 +96,19 @@ public abstract class AbstractTestReifier extends GraphTestBase
         Graph g = getGraph();
         graphAdd( g, "x rdf:subject A; x rdf:predicate P; x rdf:object O; x rdf:type rdf:Statement" );
         assertEquals( triple( "A P O" ), ReifierStd.getTriple(g, node( "x" ) ) );
-        graphAdd( g, "x rdf:subject BOOM" ); 
+        graphAdd( g, "x rdf:subject BOOM" );
         assertEquals( null, ReifierStd.getTriple( g, node( "x" ) ) );
     }
 
     public void testReificationSubjectClash()
     {
         testReificationClash( "x rdf:subject SS" );
-    }    
+    }
 
     public void testReificationPredicateClash()
     {
         testReificationClash( "x rdf:predicate PP" );
-    }    
+    }
 
     public void testReificationObjectClash()
     {
@@ -131,7 +132,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
      */
     public void testManifestQuads()
     {
-        Graph g = getGraph();   
+        Graph g = getGraph();
         ReifierStd.reifyAs(g, node( "A" ), triple( "S P O" ) ) ;
         String reified = "A rdf:type rdf:Statement; A rdf:subject S; A rdf:predicate P; A rdf:object O";
         assertIsomorphic( graphWith( reified ), g );
@@ -141,7 +142,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
     {
         Graph g = getGraph();
         ReifierStd.reifyAs( g, node( "A" ), triple( "S P O" ) );
-        assertTrue( ReifierStd.findEither( g , ALL, false ).hasNext() );    
+        assertTrue( ReifierStd.findEither( g , ALL, false ).hasNext() );
     }
 
     public void testRetrieveTriplesByNode()
@@ -167,7 +168,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         ReifierStd.reifyAs( G, N, T );
         assertTrue( "R must have T", ReifierStd.hasTriple( G, T ) );
         assertFalse( "R must not have T2", ReifierStd.hasTriple( G, T2 ) );
-    }   
+    }
 
     public void testReifyAs()
     {
@@ -183,7 +184,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         ReifierStd.reifyAs( G, node("x"), triple( "cows eat grass" ) );
         ReifierStd.reifyAs( G, node("y"), triple( "pigs can fly" ) );
         ReifierStd.reifyAs( G, node("z"), triple( "dogs may bark" ) );
-        assertEquals( "", nodeSet( "z y x" ), iteratorToSet( ReifierStd.allNodes(G) ) );
+        assertEquals( "", nodeSet( "z y x" ), Iter.toSet( ReifierStd.allNodes(G) ) );
     }
 
     public void testRemoveByNode()
@@ -210,7 +211,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         ReifierStd.reifyAs( G, X, triple( "x R y" ) );
         ReifierStd.reifyAs( G, X, triple( "x R y" ) );
         try { ReifierStd.reifyAs( G, X, triple( "x R z" ) ); fail( "did not detect already reified node" ); }
-        catch (AlreadyReifiedException e) { }      
+        catch (AlreadyReifiedException e) { }
     }
 
     public void testKevinCaseA()
@@ -218,7 +219,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         Graph G = getGraph();
         Node X = node( "x" ), a = node( "a" ), b = node( "b" ), c = node( "c" );
         G.add( Triple.create( X, RDF.Nodes.type, RDF.Nodes.Statement ) );
-        ReifierStd.reifyAs( G, X, Triple.create( a, b, c ) ); 
+        ReifierStd.reifyAs( G, X, Triple.create( a, b, c ) );
     }
 
     public void testKevinCaseB()
@@ -279,7 +280,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
     { testReifierFind( "x rdf:predicate P; x rdf:subject S; x rdf:object O; x rdf:type rdf:Statement" ); }
 
     public void testReifierFindFilter()
-    { 
+    {
         Graph g = getGraph();
         graphAdd( g, "s rdf:subject S" );
         assertEquals( tripleSet( "" ), ReifierStd.findExposed( g, triple( "s otherPredicate S" ) ).toSet() );

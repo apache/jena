@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,12 +23,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.jena.graph.test.GraphTestBase ;
+import org.junit.Assert;
+
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.rdf.model.Model ;
 import org.apache.jena.rdf.model.ModelChangedListener ;
 import org.apache.jena.rdf.model.Statement ;
 import org.apache.jena.rdf.model.StmtIterator ;
-import org.junit.Assert;
 /**
  * Class to listen to model changes and record them for testing.
  */
@@ -63,7 +64,7 @@ public class RecordingModelListener implements ModelChangedListener
 	@Override
 	public void addedStatements( final StmtIterator statements )
 	{
-		record("addIterator", GraphTestBase.iteratorToList(statements));
+		record("addIterator", Iter.toList(statements));
 	}
 
 	public void assertHas( final List<?> things )
@@ -221,7 +222,7 @@ public class RecordingModelListener implements ModelChangedListener
 	@Override
 	public void removedStatements( final StmtIterator statements )
 	{
-		record("removeIterator", GraphTestBase.iteratorToList(statements));
+		record("removeIterator", Iter.toList(statements));
 	}
 
 }

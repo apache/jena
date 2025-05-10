@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,7 +18,9 @@
 
 package org.apache.jena.rdf.model.test;
 
-import org.apache.jena.graph.test.GraphTestBase ;
+import org.junit.Assert;
+
+import org.apache.jena.atlas.iterator.Iter;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
@@ -27,7 +29,6 @@ import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
 import org.apache.jena.shared.PropertyNotFoundException ;
 import org.apache.jena.test.JenaTestBase ;
 import org.apache.jena.vocabulary.RDF ;
-import org.junit.Assert;
 
 public class TestResourceMethods extends AbstractModelTestBase
 {
@@ -96,13 +97,9 @@ public class TestResourceMethods extends AbstractModelTestBase
 
 	public void testCountsCorrect()
 	{
-		Assert.assertEquals(13,
-				GraphTestBase.iteratorToList(model.listStatements()).size());
-		Assert.assertEquals(13,
-				GraphTestBase.iteratorToList(r.listProperties(RDF.value))
-						.size());
-		Assert.assertEquals(0,
-				GraphTestBase.iteratorToList(r.listProperties(RDF.type)).size());
+		Assert.assertEquals(13, Iter.toList(model.listStatements()).size());
+		Assert.assertEquals(13, Iter.toList(r.listProperties(RDF.value)).size());
+		Assert.assertEquals(0,  Iter.toList(r.listProperties(RDF.type)).size());
 	}
 
 	public void testDouble()
