@@ -25,7 +25,7 @@ import org.apache.jena.query.QueryException;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.Prologue;
-import org.apache.jena.sparql.lang.sparql_12.SPARQLParser12;
+import org.apache.jena.sparql.lang.sparql_12.javacc.SPARQLParser12;
 import org.apache.jena.sparql.modify.UpdateSink;
 import org.apache.jena.update.UpdateException;
 
@@ -40,9 +40,9 @@ public class ParserSPARQL12Update extends UpdateParser
             parser = new SPARQLParser12(r);
             parser.setUpdate(prologue, sink);
             parser.UpdateUnit();
-        } catch (org.apache.jena.sparql.lang.sparql_12.ParseException ex) {
+        } catch (org.apache.jena.sparql.lang.sparql_12.javacc.ParseException ex) {
             throw new QueryParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn);
-        } catch (org.apache.jena.sparql.lang.sparql_12.TokenMgrError tErr) {
+        } catch (org.apache.jena.sparql.lang.sparql_12.javacc.TokenMgrError tErr) {
             // Last valid token : not the same as token error message - but this
             // should not happen
             int col = parser.token.endColumn;

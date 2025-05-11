@@ -33,9 +33,9 @@ import org.apache.jena.sparql.core.VarExprList;
 import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprList;
 import org.apache.jena.sparql.expr.ExprVar;
-import org.apache.jena.sparql.lang.arq.ARQParser;
-import org.apache.jena.sparql.lang.arq.ParseException;
-import org.apache.jena.sparql.lang.arq.TokenMgrError;
+import org.apache.jena.sparql.lang.arq.javacc.ARQParser;
+import org.apache.jena.sparql.lang.arq.javacc.ParseException;
+import org.apache.jena.sparql.lang.arq.javacc.TokenMgrError;
 
 /**
  * The Solution Modifier handler.

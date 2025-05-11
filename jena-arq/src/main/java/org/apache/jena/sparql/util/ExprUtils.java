@@ -35,7 +35,7 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.engine.binding.BindingRoot ;
 import org.apache.jena.sparql.expr.* ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.lang.arq.* ;
+import org.apache.jena.sparql.lang.arq.javacc.*;
 import org.apache.jena.sparql.serializer.FmtExprSPARQL ;
 import org.apache.jena.sparql.serializer.SerializationContext ;
 import org.apache.jena.sparql.sse.SSE ;

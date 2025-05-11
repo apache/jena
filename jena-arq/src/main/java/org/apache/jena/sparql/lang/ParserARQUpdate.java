@@ -25,7 +25,7 @@ import org.apache.jena.query.QueryException;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.Prologue;
-import org.apache.jena.sparql.lang.arq.ARQParser;
+import org.apache.jena.sparql.lang.arq.javacc.ARQParser;
 import org.apache.jena.sparql.modify.UpdateSink;
 
 public class ParserARQUpdate extends UpdateParser {
@@ -38,9 +38,9 @@ public class ParserARQUpdate extends UpdateParser {
             parser = new ARQParser(r);
             parser.setUpdate(prologue, sink);
             parser.UpdateUnit();
-        } catch (org.apache.jena.sparql.lang.arq.ParseException ex) {
+        } catch (org.apache.jena.sparql.lang.arq.javacc.ParseException ex) {
             throw new QueryParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn);
-        } catch (org.apache.jena.sparql.lang.arq.TokenMgrError tErr) {
+        } catch (org.apache.jena.sparql.lang.arq.javacc.TokenMgrError tErr) {
             // Last valid token : not the same as token error message - but this
             // should not happen
             int col = parser.token.endColumn;
