@@ -59,7 +59,8 @@ public class Endpoint implements Counters {
         // Canonicalise to "" for dataset-level operations.
         this.endpointName = endpointName==null? DatasetEP : endpointName;
         this.authPolicy = requestAuth;
-        this.context = context;
+        // Always provide a context so that e.g. fmods can store data.
+        this.context = context != null ? context : Context.create() ;
         this.processor = processor;
 
         // Standard counters - there may be others
