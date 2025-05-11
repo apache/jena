@@ -60,23 +60,22 @@ function grammar
 ##     mv F $F
 
     ## JavaCharStream -- SimpleCharStream is OK.
-    echo "---- Fixing Java warnings in JavaCharStream..."
     F="$DIR/JavaCharStream.java"
     if [ -e "$F" ]
     then
-	perl -0777 -pe 's/public\nclass JavaCharStream/\@SuppressWarnings("all")\npublic\nclass JavaCharStream/' < $F > F
-	##sed -e 's/^public$/@SuppressWarnings("all")\npublic/' < $F > F 
+	echo "---- Fixing Javadoc warnings in JavaCharStream..."
+	perl -0777 -pe 's!/\*\* (Constructor|Reinitialise).!/\* $1!sg' < $F > F
 	mv F $F
     fi
 
-    ## TokenMgrError
-    echo "---- Fixing Java warnings in TokenMgrError"
-    F="$DIR/TokenMgrError.java"
-    if [ -e "$F" ]
-    then
-	sed -e 's/public class TokenMgrError/\n@SuppressWarnings("all")\npublic class TokenMgrError/' < $F > F 
-	mv F $F
-    fi
+##     ## TokenMgrError
+##     echo "---- Fixing Java warnings in TokenMgrError"
+##     F="$DIR/TokenMgrError.java"
+##     if [ -e "$F" ]
+##     then
+## 	sed -e 's/public class TokenMgrError/\n@SuppressWarnings("all")\npublic class TokenMgrError/' < $F > F 
+## 	mv F $F
+##     fi
 
     ## -- In the parser itself
     echo "---- Fixing Java warnings in ${CLASS} ..."

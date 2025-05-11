@@ -7,7 +7,6 @@ package org.apache.jena.sparql.lang.sparql_12.javacc ;
  * contain only ASCII characters (with java-like unicode escape processing).
  */
 
-@SuppressWarnings("all")
 public
 class JavaCharStream
 {
@@ -401,7 +400,7 @@ class JavaCharStream
       bufpos += bufsize;
   }
 
-/** Constructor.
+/* Constructor
  * @param dstream the underlying data source.
  * @param startline line number of the first character of the stream, mostly for error messages.
  * @param startcolumn column number of the first character of the stream.
@@ -421,7 +420,7 @@ class JavaCharStream
     nextCharBuf = new char[4096];
   }
 
-/** Constructor.
+/* Constructor
  * @param dstream the underlying data source.
  * @param startline line number of the first character of the stream, mostly for error messages.
  * @param startcolumn column number of the first character of the stream.
@@ -432,7 +431,7 @@ class JavaCharStream
     this(dstream, startline, startcolumn, 4096);
   }
 
-/** Constructor.
+/* Constructor
  * @param dstream the underlying data source.
  * @param startline line number of the first character of the stream, mostly for error messages.
  */
@@ -473,14 +472,14 @@ class JavaCharStream
   {
     ReInit(dstream, 1, 1, 4096);
   }
-/** Constructor. */
+/* Constructor */
   public JavaCharStream(java.io.InputStream dstream, String encoding, int startline,
   int startcolumn, int buffersize) throws java.io.UnsupportedEncodingException
   {
     this(encoding == null ? new java.io.InputStreamReader(dstream) : new java.io.InputStreamReader(dstream, encoding), startline, startcolumn, buffersize);
   }
 
-/** Constructor.
+/* Constructor
  * @param dstream the underlying data source.
  * @param startline line number of the first character of the stream, mostly for error messages.
  * @param startcolumn column number of the first character of the stream.
@@ -492,7 +491,7 @@ class JavaCharStream
     this(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
   }
 
-/** Constructor.
+/* Constructor
  * @param dstream the underlying data source.
  * @param encoding the character encoding of the data stream.
  * @param startline line number of the first character of the stream, mostly for error messages.
@@ -505,7 +504,7 @@ class JavaCharStream
     this(dstream, encoding, startline, startcolumn, 4096);
   }
 
-/** Constructor.
+/* Constructor
  * @param dstream the underlying data source.
  * @param startline line number of the first character of the stream, mostly for error messages.
  * @param startcolumn column number of the first character of the stream.
@@ -516,7 +515,7 @@ class JavaCharStream
     this(dstream, startline, startcolumn, 4096);
   }
 
-/** Constructor.
+/* Constructor
  * @param dstream the underlying data source.
  * @param encoding the character encoding of the data stream.
  * @throws UnsupportedEncodingException encoding is invalid or unsupported.
@@ -526,7 +525,7 @@ class JavaCharStream
     this(dstream, encoding, 1, 1, 4096);
   }
 
-  /** Constructor.
+  /* Constructor
    * @param dstream the underlying data source.
    */
   public JavaCharStream(java.io.InputStream dstream)
@@ -534,7 +533,7 @@ class JavaCharStream
     this(dstream, 1, 1, 4096);
   }
 
-/** Reinitialise.
+/* Reinitialise
  * @param dstream the underlying data source.
  * @param encoding the character encoding of the data stream.
  * @param startline line number of the first character of the stream, mostly for error messages.
@@ -547,7 +546,7 @@ class JavaCharStream
     ReInit(encoding == null ? new java.io.InputStreamReader(dstream) : new java.io.InputStreamReader(dstream, encoding), startline, startcolumn, buffersize);
   }
 
-/** Reinitialise.
+/* Reinitialise
  * @param dstream the underlying data source.
  * @param startline line number of the first character of the stream, mostly for error messages.
  * @param startcolumn column number of the first character of the stream.
@@ -558,7 +557,7 @@ class JavaCharStream
   {
     ReInit(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
   }
-/** Reinitialise.
+/* Reinitialise
  * @param dstream the underlying data source.
  * @param encoding the character encoding of the data stream.
  * @param startline line number of the first character of the stream, mostly for error messages.
@@ -570,7 +569,7 @@ class JavaCharStream
   {
     ReInit(dstream, encoding, startline, startcolumn, 4096);
   }
-/** Reinitialise.
+/* Reinitialise
  * @param dstream the underlying data source.
  * @param startline line number of the first character of the stream, mostly for error messages.
  * @param startcolumn column number of the first character of the stream.
@@ -580,7 +579,7 @@ class JavaCharStream
   {
     ReInit(dstream, startline, startcolumn, 4096);
   }
-/** Reinitialise.
+/* Reinitialise
  * @param dstream the underlying data source.
  * @param encoding the character encoding of the data stream.
  * @throws UnsupportedEncodingException encoding is invalid or unsupported.
@@ -590,7 +589,7 @@ class JavaCharStream
     ReInit(dstream, encoding, 1, 1, 4096);
   }
 
-/** Reinitialise.
+/* Reinitialise
  * @param dstream the underlying data source.
  */
   public void ReInit(java.io.InputStream dstream)
