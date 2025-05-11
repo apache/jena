@@ -28,6 +28,7 @@ import org.junit.runners.Suite;
     TestRDFConnectionLocalTxnMem.class
     , TestRDFConnectionLocalMRSW.class
     , TestLibRDFConn.class
+    , TestRDFConnectionToDatasetGraphOverRDFLink.class
     , TestRDFConnectionRewrapping.class
 })
 
