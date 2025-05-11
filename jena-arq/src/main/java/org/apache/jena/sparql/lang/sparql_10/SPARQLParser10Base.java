@@ -17,14 +17,14 @@
  */
 
 package org.apache.jena.sparql.lang.sparql_10;
+
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.TypeMapper;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.sparql.lang.SPARQLParserBase ;
 
-class SPARQLParser10Base extends SPARQLParserBase implements SPARQLParser10Constants {
-    // LEGACY
+class SPARQLParser10Base extends Legacy10.SPARQLParserBase {
+
     protected Node createLiteral(String lexicalForm, String langTag, String datatypeURI) {
         Node n = null;
         // Can't have type and lang tag in parsing.
