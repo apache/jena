@@ -37,6 +37,7 @@ import org.apache.jena.sparql.modify.UpdateSink;
 import org.apache.jena.sparql.modify.UsingList;
 import org.apache.jena.sparql.modify.UsingUpdateSink;
 import org.apache.jena.sparql.modify.request.UpdateWithUsing;
+import org.apache.jena.sparql.util.Context;
 
 /**
  * A class of forms for executing SPARQL Update operations. parse means the update
@@ -356,7 +357,7 @@ public class UpdateAction {
             if ( in == null )
                 throw new UpdateException("File could not be opened: " + fileName);
         }
-        parseExecute(usingList, dataset, in, inputBinding, baseURI, syntax);
+        parseExecute(usingList, dataset, in, inputBinding, baseURI, syntax, null);
         if ( in != System.in )
             IO.close(in);
     }
@@ -408,7 +409,7 @@ public class UpdateAction {
      * @param syntax The update language syntax
      */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, String baseURI, Syntax syntax) {
-        parseExecute(usingList, dataset, input, (Binding)null, baseURI, syntax);
+        parseExecute(usingList, dataset, input, (Binding)null, baseURI, syntax, null);
     }
 
     /**
@@ -427,7 +428,7 @@ public class UpdateAction {
      */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, QuerySolution inputBinding,
                                     String baseURI, Syntax syntax) {
-        parseExecute(usingList, dataset, input, BindingLib.asBinding(inputBinding), baseURI, syntax);
+        parseExecute(usingList, dataset, input, BindingLib.asBinding(inputBinding), baseURI, syntax, null);
     }
 
     /**
@@ -445,9 +446,9 @@ public class UpdateAction {
      * @param syntax The update language syntax
      */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, Binding inputBinding, String baseURI,
-                                    Syntax syntax) {
+                                    Syntax syntax, Context context) {
         @SuppressWarnings("removal")
-        UpdateProcessorStreaming uProc = UpdateStreaming.createStreaming(dataset, inputBinding);
+        UpdateProcessorStreaming uProc = UpdateStreaming.makeStreaming(dataset, inputBinding, context);
         if ( uProc == null )
             throw new ARQException("No suitable update procesors are registered/able to execute your updates");
 
