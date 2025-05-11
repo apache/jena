@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.lang;
+package org.apache.jena.sparql.lang.sparql_11;
 
 import java.io.Reader;
 
@@ -25,30 +25,30 @@ import org.apache.jena.query.QueryException;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.Prologue;
-import org.apache.jena.sparql.lang.arq.javacc.ARQParser;
+import org.apache.jena.sparql.lang.UpdateParser;
 import org.apache.jena.sparql.modify.UpdateSink;
+import org.apache.jena.update.UpdateException;
 
-public class ParserARQUpdate extends UpdateParser {
-    public ParserARQUpdate() {}
+public class ParserSPARQL11Update extends UpdateParser
+{
+    public ParserSPARQL11Update() {}
 
     @Override
     protected void executeParse(UpdateSink sink, Prologue prologue, Reader r) {
-        ARQParser parser = null;
+        SPARQLParser11 parser = null;
         try {
-            parser = new ARQParser(r);
+            parser = new SPARQLParser11(r);
             parser.setUpdate(prologue, sink);
             parser.UpdateUnit();
-        } catch (org.apache.jena.sparql.lang.arq.javacc.ParseException ex) {
+        } catch (org.apache.jena.sparql.lang.sparql_11.ParseException ex) {
             throw new QueryParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn);
-        } catch (org.apache.jena.sparql.lang.arq.javacc.TokenMgrError tErr) {
+        } catch (org.apache.jena.sparql.lang.sparql_11.TokenMgrError tErr) {
             // Last valid token : not the same as token error message - but this
             // should not happen
             int col = parser.token.endColumn;
             int line = parser.token.endLine;
             throw new QueryParseException(tErr.getMessage(), line, col);
-        }
-
-        catch (QueryException ex) {
+        } catch (UpdateException ex) {
             throw ex;
         } catch (JenaException ex) {
             throw new QueryException(ex.getMessage(), ex);

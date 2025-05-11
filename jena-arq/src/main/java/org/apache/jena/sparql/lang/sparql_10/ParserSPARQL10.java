@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.lang;
+package org.apache.jena.sparql.lang.sparql_10;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -27,7 +27,7 @@ import org.apache.jena.query.QueryException;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.Syntax;
 import org.apache.jena.shared.JenaException;
-import org.apache.jena.sparql.lang.sparql_10.SPARQLParser10;
+import org.apache.jena.sparql.lang.SPARQLParser;
 import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.syntax.Template;
 

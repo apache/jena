@@ -22,6 +22,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.jena.query.Syntax;
+import org.apache.jena.sparql.lang.arq.ParserARQ;
+import org.apache.jena.sparql.lang.sparql_10.ParserSPARQL10;
+import org.apache.jena.sparql.lang.sparql_11.ParserSPARQL11;
+import org.apache.jena.sparql.lang.sparql_12.ParserSPARQL12;
 
 public class SPARQLParserRegistry
 {
