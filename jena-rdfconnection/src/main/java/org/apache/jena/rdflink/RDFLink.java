@@ -29,7 +29,6 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.http.HttpEnv;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdfconnection.Isolation;
 import org.apache.jena.rdfconnection.JenaConnectionException;
 import org.apache.jena.rdfconnection.LibSec;
@@ -374,7 +373,7 @@ public interface RDFLink extends
      */
     @Override
     public default QueryExec query(String queryString) {
-        return query(QueryFactory.create(queryString));
+        return newQuery().query(queryString).build();
     }
 
     /**
@@ -422,6 +421,7 @@ public interface RDFLink extends
     @Override
     public default void update(String updateString) {
         update(UpdateFactory.create(updateString));
+        // newUpdate().update(updateString).execute();
     }
 
     /** Fetch the default graph.
