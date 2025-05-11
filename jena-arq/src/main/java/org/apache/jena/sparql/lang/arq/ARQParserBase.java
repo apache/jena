@@ -39,7 +39,7 @@ import org.apache.jena.sparql.syntax.ElementNamedGraph;
 import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.jena.sparql.syntax.Template;
 
-class ARQParserBase extends SPARQLParserBase
+public class ARQParserBase extends SPARQLParserBase
 {
     // JSON
     JSONHandler handler = new JSONHandlerBase() ;

@@ -38,15 +38,15 @@
 #endif
 
 #ifdef SPARQL_12
-#define PACKAGE     lang.sparql_12
+#define PACKAGE     org.apache.jena.sparql.lang.sparql_12
 #define CLASS       SPARQLParser12
-#define PARSERBASE  SPARQLParser12Base
+#define PARSERBASE  org.apache.jena.sparql.lang.sparql_12.SPARQLParser12Base
 #endif
 
 #ifdef ARQ
-#define PACKAGE     lang.arq
+#define PACKAGE     org.apache.jena.sparql.lang.arq
 #define CLASS       ARQParser
-#define PARSERBASE  ARQParserBase
+#define PARSERBASE  org.apache.jena.sparql.lang.arq.ARQParserBase
 #endif
 
 options
@@ -88,7 +88,7 @@ PARSER_BEGIN(CLASS)
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.PACKAGE ;
+package PACKAGE.javacc ;
 
 import org.apache.jena.graph.* ;
 import org.apache.jena.query.* ;

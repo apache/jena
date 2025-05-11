@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,9 +27,9 @@ import org.apache.jena.query.QueryParseException;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.core.VarExprList;
 import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.lang.arq.ARQParser;
-import org.apache.jena.sparql.lang.arq.ParseException;
-import org.apache.jena.sparql.lang.arq.TokenMgrError;
+import org.apache.jena.sparql.lang.arq.javacc.ARQParser;
+import org.apache.jena.sparql.lang.arq.javacc.ParseException;
+import org.apache.jena.sparql.lang.arq.javacc.TokenMgrError;
 
 /**
  * A Select clause handler.
@@ -43,7 +43,7 @@ public class SelectHandler implements Handler {
 
     /**
      * Constructor.
-     * 
+     *
      * @param aggHandler The aggregate handler that wraps the query we want to
      * handle.
      */
@@ -57,7 +57,7 @@ public class SelectHandler implements Handler {
     /**
      * Set the distinct flag. Set or unset the distinct flag. Will set the reduced
      * flag if it was previously set.
-     * 
+     *
      * @param state the state to set the distinct flag to.
      */
     public void setDistinct(boolean state) {
@@ -70,7 +70,7 @@ public class SelectHandler implements Handler {
     /**
      * Set the reduced flag. Set or unset the reduced flag. Will set the reduced
      * flag if it was previously set.
-     * 
+     *
      * @param state the state to set the reduced flag to.
      */
     public void setReduced(boolean state) {
@@ -83,7 +83,7 @@ public class SelectHandler implements Handler {
     /**
      * Add a variable to the select. If the variable is <code>null</code> the
      * variables are set to star.
-     * 
+     *
      * @param var The variable to add.
      */
     public void addVar(Var var) {
@@ -98,7 +98,7 @@ public class SelectHandler implements Handler {
     /**
      * Add an Expression as variable to the select. If the variable is the variables
      * are set to star.
-     * 
+     *
      * @param expression The expression as a string.
      * @param var The variable to add.
      */
@@ -108,9 +108,9 @@ public class SelectHandler implements Handler {
 
     /**
      * Parse an expression string into an expression.
-     * 
+     *
      * This must be able to be parsed as though it were written "SELECT "+s
-     * 
+     *
      * @param s the select string to parse.
      * @return the expression
      * @throws QueryParseException on error
@@ -139,7 +139,7 @@ public class SelectHandler implements Handler {
 
     /**
      * Add an Expression as variable to the select.
-     * 
+     *
      * @param expr The expression to add.
      * @param var The variable to add.
      */
@@ -157,7 +157,7 @@ public class SelectHandler implements Handler {
 
     /**
      * Get the list of variables from the query.
-     * 
+     *
      * @return The list of variables in the query.
      */
     public List<Var> getVars() {
@@ -166,7 +166,7 @@ public class SelectHandler implements Handler {
 
     /**
      * Return the projected var expression list.
-     * 
+     *
      * @return The projected var expression list.
      */
     public VarExprList getProject() {
@@ -175,7 +175,7 @@ public class SelectHandler implements Handler {
 
     /**
      * Add all the variables from the select handler variable.
-     * 
+     *
      * @param selectHandler The select handler to copy the variables from.
      */
     public void addAll(SelectHandler selectHandler) {

@@ -23,7 +23,7 @@ options
   STATIC = false ;
 }
 PARSER_BEGIN(ARQParser)
-package org.apache.jena.sparql.lang.arq ;
+package org.apache.jena.sparql.lang.arq.javacc ;
 import org.apache.jena.graph.* ;
 import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.Var ;
@@ -37,7 +37,7 @@ import org.apache.jena.sparql.modify.request.* ;
 import org.apache.jena.sparql.core.Quad ;
 import java.util.List;
 import java.util.ArrayList;
-public class ARQParser extends ARQParserBase
+public class ARQParser extends org.apache.jena.sparql.lang.arq.ARQParserBase
 {}
 PARSER_END(ARQParser)
 void QueryUnit(): { }

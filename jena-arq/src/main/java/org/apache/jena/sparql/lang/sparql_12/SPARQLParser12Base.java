@@ -19,4 +19,4 @@
 package org.apache.jena.sparql.lang.sparql_12;
 import org.apache.jena.sparql.lang.SPARQLParserBase ;
 
-class SPARQLParser12Base extends SPARQLParserBase implements SPARQLParser12Constants {}
+public class SPARQLParser12Base extends SPARQLParserBase {}
