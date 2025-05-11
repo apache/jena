@@ -25,9 +25,9 @@ import org.apache.jena.irix.IRIs;
 import org.apache.jena.irix.IRIx;
 import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.shared.NotFoundException;
-import org.apache.jena.sparql.lang.ParserARQ;
 import org.apache.jena.sparql.lang.SPARQLParser;
 import org.apache.jena.sparql.lang.SPARQLParserRegistry;
+import org.apache.jena.sparql.lang.arq.ParserARQ;
 import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.syntax.Template;
 
