@@ -3,8 +3,6 @@
 package org.apache.jena.sparql.lang.arq.javacc ;
 
 /** Token Manager Error. */
-
-@SuppressWarnings("all")
 public class TokenMgrError extends Error
 {
 
