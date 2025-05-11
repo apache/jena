@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory ;
  * This class provides the Jena Graph interface to a remote SPARQL endpoint.
  * Efficiency not guaranteed.
  */
-
+@Deprecated(forRemoval = true) // Superseded by DatasetGraphOverSparql
 public class GraphSPARQLService extends GraphBase implements Graph
 {
     private static Logger log = LoggerFactory.getLogger(GraphSPARQLService.class) ;
