@@ -1,0 +1,63 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX :        <#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX delta:   <http://jena.apache.org/delta#>
+
+# TDB2 Dataset with Delta Change Tracking
+# 
+# This configuration demonstrates how to create a TDB2 dataset that
+# automatically tracks and logs changes to an RDF Delta patch log server.
+# 
+# To use this configuration with Fuseki, add it to the Fuseki configuration
+# directory and reference it from a service configuration.
+
+# The base TDB2 dataset
+:tdb_dataset rdf:type tdb2:DatasetTDB2 ;
+    tdb2:location "/path/to/tdb2-data" ;
+    .
+
+# The Delta tracked TDB2 dataset
+:delta_dataset rdf:type delta:TDB2Dataset ;
+    # Link to the base TDB2 dataset
+    delta:dataset :tdb_dataset ;
+    
+    # Delta server URL
+    delta:server "http://localhost:1066/" ;
+    
+    # Dataset name/ID in the patch log server
+    delta:name "example" ;
+    
+    # Optional polling interval for checking updates (in milliseconds)
+    delta:pollingInterval 1000 ;
+    .
+
+# Fuseki service configuration that uses the Delta dataset
+:service_tdb_delta rdf:type fuseki:Service ;
+    rdfs:label "TDB2 with Delta Change Tracking" ;
+    fuseki:name "delta" ;
+    fuseki:endpoint [ 
+        fuseki:operation fuseki:query ;
+        fuseki:name "query" 
+    ] ;
+    fuseki:endpoint [ 
+        fuseki:operation fuseki:update ;
+        fuseki:name "update" 
+    ] ;
+    fuseki:endpoint [ 
+        fuseki:operation fuseki:gsp-r ;
+        fuseki:name "get" 
+    ] ;
+    fuseki:endpoint [ 
+        fuseki:operation fuseki:gsp-rw ;
+        fuseki:name "data" 
+    ] ;
+    fuseki:endpoint [ 
+        fuseki:operation fuseki:upload ;
+        fuseki:name "upload" 
+    ] ;
+    fuseki:dataset :delta_dataset ;
+    .

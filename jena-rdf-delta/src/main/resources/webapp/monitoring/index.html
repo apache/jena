@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RDF Delta - Monitoring Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <style>
+        body {
+            padding-top: 20px;
+            padding-bottom: 40px;
+            background-color: #f5f5f5;
+        }
+        .status-card {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .status-card:hover {
+            transform: translateY(-5px);
+        }
+        .status-healthy {
+            border-left: 5px solid #28a745;
+        }
+        .status-degraded {
+            border-left: 5px solid #ffc107;
+        }
+        .status-unhealthy {
+            border-left: 5px solid #dc3545;
+        }
+        .status-unknown {
+            border-left: 5px solid #6c757d;
+        }
+        .chart-container {
+            height: 250px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="pb-3 mb-4 border-bottom">
+            <div class="d-flex align-items-center text-dark text-decoration-none">
+                <span class="fs-4">RDF Delta Monitoring Dashboard</span>
+                <div class="ms-auto">
+                    <button id="refreshBtn" class="btn btn-sm btn-outline-primary">
+                        <span id="refreshIcon" class="bi">⟳</span> Refresh
+                    </button>
+                    <div class="form-check form-switch d-inline-block ms-2">
+                        <input class="form-check-input" type="checkbox" id="autoRefreshSwitch">
+                        <label class="form-check-label" for="autoRefreshSwitch">Auto-refresh</label>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Overall Status -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div id="overall-status" class="card status-unknown">
+                    <div class="card-body">
+                        <h5 class="card-title">System Status</h5>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h2 id="status-text">Loading...</h2>
+                                <p id="status-message" class="text-muted mb-0">Fetching system status...</p>
+                            </div>
+                            <div>
+                                <span id="status-icon" class="display-4">⌛</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Checks -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <h4>Health Checks</h4>
+                <div id="health-checks" class="row">
+                    <div class="col-md-12 text-center py-5">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Loading health checks...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="row mb-4">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">Memory Usage</div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="memoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">Disk Usage</div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="diskChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">Request Rate</div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="requestChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">Response Time</div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="responseTimeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Datasets -->
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Datasets</h4>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Patches</th>
+                                        <th>Last Updated</th>
+                                        <th>Replication Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="datasets-table">
+                                    <tr>
+                                        <td colspan="4" class="text-center">Loading datasets...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="pt-3 mt-4 text-muted border-top">
+            &copy; 2023 Apache Jena | RDF Delta Monitoring
+            <div class="float-end">Updated: <span id="last-updated">-</span></div>
+        </footer>
+    </div>
+
+    <script>
+        // Dashboard functionality
+        let autoRefreshInterval;
+        const autoRefreshDelay = 10000; // 10 seconds
+        let memoryChart, diskChart, requestChart, responseTimeChart;
+        
+        // Initial data structures
+        let healthData = {};
+        let statusData = {};
+        let metricsData = {
+            memory: [],
+            disk: [],
+            requests: [],
+            responseTimes: []
+        };
+        
+        // Setup charts
+        function setupCharts() {
+            const memoryCtx = document.getElementById('memoryChart').getContext('2d');
+            memoryChart = new Chart(memoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Used', 'Free'],
+                    datasets: [{
+                        data: [0, 100],
+                        backgroundColor: ['#dc3545', '#28a745']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            
+            const diskCtx = document.getElementById('diskChart').getContext('2d');
+            diskChart = new Chart(diskCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Used', 'Free'],
+                    datasets: [{
+                        data: [0, 100],
+                        backgroundColor: ['#dc3545', '#28a745']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            
+            const requestCtx = document.getElementById('requestChart').getContext('2d');
+            requestChart = new Chart(requestCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Requests per minute',
+                        data: [],
+                        borderColor: '#007bff',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            const responseTimeCtx = document.getElementById('responseTimeChart').getContext('2d');
+            responseTimeChart = new Chart(responseTimeCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Response time (ms)',
+                        data: [],
+                        borderColor: '#17a2b8',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Fetch data from server
+        async function fetchData() {
+            try {
+                // Fetch health data
+                const healthResponse = await fetch('../health?run=true');
+                healthData = await healthResponse.json();
+                
+                // Fetch status data
+                const statusResponse = await fetch('../status');
+                statusData = await statusResponse.json();
+                
+                // Update UI
+                updateDashboard();
+                
+                // Update last updated timestamp
+                document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+        
+        // Update dashboard UI
+        function updateDashboard() {
+            // Update overall status
+            const statusCard = document.getElementById('overall-status');
+            const statusText = document.getElementById('status-text');
+            const statusMessage = document.getElementById('status-message');
+            const statusIcon = document.getElementById('status-icon');
+            
+            // Update status card based on health data
+            if (healthData && healthData.status) {
+                statusCard.className = 'card status-' + healthData.status;
+                statusText.textContent = healthData.status.charAt(0).toUpperCase() + healthData.status.slice(1);
+                
+                switch (healthData.status) {
+                    case 'healthy':
+                        statusIcon.textContent = '✓';
+                        statusIcon.className = 'display-4 text-success';
+                        break;
+                    case 'degraded':
+                        statusIcon.textContent = '⚠';
+                        statusIcon.className = 'display-4 text-warning';
+                        break;
+                    case 'unhealthy':
+                        statusIcon.textContent = '✗';
+                        statusIcon.className = 'display-4 text-danger';
+                        break;
+                    default:
+                        statusIcon.textContent = '?';
+                        statusIcon.className = 'display-4 text-secondary';
+                }
+                
+                statusMessage.textContent = 'Last checked: ' + new Date(healthData.timestamp).toLocaleTimeString();
+            }
+            
+            // Update health checks
+            const healthChecksContainer = document.getElementById('health-checks');
+            if (healthData && healthData.checks) {
+                let healthChecksHtml = '';
+                for (const [name, check] of Object.entries(healthData.checks)) {
+                    let statusClass = 'status-' + check.status;
+                    let statusBadge = '';
+                    
+                    switch (check.status) {
+                        case 'healthy':
+                            statusBadge = '<span class="badge bg-success">Healthy</span>';
+                            break;
+                        case 'degraded':
+                            statusBadge = '<span class="badge bg-warning text-dark">Degraded</span>';
+                            break;
+                        case 'unhealthy':
+                            statusBadge = '<span class="badge bg-danger">Unhealthy</span>';
+                            break;
+                        default:
+                            statusBadge = '<span class="badge bg-secondary">Unknown</span>';
+                    }
+                    
+                    healthChecksHtml += `
+                        <div class="col-md-6 mb-3">
+                            <div class="card status-card ${statusClass}">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="card-title">${name}</h5>
+                                        ${statusBadge}
+                                    </div>
+                                    <p class="card-text">${check.message}</p>
+                                    <div class="text-muted small">Last checked: ${new Date(check.timestamp).toLocaleTimeString()}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                healthChecksContainer.innerHTML = healthChecksHtml;
+            } else {
+                healthChecksContainer.innerHTML = '<div class="col-12"><div class="alert alert-warning">No health checks available</div></div>';
+            }
+            
+            // Update metrics charts if status data is available
+            if (statusData && statusData.jvm && statusData.system) {
+                // Memory chart
+                const heapUsed = statusData.jvm.memory.heap.used;
+                const heapMax = statusData.jvm.memory.heap.max;
+                const heapPercent = Math.round((heapUsed / heapMax) * 100);
+                
+                memoryChart.data.datasets[0].data = [heapPercent, 100 - heapPercent];
+                memoryChart.update();
+                
+                // In a real dashboard, we would collect metrics over time
+                // Here we're simulating some data for the request and response time charts
+                const now = new Date().toLocaleTimeString();
+                const requestCount = Math.round(Math.random() * 50) + 10;
+                const responseTime = Math.round(Math.random() * 100) + 50;
+                
+                if (requestChart.data.labels.length > 10) {
+                    requestChart.data.labels.shift();
+                    requestChart.data.datasets[0].data.shift();
+                }
+                requestChart.data.labels.push(now);
+                requestChart.data.datasets[0].data.push(requestCount);
+                requestChart.update();
+                
+                if (responseTimeChart.data.labels.length > 10) {
+                    responseTimeChart.data.labels.shift();
+                    responseTimeChart.data.datasets[0].data.shift();
+                }
+                responseTimeChart.data.labels.push(now);
+                responseTimeChart.data.datasets[0].data.push(responseTime);
+                responseTimeChart.update();
+            }
+            
+            // In a real dashboard, we would fetch dataset information
+            // Here we're simulating some dataset data
+            const datasetsTable = document.getElementById('datasets-table');
+            datasetsTable.innerHTML = `
+                <tr>
+                    <td>example-dataset</td>
+                    <td>1,245</td>
+                    <td>${new Date().toLocaleString()}</td>
+                    <td><span class="badge bg-success">Synchronized</span></td>
+                </tr>
+                <tr>
+                    <td>test-dataset</td>
+                    <td>567</td>
+                    <td>${new Date().toLocaleString()}</td>
+                    <td><span class="badge bg-success">Synchronized</span></td>
+                </tr>
+                <tr>
+                    <td>production-data</td>
+                    <td>12,789</td>
+                    <td>${new Date().toLocaleString()}</td>
+                    <td><span class="badge bg-warning text-dark">2 patches behind</span></td>
+                </tr>
+            `;
+        }
+        
+        // Initialize auto refresh toggle
+        function initializeAutoRefresh() {
+            const autoRefreshSwitch = document.getElementById('autoRefreshSwitch');
+            const refreshBtn = document.getElementById('refreshBtn');
+            
+            autoRefreshSwitch.addEventListener('change', function() {
+                if (this.checked) {
+                    autoRefreshInterval = setInterval(fetchData, autoRefreshDelay);
+                } else {
+                    clearInterval(autoRefreshInterval);
+                }
+            });
+            
+            refreshBtn.addEventListener('click', function() {
+                const refreshIcon = document.getElementById('refreshIcon');
+                refreshIcon.classList.add('rotate');
+                fetchData().then(() => {
+                    setTimeout(() => {
+                        refreshIcon.classList.remove('rotate');
+                    }, 500);
+                });
+            });
+        }
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            setupCharts();
+            initializeAutoRefresh();
+            fetchData();
+        });
+    </script>
+</body>
+</html>

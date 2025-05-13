@@ -1,0 +1,54 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX delta:   <http://jena.apache.org/delta#>
+
+# Fuseki configuration with RDF Delta replication
+# 
+# This configuration demonstrates how to create a high-availability Fuseki
+# setup with multiple servers sharing the same data through RDF Delta.
+# It uses TDB2 for local storage and synchronizes changes through a Delta server.
+
+# Server configuration
+<#server> rdf:type fuseki:Server ;
+    fuseki:services (
+        <#service_tdb_delta>
+    ) .
+
+# Base TDB2 dataset
+<#tdb_dataset> rdf:type tdb2:DatasetTDB2 ;
+    tdb2:location "/fuseki/databases/DB" ;
+    .
+
+# Delta-replicated dataset
+<#delta_dataset> rdf:type delta:ReplicatedDataset ;
+    # The underlying TDB2 dataset
+    delta:dataset <#tdb_dataset> ;
+    
+    # Delta server URL
+    delta:server "http://delta-server:1066/" ;
+    
+    # Dataset name/ID in the patch log server
+    delta:datasetName "example" ;
+    
+    # Optional zone name for this Fuseki server
+    delta:zone "fuseki-1" ;
+    .
+
+# Fuseki service configuration
+<#service_tdb_delta> rdf:type fuseki:Service ;
+    rdfs:label "TDB2 with Delta replication" ;
+    fuseki:name "example" ;                  # http://host:port/example
+    fuseki:serviceQuery "query" ;            # SPARQL query service
+    fuseki:serviceQuery "sparql" ;           # SPARQL query service
+    fuseki:serviceUpdate "update" ;          # SPARQL update service
+    fuseki:serviceUpload "upload" ;          # File upload service
+    fuseki:serviceReadWriteGraphStore "data" ;   # Graph store protocol (read-write)
+    fuseki:serviceReadGraphStore "get" ;     # Graph store protocol (read-only)
+    fuseki:dataset <#delta_dataset> ;
+    .

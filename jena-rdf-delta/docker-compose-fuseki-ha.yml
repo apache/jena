@@ -1,0 +1,118 @@
+version: '3'
+
+services:
+  # ZooKeeper for coordination
+  zookeeper:
+    image: zookeeper:3.8
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper-data:/data
+      - zookeeper-logs:/datalog
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zookeeper:2888:3888;2181
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "zkServer.sh", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - delta-network
+
+  # RDF Delta server
+  delta-server:
+    build: .
+    ports:
+      - "1066:1066"
+    depends_on:
+      - zookeeper
+    volumes:
+      - delta-data:/var/lib/delta-server
+    environment:
+      DELTA_SERVER_PORT: 1066
+      DELTA_STORAGE_PATH: /var/lib/delta-server/store
+      DELTA_CLUSTER_ENABLED: "true"
+      DELTA_CLUSTER_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      DELTA_METRICS_ENABLED: "true"
+      JAVA_OPTS: "-Xmx1g"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1066/$/list"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - delta-network
+
+  # Fuseki server 1
+  fuseki-1:
+    image: apache/jena-fuseki
+    ports:
+      - "3030:3030"
+    depends_on:
+      - delta-server
+    volumes:
+      - fuseki-data-1:/fuseki
+      - ./src/main/resources/examples/fuseki-ha-config.ttl:/fuseki/config.ttl:ro
+    environment:
+      FUSEKI_BASE: /fuseki
+      FUSEKI_ARGS: "--config=/fuseki/config.ttl"
+      JAVA_OPTS: "-Xmx2g -Ddelta.fuseki.zone=fuseki-1"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3030/$/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - delta-network
+
+  # Fuseki server 2
+  fuseki-2:
+    image: apache/jena-fuseki
+    ports:
+      - "3031:3030"
+    depends_on:
+      - delta-server
+    volumes:
+      - fuseki-data-2:/fuseki
+      - ./src/main/resources/examples/fuseki-ha-config.ttl:/fuseki/config.ttl:ro
+    environment:
+      FUSEKI_BASE: /fuseki
+      FUSEKI_ARGS: "--config=/fuseki/config.ttl"
+      JAVA_OPTS: "-Xmx2g -Ddelta.fuseki.zone=fuseki-2"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3030/$/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - delta-network
+
+  # Load balancer for Fuseki servers
+  haproxy:
+    image: haproxy:2.5
+    ports:
+      - "8030:8030"
+    depends_on:
+      - fuseki-1
+      - fuseki-2
+    volumes:
+      - ./haproxy-fuseki.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    restart: unless-stopped
+    networks:
+      - delta-network
+
+volumes:
+  zookeeper-data:
+  zookeeper-logs:
+  delta-data:
+  fuseki-data-1:
+  fuseki-data-2:
+
+networks:
+  delta-network:
+    driver: bridge

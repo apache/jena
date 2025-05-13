@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="800px" height="600px" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect x="0" y="0" width="800" height="600" fill="#f8f9fa" />
+  
+  <!-- Title -->
+  <text x="400" y="30" font-family="Arial" font-size="24" text-anchor="middle" font-weight="bold">Apache Jena Fuseki High-Availability Architecture</text>
+  
+  <!-- Load Balancer -->
+  <rect x="300" y="70" width="200" height="50" rx="5" ry="5" fill="#6c757d" stroke="#495057" stroke-width="2" />
+  <text x="400" y="100" font-family="Arial" font-size="16" text-anchor="middle" fill="white">Load Balancer</text>
+  
+  <!-- Connections from Load Balancer -->
+  <line x1="400" y1="120" x2="400" y2="140" stroke="#495057" stroke-width="2" />
+  <line x1="400" y1="140" x2="200" y2="180" stroke="#495057" stroke-width="2" />
+  <line x1="400" y1="140" x2="600" y2="180" stroke="#495057" stroke-width="2" />
+  
+  <!-- Fuseki Server 1 -->
+  <rect x="100" y="180" width="200" height="100" rx="5" ry="5" fill="#007bff" stroke="#0056b3" stroke-width="2" />
+  <text x="200" y="210" font-family="Arial" font-size="16" text-anchor="middle" fill="white">Fuseki Server 1</text>
+  <text x="200" y="230" font-family="Arial" font-size="12" text-anchor="middle" fill="white">RDF Delta Client</text>
+  <text x="200" y="250" font-family="Arial" font-size="12" text-anchor="middle" fill="white">TDB2 Dataset</text>
+  <text x="200" y="270" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Zone: fuseki-1</text>
+  
+  <!-- Fuseki Server 2 -->
+  <rect x="500" y="180" width="200" height="100" rx="5" ry="5" fill="#007bff" stroke="#0056b3" stroke-width="2" />
+  <text x="600" y="210" font-family="Arial" font-size="16" text-anchor="middle" fill="white">Fuseki Server 2</text>
+  <text x="600" y="230" font-family="Arial" font-size="12" text-anchor="middle" fill="white">RDF Delta Client</text>
+  <text x="600" y="250" font-family="Arial" font-size="12" text-anchor="middle" fill="white">TDB2 Dataset</text>
+  <text x="600" y="270" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Zone: fuseki-2</text>
+  
+  <!-- Connections to Delta Server -->
+  <line x1="200" y1="280" x2="200" y2="340" stroke="#0056b3" stroke-width="2" />
+  <line x1="600" y1="280" x2="600" y2="340" stroke="#0056b3" stroke-width="2" />
+  <line x1="200" y1="340" x2="400" y2="380" stroke="#0056b3" stroke-width="2" />
+  <line x1="600" y1="340" x2="400" y2="380" stroke="#0056b3" stroke-width="2" />
+  
+  <!-- Delta Server -->
+  <rect x="300" y="380" width="200" height="80" rx="5" ry="5" fill="#28a745" stroke="#1e7e34" stroke-width="2" />
+  <text x="400" y="410" font-family="Arial" font-size="16" text-anchor="middle" fill="white">RDF Delta Server</text>
+  <text x="400" y="430" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Patch Log Service</text>
+  <text x="400" y="450" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Dataset: example</text>
+  
+  <!-- Connection to Storage and ZooKeeper -->
+  <line x1="400" y1="460" x2="400" y2="480" stroke="#1e7e34" stroke-width="2" />
+  <line x1="400" y1="480" x2="250" y2="510" stroke="#1e7e34" stroke-width="2" />
+  <line x1="400" y1="480" x2="550" y2="510" stroke="#1e7e34" stroke-width="2" />
+  
+  <!-- Storage -->
+  <rect x="200" y="510" width="100" height="60" rx="5" ry="5" fill="#fd7e14" stroke="#d63384" stroke-width="2" />
+  <text x="250" y="540" font-family="Arial" font-size="14" text-anchor="middle" fill="white">Patch Log</text>
+  <text x="250" y="560" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Storage</text>
+  
+  <!-- ZooKeeper -->
+  <rect x="500" y="510" width="100" height="60" rx="5" ry="5" fill="#6f42c1" stroke="#59359a" stroke-width="2" />
+  <text x="550" y="540" font-family="Arial" font-size="14" text-anchor="middle" fill="white">ZooKeeper</text>
+  <text x="550" y="560" font-family="Arial" font-size="12" text-anchor="middle" fill="white">Coordination</text>
+  
+  <!-- Client -->
+  <rect x="50" y="70" width="100" height="50" rx="5" ry="5" fill="#20c997" stroke="#17a2b8" stroke-width="2" />
+  <text x="100" y="100" font-family="Arial" font-size="14" text-anchor="middle" fill="white">SPARQL Client</text>
+  
+  <!-- Client Connection -->
+  <line x1="150" y1="95" x2="300" y2="95" stroke="#17a2b8" stroke-width="2" />
+  <polygon points="295,90 300,95 295,100" fill="#17a2b8" />
+  
+  <!-- Data Flow Labels -->
+  <text x="280" y="170" font-family="Arial" font-size="12" text-anchor="middle" fill="#1e7e34">Queries &amp; Updates</text>
+  <text x="520" y="170" font-family="Arial" font-size="12" text-anchor="middle" fill="#1e7e34">Queries &amp; Updates</text>
+  
+  <text x="150" y="320" font-family="Arial" font-size="12" text-anchor="middle" fill="#0056b3">Patches</text>
+  <text x="650" y="320" font-family="Arial" font-size="12" text-anchor="middle" fill="#0056b3">Patches</text>
+  
+  <text x="330" y="500" font-family="Arial" font-size="12" text-anchor="middle" fill="#1e7e34">Store Patches</text>
+  <text x="470" y="500" font-family="Arial" font-size="12" text-anchor="middle" fill="#1e7e34">Coordinate Servers</text>
+  
+  <!-- Legend -->
+  <rect x="650" y="70" width="120" height="130" rx="5" ry="5" fill="white" stroke="#dee2e6" stroke-width="1" />
+  <text x="710" y="90" font-family="Arial" font-size="14" text-anchor="middle" font-weight="bold">Legend</text>
+  
+  <rect x="660" y="100" width="15" height="15" fill="#007bff" />
+  <text x="685" y="112" font-family="Arial" font-size="12" text-anchor="start">Fuseki Server</text>
+  
+  <rect x="660" y="125" width="15" height="15" fill="#28a745" />
+  <text x="685" y="137" font-family="Arial" font-size="12" text-anchor="start">Delta Server</text>
+  
+  <rect x="660" y="150" width="15" height="15" fill="#6c757d" />
+  <text x="685" y="162" font-family="Arial" font-size="12" text-anchor="start">Load Balancer</text>
+  
+  <rect x="660" y="175" width="15" height="15" fill="#6f42c1" />
+  <text x="685" y="187" font-family="Arial" font-size="12" text-anchor="start">ZooKeeper</text>
+</svg>

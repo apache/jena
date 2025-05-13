@@ -278,6 +278,8 @@
         <module>jena-shex</module>
         <module>jena-rdfpatch</module>
         <module>jena-rdfconnection</module>
+        <module>jena-memory</module>
+        <module>jena-rdf-delta</module>
         <module>jena-db</module>
         <module>jena-tdb1</module>
         <module>jena-tdb2</module>
