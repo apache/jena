@@ -22,6 +22,7 @@ import static org.apache.jena.util.iterator.WrappedIterator.create;
 import java.util.*;
 
 import org.apache.jena.graph.* ;
+import org.apache.jena.reasoner.InfGraph;
 import org.apache.jena.shared.* ;
 import org.apache.jena.util.CollectionFactory ;
 import org.apache.jena.util.iterator.* ;
@@ -153,12 +154,24 @@ public class GraphMatcher extends java.lang.Object {
         // check that the size's are the same.
         // If the size is not accurate then it is a lower bound
 
-        if (m.getCapabilities().sizeAccurate()
-                && m.size() < other.m.size() )
-            return null;
-        if (other.m.getCapabilities().sizeAccurate()
-                && m.size() > other.m.size() )
-            return null;
+//        @SuppressWarnings("removal")
+//        boolean testForSize = m.getCapabilities().sizeAccurate() && other.m.getCapabilities().sizeAccurate() ;
+        boolean testForSize = ! ( m instanceof InfGraph || other.m instanceof InfGraph );
+        if ( testForSize ) {
+            if ( m.size() != -1 && ( m.size() != other.m.size() ) )
+                return null;
+        }
+
+        // Old code up to Jena 5.4.0, prior to removing capabilities.
+        // Size is lower bound
+        // Only InfGraphs have inaccurate size (GraphMatech is not designed for large database-stored graphs.
+
+//        if (m.getCapabilities().sizeAccurate()
+//                && m.size() < other.m.size() )
+//            return null;
+//        if (other.m.getCapabilities().sizeAccurate()
+//                && m.size() > other.m.size() )
+//            return null;
         int myPrep = prepare(other.m);
         if ( myPrep == -1 || myPrep != other.prepare(m) ) {
             return null;

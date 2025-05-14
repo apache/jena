@@ -37,6 +37,6 @@ public class TestOntGraph extends AbstractTestGraph
         { return new TestSuite( TestOntGraph.class ); }
 
     @Override
-    public Graph getGraph()
+    public Graph getNewGraph()
         { return ModelFactory.createOntologyModel().getGraph(); }
     }

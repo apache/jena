@@ -50,10 +50,10 @@ public class GraphWrapper implements Graph
         return get().getTransactionHandler();
     }
 
-    @Override
-    public Capabilities getCapabilities() {
-        return get().getCapabilities();
-    }
+//    @Override
+//    public Capabilities getCapabilities() {
+//        return get().getCapabilities();
+//    }
 
     @Override
     public GraphEventManager getEventManager() {

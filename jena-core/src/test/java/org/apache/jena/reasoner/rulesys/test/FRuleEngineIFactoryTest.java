@@ -134,9 +134,6 @@ public class FRuleEngineIFactoryTest extends TestCase {
         public TransactionHandler getTransactionHandler() { return null; }
 
         @Override
-        public Capabilities getCapabilities() { return null; }
-
-        @Override
         public GraphEventManager getEventManager() { return null; }
 
         @Override

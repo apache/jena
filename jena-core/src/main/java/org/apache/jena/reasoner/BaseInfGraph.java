@@ -74,6 +74,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     private Capabilities calcCapabilitiesFrom(Graph data) {
         if ( data == null )
             return reasonerInfCapabilities;
+
         // Same as data graph except size is not accurate.
         Capabilities baseCapabilities = data.getCapabilities();
         return AllCapabilities.create(false,
