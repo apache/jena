@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jena Memory Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Apache Jena Memory Dashboard</h1>
+            <div class="controls">
+                <button id="refreshBtn" title="Refresh data"><span class="icon">↻</span> Refresh</button>
+                <button id="gcBtn" title="Force garbage collection"><span class="icon">🗑️</span> Run GC</button>
+                <div class="auto-refresh">
+                    <label>
+                        <input type="checkbox" id="autoRefreshToggle" checked>
+                        Auto-refresh
+                    </label>
+                    <select id="refreshInterval">
+                        <option value="5000">5 seconds</option>
+                        <option value="10000">10 seconds</option>
+                        <option value="30000">30 seconds</option>
+                        <option value="60000">1 minute</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+        
+        <div class="dashboard">
+            <!-- Summary cards -->
+            <div class="summary">
+                <div class="card" id="heapCard">
+                    <h2>Heap Memory</h2>
+                    <div class="metric">
+                        <div class="value" id="heapValue">0 MB</div>
+                        <div class="label">of <span id="heapMax">0 MB</span></div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="heapFill" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div class="card" id="nonHeapCard">
+                    <h2>Non-Heap Memory</h2>
+                    <div class="metric">
+                        <div class="value" id="nonHeapValue">0 MB</div>
+                        <div class="label">of <span id="nonHeapMax">0 MB</span></div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="nonHeapFill" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div class="card" id="gcCard">
+                    <h2>Garbage Collection</h2>
+                    <div class="metric">
+                        <div class="value" id="youngGcCount">0</div>
+                        <div class="label">Young GC</div>
+                    </div>
+                    <div class="metric">
+                        <div class="value" id="oldGcCount">0</div>
+                        <div class="label">Old GC</div>
+                    </div>
+                </div>
+                
+                <div class="card" id="componentCard">
+                    <h2>Components</h2>
+                    <div class="metric">
+                        <div class="value" id="componentCount">0</div>
+                        <div class="label">Registered</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts -->
+            <div class="charts">
+                <div class="chart-container">
+                    <h2>Memory Usage Over Time</h2>
+                    <canvas id="memoryChart"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <h2>Garbage Collection</h2>
+                    <canvas id="gcChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Tabs for detailed information -->
+            <div class="tabs">
+                <div class="tab-header">
+                    <button class="tab-button active" data-tab="heap">Heap Memory</button>
+                    <button class="tab-button" data-tab="gc">GC Details</button>
+                    <button class="tab-button" data-tab="components">Components</button>
+                    <button class="tab-button" data-tab="alerts">Alerts</button>
+                </div>
+                
+                <div class="tab-content">
+                    <!-- Heap Memory Tab -->
+                    <div class="tab-pane active" id="heap-tab">
+                        <div class="chart-container">
+                            <h3>Memory Generation Breakdown</h3>
+                            <canvas id="generationsChart"></canvas>
+                        </div>
+                        
+                        <div class="table-container">
+                            <h3>Memory Pools</h3>
+                            <table class="data-table" id="memoryPoolsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Pool Name</th>
+                                        <th>Type</th>
+                                        <th>Used</th>
+                                        <th>Committed</th>
+                                        <th>Max</th>
+                                        <th>Usage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="6" class="text-center">Loading data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- GC Details Tab -->
+                    <div class="tab-pane" id="gc-tab">
+                        <div class="chart-container">
+                            <h3>GC Time</h3>
+                            <canvas id="gcTimeChart"></canvas>
+                        </div>
+                        
+                        <div class="table-container">
+                            <h3>GC Statistics</h3>
+                            <table class="data-table" id="gcTable">
+                                <thead>
+                                    <tr>
+                                        <th>GC Name</th>
+                                        <th>Collection Count</th>
+                                        <th>Collection Time (ms)</th>
+                                        <th>Avg Time Per Collection (ms)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="4" class="text-center">Loading data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Components Tab -->
+                    <div class="tab-pane" id="components-tab">
+                        <div class="table-container">
+                            <h3>Component Memory Usage</h3>
+                            <table class="data-table" id="componentsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Component</th>
+                                        <th>Heap Used</th>
+                                        <th>Off-Heap Used</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="4" class="text-center">Loading data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="chart-container">
+                            <h3>Component Memory Distribution</h3>
+                            <canvas id="componentsChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Alerts Tab -->
+                    <div class="tab-pane" id="alerts-tab">
+                        <div class="alerts-container" id="alertsList">
+                            <div class="no-alerts">No alerts to display</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Apache Jena Memory Dashboard | Last updated: <span id="lastUpdated">-</span></p>
+        </footer>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
