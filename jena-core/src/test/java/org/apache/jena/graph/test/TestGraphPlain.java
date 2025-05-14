@@ -35,7 +35,7 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "removal"})
 public class TestGraphPlain {
 
     private static Graph graph;
