@@ -29,8 +29,8 @@ public class SecuredStatementTermImpl extends SecuredRDFNodeImpl implements Secu
     /**
      * get a SecuredStatement
      *
-     * @param securedModel The secured model that provides the security context
-     * @param stmt         The statement to secure.
+     * @param securedModel     The secured model that provides the security context
+     * @param stmtTerm         The statement term to secure.
      * @return the SecuredStatement
      */
     public static SecuredStatementTerm getInstance(final SecuredModel securedModel, final StatementTerm stmtTerm) {

@@ -170,6 +170,7 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
      */
+    @SuppressWarnings("removal")
     @Override
     public boolean dependsOn(final Graph other) throws ReadDeniedException, AuthenticationRequiredException {
         if (checkSoftRead()) {

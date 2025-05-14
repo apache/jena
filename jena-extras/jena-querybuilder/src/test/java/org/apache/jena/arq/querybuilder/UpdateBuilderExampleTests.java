@@ -24,20 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
-import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.impl.CollectionGraph;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.sparql.vocabulary.FOAF;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateRequest;
@@ -59,13 +51,11 @@ public class UpdateBuilderExampleTests {
     private static final String NS_prefix = "http://example.org/ns#";
 
     private List<Triple> triples;
-    private Graph g;
     private Model m;
 
     public UpdateBuilderExampleTests() {
         triples = new ArrayList<Triple>();
-        g = new CollectionGraph(triples);
-        m = ModelFactory.createModelForGraph(g);
+        m = ModelFactory.createDefaultModel();
     }
 
     @Before

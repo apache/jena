@@ -24,17 +24,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.impl.CollectionGraph;
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.modify.request.UpdateDataDelete;
@@ -66,7 +59,7 @@ public class UpdateBuilderTest {
         builder.addWhere( s, "ex:predicat2", "?o" );
         builder.build();
     }
-    
+
     @Test
     public void testInsert_SPO() {
         UpdateBuilder builder = new UpdateBuilder();
@@ -495,34 +488,34 @@ public class UpdateBuilderTest {
 
     /*
      * 	Example 1: Adding some triples to a graph
-    
+
     This snippet describes two RDF triples to be inserted into the default graph of the Graph Store.
-    
+
     PREFIX dc: <http://purl.org/dc/elements/1.1/>
     INSERT DATA
     {
       <http://example/book1> dc:title "A new book" ;
                              dc:creator "A.N.Other" .
     }
-    
+
     Data before:
-    
+
     # Default graph
     @prefix dc: <http://purl.org/dc/elements/1.1/> .
     @prefix ns: <http://example.org/ns#> .
-    
+
     <http://example/book1> ns:price 42 .
-    
+
     Data after:
-    
+
     # Default graph
     @prefix dc: <http://purl.org/dc/elements/1.1/> .
     @prefix ns: <http://example.org/ns#> .
-    
+
     <http://example/book1> ns:price 42 .
     <http://example/book1> dc:title "A new book" .
     <http://example/book1> dc:creator "A.N.Other" .
-    
+
      */
     @Test
     public void example1() {
@@ -534,8 +527,7 @@ public class UpdateBuilderTest {
 
         List<Triple> triples = new ArrayList<Triple>();
         triples.add(Triple.create(n, priceN, priceV));
-        Graph g = new CollectionGraph(triples);
-        Model m = ModelFactory.createModelForGraph(g);
+        Model m = ModelFactory.createDefaultModel();
         m.setNsPrefix("dc", DC_11.NS);
         m.setNsPrefix("ns", "http://example.org/ns#");
 
