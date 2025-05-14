@@ -27,7 +27,6 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.apache.jena.graph.Capabilities ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.graph.TransactionHandler ;
 import org.apache.jena.shared.JenaException ;
@@ -92,10 +91,10 @@ public abstract class Polyadic extends CompositionBase
 
     @Override
     protected PrefixMapping createPrefixMapping()
-    { 
+    {
         return new PolyadicPrefixMappingImpl( this );
     }
-    
+
     /**
      * <p>
      * Construct a composition of all of the given graphs.
@@ -263,10 +262,4 @@ public abstract class Polyadic extends CompositionBase
     public TransactionHandler getTransactionHandler() {
         return (getBaseGraph() == null) ? super.getTransactionHandler() : getBaseGraph().getTransactionHandler();
         }
-
-    @Override
-    public Capabilities getCapabilities() {
-        return (getBaseGraph() == null) ? super.getCapabilities() : getBaseGraph().getCapabilities();
-    }
-
 }

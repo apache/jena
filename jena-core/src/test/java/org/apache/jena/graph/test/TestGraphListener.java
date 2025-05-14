@@ -52,7 +52,7 @@ public class TestGraphListener extends MetaTestGraph {
 		public CheckChanges(String description, Graph g) {
 			original = g;
 			desc = description;
-			copy = TestGraphListener.super.getGraph();
+			copy = TestGraphListener.super.getNewGraph();
 		}
 
 
@@ -143,7 +143,7 @@ public class TestGraphListener extends MetaTestGraph {
 	}
 
     @Override
-	public Graph getGraph() {
+	public Graph getNewGraph() {
     	Graph g = GraphMemFactory.createGraphMem();
 
     	g.getEventManager().register(new CheckChanges("simple tracking",g));

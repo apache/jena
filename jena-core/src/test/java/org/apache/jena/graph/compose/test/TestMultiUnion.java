@@ -55,7 +55,7 @@ public class TestMultiUnion extends AbstractTestGraph
         { return new TestSuite( TestMultiUnion.class ); }   
     
     @Override
-    public Graph getGraph()
+    public Graph getNewGraph()
         {
         Graph gBase = graphWith( "" ), g1 = graphWith( "" );
         return new MultiUnion( new Graph[] {gBase, g1} ); 

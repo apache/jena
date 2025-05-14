@@ -38,7 +38,7 @@ public class SecuredGraphContractTests extends MetaTestGraph {
     }
 
     @Override
-    public Graph getGraph() {
+    public Graph getNewGraph() {
         return org.apache.jena.permissions.Factory.getInstance(eval, getName(), GraphMemFactory.createDefaultGraph());
     }
 

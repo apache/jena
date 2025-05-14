@@ -37,7 +37,7 @@ public class SecuredGraphListenerTest extends TestGraphListener {
     }
 
     @Override
-    public Graph getGraph() {
+    public Graph getNewGraph() {
         final Graph graph = org.apache.jena.permissions.Factory.getInstance(eval, getName(),
                                                                             GraphMemFactory.createDefaultGraph());
         graph.getEventManager().register(new CheckChanges("simple tracking", graph));

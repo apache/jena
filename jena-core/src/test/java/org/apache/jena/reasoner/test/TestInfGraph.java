@@ -44,7 +44,7 @@ public class TestInfGraph extends AbstractTestGraph
         }
     
     @Override
-    public Graph getGraph()
+    public Graph getNewGraph()
         { return getInfGraph(); }
     
     public void testInfGraph()
