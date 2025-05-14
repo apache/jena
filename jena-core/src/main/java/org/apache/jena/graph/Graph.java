@@ -52,9 +52,12 @@ public interface Graph {
     /**
         An immutable empty graph.
     */
-    public static final Graph emptyGraph = new GraphBase()
-        { @Override
-        public ExtendedIterator<Triple> graphBaseFind( Triple tm ) { return NullIterator.instance(); } };
+    public static final Graph emptyGraph = new GraphBase() {
+        @Override
+        public ExtendedIterator<Triple> graphBaseFind(Triple tm) {
+            return NullIterator.instance();
+        }
+    };
 
     /**
         true if this graph's content depends on the other graph. May be
@@ -69,13 +72,14 @@ public interface Graph {
     /** returns this Graph's transaction handler */
     TransactionHandler getTransactionHandler();
 
-
     /**
      * returns this Graph's capabilities
      * @deprecated To be removed.
      */
     @Deprecated(forRemoval = true)
-    default Capabilities getCapabilities() { return AllCapabilities.updateAllowed; }
+    default Capabilities getCapabilities() {
+        return AllCapabilities.updateAllowed;
+    }
 
     /**
         Answer this Graph's event manager.

@@ -19,11 +19,7 @@ package org.apache.jena.permissions.graph;
 
 import java.util.*;
 
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.GraphEventManager;
-import org.apache.jena.graph.GraphListener;
-import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.impl.CollectionGraph;
+import org.apache.jena.graph.*;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator.Action;
 import org.apache.jena.permissions.impl.CachedSecurityEvaluator;
@@ -89,13 +85,14 @@ public class SecuredGraphEventManager implements GraphEventManager {
                 if (evaluator.evaluateAny(runAs, SecuredGraphEventManager.ADD, sg.getModelNode())) {
                     if (!evaluator.evaluateAny(runAs, SecuredGraphEventManager.ADD, sg.getModelNode(), Triple.ANY)) {
                         final List<Triple> lst = added.find(Triple.ANY).toList();
-                        addGraph = new CollectionGraph(Arrays.asList(
-                                getArray(g, lst.toArray(new Triple[lst.size()]), SecuredGraphEventManager.ADD)));
+                        addGraph = GraphMemFactory.createDefaultGraph();
+                        List<Triple> triples = Arrays.asList(getArray(g, lst.toArray(new Triple[lst.size()]), SecuredGraphEventManager.ADD));
+                        GraphUtil.add(addGraph, triples);
                     } else {
                         addGraph = added;
                     }
                 } else {
-                    addGraph = new CollectionGraph(Collections.<Triple>emptyList());
+                    addGraph = GraphMemFactory.createDefaultGraph();
                 }
             }
             if (addGraph.size() > 0) {
@@ -198,10 +195,11 @@ public class SecuredGraphEventManager implements GraphEventManager {
                 if (evaluator.evaluateAny(runAs, SecuredGraphEventManager.DELETE, sg.getModelNode())) {
                     Graph g2 = removed;
                     if (!evaluator.evaluateAny(runAs, SecuredGraphEventManager.DELETE, sg.getModelNode(), Triple.ANY)) {
-                        g2 = new CollectionGraph(removed.find(Triple.ANY)
+                        g2 = GraphMemFactory.createDefaultGraph();
+                        List<Triple> triples = removed.find(Triple.ANY)
                                 .filterKeep(new PermTripleFilter(SecuredGraphEventManager.DELETE, sg, evaluator))
-                                .toList());
-
+                                .toList();
+                        GraphUtil.add(g2, triples);
                     }
                     wrapped.notifyDeleteGraph(g, g2);
                 } else {
