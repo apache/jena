@@ -35,10 +35,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.apache.jena.datatypes.RDFDatatype;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.impl.CollectionGraph;
+import org.apache.jena.graph.*;
 import org.apache.jena.permissions.SecuredItem;
 import org.apache.jena.permissions.SecurityEvaluator;
 import org.apache.jena.permissions.graph.SecuredGraph;
@@ -2810,7 +2807,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
                     checkDelete(s);
                     lst.add(s.asTriple());
                 }
-                final Model m = ModelFactory.createModelForGraph(new CollectionGraph(lst));
+                Graph g = GraphMemFactory.createDefaultGraph();
+                Model m = ModelFactory.createModelForGraph(g);
                 holder.getBaseItem().remove(m.listStatements());
             } finally {
                 iter.close();

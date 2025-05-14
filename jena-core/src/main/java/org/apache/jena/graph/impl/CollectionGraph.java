@@ -37,10 +37,10 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  * <ul>
  * <li>
  * Does not support deleting triples from the iterator
- * </li><li>
- * Does not handle literal typing
  * </li></ul>
+ * @deprecated To be removed.
  */
+@Deprecated(forRemoval = true)
 public class CollectionGraph extends GraphBase
 {
     static boolean tripleContained(Triple patternTriple, Triple dataTriple) {
