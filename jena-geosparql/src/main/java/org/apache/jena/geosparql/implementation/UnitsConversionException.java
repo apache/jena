@@ -22,6 +22,7 @@ package org.apache.jena.geosparql.implementation;
  *
  */
 public class UnitsConversionException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
     public UnitsConversionException(String msg) {
         super(msg);

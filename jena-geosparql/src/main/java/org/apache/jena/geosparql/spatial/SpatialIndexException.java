@@ -22,6 +22,7 @@ package org.apache.jena.geosparql.spatial;
  *
  */
 public class SpatialIndexException extends Exception {
+    private static final long serialVersionUID = 1L;
 
     public SpatialIndexException(String msg) {
         super(msg);
