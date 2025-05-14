@@ -28,8 +28,6 @@ import org.apache.jena.riot.lang.CollectorStreamRDF;
  * Suitable for single-threaded parsing, for use with small data or distributed
  * computing frameworks (e.g. Hadoop) where the overhead of creating many threads
  * is significant.
- *
- * @see CollectorStreamBase
  */
 public class ExRIOT5_StreamRDFCollect {
 

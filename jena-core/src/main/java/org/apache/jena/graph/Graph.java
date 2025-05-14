@@ -64,9 +64,11 @@ public interface Graph {
         pessimistic (i.e. return true if it's not sure). Typically true when a
         graph is a composition of other graphs, eg union.
 
-         @param other the graph this graph may depend on
-         @return false if this does not depend on other
+        @param other the graph this graph may depend on
+        @return false if this does not depend on other
+        @deprecated To be removed.
     */
+    @Deprecated(forRemoval = true)
     boolean dependsOn( Graph other );
 
     /** returns this Graph's transaction handler */

@@ -83,6 +83,7 @@ public abstract class GraphBase implements GraphWithPerform
          Default implementation answers <code>true</code> iff this graph is the
          same graph as the argument graph.
     */
+    @SuppressWarnings("removal")
 	@Override
     public boolean dependsOn( Graph other )
         { return this == other; }
