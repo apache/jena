@@ -31,7 +31,7 @@ public class TestDifference extends TestDyadic
     { return new TestSuite( TestDifference.class ); }	
 
     @Override
-    public Graph getGraph()
+    public Graph getNewGraph()
     {
         Graph gBase = graphWith( "" ), g1 = graphWith( "" );
         return new Difference( gBase, g1 ); 

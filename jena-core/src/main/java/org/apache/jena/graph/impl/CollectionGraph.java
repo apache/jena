@@ -21,7 +21,6 @@ import java.util.Collection ;
 import java.util.HashSet ;
 import java.util.Set ;
 
-import org.apache.jena.graph.Capabilities ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
@@ -38,10 +37,10 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  * <ul>
  * <li>
  * Does not support deleting triples from the iterator
- * </li><li>
- * Does not handle literal typing
  * </li></ul>
+ * @deprecated To be removed.
  */
+@Deprecated(forRemoval = true)
 public class CollectionGraph extends GraphBase
 {
     static boolean tripleContained(Triple patternTriple, Triple dataTriple) {
@@ -92,10 +91,5 @@ public class CollectionGraph extends GraphBase
     @Override
     public void performDelete(final Triple t) {
         triples.remove(t);
-    }
-
-    @Override
-    public Capabilities getCapabilities() {
-        return AllCapabilities.updateAllowed;
     }
 }

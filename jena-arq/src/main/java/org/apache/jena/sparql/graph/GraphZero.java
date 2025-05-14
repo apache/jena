@@ -18,11 +18,9 @@
 
 package org.apache.jena.sparql.graph;
 
-import org.apache.jena.graph.Capabilities;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.TransactionHandler;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.impl.AllCapabilities;
 import org.apache.jena.graph.impl.GraphBase;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.util.iterator.ExtendedIterator;
@@ -70,10 +68,4 @@ public class GraphZero extends GraphBase {
 
     @Override
     public void performDelete( Triple t ) { throw new UnsupportedOperationException("delete triple"); }
-
-    private Capabilities capabilities = null;
-    @Override
-    public Capabilities getCapabilities() {
-        return AllCapabilities.updateNotAllowed;
-    }
 }

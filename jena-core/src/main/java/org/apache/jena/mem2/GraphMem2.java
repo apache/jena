@@ -18,17 +18,15 @@
 
 package org.apache.jena.mem2;
 
+import java.util.stream.Stream;
+
 import org.apache.jena.atlas.lib.Copyable;
-import org.apache.jena.graph.Capabilities;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.graph.impl.AllCapabilities;
 import org.apache.jena.graph.impl.GraphWithPerform;
 import org.apache.jena.mem.GraphMemBase;
 import org.apache.jena.mem2.store.TripleStore;
 import org.apache.jena.util.iterator.ExtendedIterator;
-
-import java.util.stream.Stream;
 
 /**
  * A graph that stores triples in memory. This class is not thread-safe.
@@ -141,11 +139,6 @@ public class GraphMem2 extends GraphMemBase implements GraphWithPerform, Copyabl
     @Override
     public int graphBaseSize() {
         return this.tripleStore.countTriples();
-    }
-
-    @Override
-    public Capabilities getCapabilities() {
-        return AllCapabilities.updateAllowed;
     }
 
     /**

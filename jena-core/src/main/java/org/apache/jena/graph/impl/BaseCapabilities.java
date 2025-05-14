@@ -26,6 +26,7 @@ import org.apache.jena.graph.Capabilities;
  * The settings are the
  * general default: allow update, size is accurate, and term value semantics.
  */
+@SuppressWarnings("removal")
 public class BaseCapabilities implements Capabilities {
     @Override public boolean sizeAccurate()     { return true; }
     @Override public boolean addAllowed()       { return true; }

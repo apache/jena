@@ -18,7 +18,6 @@
 
 package org.apache.jena.graph.compose;
 
-import org.apache.jena.graph.Capabilities;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.GraphPlain;
@@ -45,11 +44,11 @@ public class Delta extends CompositionBase implements Graph {
         this.deletions = GraphPlain.plain();
     }
 
-    @Override
-    public Capabilities getCapabilities() {
-        // Not strictly accurate.
-        return base.getCapabilities();
-    }
+//    @Override
+//    public Capabilities getCapabilities() {
+//        // Not strictly accurate.
+//        return base.getCapabilities();
+//    }
 
     /**
      * Answer the graph of all triples added.

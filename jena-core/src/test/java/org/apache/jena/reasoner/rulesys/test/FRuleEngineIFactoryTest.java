@@ -127,14 +127,12 @@ public class FRuleEngineIFactoryTest extends TestCase {
         @Override
         public Iterator<Derivation> getDerivation(Triple triple) { return null; }
 
+        @SuppressWarnings("removal")
         @Override
         public boolean dependsOn(Graph other) { return false; }
 
         @Override
         public TransactionHandler getTransactionHandler() { return null; }
-
-        @Override
-        public Capabilities getCapabilities() { return null; }
 
         @Override
         public GraphEventManager getEventManager() { return null; }

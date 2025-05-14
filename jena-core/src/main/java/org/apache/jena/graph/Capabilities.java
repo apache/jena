@@ -21,6 +21,7 @@ package org.apache.jena.graph;
 /**
  * Interface for expressing capabilities.
  */
+@Deprecated(forRemoval = true)
 public interface Capabilities {
     /**
      * Answer true iff Graph::size() is accurate.

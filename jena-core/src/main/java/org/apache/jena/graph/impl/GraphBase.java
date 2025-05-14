@@ -83,6 +83,7 @@ public abstract class GraphBase implements GraphWithPerform
          Default implementation answers <code>true</code> iff this graph is the
          same graph as the argument graph.
     */
+    @SuppressWarnings("removal")
 	@Override
     public boolean dependsOn( Graph other )
         { return this == other; }
@@ -126,11 +127,6 @@ public abstract class GraphBase implements GraphWithPerform
     @Override
     public TransactionHandler getTransactionHandler()
         { return new SimpleTransactionHandler(); }
-
-    @Override
-    public Capabilities getCapabilities() {
-        return AllCapabilities.updateAllowed;
-    }
 
     /**
         Answer the PrefixMapping object for this graph, the same one each time.

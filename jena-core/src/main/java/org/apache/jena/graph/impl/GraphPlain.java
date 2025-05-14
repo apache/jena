@@ -57,19 +57,9 @@ public class GraphPlain extends WrappedGraph
         return plain(GraphMemFactory.createDefaultGraph());
     }
 
-    private final Capabilities capabilities;
-
     private GraphPlain(Graph other) {
         super(other);
-        capabilities = new WrappedCapabilities(base.getCapabilities()) {
-            @Override public boolean handlesLiteralTyping() { return false; }
-        };
     }
-
-    @Override
-	public Capabilities getCapabilities() {
-		return capabilities;
-	}
 
     @Override
     public void remove( Node s, Node p, Node o ) {

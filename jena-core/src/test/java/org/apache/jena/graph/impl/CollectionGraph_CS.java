@@ -31,15 +31,16 @@ import org.xenei.junit.contract.ContractImpl;
 import org.xenei.junit.contract.ContractSuite;
 import org.xenei.junit.contract.IProducer;
 
+@SuppressWarnings("removal")
 @RunWith(ContractSuite.class)
 @ContractImpl(CollectionGraph.class)
 public class CollectionGraph_CS {
-	 
+
 	protected IProducer<CollectionGraph> graphProducer;
-	
+
 	public CollectionGraph_CS() {
 		graphProducer = new AbstractGraphProducer<CollectionGraph>() {
-			
+
 			@Override
 			protected CollectionGraph createNewGraph() {
 				return new CollectionGraph( new HashSet<Triple>() );
