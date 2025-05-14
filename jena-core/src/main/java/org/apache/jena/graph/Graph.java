@@ -67,6 +67,7 @@ public interface Graph {
          @param other the graph this graph may depend on
          @return false if this does not depend on other
     */
+    @Deprecated(forRemoval = true)
     boolean dependsOn( Graph other );
 
     /** returns this Graph's transaction handler */

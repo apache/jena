@@ -643,6 +643,7 @@ public class GraphContractTest<T extends Graph>
 		GL.assertContains("delete", g, triple("quint rdf:subject S"));
 	}
 
+    @SuppressWarnings("removal")
 	@ContractTest
 	public void testDependsOn()
 	{

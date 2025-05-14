@@ -35,6 +35,7 @@ public class WrappedGraph implements GraphWithPerform
     public WrappedGraph( Graph base )
     { this.base = base; }
 
+    @SuppressWarnings("removal")
     @Override
     public boolean dependsOn( Graph other )
     { return base.dependsOn( other ); }
