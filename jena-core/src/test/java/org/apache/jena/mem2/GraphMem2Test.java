@@ -156,6 +156,7 @@ public class GraphMem2Test {
         verifyNoMoreInteractions(mockStore);
     }
 
+    @SuppressWarnings("removal")
     @Test
     public void testGetCapabilities() {
         TripleStore mockStore = mock();

@@ -27,6 +27,7 @@ import org.apache.jena.permissions.SecurityEvaluator.Action;
  * The interface for secured Capabilities instances.
  *
  */
+@Deprecated(forRemoval = true)
 public class SecuredCapabilities implements Capabilities {
     // the security evaluator in use
     private final SecurityEvaluator securityEvaluator;

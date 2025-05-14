@@ -20,6 +20,7 @@ package org.apache.jena.graph.impl;
 
 import org.apache.jena.graph.Capabilities;
 
+@SuppressWarnings("removal")
 public class WrappedCapabilities implements Capabilities {
 
     protected final Capabilities other;

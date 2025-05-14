@@ -48,6 +48,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     /** version count */
     protected volatile int version = 0;
 
+    @SuppressWarnings("removal")
     private Capabilities infCapabilities;
 
     /**
@@ -71,6 +72,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         this.infCapabilities = calcCapabilitiesFrom(data);
     }
 
+    @SuppressWarnings("removal")
     private Capabilities calcCapabilitiesFrom(Graph data) {
         if ( data == null )
             return reasonerInfCapabilities;
@@ -86,6 +88,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     /**
         Answer the InfCapabilities of this InfGraph.
      */
+    @SuppressWarnings("removal")
     @Override
     public Capabilities getCapabilities() {
         return infCapabilities;
@@ -96,6 +99,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * A base graph may also provide handling literal datatypes.
      */
 
+    @SuppressWarnings("removal")
     public static Capabilities reasonerInfCapabilities = new Capabilities() {
         @Override
         public boolean sizeAccurate() { return false; }

@@ -20,8 +20,7 @@ package org.apache.jena.graph.impl;
 
 import org.apache.jena.graph.Capabilities ;
 
-/**
- */
+@SuppressWarnings("removal")
 public class AllCapabilities {
 
     public static Capabilities updateAllowed = create(true, true, true, false);

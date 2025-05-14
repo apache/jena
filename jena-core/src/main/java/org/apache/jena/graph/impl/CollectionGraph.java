@@ -21,7 +21,6 @@ import java.util.Collection ;
 import java.util.HashSet ;
 import java.util.Set ;
 
-import org.apache.jena.graph.Capabilities ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.Triple ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
@@ -92,10 +91,5 @@ public class CollectionGraph extends GraphBase
     @Override
     public void performDelete(final Triple t) {
         triples.remove(t);
-    }
-
-    @Override
-    public Capabilities getCapabilities() {
-        return AllCapabilities.updateAllowed;
     }
 }

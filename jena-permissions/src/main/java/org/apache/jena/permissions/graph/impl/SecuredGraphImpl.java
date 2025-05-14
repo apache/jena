@@ -233,6 +233,7 @@ public class SecuredGraphImpl extends SecuredItemImpl implements SecuredGraph {
         return createIterator(() -> holder.getBaseItem().find(t), () -> new PermTripleFilter(Action.Read, this));
     }
 
+    @Deprecated(forRemoval = true)
     @Override
     public SecuredCapabilities getCapabilities() {
         return new SecuredCapabilities(getSecurityEvaluator(), getModelIRI(), holder.getBaseItem().getCapabilities());
