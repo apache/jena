@@ -31,7 +31,7 @@ public class TestUnion extends TestDyadic
     { return new TestSuite( TestUnion.class ); }
 
     @Override
-    public Graph getGraph()
+    public Graph getNewGraph()
     {
         Graph gBase = graphWith( "" ), g1 = graphWith( "" );
         return new Union( gBase, g1 ); 

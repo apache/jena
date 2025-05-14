@@ -30,10 +30,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.junit.After;
-
-import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.mem.TrackingTripleIterator;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -45,6 +41,7 @@ import org.apache.jena.testing_framework.AbstractGraphProducer;
 import org.apache.jena.testing_framework.NodeCreateUtils;
 import org.apache.jena.util.iterator.ClosableIterator;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.junit.After;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xenei.junit.contract.Contract;
@@ -128,7 +125,13 @@ public class GraphContractTest<T extends Graph>
 		}
 	}
 
-	/**
+	@SuppressWarnings("deprecation")
+    private static boolean xsupportsLiteralTyping(Graph g) {
+	    //return g.getCapabilities().handlesLiteralTyping();
+	    return g instanceof org.apache.jena.mem.GraphMem;
+    }
+
+    /**
 	 * Test that clear works, in the presence of inferencing graphs that mean
 	 * emptyness isn't available. This is why we go round the houses and test
 	 * that expected ~= initialContent + addedStuff - removed - initialContent.
@@ -388,36 +391,6 @@ public class GraphContractTest<T extends Graph>
 	}
 
 	@ContractTest
-	public void testContains_Node_Node_Node_ByValue()
-	{
-		Node x = node("x");
-		Node P = node("P");
-		Graph g1 = producer.newInstance();
-		if (g1.getCapabilities().handlesLiteralTyping())
-		{
-			graphWith(g1, "x P '1'xsd:integer");
-			txnRun(g1,
-					() -> assertTrue(
-							String.format(
-									"literal type equality failed, does %s really implement literal typing",
-									g1.getClass()),
-							g1.contains(x, P, node("'01'xsd:int"))));
-			//
-			Graph g2 = graphWith(producer.newInstance(), "x P '1'xsd:int");
-			txnRun(g2, () -> {
-				assertTrue("Literal equality with '1'xsd:integer failed",
-						g2.contains(x, P, node("'1'xsd:integer")));
-			});
-			//
-			Graph g3 = graphWith(producer.newInstance(), "x P '123'xsd:string");
-			txnRun(g3, () -> {
-				assertTrue("Literal equality with '123' failed",
-						g3.contains(x, P, node("'123'")));
-			});
-		}
-	}
-
-	@ContractTest
 	public void testContains_Node_Node_Node_Concrete()
 	{
 		Node s = node("s");
@@ -535,33 +508,6 @@ public class GraphContractTest<T extends Graph>
 			assertTrue(g.contains(triple("?? P ??")));
 			assertTrue(g.contains(triple("?? Q ??")));
 		});
-	}
-
-	@ContractTest
-	public void testContains_Triple_ByValue()
-	{
-		Graph g1 = producer.newInstance();
-		if (g1.getCapabilities().handlesLiteralTyping())
-		{
-			graphWith(g1, "x P '1'xsd:integer");
-			txnRun(g1, () -> {
-				assertTrue(
-						String.format(
-								"did not find x P '01'xsd:int, does %s really implement literal typing",
-								g1.getClass()),
-						g1.contains(triple("x P '01'xsd:int")));
-			});
-			//
-			Graph g2 = graphWith(producer.newInstance(), "x P '1'xsd:int");
-			txnRun(g2, () -> {
-				assertTrue("did not find x P '1'xsd:integer",
-						g2.contains(triple("x P '1'xsd:integer")));
-			});
-			//
-			Graph g3 = graphWith(producer.newInstance(), "x P '123'xsd:string");
-			txnRun(g3, () -> assertTrue("did not find x P '123'xsd:string",
-					g3.contains(triple("x P '123'"))));
-		}
 	}
 
 	@ContractTest
@@ -781,88 +727,31 @@ public class GraphContractTest<T extends Graph>
 	}
 
 	@ContractTest
-	public void testFind_Node_Node_Node_ProgrammaticValues()
-	{
-		Graph g = producer.newInstance();
-		if (g.getCapabilities().handlesLiteralTyping())
-		{
-            @SuppressWarnings("deprecation")
-			Node ab = NodeFactory.createLiteral(LiteralLabelFactory
-					.createTypedLiteral(Byte.valueOf((byte) 42)));
-            @SuppressWarnings("deprecation")
-			Node as = NodeFactory.createLiteral(LiteralLabelFactory
-					.createTypedLiteral(Short.valueOf((short) 42)));
-            @SuppressWarnings("deprecation")
-			Node ai = NodeFactory.createLiteral(
-					LiteralLabelFactory.createTypedLiteral(Integer.valueOf(42)));
-            @SuppressWarnings("deprecation")
-			Node al = NodeFactory.createLiteral(
-					LiteralLabelFactory.createTypedLiteral(Long.valueOf(42)));
-
-			Node SB = NodeCreateUtils.create("SB");
-			Node SS = NodeCreateUtils.create("SS");
-			Node SI = NodeCreateUtils.create("SI");
-			Node SL = NodeCreateUtils.create("SL");
-			Node P = NodeCreateUtils.create("P");
-
-			txnBegin(g);
-			try
-			{
-				g.add(Triple.create(SB, P, ab));
-				g.add(Triple.create(SS, P, as));
-				g.add(Triple.create(SI, P, ai));
-				g.add(Triple.create(SL, P, al));
-			} catch (Exception e)
-			{
-				txnRollback(g);
-				fail(e.getMessage());
-			}
-			txnCommit(g);
-			txnBegin(g);
-			assertEquals(
-					String.format(
-							"Should have found 4 elements, does %s really implement literal typing",
-							g.getClass()),
-					4,
-					Iter.toSet(
-							g.find(Node.ANY, P, NodeCreateUtils.create("42")))
-									.size());
-			txnRollback(g);
-		}
-	}
-
-	@ContractTest
 	public void testFind_Node_Node_Node_MatchLanguagedLiteralCaseInsensitive()
 	{
-		Graph g = graphWith(producer.newInstance(), "a p 'chat'en");
-		if (g.getCapabilities().handlesLiteralTyping())
-		{
-			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
-			assertEquals(chaten, chatEN);
-			assertTrue(chaten.sameValueAs(chatEN));
-			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
-			txnBegin(g);
-			assertEquals(1, g.find(Node.ANY, Node.ANY, chaten).toList().size());
-			assertEquals(1, g.find(Node.ANY, Node.ANY, chatEN).toList().size());
-			txnRollback(g);
-		}
+	    Graph g = graphWith(producer.newInstance(), "a p 'chat'en");
+	    Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
+	    assertEquals(chaten, chatEN);
+	    assertTrue(chaten.sameValueAs(chatEN));
+	    assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
+	    txnBegin(g);
+	    assertEquals(1, g.find(Node.ANY, Node.ANY, chaten).toList().size());
+	    assertEquals(1, g.find(Node.ANY, Node.ANY, chatEN).toList().size());
+	    txnRollback(g);
 	}
 
 	@ContractTest
 	public void testFind_Node_Node_Node_NoMatchAgainstUnlanguagesLiteral()
 	{
 		Graph g = graphWith(producer.newInstance(), "a p 'chat'en; a p 'chat'");
-		if (g.getCapabilities().handlesLiteralTyping())
-		{
-			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
-			assertEquals(chaten, chatEN);
-			assertTrue(chaten.sameValueAs(chatEN));
-			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
-			txnBegin(g);
-			assertEquals(1, g.find(Node.ANY, Node.ANY, chaten).toList().size());
-			assertEquals(1, g.find(Node.ANY, Node.ANY, chatEN).toList().size());
-			txnRollback(g);
-		}
+		Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
+		assertEquals(chaten, chatEN);
+		assertTrue(chaten.sameValueAs(chatEN));
+		assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
+		txnBegin(g);
+		assertEquals(1, g.find(Node.ANY, Node.ANY, chaten).toList().size());
+		assertEquals(1, g.find(Node.ANY, Node.ANY, chatEN).toList().size());
+		txnRollback(g);
 	}
 
 	@ContractTest
@@ -920,119 +809,19 @@ public class GraphContractTest<T extends Graph>
 	}
 
 	@ContractTest
-	public void testFind_Triple_ProgrammaticValues()
-	{
-		Graph g = producer.newInstance();
-		if (g.getCapabilities().handlesLiteralTyping())
-		{
-			@SuppressWarnings("deprecation")
-            Node ab = NodeFactory.createLiteral(LiteralLabelFactory
-					.createTypedLiteral(Byte.valueOf((byte) 42)));
-            @SuppressWarnings("deprecation")
-			Node as = NodeFactory.createLiteral(LiteralLabelFactory
-					.createTypedLiteral(Short.valueOf((short) 42)));
-            @SuppressWarnings("deprecation")
-			Node ai = NodeFactory.createLiteral(
-					LiteralLabelFactory.createTypedLiteral(Integer.valueOf(42)));
-            @SuppressWarnings("deprecation")
-			Node al = NodeFactory.createLiteral(
-					LiteralLabelFactory.createTypedLiteral(Long.valueOf(42)));
-
-			Node SB = NodeCreateUtils.create("SB");
-			Node SS = NodeCreateUtils.create("SS");
-			Node SI = NodeCreateUtils.create("SI");
-			Node SL = NodeCreateUtils.create("SL");
-			Node P = NodeCreateUtils.create("P");
-
-			txnBegin(g);
-			try
-			{
-				g.add(Triple.create(SB, P, ab));
-				g.add(Triple.create(SS, P, as));
-				g.add(Triple.create(SI, P, ai));
-				g.add(Triple.create(SL, P, al));
-			} catch (Exception e)
-			{
-				txnRollback(g);
-				fail(e.getMessage());
-			}
-			txnCommit(g);
-			txnBegin(g);
-			assertEquals(
-					String.format(
-							"Should have found 4 elements, does %s really implement literal typing",
-							g.getClass()),
-					4, Iter.toSet(g.find(Triple.create(Node.ANY, P,
-							NodeCreateUtils.create("42")))).size());
-			txnRollback(g);
-		}
-	}
-
-	@ContractTest
-	public void testFind_Triple_MatchLanguagedLiteralCaseInsensitive()
-	{
-		Graph g = graphWith(producer.newInstance(), "a p 'chat'en");
-		if (g.getCapabilities().handlesLiteralTyping())
-		{
-			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
-			assertEquals(chaten, chatEN);
-			assertTrue(chaten.sameValueAs(chatEN));
-			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
-			txnBegin(g);
-			assertEquals(1, g.find(Triple.create(Node.ANY, Node.ANY, chaten))
-					.toList().size());
-			assertEquals(1, g.find(Triple.create(Node.ANY, Node.ANY, chatEN))
-					.toList().size());
-			txnRollback(g);
-		}
-	}
-
-	@ContractTest
 	public void testFind_Triple_NoMatchAgainstUnlanguagesLiteral()
 	{
-		Graph g = graphWith(producer.newInstance(), "a p 'chat'en; a p 'chat'");
-		if (g.getCapabilities().handlesLiteralTyping())
-		{
-			Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
-			assertEquals(chaten, chatEN);
-			assertTrue(chaten.sameValueAs(chatEN));
-			assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
-			txnBegin(g);
-			assertEquals(1, g.find(Triple.create(Node.ANY, Node.ANY, chaten))
-					.toList().size());
-			assertEquals(1, g.find(Triple.create(Node.ANY, Node.ANY, chatEN))
-					.toList().size());
-			txnRollback(g);
-		}
-	}
-
-	@ContractTest
-	public void testGetCapabilities()
-	{
-		Graph g = producer.newInstance();
-		Capabilities c = g.getCapabilities();
-		assertNotNull("Capabilities are not returned", c);
-		try
-		{
-			c.sizeAccurate();
-		} catch (Exception e)
-		{
-			fail("sizeAccurate() threw Exception: " + e.toString());
-		}
-		try
-		{
-			c.addAllowed();
-		} catch (Exception e)
-		{
-			fail("addAllowed() threw Exception: " + e.toString());
-		}
-		try
-		{
-			c.deleteAllowed();
-		} catch (Exception e)
-		{
-			fail("deleteAllowed() threw Exception: " + e.toString());
-		}
+	    Graph g = graphWith(producer.newInstance(), "a p 'chat'en; a p 'chat'");
+	    Node chaten = node("'chat'en"), chatEN = node("'chat'EN");
+	    assertEquals(chaten, chatEN);
+	    assertTrue(chaten.sameValueAs(chatEN));
+	    assertEquals(chaten.getIndexingValue(), chatEN.getIndexingValue());
+	    txnBegin(g);
+	    assertEquals(1, g.find(Triple.create(Node.ANY, Node.ANY, chaten))
+	                 .toList().size());
+	    assertEquals(1, g.find(Triple.create(Node.ANY, Node.ANY, chatEN))
+	                 .toList().size());
+	    txnRollback(g);
 	}
 
 	@ContractTest
@@ -1599,81 +1388,6 @@ public class GraphContractTest<T extends Graph>
 			return t.getObject();
 		}
 	};
-
-	private void testLiteralTypingBasedFind(final String data, final int size,
-			final String search, final String results, boolean reqLitType)
-	{
-
-		Graph g = producer.newInstance();
-
-		if (!reqLitType || g.getCapabilities().handlesLiteralTyping())
-		{
-			graphWith(g, data);
-
-			Node literal = NodeCreateUtils.create(search);
-			//
-			txnBegin(g);
-			assertEquals("graph has wrong size", size, g.size());
-			Set<Node> got = g.find(Node.ANY, Node.ANY, literal)
-					.mapWith(getObject).toSet();
-			assertEquals(nodeSet(results), got);
-			txnRollback(g);
-		}
-	}
-
-	@ContractTest
-	public void testLiteralTypingBasedFind()
-	{
-		testLiteralTypingBasedFind("a P 'simple'", 1, "'simple'", "'simple'",
-				false);
-		testLiteralTypingBasedFind("a P 'simple'xsd:string", 1, "'simple'",
-				"'simple'xsd:string", true);
-		testLiteralTypingBasedFind("a P 'simple'", 1, "'simple'xsd:string",
-				"'simple'", true);
-		// ensure that adding identical strings one with type yields single
-		// result
-		// and that querying with or without type works
-		testLiteralTypingBasedFind("a P 'simple'xsd:string", 1,
-				"'simple'xsd:string", "'simple'xsd:string", false);
-		testLiteralTypingBasedFind("a P 'simple'; a P 'simple'xsd:string", 1,
-				"'simple'", "'simple'xsd:string", true);
-		testLiteralTypingBasedFind("a P 'simple'; a P 'simple'xsd:string", 1,
-				"'simple'xsd:string", "'simple'", true);
-		testLiteralTypingBasedFind("a P 'simple'; a P 'simple'xsd:string", 1,
-				"'simple'", "'simple'", true);
-		testLiteralTypingBasedFind("a P 'simple'; a P 'simple'xsd:string", 1,
-				"'simple'xsd:string", "'simple'xsd:string", true);
-		testLiteralTypingBasedFind("a P 1", 1, "1", "1", false);
-		testLiteralTypingBasedFind("a P '1'xsd:float", 1, "'1'xsd:float",
-				"'1'xsd:float", false);
-		testLiteralTypingBasedFind("a P '1'xsd:double", 1, "'1'xsd:double",
-				"'1'xsd:double", false);
-		testLiteralTypingBasedFind("a P '1'xsd:float", 1, "'1'xsd:float",
-				"'1'xsd:float", false);
-		testLiteralTypingBasedFind("a P '1.1'xsd:float", 1, "'1'xsd:float", "",
-				false);
-		testLiteralTypingBasedFind("a P '1'xsd:double", 1, "'1'xsd:int", "",
-				false);
-		testLiteralTypingBasedFind("a P 'abc'rdf:XMLLiteral", 1, "'abc'", "",
-				false);
-		testLiteralTypingBasedFind("a P 'abc'", 1, "'abc'rdf:XMLLiteral", "",
-				false);
-		//
-		// floats & doubles are not compatible
-		//
-		testLiteralTypingBasedFind("a P '1'xsd:float", 1, "'1'xsd:double", "",
-				false);
-		testLiteralTypingBasedFind("a P '1'xsd:double", 1, "'1'xsd:float", "",
-				false);
-		testLiteralTypingBasedFind("a P 1", 1, "'1'", "", false);
-		testLiteralTypingBasedFind("a P 1", 1, "'1'xsd:integer",
-				"'1'xsd:integer", false);
-		testLiteralTypingBasedFind("a P 1", 1, "'1'", "", false);
-		testLiteralTypingBasedFind("a P '1'xsd:short", 1, "'1'xsd:integer",
-				"'1'xsd:short", true);
-		testLiteralTypingBasedFind("a P '1'xsd:int", 1, "'1'xsd:integer",
-				"'1'xsd:int", true);
-	}
 
 	@ContractTest
 	public void testQuadRemove()

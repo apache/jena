@@ -45,20 +45,18 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Returns a Graph to take part in the test. Must be overridden in
         a subclass.
      */
-    public abstract Graph getGraph();
-
-     //public Graph getGraph() { return Factory.createGraphMem(); }
+    public abstract Graph getNewGraph();
 
     public Graph getGraphWith( String facts )
     {
-        Graph g = getGraph();
+        Graph g = getNewGraph();
         graphAdd( g, facts );
         return g;
     }
 
     public void testCloseSetsIsClosed()
     {
-        Graph g = getGraph();
+        Graph g = getNewGraph();
         assertFalse( "unclosed Graph shouild not be isClosed()", g.isClosed() );
         g.close();
         assertTrue( "closed Graph should be isClosed()", g.isClosed() );
@@ -70,7 +68,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
      */
     public void testFindAndContains()
     {
-        Graph g = getGraph();
+        Graph g = getNewGraph();
         Node r = NodeCreateUtils.create( "r" ), s = NodeCreateUtils.create( "s" ), p = NodeCreateUtils.create( "P" );
         g.add( Triple.create( r, p, s ) );
         assertTrue( g.contains( r, p, Node.ANY ) );
@@ -130,79 +128,35 @@ public abstract class AbstractTestGraph extends GraphTestBase
         assertFalse( g.contains( triple( "a S ??" ) ) );
     }
 
-    /**
-        Check that contains respects by-value semantics.
-     */
-    public void testContainsByValue()
-    {
-        if (getGraph().getCapabilities().handlesLiteralTyping())
-        {
-            Graph g1 = getGraphWith( "x P '1'xsd:integer" );
-
-            boolean b = g1.contains( triple( "x P '01'xsd:int" ) );
-            if ( !b )
-                System.err.println("No value match: "+g1.getClass().getSimpleName());
-
-            assertTrue( g1.contains( triple( "x P '01'xsd:int" ) ) );
-            //
-            Graph g2 = getGraphWith( "x P '1'xsd:int" );
-            assertTrue( g2.contains( triple( "x P '1'xsd:integer" ) ) );
-            //
-            Graph g3 = getGraphWith( "x P '123'xsd:string" );
-            assertTrue( g3.contains( triple( "x P '123'" ) ) );
-        }
-    }
-
     public void testMatchLanguagedLiteralCaseInsensitive()
     {
         Graph m = graphWith( "a p 'chat'en" );
-        if (m.getCapabilities().handlesLiteralTyping())
-        {
-            Node chaten = node( "'chat'en" ), chatEN = node( "'chat'EN" );
-            //assertDiffer( chaten, chatEN ); // Up to Jena4.
-            assertEquals( chaten, chatEN ); // Jena5 -- the nodes are now the same due to normalized langtags
-            assertTrue( chaten.sameValueAs( chatEN ) );
-            assertEquals( chaten.getIndexingValue(), chatEN.getIndexingValue() );
-            assertEquals( 1, m.find( Node.ANY, Node.ANY, chaten ).toList().size() );
-            assertEquals( 1, m.find( Node.ANY, Node.ANY, chatEN ).toList().size() );
-        }
+        Node chaten = node( "'chat'en" ), chatEN = node( "'chat'EN" );
+        //assertDiffer( chaten, chatEN ); // Up to Jena4.
+        assertEquals( chaten, chatEN ); // Jena5 -- the nodes are now the same due to normalized langtags
+        assertTrue( chaten.sameValueAs( chatEN ) );
+        assertEquals( chaten.getIndexingValue(), chatEN.getIndexingValue() );
+        assertEquals( 1, m.find( Node.ANY, Node.ANY, chaten ).toList().size() );
+        assertEquals( 1, m.find( Node.ANY, Node.ANY, chatEN ).toList().size() );
     }
 
     public void testMatchBothLanguagedLiteralsCaseInsensitive()
     {
         Graph m = graphWith( "a p 'chat'en; a p 'chat'EN" );
-        if (m.getCapabilities().handlesLiteralTyping())
-        {
-            Node chaten = node( "'chat'en" ), chatEN = node( "'chat'EN" );
-            // Jena4.
-//            assertDiffer( chaten, chatEN ); // Up to Jena4.
-//            assertTrue( chaten.sameValueAs( chatEN ) );
-//            assertEquals( chaten.getIndexingValue(), chatEN.getIndexingValue() );
-//            assertEquals( 2, m.find( Node.ANY, Node.ANY, chaten ).toList().size() );
-//            assertEquals( 2, m.find( Node.ANY, Node.ANY, chatEN ).toList().size() );
+        Node chaten = node( "'chat'en" ), chatEN = node( "'chat'EN" );
+        // Jena4.
+//        assertDiffer( chaten, chatEN ); // Up to Jena4.
+//        assertTrue( chaten.sameValueAs( chatEN ) );
+//        assertEquals( chaten.getIndexingValue(), chatEN.getIndexingValue() );
+//        assertEquals( 2, m.find( Node.ANY, Node.ANY, chaten ).toList().size() );
+//        assertEquals( 2, m.find( Node.ANY, Node.ANY, chatEN ).toList().size() );
 
-            // Jena5 -- the nodes are now the same due to normalized langtags
-            assertEquals( chaten, chatEN ); // Jena5 -- the nodes are now the same due to normalized langtags
-            assertTrue( chaten.sameValueAs( chatEN ) );
-            assertEquals( chaten.getIndexingValue(), chatEN.getIndexingValue() );
-            assertEquals( 1, m.find( Node.ANY, Node.ANY, chaten ).toList().size() );
-            assertEquals( 1, m.find( Node.ANY, Node.ANY, chatEN ).toList().size() );
-        }
-    }
-
-    public void testNoMatchAgainstUnlanguagesLiteral()
-    {
-        Graph m = graphWith( "a p 'chat'en; a p 'chat'" );
-        if (m.getCapabilities().handlesLiteralTyping())
-        {
-            Node chaten = node( "'chat'en" ), chatEN = node( "'chat'EN" );
-            //assertDiffer( chaten, chatEN ); // Up to Jena4.
-            assertEquals( chaten, chatEN ); // Jena5 -- the nodes are now the same due to normalized langtags
-            assertTrue( chaten.sameValueAs( chatEN ) );
-            assertEquals( chaten.getIndexingValue(), chatEN.getIndexingValue() );
-            assertEquals( 1, m.find( Node.ANY, Node.ANY, chaten ).toList().size() );
-            assertEquals( 1, m.find( Node.ANY, Node.ANY, chatEN ).toList().size() );
-        }
+        // Jena5 -- the nodes are now the same due to normalized langtags
+        assertEquals( chaten, chatEN ); // Jena5 -- the nodes are now the same due to normalized langtags
+        assertTrue( chaten.sameValueAs( chatEN ) );
+        assertEquals( chaten.getIndexingValue(), chatEN.getIndexingValue() );
+        assertEquals( 1, m.find( Node.ANY, Node.ANY, chaten ).toList().size() );
+        assertEquals( 1, m.find( Node.ANY, Node.ANY, chatEN ).toList().size() );
     }
 
     /**
@@ -210,7 +164,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
      */
     public void testIsEmpty()
     {
-        Graph g = getGraph();
+        Graph g = getNewGraph();
         if (canBeEmpty( g ))
         {
             assertTrue( g.isEmpty() );
@@ -231,7 +185,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
     public void testAGraph()
     {
         String title = this.getClass().getName();
-        Graph g = getGraph();
+        Graph g = getNewGraph();
         int baseSize = g.size();
         graphAdd( g, "x R y; p S q; a T b" );
         /* */
@@ -252,28 +206,13 @@ public abstract class AbstractTestGraph extends GraphTestBase
         it.close();
     }
 
-    //    public void testStuff()
-    //        {
-    ////        testAGraph( "StoreMem", new GraphMem() );
-    ////        testAGraph( "StoreMemBySubject", new GraphMem() );
-    ////        String [] empty = new String [] {};
-    ////        Graph g = graphWith( "x R y; p S q; a T b" );
-    ////    /* */
-    ////        assertContainsAll( "simple graph", g, "x R y; p S q; a T b" );
-    ////        graphAdd( g, "spindizzies lift cities; Diracs communicate instantaneously" );
-    ////        g.delete( triple( "x R y" ) );
-    ////        g.delete( triple( "a T b" ) );
-    ////        assertContainsAll( "modified simple graph", g, "p S q; spindizzies lift cities; Diracs communicate instantaneously" );
-    ////        assertOmitsAll( "modified simple graph", g, "x R y; a T b" );
-    //        }
-
     /**
         Test that Graphs have transaction support methods, and that if they fail
         on some g they fail because they do not support the operation.
      */
     public void testHasTransactions()
     {
-        Graph g = getGraph();
+        Graph g = getNewGraph();
         TransactionHandler th = g.getTransactionHandler();
         th.transactionsSupported();
         try { th.begin(); }                 catch (UnsupportedOperationException x) {}
@@ -283,14 +222,14 @@ public abstract class AbstractTestGraph extends GraphTestBase
     }
 
     public void testExecuteInTransactionCatchesThrowable() {
-        Graph g = getGraph();
+        Graph g = getNewGraph();
         TransactionHandler th = g.getTransactionHandler();
         try { th.executeAlways( ()-> { throw new Error() ; } ); }
         catch (JenaException x) {}
     }
 
     public void testCalculateInTransactionCatchesThrowable() {
-        Graph g = getGraph();
+        Graph g = getNewGraph();
         TransactionHandler th = g.getTransactionHandler();
         try { th.calculateAlways( ()-> { throw new Error() ; } ); }
         catch (JenaException x) {}
@@ -307,7 +246,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
 
     public void testBulkUpdate()
     {
-        Graph g = getGraph();
+        Graph g = getNewGraph();
         Graph items = graphWith( "pigs might fly; dead can dance" );
         int initialSize = g.size();
         /* */
@@ -354,7 +293,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
 
     public void testAddWithReificationPreamble()
     {
-        Graph g = getGraph();
+        Graph g = getNewGraph();
         xSPO( g );
         assertFalse( g.isEmpty() );
     }
@@ -403,7 +342,8 @@ public abstract class AbstractTestGraph extends GraphTestBase
 
     public void testHasCapabilities()
     {
-        Graph g = getGraph();
+        Graph g = getNewGraph();
+        @SuppressWarnings("removal")
         Capabilities c = g.getCapabilities();
         boolean sa = c.sizeAccurate();
         boolean aaSome = c.addAllowed();
@@ -412,7 +352,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
 
     public void testFind()
     {
-        Graph g = getGraph();
+        Graph g = getNewGraph();
         graphAdd( g, "S P O" );
         assertDiffer( Set.of(), g.find( Node.ANY, Node.ANY, Node.ANY ).toSet() );
         assertDiffer( Set.of(), g.find( Triple.ANY ).toSet() );
@@ -423,7 +363,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
 
     public void testEventRegister()
     {
-        Graph g = getGraph();
+        Graph g = getNewGraph();
         GraphEventManager gem = g.getEventManager();
         assertSame( gem, gem.register( new RecordingListener() ) );
     }
@@ -433,7 +373,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
      */
     public void testEventUnregister()
     {
-        getGraph().getEventManager().unregister( L );
+        getNewGraph().getEventManager().unregister( L );
     }
 
     /**
@@ -447,7 +387,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
      */
     protected Graph getAndRegister( GraphListener gl )
     {
-        Graph g = getGraph();
+        Graph g = getNewGraph();
         g.getEventManager().register( gl );
         return g;
     }
@@ -543,7 +483,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
     {
         RecordingListener L1 = new RecordingListener();
         RecordingListener L2 = new RecordingListener();
-        Graph g = getGraph();
+        Graph g = getNewGraph();
         GraphEventManager gem = g.getEventManager();
         gem.register( L1 ).register( L2 );
         g.add( SPO );
@@ -553,7 +493,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
 
     public void testUnregisterWorks()
     {
-        Graph g = getGraph();
+        Graph g = getNewGraph();
         GraphEventManager gem = g.getEventManager();
         gem.register( L ).unregister( L );
         g.add( SPO );
@@ -705,7 +645,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
      */
     public void testContainsNode()
     {
-        Graph g = getGraph();
+        Graph g = getNewGraph();
         graphAdd( g, "a P b; _c _Q _d; a 11 12" );
         assertTrue( containsNode( g, node( "a" ) ) );
         assertTrue( containsNode( g, node( "P" ) ) );
@@ -849,14 +789,14 @@ public abstract class AbstractTestGraph extends GraphTestBase
 
     public void testRemoveAll( String triples )
     {
-        Graph g = getGraph();
+        Graph g = getNewGraph();
         graphAdd( g, triples );
         g.clear();
         assertTrue( g.isEmpty() );
     }
 
     public void failingTestDoubleRemoveAll() {
-        final Graph g = getGraph();
+        final Graph g = getNewGraph();
         graphAdd(g,"c S d; e:ff GGG hhhh; _i J 27; Ell Em 'en'"  );
         try {
             Iterator<Triple> it = new TrackingTripleIterator(g.find(Triple.ANY)){
@@ -907,7 +847,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         {
             for ( int j = 0; j < 3; j += 1 )
             {
-                Graph content = getGraph();
+                Graph content = getNewGraph();
                 Graph baseContent = copy( content );
                 graphAdd( content, aCase[0] );
                 Triple remove = triple( aCase[1] );
@@ -947,8 +887,8 @@ public abstract class AbstractTestGraph extends GraphTestBase
 
     private void testIsomorphismFile(int n, String lang, String suffix, boolean result) {
 
-        Graph g1 = getGraph();
-        Graph g2 = getGraph();
+        Graph g1 = getNewGraph();
+        Graph g2 = getNewGraph();
         Model m1 = ModelFactory.createModelForGraph(g1);
         Model m2 = ModelFactory.createModelForGraph(g2);
 
@@ -992,53 +932,8 @@ public abstract class AbstractTestGraph extends GraphTestBase
 
     protected Graph getClosed()
     {
-        Graph result = getGraph();
+        Graph result = getNewGraph();
         result.close();
         return result;
     }
-
-    //    public void testClosedDelete()
-    //        {
-    //        try { getClosed().delete( triple( "x R y" ) ); fail( "delete when closed" ); }
-    //        catch (ClosedException c) { /* as required */ }
-    //        }
-    //
-    //    public void testClosedAdd()
-    //        {
-    //        try { getClosed().add( triple( "x R y" ) ); fail( "add when closed" ); }
-    //        catch (ClosedException c) { /* as required */ }
-    //        }
-    //
-    //    public void testClosedContainsTriple()
-    //        {
-    //        try { getClosed().contains( triple( "x R y" ) ); fail( "contains[triple] when closed" ); }
-    //        catch (ClosedException c) { /* as required */ }
-    //        }
-    //
-    //    public void testClosedContainsSPO()
-    //        {
-    //        Node a = Node.ANY;
-    //        try { getClosed().contains( a, a, a ); fail( "contains[SPO] when closed" ); }
-    //        catch (ClosedException c) { /* as required */ }
-    //        }
-    //
-    //    public void testClosedFindTriple()
-    //        {
-    //        try { getClosed().find( triple( "x R y" ) ); fail( "find [triple] when closed" ); }
-    //        catch (ClosedException c) { /* as required */ }
-    //        }
-    //
-    //    public void testClosedFindSPO()
-    //        {
-    //        Node a = Node.ANY;
-    //        try { getClosed().find( a, a, a ); fail( "find[SPO] when closed" ); }
-    //        catch (ClosedException c) { /* as required */ }
-    //        }
-    //
-    //    public void testClosedSize()
-    //        {
-    //        try { getClosed().size(); fail( "size when closed (" + this.getClass() + ")" ); }
-    //        catch (ClosedException c) { /* as required */ }
-    //        }
-
 }

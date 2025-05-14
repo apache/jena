@@ -43,6 +43,7 @@ public class WrappedGraph implements GraphWithPerform
     public TransactionHandler getTransactionHandler()
     { return base.getTransactionHandler(); }
 
+    @Deprecated(forRemoval = true)
     @Override
     public Capabilities getCapabilities()
     { return base.getCapabilities(); }

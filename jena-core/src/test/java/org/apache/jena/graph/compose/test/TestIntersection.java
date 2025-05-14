@@ -31,7 +31,7 @@ public class TestIntersection extends TestDyadic
     { return new TestSuite( TestIntersection.class ); }
 
     @Override
-    public Graph getGraph()
+    public Graph getNewGraph()
     {
         Graph gBase = graphWith( "" ), g1 = graphWith( "" );
         return new Intersection( gBase, g1 ); 

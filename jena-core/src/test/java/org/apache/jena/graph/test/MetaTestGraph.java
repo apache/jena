@@ -85,7 +85,7 @@ public class MetaTestGraph extends AbstractTestGraph
         catch (Exception e) { throw new JenaException( e ); }
         }
 
-	@Override public Graph getGraph() 
+	@Override public Graph getNewGraph() 
         { return getGraph( this, graphClass); }
         
     }

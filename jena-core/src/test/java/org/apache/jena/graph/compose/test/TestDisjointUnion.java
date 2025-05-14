@@ -35,7 +35,7 @@ public class TestDisjointUnion extends TestDyadic
     
     
     @Override
-	public Graph getGraph()
+	public Graph getNewGraph()
 	{
 		Graph gBase = graphWith( "" ), g1 = graphWith( "" );
         return new DisjointUnion( gBase, g1 ); 

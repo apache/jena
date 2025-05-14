@@ -127,11 +127,6 @@ public abstract class GraphBase implements GraphWithPerform
     public TransactionHandler getTransactionHandler()
         { return new SimpleTransactionHandler(); }
 
-    @Override
-    public Capabilities getCapabilities() {
-        return AllCapabilities.updateAllowed;
-    }
-
     /**
         Answer the PrefixMapping object for this graph, the same one each time.
      */

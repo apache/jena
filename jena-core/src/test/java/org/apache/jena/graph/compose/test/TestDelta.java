@@ -40,7 +40,7 @@ public class TestDelta extends AbstractTestGraph
     }
 
     @Override
-    public Graph getGraph()
+    public Graph getNewGraph()
     {
         Graph gBase = graphWith( "" );
         return new Delta( gBase ); 
