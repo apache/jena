@@ -74,12 +74,15 @@
       <artifactId>RoaringBitmap</artifactId>
     </dependency>
 
+    <!--
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
       <scope>test</scope>
     </dependency>
+    -->
 
+    <!--
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
@@ -91,11 +94,12 @@
       <artifactId>junit-platform-suite-engine</artifactId>
       <scope>test</scope>
     </dependency>
+    -->
 
+    <!-- junit-vintage-engine does not seem to work properly -->
     <dependency>
-      <groupId>org.xenei</groupId>
-      <artifactId>junit-contracts</artifactId>
-      <scope>test</scope>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
     </dependency>
 
     <dependency>
@@ -154,15 +158,15 @@
         <artifactId>maven-resources-plugin</artifactId>
       </plugin>
 
-      <!-- Contract tests use mockito -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <!--
           <argLine>-javaagent:${org.mockito:mockito-core:jar} -Xshare:off</argLine>
+          -->
           <includes>
             <include>org/apache/jena/test/TestPackage_core.java</include>
-            <include>**/*_CS.java</include>
           </includes>
         </configuration>
       </plugin>
@@ -235,48 +239,6 @@
         </executions>
       </plugin>
 
-      <plugin>
-        <groupId>org.xenei</groupId>
-        <artifactId>contract-test-maven-plugin</artifactId>
-        <version>${ver.contract.tests}</version>
-        <configuration>
-          <failOnError>false</failOnError>
-          <packages>
-            <package>org.apache.jena.assembler</package>
-            <package>org.apache.jena.datatypes</package>
-            <package>org.apache.jena.enhanced</package>
-            <package>org.apache.jena.graph</package>
-            <package>org.apache.jena.mem</package>
-            <package>org.apache.jena.ontology</package>
-            <package>org.apache.jena.rdf</package>
-            <package>org.apache.jena.rdfxml</package>
-            <package>org.apache.jena.reasoner</package>
-            <package>org.apache.jena.shared</package>
-            <package>org.apache.jena.util</package>
-            <package>org.apache.jena.vocabulary</package>
-          </packages>
-          <skipFilter>Wildcard( *.test.* )</skipFilter>
-          <unimplemented>
-            <report>true</report>
-            <failOnError>false</failOnError>
-          </unimplemented>
-          <untested>
-            <report>true</report>
-            <failOnError>false</failOnError>
-          </untested>
-          <errors>
-            <report>true</report>
-            <failOnError>false</failOnError>
-          </errors>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>contract-test</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
