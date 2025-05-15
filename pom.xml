@@ -109,7 +109,6 @@
  
     <ver.mockito>5.17.0</ver.mockito>
     <ver.awaitility>4.3.0</ver.awaitility>
-    <ver.contract.tests>0.2.0</ver.contract.tests>
 
     <!-- For testing, not shipped -->
     <ver.graalvm>24.2.1</ver.graalvm>
@@ -732,30 +731,6 @@
         <groupId>org.openjdk.jmh</groupId>
         <artifactId>jmh-generator-annprocess</artifactId>
         <version>${ver.org.openjdk.jmh}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.xenei</groupId>
-        <artifactId>junit-contracts</artifactId>
-        <version>${ver.contract.tests}</version>
-        <scope>test</scope>
-        <exclusions>
-          <exclusion>
-            <artifactId>commons-cli</artifactId>
-            <groupId>commons-cli</groupId>
-          </exclusion>
-          <exclusion>
-            <artifactId>commons-logging</artifactId>
-            <groupId>commons-logging</groupId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      
-      <dependency>
-        <groupId>org.xenei</groupId>
-        <artifactId>contract-test-maven-plugin</artifactId>
-        <version>${ver.contract.tests}</version>
         <scope>test</scope>
       </dependency>
 
