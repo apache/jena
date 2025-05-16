@@ -27,8 +27,6 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Local basic testing to make sure the general parsing is OK in addition to running the W3C Test Suite.
- *
- * These test assume that ARP is correct!
  */
 @RunWith(Parameterized.class)
 public class Test_RRX_Local_SAX extends AbstractTestRDFXML_RRX {

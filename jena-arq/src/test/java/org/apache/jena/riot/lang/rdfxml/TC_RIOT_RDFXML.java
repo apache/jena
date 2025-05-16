@@ -51,8 +51,5 @@ import org.junit.runners.Suite;
  * test suite. These are RDF1.1 and RDF 1.2 tests.
  * <p>
  * ARP1 is ARP is the RDFXML parser using IRIx in Jena4 from Jena 4.7.0.
- * <p>
- * ARP0 is ARP before conversion to IRIx and used in Jena up and including  to 4.6.1.
- * It is unlikely to be maintained.
  */
 public class TC_RIOT_RDFXML {}

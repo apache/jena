@@ -28,8 +28,6 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Run over all files found by a deep walk of the directory tree.
- * Test for an error if ARP generates an error.
- * These test assume that ARP is correct!
  */
 
 @RunWith(Parameterized.class)

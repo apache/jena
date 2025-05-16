@@ -985,7 +985,6 @@ class ParserRRX_StAX_SR {
 
     /**
      * Escape text used in an XML content.
-     * Escapes aligned to ARP.
      */
     private String xmlLiteralEscapeText(CharSequence stringAcc) {
         StringBuilder sBuff = new StringBuilder();
@@ -1010,7 +1009,6 @@ class ParserRRX_StAX_SR {
 
     /**
      * Escape text used in an XML attribute value.
-     * Escapes aligned to ARP.
      */
     private String xmlLiteralEscapeAttr(CharSequence stringAcc) {
         StringBuilder sBuff = new StringBuilder();
