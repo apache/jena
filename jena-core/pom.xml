@@ -175,6 +175,8 @@
           <argLine>-javaagent:${org.mockito:mockito-core:jar} -Xshare:off</argLine>
           <includes>
             <include>org/apache/jena/test/TestPackage_core.java</include>
+            <include>org/apache/jena/mem2/**/*Test.java</include>
+            <include>org/apache/jena/mem2/**/*Test2.java</include>
           </includes>
         </configuration>
       </plugin>
