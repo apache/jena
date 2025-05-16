@@ -96,7 +96,6 @@
     </dependency>
     -->
 
-    <!-- junit-vintage-engine does not seem to work properly -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -161,10 +160,19 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <!-- 
+             Choose the provider if necessary. 
+             Necessary if surefire is not reporting during test runs.
+        -->
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-junit47</artifactId>
+            <version>${ver.plugin.surefire}</version>
+          </dependency>
+        </dependencies>
         <configuration>
-          <!--
           <argLine>-javaagent:${org.mockito:mockito-core:jar} -Xshare:off</argLine>
-          -->
           <includes>
             <include>org/apache/jena/test/TestPackage_core.java</include>
           </includes>
