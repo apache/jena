@@ -27,16 +27,7 @@
  * <li>A StAX-based parser using {@link javax.xml.stream.XMLStreamReader XMLStreamReader}.
  * <li>A StAX-based parser using {@link javax.xml.stream.XMLEventReader XMLEventReader}.
  * </ul>
- * In addition, Jena (in jena-core) has the original ARP parser.
- * <p>
- * "ARP0" in package {@code org.apach.jena-rdfxml.rdfxml0}
- * This was the RDF/XML parser up to Jena 4.6.1. It handled IRIs directly using jena-iri.
- * <p>
- * "ARP1" is in package {@code org.apach.jena-rdfxml.rdfxml1} is derived from ARP0.
- * It uses the {@link org.apache.jena.irix.IRIx IRIx} abstraction to handle IRIs.
- * It has error reporting aligned with RIOT.
- * <br/>
- * </p>
+ *
  * <table border=1 style="border-width: 2px ; border-style: solid; border-collapse: collapse">
  * <thead>
  * <tr>
@@ -75,12 +66,6 @@
  *   <td>ARP1</td>
  *   <td><code>RRX.RDFXML-ARP1</code></td>
  *   <td><code>arp1</code></td>
- *   <td></td>
- * </tr>
- *  <tr>
- *   <td>ARP0</td>
- *   <td><code>RRX.RDFXML_ARP0</code></td>
- *   <td><code>arp0</code></td>
  *   <td></td>
  * </tr>
  * </tbody>
