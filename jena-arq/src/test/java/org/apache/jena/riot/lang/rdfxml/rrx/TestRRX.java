@@ -114,14 +114,12 @@ public class TestRRX {
 
     // rdf:parserType=
     @Test public void error_parseType_unknown() {
-        // This is only a warning in ARP.
         checkForError("parseType-unknown.rdf", false);
     }
 
     @Test public void warn_parseType_extension_1() {
         // Now valid. parseType="literal" -> parseType="Literal"
         // because ARP behaved that way.
-        // Warning issued.
         warningTest("parseType-warn.rdf", 1);
     }
 

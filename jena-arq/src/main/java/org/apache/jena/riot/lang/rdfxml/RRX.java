@@ -59,16 +59,6 @@ public class RRX {
             .build();
 
     /**
-     * <a href="http://www.w3.org/TR/rdf-syntax-grammar/">RDF/XML</a> implemented by ARP0.
-     * @deprecated To be removed. Transition only.
-     */
-    @Deprecated(forRemoval = true)
-    public static final Lang RDFXML_ARP0 = LangBuilder.create("RDFXML-ARP0", "application/rdf+arp0")
-            .addAltNames("arp0")
-            .addFileExtensions("arp0")
-            .build();
-
-    /**
      * Register direct Lang constants for RDF/XML parsers.
      */
     public static void register() {
@@ -77,9 +67,8 @@ public class RRX {
         register(RDFXML_StAX_ev, ReaderRDFXML_StAX_EV.factory);
         register(RDFXML_StAX_sr, ReaderRDFXML_StAX_SR.factory);
 
-        // Names for ARP
+        // ARP using IRIx
         register(RDFXML_ARP1,    ReaderRDFXML_ARP1.factory);
-        register(RDFXML_ARP0,    ReaderRDFXML_ARP0.factory);
     }
 
     private static void register(Lang lang, ReaderRIOTFactory factory) {
@@ -95,7 +84,6 @@ public class RRX {
         unregister(RDFXML_StAX_ev);
         unregister(RDFXML_StAX_sr);
         unregister(RDFXML_ARP1);
-        unregister(RDFXML_ARP0);
     }
 
     private static void unregister(Lang lang) {

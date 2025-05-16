@@ -35,16 +35,13 @@ import org.apache.jena.riot.system.ErrorHandlerFactory;
 import org.junit.Test;
 
 /**
- * Tests for setting reader properties - specific to ARP0 and ARP1.
+ * Tests for setting reader properties - specific to ARP1.
  */
 @SuppressWarnings("removal")
 public class TestRDFXML_ReaderProperties {
-    @Test public void rdfxmlreaderProperties_arp0() {
-        execTest(RRX.RDFXML_ARP0);
-    }
 
     @Test public void rdfxmlreaderProperties_arp1() {
-        execTest(RRX.RDFXML_ARP0);
+        execTest(RRX.RDFXML_ARP1);
     }
 
     private void execTest(Lang parserLang) {

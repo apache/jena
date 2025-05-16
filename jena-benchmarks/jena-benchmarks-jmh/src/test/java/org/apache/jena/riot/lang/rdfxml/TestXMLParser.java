@@ -62,12 +62,8 @@ public class TestXMLParser {
                 return RRX.RDFXML_StAX_ev;
             case "RRX.RDFXML_StAX_sr":
                 return RRX.RDFXML_StAX_sr;
-
-            case "RRX.RDFXML_ARP0":
-                return RRX.RDFXML_ARP0;
             case "RRX.RDFXML_ARP1":
                 return RRX.RDFXML_ARP1;
-
             default:
                 throw new IllegalArgumentException("Unknown lang: " + langName);
         }

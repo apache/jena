@@ -953,8 +953,6 @@ class ParserRRX_SAX
         // If there is an attribute a with a.URI == rdf:about then e.subject :=
         // uri(identifier := resolve(e, a.string-value)).
         //
-        // Text quoted is implicitly "latter overrides former" but it seems ARP generate an error.
-
         // This will be resolved and checked for a valid IRI later.
         String iriStr = attributes.getValue(rdfNS, rdfAbout);
         // Checked when the blank node is created.
@@ -1764,7 +1762,6 @@ class ParserRRX_SAX
 
     /**
      * Escape text used in an XML content.
-     * Escapes aligned to ARP.
      */
     private String xmlLiteralEscapeText(CharSequence stringAcc) {
         StringBuilder sBuff = new StringBuilder();
@@ -1789,7 +1786,6 @@ class ParserRRX_SAX
 
     /**
      * Escape text used in an XML attribute value.
-     * Escapes aligned to ARP.
      */
     private String xmlLiteralEscapeAttr(CharSequence stringAcc) {
         StringBuilder sBuff = new StringBuilder();

@@ -19,6 +19,7 @@
 package org.apache.jena.reasoner.test;
 
 import junit.framework.*;
+import org.apache.jena.reasoner.rulesys.test.TestRuleReasoners;
 
 /**
  * Aggregate tester that runs all the test associated with the reasoner package.
@@ -36,7 +37,7 @@ public class TestPackage_reasoners extends TestSuite {
         addTest( "TestTransitiveGraphCache", TestTransitiveGraphCache.suite() );
         addTest( "TestReasoners", TestReasoners.suite() );
         addTest( "TestRDFSReasoners", TestRDFSReasoners.suite() );
-        addTest( "TestRuleReasoners",  org.apache.jena.reasoner.rulesys.test.TestPackage_Rules.suite() );
+        addTest( "TestRuleReasoners",  TestRuleReasoners.suite() );
         addTest( "TestReasonerPrefixMapping", TestInfPrefixMapping.suite() );
         addTest( "TestInfGraph", TestInfGraph.suite() );
         addTest( "TestInfModel", TestInfModel.suite() );
