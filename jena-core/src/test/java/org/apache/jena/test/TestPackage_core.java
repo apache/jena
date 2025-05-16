@@ -40,7 +40,7 @@ public class TestPackage_core extends TestCase {
         addTest(ts,  "IRIx", org.apache.jena.irix.TS_IRIx.suite());
         addTest(ts,  "LangTagX", org.apache.jena.langtagx.TS_LangTagX.suite());
         addTest(ts,  "Enhanced", org.apache.jena.enhanced.test.TestPackage_enh.suite());
-        addTest(ts,  "Datatypes", org.apache.jena.datatypes.TestPackage_dt.suite()) ;
+        addTest(ts,  "Datatypes", org.apache.jena.datatypes.TestPackage_dt.suite());
         addTest(ts,  "Graph", org.apache.jena.graph.test.TestPackage_graph.suite());
         addTest(ts,  "Mem", org.apache.jena.mem.test.TestMemPackage.suite() );
         addTest(ts,  "Mem2", org.apache.jena.mem.test.TestGraphMemPackage.suite() );
