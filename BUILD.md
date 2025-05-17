@@ -87,12 +87,8 @@ This happens if the top level POM is included, as well as `jena-db` and
 
 ### Avoid output modules
 
-Artifacts that provide shaded jars should not normally be imported, especially
-`jena-shaded-guava`. Other shared jars included `jena-fuseki-server` and
-`jena-fuseki-fulljar`.
-
-`jena-shaded-guava` will be obtained from a maven repository or from a local run
-of mvn.
+Artifacts that provide shaded jars should not normally be imported,
+such as `jena-fuseki-server`.
 
 ## Build Notes
 
