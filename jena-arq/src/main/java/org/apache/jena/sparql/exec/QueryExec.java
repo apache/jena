@@ -93,6 +93,12 @@ public interface QueryExec extends AutoCloseable {
     public String getQueryString();
 
     /**
+     * Return the query element (object or string) associated with this query execution.
+     * This may be null (QueryExec may have been created by other means).
+     */
+    // public QueryElt getQueryElt();
+
+    /**
      * Execute a SELECT query
      * <p>
      * <strong>Important:</strong> The name of this method is somewhat of a misnomer

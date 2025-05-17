@@ -26,6 +26,20 @@ import org.apache.jena.sparql.util.Context;
  */
 public interface UpdateProcessor
 {
+    /**
+     * The update request associated with this update execution. May be null (QueryExec may
+     * have been created by other means)
+     */
+    default public UpdateRequest getUpdateRequest() { return null; }
+
+    /**
+     * The update request as a string.
+     * This may be null (UpdateExec may have been created by other means).
+     * This may contain non-Jena extensions and can not be parsed by Jena.
+     * If {@code getUpdateRequest()} is not null, this is a corresponding string that parses to the same query.
+     */
+    default public String getUpdateRequestString() { return null; }
+
     /** Execute */
     public void execute() ;
 
