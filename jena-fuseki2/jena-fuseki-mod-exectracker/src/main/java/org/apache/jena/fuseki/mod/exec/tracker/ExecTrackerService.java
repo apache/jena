@@ -31,17 +31,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.jena.fuseki.FusekiException;
 import org.apache.jena.fuseki.servlets.BaseActionREST;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.riot.WebContent;
-import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.sparql.exec.tracker.ExecTracker;
-import org.apache.jena.sparql.exec.tracker.ExecTracker.CompletionRecord;
-import org.apache.jena.sparql.exec.tracker.ExecTracker.StartRecord;
-import org.apache.jena.sparql.exec.tracker.ExecTrackerListener;
+import org.apache.jena.sparql.exec.tracker.BasicTaskExec;
+import org.apache.jena.sparql.exec.tracker.HistoryTrackerRegistry;
+import org.apache.jena.sparql.exec.tracker.TaskListener;
 import org.apache.jena.sparql.util.Context;
 import org.apache.jena.web.HttpSC;
 import org.slf4j.Logger;
@@ -73,15 +72,19 @@ public class ExecTrackerService extends BaseActionREST {
         // Lock to prevent concurrent addition/removal of listeners while broadcasting events.
         Object listenerLock = new Object();
 
-        // Single listener on an ExecTracker.
-        Runnable execTrackerListenerDisposer;
+        // Single listener on an TaskTrackerRegistry. - Not needed here; this listener initialized during FMOD init.
+        Runnable taskTrackerListenerDisposer;
+
+        // The history tracker connected to the taskTracker.
+        HistoryTrackerRegistry historyTracker;
+        // Runnable historyTrackerDisposer;
 
         // Web clients on the ExecTracker.
         Map<AsyncContext, Runnable> eventListeners = Collections.synchronizedMap(new IdentityHashMap<>()); // new ConcurrentHashMap<>();
     }
 
     /** Registered clients listening to server side events for indexer status updates. */
-    private Map<ExecTracker, Clients> trackerToClients = Collections.synchronizedMap(new IdentityHashMap<>());
+    private Map<HistoryTrackerRegistry, Clients> trackerToClients = new ConcurrentHashMap<>(); // Collections.synchronizedMap(new IdentityHashMap<>());
 
     public ExecTrackerService() {}
 
@@ -113,16 +116,20 @@ public class ExecTrackerService extends BaseActionREST {
     protected void stopExec(HttpAction action) {
         long execId = getExecId(action);
 
-        ExecTracker execTracker = requireExecTracker(action);
-        StartRecord task = execTracker.getActiveTasks().get(execId);
+        HistoryTrackerRegistry execTracker = requireTaskHistoryTracker(action);
+        BasicTaskExec task = execTracker.getByTaskId(execId); // execTracker.getActiveTasks().get(execId);
 
         if (task != null) {
-            Runnable abortAction = task.abortAction();
-            if (abortAction == null) {
-                logger.info("Abort not supported because action is null: " + execId);
-            } else {
-                abortAction.run();
+            try {
+                task.abort();
+            } catch (Throwable t) {
+                // might have failed
             }
+//            if (abortAction == null) {
+//                logger.info("Abort not supported because action is null: " + execId);
+//            } else {
+//                abortAction.run();
+//            }
             logger.info("Sending stop request to execution: " + execId);
         } else {
             logger.warn("No such execution to abort: " + execId);
@@ -149,46 +156,83 @@ public class ExecTrackerService extends BaseActionREST {
         }
     }
 
-    protected ExecTracker requireExecTracker(HttpAction action) {
-        DatasetGraph dsg = action.getDataset();
-        Context cxt = dsg.getContext();
-        ExecTracker execTracker = ExecTracker.requireTracker(cxt);
-        return execTracker;
+    protected HistoryTrackerRegistry requireTaskHistoryTracker(HttpAction action) {
+        // DatasetGraph dsg = action.getDataset();
+        // Context cxt = dsg.getContext();
+        Context cxt = action.getEndpoint().getContext();
+        HistoryTrackerRegistry taskTracker = HistoryTrackerRegistry.require(cxt);
+        // ExecTracker2 execTracker = ExecTracker2.requireTracker(cxt);
+        return taskTracker;
     }
 
-    protected Runnable registerExecTrackerListener(ExecTracker execTracker, Clients clients) {
-        Runnable disposeExecTrackerListener = execTracker.addListener(new ExecTrackerListener() {
-            @Override
-            public void onStart(StartRecord startRecord) {
-                try (JsonTreeWriter writer = new JsonTreeWriter()) {
-                    ExecTrackerWriter.writeStartRecordObject(writer, startRecord);
-                    JsonElement json = writer.get();
-                    synchronized (clients.listenerLock) {
-                        Iterator<Entry<AsyncContext, Runnable>> it = clients.eventListeners.entrySet().iterator();
-                        broadcastJson(it, json);
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+//    protected ExecTracker2 requireExecTracker(HttpAction action) {
+//        TaskTrackerRegistry taskTrackerRegistry = requireTaskTracker(action);
+//
+//        // Check if this servlet already has a registration on this task tracker
+//        taskTrackerRegistry.addListener(BasicTaskExec.class, null);
+//    }
 
-            @Override
-            public void onComplete(CompletionRecord endRecord) {
-                try (JsonTreeWriter writer = new JsonTreeWriter()) {
-                    ExecTrackerWriter.writeCompletionRecordObject(writer, endRecord);
-                    JsonElement json = writer.get();
-                    synchronized (clients.listenerLock) {
-                        Iterator<Entry<AsyncContext, Runnable>> it = clients.eventListeners.entrySet().iterator();
-                        broadcastJson(it, json);
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
+//    protected HistoryTrackerRegistry getExecTracker(HttpAction action) {
+//        HistoryTrackerRegistry taskTrackerRegistry = requireTaskHistoryTracker(action);
+//        Clients clients = trackerToClients.get(taskTrackerRegistry);
+//        HistoryTrackerRegistry result = clients == null ? null : clients.historyTracker;
+//        return result;
+//    }
+
+    protected Runnable registerExecTrackerListener(HistoryTrackerRegistry taskTrackerRegistry, Clients clients) {
+        // Register the history tracker to the task tracker
+        // clients.historyTracker = new TaskTrackerRegistry();
+        // clients.historyTrackerDisposer = taskTrackerRegistry.addListener(BasicTaskExec.class, clients.historyTracker);
+
+        // Register the SSE handler to the history tracker
+        Runnable disposeExecTrackerListener = taskTrackerRegistry.addListener(BasicTaskExec.class, new InternalListener(clients));
         return disposeExecTrackerListener;
     }
 
+
+    protected class InternalListener implements TaskListener<BasicTaskExec> {
+        protected Clients clients;
+
+        public InternalListener(Clients clients) {
+            super();
+            this.clients = clients;
+        }
+
+        @Override
+        public void onStateChange(BasicTaskExec task) {
+            switch (task.getState()) {
+            case STARTING: onStart(task); break;
+            case TERMINATED: onTerminated(task); break;
+            default: // ignored
+            }
+        }
+
+        public void onStart(BasicTaskExec startRecord) {
+            try (JsonTreeWriter writer = new JsonTreeWriter()) {
+                ExecTrackerWriter.writeStartRecordObject(writer, startRecord);
+                JsonElement json = writer.get();
+                synchronized (clients.listenerLock) {
+                    Iterator<Entry<AsyncContext, Runnable>> it = clients.eventListeners.entrySet().iterator();
+                    broadcastJson(it, json);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public void onTerminated(BasicTaskExec endRecord) {
+            try (JsonTreeWriter writer = new JsonTreeWriter()) {
+                ExecTrackerWriter.writeCompletionRecordObject(writer, endRecord);
+                JsonElement json = writer.get();
+                synchronized (clients.listenerLock) {
+                    Iterator<Entry<AsyncContext, Runnable>> it = clients.eventListeners.entrySet().iterator();
+                    broadcastJson(it, json);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
     protected void serveEvents(HttpAction action) {
         HttpServletRequest request = action.getRequest();
         HttpServletResponse response = action.getResponse();
@@ -200,7 +244,7 @@ public class ExecTrackerService extends BaseActionREST {
         AsyncContext asyncContext = request.startAsync();
         asyncContext.setTimeout(0);
 
-        ExecTracker execTracker = requireExecTracker(action);
+        HistoryTrackerRegistry taskTracker = requireTaskHistoryTracker(action);
 
         Runnable[] disposeSseListener = {null};
 
@@ -228,7 +272,7 @@ public class ExecTrackerService extends BaseActionREST {
         });
 
         disposeSseListener[0] = () -> {
-            trackerToClients.compute(execTracker, (et, clts) -> {
+            trackerToClients.compute(taskTracker, (et, clts) -> {
                 Clients r = clts;
                 if (clts != null) {
                     synchronized (clts.listenerLock) {
@@ -237,7 +281,8 @@ public class ExecTrackerService extends BaseActionREST {
 
                         // If no more listeners remain then dispose the exec tracker listener.
                         if (clts.eventListeners.isEmpty()) {
-                            clts.execTrackerListenerDisposer.run();
+                            clts.taskTrackerListenerDisposer.run();
+                            // clts.historyTrackerDisposer.run();
                             r = null;
                         }
                     }
@@ -247,11 +292,12 @@ public class ExecTrackerService extends BaseActionREST {
         };
 
         // Atomically set up the new listener.
-        trackerToClients.compute(execTracker, (et, clients) -> {
+        trackerToClients.compute(taskTracker, (et, clients) -> {
             if (clients == null) {
                 clients = new Clients();
-                Runnable disposer = registerExecTrackerListener(execTracker, clients);
-                clients.execTrackerListenerDisposer = disposer;
+                Runnable disposer = registerExecTrackerListener(taskTracker, clients);
+                // clients.eventListeners.put(asyncContext, disposer);
+                clients.taskTrackerListenerDisposer = disposer;
             }
             synchronized (clients.listenerLock) {
                 clients.eventListeners.put(asyncContext, disposeSseListener[0]);
@@ -264,7 +310,9 @@ public class ExecTrackerService extends BaseActionREST {
      * Serves a JSON object with the running and recently completed tasks.
      */
     protected void serveStatus(HttpAction action) {
-        ExecTracker execTracker = requireExecTracker(action);
+        HistoryTrackerRegistry execTracker = requireTaskHistoryTracker(action);
+
+        // ExecTracker2 execTracker = requireExecTracker(action);
 
         action.setResponseStatus(HttpSC.OK_200);
         action.setResponseContentType(WebContent.contentTypeJSON);

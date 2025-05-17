@@ -19,12 +19,10 @@
 package org.apache.jena.fuseki.mod.exec.tracker;
 
 import java.io.IOException;
-import java.util.Objects;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.jena.sparql.exec.tracker.ExecTracker;
-import org.apache.jena.sparql.exec.tracker.ExecTracker.CompletionRecord;
-import org.apache.jena.sparql.exec.tracker.ExecTracker.StartRecord;
+import org.apache.jena.sparql.exec.tracker.BasicTaskExec;
+import org.apache.jena.sparql.exec.tracker.HistoryTrackerRegistry;
 
 import com.google.gson.stream.JsonWriter;
 
@@ -42,75 +40,77 @@ public class ExecTrackerWriter {
         this.maxHistorySize = maxHistorySize;
     }
 
-    public void writeStatusObject(JsonWriter writer, ExecTracker execTracker) throws IOException {
+    public void writeStatusObject(JsonWriter writer, HistoryTrackerRegistry execTracker) throws IOException {
         writer.beginObject();
         writeStatusMembers(writer, execTracker);
         writer.endObject();
     }
 
-    public void writeStatusMembers(JsonWriter writer, ExecTracker execTracker) throws IOException {
+    public void writeStatusMembers(JsonWriter writer, HistoryTrackerRegistry execTracker) throws IOException {
         writer.name("runningTasks");
         writer.beginArray();
-        for (StartRecord item : execTracker.getActiveTasks().values()) {
+        for (BasicTaskExec item : execTracker.getActiveTasks().values()) {
             writeStartRecordObject(writer, item);
         }
         writer.endArray();
 
         writer.name("completedTasks");
         writer.beginArray();
-        Iterable<CompletionRecord> recentHistory = () -> execTracker.getHistory().descendingMap().values().stream().limit(maxHistorySize).iterator();
-        for (CompletionRecord item : recentHistory) {
+        Iterable<BasicTaskExec> recentHistory = () -> execTracker.getHistory().descendingMap().values().stream().limit(maxHistorySize).iterator();
+        for (BasicTaskExec item : recentHistory) {
             writeCompletionRecordObject(writer, item);
         }
         writer.endArray();
     }
 
-    public static void writeStartRecordObject(JsonWriter writer, StartRecord item) throws IOException {
+    public static void writeStartRecordObject(JsonWriter writer, BasicTaskExec item) throws IOException {
         writer.beginObject();
         writeStartRecordMembers(writer, item);
         writer.endObject();
     }
 
-    public static void writeStartRecordMembers(JsonWriter writer, StartRecord item) throws IOException {
+    public static void writeStartRecordMembers(JsonWriter writer, BasicTaskExec item) throws IOException {
         writer.name("type");
         writer.value("StartRecord");
 
         writer.name("requestId");
-        writer.value(item.requestId());
+        long id = System.identityHashCode(item);
+        writer.value(id);
 
         writer.name("payload");
         writePayloadObject(writer, item);
 
         writer.name("timestamp");
-        writer.value(item.timestamp().toEpochMilli());
+        writer.value(item.getStartTime());
     }
 
-    public static void writePayloadObject(JsonWriter writer, StartRecord item) throws IOException {
+    public static void writePayloadObject(JsonWriter writer, BasicTaskExec item) throws IOException {
         writer.beginObject();
         writePayloadMembers(writer, item);
         writer.endObject();
     }
 
-    public static void writePayloadMembers(JsonWriter writer, StartRecord item) throws IOException {
-        String label = Objects.toString(item.requestObject());
+    public static void writePayloadMembers(JsonWriter writer, BasicTaskExec item) throws IOException {
+        // XXX Change to description
+        String label = item.getDescription();
         writer.name("label");
         writer.value(label);
     }
 
-    public static void writeCompletionRecordObject(JsonWriter writer, CompletionRecord item) throws IOException {
+    public static void writeCompletionRecordObject(JsonWriter writer, BasicTaskExec item) throws IOException {
         writer.beginObject();
         writeCompletionRecordMembers(writer, item);
         writer.endObject();
     }
 
-    public static void writeCompletionRecordMembers(JsonWriter writer, CompletionRecord item) throws IOException {
+    public static void writeCompletionRecordMembers(JsonWriter writer, BasicTaskExec item) throws IOException {
         writer.name("type");
         writer.value("CompletionRecord");
 
         writer.name("startRecord");
-        writeStartRecordObject(writer, item.start());
+        writeStartRecordObject(writer, item);
 
-        Throwable throwable = item.throwable();
+        Throwable throwable = item.getThrowable();
         if (throwable != null) {
             String errorMessage = ExceptionUtils.getStackTrace(throwable);
             writer.name("error");
@@ -118,6 +118,6 @@ public class ExecTrackerWriter {
         }
 
         writer.name("timestamp");
-        writer.value(item.timestamp().toEpochMilli());
+        writer.value(item.getFinishTime());
     }
 }

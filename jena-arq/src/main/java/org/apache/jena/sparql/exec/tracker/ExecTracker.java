@@ -39,30 +39,19 @@ import org.slf4j.LoggerFactory;
 public class ExecTracker {
     private static final Logger logger = LoggerFactory.getLogger(ExecTracker.class);
 
-    public record StartRecord(long requestId, Instant timestamp, Object requestObject, Runnable abortAction) {}
-
-    public record CompletionRecord(StartRecord start, Instant timestamp, Throwable throwable) {
-        public Duration duration() {
-            return Duration.between(start.timestamp, timestamp);
-        }
-
-        public boolean isSuccess() {
-            return throwable == null;
-        }
-    }
 
     private Set<ExecTrackerListener> eventListeners = Collections.synchronizedSet(Collections.newSetFromMap(new IdentityHashMap<>()));
 
     protected AtomicLong nextId = new AtomicLong();
     protected ConcurrentNavigableMap<Long, StartRecord> idToStartRecord = new ConcurrentSkipListMap<>();
     protected int maxHistorySize = 1000;
-    protected ConcurrentNavigableMap<Long, CompletionRecord> history = new ConcurrentSkipListMap<>();
+    protected ConcurrentNavigableMap<Long, FinishRecord> history = new ConcurrentSkipListMap<>();
 
     public ConcurrentNavigableMap<Long, StartRecord> getActiveTasks() {
         return idToStartRecord;
     }
 
-    public ConcurrentNavigableMap<Long, CompletionRecord> getHistory() {
+    public ConcurrentNavigableMap<Long, FinishRecord> getHistory() {
         return history;
     }
 
@@ -80,7 +69,7 @@ public class ExecTracker {
 
     protected void trimHistory() {
         if (history.size() >= maxHistorySize) {
-            Iterator<Entry<Long, CompletionRecord>> it = history.entrySet().iterator();
+            Iterator<Entry<Long, FinishRecord>> it = history.entrySet().iterator();
             while (history.size() >= maxHistorySize && it.hasNext()) {
                 it.next();
                 it.remove();
@@ -88,13 +77,13 @@ public class ExecTracker {
         }
     }
 
-    public CompletionRecord remove(long id, Throwable t) {
+    public FinishRecord remove(long id, Throwable t) {
         StartRecord startRecord = idToStartRecord.remove(id);
-        CompletionRecord result = null;
+        FinishRecord result = null;
         if (startRecord != null) {
             trimHistory();
             Instant now = Instant.now();
-            result = new CompletionRecord(startRecord, now, t);
+            result = new FinishRecord(startRecord, now, t);
             // long requestId = startRecord.requestId();
             // history.put(now, result);
             history.put(id, result);
@@ -106,7 +95,7 @@ public class ExecTracker {
     protected void broadcastStartEvent(StartRecord startRecord) {
         for (ExecTrackerListener listener : eventListeners) {
             try {
-                listener.onStart(startRecord);
+                listener.onQueryExecStart(startRecord);
             } catch (Throwable t) {
                 if (logger.isWarnEnabled()) {
                     logger.warn("Failure during event handler.", t);
@@ -115,10 +104,10 @@ public class ExecTracker {
         }
     }
 
-    protected void broadcastCompletionEvent(CompletionRecord completionRecord) {
+    protected void broadcastCompletionEvent(FinishRecord completionRecord) {
         for (ExecTrackerListener listener : eventListeners) {
             try {
-                listener.onComplete(completionRecord);
+                listener.onQueryExecFinish(completionRecord);
             } catch (Throwable t) {
                 if (logger.isWarnEnabled()) {
                     logger.warn("Failure during event handler.", t);

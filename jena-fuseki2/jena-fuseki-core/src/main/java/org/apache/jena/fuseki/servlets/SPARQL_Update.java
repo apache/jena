@@ -24,7 +24,12 @@ import static org.apache.jena.fuseki.servlets.ActionExecLib.incCounter;
 import static org.apache.jena.fuseki.servlets.SPARQLProtocol.countParamOccurences;
 import static org.apache.jena.fuseki.servlets.SPARQLProtocol.messageForException;
 import static org.apache.jena.fuseki.servlets.SPARQLProtocol.messageForParseException;
-import static org.apache.jena.riot.WebContent.*;
+import static org.apache.jena.riot.WebContent.charsetUTF8;
+import static org.apache.jena.riot.WebContent.contentTypeHTMLForm;
+import static org.apache.jena.riot.WebContent.contentTypeSPARQLUpdate;
+import static org.apache.jena.riot.WebContent.ctSPARQLUpdate;
+import static org.apache.jena.riot.WebContent.isHtmlForm;
+import static org.apache.jena.riot.WebContent.matchContentType;
 import static org.apache.jena.riot.web.HttpNames.paramRequest;
 import static org.apache.jena.riot.web.HttpNames.paramUpdate;
 import static org.apache.jena.riot.web.HttpNames.paramUsingGraphURI;
@@ -37,8 +42,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
-
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.Bytes;
@@ -55,13 +59,21 @@ import org.apache.jena.query.Syntax;
 import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames;
 import org.apache.jena.shared.OperationDeniedException;
+import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
+import org.apache.jena.sparql.exec.UpdateExec;
+import org.apache.jena.sparql.exec.tracker.TaskTrackerRegistry;
+import org.apache.jena.sparql.exec.tracker.UpdateExecBase;
 import org.apache.jena.sparql.modify.UsingList;
+import org.apache.jena.sparql.util.Context;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateException;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
 import org.apache.jena.web.HttpSC;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public class SPARQL_Update extends ActionService
 {
@@ -208,11 +220,15 @@ public class SPARQL_Update extends ActionService
     protected void execute(HttpAction action, InputStream input) {
         UsingList usingList = processProtocol(action.getRequest());
 
+        DatasetGraph configuredDsg = action.getDataset();
+        TaskTrackerRegistry taskTracker = TaskTrackerRegistry.get(configuredDsg);
+
         // If the dsg is transactional, then we can parse and execute the update in a streaming fashion.
         // If it isn't, we need to read the entire update request before performing any updates, because
         // we have to attempt to make the request atomic in the face of malformed updates.
+        // If there is a task tracker then parse the request so we can display the request string.
         UpdateRequest req = null;
-        if (!action.isTransactional()) {
+        if (!action.isTransactional() || taskTracker != null) {
             try {
                 req = UpdateFactory.read(usingList, input, UpdateParseBase, Syntax.syntaxARQ);
             }
@@ -222,10 +238,27 @@ public class SPARQL_Update extends ActionService
 
         action.beginWrite();
         try {
-            if (req == null )
-                UpdateAction.parseExecute(usingList, action.getActiveDSG(), input, UpdateParseBase, Syntax.syntaxARQ);
-            else
-                UpdateAction.execute(req, action.getActiveDSG());
+            DatasetGraph activeDsg = action.getActiveDSG();
+            UpdateExec updateExec;
+            if (req == null ) {
+                // XXX UpdateAction.parseExecute should be adapted to create an UpdateExec instance.
+                Context localContext = Context.create();
+                AtomicBoolean cancelSignal = Context.getOrSetCancelSignal(localContext);
+                updateExec = new UpdateExecBase(null, "# Streaming update. Request data is streamed directly to update engine.") {
+                    @Override
+                    public void execute() {
+                        UpdateAction.parseExecute(usingList, activeDsg, input, (Binding)null, UpdateParseBase, Syntax.syntaxARQ, localContext);
+                    }
+                    @Override
+                    public void abort() {
+                        cancelSignal.set(true);
+                    }
+                };
+            } else {
+                updateExec = UpdateExec.newBuilder().update(req).dataset(activeDsg).build();
+            }
+            updateExec = TaskTrackerRegistry.track(taskTracker, updateExec);
+            updateExec.execute();
             action.commit();
         } catch (UpdateException ex) {
             ActionLib.consumeBody(action);

@@ -18,10 +18,12 @@
 
 package org.apache.jena.sparql.exec.tracker;
 
-import org.apache.jena.sparql.exec.tracker.ExecTracker.CompletionRecord;
-import org.apache.jena.sparql.exec.tracker.ExecTracker.StartRecord;
+import org.apache.jena.sparql.exec.QueryExec;
 
 public interface ExecTrackerListener {
-    void onStart(StartRecord startRecord);
-    void onComplete(CompletionRecord endRecord);
+    void onQueryExecStart(StartRecord<QueryExec> startRecord);
+    void onQueryExecFinish(FinishRecord<QueryExec> endRecord);
+
+    void onUpdateRequestExecStart(StartRecord<QueryExec> startRecord);
+    void onUpdateRequestExecFinish(FinishRecord<QueryExec> endRecord);
 }

@@ -28,7 +28,6 @@ import org.apache.jena.sparql.engine.QueryEngineRegistry;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorWrapper;
-import org.apache.jena.sparql.exec.tracker.ExecTracker.CompletionRecord;
 import org.apache.jena.sparql.util.Context;
 
 public class QueryEngineFactoryExecTracker
@@ -128,7 +127,7 @@ public class QueryEngineFactoryExecTracker
 
                 @Override
                 protected void closeIterator() {
-                    CompletionRecord completionRecord = execTracker.remove(idRef[0], t);
+                    FinishRecord completionRecord = execTracker.remove(idRef[0], t);
                     super.closeIterator();
                 }
             };
