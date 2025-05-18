@@ -54,7 +54,7 @@ public class ARQConstants
     public static final String rdfsPrefix = "http://www.w3.org/2000/01/rdf-schema#"; //RDFS.getURI() ;
 
     /** SPARQL namespace prefix */
-    public static final String sparqlPrefix = "https://www.w3.org/ns/sparql#";
+    public static final String sparqlPrefix = "http://www.w3.org/ns/sparql#";
 
     /** OWL namespace prefix */
     public static final String owlPrefix = "http://www.w3.org/2002/07/owl#"; //OWL.getURI() ;

@@ -32,8 +32,8 @@ import org.apache.jena.sparql.util.ExprUtils ;
 import org.apache.jena.sys.JenaSystem;
 
 /**
- * Test that SPARQl functions can be called by their URI as given in the SPARQL 1.2
- * namespace <a href="https://www.w3.org/ns/sparql#">https://www.w3.org/ns/sparql#</a>.
+ * Test that SPARQL functions can be called by their URI as given in the SPARQL 1.2
+ * namespace <a href="https://www.w3.org/ns/sparql#">http://www.w3.org/ns/sparql#</a>.
  */
 public class TestFunctionsByURI
 {
@@ -52,8 +52,8 @@ public class TestFunctionsByURI
         NodeValue.VerboseWarnings = warnOnBadLexicalForms;
     }
 
-    @Test public void sparql_function_uri_1()  { test("sparql:unary-minus(123)",                "-123") ; }
-    @Test public void sparql_function_uri_2()  { test("sparql:subtract(12 ,sparql:multiply(5,2))",  "2") ; }
+    @Test public void sparql_function_uri_1()  { test("sparql:unary-minus(123)",                    "-123") ; }
+    @Test public void sparql_function_uri_2()  { test("sparql:subtract(12, sparql:multiply(5,2))",  "2") ; }
     @Test public void sparql_function_uri_3()  { test("sparql:not(123)",   "false") ; }          // EBV - effective boolean value
     // --------
 
