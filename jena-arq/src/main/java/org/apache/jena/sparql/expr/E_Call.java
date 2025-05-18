@@ -38,34 +38,31 @@ public class E_Call extends ExprFunctionN
     private Expr identExpr;
     private List<Expr> argExprs;
 
-    public E_Call(ExprList args)
-    {
-        this(symbol, args) ;
+    public E_Call(ExprList args) {
+        this(symbol, args);
     }
-    
-    protected E_Call(String sym, ExprList args)
-    {
-        super(sym, args) ;
-        if (args.size() == 0) {
-        	identExpr = null;
+
+    protected E_Call(String sym, ExprList args) {
+        super(sym, args);
+        if ( args.size() == 0 ) {
+            identExpr = null;
         } else {
-        	identExpr = args.get(0);
-        	argExprs = args.getList().subList(1,args.size()) ; 
+            identExpr = args.get(0);
+            argExprs = args.getList().subList(1, args.size());
         }
     }
 
     @Override
-    public NodeValue evalSpecial(Binding binding, FunctionEnv env)
-    {
-        //No argument returns unbound
+    public NodeValue evalSpecial(Binding binding, FunctionEnv env) {
+        // No argument returns unbound
         if (identExpr == null) throw new ExprEvalException("CALL() has no arguments");
-        
+
         //One/More arguments means invoke a function dynamically
         NodeValue func = identExpr.eval(binding, env);
         if (func == null) throw new ExprEvalException("CALL: Function identifier unbound");
         if (func.isIRI()) {
         	Expr e = buildFunction(func.getNode().getURI(), argExprs, env.getContext());
-        	if (e == null) 
+        	if (e == null)
         	    throw new ExprEvalException("CALL: Function identifier <" + func.getNode().getURI() + "> does not identify a known function");
         	//Calling this may throw an error which we will just let bubble up
         	return e.eval(binding, env);
@@ -73,7 +70,7 @@ public class E_Call extends ExprFunctionN
         	throw new ExprEvalException("CALL: Function identifier not an IRI");
         }
     }
-    
+
     @Override
     public Expr copy(ExprList newArgs)       { return new E_Call(newArgs) ; }
 
@@ -95,17 +92,17 @@ public class E_Call extends ExprFunctionN
         } else
             throw new ExprEvalException("CALL: Function identifier not an IRI");
     }
-    
+
 	@Override
 	public NodeValue eval(List<NodeValue> args) {
 	    // eval(List, FunctionEnv) should be called.
 		throw new ARQInternalErrorException();
 	}
-	    
+
 	/**
 	 * Returns the expr representing the dynamic function to be invoked
 	 * <p>
-	 * Uses caching wherever possible to avoid 
+	 * Uses caching wherever possible to avoid
 	 * </p>
 	 */
     private Expr buildFunction(String functionIRI, List<Expr> args, Context cxt)
@@ -113,11 +110,10 @@ public class E_Call extends ExprFunctionN
     	//Use our cached version of the expression wherever possible
     	if (functionCache.containsKey(functionIRI))	{
     		return functionCache.get(functionIRI);
-    	}    	
-    	
+    	}
+
     	//Otherwise generate a new function and cache it
-    	try
-    	{
+    	try {
     		E_Function e = new E_Function(functionIRI, new ExprList(args));
     		e.buildFunction(cxt);
         	functionCache.put(functionIRI, e);
@@ -127,6 +123,5 @@ public class E_Call extends ExprFunctionN
     		functionCache.put(functionIRI, null);
     		return null;
     	}
-        
     }
 }
