@@ -2221,8 +2221,6 @@ TOKEN :
 | < ASSIGN: ":=">
 | < VBAR: "|" >
 | < CARAT: "^" >
-| < FPATH: "->" >
-| < RPATH: "<-" >
 | < QMARK: "?" >
 }
 TOKEN:

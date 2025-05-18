@@ -1744,12 +1744,6 @@ TOKEN [IGNORE_CASE] :
 | < MAX: "max" >
 | < SUM: "sum" >
 | < AVG: "avg" >
-| < STDEV: "stdev" >
-| < STDEV_SAMP: "stdev_samp" >
-| < STDEV_POP: "stdev_pop" >
-| < VARIANCE: "variance" >
-| < VAR_SAMP: "var_samp" >
-| < VAR_POP: "var_pop" >
 | < SAMPLE: "sample" >
 | < GROUP_CONCAT: "group_concat" >
 | < FILTER: "filter" >
@@ -1915,8 +1909,6 @@ TOKEN :
 | < AT: "@">
 | < VBAR: "|" >
 | < CARAT: "^" >
-| < FPATH: "->" >
-| < RPATH: "<-" >
 | < QMARK: "?" >
 }
 TOKEN:
