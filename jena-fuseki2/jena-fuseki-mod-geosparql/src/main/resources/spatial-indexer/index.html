@@ -86,7 +86,6 @@
         <div style="display:flex; justify-content:flex-end; margin-left: auto;">
             <button id="clean-action">Remove absent graphs from index</button>
         </div>
-        <!-- <button id="stop-action">Stop running action</button> -->
     </div>
 
     <!--
@@ -113,7 +112,7 @@
     </table>
 
     <script>
-        const sparqlEndpoint = document.location.href + '/../';
+        // const sparqlEndpoint = document.location.href + '/../';
         const apiEndpoint = document.location.href;
         const eventEndpoint = new EventSource(apiEndpoint + '?command=events');
 
@@ -153,7 +152,7 @@
             }
         }
 
-        async function cancelIndexing() {
+        async function cancelTask() {
             const params = new URLSearchParams({ "command": "cancel" });
             try {
                 const response = await fetch(apiEndpoint, { "method": "POST", "body": params })
@@ -167,6 +166,21 @@
         }
 
         async function fetchGraphs() {
+            const url = apiEndpoint + '?command=graphs';
+
+            try {
+                const response = await fetch(url, { "method": "POST" });
+                const data = await response.json();
+                return data;
+                // return data.results.bindings.map(binding => binding.g.value);
+            } catch (error) {
+                console.error('Error fetching graphs:', error);
+                return [];
+            }
+        }
+
+        // No longer used in order to make spatial indexer endpoint self-contained!
+        async function fetchGraphsViaSparql() {
             const query = `SELECT ?g { { BIND(<urn:x-arq:DefaultGraph> AS ?g) } UNION { BIND(<urn:x-arq:UnionGraph> AS ?g) } UNION { { SELECT * { GRAPH ?g { } } ORDER BY ?g } } }`;
             const url = `${sparqlEndpoint}?query=${encodeURIComponent(query)}&format=application/json`;
 
@@ -221,6 +235,7 @@
 
         const deselectAllBtn = document.getElementById('deselect-all');
         const applyBtn = document.getElementById('apply-action');
+        const stopBtn = document.getElementById('stop-action');
         const cleanBtn = document.getElementById('clean-action');
         const replaceCb = document.getElementById('replace-toggle');
         const maxThreadCountInput = document.getElementById('max-thread-count');
@@ -275,6 +290,10 @@
             reIndexGraphs(selectedGraphs);
         });
 
+        stopBtn.addEventListener('click', function() {
+            cancelTask();
+        });
+
         cleanBtn.addEventListener('click', function () {
             cleanGraphs();
         });
@@ -290,7 +309,7 @@
         }
 
         function updateCancelButton() {
-            const elt = document.getElementById('stop-action');
+            const elt = stopBtn;
             elt.style.display = 'none';
             elt.innerHTML = "Stop running indexer.";
             elt.disabled = false;
@@ -352,14 +371,6 @@
                 return;
             }
         }
-
-        document.getElementById('stop-action').addEventListener('click', function() {
-            cancelIndexing();
-        });
-
-        cleanBtn.addEventListener('click', function() {
-            cancelIndexing();
-        });
 
         async function initialize() {
             status = await fetchIndexerStatus();

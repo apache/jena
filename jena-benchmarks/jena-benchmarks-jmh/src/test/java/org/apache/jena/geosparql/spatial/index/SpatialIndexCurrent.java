@@ -24,7 +24,7 @@ import org.apache.jena.geosparql.configuration.GeoSPARQLOperations;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexIoKryo;
 import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexPerGraph;
-import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexUtils;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFParserBuilder;
@@ -60,7 +60,7 @@ public class SpatialIndexCurrent
 
     @Override
     public void init() {
-        SpatialIndexUtils.setSpatialIndex(dsg.getContext(), null);
+        SpatialIndexLib.setSpatialIndex(dsg.getContext(), null);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class SpatialIndexCurrent
     @Override
     public void build() throws Exception {
         indexFile = Files.createTempFile("jena-", ".spatial-index");
-        indexA = (SpatialIndexPerGraph)SpatialIndexUtils.buildSpatialIndex(dsg, finalSrs);
+        indexA = (SpatialIndexPerGraph)SpatialIndexLib.buildSpatialIndex(dsg, finalSrs);
         SpatialIndexIoKryo.save(indexFile, indexA);
     }
 

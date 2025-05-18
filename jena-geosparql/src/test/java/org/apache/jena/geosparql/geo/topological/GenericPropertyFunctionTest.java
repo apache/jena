@@ -41,7 +41,7 @@ import org.apache.jena.geosparql.implementation.index.IndexConfiguration.IndexOp
 import org.apache.jena.geosparql.implementation.index.QueryRewriteIndex;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
-import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexUtils;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -79,10 +79,10 @@ public class GenericPropertyFunctionTest {
     public static void setUpClass() throws SpatialIndexException {
         GeoSPARQLConfig.setup(IndexOption.MEMORY, Boolean.TRUE);
         modelGeoSparql = QueryRewriteTestData.addTestDataGeoSparql(ModelFactory.createDefaultModel());
-        datasetGeoSparql = SpatialIndexUtils.wrapModel(modelGeoSparql, TEST_SRS_URI);
+        datasetGeoSparql = SpatialIndexLib.wrapModel(modelGeoSparql, TEST_SRS_URI);
 
         modelWgs84 = QueryRewriteTestData.addTestDataWgs84(ModelFactory.createDefaultModel());
-        datasetWgs84 = SpatialIndexUtils.wrapModel(modelWgs84, TEST_SRS_URI);
+        datasetWgs84 = SpatialIndexLib.wrapModel(modelWgs84, TEST_SRS_URI);
     }
 
     @AfterClass

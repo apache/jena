@@ -41,8 +41,8 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.configuration.GeoSPARQLOperations;
 import org.apache.jena.geosparql.configuration.SrsException;
+import org.apache.jena.geosparql.spatial.SpatialIndexConstants;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
-import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexUtils;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Property;
@@ -122,15 +122,24 @@ public class GeoAssembler extends DatasetAssembler {
         if (root.hasProperty(pSpatialIndexFile) )
             spatialIndexFilename = GraphUtils.getStringValue(root, pSpatialIndexFile);
 
+        if (spatialIndexFilename == null) {
+            LOG.warn(root + ": No spatial index file location is specified via " + pSpatialIndexFile + ". Spatial index will not be persisted.");
+        }
+
         // SRS URI
         String srsURI = null;
-        if (root.hasProperty(pSrsUri) )
-            srsURI = GraphUtils.getStringValue(root, pSrsUri);
+        if (root.hasProperty(pSrsUri) ) {
+            srsURI = GraphUtils.getResourceValue(root, pSrsUri).getURI();
+        }
+
+        if (srsURI == null) {
+            LOG.warn(root + ": No preferred SRS is configured via " + pSrsUri);
+        }
 
 
         // ---- Build
         Dataset dataset = DatasetFactory.wrap(base);
-        dataset.getContext().set(SpatialIndexUtils.symSrsUri, srsURI);
+        dataset.getContext().set(SpatialIndexConstants.symSrsUri, srsURI);
 
         // Conversion of data. Startup-only.
         // needed for w3c:geo/wgs84_pos#lat/log.
@@ -178,13 +187,9 @@ public class GeoAssembler extends DatasetAssembler {
 
     private static void prepareSpatialExtension(Dataset dataset, String spatialIndex){
         boolean isEmpty = dataset.calculateRead(dataset::isEmpty);
-        if ( isEmpty && spatialIndex != null ) {
-            LOG.warn("Dataset empty. Spatial Index not constructed. Server will require restarting after adding data and any updates to build Spatial Index.");
-            return;
+        if ( isEmpty ) {
+            LOG.warn("Dataset is empty. Constructing an empty spatial index that needs to be updated once data is added.");
         }
-        if ( isEmpty )
-            // Nothing to do.
-            return;
 
         try {
             // no file given, i.e. in-memory index only

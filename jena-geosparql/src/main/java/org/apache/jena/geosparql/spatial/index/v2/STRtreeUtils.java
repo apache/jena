@@ -17,7 +17,6 @@
  */
 package org.apache.jena.geosparql.spatial.index.v2;
 
-import java.lang.invoke.MethodHandles;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -31,15 +30,11 @@ import org.apache.jena.geosparql.spatial.SpatialIndexFindUtils;
 import org.apache.jena.geosparql.spatial.SpatialIndexItem;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.compose.Union;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.locationtech.jts.index.strtree.STRtree;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class STRtreeUtils {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     static final int MINIMUM_CAPACITY = 2;
 
     public static STRtree buildSpatialIndexTree(Graph graph, String srsURI) throws SpatialIndexException {
@@ -57,27 +52,22 @@ public class STRtreeUtils {
         }
     }
 
-    public static STRtree buildSpatialIndexTreeUnion(DatasetGraph datasetGraph, String srsURI) throws SpatialIndexException {
-        // create the union view of default graph and all named graphs
-        Union unionAllGraph = new Union(datasetGraph.getDefaultGraph(), datasetGraph.getUnionGraph());
-        STRtree tree = buildSpatialIndexTree(unionAllGraph, srsURI);
-        return tree;
-    }
-
+    // XXX This method overlaps function-wise with SpatialIndexerComputation. Consolidate?
     public static STRtreePerGraph buildSpatialIndexTree(DatasetGraph datasetGraph, String srsURI) throws SpatialIndexException {
         Map<Node, STRtree> treeMap = new LinkedHashMap<>();
 
-        LOGGER.info("building spatial index for default graph ...");
+        // Process default graph.
+        // LOGGER.info("building spatial index for default graph ...");
         Graph defaultGraph = datasetGraph.getDefaultGraph();
         STRtree defaultGraphTree = buildSpatialIndexTree(defaultGraph, srsURI);
         treeMap.put(Quad.defaultGraphIRI, defaultGraphTree);
 
-        // Named graphs
+        // Process named graphs.
         Iterator<Node> graphIter = datasetGraph.listGraphNodes();
         try {
             while (graphIter.hasNext()) {
                 Node graphNode = graphIter.next();
-                LOGGER.info("building spatial index for graph {} ...", graphNode);
+                // LOGGER.info("building spatial index for graph {} ...", graphNode);
                 Graph namedGraph = datasetGraph.getGraph(graphNode);
                 treeMap.put(graphNode, buildSpatialIndexTree(namedGraph, srsURI));
             }
@@ -111,7 +101,6 @@ public class STRtreeUtils {
      * It's the caller's responsibility to close the iterator if needed.
      */
     public static void addToTree(STRtree treeAcc, Iterator<SpatialIndexItem> it) throws SpatialIndexException {
-        // List<SpatialIndexItem> items = Iter.toList(it);
         it.forEachRemaining(item -> treeAcc.insert(item.getEnvelope(), item.getItem()));
     }
 }

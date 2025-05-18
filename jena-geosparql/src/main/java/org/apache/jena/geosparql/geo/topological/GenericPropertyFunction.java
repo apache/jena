@@ -28,7 +28,7 @@ import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
 import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
-import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexUtils;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -154,7 +154,7 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
             }
         }
 
-        boolean isSpatialIndex = SpatialIndexUtils.isDefined(execCxt);
+        boolean isSpatialIndex = SpatialIndexLib.isDefined(execCxt);
         QueryIterator result;
         if (!isSpatialIndex || filterFunction.isDisjoint() || filterFunction.isDisconnected()) {
             //Disjointed so retrieve all cases.
@@ -230,12 +230,12 @@ public abstract class GenericPropertyFunction extends PFuncSimple {
             Node geometryLiteral = boundGeometryLiteral.getGeometryLiteral();
 
             // Perform the search of the Spatial Index of the Dataset.
-            SpatialIndex spatialIndex = SpatialIndexUtils.retrieve(execCxt);
+            SpatialIndex spatialIndex = SpatialIndexLib.retrieve(execCxt);
             GeometryWrapper geom = GeometryWrapper.extract(geometryLiteral);
             GeometryWrapper transformedGeom = geom.transform(spatialIndex.getSrsInfo());
 
             Envelope searchEnvelope = transformedGeom.getEnvelope();
-            Node graphName = SpatialIndexUtils.unwrapGraphName(graph);
+            Node graphName = SpatialIndexLib.unwrapGraphName(graph);
             Collection<Node> features = spatialIndex.query(searchEnvelope, graphName);
 
             // Check each of the Features that match the search.

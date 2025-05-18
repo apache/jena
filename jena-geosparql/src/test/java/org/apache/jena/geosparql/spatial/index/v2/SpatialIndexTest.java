@@ -115,7 +115,7 @@ public class SpatialIndexTest {
         Path file = Files.createTempFile("jena-", ".spatial-index");
         try {
             // Query the built index (no IO)
-            SpatialIndexPerGraph indexA = (SpatialIndexPerGraph)SpatialIndexUtils.buildSpatialIndex(dsg);
+            SpatialIndexPerGraph indexA = (SpatialIndexPerGraph)SpatialIndexLib.buildSpatialIndex(dsg);
             long itemCountA = indexA.query(envelope, null).size();
             Assert.assertEquals(expectedItemCount, itemCountA);
 

@@ -39,7 +39,7 @@ import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.geosparql.spatial.index.compat.SpatialIndexIo;
 import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexIoKryo;
-import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexUtils;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.sparql.function.FunctionRegistry;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry;
@@ -258,7 +258,7 @@ public class GeoSPARQLConfig {
      * @throws SpatialIndexException
      */
     public static final void setupSpatialIndex(Dataset dataset) throws SpatialIndexException {
-        SpatialIndexUtils.buildSpatialIndex(dataset.asDatasetGraph());
+        SpatialIndexLib.buildSpatialIndex(dataset.asDatasetGraph());
     }
 
     /**
@@ -271,7 +271,7 @@ public class GeoSPARQLConfig {
      */
     public static final void setupPrecomputedSpatialIndex(Dataset dataset, Path spatialIndexFile) throws SpatialIndexException {
         SpatialIndex si = SpatialIndexIo.load(spatialIndexFile);
-        SpatialIndexUtils.setSpatialIndex(dataset, si);
+        SpatialIndexLib.setSpatialIndex(dataset, si);
     }
 
     /**
@@ -284,12 +284,8 @@ public class GeoSPARQLConfig {
      * @throws SpatialIndexException
      */
     public static final void setupSpatialIndex(Dataset dataset, Path spatialIndexFile) throws SpatialIndexException {
-        SpatialIndexIoKryo.buildSpatialIndex(dataset, spatialIndexFile);
+        SpatialIndexIoKryo.loadOrBuildSpatialIndex(dataset, spatialIndexFile);
     }
-
-//    public static final void setupSpatialIndex(Dataset dataset, Path spatialIndexFile, boolean spatialIndexPerGraph) throws SpatialIndexException {
-//        SpatialIndexIoKryo.buildSpatialIndex(dataset, spatialIndexFile, spatialIndexPerGraph);
-//    }
 
     /**
      * Setup Spatial Index using Dataset using provided SRS URI.<br>
@@ -301,7 +297,7 @@ public class GeoSPARQLConfig {
      * @throws SpatialIndexException
      */
     public static final void setupSpatialIndex(Dataset dataset, String srsURI, Path spatialIndexFile) throws SpatialIndexException {
-        SpatialIndexIoKryo.buildSpatialIndex(dataset, srsURI, spatialIndexFile);
+        SpatialIndexIoKryo.loadOrBuildSpatialIndex(dataset, srsURI, spatialIndexFile);
     }
 
     /**

@@ -31,8 +31,8 @@ import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.geosparql.spatial.index.v2.GeometryGenerator;
 import org.apache.jena.geosparql.spatial.index.v2.GeometryGenerator.GeometryType;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
 import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexPerGraph;
-import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
@@ -76,16 +76,19 @@ public class TestFMod_SpatialIndexer {
         dsg = DatasetGraphFactory.create();
         setupTestData(dsg);
 
-        spatialIndex = SpatialIndexUtils.buildSpatialIndex(dsg);
+        spatialIndex = SpatialIndexLib.buildSpatialIndex(dsg);
 
         String[] argv = new String[] { "--empty" };
+
         FusekiServer server = FusekiMain.builder(argv)
             .add("test", dsg)
+            .registerOperation(FMod_SpatialIndexer.spatialIndexerOperation, new SpatialIndexerService())
+            .addEndpoint("test", "spatial-indexer", FMod_SpatialIndexer.spatialIndexerOperation)
             .build();
         server.start();
         int port = server.getPort();
         String serverURL = "http://localhost:" + port + "/";
-        String siteUrl = serverURL + "test/update-spatial";
+        String siteUrl = serverURL + "test/spatial-indexer";
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless=new"); // use "new" headless mode (better support)
@@ -132,7 +135,7 @@ public class TestFMod_SpatialIndexer {
         WebElement cleanButton = driver.findElement(By.id("clean-action"));
         cleanButton.click();
         awaitEvent();
-        SpatialIndexPerGraph newIndex = (SpatialIndexPerGraph)SpatialIndexUtils.getSpatialIndex(dsg.getContext());
+        SpatialIndexPerGraph newIndex = (SpatialIndexPerGraph)SpatialIndexLib.getSpatialIndex(dsg.getContext());
 
         // Check the number of graphs in the spatial index; the treeMap includes the default graph.
         long numGraphsInIndex = newIndex.getIndex().getTreeMap().keySet().size();

@@ -27,10 +27,8 @@ import java.util.Objects;
 
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IOX;
-import org.apache.jena.geosparql.configuration.GeoSPARQLOperations;
 import org.apache.jena.geosparql.implementation.SRSInfo;
 import org.apache.jena.geosparql.implementation.registry.SRSRegistry;
-import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.apache.jena.geosparql.kryo.GeometrySerializerJtsWkb;
 import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
@@ -49,25 +47,53 @@ import com.google.gson.JsonObject;
 public class SpatialIndexIoKryo {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    public static SpatialIndex buildSpatialIndex(Dataset dataset,
-                                                 String srsURI,
-                                                 Path spatialIndexFile) throws SpatialIndexException {
+    // Flag whether additional serializers for storing geometries in the index should be registered.
+    // The current version of the index only stores the envelopes so this feature is not needed.
+    private static boolean enableGeometrySerde = false;
 
-        SpatialIndexPerGraph spatialIndex = load(spatialIndexFile);
-
-        if (spatialIndex.isEmpty()) {
-            spatialIndex = SpatialIndexUtils.buildSpatialIndex(dataset.asDatasetGraph(), srsURI);
-            save(spatialIndexFile, spatialIndex);
-        }
-        spatialIndex.setLocation(spatialIndexFile);
-
-        SpatialIndexUtils.setSpatialIndex(dataset, spatialIndex);
+    public static SpatialIndex loadOrBuildSpatialIndex(Dataset dataset, Path spatialIndexFile) throws SpatialIndexException {
+        SpatialIndex spatialIndex = loadOrBuildSpatialIndex(dataset, null, spatialIndexFile);
         return spatialIndex;
     }
 
-    public static SpatialIndex buildSpatialIndex(Dataset dataset, Path spatialIndexFile) throws SpatialIndexException {
-        String srsURI = GeoSPARQLOperations.findModeSRS(dataset);
-        SpatialIndex spatialIndex = buildSpatialIndex(dataset, srsURI, spatialIndexFile);
+    private static boolean isNonEmptyFile(Path path) {
+        boolean result = false;
+        if (path != null && Files.exists(path)) {
+            try {
+                result = Files.size(path) > 0;
+            } catch (IOException e) {
+                throw IOX.exception(e);
+            }
+        }
+        return result;
+    }
+
+    public static SpatialIndex loadOrBuildSpatialIndex(Dataset dataset,
+                                                 String srsURI,
+                                                 Path spatialIndexFile) throws SpatialIndexException {
+        SpatialIndexPerGraph spatialIndex = null;
+
+        // If the spatial index file exists and has non-zero size then load it.
+        // Otherwise build one.
+        if (isNonEmptyFile(spatialIndexFile)) {
+            spatialIndex = load(spatialIndexFile);
+            SpatialIndexLib.setSpatialIndex(dataset, spatialIndex);
+        } else {
+            spatialIndex = buildSpatialIndex(dataset, srsURI, spatialIndexFile);
+        }
+
+        return spatialIndex;
+    }
+
+    public static SpatialIndexPerGraph buildSpatialIndex(Dataset dataset,
+                                                 String srsURI,
+                                                 Path spatialIndexFile) throws SpatialIndexException {
+        SpatialIndexPerGraph spatialIndex = SpatialIndexLib.buildSpatialIndex(dataset.asDatasetGraph(), srsURI);
+        if (spatialIndexFile != null) {
+            // Register the source file with the index.
+            spatialIndex.setLocation(spatialIndexFile);
+            save(spatialIndexFile, spatialIndex);
+        }
         return spatialIndex;
     }
 
@@ -79,26 +105,39 @@ public class SpatialIndexIoKryo {
      * @throws SpatialIndexException
      */
     public static final void save(Path spatialIndexFile, SpatialIndexPerGraph index) throws SpatialIndexException {
-        Path absPath = spatialIndexFile.toAbsolutePath();
-        if (spatialIndexFile != null) {
-            LOGGER.info("Saving Spatial Index - Started: {}", absPath);
+        Path originalFile = spatialIndexFile.toAbsolutePath();
+        LOGGER.info("Saving Spatial Index - Started: " + originalFile);
 
-            String filename = absPath.toString();
-            Path file = Path.of(filename);
-            Path tmpFile = IOX.uniqueDerivedPath(file, null);
+        // Create a temporary file for writing the new index.
+        Path tmpFile = IOX.uniqueDerivedPath(originalFile, null);
+
+        // As long as the new file has not been successfully written:
+        // Move the original file out of the way but don't delete it yet.
+        Path originalBackup = IOX.uniqueDerivedPath(originalFile, baseName -> baseName + ".bak");
+        if (Files.exists(originalFile)) {
+            IOX.moveAllowCopy(originalFile, originalBackup);
+        }
+
+        try {
+            IOX.safeWriteOrCopy(originalFile, tmpFile, out -> writeToOutputStream(out, index));
+            LOGGER.info("Saving Spatial Index - Success: " + originalFile);
+        } catch (RuntimeIOException ex) {
+            LOGGER.info("Failure writing spatial index: " + originalFile, ex);
+            // Attempt to restore original file from backed up one.
             try {
-                Files.deleteIfExists(file);
-            } catch (IOException ex) {
-                throw new SpatialIndexException("Failed to delete file: " + ex.getMessage());
-            }
-            try {
-                IOX.safeWriteOrCopy(file, tmpFile, out -> writeToOutputStream(out, index));
-            } catch (RuntimeIOException ex) {
-                throw new SpatialIndexException("Save Exception: " + ex.getMessage());
-            } finally {
-                LOGGER.info("Saving Spatial Index - Completed: {}", absPath);
+                IOX.moveAllowCopy(originalBackup, originalFile);
+            } catch (RuntimeException ex2) {
+                LOGGER.warn("Failed to restore " + originalFile + " + from backup file " + originalBackup, ex2);
             }
 
+            throw new SpatialIndexException("Save Exception: " + originalFile + " (via temp file: " + tmpFile + ")", ex);
+        }
+
+        // Delete backup
+        try {
+            Files.deleteIfExists(originalBackup);
+        } catch (IOException ex) {
+            LOGGER.warn("Failed to remove no longer needed backup: " + originalBackup, ex);
         }
     }
 
@@ -108,16 +147,19 @@ public class SpatialIndexIoKryo {
      * @param index spatial index
      */
     public static void writeToOutputStream(OutputStream os, SpatialIndexPerGraph index) {
-        GeometrySerializerJtsWkb geometrySerde = new GeometrySerializerJtsWkb();
-
         SpatialIndexHeader header = new SpatialIndexHeader();
         header.setType(SpatialIndexHeader.TYPE_VALUE);
         header.setVersion("2.0.0");
         header.setSrsUri(index.getSrsInfo().getSrsURI());
-        header.setGeometrySerializerClass(geometrySerde.getClass().getName());
+
+        GeometrySerializerJtsWkb geometrySerializer = null;
+        if (enableGeometrySerde) {
+            geometrySerializer = new GeometrySerializerJtsWkb();
+            header.setGeometrySerializerClass(geometrySerializer.getClass().getName());
+        }
 
         Kryo kryo = new Kryo();
-        KryoRegistratorSpatialIndexV2.registerClasses(kryo, geometrySerde);
+        KryoRegistratorSpatialIndexV2.registerClasses(kryo, geometrySerializer);
         try (Output output = new Output(os)) {
             writeHeader(output, header);
             STRtreePerGraph trees = index.getIndex();
@@ -153,30 +195,29 @@ public class SpatialIndexIoKryo {
         String srsUri;
         STRtreePerGraph index;
 
-        if (spatialIndexFile != null && Files.exists(spatialIndexFile)) {
-            spatialIndexFile = spatialIndexFile.toAbsolutePath();
-            LOGGER.info("Loading Spatial Index - Started: {}", spatialIndexFile);
+        spatialIndexFile = spatialIndexFile.toAbsolutePath();
+        LOGGER.info("Loading Spatial Index - Started: {}", spatialIndexFile);
 
-            try (Input input = new Input(Files.newInputStream(spatialIndexFile))) {
-                SpatialIndexHeader header = readHeader(input);
+        try (Input input = new Input(Files.newInputStream(spatialIndexFile))) {
+            SpatialIndexHeader header = readHeader(input);
 
-                String type = header.getType();
-                if (!"jena-spatial-index".equals(type)) {
-                    throw new RuntimeException("Type does not indicate a spatial index file.");
-                }
+            String type = header.getType();
+            if (!"jena-spatial-index".equals(type)) {
+                throw new RuntimeException("Type does not indicate a spatial index file.");
+            }
 
-                String version = header.getVersion();
-                if (!"2.0.0".equals(version)) {
-                    throw new SpatialIndexException("The version of the spatial index does not match the version of this loader class.");
-                }
+            String version = header.getVersion();
+            if (!"2.0.0".equals(version)) {
+                throw new SpatialIndexException("The version of the spatial index does not match the version of this loader class.");
+            }
 
-                srsUri = header.getSrsUri();
+            srsUri = header.getSrsUri();
 
-                // Get the geometrySerializer attribute
+            Serializer<Geometry> geometrySerializer = null;
+            if (enableGeometrySerde) {
                 String geometrySerdeName = header.getGeometrySerializerClass();
                 Objects.requireNonNull(geometrySerdeName, "Field 'geometrySerde' not set.");
 
-                Serializer<Geometry> geometrySerializer;
                 try {
                     Class<?> geometrySerdeClass = Class.forName(geometrySerdeName);
                     geometrySerializer = (Serializer<Geometry>)geometrySerdeClass.getConstructor().newInstance();
@@ -184,19 +225,15 @@ public class SpatialIndexIoKryo {
                         | InvocationTargetException | NoSuchMethodException | ClassCastException | SecurityException e) {
                     throw new SpatialIndexException("Failed to load index", e);
                 }
-
-                Kryo kryo = new Kryo();
-                KryoRegistratorSpatialIndexV2.registerClasses(kryo, geometrySerializer);
-
-                index = kryo.readObject(input, STRtreePerGraph.class);
-                LOGGER.info("Loading Spatial Index - Completed: {}", spatialIndexFile);
-            } catch (IOException ex) {
-                throw new SpatialIndexException("Loading Exception: " + ex.getMessage(), ex);
             }
-        } else {
-            LOGGER.info("File {} does not exist. Creating empty Spatial Index.", (spatialIndexFile != null ? spatialIndexFile.toAbsolutePath() : "null"));
-            srsUri = SRS_URI.DEFAULT_WKT_CRS84;
-            index = new STRtreePerGraph();
+
+            Kryo kryo = new Kryo();
+            KryoRegistratorSpatialIndexV2.registerClasses(kryo, geometrySerializer);
+
+            index = kryo.readObject(input, STRtreePerGraph.class);
+            LOGGER.info("Loading Spatial Index - Completed: {}", spatialIndexFile);
+        } catch (IOException ex) {
+            throw new SpatialIndexException("Loading Exception: " + ex.getMessage(), ex);
         }
 
         SRSInfo srsInfo = SRSRegistry.getSRSInfo(srsUri);
