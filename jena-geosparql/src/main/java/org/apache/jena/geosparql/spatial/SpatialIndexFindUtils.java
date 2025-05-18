@@ -78,18 +78,31 @@ public class SpatialIndexFindUtils {
         IteratorCloseable<SpatialIndexItem> result;
         // Only add one set of statements as a converted dataset will duplicate the same info.
         if (graph.contains(null, Geo.HAS_GEOMETRY_NODE, null)) {
-            LOGGER.info("Feature-hasGeometry-Geometry statements found.");
-            if (graph.contains(null, SpatialExtension.GEO_LAT_NODE, null)) {
-                LOGGER.warn("Lat/Lon Geo predicates also found but will not be added to index.");
-            }
+            // LOGGER.info("Feature-hasGeometry-Geometry statements found.");
+            // if (graph.contains(null, SpatialExtension.GEO_LAT_NODE, null)) {
+            //     LOGGER.warn("Lat/Lon Geo predicates also found but will not be added to index.");
+            // }
             result = findGeometryIndexItems(graph, srsURI);
         } else if (graph.contains(null, SpatialExtension.GEO_LAT_NODE, null)) {
-            LOGGER.info("Geo predicate statements found.");
+            // LOGGER.info("Geo predicate statements found.");
             result = findGeoPredicateIndexItems(graph, srsURI);
         } else {
             result = Iter.empty();
         }
         return result;
+    }
+
+    /** Print out log messages for what type of spatial data is found in the given graph. */
+    public static final void checkSpatialIndexItems(Graph graph) {
+        // Only add one set of statements as a converted dataset will duplicate the same info.
+        if (graph.contains(null, Geo.HAS_GEOMETRY_NODE, null)) {
+            LOGGER.info("Feature-hasGeometry-Geometry statements found.");
+            if (graph.contains(null, SpatialExtension.GEO_LAT_NODE, null)) {
+                LOGGER.warn("Lat/Lon Geo predicates also found but will not be added to index.");
+            }
+        } else if (graph.contains(null, SpatialExtension.GEO_LAT_NODE, null)) {
+            LOGGER.info("Geo predicate statements found.");
+        }
     }
 
     /**
@@ -134,28 +147,35 @@ public class SpatialIndexFindUtils {
     }
 
     /**
-     * 
+     *
      * @param graph
      * @param srsURI
      * @return Geo predicate objects prepared for adding to SpatialIndex.
      */
     public static IteratorCloseable<SpatialIndexItem> findGeoPredicateIndexItems(Graph graph, String srsURI) {
+        // Warn about multiple lat/lon combinations only at most once per graph.
+        boolean enableWarnings = false;
+        boolean[] loggedMultipleLatLons = { false };
         Iterator<Triple> latIt = graph.find(Node.ANY, SpatialExtension.GEO_LAT_NODE, Node.ANY);
         IteratorCloseable<SpatialIndexItem> result = Iter.iter(latIt).flatMap(triple -> {
             Node feature = triple.getSubject();
             Node lat = triple.getObject();
 
-            // Silently create the cross-product between lats and lons.
+            // Create the cross-product between lats and lons.
             Iterator<Node> lons = G.iterSP(graph, feature, SpatialExtension.GEO_LON_NODE);
-            // LOGGER.warn("Geo predicates: also found but will not be added to index.");
 
-
-            // int[] lonCounter = {0};
+            // On malformed data this can cause lots of log output. Perhaps it's better to keep validation separate from indexing.
+            int[] lonCounter = {0};
             Iterator<SpatialIndexItem> r = Iter.iter(lons).map(lon -> {
-//            	if (lonCounter[0] == 1) {
-//            		LOGGER.warn("Geo predicates: multiple longitudes on feature " + feature);
-//            	}
-//            	++lonCounter[0];
+                if (enableWarnings) {
+                    if (lonCounter[0] == 1) {
+                        if (!loggedMultipleLatLons[0]) {
+                            LOGGER.warn("Geo predicates: multiple longitudes detected on feature " + feature + ". Further warnings will be omitted.");
+                            loggedMultipleLatLons[0] = true;
+                        }
+                    }
+                    ++lonCounter[0];
+                }
                 GeometryWrapper geometryWrapper = ConvertLatLon.toGeometryWrapper(lat, lon);
                 SpatialIndexItem item = makeSpatialIndexItem(feature, geometryWrapper, srsURI);
                 return item;
@@ -166,7 +186,7 @@ public class SpatialIndexFindUtils {
     }
 
     public static SpatialIndexItem makeSpatialIndexItem(Node feature, GeometryWrapper geometryWrapper, String srsURI) {
-        //Ensure all entries in the target SRS URI.
+        // Ensure all entries in the target SRS URI.
         GeometryWrapper transformedGeometryWrapper = unsafeConvert(geometryWrapper, srsURI);
         Envelope envelope = transformedGeometryWrapper.getEnvelope();
         SpatialIndexItem item = new SpatialIndexItem(envelope, feature);

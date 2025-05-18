@@ -35,21 +35,10 @@ import org.apache.jena.rdf.model.Model;
 
 public class FMod_SpatialIndexer implements FusekiAutoModule {
 
-    private Operation spatialOperation = null;
-
-    public Operation getOperation() {
-        if (spatialOperation == null) {
-            synchronized (this) {
-                if (spatialOperation == null) {
-                    Fuseki.configLog.info(name() + ": Add spatial indexer operation into global registry.");
-                    spatialOperation = Operation.alloc("http://org.apache.jena/spatial-index-service",
-                            "spatial-indexer",
-                            "Spatial index computation service");
-                }
-            }
-        }
-        return spatialOperation;
-    }
+    public static Operation spatialIndexerOperation =
+        Operation.alloc("http://jena.apache.org/fuseki#spatial-indexer",
+            "spatial-indexer",
+            "Spatial indexer service");
 
     public FMod_SpatialIndexer() {
         super();
@@ -66,9 +55,8 @@ public class FMod_SpatialIndexer implements FusekiAutoModule {
 
     @Override
     public void prepare(FusekiServer.Builder builder, Set<String> datasetNames, Model configModel) {
-        Fuseki.configLog.info(name() + ": Registering spatial index operation and servlet.");
-        Operation op = getOperation();
-        builder.registerOperation(op, new SpatialIndexComputeService());
+        Fuseki.configLog.info(name() + ": Registering operation " + spatialIndexerOperation.getId());
+        builder.registerOperation(spatialIndexerOperation, new SpatialIndexerService());
     }
 
     /**
@@ -77,6 +65,21 @@ public class FMod_SpatialIndexer implements FusekiAutoModule {
      */
     @Override
     public void configured(FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
+        FusekiAutoModule.super.configured(serverBuilder, dapRegistry, configModel);
+
+        boolean autoConfigure = false;
+        if (autoConfigure) {
+            autoConfigure(serverBuilder, dapRegistry, configModel);
+        }
+    }
+
+    /**
+     * Disabled for now.
+     *
+     * Automatically creates a corresponding spatial indexer endpoint for each SPARQL update endpoint.
+     * The spatial indexer endpoint with name follows the pattern '{updateEndpointName}-spatial and inherits the update endpoint's auth policy.
+     */
+    private void autoConfigure(FusekiServer.Builder serverBuilder, DataAccessPointRegistry dapRegistry, Model configModel) {
         FusekiAutoModule.super.configured(serverBuilder, dapRegistry, configModel);
 
         List<DataAccessPoint> newDataAccessPoints = new ArrayList<>();
@@ -92,19 +95,18 @@ public class FMod_SpatialIndexer implements FusekiAutoModule {
             List<Endpoint> spatialEndpoints = new ArrayList<>();
             for (Endpoint updateEndpoint : updateEndpoints) {
                 String updateEndpointName = updateEndpoint.getName();
-                String spatialEndpointName = updateEndpointName + "-spatial";
+                String geoIndexerEndpointName = updateEndpointName + "-spatial";
                 AuthPolicy authPolicy = updateEndpoint.getAuthPolicy();
 
-                Fuseki.configLog.info(logPrefix + "Registering spatial indexer endpoint: " + spatialEndpointName);
+                Fuseki.configLog.info(logPrefix + "Registering spatial indexer endpoint: " + geoIndexerEndpointName);
 
-                Operation op = getOperation();
-                Endpoint spatialEndpoint = Endpoint.create()
-                        .operation(op)
-                        .endpointName(spatialEndpointName)
+                Endpoint geoIndexerEndpoint = Endpoint.create()
+                        .operation(spatialIndexerOperation)
+                        .endpointName(geoIndexerEndpointName)
                         .authPolicy(authPolicy)
                         .build();
 
-                spatialEndpoints.add(spatialEndpoint);
+                spatialEndpoints.add(geoIndexerEndpoint);
             }
 
             // Create new DataService based on existing one with the spatial indexer endpoints attached.
@@ -119,9 +121,5 @@ public class FMod_SpatialIndexer implements FusekiAutoModule {
             dapRegistry.remove(dap.getName());
             dapRegistry.register(dap);
         });
-    }
-
-    @Override
-    public void serverAfterStarting(FusekiServer server) {
     }
 }

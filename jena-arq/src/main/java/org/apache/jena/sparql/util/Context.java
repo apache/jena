@@ -390,8 +390,9 @@ public class Context {
     }
 
     /** Atomic compute. */
-    public <V> Object compute(Symbol key, BiFunction<Symbol, Object, V> remappingFunction) {
-        return context.compute(key, remappingFunction);
+    @SuppressWarnings("unchecked")
+    public <V> V compute(Symbol key, BiFunction<Symbol, Object, ? extends V> remappingFunction) {
+        return (V)context.compute(key, remappingFunction);
     }
 
     @Override

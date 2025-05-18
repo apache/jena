@@ -15,16 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.jena.geosparql.spatial;
 
-import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
-import org.apache.jena.sparql.core.DatasetGraph;
+import org.apache.jena.sparql.util.Symbol;
 
-public class TestSpatialIndexGraphLookupV2
-    extends AbstractSpatialIndexGraphLookpTest
-{
-    @Override
-    protected SpatialIndex buildSpatialIndex(DatasetGraph dsg, String srsUri) throws SpatialIndexException {
-        return SpatialIndexLib.buildSpatialIndex(dsg, srsUri);
-    }
+public class SpatialIndexConstants {
+
+    public static final Symbol symSpatialIndex = Symbol.create("http://jena.apache.org/spatial#index");
+    public static final Symbol symSrsUri = Symbol.create("http://jena.apache.org/spatial#srsURI");
+
+    /** Symbol for a running task in a dataset's context. Used to synchronize tasks that modify the spatial index. */
+    public static final Symbol symSpatialIndexTask = Symbol.create("http://jena.apache.org/spatial#indexTask");
 }

@@ -15,16 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.jena.geosparql.spatial;
 
-import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
-import org.apache.jena.sparql.core.DatasetGraph;
+package org.apache.jena.geosparql.spatial.task;
 
-public class TestSpatialIndexGraphLookupV2
-    extends AbstractSpatialIndexGraphLookpTest
-{
-    @Override
-    protected SpatialIndex buildSpatialIndex(DatasetGraph dsg, String srsUri) throws SpatialIndexException {
-        return SpatialIndexLib.buildSpatialIndex(dsg, srsUri);
-    }
+public enum TaskState {
+    CREATED,     // Task object created.
+    STARTING,    // Task execution requested, but core task.run() method not yet invoked.
+    RUNNING,     // Core task.run() method invoked.
+    ABORTING,    // Abort called while not in TERMINATING / TERMINATED state.
+    TERMINATING, // Core task.run() method exited.
+    TERMINATED,  // Task cleanup complete. Triggering this event may require a call to close().
 }

@@ -18,36 +18,40 @@
 
 package org.apache.jena.geosparql.spatial.task;
 
-import java.time.Instant;
-import java.util.function.Consumer;
+import org.apache.jena.sparql.engine.iterator.Abortable;
 
 /** An outside view of a running task */
-public interface TaskControl<S> {
-    @FunctionalInterface
-    interface Registration {
-        void dispose();
+public interface BasicTask extends Abortable {
+
+    public interface TaskListener<T extends BasicTask> {
+        void onStateChange(T task);
     }
 
+    TaskState getTaskState();
+
+    /** A label for the task. */
     String getLabel();
-    S getSource();
+
+    @Override
     void abort();
-    boolean isAborting();
 
-    boolean isComplete();
-    Throwable getThrowable(); // Only meaningful if isComplete is true.
+    long getCreationTime();
+    long getStartTime();
+    long getEndTime();
+    long getAbortTime();
 
-    Instant getStartTime();
-    Instant getEndTime();
-    Instant getCancelTime();
+    /** If non null, the throwable that is the cause for an exceptional termination of the task. */
+    Throwable getThrowable();
 
     /** Get the last status message of the task. May be null. */
     String getStatusMessage();
 
-    /**
-     * Registered actions are run only once, then the registration is removed automatically.
-     *
-     * @param action The action is invoked with any thrown exception - null if there was none.
-     * @return A registration that can be used to unregister the listener early.
-     */
-    Registration whenComplete(Consumer<Throwable> action);
+    /** Whether abort has been called. */
+    // XXX this might be different from whether the task actually transitioned into aborting state.
+    boolean isAborting();
+
+    default boolean isTerminated() {
+        TaskState state = getTaskState();
+        return TaskState.TERMINATED.equals(state);
+    }
 }

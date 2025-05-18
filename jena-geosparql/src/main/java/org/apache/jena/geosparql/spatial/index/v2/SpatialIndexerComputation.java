@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -38,13 +39,18 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.TxnType;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.engine.iterator.Abortable;
 import org.apache.jena.system.AutoTxn;
 import org.apache.jena.system.Txn;
 import org.locationtech.jts.index.strtree.STRtree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SpatialIndexerComputation {
+
+/** Low level class to compute geo indexes for a given set of graphs. */
+public class SpatialIndexerComputation
+    implements Callable<SpatialIndexPerGraph>, Abortable
+{
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private DatasetGraph datasetGraph;
@@ -58,6 +64,8 @@ public class SpatialIndexerComputation {
     private Object cancelLock = new Object();
 
     private List<Future<Entry<Node, STRtree>>> futures = new ArrayList<>();
+
+    private static boolean logProgress = false;
 
     /**
      * Create an instance of a spatial indexer computation.
@@ -78,31 +86,52 @@ public class SpatialIndexerComputation {
         }
     }
 
+    public String getSrsURI() {
+        return srsURI;
+    }
+
     public List<Node> getGraphNodes() {
         return graphNodes;
     }
 
     private Entry<Node, STRtree> indexOneGraph(Node graphNode) throws SpatialIndexException {
-        LOGGER.info("Started spatial index build for graph {} ...", graphNode);
-        STRtree tree;
+        if (logProgress) {
+            LOGGER.info("Started spatial index build for graph {} ...", graphNode);
+        }
+
+        STRtree tree = null;
 
         try (AutoTxn txn = Txn.autoTxn(datasetGraph, TxnType.READ)) {
             Graph graph = Quad.isDefaultGraph(graphNode) // XXX would getGraph work with the default graph URIs?
                 ? datasetGraph.getDefaultGraph()
                 : datasetGraph.getGraph(graphNode);
-            tree = STRtreeUtils.buildSpatialIndexTree(graph, srsURI);
+            if (graph != null) { // May be null if the requested graph does not exist (possibly due to a dynamic dataset)
+                tree = STRtreeUtils.buildSpatialIndexTree(graph, srsURI);
+            }
 
             // XXX This commit is a workaround for DatasetGraphText.abort() causing a NPE in
             // during multi-threaded spatial index computation.
             // This is an issue related to the transaction mechanics of DatasetGraphText.
             txn.commit();
         }
-        LOGGER.info("Completed spatial index for graph {}", graphNode);
 
+        if (logProgress) {
+            LOGGER.info("Completed spatial index for graph {}", graphNode);
+        }
         return Map.entry(graphNode, tree);
     }
 
+    /** Returns a {@link SpatialIndexPerGraph} instance with the configured SRS. */
+    @Override
     public SpatialIndexPerGraph call() throws InterruptedException, ExecutionException {
+        try {
+            return callActual();
+        } finally {
+            cleanUp();
+        }
+    }
+
+    protected SpatialIndexPerGraph callActual() throws InterruptedException, ExecutionException {
         synchronized (cancelLock) {
             if (executorService != null) {
                 throw new IllegalStateException("Task already running.");
@@ -124,13 +153,26 @@ public class SpatialIndexerComputation {
             Entry<Node, STRtree> entry = future.get();
             Node graphNode = entry.getKey();
             STRtree tree = entry.getValue();
-            treeMap.put(graphNode, tree);
+            if (tree != null) {
+                treeMap.put(graphNode, tree);
+            }
         }
 
         STRtreePerGraph trees = new STRtreePerGraph();
         trees.setTrees(treeMap);
         SpatialIndexPerGraph result = new SpatialIndexPerGraph(trees);
         return result;
+    }
+
+    protected void cleanUp() {
+        if (executorService != null) {
+            executorService.shutdownNow();
+            try {
+                executorService.awaitTermination(5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                LOGGER.warn("Abandoning an executor service that failed to stop.", e);
+            }
+        }
     }
 
     protected void checkRequestingCancel() {
@@ -140,23 +182,13 @@ public class SpatialIndexerComputation {
         }
     }
 
+    @Override
     public void abort() {
         synchronized (cancelLock) {
             requestingCancel.set(true);
             if (!cancelOnce) {
                 requestCancel();
                 cancelOnce = true;
-            }
-        }
-    }
-
-    public void close() {
-        if (executorService != null) {
-            executorService.shutdownNow();
-            try {
-                executorService.awaitTermination(5, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                throw new RuntimeException("Abandoning an executor serivce that failed to stop.", e);
             }
         }
     }

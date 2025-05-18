@@ -32,15 +32,15 @@ public class STRtreePerGraphSerializer
 {
     @Override
     public void write(Kryo kryo, Output output, STRtreePerGraph index) {
-        kryo.writeClassAndObject(output, index.getInternalTreeMap());
         output.writeBoolean(index.isBuilt());
+        kryo.writeClassAndObject(output, index.getInternalTreeMap());
     }
 
     @Override
     public STRtreePerGraph read(Kryo kryo, Input input, Class<STRtreePerGraph> type) {
+        boolean isBuilt = input.readBoolean();
         @SuppressWarnings("unchecked")
         Map<Node, STRtree> treeMap = (Map<Node, STRtree>)kryo.readClassAndObject(input);
-        boolean isBuilt = input.readBoolean();
         STRtreePerGraph result = new STRtreePerGraph(treeMap);
         if (isBuilt) {
             result.build();

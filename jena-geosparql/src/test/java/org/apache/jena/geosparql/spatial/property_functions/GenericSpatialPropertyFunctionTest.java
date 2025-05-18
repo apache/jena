@@ -28,7 +28,7 @@ import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.geosparql.spatial.SpatialIndexTestData;
-import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexUtils;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -203,7 +203,7 @@ public class GenericSpatialPropertyFunctionTest {
         Resource geoFeature = ResourceFactory.createResource("http://example.org/GeoFeatureX");
         model.add(geoFeature, SpatialExtension.GEO_LAT_PROP, ResourceFactory.createTypedLiteral("0.0", XSDDatatype.XSDfloat));
         model.add(geoFeature, SpatialExtension.GEO_LON_PROP, ResourceFactory.createTypedLiteral("0.0", XSDDatatype.XSDfloat));
-        Dataset dataset = SpatialIndexUtils.wrapModel(model);
+        Dataset dataset = SpatialIndexLib.wrapModel(model);
 
         String query = "PREFIX spatial: <http://jena.apache.org/spatial#>\n"
                 + "\n"

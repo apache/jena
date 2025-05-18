@@ -46,7 +46,7 @@ import com.esotericsoftware.kryo.serializers.MapSerializer;
 
 /**
  * The class is used to configure the kryo serialization
- * of the spatial index. Changes to the kyro configuration may
+ * of the spatial index. Changes to the kryo configuration may
  * break loading of existing index files - so changes must be made
  * with care.
  */
@@ -55,7 +55,7 @@ public class KryoRegistratorSpatialIndexV2 {
     private final static Logger LOGGER = LoggerFactory.getLogger(KryoRegistratorSpatialIndexV2.class);
 
     public static void registerClasses(Kryo kryo, Serializer<Geometry> geometrySerializer) {
-        LOGGER.debug("Registering custom serializers for geometry types");
+        LOGGER.debug("Registering kryo serializers for spatial index v2.");
 
         // Java
         Serializer<?> mapSerializer = new MapSerializer();
@@ -75,8 +75,10 @@ public class KryoRegistratorSpatialIndexV2 {
         kryo.register(STRtreePerGraph.class, new STRtreePerGraphSerializer());
 
         // The index only stores envelopes and jena nodes.
-        // Therefore geometry serializers are not needed.
-        // registerGeometrySerializers(kryo, geometrySerializer);
+        // Therefore, geometry serializers should not be needed.
+        if (geometrySerializer != null) {
+            registerGeometrySerializers(kryo, geometrySerializer);
+        }
     }
 
     /**
@@ -85,7 +87,9 @@ public class KryoRegistratorSpatialIndexV2 {
      */
     public static void registerTripleSerializer(Kryo kryo) {
         kryo.register(Triple.class, new TripleSerializer());
-        // kryo.register(Triple[].class); // Array variants need to be registered though no extra serializer needed.
+
+        // Array-of-triples serializer variant would have to be registered separately - but does not seem to be needed.
+        // kryo.register(Triple[].class);
     }
 
     public static void registerGeometrySerializers(Kryo kryo, Serializer<Geometry> geometrySerializer) {

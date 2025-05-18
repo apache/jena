@@ -433,7 +433,7 @@ public class FusekiConfig {
             return dataAccess;
         } catch (FusekiException ex) {
             Fuseki.configLog.error("Skipping: Failed to build service for "+BuildLib.displayStr(configuration, n));
-            Fuseki.configLog.error("    "+ex.getMessage());
+            Fuseki.configLog.error("    "+ex.getMessage(), ex);
             return null;
         }
     }

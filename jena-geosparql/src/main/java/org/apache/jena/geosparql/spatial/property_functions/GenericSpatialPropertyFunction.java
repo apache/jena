@@ -33,7 +33,7 @@ import org.apache.jena.geosparql.spatial.ConvertLatLon;
 import org.apache.jena.geosparql.spatial.SearchEnvelope;
 import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
-import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexUtils;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
@@ -66,7 +66,7 @@ public abstract class GenericSpatialPropertyFunction extends PFuncSimpleAndList 
     @Override
     public final QueryIterator execEvaluated(Binding binding, Node subject, Node predicate, PropFuncArg object, ExecutionContext execCxt) {
         try {
-            spatialIndex = SpatialIndexUtils.retrieve(execCxt);
+            spatialIndex = SpatialIndexLib.retrieve(execCxt);
             spatialArguments = extractObjectArguments(predicate, object, spatialIndex.getSrsInfo());
             return search(binding, execCxt, subject, spatialArguments.limit);
         } catch (SpatialIndexException ex) {
@@ -186,7 +186,7 @@ public abstract class GenericSpatialPropertyFunction extends PFuncSimpleAndList 
         SearchEnvelope searchEnvelope = spatialArguments.searchEnvelope;
         Graph activeGraph = execCxt.getActiveGraph();
 
-        Node graphName = SpatialIndexUtils.unwrapGraphName(activeGraph);
+        Node graphName = SpatialIndexLib.unwrapGraphName(activeGraph);
         Collection<Node> features = searchEnvelope.check(spatialIndex, graphName);
         Var subjectVar = Var.alloc(subject.getName());
 

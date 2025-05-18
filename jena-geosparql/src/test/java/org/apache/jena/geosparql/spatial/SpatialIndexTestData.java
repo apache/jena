@@ -30,7 +30,7 @@ import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.apache.jena.geosparql.spatial.index.v2.STRtreePerGraph;
 import org.apache.jena.geosparql.spatial.index.v2.STRtreeUtils;
 import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexPerGraph;
-import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexUtils;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
@@ -120,7 +120,7 @@ public class SpatialIndexTestData {
 
             dataset.setDefaultModel(model);
             SpatialIndex spatialIndex = createTestIndex();
-            SpatialIndexUtils.setSpatialIndex(dataset, spatialIndex);
+            SpatialIndexLib.setSpatialIndex(dataset, spatialIndex);
             TEST_DATASET = dataset;
         }
 

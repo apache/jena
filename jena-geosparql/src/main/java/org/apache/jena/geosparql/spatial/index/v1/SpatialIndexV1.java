@@ -42,10 +42,11 @@ import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
 import org.apache.jena.geosparql.spatial.ConvertLatLon;
 import org.apache.jena.geosparql.spatial.SpatialIndex;
+import org.apache.jena.geosparql.spatial.SpatialIndexConstants;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.geosparql.spatial.SpatialIndexItem;
 import org.apache.jena.geosparql.spatial.SpatialIndexStorage;
-import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexUtils;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.ReadWrite;
@@ -218,7 +219,7 @@ public class SpatialIndexV1 {
     public static final SpatialIndexV1 retrieve(ExecutionContext execCxt) throws SpatialIndexException {
 
         Context context = execCxt.getContext();
-        SpatialIndexV1 spatialIndex = (SpatialIndexV1) context.get(SpatialIndexUtils.SPATIAL_INDEX_SYMBOL, null);
+        SpatialIndexV1 spatialIndex = (SpatialIndexV1) context.get(SpatialIndexConstants.symSpatialIndex, null);
 
         if (spatialIndex == null) {
             throw new SpatialIndexException("Dataset Context does not contain SpatialIndex.");
@@ -234,7 +235,7 @@ public class SpatialIndexV1 {
      */
     public static final boolean isDefined(ExecutionContext execCxt) {
         Context context = execCxt.getContext();
-        return context.isDefined(SpatialIndexUtils.SPATIAL_INDEX_SYMBOL);
+        return context.isDefined(SpatialIndexConstants.symSpatialIndex);
     }
 
     /**
@@ -247,7 +248,7 @@ public class SpatialIndexV1 {
     public static final void setSpatialIndex(Dataset dataset, SpatialIndexV1 spatialIndex) {
         Context context = dataset.getContext();
         SpatialIndex wrapper = new SpatialIndexAdapterV1(spatialIndex);
-        SpatialIndexUtils.setSpatialIndex(context, wrapper);
+        SpatialIndexLib.setSpatialIndex(context, wrapper);
     }
 
     /**

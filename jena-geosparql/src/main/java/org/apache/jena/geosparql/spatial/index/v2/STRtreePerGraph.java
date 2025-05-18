@@ -39,6 +39,8 @@ public class STRtreePerGraph {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     /**
+     * Mapping of graph node to STRtree.
+     *
      * @implNote
      *   The STRtree that corresponds to the default graph (referred to as 'default tree')
      *   uses the name {@link Quad#defaultGraphIRI}.
@@ -47,11 +49,8 @@ public class STRtreePerGraph {
      */
     private Map<Node, STRtree> treeMap;
 
-    // Unmodifiable view
+    /** Unmodifiable view of treeMap */
     private Map<Node, STRtree> treeMapView;
-
-    // XXX Make srsInfo part of this class?
-    // this.srsInfo = SRSRegistry.getSRSInfo(SRS_URI.DEFAULT_WKT_CRS84);
 
     private boolean isBuilt = false;
 
