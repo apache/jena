@@ -2807,6 +2807,7 @@ TOKEN [IGNORE_CASE] :
 |  < GROUP:       "group" >
 |  < HAVING:      "having" >
 |  < SEPARATOR:   "separator" >
+
 |  < AGG:         "agg" >
 |  < COUNT:       "count" >
 |  < MIN:         "min" >
@@ -2816,13 +2817,13 @@ TOKEN [IGNORE_CASE] :
 #ifdef ARQ
 |  < MEDIAN:      "median" >
 |  < MODE:        "mode" >
-#endif
 |  < STDEV:       "stdev" >
 |  < STDEV_SAMP:  "stdev_samp" >
 |  < STDEV_POP:   "stdev_pop" >
 |  < VARIANCE:    "variance" >
 |  < VAR_SAMP:    "var_samp" >
 |  < VAR_POP:     "var_pop" >
+#endif
 #ifdef ARQ
 |  < FOLD:        "fold" >
 #endif
@@ -3064,8 +3065,6 @@ TOKEN :
 // Path related
 | < VBAR:     "|" >
 | < CARAT:    "^" >
-| < FPATH:    "->" >
-| < RPATH:    "<-" >
 | < QMARK:    "?" >
 }
 
