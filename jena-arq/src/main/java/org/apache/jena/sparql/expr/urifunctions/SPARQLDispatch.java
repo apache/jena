@@ -160,9 +160,9 @@ public class SPARQLDispatch {
         register(map, "equals", SPARQLFuncOp::sparql_equals );
         register(map, "not-equals", SPARQLFuncOp::sparql_not_equals );
         register(map, "greaterThan", SPARQLFuncOp::sparql_greaterThan );
-        register(map, "greaterThanOrEquals", SPARQLFuncOp::sparql_greaterThanOrEquals );
-        register(map, "lessThat", SPARQLFuncOp::sparql_lessThat );
-        register(map, "lessThanOrEquals", SPARQLFuncOp::sparql_lessThanOrEquals );
+        register(map, "greaterThanOrEqual", SPARQLFuncOp::sparql_greaterThanOrEqual );
+        register(map, "lessThan", SPARQLFuncOp::sparql_lessThat );
+        register(map, "lessThanOrEqual", SPARQLFuncOp::sparql_lessThanOrEqual );
 
         register(map, "and", SPARQLFuncOp::sparql_function_and );
         register(map, "or", SPARQLFuncOp::sparql_function_or );

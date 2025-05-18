@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.jena.atlas.lib.*;
 import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.ARQConstants;
 import org.apache.jena.sparql.expr.*;
 import org.apache.jena.sparql.expr.nodevalue.NodeFunctions;
 import org.apache.jena.sparql.expr.nodevalue.NodeValueDigest;
@@ -45,7 +46,7 @@ import org.apache.jena.sparql.function.library.triple.TripleTermOps;
  */
 public class SPARQLFuncOp {
 
-    public static final String NS = "https://www.w3.org/ns/sparql#";
+    public static final String NS = ARQConstants.sparqlPrefix;
 
     // ---- Integration into ARQ function execution
 
@@ -147,12 +148,12 @@ public class SPARQLFuncOp {
         return NodeValue.booleanReturn(r == Expr.CMP_LESS);
     }
 
-    public static NodeValue sparql_greaterThanOrEquals(NodeValue nv1, NodeValue nv2) {
+    public static NodeValue sparql_greaterThanOrEqual(NodeValue nv1, NodeValue nv2) {
         int r = NodeValue.compare(nv1, nv2);
         return NodeValue.booleanReturn(r == Expr.CMP_GREATER || r == Expr.CMP_EQUAL);
     }
 
-    public static NodeValue sparql_lessThanOrEquals(NodeValue nv1, NodeValue nv2) {
+    public static NodeValue sparql_lessThanOrEqual(NodeValue nv1, NodeValue nv2) {
         int r = NodeValue.compare(nv1, nv2);
         return NodeValue.booleanReturn(r == Expr.CMP_LESS || r == Expr.CMP_EQUAL);
     }
