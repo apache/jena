@@ -19,89 +19,12 @@ package org.apache.jena.arq.querybuilder;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.apache.jena.arq.querybuilder.clauses.WhereClause;
 import org.apache.jena.graph.Node;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.sparql.core.Var;
-import org.apache.jena.sparql.expr.E_Add;
-import org.apache.jena.sparql.expr.E_BNode;
-import org.apache.jena.sparql.expr.E_Bound;
-import org.apache.jena.sparql.expr.E_Call;
-import org.apache.jena.sparql.expr.E_Coalesce;
-import org.apache.jena.sparql.expr.E_Conditional;
-import org.apache.jena.sparql.expr.E_Datatype;
-import org.apache.jena.sparql.expr.E_DateTimeDay;
-import org.apache.jena.sparql.expr.E_DateTimeHours;
-import org.apache.jena.sparql.expr.E_DateTimeMinutes;
-import org.apache.jena.sparql.expr.E_DateTimeMonth;
-import org.apache.jena.sparql.expr.E_DateTimeSeconds;
-import org.apache.jena.sparql.expr.E_DateTimeTZ;
-import org.apache.jena.sparql.expr.E_DateTimeTimezone;
-import org.apache.jena.sparql.expr.E_DateTimeYear;
-import org.apache.jena.sparql.expr.E_Divide;
-import org.apache.jena.sparql.expr.E_Equals;
-import org.apache.jena.sparql.expr.E_Exists;
-import org.apache.jena.sparql.expr.E_Function;
-import org.apache.jena.sparql.expr.E_FunctionDynamic;
-import org.apache.jena.sparql.expr.E_GreaterThan;
-import org.apache.jena.sparql.expr.E_GreaterThanOrEqual;
-import org.apache.jena.sparql.expr.E_IRI;
-import org.apache.jena.sparql.expr.E_IsBlank;
-import org.apache.jena.sparql.expr.E_IsIRI;
-import org.apache.jena.sparql.expr.E_IsLiteral;
-import org.apache.jena.sparql.expr.E_IsNumeric;
-import org.apache.jena.sparql.expr.E_Lang;
-import org.apache.jena.sparql.expr.E_LangMatches;
-import org.apache.jena.sparql.expr.E_LessThan;
-import org.apache.jena.sparql.expr.E_LessThanOrEqual;
-import org.apache.jena.sparql.expr.E_LogicalAnd;
-import org.apache.jena.sparql.expr.E_LogicalNot;
-import org.apache.jena.sparql.expr.E_LogicalOr;
-import org.apache.jena.sparql.expr.E_MD5;
-import org.apache.jena.sparql.expr.E_Multiply;
-import org.apache.jena.sparql.expr.E_NotEquals;
-import org.apache.jena.sparql.expr.E_NotExists;
-import org.apache.jena.sparql.expr.E_NotOneOf;
-import org.apache.jena.sparql.expr.E_Now;
-import org.apache.jena.sparql.expr.E_NumAbs;
-import org.apache.jena.sparql.expr.E_NumCeiling;
-import org.apache.jena.sparql.expr.E_NumFloor;
-import org.apache.jena.sparql.expr.E_NumRound;
-import org.apache.jena.sparql.expr.E_OneOf;
-import org.apache.jena.sparql.expr.E_Random;
-import org.apache.jena.sparql.expr.E_Regex;
-import org.apache.jena.sparql.expr.E_SHA1;
-import org.apache.jena.sparql.expr.E_SHA224;
-import org.apache.jena.sparql.expr.E_SHA256;
-import org.apache.jena.sparql.expr.E_SHA384;
-import org.apache.jena.sparql.expr.E_SHA512;
-import org.apache.jena.sparql.expr.E_SameTerm;
-import org.apache.jena.sparql.expr.E_Str;
-import org.apache.jena.sparql.expr.E_StrAfter;
-import org.apache.jena.sparql.expr.E_StrBefore;
-import org.apache.jena.sparql.expr.E_StrConcat;
-import org.apache.jena.sparql.expr.E_StrContains;
-import org.apache.jena.sparql.expr.E_StrDatatype;
-import org.apache.jena.sparql.expr.E_StrEncodeForURI;
-import org.apache.jena.sparql.expr.E_StrEndsWith;
-import org.apache.jena.sparql.expr.E_StrLang;
-import org.apache.jena.sparql.expr.E_StrLength;
-import org.apache.jena.sparql.expr.E_StrLowerCase;
-import org.apache.jena.sparql.expr.E_StrReplace;
-import org.apache.jena.sparql.expr.E_StrStartsWith;
-import org.apache.jena.sparql.expr.E_StrSubstring;
-import org.apache.jena.sparql.expr.E_StrUUID;
-import org.apache.jena.sparql.expr.E_StrUpperCase;
-import org.apache.jena.sparql.expr.E_Subtract;
-import org.apache.jena.sparql.expr.E_UUID;
-import org.apache.jena.sparql.expr.E_UnaryMinus;
-import org.apache.jena.sparql.expr.E_UnaryPlus;
-import org.apache.jena.sparql.expr.E_Version;
-import org.apache.jena.sparql.expr.Expr;
-import org.apache.jena.sparql.expr.ExprList;
-import org.apache.jena.sparql.expr.ExprNone;
-import org.apache.jena.sparql.expr.ExprVar;
-import org.apache.jena.sparql.expr.NodeValue;
+import org.apache.jena.sparql.expr.*;
 
 /**
  * Create expressions.
@@ -1213,42 +1136,6 @@ public class ExprFactory {
      */
     public final Expr bnode() {
         return E_BNode.create();
-    }
-
-    /**
-     * Creates a dynamic function call.
-     *
-     * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rFunctionCall
-     *
-     * Converts function to an Expr object via expr()
-     *
-     * @see #asExpr(Object)
-     * @see org.apache.jena.sparql.expr.E_FunctionDynamic
-     *
-     * @param function The function to execute
-     * @param args the arguments to the function.
-     * @return an E_FunctionDynamic instance.
-     */
-    public final E_FunctionDynamic call(Object function, ExprList args) {
-        return new E_FunctionDynamic(asExpr(function), args);
-    }
-
-    /**
-     * Creates a dynamic function call.
-     *
-     * https://www.w3.org/TR/2013/REC-sparql11-query-20130321/#rFunctionCall
-     *
-     * Converts function to an Expr object via expr()
-     *
-     * @see #asExpr(Object)
-     * @see org.apache.jena.sparql.expr.E_FunctionDynamic
-     *
-     * @param function The function to execute
-     * @param args the arguments to the function.
-     * @return an E_FunctionDynamic instance.
-     */
-    public final E_FunctionDynamic call(Object function, Object... args) {
-        return call(asExpr(function), asList(args));
     }
 
     /**

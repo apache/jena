@@ -2567,21 +2567,6 @@ Expr iriOrFunction() : { String iri ; Args a = null ; }
   }
 }
 
-#ifdef ARQ_CALL
-// Needs checking.
-// The case of "?var()" or just "?var"
-Expr VarOrFunction() : { Var v ; ExprList a = null ; }
-{
-  v = Var()
-  { Expr ev = new ExprVar(v) ; }
-  ( a = ExpressionList() )?
-  { if ( a == null ) return ev ;
-    return new E_FunctionDynamic(ev, a) ;
-  }
-}
-#endif
-
-
 Node RDFLiteral() : { Token t ; String lex = null ; String uri = null ; }
 {
   lex = String()

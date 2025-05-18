@@ -466,12 +466,6 @@ public class ExprFactoryTest {
     }
 
     @Test
-    public void callTest_dynamic() {
-        Expr e = factory.call(factory.none(), factory.list());
-        assertTrue(e instanceof E_FunctionDynamic);
-    }
-
-    @Test
     public void callTest() {
         Expr e = factory.call(factory.list());
         assertTrue(e instanceof E_Call);
@@ -652,7 +646,7 @@ public class ExprFactoryTest {
 
     @Test
     public void asExprTest_Triplenode() {
-        Triple expected = Triple.create(NodeFactory.createURI("a"), 
+        Triple expected = Triple.create(NodeFactory.createURI("a"),
                 NodeFactory.createURI("b"), NodeFactory.createURI("c"));
         Node tripleNode = NodeFactory.createTripleTerm(expected);
         Expr e = factory.asExpr(tripleNode);
@@ -660,7 +654,7 @@ public class ExprFactoryTest {
         NodeValueNode n = (NodeValueNode) e;
         assertTrue(expected.matches(n.asNode().getTriple()));
     }
-    
+
     @Test
     public void asExprTest_URIstring() {
         Expr e = factory.asExpr("http://example.com/foo");

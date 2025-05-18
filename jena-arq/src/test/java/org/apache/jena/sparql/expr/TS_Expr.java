@@ -50,7 +50,6 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestExprTransform.class
     , TestCustomAggregates.class
     , TestStatisticsAggregates.class
-    , TestFunctionDynamic.class
     , TestNodeValueSortKey.class
 })
 
