@@ -23,21 +23,14 @@ import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.graph.NodeTransform ;
 
-/** Marker, used in place of a null.
- *  This may be tested for using {@code ==} */
-
-//public /*package*/ class ExprNone extends ExprVar { // extends ExprNode {
-//    
-//    /*package*/ static Expr NONE0 = new ExprNone() ; 
-//    
-//    private ExprNone() { super("") ; }
-//}
-
+/**
+ * Marker, used in place of a null. This may be tested for using {@code ==}
+ */
 public class ExprNone extends ExprNode {
-    
+
     /*package*/ static Expr NONE0 = new ExprNone() ;
     private ExprNone() {}
-    
+
     @Override public void visit(ExprVisitor visitor) { visitor.visit(this); }
 
     @Override public NodeValue eval(Binding binding, FunctionEnv env) {
