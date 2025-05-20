@@ -69,7 +69,7 @@ public interface Statement extends FrontsTriple
      */
     public Property getPredicate();
 
-    /** An accessor funtion to return the object of the statement.
+    /** An accessor function to return the object of the statement.
      * @return Return the object of the statement.
      */
     public RDFNode getObject();

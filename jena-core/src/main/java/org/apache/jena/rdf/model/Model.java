@@ -24,6 +24,7 @@ import java.util.function.Supplier ;
 
 import org.apache.jena.datatypes.* ;
 import org.apache.jena.shared.* ;
+import org.apache.jena.vocabulary.RDF;
 
 /**
     An RDF Model.
@@ -210,11 +211,50 @@ public interface Model
 	public Resource createResource( String uri ) ;
 
 	/**
-	 * Create a resource that represents a statement. This is in support of RDF-star.
-	 * @param statement
-	 * @return a new resource linked to this model.
-	 */
-	public Resource createResource( Statement statement ) ;
+	 * Create a resource that represents a statement.
+	 * This is in support of RDF 1.2 triple terms.
+     * @deprecated Use {@link #createStatementTerm}
+     */
+    @Deprecated(forRemoval = true)
+	public default RDFNode createResource( Statement statement ) {
+        return createStatementTerm(statement);
+    }
+
+    /**
+     * Create an RDFNode for a statement.
+     * This is in support of RDF 1.2 triple terms.
+     * Triple terms can only appear in the object position.
+     * Use with predicate {@code rdf:reifies}
+     *
+     * @param statement
+     * @return a new resource linked to this model.
+     */
+    public RDFNode createStatementTerm( Statement statement );
+
+    /**
+     * Create an anonymous resource that reifies a statement (RDF 1.2)
+     *
+     * @param statement
+     * @return the reifier resource.
+     */
+    public default Resource createReifiedStmt( Statement statement ) {
+        Resource reifier = this.createResource();
+        return createReifiedStmt(reifier, statement);
+    }
+
+    /**
+     * Create a reification statement in the model.
+     * {@code reifier rdf:reifies statement}
+     *
+     * @param reifier
+     * @param statement
+     * @return the reifier
+     */
+    public default Resource createReifiedStmt( Resource reifier, Statement statement ) {
+        RDFNode n = createStatementTerm(statement);
+        this.add(reifier, RDF.reifies, n);
+        return reifier;
+    }
 
 	/**
         Create a property with a given URI composed from a namespace part and a
