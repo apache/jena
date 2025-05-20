@@ -1345,8 +1345,17 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     }
 
     @Override
-    public Resource createResource(Statement statement) {
-        return SecuredResourceImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createResource(statement));
+    public RDFNode createStatementTerm(Statement statement) {
+        return SecuredResourceImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createStatementTerm(statement));
+    }
+
+    @Override
+    public Resource createReifier( Resource reifier, Statement statement ) {
+        RDFNode n = createStatementTerm(statement);
+        Statement stmt = this.createStatement(reifier, RDF.reifies, n);
+        Statement stmtx =  SecuredStatementImpl.getInstance(this, stmt);
+        this.add(stmtx);
+        return reifier;
     }
 
     private void checkReadOrUpdate(Resource s, Property p, RDFNode o) {

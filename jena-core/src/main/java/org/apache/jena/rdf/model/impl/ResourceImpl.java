@@ -138,8 +138,6 @@ public class ResourceImpl extends EnhNode implements Resource {
             return this;
         if ( isAnon() )
             return m.createResource( getId() );
-        if ( isStmtResource() )
-            return m.createResource( getStmtTerm() );
         if ( asNode().isConcrete() == false )
             return (Resource) m.getRDFNode( asNode() );
         // if isURIResource()
