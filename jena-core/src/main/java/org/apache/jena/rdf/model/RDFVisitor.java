@@ -19,40 +19,41 @@
 package org.apache.jena.rdf.model;
 
 /**
-    The interface for visiting (ie type-dispatching) an RDF Node.
-*/
-public interface RDFVisitor
-    {
+ * The interface for visiting (ie type-dispatching) an RDF Node.
+ */
+public interface RDFVisitor {
     /**
-        Method to call when visiting a blank node r with identifier id.
-        @param r the blank RDF node being visited
-        @param id the identifier of that node
-        @return value to be returned from the visit
-    */
-    Object visitBlank( Resource r, AnonId id );
-    
+     * Method to call when visiting a blank node r with identifier id.
+     *
+     * @param r the blank RDF node being visited
+     * @param id the identifier of that node
+     * @return value to be returned from the visit
+     */
+    Object visitBlank(Resource r, AnonId id);
+
     /**
-        Method to call when visiting a URI node r with the given uri.
-        @param r the URI node being visited
-        @param uri the URI string of that node
-        @return value to be returned from the visit
-    */
-    Object visitURI( Resource r, String uri );
-    
-    
+     * Method to call when visiting a URI node r with the given uri.
+     *
+     * @param r the URI node being visited
+     * @param uri the URI string of that node
+     * @return value to be returned from the visit
+     */
+    Object visitURI(Resource r, String uri);
+
     /**
-     * Method to call when visiting a resource with a statement.
-     *   @param r the resource node being visited
-     *   @param statement the statement of that node
-     *   @return value to be returned from the visit
-     */ 
-        
-    default Object visitStmt( Resource r, Statement statement) { return null; }
-    
+     * Method to call when visiting a literal RDF node l.
+     *
+     * @param l the RDF Literal node
+     * @return a value to be returned from the visit
+     */
+    Object visitLiteral(Literal l);
+
     /**
-        Method to call when visiting a literal RDF node l.
-        @param l the RDF Literal node
-        @return a value to be returned from the visit
-    */
-    Object visitLiteral( Literal l );
-    }
+     * Method to call when visiting a statement term.
+     *
+     * @param statementTerm the statement term being visited
+     * @param statement the statement of that node
+     * @return value to be returned from the visit
+     */
+    default Object visitStmt(StatementTerm StatementTerm, Statement statement) { return statement; }
+}

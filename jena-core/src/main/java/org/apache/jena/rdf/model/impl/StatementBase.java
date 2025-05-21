@@ -23,7 +23,7 @@ import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.JenaException ;
 
 /**
- 	Abstract base class for StaementImpl - pulls up the stuff that doesn't depend
+ 	Abstract base class for StatementImpl - pulls up the stuff that doesn't depend
  	on how statements are represented (as S/P/O or as Triples).
 */
 public abstract class StatementBase

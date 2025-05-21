@@ -27,7 +27,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory ;
-import org.apache.jena.shared.Lock ;
+import org.apache.jena.shared.Lock;
 
 /**
  * Collected test suite for the .model package.
@@ -69,33 +69,19 @@ public abstract class AbstractTestPackage extends TestSuite
 		addTest(TestContains.class, modelFactory);
 		addTest(TestLiteralImpl.class, modelFactory);
 		addTest(TestResourceImpl.class, modelFactory);
+		addTest(TestStatementTerms.class, modelFactory);
+
 		addTest(TestHiddenStatements.class, modelFactory);
 		addTest(TestNamespace.class, modelFactory);
 		addTest(TestModelBulkUpdate.class, modelFactory);
-		addTest(TestConcurrencyNesting.class, modelFactory,
-				TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL1,
-				Lock.READ, Lock.READ, false);
-		addTest(TestConcurrencyNesting.class, modelFactory,
-				TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL1,
-				Lock.WRITE, Lock.WRITE, false);
-		addTest(TestConcurrencyNesting.class, modelFactory,
-				TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL1,
-				Lock.READ, Lock.WRITE, true);
-		addTest(TestConcurrencyNesting.class, modelFactory,
-				TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL1,
-				Lock.WRITE, Lock.READ, false);
-		addTest(TestConcurrencyNesting.class, modelFactory,
-				TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL2,
-				Lock.READ, Lock.READ, false);
-		addTest(TestConcurrencyNesting.class, modelFactory,
-				TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL2,
-				Lock.WRITE, Lock.WRITE, false);
-		addTest(TestConcurrencyNesting.class, modelFactory,
-				TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL2,
-				Lock.READ, Lock.WRITE, false);
-		addTest(TestConcurrencyNesting.class, modelFactory,
-				TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL2,
-				Lock.WRITE, Lock.READ, false);
+		addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL1, Lock.READ, Lock.READ, false);
+		addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL1, Lock.WRITE, Lock.WRITE, false);
+      addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL1, Lock.READ, Lock.WRITE, true);
+      addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL1, Lock.WRITE, Lock.READ, false);
+      addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL2, Lock.READ, Lock.READ, false);
+      addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL2, Lock.WRITE, Lock.WRITE, false);
+      addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL2, Lock.READ, Lock.WRITE, false);
+      addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL2, Lock.WRITE, Lock.READ, false);
 
 		addTest(TestConcurrencyParallel.class, modelFactory);
 		addTest(TestContainers.class, modelFactory);

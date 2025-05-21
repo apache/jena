@@ -79,6 +79,10 @@ public class LiteralImpl extends EnhNode implements Literal {
     public Resource asResource()
         { throw new ResourceRequiredException( asNode() ); }
 
+    @Override
+    public StatementTerm asStatementTerm()
+        { throw new StmtTermRequiredException( asNode() ); }
+
     /**
         Answer the model this literal was created in, if any, otherwise null.
     */

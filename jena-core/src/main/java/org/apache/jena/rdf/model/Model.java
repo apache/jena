@@ -229,7 +229,7 @@ public interface Model
      * @param statement
      * @return a new resource linked to this model.
      */
-    public RDFNode createStatementTerm( Statement statement );
+    public StatementTerm createStatementTerm( Statement statement );
 
     /**
      * Create an anonymous resource that reifies a statement (RDF 1.2)
@@ -237,9 +237,9 @@ public interface Model
      * @param statement
      * @return the reifier resource.
      */
-    public default Resource createReifiedStmt( Statement statement ) {
+    public default Resource createReifier( Statement statement ) {
         Resource reifier = this.createResource();
-        return createReifiedStmt(reifier, statement);
+        return createReifier(reifier, statement);
     }
 
     /**
@@ -250,8 +250,8 @@ public interface Model
      * @param statement
      * @return the reifier
      */
-    public default Resource createReifiedStmt( Resource reifier, Statement statement ) {
-        RDFNode n = createStatementTerm(statement);
+    public default Resource createReifier( Resource reifier, Statement statement ) {
+        StatementTerm n = createStatementTerm(statement);
         this.add(reifier, RDF.reifies, n);
         return reifier;
     }

@@ -24,7 +24,6 @@ import org.apache.jena.enhanced.EnhNode ;
 import org.apache.jena.enhanced.Implementation ;
 import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.* ;
 import org.apache.jena.shared.PropertyNotFoundException;
 
@@ -46,16 +45,16 @@ public class ResourceImpl extends EnhNode implements Resource {
     final static public Implementation rdfNodeFactory = new Implementation() {
         @Override
         public boolean canWrap( Node n, EnhGraph eg )
-            { return true; }
+        { return true; }
         @Override
         public EnhNode wrap(Node n,EnhGraph eg) {
-		if ( n.isURI() || n.isBlank() )
-		  return new ResourceImpl(n,eg);
-		if ( n.isLiteral() )
-		  return new LiteralImpl(n,eg);
-		return null;
-	}
-};
+            if ( n.isURI() || n.isBlank() )
+                return new ResourceImpl(n,eg);
+            if ( n.isLiteral() )
+                return new LiteralImpl(n,eg);
+            return null;
+        }
+    };
 
     /**
         the main constructor: make a new Resource in the given model,
@@ -76,7 +75,6 @@ public class ResourceImpl extends EnhNode implements Resource {
     public ResourceImpl( ModelCom m ) {
         this( fresh( null ), m );
     }
-
 
     public ResourceImpl( Node n, EnhGraph m ) {
         super( n, m );
@@ -110,16 +108,10 @@ public class ResourceImpl extends EnhNode implements Resource {
         this( NodeFactory.createURI( nameSpace + localName ), m );
     }
 
-    public ResourceImpl(Statement statement, ModelCom m) {
-        this( NodeFactory.createTripleTerm(statement.asTriple()), m);
-    }
-
     @Override
     public Object visitWith(RDFVisitor rv) {
         if ( isAnon() )
             return rv.visitBlank(this, getId());
-        if ( isStmtResource() )
-            return rv.visitStmt(this, getStmtTerm());
         // if isURIResource()
         return rv.visitURI(this, getURI());
     }
@@ -131,6 +123,11 @@ public class ResourceImpl extends EnhNode implements Resource {
     @Override
     public Literal asLiteral()
         { throw new LiteralRequiredException( asNode() ); }
+
+    @Override
+    public StatementTerm asStatementTerm() {
+        { throw new StmtTermRequiredException( asNode() ); }
+    }
 
     @Override
     public Resource inModel( Model m ) {
@@ -155,15 +152,6 @@ public class ResourceImpl extends EnhNode implements Resource {
     @Override
     public String  getURI() {
         return this.isURIResource() ? node.getURI() : null;
-    }
-
-    @Override
-    public Statement getStmtTerm() {
-        if ( ! isStmtResource() )
-            return null;
-        Triple t = node.getTriple();
-        Statement stmt = StatementImpl.toStatement(t, getModelCom());
-        return stmt;
     }
 
     @Override

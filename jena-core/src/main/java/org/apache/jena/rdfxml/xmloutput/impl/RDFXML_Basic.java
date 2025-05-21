@@ -145,7 +145,7 @@ public class RDFXML_Basic extends BaseXMLWriter
 		if (r.isAnon()) {
 			writer.print(rdfAt("nodeID") + "=" + attributeQuoted(anonId(r)));
 		} else {
-		    if ( r.isStmtResource() )
+		    if ( r.isStatementTerm() )
 		        throw new JenaException("Triple terms not supported in RDF/XML");
 
 			writer.print(

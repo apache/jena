@@ -16,25 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.enhanced.test;
+package org.apache.jena.rdf.model;
 
-import org.apache.jena.rdf.model.RDFNode ;
+import org.apache.jena.graph.* ;
+import org.apache.jena.shared.* ;
 
 /**
- * An interface for viewing object nodes in the graph.
- */
-public interface TestObject extends RDFNode, TestNode {
+    Exception to throw when an RDFNode required to be a StatementTerm isn't, or when a Node
+    supposed to be a triple term isn't.
+*/
+public class StmtTermRequiredException extends JenaException
+    {
+    public StmtTermRequiredException( RDFNode n )
+        { this( n.asNode() ); }
 
-    /**
-     * Checks whether this node is right now the object of some
-     * triple in the graph.
-     * @return true if this interface is currently working.
-     */
-    boolean isObject();
-
-    /** The subject of a triple of which I am object.
-     *
-     * @return the subject of a triple.
-     */
-    TestSubject aSubject();
-}
+    public StmtTermRequiredException( Node n )
+        { super( n.toString( PrefixMapping.Extended) ); }
+    }

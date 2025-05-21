@@ -32,12 +32,12 @@ public class TestAllImpl extends TestCommonImpl implements TestSubject, TestProp
         return new TestAllImpl(n,eg);
     }
 };
-    
+
     /** Creates a new instance of TestAllImpl */
     private TestAllImpl(Node n,EnhGraph eg) {
         super( n, eg );
     }
-    
+
     @Override public <X extends RDFNode> boolean supports( Class<X> t )
         {
         // return convertTo( t ) != null;
@@ -48,42 +48,46 @@ public class TestAllImpl extends TestCommonImpl implements TestSubject, TestProp
             : false
             ;
         }
-        
+
     @Override
     public boolean isObject() {
         return findObject() != null;
     }
-    
+
     @Override
     public boolean isProperty() {
         return findPredicate() != null;
     }
-    
+
     @Override
     public boolean isSubject() {
         return findSubject() != null;
-    } 
-    
+    }
+
     @Override
     public TestObject anObject() {
         if (!isProperty())
-            
             throw new IllegalStateException("Node is not the property of a triple.");
         return enhGraph.getNodeAs(findPredicate().getObject(),TestObject.class);
     }
-    
+
     @Override
     public TestProperty aProperty() {
         if (!isSubject())
             throw new IllegalStateException("Node is not the subject of a triple.");
         return enhGraph.getNodeAs(findSubject().getPredicate(),TestProperty.class);
     }
-    
+
     @Override
     public TestSubject aSubject() {
         if (!isObject())
             throw new IllegalStateException("Node is not the object of a triple.");
         return enhGraph.getNodeAs(findObject().getSubject(),TestSubject.class);
     }
-    
+
+    @Override
+    public StatementTerm asStatementTerm() {
+        throw new IllegalStateException("StatementTerm");
+    }
+
 }

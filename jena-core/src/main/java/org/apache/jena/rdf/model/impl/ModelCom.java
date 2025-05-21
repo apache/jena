@@ -524,8 +524,8 @@ public class ModelCom extends EnhGraph implements Model, PrefixMapping, Lock
     { return getResource( uri ).addProperty( RDF.type, type ); }
 
     @Override
-    public RDFNode createStatementTerm( Statement statement )
-    { return new ResourceImpl( statement, this ); }
+    public StatementTerm createStatementTerm( Statement statement )
+    { return new StatementTermImpl( statement, this ); }
 
     /** create a type literal from a boolean value.
      *

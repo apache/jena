@@ -24,27 +24,31 @@ import org.apache.jena.query.QuerySolution ;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.StatementTerm;
 
-/** Implementation of QuerySolution that contains the canonicalization and casting code. */ 
+/** Implementation of QuerySolution that contains the canonicalization and casting code. */
 
 public abstract class QuerySolutionBase implements QuerySolution
 {
     @Override
     public RDFNode get(String varName)          { return _get(Var.canonical(varName)) ; }
-    
-    protected abstract RDFNode _get(String varName) ; 
+
+    protected abstract RDFNode _get(String varName) ;
 
     @Override
-    public Resource getResource(String varName) { return (Resource)get(varName) ; } 
+    public Resource getResource(String varName) { return (Resource)get(varName) ; }
 
     @Override
     public Literal getLiteral(String varName)   { return (Literal)get(varName) ; }
 
     @Override
-    public boolean contains(String varName)     { return _contains(Var.canonical(varName)) ; }  
+    public StatementTerm getStatementTerm(String varName)   { return (StatementTerm)get(varName) ; }
+
+    @Override
+    public boolean contains(String varName)     { return _contains(Var.canonical(varName)) ; }
 
     protected abstract boolean _contains(String varName) ;
-    
+
     @Override
     public abstract Iterator<String> varNames() ;
 }
