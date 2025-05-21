@@ -18,67 +18,69 @@
 
 package org.apache.jena.web;
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.jena.atlas.io.IO;
-import org.apache.jena.atlas.web.HttpException;
+import org.apache.jena.http.HttpLib;
+import org.apache.jena.riot.WebContent;
+import org.apache.jena.riot.web.HttpNames;
 
-/** Multipart HTTP PUT/POST. */
+/**
+ * Simple Multipart HTTP PUT/POST sender for testing.
+ * THis class does not stream the content.
+ * It is in main/src to enable sharing without needing to depend on a test artifact.
+ */
 public class FileSender {
 
-    class Entry {
-        String fileName;
-        String content;
-        String contentType;
-    }
+    static record Entry(String fileName, String content, String contentType) {}
 
     private List<Entry> items = new ArrayList<>();
 
-    private String url;
+    private final String url;
 
     public FileSender(String url ) { this.url = url; }
 
     public void add(String filename, String content, String type) {
-        Entry e = new Entry();
-        e.fileName = filename;
-        e.content = content;
-        e.contentType = type;
+        Entry e = new Entry(filename, content, type);
         items.add(e);
     }
 
     /** Return response code */
     public int send(String method) {
-        try {
-            String WNL = "\r\n";   // Web newline
-            String boundary = UUID.randomUUID().toString();
+        String WNL = "\r\n";   // Web newline
+        String boundary = UUID.randomUUID().toString();
 
-            HttpURLConnection connection = (HttpURLConnection)new URL(url).openConnection();
-            connection.setRequestMethod(method);
-            connection.setDoOutput(true);
-            connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-            try ( PrintStream ps = new PrintStream(connection.getOutputStream()); ) {
-                for ( Entry e : items ) {
-                    ps.print("--" + boundary+WNL);
-                    ps.print("Content-Disposition: form-data; name=\"FILE\"; filename=\""+e.fileName+"\""+WNL);
-                    ps.print("Content-Type: "+e.contentType+";charset=UTF-8"+WNL);
-                    ps.print(WNL);
-                    ps.print(e.content);
-                    ps.print(WNL);
-                }
-                ps.print("--" + boundary + "--"+WNL);
-            }
-            connection.connect();
-            int responseCode = connection.getResponseCode();
-            if ( responseCode >= 300 )
-                throw new HttpException(responseCode);
-            return responseCode;
-        } catch (IOException ex) { IO.exception(ex); return -1;}
+        // This is for testing so build a body.
+        StringBuilder strBuidler = new StringBuilder();
+        for ( Entry e : items ) {
+            strBuidler.append("--" + boundary+WNL);
+            strBuidler.append("Content-Disposition: form-data; name=\"FILE\"; filename=\""+e.fileName+"\""+WNL);
+            strBuidler.append("Content-Type: "+e.contentType+";charset=UTF-8"+WNL);
+            strBuidler.append(WNL);
+            strBuidler.append(e.content);
+            strBuidler.append(WNL);
+        }
+        strBuidler.append("--" + boundary + "--"+WNL);
+
+        URI uri = HttpLib.toRequestURI(url);
+        String body = strBuidler.toString();
+        String ctHeaderValue = WebContent.contentTypeMultipartFormData+"; boundary="+boundary;
+
+        HttpRequest request = HttpRequest
+                .newBuilder(uri)
+                .setHeader(HttpNames.hContentType, ctHeaderValue)
+                .method(method, BodyPublishers.ofString(body))
+                .build();
+        HttpResponse<InputStream> response = HttpLib.executeJDK(HttpClient.newHttpClient(), request, BodyHandlers.ofInputStream());
+        HttpLib.handleResponseNoBody(response);
+        return response.statusCode();
     }
 }
-
