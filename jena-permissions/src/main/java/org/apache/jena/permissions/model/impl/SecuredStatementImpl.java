@@ -457,7 +457,6 @@ public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStat
         checkRead(holder.getBaseItem().asTriple());
         final RDFNode rdfNode = holder.getBaseItem().getObject();
         return SecuredRDFNodeImpl.getInstance(getModel(), rdfNode);
-
     }
 
     /**

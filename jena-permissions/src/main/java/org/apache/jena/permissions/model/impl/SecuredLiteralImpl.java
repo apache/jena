@@ -25,10 +25,8 @@ import org.apache.jena.permissions.impl.SecuredItemInvoker;
 import org.apache.jena.permissions.model.SecuredLiteral;
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.model.SecuredResource;
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFVisitor;
-import org.apache.jena.rdf.model.ResourceRequiredException;
+import org.apache.jena.permissions.model.SecuredStatementTerm;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.AuthenticationRequiredException;
 import org.apache.jena.shared.ReadDeniedException;
 
@@ -98,6 +96,14 @@ public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements SecuredLit
             throw new ResourceRequiredException(asNode());
         }
         throw new ResourceRequiredException(NodeFactory.createLiteralString("Can not read"));
+    }
+
+    @Override
+    public SecuredStatementTerm asStatementTerm() {
+        if (canRead()) {
+            throw new StmtTermRequiredException(asNode());
+        }
+        throw new StmtTermRequiredException(NodeFactory.createLiteralString("Can not read"));
     }
 
     /**

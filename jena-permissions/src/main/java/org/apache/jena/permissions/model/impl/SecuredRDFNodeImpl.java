@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,10 +28,7 @@ import org.apache.jena.permissions.impl.SecuredItemImpl;
 import org.apache.jena.permissions.model.SecuredModel;
 import org.apache.jena.permissions.model.SecuredRDFNode;
 import org.apache.jena.permissions.model.SecuredUnsupportedPolymorphismException;
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.shared.AuthenticationRequiredException;
 import org.apache.jena.shared.ReadDeniedException;
 
@@ -40,7 +37,7 @@ import org.apache.jena.shared.ReadDeniedException;
  */
 public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements SecuredRDFNode {
     /**
-     * 
+     *
      * @param securedModel the Secured Model to use.
      * @param rdfNode      the node to secure.
      * @return the secured RDFNode
@@ -48,6 +45,9 @@ public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements Secu
     public static SecuredRDFNode getInstance(final SecuredModel securedModel, final RDFNode rdfNode) {
         if (rdfNode instanceof Literal) {
             return SecuredLiteralImpl.getInstance(securedModel, (Literal) rdfNode);
+        }
+        if (rdfNode instanceof StatementTerm ) {
+            return SecuredStatementTermImpl.getInstance(securedModel, (StatementTerm)rdfNode);
         }
         return SecuredResourceImpl.getInstance(securedModel, (Resource) rdfNode);
     }
@@ -60,7 +60,7 @@ public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements Secu
 
     /**
      * Constructor
-     * 
+     *
      * @param securedModel the Secured Model to use.
      * @param holder       the item holder that will contain this SecuredRDFNode.
      */
@@ -198,8 +198,8 @@ public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements Secu
     }
 
     @Override
-    public boolean isStmtResource() {
-        return holder.getBaseItem().isStmtResource();
+    public boolean isStatementTerm() {
+        return holder.getBaseItem().isStatementTerm();
     }
 
     /**
@@ -208,7 +208,7 @@ public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements Secu
      * asNode, because we allow other implementations of Resource, at least in
      * principle. This is deemed to be a complete and correct interpretation of
      * RDFNode equality, which is why this method has been marked final.
-     * 
+     *
      * @param o An object to test for equality with this node
      * @return True if o is equal to this node.
      * @throws ReadDeniedException
@@ -222,7 +222,7 @@ public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements Secu
 
     /**
      * The hash code of an RDFnode is defined to be the same as the underlying node.
-     * 
+     *
      * @return The hashcode as an int
      */
     @Override

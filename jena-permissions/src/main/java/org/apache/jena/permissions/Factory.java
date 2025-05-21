@@ -34,7 +34,7 @@ public class Factory {
 
     /**
      * Create an instance of the SecuredGraph
-     * 
+     *
      * @param securityEvaluator The security evaluator to use
      * @param graphIRI          The IRI for the graph.
      * @param graph             The graph that we are wrapping.
@@ -48,7 +48,7 @@ public class Factory {
 
     /**
      * Get an instance of SecuredModel
-     * 
+     *
      * @param securityEvaluator The security evaluator to use
      * @param modelIRI          The securedModel IRI (graph IRI) to evaluate
      *                          against.

@@ -1345,8 +1345,8 @@ public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
     }
 
     @Override
-    public RDFNode createStatementTerm(Statement statement) {
-        return SecuredResourceImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createStatementTerm(statement));
+    public StatementTerm createStatementTerm(Statement statement) {
+        return SecuredStatementTermImpl.getInstance(holder.getSecuredItem(), holder.getBaseItem().createStatementTerm(statement));
     }
 
     @Override
