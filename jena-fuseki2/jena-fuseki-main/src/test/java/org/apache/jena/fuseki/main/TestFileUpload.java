@@ -33,7 +33,6 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.exec.http.DSP;
 import org.apache.jena.sparql.exec.http.GSP;
 import org.apache.jena.sparql.graph.GraphFactory;
-import org.apache.jena.web.FileSender;
 import org.apache.jena.web.HttpSC;
 import org.junit.jupiter.api.Test;
 

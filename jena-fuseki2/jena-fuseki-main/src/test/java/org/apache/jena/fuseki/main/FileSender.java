@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.web;
+package org.apache.jena.fuseki.main;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -34,15 +34,14 @@ import org.apache.jena.riot.WebContent;
 import org.apache.jena.riot.web.HttpNames;
 
 /**
- * @deprecated To be removed - do not use.
+ * Simple multipart form data HTTP PUT/POST sender, primarily for.
+ * This class does not stream the content.
  */
-@Deprecated(forRemoval = true)
 public class FileSender {
+    // This class is in main/src to enable sharing without needing to depend on a test artifact.
 
-    static record Entry(String fileName, String content, String contentType) {}
-
+    private static record Entry(String fileName, String content, String contentType) {}
     private List<Entry> items = new ArrayList<>();
-
     private final String url;
 
     public FileSender(String url ) { this.url = url; }
