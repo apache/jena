@@ -298,6 +298,12 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     }
 
     @Override
+    public StatementTerm asStatementTerm() {
+        checkRead();
+        throw new StmtTermRequiredException(asNode());
+    }
+
+    @Override
     public SecuredResource begin() {
         holder.getBaseItem().begin();
         return holder.getSecuredItem();
@@ -503,27 +509,6 @@ public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredRe
     public String getURI() throws ReadDeniedException, AuthenticationRequiredException {
         checkRead();
         return holder.getBaseItem().getURI();
-    }
-
-    /**
-     * @sec.graph Read
-     *
-     *            if {@link SecurityEvaluator#isHardReadError()} is true and the
-     *            user does not have read access then @{code null} is returned.
-     *
-     * @throws ReadDeniedException
-     * @throws AuthenticationRequiredException if user is not authenticated and is
-     *                                         required to be.
-     */
-    @Override
-    public Statement getStmtTerm() {
-        if (checkSoftRead()) {
-            Statement stmt = holder.getBaseItem().getStmtTerm();
-            if (stmt != null && canRead(stmt)) {
-                return SecuredStatementImpl.getInstance(getModel(), stmt);
-            }
-        }
-        return null;
     }
 
     /**
