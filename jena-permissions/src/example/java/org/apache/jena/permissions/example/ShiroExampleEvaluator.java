@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,11 +31,12 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Class to use Shiro to provide credentials.
- * 
+ *
  * An example evaluator that only provides access to messages in the graph that
  * are from or to the principal.
  *
  */
+@SuppressWarnings("removal")
 public class ShiroExampleEvaluator implements SecurityEvaluator {
 
     private static final Logger LOG = LoggerFactory.getLogger(ShiroExampleEvaluator.class);
@@ -46,7 +47,7 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
     private Property pFrom = ResourceFactory.createProperty("http://example.com/from");
 
     /**
-     * 
+     *
      * @param model The graph we are going to evaluate against.
      */
     public ShiroExampleEvaluator(Model model) {
@@ -67,7 +68,7 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
      * method is called from the evaluate(Object,Node) method. A user may only
      * access the resource if they are authenticated, and are either the sender or
      * the recipient. Additionally the admin can always see the messages.
-     * 
+     *
      * @param principalObj
      * @param r
      * @return
@@ -101,7 +102,7 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
 
     /**
      * Check that the user can see a specific node.
-     * 
+     *
      * @param principal
      * @param node
      * @return
@@ -126,7 +127,7 @@ public class ShiroExampleEvaluator implements SecurityEvaluator {
 
     /**
      * Evaluate if the user can see the triple.
-     * 
+     *
      * @param principal
      * @param triple
      * @return

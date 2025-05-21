@@ -37,6 +37,7 @@ import org.junit.Test;
  * available to the user.
  *
  */
+@SuppressWarnings("removal")
 public class SecuredModelDetailTest {
 
     private static String NS_FMT = "http://example.com/%s";

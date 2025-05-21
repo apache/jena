@@ -30,6 +30,7 @@ import org.apache.jena.shared.ReadDeniedException;
 /**
  * Implementation of SecuredProperty to be used by a SecuredItemInvoker proxy.
  */
+@SuppressWarnings("removal")
 public class SecuredPropertyImpl extends SecuredResourceImpl implements SecuredProperty {
     /**
      * Get an instance of SecuredProperty

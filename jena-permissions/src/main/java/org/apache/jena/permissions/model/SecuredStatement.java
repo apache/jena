@@ -24,7 +24,9 @@ import org.apache.jena.rdf.model.Statement;
  * The interface for secured Statement instances.
  *
  * Use the SecuredStatement.Factory to create instances
- */
+* @deprecated To be removed.
+*/
+@Deprecated(forRemoval = true)
 public interface SecuredStatement extends Statement, SecuredItem {
 
 }

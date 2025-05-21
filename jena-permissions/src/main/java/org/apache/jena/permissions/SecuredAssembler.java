@@ -126,6 +126,7 @@ import org.apache.jena.sparql.util.MappingRegistry;
  * assembler.</dd>
  * </dl>
  */
+@SuppressWarnings("removal")
 public class SecuredAssembler extends ModelAssembler implements AssemblerConstants {
     private static boolean initialized;
 

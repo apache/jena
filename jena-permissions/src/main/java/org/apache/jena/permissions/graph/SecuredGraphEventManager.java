@@ -33,6 +33,7 @@ import org.apache.jena.util.iterator.WrappedIterator;
  * Since we sit between the graph and other items we have to determine when the
  * message is first seen and send it to the underlying graph if necessary.
  */
+@SuppressWarnings("removal")
 public class SecuredGraphEventManager implements GraphEventManager {
     private class SecuredGraphListener implements GraphListener {
         private final GraphListener wrapped;

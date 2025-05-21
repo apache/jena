@@ -45,6 +45,7 @@ import org.apache.jena.util.iterator.NiceIterator;
 /**
  * Implementation of SecuredResource to be used by a SecuredItemInvoker proxy.
  */
+@SuppressWarnings("removal")
 public class SecuredResourceImpl extends SecuredRDFNodeImpl implements SecuredResource {
     /**
      * Get a SecuredResource.

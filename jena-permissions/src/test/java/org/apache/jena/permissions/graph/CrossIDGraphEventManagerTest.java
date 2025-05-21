@@ -27,6 +27,7 @@ import org.apache.jena.sparql.graph.GraphFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
+@SuppressWarnings("all")
 public class CrossIDGraphEventManagerTest {
 
     private final GraphEventManager manager;

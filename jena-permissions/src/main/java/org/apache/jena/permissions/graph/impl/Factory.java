@@ -25,11 +25,12 @@ import org.apache.jena.permissions.impl.ItemHolder;
 import org.apache.jena.permissions.impl.SecuredItemInvoker;
 import org.apache.jena.shared.PrefixMapping;
 
+@SuppressWarnings("removal")
 public class Factory {
 
     /**
      * Create an instance of SecuredPrefixMapping
-     * 
+     *
      * @param graph         The SecuredGraph that contains the prefixmapping.
      * @param prefixMapping The prefixmapping returned from the base graph.
      * @return The SecuredPrefixMapping.
@@ -50,7 +51,7 @@ public class Factory {
 
     /**
      * Create an instance of the SecuredGraph
-     * 
+     *
      * @param securityEvaluator The security evaluator to use
      * @param graphIRI          The IRI for the graph.
      * @param graph             The graph that we are wrapping.

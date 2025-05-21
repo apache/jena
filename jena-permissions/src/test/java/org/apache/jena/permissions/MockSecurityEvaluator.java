@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +25,7 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Resource;
 
+@SuppressWarnings("removal")
 public class MockSecurityEvaluator implements SecurityEvaluator {
 
     private final boolean loggedIn;
@@ -67,9 +68,9 @@ public class MockSecurityEvaluator implements SecurityEvaluator {
 
     /**
      * Answers the question. can the logged in user perform action on the object.
-     * 
+     *
      * if there is no logged in user then anonymous access is assumed.
-     * 
+     *
      * @param action
      * @param object
      * @return boolean
@@ -106,7 +107,7 @@ public class MockSecurityEvaluator implements SecurityEvaluator {
 
     /**
      * Return true if all the permissions are present
-     * 
+     *
      * @param action the set of actions to test
      * @return the result of the logical and of the permissions
      */

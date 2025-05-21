@@ -75,7 +75,7 @@ import org.apache.jena.vocabulary.RDF;
 /**
  * Implementation of SecuredModel to be used by a SecuredItemInvoker proxy.
  */
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "removal"})
 public class SecuredModelImpl extends SecuredItemImpl implements SecuredModel {
 
     /**

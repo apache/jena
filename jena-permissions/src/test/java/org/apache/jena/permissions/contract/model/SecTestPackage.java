@@ -36,6 +36,7 @@ import junit.framework.TestSuite;
 /**
  * Test package to test Model implementation.
  */
+@SuppressWarnings("removal")
 public class SecTestPackage extends AbstractTestPackage {
     static public TestSuite suite() throws SecurityException, IllegalArgumentException {
         return new SecTestPackage();

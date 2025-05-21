@@ -32,6 +32,7 @@ import org.apache.jena.vocabulary.RDF;
  * are from or to the principal.
  *
  */
+@SuppressWarnings("removal")
 public class ExampleEvaluator implements SecurityEvaluator {
 
     private Principal principal;

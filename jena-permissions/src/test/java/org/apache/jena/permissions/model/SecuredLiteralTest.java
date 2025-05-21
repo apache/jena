@@ -33,6 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+@SuppressWarnings("all")
 @RunWith(value = SecurityEvaluatorParameters.class)
 public class SecuredLiteralTest extends SecuredRDFNodeTest {
 

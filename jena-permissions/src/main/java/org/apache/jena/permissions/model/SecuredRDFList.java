@@ -30,6 +30,7 @@ import org.apache.jena.shared.AuthenticationRequiredException;
 import org.apache.jena.shared.ReadDeniedException;
 import org.apache.jena.util.iterator.ExtendedIterator;
 
+@SuppressWarnings("removal")
 public interface SecuredRDFList extends RDFList, SecuredResource {
 
     /**
@@ -66,7 +67,7 @@ public interface SecuredRDFList extends RDFList, SecuredResource {
 
     /**
      * Execute a reduct function across the list.
-     * 
+     *
      * @param requiredActions the permission set required to execute the reduce.
      * @param fn              the reduction function.
      * @param initial         the initial accumulation value.

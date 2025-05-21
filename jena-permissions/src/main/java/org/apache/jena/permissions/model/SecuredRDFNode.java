@@ -24,6 +24,8 @@ import org.apache.jena.rdf.model.RDFNode;
  * The interface for secured RDFNode instances.
  *
  * Use one the SecuredRDFNode derived class Factories to create instances
+ * @deprecated To be removed.
  */
+@Deprecated(forRemoval = true)
 public interface SecuredRDFNode extends RDFNode, SecuredItem {
 }

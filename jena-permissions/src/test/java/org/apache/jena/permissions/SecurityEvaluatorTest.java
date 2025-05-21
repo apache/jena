@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import java.util.EnumSet;
 
+@SuppressWarnings("removal")
 public class SecurityEvaluatorTest {
     private static final Object PRINCIPAL = null;
     private static final Node GRAPH = null;

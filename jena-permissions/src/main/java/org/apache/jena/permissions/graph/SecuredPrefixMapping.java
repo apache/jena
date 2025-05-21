@@ -30,6 +30,7 @@ import org.apache.jena.shared.UpdateDeniedException;
  *
  * Use the SecuredPrefixMapping.Factory to create instances
  */
+@SuppressWarnings("removal")
 public interface SecuredPrefixMapping extends PrefixMapping, SecuredItem {
     /**
      * @sec.graph Read

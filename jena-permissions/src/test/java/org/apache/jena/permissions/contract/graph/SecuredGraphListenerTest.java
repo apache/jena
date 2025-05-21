@@ -23,6 +23,7 @@ import org.apache.jena.graph.test.TestGraphListener;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
 
+@SuppressWarnings("removal")
 public class SecuredGraphListenerTest extends TestGraphListener {
     private final SecurityEvaluator eval;
 

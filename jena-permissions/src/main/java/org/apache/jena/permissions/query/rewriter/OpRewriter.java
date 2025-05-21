@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
  * This implementation inserts security evaluator checks where necessary.
  * </p>
  */
+@SuppressWarnings("removal")
 public class OpRewriter implements OpVisitor {
     private static Logger LOG = LoggerFactory.getLogger(OpRewriter.class);
     private OpSequence result;

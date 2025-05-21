@@ -27,6 +27,7 @@ import org.apache.jena.shared.AuthenticationRequiredException;
 /**
  * A SecurityEvaluator that can be cached for later use.
  */
+@SuppressWarnings("removal")
 public class CachedSecurityEvaluator implements SecurityEvaluator {
     private final SecurityEvaluator wrapped;
     private final Object origPrincipal;

@@ -32,7 +32,9 @@ import org.apache.jena.shared.ReadDeniedException;
 
 /**
  * Implementation of SecuredLiteral to be used by a SecuredItemInvoker proxy.
+ * @deprecated To be removed.
  */
+@Deprecated
 public class SecuredLiteralImpl extends SecuredRDFNodeImpl implements SecuredLiteral {
     /**
      * Get an instance of SecuredLiteral

@@ -26,8 +26,9 @@ import org.apache.jena.rdf.model.Seq;
  *
  * Sequence may have breaks in the order.
  * http://www.w3.org/TR/2004/REC-rdf-mt-20040210/#Containers
- *
+ * @deprecated To be removed.
  */
+@Deprecated(forRemoval = true)
 public interface SecuredSeq extends Seq, SecuredContainer {
 
 }

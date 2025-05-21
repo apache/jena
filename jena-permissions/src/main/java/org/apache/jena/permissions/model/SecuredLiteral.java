@@ -23,6 +23,8 @@ import org.apache.jena.rdf.model.Literal;
  * The interface for secured Literal instances.
  *
  * Use the SecuredLiteral.Factory to create instances
+ * @deprecated To be removed.
  */
+@Deprecated(forRemoval = true)
 public interface SecuredLiteral extends Literal, SecuredRDFNode {
 }

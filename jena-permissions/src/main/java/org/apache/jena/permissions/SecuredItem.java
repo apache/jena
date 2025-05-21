@@ -26,7 +26,9 @@ import org.apache.jena.shared.AuthenticationRequiredException;
  * The secured item interface is mixed into instances of secured objects by the
  * proxy. It provides the security context for the security checks as well as
  * several useful shorthand methods for common checks.
+ * @deprecated To be removed
  */
+@Deprecated(forRemoval = true)
 public interface SecuredItem {
 
     /**
@@ -36,7 +38,7 @@ public interface SecuredItem {
         /**
          * Secured items are equivalent if their security evaluators and modelIRIs are
          * equal.
-         * 
+         *
          * @param si1 A secured item to check
          * @param si2 A second secured item to check
          * @return true if si1 is equivalent to si2.
@@ -66,9 +68,9 @@ public interface SecuredItem {
      * Return true if the triple can be created. If any s,p or o is SecNode.ANY then
      * this method must return false if there are any restrictions where the
      * remaining nodes and held constant and the ANY node is allowed to vary.
-     * 
+     *
      * See canRead(Triple t)
-     * 
+     *
      * @param t The triple to check
      * @return true if the triple can be created.
      * @throws AuthenticationRequiredException if user is not authenticated and is
@@ -78,9 +80,9 @@ public interface SecuredItem {
 
     /**
      * Return true if the fronted triple can be created.
-     * 
+     *
      * See canRead(Triple t)
-     * 
+     *
      * @param t The fronted triple to check
      * @return true if the triple can be created.
      * @throws AuthenticationRequiredException if user is not authenticated and is
@@ -99,9 +101,9 @@ public interface SecuredItem {
      * Return true if the triple can be deleted. If any s,p or o is SecNode.ANY then
      * this method must return false if there are any restrictions where the
      * remaining nodes and held constant and the ANY node is allowed to vary.
-     * 
+     *
      * See canRead(Triple t)
-     * 
+     *
      * @param t The triple to check
      * @return true if the triple can be deleted.
      * @throws AuthenticationRequiredException if user is not authenticated and is
@@ -111,9 +113,9 @@ public interface SecuredItem {
 
     /**
      * Return true if the fronted triple can be deleted.
-     * 
+     *
      * See canRead(Triple t)
-     * 
+     *
      * @param t The fronted triple to check
      * @return true if the triple can be deleted.
      * @throws AuthenticationRequiredException if user is not authenticated and is
@@ -132,11 +134,11 @@ public interface SecuredItem {
      * Return true if the triple can be read. If any s,p or o is SecNode.ANY then
      * this method must return false if there are any restrictions where the
      * remaining nodes and held constant and the ANY node is allowed to vary.
-     * 
+     *
      * (S, P, O) check if S,P,O can be read. (S, P, ANY) check if there are any
      * S,P,x restrictions. (S, ANY, P) check if there are any S,x,P restrictions.
      * (ANY, ANY, ANY) check if there are any restrictions on reading.
-     * 
+     *
      * @param t The triple to check
      * @return true if the triple can be read.
      * @throws AuthenticationRequiredException if user is not authenticated and is
@@ -146,7 +148,7 @@ public interface SecuredItem {
 
     /**
      * Return true if the fronted triple can be read.
-     * 
+     *
      * @param t The frontedtriple to check
      * @return true if the triple can be read.
      * @throws AuthenticationRequiredException if user is not authenticated and is
@@ -165,9 +167,9 @@ public interface SecuredItem {
      * Return true if the triple can be updated. If any s,p or o is SecNode.ANY then
      * this method must return false if there are any restrictions where the
      * remaining nodes and held constant and the ANY node is allowed to vary.
-     * 
+     *
      * See canRead(Triple t)
-     * 
+     *
      * @param from The triple that will be changed
      * @param to   The resulting triple.
      * @return true if the from triple can be updated as the to triple.
@@ -178,10 +180,10 @@ public interface SecuredItem {
 
     /**
      * Return true if the fronted triple can be updated.
-     * 
-     * 
+     *
+     *
      * See canUpdate(Triple from, Triple to)
-     * 
+     *
      * @param from The fronted triple that will be changed
      * @param to   The resulting fronted triple.
      * @return true if the from triple can be updated as the to triple.
@@ -210,7 +212,7 @@ public interface SecuredItem {
 
     /**
      * The SecurityEvaluator implementation that is being used to determine access.
-     * 
+     *
      * @return The SecurityEvaluator implementation.
      */
     public SecurityEvaluator getSecurityEvaluator();
@@ -218,7 +220,7 @@ public interface SecuredItem {
     /**
      * Return true if this secured item is equivalent to another secured item.
      * Generally implemented by calling SecuredItem.Util.isEquivalent
-     * 
+     *
      * @param securedItem the other secured item.
      * @return True if they are equivalent, false otherwise.
      */
