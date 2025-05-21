@@ -51,10 +51,11 @@ import org.apache.jena.vocabulary.RDF;
 /**
  * Implementation of SecuredContainer to be used by a SecuredItemInvoker proxy.
  */
+@SuppressWarnings("all")
 public class SecuredContainerImpl extends SecuredResourceImpl implements SecuredContainer {
     /**
      * Constructor
-     * 
+     *
      * @param securedModel the Secured Model to use.
      * @param container    The container to secure.
      * @return The SecuredResource
@@ -94,7 +95,7 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements Secured
 
     /**
      * Constructor
-     * 
+     *
      * @param securedModel the Secured Model to use.
      * @param holder       The item holder that will contain this SecuredContainer
      */
@@ -277,10 +278,10 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements Secured
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple( this, RDF.li, o );
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -293,10 +294,10 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements Secured
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple( this, RDF.li, o );
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -309,10 +310,10 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements Secured
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple( this, RDF.li, o );
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -325,10 +326,10 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements Secured
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple( this, RDF.li, o );
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -341,10 +342,10 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements Secured
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple( this, RDF.li, o );
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -357,10 +358,10 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements Secured
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple( this, RDF.li, o );
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -373,10 +374,10 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements Secured
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple( this, RDF.li, o );
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -400,10 +401,10 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements Secured
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple( this, RDF.li, o );
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -416,10 +417,10 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements Secured
     /**
      * @sec.graph Read
      * @sec.triple Read SecTriple( this, RDF.li, o );
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then @{code false} is returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -496,11 +497,11 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements Secured
     /**
      * @sec.graph Read
      * @sec.triple Read on each triple ( this, rdf:li_? node ) returned by iterator;
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then an empty iterator is
      *             returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.
@@ -530,11 +531,11 @@ public class SecuredContainerImpl extends SecuredResourceImpl implements Secured
      * @sec.graph Read
      * @sec.triple Read + perms on each triple ( this, rdf:li_? node ) returned by
      *             iterator;
-     * 
+     *
      *             if {@link SecurityEvaluator#isHardReadError()} is true and the
      *             user does not have read access then an empty iterator is
      *             returned.
-     * 
+     *
      * @throws ReadDeniedException
      * @throws AuthenticationRequiredException if user is not authenticated and is
      *                                         required to be.

@@ -79,7 +79,9 @@ import org.apache.jena.shared.AuthenticationRequiredException;
  * </ul>
  * </dd>
  * </dl>
+ * @deprecated jena-permissions will be retired
  */
+@Deprecated(forRemoval = true)
 public interface SecurityEvaluator {
     /**
      * Identifies a specific CRUD actions.

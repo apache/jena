@@ -47,6 +47,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+@SuppressWarnings("removal")
 @RunWith(value = SecurityEvaluatorParameters.class)
 public class SecuredStatementTest {
     private final MockSecurityEvaluator securityEvaluator;

@@ -47,6 +47,7 @@ import org.apache.jena.vocabulary.RDF;
  * </p>
  *
  */
+@SuppressWarnings("removal")
 public abstract class SecuredItemImpl implements SecuredItem {
     // a key for the secured item.
     private class CacheKey implements Comparable<CacheKey> {

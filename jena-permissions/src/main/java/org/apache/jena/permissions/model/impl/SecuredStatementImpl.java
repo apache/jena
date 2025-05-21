@@ -45,6 +45,7 @@ import org.apache.jena.shared.UpdateDeniedException;
 /**
  * Implementation of SecuredStatement to be used by a SecuredItemInvoker proxy.
  */
+@SuppressWarnings("all")
 public class SecuredStatementImpl extends SecuredItemImpl implements SecuredStatement {
     /**
      * get a SecuredStatement

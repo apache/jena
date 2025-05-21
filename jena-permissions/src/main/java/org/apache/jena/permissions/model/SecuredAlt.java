@@ -23,7 +23,9 @@ import org.apache.jena.rdf.model.Alt;
  * The interface for secured Alt instances.
  *
  * Use the SecuredAlt.Factory to create instances
+ * @deprecated To be removed.
  */
+@Deprecated(forRemoval = true)
 public interface SecuredAlt extends Alt, SecuredContainer {
 
 }

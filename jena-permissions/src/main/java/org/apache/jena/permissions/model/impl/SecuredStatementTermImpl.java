@@ -25,6 +25,7 @@ import org.apache.jena.rdf.model.*;
 /**
  * Implementation of SecuredStatement to be used by a SecuredItemInvoker proxy.
  */
+@SuppressWarnings("removal")
 public class SecuredStatementTermImpl extends SecuredRDFNodeImpl implements SecuredStatementTerm {
     /**
      * get a SecuredStatement

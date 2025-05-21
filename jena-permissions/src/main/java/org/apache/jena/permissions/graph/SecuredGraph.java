@@ -25,9 +25,11 @@ import org.apache.jena.permissions.SecuredItem;
  *
  * Use the SecuredGraph.Factory to create instances
  *
- * 
+ *
  * {@link org.apache.jena.permissions.graph.impl.SecuredGraphImpl} for javadocs
+ * @deprecated To be removed.
  */
+@Deprecated(forRemoval = true)
 public interface SecuredGraph extends Graph, SecuredItem {
 
 }

@@ -28,6 +28,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("removal")
 public class SecuredAssemblerTest {
     private Assembler assembler;
     private Model model;

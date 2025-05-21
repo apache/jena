@@ -23,6 +23,7 @@ import org.apache.jena.graph.test.MetaTestGraph;
 import org.apache.jena.permissions.MockSecurityEvaluator;
 import org.apache.jena.permissions.SecurityEvaluator;
 
+@SuppressWarnings("removal")
 public class SecuredGraphContractTests extends MetaTestGraph {
 
     private final SecurityEvaluator eval;

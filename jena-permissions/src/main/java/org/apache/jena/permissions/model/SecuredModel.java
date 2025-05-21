@@ -25,7 +25,9 @@ import org.apache.jena.rdf.model.Model;
  * The interface for secured Model instances.
  *
  * Use the SecuredModel.Factory to create instances
+ * @deprecated To be removed.
  */
+@Deprecated(forRemoval = true)
 public interface SecuredModel extends Model, SecuredItem, SecuredPrefixMapping {
 
 }

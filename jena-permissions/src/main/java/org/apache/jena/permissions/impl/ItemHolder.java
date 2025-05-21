@@ -33,6 +33,7 @@ import org.apache.jena.permissions.SecuredItem;
  * @param <Base>    The base class that is being secured
  * @param <Secured> The implementation (proxy) of the secured class.
  */
+@SuppressWarnings("all")
 public class ItemHolder<Base, Secured extends SecuredItem> {
     /**
      * The base item that is being secured
@@ -45,7 +46,7 @@ public class ItemHolder<Base, Secured extends SecuredItem> {
 
     /**
      * Constructor.
-     * 
+     *
      * @param baseItem The base item.
      */
     public ItemHolder(final Base baseItem) {
@@ -55,9 +56,9 @@ public class ItemHolder<Base, Secured extends SecuredItem> {
 
     /**
      * Get the base item.
-     * 
+     *
      * This method is used in the proxy to get call to the underlying instance.
-     * 
+     *
      * @return The instance that is being protected.
      */
     public Base getBaseItem() {
@@ -66,11 +67,11 @@ public class ItemHolder<Base, Secured extends SecuredItem> {
 
     /**
      * Get the secured item.
-     * 
+     *
      * This method is used in the invocation handler to get the instance of the
      * proxy on which a method call was made. Generally used in returning the
      * original object to support cascading.
-     * 
+     *
      * @return the proxy.
      */
     public Secured getSecuredItem() {
@@ -79,7 +80,7 @@ public class ItemHolder<Base, Secured extends SecuredItem> {
 
     /**
      * Creates the proxy, saves it as the securedItem and returns it.
-     * 
+     *
      * @param handler The SecuredItemInvoker to create the proxy with.
      * @return The proxy.
      */

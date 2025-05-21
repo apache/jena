@@ -35,6 +35,7 @@ import org.apache.jena.shared.ReadDeniedException;
 /**
  * Implementation of SecuredRDFNode to be used by a SecuredItemInvoker proxy.
  */
+@SuppressWarnings("all")
 public abstract class SecuredRDFNodeImpl extends SecuredItemImpl implements SecuredRDFNode {
     /**
      *

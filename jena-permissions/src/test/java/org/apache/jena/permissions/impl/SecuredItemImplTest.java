@@ -30,6 +30,7 @@ import org.mockito.ArgumentCaptor;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@SuppressWarnings("removal")
 public class SecuredItemImplTest {
     private SecurityEvaluator evaluator = mock(SecurityEvaluator.class);
     private ItemHolder<?, ?> holder = mock(ItemHolder.class);

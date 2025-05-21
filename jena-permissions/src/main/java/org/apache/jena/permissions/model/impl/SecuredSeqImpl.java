@@ -54,6 +54,7 @@ import org.apache.jena.vocabulary.RDF;
  * http://www.w3.org/TR/2004/REC-rdf-mt-20040210/#Containers
  *
  */
+@SuppressWarnings("all")
 public class SecuredSeqImpl extends SecuredContainerImpl implements SecuredSeq {
 
     /**

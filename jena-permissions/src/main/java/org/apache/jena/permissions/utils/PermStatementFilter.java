@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,6 +32,7 @@ import org.apache.jena.shared.AuthenticationRequiredException;
  * A filter for to filter ExtendedIterators on Statements. This filter removes
  * any triple that the user can not perform all the actions on.
  */
+@SuppressWarnings("removal")
 public class PermStatementFilter implements Predicate<Statement> {
     private final SecurityEvaluator evaluator;
     private final Node modelNode;
@@ -41,7 +42,7 @@ public class PermStatementFilter implements Predicate<Statement> {
     /**
      * Creates a filter that requires that the user have all the permissions listed
      * in the actions parameter
-     * 
+     *
      * @param action      The action the user must be permitted to perform.
      * @param securedItem The secured item that secures this iterator.
      */
@@ -55,7 +56,7 @@ public class PermStatementFilter implements Predicate<Statement> {
     /**
      * Creates a filter that requires that the user have all the permissions listed
      * in the actions parameter
-     * 
+     *
      * @param action      The action the user must be permitted to perform.
      * @param securedItem The secured item that secures this iterator.
      * @param evaluator   The security evaluator to evaluate the security queries.
@@ -70,7 +71,7 @@ public class PermStatementFilter implements Predicate<Statement> {
     /**
      * Creates a filter that requires that the user have all the permissions listed
      * in the actions parameter
-     * 
+     *
      * @param actions     The actions the user must be permitted to perform.
      * @param securedItem The secured item that secures this iterator.
      */
@@ -84,7 +85,7 @@ public class PermStatementFilter implements Predicate<Statement> {
     /**
      * Creates a filter that requires that the user have all the permissions listed
      * in the actions parameter
-     * 
+     *
      * @param actions     The actions the user must be permitted to perform.
      * @param securedItem The secured item that secures this iterator.
      * @param evaluator   The security evaluator to evaluate the security queries.
@@ -100,7 +101,7 @@ public class PermStatementFilter implements Predicate<Statement> {
     /**
      * Creates a filter that requires that the user have all the permissions listed
      * in the actions parameter
-     * 
+     *
      * @param actions     The actions the user must be permitted to perform.
      * @param securedItem The secured item that secures this iterator.
      */
@@ -114,7 +115,7 @@ public class PermStatementFilter implements Predicate<Statement> {
     /**
      * Creates a filter that requires that the user have all the permissions listed
      * in the actions parameter
-     * 
+     *
      * @param actions     The actions the user must be permitted to perform.
      * @param securedItem The secured item that secures this iterator.
      * @param evaluator   The security evaluator to evaluate the security queries.

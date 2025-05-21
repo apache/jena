@@ -39,6 +39,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+@SuppressWarnings("removal")
 @RunWith(value = SecurityEvaluatorParameters.class)
 public class MemGraphTest {
     private SecuredGraph securedGraph;
@@ -139,7 +140,6 @@ public class MemGraphTest {
         }
     }
 
-    @SuppressWarnings("removal")
     @Test
     public void testDependsOn() throws Exception {
         try {
