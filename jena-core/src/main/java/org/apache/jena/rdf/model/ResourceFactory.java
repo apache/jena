@@ -25,10 +25,7 @@ import org.apache.jena.datatypes.xsd.XSDDatatype ;
 import org.apache.jena.datatypes.xsd.XSDDateTime ;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory ;
-import org.apache.jena.rdf.model.impl.LiteralImpl;
-import org.apache.jena.rdf.model.impl.PropertyImpl;
-import org.apache.jena.rdf.model.impl.ResourceImpl;
-import org.apache.jena.rdf.model.impl.StatementImpl;
+import org.apache.jena.rdf.model.impl.*;
 
 /** A Factory class for creating resources.
  *
@@ -92,15 +89,6 @@ public class ResourceFactory {
      */
     public static Resource createResource(String uriref) {
         return instance.createResource(uriref);
-    }
-
-    /**
-     * Create a new resource representing an RDF-star triple term.
-     * @param statement
-     * @return a new resource
-     */
-    public static Resource createStmtResource(Statement statement) {
-        return instance.createStmtResource(statement);
     }
 
     /**
@@ -203,6 +191,18 @@ public class ResourceFactory {
         return instance.createStatement(subject, predicate, object);
     }
 
+    /**
+     * Create a new statement term.
+     * <p>
+     * Uses the current factory object to create a new statement.</p>
+     *
+     * @param statement
+     * @return a new statement term for the statement
+     */
+    public static StatementTerm createStatementTerm(Statement statement) {
+        return instance.createStatementTerm(statement);
+    }
+
     /** The interface to resource factory objects.
      */
     public interface Interface {
@@ -219,13 +219,6 @@ public class ResourceFactory {
          * @return a new resource
          */
         public Resource createResource(String uriref);
-
-        /** Create a new resource representing an RDF-star triple term.
-         *
-         * @param statement
-         * @return a new resource
-         */
-        public Resource createStmtResource(Statement statement);
 
         /**
          * Answer a string (xsd:string) literal.
@@ -287,10 +280,14 @@ public class ResourceFactory {
          * @param object object of the new statement
          * @return a new statement
          */
-        public Statement createStatement(
-            Resource subject,
-            Property predicate,
-            RDFNode object);
+        public Statement createStatement(Resource subject, Property predicate, RDFNode object);
+
+        /** Create a new statement term representing an RDF 1.2 triple term.
+        *
+        * @param statement
+        * @return a new statement term
+        */
+       public StatementTerm createStatementTerm(Statement statement);
     }
 
     static class Impl implements Interface {
@@ -306,11 +303,6 @@ public class ResourceFactory {
         @Override
         public Resource createResource(String uriref) {
             return new ResourceImpl(uriref);
-        }
-
-        @Override
-        public Resource createStmtResource(Statement statement) {
-            return new ResourceImpl(statement, null);
         }
 
         @Override
@@ -357,6 +349,11 @@ public class ResourceFactory {
             Property predicate,
             RDFNode object) {
             return new StatementImpl(subject, predicate, object);
+        }
+
+        @Override
+        public StatementTerm createStatementTerm(Statement statement) {
+            return new StatementTermImpl(statement);
         }
     }
 }

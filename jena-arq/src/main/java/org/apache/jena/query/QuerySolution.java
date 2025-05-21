@@ -22,43 +22,61 @@ import java.util.Iterator ;
 import org.apache.jena.rdf.model.Literal ;
 import org.apache.jena.rdf.model.RDFNode ;
 import org.apache.jena.rdf.model.Resource ;
-
+import org.apache.jena.rdf.model.StatementTerm;
 
 /**
- * A single answer from a SELECT query. */
+ * A single answer from a SELECT query.
+ */
 
 public interface QuerySolution
 {
-    /** Return the value of the named variable in this binding.
-     *  A return of null indicates that the variable is not present in this solution.
-     *  @param varName
-     *  @return RDFNode
+    /**
+     * Return the value of the named variable in this binding. A return of null
+     * indicates that the variable is not present in this solution.
+     *
+     * @param varName
+     * @return RDFNode
      */
     public RDFNode get(String varName);
 
-    /** Return the value of the named variable in this binding, casting to a Resource.
-     *  A return of null indicates that the variable is not present in this solution.
-     *  An exception indicates it was present but not a resource.
-     *  @param varName
-     *  @return Resource
+    /**
+     * Return the value of the named variable in this binding, casting to a
+     * {@link Resource}. A return of null indicates that the variable is not present
+     * in this solution. An exception indicates it was present but not a resource.
+     *
+     * @param varName
+     * @return Resource
      */
     public Resource getResource(String varName);
 
-    /** Return the value of the named variable in this binding, casting to a Literal.
-     *  A return of null indicates that the variable is not present in this solution.
-     *  An exception indicates it was present but not a literal.
-     *  @param varName
-     *  @return Resource
+    /**
+     * Return the value of the named variable in this binding, casting to a
+     * {@link Literal}. A return of null indicates that the variable is not present
+     * in this solution. An exception indicates it was present but not a literal.
+     *
+     * @param varName
+     * @return Resource
      */
     public Literal getLiteral(String varName);
 
-    
+    /**
+     * Return the value of the named variable in this binding, casting to a
+     * {@link StatementTerm}. A return of null indicates that the variable is not
+     * present in this solution. An exception indicates it was present but not a
+     * triple term.
+     *
+     * @param varName
+     * @return Resource
+     */
+    public StatementTerm getStatementTerm(String varName);
+
     /** Return true if the named variable is in this binding */
     public boolean contains(String varName);
 
-    /** Iterate over the variable names (strings) in this QuerySolution.
+    /**
+     * Iterate over the variable names (strings) in this QuerySolution.
+     *
      * @return Iterator of strings
-     */ 
-    public Iterator<String> varNames() ;
-    
+     */
+    public Iterator<String> varNames();
 }

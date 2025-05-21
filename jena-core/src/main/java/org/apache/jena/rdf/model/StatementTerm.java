@@ -16,25 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.enhanced.test;
-
-import org.apache.jena.rdf.model.RDFNode ;
+package org.apache.jena.rdf.model;
 
 /**
- * An interface for viewing object nodes in the graph.
+ * The Jena Model abstraction of a RDF 1.2 triple term.
  */
-public interface TestObject extends RDFNode, TestNode {
+public interface StatementTerm extends RDFNode {
 
     /**
-     * Checks whether this node is right now the object of some
-     * triple in the graph.
-     * @return true if this interface is currently working.
+     * Return the {@link Statement} that this {@link StatementTerm} represents.
      */
-    boolean isObject();
-
-    /** The subject of a triple of which I am object.
-     *
-     * @return the subject of a triple.
-     */
-    TestSubject aSubject();
+    public Statement getStatement();
 }

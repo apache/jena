@@ -19,12 +19,12 @@
 package org.apache.jena.enhanced.test;
 
 public interface TestNode {
-	// Convenience routines for converting between different 
+	// Convenience routines for converting between different
 	// views using the subinterfaces,
 	// These are implemented in the base implementation class
 	// TestCommonImpl.
     TestSubject asSubject();
     TestObject asObject();
     TestProperty asProperty();
-    
+
 }

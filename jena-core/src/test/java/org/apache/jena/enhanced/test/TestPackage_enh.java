@@ -339,141 +339,135 @@ public class TestPackage_enh extends GraphTestBase  {
     	}
     }
 
-    static class Example extends EnhNode implements RDFNode
-        {
-        public Example( Node n, EnhGraph g )
-            { super( n, g ); }
+    static class Example extends EnhNode implements RDFNode {
+        public Example(Node n, EnhGraph g) {
+            super(n, g);
+        }
 
-        static final Implementation factory = new Implementation()
-            {
-            @Override public EnhNode wrap( Node n, EnhGraph g )
-                { return new EnhNode( n, g ); }
+        static final Implementation factory = new Implementation() {
+            @Override
+            public EnhNode wrap(Node n, EnhGraph g) {
+                return new EnhNode(n, g);
+            }
 
-            @Override public boolean canWrap( Node n, EnhGraph g )
-                { return n.isURI(); }
-            };
+            @Override
+            public boolean canWrap(Node n, EnhGraph g) {
+                return n.isURI();
+            }
+        };
 
         @Override
         public RDFNode inModel( Model m )
-            { return null; }
+        { return null; }
 
         @Override
         public Model getModel()
-            { throw new JenaException( "getModel() should not be called in the EnhGraph/Node tests" ); }
+        { throw new JenaException( "getModel() should not be called in the EnhGraph/Node tests" ); }
 
         @Override
         public Resource asResource()
-            { throw new JenaException( "asResource() should not be called in the EnhGraph/Node tests" ); }
+        { throw new JenaException( "asResource() should not be called in the EnhGraph/Node tests" ); }
 
         @Override
         public Literal asLiteral()
-            { throw new JenaException( "asLiteral() should not be called in the EnhGraph/Node tests" ); }
+        { throw new JenaException( "asLiteral() should not be called in the EnhGraph/Node tests" ); }
+
+        @Override
+        public StatementTerm asStatementTerm()
+        { throw new JenaException( "asStatementTerm() should not be called in the EnhGraph/Node tests" ); }
 
         @Override
         public Object visitWith( RDFVisitor rv )
             { return null; }
         }
 
-    public void testSimple()
-        {
-        Graph g = GraphMemFactory.createGraphMem();
-        Personality<RDFNode> ours = BuiltinPersonalities.model.copy().add( Example.class, Example.factory );
-        EnhGraph eg = new EnhGraph( g, ours );
-        Node n = NodeFactory.createURI( "spoo:bar" );
-        EnhNode eNode = new EnhNode( NodeFactory.createURI( "spoo:bar" ), eg );
-        EnhNode eBlank = new EnhNode( NodeFactory.createBlankNode(), eg );
-        assertTrue( "URI node can be an Example", eNode.supports( Example.class ) );
-        assertFalse( "Blank node cannot be an Example", eBlank.supports( Example.class ) );
+        public void testSimple() {
+            Graph g = GraphMemFactory.createGraphMem();
+            Personality<RDFNode> ours = BuiltinPersonalities.model.copy().add(Example.class, Example.factory);
+            EnhGraph eg = new EnhGraph(g, ours);
+            Node n = NodeFactory.createURI("spoo:bar");
+            EnhNode eNode = new EnhNode(NodeFactory.createURI("spoo:bar"), eg);
+            EnhNode eBlank = new EnhNode(NodeFactory.createBlankNode(), eg);
+            assertTrue("URI node can be an Example", eNode.supports(Example.class));
+            assertFalse("Blank node cannot be an Example", eBlank.supports(Example.class));
         }
 
-    static class AnotherExample
-        {
-        static final Implementation factory = new Implementation()
-            {
-            @Override
-            public EnhNode wrap( Node n, EnhGraph g ) { return new EnhNode( n, g ); }
+        static class AnotherExample {
+            static final Implementation factory = new Implementation() {
+                @Override
+                public EnhNode wrap(Node n, EnhGraph g) {
+                    return new EnhNode(n, g);
+                }
 
-            @Override
-            public boolean canWrap( Node n, EnhGraph g ) { return n.isURI(); }
+                @Override
+                public boolean canWrap(Node n, EnhGraph g) {
+                    return n.isURI();
+                }
             };
         }
 
-    public void testAlreadyLinkedViewException()
-        {
-         Graph g = GraphMemFactory.createGraphMem();
-         Personality<RDFNode> ours = BuiltinPersonalities.model.copy().add( Example.class, Example.factory );
-         EnhGraph eg = new EnhGraph( g, ours );
-         Node n = NodeCreateUtils.create( "spoo:bar" );
-         EnhNode eNode = new Example( n, eg );
-         EnhNode multiplexed = new Example( n, eg );
-         multiplexed.as( Property.class );
-         eNode.viewAs( Example.class );
-         try
-            {
-            eNode.addView( multiplexed );
-            fail( "should raise an AlreadyLinkedViewException " );
-            }
-        catch (AlreadyLinkedViewException e)
-            {}
+        public void testAlreadyLinkedViewException() {
+            Graph g = GraphMemFactory.createGraphMem();
+            Personality<RDFNode> ours = BuiltinPersonalities.model.copy().add(Example.class, Example.factory);
+            EnhGraph eg = new EnhGraph(g, ours);
+            Node n = NodeCreateUtils.create("spoo:bar");
+            EnhNode eNode = new Example(n, eg);
+            EnhNode multiplexed = new Example(n, eg);
+            multiplexed.as(Property.class);
+            eNode.viewAs(Example.class);
+            try {
+                eNode.addView(multiplexed);
+                fail("should raise an AlreadyLinkedViewException ");
+            } catch (AlreadyLinkedViewException e) {}
         }
 
-    /**
-        Test that an attempt to polymorph an enhanced node into a class that isn't
-        supported by the enhanced graph generates an UnsupportedPolymorphism
-        exception.
-    */
-    public void testNullPointerTrap()
-        {
-        EnhGraph eg = new EnhGraph( GraphMemFactory.createGraphMem(), new Personality<RDFNode>() );
-        Node n = NodeCreateUtils.create( "eh:something" );
-        EnhNode en = new EnhNode( n, eg );
-        try
-            {
-            en.as( Property.class );
-            fail( "oops" );
-            }
-        catch (UnsupportedPolymorphismException e)
-            {
-            assertEquals( en, e.getBadNode() );
-            assertTrue( "exception should have cuplprit graph", eg == ((EnhNode)e.getBadNode()).getGraph() );
-            assertSame( "exception should have culprit class", Property.class, e.getBadClass() );
+        /**
+         * Test that an attempt to polymorph an enhanced node into a class that isn't
+         * supported by the enhanced graph generates an UnsupportedPolymorphism
+         * exception.
+         */
+        public void testNullPointerTrap() {
+            EnhGraph eg = new EnhGraph(GraphMemFactory.createGraphMem(), new Personality<RDFNode>());
+            Node n = NodeCreateUtils.create("eh:something");
+            EnhNode en = new EnhNode(n, eg);
+            try {
+                en.as(Property.class);
+                fail("oops");
+            } catch (UnsupportedPolymorphismException e) {
+                assertEquals(en, e.getBadNode());
+                assertTrue("exception should have cuplprit graph", eg == ((EnhNode)e.getBadNode()).getGraph());
+                assertSame("exception should have culprit class", Property.class, e.getBadClass());
             }
         }
 
-    public void testNullPointerTrapInCanSupport()
-        {
-        EnhGraph eg = new EnhGraph( GraphMemFactory.createGraphMem(), new Personality<RDFNode>() );
-        Node n = NodeCreateUtils.create( "eh:something" );
-        EnhNode en = new EnhNode( n, eg );
-        assertFalse( en.canAs( Property.class ) );
+        public void testNullPointerTrapInCanSupport() {
+            EnhGraph eg = new EnhGraph(GraphMemFactory.createGraphMem(), new Personality<RDFNode>());
+            Node n = NodeCreateUtils.create("eh:something");
+            EnhNode en = new EnhNode(n, eg);
+            assertFalse(en.canAs(Property.class));
         }
 
-    public void testAsToOwnClassWithNoModel()
-        {
-        Resource r = ResourceFactory.createResource();
-        assertEquals( null, r.getModel() );
-        assertTrue( r.canAs( Resource.class ) );
-        assertSame( r, r.as( Resource.class ) );
+        public void testAsToOwnClassWithNoModel() {
+            Resource r = ResourceFactory.createResource();
+            assertEquals(null, r.getModel());
+            assertTrue(r.canAs(Resource.class));
+            assertSame(r, r.as(Resource.class));
         }
 
-    public void testCanAsReturnsFalseIfNoModel()
-        {
-        Resource r = ResourceFactory.createResource();
-        assertEquals( false, r.canAs( Example.class ) );
+        public void testCanAsReturnsFalseIfNoModel() {
+            Resource r = ResourceFactory.createResource();
+            assertEquals(false, r.canAs(Example.class));
         }
 
-    public void testAsThrowsPolymorphismExceptionIfNoModel()
-        {
-        Resource r = ResourceFactory.createResource();
-        try
-            { r.as( Example.class );
-            fail( "should throw UnsupportedPolymorphismException" ); }
-        catch (UnsupportedPolymorphismException e)
-            {
-        	assertTrue( e.getBadNode() instanceof EnhNode );
-            assertEquals( null, ((EnhNode)e.getBadNode()).getGraph() );
-            assertEquals( Example.class, e.getBadClass() );
+        public void testAsThrowsPolymorphismExceptionIfNoModel() {
+            Resource r = ResourceFactory.createResource();
+            try {
+                r.as(Example.class);
+                fail("should throw UnsupportedPolymorphismException");
+            } catch (UnsupportedPolymorphismException e) {
+                assertTrue(e.getBadNode() instanceof EnhNode);
+                assertEquals(null, ((EnhNode)e.getBadNode()).getGraph());
+                assertEquals(Example.class, e.getBadClass());
             }
         }
-
 }

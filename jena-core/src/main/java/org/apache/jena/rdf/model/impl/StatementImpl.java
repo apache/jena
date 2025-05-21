@@ -21,6 +21,7 @@ package org.apache.jena.rdf.model.impl;
 import org.apache.jena.enhanced.* ;
 import org.apache.jena.graph.* ;
 import org.apache.jena.rdf.model.* ;
+import org.apache.jena.shared.JenaException;
 
 /** An implementation of Statement.
  */
@@ -177,9 +178,17 @@ public class StatementImpl extends StatementBase implements Statement {
     }
 
     /**
-     * create an RDF node which might be a literal, or not.
+     * Create an RDF node from a {@link Node} for a {@link Model}.
      */
     public static RDFNode createObject(Node n, EnhGraph g) {
-        return n.isLiteral() ? (RDFNode)new LiteralImpl(n, g) : new ResourceImpl(n, g);
+        if ( n.isBlank() || n.isURI() )
+            return new ResourceImpl(n, g);
+        if ( n.isLiteral() )
+            return new LiteralImpl(n, g);
+        if ( n.isTripleTerm() )
+            return new StatementTermImpl(n, g);
+        if (Node.ANY.equals(n) )
+            return new ResourceImpl(n, g);
+        throw new JenaException("Node type not compatible with Model: "+n);
     }
 }
