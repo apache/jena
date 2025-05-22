@@ -36,11 +36,11 @@ import org.junit.runners.Suite ;
     , TestTransDiskDirect.class
     , TestTransDiskMapped.class
     , TestTransRestart.class
-    , TestTransactionTDB.class
+    , TestTransactionTDB1.class
     , TestTransactionUnionGraph.class
-    , TestTransactionMiscTDB.class
-    , TestTDBInternal.class
-    , TestTransPromoteTDB.class
+    , TestTransactionMiscTDB1.class
+    , TestTDB1Internal.class
+    , TestTransPromoteTDB1.class
     , TestTransControl.class
     , TestTransIsolation.class
 })

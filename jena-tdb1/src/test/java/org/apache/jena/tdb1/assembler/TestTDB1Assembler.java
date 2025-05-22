@@ -39,7 +39,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestTDBAssembler {
+public class TestTDB1Assembler {
     // Can be slow - explicitly closes the dataset.
     static String dirAssem = null;
     static final String dirDB = ConfigTest.getTestingDir() + "/DB";

@@ -29,36 +29,36 @@ import org.junit.Assert ;
 import org.junit.Test ;
 
 /** Tests for lower level details of TDB */
-public class TestTDBInternal {
+public class TestTDB1Internal {
 
     @Test public void basics_1() {
         DatasetGraph dsg = TDB1Factory.createDatasetGraph() ;
         StoreConnection sConn = TDBInternal.getStoreConnection(dsg) ;
         Assert.assertNotNull(sConn);
     }
-    
+
     @Test public void basics_2() {
         DatasetGraph dsg = TDB1Factory.createDatasetGraph() ;
         TransactionManager txnmgr = TDBInternal.getTransactionManager(dsg) ;
-        Assert.assertNotNull(txnmgr); 
+        Assert.assertNotNull(txnmgr);
     }
-    
+
     @Test public void exclusive_1() {
         DatasetGraph dsg = TDB1Factory.createDatasetGraph() ;
         TransactionManager txnmgr = TDBInternal.getTransactionManager(dsg) ;
         checkTxnMgr(txnmgr, 0, 0) ;
-        
+
         ReentrantReadWriteLock rwx = (ReentrantReadWriteLock)txnmgr.getExclusivityLock$() ;
         checkLock(rwx,0,0) ;
-        
+
         dsg.begin(ReadWrite.WRITE);
         checkLock(rwx,1,0) ;    // Exclusivity reader lock.
         checkTxnMgr(txnmgr, 0, 1) ;
         dsg.commit();
-        
+
         checkLock(rwx,0,0) ;    // Exclusivity reader lock.
         checkTxnMgr(txnmgr, 0, 0) ;
-        
+
         dsg.end();
         checkLock(rwx,0,0) ;    // Exclusivity reader lock.
         checkTxnMgr(txnmgr, 0, 0) ;
@@ -68,10 +68,10 @@ public class TestTDBInternal {
         DatasetGraph dsg = TDB1Factory.createDatasetGraph() ;
         TransactionManager txnmgr = TDBInternal.getTransactionManager(dsg) ;
         checkTxnMgr(txnmgr, 0, 0) ;
-        
+
         ReentrantReadWriteLock rwx = (ReentrantReadWriteLock)txnmgr.getExclusivityLock$() ;
         checkLock(rwx,0,0) ;
-        
+
         dsg.begin(ReadWrite.READ);
         checkLock(rwx,1,0) ;
         checkTxnMgr(txnmgr, 1, 0) ;
@@ -79,12 +79,12 @@ public class TestTDBInternal {
         checkLock(rwx,0,0) ;
         checkTxnMgr(txnmgr, 0, 0) ;
     }
-    
+
     @Test public void exclusive_3() {
         DatasetGraph dsg = TDB1Factory.createDatasetGraph() ;
         TransactionManager txnmgr = TDBInternal.getTransactionManager(dsg) ;
         ReentrantReadWriteLock rwx = (ReentrantReadWriteLock)txnmgr.getExclusivityLock$() ;
-        
+
         checkLock(rwx, 0, 0) ;
         txnmgr.startExclusiveMode();
         checkLock(rwx, 0, 1) ;
@@ -96,7 +96,7 @@ public class TestTDBInternal {
         DatasetGraph dsg = TDB1Factory.createDatasetGraph() ;
         TransactionManager txnmgr = TDBInternal.getTransactionManager(dsg) ;
         ReentrantReadWriteLock rwx = (ReentrantReadWriteLock)txnmgr.getExclusivityLock$() ;
-        
+
         checkLock(rwx, 0, 0) ;
         boolean b = txnmgr.tryExclusiveMode();
         Assert.assertTrue("Exclusive 1", b);
@@ -115,19 +115,19 @@ public class TestTDBInternal {
         boolean b = txnmgr.tryExclusiveMode();
         Assert.assertFalse(b);
     }
-    
+
     private static void checkLock(ReentrantReadWriteLock rwx, int expectedR, int expectedW) {
         int r = rwx.getReadHoldCount() ;
         int w = rwx.getWriteHoldCount() ;
         Assert.assertEquals("R", expectedR, r);
-        Assert.assertEquals("W", expectedW, w); 
+        Assert.assertEquals("W", expectedW, w);
     }
-    
+
     private static void checkTxnMgr(TransactionManager txnmgr , int expectedActiveReaders, int expectedActiveWriters) {
         long r = txnmgr.getCountActiveReaders() ;
         long w = txnmgr.getCountActiveWriters() ;
         Assert.assertEquals("R-active", expectedActiveReaders, r);
-        Assert.assertEquals("W-active", expectedActiveWriters, w); 
-        
+        Assert.assertEquals("W-active", expectedActiveWriters, w);
+
     }
 }

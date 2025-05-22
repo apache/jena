@@ -31,7 +31,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-public class TestTransactionTDB extends AbstractTestTransactionLifecycle
+public class TestTransactionTDB1 extends AbstractTestTransactionLifecycle
 {
     private String DIR = null ; 
     private static String level = null ;

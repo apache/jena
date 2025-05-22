@@ -35,7 +35,7 @@ import org.apache.jena.tdb1.TDB1Factory;
 import org.junit.Test ;
 
 /** Tests of datasets, prefixes, special URIs etc (see also {@link org.apache.jena.sparql.graph.GraphsTests} */
-public class TestDatasetTDB
+public class TestDatasetTDB1
 {
 
     private static Dataset create()

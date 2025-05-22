@@ -16,19 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb1.graph;
+package org.apache.jena.tdb1.lib;
 
-import org.junit.After ;
-import org.junit.Before ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class TestGraphsTDBnonTxn extends AbstractTestGraphsTDB1
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestNodeLib.class
+    , TestStringAbbrev.class
+    , TestColumnMap.class
+})
+
+
+public class TS_LibTDB1
 {
-    // Non-transactional.
-    @Before public void before() 
-    {
-    }
 
-    @After public void after() 
-    {
-    }
 }

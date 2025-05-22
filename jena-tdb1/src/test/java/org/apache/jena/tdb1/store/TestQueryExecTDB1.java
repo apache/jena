@@ -16,35 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb1.transaction ;
+package org.apache.jena.tdb1.store;
 
-import org.apache.jena.sparql.JenaTransactionException;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.sparql.transaction.AbstractTestTransPromote ;
-import org.apache.jena.tdb1.TDB1;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.sparql.core.AbstractTestQueryExec;
 import org.apache.jena.tdb1.TDB1Factory;
-import org.apache.jena.tdb1.sys.SystemTDB;
+import org.apache.jena.tdb1.sys.TDBInternal;
 
-/** Tests for transactions that start read and then promote to write -- TDB */
-public class TestTransPromoteTDB extends AbstractTestTransPromote {
-    public TestTransPromoteTDB() {
-        super(getLoggers()) ;
+public class TestQueryExecTDB1 extends AbstractTestQueryExec
+{
+    @Override
+    protected Dataset createDataset()
+    {
+        return TDB1Factory.createDataset() ;
     }
 
     @Override
-    protected DatasetGraph create() {
-        return TDB1Factory.createDatasetGraph() ;
-    }
-
-    private static String[] getLoggers() {
-        return new String[]{
-            SystemTDB.errlog.getName(),
-            TDB1.logInfoName
-        } ;
-    }
-
-    @Override
-    protected Class<JenaTransactionException> getTransactionExceptionClass() {
-        return JenaTransactionException.class ;
+    protected void releaseDataset(Dataset ds) {
+        TDBInternal.expel(ds.asDatasetGraph());
     }
 }
+
