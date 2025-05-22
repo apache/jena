@@ -181,5 +181,12 @@ public class TestBufferingDatasetGraph {
         });
     }
 
-
+    @Test
+    public void buffered_5() {
+        Quad quad = SSE.parseQuad("(:g :s :p 1)");
+        buffered.add(quad);
+        assertFalse(buffered.isEmpty());
+        buffered.reset();
+        assertTrue(buffered.isEmpty());
+    }
 }

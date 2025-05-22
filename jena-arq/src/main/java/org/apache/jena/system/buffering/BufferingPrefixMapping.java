@@ -49,7 +49,11 @@ public class BufferingPrefixMapping extends PrefixMappingBase implements Bufferi
     public void flush() {
         deleted.forEach(prefix->other.removeNsPrefix(prefix));
         other.setNsPrefixes(added);
+        reset();
+    }
 
+    @Override
+    public void reset() {
         deleted.clear();
         added.clearNsPrefixMap();
     }

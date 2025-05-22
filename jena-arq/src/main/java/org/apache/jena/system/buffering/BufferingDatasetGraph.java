@@ -165,6 +165,19 @@ public class BufferingDatasetGraph extends DatasetGraphTriplesQuads implements D
         accessState = AccessState.NONE;
     }
 
+    @Override
+    public void reset() {
+        resetBuffered();
+        prefixes.reset();
+    }
+
+    private void resetBuffered() {
+        addedTriples.clear();
+        deletedTriples.clear();
+        addedQuads.clear();
+        deletedQuads.clear();
+    }
+
     /**
      * Send the changes to the underlying store, drop the buffered changes that have
      * been flushed, but do not end the buffering session.
@@ -178,10 +191,8 @@ public class BufferingDatasetGraph extends DatasetGraphTriplesQuads implements D
             addedQuads.forEach(baseDSG::add);
             deletedQuads.forEach(baseDSG::delete);
 
-            addedTriples.clear();
-            deletedTriples.clear();
-            addedQuads.clear();
-            deletedQuads.clear();
+            resetBuffered();
+
             prefixes.flush();
             writeTxnCount = 0;
         });

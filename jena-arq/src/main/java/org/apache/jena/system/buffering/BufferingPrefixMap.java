@@ -126,9 +126,12 @@ public class BufferingPrefixMap extends PrefixMapBase {
     public void flush() {
         addedMappings.forEach(base::add);
         deletedMappings.forEach(base::delete);
+        reset();
+    }
+
+    public void reset() {
         addedMappings.clear();
         deletedMappings.clear();
-
     }
 
     public String state() {

@@ -124,4 +124,14 @@ public class TestBufferingGraph {
             assertTrue(graph.isEmpty());
         });
     }
+
+    @Test public void basic_6() {
+        BufferingGraph graph = buffered;
+        // New object, same triple.
+        Triple t = SSE.parseTriple("(:s :p 1)");
+        buffered.add(t);
+        assertFalse(buffered.isEmpty());
+        buffered.reset();
+        assertTrue(buffered.isEmpty());
+    }
 }

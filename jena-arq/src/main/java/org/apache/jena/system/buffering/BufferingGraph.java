@@ -84,16 +84,27 @@ public class BufferingGraph extends GraphWrapper implements BufferingCtl {
     private void flushDirect(Graph base) {
         deletedTriples.forEach(base::delete);
         addedGraph.find().forEachRemaining(base::add);
+        prefixMapping.flush();  // Does a reset().
+        resetBufferedTriples();
+    }
+
+    /**
+     *  Remove all recorded added and deleted triples and also reset the buffering prefixes.
+     */
+    @Override
+    public void reset() {
+        resetBufferedTriples();
+        prefixMapping.reset();
+    }
+
+    private void resetBufferedTriples() {
         deletedTriples.clear();
         addedGraph.clear();
-        prefixMapping.flush();
     }
 
-    private void updateOperation() {
-    }
+    protected void updateOperation() {}
 
-    private void readOperation() {
-    }
+    protected void readOperation() {}
 
 
     @Override

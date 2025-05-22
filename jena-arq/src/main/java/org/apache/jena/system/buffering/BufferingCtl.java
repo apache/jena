@@ -19,5 +19,13 @@
 package org.apache.jena.system.buffering;
 
 public interface BufferingCtl {
+    /**
+     * Push the buffered changes into the base object
+     */
     public void flush() ;
+
+    /**
+     * Remove any changes that are buffered.
+     */
+    public void reset() ;
 }
