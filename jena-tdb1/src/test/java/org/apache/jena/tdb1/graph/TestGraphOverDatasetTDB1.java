@@ -29,7 +29,7 @@ public class TestGraphOverDatasetTDB1 extends AbstractTestGraphOverDatasetGraph
 {
     @Override
     protected DatasetGraph createBaseDSG() { return TDB1Factory.createDatasetGraph() ; }
-    
+
     @Override
     protected Graph makeNamedGraph(DatasetGraph dsg, Node gn)
     {

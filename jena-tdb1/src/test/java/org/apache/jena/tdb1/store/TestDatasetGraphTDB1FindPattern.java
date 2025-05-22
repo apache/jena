@@ -16,16 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb1.solver;
+package org.apache.jena.tdb1.store;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.apache.jena.sparql.core.AbstractDatasetGraphFindPatterns ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.tdb1.TDB1Factory;
+import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestSolverTDB.class
-    , TestStats.class
-})
+public class TestDatasetGraphTDB1FindPattern extends AbstractDatasetGraphFindPatterns {
 
-public class TS_SolverTDB
-{}
+    @Override
+    public DatasetGraph create() {
+        // Get the underlying storage, not the transactional support. 
+        return ((DatasetGraphTransaction)TDB1Factory.createDatasetGraph()).getBaseDatasetGraph();
+    }
+}

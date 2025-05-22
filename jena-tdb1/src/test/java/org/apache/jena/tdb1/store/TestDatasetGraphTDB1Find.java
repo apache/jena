@@ -16,14 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb1.junit;
+package org.apache.jena.tdb1.store;
 
-import org.apache.jena.tdb1.TDB1Exception;
+import org.apache.jena.sparql.core.AbstractDatasetGraphFind ;
+import org.apache.jena.sparql.core.DatasetGraph ;
+import org.apache.jena.tdb1.TDB1Factory;
+import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;
 
-public class TDBTestException extends TDB1Exception
-{
-    public TDBTestException() {}
-    public TDBTestException(String msg) { super(msg) ; }
-    public TDBTestException(Throwable th) { super(th) ;}
-    public TDBTestException(String msg, Throwable th) { super(msg, th) ; }
+public class TestDatasetGraphTDB1Find extends AbstractDatasetGraphFind {
+
+    @Override
+    public DatasetGraph create() {
+        // Get the underlying storage, not the transactional support. 
+        return ((DatasetGraphTransaction)TDB1Factory.createDatasetGraph()).getBaseDatasetGraph();
+    }
 }

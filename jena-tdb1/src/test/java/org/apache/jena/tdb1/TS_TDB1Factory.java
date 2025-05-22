@@ -24,7 +24,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestTDBFactory.class
+    TestTDB1Factory.class
 })
 
 public class TS_TDB1Factory

@@ -16,21 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb1.graph;
+package org.apache.jena.tdb1.store;
 
-import org.apache.jena.query.ReadWrite ;
-import org.junit.After ;
-import org.junit.Before ;
+import org.apache.jena.query.Dataset ;
+import org.apache.jena.sparql.core.AbstractTestDynamicDataset ;
+import org.apache.jena.tdb1.TDB1Factory;
+import org.apache.jena.tdb1.sys.TDBInternal;
 
-public class TestGraphsTDBinsideTxn extends AbstractTestGraphsTDB1
+public class TestDynamicDatasetTDB1 extends AbstractTestDynamicDataset
 {
-    @Before public void before() 
+    @Override
+    protected Dataset createDataset()
     {
-        getDataset().begin(ReadWrite.READ) ;
+        return TDB1Factory.createDataset() ;
     }
-
-    @After public void after() 
-    {
-        getDataset().end() ;
+    
+    @Override
+    protected void releaseDataset(Dataset ds) {
+        TDBInternal.expel(ds.asDatasetGraph());
     }
 }
+

@@ -30,21 +30,21 @@ import org.junit.runners.Suite ;
 @Suite.SuiteClasses( {
     TestNodeId.class
     , TestTripleTable.class
-    , TestGraphTDB.class
-    , TestGraphNamedTDB.class
-    , TestDatasetTDBPersist.class
-    , TestDatasetTDB.class
-    , TestDatasetGraphTDBFind.class
-    , TestDatasetGraphTDBFindPattern.class
+    , TestGraphTDB1.class
+    , TestGraphNamedTDB1.class
+    , TestDatasetTDB1Persist.class
+    , TestDatasetTDB1.class
+    , TestDatasetGraphTDB1Find.class
+    , TestDatasetGraphTDB1FindPattern.class
     , TestLoader.class
-    , Test_SPARQL_TDB.class
+    , Test_SPARQL_TDB1.class
     , TestConcurrentAccess.class
-    , TestQueryExecTDB.class
-    , TestDynamicDatasetTDB.class
+    , TestQueryExecTDB1.class
+    , TestDynamicDatasetTDB1.class
     , TestStoreConnectionsDirect.class
     , TestStoreConnectionsMapped.class
     , TestLocationLockStoreConnection.class
-    , TestGraphTDB_Prefixes.class
+    , TestGraphTDB1_Prefixes.class
     , TestQuadFilter.class
 } )
 public class TS_Store
