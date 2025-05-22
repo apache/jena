@@ -25,7 +25,7 @@ import org.apache.jena.sparql.core.TriplePath;
 
 /** A triples-only TripleCollector. */
 
-public class TripleCollectorBGP implements TripleCollectorMark
+public class TripleCollectorBGP implements TripleCollector, TripleCollectorMark
 {
     BasicPattern bgp = new BasicPattern();
 

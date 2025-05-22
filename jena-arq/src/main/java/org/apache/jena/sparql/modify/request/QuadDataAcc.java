@@ -18,65 +18,60 @@
 
 package org.apache.jena.sparql.modify.request;
 
-import java.util.ArrayList ;
-import java.util.Collections ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import org.apache.jena.atlas.lib.SinkToCollection ;
-import org.apache.jena.graph.Triple ;
-import org.apache.jena.sparql.core.Quad ;
-import org.apache.jena.sparql.core.TriplePath ;
-import org.apache.jena.sparql.syntax.TripleCollectorMark ;
+import org.apache.jena.atlas.lib.SinkToCollection;
+import org.apache.jena.graph.Triple;
+import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.core.TriplePath;
+import org.apache.jena.sparql.syntax.TripleCollectorMark;
 
 /** Accumulate quads (excluding allowing variables) during parsing. */
-public class QuadDataAcc extends QuadDataAccSink implements TripleCollectorMark
-{
-    private final List<Quad> quads ;
-    private final List<Quad> quadsView ;
+public class QuadDataAcc extends QuadDataAccSink implements TripleCollectorMark {
+    private final List<Quad> quads;
+    private final List<Quad> quadsView;
 
-    public QuadDataAcc()
-    {
+    public QuadDataAcc() {
         this(new ArrayList<Quad>());
     }
 
-    public QuadDataAcc(List<Quad> quads)
-    {
+    public QuadDataAcc(List<Quad> quads) {
         super(new SinkToCollection<>(quads));
         this.quads = quads;
-        this.quadsView = Collections.unmodifiableList(quads) ;
+        this.quadsView = Collections.unmodifiableList(quads);
     }
 
-    public List<Quad> getQuads()
-    {
-        return quadsView ;
-    }
-
-    @Override
-    public int hashCode() { return quads.hashCode() ; }
-
-    @Override
-    public boolean equals(Object other)
-    {
-        if ( ! ( other instanceof QuadDataAcc acc ) ) return false ;
-        return quads.equals(acc.quads) ;
+    public List<Quad> getQuads() {
+        return quadsView;
     }
 
     @Override
-    public int mark()
-    {
-        return quads.size() ;
+    public int hashCode() {
+        return quads.hashCode();
     }
 
     @Override
-    public void addTriple(int index, Triple triple)
-    {
-        check(triple) ;
-        quads.add(index, new Quad(graphNode, triple)) ;
+    public boolean equals(Object other) {
+        if ( !(other instanceof QuadDataAcc acc) )
+            return false;
+        return quads.equals(acc.quads);
     }
 
     @Override
-    public void addTriplePath(int index, TriplePath tPath)
-    {
-        throw new UnsupportedOperationException("Can't add paths to quads") ;
+    public int mark() {
+        return quads.size();
+    }
+
+    @Override
+    public void addTriple(int index, Triple triple) {
+        check(triple);
+        quads.add(index, new Quad(graphNode, triple));
+    }
+
+    @Override
+    public void addTriplePath(int index, TriplePath tPath) {
+        throw new UnsupportedOperationException("Can't add paths to quads");
     }
 }
