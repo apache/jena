@@ -35,6 +35,7 @@ import org.apache.jena.tdb1.store.tupletable.TupleIndexRecord;
 
 /** Lowlevel utilities for working with TDB */
 
+@SuppressWarnings("removal")
 public class DebugTDB
 {
     public static NodeId lookup(DatasetGraphTDB dsg, Node n)
@@ -43,7 +44,7 @@ public class DebugTDB
         NodeId nid = nt.getNodeIdForNode(n) ;
         return nid ;
     }
-    
+
     public static void dumpInternals(DatasetGraphTDB dsg, boolean includeNamedGraphs)
     {
         dumpNodeTable("Nodes", dsg) ;
@@ -54,26 +55,26 @@ public class DebugTDB
             System.out.println(idx.getName()) ;
             dumpIndex(idx) ;
         }
-        
+
         if ( ! includeNamedGraphs ) return ;
-        
+
         for ( TupleIndex idx : indexes2 )
         {
             System.out.println(idx.getName()) ;
             dumpIndex(idx) ;
         }
     }
-    
+
     public static void dumpNodeTable(String label, DatasetGraphTDB dsg)
     {
         NodeTable nt1 = dsg.getTripleTable().getNodeTupleTable().getNodeTable() ;
         NodeTableLib.print(label, nt1) ;
     }
-    
-//    public static RangeIndex makeRangeIndex(Location location, String indexName, 
+
+//    public static RangeIndex makeRangeIndex(Location location, String indexName,
 //                                            int dftKeyLength, int dftValueLength,
 //                                            int readCacheSize,int writeCacheSize)
-    
+
     public static void dumpNodeIndex(String dir)
     {
         Location location = Location.create(dir) ;
@@ -83,21 +84,21 @@ public class DebugTDB
             System.out.println( aNodeToId );
         }
     }
-    
-    
+
+
     public static TupleIndex getIndex(String idxName, DatasetGraphTDB dsg)
     {
         System.out.println(idxName) ;
         TupleIndex[] indexes1 = dsg.getTripleTable().getNodeTupleTable().getTupleTable().getIndexes() ;
         TupleIndex[] indexes2 = dsg.getQuadTable().getNodeTupleTable().getTupleTable().getIndexes() ;
-        TupleIndex idx = null ; 
-        
+        TupleIndex idx = null ;
+
         for ( TupleIndex i : indexes1 )
         {
             if ( i.getName().equals(idxName) )
                 return i ;
         }
-        
+
         for ( TupleIndex i : indexes2 )
         {
             if ( i.getName().equals(idxName) )
@@ -114,7 +115,7 @@ public class DebugTDB
             Tuple<NodeId> tuple = iter.next() ;
             System.out.println(tuple) ;
         }
-        
+
         if ( false )
         {
             // Dump raw

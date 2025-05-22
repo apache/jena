@@ -35,7 +35,11 @@ import org.apache.jena.tdb1.sys.TDBInternal;
 import org.apache.jena.tdb1.sys.TDBMaker;
 import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;
 
-/** Public factory for creating objects datasets backed by TDB storage */
+/**
+ * Public factory for creating objects datasets backed by TDB storage.
+ * @deprecated TDB1 will be phased out at some point. TDB2 is the preferred database.
+ */
+@Deprecated(forRemoval = true)
 public class TDB1Factory
 {
     static { JenaSystem.init(); }

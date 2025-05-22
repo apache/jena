@@ -88,6 +88,7 @@ import org.slf4j.Logger;
         throw new CmdException("Directory not a database: " + directory);
     }
 
+    @SuppressWarnings("removal")
     private static void setupTDB1(Logger log, String directory, ServerArgs serverArgs) {
         serverArgs.datasetDescription = "TDB1 dataset: location="+directory;
         serverArgs.dataset = TDB1Factory.createDatasetGraph(directory);
@@ -98,7 +99,8 @@ import org.slf4j.Logger;
         serverArgs.dataset = DatabaseMgr.connectDatasetGraph(directory);
     }
 
-    /*package*/ static void setupMemTDB(Logger log, boolean useTDB2, ServerArgs serverArgs) {
+    /*package*/ @SuppressWarnings("removal")
+    static void setupMemTDB(Logger log, boolean useTDB2, ServerArgs serverArgs) {
         String tag = useTDB2 ? "TDB2" : "TDB1";
         serverArgs.datasetDescription = tag+" dataset in-memory";
         serverArgs.dataset = useTDB2

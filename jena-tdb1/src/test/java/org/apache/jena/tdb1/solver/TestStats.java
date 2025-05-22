@@ -36,6 +36,7 @@ import org.apache.jena.tdb1.store.nodetupletable.NodeTupleTable;
 import org.apache.jena.tdb1.sys.TDBInternal;
 import org.junit.Test;
 
+@SuppressWarnings("removal")
 public class TestStats {
     static DatasetGraphTDB dsg = TDBInternal.getBaseDatasetGraphTDB(TDB1Factory.createDatasetGraph());
     static NodeTupleTable quads = dsg.getQuadTable().getNodeTupleTable();

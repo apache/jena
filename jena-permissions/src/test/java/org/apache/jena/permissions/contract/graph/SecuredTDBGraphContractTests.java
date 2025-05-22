@@ -43,5 +43,4 @@ public class SecuredTDBGraphContractTests extends MetaTestGraph {
         return org.apache.jena.permissions.Factory.getInstance(eval, getName(),
                 TDB1Factory.createDatasetGraph().getDefaultGraph());
     }
-
 }

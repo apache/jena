@@ -23,6 +23,7 @@ import org.apache.jena.sparql.core.AbstractTestQueryExec;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb1.sys.TDBInternal;
 
+@SuppressWarnings("removal")
 public class TestQueryExecTDB1 extends AbstractTestQueryExec
 {
     @Override

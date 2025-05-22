@@ -63,6 +63,7 @@ public class TestDatasetPrefixes {
     @Parameters(name = "{index}: {0}")
     public static Collection<Object[]> data(){
         Creator<DatasetGraph> c1 = ()->DatasetGraphFactory.createTxnMem();
+        @SuppressWarnings("removal")
         Creator<DatasetGraph> c2 = ()->TDB1Factory.createDatasetGraph();
         Creator<DatasetGraph> c3 = ()->DatabaseMgr.createDatasetGraph();
         Creator<DatasetGraph> c4 = ()->new DatasetGraphMap();     //DatasetGraphFactory.create();

@@ -22,6 +22,7 @@ import org.apache.jena.riot.system.AbstractTestPrefixMap;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.tdb1.TDB1Factory;
 
+@SuppressWarnings("removal")
 public class TestPrefixMapTDB1 extends AbstractTestPrefixMap
 {
     @Override

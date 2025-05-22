@@ -38,9 +38,11 @@ import org.apache.jena.tdb1.transaction.TransactionManager;
  * A collection of helpers to abstract away from internal details of TDB.
  * Use with care.
  * These are not general purpose operations.
+ * @deprecated Migrate to TDB2
  */
-public class TDBInternal
-{
+@Deprecated(forRemoval = true)
+public class TDBInternal {
+
     /**
      * Return true if this is a TDB1 backed DatasetGraph.
      */

@@ -34,6 +34,7 @@ import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;
 import org.junit.Test;
 
+@SuppressWarnings("removal")
 public class TestGraphTDB1_Prefixes {
 
     public static Graph graphX(DatasetGraph dataset, Node graphName) {

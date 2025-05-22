@@ -31,6 +31,7 @@ import org.apache.jena.tdb1.sys.SystemTDB;
 
 /** copy one index to another, possibly changing the order */
 public class tdbgenindex {
+    @SuppressWarnings("removal")
     public static void main(String...argv) {
         // Usage: srcLocation indexName dstLocation indexName
         if ( argv.length != 4 ) {

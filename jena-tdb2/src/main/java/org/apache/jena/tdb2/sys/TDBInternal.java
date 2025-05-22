@@ -41,7 +41,6 @@ import org.apache.jena.tdb2.store.tupletable.TupleIndexRecord;
  * <p>
  * Use with care.
  * <p>{@link DatabaseOps#compact Compaction} invalidates any previous objects.
- *
  */
 public class TDBInternal {
 

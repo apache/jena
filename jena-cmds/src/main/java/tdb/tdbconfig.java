@@ -42,6 +42,7 @@ import tdb.cmdline.CmdTDB;
 import tdb.cmdline.CmdTDBGraph;
 
 /** Tools to manage a TDB store.  Subcommand based. */
+@SuppressWarnings("removal")
 public class tdbconfig extends CmdSub
 {
     static final String CMD_CLEAN       = "clean" ;

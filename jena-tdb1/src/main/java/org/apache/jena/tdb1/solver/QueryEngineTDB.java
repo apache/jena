@@ -45,7 +45,7 @@ import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;
 // then to make the quad form.
 // TDB also uses a custom OpExecutor to intercept certain part
 // of the Op evaluations
-
+@SuppressWarnings("removal")
 public class QueryEngineTDB extends QueryEngineMain
 {
     // ---- Wiring

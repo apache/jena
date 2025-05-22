@@ -33,8 +33,8 @@ import org.apache.jena.tdb1.sys.SystemTDB;
 
 /**
  * Represents a lock on a TDB location
- *
  */
+@SuppressWarnings("removal")
 public class LocationLock {
     private static final int NO_OWNER = 0;
     private static final String LOCK_FILENAME = "tdb.lock";

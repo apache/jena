@@ -31,25 +31,26 @@ import org.apache.jena.tdb1.sys.SystemTDB;
 import org.apache.jena.tdb1.sys.TDBInternal;
 import org.junit.* ;
 
-/** Tests for transaction controls: batching, flushing on size, flushing on backlog of commits */ 
+/** Tests for transaction controls: batching, flushing on size, flushing on backlog of commits */
+@SuppressWarnings("removal")
 public class TestTransControl {
 
-    private static String levelInfo;  
-    private static String levelErr;  
-    
+    private static String levelInfo;
+    private static String levelErr;
+
     @BeforeClass public static void beforeClassLogging() {
         levelInfo = LogCtl.getLevel(TDB1.logInfoName);
         levelErr = LogCtl.getLevel(SystemTDB.errlog.getName());
-        
+
         LogCtl.setLevel("org.apache.jena.tdb.info", "WARN");
         LogCtl.setLevel("org.apache.jena.tdb.exec", "WARN");
-        
+
     }
     @AfterClass public static void afterClassLogging() {
         LogCtl.setLevel(TDB1.logInfoName, levelInfo);
         LogCtl.setLevel(SystemTDB.errlog.getName(), levelErr);
     }
-    
+
     private static int x_QueueBatchSize ;
     private static int x_MaxQueueThreshold ;
     private static int x_JournalThresholdSize ;
@@ -66,7 +67,7 @@ public class TestTransControl {
         TransactionManager.QueueBatchSize = x_QueueBatchSize ;
         TransactionManager.MaxQueueThreshold = x_MaxQueueThreshold ;
         TransactionManager.JournalThresholdSize = x_JournalThresholdSize ;
-        
+
 
     }
 
@@ -81,8 +82,8 @@ public class TestTransControl {
     @After
     public void after() {
     }
-    
-    
+
+
     private static Quad q1 = SSE.parseQuad("(_ :s :p1 1)") ;
     private static Quad q2 = SSE.parseQuad("(_ :s :p2 2)") ;
     private static Quad q3 = SSE.parseQuad("(_ :s :p3 3)") ;
@@ -93,26 +94,26 @@ public class TestTransControl {
 
     // ---- JournalThresholdSize
 
-    // Flush on journal size / no spill. 
+    // Flush on journal size / no spill.
     @Test public void journalThresholdSize_01() {
         TransactionManager.QueueBatchSize = 100 ;
         TransactionManager.MaxQueueThreshold = -1 ;
-        TransactionManager.JournalThresholdSize = 1000 ; // More than commit size, less than a block. 
+        TransactionManager.JournalThresholdSize = 1000 ; // More than commit size, less than a block.
         DatasetGraph dsg = create() ;
         TransactionManager tMgr = TDBInternal.getTransactionManager(dsg) ;
 
         Txn.executeWrite(dsg,  ()->{});    // About 20 bytes.
         assertEquals(1, tMgr.getQueueLength()) ;
     }
-    
+
     // Flush on journal size / small setting.
     @Test public void journalThresholdSize_02() {
         TransactionManager.QueueBatchSize = 100 ;
         TransactionManager.MaxQueueThreshold = -1 ;
-        TransactionManager.JournalThresholdSize = 10 ; // Less than commit size. 
+        TransactionManager.JournalThresholdSize = 10 ; // Less than commit size.
         DatasetGraph dsg = create() ;
         TransactionManager tMgr = TDBInternal.getTransactionManager(dsg) ;
-        
+
         txnAddData(dsg) ;
         assertEquals(0, tMgr.getQueueLength()) ;
     }
@@ -122,21 +123,21 @@ public class TestTransControl {
         TransactionManager.QueueBatchSize = 100 ;
         TransactionManager.MaxQueueThreshold = -1 ;
         TransactionManager.JournalThresholdSize = 1000 ; // More than commit size, less than block.
-        
+
         DatasetGraph dsg = create() ;
         TransactionManager tMgr = TDBInternal.getTransactionManager(dsg) ;
-        
+
         Txn.executeWrite(dsg,  ()->{});    // About 20 bytes.
         assertEquals(1, tMgr.getQueueLength()) ;
         txnAddData(dsg) ;
         assertEquals(0, tMgr.getQueueLength()) ;
     }
-    
+
     // ---- QueueBatchSize
-    
+
     @Test public void queueBatchSize_01() {
         TransactionManager.QueueBatchSize = 0 ; // Immediate.
-        
+
         DatasetGraph dsg = create() ;
         TransactionManager tMgr = TDBInternal.getTransactionManager(dsg) ;
 
@@ -148,7 +149,7 @@ public class TestTransControl {
 
     @Test public void queueBatchSize_02() {
         TransactionManager.QueueBatchSize = 1 ;
- 
+
         DatasetGraph dsg = create() ;
         TransactionManager tMgr = TDBInternal.getTransactionManager(dsg) ;
 
@@ -173,10 +174,10 @@ public class TestTransControl {
     }
 
     // ---- MaxQueueThreshold
-    
+
     @Test public void maxQueueThreshold_01() {
         TransactionManager.MaxQueueThreshold = 1 ;
-        
+
         DatasetGraph dsg = create() ;
         TransactionManager tMgr = TDBInternal.getTransactionManager(dsg) ;
 
@@ -185,10 +186,10 @@ public class TestTransControl {
         Txn.executeWrite(dsg,  ()->{});
         assertEquals(0, tMgr.getQueueLength()) ;
     }
-    
+
     @Test public void maxQueueThreshold_02() {
         TransactionManager.MaxQueueThreshold = 2 ;
- 
+
         DatasetGraph dsg = create() ;
         TransactionManager tMgr = TDBInternal.getTransactionManager(dsg) ;
 

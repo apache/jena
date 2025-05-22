@@ -30,6 +30,7 @@ import org.junit.Before;
 /**
  * This abstract class defines a setup configuration for a dataset with a deletion-support-enabled Lucene index.
  */
+@SuppressWarnings("removal")
 public class AbstractTestDatasetWithLuceneTextIndexDeletionSupport extends AbstractTestDatasetWithTextIndex {
 
     @Before

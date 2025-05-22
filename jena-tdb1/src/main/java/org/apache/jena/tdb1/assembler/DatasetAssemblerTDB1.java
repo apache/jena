@@ -20,8 +20,6 @@ package org.apache.jena.tdb1.assembler;
 
 import static org.apache.jena.sparql.util.graph.GraphUtils.exactlyOneProperty ;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getStringValue ;
-import static org.apache.jena.tdb1.assembler.VocabTDB1.pLocation;
-import static org.apache.jena.tdb1.assembler.VocabTDB1.pUnionDefaultGraph;
 
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.exceptions.AssemblerException ;
@@ -37,6 +35,7 @@ import org.apache.jena.tdb1.TDB1;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb1.base.file.Location;
 
+@SuppressWarnings("removal")
 public class DatasetAssemblerTDB1 extends DatasetAssembler
 {
     // This is not a NamedDatasetAssembler
@@ -53,15 +52,15 @@ public class DatasetAssemblerTDB1 extends DatasetAssembler
     }
 
     public static DatasetGraph make(Assembler a, Resource root) {
-        if ( !exactlyOneProperty(root, pLocation) )
+        if ( !exactlyOneProperty(root, VocabTDB1.pLocation) )
             throw new AssemblerException(root, "No location given");
 
-        String dir = getStringValue(root, pLocation);
+        String dir = getStringValue(root, VocabTDB1.pLocation);
         Location loc = Location.create(dir);
         DatasetGraph dsg = TDB1Factory.createDatasetGraph(loc);
 
-        if ( root.hasProperty(pUnionDefaultGraph) ) {
-            Node b = root.getProperty(pUnionDefaultGraph).getObject().asNode();
+        if ( root.hasProperty(VocabTDB1.pUnionDefaultGraph) ) {
+            Node b = root.getProperty(VocabTDB1.pUnionDefaultGraph).getObject().asNode();
             NodeValue nv = NodeValue.makeNode(b);
             if ( nv.isBoolean() )
                 dsg.getContext().set(TDB1.symUnionDefaultGraph, nv.getBoolean());

@@ -28,7 +28,7 @@ import org.junit.runners.Suite ;
     //    TestRDFLinkLocalMRSW
 
     // Addition tests added here.
-    TestRDFLinkLocalTDB.class,
+    TestRDFLinkLocalTDB1.class,
     TestRDFLinkLocalTDB2.class,
     TestRDFLinkHTTP.class,
     TestRDFLinkFuseki.class,

@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Utilities used within the TDB BGP solver : local TDB store */
+@SuppressWarnings("removal")
 public class SolverLibTDB
 {
     private static Logger log = LoggerFactory.getLogger(SolverLibTDB.class);

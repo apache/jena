@@ -48,6 +48,7 @@ import org.apache.jena.tdb1.sys.StoreConnection;
  *
  * Not considered to be in the public API.
  */
+@SuppressWarnings("removal")
  public class DatasetGraphTransaction extends DatasetGraphWrapper implements Sync {
     /*
      * Initially, the app can use this DatasetGraph non-transactionally. But as

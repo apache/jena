@@ -91,6 +91,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <release>${java.version}</release>
+          <compilerArgs>
+            <arg>-proc:none</arg>
+            <arg>-Xlint:-removal</arg>
+          </compilerArgs>
+        </configuration>
       </plugin>
 
       <plugin>

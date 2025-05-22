@@ -37,11 +37,11 @@ import org.apache.jena.tdb1.store.tupletable.TupleIndexRecord;
 import org.slf4j.Logger ;
 
 /** Makes things : datasets from locations, indexes, etc etc. */
-
+@Deprecated(forRemoval = true)
 public class SetupTDB
 {
     // Replaced/merge with DatasetBuilderStd mechanisms.
-    
+
     //private static final Logger log = LoggerFactory.getLogger(NewSetup.class) ;
     static final Logger log = TDB1.logInfo ;
     public static void error(Logger log, String msg)
@@ -64,7 +64,7 @@ public class SetupTDB
             indexes[i] = makeTupleIndex(location, primary, descs[i], filenames[i], indexRecordLen) ;
         return indexes ;
     }
-    
+
     public static TupleIndex makeTupleIndex(Location location,
                                             String primary, String indexOrder, String indexName,
                                             int keyLength)
@@ -72,30 +72,30 @@ public class SetupTDB
         FileSet fs = new FileSet(location, indexName) ;
         int readCacheSize = params.getBlockReadCacheSize() ;
         int writeCacheSize = params.getBlockWriteCacheSize() ;
-        
+
         // Value part is null (zero length)
         RangeIndex rIndex = SetupIndex.makeRangeIndex(location, indexName, params.getBlockSize(), keyLength, 0, readCacheSize, writeCacheSize) ;
         TupleIndex tupleIndex = new TupleIndexRecord(primary.length(), new ColumnMap(primary, indexOrder), indexOrder, rIndex.getRecordFactory(), rIndex) ;
         return tupleIndex ;
     }
-    
-    
+
+
     public static Index makeIndex(Location location, String indexName,
                                   int blkSize,
-                                  int dftKeyLength, int dftValueLength, 
+                                  int dftKeyLength, int dftValueLength,
                                   int readCacheSize,int writeCacheSize)
     {
         return SetupIndex.makeIndex(location, indexName, blkSize, dftKeyLength, dftValueLength, readCacheSize, writeCacheSize) ;
     }
-    
-    public static RangeIndex makeRangeIndex(Location location, String indexName, 
+
+    public static RangeIndex makeRangeIndex(Location location, String indexName,
                                             int blkSize,
                                              int dftKeyLength, int dftValueLength,
                                              int readCacheSize,int writeCacheSize)
     {
         return SetupIndex.makeRangeIndex(location, indexName, blkSize, dftKeyLength, dftValueLength, readCacheSize, writeCacheSize) ;
     }
-    
+
     public static RangeIndex makeBPlusTree(FileSet fs, int blkSize,
                                            int readCacheSize, int writeCacheSize,
                                            int dftKeyLength, int dftValueLength)
@@ -107,7 +107,7 @@ public class SetupTDB
     {
         return SetupIndex.makeRecordFactory(keyLen, valueLen) ;
     }
-    
+
     public static ObjectFile makeObjectFile(FileSet fsIdToNode)
     {
         String filename = fsIdToNode.filename(Names.extNodeData) ;
@@ -119,7 +119,7 @@ public class SetupTDB
     public static RangeIndex createBPTree(FileSet fileset, RecordFactory factory) {
         return SetupIndex.createBPTree(fileset, factory) ;
     }
-    
+
     /** Create a B+Tree by BlockSize */
     public static RangeIndex createBPTreeByBlockSize(FileSet fileset,
                                                      int blockSize,
@@ -127,7 +127,7 @@ public class SetupTDB
                                                      RecordFactory factory) {
         return SetupIndex.createBPTreeByBlockSize(fileset, blockSize, readCacheSize, writeCacheSize, factory) ;
     }
-    
+
     /** Create a B+Tree by Order */
     public static RangeIndex createBPTreeByOrder(FileSet fileset,
                                                  int order,
@@ -135,7 +135,7 @@ public class SetupTDB
                                                  RecordFactory factory) {
         return SetupIndex.createBPTreeByOrder(fileset, order, readCacheSize, writeCacheSize, factory) ;
     }
-    
+
 
     /** Knowing all the parameters, create a B+Tree */
     public static BPlusTree createBPTree(FileSet fileset, int order, int blockSize,

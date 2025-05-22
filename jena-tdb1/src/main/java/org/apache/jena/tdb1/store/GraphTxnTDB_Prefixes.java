@@ -69,6 +69,7 @@ public class GraphTxnTDB_Prefixes extends GraphTxnTDB {
             this.isDefault = (graphName==null)?true: Quad.isDefaultGraph(graphName);
         }
 
+        @SuppressWarnings("removal")
         private PrefixMap getPrefixMap() {
             DatasetPrefixesTDB pm = TDBInternal.getDatasetGraphTDB(dsgx).getStoragePrefixes();
             if ( isDefault )

@@ -21,6 +21,7 @@ package org.apache.jena.tdb1;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.sparql.AbstractTestAdditional;
 
+@SuppressWarnings("removal")
 public class TestMiscTDB1 extends AbstractTestAdditional {
 
     @Override

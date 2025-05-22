@@ -44,42 +44,43 @@ import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
-/** Test of re-attaching to a pre-existing database */  
+/** Test of re-attaching to a pre-existing database */
+@SuppressWarnings("removal")
 public class TestTransRestart {
-    static { 
+    static {
         // Only if run directly, not in test suite.
         if ( false )
-            SystemTDB.setFileMode(FileMode.direct) ; 
+            SystemTDB.setFileMode(FileMode.direct) ;
     }
-    
-    private String path = null ; 
+
+    private String path = null ;
     private Location location = null ;
-    
+
     private static boolean useTransactionsSetup = true ;
     private static Quad quad1 = SSE.parseQuad("(_ <foo:bar> rdfs:label 'foo')") ;
     private static Quad quad2 = SSE.parseQuad("(_ <foo:bar> rdfs:label 'bar')") ;
-    
+
     @Before public void setup() {
         TDBInternal.reset();
-        path = ConfigTest.getCleanDir() ; 
+        path = ConfigTest.getCleanDir() ;
         location = Location.create (path) ;
         if ( useTransactionsSetup )
             setupTxn() ;
         else
             setupPlain() ;
     }
-    
+
     @After public void teardown()
     {
         cleanup() ;
     }
-    
+
     private static DatasetGraphTDB createPlain(Location location) { return DatasetBuilderStd.create(location) ; }
-    
+
     private void setupPlain() {
         // Make without transactions.
         DatasetGraphTDB dsg = createPlain(location) ;
-        dsg.add(quad1) ; 
+        dsg.add(quad1) ;
         dsg.close() ;
         return ;
     }
@@ -89,13 +90,13 @@ public class TestTransRestart {
         FileOps.clearDirectory(path);
         StoreConnection sc = StoreConnection.make(location) ;
         DatasetGraphTxn dsg = sc.begin(TxnType.WRITE);
-        dsg.add(quad1) ; 
+        dsg.add(quad1) ;
         dsg.commit() ;
         dsg.end() ;
-        sc.flush(); 
+        sc.flush();
         StoreConnection.release(location) ;
     }
-        
+
     private void cleanup() {
         TDBInternal.reset();
         if ( FileOps.exists(path)) {
@@ -103,20 +104,20 @@ public class TestTransRestart {
             FileOps.deleteSilent(path) ;
         }
     }
-    
+
     @Test
     public void testTxn() {
         assertEquals (3, countRDFNodes()) ;
-        StoreConnection sc = StoreConnection.make(location) ; 
+        StoreConnection sc = StoreConnection.make(location) ;
         DatasetGraphTxn dsg = sc.begin(TxnType.WRITE) ;
         assertTrue(dsg.contains(quad1)) ;
-        dsg.add(quad2) ; 
-        dsg.commit() ; 
-        dsg.end() ; 
+        dsg.add(quad2) ;
+        dsg.commit() ;
+        dsg.end() ;
         StoreConnection.release(location) ;
         assertEquals (4, countRDFNodes()) ;
     }
-    
+
     @Test
     public void testPlain() {
         assertEquals (3, countRDFNodes()) ;
@@ -128,13 +129,13 @@ public class TestTransRestart {
         StoreConnection.release(location) ;
         assertEquals (4, countRDFNodes()) ;
     }
-    
-    // Only call when the dataset is not in TDBMaker or in StoreConnection  
+
+    // Only call when the dataset is not in TDBMaker or in StoreConnection
     private int countRDFNodes() {
         ObjectFile objects = FileFactory.createObjectFileDisk( location.getPath(Names.indexId2Node, Names.extNodeData) ) ;
         int count = 0 ;
-        Iterator<Pair<Long,ByteBuffer>> iter = objects.all() ; 
-        while ( iter.hasNext() ) { 
+        Iterator<Pair<Long,ByteBuffer>> iter = objects.all() ;
+        while ( iter.hasNext() ) {
             iter.next() ;
             count++ ;
         }

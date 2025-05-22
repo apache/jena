@@ -20,7 +20,6 @@ package org.apache.jena.fuseki.server;
 
 import static java.lang.String.format;
 import static org.apache.jena.fuseki.server.DataServiceStatus.*;
-import static org.apache.jena.tdb1.sys.TDBInternal.isTDB1;
 import static org.apache.jena.tdb2.sys.TDBInternal.isTDB2;
 
 import java.util.*;
@@ -261,6 +260,7 @@ public class DataService {
         state = CLOSED;
     }
 
+    @SuppressWarnings("removal")
     private static void expel(DatasetGraph database) {
         // This should not be necessary.
         // When created by assembler, "closeIndexOnClose" should be set true.
@@ -277,7 +277,8 @@ public class DataService {
         DatasetGraph base = findTDB(database);
         database.close();
 
-        boolean isTDB1 = isTDB1(base);
+        // Using an import cause a javbadoc warning
+        boolean isTDB1 = org.apache.jena.tdb1.sys.TDBInternal.isTDB1(base);
         boolean isTDB2 = isTDB2(base);
 
         if ( isTDB1 || isTDB2 ) {
@@ -290,10 +291,11 @@ public class DataService {
     }
 
     /** Unwrap until a TDB database is encountered */
+    @SuppressWarnings("removal")
     private static DatasetGraph findTDB(DatasetGraph dsg) {
         DatasetGraph dsgw = dsg;
         while (dsgw instanceof DatasetGraphWrapper) {
-            if ( isTDB1(dsgw) )
+            if ( org.apache.jena.tdb1.sys.TDBInternal.isTDB1(dsgw) )
                 return dsgw;
             if ( isTDB2(dsgw) )
                 return dsgw;
