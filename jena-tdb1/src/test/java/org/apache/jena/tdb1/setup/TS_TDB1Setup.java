@@ -16,17 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb1.transaction;
+package org.apache.jena.tdb1.setup;
 
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.tdb1.TDB1Factory;
-import org.junit.Assert ;
-import org.junit.Test ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
 
-public class TestTransactionMiscTDB {
-    @Test public void support() {
-        DatasetGraph dsg = TDB1Factory.createDatasetGraph() ;
-        Assert.assertTrue(dsg.supportsTransactions()) ;
-        Assert.assertTrue(dsg.supportsTransactionAbort()) ;
-    }
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestStoreParams.class
+    , TestStoreParamsChoose.class
+    , TestStoreParamsCreate.class
+})
+public class TS_TDB1Setup {
+    
 }
+

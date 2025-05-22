@@ -16,18 +16,21 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb1.store;
+package org.apache.jena.tdb1.graph;
 
-import org.apache.jena.sparql.core.AbstractDatasetGraphFindPatterns ;
-import org.apache.jena.sparql.core.DatasetGraph ;
-import org.apache.jena.tdb1.TDB1Factory;
-import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;
+import org.apache.jena.query.ReadWrite ;
+import org.junit.After ;
+import org.junit.Before ;
 
-public class TestDatasetGraphTDBFindPattern extends AbstractDatasetGraphFindPatterns {
+public class TestGraphsTDB1_insideTxn extends AbstractTestGraphsTDB1
+{
+    @Before public void before() 
+    {
+        getDataset().begin(ReadWrite.READ) ;
+    }
 
-    @Override
-    public DatasetGraph create() {
-        // Get the underlying storage, not the transactional support. 
-        return ((DatasetGraphTransaction)TDB1Factory.createDatasetGraph()).getBaseDatasetGraph();
+    @After public void after() 
+    {
+        getDataset().end() ;
     }
 }

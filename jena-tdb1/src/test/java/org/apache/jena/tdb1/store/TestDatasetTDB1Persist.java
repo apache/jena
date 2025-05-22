@@ -34,7 +34,6 @@ import org.apache.jena.sparql.sse.SSE ;
 import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.tdb1.ConfigTest;
 import org.apache.jena.tdb1.base.file.Location;
-import org.apache.jena.tdb1.junit.GraphLocation;
 import org.apache.jena.tdb1.sys.TDBInternal;
 import org.junit.After ;
 import org.junit.AfterClass ;
@@ -42,7 +41,7 @@ import org.junit.Before ;
 import org.junit.Test ;
 
 /** Testing persistence  */ 
-public class TestDatasetTDBPersist
+public class TestDatasetTDB1Persist
 {
     static Node n0 = NodeFactoryExtra.parseNode("<http://example/n0>") ; 
     static Node n1 = NodeFactoryExtra.parseNode("<http://example/n1>") ;

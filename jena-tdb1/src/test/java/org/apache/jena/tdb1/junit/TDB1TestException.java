@@ -16,15 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb1.assembler;
+package org.apache.jena.tdb1.junit;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.apache.jena.tdb1.TDB1Exception;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-     TestTDBAssembler.class
-})
-
-public class TS_TDBAssembler
-{}
+public class TDB1TestException extends TDB1Exception
+{
+    public TDB1TestException() {}
+    public TDB1TestException(String msg) { super(msg) ; }
+    public TDB1TestException(Throwable th) { super(th) ;}
+    public TDB1TestException(String msg, Throwable th) { super(msg, th) ; }
+}

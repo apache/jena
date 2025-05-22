@@ -16,24 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb1.store;
+package org.apache.jena.tdb1.transaction;
 
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.sparql.core.AbstractTestQueryExec;
+import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.tdb1.TDB1Factory;
-import org.apache.jena.tdb1.sys.TDBInternal;
+import org.junit.Assert ;
+import org.junit.Test ;
 
-public class TestQueryExecTDB extends AbstractTestQueryExec
-{
-    @Override
-    protected Dataset createDataset()
-    {
-        return TDB1Factory.createDataset() ;
-    }
-
-    @Override
-    protected void releaseDataset(Dataset ds) {
-        TDBInternal.expel(ds.asDatasetGraph());
+public class TestTransactionMiscTDB1 {
+    @Test public void support() {
+        DatasetGraph dsg = TDB1Factory.createDatasetGraph() ;
+        Assert.assertTrue(dsg.supportsTransactions()) ;
+        Assert.assertTrue(dsg.supportsTransactionAbort()) ;
     }
 }
-

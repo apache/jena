@@ -16,20 +16,15 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb1.lib;
+package org.apache.jena.tdb1.assembler;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestNodeLib.class
-    , TestStringAbbrev.class
-    , TestColumnMap.class
+     TestTDB1Assembler.class
 })
 
-
-public class TS_LibTDB
-{
-
-}
+public class TS_TDB1Assembler
+{}

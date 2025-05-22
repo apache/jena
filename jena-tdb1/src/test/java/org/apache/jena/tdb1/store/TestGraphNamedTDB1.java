@@ -26,7 +26,7 @@ import org.apache.jena.sparql.util.NodeFactoryExtra ;
 import org.apache.jena.tdb1.TDB1Factory;
 
 /** Programmatic tests on persistent graph */
-public class TestGraphNamedTDB extends AbstractTestGraphAddDelete
+public class TestGraphNamedTDB1 extends AbstractTestGraphAddDelete
 {
     Node graphNode = NodeFactoryExtra.parseNode("<http://example/namedGraph>") ;
 

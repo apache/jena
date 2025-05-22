@@ -41,7 +41,7 @@ import org.junit.Test ;
 /**
  * Test SPARQL
  */
-public class Test_SPARQL_TDB
+public class Test_SPARQL_TDB1
 {
     private static Dataset create() {
         return TDB1Factory.createDataset();

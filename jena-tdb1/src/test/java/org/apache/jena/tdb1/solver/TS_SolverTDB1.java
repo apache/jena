@@ -16,24 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb1.store;
+package org.apache.jena.tdb1.solver;
 
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.sparql.core.AbstractTestDynamicDataset ;
-import org.apache.jena.tdb1.TDB1Factory;
-import org.apache.jena.tdb1.sys.TDBInternal;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
 
-public class TestDynamicDatasetTDB extends AbstractTestDynamicDataset
-{
-    @Override
-    protected Dataset createDataset()
-    {
-        return TDB1Factory.createDataset() ;
-    }
-    
-    @Override
-    protected void releaseDataset(Dataset ds) {
-        TDBInternal.expel(ds.asDatasetGraph());
-    }
-}
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestSolverTDB1.class
+    , TestStats.class
+})
 
+public class TS_SolverTDB1
+{}

@@ -22,7 +22,6 @@ import org.apache.jena.graph.Graph ;
 import org.apache.jena.sparql.graph.AbstractTestGraphAddDelete ;
 import org.apache.jena.tdb1.ConfigTest;
 import org.apache.jena.tdb1.base.file.Location;
-import org.apache.jena.tdb1.junit.GraphLocation;
 import org.apache.jena.tdb1.sys.TDBInternal;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -30,7 +29,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 /** Programmatic tests on persistent graph */
-public class TestGraphTDB extends AbstractTestGraphAddDelete
+public class TestGraphTDB1 extends AbstractTestGraphAddDelete
 {
     static GraphLocation graphLocation = null ;
     

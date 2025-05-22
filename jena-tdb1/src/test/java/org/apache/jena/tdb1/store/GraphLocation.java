@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.tdb1.junit;
+package org.apache.jena.tdb1.store;
 
 
 import java.util.Iterator ;
@@ -34,56 +34,57 @@ import org.apache.jena.rdf.model.ModelFactory ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb1.base.file.Location;
+import org.apache.jena.tdb1.junit.TDB1TestException;
 
 /** Manage a graph at a fixed location */
-public class GraphLocation
+class GraphLocation
 {
     private Location loc = null ;
     private Graph graph = null ;
     private Model model = null ;
     private DatasetGraph dsg = null ;
-    
+
     public GraphLocation(Location loc)
     {
         this.loc = loc ;
     }
-    
+
     public void clearDirectory() { FileOps.clearDirectory(loc.getDirectoryPath()) ; }
-    
+
     public Graph getGraph() { return graph ; }
-    
+
     public Model getModel() { return model ; }
-    
+
     public Dataset getDataset()
-    { 
+    {
         if ( dsg == null ) return null ;
         return DatasetFactory.wrap(dsg) ;
     }
 
-    public Dataset createDataset() 
+    public Dataset createDataset()
     {
         if ( dsg != null )
-            throw new TDBTestException("dataset already in use") ;
+            throw new TDB1TestException("dataset already in use") ;
         dsg = TDB1Factory.createDatasetGraph(loc) ;
         return DatasetFactory.wrap(dsg) ;
     }
-    
+
     public Graph createGraph()
     {
         if ( graph != null )
-            throw new TDBTestException("Graph already in use") ;
+            throw new TDB1TestException("Graph already in use") ;
         graph = TDB1Factory.createDatasetGraph(loc).getDefaultGraph() ;
         model = ModelFactory.createModelForGraph(graph) ;
         return graph ;
     }
-    
+
     public void clearGraph()
-    { 
+    {
         if ( graph != null )
         {
             Iterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
             List<Triple> triples = Iter.toList(iter) ;
-            
+
             for ( Triple t : triples )
                 graph.delete(t) ;
         }

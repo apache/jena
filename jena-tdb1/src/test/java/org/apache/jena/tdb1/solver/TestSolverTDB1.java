@@ -49,7 +49,7 @@ import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.tdb1.ConfigTest;
 import org.apache.jena.tdb1.TDB1Factory;
 
-public class TestSolverTDB {
+public class TestSolverTDB1 {
     static String graphData = null;
     static Dataset dataset = null;
     static PrefixMapping pmap = null;
