@@ -41,6 +41,7 @@ public class TestBuildTextDataset
         createAssembler("text-config.ttl") ;
     }
 
+    @SuppressWarnings("removal")
     @Test
     public void buildText_02() {
         Dataset ds = createAssembler("text-config-union.ttl") ;

@@ -57,6 +57,7 @@ public class TestDataset2Graph {
     public static Collection<Object[]> data() {
         Creator<Dataset> datasetPlainMaker = ()-> DatasetFactory.createGeneral() ;
         Creator<Dataset> datasetTxnMemMaker = ()-> DatasetFactory.createTxnMem() ;
+        @SuppressWarnings("removal")
         Creator<Dataset> datasetTDB1 = ()-> TDB1Factory.createDataset();
         Creator<Dataset> datasetTDB2 = ()-> TDB2Factory.createDataset();
 

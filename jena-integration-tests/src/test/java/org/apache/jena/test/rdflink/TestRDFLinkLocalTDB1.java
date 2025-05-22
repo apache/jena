@@ -25,7 +25,8 @@ import org.apache.jena.rdflink.RDFLinkFactory;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb1.TDB1Factory;
 
-public class TestRDFLinkLocalTDB extends AbstractTestRDFLink {
+@SuppressWarnings("removal")
+public class TestRDFLinkLocalTDB1 extends AbstractTestRDFLink {
 
     @Override
     protected boolean supportsAbort() { return true ; }

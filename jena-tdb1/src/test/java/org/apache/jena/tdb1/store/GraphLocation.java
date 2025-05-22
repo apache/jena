@@ -37,6 +37,7 @@ import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.junit.TDB1TestException;
 
 /** Manage a graph at a fixed location */
+@SuppressWarnings("removal")
 class GraphLocation
 {
     private Location loc = null ;

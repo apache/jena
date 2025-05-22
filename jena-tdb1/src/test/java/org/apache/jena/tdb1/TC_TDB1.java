@@ -33,7 +33,6 @@ import org.apache.jena.tdb1.store.TS_Store;
 import org.apache.jena.tdb1.store.nodetable.TS_NodeTable;
 import org.apache.jena.tdb1.store.tupletable.TS_TupleTable;
 import org.apache.jena.tdb1.sys.SystemTDB;
-import org.apache.jena.tdb1.sys.TS_Sys;
 import org.apache.jena.tdb1.transaction.TS_TransactionTDB1;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
@@ -55,7 +54,6 @@ import org.junit.runners.Suite ;
     , TS_TDB1Setup.class
     , TS_Store.class        // The main storage implementation.  Some slow tests.
     , TS_SolverTDB1.class
-    , TS_Sys.class
     , TS_GraphTDB1.class
     , TS_TDB1Factory.class
     , TS_TDB1Assembler.class

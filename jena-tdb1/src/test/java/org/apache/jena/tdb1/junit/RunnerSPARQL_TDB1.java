@@ -28,6 +28,7 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.junit.runners.model.InitializationError;
 
+@SuppressWarnings("removal")
 public class RunnerSPARQL_TDB1 extends AbstractRunnerOfTests {
 
     public RunnerSPARQL_TDB1(Class<? > klass) throws InitializationError {

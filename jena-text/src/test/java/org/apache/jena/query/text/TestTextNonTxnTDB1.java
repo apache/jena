@@ -39,6 +39,7 @@ import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory;
 
 /** Text dataset tests using TDB1 non-transactionally, including context unionDefaultGraph */
+@SuppressWarnings("removal")
 public class TestTextNonTxnTDB1 {
     private static Dataset create() {
         Dataset ds1 = TDB1Factory.createDataset();

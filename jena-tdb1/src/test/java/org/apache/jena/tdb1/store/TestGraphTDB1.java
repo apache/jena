@@ -29,10 +29,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 /** Programmatic tests on persistent graph */
+@SuppressWarnings("removal")
 public class TestGraphTDB1 extends AbstractTestGraphAddDelete
 {
     static GraphLocation graphLocation = null ;
-    
+
     @BeforeClass public static void beforeClass()
     {
         TDBInternal.reset() ;
@@ -43,32 +44,32 @@ public class TestGraphTDB1 extends AbstractTestGraphAddDelete
         graph = graphLocation.getGraph() ;
     }
     // ----------
-    
+
     @AfterClass public static void afterClass()
-    { 
+    {
         graphLocation.release() ;
         TDBInternal.reset() ;
         graphLocation.clearDirectory() ;
         ConfigTest.deleteTestingDirDB() ;
     }
-    
+
     static Graph graph = null ;
     @Before public void before()
-    { 
+    {
         if ( graph != null )
             graph.clear() ;
     }
-            
-    @After public void after()   
-    { 
+
+    @After public void after()
+    {
     }
-    
+
     @Override
     protected Graph emptyGraph()
     {
         return graph ;
     }
-    
+
     @Override
     protected void returnGraph(Graph g)
     {}

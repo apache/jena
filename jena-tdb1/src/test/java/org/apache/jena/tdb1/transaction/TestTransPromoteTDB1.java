@@ -26,6 +26,7 @@ import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb1.sys.SystemTDB;
 
 /** Tests for transactions that start read and then promote to write -- TDB */
+@SuppressWarnings("removal")
 public class TestTransPromoteTDB1 extends AbstractTestTransPromote {
     public TestTransPromoteTDB1() {
         super(getLoggers()) ;

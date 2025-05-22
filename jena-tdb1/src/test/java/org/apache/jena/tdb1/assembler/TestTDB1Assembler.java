@@ -39,6 +39,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+@SuppressWarnings("removal")
 public class TestTDB1Assembler {
     // Can be slow - explicitly closes the dataset.
     static String dirAssem = null;

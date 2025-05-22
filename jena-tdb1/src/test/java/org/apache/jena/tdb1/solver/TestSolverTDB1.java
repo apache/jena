@@ -49,6 +49,7 @@ import org.apache.jena.sparql.sse.SSE;
 import org.apache.jena.tdb1.ConfigTest;
 import org.apache.jena.tdb1.TDB1Factory;
 
+@SuppressWarnings("removal")
 public class TestSolverTDB1 {
     static String graphData = null;
     static Dataset dataset = null;

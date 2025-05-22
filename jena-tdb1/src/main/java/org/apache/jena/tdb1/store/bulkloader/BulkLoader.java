@@ -63,6 +63,7 @@ public class BulkLoader {
     public static EventType evStartIndexBulkload  = new EventType(baseName + "start-bulkload-index");
     public static EventType evFinishIndexBulkload = new EventType(baseName + "finish-bulkload-index");
 
+    @SuppressWarnings("removal")
     static private Logger   loadLogger            = TDB1.logLoader;
 
     // Event callbacks for the load stages?

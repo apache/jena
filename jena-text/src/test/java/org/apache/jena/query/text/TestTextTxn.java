@@ -60,7 +60,7 @@ import org.junit.runners.Parameterized.Parameters;
  * TDB2 is transactional only.
  * <p>Union graph support by context is required for these tests.
  */
-
+@SuppressWarnings("removal")
 @RunWith(Parameterized.class)
 public class TestTextTxn
 {

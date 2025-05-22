@@ -23,6 +23,7 @@ import org.apache.jena.sparql.core.AbstractTestDynamicDataset ;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb1.sys.TDBInternal;
 
+@SuppressWarnings("removal")
 public class TestDynamicDatasetTDB1 extends AbstractTestDynamicDataset
 {
     @Override
@@ -30,7 +31,7 @@ public class TestDynamicDatasetTDB1 extends AbstractTestDynamicDataset
     {
         return TDB1Factory.createDataset() ;
     }
-    
+
     @Override
     protected void releaseDataset(Dataset ds) {
         TDBInternal.expel(ds.asDatasetGraph());

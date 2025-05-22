@@ -40,34 +40,35 @@ import org.junit.AfterClass ;
 import org.junit.Before ;
 import org.junit.Test ;
 
-/** Testing persistence  */ 
+/** Testing persistence  */
+@SuppressWarnings("removal")
 public class TestDatasetTDB1Persist
 {
-    static Node n0 = NodeFactoryExtra.parseNode("<http://example/n0>") ; 
+    static Node n0 = NodeFactoryExtra.parseNode("<http://example/n0>") ;
     static Node n1 = NodeFactoryExtra.parseNode("<http://example/n1>") ;
     static Node n2 = NodeFactoryExtra.parseNode("<http://example/n2>") ;
-    
+
     // To avoid the problems on MS Windows whereby memory mapped files
-    // can't be deleted from a running JVM, we use a different, cleaned 
+    // can't be deleted from a running JVM, we use a different, cleaned
     // directory each time.
 
     GraphLocation graphLocation = null ;
-    
+
     @Before public void before()
-    {   
+    {
         TDBInternal.reset() ;
     	String dirname = ConfigTest.getCleanDir() ;
 		graphLocation = new GraphLocation(Location.create(dirname)) ;
         graphLocation.createDataset() ;
     }
-    
+
     @After public void after()
     {
     	if ( graphLocation != null )
     		graphLocation.release() ;
     	graphLocation.clearDirectory() ;	// Does not have the desired effect on Windows.
     }
-    
+
     @AfterClass public static void afterClass() { TDBInternal.reset() ; }
 
     @Test public void dataset1()
@@ -76,13 +77,13 @@ public class TestDatasetTDB1Persist
         assertTrue( ds.getDefaultModel().getGraph() instanceof GraphTDB ) ;
         assertTrue( ds.getNamedModel("http://example/").getGraph() instanceof GraphTDB ) ;
     }
-    
+
     @Test public void dataset2()
     {
         Dataset ds = graphLocation.getDataset() ;
         Graph g1 = ds.getDefaultModel().getGraph() ;
         Graph g2 = ds.getNamedModel("http://example/").getGraph() ;
-        
+
         g1.add(Triple.create(n0,n1,n2) ) ;
         assertTrue(g1.contains(n0,n1,n2) ) ;
         assertFalse(g2.contains(n0,n1,n2) ) ;
@@ -92,11 +93,11 @@ public class TestDatasetTDB1Persist
     {
         Dataset ds = graphLocation.getDataset() ;
         Graph g1 = ds.getDefaultModel().getGraph() ;
-        // Sometimes, under windows, deleting the files by 
-        // graphLocation.clearDirectory does not work.  
+        // Sometimes, under windows, deleting the files by
+        // graphLocation.clearDirectory does not work.
         // Needed for safe tests on windows.
         g1.clear() ;
-        
+
         Graph g2 = ds.getNamedModel("http://example/").getGraph() ;
         g2.add(Triple.create(n0,n1,n2) ) ;
         assertTrue(g2.contains(n0,n1,n2) ) ;
@@ -112,24 +113,24 @@ public class TestDatasetTDB1Persist
         Dataset ds = graphLocation.getDataset() ;
         // ?? See TupleLib.
         ds.asDatasetGraph().deleteAny(gn, null, null, null) ;
-        
+
         Graph g2 = ds.asDatasetGraph().getGraph(gn) ;
-        
+
 //        if ( true )
 //        {
 //            PrintStream ps = System.err ;
 //            ps.println("Dataset names: ") ;
 //            Iter.print(ps, ds.listNames()) ;
 //        }
-        
+
         // Graphs only exists if they have a triple in them
         assertFalse(ds.containsNamedModel(graphName)) ;
-        
+
         List<String> names = Iter.toList(ds.listNames()) ;
         assertEquals(0, names.size()) ;
         assertEquals(0, ds.asDatasetGraph().size()) ;
     }
-    
+
     @Test public void dataset5()
     {
         String graphName = "http://example/" ;
@@ -138,12 +139,12 @@ public class TestDatasetTDB1Persist
         Graph g2 = ds.asDatasetGraph().getGraph(org.apache.jena.graph.NodeFactory.createURI(graphName)) ;
         // Graphs only exists if they have a triple in them
         g2.add(triple) ;
-        
+
         assertTrue(ds.containsNamedModel(graphName)) ;
         List<String> x = Iter.toList(ds.listNames()) ;
         List<String> y = Arrays.asList(graphName) ;
         assertEquals(x,y) ;
-        
+
         assertEquals(1, ds.asDatasetGraph().size()) ;
     }
 }

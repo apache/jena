@@ -32,7 +32,9 @@ import org.apache.jena.tdb1.sys.TDBInternal;
 
 /** Public interface to the loader functionality.
  * The bulk loader is not transactional.
+ * @deprecated Migrate to TDB2.
  */
+@Deprecated(forRemoval =true)
 public class TDB1Loader
 {
     /** Load the contents of URL into a dataset. */

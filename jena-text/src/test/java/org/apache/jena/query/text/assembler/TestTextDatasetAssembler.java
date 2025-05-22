@@ -36,6 +36,7 @@ import org.junit.Test;
 /**
  * Test the text dataset assembler.
  */
+@SuppressWarnings("removal")
 public class TestTextDatasetAssembler extends AbstractTestTextAssembler {
 
     private static final String TESTBASE = "http://example.org/testDatasetAssembler/";

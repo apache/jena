@@ -29,6 +29,7 @@ import org.junit.Assert ;
 import org.junit.Test ;
 
 /** Tests for lower level details of TDB */
+@SuppressWarnings("removal")
 public class TestTDB1Internal {
 
     @Test public void basics_1() {

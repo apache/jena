@@ -41,6 +41,7 @@ import org.junit.Test ;
 /**
  * Test SPARQL
  */
+@SuppressWarnings("removal")
 public class Test_SPARQL_TDB1
 {
     private static Dataset create() {

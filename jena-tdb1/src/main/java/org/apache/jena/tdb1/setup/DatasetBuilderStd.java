@@ -59,7 +59,7 @@ import org.slf4j.Logger;
  * This class is the process of building a dataset. Records
  * BlockMgr/BufferChannel/NodeTable for use by the transaction builder.
  */
-
+@SuppressWarnings("removal")
 public class DatasetBuilderStd {
     private static final Logger log = TDB1.logInfo;
 

@@ -31,11 +31,12 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+@SuppressWarnings("removal")
 public class TestTransactionTDB1 extends AbstractTestTransactionLifecycle
 {
-    private String DIR = null ; 
+    private String DIR = null ;
     private static String level = null ;
-    
+
     @BeforeClass
     public static void beforeClassLoggingOff() {
         level = LogCtl.getLevel(SystemTDB.errlog.getName());
@@ -46,7 +47,7 @@ public class TestTransactionTDB1 extends AbstractTestTransactionLifecycle
     public static void afterClassLoggingOn() {
         LogCtl.setLevel(SystemTDB.errlog.getName(), level);
     }
-    
+
     @Before
     public void before() {
         TDBInternal.reset();

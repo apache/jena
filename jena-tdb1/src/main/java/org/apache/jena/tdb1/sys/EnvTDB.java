@@ -25,6 +25,7 @@ import org.apache.jena.sparql.util.Context ;
 import org.apache.jena.sparql.util.Symbol ;
 import org.apache.jena.tdb1.TDB1;
 
+@SuppressWarnings("removal")
 public class EnvTDB
 {
     public static void processGlobalSystemProperties()

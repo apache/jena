@@ -42,7 +42,7 @@ import org.apache.jena.tdb1.TDB1;
 import org.apache.jena.tdb1.TDB1Exception;
 
 /** Simple encoder/decoder for nodes that uses Turtle term string encoding. */
-
+@SuppressWarnings("removal")
 public class NodecSSE implements Nodec
 {
     // Characters in IRIs that are illegal and cause SSE problems, but we wish to keep.

@@ -43,6 +43,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
+@SuppressWarnings("removal")
 public class TestLoader {
     private static String DIR = null ;
     private static final Node   g   = NodeFactory.createURI("g") ;

@@ -37,6 +37,7 @@ import org.apache.jena.tdb1.sys.SystemTDB;
 import org.apache.jena.tdb1.sys.TDBInternal;
 import org.junit.Test ;
 
+@SuppressWarnings("removal")
 public class TestQuadFilter
 {
     private static String graphToHide = "http://example/g2";

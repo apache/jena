@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory ;
  * because the {@link TransactionManager} is responsible to writing
  * the blocks to the main storage.
  */
+@SuppressWarnings("removal")
 public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
 {
     private static Logger log = LoggerFactory.getLogger(BlockMgrJournal.class) ;

@@ -35,6 +35,7 @@ import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
+@SuppressWarnings("removal")
 public class TestTDB1Factory
 {
     String DIR = ConfigTest.getCleanDir() ;

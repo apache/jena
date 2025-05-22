@@ -41,6 +41,7 @@ import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 
+@SuppressWarnings("removal")
 public abstract class AbstractStoreConnections
 {
     // Subclass to give direct and mapped versions.
@@ -180,7 +181,6 @@ public abstract class AbstractStoreConnections
         dsgTxn2.end() ;
     }
 
-    @SuppressWarnings("removal")
     @Test
     public void store_7() {
         // No transaction, plain update, then transaction.

@@ -107,6 +107,7 @@ public interface SecurityContext {
      * Throws {@link IllegalArgumentException} if {@link DatasetGraph} is not a TDB1 or TDB2 backed dataset.
      * May throw {@link UnsupportedOperationException}.
      */
+    @SuppressWarnings("removal")
     public default void filterTDB(DatasetGraph dsg, QueryExec qExec) {
         if ( ! org.apache.jena.tdb1.sys.TDBInternal.isTDB1(dsg) || ! org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dsg) )
             throw new IllegalArgumentException("Not a TDB database");

@@ -25,6 +25,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.tdb1.TDB1Factory;
 
 /** This is the view-graph test suite run over a TDB DatasetGraph to check compatibility */
+@SuppressWarnings("removal")
 public class TestGraphOverDatasetTDB1 extends AbstractTestGraphOverDatasetGraph
 {
     @Override
