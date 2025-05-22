@@ -29,6 +29,6 @@ public class FN_BEV extends FunctionBase1
     @Override
     public NodeValue exec(NodeValue x)
     {
-        return XSDFuncOp.booleanEffectiveValueAsNodeValue(x) ;
+        return XSDFuncOp.effectiveBooleanValueAsNodeValue(x) ;
     }
 }

@@ -96,15 +96,15 @@ public abstract class ExprFunction extends ExprNode
     }
 
     /**
-     * Name used for output in SPARQL format needing functional form (no specific keyword).
+     * Name used for output in SPARQL format needing functional syntax: name(arg1, arg2, ...)
      * e.g. regexp(), custom functions, ...
      */
     public String getFunctionPrintName(SerializationContext cxt)
     { return funcSymbol.getSymbol(); }
 
     /**
-     * Name used in a functional form (i.e. SPARQL algebra).
-     * getOpName() is used in preference as a short, symbol name.
+     * Name used in the SPARQL algebra.
+     * See also {@link #getOpName} for an operator form.
      */
     public String getFunctionName(SerializationContext cxt)
     { return funcSymbol.getSymbol(); }
@@ -116,7 +116,7 @@ public abstract class ExprFunction extends ExprNode
     /** URI for this function, whether custom or specification defined URI (these are keywords in the language) */
     public String getFunctionIRI() { return null; }
 
-    /** Get the symbol name (+, ! etc) for this function -- maybe null for none */
+    /** Get the operator symbol name (+, ! etc) for this function -- maybe null for none */
     public String getOpName()
     { return opSign; }
 }

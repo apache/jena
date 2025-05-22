@@ -34,8 +34,8 @@ import org.apache.jena.sparql.sse.Tags;
  * The function URI(expr) is the same, but under a different name as a
  * subclass.
  * <p>
- * As an ARQ extension , there is also {@code IRI(base, relative)} form which is E_IRI2.
- * The relative URI (string or IRI) is resolved against the result of the "base" expression.
+ * See also E_IRI2, an ARQ extension. That allows a base and a relative IRI.
+ * The relative URI (string or IRI) is resolved against the result of the value of the base expression.
  * which in turn is resolved as per the one-argument form.
  */
 public class E_IRI extends ExprFunction1 {
@@ -62,7 +62,7 @@ public class E_IRI extends ExprFunction1 {
         this.relExpr = relExpr;
     }
 
-    // Evaluation of a "one argument with access to the env.
+    // Evaluation of a "one argument" with access to the env.
     @Override
     protected NodeValue evalSpecial(Binding binding, FunctionEnv env) {
         // IRI(relative)
@@ -72,15 +72,18 @@ public class E_IRI extends ExprFunction1 {
         return resolve(nvRel, baseIRI, env);
     }
 
+    @Override
+    public NodeValue eval(NodeValue v, FunctionEnv env) {
+        // Shouldn't be called. Legacy only.
+        return resolve(v, parserBase, env);
+    }
+
     /*package*/ static NodeValue resolve(NodeValue relative, String baseIRI, FunctionEnv env) {
         if ( baseIRI == null ) {
             if ( env.getContext() != null ) {
                 Query query = (Query)env.getContext().get(ARQConstants.sysCurrentQuery);
                 if ( query != null )
                     baseIRI = query.getBaseURI();
-                // If still null, NodeFunctions.iri will use the system base.
-//                if ( baseIRI == null )
-//                    baseIRI = IRIs.getBaseStr();
             }
         }
         if ( NodeFunctions.isIRI(relative.asNode()) ) {
@@ -88,12 +91,6 @@ public class E_IRI extends ExprFunction1 {
         }
 
         return NodeFunctions.iri(relative, baseIRI);
-    }
-
-    @Override
-    public NodeValue eval(NodeValue v, FunctionEnv env) {
-        // Shouldn't be called. Legacy only. Does not support baseExpr!=null
-        return resolve(v, parserBase, env);
     }
 
     @Override
