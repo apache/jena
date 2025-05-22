@@ -23,6 +23,7 @@ import org.apache.jena.tdb1.TDB1Factory;
 import org.junit.Assert ;
 import org.junit.Test ;
 
+@SuppressWarnings("removal")
 public class TestTransactionMiscTDB1 {
     @Test public void support() {
         DatasetGraph dsg = TDB1Factory.createDatasetGraph() ;

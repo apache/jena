@@ -131,6 +131,7 @@ public class SecurityContextView implements SecurityContext {
      *             if not a TDB database, or a {@link DatasetGraphAccessControl} wrapped
      *             TDB database.
      */
+    @SuppressWarnings("removal")
     protected GraphFilter<?> predicate(DatasetGraph dsg) {
         dsg = DatasetGraphAccessControl.removeWrapper(dsg);
         // dsg has to be the database dataset, not wrapped.
@@ -142,6 +143,7 @@ public class SecurityContextView implements SecurityContext {
         throw new IllegalArgumentException("Not a TDB1 or TDB2 database: "+dsg.getClass().getSimpleName());
     }
 
+    @SuppressWarnings("removal")
     protected static boolean isAccessControlledTDB(DatasetGraph dsg) {
         DatasetGraph dsgBase = DatasetGraphAccessControl.unwrapOrNull(dsg);
         if ( dsgBase == null )

@@ -51,6 +51,7 @@ import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated(forRemoval = true)
 public class TDB1 {
 
     private TDB1() {}

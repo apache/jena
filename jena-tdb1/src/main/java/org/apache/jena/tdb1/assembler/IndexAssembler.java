@@ -20,8 +20,6 @@ package org.apache.jena.tdb1.assembler;
 
 import static org.apache.jena.sparql.util.graph.GraphUtils.exactlyOneProperty ;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getAsStringValue ;
-import static org.apache.jena.tdb1.assembler.VocabTDB1.pDescription;
-import static org.apache.jena.tdb1.assembler.VocabTDB1.pFile;
 
 import java.util.Locale ;
 
@@ -43,31 +41,32 @@ import org.apache.jena.tdb1.store.tupletable.TupleIndexRecord;
 import org.apache.jena.tdb1.sys.Names;
 import org.apache.jena.tdb1.sys.SystemTDB;
 
+@SuppressWarnings("removal")
 public class IndexAssembler extends AssemblerBase //implements Assembler
 {
-    /* 
+    /*
      * [ :description "SPO" ; :file "SPO.idx" ]
      */
-    
+
     private Location location = null ;
     private IndexAssembler()                   { this.location = null ; }
     private IndexAssembler(Location location)  { this.location = location ; }
-    
+
     @Override
     public TupleIndex open(Assembler a, Resource root, Mode mode)
     {
-        exactlyOneProperty(root, pDescription) ;
-        String desc = getAsStringValue(root, pDescription).toUpperCase(Locale.ENGLISH) ;
-        exactlyOneProperty(root, pFile) ;
-        String filename = getAsStringValue(root, pFile) ;
-        
+        exactlyOneProperty(root, VocabTDB1.pDescription) ;
+        String desc = getAsStringValue(root, VocabTDB1.pDescription).toUpperCase(Locale.ENGLISH) ;
+        exactlyOneProperty(root, VocabTDB1.pFile) ;
+        String filename = getAsStringValue(root, VocabTDB1.pFile) ;
+
         // Need to get location from the enclosing PGraphAssembler
         if ( location != null )
             filename = location.absolute(filename) ;
-        
+
         String primary = null ;
         RecordFactory rf = null ;
-        
+
         switch ( desc.length() )
         {
             case 3:
@@ -80,7 +79,7 @@ public class IndexAssembler extends AssemblerBase //implements Assembler
                 break ;
             default:
                 throw new TDB1Exception("Bad length for index description: "+desc) ;
-                
+
         }
         // Problems with spotting the index technology.
         FileSet fileset = null ; //FileSet.fromFilename(filename) ;

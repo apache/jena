@@ -22,6 +22,7 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.transaction.AbstractTestTransactionIsolation ;
 import org.apache.jena.tdb1.TDB1Factory;
 
+@SuppressWarnings("removal")
 public class TestTransIsolation extends AbstractTestTransactionIsolation {
 
     @Override

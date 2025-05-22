@@ -23,11 +23,12 @@ import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb1.transaction.DatasetGraphTransaction;
 
+@SuppressWarnings("removal")
 public class TestDatasetGraphTDB1FindPattern extends AbstractDatasetGraphFindPatterns {
 
     @Override
     public DatasetGraph create() {
-        // Get the underlying storage, not the transactional support. 
+        // Get the underlying storage, not the transactional support.
         return ((DatasetGraphTransaction)TDB1Factory.createDatasetGraph()).getBaseDatasetGraph();
     }
 }

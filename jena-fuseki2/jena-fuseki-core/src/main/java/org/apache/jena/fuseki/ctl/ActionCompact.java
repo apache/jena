@@ -68,6 +68,7 @@ public class ActionCompact extends ActionAsyncTask
     // This include a DatasetGraphText.
 
     /** Safety condition that stops further unwrapping */
+    @SuppressWarnings("removal")
     private static Predicate<DatasetGraph> notTDB2 =
         (dsg) -> org.apache.jena.tdb1.sys.TDBInternal.isTDB1(dsg);
 

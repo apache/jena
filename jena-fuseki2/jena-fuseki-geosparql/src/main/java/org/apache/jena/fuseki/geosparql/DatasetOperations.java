@@ -103,6 +103,7 @@ public class DatasetOperations {
         return dataset;
     }
 
+    @SuppressWarnings("removal")
     public static Dataset prepareDataset(ArgsConfig argsConfig) {
 
         Dataset dataset;

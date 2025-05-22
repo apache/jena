@@ -74,6 +74,7 @@ public class TestSecurityFilterFuseki {
         return fusekiServer.datasetURL(dsName);
     }
 
+    @SuppressWarnings("removal")
     private static DatasetGraph testdsg1 =  TDB1Factory.createDatasetGraph();
     private static DatasetGraph testdsg2 =  DatabaseMgr.createDatasetGraph();
     private static DatasetGraph testdsg3 =  DatasetGraphFactory.createTxnMem();

@@ -49,6 +49,7 @@ public abstract class GraphFilter<X> implements Predicate<Tuple<X>> {
         this.matchDefaultGraph = matchDefaultGraph;
     }
 
+    @SuppressWarnings("removal")
     public static Symbol getContextKey(DatasetGraph dsg) {
         dsg = DatasetGraphAccessControl.removeWrapper(dsg);
 

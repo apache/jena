@@ -40,6 +40,7 @@ import org.apache.jena.tdb1.store.NodeId;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+@SuppressWarnings("removal")
 public class SystemTDB
 {
     static { JenaSystem.init(); }

@@ -24,8 +24,9 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb1.TDB1;
 import org.apache.jena.tdb1.transaction.TransactionManager;
 import tdb.cmdline.CmdTDB;
-import tdb.cmdline.ModTDBDataset;
+import tdb.cmdline.ModTDB1Dataset;
 
+@SuppressWarnings("removal")
 public class tdbupdate extends arq.update {
     // Inherits from arq.update so is not a CmdTDB. Mixins for Java!
     public static void main(String...argv) {
@@ -49,7 +50,7 @@ public class tdbupdate extends arq.update {
 
     @Override
     protected ModDataset setModDataset() {
-        return new ModTDBDataset();
+        return new ModTDB1Dataset();
     }
 
     @Override

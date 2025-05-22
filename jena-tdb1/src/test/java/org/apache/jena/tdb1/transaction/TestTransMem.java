@@ -25,15 +25,16 @@ import org.junit.After ;
 import org.junit.Before ;
 
 /** Basic tests and tests of ordering (single thread) */
+@SuppressWarnings("removal")
 public class TestTransMem extends AbstractTestTransSeq
 {
     @Before public void before()
     {
         TDBInternal.reset() ;
     }
-  
+
     @After public void after() {}
-    
+
     @Override
     protected StoreConnection getStoreConnection()
     {

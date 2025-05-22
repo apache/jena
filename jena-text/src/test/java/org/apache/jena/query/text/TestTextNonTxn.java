@@ -46,6 +46,7 @@ import org.junit.runners.Parameterized.Parameters;
 /** Test using various dataset implmentations without transactions
  *  No context-set union graph usage either.
  */
+@SuppressWarnings("removal")
 @RunWith(Parameterized.class)
 public class TestTextNonTxn
 {

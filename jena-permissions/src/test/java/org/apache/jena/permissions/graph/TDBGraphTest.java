@@ -26,6 +26,7 @@ import org.apache.jena.tdb1.TDB1;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.junit.After;
 
+@SuppressWarnings("removal")
 public class TDBGraphTest extends MemGraphTest {
 
     private DatasetGraph dsGraph;

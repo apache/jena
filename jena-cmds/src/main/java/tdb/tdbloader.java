@@ -35,6 +35,7 @@ import org.apache.jena.util.FileUtils;
 import tdb.cmdline.CmdTDB;
 import tdb.cmdline.CmdTDBGraph;
 
+@SuppressWarnings("removal")
 public class tdbloader extends CmdTDBGraph {
     private static final ArgDecl argNoStats = new ArgDecl(ArgDecl.NoValue, "nostats") ;
     private static final ArgDecl argStats = new ArgDecl(ArgDecl.HasValue,  "stats") ;

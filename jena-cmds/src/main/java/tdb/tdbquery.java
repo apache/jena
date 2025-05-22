@@ -19,10 +19,11 @@
 package tdb;
 
 import tdb.cmdline.CmdTDB;
-import tdb.cmdline.ModTDBDataset;
+import tdb.cmdline.ModTDB1Dataset;
 import arq.cmdline.ModDataset;
 import org.apache.jena.tdb1.TDB1;
 
+@SuppressWarnings("removal")
 public class tdbquery extends arq.query {
     // Inherits from arq.query so is not a CmdTDB. Mixins for Java!
     public static void main(String...argv) {
@@ -48,6 +49,6 @@ public class tdbquery extends arq.query {
 
     @Override
     protected ModDataset setModDataset() {
-        return new ModTDBDataset();
+        return new ModTDB1Dataset();
     }
 }

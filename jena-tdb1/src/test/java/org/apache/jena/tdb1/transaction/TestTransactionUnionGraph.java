@@ -32,6 +32,7 @@ import org.apache.jena.update.* ;
 import org.junit.* ;
 
 /** Tests of transactions and the TDB union graph */
+@SuppressWarnings("removal")
 public class TestTransactionUnionGraph
 {
     private Dataset ds ;

@@ -56,6 +56,7 @@ public class TestSecurityFilterLocal {
     @Parameters(name = "{index}: {0}")
     public static Iterable<Object[]> data() {
         // By filtering on the TDB database
+        @SuppressWarnings("removal")
         Creator<DatasetGraph> c1 = TDB1Factory::createDatasetGraph;
         Creator<DatasetGraph> c2 = DatabaseMgr::createDatasetGraph;
         Creator<DatasetGraph> c3 = DatasetGraphFactory::createTxnMem;
@@ -242,6 +243,7 @@ public class TestSecurityFilterLocal {
     }
 
     // Query execution w/ union default graph
+    @SuppressWarnings("removal")
     private void filter_union_user(String user, Node ... expected) {
         SecurityContext sCxt = reg.get(user);
         Set<Node> visible;

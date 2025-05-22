@@ -41,6 +41,7 @@ public class FusekiCore {
 
     private static boolean initialized = false;
 
+    @SuppressWarnings("removal")
     public synchronized static void init() {
         if ( initialized )
             return;

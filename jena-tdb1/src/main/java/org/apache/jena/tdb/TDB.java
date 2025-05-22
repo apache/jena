@@ -32,7 +32,7 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 /**
- * @deprecated Use {@link org.apache.jena.tdb1.TDB1}
+ * @deprecated Migrate to TDB2
  */
 @Deprecated(forRemoval = true)
 @SuppressWarnings("all")

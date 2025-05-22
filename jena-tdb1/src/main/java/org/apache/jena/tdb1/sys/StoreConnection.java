@@ -185,6 +185,7 @@ public class StoreConnection
      * Stop managing a location. Use with great care (testing only).
      * Use via {@link TDBInternal#expel} wherever possible.
      */
+    @SuppressWarnings("removal")
     public static synchronized void expel(Location location, boolean force) {
         // Evict from TBDMaker cache otherwise that will retain a reference to this StoreConnection.
         StoreConnection sConn = cache.get(location) ;

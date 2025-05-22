@@ -25,7 +25,7 @@ import org.apache.jena.tdb1.base.file.Location;
 
 /**
  * Backup a database.
- * @deprecated Use {@link org.apache.jena.tdb1.TDB1Backup}
+ * @deprecated Migrate to TDB2
  */
 @Deprecated(forRemoval = true)
 public class TDBBackup

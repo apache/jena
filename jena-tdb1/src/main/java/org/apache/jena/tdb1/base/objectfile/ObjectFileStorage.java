@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  *  Variable length ByteBuffer file on disk with
  *  buffering for delayed writes.
  */
-
+@SuppressWarnings("removal")
 public class ObjectFileStorage implements ObjectFile
 {
     private static Logger log = LoggerFactory.getLogger(ObjectFileStorage.class);

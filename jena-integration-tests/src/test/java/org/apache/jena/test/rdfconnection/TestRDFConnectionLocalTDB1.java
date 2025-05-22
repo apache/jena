@@ -24,7 +24,8 @@ import org.apache.jena.rdfconnection.Isolation;
 import org.apache.jena.rdfconnection.RDFConnection;
 import org.apache.jena.tdb1.TDB1Factory;
 
-public class TestRDFConnectionLocalTDB extends AbstractTestRDFConnection {
+@SuppressWarnings("removal")
+public class TestRDFConnectionLocalTDB1 extends AbstractTestRDFConnection {
 
     @Override
     protected boolean supportsAbort() { return true ; }
