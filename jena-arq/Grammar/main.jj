@@ -1341,11 +1341,11 @@ void PropertyListNotEmpty(Node s, TripleCollector acc) :
     { Node p = null ; }
 {
     p = Verb()
-    ObjectList(s, p, null, acc)
+    ObjectList(s, p, acc)
   ( <SEMICOLON> 
     ( /* TriG template: LOOKAHEAD(2) */
        p = Verb()
-      ObjectList(s, p, null, acc)
+      ObjectList(s, p, acc)
     )? 
   )*
 }
@@ -1358,18 +1358,18 @@ Node Verb() : { Node p ;}
   { return p ; }
 }
 
-void ObjectList(Node s,  Node p, Path path, TripleCollector acc): { Node o ; } 
+void ObjectList(Node s, Node p, TripleCollector acc): { Node o ; } 
 {
-  Object(s, p, path, acc)
-  ( <COMMA> Object(s, p, path, acc) )*
+  Object(s, p, acc)
+  ( <COMMA> Object(s, p, acc) )*
 }
 
-void Object(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
+void Object(Node s, Node p, TripleCollector acc): { Node o ; }
 {
   { ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ; }
   o = GraphNode(tempAcc) 
-  { insert(tempAcc, mark, s, p, path, o) ; insert(acc, tempAcc) ; }
-  Annotation(acc, s, p, path, o)
+  { insert(tempAcc, mark, s, p, o) ; insert(acc, tempAcc) ; }
+  Annotation(acc, s, p, o)
 }
 
 // -------- BGPs with paths.
@@ -1610,7 +1610,7 @@ P_Path0 PathOneInPropertySet() : { String str ; Node n ; }
 // Anything that can stand in a node slot and which is
 // a number of triples
 
-Node TriplesNode(TripleCollectorMark acc) : { Node n ; }
+Node TriplesNode(TripleCollector acc) : { Node n ; }
 {
    n = Collection(acc) { return n ; }
  |
@@ -1626,7 +1626,7 @@ Node BlankNodePropertyList(TripleCollector acc) : { Token t ; }
     { return n ; }
 }
 
-Node TriplesNodePath(TripleCollectorMark acc) : { Node n ; }
+Node TriplesNodePath(TripleCollector acc) : { Node n ; }
 {
    n = CollectionPath(acc) { return n ; }
  |
@@ -1644,7 +1644,7 @@ Node BlankNodePropertyListPath(TripleCollector acc) : { Token t ; }
 
 // ------- RDF collections
 
-Node Collection(TripleCollectorMark acc) : 
+Node Collection(TripleCollector acc) : 
     { Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ; }
 {
   t = <LPAREN>
@@ -1670,7 +1670,7 @@ Node Collection(TripleCollectorMark acc) :
      return listHead ; }
 }
 
-Node CollectionPath(TripleCollectorMark acc) : 
+Node CollectionPath(TripleCollector acc) : 
     { Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ; }
 {
   t = <LPAREN>
@@ -1725,17 +1725,17 @@ void AnnotationBlockPath(TripleCollector acc, Node reifId) : { }
 
 // ---- RDF-star Annotation Syntax
 // No paths. Construct templates.
-void Annotation(TripleCollector acc, Node s, Node p, Path path, Node o) : { Node reifId = null ; }
+void Annotation(TripleCollector acc, Node s, Node p, Node o) : { Node reifId = null ; }
 {
   (
-    { p = preConditionReifier(s, p, path, o, token.beginLine, token.beginColumn); }
+    { p = preConditionReifier(s, p,null, o, token.beginLine, token.beginColumn); }
     reifId = Reifier()
     // @@ Rewrite java?
     { reifId = insertTripleReifier(acc, reifId, s, p, o, token.beginLine, token.beginColumn) ; }    
     { setReifierId(reifId); }
   |
     {
-      p = preConditionReifier(s, p, path, o, token.beginLine, token.beginColumn);
+      p = preConditionReifier(s, p, null, o, token.beginLine, token.beginColumn);
       reifId = getOrAllocReifierId(acc, s, p, o, token.beginLine, token.beginColumn);
     }
     { clearReifierId(); }
@@ -1755,7 +1755,7 @@ void AnnotationBlock(TripleCollector acc, Node reifId) : { }
 
 // Object position RDF term, element of a list
 // No paths in TriplesNode
-Node GraphNode(TripleCollectorMark acc) : { Node n ; }
+Node GraphNode(TripleCollector acc) : { Node n ; }
 {
    n = VarOrTerm() { return n ; }
  |
@@ -1765,7 +1765,7 @@ Node GraphNode(TripleCollectorMark acc) : { Node n ; }
 }
 
 // Object position RDF term. NEW-SYNTAX Rename?
-Node GraphNodePath(TripleCollectorMark acc) : { Node n ; }
+Node GraphNodePath(TripleCollector acc) : { Node n ; }
 {
   n = VarOrTerm() { return n ; }
 |

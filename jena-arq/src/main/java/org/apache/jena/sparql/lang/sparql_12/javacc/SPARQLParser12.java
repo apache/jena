@@ -2770,7 +2770,7 @@ insert(acc, tempAcc) ;
 
   final public void PropertyListNotEmpty(Node s, TripleCollector acc) throws ParseException {Node p = null ;
     p = Verb();
-    ObjectList(s, p, null, acc);
+    ObjectList(s, p, acc);
     label_22:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2791,7 +2791,7 @@ insert(acc, tempAcc) ;
       case VAR2:
       case KW_A:{
         p = Verb();
-        ObjectList(s, p, null, acc);
+        ObjectList(s, p, acc);
         break;
         }
       default:
@@ -2825,8 +2825,8 @@ p = nRDFtype ;
     throw new Error("Missing return statement in function");
 }
 
-  final public void ObjectList(Node s, Node p, Path path, TripleCollector acc) throws ParseException {Node o ;
-    Object(s, p, path, acc);
+  final public void ObjectList(Node s, Node p, TripleCollector acc) throws ParseException {Node o ;
+    Object(s, p, acc);
     label_23:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -2839,15 +2839,15 @@ p = nRDFtype ;
         break label_23;
       }
       jj_consume_token(COMMA);
-      Object(s, p, path, acc);
+      Object(s, p, acc);
     }
 }
 
-  final public void Object(Node s, Node p, Path path, TripleCollector acc) throws ParseException {Node o ;
+  final public void Object(Node s, Node p, TripleCollector acc) throws ParseException {Node o ;
 ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ;
     o = GraphNode(tempAcc);
-insert(tempAcc, mark, s, p, path, o) ; insert(acc, tempAcc) ;
-    Annotation(acc, s, p, path, o);
+insert(tempAcc, mark, s, p, o) ; insert(acc, tempAcc) ;
+    Annotation(acc, s, p, o);
 }
 
   final public void TriplesSameSubjectPath(TripleCollector acc) throws ParseException {Node s ;
@@ -3282,7 +3282,7 @@ n = createNode(str) ; {if ("" != null) return new P_ReverseLink(n) ;}
     throw new Error("Missing return statement in function");
 }
 
-  final public Node TriplesNode(TripleCollectorMark acc) throws ParseException {Node n ;
+  final public Node TriplesNode(TripleCollector acc) throws ParseException {Node n ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case LPAREN:{
       n = Collection(acc);
@@ -3311,7 +3311,7 @@ Node n = createBNode( t.beginLine, t.beginColumn) ;
     throw new Error("Missing return statement in function");
 }
 
-  final public Node TriplesNodePath(TripleCollectorMark acc) throws ParseException {Node n ;
+  final public Node TriplesNodePath(TripleCollector acc) throws ParseException {Node n ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case LPAREN:{
       n = CollectionPath(acc);
@@ -3340,7 +3340,7 @@ Node n = createBNode( t.beginLine, t.beginColumn) ;
     throw new Error("Missing return statement in function");
 }
 
-  final public Node Collection(TripleCollectorMark acc) throws ParseException {Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
+  final public Node Collection(TripleCollector acc) throws ParseException {Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
     t = jj_consume_token(LPAREN);
 int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
     label_29:
@@ -3397,7 +3397,7 @@ if ( lastCell != null )
     throw new Error("Missing return statement in function");
 }
 
-  final public Node CollectionPath(TripleCollectorMark acc) throws ParseException {Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
+  final public Node CollectionPath(TripleCollector acc) throws ParseException {Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
     t = jj_consume_token(LPAREN);
 int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
     label_30:
@@ -3497,7 +3497,7 @@ clearReifierId();
     jj_consume_token(R_ANN);
 }
 
-  final public void Annotation(TripleCollector acc, Node s, Node p, Path path, Node o) throws ParseException {Node reifId = null ;
+  final public void Annotation(TripleCollector acc, Node s, Node p, Node o) throws ParseException {Node reifId = null ;
     label_32:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -3512,14 +3512,14 @@ clearReifierId();
       }
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case TILDE:{
-p = preConditionReifier(s, p, path, o, token.beginLine, token.beginColumn);
+p = preConditionReifier(s, p,null, o, token.beginLine, token.beginColumn);
         reifId = Reifier();
 reifId = insertTripleReifier(acc, reifId, s, p, o, token.beginLine, token.beginColumn) ;
 setReifierId(reifId);
         break;
         }
       case L_ANN:{
-p = preConditionReifier(s, p, path, o, token.beginLine, token.beginColumn);
+p = preConditionReifier(s, p, null, o, token.beginLine, token.beginColumn);
       reifId = getOrAllocReifierId(acc, s, p, o, token.beginLine, token.beginColumn);
 clearReifierId();
         AnnotationBlock(acc, reifId);
@@ -3539,7 +3539,7 @@ clearReifierId();
     jj_consume_token(R_ANN);
 }
 
-  final public Node GraphNode(TripleCollectorMark acc) throws ParseException {Node n ;
+  final public Node GraphNode(TripleCollector acc) throws ParseException {Node n ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -3588,7 +3588,7 @@ clearReifierId();
     throw new Error("Missing return statement in function");
 }
 
-  final public Node GraphNodePath(TripleCollectorMark acc) throws ParseException {Node n ;
+  final public Node GraphNodePath(TripleCollector acc) throws ParseException {Node n ;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case IRIref:
     case PNAME_NS:

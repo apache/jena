@@ -18,6 +18,7 @@
 
 package org.apache.jena.sparql.syntax;
 
+import org.apache.jena.atlas.lib.InternalErrorException;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.sparql.core.TriplePath;
 
@@ -27,4 +28,17 @@ public interface TripleCollector
     public void addTriple(Triple t);
 
     public void addTriplePath(TriplePath tPath);
+
+    // The mark is used by some TripleCollector so
+    // that triple order if nicer for RDF lists.
+
+    // The contract with the mark is that there should be no disturbing
+    // triples 0..(mark-1) before using a mark. That is, use marks in
+    // LIFO (stack) order.
+
+    public default int mark() { throw new InternalErrorException("Mark no tsupported"); }
+
+    public default void addTriple(int index, Triple t) { addTriple(t); }
+
+    public default void addTriplePath(int index, TriplePath tPath) { addTriplePath(tPath); }
 }

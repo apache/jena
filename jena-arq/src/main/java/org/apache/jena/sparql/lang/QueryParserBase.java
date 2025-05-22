@@ -538,7 +538,7 @@ public class QueryParserBase {
         acc.addTriple(Triple.create(s, p, o));
     }
 
-    protected void insert(TripleCollectorMark acc, int index, Node s, Node p, Node o) {
+    protected void insert(TripleCollector acc, int index, Node s, Node p, Node o) {
         acc.addTriple(index, Triple.create(s, p, o));
     }
 
@@ -549,7 +549,7 @@ public class QueryParserBase {
             acc.addTriple(Triple.create(s, p, o));
     }
 
-    protected void insert(TripleCollectorMark acc, int index, Node s, Node p, Path path, Node o) {
+    protected void insert(TripleCollector acc, int index, Node s, Node p, Path path, Node o) {
         if ( p == null )
             acc.addTriplePath(index, new TriplePath(s, path, o));
         else
