@@ -143,7 +143,7 @@ public class SPARQLFuncOp {
         return NodeValue.booleanReturn(r == Expr.CMP_GREATER);
     }
 
-    public static NodeValue sparql_lessThat(NodeValue nv1, NodeValue nv2) {
+    public static NodeValue sparql_lessThan(NodeValue nv1, NodeValue nv2) {
         int r = NodeValue.compare(nv1, nv2);
         return NodeValue.booleanReturn(r == Expr.CMP_LESS);
     }
@@ -158,22 +158,22 @@ public class SPARQLFuncOp {
         return NodeValue.booleanReturn(r == Expr.CMP_LESS || r == Expr.CMP_EQUAL);
     }
 
-    // and,or,not as functions (arguments have been evaluated)
+    // and, or, not as functions (arguments have been evaluated)
 
     public static NodeValue sparql_function_and(NodeValue nv1, NodeValue nv2) {
-        boolean arg1 = XSDFuncOp.booleanEffectiveValue(nv1);
-        boolean arg2 = XSDFuncOp.booleanEffectiveValue(nv2);
+        boolean arg1 = XSDFuncOp.effectiveBooleanValue(nv1);
+        boolean arg2 = XSDFuncOp.effectiveBooleanValue(nv2);
         return NodeValue.booleanReturn(arg1 && arg2);
     }
 
     public static NodeValue sparql_function_or(NodeValue nv1, NodeValue nv2) {
-        boolean arg1 = XSDFuncOp.booleanEffectiveValue(nv1);
-        boolean arg2 = XSDFuncOp.booleanEffectiveValue(nv2);
+        boolean arg1 = XSDFuncOp.effectiveBooleanValue(nv1);
+        boolean arg2 = XSDFuncOp.effectiveBooleanValue(nv2);
         return NodeValue.booleanReturn(arg1 || arg2);
     }
 
   public static NodeValue sparql_function_not(NodeValue nv) {
-      boolean arg = XSDFuncOp.booleanEffectiveValue(nv);
+      boolean arg = XSDFuncOp.effectiveBooleanValue(nv);
       return NodeValue.booleanReturn(!arg);
   }
 
@@ -226,10 +226,11 @@ public class SPARQLFuncOp {
     // Term functions : NodeFunctions
 
     public static NodeValue sparql_iri(NodeValue nv) { return NodeFunctions.iri(nv, null); }
-    // Extension
-    public static NodeValue sparql_iri(NodeValue nv, NodeValue nvBase) { return NodeFunctions.iri(nv, nvBase.getString()); }
-
     public static NodeValue sparql_uri(NodeValue nv) { return sparql_iri(nv); }
+
+    // Extension
+    public static NodeValue arq_iri(NodeValue nv, NodeValue nvBase) { return NodeFunctions.iri(nv, nvBase.getString()); }
+    public static NodeValue arq_uri(NodeValue nv, NodeValue nvBase) { return NodeFunctions.iri(nv, nvBase.getString()); }
 
     // Only BNODE(), not BNODE(str)
     public static NodeValue sparql_bnode() { return null; }
@@ -256,10 +257,7 @@ public class SPARQLFuncOp {
     public static NodeValue sparql_contains(NodeValue nv1, NodeValue nv2) { return XSDFuncOp.strContains(nv1, nv2); }
     public static NodeValue sparql_strbefore(NodeValue nv1, NodeValue nv2) { return XSDFuncOp.strBefore(nv1, nv2); }
     public static NodeValue sparql_strafter(NodeValue nv1, NodeValue nv2) { return XSDFuncOp.strAfter(nv1, nv2); }
-
-    public static NodeValue sparql_concat(NodeValue...args) {
-        return XSDFuncOp.strConcat(List.of(args));
-    }
+    public static NodeValue sparql_concat(NodeValue...args) { return XSDFuncOp.strConcat(List.of(args)); }
 
     public static NodeValue sparql_langMatches(NodeValue nv1, NodeValue nv2) { return NodeFunctions.langMatches(nv1, nv2); }
 
@@ -270,10 +268,11 @@ public class SPARQLFuncOp {
         return regexEngineCache.get(cacheKey, (key)->E_Regex.makeRegexEngine(key.pattern, key.flags));
     }
 
+    public static NodeValue sparql_regex(NodeValue string, NodeValue pattern) { return sparql_regex(string, pattern, null); }
     public static NodeValue sparql_regex(NodeValue string, NodeValue pattern, NodeValue flags) {
         // Cache - this means regexes are compiled once.
         String patternStr = pattern.getString();
-        String flagsStr = flags.getString();
+        String flagsStr = (flags == null) ? null : flags.getString();
         RegexEngine regexEngine = getRegexEngine(patternStr, flagsStr);
         String str = string.getString();
         boolean b = regexEngine.match(str);
@@ -282,6 +281,9 @@ public class SPARQLFuncOp {
 
     public static NodeValue sparql_replace(NodeValue nvStr, NodeValue nvPattern, NodeValue nvReplacement)
     { return XSDFuncOp.strReplace(nvStr, nvPattern, nvReplacement); }
+
+    public static NodeValue sparql_replace(NodeValue nvStr, NodeValue nvPattern, NodeValue nvReplacement, NodeValue envFlags)
+    { return XSDFuncOp.strReplace(nvStr, nvPattern, nvReplacement, envFlags); }
 
     public static NodeValue sparql_encode(NodeValue nv) { return XSDFuncOp.strEncodeForURI(nv); }
     public static NodeValue sparql_abs(NodeValue nv)    { return XSDFuncOp.abs(nv); }
@@ -316,6 +318,7 @@ public class SPARQLFuncOp {
 
     public static NodeValue sparql_md5(NodeValue nv)    { return NodeValueDigest.calculateDigest(nv, "MD-5"); }
     public static NodeValue sparql_sha1(NodeValue nv)   { return NodeValueDigest.calculateDigest(nv, "SHA-1"); }
+    public static NodeValue sparql_sha224(NodeValue nv) { return NodeValueDigest.calculateDigest(nv, "SHA-224"); }
     public static NodeValue sparql_sha256(NodeValue nv) { return NodeValueDigest.calculateDigest(nv, "SHA-256"); }
     public static NodeValue sparql_sha384(NodeValue nv) { return NodeValueDigest.calculateDigest(nv, "SHA-384"); }
     public static NodeValue sparql_sha512(NodeValue nv) { return NodeValueDigest.calculateDigest(nv, "SHA-512"); }

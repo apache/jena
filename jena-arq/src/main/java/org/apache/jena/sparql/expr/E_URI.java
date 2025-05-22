@@ -33,18 +33,18 @@ public class E_URI extends E_IRI {
         this(null, relExpr);
     }
 
-    public E_URI(String baseStr, Expr relExpr) {
-        super(baseStr, relExpr, sparqlPrintName, sseFunctionName);
+    public E_URI(String parserBaseURI, Expr relExpr) {
+        super(parserBaseURI, relExpr, sparqlPrintName, sseFunctionName);
     }
-
-    @Override
-    public String getFunctionPrintName(SerializationContext cxt)
-    { return sparqlPrintName ; }
 
     @Override
     public Expr copy(Expr expr) {
         return new E_URI(parserBase, expr);
     }
+
+    @Override
+    public String getFunctionPrintName(SerializationContext cxt)
+    { return sparqlPrintName ; }
 
     @Override
     public int hashCode() {

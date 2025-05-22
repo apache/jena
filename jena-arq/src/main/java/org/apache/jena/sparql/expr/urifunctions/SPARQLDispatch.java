@@ -123,6 +123,18 @@ public class SPARQLDispatch {
     }
 
     // Switch on arity
+    static void register(Map<String, Call> map, String uri, Function3 function3, Function4 function4) {
+        Call call = args->{
+            if ( args.length == 3 )
+                return function3.exec(args[0], args[1], args[2]);
+            if ( args.length == 4 )
+                return function4.exec(args[0], args[1], args[2], args[3]);
+            throw exception("%s: Expected three or four arguments. Got %d", uri, args.length);
+        };
+        registerCall(map, uri, call);
+    }
+
+    // Arity N
     static void register(Map<String, Call> map, String uri, FunctionN function) {
         Call call = args->{
             return function.exec(args);
@@ -150,6 +162,10 @@ public class SPARQLDispatch {
 
     static Map<String, Call> buildDispatchMap() {
         Map<String, Call> map = new HashMap<>();
+
+        // Move out/rename to "FunctionDispatch"
+        // Add ARQ specials.
+
         register(map, "plus", SPARQLFuncOp::sparql_plus );
         register(map, "add", SPARQLFuncOp::sparql_plus );           // Alt name.
         register(map, "subtract", SPARQLFuncOp::sparql_subtract );
@@ -161,7 +177,7 @@ public class SPARQLDispatch {
         register(map, "not-equals", SPARQLFuncOp::sparql_not_equals );
         register(map, "greaterThan", SPARQLFuncOp::sparql_greaterThan );
         register(map, "greaterThanOrEqual", SPARQLFuncOp::sparql_greaterThanOrEqual );
-        register(map, "lessThan", SPARQLFuncOp::sparql_lessThat );
+        register(map, "lessThan", SPARQLFuncOp::sparql_lessThan );
         register(map, "lessThanOrEqual", SPARQLFuncOp::sparql_lessThanOrEqual );
 
         register(map, "and", SPARQLFuncOp::sparql_function_and );
@@ -184,9 +200,13 @@ public class SPARQLDispatch {
         register(map, "floor", SPARQLFuncOp::sparql_floor);
         register(map, "haslang", SPARQLFuncOp::sparql_haslang);
         register(map, "haslangdir", SPARQLFuncOp::sparql_haslangdir);
+
         // Arity 1/2
-        register(map, "iri", x->SPARQLFuncOp.sparql_iri(x), (x,b)->SPARQLFuncOp.sparql_iri(x,b));
-        register(map, "uri", SPARQLFuncOp::sparql_uri);
+        //register(map, "iri", x->SPARQLFuncOp.sparql_iri(x), (x,b)->SPARQLFuncOp.arq_iri(x,b));
+        register(map, "iri", SPARQLFuncOp::sparql_iri, SPARQLFuncOp::arq_iri);
+        //register(map, "uri", x->SPARQLFuncOp.sparql_uri(x), (x,b)->SPARQLFuncOp.arq_uri(x,b));
+        register(map, "uri", SPARQLFuncOp::sparql_uri, SPARQLFuncOp::arq_uri);
+
         register(map, "isBlank", SPARQLFuncOp::sparql_isBlank);
         register(map, "isLiteral", SPARQLFuncOp::sparql_isLiteral);
         register(map, "isNumeric", SPARQLFuncOp::sparql_isNumeric);
@@ -199,8 +219,12 @@ public class SPARQLDispatch {
         register(map, "ucase", SPARQLFuncOp::sparql_ucase);
         register(map, "now", SPARQLFuncOp::sparql_now);
         register(map, "rand", SPARQLFuncOp::sparql_rand);
-        register(map, "regex", SPARQLFuncOp::sparql_regex);
-        register(map, "replace", SPARQLFuncOp::sparql_replace);
+        // Arity 2/3
+        register(map, "regex", SPARQLFuncOp::sparql_regex, SPARQLFuncOp::sparql_regex);
+
+        // Arity 3/4
+        register(map, "replace", SPARQLFuncOp::sparql_replace, SPARQLFuncOp::sparql_replace);
+
         register(map, "round", SPARQLFuncOp::sparql_round);
         register(map, "sameTerm", SPARQLFuncOp::sparql_sameTerm);
         register(map, "sameValue", SPARQLFuncOp::sparql_sameValue);
@@ -223,6 +247,7 @@ public class SPARQLDispatch {
 
         register(map, "md5", SPARQLFuncOp::sparql_md5);
         register(map, "sha1", SPARQLFuncOp::sparql_sha1);
+        register(map, "sha224", SPARQLFuncOp::sparql_sha224);
         register(map, "sha256", SPARQLFuncOp::sparql_sha256);
         register(map, "sha384", SPARQLFuncOp::sparql_sha384);
         register(map, "sha512", SPARQLFuncOp::sparql_sha512);
@@ -237,7 +262,7 @@ public class SPARQLDispatch {
         register(map, "strlen", SPARQLFuncOp::sparql_strlen);
         register(map, "strstarts", SPARQLFuncOp::sparql_strstarts);
         // Arity 2/3
-        register(map, "substr", (s,x)->SPARQLFuncOp.sparql_substr(s,x), (s,x,y)->SPARQLFuncOp.sparql_substr(s,x,y));
+        register(map, "substr", SPARQLFuncOp::sparql_substr, SPARQLFuncOp::sparql_substr);
         register(map, "struuid", SPARQLFuncOp::sparql_struuid);
 
         return Map.copyOf(map);

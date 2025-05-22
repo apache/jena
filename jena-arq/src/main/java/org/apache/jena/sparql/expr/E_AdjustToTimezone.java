@@ -25,6 +25,10 @@ import org.apache.jena.sparql.sse.Tags;
 /** Do any of FN_Adjust(date/time)ToTimezone */
 public class E_AdjustToTimezone extends ExprFunctionN {
 
+    public E_AdjustToTimezone(Expr expr1){
+        this(expr1, null);
+    }
+
     public E_AdjustToTimezone(Expr expr1, Expr expr2){
         super(Tags.tagAdjust, expr1, expr2);
     }

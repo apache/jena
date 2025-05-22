@@ -25,19 +25,25 @@ import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import org.apache.jena.sparql.sse.Tags ;
 
 public class E_StrReplace extends ExprFunctionN {
-    private static final String symbol  = Tags.tagReplace ;
-    private Pattern             pattern = null ;
+    private static final String symbol  = Tags.tagReplace;
+    private final Pattern pattern;
+
+    public E_StrReplace(Expr expr1, Expr expr2, Expr expr3) {
+        this(expr1, expr2, expr3, null);
+    }
 
     public E_StrReplace(Expr expr1, Expr expr2, Expr expr3, Expr expr4) {
-        super(symbol, expr1, expr2, expr3, expr4) ;
+        super(symbol, expr1, expr2, expr3, expr4);
 
+        Pattern pattern0 = null;
         if ( isString(expr2) && (expr4 == null || isString(expr4)) ) {
             String flags = null;
             if ( expr4 != null && expr4.isConstant() && expr4.getConstant().isString() )
                 flags = expr4.getConstant().getString();
             String patternStr = expr2.getConstant().getString();
-            pattern = RegexEngine.makePattern("REPLACE", patternStr, flags);
+            pattern0 = RegexEngine.makePattern("REPLACE", patternStr, flags);
         }
+        pattern = pattern0;
     }
 
     private static boolean isString(Expr expr) {

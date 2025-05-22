@@ -16,20 +16,30 @@
  * limitations under the License.
  */
 
-package org.apache.jena.sparql.function.library.leviathan;
+package org.apache.jena.sparql.expr.nodevalue;
 
-import org.apache.jena.sparql.expr.E_MD5 ;
-import org.apache.jena.sparql.expr.ExprDigest ;
-import org.apache.jena.sparql.expr.NodeValue ;
-import org.apache.jena.sparql.function.FunctionBase1 ;
+import java.util.Optional;
 
-public class md5hash extends FunctionBase1 {
+import org.apache.jena.atlas.lib.Version;
+import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.expr.NodeValue;
 
-    private ExprDigest digest = new E_MD5(NodeValue.makeBoolean(true));
+/** Functions specific to ARQ */
+public class ARQFuncOp {
 
-    @Override
-    public NodeValue exec(NodeValue v) {
-        return digest.eval(v);
+    /** The return version information as a human-readable string.*/
+    public static NodeValue version() {
+        String verStr = versionString();
+        return NodeValue.makeString(verStr);
     }
 
+    private static String versionString() {
+        if ( true )
+            return ARQ.NAME+" "+ARQ.VERSION;
+        Optional<String> version = Version.versionForClass(ARQ.class);
+        if ( version.isPresent() )
+            return String.format("Apache Jena version %s", version.get());
+
+        return "Apache Jena";
+    }
 }

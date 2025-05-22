@@ -33,6 +33,10 @@ public class E_Regex extends ExprFunctionN
     private static final String name = Tags.tagRegex;
     private RegexEngine regexEngine = null;
 
+    public E_Regex(Expr expr, Expr pattern) {
+        this(expr, pattern, null);
+    }
+
     public E_Regex(Expr expr, Expr pattern, Expr flags) {
         super(name, expr, pattern, flags);
         init(pattern, flags);
