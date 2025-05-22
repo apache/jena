@@ -43,14 +43,19 @@ public class E_IRI2 extends ExprFunction2 {
     private static final String sseFunctionName = Tags.tagIri2;
 
     // The base in force when the function was created.
-    // Kept separate from baseExpr so we can see whether it was the one argument or two argument form.
     protected final String parserBase;
 
     // ARQ extension: "IRI(base, relative)"
     protected final Expr baseExpr;
     protected final Expr relExpr;
 
+    public E_IRI2(Expr baseExpr, Expr relExpr) {
+        this(baseExpr, null, relExpr);
+    }
+
     public E_IRI2(Expr baseExpr, String parserBaseURI, Expr relExpr) {
+        // BaseStr is the base in force at the time this expression was created.
+        // This may be null.
         this(baseExpr, parserBaseURI, relExpr, sparqlPrintName, sseFunctionName);
     }
 

@@ -36,7 +36,7 @@ public interface TripleCollector
     // triples 0..(mark-1) before using a mark. That is, use marks in
     // LIFO (stack) order.
 
-    public default int mark() { throw new InternalErrorException("Mark no tsupported"); }
+    public default int mark() { throw new InternalErrorException("Mark not supported"); }
 
     public default void addTriple(int index, Triple t) { addTriple(t); }
 

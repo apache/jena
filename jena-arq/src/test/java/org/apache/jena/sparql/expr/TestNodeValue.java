@@ -493,7 +493,7 @@ public class TestNodeValue
         assertTrue("Not a boolean: " + v, v.isBoolean());
         // assertTrue("Not a node: "+v, v.hasNode()) ;
         assertTrue("Not true: " + v, v.getBoolean());
-        assertTrue("Not true: " + v, XSDFuncOp.booleanEffectiveValue(v));
+        assertTrue("Not true: " + v, XSDFuncOp.effectiveBooleanValue(v));
     }
 
     @Test
@@ -502,7 +502,7 @@ public class TestNodeValue
         assertTrue("Not a boolean: " + v, v.isBoolean());
         // assertTrue("Not a node: "+v, v.hasNode()) ;
         assertFalse("Not false: " + v, v.getBoolean());
-        assertFalse("Not false: " + v, XSDFuncOp.booleanEffectiveValue(v));
+        assertFalse("Not false: " + v, XSDFuncOp.effectiveBooleanValue(v));
     }
 
     @Test
@@ -693,21 +693,21 @@ public class TestNodeValue
     public void testEBV1() {
         assertTrue("Not a boolean", NodeValue.TRUE.isBoolean());
         assertTrue("Not true", NodeValue.TRUE.getBoolean());
-        assertTrue("Not true", XSDFuncOp.booleanEffectiveValue(NodeValue.TRUE));
+        assertTrue("Not true", XSDFuncOp.effectiveBooleanValue(NodeValue.TRUE));
     }
 
     @Test
     public void testEBV2() {
         assertTrue("Not a boolean", NodeValue.FALSE.isBoolean());
         assertFalse("Not false", NodeValue.FALSE.getBoolean());
-        assertFalse("Not false", XSDFuncOp.booleanEffectiveValue(NodeValue.FALSE));
+        assertFalse("Not false", XSDFuncOp.effectiveBooleanValue(NodeValue.FALSE));
     }
 
     @Test
     public void testEBV3() {
         NodeValue v = NodeValue.makeInteger(1);
         assertFalse("It's a boolean: " + v, v.isBoolean());
-        assertTrue("Not EBV true: " + v, XSDFuncOp.booleanEffectiveValue(v));
+        assertTrue("Not EBV true: " + v, XSDFuncOp.effectiveBooleanValue(v));
     }
 
     @Test
@@ -719,7 +719,7 @@ public class TestNodeValue
             fail("getBoolean should fail");
         }
         catch (ExprEvalException e) {}
-        assertFalse("Not EBV false: " + v, XSDFuncOp.booleanEffectiveValue(v));
+        assertFalse("Not EBV false: " + v, XSDFuncOp.effectiveBooleanValue(v));
     }
 
     @Test
@@ -732,7 +732,7 @@ public class TestNodeValue
             fail("getBoolean should fail");
         }
         catch (ExprEvalException e) {}
-        assertTrue("Not EBV true: " + v, XSDFuncOp.booleanEffectiveValue(v));
+        assertTrue("Not EBV true: " + v, XSDFuncOp.effectiveBooleanValue(v));
     }
 
     @Test
@@ -744,7 +744,7 @@ public class TestNodeValue
             fail("getBoolean should fail");
         }
         catch (ExprEvalException e) {}
-        assertFalse("Not EBV false: " + v, XSDFuncOp.booleanEffectiveValue(v));
+        assertFalse("Not EBV false: " + v, XSDFuncOp.effectiveBooleanValue(v));
     }
 
     // EBV includes plain literals which includes language tagged literals.
@@ -752,18 +752,18 @@ public class TestNodeValue
     public void testEBV7() {
         Node x = NodeFactory.createLiteralLang("", "en");
         NodeValue v = NodeValue.makeNode(x);
-        assertFalse("Not EBV false: " + v, XSDFuncOp.booleanEffectiveValue(v));
+        assertFalse("Not EBV false: " + v, XSDFuncOp.effectiveBooleanValue(v));
     }
 
     @Test
     public void testEBV8() {
         Node x = NodeFactory.createLiteralLang("not empty", "en");
         NodeValue v = NodeValue.makeNode(x);
-        assertTrue("Not EBV true: " + v, XSDFuncOp.booleanEffectiveValue(v));
+        assertTrue("Not EBV true: " + v, XSDFuncOp.effectiveBooleanValue(v));
     }
 
     static boolean ebvDouble(double d) {
-        return XSDFuncOp.booleanEffectiveValue(NodeValue.makeDouble(d));
+        return XSDFuncOp.effectiveBooleanValue(NodeValue.makeDouble(d));
     }
 
     @Test
@@ -783,11 +783,11 @@ public class TestNodeValue
 
         Node x = NodeFactory.createLiteralDT("NaN", XSDDatatype.XSDdouble);
         NodeValue v = NodeValue.makeNode(x);
-        assertFalse(XSDFuncOp.booleanEffectiveValue(v));
+        assertFalse(XSDFuncOp.effectiveBooleanValue(v));
     }
 
     static boolean ebvFloat(float f) {
-        return XSDFuncOp.booleanEffectiveValue(NodeValue.makeFloat(f));
+        return XSDFuncOp.effectiveBooleanValue(NodeValue.makeFloat(f));
     }
 
     @Test
@@ -807,12 +807,12 @@ public class TestNodeValue
 
         Node x = NodeFactory.createLiteralDT("NaN", XSDDatatype.XSDfloat);
         NodeValue v = NodeValue.makeNode(x);
-        assertFalse(XSDFuncOp.booleanEffectiveValue(v));
+        assertFalse(XSDFuncOp.effectiveBooleanValue(v));
     }
 
     private static boolean filterEBV(NodeValue nv) {
         try {
-            return XSDFuncOp.booleanEffectiveValue(nv);
+            return XSDFuncOp.effectiveBooleanValue(nv);
         }
         catch (ExprEvalException ex) {
             return false;

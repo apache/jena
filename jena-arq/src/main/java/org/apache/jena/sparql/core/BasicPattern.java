@@ -48,7 +48,7 @@ public class BasicPattern implements Iterable<Triple> {
         triples.addAll(other.triples) ;
     }
 
-    private BasicPattern(List<Triple> triples) {
+    public BasicPattern(List<Triple> triples) {
         this.triples = triples ;
     }
 

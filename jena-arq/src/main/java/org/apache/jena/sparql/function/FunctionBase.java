@@ -66,5 +66,5 @@ public abstract class FunctionBase implements Function {
     /** Function call to a list of evaluated argument values */
     public abstract NodeValue exec(List<NodeValue> args) ;
 
-    public abstract void checkBuild(String uri, ExprList args) ;
+    public abstract void checkBuild(String uri, ExprList args);
 }

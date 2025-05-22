@@ -18,28 +18,25 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.query.ARQ ;
+import org.apache.jena.sparql.expr.nodevalue.ARQFuncOp;
 import org.apache.jena.sparql.function.FunctionEnv ;
 import org.apache.jena.sparql.sse.Tags ;
 
 public class E_Version extends ExprFunction0
 {
     static private String fName = Tags.tagVersion ;
-    
-    public E_Version()
-    {
-        super(fName) ;
+
+    public E_Version() {
+        super(fName);
     }
 
     @Override
-    public Expr copy()
-    {
-        return new E_Version() ;
+    public Expr copy() {
+        return new E_Version();
     }
 
     @Override
-    public NodeValue eval(FunctionEnv env)
-    {
-        return NodeValue.makeString(ARQ.NAME+" "+ARQ.VERSION) ;
+    public NodeValue eval(FunctionEnv env) {
+        return ARQFuncOp.version();
     }
 }

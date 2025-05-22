@@ -295,19 +295,33 @@ public class XSDFuncOp
 
     /** {@literal F&O} fn:not */
     public static NodeValue not(NodeValue nv) {
-        boolean b = XSDFuncOp.booleanEffectiveValue(nv);
+        boolean b = XSDFuncOp.effectiveBooleanValue(nv);
         return NodeValue.booleanReturn(!b);
     }
 
-    /** {@literal F&O} fn:boolean */
+    /** @deprecated Renamed as {@link effectiveBooleanValueAsNodeValue}. */
+    @Deprecated(forRemoval = true)
     public static NodeValue booleanEffectiveValueAsNodeValue(NodeValue nv) {
-        if ( nv.isBoolean() ) // "Optimization" (saves on object churn)
-            return nv;
-        return NodeValue.booleanReturn(booleanEffectiveValue(nv));
+        return effectiveBooleanValueAsNodeValue(nv);
     }
 
     /** {@literal F&O} fn:boolean */
+    public static NodeValue effectiveBooleanValueAsNodeValue(NodeValue nv) {
+        if ( nv.isBoolean() ) // "Optimization" (saves on object churn)
+            return nv;
+        return NodeValue.booleanReturn(effectiveBooleanValue(nv));
+    }
+
+    /** @deprecated Renamed as {@link effectiveBooleanValue}. */
+    @Deprecated(forRemoval = true)
     public static boolean booleanEffectiveValue(NodeValue nv) {
+        return effectiveBooleanValue(nv);
+    }
+
+    /** {@literal F&O} fn:boolean */
+    public static boolean effectiveBooleanValue(NodeValue nv) {
+        Objects.requireNonNull(nv, "NodeValue is null in call to effectiveBooleanValue");
+
         // Apply the "boolean effective value" rules
         // boolean: value of the boolean (strictly, if derived from xsd:boolean)
         // plain literal: lexical form length(string) > 0
