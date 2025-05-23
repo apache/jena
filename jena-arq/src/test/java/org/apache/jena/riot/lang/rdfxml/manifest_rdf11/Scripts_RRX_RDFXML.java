@@ -28,8 +28,6 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses( {
-    // ARP0 is unlikely to be maintained.
-    TestManifest_RDF11_ARP0.class,
     TestManifest_RDF11_ARP1.class,
     TestManifest_RDF11_RRX_SAX.class,
     TestManifest_RDF11_RRX_StAXsr.class,

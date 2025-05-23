@@ -40,15 +40,14 @@ public class TestPackage_core extends TestCase {
         addTest(ts,  "IRIx", org.apache.jena.irix.TS_IRIx.suite());
         addTest(ts,  "LangTagX", org.apache.jena.langtagx.TS_LangTagX.suite());
         addTest(ts,  "Enhanced", org.apache.jena.enhanced.test.TestPackage_enh.suite());
-        addTest(ts,  "Datatypes", org.apache.jena.datatypes.TestPackage_dt.suite()) ;
+        addTest(ts,  "Datatypes", org.apache.jena.datatypes.TestPackage_dt.suite());
         addTest(ts,  "Graph", org.apache.jena.graph.test.TestPackage_graph.suite());
         addTest(ts,  "Mem", org.apache.jena.mem.test.TestMemPackage.suite() );
         addTest(ts,  "Mem2", org.apache.jena.mem.test.TestGraphMemPackage.suite() );
         addTest(ts,  "Model", org.apache.jena.rdf.model.test.TestPackage_model.suite());
-
         addTest(ts,  "StandardModels", org.apache.jena.rdf.model.test.TestStandardModels.suite() );
-        // Currently, "ARP[IRIx]"
-        addTest(ts,  "XML Input", org.apache.jena.rdfxml.xmlinput1.TestPackage_xmlinput1.suite());
+
+        addTest(ts,  "XML Input [ARP/IRIx]", org.apache.jena.rdfxml.xmlinput1.TestPackage_xmlinput1.suite());
         addTest(ts,  "XML Output", org.apache.jena.rdfxml.xmloutput.TestPackage_xmloutput.suite());
         addTest(ts,  "Util", org.apache.jena.util.TestPackage_util.suite());
         addTest(ts,  "Jena iterator", org.apache.jena.util.iterator.test.TestPackage_iter.suite() );
@@ -59,9 +58,6 @@ public class TestPackage_core extends TestCase {
         addTest(ts,  "Reasoners", org.apache.jena.reasoner.test.TestPackage_reasoners.suite());
         addTest(ts,  "Ontology ModelMaker", org.apache.jena.ontology.makers.TestPackage_ModelMakers.suite() );
         addTest(ts,  "Ontology", org.apache.jena.ontology.impl.TestPackage_ont.suite() );
-
-        // ARP, with jena-iri
-        addTest(ts,  "ARP[Legacy]", org.apache.jena.rdfxml.xmlinput0.TestPackage_xmlinput0.suite());
 
         // Local TTL parser for tests - not fully compliant.
         addTest(ts,  "Turtle", org.apache.jena.ttl_test.test.turtle.TurtleTestSuite.suite()) ;

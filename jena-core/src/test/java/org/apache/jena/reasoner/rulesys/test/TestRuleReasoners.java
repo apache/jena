@@ -33,16 +33,16 @@ import org.slf4j.LoggerFactory ;
  * Aggregate tester that runs all the test associated with the rulesys package.
  */
 
-public class TestPackage_Rules extends TestSuite {
+public class TestRuleReasoners extends TestSuite {
 
-    protected static Logger logger = LoggerFactory.getLogger(TestPackage_Rules.class);
+    protected static Logger logger = LoggerFactory.getLogger(TestRuleReasoners.class);
 
     static public TestSuite suite() {
-        return new TestPackage_Rules();
+        return new TestRuleReasoners();
     }
 
     /** Creates new TestPackage */
-    private TestPackage_Rules() {
+    private TestRuleReasoners() {
         super("RuleSys");
 
         addTestSuite( TestConfigVocabulary.class );

@@ -133,19 +133,8 @@ public class ReaderRDFXML_ARP1 implements ReaderRIOT
         options.setErrorMode(cond, val);
     }
 
-    @SuppressWarnings({"deprecation", "removal"})
+    @SuppressWarnings({"deprecation"})
     private void parse(InputStream input, Reader reader, String xmlBase, ContentType ct, StreamRDF sink, Context context) {
-        // One of input and reader is null.
-        boolean legacySwitch = context.isTrue(RIOT.symRDFXML0);
-        if ( legacySwitch ) {
-            Log.warnOnce(SysRIOT.getLogger(),
-                         "Do not use rdfxml:rdfxml0 - use Lang RRX#RDFXML_ARP0 or \"--syntax arp0\"",
-                         ReaderRDFXML_ARP0.class);
-            ReaderRDFXML_ARP0 other = new ReaderRDFXML_ARP0(parserProfile.getErrorHandler());
-            other.parse(input, reader, xmlBase, ct, sink, context);
-            return;
-        }
-
         // Hacked out of ARP because of all the "private" methods
         // JenaReader has reset the options since new ARP() was called.
         sink.start() ;
