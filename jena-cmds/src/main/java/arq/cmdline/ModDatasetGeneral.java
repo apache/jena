@@ -53,13 +53,13 @@ public class ModDatasetGeneral extends ModDataset
         cl.getUsage().startCategory("Dataset") ;
         cl.add(dataDecl,
                "--data=FILE",
-               "Data for the dataset - triple or quad formats") ;
+               "Data for the dataset - triple or quad formats.  --data can be used for multiple times in the same command. FILE can be a URL (http/https)") ;
         cl.add(graphDecl,
                "--graph=FILE",
-               "Graph for default graph of the datset") ;
+               "Graph for default graph of the dataset. FILE can be a URL (http/https)") ;
         cl.add(namedGraphDecl,
                "--namedGraph=FILE",
-               "Add a graph into the dataset as a named graph");
+               "Add a graph into the dataset as a named graph.  --namedGraph can be used multiple times in the same command.  FILE in this case can only be a file, not a URL.  It will be called <FILE> even if a local path of /data/sub1/FILE");
     }
 
     @Override
