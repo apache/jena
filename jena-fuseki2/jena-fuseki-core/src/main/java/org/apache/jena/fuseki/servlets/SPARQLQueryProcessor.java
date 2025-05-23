@@ -50,6 +50,7 @@ import org.apache.jena.sparql.exec.QueryExec;
 import org.apache.jena.sparql.exec.QueryExecDatasetBuilder;
 import org.apache.jena.sparql.exec.QueryExecResult;
 import org.apache.jena.sparql.exec.RowSet;
+import org.apache.jena.sparql.exec.tracker.TaskTrackerRegistry;
 import org.apache.jena.web.HttpSC;
 
 /**
@@ -325,6 +326,10 @@ public abstract class SPARQLQueryProcessor extends ActionService
                 ;
         setTimeouts(builder, action);
         QueryExec qExec = builder.build();
+
+        // Track execution if there is a task tracker in the context.
+        qExec = TaskTrackerRegistry.track(qExec);
+
         return qExec;
     }
 
