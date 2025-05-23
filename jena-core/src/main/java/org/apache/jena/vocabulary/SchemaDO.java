@@ -2244,7 +2244,7 @@ public class SchemaDO {
     public static final Property lastReviewed = m.createProperty(NS+"lastReviewed");
     public static final Property broadcaster = m.createProperty(NS+"broadcaster");
     public static final Property inCodeSet = m.createProperty(NS+"inCodeSet");
-    public static final Property _abstract = m.createProperty(NS+"_abstract");
+    public static final Property _abstract = m.createProperty(NS+"abstract");
     public static final Property parent = m.createProperty(NS+"parent");
     public static final Property guidelineDate = m.createProperty(NS+"guidelineDate");
     public static final Property eligibleRegion = m.createProperty(NS+"eligibleRegion");
