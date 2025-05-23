@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-package tdb1.examples;
+package tdb2.examples;
 
 import org.apache.jena.query.*;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb1.TDB1Factory;
+import org.apache.jena.tdb2.TDB2Factory;
 
 /**
  * Example of a READ transaction.
@@ -31,12 +31,12 @@ public class ExTDB_Txn1
     public static void main(String... argv)
     {
         String directory = "MyDatabases/DB1";
-        Dataset dataset = TDB1Factory.createDataset(directory);
+        Dataset dataset = TDB2Factory.connectDataset(directory);
 
-        // Start READ transaction. 
+        // Start READ transaction.
         //   No updates or changes to the dataset are possible while this
         //   dataset is used for a read transaction.
-        //   An application can have other Datasets, in the same JVM, 
+        //   An application can have other Datasets, in the same JVM,
         //   tied to the same TDB database performing read or write
         //   transactions concurrently.
 
@@ -46,7 +46,7 @@ public class ExTDB_Txn1
         // ...
         // ... The app can also call dataset.abort() or dataset.commit() here; commit is not necessary
         // } finally { dataset.end();}
-        
+
         // Use Txn.executeRead when the app knows there are no updates.
         // Can use Txn.execute when a write is possible.
         Txn.executeRead(dataset, ()-> {
@@ -58,7 +58,7 @@ public class ExTDB_Txn1
             execQuery(sparqlQueryString2, dataset);
         });
     }
-    
+
     public static void execQuery(String sparqlQueryString, Dataset dataset)
     {
         Query query = QueryFactory.create(sparqlQueryString);

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package tdb1.examples;
+package tdb2.examples;
 
 import java.util.function.Predicate;
 
@@ -26,16 +26,16 @@ import org.apache.jena.query.* ;
 import org.apache.jena.sparql.core.DatasetGraph ;
 import org.apache.jena.sparql.core.Quad ;
 import org.apache.jena.sparql.sse.SSE ;
-import org.apache.jena.tdb1.TDB1;
-import org.apache.jena.tdb1.TDB1Factory;
-import org.apache.jena.tdb1.store.NodeId;
-import org.apache.jena.tdb1.sys.SystemTDB;
-import org.apache.jena.tdb1.sys.TDBInternal;
+import org.apache.jena.tdb2.TDB2;
+import org.apache.jena.tdb2.TDB2Factory;
+import org.apache.jena.tdb2.store.NodeId;
+import org.apache.jena.tdb2.sys.SystemTDB;
+import org.apache.jena.tdb2.sys.TDBInternal;
 
 /** Example of how to filter quads as they are accessed at the lowest level.
- * Can be used to exclude data from specific graphs.   
+ * Can be used to exclude data from specific graphs.
  * This mechanism is not limited to graphs - it works for properties or anything
- * where the visibility of otherwise is determined by the elements of the quad. 
+ * where the visibility of otherwise is determined by the elements of the quad.
  * See <a href="http://jena.apache.org/documentation/tdb/quadfilter.html">QuadFiltering</a>
  * for further details.
  */
@@ -47,17 +47,17 @@ public class ExQuadFilter
     public static void main(String ... args)
     {
         // This also works for default union graph ....
-        TDB1.getContext().setTrue(TDB1.symUnionDefaultGraph) ;
-        
+        TDB2.getContext().setTrue(TDB2.symUnionDefaultGraph) ;
+
         Dataset ds = setup() ;
         Predicate<Tuple<NodeId>> filter = createFilter(ds) ;
         example(ds, filter) ;
     }
-    
+
     /** Example setup - in-memory dataset with two graphs, one triple in each */
     private static Dataset setup()
     {
-        Dataset ds = TDB1Factory.createDataset() ;
+        Dataset ds = TDB2Factory.createDataset() ;
         DatasetGraph dsg = ds.asDatasetGraph() ;
         Quad q1 = SSE.parseQuad("(<http://example/g1> <http://example/s> <http://example/p> <http://example/o1>)") ;
         Quad q2 = SSE.parseQuad("(<http://example/g2> <http://example/s> <http://example/p> <http://example/o2>)") ;
@@ -65,16 +65,16 @@ public class ExQuadFilter
         dsg.add(q2) ;
         return ds ;
     }
-        
+
     /** Create a filter to exclude the graph http://example/g2 */
     private static Predicate<Tuple<NodeId>> createFilter(Dataset ds)
     {
-        // Filtering operates at a very low level: 
-        // Need to know the internal identifier for the graph name. 
+        // Filtering operates at a very low level:
+        // Need to know the internal identifier for the graph name.
         final NodeId target = TDBInternal.getNodeId(ds, NodeFactory.createURI(graphToHide)) ;
 
         System.out.println("Hide graph: "+graphToHide+" --> "+target) ;
-        
+
         // Filter for accept/reject as quad as being visible.
         // Return true for "accept", false for "reject"
         Predicate<Tuple<NodeId>> filter = item ->
@@ -90,10 +90,10 @@ public class ExQuadFilter
                 //System.out.println("Accept: "+item) ;
                 return true ;
             } ;
-            
+
         return filter ;
-    }            
-        
+    }
+
     private static void example(Dataset ds, Predicate<Tuple<NodeId>> filter)
     {
         String[] x = {
@@ -102,13 +102,13 @@ public class ExQuadFilter
             // This filter does not hide the graph itself, just the quads associated with the graph.
             "SELECT * { GRAPH ?g {} }"
             } ;
-        
+
         for ( String qs : x )
         {
             example(ds, qs, filter) ;
             example(ds, qs, null) ;
         }
-        
+
     }
 
     private static void example(Dataset ds, String qs, Predicate<Tuple<NodeId>> filter)
