@@ -76,7 +76,7 @@ public class ModelUtils
     /**
      * @deprecated Use {@link Model#asStatement(Triple)}.
      */
-   @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true)
     public static Statement tripleToStatement(Model model, Triple t) {
         if ( model == null )
             throw new ARQInternalErrorException("Attempt to create statement with null model");

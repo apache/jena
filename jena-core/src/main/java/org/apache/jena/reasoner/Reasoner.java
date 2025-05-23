@@ -18,7 +18,6 @@
 
 package org.apache.jena.reasoner;
 
-import org.apache.jena.graph.Capabilities ;
 import org.apache.jena.graph.Graph ;
 import org.apache.jena.rdf.model.* ;
 
@@ -144,5 +143,5 @@ public interface Reasoner {
      *    Use the inference graph capabilities.
      */
     @Deprecated
-    public Capabilities getGraphCapabilities();
+    public org.apache.jena.graph.Capabilities getGraphCapabilities();
 }
