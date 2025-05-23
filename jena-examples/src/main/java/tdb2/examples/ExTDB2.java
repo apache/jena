@@ -16,16 +16,16 @@
  * limitations under the License.
  */
 
-package tdb1.examples;
+package tdb2.examples;
 
 import org.apache.jena.query.Dataset ;
-import org.apache.jena.tdb1.TDB1Factory;
+import org.apache.jena.tdb2.TDB2Factory;
 
 /**
  * Using an assembler description (see wiki for details of the assembler format for TDB)
  * This way, you can change the model being used without changing the code.
  * The assembler file is a configuration file.
- * The same assembler description will work as part of a Joseki configuration file. 
+ * The same assembler description will work as part of a Joseki configuration file.
  */
 
 public class ExTDB2
@@ -34,10 +34,10 @@ public class ExTDB2
     {
         String assemblerFile = "Store/tdb-assembler.ttl" ;
 
-        Dataset ds = TDB1Factory.assembleDataset(assemblerFile) ;
-        
-        // ... do work ...
-        
+        Dataset ds = TDB2Factory.assembleDataset(assemblerFile) ;
+
+        // ... do work ... transactions required ...
+
         ds.close() ;
     }
 }

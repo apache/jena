@@ -16,15 +16,15 @@
  * limitations under the License.
  */
 
-package tdb1.examples;
+package tdb2.examples;
 
 import org.apache.jena.atlas.lib.StrUtils;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb1.TDB1Factory;
+import org.apache.jena.tdb2.TDB2Factory;
+import org.apache.jena.update.UpdateExecution;
 import org.apache.jena.update.UpdateExecutionFactory;
 import org.apache.jena.update.UpdateFactory;
-import org.apache.jena.update.UpdateExecution;
 import org.apache.jena.update.UpdateRequest;
 
 /**
@@ -34,7 +34,7 @@ import org.apache.jena.update.UpdateRequest;
 public class ExTDB_Txn2 {
     public static void main(String...argv) {
         String directory = "MyDatabases/DB1";
-        Dataset dataset = TDB1Factory.createDataset(directory);
+        Dataset dataset = TDB2Factory.connectDataset(directory);
 
         // Start WRITE transaction.
         // It's possible to read from the dataset inside the write transaction.

@@ -16,35 +16,37 @@
  * limitations under the License.
  */
 
-package tdb1.examples;
+package tdb2.examples;
 
-import org.apache.jena.query.Dataset ;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.tdb1.TDB1Factory;
+import org.apache.jena.query.*;
+import org.apache.jena.tdb2.TDB2Factory;
 
 /** Example of creating a TDB-backed model.
  *  The preferred way is to create a dataset then get the mode required from the dataset.
  *  The dataset can be used for SPARQL query and update
  *  but the Model (or Graph) can also be used.
- *  
+ *
  *  All the Jena APIs work on the model.
- *   
+ *
  *  Calling TDBFactory is the only place TDB-specific code is needed.
  */
 
-public class ExTDB1
+public class ExTDB4
 {
     public static void main(String... argv)
     {
         // Direct way: Make a TDB-back Jena model in the named directory.
         String directory = "MyDatabases/DB1" ;
-        Dataset ds = TDB1Factory.createDataset(directory) ;
-        Model model = ds.getDefaultModel() ;
-        
-        // ... do work ...
-        
-        // Close the dataset.
-        ds.close();
-        
+        Dataset dataset = TDB2Factory.connectDataset(directory) ;
+
+        // Potentially expensive query.
+        String sparqlQueryString = "SELECT (count(*) AS ?count) { ?s ?p ?o }" ;
+        // See http://incubator.apache.org/jena/documentation/query/app_api.html
+
+        Query query = QueryFactory.create(sparqlQueryString) ;
+        try ( QueryExecution qexec = QueryExecutionFactory.create(query, dataset) ) {
+            ResultSet results = qexec.execSelect() ;
+            ResultSetFormatter.out(results) ;
+        }
     }
 }

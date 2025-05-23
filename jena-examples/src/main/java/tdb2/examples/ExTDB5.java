@@ -16,16 +16,10 @@
  * limitations under the License.
  */
 
-package tdb1.examples;
+package tdb2.examples;
 
-import org.apache.jena.query.Dataset;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.tdb1.TDB1Factory;
+import org.apache.jena.query.*;
+import org.apache.jena.tdb2.TDB2Factory;
 
 /**
  * Example of creating a TDB-backed model. The preferred way is to create a dataset
@@ -39,20 +33,21 @@ public class ExTDB5 {
     public static void main(String...argv) {
         // Direct way: Make a TDB-back Jena model in the named directory.
         String directory = "MyDatabases/DB1";
-        Dataset dataset = TDB1Factory.createDataset(directory);
+        Dataset dataset = TDB2Factory.connectDataset(directory);
 
         // Potentially expensive query.
         String sparqlQueryString = "SELECT (count(*) AS ?count) { ?s ?p ?o }";
-        // See http://incubator.apache.org/jena/documentation/query/app_api.html
 
         Query query = QueryFactory.create(sparqlQueryString);
-        try (QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
-            ResultSet results = qexec.execSelect();
-            for ( ; results.hasNext() ; ) {
-                QuerySolution soln = results.nextSolution();
-                int count = soln.getLiteral("count").getInt();
-                System.out.println("count = " + count);
+        dataset.executeRead(()->{
+            try (QueryExecution qexec = QueryExecutionFactory.create(query, dataset)) {
+                ResultSet results = qexec.execSelect();
+                for ( ; results.hasNext() ; ) {
+                    QuerySolution soln = results.nextSolution();
+                    int count = soln.getLiteral("count").getInt();
+                    System.out.println("count = " + count);
+                }
             }
-        }
+        });
     }
 }

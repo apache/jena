@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package tdb1.examples;
+package tdb2.examples;
 
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.query.Dataset ;
@@ -27,7 +27,7 @@ import org.apache.jena.shared.JenaException ;
 import org.apache.jena.sparql.core.assembler.DatasetAssemblerVocab ;
 import org.apache.jena.sparql.util.TypeNotUniqueException ;
 import org.apache.jena.sparql.util.graph.GraphUtils ;
-import org.apache.jena.tdb1.assembler.VocabTDB1;
+import org.apache.jena.tdb2.assembler.VocabTDB2;
 
 /**
  * Examples of finding an assembler for a TDB model in a larger collection
@@ -53,7 +53,7 @@ public class ExTDB3
             // Alternatively, look for the a single resource of the right type.
             try {
                 // Find the required description - the file can contain descriptions of many different types.
-                root = GraphUtils.findRootByType(spec, VocabTDB1.tDatasetTDB) ;
+                root = GraphUtils.findRootByType(spec, VocabTDB2.tDatasetTDB) ;
                 if ( root == null )
                     throw new JenaException("Failed to find a suitable root") ;
             } catch (TypeNotUniqueException ex)
