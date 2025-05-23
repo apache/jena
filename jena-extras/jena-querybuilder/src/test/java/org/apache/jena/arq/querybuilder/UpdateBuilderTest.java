@@ -525,9 +525,8 @@ public class UpdateBuilderTest {
         UpdateBuilder builder = new UpdateBuilder().addPrefix("dc", DC_11.NS).addInsert(n, DC_11.title, "A new book")
                 .addInsert(n, DC_11.creator, "A.N.Other");
 
-        List<Triple> triples = new ArrayList<Triple>();
-        triples.add(Triple.create(n, priceN, priceV));
         Model m = ModelFactory.createDefaultModel();
+        m.getGraph().add(n, priceN, priceV);
         m.setNsPrefix("dc", DC_11.NS);
         m.setNsPrefix("ns", "http://example.org/ns#");
 
@@ -539,8 +538,7 @@ public class UpdateBuilderTest {
         assertTrue(m.contains(r, rPriceP, rPriceV));
         assertTrue(m.contains(r, DC_11.title, "A new book"));
         assertTrue(m.contains(r, DC_11.creator, "A.N.Other"));
-        assertEquals(3, triples.size());
-
+        assertEquals(3, m.size());
     }
 
     @Test
