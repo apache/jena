@@ -55,5 +55,5 @@ public interface RDFVisitor {
      * @param statement the statement of that node
      * @return value to be returned from the visit
      */
-    default Object visitStmt(StatementTerm StatementTerm, Statement statement) { return statement; }
+    default Object visitStmt(StatementTerm statementTerm, Statement statement) { return statement; }
 }

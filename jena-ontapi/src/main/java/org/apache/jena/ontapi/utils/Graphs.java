@@ -758,6 +758,7 @@ public class Graphs {
      * @param right {@link Graph}
      * @return {@code true} if the left argument graph is dependent on the right
      */
+    @SuppressWarnings("removal")
     public static boolean dependsOn(Graph left, Graph right) {
         return left == right || (left != null && left.dependsOn(right));
     }

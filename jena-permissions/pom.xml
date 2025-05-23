@@ -55,10 +55,10 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <release>${java.version}</release>
-            <compilerArgs>
-              <arg>-Xlint:-removal</arg>
-              <arg>-proc:none</arg>
-            </compilerArgs>
+          <compilerArgs>
+            <arg>-Xlint:-removal</arg>
+            <arg>-proc:none</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
       <plugin>
@@ -100,6 +100,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
+          <doclint>none</doclint>
           <excludePackageNames>org.apache.jena.security.example:org.apache.jena.security.example.*</excludePackageNames>
           <tags>
             <tag>

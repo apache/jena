@@ -219,6 +219,7 @@ public class UnionGraphTest {
         Assertions.assertEquals(2, a.listSubGraphBases().toList().size());
     }
 
+    @SuppressWarnings("removal")
     @Test
     public void testDependsOn() {
         Graph g1 = GraphMemFactory.createGraphMem();
