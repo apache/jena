@@ -43,6 +43,7 @@ import org.junit.Test ;
 /**
  * Spin up multiple threads against a multiple-reader/single-writer Dataset to test that the Lucene index handles concurrency properly.
  */
+@SuppressWarnings("removal")
 public class TestLuceneWithMultipleThreads
 {
     private static final EntityDefinition entDef;

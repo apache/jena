@@ -23,6 +23,7 @@ import org.apache.jena.tdb1.store.DatasetGraphTDB;
 import org.apache.jena.tdb1.transaction.JournalControl;
 import tdb.cmdline.CmdTDB;
 
+@SuppressWarnings("removal")
 public class tdbrecovery extends CmdTDB {
     static public void main(String...argv) {
         CmdTDB.init();

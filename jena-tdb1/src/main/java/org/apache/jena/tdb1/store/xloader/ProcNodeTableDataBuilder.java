@@ -47,6 +47,7 @@ import org.apache.jena.tdb1.sys.TDBInternal;
 import org.slf4j.Logger;
 
 /** Create the Node table and write the triples/quads temporary files */
+@SuppressWarnings("removal")
 public class ProcNodeTableDataBuilder {
     // See also TDB2 ProcNodeTableBuilder
     private static Logger cmdLog = TDB1.logLoader;

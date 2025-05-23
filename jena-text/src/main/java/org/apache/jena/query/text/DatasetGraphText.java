@@ -80,6 +80,7 @@ public class DatasetGraphText extends DatasetGraphTextMonitor implements Transac
         this(dsg, index, producer, false);
     }
 
+    @SuppressWarnings("removal")
     public DatasetGraphText(DatasetGraph dsg, TextIndex index, TextDocProducer producer, boolean closeIndexOnClose) {
         super(dsg, producer);
         this.textIndex = index;

@@ -51,6 +51,7 @@ public class DataSetTest {
         SecuredQueryEngineFactory.unregister();
     }
 
+    @SuppressWarnings("removal")
     public void setup() {
 
         DatasetGraph dsg = TDB1Factory.createDatasetGraph();

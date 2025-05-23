@@ -261,6 +261,7 @@ public class DataService {
         state = CLOSED;
     }
 
+    @SuppressWarnings("removal")
     private static void expel(DatasetGraph database) {
         // This should not be necessary.
         // When created by assembler, "closeIndexOnClose" should be set true.
@@ -290,6 +291,7 @@ public class DataService {
     }
 
     /** Unwrap until a TDB database is encountered */
+    @SuppressWarnings("removal")
     private static DatasetGraph findTDB(DatasetGraph dsg) {
         DatasetGraph dsgw = dsg;
         while (dsgw instanceof DatasetGraphWrapper) {

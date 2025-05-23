@@ -20,9 +20,6 @@ package org.apache.jena.tdb1.assembler;
 
 import static org.apache.jena.sparql.util.graph.GraphUtils.getAsStringValue ;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getResourceValue ;
-import static org.apache.jena.tdb1.assembler.VocabTDB1.pName;
-import static org.apache.jena.tdb1.assembler.VocabTDB1.pSetting;
-import static org.apache.jena.tdb1.assembler.VocabTDB1.pValue;
 
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.Mode ;
@@ -30,19 +27,20 @@ import org.apache.jena.query.ARQ ;
 import org.apache.jena.rdf.model.Resource ;
 import org.apache.jena.sparql.util.Symbol ;
 
+@SuppressWarnings("removal")
 public class SettingAssembler //extends DatasetAssembler
 {
     public SettingAssembler() {}
-    /* 
+    /*
      *  :setting [ :name tdbsym:name ; :value "SPO.idx" ]
      */
-    
+
     //@Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
-        Resource r = getResourceValue(root, pSetting ) ;
-        String k = getAsStringValue(r, pName) ;
-        String v = getAsStringValue(r, pValue) ;
+        Resource r = getResourceValue(root, VocabTDB1.pSetting ) ;
+        String k = getAsStringValue(r, VocabTDB1.pName) ;
+        String v = getAsStringValue(r, VocabTDB1.pValue) ;
         Symbol symbol = Symbol.create(k) ;
         ARQ.getContext().set(symbol, v) ;
         return r ;

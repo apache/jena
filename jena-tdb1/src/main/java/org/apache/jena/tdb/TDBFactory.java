@@ -27,7 +27,7 @@ import org.apache.jena.tdb1.base.file.Location;
 import org.apache.jena.tdb1.setup.StoreParams;
 
 /** Public factory for creating objects datasets backed by TDB1 storage.
- * @deprecated Use {@link org.apache.jena.tdb1.TDB1Factory}
+ * @deprecated Migrate to TDB2
  *
  */
 @Deprecated(forRemoval = true)

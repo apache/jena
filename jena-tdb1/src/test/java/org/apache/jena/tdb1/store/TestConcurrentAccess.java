@@ -41,6 +41,7 @@ import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.junit.Test ;
 
+@SuppressWarnings("removal")
 public class TestConcurrentAccess
 {
     static String data = StrUtils.strjoinNL(
@@ -55,14 +56,14 @@ public class TestConcurrentAccess
        "  (<x> <p> 8)" ,
        "  (<x> <p> 9)" ,
         ")") ;
-    
+
     private static Graph buildGraph()
     {
         Item item = SSE.parse(data) ;
         Graph g = BuilderGraph.buildGraph(item) ;
         return g ;
     }
-    
+
     private static Dataset create()
     {
         Graph g = buildGraph() ;
@@ -70,22 +71,22 @@ public class TestConcurrentAccess
         GraphUtil.addInto(ds.getDefaultModel().getGraph(), g) ;
         return ds ;
     }
-    
+
     @Test public void mrswGraph1()
     {
         Model m = create().getDefaultModel() ;
         Resource r = m.createResource("x") ;
         ExtendedIterator<Statement> iter1 = m.listStatements(r, null, (RDFNode)null) ;
         assertNotNull(iter1.next()) ;
-        
+
         ExtendedIterator<Statement> iter2 = m.listStatements(r, null, (RDFNode)null) ;
         assertNotNull(iter2.next()) ;
-        
+
         for ( ; iter2.hasNext() ; ) iter2.next() ;
-        
+
         assertNotNull(iter1.next()) ;
     }
-    
+
     @Test(expected=ConcurrentModificationException.class)
     public void mrswGraph2()
     {
@@ -93,14 +94,14 @@ public class TestConcurrentAccess
         Resource r = m.createResource("x") ;
         ExtendedIterator<Statement> iter1 = m.listStatements(r, null, (RDFNode)null) ;
         assertNotNull(iter1.next()) ;
-        
+
         Triple t = SSE.parseTriple("(<y> <p> 99)") ;
         m.getGraph().add(t) ;
-        
+
         // Bad
         iter1.hasNext();
     }
-    
+
     @Test(expected=ConcurrentModificationException.class)
     public void mrswGraph3()
     {
@@ -108,10 +109,10 @@ public class TestConcurrentAccess
         Resource r = m.createResource("x") ;
         ExtendedIterator<Statement> iter1 = m.listStatements(r, null, (RDFNode)null) ;
         assertNotNull(iter1.next()) ;
-        
+
         Triple t = SSE.parseTriple("(<y> <p> 99)") ;
         m.getGraph().delete(t) ;
-        
+
         // Bad
         iter1.hasNext();
     }
@@ -124,14 +125,14 @@ public class TestConcurrentAccess
         ExtendedIterator<Statement> iter1 = m.listLiteralStatements(r, null, 1) ;
         assertNotNull(iter1.next()) ;
         // and now the iterator has implicitly finished.
-        
+
         Triple t = SSE.parseTriple("(<y> <p> 99)") ;
         m.getGraph().add(t) ;
-        
+
         // Bad - modification of the dataset occurred.
         iter1.hasNext();
     }
-    
+
     @Test
     public void mrswGraph5()
     {
@@ -140,7 +141,7 @@ public class TestConcurrentAccess
         GraphUtil.addInto(m.getGraph(), buildGraph()) ;
         Resource r = m.createResource("x") ;
         ExtendedIterator<Statement> iter1 = m.listStatements(r, null, (RDFNode)null) ;
-        while(iter1.hasNext()) 
+        while(iter1.hasNext())
             iter1.next();
         Triple t = SSE.parseTriple("(<y> <p> 99)") ;
         m.getGraph().delete(t) ;
@@ -156,41 +157,41 @@ public class TestConcurrentAccess
         Resource r = m.createResource("x") ;
         ExtendedIterator<Statement> iter1 = m.listStatements(r, null, (RDFNode)null) ;
         assertNotNull(iter1.next()) ;
-        
+
         Triple t = SSE.parseTriple("(<y> <p> 99)") ;
         m.getGraph().delete(t) ;
         iter1.next() ;
     }
-    
+
     @Test
     public void mrswSPARQL1()
     {
-        Dataset ds = create(); 
+        Dataset ds = create();
         Query query = QueryFactory.create("SELECT * { ?s ?p ?o}") ;
         try(QueryExecution qExec = QueryExecutionFactory.create(query, ds)) {
             ResultSet rs = qExec.execSelect() ;
-            while(rs.hasNext()) 
+            while(rs.hasNext())
                 rs.next();
         }
-        
+
         DatasetGraph dsg = ds.asDatasetGraph() ;
         Quad quad = SSE.parseQuad("(<g> <y> <p> 99)") ;
         dsg.add(quad) ;
-        
+
         Iterator<Quad> iter = dsg.find() ;
         iter.hasNext() ;
         iter.next() ;
     }
-    
+
     @Test(expected=ConcurrentModificationException.class)
     public void mrswSPARQL2()
     {
-        Dataset ds = create(); 
+        Dataset ds = create();
         DatasetGraph dsg = ds.asDatasetGraph() ;
         Query query = QueryFactory.create("SELECT * { ?s ?p ?o}") ;
         QueryExecution qExec = QueryExecutionFactory.create(query, ds) ;
         ResultSet rs = qExec.execSelect() ;
-        rs.hasNext() ; 
+        rs.hasNext() ;
         rs.next();
         Quad quad = SSE.parseQuad("(<g> <y> <p> 99)") ;
         dsg.add(quad) ;
@@ -198,7 +199,7 @@ public class TestConcurrentAccess
         rs.next();
     }
 
-    
+
     @Test(expected=ConcurrentModificationException.class)
     public void mrswDataset1()
     {
@@ -210,6 +211,6 @@ public class TestConcurrentAccess
         iter.hasNext() ;
         iter.next() ;
     }
-   
+
     // More DSG tests ..
 }

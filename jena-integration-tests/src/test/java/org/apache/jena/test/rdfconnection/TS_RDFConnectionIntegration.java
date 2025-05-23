@@ -30,7 +30,7 @@ import org.junit.runners.Suite ;
     TestBlankNodeBinary.class,
 
     // Addition tests added here.
-    TestRDFConnectionLocalTDB.class,
+    TestRDFConnectionLocalTDB1.class,
     TestRDFConnectionRemote.class,
     TestRDFConnectionFuseki.class,
     TestRDFConnectionFusekiBinary.class

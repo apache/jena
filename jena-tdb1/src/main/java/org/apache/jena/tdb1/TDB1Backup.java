@@ -32,25 +32,26 @@ import org.apache.jena.tdb1.transaction.DatasetGraphTxn;
 
 /**
  * Backup a database.
+ * @deprecated Migrate to TDB2.
  */
-
+@Deprecated(forRemoval =true)
 public class TDB1Backup
 {
     public static void backup(Location location, String backupfile)
     {
         try(OutputStream out = new BufferedOutputStream(new FileOutputStream(backupfile))) {
             backup(location, out) ;
-        } 
+        }
         catch (FileNotFoundException e)
         {
             Log.warn(TDB1Backup.class, "File not found: "+backupfile) ;
             throw new TDB1Exception("File not found: "+backupfile) ;
-        } 
+        }
         catch (IOException e)
         { IO.exception(e) ; }
-        
+
     }
-    
+
     public static void backup(Location location, OutputStream backupfile)
     {
         Dataset ds = TDB1Factory.createDataset(location) ;

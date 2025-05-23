@@ -343,6 +343,7 @@ public class ActionDatasets extends ActionContainerItem {
             // configuration file, so the databases will not be associated with the server
             // anymore.
 
+            @SuppressWarnings("removal")
             boolean isTDB1 = org.apache.jena.tdb1.sys.TDBInternal.isTDB1(dataService.getDataset());
             boolean isTDB2 = org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dataService.getDataset());
 

@@ -25,9 +25,10 @@ import org.apache.jena.tdb1.sys.TDBInternal;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 
+@SuppressWarnings("removal")
 public class TestStoreConnectionsMapped extends AbstractStoreConnections
 {
-    static FileMode mode ;   
+    static FileMode mode ;
 
     @BeforeClass
     public static void beforeClassFileMode()

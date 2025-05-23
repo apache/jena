@@ -30,7 +30,7 @@ import org.apache.jena.tdb1.store.GraphTDB;
 /** Public interface to the loader functionality.
  * The bulk loader is not transactional.
  *
- * @deprecated Use {@link org.apache.jena.tdb1.TDB1Loader}
+ * @deprecated Migrate to TDB2
  */
 @Deprecated(forRemoval = true)
 public class TDBLoader

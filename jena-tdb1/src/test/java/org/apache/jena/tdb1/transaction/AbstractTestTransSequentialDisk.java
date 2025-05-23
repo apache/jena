@@ -30,11 +30,12 @@ import org.junit.Before ;
 public abstract class AbstractTestTransSequentialDisk extends AbstractTestTransSeq
 {
     protected String DIR = null ;
-    
+
     // Subclasses must implement.
 //    @BeforeClass public static void beforeClass() {}
 //    @AfterClass  public static void afterClass()  {}
-    
+
+    @SuppressWarnings("removal")
     @Before public void before()
     {
         TDBInternal.reset() ;
@@ -42,7 +43,7 @@ public abstract class AbstractTestTransSequentialDisk extends AbstractTestTransS
         File d = new File(DIR) ;
     }
 
-    @After public void after() {} 
+    @After public void after() {}
 
     @Override
     protected StoreConnection getStoreConnection()

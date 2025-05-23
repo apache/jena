@@ -27,6 +27,7 @@ import org.apache.jena.tdb1.sys.SystemTDB;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 
+@SuppressWarnings("removal")
 public abstract class AbstractTestGraphsTDB1 extends GraphsTests
 {
     private static ReorderTransformation reorder  ;

@@ -22,6 +22,7 @@ import org.apache.jena.sys.JenaSubsystemLifecycle ;
 import org.apache.jena.tdb1.TDB1;
 
 /** Jena subsystem initialization */
+@SuppressWarnings("removal")
 public class InitTDB implements JenaSubsystemLifecycle {
 
     @Override
@@ -32,9 +33,9 @@ public class InitTDB implements JenaSubsystemLifecycle {
     @Override
     public void stop() {
         // This is savage and does not take account of in-flight transactions.
-        TDB1.closedown() ; 
+        TDB1.closedown() ;
     }
-    
+
     @Override
     public int level() {
         return 40 ;

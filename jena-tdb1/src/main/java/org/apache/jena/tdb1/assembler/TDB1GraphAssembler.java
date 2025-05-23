@@ -21,7 +21,6 @@ package org.apache.jena.tdb1.assembler;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getAsStringValue ;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getResourceValue ;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getStringValue ;
-import static org.apache.jena.tdb1.assembler.VocabTDB1.*;
 
 import org.apache.jena.assembler.Assembler ;
 import org.apache.jena.assembler.Mode ;
@@ -38,6 +37,7 @@ import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.tdb1.TDB1Factory;
 import org.apache.jena.tdb1.base.file.Location;
 
+@SuppressWarnings("removal")
 public class TDB1GraphAssembler extends AssemblerBase implements Assembler
 {
     static { JenaSystem.init(); }
@@ -59,8 +59,8 @@ public class TDB1GraphAssembler extends AssemblerBase implements Assembler
         //    tdb:graphName <http://example/name>;
 
         // Location or dataset reference.
-        String locationDir = getStringValue(root, pLocation);
-        Resource dataset = getResourceValue(root, pDataset);
+        String locationDir = getStringValue(root, VocabTDB1.pLocation);
+        Resource dataset = getResourceValue(root, VocabTDB1.pDataset);
 
         if ( locationDir != null && dataset != null )
             throw new AssemblerException(root, "Both location and dataset given: exactly one required");
@@ -69,12 +69,12 @@ public class TDB1GraphAssembler extends AssemblerBase implements Assembler
             throw new AssemblerException(root, "Must give location or refer to a dataset description");
 
         String graphName = null;
-        if ( root.hasProperty(pGraphName1) )
-            graphName = getAsStringValue(root, pGraphName1);
-        if ( root.hasProperty(pGraphName2) )
-            graphName = getAsStringValue(root, pGraphName2);
+        if ( root.hasProperty(VocabTDB1.pGraphName1) )
+            graphName = getAsStringValue(root, VocabTDB1.pGraphName1);
+        if ( root.hasProperty(VocabTDB1.pGraphName2) )
+            graphName = getAsStringValue(root, VocabTDB1.pGraphName2);
 
-        if ( root.hasProperty(pIndex) )
+        if ( root.hasProperty(VocabTDB1.pIndex) )
             Log.warn(this, "Custom indexes not implemented yet - ignored");
 
         DatasetGraph dsg;

@@ -21,16 +21,15 @@ package org.apache.jena.fuseki.server;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import org.junit.jupiter.api.Test;
-
 import org.apache.jena.fuseki.build.DatasetDescriptionMap;
 import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.tdb1.assembler.VocabTDB1;
+import org.apache.jena.tdb2.assembler.VocabTDB2;
 import org.apache.jena.vocabulary.RDF;
+import org.junit.jupiter.api.Test;
 
 public class TestDatasetDescriptionMap {
 
@@ -42,11 +41,11 @@ public class TestDatasetDescriptionMap {
     static {
         dsModel = ModelFactory.createDefaultModel();
         dsDesc1 = dsModel.createResource()
-                .addProperty(RDF.type, VocabTDB1.tDatasetTDB)
-                .addProperty(VocabTDB1.pLocation, "--mem--");
+                .addProperty(RDF.type, VocabTDB2.tDatasetTDB)
+                .addProperty(VocabTDB2.pLocation, "--mem--");
         dsDesc2 = dsModel.createResource()
-                .addProperty(RDF.type, VocabTDB1.tDatasetTDB)
-                .addProperty(VocabTDB1.pLocation, "--mem--");
+                .addProperty(RDF.type, VocabTDB2.tDatasetTDB)
+                .addProperty(VocabTDB2.pLocation, "--mem--");
     }
     @Test
     public void testVerifySameDatasetObjectForSameDescription() {

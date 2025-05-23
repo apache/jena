@@ -24,6 +24,8 @@ import org.apache.jena.sparql.core.assembler.AssemblerUtils ;
 import org.apache.jena.system.Vocab;
 import org.apache.jena.tdb1.TDB1;
 
+/** @deprecated Migrate to TDB2. */
+@Deprecated(forRemoval = true)
 public class VocabTDB1
 {
     private static final String NS = TDB1.namespace ;

@@ -38,6 +38,7 @@ public class SecuredTDBGraphContractTests extends MetaTestGraph {
         eval = new MockSecurityEvaluator(true, true, true, true, true, true, true);
     }
 
+    @SuppressWarnings("removal")
     @Override
     public Graph getNewGraph() {
         return org.apache.jena.permissions.Factory.getInstance(eval, getName(),

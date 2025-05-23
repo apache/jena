@@ -21,6 +21,7 @@ package tdb;
 import org.apache.jena.tdb1.TDB1Backup;
 import tdb.cmdline.CmdTDB;
 
+@SuppressWarnings("removal")
 public class tdbbackup extends CmdTDB {
     static public void main(String...argv) {
         CmdTDB.init();

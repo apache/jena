@@ -26,8 +26,8 @@ import org.junit.runners.Suite ;
     TestPrefixMapTDB1.class
     , TestPrefixMappingTDB1.class
     , TestDatasetGraphTDB1.class
-    , TestGraphsTDBnonTxn.class
-    , TestGraphsTDBinsideTxn.class
+    , TestGraphsTDB1_nonTxn.class
+    , TestGraphsTDB1_insideTxn.class
     , TestGraphOverDatasetTDB1.class
 })
 public class TS_GraphTDB1
