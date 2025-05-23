@@ -24,7 +24,6 @@ import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.vocabulary.RDF;
@@ -56,62 +55,58 @@ public class QueryRewriteTestData {
 
     public static final String TEST_SRS_URI = SRS_URI.OSGB36_CRS;
 
-    private static Model TEST_MODEL = null;
+    public static final Model addTestDataGeoSparql(Model model) {
+        //Geometry
+        model.add(GEOMETRY_A, Geo.HAS_SERIALIZATION_PROP, ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))", WKTDatatype.INSTANCE));
+        model.add(GEOMETRY_B, Geo.HAS_SERIALIZATION_PROP, LITERAL_B);
+        model.add(GEOMETRY_C_BLANK, Geo.HAS_SERIALIZATION_PROP, ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(5 5)", WKTDatatype.INSTANCE));
+        model.add(GEOMETRY_D, Geo.HAS_SERIALIZATION_PROP, ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(11 11)", WKTDatatype.INSTANCE));
+        model.add(GEOMETRY_A, RDF.type, Geo.GEOMETRY_RES);
+        model.add(GEOMETRY_B, RDF.type, Geo.GEOMETRY_RES);
+        model.add(GEOMETRY_C_BLANK, RDF.type, Geo.GEOMETRY_RES);
+        model.add(GEOMETRY_D, RDF.type, Geo.GEOMETRY_RES);
+        model.add(GEOMETRY_E, RDF.type, Geo.GEOMETRY_RES);
+        model.add(GEOMETRY_F, RDF.type, Geo.GEOMETRY_RES);
 
-    public static final Model createTestData() {
+        //Feature
+        model.add(FEATURE_A, Geo.HAS_DEFAULT_GEOMETRY_PROP, GEOMETRY_A);
+        model.add(FEATURE_B, Geo.HAS_DEFAULT_GEOMETRY_PROP, GEOMETRY_B);
+        model.add(FEATURE_C, Geo.HAS_DEFAULT_GEOMETRY_PROP, GEOMETRY_C_BLANK);
+        model.add(FEATURE_D, Geo.HAS_DEFAULT_GEOMETRY_PROP, GEOMETRY_D);
+        model.add(FEATURE_A, Geo.HAS_GEOMETRY_PROP, GEOMETRY_A);
+        model.add(FEATURE_B, Geo.HAS_GEOMETRY_PROP, GEOMETRY_B);
+        model.add(FEATURE_C, Geo.HAS_GEOMETRY_PROP, GEOMETRY_C_BLANK);
+        model.add(FEATURE_D, Geo.HAS_GEOMETRY_PROP, GEOMETRY_D);
+        model.add(FEATURE_A, RDF.type, Geo.FEATURE_RES);
+        model.add(FEATURE_B, RDF.type, Geo.FEATURE_RES);
+        model.add(FEATURE_C, RDF.type, Geo.FEATURE_RES);
+        model.add(FEATURE_D, RDF.type, Geo.FEATURE_RES);
 
-        if (TEST_MODEL == null) {
-            TEST_MODEL = ModelFactory.createDefaultModel();
+        //Spatial Objects
+        model.add(FEATURE_A, RDF.type, Geo.SPATIAL_OBJECT_RES);
+        model.add(FEATURE_B, RDF.type, Geo.SPATIAL_OBJECT_RES);
+        model.add(FEATURE_C, RDF.type, Geo.SPATIAL_OBJECT_RES);
+        model.add(FEATURE_D, RDF.type, Geo.SPATIAL_OBJECT_RES);
+        model.add(GEOMETRY_A, RDF.type, Geo.SPATIAL_OBJECT_RES);
+        model.add(GEOMETRY_B, RDF.type, Geo.SPATIAL_OBJECT_RES);
+        model.add(GEOMETRY_C_BLANK, RDF.type, Geo.SPATIAL_OBJECT_RES);
+        model.add(GEOMETRY_D, RDF.type, Geo.SPATIAL_OBJECT_RES);
+        model.add(GEOMETRY_E, RDF.type, Geo.SPATIAL_OBJECT_RES);
+        model.add(GEOMETRY_F, RDF.type, Geo.SPATIAL_OBJECT_RES);
 
-            //Geometry
-            TEST_MODEL.add(GEOMETRY_A, Geo.HAS_SERIALIZATION_PROP, ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))", WKTDatatype.INSTANCE));
-            TEST_MODEL.add(GEOMETRY_B, Geo.HAS_SERIALIZATION_PROP, LITERAL_B);
-            TEST_MODEL.add(GEOMETRY_C_BLANK, Geo.HAS_SERIALIZATION_PROP, ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(5 5)", WKTDatatype.INSTANCE));
-            TEST_MODEL.add(GEOMETRY_D, Geo.HAS_SERIALIZATION_PROP, ResourceFactory.createTypedLiteral("<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(11 11)", WKTDatatype.INSTANCE));
-            TEST_MODEL.add(GEOMETRY_A, RDF.type, Geo.GEOMETRY_RES);
-            TEST_MODEL.add(GEOMETRY_B, RDF.type, Geo.GEOMETRY_RES);
-            TEST_MODEL.add(GEOMETRY_C_BLANK, RDF.type, Geo.GEOMETRY_RES);
-            TEST_MODEL.add(GEOMETRY_D, RDF.type, Geo.GEOMETRY_RES);
-            TEST_MODEL.add(GEOMETRY_E, RDF.type, Geo.GEOMETRY_RES);
-            TEST_MODEL.add(GEOMETRY_F, RDF.type, Geo.GEOMETRY_RES);
+        //Contains asserted
+        model.add(GEOMETRY_A, Geo.SF_CONTAINS_PROP, GEOMETRY_F);
 
-            //Feature
-            TEST_MODEL.add(FEATURE_A, Geo.HAS_DEFAULT_GEOMETRY_PROP, GEOMETRY_A);
-            TEST_MODEL.add(FEATURE_B, Geo.HAS_DEFAULT_GEOMETRY_PROP, GEOMETRY_B);
-            TEST_MODEL.add(FEATURE_C, Geo.HAS_DEFAULT_GEOMETRY_PROP, GEOMETRY_C_BLANK);
-            TEST_MODEL.add(FEATURE_D, Geo.HAS_DEFAULT_GEOMETRY_PROP, GEOMETRY_D);
-            TEST_MODEL.add(FEATURE_A, Geo.HAS_GEOMETRY_PROP, GEOMETRY_A);
-            TEST_MODEL.add(FEATURE_B, Geo.HAS_GEOMETRY_PROP, GEOMETRY_B);
-            TEST_MODEL.add(FEATURE_C, Geo.HAS_GEOMETRY_PROP, GEOMETRY_C_BLANK);
-            TEST_MODEL.add(FEATURE_D, Geo.HAS_GEOMETRY_PROP, GEOMETRY_D);
-            TEST_MODEL.add(FEATURE_A, RDF.type, Geo.FEATURE_RES);
-            TEST_MODEL.add(FEATURE_B, RDF.type, Geo.FEATURE_RES);
-            TEST_MODEL.add(FEATURE_C, RDF.type, Geo.FEATURE_RES);
-            TEST_MODEL.add(FEATURE_D, RDF.type, Geo.FEATURE_RES);
-
-            //Spatial Objects
-            TEST_MODEL.add(FEATURE_A, RDF.type, Geo.SPATIAL_OBJECT_RES);
-            TEST_MODEL.add(FEATURE_B, RDF.type, Geo.SPATIAL_OBJECT_RES);
-            TEST_MODEL.add(FEATURE_C, RDF.type, Geo.SPATIAL_OBJECT_RES);
-            TEST_MODEL.add(FEATURE_D, RDF.type, Geo.SPATIAL_OBJECT_RES);
-            TEST_MODEL.add(GEOMETRY_A, RDF.type, Geo.SPATIAL_OBJECT_RES);
-            TEST_MODEL.add(GEOMETRY_B, RDF.type, Geo.SPATIAL_OBJECT_RES);
-            TEST_MODEL.add(GEOMETRY_C_BLANK, RDF.type, Geo.SPATIAL_OBJECT_RES);
-            TEST_MODEL.add(GEOMETRY_D, RDF.type, Geo.SPATIAL_OBJECT_RES);
-            TEST_MODEL.add(GEOMETRY_E, RDF.type, Geo.SPATIAL_OBJECT_RES);
-            TEST_MODEL.add(GEOMETRY_F, RDF.type, Geo.SPATIAL_OBJECT_RES);
-
-            //Contains asserted
-            TEST_MODEL.add(GEOMETRY_A, Geo.SF_CONTAINS_PROP, GEOMETRY_F);
-
-            //Geo Features
-            TEST_MODEL.add(GEO_FEATURE_Y, SpatialExtension.GEO_LAT_PROP, GEO_FEATURE_LAT);
-            TEST_MODEL.add(GEO_FEATURE_Y, SpatialExtension.GEO_LON_PROP, GEO_FEATURE_LON);
-            TEST_MODEL.add(GEO_FEATURE_Z, SpatialExtension.GEO_LAT_PROP, GEO_FEATURE_LAT);
-            TEST_MODEL.add(GEO_FEATURE_Z, SpatialExtension.GEO_LON_PROP, GEO_FEATURE_LON);
-
-        }
-        return TEST_MODEL;
+        return model;
     }
 
+    public static final Model addTestDataWgs84(Model model) {
+        //Geo Features
+        model.add(GEO_FEATURE_Y, SpatialExtension.GEO_LAT_PROP, GEO_FEATURE_LAT);
+        model.add(GEO_FEATURE_Y, SpatialExtension.GEO_LON_PROP, GEO_FEATURE_LON);
+        model.add(GEO_FEATURE_Z, SpatialExtension.GEO_LAT_PROP, GEO_FEATURE_LAT);
+        model.add(GEO_FEATURE_Z, SpatialExtension.GEO_LON_PROP, GEO_FEATURE_LON);
+
+        return model;
+    }
 }

@@ -306,7 +306,7 @@ public class HttpSC {
       */
      public static Code getCode(int code)
      {
-         if (code <= MAX_CODE)
+         if (code >= 0 && code <= MAX_CODE)
          {
              return codeMap[code];
          }
