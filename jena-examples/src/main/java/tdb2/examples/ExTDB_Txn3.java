@@ -16,38 +16,38 @@
  * limitations under the License.
  */
 
-package tdb1.examples;
+package tdb2.examples;
 
 import org.apache.jena.query.*;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.system.Txn;
-import org.apache.jena.tdb1.TDB1Factory;
+import org.apache.jena.tdb2.DatabaseMgr;
 
 /** Illustration of working at the DatasetGraph level.
  *  Normally, applications work with {@link Dataset}.
  *  Occasionally, it's more convenient to work with the
- *  TDB-implemented DatasetGraph interface. 
+ *  TDB-implemented DatasetGraph interface.
  */
 public class ExTDB_Txn3
 {
     public static void main(String... argv)
     {
-        DatasetGraph dsg = TDB1Factory.createDatasetGraph();
+        DatasetGraph dsg = DatabaseMgr.createDatasetGraph();
 
-        // Start a transaction. It starts in "read" mode and promotes to "write" mode if necessary. 
+        // Start a transaction. It starts in "read" mode and promotes to "write" mode if necessary.
         Txn.execute(dsg, ()->{
             // Do some queries
             String sparqlQueryString1 = "SELECT (count(*) AS ?count) { ?s ?p ?o }";
             execQuery(sparqlQueryString1, dsg);
         });
     }
-    
+
     public static void execQuery(String sparqlQueryString, DatasetGraph dsg)
     {
         // Add a dataset wrapper to conform with the query interface.
         // This should not be very expensive.
         Dataset dataset = DatasetFactory.wrap(dsg);
-        
+
         Query query = QueryFactory.create(sparqlQueryString);
         try ( QueryExecution qexec = QueryExecutionFactory.create(query, dataset) ) {
             ResultSet results = qexec.execSelect();
