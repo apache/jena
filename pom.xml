@@ -970,6 +970,11 @@
             <release>${java.version}</release>
             <compilerArgs>
               <arg>-proc:none</arg>
+              <!-- 
+                   In preparation for Jena6, silence deprecation=removal warnings.
+                   There are many.
+                   Remove Xlint setting at or after Jena6.
+              -->
               <arg>-Xlint:-removal</arg>
             </compilerArgs>
           </configuration>
