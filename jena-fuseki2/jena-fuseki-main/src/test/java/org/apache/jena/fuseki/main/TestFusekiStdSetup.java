@@ -59,7 +59,7 @@ public class TestFusekiStdSetup {
         dataset.add(SSE.parseQuad("(:g :s :p 2 )"));
     }
 
-    // ==== Common code: TestFusekiStdSetup, TestFusekiStdReadOnlySetup, TestFusekiShaclValidation
+    // ==== Common code: TestFusekiStdSetup, TestFusekiStdReadOnlySetup, TestFusekiShaclValidation, TestRDFConnectionRemote
 
     private static Object lock = new Object();
 

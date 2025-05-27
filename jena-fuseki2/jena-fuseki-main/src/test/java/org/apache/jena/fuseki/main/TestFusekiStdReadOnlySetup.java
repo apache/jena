@@ -40,6 +40,7 @@ import org.apache.jena.sparql.sse.SSE;
 
 /** Tests for .add("/ds", dsg, false) */
 public class TestFusekiStdReadOnlySetup {
+
     // This test suite is TestFusekiStdSetup, modified for read-only.
 
     private static FusekiServer server = null;
