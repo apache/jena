@@ -21,6 +21,7 @@ package org.apache.jena.sparql.engine;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.jena.atlas.iterator.Iter;
@@ -108,13 +109,39 @@ public class ExecutionContext implements FunctionEnv
     }
 
     /**
+     * ExecutionContext for normal execution over a dataset,
+     * with default for {@link OpExecutorFactory}.
+     */
+    public static ExecutionContext create(DatasetGraph dataset, Context context) {
+        Objects.requireNonNull(dataset, "dataset is null in call to ExecutionContext create(DatasetGraph dataset, Context context)");
+        Graph dftGraph = dataset.getDefaultGraph();
+        return create(dataset, dftGraph, context);
+    }
+
+    /**
+     * ExecutionContext for execution without a dataset,
+     * with default for {@link OpExecutorFactory}.
+     */
+    public static ExecutionContext create(Context context) {
+        return create(null, null, context);
+    }
+
+
+    /**
      * ExecutionContext for normal execution over a dataset, with defaults for
      * {@link Context} and {@link OpExecutorFactory}.
      */
-    public static ExecutionContext create(DatasetGraph dataset, Context context) {
-        Graph dftGraph = (dataset == null) ? null : dataset.getDefaultGraph();
+    public static ExecutionContext create(DatasetGraph dataset, Graph activeGraph) {
+        Context cxt = ARQ.getContext().copy();
+        return create(dataset, activeGraph, cxt);
+    }
+
+    /**
+     * ExecutionContext for normal execution over a dataset.
+     */
+    public static ExecutionContext create(DatasetGraph dataset, Graph activeGraph, Context context) {
         return new ExecutionContext(context,
-                                    dftGraph, dataset,
+                                    activeGraph, dataset,
                                     QC.getFactory(context),
                                     Context.getCancelSignal(context));
     }
@@ -133,7 +160,7 @@ public class ExecutionContext implements FunctionEnv
      */
     public static ExecutionContext createForGraph(Graph graph,  Context cxt) {
         DatasetGraph dsg = (graph == null) ? null : DatasetGraphFactory.wrap(graph);
-        return create(dsg, cxt);
+        return create(dsg, graph, cxt);
     }
 
     // ---- Previous generation - constructors

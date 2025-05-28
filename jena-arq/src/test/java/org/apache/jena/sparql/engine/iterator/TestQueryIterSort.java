@@ -85,7 +85,7 @@ public class TestQueryIterSort {
     }
 
     private static ExecutionContext createExecutionContext(Context context) {
-        return ExecutionContext.create(null, context);
+        return ExecutionContext.create(context);
     }
 
     @Test
