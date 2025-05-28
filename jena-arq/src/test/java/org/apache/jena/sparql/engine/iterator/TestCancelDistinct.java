@@ -32,7 +32,6 @@ import org.junit.Test;
 import org.apache.jena.atlas.data.DistinctDataBag;
 import org.apache.jena.atlas.io.IndentedWriter;
 import org.apache.jena.query.ARQ;
-import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingFactory;
@@ -100,8 +99,7 @@ public class TestCancelDistinct {
     }
 
     final Context params = new Context();
-    final DatasetGraph dataset = null;
-    final ExecutionContext cxt = ExecutionContext.create(dataset, params);
+    final ExecutionContext cxt = ExecutionContext.create(params);
 
     /**
        test that of a QueryIterDistinct with an active databag is

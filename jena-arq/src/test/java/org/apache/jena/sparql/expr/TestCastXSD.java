@@ -151,7 +151,7 @@ public class TestCastXSD {
     private NodeValue cast(String input$) {
         Expr input = ExprUtils.parse(input$) ;
         Context cxt = ARQ.getContext().copy().set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime()) ;
-        FunctionEnv env = ExecutionContext.create(null, cxt);
+        FunctionEnv env = ExecutionContext.create(cxt);
         return input.eval(null, env) ;
     }
 }
