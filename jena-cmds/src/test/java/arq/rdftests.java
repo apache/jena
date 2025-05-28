@@ -198,10 +198,14 @@ public class rdftests extends CmdGeneral
 
     // Test subsystems.
     private static List<Function<ManifestEntry, Runnable>> installed = new ArrayList<>();
+
+    public static void installTestMaker(Function<ManifestEntry, Runnable> testMaker) {
+        installed.add(testMaker);
+    }
+
     static {
-        installed.add(RiotTests::makeRIOTTest);
-        installed.add(SparqlTests::makeSPARQLTest);
-        // SHACL-WG manifests are structured different.
+        installTestMaker(RiotTests::makeRIOTTest);
+        installTestMaker(SparqlTests::makeSPARQLTest);
     }
 
     private static Function<ManifestEntry, Runnable> testMaker() {
