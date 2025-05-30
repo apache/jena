@@ -17,12 +17,15 @@
  */
 package org.apache.jena.geosparql.implementation;
 
+import static org.apache.jena.geosparql.configuration.GeoSPARQLOperations.cleanUpPrecision;
+
 import java.io.Serializable;
 import java.util.Objects;
+
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Length;
-import static org.apache.jena.geosparql.configuration.GeoSPARQLOperations.cleanUpPrecision;
+
 import org.apache.jena.geosparql.implementation.registry.UnitsRegistry;
 import org.apache.jena.geosparql.implementation.vocabulary.Unit_URI;
 import org.apache.sis.measure.Quantities;
@@ -38,6 +41,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  *
  */
 public class UnitsOfMeasure implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final Unit<Length> unit;
     private final String unitURI;

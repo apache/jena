@@ -17,7 +17,17 @@
  */
 package org.apache.jena.geosparql.geo.topological;
 
-import static org.apache.jena.geosparql.geo.topological.QueryRewriteTestData.*;
+import static org.apache.jena.geosparql.geo.topological.QueryRewriteTestData.FEATURE_A;
+import static org.apache.jena.geosparql.geo.topological.QueryRewriteTestData.FEATURE_B;
+import static org.apache.jena.geosparql.geo.topological.QueryRewriteTestData.FEATURE_D;
+import static org.apache.jena.geosparql.geo.topological.QueryRewriteTestData.GEOMETRY_A;
+import static org.apache.jena.geosparql.geo.topological.QueryRewriteTestData.GEOMETRY_B;
+import static org.apache.jena.geosparql.geo.topological.QueryRewriteTestData.GEOMETRY_C_BLANK;
+import static org.apache.jena.geosparql.geo.topological.QueryRewriteTestData.GEOMETRY_D;
+import static org.apache.jena.geosparql.geo.topological.QueryRewriteTestData.GEOMETRY_F;
+import static org.apache.jena.geosparql.geo.topological.QueryRewriteTestData.GEO_FEATURE_Y;
+import static org.apache.jena.geosparql.geo.topological.QueryRewriteTestData.GEO_FEATURE_Z;
+import static org.apache.jena.geosparql.geo.topological.QueryRewriteTestData.TEST_SRS_URI;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
@@ -30,16 +40,25 @@ import org.apache.jena.geosparql.geo.topological.property_functions.simple_featu
 import org.apache.jena.geosparql.implementation.index.IndexConfiguration.IndexOption;
 import org.apache.jena.geosparql.implementation.index.QueryRewriteIndex;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
-import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.query.*;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.RDF;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
@@ -47,8 +66,11 @@ import org.junit.*;
  */
 public class GenericPropertyFunctionTest {
 
-    private static Model model;
-    private static Dataset dataset;
+    private static Model modelGeoSparql;
+    private static Dataset datasetGeoSparql;
+
+    private static Model modelWgs84;
+    private static Dataset datasetWgs84;
 
     public GenericPropertyFunctionTest() {
     }
@@ -56,8 +78,11 @@ public class GenericPropertyFunctionTest {
     @BeforeClass
     public static void setUpClass() throws SpatialIndexException {
         GeoSPARQLConfig.setup(IndexOption.MEMORY, Boolean.TRUE);
-        model = QueryRewriteTestData.createTestData();
-        dataset = SpatialIndex.wrapModel(model, TEST_SRS_URI);
+        modelGeoSparql = QueryRewriteTestData.addTestDataGeoSparql(ModelFactory.createDefaultModel());
+        datasetGeoSparql = SpatialIndexLib.wrapModel(modelGeoSparql, TEST_SRS_URI);
+
+        modelWgs84 = QueryRewriteTestData.addTestDataWgs84(ModelFactory.createDefaultModel());
+        datasetWgs84 = SpatialIndexLib.wrapModel(modelWgs84, TEST_SRS_URI);
     }
 
     @AfterClass
@@ -78,7 +103,7 @@ public class GenericPropertyFunctionTest {
     @Test
     public void testQueryRewrite_geometry_geometry() {
 
-        Graph graph = model.getGraph();
+        Graph graph = modelGeoSparql.getGraph();
         Node subject = GEOMETRY_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
         Node object = GEOMETRY_B.asNode();
@@ -95,7 +120,7 @@ public class GenericPropertyFunctionTest {
     @Test
     public void testQueryRewrite_geometry_geometry_blank() {
 
-        Graph graph = model.getGraph();
+        Graph graph = modelGeoSparql.getGraph();
         Node subject = GEOMETRY_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
         Node object = GEOMETRY_C_BLANK.asNode();
@@ -112,8 +137,7 @@ public class GenericPropertyFunctionTest {
     @Test
     public void testQueryRewrite_blank() {
 
-
-        Graph graph = model.getGraph();
+        Graph graph = modelGeoSparql.getGraph();
 
         Boolean expResult = true;
         String id = GEOMETRY_C_BLANK.asNode().getBlankNodeLabel();
@@ -129,7 +153,7 @@ public class GenericPropertyFunctionTest {
     @Test
     public void testQueryRewrite_geometry_geometry_disabled() {
         GeoSPARQLConfig.setup(IndexOption.MEMORY, Boolean.FALSE);
-        Graph graph = model.getGraph();
+        Graph graph = modelGeoSparql.getGraph();
         Node subject = GEOMETRY_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
         Node object = FEATURE_B.asNode();
@@ -148,7 +172,7 @@ public class GenericPropertyFunctionTest {
     @Test
     public void testQueryRewrite_feature_geometry() {
 
-        Graph graph = model.getGraph();
+        Graph graph = modelGeoSparql.getGraph();
         Node subject = FEATURE_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
         Node object = GEOMETRY_B.asNode();
@@ -165,7 +189,7 @@ public class GenericPropertyFunctionTest {
     @Test
     public void testQueryRewrite_feature_feature() {
 
-        Graph graph = model.getGraph();
+        Graph graph = modelGeoSparql.getGraph();
         Node subject = FEATURE_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
         Node object = FEATURE_B.asNode();
@@ -182,7 +206,7 @@ public class GenericPropertyFunctionTest {
     @Test
     public void testQueryRewrite_geometry_feature() {
 
-        Graph graph = model.getGraph();
+        Graph graph = modelGeoSparql.getGraph();
         Node subject = GEOMETRY_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
         Node object = FEATURE_B.asNode();
@@ -200,7 +224,7 @@ public class GenericPropertyFunctionTest {
     public void testQueryRewrite_geometry_feature_disabled() {
 
         GeoSPARQLConfig.setup(IndexOption.MEMORY, Boolean.FALSE);
-        Graph graph = model.getGraph();
+        Graph graph = modelGeoSparql.getGraph();
         Node subject = GEOMETRY_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
         Node object = FEATURE_B.asNode();
@@ -219,7 +243,7 @@ public class GenericPropertyFunctionTest {
     @Test
     public void testQueryRewrite_geometry_geometry_false() {
 
-        Graph graph = model.getGraph();
+        Graph graph = modelGeoSparql.getGraph();
         Node subject = GEOMETRY_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
         Node object = GEOMETRY_D.asNode();
@@ -236,7 +260,7 @@ public class GenericPropertyFunctionTest {
     @Test
     public void testQueryRewrite_feature_geometry_false() {
 
-        Graph graph = model.getGraph();
+        Graph graph = modelGeoSparql.getGraph();
         Node subject = FEATURE_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
         Node object = GEOMETRY_D.asNode();
@@ -253,7 +277,7 @@ public class GenericPropertyFunctionTest {
     @Test
     public void testQueryRewrite_feature_feature_false() {
 
-        Graph graph = model.getGraph();
+        Graph graph = modelGeoSparql.getGraph();
         Node subject = FEATURE_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
         Node object = FEATURE_D.asNode();
@@ -270,7 +294,7 @@ public class GenericPropertyFunctionTest {
     @Test
     public void testQueryRewrite_geometry_feature_false() {
 
-        Graph graph = model.getGraph();
+        Graph graph = modelGeoSparql.getGraph();
         Node subject = GEOMETRY_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
         Node object = FEATURE_D.asNode();
@@ -288,7 +312,7 @@ public class GenericPropertyFunctionTest {
     public void testQueryRewrite_geometry_geometry_asserted() {
 
 
-        Graph graph = model.getGraph();
+        Graph graph = modelGeoSparql.getGraph();
         Node subject = GEOMETRY_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
         Node object = GEOMETRY_F.asNode();
@@ -306,7 +330,7 @@ public class GenericPropertyFunctionTest {
     public void testQueryRewrite_geometry_geometry_asserted_disabled() {
 
         GeoSPARQLConfig.setup(IndexOption.MEMORY, Boolean.FALSE);
-        Graph graph = model.getGraph();
+        Graph graph = modelGeoSparql.getGraph();
         Node subject = GEOMETRY_A.asNode();
         Node predicate = Geo.SF_CONTAINS_NODE;
         Node object = GEOMETRY_F.asNode();
@@ -325,7 +349,7 @@ public class GenericPropertyFunctionTest {
     @Test
     public void testQueryRewrite_feature_feature_disjoint() {
 
-        Graph graph = model.getGraph();
+        Graph graph = modelGeoSparql.getGraph();
         Node subject = FEATURE_A.asNode();
         Node predicate = Geo.SF_DISJOINT_NODE;
         Node object = FEATURE_D.asNode();
@@ -342,7 +366,7 @@ public class GenericPropertyFunctionTest {
     @Test
     public void testQueryRewrite_feature_feature_disjoint_false() {
 
-        Graph graph = model.getGraph();
+        Graph graph = modelGeoSparql.getGraph();
         Node subject = FEATURE_A.asNode();
         Node predicate = Geo.SF_DISJOINT_NODE;
         Node object = FEATURE_B.asNode();
@@ -369,7 +393,7 @@ public class GenericPropertyFunctionTest {
 
         List<Resource> subjects = new ArrayList<>();
         List<Resource> objects = new ArrayList<>();
-        try (QueryExecution qe = QueryExecutionFactory.create(query, dataset)) {
+        try (QueryExecution qe = QueryExecutionFactory.create(query, datasetGeoSparql)) {
             ResultSet rs = qe.execSelect();
             while (rs.hasNext()) {
                 QuerySolution qs = rs.nextSolution();
@@ -405,7 +429,7 @@ public class GenericPropertyFunctionTest {
                 + "}ORDER by ?obj";
 
         List<Resource> objects = new ArrayList<>();
-        try (QueryExecution qe = QueryExecutionFactory.create(query, dataset)) {
+        try (QueryExecution qe = QueryExecutionFactory.create(query, datasetGeoSparql)) {
             ResultSet rs = qe.execSelect();
             while (rs.hasNext()) {
                 QuerySolution qs = rs.nextSolution();
@@ -438,7 +462,7 @@ public class GenericPropertyFunctionTest {
                 + "}ORDER by ?obj";
 
         List<Resource> objects = new ArrayList<>();
-        try (QueryExecution qe = QueryExecutionFactory.create(query, dataset)) {
+        try (QueryExecution qe = QueryExecutionFactory.create(query, datasetGeoSparql)) {
             ResultSet rs = qe.execSelect();
             while (rs.hasNext()) {
                 QuerySolution qs = rs.nextSolution();
@@ -474,7 +498,7 @@ public class GenericPropertyFunctionTest {
                 + "}ORDER by ?subj";
 
         List<Resource> results = new ArrayList<>();
-        try (QueryExecution qe = QueryExecutionFactory.create(query, dataset)) {
+        try (QueryExecution qe = QueryExecutionFactory.create(query, datasetGeoSparql)) {
             ResultSet rs = qe.execSelect();
             while (rs.hasNext()) {
                 QuerySolution qs = rs.nextSolution();
@@ -509,7 +533,7 @@ public class GenericPropertyFunctionTest {
 
         List<Resource> subjects = new ArrayList<>();
         List<Resource> objects = new ArrayList<>();
-        try (QueryExecution qe = QueryExecutionFactory.create(query, dataset)) {
+        try (QueryExecution qe = QueryExecutionFactory.create(query, datasetGeoSparql)) {
             ResultSet rs = qe.execSelect();
             while (rs.hasNext()) {
                 QuerySolution qs = rs.nextSolution();
@@ -530,11 +554,10 @@ public class GenericPropertyFunctionTest {
 
     /**
      * Test of execEvaluated method, of class GenericPropertyFunction.
+     * @throws SpatialIndexException
      */
     @Test
-    public void testExecEvaluated_both_bound_geo() {
-
-
+    public void testExecEvaluated_both_bound_geo() throws SpatialIndexException {
         String query = "PREFIX geo: <http://www.opengis.net/ont/geosparql#>\n"
                 + "\n"
                 + "SELECT ?subj ?obj\n"
@@ -546,7 +569,7 @@ public class GenericPropertyFunctionTest {
 
         List<Resource> subjects = new ArrayList<>();
         List<Resource> objects = new ArrayList<>();
-        try (QueryExecution qe = QueryExecutionFactory.create(query, dataset)) {
+        try (QueryExecution qe = QueryExecutionFactory.create(query, datasetWgs84)) {
             ResultSet rs = qe.execSelect();
             while (rs.hasNext()) {
                 QuerySolution qs = rs.nextSolution();
@@ -582,7 +605,7 @@ public class GenericPropertyFunctionTest {
                 + "}ORDER by ?subj";
 
         List<Resource> results = new ArrayList<>();
-        try (QueryExecution qe = QueryExecutionFactory.create(query, dataset)) {
+        try (QueryExecution qe = QueryExecutionFactory.create(query, datasetGeoSparql)) {
             ResultSet rs = qe.execSelect();
             while (rs.hasNext()) {
                 QuerySolution qs = rs.nextSolution();

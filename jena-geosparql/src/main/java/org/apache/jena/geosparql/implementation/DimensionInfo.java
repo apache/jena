@@ -17,11 +17,13 @@
  */
 package org.apache.jena.geosparql.implementation;
 
+import static org.apache.jena.geosparql.implementation.jts.CustomCoordinateSequence.findCoordinateSequenceDimensions;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+
 import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions;
-import static org.apache.jena.geosparql.implementation.jts.CustomCoordinateSequence.findCoordinateSequenceDimensions;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateXY;
 import org.locationtech.jts.geom.Geometry;
@@ -31,6 +33,7 @@ import org.locationtech.jts.geom.Geometry;
  *
  */
 public class DimensionInfo implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final int coordinate;
     private final int spatial;
