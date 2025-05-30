@@ -30,7 +30,7 @@ import org.apache.jena.mem.* ;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 
 /**
-    Test triple bunch implementations - NOT YET FINISHED
+    Test triple bunch implementations
 */
 public abstract class TestTripleBunch extends GraphTestBase
     {

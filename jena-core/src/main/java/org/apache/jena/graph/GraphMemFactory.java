@@ -24,6 +24,7 @@ import org.apache.jena.graph.impl.GraphBase ;
 import org.apache.jena.mem2.GraphMem2Fast;
 import org.apache.jena.mem2.GraphMem2Legacy;
 import org.apache.jena.mem2.GraphMem2Roaring;
+import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.apache.jena.util.iterator.NullIterator ;
 
@@ -47,9 +48,12 @@ import org.apache.jena.util.iterator.NullIterator ;
  */
 public class GraphMemFactory
 {
+    static { JenaSystem.init(); }
+
+    private GraphMemFactory() {}
     // Default for sameTerm/sameValue
-    // Jena 4 : default false (same value)
-    // Jena 5 : default false (same term)
+    // Up to Jena 4 : default false (same value)
+    // From Jena 5  : default false (same term)
     private static boolean defaultSameTerm = true;
     static {
         // Initial setting.
@@ -70,7 +74,9 @@ public class GraphMemFactory
      * with the system default is same value (Jena4).
      * <p>
      * This affects {@link #createDefaultGraph}.
+     * @deprecated To be removed.
      */
+    @Deprecated(forRemoval = true)
     public static void setDftGraphSameTerm(boolean value) {
         defaultSameTerm = value;
     }
@@ -80,12 +86,13 @@ public class GraphMemFactory
      * (false).
      * <p>
      * This is used by {@link #createDefaultGraph}.
+     * @deprecated To be removed.
      */
+    @Deprecated(forRemoval = true)
     public static boolean dftGraphSameTerm() {
         return defaultSameTerm;
     }
 
-    private GraphMemFactory() {}
 
     /**
      * Answer a memory-based graph.
@@ -98,9 +105,18 @@ public class GraphMemFactory
     }
 
     /**
-     * This function will track the preferred general purpose graph for the Model API.
+     * @deprecated To be renamed. Use {@link #createGraphMemForModel()}. The function will be re-purposed for the default samer-term memory graph.
      */
+    @Deprecated(forRemoval = true)
     public static Graph createGraphMem() {
+        //return createGraphMemForModel();
+        return createGraphMem2();
+    }
+
+     /**
+      * This function will track the preferred general purpose graph for the Model API.
+      */
+    public static Graph createGraphMemForModel() {
         @SuppressWarnings("deprecation")
         Graph g = new org.apache.jena.mem.GraphMem();
         return g;
@@ -138,9 +154,18 @@ public class GraphMemFactory
      * with a simpler implementation, primarily due to not providing support for {@link Iterator#remove}.
      * <p>
      * See {@link GraphMem2Legacy} for details.
+     *
      */
-    public static Graph createGraphMem2Basic()
-    { return new GraphMem2Legacy(); }
+     public static Graph createGraphMemBasic()
+     { return new GraphMem2Legacy(); }
+
+     /**
+      * @deprecated Use {@link #createGraphMemBasic()}
+      */
+     @Deprecated(forRemoval = true)
+     public static Graph createGraphMem2Basic()
+     { return createGraphMemBasic(); }
+
 
     /**
      * A graph that stores triples in memory. This class is not thread-safe.
@@ -154,8 +179,18 @@ public class GraphMemFactory
      * <p>
      * See {@link GraphMem2Fast} for details.
      */
-    public static Graph createGraphMem2()
-    { return new GraphMem2Fast(); }
+    //public static Graph createGraphMemX() {
+     public static Graph createGraphMem2() {
+        return new GraphMem2Fast();
+    }
+
+//     /**
+//      * @deprecated Use {@link #createGraphMemBasic()}
+//      */
+//     @Deprecated(forRemoval = true)
+//     public static Graph createGraphMem2() {
+//         return new GraphMem2Fast();
+//     }
 
     /**
      * A graph that stores triples in memory. This class is not thread-safe.
@@ -170,8 +205,16 @@ public class GraphMemFactory
      * <p>
      * See {@link GraphMem2Roaring} for details.
      */
-    public static Graph createGraphMem2Roaring()
+    public static Graph createGraphMemRoaring()
     { return new GraphMem2Roaring(); }
+
+
+    /**
+     * @deprecated Use {@link #createGraphMemRoaring()}
+     */
+    @Deprecated(forRemoval = true)
+    public static Graph createGraphMem2Roaring()
+    { return createGraphMemRoaring(); }
 
     private final static Graph emptyGraph = new GraphBase() {
         @Override

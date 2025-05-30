@@ -51,46 +51,46 @@ import org.slf4j.LoggerFactory ;
  * for future reference).
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
-    
+
     /** Single context for the reasoner, used when passing information to builtins */
     protected BBRuleContext context;
-     
+
     /** A finder that searches across the data, schema, axioms and forward deductions*/
     protected Finder dataFind;
-    
+
     /** The core backward rule engine which includes all the memoized results */
     protected LPBRuleEngine bEngine;
-    
+
     /** The original rule set as supplied */
     protected List<Rule> rawRules;
-    
+
     /** The rule list after possible extension by preprocessing hooks */
     protected List<Rule> rules;
-    
+
     /** Static switch from Basic to RETE implementation of the forward component */
     public static boolean useRETE = true;
 
     /** Flag, if true then subClass and subProperty lattices will be optimized using TGCs */
     protected boolean useTGCCaching = false;
-    
+
     /** Optional precomputed cache of the subClass/subproperty lattices */
     protected TransitiveEngine transitiveEngine;
-    
+
     /** Optional list of preprocessing hooks  to be run in sequence during preparation time */
     protected List<RulePreprocessHook> preprocessorHooks;
-    
+
     /** Cache of temporary property values inferred through getTemp calls */
     protected TempNodeCache tempNodecache;
-    
+
     /** Table of temp nodes which should be hidden from output listings */
     protected Set<Node> hiddenNodes;
 
     /** Optional map of property node to datatype ranges */
     protected HashMap<Node, List<RDFDatatype>> dtRange = null;
-    
+
     /** Flag to request datatype range validation be included in the validation step */
     protected boolean requestDatatypeRangeValidation = false;
-    
+
     static Logger logger = LoggerFactory.getLogger(FBRuleInfGraph.class);
 
 //  =======================================================================
@@ -103,7 +103,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     public FBRuleInfGraph(Reasoner reasoner, Graph schema) {
         super(reasoner, schema);
-        constructorInit(schema);    
+        constructorInit(schema);
     }
 
     /**
@@ -115,9 +115,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public FBRuleInfGraph(Reasoner reasoner, List<Rule> rules, Graph schema) {
         super( reasoner, rules, schema );
         this.rawRules = rules;
-        constructorInit( schema ); 
+        constructorInit( schema );
     }
-    
+
     /**
      * Constructor.
      * @param reasoner the reasoner which created this inf graph instance
@@ -127,8 +127,8 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     public FBRuleInfGraph( Reasoner reasoner, List<Rule> rules, Graph schema, Graph data ) {
         super(reasoner, rules, schema, data);
-        this.rawRules = rules;  
-        constructorInit(schema);    
+        this.rawRules = rules;
+        constructorInit(schema);
     }
 
 
@@ -136,7 +136,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Common pieces of initialization code which apply in all constructor cases.
      */
     private void constructorInit(Graph schema) {
-        initLP(schema);  
+        initLP(schema);
         tempNodecache = new TempNodeCache(this);
         if (JenaParameters.enableFilteringOfHiddenInfNodes) {
             hiddenNodes = new HashSet<>();
@@ -145,7 +145,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             }
         }
     }
-    
+
     /**
      * Instantiate the forward rule engine to use.
      * Subclasses can override this to switch to, say, a RETE implementation.
@@ -158,7 +158,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
 
     /**
      * Initialize the LP engine, based on an optional schema graph.
-     */    
+     */
     private void initLP(Graph schema) {
         if (schema != null && schema instanceof FBRuleInfGraph) {
             LPRuleStore newStore = new LPRuleStore();
@@ -168,7 +168,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             bEngine = new LPBRuleEngine(this);
         }
     }
-    
+
     /**
      * Instantiate the optional caches for the subclass/suproperty lattices.
      * Unless this call is made the TGC caching will not be used.
@@ -177,7 +177,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         useTGCCaching = true;
         resetTGCCache();
     }
-    
+
     /**
      * Rest the transitive graph caches
      */
@@ -190,11 +190,11 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                 new TransitiveGraphCache(ReasonerVocabulary.directSubPropertyOf.asNode(), RDFS.subPropertyOf.asNode()));
         }
     }
-    
+
 //  =======================================================================
 //   Interface between infGraph and the goal processing machinery
 
-    
+
     /**
      * Search the combination of data and deductions graphs for the given triple pattern.
      * This may different from the normal find operation in the base of hybrid reasoners
@@ -204,7 +204,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public ExtendedIterator<Triple> findDataMatches(Node subject, Node predicate, Node object) {
         return dataFind.find(new TriplePattern(subject, predicate, object));
     }
-    
+
     /**
      * Search the combination of data and deductions graphs for the given triple pattern.
      * This may different from the normal find operation in the base of hybrid reasoners
@@ -214,7 +214,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public ExtendedIterator<Triple> findDataMatches(TriplePattern pattern) {
         return dataFind.find(pattern);
     }
-            
+
     /**
      * Process a call to a builtin predicate
      * @param clause the Functor representing the call
@@ -225,7 +225,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     @Override
     public boolean processBuiltin(ClauseEntry clause, Rule rule, BindingEnvironment env) {
         throw new ReasonerException("Internal error in FBLP rule engine, incorrect invocation of builtin in rule " + rule);
-        // TODO: Remove 
+        // TODO: Remove
 //        if (clause instanceof Functor) {
 //            context.setEnv(env);
 //            context.setRule(rule);
@@ -234,7 +234,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
 //            throw new ReasonerException("Illegal builtin predicate: " + clause + " in rule " + rule);
 //        }
     }
-    
+
     /**
      * Adds a new Backward rule as a result of a forward rule process. Only some
      * infgraphs support this.
@@ -247,7 +247,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         bEngine.addRule(brule);
         bEngine.reset();
     }
-       
+
     /**
      * Deletes a new Backward rule as a rules of a forward rule process. Only some
      * infgraphs support this.
@@ -260,7 +260,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         bEngine.deleteRule(brule);
         bEngine.reset();
     }
-    
+
     /**
      * Adds a set of new Backward rules
      */
@@ -272,7 +272,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         }
         bEngine.reset();
     }
-    
+
     /**
      * Return an ordered list of all registered backward rules. Includes those
      * generated by forward productions.
@@ -280,7 +280,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public List<Rule> getBRules() {
         return bEngine.getAllRules();
     }
-    
+
     /**
      * Return the originally supplied set of rules, may be a mix of forward
      * and backward rules.
@@ -288,9 +288,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public List<Rule> getRules() {
         return rules;
     }
-      
+
     /**
-     * Set a predicate to be tabled/memoized by the LP engine. 
+     * Set a predicate to be tabled/memoized by the LP engine.
      */
     public void setTabled(Node predicate) {
         bEngine.tablePredicate(predicate);
@@ -298,7 +298,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             logger.info("LP TABLE " + predicate);
         }
     }
-    
+
     /**
      * Return a compiled representation of all the registered
      * forward rules.
@@ -306,7 +306,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     private Object getForwardRuleStore() {
         return engine.getRuleStore();
     }
-    
+
     /**
      * Add a new deduction to the deductions graph.
      */
@@ -323,16 +323,16 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * @param instance the base instance node to which the property applies
      * @param prop the property node whose value is being inferred
      * @param pclass the (optional, can be null) class for the inferred value.
-     * @return the bNode representing the property value 
+     * @return the bNode representing the property value
      */
     @Override
     public Node getTemp(Node instance, Node prop, Node pclass) {
         return tempNodecache.getTemp(instance, prop, pclass);
     }
-   
+
 //  =======================================================================
 //  Core inf graph methods
-    
+
     /**
      * Add a new rule to the rule set. This should only be used by implementations
      * of RuleProprocessHook (which are called during rule system preparation phase).
@@ -353,7 +353,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         }
         rules.add(rule);
     }
-    
+
     /**
      * Add a new preprocessing hook defining an operation that
      * should be run when the preparation phase is underway.
@@ -364,7 +364,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         }
         preprocessorHooks.add(hook);
     }
-    
+
     /**
      * Perform any initial processing and caching. This call is optional. Most
      * engines either have negligable set up work or will perform an implicit
@@ -376,16 +376,16 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     @Override
     public synchronized void prepare() {
         if (this.isPrepared()) return;
-        
+
         this.setPreparedState(true);
-                    
+
         // Restore the original pre-hookProcess rules
         rules = rawRules;
-        
+
         // Is there any data to bind in yet?
         Graph data = null;
         if (fdata != null) data = fdata.getGraph();
-        
+
         // initilize the deductions graph
         if (fdeductions != null) {
             Graph oldDeductions = (fdeductions).getGraph();
@@ -395,22 +395,22 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         }
         dataFind = (data == null) ? fdeductions :  FinderUtil.cascade(fdeductions, fdata);
         Finder dataSource = fdata;
-        
+
         // Initialize the optional TGC caches
         if (useTGCCaching) {
             resetTGCCache();
             if (schemaGraph != null) {
-                // Check if we can just reuse the copy of the raw 
+                // Check if we can just reuse the copy of the raw
                 if (
                     (transitiveEngine.checkOccurance(TransitiveReasoner.subPropertyOf, data) ||
                      transitiveEngine.checkOccurance(TransitiveReasoner.subClassOf, data) ||
                      transitiveEngine.checkOccurance(RDFS.domain.asNode(), data) ||
                      transitiveEngine.checkOccurance(RDFS.range.asNode(), data) )) {
-            
+
                     // The data graph contains some ontology knowledge so split the caches
                     // now and rebuild them using merged data
                     transitiveEngine.insert(((FBRuleInfGraph)schemaGraph).fdata, fdata);
-                }     
+                }
             } else {
                 if (data != null) {
                     transitiveEngine.insert(null, fdata);
@@ -437,17 +437,17 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             transitiveEngine.setCaching(true, true);
 //                dataFind = FinderUtil.cascade(subClassCache, subPropertyCache, dataFind);
             dataFind = FinderUtil.cascade(dataFind, transitiveEngine.getSubClassCache(), transitiveEngine.getSubPropertyCache());
-            
+
             // Without the next statement then the transitive closures are not seen by the forward rules
             dataSource = FinderUtil.cascade(dataSource, transitiveEngine.getSubClassCache(), transitiveEngine.getSubPropertyCache());
         }
-        
+
         // Make sure there are no Brules left over from pior runs
         bEngine.deleteAllRules();
 
         // Call any optional preprocessing hook
         if (preprocessorHooks != null && preprocessorHooks.size() > 0) {
-            Graph inserts = GraphMemFactory.createGraphMem();
+            Graph inserts = GraphMemFactory.createDefaultGraph();
             for ( RulePreprocessHook hook : preprocessorHooks )
             {
                 hook.run( this, dataFind, inserts );
@@ -458,7 +458,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                 dataFind = FinderUtil.cascade(dataFind, finserts);
             }
         }
-        
+
         boolean rulesLoaded = false;
         if (schemaGraph != null) {
             Graph rawPreload = ((InfGraph)schemaGraph).getRawGraph();
@@ -477,13 +477,13 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         // Prepare the context for builtins run in backwards engine
         context = new BBRuleContext(this);
     }
-    
+
     /**
      * Cause the inference graph to reconsult the underlying graph to take
      * into account changes. Normally changes are made through the InfGraph's add and
      * remove calls are will be handled appropriately. However, in some cases changes
      * are made "behind the InfGraph's back" and this forces a full reconsult of
-     * the changed data. 
+     * the changed data.
      */
     @Override
     public void rebind() {
@@ -491,11 +491,11 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         if (bEngine != null) bEngine.reset();
         this.setPreparedState(false);
     }
-    
+
     /**
      * Cause the inference graph to reconsult both the underlying graph and
      * the reasoner ruleset, permits the forward rule set to be dynamically changed.
-     * Causes the entire rule engine to be rebuilt from the current ruleset and 
+     * Causes the entire rule engine to be rebuilt from the current ruleset and
      * reinitialized against the current data. Not needed for normal cases.
      */
     public void rebindAll() {
@@ -503,7 +503,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         instantiateRuleEngine( rawRules );
         rebind();
     }
-    
+
     /**
      * Set the state of the trace flag. If set to true then rule firings
      * are logged out to the Log at "INFO" level.
@@ -528,7 +528,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             derivations = null;
         }
     }
-    
+
     /**
      * Return the number of rules fired since this rule engine instance
      * was created and initialized. The current implementation only counts
@@ -539,7 +539,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public long getNRulesFired() {
         return engine.getNRulesFired();
     }
-    
+
     /**
      * Extended find interface used in situations where the implementator
      * may or may not be able to answer the complete query. It will
@@ -566,7 +566,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             return result;
         }
     }
-    
+
     /**
      * Internal variant of find which omits the filters which block illegal RDF data.
      * @param pattern a TriplePattern to be matched against the data
@@ -576,10 +576,10 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         this.requirePrepared();
        return bEngine.find(pattern).filterKeep( new UniqueFilter<Triple>());
     }
-   
-    /** 
+
+    /**
      * Returns an iterator over Triples.
-     * This implementation assumes that the underlying findWithContinuation 
+     * This implementation assumes that the underlying findWithContinuation
      * will have also consulted the raw data.
      */
     @Override
@@ -589,7 +589,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
 
     /**
      * Basic pattern lookup interface.
-     * This implementation assumes that the underlying findWithContinuation 
+     * This implementation assumes that the underlying findWithContinuation
      * will have also consulted the raw data.
      * @param pattern a TriplePattern to be matched against the data
      * @return a ExtendedIterator over all Triples in the data set
@@ -646,9 +646,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         bEngine.reset();
     }
 
-    /** 
-     * Removes the triple t (if possible) from the set belonging to this graph. 
-     */   
+    /**
+     * Removes the triple t (if possible) from the set belonging to this graph.
+     */
     @Override
     public void performDelete(Triple t) {
         version++;
@@ -661,7 +661,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                 }
                 this.setPreparedState(false);
             }
-        } 
+        }
         // Full incremental remove processing requires reference counting
         // of all deductions. It's not clear the cost of maintaining the
         // reference counts is worth it so the current implementation
@@ -674,7 +674,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         }
         bEngine.reset();
     }
-    
+
     /**
      * Return a new inference graph which is a clone of the current graph
      * together with an additional set of data premises. Attempts to the replace
@@ -689,36 +689,36 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
 //        if (useTGCCaching) graph.setUseTGCCache();
 //        graph.setDerivationLogging(recordDerivations);
 //        graph.setTraceOn(traceOn);
-//        // Implementation note:  whilst current tests pass its not clear that 
+//        // Implementation note:  whilst current tests pass its not clear that
 //        // the nested passing of FBRuleInfGraph's will correctly handle all
 //        // cases of indirectly bound schema data. If we do uncover a problem here
 //        // then either include the raw schema in a Union with the premises or
-//        // revert of a more brute force version. 
+//        // revert of a more brute force version.
 //        graph.rebind(premises);
 //        return graph;
 //    }
-    
-    /** 
+
+    /**
      * Free all resources, any further use of this Graph is an error.
      */
     @Override
     public void close() {
         if (!closed) {
-            bEngine.halt();        
+            bEngine.halt();
             bEngine = null;
             transitiveEngine = null;
             super.close();
         }
     }
-    
+
 //  =======================================================================
 //  Generalized validation machinery. Assumes rule set has special validation
 //  rules that can be turned on.
-   
+
     /**
      * Test the consistency of the bound data. This normally tests
      * the validity of the bound instance data against the bound
-     * schema data. 
+     * schema data.
      * @return a ValidityReport structure
      */
     @Override
@@ -726,14 +726,14 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         checkOpen();
         StandardValidityReport report = new StandardValidityReport();
         // Switch on validation
-        Triple validateOn = Triple.create(NodeFactory.createBlankNode(), 
+        Triple validateOn = Triple.create(NodeFactory.createBlankNode(),
                                 ReasonerVocabulary.RB_VALIDATION.asNode(),
                                 Functor.makeFunctorNode("on", new Node[] {}));
         // We sneak this switch directly into the engine to avoid contaminating the
         // real data - this is only possible only the forward engine has been prepared
 //      add(validateOn);
         this.requirePrepared();
-        engine.add(validateOn); 
+        engine.add(validateOn);
         // Look for all reports
         TriplePattern pattern = new TriplePattern(null, ReasonerVocabulary.RB_VALIDATION_REPORT.asNode(), null);
         final Model forConversion = ModelFactory.createDefaultModel();
@@ -758,20 +758,20 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                 }
             }
         }
-        
+
         if (requestDatatypeRangeValidation) {
             performDatatypeRangeValidation( report );
         }
         return report;
     }
-    
+
     /**
      * Switch on/off datatype range validation
      */
     public void setDatatypeRangeValidation(boolean on) {
         requestDatatypeRangeValidation = on;
     }
-    
+
     /**
      * Run a datatype range check on all literal values of all properties with a range declaration.
      * @param report
@@ -802,7 +802,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         if (range != null) {
             if (value.isBlank()) return null;
             if (!value.isLiteral()) {
-                return new ValidityReport.Report(true, "dtRange", 
+                return new ValidityReport.Report(true, "dtRange",
                     "Property " + prop + " has a typed range but was given a non literal value " + value);
             }
             LiteralLabel ll = value.getLiteral();
@@ -850,7 +850,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
 
     /**
      * Scan the initial rule set and pick out all the backward-only rules with non-null bodies,
-     * and transfer these rules to the backward engine. 
+     * and transfer these rules to the backward engine.
      */
     private static List<Rule> extractPureBackwardRules(List<Rule> rules) {
         List<Rule> bRules = new ArrayList<>();
@@ -891,7 +891,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             return false;
         }
     }
-   
+
     /**
      * Called to flag that a node should be hidden from external queries.
      */
@@ -904,10 +904,10 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             hiddenNodes.add(n);
         }
     }
-    
+
 //  =======================================================================
 //  Support for LP engine profiling
-    
+
     /**
      * Reset the LP engine profile.
      * @param enable it true then profiling will continue with a new empty profile table,
@@ -916,17 +916,17 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public void resetLPProfile(boolean enable) {
         bEngine.resetProfile(enable);
     }
-    
+
     /**
      * Print a profile of LP rules used since the last reset.
      */
     public void printLPProfile() {
         bEngine.printProfile();
     }
-    
+
 //  =======================================================================
 //  Implement Filter signature
- 
+
     /**
      * Post-filter query results to hide unwanted
      * triples from the glare of publicity. Unwanted triples
@@ -935,25 +935,25 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     public boolean accept(Object tin) {
         Triple t = (Triple)tin;
-        
+
         if ((t).getSubject().isLiteral()) return true;
-        
+
         if (JenaParameters.enableFilteringOfHiddenInfNodes && hiddenNodes != null) {
             if (hiddenNodes.contains(t.getSubject()) || hiddenNodes.contains(t.getObject()) || hiddenNodes.contains(t.getPredicate())) {
                 return true;
             }
         }
-        
+
         if (filterFunctors) {
             if (Functor.isFunctor(t.getObject())) {
                 return true;
             }
         }
-        
+
         return false;
 
      }
-     
+
 //  =======================================================================
 //   Inner classes
 
@@ -961,17 +961,17 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Structure used to wrap up pre-processed/compiled rule sets.
      */
     public static class RuleStore {
-        
+
         /** The raw rules */
         protected List<Rule> rawRules;
-        
+
         /** The indexed store used by the forward chainer */
         protected Object fRuleStore;
-        
+
         /** The separated backward rules */
         protected List<Rule> bRules;
-        
-        /** 
+
+        /**
          * Constructor.
          */
         public RuleStore(List<Rule> rawRules, Object fRuleStore, List<Rule> bRules) {
@@ -979,8 +979,8 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             this.fRuleStore = fRuleStore;
             this.bRules = bRules;
         }
-        
+
     }
-   
-    
+
+
 }

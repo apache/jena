@@ -16,19 +16,17 @@
  * limitations under the License.
  */
 
-package org.apache.jena.mem.test;
+package org.apache.jena.mem2;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-import junit.framework.*;
-
-public class TestGraphMemPackage extends TestCase
-    {
-    public static TestSuite suite()
-        { 
-        TestSuite result = new TestSuite();
-        result.addTest( TestGraphMemValue.suite() );
-        result.addTest( TestGraphMem2.suite() );
-        result.addTest( TestConcurrentModificationException.suite() );
-        return result;
-        }
-    }
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    GraphMem2LegacyTest.class,
+    GraphMem2FastTest.class,
+    GraphMem2RoaringTest.class,
+    GraphMem2Test.class
+} )
+public class TestPackage_GraphMem2 {
+}
