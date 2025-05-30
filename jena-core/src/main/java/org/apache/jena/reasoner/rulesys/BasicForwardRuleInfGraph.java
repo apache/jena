@@ -44,33 +44,33 @@ import org.apache.jena.util.iterator.NullIterator ;
  */
 
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
-    
+
     /** Table of derivation records, maps from triple to RuleDerivation */
     protected OneToManyMap<Triple, Derivation> derivations;
-    
+
     /** The set of deduced triples, this is in addition to base triples in the fdata graph */
     protected FGraph fdeductions;
-    
+
     /** A safe wrapped version of the deductions graph used for reporting getDeductions */
     protected Graph safeDeductions;
-    
+
     /** Reference to any schema graph data bound into the parent reasoner */
     protected Graph schemaGraph;
-    
+
     /** The forward rule engine being used */
     protected FRuleEngineI engine;
-    
+
     /** The original rule set as supplied */
     private List<Rule> rules;
-    
+
     /** Flag, if true then find results will be filtered to remove functors and illegal RDF */
     public boolean filterFunctors = true;
-    
+
     /** Flag which, if true, enables tracing of rule actions to logger.info */
     protected boolean traceOn = false;
-    
+
 //    private static Logger logger = LoggerFactory.getLogger(BasicForwardRuleInfGraph.class);
-    
+
 //=======================================================================
 // Core methods
 
@@ -80,40 +80,40 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     * any configuration parameters (such as logging) to be set before the data is added.
     * Note that until the data is added using {@link #rebind rebind} then any operations
     * like add, remove, find will result in errors.
-    * 
-    * @param reasoner the parent reasoner 
+    *
+    * @param reasoner the parent reasoner
     * @param schema the (optional) schema data which is being processed
     */
    public BasicForwardRuleInfGraph(Reasoner reasoner, Graph schema) {
        super(null, reasoner);
        instantiateRuleEngine(null);
        this.schemaGraph = schema;
-   }    
+   }
 
    /**
-    * Constructor. Creates a new inference graph based on the given rule set. 
+    * Constructor. Creates a new inference graph based on the given rule set.
     * No data graph is attached at this stage. This is to allow
     * any configuration parameters (such as logging) to be set before the data is added.
     * Note that until the data is added using {@link #rebind rebind} then any operations
     * like add, remove, find will result in errors.
-    * 
-    * @param reasoner the parent reasoner 
+    *
+    * @param reasoner the parent reasoner
     * @param rules the list of rules to use this time
     * @param schema the (optional) schema or preload data which is being processed
     */
    public BasicForwardRuleInfGraph(Reasoner reasoner, List<Rule> rules, Graph schema)
-   {       
+   {
        super( null, reasoner );
        instantiateRuleEngine( rules );
        this.rules = rules;
        this.schemaGraph = schema;
    }
-   
+
     /**
      * Constructor. Creates a new inference graph based on the given rule set
      * then processes the initial data graph. No precomputed deductions are loaded.
-     * 
-     * @param reasoner the parent reasoner 
+     *
+     * @param reasoner the parent reasoner
      * @param rules the list of rules to use this time
      * @param schema the (optional) schema or preload data which is being processed
      * @param data the data graph to be processed
@@ -131,15 +131,15 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     protected void instantiateRuleEngine(List<Rule> rules) {
         engine = FRuleEngineIFactory.getInstance().createFRuleEngineI(this, rules, false);
     }
-    
+
     /**
      * Attach a compiled rule set to this inference graph.
-     * @param ruleStore a compiled set of rules (i.e. the result of an FRuleEngine.compile). 
+     * @param ruleStore a compiled set of rules (i.e. the result of an FRuleEngine.compile).
      */
     public void setRuleStore(Object ruleStore) {
         engine.setRuleStore(ruleStore);
     }
-    
+
     /**
      * Replace the underlying data graph for this inference graph and start any
      * inferences over again. This is primarily using in setting up ontology imports
@@ -152,13 +152,13 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
         fdata = new FGraph( data );
         rebind();
     }
-    
+
     /**
      * Cause the inference graph to reconsult the underlying graph to take
      * into account changes. Normally changes are made through the InfGraph's add and
      * remove calls are will be handled appropriately. However, in some cases changes
      * are made "behind the InfGraph's back" and this forces a full reconsult of
-     * the changed data. 
+     * the changed data.
      */
     @Override
     public void rebind() {
@@ -173,7 +173,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public Graph getSchemaGraph() {
         return schemaGraph;
     }
-        
+
     /**
      * Perform any initial processing and caching. This call is optional. Most
      * engines either have negligable set up work or will perform an implicit
@@ -186,7 +186,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public synchronized void prepare() {
         if (this.isPrepared()) return;
         this.setPreparedState(true);
-        
+
         // initilize the deductions graph
         fdeductions = new FGraph( createDeductionsGraph() );
         boolean rulesLoaded = false;
@@ -194,7 +194,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
             rulesLoaded = preloadDeductions(schemaGraph);
         }
         if (rulesLoaded) {
-            engine.fastInit(fdata); 
+            engine.fastInit(fdata);
         } else {
             engine.init(true, fdata);
         }
@@ -222,7 +222,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
             return false;
         }
     }
-    
+
     /**
      * Add a new deduction to the deductions graph.
      */
@@ -230,7 +230,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public void addDeduction(Triple t) {
         getDeductionsGraph().add(t);
     }
-    
+
     /**
      * Set to true to cause functor-valued literals to be dropped from rule output.
      * Default is true.
@@ -239,7 +239,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public void setFunctorFiltering(boolean param) {
         filterFunctors = param;
     }
-   
+
     /**
      * Extended find interface used in situations where the implementator
      * may or may not be able to answer the complete query. It will
@@ -255,7 +255,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation) {
         return findWithContinuation(pattern, continuation, true);
     }
-    
+
     /**
      * Internals of findWithContinuation implementation which allows control
      * over functor filtering.
@@ -279,10 +279,10 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
             return result;
         }
     }
-   
-    /** 
+
+    /**
      * Returns an iterator over Triples.
-     * This implementation assumes that the underlying findWithContinuation 
+     * This implementation assumes that the underlying findWithContinuation
      * will have also consulted the raw data.
      */
     @Override
@@ -292,7 +292,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
 
     /**
      * Basic pattern lookup interface.
-     * This implementation assumes that the underlying findWithContinuation 
+     * This implementation assumes that the underlying findWithContinuation
      * will have also consulted the raw data.
      * @param pattern a TriplePattern to be matched against the data
      * @return a ExtendedIterator over all Triples in the data set
@@ -302,7 +302,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public ExtendedIterator<Triple> find(TriplePattern pattern) {
         return findWithContinuation(pattern, null);
     }
-    
+
 
     /**
      * Add one triple to the data graph, run any rules triggered by
@@ -328,10 +328,10 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
         int dedSize = fdeductions.getGraph().size();
         return baseSize + dedSize;
     }
-    
-    /** 
-     * Removes the triple t (if possible) from the set belonging to this graph. 
-     */   
+
+    /**
+     * Removes the triple t (if possible) from the set belonging to this graph.
+     */
     @Override
     public void performDelete(Triple t) {
         version++;
@@ -345,8 +345,8 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
             fdeductions.getGraph().delete(t);
         }
     }
-   
-    /** 
+
+    /**
      * Free all resources, any further use of this Graph is an error.
      */
     @Override
@@ -363,7 +363,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
 //  =======================================================================
 //   Implementation of ForwardRuleInfGraphI interface which is used by
 //   the forward rule engine to invoke functions in this InfGraph
-    
+
     /**
      * Adds a new Backward rule as a rules of a forward rule process. Only some
      * infgraphs support this.
@@ -372,7 +372,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public void addBRule(Rule brule) {
         throw new ReasonerException("Forward reasoner does not support hybrid rules - " + brule.toShortString());
     }
-        
+
     /**
      * Deletes a new Backward rule as a rules of a forward rule process. Only some
      * infgraphs support this.
@@ -381,7 +381,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public void deleteBRule(Rule brule) {
         throw new ReasonerException("Forward reasoner does not support hybrid rules - " + brule.toShortString());
     }
-    
+
     /**
      * Return the Graph containing all the static deductions available so far.
      * Will force a prepare.
@@ -389,15 +389,15 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     @Override
     public Graph getDeductionsGraph() {
         prepare();
-        return safeDeductions; 
+        return safeDeductions;
     }
-   
-    /** 
+
+    /**
      * Create the graph used to hold the deductions. Can be overridden
      * by subclasses that need special purpose graph implementations here.
      * Assumes the graph underlying fdeductions and associated SafeGraph
      * wrapper can be reused if present thus enabling preservation of
-     * listeners. 
+     * listeners.
      */
     protected Graph createDeductionsGraph() {
         if (fdeductions != null) {
@@ -408,11 +408,11 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
                 return dg;
             }
         }
-        Graph dg = GraphMemFactory.createGraphMem( ); 
+        Graph dg = GraphMemFactory.createDefaultGraph( );
         safeDeductions = new SafeGraph( dg );
         return dg;
     }
-    
+
     /**
      * Return the Graph containing all the static deductions available so far.
      * Does not trigger a prepare action. Returns a SafeWrapper and so
@@ -424,7 +424,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
         return safeDeductions;
 //        return fdeductions.getGraph();
     }
-    
+
     /**
      * Search the combination of data and deductions graphs for the given triple pattern.
      * This may different from the normal find operation in the base of hybrid reasoners
@@ -434,7 +434,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public ExtendedIterator<Triple> findDataMatches(Node subject, Node predicate, Node object) {
         return findWithContinuation(new TriplePattern(subject, predicate, object), null, false);
     }
-   
+
 
     /**
      * Log a dervivation record against the given triple.
@@ -443,7 +443,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public void logDerivation(Triple t, Derivation derivation) {
         derivations.put(t, derivation);
     }
-    
+
     /**
      * Assert a new triple in the deduction graph, bypassing any processing machinery.
      */
@@ -468,7 +468,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
             derivations = null;
         }
     }
-    
+
     /**
      * Return true if derivation logging is enabled.
      */
@@ -476,7 +476,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public boolean shouldLogDerivations() {
         return recordDerivations;
     }
-    
+
     /**
      * Return the derivation of at triple.
      * The derivation is a List of DerivationRecords
@@ -489,7 +489,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
             return derivations.getAll(t);
         }
     }
-     
+
     /**
      * Set the state of the trace flag. If set to true then rule firings
      * are logged out to the Log at "INFO" level.
@@ -497,7 +497,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public void setTraceOn(boolean state) {
         traceOn = state;
     }
-    
+
     /**
      * Return true if tracing should be acted on - i.e. if traceOn is true
      * and we are past the bootstrap phase.
@@ -506,7 +506,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public boolean shouldTrace() {
         return traceOn && engine.shouldTrace();
     }
-    
+
     /**
      * Return the number of rules fired since this rule engine instance
      * was created and initialized
@@ -514,5 +514,5 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public long getNRulesFired() {
         return engine.getNRulesFired();
     }
-    
+
 }

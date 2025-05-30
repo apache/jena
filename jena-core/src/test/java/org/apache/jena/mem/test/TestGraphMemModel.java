@@ -23,14 +23,12 @@ import static org.apache.jena.testing_framework.GraphHelper.txnCommit;
 import static org.apache.jena.testing_framework.GraphHelper.txnRollback;
 import static org.apache.jena.testing_framework.GraphHelper.txnRun;
 
+import java.util.Iterator;
 import java.util.Set;
 
 import junit.framework.JUnit4TestAdapter;
 import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node;
-import org.apache.jena.graph.NodeFactory;
-import org.apache.jena.graph.Triple;
+import org.apache.jena.graph.*;
 import org.apache.jena.graph.impl.LiteralLabelFactory;
 import org.apache.jena.graph.test.AbstractTestGraph;
 import org.apache.jena.mem.GraphMem ;
@@ -46,19 +44,18 @@ import org.junit.Test;
  * Jena5+ : Only {@link GraphMem} supports this. Other graph are "same term", not "same value"
  * and language tags are held in canonical form.
  */
-public class TestGraphMemValue extends AbstractTestGraph {
-    public TestGraphMemValue(String name) {
+public class TestGraphMemModel extends AbstractTestGraph {
+    public TestGraphMemModel(String name) {
         super(name);
     }
 
     public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(TestGraphMemValue.class);
+        return new JUnit4TestAdapter(TestGraphMemModel.class);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public Graph getNewGraph() {
-        return new GraphMem();
+        return GraphMemFactory.createGraphMemForModel();
     }
 
     @Test public void testSizeAfterRemove() {
@@ -278,4 +275,62 @@ public class TestGraphMemValue extends AbstractTestGraph {
         literalTypingBasedFindTest("a P '1'xsd:short", 1, "'1'xsd:integer", "'1'xsd:short", true);
         literalTypingBasedFindTest("a P '1'xsd:int", 1, "'1'xsd:integer", "'1'xsd:int", true);
     }
+
+    @Test
+    public void testBrokenIndexes() {
+        Graph g = getGraphWith("x R y; x S z");
+        ExtendedIterator<Triple> it = g.find(Node.ANY, Node.ANY, Node.ANY);
+        it.removeNext();
+        it.removeNext();
+        assertFalse(g.find(node("x"), Node.ANY, Node.ANY).hasNext());
+        assertFalse(g.find(Node.ANY, node("R"), Node.ANY).hasNext());
+        assertFalse(g.find(Node.ANY, Node.ANY, node("y")).hasNext());
+    }
+
+    @Test
+    public void testBrokenSubject() {
+        Graph g = getGraphWith("x brokenSubject y");
+        ExtendedIterator<Triple> it = g.find(node("x"), Node.ANY, Node.ANY);
+        it.removeNext();
+        assertFalse(g.find(Node.ANY, Node.ANY, Node.ANY).hasNext());
+    }
+
+    @Test
+    public void testBrokenPredicate() {
+        Graph g = getGraphWith("x brokenPredicate y");
+        ExtendedIterator<Triple> it = g.find(Node.ANY, node("brokenPredicate"), Node.ANY);
+        it.removeNext();
+        assertFalse(g.find(Node.ANY, Node.ANY, Node.ANY).hasNext());
+    }
+
+    @Test
+    public void testBrokenObject() {
+        Graph g = getGraphWith("x brokenObject y");
+        ExtendedIterator<Triple> it = g.find(Node.ANY, Node.ANY, node("y"));
+        it.removeNext();
+        assertFalse(g.find(Node.ANY, Node.ANY, Node.ANY).hasNext());
+    }
+
+    @Test
+    public void testUnnecessaryMatches() {
+        Node special = new Node_URI("eg:foo") {
+            @Override
+            public boolean matches(Node s) {
+                fail("Matched called superfluously.");
+                return true;
+            }
+        };
+        Graph g = getGraphWith("x p y");
+        g.add(Triple.create(special, special, special));
+        exhaust(g.find(special, Node.ANY, Node.ANY));
+        exhaust(g.find(Node.ANY, special, Node.ANY));
+        exhaust(g.find(Node.ANY, Node.ANY, special));
+    }
+
+    protected void exhaust(Iterator<? > it) {
+        while (it.hasNext())
+            it.next();
+    }
 }
+
+

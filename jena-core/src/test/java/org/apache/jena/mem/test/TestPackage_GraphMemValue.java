@@ -18,25 +18,22 @@
 
 package org.apache.jena.mem.test;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
-/**
-     TestMemPackage
- */
-public class TestMemPackage extends TestCase
+import junit.framework.*;
+
+public class TestPackage_GraphMemValue extends TestCase
     {
-    public TestMemPackage( String name )
-        { super( name ); }
-    
     public static TestSuite suite()
-        { 
+        {
         TestSuite result = new TestSuite();
+        result.addTest( TestGraphMemModel.suite() );
         result.addTest( TestGraphTripleStoreMem.suite() );
-        result.addTest( new TestSuite( TestArrayTripleBunch.class ) );
-        result.addTest( new TestSuite( TestHashedTripleBunch.class ) );
+        result.addTest( TestConcurrentModificationException.suite() );
+        result.addTestSuite( TestArrayTripleBunch.class );
+        result.addTestSuite( TestHashedTripleBunch.class );
         result.addTestSuite( TestHashedBunchMap.class );
         result.addTestSuite( TestHashCommon.class );
+
         return result;
         }
     }

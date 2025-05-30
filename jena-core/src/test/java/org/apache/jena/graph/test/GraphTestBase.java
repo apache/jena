@@ -173,7 +173,7 @@ public class GraphTestBase extends JenaTestBase
     */
     public static Graph newGraph()
         {
-        Graph result = GraphMemFactory.createGraphMem();
+        Graph result = GraphMemFactory.createDefaultGraphSameValue();
         result.getPrefixMapping().setNsPrefixes( PrefixMapping.Extended );
         return result;
         }

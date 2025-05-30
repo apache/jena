@@ -47,11 +47,8 @@ import org.apache.jena.sys.JenaSystem ;
 public class ModelFactory extends ModelFactoryBase
 {
     static { JenaSystem.init(); }
-    /**
-        No-one can make instances of this.
-    */
-    private ModelFactory()
-        {}
+
+    private ModelFactory() {}
 
     /**
      * Answer a fresh Model for use with the Model API.
@@ -78,10 +75,9 @@ public class ModelFactory extends ModelFactoryBase
         return createModelForGraph(GraphMemFactory.createDefaultGraphSameValue());
     }
 
-
     /**
-        Answer a model that encapsulates the given graph. Existing prefixes are
-        undisturbed.
+        Answer a model that encapsulates the given graph.
+        Existing prefixes are undisturbed.
         @param g A graph structure
         @return A model presenting an API view of graph g
     */
@@ -95,8 +91,9 @@ public class ModelFactory extends ModelFactoryBase
 
         @return a ModelMaker that constructs memory-based models
     */
-    public static ModelMaker createMemModelMaker()
-        { return new ModelMakerImpl( new SimpleGraphMaker( ) );  }
+    public static ModelMaker createMemModelMaker() {
+        return new ModelMakerImpl(new SimpleGraphMaker());
+    }
 
     /**
      * Return a Model through which all the RDFS entailments

@@ -34,7 +34,7 @@ public class TestPackage_core extends TestCase {
         RDFReaderFImpl.alternative(new X_RDFReaderF());
 
         TestSuite ts = new TestSuite() ;
-        ts.setName("Jena") ;
+        ts.setName("Jena Core") ;
 
         addTest(ts,  "System setup", TestSystemSetup.suite());
         addTest(ts,  "IRIx", org.apache.jena.irix.TS_IRIx.suite());
@@ -42,8 +42,9 @@ public class TestPackage_core extends TestCase {
         addTest(ts,  "Enhanced", org.apache.jena.enhanced.test.TestPackage_enh.suite());
         addTest(ts,  "Datatypes", org.apache.jena.datatypes.TestPackage_dt.suite());
         addTest(ts,  "Graph", org.apache.jena.graph.test.TestPackage_graph.suite());
-        addTest(ts,  "Mem", org.apache.jena.mem.test.TestMemPackage.suite() );
-        addTest(ts,  "Mem2", org.apache.jena.mem.test.TestGraphMemPackage.suite() );
+
+        addTest(ts,  "Mem",  org.apache.jena.mem.test.TestPackage_GraphMemValue.suite() );
+
         addTest(ts,  "Model", org.apache.jena.rdf.model.test.TestPackage_model.suite());
         addTest(ts,  "StandardModels", org.apache.jena.rdf.model.test.TestStandardModels.suite() );
 
