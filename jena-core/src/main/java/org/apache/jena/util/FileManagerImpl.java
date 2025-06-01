@@ -342,7 +342,7 @@ public class FileManagerImpl implements FileManager
             throw new NotFoundException("Not found: " + filenameOrURI);
         }
         model.read(in.getInput(), baseURI, syntax) ;
-        try { in.getInput().close(); } catch (IOException ex) {}
+        try { in.getInput().close(); } catch (IOException ex) { ex.printStackTrace();}
         return model ;
     }
 

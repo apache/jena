@@ -16,24 +16,30 @@
  * limitations under the License.
  */
 
-package org.apache.jena.mem.test;
+package org.apache.jena.ttl_test.test.turtle;
 
+import junit.framework.TestCase;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.ttl_test.turtle.TurtleParseException;
+import org.apache.jena.ttl_test.turtle.TurtleReader;
 
-import junit.framework.*;
-
-public class TestPackage_GraphMemValue extends TestCase
-    {
-    public static TestSuite suite()
-        {
-        TestSuite result = new TestSuite();
-        result.addTest( TestGraphMemModel.suite() );
-        result.addTest( TestGraphTripleStoreMem.suite() );
-        result.addTest( TestConcurrentModificationException.suite() );
-        result.addTestSuite( TestArrayTripleBunch.class );
-        result.addTestSuite( TestHashedTripleBunch.class );
-        result.addTestSuite( TestHashedBunchMap.class );
-        result.addTestSuite( TestHashCommon.class );
-
-        return result;
-        }
+public class TestItemBadSyntax extends TestCase {
+    String uri;
+    public TestItemBadSyntax(String name, String uri) {
+        super(name);
+        this.uri = uri;
     }
+
+    @Override
+    public void runTest() {
+        Model model = ModelFactory.createDefaultModel();
+        RDFReaderI t = new TurtleReader();
+        try {
+            t.read(model, uri);
+            fail("Bad syntax test succeed in parsing the file");
+        } catch (TurtleParseException ex) {
+            return;
+        }
+
+    }
+}

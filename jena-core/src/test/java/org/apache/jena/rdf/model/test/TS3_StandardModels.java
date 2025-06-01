@@ -21,15 +21,15 @@ package org.apache.jena.rdf.model.test;
 import junit.framework.*;
 import org.apache.jena.rdf.model.* ;
 
-public class TestStandardModels extends AbstractTestModel
+public class TS3_StandardModels extends AbstractTestModel
     {
 
-    public TestStandardModels(String name)
+    public TS3_StandardModels(String name)
         { super(name); }
         
     public static TestSuite suite()
         {
-        return new TestSuite( TestStandardModels.class );
+        return new TestSuite( TS3_StandardModels.class );
         }
 
     @Override

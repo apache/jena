@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,12 +29,12 @@ import org.junit.Assert;
 
 public class IsomorphicTests extends AbstractModelTestBase
 {
-    // This is not part of the standard test suite 
+    // This is not part of the standard test suite
     // It's not stable enough for inclusion in the automatic test suite.
     // Often, they pass, but there is a significant number of times they don't.
     // It also seems to be machine-dependent - failures are more frequent
-    // on Apache Jenkins (hardware influening "random" numbers?)
-    
+    // on Apache Jenkins (hardware influencing "random" numbers?)
+
 	/**
 	 * A theoretical graph for testing purposes.
 	 * All nodes are anonymous resources. All edges are labelled

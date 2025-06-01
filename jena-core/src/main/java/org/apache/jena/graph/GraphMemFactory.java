@@ -105,7 +105,7 @@ public class GraphMemFactory
     }
 
     /**
-     * @deprecated To be renamed. Use {@link #createGraphMemForModel()}. The function will be re-purposed for the default samer-term memory graph.
+     * @deprecated To be renamed. Use {@link #createGraphMemForModel()}. The function will be re-purposed for the default same-term memory graph.
      */
     @Deprecated(forRemoval = true)
     public static Graph createGraphMem() {

@@ -16,17 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.jena.mem2;
+package org.apache.jena.ttl_test.test.turtle;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import junit.framework.TestCase;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.ttl_test.turtle.TurtleParseException;
+import org.apache.jena.ttl_test.turtle.TurtleReader;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    GraphMem2LegacyTest.class,
-    GraphMem2FastTest.class,
-    GraphMem2RoaringTest.class,
-    GraphMem2Test.class
-} )
-public class TestPackage_GraphMem2 {
+public class TestItemSyntax extends TestCase {
+    String uri;
+    public TestItemSyntax(String name, String uri) {
+        super(name);
+        this.uri = uri;
+    }
+
+    @Override
+    public void runTest() {
+        Model model = ModelFactory.createDefaultModel();
+        RDFReaderI t = new TurtleReader();
+        try {
+            t.read(model, uri);
+        } catch (TurtleParseException ex) {
+            throw ex;
+        }
+    }
+
 }

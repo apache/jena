@@ -18,29 +18,12 @@
 
 package org.apache.jena.ttl_test.test.turtle;
 
-import junit.framework.TestCase;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.ttl_test.turtle.TurtleParseException;
-import org.apache.jena.ttl_test.turtle.TurtleReader;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-
-public class TestBadSyntax extends TestCase
-{
-    String uri ;
-    public TestBadSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
-    
-    @Override
-    public void runTest()
-    {
-        Model model = ModelFactory.createDefaultModel() ;
-        RDFReaderI t = new TurtleReader() ;
-        try {
-            t.read(model, uri) ;
-            fail("Bad syntax test succeed in parsing the file") ;
-        } catch (TurtleParseException ex)
-        {
-            return ;    
-        }
-
-    }
-}
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    TestTurtleReader.class,
+    TestTurtleInternal.class,
+})
+public class TS_TestTurtle {}

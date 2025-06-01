@@ -26,7 +26,7 @@ import org.apache.jena.test.X_RDFReaderF;
 /**
  * JUnit regression tests for output
  */
-public class TestPackage_xmloutput extends TestCase{
+public class TS3_xmloutput extends TestCase{
 
     /**
      * Answer a suite of all the tests defined here

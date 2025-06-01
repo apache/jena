@@ -38,7 +38,7 @@ public class TestReaderEvents extends AbstractModelTestBase
 
 	public TestReaderEvents()
 	{
-		this( new TestPackage_model.PlainModelFactory(), "TestReaderEvents");
+		this( new TS3_Model1.PlainModelFactory(), "TestReaderEvents");
 	}
 
 	public void testNTriplesReaderEvents()

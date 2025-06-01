@@ -16,20 +16,21 @@
  * limitations under the License.
  */
 
-package org.apache.jena.assembler.test;
+package org.apache.jena.mem.test;
 
-import junit.framework.*;
 
-public class TestAssemblerPackage extends TestCase
-    {
-    public static TestSuite suite()
-        {
-        TestSuite result = new TestSuite();
-        result.addTestSuite( TestMode.class );
-        result.addTestSuite( TestModelExpansion.class );
-        result.addTestSuite( TestImportManager.class );
-        result.addTest( TestAssemblers.suite() );
-        result.addTestSuite( AcceptanceTesting.class );
-        return result;
-        }
-    }
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestGraphMemModel.class,
+    TestGraphTripleStoreMem.class,
+    TestConcurrentModificationException.class,
+    TestArrayTripleBunch.class,
+    TestHashedTripleBunch.class,
+    TestHashedBunchMap.class,
+    TestHashCommon.class
+})
+
+public class TS3_GraphMemValue {}

@@ -16,30 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.ttl_test.test.turtle;
+package org.apache.jena.reasoner.test;
 
-import junit.framework.TestCase;
-import org.apache.jena.rdf.model.* ;
-import org.apache.jena.ttl_test.turtle.TurtleParseException;
-import org.apache.jena.ttl_test.turtle.TurtleReader;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    TestTransitiveGraphCache.class,
+    TestReasoners.class,
+    TestRDFSReasoners.class,
+    TestInfPrefixMapping.class,
+    TestInfGraph.class,
+    TestInfModel.class,
+    TestSafeModel.class,
+})
 
-public class TestSyntax extends TestCase
-{
-    String uri ;
-    public TestSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
-    
-    @Override
-    public void runTest()
-    {
-        Model model = ModelFactory.createDefaultModel() ;
-        RDFReaderI t = new TurtleReader() ;
-        try {
-            t.read(model, uri) ;
-        } catch (TurtleParseException ex)
-        {
-            throw ex ;    
-        }
-    }
-
-}
+public class TS3_reasoners {}

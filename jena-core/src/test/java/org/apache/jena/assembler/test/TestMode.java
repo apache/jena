@@ -18,50 +18,54 @@
 
 package org.apache.jena.assembler.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.jena.assembler.Mode ;
 import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.junit.Test;
 
-public class TestMode extends AssemblerTestBase
-    {
-    public TestMode( String name )
-        { super( name ); }
+public class TestMode {
 
-    public void testConstantsExist()
-        {
+    @Test
+    public void testConstantsExist() {
         Mode a = Mode.CREATE, b = Mode.DEFAULT;
         Mode c = Mode.REUSE, d = Mode.ANY;
-        assertDiffer( Mode.CREATE, Mode.DEFAULT );
-        assertDiffer( Mode.CREATE, Mode.REUSE );
-        assertDiffer( Mode.CREATE, Mode.ANY );
-        assertDiffer( Mode.DEFAULT, Mode.REUSE );
-        assertDiffer( Mode.DEFAULT, Mode.ANY );
-        assertDiffer( Mode.REUSE, Mode.ANY );
-        }
-    
-    static final String someName = "aName";
-    static final Resource someRoot = resource( "aRoot" );
-    
-    public void testCreate()
-        {
-        assertEquals( true, Mode.CREATE.permitCreateNew( someRoot, someName ) );
-        assertEquals( false, Mode.CREATE.permitUseExisting( someRoot, someName ) );
-        }    
-    
-    public void testReuse()
-        {
-        assertEquals( false, Mode.REUSE.permitCreateNew( someRoot, someName ) );
-        assertEquals( true, Mode.REUSE.permitUseExisting( someRoot, someName ) );
-        }    
-    
-    public void testAny()
-        {
-        assertEquals( true, Mode.ANY.permitCreateNew( someRoot, someName ) );
-        assertEquals( true, Mode.ANY.permitUseExisting( someRoot, someName ) );
-        }    
-    
-    public void testDefault()
-        {
-        assertEquals( false, Mode.DEFAULT.permitCreateNew( someRoot, someName ) );
-        assertEquals( true, Mode.DEFAULT.permitUseExisting( someRoot, someName ) );
-        }
+
+        assertNotEquals(Mode.CREATE, Mode.DEFAULT);
+        assertNotEquals(Mode.CREATE, Mode.REUSE);
+        assertNotEquals(Mode.CREATE, Mode.ANY);
+        assertNotEquals(Mode.DEFAULT, Mode.REUSE);
+        assertNotEquals(Mode.DEFAULT, Mode.ANY);
+        assertNotEquals(Mode.REUSE, Mode.ANY);
     }
+
+    private static final String someName = "aName";
+    private static final Resource someRoot = ResourceFactory.createResource("http://example/aRoot");
+
+    @Test
+    public void testCreate() {
+        assertTrue(Mode.CREATE.permitCreateNew(someRoot, someName));
+        assertFalse(Mode.CREATE.permitUseExisting(someRoot, someName));
+    }
+
+    @Test
+    public void testReuse() {
+        assertFalse(Mode.REUSE.permitCreateNew(someRoot, someName));
+        assertTrue(Mode.REUSE.permitUseExisting(someRoot, someName));
+    }
+
+    @Test
+    public void testAny() {
+        assertTrue(Mode.ANY.permitCreateNew(someRoot, someName));
+        assertTrue(Mode.ANY.permitUseExisting(someRoot, someName));
+    }
+
+    @Test
+    public void testDefault() {
+        assertFalse(Mode.DEFAULT.permitCreateNew(someRoot, someName));
+        assertTrue(Mode.DEFAULT.permitUseExisting(someRoot, someName));
+    }
+}

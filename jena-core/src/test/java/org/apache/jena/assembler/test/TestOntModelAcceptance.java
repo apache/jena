@@ -21,9 +21,9 @@ package org.apache.jena.assembler.test;
 import org.apache.jena.ontology.* ;
 import org.apache.jena.rdf.model.* ;
 
-public class AcceptanceTesting extends AssemblerTestBase
+public class TestOntModelAcceptance extends AssemblerTestBase
     {
-    public AcceptanceTesting( String name )
+    public TestOntModelAcceptance( String name )
         { super( name ); }
 
     /**

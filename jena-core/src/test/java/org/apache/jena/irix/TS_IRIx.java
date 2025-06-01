@@ -18,12 +18,9 @@
 
 package org.apache.jena.irix;
 
+import org.apache.jena.iri3986.provider.InitIRI3986;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-
-import junit.framework.JUnit4TestAdapter;
-import junit.framework.TestSuite;
-import org.apache.jena.iri3986.provider.InitIRI3986;
 
 /**
  * Test of IRIx for the system default IRIProvider.
@@ -58,12 +55,5 @@ public class TS_IRIx {
     static {
         SystemIRIx.init();
         InitIRI3986.init();
-    }
-
-    public static TestSuite suite() {
-        TestSuite ts = new TestSuite();
-        ts.setName("IRIx");
-        ts.addTest(new JUnit4TestAdapter(TS_IRIx.class));
-        return ts;
     }
 }

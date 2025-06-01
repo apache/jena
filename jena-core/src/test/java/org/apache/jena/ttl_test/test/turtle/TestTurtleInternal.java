@@ -26,17 +26,16 @@ import org.apache.jena.ttl_test.turtle.TurtleEventNull;
 import org.apache.jena.ttl_test.turtle.parser.TurtleParser;
 import org.apache.jena.util.junit.TestUtils ;
 
-public class TurtleInternalTests extends TestSuite
+public class TestTurtleInternal extends TestSuite
 {
     static public TestSuite suite() {
-        return new TurtleInternalTests() ;
+        return new TestTurtleInternal() ;
     }
 
 	static public final String QUOTE3 = "\"\"\"" ;
 	static public boolean VERBOSE = false ;
 
-	public TurtleInternalTests()
-	{
+    public TestTurtleInternal() {
 		super("Turtle Parser Syntactic tests") ;
 
         // ---- Debug testing
