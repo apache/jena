@@ -26,9 +26,14 @@ import java.io.Writer;
 
 import org.apache.jena.atlas.lib.Closeable;
 
-/** A writer that records what the current indentation level is, and
- *  uses that to insert a prefix at each line.
- *  It can also insert line numbers at the beginning of lines. */
+/**
+ * A {@link AWriter} that records what the current indentation level is, and uses
+ * that to insert a prefix at each line.
+ * It can also insert line numbers at the beginning of lines.
+ * <p>
+ * An {@code IndentedWriter} flushed, bit does not close, the underlying output a
+ * stream on close.
+ */
 
 public class IndentedWriter extends AWriterBase implements AWriter, Closeable
 {
@@ -109,16 +114,23 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     public IndentedWriter clone() {
         return clone(this);
     }
+
     private static Writer makeWriter(OutputStream out) {
         return IO.asBufferedUTF8(out);
     }
 
-    /** Using Writers directly is discouraged */
+    /**
+     * Using {@link java.io.Writer Java I/O Writers} directly is discouraged
+     * and may case character encoding issues.
+     */
     protected IndentedWriter(Writer writer) {
         this(writer, false);
     }
 
-    /** Using Writers directly is discouraged */
+    /**
+     * Using {@link java.io.Writer Java I/O Writers} directly is discouraged
+     * and may case character encoding issues.
+     */
     protected IndentedWriter(Writer writer, boolean withLineNumbers) {
         out = writer;
         lineNumbers = withLineNumbers;
@@ -253,7 +265,11 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     }
 
     @Override
-    public void close() { IO.close(out); }
+    public void close() {
+        // flush, not close.
+        // IndentedWriters wrap an underlying output, often a short term additional layer.
+        flush();
+    }
 
     @Override
     public void flush() { IO.flush(out); }
