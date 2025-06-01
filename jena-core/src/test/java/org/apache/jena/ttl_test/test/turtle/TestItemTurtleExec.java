@@ -18,47 +18,46 @@
 
 package org.apache.jena.ttl_test.test.turtle;
 
-
 import junit.framework.TestCase;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.RDFReaderI ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFReaderI;
 import org.apache.jena.ttl_test.turtle.TurtleParseException;
 import org.apache.jena.ttl_test.turtle.TurtleReader;
-import org.apache.jena.util.FileManager ;
-import org.apache.jena.util.FileUtils ;
+import org.apache.jena.util.FileManager;
+import org.apache.jena.util.FileUtils;
 
+public class TestItemTurtleExec extends TestCase {
+    String input;
+    String output;
+    String baseIRI;
 
-public class TestTurtle extends TestCase
-{
-    String input ;
-    String output ;
-    String baseIRI ;
-
-    public TestTurtle(String name, String input, String output, String baseIRI)
-    { super(name) ; this.input = input ; this.output = output ; this.baseIRI = baseIRI ; }
+    public TestItemTurtleExec(String name, String input, String output, String baseIRI) {
+        super(name);
+        this.input = input;
+        this.output = output;
+        this.baseIRI = baseIRI;
+    }
 
     @Override
-    public void runTest()
-    {
-        Model model = ModelFactory.createDefaultModel() ;
-        RDFReaderI t = new TurtleReader() ;
+    public void runTest() {
+        Model model = ModelFactory.createDefaultModel();
+        RDFReaderI t = new TurtleReader();
         try {
             if ( baseIRI != null )
-                t.read(model, FileManager.getInternal().open(input), baseIRI) ;
+                t.read(model, FileManager.getInternal().open(input), baseIRI);
             else
-                t.read(model, input) ;
+                t.read(model, input);
             // "http://www.w3.org/2001/sw/DataAccess/df1/tests/rdfq-results.ttl"
 
-            String syntax = FileUtils.guessLang(output, FileUtils.langNTriple) ;
-            Model results = ModelFactory.createDefaultModel() ;
+            String syntax = FileUtils.guessLang(output, FileUtils.langNTriple);
+            Model results = ModelFactory.createDefaultModel();
             results.read(output, null, syntax);
-            boolean b = model.isIsomorphicWith(results) ;
+            boolean b = model.isIsomorphicWith(results);
             if ( !b )
-                assertTrue("Models not isomorphic", b) ;
-        } catch (TurtleParseException ex)
-        {
-            throw ex ;
+                assertTrue("Models not isomorphic", b);
+        } catch (TurtleParseException ex) {
+            throw ex;
         }
     }
 }

@@ -18,25 +18,17 @@
 
 package org.apache.jena.vocabulary.test;
 
-import junit.framework.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-/**
-    Collect together all the vocabulary tests.
-*/
-public class TestVocabularies extends TestCase
-    {
-    public TestVocabularies( String name )
-        { super( name ); }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    TestVocabRDF.class,
+    TestVocabRDFS.class,
+    TestVocabVCARD.class,
+    TestVocabRSS.class,
+    TestVocabDC10.class,
+    TestOWL2Vocabulary.class
+} )
 
-    public static TestSuite suite()
-        {
-        TestSuite result = new TestSuite();
-        result.addTest( TestVocabRDF.suite() );
-        result.addTest( TestVocabRDFS.suite() );
-        result.addTest( TestVocabVCARD.suite() );
-        result.addTest( TestVocabRSS.suite() );
-        result.addTest( TestVocabDC10.suite() );
-        result.addTestSuite( TestOWL2Vocabulary.class );
-        return result;
-        }
-    }
+public class TS_Vocabularies {}

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.reasoner.test;
+package org.apache.jena.reasoner.examples;
 
 import java.io.PrintWriter;
 import java.util.*;
@@ -36,7 +36,7 @@ import org.apache.jena.vocabulary.ReasonerVocabulary ;
 public class ManualExample {
 
     /** Illustrate different ways of finding a reasoner */
-    public void test1() {
+    public void example1() {
         String NS = "urn:example:";
 
         // Build a trivial example data set
@@ -64,7 +64,7 @@ public class ManualExample {
     }
 
     /** illustrate validation */
-    public void test2(String fname) {
+    public void example2(String fname) {
         System.out.println("Testing " + fname);
         Model data = FileManager.getInternal().loadModelInternal(fname);
         InfModel infmodel = ModelFactory.createRDFSModel(data);
@@ -82,7 +82,7 @@ public class ManualExample {
     }
 
     /** illustrate generic rules and derivation tracing */
-    public void test3() {
+    public void example3() {
         // Test data
         String egNS = PrintUtil.egNS;   // Namespace for examples
         Model rawData = ModelFactory.createDefaultModel();
@@ -114,7 +114,7 @@ public class ManualExample {
     }
 
     /** Another generic rules illustration */
-    public void test4() {
+    public void example4() {
         // Test data
         String egNS = PrintUtil.egNS;   // Namespace for examples
         Model rawData = ModelFactory.createDefaultModel();
@@ -133,7 +133,8 @@ public class ManualExample {
 
         // Rule example for
         String rules =
-            "[r1: (?c eg:concatFirst ?p), (?c eg:concatSecond ?q) -> " +            "     [r1b: (?x ?c ?y) <- (?x ?p ?z) (?z ?q ?y)] ]";        Reasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
+            "[r1: (?c eg:concatFirst ?p), (?c eg:concatSecond ?q) -> " +            "     [r1b: (?x ?c ?y) <- (?x ?p ?z) (?z ?q ?y)] ]";
+        Reasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
 //        reasoner.setParameter(ReasonerVocabulary.PROPtraceOn, Boolean.TRUE);
         InfModel inf = ModelFactory.createInfModel(reasoner, rawData);
 //        System.out.println("OK = " + inf.contains(A, r, C));
@@ -146,11 +147,12 @@ public class ManualExample {
 
     public static void main(String[] args) {
         try {
-//            new ManualExample().test1();
-//            new ManualExample().test2("file:testing/reasoners/rdfs/dttest2.nt");
-//            new ManualExample().test2("file:testing/reasoners/rdfs/dttest3.nt");
-//            new ManualExample().test3();
-            new ManualExample().test4();
+            ManualExample examples = new ManualExample();
+            examples.example1();
+            examples.example2("file:testing/reasoners/rdfs/dttest2.nt");
+            examples.example2("file:testing/reasoners/rdfs/dttest3.nt");
+            examples.example3();
+            examples.example4();
         } catch (Exception e) {
             System.out.println("Problem: " + e);
             e.printStackTrace();

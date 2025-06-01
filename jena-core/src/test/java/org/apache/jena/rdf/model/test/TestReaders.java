@@ -38,7 +38,7 @@ public class TestReaders extends AbstractModelTestBase
     }
 
     public TestReaders() {
-        this(new TestPackage_model.PlainModelFactory(), "TestReaders") ;
+        this(new TS3_Model1.PlainModelFactory(), "TestReaders") ;
     }
 
     /**

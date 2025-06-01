@@ -20,58 +20,52 @@ package org.apache.jena.ttl_test.test.turtle;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.apache.jena.rdf.model.Resource ;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.ttl_test.TestFactoryManifestOld;
-import org.apache.jena.util.junit.TestUtils ;
-import org.apache.jena.vocabulary.RDF ;
+import org.apache.jena.util.junit.TestUtils;
+import org.apache.jena.vocabulary.RDF;
 
+public class TurtleTestFactory extends TestFactoryManifestOld {
 
-public class TurtleTestFactory extends TestFactoryManifestOld
-{
-    
-    public static TestSuite make(String filename)
-    {
-        return new TurtleTestFactory().process(filename) ;
+    public static TestSuite make(String filename) {
+        return new TurtleTestFactory().process(filename);
     }
-    
+
     @Override
-    public Test makeTest(Resource manifest, Resource item, String testName, Resource action, Resource result)
-    {
+    public Test makeTest(Resource manifest, Resource item, String testName, Resource action, Resource result) {
         try {
-            Resource r = TestUtils.getResource(item, RDF.type) ;
-            Resource input = TestUtils.getResource(action, TurtleTestVocab.input) ;
-            Resource output = TestUtils.getResource(result, TurtleTestVocab.output) ;
-            Resource inputIRIr = TestUtils.getResource(action, TurtleTestVocab.inputIRI) ;
-            String baseIRI = (inputIRIr == null)?null:inputIRIr.getURI() ; 
-            
-            if ( r.equals(TurtleTestVocab.TestInOut))
-            {
-                return new TestTurtle(testName, input.getURI(), output.getURI(), baseIRI) ;
+            Resource r = TestUtils.getResource(item, RDF.type);
+            Resource input = TestUtils.getResource(action, TurtleTestVocab.input);
+            Resource output = TestUtils.getResource(result, TurtleTestVocab.output);
+            Resource inputIRIr = TestUtils.getResource(action, TurtleTestVocab.inputIRI);
+            String baseIRI = (inputIRIr == null) ? null : inputIRIr.getURI();
+
+            if ( r.equals(TurtleTestVocab.TestInOut) ) {
+                System.out.printf("TestInOut %s, in:%s, out:%s, base=%s\n", testName, input.getURI(), output.getURI(), baseIRI);
+                return new TestItemTurtleExec(testName, input.getURI(), output.getURI(), baseIRI);
             }
-            
-            if ( r.equals(TurtleTestVocab.TestSyntax))
-            {
-                return new TestSyntax(testName, input.getURI()) ;
+
+            if ( r.equals(TurtleTestVocab.TestSyntax) ) {
+                System.out.printf("TestSynGood %s, in:%s\n", testName, input.getURI());
+                return new TestItemSyntax(testName, input.getURI());
             }
-            
-            if ( r.equals(TurtleTestVocab.TestBadSyntax))
-            {
-                return new TestBadSyntax(testName, input.getURI()) ;
+
+            if ( r.equals(TurtleTestVocab.TestBadSyntax) ) {
+                System.out.printf("TestSynBad %s, in:%s, out:%s, base=%s\n", testName, input.getURI(), output.getURI(), baseIRI);
+                return new TestItemBadSyntax(testName, input.getURI());
             }
-            
-            //if ( r.equals(TurtleTestVocab.TestSurpeessed )) 
-            //    return new TestSupressed(testName, null) ;
-            
-            System.err.println("Unrecognized test : "+testName) ;
-            return null ;
-            
-            
-        } catch (Exception ex)
-        {
-            ex.printStackTrace(System.err) ;
-            System.err.println("Failed to grok test : "+testName) ;
-            return null ;
+
+            // if ( r.equals(TurtleTestVocab.TestSurpeessed ))
+            // return new TestSupressed(testName, null) ;
+
+            System.err.println("Unrecognized test : " + testName);
+            return null;
+
+        } catch (Exception ex) {
+            ex.printStackTrace(System.err);
+            System.err.println("Failed to grok test : " + testName);
+            return null;
         }
-        
+
     }
 }

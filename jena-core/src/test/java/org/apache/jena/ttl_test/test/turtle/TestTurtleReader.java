@@ -20,36 +20,31 @@ package org.apache.jena.ttl_test.test.turtle;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.jena.rdf.model.Model ;
-import org.apache.jena.rdf.model.ModelFactory ;
-import org.apache.jena.rdf.model.RDFReaderI ;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFReaderI;
 import org.apache.jena.ttl_test.turtle.TurtleReader;
 
-public class TestTurtleReader extends TestCase
-{
+public class TestTurtleReader extends TestCase {
 
-    public static TestSuite suite()
-    {
-        return new TestSuite(TestTurtleReader.class, "Basic Turtle tests") ;
+    public static TestSuite suite() {
+        return new TestSuite(TestTurtleReader.class, "Basic Turtle tests");
     }
 
-    public void test0()
-    {
+    public void test0() {
         RDFReaderI r = new TurtleReader();
-        assertNotNull(r) ;
+        assertNotNull(r);
     }
 
-    public void test1()
-    {
-        Model m = ModelFactory.createDefaultModel() ;
-        m.read("file:testing/Turtle/simple.ttl", "TTL") ;
-        assertFalse(m.isEmpty()) ;
+    public void test1() {
+        Model m = ModelFactory.createDefaultModel();
+        m.read("file:testing/Turtle/simple.ttl", "TTL");
+        assertFalse(m.isEmpty());
     }
 
-    public void test2()
-    {
-        Model m = ModelFactory.createDefaultModel() ;
-        m.read("file:testing/Turtle/i18n.ttl", "TTL") ;
-        assertFalse(m.isEmpty()) ;
+    public void test2() {
+        Model m = ModelFactory.createDefaultModel();
+        m.read("file:testing/Turtle/i18n.ttl", "TTL");
+        assertFalse(m.isEmpty());
     }
 }

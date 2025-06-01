@@ -25,12 +25,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.test.helpers.TestingModelFactory;
 import org.apache.jena.shared.PrefixMapping;
 
-/**
- * Implementation of the basic Model TestPackage. Uses the standard ModelFactory to
- * create models for testing.
- */
-
-public class TestPackage_model extends AbstractTestPackage {
+public class TS3_Model1 extends AbstractTestPackage {
 
     public static class PlainModelFactory implements TestingModelFactory {
         @Override
@@ -50,10 +45,10 @@ public class TestPackage_model extends AbstractTestPackage {
     }
 
     static public TestSuite suite() {
-        return new TestPackage_model();
+        return new TS3_Model1();
     }
 
-    public TestPackage_model() {
+    public TS3_Model1() {
         super("Model", new PlainModelFactory());
     }
 }

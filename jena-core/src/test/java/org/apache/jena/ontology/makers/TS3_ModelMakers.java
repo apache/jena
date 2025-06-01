@@ -16,27 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.datatypes;
+package org.apache.jena.ontology.makers;
 
-import junit.framework.JUnit4TestAdapter ;
-import junit.framework.TestSuite ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-/**
-    Collected test suite for the .datatype package.
-    (many other tests are elsewhere)
-*/
-
-public class TestPackage_dt extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage_dt();
-    }
-
-    /** Creates new TestPackage */
-    private TestPackage_dt() {
-        super("datatypes");
-        addTest(new JUnit4TestAdapter(TestDatatypes.class)) ;
-        addTest(new JUnit4TestAdapter(TestDatatypeValues.class)) ;
-        addTest(new JUnit4TestAdapter(TestRDFXMLiteral.class)) ;
-    }
-}
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    TestSimpleGraphMaker.class,
+    TestModelMakerImpl.class
+})
+public class TS3_ModelMakers {}

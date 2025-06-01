@@ -49,7 +49,7 @@ import org.apache.jena.shared.JenaException ;
  *These tests only test EnhNode polymorphism and not EnhGraph polymorphism.
  *EnhGraph polymorphism currently will not work.
  */
-public class TestPackage_enh extends GraphTestBase  {
+public class TS3_enh extends GraphTestBase  {
 
 	static final private  Personality<RDFNode> split = new Personality<>();
 
@@ -83,13 +83,13 @@ public class TestPackage_enh extends GraphTestBase  {
         broken.add( TestProperty.class, TestObjectImpl.factory );
 	}
     /** Creates a new instance of EnhancedTestSuite */
-   	public TestPackage_enh(String name)
+   	public TS3_enh(String name)
 		{
 		super( name );
 		}
 
     public static TestSuite suite()
-        { return new TestSuite( TestPackage_enh.class ); }
+        { return new TestSuite( TS3_enh.class ); }
 
     /**
         test that equals works on an EnhNode (after hedgehog introduced FrontsNode

@@ -17,12 +17,12 @@
  */
 package org.apache.jena.permissions.contract.model;
 
-import org.apache.jena.rdf.model.test.TestPackage_model;
+import org.apache.jena.rdf.model.test.TS3_Model1;
 
 public class SecTestReaderEvents extends org.apache.jena.rdf.model.test.TestReaderEvents {
 
     public SecTestReaderEvents() {
-        super(new TestPackage_model.PlainModelFactory(), "SecTestReaderEvents");
+        super(new TS3_Model1.PlainModelFactory(), "SecTestReaderEvents");
     }
 
 }

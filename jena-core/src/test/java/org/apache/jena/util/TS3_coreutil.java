@@ -16,21 +16,31 @@
  * limitations under the License.
  */
 
-package org.apache.jena.ttl_test.test.turtle;
+package org.apache.jena.util;
 
-import junit.framework.* ;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class TurtleTestSuite extends TestSuite
-{
-    static public TestSuite suite() {
-        return new TurtleTestSuite() ;
-    }
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestSimpleTokenizer.class,
+    TestFileUtils.class,
+    TestCollectionFactory.class,
+    TestLocationMapper.class,
+    TestFileManager.class,
+    TestMonitors.class,
+    TestPrintUtil.class,
+    TestPrefixMappingUtils.class,
+    TestIteratorCollection.class,
+    TestModelCollector.class,
 
-	private TurtleTestSuite()
-	{
-		super("Turtle") ;
-        addTest(TestTurtleReader.suite()) ;
-        addTest(TurtleInternalTests.suite()) ;
-        addTest(TurtleTestFactory.make("testing/Turtle/manifest.ttl")) ;
-	}
-}
+    TestSplitIRI_Display.class,
+    TestSplitIRI_XML.class,
+    TestSplitIRI_TTL.class,
+
+    // Needs the legacy N3 reader loaded.
+    TestLocators.class,
+    TestOneToManyMap.class
+})
+
+public class TS3_coreutil {}

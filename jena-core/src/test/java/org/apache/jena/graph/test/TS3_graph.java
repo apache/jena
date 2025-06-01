@@ -16,15 +16,38 @@
  * limitations under the License.
  */
 
-package org.apache.jena.shared;
+package org.apache.jena.graph.test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-    TestPrefixMapping.class,
-    TestJenaException.class,
-    TestLockMRPlusSW.class
+@Suite.SuiteClasses( {
+    TestFindLiterals.class,
+    TestLiteralLabels.class,
+    TestLiteralLabelSameValueAs.class,
+    TestNode.class,
+    TestTriple.class,
+    TestTripleField.class,
+    TestNodeToTriplesMapMem.class,
+    TestReifier.class,
+    TestTypedLiterals.class,
+    TestDateTime.class,
+    TestFactory.class,
+    TestGraph.class,
+    TestGraphPlain.class,
+    TestCoreGraphUtil.class,
+    TestGraphPrefixMapping.class,
+    TestGraphMatchWithInference.class,
+    TestGraphEvents.class,
+    TestGraphBaseToString.class,
+    TestNodeExtras.class,
+    TestRDFStringLiterals.class,
+    TestNodeEdgeCases.class,
+
+    // Has to be in a specific package.
+    org.apache.jena.graph.TestGraphUtil.class
+
 })
-public class TestSharedPackage {}
+
+public class TS3_graph { }

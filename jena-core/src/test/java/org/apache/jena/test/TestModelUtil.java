@@ -21,18 +21,12 @@ package org.apache.jena.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import junit.framework.TestSuite;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.impl.Util;
 import org.junit.Test;
 
-/** Tests for {@link org.apache.jena.rdf.model.impl.Util} */
-public class TestModelUtil extends TestSuite {
-
-    public static TestSuite suite() {
-        return new TestSuite(TestModelUtil.class);
-    }
+public class TestModelUtil {
 
     // -- xsd:string
 

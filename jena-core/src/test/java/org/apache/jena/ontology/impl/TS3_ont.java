@@ -16,17 +16,30 @@
  * limitations under the License.
  */
 
-package org.apache.jena.ontology.makers;
+package org.apache.jena.ontology.impl;
 
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class TestPackage_ModelMakers extends TestSuite {
 
-    public static TestSuite suite() {
-        TestSuite result = new TestSuite();
-        result.addTestSuite(TestSimpleGraphMaker.class);
-        result.addTestSuite(TestModelMakerImpl.class);
-        return result;
-    }
-
-}
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    TestOntGraph.class,
+    TestResource.class,
+    TestAxioms.class,
+    TestClassExpression.class,
+    TestOntDocumentManager.class,
+    TestOntology.class,
+    TestProperty.class,
+    TestListSyntaxCategories.class,
+    TestCreate.class,
+    TestIndividual.class,
+    TestAllDifferent.class,
+    TestOntModelSpec.class,
+    TestOntReasoning.class,
+    TestOntModel.class,
+    TestOntClass.class,
+    TestFrameView.class,
+    TestOntTools.class,
+})
+public class TS3_ont {}
