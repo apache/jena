@@ -95,7 +95,7 @@
     <ver.commons-codec>1.18.0</ver.commons-codec>
     <ver.commons-compress>1.27.1</ver.commons-compress>
     <ver.commons-collections>4.5.0</ver.commons-collections>
-    <ver.commons-fileupload>2.0.0-M2</ver.commons-fileupload>
+    <ver.commons-fileupload>2.0.0-M3</ver.commons-fileupload>
 
     <ver.dexxcollection>0.7</ver.dexxcollection>
     <ver.micrometer>1.15.0</ver.micrometer>
