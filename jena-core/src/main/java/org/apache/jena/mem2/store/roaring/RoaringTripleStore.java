@@ -18,76 +18,160 @@
 
 package org.apache.jena.mem2.store.roaring;
 
-import org.apache.jena.atlas.lib.Copyable;
-import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.mem2.collection.FastHashMap;
-import org.apache.jena.mem2.collection.FastHashSet;
-import org.apache.jena.mem2.pattern.MatchPattern;
+import org.apache.jena.mem2.IndexingStrategy;
 import org.apache.jena.mem2.pattern.PatternClassifier;
 import org.apache.jena.mem2.store.TripleStore;
+import org.apache.jena.mem2.store.roaring.strategies.*;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.util.iterator.NiceIterator;
 import org.apache.jena.util.iterator.SingletonIterator;
 import org.roaringbitmap.FastAggregation;
-import org.roaringbitmap.ImmutableBitmapDataProvider;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.stream.Stream;
 
 /**
  * A triple store that is ideal for handling extremely large graphs.
+ * With the new indexing strategies, it also works well for very small graphs,
+ * where pattern matching is not needed.
+ * <p>
+ * This store supports different indexing strategies to balance RAM usage and performance for various operations.
+ * See {@link IndexingStrategy} for details on the available strategies.
  * <p>
  * Internal structure:
- * - One indexed hash set (same as GraphMem2Fast uses) that holds all triples
- * - Three hash maps indexed by subjects, predicates, and objects with RoaringBitmaps as values
- * - The bitmaps contain the indices of the triples in the central hash set
+ * <ul>
+ *     <li> One indexed hash set (same as GraphMem2Fast uses) that holds all triples
+ *     <li> The index consists of three hash maps indexed by subjects, predicates, and objects
+ *          with RoaringBitmaps as values
+ *     <li> The bitmaps contain the indices of the triples in the central hash set
+ * </ul>
  * <p>
  * The bitmaps are used to quickly find triples that match a given pattern.
- * The bitmaps operations like {@link FastAggregation#naive_and(RoaringBitmap...)} and
+ * The bitmap operations like {@link FastAggregation#naive_and(RoaringBitmap...)} and
  * {@link RoaringBitmap#intersects(RoaringBitmap, RoaringBitmap)} are used to find matches for the pattern
  * S_O, SP_, and _PO pretty fast, even in large graphs.
- * <p>
- * Additional optimizations:
- * - because we know that if a triple exists in one of the maps, it also exists in the other two, we can use the
- * {@link org.apache.jena.mem2.collection.JenaMapSetCommon#removeUnchecked(java.lang.Object)} method to avoid
- * unnecessary checks.
  */
 public class RoaringTripleStore implements TripleStore {
 
     private static final String UNKNOWN_PATTERN_CLASSIFIER = "Unknown pattern classifier: %s";
-    private static final RoaringBitmap EMPTY_BITMAP = new RoaringBitmap();
-    final NodesToBitmapsMap subjectBitmaps;
-    final NodesToBitmapsMap predicateBitmaps;
-    final NodesToBitmapsMap objectBitmaps;
     final TripleSet triples; // In this special set, each element has an index
+    private StoreStrategy currentStrategy;
+    private final IndexingStrategy indexingStrategy;
 
+    /**
+     * Create a new RoaringTripleStore with the default indexing strategy (EAGER).
+     * <p>
+     * The default strategy is EAGER, because of backwards compatibility.
+     * This is not necessarily the best strategy for all use cases,
+     * but it reflects the behavior before introducing the indexing strategies.
+     */
     public RoaringTripleStore() {
-        subjectBitmaps = new NodesToBitmapsMap();
-        predicateBitmaps = new NodesToBitmapsMap();
-        objectBitmaps = new NodesToBitmapsMap();
-        triples = new TripleSet();
+        this(IndexingStrategy.EAGER);
     }
 
+    /**
+     * Create a new RoaringTripleStore with the given indexing strategy.
+     *
+     * @param indexingStrategy the indexing strategy to use
+     */
+    public RoaringTripleStore(final IndexingStrategy indexingStrategy) {
+        this.triples = new TripleSet();
+        this.indexingStrategy = indexingStrategy;
+        this.currentStrategy = createStoreStrategy(indexingStrategy);
+    }
+    /**
+     * Copy constructor to create a new RoaringTripleStore instance
+     */
     private RoaringTripleStore(final RoaringTripleStore storeToCopy) {
-        subjectBitmaps = storeToCopy.subjectBitmaps.copy();
-        predicateBitmaps = storeToCopy.predicateBitmaps.copy();
-        objectBitmaps = storeToCopy.objectBitmaps.copy();
-        triples = storeToCopy.triples.copy();
-    }
-
-    private static void addIndex(final NodesToBitmapsMap map, final Node node, final int index) {
-        final var bitmap = map.computeIfAbsent(node, RoaringBitmap::new);
-        bitmap.add(index);
-    }
-
-    private static void removeIndex(final NodesToBitmapsMap map, final Node node, final int index) {
-        final var bitmap = map.get(node);
-        bitmap.remove(index);
-        if (bitmap.isEmpty()) {
-            map.removeUnchecked(node);
+        this.triples = storeToCopy.triples.copy();
+        this.indexingStrategy = storeToCopy.indexingStrategy;
+        if(storeToCopy.currentStrategy instanceof EagerStoreStrategy eagerStoreStrategy) {
+            currentStrategy = new EagerStoreStrategy(triples, eagerStoreStrategy); // Copy the bitmaps from the original strategy
+        } else {
+            currentStrategy = createStoreStrategy(indexingStrategy);
         }
     }
+
+
+    /**
+     * Create a new RoaringTripleStore with the given indexing strategy and an initial capacity.
+     *
+     * @param indexingStrategy the indexing strategy to use
+     * @returns a new RoaringTripleStore instance
+     */
+    private StoreStrategy createStoreStrategy(final IndexingStrategy indexingStrategy) {
+        return switch (indexingStrategy) {
+            case EAGER
+                    -> new EagerStoreStrategy(triples);
+            case LAZY
+                    -> new LazyStoreStrategy(this::setCurrentStrategyToNewEagerStoreStrategy);
+            case LAZY_PARALLEL
+                    -> new LazyStoreStrategy(this::setCurrentStrategyToNewEagerStoreStrategyParallel);
+            case MANUAL
+                    -> new ManualStoreStrategy();
+            case MINIMAL
+                    -> new MinimalStoreStrategy(triples);
+            default
+                    -> throw new IllegalArgumentException("Unknown indexing strategy: " + indexingStrategy);
+        };
+    }
+
+    private EagerStoreStrategy setCurrentStrategyToNewEagerStoreStrategy() {
+        final var eagerStoreStrategy= new EagerStoreStrategy(triples, false);
+        this.currentStrategy = eagerStoreStrategy;
+        return eagerStoreStrategy;
+    }
+
+    private EagerStoreStrategy setCurrentStrategyToNewEagerStoreStrategyParallel() {
+        final var eagerStoreStrategy= new EagerStoreStrategy(triples, true);
+        this.currentStrategy = eagerStoreStrategy;
+        return eagerStoreStrategy;
+    }
+
+    /**
+     * Check if the index of this store is initialized.
+     * This will return true if the current strategy is EagerStoreStrategy,
+     * which means that the index has been initialized and all triples are indexed.
+     *
+     * @return true if the index is initialized, false otherwise
+     */
+    public boolean isIndexInitialized() {
+        return currentStrategy instanceof EagerStoreStrategy;
+    }
+
+    /**
+     * Get the indexing strategy of this store.
+     *
+     * @return the indexing strategy
+     */
+    public IndexingStrategy getIndexingStrategy() {
+        return indexingStrategy;
+    }
+
+    /**
+     * Clear the index of this store.
+     * This will remove all triples from the index and reset the current strategy to the initial one.
+     */
+    public void clearIndex() {
+        this.currentStrategy = createStoreStrategy(indexingStrategy);
+    }
+
+    /**
+     * Initialize the index for this store.
+     */
+    public void initializeIndex() {
+        currentStrategy = new EagerStoreStrategy(this.triples, false);
+    }
+
+    /**
+     * Initialize the index for this store in parallel.
+     * This will index all triples in parallel, which can be faster for large datasets.
+     */
+    public void initializeIndexParallel() {
+        currentStrategy = new EagerStoreStrategy(this.triples, true);
+    }
+
 
     @Override
     public void add(final Triple triple) {
@@ -95,9 +179,7 @@ public class RoaringTripleStore implements TripleStore {
         if (index < 0) { /*triple already exists*/
             return;
         }
-        addIndex(this.subjectBitmaps, triple.getSubject(), index);
-        addIndex(this.predicateBitmaps, triple.getPredicate(), index);
-        addIndex(this.objectBitmaps, triple.getObject(), index);
+        currentStrategy.addToIndex(triple, index);
     }
 
     @Override
@@ -106,17 +188,13 @@ public class RoaringTripleStore implements TripleStore {
         if (index < 0) { /*triple does not exist*/
             return;
         }
-        removeIndex(this.subjectBitmaps, triple.getSubject(), index);
-        removeIndex(this.predicateBitmaps, triple.getPredicate(), index);
-        removeIndex(this.objectBitmaps, triple.getObject(), index);
+        currentStrategy.removeFromIndex(triple, index);
     }
 
     @Override
     public void clear() {
-        this.subjectBitmaps.clear();
-        this.predicateBitmaps.clear();
-        this.objectBitmaps.clear();
         this.triples.clear();
+        this.currentStrategy.clearIndex();
     }
 
     @Override
@@ -140,127 +218,13 @@ public class RoaringTripleStore implements TripleStore {
                  SUB_PRE_ANY,
                  ANY_PRE_OBJ,
                  SUB_ANY_OBJ:
-                return hasMatchInBitmaps(tripleMatch, matchPattern);
+                return currentStrategy.containsMatch(tripleMatch, matchPattern);
 
             case SUB_PRE_OBJ:
                 return this.triples.containsKey(tripleMatch);
 
             case ANY_ANY_ANY:
                 return !this.isEmpty();
-
-            default:
-                throw new IllegalStateException(String.format(UNKNOWN_PATTERN_CLASSIFIER, PatternClassifier.classify(tripleMatch)));
-        }
-    }
-
-    private ImmutableBitmapDataProvider getBitmapForMatch(final Triple tripleMatch, final MatchPattern matchPattern) {
-        switch (matchPattern) {
-
-            case SUB_ANY_ANY:
-                return this.subjectBitmaps.getOrDefault(tripleMatch.getSubject(), EMPTY_BITMAP);
-            case ANY_PRE_ANY:
-                return this.predicateBitmaps.getOrDefault(tripleMatch.getPredicate(), EMPTY_BITMAP);
-            case ANY_ANY_OBJ:
-                return this.objectBitmaps.getOrDefault(tripleMatch.getObject(), EMPTY_BITMAP);
-
-            case SUB_PRE_ANY: {
-                final var subjectBitmap = this.subjectBitmaps.get(tripleMatch.getSubject());
-                if (null == subjectBitmap)
-                    return EMPTY_BITMAP;
-
-                final var predicateBitmap = this.predicateBitmaps.get(tripleMatch.getPredicate());
-                if (null == predicateBitmap)
-                    return EMPTY_BITMAP;
-
-                return FastAggregation.naive_and(subjectBitmap, predicateBitmap);
-            }
-
-            case ANY_PRE_OBJ: {
-                final var predicateBitmap = this.predicateBitmaps.get(tripleMatch.getPredicate());
-                if (null == predicateBitmap)
-                    return EMPTY_BITMAP;
-
-                final var objectBitmap = this.objectBitmaps.get(tripleMatch.getObject());
-                if (null == objectBitmap)
-                    return EMPTY_BITMAP;
-
-                return FastAggregation.naive_and(predicateBitmap, objectBitmap);
-            }
-
-            case SUB_ANY_OBJ: {
-                final var subjectBitmap = this.subjectBitmaps.get(tripleMatch.getSubject());
-                if (null == subjectBitmap)
-                    return EMPTY_BITMAP;
-
-                final var objectBitmap = this.objectBitmaps.get(tripleMatch.getObject());
-                if (null == objectBitmap)
-                    return EMPTY_BITMAP;
-
-                return FastAggregation.naive_and(subjectBitmap, objectBitmap);
-            }
-
-            case SUB_PRE_OBJ:
-                throw new IllegalArgumentException("Getting bitmap for match pattern SPO ist not supported because it is not efficient");
-
-            case ANY_ANY_ANY:
-                throw new IllegalArgumentException("Cannot get bitmap for match pattern ___");
-
-            default:
-                throw new IllegalStateException(String.format(UNKNOWN_PATTERN_CLASSIFIER, PatternClassifier.classify(tripleMatch)));
-        }
-    }
-
-    private boolean hasMatchInBitmaps(final Triple tripleMatch, final MatchPattern matchPattern) {
-        switch (matchPattern) {
-
-            case SUB_ANY_ANY:
-                return this.subjectBitmaps.containsKey(tripleMatch.getSubject());
-            case ANY_PRE_ANY:
-                return this.predicateBitmaps.containsKey(tripleMatch.getPredicate());
-            case ANY_ANY_OBJ:
-                return this.objectBitmaps.containsKey(tripleMatch.getObject());
-
-            case SUB_PRE_ANY: {
-                final var subjectBitmap = this.subjectBitmaps.get(tripleMatch.getSubject());
-                if (null == subjectBitmap)
-                    return false;
-
-                final var predicateBitmap = this.predicateBitmaps.get(tripleMatch.getPredicate());
-                if (null == predicateBitmap)
-                    return false;
-
-                return RoaringBitmap.intersects(subjectBitmap, predicateBitmap);
-            }
-
-            case ANY_PRE_OBJ: {
-                final var predicateBitmap = this.predicateBitmaps.get(tripleMatch.getPredicate());
-                if (null == predicateBitmap)
-                    return false;
-
-                final var objectBitmap = this.objectBitmaps.get(tripleMatch.getObject());
-                if (null == objectBitmap)
-                    return false;
-
-                return RoaringBitmap.intersects(objectBitmap, predicateBitmap);
-            }
-
-            case SUB_ANY_OBJ: {
-                final var subjectBitmap = this.subjectBitmaps.get(tripleMatch.getSubject());
-                if (null == subjectBitmap)
-                    return false;
-
-                final var objectBitmap = this.objectBitmaps.get(tripleMatch.getObject());
-                if (null == objectBitmap)
-                    return false;
-
-                return RoaringBitmap.intersects(subjectBitmap, objectBitmap);
-            }
-
-            case SUB_PRE_OBJ:
-                throw new IllegalArgumentException("Getting bitmap for match pattern SPO ist not supported because it is not efficient");
-
-            case ANY_ANY_ANY:
-                throw new IllegalArgumentException("Cannot get bitmap for match pattern ___");
 
             default:
                 throw new IllegalStateException(String.format(UNKNOWN_PATTERN_CLASSIFIER, PatternClassifier.classify(tripleMatch)));
@@ -285,9 +249,8 @@ public class RoaringTripleStore implements TripleStore {
                  SUB_ANY_ANY,
                  ANY_PRE_OBJ,
                  ANY_PRE_ANY,
-                    ANY_ANY_OBJ:
-                return this.getBitmapForMatch(tripleMatch, pattern)
-                        .stream().mapToObj(this.triples::getKeyAt);
+                 ANY_ANY_OBJ:
+                return this.currentStrategy.streamMatch(tripleMatch, pattern);
 
             case ANY_ANY_ANY:
                 return this.stream();
@@ -311,7 +274,7 @@ public class RoaringTripleStore implements TripleStore {
                  ANY_PRE_OBJ,
                  ANY_PRE_ANY,
                  ANY_ANY_OBJ:
-                return new RoaringBitmapTripleIterator(this.getBitmapForMatch(tripleMatch, pattern), this.triples);
+                return currentStrategy.findMatch(tripleMatch, pattern);
 
             case ANY_ANY_ANY:
                 return this.triples.keyIterator();
@@ -324,73 +287,5 @@ public class RoaringTripleStore implements TripleStore {
     @Override
     public RoaringTripleStore copy() {
         return new RoaringTripleStore(this);
-    }
-
-    /**
-     * Set of triples that is backed by a {@link TripleSet}.
-     */
-    private static class TripleSet
-            extends FastHashSet<Triple>
-            implements Copyable<TripleSet>{
-
-        public TripleSet() {
-            super();
-        }
-
-        private TripleSet(final FastHashSet<Triple> setToCopy) {
-            super(setToCopy);
-        }
-
-        @Override
-        protected Triple[] newKeysArray(int size) {
-            return new Triple[size];
-        }
-
-        /**
-         * Create a copy of this set.
-         *
-         * @return TripleSet
-         */
-        @Override
-        public TripleSet copy() {
-            return new TripleSet(this);
-        }
-    }
-
-    /**
-     * Map from {@link Node} to {@link RoaringBitmap}.
-     */
-    private static class NodesToBitmapsMap
-            extends FastHashMap<Node, RoaringBitmap>
-            implements Copyable<NodesToBitmapsMap> {
-
-        public NodesToBitmapsMap() {
-            super();
-        }
-
-        public NodesToBitmapsMap(final NodesToBitmapsMap mapToCopy) {
-            super(mapToCopy, RoaringBitmap::clone);
-        }
-
-        @Override
-        protected Node[] newKeysArray(int size) {
-            return new Node[size];
-        }
-
-        @Override
-        protected RoaringBitmap[] newValuesArray(int size) {
-            return new RoaringBitmap[size];
-        }
-
-        /**
-         * Create a copy of this map.
-         * The new map will contain all the same nodes as keys of this map, but clones of the bitmaps as values.
-         *
-         * @return a copy of this map
-         */
-        @Override
-        public NodesToBitmapsMap copy() {
-            return new NodesToBitmapsMap(this);
-        }
     }
 }

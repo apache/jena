@@ -42,11 +42,12 @@ public class TestGraphDelete {
     public String param0_GraphUri;
 
     @Param({
-            "GraphMem (current)",
             "GraphMem2Fast (current)",
-            "GraphMem2Legacy (current)",
-            "GraphMem2Roaring (current)",
-            "GraphMem (Jena 4.8.0)",
+            "GraphMem2Roaring EAGER (current)",
+//            "GraphMem2Roaring LAZY (current)",
+            "GraphMem2Roaring LAZY_PARALLEL (current)",
+            "GraphMem2Roaring MINIMAL (current)",
+//            "GraphMem (Jena 4.8.0)",
     })
     public String param1_GraphImplementation;
     java.util.function.Supplier<Integer> graphDelete;

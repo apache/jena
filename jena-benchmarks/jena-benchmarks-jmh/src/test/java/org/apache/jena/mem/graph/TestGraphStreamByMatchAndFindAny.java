@@ -23,6 +23,7 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.mem.graph.helper.Context;
 import org.apache.jena.mem.graph.helper.JMHDefaultOptions;
 import org.apache.jena.mem.graph.helper.Releases;
+import org.apache.jena.mem2.GraphMem2Roaring;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
@@ -48,11 +49,11 @@ public class TestGraphStreamByMatchAndFindAny {
     public String param0_GraphUri;
 
     @Param({
-            "GraphMem (current)",
             "GraphMem2Fast (current)",
-            "GraphMem2Legacy (current)",
-            "GraphMem2Roaring (current)",
-            "GraphMem (Jena 4.8.0)",
+            "GraphMem2Roaring EAGER (current)",
+//            "GraphMem2Roaring LAZY (current)",
+            "GraphMem2Roaring LAZY_PARALLEL (current)",
+//            "GraphMem (Jena 4.8.0)",
     })
     public String param1_GraphImplementation;
     java.util.function.Function<String, Object> graphStream;
@@ -163,6 +164,11 @@ public class TestGraphStreamByMatchAndFindAny {
 
                 var triples = Releases.current.readTriples(param0_GraphUri);
                 triples.forEach(this.sutCurrent::add);
+                // init index if needed
+                if(this.sutCurrent instanceof GraphMem2Roaring roaringGraph
+                        && !roaringGraph.isIndexInitialized()) {
+                    roaringGraph.initializeIndexParallel();
+                }
 
                 /*clone the triples because they should not be the same objects*/
                 this.triplesToFindCurrent = Releases.current.cloneTriples(triples);

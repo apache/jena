@@ -18,6 +18,15 @@
 
 package org.apache.jena.mem2.collection;
 
+import org.apache.jena.mem2.iterator.SparseArrayIndexedIterator;
+import org.apache.jena.mem2.spliterator.SparseArrayIndexedSpliterator;
+import org.apache.jena.util.iterator.ExtendedIterator;
+
+import java.util.ConcurrentModificationException;
+import java.util.Spliterator;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
 /**
  * Set which grows, if needed but never shrinks.
  * This set does not guarantee any order. Although due to the way it is implemented the elements have a certain order.
@@ -119,5 +128,63 @@ public abstract class FastHashSet<K> extends FastHashBase<K> implements JenaSetH
      */
     public K getKeyAt(int i) {
         return keys[i];
+    }
+
+    /**
+     * Entry pairing a key with its index in the set.
+     * @param index index of the key in the set
+     * @param key the key
+     * @param <K> the type of the key
+     */
+    public record IndexedKey<K>(int index, K key) {}
+
+    /**
+     * Get an iterator over pairs of keys and their indices in the set.
+     * The iterator is not thread safe.
+     *
+     * @return an iterator over pairs of keys and their indices in the set
+     */
+    public final ExtendedIterator<IndexedKey<K>> indexedKeyIterator() {
+        final var initialSize = size();
+        final Runnable checkForConcurrentModification = () ->
+        {
+            if (size() != initialSize) throw new ConcurrentModificationException();
+        };
+        return new SparseArrayIndexedIterator<>(keys, keysPos, checkForConcurrentModification);
+    }
+
+    /**
+     * Get a spliterator over pairs of keys and their indices in the set.
+     * The spliterator is not thread safe.
+     *
+     * @return a spliterator over pairs of keys and their indices in the set
+     */
+    public final Spliterator<IndexedKey<K>> indexedKeySpliterator() {
+        final var initialSize = this.size();
+        final Runnable checkForConcurrentModification = () ->
+        {
+            if (this.size() != initialSize) throw new ConcurrentModificationException();
+        };
+        return new SparseArrayIndexedSpliterator<>(keys, keysPos, checkForConcurrentModification);
+    }
+
+    /**
+     * Get a stream over pairs of keys and their indices in the set.
+     * The stream is not thread safe.
+     *
+     * @return a stream over pairs of keys and their indices in the set
+     */
+    public final Stream<IndexedKey<K>> indexedKeyStream() {
+        return StreamSupport.stream(indexedKeySpliterator(), false);
+    }
+
+    /**
+     * Get a parallel stream over pairs of keys and their indices in the set.
+     * The stream is not thread safe.
+     *
+     * @return a parallel stream over pairs of keys and their indices in the set
+     */
+    public final Stream<IndexedKey<K>> indexedKeyStreamParallel() {
+        return StreamSupport.stream(indexedKeySpliterator(), true);
     }
 }

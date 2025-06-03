@@ -29,7 +29,6 @@ import org.openjdk.jmh.runner.Runner;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Spliterator;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.junit.Assert.assertEquals;
@@ -60,7 +59,7 @@ public class TestSetStreamAll {
     @Benchmark
     public Object streamSet() {
         var list = StreamSupport.stream(getSpliterator.get(), false)
-                .collect(Collectors.toList());
+                .toList();
         assertEquals(triples.size(), list.size());
         return list;
     }
@@ -68,7 +67,7 @@ public class TestSetStreamAll {
     @Benchmark
     public Object streamSetParallel() {
         var list = StreamSupport.stream(getSpliterator.get(), true)
-                .collect(Collectors.toList());
+                .toList();
         assertEquals(triples.size(), list.size());
         return list;
     }

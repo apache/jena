@@ -22,6 +22,7 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.mem.graph.helper.Context;
 import org.apache.jena.mem.graph.helper.JMHDefaultOptions;
 import org.apache.jena.mem.graph.helper.Releases;
+import org.apache.jena.mem2.GraphMem2Roaring;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
@@ -31,32 +32,36 @@ import java.util.List;
 
 
 @State(Scope.Benchmark)
-public class TestGraphAdd {
+public class TestGraphInitializeIndex {
 
     @Param({
-            "../testing/cheeses-0.1.ttl",
-            "../testing/pizza.owl.rdf",
+//            "../testing/cheeses-0.1.ttl",
+//            "../testing/pizza.owl.rdf",
             "../testing/BSBM/bsbm-1m.nt.gz",
     })
     public String param0_GraphUri;
 
     @Param({
-            "GraphMem2Fast (current)",
-            "GraphMem2Roaring EAGER (current)",
-//            "GraphMem2Roaring LAZY (current)",
-            "GraphMem2Roaring LAZY_PARALLEL (current)",
-            "GraphMem2Roaring MINIMAL (current)",
-//            "GraphMem (Jena 4.8.0)",
+            "GraphMem2Roaring MANUAL (current)",
     })
     public String param1_GraphImplementation;
     java.util.function.Supplier<Object> graphAdd;
     private Context trialContext;
     private List<Triple> triplesCurrent;
-    private List<org.apache.shadedJena480.graph.Triple> triples480;
+
 
     @Benchmark
-    public Object graphAdd() {
-        return graphAdd.get();
+    public Object GrapInitializeIndex() {
+        var graphWithIndexing= (GraphMem2Roaring) graphAdd.get();
+        graphWithIndexing.initializeIndex();
+        return graphWithIndexing;
+    }
+
+    @Benchmark
+    public Object GrapInitializeIndexParallel() {
+        var graphWithIndexing= (GraphMem2Roaring) graphAdd.get();
+        graphWithIndexing.initializeIndexParallel();
+        return graphWithIndexing;
     }
 
     private Object graphAddCurrent() {
@@ -66,14 +71,6 @@ public class TestGraphAdd {
         return sutCurrent;
     }
 
-    private Object graphAdd480() {
-        var sut480 = Releases.v480.createGraph(trialContext.getGraphClass());
-        triples480.forEach(sut480::add);
-        Assert.assertEquals(triples480.size(), sut480.size());
-        return sut480;
-    }
-
-
     @Setup(Level.Trial)
     public void setupTrial() throws Exception {
         this.trialContext = new Context(param1_GraphImplementation);
@@ -81,10 +78,6 @@ public class TestGraphAdd {
             case CURRENT:
                 triplesCurrent = Releases.current.readTriples(param0_GraphUri);
                 this.graphAdd = this::graphAddCurrent;
-                break;
-            case JENA_4_8_0:
-                triples480 = Releases.v480.readTriples(param0_GraphUri);
-                this.graphAdd = this::graphAdd480;
                 break;
             default:
                 throw new IllegalArgumentException("Unknown Jena version: " + this.trialContext.getJenaVersion());
