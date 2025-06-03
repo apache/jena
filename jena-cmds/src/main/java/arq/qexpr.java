@@ -180,7 +180,7 @@ public class qexpr {
                     } else {
                         // Default action
                         ARQ.getContext().set(ARQConstants.sysCurrentTime, NodeFactoryExtra.nowAsDateTime());
-                        FunctionEnv env = ExecutionContext.create(null, ARQ.getContext().copy());
+                        FunctionEnv env = ExecutionContext.create(ARQ.getContext().copy());
                         NodeValue r = expr.eval(null, env);
                         // System.out.println(r.asQuotedString()) ;
                         Node n = r.asNode();
