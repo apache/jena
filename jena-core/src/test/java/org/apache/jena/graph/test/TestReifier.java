@@ -26,7 +26,7 @@ import org.apache.jena.mem2.GraphMem2Fast;
 import org.apache.jena.shared.JenaException ;
 
 /**
-    This class tests the reifiers of ordinary GraphMem graphs.
+    This class tests the reifiers of ordinary graphs.
     Old test suite - kept to ensure compatibility for the one and only Standard mode
 */
 public class TestReifier extends AbstractTestReifier

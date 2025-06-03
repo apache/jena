@@ -98,9 +98,8 @@ public class TestBasics extends TestCase  {
         return new TestSuite( TestBasics.class );
     }
 
-    @SuppressWarnings("removal")
     private static  Graph createGraphForTest() {
-        return GraphMemFactory.createGraphMem();
+        return GraphMemFactory.createDefaultGraph();
     }
 
     /**

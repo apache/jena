@@ -34,7 +34,6 @@ import org.apache.jena.graph.impl.* ;
  * @deprecated Do not use - to be removed.
  */
 @Deprecated(forRemoval = true)
-
 public class MonitorGraph extends WrappedGraph {
 
     /** The last known snapshot, a set of triples */

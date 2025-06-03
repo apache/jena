@@ -76,9 +76,8 @@ public class TestReasoners extends TestCase {
         return new TestSuite(TestReasoners.class);
     }
 
-    @SuppressWarnings("removal")
     private static  Graph createGraphForTest() {
-        return GraphMemFactory.createGraphMem();
+        return GraphMemFactory.createDefaultGraph();
     }
 
     /**
