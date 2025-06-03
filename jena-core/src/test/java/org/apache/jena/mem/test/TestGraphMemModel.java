@@ -37,7 +37,7 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
 import org.junit.Test;
 
 /**
- * Tests of {@link GraphMem} based on (Java object) value handling.
+ * Tests of a graph which has support for (Java object) value handling.
  * <p>
  * This is used by the Model API.
  * <p>

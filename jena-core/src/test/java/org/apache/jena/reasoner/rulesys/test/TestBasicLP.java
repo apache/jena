@@ -94,9 +94,8 @@ public class TestBasicLP  extends TestCase {
         return suite;
     }
 
-    @SuppressWarnings("removal")
     private static  Graph createGraphForTest() {
-        return GraphMemFactory.createGraphMem();
+        return GraphMemFactory.createDefaultGraph();
     }
 
     /**

@@ -54,9 +54,8 @@ public class TestLPDerivation extends TestCase {
         return new TestSuite( TestLPDerivation.class );
     }
 
-    @SuppressWarnings("removal")
     private static  Graph createGraphForTest() {
-        return GraphMemFactory.createGraphMem();
+        return GraphMemFactory.createDefaultGraph();
     }
 
     // Useful constants

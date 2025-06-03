@@ -49,9 +49,8 @@ public class TestRDFS9 extends TestCase {
         return new TestSuite(TestRDFS9.class);
     }
 
-    @SuppressWarnings("removal")
     private static  Graph createGraphForTest() {
-        return GraphMemFactory.createGraphMem();
+        return GraphMemFactory.createDefaultGraph();
     }
 
     /**

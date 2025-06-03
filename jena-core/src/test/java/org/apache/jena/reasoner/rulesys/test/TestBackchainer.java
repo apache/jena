@@ -104,9 +104,8 @@ public class TestBackchainer extends TestCase {
 //        return suite;
     }
 
-    @SuppressWarnings("removal")
     private static  Graph createGraphForTest() {
-        return GraphMemFactory.createGraphMem();
+        return GraphMemFactory.createDefaultGraph();
     }
 
     /**
@@ -607,7 +606,7 @@ public class TestBackchainer extends TestCase {
 //     * Test multiheaded rule.
 //     */
 //    public void testMutliHead() {
-//        Graph data = new GraphMem();
+//        Graph data = createGraphForTest();
 //        data.add(Triple.create(a, p, b));
 //        data.add(Triple.create(b, r, c));
 //        List<Rule> rules = Rule.parseRules(

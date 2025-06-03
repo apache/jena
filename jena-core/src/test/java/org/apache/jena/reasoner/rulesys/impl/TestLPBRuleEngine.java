@@ -44,9 +44,8 @@ public class TestLPBRuleEngine extends TestCase {
 	protected Node C2 = NodeFactory.createURI("C2");
 	protected Node ty = RDF.Nodes.type;
 
-    @SuppressWarnings("removal")
     private static  Graph createGraphForTest() {
-        return GraphMemFactory.createGraphMem();
+        return GraphMemFactory.createDefaultGraph();
     }
 
 	public FBRuleReasoner createReasoner(List<Rule> rules) {

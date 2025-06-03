@@ -82,9 +82,8 @@ public class DebugOWL {
     /** reasoner config: LP RDFS exp */
     public static final int RDFSLPExpt = 7;
 
-    @SuppressWarnings("removal")
     private static  Graph createGraphForTest() {
-        return GraphMemFactory.createGraphMem();
+        return GraphMemFactory.createDefaultGraph();
     }
 
     /**

@@ -43,9 +43,8 @@ public class TestRestartableLBRule extends TestCase {
         return new TestSuite(TestRestartableLBRule.class);
     }
 
-    @SuppressWarnings("removal")
     private static  Graph createGraphForTest() {
-        return GraphMemFactory.createGraphMem();
+        return GraphMemFactory.createDefaultGraph();
     }
 
     Resource Senator = ResourceFactory.createResource("http://example.com/ns/Senator");
