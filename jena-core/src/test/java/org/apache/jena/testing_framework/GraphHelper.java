@@ -190,7 +190,7 @@ public class GraphHelper extends TestUtils {
 	 * Answer a new memory-based graph with Extended prefixes.
 	 */
 	public static Graph memGraph() {
-		Graph result = GraphMemFactory.createGraphMem();
+		Graph result = GraphMemFactory.createDefaultGraph();
 		result.getPrefixMapping().setNsPrefixes(PrefixMapping.Extended);
 		return result;
 	}

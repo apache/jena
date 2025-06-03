@@ -27,6 +27,7 @@ import org.junit.runners.Suite;
     TestLiteralLabels.class,
     TestLiteralLabelSameValueAs.class,
     TestNode.class,
+    TestNodeCreateStrings.class,
     TestTriple.class,
     TestTripleField.class,
     TestNodeToTriplesMapMem.class,

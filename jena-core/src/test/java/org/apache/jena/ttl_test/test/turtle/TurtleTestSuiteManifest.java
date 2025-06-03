@@ -28,11 +28,10 @@ public class TurtleTestSuiteManifest extends TestSuite {
 
     private TurtleTestSuiteManifest() {
         super("TurtleManifest");
-        //addTest(TurtleTestFactory.make("testing/Turtle/manifest.ttl"));
         testGood("rdf-schema"     , "RaptorTurtle/rdf-schema.ttl",      "RaptorTurtle/rdf-schema.out");
         testGood("rdfq-results"   , "RaptorTurtle/rdfq-results.ttl",    "RaptorTurtle/rdfq-results.out", "http://www.w3.org/2001/sw/DataAccess/df1/tests/rdfq-results.ttl");
         testGood("rdfs-namespace" , "RaptorTurtle/rdfs-namespace.ttl",  "RaptorTurtle/rdfs-namespace.out");
-        testGood("test-00"        , "RaptorTurtle/test-00.ttl",         "RaptorTurtle/test-00.out", "http://www.w3.org/2001/sw/DataAccess/df1/tests/test-00.ttl");
+        testGood("test-00"        , "RaptorTurtle/test-00.ttl",         "RaptorTurtle/test-00.out",      "http://www.w3.org/2001/sw/DataAccess/df1/tests/test-00.ttl");
         testGood("test-01"        , "RaptorTurtle/test-01.ttl",         "RaptorTurtle/test-01.out");
         testGood("test-02"        , "RaptorTurtle/test-02.ttl",         "RaptorTurtle/test-02.out");
         testGood("test-03"        , "RaptorTurtle/test-03.ttl",         "RaptorTurtle/test-03.out");
@@ -64,13 +63,11 @@ public class TurtleTestSuiteManifest extends TestSuite {
         testBad("Bad-11" , "RaptorTurtle/bad-11.ttl");
         testBad("Bad-12" , "RaptorTurtle/bad-12.ttl");
         testBad("Bad-13" , "RaptorTurtle/bad-13.ttl");
-
     }
 
     private void testBad(String name, String inputFile) {
         TestCase test = new TestItemBadSyntax(name, "file:testing/Turtle/"+inputFile);
         this.addTest(test);
-
     }
 
     private void testGood(String name, String inputFile, String outputFile) {

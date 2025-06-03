@@ -51,7 +51,7 @@ import java.util.List;
  * </p>
  */
 public class TestBasicLP  extends TestCase {
-    
+
     // Useful constants
     Node p = NodeFactory.createURI("p");
     Node q = NodeFactory.createURI("q");
@@ -77,23 +77,28 @@ public class TestBasicLP  extends TestCase {
 
     /**
      * Boilerplate for junit
-     */ 
+     */
     public TestBasicLP( String name ) {
-        super( name ); 
+        super( name );
     }
-    
+
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
     public static TestSuite suite() {
 //        return new TestSuite( TestBasicLP.class );
-        
+
         TestSuite suite = new TestSuite();
         suite.addTest(new TestBasicLP( "testCME" ));
         return suite;
-    }  
-   
+    }
+
+    @SuppressWarnings("removal")
+    private static  Graph createGraphForTest() {
+        return GraphMemFactory.createGraphMem();
+    }
+
     /**
      * Return an inference graph working over the given rule set and raw data.
      * Can be overridden by subclasses of this test class.
@@ -106,7 +111,7 @@ public class TestBasicLP  extends TestCase {
 //        infgraph.setTraceOn(true);
         return infgraph;
     }
-   
+
     /**
      * Return an inference graph working over the given rule set and raw data.
      * Can be overridden by subclasses of this test class.
@@ -123,108 +128,108 @@ public class TestBasicLP  extends TestCase {
         }
         return infgraph;
     }
-    
+
     /**
      * Test basic rule operations - lookup, no matching rules
      */
-    public void testBaseRules1() {    
-        doBasicTest("[r1: (?x r c) <- (?x p b)]", 
+    public void testBaseRules1() {
+        doBasicTest("[r1: (?x r c) <- (?x p b)]",
                      Triple.create(Node.ANY, p, b),
                      new Object[] {
                         Triple.create(a, p, b)
                      } );
     }
-   
+
     /**
      * Test basic rule operations - simple chain rule
      */
-    public void testBaseRules2() {    
-        doBasicTest("[r1: (?x r c) <- (?x p b)]", 
+    public void testBaseRules2() {
+        doBasicTest("[r1: (?x r c) <- (?x p b)]",
                      Triple.create(Node.ANY, r, c),
                      new Object[] {
                         Triple.create(a, r, c)
                      } );
     }
-   
+
     /**
      * Test basic rule operations - chain rule with head unification
      */
-    public void testBaseRules3() {    
-        doBasicTest("[r1: (?x r ?x) <- (?x p b)]", 
+    public void testBaseRules3() {
+        doBasicTest("[r1: (?x r ?x) <- (?x p b)]",
                      Triple.create(Node.ANY, r, a),
                      new Object[] {
                         Triple.create(a, r, a)
                      } );
     }
-    
+
     /**
      * Test basic rule operations - rule with head unification, non-temp var
      */
-    public void testBaseRules4() {    
-        doBasicTest("[r1: (?x r ?x) <- (?y p b), (?x p b)]", 
+    public void testBaseRules4() {
+        doBasicTest("[r1: (?x r ?x) <- (?y p b), (?x p b)]",
                      Triple.create(Node.ANY, r, a),
                      new Object[] {
                         Triple.create(a, r, a)
                      } );
     }
-    
+
     /**
      * Test basic rule operations - simple cascade
      */
-    public void testBaseRules5() {    
+    public void testBaseRules5() {
         doBasicTest("[r1: (?x q ?y) <- (?x r ?y)(?y s ?x)]" +
-                    "[r2: (?x r ?y) <- (?x p ?y)]" + 
-                    "[r3: (?x s ?y) <- (?y p ?x)]", 
+                    "[r2: (?x r ?y) <- (?x p ?y)]" +
+                    "[r3: (?x s ?y) <- (?y p ?x)]",
                      Triple.create(Node.ANY, q, Node.ANY),
                      new Object[] {
                         Triple.create(a, q, b)
                      } );
     }
-   
+
     /**
      * Test basic rule operations - chain rule which will fail at head time
      */
-    public void testBaseRules6() {    
-        doBasicTest("[r1: (?x r ?x) <- (?x p b)]", 
+    public void testBaseRules6() {
+        doBasicTest("[r1: (?x r ?x) <- (?x p b)]",
                      Triple.create(a, r, b),
                      new Object[] {
                      } );
     }
-   
+
     /**
      * Test basic rule operations - chain rule which will fail in search
      */
-    public void testBaseRules7() {    
-        doBasicTest("[r1: (?x r ?y) <- (?x p c)]", 
+    public void testBaseRules7() {
+        doBasicTest("[r1: (?x r ?y) <- (?x p c)]",
                      Triple.create(a, r, b),
                      new Object[] {
                      } );
     }
-    
+
     /**
      * Test basic rule operations - simple chain
      */
-    public void testBaseRules8() {    
+    public void testBaseRules8() {
         doBasicTest("[r1: (?x q ?y) <- (?x r ?y)]" +
-                    "[r2: (?x r ?y) <- (?x p ?y)]", 
+                    "[r2: (?x r ?y) <- (?x p ?y)]",
                      Triple.create(Node.ANY, q, Node.ANY),
                      new Object[] {
                         Triple.create(a, q, b)
                      } );
     }
-    
+
     /**
      * Test basic rule operations - simple chain
      */
-    public void testBaseRules9() {    
+    public void testBaseRules9() {
         doBasicTest("[r1: (?x q ?y) <- (?x r ?y)]" +
-                    "[r2: (?x r ?y) <- (?y p ?x)]", 
+                    "[r2: (?x r ?y) <- (?y p ?x)]",
                      Triple.create(Node.ANY, q, Node.ANY),
                      new Object[] {
                         Triple.create(b, q, a)
                      } );
     }
-    
+
     /**
      * Test backtracking - simple triple query.
      */
@@ -242,7 +247,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(a, p, d)
                 } );
     }
-    
+
     /**
      * Test backtracking - chain to simple triple query.
      */
@@ -260,7 +265,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(a, r, d)
                 } );
     }
-    
+
     /**
      * Test backtracking - simple choice point
      */
@@ -278,7 +283,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(a, r, C3)
                 } );
     }
-    
+
     /**
      * Test backtracking - nested choice point
      */
@@ -300,7 +305,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(a, s, D3)
                 } );
     }
-    
+
     /**
      * Test backtracking - nested choice point with multiple triple matches
      */
@@ -322,7 +327,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(b, s, C2)
                 } );
     }
-    
+
     /**
      * Test backtracking - nested choice point with multiple triple matches, and
      * checking temp v. permanent variable usage
@@ -345,7 +350,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(D2, s, C2),
                 } );
     }
-    
+
     /**
      * Test backtracking - nested choice point with simple triple matches
      */
@@ -370,7 +375,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(a, s, C3),
                 } );
     }
-    
+
     /**
      * Test backtracking - nested choice point with simple triple matches,
      * permanent vars but used just once in body
@@ -397,7 +402,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(a, s, C3),
                 } );
     }
-   
+
     /**
      * Test backtracking - multiple triple matches
      */
@@ -418,7 +423,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(b, s, D2),
                 } );
     }
-   
+
     /**
      * Test backtracking - multiple triple matches
      */
@@ -441,7 +446,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(a, s, D2),
                 } );
     }
-    
+
     /**
      * Test clause order is right
      */
@@ -450,7 +455,7 @@ public class TestBasicLP  extends TestCase {
             "[r1: (?x r C1) <- (?x p b)]" +
             "[r1: (?x r C2) <- (?x p b)]" +
             "[r2: (?x r C3) <- (?x r C3) (?x p b)]");
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(a, p, b));
         InfGraph infgraph =  makeInfGraph(rules, data);
         ExtendedIterator<Triple> i = infgraph.find(Node.ANY, r, Node.ANY);
@@ -458,7 +463,7 @@ public class TestBasicLP  extends TestCase {
         assertEquals(i.next(), Triple.create(a, r, C1));
         i.close();
     }
-    
+
     /**
      * Test axioms work.
      */
@@ -498,7 +503,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(a, s, c),
                 } );
     }
-    
+
     /**
      * Test simple invocation of a builtin
      */
@@ -514,8 +519,8 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(b, r, Util.makeIntNode(6)),
                 } );
     }
-    
-    
+
+
     /**
      * Test simple invocation of a builtin
      */
@@ -532,7 +537,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(b, r, C1),
                 } );
     }
-    
+
     /**
      * Test wildcard predicate usage - simple triple search.
      * Rules look odd because we have to hack around the recursive loops.
@@ -550,7 +555,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(b, r, q)
                 } );
     }
-    
+
     /**
      * Test wildcard predicate usage - combind triple search and multiclause matching.
      * Rules look odd because we have to hack around the recursive loops.
@@ -581,7 +586,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(a, r, s),
                 } );
     }
-    
+
     /**
      * Test wildcard predicate usage - combined triple search and multiclause matching.
      * Rules look odd because we have to hack around the recursive loops.
@@ -622,7 +627,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(c, t, q)
                 } );
     }
-    
+
     /**
      * Test wildcard predicate usage - wildcard in head as well
      */
@@ -710,7 +715,7 @@ public class TestBasicLP  extends TestCase {
                 Triple.create(c, s, d)
             } );
     }
-    
+
     /**
      * Test tabled predicates. Simple chain call case.
      */
@@ -728,7 +733,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(b, r, c)
                 } );
     }
-    
+
     /**
      * Test tabled predicates. Simple transitive closure case.
      */
@@ -749,7 +754,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(a, p, d),
                 } );
     }
-    
+
     /**
      * Test tabled predicates. Simple transitive closure over normal predicates
      */
@@ -772,7 +777,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(a, p, c)
                 } );
     }
-    
+
     /**
      * Test tabled predicates. Co-routining example.
      */
@@ -794,7 +799,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(p, a, r)
                 } );
     }
-    
+
     /**
      * Test tabled predicates. Simple transitive closure case.
      */
@@ -816,7 +821,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(a, r, d),
                 } );
     }
-   
+
     /**
      * Test tabled predicates. Simple transitive closure case, tabling set
      * by rule base.
@@ -840,7 +845,7 @@ public class TestBasicLP  extends TestCase {
 
     /**
      * Test tabled calls with aliased local vars in the call.
-     */   
+     */
     public void testTabled7() {
         doTest("[r1: (?a q ?b) <- (?a p ?b)]" +
                "[r2: (?a q ?a) <- (?a s ?a)]" +
@@ -860,7 +865,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(d, r, C1),
                 } );
     }
-    
+
     /**
      * Test RDFS example.
      */
@@ -884,7 +889,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(d, ty, C1),
                 } );
     }
-   
+
     /**
      * Test RDFS example - branched version
      */
@@ -934,8 +939,8 @@ public class TestBasicLP  extends TestCase {
      * A problem from the original backchainer tests - tabled closure operation.
      */
     public void testProblem2() {
-        String ruleSrc = 
-        "[rdfs8:  (?a rdfs:subClassOf ?c) <- (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c)]" + 
+        String ruleSrc =
+        "[rdfs8:  (?a rdfs:subClassOf ?c) <- (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c)]" +
         "[rdfs7:  (?a rdfs:subClassOf ?a) <- (?a rdf:type rdfs:Class)]";
         doTest( ruleSrc,
                 new Node[] { ty, sC },
@@ -1005,11 +1010,11 @@ public class TestBasicLP  extends TestCase {
     }
 
     /**
-     * A problem from the original backchainer tests - RDFS example which threw an NPE 
+     * A problem from the original backchainer tests - RDFS example which threw an NPE
      */
     public void testProblem5() {
-        String ruleSrc = 
-        "[rdfs8:  (?a rdfs:subClassOf ?c) <- (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c)]" + 
+        String ruleSrc =
+        "[rdfs8:  (?a rdfs:subClassOf ?c) <- (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c)]" +
         "[rdfs9:   (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y), (?a rdf:type ?x)]" +
         "[(rdf:type rdfs:range rdfs:Class) <-]" +
         "[rdfs3:  (?y rdf:type ?c) <- (?x ?p ?y), (?p rdfs:range ?c)]" +
@@ -1032,10 +1037,10 @@ public class TestBasicLP  extends TestCase {
     }
 
     /**
-     * A problem from the original backchainer tests - RDFS example which threw an NPE 
+     * A problem from the original backchainer tests - RDFS example which threw an NPE
      */
     public void testProblem6() {
-        String ruleSrc = 
+        String ruleSrc =
         "[rdfs9:   (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y), (?a rdf:type ?x)]" +
         "[restriction2: (?C owl:equivalentClass all(?P, ?D)) <- (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D)]" +
         "[rs2: (?X rdf:type all(?P,?C)) <- (?D owl:equivalentClass all(?P,?C)), (?X rdf:type ?D)]" +
@@ -1060,21 +1065,21 @@ public class TestBasicLP  extends TestCase {
      * Was due to interpeter setup failing to clone input variables.
      */
     public void testProblem7() {
-        String ruleSrc = 
-        "[rdfs8:  (?a rdfs:subClassOf ?c) <- (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c)]" + 
+        String ruleSrc =
+        "[rdfs8:  (?a rdfs:subClassOf ?c) <- (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c)]" +
         "[rdfs9:   (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y), (?a rdf:type ?x)]" +
 //        "[(rdf:type rdfs:range rdfs:Class) <-]" +
 //        "[rdfs3:  (?y rdf:type ?c) <- (?x ?p ?y), (?p rdfs:range ?c)]" +
         "[rdfs3:  (?y rdf:type rdfs:Class) <- (?x rdf:type ?y)]" +
         "[rdfs7:  (?a rdfs:subClassOf ?a) <- (?a rdf:type rdfs:Class)]";
         List<Rule> rules = Rule.parseRules(ruleSrc);
-        Node[] tabled = new Node[] { ty, sC }; 
+        Node[] tabled = new Node[] { ty, sC };
         Triple[] triples = new Triple[] {
                     Triple.create(C1, sC, C2),
                     Triple.create(C2, sC, C3),
                     Triple.create(a, ty, C1)
                 };
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         for ( Triple triple : triples )
         {
             data.add( triple );
@@ -1086,8 +1091,8 @@ public class TestBasicLP  extends TestCase {
         assertEquals(result.getPredicate(), ty);
         it.close();
         // Make sure if we start again we get the full listing.
-        TestUtil.assertIteratorValues(this, 
-            infgraph.find(a, ty, null), 
+        TestUtil.assertIteratorValues(this,
+            infgraph.find(a, ty, null),
             new Object[] {
                 Triple.create(a, ty, C1),
                 Triple.create(a, ty, C2),
@@ -1100,8 +1105,8 @@ public class TestBasicLP  extends TestCase {
      * Was due to unsupported multi-head statement.
      */
     public void testProblem8() {
-        String ruleSrc = 
-        "[rdfs9:   (?a rdf:type ?y) <- bound(?y) (?x rdfs:subClassOf ?y) (?a rdf:type ?x)]" + 
+        String ruleSrc =
+        "[rdfs9:   (?a rdf:type ?y) <- bound(?y) (?x rdfs:subClassOf ?y) (?a rdf:type ?x)]" +
         "[restriction4:  (?C owl:equivalentClass max(?P, ?X)) <- (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:maxCardinality ?X)]" +
         "[restrictionProc11: (?X rdf:type max(?P, 1)) <- (?P rdf:type owl:FunctionalProperty), (?X rdf:type owl:Thing)]" +
         "[equivalentClass1: (?Q rdfs:subClassOf ?P) <- (?P owl:equivalentClass ?Q) ]" +
@@ -1122,7 +1127,7 @@ public class TestBasicLP  extends TestCase {
                     Triple.create(a, ty, c)
                 } );
     }
-      
+
     /**
      * Test derivation machinery
      */
@@ -1131,7 +1136,7 @@ public class TestBasicLP  extends TestCase {
                        "[testRule2: (C2, q, ?a) <- (C1 q ?a)]" +
                        "[testRule3: (a p ?a)  <- (C2 p ?a), (C2 q ?a)]";
         List<Rule> ruleList = Rule.parseRules(rules);
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(C1, p, C3));
         data.add(Triple.create(C1, q, C4));
         data.add(Triple.create(C1, q, C3));
@@ -1142,7 +1147,7 @@ public class TestBasicLP  extends TestCase {
             new Triple[] {
                 Triple.create(a, p, C3)
             });
-        
+
         Iterator<Derivation> derivs = infgraph.getDerivation(Triple.create(a, p, C3));
         StringWriter outString = new StringWriter(250);
         PrintWriter out = new PrintWriter(outString);
@@ -1163,9 +1168,9 @@ public class TestBasicLP  extends TestCase {
     /**
      * A suspect problem, originally derived from the OWL rules - risk of unbound variables escaping.
      * Not managed to isolate or reproduce the problem yet.
-     */ 
+     */
     public void testProblem9() {
-        String ruleSrc = 
+        String ruleSrc =
         "[test:   (?x owl:sameAs ?x) <- (?x rdf:type owl:Thing) ]" +
         "[sameIndividualAs6: (?X rdf:type owl:Thing) <- (?X owl:sameAs ?Y) ]" +
         "[ans:    (?x p C1) <- (?y owl:sameAs ?x)]";
@@ -1187,8 +1192,8 @@ public class TestBasicLP  extends TestCase {
 //                    Triple.create(a, ty, OWL.Thing.asNode()),
 //                    Triple.create(b, ty, OWL.Thing.asNode())
 //                } );
-    } 
-    
+    }
+
     /**
      * Test 3-arg builtins such as arithmetic.
      */
@@ -1225,7 +1230,7 @@ public class TestBasicLP  extends TestCase {
             Util.makeIntNode(4),Util.makeIntNode(3), Util.makeIntNode(4)
         );
     }
-    
+
     /**
      * Test the temporary list builtins
      */
@@ -1233,19 +1238,19 @@ public class TestBasicLP  extends TestCase {
         String ruleSrc = "[(a r ?n) <- (a p ?l), listLength(?l, ?n)]" +
         "[(a s ?e) <- (a p ?l), listEntry(?l, 1, ?e)]";
         List<Rule> rules = Rule.parseRules(ruleSrc);
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(a, p, Util.makeList(new Node[]{C1,C2,C3},data)));
         InfGraph infgraph =  makeInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this, 
-                infgraph.find(Triple.create(a, r, Node.ANY)), 
+        TestUtil.assertIteratorValues(this,
+                infgraph.find(Triple.create(a, r, Node.ANY)),
                 new Triple[] {
                     Triple.create(a, r, Util.makeIntNode(3))
-                }); 
-        TestUtil.assertIteratorValues(this, 
-                infgraph.find(Triple.create(a, s, Node.ANY)), 
+                });
+        TestUtil.assertIteratorValues(this,
+                infgraph.find(Triple.create(a, s, Node.ANY)),
                 new Triple[] {
                     Triple.create(a, s, C2)
-                }); 
+                });
 
         rules = Rule.parseRules(
         "[(a s b) <- (a p ?l), (a, q, ?j) listEqual(?l, ?j)]" +
@@ -1253,41 +1258,41 @@ public class TestBasicLP  extends TestCase {
         "[(a s d) <- (a p ?l), (a, r, ?j) listEqual(?l, ?j)]" +
         "[(a s e) <- (a p ?l), (a, r, ?j) listNotEqual(?l, ?j)]"
             );
-        data = GraphMemFactory.createGraphMem();
-        data.add(Triple.create(a, p, 
+        data = createGraphForTest();
+        data.add(Triple.create(a, p,
             Util.makeList( new Node[]{C1, Util.makeIntNode(3), C3}, data) ));
-        data.add(Triple.create(a, q, 
+        data.add(Triple.create(a, q,
             Util.makeList( new Node[]{C3, C1, Util.makeLongNode(3)}, data) ));
-        data.add(Triple.create(a, r, 
+        data.add(Triple.create(a, r,
             Util.makeList( new Node[]{C3, C1, Util.makeLongNode(2)}, data) ));
         infgraph =  makeInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this, 
-            infgraph.find(Triple.create(a, s, Node.ANY)), 
+        TestUtil.assertIteratorValues(this,
+            infgraph.find(Triple.create(a, s, Node.ANY)),
             new Triple[] {
                 Triple.create(a, s, b),
                 Triple.create(a, s, e),
-            }); 
+            });
 
         rules = Rule.parseRules(
         "[(b r ?j) <- (a p ?l), (a, q, ?j) listContains(?l, ?j)]" +
         "[(b s ?j) <- (a p ?l), (a, q, ?j) listNotContains(?l, ?j)]"
             );
-        data = GraphMemFactory.createGraphMem();
-        data.add(Triple.create(a, p, 
+        data = createGraphForTest();
+        data.add(Triple.create(a, p,
             Util.makeList( new Node[]{C1, Util.makeIntNode(3), C3}, data) ));
         data.add(Triple.create(a, q, C1));
         data.add(Triple.create(a, q, Util.makeLongNode(3)));
         data.add(Triple.create(a, q, C2));
         infgraph =  makeInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this, 
-            infgraph.find(Triple.create(b, Node.ANY, Node.ANY)), 
+        TestUtil.assertIteratorValues(this,
+            infgraph.find(Triple.create(b, Node.ANY, Node.ANY)),
             new Triple[] {
                 Triple.create(b, r, C1),
                 Triple.create(b, r, Util.makeIntNode(3)),
                 Triple.create(b, s, C2),
-            }); 
+            });
     }
-    
+
     /**
      * Test that we detect concurrent modification of LP graphs with
      * non-closed iterators.
@@ -1295,19 +1300,19 @@ public class TestBasicLP  extends TestCase {
     public void testCME() {
         String ruleSrc = "(?a p 1) <- (?a p 0). (?a p 2) <- (?a p 0).";
         List<Rule> rules = Rule.parseRules(ruleSrc);
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(a, p, Util.makeIntNode(0)));
         InfGraph infgraph =  makeInfGraph(rules, data);
-        
+
         // Check the base case works
-        TestUtil.assertIteratorValues(this, 
-                infgraph.find(Triple.create(a, p, Node.ANY)), 
+        TestUtil.assertIteratorValues(this,
+                infgraph.find(Triple.create(a, p, Node.ANY)),
                 new Triple[] {
             Triple.create(a, p, Util.makeIntNode(0)),
             Triple.create(a, p, Util.makeIntNode(1)),
             Triple.create(a, p, Util.makeIntNode(2)),
-                }); 
-        
+                });
+
         // Now force a CME
         boolean ok = false;
         ExtendedIterator<Triple> i = infgraph.find(Triple.create(a, p, Node.ANY));
@@ -1322,8 +1327,8 @@ public class TestBasicLP  extends TestCase {
         }
         assertTrue("Expect CME on unclosed iterators", ok);
     }
-    
-    /** 
+
+    /**
      * Generic test operation.
      * @param ruleSrc the source of the rules
      * @param triples a set of triples to insert in the graph before the query
@@ -1332,16 +1337,16 @@ public class TestBasicLP  extends TestCase {
      */
     private void doTest(String ruleSrc, Triple[] triples, Triple query, Object[] results) {
         List<Rule> rules = Rule.parseRules(ruleSrc);
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         for ( Triple triple : triples )
         {
             data.add( triple );
         }
         InfGraph infgraph =  makeInfGraph(rules, data);
-        TestUtil.assertIteratorValues(this, infgraph.find(query), results); 
+        TestUtil.assertIteratorValues(this, infgraph.find(query), results);
     }
 
-    /** 
+    /**
      * Generic test operation.
      * @param ruleSrc the source of the rules
      * @param tabled the predicates that should be tabled
@@ -1351,17 +1356,17 @@ public class TestBasicLP  extends TestCase {
      */
     private void doTest(String ruleSrc, Node[] tabled, Triple[] triples, Triple query, Object[] results) {
         List<Rule> rules = Rule.parseRules(ruleSrc);
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         for ( Triple triple : triples )
         {
             data.add( triple );
         }
         InfGraph infgraph =  makeInfGraph(rules, data, tabled);
-        TestUtil.assertIteratorValues(this, infgraph.find(query), results); 
+        TestUtil.assertIteratorValues(this, infgraph.find(query), results);
 
     }
-    
-    /** 
+
+    /**
      * Generic base test operation on a graph with the single triple (a, p, b)
      * @param ruleSrc the source of the rules
      * @param query the Triple to search for
@@ -1370,7 +1375,7 @@ public class TestBasicLP  extends TestCase {
     private void doBasicTest(String ruleSrc, Triple query, Object[] results) {
         doTest(ruleSrc, new Triple[]{Triple.create(a,p,b)}, query, results);
     }
-    
+
     /**
      * Generic test operation.
      * @param rule to test a simple builtin operation
@@ -1380,14 +1385,14 @@ public class TestBasicLP  extends TestCase {
      */
     private void doBuiltinTest(String ruleSrc, Node param1, Node param2, Node result) {
         doTest(ruleSrc,
-               new Triple[] { 
+               new Triple[] {
                    Triple.create(a, p, param1),
-                   Triple.create(a, q, param2) 
+                   Triple.create(a, q, param2)
                 },
                 Triple.create(a, r, Node.ANY),
                 new Triple[] {
                     Triple.create(a, r, result)
                 });
     }
-    
+
 }

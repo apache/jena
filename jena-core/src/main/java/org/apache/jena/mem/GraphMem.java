@@ -36,6 +36,8 @@ import java.util.stream.Stream;
  */
 @Deprecated
 public class GraphMem extends GraphMemBase {
+    // Rename as GraphMemValue.
+
     /**
      This Graph's TripleStore. Visible for <i>read-only</i> purposes only.
      */

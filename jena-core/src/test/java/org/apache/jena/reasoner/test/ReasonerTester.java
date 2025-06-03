@@ -157,7 +157,7 @@ public class ReasonerTester {
             boolean cache = predicate.equals(tboxP) || predicate.equals(dataP);
             return loadFile(fileName, cache).getGraph();
         } else {
-            return GraphMemFactory.createGraphMem();
+            return GraphMemFactory.createDefaultGraph();
         }
     }
 
@@ -278,7 +278,7 @@ public class ReasonerTester {
 
         // Run each query triple and accumulate the results
         Graph queryG = loadTestFile(test, queryP);
-        Graph resultG = GraphMemFactory.createGraphMem();
+        Graph resultG = GraphMemFactory.createDefaultGraph();
 
         Iterator<Triple> queries = queryG.find(null, null, null);
         while (queries.hasNext()) {

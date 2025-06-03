@@ -39,7 +39,7 @@ public class TestPrefixMappingUtils {
     }
 
     static Graph create (String data) {
-        Graph graph = GraphMemFactory.createGraphMem() ;
+        Graph graph = GraphMemFactory.createDefaultGraph();
         Model m = ModelFactory.createModelForGraph(graph);
         m.read(new StringReader(data), null, "TTL");
         return graph ;

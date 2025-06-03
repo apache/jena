@@ -31,17 +31,9 @@ import org.apache.jena.shared.Lock;
 
 /**
  * Collected test suite for the .model package.
- *
- * This is the base class for TestPackage implementations.
- *
- * Model developers should extend this class to implement the package test
- * suite.
- * See TestPackage for example of usage.
  */
-
 public abstract class AbstractTestPackage extends TestSuite
 {
-
 	/**
 	 * Constructor.
 	 *
@@ -57,65 +49,66 @@ public abstract class AbstractTestPackage extends TestSuite
 	 * @throws InvocationTargetException
 	 */
 	protected AbstractTestPackage( String suiteName, TestingModelFactory modelFactory ) {
-		super(suiteName);
+	    super(suiteName);
 
-		addTest(TestModelFactory.class);
-		addTest(TestSimpleListStatements.class, modelFactory);
-		addTest(TestModelPolymorphism.class, modelFactory);
-		addTest(TestStatements.class, modelFactory);
-		addTest(TestRDFNodes.class, modelFactory);
-		addTest(TestIterators.class, modelFactory);
+	    addTest(TestModelFactory.class);
+	    addTest(TestSimpleListStatements.class, modelFactory);
+	    addTest(TestModelPolymorphism.class, modelFactory);
+	    addTest(TestStatements.class, modelFactory);
+	    addTest(TestRDFNodes.class, modelFactory);
+	    addTest(TestIterators.class, modelFactory);
 
-		addTest(TestContains.class, modelFactory);
-		addTest(TestLiteralImpl.class, modelFactory);
-		addTest(TestResourceImpl.class, modelFactory);
-		addTest(TestStatementTerms.class, modelFactory);
+	    addTest(TestContains.class, modelFactory);
+	    addTest(TestLiteralImpl.class, modelFactory);
+	    addTest(TestResourceImpl.class, modelFactory);
+	    addTest(TestStatementTerms.class, modelFactory);
 
-		addTest(TestHiddenStatements.class, modelFactory);
-		addTest(TestNamespace.class, modelFactory);
-		addTest(TestModelBulkUpdate.class, modelFactory);
-		addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL1, Lock.READ, Lock.READ, false);
-		addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL1, Lock.WRITE, Lock.WRITE, false);
-      addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL1, Lock.READ, Lock.WRITE, true);
-      addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL1, Lock.WRITE, Lock.READ, false);
-      addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL2, Lock.READ, Lock.READ, false);
-      addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL2, Lock.WRITE, Lock.WRITE, false);
-      addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL2, Lock.READ, Lock.WRITE, false);
-      addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL2, Lock.WRITE, Lock.READ, false);
+	    addTest(TestHiddenStatements.class, modelFactory);
+	    addTest(TestNamespace.class, modelFactory);
+	    addTest(TestModelBulkUpdate.class, modelFactory);
 
-		addTest(TestConcurrencyParallel.class, modelFactory);
-		addTest(TestContainers.class, modelFactory);
-		addTest(TestModel.class, modelFactory);
-		addTest(TestModelSetOperations.class, modelFactory);
-		addTest(TestModelEvents.class, modelFactory);
-		addTest(TestReaderEvents.class, modelFactory);
-		addTest(TestList.class, modelFactory);
-		addTest(TestAnonID.class);
-		addTest(TestLiteralsInModel.class, modelFactory);
-		addTest(TestRemoveSPO.class, modelFactory);
-		addTest(TestListSubjectsEtc.class, modelFactory);
-		addTest(TestModelRead.class, modelFactory);
-		addTestSuite(TestProperties.class);
-		addTest(TestContainerConstructors.class, modelFactory);
-		addTest(TestAltMethods.class, modelFactory);
-		addTest(TestBagMethods.class, modelFactory);
-		addTest(TestSeqMethods.class, modelFactory);
-		addTest(TestAddAndContains.class, modelFactory);
-		addTest(TestAddModel.class, modelFactory);
-		addTest(TestGet.class, modelFactory);
-		addTest(TestListSubjects.class, modelFactory);
-		addTest(TestLiterals.class, modelFactory);
-		addTest(TestObjects.class, modelFactory);
-		addTest(TestResourceMethods.class, modelFactory);
-		addTest(TestResources.class, modelFactory);
-		addTest(TestStatementMethods.class, modelFactory);
-		addTest(TestStatementCreation.class, modelFactory);
-		addTest(TestReaders.class, modelFactory);
-		addTest(TestObjectOfProperties.class, modelFactory);
-		addTest(TestCopyInOutOfModel.class, modelFactory);
-		// These tests are probabilistic testing.
-		// See notes in the class.
-		//addTest(IsomorphicTests.class, modelFactory);
+	    addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL1, Lock.READ, Lock.READ, false);
+	    addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL1, Lock.WRITE, Lock.WRITE, false);
+	    addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL1, Lock.READ, Lock.WRITE, true);
+	    addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL1, Lock.WRITE, Lock.READ, false);
+	    addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL2, Lock.READ, Lock.READ, false);
+	    addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL2, Lock.WRITE, Lock.WRITE, false);
+	    addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL2, Lock.READ, Lock.WRITE, false);
+	    addTest(TestConcurrencyNesting.class, modelFactory, TestConcurrencyNesting.MODEL1, TestConcurrencyNesting.MODEL2, Lock.WRITE, Lock.READ, false);
+
+	    addTest(TestConcurrencyParallel.class, modelFactory);
+	    addTest(TestContainers.class, modelFactory);
+	    addTest(TestModel.class, modelFactory);
+	    addTest(TestModelSetOperations.class, modelFactory);
+	    addTest(TestModelEvents.class, modelFactory);
+	    addTest(TestReaderEvents.class, modelFactory);
+	    addTest(TestList.class, modelFactory);
+	    addTest(TestAnonID.class);
+	    addTest(TestLiteralsInModel.class, modelFactory);
+	    addTest(TestRemoveSPO.class, modelFactory);
+	    addTest(TestListSubjectsEtc.class, modelFactory);
+	    addTest(TestModelRead.class, modelFactory);
+	    addTestSuite(TestProperties.class);
+	    addTest(TestContainerConstructors.class, modelFactory);
+	    addTest(TestAltMethods.class, modelFactory);
+	    addTest(TestBagMethods.class, modelFactory);
+	    addTest(TestSeqMethods.class, modelFactory);
+	    addTest(TestAddAndContains.class, modelFactory);
+	    addTest(TestAddModel.class, modelFactory);
+	    addTest(TestGet.class, modelFactory);
+	    addTest(TestListSubjects.class, modelFactory);
+	    addTest(TestLiterals.class, modelFactory);
+	    addTest(TestObjects.class, modelFactory);
+	    addTest(TestResourceMethods.class, modelFactory);
+	    addTest(TestResources.class, modelFactory);
+	    addTest(TestStatementMethods.class, modelFactory);
+	    addTest(TestStatementCreation.class, modelFactory);
+	    addTest(TestReaders.class, modelFactory);
+	    addTest(TestObjectOfProperties.class, modelFactory);
+	    addTest(TestCopyInOutOfModel.class, modelFactory);
+	    // These tests are probabilistic testing.
+	    // See notes in the class.
+	    //addTest(IsomorphicTests.class, modelFactory);
 	}
 
 	/**
@@ -132,57 +125,41 @@ public abstract class AbstractTestPackage extends TestSuite
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	private void addTest( final Class<? extends TestCase> testClass,
-			final Object... constructorArgs )
-	{
-		final Object[] args = new Object[constructorArgs.length + 1];
-		System.arraycopy(constructorArgs, 0, args, 0, constructorArgs.length);
-		final List<Class<?>> parameterTypes = new ArrayList<>();
-		for (final Object o : constructorArgs)
-		{
-			if (o instanceof TestingModelFactory)
-			{
-				parameterTypes.add(TestingModelFactory.class);
-			}
-			else
-			{
-				parameterTypes.add(o.getClass());
-			}
-		}
-		parameterTypes.add(String.class);
-		Constructor<TestCase> c;
-		try
-		{
-		    @SuppressWarnings( "unchecked" )
-		    Constructor<TestCase> cc = (Constructor<TestCase>) testClass.getConstructor(parameterTypes
-					.toArray(new Class[parameterTypes.size()]));
-		    c = cc ;
-		}
-		catch (final SecurityException | NoSuchMethodException e)
-		{
-			e.printStackTrace();
-			throw new RuntimeException(e.getMessage(), e);
-		}
+    private void addTest(final Class<? extends TestCase> testClass, final Object...constructorArgs) {
+        final Object[] args = new Object[constructorArgs.length + 1];
+        System.arraycopy(constructorArgs, 0, args, 0, constructorArgs.length);
+        final List<Class<? >> parameterTypes = new ArrayList<>();
+        for ( final Object o : constructorArgs ) {
+            if ( o instanceof TestingModelFactory ) {
+                parameterTypes.add(TestingModelFactory.class);
+            } else {
+                parameterTypes.add(o.getClass());
+            }
+        }
+        parameterTypes.add(String.class);
+        Constructor<TestCase> c;
+        try {
+            @SuppressWarnings("unchecked")
+            Constructor<TestCase> cc = (Constructor<TestCase>)testClass.getConstructor(parameterTypes.toArray(new Class[parameterTypes.size()]));
+            c = cc;
+        } catch (final SecurityException | NoSuchMethodException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage(), e);
+        }
 
-        for (final Method m : testClass.getMethods())
-		{
-			if (m.getParameterTypes().length == 0)
-			{
-				if (m.getName().startsWith("test"))
-				{
-					args[constructorArgs.length] = m.getName();
-					try
-					{
-						addTest(c.newInstance(args));
-					}
-					catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException | InstantiationException e)
-					{
-						e.printStackTrace();
-						throw new RuntimeException(e.getMessage(), e);
-					}
+        for ( final Method m : testClass.getMethods() ) {
+            if ( m.getParameterTypes().length == 0 ) {
+                if ( m.getName().startsWith("test") ) {
+                    args[constructorArgs.length] = m.getName();
+                    try {
+                        addTest(c.newInstance(args));
+                    } catch (final IllegalArgumentException | InvocationTargetException | IllegalAccessException
+                            | InstantiationException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException(e.getMessage(), e);
+                    }
                 }
-			}
-		}
-	}
-
+            }
+        }
+    }
 }

@@ -26,6 +26,7 @@ import org.apache.jena.rdf.model.test.helpers.TestingModelFactory;
 import org.apache.jena.shared.PrefixMapping;
 
 public class TS3_Model1 extends AbstractTestPackage {
+    // AbstractTestPackage create a large test suite of many test classes.
 
     public static class PlainModelFactory implements TestingModelFactory {
         @Override

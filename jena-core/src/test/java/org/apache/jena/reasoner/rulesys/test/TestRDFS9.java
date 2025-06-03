@@ -33,21 +33,26 @@ import org.apache.jena.vocabulary.* ;
  * of modified versions of rule rdfs9.
  */
 public class TestRDFS9 extends TestCase {
-    
+
     /**
      * Boilerplate for junit
-     */ 
+     */
     public TestRDFS9( String name ) {
-        super( name ); 
+        super( name );
     }
-    
+
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
     public static TestSuite suite() {
         return new TestSuite(TestRDFS9.class);
-    }  
+    }
+
+    @SuppressWarnings("removal")
+    private static  Graph createGraphForTest() {
+        return GraphMemFactory.createGraphMem();
+    }
 
     /**
      * Test a type inheritance example.
@@ -65,14 +70,14 @@ public class TestRDFS9 extends TestCase {
         Node r = NodeFactory.createURI("r");
         Node sC = RDFS.subClassOf.asNode();
         Node ty = RDF.type.asNode();
-        
-        Graph tdata = GraphMemFactory.createGraphMem();
+
+        Graph tdata = createGraphForTest();
         tdata.add(Triple.create(C1, sC, C2));
         tdata.add(Triple.create(C2, sC, C3));
         tdata.add(Triple.create(p, RDFS.subPropertyOf.asNode(), q));
         tdata.add(Triple.create(q, RDFS.subPropertyOf.asNode(), r));
         tdata.add(Triple.create(r, RDFS.domain.asNode(), D));
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(a, p, b));
         InfGraph igraph = ReasonerRegistry.getRDFSReasoner().bind(new Union(tdata, data));
         TestUtil.assertIteratorValues(this, igraph.find(a, ty, null),

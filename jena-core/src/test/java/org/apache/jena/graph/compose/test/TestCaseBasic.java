@@ -23,22 +23,22 @@ import java.lang.reflect.*;
 import org.apache.jena.graph.* ;
 import org.apache.jena.rdf.model.ModelFactory ;
 
-public class TestCaseBasic extends org.apache.jena.regression.TestCaseBasic 
+public class TestCaseBasic extends org.apache.jena.regression.TestCaseBasic
 	{
     private Class<? extends Graph> graphClass;
 
-    public TestCaseBasic(String name, Class<? extends Graph> graphClass) 
+    public TestCaseBasic(String name, Class<? extends Graph> graphClass)
     	{
         super(name);
         this.graphClass = graphClass;
     	}
-    
+
     private Graph newGraph( Constructor< ? extends Graph> cons ) throws Exception
     	{
     	return cons.newInstance
-            ( GraphMemFactory.createGraphMem(), GraphMemFactory.createGraphMem() );
+            ( GraphMemFactory.createDefaultGraph(), GraphMemFactory.createDefaultGraph() );
     	}
-    	
+
     @Override public void setUp() throws Exception
     	{
 		Constructor< ? extends Graph> constructor = graphClass.getConstructor

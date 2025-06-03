@@ -195,7 +195,7 @@ public class WGReasonerTester {
             String fileName = test.getRequiredProperty(predicate).getObject().toString();
             return loadFile(fileName).getGraph();
         } else {
-            return GraphMemFactory.createGraphMem();
+            return GraphMemFactory.createDefaultGraph();
         }
     }
 

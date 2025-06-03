@@ -29,7 +29,7 @@ import org.apache.jena.reasoner.rulesys.impl.* ;
 import org.apache.jena.reasoner.test.TestUtil ;
 
 public class TestRETE  extends TestCase {
-     
+
     // Useful constants
     Node_RuleVariable x = new Node_RuleVariable("x", 0);
     Node_RuleVariable y = new Node_RuleVariable("y", 1);
@@ -48,61 +48,66 @@ public class TestRETE  extends TestCase {
     Node n3 = NodeFactory.createURI("n3");
     Node n4 = NodeFactory.createURI("n4");
     Node res = NodeFactory.createURI("res");
-         
+
     /**
      * Boilerplate for junit
-     */ 
+     */
     public TestRETE( String name ) {
-        super( name ); 
+        super( name );
     }
-    
+
     /**
      * Boilerplate for junit.
      * This is its own test suite
      */
     public static TestSuite suite() {
-        return new TestSuite( TestRETE.class ); 
+        return new TestSuite( TestRETE.class );
 //        TestSuite suite = new TestSuite();
 //        suite.addTest(new TestRETE( "foo" ));
 //        return suite;
-    }  
+    }
+
+    @SuppressWarnings("removal")
+    private static  Graph createGraphForTest() {
+        return GraphMemFactory.createGraphMem();
+    }
 
     /**
      * Test clause compiler and clause filter implementation.
      */
     public void testClauseFilter() {
-        doTestClauseFilter( new TriplePattern(a, p, x), 
+        doTestClauseFilter( new TriplePattern(a, p, x),
                             Triple.create(a, p, b), new Node[]{b, null, null});
-        doTestClauseFilter( new TriplePattern(x, p, b), 
+        doTestClauseFilter( new TriplePattern(x, p, b),
                             Triple.create(a, p, b), new Node[]{a, null, null});
         doTestClauseFilter( new TriplePattern(a, p, x), Triple.create(b, p, a), null);
         doTestClauseFilter( new TriplePattern(a, p, x), Triple.create(a, q, a), null);
-        doTestClauseFilter( new TriplePattern(x, p, x), 
+        doTestClauseFilter( new TriplePattern(x, p, x),
                             Triple.create(a, p, a), new Node[]{a, null, null});
         doTestClauseFilter( new TriplePattern(x, p, x), Triple.create(a, p, b), null);
-        doTestClauseFilter( 
-            new TriplePattern(a, p, Functor.makeFunctorNode("f", new Node[]{x, c})), 
-            Triple.create(a, p, a), 
+        doTestClauseFilter(
+            new TriplePattern(a, p, Functor.makeFunctorNode("f", new Node[]{x, c})),
+            Triple.create(a, p, a),
             null);
-        doTestClauseFilter( 
-            new TriplePattern(a, p, x), 
-            Triple.create(a, p, Functor.makeFunctorNode("f", new Node[]{b, c})), 
+        doTestClauseFilter(
+            new TriplePattern(a, p, x),
+            Triple.create(a, p, Functor.makeFunctorNode("f", new Node[]{b, c})),
             new Node[]{Functor.makeFunctorNode("f", new Node[]{b, c}), null, null});
-        doTestClauseFilter( 
-            new TriplePattern(a, p, Functor.makeFunctorNode("g", new Node[]{x, c})), 
-            Triple.create(a, p, Functor.makeFunctorNode("f", new Node[]{b, c})), 
+        doTestClauseFilter(
+            new TriplePattern(a, p, Functor.makeFunctorNode("g", new Node[]{x, c})),
+            Triple.create(a, p, Functor.makeFunctorNode("f", new Node[]{b, c})),
             null);
-        doTestClauseFilter( 
-            new TriplePattern(a, p, Functor.makeFunctorNode("f", new Node[]{x, c})), 
-            Triple.create(a, p, Functor.makeFunctorNode("f", new Node[]{b, c})), 
+        doTestClauseFilter(
+            new TriplePattern(a, p, Functor.makeFunctorNode("f", new Node[]{x, c})),
+            Triple.create(a, p, Functor.makeFunctorNode("f", new Node[]{b, c})),
             new Node[] {b, null, null});
-        doTestClauseFilter( 
-            new TriplePattern(x, p, Functor.makeFunctorNode("f", new Node[]{x, c})), 
-            Triple.create(a, p, Functor.makeFunctorNode("f", new Node[]{a, c})), 
+        doTestClauseFilter(
+            new TriplePattern(x, p, Functor.makeFunctorNode("f", new Node[]{x, c})),
+            Triple.create(a, p, Functor.makeFunctorNode("f", new Node[]{a, c})),
             new Node[] {a, null, null});
-        doTestClauseFilter( 
-            new TriplePattern(x, p, Functor.makeFunctorNode("f", new Node[]{x, c})), 
-            Triple.create(a, p, Functor.makeFunctorNode("f", new Node[]{b, c})), 
+        doTestClauseFilter(
+            new TriplePattern(x, p, Functor.makeFunctorNode("f", new Node[]{x, c})),
+            Triple.create(a, p, Functor.makeFunctorNode("f", new Node[]{b, c})),
             null);
     }
 
@@ -122,23 +127,23 @@ public class TestRETE  extends TestCase {
             assertEquals(new BindingVector(expected), tnode.env);
         }
     }
-    
+
     /**
      * Inner class usable as a dummy RETENode end point for testing.
      */
     protected static class RETETestNode implements RETESinkNode {
         /** The environment passed in */
         BindingVector env;
-        
+
         /** The mode flag */
         boolean isAdd;
-        
+
         /** True if the fire has been called */
         int firings = 0;
 
-        /** 
+        /**
          * Propagate a token to this node.
-         * @param env a set of variable bindings for the rule being processed. 
+         * @param env a set of variable bindings for the rule being processed.
          * @param isAdd distinguishes between add and remove operations.
          */
         @Override
@@ -147,7 +152,7 @@ public class TestRETE  extends TestCase {
             this.env = env;
             this.isAdd = isAdd;
         }
-        
+
         /**
          * Clone this node in the network across to a different context.
          * @param netCopy a map from RETENodes to cloned instance so far.
@@ -158,9 +163,9 @@ public class TestRETE  extends TestCase {
             // Dummy, not used in testing
             return this;
         }
-        
+
     }
-      
+
     /**
      * Minimal rule tester to check basic pattern match.
      */
@@ -183,7 +188,7 @@ public class TestRETE  extends TestCase {
                         Triple.create(n1, q, n3),
                         Triple.create(n4, n4, p),
                     });
-                    
+
         doRuleTest( "[testRule1: (n1 p ?a) -> (n2, p, ?a)]" +
                         "[testRule2: (n1 q ?a) -> (n2, q, ?a)]" +
                         "[testRule3: (n2 p ?a), (n2 q ?a) -> (res p ?a)]" +
@@ -193,7 +198,7 @@ public class TestRETE  extends TestCase {
                          Triple.create(n1, p, n3),
                          Triple.create(n2, p, n3)
                      });
-        
+
         doRuleTest( "[testRule1: (n1 p ?a) -> (n2, p, ?a)]" +
                         "[testRule2: (n1 q ?a) -> (n2, q, ?a)]" +
                         "[testRule3: (n2 p ?a), (n2 q ?a) -> (res p ?a)]" +
@@ -229,11 +234,11 @@ public class TestRETE  extends TestCase {
      */
     private void doRuleTest(String rules, Triple[] adds, Triple[] expected) {
         List<Rule> ruleList = Rule.parseRules(rules);
-        BasicForwardRuleInfGraph infgraph = new BasicForwardRuleInfGraph(null, new ArrayList<Rule>(), null, GraphMemFactory.createGraphMem());
+        BasicForwardRuleInfGraph infgraph = new BasicForwardRuleInfGraph(null, new ArrayList<Rule>(), null, createGraphForTest());
 //        infgraph.setTraceOn(true);
         RETEEngine engine = new RETEEngine(infgraph, ruleList);
         infgraph.prepare();
-        engine.init(true, new FGraph(GraphMemFactory.createGraphMem()));
+        engine.init(true, new FGraph(createGraphForTest()));
         for ( Triple add : adds )
         {
             engine.addTriple( add, true );
@@ -241,25 +246,25 @@ public class TestRETE  extends TestCase {
         engine.runAll();
         TestUtil.assertIteratorValues(this, infgraph.find(null, null, null), expected);
     }
-    
+
     /**
      * Check that the rulestate cloning keeps two descendent graphs independent.
-     * 
+     *
      */
     public void testRuleClone() {
         String rules = "[testRule1: (a p ?x) (b p ?x) -> (n1 p ?x) ]" +
                        "[testRule2: (?x q ?y) -> (?x p ?y)]";
         List<Rule> ruleList = Rule.parseRules(rules);
-        Graph schema = GraphMemFactory.createGraphMem();
+        Graph schema = createGraphForTest();
         schema.add(Triple.create(a, q, c));
         schema.add(Triple.create(a, q, d));
 
-        Graph data1 = GraphMemFactory.createGraphMem();
+        Graph data1 = createGraphForTest();
         data1.add(Triple.create(b, q, c));
-        
-        Graph data2 = GraphMemFactory.createGraphMem();
+
+        Graph data2 = createGraphForTest();
         data2.add(Triple.create(b, q, d));
-        
+
         GenericRuleReasoner reasoner =  new GenericRuleReasoner(ruleList);
         reasoner.setMode(GenericRuleReasoner.FORWARD_RETE);
         Reasoner boundReasoner = reasoner.bindSchema(schema);

@@ -38,14 +38,14 @@ import org.apache.jena.util.iterator.ExtendedIterator ;
  */
 
 public class TestLPDerivation extends TestCase {
-    
+
     /**
      * Boilerplate for junit
-     */ 
+     */
     public TestLPDerivation( String name ) {
-        super( name ); 
+        super( name );
     }
-    
+
     /**
      * Boilerplate for junit.
      * This is its own test suite
@@ -53,7 +53,12 @@ public class TestLPDerivation extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestLPDerivation.class );
     }
-    
+
+    @SuppressWarnings("removal")
+    private static  Graph createGraphForTest() {
+        return GraphMemFactory.createGraphMem();
+    }
+
     // Useful constants
     Node p = NodeFactory.createURI("p");
     Node q = NodeFactory.createURI("q");
@@ -95,7 +100,7 @@ public class TestLPDerivation extends TestCase {
      */
     private void doTest(String ruleSrc, Node[] tabled, Triple[] triples, Triple query, Triple[] matches, int rulenumber) {
         List<Rule> rules = Rule.parseRules(ruleSrc);
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         for ( Triple triple : triples )
         {
             data.add( triple );
@@ -125,7 +130,7 @@ public class TestLPDerivation extends TestCase {
         doTest(
                 "(?x p ?y) <- (?x q ?y).", new Node[]{},    // Rules + tabling
                 new Triple[] {                              // Data
-                        Triple.create(a, q, b),  
+                        Triple.create(a, q, b),
                 },
                 Triple.create(a, p, b),                        // query
                 new Triple[] {                              // Expected match list in derivation
@@ -134,16 +139,16 @@ public class TestLPDerivation extends TestCase {
                 0                                           // Expected rule in derivation
                 );
     }
-    
+
     /**
      * Test simple rule derivation from pair
      */
     public void testBasic2() {
         doTest(
-                "(?x p ?y) <- (?x q ?y). (?x p ?y) <- (?x r ?y).", 
+                "(?x p ?y) <- (?x q ?y). (?x p ?y) <- (?x r ?y).",
                 new Node[]{},    // Rules + tabling
                 new Triple[] {                              // Data
-                        Triple.create(a, r, b),  
+                        Triple.create(a, r, b),
                 },
                 Triple.create(a, p, b),                        // query
                 new Triple[] {                              // Expected match list in derivation
@@ -152,7 +157,7 @@ public class TestLPDerivation extends TestCase {
                 1                                           // Expected rule in derivation
                 );
     }
-    
+
     /**
      * Test composite derivation.
      */
@@ -160,38 +165,38 @@ public class TestLPDerivation extends TestCase {
         doTest(
                 "(?x p ?y) <- (?x q ?y) (?x r ?y).",  new Node[]{},    // Rules + tabling
                 new Triple[] {                              // Data
-                        Triple.create(a, q, b),  
-                        Triple.create(a, r, b),  
+                        Triple.create(a, q, b),
+                        Triple.create(a, r, b),
                 },
                 Triple.create(a, p, b),                        // query
                 new Triple[] {                              // Expected match list in derivation
-                        Triple.create(a, q, b),  
+                        Triple.create(a, q, b),
                         Triple.create(a, r, b)
                 },
                 0                                           // Expected rule in derivation
                 );
     }
-    
+
     /**
      * Test Chain derivation.
      */
     public void testChain() {
         doTest(
-                "(?x s ?y) <- (?x r ?y). (?x p ?y) <- (?x q ?y) (?x s ?y). ",  
+                "(?x s ?y) <- (?x r ?y). (?x p ?y) <- (?x q ?y) (?x s ?y). ",
                 new Node[]{},    // Rules + tabling
                 new Triple[] {                              // Data
-                        Triple.create(a, q, b),  
-                        Triple.create(a, r, b),  
+                        Triple.create(a, q, b),
+                        Triple.create(a, r, b),
                 },
                 Triple.create(a, p, b),                        // query
                 new Triple[] {                              // Expected match list in derivation
-                        Triple.create(a, q, b),  
+                        Triple.create(a, q, b),
                         Triple.create(a, s, b)
                 },
                 1                                           // Expected rule in derivation
                 );
     }
-    
+
     /**
      * Test tabled chaining
      */
@@ -200,17 +205,17 @@ public class TestLPDerivation extends TestCase {
                 "(?x p ?z) <- (?x p ?y) (?y p ?z).",
                 new Node[]{ p },    // Rules + tabling
                 new Triple[] {                              // Data
-                        Triple.create(a, p, b),  
-                        Triple.create(a, p, c),  
-                        Triple.create(b, p, d),  
+                        Triple.create(a, p, b),
+                        Triple.create(a, p, c),
+                        Triple.create(b, p, d),
                 },
                 Triple.create(a, p, d),                        // query
                 new Triple[] {                              // Expected match list in derivation
-                        Triple.create(a, p, b),  
+                        Triple.create(a, p, b),
                         Triple.create(b, p, d)
                 },
                 0                                           // Expected rule in derivation
                 );
     }
-    
+
 }
