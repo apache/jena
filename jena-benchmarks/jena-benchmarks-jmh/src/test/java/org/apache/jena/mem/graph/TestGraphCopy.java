@@ -42,8 +42,10 @@ public class TestGraphCopy {
 
     @Param({
             "GraphMem2Fast (current)",
-            "GraphMem2Legacy (current)",
-            "GraphMem2Roaring (current)",
+            "GraphMem2Roaring EAGER (current)",
+            "GraphMem2Roaring LAZY (current)",
+            "GraphMem2Roaring LAZY_PARALLEL (current)",
+            "GraphMem2Roaring MINIMAL (current)",
     })
     public String param1_GraphImplementation;
 
@@ -64,8 +66,7 @@ public class TestGraphCopy {
     }
 
     private GraphMem2 nativeCopy() {
-        var copy = sutCurrent.copy();
-        return copy;
+        return sutCurrent.copy();
     }
 
     private GraphMem2 findAndAddAll() {

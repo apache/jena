@@ -43,11 +43,12 @@ public class TestGraphStreamAll {
     public String param0_GraphUri;
 
     @Param({
-            "GraphMem (current)",
             "GraphMem2Fast (current)",
-            "GraphMem2Legacy (current)",
-            "GraphMem2Roaring (current)",
-            "GraphMem (Jena 4.8.0)",
+            "GraphMem2Roaring EAGER (current)",
+            "GraphMem2Roaring LAZY (current)",
+            "GraphMem2Roaring LAZY_PARALLEL (current)",
+            "GraphMem2Roaring MINIMAL (current)",
+//            "GraphMem (Jena 4.8.0)",
     })
     public String param1_GraphImplementation;
     java.util.function.Supplier<Object> graphStream;
@@ -66,25 +67,25 @@ public class TestGraphStreamAll {
     }
 
     private Object graphStreamCurrent() {
-        var list = sutCurrent.stream().collect(Collectors.toList());
+        var list = sutCurrent.stream().toList();
         assertEquals(sutCurrent.size(), list.size());
         return list;
     }
 
     private Object graphStream480() {
-        var list = sut480.stream().collect(Collectors.toList());
+        var list = sut480.stream().toList();
         assertEquals(sut480.size(), list.size());
         return list;
     }
 
     private Object graphStreamParallelCurrent() {
-        var list = sutCurrent.stream().parallel().collect(Collectors.toList());
+        var list = sutCurrent.stream().parallel().toList();
         assertEquals(sutCurrent.size(), list.size());
         return list;
     }
 
     private Object graphStreamParallel480() {
-        var list = sut480.stream().parallel().collect(Collectors.toList());
+        var list = sut480.stream().parallel().toList();
         assertEquals(sut480.size(), list.size());
         return list;
     }

@@ -33,17 +33,13 @@ public class SparseArraySubSpliteratorTest {
             Integer[] array = new Integer[0];
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
-            assertFalse(spliterator.tryAdvance((i) -> {
-                fail("Should not have advanced");
-            }));
+            assertFalse(spliterator.tryAdvance(i -> fail("Should not have advanced")));
         }
         {
             Integer[] array = new Integer[1];
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
-            assertFalse(spliterator.tryAdvance((i) -> {
-                fail("Should not have advanced");
-            }));
+            assertFalse(spliterator.tryAdvance(i -> fail("Should not have advanced")));
         }
     }
 
@@ -54,33 +50,27 @@ public class SparseArraySubSpliteratorTest {
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            while (spliterator.tryAdvance((i) -> {
-                itemsFound.add(1);
-            })) ;
+            while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(1, itemsFound.size());
-            itemsFound.contains(1);
+            assertTrue(itemsFound.contains(1));
         }
         {
             Integer[] array = new Integer[]{1, null};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            while (spliterator.tryAdvance((i) -> {
-                itemsFound.add(1);
-            })) ;
+            while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(1, itemsFound.size());
-            itemsFound.contains(1);
+            assertTrue(itemsFound.contains(1));
         }
         {
             Integer[] array = new Integer[]{null, 1};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            while (spliterator.tryAdvance((i) -> {
-                itemsFound.add(1);
-            })) ;
+            while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(1, itemsFound.size());
-            itemsFound.contains(1);
+            assertTrue(itemsFound.contains(1));
         }
     }
 
@@ -91,60 +81,50 @@ public class SparseArraySubSpliteratorTest {
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            while (spliterator.tryAdvance((i) -> {
-                itemsFound.add(i);
-            })) ;
+            while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(2, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
         }
         {
             Integer[] array = new Integer[]{1, null, 2};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            while (spliterator.tryAdvance((i) -> {
-                itemsFound.add(i);
-            })) ;
+            while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(2, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
         }
         {
             Integer[] array = new Integer[]{1, null, null, 2};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            while (spliterator.tryAdvance((i) -> {
-                itemsFound.add(i);
-            })) ;
+            while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(2, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
         }
         {
             Integer[] array = new Integer[]{null, 1, null, 2};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            while (spliterator.tryAdvance((i) -> {
-                itemsFound.add(i);
-            })) ;
+            while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(2, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
         }
         {
             Integer[] array = new Integer[]{null, 1, null, null, 2};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            while (spliterator.tryAdvance((i) -> {
-                itemsFound.add(i);
-            })) ;
+            while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(2, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
         }
     }
 
@@ -155,65 +135,55 @@ public class SparseArraySubSpliteratorTest {
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            while (spliterator.tryAdvance((i) -> {
-                itemsFound.add(i);
-            })) ;
+            while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(3, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
-            itemsFound.contains(3);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
+            assertTrue(itemsFound.contains(3));
         }
         {
             Integer[] array = new Integer[]{1, null, 2, 3};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            while (spliterator.tryAdvance((i) -> {
-                itemsFound.add(i);
-            })) ;
+            while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(3, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
-            itemsFound.contains(3);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
+            assertTrue(itemsFound.contains(3));
         }
         {
             Integer[] array = new Integer[]{1, null, null, 2, 3};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            while (spliterator.tryAdvance((i) -> {
-                itemsFound.add(i);
-            })) ;
+            while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(3, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
-            itemsFound.contains(3);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
+            assertTrue(itemsFound.contains(3));
         }
         {
             Integer[] array = new Integer[]{null, 1, null, 2, null, 3};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            while (spliterator.tryAdvance((i) -> {
-                itemsFound.add(i);
-            })) ;
+            while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(3, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
-            itemsFound.contains(3);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
+            assertTrue(itemsFound.contains(3));
         }
         {
             Integer[] array = new Integer[]{null, 1, null, null, 2, null, 3};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            while (spliterator.tryAdvance((i) -> {
-                itemsFound.add(i);
-            })) ;
+            while (spliterator.tryAdvance(itemsFound::add)) { /*empty*/ }
             assertEquals(3, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
-            itemsFound.contains(3);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
+            assertTrue(itemsFound.contains(3));
         }
     }
 
@@ -224,9 +194,7 @@ public class SparseArraySubSpliteratorTest {
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            spliterator.forEachRemaining((i) -> {
-                itemsFound.add(i);
-            });
+            spliterator.forEachRemaining(itemsFound::add);
             assertEquals(0, itemsFound.size());
         }
         {
@@ -234,9 +202,7 @@ public class SparseArraySubSpliteratorTest {
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            spliterator.forEachRemaining((i) -> {
-                itemsFound.add(i);
-            });
+            spliterator.forEachRemaining(itemsFound::add);
             assertEquals(0, itemsFound.size());
         }
     }
@@ -248,33 +214,27 @@ public class SparseArraySubSpliteratorTest {
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            spliterator.forEachRemaining((i) -> {
-                itemsFound.add(i);
-            });
+            spliterator.forEachRemaining(itemsFound::add);
             assertEquals(1, itemsFound.size());
-            itemsFound.contains(1);
+            assertTrue(itemsFound.contains(1));
         }
         {
             Integer[] array = new Integer[]{null, 1};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            spliterator.forEachRemaining((i) -> {
-                itemsFound.add(i);
-            });
+            spliterator.forEachRemaining(itemsFound::add);
             assertEquals(1, itemsFound.size());
-            itemsFound.contains(1);
+            assertTrue(itemsFound.contains(1));
         }
         {
             Integer[] array = new Integer[]{1, null};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            spliterator.forEachRemaining((i) -> {
-                itemsFound.add(i);
-            });
+            spliterator.forEachRemaining(itemsFound::add);
             assertEquals(1, itemsFound.size());
-            itemsFound.contains(1);
+            assertTrue(itemsFound.contains(1));
         }
     }
 
@@ -285,60 +245,50 @@ public class SparseArraySubSpliteratorTest {
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            spliterator.forEachRemaining((i) -> {
-                itemsFound.add(i);
-            });
+            spliterator.forEachRemaining(itemsFound::add);
             assertEquals(2, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
         }
         {
             Integer[] array = new Integer[]{1, null, 2};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            spliterator.forEachRemaining((i) -> {
-                itemsFound.add(i);
-            });
+            spliterator.forEachRemaining(itemsFound::add);
             assertEquals(2, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
         }
         {
             Integer[] array = new Integer[]{1, null, null, 2};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            spliterator.forEachRemaining((i) -> {
-                itemsFound.add(i);
-            });
+            spliterator.forEachRemaining(itemsFound::add);
             assertEquals(2, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
         }
         {
             Integer[] array = new Integer[]{null, 1, null, 2};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            spliterator.forEachRemaining((i) -> {
-                itemsFound.add(i);
-            });
+            spliterator.forEachRemaining(itemsFound::add);
             assertEquals(2, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
         }
         {
             Integer[] array = new Integer[]{null, 1, null, null, 2};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            spliterator.forEachRemaining((i) -> {
-                itemsFound.add(i);
-            });
+            spliterator.forEachRemaining(itemsFound::add);
             assertEquals(2, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
         }
     }
 
@@ -349,62 +299,55 @@ public class SparseArraySubSpliteratorTest {
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            spliterator.forEachRemaining((i) -> {
-                itemsFound.add(i);
-            });
+            spliterator.forEachRemaining(itemsFound::add);
             assertEquals(3, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
-            itemsFound.contains(3);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
+            assertTrue(itemsFound.contains(3));
         }
         {
             Integer[] array = new Integer[]{1, null, 2, 3};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            spliterator.forEachRemaining((i) -> {
-                itemsFound.add(i);
-            });
+            spliterator.forEachRemaining(itemsFound::add);
             assertEquals(3, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
-            itemsFound.contains(3);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
+            assertTrue(itemsFound.contains(3));
         }
         {
             Integer[] array = new Integer[]{1, null, null, 2, 3};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            spliterator.forEachRemaining((i) -> {
-                itemsFound.add(i);
-            });
+            spliterator.forEachRemaining(itemsFound::add);
             assertEquals(3, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
-            itemsFound.contains(3);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
+            assertTrue(itemsFound.contains(3));
         }
         {
             Integer[] array = new Integer[]{null, 1, null, 2, 3};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            spliterator.forEachRemaining((i) -> {
-                itemsFound.add(i);
-            });
+            spliterator.forEachRemaining(itemsFound::add);
             assertEquals(3, itemsFound.size());
-            itemsFound.contains(1);
-            itemsFound.contains(2);
-            itemsFound.contains(3);
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
+            assertTrue(itemsFound.contains(3));
         }
         {
             Integer[] array = new Integer[]{null, 1, null, null, 2, 3};
             Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
             });
             var itemsFound = new ArrayList<>();
-            spliterator.forEachRemaining((i) -> {
-                itemsFound.add(i);
-            });
+            spliterator.forEachRemaining(itemsFound::add);
             assertEquals(3, itemsFound.size());
+            assertTrue(itemsFound.contains(1));
+            assertTrue(itemsFound.contains(2));
+            assertTrue(itemsFound.contains(3));
         }
     }
 
@@ -536,7 +479,7 @@ public class SparseArraySubSpliteratorTest {
 
     @Test
     public void splitWithOneElementNull() {
-        Integer[] array = new Integer[]{1};
+        Integer[] array = new Integer[]{null};
         Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
         });
         assertNull(spliterator.trySplit());
@@ -544,11 +487,10 @@ public class SparseArraySubSpliteratorTest {
 
     @Test
     public void splitWithOneRemainingElementNull() {
-        Integer[] array = new Integer[]{1, 2};
+        Integer[] array = new Integer[]{1, null};
         Spliterator<Integer> spliterator = new SparseArraySubSpliterator<>(array, () -> {
         });
-        spliterator.tryAdvance((i) -> {
-        });
+        spliterator.tryAdvance(i -> {});
         assertNull(spliterator.trySplit());
     }
 }
