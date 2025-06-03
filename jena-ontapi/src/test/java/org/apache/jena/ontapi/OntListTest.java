@@ -336,7 +336,7 @@ public class OntListTest {
     @Test
     public void testTypedList() {
         OntGraphModelImpl m = new OntGraphModelImpl(
-                OntModelFactory.createUnionGraph(GraphMemFactory.createGraphMem()),
+                OntModelFactory.createUnionGraph(GraphMemFactory.createDefaultGraph()),
                 OntSpecification.OWL2_DL_MEM_BUILTIN_RDFS_INF.getPersonality()
         );
         m.setNsPrefixes(OntModelFactory.STANDARD);

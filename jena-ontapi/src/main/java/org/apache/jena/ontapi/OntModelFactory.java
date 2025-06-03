@@ -78,7 +78,7 @@ public class OntModelFactory {
      * @return {@code Graph}
      */
     public static Graph createDefaultGraph() {
-        return GraphMemFactory.createGraphMem();
+        return GraphMemFactory.createDefaultGraph();
     }
 
     /**

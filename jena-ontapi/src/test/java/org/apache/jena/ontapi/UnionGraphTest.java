@@ -159,11 +159,11 @@ public class UnionGraphTest {
 
     @Test
     public void testCloseRecursiveGraph() {
-        UnionGraph a = new UnionGraphImpl(GraphMemFactory.createGraphMem());
-        UnionGraph b = new UnionGraphImpl(GraphMemFactory.createGraphMem());
-        UnionGraph c = new UnionGraphImpl(GraphMemFactory.createGraphMem());
-        UnionGraph d = new UnionGraphImpl(GraphMemFactory.createGraphMem());
-        UnionGraph e = new UnionGraphImpl(GraphMemFactory.createGraphMem());
+        UnionGraph a = new UnionGraphImpl(GraphMemFactory.createDefaultGraph());
+        UnionGraph b = new UnionGraphImpl(GraphMemFactory.createDefaultGraph());
+        UnionGraph c = new UnionGraphImpl(GraphMemFactory.createDefaultGraph());
+        UnionGraph d = new UnionGraphImpl(GraphMemFactory.createDefaultGraph());
+        UnionGraph e = new UnionGraphImpl(GraphMemFactory.createDefaultGraph());
         assertClosed(a, false);
         assertClosed(b, false);
         assertClosed(c, false);
@@ -185,9 +185,9 @@ public class UnionGraphTest {
 
     @Test
     public void testCloseHierarchyGraph() {
-        UnionGraphImpl a = new UnionGraphImpl(GraphMemFactory.createGraphMem());
-        UnionGraphImpl b = new UnionGraphImpl(GraphMemFactory.createGraphMem());
-        UnionGraphImpl c = new UnionGraphImpl(GraphMemFactory.createGraphMem());
+        UnionGraphImpl a = new UnionGraphImpl(GraphMemFactory.createDefaultGraph());
+        UnionGraphImpl b = new UnionGraphImpl(GraphMemFactory.createDefaultGraph());
+        UnionGraphImpl c = new UnionGraphImpl(GraphMemFactory.createDefaultGraph());
         assertClosed(a, false);
         assertClosed(b, false);
         assertClosed(c, false);
@@ -199,7 +199,7 @@ public class UnionGraphTest {
         assertClosed(c, true);
         assertClosed(a, false);
 
-        UnionGraphImpl d = new UnionGraphImpl(GraphMemFactory.createGraphMem());
+        UnionGraphImpl d = new UnionGraphImpl(GraphMemFactory.createDefaultGraph());
         try {
             b.addSubGraph(d);
             Assertions.fail("Possible to add a sub-graph");
