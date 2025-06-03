@@ -26,54 +26,56 @@ import org.apache.jena.graph.compose.* ;
 import org.apache.jena.graph.test.* ;
 import org.apache.jena.util.iterator.* ;
 
-public abstract class TestDyadic extends AbstractTestGraph
-	{
-	public TestDyadic( String name )
-		{ super( name ); }
-		
-	
-	public static TestSuite suite()
-    	{ return new TestSuite( TestDyadic.class ); }
-    
+public abstract class TestDyadic extends AbstractTestGraph {
+    public TestDyadic(String name) {
+        super(name);
+    }
 
-	static private ExtendedIterator<String> things( final String x ) 
-		{
-		return new NiceIterator<String>()
-			{
-			private StringTokenizer tokens = new StringTokenizer( x );
-			@Override public boolean hasNext() { return tokens.hasMoreTokens(); }
-			@Override public String next() { return tokens.nextToken(); }
-			};
-		}
-	
-	/**
-	 * Test the things() iterator generating utility function.
-	 */
-	public void testThings()
-		{
-		ExtendedIterator<String> it1 = things( "now is the time" );
-		ExtendedIterator<String> it2 = things( "now is the time" );
-		ExtendedIterator<String> mt1 = things( "" );
-		ExtendedIterator<String> mt2 = things( "" );
-		assertEquals( "mt1.hasNext()", false, mt1.hasNext() );
-		assertEquals( "mt2.hasNext()", false, mt2.hasNext() );
-		assertEquals( "andThen(mt1,mt2).hasNext()", false, mt1.andThen( mt2 ).hasNext() ); 		
-		assertEquals( "butNot(it1,it2).hasNext()", false, CompositionBase.butNot( it1, it2 ).hasNext() );
-		assertEquals( "x y z @butNot z", true, CompositionBase.butNot( things( "x y z" ), things( "z" ) ).hasNext() );
-		assertEquals( "x y z @butNot a", true, CompositionBase.butNot( things( "x y z" ), things( "z" ) ).hasNext() );
-		}
-    
-    public void testDyadicOperands()
-        {
-        Graph g = GraphMemFactory.createGraphMem(), h = GraphMemFactory.createGraphMem();
-        Dyadic d = new Dyadic( g, h )
-            {
-            @Override protected ExtendedIterator<Triple> _graphBaseFind( Triple m ) { return null; }
-            };
-        assertSame( g, d.getL() );
-        assertSame( h, d.getR() );
-        }
+    public static TestSuite suite() {
+        return new TestSuite(TestDyadic.class);
+    }
 
+    static private ExtendedIterator<String> things(final String x) {
+        return new NiceIterator<String>() {
+            private StringTokenizer tokens = new StringTokenizer(x);
+            @Override
+            public boolean hasNext() {
+                return tokens.hasMoreTokens();
+            }
 
-	
-	}
+            @Override
+            public String next() {
+                return tokens.nextToken();
+            }
+        };
+    }
+
+    /**
+     * Test the things() iterator generating utility function.
+     */
+    public void testThings() {
+        ExtendedIterator<String> it1 = things("now is the time");
+        ExtendedIterator<String> it2 = things("now is the time");
+        ExtendedIterator<String> mt1 = things("");
+        ExtendedIterator<String> mt2 = things("");
+        assertEquals("mt1.hasNext()", false, mt1.hasNext());
+        assertEquals("mt2.hasNext()", false, mt2.hasNext());
+        assertEquals("andThen(mt1,mt2).hasNext()", false, mt1.andThen(mt2).hasNext());
+        assertEquals("butNot(it1,it2).hasNext()", false, CompositionBase.butNot(it1, it2).hasNext());
+        assertEquals("x y z @butNot z", true, CompositionBase.butNot(things("x y z"), things("z")).hasNext());
+        assertEquals("x y z @butNot a", true, CompositionBase.butNot(things("x y z"), things("z")).hasNext());
+    }
+
+    public void testDyadicOperands() {
+        Graph g = GraphMemFactory.createDefaultGraph();
+        Graph h = GraphMemFactory.createDefaultGraph();
+        Dyadic d = new Dyadic(g, h) {
+            @Override
+            protected ExtendedIterator<Triple> _graphBaseFind(Triple m) {
+                return null;
+            }
+        };
+        assertSame(g, d.getL());
+        assertSame(h, d.getR());
+    }
+}

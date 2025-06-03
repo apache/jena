@@ -27,4 +27,4 @@ import org.junit.runners.Suite;
     TestJenaException.class,
     TestLockMRPlusSW.class
 })
-public class TestSharedPackage {}
+public class TS_SharedPackage {}

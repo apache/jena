@@ -19,23 +19,21 @@
 package org.apache.jena.rdf.model.test;
 
 import junit.framework.*;
-import org.apache.jena.rdf.model.* ;
+import org.apache.jena.rdf.model.*;
 
-public class TS3_StandardModels extends AbstractTestModel
-    {
+public class TS3_StandardModels extends AbstractTestModel {
 
-    public TS3_StandardModels(String name)
-        { super(name); }
-        
-    public static TestSuite suite()
-        {
-        return new TestSuite( TS3_StandardModels.class );
-        }
+    public TS3_StandardModels(String name) {
+        super(name);
+    }
+
+    public static TestSuite suite() {
+        return new TestSuite(TS3_StandardModels.class);
+    }
 
     @Override
-    public Model getModel()
-        {
+    public Model getModel() {
         return ModelFactory.createDefaultModel();
-        }   
-
     }
+
+}

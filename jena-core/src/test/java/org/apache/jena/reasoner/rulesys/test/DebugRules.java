@@ -29,7 +29,7 @@ import org.apache.jena.reasoner.rulesys.Rule ;
 import org.apache.jena.reasoner.rulesys.Util ;
 import org.apache.jena.util.PrintUtil ;
 
-/** * Using during debuging of the rule systems.
+/** * Using during debugging of the rule systems.
  * Runs a named set of rules (can contain axioms and rules) and
  * lists all the resulting entailments.
  */
@@ -37,27 +37,27 @@ public class DebugRules {
 
     /** The name of the rule set to load */
     public static final String ruleFile = "etc/temp.rules";
-    
+
     /** The parsed set of rules */
     public List<Rule> ruleset;
-    
+
     /** Constructor - loads the rules */
     public DebugRules(String rulefileName) {
         ruleset = Rule.parseRules(Util.loadRuleParserFromResourceFile(rulefileName));
     }
-    
+
     /** Run a single test */
     public void run() {
-        
+
         BasicForwardRuleReasoner reasoner = new BasicForwardRuleReasoner(ruleset);
-        InfGraph result = reasoner.bind(GraphMemFactory.createGraphMem());
+        InfGraph result = reasoner.bind(GraphMemFactory.createDefaultGraph());
         System.out.println("Final graph state");
         for (Iterator<Triple> i = result.find(null, null, null); i.hasNext(); ) {
             System.out.println(PrintUtil.print(i.next()));
         }
-        
+
     }
-    
+
     public static void main(String[] args) {
         try {
             DebugRules tester = new DebugRules(ruleFile);
@@ -66,5 +66,5 @@ public class DebugRules {
             System.out.println("Problem: " + e);
         }
     }
-    
+
 }

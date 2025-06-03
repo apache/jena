@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.test;
+package org.apache.jena.graph.test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -26,7 +26,9 @@ import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.rdf.model.impl.Util;
 import org.junit.Test;
 
-public class TestModelUtil {
+
+/** Testing making string-like RDF terms */
+public class TestNodeCreateStrings {
 
     // -- xsd:string
 

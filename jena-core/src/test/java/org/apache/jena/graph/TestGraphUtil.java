@@ -30,14 +30,14 @@ public class TestGraphUtil {
     private static Graph graph2 = make(2);
 
     private static Graph make(int N) {
-        Graph graph = GraphMemFactory.createGraphMem();
+        Graph graph = GraphMemFactory.createDefaultGraph();
         for ( int i = 0 ; i < N ; i++ ) {
             Triple t = GraphTestBase.triple("a P 'x"+i+"'");
             graph.add(t);
         }
         return graph ;
     }
-    
+
     @Test public void compareSizeTo_1() {
         assertEquals(1, GraphUtil.compareSizeTo(graph2, 0));
         assertEquals(1, GraphUtil.compareSizeTo(graph2, 1));
@@ -45,7 +45,7 @@ public class TestGraphUtil {
         assertEquals(-1, GraphUtil.compareSizeTo(graph2, 3));
         assertEquals(-1, GraphUtil.compareSizeTo(graph2, 4));
     }
-    
+
     @Test public void compareSizeTo_2() {
         assertEquals(1, GraphUtil.compareSizeTo(graph1, 0));
         assertEquals(0, GraphUtil.compareSizeTo(graph1, 1));

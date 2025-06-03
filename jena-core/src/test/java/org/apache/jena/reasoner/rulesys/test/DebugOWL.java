@@ -40,58 +40,62 @@ public class DebugOWL {
 
     /** The base reasoner being tested */
     Reasoner reasoner;
-    
+
     /** The raw tests data as a Graph */
     Graph testdata;
-    
+
     /** The (optional) schema graph used in interpreting the test data */
     Graph schema;
-    
+
     /** The inference graph under test */
     InfGraph infgraph;
-    
+
     /** Concepts created by testGenerator, [layer, index] */
     Node[] concepts;
-    
+
     /** Instances of each concept */
     Node[] instances;
-    
+
     /** Instance properties */
     Node[] properties;
-        
+
     static Logger logger = LoggerFactory.getLogger(DebugOWL.class);
-    
+
     /** reasoner config: experimental ruleset and config */
     public static final int EXPT = 1;
-    
+
     /** reasoner config: normal OWL-FB */
     public static final int OWLFB = 2;
-    
+
     /** reasoner config: normal OWL forward */
     public static final int OWL = 3;
-    
+
     /** reasoner config: normal RDFS */
     public static final int RDFSFB = 4;
-    
+
     /** reasoner config: final RDFS - hybrid + TGC */
     public static final int RDFSFinal = 5;
-    
+
     /** reasoner config: experimental OWL */
     public static final int OWLExpt = 6;
-    
+
     /** reasoner config: LP RDFS exp */
     public static final int RDFSLPExpt = 7;
-    
-    
+
+    @SuppressWarnings("removal")
+    private static  Graph createGraphForTest() {
+        return GraphMemFactory.createGraphMem();
+    }
+
     /**
      * Construct an empty test harness.
      */
     public DebugOWL(int config) {
-        testdata = GraphMemFactory.createGraphMem();
+        testdata = createGraphForTest();
         schema = null;
-        
+
         switch(config) {
-            
+
         case EXPT:
             reasoner = GenericRuleReasonerFactory.theInstance().create(null);
             GenericRuleReasoner grr = (GenericRuleReasoner)reasoner;
@@ -106,20 +110,20 @@ public class DebugOWL {
 //            grr.setOWLTranslation(true);
 //            grr.setTraceOn(true);
             break;
-            
+
             case OWLFB:
                 reasoner = OWLFBRuleReasonerFactory.theInstance().create(null);
 //                ((OWLFBRuleReasoner)reasoner).setTraceOn(true);
                 break;
-                        
+
             case RDFSFB:
                 reasoner = RDFSFBRuleReasonerFactory.theInstance().create(null);
                 break;
-            
+
             case RDFSFinal:
                 reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
                 break;
-                        
+
             case RDFSLPExpt:
                 try {
                     List<Rule> rules = Rule.parseRules(Util.loadRuleParserFromResourceFile("etc/expt.rules"));
@@ -129,11 +133,11 @@ public class DebugOWL {
                     System.exit(1);
                 }
                 break;
-            
-        } 
-        
+
+        }
+
     }
-    
+
     /**
      * Load a test data set from file.
      */
@@ -141,7 +145,7 @@ public class DebugOWL {
         testdata = FileManager.getInternal().loadModelInternal(testFile).getGraph();
         schema = null;
     }
-    
+
     /**
      * Load both a schema and an instance data file.
      */
@@ -149,7 +153,7 @@ public class DebugOWL {
         testdata = FileManager.getInternal().loadModelInternal(testFile).getGraph();
         schema = FileManager.getInternal().loadModelInternal(schemaFile).getGraph();
     }
-    
+
     /**
      * Create an artificial data set. This variant puts schema and
      * instance data into the same testdata graph.
@@ -163,7 +167,7 @@ public class DebugOWL {
         int numClasses = 0;
         int levelSize = 1;
         for (int i = 0; i < depth; i++) {
-            levelSize *= NS; 
+            levelSize *= NS;
             numClasses += levelSize;
         }
         concepts = new Node[numClasses];
@@ -171,9 +175,9 @@ public class DebugOWL {
         instances = new Node[numClasses * NI];
         logger.info("Classes: " + numClasses +" Instances: " + (numClasses * NI)
                         + (withProps ? " with properties" : ""));
-        
+
         // Create the tree
-        testdata = GraphMemFactory.createGraphMem();
+        testdata = createGraphForTest();
         // First level
         int conceptPtr = 0;
         int levelStart = 0;
@@ -185,7 +189,7 @@ public class DebugOWL {
             if (i == 0) {
                 for (int j = 0; j < NS; j++) {
                     Node concept = NodeFactory.createURI("concept" + conceptPtr);
-                    if (withProps) { 
+                    if (withProps) {
                         property = NodeFactory.createURI("prop" + conceptPtr);
                         properties[conceptPtr] = property;
                     }
@@ -196,7 +200,7 @@ public class DebugOWL {
                     Node superConcept = concepts[j];
                     for (int k = 0; k < NS; k++) {
                         Node concept = NodeFactory.createURI("concept" + conceptPtr);
-                        if (withProps) { 
+                        if (withProps) {
                             property = NodeFactory.createURI("prop" + conceptPtr);
                             properties[conceptPtr] = property;
                         }
@@ -221,7 +225,7 @@ public class DebugOWL {
             }
         }
     }
-    
+
     /**
      * Configure the inference graph ready for testing.
      */
@@ -241,14 +245,14 @@ public class DebugOWL {
             System.out.println(".. finished");
         }
     }
-    
+
     /**
      * Test and time an predefined class extension listing
      */
     long listC0(boolean print) {
         return list(null, RDF.type.asNode(), concepts[0], print);
     }
-    
+
     /**
      * Test and time an general access operation.
      */
@@ -267,7 +271,7 @@ public class DebugOWL {
         System.out.println("Found " + count + " results");
         return (t2 - t1);
     }
-   
+
     /**
      * Create and run a list classes test.
      */
@@ -276,7 +280,7 @@ public class DebugOWL {
         long t = list(null, RDF.type.asNode(), RDFS.Class.asNode(), false);
         System.out.println("Took " + t + "ms");
     }
-   
+
     /**
      * Create and run a volz test.
      */
@@ -288,7 +292,7 @@ public class DebugOWL {
             ((FBRuleInfGraph)infgraph).printLPProfile();
         }
     }
-    
+
     /**
      * Run a standard test squence based on Volz et al sets
      */
@@ -297,7 +301,7 @@ public class DebugOWL {
         runVolz(3,5,10, false);
         runVolz(4,5,10, false);
         runVolz(5,5,10, false);
-        
+
 //        runVolz(3,5,30, false);
 //        runVolz(4,5,30, false);
 //        runVolz(5,5,30, false);
@@ -305,7 +309,7 @@ public class DebugOWL {
 //        run(4,5,10, true);
 //        run(5,5,10, true);
     }
-    
+
     /**
      * Run default test on a named file.
      */
@@ -315,7 +319,7 @@ public class DebugOWL {
         long t = list(null, RDF.type.asNode(), RDFS.Class.asNode(), false);
         System.out.println("Took " + t + "ms");
     }
-    
+
     public static void main(String[] args) {
         try {
             String dataFile = "file:testing/ontology/owl/list-syntax/test-with-import.rdf";
@@ -324,30 +328,30 @@ public class DebugOWL {
             String dataFile2 = "file:testing/reasoners/bugs/test.owl";
             String food = "file:testing/reasoners/bugs/food.owl";
 
-            // Example from ontology development which takes s rather than ms            
+            // Example from ontology development which takes s rather than ms
 //            new DebugOWL(OWLExpt).listClassesOn(dataFile2);
-            
+
             // owl.owl goes into meltdown with even the forward rules
 //            new DebugOWL(OWLFB).run(schemaFile);
 //            new DebugOWL(OWL).run("file:temp/owl-subset.owl");
-            
+
             // Test volz examples on OWL config
 //            new DebugOWL(OWLFB).runVolz();
 //            new DebugOWL(OWLExpt).runVolz();
-            
+
             // Test volz examples on RDFS config
             System.out.println("Volz tests on normal RDFS, tgc + type rules");
             new DebugOWL(RDFSFinal).runVolz();
 //            System.out.println("Volz tests on lp + expt RDFS rules");
 //            new DebugOWL(RDFSLPExpt).runVolz();
-            
+
 //            System.out.println("Volz tests on normal RDFS fb rules");
 //            new DebugOWL(RDFSFB).runVolz();
 //            System.out.println("Volz tests on lp + expt owl rules");
 //            new DebugOWL(OWLExpt).runVolz();
 //            System.out.println("Volz tests on normal OWL-FB");
 //            new DebugOWL(OWLFB).runVolz();
-                        
+
 //            DebugOWL tester = new DebugOWL(OWLFB);
 //            tester.load(dataFile2);
 //            System.out.println("Test schema + data  started ...");
@@ -367,5 +371,5 @@ public class DebugOWL {
             e.printStackTrace();
         }
     }
-    
+
 }

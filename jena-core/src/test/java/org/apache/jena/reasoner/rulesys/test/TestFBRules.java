@@ -116,6 +116,11 @@ public class TestFBRules extends TestCase {
 //        return suite;
     }
 
+    @SuppressWarnings("removal")
+    private static  Graph createGraphForTest() {
+        return GraphMemFactory.createGraphMem();
+    }
+
     /**
      * Override in subclasses to test other reasoners.
      */
@@ -139,7 +144,7 @@ public class TestFBRules extends TestCase {
      * Assemble a test infGraph from a rule source and empty data
      */
     public InfGraph createInfGraph(String rules) {
-        return createReasoner( Rule.parseRules(rules) ).bind(GraphMemFactory.createGraphMem());
+        return createReasoner( Rule.parseRules(rules) ).bind(createGraphForTest());
     }
 
     /**
@@ -245,9 +250,9 @@ public class TestFBRules extends TestCase {
                        "[testRule3: (n2 p ?a), (n2 q ?a) -> (res p ?a)]" +
                        "[testBRule4: (n3 p ?a) <- (n1, p, ?a)]";
         List<Rule> ruleList = Rule.parseRules(rules);
-        Graph schema = GraphMemFactory.createGraphMem();
+        Graph schema = createGraphForTest();
         schema.add(Triple.create(n1, p, n3));
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(n1, q, n4));
         data.add(Triple.create(n1, q, n3));
 
@@ -294,7 +299,7 @@ public class TestFBRules extends TestCase {
      */
     public void testRebind() {
         String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(n1, p, n2));
         InfGraph infgraph = createInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
@@ -302,7 +307,7 @@ public class TestFBRules extends TestCase {
                 Triple.create(n1, p, n2),
                 Triple.create(n1, q, n2)
             });
-        Graph ndata = GraphMemFactory.createGraphMem();
+        Graph ndata = createGraphForTest();
         ndata.add(Triple.create(n1, p, n3));
         infgraph.rebind(ndata);
         TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
@@ -365,7 +370,7 @@ public class TestFBRules extends TestCase {
      */
     public void testClose() {
         String rules = "[rule1: (?x p ?y) -> (?x q ?y)]";
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(n1, p, n2));
         InfGraph infgraph = createInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
@@ -387,7 +392,7 @@ public class TestFBRules extends TestCase {
      * Test example pure backchaining rules
      */
     public void testBackchain1() {
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(p, sP, q));
         data.add(Triple.create(q, sP, r));
         data.add(Triple.create(C1, sC, C2));
@@ -417,7 +422,7 @@ public class TestFBRules extends TestCase {
      * Test complex rule head unification
      */
     public void testBackchain2() {
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(c, q, d));
         String rules =
             "[r1: (c r ?x) <- (?x p f(?x b))]" +
@@ -437,7 +442,7 @@ public class TestFBRules extends TestCase {
                   Triple.create(c, r, a)
               } );
 
-        data = GraphMemFactory.createGraphMem();
+        data = createGraphForTest();
         data.add(Triple.create(a, q, a));
         data.add(Triple.create(a, q, b));
         data.add(Triple.create(a, q, c));
@@ -468,7 +473,7 @@ public class TestFBRules extends TestCase {
      * Test restriction example
      */
     public void testBackchain3() {
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(a, ty, r));
         data.add(Triple.create(a, p, b));
         data.add(Triple.create(r, sC, C1));
@@ -491,7 +496,7 @@ public class TestFBRules extends TestCase {
      * Test example hybrid rule.
      */
     public void testHybrid1() {
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(a, p, b));
         data.add(Triple.create(p, ty, s));
         String rules =
@@ -508,7 +513,7 @@ public class TestFBRules extends TestCase {
      * Test example hybrid rule.
      */
     public void testHybrid2() {
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(a, r, b));
         data.add(Triple.create(p, ty, s));
         String rules =
@@ -543,7 +548,7 @@ public class TestFBRules extends TestCase {
      * Test example hybrid rules for rdfs.
      */
     public void testHybridRDFS() {
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(a, p, b));
         data.add(Triple.create(p, RDFS.range.asNode(), C1));
         String rules =
@@ -567,7 +572,7 @@ public class TestFBRules extends TestCase {
      * Test example hybrid rules for rdfs.
      */
     public void testHybridRDFS2() {
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(a, p, b));
         data.add(Triple.create(p, sP, r));
         data.add(Triple.create(r, RDFS.range.asNode(), C1));
@@ -586,7 +591,7 @@ public class TestFBRules extends TestCase {
      * Test access to makeInstance machinery from a Brule.
      */
     public void testMakeInstance() {
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(a, ty, C1));
         String rules =
         "[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]" +
@@ -605,7 +610,7 @@ public class TestFBRules extends TestCase {
      * Test access to makeInstance machinery from a Brule.
      */
     public void testMakeInstances() {
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(a, ty, C1));
         String rules =
         "[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, ?t)]" ;
@@ -621,7 +626,7 @@ public class TestFBRules extends TestCase {
      * Test case for makeInstance which failed during development.
      */
     public void testMakeInstanceBug() {
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(a, ty, r));
         data.add(Triple.create(r, sC, Functor.makeFunctorNode("some", new Node[] {p, C1})));
         String rules =
@@ -646,7 +651,7 @@ public class TestFBRules extends TestCase {
         "[r1: (?x p f(a, ?x)) -> (?x q f(?x)) ]" +
         "[r1: (?x p f(a, 0)) -> (?x s res) ]" +
                        "";
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(n1, p, Util.makeIntNode(2)) );
         data.add(Triple.create(n2, p, Functor.makeFunctorNode("f", new Node[] {
                                         a, Util.makeIntNode(0)  })));
@@ -680,7 +685,7 @@ public class TestFBRules extends TestCase {
         "[r5: (?x q ?vx), (?y q ?vy), notEqual(?vx, ?vy) -> (?x ne ?y)]" +
         "[r6: (?x q ?vx), (?y q ?vy), equal(?vx, ?vy) -> (?x eq ?y)]" +
                        "";
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(n1, q, Util.makeIntNode(2)) );
         data.add(Triple.create(n2, q, Util.makeIntNode(2)) );
         data.add(Triple.create(n3, q, Util.makeIntNode(3)) );
@@ -706,7 +711,7 @@ public class TestFBRules extends TestCase {
             });
 
         // Floating point comparisons
-        data = GraphMemFactory.createGraphMem();
+        data = createGraphForTest();
         data.add(Triple.create(n1, q, Util.makeIntNode(2)) );
         data.add(Triple.create(n2, q, Util.makeDoubleNode(2.2)) );
         data.add(Triple.create(n3, q, Util.makeDoubleNode(2.3)) );
@@ -726,7 +731,7 @@ public class TestFBRules extends TestCase {
             });
 
         // XSD timeDate point comparisons
-        data = GraphMemFactory.createGraphMem();
+        data = createGraphForTest();
         XSDDatatype dt = new XSDDatatype("dateTime");
         data.add(Triple.create(n1, q, NodeFactory.createLiteralDT("2000-03-04T20:00:00Z", XSDDatatype.XSDdateTime)));
         data.add(Triple.create(n2, q, NodeFactory.createLiteralDT("2001-03-04T20:00:00Z", XSDDatatype.XSDdateTime)));
@@ -779,7 +784,7 @@ public class TestFBRules extends TestCase {
         "[r4: (?x p ?a), (?x q ?b), min(?b, ?a, ?c) -> (?x r ?c)]" +
         "[r4: (?x p ?a), (?x q ?b), max(?b, ?a, ?c) -> (?x x ?c)]" +
                        "";
-        data = GraphMemFactory.createGraphMem();
+        data = createGraphForTest();
         data.add(Triple.create(n1, p, Util.makeIntNode(3)) );
         data.add(Triple.create(n1, q, Util.makeIntNode(5)) );
         infgraph = createInfGraph(rules, data);
@@ -803,7 +808,7 @@ public class TestFBRules extends TestCase {
         "[r1: (?x p ?y), isBNode(?y) -> (?x s 'bNode')]" +
         "[r1: (?x p ?y), notBNode(?y) -> (?x s 'notBNode')]" +
                        "";
-        data = GraphMemFactory.createGraphMem();
+        data = createGraphForTest();
         data.add(Triple.create(n1, p, Util.makeIntNode(3)) );
         data.add(Triple.create(n2, p, res));
         data.add(Triple.create(n3, p, NodeFactory.createBlankNode()));
@@ -834,7 +839,7 @@ public class TestFBRules extends TestCase {
         "[r1: (?x p ?y), notDType(?y, http://www.w3.org/2001/XMLSchema#int) -> (?x s 'notXSDInt')]" +
         "[r1: (?x p ?y), notDType(?y, http://www.w3.org/2001/XMLSchema#string) -> (?x s 'notXSDString')]" +
                        "";
-        data = GraphMemFactory.createGraphMem();
+        data = createGraphForTest();
         data.add(Triple.create(n1, p, Util.makeIntNode(3)) );
         data.add(Triple.create(n2, p, NodeFactory.createLiteralString("foo")) );
         data.add(Triple.create(n3, p, NodeFactory.createLiteralDT("foo", XSDDatatype.XSDstring)) );
@@ -867,7 +872,7 @@ public class TestFBRules extends TestCase {
 
         // Literal counting
         rules = "[r1: (?x p ?y), countLiteralValues(?x, p, ?c) -> (?x s ?c)]";
-        data = GraphMemFactory.createGraphMem();
+        data = createGraphForTest();
         data.add(Triple.create(n1, p, Util.makeIntNode(2)) );
         data.add(Triple.create(n1, p, Util.makeIntNode(2)) );
         data.add(Triple.create(n1, p, Util.makeIntNode(3)) );
@@ -881,7 +886,7 @@ public class TestFBRules extends TestCase {
         // Map list operation
         rules = "[r1: (n1 p ?l) -> listMapAsSubject(?l, q, C1)]" +
                 "[r2: (n1 p ?l) -> listMapAsObject ( a, q, ?l)]";
-        data = GraphMemFactory.createGraphMem();
+        data = createGraphForTest();
         data.add(Triple.create(n1, p, Util.makeList(new Node[]{b, c, d}, data) ));
         infgraph = createInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, infgraph.find(null, q, null),
@@ -903,7 +908,7 @@ public class TestFBRules extends TestCase {
             "[r1: (?x p ?y) strConcat(?y, rdf:type, 'foo', ?z) -> (?x q ?z) ] \n" +
             "[r1: (?x p ?y) strConcat(?z) -> (?x q ?z) ] \n" +
             "[r2: (?x p ?y) uriConcat('http://jena.hpl.hp.com/test#', ?y, ?z) -> (?x q ?z) ]";
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(n1, p, NodeFactory.createLiteralString("test")) );
         InfGraph infgraph = createInfGraph(rules, data);
 
@@ -918,7 +923,7 @@ public class TestFBRules extends TestCase {
             "[r1: (?x p ?y) regex(?y, '(.*)\\\\s(.*) (f.*)') -> (?x q 'ok') ] \n" +
             "[r2: (?x p ?y) regex(?y, '(.*)\\\\s(.*) (f.*)', ?m1, ?m2, ?m3) -> (?x r ?m2) ] \n" +
             "";
-        data = GraphMemFactory.createGraphMem();
+        data = createGraphForTest();
         data.add(Triple.create(n1, p, NodeFactory.createLiteralString("foo bar foo")) );
         data.add(Triple.create(n2, p, NodeFactory.createLiteralString("foo bar baz")) );
         infgraph = createInfGraph(rules, data);
@@ -939,7 +944,7 @@ public class TestFBRules extends TestCase {
         String rules =
             "[r2: (?x p ?y) regex(?y, '((Boys)|(Girls))(.*)', ?m1, ?m2, ?m3, ?m4) ->  (?x q ?m2) (?x r ?m3) (?x s ?m4) ] \n" +
             "";
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(n1, p, NodeFactory.createLiteralString("Girls44")) );
         InfGraph infgraph = createInfGraph(rules, data);
         infgraph.prepare();
@@ -972,7 +977,7 @@ public class TestFBRules extends TestCase {
         String rules =
             "[r1: (?x p ?a), (?x q ?b), (?x r ?c) " + op + "(?a, ?b, ?c) -> (?x s ?c)]\n " +
             "[r2: (?x p ?a), (?x q ?b), (?x t ?c) " + op + "(?a, ?b, ?c) -> (?x u ?c)]";
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(n1, p, Util.makeIntNode(arg1)) );
         data.add(Triple.create(n1, q, Util.makeIntNode(arg2)) );
         data.add(Triple.create(n1, r, Util.makeIntNode(expected)) );
@@ -1018,7 +1023,7 @@ public class TestFBRules extends TestCase {
             }
 //            listFBGraph("direct databind case", (FBRuleInfGraph)infgraph);
             assertEquals(5, count);
-            infgraph = reasoner.bindSchema(data).bind(GraphMemFactory.createGraphMem());
+            infgraph = reasoner.bindSchema(data).bind(createGraphForTest());
             count = 0;
             for (Iterator<Triple> i = infgraph.find(null, rbPrototypeProp, null); i.hasNext(); ) {
                 Triple t = i.next();
@@ -1057,7 +1062,7 @@ public class TestFBRules extends TestCase {
 
     private Node getSkolem(Node x, Node y) {
         String rules =  "[r1: (?n p ?x) (?n q ?y) makeSkolem(?s ?x ?y) -> (?n s ?s)]";
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(n1, p, x));
         data.add(Triple.create(n1, q, y));
         InfGraph infgraph = createInfGraph(rules, data);
@@ -1066,7 +1071,7 @@ public class TestFBRules extends TestCase {
 
     private Node getSkolem(Node x) {
         String rules =  "[r1: (?n p ?x)  makeSkolem(?s ?x) -> (?n s ?s)]";
-        Graph data = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
         data.add(Triple.create(n1, p, x));
         InfGraph infgraph = createInfGraph(rules, data);
         return infgraph.find(n1, s, Node.ANY).next().getObject();
@@ -1076,8 +1081,8 @@ public class TestFBRules extends TestCase {
      * Check cost of creating an empty OWL closure.
      */
     public void temp() {
-        Graph data = GraphMemFactory.createGraphMem();
-        Graph data2 = GraphMemFactory.createGraphMem();
+        Graph data = createGraphForTest();
+        Graph data2 = createGraphForTest();
         Reasoner reasoner =  new OWLFBRuleReasoner(OWLFBRuleReasonerFactory.theInstance());
         FBRuleInfGraph infgraph = (FBRuleInfGraph)reasoner.bind(data);
         FBRuleInfGraph infgraph2 = (FBRuleInfGraph)reasoner.bind(data2);

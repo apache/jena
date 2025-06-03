@@ -83,23 +83,28 @@ public class TS3_enh extends GraphTestBase  {
         broken.add( TestProperty.class, TestObjectImpl.factory );
 	}
     /** Creates a new instance of EnhancedTestSuite */
-   	public TS3_enh(String name)
-		{
-		super( name );
-		}
+    public TS3_enh(String name) {
+        super(name);
+    }
 
-    public static TestSuite suite()
-        { return new TestSuite( TS3_enh.class ); }
+    public static TestSuite suite() {
+        return new TestSuite(TS3_enh.class);
+    }
+
+    // Create the graph to test.
+    // These are model tests so use a same-value model.
+    private static Graph graphToTest() {
+        return GraphMemFactory.createDefaultGraphSameValue();
+    }
 
     /**
-        test that equals works on an EnhNode (after hedgehog introduced FrontsNode
-        it didn't).
-    */
-    public void testEquals()
-        {
-        EnhNode a = new EnhNode( NodeCreateUtils.create( "eg:example" ), null );
-        assertEquals( a, a );
-        }
+     * test that equals works on an EnhNode (after hedgehog introduced FrontsNode it
+     * didn't).
+     */
+    public void testEquals() {
+        EnhNode a = new EnhNode(NodeCreateUtils.create("eg:example"), null);
+        assertEquals(a, a);
+    }
 
     /**
      * View n as intf. This is supported iff rslt.
@@ -140,7 +145,7 @@ public class TS3_enh extends GraphTestBase  {
      *  The methods tested are as and supports.
      */
     private static void basic(String title, Personality<RDFNode> p) {
-        Graph g = GraphMemFactory.createGraphMem();
+        Graph g = graphToTest();
         TestModel model =  new TestModelImpl(g,p);
         // create some data
         graphAdd( g, "x R y;" );
@@ -236,7 +241,7 @@ public class TS3_enh extends GraphTestBase  {
 	}
 
     private void follow(String title, Personality<RDFNode> p) {
-        Graph g = GraphMemFactory.createGraphMem();
+        Graph g = graphToTest();
         TestModel model =  new TestModelImpl(g,p);
         // create some data
         graphAdd( g, "a b c;" );
@@ -307,7 +312,7 @@ public class TS3_enh extends GraphTestBase  {
     	// bitOfBoth is a surprising personality ...
     	// we can have two different java objects implementing the same interface.
 
-		Graph g = GraphMemFactory.createGraphMem();
+		Graph g = graphToTest();
 		TestModel model =  new TestModelImpl(g,bitOfBoth);
 		// create some data
 		graphAdd( g, "a a a;" );
@@ -378,96 +383,98 @@ public class TS3_enh extends GraphTestBase  {
 
         @Override
         public Object visitWith( RDFVisitor rv )
-            { return null; }
-        }
+        { return null; }
+    }
 
-        public void testSimple() {
-            Graph g = GraphMemFactory.createGraphMem();
-            Personality<RDFNode> ours = BuiltinPersonalities.model.copy().add(Example.class, Example.factory);
-            EnhGraph eg = new EnhGraph(g, ours);
-            Node n = NodeFactory.createURI("spoo:bar");
-            EnhNode eNode = new EnhNode(NodeFactory.createURI("spoo:bar"), eg);
-            EnhNode eBlank = new EnhNode(NodeFactory.createBlankNode(), eg);
-            assertTrue("URI node can be an Example", eNode.supports(Example.class));
-            assertFalse("Blank node cannot be an Example", eBlank.supports(Example.class));
-        }
+    public void testSimple() {
+        Graph g = graphToTest();
+        Personality<RDFNode> ours = BuiltinPersonalities.model.copy().add(Example.class, Example.factory);
+        EnhGraph eg = new EnhGraph(g, ours);
+        Node n = NodeFactory.createURI("spoo:bar");
+        EnhNode eNode = new EnhNode(NodeFactory.createURI("spoo:bar"), eg);
+        EnhNode eBlank = new EnhNode(NodeFactory.createBlankNode(), eg);
+        assertTrue("URI node can be an Example", eNode.supports(Example.class));
+        assertFalse("Blank node cannot be an Example", eBlank.supports(Example.class));
+    }
 
-        static class AnotherExample {
-            static final Implementation factory = new Implementation() {
-                @Override
-                public EnhNode wrap(Node n, EnhGraph g) {
-                    return new EnhNode(n, g);
-                }
-
-                @Override
-                public boolean canWrap(Node n, EnhGraph g) {
-                    return n.isURI();
-                }
-            };
-        }
-
-        public void testAlreadyLinkedViewException() {
-            Graph g = GraphMemFactory.createGraphMem();
-            Personality<RDFNode> ours = BuiltinPersonalities.model.copy().add(Example.class, Example.factory);
-            EnhGraph eg = new EnhGraph(g, ours);
-            Node n = NodeCreateUtils.create("spoo:bar");
-            EnhNode eNode = new Example(n, eg);
-            EnhNode multiplexed = new Example(n, eg);
-            multiplexed.as(Property.class);
-            eNode.viewAs(Example.class);
-            try {
-                eNode.addView(multiplexed);
-                fail("should raise an AlreadyLinkedViewException ");
-            } catch (AlreadyLinkedViewException e) {}
-        }
-
-        /**
-         * Test that an attempt to polymorph an enhanced node into a class that isn't
-         * supported by the enhanced graph generates an UnsupportedPolymorphism
-         * exception.
-         */
-        public void testNullPointerTrap() {
-            EnhGraph eg = new EnhGraph(GraphMemFactory.createGraphMem(), new Personality<RDFNode>());
-            Node n = NodeCreateUtils.create("eh:something");
-            EnhNode en = new EnhNode(n, eg);
-            try {
-                en.as(Property.class);
-                fail("oops");
-            } catch (UnsupportedPolymorphismException e) {
-                assertEquals(en, e.getBadNode());
-                assertTrue("exception should have cuplprit graph", eg == ((EnhNode)e.getBadNode()).getGraph());
-                assertSame("exception should have culprit class", Property.class, e.getBadClass());
+    static class AnotherExample {
+        static final Implementation factory = new Implementation() {
+            @Override
+            public EnhNode wrap(Node n, EnhGraph g) {
+                return new EnhNode(n, g);
             }
-        }
 
-        public void testNullPointerTrapInCanSupport() {
-            EnhGraph eg = new EnhGraph(GraphMemFactory.createGraphMem(), new Personality<RDFNode>());
-            Node n = NodeCreateUtils.create("eh:something");
-            EnhNode en = new EnhNode(n, eg);
-            assertFalse(en.canAs(Property.class));
-        }
-
-        public void testAsToOwnClassWithNoModel() {
-            Resource r = ResourceFactory.createResource();
-            assertEquals(null, r.getModel());
-            assertTrue(r.canAs(Resource.class));
-            assertSame(r, r.as(Resource.class));
-        }
-
-        public void testCanAsReturnsFalseIfNoModel() {
-            Resource r = ResourceFactory.createResource();
-            assertEquals(false, r.canAs(Example.class));
-        }
-
-        public void testAsThrowsPolymorphismExceptionIfNoModel() {
-            Resource r = ResourceFactory.createResource();
-            try {
-                r.as(Example.class);
-                fail("should throw UnsupportedPolymorphismException");
-            } catch (UnsupportedPolymorphismException e) {
-                assertTrue(e.getBadNode() instanceof EnhNode);
-                assertEquals(null, ((EnhNode)e.getBadNode()).getGraph());
-                assertEquals(Example.class, e.getBadClass());
+            @Override
+            public boolean canWrap(Node n, EnhGraph g) {
+                return n.isURI();
             }
+        };
+    }
+
+    public void testAlreadyLinkedViewException() {
+        Graph g = graphToTest();
+        Personality<RDFNode> ours = BuiltinPersonalities.model.copy().add(Example.class, Example.factory);
+        EnhGraph eg = new EnhGraph(g, ours);
+        Node n = NodeCreateUtils.create("spoo:bar");
+        EnhNode eNode = new Example(n, eg);
+        EnhNode multiplexed = new Example(n, eg);
+        multiplexed.as(Property.class);
+        eNode.viewAs(Example.class);
+        try {
+            eNode.addView(multiplexed);
+            fail("should raise an AlreadyLinkedViewException ");
+        } catch (AlreadyLinkedViewException e) {}
+    }
+
+    /**
+     * Test that an attempt to polymorph an enhanced node into a class that isn't
+     * supported by the enhanced graph generates an UnsupportedPolymorphism
+     * exception.
+     */
+    public void testNullPointerTrap() {
+        Graph g = graphToTest();
+        EnhGraph eg = new EnhGraph(g, new Personality<RDFNode>());
+        Node n = NodeCreateUtils.create("eh:something");
+        EnhNode en = new EnhNode(n, eg);
+        try {
+            en.as(Property.class);
+            fail("oops");
+        } catch (UnsupportedPolymorphismException e) {
+            assertEquals(en, e.getBadNode());
+            assertTrue("exception should have cuplprit graph", eg == ((EnhNode)e.getBadNode()).getGraph());
+            assertSame("exception should have culprit class", Property.class, e.getBadClass());
         }
+    }
+
+    public void testNullPointerTrapInCanSupport() {
+        Graph g = graphToTest();
+        EnhGraph eg = new EnhGraph(g, new Personality<RDFNode>());
+        Node n = NodeCreateUtils.create("eh:something");
+        EnhNode en = new EnhNode(n, eg);
+        assertFalse(en.canAs(Property.class));
+    }
+
+    public void testAsToOwnClassWithNoModel() {
+        Resource r = ResourceFactory.createResource();
+        assertEquals(null, r.getModel());
+        assertTrue(r.canAs(Resource.class));
+        assertSame(r, r.as(Resource.class));
+    }
+
+    public void testCanAsReturnsFalseIfNoModel() {
+        Resource r = ResourceFactory.createResource();
+        assertEquals(false, r.canAs(Example.class));
+    }
+
+    public void testAsThrowsPolymorphismExceptionIfNoModel() {
+        Resource r = ResourceFactory.createResource();
+        try {
+            r.as(Example.class);
+            fail("should throw UnsupportedPolymorphismException");
+        } catch (UnsupportedPolymorphismException e) {
+            assertTrue(e.getBadNode() instanceof EnhNode);
+            assertEquals(null, ((EnhNode)e.getBadNode()).getGraph());
+            assertEquals(Example.class, e.getBadClass());
+        }
+    }
 }

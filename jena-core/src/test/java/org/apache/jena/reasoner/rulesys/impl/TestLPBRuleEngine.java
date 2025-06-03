@@ -44,6 +44,11 @@ public class TestLPBRuleEngine extends TestCase {
 	protected Node C2 = NodeFactory.createURI("C2");
 	protected Node ty = RDF.Nodes.type;
 
+    @SuppressWarnings("removal")
+    private static  Graph createGraphForTest() {
+        return GraphMemFactory.createGraphMem();
+    }
+
 	public FBRuleReasoner createReasoner(List<Rule> rules) {
 		FBRuleReasoner reasoner = new FBRuleReasoner(rules);
 		reasoner.tablePredicate(RDFS.Nodes.subClassOf);
@@ -54,7 +59,7 @@ public class TestLPBRuleEngine extends TestCase {
 
 	@Test
 	public void testTabledGoalsCacheHits() throws Exception {
-		Graph data = GraphMemFactory.createGraphMem();
+		Graph data = createGraphForTest();
 		data.add(Triple.create(a, ty, C1));
 		List<Rule> rules = Rule
 				.parseRules("[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]"
@@ -94,7 +99,7 @@ public class TestLPBRuleEngine extends TestCase {
 
 	@Test
 	public void testTabledGoalsLeak() throws Exception {
-		Graph data = GraphMemFactory.createGraphMem();
+		Graph data = createGraphForTest();
 		data.add(Triple.create(a, ty, C1));
 		List<Rule> rules = Rule
 				.parseRules("[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]"
@@ -135,7 +140,7 @@ public class TestLPBRuleEngine extends TestCase {
 		// Set the cache size very small just for this test
 		System.setProperty("jena.rulesys.lp.max_cached_tabled_goals", "" + MAX);
 		try {
-			Graph data = GraphMemFactory.createGraphMem();
+			Graph data = createGraphForTest();
 			data.add(Triple.create(a, ty, C1));
 			List<Rule> rules = Rule
 					.parseRules("[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]"

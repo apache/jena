@@ -52,7 +52,12 @@ public class TestLPBRuleEngineLeak extends TestCase {
 	protected Node C2 = NodeFactory.createURI("C2");
 	protected Node ty = RDF.Nodes.type;
 
-	public FBRuleReasoner createReasoner(List<Rule> rules) {
+    @SuppressWarnings("removal")
+    private static  Graph createGraphForTest() {
+        return GraphMemFactory.createGraphMem();
+    }
+
+    public FBRuleReasoner createReasoner(List<Rule> rules) {
 		FBRuleReasoner reasoner = new FBRuleReasoner(rules);
 		reasoner.tablePredicate(RDFS.Nodes.subClassOf);
 		reasoner.tablePredicate(RDF.Nodes.type);
@@ -62,7 +67,7 @@ public class TestLPBRuleEngineLeak extends TestCase {
 
 	@Test
 	public void testNotLeakingActiveInterpreters() throws Exception {
-		Graph data = GraphMemFactory.createGraphMem();
+		Graph data = createGraphForTest();
 		data.add(Triple.create(a, ty, C1));
 		data.add(Triple.create(b, ty, C1));
 		List<Rule> rules = Rule
@@ -89,25 +94,25 @@ public class TestLPBRuleEngineLeak extends TestCase {
 		it2.close();
 		assertEquals(0, engine.activeInterpreters.size());
 
-		
+
 		// OK, let's ask for something that is in the graph
-		
+
 		ExtendedIterator<Triple> it3 = infgraph.find(a, ty, C1);
 		assertTrue(it3.hasNext());
 		assertEquals(a, it3.next().getMatchSubject());
-		
+
 		// .. and what if we forget to call next() to consume b?
 		// (e.g. return from a method with the first hit)
-		
+
 		// this should be enough
 		it3.close();
 		// without leaks of activeInterpreters
 		assertEquals(0, engine.activeInterpreters.size());
 	}
-	
+
 	@Test
 	public void testTabledGoalsCacheHits() throws Exception {
-		Graph data = GraphMemFactory.createGraphMem();
+		Graph data = createGraphForTest();
 		data.add(Triple.create(a, ty, C1));
 		List<Rule> rules = Rule
 				.parseRules("[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]"
@@ -151,7 +156,7 @@ public class TestLPBRuleEngineLeak extends TestCase {
 	 * be in the wrong package for either FBRuleInfGraph or LPBRuleEngine.
 	 * <p>
 	 * <strong>This method should only be used for test purposes.</strong>
-	 * 
+	 *
 	 * @param infgraph
 	 * @return
 	 * @throws SecurityException

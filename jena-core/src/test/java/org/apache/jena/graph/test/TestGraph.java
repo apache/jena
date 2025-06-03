@@ -71,12 +71,11 @@ public class TestGraph extends GraphTestBase
         { return MetaTestGraph.suite( classWithTests, graphClass ); }
 
     /**
-        Trivial [incomplete] test that a Wrapped graph pokes through to the underlying
-        graph. Really want something using mock classes. Will think about it.
+        Trivial [incomplete] test that a Wrapped graph pokes through to the underlying graph.
     */
     public void testWrappedSame()
         {
-        Graph m = GraphMemFactory.createGraphMem();
+        Graph m = GraphMemFactory.createDefaultGraph();
         Graph w = new WrappedGraph( m );
         graphAdd( m, "a trumps b; c eats d" );
         assertIsomorphic( m, w );
@@ -89,7 +88,8 @@ public class TestGraph extends GraphTestBase
     */
     public static class WrappedGraphMem extends WrappedGraph
         {
+        @SuppressWarnings("removal")
         public WrappedGraphMem( )
-            { super( GraphMemFactory.createGraphMem( ) ); }
+            { super( GraphMemFactory.createGraphMem() ); }
         }
     }
