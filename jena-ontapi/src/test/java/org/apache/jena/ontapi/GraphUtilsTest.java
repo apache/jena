@@ -117,7 +117,7 @@ public class GraphUtilsTest {
 
     @Test
     public void testIsSame() {
-        Graph g = GraphMemFactory.createGraphMem();
+        Graph g = GraphMemFactory.createDefaultGraph();
         Assertions.assertTrue(Graphs.isSameBase(g, g));
 
         Graph a = new UnionGraphImpl(g);
@@ -134,7 +134,8 @@ public class GraphUtilsTest {
         UnionGraph c2 = new UnionGraphImpl(new WrappedGraph(g));
         Assertions.assertTrue(Graphs.isSameBase(a, c2));
 
-        Assertions.assertFalse(Graphs.isSameBase(g, new GraphMem()));
+        Graph g2 = GraphMemFactory.createDefaultGraph();
+        Assertions.assertFalse(Graphs.isSameBase(g, g2));
 
         Graph d = new UnionGraphImpl(new WrappedGraph(new WrappedGraph(g)));
         Assertions.assertTrue(Graphs.isSameBase(a, d));

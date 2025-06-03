@@ -153,7 +153,7 @@ public class OntPersonalityTest {
     @Test
     public void testPersonalityPunnings() {
         String ns = "http://x#";
-        OntModel m1 = OntModelFactory.createModel(GraphMemFactory.createGraphMem(), TestOntPersonalities.OWL2_PERSONALITY_STRICT_PUNNS)
+        OntModel m1 = OntModelFactory.createModel(GraphMemFactory.createDefaultGraph(), TestOntPersonalities.OWL2_PERSONALITY_STRICT_PUNNS)
                 .setNsPrefixes(OntModelFactory.STANDARD)
                 .setNsPrefix("x", ns);
         OntClass.Named c1 = m1.createOntClass(ns + "C1");
