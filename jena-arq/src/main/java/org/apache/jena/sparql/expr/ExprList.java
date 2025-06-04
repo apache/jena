@@ -30,21 +30,29 @@ import org.apache.jena.sparql.util.Context ;
 public class ExprList implements Iterable<Expr>
 {
     private final List<Expr> expressions ;
-    /** Create a copy which does not share the list of expressions with the original */ 
+    /** Create a copy which does not share the list of expressions with the original */
     public static ExprList copy(ExprList other) { return new ExprList(other) ; }
-    
+
     /** Create an ExprList that contains the expressions */
     public static ExprList create(Collection<Expr> exprs) {
         ExprList exprList = new ExprList() ;
         exprs.forEach(exprList::add) ;
-        return exprList ; 
-    } 
-    
+        return exprList ;
+    }
+
+    /** Create an ExprList from a number of Expr or an array. */
+    public static ExprList create(Expr...exprs) {
+        ExprList exprList = new ExprList() ;
+        for (Expr expr : exprs)
+            exprList.add(expr);
+        return exprList ;
+    }
+
     /** Empty, immutable ExprList */
     public static final ExprList emptyList = new ExprList(Collections.emptyList()) ;
-    
+
     public ExprList() { expressions = new ArrayList<>() ; }
-    
+
     private ExprList(ExprList other) {
         this() ;
         expressions.addAll(other.expressions) ;
@@ -64,13 +72,13 @@ public class ExprList implements Iterable<Expr>
         }
         return true ;
     }
-    
+
     public Expr get(int idx)                            { return expressions.get(idx) ; }
     public int size()                                   { return expressions.size() ; }
     public boolean isEmpty()                            { return expressions.isEmpty() ; }
     public ExprList subList(int fromIdx, int toIdx)     { return new ExprList(expressions.subList(fromIdx, toIdx)) ; }
     public ExprList tail(int fromIdx)                   { return subList(fromIdx, expressions.size()) ; }
-    
+
     public Set<Var> getVarsMentioned() {
         return ExprVars.getVarsMentioned(this);
     }
@@ -82,7 +90,7 @@ public class ExprList implements Iterable<Expr>
         ExprList x = new ExprList() ;
         for ( Expr e : expressions)
             x.add(e.applyNodeTransform(transform));
-        return x ; 
+        return x ;
     }
 
     public ExprList copySubstitute(Binding binding) {
@@ -101,34 +109,34 @@ public class ExprList implements Iterable<Expr>
     public List<Expr> getListRaw()          { return expressions ; }
     @Override
     public Iterator<Expr> iterator()        { return expressions.iterator() ; }
-    
+
     public void prepareExprs(Context context) {
         ExprBuild build = new ExprBuild(context) ;
         // Give each expression the chance to set up (bind functions)
         for (Expr expr : expressions)
             Walker.walk(expr, build) ;
     }
-    
+
     @Override
     public String toString()
     { return expressions.toString() ; }
-    
+
     @Override
     public int hashCode() { return expressions.hashCode() ; }
 
     public boolean equals(ExprList other, boolean bySyntax) {
         if ( this == other ) return true ;
         if (expressions.size() != other.expressions.size()) return false;
-        
+
         for ( int i = 0 ; i < expressions.size() ; i++ ) {
             Expr e1 = expressions.get(i) ;
             Expr e2 = other.expressions.get(i) ;
-            if ( ! e1.equals(e2, bySyntax) ) 
+            if ( ! e1.equals(e2, bySyntax) )
                 return false ;
         }
         return true ;
     }
-    
+
     @Override
     public boolean equals(Object other) {
         if ( this == other ) return true ;
