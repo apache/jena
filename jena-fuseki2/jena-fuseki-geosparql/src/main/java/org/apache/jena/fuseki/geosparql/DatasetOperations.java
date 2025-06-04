@@ -215,7 +215,6 @@ public class DatasetOperations {
                 dataset.end();
             }
         }
-
     }
 
     private static void prepareSpatialExtension(Dataset dataset, ArgsConfig argsConfig) throws SpatialIndexException {

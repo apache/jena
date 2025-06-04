@@ -28,32 +28,29 @@ import org.apache.jena.sparql.sse.Tags ;
 public class E_OneOf extends E_OneOfBase
 {
 
-    private static final String functionName = Tags.tagIn ;
-    
-    public E_OneOf(Expr expr, ExprList args)
-    {
-        super(functionName, expr, args) ;
+    private static final String functionName = Tags.tagIn;
+
+    public E_OneOf(Expr expr, ExprList args) {
+        super(functionName, expr, args);
     }
-    
-    protected E_OneOf(ExprList args)
-    {
-        super(functionName, args) ;
+
+    protected E_OneOf(ExprList args) {
+        super(functionName, args);
     }
 
     @Override
-    public NodeValue evalSpecial(Binding binding, FunctionEnv env)
-    {
-        boolean b = super.evalOneOf(binding, env) ;
-        return NodeValue.booleanReturn(b) ;
+    public NodeValue evalSpecial(Binding binding, FunctionEnv env) {
+        boolean b = super.evalOneOf(binding, env);
+        return NodeValue.booleanReturn(b);
     }
-    
+
     @Override
-    public NodeValue eval(List<NodeValue> args)
-    { throw new ARQInternalErrorException() ; }
-    
+    public NodeValue eval(List<NodeValue> args) {
+        throw new ARQInternalErrorException();
+    }
+
     @Override
-    public Expr copy(ExprList newArgs)
-    {
-        return new E_OneOf(newArgs) ;
+    public Expr copy(ExprList newArgs) {
+        return new E_OneOf(newArgs);
     }
 }
