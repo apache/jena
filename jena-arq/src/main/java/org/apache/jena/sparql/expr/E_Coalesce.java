@@ -18,44 +18,40 @@
 
 package org.apache.jena.sparql.expr;
 
-import java.util.List ;
+import java.util.List;
 
-import org.apache.jena.sparql.ARQInternalErrorException ;
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.ARQInternalErrorException;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.sse.Tags;
 
 /** SPARQL coalesce special form. */
 
-public class E_Coalesce extends ExprFunctionN
-{
-    private static final String name = Tags.tagCoalesce ;
-    
-    public E_Coalesce(ExprList args)
-    {
-        super(name, args) ;
+public class E_Coalesce extends ExprFunctionN {
+    private static final String name = Tags.tagCoalesce;
+
+    public E_Coalesce(ExprList args) {
+        super(name, args);
     }
 
     @Override
-    public NodeValue evalSpecial(Binding binding, FunctionEnv env)
-    {
-        for ( Expr expr : super.getArgs() )
-        {
-            try { 
-                NodeValue nv = expr.eval(binding, env) ;
-                return nv ;
+    public NodeValue evalSpecial(Binding binding, FunctionEnv env) {
+        for ( Expr expr : super.getArgs() ) {
+            try {
+                NodeValue nv = expr.eval(binding, env);
+                return nv;
             } catch (ExprEvalException ex) {}
         }
-        throw new ExprEvalException("COALESCE: no value") ;
-    }
-    
-    @Override
-    public Expr copy(ExprList newArgs)
-    {
-        return new E_Coalesce(newArgs) ;
+        throw new ExprEvalException("COALESCE: no value");
     }
 
     @Override
-    public NodeValue eval(List<NodeValue> args)
-    { throw new ARQInternalErrorException() ; }
+    public Expr copy(ExprList newArgs) {
+        return new E_Coalesce(newArgs);
+    }
+
+    @Override
+    public NodeValue eval(List<NodeValue> args) {
+        throw new ARQInternalErrorException();
+    }
 }

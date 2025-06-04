@@ -18,51 +18,50 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.sse.Tags ;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.sse.Tags;
 
 public class E_Bound extends ExprFunction1
 {
-    private static final String symbol = Tags.tagBound ;
-    boolean isBound = false ;
+    private static final String symbol = Tags.tagBound;
+    boolean isBound = false;
 
-    public E_Bound(Expr expr)
-    {
-        super(expr, symbol) ;
+    public E_Bound(Expr expr) {
+        super(expr, symbol);
     }
-    
+
     @Override
-    public NodeValue evalSpecial(Binding binding, FunctionEnv env) { 
+    public NodeValue evalSpecial(Binding binding, FunctionEnv env) {
         // See also ExprLib.evalOrNull.
-        // This code predates that; it handles exceptions 
+        // This code predates that; it handles exceptions
         // slightly differently (VariableNotBoundException not
         // a general ExprEvalException).
-        
+
         if ( expr.isConstant() )
             // The case of the variable having been substituted for a constant.
-            // Note: this has often been optimized away by constant folding 
+            // Note: this has often been optimized away by constant folding
             // (ExprTransformConstantFold) which called eval(NodeValue x) -> TRUE.
-            return NodeValue.TRUE ;
-        
+            return NodeValue.TRUE;
+
         if ( expr.isVariable() )
-            // The case of the expr being a single variable. 
-            return NodeValue.booleanReturn(binding.contains(expr.asVar())) ; 
-        
+            // The case of the expr being a single variable.
+            return NodeValue.booleanReturn(binding.contains(expr.asVar()));
+
         // General expression. This case can't be written in SPARQL
         // but we keep the code general in case some optimization rewrite
         // or algebra expression uses the generalized feature.
 		try {
-			expr.eval(binding, env) ;
-            return NodeValue.TRUE ;
+			expr.eval(binding, env);
+            return NodeValue.TRUE;
 		} catch (VariableNotBoundException ex) {
-			return NodeValue.FALSE ;
+			return NodeValue.FALSE;
 		}
     }
 
     @Override
-    public NodeValue eval(NodeValue x) { return NodeValue.TRUE ; }
-    
+    public NodeValue eval(NodeValue x) { return NodeValue.TRUE; }
+
     @Override
-    public Expr copy(Expr expr) { return new E_Bound(expr) ; } 
+    public Expr copy(Expr expr) { return new E_Bound(expr); }
 }
