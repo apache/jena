@@ -148,6 +148,15 @@ public class StoreConnection
             sConn.lock.unlock();
             ProcessFileLock.release(sConn.lock);
         }
+        // https://bugs.openjdk.org/browse/JDK-4724038
+        //   Release of memory mapped files.
+        //
+        // This can help with memory mapped buffers but this is not a guarantee.
+        // TDB2 does not hand out the MappedByBuffer the reference and
+        // closing nulls the references. The GC usually causes the clearup.
+        //
+        // This does not fix the MS-Windows specific issue.
+        Runtime.getRuntime().gc();
     }
 
     /** Create or fetch a {@link ProcessFileLock} for a Location */
