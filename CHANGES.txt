@@ -77,7 +77,7 @@ Issues: https://s.apache.org/jena-5.3.0-issues
 Announcement:
 https://lists.apache.org/thread/4gk0kpf75hyk58db343hx13nzq8pvldg
 
-ena 5.3.0 has changes in the structure of the Fuseki server; a new IRI provider; and clean-up and simplification of Jena's use of Apache Xerces code in RDF Datatypes.
+Jena 5.3.0 has changes in the structure of the Fuseki server; a new IRI provider; and clean-up and simplification of Jena's use of Apache Xerces code in RDF Datatypes.
 
 ==== Contributions
 
