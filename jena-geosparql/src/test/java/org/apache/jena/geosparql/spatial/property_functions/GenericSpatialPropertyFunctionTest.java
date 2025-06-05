@@ -17,15 +17,18 @@
  */
 package org.apache.jena.geosparql.spatial.property_functions;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.implementation.vocabulary.SpatialExtension;
-import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
 import org.apache.jena.geosparql.spatial.SpatialIndexTestData;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -37,7 +40,6 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -201,7 +203,7 @@ public class GenericSpatialPropertyFunctionTest {
         Resource geoFeature = ResourceFactory.createResource("http://example.org/GeoFeatureX");
         model.add(geoFeature, SpatialExtension.GEO_LAT_PROP, ResourceFactory.createTypedLiteral("0.0", XSDDatatype.XSDfloat));
         model.add(geoFeature, SpatialExtension.GEO_LON_PROP, ResourceFactory.createTypedLiteral("0.0", XSDDatatype.XSDfloat));
-        Dataset dataset = SpatialIndex.wrapModel(model);
+        Dataset dataset = SpatialIndexLib.wrapModel(model);
 
         String query = "PREFIX spatial: <http://jena.apache.org/spatial#>\n"
                 + "\n"

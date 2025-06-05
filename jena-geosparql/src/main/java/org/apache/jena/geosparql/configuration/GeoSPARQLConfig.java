@@ -17,11 +17,17 @@
  */
 package org.apache.jena.geosparql.configuration;
 
-import java.io.File;
+import java.nio.file.Path;
 
 import org.apache.jena.geosparql.geof.topological.RelateFF;
 import org.apache.jena.geosparql.implementation.datatype.GeometryDatatype;
-import org.apache.jena.geosparql.implementation.function_registration.*;
+import org.apache.jena.geosparql.implementation.function_registration.Egenhofer;
+import org.apache.jena.geosparql.implementation.function_registration.GeometryProperty;
+import org.apache.jena.geosparql.implementation.function_registration.NonTopological;
+import org.apache.jena.geosparql.implementation.function_registration.RCC8;
+import org.apache.jena.geosparql.implementation.function_registration.Relate;
+import org.apache.jena.geosparql.implementation.function_registration.SimpleFeatures;
+import org.apache.jena.geosparql.implementation.function_registration.Spatial;
 import org.apache.jena.geosparql.implementation.index.GeometryLiteralIndex;
 import org.apache.jena.geosparql.implementation.index.GeometryTransformIndex;
 import org.apache.jena.geosparql.implementation.index.IndexConfiguration;
@@ -31,6 +37,9 @@ import org.apache.jena.geosparql.implementation.registry.SRSRegistry;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
+import org.apache.jena.geosparql.spatial.index.compat.SpatialIndexIo;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexIoKryo;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.sparql.function.FunctionRegistry;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry;
@@ -249,7 +258,7 @@ public class GeoSPARQLConfig {
      * @throws SpatialIndexException
      */
     public static final void setupSpatialIndex(Dataset dataset) throws SpatialIndexException {
-        SpatialIndex.buildSpatialIndex(dataset);
+        SpatialIndexLib.buildSpatialIndex(dataset.asDatasetGraph());
     }
 
     /**
@@ -260,9 +269,9 @@ public class GeoSPARQLConfig {
      * @param spatialIndexFile the file containing the serialized spatial index
      * @throws SpatialIndexException
      */
-    public static final void setupPrecomputedSpatialIndex(Dataset dataset, File spatialIndexFile) throws SpatialIndexException {
-        SpatialIndex si = SpatialIndex.load(spatialIndexFile);
-        SpatialIndex.setSpatialIndex(dataset, si);
+    public static final void setupPrecomputedSpatialIndex(Dataset dataset, Path spatialIndexFile) throws SpatialIndexException {
+        SpatialIndex si = SpatialIndexIo.load(spatialIndexFile);
+        SpatialIndexLib.setSpatialIndex(dataset, si);
     }
 
     /**
@@ -274,8 +283,8 @@ public class GeoSPARQLConfig {
      * @param spatialIndexFile
      * @throws SpatialIndexException
      */
-    public static final void setupSpatialIndex(Dataset dataset, File spatialIndexFile) throws SpatialIndexException {
-        SpatialIndex.buildSpatialIndex(dataset, spatialIndexFile);
+    public static final void setupSpatialIndex(Dataset dataset, Path spatialIndexFile) throws SpatialIndexException {
+        SpatialIndexIoKryo.loadOrBuildSpatialIndex(dataset, spatialIndexFile);
     }
 
     /**
@@ -287,8 +296,8 @@ public class GeoSPARQLConfig {
      * @param spatialIndexFile
      * @throws SpatialIndexException
      */
-    public static final void setupSpatialIndex(Dataset dataset, String srsURI, File spatialIndexFile) throws SpatialIndexException {
-        SpatialIndex.buildSpatialIndex(dataset, srsURI, spatialIndexFile);
+    public static final void setupSpatialIndex(Dataset dataset, String srsURI, Path spatialIndexFile) throws SpatialIndexException {
+        SpatialIndexIoKryo.loadOrBuildSpatialIndex(dataset, srsURI, spatialIndexFile);
     }
 
     /**

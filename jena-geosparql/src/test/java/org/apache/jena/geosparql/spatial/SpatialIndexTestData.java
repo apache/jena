@@ -17,17 +17,28 @@
  */
 package org.apache.jena.geosparql.spatial;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.apache.jena.geosparql.implementation.GeometryWrapper;
 import org.apache.jena.geosparql.implementation.SRSInfo;
 import org.apache.jena.geosparql.implementation.datatype.WKTDatatype;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.implementation.vocabulary.SRS_URI;
+import org.apache.jena.geosparql.spatial.index.v2.STRtreePerGraph;
+import org.apache.jena.geosparql.spatial.index.v2.STRtreeUtils;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexPerGraph;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
+import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.locationtech.jts.index.strtree.STRtree;
 
 /**
  *
@@ -60,21 +71,28 @@ public class SpatialIndexTestData {
     public static final SRSInfo WGS_84_SRS_INFO = new SRSInfo(SRS_URI.WGS84_CRS);
     public static final SRSInfo OSGB_SRS_INFO = new SRSInfo(SRS_URI.OSGB36_CRS);
 
-    private static SpatialIndex TEST_SPATIAL_INDEX = null;
+    private static SpatialIndexPerGraph TEST_SPATIAL_INDEX = null;
     private static Dataset TEST_DATASET = null;
 
-    public static final SpatialIndex createTestIndex() {
+    public static final List<SpatialIndexItem> getTestItems() {
+        List<SpatialIndexItem> items = List.of(
+                SpatialIndexItem.of(LONDON_GEOMETRY_WRAPPER.getEnvelope(), LONDON_FEATURE.asNode()),
+                SpatialIndexItem.of(NEW_YORK_GEOMETRY_WRAPPER.getEnvelope(), NEW_YORK_FEATURE.asNode()),
+                SpatialIndexItem.of(HONOLULU_GEOMETRY_WRAPPER.getEnvelope(), HONOLULU_FEATURE.asNode()),
+                SpatialIndexItem.of(PERTH_GEOMETRY_WRAPPER.getEnvelope(), PERTH_FEATURE.asNode()),
+                SpatialIndexItem.of(AUCKLAND_GEOMETRY_WRAPPER.getEnvelope(), AUCKLAND_FEATURE.asNode()));
+        return items;
+    }
+
+    public static final SpatialIndexPerGraph createTestIndex() {
 
         if (TEST_SPATIAL_INDEX == null) {
             try {
-                SpatialIndex spatialIndex = new SpatialIndex(100, SRS_URI.WGS84_CRS);
-                spatialIndex.insertItem(LONDON_GEOMETRY_WRAPPER.getEnvelope(), LONDON_FEATURE);
-                spatialIndex.insertItem(NEW_YORK_GEOMETRY_WRAPPER.getEnvelope(), NEW_YORK_FEATURE);
-                spatialIndex.insertItem(HONOLULU_GEOMETRY_WRAPPER.getEnvelope(), HONOLULU_FEATURE);
-                spatialIndex.insertItem(PERTH_GEOMETRY_WRAPPER.getEnvelope(), PERTH_FEATURE);
-                spatialIndex.insertItem(AUCKLAND_GEOMETRY_WRAPPER.getEnvelope(), AUCKLAND_FEATURE);
-
-                spatialIndex.build();
+                // SpatialIndexPerGraph spatialIndex = new SpatialIndexPerGraph(100, SRS_URI.WGS84_CRS);
+                List<SpatialIndexItem> items = getTestItems();
+                STRtree tree = STRtreeUtils.buildSpatialIndexTree(items);
+                STRtreePerGraph index = new STRtreePerGraph(tree);
+                SpatialIndexPerGraph spatialIndex = new SpatialIndexPerGraph(index);
                 TEST_SPATIAL_INDEX = spatialIndex;
             } catch (SpatialIndexException ex) {
 
@@ -102,11 +120,15 @@ public class SpatialIndexTestData {
 
             dataset.setDefaultModel(model);
             SpatialIndex spatialIndex = createTestIndex();
-            SpatialIndex.setSpatialIndex(dataset, spatialIndex);
+            SpatialIndexLib.setSpatialIndex(dataset, spatialIndex);
             TEST_DATASET = dataset;
         }
 
         return TEST_DATASET;
+    }
+
+    public static Set<Node> asNodes(Collection<Resource> resources) {
+        return resources.stream().map(Resource::asNode).collect(Collectors.toSet());
     }
 
 }

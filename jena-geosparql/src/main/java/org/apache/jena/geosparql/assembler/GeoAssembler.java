@@ -18,7 +18,15 @@
 
 package org.apache.jena.geosparql.assembler;
 
-import static org.apache.jena.geosparql.assembler.VocabGeoSPARQL.*;
+import static org.apache.jena.geosparql.assembler.VocabGeoSPARQL.pApplyDefaultGeometry;
+import static org.apache.jena.geosparql.assembler.VocabGeoSPARQL.pDataset;
+import static org.apache.jena.geosparql.assembler.VocabGeoSPARQL.pIndexEnabled;
+import static org.apache.jena.geosparql.assembler.VocabGeoSPARQL.pIndexExpiries;
+import static org.apache.jena.geosparql.assembler.VocabGeoSPARQL.pIndexSizes;
+import static org.apache.jena.geosparql.assembler.VocabGeoSPARQL.pInference;
+import static org.apache.jena.geosparql.assembler.VocabGeoSPARQL.pQueryRewrite;
+import static org.apache.jena.geosparql.assembler.VocabGeoSPARQL.pSpatialIndexFile;
+import static org.apache.jena.geosparql.assembler.VocabGeoSPARQL.pSrsUri;
 import static org.apache.jena.sparql.util.graph.GraphUtils.getBooleanValue;
 
 import java.io.IOException;
@@ -33,9 +41,8 @@ import org.apache.jena.atlas.io.IO;
 import org.apache.jena.geosparql.configuration.GeoSPARQLConfig;
 import org.apache.jena.geosparql.configuration.GeoSPARQLOperations;
 import org.apache.jena.geosparql.configuration.SrsException;
+import org.apache.jena.geosparql.spatial.SpatialIndexConstants;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
-import org.apache.jena.graph.Graph;
-import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Property;
@@ -56,8 +63,6 @@ public class GeoAssembler extends DatasetAssembler {
 
         // Base dataset.
         DatasetGraph base = super.createBaseDataset(root, pDataset);
-        Graph graph = root.getModel().getGraph();
-        Node subj = root.asNode();
 
         // GeoSPARQL RDFS inference. CLI: names = {"--inference", "-i"}
         boolean inference = true;
@@ -117,9 +122,24 @@ public class GeoAssembler extends DatasetAssembler {
         if (root.hasProperty(pSpatialIndexFile) )
             spatialIndexFilename = GraphUtils.getStringValue(root, pSpatialIndexFile);
 
-        // ---- Build
+        if (spatialIndexFilename == null) {
+            LOG.warn(root + ": No spatial index file location is specified via " + pSpatialIndexFile + ". Spatial index will not be persisted.");
+        }
 
+        // SRS URI
+        String srsURI = null;
+        if (root.hasProperty(pSrsUri) ) {
+            srsURI = GraphUtils.getResourceValue(root, pSrsUri).getURI();
+        }
+
+        if (srsURI == null) {
+            LOG.warn(root + ": No preferred SRS is configured via " + pSrsUri);
+        }
+
+
+        // ---- Build
         Dataset dataset = DatasetFactory.wrap(base);
+        dataset.getContext().set(SpatialIndexConstants.symSrsUri, srsURI);
 
         // Conversion of data. Startup-only.
         // needed for w3c:geo/wgs84_pos#lat/log.
@@ -142,8 +162,8 @@ public class GeoAssembler extends DatasetAssembler {
         //Setup GeoSPARQL
         if (indexEnabled) {
             GeoSPARQLConfig.setupMemoryIndex(indexSizes.get(0), indexSizes.get(1), indexSizes.get(2),
-                                             (long)indexExpiries.get(0), (long)indexExpiries.get(1), (long)indexExpiries.get(2),
-                                             queryRewrite);
+                    (long)indexExpiries.get(0), (long)indexExpiries.get(1), (long)indexExpiries.get(2),
+                    queryRewrite);
         } else {
             GeoSPARQLConfig.setupNoIndex(queryRewrite);
         }
@@ -166,14 +186,10 @@ public class GeoAssembler extends DatasetAssembler {
     }
 
     private static void prepareSpatialExtension(Dataset dataset, String spatialIndex){
-        boolean isEmpty = dataset.calculateRead(()->dataset.isEmpty());
-        if ( isEmpty && spatialIndex != null ) {
-            LOG.warn("Dataset empty. Spatial Index not constructed. Server will require restarting after adding data and any updates to build Spatial Index.");
-            return;
+        boolean isEmpty = dataset.calculateRead(dataset::isEmpty);
+        if ( isEmpty ) {
+            LOG.warn("Dataset is empty. Constructing an empty spatial index that needs to be updated once data is added.");
         }
-        if ( isEmpty )
-            // Nothing to do.
-            return;
 
         try {
             // no file given, i.e. in-memory index only
@@ -185,23 +201,23 @@ public class GeoAssembler extends DatasetAssembler {
             // file given but empty -> compute and serialize index
             Path spatialIndexPath = Path.of(spatialIndex);
             if ( ! Files.exists(spatialIndexPath) || Files.size(spatialIndexPath) == 0 ) {
-                GeoSPARQLConfig.setupSpatialIndex(dataset, spatialIndexPath.toFile());
+                GeoSPARQLConfig.setupSpatialIndex(dataset, spatialIndexPath);
                 return;
             }
 
             // load and setup the precomputed index
-            GeoSPARQLConfig.setupPrecomputedSpatialIndex(dataset, spatialIndexPath.toFile());
+            GeoSPARQLConfig.setupPrecomputedSpatialIndex(dataset, spatialIndexPath);
         }
         catch (SrsException ex) {
             // Data but no spatial data.
             if ( ! ex.getMessage().startsWith("No SRS found") )
                 throw ex;
-            LOG.warn(ex.getMessage());
+            LOG.warn(ex.getMessage(), ex);
         }
         catch (IOException ex) { IO.exception(ex); return; }
         catch (SpatialIndexException ex) {
             String msg = "Failed to create spatial index: "+ex.getMessage();
-            LOG.error(msg);
+            LOG.error(msg, ex);
             throw new JenaException(msg, ex);
         }
     }

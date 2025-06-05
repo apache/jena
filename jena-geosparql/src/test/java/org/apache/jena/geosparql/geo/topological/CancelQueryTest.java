@@ -33,6 +33,7 @@ import org.apache.jena.geosparql.implementation.index.IndexConfiguration;
 import org.apache.jena.geosparql.implementation.vocabulary.Geo;
 import org.apache.jena.geosparql.spatial.SpatialIndex;
 import org.apache.jena.geosparql.spatial.SpatialIndexException;
+import org.apache.jena.geosparql.spatial.index.v2.SpatialIndexLib;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Dataset;
@@ -106,8 +107,8 @@ public class CancelQueryTest {
         // create spatial index
         if (useIndex){
             try {
-                SpatialIndex index = SpatialIndex.buildSpatialIndex(ds);
-                SpatialIndex.setSpatialIndex(ds, index);
+                SpatialIndex index = SpatialIndexLib.buildSpatialIndex(ds.asDatasetGraph());
+                SpatialIndexLib.setSpatialIndex(ds, index);
             } catch (SpatialIndexException e) {
                 throw new RuntimeException(e);
             }
