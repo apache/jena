@@ -48,6 +48,44 @@ Licensed under BSD-style license (see licenses/LICENSE_Scala.txt)
 
 - - - - - - - - - - - - - - - - - - - - - - -
 
+EsotericSoftware licenses the following under 3 clause BSD licenses:
+
+  kryo
+  Copyright (c) 2008-2025, Nathan Sweet
+  https://github.com/EsotericSoftware/kryo/blob/master/LICENSE.md
+
+  reflectasm
+  Copyright (c) 2008, Nathan Sweet
+  https://github.com/EsotericSoftware/reflectasm/blob/master/license.txt
+
+  minlog
+  Copyright (c) 2008, Nathan Sweet
+  https://github.com/EsotericSoftware/minlog/blob/master/license.txt
+
+- - - - - - - - - - - - - - - - - - - - - - -
+
+The ASM library
+Copyright (c) 2000-2011 INRIA, France Telecom
+https://asm.ow2.io/license.html
+
+- - - - - - - - - - - - - - - - - - - - - - -
+
+Units of Measurement API
+Copyright (c) 2014-2020, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+https://github.com/unitsofmeasurement/unit-api/blob/master/LICENSE
+
+- - - - - - - - - - - - - - - - - - - - - - -
+
+JTS Topology Suite
+Copyright (c) 2007, Eclipse Foundation, Inc. and its licensors.
+https://github.com/locationtech/jts/blob/master/LICENSE_EDLv1.txt
+
+and includes material
+  Copyright (c) 2003, Open Source Geospatial Foundation
+  https://github.com/locationtech/jts/blob/master/OSGEO_LICENSE.txt
+  
+- - - - - - - - - - - - - - - - - - - - - - -
+
 From Apache Lucene:
 
 ICU4J, (under analysis/icu) is licensed under an MIT styles license
