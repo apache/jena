@@ -67,7 +67,7 @@
     <ver.jakarta.json>2.0.1</ver.jakarta.json>
 
     <!-- These two must be in-step -->
-    <ver.jetty>12.0.21</ver.jetty>
+    <ver.jetty>12.0.22</ver.jetty>
     <ver.jakarta-servlet>6.1.0</ver.jakarta-servlet>
 
     <!-- 
@@ -75,7 +75,7 @@
          See jena-fuseki-webapp and https://shiro.apache.org/jakarta-ee.html
     -->
     <ver.shiro>2.0.4</ver.shiro>
-    <ver.omnifaces>4.6.3</ver.omnifaces>
+    <ver.omnifaces>4.6.5</ver.omnifaces>
 
     <ver.protobuf>4.31.1</ver.protobuf>
     <ver.libthrift>0.21.0</ver.libthrift>
@@ -104,7 +104,7 @@
 
     <!-- Testing -->
     <ver.junit4>4.13.2</ver.junit4>
-    <ver.junit5>5.13.0</ver.junit5>
+    <ver.junit5>5.13.1</ver.junit5>
     <ver.junit5-platform>1.10.2</ver.junit5-platform>
  
     <ver.mockito>5.18.0</ver.mockito>
