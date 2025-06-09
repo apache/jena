@@ -857,7 +857,7 @@
       <dependency>
         <groupId>io.github.bonigarcia</groupId>
         <artifactId>webdrivermanager</artifactId>
-        <version>5.8.0</version>
+        <version>6.1.0</version>
         <scope>test</scope>
       </dependency>
       <!-- END jena-fuseki-mod-geosparql -->
