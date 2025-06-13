@@ -23,8 +23,8 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -73,7 +73,7 @@ public class TestCrossOriginFilterMock {
     HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
     FilterChain chain = mock(FilterChain.class);
 
-    @Before
+    @BeforeEach
     public void setUpTest() {
         when(httpServletRequest.getHeader("Origin")).thenReturn("http://localhost:12335");
         when(httpServletRequest.getHeaders("Connection")).thenReturn(Collections.emptyEnumeration());
