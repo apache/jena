@@ -17,7 +17,9 @@
  */
 package org.apache.jena.fuseki.metrics;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -35,24 +37,30 @@ public class FusekiRequestsMetrics implements MeterBinder {
     @Override
     public void bindTo(MeterRegistry registry) {
         DataService dataService = dataAccessPoint.getDataService();
+        Set<Gauge> gauges = new HashSet<>();
+
         for (Operation operation : dataService.getOperations()) {
             List<Endpoint> endpoints = dataService.getEndpoints( operation );
             for (Endpoint endpoint : endpoints) {
                 CounterSet counters = endpoint.getCounters();
                 for (CounterName counterName : counters.counters()) {
                     Counter counter = counters.get( counterName );
-
-                    Gauge.builder(
-                            "fuseki_" + counterName.getFullName(), counter, Counter::value )
-                            .tags( new String[] {
-                                    "dataset", dataAccessPoint.getName(),
-                                    "endpoint", endpoint.getName(),
-                                    "operation", operation.getName(),
-                                    "description", operation.getDescription()
-                            } )
-                            .register( registry );
+                    Gauge gauge =
+                        Gauge.builder(
+                                "fuseki_" + counterName.getFullName(), counter, Counter::value )
+                                .tags( new String[] {
+                                        "dataset", dataAccessPoint.getName(),
+                                        "endpoint", endpoint.getName(),
+                                        "operation", operation.getName(),
+                                        "description", operation.getDescription()
+                                } )
+                                .register( registry );
+                    gauges.add(gauge);
                 }
             }
         }
+        dataService.addShutdownHandler(dataSrv->{
+            gauges.forEach(registry::remove);
+        });
     }
 }
