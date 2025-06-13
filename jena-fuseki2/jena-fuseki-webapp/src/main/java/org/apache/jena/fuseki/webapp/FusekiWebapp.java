@@ -18,8 +18,6 @@
 
 package org.apache.jena.fuseki.webapp;
 
-import static java.lang.String.format;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,12 +37,12 @@ import org.apache.jena.fuseki.Fuseki;
 import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.cmd.FusekiArgs;
+import org.apache.jena.fuseki.mgt.ActionDatasets;
 import org.apache.jena.fuseki.mgt.Template;
 import org.apache.jena.fuseki.mgt.TemplateFunctions;
 import org.apache.jena.fuseki.server.DataAccessPoint;
 import org.apache.jena.fuseki.server.DataAccessPointRegistry;
 import org.apache.jena.fuseki.server.DataService;
-import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
 import org.apache.jena.fuseki.system.FusekiCore;
 import org.apache.jena.graph.Graph;
@@ -114,6 +112,27 @@ public class FusekiWebapp
     private static boolean    initialized        = false;
     // Marks the end of successful initialization.
     /*package*/static boolean serverInitialized  = false;
+
+    // Run-time lock for operations that change the server configuration (e..g adding and deleting data services)
+    public static final Object systemLock        = new Object();
+
+    /**
+     * Control whether to allow creating new dataservices by uploading a config file.
+     * See {@link ActionDatasets}.
+     *
+     */
+    public static final String allowConfigFileProperty = "fuseki:allowAddByConfigFile";
+
+    /**
+     * Return whether to allow service configuration files to be uploaded as a file.
+     * See {@link ActionDatasets}.
+     */
+    public static boolean allowConfigFiles() {
+        String value = System.getProperty(allowConfigFileProperty);
+        if ( value != null )
+            return "true".equals(value);
+        return false;
+    }
 
     public /*package*/ synchronized static void formatBaseArea() {
         if ( initialized )
@@ -407,25 +426,6 @@ public class FusekiWebapp
         return path;
     }
 
-    /**
-     * Dataset set name to configuration file name. Return a configuration file name -
-     * existing one or ".ttl" form if new
-     */
-    public static String datasetNameToConfigurationFile(HttpAction action, String dsName) {
-        List<String> existing = existingConfigurationFile(dsName);
-        if ( ! existing.isEmpty() ) {
-            if ( existing.size() > 1 ) {
-                action.log.warn(format("[%d] Multiple existing configuration files for %s : %s",
-                                       action.id, dsName, existing));
-                ServletOps.errorBadRequest("Multiple existing configuration files for "+dsName);
-                return null;
-            }
-            return existing.get(0).toString();
-        }
-
-        return generateConfigurationFilename(dsName);
-    }
-
     /** New configuration file name - absolute filename */
     public static String generateConfigurationFilename(String dsName) {
         String filename = dsName;
@@ -437,10 +437,12 @@ public class FusekiWebapp
     }
 
     /** Return the filenames of all matching files in the configuration directory (absolute paths returned ). */
-    public static List<String> existingConfigurationFile(String baseFilename) {
+    public static List<String> existingConfigurationFile(String serviceName) {
+        String filename = DataAccessPoint.isCanonical(serviceName) ? serviceName.substring(1) : serviceName;
         try {
             List<String> paths = new ArrayList<>();
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(FusekiWebapp.dirConfiguration, baseFilename+".*") ) {
+            // This ".* is a file glob pattern, not a regular expression  - it looks for file extensions.
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(FusekiWebapp.dirConfiguration, filename+".*") ) {
                 stream.forEach((p)-> paths.add(FusekiWebapp.dirConfiguration.resolve(p).toString() ));
             }
             return paths;

@@ -33,6 +33,8 @@ import org.junit.runners.Suite;
     , TestWebappAuthUpdate_JDK.class
     , TestWebappFileUpload.class
     , TestWebappAdmin.class
+    , TestWebappAdminAddDeleteDatasetTemplate.class
+    , TestWebappAdminAddDeleteDatasetFile.class
     , TestWebappAdminAPI.class
     , TestWebappServerReadOnly.class
     , TestWebappMetrics.class
