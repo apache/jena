@@ -58,14 +58,15 @@ public class DataService {
      * associated with. This is mainly for checking and development.
      * Usually, one {@code DataService} is associated with one {@link DataAccessPoint}.
      */
-    private List<DataAccessPoint> dataAccessPoints      = new ArrayList<>(1);
+    private List<DataAccessPoint> dataAccessPoints          = new ArrayList<>(1);
+    private List<Consumer<DataService>> shutdownHandlers    = new ArrayList<>(5);
 
-    private volatile DataServiceStatus state            = UNINITIALIZED;
+    private volatile DataServiceStatus state                = UNINITIALIZED;
 
     // DataService-level counters.
-    private final CounterSet    counters                = new CounterSet();
-    private final AtomicBoolean offlineInProgress       = new AtomicBoolean(false);
-    private final AtomicBoolean acceptingRequests       = new AtomicBoolean(true);
+    private final CounterSet    counters                    = new CounterSet();
+    private final AtomicBoolean offlineInProgress           = new AtomicBoolean(false);
+    private final AtomicBoolean acceptingRequests           = new AtomicBoolean(true);
 
     private DispatchFunction plainOperationChooser;
 
@@ -251,10 +252,15 @@ public class DataService {
         }
     }
 
+    public void addShutdownHandler(Consumer<DataService> action ) {
+        shutdownHandlers.add(action);
+    }
+
     /** Shutdown and never use again. */
     public synchronized void shutdown() {
         if ( state == CLOSING )
             return;
+        shutdownHandlers.forEach(action->action.accept(this));
         expel(dataset);
         dataset = null;
         state = CLOSED;
