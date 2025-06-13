@@ -19,6 +19,10 @@
 package org.apache.jena.atlas.lib;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.jena.atlas.lib.tuple.Tuple ;
 import org.junit.Test ;
@@ -43,6 +47,15 @@ public class TestFileOps
         assertEquals(expected, result);
     }
 
+    static void testComponents(String path, String...expected) {
+        List<String> actualList = FileOps.pathComponents(path);
+        if ( path.equals("/") ) {
+            assertTrue(actualList.isEmpty() );
+            return;
+        }
+        List<String> expectedList = Arrays.asList(expected);
+        assertEquals(expectedList, actualList);
+    }
 
     @Test public void split01()
     { testParts("/aa/bb/cc.ext", "/aa/bb", "cc", "ext") ; }
@@ -88,4 +101,29 @@ public class TestFileOps
 
     @Test public void concat06()
     { testConcat("/xyz", "", "/xyz"); }
+
+    @Test public void components01()
+    { testComponents("", ""); }
+
+    @Test public void components02()
+    { testComponents("/"); }
+
+    @Test public void components03()
+    { testComponents("x", "x"); }
+
+    @Test public void components04()
+    { testComponents("/x", "x"); }
+
+    @Test public void components05()
+    { testComponents("/x/y/z", "x", "y", "z"); }
+
+    @Test public void components06()
+    { testComponents("/x/y/z/", "x", "y", "z"); }
+
+    @Test public void components07()
+    { testComponents("/x/../z/", "x", "..", "z"); }
+
+    @Test public void components08()
+    { testComponents("../y/z", "..", "y", "z"); }
+
 }

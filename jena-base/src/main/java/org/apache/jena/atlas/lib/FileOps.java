@@ -21,6 +21,9 @@ package org.apache.jena.atlas.lib ;
 import java.io.File ;
 import java.io.IOException ;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
@@ -202,6 +205,28 @@ public class FileOps {
         return iExt > iSlash ? filename.substring(iExt + 1).toLowerCase() : "" ;
     }
 
+    /**
+     * Return the components of a path as a list.
+     * A path of "/" returns an empty list.
+     * A path of "" returns a list of exactly "".
+     */
+    public static List<String> pathComponents(String path) {
+        return pathComponents(Path.of(path));
+    }
+
+    /**
+     * Return the components of a path as a list.
+     * A path of "/" returns an empty list.
+     * A path of "" returns a list of exactly "".
+     */
+    public static List<String> pathComponents(Path path) {
+        List<String> x = new ArrayList<>();
+        for ( int i = 0; i < path.getNameCount(); i++ ) {
+            x.add(path.getName(i).toString());
+        }
+        return x;
+    }
+
     public static String concatPaths(String directory, String path) {
         return Lib.concatPaths(directory, path);
     }
@@ -225,19 +250,10 @@ public class FileOps {
     /** Copy a file */
     public static void copyFile(File source, File dest) {
         try {
-        		Files.copy(source.toPath(), dest.toPath());
+            Files.copy(source.toPath(), dest.toPath());
         }
         catch (IOException ex) {
             IO.exception(ex) ;
         }
     }
-
-    // public static String getExt(String filename)
-    // {
-    // int i = filename.lastIndexOf('.') ;
-    // int j = filename.lastIndexOf('/') ;
-    // if ( i > j )
-    // return filename.substring(i+1) ;
-    // return null ;
-    // }
 }
