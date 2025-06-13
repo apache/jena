@@ -23,8 +23,17 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
-public class Registry<K,T>
-{
+/**
+ * A registry is mapping from a key to an item, typically as the long term state and configuration of the system.
+ * They are "read-mostly" - it is expect that most operations are read operations.
+ *
+ * Individual operations on a Registry are thread-safe (the code won't crash) but
+ * iteration ({@code forEach}) is not a snapshot of the registry so it can be
+ * inconsistent (e.g. yield two entries that never existed in the registry at the
+ * same time).
+ */
+
+public class Registry<K,T> {
     protected Map<K, T> registry = new ConcurrentHashMap<>();
 
     public Registry() {}
