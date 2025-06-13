@@ -49,7 +49,6 @@ public class LocalhostOnly implements Filter {
             Arrays.asList(LOCALHOST_IpV4, LOCALHOST_IpV6_a, LOCALHOST_IpV6_b, LOCALHOST_IpV6_c));
 
     private static Logger log = Fuseki.serverLog;
-    private static final String message = "Access denied : only localhost access allowed";
 
     public LocalhostOnly() { }
 

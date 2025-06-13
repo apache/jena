@@ -33,8 +33,6 @@ import org.apache.jena.sys.JenaSystem;
 /** Same package for access */
 public class TestFusekiModules {
 
-    private static FusekiModules system = null;
-
     @BeforeAll
     public static void beforeClass() { JenaSystem.init(); }
 

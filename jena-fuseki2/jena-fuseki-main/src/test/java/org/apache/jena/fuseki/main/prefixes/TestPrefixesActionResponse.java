@@ -65,10 +65,6 @@ public class TestPrefixesActionResponse {
         return serviceR;
     }
 
-    // Test JSON responses
-
-    private record PrefixesEntry(String prefix, String namespace) {}
-
     @Test
     public void getAllJson() {
         TypedInputStream x = httpGet(testReadURL());

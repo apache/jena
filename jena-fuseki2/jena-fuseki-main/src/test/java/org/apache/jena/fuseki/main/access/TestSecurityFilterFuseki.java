@@ -140,11 +140,11 @@ public class TestSecurityFilterFuseki {
     public TestSecurityFilterFuseki() {}
 
     private static String queryAll        = "SELECT * { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }";
-    private static String queryDft        = "SELECT * { ?s ?p ?o }";
-    private static String queryNamed      = "SELECT * { GRAPH ?g { ?s ?p ?o } }";
-
-    private static String queryG2         = "SELECT * { GRAPH <http://test/graph2> { ?s ?p ?o } }";
-    private static String queryGraphNames = "SELECT * { GRAPH ?g { } }";
+//    private static String queryDft        = "SELECT * { ?s ?p ?o }";
+//    private static String queryNamed      = "SELECT * { GRAPH ?g { ?s ?p ?o } }";
+//
+//    private static String queryG2         = "SELECT * { GRAPH <http://test/graph2> { ?s ?p ?o } }";
+//    private static String queryGraphNames = "SELECT * { GRAPH ?g { } }";
 
     private Set<Node> query(String user, String password, String dsName, String queryString) {
         Set<Node> results = new HashSet<>();

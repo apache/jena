@@ -45,9 +45,6 @@ import org.slf4j.Logger;
 
 public class FMod_Admin implements FusekiModule {
 
-    private static FusekiModule singleton = new FMod_Admin();
-    // ----
-
 //    @Override
 //    public void start() {}
 //

@@ -21,6 +21,6 @@ package org.apache.jena.fuseki.main.access;
 public class TestFusekiSecurityAssemblerShared extends AbstractTestFusekiSecurityAssembler {
 
     public TestFusekiSecurityAssemblerShared() {
-        super(DIR+"assem-security-shared.ttl", true);
+        super(DIR+"assem-security-shared.ttl");
     }
 }

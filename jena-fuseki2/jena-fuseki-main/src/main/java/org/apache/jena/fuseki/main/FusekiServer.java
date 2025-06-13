@@ -25,7 +25,6 @@ import static org.apache.jena.fuseki.Fuseki.serverLog;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import jakarta.servlet.Filter;
@@ -61,7 +60,6 @@ import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.sparql.util.Context;
@@ -473,9 +471,6 @@ public class FusekiServer {
         // HTTPS
         private String                   httpsKeystore          = null;
         private String                   httpsKeystorePasswd    = null;
-
-        // Bearer authentication : verify and extract the user for a request.
-        private Function<String, String> bearerVerifiedUser = null;
 
         // Other servlets to add. The pathspec for servlets must be unique.
         // Order does not matter, the rules of pathspec dispatch are "exact match"
@@ -933,16 +928,6 @@ public class FusekiServer {
             return this;
         }
 
-        /**
-         * Server level setting specific to Fuseki main.
-         * General settings done by {@link FusekiConfig#processServerConfiguration}.
-         */
-        private void processConfigServerLevel(Resource server) {
-            if ( server == null )
-                return;
-            processConfigServerLevel(server.getModel().getGraph(), server.asNode());
-        }
-
         private void processConfigServerLevel(Graph config, Node server) {
             if ( server == null )
                 return;
@@ -955,11 +940,6 @@ public class FusekiServer {
             enableCompact(argBoolean(config, server, FusekiVocabG.pServerCompact, false));
             processConfAuthentication(config, server);
             serverAuth = FusekiConfig.allowedUsers(config, server);
-        }
-
-        /** Process password file, auth and realm settings on the server description. **/
-        private void processConfAuthentication(Resource server) {
-
         }
 
         private void processConfAuthentication(Graph config, Node server) {
