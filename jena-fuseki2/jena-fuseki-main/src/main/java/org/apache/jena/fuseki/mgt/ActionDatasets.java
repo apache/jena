@@ -20,8 +20,6 @@ package org.apache.jena.fuseki.mgt;
 
 import static java.lang.String.format;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,25 +33,28 @@ import org.apache.jena.atlas.json.JsonBuilder;
 import org.apache.jena.atlas.json.JsonValue;
 import org.apache.jena.atlas.lib.FileOps;
 import org.apache.jena.atlas.lib.InternalErrorException;
+import org.apache.jena.atlas.lib.NotImplemented;
 import org.apache.jena.atlas.logging.FmtLog;
 import org.apache.jena.atlas.web.ContentType;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.dboe.base.file.Location;
+import org.apache.jena.fuseki.FusekiConfigException;
 import org.apache.jena.fuseki.build.DatasetDescriptionMap;
 import org.apache.jena.fuseki.build.FusekiConfig;
 import org.apache.jena.fuseki.ctl.ActionContainerItem;
 import org.apache.jena.fuseki.ctl.JsonDescription;
 import org.apache.jena.fuseki.metrics.MetricsProvider;
-import org.apache.jena.fuseki.server.DataAccessPoint;
-import org.apache.jena.fuseki.server.DataService;
-import org.apache.jena.fuseki.server.FusekiVocab;
-import org.apache.jena.fuseki.server.ServerConst;
+import org.apache.jena.fuseki.server.*;
 import org.apache.jena.fuseki.servlets.ActionLib;
 import org.apache.jena.fuseki.servlets.HttpAction;
 import org.apache.jena.fuseki.servlets.ServletOps;
-import org.apache.jena.fuseki.system.DataUploader;
 import org.apache.jena.fuseki.system.FusekiNetLib;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.impl.Util;
 import org.apache.jena.riot.*;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFLib;
@@ -61,15 +62,17 @@ import org.apache.jena.shared.JenaException;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
+import org.apache.jena.sparql.exec.QueryExec;
+import org.apache.jena.sparql.exec.RowSet;
 import org.apache.jena.sparql.util.FmtUtils;
+import org.apache.jena.system.G;
+import org.apache.jena.tdb1.TDB1;
+import org.apache.jena.tdb2.TDB2;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.web.HttpSC;
 
 public class ActionDatasets extends ActionContainerItem {
-
-
     static private Property pServiceName = FusekiVocab.pServiceName;
-    //static private Property pStatus = FusekiVocab.pStatus;
 
     private static final String paramDatasetName    = "dbName";
     private static final String paramDatasetType    = "dbType";
@@ -121,43 +124,55 @@ public class ActionDatasets extends ActionContainerItem {
             ServletOps.errorBadRequest("Bad request - Content-Type or both parameters dbName and dbType required");
 
         boolean succeeded = false;
-        String systemFileCopy = null;
+        // Used in clear-up.
         String configFile = null;
+        String systemFileCopy = null;
 
+        FusekiServerCtl serverCtl = FusekiServerCtl.get(action.getServletContext());
         DatasetDescriptionMap registry = new DatasetDescriptionMap();
 
-        synchronized (FusekiAdmin.systemLock) {
+        synchronized (serverCtl.getServerlock()) {
             try {
-                // Where to build the templated service/database.
-                Model descriptionModel = ModelFactory.createDefaultModel();
-                StreamRDF dest = StreamRDFLib.graph(descriptionModel.getGraph());
+                // Get the request input.
+                Model modelFromRequest = ModelFactory.createDefaultModel();
+                StreamRDF dest = StreamRDFLib.graph(modelFromRequest.getGraph());
 
-                if ( hasParams || WebContent.isHtmlForm(ct) )
-                    assemblerFromForm(action, dest);
-                else if ( WebContent.isMultiPartForm(ct) )
-                    assemblerFromUpload(action, dest);
-                else
-                    assemblerFromBody(action, dest);
+                boolean templatedRequest = false;
 
-                // ----
-                // Keep a persistent copy immediately.  This is not used for
-                // anything other than being "for the record".
-                systemFileCopy = FusekiServerCtl.dirSystemFileArea.resolve(uuid.toString()).toString();
-                try ( OutputStream outCopy = IO.openOutputFile(systemFileCopy) ) {
-                    RDFDataMgr.write(outCopy, descriptionModel, Lang.TURTLE);
+                try {
+                    if ( hasParams || WebContent.isHtmlForm(ct) ) {
+                        assemblerFromForm(action, dest);
+                        templatedRequest = true;
+                        // dbName, dbType
+                    } else if ( WebContent.isMultiPartForm(ct) ) {
+                        // Cannot be enabled.
+                        ServletOps.errorBadRequest("Service configuration from a multipart upload not supported");
+                        //assemblerFromUpload(action, dest);
+                    } else {
+                        if ( ! FusekiAdmin.allowConfigFiles() )
+                            ServletOps.errorBadRequest("Service configuration from an upload file not supported");
+                        assemblerFromBody(action, dest);
+                    }
+                } catch (RiotException ex) {
+                    ActionLib.consumeBody(action);
+                    action.log.warn(format("[%d] Failed to read configuration: %s", action.id, ex.getMessage()));
+                    ServletOps.errorBadRequest("Failed to read configuration");
                 }
 
                 // ----
                 // Add the dataset and graph wiring for assemblers
                 Model model = ModelFactory.createDefaultModel();
-                model.add(descriptionModel);
+                model.add(modelFromRequest);
                 model = AssemblerUtils.prepareForAssembler(model);
 
                 // ----
                 // Process configuration.
-
                 // Returns the "service fu:name NAME" statement
                 Statement stmt = findService(model);
+                if ( stmt == null ) {
+                    action.log.warn(format("[%d] No service name", action.id));
+                    ServletOps.errorBadRequest(format("No service name"));
+                }
 
                 Resource subject = stmt.getSubject();
                 Literal object = stmt.getObject().asLiteral();
@@ -165,39 +180,85 @@ public class ActionDatasets extends ActionContainerItem {
                 if ( object.getDatatype() != null && ! object.getDatatype().equals(XSDDatatype.XSDstring) )
                     action.log.warn(format("[%d] Service name '%s' is not a string", action.id, FmtUtils.stringForRDFNode(object)));
 
-                String datasetPath;
-                {   // Check the name provided.
+                final String datasetPath;
+                {
                     String datasetName = object.getLexicalForm();
                     // This duplicates the code FusekiBuilder.buildDataAccessPoint to give better error messages and HTTP status code."
 
                     // ---- Check and canonicalize name.
-                    if ( datasetName.isEmpty() )
-                        ServletOps.error(HttpSC.BAD_REQUEST_400, "Empty dataset name");
-                    if ( StringUtils.isBlank(datasetName) )
-                        ServletOps.error(HttpSC.BAD_REQUEST_400, format("Whitespace dataset name: '%s'", datasetName));
-                    if ( datasetName.contains(" ") )
-                        ServletOps.error(HttpSC.BAD_REQUEST_400, format("Bad dataset name (contains spaces) '%s'",datasetName));
-                    if ( datasetName.equals("/") )
-                        ServletOps.error(HttpSC.BAD_REQUEST_400, format("Bad dataset name '%s'",datasetName));
+                    // Various explicit check for better error messages.
+
+                    if ( datasetName.isEmpty() ) {
+                        action.log.warn(format("[%d] Empty dataset name", action.id));
+                        ServletOps.errorBadRequest("Empty dataset name");
+                    }
+                    if ( StringUtils.isBlank(datasetName) ) {
+                        action.log.warn(format("[%d] Whitespace dataset name: '%s'", action.id, datasetName));
+                        ServletOps.errorBadRequest(format("Whitespace dataset name: '%s'", datasetName));
+                    }
+                    if ( datasetName.contains(" ") ) {
+                        action.log.warn(format("[%d] Bad dataset name (contains spaces) '%s'", action.id, datasetName));
+                        ServletOps.errorBadRequest(format("Bad dataset name (contains spaces) '%s'", datasetName));
+                    }
+                    if ( datasetName.equals("/") ) {
+                        action.log.warn(format("[%d] Bad dataset name '%s'", action.id, datasetName));
+                        ServletOps.errorBadRequest(format("Bad dataset name '%s'", datasetName));
+                    }
+
+                    // The service names must be a valid URI path
+                    try {
+                        ValidString validServiceName = Validators.serviceName(datasetName);
+                    } catch (FusekiConfigException ex) {
+                        action.log.warn(format("[%d] Invalid service name: '%s'", action.id, datasetName));
+                        ServletOps.error(HttpSC.BAD_REQUEST_400, format("Invalid service name: '%s'", datasetName));
+                    }
+
+                    // Canonical - starts with "/",does not end in "/"
                     datasetPath = DataAccessPoint.canonical(datasetName);
-                    // ---- Check whether it already exists
-                    if ( action.getDataAccessPointRegistry().isRegistered(datasetPath) )
-                        ServletOps.error(HttpSC.CONFLICT_409, "Name already registered "+datasetPath);
+
+                    // For this operation, check additionally that the path does not go outside the expected file area.
+                    // This imposes the path component-only rule and does not allow ".."
+                    if ( ! isValidServiceName(datasetPath) ) {
+                        action.log.warn(format("[%d] Database service name not acceptable: '%s'", action.id, datasetName));
+                        ServletOps.error(HttpSC.BAD_REQUEST_400, format("Database service name not acceptable: '%s'", datasetName));
+                    }
                 }
 
+                // ---- Check whether it already exists
+                if ( action.getDataAccessPointRegistry().isRegistered(datasetPath) ) {
+                    action.log.warn(format("[%d] Name already registered '%s'", action.id, datasetPath));
+                    ServletOps.error(HttpSC.CONFLICT_409, format("Name already registered '%s'", datasetPath));
+                }
+
+                // -- Validate any TDB locations.
+                // If this is a templated request, there is no need to do this
+                // because the location is "datasetPath" which has been checked.
+                if ( ! templatedRequest ) {
+                    List<String> tdbLocations = tdbLocations(action, model.getGraph());
+                    for(String tdbLocation : tdbLocations ) {
+                        if ( ! isValidTDBLocation(tdbLocation) ) {
+                            action.log.warn(format("[%d] TDB database location not acceptable: '%s'", action.id, tdbLocation));
+                            ServletOps.error(HttpSC.BAD_REQUEST_400, format("TDB database location not acceptable: '%s'", tdbLocation));
+                        }
+                    }
+                }
+
+                // ----
+                // Keep a persistent copy with a globally unique name.
+                // This is not used for anything other than being "for the record".
+                systemFileCopy = FusekiServerCtl.dirSystemFileArea.resolve(uuid.toString()).toString();
+                RDFWriter.source(model).lang(Lang.TURTLE).output(systemFileCopy);
+
+                // ----
                 action.log.info(format("[%d] Create database : name = %s", action.id, datasetPath));
 
-                configFile = FusekiServerCtl.generateConfigurationFilename(datasetPath);
                 List<String> existing = FusekiServerCtl.existingConfigurationFile(datasetPath);
                 if ( ! existing.isEmpty() )
                     ServletOps.error(HttpSC.CONFLICT_409, "Configuration file for '"+datasetPath+"' already exists");
 
-                // Write to configuration directory.
-                try ( OutputStream outCopy = IO.openOutputFile(configFile) ) {
-                    RDFDataMgr.write(outCopy, descriptionModel, Lang.TURTLE);
-                }
+                configFile = FusekiServerCtl.generateConfigurationFilename(datasetPath);
 
-                // Need to be in Resource space at this point.
+                // ---- Build the service
                 DataAccessPoint dataAccessPoint = FusekiConfig.buildDataAccessPoint(subject.getModel().getGraph(), subject.asNode(), registry);
                 if ( dataAccessPoint == null ) {
                     FmtLog.error(action.log, "Failed to build DataAccessPoint: datasetPath = %s; DataAccessPoint name = %s", datasetPath, dataAccessPoint);
@@ -205,10 +266,18 @@ public class ActionDatasets extends ActionContainerItem {
                     return null;
                 }
                 dataAccessPoint.getDataService().setEndpointProcessors(action.getOperationRegistry());
-                dataAccessPoint.getDataService().goActive();
+
+                // Write to configuration directory.
+                RDFWriter.source(model).lang(Lang.TURTLE).output(configFile);
+
                 if ( ! datasetPath.equals(dataAccessPoint.getName()) )
                     FmtLog.warn(action.log, "Inconsistent names: datasetPath = %s; DataAccessPoint name = %s", datasetPath, dataAccessPoint);
+
+                dataAccessPoint.getDataService().goActive();
                 succeeded = true;
+
+                // At this point, a server restarting will find the new service.
+                // This next line makes it dispatchable in this running server.
                 action.getDataAccessPointRegistry().register(dataAccessPoint);
 
                 // Add to metrics
@@ -218,8 +287,8 @@ public class ActionDatasets extends ActionContainerItem {
 
                 action.setResponseContentType(WebContent.contentTypeTextPlain);
                 ServletOps.success(action);
-            } catch (IOException ex) { IO.exception(ex); }
-            finally {
+            } finally {
+                // Clear-up on failure.
                 if ( ! succeeded ) {
                     if ( systemFileCopy != null ) FileOps.deleteSilent(systemFileCopy);
                     if ( configFile != null ) FileOps.deleteSilent(configFile);
@@ -227,6 +296,41 @@ public class ActionDatasets extends ActionContainerItem {
             }
             return null;
         }
+    }
+
+    /**
+     * Check whether a service name is acceptable.
+     * A service name is used as a filesystem path component,
+     * except it may have a leading "/"., to store the database and the configuration.
+     * <p>
+     * The canonical name for a service (see {@link DataAccessPoint#canonical})
+     * starts with a "/" and this will be added if necessary.
+     */
+    private boolean isValidServiceName(String datasetPath) {
+        // Leading "/" is OK , nowhere else is.
+        int idx = datasetPath.indexOf('/', 1);
+        if ( idx > 0 )
+            return false;
+        // No slash, except maybe at the start so a meaningful use of .. can only be at the start.
+        if ( datasetPath.startsWith("/.."))
+            return false;
+        // Character restrictions done by Validators.serviceName
+        return true;
+    }
+
+    // This works for TDB1 as well.
+    private boolean isValidTDBLocation(String tdbLocation) {
+        Location location = Location.create(tdbLocation);
+        if ( location.isMem() )
+            return true;
+        // No ".."
+        if (tdbLocation.startsWith("..") || tdbLocation.contains("/..") ) {
+            // That test was too strict.
+            List<String> components = FileOps.pathComponents(tdbLocation);
+            if ( components.contains("..") )
+                return false;
+        }
+        return true;
     }
 
     /** Find the service resource. There must be only one in the configuration. */
@@ -261,8 +365,11 @@ public class ActionDatasets extends ActionContainerItem {
             stmt = stmt3;
         }
 
+        if ( stmt == null )
+            return null;
+
         if ( ! stmt.getObject().isLiteral() )
-            ServletOps.errorBadRequest("Found "+FmtUtils.stringForRDFNode(stmt.getObject())+" : Service names are strings, then used to build the external URI");
+            ServletOps.errorBadRequest("Found "+FmtUtils.stringForRDFNode(stmt.getObject())+" : Service names are strings, which are then used to build the external URI");
 
         return stmt;
     }
@@ -305,13 +412,10 @@ public class ActionDatasets extends ActionContainerItem {
             ServletOps.errorNotFound("No such dataset registered: "+name);
 
         boolean succeeded = false;
+        FusekiServerCtl serverCtl = FusekiServerCtl.get(action.getServletContext());
 
-        synchronized(FusekiAdmin.systemLock ) {
+        synchronized(serverCtl.getServerlock()) {
             try {
-                // Here, go offline.
-                // Need to reference count operations when they drop to zero
-                // or a timer goes off, we delete the dataset.
-
                 // Redo check inside transaction.
                 DataAccessPoint ref = action.getDataAccessPointRegistry().get(name);
                 if ( ref == null )
@@ -319,7 +423,8 @@ public class ActionDatasets extends ActionContainerItem {
 
                 // Get a reference before removing.
                 DataService dataService = ref.getDataService();
-                // ---- Make it invisible in this running server.
+
+                // Remove from the registry - operation dispatch will not find it any more.
                 action.getDataAccessPointRegistry().remove(name);
 
                 // Find the configuration.
@@ -327,7 +432,7 @@ public class ActionDatasets extends ActionContainerItem {
                 List<String> configurationFiles = FusekiServerCtl.existingConfigurationFile(filename);
 
                 if ( configurationFiles.isEmpty() ) {
-                    // ---- Unmanaged
+                    // -- Unmanaged
                     action.log.warn(format("[%d] Can't delete database configuration - not a managed database", action.id, name));
 //                ServletOps.errorOccurred(format("Can't delete database - not a managed configuration", name));
                     succeeded = true;
@@ -343,23 +448,22 @@ public class ActionDatasets extends ActionContainerItem {
                     return;
                 }
 
-                // ---- Remove managed database.
+                // -- Remove managed database.
                 String cfgPathname = configurationFiles.get(0);
 
                 // Delete configuration file.
                 // Once deleted, server restart will not have the database.
                 FileOps.deleteSilent(cfgPathname);
 
-                // Delete the database for real only when it is in the server "run/databases"
-                // area. Don't delete databases that reside elsewhere. We do delete the
-                // configuration file, so the databases will not be associated with the server
-                // anymore.
+                // Delete the database for real only if it is in the server
+                // "run/databases" area. Don't delete databases that reside
+                // elsewhere. We have already deleted the configuration file, so the
+                // databases will not be associated with the server anymore.
 
                 @SuppressWarnings("removal")
                 boolean isTDB1 = org.apache.jena.tdb1.sys.TDBInternal.isTDB1(dataService.getDataset());
                 boolean isTDB2 = org.apache.jena.tdb2.sys.TDBInternal.isTDB2(dataService.getDataset());
 
-                // This occasionally fails in tests due to outstanding transactions.
                 try {
                     dataService.shutdown();
                 } catch (JenaException ex) {
@@ -368,8 +472,9 @@ public class ActionDatasets extends ActionContainerItem {
                 // JENA-1481: Really delete files.
                 if ( ( isTDB1 || isTDB2 ) ) {
                     // Delete databases created by the UI, or the admin operation, which are
-                    // in predictable, unshared location on disk.
+                    // in predictable, unshared locations on disk.
                     // There may not be any database files, the in-memory case.
+                    // (TDB supports an in-memory mode.)
                     Path pDatabase = FusekiServerCtl.dirDatabases.resolve(filename);
                     if ( Files.exists(pDatabase)) {
                         try {
@@ -406,18 +511,16 @@ public class ActionDatasets extends ActionContainerItem {
     }
 
     private static void assemblerFromForm(HttpAction action, StreamRDF dest) {
-        String x = action.getRequestQueryString();
         String dbType = action.getRequestParameter(paramDatasetType);
         String dbName = action.getRequestParameter(paramDatasetName);
-        if ( StringUtils.isBlank(dbType) || StringUtils.isBlank(dbName) )
-            ServletOps.errorBadRequest("Received HTML form.  Both parameters 'dbName' and 'dbType' required");
+        // Test for null, empty or only whitespace.
+        if ( StringUtils.isBlank(dbType) || StringUtils.isBlank(dbName) ) {
+            action.log.warn(format("[%d] Both parameters 'dbName' and 'dbType' required and not be blank", action.id));
+            ServletOps.errorBadRequest("Received HTML form. Both parameters 'dbName' and 'dbType' required");
+        }
 
         Map<String, String> params = new HashMap<>();
-
-        if ( dbName.startsWith("/") )
-            params.put(Template.NAME, dbName.substring(1));
-        else
-            params.put(Template.NAME, dbName);
+        params.put(Template.NAME, dbName);
 
         FusekiServerCtl serverCtl = FusekiServerCtl.get(action.getServletContext());
         if ( serverCtl != null )
@@ -427,8 +530,7 @@ public class ActionDatasets extends ActionContainerItem {
             // No return.
         }
 
-        //action.log.info(format("[%d] Create database : name = %s, type = %s", action.id, dbName, dbType ));
-
+        // -- Get the template
         String template = dbTypeToTemplate.get(dbType.toLowerCase(Locale.ROOT));
         if ( template == null ) {
             List<String> keys = new ArrayList<>(dbTypeToTemplate.keySet());
@@ -441,7 +543,8 @@ public class ActionDatasets extends ActionContainerItem {
     }
 
     private static void assemblerFromUpload(HttpAction action, StreamRDF dest) {
-        DataUploader.incomingData(action, dest);
+        throw new NotImplemented();
+        //DataUploader.incomingData(action, dest);
     }
 
     // ---- Auxiliary functions
@@ -476,6 +579,49 @@ public class ActionDatasets extends ActionContainerItem {
             return;
         }
         dest.prefix("root", base+"#");
-        ActionLib.parseOrError(action, dest, lang, base);
+        ActionLib.parse(action, dest, lang, base);
+    }
+
+    // ---- POST
+
+    private static final String NL = "\n";
+
+    @SuppressWarnings("removal")
+    private static final String queryStringLocations =
+            "PREFIX tdb1:   <"+TDB1.namespace+">"+NL+
+            "PREFIX tdb2:   <"+TDB2.namespace+">"+NL+
+            """
+            SELECT * {
+               ?x ( tdb2:location | tdb1:location) ?location
+            }
+            """ ;
+
+    private static final Query queryLocations = QueryFactory.create(queryStringLocations);
+
+    private static List<String> tdbLocations(HttpAction action, Graph configGraph) {
+        try ( QueryExec exec =  QueryExec.graph(configGraph).query(queryLocations).build() ) {
+            RowSet results = exec.select();
+            List<String> locations = new ArrayList<>();
+            results.forEach(b->{
+                Node loc = b.get("location");
+                String location;
+                if ( loc.isURI() )
+                    location = loc.getURI();
+                else if ( Util.isSimpleString(loc) )
+                    location = G.asString(loc);
+                else {
+                    //action.log.warn(format("[%d] Database location is not a string nor a URI", action.id));
+                    // No return
+                    ServletOps.errorBadRequest("TDB database location is not a string");
+                    location = null;
+                }
+                locations.add(location);
+            });
+            return locations;
+        } catch (Exception ex) {
+            // No return
+            ServletOps.errorBadRequest("TDB database location can not be deterined");
+            return null;
+        }
     }
 }

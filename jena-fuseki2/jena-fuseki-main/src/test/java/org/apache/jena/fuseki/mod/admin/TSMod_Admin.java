@@ -16,24 +16,18 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.mgt;
+package org.apache.jena.fuseki.mod.admin;
 
-public class FusekiAdmin {
-    /**
-     * Control whether to allow creating new dataservices by uploading a config file.
-     * See {@link ActionDatasets}.
-     *
-     */
-    public static final String allowConfigFileProperty = "fuseki:allowAddByConfigFile";
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-    /**
-     * Return whether to allow service configuration files to be uploaded as a file.
-     * See {@link ActionDatasets}.
-     */
-    public static boolean allowConfigFiles() {
-        String value = System.getProperty(allowConfigFileProperty);
-        if ( value != null )
-            return "true".equals(value);
-        return false;
-    }
-}
+@Suite
+@SelectClasses({
+    TestAdmin.class,
+    TestAdminDatabaseOps.class,
+    TestAdminAddDatasetsConfigFile.class,
+    TestAdminAddDatasetTemplate.class,
+    TestFusekiReload.class,
+})
+
+public class TSMod_Admin {}

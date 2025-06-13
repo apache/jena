@@ -427,10 +427,12 @@ public class FusekiServerCtl {
     }
 
     /** Return the filenames of all matching files in the configuration directory (absolute paths returned ). */
-    public static List<String> existingConfigurationFile(String baseFilename) {
+    public static List<String> existingConfigurationFile(String serviceName) {
+        String filename = DataAccessPoint.isCanonical(serviceName) ? serviceName.substring(1) : serviceName;
         try {
             List<String> paths = new ArrayList<>();
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(FusekiServerCtl.dirConfiguration, baseFilename+".*") ) {
+            // This ".* is a file glob pattern, not a regular expression  - it looks for file extensions.
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(FusekiServerCtl.dirConfiguration, filename+".*") ) {
                 stream.forEach((p)-> paths.add(FusekiServerCtl.dirConfiguration.resolve(p).toString() ));
             }
             return paths;
@@ -438,5 +440,4 @@ public class FusekiServerCtl {
             throw new InternalErrorException("Failed to read configuration directory "+FusekiServerCtl.dirConfiguration);
         }
     }
-
 }

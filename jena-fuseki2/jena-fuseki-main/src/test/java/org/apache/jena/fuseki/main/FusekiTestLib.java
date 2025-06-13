@@ -43,6 +43,10 @@ public class FusekiTestLib {
         expectFail(runnable, HttpSC.Code.NOT_FOUND);
     }
 
+    public static void expect409(Runnable runnable) {
+        expectFail(runnable, HttpSC.Code.CONFLICT);
+    }
+
     public static void expectFail(Runnable runnable, Code code) {
         if ( code == null || ( 200 <= code.getCode() && code.getCode() < 300 ) ) {
             runnable.run();
