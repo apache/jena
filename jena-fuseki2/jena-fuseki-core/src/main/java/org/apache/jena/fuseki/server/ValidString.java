@@ -38,7 +38,6 @@ public class ValidString {
         return new ValidString(string, validator);
     }
 
-    // It's a record.
     public final String string;
     public final Validator validator;
 

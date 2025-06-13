@@ -23,7 +23,6 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import jakarta.servlet.ServletContext;
-
 import org.apache.jena.atlas.lib.DateTimeUtils;
 import org.apache.jena.atlas.lib.Version;
 import org.apache.jena.fuseki.system.FusekiCore;
@@ -32,6 +31,7 @@ import org.apache.jena.riot.system.stream.LocatorFTP;
 import org.apache.jena.riot.system.stream.LocatorHTTP;
 import org.apache.jena.riot.system.stream.StreamManager;
 import org.apache.jena.sparql.util.Context;
+import org.apache.jena.sparql.util.Symbol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,8 +45,7 @@ public class Fuseki {
     static public final String FusekiIRI          = "http://jena.apache.org/Fuseki";
 
     /**
-     * a unique IRI including the symbol notation for which properties should be
-     * appended
+     * A Fuseki base IRI for {@link Symbol Symbols}
      */
     static public final String FusekiSymbolIRI    = "http://jena.apache.org/fuseki#";
 

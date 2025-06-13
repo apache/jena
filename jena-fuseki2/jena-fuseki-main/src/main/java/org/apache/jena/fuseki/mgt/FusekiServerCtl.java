@@ -59,6 +59,9 @@ import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.assembler.AssemblerUtils;
 import org.apache.jena.system.G;
 
+/**
+ * Each server with management has a {@code FusekiServerCtl} object for its per-server configuration.
+ */
 public class FusekiServerCtl {
     public static final String envFusekiBase          = "FUSEKI_BASE";
     public static final String envFusekiShiro         = "FUSEKI_SHIRO";
@@ -108,15 +111,16 @@ public class FusekiServerCtl {
     /** Directory for assembler files */
     public static Path        dirTemplates       = null;
 
-    private static boolean    initialized        = false;
     // Marks the end of successful initialization.
     /*package*/static boolean serverInitialized  = false;
 
     // Default - "run" in the current directory.
-    public static final String dftFusekiBase = "run";
+    public static final String dftFusekiBase    = "run";
 
     private Path fusekiBase = null;
 
+    // Server-wide lock for configuration changes.
+    private final Object serverLock            = new Object();
 
     public FusekiServerCtl(Path location) {
         if ( location == null )
@@ -129,6 +133,9 @@ public class FusekiServerCtl {
         return fusekiBase;
     }
 
+    public Object getServerlock() {
+        return serverLock;
+    }
 
     private Path envFusekiBase() {
         // Does not guarantee existence

@@ -70,8 +70,6 @@ public abstract class AbstractTestFusekiSecurityAssembler {
     private final String assemblerFile;
     private static AtomicReference<String> user = new AtomicReference<>();
 
-    private boolean sharedDatabase;
-
     private static FusekiServer server;
     private FusekiServer getServer() {
         if ( server == null )
@@ -147,9 +145,8 @@ public abstract class AbstractTestFusekiSecurityAssembler {
         return server;
     }
 
-    protected AbstractTestFusekiSecurityAssembler(String assemberFile, boolean sharedDatabase) {
+    protected AbstractTestFusekiSecurityAssembler(String assemberFile) {
         this.assemblerFile = assemberFile;
-        this.sharedDatabase = sharedDatabase;
     }
 
     private static Node s1 = SSE.parseNode(":s1");

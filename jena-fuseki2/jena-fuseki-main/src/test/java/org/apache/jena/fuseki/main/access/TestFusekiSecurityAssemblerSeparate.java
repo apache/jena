@@ -21,6 +21,6 @@ package org.apache.jena.fuseki.main.access;
 public class TestFusekiSecurityAssemblerSeparate extends AbstractTestFusekiSecurityAssembler {
 
     public TestFusekiSecurityAssemblerSeparate() {
-        super(DIR+"assem-security.ttl", false);
+        super(DIR+"assem-security.ttl");
     }
 }
