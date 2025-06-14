@@ -29,7 +29,7 @@ import org.apache.jena.rdf.model.ModelFactory ;
 public class ExampleDBpedia3
 {
     static public void main(String... argv) {
-        String serviceURI  = "http://dbpedia-live.openlinksw.com/sparql" ;
+        String serviceURI  = "http://dbpedia.org/sparql" ;
         String queryString =
             "SELECT * WHERE { " +
             "    SERVICE <" + serviceURI + "> { " +
@@ -39,7 +39,7 @@ public class ExampleDBpedia3
 
         Query query = QueryFactory.create(queryString) ;
 
-        // Local execution which uses SERBVICE for remote access.
+        // Local execution which uses SERVICE for remote access.
         QueryExecutionDatasetBuilder.create().context(null);
 
         try(QueryExecution qexec = QueryExecutionFactory.create(query, ModelFactory.createDefaultModel())) {
