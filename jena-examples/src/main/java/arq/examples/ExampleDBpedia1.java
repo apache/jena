@@ -26,7 +26,7 @@ public class ExampleDBpedia1
     static public void main(String... argv) {
         String queryString = 
             "SELECT * WHERE { " +
-            "    SERVICE <http://dbpedia-live.openlinksw.com/sparql?timeout=2000> { " +
+            "    SERVICE <http://dbpedia.org/sparql?timeout=2000> { " +
             "        SELECT DISTINCT ?company where {?company a <http://dbpedia.org/ontology/Company>} LIMIT 20" +
             "    }" +
             "}" ;
