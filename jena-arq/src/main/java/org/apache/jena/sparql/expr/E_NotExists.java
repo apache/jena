@@ -20,49 +20,37 @@ package org.apache.jena.sparql.expr;
 
 import org.apache.jena.sparql.algebra.Algebra ;
 import org.apache.jena.sparql.algebra.Op ;
-import org.apache.jena.sparql.core.Substitute ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
 import org.apache.jena.sparql.function.FunctionEnv ;
-import org.apache.jena.sparql.graph.NodeTransform;
-import org.apache.jena.sparql.graph.NodeTransformLib ;
 import org.apache.jena.sparql.sse.Tags ;
 import org.apache.jena.sparql.syntax.Element ;
 
 public class E_NotExists extends ExprFunctionOp
 {
-    // Translated to "(not (exists (...)))" 
+    // Translated to "(not (exists (...)))"
     private static final String symbol = Tags.tagNotExists ;
 
     public E_NotExists(Op op)
     {
         this(null, op) ;
     }
-    
+
     public E_NotExists(Element elt)
     {
         this(elt, Algebra.compile(elt)) ;
     }
-    
+
     public E_NotExists(Element el, Op op)
     {
         super(symbol, el, op) ;
     }
 
     @Override
-    public Expr copySubstitute(Binding binding)
-    {
-        Op op2 = Substitute.substitute(getGraphPattern(), binding) ;
-        return new E_NotExists(getElement(), op2) ;
+    protected Expr copy(Element elt, Op op) {
+        return new E_NotExists(elt, op) ;
     }
 
-    @Override
-    public Expr applyNodeTransform(NodeTransform nodeTransform)
-    {
-        Op op2 = NodeTransformLib.transform(nodeTransform, getGraphPattern()) ;
-        return new E_NotExists(getElement(), op2) ;
-    }
-    
     @Override
     protected NodeValue eval(Binding binding, QueryIterator qIter, FunctionEnv env)
     {
@@ -75,24 +63,24 @@ public class E_NotExists extends ExprFunctionOp
     {
         return symbol.hashCode() ^ getGraphPattern().hashCode() ;
     }
-    
+
     @Override
     public boolean equals(Expr other, boolean bySyntax) {
         if ( other == null ) return false ;
         if ( this == other ) return true ;
         if ( ! ( other instanceof E_NotExists ) )
             return false ;
-        
+
         E_NotExists ex = (E_NotExists)other ;
         if ( bySyntax )
             return this.getElement().equals(ex.getElement()) ;
         else
             return this.getGraphPattern().equals(ex.getGraphPattern()) ;
     }
-    
+
     @Override
     public ExprFunctionOp copy(ExprList args, Op x) { return new E_NotExists(x) ; }
-    
+
     @Override
     public ExprFunctionOp copy(ExprList args, Element elPattern) { return new E_NotExists(elPattern) ; }
 }
