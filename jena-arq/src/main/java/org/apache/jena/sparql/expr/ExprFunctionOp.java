@@ -18,16 +18,29 @@
 
 package org.apache.jena.sparql.expr;
 
+import java.util.Map;
+
+import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.algebra.Op;
+import org.apache.jena.sparql.algebra.OpAsQuery;
+import org.apache.jena.sparql.core.Substitute;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.ExecutionContext;
 import org.apache.jena.sparql.engine.QueryIterator;
 import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingLib;
 import org.apache.jena.sparql.engine.iterator.QueryIterSingleton;
 import org.apache.jena.sparql.engine.iterator.QueryIteratorCheck;
 import org.apache.jena.sparql.engine.main.QC;
 import org.apache.jena.sparql.function.FunctionEnv;
+import org.apache.jena.sparql.graph.NodeTransform;
+import org.apache.jena.sparql.graph.NodeTransformLib;
 import org.apache.jena.sparql.syntax.Element;
-
+import org.apache.jena.sparql.syntax.syntaxtransform.ElementTransform;
+import org.apache.jena.sparql.syntax.syntaxtransform.ElementTransformSubst;
+import org.apache.jena.sparql.syntax.syntaxtransform.ElementTransformer;
+import org.apache.jena.sparql.syntax.syntaxtransform.ExprTransformNodeElement;
+import org.apache.jena.sparql.syntax.syntaxtransform.NodeTransformSubst;
 
 /** A "function" that executes over a pattern */
 
@@ -35,7 +48,9 @@ public abstract class ExprFunctionOp extends ExprFunction
 {
     private final Op op;
     private Op opRun = null;
-    private final Element element;
+
+    // If element has not been set via the ctor then getElement() will compute it lazily.
+    private Element element;
 
     protected ExprFunctionOp(String fName, Element el, Op op) {
         super(fName);
@@ -53,10 +68,45 @@ public abstract class ExprFunctionOp extends ExprFunction
     @Override
     public Op getGraphPattern()         { return op; }
 
-    public Element getElement()         { return element; }
+    public Element getElement()         {
+        if (element == null) {
+            element = OpAsQuery.asElement(op);
+        }
+        return element;
+    }
 
     @Override
     public int numArgs() { return 0; }
+
+    @Override
+    public Expr copySubstitute(Binding binding) {
+        Op op2 = Substitute.substitute(getGraphPattern(), binding) ;
+        Element elt = getElement();
+        Element elt2 = null;
+        if (elt != null) {
+            Map<Var, Node> map = BindingLib.bindingToMap(binding);
+            NodeTransform nodeTransform = new NodeTransformSubst(map);
+            ElementTransform eltTransform = new ElementTransformSubst(nodeTransform);
+            ExprTransform exprTransform =  new ExprTransformNodeElement(nodeTransform, eltTransform);
+            elt2 = ElementTransformer.transform(elt, eltTransform, exprTransform);
+        }
+        return copy(elt2, op2) ;
+    }
+
+    @Override
+    public Expr applyNodeTransform(NodeTransform nodeTransform) {
+        Op op2 = NodeTransformLib.transform(nodeTransform, getGraphPattern()) ;
+        Element elt = getElement();
+        Element elt2 = null;
+        if (elt != null) {
+            ElementTransform eltTransform = new ElementTransformSubst(nodeTransform);
+            ExprTransform exprTransform =  new ExprTransformNodeElement(nodeTransform, eltTransform);
+            elt2 = ElementTransformer.transform(elt, eltTransform, exprTransform);
+        }
+        return copy(elt2, op2) ;
+    }
+
+    protected abstract Expr copy(Element elt, Op op);
 
     // ---- Evaluation
 
