@@ -21,6 +21,7 @@ package org.apache.jena.sparql.syntax.syntaxtransform;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Node_Variable;
@@ -48,11 +49,13 @@ import org.apache.jena.sparql.syntax.*;
  */
 public class ElementTransformSubst extends ElementTransformCopyBase {
     private final NodeTransform nodeTransform;
-    private final Map<Var, ? extends Node> mapping;
 
     public ElementTransformSubst(Map<Var, ? extends Node> mapping) {
-        this.mapping = mapping;
-        this.nodeTransform = new NodeTransformSubst(mapping);
+        this(new NodeTransformSubst(mapping));
+    }
+
+    public ElementTransformSubst(NodeTransform nodeTransform) {
+        this.nodeTransform = Objects.requireNonNull(nodeTransform);
     }
 
     @Override
@@ -144,7 +147,10 @@ public class ElementTransformSubst extends ElementTransformCopyBase {
     public ElementData transform(ElementData data) {
         // Check for var-var. If none, no work to do.
         List<Var> vars = data.getVars();
-        boolean workToDo = vars.stream().anyMatch(v->mapping.containsKey(v));
+        boolean workToDo = vars.stream().anyMatch(v-> {
+            Node n = nodeTransform.apply(v);
+            return n != null && !v.equals(n);
+        });
         if ( ! workToDo )
             return data;
 
