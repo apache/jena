@@ -51,6 +51,8 @@ import org.junit.runners.Suite.SuiteClasses;
     , TestCustomAggregates.class
     , TestStatisticsAggregates.class
     , TestNodeValueSortKey.class
+    , TestExprFunctionOp_NodeTransform.class
+    , TestExprFunctionOp_ExprTransform.class
 })
 
 public class TS_Expr
