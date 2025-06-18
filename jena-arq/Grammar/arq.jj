@@ -1341,6 +1341,7 @@ Node ReifiedTripleSubject(TripleCollector acc) : { Node s; String iri; }
   | s = BooleanLiteral()
   | s = BlankNode()
   | s = ReifiedTriple(acc)
+  | s = TripleTerm()
   )
   { return s; }
 }
@@ -1375,6 +1376,7 @@ Node TripleTermSubject() : { Node n; String iri; }
   | n = NumericLiteral()
   | n = BooleanLiteral()
   | n = BlankNode()
+  | n = TripleTerm() { return n; }
   )
   { return n; }
 }
@@ -1406,6 +1408,7 @@ Node TripleTermDataSubject() : { Node n = null; String iri; }
  | n = RDFLiteral()
  | n = NumericLiteral()
  | n = BooleanLiteral()
+ | n = TripleTermData()
  )
  { return n; }
 }
@@ -1575,6 +1578,7 @@ Node ExprTripleTermSubject() : { Node n; String iri; }
   | n = NumericLiteral()
   | n = BooleanLiteral()
   | n = Var()
+  | n = ExprTripleTerm()
   )
   { return n; }
 }
