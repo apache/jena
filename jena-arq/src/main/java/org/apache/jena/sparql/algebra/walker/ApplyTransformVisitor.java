@@ -22,6 +22,7 @@ import java.util.* ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.graph.Node ;
 import org.apache.jena.query.SortCondition ;
 import org.apache.jena.sparql.algebra.Op ;
 import org.apache.jena.sparql.algebra.OpVisitor ;
@@ -30,7 +31,9 @@ import org.apache.jena.sparql.algebra.op.* ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.core.VarExprList ;
 import org.apache.jena.sparql.expr.* ;
+import org.apache.jena.sparql.expr.NodeValue ;
 import org.apache.jena.sparql.expr.aggregate.Aggregator ;
+import org.apache.jena.sparql.pfunction.PropFuncArg ;
 
 /** Apply the {@link Transform}, {@link ExprTransform}
  *  Works in conjunction with {@link WalkerVisitor}.
@@ -333,6 +336,55 @@ public class ApplyTransformVisitor implements OpVisitorByTypeAndExpr, ExprVisito
             subOp = f.getSubOp() ;
         }
         push(opStack, f.apply(opTransform, subOp)) ;
+    }
+
+    protected PropFuncArg visitPropFuncArg(PropFuncArg arg) {
+        ExprList in = arg.asExprList() ;
+        ExprList out = collect(in);
+
+        PropFuncArg result;
+        if (out.equals(in)) {
+            result = arg;
+        } else {
+            if (arg.isNode()) {
+                Node n = ExprLib.exprToNode(out.get(0));
+                result = new PropFuncArg(n);
+            } else {
+                List<Node> nodes = out.getList().stream().map(ExprLib::exprToNode).toList();
+                result = new PropFuncArg(nodes);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public void visit(OpPropFunc opPropFunc) {
+        Op outSubOp = null;
+        Op inSubOp = opPropFunc.getSubOp();
+        if (inSubOp != null) {
+            outSubOp = pop(opStack);
+        }
+
+        // This logic would also rename the function name
+        // (update OpVistorByTypeAndExpr to put the name onto the stack).
+        // List<Expr> opProperty = collect(1);
+        // Node inP = opPropFunc.getProperty();
+        // Node outP = ExprLib.exprToNode(opProperty.get(0));
+
+        Node outP = opPropFunc.getProperty();
+
+        PropFuncArg inS = opPropFunc.getSubjectArgs();
+        PropFuncArg outS = visitPropFuncArg(inS);
+
+        PropFuncArg inO = opPropFunc.getObjectArgs();
+        PropFuncArg outO = visitPropFuncArg(inO);
+
+        OpPropFunc f = opPropFunc;
+        if (inS != outS || inO != outO || inSubOp != outSubOp /* || inP != outP */) {
+            f = new OpPropFunc(outP, outS, outO, outSubOp);
+        }
+
+        push(opStack, f.apply(opTransform, outSubOp)) ;
     }
 
     @Override
