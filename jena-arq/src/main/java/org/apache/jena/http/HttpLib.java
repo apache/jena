@@ -43,6 +43,7 @@ import java.util.function.Function;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.jena.atlas.RuntimeIOException;
 import org.apache.jena.atlas.io.IO;
 import org.apache.jena.atlas.lib.IRILib;
@@ -150,6 +151,8 @@ public class HttpLib {
                     return responseInput;
                 case "gzip" :
                     return new GZIPInputStream(responseInput, 2*1024);
+                case "bzip2" :
+                    return new BZip2CompressorInputStream(responseInput, true);
                 case "inflate" :
                     return new InflaterInputStream(responseInput);
                 case "br" : // RFC7932

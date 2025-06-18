@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.fileupload2.core.FileItemInput;
 import org.apache.commons.fileupload2.core.FileItemInputIterator;
 import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
@@ -174,6 +175,8 @@ public class DataUploader {
             lang = RDFLanguages.pathnameToLang(submittedFileName);
             if (submittedFileName.endsWith(".gz"))
                 input = new GZIPInputStream(input);
+            else if (submittedFileName.endsWith(".bz2"))
+                input = new BZip2CompressorInputStream(input, true);
         }
         if ( lang == null )
             // Desperate.
