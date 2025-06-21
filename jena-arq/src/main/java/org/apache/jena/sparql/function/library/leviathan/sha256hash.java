@@ -25,8 +25,8 @@ import org.apache.jena.sparql.function.FunctionBase1 ;
 
 public class sha256hash extends FunctionBase1 {
 
-    private ExprDigest digest = new E_SHA256(NodeValue.makeBoolean(true).getExpr());
-    
+    private ExprDigest digest = new E_SHA256(NodeValue.makeBoolean(true));
+
     @Override
     public NodeValue exec(NodeValue v) {
         return digest.eval(v);

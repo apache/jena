@@ -26,9 +26,14 @@ import java.io.Writer;
 
 import org.apache.jena.atlas.lib.Closeable;
 
-/** A writer that records what the current indentation level is, and
- *  uses that to insert a prefix at each line.
- *  It can also insert line numbers at the beginning of lines. */
+/**
+ * A {@link AWriter} that records what the current indentation level is, and uses
+ * that to insert a prefix at each line.
+ * It can also insert line numbers at the beginning of lines.
+ * <p>
+ * An {@code IndentedWriter} flushed, bit does not close, the underlying output a
+ * stream on close.
+ */
 
 public class IndentedWriter extends AWriterBase implements AWriter, Closeable
 {
@@ -109,16 +114,23 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     public IndentedWriter clone() {
         return clone(this);
     }
+
     private static Writer makeWriter(OutputStream out) {
         return IO.asBufferedUTF8(out);
     }
 
-    /** Using Writers directly is discouraged */
+    /**
+     * Using {@link java.io.Writer Java I/O Writers} directly is discouraged
+     * and may case character encoding issues.
+     */
     protected IndentedWriter(Writer writer) {
         this(writer, false);
     }
 
-    /** Using Writers directly is discouraged */
+    /**
+     * Using {@link java.io.Writer Java I/O Writers} directly is discouraged
+     * and may case character encoding issues.
+     */
     protected IndentedWriter(Writer writer, boolean withLineNumbers) {
         out = writer;
         lineNumbers = withLineNumbers;
@@ -253,7 +265,11 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     }
 
     @Override
-    public void close() { IO.close(out); }
+    public void close() {
+        // flush, not close.
+        // IndentedWriters wrap an underlying output, often a short term additional layer.
+        flush();
+    }
 
     @Override
     public void flush() { IO.flush(out); }
@@ -335,29 +351,35 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
         return 0;
     }
 
+    protected IndentedWriter self() { return this; }
+
     /** Get indent from the left hand edge */
     public int getAbsoluteIndent()       { return currentIndent; }
 
     /** Set indent from the left hand edge. Returns {@code this}. */
-    public void setAbsoluteIndent(int x) { currentIndent = x; }
+    public IndentedWriter setAbsoluteIndent(int x) { currentIndent = x; return self(); }
 
     public boolean hasLineNumbers() {
         return lineNumbers;
     }
 
-    public void setLineNumbers(boolean lineNumbers) {
+    public IndentedWriter setLineNumbers(boolean lineNumbers) {
         this.lineNumbers = lineNumbers;
+        return self();
     }
 
     public String getEndOfLineMarker()              { return endOfLineMarker; }
 
     /** Set the marker included at end of line - set to null for "none".  Usually used for debugging. */
-    public void setEndOfLineMarker(String marker)  {  endOfLineMarker = marker; }
+    public IndentedWriter setEndOfLineMarker(String marker)  {  endOfLineMarker = marker; return self(); }
 
     /** Flat mode - print without NL, for a more compact representation */
     public boolean inFlatMode()                     { return flatMode; }
     /** Flat mode - print without NL, for a more compact representation*/
-    public void setFlatMode(boolean flatMode)       { this.flatMode = flatMode; }
+    public IndentedWriter setFlatMode(boolean flatMode) {
+        this.flatMode = flatMode;
+        return self();
+    }
 
     /** Flush on newline **/
     public boolean getFlushOnNewline()              { return flushOnNewline; }
@@ -367,11 +389,14 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
      * but not by default otherwise. The underlying output, if it is a {@link PrintStream}
      * may also have a flush on newline as well (e.g {@link System#out}).
      */
-    public void setFlushOnNewline(boolean flushOnNewline) { this.flushOnNewline = flushOnNewline; }
+    public IndentedWriter setFlushOnNewline(boolean flushOnNewline) {
+        this.flushOnNewline = flushOnNewline;
+        return self();
+    }
 
     public char getPadChar()                        { return padChar; }
 
-    public void setPadChar(char ch)                 { this.padChar = ch; }
+    public IndentedWriter setPadChar(char ch)       { this.padChar = ch; return self(); }
 
     public String getPadString()                    { return padString; }
 
@@ -386,14 +411,16 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     }
 
     /** Set the initial string printed at the start of each line. */
-    public void setLinePrefix(String str) {
+    public IndentedWriter setLinePrefix(String str) {
         this.linePrefix = str;
+        return self();
     }
 
     public int getUnitIndent()         { return unitIndent; }
 
-    public void setUnitIndent(int x) {
+    public IndentedWriter setUnitIndent(int x) {
         unitIndent = x;
+        return self();
     }
 
     private int widthLineNumber = 3;
@@ -404,8 +431,9 @@ public class IndentedWriter extends AWriterBase implements AWriter, Closeable
     /** Set the width of the number field.
      * There is also a single space after the number not included in this setting.
      */
-    public void setNumberWidth(int widthOfNumbers) {
+    public IndentedWriter setNumberWidth(int widthOfNumbers) {
         widthLineNumber = widthOfNumbers;
+        return self();
     }
 
     private void insertLineNumber() {

@@ -51,7 +51,7 @@ public class TestExpressions3
         Binding binding = binding(bindingStr) ;
         Expr expr = ExprUtils.parse(string) ;
         NodeValue nv = expr.eval(binding, LibTestExpr.createTest()) ;
-        boolean b = XSDFuncOp.booleanEffectiveValue(nv) ;
+        boolean b = XSDFuncOp.effectiveBooleanValue(nv) ;
         assertEquals(string, expected, b) ;
     }
 
@@ -60,7 +60,7 @@ public class TestExpressions3
         Binding binding = binding(bindingStr) ;
         Expr expr = SSE.parseExpr(exprString) ;
         NodeValue nv = expr.eval(binding, LibTestExpr.createTest()) ;
-        boolean b = XSDFuncOp.booleanEffectiveValue(nv) ;
+        boolean b = XSDFuncOp.effectiveBooleanValue(nv) ;
         assertEquals(exprString, expected, b) ;
     }
 

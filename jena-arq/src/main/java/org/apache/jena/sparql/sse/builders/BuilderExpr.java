@@ -796,7 +796,7 @@ public class BuilderExpr
         if ( numArgs(list) == 2 ) {
             Expr expr1 = buildExpr(list.get(1));
             Expr expr2 = buildExpr(list.get(2));
-            return new E_URI2(expr1, null, expr2);
+            return new E_URI2(expr1, expr2);
         }
         String baseStr = asString(list.get(1));
         Expr expr1 = buildExpr(list.get(2));

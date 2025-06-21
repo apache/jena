@@ -18,75 +18,69 @@
 
 package org.apache.jena.sparql.expr;
 
-import org.apache.jena.sparql.engine.binding.Binding ;
-import org.apache.jena.sparql.function.FunctionEnv ;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.function.FunctionEnv;
 
-public abstract class E_OneOfBase extends ExprFunctionN
-{   
-    /* This operation stores it's arguments as a single list.
-     * The first element of the array is the expression being tested,
-     * the rest are the items to be used to test against.
-     * There are cached copies of the LHS (car) and RHS (cdr).
-     */
-    
+public abstract class E_OneOfBase extends ExprFunctionN {
+    /* This operation stores it's arguments as a single list. The first element of
+     * the array is the expression being tested, the rest are the items to be used to
+     * test against. There are cached copies of the LHS (car) and RHS (cdr). */
+
     // Cached values.
-    protected final Expr expr ;
-    protected final ExprList possibleValues ;
-    
-    protected E_OneOfBase(String name, Expr expr, ExprList args)
-    {
-        super(name, fixup(expr, args)) ;
-        this.expr = expr ;
-        this.possibleValues = args ;
+    protected final Expr expr;
+    protected final ExprList possibleValues;
+
+    protected E_OneOfBase(String name, Expr expr, ExprList args) {
+        super(name, fixup(expr, args));
+        this.expr = expr;
+        this.possibleValues = args;
     }
-    
+
     // All ArgList, first arg is the expression.
-    protected E_OneOfBase(String name, ExprList args)
-    {
-        super(name, args) ;
-        this.expr = args.get(0) ;
-        this.possibleValues = args.tail(1) ;
-    }
-    
-    private static ExprList fixup(Expr expr2, ExprList args)
-    {
-        ExprList allArgs = new ExprList(expr2) ;
-        allArgs.addAll(args) ;
-        return allArgs ;
+    protected E_OneOfBase(String name, ExprList args) {
+        super(name, args);
+        this.expr = args.get(0);
+        this.possibleValues = args.tail(1);
     }
 
-    public Expr getLHS()        { return expr ; }
-    public ExprList getRHS()    { return possibleValues; }
+    private static ExprList fixup(Expr expr2, ExprList args) {
+        ExprList allArgs = new ExprList(expr2);
+        allArgs.addAll(args);
+        return allArgs;
+    }
 
-    
-//    public Expr getLHS() { return expr ; }
-//    public ExprList getRHS() { return possibleValues ; }
+    public Expr getLHS() {
+        return expr;
+    }
 
-    protected boolean evalOneOf(Binding binding, FunctionEnv env)
-    {
+    public ExprList getRHS() {
+        return possibleValues;
+    }
+
+// public Expr getLHS() { return expr ; }
+// public ExprList getRHS() { return possibleValues ; }
+
+    protected boolean evalOneOf(Binding binding, FunctionEnv env) {
         // Special form.
         // Like ( expr = expr1 ) || ( expr = expr2 ) || ...
 
-        NodeValue nv = expr.eval(binding, env) ;
-        ExprEvalException error = null ;
-        for ( Expr inExpr : possibleValues )
-        {
+        NodeValue nv = expr.eval(binding, env);
+        ExprEvalException error = null;
+        for ( Expr inExpr : possibleValues ) {
             try {
-                NodeValue maybe = inExpr.eval(binding, env) ;
+                NodeValue maybe = inExpr.eval(binding, env);
                 if ( NodeValue.sameValueAs(nv, maybe) )
-                    return true ;
-            } catch (ExprEvalException ex)
-            {
-                error = ex ;
+                    return true;
+            } catch (ExprEvalException ex) {
+                error = ex;
             }
         }
         if ( error != null )
-            throw error ;
-        return false ;
+            throw error;
+        return false;
     }
-    
-    protected boolean evalNotOneOf(Binding binding, FunctionEnv env)
-    {
-        return ! evalOneOf(binding, env) ;
+
+    protected boolean evalNotOneOf(Binding binding, FunctionEnv env) {
+        return !evalOneOf(binding, env);
     }
 }

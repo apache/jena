@@ -29,22 +29,24 @@ public class E_URI2 extends E_IRI2 {
     private static final String sparqlPrintName = "URI";
     private static final String sseFunctionName = Tags.tagUri2;
 
-    public E_URI2(String baseURI, Expr relExpr) {
-        this(null, baseURI, relExpr);
+    public E_URI2(Expr baseExpr, Expr relExpr) {
+        this(baseExpr, null, relExpr);
     }
 
     public E_URI2(Expr baseExpr, String baseStr, Expr relExpr) {
+        // BaseStr is the base in force at the time this expression was created.
+        // This may be null.
         super(baseExpr, baseStr, relExpr, sparqlPrintName, sseFunctionName);
     }
-
-    @Override
-    public String getFunctionPrintName(SerializationContext cxt)
-    { return sparqlPrintName ; }
 
     @Override
     public Expr copy(Expr expr1, Expr expr2) {
         return new E_URI2(expr1, parserBase, expr2);
     }
+
+    @Override
+    public String getFunctionPrintName(SerializationContext cxt)
+    { return sparqlPrintName ; }
 
     @Override
     public int hashCode() {

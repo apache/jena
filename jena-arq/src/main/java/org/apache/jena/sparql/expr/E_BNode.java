@@ -36,17 +36,17 @@ public class E_BNode implements Unstable
     private static final Symbol keyMap = Symbol.create("arq:internal:bNodeMappings");
 
     public static Expr create() {
-        return new E_BNode0();
+        return new BNode0();
     }
 
     public static Expr create(Expr expr) {
-        return new E_BNode1(expr);
+        return new BNode1(expr);
     }
 
     // --- The zero argument case.
-    private static class E_BNode0 extends ExprFunction0  implements Unstable {
+    public static class BNode0 extends ExprFunction0  implements Unstable {
 
-        protected E_BNode0() {
+        protected BNode0() {
             super(symbol);
         }
 
@@ -57,13 +57,13 @@ public class E_BNode implements Unstable
 
         @Override
         public Expr copy() {
-            return new E_BNode0();
+            return new BNode0();
         }
     }
 
     // --- The one argument case.
-    private static class E_BNode1 extends ExprFunction1  implements Unstable {
-        protected E_BNode1(Expr expr) {
+    public static class BNode1 extends ExprFunction1  implements Unstable {
+        protected BNode1(Expr expr) {
             super(expr, symbol);
         }
 
@@ -102,8 +102,7 @@ public class E_BNode implements Unstable
 
         @Override
         public Expr copy(Expr expr) {
-            return new E_BNode1(expr);
+            return new BNode1(expr);
         }
     }
-
 }

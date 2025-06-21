@@ -42,7 +42,7 @@ public class E_LogicalAnd extends ExprFunction2
         try {
             NodeValue x = getArg1().eval(binding, env) ;
     
-            if ( ! XSDFuncOp.booleanEffectiveValue(x) )
+            if ( ! XSDFuncOp.effectiveBooleanValue(x) )
                 return NodeValue.FALSE ; 
         } catch (ExprEvalException eee)
         {
@@ -55,7 +55,7 @@ public class E_LogicalAnd extends ExprFunction2
         try {
             NodeValue y = getArg2().eval(binding, env) ;
     
-            if ( ! XSDFuncOp.booleanEffectiveValue(y) )
+            if ( ! XSDFuncOp.effectiveBooleanValue(y) )
                 return NodeValue.FALSE ;
             
             // RHS is true but was there an error earlier?

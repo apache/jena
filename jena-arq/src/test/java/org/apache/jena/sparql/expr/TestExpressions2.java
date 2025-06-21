@@ -245,7 +245,7 @@ public class TestExpressions2
     /*package*/ static void eval(String string, boolean result) {
         Expr expr = ExprUtils.parse(string) ;
         NodeValue nv = expr.eval(null, LibTestExpr.createTest()) ;
-        boolean b = XSDFuncOp.booleanEffectiveValue(nv) ;
+        boolean b = XSDFuncOp.effectiveBooleanValue(nv) ;
         assertEquals(string, result, b) ;
     }
 }
